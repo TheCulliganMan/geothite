@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "id": "MnR12Cave1F",
+  "tileset": "cave",
+  "dimensions_metatiles": [
+    16,
+    12
+  ],
+  "border_block": 46,
+  "palette_group": "nite",
+  "rows": [
+    "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e",
+    "2e 04 05 05 05 06 2e 2e 2e 2e 04 05 05 05 06 2e",
+    "2e 08 02 02 02 0a 2e 2e 2e 04 02 02 02 02 0a 2e",
+    "2e 08 02 02 02 0a 2e 2e 2e 08 02 02 02 02 0a 2e",
+    "2e 0c 0d 30 0d 0e 2e 2e 2e 0c 0d 0d 0d 36 2e 2e",
+    "2e 2e 04 02 02 10 0d 11 02 02 02 02 02 02 06 2e",
+    "2e 04 02 02 02 0a 2e 08 02 1d 02 02 3e 3d 2e 2e",
+    "2e 08 02 1d 02 0a 2e 08 02 02 02 3e 0f 25 2e 2e",
+    "2e 08 02 02 02 06 05 04 02 02 02 26 0f 25 2e 2e",
+    "2e 0c 0d 0d 0d 02 02 02 02 02 02 32 0f 33 2e 2e",
+    "2e 2e 2e 2e 2e 0c 0d 0d 02 0d 0e 2e 2e 2e 2e 2e",
+    "2e 2e 2e 2e 2e 2e 2e 2e 24 2e 2e 2e 2e 2e 2e 2e"
+  ]
+}

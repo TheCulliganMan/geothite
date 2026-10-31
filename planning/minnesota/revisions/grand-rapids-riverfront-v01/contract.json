@@ -1,0 +1,178 @@
+{
+  "schema_version": 1,
+  "map": "MnGrandRapids",
+  "parent_revision": "gunflint_spring_shelter_revision",
+  "parent_pack": "content-packs/minnesota-gunflint-spring-shelter-v02.crystalpack",
+  "parent_pack_sha256": "6a4af10d7d025cb9041878a63855c6d01cf4e5180c2672cf10a07b0ceda5fecb",
+  "native_module_sha256": "707f7557008f653287f06da2ea5effd1bb6a7793d1da0ee7b3b7dbd57e48cd61",
+  "preserved_warps": [
+    {
+      "index": 1,
+      "x": 9,
+      "y": 11,
+      "target_map_constant": "MN_GRAND_RAPIDS_POKECENTER_1F",
+      "target_map": "MN_GRAND_RAPIDS_POKECENTER_1F",
+      "target_warp_id": 3
+    },
+    {
+      "index": 2,
+      "x": 9,
+      "y": 12,
+      "target_map_constant": "MN_GRAND_RAPIDS",
+      "target_map": "MN_GRAND_RAPIDS",
+      "target_warp_id": 2
+    },
+    {
+      "index": 3,
+      "x": 39,
+      "y": 15,
+      "target_map_constant": "MN_GRAND_RAPIDS_MART",
+      "target_map": "MN_GRAND_RAPIDS_MART",
+      "target_warp_id": 3
+    },
+    {
+      "index": 4,
+      "x": 39,
+      "y": 16,
+      "target_map_constant": "MN_GRAND_RAPIDS",
+      "target_map": "MN_GRAND_RAPIDS",
+      "target_warp_id": 4
+    },
+    {
+      "index": 5,
+      "x": 27,
+      "y": 13,
+      "target_map_constant": "MN_GRAND_RAPIDS_SURVEY_DEPOT",
+      "target_map": "MN_GRAND_RAPIDS_SURVEY_DEPOT",
+      "target_warp_id": 3
+    },
+    {
+      "index": 6,
+      "x": 27,
+      "y": 14,
+      "target_map_constant": "MN_GRAND_RAPIDS",
+      "target_map": "MN_GRAND_RAPIDS",
+      "target_warp_id": 6
+    }
+  ],
+  "preserved_actor_anchors": [
+    {
+      "id": "MN_GR_WORKER",
+      "script": "MN_GR_WORKER",
+      "tile": [
+        17,
+        25
+      ]
+    },
+    {
+      "id": "MN_GR_RIVER_WATCHER",
+      "script": "MN_GR_RIVER_WATCHER",
+      "tile": [
+        31,
+        32
+      ]
+    },
+    {
+      "id": "MN_GRAND_RAPIDS_WEST_GUARD_NORTH",
+      "script": "MnGrandRapidsWestCheck",
+      "tile": [
+        2,
+        24
+      ]
+    },
+    {
+      "id": "MN_GRAND_RAPIDS_WEST_GUARD_SOUTH",
+      "script": "MnGrandRapidsWestCheck",
+      "tile": [
+        2,
+        25
+      ]
+    },
+    {
+      "id": "MN_GRAND_RAPIDS_EAST_GUARD_NORTH",
+      "script": "MnGrandRapidsEastCheck",
+      "tile": [
+        45,
+        24
+      ]
+    },
+    {
+      "id": "MN_GRAND_RAPIDS_EAST_GUARD_SOUTH",
+      "script": "MnGrandRapidsEastCheck",
+      "tile": [
+        45,
+        25
+      ]
+    }
+  ],
+  "preserved_readings": [
+    {
+      "x": 14,
+      "y": 22,
+      "event_type": "BGEVENT_READ",
+      "script": "MN_GR_WEST_SIGN"
+    },
+    {
+      "x": 38,
+      "y": 22,
+      "event_type": "BGEVENT_READ",
+      "script": "MN_GR_EAST_SIGN"
+    },
+    {
+      "x": 22,
+      "y": 12,
+      "event_type": "BGEVENT_READ",
+      "script": "MN_GR_DEPOT_SIGN"
+    }
+  ],
+  "preserved_coordinate_events": [
+    {
+      "x": 3,
+      "y": 24,
+      "scene_id": "",
+      "script_name": "MnGrandRapidsWestCheck"
+    },
+    {
+      "x": 1,
+      "y": 24,
+      "scene_id": "",
+      "script_name": "MnGrandRapidsWestCheckInward"
+    },
+    {
+      "x": 3,
+      "y": 25,
+      "scene_id": "",
+      "script_name": "MnGrandRapidsWestCheck"
+    },
+    {
+      "x": 1,
+      "y": 25,
+      "scene_id": "",
+      "script_name": "MnGrandRapidsWestCheckInward"
+    },
+    {
+      "x": 44,
+      "y": 24,
+      "scene_id": "",
+      "script_name": "MnGrandRapidsEastCheck"
+    },
+    {
+      "x": 46,
+      "y": 24,
+      "scene_id": "",
+      "script_name": "MnGrandRapidsEastCheckInward"
+    },
+    {
+      "x": 44,
+      "y": 25,
+      "scene_id": "",
+      "script_name": "MnGrandRapidsEastCheck"
+    },
+    {
+      "x": 46,
+      "y": 25,
+      "scene_id": "",
+      "script_name": "MnGrandRapidsEastCheckInward"
+    }
+  ]
+}

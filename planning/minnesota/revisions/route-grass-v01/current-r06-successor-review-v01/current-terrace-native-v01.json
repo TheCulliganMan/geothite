@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "log": ".local/route-grass-review/r06-current-terrace-native-v01.log",
+  "cut_permissions": true,
+  "terrace_ether_once_and_continue": true,
+  "native_return_from_inside": true,
+  "scope": "Local native Cut/party/badge fixture; reached play uses production controller."
+}

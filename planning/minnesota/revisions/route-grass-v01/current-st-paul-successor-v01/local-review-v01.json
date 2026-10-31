@@ -1,0 +1,14 @@
+{
+  "status": "PASS_LOCAL_INHERITANCE_OF_ST_PAUL_COMPLETE_TOUR",
+  "pack": "content-packs/minnesota-international-falls-windbreak-v01.crystalpack",
+  "pack_sha256": "7066f05448101c79b4dc761963b0f39a570bad07c4f80e3e777901ac2e207507",
+  "complete_maps_and_used_art_exact": 43,
+  "reference_pack": "content-packs/minnesota-st-paul-southbank-v03.crystalpack",
+  "production_tour": "planning/minnesota/renders/st-paul-southbank-v221/production-tour-v229/receipt.json",
+  "production_tour_sha256": "29d7e55586bd81e3a318bc0b215702825d166072a08d41967517fdb3b2664484",
+  "original_production_calls": 1387,
+  "distinct_building_entries": 40,
+  "both_bridges_and_native_ledge_reverse_denial_ramp_return": true,
+  "whole_native_source_inspected": "planning/minnesota/renders/st-paul-southbank-v221/native-gpu-v225/MnStPaul-whole-native-source.png",
+  "scope": "Exact city/42named rooms and used pixels/collision inherit earlier complete production tour. Original receipts retain original pack identity; no fresh current-pack gameplay/global battle equivalence claimed. No pack/art/terrain change or earned campaign claim."
+}

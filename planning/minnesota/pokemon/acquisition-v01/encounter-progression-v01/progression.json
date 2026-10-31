@@ -1,0 +1,1183 @@
+{
+  "schema_version": 1,
+  "parent_content_hash": "cbc705f5ba5d1f7a3296cc70c4b9b2cd887d3d04714dfdb9186a1d179ec8d770",
+  "groups": [
+    {
+      "id": "opening-woodland",
+      "minimum_badges": 0,
+      "access": "Partner receipt opens Winona to Rochester; Surf here is a return after Capitol.",
+      "maps": [
+        "MnR01C00R00",
+        "MnR01Cave1F"
+      ],
+      "grass": [
+        2,
+        2,
+        3,
+        3,
+        3,
+        4,
+        4
+      ],
+      "surf": [
+        20,
+        22,
+        24
+      ]
+    },
+    {
+      "id": "driftless-gallery",
+      "minimum_badges": 0,
+      "access": "Optional lamp gallery from the first Driftless cave. No badge needed to explore.",
+      "maps": [
+        "MnDriftlessLampGallery"
+      ],
+      "grass": [
+        5,
+        5,
+        6,
+        6,
+        6,
+        7,
+        7
+      ],
+      "surf": [
+        20,
+        22,
+        24
+      ]
+    },
+    {
+      "id": "prairie-farms",
+      "minimum_badges": 1,
+      "access": "Care Badge opens Rochester to Mankato.",
+      "maps": [
+        "MnR02C00R00"
+      ],
+      "grass": [
+        8,
+        8,
+        9,
+        9,
+        10,
+        11,
+        11
+      ],
+      "surf": [
+        20,
+        22,
+        24
+      ],
+      "zone_replacements": {
+        "MN_HABITAT_HARVEST_WIND": {
+          "CROWSCARE": "VANECHICK"
+        }
+      }
+    },
+    {
+      "id": "river-valley",
+      "minimum_badges": 2,
+      "access": "Prairie Badge opens Mankato to Minneapolis. Strength side chamber requires Current.",
+      "maps": [
+        "MnR03C00R00",
+        "MnR03C00R01",
+        "MnR03Cave1F"
+      ],
+      "grass": [
+        12,
+        13,
+        14,
+        15,
+        16,
+        16,
+        17
+      ],
+      "surf": [
+        20,
+        22,
+        24
+      ]
+    },
+    {
+      "id": "twin-cities",
+      "minimum_badges": 3,
+      "access": "Current Badge opens the Minneapolis to St Paul road.",
+      "maps": [
+        "MnR04C00R00"
+      ],
+      "grass": [
+        17,
+        18,
+        19,
+        20,
+        21,
+        21,
+        21
+      ],
+      "surf": [
+        20,
+        22,
+        24
+      ],
+      "promotions": {
+        "NIBBIN": "CACHEEK"
+      }
+    },
+    {
+      "id": "metro-woodland",
+      "minimum_badges": 4,
+      "access": "Both Current and Capitol open the road to St Cloud.",
+      "maps": [
+        "MnR05C00R00",
+        "MnR05C00R01",
+        "MnR05C00R02"
+      ],
+      "grass": [
+        21,
+        22,
+        23,
+        24,
+        25,
+        25,
+        25
+      ],
+      "surf": [
+        22,
+        24,
+        26
+      ],
+      "promotions": {
+        "POUCHID": "SLIPPERINA",
+        "PODLET": "FLOSSAIL",
+        "DRIPTIP": "SINKNOOK"
+      }
+    },
+    {
+      "id": "pine-country",
+      "minimum_badges": 5,
+      "access": "Wind Badge opens St Cloud to Brainerd.",
+      "maps": [
+        "MnR06C00R00",
+        "MnR06C00R01"
+      ],
+      "grass": [
+        25,
+        26,
+        27,
+        28,
+        29,
+        29,
+        30
+      ],
+      "surf": [
+        25,
+        27,
+        29
+      ],
+      "promotions": {
+        "RICELING": "REEDRAFT"
+      }
+    },
+    {
+      "id": "lake-road",
+      "minimum_badges": 6,
+      "access": "Lake Badge opens Brainerd to Leech Lake.",
+      "maps": [
+        "MnR07C00R00",
+        "MnR07C00R01"
+      ],
+      "grass": [
+        29,
+        30,
+        31,
+        32,
+        33,
+        33,
+        34
+      ],
+      "surf": [
+        29,
+        31,
+        34
+      ],
+      "promotions": {
+        "CHORIP": "CHOIRBOG",
+        "CLINKLAW": "TRAPNACK",
+        "RICELING": "REEDRAFT",
+        "RIVVIT": "SLIDEWAKE"
+      }
+    },
+    {
+      "id": "peat-country",
+      "minimum_badges": 6,
+      "access": "Lake Badge opens Leech Lake to Bemidji; no Surf needed for the road.",
+      "maps": [
+        "MnR08C00R00",
+        "MnR08C00R01",
+        "MnR08C01R00",
+        "MnR08C01R01"
+      ],
+      "grass": [
+        31,
+        32,
+        33,
+        34,
+        35,
+        35,
+        36
+      ],
+      "surf": [
+        31,
+        33,
+        35
+      ],
+      "promotions": {
+        "CLINKLAW": "TRAPNACK"
+      }
+    },
+    {
+      "id": "iron-range",
+      "minimum_badges": 7,
+      "access": "Pine plus the acknowledged independent report opens the mine journey.",
+      "maps": [
+        "MnR09C00R00",
+        "MnR09C00R01",
+        "MnR09C01R00",
+        "MnR09C01R01",
+        "MnR09Cave1F"
+      ],
+      "grass": [
+        34,
+        35,
+        36,
+        37,
+        38,
+        38,
+        39
+      ],
+      "surf": [
+        34,
+        36,
+        38
+      ],
+      "promotions": {
+        "DENSY": "DOZEBEAR"
+      }
+    },
+    {
+      "id": "harbor-road",
+      "minimum_badges": 7,
+      "access": "Pine and the depot meter handover open the road to Duluth.",
+      "maps": [
+        "MnR10C00R00",
+        "MnR10C01R00",
+        "MnR10Cave1F"
+      ],
+      "grass": [
+        36,
+        37,
+        38,
+        39,
+        40,
+        40,
+        41
+      ],
+      "surf": [
+        36,
+        38,
+        40
+      ],
+      "promotions": {
+        "CARTICK": "HAULGEIST",
+        "DENSY": "DOZEBEAR",
+        "WHIRLNUT": "SAMURREL"
+      }
+    },
+    {
+      "id": "north-shore",
+      "minimum_badges": 8,
+      "access": "All eight badges and the completed Harbor signal open the North Shore.",
+      "maps": [
+        "MnR11C00R00",
+        "MnR11C00R01",
+        "MnR11C00R02",
+        "MnR11C00R03",
+        "MnR11C01R00",
+        "MnR11C01R01",
+        "MnR11C01R02",
+        "MnR11C01R03"
+      ],
+      "grass": [
+        39,
+        40,
+        41,
+        41,
+        42,
+        43,
+        44
+      ],
+      "surf": [
+        39,
+        41,
+        43
+      ],
+      "promotions": {
+        "DOZEBEAR": "DENUMBRA"
+      }
+    },
+    {
+      "id": "gunflint",
+      "minimum_badges": 8,
+      "access": "All eight badges and the Harbor signal precede the Boundary investigation.",
+      "maps": [
+        "MnR12C00R00",
+        "MnR12C00R01",
+        "MnR12Cave1F"
+      ],
+      "grass": [
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        46
+      ],
+      "surf": [
+        41,
+        43,
+        45
+      ],
+      "promotions": {
+        "REEDRAFT": "ZIZALITH",
+        "CLINKLAW": "TRAPNACK",
+        "DOZEBEAR": "DENUMBRA"
+      }
+    },
+    {
+      "id": "league-approach",
+      "minimum_badges": 8,
+      "access": "All eight badges and the restored survey open the Ely approach.",
+      "maps": [
+        "MnR13C00R00",
+        "MnR13C00R01",
+        "MnR13C00R02",
+        "MnR13Cave1F"
+      ],
+      "grass": [
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        48
+      ],
+      "surf": [
+        43,
+        45,
+        47
+      ],
+      "promotions": {
+        "DOZEBEAR": "DENUMBRA"
+      }
+    },
+    {
+      "id": "itasca-circuit",
+      "minimum_badges": 6,
+      "access": "Lake Badge permits exploring Itasca; Pine and the report are separate story requirements.",
+      "maps": [
+        "MnR14C00R00",
+        "MnR14C00R01",
+        "MnR14C01R00",
+        "MnR14C01R01",
+        "MnLakeItasca"
+      ],
+      "grass": [
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        35
+      ],
+      "surf": [
+        30,
+        32,
+        35
+      ],
+      "promotions": {
+        "RICELING": "REEDRAFT",
+        "CLINKLAW": "TRAPNACK",
+        "GILLPUP": "MUDMENDER"
+      }
+    },
+    {
+      "id": "detroit-lakes-circuit",
+      "minimum_badges": 6,
+      "access": "Optional Lake Badge branch from Brainerd.",
+      "maps": [
+        "MnR15C00R00",
+        "MnDetroitLakesApproach"
+      ],
+      "grass": [
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35
+      ],
+      "surf": [
+        29,
+        31,
+        34
+      ],
+      "promotions": {
+        "PODLET": "FLOSSAIL",
+        "GILLPUP": "MUDMENDER",
+        "CLINKLAW": "TRAPNACK",
+        "RIVVIT": "SLIDEWAKE",
+        "TICKLET": "SOLSTORT"
+      }
+    },
+    {
+      "id": "western-prairie",
+      "minimum_badges": 6,
+      "access": "Lake Badge optional Detroit Lakes to Moorhead branch.",
+      "maps": [
+        "MnR16C00R00",
+        "MnR16C01R00",
+        "MnFormerShores",
+        "MnFieldMargin"
+      ],
+      "grass": [
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35
+      ],
+      "surf": [
+        29,
+        31,
+        34
+      ],
+      "promotions": {
+        "ZAPSAP": "TAPACITOR",
+        "VANECHICK": "SILOHAWK",
+        "TICKLET": "SOLSTORT"
+      }
+    },
+    {
+      "id": "border-road",
+      "minimum_badges": 7,
+      "access": "Pine Badge opens the International Falls road.",
+      "maps": [
+        "MnR17C00R00",
+        "MnR17C00R01",
+        "MnR17C00R02",
+        "MnR17Cave1F"
+      ],
+      "grass": [
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40
+      ],
+      "surf": [
+        34,
+        36,
+        39
+      ],
+      "promotions": {
+        "CLINKLAW": "TRAPNACK"
+      }
+    },
+    {
+      "id": "mille-lacs-circuit",
+      "minimum_badges": 6,
+      "access": "Optional public shore after Lake; paid admission is not needed.",
+      "maps": [
+        "MnR18C00R00",
+        "MnR18C01R00",
+        "MnMilleLacs"
+      ],
+      "grass": [
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35
+      ],
+      "surf": [
+        29,
+        31,
+        34
+      ],
+      "promotions": {
+        "GILLPUP": "MUDMENDER",
+        "POUCHID": "SLIPPERINA",
+        "RIVVIT": "SLIDEWAKE",
+        "TICKLET": "SOLSTORT"
+      }
+    },
+    {
+      "id": "western-woods-oaks",
+      "minimum_badges": 6,
+      "access": "Follow the western woodland loop after earning the Lake Badge. Use Headbutt on the oak trees.",
+      "maps": [
+        "MnR19C00R00"
+      ],
+      "grass": [
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36
+      ],
+      "surf": [
+        30,
+        32,
+        35
+      ],
+      "promotions": {
+        "CLINKLAW": "TRAPNACK",
+        "GILLPUP": "MUDMENDER"
+      },
+      "field_delta": 3
+    },
+    {
+      "id": "western-woods-road",
+      "minimum_badges": 6,
+      "access": "Follow the western woodland loop after earning the Lake Badge.",
+      "maps": [
+        "MnR19C00R01"
+      ],
+      "grass": [
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36
+      ],
+      "surf": [
+        30,
+        32,
+        35
+      ],
+      "promotions": {
+        "CLINKLAW": "TRAPNACK",
+        "GILLPUP": "MUDMENDER"
+      }
+    },
+    {
+      "id": "northern-preserve",
+      "minimum_badges": 8,
+      "access": "All eight badges and Harbor signal open the final northern loop.",
+      "maps": [
+        "MnR20C00R00",
+        "MnR20C00R01",
+        "MnR20C01R00",
+        "MnR20C01R01",
+        "MnR20Cave1F",
+        "MnPreservePineEntry"
+      ],
+      "grass": [
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48
+      ],
+      "surf": [
+        42,
+        44,
+        47
+      ],
+      "promotions": {
+        "DOZEBEAR": "DENUMBRA"
+      }
+    },
+    {
+      "id": "grand-marais",
+      "minimum_badges": 8,
+      "access": "Rest stop after all eight badges and Harbor signal. Town wildlife shares the late North Shore level band.",
+      "maps": [
+        "MnGrandMarais"
+      ],
+      "grass": [
+        39,
+        40,
+        41,
+        40,
+        41,
+        42,
+        43
+      ],
+      "surf": [
+        39,
+        41,
+        43
+      ],
+      "residents": {
+        "morning": [
+          "NOTCHBILL",
+          "LATCHQUILL",
+          "GOUGECREST",
+          "BRISTUB",
+          "PITCHWICK",
+          "FLOSSAIL",
+          "PYROPINE"
+        ],
+        "day": [
+          "NOTCHBILL",
+          "LATCHQUILL",
+          "GOUGECREST",
+          "BRISTUB",
+          "PITCHWICK",
+          "FLOSSAIL",
+          "PYROPINE"
+        ],
+        "night": [
+          "PINIT",
+          "BRISTUB",
+          "PITCHWICK",
+          "LATCHQUILL",
+          "PYROPINE",
+          "PINIT",
+          "SKEETEREX"
+        ]
+      }
+    },
+    {
+      "id": "fair-food-and-exhibits",
+      "minimum_badges": 4,
+      "access": "Optional woodland trail off R05 after Current and Capitol. Family forms fit the visit, with final forms earned by evolution.",
+      "maps": [
+        "MnStateFairgrounds"
+      ],
+      "grass": [
+        21,
+        22,
+        21,
+        24,
+        25,
+        25,
+        24
+      ],
+      "surf": [
+        22,
+        24,
+        26
+      ]
+    },
+    {
+      "id": "bemidji-woods",
+      "minimum_badges": 6,
+      "access": "Bemidji and its southern woods are reached after Lake; northern exit retains its own Pine check.",
+      "maps": [
+        "MnBemidjiNorthwoods",
+        "MnLayeredFen"
+      ],
+      "grass": [
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        38
+      ],
+      "surf": [
+        32,
+        34,
+        36
+      ],
+      "promotions": {
+        "CLINKLAW": "TRAPNACK"
+      }
+    },
+    {
+      "id": "tall-tale-trail",
+      "minimum_badges": 6,
+      "access": "Optional woodland gate from Bemidji. Voluntary tale encounters retain their separate high-level challenge.",
+      "maps": [
+        "MnTallTaleTrail"
+      ],
+      "grass": [
+        32,
+        33,
+        34,
+        34,
+        35,
+        36,
+        35
+      ],
+      "surf": [
+        32,
+        34,
+        36
+      ],
+      "field_delta": 4
+    },
+    {
+      "id": "cedar-and-kettle",
+      "minimum_badges": 8,
+      "access": "Optional North Shore paths after all badges and Harbor signal.",
+      "maps": [
+        "MnMaraisCedarApproach",
+        "MnDevilsKettle"
+      ],
+      "grass": [
+        39,
+        40,
+        41,
+        41,
+        42,
+        43,
+        44
+      ],
+      "surf": [
+        39,
+        41,
+        43
+      ],
+      "promotions": {
+        "DOZEBEAR": "DENUMBRA"
+      }
+    },
+    {
+      "id": "ely-shore",
+      "minimum_badges": 8,
+      "access": "Free Boundary shelter and restored-survey Ely passage; no paid Safari requirement.",
+      "maps": [
+        "MnElyShorePass"
+      ],
+      "grass": [
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48
+      ],
+      "surf": [
+        42,
+        44,
+        47
+      ],
+      "promotions": {
+        "DOZEBEAR": "DENUMBRA"
+      }
+    },
+    {
+      "id": "iron-workings",
+      "minimum_badges": 7,
+      "access": "Mine side passages after Pine and independent report.",
+      "maps": [
+        "MnIronDrillApproach",
+        "MnIronSump"
+      ],
+      "grass": [
+        35,
+        35,
+        36,
+        36,
+        37,
+        38,
+        39
+      ],
+      "surf": [
+        35,
+        37,
+        39
+      ]
+    },
+    {
+      "id": "icefield-branch",
+      "minimum_badges": 8,
+      "access": "Northern preserve branch from the all-badges R20 loop.",
+      "maps": [
+        "MnRainyRiverIcefields"
+      ],
+      "grass": [
+        43,
+        44,
+        45,
+        46,
+        47,
+        47,
+        48
+      ],
+      "surf": [
+        43,
+        45,
+        47
+      ]
+    },
+    {
+      "id": "voyageurs-upper",
+      "minimum_badges": 7,
+      "access": "Optional Voyageurs branch from the Pine-gated border visit.",
+      "maps": [
+        "MnVoyageursIce1F"
+      ],
+      "grass": [
+        37,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42
+      ],
+      "surf": [
+        36,
+        38,
+        40
+      ]
+    },
+    {
+      "id": "voyageurs-lower",
+      "minimum_badges": 7,
+      "access": "Deeper optional Voyageurs ice rooms; stronger than the public border road.",
+      "maps": [
+        "MnVoyageursIceB1F"
+      ],
+      "grass": [
+        39,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44
+      ],
+      "surf": [
+        38,
+        40,
+        42
+      ]
+    },
+    {
+      "id": "opening-water-return",
+      "minimum_badges": 0,
+      "access": "Winona water is reached with Surf after Capitol, unlike the opening walking encounters.",
+      "maps": [
+        "MnWinona"
+      ],
+      "grass": [
+        2,
+        2,
+        3,
+        3,
+        3,
+        4,
+        4
+      ],
+      "surf": [
+        20,
+        22,
+        24
+      ]
+    },
+    {
+      "id": "metro-water",
+      "minimum_badges": 2,
+      "access": "Minneapolis arrival after Prairie; actual swimming requires the later Capitol Surf gift.",
+      "maps": [
+        "MnMinneapolis"
+      ],
+      "grass": [
+        12,
+        13,
+        14,
+        15,
+        16,
+        16,
+        17
+      ],
+      "surf": [
+        21,
+        23,
+        25
+      ]
+    },
+    {
+      "id": "capitol-water",
+      "minimum_badges": 3,
+      "access": "St Paul arrival after Current; Capitol permits the actual Surf gift.",
+      "maps": [
+        "MnStPaul"
+      ],
+      "grass": [
+        17,
+        18,
+        19,
+        20,
+        21,
+        21,
+        21
+      ],
+      "surf": [
+        21,
+        23,
+        25
+      ]
+    },
+    {
+      "id": "st-cloud-water",
+      "minimum_badges": 4,
+      "access": "St Cloud is after both metro badges.",
+      "maps": [
+        "MnStCloud"
+      ],
+      "grass": [
+        21,
+        22,
+        23,
+        24,
+        25,
+        25,
+        25
+      ],
+      "surf": [
+        23,
+        25,
+        27
+      ]
+    },
+    {
+      "id": "brainerd-water",
+      "minimum_badges": 5,
+      "access": "Brainerd arrival after Wind; its optional Surf handoff is a separate service.",
+      "maps": [
+        "MnBrainerd"
+      ],
+      "grass": [
+        25,
+        26,
+        27,
+        28,
+        29,
+        29,
+        30
+      ],
+      "surf": [
+        26,
+        28,
+        30
+      ]
+    },
+    {
+      "id": "lake-town-water",
+      "minimum_badges": 6,
+      "access": "Lake Badge opens the western circuit and Bemidji land journey.",
+      "maps": [
+        "MnBemidji",
+        "MnDetroitLakes",
+        "MnMoorhead"
+      ],
+      "grass": [
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        35
+      ],
+      "surf": [
+        30,
+        32,
+        34
+      ]
+    },
+    {
+      "id": "leech-lake",
+      "minimum_badges": 6,
+      "access": "Lake Badge mainland, cabin pines and optional island.",
+      "maps": [
+        "MnLeechLake"
+      ],
+      "grass": [
+        30,
+        30,
+        31,
+        32,
+        33,
+        35,
+        35
+      ],
+      "surf": [
+        30,
+        32,
+        34
+      ]
+    },
+    {
+      "id": "grand-rapids-water",
+      "minimum_badges": 7,
+      "access": "Mine/depot journey after Pine and the independent report.",
+      "maps": [
+        "MnGrandRapids"
+      ],
+      "grass": [
+        34,
+        35,
+        36,
+        37,
+        38,
+        38,
+        39
+      ],
+      "surf": [
+        34,
+        36,
+        38
+      ]
+    },
+    {
+      "id": "duluth-water",
+      "minimum_badges": 7,
+      "access": "Harbor city after Pine and depot handover.",
+      "maps": [
+        "MnDuluth"
+      ],
+      "grass": [
+        36,
+        37,
+        38,
+        39,
+        40,
+        40,
+        41
+      ],
+      "surf": [
+        37,
+        39,
+        41
+      ]
+    },
+    {
+      "id": "boundary-water",
+      "minimum_badges": 8,
+      "access": "All badges plus Harbor signal; intake requires the acknowledged chief live link.",
+      "maps": [
+        "MnBoundaryWaters",
+        "MnBoundaryIntake"
+      ],
+      "grass": [
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        46
+      ],
+      "surf": [
+        41,
+        43,
+        45
+      ]
+    },
+    {
+      "id": "lower-mississippi",
+      "minimum_badges": 4,
+      "access": "Winona north mouth and connected lower banks have water-only entry; first Surf is after Capitol.",
+      "maps": [
+        "MnMississippiLowerWoodsC00R00",
+        "MnMississippiLowerWoodsC00R01",
+        "MnMississippiLowerWoodsC00R02",
+        "MnMississippiLowerWoodsC01R00",
+        "MnMississippiLowerWoodsC01R01",
+        "MnMississippiLowerWoodsC01R02",
+        "MnMississippiWinonaMouth"
+      ],
+      "grass": [
+        24,
+        25,
+        25,
+        26,
+        27,
+        28,
+        28
+      ],
+      "surf": [
+        23,
+        25,
+        27
+      ]
+    },
+    {
+      "id": "mississippi-confluence",
+      "minimum_badges": 4,
+      "access": "Optional Surf corridor after Capitol; preserves the actual river course and bank entrances.",
+      "maps": [
+        "MnMississippiConfluenceC00R00",
+        "MnMississippiConfluenceC01R00",
+        "MnMississippiConfluenceC02R00",
+        "MnMississippiConfluenceC03R00"
+      ],
+      "grass": [
+        25,
+        26,
+        26,
+        27,
+        28,
+        29,
+        29
+      ],
+      "surf": [
+        24,
+        26,
+        28
+      ]
+    },
+    {
+      "id": "upstream-mississippi",
+      "minimum_badges": 4,
+      "access": "Optional upper river banks accessible with Surf; local opponents form a harder side trip.",
+      "maps": [
+        "MnMississippiUpstreamWoodsC00R00",
+        "MnMississippiUpstreamWoodsC00R01",
+        "MnMississippiUpstreamWoodsC00R02",
+        "MnMississippiUpstreamWoodsC01R00",
+        "MnMississippiUpstreamWoodsC01R01",
+        "MnMississippiUpstreamWoodsC01R02"
+      ],
+      "grass": [
+        26,
+        27,
+        27,
+        28,
+        29,
+        30,
+        30
+      ],
+      "surf": [
+        25,
+        27,
+        29
+      ]
+    }
+  ]
+}

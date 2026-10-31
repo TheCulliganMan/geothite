@@ -1,0 +1,7 @@
+{
+  "workspace_fmt_exit_code": 1,
+  "workspace_fmt_log": ".local/route-grass-review/duluth-mart-cargo-fmt-all-v01.log",
+  "owned_leaf_fmt_exit_code": 0,
+  "new_owned_source_lint_diagnostics": false,
+  "scope": "Existing unrelated shared formatting/lint warnings are retained; no unrelated formatting rewrite."
+}

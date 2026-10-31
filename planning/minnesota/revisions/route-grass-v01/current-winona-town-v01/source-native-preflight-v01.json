@@ -1,0 +1,328 @@
+{
+  "status": "READ_ONLY_CURRENT_PARENT_PREFLIGHT",
+  "parent": {
+    "revision": "route_grass_mankato_town_revision",
+    "pack": "content-packs/minnesota-current-mankato-native-exterior-v03.crystalpack",
+    "sha256": "4f22dd532f5dc1ca28f63383bb9a66030d4f93ced96ed4daa265b3f36680e02f"
+  },
+  "source_sha256": "ae8dc63194f4ec043be773fdc7437311d7a88c3bb1d6c4bf481664c92012a4a3",
+  "dossier_sha256": "d0653dfa2dfcaa9386f800769b8e9188a540f67fe891165f7096cc029fe64002",
+  "source_native_differences": [
+    {
+      "at": [
+        13,
+        0
+      ],
+      "source": "05",
+      "native": "58"
+    },
+    {
+      "at": [
+        14,
+        0
+      ],
+      "source": "05",
+      "native": "59"
+    },
+    {
+      "at": [
+        9,
+        5
+      ],
+      "source": "02",
+      "native": "18"
+    },
+    {
+      "at": [
+        10,
+        5
+      ],
+      "source": "02",
+      "native": "19"
+    },
+    {
+      "at": [
+        9,
+        6
+      ],
+      "source": "02",
+      "native": "16"
+    },
+    {
+      "at": [
+        10,
+        6
+      ],
+      "source": "02",
+      "native": "1e"
+    },
+    {
+      "at": [
+        11,
+        6
+      ],
+      "source": "02",
+      "native": "45"
+    },
+    {
+      "at": [
+        0,
+        9
+      ],
+      "source": "05",
+      "native": "01"
+    }
+  ],
+  "attributes": {
+    "tileset_name": "johto",
+    "border_block": 5,
+    "width": 16,
+    "height": 14,
+    "connections": [
+      {
+        "direction": "west",
+        "target_map": "MnR01C00R00",
+        "offset": -3
+      },
+      {
+        "direction": "north",
+        "target_map": "MnMississippiWinonaMouth",
+        "offset": 0
+      }
+    ],
+    "time_of_day": null,
+    "phone_service": 0,
+    "phone_flag": false,
+    "environment": "TOWN",
+    "location": "LANDMARK_MN_WINONA",
+    "music": "MUSIC_NEW_BARK_TOWN",
+    "palette": "PALETTE_AUTO",
+    "fishing_group": "FISHGROUP_MN_OCEAN",
+    "map_constant": "MN_WINONA",
+    "map_group_constant": "MAPGROUP_MINNESOTA_WINONA",
+    "blocks_label": "MnWinona_Blocks",
+    "map_scripts_label": "MnWinona_MapScripts",
+    "map_events_label": "MnWinona_MapEvents",
+    "connection_flags": "WEST | NORTH"
+  },
+  "events": {
+    "warps": [
+      {
+        "index": 1,
+        "x": 7,
+        "y": 7,
+        "target_map_constant": "MN_WINONA_HOME_1F",
+        "target_map": "MN_WINONA_HOME_1F",
+        "target_warp_id": 4
+      },
+      {
+        "index": 2,
+        "x": 7,
+        "y": 8,
+        "target_map_constant": "MN_WINONA",
+        "target_map": "MN_WINONA",
+        "target_warp_id": 2
+      },
+      {
+        "index": 3,
+        "x": 17,
+        "y": 7,
+        "target_map_constant": "MN_WINONA_POKECENTER_1F",
+        "target_map": "MN_WINONA_POKECENTER_1F",
+        "target_warp_id": 3
+      },
+      {
+        "index": 4,
+        "x": 17,
+        "y": 8,
+        "target_map_constant": "MN_WINONA",
+        "target_map": "MN_WINONA",
+        "target_warp_id": 4
+      },
+      {
+        "index": 5,
+        "x": 7,
+        "y": 23,
+        "target_map_constant": "MN_WINONA_MART",
+        "target_map": "MN_WINONA_MART",
+        "target_warp_id": 3
+      },
+      {
+        "index": 6,
+        "x": 7,
+        "y": 24,
+        "target_map_constant": "MN_WINONA",
+        "target_map": "MN_WINONA",
+        "target_warp_id": 6
+      },
+      {
+        "index": 7,
+        "x": 18,
+        "y": 19,
+        "target_map_constant": "MN_WINONA_FIELD_STATION",
+        "target_map": "MN_WINONA_FIELD_STATION",
+        "target_warp_id": 3
+      },
+      {
+        "index": 8,
+        "x": 18,
+        "y": 20,
+        "target_map_constant": "MN_WINONA",
+        "target_map": "MN_WINONA",
+        "target_warp_id": 8
+      },
+      {
+        "index": 9,
+        "x": 19,
+        "y": 13,
+        "target_map_constant": "MN_WINONA_STATION",
+        "target_map": "MN_WINONA_STATION",
+        "target_warp_id": 3
+      },
+      {
+        "index": 10,
+        "x": 19,
+        "y": 14,
+        "target_map_constant": "MN_WINONA",
+        "target_map": "MN_WINONA",
+        "target_warp_id": 10
+      }
+    ],
+    "coord_events": [
+      {
+        "x": 3,
+        "y": 18,
+        "scene_id": "-1",
+        "script_name": "MnWTrailCheck"
+      },
+      {
+        "x": 1,
+        "y": 18,
+        "scene_id": "-1",
+        "script_name": "MnWTrailCheckInward"
+      },
+      {
+        "x": 3,
+        "y": 19,
+        "scene_id": "-1",
+        "script_name": "MnWTrailCheck"
+      },
+      {
+        "x": 1,
+        "y": 19,
+        "scene_id": "-1",
+        "script_name": "MnWTrailCheckInward"
+      }
+    ],
+    "bg_events": [
+      {
+        "x": 12,
+        "y": 10,
+        "event_type": "BGEVENT_READ",
+        "script": "MnWHomeSign"
+      },
+      {
+        "x": 20,
+        "y": 8,
+        "event_type": "BGEVENT_READ",
+        "script": "MnWClinicSign"
+      },
+      {
+        "x": 24,
+        "y": 20,
+        "event_type": "BGEVENT_READ",
+        "script": "MnWStationSign"
+      },
+      {
+        "x": 14,
+        "y": 16,
+        "event_type": "BGEVENT_READ",
+        "script": "MnWTownSign"
+      },
+      {
+        "x": 22,
+        "y": 12,
+        "event_type": "BGEVENT_READ",
+        "script": "MN_WINONA_DEPOT_SIGN"
+      }
+    ]
+  },
+  "objects": [
+    {
+      "sprite": "SPRITE_FISHER",
+      "sprite_has_facings": true,
+      "x": 24,
+      "y": 15,
+      "spritemovedata": "SPRITEMOVEDATA_STANDING_RIGHT",
+      "move_range_x": 0,
+      "move_range_y": 0,
+      "hram_x": -1,
+      "hram_y": -1,
+      "pal": 0,
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "radius": 0,
+      "script": "MN_W_RIVER_WATCHER",
+      "label": null,
+      "event_flag": "-1",
+      "object_identifier": "MN_W_RIVER_WATCHER",
+      "sightline_direction_override": null
+    },
+    {
+      "sprite": "SPRITE_TEACHER",
+      "sprite_has_facings": true,
+      "x": 10,
+      "y": 17,
+      "spritemovedata": "SPRITEMOVEDATA_STANDING_LEFT",
+      "move_range_x": 0,
+      "move_range_y": 0,
+      "hram_x": -1,
+      "hram_y": -1,
+      "pal": 0,
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "radius": 0,
+      "script": "MN_W_TRAIL_GUIDE",
+      "label": null,
+      "event_flag": "-1",
+      "object_identifier": "MN_W_TRAIL_GUIDE",
+      "sightline_direction_override": null
+    },
+    {
+      "sprite": "SPRITE_OFFICER",
+      "sprite_has_facings": true,
+      "x": 2,
+      "y": 18,
+      "spritemovedata": "SPRITEMOVEDATA_STANDING_RIGHT",
+      "move_range_x": 0,
+      "move_range_y": 0,
+      "hram_x": -1,
+      "hram_y": -1,
+      "pal": 0,
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "radius": 0,
+      "script": "MnWTrailCheck",
+      "label": null,
+      "event_flag": "-1",
+      "object_identifier": "MN_W_TRAIL_WARDEN_NORTH",
+      "sightline_direction_override": null
+    },
+    {
+      "sprite": "SPRITE_OFFICER",
+      "sprite_has_facings": true,
+      "x": 2,
+      "y": 19,
+      "spritemovedata": "SPRITEMOVEDATA_STANDING_RIGHT",
+      "move_range_x": 0,
+      "move_range_y": 0,
+      "hram_x": -1,
+      "hram_y": -1,
+      "pal": 0,
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "radius": 0,
+      "script": "MnWTrailCheck",
+      "label": null,
+      "event_flag": "-1",
+      "object_identifier": "MN_W_TRAIL_WARDEN_SOUTH",
+      "sightline_direction_override": null
+    }
+  ]
+}

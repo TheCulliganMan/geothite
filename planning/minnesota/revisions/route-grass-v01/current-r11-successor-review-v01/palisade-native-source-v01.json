@@ -1,0 +1,13 @@
+{
+  "id": "MnR11C00R01",
+  "residents": [],
+  "signs": [
+    {
+      "id": "MN_R11_PALISADE_SIGN",
+      "tile": [
+        26,
+        4
+      ]
+    }
+  ]
+}

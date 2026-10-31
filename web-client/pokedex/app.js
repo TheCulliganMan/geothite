@@ -53,7 +53,7 @@ if (document.body.dataset.page === 'index') {
     for (const card of cards) {
       const data = card.dataset;
       const matches = (includeCut || data.cut !== 'true')
-        && terms.every(term => normalize(data.search).includes(term))
+        && terms.every(term => normalize(`${data.search} ${data.locationSearch || ''}`).includes(term))
         && selectedTypes.every(type => data.types.split(' ').includes(type))
         && (!region || data.region === region)
         && (!notebook || saved.has(data.id))

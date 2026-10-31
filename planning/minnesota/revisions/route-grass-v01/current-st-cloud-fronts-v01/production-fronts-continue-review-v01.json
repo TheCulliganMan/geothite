@@ -1,0 +1,111 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-st-cloud-fronts-v01.crystalpack",
+  "pack_sha256": "09641f0c2769ed3fdb9860b163ceabc2586ecc0b6e4a22100e90c8c253a84f80",
+  "cases": [
+    {
+      "building": "clinic",
+      "source_save": ".local/route-grass-review/st-cloud-fronts-native-facades-saves-v01/brainerd-1318-1793379652296679000.crystalsave",
+      "source_sha256": "97c16852d33fd9831153b09d7502c6a6ed0efb425d0bdfb1777e0298e8caf7ac",
+      "input_save": ".local/route-grass-review/st-cloud-fronts-clinic-input-v01.crystalsave",
+      "save": ".local/route-grass-review/st-cloud-fronts-clinic-output-v01.crystalsave",
+      "initial": {
+        "badges": 0,
+        "dialogue": false,
+        "facing": "down",
+        "frame": 653,
+        "map": "MnStCloud",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 0
+        },
+        "position": {
+          "x": 7,
+          "y": 10
+        }
+      },
+      "final": {
+        "badges": 0,
+        "dialogue": false,
+        "facing": "left",
+        "frame": 679,
+        "map": "MnStCloud",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 0
+        },
+        "position": {
+          "x": 7,
+          "y": 10
+        }
+      },
+      "old_door_denied": true,
+      "new_door_both_carpets": true,
+      "reached_save_continue": true,
+      "menus_and_walking": true,
+      "stderr_bytes": 0,
+      "input_and_source_unchanged": true
+    },
+    {
+      "building": "mart",
+      "source_save": ".local/route-grass-review/st-cloud-fronts-native-facades-saves-v01/brainerd-1318-1793379654054544000.crystalsave",
+      "source_sha256": "e67a59c57b70d603b9ce943e7141d4f8a93a1daad7cbf5ec815b9494ad65f3f3",
+      "input_save": ".local/route-grass-review/st-cloud-fronts-mart-input-v01.crystalsave",
+      "save": ".local/route-grass-review/st-cloud-fronts-mart-output-v01.crystalsave",
+      "initial": {
+        "badges": 0,
+        "dialogue": false,
+        "facing": "down",
+        "frame": 653,
+        "map": "MnStCloud",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 0
+        },
+        "position": {
+          "x": 15,
+          "y": 10
+        }
+      },
+      "final": {
+        "badges": 0,
+        "dialogue": false,
+        "facing": "left",
+        "frame": 679,
+        "map": "MnStCloud",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 0
+        },
+        "position": {
+          "x": 15,
+          "y": 10
+        }
+      },
+      "old_door_denied": true,
+      "new_door_both_carpets": true,
+      "reached_save_continue": true,
+      "menus_and_walking": true,
+      "stderr_bytes": 0,
+      "input_and_source_unchanged": true
+    }
+  ],
+  "calls": 92,
+  "scope": "Two actual reached native current-child checkpoints, no retagging or direct state/flag edits. Initial party/eight badges are local QA fixtures."
+}

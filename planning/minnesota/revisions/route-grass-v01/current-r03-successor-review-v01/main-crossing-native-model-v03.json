@@ -1,0 +1,20 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-r05-cache-grass-bank-v03.crystalpack",
+  "pack_sha256": "618d6faa81c9b0bf09b4e3b0cdb22ec1e36eecdaf77678a58146b58de970e5cf",
+  "measurements": [
+    {
+      "status": "MEASURED",
+      "grass_steps": 6,
+      "grass_quadrants_in_contract": 48,
+      "ice_quadrants": 0
+    },
+    {
+      "status": "MEASURED",
+      "grass_steps": 6,
+      "grass_quadrants_in_contract": 48,
+      "ice_quadrants": 0
+    }
+  ],
+  "current_tile_jump_and_lateral_lip_walking": true
+}

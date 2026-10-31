@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "id": "MN_R11",
+  "source_kind": "scoped_route_grass_review_contract",
+  "native_binding": {
+    "pack": "content-packs/minnesota-current-r11-southwest-grass-v01.crystalpack",
+    "pack_sha256": "9f0ff0c7d0f6dd874ef1a581657900984ca75d360ffb04da2c92b00ab58475aa",
+    "content_identity": "76a702233ab6f9e154909031967ca44d51aec511ad2bf2cafad23d0a5966ee21"
+  },
+  "new_grass_quadrants": 20,
+  "route_grass_quadrants": 380,
+  "approach_core": [
+    [
+      35,
+      17
+    ],
+    [
+      35,
+      25
+    ]
+  ],
+  "minimum_approach_grass_steps": 4,
+  "existing_cliffs_stairs_actors_and_signs_preserved": true,
+  "scope": "Whole route rendered; scoped upper grass crossing acceptance. Full current route traversal remains separate."
+}

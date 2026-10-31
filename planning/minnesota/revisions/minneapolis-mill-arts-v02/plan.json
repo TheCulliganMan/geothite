@@ -1,0 +1,501 @@
+{
+  "schema_version": 1,
+  "status": "Verified local native street refinement; world.json owns selection.",
+  "parent_revision": "route_grass_duluth_mart_revision",
+  "parent_pack": "content-packs/minnesota-current-duluth-mart-v01.crystalpack",
+  "parent_pack_sha256": "d77baff3e597e6527450400022e0b9acf655b856983cf96e49fbebfe275464f3",
+  "complete_facade_moves": [
+    {
+      "name": "Supply Cooperative",
+      "warp": 11,
+      "box": [
+        2,
+        3,
+        5,
+        5
+      ],
+      "to": [
+        3,
+        4
+      ],
+      "native_rows": [
+        [
+          24,
+          159,
+          25
+        ],
+        [
+          16,
+          164,
+          17
+        ]
+      ]
+    },
+    {
+      "name": "River Family Home",
+      "warp": 73,
+      "box": [
+        6,
+        3,
+        8,
+        5
+      ],
+      "to": [
+        7,
+        4
+      ],
+      "native_rows": [
+        [
+          169,
+          170
+        ],
+        [
+          171,
+          172
+        ]
+      ]
+    },
+    {
+      "name": "Foundry Museum",
+      "warp": 19,
+      "box": [
+        2,
+        7,
+        7,
+        10
+      ],
+      "to": [
+        3,
+        8
+      ],
+      "native_rows": [
+        [
+          128,
+          130,
+          130,
+          130,
+          129
+        ],
+        [
+          132,
+          137,
+          137,
+          137,
+          133
+        ],
+        [
+          131,
+          135,
+          138,
+          135,
+          136
+        ]
+      ]
+    },
+    {
+      "name": "Arts Studio",
+      "warp": 21,
+      "box": [
+        8,
+        8,
+        11,
+        10
+      ],
+      "to": [
+        8,
+        9
+      ],
+      "native_rows": [
+        [
+          24,
+          159,
+          25
+        ],
+        [
+          16,
+          164,
+          17
+        ]
+      ]
+    },
+    {
+      "name": "Tool Workshop",
+      "warp": 15,
+      "box": [
+        11,
+        6,
+        14,
+        8
+      ],
+      "to": [
+        11,
+        7
+      ],
+      "native_rows": [
+        [
+          128,
+          130,
+          129
+        ],
+        [
+          131,
+          138,
+          136
+        ]
+      ]
+    },
+    {
+      "name": "Bridge Home",
+      "warp": 41,
+      "box": [
+        12,
+        9,
+        14,
+        11
+      ],
+      "to": [
+        12,
+        10
+      ],
+      "native_rows": [
+        [
+          169,
+          170
+        ],
+        [
+          171,
+          172
+        ]
+      ]
+    }
+  ],
+  "changed_metatiles": 100,
+  "changed_anchors": [
+    {
+      "kind": "object",
+      "index": 11,
+      "before": [
+        17,
+        13
+      ],
+      "after": [
+        15,
+        13
+      ]
+    },
+    {
+      "kind": "object",
+      "index": 13,
+      "before": [
+        15,
+        21
+      ],
+      "after": [
+        17,
+        23
+      ]
+    },
+    {
+      "kind": "background",
+      "index": 4,
+      "before": [
+        2,
+        10
+      ],
+      "after": [
+        4,
+        12
+      ]
+    },
+    {
+      "kind": "background",
+      "index": 5,
+      "before": [
+        16,
+        10
+      ],
+      "after": [
+        18,
+        12
+      ]
+    },
+    {
+      "kind": "background",
+      "index": 6,
+      "before": [
+        22,
+        16
+      ],
+      "after": [
+        22,
+        18
+      ]
+    },
+    {
+      "kind": "background",
+      "index": 8,
+      "before": [
+        2,
+        20
+      ],
+      "after": [
+        4,
+        22
+      ]
+    },
+    {
+      "kind": "background",
+      "index": 9,
+      "before": [
+        14,
+        20
+      ],
+      "after": [
+        14,
+        22
+      ]
+    },
+    {
+      "kind": "background",
+      "index": 19,
+      "before": [
+        22,
+        22
+      ],
+      "after": [
+        22,
+        24
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 10,
+      "before": [
+        7,
+        9
+      ],
+      "after": [
+        9,
+        11
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 11,
+      "before": [
+        7,
+        10
+      ],
+      "after": [
+        9,
+        12
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 14,
+      "before": [
+        24,
+        15
+      ],
+      "after": [
+        24,
+        17
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 15,
+      "before": [
+        24,
+        16
+      ],
+      "after": [
+        24,
+        18
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 18,
+      "before": [
+        8,
+        19
+      ],
+      "after": [
+        10,
+        21
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 19,
+      "before": [
+        8,
+        20
+      ],
+      "after": [
+        10,
+        22
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 20,
+      "before": [
+        19,
+        19
+      ],
+      "after": [
+        19,
+        21
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 21,
+      "before": [
+        19,
+        20
+      ],
+      "after": [
+        19,
+        22
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 40,
+      "before": [
+        25,
+        21
+      ],
+      "after": [
+        25,
+        23
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 41,
+      "before": [
+        25,
+        22
+      ],
+      "after": [
+        25,
+        24
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 72,
+      "before": [
+        13,
+        9
+      ],
+      "after": [
+        15,
+        11
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 73,
+      "before": [
+        13,
+        10
+      ],
+      "after": [
+        15,
+        12
+      ]
+    }
+  ],
+  "design": [
+    "Close native mill house fronts around a two-tile lane",
+    "Align museum and studio into a shared two-tile street",
+    "Give workshop and Bridge Home a connected turning lane",
+    "Open a real west-bank walking connection to the boathouse instead of requiring the eastern river loop"
+  ],
+  "preserve": [
+    "Native house pixels/joins and complete moved facades",
+    "All water, bridge, perimeter, bench, guarded north-pool cells and callbacks",
+    "All current cycling actors and their native return dispatch",
+    "All40 room destinations, original programs, quests, items, parties and encounters",
+    "All other maps, new R03 cave, newer Winona and selected regional work"
+  ],
+  "house_frontage_correction_source": "../minneapolis-normal-houses-v01/plan.json",
+  "house_frontage_correction_doors": [
+    73,
+    31,
+    77,
+    41,
+    5,
+    35,
+    69,
+    55,
+    57
+  ],
+  "historical_candidate": "planning/minnesota/revisions/minneapolis-mill-arts-v01",
+  "normal_house_revision": "minneapolis_normal_houses_revision",
+  "historical_initial_parent": {
+    "parent_revision": "minneapolis_normal_houses_revision",
+    "parent_pack": "content-packs/minnesota-minneapolis-normal-houses-v02.crystalpack",
+    "parent_pack_sha256": "9480368160e25c53d01162a4dbdbe301a7b7215e0a5027df58d700906612be99"
+  },
+  "published_pack": {
+    "path": "content-packs/minnesota-minneapolis-mill-arts-v02.crystalpack",
+    "sha256": "6f02a4fd9a2294a5c04825ffc3873b07b5a46a4d1d93e5a4951ec9fe6125d6c1",
+    "content_identity": "f9822ac8c39b1ea463cd3b903708a0307a796c7cc68165af40195007964b864c"
+  },
+  "verification": {
+    "building_returns_verified": 40,
+    "unique_room_exit_carpets_verified": 46,
+    "fresh_final_moved_buildings_both_exit_carpets": 6,
+    "fresh_final_production_calls": 766,
+    "native_views_reviewed": 5,
+    "fresh_final_native_views": 1,
+    "inherited_exact_scene_views": 4,
+    "source_native_pixel_mismatches": 0,
+    "retained_native_controller_cases": 8,
+    "museum_three_plaque_condition_reward_once_pack_quantity_and_reached_Continue_verified": true,
+    "audio_programs_verified": 377,
+    "unchanged_complete_maps": 731,
+    "linked_outdoor_maps": 103,
+    "walking_links": [
+      {
+        "id": "museum-to-boathouse",
+        "before_steps": 121,
+        "after_steps": 13
+      },
+      {
+        "id": "arts-to-boathouse",
+        "before_steps": 94,
+        "after_steps": 18
+      },
+      {
+        "id": "museum-to-arts",
+        "before_steps": 65,
+        "after_steps": 11
+      },
+      {
+        "id": "cooperative-to-museum",
+        "before_steps": 19,
+        "after_steps": 19
+      }
+    ]
+  },
+  "remaining_scope": [
+    "Other Minneapolis districts, broader map/cave quality and interior activity density remain open.",
+    "Earned statewide and complete campaign traversal remain unproven.",
+    "No browser deployment or save migration is claimed."
+  ],
+  "completed_steps": [
+    "Whole-city visual and native geometry review",
+    "Publisher support for exact retained gate/return programs",
+    "Native publication and independent preservation",
+    "All40 door returns, useful new link, native activities and Continue",
+    "Native2D captures and audio before selection"
+  ]
+}

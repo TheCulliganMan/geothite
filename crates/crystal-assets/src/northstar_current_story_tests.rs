@@ -13,6 +13,30 @@ fn pack(variable: &str) -> CompiledGamePack {
     .expect("strict story pack")
 }
 
+fn room_program(story: &Value, map: &str, label: &str, original: &Value) -> Value {
+    let texts = &story["dialogue_overhaul"]["texts"][map];
+    if let Some(pages) = texts.get(label) {
+        let pages: Vec<crate::authored_dialogue::AuthoredDialoguePage> =
+            serde_json::from_value(pages.clone()).expect("reviewed supporting pages");
+        return crate::authored_dialogue::compile(&pages)
+            .expect("valid canonical supporting dialogue");
+    }
+    let mut expected = original.clone();
+    if let Some(commands) = expected.as_array_mut() {
+        for index in 1..commands.len() {
+            if commands[index]["command"] == "waitbutton"
+                && commands[index - 1]["command"] == "writetext"
+                && commands[index - 1]["args"][0]
+                    .as_str()
+                    .is_some_and(|text| texts.get(text).is_some())
+            {
+                commands[index]["command"] = "promptbutton".into();
+            }
+        }
+    }
+    expected
+}
+
 #[test]
 #[ignore = "requires CRYSTAL_INTERIOR_STORY_BASE/PACK/COMPOSITION external fixtures"]
 fn current_story_composition_retains_room_life_and_rejects_unreviewed_parents() {
@@ -120,8 +144,8 @@ fn current_story_composition_retains_room_life_and_rejects_unreviewed_parents() 
             );
         }
     }
-    // Check every authored flavor label against its already-normalized parent,
-    // rather than importing old source text or trusting the story-map allowlist.
+    // Canonical dialogue owns reviewed supporting labels. All other room prose
+    // remains identical to the normalized parent, even inside a story map.
     for file in [
         "interior-life/stories.json",
         "interior-life/current-root-v01/story-supplement.json",
@@ -135,9 +159,15 @@ fn current_story_composition_retains_room_life_and_rejects_unreviewed_parents() 
             let new = &child.data.maps[name];
             for text in room["texts"].as_array().into_iter().flatten() {
                 let label = text["label"].as_str().expect("flavor text");
+                let expected = room_program(
+                    &story,
+                    name,
+                    label,
+                    original.scripts.get(label).expect("existing room prose"),
+                );
                 assert_eq!(
                     new.scripts.get(label),
-                    original.scripts.get(label),
+                    Some(&expected),
                     "room story {name}/{label}"
                 );
             }
@@ -151,9 +181,10 @@ fn current_story_composition_retains_room_life_and_rejects_unreviewed_parents() 
                     format!("{script}InteriorFullText"),
                 ] {
                     if let Some(body) = original.scripts.get(&label) {
+                        let expected = room_program(&story, name, &label, body);
                         assert_eq!(
                             new.scripts.get(&label),
-                            Some(body),
+                            Some(&expected),
                             "retained resident {name}/{label}"
                         );
                     }

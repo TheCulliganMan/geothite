@@ -1,0 +1,44 @@
+[
+  {
+    "label": "MN_R07_DROP_SIGNText",
+    "commands": [
+      {
+        "args": [
+          "\"LOW SANDBANK\""
+        ],
+        "command": "text"
+      },
+      {
+        "args": [
+          "\"SOUTHBOUND DROP\""
+        ],
+        "command": "line"
+      },
+      {
+        "args": [],
+        "command": "done"
+      }
+    ]
+  },
+  {
+    "label": "MN_R07_T02Won",
+    "commands": [
+      {
+        "args": [
+          "\"That bank is a\""
+        ],
+        "command": "text"
+      },
+      {
+        "args": [
+          "\"southbound drop.\""
+        ],
+        "command": "line"
+      },
+      {
+        "args": [],
+        "command": "done"
+      }
+    ]
+  }
+]

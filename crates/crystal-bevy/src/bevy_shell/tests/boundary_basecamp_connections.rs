@@ -40,13 +40,13 @@ struct Passage {
 
 const PASSAGES: [Passage; 3] = [
     Passage {
-        route: "MnR12C00R01",
+        route: "MnR12C00R00",
         outward: GameButton::Right,
         inner: [(60, 24), (60, 25)],
         bodies: [(61, 24), (61, 25)],
         outer: [(62, 24), (62, 25)],
         camp_edge: [(63, 24), (63, 25)],
-        route_edge: [(0, 8), (0, 9)],
+        route_edge: [(0, 28), (0, 29)],
         ids: [
             "MN_BOUNDARY_GUNFLINT_GUARD_NORTH",
             "MN_BOUNDARY_GUNFLINT_GUARD_SOUTH",
@@ -60,7 +60,7 @@ const PASSAGES: [Passage; 3] = [
         bodies: [(32, 43), (33, 43)],
         outer: [(32, 44), (33, 44)],
         camp_edge: [(32, 47), (33, 47)],
-        route_edge: [(30, 0), (31, 0)],
+        route_edge: [(32, 0), (33, 0)],
         ids: [
             "MN_BOUNDARY_LEAGUE_GUARD_WEST",
             "MN_BOUNDARY_LEAGUE_GUARD_EAST",
@@ -95,7 +95,21 @@ fn load() -> (AssetRoot, CrystalRuntime) {
             .expect("verified actual guarded-connection pack"),
     )
     .expect("native connected camp runtime");
-    assert_eq!(runtime.data().maps[CAMP].attributes.connections.len(), 3);
+    let connections = &runtime.data().maps[CAMP].attributes.connections;
+    assert_eq!(connections.len(), 4);
+    for target in [
+        "MnR12C00R00",
+        "MnR13C00R00",
+        "MnR20C01R00",
+        "MnPreservePineEntry",
+    ] {
+        assert!(
+            connections
+                .iter()
+                .any(|connection| connection.target_map == target),
+            "current basecamp connection missing: {target}"
+        );
+    }
     for id in PASSAGES.iter().flat_map(|p| p.ids) {
         assert!(
             runtime.data().maps[CAMP]

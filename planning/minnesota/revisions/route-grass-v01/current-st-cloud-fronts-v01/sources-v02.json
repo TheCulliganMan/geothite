@@ -1,0 +1,164 @@
+{
+  "schema_version": 1,
+  "parent_revision": "city_cyclist_overworld_revision",
+  "parent_source_index": "planning/minnesota/npcs/city-cyclists-v01/sources.json",
+  "parent_source_index_sha256": "2ba3d326779301977d3bfdf9ec3f65b2450e9e050d4da8f63ee14bd0a4279f2c",
+  "pack": "content-packs/minnesota-current-st-cloud-fronts-v02.crystalpack",
+  "pack_sha256": "df5e4c47500d84046f542418a203c8d58b0e119e97bc235083434464c8682ef3",
+  "current_discovery_sites": {
+    "MnR03Cave1F": {
+      "path": "planning/minnesota/caves/current-r03-gallery-v02/site-v02.json",
+      "sha256": "d5d8b658be751170841e386c2c1353389d4fd45c22e9f665d69a0bac32ba21c1",
+      "canonical_path": "planning/minnesota/pokemon/acquisition-v01/castorock/site.json",
+      "source_kind": "castorock_acquisition_site",
+      "dimensions_metatiles": [
+        14,
+        8
+      ]
+    }
+  },
+  "current_native_house_fronts": {
+    "contract": "planning/minnesota/revisions/minneapolis-normal-houses-v01/recomposition.contract.json",
+    "contract_sha256": "c12cb11a0efcba9e38f2984038f66af78bb66a257e362c46f7e848db241afdea",
+    "plan": "planning/minnesota/revisions/minneapolis-normal-houses-v01/plan.json",
+    "plan_sha256": "0ab5ef95087c2cd635fd560844a105d2d2cc4d9ac3210c845979fb3c21ed16eb",
+    "runbook": "planning/minnesota/revisions/minneapolis-normal-houses-v01/README.md",
+    "verification": "planning/minnesota/renders/minneapolis-house-normal-v264/whole-root-preservation-v280.json"
+  },
+  "current_minneapolis_mill_arts_streets": {
+    "plan": "planning/minnesota/revisions/minneapolis-mill-arts-v02/plan.json",
+    "plan_sha256": "1385e4cdd3fcc8e05166f9357c0b951b288776d066f542376d3bd861ccdd3b1a",
+    "contract": "planning/minnesota/revisions/minneapolis-mill-arts-v02/recomposition.contract.json",
+    "contract_sha256": "481a854a3db89ef9864deae792d875221c1f20e23814adac982683f52b0bf2c3",
+    "runbook": "planning/minnesota/revisions/minneapolis-mill-arts-v02/README.md",
+    "verification": "planning/minnesota/renders/minneapolis-mill-arts-v289/accepted-v305.json"
+  },
+  "current_city_cyclist_field_art": [
+    {
+      "native_source": {
+        "path": "planning/minnesota/npcs/city-cyclists-v01/01-commuter/native-pixels-v2.json",
+        "sha256": "1de90cf584182fe22a5f92fe769227260e14f4e5c9f2749415d2b9b1b09204a5"
+      },
+      "field_binding": {
+        "path": "planning/minnesota/npcs/city-cyclists-v01/01-commuter/binding-v1.json",
+        "sha256": "382212e01e0e5ef41bd1ab69eb22d52b3759fc5477e92e0e23cb37b378565a4d"
+      }
+    },
+    {
+      "native_source": {
+        "path": "planning/minnesota/npcs/city-cyclists-v01/02-city-rider/native-pixels-v1.json",
+        "sha256": "5d68119af0192a62e0840135322c424cc45856f332db817ecd80137435b3ca2a"
+      },
+      "field_binding": {
+        "path": "planning/minnesota/npcs/city-cyclists-v01/02-city-rider/binding-v1.json",
+        "sha256": "38fd76f9dffa5901dd2abc9e1867122541dbdf17f98501782d770c6a9d5d6c5a"
+      }
+    }
+  ],
+  "current_layouts": {
+    "MnDuluth": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-duluth-mart-v01/after.layout.json",
+      "sha256": "f4cf90c56079ec28859064079542a6dfdc2a1f83598fa4b8fa13aa3dd58f6db0"
+    },
+    "MN_R10": {
+      "path": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R10.after.layout.json",
+      "sha256": "24bb1efea3a5f28e9cbccfec8f75960a3a7536dd351c3fa3481300764c257a93"
+    },
+    "MN_R12": {
+      "path": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R12.after.layout.json",
+      "sha256": "51df4d5ff1a923c79c99f089eea790b1f71210e5118520a192dc2b85c694f163"
+    },
+    "MN_R15": {
+      "path": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R15.after.layout.json",
+      "sha256": "110312f7353b0b3e32f2d6bd523bad4da4f9f9c0b487732c8f5cc6f7c15c44bb"
+    },
+    "MN_R16": {
+      "path": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R16.after.layout.json",
+      "sha256": "14170b8d63a3209b0c72f1aadbb94fd515bc105827d7b1ff8485cfa0e9f26d28"
+    },
+    "MN_R17": {
+      "path": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R17.after.layout.json",
+      "sha256": "8b82a99c35d311569bb04deec5a542129868403ac91a3b724cf0ec0617cbc532"
+    },
+    "MnStPaul": {
+      "path": "planning/minnesota/revisions/st-paul-southbank-v01/after.layout.json",
+      "sha256": "a2208d44eff5fb3d49703904cacdf2bf83f3912e1a50585ca887308e66da0a38"
+    },
+    "MnMankato": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-mankato-town-v01/after-bank-composed.layout.v02.json",
+      "sha256": "df65e676b2e3f8b18a5ac291b5dde0b2f265c1630a744f6e9d6c36b17da47bf5"
+    },
+    "MnWinona": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-winona-town-v01/after-composed.layout.v01.json",
+      "sha256": "f34aa9ebe4358534542bbc13ff758f5626c302e780c8ec43c50692637f658afd"
+    },
+    "MnBemidji": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-bemidji-plateau-stairs-v01/after.layout.json",
+      "sha256": "1d4366cd015124784f505c76ee7329f7e8efdd4acc0bfc8e81a1df56b960959d"
+    },
+    "MnMinneapolis": {
+      "path": "planning/minnesota/revisions/minneapolis-mill-arts-v02/after.layout.json",
+      "sha256": "3cb9c8e2b23cc51f9f5ba3fa7fadc6fec32de869344e699523c9e4772cc18d85"
+    },
+    "MnStCloud": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-st-cloud-fronts-v01/after.layout.json",
+      "sha256": "11da4c6d1d49aef07a7e3fefd0d6332916af4fd0b85682ecaacdd20c9bc252ff"
+    }
+  },
+  "current_dossiers": {
+    "MN_R10": {
+      "path": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R10.dossier.json",
+      "sha256": "f9c9f0ac98b24d3bd639e32d2df230b990dbc0906413acb45720c73509a5812d"
+    },
+    "MN_R12": {
+      "path": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R12.dossier.json",
+      "sha256": "e788ce43279078fa2135ab566671fd30c7c59a6b3f402b60ca2a5ba773a91740"
+    },
+    "MN_R15": {
+      "path": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R15.dossier.json",
+      "sha256": "33b2a5e79c867ab186e158f36289aaf35c69898314ed47fdb02afb110797a1fb"
+    },
+    "MN_R16": {
+      "path": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R16.dossier.json",
+      "sha256": "3d428be5a64e7111eb11326b449119c04b9c7cdba4a39d44ba4fdf01d68e3af4"
+    },
+    "MN_R17": {
+      "path": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R17.dossier.json",
+      "sha256": "9567be1ebbcaf3cf8b8fc0f387b127f0371be16e5c8cc0bb70922be771721a24"
+    },
+    "MnStPaul": {
+      "path": "planning/minnesota/revisions/st-paul-southbank-v01/town.dossier.json",
+      "sha256": "7f3a04d0d1e0b04c25745c3161a5b01015504472240722bcdb8c43bb0ba5d8a8"
+    },
+    "MnMankato": {
+      "path": "planning/minnesota/towns/MnMankato.json",
+      "sha256": "2d683a2bdeabe5f2a2f9098624d1b645efe375f3535304804b4938c58dec8858"
+    },
+    "MnWinona": {
+      "path": "planning/minnesota/towns/MnWinona.json",
+      "sha256": "d0653dfa2dfcaa9386f800769b8e9188a540f67fe891165f7096cc029fe64002"
+    },
+    "MnBemidji": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-bemidji-plateau-stairs-v01/dossier.after.json",
+      "sha256": "440dafefe90f90a08f40b8631a9c1af0c559ec05db3a6733ae8624051fc30d3d"
+    },
+    "MnMinneapolis": {
+      "path": "planning/minnesota/revisions/minneapolis-mill-arts-v02/town.dossier.json",
+      "sha256": "133af1a77fa7372e3ef4c5345d8052a2c7a435fec08bd18c62b50fa31ee73f67"
+    },
+    "MnDuluth": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-duluth-mart-v01/dossier.after.json",
+      "sha256": "7c26daf1be648d7c9aef345923dc538fff39c694bf815241879be9ad0e004adf"
+    },
+    "MnStCloud": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-st-cloud-fronts-v01/dossier.after.json",
+      "sha256": "d30b2663f6761a9c8dfc79405b15a0b8970fcf5f2cbc0146f72fdcf9477a220d"
+    }
+  },
+  "current_caves": {
+    "MnR10Cave1F": {
+      "path": "planning/minnesota/caves/current-r10-fitted-fork-v01/source-v02/MnR10Cave1F.json",
+      "sha256": "c64b59fd073a8f141d0dd038618f5f6367aeea6344d1c9c5d5e7505ba0182cc8"
+    }
+  }
+}

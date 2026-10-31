@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-international-falls-windbreak-v01.crystalpack",
+  "pack_sha256": "7066f05448101c79b4dc761963b0f39a570bad07c4f80e3e777901ac2e207507",
+  "binary_sha256": "4098f51499e625d3e9d480290a942272818e78ec88293b9d7464316abc0fff01",
+  "results": [
+    {
+      "case": "native_healing_pc_priced_shop_and_both_gym_returns",
+      "status": "PASS",
+      "log": "planning/minnesota/revisions/route-grass-v01/current-minneapolis-successor-v02/services-native-v01.log"
+    }
+  ],
+  "scope": "Updated actual exterior anchors; initial injury/party/money are explicit QA fixtures, then native services/warps/Continue only."
+}

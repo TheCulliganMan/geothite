@@ -1,6 +1,11 @@
 //! Explicit access/party fixtures; every choice, gift and retry uses input.
+#[path = "minnesota_fossil_lab.rs"]
+mod lab;
+
+use crystal_assets::AssetRoot;
 use crystal_core::input::GameButton;
 use crystal_core::models::Dv;
+use crystal_runtime::CrystalRuntime;
 
 use super::super::{
     VisibleShellController, mark_runtime_snapshot_dirty, visible_start_menu_entries,
@@ -65,6 +70,14 @@ pub(super) fn talk(c: &mut VisibleShellController, facing: GameButton, answers: 
     finish(c);
 }
 
+fn restoration_fixture(root: &AssetRoot, runtime: &CrystalRuntime) -> VisibleShellController {
+    if runtime.data().maps.contains_key("MnRochesterFossilLab") {
+        fixture(root, runtime, "MnRochesterFossilLab", (3, 5))
+    } else {
+        fixture(root, runtime, "MnRochester", (20, 11))
+    }
+}
+
 #[test]
 #[ignore = "requires CRYSTAL_WINONA_TEST_PACK with Minnesota fossil research"]
 fn fossils_controller_both_choices_decline_persist_and_post_league_exchange() {
@@ -125,7 +138,7 @@ fn fossils_controller_badge_full_party_and_actual_restoration_continue() {
     let (root, r) = load();
     for (species, item) in [("TRILUME", "LENS_FOSSIL"), ("SIPHLET", "SPIRE_FOSSIL")] {
         for (badge, party_count) in [(false, 0), (true, 6), (true, 5)] {
-            let mut c = fixture(&root, &r, "MnRochester", (20, 11));
+            let mut c = restoration_fixture(&root, &r);
             {
                 let state = c.shell.shell.session_mut().state_mut();
                 state.badges.johto[0] = badge;
@@ -189,7 +202,7 @@ fn fossils_controller_badge_full_party_and_actual_restoration_continue() {
 fn fossils_controller_native_level_34_evolutions_and_continue() {
     let (root, r) = load();
     for (species, evolved) in [("TRILUME", "PANOPLITE"), ("SIPHLET", "OBELURK")] {
-        let mut c = fixture(&root, &r, "MnRochester", (20, 11));
+        let mut c = restoration_fixture(&root, &r);
         {
             let state = c.shell.shell.session_mut().state_mut();
             state.storage.party.pokemon[0] = Some(

@@ -1,0 +1,6 @@
+{
+  "status": "REJECTED_STALE_PACK_ARGUMENT",
+  "source_native_pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+  "failed_stderr": ".local/route-grass-review/current-itasca-verified-stdio-v02-v01.stderr.log",
+  "correction": "Retry against exact pack that generated the native reached save, with fresh input/output paths. Save identity is not rewritten."
+}

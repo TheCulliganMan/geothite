@@ -1,0 +1,68 @@
+{
+  "status": "NATIVE_GAMEPLAY_AND_VISUAL_PASS",
+  "selected_revision": "route_grass_bemidji_plateau_stairs_revision",
+  "publication": {
+    "kind": "native_bidirectional_plateau_stair_revision",
+    "parent_revision": "route_grass_bemidji_mart_revision",
+    "parent_pack": "content-packs/minnesota-current-bemidji-mart-v02.crystalpack",
+    "parent_pack_sha256": "b4a95a5634198e39fd8b9d6528af90b66f1e626fc9582e366b4ba4b6a9588171",
+    "pack": "content-packs/minnesota-current-bemidji-plateau-stairs-v01.crystalpack",
+    "pack_sha256": "6200af583a20de0def7f4611ab59531e43549471cc5cf6ab7a6f4f7e52b832e8",
+    "content_identity": "63f1330753882bf4dfad9eef85e933a48c018d6ab9bc6163f294e0e432e27ff9",
+    "maps": 732,
+    "map": "MnBemidji",
+    "visual_mode": "2D only",
+    "native_stair_metatile": [
+      5,
+      10
+    ],
+    "upper_approach": [
+      11,
+      19
+    ],
+    "treads": [
+      11,
+      21
+    ],
+    "lower_landing": [
+      11,
+      22
+    ],
+    "bidirectional": true,
+    "ordinary_walk_before_steps": 29,
+    "ordinary_walk_after_steps": 3,
+    "only_collision_opening": [
+      11,
+      21
+    ],
+    "all_other_complete_maps_preserved_exact": 731,
+    "state_fair_preserved_exact": true,
+    "original132_native_blocks_pixels_preserved_exact": true,
+    "all_existing_runtime_art_and_audio_preserved_exact": true,
+    "all_warps_events_scripts_residents_trainers_encounters_exact": true,
+    "native_public_road_and_surf_cases_passed": 1,
+    "production_ascent_descent_sides_continue_and_menu_checks": true,
+    "production_stdio_calls": 59,
+    "actual_native2d_views_inspected": 5,
+    "source_native_pixel_mismatches": 0,
+    "authoring_source_index": "planning/minnesota/revisions/route-grass-v01/current-bemidji-plateau-stairs-v01/sources.json",
+    "authoring_source_index_sha256": "6a79d25df41a29a331933b3b9be0356b3a165ac114c13ef32824df0f8335bb4a",
+    "runbook": "revisions/route-grass-v01/current-bemidji-plateau-stairs-v01/README.md",
+    "status": "Native2D stairs verified and selected: two-way plateau/main-street walking, side walls, reached-save Continue and five inspected native views.",
+    "code_lint_status": "QUEUED_LIVE_BUILD_WRAPPER",
+    "workspace_format_status": "UNRELATED_EXISTING_FORMAT_DIFFS_OWNED_LEAVES_PASS",
+    "scope_limit": "Broader Minnesota grass/town/source objective remains active. Three frozen facade candidates remain. Local initial party/badges are QA fixtures, not earned statewide progress."
+  },
+  "code_lint_status": "PASS",
+  "code_lint_progress": "stairs-publisher-build-progress-v01.json",
+  "formatting": "format-check-v01.json",
+  "native": "verified-progress-v01.json",
+  "production_inputs": "production-stair-input-review-v01.json",
+  "visual": "native-visual-acceptance-v01.json",
+  "preservation": "stairs-child-preservation-v01.json",
+  "controls": "publisher-negative-receipt-v01.json",
+  "goal_complete": false,
+  "code_lint_retry_progress": "planning/minnesota/revisions/route-grass-v01/current-duluth-mart-v01/mart-publisher-build-progress-v02.json",
+  "code_lint_failure": "shared-source-lint-failure-v01.json",
+  "code_lint_retry_acceptance": "code-lint-retry-acceptance-v02.json"
+}

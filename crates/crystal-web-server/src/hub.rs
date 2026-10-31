@@ -14,7 +14,7 @@ pub use crystal_net::hosted::{
 pub const MAX_NAME_BYTES: usize = 32;
 pub const MAX_TOKEN_BYTES: usize = 128;
 // Regional packs retain their full manifest lineage in the shared identity.
-const MAX_MODPACK_ID_BYTES: usize = 16 * 1024;
+const MAX_MODPACK_ID_BYTES: usize = 32 * 1024;
 pub const MAX_RATING_RANGE: u32 = 1_000;
 const PRESENCE_RADIUS_X: u32 = 12;
 const PRESENCE_RADIUS_Y: u32 = 10;
@@ -1090,8 +1090,12 @@ mod tests {
 
     #[test]
     fn hub_accepts_regional_story_lineage_and_rejects_oversized_identity() {
-        let story = ["minnesota-story-chapter-v1"; 600].join("+");
-        assert!(story.len() > 4096);
+        let story = (0..700)
+            .map(|index| format!("minnesota-story-chapter-{index:04}-v1"))
+            .collect::<Vec<_>>()
+            .join("+");
+        assert!(story.len() > 16 * 1024);
+        assert!(story.len() < MAX_MODPACK_ID_BYTES);
         let mut player = identity("story-player", "core");
         player.world.modpack.id = story;
         let mut hub = Hub::default();

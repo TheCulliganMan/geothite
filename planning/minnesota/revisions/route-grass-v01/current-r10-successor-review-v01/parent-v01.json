@@ -1,0 +1,9 @@
+{
+  "revision": "route_grass_r08_current_contract_revision",
+  "pack": "content-packs/minnesota-current-r08-grass-and-stairs-v01.crystalpack",
+  "pack_sha256": "1e1f2e2f40fdea4207e7ada6b34a85d33065cbe254a73864e47b8db4f0726e13",
+  "maps": [
+    "MnR10C00R00",
+    "MnR10C01R00"
+  ]
+}

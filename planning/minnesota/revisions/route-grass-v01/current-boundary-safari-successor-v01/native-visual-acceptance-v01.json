@@ -1,0 +1,119 @@
+{
+  "status": "PASS",
+  "tested_pack": "content-packs/minnesota-current-r14-forest-bank-v01.crystalpack",
+  "tested_sha256": "e9f4108d3b0a35f04145e4928446c03845982e1f13d7ff8f34e383bd701757d5",
+  "actual_native_images_inspected": 10,
+  "whole_preserve_source_inspected": true,
+  "all_six_source_chunks_retained": true,
+  "source_native_pixel_mismatches": 0,
+  "views": [
+    {
+      "id": "reed-portage",
+      "map": "MnBoundarySafariC00R01",
+      "core": [
+        10,
+        46
+      ],
+      "image": "planning/minnesota/renders/route-grass-v01/current-boundary-safari-successor-v01/native-v01/reed-portage/production.png",
+      "sha256": "88bd99920fc93d9bbe48a77a895b2eb321f94370b5c10b836356e2a0b4e1c1de"
+    },
+    {
+      "id": "pine-portage",
+      "map": "MnBoundarySafariC00R00",
+      "core": [
+        26,
+        22
+      ],
+      "image": "planning/minnesota/renders/route-grass-v01/current-boundary-safari-successor-v01/native-v01/pine-portage/production.png",
+      "sha256": "d3e08f272b6aae06028e2a778b5c79293cbefd338b2300955a18ed149861e548"
+    },
+    {
+      "id": "north-pine-portage",
+      "map": "MnBoundarySafariC00R00",
+      "core": [
+        62,
+        26
+      ],
+      "image": "planning/minnesota/renders/route-grass-v01/current-boundary-safari-successor-v01/native-v01/north-pine-portage/production.png",
+      "sha256": "82491bc55ecafebe507cc299ef2965d35e191474d5bcc2f8217242d63627086c"
+    },
+    {
+      "id": "isle-portage",
+      "map": "MnBoundarySafariC01R01",
+      "core": [
+        14,
+        14
+      ],
+      "image": "planning/minnesota/renders/route-grass-v01/current-boundary-safari-successor-v01/native-v01/isle-portage/production.png",
+      "sha256": "724ad85a2b231d9e7ff1d7aa88fa8cc9c5172c18415f82cc902c68a13f28c1ba"
+    },
+    {
+      "id": "palisade-portage",
+      "map": "MnBoundarySafariC00R01",
+      "core": [
+        44,
+        6
+      ],
+      "image": "planning/minnesota/renders/route-grass-v01/current-boundary-safari-successor-v01/native-v01/palisade-portage/production.png",
+      "sha256": "702bfb68fa99d159299732ef8a785479b4f252371c818fb9b281c5c12429e446"
+    },
+    {
+      "id": "northwind-portage",
+      "map": "MnBoundarySafariC01R00",
+      "core": [
+        24,
+        32
+      ],
+      "image": "planning/minnesota/renders/route-grass-v01/current-boundary-safari-successor-v01/native-v01/northwind-portage/production.png",
+      "sha256": "4cc80e3b73a36ad064f84e74f3d59554b9639b83246baa4463bb0733f9939bd0"
+    },
+    {
+      "id": "palisade-stair",
+      "map": "MnBoundarySafariC00R01",
+      "core": [
+        41,
+        11
+      ],
+      "image": "planning/minnesota/renders/route-grass-v01/current-boundary-safari-successor-v01/native-v01/palisade-stair/production.png",
+      "sha256": "fbebc31ac17a26e2b2cddc986fc142354b1d3e0185d1f4bf9b262854e7f28225"
+    },
+    {
+      "id": "northwind-stair",
+      "map": "MnBoundarySafariC01R00",
+      "core": [
+        33,
+        19
+      ],
+      "image": "planning/minnesota/renders/route-grass-v01/current-boundary-safari-successor-v01/native-v01/northwind-stair/production.png",
+      "sha256": "1379f673820db2196f690c73fad87d463a025a4fc8693a81fd2f7e0d973cf18e"
+    },
+    {
+      "id": "palisade-stair-clear",
+      "map": "MnBoundarySafariC00R01",
+      "core": [
+        41,
+        9
+      ],
+      "image": "planning/minnesota/renders/route-grass-v01/current-boundary-safari-successor-v01/native-v02/palisade-stair-clear/production.png",
+      "sha256": "d0143778fafef7a9814f35b50c4117d28be1f8591c018f08e5aa881216bf30ce"
+    },
+    {
+      "id": "northwind-stair-clear",
+      "map": "MnBoundarySafariC01R00",
+      "core": [
+        33,
+        17
+      ],
+      "image": "planning/minnesota/renders/route-grass-v01/current-boundary-safari-successor-v01/native-v02/northwind-stair-clear/production.png",
+      "sha256": "b68dfe510f8d386fd57e09e6eec98ed6c8ee5a5849330d925bfde2c7f179aac5"
+    }
+  ],
+  "findings": [
+    "All six named grass crossings occupy real paths between usable water landings.",
+    "Palisade and Northwind upper-approach cameras show the authentic native cave12 stair treads clearly.",
+    "The complete preserve remains a coherent connected lake system framed by pines, rocky shelves, camps and portages.",
+    "Current high cliff faces are closed; the five native stairs provide the actual climbs."
+  ],
+  "source_scene": "planning/minnesota/renders/route-grass-v01/current-boundary-safari-successor-v01/whole-preserve-current-source-v01.png",
+  "scope": "Ten actual native2D GPU images and the full source preserve inspected. Two upper-approach views were added to keep stair treads visible. No masks relaxed and no game image edited. Successor inheritance is documented separately."
+}

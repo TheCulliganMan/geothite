@@ -1,0 +1,34 @@
+[
+  {
+    "id": "fair-market-street",
+    "map": "MnStPaul",
+    "core": [
+      13,
+      15
+    ]
+  },
+  {
+    "id": "fair-information-return",
+    "map": "MnStPaul",
+    "core": [
+      11,
+      11
+    ]
+  },
+  {
+    "id": "care-court",
+    "map": "MnStPaul",
+    "core": [
+      13,
+      43
+    ]
+  },
+  {
+    "id": "garden-mart-lane",
+    "map": "MnStPaul",
+    "core": [
+      21,
+      35
+    ]
+  }
+]

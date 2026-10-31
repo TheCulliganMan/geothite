@@ -11,8 +11,8 @@ use crate::authored_town_publication;
 use crate::{CompiledGamePack, MapModule};
 
 pub(super) fn relocate(map: &mut MapModule, plan: &Expansion) -> Result<()> {
-    // These cities have no coordinate-bearing script instructions. Refuse a
-    // future changed epoch instead of moving events under unmoved script data.
+    // Expansion cannot translate coordinate-bearing scripts. The separate
+    // same-size Minneapolis path certifies its retained fixed programs.
     ensure!(
         map.script_map_commands.is_empty()
             && map.script_block_changes.is_empty()
@@ -23,6 +23,21 @@ pub(super) fn relocate(map: &mut MapModule, plan: &Expansion) -> Result<()> {
             && map.scenes.scenes.is_empty(),
         "city has coordinate-bearing story programs"
     );
+    relocate_anchors(map, plan)
+}
+
+/// Preserve the certified same-size Minneapolis gate and battle-return epoch.
+pub(super) fn relocate_with_fixed_programs(
+    pack: &CompiledGamePack,
+    original: &MapModule,
+    revised: &mut MapModule,
+    plan: &Expansion,
+) -> Result<()> {
+    crate::authored_city_retained_programs::validate(pack, original, revised, plan)?;
+    relocate_anchors(revised, plan)
+}
+
+fn relocate_anchors(map: &mut MapModule, plan: &Expansion) -> Result<()> {
     let shifted = |[x, y]: [u16; 2]| -> Result<[u16; 2]> {
         Ok([
             x.checked_add(plan.translation_core[0])
@@ -208,7 +223,10 @@ pub(super) fn connections_with_retained_water(
             .offset
             .checked_neg()
             .context("connection offset overflow")?;
-        authored_town_publication::replace(pack, neighbor)?;
+        // A retained seam must not republish unrelated neighboring payloads.
+        if link.offset != link.old_offset {
+            authored_town_publication::replace(pack, neighbor)?;
+        }
     }
     Ok(())
 }

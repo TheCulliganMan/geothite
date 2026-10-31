@@ -1,0 +1,30 @@
+{
+  "pid": 16688,
+  "status": "FAILED_native-ledges",
+  "steps": [
+    {
+      "step": "native-denials",
+      "command": [
+        "/Users/ryanculligan/GitHub/geothite/.local/route-grass-review/portable-tools-v01/native-controller",
+        "native_town_exterior_public_paths_qualified_roads_and_water_boundary",
+        "--ignored",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "exit_code": 0,
+      "log": ".local/route-grass-review/r14-forest-bank-native-denials-review-v02.log"
+    },
+    {
+      "step": "native-ledges",
+      "command": [
+        "/Users/ryanculligan/GitHub/geothite/.local/route-grass-review/portable-tools-v01/native-controller",
+        "native_town_exterior_ledge_hops_reverse_denial_and_ordinary_returns",
+        "--ignored",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "exit_code": 101,
+      "log": ".local/route-grass-review/r14-forest-bank-native-ledges-review-v01.log"
+    }
+  ]
+}

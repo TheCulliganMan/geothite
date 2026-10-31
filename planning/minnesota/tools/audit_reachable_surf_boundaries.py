@@ -27,7 +27,7 @@ def permits(kind, dx, dy):
                                 or kind == 'WATERFALL' and dx)
 
 
-def inspect(pack, gate_open):
+def inspect(pack, gate_open, actor_bodies=True):
     maps = {n: m for n, m in pack['data']['maps'].items() if n.startswith('Mn')
             and m['attributes']['environment'].lower() in {'town', 'route', 'outdoor'}}
     maps = dict(maps)
@@ -39,7 +39,8 @@ def inspect(pack, gate_open):
         for r in changes:
             module['blocks'][(r['y']//2)*module['attributes']['width']+r['x']//2] = r['block_id']
     kinds = {n: collision(pack, m) for n, m in maps.items()}
-    occupied = {n: {(o['x'], o['y']) for o in m['objects']} for n, m in maps.items()}
+    occupied = {n: ({(o['x'], o['y']) for o in m['objects']} if actor_bodies else set())
+                for n, m in maps.items()}
     connections = {(n, e['direction']): e for n, m in maps.items()
                    for e in m['attributes']['connections'] if e['target_map'] in maps}
 
@@ -142,6 +143,7 @@ def inspect(pack, gate_open):
     for c in components:
         del c['_banks']
     return {'gate_state': 'native_open_changes_geometry_only' if gate_open else 'packed_closed',
+            'actor_state': 'authored_positions' if actor_bodies else 'removed_for_access_check',
             'exterior_count': len(maps), 'river_component': river_component,
             'river_maps': components[river_component]['maps'], 'real_directed_surf_seam_lanes': real_seams,
             'unmatched_edge_records': exposed, 'native_neighbor_shores': native_shores,
@@ -159,18 +161,20 @@ def main():
     report = {'status': 'STATIC_NATIVE_COLLISION_AUDIT_NOT_CONTROLLER_PLAY',
               'pack': str(args.pack), 'pack_sha256': digest,
               'assumptions': ['Surf and Waterfall prerequisites supplied for geometry classification.',
-                  'Every current native object treated as occupying its authored tile; hidden/moving actors not simulated.',
+                  'Both authored object positions and all objects removed are audited; NPC bodies cannot masquerade as permanent barriers.',
                   'Bridge E0..E3 directions respected on entry and exit; no Foot-to-Surf bridge launch.',
                   'Waterfall geometry traversed vertically with HM assumed; no earned progression claim.',
                   'Foot witnesses use only ordinary Floor/TallGrass/door and native deck; ledges/Cut omitted.',
                   'No unconnected edge is alleged traversable off-map; missing visible closure is the issue.'],
-              'states': [inspect(pack, False), inspect(pack, True)]}
+              'states': [inspect(pack, gate_open, actor_bodies)
+                         for actor_bodies in [True, False] for gate_open in [False, True]]}
     assert hashlib.sha256(args.pack.read_bytes()).hexdigest() == digest
     args.output.mkdir(parents=True, exist_ok=True)
     (args.output/'audit.json').write_text(json.dumps(report, indent=2)+'\n')
     for state in report['states']:
         counts = collections.Counter((r['map'], r['direction']) for r in state['unmatched_edge_records'])
-        print(state['gate_state'], len(state['unmatched_edge_records']), sorted(counts.items()))
+        print(state['gate_state'], state['actor_state'],
+              len(state['unmatched_edge_records']), sorted(counts.items()))
         for c in state['unmatched_components']:
             print(c['index'], c['core_cells'], c['bank_count'], c['foot_launch_witness'])
 

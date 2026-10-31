@@ -1,0 +1,220 @@
+{
+  "schema_version": 1,
+  "source_kind": "installed_route_exterior_review_contract",
+  "id": "MN_R05",
+  "native_binding": {
+    "pack": "content-packs/minnesota-current-r05-cache-grass-bank-v03.crystalpack",
+    "pack_sha256": "618d6faa81c9b0bf09b4e3b0cdb22ec1e36eecdaf77678a58146b58de970e5cf",
+    "content_identity": "0e5ce89b138034b7b0c87fdb415ad7124fd8ef88e9a776b34369cbf69eeaabf1"
+  },
+  "chunk_layout": "planning/minnesota/revisions/route-grass-v01/current-r05-successor-review-v01/current-native-chunks-v03.json",
+  "grass_quadrants": 220,
+  "new_grass_quadrants": 12,
+  "required_grass_crossings": [
+    {
+      "id": "CITY_HABITAT",
+      "bounds_core": [
+        20,
+        98,
+        26,
+        102
+      ],
+      "minimum_grass_steps": 4
+    }
+  ],
+  "one_way_ledges": [
+    {
+      "id": "LOOKOUT_CACHE_DRY_RETURN",
+      "map": "MnR05C00R00",
+      "bounds_core": [
+        38,
+        20,
+        40,
+        22
+      ],
+      "direction": "south",
+      "lanes": [
+        38,
+        39
+      ],
+      "upper_y": 19,
+      "lip_y": 20,
+      "reverse_wall_y": 21,
+      "dry_landing_y": 22,
+      "minimum_ordinary_return_grass": 2,
+      "grass_entry_bounds_core": [
+        36,
+        20,
+        38,
+        22
+      ],
+      "east_dry_bypass_cap_bounds_core": [
+        40,
+        20,
+        42,
+        22
+      ],
+      "purpose": "Existing Great Ball cache requires a grass approach; a short low-bank hop returns to dry trail. The dry trail also preserves access to the river lookout."
+    }
+  ],
+  "cache": {
+    "script": "MN_R05_ITEM_02",
+    "tile": [
+      37,
+      19
+    ],
+    "item": "GREAT_BALL",
+    "quantity": 1,
+    "minimum_grass_to_any_interaction_tile": 2,
+    "once_only_native_pickup": true
+  },
+  "lookout": {
+    "script": "MN_R05_LOOKOUT",
+    "tile": [
+      53,
+      21
+    ],
+    "clear_approach": [
+      52,
+      21
+    ]
+  },
+  "superseded_tall_ledge_contracts": [
+    {
+      "id": "UPPER_DROP",
+      "bounds_core": [
+        36,
+        40,
+        40,
+        42
+      ],
+      "direction": "south",
+      "source_block": "56",
+      "upper_approach": [
+        37,
+        39
+      ],
+      "hop_from": [
+        37,
+        40
+      ],
+      "landing": [
+        37,
+        42
+      ],
+      "reverse_blocked": [
+        37,
+        41
+      ],
+      "side_barriers": [
+        [
+          35,
+          41
+        ],
+        [
+          40,
+          41
+        ]
+      ],
+      "return_passage_core": [
+        14,
+        40,
+        16,
+        42
+      ],
+      "minimum_return_steps": 35,
+      "purpose": "Southbound dry drop; the ordinary western uphill climb crosses encounter habitat. The existing cave is a separate alternate passage."
+    },
+    {
+      "id": "LOWER_DROP",
+      "bounds_core": [
+        36,
+        76,
+        40,
+        78
+      ],
+      "direction": "south",
+      "source_block": "56",
+      "upper_approach": [
+        37,
+        75
+      ],
+      "hop_from": [
+        37,
+        76
+      ],
+      "landing": [
+        37,
+        78
+      ],
+      "reverse_blocked": [
+        37,
+        77
+      ],
+      "side_barriers": [
+        [
+          35,
+          77
+        ],
+        [
+          40,
+          77
+        ]
+      ],
+      "return_passage_core": [
+        12,
+        76,
+        14,
+        78
+      ],
+      "minimum_return_steps": 35,
+      "purpose": "Southbound dry drop; the ordinary western uphill climb crosses encounter habitat. The existing cave is a separate alternate passage."
+    }
+  ],
+  "ordinary_native_stair_metatiles": [
+    {
+      "map": "MnR05C00R00",
+      "metatile": [
+        12,
+        7
+      ],
+      "block": "87"
+    },
+    {
+      "map": "MnR05C00R00",
+      "metatile": [
+        18,
+        13
+      ],
+      "block": "87"
+    },
+    {
+      "map": "MnR05C00R00",
+      "metatile": [
+        7,
+        20
+      ],
+      "block": "86"
+    },
+    {
+      "map": "MnR05C00R01",
+      "metatile": [
+        14,
+        2
+      ],
+      "block": "87"
+    },
+    {
+      "map": "MnR05C00R01",
+      "metatile": [
+        6,
+        14
+      ],
+      "block": "86"
+    }
+  ],
+  "terrain_source_before": "cache-bank-before-v03.layout.json",
+  "terrain_source_after": "cache-bank-after-v03.layout.json",
+  "native_model": "Native CURRENT-tile TryJump and ordinary lateral HOP walking; eight-cell layout includes a forest cap that rejects a zero-grass dry-side bypass.",
+  "scope": "Current three-chunk exterior and cache loop. Only eight native metatiles and one terrace-sign line changed; actors, room mouths, water/shore boundaries and all other regional content remain preserved."
+}

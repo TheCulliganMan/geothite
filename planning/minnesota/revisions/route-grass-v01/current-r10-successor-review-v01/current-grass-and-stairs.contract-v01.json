@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "id": "MN_R10",
+  "source_kind": "scoped_route_grass_review_contract",
+  "native_binding": {
+    "pack": "content-packs/minnesota-current-r10-grass-and-stairs-v01.crystalpack",
+    "pack_sha256": "840dc279fa9e35359f31885010766950d2487dae723eb11c3d5af2fa8e4da6cb",
+    "content_identity": "c68542065bac76644016febec0ff6217ecf1ac446caa247a1579d3cd024a9594"
+  },
+  "new_grass_quadrants": 16,
+  "route_grass_quadrants": 168,
+  "entrance_core": [
+    [
+      45,
+      20
+    ],
+    [
+      57,
+      20
+    ]
+  ],
+  "minimum_entrance_grass_steps": 9,
+  "active_native_hop_lanes": [],
+  "retired_historical_ledge_contracts": [
+    "CARRIER_BANK_DROP"
+  ],
+  "native_stair_metatile": [
+    5,
+    10
+  ],
+  "stair_block": "82",
+  "corrected_text_labels": [
+    "MN_R10_ROAD_KEEPERText",
+    "MN_R10_RAMP_SIGNText",
+    "MN_R10_T01Won"
+  ],
+  "scope": "Whole route visually reviewed; scoped central grass and stair directions and actual trainer victory/Continue acceptance. Complete current route and neighboring town journeys still need their own proof."
+}

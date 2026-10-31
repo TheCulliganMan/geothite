@@ -1,0 +1,21 @@
+{
+  "status": "PASS",
+  "command": [
+    "cargo",
+    "test",
+    "--locked",
+    "--profile",
+    "wasm-dev",
+    "--config",
+    "profile.wasm-dev.package.crystal-bevy.opt-level=0",
+    "-p",
+    "crystal-bevy",
+    "--lib",
+    "--no-run",
+    "--message-format=json"
+  ],
+  "source": "crates/crystal-bevy/src/bevy_shell/tests/r19_detroit_gate.rs",
+  "source_sha256": "1f8d0710f80a6224a958e3bc1eb43b93b441876e697648ec88f832eb8d8c5452",
+  "binary": ".local/route-grass-review/r19-gate-controller-v09",
+  "binary_sha256": "7de19ed13e8f1373d1ab263c9b3441bbd6f63ae13da49ad6a82c2bacda4a0fe8"
+}

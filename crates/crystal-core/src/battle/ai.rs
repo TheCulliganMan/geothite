@@ -1480,6 +1480,11 @@ pub fn trainer_ai_damage(
             let limit = state.enemy.level.saturating_add(state.enemy.level / 2);
             loop {
                 let roll = rng.battle_random_byte();
+                if let Some(error) = rng.source_error() {
+                    return Err(DamageCalculationError::RandomSource {
+                        error: error.to_owned(),
+                    });
+                }
                 if roll != 0 && roll < limit {
                     return Ok(u16::from(roll));
                 }
@@ -2695,3 +2700,7 @@ mod tests {
         assert_eq!(scores, [17]);
     }
 }
+
+#[cfg(test)]
+#[path = "ai_replay_exhaustion_tests.rs"]
+mod replay_exhaustion_tests;

@@ -1,0 +1,221 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-r10-grass-and-stairs-v01.crystalpack",
+  "pack_sha256": "840dc279fa9e35359f31885010766950d2487dae723eb11c3d5af2fa8e4da6cb",
+  "calls": 2403,
+  "wild": [
+    {
+      "phase": "grass-and-save",
+      "map": "MnR10C00R00",
+      "position": {
+        "x": 11,
+        "y": 15
+      }
+    },
+    {
+      "phase": "grass-and-save",
+      "map": "MnR10C00R00",
+      "position": {
+        "x": 11,
+        "y": 14
+      }
+    },
+    {
+      "phase": "grass-and-save",
+      "map": "MnR10C00R00",
+      "position": {
+        "x": 33,
+        "y": 11
+      }
+    },
+    {
+      "phase": "grass-and-save",
+      "map": "MnR10C00R00",
+      "position": {
+        "x": 54,
+        "y": 20
+      }
+    },
+    {
+      "phase": "grass-and-save",
+      "map": "MnR10C00R00",
+      "position": {
+        "x": 54,
+        "y": 21
+      }
+    },
+    {
+      "phase": "grass-and-save",
+      "map": "MnR10C00R00",
+      "position": {
+        "x": 47,
+        "y": 22
+      }
+    },
+    {
+      "phase": "continue-and-repeat",
+      "map": "MnR10C00R00",
+      "position": {
+        "x": 46,
+        "y": 20
+      }
+    },
+    {
+      "phase": "continue-and-repeat",
+      "map": "MnR10C00R00",
+      "position": {
+        "x": 46,
+        "y": 22
+      }
+    },
+    {
+      "phase": "continue-and-repeat",
+      "map": "MnR10C00R00",
+      "position": {
+        "x": 11,
+        "y": 15
+      }
+    }
+  ],
+  "phases": [
+    {
+      "phase": "grass-and-save",
+      "initial": {
+        "badges": 4,
+        "dialogue": false,
+        "facing": "up",
+        "frame": 42,
+        "map": "MnR10C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 0
+        },
+        "position": {
+          "x": 8,
+          "y": 25
+        }
+      },
+      "final": {
+        "badges": 4,
+        "dialogue": false,
+        "facing": "left",
+        "frame": 436,
+        "map": "MnR10C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 4
+        },
+        "position": {
+          "x": 8,
+          "y": 25
+        }
+      },
+      "output_save": ".local/route-grass-review/r10-full-route-grass-and-save-full-v02-output.crystalsave",
+      "source_unchanged": true,
+      "stderr_bytes": 0
+    },
+    {
+      "phase": "continue-and-repeat",
+      "initial": {
+        "badges": 4,
+        "dialogue": false,
+        "facing": "left",
+        "frame": 436,
+        "map": "MnR10C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 4
+        },
+        "position": {
+          "x": 8,
+          "y": 25
+        }
+      },
+      "final": {
+        "badges": 4,
+        "dialogue": false,
+        "facing": "left",
+        "frame": 830,
+        "map": "MnR10C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 4
+        },
+        "position": {
+          "x": 8,
+          "y": 25
+        }
+      },
+      "output_save": ".local/route-grass-review/r10-full-route-continue-and-repeat-full-v02-output.crystalsave",
+      "source_unchanged": true,
+      "stderr_bytes": 0
+    }
+  ],
+  "scope": "All current Route10 chunks, both terrace stairs in both directions, central grass crossing and actual round trips into MnGrandRapids and MnDuluth. Repeated after Save/Continue, with wild RUN and menus. Local initial partner, badges and placement are QA fixtures. Cave interior and Surf gameplay are not freshly checked here.",
+  "verified_connections": [
+    {
+      "inside": [
+        "MnR10C00R00",
+        0,
+        10
+      ],
+      "neighbor": "MnGrandRapids",
+      "out": "left",
+      "back": "right"
+    },
+    {
+      "inside": [
+        "MnR10C01R00",
+        31,
+        24
+      ],
+      "neighbor": "MnDuluth",
+      "out": "right",
+      "back": "left"
+    }
+  ],
+  "stair_pairs": [
+    {
+      "upper": [
+        11,
+        19
+      ],
+      "lower": [
+        11,
+        22
+      ]
+    },
+    {
+      "upper": [
+        33,
+        11
+      ],
+      "lower": [
+        33,
+        14
+      ]
+    }
+  ],
+  "actual_maps_observed": [
+    "MnDuluth",
+    "MnGrandRapids",
+    "MnR10C00R00",
+    "MnR10C01R00"
+  ]
+}

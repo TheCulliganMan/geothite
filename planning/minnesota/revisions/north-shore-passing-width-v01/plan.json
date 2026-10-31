@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "status": "Verified native coastal passing width on the selected fauna/title parent; selected status follows world.json. Statewide objective remains active.",
+  "parent_revision": "fauna_progression_revision",
+  "parent_pack": "content-packs/minnesota-fauna-progression-title-v01.crystalpack",
+  "parent_sha256": "8ea32c5704ae8e763941295e14bd035ebbeac9e0e6d84018d599aa1dd5b0c504",
+  "crossings_global_core": [
+    [
+      40,
+      40,
+      2
+    ],
+    [
+      40,
+      76,
+      2
+    ],
+    [
+      44,
+      96,
+      4
+    ],
+    [
+      40,
+      110,
+      2
+    ],
+    [
+      34,
+      122,
+      2
+    ],
+    [
+      40,
+      162,
+      2
+    ],
+    [
+      46,
+      186,
+      2
+    ]
+  ],
+  "art": {
+    "85": "Existing native floor01 with leftmost 8px rail copied from44 column0. Collision WALL,FLOOR,WALL,FLOOR.",
+    "86": "Existing native floor01 with rightmost 8px rail copied from44 column0. Collision FLOOR,WALL,FLOOR,WALL."
+  },
+  "walking_width": 4,
+  "gross_bridge_width": 6,
+  "town_mouths": {
+    "MnDuluth": "x64..67; coordinate gates extended across66/67 at y1/3.",
+    "MnGrandMarais": "y8..11; coordinate gates extended across10/11 at x1/3."
+  },
+  "preserve": [
+    "Eight-badge and lighthouse-signal gate on every added lane",
+    "Original buildings, actors, signs, program text, warps and map dimensions",
+    "Stream continuity, cliff corners and stairs",
+    "Warm North Shore and Grand Marais",
+    "All green Boundary Waters / Safari terrain untouched"
+  ],
+  "next": [
+    "Preserve this passing width in future regional children",
+    "Continue the original statewide map-quality objective; this is not a whole-state completion"
+  ],
+  "lighthouse_revision": "First preview erased the two visible water margins at the lighthouse bridge. Rejected. Shift this deck two core tiles west and retain native banked pools on both sides; four clear walking lanes remain, with reachable north/south aprons.",
+  "review": {
+    "status": "Source preview visually reviewed; production publication and gameplay pending.",
+    "all_crossings": "planning/minnesota/renders/north-shore-wide-v999/route/all-crossings.png",
+    "whole_connected": "planning/minnesota/renders/north-shore-wide-v999/connected/duluth-coast-grand-marais-original.png",
+    "town_approaches": "planning/minnesota/renders/north-shore-wide-v999/connected/town-approaches.png",
+    "static_receipt": "planning/minnesota/renders/north-shore-wide-v999/connected/receipt.json",
+    "native_day": "planning/minnesota/renders/north-shore-width-fauna-v1029/native-v1032/nine-views-original.png",
+    "installed": "planning/minnesota/renders/north-shore-width-fauna-v1029/installed/whole-original.png",
+    "source_equality": "planning/minnesota/renders/north-shore-width-fauna-v1029/source-installed-v1034.json"
+  },
+  "source_preimage_origin_revision": "iron_crosscut_bends_revision",
+  "pack": "content-packs/minnesota-north-shore-passing-width-fauna-v02.crystalpack",
+  "pack_sha256": "e951fddafee3a0c09a2356d4dd683890ac498e23daeb266d08c5f12d79ec1167",
+  "verification": "planning/minnesota/renders/north-shore-width-fauna-v1029/acceptance-v1035.json"
+}

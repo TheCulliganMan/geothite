@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "selected_revision": "route_grass_r05_cache_bank_revision",
+  "pack_sha256": "618d6faa81c9b0bf09b4e3b0cdb22ec1e36eecdaf77678a58146b58de970e5cf",
+  "native_source_metatiles_exact": 1792,
+  "all_unknown_parent_source_keys_preserved": true,
+  "complete_tested_r05_inputs_inherited": true,
+  "broader_goal_complete": false
+}

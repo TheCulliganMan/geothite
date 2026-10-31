@@ -1,0 +1,37 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-mankato-mart-v04.crystalpack",
+  "sha256": "a5d605fe2e08ed4b398a7ede9c01fb12ff23ff4244bee073f66c6dfd4cec1241",
+  "parent": {
+    "revision": "r10_fitted_fork_revision",
+    "pack": "content-packs/minnesota-current-r10-fitted-fork-v03.crystalpack",
+    "sha256": "1f16d2b3ca473cc5e937140b7ba6f3e190bcaf3718dd6854b40acd8e98a6ddff"
+  },
+  "identity": {
+    "stored": "c993310380f61024cb29cc218d22a0733f0d877bcf026011d2249fe9fde8e91d",
+    "independently_recomputed": "c993310380f61024cb29cc218d22a0733f0d877bcf026011d2249fe9fde8e91d",
+    "exact": true
+  },
+  "changed_metatiles": [
+    {
+      "at": [
+        18,
+        13
+      ],
+      "before": 22,
+      "after": 26
+    },
+    {
+      "at": [
+        19,
+        13
+      ],
+      "before": 51,
+      "after": 23
+    }
+  ],
+  "other_complete_maps_exact": 731,
+  "state_fair_exact": true,
+  "all_events_scripts_art_audio_encounters_exact": true,
+  "entire_normalized_pack_exact": true
+}

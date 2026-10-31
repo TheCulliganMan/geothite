@@ -289,6 +289,7 @@ pub(super) fn mankato_arrival() -> (AssetRoot, CrystalRuntime, VisibleShellContr
     );
     indoor_walk(&mut c, &r, (10, 14));
     travel(&mut c, GameButton::Down, "MnRochester", (15, 8));
+    super::earned_rod_visits::old_rod(&mut c, &r, &root);
     indoor_walk(&mut c, &r, (4, 18));
     travel(&mut c, GameButton::Left, "MnR02C00R00", (59, 14));
     c = continued(c, &root, &r, "prairie-earned-road");

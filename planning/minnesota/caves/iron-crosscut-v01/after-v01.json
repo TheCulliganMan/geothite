@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "id": "MnIronDrillApproach",
+  "tileset": "cave",
+  "dimensions_metatiles": [
+    16,
+    13
+  ],
+  "border_block": 46,
+  "palette_group": "nite",
+  "rows": [
+    "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e",
+    "2e 2e 04 05 05 06 2e 2e 2e 2e 04 05 05 06 2e 2e",
+    "2e 04 02 02 02 0a 2e 2e 2e 2e 08 02 07 0a 2e 2e",
+    "2e 08 02 02 02 0a 2e 2e 2e 2e 08 02 02 0a 2e 2e",
+    "2e 0c 0d 30 0d 0e 2e 2e 2e 2e 0c 0d 36 2e 2e 2e",
+    "2e 2e 04 02 02 02 02 02 02 05 04 02 02 06 2e 2e",
+    "2e 2e 08 02 02 02 04 05 06 2e 08 02 02 0a 2e 2e",
+    "2e 2e 0c 0d 02 02 08 2e 0a 2e 08 02 02 0a 2e 2e",
+    "2e 2e 2e 2e 08 02 0c 0d 0e 2e 08 02 02 02 06 2e",
+    "2e 2e 04 02 02 02 02 02 02 02 02 02 02 02 0a 2e",
+    "2e 2e 08 07 02 0a 0c 0d 0d 0d 0d 0d 0d 0d 0e 2e",
+    "2e 2e 0c 0d 0d 0e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e",
+    "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e"
+  ],
+  "purpose": "A fitted mining crosscut: a sheltered entry bends around bedrock to the two existing faction encounters, a western climb to the original Ether recess and a northeast corner stair to the real haulage ladder. Native night art, all actors/programs/rewards, wild floor and both paired mouths remain unchanged.",
+  "review_status": "Source candidate; native gameplay and visual acceptance pending."
+}

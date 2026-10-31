@@ -42,7 +42,12 @@ pub(super) fn flee(c: &mut VisibleShellController) {
         {
             return;
         }
-        let button = if s.ui.menu.is_none() && s.ui.text.is_some() {
+        let button = if !c.shell.battle_messages.is_empty()
+            || (s.battle.is_none()
+                && s.ui.menu.is_none()
+                && s.ui.text_window_open
+                && s.ui.text.is_some())
+        {
             GameButton::A
         } else if let Some(cursor) = &c.shell.battle_faint_prompt_cursor {
             if cursor.option_index > 0 {
@@ -130,7 +135,17 @@ pub(super) fn try_trail_with(
             doors: BTreeMap::from([((18, 17), "MnR01Cave1F"), ((49, 15), "MnR01Farmhouse")]),
         },
     );
-    for button in grid.path(start, to) {
+    for _ in 0..4096 {
+        let snapshot = c.snapshot().expect("live trail position");
+        let tile = snapshot.overworld.tile;
+        let here = (tile.x, tile.y);
+        if here == to {
+            return true;
+        }
+        // A native hop or encounter can finish beyond the originally planned
+        // quadrant. Replan from the actual position rather than replaying a
+        // stale suffix of the route's input list.
+        let button = *grid.path(here, to).first().expect("remaining R01 step");
         let old = c.snapshot().expect("before trail tile").overworld.tile;
         for _ in 0..8 {
             press(c, button);
@@ -139,15 +154,44 @@ pub(super) fn try_trail_with(
             }
             let now = c.snapshot().expect("trail tile");
             if now.overworld.map_name != "MnR01C00R00" {
+                if now.overworld.map_name.ends_with("Pokecenter1F")
+                    && let Some(directory) = std::env::var_os("CRYSTAL_WINONA_SAVE_DIR")
+                {
+                    let nonce = std::time::SystemTime::now()
+                        .duration_since(std::time::UNIX_EPOCH)
+                        .expect("native blackout checkpoint clock")
+                        .as_nanos();
+                    let path = std::path::PathBuf::from(directory).join(format!(
+                        "r01-native-blackout-{}-{nonce}.crystalsave",
+                        std::process::id()
+                    ));
+                    c.save(path).expect("retain actual route blackout recovery");
+                }
                 return false;
             }
             if now.overworld.tile != old {
                 break;
             }
         }
+        let after = c.snapshot().expect("native trail step outcome");
+        if after.overworld.tile == old {
+            if let Some(directory) = std::env::var_os("CRYSTAL_WINONA_SAVE_DIR") {
+                let path = std::path::PathBuf::from(directory).join(format!(
+                    "r01-blocked-{}-{}-{}.crystalsave",
+                    std::process::id(),
+                    old.x,
+                    old.y
+                ));
+                c.save(path).expect("retain the actual blocked route state");
+            }
+            panic!(
+                "R01 step {button:?} from {old:?} did not move; ui={:?}, pending={}",
+                after.ui,
+                c.has_pending_script_work()
+            );
+        }
     }
-    at(c, "MnR01C00R00", to);
-    true
+    panic!("bounded native R01 walk did not reach {to:?}");
 }
 
 pub(super) fn delivery() -> (

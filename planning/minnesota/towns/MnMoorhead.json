@@ -11,7 +11,7 @@
   ],
   "role": "town",
   "tileset": "johto_modern",
-  "composition": "A compact Red River levee, community pickup court and prairie-trail service street. The river is visible behind an uninterrupted native bank and fence; this town has no Surf launch.",
+  "composition": "A compact Red River levee, community pickup court and prairie-trail service street. A signed brick opening gives access to native river wildlife; rock boundaries close every unconnected water edge.",
   "ports": [
     {
       "route": "MN_R16",
@@ -324,7 +324,8 @@
     "each port landing",
     "every visible exterior door",
     "central square",
-    "local story NPC"
+    "local story NPC",
+    "signed Red River bank and native Surf launch"
   ],
   "door_contract": "Exact native Goldenrod/Cherrygrove 18 19 / 1a 1b clinic and 18 19 / 1a 33 shop assemblies. Both interior carpets return to a passive exterior Floor; entries use passive room Floor3. Both buildings and both carpets pass production input and native-frame review.",
   "native_constant": "MN_MOORHEAD",
@@ -496,6 +497,24 @@
         21,
         16
       ]
+    },
+    {
+      "id": "MnMoorheadRiverAccess",
+      "tile": [
+        12,
+        14
+      ],
+      "approach": [
+        12,
+        15
+      ],
+      "lines": [
+        "RED RIVER ACCESS",
+        "Cast from the",
+        "bank.",
+        "SURF with a",
+        "trusted partner."
+      ]
     }
   ],
   "doors": [
@@ -623,6 +642,13 @@
         30,
         12
       ]
+    },
+    {
+      "id": "RIVER_ACCESS",
+      "tile": [
+        11,
+        12
+      ]
     }
   ],
   "river_contract": {
@@ -636,7 +662,40 @@
       11,
       13
     ],
-    "surf_entry": false,
-    "reason": "Native BUOY shore and continuous WALL fence protect the levee. River water continues visually off-map but is unreachable from every public town tile, even with Surf."
+    "surf_entry": true,
+    "reason": "Native BUOY banks and the fence remain outside the signed two-tile opening. The west/north/south river boundaries are visibly closed. Existing R16 lanes, people, facades and notebook/clinic reward programs are unchanged.",
+    "opening_metatile": [
+      4,
+      6
+    ],
+    "brick_bank_metatile": [
+      5,
+      6
+    ],
+    "bank_core": [
+      [
+        10,
+        12
+      ],
+      [
+        10,
+        13
+      ]
+    ],
+    "water_entry_core": [
+      [
+        9,
+        12
+      ],
+      [
+        9,
+        13
+      ]
+    ],
+    "sign_core": [
+      12,
+      14
+    ],
+    "source_contract": "pokemon/acquisition-v01/water-caves-v01/habitats.json"
   }
 }

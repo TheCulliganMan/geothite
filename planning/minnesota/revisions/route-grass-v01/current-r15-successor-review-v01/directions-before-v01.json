@@ -1,0 +1,92 @@
+{
+  "MN_R15_PIER_WATCHERText": [
+    {
+      "args": [
+        "\"The rail ends\""
+      ],
+      "command": "text"
+    },
+    {
+      "args": [
+        "\"at the dock gate.\""
+      ],
+      "command": "line"
+    },
+    {
+      "args": [
+        "\"A little walk\""
+      ],
+      "command": "para"
+    },
+    {
+      "args": [
+        "\"gets a lake view.\""
+      ],
+      "command": "line"
+    },
+    {
+      "args": [
+        "\"Try the ROD GURU!\""
+      ],
+      "command": "para"
+    },
+    {
+      "args": [
+        "\"His house is above\""
+      ],
+      "command": "line"
+    },
+    {
+      "args": [
+        "\"the lakeside deck\""
+      ],
+      "command": "para"
+    },
+    {
+      "args": [
+        "\"on PINE COUNTRY RD\""
+      ],
+      "command": "line"
+    },
+    {
+      "args": [
+        "\"south of BRAINERD.\""
+      ],
+      "command": "para"
+    },
+    {
+      "args": [
+        "\"A free SUPER ROD!\""
+      ],
+      "command": "line"
+    },
+    {
+      "args": [],
+      "command": "done"
+    }
+  ],
+  "MN_R15_SIGN_02Text": [
+    {
+      "args": [
+        "\"SHINER LAKE\""
+      ],
+      "command": "text"
+    },
+    {
+      "args": [
+        "\"DOCK: NORTH\""
+      ],
+      "command": "line"
+    },
+    {
+      "args": [
+        "\"KEEP TO THE RAILS\""
+      ],
+      "command": "para"
+    },
+    {
+      "args": [],
+      "command": "done"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "status": "PASS_EXACT_R03_VISUAL_INPUT_INHERITANCE",
+  "actual_capture_pack": "content-packs/minnesota-current-r01-stair-guidance-v01.crystalpack",
+  "actual_capture_pack_sha256": "e6af050b697b6a9d52735713d5eabe0c069110f69ecdc5b81707e181b7ee30b2",
+  "current_terrain_parent": "content-packs/minnesota-r10-exploration-v03.crystalpack",
+  "current_terrain_parent_sha256": "acc5e63d532de34614cbcc0ac4bd414b190d8cdc9e5d319fdf71f3de3302e073",
+  "both_complete_r03_maps_exact": true,
+  "both_used_tilesets_exact": true,
+  "all_existing_runtime_files_exact": true,
+  "native_captures_actually_inspected": 5,
+  "scope": "Fresh R03 whole source and production traversal used the newer R10 exploration parent; five GPU captures used the preceding R01 guidance pack. Their complete R03 terrain/actors/events/art inputs match exactly. Captures are not relabeled as newly executed on R10. The final R03 guidance child changes only two local text programs."
+}

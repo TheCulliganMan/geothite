@@ -1,0 +1,63 @@
+{
+  "status": "PASS",
+  "parent": {
+    "revision": "minneapolis_normal_houses_revision",
+    "pack": "content-packs/minnesota-minneapolis-normal-houses-v02.crystalpack",
+    "sha256": "9480368160e25c53d01162a4dbdbe301a7b7215e0a5027df58d700906612be99"
+  },
+  "pack": "content-packs/minnesota-current-duluth-mart-v01.crystalpack",
+  "sha256": "d77baff3e597e6527450400022e0b9acf655b856983cf96e49fbebfe275464f3",
+  "identity": {
+    "stored": "28964cb553126e972f5fa16d11327a45c0f9440de16519a6c29c47305ca6536e",
+    "independently_recomputed": "28964cb553126e972f5fa16d11327a45c0f9440de16519a6c29c47305ca6536e",
+    "exact": true
+  },
+  "changed_metatiles": [
+    {
+      "at": [
+        39,
+        19
+      ],
+      "before": 16,
+      "after": 26
+    },
+    {
+      "at": [
+        40,
+        19
+      ],
+      "before": 23,
+      "after": 51
+    }
+  ],
+  "paired_mart_warps_shifted_left": [
+    7,
+    8
+  ],
+  "only_collision_changes": [
+    {
+      "at": [
+        79,
+        39
+      ],
+      "before": "WALL",
+      "after": "DOOR"
+    },
+    {
+      "at": [
+        80,
+        39
+      ],
+      "before": "DOOR",
+      "after": "WALL"
+    }
+  ],
+  "all_other_complete_maps_exact": 731,
+  "state_fair_exact": true,
+  "all_art_audio_encounters_trainers_exact": true,
+  "raw_event_mirrors_rebound": true,
+  "raw_and_cached_event_mirrors_independently_exactly_two_x_arguments_changed": true,
+  "all11776_collision_quadrants_independently_checked": true,
+  "all_other_scripts_exact": true,
+  "entire_normalized_pack_exact": true
+}

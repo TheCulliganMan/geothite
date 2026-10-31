@@ -1920,6 +1920,60 @@
         13
       ],
       "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Close forest-blocked survey-bank hop face",
+      "position": [
+        10,
+        12
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Close forest-blocked survey-bank hop face",
+      "position": [
+        11,
+        12
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Close forest-blocked survey-bank hop face",
+      "position": [
+        12,
+        12
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Close forest-blocked survey-bank hop face",
+      "position": [
+        13,
+        12
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Close forest-blocked survey-bank hop face",
+      "position": [
+        16,
+        12
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Close forest-blocked survey-bank hop face",
+      "position": [
+        17,
+        12
+      ],
+      "block": "05"
     }
   ],
   "crossings": [

@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-r15-open-shore-and-spur-v01.crystalpack",
+  "pack_sha256": "1c16d7043f84b8cf7a51fe45a22ddc8d38450dfc97861ca8a9d5d7a2a6127981",
+  "exit_code": 0,
+  "log": ".local/route-grass-review/r15-current-child-grass-native-v04.log",
+  "scope": "Populated climb after native T02 win, dry ledge and reverse/Continue; shore encounter/RUN/Continue; native trainer PP/victory/Continue. Explicit initial local Mew60/moves/eight badges, not earned progress. Historical dock-rail denials require replacement by current open-shore production checks."
+}

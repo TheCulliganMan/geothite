@@ -1,0 +1,9 @@
+{
+  "owned_leaf_exit_code": 0,
+  "workspace_exit_code": 1,
+  "workspace_log": ".local/route-grass-review/r14-forest-bank-workspace-format-v01.log",
+  "source_sha256": {
+    "crates/crystal-assets/src/r14_forest_bank.rs": "b9672b62a72250f80c905eeb53738e96b53d5037305935b4a7dbae64e75f1be8",
+    "crates/crystal-assets/src/bin/revise_r14_forest_bank.rs": "8b3997d61b88f04afdb2d8209f263b6855e26dc0c7417ad576d70234a74e48ec"
+  }
+}

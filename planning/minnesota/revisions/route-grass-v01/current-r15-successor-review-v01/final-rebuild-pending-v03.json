@@ -1,0 +1,21 @@
+{
+  "status": "VERIFIED_REBASED_CANDIDATE_WAITING_FOR_LIVE_REBUILD",
+  "checked_at": "2026-10-31T01:31:42.653148+00:00",
+  "selected_revision": "north_shore_footbridges_revision",
+  "candidate_pack": "content-packs/minnesota-current-r15-open-shore-and-spur-v02.crystalpack",
+  "candidate_pack_sha256": "e02fb85d4db327d146cee269809b1af3e4b387dc2e29240b71cae0ae5837ec4c",
+  "preserves_new_north_shore_footbridges": true,
+  "production_calls": 3974,
+  "production_receipt": "planning/minnesota/revisions/route-grass-v01/current-r15-successor-review-v01/full-route-production-v03.json",
+  "native_receipt": "planning/minnesota/revisions/route-grass-v01/current-r15-successor-review-v01/child-grass-native-cases-v05.json",
+  "visual_receipt": "planning/minnesota/revisions/route-grass-v01/current-r15-successor-review-v01/native-visual-inheritance-v03.json",
+  "live_build_wrapper_pid": 10144,
+  "exec_session": 90188,
+  "build_log": ".local/route-grass-review/build-r15-staples-spur-v02.log",
+  "next_commands": [
+    "python3 .local/route-grass-review/replay_r15_spur_publisher_v02.py",
+    "PYTHONPATH=\"$PWD/.local/ely-backroute-python:$PWD/planning/minnesota/tools\" python3 .local/route-grass-review/select_r15_current_v01.py"
+  ],
+  "selection_requires_terminal_build_and_clippy": true,
+  "goal_complete": false
+}

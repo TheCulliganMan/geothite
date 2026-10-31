@@ -857,6 +857,20 @@ pub fn verify_compiled_game_pack_for_runtime(pack: &CompiledGamePack) -> Result<
         );
     }
     validate_compiled_game_pack_identity(pack)?;
+    if let Some(path) = &pack.data.runtime_title_screen.static_title_image {
+        let bytes = pack
+            .runtime_files
+            .get(path)
+            .context("missing static title image")?;
+        anyhow::ensure!(
+            bytes.len() >= 24
+                && &bytes[..8] == b"\x89PNG\r\n\x1a\n"
+                && bytes[16..20] == 160_u32.to_be_bytes()
+                && bytes[20..24] == 144_u32.to_be_bytes(),
+            "static title must contain a native 160x144 PNG"
+        );
+    }
+
     {
         let _trace = pack_load_trace::Span::new("pack.semantic_validation");
         validate_compiled_report_manifest_identity(&pack.report)?;

@@ -2,36 +2,40 @@
   "id": "MnR20Cave1F",
   "template": "UnionCave1F",
   "dimensions_metatiles": [
-    9,
-    8
+    14,
+    12
   ],
-  "width_metatiles": 9,
-  "height_metatiles": 8,
+  "width_metatiles": 14,
+  "height_metatiles": 12,
   "tileset": "cave",
   "border_block": 46,
   "rows": [
-    "2e 2e 2e 2e 2e 2e 2e 2e 2e",
-    "2e 2e 04 06 2e 2e 2e 2e 2e",
-    "2e 04 02 0a 2e 2e 2e 2e 2e",
-    "2e 20 30 21 2d 05 06 2e 2e",
-    "2e 3d 02 02 3b 02 1e 2e 2e",
-    "2e 33 02 0a 2d 12 22 2e 2e",
-    "2e 2e 07 21 21 21 07 2e 2e",
-    "2e 2e 2e 2e 2e 2e 2e 2e 2e"
+    "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e",
+    "2e 2e 04 05 06 2e 2e 2e 2e 2e 2e 2e 2e 2e",
+    "2e 04 02 02 0a 2e 04 05 05 06 2e 2e 2e 2e",
+    "2e 08 02 02 02 02 02 02 02 0a 2e 2e 2e 2e",
+    "2e 20 30 21 21 21 21 21 36 2e 2e 2e 2e 2e",
+    "2e 2e 02 02 05 06 2e 04 02 05 06 2e 2e 2e",
+    "2e 2e 08 02 02 02 3b 02 02 02 0a 2e 2e 2e",
+    "2e 2e 08 02 0a 2e 2e 08 02 02 02 06 2e 2e",
+    "2e 2e 08 02 0a 3d 0f 0f 3e 08 02 0a 2e 2e",
+    "2e 2e 02 02 0a 33 0f 0f 32 08 02 02 0a 2e",
+    "2e 2e 07 21 22 2e 2e 2e 2e 20 21 07 22 2e",
+    "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e"
   ],
   "exits": [
     [
       5,
-      13
+      21
     ],
     [
-      13,
-      13
+      23,
+      21
     ]
   ],
   "clear_arrival": [
     5,
-    12
+    20
   ],
   "exit_collision": "LADDER",
   "exit_doors": [
@@ -60,291 +64,203 @@
   ],
   "signs": [],
   "mandatory": false,
-  "purpose": "A recessed west-wall seep shapes the lower cleft. Widen the upper lip by one walking tile for a visible landing before the lateral drop. Both real mouths, opposite climbs and supply shelf remain useful.",
-  "candidate_status": "Source candidate under whole-room, player-camera and production traversal review.",
+  "purpose": "A winding two-mouth Voyageurs cleft. Dry passage climbs around an enclosed seep; the raised supply branch retains the original Hyper Potion. Two leftward jump lanes shorten the east-to-west return. A local wayfinder offers an optional regional challenge beside the eastern approach.",
+  "candidate_status": "Verified and selected native winding cleft; resolve world.json for active pack.",
   "review_contract": {
-    "quality_revision": "johto-quality-v01",
+    "quality_revision": "r20-winding-cleft-v01",
     "palette_group": "nite",
-    "native_stair_blocks": [
-      [
-        2,
-        3
-      ],
-      [
-        5,
-        5
-      ]
-    ],
     "viewpoints": [
       {
         "id": "west-mouth",
         "tile": [
           5,
-          12
+          20
         ]
       },
       {
-        "id": "east-mouth",
-        "tile": [
-          13,
-          12
-        ]
-      },
-      {
-        "id": "seep",
+        "id": "west-climb",
         "tile": [
           4,
-          9
+          10
         ]
       },
       {
-        "id": "west-stair",
-        "tile": [
-          4,
-          7
-        ]
-      },
-      {
-        "id": "cache",
+        "id": "original-supply",
         "tile": [
           4,
           5
         ]
       },
       {
-        "id": "drop-landing",
+        "id": "passage-scout",
         "tile": [
-          7,
-          9
-        ]
-      },
-      {
-        "id": "upper-lip",
-        "tile": [
-          10,
+          11,
           7
         ]
       },
       {
-        "id": "east-stair",
+        "id": "east-corner-stair",
         "tile": [
-          11,
-          11
+          16,
+          10
         ]
       },
       {
-        "id": "east-approach",
+        "id": "lateral-drop",
         "tile": [
-          12,
-          9
+          14,
+          12
+        ]
+      },
+      {
+        "id": "east-wayfinder",
+        "tile": [
+          21,
+          18
+        ]
+      },
+      {
+        "id": "seep-bank",
+        "tile": [
+          17,
+          15
+        ]
+      },
+      {
+        "id": "east-mouth",
+        "tile": [
+          23,
+          20
         ]
       }
     ],
-    "notes": "A recessed west-wall seep shapes the lower cleft. Widen the upper lip by one walking tile for a visible landing before the lateral drop. Both real mouths, opposite climbs and supply shelf remain useful.",
-    "controller_probes": {
-      "stairs": [
-        {
-          "id": "WEST_SUPPLY_SHELF",
-          "metatile": [
-            2,
-            3
-          ],
-          "block": "30",
-          "before": [
-            4,
-            5
-          ],
-          "lane": [
-            [
-              4,
-              6
-            ],
-            [
-              4,
-              7
-            ]
-          ],
-          "after": [
-            4,
-            8
-          ],
-          "blocked_from": [
-            4,
-            7
-          ],
-          "blocked_target": [
-            5,
-            7
-          ],
-          "destination": [
-            4,
-            5
-          ]
-        },
-        {
-          "id": "EAST_RETURN_CLIMB",
-          "metatile": [
-            5,
-            5
-          ],
-          "block": "12",
-          "before": [
-            11,
-            9
-          ],
-          "lane": [
-            [
-              11,
-              10
-            ],
-            [
-              11,
-              11
-            ]
-          ],
-          "after": [
-            11,
-            12
-          ],
-          "blocked_from": [
-            11,
-            11
-          ],
-          "blocked_target": [
-            10,
-            11
-          ],
-          "destination": [
-            10,
-            8
-          ]
-        }
-      ],
-      "ledge_lanes": [
-        {
-          "approach": [
-            10,
-            8
-          ],
-          "hop_from": [
-            9,
-            8
-          ],
-          "landing": [
-            7,
-            8
-          ],
-          "reverse_target": [
-            8,
-            8
-          ],
-          "direction": "LEFT"
-        },
-        {
-          "approach": [
-            10,
-            9
-          ],
-          "hop_from": [
-            9,
-            9
-          ],
-          "landing": [
-            7,
-            9
-          ],
-          "reverse_target": [
-            8,
-            9
-          ],
-          "direction": "LEFT"
-        }
-      ],
-      "ledge_shoulders": [
-        [
-          8,
-          7
+    "mouths": [
+      {
+        "index": 1,
+        "inside": [
+          5,
+          21
         ],
-        [
-          9,
-          7
+        "clear": [
+          5,
+          20
         ],
-        [
-          8,
-          10
+        "target": "MnR20C00R00",
+        "target_warp": 2,
+        "outside_active": [
+          60,
+          33
         ],
-        [
-          9,
-          10
+        "outside_return": [
+          60,
+          34
         ]
-      ],
-      "potion_approach": [
-        4,
-        5
-      ],
-      "potion_facing": "right",
-      "ordinary_return_waypoints": [
-        [
-          7,
+      },
+      {
+        "index": 2,
+        "inside": [
+          23,
+          21
+        ],
+        "clear": [
+          23,
+          20
+        ],
+        "target": "MnR20C01R00",
+        "target_warp": 2,
+        "outside_active": [
+          12,
+          31
+        ],
+        "outside_return": [
+          12,
+          32
+        ]
+      }
+    ],
+    "ledge_lanes": [
+      {
+        "approach": [
+          14,
           12
         ],
-        [
+        "hop": [
+          13,
+          12
+        ],
+        "landing": [
           11,
           12
         ],
-        [
-          11,
-          9
+        "direction": "left"
+      },
+      {
+        "approach": [
+          14,
+          13
         ],
-        [
-          10,
-          8
-        ]
+        "hop": [
+          13,
+          13
+        ],
+        "landing": [
+          11,
+          13
+        ],
+        "direction": "left"
+      }
+    ],
+    "native_stairs": [
+      {
+        "block": "30",
+        "column": 2,
+        "row": 4
+      },
+      {
+        "block": "36",
+        "column": 8,
+        "row": 4
+      }
+    ],
+    "ordinary_return": "Native FLOOR route via both gallery stairways; no reverse/side bypass through the jump wall.",
+    "fishing_bank": {
+      "tile": [
+        17,
+        15
       ],
-      "mouths": [
-        {
-          "inside": [
-            5,
-            13
-          ],
-          "clear": [
-            5,
-            12
-          ],
-          "target": "MnR20C00R00",
-          "target_warp": 2,
-          "outside_active_global": [
-            60,
-            33
-          ],
-          "outside_return_global": [
-            60,
-            34
-          ]
-        },
-        {
-          "inside": [
-            13,
-            13
-          ],
-          "clear": [
-            13,
-            12
-          ],
-          "target": "MnR20C01R00",
-          "target_warp": 2,
-          "outside_active_global": [
-            76,
-            31
-          ],
-          "outside_return_global": [
-            76,
-            32
-          ]
-        }
-      ],
-      "exterior_return_semantics": "Original west room warp1 returns to MnR20C00R00 passive warp2 global60,34 FLOOR; east room warp2 returns to MnR20C01R00 passive warp2 global76,32/local12,32 FLOOR. Active west60,33 targets roomwarp1; active east76,31 targets roomwarp2. Preserve the existing inactive east Floor record's own targetwarp1; no warp records are normalized."
+      "facing": "south",
+      "water": [
+        17,
+        16
+      ]
     },
-    "current_source_note": "Retain all exact mouth/stair/ledge/item probes. The western seep remains recessed outside the dry stair lane, while native05 at metatile5,3 widens the upper lip; the two ordinary returns remain15/13inputs."
-  }
+    "ordinary_routes": {
+      "between_clear_mouths": 44,
+      "left_hop_upper_lane_return": 29,
+      "left_hop_lower_lane_return": 31,
+      "exterior_static_comparison": 18
+    },
+    "route_role": "Optional exploration and two-mouth shelter passage. The native outdoor walk is18steps and this dry cave route44steps; this is not a faster regional shortcut. The lateral drop shortens only the internal westbound return."
+  },
+  "proposed_actors": [
+    {
+      "id": "MN_EXTRA_R20_WAYFINDER",
+      "sprite": "SPRITE_COOLTRAINER_M",
+      "tile": [
+        21,
+        17
+      ]
+    }
+  ],
+  "retained_native_actors": [
+    {
+      "id": "MN_INTERIOR_R20_CLEFT_SCOUT",
+      "sprite": "SPRITE_POKEFAN_M",
+      "tile": [
+        12,
+        7
+      ],
+      "program_source": "planning/minnesota/interior-life/stories.json; current native program retained exactly."
+    }
+  ]
 }

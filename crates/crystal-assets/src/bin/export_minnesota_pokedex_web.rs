@@ -32,6 +32,9 @@ mod machine_catalog;
 #[path = "export_minnesota_pokedex_web/machine_revision.rs"]
 mod machine_revision;
 
+#[path = "export_minnesota_pokedex_web/locations.rs"]
+mod locations;
+
 const MOVES: &str = include_str!("../../../../web-client/pokedex/moves.html");
 const INDEX: &str = include_str!("../../../../web-client/pokedex/index.html");
 const ENTRY: &str = include_str!("../../../../web-client/pokedex/entry.html");
@@ -301,6 +304,14 @@ fn moves_table(
 }
 fn main() -> Result<()> {
     let args = std::env::args().skip(1).collect::<Vec<_>>();
+    if args.first().is_some_and(|arg| arg == "--locations") {
+        ensure!(
+            args.len() == 4,
+            "usage: export_minnesota_pokedex_web --locations PACK BASELINE_RELEASE NEW_RELEASE"
+        );
+        let pack = crystal_assets::read_verified_compiled_game_pack(Path::new(&args[1]))?;
+        return locations::publish(&pack, Path::new(&args[2]), Path::new(&args[3]));
+    }
     if args.first().is_some_and(|arg| arg == "--machines") {
         ensure!(
             args.len() == 5,

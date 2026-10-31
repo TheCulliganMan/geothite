@@ -1,0 +1,283 @@
+{
+  "status": "PASS_PARTIAL_DIAGNOSTIC_NOT_ACCEPTANCE",
+  "pack": "content-packs/minnesota-current-r15-open-shore-guidance-v01.crystalpack",
+  "pack_sha256": "a49a0cd9d2660ddd2fa7942c5dde2b83c419f7bae43baacae4c9973718ff23d7",
+  "calls": 3290,
+  "wild": [
+    {
+      "phase": "play-and-save",
+      "map": "MnR15C00R00",
+      "position": {
+        "x": 19,
+        "y": 15
+      }
+    },
+    {
+      "phase": "play-and-save",
+      "map": "MnR15C00R00",
+      "position": {
+        "x": 15,
+        "y": 19
+      }
+    },
+    {
+      "phase": "play-and-save",
+      "map": "MnR15C00R00",
+      "position": {
+        "x": 20,
+        "y": 15
+      }
+    },
+    {
+      "phase": "play-and-save",
+      "map": "MnR15C00R00",
+      "position": {
+        "x": 15,
+        "y": 18
+      }
+    },
+    {
+      "phase": "play-and-save",
+      "map": "MnR15C00R00",
+      "position": {
+        "x": 20,
+        "y": 15
+      }
+    },
+    {
+      "phase": "play-and-save",
+      "map": "MnR15C00R00",
+      "position": {
+        "x": 28,
+        "y": 28
+      }
+    },
+    {
+      "phase": "continue-and-repeat",
+      "map": "MnR15C00R00",
+      "position": {
+        "x": 15,
+        "y": 18
+      }
+    },
+    {
+      "phase": "continue-and-repeat",
+      "map": "MnR15C00R00",
+      "position": {
+        "x": 18,
+        "y": 15
+      }
+    },
+    {
+      "phase": "continue-and-repeat",
+      "map": "MnR15C00R00",
+      "position": {
+        "x": 15,
+        "y": 19
+      }
+    },
+    {
+      "phase": "continue-and-repeat",
+      "map": "MnR15C00R00",
+      "position": {
+        "x": 15,
+        "y": 17
+      }
+    },
+    {
+      "phase": "continue-and-repeat",
+      "map": "MnR15C00R00",
+      "position": {
+        "x": 17,
+        "y": 15
+      }
+    },
+    {
+      "phase": "continue-and-repeat",
+      "map": "MnR15C00R00",
+      "position": {
+        "x": 8,
+        "y": 24
+      }
+    },
+    {
+      "phase": "continue-and-repeat",
+      "map": "MnR15C00R00",
+      "position": {
+        "x": 26,
+        "y": 28
+      }
+    },
+    {
+      "phase": "continue-and-repeat",
+      "map": "MnR15C00R00",
+      "position": {
+        "x": 28,
+        "y": 29
+      }
+    }
+  ],
+  "phases": [
+    {
+      "phase": "play-and-save",
+      "initial": {
+        "badges": 8,
+        "dialogue": false,
+        "facing": "up",
+        "frame": 47,
+        "map": "MnR15C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 4120,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 2
+        },
+        "position": {
+          "x": 22,
+          "y": 20
+        }
+      },
+      "final": {
+        "badges": 8,
+        "dialogue": false,
+        "facing": "left",
+        "frame": 704,
+        "map": "MnR15C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 4120,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 6
+        },
+        "position": {
+          "x": 22,
+          "y": 20
+        }
+      },
+      "output_save": ".local/route-grass-review/r15-other-legs-play-and-save-v01-output.crystalsave",
+      "source_unchanged": true,
+      "stderr_bytes": 0
+    },
+    {
+      "phase": "continue-and-repeat",
+      "initial": {
+        "badges": 8,
+        "dialogue": false,
+        "facing": "left",
+        "frame": 704,
+        "map": "MnR15C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 4120,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 6
+        },
+        "position": {
+          "x": 22,
+          "y": 20
+        }
+      },
+      "final": {
+        "badges": 8,
+        "dialogue": false,
+        "facing": "left",
+        "frame": 1361,
+        "map": "MnR15C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 4120,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 9
+        },
+        "position": {
+          "x": 22,
+          "y": 20
+        }
+      },
+      "output_save": ".local/route-grass-review/r15-other-legs-continue-and-repeat-v01-output.crystalsave",
+      "source_unchanged": true,
+      "stderr_bytes": 0
+    }
+  ],
+  "hops": [
+    {
+      "phase": "play-and-save",
+      "lane": 22,
+      "blocked_reverse_inputs": 4,
+      "ordinary_grass_return_played": true
+    },
+    {
+      "phase": "play-and-save",
+      "lane": 23,
+      "blocked_reverse_inputs": 4,
+      "ordinary_grass_return_played": true
+    },
+    {
+      "phase": "play-and-save",
+      "lane": 24,
+      "blocked_reverse_inputs": 4,
+      "ordinary_grass_return_played": true
+    },
+    {
+      "phase": "play-and-save",
+      "lane": 25,
+      "blocked_reverse_inputs": 4,
+      "ordinary_grass_return_played": true
+    },
+    {
+      "phase": "continue-and-repeat",
+      "lane": 22,
+      "blocked_reverse_inputs": 4,
+      "ordinary_grass_return_played": true
+    },
+    {
+      "phase": "continue-and-repeat",
+      "lane": 23,
+      "blocked_reverse_inputs": 4,
+      "ordinary_grass_return_played": true
+    },
+    {
+      "phase": "continue-and-repeat",
+      "lane": 24,
+      "blocked_reverse_inputs": 4,
+      "ordinary_grass_return_played": true
+    },
+    {
+      "phase": "continue-and-repeat",
+      "lane": 25,
+      "blocked_reverse_inputs": 4,
+      "ordinary_grass_return_played": true
+    }
+  ],
+  "reads": [
+    {
+      "phase": "play-and-save",
+      "label": "MN_R15_PIER_WATCHERText",
+      "visible": "The open shore leads to the dock. A little walk gets a lake view. Try the ROD GURU! His house is above the lakeside deck on PINE COUNTRY RD south of BRAINERD. A free SUPER ROD!"
+    },
+    {
+      "phase": "play-and-save",
+      "label": "MN_R15_SIGN_02Text",
+      "visible": "SHINER LAKE DOCK: NORTH LAKESIDE WALK"
+    },
+    {
+      "phase": "continue-and-repeat",
+      "label": "MN_R15_PIER_WATCHERText",
+      "visible": "The open shore leads to the dock. A little walk gets a lake view. Try the ROD GURU! His house is above the lakeside deck on PINE COUNTRY RD south of BRAINERD. A free SUPER ROD!"
+    },
+    {
+      "phase": "continue-and-repeat",
+      "label": "MN_R15_SIGN_02Text",
+      "visible": "SHINER LAKE DOCK: NORTH LAKESIDE WALK"
+    }
+  ],
+  "scope": "Partial Route15 diagnosis while the confirmed broken Staples spur awaits its publisher; excludes the northern connection., four dry drops/reverse denials/grassy returns, two neighboring connection round trips, open former rail passages with real water stops, both bridge rows, cabin return, corrected NPC/sign, wild RUN, menus and Save/Continue. Explicit local native party/badges/position QA setup followed by actual native T02 victory; not earned campaign progress. Surf is outside this land course."
+}

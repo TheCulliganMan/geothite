@@ -1,6 +1,8 @@
 mod boot_font;
+mod evolution_dex_finalization;
 mod save_prompt_pages;
 mod minnesota_town_map;
+mod minnesota_badges;
 mod renderer_policy;
 #[cfg(not(target_arch = "wasm32"))]
 mod preview_audio_policy;
@@ -29,9 +31,11 @@ mod render_walk;
 mod model_preview;
 mod battle_anim_graphics;
 mod field_fly;
+mod field_notice_effects;
 mod field_waterfall;
 mod field_move_prompt_projection;
-mod ely_snow;
+mod outdoor_precipitation;
+mod outdoor_weather_policy;
 #[cfg(not(target_arch = "wasm32"))]
 mod native_tasks;
 mod overworld_step_events;
@@ -148,6 +152,8 @@ use crate::{
 };
 
 mod intro_renderer;
+#[path = "bevy_shell/static_title.rs"]
+mod static_title;
 
 const GAME_TICK_SECONDS: f32 = GB_FRAME_DURATION_SECONDS as f32;
 const VIEWPORT_TILES_X: i16 = 20;
@@ -781,6 +787,14 @@ impl VisibleShellController {
         let outcome = apply_visible_shell_smoke_frame(&mut self.shell, &buttons)?;
         self.complete_overworld_outcome(outcome)?;
         field_fly::advance(&mut self.shell, 1)?;
+        // Text/MCP hosts have no Bevy update schedule. Advance the same native
+        // minigame clocks once per input frame, including neutral wait frames.
+        if self.shell.visible_slot_machine.is_some() {
+            advance_visible_slot_machine_animation(&mut self.shell)?;
+        }
+        if self.shell.visible_card_flip.is_some() {
+            advance_visible_card_flip_animation(&mut self.shell)?;
+        }
         // Native presentation advances credits once per input-clock frame.
         // Renderer-neutral hosts have no Bevy Time system, so advance that
         // same production sequence here, without draining past its A/B waits.
@@ -2503,6 +2517,7 @@ fn record_visible_battle_item_action_frame(
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 struct TitleMenu {
+    static_title_image: Option<String>,
     spawn_identifier: u16,
     save_path: Option<PathBuf>,
     cursor: MenuCursor,
@@ -5252,6 +5267,8 @@ struct TimeSetArtKey {
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 struct TrainerCardArtKey {
     page: VisibleTrainerCardPage,
+    minnesota: bool,
+    owned_badges: [bool; 8],
     badge_frame: u8,
     player_name: String,
     player_id: u16,
@@ -6260,7 +6277,7 @@ pub fn run_bevy_shell(
             Update,
             apply_visible_battle_screen_offset.after(render_playfield),
         )
-        .add_systems(Update, ely_snow::animate.after(render_playfield))
+        .add_systems(Update, outdoor_precipitation::animate.after(render_playfield))
         .add_systems(Update, render_screen_fade_overlay.after(render_playfield))
         .add_systems(
             Update,
@@ -7902,6 +7919,9 @@ fn settle_visible_shell_controller(
                 }
             }
         }
+        if field_notice_effects::advance(runtime_shell, 1)? {
+            continue;
+        }
         if overworld_step_events::advance(runtime_shell)? {
             continue;
         }
@@ -8142,6 +8162,9 @@ fn settle_visible_shell_controller(
                 if advanced {
                     continue;
                 }
+            }
+            if field_notice_effects::start_flash_sound(runtime_shell)? {
+                continue;
             }
             // Item notifications can retain an authored script cursor without
             // a core WaitButton command. Once their printer is ready, the
@@ -8420,70 +8443,73 @@ fn advance_visible_smoke_walk_warp_phase(runtime_shell: &mut BevyRuntimeShell) -
 
 fn build_visible_title_menu(
     program: &RuntimePresentationProgram,
+    static_title_image: Option<&str>,
     spawn_identifier: u16,
     save_path: Option<PathBuf>,
 ) -> Result<TitleMenu> {
     let parameters = RuntimeTitlePresentationParameters::from_program(program)?;
     let main_menu = RuntimeTitleMainMenuDefinition::from_program(program)?;
-            let mut presentation_machine = RuntimePresentationPhaseMachine::new(
-                program,
-                "start_title_screen",
-                "title_screen",
-            )?;
-            presentation_machine
-                .memory
-                .insert("hSCX".to_string(), u16::from(parameters.entrance_start_scx));
-            presentation_machine
-                .memory
-                .insert("wJumptableIndex".to_string(), 0);
-            presentation_machine
-                .memory
-                .insert("wTitleScreenTimer".to_string(), 0);
-            presentation_machine
-                .memory
-                .insert("wSuicuneFrame".to_string(), 0);
-            presentation_machine
-                .memory
-                .insert("hClockResetTrigger".to_string(), 0);
-            presentation_machine
-                .memory
-                .insert(parameters.timeout_fade_register.clone(), 0);
-            presentation_machine.memory.insert(
-                parameters.crystal_oam_target.clone(),
-                u16::from(parameters.crystal_initial_y),
-            );
-            presentation_machine
-                .values
-                .insert("title_suicune_frame".to_string(), 0);
-            Ok(TitleMenu {
-                spawn_identifier: spawn_identifier,
-                save_path: save_path.clone(),
-                cursor: MenuCursor {
-                    surface_id: "title".to_string(),
-                    option_index: 0,
-                },
-                presentation_machine,
-                title_teardown: None,
-                main_menu_entry_interpreter: None,
-                main_menu_phase_interpreter: None,
-                main_menu_waiting_for_input: false,
-                main_menu,
-                timeout_fade_rate: parameters.timeout_fade_rate,
-                timeout_fade_register: parameters.timeout_fade_register,
-                timeout_fade_audio: parameters.timeout_fade_audio,
-                entrance_start_scx: parameters.entrance_start_scx,
-                entrance_scroll_step: parameters.entrance_scroll_step,
-                crystal_oam_target: parameters.crystal_oam_target,
-                crystal_initial_y: parameters.crystal_initial_y,
-                suicune_iterator_operation_index: parameters.suicune_iterator_operation_index,
-                teardown_start_operation_index: parameters.teardown_start_operation_index,
-                teardown_dispatch_operation_index: parameters.teardown_dispatch_operation_index,
-                suicune_frames: parameters.suicune_frames,
-                suicune_selector_mask: parameters.suicune_selector_mask,
-                suicune_selector_shift_left: parameters.suicune_selector_shift_left,
-                suicune_selector_swap_nibbles: parameters.suicune_selector_swap_nibbles,
-                joypad_mask: 0,
-            })
+    let mut presentation_machine =
+        RuntimePresentationPhaseMachine::new(program, "start_title_screen", "title_screen")?;
+    presentation_machine
+        .memory
+        .insert("hSCX".to_string(), u16::from(parameters.entrance_start_scx));
+    presentation_machine
+        .memory
+        .insert("wJumptableIndex".to_string(), 0);
+    presentation_machine
+        .memory
+        .insert("wTitleScreenTimer".to_string(), 0);
+    presentation_machine
+        .memory
+        .insert("wSuicuneFrame".to_string(), 0);
+    presentation_machine
+        .memory
+        .insert("hClockResetTrigger".to_string(), 0);
+    presentation_machine
+        .memory
+        .insert(parameters.timeout_fade_register.clone(), 0);
+    presentation_machine.memory.insert(
+        parameters.crystal_oam_target.clone(),
+        u16::from(parameters.crystal_initial_y),
+    );
+    presentation_machine
+        .values
+        .insert("title_suicune_frame".to_string(), 0);
+    let mut title = TitleMenu {
+        static_title_image: static_title_image.map(str::to_owned),
+        spawn_identifier: spawn_identifier,
+        save_path: save_path.clone(),
+        cursor: MenuCursor {
+            surface_id: "title".to_string(),
+            option_index: 0,
+        },
+        presentation_machine,
+        title_teardown: None,
+        main_menu_entry_interpreter: None,
+        main_menu_phase_interpreter: None,
+        main_menu_waiting_for_input: false,
+        main_menu,
+        timeout_fade_rate: parameters.timeout_fade_rate,
+        timeout_fade_register: parameters.timeout_fade_register,
+        timeout_fade_audio: parameters.timeout_fade_audio,
+        entrance_start_scx: parameters.entrance_start_scx,
+        entrance_scroll_step: parameters.entrance_scroll_step,
+        crystal_oam_target: parameters.crystal_oam_target,
+        crystal_initial_y: parameters.crystal_initial_y,
+        suicune_iterator_operation_index: parameters.suicune_iterator_operation_index,
+        teardown_start_operation_index: parameters.teardown_start_operation_index,
+        teardown_dispatch_operation_index: parameters.teardown_dispatch_operation_index,
+        suicune_frames: parameters.suicune_frames,
+        suicune_selector_mask: parameters.suicune_selector_mask,
+        suicune_selector_shift_left: parameters.suicune_selector_shift_left,
+        suicune_selector_swap_nibbles: parameters.suicune_selector_swap_nibbles,
+        joypad_mask: 0,
+    };
+    if title.static_title_image.is_some() {
+        reset_visible_title_program(&mut title);
+    }
+    Ok(title)
 }
 
 fn initialize_bevy_runtime_shell(
@@ -8511,11 +8537,27 @@ fn initialize_bevy_runtime_shell(
     let restore_loaded_visible_state = matches!(&start, BevyShellStart::LoadSave { .. });
     let initial_player_name_prompt = matches!(&start, BevyShellStart::NewGame { .. });
     let title_menu = match &start {
-        BevyShellStart::Title { spawn_identifier, save_path } => Some(
-            build_visible_title_menu(runtime.title_presentation_program(), *spawn_identifier, save_path.clone())?),
+        BevyShellStart::Title {
+            spawn_identifier,
+            save_path,
+        } => Some(build_visible_title_menu(
+            runtime.title_presentation_program(),
+            runtime
+                .data()
+                .runtime_title_screen
+                .static_title_image
+                .as_deref(),
+            *spawn_identifier,
+            save_path.clone(),
+        )?),
         _ => None,
     };
-    let intro_parameters = matches!(&start, BevyShellStart::Title { .. })
+    let source_opening = runtime
+        .data()
+        .runtime_title_screen
+        .static_title_image
+        .is_none();
+    let intro_parameters = (source_opening && matches!(&start, BevyShellStart::Title { .. }))
         .then(|| {
             RuntimeIntroPresentationParameters::from_program(runtime.title_presentation_program())
         })
@@ -8531,7 +8573,7 @@ fn initialize_bevy_runtime_shell(
             &runtime.data().runtime_title_screen.program,
         )?;
     }
-    let splash_screen = matches!(&start, BevyShellStart::Title { .. })
+    let splash_screen = (source_opening && matches!(&start, BevyShellStart::Title { .. }))
         .then(|| VisibleSplashScreen::from_program(runtime.title_presentation_program()))
         .transpose()?;
     let intro_display_screen = intro_screen.clone();
@@ -9253,6 +9295,7 @@ mod safari_visible;
 mod safari_catch_visible;
 
 mod field_text_program;
+mod card_flip_art;
 mod field_text_timing;
 mod field_dialogue_resume;
 mod natural_movement;

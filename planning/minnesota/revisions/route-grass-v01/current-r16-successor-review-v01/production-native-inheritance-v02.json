@@ -1,0 +1,20 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-r16-bank-guidance-v02.crystalpack",
+  "pack_sha256": "e47cfeeff4baf0e2fd9654d9859e2fd094d856f8d34bede6c1c333c8209bce26",
+  "source_production_receipt": "planning/minnesota/revisions/route-grass-v01/current-r16-successor-review-v01/full-route-production-v01.json",
+  "source_production_receipt_sha256": "e5d10e3e5752410d4363c163386d43187242f6ad92c4d6d397137cafccac3aa5",
+  "source_native_receipt": "planning/minnesota/revisions/route-grass-v01/current-r16-successor-review-v01/child-native-cases-v02.json",
+  "source_native_receipt_sha256": "d63f0ce076fe5d624161b91898f65fffedeb60caaeb8371d7b5322a2ebab311c",
+  "source_tested_pack": "content-packs/minnesota-current-r16-bank-guidance-v01.crystalpack",
+  "source_tested_pack_sha256": "87c5fcda9bb9b0264813c99f7f88d12c0a2c3cc4e9a036e0ffeeb1c9d2ea2c47",
+  "all_route_neighbor_maps_art_battle_and_script_inputs_exact": true,
+  "verified_maps": [
+    "MnR16C00R00",
+    "MnR16C01R00",
+    "MnMoorhead",
+    "MnDetroitLakesApproach",
+    "MnDetroitLakes"
+  ],
+  "scope": "11414-call production course and three current native cases retain their original pack binding; all their complete route/town/approach maps and gameplay inputs are exact in the rebased child. This is inheritance after an unrelated cave-only parent change, not a new replay."
+}

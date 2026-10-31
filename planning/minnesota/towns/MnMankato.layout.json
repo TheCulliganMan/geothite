@@ -526,6 +526,60 @@
         14
       ],
       "block": "45"
+    },
+    {
+      "name": "Complete native mart wall and endcap repair",
+      "kind": "point",
+      "position": [
+        18,
+        13
+      ],
+      "block": "1a"
+    },
+    {
+      "name": "Complete native mart wall and endcap repair",
+      "kind": "point",
+      "position": [
+        19,
+        13
+      ],
+      "block": "17"
+    },
+    {
+      "name": "Native pines close unusable bank at3,9",
+      "kind": "point",
+      "position": [
+        3,
+        9
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Native pines close unusable bank at4,9",
+      "kind": "point",
+      "position": [
+        4,
+        9
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Native pines close unusable bank at10,9",
+      "kind": "point",
+      "position": [
+        10,
+        9
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Native pines close unusable bank at11,9",
+      "kind": "point",
+      "position": [
+        11,
+        9
+      ],
+      "block": "05"
     }
   ]
 }

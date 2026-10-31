@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "map": "MnR05RockCut",
+  "parent_revision": "r13_cedar_basin_revision",
+  "parent_pack": "content-packs/minnesota-r13-cedar-basin-v01.crystalpack",
+  "parent_pack_sha256": "fa13a621b94a9d3234f3d6fc0154af49cbe1da738370d575b7908295dcbdfb55",
+  "native_module_sha256": "da0080c143f842e03a87c5a87c1bc7701f84073a012d3fd97af2eb27d227303d",
+  "preserved_warps": [
+    {
+      "index": 1,
+      "x": 5,
+      "y": 17,
+      "target_map_constant": "MnR05C00R01",
+      "target_map": "MnR05C00R01",
+      "target_warp_id": 2
+    },
+    {
+      "index": 2,
+      "x": 11,
+      "y": 5,
+      "target_map_constant": "MnR05C00R00",
+      "target_map": "MnR05C00R00",
+      "target_warp_id": 2
+    }
+  ],
+  "original_native_programs_preserved": true,
+  "original_actor_anchors": [
+    {
+      "id": "MN_R05_CUT_WALKER",
+      "core": [
+        5,
+        13
+      ]
+    },
+    {
+      "id": "MN_R05_ITEM_03",
+      "core": [
+        5,
+        5
+      ]
+    }
+  ]
+}

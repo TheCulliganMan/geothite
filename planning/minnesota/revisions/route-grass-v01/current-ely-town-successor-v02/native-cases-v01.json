@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-international-falls-windbreak-v01.crystalpack",
+  "pack_sha256": "7066f05448101c79b4dc761963b0f39a570bad07c4f80e3e777901ac2e207507",
+  "binary_sha256": "7967c361a1b0ef9f98bf93eb2b0487560aa17e6d6cb87d24c5ce0aded775f88d",
+  "results": [
+    {
+      "case": "bevy_shell::tests::ely_shore_pass::ely_town_controller_public_signs_resident_four_road_lanes_and_continue",
+      "status": "PASS",
+      "log": "planning/minnesota/revisions/route-grass-v01/current-ely-town-successor-v02/public-native-v01.log"
+    },
+    {
+      "case": "bevy_shell::tests::minnesota_gyms::ely_league::ely_league_controller_seam_services_and_independent_registration",
+      "status": "PASS",
+      "log": "planning/minnesota/revisions/route-grass-v01/current-ely-town-successor-v02/registration-services-native-v01.log"
+    }
+  ],
+  "scope": "Public sign labels/actual A inputs, resident, four road lanes/Continue; original League denial/service/independent-registration fixture with case-normalized wording. Not earned regional progression."
+}

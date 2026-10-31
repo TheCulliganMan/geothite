@@ -3830,6 +3830,7 @@ fn add_complete_runtime_pack_fixture(data: &mut GameDataSet) {
         }
     }
     data.runtime_title_screen = RuntimeTitleScreen {
+        static_title_image: None,
         title_music: Some("MUSIC_TITLE".to_string()),
         program: complete_runtime_title_program(),
     };
@@ -6166,16 +6167,23 @@ fn deferred_level_evolution_queues_same_level_target_move_when_moves_are_full() 
     dragonite.int_id = 149;
     data.pokemon.insert(dragonair.id.clone(), dragonair.clone());
     data.pokemon.insert(dragonite.id.clone(), dragonite.clone());
-    for move_id in ["WRAP", "LEER", "THUNDER_WAVE", "TWISTER", "WING_ATTACK"] {
+    for move_id in [
+        "WRAP",
+        "LEER",
+        "THUNDER_WAVE",
+        "TWISTER",
+        "WING_ATTACK",
+        "SLAM",
+    ] {
         data.moves.insert(move_id.to_string(), test_move(move_id));
     }
     data.learnsets.insert(dragonair.id.clone(), Vec::new());
     data.learnsets.insert(
         dragonite.id.clone(),
-        vec![crystal_core::systems::learnsets::LearnsetEntry(
-            55,
-            "WING_ATTACK".to_string(),
-        )],
+        vec![
+            crystal_core::systems::learnsets::LearnsetEntry(55, "WING_ATTACK".to_string()),
+            crystal_core::systems::learnsets::LearnsetEntry(55, "SLAM".to_string()),
+        ],
     );
     data.evolutions.0.insert(
         dragonair.id.clone(),
@@ -6211,7 +6219,7 @@ fn deferred_level_evolution_queues_same_level_target_move_when_moves_are_full() 
     assert_eq!(evolved.moves, moves_before);
     assert!(!state.pokedex.seen_species.contains("DRAGONITE"));
     assert!(!state.pokedex.caught_species.contains("DRAGONITE"));
-    assert_eq!(report.pending_move_learns.len(), 1);
+    assert_eq!(report.pending_move_learns.len(), 2);
     let pending = state
         .pending_move_learn
         .as_ref()
@@ -6222,6 +6230,30 @@ fn deferred_level_evolution_queues_same_level_target_move_when_moves_are_full() 
     assert_eq!(pending.learned_move.name, "WING_ATTACK");
     assert_eq!(pending.learned_move.current_pp, 35);
     assert!(!pending.defer_level_evolution);
+    assert_eq!(state.pending_move_learn_queue.len(), 1);
+    data.decline_pending_move_learn(&mut state)
+        .expect("decline first evolution move");
+    assert_eq!(
+        state
+            .pending_move_learn
+            .as_ref()
+            .expect("second prompt")
+            .learned_move
+            .name,
+        "SLAM"
+    );
+    data.replace_pending_move_learn(&mut state, 0)
+        .expect("learn second evolution move");
+    assert!(state.pending_move_learn.is_none());
+    assert!(state.pending_move_learn_queue.is_empty());
+    assert_eq!(
+        state.storage.party.pokemon[0]
+            .as_ref()
+            .expect("evolved member")
+            .moves[0]
+            .name,
+        "SLAM"
+    );
 }
 
 #[test]
@@ -7299,6 +7331,7 @@ fn verifier_requires_source_home_spawn_constant() {
 
     let mut data = GameDataSet {
         runtime_title_screen: RuntimeTitleScreen {
+            static_title_image: None,
             title_music: Some("MUSIC_TITLE".to_string()),
             program: RuntimePresentationProgram::default(),
         },
@@ -7334,6 +7367,7 @@ fn verifier_requires_source_home_spawn_constant() {
 fn verifier_requires_title_screen_music_declared_by_pack() {
     let data = GameDataSet {
         runtime_title_screen: RuntimeTitleScreen {
+            static_title_image: None,
             title_music: None,
             program: RuntimePresentationProgram::default(),
         },
@@ -7377,6 +7411,7 @@ fn verifier_requires_title_screen_music_declared_by_pack() {
 fn verifier_rejects_source_home_spawn_missing_from_spawn_table() {
     let mut data = GameDataSet {
         runtime_title_screen: RuntimeTitleScreen {
+            static_title_image: None,
             title_music: Some("MUSIC_TITLE".to_string()),
             program: RuntimePresentationProgram::default(),
         },
@@ -9844,4 +9879,82 @@ fn compiled_radio_text_preserves_pause_and_initial_line_commands() {
         {"command":"text", "args":["\"Can you\""]},
         {"command":"done", "args":[]}
     ]));
+}
+
+#[test]
+fn deferred_level_evolution_waits_for_all_item_move_choices() {
+    let data = GameDataSet::default();
+    let mut state = GameState::default();
+    let mut pokemon = crystal_core::models::Pokemon::new_for_tests(
+        species(),
+        36,
+        crystal_core::models::Dv::default(),
+    );
+    pokemon.moves = ["TACKLE", "GROWL", "LEER", "SWIFT"]
+        .into_iter()
+        .map(|name| crystal_core::models::LearnedMove {
+            name: name.into(),
+            current_pp: 20,
+            pp_ups: 0,
+        })
+        .collect();
+    state.storage.party.pokemon[0] = Some(pokemon);
+    let mut effect = crystal_core::systems::battle_items::BattleItemOutcome {
+        item_id: "RARE_CANDY".to_string(),
+        hp_before: 10,
+        hp_after: 10,
+        level_before: 16,
+        level_after: 16,
+        experience_before: 0,
+        experience_after: 0,
+        status_before: None,
+        status_after: None,
+        confusion_turns_before: 0,
+        confusion_turns_after: 0,
+        focus_energy_before: false,
+        focus_energy_after: false,
+        pp_changes: Vec::new(),
+        stat_changes: Vec::new(),
+        battle_stat_stage_changes: Vec::new(),
+        learned_moves: Vec::new(),
+        pending_move_learns: Vec::new(),
+        deferred_level_evolution: false,
+        evolution_target: None,
+        evolution_cancel_snapshot: None,
+        consumed: false,
+    };
+    effect.pending_move_learns = ["ICE_BEAM", "RIMEBRAND"]
+        .into_iter()
+        .map(|name| crystal_core::models::LearnedMove {
+            name: name.into(),
+            current_pp: 10,
+            pp_ups: 0,
+        })
+        .collect();
+    effect.deferred_level_evolution = true;
+    data.queue_item_pending_move_learn(&mut state, 0, &effect)
+        .expect("queue both item moves");
+    let first = state.pending_move_learn.as_ref().expect("first prompt");
+    assert_eq!(first.learned_move.name, "ICE_BEAM");
+    assert!(!first.defer_level_evolution);
+    assert_eq!(state.pending_move_learn_queue.len(), 1);
+    assert_eq!(
+        state.pending_move_learn_queue[0].learned_move.name,
+        "RIMEBRAND"
+    );
+    assert!(state.pending_move_learn_queue[0].defer_level_evolution);
+    let result = data
+        .decline_pending_move_learn(&mut state)
+        .expect("decline earlier choice");
+    assert!(result.deferred_evolution.is_none());
+    assert_eq!(
+        state
+            .pending_move_learn
+            .as_ref()
+            .expect("second prompt")
+            .learned_move
+            .name,
+        "RIMEBRAND"
+    );
+    assert!(state.pending_move_learn_queue.is_empty());
 }

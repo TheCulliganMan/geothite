@@ -1,0 +1,14 @@
+{
+  "path": "planning/minnesota/towns/MnBrainerd.layout.json",
+  "before_sha256": "2ab5f20df99a8a4ec6c5966fcd6207a0e86b126d03b5d771f5d136650c15e82a",
+  "after_sha256": "f458e3b7e0a3f88cac5a30c00f7c7be9c4ef8f4d85e8cbff1a3891b5082397ec",
+  "change": {
+    "metatile": [
+      10,
+      9
+    ],
+    "before": "05",
+    "after": "19"
+  },
+  "native_publication_pending": true
+}

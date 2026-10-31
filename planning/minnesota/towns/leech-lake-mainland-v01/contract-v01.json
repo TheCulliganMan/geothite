@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "parent_revision": "leech_lake_pine_island_revision",
+  "parent_pack": "content-packs/minnesota-leech-island-v05.crystalpack",
+  "parent_pack_sha256": "0ee27b841a47715f62082533cd324ec8d39c1823d524417874931449f5eeda5b",
+  "map": "MnLeechLake",
+  "native_module_sha256": "e1d9562e57acedb3f86048893c4ba11977c27deecafd777dad98de1621f82419",
+  "preserved_warps": [
+    {
+      "index": 1,
+      "x": 11,
+      "y": 13,
+      "target_map_constant": "MN_LEECH_LAKE_CARE_CABIN",
+      "target_map": "MN_LEECH_LAKE_CARE_CABIN",
+      "target_warp_id": 3
+    },
+    {
+      "index": 2,
+      "x": 11,
+      "y": 14,
+      "target_map_constant": "MN_LEECH_LAKE_SHORE",
+      "target_map": "MN_LEECH_LAKE_SHORE",
+      "target_warp_id": 2
+    },
+    {
+      "index": 3,
+      "x": 9,
+      "y": 35,
+      "target_map_constant": "MN_LEECH_LAKE_FISHER_HOUSE",
+      "target_map": "MN_LEECH_LAKE_FISHER_HOUSE",
+      "target_warp_id": 3
+    },
+    {
+      "index": 4,
+      "x": 9,
+      "y": 36,
+      "target_map_constant": "MN_LEECH_LAKE_SHORE",
+      "target_map": "MN_LEECH_LAKE_SHORE",
+      "target_warp_id": 4
+    }
+  ],
+  "preserved_coordinate_events": [
+    {
+      "x": 32,
+      "y": 3,
+      "scene_id": "-1",
+      "script_name": "MnLeechLakeCheck"
+    },
+    {
+      "x": 32,
+      "y": 1,
+      "scene_id": "-1",
+      "script_name": "MnLeechLakeCheckInward"
+    },
+    {
+      "x": 33,
+      "y": 3,
+      "scene_id": "-1",
+      "script_name": "MnLeechLakeCheck"
+    },
+    {
+      "x": 33,
+      "y": 1,
+      "scene_id": "-1",
+      "script_name": "MnLeechLakeCheckInward"
+    }
+  ]
+}

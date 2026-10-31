@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "map": "MnR12Cave1F",
+  "parent_revision": "leech_lake_mainland_pines_revision",
+  "parent_pack": "content-packs/minnesota-leech-mainland-v01.crystalpack",
+  "parent_pack_sha256": "bb416c46842b7a32bb213ed2a8e9c5eebdf384150c7dfab4ef8a341458833a87",
+  "native_module_sha256": "1076686e99af2c7a5c6c1f20a8ca31654dbdb13ae511ca4e1be6a85f952e0d5f",
+  "preserved_warps": [
+    {
+      "index": 1,
+      "x": 17,
+      "y": 23,
+      "target_map_constant": "MN_R12_C00R00",
+      "target_map": "MN_R12_C00R00",
+      "target_warp_id": 1
+    }
+  ]
+}

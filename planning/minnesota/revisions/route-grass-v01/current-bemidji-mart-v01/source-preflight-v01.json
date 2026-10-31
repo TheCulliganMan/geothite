@@ -1,0 +1,34 @@
+{
+  "status": "PASS",
+  "existing_native_composition": [
+    {
+      "at": [
+        5,
+        10
+      ],
+      "source": "57",
+      "native": "72"
+    },
+    {
+      "at": [
+        6,
+        10
+      ],
+      "source": "57",
+      "native": "72"
+    }
+  ],
+  "changed_metatiles": [
+    {
+      "at": [
+        20,
+        9
+      ],
+      "before": "10",
+      "after": "1a"
+    }
+  ],
+  "native_mart_art_matches_base_johto_modern": true,
+  "canonical_unchanged": true,
+  "native_pack_unchanged": true
+}

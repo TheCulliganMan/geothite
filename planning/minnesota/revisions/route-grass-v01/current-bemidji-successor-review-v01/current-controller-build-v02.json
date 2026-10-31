@@ -1,0 +1,21 @@
+{
+  "status": "PASS",
+  "command": [
+    "cargo",
+    "test",
+    "--locked",
+    "--profile",
+    "wasm-dev",
+    "--config",
+    "profile.wasm-dev.package.crystal-bevy.opt-level=0",
+    "-p",
+    "crystal-bevy",
+    "--lib",
+    "--no-run",
+    "--message-format=json"
+  ],
+  "source": "crates/crystal-bevy/src/bevy_shell/tests/bemidji_city.rs",
+  "source_sha256": "78241412a54fd4151049a2e81672b10545c822890a10fdc8867d329ac2b1d13f",
+  "binary": ".local/route-grass-review/bemidji-current-controller-v02",
+  "binary_sha256": "1ce6b5f113f3c48d0cb0dd7c75d5f7fdac55e51ff3366b10d8588f744655f1e0"
+}

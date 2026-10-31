@@ -1,0 +1,50 @@
+{
+  "pid": 76220,
+  "source_sha256": {
+    "crates/crystal-assets/src/bemidji_mart_facade.rs": "dd4d5b648fc92ddb993b2668896fced837637b6c88eaca2c67fa20ed14ba1aa4",
+    "crates/crystal-assets/src/bin/revise_bemidji_mart_facade.rs": "0b83f6db16b61075366c9cb09c767f10c5aba16878134f805096d3d2c8f90d93"
+  },
+  "steps": [
+    {
+      "step": "publisher",
+      "command": [
+        "cargo",
+        "build",
+        "--profile",
+        "wasm-dev",
+        "--locked",
+        "--config",
+        "profile.wasm-dev.package.crystal-assets.opt-level=0",
+        "-p",
+        "crystal-assets",
+        "--bin",
+        "revise_bemidji_mart_facade"
+      ],
+      "exit_code": 0,
+      "log": ".local/route-grass-review/bemidji-mart-publisher-v03.log",
+      "outputs": [
+        {
+          "path": ".local/route-grass-review/portable-bemidji-tools-v03/revise_bemidji_mart_facade",
+          "sha256": "dc0067346a4e640035c9974ab0f605a8a46937b85b58ac4e46c25ddff02b55f1"
+        }
+      ]
+    },
+    {
+      "step": "assets-all-target-clippy",
+      "command": [
+        "cargo",
+        "clippy",
+        "--profile",
+        "wasm-dev",
+        "--locked",
+        "--config",
+        "profile.wasm-dev.package.crystal-assets.opt-level=0",
+        "-p",
+        "crystal-assets",
+        "--all-targets"
+      ],
+      "exit_code": 0,
+      "log": ".local/route-grass-review/bemidji-mart-assets-all-target-clippy-v03.log"
+    }
+  ]
+}

@@ -1,0 +1,2771 @@
+{
+  "schema_version": 1,
+  "id": "minnesota-water-cave-habitats-v1",
+  "parent_content_hash": "bed212e656cb41707fda70334eee4c8e2f8c9ecbb545999598915f18b9ca4e8f",
+  "reference_structure": "Native Union Cave/Dark Cave seven-slot walking tables and Ice Path rate5; native Surf rate5 and three slots. Only Minnesota species are authored here.",
+  "maps": [
+    {
+      "map": "MnBemidji",
+      "water": {
+        "theme": "Northern lake and loon waters",
+        "rate": 5,
+        "anchor": [
+          10,
+          10
+        ],
+        "shore": [
+          29,
+          40
+        ],
+        "sample": [
+          30,
+          40
+        ],
+        "loop": [
+          31,
+          40
+        ],
+        "table": {
+          "morning": [
+            {
+              "species": "WINKFIN",
+              "level": 32
+            },
+            {
+              "species": "LOOBIT",
+              "level": 33
+            },
+            {
+              "species": "PIKELING",
+              "level": 34
+            }
+          ],
+          "day": [
+            {
+              "species": "WINKFIN",
+              "level": 32
+            },
+            {
+              "species": "LOOBIT",
+              "level": 33
+            },
+            {
+              "species": "PIKELING",
+              "level": 34
+            }
+          ],
+          "night": [
+            {
+              "species": "KEYPOUT",
+              "level": 32
+            },
+            {
+              "species": "WINKFIN",
+              "level": 33
+            },
+            {
+              "species": "PIKELING",
+              "level": 34
+            }
+          ]
+        }
+      }
+    },
+    {
+      "map": "MnBoundaryIntake",
+      "water": {
+        "theme": "Cold intake channel",
+        "rate": 5,
+        "anchor": [
+          5,
+          18
+        ],
+        "shore": [
+          19,
+          13
+        ],
+        "sample": [
+          20,
+          13
+        ],
+        "loop": [
+          21,
+          13
+        ],
+        "table": {
+          "morning": [
+            {
+              "species": "SCUTLET",
+              "level": 34
+            },
+            {
+              "species": "KEYPOUT",
+              "level": 35
+            },
+            {
+              "species": "CLINKLAW",
+              "level": 36
+            }
+          ],
+          "day": [
+            {
+              "species": "SCUTLET",
+              "level": 34
+            },
+            {
+              "species": "KEYPOUT",
+              "level": 35
+            },
+            {
+              "species": "CLINKLAW",
+              "level": 36
+            }
+          ],
+          "night": [
+            {
+              "species": "KEYPOUT",
+              "level": 34
+            },
+            {
+              "species": "SCUTLET",
+              "level": 35
+            },
+            {
+              "species": "CLINKLAW",
+              "level": 36
+            }
+          ]
+        }
+      }
+    },
+    {
+      "map": "MnBoundaryWaters",
+      "water": {
+        "theme": "Northern portage lakes",
+        "rate": 5,
+        "anchor": [
+          43,
+          20
+        ],
+        "shore": [
+          13,
+          14
+        ],
+        "sample": [
+          13,
+          13
+        ],
+        "loop": [
+          14,
+          13
+        ],
+        "table": {
+          "morning": [
+            {
+              "species": "PIKELING",
+              "level": 43
+            },
+            {
+              "species": "LOOBIT",
+              "level": 44
+            },
+            {
+              "species": "KEYPOUT",
+              "level": 45
+            }
+          ],
+          "day": [
+            {
+              "species": "PIKELING",
+              "level": 43
+            },
+            {
+              "species": "LOOBIT",
+              "level": 44
+            },
+            {
+              "species": "KEYPOUT",
+              "level": 45
+            }
+          ],
+          "night": [
+            {
+              "species": "KEYPOUT",
+              "level": 43
+            },
+            {
+              "species": "PIKELING",
+              "level": 44
+            },
+            {
+              "species": "SCUTLET",
+              "level": 45
+            }
+          ]
+        }
+      }
+    },
+    {
+      "map": "MnBrainerd",
+      "water": {
+        "theme": "Lake-country river junction",
+        "rate": 5,
+        "anchor": [
+          9,
+          22
+        ],
+        "shore": [
+          40,
+          18
+        ],
+        "sample": [
+          40,
+          17
+        ],
+        "loop": [
+          41,
+          17
+        ],
+        "table": {
+          "morning": [
+            {
+              "species": "CLINKLAW",
+              "level": 25
+            },
+            {
+              "species": "JIGLET",
+              "level": 26
+            },
+            {
+              "species": "RIVVIT",
+              "level": 27
+            }
+          ],
+          "day": [
+            {
+              "species": "CLINKLAW",
+              "level": 25
+            },
+            {
+              "species": "JIGLET",
+              "level": 26
+            },
+            {
+              "species": "RIVVIT",
+              "level": 27
+            }
+          ],
+          "night": [
+            {
+              "species": "KEYPOUT",
+              "level": 25
+            },
+            {
+              "species": "CLINKLAW",
+              "level": 26
+            },
+            {
+              "species": "JIGLET",
+              "level": 27
+            }
+          ]
+        }
+      }
+    },
+    {
+      "map": "MnDetroitLakes",
+      "water": {
+        "theme": "Western lake shallows",
+        "rate": 5,
+        "anchor": [
+          11,
+          10
+        ],
+        "shore": [
+          11,
+          21
+        ],
+        "sample": [
+          11,
+          22
+        ],
+        "loop": [
+          11,
+          23
+        ],
+        "table": {
+          "morning": [
+            {
+              "species": "WINKFIN",
+              "level": 29
+            },
+            {
+              "species": "JIGLET",
+              "level": 30
+            },
+            {
+              "species": "TICKLET",
+              "level": 31
+            }
+          ],
+          "day": [
+            {
+              "species": "WINKFIN",
+              "level": 29
+            },
+            {
+              "species": "JIGLET",
+              "level": 30
+            },
+            {
+              "species": "TICKLET",
+              "level": 31
+            }
+          ],
+          "night": [
+            {
+              "species": "KEYPOUT",
+              "level": 29
+            },
+            {
+              "species": "WINKFIN",
+              "level": 30
+            },
+            {
+              "species": "LEECHIMP",
+              "level": 31
+            }
+          ]
+        }
+      }
+    },
+    {
+      "map": "MnDriftlessLampGallery",
+      "walking": {
+        "theme": "Dark lower limestone gallery",
+        "rate": 5,
+        "anchor": [
+          19,
+          17
+        ],
+        "sample": [
+          19,
+          16
+        ],
+        "loop": [
+          19,
+          15
+        ],
+        "table": {
+          "morning": [
+            {
+              "species": "DRIPTIP",
+              "level": 5
+            },
+            {
+              "species": "NIBBIN",
+              "level": 5
+            },
+            {
+              "species": "DRIPTIP",
+              "level": 6
+            },
+            {
+              "species": "HUSHISS",
+              "level": 6
+            },
+            {
+              "species": "TESSLARV",
+              "level": 6
+            },
+            {
+              "species": "DRIPTIP",
+              "level": 7
+            },
+            {
+              "species": "HUSHISS",
+              "level": 7
+            }
+          ],
+          "day": [
+            {
+              "species": "DRIPTIP",
+              "level": 5
+            },
+            {
+              "species": "NIBBIN",
+              "level": 5
+            },
+            {
+              "species": "DRIPTIP",
+              "level": 6
+            },
+            {
+              "species": "HUSHISS",
+              "level": 6
+            },
+            {
+              "species": "TESSLARV",
+              "level": 6
+            },
+            {
+              "species": "DRIPTIP",
+              "level": 7
+            },
+            {
+              "species": "HUSHISS",
+              "level": 7
+            }
+          ],
+          "night": [
+            {
+              "species": "NIBBIN",
+              "level": 5
+            },
+            {
+              "species": "NIBBIN",
+              "level": 5
+            },
+            {
+              "species": "DRIPTIP",
+              "level": 6
+            },
+            {
+              "species": "HUSHISS",
+              "level": 6
+            },
+            {
+              "species": "TESSLARV",
+              "level": 6
+            },
+            {
+              "species": "DRIPTIP",
+              "level": 7
+            },
+            {
+              "species": "HUSHISS",
+              "level": 7
+            }
+          ]
+        }
+      }
+    },
+    {
+      "map": "MnDuluth",
+      "water": {
+        "theme": "Lake Superior harbor and instrumented nearshore",
+        "rate": 5,
+        "anchor": [
+          41,
+          32
+        ],
+        "shore": [
+          60,
+          57
+        ],
+        "sample": [
+          60,
+          58
+        ],
+        "loop": [
+          61,
+          58
+        ],
+        "table": {
+          "morning": [
+            {
+              "species": "SCUTLET",
+              "level": 39
+            },
+            {
+              "species": "BOBCAST",
+              "level": 40
+            },
+            {
+              "species": "CLINKLAW",
+              "level": 41
+            }
+          ],
+          "day": [
+            {
+              "species": "SCUTLET",
+              "level": 39
+            },
+            {
+              "species": "BOBCAST",
+              "level": 40
+            },
+            {
+              "species": "CLINKLAW",
+              "level": 41
+            }
+          ],
+          "night": [
+            {
+              "species": "KEYPOUT",
+              "level": 39
+            },
+            {
+              "species": "SCUTLET",
+              "level": 40
+            },
+            {
+              "species": "BOBCAST",
+              "level": 41
+            }
+          ]
+        }
+      }
+    },
+    {
+      "map": "MnGrandRapids",
+      "water": {
+        "theme": "Forested Mississippi headwaters",
+        "rate": 5,
+        "anchor": [
+          9,
+          12
+        ],
+        "shore": [
+          24,
+          33
+        ],
+        "sample": [
+          24,
+          34
+        ],
+        "loop": [
+          24,
+          35
+        ],
+        "table": {
+          "morning": [
+            {
+              "species": "GILLPUP",
+              "level": 32
+            },
+            {
+              "species": "RIVVIT",
+              "level": 33
+            },
+            {
+              "species": "CLINKLAW",
+              "level": 34
+            }
+          ],
+          "day": [
+            {
+              "species": "GILLPUP",
+              "level": 32
+            },
+            {
+              "species": "RIVVIT",
+              "level": 33
+            },
+            {
+              "species": "CLINKLAW",
+              "level": 34
+            }
+          ],
+          "night": [
+            {
+              "species": "KEYPOUT",
+              "level": 32
+            },
+            {
+              "species": "GILLPUP",
+              "level": 33
+            },
+            {
+              "species": "RIVVIT",
+              "level": 34
+            }
+          ]
+        }
+      }
+    },
+    {
+      "map": "MnIronDrillApproach",
+      "walking": {
+        "theme": "Drill approach and loose mineral spoil",
+        "rate": 10,
+        "anchor": [
+          7,
+          21
+        ],
+        "sample": [
+          7,
+          20
+        ],
+        "loop": [
+          6,
+          20
+        ],
+        "table": {
+          "morning": [
+            {
+              "species": "AGATOT",
+              "level": 34
+            },
+            {
+              "species": "CARTICK",
+              "level": 35
+            },
+            {
+              "species": "TACONIB",
+              "level": 35
+            },
+            {
+              "species": "PELLETOR",
+              "level": 36
+            },
+            {
+              "species": "HELIKNOCK",
+              "level": 36
+            },
+            {
+              "species": "BANDRAKE",
+              "level": 37
+            },
+            {
+              "species": "HAULGEIST",
+              "level": 37
+            }
+          ],
+          "day": [
+            {
+              "species": "AGATOT",
+              "level": 34
+            },
+            {
+              "species": "CARTICK",
+              "level": 35
+            },
+            {
+              "species": "TACONIB",
+              "level": 35
+            },
+            {
+              "species": "PELLETOR",
+              "level": 36
+            },
+            {
+              "species": "HELIKNOCK",
+              "level": 36
+            },
+            {
+              "species": "BANDRAKE",
+              "level": 37
+            },
+            {
+              "species": "HAULGEIST",
+              "level": 37
+            }
+          ],
+          "night": [
+            {
+              "species": "AGATOT",
+              "level": 34
+            },
+            {
+              "species": "CARTICK",
+              "level": 35
+            },
+            {
+              "species": "TACONIB",
+              "level": 35
+            },
+            {
+              "species": "PELLETOR",
+              "level": 36
+            },
+            {
+              "species": "HELIKNOCK",
+              "level": 36
+            },
+            {
+              "species": "BANDRAKE",
+              "level": 37
+            },
+            {
+              "species": "HAULGEIST",
+              "level": 37
+            }
+          ]
+        }
+      }
+    },
+    {
+      "map": "MnIronSump",
+      "water": {
+        "theme": "Cold mine sump pool",
+        "rate": 5,
+        "anchor": [
+          5,
+          18
+        ],
+        "shore": [
+          5,
+          12
+        ],
+        "sample": [
+          6,
+          12
+        ],
+        "loop": [
+          7,
+          12
+        ],
+        "table": {
+          "morning": [
+            {
+              "species": "GILLPUP",
+              "level": 34
+            },
+            {
+              "species": "KEYPOUT",
+              "level": 35
+            },
+            {
+              "species": "SCUTLET",
+              "level": 36
+            }
+          ],
+          "day": [
+            {
+              "species": "GILLPUP",
+              "level": 34
+            },
+            {
+              "species": "KEYPOUT",
+              "level": 35
+            },
+            {
+              "species": "SCUTLET",
+              "level": 36
+            }
+          ],
+          "night": [
+            {
+              "species": "KEYPOUT",
+              "level": 34
+            },
+            {
+              "species": "GILLPUP",
+              "level": 35
+            },
+            {
+              "species": "SCUTLET",
+              "level": 36
+            }
+          ]
+        }
+      }
+    },
+    {
+      "map": "MnLeechLake",
+      "water": {
+        "theme": "Leech Lake weed beds and deep channels",
+        "rate": 5,
+        "anchor": [
+          11,
+          14
+        ],
+        "shore": [
+          35,
+          18
+        ],
+        "sample": [
+          36,
+          18
+        ],
+        "loop": [
+          37,
+          18
+        ],
+        "table": {
+          "morning": [
+            {
+              "species": "WINKFIN",
+              "level": 29
+            },
+            {
+              "species": "PIKELING",
+              "level": 30
+            },
+            {
+              "species": "KEYPOUT",
+              "level": 31
+            }
+          ],
+          "day": [
+            {
+              "species": "WINKFIN",
+              "level": 29
+            },
+            {
+              "species": "PIKELING",
+              "level": 30
+            },
+            {
+              "species": "KEYPOUT",
+              "level": 31
+            }
+          ],
+          "night": [
+            {
+              "species": "KEYPOUT",
+              "level": 29
+            },
+            {
+              "species": "WINKFIN",
+              "level": 30
+            },
+            {
+              "species": "PIKELING",
+              "level": 31
+            }
+          ]
+        },
+        "replace_zero_rate_fallback": true
+      }
+    },
+    {
+      "map": "MnMinneapolis",
+      "water": {
+        "theme": "City lakes and wooded riverbanks",
+        "rate": 5,
+        "anchor": [
+          63,
+          26
+        ],
+        "shore": [
+          38,
+          40
+        ],
+        "sample": [
+          37,
+          40
+        ],
+        "loop": [
+          37,
+          41
+        ],
+        "table": {
+          "morning": [
+            {
+              "species": "RIVVIT",
+              "level": 18
+            },
+            {
+              "species": "DRIFTILE",
+              "level": 19
+            },
+            {
+              "species": "LOOBIT",
+              "level": 20
+            }
+          ],
+          "day": [
+            {
+              "species": "RIVVIT",
+              "level": 18
+            },
+            {
+              "species": "DRIFTILE",
+              "level": 19
+            },
+            {
+              "species": "LOOBIT",
+              "level": 20
+            }
+          ],
+          "night": [
+            {
+              "species": "GILLPUP",
+              "level": 18
+            },
+            {
+              "species": "DRIFTILE",
+              "level": 19
+            },
+            {
+              "species": "RIVVIT",
+              "level": 20
+            }
+          ]
+        }
+      }
+    },
+    {
+      "map": "MnMoorhead",
+      "water": {
+        "theme": "Red River levee access",
+        "rate": 5,
+        "anchor": [
+          17,
+          8
+        ],
+        "shore": [
+          10,
+          12
+        ],
+        "sample": [
+          9,
+          12
+        ],
+        "loop": [
+          8,
+          12
+        ],
+        "table": {
+          "morning": [
+            {
+              "species": "SCUTLET",
+              "level": 29
+            },
+            {
+              "species": "RIVVIT",
+              "level": 30
+            },
+            {
+              "species": "TICKLET",
+              "level": 31
+            }
+          ],
+          "day": [
+            {
+              "species": "SCUTLET",
+              "level": 29
+            },
+            {
+              "species": "RIVVIT",
+              "level": 30
+            },
+            {
+              "species": "TICKLET",
+              "level": 31
+            }
+          ],
+          "night": [
+            {
+              "species": "SCUTLET",
+              "level": 29
+            },
+            {
+              "species": "KEYPOUT",
+              "level": 30
+            },
+            {
+              "species": "RIVVIT",
+              "level": 31
+            }
+          ]
+        }
+      }
+    },
+    {
+      "map": "MnR01Cave1F",
+      "walking": {
+        "theme": "Limestone hollows and bluff-edge shelter",
+        "rate": 5,
+        "anchor": [
+          9,
+          11
+        ],
+        "sample": [
+          9,
+          10
+        ],
+        "loop": [
+          9,
+          9
+        ],
+        "table": {
+          "morning": [
+            {
+              "species": "DRIPTIP",
+              "level": 3
+            },
+            {
+              "species": "NIBBIN",
+              "level": 3
+            },
+            {
+              "species": "DRIPTIP",
+              "level": 4
+            },
+            {
+              "species": "HUSHISS",
+              "level": 4
+            },
+            {
+              "species": "NIBBIN",
+              "level": 4
+            },
+            {
+              "species": "TESSLARV",
+              "level": 4
+            },
+            {
+              "species": "DRIPTIP",
+              "level": 5
+            }
+          ],
+          "day": [
+            {
+              "species": "DRIPTIP",
+              "level": 3
+            },
+            {
+              "species": "NIBBIN",
+              "level": 3
+            },
+            {
+              "species": "DRIPTIP",
+              "level": 4
+            },
+            {
+              "species": "HUSHISS",
+              "level": 4
+            },
+            {
+              "species": "NIBBIN",
+              "level": 4
+            },
+            {
+              "species": "TESSLARV",
+              "level": 4
+            },
+            {
+              "species": "DRIPTIP",
+              "level": 5
+            }
+          ],
+          "night": [
+            {
+              "species": "NIBBIN",
+              "level": 3
+            },
+            {
+              "species": "NIBBIN",
+              "level": 3
+            },
+            {
+              "species": "DRIPTIP",
+              "level": 4
+            },
+            {
+              "species": "HUSHISS",
+              "level": 4
+            },
+            {
+              "species": "NIBBIN",
+              "level": 4
+            },
+            {
+              "species": "TESSLARV",
+              "level": 4
+            },
+            {
+              "species": "DRIPTIP",
+              "level": 5
+            }
+          ]
+        }
+      }
+    },
+    {
+      "map": "MnR03Cave1F",
+      "water": {
+        "theme": "Strength-gated limestone seep",
+        "rate": 5,
+        "anchor": [
+          21,
+          10
+        ],
+        "shore": [
+          21,
+          10
+        ],
+        "sample": [
+          21,
+          9
+        ],
+        "loop": [
+          20,
+          9
+        ],
+        "table": {
+          "morning": [
+            {
+              "species": "GILLPUP",
+              "level": 12
+            },
+            {
+              "species": "RILLBOW",
+              "level": 13
+            },
+            {
+              "species": "GILLPUP",
+              "level": 14
+            }
+          ],
+          "day": [
+            {
+              "species": "GILLPUP",
+              "level": 12
+            },
+            {
+              "species": "RILLBOW",
+              "level": 13
+            },
+            {
+              "species": "GILLPUP",
+              "level": 14
+            }
+          ],
+          "night": [
+            {
+              "species": "GILLPUP",
+              "level": 12
+            },
+            {
+              "species": "RILLBOW",
+              "level": 13
+            },
+            {
+              "species": "RILLBOW",
+              "level": 14
+            }
+          ]
+        }
+      },
+      "walking": {
+        "theme": "River-valley karst and dry banks",
+        "rate": 10,
+        "anchor": [
+          7,
+          9
+        ],
+        "sample": [
+          7,
+          8
+        ],
+        "loop": [
+          6,
+          8
+        ],
+        "table": {
+          "morning": [
+            {
+              "species": "DRIPTIP",
+              "level": 12
+            },
+            {
+              "species": "NIBBIN",
+              "level": 12
+            },
+            {
+              "species": "HUSHISS",
+              "level": 13
+            },
+            {
+              "species": "DRIPTIP",
+              "level": 13
+            },
+            {
+              "species": "NIBBIN",
+              "level": 14
+            },
+            {
+              "species": "TESSLARV",
+              "level": 14
+            },
+            {
+              "species": "DRIPTIP",
+              "level": 15
+            }
+          ],
+          "day": [
+            {
+              "species": "DRIPTIP",
+              "level": 12
+            },
+            {
+              "species": "NIBBIN",
+              "level": 12
+            },
+            {
+              "species": "HUSHISS",
+              "level": 13
+            },
+            {
+              "species": "DRIPTIP",
+              "level": 13
+            },
+            {
+              "species": "NIBBIN",
+              "level": 14
+            },
+            {
+              "species": "TESSLARV",
+              "level": 14
+            },
+            {
+              "species": "DRIPTIP",
+              "level": 15
+            }
+          ],
+          "night": [
+            {
+              "species": "DRIPTIP",
+              "level": 12
+            },
+            {
+              "species": "NIBBIN",
+              "level": 12
+            },
+            {
+              "species": "HUSHISS",
+              "level": 13
+            },
+            {
+              "species": "DRIPTIP",
+              "level": 13
+            },
+            {
+              "species": "NIBBIN",
+              "level": 14
+            },
+            {
+              "species": "TESSLARV",
+              "level": 14
+            },
+            {
+              "species": "DRIPTIP",
+              "level": 15
+            }
+          ]
+        }
+      }
+    },
+    {
+      "map": "MnR09Cave1F",
+      "walking": {
+        "theme": "Iron working seams and ore tailings",
+        "rate": 10,
+        "anchor": [
+          13,
+          19
+        ],
+        "sample": [
+          13,
+          18
+        ],
+        "loop": [
+          12,
+          18
+        ],
+        "table": {
+          "morning": [
+            {
+              "species": "CARTICK",
+              "level": 33
+            },
+            {
+              "species": "TACONIB",
+              "level": 33
+            },
+            {
+              "species": "PELLETOR",
+              "level": 34
+            },
+            {
+              "species": "AGATOT",
+              "level": 34
+            },
+            {
+              "species": "PELLETANK",
+              "level": 36
+            },
+            {
+              "species": "BANDRAKE",
+              "level": 35
+            },
+            {
+              "species": "HAULGEIST",
+              "level": 36
+            }
+          ],
+          "day": [
+            {
+              "species": "CARTICK",
+              "level": 33
+            },
+            {
+              "species": "TACONIB",
+              "level": 33
+            },
+            {
+              "species": "PELLETOR",
+              "level": 34
+            },
+            {
+              "species": "AGATOT",
+              "level": 34
+            },
+            {
+              "species": "PELLETANK",
+              "level": 36
+            },
+            {
+              "species": "BANDRAKE",
+              "level": 35
+            },
+            {
+              "species": "HAULGEIST",
+              "level": 36
+            }
+          ],
+          "night": [
+            {
+              "species": "CARTICK",
+              "level": 33
+            },
+            {
+              "species": "TACONIB",
+              "level": 33
+            },
+            {
+              "species": "PELLETOR",
+              "level": 34
+            },
+            {
+              "species": "AGATOT",
+              "level": 34
+            },
+            {
+              "species": "PELLETANK",
+              "level": 36
+            },
+            {
+              "species": "BANDRAKE",
+              "level": 35
+            },
+            {
+              "species": "HAULGEIST",
+              "level": 36
+            }
+          ]
+        }
+      }
+    },
+    {
+      "map": "MnR10Cave1F",
+      "water": {
+        "theme": "Iron Range underground spring",
+        "rate": 5,
+        "anchor": [
+          3,
+          13
+        ],
+        "shore": [
+          33,
+          22
+        ],
+        "sample": [
+          34,
+          22
+        ],
+        "loop": [
+          35,
+          22
+        ],
+        "table": {
+          "morning": [
+            {
+              "species": "KEYPOUT",
+              "level": 35
+            },
+            {
+              "species": "GILLPUP",
+              "level": 36
+            },
+            {
+              "species": "SCUTLET",
+              "level": 37
+            }
+          ],
+          "day": [
+            {
+              "species": "KEYPOUT",
+              "level": 35
+            },
+            {
+              "species": "GILLPUP",
+              "level": 36
+            },
+            {
+              "species": "SCUTLET",
+              "level": 37
+            }
+          ],
+          "night": [
+            {
+              "species": "KEYPOUT",
+              "level": 35
+            },
+            {
+              "species": "SCUTLET",
+              "level": 36
+            },
+            {
+              "species": "GILLPUP",
+              "level": 37
+            }
+          ]
+        }
+      },
+      "walking": {
+        "theme": "Deep mineral gallery and spring",
+        "rate": 10,
+        "anchor": [
+          3,
+          13
+        ],
+        "sample": [
+          3,
+          12
+        ],
+        "loop": [
+          2,
+          12
+        ],
+        "table": {
+          "morning": [
+            {
+              "species": "BANDRAKE",
+              "level": 35
+            },
+            {
+              "species": "CARTICK",
+              "level": 35
+            },
+            {
+              "species": "PELLETANK",
+              "level": 36
+            },
+            {
+              "species": "AGATOT",
+              "level": 36
+            },
+            {
+              "species": "HELIKNOCK",
+              "level": 37
+            },
+            {
+              "species": "HAULGEIST",
+              "level": 38
+            },
+            {
+              "species": "PELLETOR",
+              "level": 38
+            }
+          ],
+          "day": [
+            {
+              "species": "BANDRAKE",
+              "level": 35
+            },
+            {
+              "species": "CARTICK",
+              "level": 35
+            },
+            {
+              "species": "PELLETANK",
+              "level": 36
+            },
+            {
+              "species": "AGATOT",
+              "level": 36
+            },
+            {
+              "species": "HELIKNOCK",
+              "level": 37
+            },
+            {
+              "species": "HAULGEIST",
+              "level": 38
+            },
+            {
+              "species": "PELLETOR",
+              "level": 38
+            }
+          ],
+          "night": [
+            {
+              "species": "BANDRAKE",
+              "level": 35
+            },
+            {
+              "species": "CARTICK",
+              "level": 35
+            },
+            {
+              "species": "PELLETANK",
+              "level": 36
+            },
+            {
+              "species": "AGATOT",
+              "level": 36
+            },
+            {
+              "species": "HELIKNOCK",
+              "level": 37
+            },
+            {
+              "species": "HAULGEIST",
+              "level": 38
+            },
+            {
+              "species": "PELLETOR",
+              "level": 38
+            }
+          ]
+        }
+      }
+    },
+    {
+      "map": "MnR12Cave1F",
+      "water": {
+        "theme": "Cold Gunflint refuge spring",
+        "rate": 5,
+        "anchor": [
+          17,
+          23
+        ],
+        "shore": [
+          21,
+          19
+        ],
+        "sample": [
+          22,
+          19
+        ],
+        "loop": [
+          23,
+          19
+        ],
+        "table": {
+          "morning": [
+            {
+              "species": "RILLBOW",
+              "level": 41
+            },
+            {
+              "species": "GILLPUP",
+              "level": 42
+            },
+            {
+              "species": "KEYPOUT",
+              "level": 43
+            }
+          ],
+          "day": [
+            {
+              "species": "RILLBOW",
+              "level": 41
+            },
+            {
+              "species": "GILLPUP",
+              "level": 42
+            },
+            {
+              "species": "KEYPOUT",
+              "level": 43
+            }
+          ],
+          "night": [
+            {
+              "species": "KEYPOUT",
+              "level": 41
+            },
+            {
+              "species": "RILLBOW",
+              "level": 42
+            },
+            {
+              "species": "GILLPUP",
+              "level": 43
+            }
+          ]
+        }
+      }
+    },
+    {
+      "map": "MnR13Cave1F",
+      "water": {
+        "theme": "Cedar refuge spring",
+        "rate": 5,
+        "anchor": [
+          7,
+          15
+        ],
+        "shore": [
+          7,
+          12
+        ],
+        "sample": [
+          7,
+          11
+        ],
+        "loop": [
+          6,
+          11
+        ],
+        "table": {
+          "morning": [
+            {
+              "species": "RILLBOW",
+              "level": 44
+            },
+            {
+              "species": "GILLPUP",
+              "level": 45
+            },
+            {
+              "species": "TORROUT",
+              "level": 46
+            }
+          ],
+          "day": [
+            {
+              "species": "RILLBOW",
+              "level": 44
+            },
+            {
+              "species": "GILLPUP",
+              "level": 45
+            },
+            {
+              "species": "TORROUT",
+              "level": 46
+            }
+          ],
+          "night": [
+            {
+              "species": "KEYPOUT",
+              "level": 44
+            },
+            {
+              "species": "RILLBOW",
+              "level": 45
+            },
+            {
+              "species": "TORROUT",
+              "level": 46
+            }
+          ]
+        }
+      }
+    },
+    {
+      "map": "MnR17Cave1F",
+      "walking": {
+        "theme": "Border-pines hollow and winter litter",
+        "rate": 5,
+        "anchor": [
+          9,
+          13
+        ],
+        "sample": [
+          9,
+          12
+        ],
+        "loop": [
+          8,
+          12
+        ],
+        "table": {
+          "morning": [
+            {
+              "species": "CROOKIT",
+              "level": 34
+            },
+            {
+              "species": "AGATOT",
+              "level": 34
+            },
+            {
+              "species": "BRISTUB",
+              "level": 35
+            },
+            {
+              "species": "DOZEBEAR",
+              "level": 36
+            },
+            {
+              "species": "MITWIST",
+              "level": 36
+            },
+            {
+              "species": "DRIFTPEG",
+              "level": 37
+            },
+            {
+              "species": "CROOKVEIL",
+              "level": 38
+            }
+          ],
+          "day": [
+            {
+              "species": "CROOKIT",
+              "level": 34
+            },
+            {
+              "species": "AGATOT",
+              "level": 34
+            },
+            {
+              "species": "BRISTUB",
+              "level": 35
+            },
+            {
+              "species": "DOZEBEAR",
+              "level": 36
+            },
+            {
+              "species": "MITWIST",
+              "level": 36
+            },
+            {
+              "species": "DRIFTPEG",
+              "level": 37
+            },
+            {
+              "species": "CROOKVEIL",
+              "level": 38
+            }
+          ],
+          "night": [
+            {
+              "species": "CROOKVEIL",
+              "level": 34
+            },
+            {
+              "species": "AGATOT",
+              "level": 34
+            },
+            {
+              "species": "BRISTUB",
+              "level": 35
+            },
+            {
+              "species": "DOZEBEAR",
+              "level": 36
+            },
+            {
+              "species": "MITWIST",
+              "level": 36
+            },
+            {
+              "species": "DRIFTPEG",
+              "level": 37
+            },
+            {
+              "species": "CROOKVEIL",
+              "level": 38
+            }
+          ]
+        }
+      }
+    },
+    {
+      "map": "MnR20Cave1F",
+      "water": {
+        "theme": "Voyageurs cold cleft pool",
+        "rate": 5,
+        "anchor": [
+          5,
+          21
+        ],
+        "shore": [
+          16,
+          15
+        ],
+        "sample": [
+          16,
+          16
+        ],
+        "loop": [
+          17,
+          16
+        ],
+        "table": {
+          "morning": [
+            {
+              "species": "KEYPOUT",
+              "level": 43
+            },
+            {
+              "species": "SCUTLET",
+              "level": 44
+            },
+            {
+              "species": "LATCHUSK",
+              "level": 45
+            }
+          ],
+          "day": [
+            {
+              "species": "KEYPOUT",
+              "level": 43
+            },
+            {
+              "species": "SCUTLET",
+              "level": 44
+            },
+            {
+              "species": "LATCHUSK",
+              "level": 45
+            }
+          ],
+          "night": [
+            {
+              "species": "LATCHUSK",
+              "level": 43
+            },
+            {
+              "species": "KEYPOUT",
+              "level": 44
+            },
+            {
+              "species": "SCUTLET",
+              "level": 45
+            }
+          ]
+        }
+      },
+      "walking": {
+        "theme": "Voyageurs winter cleft",
+        "rate": 10,
+        "anchor": [
+          5,
+          21
+        ],
+        "sample": [
+          5,
+          20
+        ],
+        "loop": [
+          5,
+          19
+        ],
+        "table": {
+          "morning": [
+            {
+              "species": "BANDRAKE",
+              "level": 43
+            },
+            {
+              "species": "FENCICLE",
+              "level": 43
+            },
+            {
+              "species": "LATCHQUILL",
+              "level": 44
+            },
+            {
+              "species": "CROOKVEIL",
+              "level": 44
+            },
+            {
+              "species": "SHAWLTER",
+              "level": 45
+            },
+            {
+              "species": "DRIFTPEG",
+              "level": 45
+            },
+            {
+              "species": "RIMEGUARD",
+              "level": 46
+            }
+          ],
+          "day": [
+            {
+              "species": "BANDRAKE",
+              "level": 43
+            },
+            {
+              "species": "FENCICLE",
+              "level": 43
+            },
+            {
+              "species": "LATCHQUILL",
+              "level": 44
+            },
+            {
+              "species": "CROOKVEIL",
+              "level": 44
+            },
+            {
+              "species": "SHAWLTER",
+              "level": 45
+            },
+            {
+              "species": "DRIFTPEG",
+              "level": 45
+            },
+            {
+              "species": "RIMEGUARD",
+              "level": 46
+            }
+          ],
+          "night": [
+            {
+              "species": "DENUMBRA",
+              "level": 43
+            },
+            {
+              "species": "FENCICLE",
+              "level": 43
+            },
+            {
+              "species": "LATCHQUILL",
+              "level": 44
+            },
+            {
+              "species": "CROOKVEIL",
+              "level": 44
+            },
+            {
+              "species": "SHAWLTER",
+              "level": 45
+            },
+            {
+              "species": "DRIFTPEG",
+              "level": 45
+            },
+            {
+              "species": "RIMEGUARD",
+              "level": 46
+            }
+          ]
+        }
+      }
+    },
+    {
+      "map": "MnStCloud",
+      "water": {
+        "theme": "Upper Mississippi granite banks",
+        "rate": 5,
+        "anchor": [
+          7,
+          10
+        ],
+        "shore": [
+          4,
+          14
+        ],
+        "sample": [
+          3,
+          14
+        ],
+        "loop": [
+          3,
+          15
+        ],
+        "table": {
+          "morning": [
+            {
+              "species": "GILLPUP",
+              "level": 22
+            },
+            {
+              "species": "RIVVIT",
+              "level": 23
+            },
+            {
+              "species": "CLINKLAW",
+              "level": 24
+            }
+          ],
+          "day": [
+            {
+              "species": "GILLPUP",
+              "level": 22
+            },
+            {
+              "species": "RIVVIT",
+              "level": 23
+            },
+            {
+              "species": "CLINKLAW",
+              "level": 24
+            }
+          ],
+          "night": [
+            {
+              "species": "GILLPUP",
+              "level": 22
+            },
+            {
+              "species": "CLINKLAW",
+              "level": 23
+            },
+            {
+              "species": "RIVVIT",
+              "level": 24
+            }
+          ]
+        }
+      }
+    },
+    {
+      "map": "MnStPaul",
+      "water": {
+        "theme": "Mississippi bends below the falls",
+        "rate": 5,
+        "anchor": [
+          66,
+          48
+        ],
+        "shore": [
+          66,
+          49
+        ],
+        "sample": [
+          66,
+          50
+        ],
+        "loop": [
+          67,
+          50
+        ],
+        "table": {
+          "morning": [
+            {
+              "species": "RIVVIT",
+              "level": 18
+            },
+            {
+              "species": "GILLPUP",
+              "level": 19
+            },
+            {
+              "species": "PINGLET",
+              "level": 20
+            }
+          ],
+          "day": [
+            {
+              "species": "RIVVIT",
+              "level": 18
+            },
+            {
+              "species": "GILLPUP",
+              "level": 19
+            },
+            {
+              "species": "PINGLET",
+              "level": 20
+            }
+          ],
+          "night": [
+            {
+              "species": "GILLPUP",
+              "level": 18
+            },
+            {
+              "species": "RIVVIT",
+              "level": 19
+            },
+            {
+              "species": "PINGLET",
+              "level": 20
+            }
+          ]
+        }
+      }
+    },
+    {
+      "map": "MnVoyageursIce1F",
+      "walking": {
+        "theme": "Ice cavern upper drifts",
+        "rate": 5,
+        "anchor": [
+          5,
+          21
+        ],
+        "sample": [
+          5,
+          20
+        ],
+        "loop": [
+          4,
+          20
+        ],
+        "table": {
+          "morning": [
+            {
+              "species": "DRIFTPEG",
+              "level": 43
+            },
+            {
+              "species": "AGATOT",
+              "level": 43
+            },
+            {
+              "species": "DRIFTPEG",
+              "level": 44
+            },
+            {
+              "species": "MITWIST",
+              "level": 44
+            },
+            {
+              "species": "FENCICLE",
+              "level": 45
+            },
+            {
+              "species": "BANDRAKE",
+              "level": 45
+            },
+            {
+              "species": "DRIFTPEG",
+              "level": 46
+            }
+          ],
+          "day": [
+            {
+              "species": "DRIFTPEG",
+              "level": 43
+            },
+            {
+              "species": "AGATOT",
+              "level": 43
+            },
+            {
+              "species": "DRIFTPEG",
+              "level": 44
+            },
+            {
+              "species": "MITWIST",
+              "level": 44
+            },
+            {
+              "species": "FENCICLE",
+              "level": 45
+            },
+            {
+              "species": "BANDRAKE",
+              "level": 45
+            },
+            {
+              "species": "DRIFTPEG",
+              "level": 46
+            }
+          ],
+          "night": [
+            {
+              "species": "DRIFTPEG",
+              "level": 43
+            },
+            {
+              "species": "AGATOT",
+              "level": 43
+            },
+            {
+              "species": "DRIFTPEG",
+              "level": 44
+            },
+            {
+              "species": "MITWIST",
+              "level": 44
+            },
+            {
+              "species": "FENCICLE",
+              "level": 45
+            },
+            {
+              "species": "BANDRAKE",
+              "level": 45
+            },
+            {
+              "species": "DRIFTPEG",
+              "level": 46
+            }
+          ]
+        }
+      }
+    },
+    {
+      "map": "MnVoyageursIceB1F",
+      "walking": {
+        "theme": "Ice cavern deep frost and ghostly shelter",
+        "rate": 5,
+        "anchor": [
+          5,
+          21
+        ],
+        "sample": [
+          5,
+          20
+        ],
+        "loop": [
+          4,
+          20
+        ],
+        "table": {
+          "morning": [
+            {
+              "species": "FENCICLE",
+              "level": 44
+            },
+            {
+              "species": "BANDRAKE",
+              "level": 44
+            },
+            {
+              "species": "DRIFTPEG",
+              "level": 45
+            },
+            {
+              "species": "MITWIST",
+              "level": 45
+            },
+            {
+              "species": "SHAWLTER",
+              "level": 46
+            },
+            {
+              "species": "FENCICLE",
+              "level": 46
+            },
+            {
+              "species": "RIMEGUARD",
+              "level": 48
+            }
+          ],
+          "day": [
+            {
+              "species": "FENCICLE",
+              "level": 44
+            },
+            {
+              "species": "BANDRAKE",
+              "level": 44
+            },
+            {
+              "species": "DRIFTPEG",
+              "level": 45
+            },
+            {
+              "species": "MITWIST",
+              "level": 45
+            },
+            {
+              "species": "SHAWLTER",
+              "level": 46
+            },
+            {
+              "species": "FENCICLE",
+              "level": 46
+            },
+            {
+              "species": "RIMEGUARD",
+              "level": 48
+            }
+          ],
+          "night": [
+            {
+              "species": "FENCICLE",
+              "level": 44
+            },
+            {
+              "species": "BANDRAKE",
+              "level": 44
+            },
+            {
+              "species": "DRIFTPEG",
+              "level": 45
+            },
+            {
+              "species": "MITWIST",
+              "level": 45
+            },
+            {
+              "species": "SHAWLTER",
+              "level": 46
+            },
+            {
+              "species": "FENCICLE",
+              "level": 46
+            },
+            {
+              "species": "RIMEGUARD",
+              "level": 48
+            }
+          ]
+        }
+      }
+    },
+    {
+      "map": "MnWinona",
+      "water": {
+        "theme": "Mississippi riverfront",
+        "rate": 5,
+        "anchor": [
+          7,
+          8
+        ],
+        "shore": [
+          25,
+          9
+        ],
+        "sample": [
+          26,
+          9
+        ],
+        "loop": [
+          27,
+          9
+        ],
+        "table": {
+          "morning": [
+            {
+              "species": "GILLPUP",
+              "level": 5
+            },
+            {
+              "species": "RIVVIT",
+              "level": 6
+            },
+            {
+              "species": "PINGLET",
+              "level": 7
+            }
+          ],
+          "day": [
+            {
+              "species": "GILLPUP",
+              "level": 5
+            },
+            {
+              "species": "RIVVIT",
+              "level": 6
+            },
+            {
+              "species": "PINGLET",
+              "level": 7
+            }
+          ],
+          "night": [
+            {
+              "species": "GILLPUP",
+              "level": 5
+            },
+            {
+              "species": "PINGLET",
+              "level": 6
+            },
+            {
+              "species": "RIVVIT",
+              "level": 7
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "exceptions": [
+    {
+      "map": "MnR05RockCut",
+      "surface": "walking",
+      "reason": "Harper healer turnout remains a peaceful short passage."
+    },
+    {
+      "map": "MnR12Cave1F",
+      "surface": "walking",
+      "reason": "Otta refuge keeps a peaceful dry floor; its spring has aquatic encounters."
+    },
+    {
+      "map": "MnR13Cave1F",
+      "surface": "walking",
+      "reason": "Harper care terrace stays peaceful; its spring has aquatic encounters."
+    },
+    {
+      "map": "MnBrainerdGym",
+      "surface": "water",
+      "reason": "Gym water is a trainer puzzle, not a wild habitat."
+    },
+    {
+      "map": "MnBoundarySafariC00R00",
+      "surface": "water",
+      "reason": "Separate authored Safari expedition tables, admission and capture rules remain authoritative."
+    },
+    {
+      "map": "MnBoundarySafariC00R01",
+      "surface": "water",
+      "reason": "Separate authored Safari expedition tables, admission and capture rules remain authoritative."
+    },
+    {
+      "map": "MnBoundarySafariC00R02",
+      "surface": "water",
+      "reason": "Separate authored Safari expedition tables, admission and capture rules remain authoritative."
+    },
+    {
+      "map": "MnBoundarySafariC01R00",
+      "surface": "water",
+      "reason": "Separate authored Safari expedition tables, admission and capture rules remain authoritative."
+    },
+    {
+      "map": "MnBoundarySafariC01R01",
+      "surface": "water",
+      "reason": "Separate authored Safari expedition tables, admission and capture rules remain authoritative."
+    },
+    {
+      "map": "MnBoundarySafariC01R02",
+      "surface": "water",
+      "reason": "Separate authored Safari expedition tables, admission and capture rules remain authoritative."
+    }
+  ],
+  "fishing_repairs": [
+    {
+      "map": "MnBoundaryIntake",
+      "before": "FISHGROUP_SHORE",
+      "after": "FISHGROUP_MN_SHORE"
+    },
+    {
+      "map": "MnDetroitLakesCanoeCabin",
+      "before": "FISHGROUP_SHORE",
+      "after": "FISHGROUP_NONE"
+    },
+    {
+      "map": "MnDetroitLakesMart",
+      "before": "FISHGROUP_SHORE",
+      "after": "FISHGROUP_NONE"
+    },
+    {
+      "map": "MnDetroitLakesPokecenter1F",
+      "before": "FISHGROUP_SHORE",
+      "after": "FISHGROUP_NONE"
+    },
+    {
+      "map": "MnDetroitLakesRangerCabin",
+      "before": "FISHGROUP_SHORE",
+      "after": "FISHGROUP_NONE"
+    },
+    {
+      "map": "MnDriftlessFishingGuruHouse",
+      "before": "FISHGROUP_SHORE",
+      "after": "FISHGROUP_NONE"
+    },
+    {
+      "map": "MnFairBarn",
+      "before": "FISHGROUP_SHORE",
+      "after": "FISHGROUP_NONE"
+    },
+    {
+      "map": "MnFairDairy",
+      "before": "FISHGROUP_SHORE",
+      "after": "FISHGROUP_NONE"
+    },
+    {
+      "map": "MnFairGrandstand",
+      "before": "FISHGROUP_SHORE",
+      "after": "FISHGROUP_NONE"
+    },
+    {
+      "map": "MnGrandMaraisShoreGate",
+      "before": "FISHGROUP_SHORE",
+      "after": "FISHGROUP_NONE"
+    },
+    {
+      "map": "MnIceCargoBasement",
+      "before": "FISHGROUP_SHORE",
+      "after": "FISHGROUP_NONE"
+    },
+    {
+      "map": "MnIceMaintenance",
+      "before": "FISHGROUP_SHORE",
+      "after": "FISHGROUP_NONE"
+    },
+    {
+      "map": "MnIceOperations",
+      "before": "FISHGROUP_SHORE",
+      "after": "FISHGROUP_NONE"
+    },
+    {
+      "map": "MnIceRecords",
+      "before": "FISHGROUP_SHORE",
+      "after": "FISHGROUP_NONE"
+    },
+    {
+      "map": "MnIceRelayFloor",
+      "before": "FISHGROUP_SHORE",
+      "after": "FISHGROUP_NONE"
+    },
+    {
+      "map": "MnIceTransfer",
+      "before": "FISHGROUP_SHORE",
+      "after": "FISHGROUP_NONE"
+    },
+    {
+      "map": "MnInternationalFallsMart",
+      "before": "FISHGROUP_SHORE",
+      "after": "FISHGROUP_NONE"
+    },
+    {
+      "map": "MnInternationalFallsPokecenter1F",
+      "before": "FISHGROUP_SHORE",
+      "after": "FISHGROUP_NONE"
+    },
+    {
+      "map": "MnIronDrillApproach",
+      "before": "FISHGROUP_LAKE",
+      "after": "FISHGROUP_NONE"
+    },
+    {
+      "map": "MnMoorheadMart",
+      "before": "FISHGROUP_SHORE",
+      "after": "FISHGROUP_NONE"
+    },
+    {
+      "map": "MnMoorheadPokecenter1F",
+      "before": "FISHGROUP_SHORE",
+      "after": "FISHGROUP_NONE"
+    },
+    {
+      "map": "MnNorthShorePieShop",
+      "before": "FISHGROUP_SHORE",
+      "after": "FISHGROUP_NONE"
+    },
+    {
+      "map": "MnNorthShoreSmokehouse",
+      "before": "FISHGROUP_SHORE",
+      "after": "FISHGROUP_NONE"
+    },
+    {
+      "map": "MnPineCountryFishingGuruHouse",
+      "before": "FISHGROUP_SHORE",
+      "after": "FISHGROUP_NONE"
+    },
+    {
+      "map": "MnR19DetroitGate",
+      "before": "FISHGROUP_SHORE",
+      "after": "FISHGROUP_NONE"
+    },
+    {
+      "map": "MnRiverValleyFishingGuruHouse",
+      "before": "FISHGROUP_SHORE",
+      "after": "FISHGROUP_NONE"
+    }
+  ],
+  "moorhead_access": {
+    "cells": [
+      {
+        "metatile": [
+          0,
+          0
+        ],
+        "before": "35",
+        "after": "30"
+      },
+      {
+        "metatile": [
+          1,
+          0
+        ],
+        "before": "35",
+        "after": "31"
+      },
+      {
+        "metatile": [
+          2,
+          0
+        ],
+        "before": "35",
+        "after": "31"
+      },
+      {
+        "metatile": [
+          3,
+          0
+        ],
+        "before": "35",
+        "after": "31"
+      },
+      {
+        "metatile": [
+          4,
+          0
+        ],
+        "before": "36",
+        "after": "32"
+      },
+      {
+        "metatile": [
+          0,
+          1
+        ],
+        "before": "35",
+        "after": "34"
+      },
+      {
+        "metatile": [
+          0,
+          2
+        ],
+        "before": "35",
+        "after": "34"
+      },
+      {
+        "metatile": [
+          0,
+          3
+        ],
+        "before": "35",
+        "after": "34"
+      },
+      {
+        "metatile": [
+          0,
+          4
+        ],
+        "before": "35",
+        "after": "34"
+      },
+      {
+        "metatile": [
+          0,
+          5
+        ],
+        "before": "35",
+        "after": "34"
+      },
+      {
+        "metatile": [
+          0,
+          6
+        ],
+        "before": "35",
+        "after": "34"
+      },
+      {
+        "metatile": [
+          4,
+          6
+        ],
+        "before": "36",
+        "after": "35"
+      },
+      {
+        "metatile": [
+          5,
+          6
+        ],
+        "before": "44",
+        "after": "06"
+      },
+      {
+        "metatile": [
+          0,
+          7
+        ],
+        "before": "35",
+        "after": "34"
+      },
+      {
+        "metatile": [
+          6,
+          7
+        ],
+        "before": "06",
+        "after": "45"
+      },
+      {
+        "metatile": [
+          0,
+          8
+        ],
+        "before": "35",
+        "after": "34"
+      },
+      {
+        "metatile": [
+          0,
+          9
+        ],
+        "before": "35",
+        "after": "34"
+      },
+      {
+        "metatile": [
+          0,
+          10
+        ],
+        "before": "35",
+        "after": "34"
+      },
+      {
+        "metatile": [
+          0,
+          11
+        ],
+        "before": "35",
+        "after": "38"
+      },
+      {
+        "metatile": [
+          1,
+          11
+        ],
+        "before": "35",
+        "after": "39"
+      },
+      {
+        "metatile": [
+          2,
+          11
+        ],
+        "before": "35",
+        "after": "39"
+      },
+      {
+        "metatile": [
+          3,
+          11
+        ],
+        "before": "35",
+        "after": "39"
+      },
+      {
+        "metatile": [
+          4,
+          11
+        ],
+        "before": "36",
+        "after": "3a"
+      }
+    ],
+    "sign": [
+      12,
+      14
+    ],
+    "sign_approach": [
+      12,
+      15
+    ],
+    "shore": [
+      10,
+      12
+    ],
+    "sample": [
+      9,
+      12
+    ]
+  }
+}

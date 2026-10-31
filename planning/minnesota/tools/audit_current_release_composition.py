@@ -13,7 +13,7 @@ from render_reference import load_pack
 ABSENT = object()
 
 
-def check(current, before, released, result):
+def check(current, before, released, result, identity_limit=16384):
     assert result['format_version'] == current['format_version']
     current_maps = current['data']['maps']
     outside = {name for name, module in current_maps.items()
@@ -50,6 +50,14 @@ def check(current, before, released, result):
             assert actual == donor, 'released content missing: ' + '.'.join(path)
             counts['released_delta_subtrees'] += 1
             return
+        if path[-1:] == ('script_text_commands',) and all(isinstance(value,list) for value in [old,base,donor,actual]):
+            def by_source(rows):
+                grouped = {}
+                for row in rows:
+                    grouped.setdefault(row['source_script'], []).append(row)
+                return grouped
+            visit(*(by_source(rows) for rows in [old,base,donor,actual]), path + ('programs',))
+            return
         assert all(isinstance(value, dict) for value in [old, base, donor, actual]), (
             'unresolved conflicting content: ' + '.'.join(path))
         for key in set(old) | set(base) | set(donor) | set(actual):
@@ -71,7 +79,8 @@ def check(current, before, released, result):
     for marker in released['report']['manifests']:
         if marker not in expected:
             expected.append(marker)
-    expected.append('minnesota-current-release-composition-v1')
+    if 'minnesota-current-release-composition-v1' not in expected:
+        expected.append('minnesota-current-release-composition-v1')
     assert result['report']['manifests'] == expected, 'publication markers'
     assert current['audio_manifest'] == before['audio_manifest'], 'unreviewed current audio delta'
     assert result['audio_manifest'] == released['audio_manifest'], 'released audio metadata'
@@ -84,7 +93,8 @@ def check(current, before, released, result):
     for entries in result['audio_manifest'].values():
         total_audio += len(entries)
     assert result['compiled_audio'].keys() == released['compiled_audio'].keys()
-    assert len(result['identity']['runtime_modpack_id'].encode()) <= 16384, 'hosted identity limit'
+    assert len(result['identity']['runtime_modpack_id'].encode()) <= identity_limit, 'declared hosted identity limit'
+    assert all(len(part.encode()) <= 128 for part in result['identity']['runtime_modpack_id'].split('+')), 'manifest component limit'
     return dict(content_hash=result['identity']['content_hash'],
                 accepted_outdoor_maps_exact=len(outside),
                 original_audio_entries_exact=original_audio,
@@ -94,7 +104,7 @@ def check(current, before, released, result):
                 caution='Provenance audit only; Rust PCM verification and earned gameplay remain required.')
 
 
-def reject_mutations(current, before, released, result):
+def reject_mutations(current, before, released, result, identity_limit=16384):
     rejected = []
     for name in ['accepted-terrain', 'current-native-art', 'released-species', 'original-audio']:
         changed = dict(result)
@@ -125,7 +135,7 @@ def reject_mutations(current, before, released, result):
             entry['byte_len'] += 1
             changed['audio_manifest'][kind][key] = entry
         try:
-            check(current, before, released, changed)
+            check(current, before, released, changed, identity_limit)
         except AssertionError:
             rejected.append(name)
         else:
@@ -137,10 +147,11 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ['current', 'before', 'released', 'result']:
         parser.add_argument(name, type=Path)
+    parser.add_argument("--max-runtime-id-bytes", type=int, choices=[16384,32768], default=16384)
     args = parser.parse_args()
     packs = [load_pack(getattr(args, name)) for name in ['current', 'before', 'released', 'result']]
-    report = check(*packs)
-    report["rejected_negative_cases"] = reject_mutations(*packs)
+    report = check(*packs, identity_limit=args.max_runtime_id_bytes)
+    report["rejected_negative_cases"] = reject_mutations(*packs, identity_limit=args.max_runtime_id_bytes)
     print(json.dumps(report, indent=2))
 
 

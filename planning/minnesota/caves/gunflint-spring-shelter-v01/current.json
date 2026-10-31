@@ -1,0 +1,112 @@
+{
+  "schema_version": 1,
+  "id": "MnR12Cave1F",
+  "tileset": "cave",
+  "dimensions_metatiles": [
+    16,
+    12
+  ],
+  "border_block": 46,
+  "palette_group": "nite",
+  "rows": [
+    "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e",
+    "2e 04 05 05 05 06 2e 2e 2e 2e 04 05 05 05 06 2e",
+    "2e 08 02 02 02 0a 2e 2e 2e 04 02 02 02 02 0a 2e",
+    "2e 08 02 02 02 0a 2e 2e 2e 08 02 02 02 02 0a 2e",
+    "2e 0c 0d 30 0d 0e 2e 2e 2e 0c 0d 0d 0d 36 2e 2e",
+    "2e 2e 04 02 02 10 0d 11 02 02 02 02 02 02 06 2e",
+    "2e 04 02 02 02 0a 2e 08 02 1d 02 02 3e 3d 2e 2e",
+    "2e 08 02 1d 02 0a 2e 08 02 02 02 3e 0f 25 2e 2e",
+    "2e 08 02 02 02 06 05 04 02 02 02 26 0f 25 2e 2e",
+    "2e 0c 0d 0d 0d 02 02 02 02 02 02 32 0f 33 2e 2e",
+    "2e 2e 2e 2e 2e 0c 0d 0d 02 0d 0e 2e 2e 2e 2e 2e",
+    "2e 2e 2e 2e 2e 2e 2e 2e 24 2e 2e 2e 2e 2e 2e 2e"
+  ],
+  "purpose": "A dry Gunflint shelter with two climbable alcoves, a central rock fin, a winding spring bank and a working camp rest.",
+  "review_contract": {
+    "viewpoints": [
+      {
+        "id": "mouth",
+        "tile": [
+          17,
+          22
+        ]
+      },
+      {
+        "id": "west-fin",
+        "tile": [
+          8,
+          14
+        ]
+      },
+      {
+        "id": "otta-rest",
+        "tile": [
+          6,
+          5
+        ]
+      },
+      {
+        "id": "left-stair",
+        "tile": [
+          6,
+          9
+        ]
+      },
+      {
+        "id": "north-crosscut",
+        "tile": [
+          16,
+          10
+        ]
+      },
+      {
+        "id": "cache",
+        "tile": [
+          26,
+          5
+        ]
+      },
+      {
+        "id": "corner-climb",
+        "tile": [
+          26,
+          9
+        ]
+      },
+      {
+        "id": "spring-bank",
+        "tile": [
+          20,
+          16
+        ]
+      }
+    ]
+  },
+  "rest": {
+    "actor": "MN_R12_OTTA",
+    "approach": [
+      6,
+      5
+    ],
+    "facing": "left",
+    "offer_lines": [
+      "Catch your breath?",
+      "I'll watch while",
+      "your team rests."
+    ],
+    "accepted_lines": [
+      "Close your eyes.",
+      "I will watch here."
+    ],
+    "done_lines": [
+      "Your partners look",
+      "ready to travel."
+    ],
+    "declined_lines": [
+      "Keep your footing.",
+      "Mind the spring."
+    ],
+    "effect": "Native special HealParty after the accepted waitbutton; restores HP, PP and status for every carried partner. No payment, story flag, blackout-location change or new audio program."
+  }
+}

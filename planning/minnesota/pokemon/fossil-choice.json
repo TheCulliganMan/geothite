@@ -69,10 +69,10 @@
   "acquisition_proposal": {
     "map_basis": "MN_R01 Driftless Trail between Winona and Rochester",
     "scene": "A researcher beside the existing Driftless bluff grass offers one specimen from a paired slab. The player can decline studying it or decline final confirmation. The choice commits only after actual key-item delivery.",
-    "revival": "Rochester courtyard researcher at (20,10), approached from (20,11), restores the chosen specimen at level10 after the Care Badge. A full party leaves the specimen and restoration claim untouched.",
+    "revival": "Scientist inside Rochester Fossil Lab at (3,4), approached from (3,5), restores the chosen specimen at level10 after the Care Badge. Signed city door at (23,9), beside the clinic. A full party leaves the specimen and restoration claim untouched.",
     "inventory": "Native key items are retained until givepoke succeeds; each living line has its own saved restoration flag. Failed bag grants do not record the initial choice or the later exchange.",
-    "other_choice": "After EVENT_MN_LEAGUE_CHAMPION, return to the Driftless researcher for a free once-only exchange granting the unchosen fossil. A full key pocket retains the exchange claim.",
-    "runtime_status": "Selected fossil_research_revision, content-packs/minnesota-current-fossils-repaired-r15-v01.crystalpack. Three controller cases verify both choices, badge/full-party gates, actual gifts, post-League exchange, level34 evolutions, caught Dex entries and Continue. Earned statewide collection remains unproved."
+    "other_choice": "After either EVENT_MN_TRILUME_RESTORED or EVENT_MN_SIPHLET_RESTORED, the Rochester Fossil Lab assistant offers the other specimen for free in the same room. The original Driftless researcher can also grant it. Both providers share EVENT_MN_FOSSIL_EXCHANGED; failed delivery retains the claim. No Champion gate remains in the early-research successor.",
+    "runtime_status": "Early-research successor: both initial specimen choices, actual Route 1 to lab travel, both level10 restorations, refusal, shared once-only claim and Continue pass native controller checks. The historical level34 evolution regressions remain separate. Resolve world.json for the current selector; earned statewide collection remains unproved."
   },
   "existing_fossil_line": {
     "family_id": "MN_F018",

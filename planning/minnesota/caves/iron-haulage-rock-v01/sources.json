@@ -1,0 +1,574 @@
+{
+  "schema_version": 1,
+  "parent_revision": "route_grass_r06_current_contract_revision",
+  "parent_source_index": "planning/minnesota/revisions/route-grass-v01/current-r06-successor-review-v01/sources-v02.json",
+  "parent_source_index_sha256": "531190b67dddb5d4737c9689b5ef6f8ab35eee8fe8488bb4e2632ca245f29532",
+  "pack": "content-packs/minnesota-iron-haulage-rock-v03.crystalpack",
+  "pack_sha256": "0ec9a1d6fb22f94f2adc62eb09d46f392a9b7debd74230da8c0ce80142a64e82",
+  "current_discovery_sites": {
+    "MnR03Cave1F": {
+      "path": "planning/minnesota/caves/current-r03-gallery-v02/site-v02.json",
+      "sha256": "d5d8b658be751170841e386c2c1353389d4fd45c22e9f665d69a0bac32ba21c1",
+      "canonical_path": "planning/minnesota/pokemon/acquisition-v01/castorock/site.json",
+      "source_kind": "castorock_acquisition_site",
+      "dimensions_metatiles": [
+        14,
+        8
+      ]
+    }
+  },
+  "current_native_house_fronts": {
+    "contract": "planning/minnesota/revisions/minneapolis-normal-houses-v01/recomposition.contract.json",
+    "contract_sha256": "c12cb11a0efcba9e38f2984038f66af78bb66a257e362c46f7e848db241afdea",
+    "plan": "planning/minnesota/revisions/minneapolis-normal-houses-v01/plan.json",
+    "plan_sha256": "0ab5ef95087c2cd635fd560844a105d2d2cc4d9ac3210c845979fb3c21ed16eb",
+    "runbook": "planning/minnesota/revisions/minneapolis-normal-houses-v01/README.md",
+    "verification": "planning/minnesota/renders/minneapolis-house-normal-v264/whole-root-preservation-v280.json"
+  },
+  "current_minneapolis_mill_arts_streets": {
+    "plan": "planning/minnesota/revisions/minneapolis-mill-arts-v02/plan.json",
+    "plan_sha256": "1385e4cdd3fcc8e05166f9357c0b951b288776d066f542376d3bd861ccdd3b1a",
+    "contract": "planning/minnesota/revisions/minneapolis-mill-arts-v02/recomposition.contract.json",
+    "contract_sha256": "481a854a3db89ef9864deae792d875221c1f20e23814adac982683f52b0bf2c3",
+    "runbook": "planning/minnesota/revisions/minneapolis-mill-arts-v02/README.md",
+    "verification": "planning/minnesota/renders/minneapolis-mill-arts-v289/accepted-v305.json"
+  },
+  "current_city_cyclist_field_art": [
+    {
+      "native_source": {
+        "path": "planning/minnesota/npcs/city-cyclists-v01/01-commuter/native-pixels-v2.json",
+        "sha256": "1de90cf584182fe22a5f92fe769227260e14f4e5c9f2749415d2b9b1b09204a5"
+      },
+      "field_binding": {
+        "path": "planning/minnesota/npcs/city-cyclists-v01/01-commuter/binding-v1.json",
+        "sha256": "382212e01e0e5ef41bd1ab69eb22d52b3759fc5477e92e0e23cb37b378565a4d"
+      }
+    },
+    {
+      "native_source": {
+        "path": "planning/minnesota/npcs/city-cyclists-v01/02-city-rider/native-pixels-v1.json",
+        "sha256": "5d68119af0192a62e0840135322c424cc45856f332db817ecd80137435b3ca2a"
+      },
+      "field_binding": {
+        "path": "planning/minnesota/npcs/city-cyclists-v01/02-city-rider/binding-v1.json",
+        "sha256": "38fd76f9dffa5901dd2abc9e1867122541dbdf17f98501782d770c6a9d5d6c5a"
+      }
+    }
+  ],
+  "current_layouts": {
+    "MnDuluth": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-duluth-mart-v01/after.layout.json",
+      "sha256": "f4cf90c56079ec28859064079542a6dfdc2a1f83598fa4b8fa13aa3dd58f6db0"
+    },
+    "MN_R10": {
+      "path": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R10.after.layout.json",
+      "sha256": "24bb1efea3a5f28e9cbccfec8f75960a3a7536dd351c3fa3481300764c257a93"
+    },
+    "MN_R12": {
+      "path": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R12.after.layout.json",
+      "sha256": "51df4d5ff1a923c79c99f089eea790b1f71210e5118520a192dc2b85c694f163"
+    },
+    "MN_R15": {
+      "path": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R15.after.layout.json",
+      "sha256": "110312f7353b0b3e32f2d6bd523bad4da4f9f9c0b487732c8f5cc6f7c15c44bb"
+    },
+    "MN_R16": {
+      "path": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R16.after.layout.json",
+      "sha256": "14170b8d63a3209b0c72f1aadbb94fd515bc105827d7b1ff8485cfa0e9f26d28"
+    },
+    "MN_R17": {
+      "path": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R17.after.layout.json",
+      "sha256": "8b82a99c35d311569bb04deec5a542129868403ac91a3b724cf0ec0617cbc532"
+    },
+    "MnStPaul": {
+      "path": "planning/minnesota/revisions/st-paul-southbank-v01/after.layout.json",
+      "sha256": "a2208d44eff5fb3d49703904cacdf2bf83f3912e1a50585ca887308e66da0a38"
+    },
+    "MnMankato": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-mankato-town-v01/after-bank-composed.layout.v02.json",
+      "sha256": "df65e676b2e3f8b18a5ac291b5dde0b2f265c1630a744f6e9d6c36b17da47bf5"
+    },
+    "MnWinona": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-winona-town-v01/after-composed.layout.v01.json",
+      "sha256": "f34aa9ebe4358534542bbc13ff758f5626c302e780c8ec43c50692637f658afd"
+    },
+    "MnBemidji": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-bemidji-plateau-stairs-v01/after.layout.json",
+      "sha256": "1d4366cd015124784f505c76ee7329f7e8efdd4acc0bfc8e81a1df56b960959d"
+    },
+    "MnMinneapolis": {
+      "path": "planning/minnesota/revisions/minneapolis-mill-arts-v02/after.layout.json",
+      "sha256": "3cb9c8e2b23cc51f9f5ba3fa7fadc6fec32de869344e699523c9e4772cc18d85"
+    },
+    "MnStCloud": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-st-cloud-fronts-v01/after.layout.json",
+      "sha256": "11da4c6d1d49aef07a7e3fefd0d6332916af4fd0b85682ecaacdd20c9bc252ff"
+    },
+    "MN_R14": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r14-closed-bank-v01/after.layout.json",
+      "sha256": "0ba5f853f8457b8cfdd663870818eb3a6ca50545dbbe6447e6d78457a9fc3229"
+    },
+    "MN_BOUNDARY_WATERS_SAFARI": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-boundary-safari-successor-v01/current-native-v02.layout.json",
+      "sha256": "e9de8401952ff31eed86e6c361cc37fcbcbcb07086bc1d89c384f4f1f48ad914"
+    },
+    "MnBrainerd": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-brainerd-successor-v01/roof-after.layout.json",
+      "sha256": "83ac64424c38c6465b39870947cba6745f732330a5d19fa1ed41c621600f567b"
+    },
+    "MN_R01": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r01-successor-review-v01/current-native-v02.layout.json",
+      "sha256": "113541d12824d9950114ab219b4ea2776e17118ac1585c10dd68f7783423e7f6"
+    },
+    "MN_R03": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r03-successor-review-v01/current-native-chunks-v01.json",
+      "sha256": "188e50dd366e013e0aeaa7ace104f3157a442fb23345a256cfaf7f403475da9e",
+      "source_kind": "installed_native_chunk_layout_bundle"
+    },
+    "MN_R05": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r05-successor-review-v01/current-native-chunks-v03.json",
+      "sha256": "c81e429b8706850ffba76f564f40493b814b37c37ea52de222e22dfe9ced0d27",
+      "source_kind": "installed_native_chunk_layout_bundle"
+    },
+    "MN_R09": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r09-successor-review-v01/current-native-chunks-v01.json",
+      "sha256": "96d1ca03350978b3e2ac392cc72dbf63578400e631a72950d4d22e84a5a5fbba",
+      "source_kind": "installed_native_chunk_layout_bundle"
+    },
+    "MN_R11": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r11-successor-review-v01/current-native-chunks-v01.json",
+      "sha256": "8e517bdbd1579a1f2ea3cbdbd9cbe4e2baa6cf5aeb8935fd5b8e903d458e52cc",
+      "source_kind": "installed_native_chunk_layout_bundle"
+    },
+    "MN_R06": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r06-successor-review-v01/current-native-chunks-v01.json",
+      "sha256": "b82b2b42d752572442b257c6609c94a4f85af9205851ca6d0882d5f8f043a031",
+      "source_kind": "installed_native_chunk_layout_bundle"
+    }
+  },
+  "current_dossiers": {
+    "MN_R10": {
+      "path": "planning/minnesota/caves/r10-exploration-v01/route-dossier.json",
+      "sha256": "eaef7a9ab9eb40348c86862df64b9661bb576f29496c35c9a21d51728afb688c"
+    },
+    "MN_R12": {
+      "path": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R12.dossier.json",
+      "sha256": "e788ce43279078fa2135ab566671fd30c7c59a6b3f402b60ca2a5ba773a91740"
+    },
+    "MN_R15": {
+      "path": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R15.dossier.json",
+      "sha256": "33b2a5e79c867ab186e158f36289aaf35c69898314ed47fdb02afb110797a1fb"
+    },
+    "MN_R16": {
+      "path": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R16.dossier.json",
+      "sha256": "3d428be5a64e7111eb11326b449119c04b9c7cdba4a39d44ba4fdf01d68e3af4"
+    },
+    "MN_R17": {
+      "path": "planning/minnesota/caves/r17-talus-loop-v01/route-dossier.json",
+      "sha256": "b8f12db233c2715973a4a435e79f7587bb59650f57c9dc3c247404642a403bb4"
+    },
+    "MnStPaul": {
+      "path": "planning/minnesota/revisions/st-paul-southbank-v01/town.dossier.json",
+      "sha256": "7f3a04d0d1e0b04c25745c3161a5b01015504472240722bcdb8c43bb0ba5d8a8"
+    },
+    "MnMankato": {
+      "path": "planning/minnesota/towns/MnMankato.json",
+      "sha256": "2d683a2bdeabe5f2a2f9098624d1b645efe375f3535304804b4938c58dec8858"
+    },
+    "MnWinona": {
+      "path": "planning/minnesota/towns/MnWinona.json",
+      "sha256": "d0653dfa2dfcaa9386f800769b8e9188a540f67fe891165f7096cc029fe64002"
+    },
+    "MnBemidji": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-bemidji-plateau-stairs-v01/dossier.after.json",
+      "sha256": "440dafefe90f90a08f40b8631a9c1af0c559ec05db3a6733ae8624051fc30d3d"
+    },
+    "MnMinneapolis": {
+      "path": "planning/minnesota/revisions/minneapolis-citywide-cycling-v01/town.dossier.json",
+      "sha256": "c246bbc765cad6e9ec5769556cdbdd3966ce83aa15640a9d5788a3d0220fd32f"
+    },
+    "MnDuluth": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-duluth-mart-v01/dossier.after.json",
+      "sha256": "7c26daf1be648d7c9aef345923dc538fff39c694bf815241879be9ad0e004adf"
+    },
+    "MnStCloud": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-st-cloud-fronts-v01/dossier.after.json",
+      "sha256": "d30b2663f6761a9c8dfc79405b15a0b8970fcf5f2cbc0146f72fdcf9477a220d"
+    },
+    "MN_R14": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r14-closed-bank-v01/MN_R14.dossier.json",
+      "sha256": "4c299f6748b49325c7ea7537aa60c72887cc02c7a6db0d705974273b2d7afd7a"
+    },
+    "MnBrainerd": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-brainerd-successor-v01/current-dossier-v01.json",
+      "sha256": "639095bb221a4cf5d7594d15a8c1faece25f2a3b1baed7f48be81e5b7f98982c"
+    },
+    "MN_R01": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r01-successor-review-v01/current-exterior.contract-v01.json",
+      "sha256": "2a5f98ee19e188a70178d02d87288ded941f8b71e4d6759e9c208480432e3b38",
+      "source_kind": "installed_route_exterior_review_contract"
+    },
+    "MN_R03": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r03-successor-review-v01/current-exterior.contract-v01.json",
+      "sha256": "f65011d9277af7740130a1307f9e03561017eefb1b3ef31fba5c522263711f7f",
+      "source_kind": "installed_route_exterior_review_contract"
+    },
+    "MN_R20": {
+      "path": "planning/minnesota/caves/r20-winding-cleft-v01/route-dossier.json",
+      "sha256": "bea4012d07cc1b62fcb0745372f1769552bc83f9beb1b147a6fa7ede9c6b48a4"
+    },
+    "MN_R05": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r05-successor-review-v01/current-exterior.contract-v03.json",
+      "sha256": "4b2806a4431adb40f702050f1ea041c3462e935900ce7408e0901b8d0c6b6654",
+      "source_kind": "installed_route_exterior_review_contract"
+    },
+    "MN_R06": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r06-successor-review-v01/current-exterior.contract-v02.json",
+      "sha256": "24eb3aea5ed7064f92f07f380e93f0693ca876deda693285e0c5e306daab8f74",
+      "source_kind": "installed_route_exterior_review_contract"
+    }
+  },
+  "current_caves": {
+    "MnR10Cave1F": {
+      "path": "planning/minnesota/caves/r10-exploration-v01/current.json",
+      "sha256": "21a1860388c15d4439f7006c1c8ef1f67a2ebdae1c6d4c579aaaacdaee5ab075",
+      "contract": "planning/minnesota/caves/r10-exploration-v01/contract.json",
+      "contract_sha256": "25dece8e823260f99f4cb4f5890fde2d596f420cff95e605097ee1c716f44fdd",
+      "trainers": "planning/minnesota/caves/r10-exploration-v01/trainers.json",
+      "trainers_sha256": "c94d0056e43af22d7504553acec6d35b21319d082ea7782b39943884e951ec9e"
+    },
+    "MnIronDrillApproach": {
+      "path": "planning/minnesota/caves/current-iron-approach-v01/after.json",
+      "sha256": "ea941602de3abf1d4a39fd21a57f7535427b54241eda0a8a6daa30dae0a30990",
+      "contract": "planning/minnesota/caves/current-iron-approach-v01/contract.json",
+      "contract_sha256": "3c3b1db2334dab565c55770991fabbdf9212c2f20735e222663b28f923742eeb"
+    },
+    "MnR20Cave1F": {
+      "path": "planning/minnesota/caves/r20-winding-cleft-v01/current.json",
+      "sha256": "f5ddf035c3a5ca2218b8d457fa3f6bff366acb57e4473cdeede4d7cfd6817012",
+      "contract": "planning/minnesota/caves/r20-winding-cleft-v01/contract.json",
+      "contract_sha256": "9916dd43b1aeb7b0fa43aa0c43e70ac5d0c3a085961a7a82578b7181a5d4a17c",
+      "trainers": "planning/minnesota/caves/r20-winding-cleft-v01/trainers.json",
+      "trainers_sha256": "f17c5f0ada909a9250f37c19d0f2101b61f0203a0871651b3ba26d7f9b80eea9"
+    },
+    "MnR17Cave1F": {
+      "path": "planning/minnesota/caves/r17-talus-loop-v01/current.json",
+      "sha256": "aa5bf8d884dde5428e6d0a52a850540d33cd85e7ad09751d96f732cf9f87fb88",
+      "contract": "planning/minnesota/caves/r17-talus-loop-v01/contract.json",
+      "contract_sha256": "54b6b4053e157c9e7eaac4a86330e11e39b71b7d62b63265c799cbbef6316d49"
+    }
+  },
+  "current_minneapolis_citywide_cycling": {
+    "routes": "planning/minnesota/revisions/minneapolis-citywide-cycling-v01/routes.json",
+    "routes_sha256": "908221796555b6a7b5008edcee31a885347492a1f164103df3b072de325d8c05",
+    "plan": "planning/minnesota/revisions/minneapolis-citywide-cycling-v01/plan.json",
+    "plan_sha256": "76177b3151ca61843d91def459310f29b6a8d08d690d84f75acfd5bcd944876c",
+    "runbook": "planning/minnesota/revisions/minneapolis-citywide-cycling-v01/README.md",
+    "verification": "planning/minnesota/renders/minneapolis-cycling-v311/acceptance-v349.json",
+    "whole_city_route_review": "planning/minnesota/renders/minneapolis-cycling-v311/source-v320/whole-city-routes-original.png",
+    "native_review": "planning/minnesota/renders/minneapolis-cycling-v311/native-review-gallery-v347.png",
+    "code_recheck": "planning/minnesota/renders/minneapolis-cycling-v311/code-recheck-v358.json"
+  },
+  "current_iron_crosscut": {
+    "plan": "planning/minnesota/caves/current-iron-approach-v01/plan.json",
+    "plan_sha256": "eb91c7339186889ff0630c02499fdfb9955ec5c55f82ea87a8e436347db8e1d9",
+    "before": "planning/minnesota/caves/current-iron-approach-v01/before.json",
+    "before_sha256": "6d87667e4471c25520e371c9c3f8099804047d362be24d8a232239e12c3c96ad",
+    "after": "planning/minnesota/caves/current-iron-approach-v01/after.json",
+    "after_sha256": "ea941602de3abf1d4a39fd21a57f7535427b54241eda0a8a6daa30dae0a30990",
+    "contract": "planning/minnesota/caves/current-iron-approach-v01/contract.json",
+    "contract_sha256": "3c3b1db2334dab565c55770991fabbdf9212c2f20735e222663b28f923742eeb",
+    "runbook": "planning/minnesota/caves/current-iron-approach-v01/README.md",
+    "verification": "planning/minnesota/renders/iron-approach-v356/whole-root-preservation-v392.json",
+    "native_review": "planning/minnesota/renders/iron-approach-v356/final-native-gpu-v386/MnIronDrillApproach-production-cameras.png",
+    "renderer": "planning/minnesota/tools/review_iron_approach.py"
+  },
+  "current_boundary_safari_grass_review": {
+    "native_layout": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-boundary-safari-successor-v01/current-native-v02.layout.json",
+      "sha256": "e9de8401952ff31eed86e6c361cc37fcbcbcb07086bc1d89c384f4f1f48ad914"
+    },
+    "production_traversal": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-boundary-safari-successor-v01/production-portages-and-stairs-v01.json",
+      "sha256": "7e5a2c381d0188af781c30d4951d02987390a5c6fc04be737bf4073ff00b003f"
+    },
+    "native_visuals": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-boundary-safari-successor-v01/native-visual-acceptance-v01.json",
+      "sha256": "a4f8973aa7b827f66c7fa59f4bdd572fdb2a9010acf58058bdaa26bdd0c69a48"
+    },
+    "current_successor_inheritance": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-boundary-safari-successor-v01/current-successor-inheritance-v02.json",
+      "sha256": "68a9a32600afe7b37d1ad2fb4eef54471b3651297b776f13396ad854dbb86fea"
+    }
+  },
+  "current_brainerd_native_review": {
+    "preservation": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-brainerd-successor-v01/roof-child-preservation-v01.json",
+      "sha256": "1adbe25e55f5bf676f6cf5fbd3a04f05345c0deefa4e8d5f8018f9bd77898bfb"
+    },
+    "visual": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-brainerd-successor-v01/roof-child-visual-acceptance-v01.json",
+      "sha256": "88d193c80e8f31979eb04031de1ab3be1100e4423a2ae19053ff49d8540797ab"
+    },
+    "stairs_production_inputs": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-brainerd-successor-v01/production-stairs-cliff-continue-v01.json",
+      "sha256": "6cca259a42dec4a04e3b0e1b9a2a857aef550bf2ae268ddab7e7b90fa1a1f8a8"
+    }
+  },
+  "current_r01_grass_review": {
+    "guidance_source": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r01-successor-review-v01/guidance-after-v01.json",
+      "sha256": "69b0240fc955c3853b29c114319b90d7bc9296836cadddce6b40edbc5d4713b6"
+    },
+    "production_route": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r01-successor-review-v01/production-current-route-v02.json",
+      "sha256": "65386c26583886c32d06f88aae81aff2ee878ea52b7845542c8a6d7d5ec16f1d"
+    },
+    "actual_child_dialogue": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r01-successor-review-v01/guidance-production-v02.json",
+      "sha256": "e5077697b70c4ffeccf631bccc6d869529409f473f3a6ae50b4f910c301e909f"
+    },
+    "preservation": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r01-successor-review-v01/guidance-child-preservation-v01.json",
+      "sha256": "2a82f602e65e13e58fa6793484fae79770d615370ca3fdde8a40f313f46b9703"
+    },
+    "native_visuals": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r01-successor-review-v01/native-visual-acceptance-v01.json",
+      "sha256": "60f5de85d7572143b7f2b75a299e4a8897a4df18bd44589204ede766f6fdcc1b"
+    }
+  },
+  "current_r10_exploration": {
+    "plan": "planning/minnesota/caves/r10-exploration-v01/plan.json",
+    "plan_sha256": "6511167d9b504e8a783ca8501eccfed94cbf8bcc49cf2b5f30eb1b9706bc7f34",
+    "runbook": "planning/minnesota/caves/r10-exploration-v01/README.md",
+    "source_preview_tool": "planning/minnesota/tools/review_cave_source.py",
+    "verification": "planning/minnesota/renders/r10-exploration-v402/acceptance-v435.json",
+    "interior_reservation": "planning/minnesota/caves/current-reservations-v01/MnR10Cave1F.contract.json",
+    "interior_reservation_sha256": "09c3dc3e0fd977f8f913bb5112dab6abf5416f42d811f638b562f12fc81ff1d5"
+  },
+  "current_r03_grass_review": {
+    "guidance_source": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r03-successor-review-v01/guidance-after-v01.json",
+      "sha256": "0384444c116bc9cf5d460b0e381a95f580bf14508e9594fb04e4d4d9abb2c726"
+    },
+    "production_route": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r03-successor-review-v01/production-current-route-v01.json",
+      "sha256": "91d22a665d231358504d7a7432c129e40c42b3222e143cfe19c89c39eb1c05e0"
+    },
+    "actual_child_dialogue_and_battle": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r03-successor-review-v01/guidance-production-v01.json",
+      "sha256": "d9d974cf552dbf1b79e25a5ea5b7149637a7eadf86a19b0d56ba8f4d050d37e7"
+    },
+    "preservation": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r03-successor-review-v01/guidance-child-preservation-v02.json",
+      "sha256": "db5f2012b196dd81647efe9eae05cfc3f65fc5b9534272c4543cf3fb10359cbf"
+    },
+    "native_visuals": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r03-successor-review-v01/native-visual-acceptance-v01.json",
+      "sha256": "78a894f8588cc05cb48b3a8b09496f4dfa22f82e50a7d53b4a52367037970cd6"
+    },
+    "static_grass_contracts": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r03-successor-review-v01/current-grass-static-v01.json",
+      "sha256": "8604f11f286df9b4ef573974a198325ded7f96bed46d5e0ed2d2dc4474e0336f"
+    },
+    "native_visual_inheritance": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r03-successor-review-v01/native-visual-successor-inheritance-v01.json",
+      "sha256": "1b6bb9a6086ff376ab916886de305cfedc03f4acae8b399a6a3fbec15a4983da"
+    }
+  },
+  "current_r20_winding_cleft": {
+    "plan": "planning/minnesota/caves/r20-winding-cleft-v01/plan.json",
+    "plan_sha256": "8cd7a96f636cb1161eed8b59a64416048695dc1d65dd74b554aff6c2adf88196",
+    "runbook": "planning/minnesota/caves/r20-winding-cleft-v01/README.md",
+    "interior_reservation": "planning/minnesota/caves/r20-winding-cleft-v01/interior-reservation.current.json",
+    "interior_reservation_sha256": "68f9de4c7b50f84bad3312441a735ba969f7839a4b23b3d7e910926c745736a6",
+    "verification": "planning/minnesota/renders/r20-cleft-v437/acceptance-v455.json"
+  },
+  "shared_cave_reservation_reconciliation": {
+    "runbook": "planning/minnesota/caves/current-reservations-v01/README.md",
+    "changed_entry": "MnR10Cave1F",
+    "verification": "planning/minnesota/renders/r20-cleft-v437/reservation-sync-v456.json"
+  },
+  "current_ice_caves": {
+    "MnVoyageursIce1F": {
+      "path": "planning/minnesota/ice-caves/turning-chambers-v01/current.json",
+      "sha256": "a7b1887d5523a2f52a2bdf4278735c3f58fc3646b2e6379672851ea0f072a819",
+      "source_room_id": "MnVoyageursIce1F",
+      "dimensions_metatiles": [
+        14,
+        12
+      ]
+    },
+    "MnVoyageursIceB1F": {
+      "path": "planning/minnesota/ice-caves/turning-chambers-v01/current.json",
+      "sha256": "a7b1887d5523a2f52a2bdf4278735c3f58fc3646b2e6379672851ea0f072a819",
+      "source_room_id": "MnVoyageursIceB1F",
+      "dimensions_metatiles": [
+        16,
+        12
+      ]
+    }
+  },
+  "current_ice_dungeon": {
+    "source": "planning/minnesota/ice-caves/turning-chambers-v01/current.json",
+    "source_sha256": "a7b1887d5523a2f52a2bdf4278735c3f58fc3646b2e6379672851ea0f072a819",
+    "canonical_source": "planning/minnesota/ice-caves/voyageurs-ice.json",
+    "contract": "planning/minnesota/ice-caves/turning-chambers-v01/contract.json",
+    "contract_sha256": "23a806123f81f39a1f86f848dceb70f05362e0064ef03e564bfb1a228cbf87de",
+    "plan": "planning/minnesota/ice-caves/turning-chambers-v01/plan.json",
+    "plan_sha256": "3c09a5417034ebf104bc4b40a87b681d879e2bd4c7977da4185e0e36e2884342",
+    "interior_reservations": "planning/minnesota/ice-caves/turning-chambers-v01/interior-reservations.current.json",
+    "interior_reservations_sha256": "f82368b93abf499d6407cefdbb59089bc5bc701507f37a60d95d340e71af8e9c",
+    "runbook": "planning/minnesota/ice-caves/turning-chambers-v01/README.md",
+    "review_tool": "planning/minnesota/tools/review_ice_turns.py",
+    "verification": "planning/minnesota/renders/ice-turning-v458/acceptance-v471.json"
+  },
+  "current_r17_talus_loop": {
+    "plan": "planning/minnesota/caves/r17-talus-loop-v01/plan.json",
+    "plan_sha256": "1bc8a1610ff392ee30f9deffb3d951efea226e874d6bed5de1e62ab772c6de05",
+    "runbook": "planning/minnesota/caves/r17-talus-loop-v01/README.md",
+    "verification": "planning/minnesota/renders/r17-talus-v473/acceptance-v486.json",
+    "native_review": "planning/minnesota/renders/r17-talus-v473/native-v477/MnR17Cave1F-production-cameras.png",
+    "shared_reservation": "planning/minnesota/interiors.json:MnR17Cave1F"
+  },
+  "current_r05_cache_grass_review": {
+    "source_proof": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r05-successor-review-v01/cache-bank-source-proof-v02.json",
+      "sha256": "20ffc972099e4d1fc2dd035f04fd5d355905a0a9b706ec12df50fcd54c2d20e2"
+    },
+    "production": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r05-successor-review-v01/production-cache-bank-v03.json",
+      "sha256": "11c3554977aed23ac9b7a5964a285373fc2f77405d5390a01baeb8c9f6f7a7b0"
+    },
+    "visuals": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r05-successor-review-v01/native-cache-visual-acceptance-v01.json",
+      "sha256": "c344a953910e57558ae78667f723e37ac3ce30c674b67b5331695a81ee017379"
+    },
+    "current_rebase": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r05-successor-review-v01/current-rebase-inheritance-v03.json",
+      "sha256": "9d68c1d538c2f2886cfb74470ab739d48f3b0e87178a30f305cbe266424e1bde"
+    },
+    "movement_model_followup": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r05-successor-review-v01/native-hop-model-followup-v01.json",
+      "sha256": "bb9ae5dfa18ed27d1e695554473dfb2e79d3214c310c01ee834288f814953f05"
+    }
+  },
+  "current_r09_southwest_grass_review": {
+    "contract": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r09-successor-review-v01/current-southwest-grass.contract-v01.json",
+      "sha256": "4c421b156fdb1ba380125a09b07cc165ed1841290713fad569954345b0914baa"
+    },
+    "source": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r09-successor-review-v01/southwest-source-proof-v01.json",
+      "sha256": "abeab8c8698080b8c2a0817e5d6bd0699a75a8353fd53e3e2b9493efa9fbdf2d"
+    },
+    "preservation": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r09-successor-review-v01/southwest-child-preservation-v01.json",
+      "sha256": "0b3e6df481cdce02d755e1c988eadf2143da76e76240108fe08e0d2fcde13d72"
+    },
+    "cut": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r09-successor-review-v01/cut-native-check-v01.json",
+      "sha256": "bb057ef56f9155caa27c0848ca6d1180957297214054498eb6536f2bbdfef2b1"
+    },
+    "production": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r09-successor-review-v01/southwest-production-v02.json",
+      "sha256": "455792fa11f9e4ceb809dcbddb114596793f4640d26ae83467df498d1b9ea5cd"
+    },
+    "visuals": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r09-successor-review-v01/native-visual-review-v01.json",
+      "sha256": "106524d6555c71978da094e62c0fe2f1707718552d758ad08ece63818908a379"
+    }
+  },
+  "current_r11_upper_grass_review": {
+    "contract": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r11-successor-review-v01/current-upper-grass.contract-v01.json",
+      "sha256": "ef5172019d5c426523f9a6732bc9016af394f27dce627ee21087b1060f81fa1c"
+    },
+    "source": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r11-successor-review-v01/upper-grass-source-proof-v01.json",
+      "sha256": "3e225ca13f33325d51aeb6e8799b087a30a2745ea17d3f0d02488675ced62851"
+    },
+    "preservation": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r11-successor-review-v01/upper-child-preservation-v01.json",
+      "sha256": "7fca81b9b568302cfc9d5267723aaac983f2e805e2afd1202563fe29304b5526"
+    },
+    "checkpoint": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r11-successor-review-v01/native-checkpoint-v02.json",
+      "sha256": "f21ff53dc90d0c1e2cf1bc13a4fb7165264c6883d15b5be9fb9e3abcfb0985c9"
+    },
+    "production": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r11-successor-review-v01/upper-production-v01.json",
+      "sha256": "8cea8ba29fd04a8a6a06895e372c83d089312e78e730e555918535f51b22d974"
+    },
+    "visuals": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r11-successor-review-v01/native-visual-review-v01.json",
+      "sha256": "079c352fd0041eb42d970e7f3c5e979851b341a2b8efef3b21e6778658a354df"
+    }
+  },
+  "current_r06_south_woods_grass_review": {
+    "contract": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r06-successor-review-v01/current-south-woods-grass.contract-v01.json",
+      "sha256": "43a21fb06f0f7bdb46090583defbe8a0aca37904b83b6b102496b7dbde0450cc"
+    },
+    "source": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r06-successor-review-v01/south-woods-grass-source-proof-v01.json",
+      "sha256": "4e0756c81e18324844cd865de3ada949fba6bbc6bd7743d42f272ec503adcca1"
+    },
+    "preservation": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r06-successor-review-v01/south-woods-child-preservation-v01.json",
+      "sha256": "b60440dd5c7acccb0df7ab8d04af14479c10733485baa2803048efd24cd1e9c1"
+    },
+    "checkpoint": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r06-successor-review-v01/native-checkpoint-v02.json",
+      "sha256": "4b5c95ccb1ef0c8350a07bb2fc61147e41aa43027c00638100a3a60e2015c4d2"
+    },
+    "production": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r06-successor-review-v01/south-woods-production-v01.json",
+      "sha256": "6479800e3d13ffca7a6a223f23a645c21eba19cb960069742c95adf5accc2d18"
+    },
+    "visuals": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r06-successor-review-v01/native-visual-review-v01.json",
+      "sha256": "741cd163361add057fa8aa64968860f45fc51dd4aa50394c94a0505b0fa49310"
+    }
+  },
+  "current_r06_exterior_review": {
+    "full_course": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r06-successor-review-v01/full-route-production-v01.json",
+      "sha256": "73c9dce603e41a72529163b6ccc259f70123533a5f981e54ee84197c54e288e4"
+    },
+    "connections": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r06-successor-review-v01/connections-production-v01.json",
+      "sha256": "b35dada82e2bb5c23fb1e60eea078d8d3d085ff19fa6355d86f78767482c379a"
+    },
+    "ledges": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r06-successor-review-v01/ledges-production-v02.json",
+      "sha256": "b335053e7ebe4d0fe50ab3f1abf5747af790a0444cc8c523b462e95bd9e05739"
+    },
+    "terrace": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r06-successor-review-v01/current-terrace-native-v01.json",
+      "sha256": "63efe5dacd0b29faa18ad8fba23590973b2d601458bd2254864e00f4e56dfb5b"
+    },
+    "visuals": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r06-successor-review-v01/native-visual-review-v01.json",
+      "sha256": "741cd163361add057fa8aa64968860f45fc51dd4aa50394c94a0505b0fa49310"
+    }
+  },
+  "current_story_floors": {
+    "MnIronHaulage": {
+      "path": "planning/minnesota/caves/iron-haulage-rock-v01/current.json",
+      "sha256": "0dfb0b0caae841167d56b4ab6df18c3655a016aa2ab2e59d281ae12a4ae17ce0",
+      "source_kind": "native_rock_story_floor",
+      "contract": "planning/minnesota/caves/iron-haulage-rock-v01/contract.json",
+      "contract_sha256": "e7c60f373f141811d18cbf69f2441d52a698644c193d4245fc8c19f3d82e44d4"
+    }
+  },
+  "current_iron_haulage_rock": {
+    "plan": "planning/minnesota/caves/iron-haulage-rock-v01/plan.json",
+    "plan_sha256": "823c791197ad18ad693800f361d8ccb2a30eee1c06d68f1a12a1ba48350be1fd",
+    "runbook": "planning/minnesota/caves/iron-haulage-rock-v01/README.md",
+    "verification": "planning/minnesota/renders/iron-haulage-rock-v490/acceptance-v515.json",
+    "native_review": "planning/minnesota/renders/iron-haulage-rock-v490/native-v501/MnIronHaulage-production-cameras.png",
+    "final_parent_image_equivalence": "planning/minnesota/renders/iron-haulage-rock-v490/native-image-final-parent-proof-v513.json",
+    "shared_reservation": "planning/minnesota/interiors.json:MnIronHaulage"
+  }
+}

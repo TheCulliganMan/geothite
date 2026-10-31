@@ -1,0 +1,131 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-r10-south-woods-grass-v01.crystalpack",
+  "pack_sha256": "15fb2488f94ff981455b3405a8ee841d4336963402f67a66dba51c9c45a8d3ba",
+  "calls": 392,
+  "wild": [
+    {
+      "phase": "grass-and-save",
+      "map": "MnR10C00R00",
+      "position": {
+        "x": 46,
+        "y": 19
+      }
+    },
+    {
+      "phase": "continue-and-repeat",
+      "map": "MnR10C00R00",
+      "position": {
+        "x": 46,
+        "y": 18
+      }
+    },
+    {
+      "phase": "continue-and-repeat",
+      "map": "MnR10C00R00",
+      "position": {
+        "x": 50,
+        "y": 20
+      }
+    },
+    {
+      "phase": "continue-and-repeat",
+      "map": "MnR10C00R00",
+      "position": {
+        "x": 49,
+        "y": 20
+      }
+    }
+  ],
+  "phases": [
+    {
+      "phase": "grass-and-save",
+      "initial": {
+        "badges": 4,
+        "dialogue": false,
+        "facing": "down",
+        "frame": 0,
+        "map": "MnR10C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 0
+        },
+        "position": {
+          "x": 45,
+          "y": 20
+        }
+      },
+      "final": {
+        "badges": 4,
+        "dialogue": false,
+        "facing": "left",
+        "frame": 52,
+        "map": "MnR10C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 1
+        },
+        "position": {
+          "x": 45,
+          "y": 20
+        }
+      },
+      "output_save": ".local/route-grass-review/r10-neck-grass-and-save-v04-output.crystalsave",
+      "source_unchanged": true,
+      "stderr_bytes": 0
+    },
+    {
+      "phase": "continue-and-repeat",
+      "initial": {
+        "badges": 4,
+        "dialogue": false,
+        "facing": "left",
+        "frame": 52,
+        "map": "MnR10C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 1
+        },
+        "position": {
+          "x": 45,
+          "y": 20
+        }
+      },
+      "final": {
+        "badges": 4,
+        "dialogue": false,
+        "facing": "left",
+        "frame": 104,
+        "map": "MnR10C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 4
+        },
+        "position": {
+          "x": 45,
+          "y": 20
+        }
+      },
+      "output_save": ".local/route-grass-review/r10-neck-continue-and-repeat-v04-output.crystalsave",
+      "source_unchanged": true,
+      "stderr_bytes": 0
+    }
+  ],
+  "scope": "Actual reached upper-route resident checkpoint; native walking both ways through new grass, wild RUN, Save/Continue and menus. Explicit initial partner, badge and position QA fixture is not earned regional progress."
+}

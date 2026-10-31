@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-iron-drill-core-v04.crystalpack",
+  "pack_sha256": "4240537c844bf7e305e99c24f2b7054c314b84a03d17037747cb4ceabdbd17fd",
+  "receipt": ".local/route-grass-review/current-r04-recovery-v01-stdio.receipt.json",
+  "receipt_sha256": "45ad7bf65d5059de746c523fadae61d41ebc728715907a0a189aa458d7dc7dad",
+  "source_save_unchanged": true,
+  "calls": 15,
+  "scope": "Production save load, ordinary movement, Start/Pack Items/Balls, return to walking; native journey receipt carries battle/resource/Continue evidence."
+}

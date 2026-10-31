@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-r17-trail-guidance-v02.crystalpack",
+  "pack_sha256": "186c262b18d5174cb7ba9727358d4022bea9fce6d362529405728028ef92c60a",
+  "report": "planning/minnesota/renders/route-grass-v01/current-r19-successor-review-v01/native-v01/capture-progress.json",
+  "report_sha256": "fa343bdb5d8f5c3e6cfe624fc9e2a8e5cce15f349253972659c7fa079d767502",
+  "native_2d_views_inspected": 4,
+  "pixel_mismatches": 0,
+  "findings": "Pine bend and southern neck visibly cross the trail; native dry ledge landing and grassy ordinary return are clear; native stairs join the cliff without ladders. Full route source also inspected.",
+  "regional_link_not_accepted": true
+}

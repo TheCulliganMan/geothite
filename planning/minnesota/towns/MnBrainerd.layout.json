@@ -1303,6 +1303,15 @@
         18
       ],
       "block": "05"
+    },
+    {
+      "name": "Restore native Mart right roof",
+      "kind": "point",
+      "position": [
+        10,
+        9
+      ],
+      "block": "19"
     }
   ]
 }

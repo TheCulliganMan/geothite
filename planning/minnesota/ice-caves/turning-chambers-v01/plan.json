@@ -1,0 +1,692 @@
+{
+  "schema_version": 1,
+  "status": "verified_and_selected_scoped_native_ice_revision",
+  "scope": "Two-floor native Voyageurs ice puzzle terrain; full original programs, actors and paired warp records retained.",
+  "floors": [
+    {
+      "id": "MnVoyageursIce1F",
+      "dimensions_metatiles": [
+        14,
+        12
+      ],
+      "purpose": "Teaching fissure: an attached southern rock shoulder stops the first eastward slide; the northern tooth turns the next slide east. Separate dry stop pockets lead to the Ice Heal and the lower-floor ladder. The ice remains a substantial connected area.",
+      "arrival": [
+        5,
+        19
+      ],
+      "warps": [
+        {
+          "tile": [
+            5,
+            21
+          ],
+          "target": "MnR20C01R00",
+          "target_warp": 4
+        },
+        {
+          "tile": [
+            23,
+            5
+          ],
+          "target": "MnVoyageursIceB1F",
+          "target_warp": 2
+        },
+        {
+          "tile": [
+            5,
+            19
+          ],
+          "target": "MnR20C01R00",
+          "target_warp": 4
+        },
+        {
+          "tile": [
+            23,
+            6
+          ],
+          "target": "MnVoyageursIceB1F",
+          "target_warp": 2
+        }
+      ],
+      "rewards": [
+        {
+          "id": "MnVoyageursIceHeal",
+          "tile": [
+            9,
+            10
+          ],
+          "item": "ICE_HEAL",
+          "quantity": 1,
+          "flag": "EVENT_MN_VOYAGEURS_ICE_HEAL"
+        }
+      ],
+      "native_stopping_graph": {
+        "id": "MnVoyageursIce1F",
+        "ice_quadrants": 144,
+        "stopping_states": 111,
+        "targets": [
+          {
+            "id": "MnVoyageursIceGuide",
+            "approach": [
+              4,
+              16
+            ],
+            "course": [
+              {
+                "button": "left",
+                "stop": [
+                  4,
+                  19
+                ],
+                "steps": 1
+              },
+              {
+                "button": "up",
+                "stop": [
+                  4,
+                  18
+                ],
+                "steps": 1
+              },
+              {
+                "button": "up",
+                "stop": [
+                  4,
+                  17
+                ],
+                "steps": 1
+              },
+              {
+                "button": "up",
+                "stop": [
+                  4,
+                  16
+                ],
+                "steps": 1
+              }
+            ]
+          },
+          {
+            "id": "MnVoyageursIceHeal",
+            "approach": [
+              8,
+              10
+            ],
+            "course": [
+              {
+                "button": "right",
+                "stop": [
+                  6,
+                  19
+                ],
+                "steps": 1
+              },
+              {
+                "button": "up",
+                "stop": [
+                  6,
+                  18
+                ],
+                "steps": 1
+              },
+              {
+                "button": "up",
+                "stop": [
+                  6,
+                  17
+                ],
+                "steps": 1
+              },
+              {
+                "button": "right",
+                "stop": [
+                  7,
+                  17
+                ],
+                "steps": 1
+              },
+              {
+                "button": "up",
+                "stop": [
+                  7,
+                  16
+                ],
+                "steps": 1
+              },
+              {
+                "button": "up",
+                "stop": [
+                  7,
+                  15
+                ],
+                "steps": 1
+              },
+              {
+                "button": "up",
+                "stop": [
+                  7,
+                  14
+                ],
+                "steps": 1
+              },
+              {
+                "button": "up",
+                "stop": [
+                  7,
+                  13
+                ],
+                "steps": 1
+              },
+              {
+                "button": "up",
+                "stop": [
+                  7,
+                  12
+                ],
+                "steps": 1
+              },
+              {
+                "button": "up",
+                "stop": [
+                  7,
+                  11
+                ],
+                "steps": 1
+              },
+              {
+                "button": "right",
+                "stop": [
+                  8,
+                  11
+                ],
+                "steps": 1
+              },
+              {
+                "button": "up",
+                "stop": [
+                  8,
+                  10
+                ],
+                "steps": 1
+              }
+            ]
+          }
+        ],
+        "warps": [
+          {
+            "tile": [
+              5,
+              21
+            ],
+            "course": [
+              {
+                "button": "down",
+                "stop": [
+                  5,
+                  20
+                ],
+                "steps": 1
+              },
+              {
+                "button": "down",
+                "stop": [
+                  5,
+                  21
+                ],
+                "steps": 1
+              }
+            ]
+          },
+          {
+            "tile": [
+              23,
+              5
+            ],
+            "course": [
+              {
+                "button": "right",
+                "stop": [
+                  6,
+                  19
+                ],
+                "steps": 1
+              },
+              {
+                "button": "up",
+                "stop": [
+                  6,
+                  18
+                ],
+                "steps": 1
+              },
+              {
+                "button": "up",
+                "stop": [
+                  6,
+                  17
+                ],
+                "steps": 1
+              },
+              {
+                "button": "right",
+                "stop": [
+                  7,
+                  17
+                ],
+                "steps": 1
+              },
+              {
+                "button": "right",
+                "stop": [
+                  15,
+                  17
+                ],
+                "steps": 8
+              },
+              {
+                "button": "up",
+                "stop": [
+                  15,
+                  10
+                ],
+                "steps": 7
+              },
+              {
+                "button": "right",
+                "stop": [
+                  23,
+                  10
+                ],
+                "steps": 8
+              },
+              {
+                "button": "up",
+                "stop": [
+                  23,
+                  7
+                ],
+                "steps": 3
+              },
+              {
+                "button": "up",
+                "stop": [
+                  23,
+                  6
+                ],
+                "steps": 1
+              },
+              {
+                "button": "up",
+                "stop": [
+                  23,
+                  5
+                ],
+                "steps": 1
+              }
+            ]
+          },
+          {
+            "tile": [
+              5,
+              19
+            ],
+            "course": []
+          },
+          {
+            "tile": [
+              23,
+              6
+            ],
+            "course": [
+              {
+                "button": "right",
+                "stop": [
+                  6,
+                  19
+                ],
+                "steps": 1
+              },
+              {
+                "button": "up",
+                "stop": [
+                  6,
+                  18
+                ],
+                "steps": 1
+              },
+              {
+                "button": "up",
+                "stop": [
+                  6,
+                  17
+                ],
+                "steps": 1
+              },
+              {
+                "button": "right",
+                "stop": [
+                  7,
+                  17
+                ],
+                "steps": 1
+              },
+              {
+                "button": "right",
+                "stop": [
+                  15,
+                  17
+                ],
+                "steps": 8
+              },
+              {
+                "button": "up",
+                "stop": [
+                  15,
+                  10
+                ],
+                "steps": 7
+              },
+              {
+                "button": "right",
+                "stop": [
+                  23,
+                  10
+                ],
+                "steps": 8
+              },
+              {
+                "button": "up",
+                "stop": [
+                  23,
+                  7
+                ],
+                "steps": 3
+              },
+              {
+                "button": "up",
+                "stop": [
+                  23,
+                  6
+                ],
+                "steps": 1
+              }
+            ]
+          }
+        ],
+        "camera_stops": {
+          "sheltered-arrival": true,
+          "first-rock-stop": true,
+          "healing-pocket": true,
+          "north-tooth-turn": true,
+          "lower-ladder": true
+        }
+      }
+    },
+    {
+      "id": "MnVoyageursIceB1F",
+      "dimensions_metatiles": [
+        16,
+        12
+      ],
+      "purpose": "Offset northern and southern glacier tongues divide two substantial ice basins. The first tooth feeds a northern Max Revive branch; the alternating stops form a turning course to the NeverMeltIce shelf. A central cross-slide reaches the sheltered west bank on return.",
+      "arrival": [
+        5,
+        19
+      ],
+      "warps": [
+        {
+          "tile": [
+            5,
+            21
+          ],
+          "target": "MnVoyageursIce1F",
+          "target_warp": 4
+        },
+        {
+          "tile": [
+            5,
+            19
+          ],
+          "target": "MnVoyageursIce1F",
+          "target_warp": 4
+        }
+      ],
+      "rewards": [
+        {
+          "id": "MnVoyageursIceNeverMelt",
+          "tile": [
+            19,
+            3
+          ],
+          "item": "NEVERMELTICE",
+          "quantity": 1,
+          "flag": "EVENT_MN_VOYAGEURS_ICE_NEVERMELT"
+        },
+        {
+          "id": "MnVoyageursIceRevive",
+          "tile": [
+            5,
+            5
+          ],
+          "item": "MAX_REVIVE",
+          "quantity": 1,
+          "flag": "EVENT_MN_VOYAGEURS_ICE_REVIVE"
+        }
+      ],
+      "native_stopping_graph": {
+        "id": "MnVoyageursIceB1F",
+        "ice_quadrants": 224,
+        "stopping_states": 66,
+        "targets": [
+          {
+            "id": "MnVoyageursIceNeverMelt",
+            "approach": [
+              19,
+              4
+            ],
+            "course": [
+              {
+                "button": "right",
+                "stop": [
+                  11,
+                  19
+                ],
+                "steps": 6
+              },
+              {
+                "button": "up",
+                "stop": [
+                  11,
+                  6
+                ],
+                "steps": 13
+              },
+              {
+                "button": "right",
+                "stop": [
+                  13,
+                  6
+                ],
+                "steps": 2
+              },
+              {
+                "button": "down",
+                "stop": [
+                  13,
+                  15
+                ],
+                "steps": 9
+              },
+              {
+                "button": "right",
+                "stop": [
+                  21,
+                  15
+                ],
+                "steps": 8
+              },
+              {
+                "button": "up",
+                "stop": [
+                  21,
+                  6
+                ],
+                "steps": 9
+              },
+              {
+                "button": "left",
+                "stop": [
+                  19,
+                  6
+                ],
+                "steps": 2
+              },
+              {
+                "button": "up",
+                "stop": [
+                  19,
+                  5
+                ],
+                "steps": 1
+              },
+              {
+                "button": "up",
+                "stop": [
+                  19,
+                  4
+                ],
+                "steps": 1
+              }
+            ]
+          },
+          {
+            "id": "MnVoyageursIceRevive",
+            "approach": [
+              6,
+              5
+            ],
+            "course": [
+              {
+                "button": "down",
+                "stop": [
+                  5,
+                  20
+                ],
+                "steps": 1
+              },
+              {
+                "button": "right",
+                "stop": [
+                  6,
+                  20
+                ],
+                "steps": 1
+              },
+              {
+                "button": "up",
+                "stop": [
+                  6,
+                  5
+                ],
+                "steps": 15
+              }
+            ]
+          },
+          {
+            "id": "MN_INTERIOR_VOYAGEURS_SURVEYOR",
+            "approach": [
+              4,
+              20
+            ],
+            "course": [
+              {
+                "button": "left",
+                "stop": [
+                  4,
+                  19
+                ],
+                "steps": 1
+              },
+              {
+                "button": "down",
+                "stop": [
+                  4,
+                  20
+                ],
+                "steps": 1
+              }
+            ]
+          }
+        ],
+        "warps": [
+          {
+            "tile": [
+              5,
+              21
+            ],
+            "course": [
+              {
+                "button": "down",
+                "stop": [
+                  5,
+                  20
+                ],
+                "steps": 1
+              },
+              {
+                "button": "down",
+                "stop": [
+                  5,
+                  21
+                ],
+                "steps": 1
+              }
+            ]
+          },
+          {
+            "tile": [
+              5,
+              19
+            ],
+            "course": []
+          }
+        ],
+        "camera_stops": {
+          "deep-arrival": true,
+          "western-cache-stop": true,
+          "north-shelf": true,
+          "eastern-basin-turn": true
+        }
+      }
+    }
+  ],
+  "preserved_actor_overlay": "planning/minnesota/interior-life/voyageurs-surveyor-v01.json",
+  "publisher_contract": "planning/minnesota/ice-caves/turning-chambers-v01/contract.json",
+  "source_preview_tool": "planning/minnesota/tools/review_ice_turns.py",
+  "warm_render_seconds": 0.107,
+  "whole_render": "planning/minnesota/renders/ice-turning-v458/published-whole-dungeon-2x-v465.png",
+  "verification": {
+    "publication": "planning/minnesota/renders/ice-turning-v458/publication-ready-v462.json",
+    "builder_negative_guards": "planning/minnesota/renders/ice-turning-v458/build-results-v460.json",
+    "native_controller_clippy": "planning/minnesota/renders/ice-turning-v458/native-results-v466.json",
+    "stdio_mcp": "planning/minnesota/renders/ice-turning-v458/production-course-v468/receipt.json",
+    "native_gpu": "planning/minnesota/renders/ice-turning-v458/native-gpu-v464/capture-progress.json",
+    "whole_pack": "planning/minnesota/renders/ice-turning-v458/whole-root-audit-v465.json",
+    "audio": "planning/minnesota/renders/ice-turning-v458/audio-and-pack-v470.log",
+    "owned_format": "planning/minnesota/renders/ice-turning-v458/scoped-rustfmt-v469.log",
+    "workspace_format": "planning/minnesota/renders/ice-turning-v458/workspace-rustfmt-v469.log",
+    "acceptance": "planning/minnesota/renders/ice-turning-v458/acceptance-v471.json"
+  },
+  "limits": [
+    "Explicit local original-partner, eight-badge/lighthouse, Repel and capacity fixtures; no earned regional access, battle-balance or campaign completion claim.",
+    "Partial pickup-state graph validation uses native collision/slide rules and is distinct from production input and image evidence.",
+    "Other caves and the broader map goal remain unfinished.",
+    "Unrelated workspace format differences and inherited LAKE/SHORE references on untouched maps remain outside this revision."
+  ],
+  "selected_revision": "voyageurs_ice_turning_revision",
+  "pack": "content-packs/minnesota-ice-turning-chambers-v01.crystalpack",
+  "pack_sha256": "0f734df8621b02da80cc45cb905de3d793e28b4f987f98d24203232ddb4cd3b4",
+  "content_identity": "e964dc760a49b64510f93d1469169a5d88aa73104d12f026e8dcf4084f73bc8f",
+  "current_source": "planning/minnesota/ice-caves/turning-chambers-v01/current.json",
+  "current_source_sha256": "a7b1887d5523a2f52a2bdf4278735c3f58fc3646b2e6379672851ea0f072a819"
+}

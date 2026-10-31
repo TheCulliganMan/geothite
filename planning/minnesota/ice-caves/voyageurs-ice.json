@@ -44,18 +44,18 @@
         14,
         12
       ],
-      "purpose": "Glacial fissure: sheltered dry arrival and a three-leg teaching slide, with a separate healing-supply pocket.",
+      "purpose": "Teaching fissure: an attached southern rock shoulder stops the first eastward slide; the northern tooth turns the next slide east. Separate dry stop pockets lead to the Ice Heal and the lower-floor ladder. The ice remains a substantial connected area.",
       "rows": [
         "3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b",
         "3b 3b 3b 3b 3b 3b 3b 04 05 05 05 05 06 3b",
         "3b 3b 3b 3b 3b 3b 3b 1f 1f 1f 1f 03 0a 3b",
         "3b 3b 3b 3b 3b 3b 3b 1f 1f 1f 1f 02 0e 3b",
-        "3b 3b 3b 04 05 06 3b 1f 1f 2e 1f 0a 3b 3b",
-        "3b 3b 3b 08 02 0a 3b 1f 1f 1f 1f 0a 3b 3b",
-        "3b 3b 3b 08 1f 1f 1f 1f 2d 1f 1f 0a 3b 3b",
+        "3b 3b 3b 04 05 06 3b 3b 1f 1f 1f 1f 3b 3b",
+        "3b 3b 3b 08 02 0a 3b 1f 1f 1f 1f 1f 3b 3b",
+        "3b 3b 3b 08 1f 1f 1f 1f 1f 1f 1f 0a 3b 3b",
         "3b 04 05 02 1f 1f 1f 1f 1f 1f 1f 0a 3b 3b",
-        "3b 08 02 02 1f 1f 1f 1f 1f 1f 1f 0e 3b 3b",
-        "3b 08 02 0a 3e 3e 3e 3e 3e 3e 3e 3b 3b 3b",
+        "3b 08 02 02 1f 1f 1f 1f 3b 3b 1f 0e 3b 3b",
+        "3b 08 02 0a 3e 3b 3b 3e 3b 3b 3e 3b 3b 3b",
         "3b 08 07 0e 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b",
         "3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b"
       ],
@@ -132,9 +132,9 @@
           ]
         },
         {
-          "id": "first-slide",
+          "id": "first-rock-stop",
           "tile": [
-            7,
+            15,
             16
           ]
         },
@@ -146,10 +146,10 @@
           ]
         },
         {
-          "id": "ice-elbow",
+          "id": "north-tooth-turn",
           "tile": [
-            19,
-            16
+            15,
+            10
           ]
         },
         {
@@ -168,18 +168,18 @@
         16,
         12
       ],
-      "purpose": "Deep blue chamber: offset rock teeth create turning stops to the narrow northern NeverMeltIce shelf; western pocket offers a second optional discovery.",
+      "purpose": "Offset northern and southern glacier tongues divide two substantial ice basins. The first tooth feeds a northern Max Revive branch; the alternating stops form a turning course to the NeverMeltIce shelf. A central cross-slide reaches the sheltered west bank on return.",
       "rows": [
         "3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b",
         "3b 3b 3b 3b 3b 3b 3b 3b 3b 04 06 3b 3b 3b 3b 3b",
         "3b 3b 04 06 3b 3b 3b 3b 3b 08 0a 3b 3b 3b 3b 3b",
-        "3b 3b 1f 1f 1f 1f 1f 1f 1f 1f 1f 1f 1f 06 3b 3b",
-        "3b 3b 1f 1f 2f 1f 1f 1f 1f 1f 1f 2c 1f 0a 3b 3b",
-        "3b 3b 2e 1f 1f 1f 1f 2e 1f 1f 1f 1f 1f 0a 3b 3b",
-        "3b 08 1f 1f 1f 1f 19 2c 1f 2c 1f 1f 1f 0a 3b 3b",
-        "3b 08 1f 1f 2d 1f 2e 1f 1f 1f 1f 0a 3b 3b 3b 3b",
-        "3b 08 1f 1f 1f 1f 1f 1f 2f 2e 1f 0a 3b 3b 3b 3b",
-        "3b 08 02 1f 1f 1f 1f 1f 1f 1f 1f 0e 3b 3b 3b 3b",
+        "3b 3b 2c 1f 1f 1f 1f 3b 3b 2c 1f 1f 1f 06 3b 3b",
+        "3b 3b 1f 1f 1f 1f 1f 3b 3b 1f 1f 2c 1f 0a 3b 3b",
+        "3b 3b 2e 1f 1f 1f 1f 3b 3b 1f 1f 3b 3b 3b 3b 3b",
+        "3b 08 1f 1f 1f 1f 1f 19 1f 1f 1f 3b 3b 3b 3b 3b",
+        "3b 08 1f 1f 1f 1f 1f 1f 1f 1f 1f 3b 3b 3b 3b 3b",
+        "3b 08 1f 1f 1f 1f 3b 1f 1f 1f 1f 0a 3b 3b 3b 3b",
+        "3b 08 02 1f 1f 1f 3b 1f 1f 1f 1f 0e 3b 3b 3b 3b",
         "3b 0c 03 3e 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b",
         "3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b"
       ],
@@ -237,6 +237,13 @@
           ]
         },
         {
+          "id": "western-cache-stop",
+          "tile": [
+            5,
+            6
+          ]
+        },
+        {
           "id": "north-shelf",
           "tile": [
             19,
@@ -244,20 +251,26 @@
           ]
         },
         {
-          "id": "western-cache",
+          "id": "eastern-basin-turn",
           "tile": [
-            5,
-            4
-          ]
-        },
-        {
-          "id": "teeth-crossing",
-          "tile": [
-            15,
-            13
+            21,
+            15
           ]
         }
       ]
+    }
+  ],
+  "source_status": "Verified scoped native ice terrain; resolve world.json for the current selected version.",
+  "retained_native_overlays": [
+    {
+      "source": "planning/minnesota/interior-life/voyageurs-surveyor-v01.json",
+      "map": "MnVoyageursIceB1F",
+      "script": "MN_INTERIOR_VOYAGEURS_SURVEYOR",
+      "tile": [
+        3,
+        20
+      ],
+      "status": "Exact installed native actor/program retained; included in all partial-pickup geometry checks."
     }
   ]
 }

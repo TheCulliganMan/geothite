@@ -1,0 +1,27 @@
+{
+  "status": "PASS",
+  "selected_revision": "route_grass_r16_bank_guidance_revision",
+  "pack_sha256": "e47cfeeff4baf0e2fd9654d9859e2fd094d856f8d34bede6c1c333c8209bce26",
+  "source_index_layout_and_contract_hashes_exact": true,
+  "changed_complete_maps": [
+    "MnR16C00R00"
+  ],
+  "only_text_and_derived_mirrors_changed": true,
+  "all731_other_complete_maps_exact": true,
+  "route15_staples_spur_preserved": true,
+  "bemidji_plateau_stairs_preserved": true,
+  "iron_pump_gallery_preserved": true,
+  "coastal_zero_ice_maps": [
+    "MnDuluth",
+    "MnGrandMarais",
+    "MnR11C00R00",
+    "MnR11C00R01",
+    "MnR11C00R02",
+    "MnR11C00R03",
+    "MnR11C01R00",
+    "MnR11C01R01",
+    "MnR11C01R02",
+    "MnR11C01R03"
+  ],
+  "goal_complete": false
+}

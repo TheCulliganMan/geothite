@@ -762,6 +762,9 @@ pub struct DamageResult {
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub enum DamageCalculationError {
+    RandomSource {
+        error: String,
+    },
     MissingStat {
         pokemon_id: String,
         stat: Stat,

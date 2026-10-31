@@ -1,0 +1,23 @@
+{
+  "status": "ACCEPTED_CURRENT_UNCHANGED",
+  "map": "MnMaraisCedarApproach",
+  "revision": "route_grass_r14_forest_bank_revision",
+  "pack": "content-packs/minnesota-current-r14-forest-bank-v01.crystalpack",
+  "pack_sha256": "e9f4108d3b0a35f04145e4928446c03845982e1f13d7ff8f34e383bd701757d5",
+  "terrain_changes": 0,
+  "grass_quadrants": 16,
+  "western_minimum_grass_steps_each_direction": 3,
+  "eastern_uphill_minimum_grass_steps": 4,
+  "dry_native_drop_and_reverse_denial": true,
+  "actual_wild_battle_escape_and_continue": true,
+  "native_case_count": 1,
+  "native_log": ".local/route-grass-review/current-cedar-successor-native-v02.log",
+  "production_stdio_calls": 15,
+  "production_stdio_receipt": ".local/route-grass-review/current-cedar-successor-stdio-v01.receipt.json",
+  "native_views_inspected": 3,
+  "source_native_pixel_mismatches": 0,
+  "full_source_scene_matches_accepted_warm_parent": true,
+  "used_art_and_collision_proof": "used-art-and-current-source-proof-v01.json",
+  "pack_and_selection_unchanged_by_this_review": true,
+  "scope": "Fresh native grass/climb/drop/Continue, actual reached-save production input and current native2D inspection. Initial Mew/badges/position are QA fixtures, not earned regional access. No Rust or terrain changed; no new build/lint is claimed. Other regional completion remains active."
+}

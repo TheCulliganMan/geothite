@@ -83,6 +83,7 @@ pub fn certify_source_intro_timeline(
     )?;
     shell.title_menu = Some(build_visible_title_menu(
         shell.runtime.title_presentation_program(),
+        None,
         spawn_identifier,
         None,
     )?);

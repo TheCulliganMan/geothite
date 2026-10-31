@@ -1,0 +1,53 @@
+{
+  "pack": "content-packs/minnesota-current-duluth-mart-v01.crystalpack",
+  "pack_sha256": "d77baff3e597e6527450400022e0b9acf655b856983cf96e49fbebfe275464f3",
+  "map": "MnDuluth",
+  "source_dossier": "planning/minnesota/revisions/route-grass-v01/current-duluth-mart-v01/dossier.after.json",
+  "start": [
+    79,
+    40
+  ],
+  "badge_count": 8,
+  "event_flags": [],
+  "arrival_discovery_flags": [
+    "ENGINE_FLYPOINT_MN_DULUTH"
+  ],
+  "roads": [],
+  "gates": [],
+  "ledges": [],
+  "fences": [],
+  "doors": [
+    {
+      "room": "MnDuluthMart",
+      "outside": [
+        79,
+        40
+      ],
+      "arrival": [
+        6,
+        5
+      ],
+      "carpets": [
+        [
+          6,
+          7
+        ],
+        [
+          7,
+          7
+        ]
+      ]
+    }
+  ],
+  "surf": null,
+  "counts": {
+    "roads": 0,
+    "gates": 0,
+    "ledges": 0,
+    "fences": 0,
+    "doors": 1,
+    "residents": 17,
+    "signs": 19
+  },
+  "scope": "Single repaired Mart only, both carpets and Continue. No empty cases counted and no broader Duluth town acceptance. Initial party/eight badges are explicit QA fixtures."
+}

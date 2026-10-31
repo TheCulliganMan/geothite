@@ -1,0 +1,162 @@
+{
+  "schema_version": 1,
+  "map": "MnR13Cave1F",
+  "purpose": "Native safe pre-League shelter with care, contained fishing basin and once-only PP supply.",
+  "dimensions_metatiles": [
+    10,
+    8
+  ],
+  "connections": [
+    {
+      "interior_warp": 1,
+      "interior_core": [
+        7,
+        15
+      ],
+      "clear_arrival": [
+        7,
+        14
+      ],
+      "exterior": "MnR13C00R01",
+      "exterior_active_core": [
+        14,
+        5
+      ],
+      "exterior_passive_return_core": [
+        14,
+        6
+      ],
+      "global_route_entry": [
+        14,
+        53
+      ],
+      "global_route_return": [
+        14,
+        54
+      ]
+    }
+  ],
+  "services": [
+    {
+      "id": "MN_R13_HARPER",
+      "core": [
+        13,
+        5
+      ],
+      "approach": [
+        13,
+        6
+      ],
+      "facing": "up",
+      "effect": "Original special HealParty after both original text pages and acknowledgement; restores full team HP/status/all PP with no item or money charge.",
+      "story": "Existing voluntary shelter service; no new flags or story grants."
+    },
+    {
+      "id": "FISHGROUP_MN_LAKE",
+      "approach": [
+        3,
+        7
+      ],
+      "facing": "right",
+      "water": [
+        4,
+        7
+      ],
+      "effect": "Original Old/Good/Super Rod tables and native day/night selections; walking access requires no Surf."
+    },
+    {
+      "id": "MN_R13_SHELTER_ETHER",
+      "core": [
+        15,
+        11
+      ],
+      "approach": [
+        14,
+        11
+      ],
+      "facing": "right",
+      "item": "MAX_ETHER",
+      "quantity": 1,
+      "event": "EVENT_MN_R13_SHELTER_ETHER",
+      "effect": "Original native item program and once-only persistence. Reached through original right-side stone climb."
+    }
+  ],
+  "stairs": [
+    {
+      "id": "HARPER_TERRACE",
+      "metatile": [
+        5,
+        3
+      ],
+      "block": "30",
+      "before": [
+        10,
+        5
+      ],
+      "lane": [
+        [
+          10,
+          6
+        ],
+        [
+          10,
+          7
+        ]
+      ],
+      "after": [
+        10,
+        8
+      ],
+      "blocked_from": [
+        10,
+        7
+      ],
+      "blocked_target": [
+        11,
+        7
+      ]
+    },
+    {
+      "id": "SUPPLY_NOTCH",
+      "metatile": [
+        6,
+        5
+      ],
+      "block": "36",
+      "before": [
+        12,
+        9
+      ],
+      "lane": [
+        [
+          12,
+          10
+        ],
+        [
+          12,
+          11
+        ]
+      ],
+      "after": [
+        12,
+        12
+      ],
+      "blocked_from": [
+        12,
+        10
+      ],
+      "blocked_target": [
+        13,
+        10
+      ]
+    }
+  ],
+  "terrain_rules": [
+    "Native forced night cave palette; original art only.",
+    "Every ordinary walking tile belongs to the entrance component.",
+    "One connected24-tile basin, enclosed away from every map boundary.",
+    "Preserve original service, item, fishing and passive exterior warp behavior.",
+    "Quiet recovery room: preserve absence of random walking encounters."
+  ],
+  "status": "Verified native controller, stdio, visual, content-preservation and audio acceptance; selected local revision."
+}

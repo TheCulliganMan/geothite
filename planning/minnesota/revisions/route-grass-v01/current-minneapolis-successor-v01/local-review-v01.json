@@ -1,0 +1,12 @@
+{
+  "status": "PASS_CURRENT_CITY_INHERITANCE_AND_CYCLING_WITH_LEGACY_TEST_LIMIT",
+  "pack": "content-packs/minnesota-international-falls-windbreak-v01.crystalpack",
+  "pack_sha256": "7066f05448101c79b4dc761963b0f39a570bad07c4f80e3e777901ac2e207507",
+  "complete_maps_exact_to_game_corner_review": 45,
+  "cyclists": 18,
+  "all_two_laps_and_midroute_continue": true,
+  "actual_cyclist_steps": 880,
+  "fresh_native_cases": 1,
+  "production_continue_calls": 13,
+  "scope": "Exact city and44rooms including installed Game Corner, all used native pixels/collision. Fresh18rider two-lap/midrouteContinue and production walking/menu checks. Older service test fails obsolete45,12 exterior target; retained, not accepted. Original full city/room gameplay evidence retains its tested pack binding. No pack/terrain/art change, new visual capture or earned campaign claim."
+}

@@ -272,13 +272,25 @@ fn detroit_lakes_controller_all_rooms_residents_carpets_and_two_real_roads() {
         c.snapshot().expect("real beach dismount").overworld.mode,
         crystal_core::world::movement::MovementMode::Normal
     );
-    walk(&mut c, &r, (24, 2));
-    for _ in 0..4 {
+    // The former closed woodland boundary is now the R19 gatehouse.
+    walk(&mut c, &r, (25, 5));
+    for _ in 0..8 {
         press(&mut c, GameButton::Up);
+        if c.snapshot().expect("gatehouse entry").overworld.map_name == "MnR19DetroitGate" {
+            break;
+        }
     }
-    let boundary = c.snapshot().expect("visible woodland boundary").overworld;
+    assert_eq!(
+        c.snapshot()
+            .expect("actual north gatehouse")
+            .overworld
+            .map_name,
+        "MnR19DetroitGate"
+    );
+    walk(&mut c, &r, (4, 7));
+    let boundary = c.snapshot().expect("free town return").overworld;
     assert_eq!(boundary.map_name, CITY);
-    assert_eq!((boundary.tile.x, boundary.tile.y), (24, 2));
+    assert_eq!((boundary.tile.x, boundary.tile.y), (25, 4));
     let before = c.snapshot().expect("before town Continue").overworld;
     c = super::r10_gallery::continue_save(root, r.clone(), &mut c);
     let after = c.snapshot().expect("town Continue").overworld;
@@ -677,7 +689,16 @@ fn detroit_lakes_controller_ranger_denies_each_missing_requirement() {
 #[ignore = "requires CRYSTAL_INTERIOR_PACK with Detroit Lakes"]
 fn detroit_lakes_controller_observations_persist_on_the_real_itasca_return() {
     let (root, r, _) = load();
-    let mut c = fixture(&root, &r, "MnR19C00R01", (24, 10));
+    let mut c = fixture(&root, &r, "MnR19C00R01", (25, 8));
+    // Initial survey resources are fixtures; later changes use native input.
+    let mut partner = r
+        .data()
+        .create_pokemon("GILLPUP", 60, Dv::default())
+        .expect("regional survey partner");
+    partner.item = Some("SMOKE_BALL".into());
+    let state = c.shell.shell.session_mut().state_mut();
+    assert!(state.storage.party.add_pokemon(partner));
+    state.sync_party_from_storage();
     c.shell.shell.session_mut().state_mut().badges.johto[5] = true;
     c.shell
         .shell
@@ -694,10 +715,11 @@ fn detroit_lakes_controller_observations_persist_on_the_real_itasca_return() {
             columns: 1,
             rows: 2,
             tileset: "johto",
-            start: (24, 58),
+            start: (25, 56),
             doors: BTreeMap::new(),
         },
-    );
+    )
+    .with_battle_handler(super::authored_route_fixture::escape_wild);
     for (i, target) in [(54, 14), (40, 34), (22, 44)].into_iter().enumerate() {
         let approach = neighbors(target)
             .into_iter()

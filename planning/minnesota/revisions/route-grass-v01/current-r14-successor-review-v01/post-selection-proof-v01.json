@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "selected_revision": "route_grass_r14_current_contract_revision",
+  "gameplay_pack_unchanged": true,
+  "all_four_current_maps_bound": true,
+  "native_source_metatiles_exact": 1536,
+  "grass_quadrants": 504,
+  "current_native_cases": 5,
+  "actual_maps_observed": [
+    "MnBemidji",
+    "MnItascaGatehouse",
+    "MnLakeItasca",
+    "MnR14C00R00",
+    "MnR14C00R01",
+    "MnR14C01R00",
+    "MnR14C01R01"
+  ],
+  "goal_complete": false
+}

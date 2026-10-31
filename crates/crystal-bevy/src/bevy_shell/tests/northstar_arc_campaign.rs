@@ -1,9 +1,12 @@
 //! Earned-campaign bridges for the acted rival/lair revision; no state writes.
+#[path = "northstar_earned_intake.rs"]
+mod intake_controls;
 use crystal_assets::AssetRoot;
 use crystal_core::input::GameButton;
 use crystal_runtime::CrystalRuntime;
 
 use super::super::authored_route_fixture::indoor_walk;
+use super::super::native_city_ports::city_port;
 use super::super::northstar_ice_lair::{choice, event, talk, walk};
 use super::super::winona::{continue_in_place, finish, press, travel};
 use super::{VisibleShellController, walk_to};
@@ -47,45 +50,62 @@ pub(super) fn ellis_home(
 }
 
 pub(super) fn intake(c: &mut VisibleShellController, root: &AssetRoot, r: &CrystalRuntime) {
-    walk_to(c, r, (12, 4));
-    talk(c, GameButton::Up);
-    choice(c, false);
-    finish(c);
-    assert!(!event(c, "EVENT_MN_ARC_LINK_SENT") && !event(c, "EVENT_MN_SURVEY_RESTORED"));
-    talk(c, GameButton::Up);
-    choice(c, true);
-    finish(c);
-    assert!(event(c, "EVENT_MN_ARC_LINK_SENT") && !event(c, "EVENT_MN_SURVEY_RESTORED"));
-    walk_to(c, r, (4, 7));
-    talk(c, GameButton::Left);
-    finish(c);
-    walk_to(c, r, (13, 7));
-    travel(c, GameButton::Down, "MnBoundaryIntake", (4, 19));
-    for _ in 0..8 {
-        press(c, GameButton::Up);
-        if c.has_pending_script_work() {
-            break;
+    if c.snapshot()
+        .expect("actual intake checkpoint")
+        .overworld
+        .map_name
+        != "MnBoundaryIntake"
+    {
+        if !event(c, "EVENT_MN_ARC_LINK_SENT") {
+            walk_to(c, r, (12, 4));
+            talk(c, GameButton::Up);
+            choice(c, false);
+            finish(c);
+            assert!(!event(c, "EVENT_MN_ARC_LINK_SENT") && !event(c, "EVENT_MN_SURVEY_RESTORED"));
+            talk(c, GameButton::Up);
+            choice(c, true);
+            finish(c);
+            assert!(event(c, "EVENT_MN_ARC_LINK_SENT") && !event(c, "EVENT_MN_SURVEY_RESTORED"));
+        }
+        walk_to(c, r, (4, 7));
+        talk(c, GameButton::Left);
+        finish(c);
+        walk_to(c, r, (13, 7));
+        travel(c, GameButton::Down, "MnBoundaryIntake", (4, 19));
+        for _ in 0..8 {
+            press(c, GameButton::Up);
+            if c.has_pending_script_work() {
+                break;
+            }
+        }
+        finish(c);
+    }
+    if !event(c, "EVENT_MN_REED_BOUNDARY_DEFEATED") {
+        walk(c, r, (14, 9));
+        talk(c, GameButton::Right);
+        choice(c, true);
+        assert!(super::super::rochester_earned::try_battle(
+            c,
+            r,
+            "MN_REED_BOUNDARY",
+            "EVENT_MN_REED_BOUNDARY_DEFEATED"
+        ));
+        finish(c);
+        continue_in_place(c, root, r, "campaign-boundary-rival-won");
+    }
+    if !event(c, "EVENT_MN_SURVEY_RESTORED") {
+        if intake_controls::present(r) {
+            intake_controls::restore(c, root, r);
+        } else {
+            walk(c, r, (17, 12));
+            talk(c, GameButton::Up);
+            choice(c, false);
+            finish(c);
+            talk(c, GameButton::Up);
+            choice(c, true);
+            finish(c);
         }
     }
-    finish(c);
-    walk(c, r, (14, 9));
-    talk(c, GameButton::Right);
-    choice(c, true);
-    assert!(super::super::rochester_earned::try_battle(
-        c,
-        r,
-        "MN_REED_BOUNDARY",
-        "EVENT_MN_REED_BOUNDARY_DEFEATED"
-    ));
-    finish(c);
-    assert!(!event(c, "EVENT_MN_SURVEY_RESTORED"));
-    walk(c, r, (17, 12));
-    talk(c, GameButton::Up);
-    choice(c, false);
-    finish(c);
-    talk(c, GameButton::Up);
-    choice(c, true);
-    finish(c);
     assert!(event(c, "EVENT_MN_KETTLURK_RELEASED") && event(c, "EVENT_MN_SURVEY_RESTORED"));
     continue_in_place(c, root, r, "campaign-arc-current-released");
     walk(c, r, (4, 18));
@@ -97,29 +117,49 @@ pub(super) fn intake(c: &mut VisibleShellController, root: &AssetRoot, r: &Cryst
     );
 }
 
-pub(super) fn recruit_party(c: &mut VisibleShellController, r: &CrystalRuntime, root: &AssetRoot) {
-    use super::northstar_campaign_ice::{care, supplies};
-    care(c, r);
-    // Buy real balls before walking the same regional encounter strip used for
-    // ordinary Minneapolis preparation. Duplicate catches are not selected.
+fn capture_supplies(c: &mut VisibleShellController, r: &CrystalRuntime) {
+    // This Mart stocks Great Balls. Check the current pocket on each outing,
+    // rather than replaying sixteen empty-pocket searches after one purchase.
     let item = &r.data().items["GREAT_BALL"];
-    let quantity = (c.shell.shell.session().state().money / u32::from(item.price)).min(12) as u16;
+    let state = c.shell.shell.session().state();
+    let quantity = (state.money / u32::from(item.price))
+        .min(u32::from(6_u16.saturating_sub(state.bag.quantity(item)))) as u16;
     if quantity > 0 {
-        indoor_walk(c, r, (73, 26));
-        travel(c, GameButton::Up, "MnMinneapolisMart", (6, 5));
+        let (door, arrival) = city_port(r, "MnMinneapolis", "MnMinneapolisMart");
+        indoor_walk(c, r, door);
+        travel(c, GameButton::Up, "MnMinneapolisMart", arrival);
         indoor_walk(c, r, (3, 3));
         press(c, GameButton::Left);
         press(c, GameButton::A);
         super::super::rochester_earned::checkout(c, r, "GREAT_BALL", quantity);
         indoor_walk(c, r, (6, 6));
-        travel(c, GameButton::Down, "MnMinneapolis", (73, 26));
+        travel(c, GameButton::Down, "MnMinneapolis", door);
     }
+    assert!(
+        c.snapshot()
+            .expect("actual capture pocket")
+            .bag
+            .balls
+            .iter()
+            .any(|ball| ball.quantity > 0),
+        "earned capture budget exhausted; the native Minneapolis Mart stocks Great Balls"
+    );
+}
+
+pub(super) fn recruit_party(c: &mut VisibleShellController, r: &CrystalRuntime, root: &AssetRoot) {
+    use super::northstar_campaign_ice::{care, supplies};
+    if c.snapshot().expect("current earned team").party.slots.len() >= 4 {
+        return;
+    }
+    care(c, r);
+    capture_supplies(c, r);
     supplies(c, r);
     for outing in 0..16 {
         if c.snapshot().expect("earned mixed party").party.slots.len() >= 4 {
             return;
         }
         care(c, r);
+        capture_supplies(c, r);
         indoor_walk(c, r, (40, 62));
         travel(c, GameButton::Down, "MnR03C00R00", (20, 0));
         for step in 0..64 {

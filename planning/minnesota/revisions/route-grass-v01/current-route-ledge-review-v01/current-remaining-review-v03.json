@@ -1,0 +1,194 @@
+{
+  "status": "REMAINING_REVIEW_INDEX_NOT_COMPLETION",
+  "native_surface_snapshot": "840dc279fa9e35359f31885010766950d2487dae723eb11c3d5af2fa8e4da6cb",
+  "routes": [
+    {
+      "route": "MN_R01",
+      "changed_native_chunks": [
+        "MnR01C00R00"
+      ],
+      "current_successor_review": "planning/minnesota/revisions/route-grass-v01/current-r01-successor-review-v01",
+      "current_full_course_receipt_present": true,
+      "coverage_status": "CURRENT_FULL_COURSE_REVIEW_PRESENT",
+      "current_full_course_receipt": "planning/minnesota/revisions/route-grass-v01/current-r01-successor-review-v01/production-current-route-v02.json"
+    },
+    {
+      "route": "MN_R02",
+      "changed_native_chunks": [],
+      "current_successor_review": null,
+      "current_full_course_receipt_present": false,
+      "coverage_status": "ORIGINAL_USED_SURFACE_EXACT"
+    },
+    {
+      "route": "MN_R03",
+      "changed_native_chunks": [
+        "MnR03C00R00"
+      ],
+      "current_successor_review": "planning/minnesota/revisions/route-grass-v01/current-r03-successor-review-v01",
+      "current_full_course_receipt_present": true,
+      "coverage_status": "CURRENT_FULL_COURSE_REVIEW_PRESENT",
+      "current_full_course_receipt": "planning/minnesota/revisions/route-grass-v01/current-r03-successor-review-v01/production-current-route-v01.json"
+    },
+    {
+      "route": "MN_R04",
+      "changed_native_chunks": [],
+      "current_successor_review": null,
+      "current_full_course_receipt_present": false,
+      "coverage_status": "ORIGINAL_USED_SURFACE_EXACT"
+    },
+    {
+      "route": "MN_R05",
+      "changed_native_chunks": [
+        "MnR05C00R00",
+        "MnR05C00R01",
+        "MnR05C00R02"
+      ],
+      "current_successor_review": "planning/minnesota/revisions/route-grass-v01/current-r05-successor-review-v01",
+      "current_full_course_receipt_present": true,
+      "coverage_status": "CURRENT_FULL_COURSE_REVIEW_PRESENT",
+      "current_full_course_receipt": "planning/minnesota/revisions/route-grass-v01/current-r05-successor-review-v01/production-cache-bank-v03.json"
+    },
+    {
+      "route": "MN_R06",
+      "changed_native_chunks": [
+        "MnR06C00R00",
+        "MnR06C00R01"
+      ],
+      "current_successor_review": "planning/minnesota/revisions/route-grass-v01/current-r06-successor-review-v01",
+      "current_full_course_receipt_present": true,
+      "coverage_status": "CURRENT_FULL_COURSE_REVIEW_PRESENT"
+    },
+    {
+      "route": "MN_R07",
+      "changed_native_chunks": [
+        "MnR07C00R00",
+        "MnR07C00R01"
+      ],
+      "current_successor_review": "planning/minnesota/revisions/route-grass-v01/current-r07-successor-review-v01",
+      "current_full_course_receipt_present": true,
+      "coverage_status": "CURRENT_FULL_COURSE_REVIEW_PRESENT",
+      "current_full_course_receipt": "planning/minnesota/revisions/route-grass-v01/current-r07-successor-review-v01/full-route-production-v02.json"
+    },
+    {
+      "route": "MN_R08",
+      "changed_native_chunks": [
+        "MnR08C00R00",
+        "MnR08C00R01",
+        "MnR08C01R01"
+      ],
+      "current_successor_review": "planning/minnesota/revisions/route-grass-v01/current-r08-successor-review-v01",
+      "current_full_course_receipt_present": true,
+      "coverage_status": "CURRENT_FULL_COURSE_REVIEW_PRESENT"
+    },
+    {
+      "route": "MN_R09",
+      "changed_native_chunks": [
+        "MnR09C00R00",
+        "MnR09C00R01",
+        "MnR09C01R00",
+        "MnR09C01R01"
+      ],
+      "current_successor_review": "planning/minnesota/revisions/route-grass-v01/current-r09-successor-review-v01",
+      "current_full_course_receipt_present": false,
+      "coverage_status": "CURRENT_SCOPED_REVIEW_PRESENT_MORE_COURSE_REVIEW_NEEDED"
+    },
+    {
+      "route": "MN_R10",
+      "changed_native_chunks": [
+        "MnR10C00R00",
+        "MnR10C01R00"
+      ],
+      "current_successor_review": "planning/minnesota/revisions/route-grass-v01/current-r10-successor-review-v01",
+      "current_full_course_receipt_present": true,
+      "coverage_status": "CURRENT_FULL_COURSE_REVIEW_PRESENT"
+    },
+    {
+      "route": "MN_R11",
+      "changed_native_chunks": [
+        "MnR11C00R00",
+        "MnR11C00R01",
+        "MnR11C00R03"
+      ],
+      "current_successor_review": "planning/minnesota/revisions/route-grass-v01/current-r11-successor-review-v01",
+      "current_full_course_receipt_present": false,
+      "coverage_status": "CURRENT_SCOPED_REVIEW_PRESENT_MORE_COURSE_REVIEW_NEEDED"
+    },
+    {
+      "route": "MN_R12",
+      "changed_native_chunks": [],
+      "current_successor_review": null,
+      "current_full_course_receipt_present": false,
+      "coverage_status": "ORIGINAL_USED_SURFACE_EXACT"
+    },
+    {
+      "route": "MN_R13",
+      "changed_native_chunks": [
+        "MnR13C00R00"
+      ],
+      "current_successor_review": null,
+      "current_full_course_receipt_present": false,
+      "coverage_status": "SUCCESSOR_FEATURE_EVIDENCE_RECONCILIATION_NEEDED"
+    },
+    {
+      "route": "MN_R14",
+      "changed_native_chunks": [
+        "MnR14C00R00"
+      ],
+      "current_successor_review": null,
+      "current_full_course_receipt_present": false,
+      "coverage_status": "SUCCESSOR_FEATURE_EVIDENCE_RECONCILIATION_NEEDED"
+    },
+    {
+      "route": "MN_R15",
+      "changed_native_chunks": [
+        "MnR15C00R00"
+      ],
+      "current_successor_review": null,
+      "current_full_course_receipt_present": false,
+      "coverage_status": "SUCCESSOR_FEATURE_EVIDENCE_RECONCILIATION_NEEDED"
+    },
+    {
+      "route": "MN_R16",
+      "changed_native_chunks": [
+        "MnR16C00R00",
+        "MnR16C01R00"
+      ],
+      "current_successor_review": null,
+      "current_full_course_receipt_present": false,
+      "coverage_status": "SUCCESSOR_FEATURE_EVIDENCE_RECONCILIATION_NEEDED"
+    },
+    {
+      "route": "MN_R17",
+      "changed_native_chunks": [
+        "MnR17C00R01"
+      ],
+      "current_successor_review": null,
+      "current_full_course_receipt_present": false,
+      "coverage_status": "SUCCESSOR_FEATURE_EVIDENCE_RECONCILIATION_NEEDED"
+    },
+    {
+      "route": "MN_R18",
+      "changed_native_chunks": [],
+      "current_successor_review": null,
+      "current_full_course_receipt_present": false,
+      "coverage_status": "ORIGINAL_USED_SURFACE_EXACT"
+    },
+    {
+      "route": "MN_R19",
+      "changed_native_chunks": [
+        "MnR19C00R00"
+      ],
+      "current_successor_review": null,
+      "current_full_course_receipt_present": false,
+      "coverage_status": "SUCCESSOR_FEATURE_EVIDENCE_RECONCILIATION_NEEDED"
+    },
+    {
+      "route": "MN_R20",
+      "changed_native_chunks": [],
+      "current_successor_review": null,
+      "current_full_course_receipt_present": false,
+      "coverage_status": "ORIGINAL_USED_SURFACE_EXACT"
+    }
+  ],
+  "scope": "Index presence is not acceptance: referenced receipt contents and current native input inheritance must still be checked. Changed chunks are not classified as broken."
+}

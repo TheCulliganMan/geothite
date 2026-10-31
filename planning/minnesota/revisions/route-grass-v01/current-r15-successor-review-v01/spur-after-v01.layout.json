@@ -1,0 +1,2440 @@
+{
+  "schema_version": 2,
+  "id": "MN_R15",
+  "tileset": "kanto",
+  "compiled_tileset": "kanto",
+  "dimensions_metatiles": [
+    32,
+    18
+  ],
+  "coordinate_units": "32px metatiles, zero based",
+  "materials": {
+    "floor": "31",
+    "lawn": "01",
+    "encounter": "0b",
+    "flowers": "74",
+    "forest": "0f",
+    "water": "43",
+    "boulder": "13",
+    "sign": "56"
+  },
+  "shore_fitting": "explicit_source_edges",
+  "reject_cliff_cuts": true,
+  "layers": [
+    {
+      "kind": "polygon",
+      "name": "Shiner Lake irregular north shore",
+      "material": "water",
+      "points": [
+        [
+          12,
+          0
+        ],
+        [
+          19,
+          0
+        ],
+        [
+          19,
+          2
+        ],
+        [
+          21,
+          2
+        ],
+        [
+          21,
+          5
+        ],
+        [
+          20,
+          5
+        ],
+        [
+          20,
+          10
+        ],
+        [
+          18,
+          10
+        ],
+        [
+          18,
+          12
+        ],
+        [
+          15,
+          12
+        ],
+        [
+          15,
+          10
+        ],
+        [
+          12,
+          10
+        ],
+        [
+          12,
+          8
+        ],
+        [
+          11,
+          8
+        ],
+        [
+          11,
+          3
+        ],
+        [
+          12,
+          3
+        ]
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Outlet keeps opposite banks separate",
+      "material": "water",
+      "bounds": [
+        15,
+        11,
+        18,
+        18
+      ]
+    },
+    {
+      "kind": "path",
+      "name": "One short connected stone road",
+      "material": "floor",
+      "points": [
+        [
+          31,
+          12
+        ],
+        [
+          27,
+          12
+        ],
+        [
+          27,
+          10
+        ],
+        [
+          23,
+          10
+        ],
+        [
+          23,
+          14
+        ],
+        [
+          10,
+          14
+        ],
+        [
+          10,
+          12
+        ],
+        [
+          0,
+          12
+        ]
+      ],
+      "width_metatiles": 2
+    },
+    {
+      "kind": "path",
+      "name": "One grass detour around Ron",
+      "material": "lawn",
+      "points": [
+        [
+          7,
+          12
+        ],
+        [
+          7,
+          6
+        ],
+        [
+          11,
+          6
+        ],
+        [
+          11,
+          12
+        ],
+        [
+          10,
+          12
+        ],
+        [
+          7,
+          12
+        ]
+      ],
+      "width_metatiles": 2
+    },
+    {
+      "kind": "path",
+      "name": "West main lane through trainer sight",
+      "material": "floor",
+      "points": [
+        [
+          0,
+          12
+        ],
+        [
+          10,
+          12
+        ],
+        [
+          10,
+          14
+        ]
+      ],
+      "width_metatiles": 2
+    },
+    {
+      "kind": "rect",
+      "name": "Common west grass crossing six walking tiles",
+      "material": "encounter",
+      "bounds": [
+        3,
+        11,
+        6,
+        14
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Detour meadow grass crossing",
+      "material": "encounter",
+      "bounds": [
+        8,
+        5,
+        11,
+        8
+      ]
+    },
+    {
+      "kind": "path",
+      "name": "North detour cache spur",
+      "material": "lawn",
+      "points": [
+        [
+          11,
+          6
+        ],
+        [
+          11,
+          4
+        ]
+      ],
+      "width_metatiles": 1
+    },
+    {
+      "kind": "rect",
+      "name": "North cache passing bay",
+      "material": "lawn",
+      "bounds": [
+        11,
+        4,
+        13,
+        6
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Rons standing bay above the main lane",
+      "material": "lawn",
+      "bounds": [
+        8,
+        11,
+        9,
+        12
+      ]
+    },
+    {
+      "kind": "path",
+      "name": "Cabin side path from the road",
+      "material": "lawn",
+      "points": [
+        [
+          26,
+          10
+        ],
+        [
+          26,
+          6
+        ]
+      ],
+      "width_metatiles": 2
+    },
+    {
+      "kind": "rect",
+      "name": "Cabin forecourt six by six walking tiles",
+      "material": "floor",
+      "bounds": [
+        26,
+        6,
+        29,
+        9
+      ]
+    },
+    {
+      "kind": "path",
+      "name": "Dock spur from the eastern road",
+      "material": "lawn",
+      "points": [
+        [
+          23,
+          10
+        ],
+        [
+          23,
+          7
+        ],
+        [
+          21,
+          7
+        ]
+      ],
+      "width_metatiles": 2
+    },
+    {
+      "kind": "rect",
+      "name": "Fishing bank small turning bay",
+      "material": "lawn",
+      "bounds": [
+        21,
+        7,
+        24,
+        9
+      ]
+    },
+    {
+      "kind": "block_rect",
+      "name": "East bank wood rail north of dock opening",
+      "bounds": [
+        21,
+        3,
+        22,
+        7
+      ],
+      "block": "1b"
+    },
+    {
+      "kind": "block_rect",
+      "name": "East bank wood rail south of dock opening",
+      "bounds": [
+        21,
+        8,
+        22,
+        12
+      ],
+      "block": "1b"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Cabin west post fence",
+      "bounds": [
+        25,
+        5,
+        26,
+        9
+      ],
+      "block": "1b"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Cabin east post fence",
+      "bounds": [
+        29,
+        5,
+        30,
+        9
+      ],
+      "block": "5f"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Cabin lower rail left of exit",
+      "bounds": [
+        26,
+        9,
+        27,
+        10
+      ],
+      "block": "77"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Cabin lower rail right of exit",
+      "bounds": [
+        28,
+        9,
+        29,
+        10
+      ],
+      "block": "77"
+    },
+    {
+      "kind": "point",
+      "name": "Bridge upper stone bollards 15",
+      "position": [
+        15,
+        13
+      ],
+      "block": "51"
+    },
+    {
+      "kind": "point",
+      "name": "Bridge deck 15",
+      "position": [
+        15,
+        14
+      ],
+      "block": "31"
+    },
+    {
+      "kind": "point",
+      "name": "Bridge lower wood rail 15",
+      "position": [
+        15,
+        15
+      ],
+      "block": "77"
+    },
+    {
+      "kind": "point",
+      "name": "Bridge water beneath 15",
+      "position": [
+        15,
+        16
+      ],
+      "block": "78"
+    },
+    {
+      "kind": "point",
+      "name": "Bridge upper stone bollards 16",
+      "position": [
+        16,
+        13
+      ],
+      "block": "51"
+    },
+    {
+      "kind": "point",
+      "name": "Bridge deck 16",
+      "position": [
+        16,
+        14
+      ],
+      "block": "31"
+    },
+    {
+      "kind": "point",
+      "name": "Bridge lower wood rail 16",
+      "position": [
+        16,
+        15
+      ],
+      "block": "77"
+    },
+    {
+      "kind": "point",
+      "name": "Bridge water beneath 16",
+      "position": [
+        16,
+        16
+      ],
+      "block": "78"
+    },
+    {
+      "kind": "point",
+      "name": "Bridge upper stone bollards 17",
+      "position": [
+        17,
+        13
+      ],
+      "block": "51"
+    },
+    {
+      "kind": "point",
+      "name": "Bridge deck 17",
+      "position": [
+        17,
+        14
+      ],
+      "block": "31"
+    },
+    {
+      "kind": "point",
+      "name": "Bridge lower wood rail 17",
+      "position": [
+        17,
+        15
+      ],
+      "block": "77"
+    },
+    {
+      "kind": "point",
+      "name": "Bridge water beneath 17",
+      "position": [
+        17,
+        16
+      ],
+      "block": "78"
+    },
+    {
+      "kind": "point",
+      "name": "Dock upper bollards 18",
+      "position": [
+        18,
+        6
+      ],
+      "block": "51"
+    },
+    {
+      "kind": "point",
+      "name": "Dock stone deck 18",
+      "position": [
+        18,
+        7
+      ],
+      "block": "31"
+    },
+    {
+      "kind": "point",
+      "name": "Dock lower timber rail 18",
+      "position": [
+        18,
+        8
+      ],
+      "block": "77"
+    },
+    {
+      "kind": "point",
+      "name": "Dock water beneath 18",
+      "position": [
+        18,
+        9
+      ],
+      "block": "78"
+    },
+    {
+      "kind": "point",
+      "name": "Dock upper bollards 19",
+      "position": [
+        19,
+        6
+      ],
+      "block": "51"
+    },
+    {
+      "kind": "point",
+      "name": "Dock stone deck 19",
+      "position": [
+        19,
+        7
+      ],
+      "block": "31"
+    },
+    {
+      "kind": "point",
+      "name": "Dock lower timber rail 19",
+      "position": [
+        19,
+        8
+      ],
+      "block": "77"
+    },
+    {
+      "kind": "point",
+      "name": "Dock water beneath 19",
+      "position": [
+        19,
+        9
+      ],
+      "block": "78"
+    },
+    {
+      "kind": "point",
+      "name": "Dock upper bollards 20",
+      "position": [
+        20,
+        6
+      ],
+      "block": "51"
+    },
+    {
+      "kind": "point",
+      "name": "Dock stone deck 20",
+      "position": [
+        20,
+        7
+      ],
+      "block": "31"
+    },
+    {
+      "kind": "point",
+      "name": "Dock lower timber rail 20",
+      "position": [
+        20,
+        8
+      ],
+      "block": "77"
+    },
+    {
+      "kind": "point",
+      "name": "Dock water beneath 20",
+      "position": [
+        20,
+        9
+      ],
+      "block": "78"
+    },
+    {
+      "kind": "point",
+      "name": "Dock closed west end",
+      "position": [
+        17,
+        7
+      ],
+      "block": "1b"
+    },
+    {
+      "kind": "point",
+      "name": "West upper entry",
+      "position": [
+        1,
+        10
+      ],
+      "block": "1c"
+    },
+    {
+      "kind": "point",
+      "name": "West lower entry",
+      "position": [
+        1,
+        14
+      ],
+      "block": "51"
+    },
+    {
+      "kind": "point",
+      "name": "East upper entry",
+      "position": [
+        30,
+        10
+      ],
+      "block": "1c"
+    },
+    {
+      "kind": "point",
+      "name": "East lower entry",
+      "position": [
+        30,
+        14
+      ],
+      "block": "51"
+    },
+    {
+      "kind": "point",
+      "name": "East bridge approach stone",
+      "position": [
+        24,
+        14
+      ],
+      "block": "4d"
+    },
+    {
+      "kind": "rect",
+      "name": "West approach flowers",
+      "material": "flowers",
+      "bounds": [
+        0,
+        10,
+        1,
+        11
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Detour flower shoulder",
+      "material": "flowers",
+      "bounds": [
+        6,
+        5,
+        8,
+        6
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Cabin border flowers",
+      "material": "flowers",
+      "bounds": [
+        28,
+        7,
+        29,
+        8
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Bridge west flowers",
+      "material": "flowers",
+      "bounds": [
+        11,
+        15,
+        13,
+        16
+      ]
+    },
+    {
+      "kind": "point",
+      "name": "North copse open tree edge",
+      "position": [
+        10,
+        4
+      ],
+      "block": "6d"
+    },
+    {
+      "kind": "point",
+      "name": "West fork tree toe",
+      "position": [
+        6,
+        9
+      ],
+      "block": "6f"
+    },
+    {
+      "kind": "point",
+      "name": "South bridge tree shoulder",
+      "position": [
+        13,
+        15
+      ],
+      "block": "6e"
+    },
+    {
+      "kind": "point",
+      "name": "One complete cabin facade door",
+      "position": [
+        26,
+        5
+      ],
+      "block": "02"
+    },
+    {
+      "kind": "point",
+      "name": "Cabin facade right",
+      "position": [
+        27,
+        5
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Native sign 01",
+      "position": [
+        1,
+        10
+      ],
+      "block": "56"
+    },
+    {
+      "kind": "rect",
+      "name": "Sign reading step 01",
+      "material": "lawn",
+      "bounds": [
+        1,
+        11,
+        2,
+        12
+      ]
+    },
+    {
+      "kind": "point",
+      "name": "Native sign 02",
+      "position": [
+        24,
+        12
+      ],
+      "block": "56"
+    },
+    {
+      "kind": "rect",
+      "name": "Sign reading step 02",
+      "material": "lawn",
+      "bounds": [
+        24,
+        13,
+        25,
+        14
+      ]
+    },
+    {
+      "kind": "point",
+      "name": "Native sign 03",
+      "position": [
+        28,
+        9
+      ],
+      "block": "56"
+    },
+    {
+      "kind": "rect",
+      "name": "Sign reading step 03",
+      "material": "lawn",
+      "bounds": [
+        28,
+        10,
+        29,
+        11
+      ]
+    },
+    {
+      "kind": "block_rect",
+      "name": "One way meadow return ledge south facing",
+      "bounds": [
+        11,
+        9,
+        13,
+        10
+      ],
+      "block": "07"
+    },
+    {
+      "kind": "rect",
+      "name": "North trees close Rons short lane",
+      "material": "forest",
+      "bounds": [
+        8,
+        11,
+        9,
+        12
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "South trees close Rons short lane",
+      "material": "forest",
+      "bounds": [
+        8,
+        13,
+        9,
+        14
+      ]
+    },
+    {
+      "kind": "block_rect",
+      "name": "Shiner Lake visible north water-rock closure",
+      "bounds": [
+        12,
+        1,
+        20,
+        2
+      ],
+      "block": "6b"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Outlet visible south water-rock closure",
+      "bounds": [
+        15,
+        17,
+        18,
+        18
+      ],
+      "block": "6b"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Native forest cap above north rock closure",
+      "bounds": [
+        12,
+        0,
+        20,
+        1
+      ],
+      "block": "0f"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Refinement attached northern broadleaf shore tongue",
+      "bounds": [
+        24,
+        9,
+        26,
+        10
+      ],
+      "block": "0f"
+    },
+    {
+      "kind": "point",
+      "name": "Refinement northern tongue leafy south toe",
+      "position": [
+        24,
+        10
+      ],
+      "block": "6c"
+    },
+    {
+      "kind": "point",
+      "name": "Refinement dock branch lower broadleaf edge",
+      "position": [
+        22,
+        9
+      ],
+      "block": "6f"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Refinement southern woodland shoulder attached to existing copse",
+      "bounds": [
+        26,
+        11,
+        27,
+        13
+      ],
+      "block": "0f"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Refinement two-core stone S course at cabin fork",
+      "bounds": [
+        25,
+        10,
+        27,
+        11
+      ],
+      "block": "31"
+    },
+    {
+      "kind": "point",
+      "name": "Refinement fitted lower foliage edge beside center bend",
+      "position": [
+        24,
+        11
+      ],
+      "block": "6f"
+    },
+    {
+      "kind": "point",
+      "name": "Refinement cabin sign reading pocket upper leaf edge",
+      "position": [
+        28,
+        10
+      ],
+      "block": "6f"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Refinement east road attached north-bank copse",
+      "bounds": [
+        28,
+        11,
+        30,
+        12
+      ],
+      "block": "0f"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Refinement outlet approach north broadleaf bank",
+      "bounds": [
+        19,
+        13,
+        23,
+        14
+      ],
+      "block": "6c"
+    },
+    {
+      "kind": "point",
+      "name": "Refinement dock-side canopy toe joins existing lower shore bank",
+      "position": [
+        22,
+        10
+      ],
+      "block": "0f"
+    },
+    {
+      "kind": "block_rect",
+      "name": "West epoch upper meadow tongue fitted to Rons existing copse",
+      "bounds": [
+        9,
+        11,
+        11,
+        12
+      ],
+      "block": "0f"
+    },
+    {
+      "kind": "block_rect",
+      "name": "West epoch continuous lakeside timber bank narrows descending road",
+      "bounds": [
+        12,
+        11,
+        13,
+        14
+      ],
+      "block": "5f"
+    },
+    {
+      "kind": "block_rect",
+      "name": "West epoch lower meadow bank joins original south wood",
+      "bounds": [
+        9,
+        13,
+        11,
+        14
+      ],
+      "block": "0f"
+    },
+    {
+      "kind": "point",
+      "name": "West epoch south copse fitted corner beside flower turn",
+      "position": [
+        9,
+        14
+      ],
+      "block": "0f"
+    },
+    {
+      "kind": "point",
+      "name": "West epoch ordinary leafy edge keeps native main-path corner",
+      "position": [
+        10,
+        14
+      ],
+      "block": "6d"
+    },
+    {
+      "kind": "point",
+      "name": "West epoch shore-bank toe joins original north lake copse",
+      "position": [
+        13,
+        13
+      ],
+      "block": "0f"
+    },
+    {
+      "kind": "point",
+      "name": "West epoch lower bank native leafy edge preserves original main-path metatile join",
+      "position": [
+        10,
+        13
+      ],
+      "block": "6d"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve installed regional connection",
+      "position": [
+        9,
+        0
+      ],
+      "block": "51"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve installed regional connection",
+      "position": [
+        10,
+        0
+      ],
+      "block": "51"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve installed regional connection",
+      "position": [
+        11,
+        0
+      ],
+      "block": "51"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve installed regional connection",
+      "position": [
+        12,
+        0
+      ],
+      "block": "51"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve installed regional connection",
+      "position": [
+        13,
+        0
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve installed regional connection",
+      "position": [
+        9,
+        1
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve installed regional connection",
+      "position": [
+        9,
+        2
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve installed regional connection",
+      "position": [
+        9,
+        3
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve installed regional connection",
+      "position": [
+        9,
+        4
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Woodland ascent skipped by meadow drop",
+      "position": [
+        7,
+        8
+      ],
+      "block": "0b"
+    },
+    {
+      "kind": "point",
+      "name": "Woodland ascent skipped by meadow drop",
+      "position": [
+        7,
+        9
+      ],
+      "block": "0b"
+    },
+    {
+      "kind": "point",
+      "name": "Southern lakeshore meadow crossing",
+      "position": [
+        14,
+        13
+      ],
+      "block": "0b"
+    },
+    {
+      "kind": "point",
+      "name": "Southern lakeshore meadow crossing",
+      "position": [
+        13,
+        14
+      ],
+      "block": "0b"
+    },
+    {
+      "kind": "point",
+      "name": "Southern lakeshore meadow crossing",
+      "position": [
+        14,
+        14
+      ],
+      "block": "0b"
+    },
+    {
+      "name": "Freeze installed shore 12,2",
+      "kind": "point",
+      "position": [
+        12,
+        2
+      ],
+      "block": "65"
+    },
+    {
+      "name": "Freeze installed shore 19,2",
+      "kind": "point",
+      "position": [
+        19,
+        2
+      ],
+      "block": "2d"
+    },
+    {
+      "name": "Freeze installed shore 20,2",
+      "kind": "point",
+      "position": [
+        20,
+        2
+      ],
+      "block": "1e"
+    },
+    {
+      "name": "Freeze installed shore 21,2",
+      "kind": "point",
+      "position": [
+        21,
+        2
+      ],
+      "block": "1f"
+    },
+    {
+      "name": "Freeze installed shore 11,3",
+      "kind": "point",
+      "position": [
+        11,
+        3
+      ],
+      "block": "1d"
+    },
+    {
+      "name": "Freeze installed shore 12,3",
+      "kind": "point",
+      "position": [
+        12,
+        3
+      ],
+      "block": "2e"
+    },
+    {
+      "name": "Freeze installed shore 20,3",
+      "kind": "point",
+      "position": [
+        20,
+        3
+      ],
+      "block": "64"
+    },
+    {
+      "name": "Freeze installed shore 13,4",
+      "kind": "point",
+      "position": [
+        13,
+        4
+      ],
+      "block": "65"
+    },
+    {
+      "name": "Freeze installed shore 20,4",
+      "kind": "point",
+      "position": [
+        20,
+        4
+      ],
+      "block": "64"
+    },
+    {
+      "name": "Freeze installed shore 13,5",
+      "kind": "point",
+      "position": [
+        13,
+        5
+      ],
+      "block": "65"
+    },
+    {
+      "name": "Freeze installed shore 20,5",
+      "kind": "point",
+      "position": [
+        20,
+        5
+      ],
+      "block": "64"
+    },
+    {
+      "name": "Freeze installed shore 13,6",
+      "kind": "point",
+      "position": [
+        13,
+        6
+      ],
+      "block": "65"
+    },
+    {
+      "name": "Freeze installed shore 17,6",
+      "kind": "point",
+      "position": [
+        17,
+        6
+      ],
+      "block": "64"
+    },
+    {
+      "name": "Freeze installed shore 13,7",
+      "kind": "point",
+      "position": [
+        13,
+        7
+      ],
+      "block": "65"
+    },
+    {
+      "name": "Freeze installed shore 16,7",
+      "kind": "point",
+      "position": [
+        16,
+        7
+      ],
+      "block": "64"
+    },
+    {
+      "name": "Freeze installed shore 13,8",
+      "kind": "point",
+      "position": [
+        13,
+        8
+      ],
+      "block": "65"
+    },
+    {
+      "name": "Freeze installed shore 16,8",
+      "kind": "point",
+      "position": [
+        16,
+        8
+      ],
+      "block": "2d"
+    },
+    {
+      "name": "Freeze installed shore 17,8",
+      "kind": "point",
+      "position": [
+        17,
+        8
+      ],
+      "block": "1f"
+    },
+    {
+      "name": "Freeze installed shore 13,9",
+      "kind": "point",
+      "position": [
+        13,
+        9
+      ],
+      "block": "65"
+    },
+    {
+      "name": "Freeze installed shore 17,9",
+      "kind": "point",
+      "position": [
+        17,
+        9
+      ],
+      "block": "2d"
+    },
+    {
+      "name": "Freeze installed shore 13,10",
+      "kind": "point",
+      "position": [
+        13,
+        10
+      ],
+      "block": "65"
+    },
+    {
+      "name": "Freeze installed shore 20,10",
+      "kind": "point",
+      "position": [
+        20,
+        10
+      ],
+      "block": "64"
+    },
+    {
+      "name": "Freeze installed shore 15,11",
+      "kind": "point",
+      "position": [
+        15,
+        11
+      ],
+      "block": "65"
+    },
+    {
+      "name": "Freeze installed shore 18,11",
+      "kind": "point",
+      "position": [
+        18,
+        11
+      ],
+      "block": "64"
+    },
+    {
+      "name": "Freeze installed shore 15,12",
+      "kind": "point",
+      "position": [
+        15,
+        12
+      ],
+      "block": "65"
+    },
+    {
+      "name": "Freeze installed shore 18,12",
+      "kind": "point",
+      "position": [
+        18,
+        12
+      ],
+      "block": "64"
+    },
+    {
+      "name": "Open native fence 9,0",
+      "kind": "point",
+      "position": [
+        9,
+        0
+      ],
+      "block": "0f"
+    },
+    {
+      "name": "Open native fence 10,0",
+      "kind": "point",
+      "position": [
+        10,
+        0
+      ],
+      "block": "0f"
+    },
+    {
+      "name": "Open native fence 11,0",
+      "kind": "point",
+      "position": [
+        11,
+        0
+      ],
+      "block": "0f"
+    },
+    {
+      "name": "Open native fence 12,0",
+      "kind": "point",
+      "position": [
+        12,
+        0
+      ],
+      "block": "0f"
+    },
+    {
+      "name": "Open native fence 12,1",
+      "kind": "point",
+      "position": [
+        12,
+        1
+      ],
+      "block": "2d"
+    },
+    {
+      "name": "Open native fence 13,1",
+      "kind": "point",
+      "position": [
+        13,
+        1
+      ],
+      "block": "2d"
+    },
+    {
+      "name": "Open native fence 14,1",
+      "kind": "point",
+      "position": [
+        14,
+        1
+      ],
+      "block": "2d"
+    },
+    {
+      "name": "Open native fence 15,1",
+      "kind": "point",
+      "position": [
+        15,
+        1
+      ],
+      "block": "2d"
+    },
+    {
+      "name": "Open native fence 16,1",
+      "kind": "point",
+      "position": [
+        16,
+        1
+      ],
+      "block": "2d"
+    },
+    {
+      "name": "Open native fence 17,1",
+      "kind": "point",
+      "position": [
+        17,
+        1
+      ],
+      "block": "2d"
+    },
+    {
+      "name": "Open native fence 18,1",
+      "kind": "point",
+      "position": [
+        18,
+        1
+      ],
+      "block": "2d"
+    },
+    {
+      "name": "Open native fence 19,1",
+      "kind": "point",
+      "position": [
+        19,
+        1
+      ],
+      "block": "2d"
+    },
+    {
+      "name": "Open native fence 20,3",
+      "kind": "point",
+      "position": [
+        20,
+        3
+      ],
+      "block": "2d"
+    },
+    {
+      "name": "Open native fence 21,3",
+      "kind": "point",
+      "position": [
+        21,
+        3
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Open native fence 10,4",
+      "kind": "point",
+      "position": [
+        10,
+        4
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Open native fence 20,4",
+      "kind": "point",
+      "position": [
+        20,
+        4
+      ],
+      "block": "2d"
+    },
+    {
+      "name": "Open native fence 21,4",
+      "kind": "point",
+      "position": [
+        21,
+        4
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Open native fence 20,5",
+      "kind": "point",
+      "position": [
+        20,
+        5
+      ],
+      "block": "2d"
+    },
+    {
+      "name": "Open native fence 21,5",
+      "kind": "point",
+      "position": [
+        21,
+        5
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Open native fence 25,5",
+      "kind": "point",
+      "position": [
+        25,
+        5
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Open native fence 29,5",
+      "kind": "point",
+      "position": [
+        29,
+        5
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Open native fence 17,6",
+      "kind": "point",
+      "position": [
+        17,
+        6
+      ],
+      "block": "2d"
+    },
+    {
+      "name": "Open native fence 18,6",
+      "kind": "point",
+      "position": [
+        18,
+        6
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Open native fence 19,6",
+      "kind": "point",
+      "position": [
+        19,
+        6
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Open native fence 20,6",
+      "kind": "point",
+      "position": [
+        20,
+        6
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Open native fence 21,6",
+      "kind": "point",
+      "position": [
+        21,
+        6
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Open native fence 25,6",
+      "kind": "point",
+      "position": [
+        25,
+        6
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Open native fence 29,6",
+      "kind": "point",
+      "position": [
+        29,
+        6
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Open native fence 16,7",
+      "kind": "point",
+      "position": [
+        16,
+        7
+      ],
+      "block": "2d"
+    },
+    {
+      "name": "Open native fence 17,7",
+      "kind": "point",
+      "position": [
+        17,
+        7
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Open native fence 25,7",
+      "kind": "point",
+      "position": [
+        25,
+        7
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Open native fence 29,7",
+      "kind": "point",
+      "position": [
+        29,
+        7
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Open native fence 18,8",
+      "kind": "point",
+      "position": [
+        18,
+        8
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Open native fence 19,8",
+      "kind": "point",
+      "position": [
+        19,
+        8
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Open native fence 20,8",
+      "kind": "point",
+      "position": [
+        20,
+        8
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Open native fence 21,8",
+      "kind": "point",
+      "position": [
+        21,
+        8
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Open native fence 25,8",
+      "kind": "point",
+      "position": [
+        25,
+        8
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Open native fence 29,8",
+      "kind": "point",
+      "position": [
+        29,
+        8
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Open native fence 6,9",
+      "kind": "point",
+      "position": [
+        6,
+        9
+      ],
+      "block": "0f"
+    },
+    {
+      "name": "Open native fence 18,9",
+      "kind": "point",
+      "position": [
+        18,
+        9
+      ],
+      "block": "2d"
+    },
+    {
+      "name": "Open native fence 19,9",
+      "kind": "point",
+      "position": [
+        19,
+        9
+      ],
+      "block": "2d"
+    },
+    {
+      "name": "Open native fence 20,9",
+      "kind": "point",
+      "position": [
+        20,
+        9
+      ],
+      "block": "2d"
+    },
+    {
+      "name": "Open native fence 21,9",
+      "kind": "point",
+      "position": [
+        21,
+        9
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Open native fence 22,9",
+      "kind": "point",
+      "position": [
+        22,
+        9
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Open native fence 26,9",
+      "kind": "point",
+      "position": [
+        26,
+        9
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Open native fence 28,9",
+      "kind": "point",
+      "position": [
+        28,
+        9
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Open native fence 1,10",
+      "kind": "point",
+      "position": [
+        1,
+        10
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Open native fence 20,10",
+      "kind": "point",
+      "position": [
+        20,
+        10
+      ],
+      "block": "2d"
+    },
+    {
+      "name": "Open native fence 21,10",
+      "kind": "point",
+      "position": [
+        21,
+        10
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Open native fence 24,10",
+      "kind": "point",
+      "position": [
+        24,
+        10
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Open native fence 28,10",
+      "kind": "point",
+      "position": [
+        28,
+        10
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Open native fence 30,10",
+      "kind": "point",
+      "position": [
+        30,
+        10
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Open native fence 12,11",
+      "kind": "point",
+      "position": [
+        12,
+        11
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Open native fence 18,11",
+      "kind": "point",
+      "position": [
+        18,
+        11
+      ],
+      "block": "2d"
+    },
+    {
+      "name": "Open native fence 21,11",
+      "kind": "point",
+      "position": [
+        21,
+        11
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Open native fence 24,11",
+      "kind": "point",
+      "position": [
+        24,
+        11
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Open native fence 12,12",
+      "kind": "point",
+      "position": [
+        12,
+        12
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Open native fence 18,12",
+      "kind": "point",
+      "position": [
+        18,
+        12
+      ],
+      "block": "2d"
+    },
+    {
+      "name": "Open native fence 24,12",
+      "kind": "point",
+      "position": [
+        24,
+        12
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Open native fence 10,13",
+      "kind": "point",
+      "position": [
+        10,
+        13
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Open native fence 12,13",
+      "kind": "point",
+      "position": [
+        12,
+        13
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Open native fence 15,13",
+      "kind": "point",
+      "position": [
+        15,
+        13
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Open native fence 16,13",
+      "kind": "point",
+      "position": [
+        16,
+        13
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Open native fence 17,13",
+      "kind": "point",
+      "position": [
+        17,
+        13
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Open native fence 19,13",
+      "kind": "point",
+      "position": [
+        19,
+        13
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Open native fence 20,13",
+      "kind": "point",
+      "position": [
+        20,
+        13
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Open native fence 21,13",
+      "kind": "point",
+      "position": [
+        21,
+        13
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Open native fence 22,13",
+      "kind": "point",
+      "position": [
+        22,
+        13
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Open native fence 1,14",
+      "kind": "point",
+      "position": [
+        1,
+        14
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Open native fence 10,14",
+      "kind": "point",
+      "position": [
+        10,
+        14
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Open native fence 24,14",
+      "kind": "point",
+      "position": [
+        24,
+        14
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Open native fence 30,14",
+      "kind": "point",
+      "position": [
+        30,
+        14
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Open native fence 13,15",
+      "kind": "point",
+      "position": [
+        13,
+        15
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Open native fence 15,15",
+      "kind": "point",
+      "position": [
+        15,
+        15
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Open native fence 16,15",
+      "kind": "point",
+      "position": [
+        16,
+        15
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Open native fence 17,15",
+      "kind": "point",
+      "position": [
+        17,
+        15
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Open native fence 15,16",
+      "kind": "point",
+      "position": [
+        15,
+        16
+      ],
+      "block": "2d"
+    },
+    {
+      "name": "Open native fence 16,16",
+      "kind": "point",
+      "position": [
+        16,
+        16
+      ],
+      "block": "2d"
+    },
+    {
+      "name": "Open native fence 17,16",
+      "kind": "point",
+      "position": [
+        17,
+        16
+      ],
+      "block": "2d"
+    },
+    {
+      "name": "Open native fence 15,17",
+      "kind": "point",
+      "position": [
+        15,
+        17
+      ],
+      "block": "0f"
+    },
+    {
+      "name": "Open native fence 16,17",
+      "kind": "point",
+      "position": [
+        16,
+        17
+      ],
+      "block": "0f"
+    },
+    {
+      "name": "Open native fence 17,17",
+      "kind": "point",
+      "position": [
+        17,
+        17
+      ],
+      "block": "0f"
+    },
+    {
+      "kind": "point",
+      "name": "Fence-free canopy cap over the retained Staples walking spur",
+      "position": [
+        9,
+        0
+      ],
+      "block": "6c"
+    },
+    {
+      "kind": "point",
+      "name": "Fence-free canopy cap over the retained Staples walking spur",
+      "position": [
+        10,
+        0
+      ],
+      "block": "6c"
+    },
+    {
+      "kind": "point",
+      "name": "Fence-free canopy cap over the retained Staples walking spur",
+      "position": [
+        11,
+        0
+      ],
+      "block": "6c"
+    },
+    {
+      "kind": "point",
+      "name": "Fence-free canopy cap over the retained Staples walking spur",
+      "position": [
+        12,
+        0
+      ],
+      "block": "6c"
+    }
+  ],
+  "crossings": [
+    {
+      "id": "OUTLET_BRIDGE",
+      "deck_blocks": [
+        [
+          15,
+          14
+        ],
+        [
+          16,
+          14
+        ],
+        [
+          17,
+          14
+        ]
+      ],
+      "south_rail_blocks": [
+        [
+          15,
+          15
+        ],
+        [
+          16,
+          15
+        ],
+        [
+          17,
+          15
+        ]
+      ],
+      "water_under_rail_blocks": [
+        [
+          15,
+          16
+        ],
+        [
+          16,
+          16
+        ],
+        [
+          17,
+          16
+        ]
+      ],
+      "core_walk_line": [
+        [
+          28,
+          29
+        ],
+        [
+          29,
+          29
+        ],
+        [
+          30,
+          29
+        ],
+        [
+          31,
+          29
+        ],
+        [
+          32,
+          29
+        ],
+        [
+          33,
+          29
+        ],
+        [
+          34,
+          29
+        ],
+        [
+          35,
+          29
+        ],
+        [
+          36,
+          29
+        ],
+        [
+          37,
+          29
+        ],
+        [
+          38,
+          29
+        ]
+      ],
+      "deck_collision": "FLOOR"
+    },
+    {
+      "id": "FISHING_DOCK",
+      "deck_blocks": [
+        [
+          18,
+          7
+        ],
+        [
+          19,
+          7
+        ],
+        [
+          20,
+          7
+        ]
+      ],
+      "south_rail_blocks": [
+        [
+          18,
+          8
+        ],
+        [
+          19,
+          8
+        ],
+        [
+          20,
+          8
+        ]
+      ],
+      "water_under_rail_blocks": [
+        [
+          18,
+          9
+        ],
+        [
+          19,
+          9
+        ],
+        [
+          20,
+          9
+        ]
+      ],
+      "core_walk_line": [
+        [
+          35,
+          15
+        ],
+        [
+          36,
+          15
+        ],
+        [
+          37,
+          15
+        ],
+        [
+          38,
+          15
+        ],
+        [
+          39,
+          15
+        ],
+        [
+          40,
+          15
+        ],
+        [
+          41,
+          15
+        ],
+        [
+          42,
+          15
+        ],
+        [
+          43,
+          15
+        ]
+      ],
+      "deck_collision": "FLOOR"
+    }
+  ],
+  "art_authority": "Original Johto/Kanto render; original Kanto leafy canopy, compact Route12 houses and native pier construction.",
+  "source_pixels_modified": false,
+  "status": "Hand-authored compact native route. Shore pixels checked against the original Kanto sheet; no generated geography.",
+  "required_before_regional_release": [
+    "Fit actual Brainerd and Detroit Lakes ports, preserving BADGE_6 and SQ02.",
+    "Validate regional recovery and the earned SQ02 journey.",
+    "Complete visual and pacing review across all twenty routes."
+  ],
+  "review_contract": {
+    "road_width_core_tiles": "2\u20134 normally; one six-tile cabin forecourt",
+    "required_grass_crossings": 1,
+    "decision": "Battle on short road or a longer grass detour with a cache.",
+    "water_access": "One railed bridge, one bank opening into the closed-end dock.",
+    "area_reduction": "6912 to 576 metatiles (92% less); all playable decisions retained",
+    "one_way_return": "Native Kanto07 at meadow return: HOP_DOWN above WALL; no side bypass."
+  },
+  "additional_water_blocks": [
+    "6b"
+  ],
+  "water_boundaries": [
+    {
+      "id": "SHINER_NORTH_ROCKS",
+      "blocks": [
+        [
+          12,
+          1
+        ],
+        [
+          13,
+          1
+        ],
+        [
+          14,
+          1
+        ],
+        [
+          15,
+          1
+        ],
+        [
+          16,
+          1
+        ],
+        [
+          17,
+          1
+        ],
+        [
+          18,
+          1
+        ],
+        [
+          19,
+          1
+        ]
+      ],
+      "source_block": "6b",
+      "source_collision": [
+        "WATER",
+        "WATER",
+        "WALL",
+        "WALL"
+      ],
+      "closure": "Forest cap at meta row0 has no WATER. Native6b lower WALL row y3 closes lake below; its small water strip y2 above rocks is unreachable from all route land/Surf."
+    },
+    {
+      "id": "OUTLET_SOUTH_ROCKS",
+      "blocks": [
+        [
+          15,
+          17
+        ],
+        [
+          16,
+          17
+        ],
+        [
+          17,
+          17
+        ]
+      ],
+      "source_block": "6b",
+      "source_collision": [
+        "WATER",
+        "WATER",
+        "WALL",
+        "WALL"
+      ],
+      "closure": "Bottom map row y35 is WALL. No reciprocal water neighbor."
+    }
+  ]
+}

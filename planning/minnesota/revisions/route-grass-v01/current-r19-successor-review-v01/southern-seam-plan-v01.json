@@ -1,0 +1,52 @@
+{
+  "parent_revision": "route_grass_r17_trail_guidance_revision",
+  "parent_pack": "content-packs/minnesota-current-r17-trail-guidance-v02.crystalpack",
+  "parent_pack_sha256": "186c262b18d5174cb7ba9727358d4022bea9fce6d362529405728028ef92c60a",
+  "parent_content_identity": "f57dda999ae1f84ae1fec5dd6b0b6d763111dba2a99b966fc6bb80b2454f38f2",
+  "connections": [
+    {
+      "map": "MnR19C00R01",
+      "direction": "south",
+      "target_map": "MnDetroitLakes",
+      "offset": 0
+    },
+    {
+      "map": "MnDetroitLakes",
+      "direction": "north",
+      "target_map": "MnR19C00R01",
+      "offset": 0
+    }
+  ],
+  "town_opening": {
+    "map": "MnDetroitLakes",
+    "metatile": [
+      12,
+      0
+    ],
+    "before": "05",
+    "after": "01"
+  },
+  "lanes": [
+    {
+      "route": [
+        24,
+        11
+      ],
+      "town": [
+        24,
+        0
+      ]
+    },
+    {
+      "route": [
+        25,
+        11
+      ],
+      "town": [
+        25,
+        0
+      ]
+    }
+  ],
+  "preserve": "All other blocks, existing connections, events/guards/actors, original assets and audio. Native six-badge entry requirements remain unchanged."
+}

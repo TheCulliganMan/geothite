@@ -1,0 +1,606 @@
+{
+  "status": "FRESH_SELECTED_STATIC_SCREEN_NOT_GAMEPLAY_ACCEPTANCE",
+  "pack": "content-packs/minnesota-international-falls-windbreak-v01.crystalpack",
+  "pack_sha256": "7066f05448101c79b4dc761963b0f39a570bad07c4f80e3e777901ac2e207507",
+  "routes": [
+    {
+      "route": "MN_R01",
+      "source": "planning/minnesota/revisions/route-grass-v01/current-r01-successor-review-v01/current-exterior.contract-v01.json",
+      "endpoint_and_base_crossing_adapter": "planning/minnesota/revisions/route-grass-v01/compact-rebase-v01/MN_R01.installed-dossier.json",
+      "source_sha256": "2a5f98ee19e188a70178d02d87288ded941f8b71e4d6759e9c208480432e3b38",
+      "grass_quadrants": 136,
+      "checks": [
+        {
+          "id": "WINONA_GRASS_GATE",
+          "minimum": 4,
+          "measurements": [
+            {
+              "status": "MEASURED",
+              "grass_steps": 4,
+              "grass_quadrants_in_contract": 24,
+              "ice_quadrants": 0
+            },
+            {
+              "status": "MEASURED",
+              "grass_steps": 4,
+              "grass_quadrants_in_contract": 24,
+              "ice_quadrants": 0
+            }
+          ],
+          "status": "PASS_STATIC_BANK_ICE_MODEL"
+        }
+      ],
+      "status": "CHECKED"
+    },
+    {
+      "route": "MN_R02",
+      "source": "planning/minnesota/revisions/route-grass-v01/compact-rebase-v01/MN_R02.installed-dossier.json",
+      "endpoint_and_base_crossing_adapter": "planning/minnesota/revisions/route-grass-v01/compact-rebase-v01/MN_R02.installed-dossier.json",
+      "source_sha256": "8fe6c1081bfa040a36b8c290df9077213af19cd533c19da297d1da0b401114f0",
+      "grass_quadrants": 220,
+      "checks": [
+        {
+          "id": "MANKATO_PASTURE_GATE",
+          "minimum": 6,
+          "measurements": [
+            {
+              "status": "MEASURED",
+              "grass_steps": 6,
+              "grass_quadrants_in_contract": 36,
+              "ice_quadrants": 0
+            },
+            {
+              "status": "MEASURED",
+              "grass_steps": 6,
+              "grass_quadrants_in_contract": 36,
+              "ice_quadrants": 0
+            }
+          ],
+          "status": "PASS_STATIC_BANK_ICE_MODEL"
+        }
+      ],
+      "status": "CHECKED"
+    },
+    {
+      "route": "MN_R03",
+      "source": "planning/minnesota/revisions/route-grass-v01/current-r03-successor-review-v01/current-exterior.contract-v03.json",
+      "endpoint_and_base_crossing_adapter": "planning/minnesota/revisions/route-grass-v01/compact-rebase-v01/MN_R03.installed-dossier.json",
+      "source_sha256": "bbb83ed6f04491bd298e03122129dcaf04aff892ca5c63413ce66ace7cf1ec8b",
+      "grass_quadrants": 224,
+      "checks": [
+        {
+          "id": "LOWER_BANK_HABITAT",
+          "minimum": 6,
+          "measurements": [
+            {
+              "status": "MEASURED",
+              "grass_steps": 6,
+              "grass_quadrants_in_contract": 48,
+              "ice_quadrants": 0
+            },
+            {
+              "status": "MEASURED",
+              "grass_steps": 6,
+              "grass_quadrants_in_contract": 48,
+              "ice_quadrants": 0
+            }
+          ],
+          "status": "PASS_STATIC_BANK_ICE_MODEL"
+        }
+      ],
+      "status": "CHECKED"
+    },
+    {
+      "route": "MN_R04",
+      "source": "planning/minnesota/routes/MN_R04.json",
+      "endpoint_and_base_crossing_adapter": "planning/minnesota/routes/MN_R04.json",
+      "source_sha256": "4bbbcb2443dd2582261eeebecd3b9e56a27f0dead474f75cb0a5ba131e07fde9",
+      "grass_quadrants": 92,
+      "checks": [],
+      "status": "CUSTOM_COURSE_REFERENCE_REQUIRED"
+    },
+    {
+      "route": "MN_R05",
+      "source": "planning/minnesota/revisions/route-grass-v01/current-r05-successor-review-v01/current-exterior.contract-v03.json",
+      "endpoint_and_base_crossing_adapter": "planning/minnesota/revisions/route-grass-v01/compact-rebase-v01/MN_R05.installed-dossier.json",
+      "source_sha256": "4b2806a4431adb40f702050f1ea041c3462e935900ce7408e0901b8d0c6b6654",
+      "grass_quadrants": 220,
+      "checks": [
+        {
+          "id": "CITY_HABITAT",
+          "minimum": 4,
+          "measurements": [
+            {
+              "status": "MEASURED",
+              "grass_steps": 4,
+              "grass_quadrants_in_contract": 24,
+              "ice_quadrants": 0
+            },
+            {
+              "status": "MEASURED",
+              "grass_steps": 4,
+              "grass_quadrants_in_contract": 24,
+              "ice_quadrants": 0
+            }
+          ],
+          "status": "PASS_STATIC_BANK_ICE_MODEL"
+        }
+      ],
+      "status": "CHECKED"
+    },
+    {
+      "route": "MN_R06",
+      "source": "planning/minnesota/revisions/route-grass-v01/current-r06-successor-review-v01/current-exterior.contract-v02.json",
+      "endpoint_and_base_crossing_adapter": "planning/minnesota/revisions/route-grass-v01/current-r06-audit-v01/MN_R06.installed-dossier.json",
+      "source_sha256": "24eb3aea5ed7064f92f07f380e93f0693ca876deda693285e0c5e306daab8f74",
+      "grass_quadrants": 216,
+      "checks": [
+        {
+          "id": "SOUTH_PINE_HABITAT",
+          "minimum": 4,
+          "measurements": [
+            {
+              "status": "MEASURED",
+              "grass_steps": 4,
+              "grass_quadrants_in_contract": 40,
+              "ice_quadrants": 0
+            },
+            {
+              "status": "MEASURED",
+              "grass_steps": 4,
+              "grass_quadrants_in_contract": 40,
+              "ice_quadrants": 0
+            }
+          ],
+          "status": "PASS_STATIC_BANK_ICE_MODEL"
+        }
+      ],
+      "status": "CHECKED"
+    },
+    {
+      "route": "MN_R07",
+      "source": "planning/minnesota/revisions/route-grass-v01/current-r07-successor-review-v01/current-exterior.contract-v02.json",
+      "endpoint_and_base_crossing_adapter": "planning/minnesota/revisions/route-grass-v01/current-r07-audit-v01/MN_R07.installed-dossier.json",
+      "source_sha256": "4fb2cbe617e2ebdfb9add17ac577e6268f55a649dc39a3aa185f264387210f9e",
+      "grass_quadrants": 224,
+      "checks": [
+        {
+          "id": "PENINSULA_MEADOW",
+          "minimum": 7,
+          "measurements": [
+            {
+              "status": "MEASURED",
+              "grass_steps": 7,
+              "grass_quadrants_in_contract": 96,
+              "ice_quadrants": 0
+            },
+            {
+              "status": "MEASURED",
+              "grass_steps": 7,
+              "grass_quadrants_in_contract": 96,
+              "ice_quadrants": 0
+            }
+          ],
+          "status": "PASS_STATIC_BANK_ICE_MODEL"
+        }
+      ],
+      "status": "CHECKED"
+    },
+    {
+      "route": "MN_R08",
+      "source": "planning/minnesota/revisions/route-grass-v01/current-r08-successor-review-v01/current-exterior.contract-v02.json",
+      "endpoint_and_base_crossing_adapter": "planning/minnesota/revisions/route-grass-v01/current-r08-audit-v01/MN_R08.installed-dossier.json",
+      "source_sha256": "f41c3432d9c18f3130bc07c59aaa7de532cf8ce81a2f7c87baf396e8934af030",
+      "grass_quadrants": 372,
+      "checks": [
+        {
+          "id": "LEECH_HABITAT",
+          "minimum": 4,
+          "measurements": [
+            {
+              "status": "MEASURED",
+              "grass_steps": 4,
+              "grass_quadrants_in_contract": 40,
+              "ice_quadrants": 0
+            },
+            {
+              "status": "MEASURED",
+              "grass_steps": 4,
+              "grass_quadrants_in_contract": 40,
+              "ice_quadrants": 0
+            }
+          ],
+          "status": "PASS_STATIC_BANK_ICE_MODEL"
+        }
+      ],
+      "status": "CHECKED"
+    },
+    {
+      "route": "MN_R09",
+      "source": "planning/minnesota/revisions/route-grass-v01/current-r09-successor-review-v01/current-exterior.contract-v02.json",
+      "endpoint_and_base_crossing_adapter": "planning/minnesota/revisions/route-grass-v01/current-r09-v01/MN_R09.installed-dossier.json",
+      "source_sha256": "ce62e21a1d88ce5ea6068d0113f0a2c9b763a54261044f173bfaa961b77fb44a",
+      "grass_quadrants": 240,
+      "checks": [
+        {
+          "id": "MN_R09_SPRUCE_NECK",
+          "minimum": 4,
+          "measurements": [
+            {
+              "status": "MEASURED",
+              "grass_steps": 4,
+              "grass_quadrants_in_contract": 24,
+              "ice_quadrants": 0
+            },
+            {
+              "status": "MEASURED",
+              "grass_steps": 4,
+              "grass_quadrants_in_contract": 24,
+              "ice_quadrants": 0
+            }
+          ],
+          "status": "PASS_STATIC_BANK_ICE_MODEL"
+        }
+      ],
+      "status": "CHECKED"
+    },
+    {
+      "route": "MN_R10",
+      "source": "planning/minnesota/revisions/route-grass-v01/current-r10-successor-review-v01/current-exterior.contract-v02.json",
+      "endpoint_and_base_crossing_adapter": "planning/minnesota/revisions/r10-carrier-plateau-v02/dossier.json",
+      "source_sha256": "3c712e0e59d96b6f613a7de258ee13db10e7497272d38126f338715067b3aa0c",
+      "grass_quadrants": 168,
+      "checks": [
+        {
+          "id": "PINE_NECK_HABITAT",
+          "minimum": 6,
+          "measurements": [
+            {
+              "status": "MEASURED",
+              "grass_steps": 6,
+              "grass_quadrants_in_contract": 24,
+              "ice_quadrants": 0
+            },
+            {
+              "status": "MEASURED",
+              "grass_steps": 6,
+              "grass_quadrants_in_contract": 24,
+              "ice_quadrants": 0
+            }
+          ],
+          "status": "PASS_STATIC_BANK_ICE_MODEL"
+        }
+      ],
+      "status": "CHECKED"
+    },
+    {
+      "route": "MN_R11",
+      "source": "planning/minnesota/revisions/north-shore-footpath-v01/current-exterior.contract-v01.json",
+      "endpoint_and_base_crossing_adapter": "planning/minnesota/revisions/route-grass-v01/current-r11-v01/MN_R11.controller-dossier.json",
+      "source_sha256": "9fe3d2439758645f4068fd3b3d9fe169850c864b255a771a389cf4cb5d9087be",
+      "grass_quadrants": 380,
+      "checks": [
+        {
+          "id": "SOUTHERN_SHORE_HABITAT",
+          "minimum": 4,
+          "measurements": [
+            {
+              "status": "MEASURED",
+              "grass_steps": 4,
+              "grass_quadrants_in_contract": 16,
+              "ice_quadrants": 0
+            },
+            {
+              "status": "MEASURED",
+              "grass_steps": 4,
+              "grass_quadrants_in_contract": 16,
+              "ice_quadrants": 0
+            }
+          ],
+          "status": "PASS_STATIC_BANK_ICE_MODEL"
+        },
+        {
+          "id": "BIRCH_SWITCHBACK_GRASS",
+          "minimum": 3,
+          "measurements": [
+            {
+              "status": "MEASURED",
+              "grass_steps": 3,
+              "grass_quadrants_in_contract": 8,
+              "ice_quadrants": 0
+            },
+            {
+              "status": "MEASURED",
+              "grass_steps": 3,
+              "grass_quadrants_in_contract": 8,
+              "ice_quadrants": 0
+            }
+          ],
+          "status": "PASS_STATIC_BANK_ICE_MODEL"
+        }
+      ],
+      "status": "CHECKED"
+    },
+    {
+      "route": "MN_R12",
+      "source": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R12.dossier.json",
+      "endpoint_and_base_crossing_adapter": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R12.dossier.json",
+      "source_sha256": "e788ce43279078fa2135ab566671fd30c7c59a6b3f402b60ca2a5ba773a91740",
+      "grass_quadrants": 88,
+      "checks": [
+        {
+          "id": "WEST_PINE_SEDGE",
+          "minimum": 6,
+          "measurements": [
+            {
+              "status": "MEASURED",
+              "grass_steps": 6,
+              "grass_quadrants_in_contract": 12,
+              "ice_quadrants": 104
+            },
+            {
+              "status": "MEASURED",
+              "grass_steps": 6,
+              "grass_quadrants_in_contract": 12,
+              "ice_quadrants": 104
+            }
+          ],
+          "status": "PASS_STATIC_BANK_ICE_MODEL"
+        }
+      ],
+      "status": "CHECKED"
+    },
+    {
+      "route": "MN_R13",
+      "source": "planning/minnesota/revisions/route-grass-v01/current-r13-successor-review-v01/current-exterior.contract-v02.json",
+      "endpoint_and_base_crossing_adapter": "planning/minnesota/revisions/route-grass-v01/current-r13-union-v01/MN_R13.installed-dossier.json",
+      "source_sha256": "66b2493577e18d05601df13f6b0e76f66cb1dfeb61db532cdf3230ab1fd5c604",
+      "grass_quadrants": 208,
+      "checks": [
+        {
+          "id": "SADDLE_HABITAT",
+          "minimum": 6,
+          "measurements": [
+            {
+              "status": "MEASURED",
+              "grass_steps": 6,
+              "grass_quadrants_in_contract": 24,
+              "ice_quadrants": 16
+            },
+            {
+              "status": "MEASURED",
+              "grass_steps": 6,
+              "grass_quadrants_in_contract": 24,
+              "ice_quadrants": 16
+            }
+          ],
+          "status": "PASS_STATIC_BANK_ICE_MODEL"
+        },
+        {
+          "id": "SOUTHERN_PINE_NECK",
+          "minimum": 6,
+          "measurements": [
+            {
+              "status": "MEASURED",
+              "grass_steps": 6,
+              "grass_quadrants_in_contract": 12,
+              "ice_quadrants": 16
+            },
+            {
+              "status": "MEASURED",
+              "grass_steps": 6,
+              "grass_quadrants_in_contract": 12,
+              "ice_quadrants": 16
+            }
+          ],
+          "status": "PASS_STATIC_BANK_ICE_MODEL"
+        }
+      ],
+      "status": "CHECKED"
+    },
+    {
+      "route": "MN_R14",
+      "source": "planning/minnesota/revisions/route-grass-v01/current-r14-successor-review-v01/current-exterior.contract-v01.json",
+      "endpoint_and_base_crossing_adapter": "planning/minnesota/revisions/route-grass-v01/current-r14-v01/MN_R14.installed-dossier.json",
+      "source_sha256": "dd63ca5d5671929f72fa045383c0a392e1415776e07b7e587946e652f3e891f5",
+      "grass_quadrants": 504,
+      "checks": [
+        {
+          "id": "YOUNG_RIVER_UNDERSTORY",
+          "minimum": 4,
+          "measurements": [
+            {
+              "status": "MEASURED",
+              "grass_steps": 4,
+              "grass_quadrants_in_contract": 32,
+              "ice_quadrants": 0
+            },
+            {
+              "status": "MEASURED",
+              "grass_steps": 4,
+              "grass_quadrants_in_contract": 32,
+              "ice_quadrants": 0
+            }
+          ],
+          "status": "PASS_STATIC_BANK_ICE_MODEL"
+        }
+      ],
+      "status": "CHECKED"
+    },
+    {
+      "route": "MN_R15",
+      "source": "planning/minnesota/revisions/route-grass-v01/current-r15-successor-review-v01/current-exterior.contract-v01.json",
+      "endpoint_and_base_crossing_adapter": "planning/minnesota/revisions/route-grass-v01/current-r15-v01/MN_R15.installed-dossier.json",
+      "source_sha256": "fc37c799c177ef18ec611fd4c22ed179f8b825b9658683c99d88e0fdca22a99d",
+      "grass_quadrants": 92,
+      "checks": [
+        {
+          "id": "WEST_MEADOW_GATE",
+          "minimum": 6,
+          "measurements": [
+            {
+              "status": "MEASURED",
+              "grass_steps": 6,
+              "grass_quadrants_in_contract": 36,
+              "ice_quadrants": 0
+            },
+            {
+              "status": "MEASURED",
+              "grass_steps": 6,
+              "grass_quadrants_in_contract": 36,
+              "ice_quadrants": 0
+            }
+          ],
+          "status": "PASS_STATIC_BANK_ICE_MODEL"
+        }
+      ],
+      "status": "CHECKED"
+    },
+    {
+      "route": "MN_R16",
+      "source": "planning/minnesota/revisions/route-grass-v01/current-r16-successor-review-v01/current-exterior.contract-v01.json",
+      "endpoint_and_base_crossing_adapter": "planning/minnesota/revisions/route-grass-v01/current-r16-v01/canonical-dossier.before.json",
+      "source_sha256": "12d4d53c454a4deaad35dcdfcb2894088bc45218eb94f18b0afaddb8f43bda3c",
+      "grass_quadrants": 1016,
+      "checks": [
+        {
+          "id": "COTTONWOOD_NECK",
+          "minimum": 4,
+          "measurements": [
+            {
+              "status": "MEASURED",
+              "grass_steps": 4,
+              "grass_quadrants_in_contract": 40,
+              "ice_quadrants": 0
+            },
+            {
+              "status": "MEASURED",
+              "grass_steps": 4,
+              "grass_quadrants_in_contract": 40,
+              "ice_quadrants": 0
+            }
+          ],
+          "status": "PASS_STATIC_BANK_ICE_MODEL"
+        }
+      ],
+      "status": "CHECKED"
+    },
+    {
+      "route": "MN_R17",
+      "source": "planning/minnesota/revisions/route-grass-v01/current-r17-successor-review-v01/current-exterior.contract-v01.json",
+      "endpoint_and_base_crossing_adapter": "planning/minnesota/revisions/route-grass-v01/current-r17-v01/MN_R17.installed-dossier.json",
+      "source_sha256": "caee28d9390ef75a4204224dfdbe3b480fb51bc2345c440f7cf8eaf1484fb192",
+      "grass_quadrants": 136,
+      "checks": [
+        {
+          "id": "MN_R17_SEDGE_NECK",
+          "minimum": 4,
+          "measurements": [
+            {
+              "status": "MEASURED",
+              "grass_steps": 4,
+              "grass_quadrants_in_contract": 24,
+              "ice_quadrants": 92
+            },
+            {
+              "status": "MEASURED",
+              "grass_steps": 4,
+              "grass_quadrants_in_contract": 24,
+              "ice_quadrants": 92
+            }
+          ],
+          "status": "PASS_STATIC_BANK_ICE_MODEL"
+        }
+      ],
+      "status": "CHECKED"
+    },
+    {
+      "route": "MN_R18",
+      "source": "planning/minnesota/routes/MN_R18.json",
+      "endpoint_and_base_crossing_adapter": "planning/minnesota/routes/MN_R18.json",
+      "source_sha256": "e9fa5dee75b8326be328379c7ccf1309ee407ee4e58b4b71ae6454188d49eaa4",
+      "grass_quadrants": 268,
+      "checks": [
+        {
+          "id": "SHORE_MEADOW_NECK",
+          "minimum": 6,
+          "measurements": [
+            {
+              "status": "MEASURED",
+              "grass_steps": 6,
+              "grass_quadrants_in_contract": 48,
+              "ice_quadrants": 0
+            },
+            {
+              "status": "MEASURED",
+              "grass_steps": 6,
+              "grass_quadrants_in_contract": 48,
+              "ice_quadrants": 0
+            }
+          ],
+          "status": "PASS_STATIC_BANK_ICE_MODEL"
+        }
+      ],
+      "status": "CHECKED"
+    },
+    {
+      "route": "MN_R19",
+      "source": "planning/minnesota/revisions/route-grass-v01/current-r19-v01/MN_R19.installed-dossier.json",
+      "endpoint_and_base_crossing_adapter": "planning/minnesota/revisions/route-grass-v01/current-r19-v01/MN_R19.installed-dossier.json",
+      "source_sha256": "606a78c7c8174648d7771419e027e8652ddb9c81486e0d5be5a8aab2f93ba256",
+      "grass_quadrants": 156,
+      "checks": [
+        {
+          "id": "PRAIRIE_HABITAT_SEAM",
+          "minimum": 4,
+          "measurements": [
+            {
+              "status": "MEASURED",
+              "grass_steps": 4,
+              "grass_quadrants_in_contract": 24,
+              "ice_quadrants": 0
+            },
+            {
+              "status": "MEASURED",
+              "grass_steps": 4,
+              "grass_quadrants_in_contract": 24,
+              "ice_quadrants": 0
+            }
+          ],
+          "status": "PASS_STATIC_BANK_ICE_MODEL"
+        }
+      ],
+      "status": "CHECKED"
+    },
+    {
+      "route": "MN_R20",
+      "source": "planning/minnesota/caves/r20-winding-cleft-v01/route-dossier.json",
+      "endpoint_and_base_crossing_adapter": "planning/minnesota/caves/r20-winding-cleft-v01/route-dossier.json",
+      "source_sha256": "bea4012d07cc1b62fcb0745372f1769552bc83f9beb1b147a6fa7ede9c6b48a4",
+      "grass_quadrants": 900,
+      "checks": [
+        {
+          "id": "BOUNDARY_SHORE_NECK",
+          "minimum": 4,
+          "measurements": [
+            {
+              "status": "MEASURED",
+              "grass_steps": 4,
+              "grass_quadrants_in_contract": 48,
+              "ice_quadrants": 0
+            },
+            {
+              "status": "MEASURED",
+              "grass_steps": 4,
+              "grass_quadrants_in_contract": 48,
+              "ice_quadrants": 0
+            }
+          ],
+          "status": "PASS_STATIC_BANK_ICE_MODEL"
+        }
+      ],
+      "status": "CHECKED"
+    }
+  ],
+  "scope": "Rechecks prior inspected19declared grass crossing contracts against actual selected tiles with reciprocal banks/current-tile hops/forced ICE. R04 separate populated trainer-versus-grass course. Does not replace native/visual/actor/controller evidence or source integration."
+}

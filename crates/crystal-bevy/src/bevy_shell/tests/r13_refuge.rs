@@ -29,9 +29,15 @@ enum PartySetup {
     Empty,
     InjuredTeam,
     LowPpPartner,
+    Fishing,
 }
 fn source() -> Value {
-    let path=std::env::var_os("CRYSTAL_R13_REFUGE_SOURCE").map(PathBuf::from).unwrap_or_else(||PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../planning/minnesota/renders/caves/r13-candidate/v02/MnR13Cave1F.candidate.json"));
+    let path = std::env::var_os("CRYSTAL_R13_REFUGE_SOURCE")
+        .map(PathBuf::from)
+        .unwrap_or_else(|| {
+            PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+                .join("../../planning/minnesota/caves/r13-cedar-basin-v01/after.json")
+        });
     serde_json::from_str(
         &std::fs::read_to_string(path).expect("same frozen R13 publication source"),
     )
@@ -89,8 +95,9 @@ fn fixture(
     complete_visible_smoke_player_name_if_needed(&mut c.shell, Some("CHRIS"))
         .expect("fixture name");
     if setup != PartySetup::Empty {
-        for (species, level, status) in [("MEW", 30, "POISON"), ("TOTODILE", 20, "PARALYSIS")] {
-            if setup == PartySetup::LowPpPartner && species != "MEW" {
+        for (species, level, status) in [("CINDORE", 30, "POISON"), ("MUDMENDER", 20, "PARALYSIS")]
+        {
+            if setup == PartySetup::LowPpPartner && species != "CINDORE" {
                 continue;
             }
             let mut pokemon = runtime
@@ -99,6 +106,9 @@ fn fixture(
                 .expect("source-legal native learned moves");
             for learned in &mut pokemon.moves {
                 learned.current_pp = 1;
+            }
+            if setup == PartySetup::Fishing {
+                pokemon.item = Some("SMOKE_BALL".into());
             }
             if setup == PartySetup::InjuredTeam {
                 pokemon.hp = pokemon.max_hp - 30;
@@ -110,6 +120,15 @@ fn fixture(
         }
     }
     let state = c.shell.shell.session_mut().state_mut();
+    if setup == PartySetup::Fishing {
+        assert!(
+            state
+                .bag
+                .add_item(&runtime.data().items["OLD_ROD"], 1)
+                .expect("declared initial local rod")
+        );
+        state.registered_key_item = Some("OLD_ROD".into());
+    }
     state.money = 1000;
     state.random_state = Default::default();
     *c.shell.shell.session_mut().divider_mut_for_tests() =
@@ -146,6 +165,16 @@ fn fixture(
                 && cmd.args == ["HealParty"])
     );
     (root, runtime, c)
+}
+fn checkpoint(c: &mut VisibleShellController, name: &str) {
+    let Some(directory) = std::env::var_os("CRYSTAL_R13_CEDAR_REVIEW_DIR") else {
+        return;
+    };
+    let directory = PathBuf::from(directory);
+    std::fs::create_dir_all(&directory).expect("retained cave save directory");
+    let path = directory.join(format!("{name}.crystalsave"));
+    assert!(!path.exists(), "retain every prior cave checkpoint");
+    c.save(path).expect("actual reached cave checkpoint");
 }
 fn collected(c: &VisibleShellController) -> bool {
     c.shell
@@ -238,6 +267,7 @@ fn leave(c: &mut VisibleShellController, r: &CrystalRuntime) {
 fn r13_refuge_controller_true_passive_return_and_both_useful_stairs_bidirectional() {
     let (_, r, mut c) = fixture(OUTSIDE, (14, 6), PartySetup::Empty);
     enter(&mut c, &r);
+    checkpoint(&mut c, "entered");
     let s = source();
     let stairs = s["review_contract"]["controller_probes"]["stairs"]
         .as_array()
@@ -277,7 +307,9 @@ fn r13_refuge_controller_true_passive_return_and_both_useful_stairs_bidirectiona
         indoor_walk(&mut c, &r, point(p));
         assert_eq!(map(&mut c), ROOM);
     }
+    checkpoint(&mut c, "traversed");
     leave(&mut c, &r);
+    checkpoint(&mut c, "outside-passive");
     enter(&mut c, &r);
     assert!(!collected(&c));
 }
@@ -345,6 +377,7 @@ fn harper(c: &mut VisibleShellController, r: &CrystalRuntime) {
 #[ignore = "requires actual revised R13 refuge pack retaining original HealParty service"]
 fn r13_refuge_controller_original_harper_pages_heal_two_legal_partners_and_continue() {
     let (root, r, mut c) = fixture(ROOM, (7, 14), PartySetup::InjuredTeam);
+    checkpoint(&mut c, "injured");
     let before = c.snapshot().expect("injured/status/lowPP team").party;
     assert_eq!(before.slots.len(), 2);
     for slot in before.slots {
@@ -355,10 +388,12 @@ fn r13_refuge_controller_original_harper_pages_heal_two_legal_partners_and_conti
     let original_flags = flags(&c);
     let bag = c.snapshot().expect("initial carried inventory").bag;
     harper(&mut c, &r);
+    checkpoint(&mut c, "healed");
     assert_eq!(flags(&c), original_flags);
     assert_eq!(c.snapshot().expect("service is not an item grant").bag, bag);
     assert_eq!(c.shell.shell.session().state().money, 1000);
     c = continue_save(root, r.clone(), &mut c);
+    checkpoint(&mut c, "healed-continued");
     for slot in c.snapshot().expect("continued actual healing").party.slots {
         assert_eq!(slot.pokemon.hp, slot.pokemon.max_hp);
         assert_eq!(slot.pokemon.status, None);
@@ -421,9 +456,12 @@ fn collect(c: &mut VisibleShellController, r: &CrystalRuntime) {
 #[ignore = "requires actual revised R13 refuge pack retaining original Max Ether program"]
 fn r13_refuge_controller_original_max_ether_restores_native_learned_pp_once_and_continues() {
     let (root, r, mut c) = fixture(ROOM, (7, 14), PartySetup::LowPpPartner);
+    checkpoint(&mut c, "before-cache");
     assert_eq!(quantity(&c, &r), 0);
     collect(&mut c, &r);
+    checkpoint(&mut c, "collected");
     use_pp_item(&mut c, &r, "MAX_ETHER", Some(0));
+    checkpoint(&mut c, "ether-used");
     assert_eq!(quantity(&c, &r), 0);
     leave(&mut c, &r);
     enter(&mut c, &r);
@@ -437,4 +475,67 @@ fn r13_refuge_controller_original_max_ether_restores_native_learned_pp_once_and_
     assert!(collected(&c));
     assert_eq!(quantity(&c, &r), 0);
     assert_eq!(c.shell.shell.session().state().money, 1000);
+}
+
+#[test]
+#[ignore = "requires current Cedar Shelter pack; local registered Old Rod and source-learned regional party setup"]
+fn r13_refuge_controller_connected_bank_retains_original_fishing_and_continue() {
+    let (root, r, mut c) = fixture(ROOM, (7, 14), PartySetup::Fishing);
+    checkpoint(&mut c, "initial-fishing");
+    let original_flags = flags(&c);
+    indoor_walk(&mut c, &r, (3, 7));
+    blocked(&mut c, GameButton::Right);
+    assert_eq!(kind(&r, (4, 7)), "WATER");
+    assert!(
+        c.snapshot()
+            .expect("ordinary fishing bank")
+            .party
+            .slots
+            .iter()
+            .all(|slot| slot.pokemon.moves.iter().all(|m| m.name != "SURF"))
+    );
+    checkpoint(&mut c, "fishing-bank");
+    let mut bite = false;
+    for _ in 0..64 {
+        press(&mut c, GameButton::Select);
+        c.wait_frames(160).expect("native cast animation");
+        let notice = c.shell.field_notice.clone().expect("actual fishing notice");
+        assert!(notice.contains("A bite!") || notice.contains("Not even a nibble!"));
+        press(&mut c, GameButton::Down);
+        assert_eq!(tile(&mut c), (3, 7), "cast notice owns input");
+        press(&mut c, GameButton::A);
+        if notice.contains("A bite!") {
+            let snapshot = c.snapshot().expect("acknowledged fishing battle");
+            let battle = snapshot.battle.as_ref().expect("native fishing battle");
+            assert_eq!(battle.battle_type, "BATTLETYPE_FISH");
+            let fishing = serde_json::to_value(&r.data().fishing).expect("native fishing tables");
+            let slots = fishing["groups"]["FISHGROUP_MN_LAKE"]["rod_tables"]["OLD_ROD"]["slots"]
+                .as_array()
+                .expect("original regional lake rod table");
+            assert!(
+                slots
+                    .iter()
+                    .any(|slot| slot["species"] == battle.enemy_pokemon.species.id)
+            );
+            checkpoint(&mut c, "fishing-bite");
+            super::rochester::flee(&mut c);
+            bite = true;
+            break;
+        }
+        settle(&mut c, "no-bite cast released");
+    }
+    assert!(
+        bite,
+        "native rod must produce a real regional fishing battle"
+    );
+    assert_eq!(tile(&mut c), (3, 7));
+    assert_eq!(flags(&c), original_flags);
+    assert_eq!(
+        c.snapshot().expect("returned to bank").overworld.mode,
+        crystal_core::world::movement::MovementMode::Normal
+    );
+    c = continue_save(root, r.clone(), &mut c);
+    checkpoint(&mut c, "fishing-continued");
+    assert_eq!(tile(&mut c), (3, 7));
+    leave(&mut c, &r);
 }

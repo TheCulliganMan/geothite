@@ -1,0 +1,160 @@
+{
+  "schema_version": 1,
+  "id": "MN_R15",
+  "source_kind": "installed_route_exterior_review_contract",
+  "native_binding": {
+    "pack": "content-packs/minnesota-current-r15-open-shore-and-spur-v02.crystalpack",
+    "pack_sha256": "e02fb85d4db327d146cee269809b1af3e4b387dc2e29240b71cae0ae5837ec4c",
+    "content_identity": "b1a9b78a01adff24eb2930b5c78ca1c851a240bf520769dc62da5128e78e0fdc"
+  },
+  "previous_dossier": {
+    "path": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R15.dossier.json",
+    "sha256": "33b2a5e79c867ab186e158f36289aaf35c69898314ed47fdb02afb110797a1fb"
+  },
+  "grass_quadrants": 92,
+  "ice_quadrants": 0,
+  "main_crossing": {
+    "west": [
+      0,
+      24
+    ],
+    "east": [
+      63,
+      24
+    ],
+    "minimum_grass_steps_both_directions": 9
+  },
+  "active_native_hop_lanes": [
+    {
+      "upper": [
+        22,
+        17
+      ],
+      "lip": [
+        22,
+        18
+      ],
+      "landing": [
+        22,
+        20
+      ],
+      "reverse_wall": [
+        22,
+        19
+      ],
+      "ordinary_uphill_minimum_grass_steps": 6
+    },
+    {
+      "upper": [
+        23,
+        17
+      ],
+      "lip": [
+        23,
+        18
+      ],
+      "landing": [
+        23,
+        20
+      ],
+      "reverse_wall": [
+        23,
+        19
+      ],
+      "ordinary_uphill_minimum_grass_steps": 6
+    },
+    {
+      "upper": [
+        24,
+        17
+      ],
+      "lip": [
+        24,
+        18
+      ],
+      "landing": [
+        24,
+        20
+      ],
+      "reverse_wall": [
+        24,
+        19
+      ],
+      "ordinary_uphill_minimum_grass_steps": 6
+    },
+    {
+      "upper": [
+        25,
+        17
+      ],
+      "lip": [
+        25,
+        18
+      ],
+      "landing": [
+        25,
+        20
+      ],
+      "reverse_wall": [
+        25,
+        19
+      ],
+      "ordinary_uphill_minimum_grass_steps": 6
+    }
+  ],
+  "staples_spur": {
+    "source_changes": "planning/minnesota/revisions/route-grass-v01/current-r15-successor-review-v01/spur-source-proof-v01.json",
+    "open_edge": [
+      26,
+      0
+    ],
+    "neighbor_arrival": [
+      6,
+      19
+    ],
+    "minimum_grass_from_west": 12
+  },
+  "retired_rail_barrier_assertions": [
+    {
+      "old_stand": [
+        35,
+        15
+      ],
+      "direction": "left",
+      "current_shore_stop": [
+        34,
+        15
+      ]
+    },
+    {
+      "old_stand": [
+        38,
+        13
+      ],
+      "direction": "up",
+      "current_shore_stop": [
+        38,
+        12
+      ]
+    },
+    {
+      "old_stand": [
+        38,
+        16
+      ],
+      "direction": "down",
+      "current_shore_stop": [
+        38,
+        17
+      ]
+    }
+  ],
+  "requested_fence_removal_preserved": true,
+  "changed_texts": [
+    "MN_R15_PIER_WATCHERText",
+    "MN_R15_SIGN_02Text"
+  ],
+  "scope": "Current Route15 whole land course, four dry drops/reverse denials/grassy returns, three neighboring connection round trips, open former rail passages with real water stops, both bridge rows, cabin return, corrected NPC/sign, wild RUN, menus and Save/Continue. Explicit local native party/badges/position QA setup followed by actual native T02 victory; not earned campaign progress. Surf is outside this land course.",
+  "native_cases_scope": "Populated climb after native T02 win, dry ledge and reverse/Continue; shore encounter/RUN/Continue; native trainer PP/victory/Continue. Explicit initial local Mew60/moves/eight badges, not earned progress. Historical dock-rail denials require replacement by current open-shore production checks.",
+  "historical_story_scope_not_promoted": true
+}

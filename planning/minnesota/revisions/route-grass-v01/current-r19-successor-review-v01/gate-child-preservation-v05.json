@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-r19-detroit-gate-v05.crystalpack",
+  "pack_sha256": "b57516c0b77c7bcf94fa35e60ff8300bfd8a8781782827739742d8fc15b3f437",
+  "content_identity": "04344bc05748fa78c033e4e17f2c0a12a2d56caee0aeb64f2a48da1f3ab19821",
+  "parent_pack": "content-packs/minnesota-grand-rapids-riverfront-v01.crystalpack",
+  "parent_pack_sha256": "806a77f8542b0d69f62929690a69b554204ed3784636e2d8a2b5799c91b2e536",
+  "changed_existing_maps": [
+    "MnDetroitLakes",
+    "MnR19C00R01"
+  ],
+  "new_room": "MnR19DetroitGate",
+  "changed_exterior_metatiles": 8,
+  "all_other_maps_exact": true,
+  "all_art_audio_exact": true,
+  "selected": false
+}

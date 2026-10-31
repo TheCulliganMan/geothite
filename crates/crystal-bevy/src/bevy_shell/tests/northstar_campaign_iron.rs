@@ -31,14 +31,23 @@ fn supplies(c: &mut VisibleShellController, r: &CrystalRuntime) {
     if quantity == 0 {
         return;
     }
-    walk_to(c, r, (42, 20));
-    travel(c, GameButton::Up, "MnBemidjiMart", (6, 5));
+    let (door, arrival) =
+        super::super::native_city_ports::city_port(r, "MnBemidji", "MnBemidjiMart");
+    walk_to(
+        c,
+        r,
+        (
+            u16::try_from(door.0).expect("native Mart entrance x is on the city map"),
+            u16::try_from(door.1).expect("native Mart entrance y is on the city map"),
+        ),
+    );
+    travel(c, GameButton::Up, "MnBemidjiMart", arrival);
     walk_to(c, r, (3, 3));
     press(c, GameButton::Left);
     press(c, GameButton::A);
     checkout(c, r, "HYPER_POTION", quantity);
     walk_to(c, r, (6, 6));
-    travel(c, GameButton::Down, "MnBemidji", (42, 20));
+    travel(c, GameButton::Down, "MnBemidji", door);
 }
 
 fn arrival() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
@@ -57,24 +66,40 @@ fn arrival() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
     );
     assert!(event(&c, "EVENT_MN_HEADWATERS_REPORT"));
     assert!(!event(&c, "EVENT_MN_SURVEY_RESTORED"));
-    assert!(!event(&c, SIGNAL));
+    assert!(
+        !event(&c, SIGNAL)
+            || (super::super::northstar_dialogue::timely_evidence(&r) && event(&c, DEPOT)),
+        "only the pacing revision accepts recovered evidence before the final Gym"
+    );
     let s = c.snapshot().expect("settled checkpoint");
     assert!(s.battle.is_none() && s.ui.text.is_none() && s.ui.menu.is_none());
-    assert!(matches!(
-        s.overworld.map_name.as_str(),
-        "MnBemidji"
-            | "MnBemidjiPokecenter1F"
-            | "MnR09Cave1F"
-            | "MnIronDrillCore"
-            | "MnGrandRapidsSurveyDepot"
-            | "MnDuluth"
-            | "MnDuluthGym"
-            | "MnDuluthHarborWorkshop"
-    ));
+    assert!(
+        s.overworld.map_name.starts_with("MnR08C")
+            || matches!(
+                s.overworld.map_name.as_str(),
+                "MnBemidji"
+                    | "MnBemidjiPokecenter1F"
+                    | "MnR09Cave1F"
+                    | "MnIronDrillCore"
+                    | "MnGrandRapidsSurveyDepot"
+                    | "MnDuluth"
+                    | "MnDuluthGym"
+                    | "MnDuluthHarborWorkshop"
+            )
+    );
     (root, r, c)
 }
 
 fn mine(c: &mut VisibleShellController, r: &CrystalRuntime, root: &AssetRoot) {
+    if c.snapshot()
+        .expect("actual recruitment checkpoint")
+        .overworld
+        .map_name
+        .starts_with("MnR08C")
+    {
+        training::return_from_recruitment(c, r);
+        continue_in_place(c, root, r, "campaign-mine-income-return");
+    }
     if c.snapshot()
         .expect("native mine loss recovery")
         .overworld
@@ -98,10 +123,10 @@ fn mine(c: &mut VisibleShellController, r: &CrystalRuntime, root: &AssetRoot) {
     }
     if c.snapshot().expect("mine approach").overworld.map_name == "MnBemidji" {
         care(c, r, "MnBemidji", (31, 10));
-        if event(c, FOREMAN) {
-            training::prepare(c, r, root);
-            care(c, r, "MnBemidji", (31, 10));
-        }
+        // Prepare a varied carried party before committing to the mine, using
+        // ordinary encounters and purchases rather than waiting for a loss.
+        training::prepare(c, r, root);
+        care(c, r, "MnBemidji", (31, 10));
         if event(c, FOREMAN)
             && let Some(slot) = c
                 .snapshot()
@@ -222,6 +247,12 @@ fn receiver(c: &mut VisibleShellController, r: &CrystalRuntime) {
 }
 
 fn gym(c: &mut VisibleShellController, r: &CrystalRuntime, root: &AssetRoot) {
+    let signal_before = event(c, SIGNAL);
+    assert_eq!(
+        signal_before,
+        super::super::northstar_dialogue::timely_evidence(r),
+        "the pacing course delivers the evidence before final training"
+    );
     if c.snapshot().expect("gym approach").overworld.map_name == "MnDuluth" {
         receiver(c, r);
         assert_eq!(
@@ -234,7 +265,7 @@ fn gym(c: &mut VisibleShellController, r: &CrystalRuntime, root: &AssetRoot) {
             "MN_HARBOR_RECEIVERDeniedText"
         );
         finish(c);
-        assert!(!event(c, SIGNAL));
+        assert_eq!(event(c, SIGNAL), signal_before);
         walk_to(c, r, (8, 10));
         travel(c, GameButton::Down, "MnDuluth", (72, 42));
         walk_to(c, r, (48, 32));
@@ -280,7 +311,8 @@ fn gym(c: &mut VisibleShellController, r: &CrystalRuntime, root: &AssetRoot) {
             .quantity(&r.data().items["TM_ICY_WIND"]),
         1
     );
-    assert!(event(c, "EVENT_MN_GYM_8_COURT_OPEN") && !event(c, SIGNAL));
+    assert!(event(c, "EVENT_MN_GYM_8_COURT_OPEN"));
+    assert_eq!(event(c, SIGNAL), signal_before);
     continue_in_place(c, root, r, "campaign-harbor-city-return");
 }
 
@@ -294,32 +326,64 @@ fn northstar_campaign_boosted_mine_depot_harbor_and_signal() {
 pub(super) fn iron() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
     let (root, r, mut c) = arrival();
     boost(&mut c, &r);
-    if matches!(
-        c.snapshot()
-            .expect("continued mine")
-            .overworld
-            .map_name
-            .as_str(),
-        "MnBemidji" | "MnBemidjiPokecenter1F" | "MnR09Cave1F" | "MnIronDrillCore"
-    ) {
+    let map = c.snapshot().expect("continued mine").overworld.map_name;
+    if map.starts_with("MnR08C")
+        || matches!(
+            map.as_str(),
+            "MnBemidji" | "MnBemidjiPokecenter1F" | "MnR09Cave1F" | "MnIronDrillCore"
+        )
+    {
         mine(&mut c, &r, &root);
     }
     if c.snapshot().expect("continued depot").overworld.map_name == "MnGrandRapidsSurveyDepot" {
         handover(&mut c, &r, &root);
     }
     assert!(event(&c, FOREMAN) && event(&c, METER) && event(&c, DEPOT));
+    // Evidence reaches the crew before the final training requirement. The
+    // same ordinary Gym and coast traversal still follow; no badge is granted.
+    if super::super::northstar_dialogue::timely_evidence(&r) && !event(&c, SIGNAL) {
+        reveal(&mut c, &r, &root);
+    }
     if !event(&c, "EVENT_MN_GYM_8_DEFEATED") {
+        if c.snapshot()
+            .expect("leave the planning crew")
+            .overworld
+            .map_name
+            == "MnDuluthHarborWorkshop"
+        {
+            walk_to(&mut c, &r, (8, 9));
+            travel(&mut c, GameButton::Down, "MnDuluth", (72, 42));
+        }
         gym(&mut c, &r, &root);
     } else if c.snapshot().expect("gym exit").overworld.map_name == "MnDuluthGym" {
         northstar_earned_gyms::leave(&mut c, &r, 8, "MnDuluth", (48, 32));
     }
-    if c.snapshot().expect("reveal approach").overworld.map_name == "MnDuluth" {
-        walk_to(&mut c, &r, (72, 42));
-        travel(&mut c, GameButton::Up, "MnDuluthHarborWorkshop", (8, 9));
+    if !event(&c, SIGNAL) {
+        reveal(&mut c, &r, &root);
     }
-    walk_to(&mut c, &r, (10, 5));
-    continue_in_place(&mut c, &root, &r, "campaign-harbor-reveal-ready");
     receiver(&mut c, &r);
+    assert_eq!(
+        c.snapshot()
+            .expect("repeat reveal")
+            .ui
+            .text
+            .expect("text")
+            .label,
+        "MN_HARBOR_RECEIVERDoneText"
+    );
+    finish(&mut c);
+    assert!(!event(&c, "EVENT_MN_SURVEY_RESTORED"));
+    (root, r, c)
+}
+
+fn reveal(c: &mut VisibleShellController, r: &CrystalRuntime, root: &AssetRoot) {
+    if c.snapshot().expect("reveal approach").overworld.map_name == "MnDuluth" {
+        walk_to(c, r, (72, 42));
+        travel(c, GameButton::Up, "MnDuluthHarborWorkshop", (8, 9));
+    }
+    walk_to(c, r, (10, 5));
+    continue_in_place(c, root, r, "campaign-harbor-reveal-ready");
+    receiver(c, r);
     let before = c.shell.shell.session().state().clone();
     if r.data()
         .story_event_script_constants
@@ -332,8 +396,8 @@ pub(super) fn iron() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
             "MnOverhaulHarborReactionText",
             "MnOverhaulHarborDirectionsText",
         ] {
-            super::super::northstar_ice_lair::page(&mut c, label);
-            super::super::northstar_dialogue::acknowledge(&mut c, "MS10", label, SIGNAL);
+            super::super::northstar_ice_lair::page(c, label);
+            super::super::northstar_dialogue::acknowledge(c, "MS10", label, SIGNAL);
         }
     } else {
         let raw = c
@@ -355,7 +419,7 @@ pub(super) fn iron() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
             );
         }
         for page in pages {
-            assert!(!event(&c, SIGNAL));
+            assert!(!event(c, SIGNAL));
             assert_eq!(
                 c.snapshot()
                     .expect("reveal page")
@@ -365,38 +429,25 @@ pub(super) fn iron() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
                     .and_then(|t| t.asm_text.as_deref()),
                 Some(page.as_str())
             );
-            press(&mut c, GameButton::Down);
-            at(&mut c, "MnDuluthHarborWorkshop", (10, 5));
-            press(&mut c, GameButton::A);
+            press(c, GameButton::Down);
+            at(c, "MnDuluthHarborWorkshop", (10, 5));
+            press(c, GameButton::A);
         }
     }
     if r.data().maps.contains_key("MnBoundaryIntake") {
         assert!(
-            !event(&c, SIGNAL),
-            "Ivy's live call also requires acknowledgment"
+            !event(c, SIGNAL),
+            "the intake directions also require acknowledgment"
         );
-        super::super::northstar_ice_lair::page(&mut c, "MnArcHarborIntakeText");
-        finish(&mut c);
+        super::super::northstar_ice_lair::page(c, "MnArcHarborIntakeText");
+        finish(c);
     }
-    assert!(event(&c, SIGNAL));
-    finish(&mut c);
+    assert!(event(c, SIGNAL));
+    finish(c);
     let after = c.shell.shell.session().state();
     assert_eq!(after.badges, before.badges);
     assert_eq!(after.bag, before.bag);
     assert_eq!(after.storage, before.storage);
     assert_eq!(after.money, before.money);
-    continue_in_place(&mut c, &root, &r, "campaign-harbor-signal");
-    receiver(&mut c, &r);
-    assert_eq!(
-        c.snapshot()
-            .expect("repeat reveal")
-            .ui
-            .text
-            .expect("text")
-            .label,
-        "MN_HARBOR_RECEIVERDoneText"
-    );
-    finish(&mut c);
-    assert!(!event(&c, "EVENT_MN_SURVEY_RESTORED"));
-    (root, r, c)
+    continue_in_place(c, root, r, "campaign-harbor-signal");
 }

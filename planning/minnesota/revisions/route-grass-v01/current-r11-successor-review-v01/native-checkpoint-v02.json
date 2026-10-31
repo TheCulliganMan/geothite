@@ -1,0 +1,6 @@
+{
+  "status": "PASS",
+  "exit_code": 0,
+  "log": ".local/route-grass-review/r11-upper-native-v02.log",
+  "scope": "Save/Continue at upper passage; grass crossing is checked separately through production MCP. Initial partner, badges and location are local QA setup."
+}

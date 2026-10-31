@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "before_ordinary_steps": 29,
+  "after_ordinary_steps": 3,
+  "native_walk_up_down_and_sides": "production-stair-input-review-v01.json",
+  "pack_sha256": "6200af583a20de0def7f4611ab59531e43549471cc5cf6ab7a6f4f7e52b832e8",
+  "scope": "Actual before/after compiled floor graph with static actor bodies, no ledge hops/Surf/interior shortcuts. Native input proof is separate."
+}

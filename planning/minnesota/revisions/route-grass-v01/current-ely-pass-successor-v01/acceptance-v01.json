@@ -1,0 +1,14 @@
+{
+  "status": "PASS_CURRENT_ELY_PASS_GRASS_AND_CARE_REVIEW",
+  "pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+  "pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33",
+  "native_cases": 4,
+  "stdio_calls": 15,
+  "grass_quadrants": 16,
+  "ice_quadrants": 0,
+  "minimum_grass_steps_both_directions": 5,
+  "complete_map_used_pixels_and_collision_exact": true,
+  "approved_existing_inland_snow_footprint_exact": true,
+  "whole_inherited_map_inspected": "planning/minnesota/renders/route-grass-v01/current-ely-shore-pass-v01/source-candidate-v01/after.png",
+  "scope": "Fresh native grass crossing/guide/endpoints/wild RUN/resources/Continue, Ely-pass-coast-clinic round trip with actual HP/status/PP care and PC services, alternate lanes/original Ely north port. Initial fixtures are not earned regional progression; statewide review active."
+}

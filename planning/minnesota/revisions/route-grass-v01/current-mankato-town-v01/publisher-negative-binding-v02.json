@@ -1,0 +1,41 @@
+{
+  "status": "PASS",
+  "parent": {
+    "revision": "outdoor_terrain_integrated_revision",
+    "pack": "content-packs/minnesota-current-outdoor-composed-towns-v01.crystalpack",
+    "sha256": "fcac136e08876c25d5c8b6250fc7c0fa1aedbfc6977e165504505b2b4d02016f"
+  },
+  "publisher": ".local/route-grass-review/portable-tools-v01/revise_mankato_mart_facade",
+  "publisher_sha256": "4257096351538afaa2465cfbaaf8d01f7dde363a88b0fcb156a68b1d78c66bcb",
+  "checks": [
+    {
+      "case": "wrong-parent-sha",
+      "expected_error": "parent SHA drift",
+      "log": ".local/route-grass-review/mankato-publisher-negatives-v02/wrong-parent-sha.log",
+      "log_sha256": "4d2a904d0169272056d52ba28c208d9a7f5b0ee098b68912bc9ea58f62e82ed6",
+      "no_pack_output": true
+    },
+    {
+      "case": "unchanged-wall",
+      "expected_error": "only two contracted mart front cells may change",
+      "log": ".local/route-grass-review/mankato-publisher-negatives-v02/unchanged-wall.log",
+      "log_sha256": "f68357dd3eaaeac518ac37686d20aa2d144f18824523f707f969257547f3b4d5",
+      "no_pack_output": true
+    },
+    {
+      "case": "unrelated-terrain",
+      "expected_error": "only two contracted mart front cells may change",
+      "log": ".local/route-grass-review/mankato-publisher-negatives-v02/unrelated-terrain.log",
+      "log_sha256": "f68357dd3eaaeac518ac37686d20aa2d144f18824523f707f969257547f3b4d5",
+      "no_pack_output": true
+    },
+    {
+      "case": "unclosed-roof",
+      "expected_error": "only two contracted mart front cells may change",
+      "log": ".local/route-grass-review/mankato-publisher-negatives-v02/unclosed-roof.log",
+      "log_sha256": "f68357dd3eaaeac518ac37686d20aa2d144f18824523f707f969257547f3b4d5",
+      "no_pack_output": true
+    }
+  ],
+  "parent_unchanged": true
+}

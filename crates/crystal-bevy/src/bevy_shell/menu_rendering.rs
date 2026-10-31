@@ -1086,6 +1086,8 @@ fn trainer_card_art_key(
 ) -> TrainerCardArtKey {
     TrainerCardArtKey {
         page,
+        minnesota: minnesota_trainer_card(snapshot),
+        owned_badges: snapshot.progression.badges.johto,
         badge_frame: if page == VisibleTrainerCardPage::JohtoBadges {
             badge_frame & 0x07
         } else {
@@ -1175,6 +1177,12 @@ fn load_trainer_card_frame(
     colon_visible: bool,
     images: &mut Assets<Image>,
 ) -> Result<SpriteFrame> {
+    if page == VisibleTrainerCardPage::JohtoBadges && minnesota_trainer_card(snapshot) {
+        return Ok(trainer_card_sprite_frame(
+            minnesota_badges::render(&snapshot.progression.badges.johto, badge_frame),
+            images,
+        ));
+    }
     let assets = asset_root.runtime_assets();
     let trainer_card_dir = assets.join("gfx/trainer_card");
     let font = crate::open_runtime_image(assets.join("gfx/font/font.png"))
@@ -1363,6 +1371,12 @@ fn load_trainer_card_frame(
         draw_owned_trainer_card_badges(snapshot, badges, asset_root, badge_frame, &mut data)?;
     }
 
+    Ok(trainer_card_sprite_frame(data, images))
+}
+
+fn trainer_card_sprite_frame(data: Vec<u8>, images: &mut Assets<Image>) -> SpriteFrame {
+    let width = TRAINER_CARD_TILE_WIDTH * SOURCE_TILE_SIZE;
+    let height = TRAINER_CARD_TILE_HEIGHT * SOURCE_TILE_SIZE;
     let mut image = Image::new(
         Extent3d {
             width: width as u32,
@@ -1375,10 +1389,10 @@ fn load_trainer_card_frame(
         RenderAssetUsages::default(),
     );
     image.sampler = ImageSampler::nearest();
-    Ok(SpriteFrame {
+    SpriteFrame {
         handle: images.add(image),
         size: Vec2::new(width as f32, height as f32),
-    })
+    }
 }
 
 fn validate_trainer_card_source(

@@ -1,0 +1,21 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-r17-trail-guidance-v02.crystalpack",
+  "pack_sha256": "186c262b18d5174cb7ba9727358d4022bea9fce6d362529405728028ef92c60a",
+  "content_identity": "f57dda999ae1f84ae1fec5dd6b0b6d763111dba2a99b966fc6bb80b2454f38f2",
+  "parent_revision": "game_corner_revision",
+  "parent_pack": "content-packs/minnesota-game-corner-v06.crystalpack",
+  "parent_pack_sha256": "24170fa128d63e6d6b0253fae9f86be93747c389a56375085acb322abf001c19",
+  "delta": {
+    "maps": [
+      "MnR17C00R01"
+    ],
+    "map_scripts": [
+      "MN_R17_SIGN_02Text",
+      "MN_R17_SIGN_03Text"
+    ]
+  },
+  "all_other_gameplay_and_art_audio_exact": true,
+  "selected": false,
+  "remaining": "Full current route production course and native visual review before selection"
+}

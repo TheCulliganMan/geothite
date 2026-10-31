@@ -1,0 +1,16 @@
+{
+  "status": "SOURCE_PROSE_MISMATCH_REPRODUCED",
+  "pack": "content-packs/minnesota-current-mankato-native-exterior-v02.crystalpack",
+  "sha256": "ab7c622576a4754dbcca8ccc5c6b8596787d109fbdba7d387989b91ff26e4484",
+  "control": {
+    "step": "mankato-bank-legacy-prose-control-v02",
+    "exit_code": 101,
+    "expected_codes": [
+      0,
+      101
+    ],
+    "log": ".local/route-grass-review/mankato-bank-legacy-prose-control-v02.log"
+  },
+  "reached_seed_save": ".local/route-grass-review/mankato-bank-legacy-prose-control-saves-v02/winona-mankato-local-before-notebook-57542-1793369319849674000.crystalsave",
+  "not_counted_as_mechanics_pass": true
+}

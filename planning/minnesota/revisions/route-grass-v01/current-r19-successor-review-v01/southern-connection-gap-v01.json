@@ -1,0 +1,27 @@
+{
+  "status": "INCOMPLETE_REGIONAL_CONNECTION",
+  "pack": "content-packs/minnesota-current-r17-trail-guidance-v02.crystalpack",
+  "pack_sha256": "186c262b18d5174cb7ba9727358d4022bea9fce6d362529405728028ef92c60a",
+  "documented_endpoint": "Detroit Lakes",
+  "route_connections": [
+    {
+      "direction": "north",
+      "target_map": "MnR19C00R00",
+      "offset": 0
+    }
+  ],
+  "route_warps": [],
+  "detroit_connections": [
+    {
+      "direction": "east",
+      "target_map": "MnR15C00R00",
+      "offset": -3
+    },
+    {
+      "direction": "west",
+      "target_map": "MnDetroitLakesApproach",
+      "offset": 0
+    }
+  ],
+  "remaining": "Trace regional geography and restore a valid paired ordinary connection without overwriting Detroit approach or existing hub guards. Current grass/ledge acceptance does not prove this connection."
+}

@@ -30,6 +30,33 @@ pub(crate) fn validate(pack: &CompiledGamePack, stop: &Station) -> Result<()> {
         "{}: reviewed station rows changed",
         stop.map
     );
+    let tileset = pack
+        .data
+        .tilesets
+        .get("train_station")
+        .context("native train tileset")?;
+    ensure!(
+        room.blocks.iter().all(|block| {
+            tileset
+                .collision
+                .get(&format!("{block:02x}"))
+                .is_some_and(|cells| {
+                    cells.iter().all(|kind| {
+                        !matches!(
+                            kind.as_str(),
+                            "WATER"
+                                | "WATERFALL"
+                                | "WHIRLPOOL"
+                                | "CURRENT_UP"
+                                | "CURRENT_DOWN"
+                                | "CURRENT_LEFT"
+                                | "CURRENT_RIGHT"
+                        )
+                    })
+                })
+        }),
+        "dry station required before removing its unused fishing reference"
+    );
     let conductors: Vec<_> = room
         .objects
         .iter()

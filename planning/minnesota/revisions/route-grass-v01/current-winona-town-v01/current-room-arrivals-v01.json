@@ -1,0 +1,314 @@
+{
+  "parent": {
+    "revision": "route_grass_mankato_town_revision",
+    "pack": "content-packs/minnesota-current-mankato-native-exterior-v03.crystalpack",
+    "sha256": "4f22dd532f5dc1ca28f63383bb9a66030d4f93ced96ed4daa265b3f36680e02f"
+  },
+  "rooms": [
+    {
+      "map": "MnWinonaHome1F",
+      "dimensions": [
+        5,
+        4
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "x": 6,
+          "y": 7,
+          "target_map_constant": "MN_WINONA",
+          "target_map": "MN_WINONA",
+          "target_warp_id": 2
+        },
+        {
+          "index": 2,
+          "x": 7,
+          "y": 7,
+          "target_map_constant": "MN_WINONA",
+          "target_map": "MN_WINONA",
+          "target_warp_id": 2
+        },
+        {
+          "index": 3,
+          "x": 9,
+          "y": 0,
+          "target_map_constant": "MN_WINONA_HOME_2F",
+          "target_map": "MN_WINONA_HOME_2F",
+          "target_warp_id": 1
+        },
+        {
+          "index": 4,
+          "x": 7,
+          "y": 6,
+          "target_map_constant": "MN_WINONA",
+          "target_map": "MN_WINONA",
+          "target_warp_id": 2
+        }
+      ],
+      "scenes": {
+        "scenes": [
+          {
+            "scene_id": "SCENE_MN_W_HOME_INTRO",
+            "script_name": "MnWHomeArrival"
+          },
+          {
+            "scene_id": "SCENE_MN_W_HOME_READY",
+            "script_name": "MnWHomeNoop"
+          }
+        ]
+      }
+    },
+    {
+      "map": "MnWinonaPokecenter1F",
+      "dimensions": [
+        5,
+        4
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "x": 3,
+          "y": 7,
+          "target_map_constant": "MN_WINONA",
+          "target_map": "MN_WINONA",
+          "target_warp_id": 4
+        },
+        {
+          "index": 2,
+          "x": 4,
+          "y": 7,
+          "target_map_constant": "MN_WINONA",
+          "target_map": "MN_WINONA",
+          "target_warp_id": 4
+        },
+        {
+          "index": 3,
+          "x": 4,
+          "y": 6,
+          "target_map_constant": "MN_WINONA",
+          "target_map": "MN_WINONA",
+          "target_warp_id": 4
+        }
+      ],
+      "scenes": {
+        "scenes": []
+      }
+    },
+    {
+      "map": "MnWinonaMart",
+      "dimensions": [
+        6,
+        4
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "x": 6,
+          "y": 7,
+          "target_map_constant": "MN_WINONA",
+          "target_map": "MN_WINONA",
+          "target_warp_id": 6
+        },
+        {
+          "index": 2,
+          "x": 7,
+          "y": 7,
+          "target_map_constant": "MN_WINONA",
+          "target_map": "MN_WINONA",
+          "target_warp_id": 6
+        },
+        {
+          "index": 3,
+          "x": 6,
+          "y": 5,
+          "target_map_constant": "MN_WINONA",
+          "target_map": "MN_WINONA",
+          "target_warp_id": 6
+        }
+      ],
+      "scenes": {
+        "scenes": []
+      }
+    },
+    {
+      "map": "MnWinonaFieldStation",
+      "dimensions": [
+        5,
+        6
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "x": 4,
+          "y": 11,
+          "target_map_constant": "MN_WINONA",
+          "target_map": "MN_WINONA",
+          "target_warp_id": 8
+        },
+        {
+          "index": 2,
+          "x": 5,
+          "y": 11,
+          "target_map_constant": "MN_WINONA",
+          "target_map": "MN_WINONA",
+          "target_warp_id": 8
+        },
+        {
+          "index": 3,
+          "x": 4,
+          "y": 10,
+          "target_map_constant": "MN_WINONA",
+          "target_map": "MN_WINONA",
+          "target_warp_id": 8
+        }
+      ],
+      "scenes": {
+        "scenes": []
+      }
+    },
+    {
+      "map": "MnWinonaStation",
+      "dimensions": [
+        10,
+        9
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "x": 10,
+          "y": 17,
+          "target_map_constant": "MN_WINONA",
+          "target_map": "MN_WINONA",
+          "target_warp_id": 10
+        },
+        {
+          "index": 2,
+          "x": 11,
+          "y": 17,
+          "target_map_constant": "MN_WINONA",
+          "target_map": "MN_WINONA",
+          "target_warp_id": 10
+        },
+        {
+          "index": 3,
+          "x": 11,
+          "y": 15,
+          "target_map_constant": "MN_WINONA",
+          "target_map": "MN_WINONA",
+          "target_warp_id": 10
+        }
+      ],
+      "scenes": {
+        "scenes": []
+      }
+    }
+  ],
+  "exterior_buildings": [
+    {
+      "outside": [
+        7,
+        8
+      ],
+      "room": "MnWinonaHome1F",
+      "arrival": [
+        7,
+        6
+      ],
+      "carpets": [
+        [
+          6,
+          7
+        ],
+        [
+          7,
+          7
+        ]
+      ]
+    },
+    {
+      "outside": [
+        17,
+        8
+      ],
+      "room": "MnWinonaPokecenter1F",
+      "arrival": [
+        4,
+        6
+      ],
+      "carpets": [
+        [
+          3,
+          7
+        ],
+        [
+          4,
+          7
+        ]
+      ]
+    },
+    {
+      "outside": [
+        7,
+        24
+      ],
+      "room": "MnWinonaMart",
+      "arrival": [
+        6,
+        5
+      ],
+      "carpets": [
+        [
+          6,
+          7
+        ],
+        [
+          7,
+          7
+        ]
+      ]
+    },
+    {
+      "outside": [
+        18,
+        20
+      ],
+      "room": "MnWinonaFieldStation",
+      "arrival": [
+        4,
+        10
+      ],
+      "carpets": [
+        [
+          4,
+          11
+        ],
+        [
+          5,
+          11
+        ]
+      ]
+    },
+    {
+      "outside": [
+        19,
+        14
+      ],
+      "room": "MnWinonaStation",
+      "arrival": [
+        11,
+        15
+      ],
+      "carpets": [
+        [
+          10,
+          17
+        ],
+        [
+          11,
+          17
+        ]
+      ]
+    }
+  ],
+  "scope": "Five native exterior buildings including later station; room data read from exact current pack. Source dossier has only four original exterior buildings and the home upstairs."
+}

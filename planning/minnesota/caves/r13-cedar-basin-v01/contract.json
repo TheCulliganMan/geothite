@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "map": "MnR13Cave1F",
+  "parent_revision": "international_falls_windbreak_revision",
+  "parent_pack": "content-packs/minnesota-international-falls-windbreak-v01.crystalpack",
+  "parent_pack_sha256": "7066f05448101c79b4dc761963b0f39a570bad07c4f80e3e777901ac2e207507",
+  "native_module_sha256": "93415ed2bcdd116d93902d90f6b604d7f02b53adea94791538f0c46fa442d8b9",
+  "preserved_warps": [
+    {
+      "index": 1,
+      "x": 7,
+      "y": 15,
+      "target_map_constant": "MnR13C00R01",
+      "target_map": "MnR13C00R01",
+      "target_warp_id": 2
+    }
+  ],
+  "preserved_actor_anchors": [
+    {
+      "id": "MN_R13_HARPER",
+      "tile": [
+        13,
+        5
+      ]
+    },
+    {
+      "id": "MN_R13_SHELTER_ETHER",
+      "tile": [
+        15,
+        11
+      ]
+    }
+  ],
+  "purpose": "Safe pre-League shelter: native full-party care, an accessible fishing alcove, and a once-only Max Ether reached by a separate stair."
+}

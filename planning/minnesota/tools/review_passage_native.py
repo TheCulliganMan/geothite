@@ -62,7 +62,7 @@ def actors(pack, terrain, module):
         # Static paper/notebook objects use that frame too; unknown movements
         # continue to fail instead of silently inventing a pose.
         movement = obj["spritemovedata"]
-        if movement == "SPRITEMOVEDATA_STILL":
+        if movement in {"SPRITEMOVEDATA_STILL", "SPRITEMOVEDATA_STRENGTH_BOULDER"}:
             facing = "south"
         elif movement == "SPRITEMOVEDATA_PATROL_CLOCKWISE":
             facing = "east"

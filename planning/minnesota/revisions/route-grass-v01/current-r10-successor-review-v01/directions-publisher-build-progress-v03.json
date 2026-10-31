@@ -1,0 +1,50 @@
+{
+  "pid": 79487,
+  "source_sha256": {
+    "crates/crystal-assets/src/r10_stair_guidance.rs": "edf5a1f88abdccee81be360def7037b00f1b44d5a2aade02d6aed72002fedf3c",
+    "crates/crystal-assets/src/bin/revise_r10_stair_guidance.rs": "f5694eba4367f2d3f3d46e5f04fe04f33115c127f788340acdb16f020182beb9"
+  },
+  "steps": [
+    {
+      "step": "publisher",
+      "command": [
+        "cargo",
+        "build",
+        "--profile",
+        "wasm-dev",
+        "--locked",
+        "--config",
+        "profile.wasm-dev.package.crystal-assets.opt-level=0",
+        "-p",
+        "crystal-assets",
+        "--bin",
+        "revise_r10_stair_guidance"
+      ],
+      "exit_code": 0,
+      "log": ".local/route-grass-review/r10-stair-guidance-grass-publisher-v03.log",
+      "outputs": [
+        {
+          "path": ".local/route-grass-review/portable-r10-stair-guidance-grass-tools-v03/revise_r10_stair_guidance",
+          "sha256": "1247fb0abfa18f75df0676b4e352e9cda3ea1becee43882569568638e156548e"
+        }
+      ]
+    },
+    {
+      "step": "assets-all-target-clippy",
+      "command": [
+        "cargo",
+        "clippy",
+        "--profile",
+        "wasm-dev",
+        "--locked",
+        "--config",
+        "profile.wasm-dev.package.crystal-assets.opt-level=0",
+        "-p",
+        "crystal-assets",
+        "--all-targets"
+      ],
+      "exit_code": 0,
+      "log": ".local/route-grass-review/r10-stair-guidance-grass-assets-all-target-clippy-v03.log"
+    }
+  ]
+}

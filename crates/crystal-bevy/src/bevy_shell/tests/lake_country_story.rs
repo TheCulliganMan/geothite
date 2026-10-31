@@ -44,8 +44,8 @@ fn fixture(
     if !empty {
         let mut p = r
             .data()
-            .create_pokemon("MEW", 45, Dv::default())
-            .expect("legal initial partner");
+            .create_pokemon("BOREALYNX", 45, Dv::default())
+            .expect("active Minnesota fixture partner");
         p.moves = ["PSYCHIC_M", "FLAMETHROWER", "SURF", "THUNDERBOLT"]
             .into_iter()
             .map(|name| LearnedMove {
@@ -107,12 +107,24 @@ pub(super) fn try_road_with(
             doors,
         },
     );
-    for button in grid.path(start, target) {
+    for _ in 0..2048 {
         let old = position(c);
+        if old == target {
+            return true;
+        }
+        // Native hops can land beyond the planned adjacent tile. Encounters
+        // also settle movement before returning control. Observe that landing
+        // before choosing another direction, as an actual player must.
+        let button = *grid.path(old, target).first().expect("remaining road step");
         for _ in 0..8 {
             press(c, button);
             if c.snapshot().expect("road encounter").battle.is_some() {
                 encounter(c);
+            }
+            let outcome = c.snapshot().expect("road field notice");
+            if outcome.battle.is_none() && outcome.ui.text.is_some() {
+                // Poison and other field notices own input until acknowledged.
+                finish(c);
             }
             if !c
                 .snapshot()
@@ -127,10 +139,23 @@ pub(super) fn try_road_with(
                 break;
             }
         }
-        assert_ne!(position(c), old, "real road input must move");
+        if position(c) == old {
+            if let Some(directory) = std::env::var_os("CRYSTAL_WINONA_SAVE_DIR") {
+                c.save(std::path::PathBuf::from(directory).join(format!(
+                    "lake-road-blocked-r{n}-{}-{}-{}.crystalsave",
+                    std::process::id(),
+                    old.0,
+                    old.1
+                )))
+                .expect("retain the actual blocked road state");
+            }
+            panic!(
+                "native {prefix} road step {button:?} from {old:?} did not move; target={target:?}, ui={:?}",
+                c.snapshot().expect("actual blocked road state").ui
+            );
+        }
     }
-    assert_eq!(position(c), target);
-    true
+    panic!("bounded native {prefix} road did not reach {target:?}");
 }
 fn unchanged_story(c: &VisibleShellController) {
     for name in [

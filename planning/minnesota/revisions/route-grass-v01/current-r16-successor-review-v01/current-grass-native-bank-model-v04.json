@@ -1,0 +1,113 @@
+{
+  "status": "PASS_STATIC_NATIVE_BANK_MODEL",
+  "pack": "content-packs/minnesota-current-r16-bank-guidance-v02.crystalpack",
+  "pack_sha256": "e47cfeeff4baf0e2fd9654d9859e2fd094d856f8d34bede6c1c333c8209bce26",
+  "checks": [
+    {
+      "id": "main-west-east",
+      "start": [
+        0,
+        24
+      ],
+      "end": [
+        95,
+        24
+      ],
+      "bounds": [
+        82,
+        18,
+        86,
+        28
+      ],
+      "measurement": {
+        "status": "MEASURED",
+        "grass_steps": 4,
+        "grass_quadrants_in_contract": 40,
+        "ice_quadrants": 0
+      }
+    },
+    {
+      "id": "main-east-west",
+      "start": [
+        95,
+        24
+      ],
+      "end": [
+        0,
+        24
+      ],
+      "bounds": [
+        82,
+        18,
+        86,
+        28
+      ],
+      "measurement": {
+        "status": "MEASURED",
+        "grass_steps": 4,
+        "grass_quadrants_in_contract": 40,
+        "ice_quadrants": 0
+      }
+    },
+    {
+      "id": "uphill-52",
+      "start": [
+        52,
+        18
+      ],
+      "end": [
+        52,
+        15
+      ],
+      "bounds": [
+        0,
+        0,
+        96,
+        48
+      ],
+      "measurement": {
+        "status": "MEASURED",
+        "grass_steps": 6,
+        "grass_quadrants_in_contract": 1016,
+        "ice_quadrants": 0
+      }
+    },
+    {
+      "id": "uphill-53",
+      "start": [
+        53,
+        18
+      ],
+      "end": [
+        53,
+        15
+      ],
+      "bounds": [
+        0,
+        0,
+        96,
+        48
+      ],
+      "measurement": {
+        "status": "MEASURED",
+        "grass_steps": 6,
+        "grass_quadrants_in_contract": 1016,
+        "ice_quadrants": 0
+      }
+    }
+  ],
+  "side_wall_entry_exit_masks_from_native_core": true,
+  "scope": "Native current-tile hops and land side walls with reciprocal entry/exit masks, no Surf/Cut/interior warps; actors clear. Current native movement and production course retained separately.",
+  "all_placed_collision_kinds_inventoried": true,
+  "placed_collision_kinds": [
+    "FLOOR",
+    "HEADBUTT_TREE",
+    "HOP_DOWN",
+    "TALL_GRASS",
+    "UP_WALL",
+    "WALL",
+    "WATER"
+  ],
+  "model_source": ".local/route-grass-review/native_land_bank_surface_v01.py",
+  "model_source_sha256": "2ab1024b73c9b9c15a09e533f669633be01517af0511e69a5bdc90e250a5b661"
+}

@@ -1,0 +1,113 @@
+{
+  "schema_version": 1,
+  "map": "MnIronDrillCore",
+  "parent_revision": "route_grass_r17_trail_guidance_revision",
+  "parent_pack": "content-packs/minnesota-current-r17-trail-guidance-v02.crystalpack",
+  "parent_pack_sha256": "186c262b18d5174cb7ba9727358d4022bea9fce6d362529405728028ef92c60a",
+  "native_module_sha256": "9ab8b73e42273024ddf932f1b939f02f7d95a1ba88670042bc2bb7e8da96463a",
+  "preserved_warps": [
+    {
+      "index": 1,
+      "x": 5,
+      "y": 14,
+      "target_map_constant": "MN_IRON_PUMP_GALLERY",
+      "target_map": "MN_IRON_PUMP_GALLERY",
+      "target_warp_id": 4
+    },
+    {
+      "index": 2,
+      "x": 4,
+      "y": 15,
+      "target_map_constant": "MN_IRON_PUMP_GALLERY",
+      "target_map": "MN_IRON_PUMP_GALLERY",
+      "target_warp_id": 4
+    }
+  ],
+  "preserved_actor_anchors": [
+    {
+      "id": "MN_NDRILL_REED",
+      "tile": [
+        8,
+        8
+      ]
+    },
+    {
+      "id": "MN_NDRILL_ENGINEER",
+      "tile": [
+        8,
+        5
+      ]
+    },
+    {
+      "id": "MN_NDRILL_FINN",
+      "tile": [
+        15,
+        9
+      ]
+    },
+    {
+      "id": "MN_LODE_ARC_CORE_WEST",
+      "tile": [
+        5,
+        11
+      ]
+    },
+    {
+      "id": "MN_LODE_ARC_CORE_EAST",
+      "tile": [
+        18,
+        12
+      ]
+    }
+  ],
+  "program_driven_metatiles": [
+    {
+      "script": "MnNDrillCoreTiles",
+      "args": [
+        "10",
+        "8",
+        "22"
+      ]
+    },
+    {
+      "script": "MnNDrillStop",
+      "args": [
+        "10",
+        "8",
+        "22"
+      ]
+    },
+    {
+      "script": "MnNDrillWitness",
+      "args": [
+        "10",
+        "8",
+        "22"
+      ]
+    },
+    {
+      "script": "MnNDrillWitness",
+      "args": [
+        "10",
+        "8",
+        "18"
+      ]
+    },
+    {
+      "script": "MnNDrillWitness",
+      "args": [
+        "10",
+        "8",
+        "22"
+      ]
+    },
+    {
+      "script": "MnNDrillWitness",
+      "args": [
+        "10",
+        "8",
+        "18"
+      ]
+    }
+  ]
+}

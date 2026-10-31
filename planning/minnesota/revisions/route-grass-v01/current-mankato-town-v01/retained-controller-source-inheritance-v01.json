@@ -1,0 +1,21 @@
+{
+  "status": "PASS",
+  "native_receipt": "retained-controller-terrain-child-v01.json",
+  "original_binary_snapshot": "pre-notebook-native-snapshot-v01.json",
+  "original_pipeline": "pipeline-progress-v01.json",
+  "source_checks": [
+    {
+      "source": "crates/crystal-bevy/src/bevy_shell/tests/brainerd_city.rs",
+      "original_recorded_sha256": "6615caeb676f1a3ef03d36f9b194fce2d29700add38d0ad3228ae4eb427a94bd",
+      "current_sha256": "6615caeb676f1a3ef03d36f9b194fce2d29700add38d0ad3228ae4eb427a94bd",
+      "exact": true
+    },
+    {
+      "source": "crates/crystal-bevy/src/bevy_shell/tests/town_exterior_review.rs",
+      "original_recorded_sha256": "78c044e35c5ae5b4f29cfa59ac436a5c1856b8cc0617dfc524c59d089cf69ae3",
+      "current_sha256": "78c044e35c5ae5b4f29cfa59ac436a5c1856b8cc0617dfc524c59d089cf69ae3",
+      "exact": true
+    }
+  ],
+  "scope": "Town fixture and four native test implementations remain byte-identical to the retained original build record; the separate newly added notebook mechanics case is not present in this retained binary."
+}

@@ -587,6 +587,7 @@ include!("map_modules.rs");
 include!("runtime_pack.rs");
 include!("verification.rs");
 include!("runtime_commands.rs");
+mod game_data_encounter_surfaces;
 include!("game_data.rs");
 mod pack_load_trace;
 pub use pack_load_trace::with_compiled_pack_load_observer;
@@ -663,6 +664,10 @@ pub use boundary_basecamp_story::refresh_boundary_basecamp_story_dialogue;
 mod northstar_relay;
 mod northstar_relay_art;
 pub use northstar_relay::build_northstar_relay_scene;
+mod city_note_mimics;
+mod wild_level_refuges;
+pub use city_note_mimics::build_city_note_mimics;
+
 mod northstar_supplies;
 pub use northstar_supplies::build_northstar_supplies;
 mod authored_dialogue;
@@ -673,9 +678,11 @@ mod northstar_dispatch_revision;
 mod northstar_holding_fence;
 mod northstar_opening_revision;
 mod northstar_report_revision;
+mod northstar_story_cast;
 mod northstar_story_connections;
 mod northstar_story_pacing;
 mod northstar_story_revision;
+mod northstar_story_staff;
 pub use northstar_story_connections::align_northstar_league_entrance;
 pub use northstar_story_revision::revise_northstar_story;
 mod northstar_dialogue;
@@ -714,14 +721,20 @@ mod northstar_progression_rewards;
 pub use northstar_progression_rewards::build_northstar_progression_rewards;
 mod minnesota_fossils;
 pub use minnesota_fossils::build_minnesota_fossils;
+mod minnesota_fossil_lab;
+pub use minnesota_fossil_lab::build_minnesota_fossil_lab;
 mod minnesota_castorock;
 pub use minnesota_castorock::build_minnesota_castorock;
+mod castorock_gallery_revision;
+pub use castorock_gallery_revision::revise_castorock_gallery;
 mod minnesota_dex_roster_sync;
 pub use minnesota_dex_roster_sync::build_minnesota_dex_roster_sync;
 mod grand_marais_partner_retry;
 pub use grand_marais_partner_retry::build_grand_marais_partner_retry;
 mod minnesota_starter_return;
 pub use minnesota_starter_return::build_minnesota_starter_return;
+mod minnesota_research_access;
+pub use minnesota_research_access::build_minnesota_research_access;
 mod northstar_publication_geometry;
 mod northstar_rival_arc;
 mod northstar_rival_art;
@@ -742,6 +755,8 @@ mod northstar_drill_lair_tests;
 mod northstar_drill_scene;
 mod northstar_story_bridges;
 pub use northstar_drill_lair::build_northstar_drill_lair;
+mod minnesota_fishing_references;
+pub use minnesota_fishing_references::repair_minnesota_fishing_references;
 mod minnesota_fishing_hints;
 mod minnesota_fishing_houses;
 mod minnesota_fishing_rods;
@@ -752,6 +767,18 @@ pub use minnesota_fly_destinations::build_minnesota_fly_destinations;
 mod minnesota_habitat_fishing;
 mod minnesota_habitats;
 pub use minnesota_habitats::build_minnesota_habitats;
+mod minnesota_sweet_scent_source;
+mod minnesota_water_cave_access;
+mod minnesota_water_cave_habitats;
+mod minnesota_biome_ecology;
+mod minnesota_ecology_fishing;
+mod minnesota_ecology_coverage;
+mod minnesota_habitat_review;
+mod minnesota_clinic_companion;
+mod minnesota_encounter_progression;
+pub use minnesota_encounter_progression::build_minnesota_encounter_progression;
+pub use minnesota_water_cave_habitats::build_minnesota_water_cave_habitats;
+pub use minnesota_biome_ecology::build_minnesota_biome_ecology;
 mod minnesota_hm_progression;
 pub use minnesota_hm_progression::build_minnesota_hm_progression;
 mod minnesota_tmhm;
@@ -789,6 +816,7 @@ mod coastal_cedar_warmth;
 mod confluence_grass;
 mod detroit_approach_grass;
 mod duluth_cliff_stairs;
+mod duluth_harbor;
 mod duluth_terrace_stairs;
 mod ely_shore_pass_grass;
 mod iron_cliff_stairs;
@@ -817,6 +845,7 @@ pub use coastal_cedar_warmth::restore_coastal_cedar_warmth;
 pub use confluence_grass::revise_confluence_grass;
 pub use detroit_approach_grass::revise_detroit_approach_grass;
 pub use duluth_cliff_stairs::revise_duluth_cliff_stairs;
+pub use duluth_harbor::{clear_duluth_inner_buoys, revise_duluth_harbor, revise_duluth_shoreline};
 pub use duluth_terrace_stairs::revise_duluth_terrace_stairs;
 pub use ely_shore_pass_grass::revise_ely_shore_pass_grass;
 pub use iron_cliff_stairs::revise_iron_cliff_stairs;
@@ -894,6 +923,7 @@ mod authored_city_recomposition_art;
 mod authored_city_recomposition_design;
 mod authored_city_recomposition_gate;
 mod authored_city_recomposition_water;
+mod authored_city_retained_programs;
 pub use authored_city_recomposition::recompose_authored_city;
 mod authored_river_connections;
 mod authored_river_connections_art;
@@ -918,7 +948,7 @@ mod leech_shore_geometry;
 mod marais_regional_services;
 mod marais_shore_art;
 mod voyageurs_ice;
-pub use voyageurs_ice::build_voyageurs_ice_modpack;
+pub use voyageurs_ice::{build_voyageurs_ice_modpack, revise_voyageurs_ice_turns};
 mod ely_league;
 mod ely_league_rooms;
 mod ely_league_scripts;
@@ -1028,6 +1058,62 @@ mod rochester_mart_facade;
 pub use rochester_mart_facade::revise_rochester_mart_facade;
 mod mankato_mart_facade;
 pub use mankato_mart_facade::revise_mankato_mart_facade;
+mod north_shore_footbridges;
+mod north_shore_passing_width;
+mod r05_cache_bank;
+mod r06_south_woods_grass;
+mod r07_north_pocket_grass;
+mod r07_stair_guidance;
+mod r08_shore_grass;
+mod r09_southwest_grass;
+mod r10_neck_grass;
+mod r11_upper_grass;
+mod r13_pine_grass;
+pub use north_shore_footbridges::rebuild_north_shore_footbridges;
+pub use north_shore_passing_width::rebuild_north_shore_passing_width;
+mod r08_stair_guidance;
+mod r10_stair_guidance;
+mod r11_stair_guidance;
+pub use r05_cache_bank::revise_r05_cache_bank;
+pub use r06_south_woods_grass::revise_r06_south_woods_grass;
+pub use r08_shore_grass::revise_r08_shore_grass;
+pub use r09_southwest_grass::revise_r09_southwest_grass;
+pub use r10_neck_grass::revise_r10_neck_grass;
+pub use r11_upper_grass::revise_r11_upper_grass;
+pub use r13_pine_grass::revise_r13_pine_grass;
+mod r15_shore_guidance;
+pub use r15_shore_guidance::revise_r15_shore_guidance;
+mod r15_staples_spur;
+pub use r15_staples_spur::revise_r15_staples_spur;
+mod r16_bank_guidance;
+pub use r16_bank_guidance::revise_r16_bank_guidance;
+mod r17_trail_guidance;
+pub use r17_trail_guidance::revise_r17_trail_guidance;
+mod r13_boundary_alignment;
+pub use r07_north_pocket_grass::revise_r07_north_pocket_grass;
+pub use r07_stair_guidance::revise_r07_stair_guidance;
+pub use r08_stair_guidance::revise_r08_stair_guidance;
+pub use r10_stair_guidance::revise_r10_stair_guidance;
+pub use r11_stair_guidance::revise_r11_stair_guidance;
+pub use r13_boundary_alignment::align_r13_boundary;
+mod r03_stair_guidance;
+pub use r03_stair_guidance::revise_r03_stair_guidance;
+mod r01_stair_guidance;
+pub use r01_stair_guidance::revise_r01_stair_guidance;
+mod brainerd_mart_facade;
+pub use brainerd_mart_facade::revise_brainerd_mart_facade;
+mod winona_mart_facade;
+pub use winona_mart_facade::revise_winona_mart_facade;
+mod bemidji_mart_facade;
+pub use bemidji_mart_facade::revise_bemidji_mart_facade;
+mod bemidji_plateau_stairs;
+pub use bemidji_plateau_stairs::revise_bemidji_plateau_stairs;
+mod duluth_mart_facade;
+pub use duluth_mart_facade::revise_duluth_mart_facade;
+mod st_cloud_service_fronts;
+pub use st_cloud_service_fronts::revise_st_cloud_service_fronts;
+mod r14_forest_bank;
+pub use r14_forest_bank::revise_r14_forest_bank;
 mod iron_range_descent_modpack;
 pub use iron_range_descent_modpack::build_iron_range_descent_modpack;
 mod red_river_prairie_modpack;
@@ -1118,6 +1204,10 @@ pub use duluth_story::{build_duluth_story_modpack, refresh_duluth_story_dialogue
 
 mod ryans_house;
 pub use ryans_house::build_ryans_house_modpack;
+mod north_shore_shops;
+pub use north_shore_shops::build_north_shore_shops;
+mod minnesota_game_corner;
+pub use minnesota_game_corner::build_minnesota_game_corner;
 mod duluth_city_modpack;
 pub use duluth_city_modpack::build_duluth_city_modpack;
 mod brainerd_city_geometry;
@@ -1201,6 +1291,7 @@ mod interior_read_relocations;
 mod minnesota_interior_layouts;
 pub use minnesota_interior_layouts::build_minnesota_interior_layout_modpack;
 
+mod minnesota_native_npc;
 #[cfg(test)]
 mod minnesota_original_npc_tests;
 mod minnesota_trainer_art;
@@ -1239,3 +1330,174 @@ pub use current_minnesota_release_composition::compose_current_minnesota_release
 
 mod northstar_rescue_refresh;
 pub use northstar_rescue_refresh::refresh_northstar_rescue_evidence;
+
+// Minnesota optional discovery and field-use publishers.
+mod boundary_cabin_cast;
+pub use boundary_cabin_cast::revise_boundary_cabin_cast;
+
+mod devils_kettle;
+pub use devils_kettle::build_devils_kettle;
+
+mod devils_kettle_clinic;
+
+mod discovery_dialogue;
+
+mod flarkindle_discovery;
+pub use flarkindle_discovery::{FlarkindleDiscoveryPrograms, build_flarkindle_discovery_programs};
+
+mod flarkindle_discovery_pack;
+pub use flarkindle_discovery_pack::build_flarkindle_discovery_pack;
+
+mod icemyth_discovery;
+pub use icemyth_discovery::{IcemythDiscoveryPrograms, build_icemyth_discovery_programs};
+
+mod icemyth_discovery_pack;
+pub use icemyth_discovery_pack::build_icemyth_discovery_pack;
+
+mod kensigard_discovery;
+pub use kensigard_discovery::{KensigardDiscoveryPrograms, build_kensigard_discovery_programs};
+
+mod kensigard_discovery_pack;
+pub use kensigard_discovery_pack::build_kensigard_discovery_pack;
+
+mod minneapolis_cycling_dialogue;
+pub use minneapolis_cycling_dialogue::refresh_minneapolis_cycling_dialogue;
+
+mod minneapolis_cycling_routes;
+pub use minneapolis_cycling_routes::revise_minneapolis_cycling_routes;
+
+mod iron_crosscut;
+pub use iron_crosscut::rebuild_iron_crosscut;
+
+mod ely_pine_camp;
+pub use ely_pine_camp::rebuild_ely_pine_camp;
+
+mod iron_approach_revision;
+pub use iron_approach_revision::revise_iron_drill_approach;
+mod r10_exploration;
+pub use r10_exploration::rebuild_r10_exploration;
+mod r10_survey_spurs;
+pub use r10_survey_spurs::revise_r10_survey_spurs;
+mod international_falls_windbreak;
+pub use international_falls_windbreak::rebuild_international_falls_windbreak;
+mod r20_winding_cleft;
+pub use r20_winding_cleft::rebuild_r20_winding_cleft;
+mod r17_talus_loop;
+pub use r17_talus_loop::revise_r17_talus_loop;
+mod iron_haulage_rock;
+mod iron_haulage_rock_art;
+pub use iron_haulage_rock::rebuild_iron_haulage_rock;
+mod iron_drill_core;
+mod iron_drill_core_art;
+mod iron_pump_gallery;
+mod iron_sump_basin;
+mod iron_sump_shore_art;
+mod iron_ventilation_art;
+mod iron_ventilation_cleft;
+pub use iron_drill_core::rebuild_iron_drill_core;
+mod r13_cedar_basin;
+pub use r13_cedar_basin::rebuild_r13_cedar_basin;
+
+mod gunflint_spring_shelter;
+pub use gunflint_spring_shelter::rebuild_gunflint_spring_shelter;
+
+mod gunflint_grotto;
+pub use gunflint_grotto::rebuild_gunflint_grotto;
+mod grand_rapids_riverfront;
+mod grand_rapids_riverfront_art;
+pub use grand_rapids_riverfront::rebuild_grand_rapids_riverfront;
+pub use iron_pump_gallery::rebuild_iron_pump_gallery;
+pub use iron_sump_basin::rebuild_iron_sump_basin;
+pub use iron_ventilation_cleft::rebuild_iron_ventilation_cleft;
+
+mod driftless_fossil_gallery;
+pub use driftless_fossil_gallery::build_driftless_fossil_gallery;
+
+mod leech_lake_island;
+pub use leech_lake_island::build_leech_lake_island;
+
+mod leech_lake_mainland;
+pub use leech_lake_mainland::rebuild_leech_lake_mainland;
+
+mod minnesota_field_use;
+pub use minnesota_field_use::build_minnesota_field_use_pack;
+
+mod minnesota_field_use_art;
+
+mod comprehensive_league_seam;
+pub use comprehensive_league_seam::repair_comprehensive_league_seam;
+mod comprehensive_cave_successors;
+pub use comprehensive_cave_successors::integrate_comprehensive_cave_successors;
+mod comprehensive_story_support;
+pub use comprehensive_story_support::integrate_comprehensive_story_support;
+mod comprehensive_haulage_successors;
+pub use comprehensive_haulage_successors::integrate_comprehensive_haulage_successors;
+mod comprehensive_sump_successors;
+pub use comprehensive_sump_successors::integrate_comprehensive_sump_successors;
+mod comprehensive_core_shelter;
+pub use comprehensive_core_shelter::integrate_comprehensive_core_shelter;
+mod comprehensive_accepted_successors;
+pub use comprehensive_accepted_successors::integrate_comprehensive_accepted_successors;
+mod comprehensive_fossil_lab;
+pub use comprehensive_fossil_lab::integrate_comprehensive_fossil_lab;
+
+mod comprehensive_riverfront_gate_spurs;
+pub use comprehensive_riverfront_gate_spurs::integrate_comprehensive_riverfront_gate_spurs;
+mod comprehensive_vent_bridges;
+pub use comprehensive_vent_bridges::integrate_comprehensive_vent_bridges;
+mod comprehensive_r10_successor;
+pub use comprehensive_r10_successor::integrate_comprehensive_r10_successor;
+mod comprehensive_road_successors;
+pub use comprehensive_road_successors::integrate_comprehensive_road_successors;
+mod comprehensive_current_world;
+pub use comprehensive_current_world::{
+    integrate_comprehensive_brainerd_roof, integrate_comprehensive_current_world,
+};
+mod northstar_cast_integration;
+pub use northstar_cast_integration::complete_northstar_story_cast;
+mod northstar_story_refresh;
+pub use northstar_story_refresh::refresh_northstar_current_story;
+
+mod northwoods_discovery;
+pub use northwoods_discovery::{NorthwoodsDiscoveryPrograms, build_northwoods_discovery_programs};
+
+mod northwoods_discovery_pack;
+pub use northwoods_discovery_pack::build_northwoods_discovery_pack;
+
+mod pepin_discovery;
+pub use pepin_discovery::{PepinDiscoveryPrograms, build_pepin_discovery_programs};
+
+mod pepin_discovery_pack;
+pub use pepin_discovery_pack::build_pepin_discovery_pack;
+
+mod strandrak_discovery;
+pub use strandrak_discovery::{StrandrakDiscoveryPrograms, build_strandrak_discovery_programs};
+
+mod strandrak_discovery_pack;
+pub use strandrak_discovery_pack::build_strandrak_discovery_pack;
+
+mod minnesota_forced_movement_source;
+
+mod r19_detroit_seam;
+pub use r19_detroit_seam::restore_r19_detroit_seam;
+
+mod r19_detroit_gate;
+pub use r19_detroit_gate::build_r19_detroit_gate;
+
+mod trainer_random_selection;
+
+mod comprehensive_water_habitats;
+pub use comprehensive_water_habitats::integrate_comprehensive_water_habitats;
+
+mod comprehensive_leech_mainland;
+pub use comprehensive_leech_mainland::integrate_comprehensive_leech_mainland;
+
+mod comprehensive_research_grotto;
+pub use comprehensive_research_grotto::integrate_comprehensive_research_grotto;
+
+mod comprehensive_iron_crosscut;
+pub use comprehensive_iron_crosscut::integrate_comprehensive_iron_crosscut;
+
+mod northstar_title;
+mod northstar_title_art;
+pub use northstar_title::{NORTHSTAR_TITLE_IMAGE, build_northstar_title};

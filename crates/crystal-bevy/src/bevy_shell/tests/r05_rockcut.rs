@@ -29,11 +29,10 @@ fn source() -> Value {
     let path = std::env::var_os("CRYSTAL_R05_ROCKCUT_SOURCE")
         .map(PathBuf::from)
         .unwrap_or_else(|| {
-            PathBuf::from(env!("CARGO_MANIFEST_DIR")).join(
-                "../../planning/minnesota/renders/caves/r05-rockcut-candidate/v02/MnR05RockCut.candidate.json",
-            )
+            PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+                .join("../../planning/minnesota/caves/r05-shelf-drop-v01/after.json")
         });
-    serde_json::from_str(&std::fs::read_to_string(path).expect("frozen485652d7 source"))
+    serde_json::from_str(&std::fs::read_to_string(path).expect("matching frozen RockCut source"))
         .expect("RockCut source")
 }
 
@@ -87,7 +86,7 @@ fn fixture(
     if injured_partner {
         let mut pokemon = runtime
             .data()
-            .create_pokemon("MEW", 30, Dv::default())
+            .create_pokemon("CINDORE", 30, Dv::default())
             .expect("legal native learned moves");
         assert!(pokemon.max_hp > 30);
         pokemon.hp = pokemon.max_hp - 30;
@@ -134,6 +133,17 @@ fn fixture(
             && command.args == ["HealParty"]
     }));
     (root, runtime, controller)
+}
+
+fn checkpoint(controller: &mut VisibleShellController, name: &str) {
+    let Some(directory) = std::env::var_os("CRYSTAL_R05_SHELF_REVIEW_DIR") else {
+        return;
+    };
+    let directory = PathBuf::from(directory);
+    std::fs::create_dir_all(&directory).expect("retained RockCut checkpoint directory");
+    let path = directory.join(format!("{name}.crystalsave"));
+    assert!(!path.exists(), "retain every RockCut checkpoint");
+    controller.save(path).expect("actual reached RockCut save");
 }
 
 fn collected(controller: &VisibleShellController) -> bool {
@@ -266,6 +276,9 @@ fn leave(controller: &mut VisibleShellController, runtime: &CrystalRuntime, nort
         indoor_walk(controller, runtime, clear);
     }
     assert_eq!(tile(controller), clear);
+    if north {
+        checkpoint(controller, "north-clear");
+    }
     indoor_walk(controller, runtime, mouth);
     assert_eq!(map(controller), exterior);
     assert_eq!(tile(controller), local, "true passive exterior return");
@@ -359,13 +372,15 @@ fn healer(controller: &mut VisibleShellController, runtime: &CrystalRuntime) {
 }
 
 #[test]
-#[ignore = "requires actual revised RockCut pack and frozen485652d7 source"]
+#[ignore = "requires actual revised RockCut pack and matching frozen RockCut source"]
 fn r05_rockcut_controller_both_mouths_stair_healer_two_pages_and_continue() {
     let (root, runtime, mut controller) = fixture("MnR05C00R01", (16, 30), true);
+    checkpoint(&mut controller, "initial-outside-south");
     let initial_flags = flags(&controller);
     let bag = controller.snapshot().expect("original inventory").bag;
     enter(&mut controller, &runtime, false);
     healer(&mut controller, &runtime);
+    checkpoint(&mut controller, "healed");
     indoor_walk(&mut controller, &runtime, (9, 5));
     for (button, target) in [
         (GameButton::Down, (9, 6)),
@@ -381,8 +396,10 @@ fn r05_rockcut_controller_both_mouths_stair_healer_two_pages_and_continue() {
     step(&mut controller, GameButton::Up, (9, 6));
     step(&mut controller, GameButton::Up, (9, 5));
     leave(&mut controller, &runtime, true);
+    checkpoint(&mut controller, "north-passive");
     enter(&mut controller, &runtime, true);
     leave(&mut controller, &runtime, false);
+    checkpoint(&mut controller, "south-passive");
     enter(&mut controller, &runtime, false);
     assert_eq!(flags(&controller), initial_flags);
     assert_eq!(
@@ -614,8 +631,10 @@ fn use_repel(controller: &mut VisibleShellController, runtime: &CrystalRuntime) 
 #[ignore = "requires revised RockCut and genuine native100-step Repel catalog"]
 fn r05_rockcut_controller_original_repel_once_pack_use_movement_and_continue() {
     let (root, runtime, mut controller) = fixture(ROOM, (5, 16), false);
+    checkpoint(&mut controller, "initial-repel");
     let mut expected_flags = flags(&controller);
     collect(&mut controller, &runtime);
+    checkpoint(&mut controller, "collected-repel");
     expected_flags.0.insert(EVENT.to_string());
     assert_eq!(flags(&controller), expected_flags);
     leave(&mut controller, &runtime, false);
@@ -632,11 +651,13 @@ fn r05_rockcut_controller_original_repel_once_pack_use_movement_and_continue() {
     );
     step(&mut controller, GameButton::Right, (6, 5));
     use_repel(&mut controller, &runtime);
+    checkpoint(&mut controller, "used-repel");
     step(&mut controller, GameButton::Right, (7, 5));
     assert_eq!(repel_steps(&controller), 99);
     step(&mut controller, GameButton::Left, (6, 5));
     assert_eq!(repel_steps(&controller), 98);
     controller = continue_save(root, runtime.clone(), &mut controller);
+    checkpoint(&mut controller, "repel-continued");
     assert_eq!(
         repel_steps(&controller),
         98,
@@ -662,4 +683,103 @@ fn r05_rockcut_controller_original_repel_once_pack_use_movement_and_continue() {
         97,
         "continued effect still counts real steps"
     );
+}
+
+#[test]
+#[ignore = "requires the completed shelf-drop pack and exact current source; explicit local position only"]
+fn r05_rockcut_controller_two_downward_lanes_block_reverse_and_retain_stair_return() {
+    let (root, runtime, mut controller) = fixture(ROOM, (5, 16), false);
+    checkpoint(&mut controller, "initial-geometry");
+    let original_flags = flags(&controller);
+    let source = source();
+    for view in source["review_contract"]["viewpoints"]
+        .as_array()
+        .expect("whole cave camera positions")
+    {
+        let at = (
+            view["tile"][0].as_i64().expect("x") as i16,
+            view["tile"][1].as_i64().expect("y") as i16,
+        );
+        assert_eq!(
+            kind(&runtime, at),
+            "FLOOR",
+            "review cameras must be standable"
+        );
+        if at == (11, 4) {
+            indoor_walk(&mut controller, &runtime, (9, 5));
+            step(&mut controller, GameButton::Up, (9, 4));
+            step(&mut controller, GameButton::Right, (10, 4));
+            step(&mut controller, GameButton::Right, at);
+            step(&mut controller, GameButton::Left, (10, 4));
+            step(&mut controller, GameButton::Left, (9, 4));
+            step(&mut controller, GameButton::Down, (9, 5));
+        } else {
+            indoor_walk(&mut controller, &runtime, at);
+        }
+    }
+    for x in [6, 7] {
+        let approach = (x, 5);
+        let lip = (x, 6);
+        let course = (x, 7);
+        let landing = (x, 8);
+        indoor_walk(&mut controller, &runtime, approach);
+        assert_eq!(kind(&runtime, lip), "HOP_DOWN");
+        for at in [(x - 1, 7), course, (x + 1, 7)] {
+            assert_eq!(kind(&runtime, at), "WALL");
+        }
+        step(&mut controller, GameButton::Down, lip);
+        if x == 6 {
+            checkpoint(&mut controller, "drop-lip");
+            blocked(&mut controller, GameButton::Left);
+        }
+        for _ in 0..8 {
+            if tile(&mut controller) == landing {
+                break;
+            }
+            assert_eq!(tile(&mut controller), lip);
+            press(&mut controller, GameButton::Down);
+            assert_ne!(
+                tile(&mut controller),
+                course,
+                "never occupy the jumped wall course"
+            );
+        }
+        assert_eq!(tile(&mut controller), landing);
+        blocked(&mut controller, GameButton::Up);
+        if x == 6 {
+            checkpoint(&mut controller, "drop-landing");
+        }
+        controller = continue_save(root.clone(), runtime.clone(), &mut controller);
+        assert_eq!(tile(&mut controller), landing);
+        blocked(&mut controller, GameButton::Up);
+        indoor_walk(&mut controller, &runtime, (6, 8));
+        let path = [
+            (6, 8),
+            (7, 8),
+            (8, 8),
+            (9, 8),
+            (9, 7),
+            (9, 6),
+            (9, 5),
+            (8, 5),
+            (7, 5),
+            (6, 5),
+        ];
+        for pair in path.windows(2) {
+            let from = pair[0];
+            let to = pair[1];
+            let button = super::authored_route_fixture::neighbors(from)
+                .into_iter()
+                .find_map(|(at, b)| (at == to).then_some(b))
+                .expect("ordinary return step");
+            assert_eq!(kind(&runtime, to), "FLOOR");
+            step(&mut controller, button, to);
+        }
+        assert_eq!(tile(&mut controller), (6, 5));
+        assert_eq!(path.len() - 1, 9, "actual longer stair return");
+    }
+    assert_eq!(flags(&controller), original_flags);
+    assert_eq!(quantity(&controller, &runtime), 0);
+    assert_eq!(controller.shell.shell.session().state().money, 1000);
+    checkpoint(&mut controller, "stair-returned");
 }

@@ -1,0 +1,50 @@
+[
+  {
+    "id": "bluff-lower-museum",
+    "map": "MnStPaul",
+    "core": [
+      44,
+      17
+    ]
+  },
+  {
+    "id": "upper-summit-avenue",
+    "map": "MnStPaul",
+    "core": [
+      63,
+      12
+    ]
+  },
+  {
+    "id": "press-garden-bend",
+    "map": "MnStPaul",
+    "core": [
+      57,
+      20
+    ]
+  },
+  {
+    "id": "eastern-service-lane",
+    "map": "MnStPaul",
+    "core": [
+      57,
+      33
+    ]
+  },
+  {
+    "id": "freight-and-cafe",
+    "map": "MnStPaul",
+    "core": [
+      56,
+      40
+    ]
+  },
+  {
+    "id": "community-and-east-return",
+    "map": "MnStPaul",
+    "core": [
+      67,
+      33
+    ]
+  }
+]

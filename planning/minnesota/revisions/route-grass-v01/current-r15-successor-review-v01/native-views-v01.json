@@ -1,0 +1,26 @@
+[
+  {
+    "id": "meadow-drop",
+    "map": "MnR15C00R00",
+    "core": [
+      22,
+      17
+    ]
+  },
+  {
+    "id": "shore-grass",
+    "map": "MnR15C00R00",
+    "core": [
+      29,
+      28
+    ]
+  },
+  {
+    "id": "open-dock",
+    "map": "MnR15C00R00",
+    "core": [
+      35,
+      15
+    ]
+  }
+]

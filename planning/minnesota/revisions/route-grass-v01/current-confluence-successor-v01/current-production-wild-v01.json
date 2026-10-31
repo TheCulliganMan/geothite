@@ -1,0 +1,47 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+  "pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33",
+  "source_save": "/Users/ryanculligan/GitHub/geothite/.local/route-grass-review/current-confluence-native-saves-v01/marais-confluence-new-grass-approach-64325-1793423460139523000.crystalsave",
+  "reached_save": "/Users/ryanculligan/GitHub/geothite/.local/route-grass-review/current-confluence-new-grass-client-v01.crystalsave",
+  "initial_position": {
+    "x": 44,
+    "y": 6
+  },
+  "final_position": {
+    "x": 44,
+    "y": 6
+  },
+  "new_grass_wild_encounter_and_native_RUN": true,
+  "new_grass_tiles": [
+    [
+      44,
+      5
+    ],
+    [
+      45,
+      5
+    ]
+  ],
+  "native_battles": [
+    {
+      "position": {
+        "x": 45,
+        "y": 5
+      },
+      "map": "MnMississippiConfluenceC02R00",
+      "native_run_completed": true,
+      "views": [
+        "Foe GILLPUP Lv51 HP 126/126\nYou VOYAGEAR Lv80 HP 234/234\nTurn 1  None (0 turns)\nCHRIS \u00b7 $3000\nBadges 8/16 \u00b7 Dex 0/1\n\u25b6 VOYAGEAR   L80 234/234\n  VOYAGEAR   L40 122/122\n  DOZEBEAR   L40 118/118\nWild GILLPUP\nappeared!",
+        "Foe GILLPUP Lv51 HP 126/126\nYou VOYAGEAR Lv80 HP 234/234\nTurn 1  None (0 turns)\nCHRIS \u00b7 $3000\nBadges 8/16 \u00b7 Dex 0/1\n\u25b6 VOYAGEAR   L80 234/234\n  VOYAGEAR   L40 122/122\n  DOZEBEAR   L40 118/118\nGo! VOYAGEAR!",
+        "Foe GILLPUP Lv51 HP 126/126\nYou VOYAGEAR Lv80 HP 234/234\nTurn 1  None (0 turns)\nCHRIS \u00b7 $3000\nBadges 8/16 \u00b7 Dex 0/1\n\u25b6 VOYAGEAR   L80 234/234\n  VOYAGEAR   L40 122/122\n  DOZEBEAR   L40 118/118\n> FIGHT\n   <PKMN>\n   PACK\n   RUN",
+        "Foe GILLPUP Lv51 HP 126/126\nYou VOYAGEAR Lv80 HP 234/234\nTurn 1  None (0 turns)\nCHRIS \u00b7 $3000\nBadges 8/16 \u00b7 Dex 0/1\n\u25b6 VOYAGEAR   L80 234/234\n  VOYAGEAR   L40 122/122\n  DOZEBEAR   L40 118/118\n   FIGHT\n   <PKMN>\n> PACK\n   RUN",
+        "Foe GILLPUP Lv51 HP 126/126\nYou VOYAGEAR Lv80 HP 234/234\nTurn 1  None (0 turns)\nCHRIS \u00b7 $3000\nBadges 8/16 \u00b7 Dex 0/1\n\u25b6 VOYAGEAR   L80 234/234\n  VOYAGEAR   L40 122/122\n  DOZEBEAR   L40 118/118\n   FIGHT\n   <PKMN>\n   PACK\n> RUN",
+        "   35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55\n00 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #\n01 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #\n02 #  #  #  .  .  \"  \"  .  .  .  .  .  .  #  #  #  #  #  #  #  #\n03 #  #  #  .  .  \"  \"  .  .  .  .  .  .  #  #  #  #  #  #  #  #\n04 #  #  #  \"  \"  \"  \"  \"  \"  \"  \"  \"  \"  \"  \"  #  #  #  #  #  #\n05 #  #  #  \"  \"  \"  \"  \"  \"  \"  @> \"  \"  \"  \"  #  #  #  #  #  #\n06 #  #  #  #  #  .  .  #  #  .  .  \"  \"  \"  \"  .  .  #  #  #  #\n07 #  #  #  #  #  #  #  #  #  .  .  \"  \"  \"  \"  .  .  #  #  #  #\n08 #  #  #  #  #  .  .  .  .  .  .  .  .  .  .  #  #  #  #  #  #\n09 #  #  #  #  #  .  .  .  .  .  .  .  .  .  .  #  #  #  #  #  #\n10 #  #  #  #  #  #  #  .  .  .  .  .  .  .  .  #  #  #  #  \u2248  \u2248\n11 #  #  #  #  #  #  #  .  .  .  .  .  .  .  .  #  #  #  #  \u2248  \u2248\n12 \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248\n13 \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248\n14 \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248\nCHRIS \u00b7 $3000\nBadges 8/16 \u00b7 Dex 0/1\n  VOYAGEAR   L80 234/234\n  VOYAGEAR   L40 122/122\n  DOZEBEAR   L40 118/118\nGot away safely!"
+      ]
+    }
+  ],
+  "production_stdio_calls": 38,
+  "stderr_bytes": 0,
+  "scope": "Started from the actual reached dry Confluence bank checkpoint without Repel. Every subsequent step and RUN used production MCP input; no state or RNG edits."
+}

@@ -1,0 +1,38 @@
+[
+  {
+    "map": "MnDuluth",
+    "core": [
+      54,
+      75
+    ],
+    "facing": "right",
+    "id": "west-floating-fisher"
+  },
+  {
+    "map": "MnDuluth",
+    "core": [
+      70,
+      81
+    ],
+    "facing": "right",
+    "id": "east-floating-fisher"
+  },
+  {
+    "map": "MnDuluth",
+    "core": [
+      94,
+      67
+    ],
+    "facing": "down",
+    "id": "cleared-inner-buoy"
+  },
+  {
+    "map": "MnDuluth",
+    "core": [
+      92,
+      58
+    ],
+    "facing": "down",
+    "id": "cleared-canal-wall"
+  }
+]

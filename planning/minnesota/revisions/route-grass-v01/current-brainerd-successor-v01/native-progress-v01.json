@@ -1,0 +1,17 @@
+{
+  "pid": 33172,
+  "steps": [
+    {
+      "step": "public",
+      "test": "native_town_exterior_public_paths_qualified_roads_and_water_boundary",
+      "exit_code": 0,
+      "log": ".local/route-grass-review/current-brainerd-successor-native-public-v01.log"
+    },
+    {
+      "step": "guards",
+      "test": "native_town_exterior_guard_denials_each_requirement_and_free_inbound",
+      "exit_code": 0,
+      "log": ".local/route-grass-review/current-brainerd-successor-native-guards-v01.log"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "status": "PASS_CURRENT_DRY_RIVER_LANDING_REVIEW",
+  "pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+  "pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33",
+  "native_cases": 2,
+  "stdio_calls": 15,
+  "grass_quadrants": 0,
+  "ice_quadrants": 0,
+  "dry_bank_walking_tiles": 18,
+  "water_tiles": 72,
+  "reciprocal_river_lanes_verified": 8,
+  "bank_fishing_bite_run_and_continue": true,
+  "complete_map_used_pixels_and_collision_exact": true,
+  "whole_inherited_map_inspected": "planning/minnesota/renders/route-grass-v01/current-winona-mouth-v01/before-v01/whole.png",
+  "decision": "Retain the tiny dry landing and bench for bank fishing, Surf dismount/relaunch and connected river travel.",
+  "scope": "Native local party/badges/position/registered rod are QA setup, not earned Surf or fishing access; regional woodland grass remains separately reviewed and statewide scope remains active."
+}

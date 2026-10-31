@@ -1,0 +1,73 @@
+{
+  "interior": "MnR13Cave1F",
+  "parent_route": "MN_R13",
+  "arrival_core": [
+    7,
+    15
+  ],
+  "return_trigger_core": [
+    7,
+    15
+  ],
+  "exterior_anchor_metatile": [
+    7,
+    26
+  ],
+  "exterior_door_core": [
+    14,
+    53
+  ],
+  "requires_real_collision_check": false,
+  "clear_arrival_core": [
+    7,
+    14
+  ],
+  "return_triggers_core": [
+    [
+      7,
+      15
+    ]
+  ],
+  "exterior_arrival_core": [
+    14,
+    54
+  ],
+  "exterior_clear_return_core": [
+    14,
+    54
+  ],
+  "source_collision_checked": true,
+  "source_design": "caves/r13-cedar-basin-v01/current.json",
+  "validation": "Four production-controller cases,282 stdio calls,8 exact native cameras and2 actual reached-save views. Real fishing battle, HP/status/PP healing, Max Ether use/once and Continue pass. Local fixtures do not prove earned arrival.",
+  "mouths": [
+    {
+      "exterior_door_core": [
+        14,
+        53
+      ],
+      "interior_target_warp": 1,
+      "exterior_entry_warp": 1,
+      "exterior_return_warp": 2,
+      "safe_exterior_return_core": [
+        14,
+        54
+      ]
+    }
+  ],
+  "native_status": "Verified10x8 Cedar Shelter bank and fitted30/36 stair pair, forced nativeNITE. All original healing/fishing/item/warp behavior retained.",
+  "dimensions_metatiles": [
+    10,
+    8
+  ],
+  "native_palette": "nite",
+  "candidate_source_sha256": "c829d63d0a813c0779b3584227035cfe15cb3e89fe300bb2714d8a36166ff12b",
+  "native_review_pack_sha256": "fa13a621b94a9d3234f3d6fc0154af49cbe1da738370d575b7908295dcbdfb55",
+  "runtime_settled_exterior_core": [
+    14,
+    54
+  ],
+  "return_semantics": "Original room warp1 returns directly to exterior passive warp2 at global14,54/local14,6 FLOOR; stable after presentation and walking away/back. Exterior active CAVE warp1 at global14,53/local14,5 deliberately reenters. No warp or automatic-downstep behavior is invented.",
+  "source_file": "caves/r13-cedar-basin-v01/current.json",
+  "native_review_pack": "content-packs/minnesota-r13-cedar-basin-v01.crystalpack",
+  "verification": "planning/minnesota/renders/r13-cedar-basin-v749/acceptance-v761.json"
+}

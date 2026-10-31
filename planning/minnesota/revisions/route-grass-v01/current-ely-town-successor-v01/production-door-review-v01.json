@@ -1,0 +1,151 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+  "pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33",
+  "source_save": ".local/route-grass-review/current-ely-town-saves-v01/brainerd-78969-1793428974817993000.crystalsave",
+  "source_save_sha256": "86e66d6f19ebf7ecde0c42c80ec24cac9da28979831018bfb64f0e1698e77940",
+  "input_save": ".local/route-grass-review/current-ely-doors-input-v03.crystalsave",
+  "save": ".local/route-grass-review/current-ely-doors-output-v03.crystalsave",
+  "all_eight_returns": [
+    {
+      "room": "MnElyPokecenter1F",
+      "carpet": [
+        3,
+        7
+      ],
+      "return_position": [
+        11,
+        22
+      ],
+      "arrival_dialogue": ""
+    },
+    {
+      "room": "MnElyPokecenter1F",
+      "carpet": [
+        4,
+        7
+      ],
+      "return_position": [
+        11,
+        22
+      ],
+      "arrival_dialogue": ""
+    },
+    {
+      "room": "MnElyMart",
+      "carpet": [
+        2,
+        7
+      ],
+      "return_position": [
+        27,
+        28
+      ],
+      "arrival_dialogue": ""
+    },
+    {
+      "room": "MnElyMart",
+      "carpet": [
+        3,
+        7
+      ],
+      "return_position": [
+        27,
+        28
+      ],
+      "arrival_dialogue": ""
+    },
+    {
+      "room": "MnLeagueLobby",
+      "carpet": [
+        0,
+        4
+      ],
+      "return_position": [
+        25,
+        14
+      ],
+      "arrival_dialogue": ""
+    },
+    {
+      "room": "MnLeagueLobby",
+      "carpet": [
+        0,
+        5
+      ],
+      "return_position": [
+        25,
+        14
+      ],
+      "arrival_dialogue": ""
+    },
+    {
+      "room": "MnLeagueLobby",
+      "carpet": [
+        0,
+        4
+      ],
+      "return_position": [
+        26,
+        14
+      ],
+      "arrival_dialogue": ""
+    },
+    {
+      "room": "MnLeagueLobby",
+      "carpet": [
+        0,
+        5
+      ],
+      "return_position": [
+        26,
+        14
+      ],
+      "arrival_dialogue": ""
+    }
+  ],
+  "calls": 197,
+  "stderr_bytes": 0,
+  "initial": {
+    "badges": 0,
+    "dialogue": false,
+    "facing": "down",
+    "frame": 653,
+    "map": "MnEly",
+    "menu": null,
+    "mode": "overworld",
+    "money": 3000,
+    "player": "CHRIS",
+    "pokedex": {
+      "owned": 0,
+      "seen": 0
+    },
+    "position": {
+      "x": 27,
+      "y": 28
+    }
+  },
+  "final": {
+    "badges": 0,
+    "dialogue": false,
+    "facing": "right",
+    "frame": 796,
+    "map": "MnEly",
+    "menu": null,
+    "mode": "overworld",
+    "money": 3000,
+    "player": "CHRIS",
+    "pokedex": {
+      "owned": 0,
+      "seen": 0
+    },
+    "position": {
+      "x": 27,
+      "y": 14
+    }
+  },
+  "source_and_input_unchanged": true,
+  "arrival_dialogue_acknowledged_by_actual_input": true,
+  "items_and_balls_verified": true,
+  "scope": "Initial party and starter qualification are QA fixtures. Actual dialogue acknowledgments and depot arrival may legitimately set progress; no direct save edits or flag injection. Continue still requires a separate load of reached output."
+}

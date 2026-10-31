@@ -1009,7 +1009,17 @@ fn reset_visible_battle_item_cursors(runtime_shell: &mut BevyRuntimeShell) {
     runtime_shell.field_pack_action_cursor = None;
     runtime_shell.field_pack_target_mode = None;
     runtime_shell.battle_pack_target_mode = None;
-    runtime_shell.party_move_cursor = None;
+    // Move learning can outlive battle narration and owns this shared cursor.
+    if !runtime_shell.move_learn_forget_menu_open
+        || runtime_shell
+            .shell
+            .session()
+            .state()
+            .pending_move_learn
+            .is_none()
+    {
+        runtime_shell.party_move_cursor = None;
+    }
     runtime_shell.battle_party_action_cursor = None;
     runtime_shell.battle_party_summary_open = false;
 }
@@ -4832,7 +4842,7 @@ fn open_visible_card_flip_for_script_command(
         payout: 0,
         deck: Vec::new(),
         revealed: vec![false; 24],
-        message: "PLAY WITH THREE COINS?".to_string(),
+        message: "PLAY WITH THREE\nCOINS?".to_string(),
     });
     let script_runtime = &mut runtime_shell.shell.session_mut().state_mut().script_runtime;
     script_runtime.card_flip = None;

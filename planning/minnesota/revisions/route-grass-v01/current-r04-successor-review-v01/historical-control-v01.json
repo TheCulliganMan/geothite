@@ -1,0 +1,10 @@
+{
+  "status": "HISTORICAL_CONTROL_PASS_CURRENT_PACK_FAILURE_REMAINS",
+  "historical_pack": "content-packs/minnesota-current-grass-r04-v02.crystalpack",
+  "controller": ".local/dialogue-overhaul/tools/retained-current-controller-v27",
+  "log": ".local/route-grass-review/r04-historical-current-controller-v01.log",
+  "same_current_trainer_records": true,
+  "same_current_pokemon_moves_growth_definitions": true,
+  "geometry_unchanged": true,
+  "conclusion": "Historical source passes under the same controller, current pack fails. This rules out a universal controller/fixture failure; wider runtime content or journey state differs. No authored battle or party setup has been weakened."
+}

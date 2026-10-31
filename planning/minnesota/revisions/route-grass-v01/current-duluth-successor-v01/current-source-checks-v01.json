@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "command": [
+    "cargo",
+    "clippy",
+    "--locked",
+    "--profile",
+    "wasm-dev",
+    "-p",
+    "crystal-bevy",
+    "--all-targets"
+  ],
+  "exit_code": 0,
+  "log": ".local/route-grass-review/duluth-current-bevy-all-target-clippy-v01.log",
+  "source_sha256": {
+    "crates/crystal-bevy/src/bevy_shell/tests/duluth_city.rs": "bc47ab6926967a623f38bfbf3927ecd752ffe9e5c14bcfb23d39ca5db6d50809"
+  },
+  "owned_leaf_format_exit_code": 0
+}

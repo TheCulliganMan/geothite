@@ -1,0 +1,337 @@
+{
+  "schema_version": 1,
+  "status": "Verified local native refinement; world.json owns selection.",
+  "parent_revision": "route_grass_mankato_town_revision",
+  "parent_pack": "content-packs/minnesota-current-mankato-native-exterior-v03.crystalpack",
+  "parent_pack_sha256": "4f22dd532f5dc1ca28f63383bb9a66030d4f93ced96ed4daa265b3f36680e02f",
+  "complete_facade_moves": [
+    {
+      "name": "Riverside Supplies",
+      "warp": 69,
+      "box": [
+        2,
+        27,
+        4,
+        29
+      ],
+      "to": [
+        3,
+        28
+      ],
+      "native_rows": [
+        [
+          32,
+          33
+        ],
+        [
+          124,
+          115
+        ]
+      ]
+    },
+    {
+      "name": "Westside Community",
+      "warp": 71,
+      "box": [
+        7,
+        28,
+        12,
+        31
+      ],
+      "to": [
+        8,
+        28
+      ],
+      "native_rows": [
+        [
+          32,
+          84,
+          84,
+          84,
+          33
+        ],
+        [
+          104,
+          127,
+          127,
+          127,
+          105
+        ],
+        [
+          55,
+          58,
+          125,
+          125,
+          126
+        ]
+      ]
+    },
+    {
+      "name": "Angler House",
+      "warp": 67,
+      "box": [
+        2,
+        31,
+        4,
+        32
+      ],
+      "to": [
+        5,
+        31
+      ],
+      "native_rows": [
+        [
+          2,
+          3
+        ]
+      ]
+    },
+    {
+      "name": "Boat Cooperative",
+      "warp": 75,
+      "box": [
+        21,
+        30,
+        23,
+        31
+      ],
+      "to": [
+        22,
+        30
+      ],
+      "native_rows": [
+        [
+          2,
+          3
+        ]
+      ]
+    },
+    {
+      "name": "South Landing Survey",
+      "warp": 79,
+      "box": [
+        30,
+        28,
+        34,
+        31
+      ],
+      "to": [
+        29,
+        28
+      ],
+      "native_rows": [
+        [
+          32,
+          84,
+          84,
+          33
+        ],
+        [
+          104,
+          127,
+          127,
+          105
+        ],
+        [
+          55,
+          58,
+          125,
+          126
+        ]
+      ]
+    }
+  ],
+  "changed_metatiles": 104,
+  "changed_anchors": [
+    {
+      "kind": "object",
+      "index": 11,
+      "before": [
+        59,
+        61
+      ],
+      "after": [
+        57,
+        61
+      ]
+    },
+    {
+      "kind": "background",
+      "index": 9,
+      "before": [
+        59,
+        57
+      ],
+      "after": [
+        55,
+        57
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 66,
+      "before": [
+        5,
+        63
+      ],
+      "after": [
+        11,
+        63
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 67,
+      "before": [
+        5,
+        64
+      ],
+      "after": [
+        11,
+        64
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 68,
+      "before": [
+        5,
+        57
+      ],
+      "after": [
+        7,
+        59
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 69,
+      "before": [
+        5,
+        58
+      ],
+      "after": [
+        7,
+        60
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 70,
+      "before": [
+        16,
+        61
+      ],
+      "after": [
+        18,
+        61
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 71,
+      "before": [
+        16,
+        62
+      ],
+      "after": [
+        18,
+        62
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 74,
+      "before": [
+        43,
+        61
+      ],
+      "after": [
+        45,
+        61
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 75,
+      "before": [
+        43,
+        62
+      ],
+      "after": [
+        45,
+        62
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 78,
+      "before": [
+        62,
+        61
+      ],
+      "after": [
+        60,
+        61
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 79,
+      "before": [
+        62,
+        62
+      ],
+      "after": [
+        60,
+        62
+      ]
+    }
+  ],
+  "design": [
+    "Westside supplies, community and angler destinations share a turning neighborhood lane",
+    "One continuous bank street links both bridge approaches",
+    "Boat cooperative, inn and survey hall group around the eastern landing",
+    "Existing trainer and pickup remain reachable inside a bounded river court"
+  ],
+  "preserve": [
+    "All water, bridge and perimeter cells",
+    "Both northern city refinements and care-court rail",
+    "All room programs, trainer parties, rewards, flags, artwork and audio",
+    "All other maps and reciprocal river connections"
+  ],
+  "historical_initial_parent": {
+    "revision": "st_paul_civic_east_revision",
+    "pack": "content-packs/minnesota-st-paul-civic-east-v02.crystalpack",
+    "pack_sha256": "92ba2e65ef04f4502cd6c64106d54e429317167573548badc1e1f6a3f2c412c2"
+  },
+  "published_pack": {
+    "path": "content-packs/minnesota-st-paul-southbank-v03.crystalpack",
+    "sha256": "9c8b263d0e9b02523d4c3c3baf81b7b39337ff75b69f79129f6277ee0550719c",
+    "content_identity": "ca7473c93311962cb055166d7ad6929b15b98b9d977aa05aca35c6f2ef7b1029"
+  },
+  "completed_steps": [
+    "Whole-city native-art source review",
+    "Native publication and exact preservation",
+    "Forty door roundtrips, bridge loop, reader relocation and Continue",
+    "Trainer court challenge and native move execution",
+    "Native captures and audio verification before selection"
+  ],
+  "verification": {
+    "production_tour_calls": 1387,
+    "production_battle_calls": 114,
+    "door_roundtrips": 40,
+    "reviewed_native_views": 5,
+    "fresh_final_native_captures": 1,
+    "source_native_pixel_mismatches": 0,
+    "unchanged_complete_maps": 731,
+    "audio_programs": 377,
+    "selected_move_pp_before": 20,
+    "selected_move_pp_after": 19
+  },
+  "remaining_scope": [
+    "Further regional map and cave composition",
+    "Complete interior activity and earned campaign acceptance",
+    "No browser publication or save migration claimed"
+  ]
+}

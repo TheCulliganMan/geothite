@@ -1,0 +1,21 @@
+{
+  "status": "PASS",
+  "command": [
+    "cargo",
+    "test",
+    "--locked",
+    "--profile",
+    "wasm-dev",
+    "--config",
+    "profile.wasm-dev.package.crystal-bevy.opt-level=0",
+    "-p",
+    "crystal-bevy",
+    "--lib",
+    "--no-run",
+    "--message-format=json"
+  ],
+  "source": "crates/crystal-bevy/src/bevy_shell/tests/boundary_basecamp_connections.rs",
+  "source_sha256": "a8ee04a49169255d0f8567f473c03b85e9b03ef31bc919036f5ccb287cf2d827",
+  "binary": ".local/route-grass-review/boundary-basecamp-current-controller-v01",
+  "binary_sha256": "b19fdc28b1ea8970af2a59d753273929b10f80eb1267d435d3dc19135053da79"
+}

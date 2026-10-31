@@ -190,7 +190,14 @@ impl Layout {
                 && (layout.shore_fitting == expected.2
                     || (matches!(
                         layout.id.as_str(),
-                        "MN_R03" | "MN_R05" | "MN_R11" | "MN_R12" | "MN_R13" | "MN_R17"
+                        "MN_R03"
+                            | "MN_R05"
+                            | "MN_R11"
+                            | "MN_R12"
+                            | "MN_R13"
+                            | "MN_R15"
+                            | "MN_R16"
+                            | "MN_R17"
                     ) && layout.shore_fitting == "explicit_source_edges")),
             "retain the complete authored route and native art fitting"
         );

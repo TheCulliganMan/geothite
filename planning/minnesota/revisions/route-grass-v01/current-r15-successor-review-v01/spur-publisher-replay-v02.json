@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "same_bytes_as_native_tested_candidate": true,
+  "pack": "content-packs/minnesota-current-r15-open-shore-and-spur-v02.crystalpack",
+  "pack_sha256": "e02fb85d4db327d146cee269809b1af3e4b387dc2e29240b71cae0ae5837ec4c",
+  "replay_pack": "content-packs/minnesota-current-r15-spur-publisher-replay-v02.crystalpack",
+  "source_change": "Use a guarded mutable slice for four existing cells; no content or publisher contract change."
+}

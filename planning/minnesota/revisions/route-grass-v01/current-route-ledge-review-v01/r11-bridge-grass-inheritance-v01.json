@@ -1,0 +1,24 @@
+{
+  "status": "PASS_COLLISION_AND_GRASS_INHERITANCE",
+  "candidate_pack": "content-packs/minnesota-current-r15-open-shore-and-spur-v02.crystalpack",
+  "candidate_pack_sha256": "e02fb85d4db327d146cee269809b1af3e4b387dc2e29240b71cae0ae5837ec4c",
+  "all_eight_maps_collision_actors_events_connections_exact_to_previous_current_land_course": true,
+  "grass_quadrants": 380,
+  "coastal_ice_quadrants": 0,
+  "upper_grass_steps_both_directions": [
+    {
+      "status": "MEASURED",
+      "grass_steps": 4,
+      "grass_quadrants_in_contract": 20,
+      "ice_quadrants": 0
+    },
+    {
+      "status": "MEASURED",
+      "grass_steps": 4,
+      "grass_quadrants_in_contract": 20,
+      "ice_quadrants": 0
+    }
+  ],
+  "bridge_native_visual_and_no_surf_provenance": "planning/minnesota/revisions/north-shore-footpath-v01/current-exterior.contract-v01.json",
+  "scope": "Current bridge art repair changes no route collision. Retains previous native land-course, stair, ledge, grass and Continue evidence alongside the new bridge native cameras/controller replay; not a new whole-campaign run."
+}

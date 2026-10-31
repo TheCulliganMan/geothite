@@ -1,0 +1,50 @@
+{
+  "pid": 15827,
+  "source_sha256": {
+    "crates/crystal-assets/src/r16_bank_guidance.rs": "abd9564cca6996413c9fcede85d7d5b5643c85462738c2d4556278e20c0bfaeb",
+    "crates/crystal-assets/src/bin/revise_r16_bank_guidance.rs": "e5d591a0d026c8b28a1a551b001a00d7dc476806d6c12488bbc33204676693ac"
+  },
+  "steps": [
+    {
+      "step": "publisher",
+      "command": [
+        "cargo",
+        "build",
+        "--profile",
+        "wasm-dev",
+        "--locked",
+        "--config",
+        "profile.wasm-dev.package.crystal-assets.opt-level=0",
+        "-p",
+        "crystal-assets",
+        "--bin",
+        "revise_r16_bank_guidance"
+      ],
+      "exit_code": 0,
+      "log": ".local/route-grass-review/r16-bank-guidance-publisher-v01.log",
+      "outputs": [
+        {
+          "path": ".local/route-grass-review/portable-r16-bank-guidance-tools-v01/revise_r16_bank_guidance",
+          "sha256": "3fe8b0a731ef9a0e62a263681afe3bff116f399e11acc1eeec8f971d3f71cc70"
+        }
+      ]
+    },
+    {
+      "step": "assets-all-target-clippy",
+      "command": [
+        "cargo",
+        "clippy",
+        "--profile",
+        "wasm-dev",
+        "--locked",
+        "--config",
+        "profile.wasm-dev.package.crystal-assets.opt-level=0",
+        "-p",
+        "crystal-assets",
+        "--all-targets"
+      ],
+      "exit_code": 0,
+      "log": ".local/route-grass-review/r16-bank-guidance-assets-all-target-clippy-v01.log"
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "status": "CANDIDATE_PREPARED_DOSSIER_AND_WARP_UPDATE_REQUIRED",
+  "previous_candidate_rejected": "v01 adds a second door and lacks native complete Mart assembly; not publishable.",
+  "changes": [
+    {
+      "at": [
+        41,
+        19
+      ],
+      "before": "WALL",
+      "after": "DOOR"
+    },
+    {
+      "at": [
+        42,
+        19
+      ],
+      "before": "DOOR",
+      "after": "WALL"
+    }
+  ],
+  "old_door": [
+    42,
+    19
+  ],
+  "new_door": [
+    41,
+    19
+  ],
+  "old_return": [
+    42,
+    20
+  ],
+  "new_return": [
+    41,
+    20
+  ],
+  "native_mart_recipe": [
+    "18",
+    "19",
+    "1a",
+    "33"
+  ],
+  "native_pack_unchanged": true
+}

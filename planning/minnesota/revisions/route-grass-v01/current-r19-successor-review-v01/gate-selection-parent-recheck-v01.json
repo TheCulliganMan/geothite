@@ -1,0 +1,10 @@
+{
+  "status": "REBASE_REQUIRED_BEFORE_SELECTION",
+  "active_revision": "grand_rapids_riverfront_revision",
+  "active_pack": "content-packs/minnesota-grand-rapids-riverfront-v01.crystalpack",
+  "active_pack_sha256": "806a77f8542b0d69f62929690a69b554204ed3784636e2d8a2b5799c91b2e536",
+  "candidate_parent": "content-packs/minnesota-gunflint-spring-shelter-v02.crystalpack",
+  "candidate": "content-packs/minnesota-current-r19-detroit-gate-v04.crystalpack",
+  "native_three_cases": "PASS",
+  "action": "Preserve newer Grand Rapids changes by Rust rebase, compare candidate surfaces and rerun affected native checks before selection."
+}

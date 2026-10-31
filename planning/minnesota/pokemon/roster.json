@@ -698,6 +698,7 @@
         }
       ],
       "theme": "Red pine, resin and campfires: a cone sprouts resin-filled branches, then branch-tip lanterns that preserve its living trunk.",
+      "habitat": "Wooded routes in both southern and northern Minnesota, including low-level opening encounters on the Driftless Trail. Use local tree cover rather than treating latitude or early evolution stage as the habitat.",
       "region": "northwoods"
     },
     {
@@ -1387,6 +1388,7 @@
         }
       ],
       "theme": "Cheese curds and state-fair batter: a squeaky springy curd develops battered boxing gloves and rebounds from blows.",
+      "habitat": "State Fair food courts only. The family is not a generic town or farm encounter.",
       "region": "towns"
     },
     {
@@ -3515,15 +3517,13 @@
       "status": "proposal-awaiting-root-lock",
       "theme": "Minnesota fair cookies grow into their own serving containers: Doughlin becomes Crumcone, a white paper cone overflowing with warm cookies, then Pailbaron, a broad white bucket whose handle guards its towering cookie hoard.",
       "region": "twin_cities",
-      "habitat": "Bakery back rooms and fair-food markets around St Paul; visiting fair vendors can supply a city habitat without assuming a new fairground map already exists.",
+      "habitat": "State Fair cookie stalls and serving areas only. The paper cone and overflowing bucket are fairground specialists, not generic bakery or prairie encounters.",
       "map_placement": {
         "towns": [
-          "ST_PAUL"
+          "STATE_FAIRGROUNDS"
         ],
-        "routes": [
-          "MN_R04"
-        ],
-        "status": "proposed habitat only; no map or encounter mutation"
+        "routes": [],
+        "status": "State Fair only; enforced by the biome habitat review"
       },
       "sources": [
         {
@@ -3570,9 +3570,7 @@
         }
       ],
       "sprite_design": "Only3-4 large chip marks, no tiny crumbs/particles or readable branding. Original pail-shaped anatomy differs from Casserogre food shell and Stackajack pancake stack. Ember glow is flat orange ink, no gradients.",
-      "proposed_routes": [
-        "MN_R04"
-      ],
+      "proposed_routes": [],
       "design_status": "root-reviewed-locked-for-art",
       "design_lock": "locked by root; first153identities fixed",
       "evolution_design": {
@@ -3599,7 +3597,7 @@
       "status": "proposal-awaiting-root-lock",
       "theme": "Minnesota portable-pacemaker invention and the metronome circuit: a rhythm-helper creature learns to steady its own beat, then coordinates powerful protective movements through paired pulse limbs.",
       "region": "twin_cities",
-      "habitat": "Quiet workshop gardens and clinic courtyards in Rochester/Minneapolis. Fictional companion-restoration theme, no human treatment, device brand or graphic anatomy.",
+      "habitat": "A free companion at Rochester's resting house after the first clinic parcel; it is not a river-hatch encounter. Fictional companion-restoration theme, no human treatment, device brand or graphic anatomy.",
       "map_placement": {
         "towns": [
           "ROCHESTER",
@@ -3671,7 +3669,7 @@
       "status": "root-locked",
       "theme": "Minnesota trilobite fossils; compound eyes and articulating armor inspire an original living visor-shield. A low three-lobed crawler with a broad eye visor grows into a compact bastion; interlocking plates unfold around the face and paired shovel-like forelimbs brace its stance. No swords or scythes.",
       "region": "driftless",
-      "habitat": "Fossil-bearing bluff layers and proposed Rochester revival courtyard service. Authored two-choice mechanic is specified in fossil-choice.json; it is not runtime registered.",
+      "habitat": "Fossil-bearing bluff layers along the Driftless Trail. Revived specimens are studied at Rochester Fossil Lab.",
       "map_placement": {
         "towns": [
           "WINONA",
@@ -3680,7 +3678,7 @@
         "routes": [
           "MN_R01"
         ],
-        "status": "proposed habitat only; no map or encounter mutation"
+        "status": "Native Route1 specimen choice and Rochester Fossil Lab restoration installed; see fossil-choice.json and world.json."
       },
       "sources": [
         {
@@ -3720,11 +3718,11 @@
           "evolution_condition": null
         }
       ],
-      "sprite_design": "Distinct species palettes. Gen2 fronts56x56, enlarged back portraits48x48, connected shell rims and readable structural interior seams. Root locked fossil names/types and level40 evolution; no existing Pokemon copies.",
+      "sprite_design": "Distinct species palettes. Gen2 fronts56x56, enlarged back portraits48x48, connected shell rims and readable structural interior seams. Root locked fossil names/types and level34 evolution; no existing Pokemon copies.",
       "fossil_choice_item": "LENS FOSSIL",
       "evolution_conditions": {
         "method": "LEVEL",
-        "level": 40
+        "level": 34
       },
       "fossil_choice_design_file": "planning/minnesota/pokemon/fossil-choice.json",
       "proposed_routes": [
@@ -3739,7 +3737,7 @@
       "status": "root-locked",
       "theme": "Straight-shelled Ordovician cephalopods from southeastern Minnesota; chambered shell and jet movement inspire original ink-ambush anatomy. A squat chamber-cone youngster grows a long tapering obelisk shell angled above a hooded mantle; two broad grasping fins and a few thick tendrils form a clear triangular base. Ink forms a solid dark veil rather than particle clutter.",
       "region": "driftless",
-      "habitat": "Fossil-bearing bluff layers and proposed Rochester revival courtyard service. Authored two-choice mechanic is specified in fossil-choice.json; it is not runtime registered.",
+      "habitat": "Fossil-bearing bluff layers along the Driftless Trail. Revived specimens are studied at Rochester Fossil Lab.",
       "map_placement": {
         "towns": [
           "WINONA",
@@ -3748,7 +3746,7 @@
         "routes": [
           "MN_R01"
         ],
-        "status": "proposed habitat only; no map or encounter mutation"
+        "status": "Native Route1 specimen choice and Rochester Fossil Lab restoration installed; see fossil-choice.json and world.json."
       },
       "sources": [
         {
@@ -3788,11 +3786,11 @@
           "evolution_condition": null
         }
       ],
-      "sprite_design": "Distinct species palettes. Gen2 fronts56x56, enlarged back portraits48x48, connected shell rims and readable structural interior seams. Root locked fossil names/types and level40 evolution; no existing Pokemon copies.",
+      "sprite_design": "Distinct species palettes. Gen2 fronts56x56, enlarged back portraits48x48, connected shell rims and readable structural interior seams. Root locked fossil names/types and level34 evolution; no existing Pokemon copies.",
       "fossil_choice_item": "SPIRE FOSSIL",
       "evolution_conditions": {
         "method": "LEVEL",
-        "level": 40
+        "level": 34
       },
       "fossil_choice_design_file": "planning/minnesota/pokemon/fossil-choice.json",
       "proposed_routes": [

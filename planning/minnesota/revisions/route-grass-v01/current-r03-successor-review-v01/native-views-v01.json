@@ -1,0 +1,42 @@
+[
+  {
+    "id": "woodland-drop",
+    "map": "MnR03C00R00",
+    "core": [
+      13,
+      19
+    ]
+  },
+  {
+    "id": "extended-drop",
+    "map": "MnR03C00R00",
+    "core": [
+      15,
+      19
+    ]
+  },
+  {
+    "id": "dry-return",
+    "map": "MnR03C00R00",
+    "core": [
+      13,
+      22
+    ]
+  },
+  {
+    "id": "terrace-stairs",
+    "map": "MnR03C00R00",
+    "core": [
+      41,
+      42
+    ]
+  },
+  {
+    "id": "fishing-house",
+    "map": "MnR03C00R00",
+    "core": [
+      31,
+      30
+    ]
+  }
+]

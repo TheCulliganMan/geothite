@@ -1,5 +1,38 @@
 # Driftless fossil research
 
+## Collect every prehistoric family
+
+| Family | Acquisition path | Evolution |
+| --- | --- | --- |
+| Trilume | Choose the free Lens Fossil on Route 1. After the Care Badge, restore it at Rochester Fossil Lab beside the clinic. | Panoplite at 34 |
+| Siphlet | Choose the free Spire Fossil instead, or ask the same lab's assistant for it after restoring the first fossil. Restore it with the scientist. | Obelurk at 34 |
+| Castorock | Ask the lab about the prehistoric beaver. After obtaining Strength, enter Route 3's incisor gallery and acknowledge the waterline grooves, worn pillar and toothmarks. Approach the living Castorock for its optional encounter. | Castoroar at 32 |
+
+Either fossil choice works. After the first restoration, the assistant supplies
+the other specimen for free; neither line requires becoming Champion. Restored
+partners arrive at level 10. Leave a party slot for each restoration. A full
+party preserves the specimen and its claim. The two providers of the second
+specimen share one claim, so returning to the Route 1 researcher is an alternate
+handoff rather than an additional fossil.
+
+Castorock is a separate living discovery, not a third lab revival. It appears
+at level 24 and remains available after refusal, RUN or defeat: leave the cave
+and reenter for another uncaught attempt. Catching it never gates either lab
+fossil or the main story.
+
+The [early research revision](early-research.md) verifies the paired fossil
+paths. The [complete encounter progression](encounter-progression-v01/README.md)
+integrates them with the full roster; consult `world.json` for current selection.
+
+## Earlier stage records
+
+The [early research successor](early-research.md) makes the second specimen free
+from the lab assistant immediately after restoring the first. The original
+bluff researcher shares that once-only claim. The older post-League exchange
+described below is historical; consult `world.json` for the selected stage.
+
+The current service is inside the signed [Rochester Fossil Lab](../../landmarks/fossil-lab-v01/README.md), at scientist(3,4), approached from(3,5). Enter the city door(23,9) beside the clinic. The original courtyard stage below is historical; its item/flag/gate rules remain intact. Four current controller cases and74 stdio calls verify the indoor service and both returns.
+
 The fossil stage was verified as
 `content-packs/minnesota-current-fossils-repaired-r15-v01.crystalpack`, built from
 `content-packs/minnesota-scripts-repaired-r15-v01.crystalpack`. It inherits

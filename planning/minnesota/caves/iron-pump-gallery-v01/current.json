@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "id": "MnIronPumpGallery",
+  "tileset": "mn_iron_haulage_rock",
+  "base_tileset": "mn_iron_haulage_rock",
+  "dimensions_metatiles": [
+    16,
+    12
+  ],
+  "border_block": 46,
+  "palette_group": "nite",
+  "purpose": "A single winding maintenance gallery: climb through the pump guard shelf, descend by the sealed drill shaft, pass the intake guard and isolate the feed. The original console opens both the core door and a short lower return.",
+  "rows": [
+    "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e",
+    "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 04 05 06 2e 2e",
+    "2e 2e 04 05 05 05 05 05 06 2e 2e 08 42 1e 2e 2e",
+    "2e 2e 08 0d 0d 0d 0d 0d 1e 2e 2e 20 41 22 2e 2e",
+    "2e 2e 20 30 21 21 21 21 36 2e 04 0d 0d 06 2e 2e",
+    "2e 04 05 0d 06 2e 2e 2e 0d 05 0d 0d 0d 0d 06 2e",
+    "2e 08 0d 0d 1e 2e 2e 2e 20 21 21 22 08 0d 1e 2e",
+    "2e 08 0d 1d 1e 2e 2e 2e 2e 2e 2e 2e 08 0d 1e 2e",
+    "2e 04 0d 0d 0d 0d 0d 41 0d 0d 0d 0d 40 0d 22 2e",
+    "2e 20 42 21 21 21 22 2e 08 0d 0d 0d 0d 1e 2e 2e",
+    "2e 2e 2e 2e 2e 2e 2e 2e 20 21 21 21 21 22 2e 2e",
+    "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e"
+  ],
+  "review_contract": {
+    "viewpoints": [
+      {
+        "id": "sump-arrival",
+        "tile": [
+          4,
+          19
+        ]
+      },
+      {
+        "id": "west-climb",
+        "tile": [
+          6,
+          10
+        ]
+      },
+      {
+        "id": "pump-guard",
+        "tile": [
+          12,
+          6
+        ]
+      },
+      {
+        "id": "upper-shelf",
+        "tile": [
+          15,
+          7
+        ]
+      },
+      {
+        "id": "east-climb",
+        "tile": [
+          16,
+          10
+        ]
+      },
+      {
+        "id": "sealed-core",
+        "tile": [
+          24,
+          8
+        ]
+      },
+      {
+        "id": "intake-guard",
+        "tile": [
+          27,
+          13
+        ]
+      },
+      {
+        "id": "feed-console",
+        "tile": [
+          25,
+          18
+        ]
+      },
+      {
+        "id": "return-shutter",
+        "tile": [
+          16,
+          17
+        ]
+      }
+    ]
+  }
+}

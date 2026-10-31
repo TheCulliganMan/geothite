@@ -1,0 +1,1385 @@
+{
+  "schema_version": 1,
+  "id": "minnesota-rare-discoveries-v1",
+  "status": "Integrated in the selected fauna/progression successor. All nine formerly missing rare species have explicit optional acquisition paths; 39 native local discovery cases pass, with exact inheritance through the reviewed title update. All225 active species have conditional acquisition closure. No uninterrupted campaign or earned full-collection claim.",
+  "shared_contract": [
+    "Only the active original Minnesota roster is legal. Preserve all ordinary regional travel and existing story progress.",
+    "Every observation becomes persistent only after the player acknowledges its final dialogue page. Save/Continue must preserve both acknowledged and pending states.",
+    "Every encounter is voluntary. Refusal spends nothing. Only actual capture marks caught; RUN and knockout withdraw for the visit, physical reentry restores eligibility, Continue preserves withdrawal.",
+    "Support real defeat/blackout, registered clinic care and physical return. Full party uses the selected PC box; full storage fails without consuming the encounter.",
+    "Do not require species capture to finish the main campaign, another rare quest, or ordinary travel. No trading, calendar-exclusive distribution or paid Safari admission is required.",
+    "Use existing native art and authored geography only after exact current-parent inspection. No suggested entrance coordinate here establishes a safe or installed connection.",
+    "Preserve all unrelated maps, teams, catalog entries, original audio and current authored story programs. Keep the regional completion threshold at225."
+  ],
+  "quests": [
+    {
+      "id": "northwoods-tall-tales",
+      "species": [
+        "BABEHEMOTH",
+        "BUNJANT"
+      ],
+      "region": "Bemidji logging trail and a forgotten northern camp",
+      "stage": "optional late campaign; access clues before the League",
+      "premise": "A retired trail worker asks why an abandoned skid road is filling with water despite clear culverts. The huge hoofprints and neatly stacked windthrow suggest two creatures repairing damage differently.",
+      "steps": [
+        "Read the trail worker's account and inspect the dry culvert, crescent hoofprint pool, and windthrow stack. Each clue changes the worker's next response.",
+        "At the forgotten camp, trace the old drainage ditch to a low crossing. Reopen the existing footpath without cutting live trees. Bunjant first appears across the ditch, watches, then leaves a marked log.",
+        "Return the marked-log observation to the worker. Their old tally describes the same crescent prints before the camp existed; this is a tall tale, not evidence of a historical giant.",
+        "Follow the newly readable hoofprint sequence to Babehemoth's pool. Its optional encounter becomes available independently of capturing Bunjant.",
+        "Return to the camp after the footpath is acknowledged safe. Bunjant's optional encounter becomes available independently of capturing Babehemoth."
+      ],
+      "discovery_distinction": "Babehemoth follows landscape-scale tracks and pooled water; Bunjant responds to how the player restores a damaged work site. The two reveals are separate and neither capture gates the other.",
+      "proposed_levels": {
+        "BABEHEMOTH": 60,
+        "BUNJANT": 60
+      },
+      "quest_flags": [
+        "CULVERT_READ",
+        "PRINTS_READ",
+        "STACK_READ",
+        "CAMP_DIRECTIONS",
+        "CAMP_PATH_ACKNOWLEDGED",
+        "LOG_ACCOUNT_READ",
+        "OX_REVEALED",
+        "CAMP_KEEPER_REVEALED"
+      ],
+      "completion": "Worker acknowledges the safe path and the two distinct signs, regardless of battle outcomes.",
+      "dialogue_pages": {
+        "worker_introduction": [
+          [
+            "The old skid road",
+            "is under water."
+          ],
+          [
+            "The pipe is clear.",
+            "I checked twice."
+          ],
+          [
+            "Past the north",
+            "trail, look for"
+          ],
+          [
+            "a crescent print",
+            "and stacked logs."
+          ],
+          [
+            "Someone is fixing",
+            "our old mistakes."
+          ]
+        ],
+        "culvert": [
+          [
+            "The ditch is",
+            "open and dry."
+          ],
+          [
+            "Water is pooling",
+            "above the ditch."
+          ]
+        ],
+        "hoofprint": [
+          [
+            "A crescent hollow",
+            "holds blue water."
+          ],
+          [
+            "One print spans",
+            "the whole trail."
+          ]
+        ],
+        "windthrow": [
+          [
+            "Split wood is set",
+            "in careful layers."
+          ],
+          [
+            "Every live sapling",
+            "has been spared."
+          ]
+        ],
+        "worker_partial": [
+          [
+            "A giant footprint?",
+            "That is a story."
+          ],
+          [
+            "Show me what the",
+            "water is doing."
+          ]
+        ],
+        "worker_comparison": [
+          [
+            "The print holds",
+            "the overflow."
+          ],
+          [
+            "Those stacked logs",
+            "keep it off homes."
+          ],
+          [
+            "Whoever did this",
+            "knows the land."
+          ],
+          [
+            "The abandoned camp",
+            "is past the ditch."
+          ],
+          [
+            "Keep to the path.",
+            "Spare live trees."
+          ]
+        ],
+        "blocked_path": [
+          [
+            "The old footpath",
+            "ends at timber."
+          ],
+          [
+            "Clear the timber?"
+          ]
+        ],
+        "path_refusal": [
+          [
+            "The loose timber",
+            "stays in place."
+          ]
+        ],
+        "path_cleared": [
+          [
+            "The loose wood",
+            "is set aside."
+          ],
+          [
+            "Across the ditch,",
+            "a pine beard moves"
+          ],
+          [
+            "A huge bark hand",
+            "sets down a log."
+          ]
+        ],
+        "marked_log": [
+          [
+            "Three deep marks",
+            "cross the grain."
+          ],
+          [
+            "Beneath them lies",
+            "a crescent groove."
+          ]
+        ],
+        "worker_log_account": [
+          [
+            "My oldest tally",
+            "has those marks."
+          ],
+          [
+            "The camp was built",
+            "beside them."
+          ],
+          [
+            "It did not put",
+            "them there."
+          ],
+          [
+            "Follow the prints",
+            "up to the pool."
+          ],
+          [
+            "Then visit camp.",
+            "The path is safe."
+          ]
+        ],
+        "ox_reveal": [
+          [
+            "The pool trembles.",
+            "Blue horns rise."
+          ],
+          [
+            "Water slips from",
+            "a vast white mane."
+          ],
+          [
+            "BABEHEMOTH lowers",
+            "its head to you."
+          ]
+        ],
+        "ox_ask": [
+          [
+            "Approach",
+            "BABEHEMOTH?"
+          ]
+        ],
+        "keeper_reveal": [
+          [
+            "A pine beard parts",
+            "the falling shade."
+          ],
+          [
+            "BUNJANT checks",
+            "the cleared path."
+          ],
+          [
+            "It rests one hand",
+            "on the marked log."
+          ]
+        ],
+        "keeper_ask": [
+          [
+            "Approach BUNJANT?"
+          ]
+        ],
+        "retry": [
+          [
+            "The creature turns",
+            "into the woods."
+          ],
+          [
+            "The trail remains.",
+            "Come back later."
+          ]
+        ],
+        "worker_after": [
+          [
+            "Two old stories.",
+            "Two sets of marks."
+          ],
+          [
+            "And a safe path",
+            "through the camp."
+          ],
+          [
+            "That is enough",
+            "for my new tally."
+          ]
+        ],
+        "camp_record": [
+          [
+            "An old camp sign."
+          ],
+          [
+            "The tally marks",
+            "match the log."
+          ]
+        ]
+      },
+      "status": "Original Crystal art only; custom campfire, table and marker props removed; v04 publication and current runtime acceptance pending"
+    },
+    {
+      "id": "pepin-three-wakes",
+      "species": [
+        "PEPIVERN"
+      ],
+      "region": "Lake Pepin; preserve the existing main river and fishing quest",
+      "stage": "optional Surf exploration",
+      "premise": "A dock observer has three sketches of a wake that travels against the wind. A working boat operator thinks it is a submerged snag until the player compares the sightings.",
+      "steps": [
+        "Read the dock sketch: a wake crosses the current, then turns upstream after the boat has passed. Do not add buoy or marker props.",
+        "Observe a shoreline eddy from land and a sheltered reed opening from Surf. These are distinct acknowledged viewpoints, not three copies of one sign.",
+        "Compare all three observations at the dock. The operator identifies a safe sheltered inlet and explains how to approach without entering the shipping channel.",
+        "Follow the optional inlet loop to the still pool. Pepivern surfaces with paddlewheel fins; the player may watch and leave or accept the encounter."
+      ],
+      "discovery_distinction": "The clue is the direction and shape of the wake, not a rare fishing roll or a forced whirlpool gate.",
+      "proposed_levels": {
+        "PEPIVERN": 55
+      },
+      "quest_flags": [
+        "DOCK_SKETCH_READ",
+        "EDDY_OBSERVED",
+        "REEDS_OBSERVED",
+        "SAFE_INLET_IDENTIFIED"
+      ],
+      "completion": "The dock record gains the matched three-wake account even if the player declines battle.",
+      "presentation_contract": "Use existing native shoreline, water and ordinary dock actors. No custom signs, tables, campfires or buoy props. Land and Surf viewpoints must be reachable through the actual current geometry.",
+      "dialogue_pages": {
+        "dock_intro": [
+          [
+            "I draw boat wakes.",
+            "Keeps me occupied."
+          ],
+          [
+            "This one turned",
+            "after the boat."
+          ],
+          [
+            "Boats do not do",
+            "that. Wakes might."
+          ],
+          [
+            "Take a look before",
+            "we name a monster."
+          ]
+        ],
+        "dock_sketch": [
+          [
+            "A boat heads down.",
+            "Two wakes fan out."
+          ],
+          [
+            "A third line curls",
+            "back upstream."
+          ],
+          [
+            "No boat follows",
+            "that narrow line."
+          ]
+        ],
+        "eddy": [
+          [
+            "The foam turns",
+            "with the current."
+          ],
+          [
+            "A long ripple",
+            "pushes against it."
+          ],
+          [
+            "It slips beneath",
+            "the shore again."
+          ]
+        ],
+        "reeds": [
+          [
+            "The sheltered",
+            "water is still."
+          ],
+          [
+            "Three low humps",
+            "pass in a row."
+          ],
+          [
+            "A fin turns like",
+            "a paddlewheel."
+          ]
+        ],
+        "needs_surf": [
+          [
+            "The reeds hide",
+            "the water here."
+          ],
+          [
+            "A quiet approach",
+            "by Surf may help."
+          ]
+        ],
+        "operator_intro": [
+          [
+            "I work this reach.",
+            "I watch the water."
+          ],
+          [
+            "A snag stays put.",
+            "Most stories grow."
+          ],
+          [
+            "Bring me what you",
+            "actually saw."
+          ]
+        ],
+        "operator_partial": [
+          [
+            "A sketch alone",
+            "could be anything."
+          ],
+          [
+            "Watch the eddy",
+            "and sheltered bay."
+          ],
+          [
+            "Mind the current.",
+            "Take your time."
+          ]
+        ],
+        "operator_compare": [
+          [
+            "Upstream ripple.",
+            "Three low humps."
+          ],
+          [
+            "And that fin...",
+            "No snag has fins."
+          ],
+          [
+            "Keep to the shore.",
+            "Past the reed gap."
+          ],
+          [
+            "The still inlet",
+            "has room to turn."
+          ],
+          [
+            "You can watch it.",
+            "No need to fight."
+          ]
+        ],
+        "inlet_early": [
+          [
+            "Only small ripples",
+            "reach this inlet."
+          ]
+        ],
+        "reveal": [
+          [
+            "The water lifts.",
+            "A long back rises."
+          ],
+          [
+            "Two wheel-like",
+            "fins turn slowly."
+          ],
+          [
+            "PEPIVERN watches",
+            "from the inlet."
+          ]
+        ],
+        "ask": [
+          [
+            "Approach PEPIVERN?"
+          ]
+        ],
+        "decline": [
+          [
+            "You keep still.",
+            "The water settles."
+          ]
+        ],
+        "retreat": [
+          [
+            "The long shadow",
+            "moves into reeds."
+          ]
+        ],
+        "caught": [
+          [
+            "The inlet is calm.",
+            "One wake remains."
+          ]
+        ],
+        "operator_complete": [
+          [
+            "You found the fin",
+            "behind that wake."
+          ],
+          [
+            "I kept your notes.",
+            "Names can wait."
+          ],
+          [
+            "When I see it,",
+            "I will slow down."
+          ]
+        ],
+        "dock_complete": [
+          [
+            "Three wakes.",
+            "One living cause."
+          ],
+          [
+            "That is a better",
+            "sketch than mine."
+          ]
+        ]
+      },
+      "status": "Sixteen native dialogue entries and native script lowering implemented privately: acknowledged three observations, actual Surf-state guard, independent optional capture/refusal/visit retry callbacks. Current-parent geometry binding, pack publication and runtime acceptance remain pending; not yet catchable through this quest.",
+      "current_geometry_audit": "The verified v02 review parent contains no map named MnMississippiPepin. That old layout is historical authoring, not an installed quest site. Inspect the actual MnMississippiLowerWoods chunks, preserve their river/fishing content, and derive any safe connection from their current native geometry before installation."
+    },
+    {
+      "id": "traveling-frozen-exhibit",
+      "species": [
+        "ICEMYTH"
+      ],
+      "region": "State Fair exhibit and its ordinary service return",
+      "stage": "optional after the fair opens; no paid admission dependency",
+      "premise": "An exhibit attendant admits the label was written to sell tickets. Three witnesses disagree about the silhouette inside the ice. The mystery concerns the creature and unreliable recollection, not a claim that the sideshow legend is fact.",
+      "steps": [
+        "Speak to the attendant, a delivery worker and a visitor. Each describes a different face; the player can read their short accounts in any order.",
+        "Inspect the intact rear latch and the meltwater tray. Neither supports the attendant's story that somebody replaced the specimen.",
+        "Return after those accounts are acknowledged. The attendant takes down the invented label and asks for help moving the warming case into shade.",
+        "Use the ordinary service passage and compare the empty case with a second patch of cloudy ice. The silhouette has moved on its own. Icemyth offers a voluntary encounter there."
+      ],
+      "discovery_distinction": "Contradictory witness pages and the physical case lead to an honest corrected label; no real-time day, external event code or irreversible wrong-answer lock.",
+      "proposed_levels": {
+        "ICEMYTH": 50
+      },
+      "quest_flags": [
+        "ATTENDANT_ACCOUNT",
+        "DELIVERY_ACCOUNT",
+        "VISITOR_ACCOUNT",
+        "LATCH_READ",
+        "TRAY_READ",
+        "LABEL_CORRECTED",
+        "MOVED_ICE_FOUND"
+      ],
+      "completion": "The exhibit keeps the corrected account and stops advertising a certainty it cannot support.",
+      "dialogue_pages": {
+        "attendant_intro": [
+          [
+            "One ticket. One",
+            "frozen mystery."
+          ],
+          [
+            "That is what the",
+            "old label says."
+          ],
+          [
+            "I wrote it before",
+            "the ice arrived."
+          ]
+        ],
+        "delivery_account": [
+          [
+            "I brought the case",
+            "through the back."
+          ],
+          [
+            "The latch stayed",
+            "shut all the way."
+          ],
+          [
+            "The shape inside",
+            "looked small then."
+          ]
+        ],
+        "visitor_account": [
+          [
+            "I saw a long face.",
+            "My sister did not."
+          ],
+          [
+            "We stood on",
+            "different sides."
+          ],
+          [
+            "Ice bends things.",
+            "Try the back."
+          ]
+        ],
+        "latch": [
+          [
+            "The rear latch",
+            "is still sealed."
+          ],
+          [
+            "There are no fresh",
+            "marks on the pin."
+          ]
+        ],
+        "tray": [
+          [
+            "Cold water drips",
+            "into the tray."
+          ],
+          [
+            "A trail of frost",
+            "leads behind it."
+          ]
+        ],
+        "attendant_partial": [
+          [
+            "Ask the people who",
+            "actually saw it."
+          ],
+          [
+            "Then check the",
+            "latch and tray."
+          ],
+          [
+            "My label is not",
+            "much of a clue."
+          ]
+        ],
+        "attendant_compare": [
+          [
+            "Nobody opened it.",
+            "The ice is moving."
+          ],
+          [
+            "I made a guess",
+            "sound like proof."
+          ],
+          [
+            "That label comes",
+            "down right now."
+          ],
+          [
+            "Help me check the",
+            "shaded passage."
+          ]
+        ],
+        "service_early": [
+          [
+            "A cold draft comes",
+            "from the passage."
+          ],
+          [
+            "The attendant is",
+            "taking notes."
+          ]
+        ],
+        "empty_case": [
+          [
+            "The case is empty."
+          ],
+          [
+            "Frost crosses the",
+            "floor behind it."
+          ],
+          [
+            "The rear latch is",
+            "still sealed."
+          ]
+        ],
+        "reveal": [
+          [
+            "The cloudy ice",
+            "turns toward you."
+          ],
+          [
+            "A pale shape steps",
+            "out of its shadow."
+          ],
+          [
+            "ICEMYTH watches",
+            "without a sound."
+          ]
+        ],
+        "ask": [
+          [
+            "Approach ICEMYTH?"
+          ]
+        ],
+        "decline": [
+          [
+            "You step aside."
+          ],
+          [
+            "The cold shape",
+            "slips into shade."
+          ]
+        ],
+        "retreat": [
+          [
+            "A sheet of mist",
+            "covers the floor."
+          ],
+          [
+            "The shape is gone."
+          ]
+        ],
+        "caught": [
+          [
+            "Frost remains."
+          ],
+          [
+            "A few cold drops",
+            "drip off the case."
+          ]
+        ],
+        "attendant_complete": [
+          [
+            "New label:"
+          ],
+          [
+            "Something living.",
+            "Still a mystery."
+          ],
+          [
+            "I can tell them",
+            "what we observed."
+          ],
+          [
+            "That ought to be",
+            "worth a look."
+          ]
+        ],
+        "visitor_complete": [
+          [
+            "So we both saw it."
+          ],
+          [
+            "Not all of it."
+          ]
+        ],
+        "case_occupied": [
+          [
+            "Clouded ice fills",
+            "a sealed case."
+          ],
+          [
+            "A pale shape stirs",
+            "behind the glass."
+          ]
+        ]
+      },
+      "status": "Native witness programs and guarded hall/service-room publisher are implemented privately. The corrected layout passes15 source collision/reachability checks and its terrain renders are inspected; the publisher, independent preservation audit and actual scene/actor/warp/capture/Continue checks have not run. No acquisition is installed."
+    },
+    {
+      "id": "fen-memory",
+      "species": [
+        "FLARKINDLE"
+      ],
+      "region": "Big Bog-inspired northwest spur from Bemidji/Border Pines",
+      "stage": "optional boardwalk and peatland loop",
+      "premise": "A field observer finds a boardwalk marker on the wrong side of a pool. Flarkindle folds remembered paths through the patterned fen. The setting is an original fantasy extension of Minnesota peatland patterns.",
+      "steps": [
+        "Read three observations in separate fen viewpoints: high peat rib, open flark pool, and older buried root layer. Each has a visibly different landform.",
+        "Compare the three layer records at the entrance shelter. The observer explains the difference between a present path and a remembered one.",
+        "At the inner loop, choose the markers in layer order: older root, pool edge, living rib. An incorrect order resets only the local sequence and gives a readable clue; it never traps the player.",
+        "The folded side path appears after the final acknowledged observation. It is optional and its outer dry outer path always leads home. Flarkindle waits in the lavender island hollow."
+      ],
+      "discovery_distinction": "Layer order and repeated geography replace a real-time clock requirement. No invention that Waskish is already on R17; site connection must respect the accepted map.",
+      "proposed_levels": {
+        "FLARKINDLE": 55
+      },
+      "quest_flags": [
+        "RIB_READ",
+        "POOL_READ",
+        "ROOT_READ",
+        "LAYERS_COMPARED",
+        "FOLDED_PATH_REVEALED"
+      ],
+      "completion": "The observer records the three layers; encounter outcomes never remove the safe boardwalk.",
+      "dialogue_pages": {
+        "observer_intro": [
+          [
+            "I drew this path",
+            "last spring."
+          ],
+          [
+            "Now the old bend",
+            "ends at a pool."
+          ],
+          [
+            "Read the layers.",
+            "Use the dry path."
+          ]
+        ],
+        "rib": [
+          [
+            "A living peat rib",
+            "rises by the path."
+          ],
+          [
+            "Pale new roots",
+            "hold its surface."
+          ]
+        ],
+        "pool": [
+          [
+            "Dark water fills",
+            "a shallow hollow."
+          ],
+          [
+            "Peat curls below",
+            "the quiet surface."
+          ]
+        ],
+        "root": [
+          [
+            "A buried root",
+            "crosses old peat."
+          ],
+          [
+            "Water and new moss",
+            "rest above it."
+          ]
+        ],
+        "observer_partial": [
+          [
+            "Find the live rib,",
+            "the pool and root."
+          ],
+          [
+            "Take your time.",
+            "The exit stays."
+          ]
+        ],
+        "observer_compare": [
+          [
+            "The root lies low.",
+            "The pool was next."
+          ],
+          [
+            "The living rib",
+            "is growing now."
+          ],
+          [
+            "Start with what",
+            "the fen remembers."
+          ],
+          [
+            "Root, then water.",
+            "Then living peat."
+          ]
+        ],
+        "root_selected": [
+          [
+            "The buried root",
+            "holds your step."
+          ]
+        ],
+        "pool_selected": [
+          [
+            "The dark pool",
+            "reflects the root."
+          ]
+        ],
+        "rib_selected": [
+          [
+            "New moss rises",
+            "above the water."
+          ]
+        ],
+        "wrong_order": [
+          [
+            "The path doubles",
+            "back on itself."
+          ],
+          [
+            "Root, then water.",
+            "Then living peat."
+          ]
+        ],
+        "folded_path": [
+          [
+            "The three banks",
+            "lie side by side."
+          ],
+          [
+            "The gap between",
+            "them grows narrow."
+          ],
+          [
+            "A shaded path",
+            "opens beside you."
+          ]
+        ],
+        "early": [
+          [
+            "The far bank looks",
+            "almost familiar."
+          ]
+        ],
+        "reveal": [
+          [
+            "A lavender hood",
+            "opens in shade."
+          ],
+          [
+            "Three broad limbs",
+            "float above peat."
+          ],
+          [
+            "FLARKINDLE peers",
+            "past pale roots."
+          ]
+        ],
+        "ask": [
+          [
+            "Face FLARKINDLE?"
+          ]
+        ],
+        "decline": [
+          [
+            "You stay back."
+          ],
+          [
+            "Its pale face",
+            "turns to the pool."
+          ]
+        ],
+        "retreat": [
+          [
+            "The lavender hood",
+            "folds into shadow."
+          ],
+          [
+            "Only the moss",
+            "moves beneath it."
+          ]
+        ],
+        "caught": [
+          [
+            "The pool is still."
+          ],
+          [
+            "The shaded path",
+            "stays beside you."
+          ]
+        ],
+        "observer_after": [
+          [
+            "Your route fits",
+            "all three layers."
+          ],
+          [
+            "I will keep both",
+            "maps in my book."
+          ],
+          [
+            "One for the path.",
+            "One for its past."
+          ]
+        ]
+      },
+      "status": "Native dialogue/lowerer, reviewed native closed/open fen geometry, guarded Rust publisher with returning terrain hook and tiles restoration, independent audit and three controller cases authored privately. Static closed379/open446 dry reach, six clues and Surf-safe gate pass. Compilation/publication/native gameplay/MCP/recovery and native presentation pending; no acquisition installed."
+    },
+    {
+      "id": "three-former-shores",
+      "species": [
+        "STRANDRAK"
+      ],
+      "region": "Agassiz beach-ridge prairie between Detroit Lakes and Moorhead; fictional optional basin chamber",
+      "stage": "optional route spur",
+      "premise": "A basin surveyor asks the player to compare three ridges left by different lake levels. Strandrak's crescent shell carries the same nested pattern.",
+      "steps": [
+        "Walk each of three ridge terraces and read their distinct shoreline marks from high to low. Their ordinary returns remain accessible before and after solving the puzzle.",
+        "Compare the marks at the survey shelter. The surveyor separates observed beach ridges from the fictional guardian story.",
+        "Inside the optional basin, set three outlet indicators to their corresponding former levels. Wrong settings leave the exit open and give local feedback; the player can inspect clues again.",
+        "A small inner basin drains while the outside route remains unchanged. Strandrak braces the outlet with its forked forearms and becomes available for a voluntary encounter."
+      ],
+      "discovery_distinction": "Three nested terraces and an intelligible outlet mechanism, not a warp maze with arbitrary combinations. No draining of real regional waters or main-route obstruction.",
+      "proposed_levels": {
+        "STRANDRAK": 60
+      },
+      "quest_flags": [
+        "HIGH_SHORE_READ",
+        "MIDDLE_SHORE_READ",
+        "LOW_SHORE_READ",
+        "SHORES_COMPARED",
+        "INNER_OUTLET_ACKNOWLEDGED"
+      ],
+      "completion": "The basin survey is complete before the encounter choice; all ordinary travel stays open.",
+      "dialogue_pages": {
+        "surveyor_intro": [
+          [
+            "These three ridges",
+            "were once shores."
+          ],
+          [
+            "Walk each terrace.",
+            "Read its old mark."
+          ],
+          [
+            "The basin below",
+            "has those steps."
+          ]
+        ],
+        "high_shore": [
+          [
+            "A high gravel bank",
+            "holds pale shells."
+          ],
+          [
+            "The lower banks",
+            "lie far beneath."
+          ]
+        ],
+        "middle_shore": [
+          [
+            "A second beach",
+            "cuts the slope."
+          ],
+          [
+            "Its gravel rests",
+            "below the first."
+          ]
+        ],
+        "low_shore": [
+          [
+            "A low curved ridge",
+            "ends by the basin."
+          ],
+          [
+            "Three nested banks",
+            "face one outlet."
+          ]
+        ],
+        "surveyor_partial": [
+          [
+            "Read all three",
+            "marks on the bank."
+          ],
+          [
+            "The controls match",
+            "the former levels."
+          ]
+        ],
+        "surveyor_compare": [
+          [
+            "Three old shores.",
+            "Three old levels."
+          ],
+          [
+            "Upper bank: HIGH.",
+            "Center bank: MID."
+          ],
+          [
+            "Lower bank: LOW."
+          ],
+          [
+            "Try each control.",
+            "Then use the lever"
+          ]
+        ],
+        "early": [
+          [
+            "The old marks",
+            "are hard to read."
+          ]
+        ],
+        "wrong_release": [
+          [
+            "The outlets differ",
+            "from the old cuts."
+          ],
+          [
+            "Check the ridges.",
+            "Try each control."
+          ]
+        ],
+        "open_inner": [
+          [
+            "A shallow channel",
+            "takes the water."
+          ],
+          [
+            "The small basin",
+            "settles one step."
+          ],
+          [
+            "The outer path",
+            "stays clear."
+          ]
+        ],
+        "reveal": [
+          [
+            "A crescent shell",
+            "lifts from mud."
+          ],
+          [
+            "Two forked palms",
+            "brace the outlet."
+          ],
+          [
+            "STRANDRAK lowers",
+            "its ridged head."
+          ]
+        ],
+        "ask": [
+          [
+            "Face STRANDRAK?"
+          ]
+        ],
+        "decline": [
+          [
+            "You keep the path."
+          ],
+          [
+            "The broad shell",
+            "rests by the bank."
+          ]
+        ],
+        "retreat": [
+          [
+            "The split tail",
+            "turns into shadow."
+          ],
+          [
+            "A long ripple",
+            "crosses the basin."
+          ]
+        ],
+        "caught": [
+          [
+            "The outlet flows."
+          ],
+          [
+            "Three old shores",
+            "ring a quiet pool."
+          ]
+        ],
+        "surveyor_after": [
+          [
+            "All three levels",
+            "fit the old banks."
+          ],
+          [
+            "I will mark the",
+            "outlet on my map."
+          ],
+          [
+            "The rest of the",
+            "slope stays as is."
+          ]
+        ],
+        "upper_low": [
+          [
+            "Upper outlet:",
+            "LOW water mark."
+          ]
+        ],
+        "upper_middle": [
+          [
+            "Upper outlet:",
+            "MIDDLE water mark."
+          ]
+        ],
+        "upper_high": [
+          [
+            "Upper outlet:",
+            "HIGH water mark."
+          ]
+        ],
+        "center_low": [
+          [
+            "Center outlet:",
+            "LOW water mark."
+          ]
+        ],
+        "center_middle": [
+          [
+            "Center outlet:",
+            "MIDDLE water mark."
+          ]
+        ],
+        "center_high": [
+          [
+            "Center outlet:",
+            "HIGH water mark."
+          ]
+        ],
+        "lower_low": [
+          [
+            "Lower outlet:",
+            "LOW water mark."
+          ]
+        ],
+        "lower_middle": [
+          [
+            "Lower outlet:",
+            "MIDDLE water mark."
+          ]
+        ],
+        "lower_high": [
+          [
+            "Lower outlet:",
+            "HIGH water mark."
+          ]
+        ]
+      },
+      "status": "Native dialogue/lowerer, reviewed three-terrace exterior and isolated cave geometry, guarded two-map Rust publisher, independent preservation/collision audit and three controller cases authored privately. Static ridge482/closed333/open432 reach and Surf-safe sill pass. Nine local changes drain only the fictional chamber. Compilation/publication/native gameplay/MCP/recovery and native visual acceptance pending; no acquisition installed."
+    },
+    {
+      "id": "field-margin-markers",
+      "species": [
+        "KENSIGARD"
+      ],
+      "region": "Red River Prairie field-margin spur on R16; a moving-stone mystery inspired by Kensington boundary-marker stories",
+      "stage": "optional overland investigation",
+      "premise": "A caretaker finds stone markers turning toward a buried field boundary. The mystery is the movement of an original creature, not proof of medieval settlement.",
+      "steps": [
+        "Read the caretaker's account and compare three markers: fresh soil on the reverse, a matching buried edge, and grooves that change between inspections.",
+        "Follow the field margin rather than crossing the crop rows. Locate the displaced boundary marker and return its location to the caretaker.",
+        "The caretaker withdraws a historical claim from the account he keeps and records what was actually observed.",
+        "Return along the margin. Kensigard has risen from the buried edge and now faces the restored boundary. The player can approach voluntarily."
+      ],
+      "discovery_distinction": "Observation, a clear crop-respecting loop, and a corrected claim; no fictional archaeological proof or item fetched from a different legendary quest.",
+      "proposed_levels": {
+        "KENSIGARD": 50
+      },
+      "quest_flags": [
+        "CARETAKER_READ",
+        "SOIL_READ",
+        "BURIED_EDGE_READ",
+        "CHANGING_GROOVES_READ",
+        "BOUNDARY_REPORTED",
+        "NOTICE_CORRECTED"
+      ],
+      "completion": "The caretaker acknowledges the located boundary and corrected notice before capture is possible.",
+      "dialogue_pages": {
+        "caretaker_intro": [
+          [
+            "I set that stone",
+            "upright yesterday."
+          ],
+          [
+            "Look where its",
+            "shadow falls now."
+          ],
+          [
+            "Use the field edge",
+            "Leave crops alone."
+          ]
+        ],
+        "soil": [
+          [
+            "Damp soil clings",
+            "to the stone back."
+          ],
+          [
+            "Two broad prints",
+            "end beneath it."
+          ]
+        ],
+        "buried_edge": [
+          [
+            "A buried stone",
+            "tracks the furrow."
+          ],
+          [
+            "Its broken corner",
+            "fits the first."
+          ]
+        ],
+        "grooves_first": [
+          [
+            "Three deep grooves",
+            "cross the face."
+          ],
+          [
+            "Loose grit rests",
+            "inside each cut."
+          ]
+        ],
+        "grooves_changed": [
+          [
+            "Grit has shifted."
+          ],
+          [
+            "The middle groove",
+            "now forks in two."
+          ],
+          [
+            "A fresh scrape",
+            "points downfield."
+          ]
+        ],
+        "boundary_marker": [
+          [
+            "A broad stone foot",
+            "braces the furrow."
+          ],
+          [
+            "The buried edge",
+            "continues beneath."
+          ]
+        ],
+        "caretaker_partial": [
+          [
+            "Check the back,",
+            "the edge and cuts."
+          ],
+          [
+            "Take another look",
+            "after your walk."
+          ],
+          [
+            "Stay on the margin",
+            "It leads you home."
+          ]
+        ],
+        "caretaker_comparison": [
+          [
+            "Those are feet.",
+            "And a fresh trail."
+          ],
+          [
+            "The cuts changed",
+            "while you walked."
+          ],
+          [
+            "Follow the margin",
+            "to the low furrow."
+          ],
+          [
+            "Tell me where the",
+            "buried line ends."
+          ]
+        ],
+        "claim_corrected": [
+          [
+            "I said those cuts",
+            "proved its age."
+          ],
+          [
+            "They changed here.",
+            "It proves motion."
+          ],
+          [
+            "I will change the",
+            "account I keep."
+          ],
+          [
+            "Go along the edge.",
+            "Give it some room."
+          ]
+        ],
+        "margin_early": [
+          [
+            "Loose soil shifts",
+            "under the stones."
+          ]
+        ],
+        "reveal": [
+          [
+            "A thick stone slab",
+            "rises from soil."
+          ],
+          [
+            "Broad feet settle",
+            "beside the furrow."
+          ],
+          [
+            "KENSIGARD braces",
+            "its shield arms."
+          ]
+        ],
+        "ask": [
+          [
+            "Face KENSIGARD?"
+          ]
+        ],
+        "decline": [
+          [
+            "You leave it room."
+          ],
+          [
+            "Its carved brow",
+            "turns downfield."
+          ]
+        ],
+        "retreat": [
+          [
+            "The slab sinks",
+            "into soft soil."
+          ],
+          [
+            "Its last footprint",
+            "fills with dust."
+          ]
+        ],
+        "caught": [
+          [
+            "The field rests."
+          ],
+          [
+            "Two broad prints",
+            "mark the boundary."
+          ]
+        ],
+        "caretaker_after": [
+          [
+            "Now I know where",
+            "the old line ran."
+          ],
+          [
+            "The rest can wait.",
+            "The crops cannot."
+          ]
+        ]
+      },
+      "status": "Native dialogue, physical-revisit lowerer, reviewed native field-margin geometry, guarded Rust publisher, independent preservation audit and three controller cases authored privately. Static 399-tile dry connectivity and solid clue targets pass. Compilation/publication/gameplay/MCP/native presentation and KO/blackout recovery remain pending; no acquisition installed."
+    }
+  ]
+}

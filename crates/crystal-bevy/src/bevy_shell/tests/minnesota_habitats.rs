@@ -21,6 +21,44 @@ fn fixture(
     CrystalRuntime,
     VisibleShellController,
 ) {
+    fixture_at_hour(map, tile, surf, rod, 12)
+}
+
+fn fixture_at_hour(
+    map: &str,
+    tile: [i16; 2],
+    surf: bool,
+    rod: bool,
+    hour: u8,
+) -> (
+    crystal_assets::AssetRoot,
+    CrystalRuntime,
+    VisibleShellController,
+) {
+    fixture_with_partner(
+        map,
+        tile,
+        surf,
+        rod,
+        hour,
+        if surf { "VOYAGEAR" } else { "BOREALYNX" },
+        70,
+    )
+}
+
+fn fixture_with_partner(
+    map: &str,
+    tile: [i16; 2],
+    surf: bool,
+    rod: bool,
+    hour: u8,
+    species: &str,
+    level: u8,
+) -> (
+    crystal_assets::AssetRoot,
+    CrystalRuntime,
+    VisibleShellController,
+) {
     let (root, r) = load();
     let shell = initialize_bevy_runtime_shell(
         root.clone(),
@@ -42,11 +80,7 @@ fn fixture(
     let state = c.shell.shell.session_mut().state_mut();
     let mut p = r
         .data()
-        .create_pokemon(
-            if surf { "VOYAGEAR" } else { "BOREALYNX" },
-            70,
-            Dv::default(),
-        )
+        .create_pokemon(species, level, Dv::default())
         .expect("legal Minnesota partner");
     p.item = Some("SMOKE_BALL".into());
     if surf {
@@ -85,7 +119,7 @@ fn fixture(
             month: 1,
             day: 3,
         },
-        12,
+        hour,
         0,
         0,
     );
@@ -107,12 +141,17 @@ fn encounter_and_capture(
     a: [i16; 2],
     b: [i16; 2],
 ) {
-    for step in 0..1024 {
+    let mut seen = std::collections::BTreeMap::<String, usize>::new();
+    // A 4% slot needs more walking than the common-resident smoke checks.
+    for step in 0..4096 {
         let s = c.snapshot().expect("native habitat step");
         if let Some(battle) = s.battle {
+            *seen
+                .entry(battle.enemy_pokemon.species.id.clone())
+                .or_default() += 1;
             if battle.enemy_pokemon.species.id == target {
                 assert!(
-                    super::rochester_earned::try_recruit(c, r),
+                    super::rochester_earned::try_recruit_with_ball(c, r, "MASTER_BALL"),
                     "actual target capture"
                 );
                 return;
@@ -136,7 +175,7 @@ fn encounter_and_capture(
         press(c, direction);
         c.wait_frames(17 + step % 11).expect("ordinary idle frames");
     }
-    panic!("did not naturally encounter {target} through production movement");
+    panic!("did not naturally encounter {target} through production movement; observed {seen:?}");
 }
 
 fn checkpoint(c: &mut VisibleShellController, name: &str) {
@@ -297,7 +336,11 @@ fn habitats_registered_rod_controller_clock_preserves_pose_and_captures_local_fi
         }
         if let Some(battle) = c.snapshot().expect("cast result").battle {
             if battle.enemy_pokemon.species.id == "PINGLET" {
-                assert!(super::rochester_earned::try_recruit(&mut c, &r));
+                assert!(super::rochester_earned::try_recruit_with_ball(
+                    &mut c,
+                    &r,
+                    "MASTER_BALL"
+                ));
                 verify_capture(&c, &r, "PINGLET");
                 c = super::r10_gallery::continue_save(root, r.clone(), &mut c);
                 verify_capture(&c, &r, "PINGLET");
@@ -309,3 +352,18 @@ fn habitats_registered_rod_controller_clock_preserves_pose_and_captures_local_fi
     }
     panic!("local Good Rod never selected PINGLET through native RNG");
 }
+
+#[path = "minnesota_habitat_fishing.rs"]
+mod fishing;
+
+#[path = "minnesota_habitat_headbutt.rs"]
+mod headbutt;
+
+#[path = "minnesota_landmark_habitats.rs"]
+mod landmarks;
+
+#[path = "minnesota_water_caves.rs"]
+mod water_caves;
+
+#[path = "minnesota_ecology.rs"]
+mod ecology;

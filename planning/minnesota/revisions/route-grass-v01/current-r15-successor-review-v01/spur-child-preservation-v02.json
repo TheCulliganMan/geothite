@@ -1,0 +1,28 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-r15-open-shore-and-spur-v02.crystalpack",
+  "pack_sha256": "e02fb85d4db327d146cee269809b1af3e4b387dc2e29240b71cae0ae5837ec4c",
+  "content_identity": "b1a9b78a01adff24eb2930b5c78ca1c851a240bf520769dc62da5128e78e0fdc",
+  "guidance_parent": {
+    "status": "PASS",
+    "pack": "content-packs/minnesota-current-r15-open-shore-guidance-v02.crystalpack",
+    "pack_sha256": "a899df41e71349810048c4b825b848540efb59e4ac0150f8659eb0f67f1fa682",
+    "parent": {
+      "status": "PASS",
+      "selected_revision": "north_shore_footbridges_revision",
+      "pack": "content-packs/minnesota-north-shore-footbridges-v01.crystalpack",
+      "pack_sha256": "d80b17e60aab68827bb91e397ceeaf0ee0067e36b647bcf19cbdea582d462bdb",
+      "current_layout": {
+        "path": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R15.after.layout.json",
+        "sha256": "110312f7353b0b3e32f2d6bd523bad4da4f9f9c0b487732c8f5cc6f7c15c44bb"
+      },
+      "current_dossier": {
+        "path": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R15.dossier.json",
+        "sha256": "33b2a5e79c867ab186e158f36289aaf35c69898314ed47fdb02afb110797a1fb"
+      }
+    }
+  },
+  "all_three_town_cabin_route_maps_and_used_art_exact_to_tested_candidate": true,
+  "north_shore_footbridges_and_all_unrelated_maps_preserved": true,
+  "all_grass_ledge_water_actors_events_battle_inputs_exact": true
+}

@@ -1,0 +1,258 @@
+{
+  "schema_version": 1,
+  "route": "MN_R11",
+  "purpose": "Continuous visible dry footbridges on the main Duluth to Grand Marais land path.",
+  "parent": {
+    "kind": "current_route_exterior_source_reconciliation",
+    "parent_revision": "route_grass_r13_boundary_apron_revision",
+    "parent_pack": "content-packs/minnesota-current-r13-boundary-apron-v03.crystalpack",
+    "parent_pack_sha256": "7d3987bfbf0378aed960495cc20981c0d258eb391f33630b8e3de6c2686e2e7d",
+    "pack": "content-packs/minnesota-current-r13-boundary-apron-v03.crystalpack",
+    "pack_sha256": "7d3987bfbf0378aed960495cc20981c0d258eb391f33630b8e3de6c2686e2e7d",
+    "content_identity": "557676e74fb5264e436590746046616fb503862e0db0dc403bac493ff4bd352c",
+    "maps": [
+      "MnR14C00R00",
+      "MnR14C00R01",
+      "MnR14C01R00",
+      "MnR14C01R01"
+    ],
+    "dimensions_metatiles": [
+      48,
+      32
+    ],
+    "authoring_source_index": "planning/minnesota/revisions/route-grass-v01/current-r14-successor-review-v01/sources-v01.json",
+    "authoring_source_index_sha256": "43fbc43e89f6ded0dc3c7e4e6ff41a73cbfb74a1daaf37e90ae13534973b1887",
+    "runbook": "planning/minnesota/revisions/route-grass-v01/current-r14-successor-review-v01/README.md",
+    "verification": {
+      "native": {
+        "path": "planning/minnesota/revisions/route-grass-v01/current-r14-successor-review-v01/current-native-cases-v01.json",
+        "sha256": "ea458ef5cde3f15ecb4d7d6677539081c67dc476f6d945db79cd06a32662ceed"
+      },
+      "production": {
+        "path": "planning/minnesota/revisions/route-grass-v01/current-r14-successor-review-v01/full-route-production-v01.json",
+        "sha256": "1bf7bdb3e1626204d02ea7a25965e7e5082d5ba7dcb2301808102de6514bc255"
+      },
+      "grass": {
+        "path": "planning/minnesota/revisions/route-grass-v01/current-r14-successor-review-v01/current-grass-native-model-v01.json",
+        "sha256": "36481763de16c17043d729b750f490ca1e4a22252a685dbc6f9e7dc406b08cb6"
+      },
+      "visuals": {
+        "path": "planning/minnesota/revisions/route-grass-v01/current-r14-successor-review-v01/current-visual-inheritance-v01.json",
+        "sha256": "070e612dcd38565b924ff95273d2f2e7faa4393d82be0b8b156a677353d6ebb5"
+      },
+      "source": {
+        "path": "planning/minnesota/revisions/route-grass-v01/current-r14-successor-review-v01/post-selection-proof-v01.json",
+        "sha256": "6cf44c5f6b2ec10713dfadb4c57c87986c100b91a08fc940fded20bbfbb6bbe2"
+      }
+    },
+    "status": "Current Route14 land course, four grassy uphill/dry downhill lanes, actual Itasca gatehouse and Bemidji, battle/Cut and Continue verified. Gameplay pack unchanged; statewide review active.",
+    "production_stdio_calls": 4345
+  },
+  "changes": [
+    {
+      "map": "MnR11C00R00",
+      "metatile": [
+        20,
+        20
+      ],
+      "global_core": [
+        40,
+        40
+      ],
+      "before": "06",
+      "after": "84"
+    },
+    {
+      "map": "MnR11C00R01",
+      "metatile": [
+        20,
+        14
+      ],
+      "global_core": [
+        40,
+        76
+      ],
+      "before": "06",
+      "after": "84"
+    },
+    {
+      "map": "MnR11C00R02",
+      "metatile": [
+        23,
+        0
+      ],
+      "global_core": [
+        46,
+        96
+      ],
+      "before": "06",
+      "after": "84"
+    },
+    {
+      "map": "MnR11C00R02",
+      "metatile": [
+        23,
+        1
+      ],
+      "global_core": [
+        46,
+        98
+      ],
+      "before": "06",
+      "after": "84"
+    },
+    {
+      "map": "MnR11C00R02",
+      "metatile": [
+        20,
+        7
+      ],
+      "global_core": [
+        40,
+        110
+      ],
+      "before": "06",
+      "after": "84"
+    },
+    {
+      "map": "MnR11C00R02",
+      "metatile": [
+        17,
+        13
+      ],
+      "global_core": [
+        34,
+        122
+      ],
+      "before": "06",
+      "after": "84"
+    },
+    {
+      "map": "MnR11C00R03",
+      "metatile": [
+        20,
+        9
+      ],
+      "global_core": [
+        40,
+        162
+      ],
+      "before": "06",
+      "after": "84"
+    },
+    {
+      "map": "MnR11C00R03",
+      "metatile": [
+        23,
+        21
+      ],
+      "global_core": [
+        46,
+        186
+      ],
+      "before": "06",
+      "after": "84"
+    }
+  ],
+  "art": {
+    "tileset": "mn_north_shore",
+    "new_block": "84",
+    "collision": [
+      "LADDER",
+      "LADDER",
+      "LADDER",
+      "LADDER"
+    ],
+    "source_pixels_modified": false,
+    "tile_column_sources": [
+      {
+        "source_tileset": "mn_north_shore",
+        "source_block": "44",
+        "source_column": 0
+      },
+      {
+        "source_tileset": "mn_north_shore",
+        "source_block": "01",
+        "source_column": 1
+      },
+      {
+        "source_tileset": "mn_north_shore",
+        "source_block": "01",
+        "source_column": 2
+      },
+      {
+        "source_tileset": "mn_north_shore",
+        "source_block": "44",
+        "source_column": 0
+      }
+    ]
+  },
+  "preserve": "All existing collision quadrants, landings, river/falls/buoy boundaries, scripts, actors, connections, trainer teams, audio and shared original art.",
+  "review_status": "Verified native implementation: selected only after exact source/pack checks. Qualified 1953-call dry mainland roundtrip, nine zero-difference native views and full-parent preservation passed.",
+  "diagnosis_parent": {
+    "revision": "route_grass_r13_boundary_apron_revision",
+    "kind": "native_route_exit_apron_restoration",
+    "parent_revision": "iron_ventilation_cleft_revision",
+    "parent_pack": "content-packs/minnesota-iron-ventilation-cleft-v03.crystalpack",
+    "parent_pack_sha256": "283c214cda8f5ed04e878bed7e698cc08d9f8a764ae9553161113d4837762330",
+    "pack": "content-packs/minnesota-current-r13-boundary-apron-v03.crystalpack",
+    "pack_sha256": "7d3987bfbf0378aed960495cc20981c0d258eb391f33630b8e3de6c2686e2e7d",
+    "content_identity": "557676e74fb5264e436590746046616fb503862e0db0dc403bac493ff4bd352c",
+    "maps": [
+      "MnIronVentilation"
+    ],
+    "dimensions_metatiles": [
+      18,
+      13
+    ],
+    "authoring_source_index": "planning/minnesota/revisions/route-grass-v01/current-r13-successor-review-v01/sources-v02.json",
+    "authoring_source_index_sha256": "b2f8939c365b260dfd310d15f40dc834deb54798f8b92787d48cbc64770d80a4",
+    "runbook": "planning/minnesota/caves/iron-ventilation-cleft-v01/README.md",
+    "verification": "planning/minnesota/renders/iron-ventilation-v534/acceptance-v558.json",
+    "status": "Verified Route13 land course, restored Boundary Waters apron, two-way stairs and inland ice, both town connections, Cut/Revive and Continue. Broader statewide goal remains active.",
+    "production_stdio_calls": 6454
+  },
+  "connections": [
+    {
+      "from_map": "MnDuluth",
+      "from_core": [
+        64,
+        0
+      ],
+      "to_map": "MnR11C00R03",
+      "to_core": [
+        46,
+        47
+      ]
+    },
+    {
+      "from_map": "MnR11C01R00",
+      "from_core": [
+        7,
+        8
+      ],
+      "to_map": "MnGrandMarais",
+      "to_core": [
+        0,
+        8
+      ]
+    }
+  ],
+  "gameplay_contract": {
+    "main_path": "Walk from Duluth to the west side of Grand Marais and return without Surf, Cut, Waterfall or forced ledge hops.",
+    "existing_story_gate": "Eight badges and EVENT_MN_LIGHTHOUSE_SIGNAL remain required by the existing Duluth shore check.",
+    "weather": "No snow or ice on North Shore; inland Ely connection preserved.",
+    "walking_width_core": 2,
+    "river_spans_core": [
+      2,
+      2,
+      4,
+      2,
+      2,
+      2,
+      2
+    ],
+    "source_warm_loop_seconds": 0.991,
+    "installed_warm_loop_seconds": 0.856
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "selected_revision": "route_grass_r19_detroit_gate_revision",
+  "pack": "content-packs/minnesota-current-r19-detroit-gate-v05.crystalpack",
+  "pack_sha256": "b57516c0b77c7bcf94fa35e60ff8300bfd8a8781782827739742d8fc15b3f437",
+  "original_acceptance": "planning/minnesota/revisions/route-grass-v01/current-staples-junction-review-v01/acceptance.json",
+  "complete_map_exact": {
+    "MnStaplesRailJunction": true,
+    "MnStaplesStation": true
+  },
+  "scope": "Current R15 approach may differ and requires fresh gameplay; map comparisons are not standalone acceptance."
+}

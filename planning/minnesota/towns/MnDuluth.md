@@ -1,5 +1,12 @@
 # Duluth — cliff stairs and connected streets
 
+The [harbor revision](../revisions/duluth-harbor-platforms-v01/README.md) removes
+the raised inner water edges and isolated buoy, keeping the outer buoy boundary.
+Floating decks at metatiles `(26,36)` and `(34,39)` have native fishermen at
+gameplay `(55,75)` and `(71,81)`, with open western Surf boarding faces.
+Resolve `world.json.active_local_review_revision` and its authoring source index
+before editing; the canonical layout below remains an older guarded preimage.
+
 The current exterior is 64×46 metatiles, with 38 real doors and 76 paired exterior
 warps. The cliff repair gives eleven native cave36 stair flights real upper and
 lower landings, joins the western upper streets at one height, and closes the
@@ -17,6 +24,11 @@ The western native seam retains town tiles(0,44)/(0,45),
 remains(41,32). These are implemented walking connections, rather than the old
 gatehouse reservations recorded below. Final selection follows
 `world.json.active_local_review_revision`; the selected cliff repair preserves the State Fair building parent.
+
+The [shoreline follow-up](../revisions/shore-rocks-open-routes-v01/README.md)
+adds38 native boulders on grassy shore cells while retaining the open harbor,
+Surf access and both floating fisherman decks. Its current source layout is
+resolved through the selected `world.json` authoring index.
 
 ## Historical city and ice-course notes
 

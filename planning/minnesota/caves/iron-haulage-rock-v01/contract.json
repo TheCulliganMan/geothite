@@ -1,0 +1,123 @@
+{
+  "schema_version": 1,
+  "map": "MnIronHaulage",
+  "native_module_sha256": "162646fca8c750f8589a9f2bee1eee1c70b83a07d13c588b1afab8dffe52b766",
+  "parent_revision": "route_grass_r06_current_contract_revision",
+  "parent_pack": "content-packs/minnesota-current-r06-south-woods-grass-v01.crystalpack",
+  "parent_pack_sha256": "1d906a7d4998ce8b25332b05413131d9d256961a284230143d82541b24c403d0",
+  "preserved_warps": [
+    {
+      "index": 1,
+      "x": 5,
+      "y": 22,
+      "target_map_constant": "MN_IRON_DRILL_APPROACH",
+      "target_map": "MN_IRON_DRILL_APPROACH",
+      "target_warp_id": 4
+    },
+    {
+      "index": 2,
+      "x": 4,
+      "y": 23,
+      "target_map_constant": "MN_IRON_DRILL_APPROACH",
+      "target_map": "MN_IRON_DRILL_APPROACH",
+      "target_warp_id": 4
+    },
+    {
+      "index": 3,
+      "x": 7,
+      "y": 4,
+      "target_map_constant": "MN_IRON_SUMP",
+      "target_map": "MN_IRON_SUMP",
+      "target_warp_id": 2
+    },
+    {
+      "index": 4,
+      "x": 6,
+      "y": 5,
+      "target_map_constant": "MN_IRON_SUMP",
+      "target_map": "MN_IRON_SUMP",
+      "target_warp_id": 2
+    },
+    {
+      "index": 5,
+      "x": 27,
+      "y": 4,
+      "target_map_constant": "MN_IRON_VENTILATION",
+      "target_map": "MN_IRON_VENTILATION",
+      "target_warp_id": 4
+    },
+    {
+      "index": 6,
+      "x": 26,
+      "y": 5,
+      "target_map_constant": "MN_IRON_VENTILATION",
+      "target_map": "MN_IRON_VENTILATION",
+      "target_warp_id": 4
+    },
+    {
+      "index": 7,
+      "x": 29,
+      "y": 22,
+      "target_map_constant": "MN_IRON_SUMP",
+      "target_map": "MN_IRON_SUMP",
+      "target_warp_id": 6
+    },
+    {
+      "index": 8,
+      "x": 28,
+      "y": 23,
+      "target_map_constant": "MN_IRON_SUMP",
+      "target_map": "MN_IRON_SUMP",
+      "target_warp_id": 6
+    },
+    {
+      "index": 9,
+      "x": 13,
+      "y": 12,
+      "target_map_constant": "MN_IRON_VENTILATION",
+      "target_map": "MN_IRON_VENTILATION",
+      "target_warp_id": 6
+    },
+    {
+      "index": 10,
+      "x": 12,
+      "y": 13,
+      "target_map_constant": "MN_IRON_VENTILATION",
+      "target_map": "MN_IRON_VENTILATION",
+      "target_warp_id": 6
+    }
+  ],
+  "preserved_actor_anchors": [
+    {
+      "id": "MnIronHaulageRuth",
+      "tile": [
+        5,
+        15
+      ]
+    },
+    {
+      "id": "MN_LODE_ARC_WEIGH",
+      "tile": [
+        14,
+        7
+      ]
+    },
+    {
+      "id": "MN_LODE_ARC_CONVEYOR",
+      "tile": [
+        30,
+        13
+      ]
+    }
+  ],
+  "closed_crosscut_metatile": [
+    9,
+    8
+  ],
+  "open_crosscut_block": 13,
+  "pressure_flag": "EVENT_MN_IRON_HAUL_PRESSURE_OFF",
+  "control_tile": [
+    29,
+    11
+  ]
+}

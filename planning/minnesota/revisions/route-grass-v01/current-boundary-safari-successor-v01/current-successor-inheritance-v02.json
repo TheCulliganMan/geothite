@@ -1,0 +1,40 @@
+{
+  "status": "PASS_EXACT_BOUNDARY_SAFARI_SUCCESSOR_INHERITANCE",
+  "tested_revision": "route_grass_r14_forest_bank_revision",
+  "tested_pack": "content-packs/minnesota-current-r14-forest-bank-v01.crystalpack",
+  "tested_sha256": "e9f4108d3b0a35f04145e4928446c03845982e1f13d7ff8f34e383bd701757d5",
+  "current_revision": "iron_crosscut_rock_cache_revision",
+  "current_pack": "content-packs/minnesota-iron-crosscut-rock-cache-v02.crystalpack",
+  "current_sha256": "bc38b8920bdc6d5e3c0e18ddac283aa4087e0020d694861f277d10314a3875d1",
+  "complete_six_native_maps_exact": true,
+  "safari_art_collision_and_all_graphics_exact": true,
+  "moves_items_and_audio_exact": true,
+  "changed_native_data_keys": {
+    "maps": [
+      "MnIronDrillApproach"
+    ],
+    "map_scripts": [
+      "MnIronDrillApproach_MapEvents",
+      "MN_IRON_APPROACH_ETHER"
+    ],
+    "map_attributes": [
+      "MnIronDrillApproach"
+    ],
+    "map_blocks": [
+      "MnIronDrillApproach_Blocks"
+    ],
+    "story_event_script_constants": [
+      "global"
+    ],
+    "npcs": [
+      "MnIronDrillApproach"
+    ]
+  },
+  "scope": "Runtime inputs and GPU captures remain attributed to the tested R14 pack. Current cave-only successor inherits the exact Safari maps, art and related data; no fresh runtime test on the successor is claimed.",
+  "all103_complete_minnesota_outdoor_maps_exact": true,
+  "all_native_data_except_room_and_constant_related_records_exact": true,
+  "all_existing_story_event_symbol_values_preserved": true,
+  "new_story_event_symbols": [
+    "EVENT_MN_IRON_APPROACH_ETHER"
+  ]
+}

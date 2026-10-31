@@ -24,12 +24,14 @@ pub(crate) fn validate(
     for stop in stations {
         let old = &base.data.maps[&stop.map];
         let new = &data.maps[&stop.map];
+        let mut attributes = old.attributes.clone();
+        attributes.fishing_group = Some("FISHGROUP_NONE".into());
         ensure!(
-            old.attributes == new.attributes
+            attributes == new.attributes
                 && old.blocks == new.blocks
                 && old.objects == new.objects
                 && old.events == new.events,
-            "station terrain, original people and public doors must stay exact"
+            "station terrain, people and doors must stay exact; only unused fishing metadata may change"
         );
         ensure!(
             new.scripts[&format!("{}Original", stop.prefix())]
@@ -63,6 +65,8 @@ pub(crate) fn validate(
                 .context("native script section")?,
         );
         data.maps.insert(stop.map.clone(), old.clone());
+        data.map_attributes
+            .insert(stop.map.clone(), old.attributes.clone());
     }
     let extra: Vec<_> = data
         .map_scripts

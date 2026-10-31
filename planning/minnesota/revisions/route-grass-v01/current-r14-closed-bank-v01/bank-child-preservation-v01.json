@@ -1,0 +1,46 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-r14-forest-bank-v01.crystalpack",
+  "sha256": "e9f4108d3b0a35f04145e4928446c03845982e1f13d7ff8f34e383bd701757d5",
+  "parent_pack": "content-packs/minnesota-minneapolis-citywide-cycling-v02.crystalpack",
+  "parent_sha256": "504938ec2d3b0230674ddc5ae4f8ec13e9e713dd4189c1f128ff23112959b24a",
+  "changed_metatiles": [
+    {
+      "index": 394,
+      "before": 87,
+      "after": 5
+    },
+    {
+      "index": 395,
+      "before": 87,
+      "after": 5
+    },
+    {
+      "index": 396,
+      "before": 87,
+      "after": 5
+    },
+    {
+      "index": 397,
+      "before": 87,
+      "after": 5
+    },
+    {
+      "index": 400,
+      "before": 87,
+      "after": 5
+    },
+    {
+      "index": 401,
+      "before": 87,
+      "after": 5
+    }
+  ],
+  "all_other_complete_maps_preserved_exact": 731,
+  "all_art_audio_events_scripts_encounters_trainers_exact": true,
+  "identity": {
+    "stored": "ebf80f65052662f5b0f729a90452186b47c946a62a39ab344cdcfba01caa4bb9",
+    "independently_recomputed": "ebf80f65052662f5b0f729a90452186b47c946a62a39ab344cdcfba01caa4bb9",
+    "exact": true
+  }
+}

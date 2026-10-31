@@ -1,0 +1,12 @@
+{
+  "status": "PASS_LOCAL_INHERITANCE",
+  "tested_pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+  "selected_pack": "content-packs/minnesota-international-falls-windbreak-v01.crystalpack",
+  "selected_pack_sha256": "7066f05448101c79b4dc761963b0f39a570bad07c4f80e3e777901ac2e207507",
+  "complete_maps_and_used_native_art_collision_exact": [
+    "MnBoundaryWaters",
+    "MnBoundaryWatersSurveyShelter",
+    "MnPreservePineEntry"
+  ],
+  "scope": "Original five-case native and15-call production receipts retain their R10 tested pack binding. This proves exact local inheritance only, not fresh execution on successor/global gameplay equivalence."
+}

@@ -1,0 +1,478 @@
+{
+  "pack": "content-packs/minnesota-current-mankato-native-exterior-v02.crystalpack",
+  "pack_sha256": "ab7c622576a4754dbcca8ccc5c6b8596787d109fbdba7d387989b91ff26e4484",
+  "map": "MnMankato",
+  "source_dossier": "planning/minnesota/revisions/route-grass-v01/current-mankato-town-v01/dossier.before.json",
+  "start": [
+    40,
+    18
+  ],
+  "badge_count": 2,
+  "event_flags": [],
+  "roads": [
+    {
+      "inside": [
+        24,
+        4
+      ],
+      "out": "up",
+      "neighbor": "MnR03C00R01",
+      "there": [
+        18,
+        15
+      ]
+    },
+    {
+      "inside": [
+        25,
+        4
+      ],
+      "out": "up",
+      "neighbor": "MnR03C00R01",
+      "there": [
+        19,
+        15
+      ]
+    },
+    {
+      "inside": [
+        46,
+        18
+      ],
+      "out": "right",
+      "neighbor": "MnR02C00R00",
+      "there": [
+        0,
+        30
+      ]
+    },
+    {
+      "inside": [
+        46,
+        19
+      ],
+      "out": "right",
+      "neighbor": "MnR02C00R00",
+      "there": [
+        0,
+        31
+      ]
+    }
+  ],
+  "gates": [
+    {
+      "inside": [
+        24,
+        4
+      ],
+      "out": "up",
+      "neighbor": "MnR03C00R01",
+      "there": [
+        18,
+        15
+      ],
+      "script_root": "MnMKRiverCheck",
+      "required_flags": [
+        "ENGINE_HIVEBADGE"
+      ]
+    },
+    {
+      "inside": [
+        25,
+        4
+      ],
+      "out": "up",
+      "neighbor": "MnR03C00R01",
+      "there": [
+        19,
+        15
+      ],
+      "script_root": "MnMKRiverCheck",
+      "required_flags": [
+        "ENGINE_HIVEBADGE"
+      ]
+    }
+  ],
+  "ledges": [
+    {
+      "upper": [
+        10,
+        17
+      ],
+      "lip": [
+        10,
+        18
+      ],
+      "landing": [
+        10,
+        20
+      ],
+      "out": "down",
+      "return_via": [
+        [
+          30,
+          20
+        ],
+        [
+          30,
+          17
+        ]
+      ]
+    },
+    {
+      "upper": [
+        11,
+        17
+      ],
+      "lip": [
+        11,
+        18
+      ],
+      "landing": [
+        11,
+        20
+      ],
+      "out": "down",
+      "return_via": [
+        [
+          30,
+          20
+        ],
+        [
+          30,
+          17
+        ]
+      ]
+    },
+    {
+      "upper": [
+        12,
+        17
+      ],
+      "lip": [
+        12,
+        18
+      ],
+      "landing": [
+        12,
+        20
+      ],
+      "out": "down",
+      "return_via": [
+        [
+          30,
+          20
+        ],
+        [
+          30,
+          17
+        ]
+      ]
+    },
+    {
+      "upper": [
+        13,
+        17
+      ],
+      "lip": [
+        13,
+        18
+      ],
+      "landing": [
+        13,
+        20
+      ],
+      "out": "down",
+      "return_via": [
+        [
+          30,
+          20
+        ],
+        [
+          30,
+          17
+        ]
+      ]
+    },
+    {
+      "upper": [
+        14,
+        17
+      ],
+      "lip": [
+        14,
+        18
+      ],
+      "landing": [
+        14,
+        20
+      ],
+      "out": "down",
+      "return_via": [
+        [
+          30,
+          20
+        ],
+        [
+          30,
+          17
+        ]
+      ]
+    },
+    {
+      "upper": [
+        15,
+        17
+      ],
+      "lip": [
+        15,
+        18
+      ],
+      "landing": [
+        15,
+        20
+      ],
+      "out": "down",
+      "return_via": [
+        [
+          30,
+          20
+        ],
+        [
+          30,
+          17
+        ]
+      ]
+    },
+    {
+      "upper": [
+        16,
+        17
+      ],
+      "lip": [
+        16,
+        18
+      ],
+      "landing": [
+        16,
+        20
+      ],
+      "out": "down",
+      "return_via": [
+        [
+          30,
+          20
+        ],
+        [
+          30,
+          17
+        ]
+      ]
+    },
+    {
+      "upper": [
+        17,
+        17
+      ],
+      "lip": [
+        17,
+        18
+      ],
+      "landing": [
+        17,
+        20
+      ],
+      "out": "down",
+      "return_via": [
+        [
+          30,
+          20
+        ],
+        [
+          30,
+          17
+        ]
+      ]
+    },
+    {
+      "upper": [
+        18,
+        17
+      ],
+      "lip": [
+        18,
+        18
+      ],
+      "landing": [
+        18,
+        20
+      ],
+      "out": "down",
+      "return_via": [
+        [
+          30,
+          20
+        ],
+        [
+          30,
+          17
+        ]
+      ]
+    },
+    {
+      "upper": [
+        19,
+        17
+      ],
+      "lip": [
+        19,
+        18
+      ],
+      "landing": [
+        19,
+        20
+      ],
+      "out": "down",
+      "return_via": [
+        [
+          30,
+          20
+        ],
+        [
+          30,
+          17
+        ]
+      ]
+    }
+  ],
+  "doors": [
+    {
+      "room": "MnMankatoPokecenter1F",
+      "outside": [
+        31,
+        14
+      ],
+      "arrival": [
+        10,
+        13
+      ],
+      "carpets": [
+        [
+          10,
+          15
+        ],
+        [
+          11,
+          15
+        ]
+      ]
+    },
+    {
+      "room": "MnMankatoMart",
+      "outside": [
+        37,
+        28
+      ],
+      "arrival": [
+        6,
+        5
+      ],
+      "carpets": [
+        [
+          6,
+          7
+        ],
+        [
+          7,
+          7
+        ]
+      ]
+    },
+    {
+      "room": "MnMankatoGym",
+      "outside": [
+        10,
+        12
+      ],
+      "arrival": [
+        6,
+        17
+      ],
+      "carpets": [
+        [
+          6,
+          19
+        ],
+        [
+          7,
+          19
+        ]
+      ]
+    }
+  ],
+  "fences": [
+    {
+      "stand": [
+        6,
+        17
+      ],
+      "blocked": "down"
+    },
+    {
+      "stand": [
+        7,
+        17
+      ],
+      "blocked": "down"
+    },
+    {
+      "stand": [
+        8,
+        17
+      ],
+      "blocked": "down"
+    },
+    {
+      "stand": [
+        9,
+        17
+      ],
+      "blocked": "down"
+    },
+    {
+      "stand": [
+        20,
+        17
+      ],
+      "blocked": "down"
+    },
+    {
+      "stand": [
+        21,
+        17
+      ],
+      "blocked": "down"
+    },
+    {
+      "stand": [
+        22,
+        17
+      ],
+      "blocked": "down"
+    }
+  ],
+  "surf": null,
+  "arrival_discovery_flags": [
+    "ENGINE_FLYPOINT_MN_MANKATO"
+  ],
+  "counts": {
+    "roads": 4,
+    "gates": 2,
+    "ledges": 10,
+    "doors": 3,
+    "fences": 7,
+    "residents": 2,
+    "signs": 4
+  },
+  "fixture_note": "Initial Mew60/Surf and two prior badges are explicit local QA setup. Notebook acknowledgment and denial have separate native cases; no earned campaign claim."
+}

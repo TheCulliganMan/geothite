@@ -1,0 +1,223 @@
+{
+  "schema_version": 1,
+  "map": "MnIronHaulage",
+  "status": "Verified and selected local native rock-floor successor; user visual review and other mine floors remain open.",
+  "dimensions_metatiles": [
+    18,
+    14
+  ],
+  "purpose": "Rock galleries and raised workings around a pressure-operated crosscut. Preserve all five original ladder pairs, Ruth, two LODE guards, controls and quest ordering.",
+  "current_parent_revision": "route_grass_r06_current_contract_revision",
+  "ports": [
+    {
+      "name": "mouth",
+      "active": [
+        5,
+        22
+      ],
+      "passive": [
+        4,
+        23
+      ],
+      "target": "MnIronDrillApproach",
+      "target_active": [
+        25,
+        5
+      ],
+      "target_passive": [
+        24,
+        5
+      ]
+    },
+    {
+      "name": "haul_down",
+      "active": [
+        7,
+        4
+      ],
+      "passive": [
+        6,
+        5
+      ],
+      "target": "MnIronSump",
+      "target_active": [
+        5,
+        18
+      ],
+      "target_passive": [
+        4,
+        19
+      ]
+    },
+    {
+      "name": "upper_crossing",
+      "active": [
+        27,
+        4
+      ],
+      "passive": [
+        26,
+        5
+      ],
+      "target": "MnIronVentilation",
+      "target_active": [
+        7,
+        4
+      ],
+      "target_passive": [
+        6,
+        5
+      ]
+    },
+    {
+      "name": "east_drop",
+      "active": [
+        29,
+        22
+      ],
+      "passive": [
+        28,
+        23
+      ],
+      "target": "MnIronSump",
+      "target_active": [
+        31,
+        18
+      ],
+      "target_passive": [
+        30,
+        19
+      ]
+    },
+    {
+      "name": "service_loop",
+      "active": [
+        13,
+        12
+      ],
+      "passive": [
+        12,
+        13
+      ],
+      "target": "MnIronVentilation",
+      "target_active": [
+        27,
+        20
+      ],
+      "target_passive": [
+        26,
+        21
+      ]
+    }
+  ],
+  "native_climbs": [
+    {
+      "block": "30",
+      "metatile": [
+        5,
+        4
+      ],
+      "lane_x": 10,
+      "walking_y": [
+        10,
+        9,
+        8,
+        7
+      ]
+    },
+    {
+      "block": "36",
+      "metatile": [
+        13,
+        4
+      ],
+      "lane_x": 26,
+      "walking_y": [
+        10,
+        9,
+        8,
+        7
+      ]
+    }
+  ],
+  "actors": [
+    {
+      "id": "MnIronHaulageRuth",
+      "tile": [
+        5,
+        15
+      ],
+      "approach": [
+        5,
+        16
+      ],
+      "role": "Original worker explains the alternate mining levels."
+    },
+    {
+      "id": "MN_LODE_ARC_WEIGH",
+      "tile": [
+        14,
+        7
+      ],
+      "approach": [
+        13,
+        7
+      ],
+      "role": "Original sight-triggered guard and postbattle dialogue; PELLETOR37/CARTICK37 before native scaling."
+    },
+    {
+      "id": "MN_LODE_ARC_CONVEYOR",
+      "tile": [
+        30,
+        13
+      ],
+      "approach": [
+        29,
+        13
+      ],
+      "role": "Original valve-side guard; AGATOT37/SLUDGESKI37 before native scaling."
+    }
+  ],
+  "pressure": {
+    "control_tile": [
+      29,
+      11
+    ],
+    "approach": [
+      29,
+      12
+    ],
+    "closed_shutter_metatile": [
+      9,
+      8
+    ],
+    "closed_block": "41",
+    "open_block": "0d",
+    "native_flag": "EVENT_MN_IRON_HAUL_PRESSURE_OFF",
+    "closed_free_floor_cells": {
+      "west": 170,
+      "east": 136
+    },
+    "open_free_floor_cells": 310,
+    "second_circuit": "EVENT_MN_IRON_VENT_PRESSURE_OFF",
+    "scope": "The retained sump callback requires both circuits. These controls do not grant feed isolation, witnessed drill test, stopped drill or recovered instrument."
+  },
+  "native_art": {
+    "alias": "mn_iron_haulage_rock",
+    "source": "cave",
+    "palette": "nite",
+    "original_pixels_modified": false,
+    "machine": "Native underground2b",
+    "shutter": "Right native facility16 glyph columns repeated with solid collision",
+    "shaft": "Native cave0b quadrants 0,3,2,1 with matching collision",
+    "script_compatibility": "Private0d retains FLOOR in all four quadrants for the unchanged pressure callbacks."
+  },
+  "source_loop": "planning/minnesota/tools/review_iron_haulage.py",
+  "preservation_audit": "planning/minnesota/renders/iron-haulage-rock-v490/published-audit-v507/receipt.json",
+  "native_views": "planning/minnesota/renders/iron-haulage-rock-v490/native-v501/MnIronHaulage-production-cameras.png",
+  "fixture_limits": "Local approach position, four original Minnesota partners at level55, declared Johto badge/access fixture and carried supplies. No earned access or campaign balance claim. All later movement, battles, valves and saves use production input.",
+  "controller_cases_passed": 1,
+  "production_mcp_calls": 578,
+  "native_camera_pixel_mismatches": 0,
+  "verification": "planning/minnesota/renders/iron-haulage-rock-v490/acceptance-v515.json"
+}

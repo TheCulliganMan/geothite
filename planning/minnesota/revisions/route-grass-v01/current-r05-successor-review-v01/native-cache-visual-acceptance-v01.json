@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "actual_native_images_inspected": 5,
+  "whole_upper_before_after_and_complete_original_route_inspected": true,
+  "detail_before_after_inspected": true,
+  "source_native_pixel_mismatches": 0,
+  "capture_receipt": "planning/minnesota/renders/route-grass-v01/current-r05-successor-review-v01/cache-native-v01/capture-progress.json",
+  "composition": "Contiguous native grass surrounds the existing Great Ball approach. A short two-lane bank lands on a dry trail. Its forest cap closes a dry lateral shortcut; the trail continues around it to preserve the river lookout. Tall rock terraces retain stairs.",
+  "source_pixels_modified": false
+}

@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "parent_source_index": "planning/minnesota/revisions/duluth-harbor-platforms-v01/sources.json",
+  "parent_revision": "duluth_harbor_platforms_revision",
+  "pack": "content-packs/minnesota-current-r10-fitted-fork-v03.crystalpack",
+  "pack_sha256": "1f16d2b3ca473cc5e937140b7ba6f3e190bcaf3718dd6854b40acd8e98a6ddff",
+  "current_layouts": {
+    "MnDuluth": {
+      "path": "planning/minnesota/revisions/duluth-harbor-platforms-v01/after.layout.json",
+      "sha256": "3e8ca58723e8b7dc9650f845c34d7cce22eeaba9f3ad3c8a6e5f0992ebcb0d11"
+    },
+    "MN_R10": {
+      "path": "planning/minnesota/revisions/r10-carrier-plateau-v02/after.layout.json",
+      "sha256": "b06b49c06b87cb2c23ffe6acda417eb10f596237d6d9a69a6d4541bfc1194201"
+    }
+  },
+  "current_caves": {
+    "MnR10Cave1F": {
+      "path": "planning/minnesota/caves/current-r10-fitted-fork-v01/source-v02/MnR10Cave1F.json",
+      "sha256": "c64b59fd073a8f141d0dd038618f5f6367aeea6344d1c9c5d5e7505ba0182cc8"
+    }
+  },
+  "current_dossiers": {
+    "MN_R10": {
+      "path": "planning/minnesota/caves/current-r10-fitted-fork-v01/route-dossier.json",
+      "sha256": "160f56f43391958887a0c6cf6897332087bf90b1cfab896b2b6f4eb5fdadd726"
+    }
+  },
+  "ordered_stages": [
+    {
+      "builder": "revise_authored_cave",
+      "parent_pack": "content-packs/minnesota-current-duluth-harbor-v02.crystalpack",
+      "parent_pack_sha256": "2450f44c16fd9f783b8b1dae8e6fa292fbf6a1444a730527c7ebfc63af09b721",
+      "before_room": "planning/minnesota/caves/current-r10-fitted-fork-v01/source-before/MnR10Cave1F.json",
+      "after_room": "planning/minnesota/caves/current-r10-fitted-fork-v01/source-v02/MnR10Cave1F.json"
+    }
+  ],
+  "status": "Verified local authoring sources; resolve world.json for selection. Unrelated city/shore repairs are inherited through parent_source_index.",
+  "scope": "The canonical cave source may be updated only with exact preimage and final world guards; existing exterior source layouts, actors, programs and regional seams are preserved."
+}

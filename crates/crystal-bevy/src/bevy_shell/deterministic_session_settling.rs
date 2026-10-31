@@ -30,7 +30,7 @@ fn finish_visible_empty_battle_reward_presentation(
         runtime_shell.battle_hp_tween = None;
         runtime_shell.battle_fanfare_messages.clear();
         runtime_shell.battle_evolution_cries.clear();
-        runtime_shell.battle_evolution_cancellations.clear();
+        evolution_dex_finalization::record_completed_before_exit(runtime_shell)?;
         runtime_shell.battle_sounds_after_messages.clear();
         reset_visible_music_state(runtime_shell);
         queue_visible_current_music(runtime_shell)?;
@@ -936,7 +936,7 @@ fn press_visible_a_button(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
                 runtime_shell.pending_battle_exp_tweens.clear();
                 runtime_shell.battle_fanfare_messages.clear();
                 runtime_shell.battle_evolution_cries.clear();
-                runtime_shell.battle_evolution_cancellations.clear();
+                evolution_dex_finalization::record_completed_before_exit(runtime_shell)?;
                 runtime_shell.battle_sounds_after_messages.clear();
                 runtime_shell.battle_level_stats.clear();
                 reset_visible_music_state(runtime_shell);
@@ -1385,6 +1385,11 @@ fn press_visible_a_button(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
         }
     }
     if snapshot.pending_move_learn.is_some() {
+        // Finish the previous move's result pages before exposing the next
+        // queued choice. Those pages may still own the shared move cursor.
+        if runtime_shell.special_boundary.is_some() {
+            return close_visible_special_boundary(runtime_shell);
+        }
         return confirm_visible_pending_move_learn(runtime_shell);
     }
     // Full-screen menus retain input ownership even when their originating
@@ -2305,6 +2310,11 @@ fn press_visible_b_button(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
     }
     let snapshot = runtime_shell.shell.presentation_snapshot()?;
     if snapshot.pending_move_learn.is_some() {
+        // Finish the previous move's result pages before exposing the next
+        // queued choice. Those pages may still own the shared move cursor.
+        if runtime_shell.special_boundary.is_some() {
+            return close_visible_special_boundary(runtime_shell);
+        }
         return cancel_visible_pending_move_learn(runtime_shell);
     }
     if runtime_shell.pending_phone_prompt.is_some() {

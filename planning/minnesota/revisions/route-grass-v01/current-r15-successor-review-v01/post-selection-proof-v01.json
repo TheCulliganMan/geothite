@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "selected_revision": "route_grass_r15_open_shore_spur_revision",
+  "pack_sha256": "e02fb85d4db327d146cee269809b1af3e4b387dc2e29240b71cae0ae5837ec4c",
+  "native_source_metatiles_exact": 576,
+  "grass_quadrants": 92,
+  "requested_fence_removal_preserved": true,
+  "all_three_neighbor_connections_played": true,
+  "actual_maps_observed": [
+    "MnBrainerd",
+    "MnDetroitLakes",
+    "MnR15C00R00",
+    "MnR15LakeCabin",
+    "MnStaplesRailJunction"
+  ],
+  "goal_complete": false
+}

@@ -275,7 +275,11 @@ fn verdigrim_controller_three_controls_refusal_order_and_acknowledged_crew() {
         }
         c.wait_frames(64).expect("native encounter transition");
     }
-    assert!(super::rochester_earned::try_recruit(&mut c, &runtime));
+    assert!(super::rochester_earned::try_recruit_with_ball(
+        &mut c,
+        &runtime,
+        "MASTER_BALL"
+    ));
     settle(&mut c, "actual Verdigrim capture");
     assert!(event(&c, "EVENT_MN_VERDIGRIM_CAUGHT"));
     assert!(

@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "map": "MnIronDrillApproach",
+  "native_module_sha256": "eff97e26f37b99933a0327cb5ab09ea2142fae416b1e79c266915e9a26692b4e",
+  "reward": {
+    "id": "MN_IRON_APPROACH_ETHER",
+    "flag": "EVENT_MN_IRON_APPROACH_ETHER",
+    "tile": [
+      5,
+      5
+    ],
+    "item": "ETHER",
+    "quantity": 1
+  },
+  "preserved_warps": [
+    {
+      "index": 1,
+      "tile": [
+        7,
+        21
+      ],
+      "target": "MnR09Cave1F",
+      "target_warp": 2
+    },
+    {
+      "index": 2,
+      "tile": [
+        6,
+        21
+      ],
+      "target": "MnR09Cave1F",
+      "target_warp": 2
+    },
+    {
+      "index": 3,
+      "tile": [
+        25,
+        5
+      ],
+      "target": "MN_IRON_HAULAGE",
+      "target_warp": 2
+    },
+    {
+      "index": 4,
+      "tile": [
+        24,
+        5
+      ],
+      "target": "MN_IRON_HAULAGE",
+      "target_warp": 2
+    }
+  ],
+  "native_actor_anchors": [
+    {
+      "id": "MN_LODE_ARC_ACCESS",
+      "tile": [
+        10,
+        12
+      ]
+    },
+    {
+      "id": "MN_LODE_ARC_SPOIL",
+      "tile": [
+        26,
+        18
+      ]
+    }
+  ],
+  "purpose": "Fit the crosscut into solid native cave rock and give its existing upper side loop one optional restorative cache; preserve every existing floor quadrant, stair, story actor and native program."
+}

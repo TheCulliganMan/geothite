@@ -1,0 +1,24 @@
+{
+  "status": "GENERIC_DOOR_REVIEW_ARRIVAL_DIALOGUE_LIMITATION",
+  "failed_log": ".local/route-grass-review/winona-parent-native-controller-v02.log",
+  "room": "MnWinonaHome1F",
+  "arrival": [
+    7,
+    6
+  ],
+  "intended_left_carpet_approach": [
+    6,
+    6
+  ],
+  "approach_collision": "FLOOR",
+  "cause": "MnWHomeArrival opens initial home text before movement. Generic facade test does not finish room-arrival dialogue before walking.",
+  "source": "crates/crystal-assets/src/winona_opening.rs:MnWHomeArrival",
+  "native_geometry_changed": false,
+  "followup": "Use actual production input to acknowledge arrival text, then verify both exit carpets in all five buildings.",
+  "other_native_cases_passed": [
+    "starter checkpoint denial/free inbound both lanes",
+    "public residents/signs/qualified road lanes"
+  ],
+  "initial_missing_contract_attempt": ".local/route-grass-review/winona-parent-native-controller-v01.log",
+  "incorrect_initial_side_approach_interpretation_retracted": true
+}

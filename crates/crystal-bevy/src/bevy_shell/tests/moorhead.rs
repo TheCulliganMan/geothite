@@ -67,7 +67,7 @@ fn moorhead_controller_all_people_rooms_returns_and_both_prairie_lanes() {
     let mut c = fixture(&root, &r, CITY, (30, 12));
     let mut partner = r
         .data()
-        .create_pokemon("MEW", 50, Dv::default())
+        .create_pokemon("VOYAGEAR", 50, Dv::default())
         .expect("legal Surf fixture");
     partner.moves = vec![LearnedMove {
         name: "SURF".into(),
@@ -130,6 +130,25 @@ fn moorhead_controller_all_people_rooms_returns_and_both_prairie_lanes() {
     }
     for y in 2..22 {
         walk(&mut c, &r, (11, y));
+        if r.data().maps[CITY]
+            .scripts
+            .contains_key("MnMoorheadRiverAccess")
+            && matches!(y, 12 | 13)
+        {
+            // The habitat successor opens exactly this two-tile brick bank.
+            // Its separate regression casts, mounts and tests the river bounds.
+            for _ in 0..4 {
+                press(&mut c, GameButton::Left);
+                if c.snapshot().expect("brick bank step").overworld.tile.x == 10 {
+                    break;
+                }
+            }
+            let bank = c.snapshot().expect("signed bank approach").overworld;
+            assert_eq!((bank.tile.x, bank.tile.y), (10, y));
+            assert_eq!(bank.mode, MovementMode::Normal);
+            walk(&mut c, &r, (11, y));
+            continue;
+        }
         press(&mut c, GameButton::Left);
         press(&mut c, GameButton::A);
         let s = c.snapshot().expect("actual levee barrier").overworld;

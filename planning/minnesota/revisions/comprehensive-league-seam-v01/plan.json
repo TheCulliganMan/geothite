@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "map": "MnR13C00R00",
+  "layout": "planning/minnesota/routes/MN_R13.layout.json",
+  "position_metatiles": [
+    16,
+    0
+  ],
+  "closed_block": "8b",
+  "open_block": "83",
+  "core_apron": [
+    [
+      32,
+      0
+    ],
+    [
+      33,
+      0
+    ],
+    [
+      32,
+      1
+    ],
+    [
+      33,
+      1
+    ]
+  ],
+  "retained_route_core_columns": [
+    30,
+    31
+  ],
+  "boundary_gate_core_columns": [
+    32,
+    33
+  ],
+  "reference": "Exact existing native snow-floor block in the accepted V23 League approach; current Boundary Waters gate and all of its checks remain unchanged.",
+  "parent_content_hash": "f657896b50632d9308e28185e9f6801a1b08e1afa14b61fb16f5319ed5c814bb",
+  "status": "Implemented source; publication, independent preservation, two-way native gate/Continue and rendered review pending.",
+  "runtime_tileset": "mn_outdoor_winter_stairs"
+}

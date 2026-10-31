@@ -1,0 +1,381 @@
+{
+  "schema_version": 1,
+  "status": "Verified local native exterior; resolve world.json for selection.",
+  "parent_revision": "st_paul_inhabited_streets_revision",
+  "parent_pack": "content-packs/minnesota-st-paul-inhabited-streets-v03.crystalpack",
+  "parent_pack_sha256": "43f491c876f40823ff43da723f33e405d94d2ff59fc49d41b87d929f594d3e9d",
+  "dimensions_metatiles": [
+    40,
+    34
+  ],
+  "complete_facade_moves": [
+    {
+      "name": "Civic Museum",
+      "warp": 35,
+      "box": [
+        24,
+        8,
+        28,
+        11
+      ],
+      "to": [
+        23,
+        9
+      ],
+      "native_rows": [
+        [
+          32,
+          84,
+          84,
+          33
+        ],
+        [
+          104,
+          127,
+          127,
+          105
+        ],
+        [
+          55,
+          58,
+          125,
+          126
+        ]
+      ]
+    },
+    {
+      "name": "Summit Move Study House",
+      "warp": 37,
+      "box": [
+        29,
+        2,
+        31,
+        4
+      ],
+      "to": [
+        29,
+        3
+      ],
+      "native_rows": [
+        [
+          32,
+          33
+        ],
+        [
+          124,
+          126
+        ]
+      ]
+    },
+    {
+      "name": "Summit Press House",
+      "warp": 41,
+      "box": [
+        29,
+        10,
+        31,
+        11
+      ],
+      "to": [
+        29,
+        8
+      ],
+      "native_rows": [
+        [
+          2,
+          3
+        ]
+      ]
+    },
+    {
+      "name": "Community Hall",
+      "warp": 59,
+      "box": [
+        31,
+        12,
+        36,
+        15
+      ],
+      "to": [
+        29,
+        13
+      ],
+      "native_rows": [
+        [
+          32,
+          84,
+          84,
+          84,
+          33
+        ],
+        [
+          104,
+          127,
+          127,
+          127,
+          105
+        ],
+        [
+          55,
+          58,
+          125,
+          125,
+          126
+        ]
+      ]
+    },
+    {
+      "name": "East Workshop",
+      "warp": 57,
+      "box": [
+        22,
+        18,
+        26,
+        21
+      ],
+      "to": [
+        22,
+        17
+      ],
+      "native_rows": [
+        [
+          32,
+          84,
+          84,
+          33
+        ],
+        [
+          104,
+          127,
+          127,
+          105
+        ],
+        [
+          55,
+          58,
+          125,
+          126
+        ]
+      ]
+    },
+    {
+      "name": "Freight Office",
+      "warp": 63,
+      "box": [
+        31,
+        17,
+        35,
+        20
+      ],
+      "to": [
+        29,
+        17
+      ],
+      "native_rows": [
+        [
+          32,
+          84,
+          84,
+          33
+        ],
+        [
+          104,
+          127,
+          127,
+          105
+        ],
+        [
+          55,
+          58,
+          125,
+          126
+        ]
+      ]
+    }
+  ],
+  "changed_metatiles": 194,
+  "changed_anchors": [
+    {
+      "kind": "warp",
+      "index": 34,
+      "before": [
+        50,
+        21
+      ],
+      "after": [
+        48,
+        23
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 35,
+      "before": [
+        50,
+        22
+      ],
+      "after": [
+        48,
+        24
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 36,
+      "before": [
+        59,
+        7
+      ],
+      "after": [
+        59,
+        9
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 37,
+      "before": [
+        59,
+        8
+      ],
+      "after": [
+        59,
+        10
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 40,
+      "before": [
+        59,
+        21
+      ],
+      "after": [
+        59,
+        17
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 41,
+      "before": [
+        59,
+        22
+      ],
+      "after": [
+        59,
+        18
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 56,
+      "before": [
+        46,
+        41
+      ],
+      "after": [
+        46,
+        39
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 57,
+      "before": [
+        46,
+        42
+      ],
+      "after": [
+        46,
+        40
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 58,
+      "before": [
+        64,
+        29
+      ],
+      "after": [
+        60,
+        31
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 59,
+      "before": [
+        64,
+        30
+      ],
+      "after": [
+        60,
+        32
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 62,
+      "before": [
+        64,
+        39
+      ],
+      "after": [
+        60,
+        39
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 63,
+      "before": [
+        64,
+        40
+      ],
+      "after": [
+        60,
+        40
+      ]
+    }
+  ],
+  "design": [
+    "Museum and annex share a bounded lower civic frontage",
+    "Summit houses and press have short connected approaches and retain both pickups",
+    "Connected civic windbreak bounds the shelf; the original19-step native ramp return stays open",
+    "Gym, clinic and community share one street; workshop, cafe and freight share the next",
+    "Forested east block replaces the empty service yard; two ordinary side alleys remain"
+  ],
+  "preserve": [
+    "all40 rooms, their programs, trainers, rewards and story",
+    "previous market and care-court refinement",
+    "native drop, walking return and connected river/bridges/perimeter",
+    "all other maps and native art/audio"
+  ],
+  "completed_steps": [
+    "source collision and whole-city review",
+    "native publication and full preservation",
+    "production door/ledge/rail journeys and Continue",
+    "native pixel and audio verification before selection"
+  ],
+  "published_pack": {
+    "path": "content-packs/minnesota-st-paul-civic-east-v02.crystalpack",
+    "sha256": "92ba2e65ef04f4502cd6c64106d54e429317167573548badc1e1f6a3f2c412c2",
+    "content_identity": "74e2dc4c4d8b08f79364804952f3a84c6aca6306181f09c7c5e656de9c60f345"
+  },
+  "verification": {
+    "production_stdio_calls": 1362,
+    "native_door_roundtrips": 40,
+    "bluff_ordinary_return_steps": 19,
+    "reviewed_native_views": 6,
+    "pixel_mismatches": 0,
+    "audio_programs": 377,
+    "unchanged_complete_maps": 731
+  },
+  "remaining_scope": [
+    "Further whole-region composition and activity review",
+    "Earned campaign access and interior transactions",
+    "No browser publication or save migration claimed"
+  ]
+}

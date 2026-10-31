@@ -1,0 +1,18 @@
+{
+  "status": "PASS_CURRENT_SOURCE_ONLY_SELECTION",
+  "selected_revision": "route_grass_boundary_safari_sources_revision",
+  "pack": "content-packs/minnesota-iron-crosscut-rock-cache-v02.crystalpack",
+  "sha256": "bc38b8920bdc6d5e3c0e18ddac283aa4087e0020d694861f277d10314a3875d1",
+  "pack_and_identity_unchanged": true,
+  "world_changed_keys": [
+    "active_local_review_revision",
+    "route_grass_boundary_safari_sources_revision"
+  ],
+  "parent_source_fields_preserved": true,
+  "current_source_all3584_metatiles_exact": true,
+  "active_retired_jump_contracts": 0,
+  "historical_jump_contracts_retained": 5,
+  "current_stairs": 5,
+  "current_portages": 6,
+  "scope": "Authoritative current source and documentation only; no native map, art, actors, events, gameplay permissions or compiled pack were edited. Native/GPU results remain labeled with their tested pack and exact successor inheritance."
+}

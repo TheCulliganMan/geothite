@@ -1,0 +1,1323 @@
+{
+  "id": "MnBemidji",
+  "name": "BEMIDJI",
+  "dimensions_metatiles": [
+    24,
+    24
+  ],
+  "reference_anchor_percent": [
+    35,
+    25
+  ],
+  "role": "gym_7",
+  "tileset": "johto_modern",
+  "composition": "A pine-shelf Grass Gym drops into a lumber heritage glade; an angled street knits four route mouths to services and a rail-lined Lake Bemidji pier. The Q05 field officer stands on the independent-report civic approach.",
+  "ports": [
+    {
+      "route": "MN_R08",
+      "side": "S",
+      "gate_metatile": [
+        12,
+        22
+      ],
+      "landing_metatile": [
+        12,
+        20
+      ]
+    },
+    {
+      "route": "MN_R09",
+      "side": "E",
+      "gate_metatile": [
+        22,
+        12
+      ],
+      "landing_metatile": [
+        20,
+        12
+      ]
+    },
+    {
+      "route": "MN_R14",
+      "side": "W",
+      "gate_metatile": [
+        1,
+        12
+      ],
+      "landing_metatile": [
+        3,
+        12
+      ]
+    },
+    {
+      "route": "MN_R17",
+      "side": "N",
+      "gate_metatile": [
+        12,
+        1
+      ],
+      "landing_metatile": [
+        12,
+        3
+      ]
+    }
+  ],
+  "interiors": [
+    {
+      "id": "MnBemidjiPokecenter1F",
+      "kind": "pokecenter",
+      "dimensions_metatiles": [
+        10,
+        8
+      ],
+      "source_behavior": "canonical healing, PC and blackout recovery",
+      "tileset": "pokecenter",
+      "rows": [
+        "00 00 00 00 00 00 00 00 00 00",
+        "00 00 01 02 03 13 08 00 00 00",
+        "00 00 05 06 07 04 0c 00 00 00",
+        "00 00 04 04 04 2e 2f 00 00 00",
+        "00 00 2d 04 04 04 2c 00 00 00",
+        "00 00 00 2e 2f 04 2b 00 00 00",
+        "00 00 00 00 04 04 00 00 00 00",
+        "00 00 00 00 00 24 00 00 00 00"
+      ],
+      "clear_arrival": [
+        10,
+        13
+      ],
+      "passive_arrival": {
+        "index": 3,
+        "tile": [
+          10,
+          13
+        ]
+      },
+      "exits": [
+        {
+          "index": 1,
+          "tile": [
+            10,
+            15
+          ],
+          "target": "MnBemidji",
+          "target_warp": 6
+        },
+        {
+          "index": 2,
+          "tile": [
+            11,
+            15
+          ],
+          "target": "MnBemidji",
+          "target_warp": 6
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_BEMIDJI_NURSE",
+          "sprite": "SPRITE_NURSE",
+          "tile": [
+            7,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "Welcome! Your team",
+            "can rest here."
+          ],
+          "service": "heal_party",
+          "approach": [
+            7,
+            5
+          ],
+          "counter_tile": [
+            7,
+            4
+          ]
+        },
+        {
+          "id": "MN_BEMIDJI_CLINIC_WALKER",
+          "sprite": "SPRITE_FISHER",
+          "tile": [
+            6,
+            7
+          ],
+          "facing": "east",
+          "lines": [
+            "ORLIS studies",
+            "roots and leaves."
+          ]
+        },
+        {
+          "id": "MN_BEMIDJI_CLINIC_READER",
+          "sprite": "SPRITE_TEACHER",
+          "tile": [
+            10,
+            10
+          ],
+          "facing": "west",
+          "lines": [
+            "Itasca holds the",
+            "independent mark."
+          ]
+        }
+      ],
+      "signs": [],
+      "status": "SOURCE ONLY; native event/service/battle lowering pending.",
+      "pc": {
+        "tile": [
+          13,
+          3
+        ],
+        "approach": [
+          13,
+          4
+        ],
+        "collision": "PC",
+        "service": "canonical_pc_pending",
+        "status": "SOURCE ONLY: native PC service pending."
+      },
+      "recovery_contract": {
+        "spawn_tile": [
+          10,
+          13
+        ],
+        "status": "Register as native blackout recovery only during publication; currently uninstalled."
+      },
+      "native_constant": "MN_BEMIDJI_POKECENTER_1F"
+    },
+    {
+      "id": "MnBemidjiMart",
+      "kind": "mart",
+      "dimensions_metatiles": [
+        6,
+        4
+      ],
+      "tileset": "mart",
+      "rows": [
+        "14 27 13 13 13 13",
+        "0b 22 2b 2b 2b 28",
+        "0b 29 13 2b 2b 28",
+        "00 00 00 2a 00 00"
+      ],
+      "clear_arrival": [
+        6,
+        5
+      ],
+      "passive_arrival": {
+        "index": 3,
+        "tile": [
+          6,
+          5
+        ]
+      },
+      "exits": [
+        {
+          "index": 1,
+          "tile": [
+            6,
+            7
+          ],
+          "target": "MnBemidji",
+          "target_warp": 10
+        },
+        {
+          "index": 2,
+          "tile": [
+            7,
+            7
+          ],
+          "target": "MnBemidji",
+          "target_warp": 10
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_BEMIDJI_CLERK",
+          "sprite": "SPRITE_CLERK",
+          "tile": [
+            1,
+            3
+          ],
+          "facing": "east",
+          "lines": [
+            "May I help you?"
+          ],
+          "service": "canonical_pokemart_pending",
+          "approach": [
+            3,
+            3
+          ],
+          "counter_tile": [
+            2,
+            3
+          ],
+          "stock": [
+            "ULTRA_BALL",
+            "HYPER_POTION",
+            "FULL_HEAL",
+            "REVIVE",
+            "MAX_REPEL"
+          ]
+        },
+        {
+          "id": "MN_BEMIDJI_CUSTOMER",
+          "sprite": "SPRITE_GENTLEMAN",
+          "tile": [
+            9,
+            5
+          ],
+          "facing": "west",
+          "lines": [
+            "Supply up before",
+            "the Itasca trail."
+          ]
+        }
+      ],
+      "signs": [],
+      "status": "SOURCE ONLY; native event/service/battle lowering pending.",
+      "native_constant": "MN_BEMIDJI_MART",
+      "source_behavior": "canonical clerk, money deduction and inventory"
+    },
+    {
+      "id": "MnBemidjiGym",
+      "kind": "gym_7",
+      "dimensions_metatiles": [
+        6,
+        10
+      ],
+      "tileset": "mn_gym_7",
+      "passive_arrival": {
+        "index": 3,
+        "tile": [
+          4,
+          17
+        ]
+      },
+      "exits": [
+        {
+          "index": 1,
+          "tile": [
+            4,
+            19
+          ],
+          "target": "MnBemidji",
+          "target_warp": 2
+        },
+        {
+          "index": 2,
+          "tile": [
+            5,
+            19
+          ],
+          "target": "MnBemidji",
+          "target_warp": 2
+        }
+      ],
+      "status": "Native canonical Cut garden and local Bemidji facade published and controller-verified; regional integration remains separate.",
+      "native_constant": "MN_BEMIDJI_GYM",
+      "rows": [
+        "06 06 06 06 06 06",
+        "0c 0a 0a 0a 0a 0c",
+        "0c 01 01 01 01 0c",
+        "00 00 00 03 00 00",
+        "0c 01 01 01 01 0c",
+        "0c 01 00 00 01 0c",
+        "00 09 00 00 00 00",
+        "07 02 02 02 02 08",
+        "02 04 02 02 05 02",
+        "02 02 0d 02 02 02"
+      ],
+      "canonical_source": "planning/minnesota/gyms/interiors.json",
+      "canonical_gym_sha256": "629bcb254a5b1eb2b8b8263dd7cd629ce5ce850d9b8f82cd34660ab10a34f289",
+      "authority": "Shared canonical gym7. This city dossier is an exact source preview/integration reference, not an alternate gym definition.",
+      "residents": [
+        {
+          "id": "MnBemidjiGymLeader",
+          "sprite": "SPRITE_COOLTRAINER_M",
+          "tile": [
+            5,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "Nothing here grew",
+            "in a single day.",
+            "Show me what you",
+            "have tended."
+          ],
+          "trainer_class": "COOLTRAINERM",
+          "battle_id": "MN_GYM_7",
+          "party": [
+            {
+              "species": "TANGELA",
+              "level": 38,
+              "moves": [
+                "MEGA_DRAIN",
+                "VINE_WHIP",
+                "BIND",
+                "STUN_SPORE"
+              ]
+            },
+            {
+              "species": "JUMPLUFF",
+              "level": 39,
+              "moves": [
+                "GIGA_DRAIN",
+                "LEECH_SEED",
+                "COTTON_SPORE",
+                "SYNTHESIS"
+              ]
+            },
+            {
+              "species": "BELLOSSOM",
+              "level": 40,
+              "moves": [
+                "GIGA_DRAIN",
+                "PETAL_DANCE",
+                "STUN_SPORE",
+                "SWEET_SCENT"
+              ]
+            }
+          ],
+          "requires": [
+            "BADGE_6"
+          ],
+          "court_requires": [
+            "EVENT_MN_GYM_7_TRAINER_1_DEFEATED",
+            "EVENT_MN_GYM_7_TRAINER_2_DEFEATED"
+          ],
+          "on_win": [
+            "BADGE_7",
+            "EVENT_MN_GYM_7_DEFEATED"
+          ],
+          "reward": "TM_GIGA_DRAIN",
+          "native_badge_index": 6,
+          "phase": "after_both_cuts"
+        },
+        {
+          "id": "MN_GYM_7_TRAINER_1",
+          "sprite": "SPRITE_COOLTRAINER_M",
+          "tile": [
+            7,
+            14
+          ],
+          "facing": "south",
+          "lines": [
+            "Can your team",
+            "handle new growth?"
+          ],
+          "after_lines": [
+            "Cut the small tree",
+            "in the west hedge.",
+            "ELVREN is beyond."
+          ],
+          "party": [
+            {
+              "species": "TANGELA",
+              "level": 35
+            }
+          ],
+          "trainer_class": "COOLTRAINERM",
+          "battle_id": "MN_GYM_7_TRAINER_1",
+          "defeat_flag": "EVENT_MN_GYM_7_TRAINER_1_DEFEATED",
+          "optional": false,
+          "requires": [],
+          "phase": "always"
+        },
+        {
+          "id": "MN_GYM_7_TRAINER_2",
+          "sprite": "SPRITE_LASS",
+          "tile": [
+            8,
+            9
+          ],
+          "facing": "south",
+          "lines": [
+            "Careful pruning",
+            "lets flowers grow."
+          ],
+          "after_lines": [
+            "The next small",
+            "tree is east.",
+            "ORLIS is beyond."
+          ],
+          "party": [
+            {
+              "species": "HOPPIP",
+              "level": 35
+            },
+            {
+              "species": "GLOOM",
+              "level": 36
+            }
+          ],
+          "trainer_class": "COOLTRAINERF",
+          "battle_id": "MN_GYM_7_TRAINER_2",
+          "defeat_flag": "EVENT_MN_GYM_7_TRAINER_2_DEFEATED",
+          "optional": false,
+          "requires": [
+            "EVENT_MN_GYM_7_TRAINER_1_DEFEATED"
+          ],
+          "phase": "after_south_cut"
+        },
+        {
+          "id": "MN_GYM_7_TRAINER_3",
+          "sprite": "SPRITE_GRAMPS",
+          "tile": [
+            3,
+            9
+          ],
+          "facing": "south",
+          "lines": [
+            "An old seed still",
+            "has life in it."
+          ],
+          "after_lines": [
+            "New shoots need",
+            "room to grow."
+          ],
+          "party": [
+            {
+              "species": "WEEPINBELL",
+              "level": 36
+            }
+          ],
+          "trainer_class": "GENTLEMAN",
+          "battle_id": "MN_GYM_7_TRAINER_3",
+          "defeat_flag": "EVENT_MN_GYM_7_TRAINER_3_DEFEATED",
+          "optional": true,
+          "requires": [],
+          "phase": "after_south_cut"
+        },
+        {
+          "id": "MnBemidjiGymGuide",
+          "sprite": "SPRITE_GYM_GUIDE",
+          "tile": [
+            9,
+            17
+          ],
+          "facing": "south",
+          "lines": [
+            "CUT opens gaps",
+            "in the hedges.",
+            "Battle MOSLEN.",
+            "Find ELVREN past",
+            "the west hedge.",
+            "Then cut east",
+            "to reach ORLIS."
+          ],
+          "native_canonical_lines": [
+            "CUT opens gaps",
+            "in the hedges.",
+            "Battle MOSLEN.",
+            "Find ELVREN past",
+            "the west hedge.",
+            "Then cut east",
+            "to reach ORLIS."
+          ],
+          "phase": "always"
+        }
+      ],
+      "gym_play": "Cut the west hedge to reach Elvren, then the east hedge to reach Orlis. Walking through each native Cut opening records permanent pruning. Moslen must be beaten before Elvren; both victories and badge6 qualify for Orlis. Brindel is optional. No quiz stations. Native move and Hive Badge requirements still apply.",
+      "cut_contracts": [
+        {
+          "id": "SOUTH_HEDGE",
+          "tree_core": [
+            3,
+            12
+          ],
+          "approach_core": [
+            3,
+            13
+          ],
+          "replacement_symbol": "o",
+          "targets_core": [
+            [
+              3,
+              11
+            ]
+          ],
+          "gated_trainers": [
+            "MN_GYM_7_TRAINER_2",
+            "MN_GYM_7_TRAINER_3"
+          ],
+          "event": "EVENT_MN_GYM_7_CUT_SOUTH_HEDGE_PRUNED"
+        },
+        {
+          "id": "NORTH_HEDGE",
+          "tree_core": [
+            7,
+            6
+          ],
+          "approach_core": [
+            7,
+            7
+          ],
+          "replacement_symbol": "o",
+          "targets_core": [
+            [
+              7,
+              5
+            ]
+          ],
+          "gated_trainers": [],
+          "event": "EVENT_MN_GYM_7_CUT_NORTH_HEDGE_PRUNED"
+        }
+      ],
+      "court_requires": [
+        "EVENT_MN_GYM_7_TRAINER_1_DEFEATED",
+        "EVENT_MN_GYM_7_TRAINER_2_DEFEATED"
+      ]
+    },
+    {
+      "id": "MnBemidjiShelfHouse",
+      "kind": "house",
+      "dimensions_metatiles": [
+        6,
+        4
+      ],
+      "tileset": "house",
+      "rows": [
+        "0a 04 08 09 04 0a",
+        "0a 0f 18 0f 0f 0a",
+        "0a 0f 0f 0f 0f 0a",
+        "0a 0a 0a 0b 0a 0a"
+      ],
+      "residents": [
+        {
+          "id": "MN_BEMIDJI_SHELF_RESIDENT",
+          "sprite": "SPRITE_GRANNY",
+          "tile": [
+            3,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "The shelf trail",
+            "drops to the road.",
+            "Climb at the east."
+          ]
+        }
+      ],
+      "passive_arrival": {
+        "index": 3,
+        "tile": [
+          6,
+          5
+        ]
+      },
+      "exits": [
+        {
+          "index": 1,
+          "tile": [
+            6,
+            7
+          ],
+          "target": "MnBemidji",
+          "target_warp": 4
+        },
+        {
+          "index": 2,
+          "tile": [
+            7,
+            7
+          ],
+          "target": "MnBemidji",
+          "target_warp": 4
+        }
+      ],
+      "status": "SOURCE ONLY; native event/service/battle lowering pending.",
+      "native_constant": "MN_BEMIDJI_SHELF_HOUSE"
+    },
+    {
+      "id": "MnBemidjiNorthHouse",
+      "kind": "house",
+      "dimensions_metatiles": [
+        6,
+        4
+      ],
+      "tileset": "house",
+      "rows": [
+        "0a 04 08 09 04 0a",
+        "0a 0f 0f 18 0f 0a",
+        "0a 0f 0f 0f 0f 0a",
+        "0a 0a 0a 0b 0a 0a"
+      ],
+      "residents": [
+        {
+          "id": "MN_BEMIDJI_NORTH_RESIDENT",
+          "sprite": "SPRITE_POKEFAN_F",
+          "tile": [
+            7,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "Our stories cross",
+            "borders. Our lakes",
+            "need clean water."
+          ]
+        }
+      ],
+      "passive_arrival": {
+        "index": 3,
+        "tile": [
+          6,
+          5
+        ]
+      },
+      "exits": [
+        {
+          "index": 1,
+          "tile": [
+            6,
+            7
+          ],
+          "target": "MnBemidji",
+          "target_warp": 8
+        },
+        {
+          "index": 2,
+          "tile": [
+            7,
+            7
+          ],
+          "target": "MnBemidji",
+          "target_warp": 8
+        }
+      ],
+      "status": "SOURCE ONLY; native event/service/battle lowering pending.",
+      "native_constant": "MN_BEMIDJI_NORTH_HOUSE"
+    },
+    {
+      "id": "MnBemidjiHeritageHouse",
+      "kind": "history_house",
+      "dimensions_metatiles": [
+        8,
+        6
+      ],
+      "tileset": "house",
+      "rows": [
+        "0a 04 04 08 08 04 04 0a",
+        "0a 1a 1a 0f 0f 1a 1a 0a",
+        "0a 0f 0f 0f 0f 0f 0f 0a",
+        "0a 0f 01 02 0f 0f 0f 0a",
+        "0a 0f 0c 0d 0f 0f 0f 0a",
+        "0a 0a 0a 0a 0b 0a 0a 0a"
+      ],
+      "residents": [
+        {
+          "id": "MN_BEMIDJI_ARCHIVIST",
+          "sprite": "SPRITE_GRAMPS",
+          "tile": [
+            5,
+            5
+          ],
+          "facing": "south",
+          "lines": [
+            "Lumber camps spun",
+            "PAUL AND BABE",
+            "became legends."
+          ]
+        },
+        {
+          "id": "MN_BEMIDJI_LOGGER",
+          "sprite": "SPRITE_BLACK_BELT",
+          "tile": [
+            11,
+            7
+          ],
+          "facing": "west",
+          "lines": [
+            "Big timber needs",
+            "new trees planted."
+          ]
+        }
+      ],
+      "exhibit_contract": "Original native bookshelf quadrants contain lumber history and folklore pages. The outdoor lawn reserves future bespoke statues; these are not present in current source art.",
+      "passive_arrival": {
+        "index": 3,
+        "tile": [
+          8,
+          9
+        ]
+      },
+      "exits": [
+        {
+          "index": 1,
+          "tile": [
+            8,
+            11
+          ],
+          "target": "MnBemidji",
+          "target_warp": 12
+        },
+        {
+          "index": 2,
+          "tile": [
+            9,
+            11
+          ],
+          "target": "MnBemidji",
+          "target_warp": 12
+        }
+      ],
+      "status": "SOURCE ONLY; native event/service/battle lowering pending.",
+      "exhibits": [
+        {
+          "id": "MN_BEMIDJI_LOGGING_EXHIBIT",
+          "tile": [
+            2,
+            3
+          ],
+          "approach": [
+            2,
+            4
+          ],
+          "collision": "BOOKSHELF",
+          "lines": [
+            "Trees fed mills.",
+            "Pines need time to",
+            "grow tall again."
+          ]
+        },
+        {
+          "id": "MN_BEMIDJI_FOLKLORE_EXHIBIT",
+          "tile": [
+            12,
+            3
+          ],
+          "approach": [
+            12,
+            4
+          ],
+          "collision": "BOOKSHELF",
+          "lines": [
+            "PAUL AND BABE",
+            "grew in the camps.",
+            "Tales travel far."
+          ]
+        }
+      ],
+      "native_constant": "MN_BEMIDJI_HERITAGE_HOUSE"
+    }
+  ],
+  "walkable_destinations": [
+    "all four original route landings",
+    "six real facade doors",
+    "Q05 officer at core21,19",
+    "gym downhill ledge and ordinary east-ramp return",
+    "heritage glade and visitor hall",
+    "reachable rail-lined pier",
+    "one low Surf launch"
+  ],
+  "door_contract": "Every native DOOR quadrant is paired. Active exterior warp odd, passive safe return even; every room targets its exterior passive return, and room arrival is FLOOR warp 3.",
+  "status": "SOURCE ONLY: hand-authored whole town and rooms; native publication, services, battles, regional seams and continuation remain pending.",
+  "compiled_tileset": "mn_bemidji",
+  "native_constant": "MN_BEMIDJI",
+  "layout_source": "planning/minnesota/towns/MnBemidji.layout.json",
+  "doors": [
+    {
+      "id": "GYM",
+      "tile": [
+        10,
+        9
+      ],
+      "return_tile": [
+        10,
+        10
+      ],
+      "arrival_tile": [
+        10,
+        10
+      ],
+      "target": "MnBemidjiGym",
+      "warp_index": 1,
+      "return_warp_index": 2,
+      "target_warp": 3
+    },
+    {
+      "id": "SHELF_HOME",
+      "tile": [
+        7,
+        15
+      ],
+      "return_tile": [
+        7,
+        16
+      ],
+      "arrival_tile": [
+        7,
+        16
+      ],
+      "target": "MnBemidjiShelfHouse",
+      "warp_index": 3,
+      "return_warp_index": 4,
+      "target_warp": 3
+    },
+    {
+      "id": "CLINIC",
+      "tile": [
+        31,
+        9
+      ],
+      "return_tile": [
+        31,
+        10
+      ],
+      "arrival_tile": [
+        31,
+        10
+      ],
+      "target": "MnBemidjiPokecenter1F",
+      "warp_index": 5,
+      "return_warp_index": 6,
+      "target_warp": 3
+    },
+    {
+      "id": "NORTH_HOME",
+      "tile": [
+        33,
+        17
+      ],
+      "return_tile": [
+        33,
+        18
+      ],
+      "arrival_tile": [
+        33,
+        18
+      ],
+      "target": "MnBemidjiNorthHouse",
+      "warp_index": 7,
+      "return_warp_index": 8,
+      "target_warp": 3
+    },
+    {
+      "id": "MART",
+      "tile": [
+        41,
+        19
+      ],
+      "return_tile": [
+        41,
+        20
+      ],
+      "arrival_tile": [
+        41,
+        20
+      ],
+      "target": "MnBemidjiMart",
+      "warp_index": 9,
+      "return_warp_index": 10,
+      "target_warp": 3
+    },
+    {
+      "id": "HERITAGE",
+      "tile": [
+        9,
+        37
+      ],
+      "return_tile": [
+        9,
+        38
+      ],
+      "arrival_tile": [
+        9,
+        38
+      ],
+      "target": "MnBemidjiHeritageHouse",
+      "warp_index": 11,
+      "return_warp_index": 12,
+      "target_warp": 3
+    }
+  ],
+  "residents": [
+    {
+      "id": "MN_BEMIDJI_OFFICER",
+      "sprite": "SPRITE_OFFICER",
+      "tile": [
+        21,
+        19
+      ],
+      "facing": "south",
+      "lines": [
+        "A reading is just",
+        "one observation.",
+        "Compare the logs."
+      ],
+      "requires": [
+        "BADGE_7",
+        "EVENT_MN_HEADWATERS_READING"
+      ],
+      "sets": [
+        "EVENT_MN_HEADWATERS_REPORT"
+      ],
+      "scene": "CompareHeadwaterReport",
+      "repeat_lines": [
+        "Those copied logs",
+        "point to the mine."
+      ]
+    },
+    {
+      "id": "MN_BEMIDJI_PIER_FISHER",
+      "sprite": "SPRITE_FISHER",
+      "tile": [
+        34,
+        35
+      ],
+      "facing": "east",
+      "lines": [
+        "Lakes need clean",
+        "water and banks."
+      ]
+    },
+    {
+      "id": "MN_BEMIDJI_HERITAGE_HOST",
+      "sprite": "SPRITE_GRAMPS",
+      "tile": [
+        11,
+        28
+      ],
+      "facing": "south",
+      "lines": [
+        "PAUL AND BABE!",
+        "Big stories from",
+        "the lumber camps."
+      ]
+    },
+    {
+      "id": "MN_BEMIDJI_LAKE_WALKER",
+      "sprite": "SPRITE_TEACHER",
+      "tile": [
+        26,
+        38
+      ],
+      "facing": "south",
+      "lines": [
+        "The rail ends at",
+        "the low launch."
+      ]
+    },
+    {
+      "id": "MN_BEMIDJI_NORTH_WALKER",
+      "sprite": "SPRITE_POKEFAN_M",
+      "tile": [
+        25,
+        13
+      ],
+      "facing": "west",
+      "lines": [
+        "The north trail",
+        "leaves the pines."
+      ]
+    }
+  ],
+  "signs": [
+    {
+      "id": "MN_BEMIDJI_TOWN",
+      "tile": [
+        22,
+        22
+      ],
+      "lines": [
+        "BEMIDJI",
+        "Pines meet water."
+      ]
+    },
+    {
+      "id": "MN_BEMIDJI_GYM",
+      "tile": [
+        14,
+        10
+      ],
+      "lines": [
+        "ORLIS GYM",
+        "The Pine Badge."
+      ]
+    },
+    {
+      "id": "MN_BEMIDJI_LAKE",
+      "tile": [
+        26,
+        30
+      ],
+      "lines": [
+        "LAKE BEMIDJI",
+        "Pier and launch."
+      ]
+    },
+    {
+      "id": "MN_BEMIDJI_HERITAGE",
+      "tile": [
+        16,
+        28
+      ],
+      "lines": [
+        "PAUL AND BABE",
+        "Lumber heritage."
+      ]
+    },
+    {
+      "id": "MN_BEMIDJI_NORTH",
+      "tile": [
+        26,
+        4
+      ],
+      "lines": [
+        "BORDER COUNTRY",
+        "North trail."
+      ]
+    },
+    {
+      "id": "MN_BEMIDJI_DOCK",
+      "tile": [
+        26,
+        40
+      ],
+      "lines": [
+        "LOW LAUNCH",
+        "SURF from here."
+      ]
+    }
+  ],
+  "viewpoints": [
+    {
+      "id": "FIRST_SOUTH_ARRIVAL",
+      "tile": [
+        24,
+        40
+      ]
+    },
+    {
+      "id": "GYM_SHELF",
+      "tile": [
+        12,
+        11
+      ]
+    },
+    {
+      "id": "LEDGE_DECISION",
+      "tile": [
+        11,
+        19
+      ]
+    },
+    {
+      "id": "OFFICER_AND_RETURN",
+      "tile": [
+        22,
+        19
+      ]
+    },
+    {
+      "id": "LAKE_PIER",
+      "tile": [
+        32,
+        35
+      ]
+    },
+    {
+      "id": "LOW_LAUNCH",
+      "tile": [
+        28,
+        40
+      ]
+    },
+    {
+      "id": "HERITAGE_GLADE",
+      "tile": [
+        13,
+        30
+      ]
+    },
+    {
+      "id": "CLINIC_STREET",
+      "tile": [
+        28,
+        10
+      ]
+    },
+    {
+      "id": "WIDEST_THROUGH_SEGMENT",
+      "tile": [
+        31,
+        24
+      ]
+    },
+    {
+      "id": "NORTH_GATE",
+      "tile": [
+        24,
+        6
+      ]
+    }
+  ],
+  "one_way_ledges": [
+    {
+      "id": "MN_BEMIDJI_GYM_DOWNHILL",
+      "source_blocks": [
+        [
+          5,
+          10
+        ],
+        [
+          6,
+          10
+        ]
+      ],
+      "upper_approach": [
+        11,
+        19
+      ],
+      "hop_core": [
+        11,
+        20
+      ],
+      "landing": [
+        11,
+        22
+      ],
+      "reverse_blocked": [
+        11,
+        21
+      ],
+      "minimum_return_steps": 15,
+      "return_passage_core": [
+        19,
+        16,
+        20,
+        18
+      ],
+      "purpose": "Drop from the gym shelf to the west/Itasca street. Ordinary return climbs east ramp rather than reversing the drop."
+    }
+  ],
+  "lakefront": {
+    "pier_approach": [
+      27,
+      35
+    ],
+    "pier_end": [
+      37,
+      35
+    ],
+    "launch_tile": [
+      29,
+      40
+    ],
+    "water_target": [
+      30,
+      40
+    ],
+    "north_rail_blocks": [
+      [
+        14,
+        17
+      ],
+      [
+        15,
+        17
+      ],
+      [
+        16,
+        17
+      ],
+      [
+        17,
+        17
+      ],
+      [
+        18,
+        17
+      ]
+    ],
+    "south_rail_blocks": [
+      [
+        14,
+        18
+      ],
+      [
+        15,
+        18
+      ],
+      [
+        16,
+        18
+      ],
+      [
+        17,
+        18
+      ],
+      [
+        18,
+        18
+      ]
+    ],
+    "outer_boundary": "Native BUOY rocks on east and south; forest closes remaining outer boundaries. No unconnected Surf edge.",
+    "allowed_surf_edges": [
+      {
+        "bank": [
+          29,
+          40
+        ],
+        "water": [
+          30,
+          40
+        ]
+      },
+      {
+        "bank": [
+          29,
+          41
+        ],
+        "water": [
+          30,
+          41
+        ]
+      }
+    ]
+  },
+  "landmark_art_contract": {
+    "site": "Paul and Babe lumber heritage glade and visitor hall",
+    "current_source_art": "Complete original native timber facade (Johto22/23/28/29), original caretaker sprite, native history plaques and planted pines; every source pixel and collision quadrant preserved.",
+    "not_claimed": "No literal giant Paul/Babe statue is present. Reusing a generic monster or boulder as either statue would misrepresent the art.",
+    "future_asset_reservation_core": [
+      [
+        8,
+        28
+      ],
+      [
+        15,
+        28
+      ]
+    ],
+    "future_rule": "A bespoke tall Paul and blue ox sprite must be reviewed at native camera scale and acquire matching native blocking collision before installation. Existing walking connection around the exhibit must remain open."
+  },
+  "story_contract": {
+    "chapter": "Q05",
+    "actor": "MN_BEMIDJI_OFFICER",
+    "anchor_core": [
+      21,
+      19
+    ],
+    "requires": [
+      "BADGE_7",
+      "EVENT_MN_HEADWATERS_READING"
+    ],
+    "sets": [
+      "EVENT_MN_HEADWATERS_REPORT"
+    ],
+    "repeat_guard": "Only a completed independent reading plus badge7 grants report; report survives save/reload. R09 is not opened by the reading alone.",
+    "no_rail_stop": "The six-stop Glacier Line does not pass through Bemidji."
+  },
+  "native_integration_contract": {
+    "map_environment": "TOWN",
+    "day_music": "MUSIC_ECRUTEAK_CITY",
+    "fishing_group": "FISHGROUP_SHORE",
+    "no_train_stop": true,
+    "story_and_services": "VisibleShellController production native scripts, healer/shop/PC, ordinary conversation and trainer state; no custom frontend dispatcher.",
+    "source_only": "All contracts require Root Rust publication and production controller tests before playable claims."
+  }
+}

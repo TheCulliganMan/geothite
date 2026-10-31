@@ -1,6 +1,8 @@
 //! Explicit local fixtures; visits, choices, rides and the courier win use input.
 #[path = "glacier_line_capture.rs"]
 mod capture;
+#[path = "glacier_line_city_access.rs"]
+mod city_access;
 use std::path::PathBuf;
 use std::sync::OnceLock;
 use std::time::{SystemTime, UNIX_EPOCH};
@@ -120,6 +122,19 @@ fn setup(
             .expect("declared upstream visit fixture");
     }
     state.money = 10000;
+    // MAPSETUP_TRAIN clears these native movement flags on arrival. Record
+    // their initial false values so the exact flag comparison below does not
+    // confuse an absent false entry with a progression change.
+    for flag in [
+        "ENGINE_STRENGTH_ACTIVE",
+        "ENGINE_ALWAYS_ON_BIKE",
+        "ENGINE_DOWNHILL",
+    ] {
+        state
+            .flags
+            .set_engine_flag(flag, false)
+            .expect("declared inactive passenger movement flags");
+    }
     // Initial damaged partner and spent PP make an accidental train heal visible.
     let mut partner = runtime
         .data()
@@ -186,6 +201,9 @@ fn choose(c: &mut VisibleShellController, row: usize) {
             .option_index,
         row
     );
+    // Isolate this choice before press can settle the whole native train clock.
+    // This clears diagnostic history only, never authoritative game state.
+    c.shell.last_audio_events.clear();
     press(c, GameButton::A);
 }
 
@@ -209,7 +227,6 @@ fn ride(c: &mut VisibleShellController, origin: &Value, destination: &Value) {
     // press/wait_frames settle automatic presentation through its native clock.
     // The terminal arrival cue proves that clock reached its real final phase;
     // it cannot be observed as an intermediate shell value after press returns.
-    let audit_start = c.shell.last_audio_events.len();
     for _ in 0..1024 {
         let s = c.snapshot().expect("native train journey");
         if s.overworld.map_name == name(destination)
@@ -217,10 +234,13 @@ fn ride(c: &mut VisibleShellController, origin: &Value, destination: &Value) {
             && !c.has_pending_script_work()
             && c.shell.visible_magnet_train.is_none()
         {
-            let events = &c.shell.last_audio_events[audit_start..];
+            let events = &c.shell.last_audio_events;
             let train = events
                 .iter()
-                .position(|e| e.contains("routine=MagnetTrain"))
+                .position(|e| {
+                    e.starts_with("drained script event Graphics:")
+                        && e.contains("kind: MagnetTrain")
+                })
                 .unwrap_or_else(|| {
                     panic!(
                         "{} -> {} must execute the native graphics special: {events:?}",
@@ -546,18 +566,15 @@ fn glacier_line_controller_all_twenty_real_rides_restore_conductors_resources_an
 fn glacier_line_controller_actual_courier_win_unlocks_a_guarded_ride_without_granting_manifest() {
     let (root, r, stops) = load();
     let stop = &stops[3];
-    let parent = stop["parent_map"].as_str().expect("St Paul");
-    let door = r.data().maps[parent]
-        .events
-        .warps
-        .iter()
-        .find(|w| w.index == 1)
-        .expect("depot facade");
-    let at = (
-        i16::try_from(door.x).expect("x"),
-        i16::try_from(door.y + 1).expect("porch"),
+    // This case isolates the courier/service transaction. Public foot entries
+    // have their own native course; an approach through the guarded hall can
+    // enter courier sight before a movement-only helper reaches the conductor.
+    let mut c = fixture(
+        &root,
+        &r,
+        stop["map"].as_str().expect("St Paul depot"),
+        point(&stop["approach_core"]),
     );
-    let mut c = fixture(&root, &r, parent, at);
     let state = c.shell.shell.session_mut().state_mut();
     state.badges.johto = [true, true, true, false, false, false, false, false];
     for (i, flag) in BADGE_ENGINE_FLAGS[..8].iter().enumerate() {
@@ -574,6 +591,10 @@ fn glacier_line_controller_actual_courier_win_unlocks_a_guarded_ride_without_gra
         .flags
         .set_event_flag(visited(&stops[2]), true)
         .expect("declared earlier St Cloud visit");
+    state
+        .flags
+        .set_event_flag(visited(stop), true)
+        .expect("declared earlier St Paul foot visit");
     for species in ["RIMEPELT", "PORTABEAU", "SLIPPERINA"] {
         assert!(
             state.storage.party.add_pokemon(
@@ -585,7 +606,6 @@ fn glacier_line_controller_actual_courier_win_unlocks_a_guarded_ride_without_gra
     }
     state.sync_party_from_storage();
     mark_runtime_snapshot_dirty(&mut c.shell);
-    walk(&mut c, &r, (at.0, at.1 - 1));
     assert!(event(&c, visited(stop)) && !event(&c, SERVICE));
     assert!(ticket(&mut c, &r, stop).0.is_none());
     walk(&mut c, &r, (19, 16));

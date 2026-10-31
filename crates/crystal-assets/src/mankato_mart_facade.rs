@@ -1,10 +1,10 @@
-//! Restore the complete native Mankato mart facade.
+//! Restore Mankato's native mart and fit its low bank to the existing forest.
 use anyhow::{Context, Result, ensure};
 
 use crate::CompiledGamePack;
 use crate::authored_route_layout::Layout;
 
-/// Restores the complete native front and closes two unintended roof floor tiles.
+/// Restores the native front and closes unusable bank faces into existing pines.
 ///
 /// # Errors
 /// Rejects stale source, art, facade, door, collision, or compact geography.
@@ -61,11 +61,19 @@ pub fn revise_mankato_mart_facade(
     expected[13 * 24 + 18] = 0x1a;
     ensure!(expected[13 * 24 + 19] == 0x33, "mart endcap preimage drift");
     expected[13 * 24 + 19] = 0x17;
+    for (x, before) in [(3, 0x57), (4, 0x57), (10, 0x57), (11, 0x4b)] {
+        ensure!(expected[9 * 24 + x] == before, "bank preimage drift");
+        ensure!(
+            expected[10 * 24 + x] == 0x05,
+            "new trees must extend the existing native forest"
+        );
+        expected[9 * 24 + x] = 0x05;
+    }
     let mut map = old.clone();
     map.blocks = after.compile()?;
     ensure!(
         map.blocks == expected,
-        "only two contracted mart front cells may change"
+        "only the six contracted mart and bank cells may change"
     );
     let reference = base
         .data
@@ -94,21 +102,38 @@ pub fn revise_mankato_mart_facade(
         for x in 0..48 {
             let before = crate::authored_town_geometry::kind(base, old, [x, y])?;
             let after = crate::authored_town_geometry::kind(base, &map, [x, y])?;
-            if [[38, 26], [39, 26]].contains(&[x, y]) {
+            if [[38, 26], [39, 26], [23, 18], [23, 19]].contains(&[x, y]) {
                 ensure!(
                     before == "FLOOR" && after == "WALL",
-                    "close only the malformed roof floor"
+                    "close only the roof floors and unused forest alcove"
                 );
+            } else if [6, 7, 8, 9, 20, 21, 22].contains(&x) && y == 18 {
                 ensure!(
-                    !old.objects.iter().any(|o| [o.x, o.y] == [x, y]),
-                    "roof floor must have no actor"
+                    before == "HOP_DOWN" && after == "WALL",
+                    "close only bank faces whose landings are trees"
                 );
             } else {
                 ensure!(before == after, "all other collision must remain exact");
             }
+            if before != after {
+                ensure!(
+                    !old.objects.iter().any(|o| [o.x, o.y] == [x, y]),
+                    "closed bank or roof must have no actor"
+                );
+                ensure!(
+                    !old.events
+                        .warps
+                        .iter()
+                        .map(|e| [e.x, e.y])
+                        .chain(old.events.coord_events.iter().map(|e| [e.x, e.y]))
+                        .chain(old.events.bg_events.iter().map(|e| [e.x, e.y]))
+                        .any(|at| at == [x, y]),
+                    "closed bank or roof must have no event"
+                );
+            }
         }
     }
-    const MANIFEST: &str = "minnesota-mankato-mart-facade-v1";
+    const MANIFEST: &str = "minnesota-mankato-native-exterior-v2";
     ensure!(
         !base.report.manifests.iter().any(|m| m == MANIFEST),
         "already revised"

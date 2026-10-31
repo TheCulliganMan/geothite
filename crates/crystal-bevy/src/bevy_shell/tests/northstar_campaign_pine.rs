@@ -6,6 +6,7 @@ use crystal_core::input::GameButton;
 use crystal_runtime::CrystalRuntime;
 
 use super::super::authored_route_fixture::indoor_walk;
+use super::super::native_city_ports::city_port;
 use super::super::northstar_earned_gyms;
 use super::super::rochester_earned::try_battle;
 use super::super::winona::{at, continue_in_place, finish, load, press, travel};
@@ -143,9 +144,10 @@ fn witnesses(c: &mut VisibleShellController, r: &CrystalRuntime) {
 }
 
 fn care(c: &mut VisibleShellController, r: &CrystalRuntime) {
+    let (door, arrival) = city_port(r, CITY, CLINIC);
     if c.snapshot().expect("Bemidji care").overworld.map_name == CITY {
-        indoor_walk(c, r, (31, 10));
-        travel(c, GameButton::Up, CLINIC, (10, 13));
+        indoor_walk(c, r, door);
+        travel(c, GameButton::Up, CLINIC, arrival);
     }
     indoor_walk(c, r, (7, 5));
     let money = c.shell.shell.session().state().money;
@@ -169,7 +171,7 @@ fn care(c: &mut VisibleShellController, r: &CrystalRuntime) {
             })
     );
     indoor_walk(c, r, (10, 14));
-    travel(c, GameButton::Down, CITY, (31, 10));
+    travel(c, GameButton::Down, CITY, door);
 }
 
 fn gym(c: &mut VisibleShellController, r: &CrystalRuntime, root: &AssetRoot) {
@@ -391,6 +393,7 @@ pub(super) fn pine() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
     }
     assert!(event(&c, READING) && event(&c, REPORT));
     later(&c);
+    super::northstar_earned_services::bemidji(&mut c, &r, &root);
     continue_in_place(&mut c, &root, &r, "campaign-headwaters-report");
     (root, r, c)
 }

@@ -1,0 +1,1281 @@
+{
+  "schema_version": 2,
+  "id": "MnStCloud",
+  "tileset": "johto_modern",
+  "compiled_tileset": "mn_outdoor_modern_stairs",
+  "dimensions_metatiles": [
+    24,
+    18
+  ],
+  "coordinate_units": "32px metatiles; events are16px core",
+  "shore_fitting": "johto_8_neighbors",
+  "reject_cliff_cuts": true,
+  "source_pixels_modified": false,
+  "additional_water_blocks": [
+    "34",
+    "36"
+  ],
+  "layers": [
+    {
+      "name": "North civic and station-bank clearing",
+      "kind": "polygon",
+      "material": "lawn",
+      "points": [
+        [
+          2,
+          2
+        ],
+        [
+          10,
+          2
+        ],
+        [
+          10,
+          1
+        ],
+        [
+          13,
+          1
+        ],
+        [
+          13,
+          3
+        ],
+        [
+          15,
+          3
+        ],
+        [
+          15,
+          1
+        ],
+        [
+          21,
+          1
+        ],
+        [
+          21,
+          6
+        ],
+        [
+          22,
+          6
+        ],
+        [
+          22,
+          8
+        ],
+        [
+          2,
+          8
+        ]
+      ]
+    },
+    {
+      "name": "South gym court and granite overlook bank",
+      "kind": "polygon",
+      "material": "lawn",
+      "points": [
+        [
+          2,
+          11
+        ],
+        [
+          13,
+          11
+        ],
+        [
+          13,
+          12
+        ],
+        [
+          21,
+          12
+        ],
+        [
+          21,
+          16
+        ],
+        [
+          14,
+          16
+        ],
+        [
+          14,
+          17
+        ],
+        [
+          10,
+          17
+        ],
+        [
+          10,
+          16
+        ],
+        [
+          2,
+          16
+        ]
+      ]
+    },
+    {
+      "name": "Mississippi river town reach",
+      "kind": "block_rect",
+      "block": "35",
+      "bounds": [
+        0,
+        8,
+        24,
+        11
+      ]
+    },
+    {
+      "name": "Upper western river finger",
+      "kind": "block_rect",
+      "block": "35",
+      "bounds": [
+        0,
+        7,
+        7,
+        8
+      ]
+    },
+    {
+      "name": "Lower eastern river bend",
+      "kind": "block_rect",
+      "block": "35",
+      "bounds": [
+        15,
+        11,
+        24,
+        12
+      ]
+    },
+    {
+      "name": "Native water-rock west closure",
+      "kind": "block_rect",
+      "block": "34",
+      "bounds": [
+        0,
+        7,
+        1,
+        11
+      ]
+    },
+    {
+      "name": "Native water-rock east closure",
+      "kind": "block_rect",
+      "block": "36",
+      "bounds": [
+        23,
+        8,
+        24,
+        12
+      ]
+    },
+    {
+      "name": "North-south port street",
+      "kind": "block_rect",
+      "block": "01",
+      "bounds": [
+        12,
+        0,
+        13,
+        8
+      ]
+    },
+    {
+      "name": "South route street",
+      "kind": "block_rect",
+      "block": "01",
+      "bounds": [
+        12,
+        11,
+        13,
+        18
+      ]
+    },
+    {
+      "name": "North compact service street",
+      "kind": "block_rect",
+      "block": "01",
+      "bounds": [
+        3,
+        6,
+        20,
+        7
+      ]
+    },
+    {
+      "name": "Clinic shared public porch",
+      "kind": "block_rect",
+      "block": "01",
+      "bounds": [
+        3,
+        5,
+        10,
+        6
+      ]
+    },
+    {
+      "name": "South gym frontage street",
+      "kind": "block_rect",
+      "block": "01",
+      "bounds": [
+        3,
+        14,
+        13,
+        15
+      ]
+    },
+    {
+      "name": "Granite ramp approach",
+      "kind": "block_rect",
+      "block": "01",
+      "bounds": [
+        12,
+        15,
+        19,
+        16
+      ]
+    },
+    {
+      "name": "Mississippi crossing west balustrade",
+      "kind": "block_rect",
+      "block": "44",
+      "bounds": [
+        11,
+        7,
+        12,
+        12
+      ]
+    },
+    {
+      "name": "Mississippi crossing east balustrade",
+      "kind": "block_rect",
+      "block": "46",
+      "bounds": [
+        12,
+        7,
+        13,
+        12
+      ]
+    },
+    {
+      "name": "Northern bridge approach",
+      "kind": "point",
+      "block": "01",
+      "position": [
+        12,
+        7
+      ]
+    },
+    {
+      "name": "Southern bridge approach",
+      "kind": "point",
+      "block": "01",
+      "position": [
+        12,
+        11
+      ]
+    },
+    {
+      "name": "Civic POKECENTER authentic modern facade",
+      "kind": "point",
+      "block": "18",
+      "position": [
+        3,
+        3
+      ]
+    },
+    {
+      "name": "Civic POKECENTER authentic modern facade",
+      "kind": "point",
+      "block": "1f",
+      "position": [
+        4,
+        3
+      ]
+    },
+    {
+      "name": "Civic POKECENTER authentic modern facade",
+      "kind": "point",
+      "block": "19",
+      "position": [
+        5,
+        3
+      ]
+    },
+    {
+      "name": "Civic POKECENTER authentic modern facade",
+      "kind": "point",
+      "block": "17",
+      "position": [
+        3,
+        4
+      ]
+    },
+    {
+      "name": "Civic POKECENTER authentic modern facade",
+      "kind": "point",
+      "block": "1b",
+      "position": [
+        4,
+        4
+      ]
+    },
+    {
+      "name": "Civic POKECENTER authentic modern facade",
+      "kind": "point",
+      "block": "11",
+      "position": [
+        5,
+        4
+      ]
+    },
+    {
+      "name": "Compact MART authentic modern facade",
+      "kind": "point",
+      "block": "18",
+      "position": [
+        7,
+        3
+      ]
+    },
+    {
+      "name": "Compact MART authentic modern facade",
+      "kind": "point",
+      "block": "1f",
+      "position": [
+        8,
+        3
+      ]
+    },
+    {
+      "name": "Compact MART authentic modern facade",
+      "kind": "point",
+      "block": "19",
+      "position": [
+        9,
+        3
+      ]
+    },
+    {
+      "name": "Compact MART authentic modern facade",
+      "kind": "point",
+      "block": "17",
+      "position": [
+        7,
+        4
+      ]
+    },
+    {
+      "name": "Compact MART authentic modern facade",
+      "kind": "point",
+      "block": "33",
+      "position": [
+        8,
+        4
+      ]
+    },
+    {
+      "name": "Compact MART authentic modern facade",
+      "kind": "point",
+      "block": "11",
+      "position": [
+        9,
+        4
+      ]
+    },
+    {
+      "name": "Glacier depot native clock-stone tower",
+      "kind": "point",
+      "block": "21",
+      "position": [
+        15,
+        1
+      ]
+    },
+    {
+      "name": "Glacier depot native clock-stone tower",
+      "kind": "point",
+      "block": "22",
+      "position": [
+        15,
+        2
+      ]
+    },
+    {
+      "name": "Glacier depot native clock-stone tower",
+      "kind": "point",
+      "block": "22",
+      "position": [
+        15,
+        3
+      ]
+    },
+    {
+      "name": "Glacier depot native clock-stone tower",
+      "kind": "point",
+      "block": "25",
+      "position": [
+        15,
+        4
+      ]
+    },
+    {
+      "name": "Glacier depot native clock-stone tower",
+      "kind": "point",
+      "block": "26",
+      "position": [
+        16,
+        4
+      ]
+    },
+    {
+      "name": "Glacier depot native clock-stone tower",
+      "kind": "point",
+      "block": "29",
+      "position": [
+        15,
+        5
+      ]
+    },
+    {
+      "name": "Glacier depot native clock-stone tower",
+      "kind": "point",
+      "block": "2a",
+      "position": [
+        16,
+        5
+      ]
+    },
+    {
+      "name": "Glacier depot real public hall",
+      "kind": "point",
+      "block": "18",
+      "position": [
+        17,
+        4
+      ]
+    },
+    {
+      "name": "Glacier depot real public hall",
+      "kind": "point",
+      "block": "1f",
+      "position": [
+        18,
+        4
+      ]
+    },
+    {
+      "name": "Glacier depot real public hall",
+      "kind": "point",
+      "block": "19",
+      "position": [
+        19,
+        4
+      ]
+    },
+    {
+      "name": "Glacier depot real public hall",
+      "kind": "point",
+      "block": "1a",
+      "position": [
+        17,
+        5
+      ]
+    },
+    {
+      "name": "Glacier depot real public hall",
+      "kind": "point",
+      "block": "0f",
+      "position": [
+        18,
+        5
+      ]
+    },
+    {
+      "name": "Glacier depot real public hall",
+      "kind": "point",
+      "block": "11",
+      "position": [
+        19,
+        5
+      ]
+    },
+    {
+      "name": "SAVEN gym native full facade",
+      "kind": "point",
+      "block": "18",
+      "position": [
+        3,
+        12
+      ]
+    },
+    {
+      "name": "SAVEN gym native full facade",
+      "kind": "point",
+      "block": "1f",
+      "position": [
+        4,
+        12
+      ]
+    },
+    {
+      "name": "SAVEN gym native full facade",
+      "kind": "point",
+      "block": "19",
+      "position": [
+        5,
+        12
+      ]
+    },
+    {
+      "name": "SAVEN gym native full facade",
+      "kind": "point",
+      "block": "1c",
+      "position": [
+        3,
+        13
+      ]
+    },
+    {
+      "name": "SAVEN gym native full facade",
+      "kind": "point",
+      "block": "1d",
+      "position": [
+        4,
+        13
+      ]
+    },
+    {
+      "name": "SAVEN gym native full facade",
+      "kind": "point",
+      "block": "1e",
+      "position": [
+        5,
+        13
+      ]
+    },
+    {
+      "name": "Granite river overlook raised bank",
+      "kind": "cliff_polygon",
+      "points": [
+        [
+          16,
+          11
+        ],
+        [
+          19,
+          11
+        ],
+        [
+          19,
+          12
+        ],
+        [
+          21,
+          12
+        ],
+        [
+          21,
+          14
+        ],
+        [
+          16,
+          14
+        ]
+      ]
+    },
+    {
+      "name": "Granite overlook true native ramp",
+      "kind": "point",
+      "block": "74",
+      "position": [
+        17,
+        14
+      ]
+    },
+    {
+      "name": "Joined western overlook erratic",
+      "kind": "point",
+      "block": "0a",
+      "position": [
+        16,
+        12
+      ]
+    },
+    {
+      "name": "Joined eastern overlook erratic",
+      "kind": "point",
+      "block": "0a",
+      "position": [
+        21,
+        13
+      ]
+    },
+    {
+      "name": "North river walk lower balustrade",
+      "kind": "point",
+      "block": "49",
+      "position": [
+        2,
+        7
+      ]
+    },
+    {
+      "name": "North river walk lower balustrade",
+      "kind": "point",
+      "block": "49",
+      "position": [
+        3,
+        7
+      ]
+    },
+    {
+      "name": "North river walk lower balustrade",
+      "kind": "point",
+      "block": "49",
+      "position": [
+        4,
+        7
+      ]
+    },
+    {
+      "name": "North river walk lower balustrade",
+      "kind": "point",
+      "block": "49",
+      "position": [
+        5,
+        7
+      ]
+    },
+    {
+      "name": "North river walk lower balustrade",
+      "kind": "point",
+      "block": "49",
+      "position": [
+        6,
+        7
+      ]
+    },
+    {
+      "name": "North river walk lower balustrade",
+      "kind": "point",
+      "block": "49",
+      "position": [
+        7,
+        7
+      ]
+    },
+    {
+      "name": "North river walk lower balustrade",
+      "kind": "point",
+      "block": "49",
+      "position": [
+        8,
+        7
+      ]
+    },
+    {
+      "name": "North river walk lower balustrade",
+      "kind": "point",
+      "block": "49",
+      "position": [
+        9,
+        7
+      ]
+    },
+    {
+      "name": "North river walk lower balustrade",
+      "kind": "point",
+      "block": "49",
+      "position": [
+        10,
+        7
+      ]
+    },
+    {
+      "name": "River crossing west north cap",
+      "kind": "point",
+      "block": "4a",
+      "position": [
+        10,
+        7
+      ]
+    },
+    {
+      "name": "Depot riverwalk lower balustrade",
+      "kind": "point",
+      "block": "49",
+      "position": [
+        13,
+        7
+      ]
+    },
+    {
+      "name": "Depot riverwalk lower balustrade",
+      "kind": "point",
+      "block": "49",
+      "position": [
+        14,
+        7
+      ]
+    },
+    {
+      "name": "Depot riverwalk lower balustrade",
+      "kind": "point",
+      "block": "49",
+      "position": [
+        15,
+        7
+      ]
+    },
+    {
+      "name": "Depot riverwalk lower balustrade",
+      "kind": "point",
+      "block": "49",
+      "position": [
+        16,
+        7
+      ]
+    },
+    {
+      "name": "Depot riverwalk lower balustrade",
+      "kind": "point",
+      "block": "49",
+      "position": [
+        17,
+        7
+      ]
+    },
+    {
+      "name": "Depot riverwalk lower balustrade",
+      "kind": "point",
+      "block": "49",
+      "position": [
+        18,
+        7
+      ]
+    },
+    {
+      "name": "Depot riverwalk lower balustrade",
+      "kind": "point",
+      "block": "49",
+      "position": [
+        19,
+        7
+      ]
+    },
+    {
+      "name": "Depot riverwalk lower balustrade",
+      "kind": "point",
+      "block": "49",
+      "position": [
+        20,
+        7
+      ]
+    },
+    {
+      "name": "Depot riverwalk end cap",
+      "kind": "point",
+      "block": "4a",
+      "position": [
+        21,
+        7
+      ]
+    },
+    {
+      "name": "South river landing compact apron",
+      "kind": "block_rect",
+      "block": "01",
+      "bounds": [
+        13,
+        11,
+        16,
+        13
+      ]
+    },
+    {
+      "name": "River landing west bollard",
+      "kind": "point",
+      "block": "45",
+      "position": [
+        13,
+        11
+      ]
+    },
+    {
+      "name": "River landing east bollard",
+      "kind": "point",
+      "block": "46",
+      "position": [
+        15,
+        11
+      ]
+    },
+    {
+      "name": "Clinic lane western grove",
+      "kind": "block_rect",
+      "block": "05",
+      "bounds": [
+        2,
+        2,
+        3,
+        6
+      ]
+    },
+    {
+      "name": "Civic porches northern hedge",
+      "kind": "block_rect",
+      "block": "05",
+      "bounds": [
+        3,
+        2,
+        10,
+        3
+      ]
+    },
+    {
+      "name": "Depot tower western grove",
+      "kind": "block_rect",
+      "block": "05",
+      "bounds": [
+        14,
+        1,
+        15,
+        5
+      ]
+    },
+    {
+      "name": "Gym west grove",
+      "kind": "block_rect",
+      "block": "05",
+      "bounds": [
+        2,
+        11,
+        3,
+        16
+      ]
+    },
+    {
+      "name": "South verge attached grove",
+      "kind": "block_rect",
+      "block": "05",
+      "bounds": [
+        7,
+        15,
+        11,
+        16
+      ]
+    },
+    {
+      "name": "North trail flower shoulder",
+      "kind": "point",
+      "block": "04",
+      "position": [
+        11,
+        3
+      ]
+    },
+    {
+      "name": "Clinic waiting flowers",
+      "kind": "point",
+      "block": "04",
+      "position": [
+        6,
+        5
+      ]
+    },
+    {
+      "name": "Gym front garden",
+      "kind": "point",
+      "block": "04",
+      "position": [
+        6,
+        14
+      ]
+    },
+    {
+      "name": "Clinic physical native sign",
+      "kind": "point",
+      "block": "45",
+      "position": [
+        2,
+        5
+      ]
+    },
+    {
+      "name": "Gym physical native sign",
+      "kind": "point",
+      "block": "45",
+      "position": [
+        2,
+        14
+      ]
+    },
+    {
+      "name": "Station physical native sign",
+      "kind": "point",
+      "block": "45",
+      "position": [
+        20,
+        6
+      ]
+    },
+    {
+      "name": "River physical native sign",
+      "kind": "point",
+      "block": "45",
+      "position": [
+        14,
+        12
+      ]
+    },
+    {
+      "name": "Overlook physical native sign",
+      "kind": "point",
+      "block": "45",
+      "position": [
+        19,
+        13
+      ]
+    },
+    {
+      "name": "North physical native sign",
+      "kind": "point",
+      "block": "45",
+      "position": [
+        13,
+        3
+      ]
+    },
+    {
+      "name": "North approach west attached grove",
+      "kind": "block_rect",
+      "block": "05",
+      "bounds": [
+        10,
+        0,
+        12,
+        6
+      ]
+    },
+    {
+      "name": "North approach east attached grove",
+      "kind": "block_rect",
+      "block": "05",
+      "bounds": [
+        13,
+        0,
+        15,
+        6
+      ]
+    },
+    {
+      "name": "North direction sign retained beside street",
+      "kind": "point",
+      "block": "45",
+      "position": [
+        13,
+        3
+      ]
+    },
+    {
+      "name": "South court river-side hedge",
+      "kind": "block_rect",
+      "block": "05",
+      "bounds": [
+        3,
+        11,
+        11,
+        12
+      ]
+    },
+    {
+      "name": "South overlook approach attached grove",
+      "kind": "block_rect",
+      "block": "05",
+      "bounds": [
+        13,
+        13,
+        16,
+        15
+      ]
+    },
+    {
+      "name": "South town boundary forest",
+      "kind": "block_rect",
+      "block": "05",
+      "bounds": [
+        0,
+        17,
+        24,
+        18
+      ]
+    },
+    {
+      "name": "South route exact two-core opening",
+      "kind": "point",
+      "block": "01",
+      "position": [
+        12,
+        17
+      ]
+    },
+    {
+      "name": "Gym court northern attached grove",
+      "kind": "block_rect",
+      "block": "05",
+      "bounds": [
+        7,
+        11,
+        11,
+        14
+      ]
+    },
+    {
+      "name": "Gym southern attached garden grove",
+      "kind": "block_rect",
+      "block": "05",
+      "bounds": [
+        3,
+        15,
+        7,
+        17
+      ]
+    },
+    {
+      "name": "Depot rear attached canopy",
+      "kind": "block_rect",
+      "block": "05",
+      "bounds": [
+        16,
+        1,
+        21,
+        4
+      ]
+    },
+    {
+      "name": "Granite approach eastern boundary grove",
+      "kind": "block_rect",
+      "block": "05",
+      "bounds": [
+        19,
+        15,
+        22,
+        17
+      ]
+    },
+    {
+      "name": "Granite approach southern boundary grove",
+      "kind": "block_rect",
+      "block": "05",
+      "bounds": [
+        13,
+        16,
+        20,
+        17
+      ]
+    },
+    {
+      "name": "Gym forecourt flower pocket remains reachable",
+      "kind": "point",
+      "block": "04",
+      "position": [
+        6,
+        15
+      ]
+    },
+    {
+      "name": "Complete native two-wide service building; forest retains former solid footprint",
+      "kind": "point",
+      "position": [
+        4,
+        3
+      ],
+      "block": "19"
+    },
+    {
+      "name": "Complete native two-wide service building; forest retains former solid footprint",
+      "kind": "point",
+      "position": [
+        5,
+        3
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Complete native two-wide service building; forest retains former solid footprint",
+      "kind": "point",
+      "position": [
+        3,
+        4
+      ],
+      "block": "1a"
+    },
+    {
+      "name": "Complete native two-wide service building; forest retains former solid footprint",
+      "kind": "point",
+      "position": [
+        5,
+        4
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Complete native two-wide service building; forest retains former solid footprint",
+      "kind": "point",
+      "position": [
+        8,
+        3
+      ],
+      "block": "19"
+    },
+    {
+      "name": "Complete native two-wide service building; forest retains former solid footprint",
+      "kind": "point",
+      "position": [
+        9,
+        3
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Complete native two-wide service building; forest retains former solid footprint",
+      "kind": "point",
+      "position": [
+        7,
+        4
+      ],
+      "block": "1a"
+    },
+    {
+      "name": "Complete native two-wide service building; forest retains former solid footprint",
+      "kind": "point",
+      "position": [
+        9,
+        4
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Preserve already selected native terrain and stair composition",
+      "kind": "point",
+      "position": [
+        22,
+        12
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Preserve already selected native terrain and stair composition",
+      "kind": "point",
+      "position": [
+        23,
+        12
+      ],
+      "block": "36"
+    },
+    {
+      "name": "Preserve already selected native terrain and stair composition",
+      "kind": "point",
+      "position": [
+        22,
+        13
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Preserve already selected native terrain and stair composition",
+      "kind": "point",
+      "position": [
+        23,
+        13
+      ],
+      "block": "36"
+    },
+    {
+      "name": "Preserve already selected native terrain and stair composition",
+      "kind": "point",
+      "position": [
+        17,
+        14
+      ],
+      "block": "80"
+    },
+    {
+      "name": "Preserve already selected native terrain and stair composition",
+      "kind": "point",
+      "position": [
+        22,
+        14
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Preserve already selected native terrain and stair composition",
+      "kind": "point",
+      "position": [
+        23,
+        14
+      ],
+      "block": "36"
+    },
+    {
+      "name": "Preserve already selected native terrain and stair composition",
+      "kind": "point",
+      "position": [
+        22,
+        15
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Preserve already selected native terrain and stair composition",
+      "kind": "point",
+      "position": [
+        23,
+        15
+      ],
+      "block": "36"
+    },
+    {
+      "name": "Preserve already selected native terrain and stair composition",
+      "kind": "point",
+      "position": [
+        22,
+        16
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Preserve already selected native terrain and stair composition",
+      "kind": "point",
+      "position": [
+        23,
+        16
+      ],
+      "block": "36"
+    },
+    {
+      "name": "Preserve already selected native terrain and stair composition",
+      "kind": "point",
+      "position": [
+        22,
+        17
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Preserve already selected native terrain and stair composition",
+      "kind": "point",
+      "position": [
+        23,
+        17
+      ],
+      "block": "36"
+    }
+  ]
+}

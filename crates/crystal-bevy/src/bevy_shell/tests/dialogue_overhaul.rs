@@ -88,7 +88,13 @@ pub(super) fn opening(index: usize) -> (AssetRoot, CrystalRuntime, VisibleShellC
     press(&mut c, GameButton::Down);
     at(&mut c, "MnWinonaHome1F", (9, 1));
     continue_in_place(&mut c, &root, &r, "overhaul-mom-speaking");
-    assert!(finish(&mut c) >= 5);
+    super::northstar_dialogue::acknowledge(
+        &mut c,
+        "MS_HOME",
+        "MnWHomeIntroText",
+        "EVENT_MN_HOME_INTRO",
+    );
+    finish(&mut c);
     let mom = c
         .snapshot()
         .expect("Mom returns")
@@ -297,6 +303,27 @@ fn overhaul_earned_campaign_through_hall_of_fame() {
 #[test]
 #[ignore = "requires the same candidate's actual earned chapter save; no fixture progression or boosts"]
 fn overhaul_earned_continue_through_hall_of_fame() {
+    earned_continue(true);
+}
+
+#[test]
+#[ignore = "legacy V16 earned story checkpoint only; does not verify final V18 service acceptance"]
+fn overhaul_earned_legacy_v16_continue_through_hall_of_fame() {
+    let path = std::env::var_os("CRYSTAL_WINONA_TEST_PACK").expect("exact legacy pack path");
+    let pack = crystal_assets::read_verified_compiled_game_pack(std::path::PathBuf::from(path))
+        .expect("verified legacy pack");
+    assert_eq!(
+        pack.identity()
+            .expect("legacy content identity")
+            .content_hash,
+        "c6feb99daa624a3772c5e76cfc8878b0760d4ce9b498b47eacf145b5156f1d22",
+        "only the retained V16 story lineage may use this legacy course"
+    );
+    drop(pack);
+    earned_continue(false);
+}
+
+fn earned_continue(verify_service_return: bool) {
     assert!(
         std::env::var_os("CRYSTAL_NORTHSTAR_EVENTS_SAVE_DIR").is_some(),
         "set CRYSTAL_NORTHSTAR_EVENTS_SAVE_DIR for actual in-scene review captures"
@@ -328,9 +355,9 @@ fn overhaul_earned_continue_through_hall_of_fame() {
         1,
         "Continue requires exactly one actual New Game campaign checkpoint"
     );
-    // Native loaders verify the pack identity and each chapter's earned
-    // prerequisites. Recorded review runs retain their New Game save lineage.
-    super::minnesota_gyms::northstar_arc_unboosted_new_game_through_legendary_release_and_hall_of_fame();
+    // Native loaders retain the actual checkpoint's identity and prerequisites.
+    // The pinned legacy V16 course is story evidence, never final V18 service acceptance.
+    super::minnesota_gyms::earned_arc_through_hall_of_fame(verify_service_return);
 }
 
 #[test]

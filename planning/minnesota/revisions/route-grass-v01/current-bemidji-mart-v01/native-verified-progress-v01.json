@@ -1,0 +1,16 @@
+{
+  "pack": "content-packs/minnesota-current-bemidji-mart-v01.crystalpack",
+  "sha256": "309303a46317174d67d47c5b66d5b4828e0907caacf0f470666fd60d43fa486f",
+  "native_binary": ".local/route-grass-review/portable-tools-v01/native-controller",
+  "native_binary_sha256": "6a0c61da1dd77157003c7116551c8bfd3d49789137d085f5d2fed20dcde0fb75",
+  "steps": [
+    {
+      "case": "facades",
+      "test": "native_town_exterior_all_facades_both_returns_and_continue",
+      "exit_code": 101,
+      "log": ".local/route-grass-review/bemidji-mart-native-facades-v01.log",
+      "saves": ".local/route-grass-review/bemidji-mart-native-facades-saves-v01"
+    }
+  ],
+  "scope": "Generic6facades uses supplied child contract. Retained public/guard implementations are unchanged. Old hardcoded6facade helper predates relocated door and is not used. Local fixture initial party/badges are explicit."
+}

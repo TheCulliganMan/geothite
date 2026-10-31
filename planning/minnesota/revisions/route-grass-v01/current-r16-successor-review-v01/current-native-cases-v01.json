@@ -1,0 +1,8 @@
+{
+  "status": "REQUIRES_REVIEW",
+  "pack": "content-packs/minnesota-current-r15-open-shore-and-spur-v02.crystalpack",
+  "pack_sha256": "e02fb85d4db327d146cee269809b1af3e4b387dc2e29240b71cae0ae5837ec4c",
+  "exit_code": 101,
+  "log": ".local/route-grass-review/r16-current-native-v01.log",
+  "scope": "Existing four-case native prairie geometry/resources/Continue, trainer battle/PP/victory, populated grassy climb/dry drop and native wild RUN. Initial local party/badge/position are QA setup, not earned regional progress."
+}

@@ -125,11 +125,15 @@ def main():
         assert old['views_sha256'] == digest(args.views)
     private = ROOT/'.local'/f'city-native-{os.getpid()}'
     shutil.copy2(binary,private)
+    party_species = os.environ.get(
+        'CRYSTAL_RENDER_TEST_PARTY_SPECIES',
+        'CINDORE' if 'CINDORE' in pack['data']['pokemon'] else 'TOTODILE')
     report = dict(pack=str(pack_path),pack_sha256=digest(pack_path),binary=str(binary),binary_sha256=digest(private),
-                  views_sha256=digest(args.views),fixture='Explicit empty-party placement, south-facing, hour12. No progression claim.',
+                  views_sha256=digest(args.views),fixture=f'Explicit local placement with {party_species}, south-facing, hour12. No progression claim.',
                   captures=[],personally_visually_reviewed=False)
     env = dict(os.environ,CRYSTAL_RENDER_TEST_HEADLESS='1',CRYSTAL_RENDER_TEST_CAPTURE_TARGET='image',
-               CRYSTAL_RENDER_TEST_WINDOW_SIZE='640x576',CRYSTAL_PREVIEW_MUTE='1')
+               CRYSTAL_RENDER_TEST_WINDOW_SIZE='640x576',CRYSTAL_PREVIEW_MUTE='1',
+               CRYSTAL_RENDER_TEST_PARTY_SPECIES=party_species,CRYSTAL_RENDER_TEST_PARTY_SIZE='1')
     env.pop('CRYSTAL_RENDER_TEST_SECOND_VIEW',None)
     art = SourceArt(pack); cached = {}; terrain = {}; sheet = []
     try:

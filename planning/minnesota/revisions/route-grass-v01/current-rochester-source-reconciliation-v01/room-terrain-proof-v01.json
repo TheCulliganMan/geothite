@@ -1,0 +1,30 @@
+{
+  "status": "REQUIRES_REVIEW",
+  "rooms": [
+    {
+      "map": "MnRochesterPokecenter1F",
+      "source_blocks_or_template_exact": true,
+      "template": "GoldenrodPokecenter1F"
+    },
+    {
+      "map": "MnRochesterMart",
+      "source_blocks_or_template_exact": true,
+      "template": "CherrygroveMart"
+    },
+    {
+      "map": "MnRochesterGym",
+      "source_blocks_or_template_exact": false,
+      "template": "VioletGym"
+    },
+    {
+      "map": "MnRochesterClerkHouse",
+      "source_blocks_or_template_exact": true,
+      "template": "VioletNicknameSpeechHouse"
+    },
+    {
+      "map": "MnRochesterPatientHouse",
+      "source_blocks_or_template_exact": true,
+      "template": "VioletNicknameSpeechHouse"
+    }
+  ]
+}

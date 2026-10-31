@@ -1,0 +1,134 @@
+{
+  "schema_version": 1,
+  "map": "MnR17Cave1F",
+  "purpose": "Small dry Border Pines shelter: circle a central granite fall, visit the existing lichen reader and collect the original northern Revive. Two connected arms replace the single cramped corridor; no new field gate, battle or service.",
+  "size_metatiles": [
+    7,
+    8
+  ],
+  "retained_native_actors": [
+    {
+      "id": "MN_R17_ITEM_04",
+      "tile": [
+        5,
+        5
+      ],
+      "item": "REVIVE",
+      "quantity": 1,
+      "flag": "EVENT_MN_R17_ITEM_04"
+    },
+    {
+      "id": "MN_INTERIOR_R17_LICHEN_READER",
+      "tile": [
+        6,
+        10
+      ],
+      "role": "Optional lichen study; existing dialogue retained"
+    }
+  ],
+  "mouth": {
+    "inside": [
+      9,
+      13
+    ],
+    "clear": [
+      9,
+      12
+    ],
+    "exterior": "MnR17C00R00",
+    "active": [
+      10,
+      43
+    ],
+    "passive": [
+      10,
+      44
+    ],
+    "inside_index": 1,
+    "exterior_active_index": 1,
+    "exterior_passive_index": 2
+  },
+  "ordinary_circuit_waypoints": [
+    [
+      7,
+      10
+    ],
+    [
+      7,
+      9
+    ],
+    [
+      5,
+      9
+    ],
+    [
+      5,
+      7
+    ],
+    [
+      5,
+      6
+    ],
+    [
+      5,
+      5
+    ],
+    [
+      6,
+      5
+    ],
+    [
+      8,
+      5
+    ],
+    [
+      8,
+      6
+    ],
+    [
+      8,
+      7
+    ],
+    [
+      8,
+      8
+    ],
+    [
+      7,
+      8
+    ],
+    [
+      7,
+      9
+    ]
+  ],
+  "solid_granite_core": [
+    [
+      6,
+      6
+    ],
+    [
+      7,
+      6
+    ],
+    [
+      6,
+      7
+    ],
+    [
+      7,
+      7
+    ]
+  ],
+  "field_moves": [],
+  "new_trainers": [],
+  "story_changes": [],
+  "review": {
+    "whole_source_render": "planning/minnesota/renders/r17-talus-v473/source-loop",
+    "native_cameras": "planning/minnesota/renders/r17-talus-v473/native-v477",
+    "status": "PASS native controller, native cameras, recorded stdio and full pack preservation",
+    "verification": "planning/minnesota/renders/r17-talus-v473/acceptance-v486.json"
+  },
+  "fixture_limits": "Declared local empty-party placement outside the cave. This does not establish earned access to Route17 or regional encounter balance.",
+  "status": "verified_and_selected_local_native_terrain_revision"
+}

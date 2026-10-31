@@ -340,10 +340,12 @@ fn main() -> Result<()> {
         );
     }
     let mut extensions: Extensions = read(&root.join("northwoods-moves.json"))?;
-    let fairy_path = root.join("fairy-moves.json");
-    if fairy_path.try_exists()? {
-        let fairy: Extensions = read(&fairy_path)?;
-        extensions.moves.extend(fairy.moves);
+    for filename in ["fairy-moves.json", "starter-signature-moves.json"] {
+        let path = root.join(filename);
+        if path.try_exists()? {
+            let additional: Extensions = read(&path)?;
+            extensions.moves.extend(additional.moves);
+        }
     }
     let names: BTreeMap<_, _> = roster
         .families

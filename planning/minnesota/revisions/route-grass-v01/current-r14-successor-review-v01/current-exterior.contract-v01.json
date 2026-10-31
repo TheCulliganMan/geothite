@@ -1,0 +1,114 @@
+{
+  "schema_version": 1,
+  "id": "MN_R14",
+  "source_kind": "installed_route_exterior_review_contract",
+  "native_binding": {
+    "pack": "content-packs/minnesota-current-r13-boundary-apron-v03.crystalpack",
+    "pack_sha256": "7d3987bfbf0378aed960495cc20981c0d258eb391f33630b8e3de6c2686e2e7d",
+    "content_identity": "557676e74fb5264e436590746046616fb503862e0db0dc403bac493ff4bd352c"
+  },
+  "previous_dossier": {
+    "path": "planning/minnesota/revisions/route-grass-v01/current-r14-closed-bank-v01/MN_R14.dossier.json",
+    "sha256": "4c299f6748b49325c7ea7537aa60c72887cc02c7a6db0d705974273b2d7afd7a"
+  },
+  "grass_quadrants": 504,
+  "ice_quadrants": 0,
+  "main_crossing": {
+    "start": [
+      6,
+      42
+    ],
+    "end": [
+      95,
+      26
+    ],
+    "minimum_grass_steps_both_directions": 4
+  },
+  "active_native_hop_lanes": [
+    {
+      "upper": [
+        28,
+        23
+      ],
+      "lip": [
+        28,
+        24
+      ],
+      "landing": [
+        28,
+        26
+      ],
+      "blocked_reverse": [
+        28,
+        25
+      ],
+      "ordinary_uphill_minimum_grass_steps": 4
+    },
+    {
+      "upper": [
+        29,
+        23
+      ],
+      "lip": [
+        29,
+        24
+      ],
+      "landing": [
+        29,
+        26
+      ],
+      "blocked_reverse": [
+        29,
+        25
+      ],
+      "ordinary_uphill_minimum_grass_steps": 4
+    },
+    {
+      "upper": [
+        30,
+        23
+      ],
+      "lip": [
+        30,
+        24
+      ],
+      "landing": [
+        30,
+        26
+      ],
+      "blocked_reverse": [
+        30,
+        25
+      ],
+      "ordinary_uphill_minimum_grass_steps": 4
+    },
+    {
+      "upper": [
+        31,
+        23
+      ],
+      "lip": [
+        31,
+        24
+      ],
+      "landing": [
+        31,
+        26
+      ],
+      "blocked_reverse": [
+        31,
+        25
+      ],
+      "ordinary_uphill_minimum_grass_steps": 4
+    }
+  ],
+  "closed_unusable_hop_faces": 12,
+  "verified_neighbor_maps": [
+    "MnLakeItasca",
+    "MnItascaGatehouse",
+    "MnBemidji"
+  ],
+  "scope": "All four current Route14 chunks, four native dry drops/reverse denials/grassy ordinary returns, both town connections including actual Itasca gatehouse, wild RUN, menus and Save/Continue. Initial native fixture party/position/six badges are QA setup, not earned campaign progress; Surf remains outside this course.",
+  "native_cases_scope": "Existing native geometry across four chunks, boardwalk barriers, grassy ordinary return and dry ledge/Continue, new-grass encounter/RUN/Continue, actual Mara trainer battle/PP/Continue, and Cut permission/opening/reset. Explicit local QA setup; not earned regional progression.",
+  "historical_story_scope_not_promoted": true
+}

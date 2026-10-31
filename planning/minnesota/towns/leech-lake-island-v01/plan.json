@@ -1,0 +1,332 @@
+{
+  "schema_version": 1,
+  "id": "leech-lake-pine-island-v1",
+  "status": "Verified local native revision; active selection is authoritative in world.json.",
+  "map": "MnLeechLake",
+  "dimensions_metatiles": [
+    32,
+    24
+  ],
+  "visual_mode": "native_2d_only",
+  "source": "after.json",
+  "source_sha256": "5d5eb2003782ebb88bf1ec52ad5d73e71a0205b0568050fbe8605fa8d863c546",
+  "contract": "contract-v05.json",
+  "parent_revision": "fossil_lab_revision",
+  "parent_pack": "content-packs/minnesota-fossil-lab-v01.crystalpack",
+  "parent_pack_sha256": "4329e491655cd8d6c787a34266a5fa51e222b8cdbd596e56c3b046219c5df5db",
+  "pack": "content-packs/minnesota-leech-island-v05.crystalpack",
+  "pack_sha256": "0ee27b841a47715f62082533cd324ec8d39c1823d524417874931449f5eeda5b",
+  "connections": [
+    {
+      "direction": "south",
+      "target_map": "MnR07C00R00",
+      "offset": 6
+    },
+    {
+      "direction": "north",
+      "target_map": "MnR08C00R01",
+      "offset": 3
+    }
+  ],
+  "ports": [
+    {
+      "side": "south",
+      "town": [
+        [
+          32,
+          47
+        ],
+        [
+          33,
+          47
+        ]
+      ],
+      "route": "MnR07C00R00",
+      "route_tiles": [
+        [
+          20,
+          0
+        ],
+        [
+          21,
+          0
+        ]
+      ]
+    },
+    {
+      "side": "north",
+      "town": [
+        [
+          32,
+          0
+        ],
+        [
+          33,
+          0
+        ]
+      ],
+      "route": "MnR08C00R01",
+      "route_tiles": [
+        [
+          26,
+          47
+        ],
+        [
+          27,
+          47
+        ]
+      ],
+      "existing_gate": "ENGINE_MINERALBADGE"
+    }
+  ],
+  "preserved_rooms": [
+    {
+      "room": "MnLeechLakeCareCabin",
+      "exterior_door": [
+        11,
+        13
+      ],
+      "passive_porch": [
+        11,
+        14
+      ],
+      "arrival": [
+        10,
+        13
+      ],
+      "carpets": [
+        [
+          10,
+          15
+        ],
+        [
+          11,
+          15
+        ]
+      ],
+      "service": "Free native full-party HP/PP/status healing and original recovery"
+    },
+    {
+      "room": "MnLeechLakeFisherHouse",
+      "exterior_door": [
+        9,
+        35
+      ],
+      "passive_porch": [
+        9,
+        36
+      ],
+      "arrival": [
+        5,
+        6
+      ],
+      "carpets": [
+        [
+          5,
+          7
+        ],
+        [
+          6,
+          7
+        ]
+      ]
+    }
+  ],
+  "original_pier": {
+    "deck_rows": [
+      21,
+      22
+    ],
+    "deck_x": [
+      28,
+      40
+    ],
+    "end_x": 41,
+    "passing_tile": [
+      35,
+      22
+    ],
+    "fisher": [
+      35,
+      21
+    ]
+  },
+  "island": {
+    "landing": [
+      46,
+      30
+    ],
+    "required_grass": {
+      "min": [
+        50,
+        32
+      ],
+      "max": [
+        51,
+        33
+      ]
+    },
+    "naturalist": [
+      53,
+      30
+    ],
+    "reward": [
+      53,
+      33
+    ],
+    "ledge_lips": [
+      [
+        50,
+        34
+      ],
+      [
+        51,
+        34
+      ],
+      [
+        52,
+        34
+      ],
+      [
+        53,
+        34
+      ]
+    ],
+    "ledge_landings": [
+      [
+        50,
+        36
+      ],
+      [
+        51,
+        36
+      ],
+      [
+        52,
+        36
+      ],
+      [
+        53,
+        36
+      ]
+    ],
+    "west_side_barrier": [
+      [
+        49,
+        34
+      ]
+    ],
+    "ordinary_return_via": [
+      48,
+      36
+    ]
+  },
+  "story": {
+    "role": "Optional return visit to the original lake shore; original catch testimony and regional story gates are retained.",
+    "trainer_source": "/trainer_source/trainers/0 in after.json",
+    "trainer_species": [
+      [
+        "SHEDSTAG",
+        35
+      ],
+      [
+        "LEECHURGE",
+        36
+      ]
+    ],
+    "trainer_level_scaling": "Existing Minnesota party/PC scaling and legal regional evolutions apply.",
+    "trainer_flag": "EVENT_MN_EXTRA_LEECH_ISLAND_NATURALIST",
+    "island_reward": {
+      "id": "MN_LEECH_ISLAND_WATER",
+      "tile": [
+        53,
+        33
+      ],
+      "item": "MYSTIC_WATER",
+      "quantity": 1,
+      "flag": "EVENT_MN_LEECH_ISLAND_WATER"
+    },
+    "current_flag": "EVENT_MN_LEECH_EDDY_CACHE",
+    "mandatory_progression_grants": []
+  },
+  "return_tradeoff": {
+    "from_tile": [
+      52,
+      33
+    ],
+    "to_landing": [
+      46,
+      30
+    ],
+    "ordinary_navigation_actions": 9,
+    "ordinary_grass_steps": 2,
+    "dry_drop_navigation_actions": 14,
+    "dry_drop_grass_steps": 0,
+    "hop_stride_tiles": 2,
+    "note": "The longer dry return avoids encounters; the ordinary reverse path is shorter and crosses grass. Counts describe committed navigation actions, excluding UI/turning retries."
+  },
+  "current": {
+    "source": {
+      "cap_metatile": [
+        30,
+        9
+      ],
+      "closed_metatile": [
+        30,
+        10
+      ],
+      "current": [
+        60,
+        20
+      ],
+      "cache": [
+        61,
+        20
+      ]
+    },
+    "closed_metatile": "07",
+    "open_metatile": "36",
+    "native_frame_ticks": 11,
+    "reward": "PP_UP",
+    "requires": [
+      "SURF",
+      "WHIRLPOOL",
+      "seventh_badge"
+    ],
+    "native_reset": "Temporary clearing resets on native map load; the once-only item flag persists."
+  },
+  "encounters": {
+    "source": "/encounters in after.json",
+    "grass_zone": [
+      50,
+      32,
+      51,
+      33
+    ],
+    "grass_rate": 10,
+    "current_open_water_rate": 0,
+    "composition": "Preserve existing parent lake tables/rates/zones and append only the island zone; use zero-rate resolver fallbacks when the parent has no lake table."
+  },
+  "implementation": {
+    "builder": "crystal_assets::build_leech_lake_island",
+    "cli": "build_leech_lake_island",
+    "forced_source_sha256": "ebc02a71ca708b145292687150ae1c3e8617b2a32d042c090e6c68d16e0a7abb",
+    "global_roots": [
+      "Script_UsedWhirlpool",
+      "Script_ForcedMovement"
+    ],
+    "native_terrain_preimage": "before.json",
+    "new_cut_trees": 0,
+    "new_interiors": 0,
+    "all_original_art_audio_retained": true
+  },
+  "verification": {
+    "native_controller": "../../renders/leech-lake-island-v820/gameplay-v863/controller.log",
+    "preservation": "../../renders/leech-lake-island-v820/preservation-v863.json",
+    "visuals": "../../renders/leech-lake-island-v820/visual-binding-v864.json",
+    "regional": "../../renders/leech-lake-island-v820/regional-v864.json",
+    "whole": "../../renders/leech-lake-island-v820/whole-current-v863/whole-original.png",
+    "scope": "Declared local party/badge/position fixtures followed only by production input; no earned-campaign or web-deployment claim."
+  },
+  "style_reference": "../../renders/leech-lake-island-v820/reference-johto-v862/Route44-whole-original.png"
+}

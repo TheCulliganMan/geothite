@@ -1,0 +1,221 @@
+{
+  "pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+  "pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33",
+  "map": "MnRochester",
+  "source_dossier": "planning/minnesota/revisions/route-grass-v01/current-rochester-town-v01/public-source-with-researcher-v02.json",
+  "start": [
+    32,
+    18
+  ],
+  "badge_count": 1,
+  "event_flags": [
+    "EVENT_MN_DELIVERED_ROCHESTER_PARCEL"
+  ],
+  "roads": [
+    {
+      "inside": [
+        38,
+        18
+      ],
+      "out": "right",
+      "neighbor": "MnR01C00R00",
+      "there": [
+        0,
+        24
+      ]
+    },
+    {
+      "inside": [
+        3,
+        18
+      ],
+      "out": "left",
+      "neighbor": "MnR02C00R00",
+      "there": [
+        59,
+        14
+      ]
+    },
+    {
+      "inside": [
+        38,
+        19
+      ],
+      "out": "right",
+      "neighbor": "MnR01C00R00",
+      "there": [
+        0,
+        25
+      ]
+    },
+    {
+      "inside": [
+        3,
+        19
+      ],
+      "out": "left",
+      "neighbor": "MnR02C00R00",
+      "there": [
+        59,
+        15
+      ]
+    }
+  ],
+  "gates": [
+    {
+      "inside": [
+        4,
+        18
+      ],
+      "out": "left",
+      "neighbor": "MnR02C00R00",
+      "there": [
+        59,
+        14
+      ],
+      "script_root": "MnRCPrairieCheck",
+      "required_flags": [
+        "ENGINE_ZEPHYRBADGE"
+      ]
+    },
+    {
+      "inside": [
+        4,
+        19
+      ],
+      "out": "left",
+      "neighbor": "MnR02C00R00",
+      "there": [
+        59,
+        15
+      ],
+      "script_root": "MnRCPrairieCheck",
+      "required_flags": [
+        "ENGINE_ZEPHYRBADGE"
+      ]
+    }
+  ],
+  "ledges": [],
+  "doors": [
+    {
+      "room": "MnRochesterPokecenter1F",
+      "outside": [
+        15,
+        8
+      ],
+      "arrival": [
+        10,
+        13
+      ],
+      "carpets": [
+        [
+          10,
+          15
+        ],
+        [
+          11,
+          15
+        ]
+      ]
+    },
+    {
+      "room": "MnRochesterMart",
+      "outside": [
+        29,
+        10
+      ],
+      "arrival": [
+        6,
+        5
+      ],
+      "carpets": [
+        [
+          6,
+          7
+        ],
+        [
+          7,
+          7
+        ]
+      ]
+    },
+    {
+      "room": "MnRochesterGym",
+      "outside": [
+        30,
+        24
+      ],
+      "arrival": [
+        6,
+        17
+      ],
+      "carpets": [
+        [
+          6,
+          19
+        ],
+        [
+          7,
+          19
+        ]
+      ]
+    },
+    {
+      "room": "MnRochesterClerkHouse",
+      "outside": [
+        7,
+        8
+      ],
+      "arrival": [
+        5,
+        6
+      ],
+      "carpets": [
+        [
+          5,
+          7
+        ],
+        [
+          6,
+          7
+        ]
+      ]
+    },
+    {
+      "room": "MnRochesterPatientHouse",
+      "outside": [
+        7,
+        24
+      ],
+      "arrival": [
+        5,
+        6
+      ],
+      "carpets": [
+        [
+          5,
+          7
+        ],
+        [
+          6,
+          7
+        ]
+      ]
+    }
+  ],
+  "fences": [],
+  "surf": null,
+  "arrival_discovery_flags": [
+    "ENGINE_FLYPOINT_MN_ROCHESTER"
+  ],
+  "counts": {
+    "roads": 4,
+    "gates": 2,
+    "ledges": 0,
+    "doors": 5,
+    "fences": 0,
+    "residents": 3,
+    "signs": 4
+  },
+  "fixture_note": "Initial Mew60/Surf and one prior badge/delivery flag are explicit local QA setup. Doors case starts without qualifications; source/native room ports are checked explicitly. No earned progression claim."
+}

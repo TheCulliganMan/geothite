@@ -1,0 +1,193 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-r06-south-woods-grass-v01.crystalpack",
+  "pack_sha256": "1d906a7d4998ce8b25332b05413131d9d256961a284230143d82541b24c403d0",
+  "calls": 1912,
+  "wild": [
+    {
+      "phase": "grass-and-save",
+      "map": "MnR06C00R01",
+      "position": {
+        "x": 52,
+        "y": 11
+      }
+    },
+    {
+      "phase": "grass-and-save",
+      "map": "MnR06C00R01",
+      "position": {
+        "x": 52,
+        "y": 5
+      }
+    },
+    {
+      "phase": "grass-and-save",
+      "map": "MnR06C00R00",
+      "position": {
+        "x": 49,
+        "y": 8
+      }
+    },
+    {
+      "phase": "grass-and-save",
+      "map": "MnR06C00R00",
+      "position": {
+        "x": 50,
+        "y": 26
+      }
+    },
+    {
+      "phase": "grass-and-save",
+      "map": "MnR06C00R01",
+      "position": {
+        "x": 52,
+        "y": 9
+      }
+    },
+    {
+      "phase": "grass-and-save",
+      "map": "MnR06C00R01",
+      "position": {
+        "x": 21,
+        "y": 27
+      }
+    },
+    {
+      "phase": "continue-and-repeat",
+      "map": "MnR06C00R01",
+      "position": {
+        "x": 16,
+        "y": 29
+      }
+    },
+    {
+      "phase": "continue-and-repeat",
+      "map": "MnR06C00R00",
+      "position": {
+        "x": 50,
+        "y": 24
+      }
+    },
+    {
+      "phase": "continue-and-repeat",
+      "map": "MnR06C00R01",
+      "position": {
+        "x": 21,
+        "y": 27
+      }
+    }
+  ],
+  "phases": [
+    {
+      "phase": "grass-and-save",
+      "initial": {
+        "badges": 4,
+        "dialogue": false,
+        "facing": "down",
+        "frame": 0,
+        "map": "MnR06C00R01",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 0
+        },
+        "position": {
+          "x": 16,
+          "y": 24
+        }
+      },
+      "final": {
+        "badges": 4,
+        "dialogue": false,
+        "facing": "up",
+        "frame": 334,
+        "map": "MnR06C00R01",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 3
+        },
+        "position": {
+          "x": 16,
+          "y": 33
+        }
+      },
+      "output_save": ".local/route-grass-review/r06-south-woods-grass-and-save-connections-v01-output.crystalsave",
+      "source_unchanged": true,
+      "stderr_bytes": 0
+    },
+    {
+      "phase": "continue-and-repeat",
+      "initial": {
+        "badges": 4,
+        "dialogue": false,
+        "facing": "up",
+        "frame": 334,
+        "map": "MnR06C00R01",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 3
+        },
+        "position": {
+          "x": 16,
+          "y": 33
+        }
+      },
+      "final": {
+        "badges": 4,
+        "dialogue": false,
+        "facing": "up",
+        "frame": 676,
+        "map": "MnR06C00R01",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 4
+        },
+        "position": {
+          "x": 16,
+          "y": 33
+        }
+      },
+      "output_save": ".local/route-grass-review/r06-south-woods-continue-and-repeat-connections-v01-output.crystalsave",
+      "source_unchanged": true,
+      "stderr_bytes": 0
+    }
+  ],
+  "scope": "Actual production walking through the northern connection into MnBrainerd and back, then through the southern connection into MnStCloud and back. Both repeated after Save/Continue, with wild RUN and menus. Initial partner, badge and position fixture is local QA.",
+  "verified_connections": [
+    {
+      "inside": [
+        "MnR06C00R00",
+        42,
+        0
+      ],
+      "neighbor": "MnBrainerd",
+      "out": "up",
+      "back": "down"
+    },
+    {
+      "inside": [
+        "MnR06C00R01",
+        16,
+        39
+      ],
+      "neighbor": "MnStCloud",
+      "out": "down",
+      "back": "up"
+    }
+  ]
+}

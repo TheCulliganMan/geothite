@@ -1,0 +1,6 @@
+{
+  "workspace_exit_code": 1,
+  "workspace_log": ".local/route-grass-review/bemidji-plateau-cargo-fmt-all-v01.log",
+  "owned_leaf_exit_code": 0,
+  "scope": "Whole workspace check is read-only; unrelated shared source formatting is not rewritten."
+}

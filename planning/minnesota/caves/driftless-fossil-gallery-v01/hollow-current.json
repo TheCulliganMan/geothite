@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "id": "MnR01Cave1F",
+  "tileset": "cave",
+  "dimensions_metatiles": [
+    8,
+    7
+  ],
+  "border_block": 46,
+  "palette_group": "nite",
+  "rows": [
+    "2e 2e 2e 2e 2e 2e 2e 2e",
+    "2e 2e 04 05 05 06 06 2e",
+    "2e 04 02 0a 04 02 0a 2e",
+    "2e 08 02 0a 2f 30 22 2e",
+    "2e 20 12 2d 28 0b 0a 2e",
+    "2e 2e 20 21 07 21 22 2e",
+    "2e 2e 2e 2e 2e 2e 2e 2e"
+  ],
+  "world_exit": {
+    "index": 1,
+    "x": 9,
+    "y": 11,
+    "target_map_constant": "MnR01C00R00",
+    "target_map": "MnR01C00R00",
+    "target_warp_id": 2
+  },
+  "lower_gallery_connection": {
+    "active_warp": 2,
+    "active": [
+      11,
+      9
+    ],
+    "target": "MnDriftlessLampGallery",
+    "target_passive_warp": 2,
+    "target_passive": [
+      18,
+      17
+    ],
+    "return_passive_warp": 3,
+    "return_passive": [
+      10,
+      9
+    ]
+  },
+  "preservation": "Original native actors, HM Flash gift dispatch, Antidote and world exit preserved; original guide receives appended gallery hint.",
+  "pack": "content-packs/minnesota-driftless-fossil-gallery-v03.crystalpack",
+  "pack_sha256": "3f3d12312ff947ea9f219a9368b98b51f4348ea7a76ed2caf7b062a8ef45316d",
+  "verification": "planning/minnesota/renders/driftless-fossil-gallery-v774/acceptance-v792.json"
+}

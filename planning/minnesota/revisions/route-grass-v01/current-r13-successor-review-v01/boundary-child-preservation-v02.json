@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "parent_revision": "route_grass_r13_pine_revision",
+  "parent_pack": "content-packs/minnesota-current-r13-south-woods-grass-v01.crystalpack",
+  "parent_pack_sha256": "10cd75cf9de2578966560721755ee761129d84d5e02122e174df07331f84679d",
+  "pack": "content-packs/minnesota-current-r13-boundary-apron-v02.crystalpack",
+  "pack_sha256": "7f69523688da1d137d8f9221e79657d13c9db4fcdc582ee340c257241877d09b",
+  "content_identity": "52fb512317a7589671657861a5726199f5acefd9d6ade529941333fbf98eeb73",
+  "only_data_changes": "One Route13 northern apron metatile 8b to 83 and its raw block mirror only; all other terrain, collision definitions, art, actors, scripts, offsets, wild encounters, trainers and items exact.",
+  "source_plan": "planning/minnesota/revisions/route-grass-v01/current-r13-successor-review-v01/boundary-apron-plan-v02.json",
+  "bemidji_plateau_stairs_exact": true,
+  "state_fair_exact": true
+}

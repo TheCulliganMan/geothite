@@ -1,0 +1,87 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-mankato-mart-v03.crystalpack",
+  "pack_sha256": "fa75cf2b83da156751debe1a52f7a24c42d277b845554870f1f9eb79711d9f7d",
+  "binary": ".local/route-grass-review/native-controller-before-mankato-notebook-v01",
+  "binary_sha256": "0f539de43511c7d4de3772ad61ea7ee88eac5123e1a6b09ca37bca7b908d43f6",
+  "native_cases": 1,
+  "log": ".local/route-grass-review/mankato-harbor-facades-retained-controller-v01.log",
+  "saves": [
+    {
+      "door": {
+        "room": "MnMankatoPokecenter1F",
+        "outside": [
+          31,
+          14
+        ],
+        "arrival": [
+          10,
+          13
+        ],
+        "carpets": [
+          [
+            10,
+            15
+          ],
+          [
+            11,
+            15
+          ]
+        ]
+      },
+      "save": "/Users/ryanculligan/GitHub/geothite/.local/route-grass-review/mankato-harbor-facade-saves-v01/brainerd-30567-1793363529540397000.crystalsave",
+      "sha256": "35522d027c5c10123c9f28d15ff71bbc0ae3c9bd132d47d74f3561bed5fed6ee"
+    },
+    {
+      "door": {
+        "room": "MnMankatoMart",
+        "outside": [
+          37,
+          28
+        ],
+        "arrival": [
+          6,
+          5
+        ],
+        "carpets": [
+          [
+            6,
+            7
+          ],
+          [
+            7,
+            7
+          ]
+        ]
+      },
+      "save": "/Users/ryanculligan/GitHub/geothite/.local/route-grass-review/mankato-harbor-facade-saves-v01/brainerd-30567-1793363531110776000.crystalsave",
+      "sha256": "00b70ca0f771bd65cc52aa4b2fe9f1f275417e9efd452199fd5e5777e2bea0d4"
+    },
+    {
+      "door": {
+        "room": "MnMankatoGym",
+        "outside": [
+          10,
+          12
+        ],
+        "arrival": [
+          6,
+          17
+        ],
+        "carpets": [
+          [
+            6,
+            19
+          ],
+          [
+            7,
+            19
+          ]
+        ]
+      },
+      "save": "/Users/ryanculligan/GitHub/geothite/.local/route-grass-review/mankato-harbor-facade-saves-v01/brainerd-30567-1793363532737939000.crystalsave",
+      "sha256": "4167d394cf70c2cbdf3f34445476a8b5e5c424a3d22c835adf586134e2fed2c2"
+    }
+  ],
+  "scope": "Three actual exterior return saves produced in authored door iteration order by unchanged native test; initial Mew/qualifications are explicit local fixtures. No new earned campaign claim."
+}

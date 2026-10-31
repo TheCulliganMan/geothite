@@ -1,0 +1,54 @@
+{
+  "interior": "MnDriftlessLampGallery",
+  "parent": "MnR01Cave1F",
+  "dimensions_metatiles": [
+    12,
+    10
+  ],
+  "arrival_core": [
+    18,
+    17
+  ],
+  "native_warp_arrival_core": [
+    18,
+    17
+  ],
+  "arrival_warp_index": 2,
+  "return_trigger_core": [
+    19,
+    17
+  ],
+  "return_warp_index": 1,
+  "exterior_map": "MnR01Cave1F",
+  "exterior_door_core": [
+    11,
+    9
+  ],
+  "exterior_return_core": [
+    10,
+    9
+  ],
+  "exterior_warp_index": 2,
+  "exterior_return_warp_index": 3,
+  "palette_group": "dark",
+  "native_phone_service": 20,
+  "source_design": "caves/driftless-fossil-gallery-v01/current.json",
+  "source_file": "caves/driftless-fossil-gallery-v01/current.json",
+  "candidate_source_sha256": "38bccaa0a2c3ec4ff40f27c6e454038f9c6fb9b28570c117f3f16a8aa5eacec3",
+  "requires_real_collision_check": false,
+  "source_collision_checked": true,
+  "native_geometry_pack": "content-packs/minnesota-driftless-fossil-gallery-v03.crystalpack",
+  "native_geometry_pack_sha256": "3f3d12312ff947ea9f219a9368b98b51f4348ea7a76ed2caf7b062a8ef45316d",
+  "native_review_pack": "content-packs/minnesota-driftless-fossil-gallery-v03.crystalpack",
+  "native_review_pack_sha256": "3f3d12312ff947ea9f219a9368b98b51f4348ea7a76ed2caf7b062a8ef45316d",
+  "native_status": "Verified optional dry native12x10 fossil gallery; two fitted stairs, real native Flash, acknowledged fossil clue and once-only native Rare Candy.",
+  "validation": "Three controller cases,233 stdio calls,7 exact lit frames and2 inspected dark views. Full-pocket denial preserves cache; native Toss permits retry; Continue/once/passive returns pass. Local fixtures.",
+  "verification": "planning/minnesota/renders/driftless-fossil-gallery-v774/acceptance-v792.json",
+  "gameplay_contract": {
+    "native_flash_required": true,
+    "acknowledge_all_three_pages": true,
+    "claim_only_after_successful_native_delivery": true,
+    "full_pocket_retry": true,
+    "separate_visibility_flag": true
+  }
+}

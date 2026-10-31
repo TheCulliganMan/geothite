@@ -1,0 +1,151 @@
+{
+  "status": "DIRECT_SEAM_REJECTED_GEOGRAPHY_CYCLE",
+  "pack": "content-packs/minnesota-current-r17-trail-guidance-v02.crystalpack",
+  "pack_sha256": "186c262b18d5174cb7ba9727358d4022bea9fce6d362529405728028ef92c60a",
+  "detroit_origin": [
+    0,
+    0
+  ],
+  "actual_route_origin": [
+    -45,
+    -107
+  ],
+  "direct_north_required_origin": [
+    0,
+    -6
+  ],
+  "existing_path": [
+    {
+      "source": "MnDetroitLakes",
+      "direction": "east",
+      "target_map": "MnR15C00R00",
+      "offset": -3,
+      "target_origin": [
+        24,
+        -3
+      ]
+    },
+    {
+      "source": "MnR15C00R00",
+      "direction": "east",
+      "target_map": "MnBrainerd",
+      "offset": 0,
+      "target_origin": [
+        56,
+        -3
+      ]
+    },
+    {
+      "source": "MnBrainerd",
+      "direction": "north",
+      "target_map": "MnR07C00R01",
+      "offset": 6,
+      "target_origin": [
+        62,
+        -27
+      ]
+    },
+    {
+      "source": "MnR07C00R01",
+      "direction": "north",
+      "target_map": "MnR07C00R00",
+      "offset": 0,
+      "target_origin": [
+        62,
+        -51
+      ]
+    },
+    {
+      "source": "MnR07C00R00",
+      "direction": "north",
+      "target_map": "MnLeechLake",
+      "offset": -6,
+      "target_origin": [
+        56,
+        -75
+      ]
+    },
+    {
+      "source": "MnLeechLake",
+      "direction": "north",
+      "target_map": "MnR08C00R01",
+      "offset": 3,
+      "target_origin": [
+        59,
+        -99
+      ]
+    },
+    {
+      "source": "MnR08C00R01",
+      "direction": "north",
+      "target_map": "MnR08C00R00",
+      "offset": 0,
+      "target_origin": [
+        59,
+        -123
+      ]
+    },
+    {
+      "source": "MnR08C00R00",
+      "direction": "north",
+      "target_map": "MnBemidji",
+      "offset": 0,
+      "target_origin": [
+        59,
+        -147
+      ]
+    },
+    {
+      "source": "MnBemidji",
+      "direction": "west",
+      "target_map": "MnR14C01R00",
+      "offset": -1,
+      "target_origin": [
+        43,
+        -148
+      ]
+    },
+    {
+      "source": "MnR14C01R00",
+      "direction": "west",
+      "target_map": "MnR14C00R00",
+      "offset": 0,
+      "target_origin": [
+        11,
+        -148
+      ]
+    },
+    {
+      "source": "MnR14C00R00",
+      "direction": "west",
+      "target_map": "MnLakeItasca",
+      "offset": 9,
+      "target_origin": [
+        -13,
+        -139
+      ]
+    },
+    {
+      "source": "MnLakeItasca",
+      "direction": "west",
+      "target_map": "MnR19C00R00",
+      "offset": 8,
+      "target_origin": [
+        -45,
+        -131
+      ]
+    },
+    {
+      "source": "MnR19C00R00",
+      "direction": "south",
+      "target_map": "MnR19C00R01",
+      "offset": 0,
+      "target_origin": [
+        -45,
+        -107
+      ]
+    }
+  ],
+  "publisher_error": "Error: inconsistent outdoor placement: MnDetroitLakes/MnR15C00R00\n",
+  "next_action": "Reconcile regional placement and intended physical link before publishing. Do not bypass compact geography validation."
+}

@@ -1,0 +1,198 @@
+{
+  "pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+  "pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33",
+  "map": "MnStCloud",
+  "source_dossier": "planning/minnesota/revisions/route-grass-v01/current-st-cloud-fronts-v01/dossier.after.json",
+  "start": [
+    7,
+    10
+  ],
+  "badge_count": 8,
+  "event_flags": [],
+  "arrival_discovery_flags": [
+    "ENGINE_FLYPOINT_MN_ST_CLOUD"
+  ],
+  "roads": [
+    {
+      "inside": [
+        24,
+        4
+      ],
+      "out": "up",
+      "neighbor": "MnR06C00R01",
+      "there": [
+        16,
+        39
+      ]
+    },
+    {
+      "inside": [
+        25,
+        4
+      ],
+      "out": "up",
+      "neighbor": "MnR06C00R01",
+      "there": [
+        17,
+        39
+      ]
+    },
+    {
+      "inside": [
+        24,
+        34
+      ],
+      "out": "down",
+      "neighbor": "MnR05C00R00",
+      "there": [
+        24,
+        0
+      ]
+    },
+    {
+      "inside": [
+        25,
+        34
+      ],
+      "out": "down",
+      "neighbor": "MnR05C00R00",
+      "there": [
+        25,
+        0
+      ]
+    }
+  ],
+  "gates": [
+    {
+      "inside": [
+        24,
+        4
+      ],
+      "out": "up",
+      "neighbor": "MnR06C00R01",
+      "there": [
+        16,
+        39
+      ],
+      "script_root": "MnSCWindCheck",
+      "required_flags": [
+        "ENGINE_STORMBADGE"
+      ]
+    },
+    {
+      "inside": [
+        25,
+        4
+      ],
+      "out": "up",
+      "neighbor": "MnR06C00R01",
+      "there": [
+        17,
+        39
+      ],
+      "script_root": "MnSCWindCheck",
+      "required_flags": [
+        "ENGINE_STORMBADGE"
+      ]
+    }
+  ],
+  "ledges": [],
+  "fences": [],
+  "doors": [
+    {
+      "room": "MnStCloudPokecenter1F",
+      "outside": [
+        7,
+        10
+      ],
+      "arrival": [
+        10,
+        13
+      ],
+      "carpets": [
+        [
+          10,
+          15
+        ],
+        [
+          11,
+          15
+        ]
+      ]
+    },
+    {
+      "room": "MnStCloudMart",
+      "outside": [
+        15,
+        10
+      ],
+      "arrival": [
+        6,
+        5
+      ],
+      "carpets": [
+        [
+          6,
+          7
+        ],
+        [
+          7,
+          7
+        ]
+      ]
+    },
+    {
+      "room": "MnStCloudGym",
+      "outside": [
+        8,
+        28
+      ],
+      "arrival": [
+        4,
+        19
+      ],
+      "carpets": [
+        [
+          4,
+          21
+        ],
+        [
+          5,
+          21
+        ]
+      ]
+    },
+    {
+      "room": "MnStCloudStation",
+      "outside": [
+        35,
+        12
+      ],
+      "arrival": [
+        11,
+        17
+      ],
+      "carpets": [
+        [
+          10,
+          19
+        ],
+        [
+          11,
+          19
+        ]
+      ]
+    }
+  ],
+  "surf": null,
+  "counts": {
+    "roads": 4,
+    "gates": 2,
+    "ledges": 0,
+    "fences": 0,
+    "doors": 4,
+    "residents": 5,
+    "signs": 6
+  },
+  "scope": "All four exterior buildings and eight carpets only; no empty road/ledge/gate cases counted. Public route grass/bridge/plateau behavior is preserved, not newly claimed as fully reviewed. Initial party/badges are QA fixtures."
+}

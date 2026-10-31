@@ -26,6 +26,9 @@ use crate::{CompiledGamePack, MapModule};
 /// restore the opened shoreline through a silent map tile callback.
 /// This returns an in-memory pack and does not migrate saves,
 /// write a pack, establish earned access or certify visual quality.
+/// A same-size40×32 Minneapolis street revision may retain the existing north
+/// pool gate and18 cyclist return dispatches only after their exact programs,
+/// fixed anchors, recoil surroundings, water and boundary terrain are certified.
 ///
 /// # Errors
 /// Returns an error for an unsupported/stale city or extent, incomplete anchor
@@ -105,10 +108,17 @@ pub fn recompose_authored_city(
     validate_inventory(base, original, &plan)?;
     crate::verify_compiled_game_pack_for_runtime(base)?;
     let mut city = original.clone();
-    anchors::relocate(&mut city, &plan)?;
     city.attributes.width = width;
     city.attributes.height = height;
     city.blocks = layout.compile()?;
+    if original.id == "MnMinneapolis"
+        && same_extent
+        && (!original.script_map_commands.is_empty() || !original.script_block_changes.is_empty())
+    {
+        anchors::relocate_with_fixed_programs(base, original, &mut city, &plan)?;
+    } else {
+        anchors::relocate(&mut city, &plan)?;
+    }
     let mut pack = if let Some(block) = waterfall {
         crate::authored_city_recomposition_art::waterfall(base, block)?
     } else {

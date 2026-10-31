@@ -1130,6 +1130,10 @@ pub struct PokemonCryMetadata {
 pub struct RuntimeTitleScreen {
     #[serde(deserialize_with = "required_nullable_audio_reference_token")]
     pub title_music: Option<String>,
+    /// A complete native 160x144 title image. Skips the source studio/movie
+    /// sequence and holds this image until the player opens the main menu.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub static_title_image: Option<String>,
     pub program: RuntimePresentationProgram,
 }
 

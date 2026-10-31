@@ -1,0 +1,48 @@
+{
+  "status": "PASS_SOURCE_ONLY_RECONCILIATION",
+  "revision": "route_grass_st_cloud_fronts_revision",
+  "pack": "content-packs/minnesota-current-st-cloud-fronts-v02.crystalpack",
+  "pack_sha256": "df5e4c47500d84046f542418a203c8d58b0e119e97bc235083434464c8682ef3",
+  "native_pack_unchanged": true,
+  "native_reciprocal_connections": [
+    {
+      "map": "MnR10C00R00",
+      "connection": {
+        "direction": "east",
+        "target_map": "MnR10C01R00",
+        "offset": 0
+      }
+    },
+    {
+      "map": "MnR10C01R00",
+      "connection": {
+        "direction": "west",
+        "target_map": "MnR10C00R00",
+        "offset": 0
+      }
+    }
+  ],
+  "changed_dossier_top_level_keys": [
+    "description",
+    "rocky_revision_contract",
+    "source_reconciliation",
+    "superseded_carrier_bank_contract",
+    "districts",
+    "directional_grass_loops",
+    "status",
+    "closed_high_cliffs",
+    "viewpoints"
+  ],
+  "source_index": "planning/minnesota/revisions/route-grass-v01/current-r10-contract-reconciliation-v01/sources.json",
+  "source_index_sha256": "04d921d921519644e31883a2c118e8cbb95036f76aea0b4ff8d661c5b9810b09",
+  "compiled_dialogue_and_all_native_content_unchanged": true,
+  "required_grass_checks": "r10-current-contracts-v02.json",
+  "scope": "Source reconciliation only; no new gameplay or aesthetic acceptance.",
+  "closed_cliff_barrier_bounds_core": [
+    24,
+    21,
+    28,
+    22
+  ],
+  "closed_cliff_barrier_all_wall": true
+}

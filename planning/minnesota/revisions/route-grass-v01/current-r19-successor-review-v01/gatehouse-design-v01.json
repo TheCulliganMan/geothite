@@ -1,0 +1,24 @@
+{
+  "status": "DESIGN_REFERENCE_INSPECTED_NOT_IMPLEMENTED",
+  "authority": "Existing world.json MN_R19 southern gatehouse_warp plan and user Crystal route reference",
+  "rejected_option": "Direct native outdoor seam: incompatible placement cycle",
+  "native_reference": {
+    "exterior": "Route35 south gate, native johto art",
+    "interior": "Route35GoldenrodGate, gate tileset,5x4metatiles",
+    "inspected_images": [
+      "planning/minnesota/renders/route-grass-v01/current-r19-successor-review-v01/crystal-gate-reference-v01/Route35.png",
+      "planning/minnesota/renders/route-grass-v01/current-r19-successor-review-v01/crystal-gate-reference-v01/Route35GoldenrodGate.png"
+    ]
+  },
+  "requirements": [
+    "Visible native gate entrances at both outdoor endpoints",
+    "Interior ordinary north/south passage with paired warp carpets and safe passive arrivals",
+    "Six-badge requirement checked with native script denial and successful passage; retain inbound return behavior",
+    "Preserve required prairie habitat and all other route/town blocks and accepted facade doors",
+    "Allocate a free room identity from actual native registries; no guessed group/map IDs",
+    "Native2D whole-map/source and player-scale visual review",
+    "Production controller both directions, denial/retry, exits and Continue",
+    "Keep original direct-seam prototype unaccepted; do not bypass outdoor geography validator"
+  ],
+  "remaining": "Author source layout/room reservation, implement guarded Rust publisher, test and visually review before any selector change"
+}

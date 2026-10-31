@@ -1,0 +1,149 @@
+{
+  "schema_version": 1,
+  "id": "minnesota-kensigard-field-margin-site-v1",
+  "status": "source geometry candidate; unpublished; production travel and native view unproved",
+  "parent": "MnR16C01R00",
+  "parent_dimensions_metatiles": [
+    16,
+    24
+  ],
+  "parent_opening": {
+    "metatile": [
+      11,
+      0
+    ],
+    "before": "05",
+    "after": "02",
+    "north_offset": 3
+  },
+  "caretaker": {
+    "at": [
+      23,
+      5
+    ],
+    "approach": [
+      23,
+      6
+    ],
+    "sprite": "SPRITE_POKEFAN_M",
+    "script": "MnKensigardCaretaker"
+  },
+  "field": {
+    "map": "MnFieldMargin",
+    "constant": "MN_FIELD_MARGIN",
+    "tileset": "mn_prairie_headwaters",
+    "dimensions_metatiles": [
+      14,
+      16
+    ],
+    "south_offset": -3,
+    "border_block": "05",
+    "rows": [
+      "05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+      "05 05 05 05 02 02 02 05 05 05 05 05 05 05",
+      "05 05 05 02 02 02 02 02 05 05 05 05 05 05",
+      "05 05 02 02 0a 02 02 02 02 05 05 05 05 05",
+      "05 05 02 02 02 02 68 71 02 02 05 05 05 05",
+      "05 05 02 02 0a 02 71 71 02 02 02 05 05 05",
+      "05 05 05 02 02 02 71 71 02 02 02 05 05 05",
+      "05 05 05 02 84 84 02 02 84 84 84 02 05 05",
+      "05 05 02 02 84 84 02 02 84 84 84 02 05 05",
+      "05 05 02 02 84 84 02 02 84 84 84 02 05 05",
+      "05 05 02 02 84 84 02 71 71 02 02 02 05 05",
+      "05 05 05 02 02 02 02 68 71 02 02 02 05 05",
+      "05 05 05 05 02 02 02 71 71 02 02 05 05 05",
+      "05 05 05 05 05 02 02 02 02 02 05 05 05 05",
+      "05 05 05 05 05 05 05 02 02 05 05 05 05 05",
+      "05 05 05 05 05 05 05 05 02 05 05 05 05 05"
+    ],
+    "reads": {
+      "soil": {
+        "at": [
+          12,
+          8
+        ],
+        "approach": [
+          11,
+          8
+        ],
+        "kind": "WALL",
+        "script": "MnKensigardSoil"
+      },
+      "buried_edge": {
+        "at": [
+          8,
+          7
+        ],
+        "approach": [
+          8,
+          8
+        ],
+        "kind": "WALL",
+        "script": "MnKensigardEdge"
+      },
+      "grooves": {
+        "at": [
+          14,
+          22
+        ],
+        "approach": [
+          13,
+          22
+        ],
+        "kind": "WALL",
+        "script": "MnKensigardGrooves"
+      },
+      "boundary": {
+        "at": [
+          9,
+          10
+        ],
+        "approach": [
+          10,
+          10
+        ],
+        "kind": "WALL",
+        "script": "MnKensigardBoundary"
+      }
+    },
+    "creature": [
+      13,
+      5
+    ],
+    "creature_approach": [
+      13,
+      6
+    ],
+    "reveal_coordinate": [
+      13,
+      6
+    ],
+    "arrival": [
+      16,
+      31
+    ],
+    "ordinary_return": [
+      16,
+      30
+    ]
+  },
+  "static_review": {
+    "reachable_dry_tiles": 399,
+    "all_read_approaches_connected": true,
+    "only_open_border": "south x16/17",
+    "incidental_cut_quadrants": 0,
+    "water_tiles": 0,
+    "note": "soil and grooves use solid native exposed-earth edge quadrants so facing input cannot step onto a read"
+  },
+  "production_acceptance": [
+    "current-parent preservation",
+    "north/south walking seam and return",
+    "held A and Continue across every clue",
+    "physical reentry required for changing grooves",
+    "final report acknowledgment then coordinate reveal",
+    "RUN KO blackout native recovery and physical retry",
+    "capture party PC full-storage and once-only",
+    "production MCP",
+    "native 2D full scene inspection"
+  ]
+}

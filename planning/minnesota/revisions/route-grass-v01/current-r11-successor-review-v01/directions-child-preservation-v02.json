@@ -1,0 +1,39 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-r11-stair-guidance-v02.crystalpack",
+  "pack_sha256": "332d6ee5c5b77c028119c898e774043895859929a46ff534ebbd14bc1cc2e5d4",
+  "content_identity": "f0489cf707e52b3240962500b99dcf0b82a8ee1e51f03201f89e21b5820e5d23",
+  "grass_parent": {
+    "status": "PASS_NATIVE_CHILD_NOT_SELECTED",
+    "parent_revision": "iron_sump_basin_revision",
+    "parent_pack": "content-packs/minnesota-iron-sump-basin-v02.crystalpack",
+    "parent_pack_sha256": "39652f276409aad3d256a778897891f03787c4cc2484b1abc42299a6ec2abfab",
+    "pack": "content-packs/minnesota-current-r11-southwest-grass-v01.crystalpack",
+    "pack_sha256": "9f0ff0c7d0f6dd874ef1a581657900984ca75d360ffb04da2c92b00ab58475aa",
+    "content_identity": "76a702233ab6f9e154909031967ca44d51aec511ad2bf2cafad23d0a5966ee21",
+    "delta": {
+      "maps": [
+        "MnR11C00R00"
+      ],
+      "map_blocks": [
+        "MnR11C00R00_Blocks"
+      ]
+    },
+    "new_grass_quadrants": 20,
+    "all_other_maps_and_all_events_actors_scripts_teams_encounters_items_art_audio_exact": true
+  },
+  "delta": {
+    "maps": [
+      "MnR11C00R01",
+      "MnR11C00R03"
+    ],
+    "map_scripts": [
+      "MN_R11_LESTER_SIGNText",
+      "MN_R11_PALISADE_SIGNText"
+    ]
+  },
+  "all_terrain_actors_events_items_encounters_and_battle_inputs_exact": true,
+  "original_tested_pack": "content-packs/minnesota-current-r11-grass-and-stairs-v01.crystalpack",
+  "current_parent_revision": "iron_sump_basin_revision",
+  "all_eight_complete_r11_maps_and_test_inputs_exact": true
+}

@@ -30,6 +30,8 @@ struct Contract {
 /// # Errors
 /// Rejects invalid packs/contracts, stale identities, overlapping changes,
 /// removed manifest markers, repeated application or invalid resulting content.
+/// Compiled command caches merge by source program. Different revisions of the
+/// same program still conflict, including when their individual indices differ.
 pub fn compose_current_minnesota_release(
     current: &CompiledGamePack,
     before: &CompiledGamePack,
@@ -119,7 +121,9 @@ pub fn compose_current_minnesota_release(
             .clone_from(&released.audio_compression);
     }
     result.report.manifests = manifests;
-    result.report.manifests.push(MANIFEST.into());
+    if !result.report.manifests.iter().any(|id| id == MANIFEST) {
+        result.report.manifests.push(MANIFEST.into());
+    }
     result.identity = crate::derive_compiled_game_pack_identity_from_manifest(
         result.format_version,
         &result.data,
@@ -264,6 +268,39 @@ fn merge_value(
     if current == before || current == after {
         return Ok(after.cloned());
     }
+    // Command rows are derived independently for each source program.
+    // Two branches can revise different programs in one room without either
+    // branch owning the other program's cached rows.
+    if is_command_cache(path)
+        && let (Some(Value::Array(current)), Some(Value::Array(before)), Some(Value::Array(after))) =
+            (current, before, after)
+    {
+        let current = command_rows_by_script(current)?;
+        let before = command_rows_by_script(before)?;
+        let after = command_rows_by_script(after)?;
+        let merged = merge_value(
+            Some(&current),
+            Some(&before),
+            Some(&after),
+            &format!("{path}.programs"),
+        )?
+        .context("command cache program table cannot disappear")?;
+        let mut rows = Vec::new();
+        for commands in merged
+            .as_object()
+            .context("merged command cache program table")?
+            .values()
+        {
+            rows.extend(
+                commands
+                    .as_array()
+                    .context("merged command cache rows")?
+                    .iter()
+                    .cloned(),
+            );
+        }
+        return Ok(Some(Value::Array(rows)));
+    }
     if let (Some(Value::Object(current)), Some(Value::Object(before)), Some(Value::Object(after))) =
         (current, before, after)
     {
@@ -288,11 +325,129 @@ fn merge_value(
     bail!("overlapping current/released content at {path}")
 }
 
+fn is_command_cache(path: &str) -> bool {
+    path.starts_with("pack.data.maps.")
+        && matches!(
+            path.rsplit('.').next(),
+            Some(
+                "script_text_commands"
+                    | "script_control_commands"
+                    | "script_variable_commands"
+                    | "script_flag_commands"
+                    | "script_item_grants"
+                    | "script_item_checks"
+                    | "script_item_takes"
+                    | "gift_pokemon_scripts"
+                    | "script_runtime_commands"
+                    | "script_object_commands"
+                    | "script_audio_commands"
+                    | "script_economy_commands"
+                    | "script_map_commands"
+                    | "script_scene_commands"
+                    | "script_shop_commands"
+                    | "script_phone_commands"
+                    | "script_swarm_commands"
+                    | "script_block_changes"
+            )
+        )
+}
+
+fn command_rows_by_script(rows: &[Value]) -> Result<Value> {
+    let mut programs = BTreeMap::<String, Vec<Value>>::new();
+    for row in rows {
+        let source = row["source_script"]
+            .as_str()
+            .context("cached command requires its source program")?;
+        programs.entry(source.into()).or_default().push(row.clone());
+    }
+    Ok(serde_json::to_value(programs)?)
+}
+
 #[cfg(test)]
 mod tests {
     use super::{merge_byte_entries, merge_manifests, merge_value, preserve_outdoor_geometry};
     use serde_json::json;
     use std::collections::BTreeMap;
+
+    #[test]
+    fn independent_program_text_metadata_composes_but_same_program_conflicts() {
+        let before = json!([
+            {"source_script":"A", "command":"writetext", "text_label":"OldA", "command_index":0},
+            {"source_script":"B", "command":"writetext", "text_label":"OldB", "command_index":0}
+        ]);
+        let mut current = before.clone();
+        current[0]["text_label"] = json!("CurrentA");
+        let mut after = before.clone();
+        after[1]["text_label"] = json!("StoryB");
+        let merged = merge_value(
+            Some(&current),
+            Some(&before),
+            Some(&after),
+            "pack.data.maps.MnDuluth.script_text_commands",
+        )
+        .expect("different source programs compose")
+        .expect("text commands");
+        assert_eq!(merged[0], current[0]);
+        assert_eq!(merged[1], after[1]);
+        after[0]["text_label"] = json!("ConflictingA");
+        let error = merge_value(
+            Some(&current),
+            Some(&before),
+            Some(&after),
+            "pack.data.maps.MnDuluth.script_text_commands",
+        )
+        .expect_err("same program must not silently choose a branch");
+        assert!(error.to_string().contains("programs.A"));
+    }
+
+    #[test]
+    fn independent_aide_and_dex_caches_compose_without_merging_one_program() {
+        for field in [
+            "script_control_commands",
+            "script_variable_commands",
+            "script_flag_commands",
+            "gift_pokemon_scripts",
+        ] {
+            let before = json!([
+                {"source_script":"Aide", "command_index":0, "value":"late"},
+                {"source_script":"Dex", "command_index":0, "value":224}
+            ]);
+            let current = json!([
+                {"source_script":"Aide", "command_index":2, "value":"early"},
+                {"source_script":"Dex", "command_index":0, "value":224},
+                {"source_script":"NewPartner", "command_index":0, "value":"free"}
+            ]);
+            let released = json!([
+                {"source_script":"Aide", "command_index":0, "value":"late"},
+                {"source_script":"Dex", "command_index":0, "value":225}
+            ]);
+            let path = format!("pack.data.maps.MnWinonaFieldStation.{field}");
+            let merged = merge_value(Some(&current), Some(&before), Some(&released), &path)
+                .expect("different native programs compose")
+                .expect("cache");
+            assert_eq!(
+                merged,
+                json!([
+                    {"source_script":"Aide", "command_index":2, "value":"early"},
+                    {"source_script":"Dex", "command_index":0, "value":225},
+                    {"source_script":"NewPartner", "command_index":0, "value":"free"}
+                ])
+            );
+            let mut conflicting = released.clone();
+            conflicting[0]["value"] = json!("another change to Aide");
+            assert!(merge_value(Some(&current), Some(&before), Some(&conflicting), &path).is_err());
+            assert!(
+                merge_value(
+                    Some(&current),
+                    Some(&before),
+                    Some(&released),
+                    "pack.data.maps.MnWinonaFieldStation.objects"
+                )
+                .is_err(),
+                "ordinary arrays remain atomic"
+            );
+        }
+    }
 
     #[test]
     fn independent_terrain_and_story_compose_without_restoring_legacy_placement() {

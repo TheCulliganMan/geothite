@@ -1,0 +1,10 @@
+{
+  "status": "PASS_CURRENT_MINNEAPOLIS_SERVICES_AND_BUILDING_RETURNS",
+  "pack": "content-packs/minnesota-international-falls-windbreak-v01.crystalpack",
+  "pack_sha256": "7066f05448101c79b4dc761963b0f39a570bad07c4f80e3e777901ac2e207507",
+  "fresh_service_native_cases": 1,
+  "production_continue_calls": 15,
+  "prior_city_and_18_cyclist_review": "planning/minnesota/revisions/route-grass-v01/current-minneapolis-successor-v01/local-review-v01.json",
+  "source_checks": "current-source-checks-v01.json",
+  "scope": "Updated only obsolete service-test exterior anchors. Native healing/PC/priced purchase/both Gym returns/Continue pass, plus fresh production walking/menu/Continue from actual shop-return save. Previous45-map inheritance and18rider two-lap/midrouteContinue evidence retained. No game pack or terrain change; explicit fixtures, not earned campaign progression."
+}

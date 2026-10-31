@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "selected_revision": "route_grass_r16_bank_guidance_revision",
+  "pack": "content-packs/minnesota-current-r16-bank-guidance-v02.crystalpack",
+  "pack_sha256": "e47cfeeff4baf0e2fd9654d9859e2fd094d856f8d34bede6c1c333c8209bce26",
+  "maps": [
+    "MnR17C00R00",
+    "MnR17C00R01",
+    "MnR17C00R02"
+  ],
+  "current_layout": {
+    "path": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R17.after.layout.json",
+    "sha256": "8b82a99c35d311569bb04deec5a542129868403ac91a3b724cf0ec0617cbc532"
+  },
+  "current_dossier": {
+    "path": "planning/minnesota/caves/r17-talus-loop-v01/route-dossier.json",
+    "sha256": "b8f12db233c2715973a4a435e79f7587bb59650f57c9dc3c247404642a403bb4"
+  }
+}

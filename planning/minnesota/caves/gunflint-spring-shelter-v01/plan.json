@@ -1,0 +1,154 @@
+{
+  "schema_version": 1,
+  "map": "MnR12Cave1F",
+  "purpose": "A dry Gunflint shelter with two climbable alcoves, a central rock fin, a winding spring bank and a working camp rest.",
+  "parent": {
+    "parent_revision": "iron_drill_core_revision",
+    "parent_pack": "content-packs/minnesota-iron-drill-core-v04.crystalpack",
+    "parent_pack_sha256": "4240537c844bf7e305e99c24f2b7054c314b84a03d17037747cb4ceabdbd17fd"
+  },
+  "dimensions_metatiles": [
+    16,
+    12
+  ],
+  "palette": "Native cave NITE; no source pixels, art banks, music or audio programs changed.",
+  "entrance": {
+    "interior_active": [
+      17,
+      23
+    ],
+    "interior_clear": [
+      17,
+      22
+    ],
+    "exterior_map": "MnR12C00R00",
+    "exterior_core": [
+      40,
+      15
+    ],
+    "exterior_clear": [
+      40,
+      16
+    ],
+    "preserved_warp_index": 1,
+    "native_settled_return_core": [
+      40,
+      16
+    ]
+  },
+  "features": [
+    {
+      "id": "central-rock-fin",
+      "two_dry_paths_from": [
+        13,
+        18
+      ],
+      "to": [
+        13,
+        10
+      ],
+      "west_waypoint": [
+        8,
+        14
+      ],
+      "east_waypoint": [
+        20,
+        14
+      ]
+    },
+    {
+      "id": "camper-ledge",
+      "actor": "MN_R12_OTTA",
+      "tile": [
+        5,
+        5
+      ],
+      "approach": [
+        6,
+        5
+      ],
+      "climb": {
+        "metatile": [
+          3,
+          4
+        ],
+        "native_block": "30",
+        "walking_column": 6
+      }
+    },
+    {
+      "id": "cache-ledge",
+      "actor": "MN_R12_CAVE_CACHE",
+      "tile": [
+        27,
+        5
+      ],
+      "approach": [
+        26,
+        5
+      ],
+      "climb": {
+        "metatile": [
+          13,
+          4
+        ],
+        "native_block": "36",
+        "walking_column": 26
+      },
+      "item": "MAX_ETHER",
+      "quantity": 1,
+      "flag": "EVENT_MN_R12_CAVE_ETHER"
+    },
+    {
+      "id": "contained-spring",
+      "bank": [
+        20,
+        16
+      ],
+      "water": "Native animated WATER; entirely enclosed by the room boundary. Both main paths, camper and cache require no Surf."
+    }
+  ],
+  "rest": {
+    "actor": "MN_R12_OTTA",
+    "approach": [
+      6,
+      5
+    ],
+    "facing": "left",
+    "offer_lines": [
+      "Catch your breath?",
+      "I'll watch while",
+      "your team rests."
+    ],
+    "accepted_lines": [
+      "Close your eyes.",
+      "I will watch here."
+    ],
+    "done_lines": [
+      "Your partners look",
+      "ready to travel."
+    ],
+    "declined_lines": [
+      "Keep your footing.",
+      "Mind the spring."
+    ],
+    "effect": "Native special HealParty after the accepted waitbutton; restores HP, PP and status for every carried partner. No payment, story flag, blackout-location change or new audio program."
+  },
+  "preserve": "Exact original exterior warp/IDs, actor anchors/sprites, Otta original conversation and native once-only cache. All other maps, species, encounters, source art/audio and recovery metadata remain intact.",
+  "review": {
+    "whole_source": "planning/minnesota/renders/gunflint-spring-v631/source-v631",
+    "warm_source_seconds": 0.014,
+    "reference": "Original UnionCave1F native wall, water and stair art inspected at native scale."
+  },
+  "verification_required": [
+    "Full native source geometry and body-aware paths",
+    "Dry west/east passages and both climbs in both directions",
+    "Actual compact exterior entry, safe return and Continue",
+    "Refusal retains injured/fainted party, zero PP and status; accepted waitbutton must precede full native HealParty",
+    "Once-only Max Ether and Continue",
+    "Whole map and eight native camera comparisons",
+    "Exact full-parent preservation and all audio hashes/frame/loop ranges",
+    "Scoped Rust formatting, relevant controller/MCP and all-target Clippy"
+  ],
+  "status": "Verified complete native shelter; world.json controls selection. Broader regional map review remains active."
+}

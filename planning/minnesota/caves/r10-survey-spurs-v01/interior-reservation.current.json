@@ -1,0 +1,47 @@
+{
+  "interior": "MnR10Cave1F",
+  "parent_route": "MN_R10",
+  "arrival_core": [
+    3,
+    13
+  ],
+  "return_trigger_core": [
+    3,
+    13
+  ],
+  "exterior_anchor_metatile": [
+    18,
+    8
+  ],
+  "exterior_door_core": [
+    36,
+    17
+  ],
+  "requires_real_collision_check": true,
+  "safe_exterior_return_core": [
+    36,
+    18
+  ],
+  "native_status": "Verified complete native24x18 survey-spur refinement; five original actors, optional battles, caches, stairs, drops, spring and exact mouth retained. Local fixture evidence does not prove earned arrival.",
+  "native_warp_arrival_core": [
+    3,
+    13
+  ],
+  "dimensions_metatiles": [
+    24,
+    18
+  ],
+  "native_palette": "nite",
+  "candidate_source_sha256": "3a5f8604d4ca18c73985818b0fb05e5f88e23fdb852304e7c9d83f42e8d84c56",
+  "clear_arrival_core": [
+    3,
+    12
+  ],
+  "source_design": "caves/r10-survey-spurs-v01/current.json",
+  "native_review_pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33",
+  "validation": "Exact whole-parent preservation of732other maps and all programs/native art/audio. Three production controller cases,2923 stdio calls,12 zero-difference native cameras and two actual reached-save views pass.",
+  "verification": "planning/minnesota/renders/r10-survey-spurs-v681/acceptance-v699.json",
+  "source_file": "caves/r10-survey-spurs-v01/current.json",
+  "source_collision_checked": true,
+  "native_review_pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack"
+}

@@ -7,7 +7,7 @@ use crystal_runtime::CrystalRuntime;
 use serde_json::Value;
 
 use super::super::authored_route_fixture::indoor_walk;
-use super::super::native_city_ports::east_road_port;
+use super::super::native_city_ports::{city_port, east_road_port};
 use super::super::northstar_earned_gyms;
 use super::super::rochester_earned::try_battle;
 use super::super::winona::{at as location, continue_in_place, load, travel};
@@ -77,7 +77,8 @@ pub(super) fn current() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
             VisibleShellController::load_save(root.clone(), r.clone(), PathBuf::from(path), None)
                 .expect("genuine same-pack Current Badge victory checkpoint");
         c.set_runtime_journal_enabled(false);
-        location(&mut c, "MnMinneapolis", (64, 34));
+        let (door, _) = city_port(&r, "MnMinneapolis", "MnMinneapolisGym");
+        location(&mut c, "MnMinneapolis", door);
         for flag in [
             "EVENT_MN_GYM_1_DEFEATED",
             "EVENT_MN_GYM_2_DEFEATED",
@@ -92,8 +93,9 @@ pub(super) fn current() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
     }
     let (root, r, mut c) = arrival();
     let gym = design(&r);
+    let (home_door, _) = city_port(&r, "MnMinneapolis", "MnMinneapolisDispatcherHouse");
     indoor_walk(&mut c, &r, (5, 6));
-    travel(&mut c, GameButton::Down, "MnMinneapolis", (23, 42));
+    travel(&mut c, GameButton::Down, "MnMinneapolis", home_door);
     for (tile, id) in [
         ((1, 13), "MN_GYM_3_TRAINER_1"),
         ((8, 10), "MN_GYM_3_TRAINER_2"),
@@ -103,8 +105,9 @@ pub(super) fn current() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
         for attempt in 0..4 {
             care(&mut c, &r);
             supplies(&mut c, &r);
-            indoor_walk(&mut c, &r, (64, 34));
-            travel(&mut c, GameButton::Up, "MnMinneapolisGym", (4, 15));
+            let (door, arrival) = city_port(&r, "MnMinneapolis", "MnMinneapolisGym");
+            indoor_walk(&mut c, &r, door);
+            travel(&mut c, GameButton::Up, "MnMinneapolisGym", arrival);
             let selected = northstar_earned_gyms::selected(&r);
             if selected && id != "MN_GYM_3_TRAINER_1" {
                 if !event(&c, "EVENT_MN_GYM_3_FIRST_SWITCH_ON") {
@@ -132,7 +135,7 @@ pub(super) fn current() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
                 // Native move-learning choices remain in force. Victory and
                 // the saved trainer flag below establish the earned battle.
                 walk_to(&mut c, &r, (4, 16));
-                travel(&mut c, GameButton::Down, "MnMinneapolis", (64, 34));
+                travel(&mut c, GameButton::Down, "MnMinneapolis", door);
                 continue_in_place(&mut c, &root, &r, &format!("campaign-{id}-win"));
                 break;
             }
@@ -181,6 +184,7 @@ fn depart(
             .quantity(&r.data().items["TM_THUNDERPUNCH"]),
         1
     );
+    super::northstar_earned_services::minneapolis(&mut c, &r, &root);
     for attempt in 0..4 {
         care(&mut c, &r);
         let (approach, arrival) = east_road_port(&mut c, &r, "MnR04C00R00");

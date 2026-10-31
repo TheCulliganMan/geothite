@@ -1,5 +1,5 @@
 //! Explicit resources/defeated-trainer fixtures; all journeys and quests use input.
-use std::collections::{BTreeMap, BTreeSet, VecDeque};
+use std::collections::BTreeSet;
 use std::path::PathBuf;
 
 use crystal_core::input::GameButton;
@@ -122,97 +122,12 @@ fn register(c: &mut VisibleShellController, yes: bool) {
 
 /// Plan ordinary snow/grass steps only; the production controller owns each move.
 fn dry_walk(c: &mut VisibleShellController, r: &CrystalRuntime, to: (i16, i16)) {
-    let before = c.snapshot().expect("route origin").overworld;
-    let regions = if before.map_name.starts_with("MnR20C") {
-        vec![
-            ("MnR20C00R00", 0, 0),
-            ("MnR20C01R00", 64, 0),
-            ("MnR20C00R01", 0, 48),
-            ("MnR20C01R01", 64, 48),
-        ]
-    } else {
-        vec![(before.map_name.as_str(), 0, 0)]
-    };
-    let origin = regions
-        .iter()
-        .find(|(name, _, _)| *name == before.map_name)
-        .expect("current route rectangle");
-    let start = (before.tile.x + origin.1, before.tile.y + origin.2);
-    let target = (to.0 + origin.1, to.1 + origin.2);
-    let mut locations = BTreeMap::new();
-    for (name, ox, oy) in &regions {
-        let m = &r.data().maps[*name];
-        let bodies = m
-            .objects
-            .iter()
-            .map(|o| (o.x as i16, o.y as i16))
-            .collect::<BTreeSet<_>>();
-        for y in 0..m.attributes.height as i16 * 2 {
-            for x in 0..m.attributes.width as i16 * 2 {
-                if bodies.contains(&(x, y)) {
-                    continue;
-                }
-                let block =
-                    m.blocks[y as usize / 2 * usize::from(m.attributes.width) + x as usize / 2];
-                let k = &r.data().tilesets[&m.attributes.tileset_name].collision
-                    [&format!("{block:02x}")][y as usize % 2 * 2 + x as usize % 2];
-                if matches!(
-                    k.as_str(),
-                    "FLOOR" | "TALL_GRASS" | "BRIDGE_NS_DECK" | "BRIDGE_EW_DECK"
-                ) {
-                    locations.insert((x + ox, y + oy), (*name, (x, y)));
-                }
-            }
-        }
-    }
-    let mut parents = BTreeMap::new();
-    let mut seen = BTreeSet::from([start]);
-    let mut todo = VecDeque::from([start]);
-    while let Some(p) = todo.pop_front() {
-        if p == target {
-            break;
-        }
-        for (q, b) in [
-            ((p.0 - 1, p.1), GameButton::Left),
-            ((p.0 + 1, p.1), GameButton::Right),
-            ((p.0, p.1 - 1), GameButton::Up),
-            ((p.0, p.1 + 1), GameButton::Down),
-        ] {
-            if !locations.contains_key(&q) || seen.contains(&q) {
-                continue;
-            }
-            seen.insert(q);
-            parents.insert(q, (p, b));
-            todo.push_back(q);
-        }
-    }
-    assert!(
-        seen.contains(&target),
-        "{} has no ordinary snow-bank course {start:?} to {to:?}",
-        before.map_name
-    );
-    let mut course = Vec::new();
-    let mut p = target;
-    while p != start {
-        let (prev, b) = parents[&p];
-        course.push((p, b));
-        p = prev;
-    }
-    for (q, b) in course.into_iter().rev() {
-        journey::repel(c, r);
-        let (name, local) = locations[&q];
-        for _ in 0..8 {
-            press(c, b);
-            let actual = c.snapshot().expect("native route step").overworld;
-            if actual.map_name == name && (actual.tile.x, actual.tile.y) == local {
-                break;
-            }
-        }
-        let actual = c.snapshot().expect("actual route position").overworld;
-        assert_eq!(actual.map_name, name);
-        assert_eq!((actual.tile.x, actual.tile.y), local);
-    }
-    journey::repel(c, r);
+    let map = c
+        .snapshot()
+        .expect("current border route")
+        .overworld
+        .map_name;
+    journey::walk(c, r, &map, to);
 }
 
 #[test]
@@ -401,6 +316,23 @@ fn international_falls_controller_walks_the_real_border_loop_and_retries_full_pa
         .flags
         .set_event_flag("EVENT_MN_HEADWATERS_REPORT", true)
         .expect("explicit prior Headwaters evidence fixture for the east road");
+    // This local border-quest case supplies already completed upstream mine
+    // access, as well as the badges and lighthouse signal. The current Grand
+    // Rapids road requires the actual depot handover before eastbound travel.
+    // The border report, far-camp arrival and reward are still earned below.
+    for name in [
+        "EVENT_MN_DEPOT_FOREMAN_DEFEATED",
+        "EVENT_MN_MINE_INSTRUMENT_RECOVERED",
+        "EVENT_MN_DEPOT_CLEARED",
+    ] {
+        c.shell
+            .shell
+            .session_mut()
+            .state_mut()
+            .flags
+            .set_event_flag(name, true)
+            .expect("declared completed upstream mine fixture");
+    }
     let defeated = r
         .data()
         .maps
@@ -417,10 +349,11 @@ fn international_falls_controller_walks_the_real_border_loop_and_retries_full_pa
             .set_event_flag(&name, true)
             .expect("defeated optional match fixture");
     }
-    let partner = r
+    let mut partner = r
         .data()
         .create_pokemon("POUCHID", 80, Dv::default())
         .expect("active regional journey partner fixture");
+    partner.item = Some("SMOKE_BALL".into());
     let state = c.shell.shell.session_mut().state_mut();
     state.storage.party.pokemon.fill(None);
     assert!(state.storage.party.add_pokemon(partner));
@@ -581,7 +514,7 @@ fn international_falls_controller_free_care_pc_poison_recovery_and_priced_stock(
     let mut c = fixture(&root, &r, CLINIC, (3, 8));
     let mut partner = r
         .data()
-        .create_pokemon("CHIKORITA", 20, Dv::default())
+        .create_pokemon("CINDORE", 20, Dv::default())
         .expect("care fixture");
     partner.hp = 10;
     partner.status = Some("POISON".into());

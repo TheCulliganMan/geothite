@@ -1,0 +1,20 @@
+{
+  "status": "BUILDING_AND_WEST_TRAIL_VIEWS_INSPECTED_RIVER_COMPARISON_OPEN",
+  "pack": "content-packs/minnesota-current-winona-mart-v01.crystalpack",
+  "pack_sha256": "096585f981c5b0fcbe406f9f85e1454cf2a714d420e3dcf3284d9f3195751760",
+  "image": "planning/minnesota/renders/route-grass-v01/current-winona-town-v01/native-v01/production-decisions.png",
+  "image_sha256": "e0115722f941c7bd14702dd6df223f499570aad3ca2af197b5c7f865aaf77353",
+  "inspected": true,
+  "building_views": [
+    "mart",
+    "home",
+    "clinic",
+    "field-station",
+    "depot"
+  ],
+  "building_and_west_trail_source_mismatches": 0,
+  "river_mouth_source_mismatches": 1440,
+  "river_limitation": "Water-position capture shows surf player art. River frame comparator failed and is not counted as passing; full cause remains to inspect. No pack or geometry adjustment made to satisfy comparison.",
+  "state_fair_preserved": true,
+  "selected": false
+}

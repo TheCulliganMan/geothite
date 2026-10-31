@@ -1,0 +1,33 @@
+{
+  "pid": 74460,
+  "source_sha256": {
+    "crates/crystal-assets/src/bemidji_mart_facade.rs": "8d349cfe22a591ae029a279c98146fb977d4e4fee5adcd7de7ff8bb82dff5003",
+    "crates/crystal-assets/src/bin/revise_bemidji_mart_facade.rs": "0b83f6db16b61075366c9cb09c767f10c5aba16878134f805096d3d2c8f90d93"
+  },
+  "steps": [
+    {
+      "step": "publisher",
+      "command": [
+        "cargo",
+        "build",
+        "--profile",
+        "wasm-dev",
+        "--locked",
+        "--config",
+        "profile.wasm-dev.package.crystal-assets.opt-level=0",
+        "-p",
+        "crystal-assets",
+        "--bin",
+        "revise_bemidji_mart_facade"
+      ],
+      "exit_code": 0,
+      "log": ".local/route-grass-review/bemidji-mart-publisher-v01.log",
+      "outputs": [
+        {
+          "path": ".local/route-grass-review/portable-bemidji-tools-v01/revise_bemidji_mart_facade",
+          "sha256": "08175e693a050ad1702365246b424b96bea13401daacf7b1827967a19660a6df"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,256 @@
+{
+  "status": "PASS_STATIC_NATIVE_TREE_FIT",
+  "parent_pack": "content-packs/minnesota-st-paul-inhabited-streets-v03.crystalpack",
+  "parent_sha256": "43f491c876f40823ff43da723f33e405d94d2ff59fc49d41b87d929f594d3e9d",
+  "changed_metatiles": 6,
+  "collision_delta": [
+    {
+      "at": [
+        6,
+        18
+      ],
+      "before": "HOP_DOWN",
+      "after": "WALL"
+    },
+    {
+      "at": [
+        7,
+        18
+      ],
+      "before": "HOP_DOWN",
+      "after": "WALL"
+    },
+    {
+      "at": [
+        8,
+        18
+      ],
+      "before": "HOP_DOWN",
+      "after": "WALL"
+    },
+    {
+      "at": [
+        9,
+        18
+      ],
+      "before": "HOP_DOWN",
+      "after": "WALL"
+    },
+    {
+      "at": [
+        20,
+        18
+      ],
+      "before": "HOP_DOWN",
+      "after": "WALL"
+    },
+    {
+      "at": [
+        21,
+        18
+      ],
+      "before": "HOP_DOWN",
+      "after": "WALL"
+    },
+    {
+      "at": [
+        22,
+        18
+      ],
+      "before": "HOP_DOWN",
+      "after": "WALL"
+    },
+    {
+      "at": [
+        23,
+        18
+      ],
+      "before": "FLOOR",
+      "after": "WALL"
+    },
+    {
+      "at": [
+        23,
+        19
+      ],
+      "before": "FLOOR",
+      "after": "WALL"
+    },
+    {
+      "at": [
+        38,
+        26
+      ],
+      "before": "FLOOR",
+      "after": "WALL"
+    },
+    {
+      "at": [
+        39,
+        26
+      ],
+      "before": "FLOOR",
+      "after": "WALL"
+    }
+  ],
+  "source_pixels_modified": false,
+  "tileset_unchanged": true,
+  "all_remaining_floor_reachability_preserved": true,
+  "closed_events_or_actors": false,
+  "valid_native_bank_lanes": [
+    {
+      "upper": [
+        10,
+        17
+      ],
+      "lip": [
+        10,
+        18
+      ],
+      "landing": [
+        10,
+        20
+      ],
+      "ordinary_return_steps": 35
+    },
+    {
+      "upper": [
+        11,
+        17
+      ],
+      "lip": [
+        11,
+        18
+      ],
+      "landing": [
+        11,
+        20
+      ],
+      "ordinary_return_steps": 33
+    },
+    {
+      "upper": [
+        12,
+        17
+      ],
+      "lip": [
+        12,
+        18
+      ],
+      "landing": [
+        12,
+        20
+      ],
+      "ordinary_return_steps": 31
+    },
+    {
+      "upper": [
+        13,
+        17
+      ],
+      "lip": [
+        13,
+        18
+      ],
+      "landing": [
+        13,
+        20
+      ],
+      "ordinary_return_steps": 29
+    },
+    {
+      "upper": [
+        14,
+        17
+      ],
+      "lip": [
+        14,
+        18
+      ],
+      "landing": [
+        14,
+        20
+      ],
+      "ordinary_return_steps": 27
+    },
+    {
+      "upper": [
+        15,
+        17
+      ],
+      "lip": [
+        15,
+        18
+      ],
+      "landing": [
+        15,
+        20
+      ],
+      "ordinary_return_steps": 25
+    },
+    {
+      "upper": [
+        16,
+        17
+      ],
+      "lip": [
+        16,
+        18
+      ],
+      "landing": [
+        16,
+        20
+      ],
+      "ordinary_return_steps": 23
+    },
+    {
+      "upper": [
+        17,
+        17
+      ],
+      "lip": [
+        17,
+        18
+      ],
+      "landing": [
+        17,
+        20
+      ],
+      "ordinary_return_steps": 21
+    },
+    {
+      "upper": [
+        18,
+        17
+      ],
+      "lip": [
+        18,
+        18
+      ],
+      "landing": [
+        18,
+        20
+      ],
+      "ordinary_return_steps": 19
+    },
+    {
+      "upper": [
+        19,
+        17
+      ],
+      "lip": [
+        19,
+        18
+      ],
+      "landing": [
+        19,
+        20
+      ],
+      "ordinary_return_steps": 17
+    }
+  ],
+  "blocked_tree_approaches": 7,
+  "floor_quadrants_after": 784,
+  "hop_quadrants_after": 10,
+  "scope": "Native-source preview and actor-aware FLOOR graph; runtime denial, all10 hops and actual source/native GPU review remain required. Seven failed tree-landings become solid forest; two unused upper forest-alcove cells also close, while all remaining ordinary reachable floor is preserved."
+}

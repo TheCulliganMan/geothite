@@ -1,0 +1,56 @@
+{
+  "MN_R11_LESTER_SIGNText": [
+    {
+      "args": [
+        "\"LESTER GORGE\""
+      ],
+      "command": "text"
+    },
+    {
+      "args": [
+        "\"West: lower falls\""
+      ],
+      "command": "line"
+    },
+    {
+      "args": [
+        "\"North: the stairs\""
+      ],
+      "command": "para"
+    },
+    {
+      "args": [],
+      "command": "done"
+    }
+  ],
+  "MN_R11_PALISADE_SIGNText": [
+    {
+      "args": [
+        "\"PALISADE RIDGE\""
+      ],
+      "command": "text"
+    },
+    {
+      "args": [
+        "\"Stone stairs west.\""
+      ],
+      "command": "line"
+    },
+    {
+      "args": [
+        "\"Climb or descend.\""
+      ],
+      "command": "para"
+    },
+    {
+      "args": [
+        "\"on those steps.\""
+      ],
+      "command": "line"
+    },
+    {
+      "args": [],
+      "command": "done"
+    }
+  ]
+}

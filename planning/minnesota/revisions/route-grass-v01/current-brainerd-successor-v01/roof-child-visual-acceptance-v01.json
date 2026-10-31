@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-brainerd-mart-roof-v01.crystalpack",
+  "pack_sha256": "e343cd9c65f7c876946be4b59878eabc564c9c7f42a7f29f54cb1a2fac89396d",
+  "actual_native_images_inspected": 2,
+  "views": [
+    "mart",
+    "stairs"
+  ],
+  "source_native_pixel_mismatches": 0,
+  "native_mart_four_blocks_original_johto_pixels_exact": true,
+  "whole_source_before_after_inspected": true,
+  "prior_seven_native_views_inspected": true,
+  "defect_fixed": "Tree canopy removed from Mart upper right roof; native complete 2x2 facade restored.",
+  "stairs_preserved": true,
+  "capture_receipt": "planning/minnesota/renders/route-grass-v01/current-brainerd-successor-v01/roof-child-native-v01/capture-progress.json"
+}

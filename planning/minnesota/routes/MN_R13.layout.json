@@ -2423,12 +2423,12 @@
     },
     {
       "kind": "point",
-      "name": "Deliberate inland winter snowline, icy grass and bounded frost courses",
+      "name": "Native League exit apron joins the retained two-tile winter route",
       "position": [
         16,
         0
       ],
-      "block": "8b"
+      "block": "83"
     },
     {
       "kind": "point",
@@ -16426,7 +16426,7 @@
       "block": "84"
     }
   ],
-  "status": "Hand-authored source replacement; native publication pending.",
+  "status": "Hand-authored source replacement; native publication pending.; League apron source correction pending fresh publication and native two-way review",
   "source_pixels_modified": false,
   "inland_winter_review": {
     "status": "DETACHED_PRE_GEOGRAPHY_PROPOSAL_NOT_APPLIED",

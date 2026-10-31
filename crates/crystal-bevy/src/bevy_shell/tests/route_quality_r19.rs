@@ -330,8 +330,8 @@ fn route_quality_r19_controller_pine_grass_wild_run_return_and_continue() {
     let (runtime, mut controller, grid) = fixture((47, 13), false);
     let partner = runtime
         .data()
-        .create_pokemon("MEW", 60, crystal_core::models::Dv::default())
-        .expect("explicit native fixture partner; not authored Minnesota content");
+        .create_pokemon("BOREALYNX", 60, crystal_core::models::Dv::default())
+        .expect("explicit Minnesota fixture partner");
     let state = controller.shell.shell.session_mut().state_mut();
     assert!(state.storage.party.add_pokemon(partner));
     state.sync_party_from_storage();

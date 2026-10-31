@@ -1,0 +1,58 @@
+{
+  "status": "PASS_STATIC_BATTLE_VERSUS_GRASS_MODEL",
+  "pack": "content-packs/minnesota-iron-drill-core-v04.crystalpack",
+  "pack_sha256": "4240537c844bf7e305e99c24f2b7054c314b84a03d17037747cb4ceabdbd17fd",
+  "historical_complete_map_fields_exact": {
+    "id": true,
+    "attributes": true,
+    "scripts": true,
+    "trainer_scripts": true,
+    "scripted_trainer_battles": true,
+    "scripted_wild_battles": true,
+    "script_item_grants": true,
+    "script_item_checks": true,
+    "script_item_takes": true,
+    "script_economy_commands": true,
+    "gift_pokemon_scripts": true,
+    "script_flag_commands": true,
+    "script_scene_commands": true,
+    "script_audio_commands": true,
+    "script_block_changes": true,
+    "script_object_commands": true,
+    "script_movements": true,
+    "script_map_commands": true,
+    "script_text_commands": true,
+    "script_text_bodies": true,
+    "script_menu_definitions": true,
+    "script_vertical_menus": true,
+    "script_elevators": true,
+    "script_variable_commands": true,
+    "script_control_commands": true,
+    "script_field_pickups": true,
+    "script_shop_commands": true,
+    "script_phone_commands": true,
+    "script_runtime_commands": true,
+    "script_swarm_commands": true,
+    "map_script_section_commands": true,
+    "map_event_section_commands": true,
+    "scenes": true,
+    "events": true,
+    "objects": true,
+    "blocks": true
+  },
+  "measurements": [
+    {
+      "status": "MEASURED",
+      "grass_steps": 14,
+      "grass_quadrants_in_contract": 92,
+      "ice_quadrants": 0
+    },
+    {
+      "status": "MEASURED",
+      "grass_steps": 14,
+      "grass_quadrants_in_contract": 92,
+      "ice_quadrants": 0
+    }
+  ],
+  "scope": "Native bank masks plus all actor bodies and trainer sight cells blocked; 14grass both directions. Native battle and Continue checked separately."
+}

@@ -6,6 +6,365 @@ exports runtime catalogs, compiles and verifies the packs, and publishes local
 agent inputs. Source checkouts, ROMs, intermediate exports, PCM, and packs stay
 outside tracked source.
 
+## Pokémon Northstar title and Tamarack welcome
+
+The [opening runbook](../planning/minnesota/title/README.md) records the verified
+Rust publisher, current local pack and runnable client. A native Kettlurk still
+uses the muted new Minnesota flag; Tamarack introduces single-hook Jiglet with
+its matching cry. Studio/copyright/movie startup screens are skipped for this
+pack. The full New Game flow, 25 reviewed frames, exact native GPU title and all
+377 audio contracts pass; existing world content and source-region opening data
+are preserved. This is a local review selection.
+
+## Early research partners and both fossils (2026-10-31)
+
+The [early research runbook](../planning/minnesota/pokemon/acquisition-v01/early-research.md)
+records the Rust publisher and verified child of the mainland pack. The two
+unchosen starters are free after the first Rochester parcel delivery. Restoring
+either fossil unlocks the other free specimen from the lab assistant or original
+bluff researcher, sharing one saved claim. No Champion victory is required.
+Native checks cover every starter choice, refusal/full party, actual New Game
+delivery/return before any badge, both complete fossil paths and Continue.
+Production stdio continues the earned three-starter save with 36 clean calls.
+The current selector remains authoritative. This stage preserves the larger
+roster integration gap; it does not declare a complete campaign or collection.
+
+## Iron Range fitted crosscut (2026-10-31)
+
+The [crosscut runbook](../planning/minnesota/caves/iron-crosscut-v01/README.md)
+records the guarded Rust publisher, full native source and current connection
+contracts. `content-packs/minnesota-iron-crosscut-bends-v01.crystalpack` preserves
+the Gunflint grotto, newer research and all734 other complete maps. Fitted ore
+passages and the original Ether bench replace repeated boulder rectangles; a
+standalone two-lane native westward lip shortens the Spoil-side return. Four
+native gameplay cases,1,420 public stdio calls, ten zero-difference native
+frames, actual reached lip/landing views, full-parent/roster policy and all377
+audio checks pass. Both affected crates pass all-target Clippy with existing
+warnings; owned formatting passes and pre-existing workspace differences remain.
+The composed source index and both original ladder pairs are selected through
+`planning/minnesota/world.json`. Declared local setup does not establish earned
+campaign progression or intended-level balance; broader map review continues.
+
+## Gunflint spring grotto (2026-10-31)
+
+The [grotto runbook](../planning/minnesota/caves/gunflint-grotto-v01/README.md)
+records the executed guarded Rust publisher, exact sources and native contracts.
+`content-packs/minnesota-gunflint-grotto-v02.crystalpack` preserves the newer
+research-access parent and all 734 other complete maps. The 20×14 native night
+cave has four dry branches, fitted30/36 stairs, the original acknowledged camp
+rest and moved Max Ether, plus an optional Surf-gated pillar Revive. Five native
+gameplay cases,663 public stdio calls, ten full-frame visual comparisons, an
+actual saved Surf view, regional roster audit and all377 audio checks pass.
+Both affected crates pass all-target Clippy with existing warnings; owned
+formatting passes and unrelated workspace formatting differences remain.
+The composed source index and shared cave reservation are selected through
+`planning/minnesota/world.json`. Declared local fixtures do not establish earned
+campaign progression; broader regional map review continues.
+
+## Leech Lake mainland pines (2026-10-31)
+
+The [mainland runbook](../planning/minnesota/towns/leech-lake-mainland-v01/README.md)
+records the guarded Rust publisher, complete native source and exact parent
+binding. `content-packs/minnesota-leech-mainland-v01.crystalpack` extends the
+newer water/cave habitat pack, retaining its Surf tables and Moorhead access.
+Pine-framed cabin clearings replace empty lawns; a 34-step grass trail offers
+an alternative to the 54-step safe road. An optional fly-tier battle and native
+Super Repel reward give its side clearing a purpose. Eight controller cases,
+1,202 production stdio calls, eight native camera comparisons and 377 audio
+checks pass. All 734 other complete maps and original programs/assets survive.
+Owned formatting and affected-crate all-target Clippy pass; unrelated workspace
+format differences remain. Active local selection is recorded in
+`planning/minnesota/world.json`; this is not a browser deployment or earned
+campaign completion claim.
+
+## River, lake and cave habitats (2026-10-31)
+
+The [water/cave runbook](../planning/minnesota/pokemon/acquisition-v01/water-caves-v01/README.md)
+records the executed four-argument Rust publisher and pinned external native
+Sweet Scent source. The selected local child is
+`content-packs/minnesota-water-caves-v05.crystalpack`:19 Surf habitats, ten cave
+floors, 26 inherited fishing-header repairs and a signed bounded Red River bank
+in Moorhead. Leech Lake's zero-rate water fallback is explicitly replaced;
+its pine-island grass, rewards and programs remain exact. All prior active
+encounter tables, the indoor fossil lab, train service, unrelated maps and 377
+audio programs are retained.
+
+Six habitat cases pass 33 native captures, 32 caught-Dex Save/Continue paths,
+512 peaceful-floor steps, night burbot encounters and native Sweet Scent.
+Four original Moorhead cases, five inherited island cases, 88 production stdio
+calls, three original-game controller/MCP cases and the clean-stdio regression
+pass. Native 2D views were inspected. Full-parent preservation, fresh byte-exact
+publication replay and 4,599 regional species references pass. Scoped formatting
+and affected-crate all-target Clippy pass with unrelated existing warnings;
+whole-workspace formatting still has unrelated differences. Declared local
+fixtures do not establish earned statewide collection. Existing grass/rod
+ecology, Route 2 decorative water and nine rare routes/roster alignment remain.
+The matching static Pokédex release is `20261031-water-caves-28-v06`.
+
+## Leech Lake pine island (2026-10-31)
+
+The [island runbook](../planning/minnesota/towns/leech-lake-island-v01/README.md)
+records the guarded Rust publisher, exact source/parent hashes, fast source
+render loop and complete gameplay contract. The verified local
+`content-packs/minnesota-leech-island-v05.crystalpack` retains the Rochester lab
+and all734 other complete maps. A pine island adds required grass, an optional
+regional naturalist battle, Mystic Water and a dry ledge return. A separate
+native Whirlpool gates a once-only PP Up cache. Five controller cases,360 stdio
+calls with empty stderr, whole-town/native pixel checks and377 audio checks pass.
+Owned Rust formatting passes; existing unrelated workspace differences remain.
+Declared local fixtures establish these activities, rather than earned campaign
+completion. Active selection is recorded in `planning/minnesota/world.json`.
+
+## Rochester Fossil Lab (2026-10-31)
+
+The [lab runbook](../planning/minnesota/landmarks/fossil-lab-v01/README.md)
+records the executed Rust publisher and complete native contract. The verified parent
+`minnesota-fossil-lab-v01.crystalpack` adds a signed 5×5 indoor lab between the
+clinic and mart, moves the existing restoration service inside, and updates the
+Driftless directions. Four controller cases and74 stdio calls pass both gifts,
+returns/reentry, badge/full-party retry, evolution and Continue. All732 unrelated
+original maps, encounters, train service and377 audio programs remain exact.
+The matching web Pokédex points both fossil families to the lab. The later
+water/cave phase above retains this lab; broader grass/rod ecology and rare
+acquisition paths remain active work.
+
+## Harvest and smokehouse habitats (2026-10-31)
+
+The [habitat runbook](../planning/minnesota/pokemon/acquisition-v01/landmark-habitats.md)
+records the executed Rust `pack_landmark_habitats PACK PLAN OUTPUT` publication.
+The selected `minnesota-landmark-habitats-v02.crystalpack` retains the new
+five-stop passenger service and all734 native maps. Six existing grass beds
+gain base-level8 Oatlet in the harvest fields and base-level40 Cinderfin beside
+the North Shore Smokehouse. Two native capture/Continue cases,14 current-pack
+production stdio calls, six-bed access, guarded byte-identical replay, complete
+parent preservation and377 audio checks pass. Native2D captures were inspected.
+The [web guide](pokedex-web.md) publishes installed locations and pending routes.
+The later lab, island and water/cave children above retain this stage; broader
+grass/rod ecology remains under review.
+
+## Glacier Line passenger service (2026-10-31)
+
+The [current service runbook](../planning/minnesota/transit/glacier-current-v01/README.md)
+records the executed Rust `pack_glacier_line_service PACK SOURCE FRESH_OUTPUT`
+publication on the selected Driftless gallery parent. The local child is
+`content-packs/minnesota-glacier-current-v03.crystalpack`: Detroit Lakes,
+Staples, St. Cloud, St. Paul and Winona retain their original halls and stories,
+with twenty guarded native rides and free fares after the St. Paul courier
+victory. Six gameplay cases plus a separate train-art case, 115 stdio calls,
+five actual arrival captures and all 377 audio programs pass. Public road
+approaches, the original Winona checkpoint, all 80 visit masks, refusals,
+cancels, repeat returns and Continue are covered by declared local fixtures.
+The complete-parent audit preserves all 729 other maps and all original art,
+audio, catalogs and recovery data. Active local selection belongs to
+`planning/minnesota/world.json`; no browser deployment or earned campaign is claimed.
+
+## Driftless fossil gallery (2026-10-31)
+
+The [gallery runbook](../planning/minnesota/caves/driftless-fossil-gallery-v01/README.md)
+records the executed Rust `build_driftless_fossil_gallery PACK SHA256 SOURCE CONTRACT OUTPUT`
+publication and byte-identical fresh replay. The local child
+`content-packs/minnesota-driftless-fossil-gallery-v03.crystalpack` retains the
+Rock Cut revision and all 732 other existing maps, adding one optional lower
+gallery and its paired stair below the original Route 1 hollow. Three gameplay
+cases, 233 production stdio calls, seven exact illuminated native frames,
+two inspected dark views and all 377 audio programs pass. Checks cover the
+original HM gift and teaching, native Flash, acknowledged fossil pages,
+full-pocket retry, once-only cache and Continue. These are declared local
+fixtures; they do not establish an earned campaign. Active local selection is
+recorded in `planning/minnesota/world.json`; this does not publish a browser release.
+
+## Rock Cut shelf return (2026-10-31)
+
+The [Rock Cut runbook](../planning/minnesota/caves/r05-shelf-drop-v01/README.md)
+records the executed existing Rust `revise_authored_cave BASE BEFORE AFTER OUTPUT`
+publication, byte-identical fresh replay and rejected unsafe side-course variant.
+The local child `content-packs/minnesota-r05-shelf-drop-v01.crystalpack` retains
+Cedar Shelter and all732 other maps. Three default-profile gameplay cases,
+263 production stdio calls, eight exact native2D cameras and all377 audio
+programs pass. Its native shelf drop changes the descent; the original stairs,
+two mouth pairings, healer and100-step Repel remain intact. The world file
+records active local selection; wider map work remains in progress.
+
+## Cedar Shelter fishing bank (2026-10-31)
+
+The [Cedar Shelter runbook](../planning/minnesota/caves/r13-cedar-basin-v01/README.md)
+records the executed Rust `rebuild_r13_cedar_basin PACK SHA256 BEFORE AFTER CONTRACT OUTPUT`
+publication and default-profile controller commands. The selected local child is
+`content-packs/minnesota-r13-cedar-basin-v01.crystalpack`. Four gameplay cases,
+282 production stdio calls, eight exact native 2D cameras, all 377 audio programs
+and whole-parent preservation pass. The original healer, fishing tables, cache,
+exterior warp and all 732 other maps remain intact. Active selection belongs to
+`planning/minnesota/world.json`; this local revision does not publish a browser release.
+
+## Comprehensive campaign review (2026-10-30)
+
+The [campaign runbook](../planning/minnesota/revisions/comprehensive-game-v01/README.md)
+records the unselected 741-map review v11 and remaining earned-campaign gates.
+The [haulage integration](../planning/minnesota/revisions/comprehensive-haulage-successors-v01/README.md)
+and [Route10 integration](../planning/minnesota/revisions/comprehensive-r10-successor-v01/README.md)
+retain the story, optional areas and roster while adopting accepted terrain.
+The exact pack passes independent preservation, native pressure-network and
+renderer-policy cases, its production opening, fullscreen terminal Start/quit,
+local WebSocket protocol and all602 audio programs.
+
+These commands were executed in this checkout. The release build command below
+produced the preserved v04 client, which passes the actual opening and PTY run.
+The MCP input file exercises nine real production opening actions with empty
+stderr. Generated packs, executable copies and verification inputs stay ignored.
+
+```sh
+CARGO_TARGET_DIR=target/verdigrim-scene cargo build --release --locked -p geothite
+.local/current-main-client-release-v04/geothite mcp \
+  content-packs/minnesota-comprehensive-native-review-v11.crystalpack --name CHRIS \
+  < .local/final-minnesota-release-stdio-v06/requests.jsonl
+.local/comprehensive-audio-v11/verify_crystalpack \
+  content-packs/minnesota-comprehensive-native-review-v11.crystalpack --audio --desktop
+```
+
+The pack remains unselected. These scoped checks and inspected native mine
+camera do not establish an earned full campaign or public deployment.
+
+## Comprehensive mainland integration (2026-10-31)
+
+The unselected V20 candidate adds the current Leech mainland pines to V19.
+The wrapper pins the full parent, authored source, original contract binding and
+reviewed output identity. It rebinds only parent provenance and the complete
+native town preimage, then runs the original Rust builder and its safeguards.
+These build and frozen-copy commands completed successfully:
+
+```sh
+CARGO_TARGET_DIR=target/verdigrim-scene RUST_MIN_STACK=67108864 \
+  cargo build --locked -p crystal-assets --bin integrate_comprehensive_leech_mainland
+.local/comprehensive-mainland-build-v02/integrate_comprehensive_leech_mainland \
+  content-packs/minnesota-comprehensive-native-review-v19.crystalpack \
+  content-packs/minnesota-comprehensive-native-review-v20-reproduced-v01.crystalpack
+```
+
+The pinned publisher SHA256 is
+`83811535b7d7b366821e89e670fc610b7acc4097eff9f013e7568f7e8756b3db`.
+Its reproduced output is byte-identical to the original V20 candidate, SHA256
+`85d1f1239b60af581f1f6803584d6a714544c00d22d57abd224970466773d40a`,
+content identity
+`8c847f3ae7628d8117bebe571fb14a437fbe3108186dd88cfa6ae79054c995af`.
+A wrong-parent invocation fails without writing output. Existing outputs must
+not be overwritten. The external mainland-builder regression, including unsafe
+terrain, foreign wildlife and stale-input negatives, passes. All-target assets
+Clippy and independent preservation pass:742 other complete maps are exact;
+104 mainland metatiles change, with existing island/services/programs/art/audio
+retained. All602 PCM checks and current225-species policy also pass. Native
+component, final earned campaign and current-client production checks remain
+required; the selector and existing saves are unchanged.
+
+## Comprehensive water and cave integration (2026-10-31)
+
+The unselected V19 candidate reconciles the selected water/cave donor with the
+complete V18 campaign through their common fossil-lab parent. It preserves
+campaign event identities and testimony, keeps the eastern-cove reward, adds
+island directions and allocates the optional trainer within its native class.
+Original art/audio stay intact; only the reviewed animation metadata may be
+added. These commands completed successfully:
+
+```sh
+CARGO_TARGET_DIR=target/verdigrim-scene RUST_MIN_STACK=67108864 \
+  cargo build --locked -p crystal-assets --bin integrate_comprehensive_water_habitats
+.local/comprehensive-water-integrator-build-v03/integrate_comprehensive_water_habitats \
+  content-packs/minnesota-comprehensive-native-review-v18.crystalpack \
+  content-packs/minnesota-fossil-lab-v01.crystalpack \
+  content-packs/minnesota-water-caves-v05.crystalpack \
+  content-packs/minnesota-comprehensive-native-review-v19.crystalpack
+```
+
+The frozen publisher SHA256 is
+`bac17d131d22b775606319711c5e53c892b403eb76e33d5e3485d1eb430e8c46`.
+The fresh output SHA256 is
+`02c4278605188d7c833a149930088a5d691bfccc2ba6000bb838a9c65ba4da3a`;
+its content identity is
+`97976793b82861495b5c6a6bc13732c5ab588a9f5b0ba4fd43741163d2e305df`.
+Existing outputs must not be overwritten. Three pure reconciliation tests,
+all-target assets Clippy, Rust runtime/geography checks, independent full-data
+preservation with six rejected corruptions, all602 PCM checks and the225-species
+regional policy pass. Current native gameplay and production acceptance remain
+required. No selector or save migration was performed; a newer selected
+mainland-pines revision remains a separate integration dependency.
+
+## Comprehensive fossil-lab reproduction (2026-10-31)
+
+The unselected V18 candidate adds the currently selected fossil lab to the
+complete V17 campaign. Its tracked Rust integration binds both reviewed content
+identities, reuses the original lab builder and verifies complete readback.
+The following build and frozen-copy invocation completed successfully:
+
+```sh
+CARGO_TARGET_DIR=target/verdigrim-scene RUST_MIN_STACK=67108864 \
+  cargo build --locked -p crystal-assets --bin integrate_comprehensive_fossil_lab
+.local/comprehensive-fossil-reproducer-build-v01/integrate_comprehensive_fossil_lab \
+  content-packs/minnesota-comprehensive-native-review-v17.crystalpack \
+  content-packs/minnesota-comprehensive-native-review-v18-reproduced-v01.crystalpack
+```
+
+The frozen binary is a byte-identical copy of the built publisher. Its output
+matches `content-packs/minnesota-comprehensive-native-review-v18.crystalpack`
+byte for byte (SHA256 `1111a481d2261ccf9c327f24da1f431772d99b2004ffcd208659ff465bfc10a0`).
+Existing outputs deliberately cannot be overwritten. A stale-parent invocation
+also failed before writing any pack. All-target assets Clippy passes with no
+diagnostics in the new integration files. Generated packs and frozen binaries
+remain ignored. Integrated native lab/service cases, visual review and the
+full earned campaign are still pending; this is not active-game acceptance.
+
+## City cyclist overworld revision (2026-10-30)
+
+The [city cyclist runbook](../planning/minnesota/npcs/city-cyclists-v01/README.md)
+records the executed `tools/build-city-cyclist-sprites.sh BASE NEW` recipe over
+the current Mill/Arts streets pack. Repository Rust tools encode and bind two
+private NPC bicycle banks to all 18 existing riders. The verified local result
+is `content-packs/minnesota-city-cyclists-v01.crystalpack`; battle/player art,
+patrols, teams, scripts and geometry are preserved. Four production cycling
+regressions, actual native2D review, 22 clean-stdio client calls, raw full-pack
+preservation and all 377 audio programs pass. Packs and review output stay
+ignored; this is separate from the paused broad regional trainer publication.
+
+## Duluth open harbor and fishing platforms
+
+The [harbor runbook](../planning/minnesota/revisions/duluth-harbor-platforms-v01/README.md)
+records the exact selected North Shore shops parent, complete current layout,
+Rust `revise_duluth_harbor PACK SHA256 BEFORE AFTER OUTPUT` publisher and local
+`content-packs/minnesota-current-duluth-harbor-v02.crystalpack` output. The edit
+retains the map perimeter, native art, audio, city rooms and existing activities.
+Two floating decks provide optional Surf excursions and native paged dialogue.
+Selection and verification status belong to `planning/minnesota/world.json`;
+this local content revision does not imply a browser deployment.
+
+The [rocky shoreline and open routes runbook](../planning/minnesota/revisions/shore-rocks-open-routes-v01/README.md)
+records the subsequent Rust `revise_shoreline_and_fences PLAN OUTPUT` publication
+on the newer fitted R10 cave parent. It adds38 Duluth shore rocks, revises fences
+on Routes10,15,16 and17, confirms Route12 already has none, and removes19
+tree-backed buoy cells. Routes15/16 use explicit native shore edges so automatic
+fitting cannot restore posts. The verified local child is
+`content-packs/minnesota-current-shore-rocks-open-routes-v02.crystalpack`;
+the source index, full preservation, native captures and production input results
+are linked from that runbook.
+The [final one-cell buoy cleanup](../planning/minnesota/revisions/duluth-interior-buoy-clearance-v01/README.md)
+produces the selected v03 child, clearing Duluth's last interior buoy corner
+while preserving the full v02 revision and every exposed boundary buoy.
+
+## Minneapolis Game Corner
+
+The [Game Corner runbook](../planning/minnesota/game-corner.md) documents its
+southern Minneapolis entrance, native slots and Card Flip, free Coin Case,
+coin exchange and six repeatable prizes. The Rust `pack_minnesota_game_corner`
+publisher consumes the selected current Minnesota pack and
+`planning/minnesota/game-corner.json`. It preserves every unrelated map,
+encounter, source asset and audio program; generated packs remain ignored.
+
+## North Shore smokehouse and pie shop
+
+The [shops runbook](../planning/minnesota/landmarks/north-shore-shops-v01/README.md)
+records the Rust `pack_north_shore_shops PACK SOURCE_JSON OUTPUT` publisher,
+native room/door contracts and local verification. The separate ignored
+`minnesota-north-shore-shops-v01.crystalpack` adds both cafes and surrounding
+grass while preserving the parent's encounters, trainers, art and audio.
+Specific new spawns remain separate authoring.
+
 ## State Fair building repair (2026-10-29)
 
 The [fair runbook](../planning/minnesota/playable/state-fairgrounds.md#contiguous-building-repair-2026-10-29)
@@ -2105,3 +2464,81 @@ Cedar R20 parent and combined pack, normal Crystal six-pose field bases, all
 It preserves the parent and requires a fresh ignored output name. The runbook
 also gives the concrete production play/MCP commands, preservation/audio
 results, actual controller evidence and declared test-fixture limits.
+
+### Comprehensive research and Gunflint grotto review (V21)
+
+The unselected V21 campaign was built from exact V20 content identity
+`8c847f3ae7628d8117bebe571fb14a437fbe3108186dd88cfa6ae79054c995af`.
+The focused Rust adapter pins the original grotto source and contract and runs
+the original research and grotto builders. It produces a research-only
+intermediate so both complete-parent preservation audits can run independently.
+
+The executed build and check commands, serialized under the shared Cargo slot,
+were:
+
+```sh
+CARGO_TARGET_DIR=target/verdigrim-scene RUST_MIN_STACK=67108864 \
+  cargo build --locked -p crystal-assets --bin integrate_comprehensive_research_grotto
+CARGO_TARGET_DIR=target/verdigrim-scene RUST_MIN_STACK=67108864 \
+  cargo clippy --locked -p crystal-assets --all-targets
+```
+
+The actual frozen executable then published both fresh ignored outputs:
+
+```sh
+.local/comprehensive-research-grotto-build-v01/integrate_comprehensive_research_grotto \
+  content-packs/minnesota-comprehensive-native-review-v20.crystalpack \
+  content-packs/minnesota-comprehensive-research-stage-v01.crystalpack \
+  content-packs/minnesota-comprehensive-native-review-v21.crystalpack
+```
+
+V21 SHA-256 is
+`f4300b54e4af14db80742744147880fd759821979ce8b62d80aec079dc024617`;
+content identity is
+`9bb329910b5d111550d792b3297d3b05aca381fe6aa098f8a41e576dd3e30f05`.
+The intermediate SHA-256 is
+`e0ae7ba09a68fcb59293cba7e0999e202305e1da06e6680267301c594648395c`.
+Original inputs remain unchanged. Reusing either output path is rejected;
+choose new ignored filenames for a replay. An executed second publication is
+byte-identical for both stages, and a stale V18 parent is rejected before output.
+
+Independent audits preserve 740 unrelated maps in the research step and742
+in the grotto step. Runtime/geography/readback,225-species regional placement
+policy and all602 audio PCM hashes/frame counts/loop ranges pass. Build and
+all-target Clippy exit0 with existing workspace warnings; owned Rust formatting
+passes and workspace formatting still reports unrelated existing differences.
+Native transactions, current-pack production acceptance, the newer selected
+Iron crosscut, final earned campaign and selection remain open. This is an
+unselected review candidate, not the completed playable release.
+
+### Comprehensive fitted crosscut review (V22)
+
+The current unselected V22 review adds the accepted fitted Iron Range approach
+through `integrate_comprehensive_iron_crosscut`, preserving V21 research and
+Gunflint content. Exact authored before/after/contract bytes and the complete
+V21 content identity are pinned. The original Rust geometry and anchor guards
+remain active. The executed commands were:
+
+```sh
+CARGO_TARGET_DIR=target/verdigrim-scene RUST_MIN_STACK=67108864 \
+  cargo build --locked -p crystal-assets --bin integrate_comprehensive_iron_crosscut
+CARGO_TARGET_DIR=target/verdigrim-scene RUST_MIN_STACK=67108864 \
+  cargo clippy --locked -p crystal-assets --all-targets
+.local/comprehensive-crosscut-build-v01/integrate_comprehensive_iron_crosscut \
+  content-packs/minnesota-comprehensive-native-review-v21.crystalpack \
+  content-packs/minnesota-comprehensive-native-review-v22.crystalpack
+```
+
+Both build commands exit0 with existing workspace warnings; owned formatting
+passes and workspace formatting retains unrelated failures. The ignored child
+SHA-256 is
+`90adb2950d0de274ab8a5c56931d6b735a12e50c31f66ee04bdf9f466fb5b033`;
+content identity is
+`dcb19c6e85835fb0e93ba7e44aa31a443c29b6018c9e182abf7f76ba9f3d9275`.
+Actual second publication is byte-identical, and a stale V18 parent fails before
+output. Independent complete-map preservation confirms742 other maps, all
+programs/actors/warps/trainers/wildlife/art/audio exact, both cache body states,
+and a real21-command lip return versus38 ordinary steps. Regional225 policy,
+all602 PCM hashes/frame counts/loop ranges and local WebSocket identity/presence
+checks pass. Native movement/battles/items, production cameras, final earned
+journey and active selection remain separate pending acceptance.

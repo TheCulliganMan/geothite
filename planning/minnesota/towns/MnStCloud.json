@@ -462,7 +462,7 @@
     {
       "id": "MN_ST_CLOUD_CLINIC_DOOR",
       "tile": [
-        6,
+        7,
         9
       ],
       "target": "MnStCloudPokecenter1F",
@@ -470,11 +470,11 @@
       "return_warp_index": 2,
       "target_warp": 3,
       "return_tile": [
-        6,
+        7,
         10
       ],
       "arrival_tile": [
-        6,
+        7,
         10
       ],
       "collision": "DOOR",
@@ -483,7 +483,7 @@
     {
       "id": "MN_ST_CLOUD_MART_DOOR",
       "tile": [
-        14,
+        15,
         9
       ],
       "target": "MnStCloudMart",
@@ -491,11 +491,11 @@
       "return_warp_index": 4,
       "target_warp": 3,
       "return_tile": [
-        14,
+        15,
         10
       ],
       "arrival_tile": [
-        14,
+        15,
         10
       ],
       "collision": "DOOR",

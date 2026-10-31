@@ -1,0 +1,22 @@
+{
+  "status": "PASS_CURRENT_SUCCESSOR",
+  "reviewed_publication_revision": "route_grass_r03_stair_guidance_revision",
+  "current_selected_revision": "cave_reservations_current_revision",
+  "current_pack": "content-packs/minnesota-r20-winding-cleft-v02.crystalpack",
+  "current_pack_sha256": "bfd4e1091213f558bca8ffc4c86afbc93af8569d16a3145dd9da157c4b1164be",
+  "successor_chain": [
+    "cave_reservations_current_revision",
+    "r20_winding_cleft_revision"
+  ],
+  "world_snapshot_sha256": "bd46198a28d0c4f23b66923b06f597ad7ba825fb910ff950d8faca761ad59544",
+  "all_parent_current_sources_preserved_in_review_publication": true,
+  "current_successor_retains_r03_layout_contract_and_all_review_sources": true,
+  "both_complete_r03_maps_tilesets_encounters_and_four_trainer_teams_exact": true,
+  "all_existing_runtime_files_and_audio_exact": true,
+  "pokemon_moves_items_learnsets_and_reward_rules_exact": true,
+  "all744_native_source_metatiles_exact": true,
+  "both_text_global_and_local_mirrors_exact": true,
+  "current_source_references_valid": true,
+  "concurrent_cave_updates_preserved": true,
+  "goal_complete": false
+}

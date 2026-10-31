@@ -1,0 +1,188 @@
+{
+  "status": "PASS_SOURCE_CANDIDATE_NOT_NATIVE_PUBLISHED",
+  "parent": {
+    "revision": "cave_reservations_current_revision",
+    "pack": "content-packs/minnesota-r20-winding-cleft-v02.crystalpack",
+    "pack_sha256": "bfd4e1091213f558bca8ffc4c86afbc93af8569d16a3145dd9da157c4b1164be",
+    "maps": [
+      "MnR05C00R00",
+      "MnR05C00R01",
+      "MnR05C00R02"
+    ]
+  },
+  "changes": [
+    {
+      "metatile": [
+        17,
+        9
+      ],
+      "before": "02",
+      "after": "03"
+    },
+    {
+      "metatile": [
+        18,
+        9
+      ],
+      "before": "02",
+      "after": "03"
+    },
+    {
+      "metatile": [
+        18,
+        10
+      ],
+      "before": "01",
+      "after": "03"
+    },
+    {
+      "metatile": [
+        19,
+        10
+      ],
+      "before": "01",
+      "after": "57"
+    },
+    {
+      "metatile": [
+        20,
+        10
+      ],
+      "before": "01",
+      "after": "05"
+    },
+    {
+      "metatile": [
+        19,
+        11
+      ],
+      "before": "05",
+      "after": "01"
+    },
+    {
+      "metatile": [
+        20,
+        11
+      ],
+      "before": "05",
+      "after": "01"
+    },
+    {
+      "metatile": [
+        21,
+        11
+      ],
+      "before": "05",
+      "after": "01"
+    }
+  ],
+  "native_grass_quadrants_added": 12,
+  "new_hop_lanes": [
+    [
+      38,
+      19
+    ],
+    [
+      39,
+      19
+    ]
+  ],
+  "dry_landings": [
+    [
+      38,
+      22
+    ],
+    [
+      39,
+      22
+    ]
+  ],
+  "cache_approach_grass_costs": {
+    "(37, 18)": {
+      "status": "MEASURED",
+      "grass_steps": 3,
+      "grass_quadrants_in_contract": 220,
+      "ice_quadrants": 0
+    },
+    "(37, 20)": {
+      "status": "MEASURED",
+      "grass_steps": 2,
+      "grass_quadrants_in_contract": 220,
+      "ice_quadrants": 0
+    },
+    "(36, 19)": {
+      "status": "MEASURED",
+      "grass_steps": 3,
+      "grass_quadrants_in_contract": 220,
+      "ice_quadrants": 0
+    },
+    "(38, 19)": {
+      "status": "MEASURED",
+      "grass_steps": 2,
+      "grass_quadrants_in_contract": 220,
+      "ice_quadrants": 0
+    }
+  },
+  "return_grass_costs": [
+    {
+      "status": "MEASURED",
+      "grass_steps": 2,
+      "grass_quadrants_in_contract": 220,
+      "ice_quadrants": 0
+    },
+    {
+      "status": "MEASURED",
+      "grass_steps": 2,
+      "grass_quadrants_in_contract": 220,
+      "ice_quadrants": 0
+    }
+  ],
+  "all_old_reachable_tiles_retained_except_six_declared_bank_wall_cells": true,
+  "new_walkable_dry_trail_metatiles": [
+    [
+      19,
+      11
+    ],
+    [
+      20,
+      11
+    ],
+    [
+      21,
+      11
+    ]
+  ],
+  "river_lookout_approach_reachable": {
+    "status": "MEASURED",
+    "grass_steps": 0,
+    "grass_quadrants_in_contract": 220,
+    "ice_quadrants": 0
+  },
+  "main_grass_contracts_preserved": [
+    {
+      "id": "CITY_HABITAT",
+      "measurements": [
+        {
+          "status": "MEASURED",
+          "grass_steps": 4,
+          "grass_quadrants_in_contract": 24,
+          "ice_quadrants": 0
+        },
+        {
+          "status": "MEASURED",
+          "grass_steps": 4,
+          "grass_quadrants_in_contract": 24,
+          "ice_quadrants": 0
+        }
+      ],
+      "minimum": 4
+    }
+  ],
+  "side_cap_negative_control_without_cap_has_zero_grass_bypass": {
+    "status": "MEASURED",
+    "grass_steps": 0,
+    "grass_quadrants_in_contract": 220,
+    "ice_quadrants": 0
+  },
+  "model_note": "Uses native CURRENT-tile TryJump and permits ordinary lateral HOP walking. A dry east-side bypass is exposed without the new forest cap. Full native verification remains required; no pack was written."
+}

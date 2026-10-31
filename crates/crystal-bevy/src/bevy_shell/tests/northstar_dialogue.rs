@@ -79,10 +79,14 @@ pub(super) fn acknowledge(c: &mut VisibleShellController, id: &str, label: &str,
         .shell
         .presentation_snapshot()
         .expect("native stream");
-    assert_eq!(
-        visible_field_dialog_pages(&raw, &c.shell).expect("native pages"),
-        expected
-    );
+    let Some(actual) = visible_field_dialog_pages(&raw, &c.shell) else {
+        panic!(
+            "missing native pages for {label}; nickname chooser: {}, text window: {}",
+            c.shell.pending_name_choice.is_some(),
+            raw.ui.text_window_open
+        );
+    };
+    assert_eq!(actual, expected);
     for page in expected {
         assert!(
             !c.shell

@@ -23,12 +23,16 @@ def review(path):
     native_panels = 'mn_ice_headquarters' in pack['data']['tilesets']
     if native_panels:
         assert pack['data']['tilesets']['mn_ice_headquarters']['collision']['40'] == ['FLOOR','WARP_PANEL','FLOOR','FLOOR']
-    rooms = {r['id']: r for r in [json.loads((SOURCE / (n+'.json')).read_text())
-             for n in ['operations','records','maintenance','transfer']]}
-    for name in ['MnIceCargoBasement','MnIceRelayFloor']:
+    contracts = {r['id']: r for r in [json.loads((SOURCE / (n+'.json')).read_text())
+                 for n in ['operations','records','maintenance','transfer']]}
+    rooms = {}
+    for name in list(contracts) + ['MnIceCargoBasement','MnIceRelayFloor']:
         m = pack['data']['maps'][name]
+        dimensions = [m['attributes']['width'], m['attributes']['height']]
+        if name in contracts:
+            assert dimensions == contracts[name]['dimensions_metatiles'], ('compiled room size', name)
         rooms[name] = dict(id=name, tileset=m['attributes']['tileset_name'],
-            dimensions_metatiles=[m['attributes']['width'],m['attributes']['height']],
+            dimensions_metatiles=dimensions,
             rows=[' '.join(f'{b:02x}' for b in m['blocks'])])
     blocks = {k:[int(x,16) for row in r['rows'] for x in row.split()] for k,r in rooms.items()}
     cargo = json.loads((SOURCE.parent/'minneapolis-cargo.json').read_text())
@@ -40,12 +44,10 @@ def review(path):
         for a,b in [(link['a'],link['b']),(link['b'],link['a'])]:
             name=a['map'];x,y=a['active'];w,h=rooms[name]['dimensions_metatiles']
             if name in network['maps']:
-                assert blocks[name][y//2*w+x//2] == 7,(name,link['id'],'port overlaps wall')
-                blocks[name][y//2*w+x//2] = 0x1b if link['kind']=='panel' else 4
+                expected = (0x40 if native_panels else 0x1b) if link['kind']=='panel' else 4
+                assert blocks[name][y//2*w+x//2] == expected, (name,link['id'],'compiled port differs')
                 if native_panels:
-                    actual=pack['data']['maps'][name]
-                    assert actual['attributes']['tileset_name']=='mn_ice_headquarters'
-                    assert actual['blocks'][y//2*w+x//2] == (0x40 if link['kind']=='panel' else 4)
+                    assert rooms[name]['tileset']=='mn_ice_headquarters'
             # Safe arrivals are ordinary floor, not extra active teleporters.
             key=(name,*a['active']);assert key not in ports,('overlapping warp',key)
             ports[key]=(b['map'],*b['arrival'],link['kind'])
@@ -63,7 +65,7 @@ def review(path):
         block=blocks[name][y//2*w+x//2]
         if opened and any(d['map']==name and d['metatile']==[x//2,y//2] for d in network['doors']):block=7
         collision=pack['data']['tilesets'][rooms[name]['tileset']]['collision']
-        return collision[f'{block:02x}'][y%2*2+x%2] in ['FLOOR','LADDER','WARP_CARPET_DOWN']
+        return collision[f'{block:02x}'][y%2*2+x%2] in ['FLOOR','LADDER','WARP_CARPET_DOWN','WARP_PANEL']
     for origin, (dest,x,y,kind) in ports.items():
         assert floor(dest,x,y,False),('unsafe pre-callback arrival',origin,dest,x,y)
     def reachable(start,opened=False,panels=True):
@@ -90,12 +92,13 @@ def review(path):
     for point in arrivals:
         if point in after:assert start in reachable(point,True),('return trap',point)
     print(f'PASS: {len(network["links"])} paired connections (8 pad pairs), six card doors; no stair-only card route; relay sealed until card; three optional rooms; all returns.')
+    print('Scope: compiled terrain/ports; modeled prior cargo breaker and card states. Actor occupancy and native gameplay require separate controller evidence.')
     output=ROOT/'planning/minnesota/renders/story-events-v2'/f'ice-headquarters-{time.time_ns()}'
     output.mkdir(parents=True)
     art=SourceArt(pack);sheet=Image.new('RGB',(1024,820),'#17191c');draw=ImageDraw.Draw(sheet)
     for i,name in enumerate(network['maps']):
         room=rooms[name];w,h=room['dimensions_metatiles']
-        img=art.render('facility',w,h,blocks[name],'day');d=ImageDraw.Draw(img)
+        img=art.render(room['tileset'],w,h,blocks[name],'day');d=ImageDraw.Draw(img)
         for link in network['links']:
             for a in [link['a'],link['b']]:
                 if a['map']==name:

@@ -1,0 +1,33 @@
+{
+  "pid": 68842,
+  "source_sha256": {
+    "crates/crystal-assets/src/r07_north_pocket_grass.rs": "786ff196c355bcfe8ccd3d0114661bbdbd7af018c53387fad9cd0187fcbcc812",
+    "crates/crystal-assets/src/bin/revise_r07_north_pocket_grass.rs": "89a3eab9c28289d07f284b47af940101ede2c9c604d225779bf3bcc431a730a9"
+  },
+  "steps": [
+    {
+      "step": "publisher",
+      "command": [
+        "cargo",
+        "build",
+        "--profile",
+        "wasm-dev",
+        "--locked",
+        "--config",
+        "profile.wasm-dev.package.crystal-assets.opt-level=0",
+        "-p",
+        "crystal-assets",
+        "--bin",
+        "revise_r07_north_pocket_grass"
+      ],
+      "exit_code": 0,
+      "log": ".local/route-grass-review/r07-north-pocket-grass-publisher-v01.log",
+      "outputs": [
+        {
+          "path": ".local/route-grass-review/portable-r07-north-pocket-grass-tools-v01/revise_r07_north_pocket_grass",
+          "sha256": "be9eaa9eb8e80df24660820c2bfa6de1255143d7337e2c72f982e5ff8b85d76e"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "command": [
+    "cargo",
+    "test",
+    "--locked",
+    "--profile",
+    "wasm-dev",
+    "-p",
+    "crystal-bevy",
+    "--lib",
+    "--no-run",
+    "--message-format=json"
+  ],
+  "source": "crates/crystal-bevy/src/bevy_shell/tests/twin_cities_journey.rs",
+  "source_sha256": "e76ed91d475bc8c3192e8343b3989d3240147019b20e07692067ee015b71f3fe",
+  "binary": ".local/route-grass-review/r04-trace-controller-v01",
+  "binary_sha256": "1748d2a1f4c81d1642b8f88a833c9b2dffbc9f38cd2ea1ae8671003237c0fe51"
+}

@@ -1,0 +1,242 @@
+{
+  "schema_version": 1,
+  "id": "MnLeechLake",
+  "tileset": "mn_headwaters",
+  "dimensions_metatiles": [
+    32,
+    24
+  ],
+  "rows": [
+    "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 01 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+    "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 01 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+    "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 01 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+    "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 01 05 05 05 05 54 76 76 76 76 76 76 55 05 05 05",
+    "05 05 05 05 05 02 02 05 05 05 05 05 05 05 05 05 01 05 05 05 05 58 35 35 35 35 35 35 59 05 05 05",
+    "05 05 05 05 05 2c 2d 05 05 05 05 05 05 01 01 01 01 05 05 05 54 79 35 35 35 35 35 35 7a 76 55 05",
+    "05 05 05 05 05 2e 2f 05 05 05 05 05 05 01 05 05 05 05 05 05 58 35 35 35 35 35 35 35 35 35 59 05",
+    "05 05 05 05 02 01 01 01 45 01 01 01 01 01 05 05 05 05 05 05 58 35 35 35 35 35 35 35 35 35 59 05",
+    "05 05 05 05 05 04 04 04 05 05 05 05 05 01 05 05 05 05 54 76 79 35 35 35 35 35 35 35 35 35 59 05",
+    "05 05 05 05 05 05 05 02 05 05 05 05 3f 01 02 02 02 02 58 35 35 35 35 35 35 35 35 35 35 35 36 05",
+    "05 05 05 05 05 05 05 02 03 05 05 01 01 01 82 82 82 82 82 82 42 58 35 35 35 35 35 35 35 35 07 05",
+    "05 05 05 05 05 05 05 05 03 05 05 01 05 45 81 81 81 81 81 81 4a 58 35 35 35 35 35 35 35 35 59 05",
+    "05 05 05 05 05 05 05 03 03 02 05 01 3d 05 02 02 54 76 76 76 76 79 35 59 05 05 58 35 35 35 59 05",
+    "05 05 05 05 05 05 05 03 05 02 05 01 05 3c 45 02 58 35 35 35 35 35 59 05 05 05 05 58 35 35 59 05",
+    "05 05 05 05 05 05 02 02 05 05 05 01 01 01 01 01 58 35 35 35 35 35 59 05 05 05 05 05 58 35 59 05",
+    "05 05 05 05 05 05 02 3c 05 05 05 01 05 04 3f 05 58 35 35 35 35 35 59 02 02 05 02 05 58 35 59 05",
+    "05 05 05 05 2c 2d 02 3e 05 05 05 01 05 05 05 05 58 35 35 35 35 35 59 05 02 03 02 05 58 35 59 05",
+    "05 05 05 05 2e 2f 02 05 05 05 05 01 01 01 01 01 01 05 58 35 35 35 59 05 3d 57 57 05 58 35 59 05",
+    "05 05 05 05 01 01 01 01 01 01 01 01 05 05 05 05 01 05 58 35 35 35 59 05 02 04 02 05 58 35 59 05",
+    "05 05 05 05 3c 04 04 04 05 05 05 05 05 05 05 3d 01 45 58 35 35 35 7a 55 05 05 05 54 59 05 05 05",
+    "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 01 05 58 35 35 35 35 7a 76 76 76 79 59 05 05 05",
+    "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 01 05 05 05 05 58 35 35 35 35 35 35 59 05 05 05",
+    "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 01 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+    "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 01 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05"
+  ],
+  "purpose": "A pine-framed public shore with smaller cabin clearings and a grassy woodland link between the two original cabins. Both public road ports, all original doors/services/testimony/pier, island and Whirlpool remain.",
+  "proposed_actors": [
+    {
+      "id": "MN_EXTRA_LEECH_MAINLAND_FLY_TIER",
+      "sprite": "SPRITE_FISHER",
+      "tile": [
+        19,
+        24
+      ],
+      "facing": "west"
+    }
+  ],
+  "proposed_items": [
+    {
+      "id": "MN_LEECH_MAINLAND_REPEL",
+      "tile": [
+        19,
+        26
+      ]
+    }
+  ],
+  "trainer_source": {
+    "schema_version": 1,
+    "region": "minnesota",
+    "trainers": [
+      {
+        "id": "MN_EXTRA_LEECH_MAINLAND_FLY_TIER",
+        "map": "MnLeechLake",
+        "tile": [
+          19,
+          24
+        ],
+        "approach": [
+          18,
+          24
+        ],
+        "facing": "west",
+        "sprite": "SPRITE_FISHER",
+        "trainer_class": "FISHER",
+        "trainer_name": "FINN",
+        "optional_battle": true,
+        "party": [
+          {
+            "species": "HATCHRUSH",
+            "level": 34
+          },
+          {
+            "species": "MOTHOSAIC",
+            "level": 35
+          }
+        ],
+        "before": [
+          "Mayflies rise off",
+          "the lake at dusk.",
+          "I tie my own flies.",
+          "Want a match?"
+        ],
+        "win": [
+          "You read the hatch!"
+        ],
+        "after": [
+          "The cabin path is",
+          "shorter, but watch",
+          "the grass."
+        ],
+        "decline": [
+          "No rush. I can",
+          "finish this fly."
+        ]
+      }
+    ]
+  },
+  "trail_metatiles": [
+    [
+      7,
+      8
+    ],
+    [
+      7,
+      9
+    ],
+    [
+      7,
+      10
+    ],
+    [
+      8,
+      10
+    ],
+    [
+      8,
+      11
+    ],
+    [
+      8,
+      12
+    ],
+    [
+      7,
+      12
+    ],
+    [
+      7,
+      13
+    ],
+    [
+      7,
+      14
+    ],
+    [
+      6,
+      14
+    ],
+    [
+      6,
+      15
+    ],
+    [
+      6,
+      16
+    ],
+    [
+      6,
+      17
+    ]
+  ],
+  "grass_zone": {
+    "id": "MN_LEECH_CABIN_PINES",
+    "minX": 14,
+    "minY": 20,
+    "maxX": 17,
+    "maxY": 27,
+    "grassRates": {
+      "morning": 10,
+      "day": 10,
+      "night": 10
+    }
+  },
+  "mainland_item": {
+    "id": "MN_LEECH_MAINLAND_REPEL",
+    "tile": [
+      19,
+      26
+    ],
+    "item": "SUPER_REPEL",
+    "quantity": 1,
+    "flag": "EVENT_MN_LEECH_MAINLAND_REPEL"
+  },
+  "walker_hint": [
+    "The pine path links",
+    "both cabins. Watch",
+    "the grass in there."
+  ],
+  "review_contract": {
+    "viewpoints": [
+      {
+        "id": "care-clearing",
+        "tile": [
+          13,
+          15
+        ]
+      },
+      {
+        "id": "north-trail",
+        "tile": [
+          15,
+          20
+        ]
+      },
+      {
+        "id": "fly-tying-pocket",
+        "tile": [
+          18,
+          24
+        ]
+      },
+      {
+        "id": "south-trail",
+        "tile": [
+          13,
+          30
+        ]
+      },
+      {
+        "id": "fisher-clearing",
+        "tile": [
+          11,
+          36
+        ]
+      },
+      {
+        "id": "public-lane",
+        "tile": [
+          23,
+          27
+        ]
+      },
+      {
+        "id": "south-welcome",
+        "tile": [
+          32,
+          40
+        ]
+      }
+    ]
+  },
+  "status": "Unpublished whole-town source candidate; collision, regional roster, native scripts and gameplay acceptance pending."
+}

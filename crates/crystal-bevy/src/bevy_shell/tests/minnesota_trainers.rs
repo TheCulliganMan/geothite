@@ -13,6 +13,9 @@ use super::super::{
 };
 use super::interior_life::{fixture, load};
 
+#[path = "minnesota_trainers_current.rs"]
+mod current;
+
 #[test]
 #[ignore = "requires CRYSTAL_INTERIOR_PACK with the published Minnesota trainer expansion and external placement JSON"]
 fn minnesota_trainers_controller_talk_scaling_evolution_turn_and_continue() {
@@ -162,34 +165,53 @@ fn minnesota_trainers_controller_talk_scaling_evolution_turn_and_continue() {
 #[ignore = "requires CRYSTAL_INTERIOR_PACK with the published Minneapolis cyclists"]
 fn minneapolis_cyclists_controller_talk_turn_and_continue() {
     let (root, runtime, _) = load();
-    let source: Value = serde_json::from_str(include_str!(
-        "../../../../../planning/minnesota/trainers/minneapolis-cyclists.json"
-    ))
-    .unwrap();
     for id in [
         "MN_EXTRA_MPLS_CYCLE_01",
         "MN_EXTRA_MPLS_CYCLE_13",
         "MN_EXTRA_MPLS_CYCLE_18",
     ] {
-        let row = source["trainers"]
-            .as_array()
-            .unwrap()
+        let map = "MnMinneapolis";
+        let city = &runtime.data().maps[map];
+        let rider = city
+            .objects
             .iter()
-            .find(|row| row["id"] == id)
-            .unwrap();
-        let map = row["map"].as_str().unwrap();
-        let approach = (
-            row["approach"][0].as_i64().unwrap() as i16,
-            row["approach"][1].as_i64().unwrap() as i16,
-        );
+            .find(|object| object.script == id)
+            .expect("installed cycling opponent");
+        let x = rider.x as i16;
+        let y = rider.y as i16;
+        let (approach, facing) = [
+            ((x, y + 1), Direction::Up),
+            ((x - 1, y), Direction::Right),
+            ((x + 1, y), Direction::Left),
+            ((x, y - 1), Direction::Down),
+        ]
+        .into_iter()
+        .find(|(point, _)| {
+            let (px, py) = *point;
+            if !(0..80).contains(&px) || !(0..64).contains(&py) {
+                return false;
+            }
+            let block = city.blocks[(py / 2 * 40 + px / 2) as usize];
+            runtime.data().tilesets[&city.attributes.tileset_name].collision
+                [&format!("{block:02x}")][(py % 2 * 2 + px % 2) as usize]
+                == "FLOOR"
+                && !city
+                    .objects
+                    .iter()
+                    .any(|o| (o.x as i16, o.y as i16) == *point)
+                && !city
+                    .events
+                    .warps
+                    .iter()
+                    .any(|e| (e.x as i16, e.y as i16) == *point)
+                && !city
+                    .events
+                    .coord_events
+                    .iter()
+                    .any(|e| (e.x as i16, e.y as i16) == *point)
+        })
+        .expect("safe approach to the actual installed rider");
         let mut c = fixture(&root, &runtime, map, approach);
-        let facing = match row["facing"].as_str().unwrap() {
-            "west" => Direction::Right,
-            "east" => Direction::Left,
-            "north" => Direction::Down,
-            "south" => Direction::Up,
-            _ => unreachable!(),
-        };
         {
             let (state, overworld) = c.shell.shell.session_mut().state_and_overworld_mut();
             for (index, (species, level)) in [("BOREALYNX", 59), ("POUCHID", 20), ("BIRCHIT", 20)]

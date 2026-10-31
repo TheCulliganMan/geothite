@@ -1,0 +1,24 @@
+{
+  "status": "PARTIAL_REPAIRS_VERIFIED",
+  "selected_revision": "route_grass_winona_town_revision",
+  "pack": "content-packs/minnesota-current-winona-mart-v01.crystalpack",
+  "sha256": "096585f981c5b0fcbe406f9f85e1454cf2a714d420e3dcf3284d9f3195751760",
+  "prior_resolved_lineage": "selected-mankato-resolution-v02.json",
+  "newly_resolved": {
+    "map": "MnWinona",
+    "building": "mart",
+    "former_origin": [
+      3,
+      10
+    ],
+    "proof": "planning/minnesota/revisions/route-grass-v01/current-winona-town-v01/acceptance.json"
+  },
+  "remaining_original_frozen_candidates": 4,
+  "remaining_original_maps": {
+    "MnBemidji": 1,
+    "MnDuluth": 1,
+    "MnStCloud": 2
+  },
+  "state_fair": "User-accepted facades preserved exactly.",
+  "scope": "Original frozen audit remains evidence. Later peer city edits require current preimage reconciliation. The additional Mankato forest-bank correction is separately verified and does not claim all current route/town/story scope complete."
+}

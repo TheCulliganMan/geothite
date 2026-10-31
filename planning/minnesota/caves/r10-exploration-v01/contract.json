@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "map": "MnR10Cave1F",
+  "native_module_sha256": "d2928aaf0b03b547c0e5cb60accbf5ecd6ae9ce684d45669ece708b617082274",
+  "design": "Full Iron Range survey-cave exploration rebuild; preserve the existing exterior mouth and native art.",
+  "preserved_warps": [
+    {
+      "index": 1,
+      "x": 3,
+      "y": 13,
+      "target_map_constant": "MnR10C00R00",
+      "target_map": "MnR10C00R00",
+      "target_warp_id": 2
+    }
+  ]
+}

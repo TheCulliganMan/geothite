@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "map": "MnR10Cave1F",
+      "approach": [
+        19,
+        15
+      ],
+      "optional_battle": true,
+      "id": "MN_EXTRA_R10_SURVEY",
+      "display_name": "SILAS",
+      "trainer_class": "HIKER",
+      "sprite": "SPRITE_POKEFAN_M",
+      "tile": [
+        18,
+        15
+      ],
+      "facing": "south",
+      "sight_range": 1,
+      "defeated_flag": "EVENT_MN_EXTRA_R10_SURVEY",
+      "party": [
+        {
+          "species": "BANDRAKE",
+          "level": 40
+        },
+        {
+          "species": "HAULGEIST",
+          "level": 41
+        }
+      ],
+      "before_lines": [
+        "These iron bands",
+        "bend underground.",
+        "Test your team?"
+      ],
+      "after_lines": [
+        "Different layers,",
+        "different teams."
+      ],
+      "loss_lines": [
+        "A strong showing!",
+        "Keep exploring."
+      ]
+    },
+    {
+      "map": "MnR10Cave1F",
+      "approach": [
+        33,
+        25
+      ],
+      "optional_battle": true,
+      "id": "MN_EXTRA_R10_SPRING",
+      "display_name": "NORA",
+      "trainer_class": "FISHER",
+      "sprite": "SPRITE_FISHER",
+      "tile": [
+        33,
+        24
+      ],
+      "facing": "south",
+      "sight_range": 1,
+      "defeated_flag": "EVENT_MN_EXTRA_R10_SPRING",
+      "party": [
+        {
+          "species": "MUDMENDER",
+          "level": 40
+        },
+        {
+          "species": "VOYAGEAR",
+          "level": 41
+        }
+      ],
+      "before_lines": [
+        "The spring stays",
+        "cold all year.",
+        "Want to battle?"
+      ],
+      "after_lines": [
+        "Rock above us,",
+        "water below us."
+      ],
+      "loss_lines": [
+        "A strong showing!",
+        "Keep exploring."
+      ]
+    }
+  ]
+}

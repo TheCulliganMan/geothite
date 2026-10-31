@@ -1,0 +1,214 @@
+{
+  "pack": "content-packs/minnesota-current-r14-forest-bank-v01.crystalpack",
+  "pack_sha256": "e9f4108d3b0a35f04145e4928446c03845982e1f13d7ff8f34e383bd701757d5",
+  "map": "MnR14C00R00",
+  "start": [
+    29,
+    23
+  ],
+  "badge_count": 0,
+  "event_flags": [],
+  "arrival_discovery_flags": [],
+  "roads": [],
+  "gates": [],
+  "doors": [],
+  "fences": [
+    {
+      "stand": [
+        20,
+        23
+      ],
+      "blocked": "down"
+    },
+    {
+      "stand": [
+        21,
+        23
+      ],
+      "blocked": "down"
+    },
+    {
+      "stand": [
+        22,
+        23
+      ],
+      "blocked": "down"
+    },
+    {
+      "stand": [
+        23,
+        23
+      ],
+      "blocked": "down"
+    },
+    {
+      "stand": [
+        24,
+        23
+      ],
+      "blocked": "down"
+    },
+    {
+      "stand": [
+        25,
+        23
+      ],
+      "blocked": "down"
+    },
+    {
+      "stand": [
+        26,
+        23
+      ],
+      "blocked": "down"
+    },
+    {
+      "stand": [
+        27,
+        23
+      ],
+      "blocked": "down"
+    },
+    {
+      "stand": [
+        32,
+        23
+      ],
+      "blocked": "down"
+    },
+    {
+      "stand": [
+        33,
+        23
+      ],
+      "blocked": "down"
+    },
+    {
+      "stand": [
+        34,
+        23
+      ],
+      "blocked": "down"
+    },
+    {
+      "stand": [
+        35,
+        23
+      ],
+      "blocked": "down"
+    }
+  ],
+  "ledges": [
+    {
+      "upper": [
+        28,
+        23
+      ],
+      "lip": [
+        28,
+        24
+      ],
+      "landing": [
+        28,
+        26
+      ],
+      "out": "down",
+      "return_via": [
+        [
+          15,
+          26
+        ],
+        [
+          15,
+          23
+        ]
+      ]
+    },
+    {
+      "upper": [
+        29,
+        23
+      ],
+      "lip": [
+        29,
+        24
+      ],
+      "landing": [
+        29,
+        26
+      ],
+      "out": "down",
+      "return_via": [
+        [
+          15,
+          26
+        ],
+        [
+          15,
+          23
+        ]
+      ]
+    },
+    {
+      "upper": [
+        30,
+        23
+      ],
+      "lip": [
+        30,
+        24
+      ],
+      "landing": [
+        30,
+        26
+      ],
+      "out": "down",
+      "return_via": [
+        [
+          15,
+          26
+        ],
+        [
+          15,
+          23
+        ]
+      ]
+    },
+    {
+      "upper": [
+        31,
+        23
+      ],
+      "lip": [
+        31,
+        24
+      ],
+      "landing": [
+        31,
+        26
+      ],
+      "out": "down",
+      "return_via": [
+        [
+          15,
+          26
+        ],
+        [
+          15,
+          23
+        ]
+      ]
+    }
+  ],
+  "source_dossier": "planning/minnesota/revisions/route-grass-v01/current-r14-closed-bank-v01/bank-denial-fixture.json",
+  "counts": {
+    "roads": 0,
+    "gates": 0,
+    "doors": 0,
+    "ledges": 4,
+    "fences": 12,
+    "residents": 0,
+    "signs": 0
+  },
+  "scope": "Twelve changed faces deny four native down inputs each; four unchanged legal lanes hop, reverse-deny, ordinary-return and Continue. Initial partner and location are QA fixtures."
+}

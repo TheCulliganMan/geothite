@@ -381,6 +381,213 @@
         3
       ],
       "block": "05"
+    },
+    {
+      "name": "Bounded Red River and signed brick bank",
+      "kind": "point",
+      "position": [
+        0,
+        0
+      ],
+      "block": "30"
+    },
+    {
+      "name": "Bounded Red River and signed brick bank",
+      "kind": "point",
+      "position": [
+        1,
+        0
+      ],
+      "block": "31"
+    },
+    {
+      "name": "Bounded Red River and signed brick bank",
+      "kind": "point",
+      "position": [
+        2,
+        0
+      ],
+      "block": "31"
+    },
+    {
+      "name": "Bounded Red River and signed brick bank",
+      "kind": "point",
+      "position": [
+        3,
+        0
+      ],
+      "block": "31"
+    },
+    {
+      "name": "Bounded Red River and signed brick bank",
+      "kind": "point",
+      "position": [
+        4,
+        0
+      ],
+      "block": "32"
+    },
+    {
+      "name": "Bounded Red River and signed brick bank",
+      "kind": "point",
+      "position": [
+        0,
+        1
+      ],
+      "block": "34"
+    },
+    {
+      "name": "Bounded Red River and signed brick bank",
+      "kind": "point",
+      "position": [
+        0,
+        2
+      ],
+      "block": "34"
+    },
+    {
+      "name": "Bounded Red River and signed brick bank",
+      "kind": "point",
+      "position": [
+        0,
+        3
+      ],
+      "block": "34"
+    },
+    {
+      "name": "Bounded Red River and signed brick bank",
+      "kind": "point",
+      "position": [
+        0,
+        4
+      ],
+      "block": "34"
+    },
+    {
+      "name": "Bounded Red River and signed brick bank",
+      "kind": "point",
+      "position": [
+        0,
+        5
+      ],
+      "block": "34"
+    },
+    {
+      "name": "Bounded Red River and signed brick bank",
+      "kind": "point",
+      "position": [
+        0,
+        6
+      ],
+      "block": "34"
+    },
+    {
+      "name": "Bounded Red River and signed brick bank",
+      "kind": "point",
+      "position": [
+        4,
+        6
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Bounded Red River and signed brick bank",
+      "kind": "point",
+      "position": [
+        5,
+        6
+      ],
+      "block": "06"
+    },
+    {
+      "name": "Bounded Red River and signed brick bank",
+      "kind": "point",
+      "position": [
+        0,
+        7
+      ],
+      "block": "34"
+    },
+    {
+      "name": "Bounded Red River and signed brick bank",
+      "kind": "point",
+      "position": [
+        6,
+        7
+      ],
+      "block": "45"
+    },
+    {
+      "name": "Bounded Red River and signed brick bank",
+      "kind": "point",
+      "position": [
+        0,
+        8
+      ],
+      "block": "34"
+    },
+    {
+      "name": "Bounded Red River and signed brick bank",
+      "kind": "point",
+      "position": [
+        0,
+        9
+      ],
+      "block": "34"
+    },
+    {
+      "name": "Bounded Red River and signed brick bank",
+      "kind": "point",
+      "position": [
+        0,
+        10
+      ],
+      "block": "34"
+    },
+    {
+      "name": "Bounded Red River and signed brick bank",
+      "kind": "point",
+      "position": [
+        0,
+        11
+      ],
+      "block": "38"
+    },
+    {
+      "name": "Bounded Red River and signed brick bank",
+      "kind": "point",
+      "position": [
+        1,
+        11
+      ],
+      "block": "39"
+    },
+    {
+      "name": "Bounded Red River and signed brick bank",
+      "kind": "point",
+      "position": [
+        2,
+        11
+      ],
+      "block": "39"
+    },
+    {
+      "name": "Bounded Red River and signed brick bank",
+      "kind": "point",
+      "position": [
+        3,
+        11
+      ],
+      "block": "39"
+    },
+    {
+      "name": "Bounded Red River and signed brick bank",
+      "kind": "point",
+      "position": [
+        4,
+        11
+      ],
+      "block": "3a"
     }
   ]
 }

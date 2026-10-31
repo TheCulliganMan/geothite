@@ -8,6 +8,7 @@ pub mod hall_of_fame;
 mod map_catalog;
 mod music_catalog;
 mod outdoor_mods;
+mod regional_item_descriptions;
 mod runtime_presentation_text;
 mod runtime_safari;
 pub use runtime_safari::{safari_result_lines, safari_catch_presentation_lines};

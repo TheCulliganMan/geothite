@@ -4,6 +4,8 @@
 All script labels are scanned, including conditional and dormant programs.
 Sources and declared field usability are leads for controller verification,
 not proof of successful delivery, progression, persistence or reachable use.
+Catalog descriptions are shared source text. Displayed regional help is supplied
+by RuntimeShellSnapshot.item_description and must be checked in the controller.
 """
 import argparse
 import json
@@ -47,7 +49,7 @@ def main():
         item = items[name]
         report[name] = dict(
             **entry,
-            bag_description=item['description'],
+            catalog_description=item['description'],
             declared_field_usable=item['field_usable'],
             field_effect=item['effect'],
             has_script_source=bool(entry['sources']),

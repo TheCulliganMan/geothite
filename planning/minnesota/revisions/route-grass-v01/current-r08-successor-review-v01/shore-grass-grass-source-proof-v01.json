@@ -1,0 +1,91 @@
+{
+  "status": "SOURCE_CANDIDATE_NOT_PUBLISHED",
+  "parent": {
+    "revision": "route_grass_r07_north_pocket_revision",
+    "pack": "content-packs/minnesota-current-r07-grass-and-stairs-v02.crystalpack",
+    "pack_sha256": "7b0aea48dc662368dfa4a2482d6dce75c94f2b18e4f9f3ea2b94861f9c409316",
+    "maps": [
+      "MnR08C00R00",
+      "MnR08C00R01",
+      "MnR08C01R00",
+      "MnR08C01R01"
+    ]
+  },
+  "changes": [
+    {
+      "metatile": [
+        12,
+        4
+      ],
+      "before": "01",
+      "after": "03"
+    },
+    {
+      "metatile": [
+        12,
+        5
+      ],
+      "before": "01",
+      "after": "03"
+    },
+    {
+      "metatile": [
+        12,
+        6
+      ],
+      "before": "01",
+      "after": "03"
+    }
+  ],
+  "new_grass_quadrants": 12,
+  "existing_grass_removed": 0,
+  "native_movement_measurements": [
+    {
+      "start": [
+        25,
+        54
+      ],
+      "end": [
+        27,
+        63
+      ],
+      "before": {
+        "status": "MEASURED",
+        "grass_steps": 0,
+        "grass_quadrants_in_contract": 360,
+        "ice_quadrants": 0
+      },
+      "after": {
+        "status": "MEASURED",
+        "grass_steps": 6,
+        "grass_quadrants_in_contract": 372,
+        "ice_quadrants": 0
+      }
+    },
+    {
+      "start": [
+        27,
+        63
+      ],
+      "end": [
+        25,
+        54
+      ],
+      "before": {
+        "status": "MEASURED",
+        "grass_steps": 0,
+        "grass_quadrants_in_contract": 360,
+        "ice_quadrants": 0
+      },
+      "after": {
+        "status": "MEASURED",
+        "grass_steps": 6,
+        "grass_quadrants_in_contract": 372,
+        "ice_quadrants": 0
+      }
+    }
+  ],
+  "coastal_ice_quadrants": 0,
+  "all_cliffs_stairs_water_houses_actors_scripts_and_signs_unchanged": true,
+  "scope": "Whole-route source rendering inspected; native publication/gameplay still required."
+}

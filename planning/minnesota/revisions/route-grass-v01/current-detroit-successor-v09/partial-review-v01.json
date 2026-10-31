@@ -1,0 +1,12 @@
+{
+  "status": "PARTIAL_CURRENT_DETROIT_TOWN_PASS_SURVEY_UNRESOLVED",
+  "pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+  "pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33",
+  "native_passes": 4,
+  "production_continue_calls": 15,
+  "gatehouse_town_entry_and_return": true,
+  "source_checks": "current-source-checks-v01.json",
+  "production_receipt": ".local/route-grass-review/current-detroit-town-stdio-v01.receipt.json",
+  "unresolved": "Survey course reaches wild encounter and fails RUN blackout assertion; local fixture/encounter interaction needs diagnosis. No survey acceptance claimed.",
+  "scope": "No gameplay/pack/terrain change. Test town endpoint updated to actual R19 gatehouse; explicit survey fixture and native Repel use retained with failures. Original review records remain unchanged."
+}

@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-r03-stair-guidance-v01.crystalpack",
+  "pack_sha256": "78ccaed227c86c2ab162c97eeb5bf3d793467bb0550588641ed96cf5a0ec81c8",
+  "test": "native_town_exterior_public_paths_qualified_roads_and_water_boundary",
+  "actual_scope": "Terrace sign, actual stair-mediated walk between closed upper/lower cliff edges, two wall denials and Continue only. Initial partner, two badges and location are QA setup; complete route and six low-bank hops are checked separately.",
+  "exit_code": 0,
+  "log": ".local/route-grass-review/r03-guidance-child-terrace-v01.log"
+}

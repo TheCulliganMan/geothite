@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "id": "MN_R09",
+  "source_kind": "installed_route_exterior_review_contract",
+  "native_binding": {
+    "pack": "content-packs/minnesota-current-r10-grass-and-stairs-v01.crystalpack",
+    "pack_sha256": "840dc279fa9e35359f31885010766950d2487dae723eb11c3d5af2fa8e4da6cb",
+    "content_identity": "c68542065bac76644016febec0ff6217ecf1ac446caa247a1579d3cd024a9594"
+  },
+  "new_grass_quadrants": 12,
+  "route_grass_quadrants": 240,
+  "approach_core": [
+    [
+      12,
+      52
+    ],
+    [
+      12,
+      56
+    ]
+  ],
+  "minimum_approach_grass_steps": 2,
+  "existing_cut_gate_core": [
+    12,
+    57
+  ],
+  "pickup_core": [
+    11,
+    63
+  ],
+  "pickup_item": "REVIVE",
+  "minimum_inside_pickup_grass_steps": 2,
+  "existing_cliffs_stairs_actors_and_signs_preserved": true,
+  "scope": "All four Route9 chunks, actual native Cut from inside its reached pocket, both composite and short stair courses, Bemidji and Grand Rapids round trips, repeated after Continue. Local initial Cut partner/badge/position are QA fixtures. The current selected route/neighbor maps, used route tilesets, encounters, trainer teams and battle inputs are exact to this tested publication.",
+  "active_native_hop_lanes": [],
+  "retired_historical_ledge_contracts": [
+    "MN_R09_SPOIL_RETURN"
+  ],
+  "stair_pairs": [
+    {
+      "upper": [
+        36,
+        33
+      ],
+      "lower": [
+        36,
+        38
+      ],
+      "native_cave_blocks": [
+        "30",
+        "36"
+      ]
+    },
+    {
+      "upper": [
+        49,
+        39
+      ],
+      "lower": [
+        49,
+        42
+      ],
+      "native_cave_blocks": [
+        "12"
+      ]
+    }
+  ],
+  "neighbor_connections": [
+    "MnBemidji",
+    "MnGrandRapids"
+  ]
+}

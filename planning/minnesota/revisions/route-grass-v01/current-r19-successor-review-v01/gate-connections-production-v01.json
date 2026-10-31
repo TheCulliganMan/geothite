@@ -1,0 +1,98 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-r19-detroit-gate-v04.crystalpack",
+  "pack_sha256": "de1add590013c786bd3a2770c58ff46c656930cc3dd3944af203f7480e292e21",
+  "calls": 1310,
+  "phases": [
+    {
+      "phase": "walk-save",
+      "initial": {
+        "badges": 6,
+        "dialogue": false,
+        "facing": "up",
+        "frame": 10,
+        "map": "MnR19DetroitGate",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 0
+        },
+        "position": {
+          "x": 4,
+          "y": 3
+        }
+      },
+      "final": {
+        "badges": 6,
+        "dialogue": false,
+        "facing": "down",
+        "frame": 277,
+        "map": "MnR19DetroitGate",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 0
+        },
+        "position": {
+          "x": 4,
+          "y": 3
+        }
+      },
+      "output_save": ".local/route-grass-review/r19-gate-connections-walk-save-v01-output.crystalsave",
+      "stderr_bytes": 0,
+      "input_unchanged": true
+    },
+    {
+      "phase": "continue-return",
+      "initial": {
+        "badges": 6,
+        "dialogue": false,
+        "facing": "down",
+        "frame": 277,
+        "map": "MnR19DetroitGate",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 0
+        },
+        "position": {
+          "x": 4,
+          "y": 3
+        }
+      },
+      "final": {
+        "badges": 6,
+        "dialogue": false,
+        "facing": "down",
+        "frame": 545,
+        "map": "MnR19DetroitGate",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 0
+        },
+        "position": {
+          "x": 4,
+          "y": 3
+        }
+      },
+      "output_save": ".local/route-grass-review/r19-gate-connections-continue-return-v01-output.crystalsave",
+      "stderr_bytes": 0,
+      "input_unchanged": true
+    }
+  ],
+  "wild": [],
+  "scope": "Both gate north and south carpet lanes, both outdoor route entrances, actual Detroit Lakes doorstep, both R19 chunks and actual Lake Itasca guard corridor round trip, two-phase Save/Continue. Initial empty-party/six-badge native QA setup isolates traversal; populated grass/wild and ledges are separate candidate receipts. No earned progression claim."
+}

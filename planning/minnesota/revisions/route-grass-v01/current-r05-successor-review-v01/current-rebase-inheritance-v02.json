@@ -1,0 +1,28 @@
+{
+  "status": "PASS_CURRENT_REBASE_AND_EXACT_TEST_INHERITANCE",
+  "parent_revision": "voyageurs_ice_turning_revision",
+  "parent_pack": "content-packs/minnesota-ice-turning-chambers-v01.crystalpack",
+  "parent_pack_sha256": "0f734df8621b02da80cc45cb905de3d793e28b4f987f98d24203232ddb4cd3b4",
+  "pack": "content-packs/minnesota-current-r05-cache-grass-bank-v02.crystalpack",
+  "pack_sha256": "4304e4026b354a6d3a79a90b801dcc26c39bc133adf594876168856f65cfe5dd",
+  "content_identity": "04b4d779c836810e7c0b12fc39af95852294c9f241946da8e9f3a687c401ea89",
+  "original_tested_pack": "content-packs/minnesota-current-r05-cache-grass-bank-v01.crystalpack",
+  "original_tested_pack_sha256": "163897117d4a1a4a9c86c64bea0e7eb62c095edb6a9f5f9f3660a6c5bcf4fc52",
+  "all_three_complete_r05_maps_tilesets_encounters_and_existing_runtime_files_exact_to_tested_child": true,
+  "all_data_outside_eight_native_cells_encoded_block_mirror_and_one_sign_preserved_from_current_parent": true,
+  "all_parent_audio_preserved_exact": true,
+  "data_changes": {
+    "maps": [
+      "MnR05C00R00",
+      "MnR05C00R01"
+    ],
+    "map_scripts": [
+      "MN_R05_RAMP_SIGNText"
+    ],
+    "map_blocks": [
+      "MnR05C00R00_Blocks"
+    ]
+  },
+  "scope": "Rebased the accepted R05 native terrain/text candidate on the current inland ice-cave successor; all R05 native/stdio/GPU inputs remain exact. Earlier test logs are not relabeled as freshly run on this pack. Current cave work remains preserved.",
+  "pokemon_moves_items_learnsets_rewards_step_rules_and_five_r05_trainer_teams_exact_to_tested_child": true
+}

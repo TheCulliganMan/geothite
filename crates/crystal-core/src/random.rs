@@ -17,6 +17,13 @@ pub trait DividerSource {
 /// supplies [`ExactBattleRandom`]; fixture implementations may supply a
 /// deterministic byte stream without becoming part of cartridge state.
 pub trait BattleRandomSource {
+    /// Returns an input-source failure retained by this adapter, if any.
+    /// Rejection samplers must check after drawing a byte so a failed finite
+    /// replay cannot become an endless retry of its placeholder value.
+    fn source_error(&self) -> Option<&str> {
+        None
+    }
+
     fn battle_random_byte(&mut self) -> u8;
     fn crystal_random_byte(&mut self, carry_in: bool) -> u8 {
         let _ = carry_in;
@@ -275,6 +282,10 @@ where
     S: DividerSource + ?Sized,
     S::Error: std::fmt::Display,
 {
+    fn source_error(&self) -> Option<&str> {
+        self.divider_error.as_deref()
+    }
+
     fn battle_random_byte(&mut self) -> u8 {
         if self.divider_error.is_some() {
             return u8::MAX;

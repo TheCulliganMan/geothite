@@ -1,0 +1,7 @@
+{
+  "source": ".local/route-grass-review/current-moorhead-town-saves-v01/geothite-r10-gallery-79198-1793429092100154000.crystalsave",
+  "production_input": ".local/route-grass-review/current-moorhead-town-stdio-input-v01.crystalsave",
+  "sha256": "b0815d2f6403815f1000713f824d0cf30913db7354cb2aff35f3034c1ec6b9e9",
+  "source_case": "moorhead_controller_all_people_rooms_returns_and_both_prairie_lanes",
+  "scope": "Actual reached local controller save; initial resources/qualifications are explicit QA fixtures. Corrects inherited descriptive labels only; save bytes and production requests unchanged."
+}

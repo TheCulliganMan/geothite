@@ -1,0 +1,635 @@
+{
+  "schema_version": 1,
+  "status": "Unselected street candidate; includes user-requested normal house correction; must rebase on selected normal-house publication before future use",
+  "parent_revision": "route_grass_bemidji_mart_revision",
+  "parent_pack": "content-packs/minnesota-current-bemidji-mart-v02.crystalpack",
+  "parent_pack_sha256": "b4a95a5634198e39fd8b9d6528af90b66f1e626fc9582e366b4ba4b6a9588171",
+  "complete_facade_moves": [
+    {
+      "name": "Supply Cooperative",
+      "warp": 11,
+      "box": [
+        2,
+        3,
+        5,
+        5
+      ],
+      "to": [
+        3,
+        4
+      ],
+      "native_rows": [
+        [
+          24,
+          159,
+          25
+        ],
+        [
+          16,
+          164,
+          17
+        ]
+      ]
+    },
+    {
+      "name": "River Family Home",
+      "warp": 73,
+      "box": [
+        6,
+        3,
+        8,
+        5
+      ],
+      "to": [
+        7,
+        4
+      ],
+      "native_rows": [
+        [
+          169,
+          170
+        ],
+        [
+          171,
+          172
+        ]
+      ],
+      "native_rows_before_normalization": [
+        [
+          24,
+          25
+        ],
+        [
+          16,
+          157
+        ]
+      ]
+    },
+    {
+      "name": "Foundry Museum",
+      "warp": 19,
+      "box": [
+        2,
+        7,
+        7,
+        10
+      ],
+      "to": [
+        3,
+        8
+      ],
+      "native_rows": [
+        [
+          128,
+          130,
+          130,
+          130,
+          129
+        ],
+        [
+          132,
+          137,
+          137,
+          137,
+          133
+        ],
+        [
+          131,
+          135,
+          138,
+          135,
+          136
+        ]
+      ]
+    },
+    {
+      "name": "Arts Studio",
+      "warp": 21,
+      "box": [
+        8,
+        8,
+        11,
+        10
+      ],
+      "to": [
+        8,
+        9
+      ],
+      "native_rows": [
+        [
+          24,
+          159,
+          25
+        ],
+        [
+          16,
+          164,
+          17
+        ]
+      ]
+    },
+    {
+      "name": "Tool Workshop",
+      "warp": 15,
+      "box": [
+        11,
+        6,
+        14,
+        8
+      ],
+      "to": [
+        11,
+        7
+      ],
+      "native_rows": [
+        [
+          128,
+          130,
+          129
+        ],
+        [
+          131,
+          138,
+          136
+        ]
+      ]
+    },
+    {
+      "name": "Bridge Home",
+      "warp": 41,
+      "box": [
+        12,
+        9,
+        14,
+        11
+      ],
+      "to": [
+        12,
+        10
+      ],
+      "native_rows": [
+        [
+          169,
+          170
+        ],
+        [
+          171,
+          172
+        ]
+      ],
+      "native_rows_before_normalization": [
+        [
+          24,
+          25
+        ],
+        [
+          16,
+          157
+        ]
+      ]
+    }
+  ],
+  "changed_metatiles": 124,
+  "changed_anchors": [
+    {
+      "kind": "object",
+      "index": 11,
+      "before": [
+        17,
+        13
+      ],
+      "after": [
+        15,
+        13
+      ]
+    },
+    {
+      "kind": "object",
+      "index": 13,
+      "before": [
+        15,
+        21
+      ],
+      "after": [
+        17,
+        23
+      ]
+    },
+    {
+      "kind": "background",
+      "index": 4,
+      "before": [
+        2,
+        10
+      ],
+      "after": [
+        4,
+        12
+      ]
+    },
+    {
+      "kind": "background",
+      "index": 5,
+      "before": [
+        16,
+        10
+      ],
+      "after": [
+        18,
+        12
+      ]
+    },
+    {
+      "kind": "background",
+      "index": 6,
+      "before": [
+        22,
+        16
+      ],
+      "after": [
+        22,
+        18
+      ]
+    },
+    {
+      "kind": "background",
+      "index": 8,
+      "before": [
+        2,
+        20
+      ],
+      "after": [
+        4,
+        22
+      ]
+    },
+    {
+      "kind": "background",
+      "index": 9,
+      "before": [
+        14,
+        20
+      ],
+      "after": [
+        14,
+        22
+      ]
+    },
+    {
+      "kind": "background",
+      "index": 19,
+      "before": [
+        22,
+        22
+      ],
+      "after": [
+        22,
+        24
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 4,
+      "before": [
+        73,
+        25
+      ],
+      "after": [
+        71,
+        25
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 5,
+      "before": [
+        73,
+        26
+      ],
+      "after": [
+        71,
+        26
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 10,
+      "before": [
+        7,
+        9
+      ],
+      "after": [
+        9,
+        11
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 11,
+      "before": [
+        7,
+        10
+      ],
+      "after": [
+        9,
+        12
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 14,
+      "before": [
+        24,
+        15
+      ],
+      "after": [
+        24,
+        17
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 15,
+      "before": [
+        24,
+        16
+      ],
+      "after": [
+        24,
+        18
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 18,
+      "before": [
+        8,
+        19
+      ],
+      "after": [
+        10,
+        21
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 19,
+      "before": [
+        8,
+        20
+      ],
+      "after": [
+        10,
+        22
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 20,
+      "before": [
+        19,
+        19
+      ],
+      "after": [
+        19,
+        21
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 21,
+      "before": [
+        19,
+        20
+      ],
+      "after": [
+        19,
+        22
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 30,
+      "before": [
+        55,
+        17
+      ],
+      "after": [
+        53,
+        17
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 31,
+      "before": [
+        55,
+        18
+      ],
+      "after": [
+        53,
+        18
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 34,
+      "before": [
+        19,
+        29
+      ],
+      "after": [
+        17,
+        29
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 35,
+      "before": [
+        19,
+        30
+      ],
+      "after": [
+        17,
+        30
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 40,
+      "before": [
+        27,
+        21
+      ],
+      "after": [
+        25,
+        23
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 41,
+      "before": [
+        27,
+        22
+      ],
+      "after": [
+        25,
+        24
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 54,
+      "before": [
+        7,
+        57
+      ],
+      "after": [
+        5,
+        57
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 55,
+      "before": [
+        7,
+        58
+      ],
+      "after": [
+        5,
+        58
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 56,
+      "before": [
+        45,
+        59
+      ],
+      "after": [
+        43,
+        59
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 57,
+      "before": [
+        45,
+        60
+      ],
+      "after": [
+        43,
+        60
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 68,
+      "before": [
+        51,
+        51
+      ],
+      "after": [
+        49,
+        51
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 69,
+      "before": [
+        51,
+        52
+      ],
+      "after": [
+        49,
+        52
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 72,
+      "before": [
+        15,
+        9
+      ],
+      "after": [
+        15,
+        11
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 73,
+      "before": [
+        15,
+        10
+      ],
+      "after": [
+        15,
+        12
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 76,
+      "before": [
+        67,
+        17
+      ],
+      "after": [
+        65,
+        17
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 77,
+      "before": [
+        67,
+        18
+      ],
+      "after": [
+        65,
+        18
+      ]
+    }
+  ],
+  "design": [
+    "Close native mill house fronts around a two-tile lane",
+    "Align museum and studio into a shared two-tile street",
+    "Give workshop and Bridge Home a connected turning lane",
+    "Open a real west-bank walking connection to the boathouse instead of requiring the eastern river loop"
+  ],
+  "preserve": [
+    "Native house pixels/joins and complete moved facades",
+    "All water, bridge, perimeter, bench, guarded north-pool cells and callbacks",
+    "All current cycling actors and their native return dispatch",
+    "All40 room destinations, original programs, quests, items, parties and encounters",
+    "All other maps, new R03 cave, newer Winona and selected regional work"
+  ],
+  "pending": [
+    "Whole-city visual and native geometry review",
+    "Publisher support for exact retained gate/return programs",
+    "Native publication and independent preservation",
+    "All40 door returns, useful new link, native activities and Continue",
+    "Native2D captures and audio before selection"
+  ],
+  "house_frontage_correction_source": "../minneapolis-normal-houses-v01/plan.json",
+  "house_frontage_correction_doors": [
+    73,
+    31,
+    77,
+    41,
+    5,
+    35,
+    69,
+    55,
+    57
+  ]
+}

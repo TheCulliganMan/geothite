@@ -1,0 +1,99 @@
+{
+  "schema_version": 1,
+  "id": "devils-kettle-discovery-v1",
+  "status": "unselected native 2D review; capture, RUN, knockout, actual blackout/clinic/physical return/retry, Continue and inspected map captures verified on reviewed lineage; earned campaign integration remains pending",
+  "map": "MnDevilsKettle",
+  "map_constant": "MN_DEVILS_KETTLE",
+  "template": "MnMaraisCedarApproach",
+  "tileset": "mn_north_shore",
+  "dimensions_metatiles": [
+    20,
+    18
+  ],
+  "legend": {
+    "T": "05",
+    "R": "0a",
+    ".": "01",
+    "g": "03",
+    "w": "35",
+    "F": "80",
+    "s": "82"
+  },
+  "rows": [
+    "T T T T T T T T T T T T T T T T T T T T",
+    "T T T R R R R R T T T T T T T T T T T T",
+    "T T R R w w R w w R R T T T T T T T T T",
+    "T T R . F F R F F . R R T T T T T T T T",
+    "T T R . F F R F F . . R R T T T T T T T",
+    "T T R . w w R w w . . . R R T T T T T T",
+    "T T R . w w R w w . . . . R T T T T T T",
+    "T T R . w w w w w . . R . R T T T T T T",
+    "T T R . w w w w w . R R . R T T T T T T",
+    "T T R . R R R R R . . . . R T T T T T T",
+    "T T R . . . . . R R R . R R T T T T T T",
+    "T T R R R R . . . . R . . . T T T T T T",
+    "T T T T T R R R . . R R R . . . T T T T",
+    "T T T T T T T R . . g g g g . . T T T T",
+    "T T T T T T T R R R R R R R . . T T T T",
+    "T T T T T T T T T T T T T R . . T T T T",
+    "T T T T T T T T T T T T T R s . T T T T",
+    "T T T T T T T T T T T T T T T T T T T T"
+  ],
+  "arrival": [
+    30,
+    32
+  ],
+  "exit_read_tile": [
+    28,
+    32
+  ],
+  "entrance": {
+    "map": "MnMaraisCedarApproach",
+    "metatile": [
+      6,
+      4
+    ],
+    "required_previous_block": "01",
+    "replacement": "82",
+    "approach": [
+      14,
+      9
+    ],
+    "warp_tile": [
+      13,
+      8
+    ]
+  },
+  "encounter": {
+    "species": "KETTLURK",
+    "level": 60,
+    "actor": [
+      20,
+      12
+    ],
+    "approach": [
+      21,
+      12
+    ],
+    "required_events": [
+      "EVENT_MN_KETTLURK_RELEASED",
+      "EVENT_MN_SURVEY_RESTORED"
+    ],
+    "caught_event": "EVENT_MN_DEVILS_KETTLE_CAUGHT"
+  },
+  "discovery_text": "The two falls divide around a dark rock. One current slips into the hollow. Beyond it, another curls back toward the pool.",
+  "before_restoration_text": "There is a hollow in the current. Something should be here.",
+  "encounter_text": "KETTLURK rises between the two currents. Approach it?",
+  "retry_text": "KETTLURK slips below the falls. The current may bring it back when you return.",
+  "caught_text": "The two falls keep flowing. KETTLURK was recorded in the POKEDEX.",
+  "contracts": [
+    "The main story never requires encountering or capturing Kettlurk.",
+    "The optional trail is accessible before restoration; only the creature is gated.",
+    "Physical stairs connect the existing cedar clearing and the new valley. Preserve all eight existing cedar warp indices, actors, events and scripts.",
+    "Read the current native block/collision and source atlas before publication. Block80 must remain native WATERFALL, not a decorative imitation.",
+    "Every outer tile is a visible tree or boulder wall. Surf cannot reach an unconnected edge.",
+    "Refusal spends nothing and leaves the creature visible. Capture alone marks caught. RUN or knockout withdraws it for this visit; physical reentry restores it. Continue preserves a hidden visit.",
+    "Loss uses native blackout and recovery. Returning must be possible through actual input. Full-party capture uses the selected PC box; capture stays removed after physical reentry.",
+    "The source preview is terrain evidence only. Do not register or select this candidate before native 2D, traversal, battle, preservation, audio and Continue checks."
+  ]
+}

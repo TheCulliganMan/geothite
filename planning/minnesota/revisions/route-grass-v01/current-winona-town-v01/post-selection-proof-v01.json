@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "selected_revision": "route_grass_winona_town_revision",
+  "pack": "content-packs/minnesota-current-winona-mart-v01.crystalpack",
+  "pack_sha256": "096585f981c5b0fcbe406f9f85e1454cf2a714d420e3dcf3284d9f3195751760",
+  "changed_complete_maps": [
+    "MnWinona"
+  ],
+  "all_numbered_route_modules_exact": 53,
+  "state_fair_maps_exact": [
+    "MnStateFairgrounds"
+  ],
+  "world_only_own_revision_and_selector_changed": true,
+  "canonical_only_own_one_cell_changed": true
+}

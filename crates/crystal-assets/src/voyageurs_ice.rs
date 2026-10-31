@@ -9,6 +9,9 @@ use crate::grand_marais_modpack::authoring::{self, command};
 
 #[path = "voyageurs_ice_geometry.rs"]
 mod geometry;
+#[path = "voyageurs_ice_revision.rs"]
+mod revision;
+pub use revision::revise_voyageurs_ice_turns;
 
 #[derive(Deserialize)]
 struct Design {

@@ -1,0 +1,593 @@
+{
+  "schema_version": 1,
+  "id": "north-shore-shops-v1",
+  "parent_revision": "outdoor_terrain_integrated_revision",
+  "parent_pack": "content-packs/minnesota-current-outdoor-composed-towns-v01.crystalpack",
+  "parent_content_hash": "2d03d7bb51b67d93a1e9ac3e1f6ee70671c69fce93ad2c1dcbce479b46850849",
+  "future_spawns": "Species-specific additions are deferred. New grass inherits unchanged existing Minnesota route encounters.",
+  "shops": [
+    {
+      "id": "MnNorthShorePieShop",
+      "constant": "MN_NORTH_SHORE_PIE_SHOP",
+      "exterior_map": "MnR11C00R01",
+      "native_group_id": 41,
+      "native_map_id": 11,
+      "cells": [
+        {
+          "metatile": [
+            13,
+            15
+          ],
+          "before": "05",
+          "after": "03"
+        },
+        {
+          "metatile": [
+            14,
+            15
+          ],
+          "before": "05",
+          "after": "03"
+        },
+        {
+          "metatile": [
+            15,
+            15
+          ],
+          "before": "02",
+          "after": "03"
+        },
+        {
+          "metatile": [
+            16,
+            15
+          ],
+          "before": "02",
+          "after": "03"
+        },
+        {
+          "metatile": [
+            17,
+            15
+          ],
+          "before": "02",
+          "after": "03"
+        },
+        {
+          "metatile": [
+            18,
+            15
+          ],
+          "before": "02",
+          "after": "03"
+        },
+        {
+          "metatile": [
+            13,
+            16
+          ],
+          "before": "05",
+          "after": "03"
+        },
+        {
+          "metatile": [
+            14,
+            16
+          ],
+          "before": "05",
+          "after": "03"
+        },
+        {
+          "metatile": [
+            15,
+            16
+          ],
+          "before": "02",
+          "after": "18"
+        },
+        {
+          "metatile": [
+            16,
+            16
+          ],
+          "before": "02",
+          "after": "19"
+        },
+        {
+          "metatile": [
+            17,
+            16
+          ],
+          "before": "02",
+          "after": "03"
+        },
+        {
+          "metatile": [
+            18,
+            16
+          ],
+          "before": "02",
+          "after": "03"
+        },
+        {
+          "metatile": [
+            13,
+            17
+          ],
+          "before": "05",
+          "after": "03"
+        },
+        {
+          "metatile": [
+            14,
+            17
+          ],
+          "before": "05",
+          "after": "03"
+        },
+        {
+          "metatile": [
+            15,
+            17
+          ],
+          "before": "02",
+          "after": "1a"
+        },
+        {
+          "metatile": [
+            16,
+            17
+          ],
+          "before": "01",
+          "after": "11"
+        },
+        {
+          "metatile": [
+            18,
+            17
+          ],
+          "before": "02",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            13,
+            18
+          ],
+          "before": "05",
+          "after": "03"
+        },
+        {
+          "metatile": [
+            14,
+            18
+          ],
+          "before": "01",
+          "after": "03"
+        },
+        {
+          "metatile": [
+            17,
+            18
+          ],
+          "before": "02",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            18,
+            18
+          ],
+          "before": "02",
+          "after": "45"
+        }
+      ],
+      "door": [
+        31,
+        35
+      ],
+      "porch": [
+        31,
+        36
+      ],
+      "road_approach": [
+        40,
+        32
+      ],
+      "sign": {
+        "id": "MN_NORTH_SHORE_PIE_SHOP_SIGN",
+        "tile": [
+          36,
+          36
+        ],
+        "lines": [
+          "NORTH SHORE PIES",
+          "Fresh from the",
+          "oven every day."
+        ]
+      },
+      "grass_bounds_core": [
+        [
+          26,
+          30,
+          38,
+          32
+        ],
+        [
+          26,
+          32,
+          30,
+          38
+        ],
+        [
+          34,
+          32,
+          38,
+          34
+        ]
+      ],
+      "room": {
+        "id": "MnNorthShorePieShop",
+        "template": "OlivineCafe",
+        "dimensions_metatiles": [
+          4,
+          4
+        ],
+        "rows": [
+          "02 02 02 13",
+          "2a 15 06 16",
+          "01 19 01 17",
+          "2a 0c 01 19"
+        ],
+        "exits": [
+          [
+            2,
+            7
+          ],
+          [
+            3,
+            7
+          ]
+        ],
+        "passive_arrival": {
+          "index": 3,
+          "tile": [
+            3,
+            6
+          ]
+        },
+        "clear_arrival": [
+          3,
+          6
+        ],
+        "border_block": 0,
+        "exit_collision": "WARP_CARPET_DOWN",
+        "residents": [
+          {
+            "id": "MN_SHORE_BAKER",
+            "sprite": "SPRITE_GRANNY",
+            "tile": [
+              5,
+              3
+            ],
+            "facing": "south",
+            "lines": [
+              "A good crust is",
+              "flaky and golden.",
+              "Each pie cools",
+              "beside the window."
+            ]
+          },
+          {
+            "id": "MN_SHORE_PIE_GUEST",
+            "sprite": "SPRITE_LASS",
+            "tile": [
+              4,
+              5
+            ],
+            "facing": "south",
+            "lines": [
+              "I always stop for",
+              "pie on this road.",
+              "Then I take the",
+              "long way home."
+            ]
+          }
+        ],
+        "items": [],
+        "signs": []
+      }
+    },
+    {
+      "id": "MnNorthShoreSmokehouse",
+      "constant": "MN_NORTH_SHORE_SMOKEHOUSE",
+      "exterior_map": "MnR11C00R03",
+      "native_group_id": 41,
+      "native_map_id": 12,
+      "cells": [
+        {
+          "metatile": [
+            16,
+            1
+          ],
+          "before": "02",
+          "after": "03"
+        },
+        {
+          "metatile": [
+            17,
+            1
+          ],
+          "before": "02",
+          "after": "03"
+        },
+        {
+          "metatile": [
+            16,
+            2
+          ],
+          "before": "05",
+          "after": "03"
+        },
+        {
+          "metatile": [
+            17,
+            2
+          ],
+          "before": "05",
+          "after": "2c"
+        },
+        {
+          "metatile": [
+            18,
+            2
+          ],
+          "before": "05",
+          "after": "2d"
+        },
+        {
+          "metatile": [
+            19,
+            2
+          ],
+          "before": "05",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            16,
+            3
+          ],
+          "before": "05",
+          "after": "03"
+        },
+        {
+          "metatile": [
+            17,
+            3
+          ],
+          "before": "05",
+          "after": "2e"
+        },
+        {
+          "metatile": [
+            18,
+            3
+          ],
+          "before": "05",
+          "after": "2f"
+        },
+        {
+          "metatile": [
+            19,
+            3
+          ],
+          "before": "05",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            20,
+            3
+          ],
+          "before": "05",
+          "after": "03"
+        },
+        {
+          "metatile": [
+            16,
+            4
+          ],
+          "before": "05",
+          "after": "03"
+        },
+        {
+          "metatile": [
+            17,
+            4
+          ],
+          "before": "05",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            18,
+            4
+          ],
+          "before": "05",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            19,
+            4
+          ],
+          "before": "05",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            20,
+            4
+          ],
+          "before": "05",
+          "after": "03"
+        },
+        {
+          "metatile": [
+            17,
+            5
+          ],
+          "before": "05",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            18,
+            5
+          ],
+          "before": "05",
+          "after": "45"
+        },
+        {
+          "metatile": [
+            19,
+            5
+          ],
+          "before": "05",
+          "after": "03"
+        },
+        {
+          "metatile": [
+            20,
+            5
+          ],
+          "before": "05",
+          "after": "03"
+        }
+      ],
+      "door": [
+        35,
+        7
+      ],
+      "porch": [
+        35,
+        8
+      ],
+      "road_approach": [
+        40,
+        5
+      ],
+      "sign": {
+        "id": "MN_NORTH_SHORE_SMOKEHOUSE_SIGN",
+        "tile": [
+          36,
+          10
+        ],
+        "lines": [
+          "NORTH SHORE",
+          "SMOKEHOUSE",
+          "Slow smoke.",
+          "Lake air."
+        ]
+      },
+      "grass_bounds_core": [
+        [
+          32,
+          2,
+          36,
+          4
+        ],
+        [
+          32,
+          4,
+          34,
+          10
+        ],
+        [
+          40,
+          6,
+          42,
+          12
+        ],
+        [
+          38,
+          10,
+          40,
+          12
+        ]
+      ],
+      "room": {
+        "id": "MnNorthShoreSmokehouse",
+        "template": "OlivineCafe",
+        "dimensions_metatiles": [
+          5,
+          4
+        ],
+        "rows": [
+          "02 02 02 02 13",
+          "2a 15 01 06 16",
+          "01 19 01 01 17",
+          "2a 0c 01 01 19"
+        ],
+        "exits": [
+          [
+            2,
+            7
+          ],
+          [
+            3,
+            7
+          ]
+        ],
+        "passive_arrival": {
+          "index": 3,
+          "tile": [
+            3,
+            6
+          ]
+        },
+        "clear_arrival": [
+          3,
+          6
+        ],
+        "border_block": 0,
+        "exit_collision": "WARP_CARPET_DOWN",
+        "residents": [
+          {
+            "id": "MN_SHORE_SMOKER",
+            "sprite": "SPRITE_FISHER",
+            "tile": [
+              7,
+              3
+            ],
+            "facing": "south",
+            "lines": [
+              "Low heat, then",
+              "plenty of time.",
+              "The lake wind does",
+              "the rest for us."
+            ]
+          },
+          {
+            "id": "MN_SHORE_SMOKE_GUEST",
+            "sprite": "SPRITE_POKEFAN_M",
+            "tile": [
+              4,
+              5
+            ],
+            "facing": "south",
+            "lines": [
+              "Follow the smell",
+              "off the road.",
+              "That is how I",
+              "found this place."
+            ]
+          }
+        ],
+        "items": [],
+        "signs": []
+      }
+    }
+  ]
+}

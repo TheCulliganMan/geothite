@@ -1,5 +1,78 @@
 # Northwoods Pokédex web app
 
+## Early research locations (2026-10-31)
+
+Release `20261031-early-research-29` follows
+`content-packs/minnesota-early-research-v01.crystalpack`, content identity
+`42f026e009fd591da612f6120b70c584fbe6a13bbd0dea85a6742fad579cfbc1`.
+All three starter pages explain the free unchosen partners after the first
+Rochester parcel delivery. Both fossil families explain the Care Badge, free
+party slot and same-room assistant handoff after the first restoration.
+The [early research runbook](../planning/minnesota/pokemon/acquisition-v01/early-research.md)
+records the actual native trips and unchanged earned-save stdio checks.
+
+All 225 pages, existing facts, sprites, cries and move media are retained.
+Location, full-app and desktop/mobile browser checks pass; the fossil panels
+were inspected at 1280px and 390px. The guide still labels nine pending species
+on this selected lineage. The separate full-roster candidate's local encounter
+passes do not replace final integration or imply an earned full collection.
+
+```sh
+RUST_MIN_STACK=67108864 target/verdigrim-scene/debug/examples/publish_pokedex_locations \
+  content-packs/minnesota-early-research-v01.crystalpack \
+  target/minnesota-pokedex-web/pokedex/releases/20261031-water-caves-28-v06 \
+  target/minnesota-pokedex-web/pokedex/releases/20261031-early-research-29
+bash tools/deploy-pokedex.sh 100.101.29.133 \
+  target/minnesota-pokedex-web/pokedex/releases/20261031-early-research-29 \
+  20261031-early-research-29
+```
+
+These are fresh-output publication commands. Static guide deployment preserves
+the game's running image, settings and pack mounts.
+
+## Water and cave locations (historical release, 2026-10-31)
+
+Release `20261031-water-caves-28-v06` refreshes Where to find panels on all 225
+active species pages from the selected local water/cave pack. It includes 19
+Surf areas, ten cave floors, Leech Lake pine-island grass, the signed Moorhead
+launch, named town searches and both indoor Rochester fossil gifts. Search
+finds Moorhead, St Paul and Voyageurs Ice Cavern. All-day availability is stated
+once when ordinary and timed rod slots overlap.
+
+The Rust exporter reads actual grass zones, cave/Surf tables, rods and timed
+fishing, Headbutt, conditional gifts/discoveries and incoming level evolutions.
+The guide records 216 species with potential paths and labels nine pending.
+Base-level scaling and story/field-move conditions remain explicit. The
+[water/cave runbook](../planning/minnesota/pokemon/acquisition-v01/water-caves-v01/README.md)
+records gameplay evidence and remaining statewide work. This static guide
+publication preserves the running game's deployment and pack mounts.
+
+The executed build/export/publication commands are:
+
+```sh
+CARGO_TARGET_DIR=target/verdigrim-scene CARGO_INCREMENTAL=0 \
+RUST_MIN_STACK=67108864 cargo build --locked -p crystal-assets \
+  --example publish_pokedex_locations
+RUST_MIN_STACK=67108864 target/verdigrim-scene/debug/examples/publish_pokedex_locations \
+  content-packs/minnesota-water-caves-v05.crystalpack \
+  target/minnesota-pokedex-web/pokedex/releases/20261031-fossil-lab-27 \
+  target/minnesota-pokedex-web/pokedex/releases/20261031-water-caves-28-v06
+bash tools/deploy-pokedex.sh 100.101.29.133 \
+  target/minnesota-pokedex-web/pokedex/releases/20261031-water-caves-28-v06 \
+  20261031-water-caves-28-v06
+```
+
+Use fresh paths to repeat and serialize Cargo through the shared slot. A
+previous release with acquisition panels is a valid baseline: panels/search
+terms are replaced without duplication. Original profiles, compatibility,
+cries, sprites, thumbnails and move previews remain exact. The existing JSON
+download retains a separate acquisition-source identity, now
+`933857a91d19b2f638e3a1dc592c3eedb786321b73de7c09bb01aa8c75b5f175`.
+All 2,203 remote files match local bytes. Full app/location tests and live
+1280px/390px layout, expanded locations, searches and browser-error checks pass.
+Native and web captures were inspected. Deployment preserves the existing game
+image, environment, ports, networks and mounts.
+
 ## Verdigrim publication (2026-10-29)
 
 Release `20261029-verdigrim-25` adds Verdigrim as active species 225 with its

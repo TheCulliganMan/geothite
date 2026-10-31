@@ -1,0 +1,7 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-r13-south-woods-grass-v01.crystalpack",
+  "pack_sha256": "10cd75cf9de2578966560721755ee761129d84d5e02122e174df07331f84679d",
+  "log": ".local/route-grass-review/r13-child-cut-native-v01.log",
+  "scope": "Revised winter grass child: native Cut permissions, Revive once, Save/Continue and inside return. Initial local party/position/badge are QA fixtures."
+}

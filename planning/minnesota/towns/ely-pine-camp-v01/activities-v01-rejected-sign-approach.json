@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "id": "MN_ELY_PINE_CAMP_V1",
+  "residents": [
+    {
+      "id": "MN_ELY_EINO",
+      "sprite": "SPRITE_POKEFAN_M",
+      "tile": [
+        20,
+        5
+      ],
+      "facing": "east",
+      "approach": [
+        21,
+        5
+      ],
+      "lines": [
+        "Wind off the lake",
+        "stops at these",
+        "pines. Follow the",
+        "packed trail east",
+        "for the shore."
+      ]
+    },
+    {
+      "id": "MN_ELY_SKI_TRAINER",
+      "sprite": "SPRITE_COOLTRAINER_F",
+      "tile": [
+        32,
+        10
+      ],
+      "facing": "east",
+      "approach": [
+        33,
+        10
+      ],
+      "lines": [
+        "I warm up on the",
+        "loop behind the",
+        "lodge. The little",
+        "supply nook is",
+        "easy to miss."
+      ]
+    },
+    {
+      "id": "MN_ELY_CHALLENGER",
+      "sprite": "SPRITE_COOLTRAINER_M",
+      "tile": [
+        29,
+        16
+      ],
+      "facing": "south",
+      "approach": [
+        29,
+        17
+      ],
+      "lines": [
+        "I reached the last",
+        "League room with",
+        "no FULL HEAL left.",
+        "This time I am",
+        "checking my PACK",
+        "before I register."
+      ]
+    }
+  ],
+  "items": [
+    {
+      "id": "MN_ELY_PINE_SUPPLY",
+      "item": "FULL_RESTORE",
+      "quantity": 1,
+      "flag": "EVENT_MN_ELY_PINE_SUPPLY",
+      "tile": [
+        35,
+        5
+      ]
+    }
+  ]
+}

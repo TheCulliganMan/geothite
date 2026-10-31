@@ -1,0 +1,7 @@
+{
+  "source": ".local/route-grass-review/current-minneapolis-cycling-v01/01-actual-reached.crystalsave",
+  "production_input": ".local/route-grass-review/current-minneapolis-stdio-input-v01.crystalsave",
+  "sha256": "dbecae059eba3ae11b725ec96008168f17a84d143bb8b30022c47ac5d3b68a3e",
+  "source_case": "native_town_exterior_all_facades_both_returns_and_continue",
+  "scope": "Actual reached Detroit gate-return town save; Mew60 and initial qualifications remain explicit QA fixtures."
+}

@@ -437,6 +437,15 @@
         8
       ],
       "block": "45"
+    },
+    {
+      "name": "Complete original native Cherrygrove mart front",
+      "kind": "point",
+      "position": [
+        3,
+        11
+      ],
+      "block": "1a"
     }
   ]
 }

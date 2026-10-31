@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "parent_revision": "r05_shelf_drop_revision",
+  "parent_pack": "content-packs/minnesota-r05-shelf-drop-v01.crystalpack",
+  "parent_pack_sha256": "71a40f87927ed85404c631869295b091225ac0e26c76fef0d084adf32e5f8d67",
+  "native_parent_map": "MnR01Cave1F",
+  "native_module_sha256": "a215e5f7cda793d0d859186047fdfce234cb0a598bc09fb6630fefb10b64a5bb",
+  "preserved_exterior_warp": {
+    "index": 1,
+    "x": 9,
+    "y": 11,
+    "target_map_constant": "MnR01C00R00",
+    "target_map": "MnR01C00R00",
+    "target_warp_id": 2
+  },
+  "purpose": "Optional dry Driftless fossil gallery: descend from the lit tutorial hollow, climb the west fossil ledge, acknowledge the sea-life clue under real native Flash, then investigate the eastern sample-cache alcove. Both climbs and the low cleft have fitted native terrain; the original hollow, HM giver, Antidote and exterior exit remain."
+}

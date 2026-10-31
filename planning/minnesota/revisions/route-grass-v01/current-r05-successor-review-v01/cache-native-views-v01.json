@@ -1,0 +1,42 @@
+[
+  {
+    "id": "cache-grass",
+    "map": "MnR05C00R00",
+    "core": [
+      36,
+      20
+    ]
+  },
+  {
+    "id": "cache-upper-bank",
+    "map": "MnR05C00R00",
+    "core": [
+      38,
+      19
+    ]
+  },
+  {
+    "id": "cache-dry-landing",
+    "map": "MnR05C00R00",
+    "core": [
+      38,
+      22
+    ]
+  },
+  {
+    "id": "dry-lookout-link",
+    "map": "MnR05C00R00",
+    "core": [
+      42,
+      22
+    ]
+  },
+  {
+    "id": "river-lookout",
+    "map": "MnR05C00R00",
+    "core": [
+      52,
+      21
+    ]
+  }
+]

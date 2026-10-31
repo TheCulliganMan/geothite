@@ -1,0 +1,975 @@
+{
+  "id": "MN_R14",
+  "map_prefix": "MnR14",
+  "name": "Headwaters Trail",
+  "dimensions_metatiles": [
+    48,
+    32
+  ],
+  "chunk_metatiles": [
+    32,
+    24
+  ],
+  "chunk_columns": 2,
+  "chunk_rows": 2,
+  "endpoints": [
+    {
+      "place": "BEMIDJI",
+      "side": "E",
+      "gate_metatile": [
+        46,
+        13
+      ],
+      "landing_metatile": [
+        44,
+        13
+      ]
+    },
+    {
+      "place": "LAKE ITASCA",
+      "side": "W",
+      "gate_metatile": [
+        3,
+        21
+      ],
+      "landing_metatile": [
+        3,
+        21
+      ],
+      "native_gate_note": "Current installed Itasca gatehouse approach at core(6,42); facade at former source endpoint(2,42) is WALL. Native gatehouse warps(4,42)/(4,43), room return and regional connection are preserved."
+    }
+  ],
+  "required_flags": [
+    "BADGE_6"
+  ],
+  "quest": "Q05",
+  "tileset": "mn_headwaters",
+  "source_references": [
+    "Route29",
+    "Route30",
+    "Route12",
+    "IlexForest"
+  ],
+  "description": "A forest-understory and young-river route, built around one necessary narrow boardwalk, a survey-pond landing, a native low bank with western return, mature-pine circuit with a measured Cut shortcut, and a smaller southern fen loop. Original story/actor/item identities retained; no false cabin or mandatory field move.",
+  "main_path_metatiles": [
+    [
+      46,
+      13
+    ],
+    [
+      39,
+      13
+    ],
+    [
+      39,
+      16
+    ],
+    [
+      33,
+      16
+    ],
+    [
+      33,
+      19
+    ],
+    [
+      21,
+      19
+    ],
+    [
+      15,
+      19
+    ],
+    [
+      15,
+      18
+    ],
+    [
+      10,
+      18
+    ],
+    [
+      10,
+      21
+    ],
+    [
+      1,
+      21
+    ]
+  ],
+  "main_lane_width_gameplay_tiles": 2,
+  "districts": [
+    {
+      "id": "SURVEY",
+      "name": "Survey Pond and cedar bank",
+      "bounds_metatiles": [
+        1,
+        2,
+        22,
+        15
+      ],
+      "purpose": "Native water landing, bird observations and a directed low-bank descent."
+    },
+    {
+      "id": "ITASCA",
+      "name": "Itasca road and fern hollow",
+      "bounds_metatiles": [
+        0,
+        14,
+        22,
+        31
+      ],
+      "purpose": "Continuous free road with small returning fern habitat and rest clearing."
+    },
+    {
+      "id": "RIVER",
+      "name": "Young river crossing",
+      "bounds_metatiles": [
+        18,
+        1,
+        30,
+        31
+      ],
+      "purpose": "One narrow protected crossing and grass-lined river-bank approach."
+    },
+    {
+      "id": "PINES",
+      "name": "Mature pine circuit",
+      "bounds_metatiles": [
+        30,
+        3,
+        47,
+        20
+      ],
+      "purpose": "Optional seed meadow, botanist and actual Cut-shortened return."
+    },
+    {
+      "id": "FEN",
+      "name": "Southern fen loop",
+      "bounds_metatiles": [
+        31,
+        20,
+        47,
+        31
+      ],
+      "purpose": "Reed pool, bank fishing, insect habitat and resource spur."
+    }
+  ],
+  "loops": [],
+  "minimum_optional_branches": 5,
+  "trainers": [
+    {
+      "id": "MN_R14_T01",
+      "display_name": "MARA",
+      "trainer_class": "CAMPER",
+      "sprite": "SPRITE_YOUNGSTER",
+      "tile": [
+        81,
+        31
+      ],
+      "facing": "east",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "CLINKLAW",
+          "level": 27
+        },
+        {
+          "species": "VELVAWN",
+          "level": 28
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R14_TRAINER_01",
+      "block_main_lane": false,
+      "before_lines": [
+        "The pines make a",
+        "fine camp spot.",
+        "My partners know",
+        "every root here!"
+      ],
+      "after_lines": [
+        "We will take a",
+        "quiet walk now."
+      ],
+      "loss_lines": [
+        "A soft path beats",
+        "a stony road."
+      ]
+    },
+    {
+      "id": "MN_R14_T02",
+      "display_name": "ROSIE",
+      "trainer_class": "PICNICKER",
+      "sprite": "SPRITE_LASS",
+      "tile": [
+        73,
+        13
+      ],
+      "facing": "east",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "FLOSSAIL",
+          "level": 28
+        },
+        {
+          "species": "PITCHWICK",
+          "level": 29
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R14_TRAINER_02",
+      "block_main_lane": false,
+      "before_lines": [
+        "These flowers turn",
+        "toward the light.",
+        "Watch how my team",
+        "follows the light!"
+      ],
+      "after_lines": [
+        "A bright battle",
+        "for a shady path."
+      ],
+      "loss_lines": [
+        "Look for flowers",
+        "beside the trail."
+      ]
+    },
+    {
+      "id": "MN_R14_T03",
+      "display_name": "WADE",
+      "trainer_class": "BUG_CATCHER",
+      "sprite": "SPRITE_BUG_CATCHER",
+      "tile": [
+        19,
+        17
+      ],
+      "facing": "north",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "CLICKIT",
+          "level": 27
+        },
+        {
+          "species": "REGALARCH",
+          "level": 28
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R14_TRAINER_03",
+      "block_main_lane": false,
+      "before_lines": [
+        "See the ripples?",
+        "A bug just landed.",
+        "My team is quick",
+        "on its feet too!"
+      ],
+      "after_lines": [
+        "You saw our moves",
+        "before they came."
+      ],
+      "loss_lines": [
+        "Please keep clear",
+        "of the pond reeds."
+      ]
+    },
+    {
+      "id": "MN_R14_T04",
+      "display_name": "LUCY",
+      "trainer_class": "COOLTRAINERF",
+      "sprite": "SPRITE_COOLTRAINER_F",
+      "tile": [
+        29,
+        53
+      ],
+      "facing": "south",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "VELVAWN",
+          "level": 30
+        },
+        {
+          "species": "NOTCHBILL",
+          "level": 31
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R14_TRAINER_04",
+      "block_main_lane": false,
+      "before_lines": [
+        "This hollow keeps",
+        "the wind away.",
+        "We can practice",
+        "without a chill."
+      ],
+      "after_lines": [
+        "Your team looks",
+        "ready to travel."
+      ],
+      "loss_lines": [
+        "The west gate is",
+        "past these pines."
+      ]
+    },
+    {
+      "id": "MN_R14_T05",
+      "display_name": "BEN",
+      "trainer_class": "FISHER",
+      "sprite": "SPRITE_FISHER",
+      "tile": [
+        81,
+        55
+      ],
+      "facing": "west",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "MUDMENDER",
+          "level": 30
+        },
+        {
+          "species": "TORROUT",
+          "level": 29
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R14_TRAINER_05",
+      "block_main_lane": false,
+      "before_lines": [
+        "A little patience",
+        "helps at the pond.",
+        "Does your team",
+        "know how to wait?"
+      ],
+      "after_lines": [
+        "That was worth",
+        "the quiet wait.",
+        "Try the ROD GURU!",
+        "His house is above",
+        "the lakeside deck",
+        "on PINE COUNTRY RD",
+        "south of BRAINERD.",
+        "A free SUPER ROD!"
+      ],
+      "loss_lines": [
+        "I will stay here",
+        "and watch the bank"
+      ]
+    },
+    {
+      "id": "MN_R14_T06",
+      "display_name": "SEL",
+      "trainer_class": "BUG_CATCHER",
+      "sprite": "SPRITE_BUG_CATCHER",
+      "tile": [
+        71,
+        45
+      ],
+      "facing": "east",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "TESSLARV",
+          "level": 29
+        },
+        {
+          "species": "WINDHOPPER",
+          "level": 30
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R14_TRAINER_06",
+      "block_main_lane": false,
+      "before_lines": [
+        "The marsh hums",
+        "in the warm sun.",
+        "Let us add a",
+        "battle song!"
+      ],
+      "after_lines": [
+        "Even the bugs",
+        "fell quiet for us."
+      ],
+      "loss_lines": [
+        "A dry loop leads",
+        "round the reeds."
+      ]
+    }
+  ],
+  "items": [
+    {
+      "id": "MN_R14_ITEM_01",
+      "item": "HYPER_POTION",
+      "quantity": 1,
+      "tile": [
+        31,
+        15
+      ],
+      "flag": "EVENT_MN_R14_ITEM_01",
+      "access": "Cedar survey spur; native bank gives a useful descent."
+    },
+    {
+      "id": "MN_R14_ITEM_02",
+      "item": "ULTRA_BALL",
+      "quantity": 1,
+      "tile": [
+        85,
+        13
+      ],
+      "flag": "EVENT_MN_R14_ITEM_02",
+      "access": "Grass-priced northern seed meadow."
+    },
+    {
+      "id": "MN_R14_ITEM_03",
+      "item": "MAX_REPEL",
+      "quantity": 1,
+      "tile": [
+        11,
+        57
+      ],
+      "flag": "EVENT_MN_R14_ITEM_03",
+      "access": "Sheltered fern hollow southern loop."
+    },
+    {
+      "id": "MN_R14_ITEM_04",
+      "item": "REVIVE",
+      "quantity": 1,
+      "tile": [
+        91,
+        55
+      ],
+      "flag": "EVENT_MN_R14_ITEM_04",
+      "access": "Eastern fen habitat beyond the shore circuit."
+    }
+  ],
+  "encounters": {
+    "grass_rates": {
+      "day": 10,
+      "morning": 10,
+      "night": 10
+    },
+    "grass": {
+      "morning": [
+        {
+          "level": 27,
+          "species": "RICELING"
+        },
+        {
+          "level": 28,
+          "species": "CLINKLAW"
+        },
+        {
+          "level": 29,
+          "species": "FLOSSAIL"
+        },
+        {
+          "level": 30,
+          "species": "GILLPUP"
+        },
+        {
+          "level": 31,
+          "species": "VELVAWN"
+        },
+        {
+          "level": 32,
+          "species": "WINDHOPPER"
+        },
+        {
+          "level": 33,
+          "species": "NOTCHBILL"
+        }
+      ],
+      "day": [
+        {
+          "level": 27,
+          "species": "RICELING"
+        },
+        {
+          "level": 28,
+          "species": "CLINKLAW"
+        },
+        {
+          "level": 29,
+          "species": "FLOSSAIL"
+        },
+        {
+          "level": 30,
+          "species": "GILLPUP"
+        },
+        {
+          "level": 31,
+          "species": "VELVAWN"
+        },
+        {
+          "level": 32,
+          "species": "WINDHOPPER"
+        },
+        {
+          "level": 33,
+          "species": "NOTCHBILL"
+        }
+      ],
+      "night": [
+        {
+          "level": 27,
+          "species": "BOOMRUFF"
+        },
+        {
+          "level": 28,
+          "species": "BARRICANT"
+        },
+        {
+          "level": 29,
+          "species": "FLOSSAIL"
+        },
+        {
+          "level": 30,
+          "species": "GILLPUP"
+        },
+        {
+          "level": 31,
+          "species": "VELVAWN"
+        },
+        {
+          "level": 32,
+          "species": "WINDHOPPER"
+        },
+        {
+          "level": 33,
+          "species": "NOTCHBILL"
+        }
+      ]
+    },
+    "water_rate": 4,
+    "water": [
+      {
+        "level": 27,
+        "species": "CHORIP"
+      },
+      {
+        "level": 28,
+        "species": "GILLPUP"
+      },
+      {
+        "level": 33,
+        "species": "RIVVIT"
+      }
+    ]
+  },
+  "interiors": [],
+  "shortcut": {
+    "id": "MN_R14_SHORTCUT",
+    "kind": "Native Cut opens the short pine-circuit connection",
+    "requires": [
+      "MOVE_CUT",
+      "CUT_FIELD_PERMISSION"
+    ],
+    "mandatory": false,
+    "rejoins_main_route": true,
+    "tile": [
+      71,
+      20
+    ],
+    "approach": [
+      71,
+      21
+    ],
+    "native_block": "5b",
+    "opens_block": "3c",
+    "near_join": [
+      35,
+      11
+    ],
+    "far_join": [
+      35,
+      9
+    ],
+    "compare_from": [
+      71,
+      21
+    ],
+    "compare_to": [
+      71,
+      19
+    ],
+    "minimum_saved_steps": 12
+  },
+  "art_constraints": [
+    "Only original packed 8x8 source tiles.",
+    "No painted shadows, enlarged trees or perspective props.",
+    "Fit source shoreline/cliff quadrants; draw source trees in coherent metatile groups."
+  ],
+  "status": "Replacement source proposal in active visual review; old nine-map native evidence is historical and does not verify these dimensions.",
+  "anchor_status": "New source anchors require native publication and production-controller proof; original parties/item IDs/event flags retained.",
+  "residents": [
+    {
+      "id": "MN_R14_TRAIL_GUIDE",
+      "sprite": "SPRITE_TEACHER",
+      "tile": [
+        89,
+        27
+      ],
+      "facing": "west",
+      "lines": [
+        "Lake Itasca lies",
+        "west of this path.",
+        "Our survey marks",
+        "follow the trail."
+      ]
+    },
+    {
+      "id": "MN_R14_BOTANIST",
+      "sprite": "SPRITE_SCIENTIST",
+      "tile": [
+        65,
+        15
+      ],
+      "facing": "south",
+      "lines": [
+        "These pines shade",
+        "the small flowers.",
+        "A clear path keeps",
+        "their roots safe."
+      ]
+    },
+    {
+      "id": "MN_R14_POND_WATCHER",
+      "sprite": "SPRITE_GRAMPS",
+      "tile": [
+        19,
+        11
+      ],
+      "facing": "west",
+      "lines": [
+        "I count the birds",
+        "from the dry bank.",
+        "Itasca has more",
+        "places to explore."
+      ]
+    },
+    {
+      "id": "MN_R14_BRIDGE_KEEPER",
+      "sprite": "SPRITE_POKEFAN_M",
+      "tile": [
+        55,
+        37
+      ],
+      "facing": "west",
+      "lines": [
+        "This small stream",
+        "has so far to go.",
+        "Use the boardwalk.",
+        "Leave the reeds."
+      ]
+    },
+    {
+      "id": "MN_R14_HOLLOW_WALKER",
+      "sprite": "SPRITE_LASS",
+      "tile": [
+        17,
+        55
+      ],
+      "facing": "north",
+      "lines": [
+        "We pause in this",
+        "hollow as we walk.",
+        "There is no shop",
+        "among these pines."
+      ]
+    },
+    {
+      "id": "MN_R14_MARSH_WATCHER",
+      "sprite": "SPRITE_COOLTRAINER_M",
+      "tile": [
+        79,
+        45
+      ],
+      "facing": "east",
+      "lines": [
+        "WINDHOPPER skim",
+        "across",
+        "the marsh water.",
+        "I stay on the bank",
+        "watch them turn."
+      ]
+    }
+  ],
+  "signs": [
+    {
+      "id": "MN_R14_SIGN_01",
+      "tile": [
+        90,
+        24
+      ],
+      "lines": [
+        "HEADWATERS TRAIL",
+        "ITASCA: WEST"
+      ]
+    },
+    {
+      "id": "MN_R14_SIGN_02",
+      "tile": [
+        68,
+        10
+      ],
+      "lines": [
+        "OLD PINE WALK",
+        "FOLLOW THE GAPS"
+      ]
+    },
+    {
+      "id": "MN_R14_SIGN_03",
+      "tile": [
+        54,
+        34
+      ],
+      "lines": [
+        "YOUNG MISSISSIPPI",
+        "USE THE BOARDWALK"
+      ]
+    },
+    {
+      "id": "MN_R14_SIGN_04",
+      "tile": [
+        20,
+        12
+      ],
+      "lines": [
+        "SURVEY POND",
+        "WATCH FROM SHORE"
+      ]
+    },
+    {
+      "id": "MN_R14_SIGN_05",
+      "tile": [
+        26,
+        50
+      ],
+      "lines": [
+        "FERN HOLLOW",
+        "REST IN THE SHADE"
+      ]
+    },
+    {
+      "id": "MN_R14_SIGN_06",
+      "tile": [
+        76,
+        44
+      ],
+      "lines": [
+        "MARSH OBSERVATION",
+        "PROTECT THE REEDS"
+      ]
+    }
+  ],
+  "doors": [],
+  "viewpoints": [
+    {
+      "id": "BEMIDJI_GATE",
+      "tile": [
+        89,
+        26
+      ]
+    },
+    {
+      "id": "OLD_PINES",
+      "tile": [
+        69,
+        15
+      ]
+    },
+    {
+      "id": "CUT_RETURN",
+      "tile": [
+        71,
+        21
+      ]
+    },
+    {
+      "id": "SEED_MEADOW",
+      "tile": [
+        83,
+        13
+      ]
+    },
+    {
+      "id": "YOUNG_RIVER",
+      "tile": [
+        53,
+        31
+      ]
+    },
+    {
+      "id": "BOARDWALK",
+      "tile": [
+        47,
+        38
+      ]
+    },
+    {
+      "id": "SURVEY_LANDING",
+      "tile": [
+        15,
+        18
+      ]
+    },
+    {
+      "id": "SURVEY_POND",
+      "tile": [
+        19,
+        13
+      ]
+    },
+    {
+      "id": "CEDAR_SPUR",
+      "tile": [
+        31,
+        16
+      ]
+    },
+    {
+      "id": "LOW_BANK",
+      "tile": [
+        29,
+        23
+      ]
+    },
+    {
+      "id": "FERN_HOLLOW",
+      "tile": [
+        23,
+        55
+      ]
+    },
+    {
+      "id": "MARSH_LOOKOUT",
+      "tile": [
+        79,
+        44
+      ]
+    },
+    {
+      "id": "FEN_PICNIC",
+      "tile": [
+        81,
+        54
+      ]
+    },
+    {
+      "id": "ITASCA_GATE",
+      "tile": [
+        9,
+        42
+      ]
+    }
+  ],
+  "implementation": {
+    "layout": "MN_R14.layout.json",
+    "scope": "48 by 32 metatiles across four clipped chunks.",
+    "art_review": "../renders/headwaters/whole-route.png",
+    "state": "Current four-chunk native publication matches all 1536 exterior blocks/events. Three native asset tests and all three geometry/Cut/battle/Continue controller tests pass. Hub gates and earned Q05 remain pending.",
+    "trainer_density": "Six optional local trainers replace ten generic reservations. Reserved flags 07-10 stay unused; they grant no progression."
+  },
+  "cut_gates": [
+    {
+      "id": "MN_R14_SHORTCUT",
+      "tile": [
+        71,
+        20
+      ],
+      "approach": [
+        71,
+        21
+      ],
+      "replacement_block": "3c",
+      "targets": [
+        [
+          71,
+          20
+        ]
+      ],
+      "gated_actor_ids": []
+    }
+  ],
+  "one_way_ledges": [
+    {
+      "id": "SURVEY_BANK_RETURN",
+      "bounds_core": [
+        28,
+        24,
+        32,
+        26
+      ],
+      "direction": "south",
+      "source_block": "57",
+      "upper_approach": [
+        29,
+        23
+      ],
+      "hop_from": [
+        29,
+        24
+      ],
+      "landing": [
+        29,
+        26
+      ],
+      "reverse_blocked": [
+        29,
+        25
+      ],
+      "side_barriers": [
+        [
+          27,
+          24
+        ],
+        [
+          32,
+          24
+        ]
+      ],
+      "return_passage_core": [
+        14,
+        24,
+        16,
+        26
+      ],
+      "minimum_return_steps": 53,
+      "purpose": "Four legal dry descent lanes from the survey shore to the Itasca road; ordinary uphill travel crosses at least four grass steps through the western woodland gate. Outer ledge faces with tree-blocked landings are closed with existing pine canopy."
+    }
+  ],
+  "required_grass_crossings": [
+    {
+      "id": "YOUNG_RIVER_UNDERSTORY",
+      "bounds_core": [
+        56,
+        34,
+        60,
+        42
+      ],
+      "minimum_grass_steps": 4,
+      "purpose": "The river-side woodland neck prices the approach in four native grass steps; no dry bypass."
+    }
+  ],
+  "story_contract": {
+    "quest": "Q05",
+    "route_access": "Original BADGE_6 route requirement retained.",
+    "reading": "Lake Itasca marker grants EVENT_MN_HEADWATERS_READING on accessible dry ground; route residents do not grant it.",
+    "report": "Bemidji field officer turns actual reading into EVENT_MN_HEADWATERS_REPORT; reading alone never opens Iron Range.",
+    "quest_permission": "Q05 requires BADGE_7 in the existing story; preserve this independently from the route BADGE_6 access condition."
+  },
+  "grass_return_review_contract": {
+    "ledge_id": "SURVEY_BANK_RETURN",
+    "uphill_gate": {
+      "id": "SURVEY_BANK_UPHILL_WOODLAND_GATE",
+      "bounds_core": [
+        14,
+        24,
+        16,
+        28
+      ],
+      "minimum_grass_steps": 4,
+      "purpose": "Ordinary climb crosses woodland grass; native southbound survey ledge returns dry."
+    },
+    "ordinary_climb_minimum_grass_steps": 4,
+    "dry_drop_grass_steps": 0,
+    "verification": "Separate local uphill/downhill source proof and production-controller replay; original global YOUNG_RIVER_UNDERSTORY crossing retained."
+  }
+}

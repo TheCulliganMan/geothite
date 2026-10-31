@@ -1,0 +1,109 @@
+{
+  "id": "MN_GLACIER_LINE",
+  "name": "GLACIER LINE",
+  "status": "Verified local five-stop passenger service: actual public approaches/foot callbacks, all20 guarded native rides,80 visit masks, cancellation, resource preservation, repeat returns and Continue. Browser publication and earned statewide campaign are not claimed.",
+  "geography_source": "https://content.amtrak.com/content/timetable/Empire%20Builder.pdf",
+  "service_identity": "Fictional Minnesota service with the five approved stops in north-to-south order; Red Wing is excluded by user direction.",
+  "ordered_stops": [
+    {
+      "id": "DETROIT_LAKES",
+      "hub": "MnDetroitLakes",
+      "station": "MnDetroitLakesStation",
+      "constant": "MN_DETROIT_LAKES_STATION",
+      "visited_flag": "EVENT_MN_STATION_DETROIT_LAKES_VISITED",
+      "character": "Lake-facing timber waiting room, public beach path and canoe luggage alcove.",
+      "public_hall_status": "Verified real public road approach, original same-door return and remembered foot entry. Free native return trips after Q03 courier victory, to previously visited stops only; current local review in glacier-current-v01."
+    },
+    {
+      "id": "STAPLES",
+      "hub": null,
+      "station": "MnStaplesStation",
+      "constant": "MN_STAPLES_STATION",
+      "visited_flag": "EVENT_MN_STATION_STAPLES_VISITED",
+      "character": "Small pine-country junction with a real Central Lakes West branch walk between Detroit Lakes and Brainerd. A shared signal room, parcel-supply desk and waiting hall sit by the freight siding. Rail outpost, not an extra gym town.",
+      "exterior": "MnStaplesRailJunction",
+      "road": "MnR15C00R00",
+      "source_file": "transit/MnStaplesStation.json",
+      "publication_runbook": "interior-life/STAPLES-STATION.md",
+      "public_hall_status": "Verified real public road approach, original same-door return and remembered foot entry. Free native return trips after Q03 courier victory, to previously visited stops only; current local review in glacier-current-v01."
+    },
+    {
+      "id": "ST_CLOUD",
+      "hub": "MnStCloud",
+      "station": "MnStCloudStation",
+      "constant": "MN_ST_CLOUD_STATION",
+      "visited_flag": "EVENT_MN_STATION_ST_CLOUD_VISITED",
+      "character": "Granite platform cut into the Mississippi riverbank; river overlook, commuter waiting shelter and north trail access.",
+      "public_hall_status": "Verified real public road approach, original same-door return and remembered foot entry. Free native return trips after Q03 courier victory, to previously visited stops only; current local review in glacier-current-v01."
+    },
+    {
+      "id": "ST_PAUL",
+      "hub": "MnStPaul",
+      "station": "MnStPaulUnionDepot",
+      "constant": "MN_ST_PAUL_UNION_DEPOT",
+      "visited_flag": "EVENT_MN_STATION_ST_PAUL_VISITED",
+      "character": "Union Depot: stone colonnade, ticket room, sheltered concourse, enclosed garden and the Q03 courier encounter.",
+      "public_hall_status": "Verified real public road approach, original same-door return and remembered foot entry. Free native return trips after Q03 courier victory, to previously visited stops only; current local review in glacier-current-v01."
+    },
+    {
+      "id": "WINONA",
+      "hub": "MnWinona",
+      "station": "MnWinonaStation",
+      "constant": "MN_WINONA_STATION",
+      "visited_flag": "EVENT_MN_STATION_WINONA_VISITED",
+      "character": "Southern starter-region depot; river levee walk and limestone bluffs frame the platform.",
+      "source_file": "transit/MnWinonaStation.json",
+      "publication_runbook": "interior-life/WINONA-STATION.md",
+      "public_hall_status": "Verified real public road approach, original same-door return and remembered foot entry. Free native return trips after Q03 courier victory, to previously visited stops only; current local review in glacier-current-v01."
+    }
+  ],
+  "travel_contract": {
+    "destination_unlock": "Enter that station's public concourse on foot. Set only its visited flag in a native map callback. Viewing the timetable or riding past a stop does not unlock it.",
+    "boarding": "Conductor on the only public platform throat. Destination menu lists the four other stops in line order; unvisited stops are visibly unavailable and are checked again before any boarding movement.",
+    "fare": "Free regional return travel. No mandatory new fee or rail-pass fetch quest.",
+    "story_gate": "Q03 St. Paul courier event EVENT_MN_COURIER_DEFEATED activates passenger service. This is not Q06's Grand Rapids EVENT_MN_DEPOT_CLEARED.",
+    "no_progression_bypass": "Both service-active and destination-visited checks precede animation and map load. No gym, route checkpoint, lighthouse, survey or Safari flag is granted by a ride.",
+    "presentation": "Use the existing native special MagnetTrain with direction matching the stop indices, followed by an explicit destination map load and protected floor arrival. Keep movement, dialogue, menu cancellation, animation and warp continuation on VisibleShellController.",
+    "arrival": "Disembark inside the destination public concourse, south of its blocked boarding throat. Arrival must not step on a departure warp or replay a departure scene.",
+    "cancel": "B or Cancel closes the ticket surface without moving, charging, changing flags or leaving input owned by dialogue.",
+    "persistence": "Visited stations and service activation survive Save/Continue; destination selection and an unfinished ticket menu are not progression flags. Test Continue after actual arrival.",
+    "city_integration": "Each source station needs an exact native exterior door, passive floor return, reciprocal exit pair and public walk to the city's existing route ports before publication. A station is not proof that its unfinished city is playable."
+  },
+  "publication_checks": [
+    "Walk from a real route port to each station entrance; prove the same door returns to its own public approach.",
+    "Deny travel before the courier event, with zero visited destinations, and to each unvisited destination even if a stale menu selection is supplied.",
+    "Exercise at least one northbound and one southbound animated ride with actual authoritative map changes and disembarkation.",
+    "Verify all 20 directed source/destination bindings, Floor arrivals, no departure-trigger overlap and unique callback flags.",
+    "Cancel with B; movement and Start must recover. Refuse walking around the conductor into track/train doors.",
+    "Save/Continue after boarding; verify visited flags, route story flags, money and party data are retained.",
+    "Retain every whole-map render, native capture, preconversion original, crop and rejected revision."
+  ],
+  "historical_service_candidates": [
+    {
+      "runbook": "transit/GLACIER-SERVICE.md",
+      "source_file": "transit/glacier-service-r14-v01.json",
+      "pack": "content-packs/minnesota-glacier-line-service-r14-v01.crystalpack",
+      "pack_sha256": "0fcf972dde061fa55300a490803b95e7e68a2b0c669b46302bd89617abb9c672",
+      "maps": 730,
+      "native_directed_branches": 20,
+      "first_visit_callbacks": 5,
+      "native_table_serialization_rejection_test": "Historical V01 passed; default-profile corrected V02 replay is compiling. Exact-parent R14 source replay remains pending.",
+      "audio_programs_verified": 377,
+      "status": "Candidate only: built on selected R14 and independently preserves all newer R13/R14 terrain and all other service data exactly. Five real foot entries/Continue, all denials/cancels and all visit masks passed on V01. Corrected default-profile journeys, R14 replay, fresh native 2D review and final lint replay remain pending. Shared selector stays at route_grass_r14_revision; Red Wing is excluded.",
+      "content_identity": "547999cc4ecd67b240d1f627b7788d3f8abbff14392e73a3f8bde1553eb11140"
+    }
+  ],
+  "current_service": {
+    "revision": "glacier_line_passenger_revision",
+    "source_file": "transit/glacier-current-v01/service.json",
+    "runbook": "transit/glacier-current-v01/README.md",
+    "pack": "content-packs/minnesota-glacier-current-v03.crystalpack",
+    "pack_sha256": "fffff3a575234c28de03c6efe808fb46f6cd8d7910c76d97ce3e03bf0e5c4c5b",
+    "verification": "planning/minnesota/renders/glacier-current-v794/acceptance-v818.json",
+    "native_directed_branches": 20,
+    "first_visit_callbacks": 5,
+    "gameplay_cases": 6,
+    "separate_train_art_cases": 1,
+    "production_stdio_calls": 115
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "MN_R17_SIGN_02Text": [
+    {
+      "args": [
+        "\"SEDGE TRAIL\""
+      ],
+      "command": "text"
+    },
+    {
+      "args": [
+        "\"STAY ON TIMBER\""
+      ],
+      "command": "line"
+    },
+    {
+      "args": [],
+      "command": "done"
+    }
+  ],
+  "MN_R17_SIGN_03Text": [
+    {
+      "args": [
+        "\"MARSH CROSSING\""
+      ],
+      "command": "text"
+    },
+    {
+      "args": [
+        "\"RAILS PROTECT YOU\""
+      ],
+      "command": "line"
+    },
+    {
+      "args": [],
+      "command": "done"
+    }
+  ]
+}

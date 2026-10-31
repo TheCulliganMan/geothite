@@ -1,0 +1,225 @@
+{
+  "status": "PASS_LOCAL_TERRAIN_ART_WITH_EXPLICIT_OTHER_DIFFERENCES",
+  "pack": "content-packs/minnesota-international-falls-windbreak-v01.crystalpack",
+  "pack_sha256": "7066f05448101c79b4dc761963b0f39a570bad07c4f80e3e777901ac2e207507",
+  "reference_pack": "content-packs/minnesota-st-paul-southbank-v03.crystalpack",
+  "reference_acceptance": "planning/minnesota/renders/st-paul-southbank-v221/whole-root-preservation-v229.json",
+  "maps": [
+    {
+      "map": "MnStPaul",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnStPaulAnglerHouse",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnStPaulArchiveAnnex",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnStPaulBoatCoop",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnStPaulCapitolArchive",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnStPaulCapitolHall",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnStPaulCapitolLibrary",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnStPaulCivicMuseum",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnStPaulCommunityHall",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnStPaulEastAidClinic",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnStPaulEastWorkshop",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnStPaulFairAgricultureHall",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnStPaulFairBerrySnack",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnStPaulFairBreederBarn",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnStPaulFairCraftHouse",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnStPaulFairExhibitionHall",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnStPaulFairFestivalMail",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnStPaulFairFoodHall",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnStPaulFairGardenStand",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnStPaulFairInfoHouse",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnStPaulFairQuizPavilion",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnStPaulFreightOffice",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnStPaulGym",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnStPaulLowertownCafe",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnStPaulLowertownCrafts",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnStPaulLowertownExchange",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnStPaulLowertownExchange2F",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnStPaulLowertownExchange3F",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnStPaulMart",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnStPaulPokecenter1F",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnStPaulRiversideSupplies",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnStPaulSouthLandingInn",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnStPaulSouthLandingSurvey",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnStPaulStreetGardenHouse",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnStPaulSummitExhibitionClub",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnStPaulSummitMoveStudyHouse",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnStPaulSummitPressHouse",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnStPaulTransitHeritageHouse",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnStPaulUnionDepot",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnStPaulWestSeventhBakery",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnStPaulWestSeventhBooks",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnStPaulWestsideArena",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnStPaulWestsideCommunity",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    }
+  ],
+  "scope": "Local terrain/used-art comparison, not new gameplay or global runtime equivalence. All differing other map fields listed."
+}

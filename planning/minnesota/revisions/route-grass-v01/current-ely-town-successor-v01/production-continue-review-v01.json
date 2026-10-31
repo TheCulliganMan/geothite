@@ -1,0 +1,48 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+  "pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33",
+  "save": ".local/route-grass-review/current-ely-doors-output-v03.crystalsave",
+  "save_sha256": "d700242da3f41f7fdbb6425126746f12d210737a8151dcbad8a3073808c4a6e6",
+  "save_unchanged": true,
+  "initial": {
+    "badges": 0,
+    "dialogue": false,
+    "facing": "right",
+    "frame": 796,
+    "map": "MnEly",
+    "menu": null,
+    "mode": "overworld",
+    "money": 3000,
+    "player": "CHRIS",
+    "pokedex": {
+      "owned": 0,
+      "seen": 0
+    },
+    "position": {
+      "x": 27,
+      "y": 14
+    }
+  },
+  "final": {
+    "badges": 0,
+    "dialogue": false,
+    "facing": "right",
+    "frame": 801,
+    "map": "MnEly",
+    "menu": null,
+    "mode": "overworld",
+    "money": 3000,
+    "player": "CHRIS",
+    "pokedex": {
+      "owned": 0,
+      "seen": 0
+    },
+    "position": {
+      "x": 27,
+      "y": 14
+    }
+  },
+  "walking_and_items_balls_verified": true,
+  "stderr_bytes": 0
+}

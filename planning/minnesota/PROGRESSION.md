@@ -7,6 +7,11 @@ sources and writing conventions; [GYMS.md](GYMS.md) describes the room courses.
 Use [world.json](world.json) and the Rust route builders for actual connections.
 A route plan or a local chapter fixture does not prove a completed campaign.
 
+The [travel-gate revision](playable/travel-gate-overhaul.md) changes the overhaul's
+target: fewer public road checks, ICE concentrated at its operations, and
+investigation prerequisites applied at the relevant action. The access tables
+below record installed behavior; that replacement has not yet been published.
+
 ## Main journey
 
 ```mermaid

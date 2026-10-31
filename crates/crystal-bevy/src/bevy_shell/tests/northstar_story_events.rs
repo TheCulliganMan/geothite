@@ -75,6 +75,13 @@ pub(super) fn observe_case(c: &mut VisibleShellController) {
 pub(super) fn play_reed(c: &mut VisibleShellController) {
     let before = c.snapshot().expect("first rival battle");
     assert!(event(c, MET) && !event(c, WON));
+    if let Some(directory) = std::env::var_os("CRYSTAL_WINONA_SAVE_DIR") {
+        c.save(std::path::PathBuf::from(directory).join(format!(
+            "reed-battle-before-turn-{}.crystalsave",
+            before.party.slots[0].pokemon.species.id
+        )))
+        .expect("actual rival battle capture checkpoint");
+    }
     let first = &before.party.slots[0].pokemon;
     let attack = first
         .moves

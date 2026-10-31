@@ -1,0 +1,7 @@
+# Current Brainerd town, repaired Mart and native stairs
+
+Seven fresh native checks pass under the selected R10 survey-spurs pack. Five city cases cover all five facades/both exit carpets/safe returns, the closed tall Gym cliff and every stair tread both directions with side walls/Continue, actual HP/status/PP care/PC, native-priced Mart delivery, and full-bag gift refusal/retry/once/Continue. Two exterior cases cover public residents/signs/roads/guards/free returns/pier fencing/Surf. The fresh town save also passes13 production movement/menu calls with empty stderr, separate output and unchanged source/input. Current affected-crate all-target Clippy and changed-leaf formatting pass.
+
+The complete current town and interiors match the accepted one-cell Mart roof repair; every used native terrain pixel/collision matches. The full inherited before/after image was inspected again. Upper21,39 connects through21,40/21,41 to lower21,42; side walls20,41/22,41 stay closed. The tall east Gym cliff walls25,38/25,39 remain closed. The old hop test is replaced by this current stair/cliff contract, with bounded normal inputs and an assertion forbidding skipped treads.
+
+The historical city Gym-course test describes the replaced887puzzle and is not selected for current Winch geometry. Current facade checks use the installed Winch source. This review does not claim current Gym battle/reward acceptance. No gameplay/art/pack selection changed. Initial QA state is not earned statewide progression; broader review remains active.

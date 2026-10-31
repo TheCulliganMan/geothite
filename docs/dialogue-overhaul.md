@@ -5,6 +5,65 @@ survey errand an explicit introduction and handoff, and rewrites the required
 campaign conversations as authored native pages. It retains current geography,
 the active Minnesota roster, existing progression identities and original audio.
 
+The current storyboard candidate is **v27**, with 481 conversations and 1,170
+native pages across 56 maps. It remains unselected. The
+[full storyboard audit](../planning/minnesota/playable/dialogue-storyboard-audit.md)
+records the defects, corrections and exact limits of each acceptance run.
+The ignored chapter viewer is `.local/dialogue-overhaul/storyboard-review-v27/index.html`.
+The full gallery is `.local/dialogue-overhaul/storyboards-v27/index.html`.
+All 79 sheets have been visually reviewed against installed text programs.
+Coverage now includes headquarters staff, mine passage instructions, encounter
+replies and closed passenger service. These supporting texts join the same
+canonical source as the required campaign. The bedroom cousin now has a short,
+grounded family interaction instead of a disconnected seven-page speech.
+
+The Rust installer binds accepted female Tamarack and adult Reed art to their
+existing roles, including all nine Reed field appearances and six battles.
+Their teams and numeric identities remain unchanged. A live native capture from
+the actual New Game egg exchange verifies Reed's adult battle introduction.
+
+The v20 pacing changes remain: Itasca's public record and the officer's
+comparison accept evidence before the Pine Badge; the harbor crew accepts the
+pump log before the last Gym. Road and finale safeguards remain. Returns track
+meter custody, radio contact and shutdown. The optional Mankato notebook stays
+optional. The Verdigrim encounter is a separate unselected branch; this revision
+retains the copper/runoff observations without claiming that encounter is live.
+
+## Current verification status
+
+V26 source publication/readback, all 377 audio checks, independent parent
+runtime/geography/catalog preservation and the complete scene/frame/controller
+matrix pass, including all three fresh starter journeys through Rochester,
+actor/reward/input checks and Tess's actual rescue/reentry/Continue. V27
+publication/readback, fresh-source byte-for-byte reproduction, all 377 audio
+checks, every installed page and the production MCP cousin New Game check pass.
+Selected-parent, frozen-campaign and original-composer preservation also pass.
+Current assets Clippy, controller compilation and the complete current
+scene/frame/core matrix pass, including all three fresh starters, automatic
+entrances, native retries and reward timing, Save/Continue and text/sound/input
+boundaries. A fresh exact-v27 earned New Game course is running through the
+campaign; its ending is still open. Runtime/Bevy all-target Clippy
+pass with existing warnings; the latest test-driver correction has a follow-up
+Clippy queued. Core controller and
+production MCP/clean-stderr passes are retained.
+The v23 declared late-story course passed Hall of Fame, credits and postgame
+Continue; it began with a declared five-badge, level-65 fixture. Its separate
+earned New Game course retained a headquarters blackout, completed that rescue
+on retry and has since earned five badges. Its saved Lake checkpoint is retained
+after a road-navigation assertion; a corrected-driver continuation is running.
+Those native saves retain their original content identity.
+
+The Rust-only 2D browser build passed. Its data-only v27 review cold-starts
+locally with only 2D/TUI navigation and no observed warning/error logs.
+The browser's clock/appearance runtime profiles correctly reject the base
+native chapter checkpoint. Save identities remain intact. The restore UI now
+shows a concise mismatch explanation; later-chapter live browser review is open.
+Native/browser listening and normal-speed recordings remain open. The current
+candidate extends the reviewed Minneapolis citywide-cycling descendant and
+preserves intervening city repairs. No world selection or deployment occurs.
+The [storyboard audit](../planning/minnesota/playable/dialogue-storyboard-audit.md)
+records current evidence separately from the historical revision logs below.
+
 ## Source and publication
 
 `planning/minnesota/story.json` → `dialogue_overhaul` is the final authority for
@@ -19,11 +78,12 @@ The standalone Rust publisher requires an explicitly reviewed current parent:
 
 ```sh
 export CARGO_TARGET_DIR=target/northstar-story
-cargo build --locked -p crystal-assets --bin revise_northstar_story
+cargo build --locked -p crystal-assets --bin revise_northstar_story \
+  --bin verify_crystalpack --bin pack_northstar_current_story
 target/northstar-story/debug/revise_northstar_story \
-  content-packs/minnesota-current-duluth-cliff-stairs-v03.crystalpack \
+  content-packs/minnesota-minneapolis-citywide-cycling-v02.crystalpack \
   planning/minnesota/story.json \
-  content-packs/minnesota-dialogue-overhaul-v19.crystalpack
+  content-packs/minnesota-dialogue-overhaul-v27.crystalpack
 ```
 
 Choose a fresh ignored output filename for each publication. Completed packs
@@ -63,8 +123,8 @@ production terminal stderr must stay empty.
 External pack prerequisites are read at runtime. None are embedded in tests.
 
 ```sh
-export CRYSTAL_STORY_REVISION_PARENT="$PWD/content-packs/minnesota-current-duluth-cliff-stairs-v03.crystalpack"
-export CRYSTAL_WINONA_TEST_PACK="$PWD/content-packs/minnesota-dialogue-overhaul-v19.crystalpack"
+export CRYSTAL_STORY_REVISION_PARENT="$PWD/content-packs/minnesota-minneapolis-citywide-cycling-v02.crystalpack"
+export CRYSTAL_WINONA_TEST_PACK="$PWD/content-packs/minnesota-dialogue-overhaul-v27.crystalpack"
 export CRYSTAL_RENDER_TEST_PACK="$CRYSTAL_WINONA_TEST_PACK"
 export CRYSTAL_WINONA_SAVE_DIR="$PWD/.local/dialogue-overhaul/saves"
 export CRYSTAL_NORTHSTAR_EVENTS_SAVE_DIR="$PWD/.local/dialogue-overhaul/scene-checkpoints"
@@ -90,9 +150,12 @@ use `CRYSTAL_NORTHSTAR_CANONICAL_STORY_SOURCE` to read the ignored
 `.local/dialogue-overhaul/frozen-v13-story.json` review source; current-candidate
 checks leave that override unset. The strict frozen-campaign comparison uses
 `CRYSTAL_STORY_FROZEN_SOURCE` for that archive, checks its original programs
-against the frozen pack, then permits exactly the 50 reviewed prose changes
-and three reviewed scene programs: the two dispatch handoffs and the officer's
-inspection/reaction. Ellis gives directions at home; reading
+against the frozen pack, then permits exactly 138 reviewed changes to prior
+conversations, twelve phase-specific replies and 27 existing supporting text
+labels newly brought under canonical ownership. The guarded pacing installer
+removes only the evidence badge gates and adds completed-action return branches;
+it retains road, battle and finale prerequisites. The two dispatch handoffs and
+the officer's inspection/reaction also remain explicit. Ellis gives directions at home; reading
 the physical desk copy grants the existing evidence event only after its final
 acknowledgment. The two final clinic corrections establish where GILLPUP was
 found and acknowledge its return home, with shore repairs still needed. All
@@ -105,15 +168,18 @@ below only after execution.
 
 ## Campaign coverage
 
-The canonical revision contains 279 conversations across 36 maps, with 829
+The canonical revision contains 481 conversations across 56 maps, with 1,170
 explicit native pages. It covers required handoffs and their refusals, reminders,
 losses, repeats and completed-action returns through the ending.
-The frozen v18 pack retains 828 pages. The final source adds one clinic return
-page acknowledging the shore repairs still needed. The displaced GILLPUP
+The frozen v18 pack retains 828 pages; v19 added one clinic return page
+acknowledging the shore repairs still needed. The displaced GILLPUP
 interaction describes where it was found; the creature leaves after restoration,
 and the aide acknowledges its return home.
 Those two text corrections are installed in the composed v19 candidate; v18
-and its saves remain untouched.
+and its saves remain untouched. v20 retains those corrections, compresses the
+opening and repeated directions, and adds twelve progress-aware aftermath and
+reminder conversations. Those additional returns do not lengthen the mandatory
+opening or add another villain or rescue beat.
 
 | Chapter | What the conversation establishes |
 | --- | --- |
@@ -132,7 +198,54 @@ harbor replies describe the shutdown and released creature as completed actions.
 
 ## Verification results
 
-The final-source review candidate is v19, identity
+The unselected v23 candidate has native identity
+`74bfb7af0c8147c13812005770425d82a4dbf5a38655ac3e563d49708c7c11eb`
+and SHA256
+`baaba9f99c928fa50045aa909ca28da5acd4572c0edb41b6f3ff55779385ff41`.
+It was built from the selected 732-map Bemidji stairs descendant. Rust
+publication/readback, all 377 original audio checks, native-art encoding,
+canonical protection, selected-parent preservation and frozen-story preservation
+pass. Independent byte comparison confirms all 12 accepted cast resources,
+all 7,824 original runtime files, every party/AI/reward and old numeric event
+identity. Production MCP opening, exact pages, movement ownership, starter
+decline and clean stderr also pass. The combined current-source controller,
+remaining integration, native captures, browser and earned-ending checks remain
+separate. Records are `.local/dialogue-overhaul/storyboard-integration-v23-v02.log`
+and `cast-independent-preservation-v23.json`.
+No selected-world pointer or existing save identity has changed.
+
+The frozen unselected v22 candidate has native identity
+`054cf51922bfebcb663d5ef7364847ab158b111d7decaaa0bc00a305ab9f28c1`
+and SHA256
+`3008641d08f5cc8372a4fbf0fcba1b1d14475ba8f5f730b1eb8fe0bbbe560353`.
+It was built from the accepted 732-map Mankato exterior descendant. Rust
+publication/readback, all 377 original audio checks, every canonical page,
+selected-parent whole-data preservation, frozen-campaign preservation, original
+builder replay/preservation and assets Clippy pass. Its 69 native page boards
+match all 318 installed text programs. Fresh controller scenes, native captures,
+browser playback and earned-ending acceptance remain separate gates. The
+source/build record is `.local/dialogue-overhaul/storyboard-integration-v22.log`;
+the scene record is `.local/dialogue-overhaul/storyboard-controller-matrix-v22.log`.
+No selected-world pointer or existing save identity has changed.
+
+The frozen v20 pacing candidate has native identity
+`37768640469563a5b4180fde20f30597ca12a3b4624cd4e224afaadcb73084b9`
+and SHA256
+`38bd7d103fb605b7ce1e185d343bad570aefa199eee4041a99f63b0f28cd1972`.
+Rust publication/readback and all 377 original audio PCM/hash/frame/loop checks
+pass, including production desktop metadata. Its accepted Rochester parent
+retains the preceding Grand Marais mart, Grand Rapids buildings, Duluth stairs
+and Fair repair. Source preservation and original-builder equivalence passed;
+native scene/presentation diagnostics passed apart from a checkpoint test input
+that attempted to walk through its visible warden. The earned run reached two
+badges, then stopped while its driver tried to assemble four partners.
+That is not an earned ending or listening pass. Historical logs are
+`.local/dialogue-overhaul/pacing-source-integration-v20.log` and
+`.local/dialogue-overhaul/pacing-controller-integration-v20.log`.
+The readable source transcript is supplemental evidence. No active world pointer
+has been changed by this work.
+
+The frozen v19 review candidate has identity
 `3c48a27c98c412e3e292a5912193b06131fb8a04b70b8695be4de5f65f6ab45f`.
 Its SHA256 is
 `47970de2d183d3f4aad270dd4e1a3edc7afca237a14060bc331fd165c8c4db32`.

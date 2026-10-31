@@ -1,0 +1,23 @@
+{
+  "status": "PASS",
+  "cases": [
+    {
+      "case": "repeat-spur",
+      "exit_code": 1,
+      "stderr": "Error: blocked spur preimage drift",
+      "no_output": true
+    },
+    {
+      "case": "wrong-spur-sha",
+      "exit_code": 1,
+      "stderr": "Error: parent SHA drift",
+      "no_output": true
+    },
+    {
+      "case": "overlong-native-line",
+      "exit_code": 1,
+      "stderr": "Error: native line must fit 18 characters",
+      "no_output": true
+    }
+  ]
+}

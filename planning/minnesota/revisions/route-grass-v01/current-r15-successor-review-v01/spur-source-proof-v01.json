@@ -1,0 +1,162 @@
+{
+  "status": "PASS_SOURCE_CANDIDATE",
+  "parent_pack": "content-packs/minnesota-current-r15-open-shore-guidance-v01.crystalpack",
+  "parent_pack_sha256": "a49a0cd9d2660ddd2fa7942c5dde2b83c419f7bae43baacae4c9973718ff23d7",
+  "changes": [
+    {
+      "metatile": [
+        9,
+        0
+      ],
+      "before": "0f",
+      "after": "6c"
+    },
+    {
+      "metatile": [
+        10,
+        0
+      ],
+      "before": "0f",
+      "after": "6c"
+    },
+    {
+      "metatile": [
+        11,
+        0
+      ],
+      "before": "0f",
+      "after": "6c"
+    },
+    {
+      "metatile": [
+        12,
+        0
+      ],
+      "before": "0f",
+      "after": "6c"
+    }
+  ],
+  "checks": [
+    {
+      "id": "main-west-east",
+      "start": [
+        0,
+        24
+      ],
+      "end": [
+        63,
+        24
+      ],
+      "measurement": {
+        "status": "MEASURED",
+        "grass_steps": 9,
+        "grass_quadrants_in_contract": 92,
+        "ice_quadrants": 0
+      }
+    },
+    {
+      "id": "main-east-west",
+      "start": [
+        63,
+        24
+      ],
+      "end": [
+        0,
+        24
+      ],
+      "measurement": {
+        "status": "MEASURED",
+        "grass_steps": 9,
+        "grass_quadrants_in_contract": 92,
+        "ice_quadrants": 0
+      }
+    },
+    {
+      "id": "west-to-staples",
+      "start": [
+        0,
+        24
+      ],
+      "end": [
+        26,
+        0
+      ],
+      "measurement": {
+        "status": "MEASURED",
+        "grass_steps": 12,
+        "grass_quadrants_in_contract": 92,
+        "ice_quadrants": 0
+      }
+    },
+    {
+      "id": "uphill-22",
+      "start": [
+        22,
+        20
+      ],
+      "end": [
+        22,
+        17
+      ],
+      "measurement": {
+        "status": "MEASURED",
+        "grass_steps": 6,
+        "grass_quadrants_in_contract": 92,
+        "ice_quadrants": 0
+      }
+    },
+    {
+      "id": "uphill-23",
+      "start": [
+        23,
+        20
+      ],
+      "end": [
+        23,
+        17
+      ],
+      "measurement": {
+        "status": "MEASURED",
+        "grass_steps": 6,
+        "grass_quadrants_in_contract": 92,
+        "ice_quadrants": 0
+      }
+    },
+    {
+      "id": "uphill-24",
+      "start": [
+        24,
+        20
+      ],
+      "end": [
+        24,
+        17
+      ],
+      "measurement": {
+        "status": "MEASURED",
+        "grass_steps": 6,
+        "grass_quadrants_in_contract": 92,
+        "ice_quadrants": 0
+      }
+    },
+    {
+      "id": "uphill-25",
+      "start": [
+        25,
+        20
+      ],
+      "end": [
+        25,
+        17
+      ],
+      "measurement": {
+        "status": "MEASURED",
+        "grass_steps": 6,
+        "grass_quadrants_in_contract": 92,
+        "ice_quadrants": 0
+      }
+    }
+  ],
+  "grass_quadrants": 92,
+  "source_pixels_modified": false
+}

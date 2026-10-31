@@ -1,0 +1,24 @@
+{
+  "status": "PASS",
+  "selected_revision": "route_grass_r19_detroit_gate_revision",
+  "pack": "content-packs/minnesota-current-r19-detroit-gate-v05.crystalpack",
+  "pack_sha256": "b57516c0b77c7bcf94fa35e60ff8300bfd8a8781782827739742d8fc15b3f437",
+  "complete_map_exact": true,
+  "used_metatiles": [
+    1,
+    3,
+    5,
+    8,
+    9,
+    11,
+    14,
+    16,
+    17,
+    69,
+    86
+  ],
+  "used_pixels_and_collision_exact": true,
+  "ice_quadrants": 0,
+  "grass_quadrants": 16,
+  "prior_acceptance": "planning/minnesota/revisions/route-grass-v01/current-cedar-successor-v01/acceptance.json"
+}

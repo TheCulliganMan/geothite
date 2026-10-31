@@ -1,0 +1,10 @@
+{
+  "status": "QA_CONTRACT_SCOPE_COUNT_CORRECTION",
+  "failed_contract": "planning/minnesota/revisions/route-grass-v01/current-mankato-town-v01/exterior-child.contract.v05.json",
+  "corrected_contract": "planning/minnesota/revisions/route-grass-v01/current-mankato-town-v01/exterior-child.contract.v06.json",
+  "failed_log": ".local/route-grass-review/mankato-town-native-controller-v05.log",
+  "cause": "Expanded lists contained10 valid bank lanes and7 blocked tree approaches, but declared counts still said1 and0. Review rejected the contract before runtime loading or gameplay.",
+  "pack_unchanged": true,
+  "implementation_unchanged": true,
+  "failed_attempt_preserved": true
+}

@@ -1,0 +1,47 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+  "pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33",
+  "source_save": "/Users/ryanculligan/GitHub/geothite/.local/route-grass-review/current-rainy-native-saves-v01/winter-rainy-new-grass-approach-65319-1793423639253907000.crystalsave",
+  "reached_save": "/Users/ryanculligan/GitHub/geothite/.local/route-grass-review/current-rainy-new-grass-client-v01.crystalsave",
+  "initial_position": {
+    "x": 46,
+    "y": 22
+  },
+  "final_position": {
+    "x": 46,
+    "y": 22
+  },
+  "new_grass_wild_encounter_and_native_RUN": true,
+  "new_grass_tiles": [
+    [
+      46,
+      21
+    ],
+    [
+      47,
+      21
+    ]
+  ],
+  "native_battles": [
+    {
+      "position": {
+        "x": 47,
+        "y": 21
+      },
+      "map": "MnRainyRiverIcefields",
+      "native_run_completed": true,
+      "views": [
+        "Foe CROOKVEIL Lv50 HP 146/146\nYou VOYAGEAR Lv80 HP 234/234\nTurn 1  None (0 turns)\nCHRIS \u00b7 $3000\nBadges 1/16 \u00b7 Dex 0/1\n\u25b6 VOYAGEAR   L80 234/234\n  VOYAGEAR   L40 122/122\n  DOZEBEAR   L40 118/118\nWild CROOKVEIL\nappeared!",
+        "Foe CROOKVEIL Lv50 HP 146/146\nYou VOYAGEAR Lv80 HP 234/234\nTurn 1  None (0 turns)\nCHRIS \u00b7 $3000\nBadges 1/16 \u00b7 Dex 0/1\n\u25b6 VOYAGEAR   L80 234/234\n  VOYAGEAR   L40 122/122\n  DOZEBEAR   L40 118/118\nGo! VOYAGEAR!",
+        "Foe CROOKVEIL Lv50 HP 146/146\nYou VOYAGEAR Lv80 HP 234/234\nTurn 1  None (0 turns)\nCHRIS \u00b7 $3000\nBadges 1/16 \u00b7 Dex 0/1\n\u25b6 VOYAGEAR   L80 234/234\n  VOYAGEAR   L40 122/122\n  DOZEBEAR   L40 118/118\n> FIGHT\n   <PKMN>\n   PACK\n   RUN",
+        "Foe CROOKVEIL Lv50 HP 146/146\nYou VOYAGEAR Lv80 HP 234/234\nTurn 1  None (0 turns)\nCHRIS \u00b7 $3000\nBadges 1/16 \u00b7 Dex 0/1\n\u25b6 VOYAGEAR   L80 234/234\n  VOYAGEAR   L40 122/122\n  DOZEBEAR   L40 118/118\n   FIGHT\n   <PKMN>\n> PACK\n   RUN",
+        "Foe CROOKVEIL Lv50 HP 146/146\nYou VOYAGEAR Lv80 HP 234/234\nTurn 1  None (0 turns)\nCHRIS \u00b7 $3000\nBadges 1/16 \u00b7 Dex 0/1\n\u25b6 VOYAGEAR   L80 234/234\n  VOYAGEAR   L40 122/122\n  DOZEBEAR   L40 118/118\n   FIGHT\n   <PKMN>\n   PACK\n> RUN",
+        "   37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57\n14 #  #  #  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #\n15 #  #  #  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #\n16 #  #  #  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #\n17 #  #  #  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #\n18 .  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #\n19 .  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #\n20 .  .  .  .  .  \"  \"  \"  \"  \"  \"  #  #  #  #  #  #  #  #  #  #\n21 .  .  .  .  .  \"  \"  \"  \"  \"  @> #  #  #  #  #  #  #  #  #  #\n22 .  .  .  .  .  #  #  #  #  .  N  #  #  #  #  #  #  #  #  #  #\n23 .  .  .  .  .  #  #  #  #  .  .  #  #  #  #  #  #  #  #  #  #\n24 .  .  .  .  .  .  .  .  .  .  .  #  #  #  #  #  #  #  #  #  #\n25 .  .  .  .  .  .  .  .  .  .  .  #  #  #  #  #  #  #  #  #  #\n26 .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  #\n27 .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  #\n28 .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  #  .  .  #  #\nCHRIS \u00b7 $3000\nBadges 1/16 \u00b7 Dex 0/1\n  VOYAGEAR   L80 234/234\n  VOYAGEAR   L40 122/122\n  DOZEBEAR   L40 118/118\nGot away safely!"
+      ]
+    }
+  ],
+  "production_stdio_calls": 86,
+  "stderr_bytes": 0,
+  "scope": "Started from the actual reached dry Rainy skier-bank checkpoint without Repel. Every subsequent step and RUN used production MCP input; no state or RNG edits."
+}

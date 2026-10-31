@@ -1,0 +1,70 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-mankato-native-exterior-v02.crystalpack",
+  "sha256": "ab7c622576a4754dbcca8ccc5c6b8596787d109fbdba7d387989b91ff26e4484",
+  "parent": {
+    "revision": "st_paul_inhabited_streets_revision",
+    "pack": "content-packs/minnesota-st-paul-inhabited-streets-v03.crystalpack",
+    "sha256": "43f491c876f40823ff43da723f33e405d94d2ff59fc49d41b87d929f594d3e9d"
+  },
+  "identity": {
+    "stored": "49862c4e4feee95f20b84319fcdccecd8e7b5b284a5ed80d2a2088f45e8d998e",
+    "independently_recomputed": "49862c4e4feee95f20b84319fcdccecd8e7b5b284a5ed80d2a2088f45e8d998e",
+    "exact": true
+  },
+  "changed_metatiles": [
+    {
+      "at": [
+        3,
+        9
+      ],
+      "before": 87,
+      "after": 5
+    },
+    {
+      "at": [
+        4,
+        9
+      ],
+      "before": 87,
+      "after": 5
+    },
+    {
+      "at": [
+        10,
+        9
+      ],
+      "before": 87,
+      "after": 5
+    },
+    {
+      "at": [
+        11,
+        9
+      ],
+      "before": 75,
+      "after": 5
+    },
+    {
+      "at": [
+        18,
+        13
+      ],
+      "before": 22,
+      "after": 26
+    },
+    {
+      "at": [
+        19,
+        13
+      ],
+      "before": 51,
+      "after": 23
+    }
+  ],
+  "other_complete_maps_exact": 731,
+  "state_fair_exact": true,
+  "all_events_scripts_art_audio_encounters_exact": true,
+  "entire_normalized_pack_exact": true,
+  "source_pixels_modified": false
+}

@@ -1,0 +1,10 @@
+{
+  "revision": "route_grass_r11_current_review_revision",
+  "pack": "content-packs/minnesota-current-r11-stair-guidance-v02.crystalpack",
+  "pack_sha256": "332d6ee5c5b77c028119c898e774043895859929a46ff534ebbd14bc1cc2e5d4",
+  "maps": [
+    "MnR13C00R00",
+    "MnR13C00R01",
+    "MnR13C00R02"
+  ]
+}

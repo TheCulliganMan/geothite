@@ -1,0 +1,7 @@
+# Current St Cloud repaired fronts, paths and stairs
+
+Three fresh native cases pass on the selected R10 survey-spurs pack: all four buildings/eight active exit carpets/Continue, five resident/six sign approaches and four real road lanes (two each to R05/R06), and both north guard lanes missing WIND badge/free inbound without granting qualification. The current contract explicitly includes these nonempty road/gate scopes and retains the current repaired front anchors.
+
+Fresh production replay uses211public MCP calls from the actual native town checkpoint. It walks the floor path to the overlook stair, reaches every tread down/up, denies both side walls, saves on the upper landing, continues and descends again, then verifies Pack/Items/Balls and walking. Upper35,27, treads35,28/35,29, lower35,30; side walls34,29/36,29. Source/input saves stay unchanged, output is separate and stderr is empty.
+
+The complete town and its named rooms match the accepted StCloud front repair; all used native terrain pixels/collision match. The whole inherited before/after image was inspected again. Original native pixel captures keep their original pack binding; current-map-art-inheritance-v01.json proves used-surface inheritance. No terrain or Rust changed, so no new source build/lint is claimed. Existing production controller tests load the inspected contract at runtime. Initial party/badges/position are explicit QA fixtures, not earned statewide progression. Broader review remains active.

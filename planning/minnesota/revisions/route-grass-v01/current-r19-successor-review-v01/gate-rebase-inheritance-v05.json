@@ -1,0 +1,26 @@
+{
+  "status": "PASS_EXACT_LOCAL_MAP_ART_AUDIO_INHERITANCE",
+  "pack": "content-packs/minnesota-current-r19-detroit-gate-v05.crystalpack",
+  "pack_sha256": "b57516c0b77c7bcf94fa35e60ff8300bfd8a8781782827739742d8fc15b3f437",
+  "prior_candidate": "content-packs/minnesota-current-r19-detroit-gate-v04.crystalpack",
+  "prior_candidate_sha256": "de1add590013c786bd3a2770c58ff46c656930cc3dd3944af203f7480e292e21",
+  "complete_route_town_gate_maps_exact": [
+    "MnR19C00R00",
+    "MnR19C00R01",
+    "MnDetroitLakes",
+    "MnR19DetroitGate"
+  ],
+  "used_tilesets_exact": true,
+  "all_prior_runtime_art_audio_exact": true,
+  "new_parent_art_preserved_exact": [
+    "data/tilesets/mn_grand_rapids_riverfront.json",
+    "data/tilesets/mn_grand_rapids_riverfront_metatiles.bin",
+    "data/tilesets/mn_grand_rapids_riverfront_palette_map.json",
+    "gfx/tilesets/mn_grand_rapids_riverfront.2bpp",
+    "gfx/tilesets/mn_grand_rapids_riverfront.png"
+  ],
+  "current_grand_rapids_exact": true,
+  "prior_production_receipt": "planning/minnesota/revisions/route-grass-v01/current-r19-successor-review-v01/gate-production-traversal-acceptance-v01.json",
+  "prior_visual_receipt": "planning/minnesota/revisions/route-grass-v01/current-r19-successor-review-v01/gate-native-visual-inheritance-v04.json",
+  "scope": "Prior route/gate production and inspected native pixels retain their original pack bindings; exact local maps and runtime art justify inheritance. Fresh native cases on rebased pack are recorded separately. No earned statewide progression claim."
+}

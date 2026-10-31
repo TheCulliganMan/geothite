@@ -1,0 +1,164 @@
+{
+  "MN_R01_BLUFF_WALKERText": [
+    {
+      "args": [
+        "\"The ramp climbs\""
+      ],
+      "command": "text"
+    },
+    {
+      "args": [
+        "\"the low bluff.\""
+      ],
+      "command": "line"
+    },
+    {
+      "args": [
+        "\"The ledge lets\""
+      ],
+      "command": "para"
+    },
+    {
+      "args": [
+        "\"you hop back down.\""
+      ],
+      "command": "line"
+    },
+    {
+      "args": [],
+      "command": "done"
+    }
+  ],
+  "MN_R01_SIGN_05Text": [
+    {
+      "args": [
+        "\"ONE WAY LEDGE\""
+      ],
+      "command": "text"
+    },
+    {
+      "args": [
+        "\"DOWN: TRAIL\""
+      ],
+      "command": "line"
+    },
+    {
+      "args": [
+        "\"UP: EAST RAMP\""
+      ],
+      "command": "para"
+    },
+    {
+      "args": [],
+      "command": "done"
+    }
+  ],
+  "MN_R01_T03Won": [
+    {
+      "args": [
+        "\"The ledge below\""
+      ],
+      "command": "text"
+    },
+    {
+      "args": [
+        "\"is a quick drop.\""
+      ],
+      "command": "line"
+    },
+    {
+      "args": [],
+      "command": "done"
+    }
+  ],
+  "MN_R01_T03Lost": [
+    {
+      "args": [
+        "\"Use the east ramp\""
+      ],
+      "command": "text"
+    },
+    {
+      "args": [
+        "\"to come back up.\""
+      ],
+      "command": "line"
+    },
+    {
+      "args": [],
+      "command": "done"
+    }
+  ],
+  "MN_R01_FARMERText": [
+    {
+      "args": [
+        "\"Wild partners hide\""
+      ],
+      "command": "text"
+    },
+    {
+      "args": [
+        "\"in the tall grass.\""
+      ],
+      "command": "line"
+    },
+    {
+      "args": [
+        "\"Ledges let you hop\""
+      ],
+      "command": "para"
+    },
+    {
+      "args": [
+        "\"down, but not up.\""
+      ],
+      "command": "line"
+    },
+    {
+      "args": [
+        "\"Use the east ramp\""
+      ],
+      "command": "para"
+    },
+    {
+      "args": [
+        "\"to reach the bluff\""
+      ],
+      "command": "line"
+    },
+    {
+      "args": [
+        "\"That BERRY is\""
+      ],
+      "command": "para"
+    },
+    {
+      "args": [
+        "\"for your partner.\""
+      ],
+      "command": "line"
+    },
+    {
+      "args": [
+        "\"Dr Tamarack waits\""
+      ],
+      "command": "para"
+    },
+    {
+      "args": [
+        "\"at the Rochester\""
+      ],
+      "command": "line"
+    },
+    {
+      "args": [
+        "\"clinic out west.\""
+      ],
+      "command": "para"
+    },
+    {
+      "args": [],
+      "command": "done"
+    }
+  ]
+}

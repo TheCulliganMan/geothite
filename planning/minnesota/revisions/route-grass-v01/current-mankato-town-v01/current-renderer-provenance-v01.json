@@ -1,0 +1,37 @@
+{
+  "status": "PASS_CURRENT_CHECKOUT_RENDERER_PROVENANCE",
+  "workspace_root": "/Users/ryanculligan/GitHub/geothite",
+  "binary": "/Users/ryanculligan/GitHub/geothite/.local/route-grass-review/portable-tools-v01/render_at_location",
+  "binary_sha256": "2eccb21877082ebbf2e277ca85647a843775752f3a7b54d11f3f6551f2d622bf",
+  "dependency_file": "/Users/ryanculligan/GitHub/geothite/.local/route-grass-review/portable-tools-v01/render_at_location.d",
+  "dependency_file_sha256": "6f937633194464b98a0932e2012d32f5c9f7ad8c6ab0f041deb225082bcbc02b",
+  "expected_example_source": "/Users/ryanculligan/GitHub/geothite/crates/crystal-bevy/examples/render_at_location.rs",
+  "example_source_current_sha256": "aa686bf6bc130aa5ee5e48468f40ea6380c032c5cb7b010a4d57774c77bfed96",
+  "build": {
+    "step": "native-renderer",
+    "exit_code": 0,
+    "log": ".local/route-grass-review/portable-map-tools-native-renderer-build-v03.log",
+    "command": [
+      "cargo",
+      "build",
+      "--profile",
+      "wasm-dev",
+      "--locked",
+      "--config",
+      "profile.wasm-dev.package.crystal-assets.opt-level=0",
+      "-p",
+      "crystal-bevy",
+      "--features",
+      "location-tester",
+      "--example",
+      "render_at_location"
+    ],
+    "outputs": [
+      {
+        "path": "/Users/ryanculligan/GitHub/geothite/.local/route-grass-review/portable-tools-v01/render_at_location",
+        "sha256": "2eccb21877082ebbf2e277ca85647a843775752f3a7b54d11f3f6551f2d622bf"
+      }
+    ]
+  },
+  "presentation": "Explicit --view 2d; no 3D capture requested"
+}

@@ -26,7 +26,7 @@ The user clarified that maps do not all need to be compact. Reject sparse, overd
 - Every visible door has a destination and return. Caves, clinics, shops, gyms and home stairs are tested individually.
 - Trainer sight may control a deliberate battle lane; distinguish that challenge from an accidental trap. Defeated actors must leave a passing tile. Verify victory, item and scene flags persist, and validate recovery separately before regional acceptance.
 - Water crossings use a real bridge/causeway recipe with matching collision. Do not accept a path painted over WATER or an invisible floor shortcut.
-- Compare the map at full extent and at the actual 160 by 144 viewport. Inspect native pixels at 1:1; inspect the 2D/3D production pair only with equal map, position, time, facing and state.
+- Compare the map at full extent and at the actual 160 by 144 viewport. Inspect native pixels at 1:1. Minnesota reviews use native 2D only; compare source art and production captures at the same map, position, time, facing and game state.
 
 Each route dossier's trainer, item and story anchors reserve space. The implementing agent must write resolved core-tile coordinates and assert their collision before map acceptance. The current blockout may leave an anchor on a wall; that is a fitting task, not evidence that the engine should ignore collision.
 

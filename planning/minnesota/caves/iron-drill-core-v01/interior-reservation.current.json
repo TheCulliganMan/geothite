@@ -1,0 +1,74 @@
+{
+  "interior": "MnIronDrillCore",
+  "parent": "MnIronPumpGallery",
+  "source_file": "caves/iron-drill-core-v01/current.json",
+  "source_room_id": "MnIronDrillCore",
+  "source_kind": "authored_story_floor",
+  "purpose": "A native rock-cut drill bay with its operating machine, northern isolation control, western crew space and lower shaft forecourt.",
+  "dimensions_metatiles": [
+    12,
+    10
+  ],
+  "arrival_core": [
+    4,
+    15
+  ],
+  "arrival_warp_index": 2,
+  "return_trigger_core": [
+    5,
+    14
+  ],
+  "return_triggers_core": [
+    [
+      5,
+      14
+    ]
+  ],
+  "paired_bindings": [
+    {
+      "parent": "MnIronPumpGallery",
+      "parent_entry_core": [
+        25,
+        4
+      ],
+      "parent_entry_warp_index": 3,
+      "arrival_core": [
+        4,
+        15
+      ],
+      "arrival_warp_index": 2,
+      "arrival_collision": "FLOOR",
+      "return_trigger_indices": [
+        1
+      ],
+      "return_triggers_core": [
+        [
+          5,
+          14
+        ]
+      ],
+      "parent_safe_returns_core": [
+        [
+          24,
+          5
+        ]
+      ],
+      "pair_kind": "native_story_stairs"
+    }
+  ],
+  "resident_scripts": [
+    "MN_NDRILL_REED",
+    "MN_NDRILL_ENGINEER",
+    "MN_NDRILL_FINN",
+    "MN_LODE_ARC_CORE_WEST",
+    "MN_LODE_ARC_CORE_EAST"
+  ],
+  "requires_real_collision_check": true,
+  "native_binding_scope": "Current 732-map compact/R17 parent; original two warp records, reciprocal pump/core shaft and all five actor anchors.",
+  "exterior_door_status": "Verified whole rock chamber, native machine frames, original mine chapter and battles, independent shutdown/recovery choices, both eastern detours, fresh-process Continue and public mine return.",
+  "native_palette_group": "nite",
+  "source_sha256": "7699ef3914d6428edab0e6a3b3947b8779cafc07118843416b9aed6447537e3b",
+  "review_pack": "content-packs/minnesota-iron-drill-core-v04.crystalpack",
+  "review_pack_sha256": "4240537c844bf7e305e99c24f2b7054c314b84a03d17037747cb4ceabdbd17fd",
+  "verification": "planning/minnesota/renders/iron-drill-core-v601/acceptance-v628.json"
+}

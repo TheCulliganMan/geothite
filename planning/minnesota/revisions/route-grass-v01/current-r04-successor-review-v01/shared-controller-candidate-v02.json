@@ -1,0 +1,10 @@
+{
+  "status": "WAITING_FOR_TERMINAL_SHARED_BUILD",
+  "pid": 32876,
+  "log": "planning/minnesota/renders/gunflint-spring-v631/controller-build-v634.log",
+  "command": "cargo test --locked -p crystal-bevy --lib gunflint_spring_controller --no-run --message-format=json",
+  "source_sha256": {
+    "crates/crystal-bevy/src/bevy_shell/tests/twin_cities_journey.rs": "ec62d2ae7e49417295b0b8b0890bd8895c7bbb1edb3e820006cabc5b50dc6365",
+    "crates/crystal-bevy/src/bevy_shell/tests/authored_route_fixture.rs": "f999e2bd0bb740312175bad35a2861a3bf938536e18f154083c928d6128d65bd"
+  }
+}

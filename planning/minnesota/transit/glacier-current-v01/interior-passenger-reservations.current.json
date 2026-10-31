@@ -1,0 +1,285 @@
+[
+  {
+    "interior": "MnDetroitLakesStation",
+    "parent": "MnDetroitLakes",
+    "source_file": "transit/MnDetroitLakesStation.json",
+    "source_room_id": "MnDetroitLakesStation",
+    "arrival_core": [
+      11,
+      17
+    ],
+    "return_trigger_core": [
+      10,
+      19
+    ],
+    "return_triggers_core": [
+      [
+        10,
+        19
+      ],
+      [
+        11,
+        19
+      ]
+    ],
+    "arrival_warp_index": 3,
+    "exterior_door_core": [
+      11,
+      9
+    ],
+    "exterior_safe_return_core": [
+      11,
+      10
+    ],
+    "exterior_warp_index": 1,
+    "exterior_return_warp_index": 2,
+    "exterior_door_status": "Original facade, carpets and passive porch retained. Public road-to-hall/Continue/same-door return pass. Five-stop courier-gated free return service,20 directed rides and protected arrivals verified locally; original room stories/services remain exact. See transit/glacier-current-v01/README.md.",
+    "requires_real_collision_check": true,
+    "purpose": "A staffed rail hall with the weather ledger, parcel counter and waiting travelers; passenger service is tracked separately.",
+    "native_passenger_service": {
+      "source": "transit/glacier-current-v01/service.json",
+      "source_sha256": "875ef994e56d72430052b6bdf8062aec0bdbdbcde31b4ec39f21ebb6023b68c2",
+      "native_review_pack": "content-packs/minnesota-glacier-current-v03.crystalpack",
+      "native_review_pack_sha256": "fffff3a575234c28de03c6efe808fb46f6cd8d7910c76d97ce3e03bf0e5c4c5b",
+      "visit_flag": "EVENT_MN_STATION_DETROIT_LAKES_VISITED",
+      "authority": "EVENT_MN_COURIER_DEFEATED",
+      "free_fare": true,
+      "only_previously_visited_destinations": true,
+      "fishing_group": "FISHGROUP_NONE",
+      "ride_arrival_core": [
+        13,
+        11
+      ],
+      "verification": "planning/minnesota/renders/glacier-current-v794/acceptance-v818.json",
+      "previous_exterior_door_status": "Native facade, passive arrival and both carpets published and production-controller verified; see interior-life/DETROIT-LAKES.md. Glacier Line rides remain unfinished."
+    }
+  },
+  {
+    "interior": "MnStCloudStation",
+    "parent": "MnStCloud",
+    "source_file": "transit/MnStCloudStation.json",
+    "source_room_id": "MnStCloudStation",
+    "arrival_core": [
+      11,
+      17
+    ],
+    "return_trigger_core": [
+      10,
+      19
+    ],
+    "return_triggers_core": [
+      [
+        10,
+        19
+      ],
+      [
+        11,
+        19
+      ]
+    ],
+    "arrival_warp_index": 3,
+    "exterior_door_core": [
+      35,
+      11
+    ],
+    "exterior_safe_return_core": [
+      35,
+      12
+    ],
+    "exterior_warp_index": 7,
+    "exterior_return_warp_index": 8,
+    "exterior_door_status": "Original facade, carpets and passive porch retained. Public road-to-hall/Continue/same-door return pass. Five-stop courier-gated free return service,20 directed rides and protected arrivals verified locally; original room stories/services remain exact. See transit/glacier-current-v01/README.md.",
+    "requires_real_collision_check": true,
+    "native_passenger_service": {
+      "source": "transit/glacier-current-v01/service.json",
+      "source_sha256": "875ef994e56d72430052b6bdf8062aec0bdbdbcde31b4ec39f21ebb6023b68c2",
+      "native_review_pack": "content-packs/minnesota-glacier-current-v03.crystalpack",
+      "native_review_pack_sha256": "fffff3a575234c28de03c6efe808fb46f6cd8d7910c76d97ce3e03bf0e5c4c5b",
+      "visit_flag": "EVENT_MN_STATION_ST_CLOUD_VISITED",
+      "authority": "EVENT_MN_COURIER_DEFEATED",
+      "free_fare": true,
+      "only_previously_visited_destinations": true,
+      "fishing_group": "FISHGROUP_NONE",
+      "ride_arrival_core": [
+        11,
+        11
+      ],
+      "verification": "planning/minnesota/renders/glacier-current-v794/acceptance-v818.json",
+      "previous_exterior_door_status": "Native facade/passive arrival/both carpets and production-controller course verified. Station rail remains unfinished; see playable/st-cloud.md."
+    }
+  },
+  {
+    "interior": "MnStPaulUnionDepot",
+    "parent": "MnStPaul",
+    "source_file": "transit/MnStPaulUnionDepot.json",
+    "source_room_id": "MnStPaulUnionDepot",
+    "arrival_core": [
+      15,
+      21
+    ],
+    "return_trigger_core": [
+      14,
+      23
+    ],
+    "return_triggers_core": [
+      [
+        14,
+        23
+      ],
+      [
+        15,
+        23
+      ],
+      [
+        16,
+        23
+      ],
+      [
+        17,
+        23
+      ]
+    ],
+    "arrival_warp_index": 5,
+    "exterior_door_core": [
+      66,
+      47
+    ],
+    "exterior_safe_return_core": [
+      66,
+      48
+    ],
+    "exterior_warp_index": 1,
+    "exterior_return_warp_index": 2,
+    "exterior_door_status": "Original facade, carpets and passive porch retained. Public road-to-hall/Continue/same-door return pass. Five-stop courier-gated free return service,20 directed rides and protected arrivals verified locally; original room stories/services remain exact. See transit/glacier-current-v01/README.md.",
+    "requires_real_collision_check": true,
+    "native_passenger_service": {
+      "source": "transit/glacier-current-v01/service.json",
+      "source_sha256": "875ef994e56d72430052b6bdf8062aec0bdbdbcde31b4ec39f21ebb6023b68c2",
+      "native_review_pack": "content-packs/minnesota-glacier-current-v03.crystalpack",
+      "native_review_pack_sha256": "fffff3a575234c28de03c6efe808fb46f6cd8d7910c76d97ce3e03bf0e5c4c5b",
+      "visit_flag": "EVENT_MN_STATION_ST_PAUL_VISITED",
+      "authority": "EVENT_MN_COURIER_DEFEATED",
+      "free_fare": true,
+      "only_previously_visited_destinations": true,
+      "fishing_group": "FISHGROUP_NONE",
+      "ride_arrival_core": [
+        17,
+        11
+      ],
+      "verification": "planning/minnesota/renders/glacier-current-v794/acceptance-v818.json",
+      "previous_exterior_door_status": "Native facade/passive arrival/all room carpets published and production-controller verified. Gym4 retains all four internal pad pairs. Depot quest/rail remain unfinished; see playable/st-paul.md."
+    }
+  },
+  {
+    "interior": "MnWinonaStation",
+    "parent": "MnWinona",
+    "source_file": "transit/MnWinonaStation.json",
+    "source_room_id": "MnWinonaStation",
+    "arrival_core": [
+      11,
+      15
+    ],
+    "return_trigger_core": [
+      10,
+      17
+    ],
+    "return_triggers_core": [
+      [
+        10,
+        17
+      ],
+      [
+        11,
+        17
+      ]
+    ],
+    "arrival_warp_index": 3,
+    "exterior_door_core": [
+      19,
+      13
+    ],
+    "exterior_safe_return_core": [
+      19,
+      14
+    ],
+    "exterior_warp_index": 9,
+    "exterior_return_warp_index": 10,
+    "exterior_door_status": "Original facade, carpets and passive porch retained. Public road-to-hall/Continue/same-door return pass. Five-stop courier-gated free return service,20 directed rides and protected arrivals verified locally; original room stories/services remain exact. See transit/glacier-current-v01/README.md.",
+    "requires_real_collision_check": true,
+    "purpose": "A Winona rail hall with staff and waiting travelers; the five-stop passenger service remains a separate implementation.",
+    "native_passenger_service": {
+      "source": "transit/glacier-current-v01/service.json",
+      "source_sha256": "875ef994e56d72430052b6bdf8062aec0bdbdbcde31b4ec39f21ebb6023b68c2",
+      "native_review_pack": "content-packs/minnesota-glacier-current-v03.crystalpack",
+      "native_review_pack_sha256": "fffff3a575234c28de03c6efe808fb46f6cd8d7910c76d97ce3e03bf0e5c4c5b",
+      "visit_flag": "EVENT_MN_STATION_WINONA_VISITED",
+      "authority": "EVENT_MN_COURIER_DEFEATED",
+      "free_fare": true,
+      "only_previously_visited_destinations": true,
+      "fishing_group": "FISHGROUP_NONE",
+      "ride_arrival_core": [
+        11,
+        11
+      ],
+      "verification": "planning/minnesota/renders/glacier-current-v794/acceptance-v818.json",
+      "previous_exterior_door_status": "Native five-block town overlay, both carpets, four residents, two-clue gift and first-visit callback pass production input; seven paired native views pass. See interior-life/WINONA-STATION.md. Glacier Line rides unfinished."
+    }
+  },
+  {
+    "interior": "MnStaplesStation",
+    "parent": "MnStaplesRailJunction",
+    "source_file": "transit/MnStaplesStation.json",
+    "source_room_id": "MnStaplesStation",
+    "source_room_key": "room",
+    "source_kind": "authored_station_overlay",
+    "arrival_core": [
+      9,
+      15
+    ],
+    "arrival_warp_index": 3,
+    "return_trigger_core": [
+      8,
+      17
+    ],
+    "return_triggers_core": [
+      [
+        8,
+        17
+      ],
+      [
+        9,
+        17
+      ]
+    ],
+    "exterior_door_core": [
+      13,
+      7
+    ],
+    "exterior_safe_return_core": [
+      13,
+      8
+    ],
+    "exterior_warp_index": 1,
+    "exterior_return_warp_index": 2,
+    "requires_real_collision_check": true,
+    "exterior_door_status": "Original facade, carpets and passive porch retained. Public road-to-hall/Continue/same-door return pass. Five-stop courier-gated free return service,20 directed rides and protected arrivals verified locally; original room stories/services remain exact. See transit/glacier-current-v01/README.md.",
+    "purpose": "A staffed rail junction hall with a ledger, weather conversations and a real parcel purchase; passenger service is tracked separately.",
+    "native_passenger_service": {
+      "source": "transit/glacier-current-v01/service.json",
+      "source_sha256": "875ef994e56d72430052b6bdf8062aec0bdbdbcde31b4ec39f21ebb6023b68c2",
+      "native_review_pack": "content-packs/minnesota-glacier-current-v03.crystalpack",
+      "native_review_pack_sha256": "fffff3a575234c28de03c6efe808fb46f6cd8d7910c76d97ce3e03bf0e5c4c5b",
+      "visit_flag": "EVENT_MN_STATION_STAPLES_VISITED",
+      "authority": "EVENT_MN_COURIER_DEFEATED",
+      "free_fare": true,
+      "only_previously_visited_destinations": true,
+      "fishing_group": "FISHGROUP_NONE",
+      "ride_arrival_core": [
+        11,
+        11
+      ],
+      "verification": "planning/minnesota/renders/glacier-current-v794/acceptance-v818.json",
+      "previous_exterior_door_status": "Published in minnesota-interiors-staples-v02 on the protected Split Rock lineage: real R15 grass/spur entry, both seam lanes/directions, five residents, ledger, both carpets, parcel purchase/denial and visit Save/Continue pass. Touched-route species are active Minnesota originals, with actual wild battle/RUN. Seven exact native 2D frames; passenger rides unfinished. See interior-life/STAPLES-STATION.md."
+    }
+  }
+]

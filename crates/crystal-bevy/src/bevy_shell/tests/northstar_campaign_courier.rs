@@ -283,6 +283,7 @@ pub(super) fn capitol() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
             .quantity(&r.data().items["TM_STEEL_WING"]),
         1
     );
+    super::northstar_earned_services::st_paul(&mut c, &r, &root);
     for attempt in 0..4 {
         care(&mut c, &r);
         indoor_walk(&mut c, &r, st_paul_arrival(&r));

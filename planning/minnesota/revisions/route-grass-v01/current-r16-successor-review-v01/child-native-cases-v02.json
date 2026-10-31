@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-r16-bank-guidance-v01.crystalpack",
+  "pack_sha256": "87c5fcda9bb9b0264813c99f7f88d12c0a2c3cc4e9a036e0ffeeb1c9d2ea2c47",
+  "exit_code": 0,
+  "log": ".local/route-grass-review/r16-child-native-v02.log",
+  "scope": "Native populated grassy climb/dry hop/reverse/Continue; hay encounter/RUN/Continue; actual camper battle/PP/victory/Continue. Legacy geometry rail denial is replaced by current full production bank/bridge/resource checks. Initial local party/badges/position are QA setup, not earned regional progress."
+}

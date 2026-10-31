@@ -1,0 +1,7 @@
+{
+  "source": ".local/route-grass-review/current-ely-public-saves-v02/geothite-r10-gallery-85303-1793431178184748000.crystalsave",
+  "production_input": ".local/route-grass-review/current-ely-public-stdio-input-v01.crystalsave",
+  "sha256": "b77728c563e5c28fbe98ac0ed8b6f6d636a81d4a71cb8735686f85da5be1e4fd",
+  "source_case": "native_town_exterior_all_facades_both_returns_and_continue",
+  "scope": "Actual reached Detroit gate-return town save; Mew60 and initial qualifications remain explicit QA fixtures."
+}

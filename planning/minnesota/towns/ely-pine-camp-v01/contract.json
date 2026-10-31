@@ -1,0 +1,391 @@
+{
+  "schema_version": 1,
+  "map": "MnEly",
+  "parent_revision": "iron_crosscut_bends_revision",
+  "parent_pack": "content-packs/minnesota-iron-crosscut-bends-v01.crystalpack",
+  "parent_pack_sha256": "a69310b47d2e3583d9fb8378784c919584591d6e260d5f548ae10ea0cd3409ce",
+  "native_module_sha256": "5bfe6d254ccbbb3447f7885191d85c59a64f076ef72ff4ddade255bd0b6df104",
+  "source_sha256": "5b3bb60de855283a42637e68090a2b8f69370f61cc6b34c4eb262821f719c306",
+  "activities_sha256": "d6334c3e4d7932514d2d4a0ae905e7a6012bcd596b8420705ac279efb8bf56d9",
+  "preserved_warps": [
+    {
+      "index": 1,
+      "x": 11,
+      "y": 21,
+      "target_map_constant": "MN_ELY_POKECENTER_1F",
+      "target_map": "MN_ELY_POKECENTER_1F",
+      "target_warp_id": 3
+    },
+    {
+      "index": 2,
+      "x": 27,
+      "y": 27,
+      "target_map_constant": "MN_ELY_MART",
+      "target_map": "MN_ELY_MART",
+      "target_warp_id": 3
+    },
+    {
+      "index": 3,
+      "x": 25,
+      "y": 13,
+      "target_map_constant": "MN_LEAGUE_LOBBY",
+      "target_map": "MN_LEAGUE_LOBBY",
+      "target_warp_id": 5
+    },
+    {
+      "index": 4,
+      "x": 26,
+      "y": 13,
+      "target_map_constant": "MN_LEAGUE_LOBBY",
+      "target_map": "MN_LEAGUE_LOBBY",
+      "target_warp_id": 6
+    },
+    {
+      "index": 5,
+      "x": 11,
+      "y": 22,
+      "target_map_constant": "MN_ELY_POKECENTER_1F",
+      "target_map": "MN_ELY_POKECENTER_1F",
+      "target_warp_id": 3
+    },
+    {
+      "index": 6,
+      "x": 27,
+      "y": 28,
+      "target_map_constant": "MN_ELY_MART",
+      "target_map": "MN_ELY_MART",
+      "target_warp_id": 3
+    },
+    {
+      "index": 7,
+      "x": 25,
+      "y": 14,
+      "target_map_constant": "MN_LEAGUE_LOBBY",
+      "target_map": "MN_LEAGUE_LOBBY",
+      "target_warp_id": 5
+    },
+    {
+      "index": 8,
+      "x": 26,
+      "y": 14,
+      "target_map_constant": "MN_LEAGUE_LOBBY",
+      "target_map": "MN_LEAGUE_LOBBY",
+      "target_warp_id": 6
+    }
+  ],
+  "preserved_actor_count": 1,
+  "patches": [
+    {
+      "metatile": [
+        8,
+        1
+      ],
+      "before": "0a",
+      "after": "83"
+    },
+    {
+      "metatile": [
+        13,
+        1
+      ],
+      "before": "0a",
+      "after": "83"
+    },
+    {
+      "metatile": [
+        14,
+        1
+      ],
+      "before": "0a",
+      "after": "83"
+    },
+    {
+      "metatile": [
+        13,
+        2
+      ],
+      "before": "0a",
+      "after": "31"
+    },
+    {
+      "metatile": [
+        14,
+        2
+      ],
+      "before": "0a",
+      "after": "83"
+    },
+    {
+      "metatile": [
+        16,
+        2
+      ],
+      "before": "83",
+      "after": "31"
+    },
+    {
+      "metatile": [
+        17,
+        2
+      ],
+      "before": "83",
+      "after": "0a"
+    },
+    {
+      "metatile": [
+        10,
+        3
+      ],
+      "before": "0a",
+      "after": "83"
+    },
+    {
+      "metatile": [
+        11,
+        3
+      ],
+      "before": "0a",
+      "after": "83"
+    },
+    {
+      "metatile": [
+        12,
+        3
+      ],
+      "before": "0a",
+      "after": "83"
+    },
+    {
+      "metatile": [
+        13,
+        3
+      ],
+      "before": "0a",
+      "after": "31"
+    },
+    {
+      "metatile": [
+        14,
+        3
+      ],
+      "before": "0a",
+      "after": "31"
+    },
+    {
+      "metatile": [
+        15,
+        3
+      ],
+      "before": "0a",
+      "after": "31"
+    },
+    {
+      "metatile": [
+        16,
+        3
+      ],
+      "before": "0a",
+      "after": "31"
+    },
+    {
+      "metatile": [
+        17,
+        3
+      ],
+      "before": "0a",
+      "after": "83"
+    },
+    {
+      "metatile": [
+        15,
+        4
+      ],
+      "before": "0a",
+      "after": "83"
+    },
+    {
+      "metatile": [
+        16,
+        4
+      ],
+      "before": "0a",
+      "after": "31"
+    },
+    {
+      "metatile": [
+        17,
+        4
+      ],
+      "before": "0a",
+      "after": "83"
+    },
+    {
+      "metatile": [
+        15,
+        5
+      ],
+      "before": "0a",
+      "after": "83"
+    },
+    {
+      "metatile": [
+        16,
+        5
+      ],
+      "before": "0a",
+      "after": "31"
+    },
+    {
+      "metatile": [
+        17,
+        5
+      ],
+      "before": "0a",
+      "after": "83"
+    },
+    {
+      "metatile": [
+        15,
+        6
+      ],
+      "before": "0a",
+      "after": "83"
+    },
+    {
+      "metatile": [
+        16,
+        6
+      ],
+      "before": "0a",
+      "after": "31"
+    },
+    {
+      "metatile": [
+        17,
+        6
+      ],
+      "before": "0a",
+      "after": "83"
+    },
+    {
+      "metatile": [
+        11,
+        7
+      ],
+      "before": "31",
+      "after": "83"
+    },
+    {
+      "metatile": [
+        14,
+        7
+      ],
+      "before": "31",
+      "after": "83"
+    },
+    {
+      "metatile": [
+        3,
+        12
+      ],
+      "before": "0a",
+      "after": "83"
+    },
+    {
+      "metatile": [
+        7,
+        12
+      ],
+      "before": "0a",
+      "after": "83"
+    },
+    {
+      "metatile": [
+        3,
+        13
+      ],
+      "before": "0a",
+      "after": "83"
+    },
+    {
+      "metatile": [
+        7,
+        13
+      ],
+      "before": "0a",
+      "after": "83"
+    },
+    {
+      "metatile": [
+        7,
+        16
+      ],
+      "before": "0a",
+      "after": "83"
+    },
+    {
+      "metatile": [
+        8,
+        16
+      ],
+      "before": "0a",
+      "after": "83"
+    },
+    {
+      "metatile": [
+        9,
+        16
+      ],
+      "before": "0a",
+      "after": "83"
+    },
+    {
+      "metatile": [
+        10,
+        16
+      ],
+      "before": "0a",
+      "after": "83"
+    },
+    {
+      "metatile": [
+        11,
+        16
+      ],
+      "before": "0a",
+      "after": "83"
+    },
+    {
+      "metatile": [
+        12,
+        16
+      ],
+      "before": "0a",
+      "after": "83"
+    },
+    {
+      "metatile": [
+        13,
+        16
+      ],
+      "before": "0a",
+      "after": "83"
+    },
+    {
+      "metatile": [
+        14,
+        16
+      ],
+      "before": "0a",
+      "after": "83"
+    },
+    {
+      "metatile": [
+        15,
+        16
+      ],
+      "before": "0a",
+      "after": "83"
+    }
+  ]
+}

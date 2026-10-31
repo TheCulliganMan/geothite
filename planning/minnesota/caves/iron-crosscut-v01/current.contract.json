@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "map": "MnIronDrillApproach",
+  "pack": "content-packs/minnesota-iron-crosscut-bends-v01.crystalpack",
+  "pack_sha256": "a69310b47d2e3583d9fb8378784c919584591d6e260d5f548ae10ea0cd3409ce",
+  "content_identity": "d496760e7bebc8470ec4ed80e9790c588b39b1cbdfc7b13399bc1a57846f2d0e",
+  "source": "planning/minnesota/caves/iron-crosscut-v01/after.json",
+  "source_sha256": "8416ec3715365d2719408b35bcea723db684ccc7943d1ebdbabd5fb5ffe92ea9",
+  "native_module_sha256": "70caf74579c8a43b09048ad6867c05749cc8afeea377b82c00875d54ef670ac3",
+  "dimensions_metatiles": [
+    16,
+    13
+  ],
+  "native_palette": "nite",
+  "native_warps": [
+    {
+      "index": 1,
+      "x": 7,
+      "y": 21,
+      "target_map_constant": "MnR09Cave1F",
+      "target_map": "MnR09Cave1F",
+      "target_warp_id": 2
+    },
+    {
+      "index": 2,
+      "x": 6,
+      "y": 21,
+      "target_map_constant": "MnR09Cave1F",
+      "target_map": "MnR09Cave1F",
+      "target_warp_id": 2
+    },
+    {
+      "index": 3,
+      "x": 25,
+      "y": 5,
+      "target_map_constant": "MN_IRON_HAULAGE",
+      "target_map": "MN_IRON_HAULAGE",
+      "target_warp_id": 2
+    },
+    {
+      "index": 4,
+      "x": 24,
+      "y": 5,
+      "target_map_constant": "MN_IRON_HAULAGE",
+      "target_map": "MN_IRON_HAULAGE",
+      "target_warp_id": 2
+    }
+  ],
+  "actor_anchors": [
+    {
+      "id": "MN_LODE_ARC_ACCESS",
+      "tile": [
+        10,
+        12
+      ]
+    },
+    {
+      "id": "MN_LODE_ARC_SPOIL",
+      "tile": [
+        26,
+        18
+      ]
+    },
+    {
+      "id": "MN_IRON_APPROACH_ETHER",
+      "tile": [
+        5,
+        5
+      ]
+    }
+  ],
+  "scope": "Installed current module binding; publication preimage is separately guarded in contract.json. All original events/programs/actors/teams/wildlife unchanged."
+}

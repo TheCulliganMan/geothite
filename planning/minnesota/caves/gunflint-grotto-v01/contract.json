@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "map": "MnR12Cave1F",
+  "parent_revision": "early_research_access_revision",
+  "parent_pack": "content-packs/minnesota-early-research-v01.crystalpack",
+  "parent_pack_sha256": "1fd1bfe59ad965809741259f88a7c251e59e2add5317bfc5eacd17da7b9b7548",
+  "native_module_sha256": "1076686e99af2c7a5c6c1f20a8ca31654dbdb13ae511ca4e1be6a85f952e0d5f",
+  "preserved_warps": [
+    {
+      "index": 1,
+      "x": 17,
+      "y": 23,
+      "target_map_constant": "MN_R12_C00R00",
+      "target_map": "MN_R12_C00R00",
+      "target_warp_id": 1
+    }
+  ]
+}

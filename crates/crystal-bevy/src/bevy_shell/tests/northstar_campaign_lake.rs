@@ -6,6 +6,7 @@ use crystal_core::input::GameButton;
 use crystal_runtime::CrystalRuntime;
 
 use super::super::authored_route_fixture::indoor_walk;
+use super::super::native_city_ports::city_port;
 use super::super::northstar_earned_gyms;
 use super::super::rochester_earned::try_battle;
 use super::super::winona::{at, continue_in_place, finish, load, press, travel};
@@ -19,6 +20,8 @@ const REPORT: &str = "EVENT_MN_BRAINERD_REPORT";
 const SURF: &str = "EVENT_MN_SURF_GIFT_RECEIVED";
 const WON: &str = "EVENT_MN_GYM_6_DEFEATED";
 
+#[path = "northstar_lake_city_walk.rs"]
+mod city_walk;
 #[path = "northstar_lake_training.rs"]
 mod training;
 
@@ -46,7 +49,7 @@ fn arrival() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
         CITY if won => at(&mut c, CITY, (12, 36)),
         CITY => {
             let tile = c.snapshot().expect("actual Lake recovery").overworld.tile;
-            if (tile.x, tile.y) == (9, 22) {
+            if (tile.x, tile.y) == city_port(&r, CITY, CLINIC).0 {
                 assert!(event(&c, "EVENT_MN_GYM_6_TRAINER_2_DEFEATED"));
             } else if (tile.x, tile.y) == (12, 36) {
                 assert!(event(&c, "EVENT_MN_GYM_6_TRAINER_1_DEFEATED"));
@@ -85,10 +88,29 @@ fn later(c: &VisibleShellController) {
 }
 
 fn care(c: &mut VisibleShellController, r: &CrystalRuntime) {
-    if c.snapshot().expect("care approach").overworld.map_name == CITY {
-        indoor_walk(c, r, (9, 22));
-        travel(c, GameButton::Up, CLINIC, (10, 13));
+    let (door, arrival) = city_port(r, CITY, CLINIC);
+    // The city's walkers can move into a previously clear route. Replan from
+    // actual actors rather than finishing a stale sequence after a blocked step.
+    for _ in 0..256 {
+        finish(c);
+        let current = c.snapshot().expect("live clinic approach").overworld;
+        if current.map_name == CLINIC {
+            break;
+        }
+        assert_eq!(current.map_name, CITY, "actual Lake recovery");
+        let key = if (current.tile.x, current.tile.y) == door {
+            Some(GameButton::Up)
+        } else {
+            super::super::northstar_ice_lair::path(c, r, door)
+                .and_then(|path| path.first().copied())
+        };
+        if let Some(key) = key {
+            press(c, key);
+        } else {
+            c.wait_frames(24).expect("wait for a passing city resident");
+        }
     }
+    at(c, CLINIC, arrival);
     indoor_walk(c, r, (7, 5));
     let money = c.shell.shell.session().state().money;
     press(c, GameButton::Up);
@@ -111,7 +133,40 @@ fn care(c: &mut VisibleShellController, r: &CrystalRuntime) {
             })
     );
     indoor_walk(c, r, (10, 14));
-    travel(c, GameButton::Down, CITY, (9, 22));
+    travel(c, GameButton::Down, CITY, door);
+}
+
+#[test]
+#[ignore = "requires an actual same-pack CRYSTAL_NORTHSTAR_LAKE_CARE_SAVE; no progression setup"]
+fn northstar_earned_lake_training_checkpoint_reaches_native_care() {
+    let path = PathBuf::from(
+        std::env::var_os("CRYSTAL_NORTHSTAR_LAKE_CARE_SAVE")
+            .expect("retained earned training checkpoint"),
+    );
+    let bytes = std::fs::read(&path).expect("original checkpoint");
+    let (root, r) = load();
+    let mut c = VisibleShellController::load_save(root, r.clone(), path.clone(), None)
+        .expect("same-identity earned checkpoint");
+    c.set_runtime_journal_enabled(false);
+    let before = c.snapshot().expect("actual training return");
+    eprintln!(
+        "native care checkpoint: {} {:?} {:?}",
+        before.overworld.map_name,
+        before.overworld.tile,
+        before
+            .party
+            .slots
+            .iter()
+            .map(|s| (&s.pokemon.species.id, s.pokemon.hp, &s.pokemon.status))
+            .collect::<Vec<_>>()
+    );
+    let badges = c.shell.shell.session().state().badges.clone();
+    care(&mut c, &r);
+    assert_eq!(c.shell.shell.session().state().badges, badges);
+    assert_eq!(
+        std::fs::read(path).expect("unchanged original checkpoint"),
+        bytes
+    );
 }
 
 fn supplies(c: &mut VisibleShellController, r: &CrystalRuntime) {
@@ -122,14 +177,15 @@ fn supplies(c: &mut VisibleShellController, r: &CrystalRuntime) {
     if quantity == 0 {
         return;
     }
-    indoor_walk(c, r, (19, 22));
-    travel(c, GameButton::Up, "MnBrainerdMart", (6, 5));
+    let (door, arrival) = city_port(r, CITY, "MnBrainerdMart");
+    city_walk::walk(c, r, door);
+    travel(c, GameButton::Up, "MnBrainerdMart", arrival);
     indoor_walk(c, r, (3, 3));
     press(c, GameButton::Left);
     press(c, GameButton::A);
     super::super::rochester_earned::checkout(c, r, "SUPER_POTION", quantity);
     indoor_walk(c, r, (6, 6));
-    travel(c, GameButton::Down, CITY, (19, 22));
+    travel(c, GameButton::Down, CITY, door);
 }
 
 fn winch(c: &mut VisibleShellController, r: &CrystalRuntime, flag: &str) {
@@ -157,7 +213,7 @@ fn winch(c: &mut VisibleShellController, r: &CrystalRuntime, flag: &str) {
 }
 
 fn report(c: &mut VisibleShellController, r: &CrystalRuntime, root: &AssetRoot) {
-    indoor_walk(c, r, (25, 20));
+    city_walk::walk(c, r, (25, 20));
     press(c, GameButton::Up);
     press(c, GameButton::A);
     if r.data()
@@ -228,17 +284,34 @@ pub(super) fn lake() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
         care(&mut c, &r);
     }
     if !event(&c, WON) {
-        indoor_walk(&mut c, &r, (25, 20));
+        city_walk::walk(&mut c, &r, (25, 20));
         press(&mut c, GameButton::Up);
         press(&mut c, GameButton::A);
-        assert!(
-            c.snapshot()
-                .expect("ranger requires Lake")
-                .ui
-                .text
-                .and_then(|t| t.asm_text)
-                .is_some_and(|text| text.contains("SIVREN"))
-        );
+        if r.data()
+            .story_event_script_constants
+            .global
+            .contains_key("EVENT_MN_TAMARACK_INTRO")
+        {
+            super::super::northstar_dialogue::acknowledge(
+                &mut c,
+                "MS05",
+                "MnBrainerdRangerBeforeText",
+                REPORT,
+            );
+        } else {
+            let denial = c.snapshot().expect("ranger requires Lake");
+            assert!(
+                denial
+                    .ui
+                    .text
+                    .as_ref()
+                    .and_then(|t| t.asm_text.as_deref())
+                    .is_some_and(|text| text.contains("SIVREN")),
+                "ranger denial at {:?}: {:?}",
+                denial.overworld,
+                denial.ui
+            );
+        }
         finish(&mut c);
         assert!(!event(&c, REPORT) && !event(&c, SURF));
         care(&mut c, &r);
@@ -263,7 +336,7 @@ pub(super) fn lake() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
                 }) {
                     super::northstar_arc_campaign::switch_lead(&mut c, slot);
                 }
-                indoor_walk(&mut c, &r, (12, 36));
+                city_walk::walk(&mut c, &r, (12, 36));
                 travel(
                     &mut c,
                     GameButton::Up,

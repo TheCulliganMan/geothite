@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "id": "MN_R13",
+  "source_kind": "installed_route_exterior_review_contract",
+  "native_binding": {
+    "pack": "content-packs/minnesota-current-r13-boundary-apron-v03.crystalpack",
+    "pack_sha256": "7d3987bfbf0378aed960495cc20981c0d258eb391f33630b8e3de6c2686e2e7d",
+    "content_identity": "557676e74fb5264e436590746046616fb503862e0db0dc403bac493ff4bd352c"
+  },
+  "new_grass_quadrants": 16,
+  "grass_quadrants": 208,
+  "inland_ice_quadrants_preserved": 16,
+  "checked_approaches": [
+    [
+      35,
+      100
+    ],
+    [
+      35,
+      112
+    ]
+  ],
+  "minimum_grass_steps_before": 6,
+  "minimum_grass_steps_after": 10,
+  "native_grass_block": "84",
+  "native_floor_preimage": "83",
+  "previous_current_dossier": null,
+  "scope": "All three Route13 chunks, full north/south land course and actual boundary round trips into Boundary Waters and Ely, two-way cave terrace stairs, inland ice slide, wild RUN, menus, Save/Continue. Native Cut/Revive separately passes. Explicit local initial party, badges and location are QA setup, not earned progress. Surf and paid preserve access are outside these checks. Long legs include actual nurse healing in Ely.",
+  "active_native_hop_lanes": [],
+  "retired_high_drop": "WIND_TOR_DROP",
+  "stair_pairs": [
+    {
+      "upper": [
+        47,
+        23
+      ],
+      "lower": [
+        47,
+        26
+      ]
+    }
+  ],
+  "ice_slide": {
+    "upper": [
+      46,
+      7
+    ],
+    "lower": [
+      46,
+      16
+    ]
+  },
+  "neighbor_connections": [
+    {
+      "route_core": [
+        32,
+        0
+      ],
+      "neighbor": "MnBoundaryWaters",
+      "neighbor_core": [
+        32,
+        47
+      ]
+    },
+    {
+      "route_core": [
+        34,
+        127
+      ],
+      "neighbor": "MnEly",
+      "neighbor_core": [
+        24,
+        0
+      ]
+    }
+  ],
+  "restored_authored_apron": {
+    "metatile": [
+      16,
+      0
+    ],
+    "before": "8b",
+    "after": "83"
+  },
+  "initial_qa_setup": {
+    "partner": "VOYAGEAR",
+    "level": 60,
+    "move": "CUT",
+    "badges": 8,
+    "earned_campaign_progress": false
+  },
+  "healing_stops": {
+    "center": "MnElyPokecenter1F",
+    "native_visits": 4
+  }
+}

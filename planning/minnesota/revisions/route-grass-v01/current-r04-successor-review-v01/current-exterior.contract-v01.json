@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "id": "MN_R04",
+  "status": "PASS_CURRENT_PARK_GRASS_AND_BATTLE_CHOICE",
+  "native_binding": {
+    "pack": "content-packs/minnesota-iron-drill-core-v04.crystalpack",
+    "pack_sha256": "4240537c844bf7e305e99c24f2b7054c314b84a03d17037747cb4ceabdbd17fd",
+    "content_identity": "97043b3d6a477b803e62e6afedf3f8f6f4d813f9520a9e2c8ee8648068a453b6"
+  },
+  "grass_quadrants": 92,
+  "ice_quadrants": 0,
+  "dimensions_metatiles": [
+    28,
+    18
+  ],
+  "active_native_hop_lanes": [],
+  "terrain_unchanged": true,
+  "battle_or_grass_choice": {
+    "trainer": "MN_R04_T01",
+    "start": [
+      6,
+      18
+    ],
+    "end": [
+      48,
+      18
+    ],
+    "minimum_grass_steps_both_directions_avoiding_trainer": 14,
+    "dry_lane_after_actual_victory": true
+  },
+  "native_journey": "planning/minnesota/revisions/route-grass-v01/current-r04-successor-review-v01/current-recovery-journey-v01.json",
+  "production_save": "planning/minnesota/revisions/route-grass-v01/current-r04-successor-review-v01/production-save-check-v01.json",
+  "native_visual": "planning/minnesota/revisions/route-grass-v01/current-r04-successor-review-v01/native-visual-acceptance-v01.json",
+  "qa_setup": "Original Minnesota partners18/16, three initial badges, four Super Potions and two Revives. All recovery thereafter uses native Pack inputs. This is not earned campaign progression.",
+  "source_checks": "planning/minnesota/revisions/route-grass-v01/current-r04-successor-review-v01/recovery-source-checks-v01.json"
+}

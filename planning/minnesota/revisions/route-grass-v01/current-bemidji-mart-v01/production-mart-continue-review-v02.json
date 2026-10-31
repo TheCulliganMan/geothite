@@ -1,0 +1,55 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-bemidji-mart-v02.crystalpack",
+  "pack_sha256": "b4a95a5634198e39fd8b9d6528af90b66f1e626fc9582e366b4ba4b6a9588171",
+  "source_save": ".local/route-grass-review/bemidji-mart-native-facades-saves-v02/brainerd-76420-1793374594822247000.crystalsave",
+  "source_sha256": "eb5c93d4251758d889b3127cd3898bfc4e53ab3c9d46e9ba2bc7740b91f0c8c2",
+  "input_save": ".local/route-grass-review/bemidji-mart-stdio-input-v02.crystalsave",
+  "source_and_input_unchanged": true,
+  "save": ".local/route-grass-review/bemidji-mart-stdio-output-v02.crystalsave",
+  "initial": {
+    "badges": 0,
+    "dialogue": false,
+    "facing": "down",
+    "frame": 653,
+    "map": "MnBemidji",
+    "menu": null,
+    "mode": "overworld",
+    "money": 3000,
+    "player": "CHRIS",
+    "pokedex": {
+      "owned": 0,
+      "seen": 0
+    },
+    "position": {
+      "x": 41,
+      "y": 20
+    }
+  },
+  "final": {
+    "badges": 0,
+    "dialogue": false,
+    "facing": "left",
+    "frame": 679,
+    "map": "MnBemidji",
+    "menu": null,
+    "mode": "overworld",
+    "money": 3000,
+    "player": "CHRIS",
+    "pokedex": {
+      "owned": 0,
+      "seen": 0
+    },
+    "position": {
+      "x": 41,
+      "y": 20
+    }
+  },
+  "old_door_denied": true,
+  "new_door_both_carpet_roundtrips": true,
+  "reached_save_continue": true,
+  "items_balls_and_walking": true,
+  "calls": 46,
+  "stderr_bytes": 0,
+  "scope": "Actual saved Mart checkpoint from successful child facade native case, no retagging. Initial party and badge qualifications are explicit QA fixtures."
+}

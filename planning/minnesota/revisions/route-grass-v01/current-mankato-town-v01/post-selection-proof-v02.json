@@ -1,0 +1,60 @@
+{
+  "status": "PASS",
+  "selected_revision": "route_grass_mankato_town_revision",
+  "pack": "content-packs/minnesota-current-mankato-native-exterior-v03.crystalpack",
+  "sha256": "4f22dd532f5dc1ca28f63383bb9a66030d4f93ced96ed4daa265b3f36680e02f",
+  "world_only_own_revision_and_selector_changed": true,
+  "canonical_six_cell_delta": [
+    {
+      "at": [
+        3,
+        9
+      ],
+      "before": 87,
+      "after": 5
+    },
+    {
+      "at": [
+        4,
+        9
+      ],
+      "before": 87,
+      "after": 5
+    },
+    {
+      "at": [
+        10,
+        9
+      ],
+      "before": 87,
+      "after": 5
+    },
+    {
+      "at": [
+        11,
+        9
+      ],
+      "before": 75,
+      "after": 5
+    },
+    {
+      "at": [
+        18,
+        13
+      ],
+      "before": 22,
+      "after": 26
+    },
+    {
+      "at": [
+        19,
+        13
+      ],
+      "before": 51,
+      "after": 23
+    }
+  ],
+  "complete_installed_source_composition_exact": true,
+  "dossier_unchanged": true,
+  "source_index_hash_exact": true
+}

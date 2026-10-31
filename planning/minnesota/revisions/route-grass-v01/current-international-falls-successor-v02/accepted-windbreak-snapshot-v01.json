@@ -1,0 +1,65 @@
+{
+  "status": "PASS",
+  "scope": "Whole International Falls winter town and original local border quest; broader map goal remains active.",
+  "pack": "content-packs/minnesota-international-falls-windbreak-v01.crystalpack",
+  "pack_sha256": "7066f05448101c79b4dc761963b0f39a570bad07c4f80e3e777901ac2e207507",
+  "content_identity": "d5e7ae36505bec12e5136ef21a927b056b6bb584fda71d30c434fca2f8429c7d",
+  "parent_revision": "r10_survey_spurs_revision",
+  "parent_pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+  "parent_pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33",
+  "authoring_source_index": "planning/minnesota/revisions/international-falls-windbreak-v01/sources.json",
+  "authoring_source_index_sha256": "7353ef8d8d2ec7b16749d022789f7463c057553ed980a7e2f9185d20eb477ca2",
+  "native_controller_cases": 6,
+  "production_stdio_calls": 344,
+  "native_day_views": 12,
+  "compared_pixels_per_view": 368640,
+  "native_pixel_differences": 0,
+  "actual_reached_night_views": 2,
+  "unchanged_maps": 732,
+  "reachable_ordinary_tiles": 190,
+  "audio_programs_verified": 377,
+  "all_renders_retained": true,
+  "interiors_sha256": "9619f4b9a0d0cbb56a11f1f4be5efd476ff41e3b236693190d7a62b62be9d9c3",
+  "proofs": {
+    "preservation": {
+      "path": "planning/minnesota/renders/international-falls-windbreak-v701/preservation-v744.json",
+      "sha256": "1f7478564fe36a436b946351f074bacf3dd031bb3d32039f02cc3f5b2ef5c041"
+    },
+    "controller": {
+      "path": "planning/minnesota/renders/international-falls-windbreak-v701/controller-v743.json",
+      "sha256": "859711d18976c81df49bd57f79e58c2e031aabc2838bb424b9c395f80802d9d8"
+    },
+    "border_quest": {
+      "path": "planning/minnesota/renders/international-falls-windbreak-v701/border-controller-v742.log",
+      "sha256": "3a75c7a5357f4c63c102322d8c9a20633bd5a1ec8ba8668f3d8f59c40baa4560"
+    },
+    "stdio": {
+      "path": "planning/minnesota/renders/international-falls-windbreak-v701/mcp-v719/receipt.json",
+      "sha256": "b781736c4c7b87e63cd2ce0e96b6c59001f988ca85d4c3b345fcd7d66132ddbf"
+    },
+    "native_views": {
+      "path": "planning/minnesota/renders/international-falls-windbreak-v701/native-v711/capture-progress.json",
+      "sha256": "14a962e0b4d96aa2d0b6e6e2cb4398968aae4a0b138974016b2bfbea24315dc3"
+    },
+    "audio": {
+      "path": "planning/minnesota/renders/international-falls-windbreak-v701/audio-v705.log",
+      "sha256": "1a4264f46d5f0adb1b3ef88461346713679a998c98d33b0490c95c3d7709f1a3"
+    },
+    "negative_publication": {
+      "path": "planning/minnesota/renders/international-falls-windbreak-v701/negative-v706/receipt.json",
+      "sha256": "d09d79cc44568e858f1a6ede986c79cc312917207e77a37b202ae41b86b0da14"
+    },
+    "clippy": {
+      "path": "planning/minnesota/renders/international-falls-windbreak-v701/clippy-v743.json",
+      "sha256": "81868a6e94ffc0178bf833deb1c9013d9fab4ee95ddb876a5e8ec4f1d26376d2"
+    },
+    "source_format": {
+      "path": "planning/minnesota/renders/international-falls-windbreak-v701/owned-fmt-v744.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "fixture_scope": "New town controller cases: declared seven badges, four original regional level60 partners/supplies, injured lead. Border case: declared eight badges, signal, Headwaters evidence, completed upstream mine handover and Smoke Ball. Border report, far-camp arrival and reward are earned through input. These runs make no state edits after their initial setup. Original service/guard cases retain declared subcase fixtures. Stdio consumes earlier actually reached same-pack town checkpoints. Not earned main-campaign evidence.",
+  "workspace_format": "Pre-existing differences begin at crates/offset-allocator/src/lib.rs:408; owned leaves pass.",
+  "visual_review": "Inspected complete before/after, all twelve native day views and both actual reached night saves. Replaced greenish added gravel with existing town brick; all original facades, boards and actors retained.",
+  "goal_complete": false
+}

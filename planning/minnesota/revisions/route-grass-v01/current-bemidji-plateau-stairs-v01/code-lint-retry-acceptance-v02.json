@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "affected_crate_all_target_clippy_progress": "planning/minnesota/revisions/route-grass-v01/current-duluth-mart-v01/mart-publisher-build-progress-v02.json",
+  "log": ".local/route-grass-review/duluth-mart-assets-all-target-clippy-v02.log",
+  "unchanged_stair_source_sha256": {
+    "crates/crystal-assets/src/bemidji_plateau_stairs.rs": "5a206d8ce9c7a8cab4e318ae032bb4cfa3043c9f00853536b40ff1d343b83bf0",
+    "crates/crystal-assets/src/bin/revise_bemidji_plateau_stairs.rs": "4e6a32b694e072f9075d2d56f8cdd4f24cce0cd34ad02ddbcb318b33d69e42d0"
+  },
+  "scope": "Fresh same-crate all-target Clippy includes both unchanged exported stair module and CLI, plus Duluth repair. Earlier transient shared-source failure remains retained."
+}

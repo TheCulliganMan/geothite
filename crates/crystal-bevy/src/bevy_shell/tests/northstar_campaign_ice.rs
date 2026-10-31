@@ -7,6 +7,7 @@ use crystal_runtime::CrystalRuntime;
 
 use super::super::authored_route_fixture::indoor_walk;
 use super::super::minneapolis::release_and_read;
+use super::super::native_city_ports::city_port;
 use super::super::rochester::flee;
 use super::super::rochester_earned::{checkout, try_battle};
 use super::super::winona::{at as location, continue_in_place, finish, load, press, travel};
@@ -38,6 +39,7 @@ fn arrival() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
     {
         "MnMinneapolis" => location(&mut c, "MnMinneapolis", (40, 62)),
         "MnMinneapolisPokecenter1F" => location(&mut c, "MnMinneapolisPokecenter1F", (10, 13)),
+        road if road.starts_with("MnR03") => return_to_city(&mut c, &r),
         _ => panic!("expected an earned Minneapolis arrival or native blackout recovery"),
     }
     assert_eq!(
@@ -57,10 +59,11 @@ fn arrival() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
     (root, r, c)
 }
 
-pub(super) fn care(c: &mut VisibleShellController, r: &CrystalRuntime) {
+pub(in crate::bevy_shell::tests) fn care(c: &mut VisibleShellController, r: &CrystalRuntime) {
+    let (door, arrival) = city_port(r, "MnMinneapolis", "MnMinneapolisPokecenter1F");
     if c.snapshot().expect("city care").overworld.map_name == "MnMinneapolis" {
-        indoor_walk(c, r, (63, 26));
-        travel(c, GameButton::Up, "MnMinneapolisPokecenter1F", (10, 13));
+        indoor_walk(c, r, door);
+        travel(c, GameButton::Up, "MnMinneapolisPokecenter1F", arrival);
     }
     indoor_walk(c, r, (7, 5));
     press(c, GameButton::Up);
@@ -91,7 +94,7 @@ pub(super) fn care(c: &mut VisibleShellController, r: &CrystalRuntime) {
         Some("MN_MINNEAPOLIS_POKECENTER_1F")
     );
     indoor_walk(c, r, (10, 14));
-    travel(c, GameButton::Down, "MnMinneapolis", (63, 26));
+    travel(c, GameButton::Down, "MnMinneapolis", door);
 }
 
 pub(super) fn supplies(c: &mut VisibleShellController, r: &CrystalRuntime) {
@@ -102,14 +105,15 @@ pub(super) fn supplies(c: &mut VisibleShellController, r: &CrystalRuntime) {
     if quantity == 0 {
         return;
     }
-    indoor_walk(c, r, (73, 26));
-    travel(c, GameButton::Up, "MnMinneapolisMart", (6, 5));
+    let (door, arrival) = city_port(r, "MnMinneapolis", "MnMinneapolisMart");
+    indoor_walk(c, r, door);
+    travel(c, GameButton::Up, "MnMinneapolisMart", arrival);
     indoor_walk(c, r, (3, 3));
     press(c, GameButton::Left);
     press(c, GameButton::A);
     checkout(c, r, "SUPER_POTION", quantity);
     indoor_walk(c, r, (6, 6));
-    travel(c, GameButton::Down, "MnMinneapolis", (73, 26));
+    travel(c, GameButton::Down, "MnMinneapolis", door);
 }
 
 fn return_to_city(c: &mut VisibleShellController, r: &CrystalRuntime) {
@@ -294,19 +298,20 @@ pub(super) fn ice() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
             .iter()
             .any(|m| m.name == "HEADBUTT")
     );
-    indoor_walk(&mut c, &r, (23, 42));
+    let (home_door, home_arrival) = city_port(&r, "MnMinneapolis", "MnMinneapolisDispatcherHouse");
+    indoor_walk(&mut c, &r, home_door);
     travel(
         &mut c,
         GameButton::Up,
         "MnMinneapolisDispatcherHouse",
-        (5, 6),
+        home_arrival,
     );
     indoor_walk(&mut c, &r, (6, 4));
     press(&mut c, GameButton::Up);
     press(&mut c, GameButton::A);
     finish(&mut c);
     indoor_walk(&mut c, &r, (5, 6));
-    travel(&mut c, GameButton::Down, "MnMinneapolis", (23, 42));
+    travel(&mut c, GameButton::Down, "MnMinneapolis", home_door);
     road_trainers(&mut c, &r, &root);
     train(&mut c, &r, &root, 18);
     if r.data().maps.contains_key("MnBoundaryIntake") {
@@ -315,12 +320,13 @@ pub(super) fn ice() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
         train(&mut c, &r, &root, 23);
         care(&mut c, &r);
         supplies(&mut c, &r);
-        indoor_walk(&mut c, &r, (25, 34));
+        let (door, arrival) = city_port(&r, "MnMinneapolis", "MnMinneapolisDispatchOffice");
+        indoor_walk(&mut c, &r, door);
         travel(
             &mut c,
             GameButton::Up,
             "MnMinneapolisDispatchOffice",
-            (10, 14),
+            arrival,
         );
         c = super::super::northstar_ice_headquarters::play_chapter(c, &root, &r, true, true);
         c = super::northstar_arc_campaign::ellis_home(c, &root, &r);
@@ -329,12 +335,13 @@ pub(super) fn ice() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
     for attempt in 0..4 {
         care(&mut c, &r);
         supplies(&mut c, &r);
-        indoor_walk(&mut c, &r, (25, 34));
+        let (door, arrival) = city_port(&r, "MnMinneapolis", "MnMinneapolisDispatchOffice");
+        indoor_walk(&mut c, &r, door);
         travel(
             &mut c,
             GameButton::Up,
             "MnMinneapolisDispatchOffice",
-            (10, 14),
+            arrival,
         );
         indoor_walk(&mut c, &r, (9, 9));
         let money = c.shell.shell.session().state().money;

@@ -14417,6 +14417,24 @@
         7
       ],
       "block": "57"
+    },
+    {
+      "name": "Complete native Mart front",
+      "kind": "point",
+      "position": [
+        39,
+        19
+      ],
+      "block": "1a"
+    },
+    {
+      "name": "Complete native Mart front",
+      "kind": "point",
+      "position": [
+        40,
+        19
+      ],
+      "block": "33"
     }
   ]
 }

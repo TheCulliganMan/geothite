@@ -13,14 +13,24 @@ use super::super::{
     mark_runtime_snapshot_dirty,
 };
 
-fn finish_text(controller: &mut VisibleShellController) {
+fn finish_text(controller: &mut VisibleShellController) -> String {
+    let mut pages = String::new();
     for _ in 0..32 {
         let snapshot = controller.snapshot().expect("reward dialogue");
+        if let Some(text) = snapshot
+            .ui
+            .text
+            .as_ref()
+            .and_then(|text| text.asm_text.as_deref())
+        {
+            pages.push_str(text);
+            pages.push('\n');
+        }
         if snapshot.phase == RuntimeShellPhase::Overworld
             && snapshot.ui.pending_text_wait.is_none()
             && !controller.has_pending_script_work()
         {
-            return;
+            return pages;
         }
         controller.press(GameButton::A).expect("advance text");
     }
@@ -39,7 +49,7 @@ fn grand_marais_keeper_retries_a_full_bag_without_losing_the_part_or_reward() {
     )
     .expect("town runtime");
     let shell = initialize_bevy_runtime_shell(
-        root,
+        root.clone(),
         runtime.clone(),
         BevyShellStart::NewGameAtRuntimeTile {
             spawn_identifier: runtime.title_new_game_spawn_identifier().expect("HOME"),
@@ -75,18 +85,14 @@ fn grand_marais_keeper_retries_a_full_bag_without_losing_the_part_or_reward() {
     assert_eq!(bag.items.len(), ITEM_POCKET_CAPACITY);
     let full_bag = bag.clone();
     mark_runtime_snapshot_dirty(&mut controller.shell);
+    // No state, inventory, party, flags, position or RNG writes after setup.
     controller.press(GameButton::Up).expect("face keeper");
     controller.press(GameButton::A).expect("offer signal part");
-    let refused = controller.snapshot().expect("full bag refusal");
+    let refusal = finish_text(&mut controller);
     assert!(
-        refused
-            .ui
-            .text
-            .as_ref()
-            .and_then(|text| text.asm_text.as_deref())
-            .is_some_and(|text| text.contains("PACK is full"))
+        refusal.replace('\n', " ").contains("PACK is full"),
+        "actual refusal pages: {refusal}"
     );
-    finish_text(&mut controller);
     let state = controller.shell.shell.session().state();
     assert_eq!(state.bag, full_bag, "refusal consumed the part or an item");
     assert!(
@@ -98,12 +104,15 @@ fn grand_marais_keeper_retries_a_full_bag_without_losing_the_part_or_reward() {
             .contains("EVENT_MN_GRAND_MARAIS_SIGNAL")
     );
 
-    // Change only the capacity fixture. The following A presses still execute
-    // the complete authored keeper script through the production controller.
-    let bag = &mut controller.shell.shell.session_mut().state_mut().bag;
-    let first_item = bag.items.keys().next().expect("full bag item").clone();
-    bag.items.remove(&first_item);
-    mark_runtime_snapshot_dirty(&mut controller.shell);
+    controller = super::r10_gallery::continue_save(root.clone(), runtime.clone(), &mut controller);
+    assert_eq!(controller.shell.shell.session().state().bag, full_bag);
+    super::northstar_progression_rewards::native_toss_first_pocket_item(
+        &mut controller,
+        &super::super::FieldPackPocket::Items,
+    );
+    for _ in 0..8 {
+        super::winona::press(&mut controller, GameButton::B);
+    }
     assert_eq!(
         controller
             .snapshot()
@@ -115,7 +124,7 @@ fn grand_marais_keeper_retries_a_full_bag_without_losing_the_part_or_reward() {
     );
     controller.press(GameButton::Up).expect("face keeper again");
     controller.press(GameButton::A).expect("retry delivery");
-    finish_text(&mut controller);
+    let _ = finish_text(&mut controller);
     let delivered = controller.snapshot().expect("delivery accepted");
     assert!(
         delivered
@@ -128,6 +137,15 @@ fn grand_marais_keeper_retries_a_full_bag_without_losing_the_part_or_reward() {
     let bag = &controller.shell.shell.session().state().bag;
     assert!(bag.key_items.get("MACHINE_PART").is_none());
     assert_eq!(bag.items.get("SUPER_POTION"), Some(&1));
+    controller = super::r10_gallery::continue_save(root.clone(), runtime.clone(), &mut controller);
+    assert!(
+        controller
+            .snapshot()
+            .expect("continued signal repair")
+            .progression
+            .active_event_flags
+            .contains("EVENT_MN_GRAND_MARAIS_SIGNAL")
+    );
     controller
         .press(GameButton::Up)
         .expect("face keeper once more");
@@ -143,7 +161,7 @@ fn grand_marais_keeper_retries_a_full_bag_without_losing_the_part_or_reward() {
             .as_ref()
             .is_some_and(|text| text.label == "MnGrandMaraisSignalDoneText")
     );
-    finish_text(&mut controller);
+    let _ = finish_text(&mut controller);
     assert_eq!(
         controller
             .shell

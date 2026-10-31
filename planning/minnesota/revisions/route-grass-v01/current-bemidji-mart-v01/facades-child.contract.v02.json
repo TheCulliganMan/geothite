@@ -1,0 +1,158 @@
+{
+  "pack": "content-packs/minnesota-current-bemidji-mart-v02.crystalpack",
+  "pack_sha256": "b4a95a5634198e39fd8b9d6528af90b66f1e626fc9582e366b4ba4b6a9588171",
+  "map": "MnBemidji",
+  "source_dossier": "planning/minnesota/revisions/route-grass-v01/current-bemidji-mart-v01/dossier.after.v03.json",
+  "start": [
+    20,
+    24
+  ],
+  "badge_count": 6,
+  "event_flags": [],
+  "arrival_discovery_flags": [
+    "ENGINE_FLYPOINT_MN_BEMIDJI"
+  ],
+  "roads": [],
+  "gates": [],
+  "ledges": [],
+  "doors": [
+    {
+      "outside": [
+        10,
+        10
+      ],
+      "room": "MnBemidjiGym",
+      "arrival": [
+        4,
+        17
+      ],
+      "carpets": [
+        [
+          4,
+          19
+        ],
+        [
+          5,
+          19
+        ]
+      ]
+    },
+    {
+      "outside": [
+        7,
+        16
+      ],
+      "room": "MnBemidjiShelfHouse",
+      "arrival": [
+        6,
+        5
+      ],
+      "carpets": [
+        [
+          6,
+          7
+        ],
+        [
+          7,
+          7
+        ]
+      ]
+    },
+    {
+      "outside": [
+        31,
+        10
+      ],
+      "room": "MnBemidjiPokecenter1F",
+      "arrival": [
+        10,
+        13
+      ],
+      "carpets": [
+        [
+          10,
+          15
+        ],
+        [
+          11,
+          15
+        ]
+      ]
+    },
+    {
+      "outside": [
+        33,
+        18
+      ],
+      "room": "MnBemidjiNorthHouse",
+      "arrival": [
+        6,
+        5
+      ],
+      "carpets": [
+        [
+          6,
+          7
+        ],
+        [
+          7,
+          7
+        ]
+      ]
+    },
+    {
+      "outside": [
+        41,
+        20
+      ],
+      "room": "MnBemidjiMart",
+      "arrival": [
+        6,
+        5
+      ],
+      "carpets": [
+        [
+          6,
+          7
+        ],
+        [
+          7,
+          7
+        ]
+      ]
+    },
+    {
+      "outside": [
+        9,
+        38
+      ],
+      "room": "MnBemidjiHeritageHouse",
+      "arrival": [
+        8,
+        9
+      ],
+      "carpets": [
+        [
+          8,
+          11
+        ],
+        [
+          9,
+          11
+        ]
+      ]
+    }
+  ],
+  "fences": [],
+  "surf": null,
+  "counts": {
+    "roads": 0,
+    "gates": 0,
+    "ledges": 0,
+    "doors": 6,
+    "fences": 0,
+    "residents": 5,
+    "signs": 6
+  },
+  "scope": "All-facades-only contract. Existing public8road, guard2lane and Surf cases run separately against child. No empty road/ledge cases counted. Initial Mew/badges are local fixtures."
+}

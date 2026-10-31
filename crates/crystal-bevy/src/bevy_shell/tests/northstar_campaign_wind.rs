@@ -6,6 +6,7 @@ use crystal_core::input::GameButton;
 use crystal_runtime::CrystalRuntime;
 
 use super::super::authored_route_fixture::indoor_walk;
+use super::super::native_city_ports::city_port;
 use super::super::northstar_earned_gyms;
 use super::super::rochester::flee;
 use super::super::rochester_earned::try_battle;
@@ -38,8 +39,6 @@ fn arrival() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
             let tile = snapshot.overworld.tile;
             if (tile.x, tile.y) == (8, 28) {
                 assert!(event(&c, "EVENT_MN_GYM_5_TRAINER_1_DEFEATED"));
-            } else {
-                location(&mut c, CITY, (24, 34));
             }
         }
         CLINIC => location(&mut c, CLINIC, (10, 13)),
@@ -77,9 +76,10 @@ fn later_story(c: &VisibleShellController) {
 }
 
 pub(super) fn care(c: &mut VisibleShellController, r: &CrystalRuntime) {
+    let (door, arrival) = city_port(r, CITY, CLINIC);
     if c.snapshot().expect("care approach").overworld.map_name == CITY {
-        indoor_walk(c, r, (6, 10));
-        travel(c, GameButton::Up, CLINIC, (10, 13));
+        indoor_walk(c, r, door);
+        travel(c, GameButton::Up, CLINIC, arrival);
     }
     location(c, CLINIC, (10, 13));
     indoor_walk(c, r, (7, 5));
@@ -113,7 +113,7 @@ pub(super) fn care(c: &mut VisibleShellController, r: &CrystalRuntime) {
         Some("MN_ST_CLOUD_POKECENTER_1F")
     );
     indoor_walk(c, r, (10, 14));
-    travel(c, GameButton::Down, CITY, (6, 10));
+    travel(c, GameButton::Down, CITY, door);
 }
 
 fn supplies(c: &mut VisibleShellController, r: &CrystalRuntime) {
@@ -350,21 +350,37 @@ pub(super) fn wind() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
     // The unearned fifth badge still blocks the next road after four badges.
     indoor_walk(&mut c, &r, (24, 4));
     for _ in 0..8 {
-        if c.snapshot().expect("Wind gate").ui.text.is_some() {
+        if c.snapshot().expect("Wind gate").ui.text_window_open {
             break;
         }
         press(&mut c, GameButton::Up);
     }
-    assert!(
-        c.snapshot()
-            .expect("specific missing leader")
-            .ui
-            .text
-            .and_then(|t| t.asm_text)
-            .is_some_and(|t| t.contains("SAVEN"))
-    );
-    press(&mut c, GameButton::Up);
-    location(&mut c, CITY, (24, 3));
+    if !c.snapshot().expect("Wind checkpoint").ui.text_window_open {
+        press(&mut c, GameButton::A);
+    }
+    if r.data()
+        .story_event_script_constants
+        .global
+        .contains_key("EVENT_MN_TAMARACK_INTRO")
+    {
+        super::super::northstar_dialogue::acknowledge(
+            &mut c,
+            "MS05",
+            "MnSCWindCheckBadgesText",
+            "EVENT_MN_GYM_5_DEFEATED",
+        );
+    } else {
+        assert!(
+            c.snapshot()
+                .expect("specific missing leader")
+                .ui
+                .text
+                .and_then(|t| t.asm_text)
+                .is_some_and(|t| t.contains("SAVEN"))
+        );
+        press(&mut c, GameButton::Up);
+        location(&mut c, CITY, (24, 3));
+    }
     finish(&mut c);
     location(&mut c, CITY, (24, 4));
     later_story(&c);
@@ -427,8 +443,20 @@ pub(super) fn wind() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
         1
     );
     care(&mut c, &r);
+    super::northstar_earned_services::st_cloud(&mut c, &r, &root);
     indoor_walk(&mut c, &r, (24, 4));
     travel(&mut c, GameButton::Up, "MnR06C00R01", (16, 39));
+    assert!(try_road_with(&mut c, &r, 6, (37, 40), |c| {
+        super::super::earned_rod_visits::encounter(c, &r)
+    }));
+    super::super::earned_rod_visits::claim(
+        &mut c,
+        &r,
+        &root,
+        "MnPineCountryFishingGuruHouse",
+        "MnR06C00R00",
+        "SUPER_ROD",
+    );
     assert!(try_road_with(&mut c, &r, 6, (42, 0), flee));
     travel(&mut c, GameButton::Up, "MnBrainerd", (32, 47));
     travel(&mut c, GameButton::Up, "MnBrainerd", (32, 46));

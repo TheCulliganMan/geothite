@@ -1,0 +1,263 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-r05-cache-grass-bank-v01.crystalpack",
+  "pack_sha256": "163897117d4a1a4a9c86c64bea0e7eb62c095edb6a9f5f9f3660a6c5bcf4fc52",
+  "calls": 2305,
+  "cases": [
+    {
+      "phase": "new-grass-cache-and-two-drops",
+      "source_save": ".local/route-grass-review/r05-cache-new-grass-cache-and-two-drops-v02-output.crystalsave",
+      "input_source_unchanged": true,
+      "output_save": ".local/route-grass-review/r05-cache-new-grass-cache-and-two-drops-v03-output.crystalsave",
+      "initial": {
+        "badges": 4,
+        "dialogue": false,
+        "facing": "left",
+        "frame": 435,
+        "map": "MnR05C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 2
+        },
+        "position": {
+          "x": 38,
+          "y": 19
+        }
+      },
+      "final": {
+        "badges": 4,
+        "dialogue": false,
+        "facing": "down",
+        "frame": 585,
+        "map": "MnR05C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 3
+        },
+        "position": {
+          "x": 37,
+          "y": 22
+        }
+      },
+      "stderr_bytes": 0
+    },
+    {
+      "phase": "continued-whole-route",
+      "source_save": ".local/route-grass-review/r05-cache-new-grass-cache-and-two-drops-v03-output.crystalsave",
+      "input_source_unchanged": true,
+      "output_save": ".local/route-grass-review/r05-cache-continued-whole-route-v03-output.crystalsave",
+      "initial": {
+        "badges": 4,
+        "dialogue": false,
+        "facing": "down",
+        "frame": 585,
+        "map": "MnR05C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 3
+        },
+        "position": {
+          "x": 37,
+          "y": 22
+        }
+      },
+      "final": {
+        "badges": 4,
+        "dialogue": false,
+        "facing": "up",
+        "frame": 1272,
+        "map": "MnR05C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 4
+        },
+        "position": {
+          "x": 37,
+          "y": 22
+        }
+      },
+      "stderr_bytes": 0
+    }
+  ],
+  "new_grass_wild_battles": [
+    {
+      "phase": "new-grass-cache-and-two-drops",
+      "segment": "start",
+      "map": "MnR05C00R00",
+      "position": {
+        "x": 36,
+        "y": 19
+      },
+      "intended_target": null,
+      "added_grass": true
+    },
+    {
+      "phase": "new-grass-cache-and-two-drops",
+      "segment": "native-new-grass",
+      "map": "MnR05C00R00",
+      "position": {
+        "x": 37,
+        "y": 21
+      },
+      "intended_target": [
+        37,
+        21
+      ],
+      "added_grass": true
+    },
+    {
+      "phase": "new-grass-cache-and-two-drops",
+      "segment": "grass-paid-side-entry",
+      "map": "MnR05C00R00",
+      "position": {
+        "x": 37,
+        "y": 20
+      },
+      "intended_target": [
+        37,
+        20
+      ],
+      "added_grass": true
+    },
+    {
+      "phase": "continued-whole-route",
+      "segment": "whole-route-and-true-stairs",
+      "map": "MnR05C00R00",
+      "position": {
+        "x": 18,
+        "y": 38
+      },
+      "intended_target": [
+        37,
+        19
+      ],
+      "added_grass": false
+    },
+    {
+      "phase": "continued-whole-route",
+      "segment": "whole-route-and-true-stairs",
+      "map": "MnR05C00R00",
+      "position": {
+        "x": 15,
+        "y": 44
+      },
+      "intended_target": [
+        37,
+        19
+      ],
+      "added_grass": false
+    },
+    {
+      "phase": "continued-whole-route",
+      "segment": "whole-route-and-true-stairs",
+      "map": "MnR05C00R01",
+      "position": {
+        "x": 13,
+        "y": 35
+      },
+      "intended_target": [
+        37,
+        19
+      ],
+      "added_grass": false
+    },
+    {
+      "phase": "continued-whole-route",
+      "segment": "whole-route-and-true-stairs",
+      "map": "MnR05C00R00",
+      "position": {
+        "x": 15,
+        "y": 45
+      },
+      "intended_target": [
+        37,
+        19
+      ],
+      "added_grass": false
+    },
+    {
+      "phase": "continued-whole-route",
+      "segment": "whole-route-and-true-stairs",
+      "map": "MnR05C00R00",
+      "position": {
+        "x": 15,
+        "y": 36
+      },
+      "intended_target": [
+        37,
+        19
+      ],
+      "added_grass": false
+    },
+    {
+      "phase": "continued-whole-route",
+      "segment": "corrected-terrace-sign",
+      "map": "MnR05C00R00",
+      "position": {
+        "x": 15,
+        "y": 31
+      },
+      "intended_target": [
+        37,
+        19
+      ],
+      "added_grass": false
+    }
+  ],
+  "two_hop_lanes": [
+    {
+      "lane": 38,
+      "dry_landing": true,
+      "reverse_denied": true,
+      "return_entered_new_grass": [
+        [
+          37,
+          21
+        ],
+        [
+          37,
+          20
+        ]
+      ],
+      "lateral_native_hop_walk_observed": true
+    },
+    {
+      "lane": 39,
+      "dry_landing": true,
+      "reverse_denied": true,
+      "return_entered_new_grass": [
+        [
+          37,
+          21
+        ],
+        [
+          37,
+          20
+        ]
+      ],
+      "lateral_native_hop_walk_observed": true
+    }
+  ],
+  "original_great_ball_once_and_continue": true,
+  "dry_lateral_bypass_blocked_from_both_sides": true,
+  "whole_three_chunk_route_both_directions": true,
+  "corrected_terrace_sign_acknowledged": true,
+  "pickup_witness": "Actual native pickup and x01 inventory are retained in the first harness transcripts; this run continues its actual saved state after the formatting assertion.",
+  "scope": "Initial partner, four badges and placement are explicit native QA setup. All later grass entries, wild RUN, pickup, hops, wall denials, full-route travel and Continue are production inputs only, without retagging or state/RNG edits."
+}

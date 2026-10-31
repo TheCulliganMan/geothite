@@ -177,12 +177,16 @@ def main():
     old=json.loads((out/'capture-progress.json').read_text()) if args.resume else None
     binary=args.binary.resolve(); private=ROOT/'.local'/f'connected-route-capture-{os.getpid()}'
     shutil.copy2(binary,private)
+    party_species = os.environ.get(
+        'CRYSTAL_RENDER_TEST_PARTY_SPECIES',
+        'CINDORE' if 'CINDORE' in pack['data']['pokemon'] else 'TOTODILE')
     report=dict(pack=str(pack_path),pack_sha256=digest(pack_path),binary_sha256=digest(private),views_sha256=digest(args.views),
-                scope=__doc__,fixture='Explicit empty-party local placement, south-facing, hour12; no earned access claim.',captures=[])
+                scope=__doc__,fixture=f'Explicit local placement with {party_species}, south-facing, hour12; no earned access claim.',captures=[])
     if old:
         assert all(old[k]==report[k] for k in ['pack_sha256','binary_sha256','views_sha256'])
     env=dict(os.environ,CRYSTAL_RENDER_TEST_HEADLESS='1',CRYSTAL_RENDER_TEST_CAPTURE_TARGET='image',
-             CRYSTAL_RENDER_TEST_WINDOW_SIZE='640x576',CRYSTAL_PREVIEW_MUTE='1')
+             CRYSTAL_RENDER_TEST_WINDOW_SIZE='640x576',CRYSTAL_PREVIEW_MUTE='1',
+             CRYSTAL_RENDER_TEST_PARTY_SPECIES=party_species,CRYSTAL_RENDER_TEST_PARTY_SIZE='1')
     env.pop('CRYSTAL_RENDER_TEST_SECOND_VIEW',None); sheet=[]
     try:
         for view in json.loads(args.views.read_text()):

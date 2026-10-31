@@ -1,0 +1,50 @@
+[
+  {
+    "id": "north-arrival",
+    "map": "MnEly",
+    "core": [
+      24,
+      2
+    ]
+  },
+  {
+    "id": "supply-nook",
+    "map": "MnEly",
+    "core": [
+      34,
+      5
+    ]
+  },
+  {
+    "id": "lodge-clearing",
+    "map": "MnEly",
+    "core": [
+      27,
+      16
+    ]
+  },
+  {
+    "id": "pine-loop",
+    "map": "MnEly",
+    "core": [
+      33,
+      10
+    ]
+  },
+  {
+    "id": "clinic-garden",
+    "map": "MnEly",
+    "core": [
+      13,
+      23
+    ]
+  },
+  {
+    "id": "mart-windbreak",
+    "map": "MnEly",
+    "core": [
+      29,
+      29
+    ]
+  }
+]

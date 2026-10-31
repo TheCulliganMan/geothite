@@ -1,0 +1,315 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-r15-open-shore-and-spur-v01.crystalpack",
+  "pack_sha256": "1c16d7043f84b8cf7a51fe45a22ddc8d38450dfc97861ca8a9d5d7a2a6127981",
+  "calls": 3830,
+  "wild": [
+    {
+      "phase": "play-and-save",
+      "map": "MnR15C00R00",
+      "position": {
+        "x": 16,
+        "y": 15
+      }
+    },
+    {
+      "phase": "play-and-save",
+      "map": "MnR15C00R00",
+      "position": {
+        "x": 18,
+        "y": 15
+      }
+    },
+    {
+      "phase": "play-and-save",
+      "map": "MnR15C00R00",
+      "position": {
+        "x": 17,
+        "y": 15
+      }
+    },
+    {
+      "phase": "play-and-save",
+      "map": "MnR15C00R00",
+      "position": {
+        "x": 21,
+        "y": 15
+      }
+    },
+    {
+      "phase": "play-and-save",
+      "map": "MnR15C00R00",
+      "position": {
+        "x": 19,
+        "y": 15
+      }
+    },
+    {
+      "phase": "play-and-save",
+      "map": "MnR15C00R00",
+      "position": {
+        "x": 19,
+        "y": 15
+      }
+    },
+    {
+      "phase": "play-and-save",
+      "map": "MnR15C00R00",
+      "position": {
+        "x": 15,
+        "y": 16
+      }
+    },
+    {
+      "phase": "play-and-save",
+      "map": "MnR15C00R00",
+      "position": {
+        "x": 28,
+        "y": 27
+      }
+    },
+    {
+      "phase": "play-and-save",
+      "map": "MnR15C00R00",
+      "position": {
+        "x": 29,
+        "y": 29
+      }
+    },
+    {
+      "phase": "continue-and-repeat",
+      "map": "MnR15C00R00",
+      "position": {
+        "x": 16,
+        "y": 15
+      }
+    },
+    {
+      "phase": "continue-and-repeat",
+      "map": "MnR15C00R00",
+      "position": {
+        "x": 18,
+        "y": 15
+      }
+    },
+    {
+      "phase": "continue-and-repeat",
+      "map": "MnR15C00R00",
+      "position": {
+        "x": 15,
+        "y": 19
+      }
+    },
+    {
+      "phase": "continue-and-repeat",
+      "map": "MnR15C00R00",
+      "position": {
+        "x": 17,
+        "y": 15
+      }
+    },
+    {
+      "phase": "continue-and-repeat",
+      "map": "MnR15C00R00",
+      "position": {
+        "x": 21,
+        "y": 15
+      }
+    },
+    {
+      "phase": "continue-and-repeat",
+      "map": "MnR15C00R00",
+      "position": {
+        "x": 15,
+        "y": 18
+      }
+    },
+    {
+      "phase": "continue-and-repeat",
+      "map": "MnR15C00R00",
+      "position": {
+        "x": 19,
+        "y": 11
+      }
+    },
+    {
+      "phase": "continue-and-repeat",
+      "map": "MnR15C00R00",
+      "position": {
+        "x": 29,
+        "y": 28
+      }
+    },
+    {
+      "phase": "continue-and-repeat",
+      "map": "MnR15C00R00",
+      "position": {
+        "x": 28,
+        "y": 28
+      }
+    }
+  ],
+  "phases": [
+    {
+      "phase": "play-and-save",
+      "initial": {
+        "badges": 8,
+        "dialogue": false,
+        "facing": "up",
+        "frame": 47,
+        "map": "MnR15C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 4120,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 2
+        },
+        "position": {
+          "x": 22,
+          "y": 20
+        }
+      },
+      "final": {
+        "badges": 8,
+        "dialogue": false,
+        "facing": "left",
+        "frame": 791,
+        "map": "MnR15C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 4120,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 6
+        },
+        "position": {
+          "x": 22,
+          "y": 20
+        }
+      },
+      "output_save": ".local/route-grass-review/r15-full-play-and-save-v02-output.crystalsave",
+      "source_unchanged": true,
+      "stderr_bytes": 0
+    },
+    {
+      "phase": "continue-and-repeat",
+      "initial": {
+        "badges": 8,
+        "dialogue": false,
+        "facing": "left",
+        "frame": 791,
+        "map": "MnR15C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 4120,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 6
+        },
+        "position": {
+          "x": 22,
+          "y": 20
+        }
+      },
+      "final": {
+        "badges": 8,
+        "dialogue": false,
+        "facing": "left",
+        "frame": 1535,
+        "map": "MnR15C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 4120,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 6
+        },
+        "position": {
+          "x": 22,
+          "y": 20
+        }
+      },
+      "output_save": ".local/route-grass-review/r15-full-continue-and-repeat-v02-output.crystalsave",
+      "source_unchanged": true,
+      "stderr_bytes": 0
+    }
+  ],
+  "hops": [
+    {
+      "phase": "play-and-save",
+      "lane": 22,
+      "blocked_reverse_inputs": 4,
+      "ordinary_grass_return_played": true
+    },
+    {
+      "phase": "play-and-save",
+      "lane": 23,
+      "blocked_reverse_inputs": 4,
+      "ordinary_grass_return_played": true
+    },
+    {
+      "phase": "play-and-save",
+      "lane": 24,
+      "blocked_reverse_inputs": 4,
+      "ordinary_grass_return_played": true
+    },
+    {
+      "phase": "play-and-save",
+      "lane": 25,
+      "blocked_reverse_inputs": 4,
+      "ordinary_grass_return_played": true
+    },
+    {
+      "phase": "continue-and-repeat",
+      "lane": 22,
+      "blocked_reverse_inputs": 4,
+      "ordinary_grass_return_played": true
+    },
+    {
+      "phase": "continue-and-repeat",
+      "lane": 23,
+      "blocked_reverse_inputs": 4,
+      "ordinary_grass_return_played": true
+    },
+    {
+      "phase": "continue-and-repeat",
+      "lane": 24,
+      "blocked_reverse_inputs": 4,
+      "ordinary_grass_return_played": true
+    },
+    {
+      "phase": "continue-and-repeat",
+      "lane": 25,
+      "blocked_reverse_inputs": 4,
+      "ordinary_grass_return_played": true
+    }
+  ],
+  "reads": [
+    {
+      "phase": "play-and-save",
+      "label": "MN_R15_PIER_WATCHERText",
+      "visible": "The open shore leads to the dock. A little walk gets a lake view. Try the ROD GURU! His house is above the lakeside deck on PINE COUNTRY RD south of BRAINERD. A free SUPER ROD!"
+    },
+    {
+      "phase": "play-and-save",
+      "label": "MN_R15_SIGN_02Text",
+      "visible": "SHINER LAKE DOCK: NORTH LAKESIDE WALK"
+    },
+    {
+      "phase": "continue-and-repeat",
+      "label": "MN_R15_PIER_WATCHERText",
+      "visible": "The open shore leads to the dock. A little walk gets a lake view. Try the ROD GURU! His house is above the lakeside deck on PINE COUNTRY RD south of BRAINERD. A free SUPER ROD!"
+    },
+    {
+      "phase": "continue-and-repeat",
+      "label": "MN_R15_SIGN_02Text",
+      "visible": "SHINER LAKE DOCK: NORTH LAKESIDE WALK"
+    }
+  ],
+  "scope": "Current Route15 whole land course, four dry drops/reverse denials/grassy returns, three neighboring connection round trips, open former rail passages with real water stops, both bridge rows, cabin return, corrected NPC/sign, wild RUN, menus and Save/Continue. Explicit local native party/badges/position QA setup followed by actual native T02 victory; not earned campaign progress. Surf is outside this land course."
+}

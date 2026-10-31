@@ -1,0 +1,1290 @@
+{
+  "status": "CURRENT_NATIVE_LIP_MODEL_STATIC_REVIEW",
+  "selected_revision": "route_grass_r05_cache_bank_revision",
+  "pack": "content-packs/minnesota-current-r05-cache-grass-bank-v03.crystalpack",
+  "sha256": "618d6faa81c9b0bf09b4e3b0cdb22ec1e36eecdaf77678a58146b58de970e5cf",
+  "outdoor_maps": 103,
+  "rows": [
+    {
+      "map": "MnBemidjiNorthwoods",
+      "lip": [
+        6,
+        14
+      ],
+      "upper": [
+        "MnBemidjiNorthwoods",
+        6,
+        13
+      ],
+      "landing": [
+        "MnBemidjiNorthwoods",
+        6,
+        16
+      ],
+      "valid_geometry": true,
+      "ordinary_minimum_grass": 5,
+      "native_walk_and_hops_minimum_grass": 5
+    },
+    {
+      "map": "MnBemidjiNorthwoods",
+      "lip": [
+        7,
+        14
+      ],
+      "upper": [
+        "MnBemidjiNorthwoods",
+        7,
+        13
+      ],
+      "landing": [
+        "MnBemidjiNorthwoods",
+        7,
+        16
+      ],
+      "valid_geometry": true,
+      "ordinary_minimum_grass": 5,
+      "native_walk_and_hops_minimum_grass": 5
+    },
+    {
+      "map": "MnDetroitLakesApproach",
+      "lip": [
+        14,
+        18
+      ],
+      "upper": [
+        "MnDetroitLakesApproach",
+        14,
+        17
+      ],
+      "landing": [
+        "MnDetroitLakesApproach",
+        14,
+        20
+      ],
+      "valid_geometry": true,
+      "ordinary_minimum_grass": 2,
+      "native_walk_and_hops_minimum_grass": 2
+    },
+    {
+      "map": "MnDetroitLakesApproach",
+      "lip": [
+        15,
+        18
+      ],
+      "upper": [
+        "MnDetroitLakesApproach",
+        15,
+        17
+      ],
+      "landing": [
+        "MnDetroitLakesApproach",
+        15,
+        20
+      ],
+      "valid_geometry": true,
+      "ordinary_minimum_grass": 2,
+      "native_walk_and_hops_minimum_grass": 2
+    },
+    {
+      "map": "MnLakeItasca",
+      "lip": [
+        12,
+        28
+      ],
+      "upper": [
+        "MnLakeItasca",
+        12,
+        27
+      ],
+      "landing": [
+        "MnLakeItasca",
+        12,
+        30
+      ],
+      "valid_geometry": true,
+      "ordinary_minimum_grass": 2,
+      "native_walk_and_hops_minimum_grass": 2
+    },
+    {
+      "map": "MnLakeItasca",
+      "lip": [
+        13,
+        28
+      ],
+      "upper": [
+        "MnLakeItasca",
+        13,
+        27
+      ],
+      "landing": [
+        "MnLakeItasca",
+        13,
+        30
+      ],
+      "valid_geometry": true,
+      "ordinary_minimum_grass": 2,
+      "native_walk_and_hops_minimum_grass": 2
+    },
+    {
+      "map": "MnMankato",
+      "lip": [
+        10,
+        18
+      ],
+      "upper": [
+        "MnMankato",
+        10,
+        17
+      ],
+      "landing": [
+        "MnMankato",
+        10,
+        20
+      ],
+      "valid_geometry": true,
+      "ordinary_minimum_grass": 0,
+      "native_walk_and_hops_minimum_grass": 0
+    },
+    {
+      "map": "MnMankato",
+      "lip": [
+        11,
+        18
+      ],
+      "upper": [
+        "MnMankato",
+        11,
+        17
+      ],
+      "landing": [
+        "MnMankato",
+        11,
+        20
+      ],
+      "valid_geometry": true,
+      "ordinary_minimum_grass": 0,
+      "native_walk_and_hops_minimum_grass": 0
+    },
+    {
+      "map": "MnMankato",
+      "lip": [
+        12,
+        18
+      ],
+      "upper": [
+        "MnMankato",
+        12,
+        17
+      ],
+      "landing": [
+        "MnMankato",
+        12,
+        20
+      ],
+      "valid_geometry": true,
+      "ordinary_minimum_grass": 0,
+      "native_walk_and_hops_minimum_grass": 0
+    },
+    {
+      "map": "MnMankato",
+      "lip": [
+        13,
+        18
+      ],
+      "upper": [
+        "MnMankato",
+        13,
+        17
+      ],
+      "landing": [
+        "MnMankato",
+        13,
+        20
+      ],
+      "valid_geometry": true,
+      "ordinary_minimum_grass": 0,
+      "native_walk_and_hops_minimum_grass": 0
+    },
+    {
+      "map": "MnMankato",
+      "lip": [
+        14,
+        18
+      ],
+      "upper": [
+        "MnMankato",
+        14,
+        17
+      ],
+      "landing": [
+        "MnMankato",
+        14,
+        20
+      ],
+      "valid_geometry": true,
+      "ordinary_minimum_grass": 0,
+      "native_walk_and_hops_minimum_grass": 0
+    },
+    {
+      "map": "MnMankato",
+      "lip": [
+        15,
+        18
+      ],
+      "upper": [
+        "MnMankato",
+        15,
+        17
+      ],
+      "landing": [
+        "MnMankato",
+        15,
+        20
+      ],
+      "valid_geometry": true,
+      "ordinary_minimum_grass": 0,
+      "native_walk_and_hops_minimum_grass": 0
+    },
+    {
+      "map": "MnMankato",
+      "lip": [
+        16,
+        18
+      ],
+      "upper": [
+        "MnMankato",
+        16,
+        17
+      ],
+      "landing": [
+        "MnMankato",
+        16,
+        20
+      ],
+      "valid_geometry": true,
+      "ordinary_minimum_grass": 0,
+      "native_walk_and_hops_minimum_grass": 0
+    },
+    {
+      "map": "MnMankato",
+      "lip": [
+        17,
+        18
+      ],
+      "upper": [
+        "MnMankato",
+        17,
+        17
+      ],
+      "landing": [
+        "MnMankato",
+        17,
+        20
+      ],
+      "valid_geometry": true,
+      "ordinary_minimum_grass": 0,
+      "native_walk_and_hops_minimum_grass": 0
+    },
+    {
+      "map": "MnMankato",
+      "lip": [
+        18,
+        18
+      ],
+      "upper": [
+        "MnMankato",
+        18,
+        17
+      ],
+      "landing": [
+        "MnMankato",
+        18,
+        20
+      ],
+      "valid_geometry": true,
+      "ordinary_minimum_grass": 0,
+      "native_walk_and_hops_minimum_grass": 0
+    },
+    {
+      "map": "MnMankato",
+      "lip": [
+        19,
+        18
+      ],
+      "upper": [
+        "MnMankato",
+        19,
+        17
+      ],
+      "landing": [
+        "MnMankato",
+        19,
+        20
+      ],
+      "valid_geometry": true,
+      "ordinary_minimum_grass": 0,
+      "native_walk_and_hops_minimum_grass": 0
+    },
+    {
+      "map": "MnMaraisCedarApproach",
+      "lip": [
+        26,
+        18
+      ],
+      "upper": [
+        "MnMaraisCedarApproach",
+        26,
+        17
+      ],
+      "landing": [
+        "MnMaraisCedarApproach",
+        26,
+        20
+      ],
+      "valid_geometry": true,
+      "ordinary_minimum_grass": 4,
+      "native_walk_and_hops_minimum_grass": 4
+    },
+    {
+      "map": "MnMaraisCedarApproach",
+      "lip": [
+        27,
+        18
+      ],
+      "upper": [
+        "MnMaraisCedarApproach",
+        27,
+        17
+      ],
+      "landing": [
+        "MnMaraisCedarApproach",
+        27,
+        20
+      ],
+      "valid_geometry": true,
+      "ordinary_minimum_grass": 4,
+      "native_walk_and_hops_minimum_grass": 4
+    },
+    {
+      "map": "MnMilleLacs",
+      "lip": [
+        16,
+        18
+      ],
+      "upper": [
+        "MnMilleLacs",
+        16,
+        17
+      ],
+      "landing": [
+        "MnMilleLacs",
+        16,
+        20
+      ],
+      "valid_geometry": true,
+      "ordinary_minimum_grass": 3,
+      "native_walk_and_hops_minimum_grass": 3
+    },
+    {
+      "map": "MnMilleLacs",
+      "lip": [
+        17,
+        18
+      ],
+      "upper": [
+        "MnMilleLacs",
+        17,
+        17
+      ],
+      "landing": [
+        "MnMilleLacs",
+        17,
+        20
+      ],
+      "valid_geometry": true,
+      "ordinary_minimum_grass": 3,
+      "native_walk_and_hops_minimum_grass": 3
+    },
+    {
+      "map": "MnMississippiConfluenceC02R00",
+      "lip": [
+        40,
+        6
+      ],
+      "upper": [
+        "MnMississippiConfluenceC02R00",
+        40,
+        5
+      ],
+      "landing": [
+        "MnMississippiConfluenceC02R00",
+        40,
+        8
+      ],
+      "valid_geometry": true,
+      "ordinary_minimum_grass": 5,
+      "native_walk_and_hops_minimum_grass": 5
+    },
+    {
+      "map": "MnMississippiConfluenceC02R00",
+      "lip": [
+        41,
+        6
+      ],
+      "upper": [
+        "MnMississippiConfluenceC02R00",
+        41,
+        5
+      ],
+      "landing": [
+        "MnMississippiConfluenceC02R00",
+        41,
+        8
+      ],
+      "valid_geometry": true,
+      "ordinary_minimum_grass": 4,
+      "native_walk_and_hops_minimum_grass": 4
+    },
+    {
+      "map": "MnMississippiLowerWoodsC01R01",
+      "lip": [
+        26,
+        30
+      ],
+      "upper": [
+        "MnMississippiLowerWoodsC01R01",
+        26,
+        29
+      ],
+      "landing": [
+        "MnMississippiLowerWoodsC01R01",
+        26,
+        32
+      ],
+      "valid_geometry": true,
+      "ordinary_minimum_grass": 3,
+      "native_walk_and_hops_minimum_grass": 3
+    },
+    {
+      "map": "MnMississippiLowerWoodsC01R01",
+      "lip": [
+        27,
+        30
+      ],
+      "upper": [
+        "MnMississippiLowerWoodsC01R01",
+        27,
+        29
+      ],
+      "landing": [
+        "MnMississippiLowerWoodsC01R01",
+        27,
+        32
+      ],
+      "valid_geometry": true,
+      "ordinary_minimum_grass": 3,
+      "native_walk_and_hops_minimum_grass": 3
+    },
+    {
+      "map": "MnMississippiUpstreamWoodsC01R00",
+      "lip": [
+        9,
+        18
+      ],
+      "upper": [
+        "MnMississippiUpstreamWoodsC01R00",
+        10,
+        18
+      ],
+      "landing": [
+        "MnMississippiUpstreamWoodsC01R00",
+        7,
+        18
+      ],
+      "valid_geometry": true,
+      "ordinary_minimum_grass": 2,
+      "native_walk_and_hops_minimum_grass": 2
+    },
+    {
+      "map": "MnMississippiUpstreamWoodsC01R00",
+      "lip": [
+        9,
+        19
+      ],
+      "upper": [
+        "MnMississippiUpstreamWoodsC01R00",
+        10,
+        19
+      ],
+      "landing": [
+        "MnMississippiUpstreamWoodsC01R00",
+        7,
+        19
+      ],
+      "valid_geometry": true,
+      "ordinary_minimum_grass": 2,
+      "native_walk_and_hops_minimum_grass": 2
+    },
+    {
+      "map": "MnPreservePineEntry",
+      "lip": [
+        16,
+        22
+      ],
+      "upper": [
+        "MnPreservePineEntry",
+        16,
+        21
+      ],
+      "landing": [
+        "MnPreservePineEntry",
+        16,
+        24
+      ],
+      "valid_geometry": true,
+      "ordinary_minimum_grass": 7,
+      "native_walk_and_hops_minimum_grass": 7
+    },
+    {
+      "map": "MnPreservePineEntry",
+      "lip": [
+        17,
+        22
+      ],
+      "upper": [
+        "MnPreservePineEntry",
+        17,
+        21
+      ],
+      "landing": [
+        "MnPreservePineEntry",
+        17,
+        24
+      ],
+      "valid_geometry": true,
+      "ordinary_minimum_grass": 7,
+      "native_walk_and_hops_minimum_grass": 7
+    },
+    {
+      "map": "MnR02C00R00",
+      "lip": [
+        47,
+        14
+      ],
+      "upper": [
+        "MnR02C00R00",
+        48,
+        14
+      ],
+      "landing": [
+        "MnR02C00R00",
+        45,
+        14
+      ],
+      "valid_geometry": true,
+      "ordinary_minimum_grass": 2,
+      "native_walk_and_hops_minimum_grass": 2
+    },
+    {
+      "map": "MnR02C00R00",
+      "lip": [
+        47,
+        15
+      ],
+      "upper": [
+        "MnR02C00R00",
+        48,
+        15
+      ],
+      "landing": [
+        "MnR02C00R00",
+        45,
+        15
+      ],
+      "valid_geometry": true,
+      "ordinary_minimum_grass": 2,
+      "native_walk_and_hops_minimum_grass": 2
+    },
+    {
+      "map": "MnR02C00R00",
+      "lip": [
+        47,
+        16
+      ],
+      "upper": [
+        "MnR02C00R00",
+        48,
+        16
+      ],
+      "landing": [
+        "MnR02C00R00",
+        45,
+        16
+      ],
+      "valid_geometry": true,
+      "ordinary_minimum_grass": 2,
+      "native_walk_and_hops_minimum_grass": 2
+    },
+    {
+      "map": "MnR02C00R00",
+      "lip": [
+        47,
+        17
+      ],
+      "upper": [
+        "MnR02C00R00",
+        48,
+        17
+      ],
+      "landing": [
+        "MnR02C00R00",
+        45,
+        17
+      ],
+      "valid_geometry": true,
+      "ordinary_minimum_grass": 2,
+      "native_walk_and_hops_minimum_grass": 2
+    },
+    {
+      "map": "MnR03C00R00",
+      "lip": [
+        10,
+        20
+      ],
+      "upper": [
+        "MnR03C00R00",
+        10,
+        19
+      ],
+      "landing": [
+        "MnR03C00R00",
+        10,
+        22
+      ],
+      "valid_geometry": true,
+      "ordinary_minimum_grass": 3,
+      "native_walk_and_hops_minimum_grass": 3
+    },
+    {
+      "map": "MnR03C00R00",
+      "lip": [
+        11,
+        20
+      ],
+      "upper": [
+        "MnR03C00R00",
+        11,
+        19
+      ],
+      "landing": [
+        "MnR03C00R00",
+        11,
+        22
+      ],
+      "valid_geometry": true,
+      "ordinary_minimum_grass": 3,
+      "native_walk_and_hops_minimum_grass": 3
+    },
+    {
+      "map": "MnR03C00R00",
+      "lip": [
+        12,
+        20
+      ],
+      "upper": [
+        "MnR03C00R00",
+        12,
+        19
+      ],
+      "landing": [
+        "MnR03C00R00",
+        12,
+        22
+      ],
+      "valid_geometry": true,
+      "ordinary_minimum_grass": 4,
+      "native_walk_and_hops_minimum_grass": 4
+    },
+    {
+      "map": "MnR03C00R00",
+      "lip": [
+        13,
+        20
+      ],
+      "upper": [
+        "MnR03C00R00",
+        13,
+        19
+      ],
+      "landing": [
+        "MnR03C00R00",
+        13,
+        22
+      ],
+      "valid_geometry": true,
+      "ordinary_minimum_grass": 4,
+      "native_walk_and_hops_minimum_grass": 4
+    },
+    {
+      "map": "MnR03C00R00",
+      "lip": [
+        14,
+        20
+      ],
+      "upper": [
+        "MnR03C00R00",
+        14,
+        19
+      ],
+      "landing": [
+        "MnR03C00R00",
+        14,
+        22
+      ],
+      "valid_geometry": true,
+      "ordinary_minimum_grass": 4,
+      "native_walk_and_hops_minimum_grass": 4
+    },
+    {
+      "map": "MnR03C00R00",
+      "lip": [
+        15,
+        20
+      ],
+      "upper": [
+        "MnR03C00R00",
+        15,
+        19
+      ],
+      "landing": [
+        "MnR03C00R00",
+        15,
+        22
+      ],
+      "valid_geometry": true,
+      "ordinary_minimum_grass": 4,
+      "native_walk_and_hops_minimum_grass": 4
+    },
+    {
+      "map": "MnR05C00R00",
+      "lip": [
+        38,
+        20
+      ],
+      "upper": [
+        "MnR05C00R00",
+        38,
+        19
+      ],
+      "landing": [
+        "MnR05C00R00",
+        38,
+        22
+      ],
+      "valid_geometry": true,
+      "ordinary_minimum_grass": 2,
+      "native_walk_and_hops_minimum_grass": 2
+    },
+    {
+      "map": "MnR05C00R00",
+      "lip": [
+        39,
+        20
+      ],
+      "upper": [
+        "MnR05C00R00",
+        39,
+        19
+      ],
+      "landing": [
+        "MnR05C00R00",
+        39,
+        22
+      ],
+      "valid_geometry": true,
+      "ordinary_minimum_grass": 2,
+      "native_walk_and_hops_minimum_grass": 2
+    },
+    {
+      "map": "MnR06C00R00",
+      "lip": [
+        44,
+        10
+      ],
+      "upper": [
+        "MnR06C00R00",
+        44,
+        9
+      ],
+      "landing": [
+        "MnR06C00R00",
+        44,
+        12
+      ],
+      "valid_geometry": true,
+      "ordinary_minimum_grass": 8,
+      "native_walk_and_hops_minimum_grass": 8
+    },
+    {
+      "map": "MnR06C00R00",
+      "lip": [
+        45,
+        10
+      ],
+      "upper": [
+        "MnR06C00R00",
+        45,
+        9
+      ],
+      "landing": [
+        "MnR06C00R00",
+        45,
+        12
+      ],
+      "valid_geometry": true,
+      "ordinary_minimum_grass": 8,
+      "native_walk_and_hops_minimum_grass": 8
+    },
+    {
+      "map": "MnR11C00R02",
+      "lip": [
+        23,
+        34
+      ],
+      "upper": [
+        "MnR11C00R02",
+        24,
+        34
+      ],
+      "landing": [
+        "MnR11C00R02",
+        21,
+        34
+      ],
+      "valid_geometry": true,
+      "ordinary_minimum_grass": 13,
+      "native_walk_and_hops_minimum_grass": 13
+    },
+    {
+      "map": "MnR11C00R02",
+      "lip": [
+        23,
+        35
+      ],
+      "upper": [
+        "MnR11C00R02",
+        24,
+        35
+      ],
+      "landing": [
+        "MnR11C00R02",
+        21,
+        35
+      ],
+      "valid_geometry": true,
+      "ordinary_minimum_grass": 13,
+      "native_walk_and_hops_minimum_grass": 13
+    },
+    {
+      "map": "MnR14C00R00",
+      "lip": [
+        28,
+        24
+      ],
+      "upper": [
+        "MnR14C00R00",
+        28,
+        23
+      ],
+      "landing": [
+        "MnR14C00R00",
+        28,
+        26
+      ],
+      "valid_geometry": true,
+      "ordinary_minimum_grass": 4,
+      "native_walk_and_hops_minimum_grass": 4
+    },
+    {
+      "map": "MnR14C00R00",
+      "lip": [
+        29,
+        24
+      ],
+      "upper": [
+        "MnR14C00R00",
+        29,
+        23
+      ],
+      "landing": [
+        "MnR14C00R00",
+        29,
+        26
+      ],
+      "valid_geometry": true,
+      "ordinary_minimum_grass": 4,
+      "native_walk_and_hops_minimum_grass": 4
+    },
+    {
+      "map": "MnR14C00R00",
+      "lip": [
+        30,
+        24
+      ],
+      "upper": [
+        "MnR14C00R00",
+        30,
+        23
+      ],
+      "landing": [
+        "MnR14C00R00",
+        30,
+        26
+      ],
+      "valid_geometry": true,
+      "ordinary_minimum_grass": 4,
+      "native_walk_and_hops_minimum_grass": 4
+    },
+    {
+      "map": "MnR14C00R00",
+      "lip": [
+        31,
+        24
+      ],
+      "upper": [
+        "MnR14C00R00",
+        31,
+        23
+      ],
+      "landing": [
+        "MnR14C00R00",
+        31,
+        26
+      ],
+      "valid_geometry": true,
+      "ordinary_minimum_grass": 4,
+      "native_walk_and_hops_minimum_grass": 4
+    },
+    {
+      "map": "MnR15C00R00",
+      "lip": [
+        22,
+        18
+      ],
+      "upper": [
+        "MnR15C00R00",
+        22,
+        17
+      ],
+      "landing": [
+        "MnR15C00R00",
+        22,
+        20
+      ],
+      "valid_geometry": true,
+      "ordinary_minimum_grass": 6,
+      "native_walk_and_hops_minimum_grass": 6
+    },
+    {
+      "map": "MnR15C00R00",
+      "lip": [
+        23,
+        18
+      ],
+      "upper": [
+        "MnR15C00R00",
+        23,
+        17
+      ],
+      "landing": [
+        "MnR15C00R00",
+        23,
+        20
+      ],
+      "valid_geometry": true,
+      "ordinary_minimum_grass": 6,
+      "native_walk_and_hops_minimum_grass": 6
+    },
+    {
+      "map": "MnR15C00R00",
+      "lip": [
+        24,
+        18
+      ],
+      "upper": [
+        "MnR15C00R00",
+        24,
+        17
+      ],
+      "landing": [
+        "MnR15C00R00",
+        24,
+        20
+      ],
+      "valid_geometry": true,
+      "ordinary_minimum_grass": 6,
+      "native_walk_and_hops_minimum_grass": 6
+    },
+    {
+      "map": "MnR15C00R00",
+      "lip": [
+        25,
+        18
+      ],
+      "upper": [
+        "MnR15C00R00",
+        25,
+        17
+      ],
+      "landing": [
+        "MnR15C00R00",
+        25,
+        20
+      ],
+      "valid_geometry": true,
+      "ordinary_minimum_grass": 6,
+      "native_walk_and_hops_minimum_grass": 6
+    },
+    {
+      "map": "MnR16C00R00",
+      "lip": [
+        52,
+        16
+      ],
+      "upper": [
+        "MnR16C00R00",
+        52,
+        15
+      ],
+      "landing": [
+        "MnR16C00R00",
+        52,
+        18
+      ],
+      "valid_geometry": true,
+      "ordinary_minimum_grass": 6,
+      "native_walk_and_hops_minimum_grass": 6
+    },
+    {
+      "map": "MnR16C00R00",
+      "lip": [
+        53,
+        16
+      ],
+      "upper": [
+        "MnR16C00R00",
+        53,
+        15
+      ],
+      "landing": [
+        "MnR16C00R00",
+        53,
+        18
+      ],
+      "valid_geometry": true,
+      "ordinary_minimum_grass": 6,
+      "native_walk_and_hops_minimum_grass": 6
+    },
+    {
+      "map": "MnR19C00R00",
+      "lip": [
+        32,
+        32
+      ],
+      "upper": [
+        "MnR19C00R00",
+        32,
+        31
+      ],
+      "landing": [
+        "MnR19C00R00",
+        32,
+        34
+      ],
+      "valid_geometry": true,
+      "ordinary_minimum_grass": 3,
+      "native_walk_and_hops_minimum_grass": 3
+    },
+    {
+      "map": "MnR19C00R00",
+      "lip": [
+        33,
+        32
+      ],
+      "upper": [
+        "MnR19C00R00",
+        33,
+        31
+      ],
+      "landing": [
+        "MnR19C00R00",
+        33,
+        34
+      ],
+      "valid_geometry": true,
+      "ordinary_minimum_grass": 3,
+      "native_walk_and_hops_minimum_grass": 3
+    },
+    {
+      "map": "MnR19C00R00",
+      "lip": [
+        34,
+        32
+      ],
+      "upper": [
+        "MnR19C00R00",
+        34,
+        31
+      ],
+      "landing": [
+        "MnR19C00R00",
+        34,
+        34
+      ],
+      "valid_geometry": true,
+      "ordinary_minimum_grass": 3,
+      "native_walk_and_hops_minimum_grass": 3
+    },
+    {
+      "map": "MnR19C00R00",
+      "lip": [
+        35,
+        32
+      ],
+      "upper": [
+        "MnR19C00R00",
+        35,
+        31
+      ],
+      "landing": [
+        "MnR19C00R00",
+        35,
+        34
+      ],
+      "valid_geometry": true,
+      "ordinary_minimum_grass": 3,
+      "native_walk_and_hops_minimum_grass": 3
+    },
+    {
+      "map": "MnR20C00R01",
+      "lip": [
+        18,
+        2
+      ],
+      "upper": [
+        "MnR20C00R01",
+        18,
+        1
+      ],
+      "landing": [
+        "MnR20C00R01",
+        18,
+        4
+      ],
+      "valid_geometry": true,
+      "ordinary_minimum_grass": 6,
+      "native_walk_and_hops_minimum_grass": 6
+    },
+    {
+      "map": "MnR20C00R01",
+      "lip": [
+        19,
+        2
+      ],
+      "upper": [
+        "MnR20C00R01",
+        19,
+        1
+      ],
+      "landing": [
+        "MnR20C00R01",
+        19,
+        4
+      ],
+      "valid_geometry": true,
+      "ordinary_minimum_grass": 6,
+      "native_walk_and_hops_minimum_grass": 6
+    },
+    {
+      "map": "MnR20C00R01",
+      "lip": [
+        20,
+        2
+      ],
+      "upper": [
+        "MnR20C00R01",
+        20,
+        1
+      ],
+      "landing": [
+        "MnR20C00R01",
+        20,
+        4
+      ],
+      "valid_geometry": true,
+      "ordinary_minimum_grass": 7,
+      "native_walk_and_hops_minimum_grass": 7
+    },
+    {
+      "map": "MnR20C00R01",
+      "lip": [
+        21,
+        2
+      ],
+      "upper": [
+        "MnR20C00R01",
+        21,
+        1
+      ],
+      "landing": [
+        "MnR20C00R01",
+        21,
+        4
+      ],
+      "valid_geometry": true,
+      "ordinary_minimum_grass": 7,
+      "native_walk_and_hops_minimum_grass": 7
+    },
+    {
+      "map": "MnStPaul",
+      "lip": [
+        44,
+        14
+      ],
+      "upper": [
+        "MnStPaul",
+        44,
+        13
+      ],
+      "landing": [
+        "MnStPaul",
+        44,
+        16
+      ],
+      "valid_geometry": true,
+      "ordinary_minimum_grass": 0,
+      "native_walk_and_hops_minimum_grass": 0
+    },
+    {
+      "map": "MnStPaul",
+      "lip": [
+        45,
+        14
+      ],
+      "upper": [
+        "MnStPaul",
+        45,
+        13
+      ],
+      "landing": [
+        "MnStPaul",
+        45,
+        16
+      ],
+      "valid_geometry": true,
+      "ordinary_minimum_grass": 0,
+      "native_walk_and_hops_minimum_grass": 0
+    }
+  ],
+  "scope": "Read-only topology screen: current-tile jumps, ordinary lateral HOP walking, connection offsets and straight ice sliding. Actors clear, no Surf/Cut/interior warp. Requires per-route runtime and visual review; no global completion claim."
+}

@@ -49,7 +49,7 @@ fn badge_fixture(c: &mut VisibleShellController, index: usize) {
 use super::r10_gallery::continue_save;
 use super::r10_gallery::press;
 
-fn talk(c: &mut VisibleShellController, target: (i16, i16)) -> String {
+pub(super) fn talk(c: &mut VisibleShellController, target: (i16, i16)) -> String {
     let start = c.snapshot().expect("HM conversation start").overworld.tile;
     let facing = match (target.0 - start.x, target.1 - start.y) {
         (0, -1) => GameButton::Up,

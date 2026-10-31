@@ -1,0 +1,30 @@
+{
+  "status": "PASS",
+  "parent": {
+    "revision": "st_paul_southbank_revision",
+    "pack": "content-packs/minnesota-st-paul-southbank-v03.crystalpack",
+    "sha256": "9c8b263d0e9b02523d4c3c3baf81b7b39337ff75b69f79129f6277ee0550719c"
+  },
+  "pack": "content-packs/minnesota-current-winona-mart-v01.crystalpack",
+  "sha256": "096585f981c5b0fcbe406f9f85e1454cf2a714d420e3dcf3284d9f3195751760",
+  "identity": {
+    "stored": "fd3b207b1b9bc310f76ab1b1981365bb8b4d49e201d0f7c44911e6e47ce0e01b",
+    "independently_recomputed": "fd3b207b1b9bc310f76ab1b1981365bb8b4d49e201d0f7c44911e6e47ce0e01b",
+    "exact": true
+  },
+  "changed_metatiles": [
+    {
+      "at": [
+        3,
+        11
+      ],
+      "before": 22,
+      "after": 26
+    }
+  ],
+  "all_other_complete_maps_exact": 731,
+  "all_collision_exact": true,
+  "state_fair_exact": true,
+  "all_art_audio_encounters_scripts_events_trainers_exact": true,
+  "entire_normalized_pack_exact": true
+}

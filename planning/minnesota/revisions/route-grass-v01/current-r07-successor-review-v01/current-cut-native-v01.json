@@ -1,0 +1,7 @@
+{
+  "status": "PASS",
+  "log": ".local/route-grass-review/r07-current-cut-native-v01.log",
+  "cut_permissions_and_ether_once": true,
+  "continue_and_return_verified": true,
+  "scope": "Initial local position, Cut partner and badge fixture; subsequent play uses native production controller."
+}

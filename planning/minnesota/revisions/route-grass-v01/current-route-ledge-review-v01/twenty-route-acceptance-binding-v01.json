@@ -1,0 +1,3973 @@
+{
+  "status": "CURRENT_ACCEPTED_ROUTE_BINDING_INVENTORY_NOT_COMPLETION",
+  "revision": "minneapolis_citywide_cycling_revision",
+  "pack": "content-packs/minnesota-minneapolis-citywide-cycling-v02.crystalpack",
+  "sha256": "504938ec2d3b0230674ddc5ae4f8ec13e9e713dd4189c1f128ff23112959b24a",
+  "routes": [
+    {
+      "route": "MN_R01",
+      "accepted_publication": "planning/minnesota/revisions/route-grass-v01/compact-rebase-v01/R01-publication.json",
+      "accepted_publication_sha256": "732076166428df2831803e884341d2445575ff73ce44268f034e95a69863bd36",
+      "accepted_pack": "content-packs/minnesota-compact-grass-r01-v01.crystalpack",
+      "accepted_pack_sha256": "bd0b11ec3fa201934e113ceec2d3c351478be327f3b41601222d182bf447f027",
+      "maps": [
+        {
+          "map": "MnR01C00R00",
+          "status": "SUCCESSOR_REBINDING_REQUIRED",
+          "attributes_exact": false,
+          "blocks_exact": false,
+          "native_art_and_collision_exact": false,
+          "actors_exact": false,
+          "events_exact": false,
+          "changed_metatiles": [
+            {
+              "index": 269,
+              "before": 87,
+              "after": 114
+            },
+            {
+              "index": 270,
+              "before": 87,
+              "after": 114
+            },
+            {
+              "index": 308,
+              "before": 116,
+              "after": 128
+            },
+            {
+              "index": 492,
+              "before": 3,
+              "after": 24
+            },
+            {
+              "index": 493,
+              "before": 3,
+              "after": 25
+            },
+            {
+              "index": 524,
+              "before": 2,
+              "after": 22
+            },
+            {
+              "index": 525,
+              "before": 2,
+              "after": 30
+            },
+            {
+              "index": 556,
+              "before": 2,
+              "after": 1
+            },
+            {
+              "index": 557,
+              "before": 2,
+              "after": 69
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "route": "MN_R02",
+      "accepted_publication": "planning/minnesota/revisions/route-grass-v01/compact-rebase-v01/R02-publication.json",
+      "accepted_publication_sha256": "5d422cae3ad2e8092f5b6c81903a5ad8988591eb6c6e04dd55967f1a370db8b0",
+      "accepted_pack": "content-packs/minnesota-compact-grass-r02-v01.crystalpack",
+      "accepted_pack_sha256": "240124545e781c9ce0d9835460138779078a1a71f3aba49bceea00b7d379a303",
+      "maps": [
+        {
+          "map": "MnR02C00R00",
+          "status": "EXACT_TERRAIN_ART_ACTORS_EVENTS",
+          "attributes_exact": true,
+          "blocks_exact": true,
+          "native_art_and_collision_exact": true,
+          "actors_exact": true,
+          "events_exact": true,
+          "changed_metatiles": []
+        }
+      ]
+    },
+    {
+      "route": "MN_R03",
+      "accepted_publication": "planning/minnesota/revisions/route-grass-v01/compact-rebase-v01/R03-publication.json",
+      "accepted_publication_sha256": "4af040cda23c1c6c722ada6e936bf8011848c1c75f0e6cfb3f840d72836423d7",
+      "accepted_pack": "content-packs/minnesota-current-grass-r03-v02.crystalpack",
+      "accepted_pack_sha256": "115a2bfcec328a5d02b76c9b5f5f051836eecb239844bc965b1337719dec91e9",
+      "maps": [
+        {
+          "map": "MnR03C00R00",
+          "status": "SUCCESSOR_REBINDING_REQUIRED",
+          "attributes_exact": false,
+          "blocks_exact": false,
+          "native_art_and_collision_exact": false,
+          "actors_exact": true,
+          "events_exact": false,
+          "changed_metatiles": [
+            {
+              "index": 247,
+              "before": 10,
+              "after": 87
+            },
+            {
+              "index": 327,
+              "before": 2,
+              "after": 24
+            },
+            {
+              "index": 328,
+              "before": 2,
+              "after": 25
+            },
+            {
+              "index": 351,
+              "before": 1,
+              "after": 22
+            },
+            {
+              "index": 352,
+              "before": 2,
+              "after": 30
+            },
+            {
+              "index": 376,
+              "before": 2,
+              "after": 69
+            },
+            {
+              "index": 498,
+              "before": 87,
+              "after": 114
+            },
+            {
+              "index": 499,
+              "before": 87,
+              "after": 114
+            },
+            {
+              "index": 500,
+              "before": 116,
+              "after": 134
+            }
+          ]
+        },
+        {
+          "map": "MnR03C00R01",
+          "status": "EXACT_TERRAIN_ART_ACTORS_EVENTS",
+          "attributes_exact": true,
+          "blocks_exact": true,
+          "native_art_and_collision_exact": true,
+          "actors_exact": true,
+          "events_exact": true,
+          "changed_metatiles": []
+        }
+      ]
+    },
+    {
+      "route": "MN_R04",
+      "accepted_publication": "planning/minnesota/revisions/route-grass-v01/compact-rebase-v01/R04-publication.json",
+      "accepted_publication_sha256": "ca084ff7f95076990d492f43197328d1628a2829cd9db1155ee608857df890b1",
+      "accepted_pack": "content-packs/minnesota-current-grass-r04-v02.crystalpack",
+      "accepted_pack_sha256": "18d2114538e1c02dba7a05947b75c81cc603934d03ad215ff5a0df941ee71c07",
+      "maps": [
+        {
+          "map": "MnR04C00R00",
+          "status": "EXACT_TERRAIN_ART_ACTORS_EVENTS",
+          "attributes_exact": true,
+          "blocks_exact": true,
+          "native_art_and_collision_exact": true,
+          "actors_exact": true,
+          "events_exact": true,
+          "changed_metatiles": []
+        }
+      ]
+    },
+    {
+      "route": "MN_R05",
+      "accepted_publication": "planning/minnesota/revisions/route-grass-v01/compact-rebase-v01/R05-publication.json",
+      "accepted_publication_sha256": "1a44f86e56939ab6b0a131ec5888bc0f65fe6c99679049841cfe91c1bb1379fc",
+      "accepted_pack": "content-packs/minnesota-current-grass-r05-v03.crystalpack",
+      "accepted_pack_sha256": "79e14bbddb7723cfd688544f1c126668637c7583953b524a74008f332d7e61c3",
+      "maps": [
+        {
+          "map": "MnR05C00R00",
+          "status": "SUCCESSOR_REBINDING_REQUIRED",
+          "attributes_exact": false,
+          "blocks_exact": false,
+          "native_art_and_collision_exact": false,
+          "actors_exact": true,
+          "events_exact": true,
+          "changed_metatiles": [
+            {
+              "index": 236,
+              "before": 116,
+              "after": 135
+            },
+            {
+              "index": 434,
+              "before": 116,
+              "after": 135
+            },
+            {
+              "index": 647,
+              "before": 116,
+              "after": 134
+            },
+            {
+              "index": 658,
+              "before": 86,
+              "after": 114
+            },
+            {
+              "index": 659,
+              "before": 86,
+              "after": 114
+            }
+          ]
+        },
+        {
+          "map": "MnR05C00R01",
+          "status": "SUCCESSOR_REBINDING_REQUIRED",
+          "attributes_exact": false,
+          "blocks_exact": false,
+          "native_art_and_collision_exact": false,
+          "actors_exact": true,
+          "events_exact": true,
+          "changed_metatiles": [
+            {
+              "index": 78,
+              "before": 116,
+              "after": 135
+            },
+            {
+              "index": 299,
+              "before": 2,
+              "after": 10
+            },
+            {
+              "index": 331,
+              "before": 10,
+              "after": 114
+            },
+            {
+              "index": 454,
+              "before": 116,
+              "after": 134
+            },
+            {
+              "index": 466,
+              "before": 86,
+              "after": 114
+            },
+            {
+              "index": 467,
+              "before": 86,
+              "after": 114
+            }
+          ]
+        },
+        {
+          "map": "MnR05C00R02",
+          "status": "SUCCESSOR_REBINDING_REQUIRED",
+          "attributes_exact": false,
+          "blocks_exact": false,
+          "native_art_and_collision_exact": true,
+          "actors_exact": true,
+          "events_exact": true,
+          "changed_metatiles": [
+            {
+              "index": 128,
+              "before": 5,
+              "after": 1
+            },
+            {
+              "index": 129,
+              "before": 5,
+              "after": 1
+            },
+            {
+              "index": 130,
+              "before": 5,
+              "after": 1
+            },
+            {
+              "index": 131,
+              "before": 5,
+              "after": 1
+            },
+            {
+              "index": 132,
+              "before": 5,
+              "after": 1
+            },
+            {
+              "index": 133,
+              "before": 5,
+              "after": 1
+            },
+            {
+              "index": 134,
+              "before": 5,
+              "after": 1
+            },
+            {
+              "index": 135,
+              "before": 5,
+              "after": 1
+            },
+            {
+              "index": 136,
+              "before": 5,
+              "after": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "route": "MN_R06",
+      "accepted_publication": "planning/minnesota/revisions/route-grass-v01/current-r06-audit-v01/publication.json",
+      "accepted_publication_sha256": "3f764e2fe2b1071ab2bb62f6e0997c17f875baea702b6090fffbf424b1cc16e5",
+      "accepted_pack": "content-packs/minnesota-northstar-current-story-v03.crystalpack",
+      "accepted_pack_sha256": "560e49986d14e48c07526e9878eddc69be46d546ad079774f04b10f58e7e5c88",
+      "maps": [
+        {
+          "map": "MnR06C00R00",
+          "status": "SUCCESSOR_REBINDING_REQUIRED",
+          "attributes_exact": false,
+          "blocks_exact": false,
+          "native_art_and_collision_exact": false,
+          "actors_exact": true,
+          "events_exact": false,
+          "changed_metatiles": [
+            {
+              "index": 490,
+              "before": 86,
+              "after": 114
+            },
+            {
+              "index": 491,
+              "before": 86,
+              "after": 114
+            },
+            {
+              "index": 494,
+              "before": 116,
+              "after": 134
+            },
+            {
+              "index": 594,
+              "before": 5,
+              "after": 24
+            },
+            {
+              "index": 595,
+              "before": 5,
+              "after": 25
+            },
+            {
+              "index": 626,
+              "before": 5,
+              "after": 22
+            },
+            {
+              "index": 627,
+              "before": 5,
+              "after": 30
+            },
+            {
+              "index": 658,
+              "before": 130,
+              "after": 1
+            },
+            {
+              "index": 659,
+              "before": 130,
+              "after": 69
+            }
+          ]
+        },
+        {
+          "map": "MnR06C00R01",
+          "status": "SUCCESSOR_REBINDING_REQUIRED",
+          "attributes_exact": false,
+          "blocks_exact": true,
+          "native_art_and_collision_exact": true,
+          "actors_exact": true,
+          "events_exact": true,
+          "changed_metatiles": []
+        }
+      ]
+    },
+    {
+      "route": "MN_R07",
+      "accepted_publication": "planning/minnesota/revisions/route-grass-v01/current-r07-audit-v01/publication.json",
+      "accepted_publication_sha256": "3c40ae7c4da88b3f85f14befc2960f8f62894d62ce7639e15a384197333fe814",
+      "accepted_pack": "content-packs/minnesota-r03-bank-seep-v02.crystalpack",
+      "accepted_pack_sha256": "c6fdc6bdad16f49b5a0cc8ea0efcf7f3500d2fa61e9494e69492d4b540e6a96a",
+      "maps": [
+        {
+          "map": "MnR07C00R00",
+          "status": "SUCCESSOR_REBINDING_REQUIRED",
+          "attributes_exact": false,
+          "blocks_exact": false,
+          "native_art_and_collision_exact": false,
+          "actors_exact": true,
+          "events_exact": true,
+          "changed_metatiles": [
+            {
+              "index": 680,
+              "before": 116,
+              "after": 136
+            }
+          ]
+        },
+        {
+          "map": "MnR07C00R01",
+          "status": "SUCCESSOR_REBINDING_REQUIRED",
+          "attributes_exact": true,
+          "blocks_exact": false,
+          "native_art_and_collision_exact": true,
+          "actors_exact": true,
+          "events_exact": true,
+          "changed_metatiles": [
+            {
+              "index": 104,
+              "before": 86,
+              "after": 114
+            },
+            {
+              "index": 105,
+              "before": 86,
+              "after": 114
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "route": "MN_R08",
+      "accepted_publication": "planning/minnesota/revisions/route-grass-v01/current-r08-audit-v01/publication.json",
+      "accepted_publication_sha256": "d58c8d8902b42c25fdc919d906b6a82078902a776cbcee6028ec28b2cecb8cad",
+      "accepted_pack": "content-packs/minnesota-r03-bank-seep-v02.crystalpack",
+      "accepted_pack_sha256": "c6fdc6bdad16f49b5a0cc8ea0efcf7f3500d2fa61e9494e69492d4b540e6a96a",
+      "maps": [
+        {
+          "map": "MnR08C00R00",
+          "status": "SUCCESSOR_REBINDING_REQUIRED",
+          "attributes_exact": false,
+          "blocks_exact": false,
+          "native_art_and_collision_exact": false,
+          "actors_exact": true,
+          "events_exact": true,
+          "changed_metatiles": [
+            {
+              "index": 397,
+              "before": 113,
+              "after": 10
+            },
+            {
+              "index": 404,
+              "before": 113,
+              "after": 10
+            },
+            {
+              "index": 428,
+              "before": 10,
+              "after": 108
+            },
+            {
+              "index": 430,
+              "before": 87,
+              "after": 114
+            },
+            {
+              "index": 433,
+              "before": 116,
+              "after": 134
+            },
+            {
+              "index": 437,
+              "before": 10,
+              "after": 109
+            }
+          ]
+        },
+        {
+          "map": "MnR08C00R01",
+          "status": "EXACT_TERRAIN_ART_ACTORS_EVENTS",
+          "attributes_exact": true,
+          "blocks_exact": true,
+          "native_art_and_collision_exact": true,
+          "actors_exact": true,
+          "events_exact": true,
+          "changed_metatiles": []
+        },
+        {
+          "map": "MnR08C01R00",
+          "status": "EXACT_TERRAIN_ART_ACTORS_EVENTS",
+          "attributes_exact": true,
+          "blocks_exact": true,
+          "native_art_and_collision_exact": true,
+          "actors_exact": true,
+          "events_exact": true,
+          "changed_metatiles": []
+        },
+        {
+          "map": "MnR08C01R01",
+          "status": "SUCCESSOR_REBINDING_REQUIRED",
+          "attributes_exact": true,
+          "blocks_exact": false,
+          "native_art_and_collision_exact": true,
+          "actors_exact": true,
+          "events_exact": true,
+          "changed_metatiles": [
+            {
+              "index": 124,
+              "before": 87,
+              "after": 114
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "route": "MN_R09",
+      "accepted_publication": "planning/minnesota/revisions/route-grass-v01/current-r09-v01/publication.json",
+      "accepted_publication_sha256": "4e6cb7a9d18be4a71c0d063e0ceb2ccf94687c8213e64687f727180882bd9e64",
+      "accepted_pack": "content-packs/minnesota-current-grass-r09-v01.crystalpack",
+      "accepted_pack_sha256": "3ed13b6eb3a8d4c3e379fca8c4a721674647b426302528c80149c8d2eb8845fb",
+      "maps": [
+        {
+          "map": "MnR09C00R00",
+          "status": "SUCCESSOR_REBINDING_REQUIRED",
+          "attributes_exact": true,
+          "blocks_exact": false,
+          "native_art_and_collision_exact": false,
+          "actors_exact": false,
+          "events_exact": true,
+          "changed_metatiles": [
+            {
+              "index": 116,
+              "before": 5,
+              "after": 106
+            },
+            {
+              "index": 117,
+              "before": 5,
+              "after": 112
+            },
+            {
+              "index": 118,
+              "before": 5,
+              "after": 112
+            },
+            {
+              "index": 119,
+              "before": 5,
+              "after": 112
+            },
+            {
+              "index": 120,
+              "before": 5,
+              "after": 112
+            },
+            {
+              "index": 121,
+              "before": 5,
+              "after": 107
+            },
+            {
+              "index": 142,
+              "before": 5,
+              "after": 106
+            },
+            {
+              "index": 143,
+              "before": 5,
+              "after": 112
+            },
+            {
+              "index": 144,
+              "before": 5,
+              "after": 107
+            },
+            {
+              "index": 148,
+              "before": 5,
+              "after": 104
+            },
+            {
+              "index": 149,
+              "before": 5,
+              "after": 113
+            },
+            {
+              "index": 150,
+              "before": 5,
+              "after": 113
+            },
+            {
+              "index": 151,
+              "before": 106,
+              "after": 113
+            },
+            {
+              "index": 152,
+              "before": 112,
+              "after": 113
+            },
+            {
+              "index": 153,
+              "before": 107,
+              "after": 113
+            },
+            {
+              "index": 154,
+              "before": 5,
+              "after": 112
+            },
+            {
+              "index": 155,
+              "before": 5,
+              "after": 112
+            },
+            {
+              "index": 156,
+              "before": 5,
+              "after": 107
+            },
+            {
+              "index": 174,
+              "before": 106,
+              "after": 104
+            },
+            {
+              "index": 175,
+              "before": 107,
+              "after": 113
+            },
+            {
+              "index": 176,
+              "before": 5,
+              "after": 105
+            },
+            {
+              "index": 180,
+              "before": 106,
+              "after": 104
+            },
+            {
+              "index": 181,
+              "before": 112,
+              "after": 113
+            },
+            {
+              "index": 182,
+              "before": 112,
+              "after": 113
+            },
+            {
+              "index": 186,
+              "before": 112,
+              "after": 113
+            },
+            {
+              "index": 187,
+              "before": 107,
+              "after": 113
+            },
+            {
+              "index": 188,
+              "before": 5,
+              "after": 113
+            },
+            {
+              "index": 189,
+              "before": 106,
+              "after": 112
+            },
+            {
+              "index": 207,
+              "before": 105,
+              "after": 113
+            },
+            {
+              "index": 208,
+              "before": 5,
+              "after": 113
+            },
+            {
+              "index": 209,
+              "before": 5,
+              "after": 107
+            },
+            {
+              "index": 213,
+              "before": 10,
+              "after": 113
+            },
+            {
+              "index": 214,
+              "before": 10,
+              "after": 113
+            },
+            {
+              "index": 215,
+              "before": 111,
+              "after": 113
+            },
+            {
+              "index": 216,
+              "before": 114,
+              "after": 113
+            },
+            {
+              "index": 217,
+              "before": 114,
+              "after": 113
+            },
+            {
+              "index": 218,
+              "before": 114,
+              "after": 113
+            },
+            {
+              "index": 219,
+              "before": 109,
+              "after": 113
+            },
+            {
+              "index": 220,
+              "before": 5,
+              "after": 113
+            },
+            {
+              "index": 221,
+              "before": 108,
+              "after": 113
+            },
+            {
+              "index": 222,
+              "before": 114,
+              "after": 113
+            },
+            {
+              "index": 223,
+              "before": 114,
+              "after": 113
+            },
+            {
+              "index": 240,
+              "before": 112,
+              "after": 113
+            },
+            {
+              "index": 241,
+              "before": 107,
+              "after": 105
+            },
+            {
+              "index": 247,
+              "before": 109,
+              "after": 114
+            },
+            {
+              "index": 249,
+              "before": 5,
+              "after": 114
+            },
+            {
+              "index": 250,
+              "before": 5,
+              "after": 114
+            },
+            {
+              "index": 251,
+              "before": 5,
+              "after": 114
+            },
+            {
+              "index": 252,
+              "before": 5,
+              "after": 114
+            },
+            {
+              "index": 254,
+              "before": 5,
+              "after": 114
+            },
+            {
+              "index": 255,
+              "before": 5,
+              "after": 114
+            },
+            {
+              "index": 263,
+              "before": 5,
+              "after": 106
+            },
+            {
+              "index": 264,
+              "before": 106,
+              "after": 112
+            },
+            {
+              "index": 295,
+              "before": 5,
+              "after": 104
+            },
+            {
+              "index": 296,
+              "before": 104,
+              "after": 113
+            },
+            {
+              "index": 327,
+              "before": 5,
+              "after": 104
+            },
+            {
+              "index": 328,
+              "before": 104,
+              "after": 113
+            },
+            {
+              "index": 359,
+              "before": 5,
+              "after": 104
+            },
+            {
+              "index": 360,
+              "before": 104,
+              "after": 113
+            },
+            {
+              "index": 391,
+              "before": 5,
+              "after": 104
+            },
+            {
+              "index": 392,
+              "before": 104,
+              "after": 113
+            },
+            {
+              "index": 423,
+              "before": 5,
+              "after": 104
+            },
+            {
+              "index": 424,
+              "before": 104,
+              "after": 113
+            },
+            {
+              "index": 455,
+              "before": 106,
+              "after": 104
+            },
+            {
+              "index": 530,
+              "before": 104,
+              "after": 3
+            },
+            {
+              "index": 532,
+              "before": 3,
+              "after": 10
+            },
+            {
+              "index": 561,
+              "before": 5,
+              "after": 10
+            },
+            {
+              "index": 562,
+              "before": 104,
+              "after": 134
+            },
+            {
+              "index": 563,
+              "before": 113,
+              "after": 114
+            },
+            {
+              "index": 564,
+              "before": 113,
+              "after": 114
+            },
+            {
+              "index": 593,
+              "before": 5,
+              "after": 10
+            },
+            {
+              "index": 594,
+              "before": 104,
+              "after": 135
+            },
+            {
+              "index": 626,
+              "before": 104,
+              "after": 110
+            },
+            {
+              "index": 664,
+              "before": 116,
+              "after": 133
+            }
+          ]
+        },
+        {
+          "map": "MnR09C00R01",
+          "status": "SUCCESSOR_REBINDING_REQUIRED",
+          "attributes_exact": false,
+          "blocks_exact": false,
+          "native_art_and_collision_exact": false,
+          "actors_exact": true,
+          "events_exact": true,
+          "changed_metatiles": [
+            {
+              "index": 52,
+              "before": 108,
+              "after": 104
+            },
+            {
+              "index": 53,
+              "before": 114,
+              "after": 113
+            },
+            {
+              "index": 54,
+              "before": 110,
+              "after": 113
+            },
+            {
+              "index": 84,
+              "before": 5,
+              "after": 108
+            },
+            {
+              "index": 85,
+              "before": 5,
+              "after": 110
+            },
+            {
+              "index": 86,
+              "before": 108,
+              "after": 113
+            },
+            {
+              "index": 87,
+              "before": 114,
+              "after": 113
+            },
+            {
+              "index": 88,
+              "before": 110,
+              "after": 113
+            },
+            {
+              "index": 91,
+              "before": 108,
+              "after": 104
+            },
+            {
+              "index": 92,
+              "before": 114,
+              "after": 113
+            },
+            {
+              "index": 93,
+              "before": 114,
+              "after": 113
+            },
+            {
+              "index": 94,
+              "before": 110,
+              "after": 113
+            },
+            {
+              "index": 117,
+              "before": 5,
+              "after": 108
+            },
+            {
+              "index": 118,
+              "before": 5,
+              "after": 114
+            },
+            {
+              "index": 119,
+              "before": 5,
+              "after": 110
+            },
+            {
+              "index": 120,
+              "before": 104,
+              "after": 113
+            },
+            {
+              "index": 123,
+              "before": 5,
+              "after": 108
+            },
+            {
+              "index": 124,
+              "before": 5,
+              "after": 114
+            },
+            {
+              "index": 125,
+              "before": 5,
+              "after": 114
+            },
+            {
+              "index": 126,
+              "before": 108,
+              "after": 110
+            },
+            {
+              "index": 127,
+              "before": 114,
+              "after": 113
+            },
+            {
+              "index": 151,
+              "before": 5,
+              "after": 108
+            },
+            {
+              "index": 152,
+              "before": 108,
+              "after": 114
+            },
+            {
+              "index": 158,
+              "before": 5,
+              "after": 108
+            },
+            {
+              "index": 159,
+              "before": 5,
+              "after": 114
+            }
+          ]
+        },
+        {
+          "map": "MnR09C01R00",
+          "status": "SUCCESSOR_REBINDING_REQUIRED",
+          "attributes_exact": true,
+          "blocks_exact": false,
+          "native_art_and_collision_exact": false,
+          "actors_exact": true,
+          "events_exact": true,
+          "changed_metatiles": [
+            {
+              "index": 128,
+              "before": 106,
+              "after": 5
+            },
+            {
+              "index": 129,
+              "before": 107,
+              "after": 5
+            },
+            {
+              "index": 144,
+              "before": 5,
+              "after": 106
+            },
+            {
+              "index": 145,
+              "before": 5,
+              "after": 112
+            },
+            {
+              "index": 146,
+              "before": 5,
+              "after": 112
+            },
+            {
+              "index": 147,
+              "before": 5,
+              "after": 107
+            },
+            {
+              "index": 160,
+              "before": 113,
+              "after": 112
+            },
+            {
+              "index": 161,
+              "before": 113,
+              "after": 112
+            },
+            {
+              "index": 165,
+              "before": 5,
+              "after": 106
+            },
+            {
+              "index": 166,
+              "before": 5,
+              "after": 112
+            },
+            {
+              "index": 167,
+              "before": 5,
+              "after": 107
+            },
+            {
+              "index": 176,
+              "before": 106,
+              "after": 104
+            },
+            {
+              "index": 177,
+              "before": 112,
+              "after": 113
+            },
+            {
+              "index": 178,
+              "before": 112,
+              "after": 113
+            },
+            {
+              "index": 179,
+              "before": 107,
+              "after": 113
+            },
+            {
+              "index": 180,
+              "before": 5,
+              "after": 112
+            },
+            {
+              "index": 181,
+              "before": 5,
+              "after": 112
+            },
+            {
+              "index": 182,
+              "before": 5,
+              "after": 107
+            },
+            {
+              "index": 192,
+              "before": 114,
+              "after": 113
+            },
+            {
+              "index": 193,
+              "before": 10,
+              "after": 113
+            },
+            {
+              "index": 194,
+              "before": 10,
+              "after": 113
+            },
+            {
+              "index": 197,
+              "before": 106,
+              "after": 104
+            },
+            {
+              "index": 198,
+              "before": 107,
+              "after": 113
+            },
+            {
+              "index": 199,
+              "before": 5,
+              "after": 105
+            },
+            {
+              "index": 203,
+              "before": 5,
+              "after": 106
+            },
+            {
+              "index": 204,
+              "before": 5,
+              "after": 112
+            },
+            {
+              "index": 205,
+              "before": 5,
+              "after": 107
+            },
+            {
+              "index": 209,
+              "before": 10,
+              "after": 113
+            },
+            {
+              "index": 210,
+              "before": 10,
+              "after": 113
+            },
+            {
+              "index": 212,
+              "before": 112,
+              "after": 113
+            },
+            {
+              "index": 213,
+              "before": 112,
+              "after": 113
+            },
+            {
+              "index": 214,
+              "before": 107,
+              "after": 105
+            },
+            {
+              "index": 224,
+              "before": 5,
+              "after": 114
+            },
+            {
+              "index": 225,
+              "before": 108,
+              "after": 114
+            },
+            {
+              "index": 230,
+              "before": 105,
+              "after": 113
+            },
+            {
+              "index": 231,
+              "before": 5,
+              "after": 113
+            },
+            {
+              "index": 232,
+              "before": 5,
+              "after": 112
+            },
+            {
+              "index": 233,
+              "before": 5,
+              "after": 107
+            },
+            {
+              "index": 235,
+              "before": 106,
+              "after": 104
+            },
+            {
+              "index": 236,
+              "before": 107,
+              "after": 113
+            },
+            {
+              "index": 237,
+              "before": 5,
+              "after": 105
+            },
+            {
+              "index": 240,
+              "before": 108,
+              "after": 104
+            },
+            {
+              "index": 241,
+              "before": 114,
+              "after": 113
+            },
+            {
+              "index": 242,
+              "before": 110,
+              "after": 113
+            },
+            {
+              "index": 243,
+              "before": 10,
+              "after": 113
+            },
+            {
+              "index": 263,
+              "before": 112,
+              "after": 113
+            },
+            {
+              "index": 264,
+              "before": 112,
+              "after": 113
+            },
+            {
+              "index": 265,
+              "before": 107,
+              "after": 105
+            },
+            {
+              "index": 268,
+              "before": 105,
+              "after": 113
+            },
+            {
+              "index": 269,
+              "before": 5,
+              "after": 105
+            },
+            {
+              "index": 272,
+              "before": 5,
+              "after": 108
+            },
+            {
+              "index": 273,
+              "before": 5,
+              "after": 114
+            },
+            {
+              "index": 274,
+              "before": 108,
+              "after": 114
+            },
+            {
+              "index": 300,
+              "before": 105,
+              "after": 113
+            },
+            {
+              "index": 301,
+              "before": 5,
+              "after": 113
+            },
+            {
+              "index": 302,
+              "before": 5,
+              "after": 107
+            },
+            {
+              "index": 333,
+              "before": 112,
+              "after": 113
+            },
+            {
+              "index": 334,
+              "before": 107,
+              "after": 105
+            },
+            {
+              "index": 365,
+              "before": 10,
+              "after": 113
+            },
+            {
+              "index": 647,
+              "before": 10,
+              "after": 108
+            },
+            {
+              "index": 648,
+              "before": 87,
+              "after": 114
+            },
+            {
+              "index": 649,
+              "before": 10,
+              "after": 109
+            }
+          ]
+        },
+        {
+          "map": "MnR09C01R01",
+          "status": "SUCCESSOR_REBINDING_REQUIRED",
+          "attributes_exact": true,
+          "blocks_exact": false,
+          "native_art_and_collision_exact": false,
+          "actors_exact": true,
+          "events_exact": true,
+          "changed_metatiles": [
+            {
+              "index": 8,
+              "before": 107,
+              "after": 112
+            },
+            {
+              "index": 9,
+              "before": 5,
+              "after": 107
+            },
+            {
+              "index": 40,
+              "before": 105,
+              "after": 113
+            },
+            {
+              "index": 41,
+              "before": 5,
+              "after": 113
+            },
+            {
+              "index": 42,
+              "before": 5,
+              "after": 107
+            },
+            {
+              "index": 73,
+              "before": 112,
+              "after": 113
+            },
+            {
+              "index": 74,
+              "before": 107,
+              "after": 105
+            },
+            {
+              "index": 96,
+              "before": 10,
+              "after": 113
+            },
+            {
+              "index": 97,
+              "before": 110,
+              "after": 113
+            },
+            {
+              "index": 98,
+              "before": 10,
+              "after": 113
+            },
+            {
+              "index": 105,
+              "before": 111,
+              "after": 113
+            },
+            {
+              "index": 106,
+              "before": 109,
+              "after": 105
+            },
+            {
+              "index": 128,
+              "before": 5,
+              "after": 114
+            },
+            {
+              "index": 129,
+              "before": 108,
+              "after": 114
+            },
+            {
+              "index": 137,
+              "before": 109,
+              "after": 114
+            },
+            {
+              "index": 138,
+              "before": 5,
+              "after": 109
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "route": "MN_R10",
+      "accepted_publication": "planning/minnesota/revisions/route-grass-v01/current-r10-v01/publication.json",
+      "accepted_publication_sha256": "ff0381fdf77c680394d8778b7f8cd64874b8b3dc9534c9e21396ac4b882767ec",
+      "accepted_pack": "content-packs/minnesota-current-grass-r10-v01.crystalpack",
+      "accepted_pack_sha256": "f9e3153964a966d610e1ec8c9ecfb45e980e80eab8ea48e336e061863747acd0",
+      "maps": [
+        {
+          "map": "MnR10C00R00",
+          "status": "SUCCESSOR_REBINDING_REQUIRED",
+          "attributes_exact": true,
+          "blocks_exact": false,
+          "native_art_and_collision_exact": false,
+          "actors_exact": true,
+          "events_exact": true,
+          "changed_metatiles": [
+            {
+              "index": 57,
+              "before": 5,
+              "after": 106
+            },
+            {
+              "index": 58,
+              "before": 5,
+              "after": 112
+            },
+            {
+              "index": 59,
+              "before": 5,
+              "after": 112
+            },
+            {
+              "index": 60,
+              "before": 5,
+              "after": 107
+            },
+            {
+              "index": 71,
+              "before": 10,
+              "after": 5
+            },
+            {
+              "index": 72,
+              "before": 10,
+              "after": 5
+            },
+            {
+              "index": 73,
+              "before": 10,
+              "after": 5
+            },
+            {
+              "index": 89,
+              "before": 10,
+              "after": 104
+            },
+            {
+              "index": 90,
+              "before": 10,
+              "after": 113
+            },
+            {
+              "index": 91,
+              "before": 10,
+              "after": 113
+            },
+            {
+              "index": 92,
+              "before": 5,
+              "after": 105
+            },
+            {
+              "index": 103,
+              "before": 10,
+              "after": 5
+            },
+            {
+              "index": 104,
+              "before": 113,
+              "after": 5
+            },
+            {
+              "index": 105,
+              "before": 105,
+              "after": 5
+            },
+            {
+              "index": 110,
+              "before": 107,
+              "after": 112
+            },
+            {
+              "index": 111,
+              "before": 5,
+              "after": 112
+            },
+            {
+              "index": 112,
+              "before": 5,
+              "after": 112
+            },
+            {
+              "index": 113,
+              "before": 5,
+              "after": 112
+            },
+            {
+              "index": 114,
+              "before": 5,
+              "after": 112
+            },
+            {
+              "index": 115,
+              "before": 5,
+              "after": 112
+            },
+            {
+              "index": 116,
+              "before": 5,
+              "after": 107
+            },
+            {
+              "index": 123,
+              "before": 10,
+              "after": 113
+            },
+            {
+              "index": 124,
+              "before": 5,
+              "after": 105
+            },
+            {
+              "index": 134,
+              "before": 107,
+              "after": 112
+            },
+            {
+              "index": 135,
+              "before": 104,
+              "after": 112
+            },
+            {
+              "index": 136,
+              "before": 113,
+              "after": 112
+            },
+            {
+              "index": 137,
+              "before": 113,
+              "after": 107
+            },
+            {
+              "index": 138,
+              "before": 107,
+              "after": 5
+            },
+            {
+              "index": 139,
+              "before": 104,
+              "after": 131
+            },
+            {
+              "index": 145,
+              "before": 107,
+              "after": 3
+            },
+            {
+              "index": 146,
+              "before": 5,
+              "after": 3
+            },
+            {
+              "index": 147,
+              "before": 5,
+              "after": 3
+            },
+            {
+              "index": 148,
+              "before": 5,
+              "after": 129
+            },
+            {
+              "index": 155,
+              "before": 105,
+              "after": 113
+            },
+            {
+              "index": 156,
+              "before": 5,
+              "after": 105
+            },
+            {
+              "index": 166,
+              "before": 105,
+              "after": 5
+            },
+            {
+              "index": 169,
+              "before": 111,
+              "after": 105
+            },
+            {
+              "index": 170,
+              "before": 109,
+              "after": 5
+            },
+            {
+              "index": 171,
+              "before": 10,
+              "after": 131
+            },
+            {
+              "index": 176,
+              "before": 10,
+              "after": 3
+            },
+            {
+              "index": 177,
+              "before": 113,
+              "after": 3
+            },
+            {
+              "index": 178,
+              "before": 10,
+              "after": 3
+            },
+            {
+              "index": 179,
+              "before": 10,
+              "after": 3
+            },
+            {
+              "index": 180,
+              "before": 107,
+              "after": 129
+            },
+            {
+              "index": 188,
+              "before": 107,
+              "after": 113
+            },
+            {
+              "index": 189,
+              "before": 5,
+              "after": 107
+            },
+            {
+              "index": 198,
+              "before": 105,
+              "after": 113
+            },
+            {
+              "index": 199,
+              "before": 10,
+              "after": 113
+            },
+            {
+              "index": 200,
+              "before": 10,
+              "after": 113
+            },
+            {
+              "index": 201,
+              "before": 109,
+              "after": 105
+            },
+            {
+              "index": 202,
+              "before": 106,
+              "after": 5
+            },
+            {
+              "index": 203,
+              "before": 10,
+              "after": 108
+            },
+            {
+              "index": 204,
+              "before": 3,
+              "after": 132
+            },
+            {
+              "index": 205,
+              "before": 3,
+              "after": 132
+            },
+            {
+              "index": 206,
+              "before": 3,
+              "after": 132
+            },
+            {
+              "index": 207,
+              "before": 3,
+              "after": 132
+            },
+            {
+              "index": 208,
+              "before": 3,
+              "after": 130
+            },
+            {
+              "index": 209,
+              "before": 113,
+              "after": 110
+            },
+            {
+              "index": 211,
+              "before": 10,
+              "after": 113
+            },
+            {
+              "index": 220,
+              "before": 105,
+              "after": 113
+            },
+            {
+              "index": 221,
+              "before": 2,
+              "after": 105
+            },
+            {
+              "index": 231,
+              "before": 112,
+              "after": 113
+            },
+            {
+              "index": 232,
+              "before": 112,
+              "after": 113
+            },
+            {
+              "index": 233,
+              "before": 112,
+              "after": 133
+            },
+            {
+              "index": 234,
+              "before": 113,
+              "after": 112
+            },
+            {
+              "index": 241,
+              "before": 110,
+              "after": 104
+            },
+            {
+              "index": 250,
+              "before": 113,
+              "after": 10
+            },
+            {
+              "index": 252,
+              "before": 109,
+              "after": 114
+            },
+            {
+              "index": 253,
+              "before": 2,
+              "after": 109
+            },
+            {
+              "index": 255,
+              "before": 2,
+              "after": 106
+            },
+            {
+              "index": 263,
+              "before": 10,
+              "after": 111
+            },
+            {
+              "index": 264,
+              "before": 1,
+              "after": 114
+            },
+            {
+              "index": 265,
+              "before": 1,
+              "after": 114
+            },
+            {
+              "index": 266,
+              "before": 1,
+              "after": 114
+            },
+            {
+              "index": 267,
+              "before": 1,
+              "after": 110
+            },
+            {
+              "index": 282,
+              "before": 10,
+              "after": 114
+            },
+            {
+              "index": 287,
+              "before": 2,
+              "after": 104
+            },
+            {
+              "index": 292,
+              "before": 10,
+              "after": 104
+            },
+            {
+              "index": 294,
+              "before": 10,
+              "after": 113
+            },
+            {
+              "index": 295,
+              "before": 10,
+              "after": 105
+            },
+            {
+              "index": 296,
+              "before": 114,
+              "after": 3
+            },
+            {
+              "index": 297,
+              "before": 114,
+              "after": 3
+            },
+            {
+              "index": 298,
+              "before": 114,
+              "after": 3
+            },
+            {
+              "index": 299,
+              "before": 110,
+              "after": 104
+            },
+            {
+              "index": 319,
+              "before": 113,
+              "after": 104
+            },
+            {
+              "index": 325,
+              "before": 128,
+              "after": 130
+            },
+            {
+              "index": 326,
+              "before": 10,
+              "after": 114
+            },
+            {
+              "index": 332,
+              "before": 86,
+              "after": 114
+            },
+            {
+              "index": 333,
+              "before": 86,
+              "after": 114
+            },
+            {
+              "index": 351,
+              "before": 113,
+              "after": 104
+            },
+            {
+              "index": 356,
+              "before": 10,
+              "after": 2
+            },
+            {
+              "index": 383,
+              "before": 113,
+              "after": 108
+            },
+            {
+              "index": 397,
+              "before": 107,
+              "after": 112
+            },
+            {
+              "index": 398,
+              "before": 10,
+              "after": 107
+            },
+            {
+              "index": 406,
+              "before": 107,
+              "after": 112
+            },
+            {
+              "index": 407,
+              "before": 1,
+              "after": 107
+            },
+            {
+              "index": 429,
+              "before": 113,
+              "after": 10
+            },
+            {
+              "index": 430,
+              "before": 112,
+              "after": 133
+            },
+            {
+              "index": 431,
+              "before": 107,
+              "after": 112
+            },
+            {
+              "index": 432,
+              "before": 113,
+              "after": 112
+            },
+            {
+              "index": 433,
+              "before": 113,
+              "after": 107
+            },
+            {
+              "index": 437,
+              "before": 108,
+              "after": 104
+            },
+            {
+              "index": 438,
+              "before": 109,
+              "after": 113
+            },
+            {
+              "index": 439,
+              "before": 1,
+              "after": 105
+            },
+            {
+              "index": 443,
+              "before": 72,
+              "after": 1
+            },
+            {
+              "index": 444,
+              "before": 73,
+              "after": 1
+            },
+            {
+              "index": 445,
+              "before": 73,
+              "after": 1
+            },
+            {
+              "index": 446,
+              "before": 73,
+              "after": 1
+            },
+            {
+              "index": 447,
+              "before": 73,
+              "after": 1
+            },
+            {
+              "index": 463,
+              "before": 105,
+              "after": 113
+            },
+            {
+              "index": 465,
+              "before": 113,
+              "after": 105
+            },
+            {
+              "index": 469,
+              "before": 1,
+              "after": 108
+            },
+            {
+              "index": 470,
+              "before": 1,
+              "after": 114
+            },
+            {
+              "index": 471,
+              "before": 1,
+              "after": 109
+            },
+            {
+              "index": 495,
+              "before": 109,
+              "after": 114
+            },
+            {
+              "index": 496,
+              "before": 113,
+              "after": 114
+            },
+            {
+              "index": 497,
+              "before": 113,
+              "after": 109
+            }
+          ]
+        },
+        {
+          "map": "MnR10C01R00",
+          "status": "SUCCESSOR_REBINDING_REQUIRED",
+          "attributes_exact": true,
+          "blocks_exact": false,
+          "native_art_and_collision_exact": false,
+          "actors_exact": true,
+          "events_exact": true,
+          "changed_metatiles": [
+            {
+              "index": 112,
+              "before": 2,
+              "after": 112
+            },
+            {
+              "index": 113,
+              "before": 5,
+              "after": 112
+            },
+            {
+              "index": 114,
+              "before": 5,
+              "after": 107
+            },
+            {
+              "index": 128,
+              "before": 106,
+              "after": 113
+            },
+            {
+              "index": 129,
+              "before": 112,
+              "after": 113
+            },
+            {
+              "index": 130,
+              "before": 107,
+              "after": 105
+            },
+            {
+              "index": 144,
+              "before": 104,
+              "after": 113
+            },
+            {
+              "index": 146,
+              "before": 105,
+              "after": 113
+            },
+            {
+              "index": 147,
+              "before": 2,
+              "after": 107
+            },
+            {
+              "index": 160,
+              "before": 104,
+              "after": 113
+            },
+            {
+              "index": 163,
+              "before": 107,
+              "after": 105
+            },
+            {
+              "index": 176,
+              "before": 108,
+              "after": 114
+            },
+            {
+              "index": 208,
+              "before": 73,
+              "after": 1
+            },
+            {
+              "index": 209,
+              "before": 73,
+              "after": 1
+            },
+            {
+              "index": 210,
+              "before": 74,
+              "after": 1
+            },
+            {
+              "index": 216,
+              "before": 72,
+              "after": 1
+            },
+            {
+              "index": 217,
+              "before": 73,
+              "after": 1
+            },
+            {
+              "index": 218,
+              "before": 73,
+              "after": 1
+            },
+            {
+              "index": 219,
+              "before": 73,
+              "after": 1
+            },
+            {
+              "index": 220,
+              "before": 73,
+              "after": 1
+            },
+            {
+              "index": 221,
+              "before": 73,
+              "after": 1
+            },
+            {
+              "index": 222,
+              "before": 74,
+              "after": 1
+            },
+            {
+              "index": 227,
+              "before": 68,
+              "after": 1
+            },
+            {
+              "index": 229,
+              "before": 70,
+              "after": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "route": "MN_R11",
+      "accepted_publication": "planning/minnesota/revisions/route-grass-v01/current-r11-v01/publication.json",
+      "accepted_publication_sha256": "64a55f917b41ede792702637186b0cc14729e21e40dd6182c844f9c6e8d26efd",
+      "accepted_pack": "content-packs/minnesota-current-grass-r11-v01.crystalpack",
+      "accepted_pack_sha256": "2296cfb81cf6d17e1f02ca3477b7ae3194a33d29e1d4c965a8eb2acff81a3303",
+      "maps": [
+        {
+          "map": "MnR11C00R00",
+          "status": "SUCCESSOR_REBINDING_REQUIRED",
+          "attributes_exact": true,
+          "blocks_exact": true,
+          "native_art_and_collision_exact": false,
+          "actors_exact": true,
+          "events_exact": true,
+          "changed_metatiles": []
+        },
+        {
+          "map": "MnR11C00R01",
+          "status": "SUCCESSOR_REBINDING_REQUIRED",
+          "attributes_exact": true,
+          "blocks_exact": false,
+          "native_art_and_collision_exact": false,
+          "actors_exact": true,
+          "events_exact": false,
+          "changed_metatiles": [
+            {
+              "index": 12,
+              "before": 130,
+              "after": 105
+            },
+            {
+              "index": 72,
+              "before": 86,
+              "after": 114
+            },
+            {
+              "index": 73,
+              "before": 86,
+              "after": 114
+            },
+            {
+              "index": 74,
+              "before": 86,
+              "after": 114
+            },
+            {
+              "index": 76,
+              "before": 109,
+              "after": 131
+            },
+            {
+              "index": 493,
+              "before": 5,
+              "after": 3
+            },
+            {
+              "index": 494,
+              "before": 5,
+              "after": 3
+            },
+            {
+              "index": 495,
+              "before": 2,
+              "after": 3
+            },
+            {
+              "index": 496,
+              "before": 2,
+              "after": 3
+            },
+            {
+              "index": 497,
+              "before": 2,
+              "after": 3
+            },
+            {
+              "index": 498,
+              "before": 2,
+              "after": 3
+            },
+            {
+              "index": 525,
+              "before": 5,
+              "after": 3
+            },
+            {
+              "index": 526,
+              "before": 5,
+              "after": 3
+            },
+            {
+              "index": 527,
+              "before": 2,
+              "after": 24
+            },
+            {
+              "index": 528,
+              "before": 2,
+              "after": 25
+            },
+            {
+              "index": 529,
+              "before": 2,
+              "after": 3
+            },
+            {
+              "index": 530,
+              "before": 2,
+              "after": 3
+            },
+            {
+              "index": 557,
+              "before": 5,
+              "after": 3
+            },
+            {
+              "index": 558,
+              "before": 5,
+              "after": 3
+            },
+            {
+              "index": 559,
+              "before": 2,
+              "after": 26
+            },
+            {
+              "index": 560,
+              "before": 1,
+              "after": 17
+            },
+            {
+              "index": 562,
+              "before": 2,
+              "after": 1
+            },
+            {
+              "index": 589,
+              "before": 5,
+              "after": 3
+            },
+            {
+              "index": 590,
+              "before": 1,
+              "after": 3
+            },
+            {
+              "index": 593,
+              "before": 2,
+              "after": 1
+            },
+            {
+              "index": 594,
+              "before": 2,
+              "after": 69
+            },
+            {
+              "index": 657,
+              "before": 3,
+              "after": 10
+            },
+            {
+              "index": 658,
+              "before": 1,
+              "after": 105
+            },
+            {
+              "index": 688,
+              "before": 86,
+              "after": 114
+            },
+            {
+              "index": 689,
+              "before": 10,
+              "after": 114
+            },
+            {
+              "index": 690,
+              "before": 129,
+              "after": 131
+            }
+          ]
+        },
+        {
+          "map": "MnR11C00R02",
+          "status": "SUCCESSOR_REBINDING_REQUIRED",
+          "attributes_exact": true,
+          "blocks_exact": true,
+          "native_art_and_collision_exact": false,
+          "actors_exact": true,
+          "events_exact": true,
+          "changed_metatiles": []
+        },
+        {
+          "map": "MnR11C00R03",
+          "status": "SUCCESSOR_REBINDING_REQUIRED",
+          "attributes_exact": true,
+          "blocks_exact": false,
+          "native_art_and_collision_exact": false,
+          "actors_exact": true,
+          "events_exact": false,
+          "changed_metatiles": [
+            {
+              "index": 48,
+              "before": 2,
+              "after": 3
+            },
+            {
+              "index": 49,
+              "before": 2,
+              "after": 3
+            },
+            {
+              "index": 80,
+              "before": 5,
+              "after": 3
+            },
+            {
+              "index": 81,
+              "before": 5,
+              "after": 44
+            },
+            {
+              "index": 82,
+              "before": 5,
+              "after": 45
+            },
+            {
+              "index": 83,
+              "before": 5,
+              "after": 1
+            },
+            {
+              "index": 112,
+              "before": 5,
+              "after": 3
+            },
+            {
+              "index": 113,
+              "before": 5,
+              "after": 46
+            },
+            {
+              "index": 114,
+              "before": 5,
+              "after": 47
+            },
+            {
+              "index": 115,
+              "before": 5,
+              "after": 1
+            },
+            {
+              "index": 116,
+              "before": 5,
+              "after": 3
+            },
+            {
+              "index": 144,
+              "before": 5,
+              "after": 3
+            },
+            {
+              "index": 145,
+              "before": 5,
+              "after": 1
+            },
+            {
+              "index": 146,
+              "before": 5,
+              "after": 1
+            },
+            {
+              "index": 147,
+              "before": 5,
+              "after": 1
+            },
+            {
+              "index": 148,
+              "before": 5,
+              "after": 3
+            },
+            {
+              "index": 177,
+              "before": 5,
+              "after": 1
+            },
+            {
+              "index": 178,
+              "before": 5,
+              "after": 69
+            },
+            {
+              "index": 179,
+              "before": 5,
+              "after": 3
+            },
+            {
+              "index": 180,
+              "before": 5,
+              "after": 3
+            },
+            {
+              "index": 435,
+              "before": 129,
+              "after": 105
+            },
+            {
+              "index": 464,
+              "before": 86,
+              "after": 114
+            },
+            {
+              "index": 465,
+              "before": 86,
+              "after": 114
+            },
+            {
+              "index": 466,
+              "before": 86,
+              "after": 114
+            },
+            {
+              "index": 467,
+              "before": 109,
+              "after": 131
+            }
+          ]
+        },
+        {
+          "map": "MnR11C01R00",
+          "status": "SUCCESSOR_REBINDING_REQUIRED",
+          "attributes_exact": true,
+          "blocks_exact": true,
+          "native_art_and_collision_exact": false,
+          "actors_exact": true,
+          "events_exact": true,
+          "changed_metatiles": []
+        },
+        {
+          "map": "MnR11C01R01",
+          "status": "SUCCESSOR_REBINDING_REQUIRED",
+          "attributes_exact": true,
+          "blocks_exact": true,
+          "native_art_and_collision_exact": false,
+          "actors_exact": true,
+          "events_exact": true,
+          "changed_metatiles": []
+        },
+        {
+          "map": "MnR11C01R02",
+          "status": "SUCCESSOR_REBINDING_REQUIRED",
+          "attributes_exact": true,
+          "blocks_exact": true,
+          "native_art_and_collision_exact": false,
+          "actors_exact": true,
+          "events_exact": true,
+          "changed_metatiles": []
+        },
+        {
+          "map": "MnR11C01R03",
+          "status": "SUCCESSOR_REBINDING_REQUIRED",
+          "attributes_exact": true,
+          "blocks_exact": true,
+          "native_art_and_collision_exact": false,
+          "actors_exact": true,
+          "events_exact": true,
+          "changed_metatiles": []
+        }
+      ]
+    },
+    {
+      "route": "MN_R12",
+      "accepted_publication": "planning/minnesota/revisions/route-grass-v01/current-r12-v01/publication.json",
+      "accepted_publication_sha256": "dfacf1350aeb8b04c933978c4800c536dd6d7b9f550e29b3d42d4a87794a9be8",
+      "accepted_pack": "content-packs/minnesota-current-grass-r12-v01.crystalpack",
+      "accepted_pack_sha256": "8c9a01edf629270392e43ae8761fd0ea78d57035b0cb4b097bf9eebc3fc38717",
+      "maps": [
+        {
+          "map": "MnR12C00R00",
+          "status": "EXACT_TERRAIN_ART_ACTORS_EVENTS",
+          "attributes_exact": true,
+          "blocks_exact": true,
+          "native_art_and_collision_exact": true,
+          "actors_exact": true,
+          "events_exact": true,
+          "changed_metatiles": []
+        },
+        {
+          "map": "MnR12C00R01",
+          "status": "SUCCESSOR_REBINDING_REQUIRED",
+          "attributes_exact": false,
+          "blocks_exact": true,
+          "native_art_and_collision_exact": true,
+          "actors_exact": true,
+          "events_exact": true,
+          "changed_metatiles": []
+        }
+      ]
+    },
+    {
+      "route": "MN_R13",
+      "accepted_publication": "planning/minnesota/revisions/route-grass-v01/current-r13-union-v01/publication.json",
+      "accepted_publication_sha256": "9cc3f3749c903d4e70a302017900054b0e5f7026e3975d1e2c76b41f20a59c5e",
+      "accepted_pack": "content-packs/minnesota-current-grass-r13-union-v01.crystalpack",
+      "accepted_pack_sha256": "87bba9f81e3a6b56eaf9f92641eacc5a0b4be185bb65ac62c42a5d81eb6f7d65",
+      "maps": [
+        {
+          "map": "MnR13C00R00",
+          "status": "SUCCESSOR_REBINDING_REQUIRED",
+          "attributes_exact": false,
+          "blocks_exact": false,
+          "native_art_and_collision_exact": false,
+          "actors_exact": true,
+          "events_exact": true,
+          "changed_metatiles": [
+            {
+              "index": 371,
+              "before": 113,
+              "after": 10
+            },
+            {
+              "index": 372,
+              "before": 113,
+              "after": 10
+            },
+            {
+              "index": 402,
+              "before": 10,
+              "after": 108
+            },
+            {
+              "index": 403,
+              "before": 87,
+              "after": 114
+            },
+            {
+              "index": 404,
+              "before": 10,
+              "after": 114
+            },
+            {
+              "index": 407,
+              "before": 116,
+              "after": 140
+            }
+          ]
+        },
+        {
+          "map": "MnR13C00R01",
+          "status": "EXACT_TERRAIN_ART_ACTORS_EVENTS",
+          "attributes_exact": true,
+          "blocks_exact": true,
+          "native_art_and_collision_exact": true,
+          "actors_exact": true,
+          "events_exact": true,
+          "changed_metatiles": []
+        },
+        {
+          "map": "MnR13C00R02",
+          "status": "EXACT_TERRAIN_ART_ACTORS_EVENTS",
+          "attributes_exact": true,
+          "blocks_exact": true,
+          "native_art_and_collision_exact": true,
+          "actors_exact": true,
+          "events_exact": true,
+          "changed_metatiles": []
+        }
+      ]
+    },
+    {
+      "route": "MN_R14",
+      "accepted_publication": "planning/minnesota/revisions/route-grass-v01/current-r14-v01/publication.json",
+      "accepted_publication_sha256": "d7ca3039cdef1d7ba8878624805a264eae82bebc7ad4b0357e36a4ef543357a0",
+      "accepted_pack": "content-packs/minnesota-current-grass-r14-v01.crystalpack",
+      "accepted_pack_sha256": "0a78461bf1215ce0e81e1a47b65af4a0e027152b487e340ee0129cea28d81c34",
+      "maps": [
+        {
+          "map": "MnR14C00R00",
+          "status": "EXACT_TERRAIN_ART_ACTORS_EVENTS",
+          "attributes_exact": true,
+          "blocks_exact": true,
+          "native_art_and_collision_exact": true,
+          "actors_exact": true,
+          "events_exact": true,
+          "changed_metatiles": []
+        },
+        {
+          "map": "MnR14C00R01",
+          "status": "EXACT_TERRAIN_ART_ACTORS_EVENTS",
+          "attributes_exact": true,
+          "blocks_exact": true,
+          "native_art_and_collision_exact": true,
+          "actors_exact": true,
+          "events_exact": true,
+          "changed_metatiles": []
+        },
+        {
+          "map": "MnR14C01R00",
+          "status": "EXACT_TERRAIN_ART_ACTORS_EVENTS",
+          "attributes_exact": true,
+          "blocks_exact": true,
+          "native_art_and_collision_exact": true,
+          "actors_exact": true,
+          "events_exact": true,
+          "changed_metatiles": []
+        },
+        {
+          "map": "MnR14C01R01",
+          "status": "EXACT_TERRAIN_ART_ACTORS_EVENTS",
+          "attributes_exact": true,
+          "blocks_exact": true,
+          "native_art_and_collision_exact": true,
+          "actors_exact": true,
+          "events_exact": true,
+          "changed_metatiles": []
+        }
+      ]
+    },
+    {
+      "route": "MN_R15",
+      "accepted_publication": "planning/minnesota/revisions/route-grass-v01/current-r15-v01/publication.json",
+      "accepted_publication_sha256": "fce790dc7e5ef57023f290df09b3bb35f022d528f96d65356b94a2bcf96a8dae",
+      "accepted_pack": "content-packs/minnesota-current-grass-r15-v01.crystalpack",
+      "accepted_pack_sha256": "73bd0948be600b55d93842e1348c1fdcdd93423ef74295650d9cfa33b49badf1",
+      "maps": [
+        {
+          "map": "MnR15C00R00",
+          "status": "SUCCESSOR_REBINDING_REQUIRED",
+          "attributes_exact": true,
+          "blocks_exact": false,
+          "native_art_and_collision_exact": true,
+          "actors_exact": true,
+          "events_exact": true,
+          "changed_metatiles": [
+            {
+              "index": 9,
+              "before": 81,
+              "after": 15
+            },
+            {
+              "index": 10,
+              "before": 81,
+              "after": 15
+            },
+            {
+              "index": 11,
+              "before": 81,
+              "after": 15
+            },
+            {
+              "index": 12,
+              "before": 81,
+              "after": 15
+            },
+            {
+              "index": 44,
+              "before": 107,
+              "after": 45
+            },
+            {
+              "index": 45,
+              "before": 107,
+              "after": 45
+            },
+            {
+              "index": 46,
+              "before": 107,
+              "after": 45
+            },
+            {
+              "index": 47,
+              "before": 107,
+              "after": 45
+            },
+            {
+              "index": 48,
+              "before": 107,
+              "after": 45
+            },
+            {
+              "index": 49,
+              "before": 107,
+              "after": 45
+            },
+            {
+              "index": 50,
+              "before": 107,
+              "after": 45
+            },
+            {
+              "index": 51,
+              "before": 107,
+              "after": 45
+            },
+            {
+              "index": 116,
+              "before": 100,
+              "after": 45
+            },
+            {
+              "index": 117,
+              "before": 27,
+              "after": 1
+            },
+            {
+              "index": 138,
+              "before": 109,
+              "after": 1
+            },
+            {
+              "index": 148,
+              "before": 100,
+              "after": 45
+            },
+            {
+              "index": 149,
+              "before": 27,
+              "after": 1
+            },
+            {
+              "index": 180,
+              "before": 100,
+              "after": 45
+            },
+            {
+              "index": 181,
+              "before": 27,
+              "after": 1
+            },
+            {
+              "index": 185,
+              "before": 27,
+              "after": 1
+            },
+            {
+              "index": 189,
+              "before": 95,
+              "after": 1
+            },
+            {
+              "index": 209,
+              "before": 100,
+              "after": 45
+            },
+            {
+              "index": 210,
+              "before": 81,
+              "after": 1
+            },
+            {
+              "index": 211,
+              "before": 81,
+              "after": 1
+            },
+            {
+              "index": 212,
+              "before": 81,
+              "after": 1
+            },
+            {
+              "index": 213,
+              "before": 27,
+              "after": 1
+            },
+            {
+              "index": 217,
+              "before": 27,
+              "after": 1
+            },
+            {
+              "index": 221,
+              "before": 95,
+              "after": 1
+            },
+            {
+              "index": 240,
+              "before": 100,
+              "after": 45
+            },
+            {
+              "index": 241,
+              "before": 27,
+              "after": 1
+            },
+            {
+              "index": 249,
+              "before": 27,
+              "after": 1
+            },
+            {
+              "index": 253,
+              "before": 95,
+              "after": 1
+            },
+            {
+              "index": 274,
+              "before": 119,
+              "after": 1
+            },
+            {
+              "index": 275,
+              "before": 119,
+              "after": 1
+            },
+            {
+              "index": 276,
+              "before": 119,
+              "after": 1
+            },
+            {
+              "index": 277,
+              "before": 27,
+              "after": 1
+            },
+            {
+              "index": 281,
+              "before": 27,
+              "after": 1
+            },
+            {
+              "index": 285,
+              "before": 95,
+              "after": 1
+            },
+            {
+              "index": 294,
+              "before": 111,
+              "after": 15
+            },
+            {
+              "index": 306,
+              "before": 120,
+              "after": 45
+            },
+            {
+              "index": 307,
+              "before": 120,
+              "after": 45
+            },
+            {
+              "index": 308,
+              "before": 120,
+              "after": 45
+            },
+            {
+              "index": 309,
+              "before": 27,
+              "after": 1
+            },
+            {
+              "index": 310,
+              "before": 111,
+              "after": 1
+            },
+            {
+              "index": 314,
+              "before": 119,
+              "after": 1
+            },
+            {
+              "index": 316,
+              "before": 86,
+              "after": 121
+            },
+            {
+              "index": 321,
+              "before": 86,
+              "after": 121
+            },
+            {
+              "index": 340,
+              "before": 100,
+              "after": 45
+            },
+            {
+              "index": 341,
+              "before": 27,
+              "after": 1
+            },
+            {
+              "index": 344,
+              "before": 108,
+              "after": 1
+            },
+            {
+              "index": 348,
+              "before": 111,
+              "after": 1
+            },
+            {
+              "index": 350,
+              "before": 28,
+              "after": 1
+            },
+            {
+              "index": 364,
+              "before": 95,
+              "after": 1
+            },
+            {
+              "index": 370,
+              "before": 100,
+              "after": 45
+            },
+            {
+              "index": 373,
+              "before": 27,
+              "after": 1
+            },
+            {
+              "index": 376,
+              "before": 111,
+              "after": 1
+            },
+            {
+              "index": 396,
+              "before": 95,
+              "after": 1
+            },
+            {
+              "index": 402,
+              "before": 100,
+              "after": 45
+            },
+            {
+              "index": 408,
+              "before": 86,
+              "after": 121
+            },
+            {
+              "index": 426,
+              "before": 109,
+              "after": 1
+            },
+            {
+              "index": 428,
+              "before": 95,
+              "after": 1
+            },
+            {
+              "index": 431,
+              "before": 81,
+              "after": 1
+            },
+            {
+              "index": 432,
+              "before": 81,
+              "after": 1
+            },
+            {
+              "index": 433,
+              "before": 81,
+              "after": 1
+            },
+            {
+              "index": 435,
+              "before": 108,
+              "after": 1
+            },
+            {
+              "index": 436,
+              "before": 108,
+              "after": 1
+            },
+            {
+              "index": 437,
+              "before": 108,
+              "after": 1
+            },
+            {
+              "index": 438,
+              "before": 108,
+              "after": 1
+            },
+            {
+              "index": 449,
+              "before": 81,
+              "after": 1
+            },
+            {
+              "index": 458,
+              "before": 109,
+              "after": 1
+            },
+            {
+              "index": 472,
+              "before": 77,
+              "after": 1
+            },
+            {
+              "index": 478,
+              "before": 81,
+              "after": 1
+            },
+            {
+              "index": 493,
+              "before": 110,
+              "after": 1
+            },
+            {
+              "index": 495,
+              "before": 119,
+              "after": 1
+            },
+            {
+              "index": 496,
+              "before": 119,
+              "after": 1
+            },
+            {
+              "index": 497,
+              "before": 119,
+              "after": 1
+            },
+            {
+              "index": 527,
+              "before": 120,
+              "after": 45
+            },
+            {
+              "index": 528,
+              "before": 120,
+              "after": 45
+            },
+            {
+              "index": 529,
+              "before": 120,
+              "after": 45
+            },
+            {
+              "index": 559,
+              "before": 107,
+              "after": 15
+            },
+            {
+              "index": 560,
+              "before": 107,
+              "after": 15
+            },
+            {
+              "index": 561,
+              "before": 107,
+              "after": 15
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "route": "MN_R16",
+      "accepted_publication": "planning/minnesota/revisions/route-grass-v01/current-r16-v01/acceptance.json",
+      "accepted_publication_sha256": "1ffd05c423b4b1f23c9842de5d654243625c9de182d30ce8f4197b4482a9756e",
+      "accepted_pack": "content-packs/minnesota-current-grass-r15-v01.crystalpack",
+      "accepted_pack_sha256": "73bd0948be600b55d93842e1348c1fdcdd93423ef74295650d9cfa33b49badf1",
+      "maps": [
+        {
+          "map": "MnR16C00R00",
+          "status": "SUCCESSOR_REBINDING_REQUIRED",
+          "attributes_exact": true,
+          "blocks_exact": false,
+          "native_art_and_collision_exact": true,
+          "actors_exact": true,
+          "events_exact": true,
+          "changed_metatiles": [
+            {
+              "index": 38,
+              "before": 48,
+              "after": 53
+            },
+            {
+              "index": 39,
+              "before": 49,
+              "after": 53
+            },
+            {
+              "index": 40,
+              "before": 49,
+              "after": 53
+            },
+            {
+              "index": 41,
+              "before": 49,
+              "after": 53
+            },
+            {
+              "index": 42,
+              "before": 49,
+              "after": 53
+            },
+            {
+              "index": 43,
+              "before": 50,
+              "after": 53
+            },
+            {
+              "index": 63,
+              "before": 48,
+              "after": 53
+            },
+            {
+              "index": 227,
+              "before": 130,
+              "after": 112
+            },
+            {
+              "index": 228,
+              "before": 130,
+              "after": 112
+            },
+            {
+              "index": 229,
+              "before": 130,
+              "after": 112
+            },
+            {
+              "index": 230,
+              "before": 130,
+              "after": 112
+            },
+            {
+              "index": 231,
+              "before": 130,
+              "after": 112
+            },
+            {
+              "index": 232,
+              "before": 130,
+              "after": 112
+            },
+            {
+              "index": 233,
+              "before": 66,
+              "after": 1
+            },
+            {
+              "index": 259,
+              "before": 129,
+              "after": 114
+            },
+            {
+              "index": 260,
+              "before": 129,
+              "after": 114
+            },
+            {
+              "index": 261,
+              "before": 129,
+              "after": 114
+            },
+            {
+              "index": 262,
+              "before": 129,
+              "after": 114
+            },
+            {
+              "index": 263,
+              "before": 129,
+              "after": 114
+            },
+            {
+              "index": 264,
+              "before": 129,
+              "after": 114
+            },
+            {
+              "index": 265,
+              "before": 74,
+              "after": 1
+            },
+            {
+              "index": 272,
+              "before": 73,
+              "after": 114
+            },
+            {
+              "index": 273,
+              "before": 73,
+              "after": 114
+            },
+            {
+              "index": 274,
+              "before": 73,
+              "after": 114
+            },
+            {
+              "index": 275,
+              "before": 73,
+              "after": 114
+            },
+            {
+              "index": 276,
+              "before": 73,
+              "after": 114
+            },
+            {
+              "index": 277,
+              "before": 73,
+              "after": 114
+            },
+            {
+              "index": 278,
+              "before": 73,
+              "after": 114
+            },
+            {
+              "index": 279,
+              "before": 73,
+              "after": 114
+            },
+            {
+              "index": 280,
+              "before": 73,
+              "after": 114
+            },
+            {
+              "index": 281,
+              "before": 73,
+              "after": 114
+            },
+            {
+              "index": 283,
+              "before": 73,
+              "after": 114
+            },
+            {
+              "index": 321,
+              "before": 65,
+              "after": 1
+            },
+            {
+              "index": 322,
+              "before": 65,
+              "after": 1
+            },
+            {
+              "index": 323,
+              "before": 65,
+              "after": 1
+            },
+            {
+              "index": 357,
+              "before": 130,
+              "after": 112
+            },
+            {
+              "index": 358,
+              "before": 130,
+              "after": 112
+            },
+            {
+              "index": 359,
+              "before": 130,
+              "after": 112
+            },
+            {
+              "index": 360,
+              "before": 130,
+              "after": 112
+            },
+            {
+              "index": 361,
+              "before": 130,
+              "after": 112
+            },
+            {
+              "index": 362,
+              "before": 130,
+              "after": 112
+            },
+            {
+              "index": 363,
+              "before": 130,
+              "after": 112
+            },
+            {
+              "index": 364,
+              "before": 130,
+              "after": 112
+            },
+            {
+              "index": 365,
+              "before": 130,
+              "after": 112
+            },
+            {
+              "index": 389,
+              "before": 129,
+              "after": 114
+            },
+            {
+              "index": 390,
+              "before": 129,
+              "after": 114
+            },
+            {
+              "index": 391,
+              "before": 129,
+              "after": 114
+            },
+            {
+              "index": 392,
+              "before": 129,
+              "after": 114
+            },
+            {
+              "index": 393,
+              "before": 129,
+              "after": 114
+            },
+            {
+              "index": 394,
+              "before": 129,
+              "after": 114
+            },
+            {
+              "index": 395,
+              "before": 129,
+              "after": 114
+            },
+            {
+              "index": 396,
+              "before": 129,
+              "after": 114
+            },
+            {
+              "index": 397,
+              "before": 129,
+              "after": 114
+            },
+            {
+              "index": 435,
+              "before": 73,
+              "after": 1
+            },
+            {
+              "index": 436,
+              "before": 73,
+              "after": 1
+            },
+            {
+              "index": 437,
+              "before": 73,
+              "after": 1
+            },
+            {
+              "index": 438,
+              "before": 73,
+              "after": 1
+            },
+            {
+              "index": 440,
+              "before": 73,
+              "after": 1
+            },
+            {
+              "index": 441,
+              "before": 73,
+              "after": 1
+            },
+            {
+              "index": 442,
+              "before": 73,
+              "after": 1
+            },
+            {
+              "index": 443,
+              "before": 73,
+              "after": 1
+            },
+            {
+              "index": 449,
+              "before": 73,
+              "after": 1
+            },
+            {
+              "index": 450,
+              "before": 73,
+              "after": 1
+            },
+            {
+              "index": 451,
+              "before": 73,
+              "after": 1
+            },
+            {
+              "index": 478,
+              "before": 130,
+              "after": 112
+            },
+            {
+              "index": 479,
+              "before": 130,
+              "after": 112
+            },
+            {
+              "index": 510,
+              "before": 129,
+              "after": 114
+            },
+            {
+              "index": 511,
+              "before": 129,
+              "after": 114
+            },
+            {
+              "index": 711,
+              "before": 56,
+              "after": 53
+            },
+            {
+              "index": 712,
+              "before": 57,
+              "after": 53
+            },
+            {
+              "index": 713,
+              "before": 57,
+              "after": 53
+            },
+            {
+              "index": 714,
+              "before": 57,
+              "after": 53
+            },
+            {
+              "index": 715,
+              "before": 57,
+              "after": 53
+            },
+            {
+              "index": 716,
+              "before": 57,
+              "after": 53
+            },
+            {
+              "index": 717,
+              "before": 58,
+              "after": 53
+            },
+            {
+              "index": 734,
+              "before": 56,
+              "after": 53
+            },
+            {
+              "index": 735,
+              "before": 57,
+              "after": 53
+            }
+          ]
+        },
+        {
+          "map": "MnR16C01R00",
+          "status": "SUCCESSOR_REBINDING_REQUIRED",
+          "attributes_exact": true,
+          "blocks_exact": false,
+          "native_art_and_collision_exact": true,
+          "actors_exact": true,
+          "events_exact": true,
+          "changed_metatiles": [
+            {
+              "index": 16,
+              "before": 50,
+              "after": 53
+            },
+            {
+              "index": 52,
+              "before": 65,
+              "after": 1
+            },
+            {
+              "index": 53,
+              "before": 65,
+              "after": 1
+            },
+            {
+              "index": 67,
+              "before": 68,
+              "after": 1
+            },
+            {
+              "index": 71,
+              "before": 70,
+              "after": 1
+            },
+            {
+              "index": 83,
+              "before": 68,
+              "after": 1
+            },
+            {
+              "index": 99,
+              "before": 68,
+              "after": 1
+            },
+            {
+              "index": 103,
+              "before": 70,
+              "after": 1
+            },
+            {
+              "index": 115,
+              "before": 68,
+              "after": 1
+            },
+            {
+              "index": 119,
+              "before": 73,
+              "after": 1
+            },
+            {
+              "index": 131,
+              "before": 73,
+              "after": 1
+            },
+            {
+              "index": 171,
+              "before": 65,
+              "after": 1
+            },
+            {
+              "index": 172,
+              "before": 65,
+              "after": 1
+            },
+            {
+              "index": 173,
+              "before": 65,
+              "after": 1
+            },
+            {
+              "index": 174,
+              "before": 65,
+              "after": 1
+            },
+            {
+              "index": 182,
+              "before": 65,
+              "after": 1
+            },
+            {
+              "index": 184,
+              "before": 65,
+              "after": 1
+            },
+            {
+              "index": 213,
+              "before": 70,
+              "after": 1
+            },
+            {
+              "index": 224,
+              "before": 130,
+              "after": 112
+            },
+            {
+              "index": 225,
+              "before": 130,
+              "after": 112
+            },
+            {
+              "index": 226,
+              "before": 65,
+              "after": 1
+            },
+            {
+              "index": 227,
+              "before": 65,
+              "after": 1
+            },
+            {
+              "index": 228,
+              "before": 65,
+              "after": 1
+            },
+            {
+              "index": 229,
+              "before": 66,
+              "after": 1
+            },
+            {
+              "index": 235,
+              "before": 73,
+              "after": 1
+            },
+            {
+              "index": 236,
+              "before": 73,
+              "after": 1
+            },
+            {
+              "index": 238,
+              "before": 73,
+              "after": 1
+            },
+            {
+              "index": 240,
+              "before": 129,
+              "after": 114
+            },
+            {
+              "index": 241,
+              "before": 129,
+              "after": 114
+            },
+            {
+              "index": 243,
+              "before": 73,
+              "after": 1
+            },
+            {
+              "index": 244,
+              "before": 73,
+              "after": 1
+            },
+            {
+              "index": 245,
+              "before": 73,
+              "after": 1
+            },
+            {
+              "index": 262,
+              "before": 64,
+              "after": 1
+            },
+            {
+              "index": 263,
+              "before": 65,
+              "after": 1
+            },
+            {
+              "index": 352,
+              "before": 57,
+              "after": 53
+            },
+            {
+              "index": 353,
+              "before": 58,
+              "after": 53
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "route": "MN_R17",
+      "accepted_publication": "planning/minnesota/revisions/route-grass-v01/current-r17-v03/publication.json",
+      "accepted_publication_sha256": "3b0c8922628b53538325727fba7ef1bf6f17f4a22577c334bc68c3dacdefd318",
+      "accepted_pack": "content-packs/minnesota-current-grass-r17-v03.crystalpack",
+      "accepted_pack_sha256": "e99a9eb0fa86b85369b6b3d7e5bb52a9d7abdb9eef4aacb54856ccb989c61c84",
+      "maps": [
+        {
+          "map": "MnR17C00R00",
+          "status": "EXACT_TERRAIN_ART_ACTORS_EVENTS",
+          "attributes_exact": true,
+          "blocks_exact": true,
+          "native_art_and_collision_exact": true,
+          "actors_exact": true,
+          "events_exact": true,
+          "changed_metatiles": []
+        },
+        {
+          "map": "MnR17C00R01",
+          "status": "SUCCESSOR_REBINDING_REQUIRED",
+          "attributes_exact": true,
+          "blocks_exact": false,
+          "native_art_and_collision_exact": true,
+          "actors_exact": true,
+          "events_exact": true,
+          "changed_metatiles": [
+            {
+              "index": 174,
+              "before": 59,
+              "after": 60
+            },
+            {
+              "index": 206,
+              "before": 58,
+              "after": 60
+            },
+            {
+              "index": 267,
+              "before": 59,
+              "after": 60
+            },
+            {
+              "index": 268,
+              "before": 59,
+              "after": 60
+            },
+            {
+              "index": 269,
+              "before": 59,
+              "after": 60
+            },
+            {
+              "index": 270,
+              "before": 59,
+              "after": 60
+            },
+            {
+              "index": 299,
+              "before": 58,
+              "after": 60
+            },
+            {
+              "index": 300,
+              "before": 58,
+              "after": 60
+            },
+            {
+              "index": 301,
+              "before": 58,
+              "after": 60
+            },
+            {
+              "index": 302,
+              "before": 58,
+              "after": 60
+            }
+          ]
+        },
+        {
+          "map": "MnR17C00R02",
+          "status": "EXACT_TERRAIN_ART_ACTORS_EVENTS",
+          "attributes_exact": true,
+          "blocks_exact": true,
+          "native_art_and_collision_exact": true,
+          "actors_exact": true,
+          "events_exact": true,
+          "changed_metatiles": []
+        }
+      ]
+    },
+    {
+      "route": "MN_R18",
+      "accepted_publication": "planning/minnesota/revisions/route-grass-v01/current-r18-v01/publication.json",
+      "accepted_publication_sha256": "4f5eb63cd495366d33c61bb42da59d952ac53f9b735b46aaee74d7cfdf80d911",
+      "accepted_pack": "content-packs/minnesota-current-grass-r18-v01.crystalpack",
+      "accepted_pack_sha256": "36e58054462b67415a89445a4fc465ccc6edc84b082025a41f504104a6a3e323",
+      "maps": [
+        {
+          "map": "MnR18C00R00",
+          "status": "EXACT_TERRAIN_ART_ACTORS_EVENTS",
+          "attributes_exact": true,
+          "blocks_exact": true,
+          "native_art_and_collision_exact": true,
+          "actors_exact": true,
+          "events_exact": true,
+          "changed_metatiles": []
+        },
+        {
+          "map": "MnR18C01R00",
+          "status": "EXACT_TERRAIN_ART_ACTORS_EVENTS",
+          "attributes_exact": true,
+          "blocks_exact": true,
+          "native_art_and_collision_exact": true,
+          "actors_exact": true,
+          "events_exact": true,
+          "changed_metatiles": []
+        }
+      ]
+    },
+    {
+      "route": "MN_R19",
+      "accepted_publication": "planning/minnesota/revisions/route-grass-v01/current-r19-v01/publication.json",
+      "accepted_publication_sha256": "ab0463738b6a4121f0c2b4f392c54d44ba428282538b923d87cb26b6ef6d965a",
+      "accepted_pack": "content-packs/minnesota-current-grass-r19-v01.crystalpack",
+      "accepted_pack_sha256": "688f1568e8e5001c6f9b9c544c9f31aa8451dafd992ce67078a229fb5a5cbb10",
+      "maps": [
+        {
+          "map": "MnR19C00R00",
+          "status": "SUCCESSOR_REBINDING_REQUIRED",
+          "attributes_exact": false,
+          "blocks_exact": false,
+          "native_art_and_collision_exact": false,
+          "actors_exact": true,
+          "events_exact": true,
+          "changed_metatiles": [
+            {
+              "index": 528,
+              "before": 114,
+              "after": 86
+            },
+            {
+              "index": 530,
+              "before": 114,
+              "after": 97
+            },
+            {
+              "index": 581,
+              "before": 116,
+              "after": 128
+            },
+            {
+              "index": 585,
+              "before": 116,
+              "after": 128
+            }
+          ]
+        },
+        {
+          "map": "MnR19C00R01",
+          "status": "EXACT_TERRAIN_ART_ACTORS_EVENTS",
+          "attributes_exact": true,
+          "blocks_exact": true,
+          "native_art_and_collision_exact": true,
+          "actors_exact": true,
+          "events_exact": true,
+          "changed_metatiles": []
+        }
+      ]
+    },
+    {
+      "route": "MN_R20",
+      "accepted_publication": "planning/minnesota/revisions/route-grass-v01/current-r20-v01/publication.json",
+      "accepted_publication_sha256": "2fc58d82c494466103822b90c9c4e05e6bc884f2fa9cdc8d5586f5702e17d7f3",
+      "accepted_pack": "content-packs/minnesota-current-grass-r20-v01.crystalpack",
+      "accepted_pack_sha256": "6dd141c6475114566a3204003ceae72c40594a35bf07e9a70c6b395b1d370abf",
+      "maps": [
+        {
+          "map": "MnR20C00R00",
+          "status": "EXACT_TERRAIN_ART_ACTORS_EVENTS",
+          "attributes_exact": true,
+          "blocks_exact": true,
+          "native_art_and_collision_exact": true,
+          "actors_exact": true,
+          "events_exact": true,
+          "changed_metatiles": []
+        },
+        {
+          "map": "MnR20C00R01",
+          "status": "EXACT_TERRAIN_ART_ACTORS_EVENTS",
+          "attributes_exact": true,
+          "blocks_exact": true,
+          "native_art_and_collision_exact": true,
+          "actors_exact": true,
+          "events_exact": true,
+          "changed_metatiles": []
+        },
+        {
+          "map": "MnR20C01R00",
+          "status": "EXACT_TERRAIN_ART_ACTORS_EVENTS",
+          "attributes_exact": true,
+          "blocks_exact": true,
+          "native_art_and_collision_exact": true,
+          "actors_exact": true,
+          "events_exact": true,
+          "changed_metatiles": []
+        },
+        {
+          "map": "MnR20C01R01",
+          "status": "EXACT_TERRAIN_ART_ACTORS_EVENTS",
+          "attributes_exact": true,
+          "blocks_exact": true,
+          "native_art_and_collision_exact": true,
+          "actors_exact": true,
+          "events_exact": true,
+          "changed_metatiles": []
+        }
+      ]
+    }
+  ],
+  "scope": "Compares all20 numbered routes to their original accepted native grass publications. Changed successors need their own later acceptance; original acceptance is not silently inherited through geometry/art/event changes. Broader roster and story progression is outside this terrain binding."
+}

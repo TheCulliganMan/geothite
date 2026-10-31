@@ -1,0 +1,17 @@
+{
+  "pid": 33654,
+  "steps": [
+    {
+      "step": "guards",
+      "test": "native_town_exterior_each_gate_requirement_denial_and_free_inbound",
+      "exit_code": 0,
+      "log": ".local/route-grass-review/current-brainerd-successor-native-guards-v02.log"
+    },
+    {
+      "step": "doors",
+      "test": "native_town_exterior_all_facades_both_returns_and_continue",
+      "exit_code": 0,
+      "log": ".local/route-grass-review/current-brainerd-successor-native-doors-v02.log"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "status": "PASS",
+  "source_save": ".local/route-grass-review/current-upstream-woods-reached-v01.crystalsave",
+  "source_sha256": "f49e8cce1aabd742c8b9f6541d4841fdd24da167ab4ff25e92a1d81afa648271",
+  "input_source_unchanged": true,
+  "output_save": ".local/route-grass-review/current-upstream-woods-verified-stdio-v03-output-v01.crystalsave",
+  "pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33",
+  "pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+  "save": ".local/route-grass-review/current-upstream-woods-verified-stdio-v03-input-v01.crystalsave",
+  "initial_map": "MnMississippiUpstreamWoodsC01R00",
+  "initial_position": {
+    "x": 7,
+    "y": 25
+  },
+  "moved_position": {
+    "x": 6,
+    "y": 25
+  },
+  "calls_passed": 15,
+  "stderr_bytes": 0,
+  "items_pocket_verified": true,
+  "balls_pocket": true,
+  "returned_to_walking": true
+}

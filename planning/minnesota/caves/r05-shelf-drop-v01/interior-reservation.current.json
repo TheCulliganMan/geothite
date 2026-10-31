@@ -1,0 +1,59 @@
+{
+  "interior": "MnR05RockCut",
+  "parent": "MN_R05",
+  "arrival_core": [
+    5,
+    16
+  ],
+  "return_trigger_core": [
+    5,
+    17
+  ],
+  "exterior_doors_core": [
+    [
+      16,
+      77
+    ],
+    [
+      30,
+      27
+    ]
+  ],
+  "safe_exterior_returns_core": [
+    [
+      16,
+      78
+    ],
+    [
+      30,
+      28
+    ]
+  ],
+  "native_interior_warp_indices": [
+    1,
+    2
+  ],
+  "exterior_return_warp_indices": [
+    2,
+    2
+  ],
+  "requires_real_collision_check": false,
+  "exterior_door_status": "Both original native mouth pairings, genuine passive Floor returns, useful bidirectional stair/sidewall, two printed healer pages/input lock, real HP/status/PP healing and Continue PASS.",
+  "dimensions_metatiles": [
+    8,
+    10
+  ],
+  "native_palette": "nite",
+  "candidate_source_sha256": "8c4cfffba447d49488e9957be7b9ad9d0f287782c3406f6fbabbd72835adb938",
+  "native_geometry_pack_sha256": "71a40f87927ed85404c631869295b091225ac0e26c76fef0d084adf32e5f8d67",
+  "native_review_pack_sha256": "71a40f87927ed85404c631869295b091225ac0e26c76fef0d084adf32e5f8d67",
+  "return_semantics": "Original south insidewarp1 at (5,17), clear Floor (5,16), returns to MnR05C00R01 passive exteriorwarp2 at local (16,30), global (16,78). Original north insidewarp2 at (11,5), clear Floor (11,4), returns to MnR05C00R00 passive exteriorwarp2 at (30,28). Active exterior CAVE tiles (16,77) and (30,27) target insidewarps1 and2 respectively. Both inactive passive records retain their original target insidewarp1. No warp record changes; waiting or revisiting actual passive Floor cannot reenter.",
+  "validation": "Three native controller cases,263 stdio calls,8 exact native cameras and2 actual lip/landing save views pass. Both warp pairs/passive returns, full-party healing, native Repel use/countdown/once and Continue verified. No earned regional arrival claim.",
+  "native_status": "Verified native8x10 two-mouth RockCut with two downward shelf lanes, original stair return, healer and once-only100-step Repel.",
+  "source_design": "caves/r05-shelf-drop-v01/current.json",
+  "source_file": "caves/r05-shelf-drop-v01/current.json",
+  "source_collision_checked": true,
+  "native_geometry_pack": "content-packs/minnesota-r05-shelf-drop-v01.crystalpack",
+  "native_review_pack": "content-packs/minnesota-r05-shelf-drop-v01.crystalpack",
+  "verification": "planning/minnesota/renders/r05-shelf-drop-v763/acceptance-v772.json"
+}

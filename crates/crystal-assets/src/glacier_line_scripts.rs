@@ -50,9 +50,14 @@ pub(crate) fn install(
         room,
         &format!("{prefix}WelcomeText"),
         &[
-            "GLACIER LINE. Return trips are free.",
-            "X means a stop you haven't visited. Walk to its public hall first.",
+            "GLACIER LINE.",
+            "Return trips free.",
+            "X marks a stop you",
+            "haven't visited.",
+            "Visit its hall on",
+            "foot to unlock it.",
             "Choose a stop.",
+            "Or CANCEL to stay.",
         ],
     );
     for (label, text) in [

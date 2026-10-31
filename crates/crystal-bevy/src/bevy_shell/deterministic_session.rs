@@ -594,57 +594,10 @@ fn apply_keyboard_input(
         }
         return;
     }
-    let mut field_object_effect_advanced = false;
-    let field_notice_effect_finished = if runtime_shell.field_notice.is_none() {
-        if let Some(frames) = runtime_shell.pending_field_notice_effect_frames {
-            let frames = frames.saturating_sub(elapsed_input_ticks.min(u32::from(u8::MAX)) as u8);
-            runtime_shell.pending_field_notice_effect_frames = Some(frames);
-            if let Some(cut) = runtime_shell.visible_cut_animation.as_mut() {
-                cut.frame = 34_u8.saturating_sub(frames);
-                field_object_effect_advanced = true;
-            }
-            if let Some(headbutt) = runtime_shell.visible_headbutt_animation.as_mut() {
-                headbutt.frame = 32_u8.saturating_sub(frames);
-                field_object_effect_advanced = true;
-            }
-            if let Some(flash) = runtime_shell.visible_flash_animation.as_mut() {
-                let previous_frame = flash.frame;
-                flash.frame = 16_u8.saturating_sub(frames);
-                field_object_effect_advanced = true;
-                if previous_frame < 8 && flash.frame >= 8 {
-                    runtime_shell.field_notice_scene = None;
-                }
-            }
-            frames == 0
-        } else {
-            false
-        }
-    } else {
-        false
-    };
-    if field_object_effect_advanced {
-        mark_runtime_snapshot_dirty(&mut runtime_shell);
-    }
-    if field_notice_effect_finished {
-        runtime_shell.pending_field_notice_effect_frames = None;
-        runtime_shell.field_notice_scene = None;
-        runtime_shell.visible_earthquake = None;
-        runtime_shell.visible_cut_animation = None;
-        runtime_shell.pending_whirlpool_sound_wait = false;
-        runtime_shell.visible_headbutt_animation = None;
-        runtime_shell.visible_flash_animation = None;
-        runtime_shell.pending_surf_start_from = None;
-        if std::mem::take(&mut runtime_shell.pending_field_battle_entry) {
-            if let Err(error) = prepare_visible_battle_entry(&mut runtime_shell)
-                .and_then(|_| settle_visible_battle_after_action(&mut runtime_shell))
-            {
-                record_visible_runtime_error(&mut runtime_shell, &error);
-                runtime_shell.last_error = Some(error.to_string());
-            }
-        } else if let Some(next) = runtime_shell.field_notice_queue.pop_front() {
-            runtime_shell.field_notice = Some(next);
-        }
-        mark_runtime_snapshot_dirty(&mut runtime_shell);
+    if let Err(error) = field_notice_effects::advance(&mut runtime_shell, elapsed_input_ticks) {
+        record_visible_runtime_error(&mut runtime_shell, &error);
+        runtime_shell.last_error = Some(error.to_string());
+        return;
     }
     match field_waterfall::advance(&mut runtime_shell, elapsed_input_ticks) {
         Ok(true) => return,
@@ -1375,29 +1328,13 @@ fn apply_keyboard_input(
         // UseFlashTextScript is text_asm rather than an ordinary field-move
         // prompt: after printing it plays and waits for SFX_FLASH, then the
         // outer script runs BlindingFlash without a button boundary.
-        if runtime_shell.visible_flash_animation.is_some() && runtime_shell.field_notice.is_some() {
-            match runtime_shell.shell.presentation_snapshot() {
-                Ok(snapshot)
-                    if visible_field_dialogue_is_fully_revealed(&runtime_shell, &snapshot) =>
-                {
-                    runtime_shell.field_notice = None;
-                    if let Err(error) = play_pending_field_notice_sound(&mut runtime_shell) {
-                        record_visible_runtime_error(&mut runtime_shell, &error);
-                        runtime_shell.last_error = Some(error.to_string());
-                        return;
-                    }
-                    runtime_shell.visible_wait_sfx_boundary = true;
-                    runtime_shell.wait_play_sfx_completion =
-                        Some(VisibleWaitPlaySfxCompletion::FlashFieldMove);
-                    mark_runtime_snapshot_dirty(&mut runtime_shell);
-                    return;
-                }
-                Ok(_) => {}
-                Err(error) => {
-                    record_visible_runtime_error(&mut runtime_shell, &error);
-                    runtime_shell.last_error = Some(error.to_string());
-                    return;
-                }
+        match field_notice_effects::start_flash_sound(&mut runtime_shell) {
+            Ok(true) => return,
+            Ok(false) => {}
+            Err(error) => {
+                record_visible_runtime_error(&mut runtime_shell, &error);
+                runtime_shell.last_error = Some(error.to_string());
+                return;
             }
         }
         let field_item_found_text_ready = runtime_shell

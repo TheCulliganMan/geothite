@@ -1,0 +1,100 @@
+[
+  {
+    "map": "MnR19C00R01",
+    "metatile": [
+      12,
+      5
+    ],
+    "block": "02",
+    "collision": [
+      "FLOOR",
+      "FLOOR",
+      "FLOOR",
+      "FLOOR"
+    ]
+  },
+  {
+    "map": "MnR19C00R01",
+    "metatile": [
+      12,
+      4
+    ],
+    "block": "01",
+    "collision": [
+      "FLOOR",
+      "FLOOR",
+      "FLOOR",
+      "FLOOR"
+    ]
+  },
+  {
+    "map": "MnR19C00R01",
+    "metatile": [
+      12,
+      3
+    ],
+    "block": "01",
+    "collision": [
+      "FLOOR",
+      "FLOOR",
+      "FLOOR",
+      "FLOOR"
+    ]
+  },
+  {
+    "map": "MnDetroitLakes",
+    "metatile": [
+      12,
+      0
+    ],
+    "block": "05",
+    "collision": [
+      "WALL",
+      "WALL",
+      "WALL",
+      "WALL"
+    ]
+  },
+  {
+    "map": "MnDetroitLakes",
+    "metatile": [
+      12,
+      1
+    ],
+    "block": "01",
+    "collision": [
+      "FLOOR",
+      "FLOOR",
+      "FLOOR",
+      "FLOOR"
+    ]
+  },
+  {
+    "map": "MnDetroitLakes",
+    "metatile": [
+      12,
+      2
+    ],
+    "block": "01",
+    "collision": [
+      "FLOOR",
+      "FLOOR",
+      "FLOOR",
+      "FLOOR"
+    ]
+  },
+  {
+    "map": "MnDetroitLakes",
+    "metatile": [
+      12,
+      3
+    ],
+    "block": "01",
+    "collision": [
+      "FLOOR",
+      "FLOOR",
+      "FLOOR",
+      "FLOOR"
+    ]
+  }
+]

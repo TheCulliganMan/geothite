@@ -1,0 +1,99 @@
+{
+  "id": "MnR17Cave1F",
+  "template": "UnionCave1F",
+  "dimensions_metatiles": [
+    7,
+    8
+  ],
+  "width_metatiles": 7,
+  "height_metatiles": 8,
+  "tileset": "cave",
+  "border_block": 46,
+  "rows": [
+    "2e 2e 2e 2e 2e 2e 2e",
+    "2e 2e 04 05 06 2e 2e",
+    "2e 04 02 02 1e 2e 2e",
+    "2e 08 02 1d 1e 2e 2e",
+    "2e 20 02 02 22 2e 2e",
+    "2e 2e 08 02 06 2e 2e",
+    "2e 2e 20 21 07 22 2e",
+    "2e 2e 2e 2e 2e 2e 2e"
+  ],
+  "exits": [
+    [
+      9,
+      13
+    ]
+  ],
+  "clear_arrival": [
+    9,
+    12
+  ],
+  "exit_collision": "LADDER",
+  "exit_doors": [
+    [
+      10,
+      43
+    ]
+  ],
+  "residents": [],
+  "items": [
+    {
+      "id": "MN_R17_ITEM_04",
+      "item": "REVIVE",
+      "quantity": 1,
+      "flag": "EVENT_MN_R17_ITEM_04",
+      "access": "Optional granite den; native room return required",
+      "tile": [
+        5,
+        5
+      ]
+    }
+  ],
+  "signs": [],
+  "mandatory": false,
+  "purpose": "Small dry Border Pines shelter: circle a central granite fall, visit the existing lichen reader and collect the original northern Revive. Two connected arms replace the single cramped corridor; no new field gate, battle or service.",
+  "candidate_status": "Whole-room source review; not yet published.",
+  "review_contract": {
+    "quality_revision": "r17-talus-loop-v01",
+    "palette_group": "nite",
+    "native_stair_blocks": [],
+    "viewpoints": [
+      {
+        "id": "mouth",
+        "tile": [
+          9,
+          12
+        ]
+      },
+      {
+        "id": "reader",
+        "tile": [
+          7,
+          10
+        ]
+      },
+      {
+        "id": "west-arm",
+        "tile": [
+          5,
+          7
+        ]
+      },
+      {
+        "id": "north-cache",
+        "tile": [
+          4,
+          5
+        ]
+      },
+      {
+        "id": "east-arm",
+        "tile": [
+          8,
+          7
+        ]
+      }
+    ]
+  }
+}

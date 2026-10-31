@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "views_inspected": [
+    "woods-crossing",
+    "north-approach"
+  ],
+  "pixel_mismatches": 0
+}

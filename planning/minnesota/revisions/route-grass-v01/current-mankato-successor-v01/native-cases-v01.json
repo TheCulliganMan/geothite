@@ -1,0 +1,29 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+  "pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33",
+  "binary_sha256": "b8b2931aa932ff0be38bd7deb8386e84a67b61c771a6e6cda5b0ab9fe4c18813",
+  "results": [
+    {
+      "case": "native_town_exterior_all_facades_both_returns_and_continue",
+      "passed": true,
+      "log": "planning/minnesota/revisions/route-grass-v01/current-mankato-successor-v01/doors-native-v01.log"
+    },
+    {
+      "case": "native_town_exterior_public_paths_qualified_roads_and_water_boundary",
+      "passed": true,
+      "log": "planning/minnesota/revisions/route-grass-v01/current-mankato-successor-v01/public-native-v01.log"
+    },
+    {
+      "case": "native_town_exterior_each_gate_requirement_denial_and_free_inbound",
+      "passed": true,
+      "log": "planning/minnesota/revisions/route-grass-v01/current-mankato-successor-v01/guards-native-v01.log"
+    },
+    {
+      "case": "native_town_exterior_ledge_hops_reverse_denial_and_ordinary_returns",
+      "passed": true,
+      "log": "planning/minnesota/revisions/route-grass-v01/current-mankato-successor-v01/ledges-native-v01.log"
+    }
+  ],
+  "scope": "Fresh local fixtures; does not repeat production notebook interactions or establish earned campaign progress."
+}

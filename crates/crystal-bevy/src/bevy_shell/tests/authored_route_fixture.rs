@@ -75,15 +75,26 @@ impl RouteGrid {
     }
 
     pub fn new(runtime: &CrystalRuntime, spec: RouteSpec) -> Self {
-        Self::build(runtime, spec, false)
+        Self::build(runtime, spec, false, false)
     }
 
     /// Includes grass; populated journeys must settle encounters through input.
     pub fn new_with_grass(runtime: &CrystalRuntime, spec: RouteSpec) -> Self {
-        Self::build(runtime, spec, true)
+        Self::build(runtime, spec, true, false)
     }
 
-    fn build(runtime: &CrystalRuntime, spec: RouteSpec, include_grass: bool) -> Self {
+    /// Includes trainer sight cells for callers that play every native encounter.
+    /// Occupied actor tiles remain blocked; ordinary tours still avoid battles.
+    pub fn new_for_battles(runtime: &CrystalRuntime, spec: RouteSpec) -> Self {
+        Self::build(runtime, spec, true, true)
+    }
+
+    fn build(
+        runtime: &CrystalRuntime,
+        spec: RouteSpec,
+        include_grass: bool,
+        include_trainers: bool,
+    ) -> Self {
         let mut grid = Self {
             floor: BTreeSet::new(),
             blocked: BTreeSet::new(),
@@ -100,12 +111,23 @@ impl RouteGrid {
                     .data()
                     .assemble_map_module_from_compiled_payloads(&name)
                     .expect("published chunk");
+                // Regional revisions can give individual chunks their own art
+                // bank. Plan against the installed collision, as gameplay does.
+                let tileset = runtime
+                    .data()
+                    .tilesets
+                    .get(&module.attributes.tileset_name)
+                    .unwrap_or_else(|| {
+                        panic!(
+                            "missing installed tileset {} for {name}; fixture reference {}",
+                            module.attributes.tileset_name, spec.tileset
+                        )
+                    });
                 for y in 0..usize::from(module.attributes.height) * 2 {
                     for x in 0..usize::from(module.attributes.width) * 2 {
                         let block =
                             module.blocks[(y / 2) * usize::from(module.attributes.width) + x / 2];
-                        let kind = &runtime.data().tilesets[spec.tileset].collision
-                            [&format!("{block:02x}")][(y % 2) * 2 + x % 2];
+                        let kind = &tileset.collision[&format!("{block:02x}")][(y % 2) * 2 + x % 2];
                         if kind == "ICE" {
                             grid.ice.insert((col * 64 + x as i16, row * 48 + y as i16));
                         }
@@ -127,7 +149,7 @@ impl RouteGrid {
                 for o in module.objects {
                     let p = (col * 64 + o.x as i16, row * 48 + o.y as i16);
                     grid.blocked.insert(p);
-                    if o.object_type == "OBJECTTYPE_TRAINER" {
+                    if o.object_type == "OBJECTTYPE_TRAINER" && !include_trainers {
                         trainers.push((p, o));
                     }
                 }
@@ -629,19 +651,33 @@ fn authored_route_planner_preserves_dry_steps_and_skips_uncontrollable_ice_posit
 
 // Apply carried field medicine entirely through the production Pack UI.
 pub(super) fn use_super_potion(controller: &mut VisibleShellController) {
+    use_carried_healing_item(controller, "SUPER_POTION", false);
+}
+
+pub(super) fn use_revive(controller: &mut VisibleShellController) {
+    use_carried_healing_item(controller, "REVIVE", true);
+}
+
+fn use_carried_healing_item(controller: &mut VisibleShellController, item_id: &str, revive: bool) {
     finish_text(controller);
     let before_use = controller.snapshot().expect("carried medicine and party");
     let target_partner = before_use
         .party
         .slots
         .iter()
-        .position(|p| p.pokemon.hp > 0 && p.pokemon.hp < p.pokemon.max_hp)
+        .position(|p| {
+            if revive {
+                p.pokemon.hp == 0
+            } else {
+                p.pokemon.hp > 0 && p.pokemon.hp < p.pokemon.max_hp
+            }
+        })
         .expect("living injured partner");
     let quantity_before = before_use
         .bag
         .items
         .iter()
-        .find(|item| item.item_id == "SUPER_POTION")
+        .find(|item| item.item_id == item_id)
         .expect("carried Super Potion")
         .quantity;
     controller
@@ -676,7 +712,7 @@ pub(super) fn use_super_potion(controller: &mut VisibleShellController) {
         .items
         .iter()
         .filter(|s| s.quantity > 0)
-        .position(|s| s.item_id == "SUPER_POTION")
+        .position(|s| s.item_id == item_id)
         .expect("collected Super Potion");
     for _ in 0..16 {
         let current = controller
@@ -772,7 +808,7 @@ pub(super) fn use_super_potion(controller: &mut VisibleShellController) {
             .bag
             .items
             .iter()
-            .find(|s| s.item_id == "SUPER_POTION")
+            .find(|s| s.item_id == item_id)
             .map_or(0, |s| s.quantity),
         quantity_before - 1,
         "medicine not consumed"

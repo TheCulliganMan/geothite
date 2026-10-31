@@ -47,12 +47,16 @@ fn arrival() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
     assert!(s.battle.is_none() && s.ui.text.is_none() && s.ui.menu.is_none());
     assert!(matches!(
         s.overworld.map_name.as_str(),
-        "MnDuluthHarborWorkshop" | "MnGrandMarais" | CAMP | ROOM
+        "MnDuluthHarborWorkshop" | "MnGrandMarais" | "MnBoundaryIntake" | CAMP | ROOM
     ));
     (root, r, c)
 }
 
-fn walk_cedar(c: &mut VisibleShellController, r: &CrystalRuntime, target: (i16, i16)) {
+pub(in crate::bevy_shell::tests) fn walk_cedar(
+    c: &mut VisibleShellController,
+    r: &CrystalRuntime,
+    target: (i16, i16),
+) {
     use std::collections::{BTreeMap, BTreeSet, VecDeque};
 
     let map = &r.data().maps["MnMaraisCedarApproach"];
@@ -146,6 +150,7 @@ fn coast(c: &mut VisibleShellController, r: &CrystalRuntime, root: &AssetRoot) {
         walk_to(c, r, (8, 10));
         travel(c, GameButton::Down, "MnDuluth", (72, 42));
         care(c, r, "MnDuluth", (69, 32));
+        super::northstar_earned_services::duluth(c, r, root);
         let north = r.data().maps["MnDuluth"]
             .attributes
             .connections
@@ -326,6 +331,17 @@ fn departure(c: &mut VisibleShellController, r: &CrystalRuntime, root: &AssetRoo
 
 pub(super) fn finale() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
     let (root, r, mut c) = arrival();
+    if c.snapshot()
+        .expect("actual intake Continue")
+        .overworld
+        .map_name
+        == "MnBoundaryIntake"
+    {
+        assert!(event(&c, CHIEF) && event(&c, "EVENT_MN_ARC_LINK_SENT"));
+        super::northstar_arc_campaign::intake(&mut c, &root, &r);
+        departure(&mut c, &r, &root);
+        return (root, r, c);
+    }
     if event(&c, RESTORED) {
         departure(&mut c, &r, &root);
         return (root, r, c);

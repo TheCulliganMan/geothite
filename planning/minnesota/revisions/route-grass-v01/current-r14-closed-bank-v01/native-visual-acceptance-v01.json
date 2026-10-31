@@ -1,0 +1,52 @@
+{
+  "status": "PASS",
+  "pack_sha256": "e9f4108d3b0a35f04145e4928446c03845982e1f13d7ff8f34e383bd701757d5",
+  "actual_native_images_inspected": 4,
+  "source_native_pixel_mismatches": 0,
+  "views": [
+    {
+      "id": "west-closed-faces",
+      "core": [
+        21,
+        23
+      ],
+      "image": "planning/minnesota/renders/route-grass-v01/current-r14-closed-bank-v01/native-v01/west-closed-faces/production.png",
+      "sha256": "3b24d1b59197b4a2d5faede146bbac6f2083e6defde755afdccb90057325e3c7"
+    },
+    {
+      "id": "four-working-lanes",
+      "core": [
+        29,
+        23
+      ],
+      "image": "planning/minnesota/renders/route-grass-v01/current-r14-closed-bank-v01/native-v01/four-working-lanes/production.png",
+      "sha256": "8aa7b654121c2305eba1cc470229f28ecfb7db7b46eca5141c494f4aacda008c"
+    },
+    {
+      "id": "east-closed-faces",
+      "core": [
+        33,
+        23
+      ],
+      "image": "planning/minnesota/renders/route-grass-v01/current-r14-closed-bank-v01/native-v01/east-closed-faces/production.png",
+      "sha256": "8fa44deaa55e3efb798ec09e06995ccaf44c60aeb5a412b3e0bdbeb87e5db15d"
+    },
+    {
+      "id": "grassy-uphill-return",
+      "core": [
+        15,
+        24
+      ],
+      "image": "planning/minnesota/renders/route-grass-v01/current-r14-closed-bank-v01/native-v01/grassy-uphill-return/production.png",
+      "sha256": "5d3b50948bcecc613b12b65ee5ce46174af7018c539d7627f015703a65a847a0"
+    }
+  ],
+  "findings": [
+    "West forest closes the misleading drop faces without an open cliff lip into trees.",
+    "Four central dry drop lanes remain visible between existing pines and land on the lower path.",
+    "East canopy closes the remaining tree-backed faces and keeps the lakeside forest intact.",
+    "The western woodland approach contains continuous native encounter grass and correct player sprite priority."
+  ],
+  "whole_route_source_review": "planning/minnesota/renders/route-grass-v01/current-r14-closed-bank-v01/whole-route-candidate-v01.png",
+  "scope": "Four actual primary-checkout native2D GPU views inspected after exact full-frame comparison; no graphical edits or relaxed comparison masks. Whole route source candidate inspected separately."
+}

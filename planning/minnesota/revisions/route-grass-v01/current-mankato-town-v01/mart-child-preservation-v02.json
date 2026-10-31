@@ -1,0 +1,37 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-mankato-mart-v02.crystalpack",
+  "sha256": "697d7c2f964a14e5e2795d6e53e15ddec1cf1e228b842e78e5da88f07ab9c6d8",
+  "parent": {
+    "revision": "outdoor_terrain_integrated_revision",
+    "pack": "content-packs/minnesota-current-outdoor-composed-towns-v01.crystalpack",
+    "sha256": "fcac136e08876c25d5c8b6250fc7c0fa1aedbfc6977e165504505b2b4d02016f"
+  },
+  "identity": {
+    "stored": "73be5e3ba8a843741b1c29c510252ff2c15fd54642d0886fd1b9917d621f1cad",
+    "independently_recomputed": "73be5e3ba8a843741b1c29c510252ff2c15fd54642d0886fd1b9917d621f1cad",
+    "exact": true
+  },
+  "changed_metatiles": [
+    {
+      "at": [
+        18,
+        13
+      ],
+      "before": 22,
+      "after": 26
+    },
+    {
+      "at": [
+        19,
+        13
+      ],
+      "before": 51,
+      "after": 23
+    }
+  ],
+  "other_complete_maps_exact": 729,
+  "state_fair_exact": true,
+  "all_events_scripts_art_audio_encounters_exact": true,
+  "entire_normalized_pack_exact": true
+}

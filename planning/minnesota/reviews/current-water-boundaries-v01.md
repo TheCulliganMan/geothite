@@ -1,0 +1,15 @@
+# Current native water-boundary review
+
+Reviewed the selected Minneapolis citywide-cycling pack, SHA256 `504938ec2d3b0230674ddc5ae4f8ec13e9e713dd4189c1f128ff23112959b24a`, with `audit_reachable_surf_boundaries.py`. This is a collision/source review, separate from earned regional traversal. No map or selected-pack pointer changed for this review.
+
+The audit covers all 103 Minnesota exteriors, both authored actor positions and removed actors, and the closed/open geometry of the existing Minneapolis upper-pool gate. It respects native two-layer bridge axes and assumes Surf/Waterfall prerequisites for classification. With the gate open, the Winona water component includes St. Paul, Minneapolis and St. Cloud through 25 actual maps; 1,796 directed reciprocal Surf seam lanes exist across the audited exteriors. These counts describe native topology and do not replace the existing production-controller journey receipts.
+
+The 50 unconnected water-edge samples come from three decorative water components: Moorhead's 216 water tiles, and Route 2's separate 88- and 64-tile river sections. None has an ordinary land-to-water launch, even with all actors removed. Every nonwater neighbor of Moorhead's water is native BUOY collision, drawn as the continuous levee rail; every nonwater neighbor of Route 2's water is WALL, drawn as the enclosed banks/fences and bridge caps. Both complete native source maps were rendered and inspected. Adding a second barrier inside these sealed components would not fix a reachable escape.
+
+A separate incoming-entry check resolves all 12 warp landings into those two maps. Every landing is on land; no explicit script-map coordinate command targets their decorative water. The only runtime spawn in those two maps is Moorhead's ordinary road arrival at `(30,12)`. This is scoped evidence against alternate water entry, rather than a claim about arbitrary debug placement.
+
+Evidence remains ignored under `planning/minnesota/renders/reachable-surf-closure-v351/`: four-state `audit.json`, `decorative-entry-audit-v359.json`, and the two full-resolution source images. Earlier atlas water-to-neighbor-wall/grass records describe real neighboring shore cells; they must not be treated as unconnected open water.
+
+Moorhead's controller course passed on this reviewed pack with active original Minnesota VOYAGEAR as its QA Surf partner. It checks all 20 public levee positions, both real road seams, residents, signs, doors, room returns and reached Continue. The log is `moorhead-current-native-v377.log`. The earlier compile failures are retained separately. No foreign creature was added to game content. Minnesota's acceptance guide now explicitly requires native 2D source/production review, matching the repository's current presentation policy.
+
+This review finds no ordinary shoreline route into unconnected outside water in the audited state combinations. It does not establish every field-move gate, every saved override or earned statewide progression, nor does it complete broader map quality.

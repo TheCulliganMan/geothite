@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "id": "MN_R07",
+  "source_kind": "installed_route_exterior_review_contract",
+  "native_binding": {
+    "pack": "content-packs/minnesota-current-r07-grass-and-stairs-v02.crystalpack",
+    "pack_sha256": "7b0aea48dc662368dfa4a2482d6dce75c94f2b18e4f9f3ea2b94861f9c409316",
+    "content_identity": "ee9f8bafe7a31f4f7cb0aee63d6c51f39922edd2345583eb49374963741e6962"
+  },
+  "new_grass_quadrants": 32,
+  "route_grass_quadrants": 224,
+  "entrance_core": [
+    [
+      21,
+      4
+    ],
+    [
+      21,
+      9
+    ]
+  ],
+  "minimum_entrance_grass_steps": 2,
+  "pickup_core": [
+    25,
+    13
+  ],
+  "pickup_item": "REPEL",
+  "once_and_continue": true,
+  "active_native_hop_lanes": [],
+  "retired_historical_ledge_contracts": [
+    "SANDBANK_RETURN"
+  ],
+  "native_stair_metatile": [
+    8,
+    21
+  ],
+  "stair_block": "88",
+  "corrected_text_labels": [
+    "MN_R07_DROP_SIGNText",
+    "MN_R07_T02Won"
+  ],
+  "scope": "Current Route7 land traversal across both route chunks, both gate/town round trips, stair ascent/descent, Cut permissions and Ether once, new grass encounters/RUN, corrected three text programs and actual trainer victory, menus and Continue. Initial local qualifications are QA setup; no earned regional progress or new Surf proof is claimed.",
+  "both_route_chunks_walked_and_observed": true,
+  "native_stair_upper": [
+    17,
+    41
+  ],
+  "native_stair_lower": [
+    17,
+    44
+  ],
+  "neighbor_connections": [
+    {
+      "inside": [
+        "MnR07C00R00",
+        20,
+        0
+      ],
+      "neighbor": "MnLeechLake",
+      "out": "up",
+      "back": "down"
+    },
+    {
+      "inside": [
+        "MnR07C00R01",
+        20,
+        47
+      ],
+      "neighbor": "MnBrainerd",
+      "out": "down",
+      "back": "up"
+    }
+  ]
+}

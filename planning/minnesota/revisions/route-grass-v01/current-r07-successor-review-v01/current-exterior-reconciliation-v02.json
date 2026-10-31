@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "selected_revision": "route_grass_r07_current_contract_revision",
+  "gameplay_pack_unchanged": true,
+  "both_route_and_neighbor_maps_exact_to_tested_child": true,
+  "obsolete_ledge_ids_retired": [
+    "SANDBANK_RETURN"
+  ],
+  "goal_complete": false
+}

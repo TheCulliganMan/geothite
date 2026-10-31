@@ -1,0 +1,94 @@
+{
+  "id": "minnesota-castorock-incisor-gallery-v1",
+  "map": "MnR03Cave1F",
+  "tileset": "cave",
+  "dimensions_metatiles": [
+    14,
+    8
+  ],
+  "rows": [
+    "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e",
+    "2e 2e 04 05 05 05 06 2e 2e 04 05 06 2e 2e",
+    "2e 04 02 0a 34 08 0a 2e 04 02 34 0a 2e 2e",
+    "2e 3e 02 0a 2d 02 0d 02 02 3e 3d 0a 2e 2e",
+    "2e 2e 20 07 2d 2e 2e 2e 08 32 33 0a 2e 2e",
+    "2e 2e 2e 2e 2e 2e 2e 2e 20 02 02 02 06 2e",
+    "2e 2e 2e 2e 2e 2e 2e 2e 2e 20 21 21 22 2e",
+    "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e"
+  ],
+  "changed_original_blocks": [
+    [
+      5,
+      3,
+      "20",
+      "02"
+    ],
+    [
+      6,
+      3,
+      "22",
+      "0d"
+    ],
+    [
+      7,
+      3,
+      "2e",
+      "02"
+    ]
+  ],
+  "entrance_preserved": [
+    7,
+    9
+  ],
+  "initial_arrival": [
+    7,
+    8
+  ],
+  "boulder": [
+    13,
+    6
+  ],
+  "boulder_approach": [
+    12,
+    6
+  ],
+  "boulder_pushes_to_junction": 2,
+  "creature": [
+    21,
+    11
+  ],
+  "creature_approach": [
+    21,
+    10
+  ],
+  "level": 24,
+  "clues": [
+    [
+      2,
+      5
+    ],
+    [
+      20,
+      4
+    ],
+    [
+      23,
+      13
+    ]
+  ],
+  "clue_approaches": [
+    [
+      3,
+      5
+    ],
+    [
+      19,
+      4
+    ],
+    [
+      23,
+      12
+    ]
+  ],
+  "contract": "Keep the western pool, original entrance, walker and pickup. Strength at the Current Badge opens a single-tile rock throat. A loop around a tooth-marked pillar passes a closed seep pool and a narrow lower fossil bed. Three acknowledged observations reveal a living Castorock remnant. Decline, flee and knockout allow a later visit; only actual capture consumes the encounter. All water and walking borders remain closed."
+}

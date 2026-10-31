@@ -1,0 +1,603 @@
+{
+  "schema_version": 2,
+  "id": "MnMankato",
+  "tileset": "johto",
+  "compiled_tileset": "johto",
+  "dimensions_metatiles": [
+    24,
+    18
+  ],
+  "shore_fitting": "johto_8_neighbors",
+  "reject_cliff_cuts": true,
+  "source_pixels_modified": false,
+  "layers": [
+    {
+      "name": "Sheltered terrace and garden clearing",
+      "kind": "polygon",
+      "points": [
+        [
+          3,
+          3
+        ],
+        [
+          10,
+          3
+        ],
+        [
+          10,
+          2
+        ],
+        [
+          14,
+          2
+        ],
+        [
+          14,
+          4
+        ],
+        [
+          20,
+          4
+        ],
+        [
+          20,
+          8
+        ],
+        [
+          22,
+          8
+        ],
+        [
+          22,
+          11
+        ],
+        [
+          20,
+          11
+        ],
+        [
+          20,
+          15
+        ],
+        [
+          17,
+          15
+        ],
+        [
+          17,
+          16
+        ],
+        [
+          7,
+          16
+        ],
+        [
+          7,
+          14
+        ],
+        [
+          3,
+          14
+        ]
+      ],
+      "material": "lawn"
+    },
+    {
+      "name": "Upper gym court",
+      "kind": "rect",
+      "bounds": [
+        3,
+        6,
+        9,
+        8
+      ],
+      "material": "floor"
+    },
+    {
+      "name": "Pines shelter the back of the gym court",
+      "kind": "polygon",
+      "points": [
+        [
+          8,
+          3
+        ],
+        [
+          10,
+          3
+        ],
+        [
+          10,
+          5
+        ],
+        [
+          11,
+          5
+        ],
+        [
+          11,
+          6
+        ],
+        [
+          8,
+          6
+        ]
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "West bank narrows toward the lower lane",
+      "kind": "rect",
+      "bounds": [
+        3,
+        10,
+        5,
+        13
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Eastern arrival pine shoulder",
+      "kind": "rect",
+      "bounds": [
+        19,
+        10,
+        23,
+        12
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Eastern prairie arrival",
+      "kind": "path",
+      "points": [
+        [
+          22,
+          9
+        ],
+        [
+          17,
+          9
+        ],
+        [
+          17,
+          11
+        ],
+        [
+          12,
+          11
+        ],
+        [
+          12,
+          7
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "name": "North city departure",
+      "kind": "path",
+      "points": [
+        [
+          12,
+          1
+        ],
+        [
+          12,
+          6
+        ],
+        [
+          10,
+          6
+        ],
+        [
+          10,
+          7
+        ],
+        [
+          6,
+          7
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "name": "Clinic entrance spur",
+      "kind": "path",
+      "points": [
+        [
+          12,
+          7
+        ],
+        [
+          15,
+          7
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "name": "Lower garden and market lane",
+      "kind": "path",
+      "points": [
+        [
+          5,
+          10
+        ],
+        [
+          5,
+          12
+        ],
+        [
+          10,
+          12
+        ],
+        [
+          10,
+          14
+        ],
+        [
+          18,
+          14
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "name": "Terrace return to market",
+      "kind": "path",
+      "points": [
+        [
+          12,
+          11
+        ],
+        [
+          12,
+          12
+        ],
+        [
+          17,
+          12
+        ],
+        [
+          17,
+          14
+        ],
+        [
+          18,
+          14
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "name": "Terrace hop approach",
+      "kind": "path",
+      "points": [
+        [
+          5,
+          7
+        ],
+        [
+          5,
+          8
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "name": "Forest pocket beside the return",
+      "kind": "rect",
+      "bounds": [
+        10,
+        9,
+        12,
+        11
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Southwest grove beside lane",
+      "kind": "rect",
+      "bounds": [
+        7,
+        13,
+        9,
+        15
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "University flower bed west",
+      "kind": "rect",
+      "bounds": [
+        13,
+        13,
+        14,
+        15
+      ],
+      "material": "flowers"
+    },
+    {
+      "name": "University flower bed east",
+      "kind": "rect",
+      "bounds": [
+        15,
+        13,
+        16,
+        15
+      ],
+      "material": "flowers"
+    },
+    {
+      "name": "Upper clinic flowers",
+      "kind": "rect",
+      "bounds": [
+        18,
+        7,
+        20,
+        8
+      ],
+      "material": "flowers"
+    },
+    {
+      "name": "One-way terrace drop",
+      "kind": "block_rect",
+      "bounds": [
+        3,
+        9,
+        11,
+        10
+      ],
+      "block": "57"
+    },
+    {
+      "name": "Eastern end of low bank",
+      "kind": "point",
+      "position": [
+        11,
+        9
+      ],
+      "block": "4b"
+    },
+    {
+      "name": "Gym complete facade",
+      "kind": "point",
+      "position": [
+        4,
+        4
+      ],
+      "block": "18"
+    },
+    {
+      "name": "Gym complete facade",
+      "kind": "point",
+      "position": [
+        5,
+        4
+      ],
+      "block": "1f"
+    },
+    {
+      "name": "Gym complete facade",
+      "kind": "point",
+      "position": [
+        6,
+        4
+      ],
+      "block": "19"
+    },
+    {
+      "name": "Gym complete facade",
+      "kind": "point",
+      "position": [
+        4,
+        5
+      ],
+      "block": "1c"
+    },
+    {
+      "name": "Gym complete facade",
+      "kind": "point",
+      "position": [
+        5,
+        5
+      ],
+      "block": "1d"
+    },
+    {
+      "name": "Gym complete facade",
+      "kind": "point",
+      "position": [
+        6,
+        5
+      ],
+      "block": "1e"
+    },
+    {
+      "name": "Clinic complete facade",
+      "kind": "point",
+      "position": [
+        15,
+        5
+      ],
+      "block": "18"
+    },
+    {
+      "name": "Clinic complete facade",
+      "kind": "point",
+      "position": [
+        16,
+        5
+      ],
+      "block": "19"
+    },
+    {
+      "name": "Clinic complete facade",
+      "kind": "point",
+      "position": [
+        15,
+        6
+      ],
+      "block": "1a"
+    },
+    {
+      "name": "Clinic complete facade",
+      "kind": "point",
+      "position": [
+        16,
+        6
+      ],
+      "block": "1b"
+    },
+    {
+      "name": "Mart complete facade",
+      "kind": "point",
+      "position": [
+        18,
+        12
+      ],
+      "block": "18"
+    },
+    {
+      "name": "Mart complete facade",
+      "kind": "point",
+      "position": [
+        19,
+        12
+      ],
+      "block": "19"
+    },
+    {
+      "name": "Mart complete facade",
+      "kind": "point",
+      "position": [
+        18,
+        13
+      ],
+      "block": "16"
+    },
+    {
+      "name": "Mart complete facade",
+      "kind": "point",
+      "position": [
+        19,
+        13
+      ],
+      "block": "33"
+    },
+    {
+      "name": "Gym sign",
+      "kind": "point",
+      "position": [
+        8,
+        6
+      ],
+      "block": "45"
+    },
+    {
+      "name": "Clinic sign",
+      "kind": "point",
+      "position": [
+        17,
+        6
+      ],
+      "block": "45"
+    },
+    {
+      "name": "Mart sign",
+      "kind": "point",
+      "position": [
+        20,
+        13
+      ],
+      "block": "45"
+    },
+    {
+      "name": "Garden sign",
+      "kind": "point",
+      "position": [
+        12,
+        14
+      ],
+      "block": "45"
+    },
+    {
+      "name": "Complete native mart wall and endcap repair",
+      "kind": "point",
+      "position": [
+        18,
+        13
+      ],
+      "block": "1a"
+    },
+    {
+      "name": "Complete native mart wall and endcap repair",
+      "kind": "point",
+      "position": [
+        19,
+        13
+      ],
+      "block": "17"
+    },
+    {
+      "name": "Existing published reciprocal road mouth",
+      "kind": "point",
+      "position": [
+        12,
+        0
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Existing published reciprocal road mouth",
+      "kind": "point",
+      "position": [
+        23,
+        9
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Native pines close unusable bank at3,9",
+      "kind": "point",
+      "position": [
+        3,
+        9
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Native pines close unusable bank at4,9",
+      "kind": "point",
+      "position": [
+        4,
+        9
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Native pines close unusable bank at10,9",
+      "kind": "point",
+      "position": [
+        10,
+        9
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Native pines close unusable bank at11,9",
+      "kind": "point",
+      "position": [
+        11,
+        9
+      ],
+      "block": "05"
+    }
+  ]
+}

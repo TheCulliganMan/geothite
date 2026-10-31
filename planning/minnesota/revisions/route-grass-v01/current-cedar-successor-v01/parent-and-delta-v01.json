@@ -1,0 +1,12 @@
+{
+  "status": "CURRENT_CEDAR_SUCCESSOR_REVIEW_STARTED",
+  "revision": "route_grass_r14_forest_bank_revision",
+  "pack": "content-packs/minnesota-current-r14-forest-bank-v01.crystalpack",
+  "sha256": "e9f4108d3b0a35f04145e4928446c03845982e1f13d7ff8f34e383bd701757d5",
+  "old_acceptance": "planning/minnesota/revisions/route-grass-v01/current-cedar-grass-review-v01/acceptance.json",
+  "old_pack": "content-packs/minnesota-current-cedar-warmth-r20-v01.crystalpack",
+  "deltas": [],
+  "attributes_exact": true,
+  "objects_exact": true,
+  "events_exact": true
+}

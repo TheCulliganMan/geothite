@@ -1454,7 +1454,10 @@ impl GameDataSet {
             self.wild_battle_music_for_map_time(map_name, state.time.time_of_day)?
         };
         let catch_tutorial = request.battle_type == "BATTLETYPE_TUTORIAL";
-        if !catch_tutorial && self.wild_challenge.is_some() {
+        if !catch_tutorial
+            && self.wild_challenge.is_some()
+            && !crate::city_note_mimics::preserves_authored_level(map_name, source_script)
+        {
             if request.battle_type == "BATTLETYPE_ROAMING" {
                 let slot = state.roaming_pokemon.iter().position(|r| r.species.as_deref() == Some(request.species.as_str())).context("challenge roaming species is inactive")?;
                 request.level = self.scale_challenge_roamer(state, slot, 2)?;

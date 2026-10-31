@@ -1,0 +1,111 @@
+{
+  "status": "SOURCE_CANDIDATE_NOT_PUBLISHED",
+  "parent": {
+    "revision": "route_grass_r09_southwest_revision",
+    "pack": "content-packs/minnesota-current-r09-southwest-grass-v01.crystalpack",
+    "pack_sha256": "0d04630cac6239d4e4f544d73fc3c32af0d33c5c680605c32f41c36cc9f30880",
+    "maps": [
+      "MnR11C00R00",
+      "MnR11C00R01",
+      "MnR11C00R02",
+      "MnR11C00R03",
+      "MnR11C01R00",
+      "MnR11C01R01",
+      "MnR11C01R02",
+      "MnR11C01R03"
+    ]
+  },
+  "changes": [
+    {
+      "metatile": [
+        17,
+        9
+      ],
+      "before": "01",
+      "after": "03"
+    },
+    {
+      "metatile": [
+        18,
+        9
+      ],
+      "before": "02",
+      "after": "03"
+    },
+    {
+      "metatile": [
+        17,
+        10
+      ],
+      "before": "01",
+      "after": "03"
+    },
+    {
+      "metatile": [
+        18,
+        10
+      ],
+      "before": "02",
+      "after": "03"
+    },
+    {
+      "metatile": [
+        18,
+        11
+      ],
+      "before": "02",
+      "after": "03"
+    }
+  ],
+  "new_grass_quadrants": 20,
+  "existing_grass_removed": 0,
+  "native_movement_measurements": [
+    {
+      "start": [
+        35,
+        17
+      ],
+      "end": [
+        35,
+        25
+      ],
+      "before": {
+        "status": "MEASURED",
+        "grass_steps": 0,
+        "grass_quadrants_in_contract": 0,
+        "ice_quadrants": 0
+      },
+      "after": {
+        "status": "MEASURED",
+        "grass_steps": 4,
+        "grass_quadrants_in_contract": 20,
+        "ice_quadrants": 0
+      }
+    },
+    {
+      "start": [
+        35,
+        25
+      ],
+      "end": [
+        35,
+        17
+      ],
+      "before": {
+        "status": "MEASURED",
+        "grass_steps": 0,
+        "grass_quadrants_in_contract": 0,
+        "ice_quadrants": 0
+      },
+      "after": {
+        "status": "MEASURED",
+        "grass_steps": 4,
+        "grass_quadrants_in_contract": 20,
+        "ice_quadrants": 0
+      }
+    }
+  ],
+  "coastal_ice_quadrants": 0,
+  "all_cliffs_stairs_water_houses_actors_scripts_and_signs_unchanged": true,
+  "scope": "Whole-route source rendering inspected; native publication/gameplay still required."
+}

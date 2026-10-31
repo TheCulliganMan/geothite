@@ -20,12 +20,28 @@ def current_layout(pack_path, explicit):
         return explicit
     world = json.loads((ROOT / 'planning/minnesota/world.json').read_text())
     selected = world.get(world.get('active_local_review_revision'), {})
-    index = selected.get('authoring_source_index')
-    if index and (ROOT / selected['pack']).resolve() == pack_path.resolve():
+    if selected.get('pack') and (ROOT / selected['pack']).resolve() == pack_path.resolve():
         assert hashlib.sha256(pack_path.read_bytes()).hexdigest() == selected['pack_sha256']
-        sources = json.loads((ROOT / index).read_text())
-        assert sources['pack_sha256'] == selected['pack_sha256']
-        return ROOT / sources['current_layouts']['MnDuluth']['path']
+        owner = selected
+        visited = set()
+        while owner:
+            index = owner.get('authoring_source_index')
+            if index:
+                index_path = ROOT / index
+                if owner.get('authoring_source_index_sha256'):
+                    assert hashlib.sha256(index_path.read_bytes()).hexdigest() == owner[
+                        'authoring_source_index_sha256']
+                sources = json.loads(index_path.read_text())
+                assert sources['pack_sha256'] == owner['pack_sha256']
+                layout = sources['current_layouts']['MnDuluth']
+                path = ROOT / layout['path']
+                assert hashlib.sha256(path.read_bytes()).hexdigest() == layout['sha256'], (
+                    'Recorded Duluth source changed; use --layout for an explicit draft preview')
+                return path
+            parent = owner.get('parent_revision')
+            assert parent not in visited, 'Cycle in selected authoring-source ancestry'
+            visited.add(parent)
+            owner = world.get(parent, {})
     return ROOT / 'planning/minnesota/towns/MnDuluth.layout.json'
 
 
@@ -64,8 +80,13 @@ def main():
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--watch', action='store_true')
     args = parser.parse_args()
+    explicit_layout = args.layout is not None
     args.layout = current_layout(args.pack, args.layout)
     pack = load_pack(args.pack)
+    if not explicit_layout:
+        layout = json.loads(args.layout.read_text())
+        assert layout_blocks(layout) == pack['data']['maps']['MnDuluth']['blocks'], (
+            'Native Duluth differs from the default source; provide its current --layout')
     art = SourceArt(pack)
     previous = None
     while True:

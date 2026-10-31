@@ -680,10 +680,7 @@ fn duluth_city_controller_q07_success_sets_only_signal_and_repeat_survives_conti
     std::fs::remove_file(path).expect("remove own temporary save, never a render");
 }
 
-#[test]
-#[ignore = "requires published Duluth hill-harbor revision"]
-fn duluth_hill_harbor_all_38_paired_returns_and_native_stair() {
-    let (root, runtime) = load();
+fn check_duluth_38_paired_returns(root: &AssetRoot, runtime: &CrystalRuntime) {
     let city = runtime
         .data()
         .assemble_map_module_from_compiled_payloads(CITY)
@@ -727,7 +724,7 @@ fn duluth_hill_harbor_all_38_paired_returns_and_native_stair() {
                 exit.target_warp_id,
                 i16::try_from(passive.index).expect("city passive index")
             );
-            let mut controller = fixture(&root, &runtime, Setup::at(CITY, outside));
+            let mut controller = fixture(root, runtime, Setup::at(CITY, outside));
             enter(
                 &mut controller,
                 &room.id,
@@ -738,7 +735,7 @@ fn duluth_hill_harbor_all_38_paired_returns_and_native_stair() {
             );
             indoor_walk(
                 &mut controller,
-                &runtime,
+                runtime,
                 (
                     i16::try_from(exit.x).expect("exit x"),
                     i16::try_from(exit.y).expect("exit y"),
@@ -755,6 +752,20 @@ fn duluth_hill_harbor_all_38_paired_returns_and_native_stair() {
             assert_at(&mut controller, CITY, outside);
         }
     }
+}
+
+#[test]
+#[ignore = "requires the current expanded Duluth pack"]
+fn duluth_hill_harbor_current_38_paired_returns() {
+    let (root, runtime) = load();
+    check_duluth_38_paired_returns(&root, &runtime);
+}
+
+#[test]
+#[ignore = "requires the historical hill-harbor stair course pack"]
+fn duluth_hill_harbor_all_38_paired_returns_and_native_stair() {
+    let (root, runtime) = load();
+    check_duluth_38_paired_returns(&root, &runtime);
     let mut controller = fixture(&root, &runtime, Setup::at(CITY, (54, 37)));
     move_to(&mut controller, GameButton::Down, (54, 42));
     move_to(&mut controller, GameButton::Up, (54, 37));

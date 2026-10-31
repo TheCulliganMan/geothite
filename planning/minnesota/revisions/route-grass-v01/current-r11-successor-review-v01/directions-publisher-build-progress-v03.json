@@ -1,0 +1,51 @@
+{
+  "pid": 88710,
+  "source_sha256": {
+    "crates/crystal-assets/src/r11_stair_guidance.rs": "b4a51d87621db817d31f3e7006326b45407f47bf554653e59585e9745ad29f15",
+    "crates/crystal-assets/src/bin/revise_r11_stair_guidance.rs": "f973596c294ee4533ae3aa27ad480d684175a9175f67221a8e9b047f825734d0"
+  },
+  "steps": [
+    {
+      "step": "publisher",
+      "command": [
+        "cargo",
+        "build",
+        "--profile",
+        "wasm-dev",
+        "--locked",
+        "--config",
+        "profile.wasm-dev.package.crystal-assets.opt-level=0",
+        "-p",
+        "crystal-assets",
+        "--bin",
+        "revise_r11_stair_guidance"
+      ],
+      "exit_code": 0,
+      "log": ".local/route-grass-review/r11-stair-guidance-grass-publisher-v03.log",
+      "outputs": [
+        {
+          "path": ".local/route-grass-review/portable-r11-stair-guidance-grass-tools-v03/revise_r11_stair_guidance",
+          "sha256": "134968f42577d487810568acf5cb4c94f6f7dfad33b11b4cf9a7d99316d0e2a2"
+        }
+      ]
+    },
+    {
+      "step": "assets-all-target-clippy",
+      "exit_code": 0,
+      "log": ".local/research-reward-clippy-v23.log",
+      "shared_receipt": "planning/minnesota/revisions/route-grass-v01/current-r11-successor-review-v01/directions-current-shared-lint-v03.json",
+      "command": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "-p",
+        "crystal-assets",
+        "-p",
+        "crystal-bevy",
+        "--all-targets",
+        "--features",
+        "crystal-assets/test-fixtures,crystal-bevy/location-tester"
+      ]
+    }
+  ]
+}

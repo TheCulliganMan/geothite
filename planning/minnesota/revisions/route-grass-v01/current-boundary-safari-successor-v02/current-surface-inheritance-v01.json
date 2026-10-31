@@ -1,0 +1,40 @@
+{
+  "status": "PASS",
+  "selected_revision": "r10_survey_spurs_revision",
+  "pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+  "pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33",
+  "maps": [
+    {
+      "map": "MnBoundarySafariC00R00",
+      "complete_map_exact": true,
+      "used_pixels_and_collision_exact": true
+    },
+    {
+      "map": "MnBoundarySafariC00R01",
+      "complete_map_exact": true,
+      "used_pixels_and_collision_exact": true
+    },
+    {
+      "map": "MnBoundarySafariC00R02",
+      "complete_map_exact": true,
+      "used_pixels_and_collision_exact": true
+    },
+    {
+      "map": "MnBoundarySafariC01R00",
+      "complete_map_exact": true,
+      "used_pixels_and_collision_exact": true
+    },
+    {
+      "map": "MnBoundarySafariC01R01",
+      "complete_map_exact": true,
+      "used_pixels_and_collision_exact": true
+    },
+    {
+      "map": "MnBoundarySafariC01R02",
+      "complete_map_exact": true,
+      "used_pixels_and_collision_exact": true
+    }
+  ],
+  "prior_acceptance": "planning/minnesota/revisions/route-grass-v01/current-boundary-safari-successor-v01/acceptance.json",
+  "scope": "Exact six authored maps and used art/collision; fresh trainer/wild/reward gameplay recorded separately."
+}

@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "command": [
+    "cargo",
+    "clippy",
+    "--locked",
+    "--profile",
+    "wasm-dev",
+    "-p",
+    "crystal-bevy",
+    "--all-targets"
+  ],
+  "exit_code": 0,
+  "log": ".local/route-grass-review/detroit-current-bevy-all-target-clippy-v01.log",
+  "source_sha256": {
+    "crates/crystal-bevy/src/bevy_shell/tests/detroit_lakes.rs": "a1231e8b15db31d235197e4d22c65670ee651b384e1f3acf00bd25c15e30bd3a"
+  },
+  "owned_leaf_format_exit_code": 0
+}

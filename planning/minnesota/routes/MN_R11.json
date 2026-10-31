@@ -1342,6 +1342,31 @@
         "RYAN'S HOUSE",
         "BAPTISM RIVER"
       ]
+    },
+    {
+      "id": "MN_NORTH_SHORE_PIE_SHOP_SIGN",
+      "tile": [
+        36,
+        84
+      ],
+      "lines": [
+        "NORTH SHORE PIES",
+        "Fresh from the",
+        "oven every day."
+      ]
+    },
+    {
+      "id": "MN_NORTH_SHORE_SMOKEHOUSE_SIGN",
+      "tile": [
+        36,
+        154
+      ],
+      "lines": [
+        "NORTH SHORE",
+        "SMOKEHOUSE",
+        "Slow smoke.",
+        "Lake air."
+      ]
     }
   ],
   "interiors": [
@@ -1454,6 +1479,148 @@
       ],
       "items": [],
       "signs": []
+    },
+    {
+      "id": "MnNorthShorePieShop",
+      "template": "OlivineCafe",
+      "dimensions_metatiles": [
+        4,
+        4
+      ],
+      "rows": [
+        "02 02 02 13",
+        "2a 15 06 16",
+        "01 19 01 17",
+        "2a 0c 01 19"
+      ],
+      "exits": [
+        [
+          2,
+          7
+        ],
+        [
+          3,
+          7
+        ]
+      ],
+      "passive_arrival": {
+        "index": 3,
+        "tile": [
+          3,
+          6
+        ]
+      },
+      "clear_arrival": [
+        3,
+        6
+      ],
+      "border_block": 0,
+      "exit_collision": "WARP_CARPET_DOWN",
+      "residents": [
+        {
+          "id": "MN_SHORE_BAKER",
+          "sprite": "SPRITE_GRANNY",
+          "tile": [
+            5,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "A good crust is",
+            "flaky and golden.",
+            "Each pie cools",
+            "beside the window."
+          ]
+        },
+        {
+          "id": "MN_SHORE_PIE_GUEST",
+          "sprite": "SPRITE_LASS",
+          "tile": [
+            4,
+            5
+          ],
+          "facing": "south",
+          "lines": [
+            "I always stop for",
+            "pie on this road.",
+            "Then I take the",
+            "long way home."
+          ]
+        }
+      ],
+      "items": [],
+      "signs": []
+    },
+    {
+      "id": "MnNorthShoreSmokehouse",
+      "template": "OlivineCafe",
+      "dimensions_metatiles": [
+        5,
+        4
+      ],
+      "rows": [
+        "02 02 02 02 13",
+        "2a 15 01 06 16",
+        "01 19 01 01 17",
+        "2a 0c 01 01 19"
+      ],
+      "exits": [
+        [
+          2,
+          7
+        ],
+        [
+          3,
+          7
+        ]
+      ],
+      "passive_arrival": {
+        "index": 3,
+        "tile": [
+          3,
+          6
+        ]
+      },
+      "clear_arrival": [
+        3,
+        6
+      ],
+      "border_block": 0,
+      "exit_collision": "WARP_CARPET_DOWN",
+      "residents": [
+        {
+          "id": "MN_SHORE_SMOKER",
+          "sprite": "SPRITE_FISHER",
+          "tile": [
+            7,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "Low heat, then",
+            "plenty of time.",
+            "The lake wind does",
+            "the rest for us."
+          ]
+        },
+        {
+          "id": "MN_SHORE_SMOKE_GUEST",
+          "sprite": "SPRITE_POKEFAN_M",
+          "tile": [
+            4,
+            5
+          ],
+          "facing": "south",
+          "lines": [
+            "Follow the smell",
+            "off the road.",
+            "That is how I",
+            "found this place."
+          ]
+        }
+      ],
+      "items": [],
+      "signs": []
     }
   ],
   "doors": [
@@ -1496,6 +1663,44 @@
       ],
       "collision": "DOOR",
       "return_target_warp": 3
+    },
+    {
+      "warp_index": 1,
+      "return_warp_index": 2,
+      "tile": [
+        31,
+        83
+      ],
+      "target": "MnNorthShorePieShop",
+      "target_warp": 3,
+      "return_tile": [
+        31,
+        84
+      ],
+      "arrival_tile": [
+        31,
+        84
+      ],
+      "collision": "DOOR"
+    },
+    {
+      "warp_index": 1,
+      "return_warp_index": 2,
+      "tile": [
+        35,
+        151
+      ],
+      "target": "MnNorthShoreSmokehouse",
+      "target_warp": 3,
+      "return_tile": [
+        35,
+        152
+      ],
+      "arrival_tile": [
+        35,
+        152
+      ],
+      "collision": "DOOR"
     }
   ],
   "viewpoints": [
@@ -2953,5 +3158,12 @@
       "destination_warp": 3,
       "scope": "Already installed by interior-life publication; unchanged by grass terrain revision."
     }
-  ]
+  ],
+  "north_shore_shops": {
+    "source": "landmarks/north-shore-shops.json",
+    "runbook": "landmarks/north-shore-shops-v01/README.md",
+    "grass_walking_tiles": 92,
+    "species_specific_additions": "deferred",
+    "status": "Published native shops; production input, preservation, source/native review and all 377 audio programs pass."
+  }
 }

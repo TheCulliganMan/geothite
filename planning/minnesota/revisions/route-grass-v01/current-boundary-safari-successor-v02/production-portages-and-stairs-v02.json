@@ -1,0 +1,206 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+  "sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33",
+  "calls": 2302,
+  "portages": [
+    {
+      "id": "REED_POCKET_PORTAGE",
+      "minimum": 4,
+      "forward_steps": 12,
+      "forward_grass": 4,
+      "reverse_steps": 12,
+      "reverse_grass": 4,
+      "both_real_launches_and_dismounts": true
+    },
+    {
+      "id": "PINE_POCKET_PORTAGE",
+      "minimum": 4,
+      "forward_steps": 7,
+      "forward_grass": 4,
+      "reverse_steps": 7,
+      "reverse_grass": 4,
+      "both_real_launches_and_dismounts": true
+    },
+    {
+      "id": "NORTH_PINE_ARMS_PORTAGE",
+      "minimum": 8,
+      "forward_steps": 23,
+      "forward_grass": 9,
+      "reverse_steps": 23,
+      "reverse_grass": 8,
+      "both_real_launches_and_dismounts": true
+    },
+    {
+      "id": "ISLE_OF_PINES_PORTAGE",
+      "minimum": 6,
+      "forward_steps": 32,
+      "forward_grass": 6,
+      "reverse_steps": 32,
+      "reverse_grass": 6,
+      "both_real_launches_and_dismounts": true
+    },
+    {
+      "id": "PALISADE_GRASS_PORTAGE",
+      "minimum": 6,
+      "forward_steps": 45,
+      "forward_grass": 6,
+      "reverse_steps": 45,
+      "reverse_grass": 6,
+      "both_real_launches_and_dismounts": true
+    },
+    {
+      "id": "NORTHWIND_GRASS_PORTAGE",
+      "minimum": 6,
+      "forward_steps": 25,
+      "forward_grass": 6,
+      "reverse_steps": 25,
+      "reverse_grass": 6,
+      "both_real_launches_and_dismounts": true
+    }
+  ],
+  "stairs": [
+    {
+      "metatile": [
+        40,
+        58
+      ],
+      "both_directions": true,
+      "side_wall_denied": true
+    },
+    {
+      "metatile": [
+        96,
+        18
+      ],
+      "both_directions": true,
+      "side_wall_denied": true
+    },
+    {
+      "metatile": [
+        90,
+        26
+      ],
+      "both_directions": true,
+      "side_wall_denied": true
+    },
+    {
+      "metatile": [
+        110,
+        32
+      ],
+      "both_directions": true,
+      "side_wall_denied": true
+    },
+    {
+      "metatile": [
+        106,
+        80
+      ],
+      "both_directions": true,
+      "side_wall_denied": true
+    }
+  ],
+  "visited_maps": [
+    "MnBoundarySafariC00R00",
+    "MnBoundarySafariC00R01",
+    "MnBoundarySafariC01R00",
+    "MnBoundarySafariC01R01"
+  ],
+  "native_chunk_seams": [
+    [
+      "MnBoundarySafariC00R00",
+      "MnBoundarySafariC00R01"
+    ],
+    [
+      "MnBoundarySafariC00R00",
+      "MnBoundarySafariC01R00"
+    ],
+    [
+      "MnBoundarySafariC00R01",
+      "MnBoundarySafariC00R00"
+    ],
+    [
+      "MnBoundarySafariC00R01",
+      "MnBoundarySafariC01R01"
+    ],
+    [
+      "MnBoundarySafariC01R00",
+      "MnBoundarySafariC00R00"
+    ],
+    [
+      "MnBoundarySafariC01R00",
+      "MnBoundarySafariC01R01"
+    ],
+    [
+      "MnBoundarySafariC01R01",
+      "MnBoundarySafariC00R01"
+    ]
+  ],
+  "surf_launches": 25,
+  "dismounts": 25,
+  "source_save": ".local/route-grass-review/current-boundary-safari-successor-saves-v02/pine-portage-reached.crystalsave",
+  "source_sha256": "de6a23353723562f83d3905cb702a31418b2744a9111f290f3c204d9cfff95f1",
+  "input_source_unchanged": true,
+  "actual_output_save": ".local/route-grass-review/current-boundary-safari-recheck2-portages-output-v01.crystalsave",
+  "actual_output_save_continued": true,
+  "initial": {
+    "badges": 8,
+    "dialogue": false,
+    "facing": "right",
+    "frame": 135,
+    "map": "MnBoundarySafariC00R00",
+    "menu": null,
+    "mode": "overworld",
+    "money": 1000,
+    "player": "CHRIS",
+    "pokedex": {
+      "owned": 0,
+      "seen": 0
+    },
+    "position": {
+      "x": 29,
+      "y": 21
+    }
+  },
+  "final": {
+    "badges": 8,
+    "dialogue": false,
+    "facing": "up",
+    "frame": 1540,
+    "map": "MnBoundarySafariC01R01",
+    "menu": null,
+    "mode": "overworld",
+    "money": 1000,
+    "player": "CHRIS",
+    "pokedex": {
+      "owned": 0,
+      "seen": 0
+    },
+    "position": {
+      "x": 43,
+      "y": 31
+    }
+  },
+  "continued": {
+    "badges": 8,
+    "dialogue": false,
+    "facing": "up",
+    "frame": 1540,
+    "map": "MnBoundarySafariC01R01",
+    "menu": null,
+    "mode": "overworld",
+    "money": 1000,
+    "player": "CHRIS",
+    "pokedex": {
+      "owned": 0,
+      "seen": 0
+    },
+    "position": {
+      "x": 43,
+      "y": 31
+    }
+  },
+  "stderr_bytes": 0,
+  "scope": "Continuous production inputs from an actual native Pine portage checkpoint. Native initial Mew/badges/beyond-gate placement are explicit local QA fixtures. No paid admission, permit, capture runtime or ordinary Safari wild encounter is claimed. No later state/position/map/party/flag edits or save retagging."
+}

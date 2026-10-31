@@ -1,0 +1,105 @@
+{
+  "status": "SOURCE_CANDIDATE_NOT_PUBLISHED",
+  "parent": {
+    "revision": "route_grass_r11_upper_revision",
+    "pack": "content-packs/minnesota-current-r11-southwest-grass-v01.crystalpack",
+    "pack_sha256": "9f0ff0c7d0f6dd874ef1a581657900984ca75d360ffb04da2c92b00ab58475aa",
+    "maps": [
+      "MnR06C00R00",
+      "MnR06C00R01"
+    ]
+  },
+  "changes": [
+    {
+      "metatile": [
+        6,
+        13
+      ],
+      "before": "02",
+      "after": "03"
+    },
+    {
+      "metatile": [
+        7,
+        13
+      ],
+      "before": "02",
+      "after": "03"
+    },
+    {
+      "metatile": [
+        8,
+        13
+      ],
+      "before": "01",
+      "after": "03"
+    },
+    {
+      "metatile": [
+        9,
+        13
+      ],
+      "before": "02",
+      "after": "03"
+    },
+    {
+      "metatile": [
+        10,
+        13
+      ],
+      "before": "02",
+      "after": "03"
+    }
+  ],
+  "new_grass_quadrants": 20,
+  "existing_grass_removed": 0,
+  "native_movement_measurements": [
+    {
+      "start": [
+        16,
+        72
+      ],
+      "end": [
+        16,
+        81
+      ],
+      "before": {
+        "status": "MEASURED",
+        "grass_steps": 0,
+        "grass_quadrants_in_contract": 0,
+        "ice_quadrants": 0
+      },
+      "after": {
+        "status": "MEASURED",
+        "grass_steps": 2,
+        "grass_quadrants_in_contract": 20,
+        "ice_quadrants": 0
+      }
+    },
+    {
+      "start": [
+        16,
+        81
+      ],
+      "end": [
+        16,
+        72
+      ],
+      "before": {
+        "status": "MEASURED",
+        "grass_steps": 0,
+        "grass_quadrants_in_contract": 0,
+        "ice_quadrants": 0
+      },
+      "after": {
+        "status": "MEASURED",
+        "grass_steps": 2,
+        "grass_quadrants_in_contract": 20,
+        "ice_quadrants": 0
+      }
+    }
+  ],
+  "coastal_ice_quadrants": 0,
+  "all_cliffs_stairs_water_houses_actors_scripts_and_signs_unchanged": true,
+  "scope": "Whole-route source rendering inspected; native publication/gameplay still required."
+}

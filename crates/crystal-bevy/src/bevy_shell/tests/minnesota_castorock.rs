@@ -242,7 +242,11 @@ fn castorock_controller_decline_actual_capture_and_continue() {
         }
         c.wait_frames(64).expect("battle transition");
     }
-    assert!(super::rochester_earned::try_recruit(&mut c, &runtime));
+    assert!(super::rochester_earned::try_recruit_with_ball(
+        &mut c,
+        &runtime,
+        "MASTER_BALL"
+    ));
     finish(&mut c);
     assert!(caught(&c));
     assert!(

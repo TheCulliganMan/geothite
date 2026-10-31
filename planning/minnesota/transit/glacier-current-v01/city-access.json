@@ -1,0 +1,155 @@
+{
+  "schema_version": 1,
+  "scope": "Existing city road ports and native station doors. Winona requires actual qualified warden movement; no path goes through its actor body. All port-to-door walks need production acceptance.",
+  "paths": [
+    {
+      "id": "DETROIT_LAKES",
+      "city": "MnDetroitLakes",
+      "city_port": [
+        0,
+        18
+      ],
+      "neighbor_port": [
+        47,
+        18
+      ],
+      "native_connection": {
+        "direction": "west",
+        "target_map": "MnDetroitLakesApproach",
+        "offset": 0
+      },
+      "station": "MnDetroitLakesStation",
+      "public_door": [
+        11,
+        9
+      ],
+      "public_porch": [
+        11,
+        10
+      ],
+      "static_floor_steps": 21
+    },
+    {
+      "id": "STAPLES",
+      "city": "MnStaplesRailJunction",
+      "city_port": [
+        7,
+        19
+      ],
+      "neighbor_port": [
+        27,
+        0
+      ],
+      "native_connection": {
+        "direction": "south",
+        "target_map": "MnR15C00R00",
+        "offset": -10
+      },
+      "station": "MnStaplesStation",
+      "public_door": [
+        13,
+        7
+      ],
+      "public_porch": [
+        13,
+        8
+      ],
+      "static_floor_steps": 17
+    },
+    {
+      "id": "ST_CLOUD",
+      "city": "MnStCloud",
+      "city_port": [
+        24,
+        35
+      ],
+      "neighbor_port": [
+        24,
+        0
+      ],
+      "native_connection": {
+        "direction": "south",
+        "target_map": "MnR05C00R00",
+        "offset": 0
+      },
+      "station": "MnStCloudStation",
+      "public_door": [
+        35,
+        11
+      ],
+      "public_porch": [
+        35,
+        12
+      ],
+      "static_floor_steps": 34
+    },
+    {
+      "id": "ST_PAUL",
+      "city": "MnStPaul",
+      "city_port": [
+        0,
+        48
+      ],
+      "neighbor_port": [
+        55,
+        18
+      ],
+      "native_connection": {
+        "direction": "west",
+        "target_map": "MnR04C00R00",
+        "offset": 15
+      },
+      "station": "MnStPaulUnionDepot",
+      "public_door": [
+        66,
+        47
+      ],
+      "public_porch": [
+        66,
+        48
+      ],
+      "static_floor_steps": 74
+    },
+    {
+      "id": "WINONA",
+      "city": "MnWinona",
+      "city_port": [
+        0,
+        18
+      ],
+      "neighbor_port": [
+        63,
+        24
+      ],
+      "native_connection": {
+        "direction": "west",
+        "target_map": "MnR01C00R00",
+        "offset": -3
+      },
+      "station": "MnWinonaStation",
+      "public_door": [
+        19,
+        13
+      ],
+      "public_porch": [
+        19,
+        14
+      ],
+      "static_floor_steps": null,
+      "required_initial_event": "EVENT_MN_STARTER_RECEIVED",
+      "checkpoint": {
+        "root": "MnWTrailCheck",
+        "outside": [
+          1,
+          18
+        ],
+        "inside": [
+          3,
+          18
+        ],
+        "outward_facing": "left",
+        "inward_facing": "right"
+      }
+    }
+  ]
+}

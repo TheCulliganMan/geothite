@@ -1,0 +1,27 @@
+{
+  "status": "PASS_CURRENT_REBASE_AND_EXACT_TEST_INHERITANCE",
+  "parent_revision": "r17_talus_loop_revision",
+  "parent_pack": "content-packs/minnesota-r17-talus-loop-v01.crystalpack",
+  "parent_pack_sha256": "fcfbcffdcab4f953fbe0eca91eb42521c334818e1c1b055a5fcd75d30d962bae",
+  "pack": "content-packs/minnesota-current-r05-cache-grass-bank-v03.crystalpack",
+  "pack_sha256": "618d6faa81c9b0bf09b4e3b0cdb22ec1e36eecdaf77678a58146b58de970e5cf",
+  "content_identity": "0e5ce89b138034b7b0c87fdb415ad7124fd8ef88e9a776b34369cbf69eeaabf1",
+  "original_tested_pack": "content-packs/minnesota-current-r05-cache-grass-bank-v01.crystalpack",
+  "original_tested_pack_sha256": "163897117d4a1a4a9c86c64bea0e7eb62c095edb6a9f5f9f3660a6c5bcf4fc52",
+  "all_three_complete_r05_maps_tilesets_encounters_and_existing_runtime_files_exact_to_tested_child": true,
+  "all_data_outside_eight_native_cells_encoded_block_mirror_and_one_sign_preserved_from_current_parent": true,
+  "all_parent_audio_preserved_exact": true,
+  "data_changes": {
+    "maps": [
+      "MnR05C00R00",
+      "MnR05C00R01"
+    ],
+    "map_scripts": [
+      "MN_R05_RAMP_SIGNText"
+    ],
+    "map_blocks": [
+      "MnR05C00R00_Blocks"
+    ]
+  },
+  "scope": "Rebased the accepted R05 native terrain/text candidate on the current inland ice-cave successor; all R05 native/stdio/GPU inputs remain exact. Earlier test logs are not relabeled as freshly run on this pack. Current cave work remains preserved."
+}

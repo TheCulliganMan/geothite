@@ -71,7 +71,7 @@ fn fixture_at(
     complete_visible_smoke_player_name_if_needed(&mut c.shell, Some("CHRIS"))
         .expect("initial name");
     let state = c.shell.shell.session_mut().state_mut();
-    for species in ["MEW", "CYNDAQUIL"] {
+    for species in ["VOYAGEAR", "CINDORE"] {
         let mut p = runtime
             .data()
             .create_pokemon(species, 40, Dv::default())
@@ -480,7 +480,7 @@ fn grand_rapids_controller_native_heal_pc_priced_shop_and_safe_returns() {
     });
     let deposited = c.snapshot().expect("actual PC deposit");
     assert_eq!(deposited.party.slots.len(), 1);
-    assert_eq!(deposited.party.slots[0].pokemon.species.id, "CYNDAQUIL");
+    assert_eq!(deposited.party.slots[0].pokemon.species.id, "CINDORE");
     let boxed = deposited
         .storage
         .boxes
@@ -488,7 +488,7 @@ fn grand_rapids_controller_native_heal_pc_priced_shop_and_safe_returns() {
         .find(|b| b.index == deposited.storage.current_pc_box)
         .expect("native box");
     assert_eq!(boxed.slots.len(), 1);
-    assert_eq!(boxed.slots[0].pokemon.species.id, "MEW");
+    assert_eq!(boxed.slots[0].pokemon.species.id, "VOYAGEAR");
     press(&mut c, GameButton::B);
     assert_eq!(
         c.shell

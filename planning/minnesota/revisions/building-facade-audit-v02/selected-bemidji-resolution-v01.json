@@ -1,0 +1,23 @@
+{
+  "status": "PARTIAL_REPAIRS_VERIFIED",
+  "selected_revision": "route_grass_bemidji_mart_revision",
+  "pack": "content-packs/minnesota-current-bemidji-mart-v02.crystalpack",
+  "sha256": "b4a95a5634198e39fd8b9d6528af90b66f1e626fc9582e366b4ba4b6a9588171",
+  "prior_resolved_lineage": "selected-winona-resolution-v01.json",
+  "newly_resolved": {
+    "map": "MnBemidji",
+    "building": "mart",
+    "former_origin": [
+      20,
+      8
+    ],
+    "proof": "planning/minnesota/revisions/route-grass-v01/current-bemidji-mart-v01/acceptance.json"
+  },
+  "remaining_original_frozen_candidates": 3,
+  "remaining_original_maps": {
+    "MnDuluth": 1,
+    "MnStCloud": 2
+  },
+  "state_fair": "User-accepted facades preserved exactly.",
+  "scope": "Original frozen audit remains evidence. Later peer city edits require current preimage reconciliation. The additional Mankato forest-bank correction is separately verified and does not claim all current route/town/story scope complete."
+}

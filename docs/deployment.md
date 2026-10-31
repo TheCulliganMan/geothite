@@ -405,6 +405,15 @@ passes with existing warnings. New Rust lines match pinned rustfmt output;
 workspace formatting still reports pre-existing differences beginning in
 `crates/offset-allocator/src/lib.rs:408`.
 
+The later 732-map Minnesota story/world integration has a 16,467-byte identity.
+Current server source therefore permits a separately bounded 32 KiB composition,
+retaining every manifest name and the existing 128-byte component checks. All
+16 local Hub tests and affected-server all-target Clippy pass, including a real
+Hub join with 700 unique chapter IDs above 16 KiB and aggregate oversize rejection.
+Actual WebSocket testing of the new final pack and any hosted rollout remain
+unverified; the historical authenticated welcome above covers its own earlier
+14,708-byte pack only.
+
 The final public HTTPS checks pass:
 
 - Fresh and stale-glue startup in Chromium and mobile WebKit, with exact

@@ -13,6 +13,9 @@ use super::super::rochester_earned::{checkout, try_battle};
 use super::super::winona::{at as location, continue_in_place, finish, load, press, travel};
 use super::{VisibleShellController, event, interact, mankato_leave, walk_to};
 
+#[path = "northstar_prairie_recruitment.rs"]
+mod recruitment;
+
 fn arrival() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
     let Some(path) = std::env::var_os("CRYSTAL_NORTHSTAR_EARNED_SAVE") else {
         return mankato_arrival();
@@ -69,9 +72,21 @@ pub(super) fn enter_minneapolis(c: &mut VisibleShellController, r: &CrystalRunti
     );
 }
 
-fn depart_prairie(c: &mut VisibleShellController, r: &CrystalRuntime) {
+fn depart_prairie(c: &mut VisibleShellController, r: &CrystalRuntime, root: &AssetRoot) {
+    super::super::earned_route_machines::cut(c, r, root);
     walk_to(c, r, (24, 4));
     travel(c, GameButton::Up, "MnR03C00R01", (18, 15));
+    assert!(super::river_cities::try_road_with(c, r, (31, 30), |c| {
+        super::super::earned_rod_visits::encounter(c, r)
+    }));
+    super::super::earned_rod_visits::claim(
+        c,
+        r,
+        root,
+        "MnRiverValleyFishingGuruHouse",
+        "MnR03C00R00",
+        "GOOD_ROD",
+    );
     super::river_cities::road(c, r, (20, 0));
     enter_minneapolis(c, r);
 }
@@ -209,6 +224,12 @@ pub(super) fn learn_machine_on(
                 .map(|(i, _)| i)
         })
         .expect("deliberately selected move to replace");
+    let original_moves = c.snapshot().expect("original carried moves").party.slots[target_slot]
+        .pokemon
+        .moves
+        .iter()
+        .map(|known| known.name.clone())
+        .collect::<Vec<_>>();
     press(c, GameButton::Start);
     let entries = super::super::super::visible_start_menu_entries(&c.shell).expect("native Start");
     let target = entries
@@ -282,16 +303,6 @@ pub(super) fn learn_machine_on(
         let button = if c.shell.pending_tmhm_text_stage.is_some() || c.shell.field_notice.is_some()
         {
             GameButton::A
-        } else if c.shell.field_pack_target_mode
-            == Some(super::super::super::FieldPackTargetMode::TmHmPokemon)
-        {
-            if c.shell.party_cursor < target_slot {
-                GameButton::Down
-            } else if c.shell.party_cursor > target_slot {
-                GameButton::Up
-            } else {
-                GameButton::A
-            }
         } else if c.shell.tmhm_forget_menu_open
             && c.shell.pending_tmhm_text_stage.is_none()
             && c.shell.field_notice.is_none()
@@ -309,6 +320,16 @@ pub(super) fn learn_machine_on(
             } else {
                 GameButton::A
             }
+        } else if c.shell.field_pack_target_mode
+            == Some(super::super::super::FieldPackTargetMode::TmHmPokemon)
+        {
+            if c.shell.party_cursor < target_slot {
+                GameButton::Down
+            } else if c.shell.party_cursor > target_slot {
+                GameButton::Up
+            } else {
+                GameButton::A
+            }
         } else {
             GameButton::A
         };
@@ -321,6 +342,22 @@ pub(super) fn learn_machine_on(
             .moves
             .iter()
             .any(|m| m.name == learned)
+    );
+    let actual_moves = c.snapshot().expect("selected replacement only").party.slots[target_slot]
+        .pokemon
+        .moves
+        .iter()
+        .map(|known| known.name.clone())
+        .collect::<Vec<_>>();
+    let mut expected_moves = original_moves;
+    if expected_moves.len() < 4 {
+        expected_moves.push(learned.into());
+    } else {
+        expected_moves[target_move] = learned.into();
+    }
+    assert_eq!(
+        actual_moves, expected_moves,
+        "native teaching must replace only the selected move"
     );
     for _ in 0..128 {
         if !super::super::super::has_visible_shell_direction_action(&mut c.shell) {
@@ -417,7 +454,8 @@ pub(super) fn prairie() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
         }
         // This resumes a retained, genuinely played checkpoint. No state,
         // inventory, level, position, flags or RNG are rewritten after load.
-        depart_prairie(&mut c, &r);
+        recruitment::cut_partner(&mut c, &r, &root);
+        depart_prairie(&mut c, &r, &root);
         continue_in_place(&mut c, &root, &r, "campaign-earned-minneapolis-arrival");
         return (root, r, c);
     }
@@ -526,8 +564,12 @@ pub(super) fn prairie() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
             .quantity(&r.data().items["TM_MUD_SLAP"]),
         1
     );
-    depart_prairie(&mut c, &r);
+    recruitment::cut_partner(&mut c, &r, &root);
+    depart_prairie(&mut c, &r, &root);
     continue_in_place(&mut c, &root, &r, "campaign-earned-minneapolis-arrival");
     assert!(!event(&c, "EVENT_MN_ICE_ENFORCER_DEFEATED"));
     (root, r, c)
 }
+
+#[path = "northstar_machine_replacement.rs"]
+mod machine_replacement;

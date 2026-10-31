@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "id": "MN_R06",
+  "source_kind": "scoped_route_grass_review_contract",
+  "native_binding": {
+    "pack": "content-packs/minnesota-current-r06-south-woods-grass-v01.crystalpack",
+    "pack_sha256": "1d906a7d4998ce8b25332b05413131d9d256961a284230143d82541b24c403d0",
+    "content_identity": "41aad022dd980dc1bf1f5784fb8a8a465648d500c1119ee2ac2cda2946121ffa"
+  },
+  "new_grass_quadrants": 20,
+  "route_grass_quadrants": 216,
+  "approach_core": [
+    [
+      16,
+      72
+    ],
+    [
+      16,
+      81
+    ]
+  ],
+  "minimum_added_approach_grass_steps": 2,
+  "existing_cliffs_stairs_actors_and_signs_preserved": true,
+  "scope": "Whole route rendered; scoped upper grass crossing acceptance. Full current route traversal remains separate."
+}

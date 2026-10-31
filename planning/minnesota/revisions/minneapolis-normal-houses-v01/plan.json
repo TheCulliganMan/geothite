@@ -1,0 +1,410 @@
+{
+  "schema_version": 1,
+  "status": "Verified selected-local native house repair; world.json owns selection.",
+  "parent_revision": "route_grass_bemidji_plateau_stairs_revision",
+  "parent_pack": "content-packs/minnesota-current-bemidji-plateau-stairs-v01.crystalpack",
+  "parent_pack_sha256": "6200af583a20de0def7f4611ab59531e43549471cc5cf6ab7a6f4f7e52b832e8",
+  "map": "MnMinneapolis",
+  "fixes": [
+    {
+      "name": "MN_MINNEAPOLIS_RIVER_FAMILY_HOME",
+      "top_left_metatile": [
+        6,
+        3
+      ],
+      "before_rows": [
+        [
+          24,
+          25
+        ],
+        [
+          16,
+          157
+        ]
+      ],
+      "after_rows": [
+        [
+          169,
+          170
+        ],
+        [
+          171,
+          172
+        ]
+      ],
+      "door_index": 73,
+      "door_before": [
+        15,
+        9
+      ],
+      "door_after": [
+        13,
+        9
+      ],
+      "return_after": [
+        13,
+        10
+      ],
+      "native_assembly": "Pallet Town complete house"
+    },
+    {
+      "name": "MN_MINNEAPOLIS_RIVER_NATURALIST",
+      "top_left_metatile": [
+        26,
+        7
+      ],
+      "before_rows": [
+        [
+          24,
+          25
+        ],
+        [
+          16,
+          157
+        ]
+      ],
+      "after_rows": [
+        [
+          169,
+          170
+        ],
+        [
+          171,
+          172
+        ]
+      ],
+      "door_index": 31,
+      "door_before": [
+        55,
+        17
+      ],
+      "door_after": [
+        53,
+        17
+      ],
+      "return_after": [
+        53,
+        18
+      ],
+      "native_assembly": "Pallet Town complete house"
+    },
+    {
+      "name": "MN_MINNEAPOLIS_PATTERN_STUDIO",
+      "top_left_metatile": [
+        32,
+        7
+      ],
+      "before_rows": [
+        [
+          24,
+          25
+        ],
+        [
+          16,
+          157
+        ]
+      ],
+      "after_rows": [
+        [
+          169,
+          170
+        ],
+        [
+          171,
+          172
+        ]
+      ],
+      "door_index": 77,
+      "door_before": [
+        67,
+        17
+      ],
+      "door_after": [
+        65,
+        17
+      ],
+      "return_after": [
+        65,
+        18
+      ],
+      "native_assembly": "Pallet Town complete house"
+    },
+    {
+      "name": "MN_MINNEAPOLIS_BRIDGE_HOME",
+      "top_left_metatile": [
+        12,
+        9
+      ],
+      "before_rows": [
+        [
+          24,
+          25
+        ],
+        [
+          16,
+          157
+        ]
+      ],
+      "after_rows": [
+        [
+          169,
+          170
+        ],
+        [
+          171,
+          172
+        ]
+      ],
+      "door_index": 41,
+      "door_before": [
+        27,
+        21
+      ],
+      "door_after": [
+        25,
+        21
+      ],
+      "return_after": [
+        25,
+        22
+      ],
+      "native_assembly": "Pallet Town complete house"
+    },
+    {
+      "name": "MN_MINNEAPOLIS_MART",
+      "top_left_metatile": [
+        35,
+        11
+      ],
+      "before_rows": [
+        [
+          24,
+          25
+        ],
+        [
+          166,
+          157
+        ]
+      ],
+      "after_rows": [
+        [
+          24,
+          25
+        ],
+        [
+          26,
+          51
+        ]
+      ],
+      "door_index": 5,
+      "door_before": [
+        73,
+        25
+      ],
+      "door_after": [
+        71,
+        25
+      ],
+      "return_after": [
+        71,
+        26
+      ],
+      "native_assembly": "Cherrygrove Mart"
+    },
+    {
+      "name": "MN_MINNEAPOLIS_ANGLER_HOME",
+      "top_left_metatile": [
+        8,
+        13
+      ],
+      "before_rows": [
+        [
+          169,
+          170
+        ],
+        [
+          16,
+          157
+        ]
+      ],
+      "after_rows": [
+        [
+          169,
+          170
+        ],
+        [
+          171,
+          172
+        ]
+      ],
+      "door_index": 35,
+      "door_before": [
+        19,
+        29
+      ],
+      "door_after": [
+        17,
+        29
+      ],
+      "return_after": [
+        17,
+        30
+      ],
+      "native_assembly": "Pallet Town complete house"
+    },
+    {
+      "name": "MN_MINNEAPOLIS_TOOL_FLAT",
+      "top_left_metatile": [
+        24,
+        24
+      ],
+      "before_rows": [
+        [
+          24,
+          25
+        ],
+        [
+          16,
+          157
+        ]
+      ],
+      "after_rows": [
+        [
+          169,
+          170
+        ],
+        [
+          171,
+          172
+        ]
+      ],
+      "door_index": 69,
+      "door_before": [
+        51,
+        51
+      ],
+      "door_after": [
+        49,
+        51
+      ],
+      "return_after": [
+        49,
+        52
+      ],
+      "native_assembly": "Pallet Town complete house"
+    },
+    {
+      "name": "MN_MINNEAPOLIS_GARDENERS_HOME",
+      "top_left_metatile": [
+        2,
+        27
+      ],
+      "before_rows": [
+        [
+          24,
+          25
+        ],
+        [
+          16,
+          157
+        ]
+      ],
+      "after_rows": [
+        [
+          169,
+          170
+        ],
+        [
+          171,
+          172
+        ]
+      ],
+      "door_index": 55,
+      "door_before": [
+        7,
+        57
+      ],
+      "door_after": [
+        5,
+        57
+      ],
+      "return_after": [
+        5,
+        58
+      ],
+      "native_assembly": "Pallet Town complete house"
+    },
+    {
+      "name": "MN_MINNEAPOLIS_ARRIVAL_INFO",
+      "top_left_metatile": [
+        21,
+        28
+      ],
+      "before_rows": [
+        [
+          24,
+          25
+        ],
+        [
+          16,
+          157
+        ]
+      ],
+      "after_rows": [
+        [
+          169,
+          170
+        ],
+        [
+          171,
+          172
+        ]
+      ],
+      "door_index": 57,
+      "door_before": [
+        45,
+        59
+      ],
+      "door_after": [
+        43,
+        59
+      ],
+      "return_after": [
+        43,
+        60
+      ],
+      "native_assembly": "Pallet Town complete house"
+    }
+  ],
+  "changed_metatiles": 32,
+  "changed_anchors": 18,
+  "source_pixels_modified": false,
+  "art_policy": "Reuse complete already installed native houses and Mart; no new graphics/palettes or mixed interior edges",
+  "preserve": [
+    "All other city geometry, all actors/readings/cycling/gates/river connections",
+    "All40 existing rooms and native programs; relocate only nine entrance/return pairs to their visible doors",
+    "All other maps, art, encounters, Pokemon, audio and recovery"
+  ],
+  "published_pack": {
+    "path": "content-packs/minnesota-minneapolis-normal-houses-v02.crystalpack",
+    "sha256": "9480368160e25c53d01162a4dbdbe301a7b7215e0a5027df58d700906612be99",
+    "content_identity": "7d97ded0e56f598feb2a44a1dd25f45cc98b2d37dfbdcecf2049d6388d53c290"
+  },
+  "verification": {
+    "unchanged_complete_maps": 731,
+    "corrected_native_facades": 9,
+    "entered_buildings": 9,
+    "room_exit_carpets_verified": 18,
+    "old_door_denials_verified": 9,
+    "production_stdio_calls": 281,
+    "production_stderr_bytes": 0,
+    "native_facade_pixel_mismatches": 0,
+    "fresh_current_pack_native_captures": 2,
+    "exact_scene_inherited_captures": 7,
+    "audio_programs_verified": 377
+  },
+  "remaining_scope": [
+    "The broader mill/arts street candidate remains unselected.",
+    "No earned campaign progression, browser deployment or save migration is claimed."
+  ]
+}

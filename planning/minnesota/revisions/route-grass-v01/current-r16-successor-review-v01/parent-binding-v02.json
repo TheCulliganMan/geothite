@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "selected_revision": "iron_pump_gallery_revision",
+  "pack": "content-packs/minnesota-iron-pump-gallery-v02.crystalpack",
+  "pack_sha256": "1cbb0d2ce18333433278b9d39134be85e36c93ec8d91b566f1cb3029ff4af455",
+  "maps": [
+    "MnR16C00R00",
+    "MnR16C01R00"
+  ],
+  "current_layout": {
+    "path": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R16.after.layout.json",
+    "sha256": "14170b8d63a3209b0c72f1aadbb94fd515bc105827d7b1ff8485cfa0e9f26d28"
+  },
+  "current_dossier": {
+    "path": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R16.dossier.json",
+    "sha256": "3d428be5a64e7111eb11326b449119c04b9c7cdba4a39d44ba4fdf01d68e3af4"
+  }
+}

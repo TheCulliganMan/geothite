@@ -815,7 +815,7 @@
   ],
   "door_contract": "Every native DOOR quadrant is paired. Active exterior warp odd, passive safe return even; every room targets its exterior passive return, and room arrival is FLOOR warp 3.",
   "status": "SOURCE ONLY: hand-authored whole town and rooms; native publication, services, battles, regional seams and continuation remain pending.",
-  "compiled_tileset": "mn_bemidji",
+  "compiled_tileset": "mn_bemidji_plateau_stairs",
   "native_constant": "MN_BEMIDJI",
   "layout_source": "planning/minnesota/towns/MnBemidji.layout.json",
   "doors": [
@@ -898,15 +898,15 @@
     {
       "id": "MART",
       "tile": [
-        42,
+        41,
         19
       ],
       "return_tile": [
-        42,
+        41,
         20
       ],
       "arrival_tile": [
-        42,
+        41,
         20
       ],
       "target": "MnBemidjiMart",
@@ -1155,45 +1155,7 @@
       ]
     }
   ],
-  "one_way_ledges": [
-    {
-      "id": "MN_BEMIDJI_GYM_DOWNHILL",
-      "source_blocks": [
-        [
-          5,
-          10
-        ],
-        [
-          6,
-          10
-        ]
-      ],
-      "upper_approach": [
-        11,
-        19
-      ],
-      "hop_core": [
-        11,
-        20
-      ],
-      "landing": [
-        11,
-        22
-      ],
-      "reverse_blocked": [
-        11,
-        21
-      ],
-      "minimum_return_steps": 15,
-      "return_passage_core": [
-        19,
-        16,
-        20,
-        18
-      ],
-      "purpose": "Drop from the gym shelf to the west/Itasca street. Ordinary return climbs east ramp rather than reversing the drop."
-    }
-  ],
+  "one_way_ledges": [],
   "lakefront": {
     "pier_approach": [
       27,
@@ -1319,5 +1281,33 @@
     "no_train_stop": true,
     "story_and_services": "VisibleShellController production native scripts, healer/shop/PC, ordinary conversation and trainer state; no custom frontend dispatcher.",
     "source_only": "All contracts require Root Rust publication and production controller tests before playable claims."
-  }
+  },
+  "plateau_stairs": [
+    {
+      "id": "MN_BEMIDJI_PLATEAU_STONE_STAIRS",
+      "metatile": [
+        5,
+        10
+      ],
+      "upper_approach": [
+        11,
+        19
+      ],
+      "upper_landing": [
+        11,
+        20
+      ],
+      "treads": [
+        11,
+        21
+      ],
+      "lower_landing": [
+        11,
+        22
+      ],
+      "bidirectional": true,
+      "native_source": "cave12 lower rows with outdoor72 upper landing",
+      "purpose": "Walk between the Gym plateau and the main street without jumping the tall cliff."
+    }
+  ]
 }

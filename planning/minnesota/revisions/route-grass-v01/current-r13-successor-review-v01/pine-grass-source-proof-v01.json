@@ -1,0 +1,98 @@
+{
+  "status": "SOURCE_CANDIDATE_NOT_PUBLISHED",
+  "parent": {
+    "revision": "route_grass_r11_current_review_revision",
+    "pack": "content-packs/minnesota-current-r11-stair-guidance-v02.crystalpack",
+    "pack_sha256": "332d6ee5c5b77c028119c898e774043895859929a46ff534ebbd14bc1cc2e5d4",
+    "maps": [
+      "MnR13C00R00",
+      "MnR13C00R01",
+      "MnR13C00R02"
+    ]
+  },
+  "changes": [
+    {
+      "metatile": [
+        16,
+        3
+      ],
+      "before": "83",
+      "after": "84"
+    },
+    {
+      "metatile": [
+        17,
+        3
+      ],
+      "before": "83",
+      "after": "84"
+    },
+    {
+      "metatile": [
+        18,
+        3
+      ],
+      "before": "83",
+      "after": "84"
+    },
+    {
+      "metatile": [
+        17,
+        4
+      ],
+      "before": "83",
+      "after": "84"
+    }
+  ],
+  "new_grass_quadrants": 16,
+  "existing_grass_removed": 0,
+  "measurements": [
+    {
+      "start": [
+        35,
+        100
+      ],
+      "end": [
+        35,
+        112
+      ],
+      "before": {
+        "status": "MEASURED",
+        "grass_steps": 6,
+        "grass_quadrants_in_contract": 192,
+        "ice_quadrants": 16
+      },
+      "after": {
+        "status": "MEASURED",
+        "grass_steps": 10,
+        "grass_quadrants_in_contract": 208,
+        "ice_quadrants": 16
+      }
+    },
+    {
+      "start": [
+        35,
+        112
+      ],
+      "end": [
+        35,
+        100
+      ],
+      "before": {
+        "status": "MEASURED",
+        "grass_steps": 6,
+        "grass_quadrants_in_contract": 192,
+        "ice_quadrants": 16
+      },
+      "after": {
+        "status": "MEASURED",
+        "grass_steps": 10,
+        "grass_quadrants_in_contract": 208,
+        "ice_quadrants": 16
+      }
+    }
+  ],
+  "all16_inland_ice_quadrants_preserved": true,
+  "existing_cut_gate_preserved": true,
+  "model": "Current-tile jumps, lateral lip walking and native straight ice slides. Source check does not replace native gameplay."
+}

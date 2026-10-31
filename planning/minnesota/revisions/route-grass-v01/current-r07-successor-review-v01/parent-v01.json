@@ -1,0 +1,9 @@
+{
+  "revision": "route_grass_r06_current_contract_revision",
+  "pack": "content-packs/minnesota-current-r06-south-woods-grass-v01.crystalpack",
+  "pack_sha256": "1d906a7d4998ce8b25332b05413131d9d256961a284230143d82541b24c403d0",
+  "maps": [
+    "MnR07C00R00",
+    "MnR07C00R01"
+  ]
+}

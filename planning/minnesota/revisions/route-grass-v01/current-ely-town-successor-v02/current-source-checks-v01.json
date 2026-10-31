@@ -1,0 +1,20 @@
+{
+  "status": "PASS",
+  "command": [
+    "cargo",
+    "clippy",
+    "--locked",
+    "--profile",
+    "wasm-dev",
+    "-p",
+    "crystal-bevy",
+    "--all-targets"
+  ],
+  "exit_code": 0,
+  "log": ".local/route-grass-review/ely-town-current-bevy-all-target-clippy-v01.log",
+  "source_sha256": {
+    "crates/crystal-bevy/src/bevy_shell/tests/ely_league.rs": "807dd333b81afb95bccb46de2eb898ca7ba2918f6adbd4210785274197037cb7",
+    "crates/crystal-bevy/src/bevy_shell/tests/ely_shore_pass.rs": "e03ff1cb3bb5a75f4bca56ec817c69d0a9d636cd143cba508bcb3b92b5a4824a"
+  },
+  "owned_leaf_format_exit_code": 0
+}

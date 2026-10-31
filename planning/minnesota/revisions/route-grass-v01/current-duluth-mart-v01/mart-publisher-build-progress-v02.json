@@ -1,0 +1,50 @@
+{
+  "pid": 88071,
+  "source_sha256": {
+    "crates/crystal-assets/src/duluth_mart_facade.rs": "4dac2de9eeff45f29ec7a9609f0c073f6986f2db272d035101ca4ab65b322534",
+    "crates/crystal-assets/src/bin/revise_duluth_mart_facade.rs": "c302594fcbfa229679b1f373188d9aab8a10b49e8e8ae7d3374a7284c4ff3f03"
+  },
+  "steps": [
+    {
+      "step": "publisher",
+      "command": [
+        "cargo",
+        "build",
+        "--profile",
+        "wasm-dev",
+        "--locked",
+        "--config",
+        "profile.wasm-dev.package.crystal-assets.opt-level=0",
+        "-p",
+        "crystal-assets",
+        "--bin",
+        "revise_duluth_mart_facade"
+      ],
+      "exit_code": 0,
+      "log": ".local/route-grass-review/duluth-mart-publisher-v02.log",
+      "outputs": [
+        {
+          "path": ".local/route-grass-review/portable-duluth-mart-tools-v02/revise_duluth_mart_facade",
+          "sha256": "89384f082ca7a51178572d9a1b7d3d107a786d1e8107b06c7e414f53f9fb4e3e"
+        }
+      ]
+    },
+    {
+      "step": "assets-all-target-clippy",
+      "command": [
+        "cargo",
+        "clippy",
+        "--profile",
+        "wasm-dev",
+        "--locked",
+        "--config",
+        "profile.wasm-dev.package.crystal-assets.opt-level=0",
+        "-p",
+        "crystal-assets",
+        "--all-targets"
+      ],
+      "exit_code": 0,
+      "log": ".local/route-grass-review/duluth-mart-assets-all-target-clippy-v02.log"
+    }
+  ]
+}

@@ -1,0 +1,232 @@
+{
+  "schema_version": 1,
+  "room": "MnR10Cave1F",
+  "purpose": "Replace the broad northern floor and isolated stones with a connected bedrock spur and a bent, useful supply hollow while preserving the established exploration activities.",
+  "dimensions_metatiles": [
+    24,
+    18
+  ],
+  "palette": "native cave forced nite",
+  "terrain_source": "after.json",
+  "published_source_is_immutable": true,
+  "changes": {
+    "explicit_metatiles": 50,
+    "all_native_art_unchanged": true,
+    "northern_spur": "Ceiling-connected bedrock separates the gallery descent from the eastern hollow; cross beneath its southern toe.",
+    "supply_crook": "The northern roof recedes around a rock nose; the existing Escape Rope is reached at the end of the bent hollow."
+  },
+  "native_contract": {
+    "mouth": [
+      3,
+      13
+    ],
+    "clear_arrival": [
+      3,
+      12
+    ],
+    "west_gallery_stair": {
+      "native": "30",
+      "metatile": [
+        4,
+        3
+      ],
+      "course_core": [
+        [
+          8,
+          8
+        ],
+        [
+          8,
+          7
+        ],
+        [
+          8,
+          6
+        ],
+        [
+          8,
+          5
+        ]
+      ]
+    },
+    "right_corner_gallery_stair": {
+      "native": "36",
+      "metatile": [
+        10,
+        3
+      ],
+      "course_core": [
+        [
+          20,
+          9
+        ],
+        [
+          20,
+          8
+        ],
+        [
+          20,
+          7
+        ],
+        [
+          20,
+          6
+        ]
+      ]
+    },
+    "new_wall_checks": [
+      {
+        "approach": [
+          20,
+          13
+        ],
+        "direction": "right",
+        "wall": [
+          21,
+          13
+        ]
+      },
+      {
+        "approach": [
+          35,
+          8
+        ],
+        "direction": "up",
+        "wall": [
+          35,
+          7
+        ]
+      }
+    ],
+    "southern_spur_turn": [
+      25,
+      21
+    ],
+    "supply_bend": [
+      35,
+      9
+    ],
+    "supply_approach": [
+      38,
+      5
+    ],
+    "existing_drop_lanes": [
+      {
+        "approach": [
+          14,
+          15
+        ],
+        "lip": [
+          14,
+          16
+        ],
+        "landing": [
+          14,
+          18
+        ],
+        "ordinary_return_steps": 13
+      },
+      {
+        "approach": [
+          15,
+          15
+        ],
+        "lip": [
+          15,
+          16
+        ],
+        "landing": [
+          15,
+          18
+        ],
+        "ordinary_return_steps": 15
+      }
+    ],
+    "spring_casting_bank": [
+      36,
+      28
+    ],
+    "water_target": [
+      36,
+      27
+    ],
+    "fishing_group": "FISHGROUP_MN_LAKE",
+    "spring_and_stair_blocks_preserved_exact": true
+  },
+  "retained_interactions": [
+    {
+      "id": "MN_R10_GALLERY_READER",
+      "tile": [
+        9,
+        5
+      ],
+      "role": "Original foreman clue; dialogue owns movement."
+    },
+    {
+      "id": "MN_R10_ITEM_04",
+      "tile": [
+        29,
+        23
+      ],
+      "role": "Original once-only Revive."
+    },
+    {
+      "id": "MN_R10_ESCAPE_ROPE",
+      "tile": [
+        39,
+        5
+      ],
+      "role": "Original once-only supply; full-pocket refusal, Toss/retry and Continue preserved."
+    },
+    {
+      "id": "MN_EXTRA_R10_SURVEY",
+      "tile": [
+        18,
+        15
+      ],
+      "approach": [
+        19,
+        15
+      ],
+      "role": "SILAS optional native Hiker battle; exact existing team and scaling retained."
+    },
+    {
+      "id": "MN_EXTRA_R10_SPRING",
+      "tile": [
+        33,
+        24
+      ],
+      "approach": [
+        33,
+        25
+      ],
+      "role": "NORA optional native Fisher battle; exact existing team and scaling retained."
+    }
+  ],
+  "preservation": "Only the full block array and its encoded payload change. Existing events, actors, all programs/indexes, prizes, item quantities, flags, exterior map/warp, dimensions, palettes, native art/audio, encounters and every other map remain exact.",
+  "runtime_validation": "Rust native cave validator checks all real bodies, floor graph, protected stairs/water/mouth, paired ladder and both effective one-way drops with ordinary returns.",
+  "source_review": {
+    "tool": "planning/minnesota/tools/review_cave_source.py",
+    "warm_seconds": 0.081,
+    "retained_versions": "planning/minnesota/renders/r10-survey-spurs-v681/source-v682",
+    "references": [
+      "UnionCave1F",
+      "MountMortar1FOutside",
+      "MountMortar1FInside"
+    ]
+  },
+  "status": "Verified on current Detroit gate parent: complete native 24x18 terrain refinement, all existing activities/programs exact, both new wall faces and winding routes played, both battles/items/stairs/drops/mouth/Continue pass. World.json controls selection; broader map goal remains active.",
+  "broader_goal_complete": false,
+  "review": {
+    "audit": "planning/minnesota/renders/r10-survey-spurs-v681/audit-v694/receipt.json",
+    "native": "planning/minnesota/renders/r10-survey-spurs-v681/native-v693/capture-progress.json",
+    "controller": "planning/minnesota/renders/r10-survey-spurs-v681/controller-v693.json",
+    "stdio": "planning/minnesota/renders/r10-survey-spurs-v681/mcp-v696/receipt.json",
+    "audio": "planning/minnesota/renders/r10-survey-spurs-v681/audio-v694.json",
+    "negative": "planning/minnesota/renders/r10-survey-spurs-v681/negative-v695/receipt.json",
+    "clippy": "planning/minnesota/renders/r10-survey-spurs-v681/clippy-v687.json",
+    "format": "planning/minnesota/renders/r10-survey-spurs-v681/fmt-v687.json",
+    "visual": "planning/minnesota/renders/r10-survey-spurs-v681/visual-v698.json",
+    "actual_reached": "planning/minnesota/renders/r10-survey-spurs-v681/acted-v697/receipt.json"
+  }
+}

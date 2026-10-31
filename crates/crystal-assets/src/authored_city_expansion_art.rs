@@ -101,7 +101,8 @@ pub(super) fn install(
         .clone();
     let source_count = graphics.len() / 16;
     ensure!(
-        matches!(source_count, 192 | 256),
+        matches!(source_count, 192 | 256)
+            || (source_count == 96 && expected == "cave" && art.extended_graphics),
         "city source graphics extent differs"
     );
     let inherited_foregrounds: BTreeMap<u8, [[u8; 3]; 3]> = files
@@ -111,6 +112,15 @@ pub(super) fn install(
         .context("city base foreground colors")?
         .unwrap_or_default();
     let referenced = metatiles.iter().copied().collect::<BTreeSet<_>>();
+    if source_count == 96 {
+        // Native cave art occupies a single small bank. Expand only its private
+        // alias; the original graphics and their physical addresses stay exact.
+        ensure!(
+            referenced.iter().all(|&glyph| usize::from(glyph) < 96
+                && definition.palette_map[usize::from(glyph)] & 8 == 0),
+            "small cave graphics require unchanged single-bank native addresses"
+        );
+    }
     if art.extended_graphics {
         // Give each original bank 128 physical slots. Copy referenced source
         // glyphs to their new physical addresses without changing any IDs,

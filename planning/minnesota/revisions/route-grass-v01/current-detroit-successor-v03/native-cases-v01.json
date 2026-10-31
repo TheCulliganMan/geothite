@@ -1,0 +1,14 @@
+{
+  "status": "INCOMPLETE_OR_REQUIRES_REVIEW",
+  "pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+  "pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33",
+  "binary_sha256": "f55dba70e67da799d1e802ca908ad1599be6163918fdf4adf0e66c0c607326de",
+  "results": [
+    {
+      "case": "all_rooms_residents_carpets_and_two_real_roads",
+      "status": "REQUIRES_REVIEW",
+      "log": "planning/minnesota/revisions/route-grass-v01/current-detroit-successor-v03/all_rooms_residents_carpets_and_two_real_roads.log"
+    }
+  ],
+  "scope": "Explicit local fixtures; all subsequent movement/dialogue/services/rewards native. Existing town and Itasca scopes; new R19 gatehouse retains its separate accepted review."
+}

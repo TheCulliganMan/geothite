@@ -1,0 +1,128 @@
+{
+  "status": "PASS",
+  "parent": {
+    "revision": "minneapolis_mill_arts_streets_revision",
+    "pack": "content-packs/minnesota-minneapolis-mill-arts-v02.crystalpack",
+    "sha256": "6f02a4fd9a2294a5c04825ffc3873b07b5a46a4d1d93e5a4951ec9fe6125d6c1"
+  },
+  "pack": "content-packs/minnesota-current-st-cloud-fronts-v01.crystalpack",
+  "sha256": "09641f0c2769ed3fdb9860b163ceabc2586ecc0b6e4a22100e90c8c253a84f80",
+  "identity": {
+    "stored": "a0d4cb792f7c2829630e2d22e2cc6805d6e62f9939a7fabe12c925a1bc10560a",
+    "independently_recomputed": "a0d4cb792f7c2829630e2d22e2cc6805d6e62f9939a7fabe12c925a1bc10560a",
+    "exact": true
+  },
+  "changed_metatiles": [
+    {
+      "at": [
+        4,
+        3
+      ],
+      "before": 31,
+      "after": 25
+    },
+    {
+      "at": [
+        5,
+        3
+      ],
+      "before": 25,
+      "after": 5
+    },
+    {
+      "at": [
+        8,
+        3
+      ],
+      "before": 31,
+      "after": 25
+    },
+    {
+      "at": [
+        9,
+        3
+      ],
+      "before": 25,
+      "after": 5
+    },
+    {
+      "at": [
+        3,
+        4
+      ],
+      "before": 23,
+      "after": 26
+    },
+    {
+      "at": [
+        5,
+        4
+      ],
+      "before": 17,
+      "after": 5
+    },
+    {
+      "at": [
+        7,
+        4
+      ],
+      "before": 23,
+      "after": 26
+    },
+    {
+      "at": [
+        9,
+        4
+      ],
+      "before": 17,
+      "after": 5
+    }
+  ],
+  "paired_warps_shifted_right": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "only_collision_changes": [
+    {
+      "at": [
+        6,
+        9
+      ],
+      "before": "DOOR",
+      "after": "WALL"
+    },
+    {
+      "at": [
+        7,
+        9
+      ],
+      "before": "WALL",
+      "after": "DOOR"
+    },
+    {
+      "at": [
+        14,
+        9
+      ],
+      "before": "DOOR",
+      "after": "WALL"
+    },
+    {
+      "at": [
+        15,
+        9
+      ],
+      "before": "WALL",
+      "after": "DOOR"
+    }
+  ],
+  "all1728_collision_quadrants_independently_checked": true,
+  "raw_and_cached_event_mirrors_independently_exactly_four_x_arguments_changed": true,
+  "all_other_complete_maps_exact": 731,
+  "all_art_audio_encounters_trainers_and_other_scripts_exact": true,
+  "state_fair_exact": true,
+  "installed_stairs_and_river_joins_exact": true,
+  "entire_normalized_pack_exact": true
+}

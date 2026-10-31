@@ -1,0 +1,49 @@
+{
+  "pid": 35675,
+  "source_sha256": {
+    "crates/crystal-assets/src/brainerd_mart_facade.rs": "f6c017078e943573572831fcea66d8e91111ae5c65b0bae2f30085ca171b78b0",
+    "crates/crystal-assets/src/bin/revise_brainerd_mart_facade.rs": "966105abd1cfa0bd14f1fbc4cd4d75849e0cef6401d04f96d22035527f9ce272"
+  },
+  "steps": [
+    {
+      "step": "publisher",
+      "command": [
+        "cargo",
+        "build",
+        "--profile",
+        "wasm-dev",
+        "--locked",
+        "--config",
+        "profile.wasm-dev.package.crystal-assets.opt-level=0",
+        "-p",
+        "crystal-assets",
+        "--bin",
+        "revise_brainerd_mart_facade"
+      ],
+      "exit_code": 0,
+      "log": ".local/route-grass-review/brainerd-mart-publisher-v01.log",
+      "outputs": [
+        {
+          "path": ".local/route-grass-review/portable-brainerd-tools-v01/revise_brainerd_mart_facade",
+          "sha256": "2d1c50d14c5e7747400da64e6b20d791db03c904d6481d8bab9b16ade2cc4301"
+        }
+      ]
+    },
+    {
+      "step": "assets-all-target-clippy",
+      "command": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "-p",
+        "crystal-assets",
+        "--all-targets"
+      ],
+      "exit_code": 0,
+      "log": ".local/dialogue-overhaul/storyboard-assets-clippy-v27-v03.log",
+      "reused_completed_current_shared_check": true,
+      "acceptance": "planning/minnesota/revisions/route-grass-v01/current-brainerd-successor-v01/code-lint-current-shared-acceptance-v01.json"
+    }
+  ],
+  "duplicate_wait_cancel_reason": "Required all-target lint already passed including unchanged newly authored Brainerd targets; verified artifacts retained."
+}

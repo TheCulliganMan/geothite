@@ -1,0 +1,42 @@
+[
+  {
+    "id": "upper",
+    "map": "MnBemidji",
+    "core": [
+      11,
+      19
+    ]
+  },
+  {
+    "id": "treads",
+    "map": "MnBemidji",
+    "core": [
+      11,
+      21
+    ]
+  },
+  {
+    "id": "lower",
+    "map": "MnBemidji",
+    "core": [
+      11,
+      22
+    ]
+  },
+  {
+    "id": "east-access",
+    "map": "MnBemidji",
+    "core": [
+      20,
+      17
+    ]
+  },
+  {
+    "id": "mart-preserved",
+    "map": "MnBemidji",
+    "core": [
+      41,
+      20
+    ]
+  }
+]

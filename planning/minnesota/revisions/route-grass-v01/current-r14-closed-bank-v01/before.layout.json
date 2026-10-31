@@ -1,0 +1,2907 @@
+{
+  "schema_version": 2,
+  "id": "MN_R14",
+  "tileset": "johto",
+  "compiled_tileset": "mn_headwaters",
+  "dimensions_metatiles": [
+    48,
+    32
+  ],
+  "shore_fitting": "explicit_source_edges",
+  "reject_cliff_cuts": true,
+  "derived_blocks": [
+    {
+      "id": "80",
+      "source_tileset": "kanto",
+      "source_block": "78",
+      "collision": "WATER",
+      "required_typed_extension": "headwaters_art::build_headwaters_art_pack"
+    },
+    {
+      "id": "81",
+      "source_tileset": "kanto",
+      "source_block": "77",
+      "collision": "FLOOR/FLOOR/WALL/WALL",
+      "required_typed_extension": "headwaters_art::build_headwaters_art_pack"
+    },
+    {
+      "id": "82",
+      "source_tileset": "kanto",
+      "source_block": "77",
+      "tile_row_order": [
+        2,
+        3,
+        0,
+        1
+      ],
+      "collision_source_tileset": "johto",
+      "collision_source_block": "75",
+      "required_typed_extension": "headwaters_art::build_headwaters_art_pack"
+    }
+  ],
+  "additional_water_blocks": [
+    "30",
+    "31",
+    "32",
+    "38",
+    "39",
+    "3a"
+  ],
+  "layers": [
+    {
+      "name": "Survey pond crooked shoreline",
+      "kind": "polygon",
+      "points": [
+        [
+          3,
+          3
+        ],
+        [
+          7,
+          3
+        ],
+        [
+          7,
+          4
+        ],
+        [
+          8,
+          4
+        ],
+        [
+          8,
+          7
+        ],
+        [
+          7,
+          7
+        ],
+        [
+          7,
+          10
+        ],
+        [
+          4,
+          10
+        ],
+        [
+          4,
+          9
+        ],
+        [
+          3,
+          9
+        ],
+        [
+          3,
+          6
+        ],
+        [
+          2,
+          6
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          3,
+          4
+        ]
+      ],
+      "material": "water"
+    },
+    {
+      "name": "Young Mississippi and northern reed basin",
+      "kind": "polygon",
+      "points": [
+        [
+          22,
+          1
+        ],
+        [
+          24,
+          1
+        ],
+        [
+          24,
+          5
+        ],
+        [
+          27,
+          5
+        ],
+        [
+          27,
+          9
+        ],
+        [
+          26,
+          9
+        ],
+        [
+          26,
+          12
+        ],
+        [
+          24,
+          12
+        ],
+        [
+          24,
+          18
+        ],
+        [
+          25,
+          18
+        ],
+        [
+          25,
+          24
+        ],
+        [
+          24,
+          24
+        ],
+        [
+          24,
+          30
+        ],
+        [
+          22,
+          30
+        ],
+        [
+          22,
+          25
+        ],
+        [
+          23,
+          25
+        ],
+        [
+          23,
+          20
+        ],
+        [
+          22,
+          20
+        ],
+        [
+          22,
+          14
+        ],
+        [
+          20,
+          14
+        ],
+        [
+          20,
+          11
+        ],
+        [
+          18,
+          11
+        ],
+        [
+          18,
+          7
+        ],
+        [
+          20,
+          7
+        ],
+        [
+          20,
+          5
+        ],
+        [
+          22,
+          5
+        ]
+      ],
+      "material": "water"
+    },
+    {
+      "name": "Eastern fen pool",
+      "kind": "polygon",
+      "points": [
+        [
+          39,
+          23
+        ],
+        [
+          42,
+          23
+        ],
+        [
+          42,
+          24
+        ],
+        [
+          43,
+          24
+        ],
+        [
+          43,
+          26
+        ],
+        [
+          41,
+          26
+        ],
+        [
+          41,
+          25
+        ],
+        [
+          39,
+          25
+        ]
+      ],
+      "material": "water"
+    },
+    {
+      "name": "West survey shore",
+      "kind": "polygon",
+      "points": [
+        [
+          9,
+          4
+        ],
+        [
+          11,
+          4
+        ],
+        [
+          11,
+          7
+        ],
+        [
+          13,
+          7
+        ],
+        [
+          13,
+          9
+        ],
+        [
+          16,
+          9
+        ],
+        [
+          16,
+          11
+        ],
+        [
+          10,
+          11
+        ],
+        [
+          10,
+          9
+        ],
+        [
+          9,
+          9
+        ]
+      ],
+      "material": "lawn"
+    },
+    {
+      "name": "West trail junction",
+      "kind": "polygon",
+      "points": [
+        [
+          7,
+          15
+        ],
+        [
+          10,
+          15
+        ],
+        [
+          10,
+          16
+        ],
+        [
+          12,
+          16
+        ],
+        [
+          12,
+          18
+        ],
+        [
+          16,
+          18
+        ],
+        [
+          16,
+          20
+        ],
+        [
+          13,
+          20
+        ],
+        [
+          13,
+          22
+        ],
+        [
+          7,
+          22
+        ]
+      ],
+      "material": "lawn"
+    },
+    {
+      "name": "Fern hollow wind shelter",
+      "kind": "polygon",
+      "points": [
+        [
+          5,
+          24
+        ],
+        [
+          9,
+          24
+        ],
+        [
+          9,
+          25
+        ],
+        [
+          12,
+          25
+        ],
+        [
+          12,
+          24
+        ],
+        [
+          15,
+          24
+        ],
+        [
+          15,
+          27
+        ],
+        [
+          14,
+          27
+        ],
+        [
+          14,
+          29
+        ],
+        [
+          8,
+          29
+        ],
+        [
+          8,
+          28
+        ],
+        [
+          5,
+          28
+        ]
+      ],
+      "material": "lawn"
+    },
+    {
+      "name": "East camp bay",
+      "kind": "polygon",
+      "points": [
+        [
+          38,
+          13
+        ],
+        [
+          41,
+          13
+        ],
+        [
+          41,
+          15
+        ],
+        [
+          42,
+          15
+        ],
+        [
+          42,
+          17
+        ],
+        [
+          39,
+          17
+        ],
+        [
+          39,
+          16
+        ],
+        [
+          38,
+          16
+        ]
+      ],
+      "material": "lawn"
+    },
+    {
+      "name": "North pine light gap",
+      "kind": "polygon",
+      "points": [
+        [
+          31,
+          5
+        ],
+        [
+          34,
+          5
+        ],
+        [
+          34,
+          6
+        ],
+        [
+          38,
+          6
+        ],
+        [
+          38,
+          5
+        ],
+        [
+          40,
+          5
+        ],
+        [
+          40,
+          8
+        ],
+        [
+          37,
+          8
+        ],
+        [
+          37,
+          9
+        ],
+        [
+          34,
+          9
+        ],
+        [
+          34,
+          8
+        ],
+        [
+          31,
+          8
+        ]
+      ],
+      "material": "lawn"
+    },
+    {
+      "name": "Southern fen observation bank",
+      "kind": "polygon",
+      "points": [
+        [
+          34,
+          22
+        ],
+        [
+          37,
+          22
+        ],
+        [
+          37,
+          23
+        ],
+        [
+          39,
+          23
+        ],
+        [
+          39,
+          25
+        ],
+        [
+          38,
+          25
+        ],
+        [
+          38,
+          27
+        ],
+        [
+          42,
+          27
+        ],
+        [
+          42,
+          29
+        ],
+        [
+          36,
+          29
+        ],
+        [
+          36,
+          28
+        ],
+        [
+          34,
+          28
+        ]
+      ],
+      "material": "lawn"
+    },
+    {
+      "name": "Bemidji wooded threshold",
+      "kind": "polygon",
+      "points": [
+        [
+          43,
+          12
+        ],
+        [
+          47,
+          12
+        ],
+        [
+          47,
+          15
+        ],
+        [
+          45,
+          15
+        ],
+        [
+          45,
+          14
+        ],
+        [
+          43,
+          14
+        ]
+      ],
+      "material": "lawn"
+    },
+    {
+      "name": "Survey shore reed tongue",
+      "kind": "polygon",
+      "points": [
+        [
+          10,
+          7
+        ],
+        [
+          12,
+          7
+        ],
+        [
+          12,
+          9
+        ],
+        [
+          14,
+          9
+        ],
+        [
+          14,
+          11
+        ],
+        [
+          12,
+          11
+        ],
+        [
+          12,
+          10
+        ],
+        [
+          10,
+          10
+        ]
+      ],
+      "material": "encounter"
+    },
+    {
+      "name": "Cedar pocket habitat",
+      "kind": "polygon",
+      "points": [
+        [
+          14,
+          6
+        ],
+        [
+          16,
+          6
+        ],
+        [
+          16,
+          9
+        ],
+        [
+          14,
+          9
+        ]
+      ],
+      "material": "encounter"
+    },
+    {
+      "name": "West junction fern shoulder",
+      "kind": "polygon",
+      "points": [
+        [
+          8,
+          16
+        ],
+        [
+          10,
+          16
+        ],
+        [
+          10,
+          17
+        ],
+        [
+          12,
+          17
+        ],
+        [
+          12,
+          19
+        ],
+        [
+          10,
+          19
+        ],
+        [
+          10,
+          20
+        ],
+        [
+          8,
+          20
+        ]
+      ],
+      "material": "encounter"
+    },
+    {
+      "name": "Hollow southern fern fan",
+      "kind": "polygon",
+      "points": [
+        [
+          7,
+          25
+        ],
+        [
+          10,
+          25
+        ],
+        [
+          10,
+          26
+        ],
+        [
+          12,
+          26
+        ],
+        [
+          12,
+          28
+        ],
+        [
+          9,
+          28
+        ],
+        [
+          9,
+          29
+        ],
+        [
+          7,
+          29
+        ]
+      ],
+      "material": "encounter"
+    },
+    {
+      "name": "North seed meadow",
+      "kind": "polygon",
+      "points": [
+        [
+          40,
+          4
+        ],
+        [
+          42,
+          4
+        ],
+        [
+          42,
+          5
+        ],
+        [
+          43,
+          5
+        ],
+        [
+          43,
+          8
+        ],
+        [
+          41,
+          8
+        ],
+        [
+          41,
+          7
+        ],
+        [
+          40,
+          7
+        ]
+      ],
+      "material": "encounter"
+    },
+    {
+      "name": "East camp understory",
+      "kind": "polygon",
+      "points": [
+        [
+          40,
+          15
+        ],
+        [
+          43,
+          15
+        ],
+        [
+          43,
+          17
+        ],
+        [
+          41,
+          17
+        ],
+        [
+          41,
+          18
+        ],
+        [
+          40,
+          18
+        ]
+      ],
+      "material": "encounter"
+    },
+    {
+      "name": "Southern fen reeds",
+      "kind": "polygon",
+      "points": [
+        [
+          35,
+          23
+        ],
+        [
+          38,
+          23
+        ],
+        [
+          38,
+          25
+        ],
+        [
+          37,
+          25
+        ],
+        [
+          37,
+          27
+        ],
+        [
+          40,
+          27
+        ],
+        [
+          40,
+          28
+        ],
+        [
+          37,
+          28
+        ],
+        [
+          37,
+          29
+        ],
+        [
+          35,
+          29
+        ]
+      ],
+      "material": "encounter"
+    },
+    {
+      "name": "Eastern fen reward habitat",
+      "kind": "polygon",
+      "points": [
+        [
+          44,
+          24
+        ],
+        [
+          46,
+          24
+        ],
+        [
+          46,
+          28
+        ],
+        [
+          43,
+          28
+        ],
+        [
+          43,
+          27
+        ],
+        [
+          44,
+          27
+        ]
+      ],
+      "material": "encounter"
+    },
+    {
+      "name": "Fen circuit actual entry",
+      "kind": "path",
+      "points": [
+        [
+          33,
+          19
+        ],
+        [
+          35,
+          19
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "Mature pine circuit inward root finger",
+      "kind": "rect",
+      "bounds": [
+        37,
+        8,
+        39,
+        10
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Free Itasca woodland road",
+      "kind": "path",
+      "points": [
+        [
+          0,
+          21
+        ],
+        [
+          10,
+          21
+        ],
+        [
+          10,
+          18
+        ],
+        [
+          15,
+          18
+        ],
+        [
+          15,
+          19
+        ],
+        [
+          21,
+          19
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "Free Bemidji woodland road",
+      "kind": "path",
+      "points": [
+        [
+          47,
+          13
+        ],
+        [
+          39,
+          13
+        ],
+        [
+          39,
+          16
+        ],
+        [
+          33,
+          16
+        ],
+        [
+          33,
+          19
+        ],
+        [
+          26,
+          19
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "Upper mature pine circuit",
+      "kind": "path",
+      "points": [
+        [
+          33,
+          16
+        ],
+        [
+          31,
+          16
+        ],
+        [
+          31,
+          13
+        ],
+        [
+          39,
+          13
+        ],
+        [
+          39,
+          6
+        ],
+        [
+          31,
+          6
+        ],
+        [
+          31,
+          8
+        ],
+        [
+          35,
+          8
+        ],
+        [
+          35,
+          9
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "Cut upper spur",
+      "kind": "path",
+      "points": [
+        [
+          35,
+          8
+        ],
+        [
+          35,
+          9
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "Cut lower spur",
+      "kind": "path",
+      "points": [
+        [
+          35,
+          11
+        ],
+        [
+          35,
+          13
+        ],
+        [
+          35,
+          16
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "West pond approach and ordinary bank return",
+      "kind": "path",
+      "points": [
+        [
+          7,
+          21
+        ],
+        [
+          7,
+          11
+        ],
+        [
+          10,
+          11
+        ],
+        [
+          10,
+          8
+        ],
+        [
+          9,
+          8
+        ],
+        [
+          9,
+          5
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "Cedar resource spur",
+      "kind": "path",
+      "points": [
+        [
+          10,
+          8
+        ],
+        [
+          15,
+          8
+        ],
+        [
+          15,
+          7
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "Bank upper approach",
+      "kind": "path",
+      "points": [
+        [
+          10,
+          11
+        ],
+        [
+          14,
+          11
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "Bank landing connection",
+      "kind": "path",
+      "points": [
+        [
+          14,
+          13
+        ],
+        [
+          15,
+          13
+        ],
+        [
+          15,
+          18
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "Sheltered fern hollow circuit",
+      "kind": "path",
+      "points": [
+        [
+          10,
+          21
+        ],
+        [
+          10,
+          24
+        ],
+        [
+          6,
+          24
+        ],
+        [
+          6,
+          28
+        ],
+        [
+          15,
+          28
+        ],
+        [
+          15,
+          24
+        ],
+        [
+          10,
+          24
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "Fen and picnic circuit",
+      "kind": "path",
+      "points": [
+        [
+          35,
+          19
+        ],
+        [
+          35,
+          22
+        ],
+        [
+          42,
+          22
+        ],
+        [
+          42,
+          27
+        ],
+        [
+          35,
+          27
+        ],
+        [
+          35,
+          22
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "Fen reward spur",
+      "kind": "path",
+      "points": [
+        [
+          42,
+          27
+        ],
+        [
+          45,
+          27
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "Young river watch",
+      "kind": "path",
+      "points": [
+        [
+          27,
+          19
+        ],
+        [
+          27,
+          15
+        ],
+        [
+          25,
+          15
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "North required-understory woodland",
+      "kind": "rect",
+      "bounds": [
+        28,
+        0,
+        30,
+        17
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "South required-understory woodland",
+      "kind": "rect",
+      "bounds": [
+        28,
+        21,
+        30,
+        32
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Required young-river grass neck",
+      "kind": "rect",
+      "bounds": [
+        28,
+        17,
+        30,
+        21
+      ],
+      "material": "encounter"
+    },
+    {
+      "name": "Northern pine shortcut canopy band",
+      "kind": "rect",
+      "bounds": [
+        30,
+        10,
+        39,
+        11
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Native shortcut tree",
+      "kind": "point",
+      "position": [
+        35,
+        10
+      ],
+      "block": "5b"
+    },
+    {
+      "name": "Low survey bank west anchor",
+      "kind": "rect",
+      "bounds": [
+        0,
+        12,
+        10,
+        13
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Low survey bank east anchor",
+      "kind": "rect",
+      "bounds": [
+        18,
+        12,
+        22,
+        13
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Low survey native drop",
+      "kind": "block_rect",
+      "bounds": [
+        10,
+        12,
+        18,
+        13
+      ],
+      "block": "57"
+    },
+    {
+      "name": "Only ordinary bank return gate",
+      "kind": "point",
+      "position": [
+        7,
+        12
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Young river north post rail",
+      "kind": "block_rect",
+      "bounds": [
+        21,
+        18,
+        27,
+        19
+      ],
+      "block": "82"
+    },
+    {
+      "name": "Young river south post rail",
+      "kind": "block_rect",
+      "bounds": [
+        21,
+        19,
+        27,
+        20
+      ],
+      "block": "81"
+    },
+    {
+      "name": "Survey observation north rail",
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        8,
+        10,
+        9
+      ],
+      "block": "82"
+    },
+    {
+      "name": "Survey observation south rail",
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        9,
+        10,
+        10
+      ],
+      "block": "81"
+    },
+    {
+      "name": "Survey landing north closure",
+      "kind": "point",
+      "position": [
+        5,
+        8
+      ],
+      "block": "40"
+    },
+    {
+      "name": "Survey landing south closure",
+      "kind": "point",
+      "position": [
+        5,
+        9
+      ],
+      "block": "48"
+    },
+    {
+      "name": "Survey deck bank approach",
+      "kind": "path",
+      "points": [
+        [
+          9,
+          9
+        ],
+        [
+          10,
+          9
+        ],
+        [
+          10,
+          11
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "North river rock cap 22",
+      "kind": "point",
+      "position": [
+        22,
+        1
+      ],
+      "block": "30"
+    },
+    {
+      "name": "North river rock cap 23",
+      "kind": "point",
+      "position": [
+        23,
+        1
+      ],
+      "block": "31"
+    },
+    {
+      "name": "North river rock cap 24",
+      "kind": "point",
+      "position": [
+        24,
+        1
+      ],
+      "block": "32"
+    },
+    {
+      "name": "South river rock cap 22",
+      "kind": "point",
+      "position": [
+        22,
+        30
+      ],
+      "block": "38"
+    },
+    {
+      "name": "South river rock cap 23",
+      "kind": "point",
+      "position": [
+        23,
+        30
+      ],
+      "block": "39"
+    },
+    {
+      "name": "South river rock cap 24",
+      "kind": "point",
+      "position": [
+        24,
+        30
+      ],
+      "block": "3a"
+    },
+    {
+      "name": "Survey bird birch",
+      "kind": "point",
+      "position": [
+        11,
+        5
+      ],
+      "block": "3d"
+    },
+    {
+      "name": "Hollow wind tree",
+      "kind": "point",
+      "position": [
+        12,
+        27
+      ],
+      "block": "5d"
+    },
+    {
+      "name": "Old pine upper crown",
+      "kind": "point",
+      "position": [
+        33,
+        7
+      ],
+      "block": "61"
+    },
+    {
+      "name": "Old pine lower crown",
+      "kind": "point",
+      "position": [
+        33,
+        8
+      ],
+      "block": "65"
+    },
+    {
+      "name": "Camp shelter crown",
+      "kind": "point",
+      "position": [
+        41,
+        14
+      ],
+      "block": "5d"
+    },
+    {
+      "name": "Fen bank tree",
+      "kind": "point",
+      "position": [
+        38,
+        26
+      ],
+      "block": "3d"
+    },
+    {
+      "name": "Hollow light flowers",
+      "kind": "rect",
+      "bounds": [
+        12,
+        25,
+        14,
+        26
+      ],
+      "material": "flowers"
+    },
+    {
+      "name": "Old pine botanist flowers",
+      "kind": "rect",
+      "bounds": [
+        31,
+        5,
+        33,
+        6
+      ],
+      "material": "flowers"
+    },
+    {
+      "name": "MN_R14_T01 standing tile",
+      "kind": "point",
+      "position": [
+        40,
+        15
+      ],
+      "block": "02"
+    },
+    {
+      "name": "MN_R14_T02 standing tile",
+      "kind": "point",
+      "position": [
+        36,
+        6
+      ],
+      "block": "02"
+    },
+    {
+      "name": "MN_R14_T03 standing tile",
+      "kind": "point",
+      "position": [
+        9,
+        8
+      ],
+      "block": "02"
+    },
+    {
+      "name": "MN_R14_T04 standing tile",
+      "kind": "point",
+      "position": [
+        14,
+        26
+      ],
+      "block": "02"
+    },
+    {
+      "name": "MN_R14_T05 standing tile",
+      "kind": "point",
+      "position": [
+        40,
+        27
+      ],
+      "block": "02"
+    },
+    {
+      "name": "MN_R14_T06 standing tile",
+      "kind": "point",
+      "position": [
+        35,
+        22
+      ],
+      "block": "02"
+    },
+    {
+      "name": "MN_R14_TRAIL_GUIDE standing tile",
+      "kind": "point",
+      "position": [
+        44,
+        13
+      ],
+      "block": "02"
+    },
+    {
+      "name": "MN_R14_BOTANIST standing tile",
+      "kind": "point",
+      "position": [
+        32,
+        7
+      ],
+      "block": "02"
+    },
+    {
+      "name": "MN_R14_POND_WATCHER standing tile",
+      "kind": "point",
+      "position": [
+        9,
+        5
+      ],
+      "block": "02"
+    },
+    {
+      "name": "MN_R14_BRIDGE_KEEPER standing tile",
+      "kind": "point",
+      "position": [
+        27,
+        18
+      ],
+      "block": "02"
+    },
+    {
+      "name": "MN_R14_HOLLOW_WALKER standing tile",
+      "kind": "point",
+      "position": [
+        8,
+        27
+      ],
+      "block": "02"
+    },
+    {
+      "name": "MN_R14_MARSH_WATCHER standing tile",
+      "kind": "point",
+      "position": [
+        39,
+        22
+      ],
+      "block": "02"
+    },
+    {
+      "name": "MN_R14_ITEM_01 standing tile",
+      "kind": "point",
+      "position": [
+        15,
+        7
+      ],
+      "block": "02"
+    },
+    {
+      "name": "MN_R14_ITEM_02 standing tile",
+      "kind": "point",
+      "position": [
+        42,
+        6
+      ],
+      "block": "02"
+    },
+    {
+      "name": "MN_R14_ITEM_03 standing tile",
+      "kind": "point",
+      "position": [
+        5,
+        28
+      ],
+      "block": "02"
+    },
+    {
+      "name": "MN_R14_ITEM_04 standing tile",
+      "kind": "point",
+      "position": [
+        45,
+        27
+      ],
+      "block": "02"
+    },
+    {
+      "name": "MN_R14_SIGN_01",
+      "kind": "point",
+      "position": [
+        45,
+        12
+      ],
+      "block": "45"
+    },
+    {
+      "name": "MN_R14_SIGN_02",
+      "kind": "point",
+      "position": [
+        34,
+        5
+      ],
+      "block": "45"
+    },
+    {
+      "name": "MN_R14_SIGN_03",
+      "kind": "point",
+      "position": [
+        27,
+        17
+      ],
+      "block": "45"
+    },
+    {
+      "name": "MN_R14_SIGN_04",
+      "kind": "point",
+      "position": [
+        10,
+        6
+      ],
+      "block": "45"
+    },
+    {
+      "name": "MN_R14_SIGN_05",
+      "kind": "point",
+      "position": [
+        13,
+        25
+      ],
+      "block": "45"
+    },
+    {
+      "name": "MN_R14_SIGN_06",
+      "kind": "point",
+      "position": [
+        38,
+        22
+      ],
+      "block": "45"
+    },
+    {
+      "name": "West exterior anchor",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        0,
+        1,
+        32
+      ],
+      "block": "05"
+    },
+    {
+      "name": "East exterior anchor",
+      "kind": "block_rect",
+      "bounds": [
+        47,
+        0,
+        48,
+        32
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Actual Itasca walking edge",
+      "kind": "point",
+      "position": [
+        0,
+        21
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Actual Bemidji walking edge",
+      "kind": "point",
+      "position": [
+        47,
+        13
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve installed Lake Itasca connection",
+      "position": [
+        4,
+        18
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve installed Lake Itasca connection",
+      "position": [
+        5,
+        18
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve installed Lake Itasca connection",
+      "position": [
+        6,
+        18
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve installed Lake Itasca connection",
+      "position": [
+        0,
+        19
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve installed Lake Itasca connection",
+      "position": [
+        1,
+        19
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve installed Lake Itasca connection",
+      "position": [
+        2,
+        19
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve installed Lake Itasca connection",
+      "position": [
+        3,
+        19
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve installed Lake Itasca connection",
+      "position": [
+        4,
+        19
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve installed Lake Itasca connection",
+      "position": [
+        0,
+        20
+      ],
+      "block": "08"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve installed Lake Itasca connection",
+      "position": [
+        1,
+        20
+      ],
+      "block": "09"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve installed Lake Itasca connection",
+      "position": [
+        0,
+        21
+      ],
+      "block": "10"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve installed Lake Itasca connection",
+      "position": [
+        1,
+        21
+      ],
+      "block": "11"
+    },
+    {
+      "kind": "point",
+      "name": "Preserve installed Lake Itasca connection",
+      "position": [
+        2,
+        21
+      ],
+      "block": "0b"
+    },
+    {
+      "kind": "point",
+      "name": "Survey-bank uphill grass; dry ledge return",
+      "position": [
+        7,
+        12
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Survey-bank uphill grass; dry ledge return",
+      "position": [
+        7,
+        13
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        22,
+        2
+      ],
+      "block": "58"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        24,
+        2
+      ],
+      "block": "59"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        3,
+        3
+      ],
+      "block": "54"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        4,
+        3
+      ],
+      "block": "76"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        5,
+        3
+      ],
+      "block": "76"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        6,
+        3
+      ],
+      "block": "76"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        7,
+        3
+      ],
+      "block": "55"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        22,
+        3
+      ],
+      "block": "58"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        24,
+        3
+      ],
+      "block": "59"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        2,
+        4
+      ],
+      "block": "54"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        3,
+        4
+      ],
+      "block": "79"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        7,
+        4
+      ],
+      "block": "7a"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        8,
+        4
+      ],
+      "block": "55"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        22,
+        4
+      ],
+      "block": "58"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        24,
+        4
+      ],
+      "block": "59"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        2,
+        5
+      ],
+      "block": "58"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        8,
+        5
+      ],
+      "block": "59"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        20,
+        5
+      ],
+      "block": "54"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        21,
+        5
+      ],
+      "block": "76"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        22,
+        5
+      ],
+      "block": "79"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        24,
+        5
+      ],
+      "block": "7a"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        25,
+        5
+      ],
+      "block": "76"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        26,
+        5
+      ],
+      "block": "76"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        27,
+        5
+      ],
+      "block": "55"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        2,
+        6
+      ],
+      "block": "58"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        8,
+        6
+      ],
+      "block": "59"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        20,
+        6
+      ],
+      "block": "58"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        27,
+        6
+      ],
+      "block": "59"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        3,
+        7
+      ],
+      "block": "58"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        8,
+        7
+      ],
+      "block": "59"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        18,
+        7
+      ],
+      "block": "54"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        19,
+        7
+      ],
+      "block": "76"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        20,
+        7
+      ],
+      "block": "79"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        27,
+        7
+      ],
+      "block": "59"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        3,
+        8
+      ],
+      "block": "58"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        4,
+        8
+      ],
+      "block": "59"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        18,
+        8
+      ],
+      "block": "58"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        27,
+        8
+      ],
+      "block": "59"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        3,
+        9
+      ],
+      "block": "58"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        4,
+        9
+      ],
+      "block": "59"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        18,
+        9
+      ],
+      "block": "58"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        27,
+        9
+      ],
+      "block": "59"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        4,
+        10
+      ],
+      "block": "58"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        5,
+        10
+      ],
+      "block": "76"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        6,
+        10
+      ],
+      "block": "76"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        7,
+        10
+      ],
+      "block": "55"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        18,
+        10
+      ],
+      "block": "58"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        26,
+        10
+      ],
+      "block": "59"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        18,
+        11
+      ],
+      "block": "58"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        26,
+        11
+      ],
+      "block": "59"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        22,
+        12
+      ],
+      "block": "58"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        26,
+        12
+      ],
+      "block": "59"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        20,
+        13
+      ],
+      "block": "54"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        21,
+        13
+      ],
+      "block": "76"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        22,
+        13
+      ],
+      "block": "79"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        24,
+        13
+      ],
+      "block": "59"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        20,
+        14
+      ],
+      "block": "58"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        24,
+        14
+      ],
+      "block": "59"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        22,
+        15
+      ],
+      "block": "58"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        24,
+        15
+      ],
+      "block": "59"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        22,
+        16
+      ],
+      "block": "58"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        24,
+        16
+      ],
+      "block": "59"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        22,
+        17
+      ],
+      "block": "58"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        24,
+        17
+      ],
+      "block": "59"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        22,
+        20
+      ],
+      "block": "54"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        23,
+        20
+      ],
+      "block": "76"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        24,
+        20
+      ],
+      "block": "76"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        25,
+        20
+      ],
+      "block": "55"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        23,
+        21
+      ],
+      "block": "58"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        25,
+        21
+      ],
+      "block": "59"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        23,
+        22
+      ],
+      "block": "58"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        25,
+        22
+      ],
+      "block": "59"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        23,
+        23
+      ],
+      "block": "58"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        25,
+        23
+      ],
+      "block": "59"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        40,
+        23
+      ],
+      "block": "54"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        41,
+        23
+      ],
+      "block": "55"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        23,
+        24
+      ],
+      "block": "58"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        25,
+        24
+      ],
+      "block": "59"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        40,
+        24
+      ],
+      "block": "58"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        41,
+        24
+      ],
+      "block": "59"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        43,
+        24
+      ],
+      "block": "54"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        22,
+        25
+      ],
+      "block": "54"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        23,
+        25
+      ],
+      "block": "79"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        24,
+        25
+      ],
+      "block": "59"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        40,
+        25
+      ],
+      "block": "58"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        41,
+        25
+      ],
+      "block": "59"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        43,
+        25
+      ],
+      "block": "58"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        22,
+        26
+      ],
+      "block": "58"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        24,
+        26
+      ],
+      "block": "59"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        41,
+        26
+      ],
+      "block": "58"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        43,
+        26
+      ],
+      "block": "58"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        22,
+        27
+      ],
+      "block": "58"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        24,
+        27
+      ],
+      "block": "59"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        22,
+        28
+      ],
+      "block": "58"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        24,
+        28
+      ],
+      "block": "59"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        22,
+        29
+      ],
+      "block": "58"
+    },
+    {
+      "kind": "point",
+      "name": "Bind installed native preimage",
+      "position": [
+        24,
+        29
+      ],
+      "block": "59"
+    }
+  ],
+  "crossings": [
+    {
+      "id": "YOUNG_MISSISSIPPI_BOARDWALK",
+      "north_rail_blocks": [
+        [
+          21,
+          18
+        ],
+        [
+          22,
+          18
+        ],
+        [
+          23,
+          18
+        ],
+        [
+          24,
+          18
+        ],
+        [
+          25,
+          18
+        ],
+        [
+          26,
+          18
+        ]
+      ],
+      "south_rail_blocks": [
+        [
+          21,
+          19
+        ],
+        [
+          22,
+          19
+        ],
+        [
+          23,
+          19
+        ],
+        [
+          24,
+          19
+        ],
+        [
+          25,
+          19
+        ],
+        [
+          26,
+          19
+        ]
+      ],
+      "core_walk_line": [
+        [
+          42,
+          38
+        ],
+        [
+          43,
+          38
+        ],
+        [
+          44,
+          38
+        ],
+        [
+          45,
+          38
+        ],
+        [
+          46,
+          38
+        ],
+        [
+          47,
+          38
+        ],
+        [
+          48,
+          38
+        ],
+        [
+          49,
+          38
+        ],
+        [
+          50,
+          38
+        ],
+        [
+          51,
+          38
+        ],
+        [
+          52,
+          38
+        ],
+        [
+          53,
+          38
+        ]
+      ]
+    }
+  ],
+  "source_pixels_modified": false,
+  "art_authority": "Unchanged Johto Route30/Route29 native art and existing original Kanto rail recipes; explicitly authored terrain."
+}

@@ -1,0 +1,26 @@
+[
+  {
+    "id": "mart",
+    "map": "MnDuluth",
+    "core": [
+      79,
+      40
+    ]
+  },
+  {
+    "id": "former-door",
+    "map": "MnDuluth",
+    "core": [
+      80,
+      40
+    ]
+  },
+  {
+    "id": "street-approach",
+    "map": "MnDuluth",
+    "core": [
+      79,
+      42
+    ]
+  }
+]

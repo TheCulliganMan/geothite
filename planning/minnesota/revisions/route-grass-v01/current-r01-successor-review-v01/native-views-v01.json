@@ -1,0 +1,26 @@
+[
+  {
+    "id": "western-grass",
+    "map": "MnR01C00R00",
+    "core": [
+      11,
+      24
+    ]
+  },
+  {
+    "id": "grass-stair-approach",
+    "map": "MnR01C00R00",
+    "core": [
+      41,
+      20
+    ]
+  },
+  {
+    "id": "eastern-through-path",
+    "map": "MnR01C00R00",
+    "core": [
+      57,
+      24
+    ]
+  }
+]

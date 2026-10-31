@@ -1,0 +1,185 @@
+{
+  "schema_version": 1,
+  "id": "driftless-fossil-gallery-v01",
+  "maps": [
+    "MnR01Cave1F",
+    "MnDriftlessLampGallery"
+  ],
+  "new_map": "MnDriftlessLampGallery",
+  "purpose": "Optional dry Driftless fossil gallery: descend from the lit tutorial hollow, climb the west fossil ledge, acknowledge the sea-life clue under real native Flash, then investigate the eastern sample-cache alcove. Both climbs and the low cleft have fitted native terrain; the original hollow, HM giver, Antidote and exterior exit remain.",
+  "story": "Return to the lit Driftless hollow after earning Care Badge; obtain and teach the original HM Flash, investigate a lower limestone fossil seam, acknowledge the clue, and find the eastern field kit. Optional backtracking; no new mandatory campaign gate.",
+  "source_authority": {
+    "geology": "https://cse.umn.edu/mgs/paleozoic-geology",
+    "art": "Original supplied native cave metatiles, sprites, DARK/NITE palette and native Flash source."
+  },
+  "connections": [
+    {
+      "from_map": "MnR01Cave1F",
+      "active_warp": 2,
+      "active": [
+        11,
+        9
+      ],
+      "to_map": "MnDriftlessLampGallery",
+      "passive_warp": 2,
+      "passive": [
+        18,
+        17
+      ]
+    },
+    {
+      "from_map": "MnDriftlessLampGallery",
+      "active_warp": 1,
+      "active": [
+        19,
+        17
+      ],
+      "to_map": "MnR01Cave1F",
+      "passive_warp": 3,
+      "passive": [
+        10,
+        9
+      ]
+    }
+  ],
+  "preserved_world_exit": {
+    "inside": [
+      9,
+      11
+    ],
+    "inside_warp": 1,
+    "outside": "MnR01C00R00",
+    "active": [
+      18,
+      17
+    ],
+    "passive": [
+      18,
+      18
+    ]
+  },
+  "fossil_read": {
+    "at": [
+      6,
+      4
+    ],
+    "approach": [
+      5,
+      4
+    ],
+    "facing": "right",
+    "requires": "STATUSFLAGS_FLASH from actual native field move",
+    "pages": [
+      [
+        "Shells lie in the",
+        "limestone layers."
+      ],
+      [
+        "A shallow sea once",
+        "covered this land."
+      ],
+      [
+        "A field kit waits",
+        "on the east shelf."
+      ]
+    ],
+    "acknowledged_event": "EVENT_MN_LAMP_GALLERY_READ"
+  },
+  "sample_cache": {
+    "at": [
+      19,
+      9
+    ],
+    "approach": [
+      18,
+      9
+    ],
+    "facing": "right",
+    "item": "RARE_CANDY",
+    "quantity": 1,
+    "claim": "EVENT_MN_LAMP_GALLERY_CACHE",
+    "visibility": "EVENT_MN_LAMP_GALLERY_HIDDEN",
+    "capacity": "Native delivery failure leaves claim false; native Toss frees space for retry."
+  },
+  "stairs": [
+    {
+      "id": "FOSSIL_LEDGE",
+      "metatile": [
+        3,
+        4
+      ],
+      "block": "30",
+      "before": [
+        6,
+        7
+      ],
+      "lane": [
+        [
+          6,
+          8
+        ],
+        [
+          6,
+          9
+        ]
+      ],
+      "after": [
+        6,
+        10
+      ],
+      "blocked_from": [
+        6,
+        9
+      ],
+      "blocked_target": [
+        7,
+        9
+      ]
+    },
+    {
+      "id": "SAMPLE_ALCOVE",
+      "metatile": [
+        8,
+        6
+      ],
+      "block": "36",
+      "before": [
+        16,
+        11
+      ],
+      "lane": [
+        [
+          16,
+          12
+        ],
+        [
+          16,
+          13
+        ]
+      ],
+      "after": [
+        16,
+        14
+      ],
+      "blocked_from": [
+        16,
+        13
+      ],
+      "blocked_target": [
+        17,
+        13
+      ]
+    }
+  ],
+  "terrain": "123 connected ordinary floor tiles with cache present. Enclosed dry12x10 room, original cave art, two fitted climbs, forced DARK selector4 and native NITE under Flash.",
+  "preserved": [
+    "Original8x7 lit upper loop and both climbs",
+    "Original Care Badge HM Flash giver and native teaching",
+    "Original Antidote and once-only flag",
+    "Original exterior passive return",
+    "All other existing maps, art, audio and recovery destinations"
+  ],
+  "status": "Verified and selected local review revision; broader map work remains active.",
+  "selected_pack": "content-packs/minnesota-driftless-fossil-gallery-v03.crystalpack",
+  "selected_pack_sha256": "3f3d12312ff947ea9f219a9368b98b51f4348ea7a76ed2caf7b062a8ef45316d"
+}

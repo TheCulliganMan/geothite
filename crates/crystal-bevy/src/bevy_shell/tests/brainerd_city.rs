@@ -292,34 +292,45 @@ fn brainerd_city_controller_all_facades_both_carpets_and_safe_arrivals() {
 
 #[test]
 #[ignore = "requires the published external three-city pack"]
-fn brainerd_city_controller_native_east_hop_reverse_wall_and_ordinary_ramp_return() {
+fn brainerd_city_controller_closed_gym_cliff_and_two_way_stairs_continue() {
+    fn stair_step(c: &mut VisibleShellController, button: GameButton, y: i16) {
+        let before = at(c);
+        for _ in 0..4 {
+            press(c, button);
+            if at(c) == (21, y) {
+                return;
+            }
+            assert_eq!(at(c), before, "a native stair tread must not be skipped");
+        }
+        assert_eq!(at(c), (21, y));
+    }
     let (root, runtime) = load();
-    let mut c = fixture(&root, &runtime, TOWN, (23, 38));
-    let mut saw_face = false;
-    for _ in 0..8 {
-        // Observe each authoritative input result before extra settling frames.
-        c.press(GameButton::Right).expect("native east hop");
-        let p = at(&mut c);
-        assert!(
-            matches!(p, (23, 38) | (24, 38) | (26, 38)),
-            "unexpected hop {p:?}"
-        );
-        saw_face |= p == (24, 38);
-        if p == (26, 38) {
-            break;
+    let mut c = fixture(&root, &runtime, TOWN, (24, 38));
+    for y in [38, 39] {
+        walk(&mut c, &runtime, (24, y));
+        for _ in 0..3 {
+            press(&mut c, GameButton::Right);
+            assert_eq!(at(&mut c), (24, y), "tall Gym cliff must remain closed");
         }
     }
-    assert!(saw_face, "native HOP_RIGHT face must be traversed");
-    assert_eq!(at(&mut c), (26, 38));
-    for _ in 0..4 {
-        press(&mut c, GameButton::Left);
-        assert_eq!(at(&mut c), (26, 38), "reverse wall leaked");
+    walk(&mut c, &runtime, (21, 39));
+    for y in [40, 41, 42] {
+        stair_step(&mut c, GameButton::Down, y);
     }
-    // Existing native source planner excludes HOP/WALL; this return can only
-    // walk the ordinary southern ramp, never reverse the one-way edge.
-    walk(&mut c, &runtime, (20, 41));
-    walk(&mut c, &runtime, (23, 38));
-    let _loaded = continue_save(&mut c, &root, &runtime);
+    stair_step(&mut c, GameButton::Up, 41);
+    for button in [GameButton::Left, GameButton::Right] {
+        for _ in 0..3 {
+            press(&mut c, button);
+            assert_eq!(at(&mut c), (21, 41), "stair side wall must remain closed");
+        }
+    }
+    for y in [40, 39] {
+        stair_step(&mut c, GameButton::Up, y);
+    }
+    c = continue_save(&mut c, &root, &runtime);
+    for y in [40, 41, 42] {
+        stair_step(&mut c, GameButton::Down, y);
+    }
 }
 
 #[test]

@@ -1,0 +1,115 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-r11-southwest-grass-v01.crystalpack",
+  "pack_sha256": "9f0ff0c7d0f6dd874ef1a581657900984ca75d360ffb04da2c92b00ab58475aa",
+  "calls": 246,
+  "wild": [
+    {
+      "phase": "grass-and-save",
+      "map": "MnR11C00R00",
+      "position": {
+        "x": 35,
+        "y": 21
+      }
+    },
+    {
+      "phase": "continue-and-repeat",
+      "map": "MnR11C00R00",
+      "position": {
+        "x": 35,
+        "y": 21
+      }
+    }
+  ],
+  "phases": [
+    {
+      "phase": "grass-and-save",
+      "initial": {
+        "badges": 4,
+        "dialogue": false,
+        "facing": "down",
+        "frame": 0,
+        "map": "MnR11C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 0
+        },
+        "position": {
+          "x": 35,
+          "y": 17
+        }
+      },
+      "final": {
+        "badges": 4,
+        "dialogue": false,
+        "facing": "down",
+        "frame": 26,
+        "map": "MnR11C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 1
+        },
+        "position": {
+          "x": 35,
+          "y": 25
+        }
+      },
+      "output_save": ".local/route-grass-review/r11-upper-grass-and-save-v03-output.crystalsave",
+      "source_unchanged": true,
+      "stderr_bytes": 0
+    },
+    {
+      "phase": "continue-and-repeat",
+      "initial": {
+        "badges": 4,
+        "dialogue": false,
+        "facing": "down",
+        "frame": 26,
+        "map": "MnR11C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 1
+        },
+        "position": {
+          "x": 35,
+          "y": 25
+        }
+      },
+      "final": {
+        "badges": 4,
+        "dialogue": false,
+        "facing": "down",
+        "frame": 62,
+        "map": "MnR11C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 2
+        },
+        "position": {
+          "x": 35,
+          "y": 25
+        }
+      },
+      "output_save": ".local/route-grass-review/r11-upper-continue-and-repeat-v03-output.crystalsave",
+      "source_unchanged": true,
+      "stderr_bytes": 0
+    }
+  ],
+  "scope": "Actual reached upper-route resident checkpoint; native walking both ways through new grass, wild RUN, Save/Continue and menus. Explicit initial partner, badge and position QA fixture is not earned regional progress."
+}

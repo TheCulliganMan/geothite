@@ -1,0 +1,11 @@
+{
+  "revision": "route_grass_r07_north_pocket_revision",
+  "pack": "content-packs/minnesota-current-r07-grass-and-stairs-v02.crystalpack",
+  "pack_sha256": "7b0aea48dc662368dfa4a2482d6dce75c94f2b18e4f9f3ea2b94861f9c409316",
+  "maps": [
+    "MnR08C00R00",
+    "MnR08C00R01",
+    "MnR08C01R00",
+    "MnR08C01R01"
+  ]
+}

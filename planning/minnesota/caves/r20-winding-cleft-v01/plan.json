@@ -1,0 +1,287 @@
+{
+  "schema_version": 1,
+  "room": "MnR20Cave1F",
+  "route": "MN_R20",
+  "region": "Voyageurs Border Loop",
+  "status": "verified_and_selected_scoped_native_cave_rebuild",
+  "dimensions_metatiles": [
+    14,
+    12
+  ],
+  "route_role": "Optional endgame exploration passage between two real trail mouths. Outside walk18steps; cave dry route44. The useful shortcut is internal: a westbound drop avoids29/31step climbs.",
+  "retained_content": {
+    "scout": {
+      "id": "MN_INTERIOR_R20_CLEFT_SCOUT",
+      "tile": [
+        12,
+        7
+      ],
+      "programs": "exact native preimage"
+    },
+    "supply": {
+      "id": "MN_R20_ITEM_01",
+      "tile": [
+        5,
+        5
+      ],
+      "item": "HYPER_POTION",
+      "quantity": 1,
+      "flag": "EVENT_MN_R20_ITEM_01"
+    },
+    "regional_story": "No new authority over SQ03, lighthouse reporting, admission or regional badges."
+  },
+  "mouths": [
+    {
+      "index": 1,
+      "inside": [
+        5,
+        21
+      ],
+      "clear": [
+        5,
+        20
+      ],
+      "target": "MnR20C00R00",
+      "target_warp": 2,
+      "outside_active": [
+        60,
+        33
+      ],
+      "outside_return": [
+        60,
+        34
+      ]
+    },
+    {
+      "index": 2,
+      "inside": [
+        23,
+        21
+      ],
+      "clear": [
+        23,
+        20
+      ],
+      "target": "MnR20C01R00",
+      "target_warp": 2,
+      "outside_active": [
+        12,
+        31
+      ],
+      "outside_return": [
+        12,
+        32
+      ]
+    }
+  ],
+  "stairs": [
+    {
+      "id": "WEST_SUPPLY_SHELF",
+      "block": "30",
+      "metatile": [
+        2,
+        4
+      ],
+      "lower": [
+        4,
+        10
+      ],
+      "lane": [
+        [
+          4,
+          9
+        ],
+        [
+          4,
+          8
+        ]
+      ],
+      "upper": [
+        4,
+        7
+      ]
+    },
+    {
+      "id": "EAST_CORNER_RETURN",
+      "block": "36",
+      "metatile": [
+        8,
+        4
+      ],
+      "lower": [
+        16,
+        10
+      ],
+      "lane": [
+        [
+          16,
+          9
+        ],
+        [
+          16,
+          8
+        ]
+      ],
+      "upper": [
+        16,
+        7
+      ]
+    }
+  ],
+  "drops": [
+    {
+      "approach": [
+        14,
+        12
+      ],
+      "trigger": [
+        13,
+        12
+      ],
+      "course": [
+        12,
+        12
+      ],
+      "landing": [
+        11,
+        12
+      ],
+      "ordinary_return_steps": 29,
+      "direction": "left",
+      "reverse_and_side_course": "Native WALL; static engine and production input verified."
+    },
+    {
+      "approach": [
+        14,
+        13
+      ],
+      "trigger": [
+        13,
+        13
+      ],
+      "course": [
+        12,
+        13
+      ],
+      "landing": [
+        11,
+        13
+      ],
+      "ordinary_return_steps": 31,
+      "direction": "left",
+      "reverse_and_side_course": "Native WALL; static engine and production input verified."
+    }
+  ],
+  "opponent": {
+    "map": "MnR20Cave1F",
+    "id": "MN_EXTRA_R20_WAYFINDER",
+    "display_name": "LEIF",
+    "trainer_class": "COOLTRAINERM",
+    "sprite": "SPRITE_COOLTRAINER_M",
+    "tile": [
+      21,
+      17
+    ],
+    "approach": [
+      21,
+      18
+    ],
+    "facing": "south",
+    "optional_battle": true,
+    "sight_range": 1,
+    "defeated_flag": "EVENT_MN_EXTRA_R20_WAYFINDER",
+    "party": [
+      {
+        "species": "WHIRLNUT",
+        "level": 43
+      },
+      {
+        "species": "LUTEBRISK",
+        "level": 44
+      }
+    ],
+    "before_lines": [
+      "I scout both ends.",
+      "Wind above, cold",
+      "water below us.",
+      "Care for a match?"
+    ],
+    "after_lines": [
+      "The dry path goes",
+      "both ways.",
+      "Drop west to skip",
+      "the climb back."
+    ],
+    "loss_lines": [
+      "Good route work!",
+      "Keep your footing."
+    ]
+  },
+  "water": {
+    "bank": [
+      17,
+      15
+    ],
+    "facing": "south",
+    "water": [
+      17,
+      16
+    ],
+    "group": "FISHGROUP_MN_LAKE",
+    "water_quadrants": 32,
+    "boundary": "Internal and closed by native solid rock; no off-map water edge.",
+    "fishing_status": "PASS native registered Old Rod cast, original Minnesota SCUTLET28 battle, Run and bank movement/Start return.",
+    "fishing_evidence": "planning/minnesota/renders/r20-cleft-v437/fishing-course-v451/receipt.json"
+  },
+  "publication": {
+    "parent_revision": "route_grass_r03_stair_guidance_revision",
+    "parent_pack": "content-packs/minnesota-current-r03-stair-guidance-v01.crystalpack",
+    "parent_pack_sha256": "78ccaed227c86c2ab162c97eeb5bf3d793467bb0550588641ed96cf5a0ec81c8",
+    "parent_source_index": "planning/minnesota/revisions/route-grass-v01/current-r03-successor-review-v01/sources.json",
+    "child_pack": "content-packs/minnesota-r20-winding-cleft-v02.crystalpack",
+    "source_sha256": {
+      "before.json": "2121f1208195a058db12bdfc64ae90c9cd61329c19b39fd5a87bc4ba63f32514",
+      "after.json": "114bbab8867a9796e91930440cc63fa3d8c21e4cfec0a70da8e3263f99b6b90a",
+      "contract.json": "9916dd43b1aeb7b0fa43aa0c43e70ac5d0c3a085961a7a82578b7181a5d4a17c",
+      "trainers.json": "f17c5f0ada909a9250f37c19d0f2101b61f0203a0871651b3ba26d7f9b80eea9"
+    },
+    "child_pack_sha256": "bfd4e1091213f558bca8ffc4c86afbc93af8569d16a3145dd9da157c4b1164be"
+  },
+  "verification": {
+    "builder_and_negative_guard": "planning/minnesota/renders/r20-cleft-v437/build-results-v439.json",
+    "controller_and_clippy": "planning/minnesota/renders/r20-cleft-v437/native-results-v442.json",
+    "production_stdio": "planning/minnesota/renders/r20-cleft-v437/production-course-v447/receipt.json",
+    "native_gpu": "planning/minnesota/renders/r20-cleft-v437/native-gpu-v444/capture-progress.json",
+    "whole_room": "planning/minnesota/renders/r20-cleft-v437/published-whole-2x-v448.png",
+    "whole_room_match": "planning/minnesota/renders/r20-cleft-v437/published-whole-match-v448.json",
+    "preservation": "planning/minnesota/renders/r20-cleft-v437/whole-root-audit-v454.json",
+    "scoped_format": "planning/minnesota/renders/r20-cleft-v437/scoped-rustfmt-v448.log",
+    "workspace_format": "planning/minnesota/renders/r20-cleft-v437/workspace-rustfmt-v448.log",
+    "native_fishing": "planning/minnesota/renders/r20-cleft-v437/fishing-course-v451/receipt.json",
+    "audio": "planning/minnesota/renders/r20-cleft-v437/audio-and-pack-v449.log",
+    "acceptance": "planning/minnesota/renders/r20-cleft-v437/acceptance-v455.json"
+  },
+  "iteration": {
+    "tool": "planning/minnesota/tools/review_cave_source.py",
+    "observed_warm_seconds": [
+      0.013,
+      0.014,
+      0.028
+    ],
+    "history": "planning/minnesota/renders/r20-cleft-v437/source-loop",
+    "rejected_issues": [
+      "First pool edge repeated rock caps; replaced middle caps with native continuous water.",
+      "First bank camera stood on water; moved to actual FLOOR bank.",
+      "First wayfinder after-text exceeded native18columns; native builder rejected it and the source was shortened."
+    ]
+  },
+  "limits": [
+    "Initial parties, positions, seven badges/depot and supplies are local QA fixtures. Route20 actually requires eight badges and lighthouse progress; earned access and endgame balance are not established by these fixtures.",
+    "Unrelated inherited old nonregional fishing references on other maps and workspace-format differences remain outside this cave delta.",
+    "The broader map and cave improvement goal remains incomplete."
+  ],
+  "selected_revision": "r20_winding_cleft_revision",
+  "current_source": "planning/minnesota/caves/r20-winding-cleft-v01/current.json",
+  "current_source_sha256": "f5ddf035c3a5ca2218b8d457fa3f6bff366acb57e4473cdeede4d7cfd6817012",
+  "content_identity": "ea55c268408347b81246bae8b1e51be85ea51eeb4354adfd95e52564de153993"
+}

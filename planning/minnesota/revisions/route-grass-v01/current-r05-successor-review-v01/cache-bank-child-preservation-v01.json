@@ -1,0 +1,34 @@
+{
+  "status": "PASS_EIGHT_NATIVE_TERRAIN_CELLS_AND_ONE_SIGN",
+  "parent": {
+    "revision": "cave_reservations_current_revision",
+    "pack": "content-packs/minnesota-r20-winding-cleft-v02.crystalpack",
+    "pack_sha256": "bfd4e1091213f558bca8ffc4c86afbc93af8569d16a3145dd9da157c4b1164be"
+  },
+  "pack": "content-packs/minnesota-current-r05-cache-grass-bank-v01.crystalpack",
+  "pack_sha256": "163897117d4a1a4a9c86c64bea0e7eb62c095edb6a9f5f9f3660a6c5bcf4fc52",
+  "content_identity": "8836c7516864aff15ffc02034bc315384fdd704ade033e424bb27f8f7938dd65",
+  "data_delta": {
+    "maps": [
+      "MnR05C00R00",
+      "MnR05C00R01"
+    ],
+    "map_scripts": [
+      "MN_R05_RAMP_SIGNText"
+    ],
+    "map_blocks": [
+      "MnR05C00R00_Blocks"
+    ]
+  },
+  "all730_other_complete_maps_exact": true,
+  "all_actors_events_warps_teams_encounters_items_audio_runtime_files_exact": true,
+  "grass_quadrants_before": 208,
+  "grass_quadrants_after": 220,
+  "grass_quadrants_added": 12,
+  "existing_grass_removed": 0,
+  "legal_new_native_low_bank_lanes": [
+    38,
+    39
+  ],
+  "all_old_tall_cliff_closures_and_stairs_preserved": true
+}

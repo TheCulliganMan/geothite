@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "log": ".local/route-grass-review/r08-current-cut-native-v01.log",
+  "missing_move_denied": true,
+  "missing_badge_denied": true,
+  "authorized_cut_and_great_ball_once": true,
+  "continue_and_return_verified": true,
+  "scope": "Initial local position, Cut partner and badge are native QA fixtures; later gameplay uses production controller."
+}

@@ -907,7 +907,7 @@ fn load_common_tileset_animations(
             },
         );
     }
-    if matches!(tileset_id, "cave" | "dark_cave") {
+    if matches!(animation_source, "cave" | "dark_cave") {
         const HORIZONTAL_TILE: usize = 0x14;
         const VERTICAL_TILE: usize = 0x40;
         let water_sources = animated
@@ -2604,6 +2604,9 @@ fn load_title_screen_frame(
             size: Vec2::new(TITLE_SCREEN_WIDTH as f32, TITLE_SCREEN_HEIGHT as f32),
         });
     }
+    if let Some(path) = &title.static_title_image {
+        return static_title::load(asset_root, path, images);
+    }
     let title_root = asset_root.runtime_assets().join("gfx/title");
     let logo = crate::open_runtime_image(title_root.join("logo.png"))
         .context("decode native title logo PNG")?
@@ -3000,7 +3003,7 @@ fn oak_intro_sprite_frame(
 ) -> Option<SpriteFrame> {
     let sprite = oak_intro.current_sprite.as_deref()?;
     match sprite {
-        "OAK" | "PLAYER" => {
+        sprite if matches!(sprite, "OAK" | "PLAYER") || sprite.starts_with("battle-trainer:") => {
             let key = IntroArtKey {
                 asset_id: oak_intro_intro_asset_id(sprite, trainer),
             };
@@ -3038,7 +3041,7 @@ fn oak_intro_art_error(
     let Some(sprite) = oak_intro.current_sprite.as_deref() else {
         return "no Oak intro sprite is active".to_string();
     };
-    if !matches!(sprite, "OAK" | "PLAYER") {
+    if !matches!(sprite, "OAK" | "PLAYER") && !sprite.starts_with("battle-trainer:") {
         return pokemon_art_error(rendered_art, sprite, PokemonSpriteSide::Front, false);
     }
     let key = IntroArtKey {
@@ -3056,6 +3059,7 @@ fn oak_intro_intro_asset_id(sprite: &str, trainer: &crate::RuntimeTrainerSnapsho
         "OAK" => "trainer:oak".to_string(),
         "PLAYER" if trainer.player_gender == PLAYER_GENDER_FEMALE => "player:kris".to_string(),
         "PLAYER" => "player:chris".to_string(),
+        other if other.starts_with("battle-trainer:") => other.to_string(),
         other => other.to_ascii_lowercase(),
     }
 }

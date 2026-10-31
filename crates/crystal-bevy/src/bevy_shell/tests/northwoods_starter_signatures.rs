@@ -193,21 +193,31 @@ fn starter_signature_battle_controller(
         .shell
         .start_scripted_wild_battle("Route36", "WateredWeirdTreeScript", 12)
         .expect("authored encounter entry");
+    let species = match &shell.shell.session().state().battle {
+        crate::core::state::BattleMemory::StaticWild { species, .. } => species.clone(),
+        _ => panic!("authored static encounter"),
+    };
+    // An explicit level100 opponent keeps secondary-effect observations alive
+    // with genuine calculated stats; never inflate HP beyond the stat ceiling.
+    let durable_foe = shell
+        .runtime
+        .data()
+        .create_pokemon(&species, 100, Dv::default())
+        .expect("legal durable battle fixture");
     {
         let state = shell.shell.session_mut().state_mut();
         let crate::core::state::BattleMemory::StaticWild {
             enemy_pokemon,
             enemy_party,
+            level,
             ..
         } = &mut state.battle
         else {
             panic!("authored static encounter");
         };
-        // Retain the exact authored origin/species/level and all damage stats.
-        // Extra HP prevents a successful damaging move from fainting the foe
-        // before its probabilistic secondary can be observed.
-        enemy_pokemon.max_hp = 500;
-        enemy_pokemon.hp = 500;
+        // Retain the authored origin/species and declare a legal high-level foe.
+        *level = durable_foe.level;
+        *enemy_pokemon = durable_foe;
         enemy_pokemon.moves = vec![crate::core::models::LearnedMove {
             name: "MIMIC".to_string(),
             current_pp: enemy_pp,
@@ -427,7 +437,12 @@ fn northwoods_starter_signatures_are_reachable_after_level36_evolution_and_forge
             let mut visible_evolution = false;
             let mut learn_trace = Vec::new();
             for _ in 0..192 {
-                let snapshot = controller.snapshot().expect("growth/evolution/learn state");
+                let snapshot = controller.snapshot().unwrap_or_else(|error| {
+                    panic!("growth/evolution/learn state: {error:#}; actor={} initial_moves={} party_cursor={:?} forget={} decision={:?} trace={learn_trace:?}",
+                        case.actor, move_count, controller.shell.party_move_cursor,
+                        controller.shell.move_learn_forget_menu_open,
+                        controller.shell.move_learn_decision)
+                });
                 if let Some(text) = snapshot
                     .ui
                     .text
@@ -474,9 +489,46 @@ fn northwoods_starter_signatures_are_reachable_after_level36_evolution_and_forge
                 if done {
                     break;
                 }
-                controller
-                    .press(GameButton::A)
-                    .expect("accept actual evolution and move choices");
+                // Keep naturally learned HMs. Read the actual menu selection
+                // and move to a legal replacement using ordinary input.
+                let protected_selection = controller.shell.move_learn_forget_menu_open
+                    && controller.shell.special_boundary.is_none()
+                    && controller.shell.battle_messages.is_empty()
+                    && controller.shell.field_notice.is_none()
+                    && state.pending_move_learn.as_ref().is_some_and(|pending| {
+                        let selected = controller
+                            .shell
+                            .party_move_cursor
+                            .as_ref()
+                            .map(|cursor| cursor.option_index);
+                        let learned = snapshot
+                            .party
+                            .slots
+                            .iter()
+                            .find(|slot| slot.index == pending.party_index)
+                            .and_then(|slot| {
+                                selected.and_then(|index| slot.pokemon.moves.get(index))
+                            });
+                        learned.is_some_and(|learned| {
+                            snapshot.items.iter().any(|item| {
+                                !item.consumable
+                                    && item.tmhm_move.as_deref() == Some(learned.name.as_str())
+                            })
+                        })
+                    });
+                if protected_selection {
+                    controller
+                        .press(GameButton::Down)
+                        .expect("keep HM and choose another slot");
+                    continue;
+                }
+                let before_cursor = controller.shell.party_move_cursor.clone();
+                controller.press(GameButton::A).unwrap_or_else(|error| {
+                    panic!("accept actual evolution and move choices: {error:#}; actor={} initial_moves={} before_cursor={before_cursor:?} after_cursor={:?} forget={} decision={:?} trace={learn_trace:?} events={:?}",
+                        case.actor, move_count, controller.shell.party_move_cursor,
+                        controller.shell.move_learn_forget_menu_open, controller.shell.move_learn_decision,
+                        controller.shell.last_audio_events.iter().rev().take(16).collect::<Vec<_>>())
+                });
             }
             let after = controller.snapshot().expect("completed evolution");
             let pokemon = &after.party.slots[0].pokemon;
@@ -519,4 +571,37 @@ fn northwoods_starter_signatures_are_reachable_after_level36_evolution_and_forge
             assert!(controller.shell.last_error.is_none());
         }
     }
+}
+
+#[test]
+fn northwoods_starter_forget_cursor_survives_battle_presentation_cleanup() {
+    if !starter_signature_pack_available() {
+        return;
+    }
+    let mut shell = starter_signature_owned_shell("RIMEPELT", 36);
+    shell.shell.session_mut().state_mut().pending_move_learn =
+        Some(crate::core::state::PendingMoveLearn {
+            party_index: 0,
+            species_id: "RIMEPELT".into(),
+            level: 36,
+            learned_move: crate::core::models::LearnedMove {
+                name: "RIMEBRAND".into(),
+                current_pp: 10,
+                pp_ups: 0,
+            },
+            defer_level_evolution: false,
+        });
+    open_visible_pending_move_forget_menu(&mut shell).expect("open actual forget menu");
+    let cursor = shell.party_move_cursor.clone();
+    assert!(cursor.is_some());
+    reset_visible_battle_exit_state(&mut shell);
+    assert_eq!(
+        shell.party_move_cursor, cursor,
+        "pending move owns its cursor after battle cleanup"
+    );
+    assert!(shell.move_learn_forget_menu_open);
+    let mut controller = VisibleShellController { shell };
+    controller
+        .snapshot()
+        .expect("forget menu remains renderable");
 }

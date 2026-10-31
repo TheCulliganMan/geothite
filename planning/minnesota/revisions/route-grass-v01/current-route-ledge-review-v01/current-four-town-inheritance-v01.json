@@ -1,0 +1,55 @@
+{
+  "status": "CURRENT_BINDING_COMPARISON",
+  "pack": "content-packs/minnesota-iron-drill-core-v04.crystalpack",
+  "pack_sha256": "4240537c844bf7e305e99c24f2b7054c314b84a03d17037747cb4ceabdbd17fd",
+  "maps": [
+    {
+      "map": "MnDuluth",
+      "acceptance": "planning/minnesota/revisions/route-grass-v01/current-duluth-mart-v01/acceptance.json",
+      "acceptance_sha256": "7f1cc3d35493d4daf839586b50cc40d30beed5044b723f2801a5a9ee5879b903",
+      "tested_pack": "content-packs/minnesota-current-duluth-mart-v01.crystalpack",
+      "tested_pack_sha256": "d77baff3e597e6527450400022e0b9acf655b856983cf96e49fbebfe275464f3",
+      "complete_map_exact": true,
+      "changed_fields": [],
+      "tileset_exact": true,
+      "used_tileset_runtime_art_exact": true,
+      "scope": "Explicit current-map/art inheritance comparison; original gameplay receipts retain their tested pack identities. Full statewide or new encounter behavior is not inferred."
+    },
+    {
+      "map": "MnMankato",
+      "acceptance": "planning/minnesota/revisions/route-grass-v01/current-mankato-town-v01/acceptance.json",
+      "acceptance_sha256": "319f68f547adce64bebfa4c6975245089fc9c3ff152ee0892be5126026d8ae61",
+      "tested_pack": "content-packs/minnesota-current-mankato-native-exterior-v03.crystalpack",
+      "tested_pack_sha256": "4f22dd532f5dc1ca28f63383bb9a66030d4f93ced96ed4daa265b3f36680e02f",
+      "complete_map_exact": true,
+      "changed_fields": [],
+      "tileset_exact": true,
+      "used_tileset_runtime_art_exact": true,
+      "scope": "Explicit current-map/art inheritance comparison; original gameplay receipts retain their tested pack identities. Full statewide or new encounter behavior is not inferred."
+    },
+    {
+      "map": "MnWinona",
+      "acceptance": "planning/minnesota/revisions/route-grass-v01/current-winona-town-v01/acceptance.json",
+      "acceptance_sha256": "bcce6164f4c3f3afc495e8654e19014c225c69f3f9091fbd565bc237d6d280f1",
+      "tested_pack": "content-packs/minnesota-current-winona-mart-v01.crystalpack",
+      "tested_pack_sha256": "096585f981c5b0fcbe406f9f85e1454cf2a714d420e3dcf3284d9f3195751760",
+      "complete_map_exact": true,
+      "changed_fields": [],
+      "tileset_exact": true,
+      "used_tileset_runtime_art_exact": true,
+      "scope": "Explicit current-map/art inheritance comparison; original gameplay receipts retain their tested pack identities. Full statewide or new encounter behavior is not inferred."
+    },
+    {
+      "map": "MnStCloud",
+      "acceptance": "planning/minnesota/revisions/route-grass-v01/current-st-cloud-fronts-v01/acceptance.json",
+      "acceptance_sha256": "09c650764a8122d2423cb701a554b347a4d8700123c684b07552b5e7e135091d",
+      "tested_pack": "content-packs/minnesota-current-st-cloud-fronts-v02.crystalpack",
+      "tested_pack_sha256": "df5e4c47500d84046f542418a203c8d58b0e119e97bc235083434464c8682ef3",
+      "complete_map_exact": true,
+      "changed_fields": [],
+      "tileset_exact": true,
+      "used_tileset_runtime_art_exact": true,
+      "scope": "Explicit current-map/art inheritance comparison; original gameplay receipts retain their tested pack identities. Full statewide or new encounter behavior is not inferred."
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-mankato-mart-v02.crystalpack",
+  "sha256": "697d7c2f964a14e5e2795d6e53e15ddec1cf1e228b842e78e5da88f07ab9c6d8",
+  "binary": ".local/route-grass-review/native-controller-before-mankato-notebook-v01",
+  "binary_sha256": "0f539de43511c7d4de3772ad61ea7ee88eac5123e1a6b09ca37bca7b908d43f6",
+  "meaningful_native_cases_passed": 4,
+  "log": ".local/route-grass-review/mankato-terrain-child-retained-controller-v01.log",
+  "scope": "First fresh terrain-child native town checks using retained executable. This executable predates the separate notebook mechanics case. Fresh portable build/client/notebook/capture checks remain pending; no selector changed."
+}

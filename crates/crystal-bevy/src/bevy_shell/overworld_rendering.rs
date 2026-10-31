@@ -1265,7 +1265,6 @@ fn spawn_visible_slot_machine(
     for (text, tile_x, tile_y) in [
         (format!("{:04}", machine.coins), 5.0, 1.0),
         (format!("{:04}", machine.payout), 11.0, 1.0),
-        (machine.message.clone(), 1.0, 15.0),
         (format!("BET {} A:SPIN B:QUIT", machine.bet), 1.0, 17.0),
     ] {
         let (x, y) = battle_hud_tile_origin(tile_x, tile_y);
@@ -1275,6 +1274,24 @@ fn spawn_visible_slot_machine(
             asset_root,
             images,
             &text,
+            x,
+            y,
+            3.7,
+        );
+    }
+    let first_row = if machine.message.contains('\n') {
+        14.0
+    } else {
+        15.0
+    };
+    for (row, line) in machine.message.lines().enumerate() {
+        let (x, y) = battle_hud_tile_origin(1.0, first_row + row as f32 * 2.0);
+        spawn_field_command_bitmap_text(
+            commands,
+            rendered_art,
+            asset_root,
+            images,
+            line,
             x,
             y,
             3.7,
@@ -1315,17 +1332,27 @@ fn spawn_visible_card_flip(
         3.3,
         images,
     )?;
-    let (message_x, message_y) = battle_hud_tile_origin(1.0, 13.0);
-    spawn_field_command_bitmap_text(
+    spawn_game_corner_window(
         commands,
         rendered_art,
         asset_root,
         images,
-        &game.message,
-        message_x,
-        message_y,
-        3.6,
+        [0.0, 12.0, 20.0, 6.0],
+        3.4,
     );
+    for (row, line) in game.message.lines().enumerate() {
+        let (message_x, message_y) = battle_hud_tile_origin(1.0, 13.0 + row as f32 * 2.0);
+        spawn_field_command_bitmap_text(
+            commands,
+            rendered_art,
+            asset_root,
+            images,
+            line,
+            message_x,
+            message_y,
+            3.6,
+        );
+    }
     let (coin_x, coin_y) = battle_hud_tile_origin(10.0, 16.0);
     spawn_field_command_bitmap_text(
         commands,
@@ -1341,6 +1368,14 @@ fn spawn_visible_card_flip(
         game.phase,
         VisibleCardFlipPhase::AskPlay | VisibleCardFlipPhase::PlayAgain
     ) {
+        spawn_game_corner_window(
+            commands,
+            rendered_art,
+            asset_root,
+            images,
+            [12.0, 7.0, 7.0, 5.0],
+            3.5,
+        );
         for (index, option) in ["YES", "NO"].iter().enumerate() {
             let label = if index == game.yes_no_index {
                 format!(">{option}")
@@ -1363,17 +1398,52 @@ fn spawn_visible_card_flip(
     Ok(())
 }
 
+fn spawn_game_corner_window(
+    commands: &mut Commands,
+    rendered_art: &mut RenderedTilesetArt,
+    asset_root: &AssetRoot,
+    images: &mut Assets<Image>,
+    bounds: [f32; 4],
+    z: f32,
+) {
+    let [x, y, width, height] = bounds;
+    let (center_x, center_y) = field_window_center(x, y, width, height);
+    // Betting screens own these windows together with their glyphs. Ordinary
+    // dialogue cleanup must not retire an idle Game Corner prompt or menu.
+    commands.spawn((
+        Sprite {
+            color: Color::WHITE,
+            custom_size: Some(Vec2::new(
+                TILE_SIZE * (width - 2.0),
+                TILE_SIZE * (height - 2.0),
+            )),
+            ..default()
+        },
+        Transform::from_xyz(center_x, center_y, z),
+        FieldCommandMarker,
+    ));
+    if let Some(frame) = battle_window_frame_art(rendered_art, asset_root, images) {
+        spawn_field_command_window_frame_tiles(
+            commands,
+            frame,
+            x,
+            y,
+            width as usize,
+            height as usize,
+            z + 0.05,
+        );
+    }
+}
+
 fn load_card_flip_render_sources(asset_root: &AssetRoot) -> Result<CardFlipRenderSources> {
     const WIDTH: usize = 160;
     const HEIGHT: usize = 144;
     const TILE: usize = 8;
     let root = asset_root.resolve_vendor("gfx/card_flip");
-    let sheet_1 = crate::open_runtime_image(root.join("card_flip_1.png"))
-        .context("decode Card Flip primary sheet")?
-        .to_rgba8();
-    let sheet_2 = crate::open_runtime_image(root.join("card_flip_2.png"))
-        .context("decode Card Flip secondary sheet")?
-        .to_rgba8();
+    // The native tilemap addresses deduplicated compiled banks (62/52 tiles),
+    // while the authored PNGs contain 64/60 tiles in a different order.
+    let sheet_1 = card_flip_art::load(asset_root, "card_flip_1", 128, 32, 62)?;
+    let sheet_2 = card_flip_art::load(asset_root, "card_flip_2", 24, 160, 52)?;
     let sheet_3 = crate::open_runtime_image(root.join("card_flip_3.png"))
         .context("decode Card Flip object sheet")?
         .to_rgba8();
@@ -1429,7 +1499,9 @@ fn load_card_flip_render_sources(asset_root: &AssetRoot) -> Result<CardFlipRende
         }
     }
     for (offset, tile_id) in tilemap.into_iter().enumerate() {
-        let linear_tile = (offset / 12) * 20 + 9 + offset % 12;
+        // CardFlip_CopyToBox uses B=12 rows and C=11 columns. A 12-column
+        // stride wraps the last tile into the left side of the next LCD row.
+        let linear_tile = (offset / 11) * 20 + 9 + offset % 11;
         let tile_x = linear_tile % 20;
         let tile_y = linear_tile / 20;
         let palette_index = card_flip_background_palette(tile_x, tile_y);
@@ -4606,12 +4678,8 @@ fn spawn_field_pack_screen(
         "Pack cursor is outside its retained scrolling window");
     let description = if let Some((item_id, _)) = items.get(selected) {
         snapshot
-            .items
-            .iter()
-            .find(|item| item.item_id == *item_id)
+            .item_description(item_id)
             .with_context(|| format!("field PACK item {item_id} is missing"))?
-            .description
-            .as_str()
     } else {
         ""
     };
@@ -7674,7 +7742,10 @@ fn spawn_field_shop_screen(
             rendered_art.move_description_cache.as_ref().unwrap().get(move_id)
                 .with_context(|| format!("shop TM move description {move_id} is missing"))?.clone()
         } else {
-            item.description.clone()
+            snapshot
+                .item_description(selected_item_id)
+                .context("selected shop item description")?
+                .to_owned()
         };
         for (index, line) in wrap_boot_text_for_box(&description, 18, 2).iter().enumerate() {
             let (x, y) = battle_hud_tile_origin(1.0, 14.0 + index as f32 * 2.0);

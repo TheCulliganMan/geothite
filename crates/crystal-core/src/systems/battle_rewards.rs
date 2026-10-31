@@ -814,9 +814,17 @@ pub fn claim_active_trainer_battle_rewards(
         let exp_share_count =
             exp_share_count.ok_or(BattleRewardError::InvalidRecipientCount { count: 0 })?;
         // Legacy Exp. Share splits a halved pool among holders; Minnesota
-        // gives every nonparticipant half of the full award instead.
+        // gives every nonparticipant half of the full award instead. Holding
+        // the research reward upgrades that recipient to a full award.
         let exp_share_divisor = if automatic_share {
-            2
+            if state.storage.party.pokemon[share_index]
+                .as_ref()
+                .is_some_and(|pokemon| pokemon.item.as_deref() == Some("EXP_SHARE"))
+            {
+                1
+            } else {
+                2
+            }
         } else {
             exp_share_count.saturating_mul(2)
         };
@@ -840,7 +848,7 @@ pub fn claim_active_trainer_battle_rewards(
             false,
             holder_traded,
             if automatic_share {
-                split_experience_award(rules, &enemy, 1, true)? / 2
+                split_experience_award(rules, &enemy, 1, true)? / exp_share_divisor
             } else {
                 split_experience_award(rules, &enemy, exp_share_divisor, true)?
             },
@@ -1120,9 +1128,17 @@ where
         let exp_share_count =
             exp_share_count.ok_or(BattleRewardError::InvalidRecipientCount { count: 0 })?;
         // Legacy Exp. Share splits a halved pool among holders; Minnesota
-        // gives every nonparticipant half of the full award instead.
+        // gives every nonparticipant half of the full award instead. Holding
+        // the research reward upgrades that recipient to a full award.
         let exp_share_divisor = if automatic_share {
-            2
+            if state.storage.party.pokemon[share_index]
+                .as_ref()
+                .is_some_and(|pokemon| pokemon.item.as_deref() == Some("EXP_SHARE"))
+            {
+                1
+            } else {
+                2
+            }
         } else {
             exp_share_count.saturating_mul(2)
         };
@@ -1146,7 +1162,7 @@ where
             false,
             holder_traded,
             if automatic_share {
-                split_experience_award(rules, &enemy, 1, false)? / 2
+                split_experience_award(rules, &enemy, 1, false)? / exp_share_divisor
             } else {
                 split_experience_award(rules, &enemy, exp_share_divisor, false)?
             },
@@ -2600,7 +2616,7 @@ mod tests {
     }
 
     #[test]
-    fn minnesota_automatic_exp_share_awards_full_only_to_active_pokemon() {
+    fn minnesota_exp_share_upgrades_only_its_bench_holder_to_full_experience() {
         let growth_rates = crystal_growth_rate_catalog_for_tests();
         let mut participant = Pokemon::new_for_tests(
             species("CHIKORITA", 64, growth_rate("GROWTH_MEDIUM_FAST")),
@@ -2654,9 +2670,10 @@ mod tests {
         };
 
         state.scenes.current_map_name = "MnWinona".into();
-        state.storage.party.pokemon[2].as_mut().unwrap().item = None;
         let bench = state.storage.party.pokemon[2].as_ref().unwrap().clone();
-        state.storage.party.pokemon[3] = Some(bench.clone());
+        let mut unheld = bench.clone();
+        unheld.item = None;
+        state.storage.party.pokemon[3] = Some(unheld);
         let mut fainted = bench.clone();
         fainted.hp = 0;
         state.storage.party.pokemon[4] = Some(fainted);
@@ -2698,7 +2715,7 @@ mod tests {
                 .iter()
                 .map(|recipient| (recipient.party_index, recipient.experience_awarded))
                 .collect::<Vec<_>>(),
-            vec![(1, 65), (0, 32), (2, 32), (3, 32)]
+            vec![(1, 65), (0, 32), (2, 65), (3, 32)]
         );
         for (index, before) in [4, 5].into_iter().zip(excluded_experience) {
             assert_eq!(
@@ -2709,7 +2726,7 @@ mod tests {
                 before
             );
         }
-        for (index, expected_gain) in [(0, 32), (1, 65), (2, 32), (3, 32)] {
+        for (index, expected_gain) in [(0, 32), (1, 65), (2, 65), (3, 32)] {
             let rewarded = state.storage.party.pokemon[index].as_ref().unwrap();
             assert_eq!(
                 rewarded.experience - experience_before[index],
@@ -2813,6 +2830,9 @@ mod tests {
             .clone();
         bench.turns_in_battle = 0;
         bench.item = Some("EXP_SHARE".into());
+        let mut unheld = bench.clone();
+        unheld.item = None;
+        minnesota_state.storage.party.pokemon[3] = Some(unheld);
         minnesota_state.storage.party.pokemon[2] = Some(bench);
         let minnesota_outcome = claim_active_trainer_battle_rewards(
             &mut minnesota_state,
@@ -2833,7 +2853,7 @@ mod tests {
                 .iter()
                 .map(|recipient| (recipient.party_index, recipient.experience_awarded))
                 .collect::<Vec<_>>(),
-            vec![(1, 97), (0, 48), (2, 48)]
+            vec![(1, 97), (0, 97), (2, 97), (3, 48)]
         );
 
         let mut tower_state = state.clone();

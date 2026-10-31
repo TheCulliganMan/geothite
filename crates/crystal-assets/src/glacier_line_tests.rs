@@ -39,6 +39,10 @@ fn glacier_line_native_tables_twenty_bindings_roundtrip_preservation_and_rejecti
     for (origin, stop) in design.stations.iter().enumerate() {
         let room = &output.data.maps[&stop.map];
         assert_eq!(
+            room.attributes.fishing_group.as_deref(),
+            Some("FISHGROUP_NONE")
+        );
+        assert_eq!(
             room,
             &output
                 .data
@@ -215,4 +219,21 @@ fn glacier_line_native_tables_twenty_bindings_roundtrip_preservation_and_rejecti
             "accepted {name}"
         );
     }
+    let mut wet_hall = base.clone();
+    let block = wet_hall.data.maps["MnDetroitLakesStation"].blocks[0];
+    let cells = wet_hall
+        .data
+        .tilesets
+        .get_mut("train_station")
+        .expect("native train tileset")
+        .collision
+        .get_mut(&format!("{block:02x}"))
+        .expect("placed border collision");
+    for cell in cells {
+        *cell = "WATER".into();
+    }
+    let error = build_glacier_line_service(&wet_hall, &text)
+        .err()
+        .expect("a wet hall cannot silently lose fishing");
+    assert!(error.to_string().contains("dry station required"));
 }

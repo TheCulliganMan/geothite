@@ -1,0 +1,860 @@
+{
+  "id": "MnStCloud",
+  "name": "ST CLOUD",
+  "dimensions_metatiles": [
+    24,
+    18
+  ],
+  "reference_anchor_percent": [
+    44,
+    58
+  ],
+  "role": "gym_5",
+  "tileset": "johto_modern",
+  "composition": "Granite-bank Mississippi crossing, compact civic street, clock-stone Glacier Line depot and a real raised river overlook.",
+  "ports": [
+    {
+      "route": "MN_R05",
+      "side": "S",
+      "gate_metatile": [
+        12,
+        16
+      ],
+      "landing_metatile": [
+        12,
+        14
+      ]
+    },
+    {
+      "route": "MN_R06",
+      "side": "N",
+      "gate_metatile": [
+        12,
+        1
+      ],
+      "landing_metatile": [
+        12,
+        3
+      ]
+    }
+  ],
+  "interiors": [
+    {
+      "id": "MnStCloudPokecenter1F",
+      "kind": "pokecenter",
+      "tileset": "pokecenter",
+      "template": "GoldenrodPokecenter1F",
+      "dimensions_metatiles": [
+        10,
+        8
+      ],
+      "rows": [
+        "00 00 00 00 00 00 00 00 00 00",
+        "00 00 01 02 03 13 04 08 00 00",
+        "00 00 05 06 07 04 04 04 00 00",
+        "00 00 04 04 04 2e 2f 04 00 00",
+        "00 00 2d 04 04 04 04 04 00 00",
+        "00 00 00 00 04 04 04 2c 00 00",
+        "00 00 00 00 04 04 04 00 00 00",
+        "00 00 00 00 00 24 00 00 00 00"
+      ],
+      "clear_arrival": [
+        10,
+        13
+      ],
+      "passive_arrival": {
+        "index": 3,
+        "tile": [
+          10,
+          13
+        ],
+        "collision": "FLOOR"
+      },
+      "exits": [
+        {
+          "index": 1,
+          "tile": [
+            10,
+            15
+          ],
+          "target": "MnStCloud",
+          "target_warp": 2,
+          "collision": "WARP_CARPET_DOWN"
+        },
+        {
+          "index": 2,
+          "tile": [
+            11,
+            15
+          ],
+          "target": "MnStCloud",
+          "target_warp": 2,
+          "collision": "WARP_CARPET_DOWN"
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_ST_CLOUD_NURSE",
+          "sprite": "SPRITE_NURSE",
+          "tile": [
+            7,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "Welcome! Your team",
+            "can rest here."
+          ],
+          "service": "heal_party",
+          "counter_tile": [
+            7,
+            4
+          ],
+          "approach": [
+            7,
+            5
+          ]
+        },
+        {
+          "id": "MN_ST_CLOUD_CLINIC_WALKER",
+          "sprite": "SPRITE_FISHER",
+          "tile": [
+            6,
+            8
+          ],
+          "facing": "east",
+          "lines": [
+            "The granite path",
+            "gives a fine view."
+          ]
+        },
+        {
+          "id": "MN_ST_CLOUD_CLINIC_READER",
+          "sprite": "SPRITE_TEACHER",
+          "tile": [
+            12,
+            11
+          ],
+          "facing": "west",
+          "lines": [
+            "I record my team",
+            "before the train."
+          ]
+        }
+      ],
+      "signs": [],
+      "status": "Native room and both facade/carpet directions published and production-controller verified; see playable/st-cloud.md.",
+      "pc": {
+        "tile": [
+          15,
+          3
+        ],
+        "approach": [
+          15,
+          4
+        ],
+        "collision": "PC",
+        "service": "native_pokemon_center_pc"
+      },
+      "recovery_contract": {
+        "spawn_tile": [
+          10,
+          13
+        ],
+        "status": "Native blackout recovery binding pending; no spawn registered"
+      },
+      "native_constant": "MN_ST_CLOUD_POKECENTER_1F",
+      "source_behavior": "Native HealParty at nurse, PC at actual PC quadrant and honest future blackout registration",
+      "viewpoints": [
+        {
+          "id": "nurse-approach",
+          "tile": [
+            7,
+            5
+          ]
+        },
+        {
+          "id": "pc-approach",
+          "tile": [
+            15,
+            4
+          ]
+        },
+        {
+          "id": "quiet-waiting-room",
+          "tile": [
+            10,
+            9
+          ]
+        },
+        {
+          "id": "arrival",
+          "tile": [
+            10,
+            13
+          ]
+        }
+      ]
+    },
+    {
+      "id": "MnStCloudMart",
+      "kind": "mart",
+      "tileset": "mart",
+      "template": "OlivineMart",
+      "dimensions_metatiles": [
+        6,
+        4
+      ],
+      "rows": [
+        "14 27 13 13 13 13",
+        "0b 22 2b 2b 2b 28",
+        "0b 29 13 2b 2b 28",
+        "00 00 00 2a 00 00"
+      ],
+      "clear_arrival": [
+        6,
+        5
+      ],
+      "passive_arrival": {
+        "index": 3,
+        "tile": [
+          6,
+          5
+        ],
+        "collision": "FLOOR"
+      },
+      "exits": [
+        {
+          "index": 1,
+          "tile": [
+            6,
+            7
+          ],
+          "target": "MnStCloud",
+          "target_warp": 4,
+          "collision": "WARP_CARPET_DOWN"
+        },
+        {
+          "index": 2,
+          "tile": [
+            7,
+            7
+          ],
+          "target": "MnStCloud",
+          "target_warp": 4,
+          "collision": "WARP_CARPET_DOWN"
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_ST_CLOUD_MART_CLERK",
+          "sprite": "SPRITE_CLERK",
+          "tile": [
+            1,
+            3
+          ],
+          "facing": "east",
+          "lines": [
+            "May I help you?"
+          ],
+          "service": "pokemart",
+          "counter_tile": [
+            2,
+            3
+          ],
+          "approach": [
+            3,
+            3
+          ],
+          "stock": [
+            "POKE_BALL",
+            "GREAT_BALL",
+            "SUPER_POTION",
+            "ANTIDOTE",
+            "PARLYZ_HEAL",
+            "ESCAPE_ROPE",
+            "REPEL",
+            "AWAKENING"
+          ]
+        },
+        {
+          "id": "MN_ST_CLOUD_MART_CUSTOMER",
+          "sprite": "SPRITE_GENTLEMAN",
+          "tile": [
+            9,
+            5
+          ],
+          "facing": "south",
+          "lines": [
+            "REPELs are useful",
+            "on the pine roads."
+          ]
+        }
+      ],
+      "signs": [],
+      "status": "Native room and both facade/carpet directions published and production-controller verified; see playable/st-cloud.md.",
+      "inventory_contract": [
+        "SUPER_POTION",
+        "HYPER_POTION",
+        "GREAT_BALL",
+        "ULTRA_BALL",
+        "SUPER_REPEL",
+        "ANTIDOTE",
+        "PARLYZ_HEAL",
+        "AWAKENING"
+      ],
+      "native_constant": "MN_ST_CLOUD_MART",
+      "source_behavior": "Normal native Pokemart; pack prices, money deduction, inventory and refusal behavior pending installation",
+      "viewpoints": [
+        {
+          "id": "clerk-approach",
+          "tile": [
+            3,
+            3
+          ]
+        },
+        {
+          "id": "arrival",
+          "tile": [
+            6,
+            5
+          ]
+        }
+      ]
+    },
+    {
+      "id": "MnStCloudGym",
+      "dimensions_metatiles": [
+        9,
+        11
+      ],
+      "clear_arrival": [
+        4,
+        19
+      ],
+      "passive_arrival": {
+        "index": 3,
+        "tile": [
+          4,
+          19
+        ],
+        "collision": "FLOOR"
+      },
+      "exits": [
+        {
+          "index": 1,
+          "tile": [
+            4,
+            21
+          ],
+          "target": "MnStCloud",
+          "target_warp": 6,
+          "collision": "WARP_CARPET_DOWN"
+        },
+        {
+          "index": 2,
+          "tile": [
+            5,
+            21
+          ],
+          "target": "MnStCloud",
+          "target_warp": 6,
+          "collision": "WARP_CARPET_DOWN"
+        }
+      ],
+      "native_constant": "MN_ST_CLOUD_GYM",
+      "kind": "canonical_gym_reference",
+      "tileset": "mn_gym_5",
+      "source_reference": {
+        "path": "planning/minnesota/gyms/interiors.json",
+        "gym_id": "MnStCloudGym",
+        "room_sha256": "4c0aae779e7fd5ed2dac92dce0a911b8dfc3ff7abee6443ec734d41ab15ba08d",
+        "file_sha256_informational": "69e7d9e5d54f7752570f2a90ffb100576a1255194b9867a102f9580b7d5e7aec",
+        "symbol_blocks": {
+          "#": "00",
+          ".": "01",
+          "<": "02",
+          ">": "03",
+          "A": "04",
+          "B": "05",
+          "L": "06",
+          "R": "07",
+          "b": "08",
+          "f": "09",
+          "s": "0a",
+          "t": "0b"
+        },
+        "native_builder": "gym_art::install + gym_publication::room + gym_scripts",
+        "scope": "This canonical Gym5 object alone is authoritative; whole-file hash is informational and unrelated gym edits do not invalidate it."
+      },
+      "status": "Native room and both facade/carpet directions published and production-controller verified; see playable/st-cloud.md.",
+      "source_behavior": "Resolve canonical Gym5 directly: native wind slats, Wyrel then Hallen, both required trainer battles, Saven and retryable TM_SWIFT. No alternate room, party, sprite, puzzle or reward is owned by this city descriptor.",
+      "native_rebinding_contract": "Preserve canonical MnStCloudGym module geometry, source art allocation, actors/scripts/flags/parties/reward and native warp indices1,2,3. Root retargets only review-hall exterior destinations to MN_ST_CLOUD passive exterior warp6. Existing city gym door5 targets canonical room passive3.",
+      "viewpoints": [
+        {
+          "id": "arrival-closed",
+          "tile": [
+            4,
+            19
+          ],
+          "phase": "ARRIVAL_CLOSED"
+        },
+        {
+          "id": "lower-crossing-open",
+          "tile": [
+            7,
+            13
+          ],
+          "phase": "MN_GYM_5_TRAINER_1"
+        },
+        {
+          "id": "upper-crossing-open",
+          "tile": [
+            12,
+            9
+          ],
+          "phase": "MN_GYM_5_TRAINER_2"
+        },
+        {
+          "id": "leader-open",
+          "tile": [
+            3,
+            4
+          ],
+          "phase": "MN_GYM_5_TRAINER_2"
+        },
+        {
+          "id": "return-open",
+          "tile": [
+            12,
+            17
+          ],
+          "phase": "MN_GYM_5_TRAINER_2"
+        }
+      ]
+    },
+    {
+      "id": "MnStCloudStation",
+      "kind": "train_station",
+      "dimensions_metatiles": [
+        10,
+        10
+      ],
+      "source_file": "../transit/MnStCloudStation.json",
+      "source_behavior": "Authored Granite Bank depot; train service/callback/door publication pending",
+      "native_constant": "MN_ST_CLOUD_STATION",
+      "status": "Native room and both facade/carpet directions published and production-controller verified; see playable/st-cloud.md."
+    }
+  ],
+  "walkable_destinations": [
+    "both retained route landings",
+    "all four real facade doors",
+    "necessary Mississippi bridge",
+    "protected Surf landing",
+    "granite ramp and actual river overlook",
+    "Glacier Line public concourse",
+    "SAVEN gym battle approach"
+  ],
+  "door_contract": "Four authentic modern native facade DOORs: clinic6,9; Mart14,9; gym8,27; station35,11. Active/passive exterior records1/2,3/4,5/6,7/8. Every room entry targets passiveFloor3; its active carpets1/2 return to the paired exterior passive Floor. SOURCE only; native registration and controller warps pending.",
+  "compiled_tileset": "mn_outdoor_modern_stairs",
+  "status": "Native 492-map local candidate: all four facades, canonical wind gym/trainer/reward/Continue, native services and reciprocal two-lane R05/R06 seams pass. Rail and continuous regional progression remain unfinished.",
+  "doors": [
+    {
+      "id": "MN_ST_CLOUD_CLINIC_DOOR",
+      "tile": [
+        7,
+        9
+      ],
+      "target": "MnStCloudPokecenter1F",
+      "warp_index": 1,
+      "return_warp_index": 2,
+      "target_warp": 3,
+      "return_tile": [
+        7,
+        10
+      ],
+      "arrival_tile": [
+        7,
+        10
+      ],
+      "collision": "DOOR",
+      "passive_collision": "FLOOR"
+    },
+    {
+      "id": "MN_ST_CLOUD_MART_DOOR",
+      "tile": [
+        15,
+        9
+      ],
+      "target": "MnStCloudMart",
+      "warp_index": 3,
+      "return_warp_index": 4,
+      "target_warp": 3,
+      "return_tile": [
+        15,
+        10
+      ],
+      "arrival_tile": [
+        15,
+        10
+      ],
+      "collision": "DOOR",
+      "passive_collision": "FLOOR"
+    },
+    {
+      "id": "MN_ST_CLOUD_GYM_DOOR",
+      "tile": [
+        8,
+        27
+      ],
+      "target": "MnStCloudGym",
+      "warp_index": 5,
+      "return_warp_index": 6,
+      "target_warp": 3,
+      "return_tile": [
+        8,
+        28
+      ],
+      "arrival_tile": [
+        8,
+        28
+      ],
+      "collision": "DOOR",
+      "passive_collision": "FLOOR"
+    },
+    {
+      "id": "MN_ST_CLOUD_GLACIER_DOOR",
+      "tile": [
+        35,
+        11
+      ],
+      "target": "MnStCloudStation",
+      "warp_index": 7,
+      "return_warp_index": 8,
+      "target_warp": 3,
+      "return_tile": [
+        35,
+        12
+      ],
+      "arrival_tile": [
+        35,
+        12
+      ],
+      "collision": "DOOR",
+      "passive_collision": "FLOOR"
+    }
+  ],
+  "residents": [
+    {
+      "id": "MN_ST_CLOUD_STONECUTTER",
+      "sprite": "SPRITE_POKEFAN_M",
+      "tile": [
+        18,
+        13
+      ],
+      "facing": "west",
+      "lines": [
+        "The granite banks",
+        "hold the bridge.",
+        "Take a look below."
+      ]
+    },
+    {
+      "id": "MN_ST_CLOUD_DEPOT_GUIDE",
+      "sprite": "SPRITE_GENTLEMAN",
+      "tile": [
+        37,
+        13
+      ],
+      "facing": "west",
+      "lines": [
+        "GLACIER LINE runs",
+        "to six old stops.",
+        "Visit each first."
+      ]
+    },
+    {
+      "id": "MN_ST_CLOUD_RIVER_WATCHER",
+      "sprite": "SPRITE_FISHER",
+      "tile": [
+        29,
+        24
+      ],
+      "facing": "north",
+      "lines": [
+        "Launch right here.",
+        "The rock line is",
+        "our town boundary."
+      ]
+    },
+    {
+      "id": "MN_ST_CLOUD_OVERLOOK_ARTIST",
+      "sprite": "SPRITE_TEACHER",
+      "tile": [
+        37,
+        25
+      ],
+      "facing": "west",
+      "lines": [
+        "Up on the granite,",
+        "the river fills",
+        "my sketchbook."
+      ]
+    },
+    {
+      "id": "MN_ST_CLOUD_GYM_STUDENT",
+      "sprite": "SPRITE_YOUNGSTER",
+      "tile": [
+        19,
+        29
+      ],
+      "facing": "east",
+      "lines": [
+        "SAVEN trains",
+        "birds.",
+        "Four badges first.",
+        "Earn your badge."
+      ]
+    }
+  ],
+  "signs": [
+    {
+      "id": "MN_ST_CLOUD_CLINIC",
+      "tile": [
+        4,
+        10
+      ],
+      "lines": [
+        "POKEMON CENTER",
+        "Rest and use a PC."
+      ]
+    },
+    {
+      "id": "MN_ST_CLOUD_GYM",
+      "tile": [
+        4,
+        28
+      ],
+      "lines": [
+        "ST CLOUD GYM",
+        "SAVEN - Flying."
+      ]
+    },
+    {
+      "id": "MN_ST_CLOUD_STATION",
+      "tile": [
+        40,
+        12
+      ],
+      "lines": [
+        "GLACIER LINE",
+        "Return to visited",
+        "stations."
+      ]
+    },
+    {
+      "id": "MN_ST_CLOUD_RIVER",
+      "tile": [
+        28,
+        24
+      ],
+      "lines": [
+        "MISSISSIPPI",
+        "Protected landing."
+      ]
+    },
+    {
+      "id": "MN_ST_CLOUD_OVERLOOK",
+      "tile": [
+        38,
+        26
+      ],
+      "lines": [
+        "GRANITE OVERLOOK",
+        "Stay on the path."
+      ]
+    },
+    {
+      "id": "MN_ST_CLOUD_NORTH",
+      "tile": [
+        26,
+        6
+      ],
+      "lines": [
+        "North: PINE ROAD",
+        "South: RIVER ROAD"
+      ]
+    }
+  ],
+  "viewpoints": [
+    {
+      "id": "CIVIC_STREET",
+      "tile": [
+        22,
+        13
+      ]
+    },
+    {
+      "id": "NECESSARY_BRIDGE",
+      "tile": [
+        24,
+        18
+      ]
+    },
+    {
+      "id": "DEPOT_COURT",
+      "tile": [
+        35,
+        13
+      ]
+    },
+    {
+      "id": "GRANITE_OVERLOOK",
+      "tile": [
+        35,
+        24
+      ]
+    },
+    {
+      "id": "GYM_APPROACH",
+      "tile": [
+        14,
+        29
+      ]
+    },
+    {
+      "id": "QUIET_SOUTH_LANE",
+      "tile": [
+        27,
+        31
+      ]
+    },
+    {
+      "id": "SURF_LANDING",
+      "tile": [
+        29,
+        23
+      ]
+    }
+  ],
+  "river_contract": {
+    "name": "MISSISSIPPI",
+    "necessary_bridge_blocks": [
+      [
+        11,
+        8
+      ],
+      [
+        12,
+        8
+      ],
+      [
+        11,
+        9
+      ],
+      [
+        12,
+        9
+      ],
+      [
+        11,
+        10
+      ],
+      [
+        12,
+        10
+      ]
+    ],
+    "bridge_walk_core_x": [
+      23,
+      24
+    ],
+    "launch_tile": [
+      29,
+      22
+    ],
+    "water_target": [
+      29,
+      21
+    ],
+    "outer_rock_blocks": [
+      [
+        0,
+        7
+      ],
+      [
+        0,
+        8
+      ],
+      [
+        0,
+        9
+      ],
+      [
+        0,
+        10
+      ],
+      [
+        23,
+        8
+      ],
+      [
+        23,
+        9
+      ],
+      [
+        23,
+        10
+      ],
+      [
+        23,
+        11
+      ]
+    ],
+    "overlook_ramp_metatile": [
+      17,
+      14
+    ],
+    "overlook_core": [
+      35,
+      24
+    ],
+    "no_offmap_water": true,
+    "bridge_walk_width_core": 2,
+    "native_walk_rails": [
+      "44",
+      "46"
+    ],
+    "shore_rails": "49 straight rails with actual caps; actual bridge44/46 rails, no decorative-water access bypass",
+    "overlook_activity": "Artist dialogue and readable granite marker, real native ramp, at least15 WATER cells visible in160-frame; no treasure/Cut quota."
+  },
+  "gym_contract": {
+    "id": "MN_GYM_5",
+    "leader": "SAVEN",
+    "requires": [
+      "BADGE_4"
+    ],
+    "win_only": [
+      "BADGE_5",
+      "EVENT_MN_GYM_5_DEFEATED"
+    ],
+    "native_badge_index": 4,
+    "party": [
+      {
+        "species": "PIDGEOTTO",
+        "level": 28
+      },
+      {
+        "species": "NOCTOWL",
+        "level": 29
+      },
+      {
+        "species": "FEAROW",
+        "level": 30
+      }
+    ],
+    "status": "Canonical native Gym5 retained; city facade, all wind lanes, trainer battles, rewards, both returns and Continue pass production input."
+  },
+  "native_constant": "MN_ST_CLOUD",
+  "native_status": "Native 492-map local candidate: all four facades, canonical wind gym/trainer/reward/Continue, native services and reciprocal two-lane R05/R06 seams pass. Rail and continuous regional progression remain unfinished."
+}

@@ -1,0 +1,108 @@
+{
+  "schema_version": 1,
+  "map": "MnInternationalFalls",
+  "dimensions_metatiles": [
+    16,
+    14
+  ],
+  "status": "native_acceptance_passed",
+  "terrain": "planning/minnesota/revisions/international-falls-windbreak-v01/after.json",
+  "original_town_dossier": "planning/minnesota/towns/MnInternationalFalls.json",
+  "native_contract": "planning/minnesota/revisions/international-falls-windbreak-v01/contract.json",
+  "optional_trainer": "planning/minnesota/revisions/international-falls-windbreak-v01/trainers.json",
+  "main_course": "Southern R17 arrival to original clinic, mart, weather and border-circuit services.",
+  "circuits": [
+    {
+      "name": "sheltered-service-lane",
+      "waypoints_core": [
+        [
+          9,
+          8
+        ],
+        [
+          9,
+          11
+        ],
+        [
+          14,
+          11
+        ],
+        [
+          23,
+          10
+        ]
+      ],
+      "width_walking_tiles": 2
+    },
+    {
+      "name": "lower-library-windbreak",
+      "waypoints_core": [
+        [
+          8,
+          17
+        ],
+        [
+          9,
+          20
+        ],
+        [
+          13,
+          20
+        ],
+        [
+          20,
+          21
+        ]
+      ],
+      "width_walking_tiles": 2
+    }
+  ],
+  "seams": [
+    {
+      "direction": "south",
+      "target": "MnR17C00R00",
+      "offset_metatiles": -8,
+      "town_core": [
+        [
+          20,
+          27
+        ],
+        [
+          21,
+          27
+        ]
+      ],
+      "neighbor_core": [
+        [
+          36,
+          0
+        ],
+        [
+          37,
+          0
+        ]
+      ]
+    }
+  ],
+  "closed_east": {
+    "last_walkable_core": [
+      27,
+      14
+    ],
+    "blocking_core": [
+      28,
+      14
+    ]
+  },
+  "gameplay_preserved": [
+    "four original town residents",
+    "three original boards",
+    "all four original service/return warps",
+    "original clinic/PC/recovery and shop stock",
+    "native ranger report, long border circuit, once-only PP_UP reward and full-pocket retry"
+  ],
+  "story_grants_for_optional_battle": [],
+  "presentation": "Native 2D only, original snowy pine and facade pixels, no art or palette substitutions.",
+  "review_artifacts": "planning/minnesota/renders/international-falls-windbreak-v701",
+  "verification": "planning/minnesota/renders/international-falls-windbreak-v701/acceptance-v744.json"
+}

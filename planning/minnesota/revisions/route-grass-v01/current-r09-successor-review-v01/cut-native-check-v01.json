@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "log": ".local/route-grass-review/r09-southwest-cut-native-v01.log",
+  "missing_move_denied": true,
+  "missing_badge_denied": true,
+  "native_cut_and_revive_once": true,
+  "continue_preserves_reward_and_regrows_tree": true,
+  "return_cut_from_inside_verified": true,
+  "setup": "Explicit local position, partner and badge QA fixtures; later movement and interactions use VisibleShellController."
+}

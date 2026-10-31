@@ -1,0 +1,50 @@
+{
+  "pid": 96138,
+  "source_sha256": {
+    "crates/crystal-assets/src/r13_boundary_alignment.rs": "cf1057a985e1ec5b0c088caa2d20a1b8efd831c6846264413194c6d07ca16c3a",
+    "crates/crystal-assets/src/bin/align_r13_boundary.rs": "fd795a156e337d0f1ea635d1d61f4b33bef449bc2a36474374cae3909a8a890d"
+  },
+  "steps": [
+    {
+      "step": "publisher",
+      "command": [
+        "cargo",
+        "build",
+        "--profile",
+        "wasm-dev",
+        "--locked",
+        "--config",
+        "profile.wasm-dev.package.crystal-assets.opt-level=0",
+        "-p",
+        "crystal-assets",
+        "--bin",
+        "align_r13_boundary"
+      ],
+      "exit_code": 0,
+      "log": ".local/route-grass-review/r13-boundary-alignment-publisher-v01.log",
+      "outputs": [
+        {
+          "path": ".local/route-grass-review/portable-r13-boundary-alignment-tools-v01/align_r13_boundary",
+          "sha256": "cf1e61f46bda35a8c3265d86b4b65fbb0615fb08351a1cf6276d6c8ba5cdb3da"
+        }
+      ]
+    },
+    {
+      "step": "assets-all-target-clippy",
+      "command": [
+        "cargo",
+        "clippy",
+        "--profile",
+        "wasm-dev",
+        "--locked",
+        "--config",
+        "profile.wasm-dev.package.crystal-assets.opt-level=0",
+        "-p",
+        "crystal-assets",
+        "--all-targets"
+      ],
+      "exit_code": 0,
+      "log": ".local/route-grass-review/r13-boundary-alignment-assets-all-target-clippy-v01.log"
+    }
+  ]
+}

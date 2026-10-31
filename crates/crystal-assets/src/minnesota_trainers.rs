@@ -117,7 +117,7 @@ pub fn build_minneapolis_cyclists_modpack(
     )
 }
 
-fn build_trainers(
+pub(crate) fn build_trainers(
     base: &CompiledGamePack,
     source: &str,
     manifest: &str,

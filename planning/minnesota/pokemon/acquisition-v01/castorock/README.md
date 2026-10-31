@@ -1,5 +1,12 @@
 # Castorock's incisor gallery
 
+Current geometry follow-up: [fitted gallery revision](../../../caves/current-r03-gallery-v02/README.md)
+reshapes the eastern chamber while retaining every discovery program and anchor.
+The current `site.json` includes that source revision; the original acquisition
+source is frozen in `../../../caves/current-r03-gallery-v02/site-before.json`.
+Resolve `world.json` for the selected current pack. The acquisition-stage pack,
+hashes and execution evidence below describe their historical publication.
+
 The selected local revision is `castorock_acquisition_revision`:
 `content-packs/minnesota-current-castorock-cedar-r20-v01.crystalpack`, content
 identity `a39d74ccba50b93af03b4f80f72869e1a045efc8bf3792592a04fece45f1b395`.

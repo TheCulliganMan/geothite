@@ -1,0 +1,203 @@
+{
+  "status": "SURFACE_RECONCILIATION_NOT_GLOBAL_GAMEPLAY_ACCEPTANCE",
+  "pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+  "pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33",
+  "routes": [
+    {
+      "route": "MN_R01",
+      "status": "TRAVERSAL_SURFACE_EXACT",
+      "reference_pack": "content-packs/minnesota-iron-crosscut-rock-cache-v02.crystalpack",
+      "reference_evidence": "planning/minnesota/revisions/route-grass-v01/current-r01-successor-review-v01/production-current-route-v02.json",
+      "maps": [
+        "MnR01C00R00"
+      ],
+      "differences": [],
+      "non_surface_changes": [
+        {
+          "map": "MnR01C00R00",
+          "other_changed_fields": [
+            "script_text_bodies",
+            "scripts"
+          ]
+        }
+      ]
+    },
+    {
+      "route": "MN_R02",
+      "status": "TRAVERSAL_SURFACE_EXACT",
+      "reference_pack": "content-packs/minnesota-compact-grass-r02-v01.crystalpack",
+      "reference_evidence": "planning/minnesota/revisions/route-grass-v01/compact-rebase-v01/R02-publication.json",
+      "maps": [
+        "MnR02C00R00"
+      ],
+      "differences": [],
+      "non_surface_changes": [
+        {
+          "map": "MnR02C00R00",
+          "other_changed_fields": [
+            "script_text_bodies",
+            "scripts"
+          ]
+        }
+      ]
+    },
+    {
+      "route": "MN_R03",
+      "status": "TRAVERSAL_SURFACE_EXACT",
+      "reference_pack": "content-packs/minnesota-r10-exploration-v03.crystalpack",
+      "reference_evidence": "planning/minnesota/revisions/route-grass-v01/current-r03-successor-review-v01/production-current-route-v01.json",
+      "maps": [
+        "MnR03C00R00",
+        "MnR03C00R01"
+      ],
+      "differences": [],
+      "non_surface_changes": [
+        {
+          "map": "MnR03C00R00",
+          "other_changed_fields": [
+            "script_text_bodies",
+            "scripts"
+          ]
+        },
+        {
+          "map": "MnR03C00R01",
+          "other_changed_fields": []
+        }
+      ]
+    },
+    {
+      "route": "MN_R11",
+      "status": "TRAVERSAL_SURFACE_EXACT",
+      "reference_pack": "content-packs/minnesota-north-shore-footbridges-v01.crystalpack",
+      "reference_evidence": "planning/minnesota/renders/north-shore-footpath-v563/acceptance-v572.json",
+      "maps": [
+        "MnR11C00R00",
+        "MnR11C00R01",
+        "MnR11C00R02",
+        "MnR11C00R03",
+        "MnR11C01R00",
+        "MnR11C01R01",
+        "MnR11C01R02",
+        "MnR11C01R03"
+      ],
+      "differences": [],
+      "non_surface_changes": [
+        {
+          "map": "MnR11C00R00",
+          "other_changed_fields": []
+        },
+        {
+          "map": "MnR11C00R01",
+          "other_changed_fields": []
+        },
+        {
+          "map": "MnR11C00R02",
+          "other_changed_fields": []
+        },
+        {
+          "map": "MnR11C00R03",
+          "other_changed_fields": []
+        },
+        {
+          "map": "MnR11C01R00",
+          "other_changed_fields": []
+        },
+        {
+          "map": "MnR11C01R01",
+          "other_changed_fields": []
+        },
+        {
+          "map": "MnR11C01R02",
+          "other_changed_fields": []
+        },
+        {
+          "map": "MnR11C01R03",
+          "other_changed_fields": []
+        }
+      ]
+    },
+    {
+      "route": "MN_R12",
+      "status": "REQUIRES_REVIEW",
+      "reference_pack": "content-packs/minnesota-current-grass-r12-v01.crystalpack",
+      "reference_evidence": "planning/minnesota/revisions/route-grass-v01/current-r12-v01/publication.json",
+      "maps": [
+        "MnR12C00R00",
+        "MnR12C00R01"
+      ],
+      "differences": [
+        {
+          "map": "MnR12C00R01",
+          "field": "attributes"
+        }
+      ],
+      "non_surface_changes": [
+        {
+          "map": "MnR12C00R00",
+          "other_changed_fields": [
+            "script_text_bodies",
+            "script_text_commands",
+            "scripts"
+          ]
+        },
+        {
+          "map": "MnR12C00R01",
+          "other_changed_fields": []
+        }
+      ]
+    },
+    {
+      "route": "MN_R18",
+      "status": "TRAVERSAL_SURFACE_EXACT",
+      "reference_pack": "content-packs/minnesota-current-grass-r18-v01.crystalpack",
+      "reference_evidence": "planning/minnesota/revisions/route-grass-v01/current-r18-v01/publication.json",
+      "maps": [
+        "MnR18C00R00",
+        "MnR18C01R00"
+      ],
+      "differences": [],
+      "non_surface_changes": [
+        {
+          "map": "MnR18C00R00",
+          "other_changed_fields": []
+        },
+        {
+          "map": "MnR18C01R00",
+          "other_changed_fields": []
+        }
+      ]
+    },
+    {
+      "route": "MN_R20",
+      "status": "TRAVERSAL_SURFACE_EXACT",
+      "reference_pack": "content-packs/minnesota-current-grass-r20-v01.crystalpack",
+      "reference_evidence": "planning/minnesota/revisions/route-grass-v01/current-r20-v01/publication.json",
+      "maps": [
+        "MnR20C00R00",
+        "MnR20C00R01",
+        "MnR20C01R00",
+        "MnR20C01R01"
+      ],
+      "differences": [],
+      "non_surface_changes": [
+        {
+          "map": "MnR20C00R00",
+          "other_changed_fields": []
+        },
+        {
+          "map": "MnR20C00R01",
+          "other_changed_fields": []
+        },
+        {
+          "map": "MnR20C01R00",
+          "other_changed_fields": []
+        },
+        {
+          "map": "MnR20C01R01",
+          "other_changed_fields": []
+        }
+      ]
+    }
+  ],
+  "scope": "Checks actual blocks, attributes, ports, warps, placed objects/events and every used pixel/collision against identified original or later reviewed reference. Dialogue/script changes remain listed, not accepted by geometry equality."
+}

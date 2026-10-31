@@ -1,0 +1,30 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-r15-open-shore-guidance-v02.crystalpack",
+  "pack_sha256": "a899df41e71349810048c4b825b848540efb59e4ac0150f8659eb0f67f1fa682",
+  "parent": {
+    "status": "PASS",
+    "selected_revision": "north_shore_footbridges_revision",
+    "pack": "content-packs/minnesota-north-shore-footbridges-v01.crystalpack",
+    "pack_sha256": "d80b17e60aab68827bb91e397ceeaf0ee0067e36b647bcf19cbdea582d462bdb",
+    "current_layout": {
+      "path": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R15.after.layout.json",
+      "sha256": "110312f7353b0b3e32f2d6bd523bad4da4f9f9c0b487732c8f5cc6f7c15c44bb"
+    },
+    "current_dossier": {
+      "path": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R15.dossier.json",
+      "sha256": "33b2a5e79c867ab186e158f36289aaf35c69898314ed47fdb02afb110797a1fb"
+    }
+  },
+  "content_identity": "747640c05623798e91cdb2165e0b30c816b409668e3d6c42a924e7e15cccdc9a",
+  "delta": {
+    "maps": [
+      "MnR15C00R00"
+    ],
+    "map_scripts": [
+      "MN_R15_PIER_WATCHERText",
+      "MN_R15_SIGN_02Text"
+    ]
+  },
+  "all_terrain_actors_events_items_encounters_and_battle_inputs_exact": true
+}

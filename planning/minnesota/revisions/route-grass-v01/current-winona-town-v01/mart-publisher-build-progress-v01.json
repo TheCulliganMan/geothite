@@ -1,0 +1,50 @@
+{
+  "pid": 65937,
+  "source_sha256": {
+    "crates/crystal-assets/src/winona_mart_facade.rs": "918fd2c2463d33f208c0e1635f66a3baaf6702c0cd814aafc78d64e169a30cf5",
+    "crates/crystal-assets/src/bin/revise_winona_mart_facade.rs": "d43bebe0710e007ed9569a9e72332b17aecb2a95e4445e764b301a54a3099928"
+  },
+  "steps": [
+    {
+      "step": "publisher",
+      "command": [
+        "cargo",
+        "build",
+        "--profile",
+        "wasm-dev",
+        "--locked",
+        "--config",
+        "profile.wasm-dev.package.crystal-assets.opt-level=0",
+        "-p",
+        "crystal-assets",
+        "--bin",
+        "revise_winona_mart_facade"
+      ],
+      "exit_code": 0,
+      "log": ".local/route-grass-review/winona-mart-publisher-v01.log",
+      "outputs": [
+        {
+          "path": ".local/route-grass-review/portable-winona-tools-v01/revise_winona_mart_facade",
+          "sha256": "be3f8161a4a51f4ed7f9da6e3d9d79c4ac03b2a94f77dc9ac005fefc9a5cf71c"
+        }
+      ]
+    },
+    {
+      "step": "assets-all-target-clippy",
+      "command": [
+        "cargo",
+        "clippy",
+        "--profile",
+        "wasm-dev",
+        "--locked",
+        "--config",
+        "profile.wasm-dev.package.crystal-assets.opt-level=0",
+        "-p",
+        "crystal-assets",
+        "--all-targets"
+      ],
+      "exit_code": 0,
+      "log": ".local/route-grass-review/winona-mart-assets-all-target-clippy-v01.log"
+    }
+  ]
+}

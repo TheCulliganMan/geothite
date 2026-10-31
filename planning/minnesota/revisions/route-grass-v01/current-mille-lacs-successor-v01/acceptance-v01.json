@@ -1,0 +1,17 @@
+{
+  "status": "PASS_CURRENT_PARK_GRASS_AND_SHORE_REVIEW",
+  "pack": "content-packs/minnesota-current-r19-detroit-gate-v05.crystalpack",
+  "pack_sha256": "b57516c0b77c7bcf94fa35e60ff8300bfd8a8781782827739742d8fc15b3f437",
+  "native_cases": 5,
+  "stdio_calls": 15,
+  "grass_quadrants": 48,
+  "ice_quadrants": 0,
+  "lookout_uphill_grass_steps": 3,
+  "dry_downhill_and_reverse_denial": true,
+  "northshore_minimum_grass_both_directions": 2,
+  "picnic_minimum_grass_both_directions": 4,
+  "used_pixels_collision_and_complete_map_exact": true,
+  "whole_inherited_map_inspected": "planning/minnesota/renders/route-grass-v01/current-mille-lacs-v01/source-candidate-v01/after.png",
+  "prior_pixel_acceptance": "planning/minnesota/revisions/route-grass-v01/current-mille-lacs-v01/acceptance.json",
+  "scope": "Fresh activity grass/wild RUN/resources, public roads/residents/dock/Fly discovery, Surf-only pickup once and Save/Continue. Initial fixtures are not earned progression; statewide review active."
+}

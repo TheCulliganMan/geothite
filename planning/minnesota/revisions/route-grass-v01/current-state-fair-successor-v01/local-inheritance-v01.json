@@ -1,0 +1,66 @@
+{
+  "status": "PASS_ACCEPTED_STATE_FAIR_PRESERVED_EXACTLY",
+  "pack": "content-packs/minnesota-international-falls-windbreak-v01.crystalpack",
+  "pack_sha256": "7066f05448101c79b4dc761963b0f39a570bad07c4f80e3e777901ac2e207507",
+  "reference_pack": "content-packs/minnesota-current-state-fair-buildings-v01.crystalpack",
+  "reference_pack_sha256": "69f162aa4e8fc2b6ff35b9ad13e0dae90a99387bf5dd6fb1cb19f9ddeb498156",
+  "maps": [
+    {
+      "map": "MnFairBarn",
+      "complete_map_and_used_native_art_collision_exact": true
+    },
+    {
+      "map": "MnFairDairy",
+      "complete_map_and_used_native_art_collision_exact": true
+    },
+    {
+      "map": "MnFairGrandstand",
+      "complete_map_and_used_native_art_collision_exact": true
+    },
+    {
+      "map": "MnStPaulFairAgricultureHall",
+      "complete_map_and_used_native_art_collision_exact": true
+    },
+    {
+      "map": "MnStPaulFairBerrySnack",
+      "complete_map_and_used_native_art_collision_exact": true
+    },
+    {
+      "map": "MnStPaulFairBreederBarn",
+      "complete_map_and_used_native_art_collision_exact": true
+    },
+    {
+      "map": "MnStPaulFairCraftHouse",
+      "complete_map_and_used_native_art_collision_exact": true
+    },
+    {
+      "map": "MnStPaulFairExhibitionHall",
+      "complete_map_and_used_native_art_collision_exact": true
+    },
+    {
+      "map": "MnStPaulFairFestivalMail",
+      "complete_map_and_used_native_art_collision_exact": true
+    },
+    {
+      "map": "MnStPaulFairFoodHall",
+      "complete_map_and_used_native_art_collision_exact": true
+    },
+    {
+      "map": "MnStPaulFairGardenStand",
+      "complete_map_and_used_native_art_collision_exact": true
+    },
+    {
+      "map": "MnStPaulFairInfoHouse",
+      "complete_map_and_used_native_art_collision_exact": true
+    },
+    {
+      "map": "MnStPaulFairQuizPavilion",
+      "complete_map_and_used_native_art_collision_exact": true
+    },
+    {
+      "map": "MnStateFairgrounds",
+      "complete_map_and_used_native_art_collision_exact": true
+    }
+  ],
+  "scope": "User-accepted fair fronts and entire local maps/pixels/collision preserved. No redesign or new native gameplay/visual run claimed; earlier fair receipts retain actual tested pack binding."
+}

@@ -1,5 +1,13 @@
 # Five-stop native passenger service
 
+The [current local integration](glacier-current-v01/README.md) rebases the service
+onto the selected Driftless fossil gallery parent and completes twenty rides,
+public approaches, ticket guards, native arrival review and Continue checks.
+Resolve `world.json` for active selection. The candidates and pending checks
+below record historical work on older parents; they are not current status.
+
+## Historical candidates
+
 The current integration candidate is
 `content-packs/minnesota-glacier-line-service-r14-v01.crystalpack` (730 maps),
 SHA-256 `0fcf972dde061fa55300a490803b95e7e68a2b0c669b46302bd89617abb9c672`,

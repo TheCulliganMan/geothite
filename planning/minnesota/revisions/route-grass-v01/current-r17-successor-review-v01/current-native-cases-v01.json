@@ -1,0 +1,8 @@
+{
+  "status": "REQUIRES_REVIEW",
+  "pack": "content-packs/minnesota-current-r16-bank-guidance-v02.crystalpack",
+  "pack_sha256": "e47cfeeff4baf0e2fd9654d9859e2fd094d856f8d34bede6c1c333c8209bce26",
+  "exit_code": 101,
+  "log": ".local/route-grass-review/r17-current-native-v01.log",
+  "scope": "Existing Border Pines full geometry, Cut/rest/Continue, actual trainer battle, northern grass crossing and middle grass encounter/RUN. Local native party/permissions/position are QA setup, not earned progress; historical rails/cave variants may require current replacement."
+}

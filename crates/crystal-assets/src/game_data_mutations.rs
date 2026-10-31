@@ -1597,12 +1597,22 @@ impl GameDataSet {
                             inner: &'a mut dyn BattleRandomSource,
                             calls: &'a std::cell::Cell<u16>,
                             recorded_limit: u16,
+                            exceeded_limit: bool,
                         }
                         impl BattleRandomSource for CountingRandom<'_> {
+                            fn source_error(&self) -> Option<&str> {
+                                if self.exceeded_limit {
+                                    Some("trainer AI replay exceeded its recorded random-call budget")
+                                } else {
+                                    self.inner.source_error()
+                                }
+                            }
+
                             fn battle_random_byte(&mut self) -> u8 {
                                 let call = self.calls.get();
                                 self.calls.set(call.saturating_add(1));
                                 if call >= self.recorded_limit {
+                                    self.exceeded_limit = true;
                                     // A forged or stale call count must fail atomically instead of
                                     // letting an ASM-faithful rejection loop sample forever after
                                     // the finite replay trace is exhausted. Cycling the four slot
@@ -1617,6 +1627,7 @@ impl GameDataSet {
                             inner: rng,
                             calls: &move_calls_for_selector,
                             recorded_limit: move_random_calls,
+                            exceeded_limit: false,
                         };
                         let actual = if let Some((trainer_class, ai_move_flags)) = &trainer_ai_move_flags {
                             self.select_trainer_enemy_move_for_class(
@@ -1676,12 +1687,22 @@ impl GameDataSet {
                                 inner: &'a mut dyn BattleRandomSource,
                                 calls: &'a std::cell::Cell<u16>,
                                 recorded_limit: u16,
+                                exceeded_limit: bool,
                             }
                             impl BattleRandomSource for CountingRandom<'_> {
+                                fn source_error(&self) -> Option<&str> {
+                                    if self.exceeded_limit {
+                                        Some("trainer AI replay exceeded its recorded random-call budget")
+                                    } else {
+                                        self.inner.source_error()
+                                    }
+                                }
+
                                 fn battle_random_byte(&mut self) -> u8 {
                                     let call = self.calls.get();
                                     self.calls.set(call.saturating_add(1));
                                     if call >= self.recorded_limit {
+                                        self.exceeded_limit = true;
                                         return call.wrapping_sub(self.recorded_limit) as u8 & 3;
                                     }
                                     self.inner.battle_random_byte()
@@ -1694,6 +1715,7 @@ impl GameDataSet {
                                 inner: rng,
                                 calls: &post_calls_for_selector,
                                 recorded_limit: post_order_random_calls,
+                                exceeded_limit: false,
                             };
                             let actual = self
                                 .select_trainer_post_order_action_for_class(

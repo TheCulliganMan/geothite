@@ -1,7 +1,7 @@
 {
   "id": "MN_GLACIER_LINE",
   "name": "GLACIER LINE",
-  "status": "Five public halls: Detroit Lakes, Staples, St. Cloud, St. Paul and Winona. Red Wing is excluded by user direction. Staples and Winona first-visit callbacks are verified; the other three callbacks and all twenty guarded passenger branches remain unfinished.",
+  "status": "Verified local five-stop passenger service: actual public approaches/foot callbacks, all20 guarded native rides,80 visit masks, cancellation, resource preservation, repeat returns and Continue. Browser publication and earned statewide campaign are not claimed.",
   "geography_source": "https://content.amtrak.com/content/timetable/Empire%20Builder.pdf",
   "service_identity": "Fictional Minnesota service with the five approved stops in north-to-south order; Red Wing is excluded by user direction.",
   "ordered_stops": [
@@ -11,7 +11,8 @@
       "station": "MnDetroitLakesStation",
       "constant": "MN_DETROIT_LAKES_STATION",
       "visited_flag": "EVENT_MN_STATION_DETROIT_LAKES_VISITED",
-      "character": "Lake-facing timber waiting room, public beach path and canoe luggage alcove."
+      "character": "Lake-facing timber waiting room, public beach path and canoe luggage alcove.",
+      "public_hall_status": "Verified real public road approach, original same-door return and remembered foot entry. Free native return trips after Q03 courier victory, to previously visited stops only; current local review in glacier-current-v01."
     },
     {
       "id": "STAPLES",
@@ -24,7 +25,7 @@
       "road": "MnR15C00R00",
       "source_file": "transit/MnStaplesStation.json",
       "publication_runbook": "interior-life/STAPLES-STATION.md",
-      "public_hall_status": "Published: paired walking seam, actual door, five residents, ledger, priced supplies and remembered first foot entry verified. Passenger rides remain closed."
+      "public_hall_status": "Verified real public road approach, original same-door return and remembered foot entry. Free native return trips after Q03 courier victory, to previously visited stops only; current local review in glacier-current-v01."
     },
     {
       "id": "ST_CLOUD",
@@ -32,7 +33,8 @@
       "station": "MnStCloudStation",
       "constant": "MN_ST_CLOUD_STATION",
       "visited_flag": "EVENT_MN_STATION_ST_CLOUD_VISITED",
-      "character": "Granite platform cut into the Mississippi riverbank; river overlook, commuter waiting shelter and north trail access."
+      "character": "Granite platform cut into the Mississippi riverbank; river overlook, commuter waiting shelter and north trail access.",
+      "public_hall_status": "Verified real public road approach, original same-door return and remembered foot entry. Free native return trips after Q03 courier victory, to previously visited stops only; current local review in glacier-current-v01."
     },
     {
       "id": "ST_PAUL",
@@ -40,7 +42,8 @@
       "station": "MnStPaulUnionDepot",
       "constant": "MN_ST_PAUL_UNION_DEPOT",
       "visited_flag": "EVENT_MN_STATION_ST_PAUL_VISITED",
-      "character": "Union Depot: stone colonnade, ticket room, sheltered concourse, enclosed garden and the Q03 courier encounter."
+      "character": "Union Depot: stone colonnade, ticket room, sheltered concourse, enclosed garden and the Q03 courier encounter.",
+      "public_hall_status": "Verified real public road approach, original same-door return and remembered foot entry. Free native return trips after Q03 courier victory, to previously visited stops only; current local review in glacier-current-v01."
     },
     {
       "id": "WINONA",
@@ -51,7 +54,7 @@
       "character": "Southern starter-region depot; river levee walk and limestone bluffs frame the platform.",
       "source_file": "transit/MnWinonaStation.json",
       "publication_runbook": "interior-life/WINONA-STATION.md",
-      "public_hall_status": "Published and production-controller verified; rides remain closed."
+      "public_hall_status": "Verified real public road approach, original same-door return and remembered foot entry. Free native return trips after Q03 courier victory, to previously visited stops only; current local review in glacier-current-v01."
     }
   ],
   "travel_contract": {
@@ -75,17 +78,32 @@
     "Save/Continue after boarding; verify visited flags, route story flags, money and party data are retained.",
     "Retain every whole-map render, native capture, preconversion original, crop and rejected revision."
   ],
-  "service_candidate": {
-    "runbook": "transit/GLACIER-SERVICE.md",
-    "source_file": "transit/glacier-service-r14-v01.json",
-    "pack": "content-packs/minnesota-glacier-line-service-r14-v01.crystalpack",
-    "pack_sha256": "0fcf972dde061fa55300a490803b95e7e68a2b0c669b46302bd89617abb9c672",
-    "maps": 730,
+  "historical_service_candidates": [
+    {
+      "runbook": "transit/GLACIER-SERVICE.md",
+      "source_file": "transit/glacier-service-r14-v01.json",
+      "pack": "content-packs/minnesota-glacier-line-service-r14-v01.crystalpack",
+      "pack_sha256": "0fcf972dde061fa55300a490803b95e7e68a2b0c669b46302bd89617abb9c672",
+      "maps": 730,
+      "native_directed_branches": 20,
+      "first_visit_callbacks": 5,
+      "native_table_serialization_rejection_test": "Historical V01 passed; default-profile corrected V02 replay is compiling. Exact-parent R14 source replay remains pending.",
+      "audio_programs_verified": 377,
+      "status": "Candidate only: built on selected R14 and independently preserves all newer R13/R14 terrain and all other service data exactly. Five real foot entries/Continue, all denials/cancels and all visit masks passed on V01. Corrected default-profile journeys, R14 replay, fresh native 2D review and final lint replay remain pending. Shared selector stays at route_grass_r14_revision; Red Wing is excluded.",
+      "content_identity": "547999cc4ecd67b240d1f627b7788d3f8abbff14392e73a3f8bde1553eb11140"
+    }
+  ],
+  "current_service": {
+    "revision": "glacier_line_passenger_revision",
+    "source_file": "transit/glacier-current-v01/service.json",
+    "runbook": "transit/glacier-current-v01/README.md",
+    "pack": "content-packs/minnesota-glacier-current-v03.crystalpack",
+    "pack_sha256": "fffff3a575234c28de03c6efe808fb46f6cd8d7910c76d97ce3e03bf0e5c4c5b",
+    "verification": "planning/minnesota/renders/glacier-current-v794/acceptance-v818.json",
     "native_directed_branches": 20,
     "first_visit_callbacks": 5,
-    "native_table_serialization_rejection_test": "Historical V01 passed; default-profile corrected V02 replay is compiling. Exact-parent R14 source replay remains pending.",
-    "audio_programs_verified": 377,
-    "status": "Candidate only: built on selected R14 and independently preserves all newer R13/R14 terrain and all other service data exactly. Five real foot entries/Continue, all denials/cancels and all visit masks passed on V01. Corrected default-profile journeys, R14 replay, fresh native 2D review and final lint replay remain pending. Shared selector stays at route_grass_r14_revision; Red Wing is excluded.",
-    "content_identity": "547999cc4ecd67b240d1f627b7788d3f8abbff14392e73a3f8bde1553eb11140"
+    "gameplay_cases": 6,
+    "separate_train_art_cases": 1,
+    "production_stdio_calls": 115
   }
 }

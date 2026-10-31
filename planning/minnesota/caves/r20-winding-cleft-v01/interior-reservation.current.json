@@ -1,0 +1,109 @@
+{
+  "interior": "MnR20Cave1F",
+  "parent_route": "MN_R20",
+  "arrival_core": [
+    5,
+    21
+  ],
+  "return_trigger_core": [
+    5,
+    21
+  ],
+  "exterior_anchor_metatile": [
+    30,
+    16
+  ],
+  "exterior_door_core": [
+    60,
+    33
+  ],
+  "requires_real_collision_check": true,
+  "clear_arrival_core": [
+    5,
+    20
+  ],
+  "return_triggers_core": [
+    [
+      5,
+      21
+    ],
+    [
+      23,
+      21
+    ]
+  ],
+  "exterior_arrival_core": [
+    60,
+    34
+  ],
+  "exterior_clear_return_core": [
+    60,
+    34
+  ],
+  "source_design": "caves/r20-winding-cleft-v01/route-dossier.json",
+  "source_collision_checked": true,
+  "mouths": [
+    {
+      "exterior_door_core": [
+        60,
+        33
+      ],
+      "interior_target_warp": 1,
+      "exterior_entry_warp": 1,
+      "exterior_return_warp": 2,
+      "safe_exterior_return_core": [
+        60,
+        34
+      ],
+      "interior_active_core": [
+        5,
+        21
+      ],
+      "interior_clear_core": [
+        5,
+        20
+      ]
+    },
+    {
+      "exterior_door_core": [
+        76,
+        31
+      ],
+      "interior_target_warp": 2,
+      "exterior_entry_warp": 1,
+      "exterior_return_warp": 2,
+      "safe_exterior_return_core": [
+        76,
+        32
+      ],
+      "interior_active_core": [
+        23,
+        21
+      ],
+      "interior_clear_core": [
+        23,
+        20
+      ]
+    }
+  ],
+  "validation": "Final732-map pack: all731other maps and original programs/reward/exterior ports preserved. Both controller cases,227cross-mouth stdio RPC,55native-fishing RPC and nine source-matched GPU cameras pass.",
+  "native_status": "Verified native14x12 exploration cleft; both relocated interior mouths, stairs, westward drops, original reward/healing and Continue pass. No new regional authority.",
+  "dimensions_metatiles": [
+    14,
+    12
+  ],
+  "native_palette": "nite",
+  "candidate_source_sha256": "f5ddf035c3a5ca2218b8d457fa3f6bff366acb57e4473cdeede4d7cfd6817012",
+  "native_review_pack_sha256": "bfd4e1091213f558bca8ffc4c86afbc93af8569d16a3145dd9da157c4b1164be",
+  "runtime_settled_exterior_cores": [
+    [
+      60,
+      34
+    ],
+    [
+      76,
+      32
+    ]
+  ],
+  "return_semantics": "West interior warp1 at5,21 returns to MnR20C00R00 passive warp2 at60,34; active exterior60,33 reenters at5,21, with north clear step5,20. East interior warp2 at23,21 returns to MnR20C01R00 passive warp2 at12,32; active exterior12,31 reenters at23,21, with north clear step23,20. The original inactive east FLOOR record retains targetwarp1."
+}

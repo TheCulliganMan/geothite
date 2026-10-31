@@ -1,0 +1,1253 @@
+{
+  "status": "CURRENT_CONNECTION_AWARE_STATIC_LEDGE_REVIEW",
+  "revision": "route_grass_st_cloud_fronts_revision",
+  "pack": "content-packs/minnesota-current-st-cloud-fronts-v02.crystalpack",
+  "sha256": "df5e4c47500d84046f542418a203c8d58b0e119e97bc235083434464c8682ef3",
+  "routes": [
+    {
+      "route": "MN_R01",
+      "native_modules": 1,
+      "lanes": []
+    },
+    {
+      "route": "MN_R02",
+      "native_modules": 1,
+      "lanes": [
+        {
+          "lip": [
+            47,
+            14
+          ],
+          "kind": "HOP_LEFT",
+          "approach": [
+            48,
+            14
+          ],
+          "landing": [
+            45,
+            14
+          ],
+          "valid_native_hop": true,
+          "reverse_lip_blocked": true,
+          "ordinary_return_steps": 43,
+          "ordinary_return_minimum_grass_steps": 2,
+          "status": "VALID_HOP_AND_ORDINARY_RETURN"
+        },
+        {
+          "lip": [
+            47,
+            15
+          ],
+          "kind": "HOP_LEFT",
+          "approach": [
+            48,
+            15
+          ],
+          "landing": [
+            45,
+            15
+          ],
+          "valid_native_hop": true,
+          "reverse_lip_blocked": true,
+          "ordinary_return_steps": 41,
+          "ordinary_return_minimum_grass_steps": 2,
+          "status": "VALID_HOP_AND_ORDINARY_RETURN"
+        },
+        {
+          "lip": [
+            47,
+            16
+          ],
+          "kind": "HOP_LEFT",
+          "approach": [
+            48,
+            16
+          ],
+          "landing": [
+            45,
+            16
+          ],
+          "valid_native_hop": true,
+          "reverse_lip_blocked": true,
+          "ordinary_return_steps": 39,
+          "ordinary_return_minimum_grass_steps": 2,
+          "status": "VALID_HOP_AND_ORDINARY_RETURN"
+        },
+        {
+          "lip": [
+            47,
+            17
+          ],
+          "kind": "HOP_LEFT",
+          "approach": [
+            48,
+            17
+          ],
+          "landing": [
+            45,
+            17
+          ],
+          "valid_native_hop": true,
+          "reverse_lip_blocked": true,
+          "ordinary_return_steps": 37,
+          "ordinary_return_minimum_grass_steps": 2,
+          "status": "VALID_HOP_AND_ORDINARY_RETURN"
+        }
+      ]
+    },
+    {
+      "route": "MN_R03",
+      "native_modules": 2,
+      "lanes": [
+        {
+          "lip": [
+            10,
+            20
+          ],
+          "kind": "HOP_DOWN",
+          "approach": [
+            10,
+            19
+          ],
+          "landing": [
+            10,
+            22
+          ],
+          "valid_native_hop": true,
+          "reverse_lip_blocked": true,
+          "ordinary_return_steps": 15,
+          "ordinary_return_minimum_grass_steps": 5,
+          "status": "VALID_HOP_AND_ORDINARY_RETURN"
+        },
+        {
+          "lip": [
+            11,
+            20
+          ],
+          "kind": "HOP_DOWN",
+          "approach": [
+            11,
+            19
+          ],
+          "landing": [
+            11,
+            22
+          ],
+          "valid_native_hop": true,
+          "reverse_lip_blocked": true,
+          "ordinary_return_steps": 13,
+          "ordinary_return_minimum_grass_steps": 5,
+          "status": "VALID_HOP_AND_ORDINARY_RETURN"
+        },
+        {
+          "lip": [
+            12,
+            20
+          ],
+          "kind": "HOP_DOWN",
+          "approach": [
+            12,
+            19
+          ],
+          "landing": [
+            12,
+            22
+          ],
+          "valid_native_hop": true,
+          "reverse_lip_blocked": true,
+          "ordinary_return_steps": 11,
+          "ordinary_return_minimum_grass_steps": 6,
+          "status": "VALID_HOP_AND_ORDINARY_RETURN"
+        },
+        {
+          "lip": [
+            13,
+            20
+          ],
+          "kind": "HOP_DOWN",
+          "approach": [
+            13,
+            19
+          ],
+          "landing": [
+            13,
+            22
+          ],
+          "valid_native_hop": true,
+          "reverse_lip_blocked": true,
+          "ordinary_return_steps": 9,
+          "ordinary_return_minimum_grass_steps": 7,
+          "status": "VALID_HOP_AND_ORDINARY_RETURN"
+        },
+        {
+          "lip": [
+            14,
+            20
+          ],
+          "kind": "HOP_DOWN",
+          "approach": [
+            14,
+            19
+          ],
+          "landing": [
+            14,
+            22
+          ],
+          "valid_native_hop": true,
+          "reverse_lip_blocked": true,
+          "ordinary_return_steps": 7,
+          "ordinary_return_minimum_grass_steps": 6,
+          "status": "VALID_HOP_AND_ORDINARY_RETURN"
+        },
+        {
+          "lip": [
+            15,
+            20
+          ],
+          "kind": "HOP_DOWN",
+          "approach": [
+            15,
+            19
+          ],
+          "landing": [
+            15,
+            22
+          ],
+          "valid_native_hop": true,
+          "reverse_lip_blocked": true,
+          "ordinary_return_steps": 5,
+          "ordinary_return_minimum_grass_steps": 5,
+          "status": "VALID_HOP_AND_ORDINARY_RETURN"
+        }
+      ]
+    },
+    {
+      "route": "MN_R04",
+      "native_modules": 1,
+      "lanes": []
+    },
+    {
+      "route": "MN_R05",
+      "native_modules": 3,
+      "lanes": []
+    },
+    {
+      "route": "MN_R06",
+      "native_modules": 2,
+      "lanes": [
+        {
+          "lip": [
+            44,
+            10
+          ],
+          "kind": "HOP_DOWN",
+          "approach": [
+            44,
+            9
+          ],
+          "landing": [
+            44,
+            12
+          ],
+          "valid_native_hop": true,
+          "reverse_lip_blocked": true,
+          "ordinary_return_steps": 11,
+          "ordinary_return_minimum_grass_steps": 8,
+          "status": "VALID_HOP_AND_ORDINARY_RETURN"
+        },
+        {
+          "lip": [
+            45,
+            10
+          ],
+          "kind": "HOP_DOWN",
+          "approach": [
+            45,
+            9
+          ],
+          "landing": [
+            45,
+            12
+          ],
+          "valid_native_hop": true,
+          "reverse_lip_blocked": true,
+          "ordinary_return_steps": 9,
+          "ordinary_return_minimum_grass_steps": 8,
+          "status": "VALID_HOP_AND_ORDINARY_RETURN"
+        }
+      ]
+    },
+    {
+      "route": "MN_R07",
+      "native_modules": 2,
+      "lanes": []
+    },
+    {
+      "route": "MN_R08",
+      "native_modules": 4,
+      "lanes": []
+    },
+    {
+      "route": "MN_R09",
+      "native_modules": 4,
+      "lanes": []
+    },
+    {
+      "route": "MN_R10",
+      "native_modules": 2,
+      "lanes": []
+    },
+    {
+      "route": "MN_R11",
+      "native_modules": 8,
+      "lanes": [
+        {
+          "lip": [
+            23,
+            130
+          ],
+          "kind": "HOP_LEFT",
+          "approach": [
+            24,
+            130
+          ],
+          "landing": [
+            21,
+            130
+          ],
+          "valid_native_hop": true,
+          "reverse_lip_blocked": true,
+          "ordinary_return_steps": 49,
+          "ordinary_return_minimum_grass_steps": 14,
+          "status": "VALID_HOP_AND_ORDINARY_RETURN"
+        },
+        {
+          "lip": [
+            23,
+            131
+          ],
+          "kind": "HOP_LEFT",
+          "approach": [
+            24,
+            131
+          ],
+          "landing": [
+            21,
+            131
+          ],
+          "valid_native_hop": true,
+          "reverse_lip_blocked": true,
+          "ordinary_return_steps": 51,
+          "ordinary_return_minimum_grass_steps": 14,
+          "status": "VALID_HOP_AND_ORDINARY_RETURN"
+        }
+      ]
+    },
+    {
+      "route": "MN_R12",
+      "native_modules": 2,
+      "lanes": []
+    },
+    {
+      "route": "MN_R13",
+      "native_modules": 3,
+      "lanes": []
+    },
+    {
+      "route": "MN_R14",
+      "native_modules": 4,
+      "lanes": [
+        {
+          "lip": [
+            20,
+            24
+          ],
+          "kind": "HOP_DOWN",
+          "approach": [
+            20,
+            23
+          ],
+          "landing": [
+            20,
+            26
+          ],
+          "valid_native_hop": false,
+          "reverse_lip_blocked": true,
+          "ordinary_return_steps": null,
+          "ordinary_return_minimum_grass_steps": null,
+          "status": "REQUIRES_REVIEW"
+        },
+        {
+          "lip": [
+            21,
+            24
+          ],
+          "kind": "HOP_DOWN",
+          "approach": [
+            21,
+            23
+          ],
+          "landing": [
+            21,
+            26
+          ],
+          "valid_native_hop": false,
+          "reverse_lip_blocked": true,
+          "ordinary_return_steps": null,
+          "ordinary_return_minimum_grass_steps": null,
+          "status": "REQUIRES_REVIEW"
+        },
+        {
+          "lip": [
+            22,
+            24
+          ],
+          "kind": "HOP_DOWN",
+          "approach": [
+            22,
+            23
+          ],
+          "landing": [
+            22,
+            26
+          ],
+          "valid_native_hop": false,
+          "reverse_lip_blocked": true,
+          "ordinary_return_steps": null,
+          "ordinary_return_minimum_grass_steps": null,
+          "status": "REQUIRES_REVIEW"
+        },
+        {
+          "lip": [
+            23,
+            24
+          ],
+          "kind": "HOP_DOWN",
+          "approach": [
+            23,
+            23
+          ],
+          "landing": [
+            23,
+            26
+          ],
+          "valid_native_hop": false,
+          "reverse_lip_blocked": true,
+          "ordinary_return_steps": null,
+          "ordinary_return_minimum_grass_steps": null,
+          "status": "REQUIRES_REVIEW"
+        },
+        {
+          "lip": [
+            24,
+            24
+          ],
+          "kind": "HOP_DOWN",
+          "approach": [
+            24,
+            23
+          ],
+          "landing": [
+            24,
+            26
+          ],
+          "valid_native_hop": false,
+          "reverse_lip_blocked": true,
+          "ordinary_return_steps": null,
+          "ordinary_return_minimum_grass_steps": null,
+          "status": "REQUIRES_REVIEW"
+        },
+        {
+          "lip": [
+            25,
+            24
+          ],
+          "kind": "HOP_DOWN",
+          "approach": [
+            25,
+            23
+          ],
+          "landing": [
+            25,
+            26
+          ],
+          "valid_native_hop": false,
+          "reverse_lip_blocked": true,
+          "ordinary_return_steps": null,
+          "ordinary_return_minimum_grass_steps": null,
+          "status": "REQUIRES_REVIEW"
+        },
+        {
+          "lip": [
+            26,
+            24
+          ],
+          "kind": "HOP_DOWN",
+          "approach": [
+            26,
+            23
+          ],
+          "landing": [
+            26,
+            26
+          ],
+          "valid_native_hop": false,
+          "reverse_lip_blocked": true,
+          "ordinary_return_steps": null,
+          "ordinary_return_minimum_grass_steps": null,
+          "status": "REQUIRES_REVIEW"
+        },
+        {
+          "lip": [
+            27,
+            24
+          ],
+          "kind": "HOP_DOWN",
+          "approach": [
+            27,
+            23
+          ],
+          "landing": [
+            27,
+            26
+          ],
+          "valid_native_hop": false,
+          "reverse_lip_blocked": true,
+          "ordinary_return_steps": null,
+          "ordinary_return_minimum_grass_steps": null,
+          "status": "REQUIRES_REVIEW"
+        },
+        {
+          "lip": [
+            28,
+            24
+          ],
+          "kind": "HOP_DOWN",
+          "approach": [
+            28,
+            23
+          ],
+          "landing": [
+            28,
+            26
+          ],
+          "valid_native_hop": true,
+          "reverse_lip_blocked": true,
+          "ordinary_return_steps": 53,
+          "ordinary_return_minimum_grass_steps": 4,
+          "status": "VALID_HOP_AND_ORDINARY_RETURN"
+        },
+        {
+          "lip": [
+            29,
+            24
+          ],
+          "kind": "HOP_DOWN",
+          "approach": [
+            29,
+            23
+          ],
+          "landing": [
+            29,
+            26
+          ],
+          "valid_native_hop": true,
+          "reverse_lip_blocked": true,
+          "ordinary_return_steps": 53,
+          "ordinary_return_minimum_grass_steps": 4,
+          "status": "VALID_HOP_AND_ORDINARY_RETURN"
+        },
+        {
+          "lip": [
+            30,
+            24
+          ],
+          "kind": "HOP_DOWN",
+          "approach": [
+            30,
+            23
+          ],
+          "landing": [
+            30,
+            26
+          ],
+          "valid_native_hop": true,
+          "reverse_lip_blocked": true,
+          "ordinary_return_steps": 53,
+          "ordinary_return_minimum_grass_steps": 4,
+          "status": "VALID_HOP_AND_ORDINARY_RETURN"
+        },
+        {
+          "lip": [
+            31,
+            24
+          ],
+          "kind": "HOP_DOWN",
+          "approach": [
+            31,
+            23
+          ],
+          "landing": [
+            31,
+            26
+          ],
+          "valid_native_hop": true,
+          "reverse_lip_blocked": true,
+          "ordinary_return_steps": 55,
+          "ordinary_return_minimum_grass_steps": 4,
+          "status": "VALID_HOP_AND_ORDINARY_RETURN"
+        },
+        {
+          "lip": [
+            32,
+            24
+          ],
+          "kind": "HOP_DOWN",
+          "approach": [
+            32,
+            23
+          ],
+          "landing": [
+            32,
+            26
+          ],
+          "valid_native_hop": false,
+          "reverse_lip_blocked": true,
+          "ordinary_return_steps": null,
+          "ordinary_return_minimum_grass_steps": null,
+          "status": "REQUIRES_REVIEW"
+        },
+        {
+          "lip": [
+            33,
+            24
+          ],
+          "kind": "HOP_DOWN",
+          "approach": [
+            33,
+            23
+          ],
+          "landing": [
+            33,
+            26
+          ],
+          "valid_native_hop": false,
+          "reverse_lip_blocked": true,
+          "ordinary_return_steps": null,
+          "ordinary_return_minimum_grass_steps": null,
+          "status": "REQUIRES_REVIEW"
+        },
+        {
+          "lip": [
+            34,
+            24
+          ],
+          "kind": "HOP_DOWN",
+          "approach": [
+            34,
+            23
+          ],
+          "landing": [
+            34,
+            26
+          ],
+          "valid_native_hop": false,
+          "reverse_lip_blocked": true,
+          "ordinary_return_steps": null,
+          "ordinary_return_minimum_grass_steps": null,
+          "status": "REQUIRES_REVIEW"
+        },
+        {
+          "lip": [
+            35,
+            24
+          ],
+          "kind": "HOP_DOWN",
+          "approach": [
+            35,
+            23
+          ],
+          "landing": [
+            35,
+            26
+          ],
+          "valid_native_hop": false,
+          "reverse_lip_blocked": true,
+          "ordinary_return_steps": null,
+          "ordinary_return_minimum_grass_steps": null,
+          "status": "REQUIRES_REVIEW"
+        }
+      ]
+    },
+    {
+      "route": "MN_R15",
+      "native_modules": 1,
+      "lanes": [
+        {
+          "lip": [
+            22,
+            18
+          ],
+          "kind": "HOP_DOWN",
+          "approach": [
+            22,
+            17
+          ],
+          "landing": [
+            22,
+            20
+          ],
+          "valid_native_hop": true,
+          "reverse_lip_blocked": true,
+          "ordinary_return_steps": 29,
+          "ordinary_return_minimum_grass_steps": 6,
+          "status": "VALID_HOP_AND_ORDINARY_RETURN"
+        },
+        {
+          "lip": [
+            23,
+            18
+          ],
+          "kind": "HOP_DOWN",
+          "approach": [
+            23,
+            17
+          ],
+          "landing": [
+            23,
+            20
+          ],
+          "valid_native_hop": true,
+          "reverse_lip_blocked": true,
+          "ordinary_return_steps": 31,
+          "ordinary_return_minimum_grass_steps": 6,
+          "status": "VALID_HOP_AND_ORDINARY_RETURN"
+        },
+        {
+          "lip": [
+            24,
+            18
+          ],
+          "kind": "HOP_DOWN",
+          "approach": [
+            24,
+            17
+          ],
+          "landing": [
+            24,
+            20
+          ],
+          "valid_native_hop": true,
+          "reverse_lip_blocked": true,
+          "ordinary_return_steps": 33,
+          "ordinary_return_minimum_grass_steps": 6,
+          "status": "VALID_HOP_AND_ORDINARY_RETURN"
+        },
+        {
+          "lip": [
+            25,
+            18
+          ],
+          "kind": "HOP_DOWN",
+          "approach": [
+            25,
+            17
+          ],
+          "landing": [
+            25,
+            20
+          ],
+          "valid_native_hop": true,
+          "reverse_lip_blocked": true,
+          "ordinary_return_steps": 35,
+          "ordinary_return_minimum_grass_steps": 6,
+          "status": "VALID_HOP_AND_ORDINARY_RETURN"
+        }
+      ]
+    },
+    {
+      "route": "MN_R16",
+      "native_modules": 2,
+      "lanes": [
+        {
+          "lip": [
+            52,
+            16
+          ],
+          "kind": "HOP_DOWN",
+          "approach": [
+            52,
+            15
+          ],
+          "landing": [
+            52,
+            18
+          ],
+          "valid_native_hop": true,
+          "reverse_lip_blocked": true,
+          "ordinary_return_steps": 57,
+          "ordinary_return_minimum_grass_steps": 6,
+          "status": "VALID_HOP_AND_ORDINARY_RETURN"
+        },
+        {
+          "lip": [
+            53,
+            16
+          ],
+          "kind": "HOP_DOWN",
+          "approach": [
+            53,
+            15
+          ],
+          "landing": [
+            53,
+            18
+          ],
+          "valid_native_hop": true,
+          "reverse_lip_blocked": true,
+          "ordinary_return_steps": 59,
+          "ordinary_return_minimum_grass_steps": 6,
+          "status": "VALID_HOP_AND_ORDINARY_RETURN"
+        }
+      ]
+    },
+    {
+      "route": "MN_R17",
+      "native_modules": 3,
+      "lanes": []
+    },
+    {
+      "route": "MN_R18",
+      "native_modules": 2,
+      "lanes": []
+    },
+    {
+      "route": "MN_R19",
+      "native_modules": 2,
+      "lanes": [
+        {
+          "lip": [
+            32,
+            32
+          ],
+          "kind": "HOP_DOWN",
+          "approach": [
+            32,
+            31
+          ],
+          "landing": [
+            32,
+            34
+          ],
+          "valid_native_hop": true,
+          "reverse_lip_blocked": true,
+          "ordinary_return_steps": 5,
+          "ordinary_return_minimum_grass_steps": 4,
+          "status": "VALID_HOP_AND_ORDINARY_RETURN"
+        },
+        {
+          "lip": [
+            33,
+            32
+          ],
+          "kind": "HOP_DOWN",
+          "approach": [
+            33,
+            31
+          ],
+          "landing": [
+            33,
+            34
+          ],
+          "valid_native_hop": true,
+          "reverse_lip_blocked": true,
+          "ordinary_return_steps": 7,
+          "ordinary_return_minimum_grass_steps": 4,
+          "status": "VALID_HOP_AND_ORDINARY_RETURN"
+        },
+        {
+          "lip": [
+            34,
+            32
+          ],
+          "kind": "HOP_DOWN",
+          "approach": [
+            34,
+            31
+          ],
+          "landing": [
+            34,
+            34
+          ],
+          "valid_native_hop": true,
+          "reverse_lip_blocked": true,
+          "ordinary_return_steps": 9,
+          "ordinary_return_minimum_grass_steps": 4,
+          "status": "VALID_HOP_AND_ORDINARY_RETURN"
+        },
+        {
+          "lip": [
+            35,
+            32
+          ],
+          "kind": "HOP_DOWN",
+          "approach": [
+            35,
+            31
+          ],
+          "landing": [
+            35,
+            34
+          ],
+          "valid_native_hop": true,
+          "reverse_lip_blocked": true,
+          "ordinary_return_steps": 11,
+          "ordinary_return_minimum_grass_steps": 4,
+          "status": "VALID_HOP_AND_ORDINARY_RETURN"
+        }
+      ]
+    },
+    {
+      "route": "MN_R20",
+      "native_modules": 4,
+      "lanes": [
+        {
+          "lip": [
+            18,
+            50
+          ],
+          "kind": "HOP_DOWN",
+          "approach": [
+            18,
+            49
+          ],
+          "landing": [
+            18,
+            52
+          ],
+          "valid_native_hop": true,
+          "reverse_lip_blocked": true,
+          "ordinary_return_steps": 13,
+          "ordinary_return_minimum_grass_steps": 6,
+          "status": "VALID_HOP_AND_ORDINARY_RETURN"
+        },
+        {
+          "lip": [
+            19,
+            50
+          ],
+          "kind": "HOP_DOWN",
+          "approach": [
+            19,
+            49
+          ],
+          "landing": [
+            19,
+            52
+          ],
+          "valid_native_hop": true,
+          "reverse_lip_blocked": true,
+          "ordinary_return_steps": 15,
+          "ordinary_return_minimum_grass_steps": 6,
+          "status": "VALID_HOP_AND_ORDINARY_RETURN"
+        },
+        {
+          "lip": [
+            20,
+            50
+          ],
+          "kind": "HOP_DOWN",
+          "approach": [
+            20,
+            49
+          ],
+          "landing": [
+            20,
+            52
+          ],
+          "valid_native_hop": true,
+          "reverse_lip_blocked": true,
+          "ordinary_return_steps": 17,
+          "ordinary_return_minimum_grass_steps": 7,
+          "status": "VALID_HOP_AND_ORDINARY_RETURN"
+        },
+        {
+          "lip": [
+            21,
+            50
+          ],
+          "kind": "HOP_DOWN",
+          "approach": [
+            21,
+            49
+          ],
+          "landing": [
+            21,
+            52
+          ],
+          "valid_native_hop": true,
+          "reverse_lip_blocked": true,
+          "ordinary_return_steps": 19,
+          "ordinary_return_minimum_grass_steps": 8,
+          "status": "VALID_HOP_AND_ORDINARY_RETURN"
+        }
+      ]
+    }
+  ],
+  "total_hop_quadrants": 44,
+  "requires_review": [
+    {
+      "route": "MN_R14",
+      "lip": [
+        20,
+        24
+      ],
+      "kind": "HOP_DOWN",
+      "approach": [
+        20,
+        23
+      ],
+      "landing": [
+        20,
+        26
+      ],
+      "valid_native_hop": false,
+      "reverse_lip_blocked": true,
+      "ordinary_return_steps": null,
+      "ordinary_return_minimum_grass_steps": null,
+      "status": "REQUIRES_REVIEW"
+    },
+    {
+      "route": "MN_R14",
+      "lip": [
+        21,
+        24
+      ],
+      "kind": "HOP_DOWN",
+      "approach": [
+        21,
+        23
+      ],
+      "landing": [
+        21,
+        26
+      ],
+      "valid_native_hop": false,
+      "reverse_lip_blocked": true,
+      "ordinary_return_steps": null,
+      "ordinary_return_minimum_grass_steps": null,
+      "status": "REQUIRES_REVIEW"
+    },
+    {
+      "route": "MN_R14",
+      "lip": [
+        22,
+        24
+      ],
+      "kind": "HOP_DOWN",
+      "approach": [
+        22,
+        23
+      ],
+      "landing": [
+        22,
+        26
+      ],
+      "valid_native_hop": false,
+      "reverse_lip_blocked": true,
+      "ordinary_return_steps": null,
+      "ordinary_return_minimum_grass_steps": null,
+      "status": "REQUIRES_REVIEW"
+    },
+    {
+      "route": "MN_R14",
+      "lip": [
+        23,
+        24
+      ],
+      "kind": "HOP_DOWN",
+      "approach": [
+        23,
+        23
+      ],
+      "landing": [
+        23,
+        26
+      ],
+      "valid_native_hop": false,
+      "reverse_lip_blocked": true,
+      "ordinary_return_steps": null,
+      "ordinary_return_minimum_grass_steps": null,
+      "status": "REQUIRES_REVIEW"
+    },
+    {
+      "route": "MN_R14",
+      "lip": [
+        24,
+        24
+      ],
+      "kind": "HOP_DOWN",
+      "approach": [
+        24,
+        23
+      ],
+      "landing": [
+        24,
+        26
+      ],
+      "valid_native_hop": false,
+      "reverse_lip_blocked": true,
+      "ordinary_return_steps": null,
+      "ordinary_return_minimum_grass_steps": null,
+      "status": "REQUIRES_REVIEW"
+    },
+    {
+      "route": "MN_R14",
+      "lip": [
+        25,
+        24
+      ],
+      "kind": "HOP_DOWN",
+      "approach": [
+        25,
+        23
+      ],
+      "landing": [
+        25,
+        26
+      ],
+      "valid_native_hop": false,
+      "reverse_lip_blocked": true,
+      "ordinary_return_steps": null,
+      "ordinary_return_minimum_grass_steps": null,
+      "status": "REQUIRES_REVIEW"
+    },
+    {
+      "route": "MN_R14",
+      "lip": [
+        26,
+        24
+      ],
+      "kind": "HOP_DOWN",
+      "approach": [
+        26,
+        23
+      ],
+      "landing": [
+        26,
+        26
+      ],
+      "valid_native_hop": false,
+      "reverse_lip_blocked": true,
+      "ordinary_return_steps": null,
+      "ordinary_return_minimum_grass_steps": null,
+      "status": "REQUIRES_REVIEW"
+    },
+    {
+      "route": "MN_R14",
+      "lip": [
+        27,
+        24
+      ],
+      "kind": "HOP_DOWN",
+      "approach": [
+        27,
+        23
+      ],
+      "landing": [
+        27,
+        26
+      ],
+      "valid_native_hop": false,
+      "reverse_lip_blocked": true,
+      "ordinary_return_steps": null,
+      "ordinary_return_minimum_grass_steps": null,
+      "status": "REQUIRES_REVIEW"
+    },
+    {
+      "route": "MN_R14",
+      "lip": [
+        32,
+        24
+      ],
+      "kind": "HOP_DOWN",
+      "approach": [
+        32,
+        23
+      ],
+      "landing": [
+        32,
+        26
+      ],
+      "valid_native_hop": false,
+      "reverse_lip_blocked": true,
+      "ordinary_return_steps": null,
+      "ordinary_return_minimum_grass_steps": null,
+      "status": "REQUIRES_REVIEW"
+    },
+    {
+      "route": "MN_R14",
+      "lip": [
+        33,
+        24
+      ],
+      "kind": "HOP_DOWN",
+      "approach": [
+        33,
+        23
+      ],
+      "landing": [
+        33,
+        26
+      ],
+      "valid_native_hop": false,
+      "reverse_lip_blocked": true,
+      "ordinary_return_steps": null,
+      "ordinary_return_minimum_grass_steps": null,
+      "status": "REQUIRES_REVIEW"
+    },
+    {
+      "route": "MN_R14",
+      "lip": [
+        34,
+        24
+      ],
+      "kind": "HOP_DOWN",
+      "approach": [
+        34,
+        23
+      ],
+      "landing": [
+        34,
+        26
+      ],
+      "valid_native_hop": false,
+      "reverse_lip_blocked": true,
+      "ordinary_return_steps": null,
+      "ordinary_return_minimum_grass_steps": null,
+      "status": "REQUIRES_REVIEW"
+    },
+    {
+      "route": "MN_R14",
+      "lip": [
+        35,
+        24
+      ],
+      "kind": "HOP_DOWN",
+      "approach": [
+        35,
+        23
+      ],
+      "landing": [
+        35,
+        26
+      ],
+      "valid_native_hop": false,
+      "reverse_lip_blocked": true,
+      "ordinary_return_steps": null,
+      "ordinary_return_minimum_grass_steps": null,
+      "status": "REQUIRES_REVIEW"
+    }
+  ],
+  "scope": "Native collision and actual chunk connections; hop targets two tiles beyond lip, ordinary returns exclude every hop. No Surf, Cut or interior warp paths. Actors clear. Static evidence only; rendering and controller review are separate."
+}

@@ -1,0 +1,139 @@
+{
+  "schema_version": 1,
+  "id": "MN_R19",
+  "status": "LAND_COURSE_PASS_GATE_DENIAL_RETEST_PENDING",
+  "native_binding": {
+    "pack": "content-packs/minnesota-current-r19-detroit-gate-v04.crystalpack",
+    "pack_sha256": "de1add590013c786bd3a2770c58ff46c656930cc3dd3944af203f7480e292e21",
+    "content_identity": "1efd4ef468dc38f0346a74621151eb36cf15272736324ee9e0de925e0e4ba226"
+  },
+  "grass_quadrants": 156,
+  "ice_quadrants": 0,
+  "active_native_hop_lanes": [
+    {
+      "upper": [
+        32,
+        31
+      ],
+      "lip": [
+        32,
+        32
+      ],
+      "landing": [
+        32,
+        34
+      ],
+      "reverse_wall": [
+        32,
+        33
+      ],
+      "ordinary_uphill_minimum_grass_steps": 3
+    },
+    {
+      "upper": [
+        33,
+        31
+      ],
+      "lip": [
+        33,
+        32
+      ],
+      "landing": [
+        33,
+        34
+      ],
+      "reverse_wall": [
+        33,
+        33
+      ],
+      "ordinary_uphill_minimum_grass_steps": 3
+    },
+    {
+      "upper": [
+        34,
+        31
+      ],
+      "lip": [
+        34,
+        32
+      ],
+      "landing": [
+        34,
+        34
+      ],
+      "reverse_wall": [
+        34,
+        33
+      ],
+      "ordinary_uphill_minimum_grass_steps": 3
+    },
+    {
+      "upper": [
+        35,
+        31
+      ],
+      "lip": [
+        35,
+        32
+      ],
+      "landing": [
+        35,
+        34
+      ],
+      "reverse_wall": [
+        35,
+        33
+      ],
+      "ordinary_uphill_minimum_grass_steps": 3
+    }
+  ],
+  "native_stairs": [
+    {
+      "upper": [
+        11,
+        35
+      ],
+      "lower": [
+        11,
+        38
+      ],
+      "bidirectional": true
+    },
+    {
+      "upper": [
+        19,
+        35
+      ],
+      "lower": [
+        19,
+        38
+      ],
+      "bidirectional": true
+    }
+  ],
+  "pine_crossing": {
+    "start": [
+      47,
+      13
+    ],
+    "end": [
+      49,
+      20
+    ],
+    "minimum_grass_steps_both_directions": 7
+  },
+  "prairie_habitat_seam": {
+    "bounds_core": [
+      22,
+      48,
+      28,
+      52
+    ],
+    "minimum_grass_steps_both_directions": 4
+  },
+  "production_land_receipt": "planning/minnesota/revisions/route-grass-v01/current-r19-successor-review-v01/gate-land-course-production-v02.json",
+  "new_gate_room": "MnR19DetroitGate",
+  "new_gate_requirement": "Northbound ENGINE_MINERALBADGE; free southbound return",
+  "scope": "All four current lanes tested in both phases; original two-lane fixture is incomplete for the current native cliff. Gate denied-text test is being corrected to inspect actual displayed page history.",
+  "goal_complete": false
+}

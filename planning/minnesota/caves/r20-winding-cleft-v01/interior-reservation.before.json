@@ -1,0 +1,93 @@
+{
+  "interior": "MnR20Cave1F",
+  "parent_route": "MN_R20",
+  "arrival_core": [
+    5,
+    13
+  ],
+  "return_trigger_core": [
+    5,
+    13
+  ],
+  "exterior_anchor_metatile": [
+    30,
+    16
+  ],
+  "exterior_door_core": [
+    60,
+    33
+  ],
+  "requires_real_collision_check": true,
+  "clear_arrival_core": [
+    5,
+    12
+  ],
+  "return_triggers_core": [
+    [
+      5,
+      13
+    ],
+    [
+      13,
+      13
+    ]
+  ],
+  "exterior_arrival_core": [
+    60,
+    34
+  ],
+  "exterior_clear_return_core": [
+    60,
+    34
+  ],
+  "source_design": "routes/MN_R20.json",
+  "source_collision_checked": true,
+  "mouths": [
+    {
+      "exterior_door_core": [
+        60,
+        33
+      ],
+      "interior_target_warp": 1,
+      "exterior_entry_warp": 1,
+      "exterior_return_warp": 2,
+      "safe_exterior_return_core": [
+        60,
+        34
+      ]
+    },
+    {
+      "exterior_door_core": [
+        76,
+        31
+      ],
+      "interior_target_warp": 2,
+      "exterior_entry_warp": 1,
+      "exterior_return_warp": 2,
+      "safe_exterior_return_core": [
+        76,
+        32
+      ]
+    }
+  ],
+  "validation": "Actual written 510-map terrain/preservation150, nine native captures and six directional assets PASS; both original mouths/item/flag/program/art/attributes preserved. All three production-controller cases PASS.",
+  "native_status": "Installed dry9x8 Voyageurs cleft on1630ad06; original forced NITE. Leftward two-lane native drop, useful stairs and ordinary returns; no added field-move requirement or SQ03 authority. Native input/once/item use/Continue PASS.",
+  "dimensions_metatiles": [
+    9,
+    8
+  ],
+  "native_palette": "nite",
+  "candidate_source_sha256": "05617d4863db095ed7664ce6408f1d7f35e4ce3c6ed360d08bdfd36a35db2577",
+  "native_review_pack_sha256": "1630ad063aa4a1cf252087bdf743ca48a2a8cb6c9c46ad95cb7aceb1c74c3b05",
+  "runtime_settled_exterior_cores": [
+    [
+      60,
+      34
+    ],
+    [
+      76,
+      32
+    ]
+  ],
+  "return_semantics": "Original west room warp1 returns to MnR20C00R00 passive warp2 global60,34 FLOOR; east room warp2 returns to MnR20C01R00 passive warp2 global76,32/local12,32 FLOOR. Active west60,33 targets roomwarp1; active east76,31 targets roomwarp2. Preserve the existing inactive east Floor record's own targetwarp1; no warp records are normalized."
+}

@@ -5039,14 +5039,22 @@ fn reset_visible_title_program(title: &mut TitleMenu) {
         .presentation_machine
         .memory
         .insert("hSCX".to_string(), u16::from(title.entrance_start_scx));
-    title
-        .presentation_machine
-        .memory
-        .insert("wJumptableIndex".to_string(), 0);
-    title
-        .presentation_machine
-        .memory
-        .insert("wTitleScreenTimer".to_string(), 0);
+    title.presentation_machine.memory.insert(
+        "wJumptableIndex".to_string(),
+        if title.static_title_image.is_some() {
+            2
+        } else {
+            0
+        },
+    );
+    title.presentation_machine.memory.insert(
+        "wTitleScreenTimer".to_string(),
+        if title.static_title_image.is_some() {
+            u16::MAX
+        } else {
+            0
+        },
+    );
     title
         .presentation_machine
         .memory
@@ -5296,6 +5304,15 @@ fn tick_visible_title_screen_state(runtime_shell: &mut BevyRuntimeShell) {
         }
         return;
     }
+    // A regional still has no idle movie or attract-mode timeout. Preserve the
+    // production Start/menu interpreter when an actual input is pending.
+    if runtime_shell.title_menu.as_ref().is_some_and(|title| {
+        title.static_title_image.is_some()
+            && matches!(title.source_phase(), VisibleTitlePhase::PressStart)
+            && title.joypad_mask == 0
+    }) {
+        return;
+    }
     let music_fade_active = runtime_shell.music_fade.is_some();
     let execution = (|| -> Result<(Vec<crystal_assets::RuntimePresentationOperation>, Option<u16>)> {
         let BevyRuntimeShell {
@@ -5319,6 +5336,16 @@ fn tick_visible_title_screen_state(runtime_shell: &mut BevyRuntimeShell) {
                     0
                 },
             );
+        }
+        // The source checks its attract timer before sampling Start. A still
+        // never enters that timeout branch, including after irrelevant keys.
+        if title.static_title_image.is_some()
+            && matches!(title.source_phase(), VisibleTitlePhase::PressStart)
+        {
+            title
+                .presentation_machine
+                .memory
+                .insert("wTitleScreenTimer".into(), u16::MAX);
         }
         let scene = title
             .presentation_machine
@@ -6846,6 +6873,23 @@ const VISIBLE_OAK_INTRO_SCENES: [(&str, &str); 4] = [
     ("oak_intro_2", "OAK"),
     ("player_picture", "PLAYER"),
 ];
+fn visible_intro_professor_name(program: &RuntimePresentationProgram) -> &'static str {
+    if visible_oak_speech_operations(program).is_ok_and(|operations| {
+        operations.iter().any(|op| {
+            op.op == "present_intro_portrait"
+                && op
+                    .fields
+                    .get("trainer_class")
+                    .and_then(serde_json::Value::as_str)
+                    == Some("MN_PROF_TAMARACK")
+        })
+    }) {
+        "TAMARACK"
+    } else {
+        "OAK"
+    }
+}
+
 fn visible_oak_speech_operations(
     program: &RuntimePresentationProgram,
 ) -> Result<&[crystal_assets::RuntimePresentationOperation]> {
@@ -7086,7 +7130,11 @@ fn open_visible_oak_intro_sequence(runtime_shell: &mut BevyRuntimeShell) -> Resu
     runtime_shell
         .last_audio_events
         .push(format!("queued Oak intro music {oak_music}"));
-    set_shell_action_status(runtime_shell, "OAK INTRO");
+    let label = format!(
+        "{} INTRO",
+        visible_intro_professor_name(runtime_shell.runtime.title_presentation_program())
+    );
+    set_shell_action_status(runtime_shell, &label);
     trim_event_log(&mut runtime_shell.last_audio_events);
     Ok(())
 }
@@ -7118,7 +7166,11 @@ fn open_visible_oak_final_sequence(
     advance_visible_oak_intro_text_queue(&mut oak_intro);
     runtime_shell.pending_oak_intro = Some(oak_intro);
     record_visible_runtime_action(runtime_shell, "oak_intro:final:open")?;
-    set_shell_action_status(runtime_shell, "OAK FINALE");
+    let label = format!(
+        "{} FINALE",
+        visible_intro_professor_name(runtime_shell.runtime.title_presentation_program())
+    );
+    set_shell_action_status(runtime_shell, &label);
     trim_event_log(&mut runtime_shell.last_audio_events);
     Ok(())
 }
@@ -7127,7 +7179,7 @@ fn start_visible_oak_intro_scene(
     oak_intro: &mut VisibleOakIntroSequence,
     program: &RuntimePresentationProgram,
 ) -> Result<()> {
-    let (state, sprite) = VISIBLE_OAK_INTRO_SCENES[oak_intro
+    let (state, _) = VISIBLE_OAK_INTRO_SCENES[oak_intro
         .scene_index
         .min(VISIBLE_OAK_INTRO_SCENES.len() - 1)];
     let portrait = visible_oak_portrait_operation(program, oak_intro.scene_index)?;
@@ -7136,31 +7188,39 @@ fn start_visible_oak_intro_scene(
         .get("kind")
         .and_then(serde_json::Value::as_str)
         .context("OakSpeech portrait has no kind")?;
-    let exported_sprite = match kind {
-        "trainer" => portrait
-            .fields
-            .get("trainer_class")
-            .and_then(serde_json::Value::as_str)
-            .filter(|trainer_class| *trainer_class == "POKEMON_PROF")
-            .map(|_| "OAK"),
+    let sprite = match kind {
+        "trainer" => {
+            let class = portrait
+                .fields
+                .get("trainer_class")
+                .and_then(serde_json::Value::as_str)
+                .context("professor portrait has no trainer class")?;
+            if class == "POKEMON_PROF" {
+                "OAK".to_string()
+            } else if class == "MN_PROF_TAMARACK" {
+                "battle-trainer:mn_prof_tamarack".to_string()
+            } else {
+                anyhow::bail!("unsupported introductory professor {class}");
+            }
+        }
         "pokemon" => portrait
             .fields
             .get("species")
-            .and_then(serde_json::Value::as_str),
-        "player" => Some("PLAYER"),
-        _ => None,
-    }
-    .with_context(|| format!("unsupported OakSpeech portrait kind {kind}"))?;
+            .and_then(serde_json::Value::as_str)
+            .filter(|species| !species.is_empty())
+            .context("intro portrait has no species")?
+            .to_string(),
+        "player" => "PLAYER".to_string(),
+        _ => anyhow::bail!("unsupported introductory portrait kind {kind}"),
+    };
     anyhow::ensure!(
-        exported_sprite == sprite
-            || (state == "wooper_showcase" && kind == "pokemon" && !exported_sprite.is_empty()),
-        "OakSpeech portrait {exported_sprite} does not match scene sprite {sprite}"
+        sprite == VISIBLE_OAK_INTRO_SCENES[oak_intro.scene_index].1
+            || (kind == "pokemon" && state == "wooper_showcase")
+            || (kind == "trainer" && sprite == "battle-trainer:mn_prof_tamarack"),
+        "intro portrait {sprite} does not match scene {state}"
     );
-    // Regional packs author their own showcase species and matching embedded
-    // cry. Retain the source scene timing while using that validated portrait.
-    let sprite = exported_sprite;
     oak_intro.scene_state = state.to_string();
-    oak_intro.current_sprite = Some(sprite.to_string());
+    oak_intro.current_sprite = Some(sprite.clone());
     let text_groups = visible_oak_text_groups(program, oak_intro.scene_index, "PLAYER")?;
     oak_intro.post_cry_text_queue.clear();
     oak_intro.post_cry_requires_prompt = false;
@@ -7184,7 +7244,7 @@ fn start_visible_oak_intro_scene(
             .and_then(serde_json::Value::as_str)
             .context("Wooper OakSpeech embedded audio has no after entry")?;
         anyhow::ensure!(
-            audio.get("cry").and_then(serde_json::Value::as_str) == Some(sprite)
+            audio.get("cry").and_then(serde_json::Value::as_str) == Some(sprite.as_str())
                 && audio
                     .get("wait_for_sfx")
                     .and_then(serde_json::Value::as_bool)

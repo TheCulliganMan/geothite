@@ -1,0 +1,200 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-r09-southwest-grass-v01.crystalpack",
+  "pack_sha256": "0d04630cac6239d4e4f544d73fc3c32af0d33c5c680605c32f41c36cc9f30880",
+  "calls": 2957,
+  "wild": [
+    {
+      "phase": "grass-and-save",
+      "map": "MnR09C00R01",
+      "position": {
+        "x": 12,
+        "y": 6
+      }
+    },
+    {
+      "phase": "grass-and-save",
+      "map": "MnR09C00R00",
+      "position": {
+        "x": 61,
+        "y": 42
+      }
+    },
+    {
+      "phase": "grass-and-save",
+      "map": "MnR09C00R01",
+      "position": {
+        "x": 17,
+        "y": 2
+      }
+    },
+    {
+      "phase": "continue-and-repeat",
+      "map": "MnR09C01R00",
+      "position": {
+        "x": 40,
+        "y": 37
+      }
+    },
+    {
+      "phase": "continue-and-repeat",
+      "map": "MnR09C01R00",
+      "position": {
+        "x": 52,
+        "y": 21
+      }
+    },
+    {
+      "phase": "continue-and-repeat",
+      "map": "MnR09C00R00",
+      "position": {
+        "x": 54,
+        "y": 43
+      }
+    },
+    {
+      "phase": "continue-and-repeat",
+      "map": "MnR09C00R01",
+      "position": {
+        "x": 17,
+        "y": 1
+      }
+    },
+    {
+      "phase": "continue-and-repeat",
+      "map": "MnR09C00R01",
+      "position": {
+        "x": 12,
+        "y": 7
+      }
+    }
+  ],
+  "phases": [
+    {
+      "phase": "grass-and-save",
+      "initial": {
+        "badges": 8,
+        "dialogue": false,
+        "facing": "up",
+        "frame": 96,
+        "map": "MnR09C00R01",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 0
+        },
+        "position": {
+          "x": 11,
+          "y": 16
+        }
+      },
+      "final": {
+        "badges": 8,
+        "dialogue": false,
+        "facing": "down",
+        "frame": 613,
+        "map": "MnR09C00R01",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 2
+        },
+        "position": {
+          "x": 12,
+          "y": 8
+        }
+      },
+      "output_save": ".local/route-grass-review/r09-full-route-grass-and-save-full-v02-output.crystalsave",
+      "source_unchanged": true,
+      "stderr_bytes": 0
+    },
+    {
+      "phase": "continue-and-repeat",
+      "initial": {
+        "badges": 8,
+        "dialogue": false,
+        "facing": "down",
+        "frame": 613,
+        "map": "MnR09C00R01",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 2
+        },
+        "position": {
+          "x": 12,
+          "y": 8
+        }
+      },
+      "final": {
+        "badges": 8,
+        "dialogue": false,
+        "facing": "down",
+        "frame": 1115,
+        "map": "MnR09C00R01",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 5
+        },
+        "position": {
+          "x": 12,
+          "y": 8
+        }
+      },
+      "output_save": ".local/route-grass-review/r09-full-route-continue-and-repeat-full-v02-output.crystalsave",
+      "source_unchanged": true,
+      "stderr_bytes": 0
+    }
+  ],
+  "scope": "All four Route9 chunks, actual native Cut from inside its reached pocket, both composite and short stair courses, Bemidji and Grand Rapids round trips, repeated after Continue. Local initial Cut partner/badge/position are QA fixtures. The current selected route/neighbor maps, used route tilesets, encounters, trainer teams and battle inputs are exact to this tested publication.",
+  "actual_maps_observed": [
+    "MnBemidji",
+    "MnGrandRapids",
+    "MnR09C00R00",
+    "MnR09C00R01",
+    "MnR09C01R00",
+    "MnR09C01R01"
+  ],
+  "stair_pairs": [
+    {
+      "upper": [
+        36,
+        33
+      ],
+      "lower": [
+        36,
+        38
+      ],
+      "native_cave_blocks": [
+        "30",
+        "36"
+      ]
+    },
+    {
+      "upper": [
+        49,
+        39
+      ],
+      "lower": [
+        49,
+        42
+      ],
+      "native_cave_blocks": [
+        "12"
+      ]
+    }
+  ]
+}

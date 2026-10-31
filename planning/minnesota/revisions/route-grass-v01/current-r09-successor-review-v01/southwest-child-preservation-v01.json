@@ -1,0 +1,19 @@
+{
+  "status": "PASS_NATIVE_CHILD_NOT_SELECTED",
+  "parent_revision": "route_grass_r05_cache_bank_revision",
+  "parent_pack": "content-packs/minnesota-current-r05-cache-grass-bank-v03.crystalpack",
+  "parent_pack_sha256": "618d6faa81c9b0bf09b4e3b0cdb22ec1e36eecdaf77678a58146b58de970e5cf",
+  "pack": "content-packs/minnesota-current-r09-southwest-grass-v01.crystalpack",
+  "pack_sha256": "0d04630cac6239d4e4f544d73fc3c32af0d33c5c680605c32f41c36cc9f30880",
+  "content_identity": "d704495840eb078d9c42f6a9be04a07a8e13016ce0c5ed232d2487e9d6a7312a",
+  "delta": {
+    "maps": [
+      "MnR09C00R01"
+    ],
+    "map_blocks": [
+      "MnR09C00R01_Blocks"
+    ]
+  },
+  "new_grass_quadrants": 12,
+  "all_other_maps_and_all_events_actors_scripts_teams_encounters_items_art_audio_exact": true
+}

@@ -1,0 +1,51 @@
+{
+  "status": "PASS_OWNED_SOURCE_AND_AFFECTED_CRATE_LINT",
+  "build_steps": [
+    {
+      "step": "publisher",
+      "command": [
+        "cargo",
+        "build",
+        "--profile",
+        "wasm-dev",
+        "--locked",
+        "--config",
+        "profile.wasm-dev.package.crystal-assets.opt-level=0",
+        "-p",
+        "crystal-assets",
+        "--bin",
+        "revise_r14_forest_bank"
+      ],
+      "exit_code": 0,
+      "log": ".local/route-grass-review/r14-forest-bank-publisher-v03.log",
+      "outputs": [
+        {
+          "path": ".local/route-grass-review/portable-r14-forest-bank-tools-v03/revise_r14_forest_bank",
+          "sha256": "da001d422a712c3b967c720d1a921a7ec9799b8f40ba05b18bc3ade363f00850"
+        }
+      ]
+    },
+    {
+      "step": "assets-all-target-clippy",
+      "command": [
+        "cargo",
+        "clippy",
+        "--profile",
+        "wasm-dev",
+        "--locked",
+        "--config",
+        "profile.wasm-dev.package.crystal-assets.opt-level=0",
+        "-p",
+        "crystal-assets",
+        "--all-targets"
+      ],
+      "exit_code": 0,
+      "log": ".local/route-grass-review/r14-forest-bank-assets-all-target-clippy-v03.log"
+    }
+  ],
+  "owned_diagnostics": 0,
+  "owned_leaf_format_exit_code": 0,
+  "workspace_format_exit_code": 1,
+  "workspace_format_log": ".local/route-grass-review/r14-forest-bank-workspace-format-v02.log",
+  "scope": "Affected assets all-target Clippy passes with existing unrelated warnings; whole-workspace formatting reports unrelated existing differences, owned leaves pass."
+}

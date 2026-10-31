@@ -1,0 +1,289 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-r17-trail-guidance-v02.crystalpack",
+  "pack_sha256": "186c262b18d5174cb7ba9727358d4022bea9fce6d362529405728028ef92c60a",
+  "calls": 4779,
+  "phases": [
+    {
+      "phase": "walk-save",
+      "initial": {
+        "badges": 7,
+        "dialogue": false,
+        "facing": "up",
+        "frame": 2,
+        "map": "MnR17C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 4632,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 2
+        },
+        "position": {
+          "x": 11,
+          "y": 46
+        }
+      },
+      "final": {
+        "badges": 7,
+        "dialogue": false,
+        "facing": "left",
+        "frame": 845,
+        "map": "MnR17C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 4632,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 6
+        },
+        "position": {
+          "x": 36,
+          "y": 12
+        }
+      },
+      "output_save": ".local/route-grass-review/r17-current-course-walk-save-v09-output.crystalsave",
+      "stderr_bytes": 0,
+      "input_unchanged": true
+    },
+    {
+      "phase": "continue-return",
+      "initial": {
+        "badges": 7,
+        "dialogue": false,
+        "facing": "left",
+        "frame": 845,
+        "map": "MnR17C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 4632,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 6
+        },
+        "position": {
+          "x": 36,
+          "y": 12
+        }
+      },
+      "final": {
+        "badges": 7,
+        "dialogue": false,
+        "facing": "left",
+        "frame": 1707,
+        "map": "MnR17C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 4632,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 8
+        },
+        "position": {
+          "x": 36,
+          "y": 12
+        }
+      },
+      "output_save": ".local/route-grass-review/r17-current-course-continue-return-v09-output.crystalsave",
+      "stderr_bytes": 0,
+      "input_unchanged": true
+    }
+  ],
+  "wild": [
+    {
+      "badges": 7,
+      "dialogue": true,
+      "facing": "right",
+      "frame": 421,
+      "map": "MnR17C00R00",
+      "menu": null,
+      "mode": "wildbattle",
+      "money": 4632,
+      "player": "CHRIS",
+      "pokedex": {
+        "owned": 0,
+        "seen": 2
+      },
+      "position": {
+        "x": 36,
+        "y": 8
+      }
+    },
+    {
+      "badges": 7,
+      "dialogue": true,
+      "facing": "down",
+      "frame": 588,
+      "map": "MnR17C00R01",
+      "menu": null,
+      "mode": "wildbattle",
+      "money": 4632,
+      "player": "CHRIS",
+      "pokedex": {
+        "owned": 0,
+        "seen": 3
+      },
+      "position": {
+        "x": 19,
+        "y": 32
+      }
+    },
+    {
+      "badges": 7,
+      "dialogue": true,
+      "facing": "down",
+      "frame": 604,
+      "map": "MnR17C00R01",
+      "menu": null,
+      "mode": "wildbattle",
+      "money": 4632,
+      "player": "CHRIS",
+      "pokedex": {
+        "owned": 0,
+        "seen": 4
+      },
+      "position": {
+        "x": 25,
+        "y": 40
+      }
+    },
+    {
+      "badges": 7,
+      "dialogue": true,
+      "facing": "down",
+      "frame": 624,
+      "map": "MnR17C00R02",
+      "menu": null,
+      "mode": "wildbattle",
+      "money": 4632,
+      "player": "CHRIS",
+      "pokedex": {
+        "owned": 0,
+        "seen": 5
+      },
+      "position": {
+        "x": 33,
+        "y": 2
+      }
+    },
+    {
+      "badges": 7,
+      "dialogue": true,
+      "facing": "up",
+      "frame": 668,
+      "map": "MnR17C00R02",
+      "menu": null,
+      "mode": "wildbattle",
+      "money": 4632,
+      "player": "CHRIS",
+      "pokedex": {
+        "owned": 0,
+        "seen": 6
+      },
+      "position": {
+        "x": 33,
+        "y": 1
+      }
+    },
+    {
+      "badges": 7,
+      "dialogue": true,
+      "facing": "down",
+      "frame": 894,
+      "map": "MnR17C00R00",
+      "menu": null,
+      "mode": "wildbattle",
+      "money": 4632,
+      "player": "CHRIS",
+      "pokedex": {
+        "owned": 0,
+        "seen": 6
+      },
+      "position": {
+        "x": 41,
+        "y": 36
+      }
+    },
+    {
+      "badges": 7,
+      "dialogue": true,
+      "facing": "down",
+      "frame": 985,
+      "map": "MnR17C00R01",
+      "menu": null,
+      "mode": "wildbattle",
+      "money": 4632,
+      "player": "CHRIS",
+      "pokedex": {
+        "owned": 0,
+        "seen": 7
+      },
+      "position": {
+        "x": 19,
+        "y": 33
+      }
+    },
+    {
+      "badges": 7,
+      "dialogue": true,
+      "facing": "down",
+      "frame": 1449,
+      "map": "MnR17C00R01",
+      "menu": null,
+      "mode": "wildbattle",
+      "money": 4632,
+      "player": "CHRIS",
+      "pokedex": {
+        "owned": 0,
+        "seen": 7
+      },
+      "position": {
+        "x": 19,
+        "y": 31
+      }
+    },
+    {
+      "badges": 7,
+      "dialogue": true,
+      "facing": "down",
+      "frame": 1469,
+      "map": "MnR17C00R01",
+      "menu": null,
+      "mode": "wildbattle",
+      "money": 4632,
+      "player": "CHRIS",
+      "pokedex": {
+        "owned": 0,
+        "seen": 8
+      },
+      "position": {
+        "x": 25,
+        "y": 43
+      }
+    },
+    {
+      "badges": 7,
+      "dialogue": true,
+      "facing": "up",
+      "frame": 1548,
+      "map": "MnR17C00R01",
+      "menu": null,
+      "mode": "wildbattle",
+      "money": 4632,
+      "player": "CHRIS",
+      "pokedex": {
+        "owned": 0,
+        "seen": 8
+      },
+      "position": {
+        "x": 25,
+        "y": 41
+      }
+    }
+  ],
+  "scope": "All three exterior chunks, required ordinary grass path, International Falls and Bemidji Northwoods round trips, both corrected trail signs, actual ranger healing and Continue. Initial native trainer-win QA party is setup, not earned campaign progress. Cave, Cut and ice-slide review remain separate."
+}

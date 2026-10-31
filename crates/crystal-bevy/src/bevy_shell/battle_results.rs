@@ -5655,6 +5655,9 @@ fn restore_visible_loaded_runtime_state(
     let snapshot = runtime_shell.shell.snapshot()?;
     runtime_shell.visible_map_name_sign = None;
     field_dialogue_resume::restore(runtime_shell)?;
+    // The graphical host may draw immediately after Continue, before its first
+    // input tick. Restore the ordinary battle chooser at that same boundary.
+    sync_visible_battle_action_cursor(runtime_shell);
     record_visible_runtime_action(
         runtime_shell,
         format!(
@@ -6300,7 +6303,16 @@ fn reset_visible_battle_exit_state(runtime_shell: &mut BevyRuntimeShell) {
     // Terminal narration keeps the same origin until its actual visible exit.
     runtime_shell.battle_origin.clear();
     runtime_shell.battle_trainer_result = None;
-    runtime_shell.party_move_cursor = None;
+    if !runtime_shell.move_learn_forget_menu_open
+        || runtime_shell
+            .shell
+            .session()
+            .state()
+            .pending_move_learn
+            .is_none()
+    {
+        runtime_shell.party_move_cursor = None;
+    }
     runtime_shell.last_battle_cry_key = None;
     runtime_shell.pending_battle_cries_after_messages.clear();
     runtime_shell.battle_enemy_send_out_pending = false;

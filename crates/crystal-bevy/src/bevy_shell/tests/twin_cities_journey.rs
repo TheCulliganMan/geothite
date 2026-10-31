@@ -7,10 +7,49 @@ use crystal_core::models::Dv;
 use crystal_runtime::{CrystalRuntime, RuntimeBattleKind, RuntimeShellPhase};
 
 use super::super::{VisibleShellController, mark_runtime_snapshot_dirty};
-use super::authored_route_fixture::{finish_text, position, use_super_potion};
+use super::authored_route_fixture::{finish_text, position, use_revive, use_super_potion};
 use super::twin_cities::fixture;
 
 type Point = (i16, i16);
+
+// Optional test-only evidence. Never changes controller, party or RNG state.
+fn trace_journey(controller: &mut VisibleShellController, label: &str, medicine_uses: usize) {
+    let Some(path) = std::env::var_os("CRYSTAL_TWIN_CITIES_TRACE_FILE") else {
+        return;
+    };
+    use std::io::Write;
+    let snapshot = controller.snapshot().expect("journey trace snapshot");
+    let mut file = std::fs::OpenOptions::new()
+        .create(true)
+        .append(true)
+        .open(path)
+        .expect("journey trace file");
+    writeln!(
+        file,
+        "{label} medicine_uses={medicine_uses} map={} position={:?} battle={:?} party={:?}",
+        snapshot.overworld.map_name,
+        position(controller),
+        snapshot.battle.as_ref().map(|battle| &battle.kind),
+        snapshot
+            .party
+            .slots
+            .iter()
+            .map(|slot| (
+                slot.pokemon.species.id.as_str(),
+                slot.pokemon.level,
+                slot.pokemon.hp,
+                slot.pokemon.max_hp,
+                &slot.pokemon.status,
+                slot.pokemon
+                    .moves
+                    .iter()
+                    .map(|m| (m.name.as_str(), m.current_pp))
+                    .collect::<Vec<_>>()
+            ))
+            .collect::<Vec<_>>()
+    )
+    .expect("append journey trace");
+}
 
 struct Journey<'a> {
     runtime: &'a CrystalRuntime,
@@ -37,6 +76,18 @@ impl Journey<'_> {
                     .wait_frames(16)
                     .expect("native text presentation");
             } else {
+                // Current spatial habitats can faint the lead during failed RUN.
+                // Recover through the real field Pack before taking a trainer battle.
+                if s.party.slots.iter().any(|slot| slot.pokemon.hp == 0)
+                    && s.bag
+                        .items
+                        .iter()
+                        .any(|item| item.item_id == "REVIVE" && item.quantity > 0)
+                {
+                    use_revive(controller);
+                    trace_journey(controller, "field_revive", self.medicine_uses);
+                    continue;
+                }
                 // Exercise carried medicine on actual battle damage; a half-HP
                 // threshold can miss the item contract with this native party.
                 if s.party
@@ -50,6 +101,7 @@ impl Journey<'_> {
                 {
                     use_super_potion(controller);
                     self.medicine_uses += 1;
+                    trace_journey(controller, "field_medicine", self.medicine_uses);
                     continue;
                 }
                 return;
@@ -59,6 +111,7 @@ impl Journey<'_> {
     }
 
     fn battle(&mut self, controller: &mut VisibleShellController) {
+        trace_journey(controller, "battle_start", self.medicine_uses);
         let initial = controller.snapshot().expect("encounter");
         let wild = matches!(
             initial.battle.as_ref().expect("battle").kind,
@@ -194,6 +247,7 @@ impl Journey<'_> {
                 .wait_frames(16)
                 .expect("native battle input presentation");
         }
+        trace_journey(controller, "battle_end", self.medicine_uses);
         let ended = controller.snapshot().expect("battle result");
         assert!(
             ended.battle.is_none(),
@@ -507,6 +561,13 @@ fn twin_cities_journey_bypasses_cole_both_ways_wins_trainers_uses_ether_and_cont
             .bag
             .add_item(&runtime.data().items["SUPER_POTION"], 4)
             .expect("fixture carried medicine")
+    );
+    // Explicit initial carried recovery for the current territorial habitat.
+    assert!(
+        state
+            .bag
+            .add_item(&runtime.data().items["REVIVE"], 2)
+            .expect("carried recovery")
     );
     state.badges.johto = [true, true, true, false, false, false, false, false];
     state.sync_party_from_storage();

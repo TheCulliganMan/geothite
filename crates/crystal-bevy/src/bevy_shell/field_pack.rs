@@ -121,7 +121,10 @@ fn selected_battle_pack_item_label(
     snapshot: &RuntimeShellSnapshot,
     runtime_shell: &BevyRuntimeShell,
 ) -> Option<String> {
-    let item_ids = carried_battle_usable_item_ids(snapshot);
+    // The cursor indexes the displayed Items pocket, including field-only
+    // items. Filtering that list again can mislabel a potion or lose its target
+    // prompt when a Repel precedes it.
+    let item_ids = carried_battle_non_ball_item_ids(snapshot);
     let selected = strict_readonly_cursor_index(
         &runtime_shell.bag_cursor,
         "battle:bag-items",

@@ -1,0 +1,29 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+  "pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33",
+  "binary_sha256": "31752b82c236e16cc07dc19a962ae432fed26d7df9209cf8eac58942893d9b8c",
+  "results": [
+    {
+      "case": "all_people_rooms_returns_and_both_prairie_lanes",
+      "status": "PASS",
+      "log": "planning/minnesota/revisions/route-grass-v01/current-moorhead-successor-v01/all_people_rooms_returns_and_both_prairie_lanes.log"
+    },
+    {
+      "case": "free_care_pc_poison_recovery_and_priced_stock",
+      "status": "PASS",
+      "log": "planning/minnesota/revisions/route-grass-v01/current-moorhead-successor-v01/free_care_pc_poison_recovery_and_priced_stock.log"
+    },
+    {
+      "case": "reads_real_marker_then_remembers_notebook_gift_after_continue",
+      "status": "PASS",
+      "log": "planning/minnesota/revisions/route-grass-v01/current-moorhead-successor-v01/reads_real_marker_then_remembers_notebook_gift_after_continue.log"
+    },
+    {
+      "case": "full_pocket_keeps_kit_then_native_toss_retry_and_continue",
+      "status": "PASS",
+      "log": "planning/minnesota/revisions/route-grass-v01/current-moorhead-successor-v01/full_pocket_keeps_kit_then_native_toss_retry_and_continue.log"
+    }
+  ],
+  "scope": "Explicit local fixtures; all subsequent movement/dialogue/services/rewards native. Current Moorhead town/rooms/roads/services/notebook scope."
+}

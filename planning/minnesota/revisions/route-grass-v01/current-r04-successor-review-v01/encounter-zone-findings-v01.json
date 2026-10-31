@@ -1,0 +1,17 @@
+{
+  "status": "CURRENT_ONLY_ENCOUNTER_ZONES_IDENTIFIED_COMBAT_ACCEPTANCE_OPEN",
+  "historical_control_pass": true,
+  "current_failure_reproduced": true,
+  "unchanged": [
+    "complete route map",
+    "complete R04 trainer records",
+    "Pokemon/move/growth definitions",
+    "Super Potion/Ether definitions",
+    "original global encounter fields"
+  ],
+  "new_fields": [
+    "MN_HABITAT_BLUFF_WARNING: HUSHISS level17",
+    "MN_HABITAT_TERRITORIAL_GEESE: GOOSNIDE level18"
+  ],
+  "conclusion": "The current full journey crosses added regional encounter zones absent from the historical fixture baseline. This is a concrete changed battle input; exact causal combat trace remains needed. Preserve habitats and authored trainers."
+}

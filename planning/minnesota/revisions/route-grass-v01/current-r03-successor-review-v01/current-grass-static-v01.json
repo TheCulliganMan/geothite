@@ -1,0 +1,52 @@
+{
+  "status": "PASS_STATIC_ONLY",
+  "pack": "content-packs/minnesota-current-r03-stair-guidance-v01.crystalpack",
+  "pack_sha256": "78ccaed227c86c2ab162c97eeb5bf3d793467bb0550588641ed96cf5a0ec81c8",
+  "crossings": [
+    {
+      "contract": "LOWER_BANK_HABITAT",
+      "minimum": 6,
+      "forward": {
+        "status": "MEASURED",
+        "grass_steps": 6,
+        "grass_quadrants_in_contract": 48,
+        "ice_quadrants": 0
+      },
+      "reverse": {
+        "status": "MEASURED",
+        "grass_steps": 6,
+        "grass_quadrants_in_contract": 48,
+        "ice_quadrants": 0
+      }
+    }
+  ],
+  "ordinary_returns": [
+    {
+      "lane": 10,
+      "minimum_ordinary_return_grass": 5
+    },
+    {
+      "lane": 11,
+      "minimum_ordinary_return_grass": 5
+    },
+    {
+      "lane": 12,
+      "minimum_ordinary_return_grass": 6
+    },
+    {
+      "lane": 13,
+      "minimum_ordinary_return_grass": 7
+    },
+    {
+      "lane": 14,
+      "minimum_ordinary_return_grass": 6
+    },
+    {
+      "lane": 15,
+      "minimum_ordinary_return_grass": 5
+    }
+  ],
+  "grass_quadrants": 224,
+  "hop_quadrants": 6,
+  "scope": "Installed collision/within-route connections, actors conservatively clear, no Surf/Cut/interior warps. Native actual movement is separately recorded."
+}

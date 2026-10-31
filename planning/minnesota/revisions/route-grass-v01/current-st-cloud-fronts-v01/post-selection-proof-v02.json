@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "selected_revision": "route_grass_st_cloud_fronts_revision",
+  "pack": "content-packs/minnesota-current-st-cloud-fronts-v02.crystalpack",
+  "sha256": "df5e4c47500d84046f542418a203c8d58b0e119e97bc235083434464c8682ef3",
+  "world_only_own_revision_and_selector_changed": true,
+  "canonical_layout_and_dossier_exact": true,
+  "active_composed_source_equals_native": true,
+  "all_other_complete_maps_exact": 731,
+  "all_original_art_and_audio_exact": true,
+  "bemidji_stairs_duluth_mart_minneapolis_mill_arts_and_cyclists_preserved": true
+}

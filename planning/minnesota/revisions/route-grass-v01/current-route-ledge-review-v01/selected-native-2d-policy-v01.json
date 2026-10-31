@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-international-falls-windbreak-v01.crystalpack",
+  "pack_sha256": "7066f05448101c79b4dc761963b0f39a570bad07c4f80e3e777901ac2e207507",
+  "log": "planning/minnesota/revisions/route-grass-v01/current-route-ledge-review-v01/selected-native-2d-policy-v01.log",
+  "native_cases": 2,
+  "scope": "Regional content detection including retained original maps and actual selected external pack reject voxel support. This binary lacks voxel-view feature, so repeated F3 mutation test is not present and not claimed."
+}

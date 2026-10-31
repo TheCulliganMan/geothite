@@ -275,7 +275,11 @@ fn ancient_swamp_three_real_clues_refusal_flee_reentry_capture_and_continue() {
     reenter(&mut c, &r);
     assert!(visible(&mut c));
     encounter(&mut c, &r);
-    assert!(super::rochester_earned::try_recruit(&mut c, &r));
+    assert!(super::rochester_earned::try_recruit_with_ball(
+        &mut c,
+        &r,
+        "MASTER_BALL"
+    ));
     finish(&mut c);
     assert!(event(&c, CAUGHT) && !visible(&mut c));
     let s = c.snapshot().expect("native capture result");

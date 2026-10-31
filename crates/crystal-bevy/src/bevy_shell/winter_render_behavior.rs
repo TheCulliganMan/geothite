@@ -24,6 +24,8 @@ fn stair_source(tileset: &str) -> &str {
 pub(super) fn animation_source(tileset: &str) -> &str {
     let source = stair_source(tileset);
     match source {
+        "mn_grand_rapids_riverfront" => "johto_modern",
+        "mn_iron_sump_rock" => "cave",
         "mn_winter_north_shore" => "mn_north_shore",
         "mn_winter_outdoor" => "mn_border_pines",
         "mn_winter_gunflint" => "mn_gunflint",

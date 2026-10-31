@@ -1,0 +1,1702 @@
+{
+  "schema_version": 2,
+  "id": "MnBemidji",
+  "tileset": "johto_modern",
+  "compiled_tileset": "mn_bemidji",
+  "dimensions_metatiles": [
+    24,
+    24
+  ],
+  "coordinate_units": "32px metatiles; zero-based explicit hand strokes; events use 16px core",
+  "shore_fitting": "johto_8_neighbors",
+  "source_pixels_modified": false,
+  "reject_cliff_cuts": true,
+  "derived_blocks": [
+    {
+      "id": "80",
+      "source_tileset": "johto",
+      "source_block": "22",
+      "collision_source_tileset": "johto",
+      "collision_source_block": "22"
+    },
+    {
+      "id": "81",
+      "source_tileset": "johto",
+      "source_block": "23",
+      "collision_source_tileset": "johto",
+      "collision_source_block": "23"
+    },
+    {
+      "id": "82",
+      "source_tileset": "johto",
+      "source_block": "28",
+      "collision_source_tileset": "johto",
+      "collision_source_block": "28"
+    },
+    {
+      "id": "83",
+      "source_tileset": "johto",
+      "source_block": "29",
+      "collision_source_tileset": "johto",
+      "collision_source_block": "29"
+    }
+  ],
+  "additional_water_blocks": [
+    "30",
+    "31",
+    "32",
+    "34",
+    "36",
+    "38",
+    "39",
+    "3a"
+  ],
+  "layers": [
+    {
+      "name": "Pine-ringed civic land and narrow shore neck",
+      "kind": "polygon",
+      "points": [
+        [
+          11,
+          1
+        ],
+        [
+          14,
+          1
+        ],
+        [
+          14,
+          2
+        ],
+        [
+          18,
+          2
+        ],
+        [
+          18,
+          6
+        ],
+        [
+          21,
+          6
+        ],
+        [
+          21,
+          10
+        ],
+        [
+          23,
+          10
+        ],
+        [
+          23,
+          13
+        ],
+        [
+          15,
+          13
+        ],
+        [
+          15,
+          22
+        ],
+        [
+          11,
+          22
+        ],
+        [
+          11,
+          20
+        ],
+        [
+          3,
+          20
+        ],
+        [
+          3,
+          16
+        ],
+        [
+          2,
+          16
+        ],
+        [
+          2,
+          11
+        ],
+        [
+          9,
+          11
+        ],
+        [
+          9,
+          9
+        ],
+        [
+          11,
+          9
+        ]
+      ],
+      "material": "lawn"
+    },
+    {
+      "name": "Bemidji lake basin reaching visible rock boundary",
+      "kind": "polygon",
+      "points": [
+        [
+          15,
+          14
+        ],
+        [
+          23,
+          14
+        ],
+        [
+          23,
+          23
+        ],
+        [
+          15,
+          23
+        ]
+      ],
+      "material": "water"
+    },
+    {
+      "name": "Northwest pine gym raised shelf",
+      "kind": "cliff_polygon",
+      "points": [
+        [
+          2,
+          2
+        ],
+        [
+          8,
+          2
+        ],
+        [
+          8,
+          3
+        ],
+        [
+          9,
+          3
+        ],
+        [
+          9,
+          10
+        ],
+        [
+          2,
+          10
+        ]
+      ]
+    },
+    {
+      "name": "Gym upper turf",
+      "kind": "rect",
+      "bounds": [
+        3,
+        3,
+        9,
+        10
+      ],
+      "material": "lawn"
+    },
+    {
+      "name": "West Itasca and east Iron Range connected street",
+      "kind": "path",
+      "points": [
+        [
+          0,
+          12
+        ],
+        [
+          23,
+          12
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "North border-country civic spine",
+      "kind": "path",
+      "points": [
+        [
+          12,
+          0
+        ],
+        [
+          12,
+          12
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "South Leech Lake approach",
+      "kind": "path",
+      "points": [
+        [
+          12,
+          12
+        ],
+        [
+          12,
+          23
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "Clinic porch and upper cross street",
+      "kind": "path",
+      "points": [
+        [
+          12,
+          5
+        ],
+        [
+          17,
+          5
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "North house porch",
+      "kind": "path",
+      "points": [
+        [
+          12,
+          9
+        ],
+        [
+          17,
+          9
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "Mart lane",
+      "kind": "path",
+      "points": [
+        [
+          21,
+          10
+        ],
+        [
+          21,
+          12
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "Only ordinary upper shelf ramp",
+      "kind": "point",
+      "position": [
+        9,
+        8
+      ],
+      "block": "74"
+    },
+    {
+      "name": "Gym porch court",
+      "kind": "path",
+      "points": [
+        [
+          4,
+          5
+        ],
+        [
+          8,
+          5
+        ],
+        [
+          8,
+          8
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "East ramp lower approach",
+      "kind": "path",
+      "points": [
+        [
+          10,
+          8
+        ],
+        [
+          12,
+          8
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "Shelf home porch",
+      "kind": "path",
+      "points": [
+        [
+          3,
+          8
+        ],
+        [
+          8,
+          8
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "Pine gym useful downhill ledge",
+      "kind": "point",
+      "position": [
+        5,
+        10
+      ],
+      "block": "57"
+    },
+    {
+      "name": "Pine gym useful downhill ledge",
+      "kind": "point",
+      "position": [
+        6,
+        10
+      ],
+      "block": "57"
+    },
+    {
+      "name": "Lumber heritage precinct approach",
+      "kind": "path",
+      "points": [
+        [
+          7,
+          12
+        ],
+        [
+          7,
+          15
+        ],
+        [
+          5,
+          15
+        ],
+        [
+          5,
+          19
+        ],
+        [
+          12,
+          19
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "Lakefront overlook from original crossing",
+      "kind": "path",
+      "points": [
+        [
+          12,
+          14
+        ],
+        [
+          14,
+          14
+        ],
+        [
+          14,
+          22
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "Public pier approach",
+      "kind": "path",
+      "points": [
+        [
+          12,
+          17
+        ],
+        [
+          14,
+          17
+        ],
+        [
+          14,
+          18
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "Visitor hall door apron",
+      "kind": "path",
+      "points": [
+        [
+          5,
+          18
+        ],
+        [
+          5,
+          19
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "West heritage glade",
+      "kind": "rect",
+      "bounds": [
+        3,
+        13,
+        10,
+        16
+      ],
+      "material": "lawn"
+    },
+    {
+      "name": "North clinic garden",
+      "kind": "rect",
+      "bounds": [
+        14,
+        2,
+        18,
+        3
+      ],
+      "material": "flowers"
+    },
+    {
+      "name": "Clinic east pine backing",
+      "kind": "rect",
+      "bounds": [
+        18,
+        2,
+        20,
+        6
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Residential garden backing",
+      "kind": "rect",
+      "bounds": [
+        16,
+        6,
+        20,
+        7
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Mart flowers",
+      "kind": "rect",
+      "bounds": [
+        19,
+        10,
+        20,
+        12
+      ],
+      "material": "flowers"
+    },
+    {
+      "name": "Officer shaded civic garden",
+      "kind": "rect",
+      "bounds": [
+        9,
+        8,
+        11,
+        9
+      ],
+      "material": "flowers"
+    },
+    {
+      "name": "North route western pine wall",
+      "kind": "rect",
+      "bounds": [
+        11,
+        1,
+        12,
+        7
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Heritage west pines",
+      "kind": "rect",
+      "bounds": [
+        2,
+        13,
+        3,
+        20
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Visitor hall west pines",
+      "kind": "rect",
+      "bounds": [
+        3,
+        16,
+        4,
+        20
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "South road west pine pinch",
+      "kind": "rect",
+      "bounds": [
+        9,
+        20,
+        11,
+        23
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "South road east pine pinch",
+      "kind": "rect",
+      "bounds": [
+        13,
+        21,
+        14,
+        23
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Heritage southern flower bed",
+      "kind": "rect",
+      "bounds": [
+        4,
+        20,
+        9,
+        21
+      ],
+      "material": "flowers"
+    },
+    {
+      "name": "Gym wall western pine backing",
+      "kind": "rect",
+      "bounds": [
+        3,
+        3,
+        4,
+        5
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Shelf home garden",
+      "kind": "rect",
+      "bounds": [
+        5,
+        7,
+        7,
+        8
+      ],
+      "material": "flowers"
+    },
+    {
+      "name": "Gym west shelf pine pocket",
+      "kind": "rect",
+      "bounds": [
+        3,
+        9,
+        5,
+        10
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Gym east shelf pine pocket",
+      "kind": "rect",
+      "bounds": [
+        7,
+        9,
+        9,
+        10
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Gym eastern planter backing",
+      "kind": "rect",
+      "bounds": [
+        7,
+        3,
+        8,
+        7
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Gym garden below facade",
+      "kind": "rect",
+      "bounds": [
+        5,
+        6,
+        7,
+        7
+      ],
+      "material": "flowers"
+    },
+    {
+      "name": "Gym west shelf flower shoulder",
+      "kind": "rect",
+      "bounds": [
+        3,
+        5,
+        4,
+        6
+      ],
+      "material": "flowers"
+    },
+    {
+      "name": "Clinic return pine elbow",
+      "kind": "rect",
+      "bounds": [
+        13,
+        6,
+        16,
+        9
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "House and mart tree separator",
+      "kind": "rect",
+      "bounds": [
+        18,
+        7,
+        20,
+        10
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "West street north pine shoulder",
+      "kind": "rect",
+      "bounds": [
+        3,
+        11,
+        9,
+        12
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Central spine east woodland neck",
+      "kind": "rect",
+      "bounds": [
+        13,
+        15,
+        14,
+        17
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Southern spine west pine neck",
+      "kind": "rect",
+      "bounds": [
+        10,
+        15,
+        12,
+        18
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "North trail east throat",
+      "kind": "rect",
+      "bounds": [
+        13,
+        1,
+        14,
+        2
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Heritage glade flower north edge",
+      "kind": "rect",
+      "bounds": [
+        3,
+        13,
+        7,
+        14
+      ],
+      "material": "flowers"
+    },
+    {
+      "name": "Heritage glade southern pine shoulder",
+      "kind": "rect",
+      "bounds": [
+        8,
+        15,
+        10,
+        17
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Heritage lawn western flower edge",
+      "kind": "rect",
+      "bounds": [
+        3,
+        14,
+        4,
+        16
+      ],
+      "material": "flowers"
+    },
+    {
+      "name": "Heritage visitor approach screen",
+      "kind": "rect",
+      "bounds": [
+        8,
+        17,
+        10,
+        19
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Shore road central planted island",
+      "kind": "rect",
+      "bounds": [
+        15,
+        10,
+        17,
+        11
+      ],
+      "material": "flowers"
+    },
+    {
+      "name": "House lower street pine divider",
+      "kind": "rect",
+      "bounds": [
+        13,
+        10,
+        15,
+        12
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Lake crossroads pine shoulder",
+      "kind": "rect",
+      "bounds": [
+        17,
+        10,
+        20,
+        12
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Heritage guided exhibit apron",
+      "kind": "rect",
+      "bounds": [
+        5,
+        14,
+        8,
+        15
+      ],
+      "material": "floor"
+    },
+    {
+      "name": "Gym native complete facade",
+      "kind": "point",
+      "position": [
+        4,
+        3
+      ],
+      "block": "18"
+    },
+    {
+      "name": "Gym native complete facade",
+      "kind": "point",
+      "position": [
+        5,
+        3
+      ],
+      "block": "1f"
+    },
+    {
+      "name": "Gym native complete facade",
+      "kind": "point",
+      "position": [
+        6,
+        3
+      ],
+      "block": "19"
+    },
+    {
+      "name": "Gym native complete facade",
+      "kind": "point",
+      "position": [
+        4,
+        4
+      ],
+      "block": "1c"
+    },
+    {
+      "name": "Gym native complete facade",
+      "kind": "point",
+      "position": [
+        5,
+        4
+      ],
+      "block": "1d"
+    },
+    {
+      "name": "Gym native complete facade",
+      "kind": "point",
+      "position": [
+        6,
+        4
+      ],
+      "block": "1e"
+    },
+    {
+      "name": "Shelf residence complete facade",
+      "kind": "point",
+      "position": [
+        3,
+        6
+      ],
+      "block": "18"
+    },
+    {
+      "name": "Shelf residence complete facade",
+      "kind": "point",
+      "position": [
+        4,
+        6
+      ],
+      "block": "19"
+    },
+    {
+      "name": "Shelf residence complete facade",
+      "kind": "point",
+      "position": [
+        3,
+        7
+      ],
+      "block": "1a"
+    },
+    {
+      "name": "Shelf residence complete facade",
+      "kind": "point",
+      "position": [
+        4,
+        7
+      ],
+      "block": "11"
+    },
+    {
+      "name": "Clinic complete native POKE facade",
+      "kind": "point",
+      "position": [
+        15,
+        3
+      ],
+      "block": "18"
+    },
+    {
+      "name": "Clinic complete native POKE facade",
+      "kind": "point",
+      "position": [
+        16,
+        3
+      ],
+      "block": "19"
+    },
+    {
+      "name": "Clinic complete native POKE facade",
+      "kind": "point",
+      "position": [
+        15,
+        4
+      ],
+      "block": "1a"
+    },
+    {
+      "name": "Clinic complete native POKE facade",
+      "kind": "point",
+      "position": [
+        16,
+        4
+      ],
+      "block": "1b"
+    },
+    {
+      "name": "North residence complete facade",
+      "kind": "point",
+      "position": [
+        16,
+        7
+      ],
+      "block": "18"
+    },
+    {
+      "name": "North residence complete facade",
+      "kind": "point",
+      "position": [
+        17,
+        7
+      ],
+      "block": "19"
+    },
+    {
+      "name": "North residence complete facade",
+      "kind": "point",
+      "position": [
+        16,
+        8
+      ],
+      "block": "1a"
+    },
+    {
+      "name": "North residence complete facade",
+      "kind": "point",
+      "position": [
+        17,
+        8
+      ],
+      "block": "11"
+    },
+    {
+      "name": "Mart complete native facade",
+      "kind": "point",
+      "position": [
+        20,
+        8
+      ],
+      "block": "18"
+    },
+    {
+      "name": "Mart complete native facade",
+      "kind": "point",
+      "position": [
+        21,
+        8
+      ],
+      "block": "19"
+    },
+    {
+      "name": "Mart complete native facade",
+      "kind": "point",
+      "position": [
+        20,
+        9
+      ],
+      "block": "10"
+    },
+    {
+      "name": "Mart complete native facade",
+      "kind": "point",
+      "position": [
+        21,
+        9
+      ],
+      "block": "17"
+    },
+    {
+      "name": "Lumber heritage hall exact native timber facade",
+      "kind": "point",
+      "position": [
+        4,
+        17
+      ],
+      "block": "80"
+    },
+    {
+      "name": "Lumber heritage hall exact native timber facade",
+      "kind": "point",
+      "position": [
+        5,
+        17
+      ],
+      "block": "81"
+    },
+    {
+      "name": "Lumber heritage hall exact native timber facade",
+      "kind": "point",
+      "position": [
+        4,
+        18
+      ],
+      "block": "82"
+    },
+    {
+      "name": "Lumber heritage hall exact native timber facade",
+      "kind": "point",
+      "position": [
+        5,
+        18
+      ],
+      "block": "83"
+    },
+    {
+      "name": "Lake north pedestrian rail",
+      "kind": "point",
+      "position": [
+        15,
+        13
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Lake north pedestrian rail",
+      "kind": "point",
+      "position": [
+        16,
+        13
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Lake north pedestrian rail",
+      "kind": "point",
+      "position": [
+        17,
+        13
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Lake north pedestrian rail",
+      "kind": "point",
+      "position": [
+        18,
+        13
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Lake north pedestrian rail",
+      "kind": "point",
+      "position": [
+        19,
+        13
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Lake north pedestrian rail",
+      "kind": "point",
+      "position": [
+        20,
+        13
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Lake north pedestrian rail",
+      "kind": "point",
+      "position": [
+        21,
+        13
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Lake north pedestrian rail",
+      "kind": "point",
+      "position": [
+        22,
+        13
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Lake west pedestrian rail",
+      "kind": "point",
+      "position": [
+        14,
+        14
+      ],
+      "block": "46"
+    },
+    {
+      "name": "Lake west pedestrian rail",
+      "kind": "point",
+      "position": [
+        14,
+        15
+      ],
+      "block": "46"
+    },
+    {
+      "name": "Lake west pedestrian rail",
+      "kind": "point",
+      "position": [
+        14,
+        16
+      ],
+      "block": "46"
+    },
+    {
+      "name": "Lake west pedestrian rail",
+      "kind": "point",
+      "position": [
+        14,
+        17
+      ],
+      "block": "46"
+    },
+    {
+      "name": "Lake west pedestrian rail",
+      "kind": "point",
+      "position": [
+        14,
+        18
+      ],
+      "block": "46"
+    },
+    {
+      "name": "Lake west pedestrian rail",
+      "kind": "point",
+      "position": [
+        14,
+        19
+      ],
+      "block": "46"
+    },
+    {
+      "name": "Lake west pedestrian rail",
+      "kind": "point",
+      "position": [
+        14,
+        20
+      ],
+      "block": "46"
+    },
+    {
+      "name": "Lake west pedestrian rail",
+      "kind": "point",
+      "position": [
+        14,
+        21
+      ],
+      "block": "46"
+    },
+    {
+      "name": "Lake west pedestrian rail",
+      "kind": "point",
+      "position": [
+        14,
+        22
+      ],
+      "block": "46"
+    },
+    {
+      "name": "Public pier north solid rail",
+      "kind": "point",
+      "position": [
+        14,
+        17
+      ],
+      "block": "41"
+    },
+    {
+      "name": "Public pier south solid rail",
+      "kind": "point",
+      "position": [
+        14,
+        18
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Public pier north solid rail",
+      "kind": "point",
+      "position": [
+        15,
+        17
+      ],
+      "block": "41"
+    },
+    {
+      "name": "Public pier south solid rail",
+      "kind": "point",
+      "position": [
+        15,
+        18
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Public pier north solid rail",
+      "kind": "point",
+      "position": [
+        16,
+        17
+      ],
+      "block": "41"
+    },
+    {
+      "name": "Public pier south solid rail",
+      "kind": "point",
+      "position": [
+        16,
+        18
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Public pier north solid rail",
+      "kind": "point",
+      "position": [
+        17,
+        17
+      ],
+      "block": "41"
+    },
+    {
+      "name": "Public pier south solid rail",
+      "kind": "point",
+      "position": [
+        17,
+        18
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Public pier north solid rail",
+      "kind": "point",
+      "position": [
+        18,
+        17
+      ],
+      "block": "41"
+    },
+    {
+      "name": "Public pier south solid rail",
+      "kind": "point",
+      "position": [
+        18,
+        18
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Public pier closed rocky nose",
+      "kind": "point",
+      "position": [
+        19,
+        17
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Public pier closed rocky nose",
+      "kind": "point",
+      "position": [
+        19,
+        18
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Marked low lake launch",
+      "kind": "point",
+      "position": [
+        14,
+        20
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Lake northeast rock corner",
+      "kind": "point",
+      "position": [
+        23,
+        14
+      ],
+      "block": "32"
+    },
+    {
+      "name": "Lake east boundary rocks",
+      "kind": "point",
+      "position": [
+        23,
+        15
+      ],
+      "block": "36"
+    },
+    {
+      "name": "Lake east boundary rocks",
+      "kind": "point",
+      "position": [
+        23,
+        16
+      ],
+      "block": "36"
+    },
+    {
+      "name": "Lake east boundary rocks",
+      "kind": "point",
+      "position": [
+        23,
+        17
+      ],
+      "block": "36"
+    },
+    {
+      "name": "Lake east boundary rocks",
+      "kind": "point",
+      "position": [
+        23,
+        18
+      ],
+      "block": "36"
+    },
+    {
+      "name": "Lake east boundary rocks",
+      "kind": "point",
+      "position": [
+        23,
+        19
+      ],
+      "block": "36"
+    },
+    {
+      "name": "Lake east boundary rocks",
+      "kind": "point",
+      "position": [
+        23,
+        20
+      ],
+      "block": "36"
+    },
+    {
+      "name": "Lake east boundary rocks",
+      "kind": "point",
+      "position": [
+        23,
+        21
+      ],
+      "block": "36"
+    },
+    {
+      "name": "Lake east boundary rocks",
+      "kind": "point",
+      "position": [
+        23,
+        22
+      ],
+      "block": "36"
+    },
+    {
+      "name": "Lake southeast rock corner",
+      "kind": "point",
+      "position": [
+        23,
+        23
+      ],
+      "block": "3a"
+    },
+    {
+      "name": "Lake south boundary rocks",
+      "kind": "point",
+      "position": [
+        16,
+        23
+      ],
+      "block": "39"
+    },
+    {
+      "name": "Lake south boundary rocks",
+      "kind": "point",
+      "position": [
+        17,
+        23
+      ],
+      "block": "39"
+    },
+    {
+      "name": "Lake south boundary rocks",
+      "kind": "point",
+      "position": [
+        18,
+        23
+      ],
+      "block": "39"
+    },
+    {
+      "name": "Lake south boundary rocks",
+      "kind": "point",
+      "position": [
+        19,
+        23
+      ],
+      "block": "39"
+    },
+    {
+      "name": "Lake south boundary rocks",
+      "kind": "point",
+      "position": [
+        20,
+        23
+      ],
+      "block": "39"
+    },
+    {
+      "name": "Lake south boundary rocks",
+      "kind": "point",
+      "position": [
+        21,
+        23
+      ],
+      "block": "39"
+    },
+    {
+      "name": "Lake south boundary rocks",
+      "kind": "point",
+      "position": [
+        22,
+        23
+      ],
+      "block": "39"
+    },
+    {
+      "name": "Lake southwest rock corner",
+      "kind": "point",
+      "position": [
+        15,
+        23
+      ],
+      "block": "38"
+    },
+    {
+      "name": "Port pine throat",
+      "kind": "point",
+      "position": [
+        1,
+        11
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Port pine throat",
+      "kind": "point",
+      "position": [
+        1,
+        13
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Port pine throat",
+      "kind": "point",
+      "position": [
+        22,
+        11
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Port pine throat",
+      "kind": "point",
+      "position": [
+        22,
+        13
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Port pine throat",
+      "kind": "point",
+      "position": [
+        11,
+        22
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Port pine throat",
+      "kind": "point",
+      "position": [
+        13,
+        22
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Survey officer short civic approach",
+      "kind": "path",
+      "points": [
+        [
+          10,
+          9
+        ],
+        [
+          12,
+          9
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "TOWN native sign",
+      "kind": "point",
+      "position": [
+        11,
+        11
+      ],
+      "block": "45"
+    },
+    {
+      "name": "GYM native sign",
+      "kind": "point",
+      "position": [
+        7,
+        5
+      ],
+      "block": "45"
+    },
+    {
+      "name": "LAKE native sign",
+      "kind": "point",
+      "position": [
+        13,
+        15
+      ],
+      "block": "45"
+    },
+    {
+      "name": "HERITAGE native sign",
+      "kind": "point",
+      "position": [
+        8,
+        14
+      ],
+      "block": "45"
+    },
+    {
+      "name": "NORTH native sign",
+      "kind": "point",
+      "position": [
+        13,
+        2
+      ],
+      "block": "45"
+    },
+    {
+      "name": "DOCK native sign",
+      "kind": "point",
+      "position": [
+        13,
+        20
+      ],
+      "block": "45"
+    },
+    {
+      "name": "Northeast unused lawn closed into pine canopy",
+      "kind": "rect",
+      "bounds": [
+        20,
+        6,
+        22,
+        8
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "East town boundary pines close surplus street apron",
+      "kind": "point",
+      "position": [
+        23,
+        10
+      ],
+      "block": "05"
+    },
+    {
+      "name": "East town boundary pines close surplus street apron",
+      "kind": "point",
+      "position": [
+        23,
+        11
+      ],
+      "block": "05"
+    },
+    {
+      "name": "East town boundary pines close surplus street apron",
+      "kind": "point",
+      "position": [
+        23,
+        13
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Actual clear gym ledge landing to west street",
+      "kind": "point",
+      "position": [
+        5,
+        11
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Actual clear gym ledge landing to west street",
+      "kind": "point",
+      "position": [
+        6,
+        11
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Complete native Azalea mart front, retaining original doorway",
+      "kind": "point",
+      "position": [
+        20,
+        9
+      ],
+      "block": "1a"
+    },
+    {
+      "name": "Preserve already published native composition",
+      "kind": "point",
+      "position": [
+        5,
+        10
+      ],
+      "block": "72"
+    },
+    {
+      "name": "Preserve already published native composition",
+      "kind": "point",
+      "position": [
+        6,
+        10
+      ],
+      "block": "72"
+    }
+  ]
+}

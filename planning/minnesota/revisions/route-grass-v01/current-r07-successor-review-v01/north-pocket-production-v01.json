@@ -1,0 +1,123 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-r07-north-pocket-grass-v01.crystalpack",
+  "pack_sha256": "c753bb07a5db598d7ee50c638767e2b81bd4366d3e37a8f85229fb1960a57f9b",
+  "calls": 334,
+  "wild": [
+    {
+      "phase": "grass-and-save",
+      "map": "MnR07C00R00",
+      "position": {
+        "x": 21,
+        "y": 7
+      }
+    },
+    {
+      "phase": "continue-and-repeat",
+      "map": "MnR07C00R00",
+      "position": {
+        "x": 21,
+        "y": 6
+      }
+    },
+    {
+      "phase": "continue-and-repeat",
+      "map": "MnR07C00R00",
+      "position": {
+        "x": 25,
+        "y": 12
+      }
+    }
+  ],
+  "phases": [
+    {
+      "phase": "grass-and-save",
+      "initial": {
+        "badges": 4,
+        "dialogue": false,
+        "facing": "down",
+        "frame": 0,
+        "map": "MnR07C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 0
+        },
+        "position": {
+          "x": 21,
+          "y": 4
+        }
+      },
+      "final": {
+        "badges": 4,
+        "dialogue": false,
+        "facing": "down",
+        "frame": 44,
+        "map": "MnR07C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 1
+        },
+        "position": {
+          "x": 25,
+          "y": 12
+        }
+      },
+      "output_save": ".local/route-grass-review/r07-north-pocket-grass-and-save-v04-output.crystalsave",
+      "source_unchanged": true,
+      "stderr_bytes": 0
+    },
+    {
+      "phase": "continue-and-repeat",
+      "initial": {
+        "badges": 4,
+        "dialogue": false,
+        "facing": "down",
+        "frame": 44,
+        "map": "MnR07C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 1
+        },
+        "position": {
+          "x": 25,
+          "y": 12
+        }
+      },
+      "final": {
+        "badges": 4,
+        "dialogue": false,
+        "facing": "down",
+        "frame": 91,
+        "map": "MnR07C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 2
+        },
+        "position": {
+          "x": 25,
+          "y": 13
+        }
+      },
+      "output_save": ".local/route-grass-review/r07-north-pocket-continue-and-repeat-v04-output.crystalsave",
+      "source_unchanged": true,
+      "stderr_bytes": 0
+    }
+  ],
+  "scope": "Actual reached upper-route resident checkpoint; native walking both ways through new grass, wild RUN, Save/Continue and menus. Explicit initial partner, badge and position QA fixture is not earned regional progress."
+}

@@ -1,0 +1,195 @@
+{
+  "pack": "content-packs/minnesota-current-mankato-native-exterior-v03.crystalpack",
+  "pack_sha256": "4f22dd532f5dc1ca28f63383bb9a66030d4f93ced96ed4daa265b3f36680e02f",
+  "map": "MnWinona",
+  "source_dossier": "planning/minnesota/towns/MnWinona.json",
+  "start": [
+    17,
+    8
+  ],
+  "badge_count": 0,
+  "event_flags": [
+    "EVENT_MN_STARTER_RECEIVED"
+  ],
+  "arrival_discovery_flags": [
+    "ENGINE_FLYPOINT_MN_WINONA"
+  ],
+  "counts": {
+    "roads": 2,
+    "gates": 2,
+    "ledges": 0,
+    "doors": 5,
+    "fences": 0,
+    "residents": 2,
+    "signs": 4
+  },
+  "roads": [
+    {
+      "inside": [
+        4,
+        18
+      ],
+      "out": "left",
+      "neighbor": "MnR01C00R00",
+      "there": [
+        63,
+        24
+      ]
+    },
+    {
+      "inside": [
+        4,
+        19
+      ],
+      "out": "left",
+      "neighbor": "MnR01C00R00",
+      "there": [
+        63,
+        25
+      ]
+    }
+  ],
+  "gates": [
+    {
+      "inside": [
+        4,
+        18
+      ],
+      "out": "left",
+      "neighbor": "MnR01C00R00",
+      "there": [
+        63,
+        24
+      ],
+      "script_root": "MnWTrailCheck",
+      "required_flags": [
+        "EVENT_MN_STARTER_RECEIVED"
+      ]
+    },
+    {
+      "inside": [
+        4,
+        19
+      ],
+      "out": "left",
+      "neighbor": "MnR01C00R00",
+      "there": [
+        63,
+        25
+      ],
+      "script_root": "MnWTrailCheck",
+      "required_flags": [
+        "EVENT_MN_STARTER_RECEIVED"
+      ]
+    }
+  ],
+  "ledges": [],
+  "doors": [
+    {
+      "outside": [
+        7,
+        8
+      ],
+      "room": "MnWinonaHome1F",
+      "arrival": [
+        7,
+        6
+      ],
+      "carpets": [
+        [
+          6,
+          7
+        ],
+        [
+          7,
+          7
+        ]
+      ]
+    },
+    {
+      "outside": [
+        17,
+        8
+      ],
+      "room": "MnWinonaPokecenter1F",
+      "arrival": [
+        4,
+        6
+      ],
+      "carpets": [
+        [
+          3,
+          7
+        ],
+        [
+          4,
+          7
+        ]
+      ]
+    },
+    {
+      "outside": [
+        7,
+        24
+      ],
+      "room": "MnWinonaMart",
+      "arrival": [
+        6,
+        5
+      ],
+      "carpets": [
+        [
+          6,
+          7
+        ],
+        [
+          7,
+          7
+        ]
+      ]
+    },
+    {
+      "outside": [
+        18,
+        20
+      ],
+      "room": "MnWinonaFieldStation",
+      "arrival": [
+        4,
+        10
+      ],
+      "carpets": [
+        [
+          4,
+          11
+        ],
+        [
+          5,
+          11
+        ]
+      ]
+    },
+    {
+      "outside": [
+        19,
+        14
+      ],
+      "room": "MnWinonaStation",
+      "arrival": [
+        11,
+        15
+      ],
+      "carpets": [
+        [
+          10,
+          17
+        ],
+        [
+          11,
+          17
+        ]
+      ]
+    }
+  ],
+  "fences": []
+}

@@ -1,0 +1,101 @@
+{
+  "interior": "MnIronPumpGallery",
+  "parent": "MnIronSump",
+  "source_file": "caves/iron-pump-gallery-v01/current.json",
+  "source_room_id": "MnIronPumpGallery",
+  "source_kind": "authored_story_floor",
+  "purpose": "Winding rock maintenance gallery with two guard approaches, native climbs, feed-operated core shaft and a shorter service return.",
+  "dimensions_metatiles": [
+    16,
+    12
+  ],
+  "arrival_core": [
+    4,
+    19
+  ],
+  "arrival_warp_index": 2,
+  "return_trigger_core": [
+    5,
+    18
+  ],
+  "return_triggers_core": [
+    [
+      5,
+      18
+    ]
+  ],
+  "paired_bindings": [
+    {
+      "parent": "MnIronSump",
+      "parent_entry_core": [
+        35,
+        4
+      ],
+      "parent_entry_warp_index": 7,
+      "arrival_core": [
+        4,
+        19
+      ],
+      "arrival_warp_index": 2,
+      "arrival_collision": "FLOOR",
+      "return_trigger_indices": [
+        1
+      ],
+      "return_triggers_core": [
+        [
+          5,
+          18
+        ]
+      ],
+      "parent_safe_returns_core": [
+        [
+          34,
+          5
+        ]
+      ],
+      "pair_kind": "native_story_stairs"
+    },
+    {
+      "parent": "MnIronDrillCore",
+      "parent_entry_core": [
+        5,
+        14
+      ],
+      "parent_entry_warp_index": 1,
+      "arrival_core": [
+        24,
+        5
+      ],
+      "arrival_warp_index": 4,
+      "arrival_collision": "FLOOR",
+      "return_trigger_indices": [
+        3
+      ],
+      "return_triggers_core": [
+        [
+          25,
+          4
+        ]
+      ],
+      "parent_safe_returns_core": [
+        [
+          4,
+          15
+        ]
+      ],
+      "pair_kind": "native_story_stairs"
+    }
+  ],
+  "resident_scripts": [
+    "MN_LODE_ARC_PUMP",
+    "MN_LODE_ARC_INTAKE"
+  ],
+  "requires_real_collision_check": true,
+  "native_binding_scope": "Current 732-map compact/R15 parent; exact original IDs, four warp records and two reciprocal shaft pairs.",
+  "exterior_door_status": "Verified qualified native controller and 846-call stdio course: real pressure controls and guard wins, feed refusal/retry, physical openings, both climbs and shaft pairs, actual core-return guard, Continue and mine-mouth return. Regional arrival and deeper drilling story remain separate.",
+  "native_palette_group": "nite",
+  "source_sha256": "15ff8f77892240f2b1dce4abd02539a2b20f6f7aab96ed7f89353872410b54bc",
+  "review_pack": "content-packs/minnesota-iron-pump-gallery-v02.crystalpack",
+  "review_pack_sha256": "1cbb0d2ce18333433278b9d39134be85e36c93ec8d91b566f1cb3029ff4af455",
+  "verification": "planning/minnesota/renders/iron-pump-gallery-v561/acceptance-v597.json"
+}

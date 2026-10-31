@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "id": "MN_R09",
+  "source_kind": "scoped_route_grass_review_contract",
+  "native_binding": {
+    "pack": "content-packs/minnesota-current-r09-southwest-grass-v01.crystalpack",
+    "pack_sha256": "0d04630cac6239d4e4f544d73fc3c32af0d33c5c680605c32f41c36cc9f30880",
+    "content_identity": "d704495840eb078d9c42f6a9be04a07a8e13016ce0c5ed232d2487e9d6a7312a"
+  },
+  "new_grass_quadrants": 12,
+  "route_grass_quadrants": 240,
+  "approach_core": [
+    [
+      12,
+      52
+    ],
+    [
+      12,
+      56
+    ]
+  ],
+  "minimum_approach_grass_steps": 2,
+  "existing_cut_gate_core": [
+    12,
+    57
+  ],
+  "pickup_core": [
+    11,
+    63
+  ],
+  "pickup_item": "REVIVE",
+  "minimum_inside_pickup_grass_steps": 2,
+  "existing_cliffs_stairs_actors_and_signs_preserved": true,
+  "scope": "Whole route rendered; scoped southwest grass/Cut/pickup runtime acceptance. Full current route and original main-crossing integration remain separate requirements."
+}

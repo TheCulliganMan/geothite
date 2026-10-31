@@ -1,0 +1,49 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-mankato-mart-v03.crystalpack",
+  "sha256": "fa75cf2b83da156751debe1a52f7a24c42d277b845554870f1f9eb79711d9f7d",
+  "fresh_native_cases": 6,
+  "native_receipt": "harbor-native-six-cases-v04.json",
+  "production_client": {
+    "step": "production-client",
+    "exit_code": 0,
+    "log": ".local/route-grass-review/portable-map-tools-production-client-build-v03.log",
+    "command": [
+      "cargo",
+      "build",
+      "--profile",
+      "wasm-dev",
+      "--locked",
+      "--config",
+      "profile.wasm-dev.package.crystal-assets.opt-level=0",
+      "-p",
+      "geothite",
+      "--bin",
+      "geothite"
+    ],
+    "outputs": [
+      {
+        "path": "/Users/ryanculligan/GitHub/geothite/.local/route-grass-review/portable-tools-v01/geothite",
+        "sha256": "1eff8c6580430d231a4d5b03ae962b29ffc00d52ab16957473e092057a04cfff"
+      }
+    ]
+  },
+  "production_calls_passed": 58,
+  "town_receipt": ".local/route-grass-review/mankato-town-stdio-v04.receipt.json",
+  "notebook_input_receipt": "planning/minnesota/revisions/route-grass-v01/current-mankato-town-v01/notebook-production-input-receipt-v04.json",
+  "save_validation_log": ".local/route-grass-review/mankato-notebook-saved-progress-v04.log",
+  "saved_progress_check": {
+    "complete_repeat_continue_flag_persist": true,
+    "native_saves_verified": 6,
+    "only_notebook_event_added": true,
+    "party_bag_money_badges_preserved": true,
+    "status": "PASS",
+    "supplied_precompletion_saves_unread": true
+  },
+  "live_flag_timing_proof": "mankato-selected-notebook-native-v04.log",
+  "legacy_source_prose_mismatch_still_open": "legacy-prose-control-v04.json",
+  "fresh_reached_save_gpu_facades_reviewed": 3,
+  "facade_visual_receipt": "harbor-facade-native-visual-receipt-v01.json",
+  "standard_nine_daytime_images_pending": true,
+  "canonical_layout_and_selector_unchanged": true
+}

@@ -240,6 +240,7 @@ fn assemble_catalog(root: &Path, intro: Value, validate: bool) -> Result<Runtime
         "required splash bounce audio is missing"
     );
     let title = RuntimeTitleScreen {
+        static_title_image: None,
         title_music: Some("MUSIC_TITLE".into()),
         program,
     };

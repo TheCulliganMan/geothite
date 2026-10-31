@@ -1,5 +1,9 @@
 # Kindlit research partner
 
+The [early research successor](early-research.md) replaces this historical
+Champion gate with free access to both unchosen starters after the first parcel
+delivery. The implementation and evidence below describe the earlier stage.
+
 The Winona field-station aide offers a level-5 KINDLIT after the regional
 Champion victory. The existing research dialogue and rewards run first.
 This closes the Fire starter family's choice lock for players who chose

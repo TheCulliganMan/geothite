@@ -6257,15 +6257,15 @@
     {
       "id": "MART",
       "tile": [
-        80,
+        79,
         39
       ],
       "return_tile": [
-        80,
+        79,
         40
       ],
       "arrival_tile": [
-        80,
+        79,
         40
       ],
       "target": "MnDuluthMart",
@@ -7456,7 +7456,7 @@
     }
   ],
   "north_checkpoint_contract": {
-    "status": "Original checkpoint programs already installed; expansion relocates four officers/eight indexed coordinate records without changing tests or relative movements.",
+    "status": "Original checkpoint programs preserved over all four lanes; two original officers remain.",
     "requires": [
       "ALL_EIGHT_NATIVE_ENGINE_BADGES",
       "EVENT_MN_LIGHTHOUSE_SIGNAL"
@@ -7470,6 +7470,14 @@
       [
         65,
         3
+      ],
+      [
+        66,
+        3
+      ],
+      [
+        67,
+        3
       ]
     ],
     "inbound_trigger_core": [
@@ -7479,6 +7487,14 @@
       ],
       [
         65,
+        1
+      ],
+      [
+        66,
+        1
+      ],
+      [
+        67,
         1
       ]
     ],
@@ -7499,6 +7515,14 @@
       ],
       [
         65,
+        4
+      ],
+      [
+        66,
+        4
+      ],
+      [
+        67,
         4
       ]
     ],
@@ -9205,5 +9229,24 @@
     "native_status": "Root published historical tightv02,623maps; this finalv05 source update is not yet published or controller-accepted."
   },
   "expansion_contract_file": "towns/MnDuluth.recomposition.contract.json",
-  "native_status": "Cliff-stair v03 is selected on the State Fair building parent. Eleven stairs in both directions and Continue, all 38 doors and both returns, ten native ledge lanes with reverse denial and walking returns, production stdio and exact native2D pass. Both affected-crate all-target Clippy checks pass; the workspace formatter has existing unrelated differences. Local fixtures do not establish an earned campaign."
+  "native_status": "Cliff-stair v03 is selected on the State Fair building parent. Eleven stairs in both directions and Continue, all 38 doors and both returns, ten native ledge lanes with reverse denial and walking returns, production stdio and exact native2D pass. Both affected-crate all-target Clippy checks pass; the workspace formatter has existing unrelated differences. Local fixtures do not establish an earned campaign.",
+  "native_passing_width": {
+    "revision": "north_shore_passing_width_revision",
+    "native_binding": {
+      "pack": "content-packs/minnesota-north-shore-passing-width-fauna-v02.crystalpack",
+      "pack_sha256": "e951fddafee3a0c09a2356d4dd683890ac498e23daeb266d08c5f12d79ec1167",
+      "content_identity": "544539b3c51802c03cc284ae7ec3d683ea251596af80c71ef6f886ef4888aa16"
+    },
+    "current_terrain": "planning/minnesota/revisions/north-shore-passing-width-v01/MnDuluth.rows.json",
+    "source_kind": "installed_native_row_layout",
+    "plan": "planning/minnesota/revisions/north-shore-passing-width-v01/plan.json",
+    "gate_coordinates": "planning/minnesota/revisions/north-shore-passing-width-v01/gate-coordinates.json",
+    "preserved_story_source": "planning/minnesota/revisions/route-grass-v01/current-duluth-mart-v01/dossier.after.json",
+    "requires": [
+      "ALL_EIGHT_NATIVE_ENGINE_BADGES",
+      "EVENT_MN_LIGHTHOUSE_SIGNAL"
+    ],
+    "scope": "Four-tile coastal town mouth; original town identity, activities, actors, doors and programs preserved.",
+    "verification": "planning/minnesota/renders/north-shore-width-fauna-v1029/acceptance-v1035.json"
+  }
 }

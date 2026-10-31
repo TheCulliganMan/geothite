@@ -1,0 +1,11 @@
+{
+  "revision": "route_grass_st_cloud_fronts_revision",
+  "pack": "content-packs/minnesota-current-st-cloud-fronts-v02.crystalpack",
+  "sha256": "df5e4c47500d84046f542418a203c8d58b0e119e97bc235083434464c8682ef3",
+  "source_index": "planning/minnesota/revisions/route-grass-v01/current-st-cloud-fronts-v01/sources-v02.json",
+  "source_index_sha256": "146eed5183b00a37bbd1ab67a7f1e42c3cf9df53e1029bcf183f68a8902982a9",
+  "dossier": {
+    "path": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R10.dossier.json",
+    "sha256": "f9c9f0ac98b24d3bd639e32d2df230b990dbc0906413acb45720c73509a5812d"
+  }
+}

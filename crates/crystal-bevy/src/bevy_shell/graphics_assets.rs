@@ -1533,8 +1533,14 @@ fn format_oak_intro_dialog_overlay(runtime_shell: &BevyRuntimeShell) -> String {
     };
     let mut lines = vec![
         match oak_intro.mode {
-            VisibleOakIntroMode::Intro => "OAK INTRO".to_string(),
-            VisibleOakIntroMode::Final => "OAK FINALE".to_string(),
+            VisibleOakIntroMode::Intro => format!(
+                "{} INTRO",
+                visible_intro_professor_name(runtime_shell.runtime.title_presentation_program())
+            ),
+            VisibleOakIntroMode::Final => format!(
+                "{} FINALE",
+                visible_intro_professor_name(runtime_shell.runtime.title_presentation_program())
+            ),
         },
         format!(
             "SPRITE: {}",

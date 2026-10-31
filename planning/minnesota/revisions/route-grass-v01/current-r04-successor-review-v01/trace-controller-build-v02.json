@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "build_log": ".local/route-grass-review/r04-trace-controller-build-v02.jsonl",
+  "binary": ".local/route-grass-review/r04-trace-controller-v02",
+  "binary_sha256": "be3232fb671cfbfea7f206e518085ab92aa033288228a57304f8dc79aebfbd2b",
+  "source_sha256": {
+    "crates/crystal-bevy/src/bevy_shell/tests/twin_cities_journey.rs": "ec62d2ae7e49417295b0b8b0890bd8895c7bbb1edb3e820006cabc5b50dc6365",
+    "crates/crystal-bevy/src/bevy_shell/tests/authored_route_fixture.rs": "f999e2bd0bb740312175bad35a2861a3bf938536e18f154083c928d6128d65bd"
+  },
+  "receipt_recovery": "Compilation and copy succeeded; original wrapper failed only while writing receipt to an erroneously version-replaced directory. Corrected wrapper path; no rebuild or test retagging."
+}

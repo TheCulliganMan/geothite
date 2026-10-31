@@ -163,6 +163,19 @@ fn ice_headquarters_cross_floor_card_eight_pads_six_doors_optional_rooms_and_res
 }
 
 #[test]
+#[ignore = "requires revised external pack; declared prior-cargo party fixture, followed by actual headquarters battles and release"]
+fn overhaul_tess_leaves_after_actual_rescue_and_stays_gone_after_continue() {
+    let (_, runtime) = load();
+    let tess = runtime.data().maps["MnIceTransfer"]
+        .objects
+        .iter()
+        .find(|actor| actor.script == "MN_ICE_HQ_TESS")
+        .expect("existing captive");
+    assert_eq!(tess.event_flag, RESCUED);
+    headquarters_course(None);
+}
+
+#[test]
 #[ignore = "requires regional headquarters; intended-level full headquarters course"]
 fn ice_headquarters_intended_level_three_starters_complete_the_gauntlet() {
     for starter in ["SLIPPERINA", "RIMEPELT", "PORTABEAU"] {
@@ -241,7 +254,54 @@ fn headquarters_course(starter: Option<&str>) {
     c.set_runtime_journal_enabled(false);
     mark_runtime_snapshot_dirty(&mut c.shell);
     c.wait_frames(64).expect("settled fixture");
-    let _ = play_chapter(c, &root, &r, starter.is_some(), starter.is_some());
+    let mut c = play_chapter(c, &root, &r, starter.is_some(), starter.is_some());
+    if r.data().maps["MnIceTransfer"]
+        .objects
+        .iter()
+        .any(|actor| actor.script == "MN_ICE_HQ_TESS" && actor.event_flag == RESCUED)
+    {
+        if starter.is_some() {
+            // The optional Tess return can meet another guard. Recover at the
+            // actual city clinic after the enforcer before entering again.
+            let (outside, inside) = ports::city_port(&r, "MnMinneapolisDispatchOffice");
+            walk(&mut c, &r, (10, 14));
+            travel(&mut c, GameButton::Down, "MnMinneapolis", outside);
+            super::minnesota_gyms::northstar_campaign_ice::care(&mut c, &r);
+            super::authored_route_fixture::indoor_walk(&mut c, &r, outside);
+            travel(
+                &mut c,
+                GameButton::Up,
+                "MnMinneapolisDispatchOffice",
+                inside,
+            );
+            c = save(&mut c, &root, &r, "hq-return-care-complete");
+        }
+        let n = source();
+        walk(&mut c, &r, (5, 3));
+        travel(&mut c, GameButton::Up, "MnIceCargoBasement", (4, 19));
+        cross(&mut c, &r, &n, "cargo_stair", false);
+        cross(&mut c, &r, &n, "G", false);
+        walk(&mut c, &r, (24, 5));
+        assert!(event(&c, RESCUED) && event(&c, "EVENT_MN_ICE_HQ_TESS_HELPED"));
+        assert!(
+            !c.snapshot()
+                .expect("safe transfer room")
+                .visible_objects
+                .iter()
+                .any(|actor| actor.object_identifier.as_deref() == Some("MN_ICE_HQ_TESS"))
+        );
+        walk(&mut c, &r, (25, 5));
+        at(&mut c, "MnIceTransfer", (25, 5));
+        walk(&mut c, &r, (24, 5));
+        c = save(&mut c, &root, &r, "hq-tess-left-after-rescue");
+        assert!(
+            !c.snapshot()
+                .expect("staff departure after Continue")
+                .visible_objects
+                .iter()
+                .any(|actor| actor.object_identifier.as_deref() == Some("MN_ICE_HQ_TESS"))
+        );
+    }
 }
 
 pub(super) fn play_chapter(
@@ -255,22 +315,32 @@ pub(super) fn play_chapter(
     // No state writes beyond setup. Intended-level variants use ordinary DVs,
     // four shop potions and the real optional nurse. Their complete office-to-
     // rescue route earns recruitment and cargo access; party/badges are setup.
-    assert!(!event(&c, KEY) && !event(&c, POWER) && !event(&c, RESCUED));
+    assert!(!event(&c, POWER) && !event(&c, RESCUED));
+    assert!(
+        normal || !event(&c, KEY),
+        "fresh fixture starts before the card"
+    );
     if with_cargo {
-        super::northstar_ice_lair::join(&mut c, r, root);
+        if !event(&c, "EVENT_MN_REED_JOINED_ICE") {
+            super::northstar_ice_lair::join(&mut c, r, root);
+        }
         walk(&mut c, r, (5, 3));
         travel(&mut c, GameButton::Up, "MnIceCargoBasement", (4, 19));
-        walk(&mut c, r, (23, 18));
-        talk(&mut c, GameButton::Up);
-        choice(&mut c, true);
-        finish(&mut c);
+        if !event(&c, "EVENT_MN_ICE_CARGO_FEED_OFF") {
+            walk(&mut c, r, (23, 18));
+            talk(&mut c, GameButton::Up);
+            choice(&mut c, true);
+            finish(&mut c);
+        }
         assert!(event(&c, "EVENT_MN_ICE_CARGO_FEED_OFF"));
         cross(&mut c, r, &n, "cargo_stair", false);
     }
-    walk(&mut c, r, (15, 14));
-    talk(&mut c, GameButton::Right);
-    page(&mut c, "MnIceHQDoorOPERATIONSLockedText");
-    finish(&mut c);
+    if !event(&c, KEY) {
+        walk(&mut c, r, (15, 14));
+        talk(&mut c, GameButton::Right);
+        page(&mut c, "MnIceHQDoorOPERATIONSLockedText");
+        finish(&mut c);
+    }
     assert!(path(&mut c, r, (26, 19)).is_none(), "relay side is sealed");
     // A genuine native sight encounter, not a manually granted result.
     walk(&mut c, r, (11, 12));
@@ -290,14 +360,16 @@ pub(super) fn play_chapter(
     cross(&mut c, r, &n, "A", false);
     cross(&mut c, r, &n, "B", false);
     walk(&mut c, r, (24, 5));
-    talk(&mut c, GameButton::Right);
-    choice(&mut c, false);
-    finish(&mut c);
-    assert!(!event(&c, KEY));
-    c = save(&mut c, root, r, "hq-card-declined");
-    talk(&mut c, GameButton::Right);
-    choice(&mut c, true);
-    finish(&mut c);
+    if !event(&c, KEY) {
+        talk(&mut c, GameButton::Right);
+        choice(&mut c, false);
+        finish(&mut c);
+        assert!(!event(&c, KEY));
+        c = save(&mut c, root, r, "hq-card-declined");
+        talk(&mut c, GameButton::Right);
+        choice(&mut c, true);
+        finish(&mut c);
+    }
     assert!(event(&c, KEY));
     assert_eq!(
         c.shell
@@ -349,6 +421,16 @@ pub(super) fn play_chapter(
     talk(&mut c, GameButton::Right);
     finish(&mut c);
     assert!(event(&c, "EVENT_MN_ICE_HQ_TESS_HELPED") && !event(&c, RESCUED));
+    assert!(
+        c.snapshot()
+            .expect("Tess waits before the release")
+            .visible_objects
+            .iter()
+            .any(|actor| actor.object_identifier.as_deref() == Some("MN_ICE_HQ_TESS"))
+    );
+    press(&mut c, GameButton::Right);
+    at(&mut c, "MnIceTransfer", (24, 5));
+    c = save(&mut c, root, r, "hq-tess-waiting-for-rescue");
     door(&mut c, r, &n, "CELLS", true);
     door(&mut c, r, &n, "ANNEX", false);
     cross(&mut c, r, &n, "F", false);

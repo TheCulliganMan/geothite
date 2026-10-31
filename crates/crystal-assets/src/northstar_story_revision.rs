@@ -65,6 +65,9 @@ struct Revision {
 /// The canonical `dialogue_overhaul` section owns every revised text label and
 /// runs after chapter overlays. Existing event identities and save identities
 /// are not migrated. The returned pack has a new content identity.
+/// Public reference records and recovered evidence are accepted independently
+/// of Gym credentials. Existing travel safeguards still apply, and return
+/// conversations follow evidence custody, radio contact and completed shutdown.
 ///
 /// # Errors
 /// Rejects unreviewed parents, duplicate publication, missing scene anchors,
@@ -186,6 +189,17 @@ fn install_revision(base: &CompiledGamePack, revision: Revision) -> Result<Compi
     crate::northstar_story_connections::install(&mut pack)?;
     stage_harbor(&mut pack)?;
     crate::northstar_story_pacing::install(&mut pack)?;
+    crate::northstar_story_staff::install(&mut pack)?;
+    // The cast binder verifies its complete input before changing any art.
+    // Finalize the staged scripts' identity before crossing that boundary.
+    pack.identity = crate::derive_compiled_game_pack_identity_from_manifest(
+        pack.format_version,
+        &pack.data,
+        &pack.audio_manifest,
+        &pack.runtime_files,
+        &pack.report,
+    )?;
+    let mut pack = crate::northstar_story_cast::install(&pack)?;
     pack.report.manifests.push(MANIFEST.into());
     pack.identity = crate::derive_compiled_game_pack_identity_from_manifest(
         pack.format_version,
@@ -366,13 +380,23 @@ mod tests {
         {
             if matches!(
                 name.as_str(),
-                "MnLakeItasca" | "MnRainyRiverIcefields" | "MnDuluth"
+                "MnLakeItasca"
+                    | "MnRainyRiverIcefields"
+                    | "MnDuluth"
+                    | "MnGrandRapids"
+                    | "MnGrandMarais"
+                    | "MnRochester"
             ) {
                 let mut expected = before.data.maps[name].clone();
                 expected.blocks.clone_from(&after.data.maps[name].blocks);
+                super::wording_tests::retain_reviewed_facade_events(
+                    name,
+                    &mut expected,
+                    &after.data.maps[name],
+                );
                 assert_eq!(
                     expected, after.data.maps[name],
-                    "reviewed native terrain only {name}"
+                    "reviewed native geography only {name}"
                 );
                 continue;
             }
@@ -440,9 +464,14 @@ mod tests {
                 ) {
                     let mut expected = map.clone();
                     expected.blocks.clone_from(&after.data.maps[name].blocks);
+                    super::wording_tests::retain_reviewed_facade_events(
+                        name,
+                        &mut expected,
+                        &after.data.maps[name],
+                    );
                     assert_eq!(
                         expected, after.data.maps[name],
-                        "reviewed terrain only {name}"
+                        "reviewed geography only {name}"
                     );
                     continue;
                 }
@@ -482,11 +511,33 @@ mod tests {
         )
         .expect("canonical story");
         let child = super::revise_northstar_story(&base, &source).expect("staged revision");
+        let cast = crate::northstar_story_cast::install(&base).expect("accepted cast bindings");
+        let mut expected_trainers = base.data.trainers.clone();
+        for id in [
+            "MN_REED_WINONA",
+            "MN_REED_ROCHESTER",
+            "MN_REED_STPAUL",
+            "MN_REED_RELAY",
+            "MN_REED_MINE",
+            "MN_REED_BOUNDARY",
+        ] {
+            expected_trainers
+                .trainers
+                .get_mut(id)
+                .expect("existing rival variant")
+                .trainer_class = "MN_RIVAL_REED".into();
+        }
+        assert_eq!(
+            expected_trainers, cast.data.trainers,
+            "only Reed's private art class changes; all parties, identities, AI and rewards remain exact"
+        );
         crate::northstar_holding_fence::assert_enclosure(&child);
         if let Some(path) = std::env::var_os("CRYSTAL_STORY_FROZEN_CAMPAIGN") {
             let frozen = crate::read_verified_compiled_game_pack(PathBuf::from(path))
                 .expect("frozen campaign pack");
             let frozen = super::wording_tests::reauthor_frozen(frozen, &source);
+            let frozen = crate::northstar_story_cast::install(&frozen)
+                .expect("same exact cast bindings on the frozen story");
             assert_eq!(frozen.data.maps.len(), child.data.maps.len());
             for (name, map) in &frozen.data.maps {
                 let revised = &child.data.maps[name];
@@ -502,7 +553,16 @@ mod tests {
                     map.objects, revised.objects,
                     "frozen campaign participants {name}"
                 );
-                assert_eq!(map.events, revised.events, "frozen campaign events {name}");
+                let mut expected_events = map.events.clone();
+                super::wording_tests::retain_reviewed_sign_positions(
+                    name,
+                    &mut expected_events,
+                    &base.data.maps[name].events,
+                );
+                assert_eq!(
+                    expected_events, revised.events,
+                    "frozen campaign events {name}"
+                );
             }
         }
         if let Some(path) = std::env::var_os("CRYSTAL_STORY_REVISION_PACK") {
@@ -534,13 +594,13 @@ mod tests {
         };
         assert_eq!(
             child.runtime_files.len(),
-            base.runtime_files.len() + added_files
+            cast.runtime_files.len() + added_files
         );
         assert!(
             child
                 .runtime_files
                 .keys()
-                .filter(|name| !base.runtime_files.contains_key(*name))
+                .filter(|name| !cast.runtime_files.contains_key(*name))
                 .all(|name| name.contains("mn_northstar_holding"))
         );
         for (name, tileset) in &base.data.tilesets {
@@ -552,7 +612,32 @@ mod tests {
         }
         assert_eq!(base.data.pokemon, child.data.pokemon);
         assert_eq!(base.data.moves, child.data.moves);
-        assert_eq!(base.data.trainers, child.data.trainers);
+        for (path, bytes) in &cast.runtime_files {
+            assert_eq!(
+                child.runtime_files.get(path),
+                Some(bytes),
+                "accepted cast art {path}"
+            );
+        }
+        assert_eq!(cast.data.trainers, child.data.trainers);
+        let mut expected_staff = cast.data.maps["MnIceTransfer"].objects.clone();
+        expected_staff
+            .iter_mut()
+            .find(|actor| actor.script == "MN_ICE_HQ_TESS")
+            .expect("existing captive")
+            .event_flag = "EVENT_MN_ICE_CAPTIVE_RESCUED".into();
+        assert_eq!(
+            expected_staff, child.data.maps["MnIceTransfer"].objects,
+            "only Tess's existing rescue-event gate changes; all staff identities, positions and art remain exact"
+        );
+        assert_eq!(
+            cast.data.trainer_class_names,
+            child.data.trainer_class_names
+        );
+        assert_eq!(
+            cast.data.sprite_palette_defaults,
+            child.data.sprite_palette_defaults
+        );
         assert_eq!(base.data.items, child.data.items);
         assert_eq!(base.data.wild_encounters, child.data.wild_encounters);
         assert_eq!(base.data.field_encounters, child.data.field_encounters);
@@ -577,7 +662,7 @@ mod tests {
             "MnStPaulUnionDepot",
             "MnR13C00R00",
         ]);
-        for (name, before) in &base.data.maps {
+        for (name, before) in &cast.data.maps {
             let after = &child.data.maps[name];
             let mut expected_blocks = before.blocks.clone();
             if name == "MnMinneapolisDispatchOffice" {
@@ -620,6 +705,10 @@ mod tests {
                 );
             }
             assert_eq!(before.events.warps, after.events.warps, "warps {name}");
+            assert_eq!(
+                before.events.bg_events, after.events.bg_events,
+                "parent background events {name}"
+            );
             if !changed.contains(name.as_str()) {
                 assert!(before == after, "unrelated map {name}");
             }

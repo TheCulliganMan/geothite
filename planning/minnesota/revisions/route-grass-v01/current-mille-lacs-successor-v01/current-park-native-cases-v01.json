@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-r19-detroit-gate-v05.crystalpack",
+  "pack_sha256": "b57516c0b77c7bcf94fa35e60ff8300bfd8a8781782827739742d8fc15b3f437",
+  "binary": ".local/route-grass-review/r19-gate-controller-v11",
+  "binary_sha256": "517d0e806984d1ed3eaf5e0a6a08159a46c1f4f963eb76bcbbb4acfb225f440f",
+  "log": ".local/route-grass-review/current-mille-park-native-v01.log",
+  "exit_code": 0,
+  "scope": "Actual roads/residents/ledge/dock, public entry/Fly discovery, Surf-only reward once and native Save/Continue. Initial local party/badges/position are QA setup; not earned regional progression."
+}

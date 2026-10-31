@@ -18,6 +18,19 @@ const REPORT: &str = "EVENT_MN_HEADWATERS_REPORT";
 // Resolve real grass encounters only on the newly authored park surface.
 // Other map helpers keep their established traversal behavior.
 fn walk_to(c: &mut VisibleShellController, runtime: &CrystalRuntime, target: (u16, u16)) {
+    if c.snapshot().expect("actual walking map").overworld.map_name == "MnBemidji" {
+        // A static maze path can cross an unrelated house door. Replan each
+        // real street step using live actors and floor collision instead.
+        super::super::northstar_ice_lair::walk(
+            c,
+            runtime,
+            (
+                i16::try_from(target.0).expect("native city x"),
+                i16::try_from(target.1).expect("native city y"),
+            ),
+        );
+        return;
+    }
     if c.snapshot().expect("actual walking map").overworld.map_name != PARK {
         super::walk_to(c, runtime, target);
         return;
@@ -71,8 +84,14 @@ fn road(c: &mut VisibleShellController, r: &CrystalRuntime, prefix: &'static str
             doors: BTreeMap::new(),
         },
     );
-    for button in grid.path(start, to) {
+    for _ in 0..4096 {
         let before = position(c);
+        if before == to {
+            return;
+        }
+        // Native hops may land beyond a single quadrant. Plan each next input
+        // from the observed landing instead of consuming a stale route suffix.
+        let button = *grid.path(before, to).first().expect("remaining road step");
         for _ in 0..8 {
             press(c, button);
             if let Some(b) = c.snapshot().expect("road encounter").battle {
@@ -87,9 +106,23 @@ fn road(c: &mut VisibleShellController, r: &CrystalRuntime, prefix: &'static str
                 break;
             }
         }
-        assert_ne!(position(c), before, "native road step");
+        if position(c) == before {
+            if let Some(directory) = std::env::var_os("CRYSTAL_WINONA_SAVE_DIR") {
+                c.save(std::path::PathBuf::from(directory).join(format!(
+                    "itasca-road-blocked-{}-{}-{}.crystalsave",
+                    std::process::id(),
+                    before.0,
+                    before.1
+                )))
+                .expect("retain the actual blocked road state");
+            }
+            panic!(
+                "native {prefix} road step {button:?} from {before:?} did not move; target={to:?}, ui={:?}",
+                c.snapshot().expect("actual blocked road state").ui
+            );
+        }
     }
-    assert_eq!(position(c), to);
+    panic!("bounded native {prefix} road did not reach {to:?}");
 }
 pub(super) fn from_bemidji(c: &mut VisibleShellController, r: &CrystalRuntime, lane: u16) {
     walk_to(c, r, (4, 24 + lane));

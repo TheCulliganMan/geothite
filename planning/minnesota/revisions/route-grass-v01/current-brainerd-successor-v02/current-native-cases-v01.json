@@ -1,0 +1,32 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+  "pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33",
+  "binary": ".local/route-grass-review/brainerd-current-controller-v01",
+  "binary_sha256": "c641c6952924b0d57d6203d9d2d5dc94d354c4cd096f7fe390cf4e52e9f66c6b",
+  "test_source_sha256": "0a0141ab57a49e1029aa71d692ad55c61257cd4e050421c775327588488bcd69",
+  "results": [
+    {
+      "case": "city",
+      "status": "PASS",
+      "log": ".local/route-grass-review/current-brainerd-city-native-v01.log",
+      "cases": 5,
+      "exit_code": 0
+    },
+    {
+      "case": "roads",
+      "status": "PASS",
+      "log": ".local/route-grass-review/current-brainerd-roads-native-v01.log",
+      "cases": 1,
+      "exit_code": 0
+    },
+    {
+      "case": "guards",
+      "status": "PASS",
+      "log": ".local/route-grass-review/current-brainerd-guards-native-v01.log",
+      "cases": 1,
+      "exit_code": 0
+    }
+  ],
+  "scope": "Current town facade/carpets, closed tall cliff and two-way stairs/side walls/Continue, actual care/PC/shop/gift retry and public road/guard/Surf cases. Historical replaced-Gym course is intentionally not selected; current Winch battle acceptance is separate. Initial QA state is not earned campaign progress."
+}

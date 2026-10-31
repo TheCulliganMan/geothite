@@ -568,13 +568,13 @@ fn minneapolis_controller_native_healing_pc_priced_shop_and_both_gym_returns() {
         press(&mut c, GameButton::B);
     }
     finish(&mut c);
-    leave(&mut c, &r, (10, 14), (45, 12));
+    leave(&mut c, &r, (10, 14), (63, 26));
     for x in [4, 5] {
-        enter(&mut c, &r, (42, 24), "MnMinneapolisGym", (4, 15));
+        enter(&mut c, &r, (64, 34), "MnMinneapolisGym", (4, 15));
         walk(&mut c, &r, (x, 16));
-        advance(&mut c, GameButton::Down, CITY, (42, 24));
+        advance(&mut c, GameButton::Down, CITY, (64, 34));
     }
-    enter(&mut c, &r, (55, 16), "MnMinneapolisMart", (6, 5));
+    enter(&mut c, &r, (71, 26), "MnMinneapolisMart", (6, 5));
     walk(&mut c, &r, (3, 3));
     talk(&mut c, GameButton::Left);
     for _ in 0..32 {
@@ -635,7 +635,7 @@ fn minneapolis_controller_native_healing_pc_priced_shop_and_both_gym_returns() {
         press(&mut c, b);
     }
     assert!(c.snapshot().expect("closed shop").pending_shop.is_none());
-    leave(&mut c, &r, (6, 6), (55, 16));
+    leave(&mut c, &r, (6, 6), (71, 26));
     assert_eq!(progress(&c), [false; 3]);
     let _continued = continued(&mut c, &root, &r, "ordinary-services");
 }

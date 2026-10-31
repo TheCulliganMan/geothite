@@ -1,0 +1,367 @@
+{
+  "schema_version": 1,
+  "map": "MnMinneapolis",
+  "native_module_sha256": "9710ce204b8cfbf41b7dee40fb1e3ca60e14642033d96b16216e2db0b01d84ed",
+  "routes": [
+    {
+      "id": "MN_EXTRA_MPLS_CYCLE_01",
+      "name": "Department store riverside lane",
+      "before_start": [
+        48,
+        20
+      ],
+      "before_size": [
+        1,
+        15
+      ],
+      "start": [
+        48,
+        20
+      ],
+      "size": [
+        1,
+        15
+      ]
+    },
+    {
+      "id": "MN_EXTRA_MPLS_CYCLE_02",
+      "name": "Mill exchange court",
+      "before_start": [
+        60,
+        21
+      ],
+      "before_size": [
+        1,
+        15
+      ],
+      "start": [
+        23,
+        10
+      ],
+      "size": [
+        6,
+        3
+      ]
+    },
+    {
+      "id": "MN_EXTRA_MPLS_CYCLE_03",
+      "name": "Museum arts passage",
+      "before_start": [
+        60,
+        35
+      ],
+      "before_size": [
+        15,
+        1
+      ],
+      "start": [
+        5,
+        22
+      ],
+      "size": [
+        4,
+        1
+      ]
+    },
+    {
+      "id": "MN_EXTRA_MPLS_CYCLE_04",
+      "name": "Boathouse quay",
+      "before_start": [
+        40,
+        22
+      ],
+      "before_size": [
+        1,
+        15
+      ],
+      "start": [
+        2,
+        33
+      ],
+      "size": [
+        10,
+        2
+      ]
+    },
+    {
+      "id": "MN_EXTRA_MPLS_CYCLE_05",
+      "name": "Dispatch waterfront",
+      "before_start": [
+        40,
+        23
+      ],
+      "before_size": [
+        1,
+        15
+      ],
+      "start": [
+        18,
+        35
+      ],
+      "size": [
+        8,
+        2
+      ]
+    },
+    {
+      "id": "MN_EXTRA_MPLS_CYCLE_06",
+      "name": "West cabin promenade",
+      "before_start": [
+        40,
+        24
+      ],
+      "before_size": [
+        1,
+        15
+      ],
+      "start": [
+        2,
+        41
+      ],
+      "size": [
+        1,
+        4
+      ]
+    },
+    {
+      "id": "MN_EXTRA_MPLS_CYCLE_07",
+      "name": "Canal neighborhood",
+      "before_start": [
+        60,
+        27
+      ],
+      "before_size": [
+        15,
+        9
+      ],
+      "start": [
+        16,
+        43
+      ],
+      "size": [
+        9,
+        2
+      ]
+    },
+    {
+      "id": "MN_EXTRA_MPLS_CYCLE_08",
+      "name": "Gardeners lane",
+      "before_start": [
+        61,
+        27
+      ],
+      "before_size": [
+        14,
+        9
+      ],
+      "start": [
+        6,
+        58
+      ],
+      "size": [
+        12,
+        1
+      ]
+    },
+    {
+      "id": "MN_EXTRA_MPLS_CYCLE_09",
+      "name": "Upper bridge",
+      "before_start": [
+        69,
+        27
+      ],
+      "before_size": [
+        6,
+        10
+      ],
+      "start": [
+        30,
+        14
+      ],
+      "size": [
+        13,
+        1
+      ]
+    },
+    {
+      "id": "MN_EXTRA_MPLS_CYCLE_10",
+      "name": "Library and northeast",
+      "before_start": [
+        38,
+        44
+      ],
+      "before_size": [
+        15,
+        3
+      ],
+      "start": [
+        60,
+        11
+      ],
+      "size": [
+        13,
+        1
+      ]
+    },
+    {
+      "id": "MN_EXTRA_MPLS_CYCLE_11",
+      "name": "Music and print",
+      "before_start": [
+        37,
+        46
+      ],
+      "before_size": [
+        15,
+        1
+      ],
+      "start": [
+        44,
+        11
+      ],
+      "size": [
+        6,
+        2
+      ]
+    },
+    {
+      "id": "MN_EXTRA_MPLS_CYCLE_12",
+      "name": "East garden avenue",
+      "before_start": [
+        40,
+        44
+      ],
+      "before_size": [
+        14,
+        3
+      ],
+      "start": [
+        66,
+        18
+      ],
+      "size": [
+        7,
+        1
+      ]
+    },
+    {
+      "id": "MN_EXTRA_MPLS_CYCLE_13",
+      "name": "Gym block",
+      "before_start": [
+        41,
+        44
+      ],
+      "before_size": [
+        15,
+        3
+      ],
+      "start": [
+        60,
+        27
+      ],
+      "size": [
+        15,
+        9
+      ]
+    },
+    {
+      "id": "MN_EXTRA_MPLS_CYCLE_14",
+      "name": "Central bridge",
+      "before_start": [
+        46,
+        44
+      ],
+      "before_size": [
+        1,
+        15
+      ],
+      "start": [
+        28,
+        36
+      ],
+      "size": [
+        15,
+        1
+      ]
+    },
+    {
+      "id": "MN_EXTRA_MPLS_CYCLE_15",
+      "name": "South bridge",
+      "before_start": [
+        42,
+        46
+      ],
+      "before_size": [
+        15,
+        1
+      ],
+      "start": [
+        28,
+        56
+      ],
+      "size": [
+        13,
+        1
+      ]
+    },
+    {
+      "id": "MN_EXTRA_MPLS_CYCLE_16",
+      "name": "Market square",
+      "before_start": [
+        38,
+        46
+      ],
+      "before_size": [
+        15,
+        1
+      ],
+      "start": [
+        38,
+        44
+      ],
+      "size": [
+        15,
+        3
+      ]
+    },
+    {
+      "id": "MN_EXTRA_MPLS_CYCLE_17",
+      "name": "South residential",
+      "before_start": [
+        39,
+        46
+      ],
+      "before_size": [
+        15,
+        1
+      ],
+      "start": [
+        50,
+        52
+      ],
+      "size": [
+        5,
+        1
+      ]
+    },
+    {
+      "id": "MN_EXTRA_MPLS_CYCLE_18",
+      "name": "Kitchen and cycle club",
+      "before_start": [
+        41,
+        46
+      ],
+      "before_size": [
+        15,
+        1
+      ],
+      "start": [
+        67,
+        47
+      ],
+      "size": [
+        9,
+        8
+      ]
+    }
+  ]
+}

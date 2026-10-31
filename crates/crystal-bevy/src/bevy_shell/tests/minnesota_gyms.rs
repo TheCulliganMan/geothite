@@ -11,6 +11,8 @@ mod current_gyms;
 mod duluth_gates;
 #[path = "ely_league.rs"]
 mod ely_league;
+#[path = "ely_pine_camp.rs"]
+mod ely_pine_camp;
 #[path = "gym_care.rs"]
 mod gym_care;
 #[path = "gym_eight_approach.rs"]
@@ -42,9 +44,9 @@ mod northstar_campaign_courier;
 #[path = "northstar_campaign_current.rs"]
 mod northstar_campaign_current;
 #[path = "northstar_campaign_finale.rs"]
-mod northstar_campaign_finale;
+pub(super) mod northstar_campaign_finale;
 #[path = "northstar_campaign_ice.rs"]
-mod northstar_campaign_ice;
+pub(super) mod northstar_campaign_ice;
 #[path = "northstar_campaign_iron.rs"]
 mod northstar_campaign_iron;
 #[path = "northstar_campaign_lake.rs"]
@@ -57,6 +59,10 @@ mod northstar_campaign_pine;
 mod northstar_campaign_review;
 #[path = "northstar_campaign_wind.rs"]
 mod northstar_campaign_wind;
+#[path = "northstar_earned_return.rs"]
+mod northstar_earned_return;
+#[path = "northstar_earned_services.rs"]
+mod northstar_earned_services;
 #[path = "northstar_finale.rs"]
 mod northstar_finale;
 #[path = "northstar_iron_course.rs"]
@@ -4189,6 +4195,10 @@ fn minnesota_regional_gyms_controller_all_eight_actual_facades_and_local_courses
 #[test]
 #[ignore = "full ordinary-party arc campaign; no review boosts or injected progress"]
 pub(super) fn northstar_arc_unboosted_new_game_through_legendary_release_and_hall_of_fame() {
+    earned_arc_through_hall_of_fame(true);
+}
+
+pub(super) fn earned_arc_through_hall_of_fame(verify_service_return: bool) {
     northstar_campaign_review::require_unboosted();
     let (root, r, c) = northstar_campaign_league::arrival();
     for flag in [
@@ -4205,5 +4215,8 @@ pub(super) fn northstar_arc_unboosted_new_game_through_legendary_release_and_hal
         assert!(event(&c, flag), "earned narrative beat {flag}");
     }
     assert_eq!(c.shell.shell.session().state().badges.johto, [true; 8]);
-    northstar_campaign_league::play_chapter(root, r, c);
+    let (root, r, mut c) = northstar_campaign_league::play_chapter(root, r, c);
+    if verify_service_return {
+        northstar_earned_return::play(&mut c, &r, &root);
+    }
 }

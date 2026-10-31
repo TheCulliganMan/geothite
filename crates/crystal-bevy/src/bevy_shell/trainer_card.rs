@@ -1,3 +1,12 @@
+fn minnesota_trainer_card(snapshot: &RuntimeShellSnapshot) -> bool {
+    snapshot
+        .boot
+        .modpack_id
+        .split('+')
+        .any(|id| id.starts_with("minnesota"))
+        || snapshot.maps.iter().any(|map| map.map_name.starts_with("Mn"))
+}
+
 fn open_visible_trainer_card(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
     runtime_shell.trainer_card_return_start_menu_cursor = runtime_shell.start_menu_cursor.clone();
     let frame_phase = runtime_shell.shell.session().state().vblank_counter & 0x3f;
@@ -5367,6 +5376,9 @@ fn move_visible_primary_cursor(runtime_shell: &mut BevyRuntimeShell, delta: isiz
         return move_visible_yes_no_cursor(runtime_shell, delta);
     }
     if snapshot.pending_move_learn.is_some() {
+        if runtime_shell.special_boundary.is_some() {
+            return Ok(());
+        }
         return move_visible_pending_move_learn_cursor(runtime_shell, delta);
     }
     if runtime_shell.tmhm_teach_prompt_cursor.is_some() {

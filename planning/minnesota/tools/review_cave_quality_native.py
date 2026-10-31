@@ -22,11 +22,15 @@ from review_north_shore import oriented_sprite
 from review_passage_native import actors, digest, write
 
 
-def compare(pack, art, module, at, actual, output):
+def compare(pack, art, module, at, actual, output, hidden_actors=()):
+    assert set(hidden_actors) <= {o["script"] for o in module["objects"]}, "default-hidden source actor missing"
+    module = dict(module)
+    module["objects"] = [o for o in module["objects"] if o["script"] not in hidden_actors]
     a = module['attributes']
     assert a['time_of_day'] == 'nite'
     sprites = npc_palette_pack(pack, 'nite')
-    terrain = art.render('cave', a['width'], a['height'], module['blocks'], 'nite')
+    tileset = a['tileset_name']
+    terrain = art.render(tileset, a['width'], a['height'], module['blocks'], 'nite')
     scene = actors(sprites, terrain, module)
     x, y = at
     scene.alpha_composite(oriented_sprite(sprites, 'SPRITE_CHRIS', 'south'), (x*16, y*16))
@@ -35,7 +39,7 @@ def compare(pack, art, module, at, actual, output):
     left, top = box[0]//32*32, box[1]//32*32
     right, bottom = (box[2]+31)//32*32, (box[3]+31)//32*32
     padded = Image.new('RGBA', (right-left, bottom-top))
-    border = art.blocks('cave', 'nite')[a['border_block']]
+    border = art.blocks(tileset, 'nite')[a['border_block']]
     for yy in range(0, padded.height, 32):
         for xx in range(0, padded.width, 32):
             padded.paste(border, (xx, yy))
@@ -52,7 +56,7 @@ def compare(pack, art, module, at, actual, output):
     origin, lcd = camera_origin([(module, 0, 0)], at)
     best = actual.width*actual.height
     matched = None
-    layout = bytes(pack['runtime_files']['data/tilesets/cave_metatiles.bin'])
+    layout = bytes(pack['runtime_files'][f'data/tilesets/{tileset}_metatiles.bin'])
     water = []
     for i, block in enumerate(module['blocks']):
         for j, glyph in enumerate(layout[block*16:(block+1)*16]):
@@ -103,14 +107,16 @@ def main():
     private = Path('.local')/f'cave-quality-capture-{os.getpid()}'
     shutil.copy2(binary, private)
     report = {'pack_sha256': digest(pack_path), 'binary_sha256': digest(private),
-              'fixture': 'Local empty-party position, south-facing, noon; forced native night palette.',
+              'fixture': 'Local position, south-facing, noon, one original Minnesota Cindore30; forced native night palette.',
               'captures': []}
     old = json.loads((output/'capture-progress.json').read_text()) if args.resume else None
     if old:
         assert all(old[k] == report[k] for k in ['pack_sha256', 'binary_sha256'])
     env = dict(os.environ, CRYSTAL_RENDER_TEST_HEADLESS='1',
                CRYSTAL_RENDER_TEST_CAPTURE_TARGET='image',
-               CRYSTAL_RENDER_TEST_WINDOW_SIZE='640x576', CRYSTAL_PREVIEW_MUTE='1')
+               CRYSTAL_RENDER_TEST_WINDOW_SIZE='640x576', CRYSTAL_PREVIEW_MUTE='1',
+               CRYSTAL_RENDER_TEST_PARTY_SPECIES='CINDORE',
+               CRYSTAL_RENDER_TEST_PARTY_SIZE='1')
     env.pop('CRYSTAL_RENDER_TEST_SECOND_VIEW', None)
     try:
         for source in sorted(args.directory.glob('*.json')):
@@ -146,7 +152,7 @@ def main():
                 assert actual.size == (640, 576)
                 row = {'id': label, 'source_sha256': digest(source),
                        'production_sha256': digest(png),
-                       **compare(pack, art, module, view['tile'], actual, folder)}
+                       **compare(pack, art, module, view['tile'], actual, folder, room.get('default_hidden_actors', []))}
                 report['captures'].append(row)
                 write(output/'capture-progress.json', report)
                 print(label, 'mismatches', row['pixel_mismatches'], flush=True)

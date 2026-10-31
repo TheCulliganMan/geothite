@@ -1,0 +1,7 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-r13-boundary-apron-v02.crystalpack",
+  "pack_sha256": "7f69523688da1d137d8f9221e79657d13c9db4fcdc582ee340c257241877d09b",
+  "log": ".local/route-grass-review/r13-apron-cut-native-v03.log",
+  "scope": "Native Cut permission denials, opening, Revive once, Continue regrowth and inside return on the restored-apron child. Regional Voyagear60 and badges are explicit QA setup."
+}

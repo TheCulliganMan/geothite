@@ -1,0 +1,8 @@
+{
+  "status": "TEST_SELECTOR_CORRECTED_NO_GAME_CHANGE",
+  "old_selector": "native_town_exterior_guard_denials_each_requirement_and_free_inbound",
+  "old_matched_cases": 0,
+  "old_log": ".local/route-grass-review/current-brainerd-successor-native-guards-v01.log",
+  "correct_selector": "native_town_exterior_each_gate_requirement_denial_and_free_inbound",
+  "public_case_already_passed": true
+}

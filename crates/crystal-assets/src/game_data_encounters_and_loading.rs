@@ -376,6 +376,8 @@ impl GameDataSet {
                                 .grass
                                 .iter()
                                 .chain(encounters.water.iter())
+                                .chain(encounters.zones.iter().map(|zone| &zone.grass))
+                                .chain(encounters.swarm_overrides.values().map(|swarm| &swarm.grass))
                                 .flat_map(|table| {
                                     table.morning.iter().chain(&table.day).chain(&table.night)
                                 })
@@ -792,6 +794,14 @@ impl GameDataSet {
         Ok(())
     }
 
+    /// Resolves the native Sweet Scent command on the current land/water surface.
+    /// Authored grass zones use the same table selection as ordinary walking.
+    /// An absent ordinary component returns no encounter without an encounter
+    /// RNG read. Bug Contest continues to use its separate encounter table.
+    ///
+    /// # Errors
+    /// Reports invalid runtime coordinates, script edges, populated encounter
+    /// data or failures in the caller-owned native random stream.
     pub fn resolve_sweet_scent_encounter<S>(
         &self,
         state: &mut GameState,
@@ -817,9 +827,32 @@ impl GameDataSet {
         let contest_mode = self.bug_contest_encounter_mode(state)?;
         let swarm_encounters =
             self.active_swarm_wild_encounters_for_map(state, &overworld.map.name)?;
-        let encounters = swarm_encounters
+        let base_encounters = swarm_encounters
             .as_ref()
             .or_else(|| self.wild_encounters_for_map(&overworld.map.name));
+        let zone = base_encounters
+            .and_then(|data| data.zone_at(overworld.player.tile.x, overworld.player.tile.y));
+        let zoned_encounters = zone.map(|zone| {
+            let mut data = base_encounters
+                .expect("zone came from encounter data")
+                .clone();
+            data.grass_rates = Some(zone.grass_rates.clone());
+            data.grass = Some(zone.grass.clone());
+            data.zones.clear();
+            data
+        });
+        let encounters = zoned_encounters.as_ref().or(base_encounters);
+        let encounters = if encounters.is_some() {
+            let metadata = self.runtime_map_metadata_for_name(&overworld.map.name)?;
+            let surface = overworld
+                .current_encounter_surface_checked_with_land_encounters(
+                    can_encounter_on_any_non_ice_land(&metadata.environment) || zone.is_some(),
+                )
+                .map_err(|error| anyhow::anyhow!("resolve Sweet Scent surface: {error}"))?;
+            crate::game_data_encounter_surfaces::for_surface(encounters, surface)
+        } else {
+            None
+        };
         if !contest_mode && encounters.is_none() {
             state.random_state = rng.state();
             state
@@ -840,7 +873,8 @@ impl GameDataSet {
             u8::try_from(metadata.group_id).context("Sweet Scent map group exceeds byte")?,
             u8::try_from(metadata.map_id).context("Sweet Scent map number exceeds byte")?,
         );
-        let land_encounters_on_any_land = can_encounter_on_any_non_ice_land(&metadata.environment);
+        let land_encounters_on_any_land =
+            can_encounter_on_any_non_ice_land(&metadata.environment) || zone.is_some();
         let contest_encounters = contest_mode
             .then(|| {
                 self.bug_contest_config
@@ -939,6 +973,13 @@ impl GameDataSet {
             .with_context(|| format!("check coord event on {}", session.map.name))
     }
 
+    /// Checks the current surface after a step, honoring native cooldown and RNG.
+    /// A missing land/water component with no positive rate behaves like a
+    /// native zero-rate map; the other surface's encounters remain available.
+    ///
+    /// # Errors
+    /// Reports invalid runtime coordinates, populated encounter data, map
+    /// metadata or failures in the caller-owned native random stream.
     pub fn check_wild_encounter_after_step<S>(
         &self,
         state: &mut GameState,
@@ -1015,6 +1056,10 @@ impl GameDataSet {
             })
             .transpose()?;
         let encounters = zoned_encounters.as_ref().or(base_encounters);
+        let surface = session
+            .current_encounter_surface_checked_with_land_encounters(land_encounters_on_any_land)
+            .map_err(|error| anyhow::anyhow!("resolve native encounter surface: {error}"))?;
+        let encounters = crate::game_data_encounter_surfaces::for_surface(encounters, surface);
         if contest_mode || encounters.is_some() {
             self.preflight_exact_wild_encounter_transaction(
                 state,
@@ -1054,7 +1099,13 @@ impl GameDataSet {
                     resolved.level = if let Some(slot) = roll.roaming_slot {
                         self.scale_challenge_roamer(state, usize::from(slot), 2)?
                     } else {
-                        self.challenge_level(state, resolved.level, variation)
+                        self.ordinary_challenge_level(
+                            state,
+                            &roll.map_name,
+                            resolved.level,
+                            variation,
+                            roll.encounter_roll,
+                        )
                     };
                     if let Some(item) = active_repel_item {
                         if leading_usable_party_level(state).is_some_and(|lead| resolved.level < lead) {
@@ -2974,7 +3025,13 @@ impl GameDataSet {
         );
         self.validate_runtime_map_tile("exact fishing battle", map_name, tile)?;
         let resolved = ResolvedWildEncounter {
-            level: self.challenge_level(state, encounter.level, slot_roll),
+            level: self.ordinary_challenge_level(
+                state,
+                map_name,
+                encounter.level,
+                slot_roll,
+                bite_roll,
+            ),
             encounter,
             slot: 0,
         };

@@ -6,6 +6,7 @@ use crystal_assets::AssetRoot;
 use crystal_core::input::GameButton;
 use crystal_runtime::CrystalRuntime;
 
+use super::super::native_city_ports::city_port;
 use super::super::rochester_earned::{checkout, try_league_battle};
 use super::super::winona::{at, continue_in_place, finish, load, press, travel};
 use super::ely_league::{registrar, restore_partner_with, run, until_map};
@@ -18,6 +19,11 @@ const ACTIVE: &str = "EVENT_MN_LEAGUE_RUN_ACTIVE";
 const CHAMPION: &str = "EVENT_MN_LEAGUE_CHAMPION";
 const RESTORED: &str = "EVENT_MN_SURVEY_RESTORED";
 const CLINIC: &str = "MnElyPokecenter1F";
+
+#[path = "northstar_league_coverage.rs"]
+mod coverage;
+#[path = "northstar_league_preparation.rs"]
+mod preparation;
 
 pub(super) fn arrival() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
     let Some(path) = std::env::var_os("CRYSTAL_NORTHSTAR_LEAGUE_SAVE") else {
@@ -42,14 +48,16 @@ pub(super) fn arrival() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
     assert!(
         s.overworld.map_name == "MnR13C00R02"
             || s.overworld.map_name == "MnEly"
+            || s.overworld.map_name == CLINIC
             || s.overworld.map_name.starts_with("MnLeague")
     );
     (root, r, c)
 }
 
-fn supplies(c: &mut VisibleShellController, r: &CrystalRuntime) {
-    walk_to(c, r, (11, 22));
-    travel(c, GameButton::Up, CLINIC, (3, 5));
+fn care(c: &mut VisibleShellController, r: &CrystalRuntime) {
+    let (clinic_door, clinic_arrival) = city_port(r, "MnEly", CLINIC);
+    walk_to(c, r, clinic_door);
+    travel(c, GameButton::Up, CLINIC, clinic_arrival);
     walk_to(c, r, (3, 3));
     press(c, GameButton::Up);
     press(c, GameButton::A);
@@ -71,10 +79,53 @@ fn supplies(c: &mut VisibleShellController, r: &CrystalRuntime) {
                     .all(|m| m.current_pp == r.data().moves[&m.name].pp))
     );
     walk_to(c, r, (3, 6));
-    travel(c, GameButton::Down, "MnEly", (11, 22));
-    walk_to(c, r, (27, 28));
-    travel(c, GameButton::Up, "MnElyMart", (2, 5));
-    for (id, desired) in [("FULL_HEAL", 2_u16), ("REVIVE", 1), ("MAX_POTION", 6)] {
+    travel(c, GameButton::Down, "MnEly", clinic_door);
+}
+
+fn preferred_medicine(c: &mut VisibleShellController, r: &CrystalRuntime) -> &'static str {
+    let max_hp = c
+        .snapshot()
+        .expect("actual carried League health")
+        .party
+        .slots
+        .iter()
+        .map(|slot| slot.pokemon.max_hp)
+        .max()
+        .expect("carried League party");
+    let stock = &r.data().maps["MnElyMart"].script_shop_commands[0].mart_id;
+    let inventory = r
+        .data()
+        .marts
+        .inventory_ids(stock)
+        .expect("actual Ely inventory");
+    if max_hp <= 200
+        && inventory.iter().any(|id| id == "HYPER_POTION")
+        && r.data().items["HYPER_POTION"].price < r.data().items["MAX_POTION"].price
+    {
+        "HYPER_POTION"
+    } else {
+        "MAX_POTION"
+    }
+}
+
+fn supply_targets(c: &mut VisibleShellController, r: &CrystalRuntime) -> [(&'static str, u16); 3] {
+    [
+        ("REVIVE", 4),
+        (preferred_medicine(c, r), 12),
+        ("FULL_HEAL", 2),
+    ]
+}
+
+fn supplies(c: &mut VisibleShellController, r: &CrystalRuntime) {
+    care(c, r);
+    coverage::teach_carried(c, r);
+    let (mart_door, mart_arrival) = city_port(r, "MnEly", "MnElyMart");
+    walk_to(c, r, mart_door);
+    travel(c, GameButton::Up, "MnElyMart", mart_arrival);
+    // Prepare for all five consecutive rooms. The retained earned attempt
+    // exhausted six heals and one revival before its third-room defeat.
+    // Purchases remain limited to actual earned money and carried quantities.
+    for (id, desired) in supply_targets(c, r) {
         let item = &r.data().items[id];
         let state = c.shell.shell.session().state();
         let count = desired
@@ -89,7 +140,13 @@ fn supplies(c: &mut VisibleShellController, r: &CrystalRuntime) {
         checkout(c, r, id, count);
     }
     eprintln!(
-        "League review carried earned medicine: MAX_POTION={}, FULL_HEAL={}, REVIVE={}, remaining earned money={}",
+        "League review carried earned medicine: HYPER_POTION={}, MAX_POTION={}, FULL_HEAL={}, REVIVE={}, remaining earned money={}",
+        c.shell
+            .shell
+            .session()
+            .state()
+            .bag
+            .quantity(&r.data().items["HYPER_POTION"]),
         c.shell
             .shell
             .session()
@@ -111,11 +168,16 @@ fn supplies(c: &mut VisibleShellController, r: &CrystalRuntime) {
         c.shell.shell.session().state().money
     );
     walk_to(c, r, (2, 6));
-    travel(c, GameButton::Down, "MnEly", (27, 28));
+    travel(c, GameButton::Down, "MnEly", mart_door);
 }
 
 fn heal(c: &mut VisibleShellController, r: &CrystalRuntime) {
-    for slot in 0..c.snapshot().expect("carried partners").party.slots.len() {
+    let snapshot = c.snapshot().expect("carried partners");
+    let mut order = (0..snapshot.party.slots.len()).collect::<Vec<_>>();
+    // A native lead switch changes party order. Spend scarce carried revival
+    // on the highest-level fainted partner, rather than whichever is first.
+    order.sort_by_key(|slot| std::cmp::Reverse(snapshot.party.slots[*slot].pokemon.level));
+    for slot in order {
         if c.snapshot().expect("native partner").party.slots[slot]
             .pokemon
             .hp
@@ -151,17 +213,19 @@ fn heal(c: &mut VisibleShellController, r: &CrystalRuntime) {
         // Save a native Max Potion when a partner has lost only a few HP.
         let s = c.snapshot().expect("native pre-match HP");
         let p = &s.party.slots[slot].pokemon;
-        if p.hp > 0
-            && p.hp < p.max_hp * 3 / 4
-            && c.shell
-                .shell
-                .session()
-                .state()
-                .bag
-                .quantity(&r.data().items["MAX_POTION"])
-                > 0
-        {
-            restore_partner_with(c, r, "MAX_POTION", slot);
+        if p.hp > 0 && p.hp < p.max_hp * 3 / 4 {
+            let medicine = ["HYPER_POTION", "MAX_POTION"].into_iter().find(|id| {
+                c.shell
+                    .shell
+                    .session()
+                    .state()
+                    .bag
+                    .quantity(&r.data().items[*id])
+                    > 0
+            });
+            if let Some(id) = medicine {
+                restore_partner_with(c, r, id, slot);
+            }
         }
     }
     // Rotate rested partners through Party/Switch when medicine runs out.
@@ -194,7 +258,23 @@ fn northstar_campaign_boosted_ely_league_hall_of_fame_and_postgame() {
 
 /// Play registration, the five native battles and the ceremony with the carried party.
 /// This function never changes levels, HP, items, money or progression directly.
-pub(super) fn play_chapter(root: AssetRoot, r: CrystalRuntime, mut c: VisibleShellController) {
+pub(super) fn play_chapter(
+    root: AssetRoot,
+    r: CrystalRuntime,
+    mut c: VisibleShellController,
+) -> (AssetRoot, CrystalRuntime, VisibleShellController) {
+    if c.snapshot()
+        .expect("actual League blackout recovery")
+        .overworld
+        .map_name
+        == CLINIC
+    {
+        assert!(!event(&c, ACTIVE) && run(&c) == 0);
+        let (door, _) = city_port(&r, "MnEly", CLINIC);
+        walk_to(&mut c, &r, (3, 6));
+        travel(&mut c, GameButton::Down, "MnEly", door);
+        continue_in_place(&mut c, &root, &r, "campaign-league-blackout-return");
+    }
     if c.snapshot().expect("Ely approach").overworld.map_name == "MnR13C00R02" {
         travel(&mut c, GameButton::Down, "MnEly", (24, 0));
         travel(&mut c, GameButton::Down, "MnEly", (24, 1));
@@ -206,6 +286,7 @@ pub(super) fn play_chapter(root: AssetRoot, r: CrystalRuntime, mut c: VisibleShe
         .map_name
         == "MnEly"
     {
+        preparation::play(&mut c, &r, &root);
         supplies(&mut c, &r);
         continue_in_place(&mut c, &root, &r, "campaign-ely-supplies");
         walk_to(&mut c, &r, (25, 14));
@@ -335,4 +416,5 @@ pub(super) fn play_chapter(root: AssetRoot, r: CrystalRuntime, mut c: VisibleShe
             .is_none()
     );
     continue_in_place(&mut c, &root, &r, "campaign-league-postgame");
+    (root, r, c)
 }

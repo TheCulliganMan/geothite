@@ -1,0 +1,36 @@
+{
+  "interior": "MnR10Cave1F",
+  "parent_route": "MN_R10",
+  "arrival_core": [
+    3,
+    12
+  ],
+  "return_trigger_core": [
+    3,
+    13
+  ],
+  "exterior_anchor_metatile": [
+    18,
+    8
+  ],
+  "exterior_door_core": [
+    36,
+    17
+  ],
+  "requires_real_collision_check": true,
+  "safe_exterior_return_core": [
+    36,
+    18
+  ],
+  "native_status": "Native510-map tight-gallery review candidate: unchanged18x14/NITE;16 terrain metatiles refine ceiling and lower return. Exact original reader/text, Revive29,23/program/event/quantity, four stairs, both native hop lanes and actual13/15-step ordinary returns, mouth3,13/clear3,12/exterior passive36,18 preserved. Three actual local controller cases PASS7.14s, including both hop lanes/reverse/returns, full-bag refusal/native Potion use/original pickup retry and Continue;150 written-pack checks and eight headless native captures PASS. Root accepted bounded visuals. User final approval and earned Q06/regional progression are not claimed.",
+  "native_warp_arrival_core": [
+    3,
+    13
+  ],
+  "dimensions_metatiles": [
+    18,
+    14
+  ],
+  "native_palette": "nite",
+  "candidate_source_sha256": "be41b5fb81f3ef8536214e903a07d28685bd71b4383cb4c3fade9ebf8ab73161"
+}

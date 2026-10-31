@@ -2,7 +2,7 @@
   "schema_version": 2,
   "id": "MnBemidji",
   "tileset": "johto_modern",
-  "compiled_tileset": "mn_bemidji",
+  "compiled_tileset": "mn_bemidji_plateau_stairs",
   "dimensions_metatiles": [
     24,
     24
@@ -39,6 +39,17 @@
       "source_block": "29",
       "collision_source_tileset": "johto",
       "collision_source_block": "29"
+    },
+    {
+      "id": "84",
+      "source_tileset": "cave",
+      "source_block": "12",
+      "collision": [
+        "FLOOR",
+        "FLOOR",
+        "WALL",
+        "FLOOR"
+      ]
     }
   ],
   "additional_water_blocks": [
@@ -1670,6 +1681,72 @@
         11
       ],
       "block": "01"
+    },
+    {
+      "name": "Complete native Azalea mart front",
+      "kind": "point",
+      "position": [
+        20,
+        9
+      ],
+      "block": "1a"
+    },
+    {
+      "name": "Complete native Azalea mart front",
+      "kind": "point",
+      "position": [
+        21,
+        9
+      ],
+      "block": "33"
+    },
+    {
+      "name": "Preserve already published native cliff composition",
+      "kind": "point",
+      "position": [
+        5,
+        10
+      ],
+      "block": "72"
+    },
+    {
+      "name": "Preserve already published native cliff composition",
+      "kind": "point",
+      "position": [
+        6,
+        10
+      ],
+      "block": "72"
+    },
+    {
+      "name": "Native stone stairs from gym plateau to main street",
+      "kind": "point",
+      "position": [
+        5,
+        10
+      ],
+      "block": "84"
     }
-  ]
+  ],
+  "native_stair_join": {
+    "block": "84",
+    "upper_rows": {
+      "source_tileset": "mn_bemidji",
+      "source_block": "72",
+      "rows": [
+        0,
+        1
+      ]
+    },
+    "lower_rows": {
+      "source_tileset": "cave",
+      "source_block": "12",
+      "rows": [
+        2,
+        3
+      ]
+    },
+    "publisher": "revise_bemidji_plateau_stairs",
+    "source_pixels_modified": false
+  }
 }

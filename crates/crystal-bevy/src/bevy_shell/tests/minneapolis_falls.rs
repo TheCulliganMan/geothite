@@ -130,7 +130,15 @@ fn fixture_with_items_on_runtime(
     let mut c = VisibleShellController { shell };
     complete_visible_smoke_player_name_if_needed(&mut c.shell, Some("CHRIS"))
         .expect("explicit trainer name");
-    let partner = std::env::var("CRYSTAL_RIVER_FIXTURE_SPECIES").unwrap_or_else(|_| "MEW".into());
+    let partner =
+        std::env::var("CRYSTAL_RIVER_FIXTURE_SPECIES").unwrap_or_else(|_| "VOYAGEAR".into());
+    assert!(
+        r.data()
+            .story_event_script_constants
+            .global
+            .contains_key(&format!("MN_DEX_MEMBER_{partner}")),
+        "river field partner must belong to the active Minnesota roster"
+    );
     let mut pokemon = r
         .data()
         .create_pokemon(&partner, 80, Dv::default())

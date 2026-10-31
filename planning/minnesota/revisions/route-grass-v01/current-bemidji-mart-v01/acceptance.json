@@ -1,0 +1,52 @@
+{
+  "status": "PASS",
+  "selected_revision": "route_grass_bemidji_mart_revision",
+  "publication": {
+    "kind": "native_town_mart_facade_and_paired_door_revision",
+    "parent_revision": "r03_fitted_gallery_revision",
+    "parent_pack": "content-packs/minnesota-r03-fitted-gallery-v02.crystalpack",
+    "parent_pack_sha256": "2e23b03fdcfedc0b93a3a03ac347f2a4440965693a52db2b401a0daeb2664580",
+    "pack": "content-packs/minnesota-current-bemidji-mart-v02.crystalpack",
+    "pack_sha256": "b4a95a5634198e39fd8b9d6528af90b66f1e626fc9582e366b4ba4b6a9588171",
+    "content_identity": "2ed77d12195e330fb6770f2913a91b6bdb4556c64849a2270e53947d90393a8e",
+    "maps": 732,
+    "map": "MnBemidji",
+    "changed_native_metatiles": 2,
+    "mart_door": [
+      41,
+      19
+    ],
+    "mart_passive_return": [
+      41,
+      20
+    ],
+    "raw_and_cached_event_mirrors_rebound": true,
+    "buildings_both_returns_verified": 6,
+    "room_exit_carpets_verified": 12,
+    "native_controller_cases_passed": 3,
+    "road_lanes_verified": 8,
+    "north_guard_lanes_verified": 2,
+    "real_lake_surf_verified": true,
+    "production_continue_old_door_denial_new_door_both_returns_and_menus": true,
+    "production_stdio_calls": 46,
+    "actual_native2d_views_inspected": 9,
+    "source_native_pixel_mismatches": 0,
+    "other_complete_maps_preserved_exact": 731,
+    "state_fair_preserved_exact": true,
+    "canonical_existing_two_cliff_cells_reconciled": true,
+    "obsolete_high_cliff_hop_source_claim_removed": true,
+    "authoring_source_index": "planning/minnesota/revisions/route-grass-v01/current-bemidji-mart-v01/sources.json",
+    "authoring_source_index_sha256": "90aa4916eb2b66e574e62e1fd553602a33590eedfaf90767feed7d80bb54df17",
+    "runbook": "revisions/route-grass-v01/current-bemidji-mart-v01/README.md",
+    "status": "Verified native2D Mart, paired doorway and all six buildings/public roads/lake access. Current high cliff closure preserved.",
+    "scope_limit": "User-requested Bemidji plateau stairs are next and remain uninstalled. Three original facade candidates remain; broader route/town/source acceptance stays active. Initial party/badges are local QA fixtures, not earned campaign progress."
+  },
+  "native": "native-verified-progress-v02.json",
+  "visual": "native-visual-acceptance-v02.json",
+  "production": "production-mart-continue-review-v02.json",
+  "preservation": "mart-child-preservation-v02.json",
+  "publisher_controls": "publisher-negative-receipt-v02.json",
+  "lint": "mart-publisher-build-progress-v03.json",
+  "source_reconciliation": "retired-high-cliff-source-contract-v01.json",
+  "goal_complete": false
+}

@@ -1,0 +1,34 @@
+{
+  "status": "PASS_NATIVE_ROOF_REPAIR",
+  "selected_revision": "route_grass_brainerd_mart_roof_revision",
+  "publication": {
+    "kind": "native_one_cell_mart_roof_repair",
+    "parent_revision": "route_grass_boundary_safari_sources_revision",
+    "parent_pack": "content-packs/minnesota-iron-crosscut-rock-cache-v02.crystalpack",
+    "parent_pack_sha256": "bc38b8920bdc6d5e3c0e18ddac283aa4087e0020d694861f277d10314a3875d1",
+    "pack": "content-packs/minnesota-current-brainerd-mart-roof-v01.crystalpack",
+    "pack_sha256": "e343cd9c65f7c876946be4b59878eabc564c9c7f42a7f29f54cb1a2fac89396d",
+    "content_identity": "acbcb88bb951f3cc343ac550a4a83e423904a7b42fa4dfccfc88497d49092866",
+    "map": "MnBrainerd",
+    "metatile": [
+      10,
+      9
+    ],
+    "before": "05",
+    "after": "19",
+    "all_other731_maps_preserved_exact": true,
+    "all_collision_art_events_audio_preserved_exact": true,
+    "visual_mode": "2D only",
+    "native_building_returns": 10,
+    "actual_native_images_inspected": 2,
+    "source_native_pixel_mismatches": 0,
+    "authoring_source_index": "planning/minnesota/revisions/route-grass-v01/current-brainerd-successor-v01/sources.json",
+    "authoring_source_index_sha256": "cc5ed5bbe88ff6b121f2e01f6bda57f8c2346e7b3f0e43764bdd246eb2af8460",
+    "runbook": "planning/minnesota/revisions/route-grass-v01/current-brainerd-successor-v01/README.md",
+    "code_lint_status": "PASS",
+    "status": "Complete original native Mart roof; existing five buildings, both returns and Continue verified. Native ordinary terrace stair and closed tall cliff preserved; obsolete jump source contract retired."
+  },
+  "parent_collision_stairs_native_production_inputs_inherited_exact": true,
+  "all_parent_source_fields_preserved": true,
+  "goal_complete": false
+}

@@ -1,0 +1,7 @@
+{
+  "source": ".local/route-grass-review/mankato-bank-town-native-saves-v03/brainerd-59309-1793369770617201000.crystalsave",
+  "production_input": ".local/route-grass-review/mankato-bank-town-stdio-input-v03.crystalsave",
+  "sha256": "37791184bfe7769b6c80099cd28b156493313213f0cc99a178d52deb5923bbca",
+  "source_case": "native_town_exterior_all_facades_both_returns_and_continue",
+  "scope": "Actual reached Mankato facade save; Mew60 and initial qualifications remain explicit QA fixtures."
+}

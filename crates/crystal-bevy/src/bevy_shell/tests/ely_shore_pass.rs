@@ -233,3 +233,63 @@ fn ely_shore_pass_headless_captures_actual_reached_scenes() {
         assert!(screenshot.is_file());
     }
 }
+
+#[test]
+#[ignore = "requires the selected Minnesota pack; native Ely public paths and readable signs"]
+fn ely_town_controller_public_signs_resident_four_road_lanes_and_continue() {
+    let (root, r, _) = load();
+    let mut c = fixture(&root, &r, ELY, (27, 14));
+    walk(&mut c, &r, (19, 21));
+    assert!(!talk(&mut c, (19, 20)).is_empty());
+    // Facing a walkable background event must not assume solid sign collision.
+    for (x, y, label) in [(20, 3, "MnElyTrailSignText"), (14, 21, "MnElyCampSignText")] {
+        walk(&mut c, &r, (x, y + 2));
+        for _ in 0..4 {
+            if at(&mut c).1 == (x, y + 1) {
+                break;
+            }
+            press(&mut c, GameButton::Up);
+        }
+        assert_eq!(at(&mut c), (ELY.into(), (x, y + 1)));
+        press(&mut c, GameButton::A);
+        assert_eq!(
+            c.snapshot()
+                .expect("read actual sign")
+                .ui
+                .text
+                .expect("visible sign page")
+                .label,
+            label
+        );
+        for _ in 0..96 {
+            let snapshot = c.snapshot().expect("sign pages");
+            if !snapshot.ui.text_window_open
+                && !c.has_pending_script_work()
+                && c.shell.field_notice.is_none()
+            {
+                break;
+            }
+            press(&mut c, GameButton::A);
+        }
+        assert!(
+            !c.snapshot()
+                .expect("sign released input")
+                .ui
+                .text_window_open
+        );
+    }
+    for y in [14, 15] {
+        walk(&mut c, &r, (39, y));
+        cross(&mut c, GameButton::Right, PASS, (0, y));
+        cross(&mut c, GameButton::Left, ELY, (39, y));
+    }
+    for x in [24, 25] {
+        walk(&mut c, &r, (x, 0));
+        cross(&mut c, GameButton::Up, "MnR13C00R02", (x + 10, 31));
+        cross(&mut c, GameButton::Down, ELY, (x, 0));
+    }
+    let before = c.snapshot().expect("public town checkpoint").overworld;
+    c = continue_save(root, r.clone(), &mut c);
+    let after = c.snapshot().expect("public town Continue").overworld;
+    assert_eq!((before.map_name, before.tile), (after.map_name, after.tile));
+}

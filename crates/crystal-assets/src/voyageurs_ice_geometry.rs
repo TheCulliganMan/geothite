@@ -113,7 +113,7 @@ fn neighbor(map: &MapModule, at: [u16; 2], d: Direction) -> Option<[u16; 2]> {
     (x < map.attributes.width * 2 && y < map.attributes.height * 2).then_some([x, y])
 }
 
-fn slide(
+pub(super) fn slide(
     pack: &CompiledGamePack,
     map: &MapModule,
     mut at: [u16; 2],
@@ -141,7 +141,7 @@ fn slide(
     Ok(at)
 }
 
-fn reachable(
+pub(super) fn reachable(
     pack: &CompiledGamePack,
     map: &MapModule,
     start: [u16; 2],

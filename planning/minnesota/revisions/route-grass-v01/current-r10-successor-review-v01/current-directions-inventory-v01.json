@@ -1,0 +1,83 @@
+[
+  {
+    "label": "MN_R10_RAMP_SIGNText",
+    "commands": [
+      {
+        "args": [
+          "\"CARRIER BANK\""
+        ],
+        "command": "text"
+      },
+      {
+        "args": [
+          "\"Ramp north.\""
+        ],
+        "command": "line"
+      },
+      {
+        "args": [
+          "\"Lower road east.\""
+        ],
+        "command": "para"
+      },
+      {
+        "args": [],
+        "command": "done"
+      }
+    ]
+  },
+  {
+    "label": "MN_R10_ROAD_KEEPERText",
+    "commands": [
+      {
+        "args": [
+          "\"The upper road\""
+        ],
+        "command": "text"
+      },
+      {
+        "args": [
+          "\"drops at the bank.\""
+        ],
+        "command": "line"
+      },
+      {
+        "args": [
+          "\"Use the west ramp\""
+        ],
+        "command": "para"
+      },
+      {
+        "args": [
+          "\"to climb back up.\""
+        ],
+        "command": "line"
+      },
+      {
+        "args": [],
+        "command": "done"
+      }
+    ]
+  },
+  {
+    "label": "MN_R10_T01Won",
+    "commands": [
+      {
+        "args": [
+          "\"Use the ramp if\""
+        ],
+        "command": "text"
+      },
+      {
+        "args": [
+          "\"you head back west\""
+        ],
+        "command": "line"
+      },
+      {
+        "args": [],
+        "command": "done"
+      }
+    ]
+  }
+]

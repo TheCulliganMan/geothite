@@ -1,0 +1,20 @@
+{
+  "status": "PASS_TEXT_ONLY",
+  "parent": "content-packs/minnesota-r10-exploration-v03.crystalpack",
+  "parent_sha256": "acc5e63d532de34614cbcc0ac4bd414b190d8cdc9e5d319fdf71f3de3302e073",
+  "pack": "content-packs/minnesota-current-r03-stair-guidance-v01.crystalpack",
+  "pack_sha256": "78ccaed227c86c2ab162c97eeb5bf3d793467bb0550588641ed96cf5a0ec81c8",
+  "content_identity": "b12700ca6c0b9f8742a491763a6b0815407b5b363f158a3f7358c823fd338d1e",
+  "changed_text_labels": [
+    "MN_R03_T04Won",
+    "MN_R03_TERRACE_SIGNText"
+  ],
+  "changed_map_text_caches": [
+    "MnR03C00R00"
+  ],
+  "all731_other_maps_exact": true,
+  "all732_map_geometry_collision_actors_events_teams_encounters_exact": true,
+  "all_art_audio_runtime_files_exact": true,
+  "old_route_production_receipt_inherits_exact_geometry": "production-current-route-v01.json",
+  "native_visual_inheritance": "native-visual-successor-inheritance-v01.json"
+}

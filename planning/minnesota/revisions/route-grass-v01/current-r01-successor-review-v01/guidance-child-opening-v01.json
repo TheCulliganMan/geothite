@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-r01-stair-guidance-v01.crystalpack",
+  "pack_sha256": "e6af050b697b6a9d52735713d5eabe0c069110f69ecdc5b81707e181b7ee30b2",
+  "test": "winona_new_game_cyndaquil_decline_retry_real_gift_bundle_repeat_and_continue",
+  "exit_code": 0,
+  "log": ".local/route-grass-review/r01-guidance-child-opening-v01.log",
+  "binary": "/Users/ryanculligan/GitHub/geothite/.local/dialogue-overhaul/tools/retained-current-controller-v27",
+  "binary_sha256": "1dff41444bdcf1ed944f9a8d8b70d0e3939555ffc957f6004b1494e39436fdf2"
+}

@@ -1,5 +1,9 @@
 # Border Pines talus den
 
+This is a historical predecessor. The selected native shelter now uses the
+[talus loop revision](../r17-talus-loop-v01/README.md). Resolve `world.json`
+before building; the old pack and captures below remain historical evidence.
+
 Keep R17's optional discovery short. Native bedrock now encloses the7×8room,
 the upper stones join the overhang, and the attached lower toe turns the
 approach west before the northward hook. The original Revive remains visible

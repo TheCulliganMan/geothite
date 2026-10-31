@@ -1,0 +1,50 @@
+[
+  {
+    "id": "clinic",
+    "map": "MnStCloud",
+    "core": [
+      7,
+      10
+    ]
+  },
+  {
+    "id": "mart",
+    "map": "MnStCloud",
+    "core": [
+      15,
+      10
+    ]
+  },
+  {
+    "id": "clinic-side",
+    "map": "MnStCloud",
+    "core": [
+      10,
+      10
+    ]
+  },
+  {
+    "id": "station",
+    "map": "MnStCloud",
+    "core": [
+      35,
+      12
+    ]
+  },
+  {
+    "id": "gym",
+    "map": "MnStCloud",
+    "core": [
+      8,
+      28
+    ]
+  },
+  {
+    "id": "main-street",
+    "map": "MnStCloud",
+    "core": [
+      24,
+      12
+    ]
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "status": "PASS_CURRENT_RAINY_INLAND_WINTER_GRASS_REVIEW",
+  "pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+  "pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33",
+  "native_cases": 5,
+  "production_stdio_calls": 101,
+  "grass_quadrants": 56,
+  "ordinary_shelter_walk_grass_steps": 12,
+  "ordinary_snow_return_grass_steps": 24,
+  "lower_ice_shortcut_grass_steps": 0,
+  "existing_inland_winter_footprint_exact": true,
+  "complete_map_used_pixels_and_collision_exact": true,
+  "whole_inherited_map_inspected": "planning/minnesota/renders/route-grass-v01/current-rainy-icefields-v01/candidate-v01/whole.png",
+  "scope": "Fresh native long slides/grassy shelter/healing/return, both trainers/rewards/repeat, both R20 lanes, cache ice gap/wall stop/pickup once/Continue. Production added-grass wild/native RUN and produced-save Continue/menu checks. Explicit initial party/badges/position are QA fixtures, not earned access; statewide review active."
+}

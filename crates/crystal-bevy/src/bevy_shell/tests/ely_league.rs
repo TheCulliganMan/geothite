@@ -57,7 +57,7 @@ pub(super) fn restore_partner_with(
     let p = &before.party.slots[slot].pokemon;
     let needed = match id {
         "FULL_RESTORE" => p.hp < p.max_hp || p.status.is_some(),
-        "MAX_POTION" => p.hp < p.max_hp,
+        "MAX_POTION" | "HYPER_POTION" => p.hp < p.max_hp,
         "FULL_HEAL" => p.status.is_some(),
         "REVIVE" => p.hp == 0,
         _ => panic!("unsupported carried League medicine {id}"),
@@ -127,6 +127,7 @@ pub(super) fn restore_partner_with(
         "REVIVE" => assert!(partner.hp > 0),
         "FULL_HEAL" => assert!(partner.status.is_none()),
         "MAX_POTION" => assert_eq!(partner.hp, partner.max_hp),
+        "HYPER_POTION" => assert_eq!(partner.hp, p.hp.saturating_add(200).min(p.max_hp)),
         "FULL_RESTORE" => {
             assert_eq!(partner.hp, partner.max_hp);
             assert!(partner.status.is_none());
@@ -287,6 +288,7 @@ fn ely_league_controller_seam_services_and_independent_registration() {
                     .split_whitespace()
                     .collect::<Vec<_>>()
                     .join(" ")
+                    .to_ascii_lowercase()
                     .contains(denial))
         );
         finish(&mut c);

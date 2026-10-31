@@ -4,6 +4,10 @@ A Rust implementation of Pokémon Crystal with browser and desktop clients,
 multiplayer, and an optional 2.5D overworld renderer. Game logic, rendering,
 audio, and networking are implemented in this repository.
 
+The [Pokémon Northstar opening](planning/minnesota/title/README.md) gives Minnesota
+one native Kettlurk title card over the muted new state flag. Professor Tamarack
+introduces Jiglet; the local title, New Game flow and native screenshots are verified.
+
 The [current browser release](docs/deployment.md#combined-minnesota-release-2026-10-29)
 combines the reviewed Minnesota world/dialogue, starter signature moves and all
 225 original species' field art and cries. Verdigrim's excavation encounter is
@@ -13,11 +17,92 @@ The [Tamarack and Team ICE sprite revision](planning/minnesota/npcs/tamarack-ice
 uses normal Crystal overworld proportions, woman Tamarack and eight additional
 trainer types, with private native art and local encounter checks.
 
+The [city cyclist revision](planning/minnesota/npcs/city-cyclists-v01/README.md)
+gives all 18 Minneapolis riders their own helmeted NPC bicycle sprites, separate
+from the player characters, while preserving their patrols and battles.
+
+The [Minneapolis Game Corner](planning/minnesota/game-corner.md) adds native
+slots and Card Flip, a free Coin Case, starter coins and six item/TM prizes.
+Its runbook records the local pack and production controller checks.
+
+The [Cedar Shelter revision](planning/minnesota/caves/r13-cedar-basin-v01/README.md)
+fits the care stair and opens a sheltered fishing bank while preserving Harper's
+healing and the native Max Ether. Its runbook records the selected local pack,
+Rust publication, four gameplay cases and whole-cave native 2D review.
+
+The [Rock Cut shelf drop](planning/minnesota/caves/r05-shelf-drop-v01/README.md)
+adds a short one-way descent beside the upper Repel shelf, with the original
+stairs as the uphill return. Both hillside mouths, healing and native Repel
+behavior are verified in the selected local successor.
+
+The [Driftless fossil gallery](planning/minnesota/caves/driftless-fossil-gallery-v01/README.md)
+adds an optional lower cave with fitted stairs, a native Flash exploration clue
+and a once-only sample cache. Its runbook includes both connected levels,
+actual dark/lit gameplay captures and verified local publication commands.
+
+The [Glacier Line passenger service](planning/minnesota/transit/glacier-current-v01/README.md)
+connects the five existing station halls with free return trips after the
+St. Paul courier victory. All twenty directed rides, remembered foot visits,
+public approaches, ticket guards and Continue are verified locally.
+
+The [Leech Lake pine island](planning/minnesota/towns/leech-lake-island-v01/README.md)
+adds a Surf landing, required pine habitat, optional naturalist battle, Mystic
+Water, a dry one-way return and a separate native Whirlpool cache. Five controller
+cases and a 360-call production stdio trip verify the local revision; its runbook
+includes the complete town render and exact connection/story contracts.
+
+The [river, lake and cave habitats](planning/minnesota/pokemon/acquisition-v01/water-caves-v01/README.md)
+add19 Surf tables, ten cave floors and a signed Moorhead launch, while retaining
+Leech Lake's island habitat, the fossil lab and train service. The live
+[Pokédex](https://geothite.ryanculligan.com/pokedex/) follows these verified local
+locations with times, base levels and search; nine acquisition routes remain
+pending. The runbook records the Rust build, actual captures and remaining work.
+
+The [Leech Lake mainland revision](planning/minnesota/towns/leech-lake-mainland-v01/README.md)
+frames the cabins and public lane with pines and adds a grassy cabin link that
+saves 20 steps, an optional fly-tier battle and a Super Repel clearing. Eight
+controller cases and 1,202 production stdio calls verify the combined local town.
+
+The [Iron Range fitted crosscut](planning/minnesota/caves/iron-crosscut-v01/README.md)
+replaces repeated rock rectangles with a narrower ore passage, the original
+Ether bench and a useful one-way return lip. Both original encounters and real
+mine/haulage ladders remain intact. Four gameplay cases,1,420 production calls
+and whole-room/native visual checks verify the selected local revision.
+
+The [Gunflint spring grotto](planning/minnesota/caves/gunflint-grotto-v01/README.md)
+replaces the boxy shelter with a hooked spring, two bank paths and fitted stairs.
+Otta's rest and the original Max Ether remain accessible on foot; an optional
+Surf-only pillar holds a native Revive discovery. Five gameplay cases and a
+663-call production replay verify the selected local successor.
+
+The [early research revision](planning/minnesota/pokemon/acquisition-v01/early-research.md)
+offers the two unchosen starters free after the first Rochester parcel delivery.
+Restoring either fossil lets the lab assistant provide the other free specimen
+in the same room. Native checks include an earned New Game return before any
+badge, both fossil choices through both restorations, Continue and clean stdio.
+The web guide follows these conditions; full-roster integration remains active.
+
 The [Minnesota canoe](planning/minnesota/canoe/README.md) adds a reusable key
 item, a St. Paul canoe-shop handoff after the Capitol Badge, and native Chris/Kris
 paddling sprites. Carry it and walk into open water to launch; step onto land to
 portage. Surf remains available. The separate local candidate is
 `content-packs/minnesota-canoe-v04.crystalpack`; see its runbook for verification.
+
+The [North Shore smokehouse and pie shop](planning/minnesota/landmarks/north-shore-shops-v01/README.md)
+add enterable native 2D roadside cafes and 92 reachable grass tiles for future
+spawn placement. Their Rust publisher preserves the current route encounters.
+
+The [Duluth harbor revision](planning/minnesota/revisions/duluth-harbor-platforms-v01/README.md)
+clears the inner seawall and isolated buoy, retains the outer buoys, and adds
+two floating fishing platforms with native fishermen and Surf boarding faces.
+Its runbook identifies the local pack, Rust publisher and verification commands.
+
+The [shoreline and fence follow-up](planning/minnesota/revisions/shore-rocks-open-routes-v01/README.md)
+adds native shoreline rocks, opens the requested route fences, and removes buoy
+rows already backed by trees. Exposed water boundaries and both fishing decks
+remain usable; the current local selection is recorded in `world.json`.
+The [final interior buoy cleanup](planning/minnesota/revisions/duluth-interior-buoy-clearance-v01/README.md)
+clears the last internal corner, leaving buoys only at exposed map boundaries.
 
 The new [Voyageurs Ice Cavern](planning/minnesota/ice-caves/README.md) adds a
 Minnesota two-floor ice dungeon off R20, using native sliding puzzles, persistent
@@ -321,15 +406,44 @@ relay shutdown. After raising the review minimum to 100 for the last three
 League matches, Hall of Fame and postgame Continue also pass. Earlier saves
 retain their original pack; these reviews do not establish unboosted balance.
 
+The [comprehensive campaign review](planning/minnesota/revisions/comprehensive-game-v01/README.md)
+now has an unselected 743-map V22 candidate with early starter/fossil access,
+the expanded Gunflint grotto and accepted Iron Range fitted crosscut.
+Independent complete-parent preservation, byte-identical Rust reproduction,
+build/all-target Assets Clippy,225-species policy, all602 audio PCM/frame/loop
+checks and local WebSocket protocol pass. Native/controller rebuilds and
+production-client acceptance remain pending; an initial fresh controller build
+failed before tests in newly added Ely code, which is corrected in current
+source. V20's19 component cases and inspected production views retain their
+original binding. Full earned campaign, legal acquisition, wider visual review
+and final selection remain open.
+
+The earned V16 New Game/Continue now has all eight badges, all six Reed wins,
+mine shutdown, chief victory and acknowledged restoration. Its unchanged
+restoration save has13 caught species and all three Verdigrim controls plus
+containment complete, with capture still false. The retained Pump loss and
+native recovery are preserved. The run beat two Elite members, then lost to the third; its actual blackout
+save is retained. Earned Hall of Fame remains unproved. Its native recovery earned more trainer income and beat the first three Elite members, then lost to the fourth. All losses and earned progression are retained. This older-pack journey does not establish V22 acceptance.
+The future campaign driver visits all seven HM sources and three rod houses,
+then returns by native Fly for Master Ball and caught-Dex claims after Hall of
+Fame. Local Fly/reward-return passes on V18; nineteen V20 component cases pass with declared local prerequisites. Full acquisition and final selection remain unproved.
+
 The [comprehensive dialogue overhaul](docs/dialogue-overhaul.md) rewrites the
 required story from Winona through the Boundary Waters and Hall of Fame:
-279 conversations across 36 maps and 829 authored pages, including refusals,
-reminders and returns. The unselected v19 candidate retains the current Fair
-buildings and Duluth stairs, and uses a gray fence for the holding area.
+481 conversations across 56 maps and 1,170 authored pages, including refusals,
+reminders, returns and surrounding NPC directions. The unselected v27 candidate
+retains the accepted town, shore and cave repairs through the Minneapolis citywide-cycling revision,
+binds the accepted female Tamarack and adult Reed art, and uses a gray fence
+for the holding area. Crews accept evidence before the final badges, while
+travel safeguards remain. Replies follow actual investigation and shutdown
+progress; the full earned-ending and listening gates remain open.
 It stages the opening and courier encounter, preserves authored pages and
 native text timing, and gives each handoff a clear speaker, reason and next
 destination. Its 2D runbook records candidate publication and acceptance
-separately from the historical text-only revision.
+separately from the historical text-only revision. The
+[storyboard audit](planning/minnesota/playable/dialogue-storyboard-audit.md)
+records the active duplicate-professor scene and contradictory directions found
+by reviewing the full pack. Its ignored gallery renders every installed page.
 
 The [dialogue quality revision](planning/minnesota/playable/northstar-relay.md#dialogue-quality-revision--2026-10-27)
 is published as the ignored
@@ -1031,8 +1145,9 @@ complex lairs, six rival battles, 24 added grunts and written League remain.
 Use this newly built client for the regional caught-count query. See the
 [verified reward build/run receipt](planning/minnesota/revisions/comprehensive-game-v01/README.md)
 and [full completion requirements](planning/minnesota/revisions/comprehensive-game-v01/requirements.json).
-The comprehensive-game goal remains active: HM/fishing integration, missing
-species acquisition paths and an uninterrupted full campaign still need work.
+The comprehensive-game goal remains active: final-pack HM/fishing replays,
+legal acquisition verification for all225 species and full campaign acceptance
+still need work.
 Packs, reached saves and renders remain ignored.
 
 ## Minnesota Town Map and Fly

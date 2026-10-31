@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "id": "MN_R17",
+  "source_kind": "installed_route_exterior_review_contract",
+  "native_binding": {
+    "pack": "content-packs/minnesota-current-r17-trail-guidance-v02.crystalpack",
+    "pack_sha256": "186c262b18d5174cb7ba9727358d4022bea9fce6d362529405728028ef92c60a",
+    "content_identity": "f57dda999ae1f84ae1fec5dd6b0b6d763111dba2a99b966fc6bb80b2454f38f2"
+  },
+  "grass_quadrants": 136,
+  "ice_quadrants": 92,
+  "inland_winter_preserved": true,
+  "main_crossing": {
+    "north": [
+      36,
+      0
+    ],
+    "south": [
+      32,
+      111
+    ],
+    "minimum_grass_steps_both_directions": 20
+  },
+  "sedge_crossing": {
+    "bounds_core": [
+      22,
+      88,
+      28,
+      92
+    ],
+    "minimum_grass_steps_both_directions": 4
+  },
+  "active_native_hop_lanes": [],
+  "cut_shortcut": {
+    "tree_core": [
+      36,
+      69
+    ],
+    "endpoints": [
+      [
+        36,
+        67
+      ],
+      [
+        36,
+        73
+      ]
+    ],
+    "ordinary_steps": 66,
+    "cut_steps": 6,
+    "cache": "MAX_REPEL",
+    "native_permission_and_reset_proof": "child-native-cases-v03.json"
+  },
+  "terrain_unchanged": true,
+  "requested_fence_removal_preserved": true,
+  "changed_texts": [
+    "MN_R17_SIGN_02Text",
+    "MN_R17_SIGN_03Text"
+  ],
+  "neighbors": [
+    {
+      "route": [
+        36,
+        0
+      ],
+      "map": "MnInternationalFalls",
+      "arrival": [
+        20,
+        27
+      ]
+    },
+    {
+      "route": [
+        32,
+        111
+      ],
+      "map": "MnBemidjiNorthwoods",
+      "arrival": [
+        8,
+        0
+      ]
+    }
+  ],
+  "source_production_receipt": "planning/minnesota/revisions/route-grass-v01/current-r17-successor-review-v01/current-land-course-production-v01.json",
+  "scope": "All three exterior chunks, required ordinary grass path, International Falls and Bemidji Northwoods round trips, both corrected trail signs, actual ranger healing and Continue. Initial native trainer-win QA party is setup, not earned campaign progress. Cave, Cut and ice-slide review remain separate.",
+  "optional_cave_and_every_bank_edge_not_freshly_replayed": true
+}

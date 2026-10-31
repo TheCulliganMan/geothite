@@ -1,0 +1,502 @@
+{
+  "schema_version": 1,
+  "status": "Verified local exterior revision; selected after exact-current integration.",
+  "parent_revision": "duluth_inner_buoy_clearance_revision",
+  "parent_pack": "content-packs/minnesota-current-shore-rocks-open-routes-v03.crystalpack",
+  "parent_pack_sha256": "22ddc24c06b8e15dd4211a902e118a50daa2fefecc2a6d592b0db14420bd5c22",
+  "source_sync_cells": 178,
+  "changed_cells": 120,
+  "complete_facade_moves": [
+    {
+      "name": "Fair information booth",
+      "warp": 23,
+      "box": [
+        2,
+        3,
+        4,
+        4
+      ],
+      "to": [
+        5,
+        4
+      ],
+      "native_rows": [
+        [
+          2,
+          3
+        ]
+      ]
+    },
+    {
+      "name": "Food hall stall",
+      "warp": 11,
+      "box": [
+        2,
+        6,
+        4,
+        7
+      ],
+      "to": [
+        2,
+        5
+      ],
+      "native_rows": [
+        [
+          2,
+          3
+        ]
+      ]
+    },
+    {
+      "name": "Berry snack stall",
+      "warp": 27,
+      "box": [
+        6,
+        6,
+        8,
+        7
+      ],
+      "to": [
+        5,
+        6
+      ],
+      "native_rows": [
+        [
+          2,
+          3
+        ]
+      ]
+    },
+    {
+      "name": "Garden stand stall",
+      "warp": 13,
+      "box": [
+        10,
+        6,
+        12,
+        7
+      ],
+      "to": [
+        8,
+        6
+      ],
+      "native_rows": [
+        [
+          2,
+          3
+        ]
+      ]
+    },
+    {
+      "name": "Quiz pavilion",
+      "warp": 21,
+      "box": [
+        13,
+        6,
+        15,
+        8
+      ],
+      "to": [
+        12,
+        6
+      ],
+      "native_rows": [
+        [
+          32,
+          33
+        ],
+        [
+          124,
+          126
+        ]
+      ]
+    },
+    {
+      "name": "West Seventh bakery",
+      "warp": 45,
+      "box": [
+        2,
+        21,
+        4,
+        22
+      ],
+      "to": [
+        2,
+        19
+      ],
+      "native_rows": [
+        [
+          2,
+          3
+        ]
+      ]
+    },
+    {
+      "name": "Main Pokemon Center",
+      "warp": 3,
+      "box": [
+        6,
+        21,
+        8,
+        23
+      ],
+      "to": [
+        6,
+        19
+      ],
+      "native_rows": [
+        [
+          32,
+          33
+        ],
+        [
+          124,
+          114
+        ]
+      ]
+    },
+    {
+      "name": "Main mart",
+      "warp": 5,
+      "box": [
+        12,
+        15,
+        14,
+        17
+      ],
+      "to": [
+        10,
+        15
+      ],
+      "native_rows": [
+        [
+          32,
+          33
+        ],
+        [
+          124,
+          115
+        ]
+      ]
+    },
+    {
+      "name": "Lowertown Crafts",
+      "warp": 53,
+      "box": [
+        11,
+        20,
+        13,
+        22
+      ],
+      "to": [
+        11,
+        19
+      ],
+      "native_rows": [
+        [
+          32,
+          33
+        ],
+        [
+          124,
+          126
+        ]
+      ]
+    }
+  ],
+  "preserved": [
+    "40 destinations and reciprocal room identities",
+    "all scripts, story, trainers, rewards and interiors",
+    "entire map perimeter, river, bridges and all three connection offsets",
+    "all stair and ledge terrain"
+  ],
+  "changed_anchors": [
+    {
+      "kind": "object",
+      "index": 2,
+      "before": [
+        17,
+        47
+      ],
+      "after": [
+        17,
+        43
+      ]
+    },
+    {
+      "kind": "background",
+      "index": 0,
+      "before": [
+        19,
+        45
+      ],
+      "after": [
+        19,
+        41
+      ]
+    },
+    {
+      "kind": "background",
+      "index": 1,
+      "before": [
+        29,
+        35
+      ],
+      "after": [
+        25,
+        35
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 2,
+      "before": [
+        13,
+        45
+      ],
+      "after": [
+        13,
+        41
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 3,
+      "before": [
+        13,
+        46
+      ],
+      "after": [
+        13,
+        42
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 4,
+      "before": [
+        25,
+        33
+      ],
+      "after": [
+        21,
+        33
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 5,
+      "before": [
+        25,
+        34
+      ],
+      "after": [
+        21,
+        34
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 10,
+      "before": [
+        5,
+        13
+      ],
+      "after": [
+        5,
+        11
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 11,
+      "before": [
+        5,
+        14
+      ],
+      "after": [
+        5,
+        12
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 12,
+      "before": [
+        21,
+        13
+      ],
+      "after": [
+        17,
+        13
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 13,
+      "before": [
+        21,
+        14
+      ],
+      "after": [
+        17,
+        14
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 20,
+      "before": [
+        27,
+        15
+      ],
+      "after": [
+        25,
+        15
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 21,
+      "before": [
+        27,
+        16
+      ],
+      "after": [
+        25,
+        16
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 22,
+      "before": [
+        5,
+        7
+      ],
+      "after": [
+        11,
+        9
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 23,
+      "before": [
+        5,
+        8
+      ],
+      "after": [
+        11,
+        10
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 26,
+      "before": [
+        13,
+        13
+      ],
+      "after": [
+        11,
+        13
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 27,
+      "before": [
+        13,
+        14
+      ],
+      "after": [
+        11,
+        14
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 44,
+      "before": [
+        5,
+        43
+      ],
+      "after": [
+        5,
+        39
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 45,
+      "before": [
+        5,
+        44
+      ],
+      "after": [
+        5,
+        40
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 52,
+      "before": [
+        23,
+        43
+      ],
+      "after": [
+        23,
+        41
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 53,
+      "before": [
+        23,
+        44
+      ],
+      "after": [
+        23,
+        42
+      ]
+    }
+  ],
+  "visual_revision": "Native v01 care and mart cameras still had excessive blank foreground. Add a physically blocking low courtyard rail with two ordinary openings, and move the intact craft facade one row closer to the mart.",
+  "published_candidate": {
+    "pack": "content-packs/minnesota-st-paul-inhabited-streets-v03.crystalpack",
+    "pack_sha256": "43f491c876f40823ff43da723f33e405d94d2ff59fc49d41b87d929f594d3e9d",
+    "content_identity": "51f0a44e976179272c988681fcc5fae465663a505a17926a84688700ff1ff867"
+  },
+  "historical_initial_parent": {
+    "revision": "r10_fitted_fork_revision",
+    "pack": "content-packs/minnesota-current-r10-fitted-fork-v03.crystalpack",
+    "pack_sha256": "1f16d2b3ca473cc5e937140b7ba6f3e190bcaf3718dd6854b40acd8e98a6ddff"
+  },
+  "completed_steps": [
+    "Inspect full town and both changed district cameras",
+    "Revise composition from visual review",
+    "Publish with existing Rust recompose_authored_city path",
+    "Verify exact unrelated preservation and production traversal, services, room returns, Continue, river seams and native captures before selection"
+  ],
+  "remaining_scope": [
+    "Further civic, Summit, Lowertown and eastern street composition",
+    "Activities and transaction acceptance beyond unchanged door access",
+    "Earned regional and campaign progression; no browser deployment or save migration claimed"
+  ],
+  "verification": {
+    "changed_metatiles": 120,
+    "changed_anchors": 21,
+    "door_roundtrips": 40,
+    "production_stdio_calls": 1260,
+    "native_captures": 4,
+    "source_native_pixel_mismatches": 0,
+    "unchanged_complete_maps": 731,
+    "audio_programs": 377,
+    "proof": "planning/minnesota/renders/st-paul-streets-v200/whole-root-preservation-v205.json",
+    "tour": "planning/minnesota/renders/st-paul-streets-v200/production-tour-v206/receipt.json",
+    "rail": "planning/minnesota/renders/st-paul-streets-v200/court-rail-v208/receipt.json"
+  }
+}

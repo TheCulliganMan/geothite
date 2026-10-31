@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "views_inspected": [
+    "shore-crossing",
+    "south-bend"
+  ],
+  "pixel_mismatches": 0
+}

@@ -1,0 +1,8638 @@
+{
+  "schema_version": 1,
+  "id": "minnesota-biome-ecology-v1",
+  "parent_content_hash": "905e2db23b25a7bf1289f8d3414e837269ed1215736bbd39ad510af13083c5d7",
+  "reference_structure": "Native Route29/30/37 morning/day/night substitutions and seven weighted slots; Route38/39 local-specialist contrast. Native rod thresholds, Old Rods and swarm daily flags remain unchanged. Walking/Surf slot levels stay unchanged except the explicitly relocated level41 shipwreck encounter.",
+  "grass": [
+    {
+      "map": "MnBemidjiNorthwoods",
+      "theme": "LANDMARK_MN_BEMIDJI",
+      "sample": [
+        8,
+        2
+      ],
+      "loop": [
+        9,
+        2
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "BOOMRUFF",
+          "after": "NOTCHBILL"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "BOOMRUFF",
+          "after": "NOTCHBILL"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "BOOMRUFF",
+          "after": "LATCHQUILL"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "NOTCHBILL"
+      }
+    },
+    {
+      "map": "MnDetroitLakesApproach",
+      "theme": "LANDMARK_MN_BRAINERD",
+      "sample": [
+        12,
+        12
+      ],
+      "loop": [
+        13,
+        12
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "ZAPSAP",
+          "after": "REGALARCH"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "ZAPSAP",
+          "after": "REGALARCH"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "BOOMRUFF",
+          "after": "DOZEBEAR"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "ZAPSAP",
+          "after": "REGALARCH"
+        }
+      ],
+      "replay": {
+        "time": "night",
+        "species": "DOZEBEAR"
+      }
+    },
+    {
+      "map": "MnElyShorePass",
+      "theme": "LANDMARK_MN_LEAGUE_APPROACH",
+      "sample": [
+        8,
+        8
+      ],
+      "loop": [
+        9,
+        8
+      ],
+      "edits": [
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "BOOMRUFF",
+          "after": "MISPAIR"
+        }
+      ],
+      "replay": {
+        "time": "night",
+        "species": "MISPAIR"
+      }
+    },
+    {
+      "map": "MnGrandMarais",
+      "theme": "LANDMARK_MN_GRAND_MARAIS",
+      "sample": [
+        26,
+        6
+      ],
+      "loop": [
+        27,
+        6
+      ],
+      "edits": [
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "PIPBOOM",
+          "after": "PINIT"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "PIPBOOM",
+          "after": "PINIT"
+        },
+        {
+          "time": "night",
+          "slot": 5,
+          "before": "PIPBOOM",
+          "after": "BRISTUB"
+        },
+        {
+          "time": "night",
+          "slot": 6,
+          "before": "PIPBOOM",
+          "after": "MIDGEBIT"
+        }
+      ],
+      "replay": {
+        "time": "night",
+        "species": "PINIT"
+      }
+    },
+    {
+      "map": "MnLakeItasca",
+      "theme": "LANDMARK_MN_HEADWATERS",
+      "sample": [
+        32,
+        22
+      ],
+      "loop": [
+        33,
+        22
+      ],
+      "edits": [
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "BOOMRUFF",
+          "after": "CROOKIT"
+        }
+      ],
+      "replay": {
+        "time": "night",
+        "species": "CROOKIT"
+      }
+    },
+    {
+      "map": "MnMaraisCedarApproach",
+      "theme": "LANDMARK_MN_GRAND_MARAIS",
+      "sample": [
+        10,
+        10
+      ],
+      "loop": [
+        11,
+        10
+      ],
+      "edits": [
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "BOOMRUFF",
+          "after": "MISPAIR"
+        }
+      ],
+      "replay": {
+        "time": "night",
+        "species": "MISPAIR"
+      }
+    },
+    {
+      "map": "MnMilleLacs",
+      "theme": "LANDMARK_MN_MILLE_LACS_SHORE",
+      "sample": [
+        32,
+        8
+      ],
+      "loop": [
+        33,
+        8
+      ],
+      "edits": [
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "BOOMRUFF",
+          "after": "LEECHURGE"
+        }
+      ],
+      "replay": {
+        "time": "night",
+        "species": "LEECHURGE"
+      }
+    },
+    {
+      "map": "MnMississippiConfluenceC01R00",
+      "theme": "LANDMARK_MN_MINNEAPOLIS",
+      "sample": [
+        14,
+        2
+      ],
+      "loop": [
+        15,
+        2
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "BOOMRUFF",
+          "after": "NOTCHBILL"
+        },
+        {
+          "time": "morning",
+          "slot": 5,
+          "before": "BOOMRUFF",
+          "after": "SAMURREL"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "BOOMRUFF",
+          "after": "NOTCHBILL"
+        },
+        {
+          "time": "day",
+          "slot": 5,
+          "before": "BOOMRUFF",
+          "after": "SAMURREL"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "BOOMRUFF",
+          "after": "CROOKIT"
+        },
+        {
+          "time": "night",
+          "slot": 5,
+          "before": "BOOMRUFF",
+          "after": "HATCHIT"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "NOTCHBILL"
+      }
+    },
+    {
+      "map": "MnMississippiConfluenceC02R00",
+      "theme": "LANDMARK_MN_MINNEAPOLIS",
+      "sample": [
+        40,
+        2
+      ],
+      "loop": [
+        41,
+        2
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "BOOMRUFF",
+          "after": "NOTCHBILL"
+        },
+        {
+          "time": "morning",
+          "slot": 5,
+          "before": "BOOMRUFF",
+          "after": "SAMURREL"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "BOOMRUFF",
+          "after": "NOTCHBILL"
+        },
+        {
+          "time": "day",
+          "slot": 5,
+          "before": "BOOMRUFF",
+          "after": "SAMURREL"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "BOOMRUFF",
+          "after": "CROOKIT"
+        },
+        {
+          "time": "night",
+          "slot": 5,
+          "before": "BOOMRUFF",
+          "after": "HATCHIT"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "NOTCHBILL"
+      }
+    },
+    {
+      "map": "MnMississippiLowerWoodsC00R00",
+      "theme": "LANDMARK_MN_WINONA",
+      "sample": [
+        62,
+        22
+      ],
+      "loop": [
+        63,
+        22
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "BOOMRUFF",
+          "after": "NOTCHBILL"
+        },
+        {
+          "time": "morning",
+          "slot": 5,
+          "before": "BOOMRUFF",
+          "after": "SAMURREL"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "BOOMRUFF",
+          "after": "NOTCHBILL"
+        },
+        {
+          "time": "day",
+          "slot": 5,
+          "before": "BOOMRUFF",
+          "after": "SAMURREL"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "BOOMRUFF",
+          "after": "CROOKIT"
+        },
+        {
+          "time": "night",
+          "slot": 5,
+          "before": "BOOMRUFF",
+          "after": "HATCHIT"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "NOTCHBILL"
+      }
+    },
+    {
+      "map": "MnMississippiLowerWoodsC00R01",
+      "theme": "LANDMARK_MN_WINONA",
+      "sample": [
+        14,
+        1
+      ],
+      "loop": [
+        15,
+        1
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "BOOMRUFF",
+          "after": "NOTCHBILL"
+        },
+        {
+          "time": "morning",
+          "slot": 5,
+          "before": "BOOMRUFF",
+          "after": "SAMURREL"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "BOOMRUFF",
+          "after": "NOTCHBILL"
+        },
+        {
+          "time": "day",
+          "slot": 5,
+          "before": "BOOMRUFF",
+          "after": "SAMURREL"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "BOOMRUFF",
+          "after": "CROOKIT"
+        },
+        {
+          "time": "night",
+          "slot": 5,
+          "before": "BOOMRUFF",
+          "after": "HATCHIT"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "NOTCHBILL"
+      }
+    },
+    {
+      "map": "MnMississippiLowerWoodsC00R02",
+      "theme": "LANDMARK_MN_WINONA",
+      "sample": [
+        30,
+        10
+      ],
+      "loop": [
+        31,
+        10
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "BOOMRUFF",
+          "after": "NOTCHBILL"
+        },
+        {
+          "time": "morning",
+          "slot": 5,
+          "before": "BOOMRUFF",
+          "after": "SAMURREL"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "BOOMRUFF",
+          "after": "NOTCHBILL"
+        },
+        {
+          "time": "day",
+          "slot": 5,
+          "before": "BOOMRUFF",
+          "after": "SAMURREL"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "BOOMRUFF",
+          "after": "CROOKIT"
+        },
+        {
+          "time": "night",
+          "slot": 5,
+          "before": "BOOMRUFF",
+          "after": "HATCHIT"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "NOTCHBILL"
+      }
+    },
+    {
+      "map": "MnMississippiLowerWoodsC01R00",
+      "theme": "LANDMARK_MN_WINONA",
+      "sample": [
+        6,
+        16
+      ],
+      "loop": [
+        7,
+        16
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "BOOMRUFF",
+          "after": "NOTCHBILL"
+        },
+        {
+          "time": "morning",
+          "slot": 5,
+          "before": "BOOMRUFF",
+          "after": "SAMURREL"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "BOOMRUFF",
+          "after": "NOTCHBILL"
+        },
+        {
+          "time": "day",
+          "slot": 5,
+          "before": "BOOMRUFF",
+          "after": "SAMURREL"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "BOOMRUFF",
+          "after": "CROOKIT"
+        },
+        {
+          "time": "night",
+          "slot": 5,
+          "before": "BOOMRUFF",
+          "after": "HATCHIT"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "NOTCHBILL"
+      }
+    },
+    {
+      "map": "MnMississippiLowerWoodsC01R01",
+      "theme": "LANDMARK_MN_WINONA",
+      "sample": [
+        52,
+        8
+      ],
+      "loop": [
+        53,
+        8
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "BOOMRUFF",
+          "after": "NOTCHBILL"
+        },
+        {
+          "time": "morning",
+          "slot": 5,
+          "before": "BOOMRUFF",
+          "after": "SAMURREL"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "BOOMRUFF",
+          "after": "NOTCHBILL"
+        },
+        {
+          "time": "day",
+          "slot": 5,
+          "before": "BOOMRUFF",
+          "after": "SAMURREL"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "BOOMRUFF",
+          "after": "CROOKIT"
+        },
+        {
+          "time": "night",
+          "slot": 5,
+          "before": "BOOMRUFF",
+          "after": "HATCHIT"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "NOTCHBILL"
+      }
+    },
+    {
+      "map": "MnMississippiLowerWoodsC01R02",
+      "theme": "LANDMARK_MN_WINONA",
+      "sample": [
+        12,
+        1
+      ],
+      "loop": [
+        13,
+        1
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "BOOMRUFF",
+          "after": "NOTCHBILL"
+        },
+        {
+          "time": "morning",
+          "slot": 5,
+          "before": "BOOMRUFF",
+          "after": "SAMURREL"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "BOOMRUFF",
+          "after": "NOTCHBILL"
+        },
+        {
+          "time": "day",
+          "slot": 5,
+          "before": "BOOMRUFF",
+          "after": "SAMURREL"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "BOOMRUFF",
+          "after": "CROOKIT"
+        },
+        {
+          "time": "night",
+          "slot": 5,
+          "before": "BOOMRUFF",
+          "after": "HATCHIT"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "NOTCHBILL"
+      }
+    },
+    {
+      "map": "MnMississippiUpstreamWoodsC00R00",
+      "theme": "LANDMARK_MN_RIVER_BLUFFS",
+      "sample": [
+        46,
+        40
+      ],
+      "loop": [
+        47,
+        40
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "BOOMRUFF",
+          "after": "NOTCHBILL"
+        },
+        {
+          "time": "morning",
+          "slot": 5,
+          "before": "BOOMRUFF",
+          "after": "SAMURREL"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "BOOMRUFF",
+          "after": "NOTCHBILL"
+        },
+        {
+          "time": "day",
+          "slot": 5,
+          "before": "BOOMRUFF",
+          "after": "SAMURREL"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "BOOMRUFF",
+          "after": "CROOKIT"
+        },
+        {
+          "time": "night",
+          "slot": 5,
+          "before": "BOOMRUFF",
+          "after": "HATCHIT"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "NOTCHBILL"
+      }
+    },
+    {
+      "map": "MnMississippiUpstreamWoodsC00R01",
+      "theme": "LANDMARK_MN_RIVER_BLUFFS",
+      "sample": [
+        48,
+        1
+      ],
+      "loop": [
+        49,
+        1
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "BOOMRUFF",
+          "after": "NOTCHBILL"
+        },
+        {
+          "time": "morning",
+          "slot": 5,
+          "before": "BOOMRUFF",
+          "after": "SAMURREL"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "BOOMRUFF",
+          "after": "NOTCHBILL"
+        },
+        {
+          "time": "day",
+          "slot": 5,
+          "before": "BOOMRUFF",
+          "after": "SAMURREL"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "BOOMRUFF",
+          "after": "CROOKIT"
+        },
+        {
+          "time": "night",
+          "slot": 5,
+          "before": "BOOMRUFF",
+          "after": "HATCHIT"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "NOTCHBILL"
+      }
+    },
+    {
+      "map": "MnMississippiUpstreamWoodsC00R02",
+      "theme": "LANDMARK_MN_RIVER_BLUFFS",
+      "sample": [
+        56,
+        14
+      ],
+      "loop": [
+        57,
+        14
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "BOOMRUFF",
+          "after": "NOTCHBILL"
+        },
+        {
+          "time": "morning",
+          "slot": 5,
+          "before": "BOOMRUFF",
+          "after": "SAMURREL"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "BOOMRUFF",
+          "after": "NOTCHBILL"
+        },
+        {
+          "time": "day",
+          "slot": 5,
+          "before": "BOOMRUFF",
+          "after": "SAMURREL"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "BOOMRUFF",
+          "after": "CROOKIT"
+        },
+        {
+          "time": "night",
+          "slot": 5,
+          "before": "BOOMRUFF",
+          "after": "HATCHIT"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "NOTCHBILL"
+      }
+    },
+    {
+      "map": "MnMississippiUpstreamWoodsC01R00",
+      "theme": "LANDMARK_MN_RIVER_BLUFFS",
+      "sample": [
+        12,
+        12
+      ],
+      "loop": [
+        13,
+        12
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "BOOMRUFF",
+          "after": "NOTCHBILL"
+        },
+        {
+          "time": "morning",
+          "slot": 5,
+          "before": "BOOMRUFF",
+          "after": "SAMURREL"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "BOOMRUFF",
+          "after": "NOTCHBILL"
+        },
+        {
+          "time": "day",
+          "slot": 5,
+          "before": "BOOMRUFF",
+          "after": "SAMURREL"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "BOOMRUFF",
+          "after": "CROOKIT"
+        },
+        {
+          "time": "night",
+          "slot": 5,
+          "before": "BOOMRUFF",
+          "after": "HATCHIT"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "NOTCHBILL"
+      }
+    },
+    {
+      "map": "MnMississippiUpstreamWoodsC01R01",
+      "theme": "LANDMARK_MN_RIVER_BLUFFS",
+      "sample": [
+        28,
+        1
+      ],
+      "loop": [
+        29,
+        1
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "BOOMRUFF",
+          "after": "NOTCHBILL"
+        },
+        {
+          "time": "morning",
+          "slot": 5,
+          "before": "BOOMRUFF",
+          "after": "SAMURREL"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "BOOMRUFF",
+          "after": "NOTCHBILL"
+        },
+        {
+          "time": "day",
+          "slot": 5,
+          "before": "BOOMRUFF",
+          "after": "SAMURREL"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "BOOMRUFF",
+          "after": "CROOKIT"
+        },
+        {
+          "time": "night",
+          "slot": 5,
+          "before": "BOOMRUFF",
+          "after": "HATCHIT"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "NOTCHBILL"
+      }
+    },
+    {
+      "map": "MnMississippiUpstreamWoodsC01R02",
+      "theme": "LANDMARK_MN_RIVER_BLUFFS",
+      "sample": [
+        30,
+        1
+      ],
+      "loop": [
+        31,
+        1
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "BOOMRUFF",
+          "after": "NOTCHBILL"
+        },
+        {
+          "time": "morning",
+          "slot": 5,
+          "before": "BOOMRUFF",
+          "after": "SAMURREL"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "BOOMRUFF",
+          "after": "NOTCHBILL"
+        },
+        {
+          "time": "day",
+          "slot": 5,
+          "before": "BOOMRUFF",
+          "after": "SAMURREL"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "BOOMRUFF",
+          "after": "CROOKIT"
+        },
+        {
+          "time": "night",
+          "slot": 5,
+          "before": "BOOMRUFF",
+          "after": "HATCHIT"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "NOTCHBILL"
+      }
+    },
+    {
+      "map": "MnPreservePineEntry",
+      "theme": "LANDMARK_MN_BOUNDARY_BASECAMP",
+      "sample": [
+        16,
+        2
+      ],
+      "loop": [
+        17,
+        2
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "BOOMRUFF",
+          "after": "REVERLOON"
+        },
+        {
+          "time": "morning",
+          "slot": 6,
+          "before": "LASSERP",
+          "after": "AGROPUMMEL"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "BOOMRUFF",
+          "after": "REVERLOON"
+        },
+        {
+          "time": "day",
+          "slot": 6,
+          "before": "LASSERP",
+          "after": "AGROPUMMEL"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "BOOMRUFF",
+          "after": "MARSHRACK"
+        },
+        {
+          "time": "night",
+          "slot": 6,
+          "before": "LASSERP",
+          "after": "AGROPUMMEL"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "REVERLOON"
+      }
+    },
+    {
+      "map": "MnR01C00R00",
+      "theme": "LANDMARK_MN_DRIFTLESS",
+      "sample": [
+        24,
+        18
+      ],
+      "loop": [
+        25,
+        18
+      ],
+      "edits": [
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "PIPBOOM",
+          "after": "MIDGEBIT"
+        },
+        {
+          "time": "night",
+          "slot": 3,
+          "before": "PIPBOOM",
+          "after": "DENSY"
+        },
+        {
+          "time": "night",
+          "slot": 6,
+          "before": "PIPBOOM",
+          "after": "DRIPTIP"
+        }
+      ],
+      "replay": {
+        "time": "night",
+        "species": "MIDGEBIT"
+      }
+    },
+    {
+      "map": "MnR02C00R00",
+      "theme": "LANDMARK_MN_PRAIRIE_FARM",
+      "sample": [
+        20,
+        12
+      ],
+      "loop": [
+        21,
+        12
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 3,
+          "before": "PECKIT",
+          "after": "PIPBOOM"
+        },
+        {
+          "time": "morning",
+          "slot": 6,
+          "before": "JOTLET",
+          "after": "RUSTLEBEE"
+        },
+        {
+          "time": "day",
+          "slot": 3,
+          "before": "PECKIT",
+          "after": "PIPBOOM"
+        },
+        {
+          "time": "day",
+          "slot": 6,
+          "before": "JOTLET",
+          "after": "RUSTLEBEE"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "PIPBOOM",
+          "after": "MIDGEBIT"
+        },
+        {
+          "time": "night",
+          "slot": 6,
+          "before": "JOTLET",
+          "after": "RUSTLEBEE"
+        }
+      ],
+      "replay": {
+        "time": "night",
+        "species": "MIDGEBIT"
+      }
+    },
+    {
+      "map": "MnR03C00R00",
+      "theme": "LANDMARK_MN_RIVER_VALLEY",
+      "sample": [
+        16,
+        8
+      ],
+      "loop": [
+        17,
+        8
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 5,
+          "before": "ZAPSAP",
+          "after": "TESSLARV"
+        },
+        {
+          "time": "day",
+          "slot": 5,
+          "before": "ZAPSAP",
+          "after": "TESSLARV"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "PIPBOOM",
+          "after": "MIDGEBIT"
+        },
+        {
+          "time": "night",
+          "slot": 5,
+          "before": "ZAPSAP",
+          "after": "TESSLARV"
+        }
+      ],
+      "replay": {
+        "time": "night",
+        "species": "MIDGEBIT"
+      }
+    },
+    {
+      "map": "MnR03C00R01",
+      "theme": "LANDMARK_MN_RIVER_VALLEY",
+      "sample": [
+        38,
+        1
+      ],
+      "loop": [
+        39,
+        1
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 5,
+          "before": "ZAPSAP",
+          "after": "TESSLARV"
+        },
+        {
+          "time": "day",
+          "slot": 5,
+          "before": "ZAPSAP",
+          "after": "TESSLARV"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "PIPBOOM",
+          "after": "MIDGEBIT"
+        },
+        {
+          "time": "night",
+          "slot": 5,
+          "before": "ZAPSAP",
+          "after": "TESSLARV"
+        }
+      ],
+      "replay": {
+        "time": "night",
+        "species": "MIDGEBIT"
+      }
+    },
+    {
+      "map": "MnR04C00R00",
+      "theme": "LANDMARK_MN_TWIN_CITIES",
+      "sample": [
+        14,
+        10
+      ],
+      "loop": [
+        15,
+        10
+      ],
+      "edits": [
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "PIPBOOM",
+          "after": "WHIRLNUT"
+        }
+      ],
+      "replay": {
+        "time": "night",
+        "species": "WHIRLNUT"
+      }
+    },
+    {
+      "map": "MnR05C00R00",
+      "theme": "LANDMARK_MN_RIVER_BLUFFS",
+      "sample": [
+        34,
+        18
+      ],
+      "loop": [
+        35,
+        18
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "ZAPSAP",
+          "after": "TESSLARV"
+        },
+        {
+          "time": "morning",
+          "slot": 4,
+          "before": "JOTLET",
+          "after": "HUSHISS"
+        },
+        {
+          "time": "morning",
+          "slot": 5,
+          "before": "JOTLET",
+          "after": "DRIPTIP"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "ZAPSAP",
+          "after": "TESSLARV"
+        },
+        {
+          "time": "day",
+          "slot": 4,
+          "before": "JOTLET",
+          "after": "HUSHISS"
+        },
+        {
+          "time": "day",
+          "slot": 5,
+          "before": "JOTLET",
+          "after": "DRIPTIP"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "PIPBOOM",
+          "after": "WHIRLNUT"
+        },
+        {
+          "time": "night",
+          "slot": 4,
+          "before": "JOTLET",
+          "after": "HUSHISS"
+        },
+        {
+          "time": "night",
+          "slot": 5,
+          "before": "JOTLET",
+          "after": "DRIPTIP"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "TESSLARV"
+      }
+    },
+    {
+      "map": "MnR05C00R01",
+      "theme": "LANDMARK_MN_RIVER_BLUFFS",
+      "sample": [
+        18,
+        12
+      ],
+      "loop": [
+        19,
+        12
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "ZAPSAP",
+          "after": "TESSLARV"
+        },
+        {
+          "time": "morning",
+          "slot": 4,
+          "before": "JOTLET",
+          "after": "HUSHISS"
+        },
+        {
+          "time": "morning",
+          "slot": 5,
+          "before": "JOTLET",
+          "after": "DRIPTIP"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "ZAPSAP",
+          "after": "TESSLARV"
+        },
+        {
+          "time": "day",
+          "slot": 4,
+          "before": "JOTLET",
+          "after": "HUSHISS"
+        },
+        {
+          "time": "day",
+          "slot": 5,
+          "before": "JOTLET",
+          "after": "DRIPTIP"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "PIPBOOM",
+          "after": "WHIRLNUT"
+        },
+        {
+          "time": "night",
+          "slot": 4,
+          "before": "JOTLET",
+          "after": "HUSHISS"
+        },
+        {
+          "time": "night",
+          "slot": 5,
+          "before": "JOTLET",
+          "after": "DRIPTIP"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "TESSLARV"
+      }
+    },
+    {
+      "map": "MnR05C00R02",
+      "theme": "LANDMARK_MN_RIVER_BLUFFS",
+      "sample": [
+        20,
+        2
+      ],
+      "loop": [
+        21,
+        2
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "ZAPSAP",
+          "after": "TESSLARV"
+        },
+        {
+          "time": "morning",
+          "slot": 4,
+          "before": "JOTLET",
+          "after": "HUSHISS"
+        },
+        {
+          "time": "morning",
+          "slot": 5,
+          "before": "JOTLET",
+          "after": "DRIPTIP"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "ZAPSAP",
+          "after": "TESSLARV"
+        },
+        {
+          "time": "day",
+          "slot": 4,
+          "before": "JOTLET",
+          "after": "HUSHISS"
+        },
+        {
+          "time": "day",
+          "slot": 5,
+          "before": "JOTLET",
+          "after": "DRIPTIP"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "PIPBOOM",
+          "after": "WHIRLNUT"
+        },
+        {
+          "time": "night",
+          "slot": 4,
+          "before": "JOTLET",
+          "after": "HUSHISS"
+        },
+        {
+          "time": "night",
+          "slot": 5,
+          "before": "JOTLET",
+          "after": "DRIPTIP"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "TESSLARV"
+      }
+    },
+    {
+      "map": "MnR06C00R00",
+      "theme": "LANDMARK_MN_PINE_COUNTRY",
+      "sample": [
+        46,
+        8
+      ],
+      "loop": [
+        47,
+        8
+      ],
+      "edits": [
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "BOOMRUFF",
+          "after": "HATCHIT"
+        }
+      ],
+      "replay": {
+        "time": "night",
+        "species": "HATCHIT"
+      }
+    },
+    {
+      "map": "MnR06C00R01",
+      "theme": "LANDMARK_MN_PINE_COUNTRY",
+      "sample": [
+        52,
+        4
+      ],
+      "loop": [
+        53,
+        4
+      ],
+      "edits": [
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "BOOMRUFF",
+          "after": "HATCHIT"
+        }
+      ],
+      "replay": {
+        "time": "night",
+        "species": "HATCHIT"
+      }
+    },
+    {
+      "map": "MnR07C00R00",
+      "theme": "LANDMARK_MN_LEECH_LAKE",
+      "sample": [
+        20,
+        6
+      ],
+      "loop": [
+        21,
+        6
+      ],
+      "edits": [
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "BOOMRUFF",
+          "after": "CROOKIT"
+        }
+      ],
+      "replay": {
+        "time": "night",
+        "species": "CROOKIT"
+      }
+    },
+    {
+      "map": "MnR07C00R01",
+      "theme": "LANDMARK_MN_LEECH_LAKE",
+      "sample": [
+        18,
+        1
+      ],
+      "loop": [
+        19,
+        1
+      ],
+      "edits": [
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "BOOMRUFF",
+          "after": "CROOKIT"
+        }
+      ],
+      "replay": {
+        "time": "night",
+        "species": "CROOKIT"
+      }
+    },
+    {
+      "map": "MnR08C00R00",
+      "theme": "LANDMARK_MN_NORTHERN_LAKES",
+      "sample": [
+        56,
+        8
+      ],
+      "loop": [
+        57,
+        8
+      ],
+      "edits": [
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "BOOMRUFF",
+          "after": "LATCHQUILL"
+        }
+      ],
+      "replay": {
+        "time": "night",
+        "species": "LATCHQUILL"
+      }
+    },
+    {
+      "map": "MnR08C00R01",
+      "theme": "LANDMARK_MN_NORTHERN_LAKES",
+      "sample": [
+        14,
+        8
+      ],
+      "loop": [
+        15,
+        8
+      ],
+      "edits": [
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "BOOMRUFF",
+          "after": "LATCHQUILL"
+        }
+      ],
+      "replay": {
+        "time": "night",
+        "species": "LATCHQUILL"
+      }
+    },
+    {
+      "map": "MnR08C01R00",
+      "theme": "LANDMARK_MN_NORTHERN_LAKES",
+      "sample": [
+        1,
+        28
+      ],
+      "loop": [
+        2,
+        28
+      ],
+      "edits": [
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "BOOMRUFF",
+          "after": "LATCHQUILL"
+        }
+      ],
+      "replay": {
+        "time": "night",
+        "species": "LATCHQUILL"
+      }
+    },
+    {
+      "map": "MnR08C01R01",
+      "theme": "LANDMARK_MN_NORTHERN_LAKES",
+      "sample": [
+        8,
+        18
+      ],
+      "loop": [
+        9,
+        18
+      ],
+      "edits": [
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "BOOMRUFF",
+          "after": "LATCHQUILL"
+        }
+      ],
+      "replay": {
+        "time": "night",
+        "species": "LATCHQUILL"
+      }
+    },
+    {
+      "map": "MnR11C00R00",
+      "theme": "LANDMARK_MN_NORTH_SHORE",
+      "sample": [
+        56,
+        8
+      ],
+      "loop": [
+        57,
+        8
+      ],
+      "edits": [
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "BOOMRUFF",
+          "after": "MISPAIR"
+        }
+      ],
+      "replay": {
+        "time": "night",
+        "species": "MISPAIR"
+      }
+    },
+    {
+      "map": "MnR11C00R01",
+      "theme": "LANDMARK_MN_NORTH_SHORE",
+      "sample": [
+        16,
+        1
+      ],
+      "loop": [
+        17,
+        1
+      ],
+      "edits": [
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "BOOMRUFF",
+          "after": "MISPAIR"
+        }
+      ],
+      "replay": {
+        "time": "night",
+        "species": "MISPAIR"
+      }
+    },
+    {
+      "map": "MnR11C00R02",
+      "theme": "LANDMARK_MN_NORTH_SHORE",
+      "sample": [
+        30,
+        1
+      ],
+      "loop": [
+        31,
+        1
+      ],
+      "edits": [
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "BOOMRUFF",
+          "after": "MISPAIR"
+        }
+      ],
+      "replay": {
+        "time": "night",
+        "species": "MISPAIR"
+      }
+    },
+    {
+      "map": "MnR11C00R03",
+      "theme": "LANDMARK_MN_NORTH_SHORE",
+      "sample": [
+        32,
+        24
+      ],
+      "loop": [
+        33,
+        24
+      ],
+      "edits": [
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "BOOMRUFF",
+          "after": "MISPAIR"
+        }
+      ],
+      "replay": {
+        "time": "night",
+        "species": "MISPAIR"
+      }
+    },
+    {
+      "map": "MnR12C00R00",
+      "theme": "LANDMARK_MN_GUNFLINT",
+      "sample": [
+        36,
+        16
+      ],
+      "loop": [
+        37,
+        16
+      ],
+      "edits": [
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "BOOMRUFF",
+          "after": "DOUBLEHEX"
+        }
+      ],
+      "replay": {
+        "time": "night",
+        "species": "DOUBLEHEX"
+      }
+    },
+    {
+      "map": "MnR12C00R01",
+      "theme": "LANDMARK_MN_GUNFLINT",
+      "sample": [
+        22,
+        1
+      ],
+      "loop": [
+        23,
+        1
+      ],
+      "edits": [
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "BOOMRUFF",
+          "after": "DOUBLEHEX"
+        }
+      ],
+      "replay": {
+        "time": "night",
+        "species": "DOUBLEHEX"
+      }
+    },
+    {
+      "map": "MnR13C00R00",
+      "theme": "LANDMARK_MN_LEAGUE_APPROACH",
+      "sample": [
+        30,
+        14
+      ],
+      "loop": [
+        31,
+        14
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 6,
+          "before": "LASSERP",
+          "after": "FORTIGARD"
+        },
+        {
+          "time": "day",
+          "slot": 6,
+          "before": "LASSERP",
+          "after": "FORTIGARD"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "BOOMRUFF",
+          "after": "SHAWLTER"
+        },
+        {
+          "time": "night",
+          "slot": 6,
+          "before": "LASSERP",
+          "after": "FORTIGARD"
+        }
+      ],
+      "replay": {
+        "time": "night",
+        "species": "SHAWLTER"
+      }
+    },
+    {
+      "map": "MnR13C00R01",
+      "theme": "LANDMARK_MN_LEAGUE_APPROACH",
+      "sample": [
+        36,
+        10
+      ],
+      "loop": [
+        37,
+        10
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 6,
+          "before": "LASSERP",
+          "after": "FORTIGARD"
+        },
+        {
+          "time": "day",
+          "slot": 6,
+          "before": "LASSERP",
+          "after": "FORTIGARD"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "BOOMRUFF",
+          "after": "SHAWLTER"
+        },
+        {
+          "time": "night",
+          "slot": 6,
+          "before": "LASSERP",
+          "after": "FORTIGARD"
+        }
+      ],
+      "replay": {
+        "time": "night",
+        "species": "SHAWLTER"
+      }
+    },
+    {
+      "map": "MnR13C00R02",
+      "theme": "LANDMARK_MN_LEAGUE_APPROACH",
+      "sample": [
+        32,
+        6
+      ],
+      "loop": [
+        33,
+        6
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 6,
+          "before": "LASSERP",
+          "after": "FORTIGARD"
+        },
+        {
+          "time": "day",
+          "slot": 6,
+          "before": "LASSERP",
+          "after": "FORTIGARD"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "BOOMRUFF",
+          "after": "SHAWLTER"
+        },
+        {
+          "time": "night",
+          "slot": 6,
+          "before": "LASSERP",
+          "after": "FORTIGARD"
+        }
+      ],
+      "replay": {
+        "time": "night",
+        "species": "SHAWLTER"
+      }
+    },
+    {
+      "map": "MnR14C00R00",
+      "theme": "LANDMARK_MN_HEADWATERS",
+      "sample": [
+        28,
+        12
+      ],
+      "loop": [
+        29,
+        12
+      ],
+      "edits": [
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "BOOMRUFF",
+          "after": "CROOKIT"
+        }
+      ],
+      "replay": {
+        "time": "night",
+        "species": "CROOKIT"
+      }
+    },
+    {
+      "map": "MnR14C00R01",
+      "theme": "LANDMARK_MN_HEADWATERS",
+      "sample": [
+        14,
+        2
+      ],
+      "loop": [
+        15,
+        2
+      ],
+      "edits": [
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "BOOMRUFF",
+          "after": "CROOKIT"
+        }
+      ],
+      "replay": {
+        "time": "night",
+        "species": "CROOKIT"
+      }
+    },
+    {
+      "map": "MnR14C01R00",
+      "theme": "LANDMARK_MN_HEADWATERS",
+      "sample": [
+        16,
+        8
+      ],
+      "loop": [
+        17,
+        8
+      ],
+      "edits": [
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "BOOMRUFF",
+          "after": "CROOKIT"
+        }
+      ],
+      "replay": {
+        "time": "night",
+        "species": "CROOKIT"
+      }
+    },
+    {
+      "map": "MnR14C01R01",
+      "theme": "LANDMARK_MN_HEADWATERS",
+      "sample": [
+        8,
+        1
+      ],
+      "loop": [
+        9,
+        1
+      ],
+      "edits": [
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "BOOMRUFF",
+          "after": "CROOKIT"
+        }
+      ],
+      "replay": {
+        "time": "night",
+        "species": "CROOKIT"
+      }
+    },
+    {
+      "map": "MnR15C00R00",
+      "theme": "LANDMARK_MN_CENTRAL_LAKES",
+      "sample": [
+        16,
+        10
+      ],
+      "loop": [
+        17,
+        10
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "ZAPSAP",
+          "after": "REGALARCH"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "ZAPSAP",
+          "after": "REGALARCH"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "BOOMRUFF",
+          "after": "DOZEBEAR"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "ZAPSAP",
+          "after": "REGALARCH"
+        }
+      ],
+      "replay": {
+        "time": "night",
+        "species": "DOZEBEAR"
+      }
+    },
+    {
+      "map": "MnR16C00R00",
+      "theme": "LANDMARK_MN_RED_RIVER_PRAIRIE",
+      "sample": [
+        36,
+        4
+      ],
+      "loop": [
+        37,
+        4
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "NOTCHBILL",
+          "after": "BOOMRUFF"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "NOTCHBILL",
+          "after": "BOOMRUFF"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "BOOMRUFF",
+          "after": "CROWSCARE"
+        }
+      ],
+      "replay": {
+        "time": "night",
+        "species": "CROWSCARE"
+      }
+    },
+    {
+      "map": "MnR16C01R00",
+      "theme": "LANDMARK_MN_RED_RIVER_PRAIRIE",
+      "sample": [
+        24,
+        4
+      ],
+      "loop": [
+        25,
+        4
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "NOTCHBILL",
+          "after": "BOOMRUFF"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "NOTCHBILL",
+          "after": "BOOMRUFF"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "BOOMRUFF",
+          "after": "CROWSCARE"
+        }
+      ],
+      "replay": {
+        "time": "night",
+        "species": "CROWSCARE"
+      }
+    },
+    {
+      "map": "MnR17C00R00",
+      "theme": "LANDMARK_MN_BORDER_PINES",
+      "sample": [
+        34,
+        8
+      ],
+      "loop": [
+        35,
+        8
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "BOOMRUFF",
+          "after": "NOTCHBILL"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "BOOMRUFF",
+          "after": "NOTCHBILL"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "BOOMRUFF",
+          "after": "LATCHQUILL"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "NOTCHBILL"
+      }
+    },
+    {
+      "map": "MnR17C00R01",
+      "theme": "LANDMARK_MN_BORDER_PINES",
+      "sample": [
+        8,
+        6
+      ],
+      "loop": [
+        9,
+        6
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "BOOMRUFF",
+          "after": "NOTCHBILL"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "BOOMRUFF",
+          "after": "NOTCHBILL"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "BOOMRUFF",
+          "after": "LATCHQUILL"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "NOTCHBILL"
+      }
+    },
+    {
+      "map": "MnR17C00R02",
+      "theme": "LANDMARK_MN_BORDER_PINES",
+      "sample": [
+        30,
+        1
+      ],
+      "loop": [
+        31,
+        1
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "BOOMRUFF",
+          "after": "NOTCHBILL"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "BOOMRUFF",
+          "after": "NOTCHBILL"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "BOOMRUFF",
+          "after": "LATCHQUILL"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "NOTCHBILL"
+      }
+    },
+    {
+      "map": "MnR18C00R00",
+      "theme": "LANDMARK_MN_MILLE_LACS_SHORE",
+      "sample": [
+        22,
+        6
+      ],
+      "loop": [
+        23,
+        6
+      ],
+      "edits": [
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "BOOMRUFF",
+          "after": "LEECHURGE"
+        }
+      ],
+      "replay": {
+        "time": "night",
+        "species": "LEECHURGE"
+      }
+    },
+    {
+      "map": "MnR18C01R00",
+      "theme": "LANDMARK_MN_MILLE_LACS_SHORE",
+      "sample": [
+        1,
+        6
+      ],
+      "loop": [
+        2,
+        6
+      ],
+      "edits": [
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "BOOMRUFF",
+          "after": "LEECHURGE"
+        }
+      ],
+      "replay": {
+        "time": "night",
+        "species": "LEECHURGE"
+      }
+    },
+    {
+      "map": "MnR19C00R00",
+      "theme": "LANDMARK_MN_PRAIRIE_FOREST_LINK",
+      "sample": [
+        46,
+        14
+      ],
+      "loop": [
+        47,
+        14
+      ],
+      "edits": [
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "BOOMRUFF",
+          "after": "SAMURREL"
+        }
+      ],
+      "replay": {
+        "time": "night",
+        "species": "SAMURREL"
+      }
+    },
+    {
+      "map": "MnR19C00R01",
+      "theme": "LANDMARK_MN_PRAIRIE_FOREST_LINK",
+      "sample": [
+        22,
+        1
+      ],
+      "loop": [
+        23,
+        1
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 4,
+          "before": "NOTCHBILL",
+          "after": "BOOMRUFF"
+        },
+        {
+          "time": "day",
+          "slot": 4,
+          "before": "NOTCHBILL",
+          "after": "BOOMRUFF"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "BOOMRUFF",
+          "after": "CROWSCARE"
+        }
+      ],
+      "replay": {
+        "time": "night",
+        "species": "CROWSCARE"
+      }
+    },
+    {
+      "map": "MnR20C00R00",
+      "theme": "LANDMARK_MN_VOYAGEURS_BORDER_LOOP",
+      "sample": [
+        50,
+        28
+      ],
+      "loop": [
+        51,
+        28
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "BOOMRUFF",
+          "after": "REVERLOON"
+        },
+        {
+          "time": "morning",
+          "slot": 6,
+          "before": "LASSERP",
+          "after": "AGROPUMMEL"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "BOOMRUFF",
+          "after": "REVERLOON"
+        },
+        {
+          "time": "day",
+          "slot": 6,
+          "before": "LASSERP",
+          "after": "AGROPUMMEL"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "BOOMRUFF",
+          "after": "MARSHRACK"
+        },
+        {
+          "time": "night",
+          "slot": 6,
+          "before": "LASSERP",
+          "after": "AGROPUMMEL"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "REVERLOON"
+      }
+    },
+    {
+      "map": "MnR20C00R01",
+      "theme": "LANDMARK_MN_VOYAGEURS_BORDER_LOOP",
+      "sample": [
+        8,
+        1
+      ],
+      "loop": [
+        9,
+        1
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "BOOMRUFF",
+          "after": "REVERLOON"
+        },
+        {
+          "time": "morning",
+          "slot": 6,
+          "before": "LASSERP",
+          "after": "AGROPUMMEL"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "BOOMRUFF",
+          "after": "REVERLOON"
+        },
+        {
+          "time": "day",
+          "slot": 6,
+          "before": "LASSERP",
+          "after": "AGROPUMMEL"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "BOOMRUFF",
+          "after": "MARSHRACK"
+        },
+        {
+          "time": "night",
+          "slot": 6,
+          "before": "LASSERP",
+          "after": "AGROPUMMEL"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "REVERLOON"
+      }
+    },
+    {
+      "map": "MnR20C01R00",
+      "theme": "LANDMARK_MN_VOYAGEURS_BORDER_LOOP",
+      "sample": [
+        10,
+        18
+      ],
+      "loop": [
+        11,
+        18
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "BOOMRUFF",
+          "after": "REVERLOON"
+        },
+        {
+          "time": "morning",
+          "slot": 6,
+          "before": "LASSERP",
+          "after": "AGROPUMMEL"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "BOOMRUFF",
+          "after": "REVERLOON"
+        },
+        {
+          "time": "day",
+          "slot": 6,
+          "before": "LASSERP",
+          "after": "AGROPUMMEL"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "BOOMRUFF",
+          "after": "MARSHRACK"
+        },
+        {
+          "time": "night",
+          "slot": 6,
+          "before": "LASSERP",
+          "after": "AGROPUMMEL"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "REVERLOON"
+      }
+    },
+    {
+      "map": "MnR20C01R01",
+      "theme": "LANDMARK_MN_VOYAGEURS_BORDER_LOOP",
+      "sample": [
+        16,
+        1
+      ],
+      "loop": [
+        17,
+        1
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "BOOMRUFF",
+          "after": "REVERLOON"
+        },
+        {
+          "time": "morning",
+          "slot": 6,
+          "before": "LASSERP",
+          "after": "AGROPUMMEL"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "BOOMRUFF",
+          "after": "REVERLOON"
+        },
+        {
+          "time": "day",
+          "slot": 6,
+          "before": "LASSERP",
+          "after": "AGROPUMMEL"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "BOOMRUFF",
+          "after": "MARSHRACK"
+        },
+        {
+          "time": "night",
+          "slot": 6,
+          "before": "LASSERP",
+          "after": "AGROPUMMEL"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "REVERLOON"
+      }
+    },
+    {
+      "map": "MnRainyRiverIcefields",
+      "theme": "LANDMARK_MN_VOYAGEURS_BORDER_LOOP",
+      "sample": [
+        20,
+        4
+      ],
+      "loop": [
+        21,
+        4
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "BOOMRUFF",
+          "after": "RIMEGUARD"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "BOOMRUFF",
+          "after": "RIMEGUARD"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "BOOMRUFF",
+          "after": "RIMEGUARD"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "RIMEGUARD"
+      }
+    }
+  ],
+  "surf": [
+    {
+      "map": "MnGrandMarais",
+      "theme": "superior_coast",
+      "sample": [
+        38,
+        14
+      ],
+      "loop": [
+        38,
+        15
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "BARBELISK"
+        },
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "BUOYOSTIC"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "DRIFTILE",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "BARBELISK"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "BUOYOSTIC"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "DRIFTILE",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "LATCHUSK"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "BARBELISK"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "DRIFTILE",
+          "after": "BUOYOSTIC"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "BARBELISK"
+      },
+      "shore": [
+        37,
+        14
+      ]
+    },
+    {
+      "map": "MnLakeItasca",
+      "theme": "lake_country",
+      "sample": [
+        22,
+        18
+      ],
+      "loop": [
+        23,
+        18
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "GLACIRIS"
+        },
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "YODELOON"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "GLACIRIS"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "YODELOON"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "KEYPOUT"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "PIKEMAN"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "YODELOON"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "GLACIRIS"
+      },
+      "shore": [
+        21,
+        18
+      ]
+    },
+    {
+      "map": "MnMilleLacs",
+      "theme": "lake_country",
+      "sample": [
+        42,
+        10
+      ],
+      "loop": [
+        43,
+        10
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "GLACIRIS"
+        },
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "YODELOON"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "GLACIRIS"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "YODELOON"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "KEYPOUT"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "PIKEMAN"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "YODELOON"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "GLACIRIS"
+      },
+      "shore": [
+        41,
+        10
+      ]
+    },
+    {
+      "map": "MnMinneapolis",
+      "theme": "lake_country",
+      "sample": [
+        32,
+        10
+      ],
+      "loop": [
+        33,
+        10
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "LOOBIT",
+          "after": "TAPDUCK"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "LOOBIT",
+          "after": "TAPDUCK"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "TAPDUCK"
+      },
+      "shore": [
+        31,
+        10
+      ]
+    },
+    {
+      "map": "MnMississippiConfluenceC00R00",
+      "theme": "mississippi",
+      "sample": [
+        1,
+        2
+      ],
+      "loop": [
+        2,
+        2
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "TAPDUCK",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "SLIDEWAKE"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "RILLBOW",
+          "after": "PINGLET"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "TAPDUCK",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "SLIDEWAKE"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "RILLBOW",
+          "after": "PINGLET"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "TAPDUCK",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "SLIDEWAKE"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "RILLBOW",
+          "after": "CLINKLAW"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "GILLPUP"
+      }
+    },
+    {
+      "map": "MnMississippiConfluenceC01R00",
+      "theme": "mississippi",
+      "sample": [
+        26,
+        6
+      ],
+      "loop": [
+        27,
+        6
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "TAPDUCK",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "SLIDEWAKE"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "RILLBOW",
+          "after": "PINGLET"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "TAPDUCK",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "SLIDEWAKE"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "RILLBOW",
+          "after": "PINGLET"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "TAPDUCK",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "SLIDEWAKE"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "RILLBOW",
+          "after": "CLINKLAW"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "GILLPUP"
+      },
+      "shore": [
+        26,
+        5
+      ]
+    },
+    {
+      "map": "MnMississippiConfluenceC02R00",
+      "theme": "mississippi",
+      "sample": [
+        10,
+        6
+      ],
+      "loop": [
+        11,
+        6
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "TAPDUCK",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "SLIDEWAKE"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "RILLBOW",
+          "after": "PINGLET"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "TAPDUCK",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "SLIDEWAKE"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "RILLBOW",
+          "after": "PINGLET"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "TAPDUCK",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "SLIDEWAKE"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "RILLBOW",
+          "after": "CLINKLAW"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "GILLPUP"
+      },
+      "shore": [
+        10,
+        5
+      ]
+    },
+    {
+      "map": "MnMississippiConfluenceC03R00",
+      "theme": "mississippi",
+      "sample": [
+        2,
+        1
+      ],
+      "loop": [
+        3,
+        1
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "TAPDUCK",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "SLIDEWAKE"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "RILLBOW",
+          "after": "PINGLET"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "TAPDUCK",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "SLIDEWAKE"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "RILLBOW",
+          "after": "PINGLET"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "TAPDUCK",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "SLIDEWAKE"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "RILLBOW",
+          "after": "CLINKLAW"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "GILLPUP"
+      }
+    },
+    {
+      "map": "MnMississippiLowerWoodsC00R00",
+      "theme": "mississippi",
+      "sample": [
+        60,
+        28
+      ],
+      "loop": [
+        61,
+        28
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "TAPDUCK",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "SLIDEWAKE"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "RILLBOW",
+          "after": "PINGLET"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "TAPDUCK",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "SLIDEWAKE"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "RILLBOW",
+          "after": "PINGLET"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "TAPDUCK",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "SLIDEWAKE"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "RILLBOW",
+          "after": "CLINKLAW"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "GILLPUP"
+      },
+      "shore": [
+        60,
+        27
+      ]
+    },
+    {
+      "map": "MnMississippiLowerWoodsC00R01",
+      "theme": "mississippi",
+      "sample": [
+        29,
+        2
+      ],
+      "loop": [
+        28,
+        2
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "TAPDUCK",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "SLIDEWAKE"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "RILLBOW",
+          "after": "PINGLET"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "TAPDUCK",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "SLIDEWAKE"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "RILLBOW",
+          "after": "PINGLET"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "TAPDUCK",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "SLIDEWAKE"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "RILLBOW",
+          "after": "CLINKLAW"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "GILLPUP"
+      },
+      "shore": [
+        30,
+        2
+      ]
+    },
+    {
+      "map": "MnMississippiLowerWoodsC00R02",
+      "theme": "mississippi",
+      "sample": [
+        61,
+        16
+      ],
+      "loop": [
+        60,
+        16
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "TAPDUCK",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "SLIDEWAKE"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "RILLBOW",
+          "after": "PINGLET"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "TAPDUCK",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "SLIDEWAKE"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "RILLBOW",
+          "after": "PINGLET"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "TAPDUCK",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "SLIDEWAKE"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "RILLBOW",
+          "after": "CLINKLAW"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "GILLPUP"
+      },
+      "shore": [
+        62,
+        16
+      ]
+    },
+    {
+      "map": "MnMississippiLowerWoodsC01R00",
+      "theme": "mississippi",
+      "sample": [
+        6,
+        26
+      ],
+      "loop": [
+        7,
+        26
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "TAPDUCK",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "SLIDEWAKE"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "RILLBOW",
+          "after": "PINGLET"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "TAPDUCK",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "SLIDEWAKE"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "RILLBOW",
+          "after": "PINGLET"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "TAPDUCK",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "SLIDEWAKE"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "RILLBOW",
+          "after": "CLINKLAW"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "GILLPUP"
+      },
+      "shore": [
+        5,
+        26
+      ]
+    },
+    {
+      "map": "MnMississippiLowerWoodsC01R01",
+      "theme": "mississippi",
+      "sample": [
+        51,
+        6
+      ],
+      "loop": [
+        50,
+        6
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "TAPDUCK",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "SLIDEWAKE"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "RILLBOW",
+          "after": "PINGLET"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "TAPDUCK",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "SLIDEWAKE"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "RILLBOW",
+          "after": "PINGLET"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "TAPDUCK",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "SLIDEWAKE"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "RILLBOW",
+          "after": "CLINKLAW"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "GILLPUP"
+      },
+      "shore": [
+        52,
+        6
+      ]
+    },
+    {
+      "map": "MnMississippiLowerWoodsC01R02",
+      "theme": "mississippi",
+      "sample": [
+        22,
+        2
+      ],
+      "loop": [
+        23,
+        2
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "TAPDUCK",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "SLIDEWAKE"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "RILLBOW",
+          "after": "PINGLET"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "TAPDUCK",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "SLIDEWAKE"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "RILLBOW",
+          "after": "PINGLET"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "TAPDUCK",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "SLIDEWAKE"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "RILLBOW",
+          "after": "CLINKLAW"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "GILLPUP"
+      },
+      "shore": [
+        22,
+        1
+      ]
+    },
+    {
+      "map": "MnMississippiUpstreamWoodsC00R00",
+      "theme": "mississippi",
+      "sample": [
+        47,
+        38
+      ],
+      "loop": [
+        46,
+        38
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "TAPDUCK",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "SLIDEWAKE"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "RILLBOW",
+          "after": "PINGLET"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "TAPDUCK",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "SLIDEWAKE"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "RILLBOW",
+          "after": "PINGLET"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "TAPDUCK",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "SLIDEWAKE"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "RILLBOW",
+          "after": "CLINKLAW"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "GILLPUP"
+      },
+      "shore": [
+        48,
+        38
+      ]
+    },
+    {
+      "map": "MnMississippiUpstreamWoodsC00R01",
+      "theme": "mississippi",
+      "sample": [
+        16,
+        1
+      ],
+      "loop": [
+        17,
+        1
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "TAPDUCK",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "SLIDEWAKE"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "RILLBOW",
+          "after": "PINGLET"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "TAPDUCK",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "SLIDEWAKE"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "RILLBOW",
+          "after": "PINGLET"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "TAPDUCK",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "SLIDEWAKE"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "RILLBOW",
+          "after": "CLINKLAW"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "GILLPUP"
+      }
+    },
+    {
+      "map": "MnMississippiUpstreamWoodsC00R02",
+      "theme": "mississippi",
+      "sample": [
+        52,
+        28
+      ],
+      "loop": [
+        53,
+        28
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "TAPDUCK",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "SLIDEWAKE"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "RILLBOW",
+          "after": "PINGLET"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "TAPDUCK",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "SLIDEWAKE"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "RILLBOW",
+          "after": "PINGLET"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "TAPDUCK",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "SLIDEWAKE"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "RILLBOW",
+          "after": "CLINKLAW"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "GILLPUP"
+      },
+      "shore": [
+        52,
+        27
+      ]
+    },
+    {
+      "map": "MnMississippiUpstreamWoodsC01R00",
+      "theme": "mississippi",
+      "sample": [
+        6,
+        26
+      ],
+      "loop": [
+        7,
+        26
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "TAPDUCK",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "SLIDEWAKE"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "RILLBOW",
+          "after": "PINGLET"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "TAPDUCK",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "SLIDEWAKE"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "RILLBOW",
+          "after": "PINGLET"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "TAPDUCK",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "SLIDEWAKE"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "RILLBOW",
+          "after": "CLINKLAW"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "GILLPUP"
+      },
+      "shore": [
+        6,
+        25
+      ]
+    },
+    {
+      "map": "MnMississippiUpstreamWoodsC01R01",
+      "theme": "mississippi",
+      "sample": [
+        26,
+        2
+      ],
+      "loop": [
+        27,
+        2
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "TAPDUCK",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "SLIDEWAKE"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "RILLBOW",
+          "after": "PINGLET"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "TAPDUCK",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "SLIDEWAKE"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "RILLBOW",
+          "after": "PINGLET"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "TAPDUCK",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "SLIDEWAKE"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "RILLBOW",
+          "after": "CLINKLAW"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "GILLPUP"
+      },
+      "shore": [
+        26,
+        1
+      ]
+    },
+    {
+      "map": "MnMississippiUpstreamWoodsC01R02",
+      "theme": "mississippi",
+      "sample": [
+        34,
+        18
+      ],
+      "loop": [
+        35,
+        18
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "TAPDUCK",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "SLIDEWAKE"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "RILLBOW",
+          "after": "PINGLET"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "TAPDUCK",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "SLIDEWAKE"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "RILLBOW",
+          "after": "PINGLET"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "TAPDUCK",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "SLIDEWAKE"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "RILLBOW",
+          "after": "CLINKLAW"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "GILLPUP"
+      },
+      "shore": [
+        33,
+        18
+      ]
+    },
+    {
+      "map": "MnMississippiWinonaMouth",
+      "theme": "mississippi",
+      "sample": [
+        11,
+        2
+      ],
+      "loop": [
+        10,
+        2
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "TAPDUCK",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "SLIDEWAKE"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "RILLBOW",
+          "after": "PINGLET"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "TAPDUCK",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "SLIDEWAKE"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "RILLBOW",
+          "after": "PINGLET"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "TAPDUCK",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "SLIDEWAKE"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "RILLBOW",
+          "after": "CLINKLAW"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "GILLPUP"
+      },
+      "shore": [
+        12,
+        2
+      ]
+    },
+    {
+      "map": "MnR01C00R00",
+      "theme": "bluff_river",
+      "sample": [
+        14,
+        30
+      ],
+      "loop": [
+        15,
+        30
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "RIVVIT"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "RILLBOW"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "RIVVIT"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "RILLBOW"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "CLINKLAW"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "RILLBOW"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "GILLPUP"
+      },
+      "shore": [
+        14,
+        29
+      ]
+    },
+    {
+      "map": "MnR03C00R00",
+      "theme": "bluff_river",
+      "sample": [
+        12,
+        6
+      ],
+      "loop": [
+        13,
+        6
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "RIVVIT"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "RILLBOW"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "RILLBOW"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "CLINKLAW"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "RILLBOW"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "GILLPUP"
+      },
+      "shore": [
+        11,
+        6
+      ]
+    },
+    {
+      "map": "MnR03C00R01",
+      "theme": "bluff_river",
+      "sample": [
+        25,
+        2
+      ],
+      "loop": [
+        24,
+        2
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "RIVVIT"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "RILLBOW"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "RIVVIT"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "RILLBOW"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "CLINKLAW"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "RILLBOW"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "GILLPUP"
+      },
+      "shore": [
+        26,
+        2
+      ]
+    },
+    {
+      "map": "MnR05C00R00",
+      "theme": "bluff_river",
+      "sample": [
+        56,
+        17
+      ],
+      "loop": [
+        57,
+        17
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "RIVVIT"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "RILLBOW"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "RIVVIT"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "RILLBOW"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "CLINKLAW"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "RILLBOW"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "GILLPUP"
+      },
+      "shore": [
+        55,
+        17
+      ]
+    },
+    {
+      "map": "MnR05C00R01",
+      "theme": "bluff_river",
+      "sample": [
+        52,
+        37
+      ],
+      "loop": [
+        53,
+        37
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "RIVVIT"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "RILLBOW"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "RIVVIT"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "RILLBOW"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "CLINKLAW"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "RILLBOW"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "GILLPUP"
+      },
+      "shore": [
+        51,
+        37
+      ]
+    },
+    {
+      "map": "MnR05C00R02",
+      "theme": "bluff_river",
+      "sample": [
+        26,
+        10
+      ],
+      "loop": [
+        27,
+        10
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "RIVVIT"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "RILLBOW"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "RIVVIT"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "RILLBOW"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "GILLPUP"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "CLINKLAW"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "RILLBOW"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "GILLPUP"
+      },
+      "shore": [
+        25,
+        10
+      ]
+    },
+    {
+      "map": "MnR06C00R00",
+      "theme": "lake_country",
+      "sample": [
+        17,
+        32
+      ],
+      "loop": [
+        16,
+        32
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "GLACIRIS"
+        },
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "YODELOON"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "CLINKLAW"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "GLACIRIS"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "CLINKLAW"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "KEYPOUT"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "PIKELING"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "YODELOON"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "GLACIRIS"
+      },
+      "shore": [
+        18,
+        32
+      ]
+    },
+    {
+      "map": "MnR06C00R01",
+      "theme": "lake_country",
+      "sample": [
+        20,
+        7
+      ],
+      "loop": [
+        21,
+        7
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "GLACIRIS"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "CLINKLAW"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "GLACIRIS"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "YODELOON"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "CLINKLAW"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "KEYPOUT"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "PIKELING"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "YODELOON"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "GLACIRIS"
+      },
+      "shore": [
+        20,
+        8
+      ]
+    },
+    {
+      "map": "MnR07C00R00",
+      "theme": "lake_country",
+      "sample": [
+        46,
+        13
+      ],
+      "loop": [
+        47,
+        13
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "GLACIRIS"
+        },
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "YODELOON"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "GLACIRIS"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "YODELOON"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "KEYPOUT"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "PIKEMAN"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "YODELOON"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "GLACIRIS"
+      },
+      "shore": [
+        45,
+        13
+      ]
+    },
+    {
+      "map": "MnR07C00R01",
+      "theme": "lake_country",
+      "sample": [
+        41,
+        2
+      ],
+      "loop": [
+        40,
+        2
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "GLACIRIS"
+        },
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "YODELOON"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "GLACIRIS"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "YODELOON"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "KEYPOUT"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "PIKEMAN"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "YODELOON"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "GLACIRIS"
+      },
+      "shore": [
+        42,
+        2
+      ]
+    },
+    {
+      "map": "MnR08C00R00",
+      "theme": "lake_country",
+      "sample": [
+        12,
+        10
+      ],
+      "loop": [
+        13,
+        10
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "GLACIRIS"
+        },
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "YODELOON"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "GLACIRIS"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "YODELOON"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "KEYPOUT"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "PIKEMAN"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "YODELOON"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "GLACIRIS"
+      },
+      "shore": [
+        12,
+        9
+      ]
+    },
+    {
+      "map": "MnR08C00R01",
+      "theme": "lake_country",
+      "sample": [
+        34,
+        4
+      ],
+      "loop": [
+        35,
+        4
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "GLACIRIS"
+        },
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "YODELOON"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "GLACIRIS"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "YODELOON"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "KEYPOUT"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "PIKEMAN"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "YODELOON"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "GLACIRIS"
+      },
+      "shore": [
+        33,
+        4
+      ]
+    },
+    {
+      "map": "MnR08C01R00",
+      "theme": "lake_country",
+      "sample": [
+        7,
+        22
+      ],
+      "loop": [
+        6,
+        22
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "GLACIRIS"
+        },
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "YODELOON"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "GLACIRIS"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "YODELOON"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "KEYPOUT"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "PIKEMAN"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "YODELOON"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "GLACIRIS"
+      },
+      "shore": [
+        8,
+        22
+      ]
+    },
+    {
+      "map": "MnR08C01R01",
+      "theme": "lake_country",
+      "sample": [
+        3,
+        10
+      ],
+      "loop": [
+        2,
+        10
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "GLACIRIS"
+        },
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "YODELOON"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "GLACIRIS"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "YODELOON"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "KEYPOUT"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "PIKEMAN"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "YODELOON"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "GLACIRIS"
+      },
+      "shore": [
+        4,
+        10
+      ]
+    },
+    {
+      "map": "MnR09C00R00",
+      "theme": "ore_water",
+      "sample": [
+        50,
+        24
+      ],
+      "loop": [
+        51,
+        24
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "SCUTLET"
+        },
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "MUDMENDER"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "SCUTLET"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "MUDMENDER"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "LATCHUSK"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "SCUTLET"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "MUDMENDER"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "SCUTLET"
+      },
+      "shore": [
+        50,
+        23
+      ]
+    },
+    {
+      "map": "MnR09C00R01",
+      "theme": "ore_water",
+      "sample": [
+        33,
+        4
+      ],
+      "loop": [
+        32,
+        4
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "SCUTLET"
+        },
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "MUDMENDER"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "SCUTLET"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "LATCHUSK"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "SCUTLET"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "MUDMENDER"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "SCUTLET"
+      },
+      "shore": [
+        34,
+        4
+      ]
+    },
+    {
+      "map": "MnR09C01R00",
+      "theme": "ore_water",
+      "sample": [
+        7,
+        30
+      ],
+      "loop": [
+        6,
+        30
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "SCUTLET"
+        },
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "MUDMENDER"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "SCUTLET"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "MUDMENDER"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "LATCHUSK"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "SCUTLET"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "MUDMENDER"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "SCUTLET"
+      },
+      "shore": [
+        8,
+        30
+      ]
+    },
+    {
+      "map": "MnR10C00R00",
+      "theme": "ore_water",
+      "sample": [
+        56,
+        28
+      ],
+      "loop": [
+        57,
+        28
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "BARBELISK"
+        },
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "MUDMENDER"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "BARBELISK"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "MUDMENDER"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "LATCHUSK"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "BARBELISK"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "MUDMENDER"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "BARBELISK"
+      },
+      "shore": [
+        56,
+        27
+      ]
+    },
+    {
+      "map": "MnR10C01R00",
+      "theme": "ore_water",
+      "sample": [
+        1,
+        28
+      ],
+      "loop": [
+        2,
+        28
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "BARBELISK"
+        },
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "MUDMENDER"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "BARBELISK"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "MUDMENDER"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "LATCHUSK"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "BARBELISK"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "MUDMENDER"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "BARBELISK"
+      },
+      "shore": [
+        1,
+        27
+      ]
+    },
+    {
+      "map": "MnR11C00R00",
+      "theme": "superior_coast",
+      "sample": [
+        21,
+        13
+      ],
+      "loop": [
+        20,
+        13
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "BARBELISK"
+        },
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "BUOYOSTIC"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "DRIFTILE",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "BARBELISK"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "BUOYOSTIC"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "DRIFTILE",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "LATCHUSK"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "BARBELISK"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "DRIFTILE",
+          "after": "BUOYOSTIC"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "BARBELISK"
+      },
+      "shore": [
+        22,
+        13
+      ]
+    },
+    {
+      "map": "MnR11C00R01",
+      "theme": "superior_coast",
+      "sample": [
+        52,
+        4
+      ],
+      "loop": [
+        53,
+        4
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "BARBELISK"
+        },
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "BUOYOSTIC"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "DRIFTILE",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "BARBELISK"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "BUOYOSTIC"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "DRIFTILE",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "LATCHUSK"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "BARBELISK"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "DRIFTILE",
+          "after": "BUOYOSTIC"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "BARBELISK"
+      },
+      "shore": [
+        51,
+        4
+      ]
+    },
+    {
+      "map": "MnR11C00R02",
+      "theme": "superior_coast",
+      "sample": [
+        16,
+        1
+      ],
+      "loop": [
+        17,
+        1
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "BARBELISK"
+        },
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "BUOYOSTIC"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "DRIFTILE",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "BARBELISK"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "BUOYOSTIC"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "DRIFTILE",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "LATCHUSK"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "BARBELISK"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "DRIFTILE",
+          "after": "WRECKQUIEM",
+          "level": 41
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "BARBELISK"
+      },
+      "shore": [
+        15,
+        1
+      ]
+    },
+    {
+      "map": "MnR11C00R03",
+      "theme": "superior_coast",
+      "sample": [
+        18,
+        1
+      ],
+      "loop": [
+        19,
+        1
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "BARBELISK"
+        },
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "BUOYOSTIC"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "DRIFTILE",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "BARBELISK"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "BUOYOSTIC"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "DRIFTILE",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "LATCHUSK"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "BARBELISK"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "DRIFTILE",
+          "after": "BUOYOSTIC"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "BARBELISK"
+      },
+      "shore": [
+        17,
+        1
+      ]
+    },
+    {
+      "map": "MnR11C01R00",
+      "theme": "superior_coast",
+      "sample": [
+        1,
+        14
+      ],
+      "loop": [
+        2,
+        14
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "BARBELISK"
+        },
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "BUOYOSTIC"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "DRIFTILE",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "BARBELISK"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "BUOYOSTIC"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "DRIFTILE",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "LATCHUSK"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "BARBELISK"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "DRIFTILE",
+          "after": "BUOYOSTIC"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "BARBELISK"
+      },
+      "shore": [
+        1,
+        13
+      ]
+    },
+    {
+      "map": "MnR11C01R01",
+      "theme": "superior_coast",
+      "sample": [
+        1,
+        1
+      ],
+      "loop": [
+        2,
+        1
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "BARBELISK"
+        },
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "BUOYOSTIC"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "DRIFTILE",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "BARBELISK"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "BUOYOSTIC"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "DRIFTILE",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "LATCHUSK"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "BARBELISK"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "DRIFTILE",
+          "after": "BUOYOSTIC"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "BARBELISK"
+      }
+    },
+    {
+      "map": "MnR11C01R02",
+      "theme": "superior_coast",
+      "sample": [
+        1,
+        1
+      ],
+      "loop": [
+        2,
+        1
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "BARBELISK"
+        },
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "BUOYOSTIC"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "DRIFTILE",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "BARBELISK"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "BUOYOSTIC"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "DRIFTILE",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "LATCHUSK"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "BARBELISK"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "DRIFTILE",
+          "after": "BUOYOSTIC"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "BARBELISK"
+      }
+    },
+    {
+      "map": "MnR11C01R03",
+      "theme": "superior_coast",
+      "sample": [
+        1,
+        1
+      ],
+      "loop": [
+        2,
+        1
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "BARBELISK"
+        },
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "BUOYOSTIC"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "DRIFTILE",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "BARBELISK"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "BUOYOSTIC"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "DRIFTILE",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "LATCHUSK"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "MUDMENDER",
+          "after": "BARBELISK"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "DRIFTILE",
+          "after": "BUOYOSTIC"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "BARBELISK"
+      }
+    },
+    {
+      "map": "MnR12C00R00",
+      "theme": "lake_country",
+      "sample": [
+        28,
+        20
+      ],
+      "loop": [
+        29,
+        20
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "GLACIRIS"
+        },
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "REVERLOON"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "GLACIRIS"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "REVERLOON"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "LATCHUSK"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "PIKEMAN"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "REVERLOON"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "GLACIRIS"
+      },
+      "shore": [
+        28,
+        19
+      ]
+    },
+    {
+      "map": "MnR12C00R01",
+      "theme": "lake_country",
+      "sample": [
+        33,
+        1
+      ],
+      "loop": [
+        32,
+        1
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "GLACIRIS"
+        },
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "REVERLOON"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "GLACIRIS"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "REVERLOON"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "LATCHUSK"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "WRECKQUIEM",
+          "after": "PIKEMAN"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "REVERLOON"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "GLACIRIS"
+      },
+      "shore": [
+        34,
+        1
+      ]
+    },
+    {
+      "map": "MnR13C00R00",
+      "theme": "lake_country",
+      "sample": [
+        8,
+        23
+      ],
+      "loop": [
+        9,
+        23
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "TIPULORD"
+        },
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "REVERLOON"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "TIPULORD"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "REVERLOON"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "LATCHUSK"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "MUSKETUNGE"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "REVERLOON"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "TIPULORD"
+      },
+      "shore": [
+        8,
+        24
+      ]
+    },
+    {
+      "map": "MnR13C00R01",
+      "theme": "lake_country",
+      "sample": [
+        40,
+        1
+      ],
+      "loop": [
+        41,
+        1
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "TIPULORD"
+        },
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "REVERLOON"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "TIPULORD"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "REVERLOON"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "LATCHUSK"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "MUSKETUNGE"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "REVERLOON"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "TIPULORD"
+      }
+    },
+    {
+      "map": "MnR14C00R00",
+      "theme": "lake_country",
+      "sample": [
+        17,
+        8
+      ],
+      "loop": [
+        16,
+        8
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "GLACIRIS"
+        },
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "YODELOON"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "GLACIRIS"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "YODELOON"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "KEYPOUT"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "PIKEMAN"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "YODELOON"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "GLACIRIS"
+      },
+      "shore": [
+        18,
+        8
+      ]
+    },
+    {
+      "map": "MnR14C00R01",
+      "theme": "lake_country",
+      "sample": [
+        46,
+        1
+      ],
+      "loop": [
+        47,
+        1
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "GLACIRIS"
+        },
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "YODELOON"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "GLACIRIS"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "YODELOON"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "KEYPOUT"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "PIKEMAN"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "YODELOON"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "GLACIRIS"
+      }
+    },
+    {
+      "map": "MnR14C01R00",
+      "theme": "lake_country",
+      "sample": [
+        16,
+        46
+      ],
+      "loop": [
+        17,
+        46
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "GLACIRIS"
+        },
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "YODELOON"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "GLACIRIS"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "YODELOON"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "KEYPOUT"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "PIKEMAN"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "YODELOON"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "GLACIRIS"
+      },
+      "shore": [
+        16,
+        45
+      ]
+    },
+    {
+      "map": "MnR14C01R01",
+      "theme": "lake_country",
+      "sample": [
+        16,
+        1
+      ],
+      "loop": [
+        17,
+        1
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "GLACIRIS"
+        },
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "YODELOON"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "GLACIRIS"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "YODELOON"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "KEYPOUT"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "PIKEMAN"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "YODELOON"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "GLACIRIS"
+      },
+      "shore": [
+        15,
+        1
+      ]
+    },
+    {
+      "map": "MnR15C00R00",
+      "theme": "lake_country",
+      "sample": [
+        24,
+        2
+      ],
+      "loop": [
+        25,
+        2
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "GLACIRIS"
+        },
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "YODELOON"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "GLACIRIS"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "YODELOON"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "KEYPOUT"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "PIKEMAN"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "YODELOON"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "GLACIRIS"
+      },
+      "shore": [
+        24,
+        1
+      ]
+    },
+    {
+      "map": "MnR16C00R00",
+      "theme": "prairie_water",
+      "sample": [
+        12,
+        2
+      ],
+      "loop": [
+        13,
+        2
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "SCUTLET"
+        },
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "RIVVIT"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "CHOIRBOG"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "SCUTLET"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "RIVVIT"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "CHOIRBOG"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "SCUTLET"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "RIVVIT"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "CHOIRBOG"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "SCUTLET"
+      },
+      "shore": [
+        11,
+        2
+      ]
+    },
+    {
+      "map": "MnR16C01R00",
+      "theme": "prairie_water",
+      "sample": [
+        1,
+        2
+      ],
+      "loop": [
+        1,
+        3
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "SCUTLET"
+        },
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "RIVVIT"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "CHOIRBOG"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "SCUTLET"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "RIVVIT"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "CHOIRBOG"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "SCUTLET"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "RIVVIT"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "CHOIRBOG"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "SCUTLET"
+      },
+      "shore": [
+        2,
+        2
+      ]
+    },
+    {
+      "map": "MnR17C00R01",
+      "theme": "lake_country",
+      "sample": [
+        22,
+        20
+      ],
+      "loop": [
+        23,
+        20
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "GLACIRIS"
+        },
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "YODELOON"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "GLACIRIS"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "YODELOON"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "LATCHUSK"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "PIKEMAN"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "REVERLOON"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "GLACIRIS"
+      },
+      "shore": [
+        22,
+        19
+      ]
+    },
+    {
+      "map": "MnR18C00R00",
+      "theme": "lake_country",
+      "sample": [
+        34,
+        16
+      ],
+      "loop": [
+        35,
+        16
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "GLACIRIS"
+        },
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "YODELOON"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "GLACIRIS"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "YODELOON"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "KEYPOUT"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "PIKEMAN"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "YODELOON"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "GLACIRIS"
+      },
+      "shore": [
+        34,
+        15
+      ]
+    },
+    {
+      "map": "MnR18C01R00",
+      "theme": "lake_country",
+      "sample": [
+        2,
+        32
+      ],
+      "loop": [
+        3,
+        32
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "GLACIRIS"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "GLACIRIS"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "YODELOON"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "KEYPOUT"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "PIKEMAN"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "YODELOON"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "GLACIRIS"
+      },
+      "shore": [
+        1,
+        32
+      ]
+    },
+    {
+      "map": "MnR19C00R00",
+      "theme": "lake_country",
+      "sample": [
+        48,
+        30
+      ],
+      "loop": [
+        49,
+        30
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "GLACIRIS"
+        },
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "YODELOON"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "GLACIRIS"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "KEYPOUT"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "PIKEMAN"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "YODELOON"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "GLACIRIS"
+      },
+      "shore": [
+        48,
+        29
+      ]
+    },
+    {
+      "map": "MnR20C00R00",
+      "theme": "lake_country",
+      "sample": [
+        59,
+        22
+      ],
+      "loop": [
+        58,
+        22
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "TIPULORD"
+        },
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "REVERLOON"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "TIPULORD"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "REVERLOON"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "LATCHUSK"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "PIKEMAN"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "REVERLOON"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "TIPULORD"
+      },
+      "shore": [
+        60,
+        22
+      ]
+    },
+    {
+      "map": "MnR20C00R01",
+      "theme": "lake_country",
+      "sample": [
+        40,
+        1
+      ],
+      "loop": [
+        41,
+        1
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "TIPULORD"
+        },
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "REVERLOON"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "TIPULORD"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "REVERLOON"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "LATCHUSK"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "PIKEMAN"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "REVERLOON"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "TIPULORD"
+      }
+    },
+    {
+      "map": "MnR20C01R00",
+      "theme": "lake_country",
+      "sample": [
+        46,
+        21
+      ],
+      "loop": [
+        47,
+        21
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "TIPULORD"
+        },
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "REVERLOON"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "TIPULORD"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "REVERLOON"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "LATCHUSK"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "PIKEMAN"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "REVERLOON"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "TIPULORD"
+      },
+      "shore": [
+        46,
+        22
+      ]
+    },
+    {
+      "map": "MnR20C01R01",
+      "theme": "lake_country",
+      "sample": [
+        28,
+        6
+      ],
+      "loop": [
+        29,
+        6
+      ],
+      "edits": [
+        {
+          "time": "morning",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "TIPULORD"
+        },
+        {
+          "time": "morning",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "REVERLOON"
+        },
+        {
+          "time": "morning",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "day",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "TIPULORD"
+        },
+        {
+          "time": "day",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "REVERLOON"
+        },
+        {
+          "time": "day",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "TRAPNACK"
+        },
+        {
+          "time": "night",
+          "slot": 0,
+          "before": "CHORIP",
+          "after": "LATCHUSK"
+        },
+        {
+          "time": "night",
+          "slot": 1,
+          "before": "GILLPUP",
+          "after": "PIKEMAN"
+        },
+        {
+          "time": "night",
+          "slot": 2,
+          "before": "RIVVIT",
+          "after": "REVERLOON"
+        }
+      ],
+      "replay": {
+        "time": "morning",
+        "species": "TIPULORD"
+      },
+      "shore": [
+        27,
+        6
+      ]
+    }
+  ],
+  "fishing": [
+    {
+      "map": "MnMilleLacs",
+      "before_group": "FISHGROUP_MN_QWILFISH",
+      "biome": "lake_country",
+      "bank": {
+        "shore": [
+          41,
+          10
+        ],
+        "water": [
+          42,
+          10
+        ]
+      }
+    },
+    {
+      "map": "MnR01C00R00",
+      "before_group": "FISHGROUP_MN_QWILFISH",
+      "biome": "bluff_river",
+      "bank": {
+        "shore": [
+          14,
+          29
+        ],
+        "water": [
+          14,
+          30
+        ]
+      }
+    },
+    {
+      "map": "MnR03C00R01",
+      "before_group": "FISHGROUP_MN_QWILFISH",
+      "biome": "bluff_river"
+    },
+    {
+      "map": "MnR05C00R00",
+      "before_group": "FISHGROUP_MN_QWILFISH",
+      "biome": "bluff_river"
+    },
+    {
+      "map": "MnR05C00R01",
+      "before_group": "FISHGROUP_MN_QWILFISH",
+      "biome": "bluff_river"
+    },
+    {
+      "map": "MnR05C00R02",
+      "before_group": "FISHGROUP_MN_QWILFISH",
+      "biome": "bluff_river"
+    },
+    {
+      "map": "MnR07C00R00",
+      "before_group": "FISHGROUP_MN_QWILFISH",
+      "biome": "lake_country"
+    },
+    {
+      "map": "MnR07C00R01",
+      "before_group": "FISHGROUP_MN_QWILFISH",
+      "biome": "lake_country"
+    },
+    {
+      "map": "MnR08C00R00",
+      "before_group": "FISHGROUP_MN_QWILFISH",
+      "biome": "lake_country"
+    },
+    {
+      "map": "MnR08C00R01",
+      "before_group": "FISHGROUP_MN_QWILFISH",
+      "biome": "lake_country"
+    },
+    {
+      "map": "MnR08C01R00",
+      "before_group": "FISHGROUP_MN_QWILFISH",
+      "biome": "lake_country"
+    },
+    {
+      "map": "MnR08C01R01",
+      "before_group": "FISHGROUP_MN_QWILFISH",
+      "biome": "lake_country"
+    },
+    {
+      "map": "MnR09C00R00",
+      "before_group": "FISHGROUP_MN_QWILFISH",
+      "biome": "ore_water",
+      "bank": {
+        "shore": [
+          50,
+          23
+        ],
+        "water": [
+          50,
+          24
+        ]
+      }
+    },
+    {
+      "map": "MnR09C01R00",
+      "before_group": "FISHGROUP_MN_QWILFISH",
+      "biome": "ore_water"
+    },
+    {
+      "map": "MnR10C00R00",
+      "before_group": "FISHGROUP_MN_QWILFISH",
+      "biome": "ore_water"
+    },
+    {
+      "map": "MnR10C01R00",
+      "before_group": "FISHGROUP_MN_QWILFISH",
+      "biome": "ore_water"
+    },
+    {
+      "map": "MnR11C00R00",
+      "before_group": "FISHGROUP_MN_QWILFISH",
+      "biome": "superior_coast",
+      "bank": {
+        "shore": [
+          22,
+          13
+        ],
+        "water": [
+          21,
+          13
+        ]
+      }
+    },
+    {
+      "map": "MnR11C00R01",
+      "before_group": "FISHGROUP_MN_QWILFISH",
+      "biome": "superior_coast"
+    },
+    {
+      "map": "MnR11C00R02",
+      "before_group": "FISHGROUP_MN_QWILFISH",
+      "biome": "lighthouse_coast",
+      "bank": {
+        "shore": [
+          15,
+          1
+        ],
+        "water": [
+          16,
+          1
+        ]
+      }
+    },
+    {
+      "map": "MnR11C00R03",
+      "before_group": "FISHGROUP_MN_QWILFISH",
+      "biome": "superior_coast"
+    },
+    {
+      "map": "MnR11C01R00",
+      "before_group": "FISHGROUP_MN_QWILFISH",
+      "biome": "superior_coast"
+    },
+    {
+      "map": "MnR11C01R01",
+      "before_group": "FISHGROUP_MN_QWILFISH",
+      "biome": "superior_coast"
+    },
+    {
+      "map": "MnR11C01R02",
+      "before_group": "FISHGROUP_MN_QWILFISH",
+      "biome": "superior_coast"
+    },
+    {
+      "map": "MnR11C01R03",
+      "before_group": "FISHGROUP_MN_QWILFISH",
+      "biome": "superior_coast"
+    },
+    {
+      "map": "MnR12C00R00",
+      "before_group": "FISHGROUP_MN_QWILFISH",
+      "biome": "lake_country"
+    },
+    {
+      "map": "MnR13C00R00",
+      "before_group": "FISHGROUP_MN_QWILFISH",
+      "biome": "lake_country"
+    },
+    {
+      "map": "MnR13C00R01",
+      "before_group": "FISHGROUP_MN_QWILFISH",
+      "biome": "lake_country"
+    },
+    {
+      "map": "MnR14C00R00",
+      "before_group": "FISHGROUP_MN_QWILFISH",
+      "biome": "lake_country"
+    },
+    {
+      "map": "MnR14C00R01",
+      "before_group": "FISHGROUP_MN_QWILFISH",
+      "biome": "lake_country"
+    },
+    {
+      "map": "MnR14C01R00",
+      "before_group": "FISHGROUP_MN_QWILFISH",
+      "biome": "lake_country"
+    },
+    {
+      "map": "MnR14C01R01",
+      "before_group": "FISHGROUP_MN_QWILFISH",
+      "biome": "lake_country"
+    },
+    {
+      "map": "MnR17C00R01",
+      "before_group": "FISHGROUP_MN_QWILFISH",
+      "biome": "lake_country"
+    },
+    {
+      "map": "MnR18C00R00",
+      "before_group": "FISHGROUP_MN_QWILFISH",
+      "biome": "lake_country"
+    },
+    {
+      "map": "MnR20C00R00",
+      "before_group": "FISHGROUP_MN_QWILFISH",
+      "biome": "lake_country"
+    },
+    {
+      "map": "MnR20C00R01",
+      "before_group": "FISHGROUP_MN_QWILFISH",
+      "biome": "lake_country"
+    },
+    {
+      "map": "MnR20C01R00",
+      "before_group": "FISHGROUP_MN_QWILFISH",
+      "biome": "lake_country"
+    },
+    {
+      "map": "MnR20C01R01",
+      "before_group": "FISHGROUP_MN_QWILFISH",
+      "biome": "lake_country"
+    },
+    {
+      "map": "MnR03C00R00",
+      "before_group": "FISHGROUP_MN_HABITAT_MNR03C00R00",
+      "biome": "bluff_river"
+    },
+    {
+      "map": "MnR06C00R00",
+      "before_group": "FISHGROUP_MN_HABITAT_MNR06C00R00",
+      "biome": "lake_country"
+    },
+    {
+      "map": "MnR06C00R01",
+      "before_group": "FISHGROUP_MN_HABITAT_MNR06C00R01",
+      "biome": "lake_country"
+    },
+    {
+      "map": "MnR09C00R01",
+      "before_group": "FISHGROUP_MN_HABITAT_MNR09C00R01",
+      "biome": "ore_water"
+    },
+    {
+      "map": "MnR12C00R01",
+      "before_group": "FISHGROUP_MN_HABITAT_MNR12C00R01",
+      "biome": "lake_country"
+    },
+    {
+      "map": "MnR15C00R00",
+      "before_group": "FISHGROUP_MN_STAPLES_R15",
+      "biome": "lake_country"
+    },
+    {
+      "map": "MnR18C01R00",
+      "before_group": "FISHGROUP_MN_HABITAT_MNR18C01R00",
+      "biome": "lake_country"
+    },
+    {
+      "map": "MnWinona",
+      "before_group": "FISHGROUP_MN_OCEAN",
+      "biome": "mississippi",
+      "bank": {
+        "shore": [
+          25,
+          8
+        ],
+        "water": [
+          26,
+          8
+        ]
+      }
+    }
+  ],
+  "rod_recipes": {
+    "mississippi": {
+      "good": {
+        "BOBCAST": "PINGLET",
+        "BUOYOSTIC": "PINGLET",
+        "LEECHIMP": "GILLPUP"
+      },
+      "super": {
+        "BOBCAST": "PADDARRAY",
+        "BUOYOSTIC": "SLIDEWAKE",
+        "LEECHIMP": "MUDMENDER"
+      },
+      "timed_good": [
+        "RIVVIT",
+        "GILLPUP"
+      ],
+      "timed_super": [
+        "SLIDEWAKE",
+        "MUDMENDER"
+      ]
+    },
+    "bluff_river": {
+      "good": {
+        "LEECHIMP": "RILLBOW",
+        "POTHOLLOW": "RILLBOW"
+      },
+      "super": {
+        "LEECHIMP": "TORROUT",
+        "POTHOLLOW": "RILLBOW"
+      },
+      "timed_good": [
+        "RILLBOW",
+        "GILLPUP"
+      ],
+      "timed_super": [
+        "TORROUT",
+        "MUDMENDER"
+      ]
+    },
+    "ore_water": {
+      "good": {
+        "LEECHIMP": "CLINKLAW",
+        "POTHOLLOW": "GILLPUP"
+      },
+      "super": {
+        "LEECHIMP": "TRAPNACK",
+        "POTHOLLOW": "MUDMENDER"
+      },
+      "timed_good": [
+        "CLINKLAW",
+        "KEYPOUT"
+      ],
+      "timed_super": [
+        "TRAPNACK",
+        "LATCHUSK"
+      ]
+    },
+    "lake_country": {
+      "good": {
+        "LEECHIMP": "WINKFIN",
+        "POTHOLLOW": "PIKELING",
+        "WRECKQUIEM": "GLACIRIS"
+      },
+      "super": {
+        "LEECHIMP": "GLACIRIS",
+        "POTHOLLOW": "PIKEMAN",
+        "WRECKQUIEM": "GLACIRIS"
+      },
+      "timed_good": [
+        "PIKELING",
+        "KEYPOUT"
+      ],
+      "timed_super": [
+        "PIKEMAN",
+        "LATCHUSK"
+      ]
+    },
+    "superior_coast": {
+      "good": {
+        "LEECHIMP": "BOBCAST",
+        "POTHOLLOW": "SCUTLET"
+      },
+      "super": {
+        "LEECHIMP": "BUOYOSTIC",
+        "POTHOLLOW": "BARBELISK"
+      },
+      "timed_good": [
+        "SCUTLET",
+        "KEYPOUT"
+      ],
+      "timed_super": [
+        "BARBELISK",
+        "LATCHUSK"
+      ]
+    },
+    "lighthouse_coast": {
+      "good": {
+        "LEECHIMP": "BOBCAST",
+        "POTHOLLOW": "SCUTLET"
+      },
+      "super": {
+        "LEECHIMP": "BUOYOSTIC",
+        "POTHOLLOW": "BARBELISK"
+      },
+      "timed_good": [
+        "SCUTLET",
+        "KEYPOUT"
+      ],
+      "timed_super": [
+        "BARBELISK",
+        "WRECKQUIEM"
+      ]
+    }
+  },
+  "headbutt": {
+    "map": "MnR19C00R00",
+    "replacements": {
+      "PIPBOOM": "NOTCHBILL",
+      "CLINKLAW": "WHIRLNUT"
+    },
+    "sleep_turns_by_time": {
+      "NOTCHBILL": {
+        "night": 7
+      },
+      "WHIRLNUT": {
+        "morning": 7,
+        "day": 7
+      }
+    }
+  },
+  "hints": [
+    {
+      "map": "MnR13C00R01",
+      "label": "MN_R13_BIRD_WATCHERText",
+      "before": [
+        "BOOMRUFF follow",
+        "the lake bank.",
+        "You can see water",
+        "from this rail."
+      ],
+      "after": [
+        "REVERLOON follow",
+        "the lake bank.",
+        "You can see water",
+        "from this rail."
+      ]
+    },
+    {
+      "map": "MnR17C00R00",
+      "label": "MN_R17_OLD_PINES_WATCHERText",
+      "before": [
+        "These old crowns",
+        "shelter BOOMRUFF.",
+        "Leave the trunks",
+        "standing here."
+      ],
+      "after": [
+        "These old crowns",
+        "shelter NOTCHBILL.",
+        "Leave the trunks",
+        "standing here."
+      ]
+    }
+  ],
+  "retired_water": [
+    {
+      "map": "MnR02C00R00",
+      "reason": "The fenced irrigation drainage is deliberately sealed: no native bank,152 water cells and eight inaccessible outer cells. Preserve the farming/bridge layout and remove false acquisition claims.",
+      "before_group": "FISHGROUP_MN_QWILFISH",
+      "before_rate": 4,
+      "before_table": {
+        "morning": [
+          {
+            "level": 6,
+            "species": "CHORIP"
+          },
+          {
+            "level": 7,
+            "species": "GILLPUP"
+          },
+          {
+            "level": 9,
+            "species": "RIVVIT"
+          }
+        ],
+        "day": [
+          {
+            "level": 6,
+            "species": "CHORIP"
+          },
+          {
+            "level": 7,
+            "species": "GILLPUP"
+          },
+          {
+            "level": 9,
+            "species": "RIVVIT"
+          }
+        ],
+        "night": [
+          {
+            "level": 6,
+            "species": "CHORIP"
+          },
+          {
+            "level": 7,
+            "species": "GILLPUP"
+          },
+          {
+            "level": 9,
+            "species": "RIVVIT"
+          }
+        ]
+      },
+      "water_cells": 152,
+      "outer_water": [
+        [
+          30,
+          0
+        ],
+        [
+          31,
+          0
+        ],
+        [
+          32,
+          0
+        ],
+        [
+          33,
+          0
+        ],
+        [
+          30,
+          43
+        ],
+        [
+          31,
+          43
+        ],
+        [
+          32,
+          43
+        ],
+        [
+          33,
+          43
+        ]
+      ]
+    }
+  ],
+  "habitat_review": {
+    "reason": "Review the entire installed roster by actual habitat, including inherited local zones. Availability and early levels do not justify mismatched placement.",
+    "relocations": [
+      {
+        "map": "MnR02C00R00",
+        "zone": null,
+        "before": "PINIT",
+        "after": "TUSSNIP",
+        "slots": 3,
+        "reason": "Prairie farm grass supports the sod-stitching larva, rather than a red-pine cone.",
+        "sample": [
+          20,
+          12
+        ],
+        "loop": [
+          21,
+          12
+        ],
+        "time": "morning"
+      },
+      {
+        "map": "MnR02C00R00",
+        "zone": null,
+        "before": "PECKIT",
+        "after": "PIPBOOM",
+        "slots": 1,
+        "reason": "The open farm grass has prairie chickens; woodpeckers belong to wooded routes and tree encounters.",
+        "sample": [
+          20,
+          12
+        ],
+        "loop": [
+          21,
+          12
+        ],
+        "time": "night"
+      },
+      {
+        "map": "MnGrandMarais",
+        "zone": null,
+        "before": "NIBBIN",
+        "after": "BRISTUB",
+        "slots": 9,
+        "reason": "Replace the prairie ground squirrel with a conifer-climbing porcupine on this wooded northern margin.",
+        "sample": [
+          26,
+          6
+        ],
+        "loop": [
+          27,
+          6
+        ],
+        "time": "morning"
+      },
+      {
+        "map": "MnDriftlessLampGallery",
+        "zone": null,
+        "before": "NIBBIN",
+        "after": "DRIPTIP",
+        "slots": 4,
+        "reason": "Limestone cave encounters use the karst creature instead of a prairie seed-bank squirrel.",
+        "sample": [
+          5,
+          3
+        ],
+        "loop": [
+          6,
+          3
+        ],
+        "time": "morning"
+      },
+      {
+        "map": "MnR01Cave1F",
+        "zone": null,
+        "before": "NIBBIN",
+        "after": "DRIPTIP",
+        "slots": 7,
+        "reason": "Limestone cave encounters use the karst creature instead of a prairie seed-bank squirrel.",
+        "sample": [
+          5,
+          3
+        ],
+        "loop": [
+          6,
+          3
+        ],
+        "time": "morning"
+      },
+      {
+        "map": "MnR03Cave1F",
+        "zone": null,
+        "before": "NIBBIN",
+        "after": "DRIPTIP",
+        "slots": 6,
+        "reason": "Limestone cave encounters use the karst creature instead of a prairie seed-bank squirrel.",
+        "sample": [
+          5,
+          3
+        ],
+        "loop": [
+          6,
+          3
+        ],
+        "time": "morning"
+      },
+      {
+        "map": "MnDevilsKettle",
+        "zone": null,
+        "before": "BOOMRUFF",
+        "after": "NOTCHBILL",
+        "slots": 1,
+        "reason": "Northern woods/fen are not prairie-chicken habitat.",
+        "sample": [
+          20,
+          26
+        ],
+        "loop": [
+          21,
+          26
+        ],
+        "time": "night"
+      },
+      {
+        "map": "MnLayeredFen",
+        "zone": null,
+        "before": "BOOMRUFF",
+        "after": "SKEETEREX",
+        "slots": 3,
+        "reason": "Northern woods/fen are not prairie-chicken habitat.",
+        "sample": [
+          8,
+          12
+        ],
+        "loop": [
+          9,
+          12
+        ],
+        "time": "morning"
+      },
+      {
+        "map": "MnMaraisCedarApproach",
+        "zone": "MN_HABITAT_CEDAR_CUTOVER",
+        "before": "BOOMRUFF",
+        "after": "NOTCHBILL",
+        "slots": 1,
+        "reason": "The local zone must follow its actual wooded, peat-pool or moose-reed habitat too.",
+        "sample": [
+          32,
+          16
+        ],
+        "loop": [
+          33,
+          16
+        ],
+        "time": "night"
+      },
+      {
+        "map": "MnR06C00R00",
+        "zone": "MN_HABITAT_ECHO_LOGS",
+        "before": "BOOMRUFF",
+        "after": "BRISTUB",
+        "slots": 1,
+        "reason": "The local zone must follow its actual wooded, peat-pool or moose-reed habitat too.",
+        "sample": [
+          44,
+          24
+        ],
+        "loop": [
+          45,
+          24
+        ],
+        "time": "night"
+      },
+      {
+        "map": "MnR08C00R00",
+        "zone": "MN_HABITAT_PEAT_PUMP",
+        "before": "BOOMRUFF",
+        "after": "SKEETEREX",
+        "slots": 1,
+        "reason": "The local zone must follow its actual wooded, peat-pool or moose-reed habitat too.",
+        "sample": [
+          34,
+          28
+        ],
+        "loop": [
+          35,
+          28
+        ],
+        "time": "night"
+      },
+      {
+        "map": "MnR11C00R00",
+        "zone": "MN_HABITAT_LIFT_APPROACH",
+        "before": "BOOMRUFF",
+        "after": "NOTCHBILL",
+        "slots": 1,
+        "reason": "The local zone must follow its actual wooded, peat-pool or moose-reed habitat too.",
+        "sample": [
+          42,
+          26
+        ],
+        "loop": [
+          43,
+          26
+        ],
+        "time": "night"
+      },
+      {
+        "map": "MnR11C00R02",
+        "zone": "MN_HABITAT_LIGHTHOUSE_HEATH",
+        "before": "BOOMRUFF",
+        "after": "NOTCHBILL",
+        "slots": 1,
+        "reason": "The local zone must follow its actual wooded, peat-pool or moose-reed habitat too.",
+        "sample": [
+          34,
+          42
+        ],
+        "loop": [
+          35,
+          42
+        ],
+        "time": "night"
+      },
+      {
+        "map": "MnR11C00R03",
+        "zone": "MN_HABITAT_SMOKEHOUSE_BACK",
+        "before": "BOOMRUFF",
+        "after": "NOTCHBILL",
+        "slots": 1,
+        "reason": "The local zone must follow its actual wooded, peat-pool or moose-reed habitat too.",
+        "sample": [
+          32,
+          2
+        ],
+        "loop": [
+          33,
+          2
+        ],
+        "time": "night"
+      },
+      {
+        "map": "MnR11C00R03",
+        "zone": "MN_HABITAT_SMOKEHOUSE_WEST",
+        "before": "BOOMRUFF",
+        "after": "NOTCHBILL",
+        "slots": 1,
+        "reason": "The local zone must follow its actual wooded, peat-pool or moose-reed habitat too.",
+        "sample": [
+          32,
+          4
+        ],
+        "loop": [
+          33,
+          4
+        ],
+        "time": "night"
+      },
+      {
+        "map": "MnR11C00R03",
+        "zone": "MN_HABITAT_SMOKEHOUSE_EAST",
+        "before": "BOOMRUFF",
+        "after": "NOTCHBILL",
+        "slots": 1,
+        "reason": "The local zone must follow its actual wooded, peat-pool or moose-reed habitat too.",
+        "sample": [
+          40,
+          6
+        ],
+        "loop": [
+          41,
+          6
+        ],
+        "time": "night"
+      },
+      {
+        "map": "MnR11C00R03",
+        "zone": "MN_HABITAT_SMOKEHOUSE_PORCH",
+        "before": "BOOMRUFF",
+        "after": "NOTCHBILL",
+        "slots": 1,
+        "reason": "The local zone must follow its actual wooded, peat-pool or moose-reed habitat too.",
+        "sample": [
+          38,
+          10
+        ],
+        "loop": [
+          39,
+          10
+        ],
+        "time": "night"
+      },
+      {
+        "map": "MnR11C01R00",
+        "zone": null,
+        "before": "BOOMRUFF",
+        "after": "NOTCHBILL",
+        "slots": 1,
+        "reason": "Northern woods/fen are not prairie-chicken habitat.",
+        "sample": null,
+        "loop": null,
+        "time": "night"
+      },
+      {
+        "map": "MnR11C01R01",
+        "zone": null,
+        "before": "BOOMRUFF",
+        "after": "NOTCHBILL",
+        "slots": 1,
+        "reason": "Northern woods/fen are not prairie-chicken habitat.",
+        "sample": null,
+        "loop": null,
+        "time": "night"
+      },
+      {
+        "map": "MnR11C01R02",
+        "zone": null,
+        "before": "BOOMRUFF",
+        "after": "NOTCHBILL",
+        "slots": 1,
+        "reason": "Northern woods/fen are not prairie-chicken habitat.",
+        "sample": null,
+        "loop": null,
+        "time": "night"
+      },
+      {
+        "map": "MnR11C01R03",
+        "zone": null,
+        "before": "BOOMRUFF",
+        "after": "NOTCHBILL",
+        "slots": 1,
+        "reason": "Northern woods/fen are not prairie-chicken habitat.",
+        "sample": null,
+        "loop": null,
+        "time": "night"
+      },
+      {
+        "map": "MnR17C00R01",
+        "zone": "MN_HABITAT_MOOSE_REEDS",
+        "before": "BOOMRUFF",
+        "after": "WADEBUD",
+        "slots": 3,
+        "reason": "The local zone must follow its actual wooded, peat-pool or moose-reed habitat too.",
+        "sample": [
+          22,
+          40
+        ],
+        "loop": [
+          23,
+          40
+        ],
+        "time": "morning"
+      },
+      {
+        "map": "MnFieldMargin",
+        "zone": null,
+        "before": "DENSY",
+        "after": "VANECHICK",
+        "slots": 3,
+        "reason": "Use the grain-elevator lookout on prairie farmland; den bears remain in wooded habitats.",
+        "sample": [
+          8,
+          14
+        ],
+        "loop": [
+          9,
+          14
+        ],
+        "time": "morning"
+      },
+      {
+        "map": "MnFormerShores",
+        "zone": null,
+        "before": "DENSY",
+        "after": "VANECHICK",
+        "slots": 3,
+        "reason": "Use the grain-elevator lookout on prairie farmland; den bears remain in wooded habitats.",
+        "sample": [
+          12,
+          4
+        ],
+        "loop": [
+          13,
+          4
+        ],
+        "time": "morning"
+      },
+      {
+        "map": "MnR16C00R00",
+        "zone": null,
+        "before": "DENSY",
+        "after": "VANECHICK",
+        "slots": 3,
+        "reason": "Use the grain-elevator lookout on prairie farmland; den bears remain in wooded habitats.",
+        "sample": [
+          36,
+          4
+        ],
+        "loop": [
+          37,
+          4
+        ],
+        "time": "morning"
+      },
+      {
+        "map": "MnR16C01R00",
+        "zone": null,
+        "before": "DENSY",
+        "after": "VANECHICK",
+        "slots": 3,
+        "reason": "Use the grain-elevator lookout on prairie farmland; den bears remain in wooded habitats.",
+        "sample": [
+          24,
+          4
+        ],
+        "loop": [
+          25,
+          4
+        ],
+        "time": "morning"
+      },
+      {
+        "map": "MnTallTaleTrail",
+        "zone": null,
+        "before": "CARTICK",
+        "after": "HATCHIT",
+        "slots": 3,
+        "reason": "A logging camp has haunted axes; the poisonous ore-cart family stays at mine workings.",
+        "sample": [
+          30,
+          22
+        ],
+        "loop": [
+          31,
+          22
+        ],
+        "time": "morning"
+      },
+      {
+        "map": "MnR03C00R00",
+        "zone": "MN_HABITAT_RIVER_HATCH",
+        "before": "PIPULSE",
+        "after": "TESSLARV",
+        "slots": 6,
+        "reason": "The clinic rhythm companion moves to Rochester; the river hatch keeps its caddisfly habitat.",
+        "sample": [
+          26,
+          34
+        ],
+        "loop": [
+          27,
+          34
+        ],
+        "time": "day"
+      }
+    ],
+    "restrictions": [
+      {
+        "species": [
+          "CURDLET",
+          "SQUEAKURD",
+          "DOUGHLIN",
+          "CRUMCONE",
+          "PAILBARON",
+          "TILTAWISP"
+        ],
+        "maps": [
+          "MnStateFairgrounds"
+        ],
+        "reason": "The curd, cookie-serving-container and carnival-ride families are State Fair habitat specialists."
+      },
+      {
+        "species": [
+          "WICKIT",
+          "SPLITBEAM"
+        ],
+        "maps": [
+          "MnR11C00R02"
+        ],
+        "reason": "Lighthouse light spirits belong at the lighthouse."
+      },
+      {
+        "species": [
+          "CINDERFIN",
+          "BRINEBRAZE"
+        ],
+        "maps": [
+          "MnR11C00R03",
+          "MnStateFairgrounds"
+        ],
+        "reason": "Smoked-fish creatures inhabit the shore smokehouse and the fair food exhibit."
+      },
+      {
+        "species": [
+          "CARTICK",
+          "HAULGEIST"
+        ],
+        "maps": [
+          "MnIronDrillApproach",
+          "MnR09C00R00",
+          "MnR09C00R01",
+          "MnR09C01R00",
+          "MnR09C01R01",
+          "MnR09Cave1F",
+          "MnR10C00R00",
+          "MnR10C01R00",
+          "MnR10Cave1F"
+        ],
+        "reason": "Ore-cart ghosts belong at iron workings, not logging trails."
+      },
+      {
+        "species": [
+          "PIPULSE",
+          "CADENSET",
+          "VALORYTHM"
+        ],
+        "maps": [
+          "MnRochesterPatientHouse"
+        ],
+        "reason": "The rhythm companion is offered by the friend at the Rochester resting house after the first clinic parcel, rather than living in a river hatch."
+      }
+    ],
+    "field_relocations": [
+      {
+        "map": "MnTallTaleTrail",
+        "before": "CARTICK",
+        "after": "HATCHIT",
+        "slots": 1
+      }
+    ]
+  }
+}

@@ -1,0 +1,112 @@
+[
+  {
+    "pack": "content-packs/minnesota-current-grass-r04-v02.crystalpack",
+    "trainers": [
+      {
+        "id": "MN_R04_T01",
+        "party": [
+          {
+            "species": "DRIFTILE",
+            "level": 17,
+            "moves": [
+              "CONFUSION",
+              "HARDEN",
+              "GROWTH",
+              "REFLECT"
+            ]
+          },
+          {
+            "species": "CLICKIT",
+            "level": 17,
+            "moves": [
+              "LEECH_LIFE",
+              "SCREECH",
+              "QUICK_ATTACK",
+              "DOUBLE_KICK"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "MN_R04_T02",
+        "party": [
+          {
+            "species": "JOTLET",
+            "level": 16,
+            "moves": [
+              "GROWL",
+              "CONFUSION",
+              "STRING_SHOT",
+              "MIMIC"
+            ]
+          },
+          {
+            "species": "DENSY",
+            "level": 17,
+            "moves": [
+              "LICK",
+              "DEFENSE_CURL",
+              "HEADBUTT",
+              "DISARMING_VOICE"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "pack": "content-packs/minnesota-iron-drill-core-v04.crystalpack",
+    "trainers": [
+      {
+        "id": "MN_R04_T01",
+        "party": [
+          {
+            "species": "DRIFTILE",
+            "level": 17,
+            "moves": [
+              "CONFUSION",
+              "HARDEN",
+              "GROWTH",
+              "REFLECT"
+            ]
+          },
+          {
+            "species": "CLICKIT",
+            "level": 17,
+            "moves": [
+              "LEECH_LIFE",
+              "SCREECH",
+              "QUICK_ATTACK",
+              "DOUBLE_KICK"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "MN_R04_T02",
+        "party": [
+          {
+            "species": "JOTLET",
+            "level": 16,
+            "moves": [
+              "GROWL",
+              "CONFUSION",
+              "STRING_SHOT",
+              "MIMIC"
+            ]
+          },
+          {
+            "species": "DENSY",
+            "level": 17,
+            "moves": [
+              "LICK",
+              "DEFENSE_CURL",
+              "HEADBUTT",
+              "DISARMING_VOICE"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]

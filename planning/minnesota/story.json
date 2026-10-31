@@ -2318,7 +2318,10 @@
       "f61c3d20c98e27e1fb40a2c22791f6b62986227db1c18f722a805b31d3f8f7c0",
       "7260ca192597ff2650f3a11e3d665d08034a92d8a4d006f33ed7ba8eb825bf52",
       "17c4400d010fa9dbd10c40c9f86ee543da8b2e795bee53956d8518c30ada5472",
-      "62f318a1758b5d966e558f7855e15646369c38d33c7241c671fb68daa1f3bfb7"
+      "62f318a1758b5d966e558f7855e15646369c38d33c7241c671fb68daa1f3bfb7",
+      "697f6cddd44680f8d548223a70243e67cedb86810039a16d778614330ca32fdd",
+      "63f1330753882bf4dfad9eef85e933a48c018d6ab9bc6163f294e0e432e27ff9",
+      "a7f6270ac5c7cdc83fe0f7484fd8485990ceb9749a0fde803dc43cbd22b90bad"
     ],
     "texts": {
       "MnWinonaHome1F": {
@@ -2332,12 +2335,12 @@
             "to see you today."
           ],
           [
-            "His field station",
+            "Her field station",
             "is by the river."
           ],
           [
-            "Eat before you go.",
-            "Come back soon!"
+            "Come home and tell",
+            "me how it went!"
           ]
         ],
         "MnWGuardianRestText": [
@@ -2374,24 +2377,32 @@
       "MnWinonaFieldStation": {
         "MnOverhaulTamarackIntroText": [
           [
-            "TAMARACK: I study",
-            "river POKEMON."
+            "TAMARACK: Hello!",
+            "Thanks for coming."
           ],
           [
-            "IVY is at the",
+            "I study the river",
+            "and its POKEMON."
+          ],
+          [
+            "IVY works at the",
             "ROCHESTER clinic."
           ],
           [
-            "She needs these",
-            "water readings."
+            "She needs my notes",
+            "on water levels."
           ],
           [
             "Will you take her",
-            "an envelope?"
+            "this envelope?"
+          ],
+          [
+            "Wild POKEMON live",
+            "along the trail."
           ],
           [
             "Choose a partner",
-            "for the trail."
+            "for your journey."
           ]
         ],
         "MnWChooseText": [
@@ -2402,24 +2413,24 @@
         ],
         "MnWReadingsText": [
           [
-            "TAMARACK: A fine",
-            "partner!"
+            "TAMARACK: You two",
+            "look ready!"
           ],
           [
             "These are my",
-            "original readings."
+            "original notes."
           ],
           [
             "You received the",
             "sealed envelope."
           ],
           [
-            "Take it to IVY at",
-            "ROCHESTER clinic."
+            "TAMARACK: IVY is",
+            "at the clinic."
           ],
           [
-            "The west trail is",
-            "ROUTE 01."
+            "Take ROUTE 01 west",
+            "to ROCHESTER."
           ]
         ],
         "MnOverhaulStarterReceivedText": [
@@ -2521,26 +2532,30 @@
         ],
         "MnWReminderText": [
           [
-            "TAMARACK: Take",
-            "IVY her envelope."
+            "TAMARACK: Take the",
+            "envelope to IVY."
           ],
           [
-            "She is at the",
+            "She works at the",
             "ROCHESTER clinic."
+          ],
+          [
+            "Follow ROUTE 01",
+            "west."
           ]
         ],
         "MnWTamarackDeliveryReturnText": [
           [
-            "TAMARACK: IVY has",
-            "the envelope now."
+            "TAMARACK: IVY",
+            "called. Thank you!"
           ],
           [
-            "Thank you for",
-            "taking it to her."
+            "She has my notes",
+            "safe and sound."
           ],
           [
-            "She will keep the",
-            "originals safe."
+            "Did your partner",
+            "enjoy the trip?"
           ]
         ],
         "MnWTamarackSurveyReturnText": [
@@ -2563,107 +2578,95 @@
         ],
         "MnNSEReedArrivalText": [
           [
-            "REED: An errand?"
+            "REED: A delivery?",
+            "Is it paid work?"
           ],
           [
-            "That is why you",
-            "got a POKEMON?"
+            "I came to ask",
+            "about escort work."
           ],
           [
-            "I want a team that",
-            "wins battles."
-          ],
-          [
-            "And a job that",
-            "pays!"
+            "My team can guard",
+            "the field crews."
           ]
         ],
         "MnNSEReedCaseText": [
           [
-            "REED: I found a",
-            "case."
-          ],
-          [
-            "It was by the",
-            "drill road."
+            "REED: I found this",
+            "by the drill road."
           ],
           [
             "There is an EGG",
-            "inside."
+            "inside the case."
           ],
           [
-            "Would anyone buy",
-            "it?"
+            "Will you buy it?"
           ]
         ],
         "MnNSETamarackCaseText": [
           [
-            "TAMARACK: An EGG",
-            "is alive."
+            "TAMARACK: REED,",
+            "that EGG is cold."
           ],
           [
-            "Put the case down",
-            "carefully, REED."
+            "Set it down",
+            "gently, REED."
           ]
         ],
         "MnNSEReedDismissText": [
           [
-            "REED: Fine. You",
-            "look after it."
+            "REED: Keep it,",
+            "then."
           ],
           [
-            "I have work to",
-            "find."
+            "I need to find a",
+            "paying job."
           ]
         ],
         "MnNSETamarackWarmText": [
           [
             "TAMARACK: It is",
-            "cold."
+            "still moving."
           ],
           [
-            "I will warm it up",
-            "and check it over."
+            "I will keep it",
+            "warm here."
           ]
         ],
         "MnNSEReedChallengeText": [
           [
-            "REED: Before you",
-            "go, battle me!"
+            "REED: You there! A",
+            "quick battle."
           ],
           [
-            "Show me your",
-            "partner's moves!"
+            "My team needs to",
+            "stay sharp."
           ]
         ],
         "MnNSEReedAfterText": [
           [
-            "REED: Enjoy your",
-            "delivery job."
+            "REED: I heard ICE",
+            "is hiring escorts."
           ],
           [
-            "I will find a job",
-            "that pays."
+            "Maybe they need",
+            "someone like me."
           ]
         ],
         "MnNSETamarackQuestText": [
           [
-            "TAMARACK: IVY is",
-            "at the clinic."
-          ],
-          [
-            "Follow ROUTE 01",
-            "to ROCHESTER."
+            "TAMARACK: ROUTE 01",
+            "leads to IVY."
           ]
         ],
         "MnNSETamarackRestText": [
           [
-            "Your partner",
-            "earned a rest."
+            "TAMARACK: Let me",
+            "tend to your team."
           ],
           [
-            "There. Ready for",
-            "the journey!"
+            "There! Take care",
+            "of each other."
           ]
         ],
         "MnNSEEggOfferText": [
@@ -2682,8 +2685,8 @@
             "the POKEMON EGG."
           ],
           [
-            "Keep it with your",
-            "team."
+            "Keep it with",
+            "your team."
           ]
         ],
         "MnNSEEggDeclineText": [
@@ -2708,11 +2711,15 @@
         "MnNSEEggAfterText": [
           [
             "TAMARACK: How is",
-            "the EGG doing?"
+            "your team doing?"
           ],
           [
-            "Traveling will",
-            "help it hatch."
+            "Keep the EGG with",
+            "you on your trip."
+          ],
+          [
+            "It should hatch",
+            "soon!"
           ]
         ],
         "MnArcTamarackAfterText": [
@@ -2728,41 +2735,57 @@
             "Your journey gave",
             "us that chance."
           ]
+        ],
+        "MnNSEReedWonText": [
+          [
+            "REED: That was",
+            "a warm-up."
+          ]
+        ],
+        "MnNSEReedLostText": [
+          [
+            "REED: You need",
+            "more practice."
+          ]
         ]
       },
       "MnRochesterPokecenter1F": {
         "MnRCDeliveryText": [
           [
-            "IVY: TAMARACK sent",
-            "the readings!"
+            "IVY: You must be",
+            "TAMARACK's helper!"
           ],
           [
             "You handed IVY the",
             "sealed envelope."
           ],
           [
-            "I will keep these",
-            "original pages."
+            "IVY: Her original",
+            "river notes!"
           ],
           [
-            "They help us check",
-            "POKEMON habitats."
+            "I will keep them",
+            "safe here."
+          ],
+          [
+            "We check river",
+            "nests with these."
           ],
           [
             "ELLIS was bringing",
             "our survey meters."
           ],
           [
-            "He has not come",
-            "home."
+            "He should have",
+            "been home by now."
           ],
           [
-            "His partner JO is",
-            "in MINNEAPOLIS."
+            "JO, his partner,",
+            "is in MINNEAPOLIS."
           ],
           [
-            "Please ask JO",
-            "where ELLIS went."
+            "Ask JO if ELLIS",
+            "has come home."
           ],
           [
             "I will check the",
@@ -2771,44 +2794,48 @@
         ],
         "MnRCDeliveryAfterText": [
           [
-            "IVY: Your envelope",
-            "is safe."
+            "IVY: TAMARACK's",
+            "notes are safe."
           ],
           [
-            "Please ask JO",
-            "about ELLIS."
+            "Please check on JO",
+            "in MINNEAPOLIS."
           ],
           [
-            "JO lives in",
-            "MINNEAPOLIS."
+            "Ask if ELLIS has",
+            "come home."
           ],
           [
-            "Come here if your",
-            "team needs care."
+            "Your team can rest",
+            "here first."
           ]
         ],
         "MnArcRCWaitingText": [
           [
-            "REED: I am waiting",
-            "for someone."
+            "REED: Still on",
+            "TAMARACK's errand?"
           ],
           [
-            "Did you finish",
-            "that delivery yet?"
+            "I came to ask",
+            "about an ICE job."
           ]
         ],
         "MnArcRCPathsText": [
           [
-            "REED: Delivery",
-            "done?"
+            "REED: ICE wants a",
+            "cargo escort."
           ],
           [
-            "ICE pays trainers",
-            "to guard its gear."
+            "The interview is",
+            "in MINNEAPOLIS."
           ],
           [
-            "I am going to",
-            "MINNEAPOLIS."
+            "A wage, equipment,",
+            "a stronger team..."
+          ],
+          [
+            "That is what I",
+            "came looking for."
           ]
         ],
         "MnArcRCChallengeText": [
@@ -2819,12 +2846,12 @@
         ],
         "MnArcRCAfterText": [
           [
-            "REED: ICE still",
-            "needs an escort."
+            "REED: I am going",
+            "to that interview."
           ],
           [
-            "I will take",
-            "that job."
+            "ICE pays enough to",
+            "train properly."
           ]
         ],
         "MnArcRCDeclinedText": [
@@ -2879,22 +2906,22 @@
         ],
         "MnArcRCBeforeText": [
           [
-            "REED: You have",
-            "a partner now."
+            "REED: Is your team",
+            "any stronger?"
           ],
           [
-            "Let me see what",
-            "your team can do."
+            "Ready for another",
+            "battle?"
           ]
         ],
         "MnArcRCWonText": [
           [
-            "REED: You won",
-            "this time."
+            "REED: Still not",
+            "strong enough..."
           ],
           [
-            "I need a stronger",
-            "team of my own."
+            "I need",
+            "better training."
           ]
         ],
         "MnArcRCBattleLostText": [
@@ -2977,19 +3004,19 @@
         ],
         "MnOverhaulIvyMineText": [
           [
-            "IVY: The officer",
-            "compared the logs."
+            "IVY: LODE filed",
+            "false reports."
           ],
           [
-            "The real readings",
-            "were replaced."
+            "The missing meter",
+            "may explain why."
           ],
           [
-            "Find the meter",
-            "in the R09 mine."
+            "Look in the",
+            "R09 mine."
           ],
           [
-            "Take it to",
+            "Take the meter to",
             "GRAND RAPIDS."
           ],
           [
@@ -3000,19 +3027,19 @@
         "MnOverhaulIvyHarborText": [
           [
             "IVY: The depot",
-            "read the pump log."
+            "read the test log."
           ],
           [
             "LODE was testing",
-            "the falling water."
+            "the pumps."
           ],
           [
-            "The engineer in",
-            "DULUTH can help."
+            "Take the log copy",
+            "to DULUTH harbor."
           ],
           [
-            "Show the log at",
-            "DULUTH harbor."
+            "Ask the engineer",
+            "about these pumps."
           ]
         ],
         "MnOverhaulIvyMeterText": [
@@ -3032,36 +3059,55 @@
         "MnOverhaulIvyBrainerdText": [
           [
             "IVY: BRAINERD",
-            "needs another log."
+            "needs an old log."
           ],
           [
-            "See the officer",
-            "in BEMIDJI."
-          ],
-          [
-            "Ask about",
+            "LODE never handled",
             "the ITASCA log."
+          ],
+          [
+            "Ask the officer in",
+            "BEMIDJI."
+          ],
+          [
+            "ITASCA has a",
+            "public field log."
+          ]
+        ],
+        "MnRCMissingText": [
+          [
+            "IVY: TAMARACK has",
+            "notes for me."
+          ],
+          [
+            "Her field station",
+            "is in WINONA."
+          ],
+          [
+            "Please bring the",
+            "sealed envelope."
           ]
         ]
       },
       "MnMinneapolisDispatcherHouse": {
         "MN_MP_DISPATCHER_PARTNERText": [
           [
-            "JO: You met IVY?"
+            "JO: IVY sent you?",
+            "I am JO."
           ],
           [
-            "I am ELLIS's",
-            "partner."
+            "ELLIS is",
+            "my partner."
           ],
           [
             "He asked about our",
-            "missing equipment."
+            "missing gear."
           ],
           [
             "ICE took him away."
           ],
           [
-            "He is at the",
+            "He is in the",
             "dispatch office."
           ],
           [
@@ -3069,8 +3115,8 @@
             "me see him."
           ],
           [
-            "Please find out",
-            "what happened."
+            "Please find out if",
+            "he is safe."
           ]
         ],
         "MN_MP_DISPATCHER_PARTNERAfterText": [
@@ -3195,16 +3241,16 @@
       "MnMinneapolisDispatchOffice": {
         "MnMPICESeenText": [
           [
-            "ICE: Put your bag",
-            "on the desk."
+            "ICE: Bag on the",
+            "desk. Now."
           ],
           [
             "You asked about",
-            "our shipments."
+            "our cargo."
           ],
           [
-            "A warrant? We",
-            "decide who leaves."
+            "Nobody leaves",
+            "until we say so."
           ]
         ],
         "MnMPICEAfterText": [
@@ -3267,18 +3313,22 @@
         ],
         "MnMPCellLockedText": [
           [
-            "The cell is",
-            "locked."
+            "The holding latch",
+            "will not release."
           ],
           [
-            "The officer has",
-            "the key."
+            "ELLIS: The lock",
+            "still has power."
+          ],
+          [
+            "Look downstairs",
+            "for the controls."
           ]
         ],
         "MnMPCellDeclinedText": [
           [
-            "ELLIS: Please come",
-            "back."
+            "ELLIS: Please",
+            "come back."
           ],
           [
             "I cannot open it",
@@ -3297,30 +3347,34 @@
         ],
         "MnMPDispatchLockedText": [
           [
-            "The drawer is",
-            "locked."
+            "The shipment notes",
+            "are not on top."
           ],
           [
             "ELLIS may know",
-            "where the copy is."
+            "where to look."
           ]
         ],
         "MnMPDispatchReadText": [
           [
-            "A copy in ELLIS's",
-            "handwriting."
+            "A copy hidden",
+            "under the desk."
           ],
           [
-            "ICE escorted the",
-            "survey equipment."
+            "ELLIS recorded",
+            "the shipment."
           ],
           [
-            "LODE changed its",
-            "destination."
+            "ICE escorted it to",
+            "ST PAUL depot."
           ],
           [
-            "It went to ST PAUL",
-            "depot."
+            "LODE changed",
+            "its destination."
+          ],
+          [
+            "ELLIS did not sign",
+            "the change."
           ],
           [
             "You copied the",
@@ -3395,22 +3449,22 @@
         ],
         "MnNICEReedAcceptText": [
           [
-            "REED: Pay me every",
-            "Friday."
+            "REED: A wage and",
+            "an ICE badge?"
           ],
           [
-            "And I decide who",
-            "comes below."
+            "Pay me on Friday.",
+            "I will guard it."
           ]
         ],
         "MnNICECaptainBadgeText": [
           [
-            "CAPTAIN: Take this",
-            "badge."
+            "CAPTAIN: Take",
+            "this badge."
           ],
           [
-            "You work for ICE",
-            "now."
+            "You work",
+            "for ICE now."
           ]
         ],
         "MnNICEReedPlayerText": [
@@ -3429,16 +3483,20 @@
         ],
         "MnNICEEllisCallText": [
           [
-            "ELLIS: The cell",
-            "lock has power."
+            "ELLIS: That badge",
+            "is fake."
           ],
           [
-            "Its controls are",
-            "downstairs."
+            "The cell lock",
+            "still has power."
           ],
           [
-            "Please find a way",
-            "to switch it off."
+            "Look downstairs",
+            "for the controls."
+          ],
+          [
+            "Please switch them",
+            "off."
           ]
         ],
         "MnNICEPowerLockedText": [
@@ -3470,25 +3528,40 @@
             "The shipment went",
             "to ST PAUL depot."
           ]
+        ],
+        "MnMPICELostText": [
+          [
+            "You are staying",
+            "out of that room."
+          ]
+        ],
+        "MnMPICEWonText": [
+          [
+            "That lock was",
+            "meant to hold."
+          ]
         ]
       },
       "MnStPaulUnionDepot": {
         "MnSPCourierSeenText": [
           [
-            "COURIER: You went",
-            "to ROCHESTER."
+            "COURIER: Stop",
+            "right there!"
           ],
           [
-            "Who saw the",
-            "original readings?"
+            "You carried",
+            "TAMARACK's notes."
           ],
           [
-            "Give me every copy",
-            "you have."
+            "LODE wants the",
+            "original readings."
           ],
           [
-            "TEAM LODE wants",
-            "those readings."
+            "Who has them now?"
+          ],
+          [
+            "Hand over your",
+            "copies!"
           ]
         ],
         "MnSPCourierBadgeText": [
@@ -3558,42 +3631,46 @@
         ],
         "MnNSTPMinaQuestText": [
           [
-            "MINA: LODE took",
-            "our equipment."
+            "MINA: ELLIS never",
+            "signed this."
           ],
           [
-            "It went north for",
-            "pump tests."
+            "LODE sent our",
+            "equipment north."
           ],
           [
-            "ELLIS did not",
-            "approve it."
+            "They called it",
+            "a pump test."
+          ],
+          [
+            "The next load",
+            "stays here."
+          ],
+          [
+            "Take ELLIS's copy",
+            "to BRAINERD."
+          ],
+          [
+            "The lift crew",
+            "can help you."
           ],
           [
             "Go north through",
             "ST CLOUD."
-          ],
-          [
-            "The BRAINERD lift",
-            "crew can help."
-          ],
-          [
-            "Show them what",
-            "ELLIS found."
-          ],
-          [
-            "I will hold the",
-            "next shipment."
           ]
         ],
         "MnNSTPMinaAfterText": [
           [
-            "MINA: I stopped",
-            "the next shipment."
+            "MINA: The next",
+            "load stays here."
           ],
           [
-            "Tell the BRAINERD",
-            "crew about ELLIS."
+            "Show ELLIS's copy",
+            "at BRAINERD."
+          ],
+          [
+            "Ask for the lift",
+            "crew."
           ]
         ],
         "MnSPManifestText": [
@@ -3622,16 +3699,16 @@
         ],
         "MnArcSPBeforeText": [
           [
-            "REED: Step away",
-            "from that load."
+            "REED: Those crates",
+            "are my new job."
           ],
           [
-            "MINA does not get",
-            "to stop my shift."
+            "MINA is holding",
+            "them at the depot."
           ],
           [
-            "Those crates are",
-            "going to LODE."
+            "Step away from the",
+            "load."
           ]
         ],
         "MnArcSPReadyText": [
@@ -3645,12 +3722,16 @@
         ],
         "MnArcSPAfterText": [
           [
-            "REED: You stopped",
-            "the next load."
+            "REED: Keep it,",
+            "then."
           ],
           [
-            "The first one is",
-            "already at work."
+            "The first load is",
+            "at the mine."
+          ],
+          [
+            "They are waiting",
+            "for me there."
           ]
         ],
         "MnArcMinaAfterText": [
@@ -3665,12 +3746,16 @@
         ],
         "MnArcSPBattleText": [
           [
-            "REED: Move MINA",
-            "away from my load."
+            "REED: Let my",
+            "cargo through."
           ],
           [
-            "MINA: I work here.",
-            "I am staying."
+            "MINA: Those are",
+            "our survey meters."
+          ],
+          [
+            "ELLIS never lent",
+            "them to LODE."
           ]
         ],
         "MnArcSPDeclinedText": [
@@ -3702,6 +3787,74 @@
             "MINA: The clinic",
             "is still open."
           ]
+        ],
+        "MN_GLACIER_LINE_TIMETABLEText": [
+          [
+            "GLACIER LINE",
+            "DETROIT LAKES"
+          ],
+          [
+            "STAPLES",
+            "ST CLOUD"
+          ],
+          [
+            "ST PAUL",
+            "WINONA"
+          ],
+          [
+            "Passenger service",
+            "is not running."
+          ]
+        ],
+        "MN_ST_PAUL_DEPOT_CLERKText": [
+          [
+            "CLERK: The public",
+            "hall is open."
+          ],
+          [
+            "Passenger trains",
+            "are not running."
+          ]
+        ],
+        "MN_ST_PAUL_DEPOT_COURIERText": [
+          [
+            "That manifest is",
+            "company property."
+          ]
+        ],
+        "MN_ST_PAUL_DEPOT_GARDENERText": [
+          [
+            "A quiet garden",
+            "between trains."
+          ]
+        ],
+        "MN_ST_PAUL_DEPOT_WAITING_PASSENGERText": [
+          [
+            "North to lakes.",
+            "South to bluffs."
+          ]
+        ],
+        "MN_ST_PAUL_GLACIER_CONDUCTORText": [
+          [
+            "GLACIER LINE.",
+            "No trains today."
+          ]
+        ],
+        "MnNSTPPaperFlavorText": [
+          [
+            "Shipping labels",
+            "for pump parts."
+          ],
+          [
+            "MINA knows where",
+            "they were loaded."
+          ]
+        ],
+        "MnSPManifestLockedText": [
+          [
+            "The courier guards",
+            "the shipping file."
+          ]
         ]
       },
       "MnBrainerd": {
@@ -3711,20 +3864,24 @@
             "left this landing."
           ],
           [
-            "There is a green",
+            "Look at the green",
             "stain in the mud."
           ],
           [
-            "LODE's report says",
-            "the water is fine."
+            "LODE's reports say",
+            "nothing changed."
           ],
           [
-            "Find a log LODE",
-            "did not write."
+            "We need an older",
+            "record to check."
           ],
           [
-            "BEMIDJI's officer",
-            "can compare them."
+            "BEMIDJI has a",
+            "field officer."
+          ],
+          [
+            "He can compare",
+            "the logs."
           ]
         ],
         "MnBrainerdRangerBeforeText": [
@@ -3733,16 +3890,20 @@
             "left this landing."
           ],
           [
-            "I called BEMIDJI",
-            "to compare logs."
+            "BEMIDJI is",
+            "checking the logs."
           ],
           [
-            "SIVREN trains our",
-            "lake rescue teams."
+            "The northern road",
+            "crosses water."
           ],
           [
-            "Find her at the",
-            "BRAINERD GYM."
+            "SIVREN teaches",
+            "lake rescue here."
+          ],
+          [
+            "Train at her GYM",
+            "before you go."
           ]
         ],
         "MnBrainerdRangerFullText": [
@@ -3775,16 +3936,19 @@
         ],
         "MnBrainerdRangerRepeatText": [
           [
-            "RANGER: Ask the",
-            "BEMIDJI officer."
+            "RANGER: Head north",
+            "past LEECH LAKE."
           ],
           [
-            "We need a log that",
-            "LODE never wrote."
+            "Ask the officer in",
+            "BEMIDJI."
           ],
           [
-            "LEECH LAKE is on",
-            "the northern road."
+            "He needs an older",
+            "field log."
+          ],
+          [
+            "Ask about ITASCA."
           ]
         ],
         "MnBrainerdLakeCheckBadgesText": [
@@ -3822,34 +3986,30 @@
             "ITASCA FIELD LOG"
           ],
           [
-            "Original readings",
-            "are sealed here."
+            "A public record of",
+            "water levels."
           ],
           [
-            "Every page is",
-            "dated."
-          ],
-          [
-            "Each station has",
-            "its own number."
+            "The dates predate",
+            "LODE's pump tests."
           ],
           [
             "You copied the",
-            "field readings."
+            "dated readings."
           ],
           [
-            "Take them to",
+            "Take the copy to",
             "BEMIDJI's officer."
           ]
         ],
         "MnItascaMarkerAfterText": [
           [
-            "You copied the",
-            "field readings."
+            "You have the",
+            "ITASCA readings."
           ],
           [
-            "Take them to",
-            "BEMIDJI's officer."
+            "BEMIDJI's officer",
+            "can compare them."
           ]
         ],
         "MnItascaMarkerBeforeText": [
@@ -3875,96 +4035,111 @@
       "MnBemidji": {
         "MnBemidjiNeedReadingText": [
           [
-            "OFFICER: I called",
-            "the other crews."
+            "OFFICER: I have",
+            "LODE's reports."
           ],
           [
-            "We need a log LODE",
-            "did not handle."
+            "I need an older",
+            "record to compare."
           ],
           [
-            "Copy the ITASCA",
-            "field readings."
+            "ITASCA has an",
+            "older field log."
           ],
           [
-            "I will compare",
-            "the pages here."
+            "Copy the dated",
+            "readings there."
+          ],
+          [
+            "Bring the copy",
+            "here to compare."
           ]
         ],
         "MnBemidjiComparisonText": [
           [
-            "OFFICER: Let me",
-            "compare the pages."
+            "OFFICER: Here is",
+            "the ITASCA log."
           ],
           [
-            "These stations use",
-            "separate basins."
+            "Its levels change",
+            "from day to day."
           ],
           [
-            "Their readings",
-            "should differ."
+            "Now look at",
+            "LODE's reports."
           ],
           [
-            "LODE copied one",
-            "sheet twice."
+            "Every lake has the",
+            "same numbers."
           ],
           [
-            "Even the ink blot",
-            "is the same!"
+            "Even the same",
+            "ink blot!"
           ],
           [
-            "The real readings",
-            "were replaced."
+            "One page was used",
+            "for every lake."
+          ],
+          [
+            "These places were",
+            "never measured."
           ]
         ],
         "MnBemidjiNotebookMatchText": [
           [
-            "The notebook shows",
-            "the same copying."
+            "OFFICER: Your",
+            "notebook matches."
           ],
           [
-            "It supports what",
-            "these logs prove."
+            "The same page was",
+            "copied again."
+          ],
+          [
+            "Keep it as well."
           ]
         ],
         "MnBemidjiReportAfterText": [
           [
-            "You have the",
+            "You received the",
             "officer's report."
           ],
           [
-            "OFFICER: Show it",
-            "at the R09 mine."
+            "OFFICER: Find the",
+            "missing meter."
           ],
           [
-            "Find the missing",
-            "survey meter."
+            "It may hold the",
+            "actual test log."
           ],
           [
-            "Its log may show",
-            "what LODE tested."
+            "Show my report at",
+            "the R09 mine."
           ],
           [
-            "I will alert the",
-            "other field crews."
+            "Take the meter to",
+            "GRAND RAPIDS."
+          ],
+          [
+            "The depot can",
+            "read its log."
           ]
         ],
         "MN_BEMIDJI_OFFICERText": [
           [
-            "OFFICER: I compare",
-            "the field logs."
+            "OFFICER: I heard",
+            "from BRAINERD."
           ],
           [
-            "BRAINERD reported",
-            "a problem."
+            "Their landing is",
+            "damaged."
           ],
           [
-            "LODE says the",
-            "water is fine."
+            "LODE says",
+            "nothing changed."
           ],
           [
-            "We need an",
-            "independent log."
+            "I want to check",
+            "those reports."
           ]
         ],
         "MnBemidjiNeedPineText": [
@@ -4020,15 +4195,19 @@
         ],
         "MnOverhaulOfficerDoneText": [
           [
-            "OFFICER: IVY sent",
-            "the final report."
+            "OFFICER: IVY",
+            "called."
           ],
           [
             "The pumps are off."
           ],
           [
-            "Our crews will",
-            "monitor the water."
+            "We will check the",
+            "water."
+          ],
+          [
+            "Thank you for",
+            "bringing the logs."
           ]
         ],
         "MnOverhaulOfficerIntakeText": [
@@ -4044,11 +4223,19 @@
         "MnOverhaulOfficerNorthText": [
           [
             "OFFICER: DULUTH",
-            "has the log now."
+            "has the pump log."
           ],
           [
-            "Find the shelter",
-            "past GRAND MARAIS."
+            "The crews need the",
+            "records sent."
+          ],
+          [
+            "Use the radio at",
+            "the shelter."
+          ],
+          [
+            "It is beyond GRAND",
+            "MARAIS."
           ]
         ],
         "MnOverhaulOfficerHarborText": [
@@ -4057,8 +4244,12 @@
             "has the meter."
           ],
           [
-            "Take its log copy",
-            "to DULUTH harbor."
+            "Take its test log",
+            "to DULUTH."
+          ],
+          [
+            "Ask at the harbor",
+            "workshop."
           ]
         ],
         "MnOverhaulOfficerMeterText": [
@@ -4202,16 +4393,20 @@
             "green copper ore."
           ],
           [
-            "Runoff reached",
-            "the lower pools."
+            "Runoff reached the",
+            "lower pools."
           ],
           [
             "LODE kept the",
-            "test running."
+            "drill running."
           ],
           [
-            "Please help the",
-            "crew get out."
+            "His crew is",
+            "trapped below it."
+          ],
+          [
+            "Please help them",
+            "get out!"
           ]
         ],
         "MnNDrillEmptyCaseText": [
@@ -4235,16 +4430,16 @@
         ],
         "MnNDrillMeterDeniedText": [
           [
-            "The meter is still",
-            "part of the test."
-          ],
-          [
-            "FINN is working",
+            "FINN has the meter",
             "below the mine."
           ],
           [
-            "Stop the drill.",
-            "Help his crew out."
+            "The drill is",
+            "running overhead."
+          ],
+          [
+            "Stop it so his",
+            "crew can get out."
           ]
         ]
       },
@@ -4275,32 +4470,36 @@
         ],
         "MnGrandRapidsDepotReadText": [
           [
-            "TECH: The meter",
-            "logged pump tests."
+            "TECH: Here is the",
+            "test log."
           ],
           [
-            "Each test lowered",
-            "the water level."
+            "The pumps ran. The",
+            "water fell."
           ],
           [
-            "Those survey tags",
-            "hid the tests."
+            "Each test shows",
+            "the same thing."
           ],
           [
-            "The control crew",
-            "works in DULUTH."
+            "LODE filed these",
+            "as surveys."
           ],
           [
             "I will keep the",
-            "meter safe here."
+            "meter safe."
           ],
           [
-            "You received the",
-            "pump log copy."
+            "You received a",
+            "test log copy."
           ],
           [
-            "TECH: Show it to",
-            "the harbor crew."
+            "TECH: Show this at",
+            "DULUTH harbor."
+          ],
+          [
+            "The engineer knows",
+            "these pumps."
           ]
         ],
         "MnGrandRapidsDepotDeclinedText": [
@@ -4319,22 +4518,29 @@
             "safe here."
           ],
           [
-            "Take the log copy",
-            "to DULUTH harbor."
+            "Take its log to",
+            "DULUTH harbor."
+          ],
+          [
+            "The engineer can",
+            "help."
           ]
         ],
         "MnOverhaulDepotDoneText": [
           [
-            "TECH: The crews",
-            "are safely home."
+            "TECH: FINN called."
           ],
           [
-            "We kept the meter",
-            "and its test log."
+            "All crews",
+            "are home."
           ],
           [
-            "Every loan needs",
-            "a written record."
+            "The meter and log",
+            "are safe here."
+          ],
+          [
+            "We will need them",
+            "for the repairs."
           ]
         ],
         "MnOverhaulDepotIntakeText": [
@@ -4356,93 +4562,113 @@
             "Find the shelter",
             "past GRAND MARAIS."
           ]
+        ],
+        "MN_GR_REPAIRERText": [
+          [
+            "Meters record the",
+            "test as it runs."
+          ],
+          [
+            "Paper reports are",
+            "easier to change."
+          ]
+        ],
+        "MN_GR_ARCHIVEText": [
+          [
+            "SURVEY ARCHIVE",
+            "Original logs."
+          ],
+          [
+            "Separate copies.",
+            "No entries erased."
+          ]
         ]
       },
       "MnDuluthHarborWorkshop": {
         "MN_HARBOR_RECEIVERText": [
           [
-            "ENGINEER: These",
-            "are drain pumps."
+            "ENGINEER: This log",
+            "shows drain tests."
           ],
           [
-            "LODE plans to mine",
+            "LODE sent us these",
+            "pump plans."
+          ],
+          [
+            "They want to mine",
             "beneath the lakes."
-          ],
-          [
-            "First they need",
-            "to empty them."
           ]
         ],
         "MnOverhaulHarborEvidenceText": [
           [
-            "ENGINEER: Here is",
-            "the intake plan."
+            "ENGINEER: Look at",
+            "this intake plan."
           ],
           [
-            "This cage is built",
+            "A cage is marked",
             "for KETTLURK."
           ],
           [
-            "KETTLURK is a",
-            "lake POKEMON."
+            "That POKEMON makes",
+            "strong currents."
           ],
           [
-            "It can make",
-            "powerful currents."
-          ],
-          [
-            "They want it to",
-            "power these pumps."
+            "They mean to use",
+            "it to run pumps."
           ]
         ],
         "MnOverhaulHarborReactionText": [
           [
-            "ENGINEER: POKEMON",
-            "live there."
+            "ENGINEER: The",
+            "nests will be dry."
+          ],
+          [
+            "KETTLURK will be",
+            "trapped there."
           ],
           [
             "I will call the",
-            "shore crews now."
-          ],
-          [
-            "ICE is guarding",
-            "the intake."
+            "shore crews."
           ]
         ],
         "MnOverhaulHarborDirectionsText": [
           [
-            "ENGINEER: We will",
-            "plan the shutdown."
+            "ENGINEER: Take the",
+            "plans and log."
           ],
           [
-            "Find our radio",
+            "Find the shelter",
             "past GRAND MARAIS."
           ],
           [
-            "It is in the",
-            "survey shelter."
+            "Send the records",
+            "over its radio."
           ],
           [
-            "Use it to send",
-            "these records."
+            "We will meet you",
+            "at the intake."
           ]
         ],
         "MN_HARBOR_RECEIVERDeniedText": [
           [
             "ENGINEER: We have",
-            "your evidence."
+            "your test log."
           ],
           [
             "The intake can",
             "flood suddenly."
           ],
           [
-            "HARBOR BADGE tests",
-            "fast-water teams."
+            "We need time",
+            "to prepare."
           ],
           [
             "Train at DULUTH",
-            "GYM while we plan."
+            "GYM meanwhile."
+          ],
+          [
+            "Earn the HARBOR",
+            "BADGE there."
           ]
         ],
         "MN_HARBOR_RECEIVERDoneText": [
@@ -4475,19 +4701,19 @@
         ],
         "MnHarborSurveyReturnText": [
           [
-            "ENGINEER: Our",
-            "crews are home."
+            "ENGINEER: The",
+            "pumps are off."
           ],
           [
-            "The pumps are off."
+            "The crews are",
+            "home."
           ],
           [
-            "The lakes are",
-            "safe."
+            "KETTLURK is free."
           ],
           [
             "We will inspect",
-            "the damaged shore."
+            "the shore."
           ],
           [
             "Thank you for",
@@ -4516,16 +4742,24 @@
       "MnBoundaryWatersSurveyShelter": {
         "MnBoundarySurveyChiefSeenText": [
           [
-            "CHIEF: I signed",
-            "those surveys."
+            "CHIEF: You have",
+            "the real test log."
           ],
           [
-            "I paid ICE to",
-            "clear the site."
+            "I signed those",
+            "false surveys."
+          ],
+          [
+            "I paid ICE to keep",
+            "people out."
           ],
           [
             "LODE needs the ore",
-            "under those lakes."
+            "under the lakes."
+          ],
+          [
+            "Dry lakes make",
+            "that easy."
           ],
           [
             "Your copies will",
@@ -4603,16 +4837,19 @@
         ],
         "MnArcLinkText": [
           [
-            "Your ITASCA notes",
-            "and pump log sent."
+            "You sent the notes",
+            "and test log."
           ],
           [
-            "IVY: Every crew",
-            "has your records."
+            "IVY: We have them!"
           ],
           [
-            "We are waiting",
-            "by the intake."
+            "Every crew can see",
+            "what LODE did."
+          ],
+          [
+            "We are below you",
+            "at the intake."
           ],
           [
             "Stop the motor",
@@ -4648,40 +4885,100 @@
         ],
         "MnOverhaulChiefStoppedText": [
           [
-            "CHIEF: So the",
-            "drive is off."
+            "CHIEF: You stopped",
+            "the drive."
           ],
           [
-            "Every crew has",
-            "copies of my logs."
+            "The crews have my",
+            "test records."
           ],
           [
-            "I cannot call",
-            "those copies back."
+            "I cannot get those",
+            "copies back."
+          ]
+        ],
+        "MN_BOUNDARY_SURVEY_ASSISTANTText": [
+          [
+            "The radio links",
+            "the shore crews."
+          ],
+          [
+            "The chief guards",
+            "its control panel."
+          ]
+        ],
+        "MN_BOUNDARY_SURVEY_MEDICText": [
+          [
+            "MEDIC: Long trip?",
+            "Let me help."
+          ],
+          [
+            "I will treat your",
+            "team for free."
+          ]
+        ],
+        "MN_BOUNDARY_SURVEY_ROUTE_MAPText": [
+          [
+            "TRAIL MAP",
+            "GUNFLINT: east"
+          ],
+          [
+            "LEAGUE: south",
+            "VOYAGEURS: west"
+          ]
+        ],
+        "MN_BOUNDARY_SURVEY_SUPPLIESText": [
+          [
+            "FIELD SUPPLIES",
+            "Keep the aisle"
+          ],
+          [
+            "clear for crews."
+          ]
+        ],
+        "MnBoundarySurveyChiefBadgeDeniedText": [
+          [
+            "CHIEF: Still on",
+            "your GYM tour?"
+          ],
+          [
+            "Come back with",
+            "eight BADGES."
+          ]
+        ],
+        "MnBoundarySurveyChiefLostText": [
+          [
+            "The work goes on."
+          ]
+        ],
+        "MnBoundarySurveyChiefWonText": [
+          [
+            "You have cost me",
+            "enough already."
           ]
         ]
       },
       "MnBoundaryIntake": {
         "MnArcFinalBeforeText": [
           [
-            "REED: Every lost",
-            "job led to you."
+            "REED: This is my",
+            "last contract."
           ],
           [
-            "The chief offered",
-            "me one last deal."
+            "The chief paid me",
+            "to guard this."
           ],
           [
-            "IVY: You saw what",
-            "the cage does."
+            "IVY: Look at",
+            "KETTLURK suffer!"
           ],
           [
-            "REED: I signed for",
-            "these pumps too."
+            "REED: I know what",
+            "I signed."
           ],
           [
-            "You are not",
-            "taking this job."
+            "Stay away from",
+            "that switch."
           ]
         ],
         "MnArcFinalReadyText": [
@@ -4712,12 +5009,12 @@
         ],
         "MnArcIntakeReadyText": [
           [
-            "The pump motor",
-            "locks the cage."
+            "The cage is",
+            "under pressure."
           ],
           [
-            "Stop the motor",
-            "and open the cage?"
+            "Stop the pump and",
+            "open the gates?"
           ]
         ],
         "MnArcIntakeDeniedText": [
@@ -4732,8 +5029,11 @@
         ],
         "MnArcIntakeOpenText": [
           [
-            "You shut off the",
-            "pump motor."
+            "You stop",
+            "the motor."
+          ],
+          [
+            "The current slows."
           ],
           [
             "The intake gates",
@@ -4760,12 +5060,12 @@
             "are off."
           ],
           [
-            "All crews have",
+            "Every crew has",
             "reported in."
           ],
           [
-            "The lakes will not",
-            "be drained."
+            "LODE will not",
+            "drain these lakes."
           ]
         ],
         "MnArcIntakeDoneText": [
@@ -4814,34 +5114,32 @@
         ],
         "MnArcIntakeSeenText": [
           [
-            "The pump keeps",
-            "the gates shut."
+            "The pump roars."
           ],
           [
-            "A pale shape pulls",
-            "at the bars."
+            "A pale POKEMON",
+            "pulls at the bars."
           ],
           [
-            "IVY: That is",
-            "KETTLURK."
+            "IVY: KETTLURK!"
           ],
           [
-            "The cage is still",
-            "under pressure."
+            "The current pins",
+            "it to the cage."
           ],
           [
-            "Stop the motor",
-            "before opening it."
+            "Stop the motor so",
+            "we can open it!"
           ]
         ],
         "MnArcIntakeIvyText": [
           [
-            "IVY: I came to",
-            "find my crew."
+            "IVY: I found my",
+            "crew down here."
           ],
           [
-            "LODE sent them to",
-            "build this."
+            "They were sent to",
+            "build this intake."
           ],
           [
             "Now we can get",
@@ -4850,16 +5148,16 @@
         ],
         "MnArcIntakeFinnText": [
           [
-            "FINN: This gauge",
-            "shows pressure."
+            "FINN: Watch",
+            "this gauge."
           ],
           [
-            "If it reads high,",
-            "we stop the pumps."
+            "The pressure has",
+            "to fall first."
           ],
           [
-            "The crew comes",
-            "first."
+            "Stop the motor",
+            "before opening it."
           ]
         ],
         "MnArcIntakeReedExitText": [
@@ -4892,25 +5190,96 @@
             "The medic is",
             "upstairs."
           ]
+        ],
+        "MN_ICE_ARC_INTAKE_RECORDSLostText": [
+          [
+            "Those crews stay",
+            "out of sight."
+          ]
+        ],
+        "MN_ICE_ARC_INTAKE_RECORDSSeenText": [
+          [
+            "We took the crews.",
+            "They saw the site."
+          ]
+        ],
+        "MN_ICE_ARC_INTAKE_RECORDSWonText": [
+          [
+            "They can name",
+            "this place now."
+          ]
+        ],
+        "MN_ICE_ARC_INTAKE_WESTLostText": [
+          [
+            "Stay away from",
+            "the cage."
+          ]
+        ],
+        "MN_ICE_ARC_INTAKE_WESTSeenText": [
+          [
+            "ICE: The intake",
+            "is off limits."
+          ]
+        ],
+        "MN_ICE_ARC_INTAKE_WESTWonText": [
+          [
+            "The shore crews",
+            "know we are here?"
+          ]
+        ],
+        "MN_LODE_ARC_INTAKE_CONTROLLostText": [
+          [
+            "Production will",
+            "continue."
+          ]
+        ],
+        "MN_LODE_ARC_INTAKE_CONTROLSeenText": [
+          [
+            "ICE guards us.",
+            "We run the pumps."
+          ]
+        ],
+        "MN_LODE_ARC_INTAKE_CONTROLWonText": [
+          [
+            "The contract kept",
+            "the pumps running."
+          ]
+        ],
+        "MN_LODE_ARC_INTAKE_EASTLostText": [
+          [
+            "The pumps stay on."
+          ]
+        ],
+        "MN_LODE_ARC_INTAKE_EASTSeenText": [
+          [
+            "Drain the lake.",
+            "Get the minerals."
+          ]
+        ],
+        "MN_LODE_ARC_INTAKE_EASTWonText": [
+          [
+            "That was in",
+            "the contract."
+          ]
         ]
       },
       "MnIceCargoBasement": {
         "MnNICECargoUmaText": [
           [
-            "UMA: I work in",
-            "this cargo room."
-          ],
-          [
-            "ICE took our",
+            "UMA: They took our",
             "survey equipment."
           ],
           [
-            "The breaker feeds",
-            "the stair lock."
+            "I work down here.",
+            "I know the locks."
+          ],
+          [
+            "This breaker opens",
+            "the stair shutter."
           ],
           [
             "Switch it off to",
-            "reach ELLIS."
+            "reach the relay."
           ]
         ],
         "MnNICEBreakerText": [
@@ -4936,6 +5305,69 @@
             "The breaker is",
             "already off."
           ]
+        ],
+        "MN_ICE_CARGO_GUARDAfterText": [
+          [
+            "The captain said",
+            "nobody gets past."
+          ],
+          [
+            "He can come down",
+            "and stop you."
+          ]
+        ],
+        "MN_ICE_CARGO_GUARDLostText": [
+          [
+            "I warned you."
+          ]
+        ],
+        "MN_ICE_CARGO_GUARDSeenText": [
+          [
+            "ICE: This aisle",
+            "is closed."
+          ]
+        ],
+        "MN_ICE_CARGO_GUARDWonText": [
+          [
+            "The captain can",
+            "stop you himself."
+          ]
+        ],
+        "MN_ICE_HQ_CARGO_MANIFESTLostText": [
+          [
+            "You cannot see",
+            "that list."
+          ]
+        ],
+        "MN_ICE_HQ_CARGO_MANIFESTSeenText": [
+          [
+            "These crew lists",
+            "go with the ore."
+          ]
+        ],
+        "MN_ICE_HQ_CARGO_MANIFESTWonText": [
+          [
+            "The names are on",
+            "the manifest."
+          ]
+        ],
+        "MN_ICE_HQ_CARGO_SEARCHLostText": [
+          [
+            "Hand over those",
+            "papers."
+          ]
+        ],
+        "MN_ICE_HQ_CARGO_SEARCHSeenText": [
+          [
+            "Open your bag.",
+            "Give me the files."
+          ]
+        ],
+        "MN_ICE_HQ_CARGO_SEARCHWonText": [
+          [
+            "You still have",
+            "your papers."
+          ]
         ]
       },
       "MnIceRelayFloor": {
@@ -4955,16 +5387,16 @@
         ],
         "MnNICEReedAfterText": [
           [
-            "REED: You cost me",
-            "this post."
+            "REED: There goes",
+            "my pay."
           ],
           [
-            "LODE needs cargo",
-            "moved at ST PAUL."
+            "LODE needs an",
+            "escort at ST PAUL."
           ],
           [
-            "Next time, I pick",
-            "who gets through."
+            "I will take that",
+            "job instead."
           ],
           [
             "Take ELLIS home.",
@@ -5013,6 +5445,50 @@
             "The cell lock",
             "power is off."
           ]
+        ],
+        "MN_ICE_HQ_RELAY_PATROLLostText": [
+          [
+            "The controls",
+            "stay with us."
+          ]
+        ],
+        "MN_ICE_HQ_RELAY_PATROLSeenText": [
+          [
+            "Keep away from",
+            "the relay panel."
+          ]
+        ],
+        "MN_ICE_HQ_RELAY_PATROLWonText": [
+          [
+            "I cannot guard",
+            "that panel now."
+          ]
+        ],
+        "MN_ICE_RELAY_GUARDAfterText": [
+          [
+            "I am not taking",
+            "the blame for"
+          ],
+          [
+            "this."
+          ]
+        ],
+        "MN_ICE_RELAY_GUARDLostText": [
+          [
+            "Now get upstairs."
+          ]
+        ],
+        "MN_ICE_RELAY_GUARDSeenText": [
+          [
+            "ICE: Keep away",
+            "from the controls."
+          ]
+        ],
+        "MN_ICE_RELAY_GUARDWonText": [
+          [
+            "The boss will",
+            "hear about this."
+          ]
         ]
       },
       "MnIronDrillCore": {
@@ -5052,8 +5528,8 @@
         ],
         "MnNDrillReedSeenText": [
           [
-            "REED: I signed",
-            "for this test."
+            "REED: Stop there.",
+            "I guard this test."
           ],
           [
             "FINN: We are under",
@@ -5064,11 +5540,11 @@
           ],
           [
             "The foreman wants",
-            "the motor running."
+            "a full test."
           ],
           [
-            "You are not taking",
-            "my shift from me."
+            "I am keeping my",
+            "contract."
           ]
         ],
         "MnNDrillReedWonText": [
@@ -5086,15 +5562,15 @@
         "MnNDrillReedAfterText": [
           [
             "REED: My name is",
-            "on the test order."
+            "on that order."
           ],
           [
-            "The chief offered",
-            "me one last job."
+            "Now they want me",
+            "at the intake."
           ],
           [
-            "He wants that",
-            "lake POKEMON."
+            "The chief is",
+            "paying me himself."
           ]
         ],
         "MnNDrillPowerText": [
@@ -5119,19 +5595,15 @@
         "MnNDrillPowerDoneText": [
           [
             "The drill motor",
-            "stops."
+            "winds down."
           ],
           [
-            "FINN: At last! We",
-            "can get out."
+            "FINN: It stopped!",
+            "We can get out."
           ],
           [
-            "I have the missing",
-            "meter."
-          ],
-          [
-            "Come here and take",
-            "it."
+            "I have the meter.",
+            "Come over here."
           ]
         ],
         "MnNDrillPowerAfterText": [
@@ -5142,28 +5614,24 @@
         ],
         "MnNDrillMeterQuestText": [
           [
-            "FINN: ELLIS built",
-            "this meter."
+            "FINN: Here is",
+            "ELLIS's meter."
           ],
           [
-            "It jammed when the",
-            "test began."
+            "It jammed in the",
+            "pump test."
           ],
           [
             "Take it to GRAND",
-            "RAPIDS."
+            "RAPIDS' depot."
           ],
           [
-            "The depot crew can",
-            "repair it."
+            "They can fix it",
+            "and read the log."
           ],
           [
-            "The repair crew",
-            "can read its log."
-          ],
-          [
-            "Tell NELL I am",
-            "coming upstairs."
+            "Tell NELL we are",
+            "coming up."
           ]
         ],
         "MnNDrillMeterAfterText": [
@@ -5194,15 +5662,51 @@
         ],
         "MnNDrillReedPostgameText": [
           [
-            "REED: LODE stopped",
-            "calling me."
+            "REED: LODE cut me",
+            "off."
           ],
           [
-            "You got your lake."
+            "They kept my pay,",
+            "too."
           ],
           [
-            "Do not ask me to",
-            "thank you."
+            "Do not expect me",
+            "to thank you."
+          ]
+        ],
+        "MN_LODE_ARC_CORE_EASTLostText": [
+          [
+            "It stays running."
+          ]
+        ],
+        "MN_LODE_ARC_CORE_EASTSeenText": [
+          [
+            "No one touches",
+            "these controls."
+          ]
+        ],
+        "MN_LODE_ARC_CORE_EASTWonText": [
+          [
+            "I was told to",
+            "guard the switch."
+          ]
+        ],
+        "MN_LODE_ARC_CORE_WESTLostText": [
+          [
+            "Stay away from",
+            "that shaft."
+          ]
+        ],
+        "MN_LODE_ARC_CORE_WESTSeenText": [
+          [
+            "We heard the crew",
+            "calling below us."
+          ]
+        ],
+        "MN_LODE_ARC_CORE_WESTWonText": [
+          [
+            "We left them",
+            "down there."
           ]
         ]
       },
@@ -5235,25 +5739,61 @@
             "The stair lock",
             "has no power."
           ]
+        ],
+        "MN_LODE_ARC_INTAKELostText": [
+          [
+            "Leave the water",
+            "testing to us."
+          ]
+        ],
+        "MN_LODE_ARC_INTAKESeenText": [
+          [
+            "No water tests",
+            "until we finish."
+          ]
+        ],
+        "MN_LODE_ARC_INTAKEWonText": [
+          [
+            "The boss banned",
+            "outside testing."
+          ]
+        ],
+        "MN_LODE_ARC_PUMPLostText": [
+          [
+            "The pumps",
+            "keep running."
+          ]
+        ],
+        "MN_LODE_ARC_PUMPSeenText": [
+          [
+            "The gauge is red.",
+            "Keep pumping."
+          ]
+        ],
+        "MN_LODE_ARC_PUMPWonText": [
+          [
+            "I ignored",
+            "that red gauge."
+          ]
         ]
       },
       "MnStCloud": {
         "MnArcSCBeforeText": [
           [
-            "SERA: My shift",
-            "ended. I am going."
+            "SERA: My shift is",
+            "over. Let me go."
           ],
           [
-            "REED: I have your",
-            "transfer papers."
+            "REED: You go north",
+            "on this transfer."
           ],
           [
             "SERA: I never",
-            "signed those."
+            "agreed to that!"
           ],
           [
-            "REED: My badge",
-            "is all I need."
+            "REED: This badge",
+            "says you do."
           ]
         ],
         "MnArcSCChoiceText": [
@@ -5278,7 +5818,7 @@
         ],
         "MnArcSCStandText": [
           [
-            "You stand between",
+            "You step between",
             "REED and SERA."
           ],
           [
@@ -5291,8 +5831,8 @@
         ],
         "MnArcSCReleasedText": [
           [
-            "SERA leaves the",
-            "transfer point."
+            "SERA walks away",
+            "from the transfer."
           ],
           [
             "REED: LODE will",
@@ -5310,45 +5850,49 @@
         ],
         "MnArcSeraWaitingText": [
           [
-            "SERA: I came here",
-            "to ask for help."
+            "SERA: I asked here",
+            "for help."
           ],
           [
             "REED followed me",
             "from the lift."
           ],
           [
-            "I refused his",
-            "transfer papers."
+            "He says I agreed",
+            "to a transfer."
+          ],
+          [
+            "I never signed",
+            "those papers."
           ]
         ],
         "MnSCWindCheckBadgesText": [
           [
             "The northern road",
-            "runs into woods."
+            "is a long trip."
           ],
           [
-            "WIND BADGE tests",
-            "safe flying teams."
-          ],
-          [
-            "SAVEN trains teams",
+            "Train with SAVEN",
             "at ST CLOUD GYM."
+          ],
+          [
+            "Earn the WIND",
+            "BADGE to go north."
           ]
         ]
       },
       "MnLeechLake": {
         "MN_LEECH_SHORE_FISHERText": [
           [
-            "FISHER: LODE used",
-            "last year's log."
+            "FISHER: LODE says",
+            "the water is fine."
           ],
           [
-            "This week my nets",
-            "came up empty."
+            "My nets have been",
+            "empty all week."
           ],
           [
-            "Tell the officer",
+            "I told the officer",
             "in BEMIDJI."
           ]
         ],
@@ -5380,19 +5924,23 @@
       "MnLeechLakeFisherHouse": {
         "MN_LEECH_SHORE_DIARISTText": [
           [
-            "FISHER: I write",
-            "down each catch."
+            "FISHER: I record",
+            "each day's catch."
           ],
           [
             "ICE told me to",
-            "leave out dates."
+            "omit the dates."
+          ],
+          [
+            "Who could check",
+            "the log then?"
           ],
           [
             "I kept writing."
           ],
           [
-            "Tell the officer",
-            "in BEMIDJI."
+            "BEMIDJI has my",
+            "copy."
           ]
         ]
       },
@@ -6169,6 +6717,33 @@
             "The engineer will",
             "call the crews."
           ]
+        ],
+        "MnDuluth_MN_DULUTH_NORTH_GUARDText": [
+          [
+            "The intake can",
+            "flood suddenly."
+          ],
+          [
+            "Earn eight BADGES",
+            "to go north."
+          ],
+          [
+            "Our harbor crew",
+            "must be alerted."
+          ],
+          [
+            "Ask at the",
+            "harbor workshop."
+          ]
+        ],
+        "MnDuluth_NORTH_GATE_SIGNText": [
+          [
+            "NORTH SHORE PATH"
+          ],
+          [
+            "EIGHT BADGES",
+            "CREW ALERT NEEDED"
+          ]
         ]
       },
       "MnGrandRapids": {
@@ -6282,8 +6857,1145 @@
             "for a partner."
           ],
           [
-            "His field station",
+            "Her field station",
             "is by the river."
+          ]
+        ]
+      },
+      "MnR01Farmhouse": {
+        "MN_R01_FARMERText": [
+          [
+            "FARMER: Watch the",
+            "tall grass."
+          ],
+          [
+            "Wild POKEMON",
+            "hide there."
+          ],
+          [
+            "The east steps",
+            "reaches the bluff."
+          ],
+          [
+            "That BERRY is",
+            "for your partner."
+          ],
+          [
+            "IVY works at the",
+            "ROCHESTER clinic."
+          ]
+        ],
+        "MN_R01_FARM_NOTICEText": [
+          [
+            "TO IVY",
+            "ROCHESTER CLINIC"
+          ],
+          [
+            "FOLLOW WEST ROAD"
+          ]
+        ]
+      },
+      "MnGrandMarais": {
+        "MnGrandMaraisStudentText": [
+          [
+            "The harbor lamp",
+            "stopped turning."
+          ],
+          [
+            "The field station",
+            "has a spare part."
+          ],
+          [
+            "It is northwest",
+            "of here."
+          ]
+        ],
+        "MnGrandMaraisStudentSignalText": [
+          [
+            "The lamp is",
+            "turning again!"
+          ],
+          [
+            "I can see it",
+            "from here."
+          ],
+          [
+            "I want to learn",
+            "how signals work."
+          ]
+        ],
+        "MnGrandMaraisHarborMasterText": [
+          [
+            "The fog is thick.",
+            "Boats are waiting."
+          ],
+          [
+            "Our harbor lamp",
+            "needs a new part."
+          ],
+          [
+            "Ask at the",
+            "field station."
+          ]
+        ]
+      },
+      "MnGrandMaraisFieldStation": {
+        "MnGrandMaraisWelcomeText": [
+          [
+            "RESEARCHER: Our",
+            "lamp has failed."
+          ],
+          [
+            "The keeper needs",
+            "this spare part."
+          ],
+          [
+            "Take it to the",
+            "LIGHTHOUSE."
+          ],
+          [
+            "This BIRCHIT will",
+            "join your team."
+          ]
+        ],
+        "MnGrandMaraisPartnerText": [
+          [
+            "BIRCHIT joined",
+            "your team!"
+          ],
+          [
+            "RESEARCHER: Go to",
+            "the LIGHTHOUSE."
+          ],
+          [
+            "It is across",
+            "the harbor."
+          ]
+        ],
+        "MnGrandMaraisReminderText": [
+          [
+            "RESEARCHER: Take",
+            "the lamp part."
+          ],
+          [
+            "The LIGHTHOUSE is",
+            "across the harbor."
+          ],
+          [
+            "The clinic can",
+            "rest your team."
+          ]
+        ],
+        "MnGrandMaraisTamarackThanksText": [
+          [
+            "RESEARCHER: The",
+            "keeper called."
+          ],
+          [
+            "The harbor lamp",
+            "is working again."
+          ],
+          [
+            "Thank you for",
+            "taking the part!"
+          ]
+        ]
+      },
+      "MnGrandMaraisLighthouse": {
+        "MnGrandMaraisSignalMissingText": [
+          [
+            "KEEPER: The lamp",
+            "has stopped."
+          ],
+          [
+            "The field station",
+            "has a spare part."
+          ],
+          [
+            "Please bring it",
+            "across the harbor."
+          ]
+        ],
+        "MnGrandMaraisSignalFixedText": [
+          [
+            "KEEPER: The part!",
+            "Let me fit it."
+          ],
+          [
+            "There! The lamp",
+            "can turn again."
+          ],
+          [
+            "Boats can find",
+            "the harbor now."
+          ],
+          [
+            "Take a SUPER",
+            "POTION with you."
+          ]
+        ],
+        "MnGrandMaraisSignalDoneText": [
+          [
+            "KEEPER: The lamp",
+            "is turning well."
+          ],
+          [
+            "Thanks again for",
+            "bringing the part."
+          ]
+        ],
+        "MnGrandMaraisSignalBagFullText": [
+          [
+            "KEEPER: Your PACK",
+            "is full."
+          ],
+          [
+            "Come back for the",
+            "SUPER POTION."
+          ],
+          [
+            "I will keep it",
+            "here for you."
+          ]
+        ]
+      },
+      "MnBrainerdRangerStation": {
+        "MN_BRAINERD_ARCHIVISTText": [
+          [
+            "BEMIDJI keeps",
+            "copies of logs."
+          ],
+          [
+            "Take your notes",
+            "to the officer."
+          ],
+          [
+            "He can compare",
+            "the dates."
+          ]
+        ],
+        "MN_BRAINERD_HABITAT_LOGText": [
+          [
+            "HABITAT LOG"
+          ],
+          [
+            "Every recent entry",
+            "reads NO CHANGE."
+          ]
+        ],
+        "MN_BRAINERD_VOLUNTEERText": [
+          [
+            "The ranger takes",
+            "reports outside."
+          ],
+          [
+            "Keep a copy of",
+            "your observations."
+          ],
+          [
+            "The whole log",
+            "reads NO CHANGE."
+          ],
+          [
+            "That seems odd.",
+            "The pumps ran."
+          ]
+        ]
+      },
+      "MnR09C00R00": {
+        "MN_R09_ORE_GEOLOGISTText": [
+          [
+            "The missing meter",
+            "is in the mine."
+          ],
+          [
+            "NELL is inside,",
+            "near the stairs."
+          ],
+          [
+            "Ask her about",
+            "the crew below."
+          ]
+        ]
+      },
+      "MnDuluthPokecenter1F": {
+        "MnDuluthPokecenter1F_MN_DULUTH_CLINIC_VISITORText": [
+          [
+            "The harbor crew",
+            "heads north."
+          ],
+          [
+            "The engineer can",
+            "tell you the plan."
+          ]
+        ]
+      },
+      "MnR11C00R01": {
+        "MN_R11_N03Text": [
+          [
+            "DULUTH's engineer",
+            "calls the crews."
+          ],
+          [
+            "The local keeper",
+            "watches the lake."
+          ]
+        ]
+      },
+      "MnR11SplitRockLighthouse": {
+        "MnR11KeeperText": [
+          [
+            "KEEPER: I watch",
+            "the lake here."
+          ],
+          [
+            "DULUTH calls when",
+            "the crews go out."
+          ],
+          [
+            "I keep the lamp",
+            "ready for them."
+          ]
+        ]
+      },
+      "MnInternationalFallsPokecenter1F": {
+        "MnFallsregistered_linesText": [
+          [
+            "RANGER: You are",
+            "on our list."
+          ],
+          [
+            "Bring eight BADGES",
+            "and a crew alert."
+          ],
+          [
+            "Get the alert",
+            "at DULUTH harbor."
+          ],
+          [
+            "Reach the far camp",
+            "and report here."
+          ]
+        ]
+      },
+      "MnRainyRiverIcefields": {
+        "MnFallsdenied_linesText": [
+          [
+            "The loop needs",
+            "eight BADGES."
+          ],
+          [
+            "Check in with",
+            "the FALLS ranger."
+          ],
+          [
+            "You also need the",
+            "DULUTH crew alert."
+          ]
+        ],
+        "MnFallswarden_linesText": [
+          [
+            "WARDEN: Check in",
+            "at FALLS first."
+          ],
+          [
+            "Get the crew alert",
+            "from DULUTH first."
+          ],
+          [
+            "You need eight",
+            "BADGES as well."
+          ],
+          [
+            "Coming home?",
+            "Our lamp is lit."
+          ]
+        ]
+      },
+      "MnIceMaintenance": {
+        "MN_ICE_HQ_MAINTENANCE_GUARDLostText": [
+          [
+            "Turn around."
+          ]
+        ],
+        "MN_ICE_HQ_MAINTENANCE_GUARDSeenText": [
+          [
+            "You cannot use",
+            "these stairs."
+          ]
+        ],
+        "MN_ICE_HQ_MAINTENANCE_GUARDWonText": [
+          [
+            "Go on, then."
+          ]
+        ],
+        "MN_ICE_HQ_WORKSHOPLostText": [
+          [
+            "My shift is not",
+            "over yet."
+          ]
+        ],
+        "MN_ICE_HQ_WORKSHOPSeenText": [
+          [
+            "I keep the vans",
+            "running. They pay."
+          ]
+        ],
+        "MN_ICE_HQ_WORKSHOPWonText": [
+          [
+            "A van needs more",
+            "than an engine."
+          ]
+        ],
+        "MnIceHQDoorWORKSHOPDoneText": [
+          [
+            "The card works.",
+            "The shutter opens."
+          ]
+        ],
+        "MnIceHQDoorWORKSHOPLockedText": [
+          [
+            "A card reader.",
+            "The shutter holds."
+          ]
+        ],
+        "MnIceHQSuppliesAfterText": [
+          [
+            "OLLIE: Use the pad",
+            "for the annex."
+          ],
+          [
+            "Watch for guards."
+          ]
+        ],
+        "MnIceHQSuppliesFullText": [
+          [
+            "OLLIE: Your ITEM",
+            "POCKET is full."
+          ],
+          [
+            "Make some room.",
+            "I will keep these."
+          ]
+        ],
+        "MnIceHQSuppliesText": [
+          [
+            "OLLIE: Take two",
+            "SUPER POTIONS."
+          ],
+          [
+            "I saved them for",
+            "our crews."
+          ],
+          [
+            "Use them to keep",
+            "your team going."
+          ]
+        ],
+        "MnIceMaintenancePanelAText": [
+          [
+            "TRANSFER A",
+            "Step onto the pad."
+          ]
+        ],
+        "MnIceMaintenancePanelCText": [
+          [
+            "TRANSFER C",
+            "Step onto the pad."
+          ]
+        ],
+        "MnIceMaintenancePanelDText": [
+          [
+            "TRANSFER D",
+            "Step onto the pad."
+          ]
+        ],
+        "MnIceMaintenancePanelFText": [
+          [
+            "TRANSFER F",
+            "Step onto the pad."
+          ]
+        ],
+        "MnIceMaintenanceRoutingWorkerText": [
+          [
+            "MIRA: No stairs",
+            "on this side."
+          ],
+          [
+            "The other pad goes",
+            "to RECORDS."
+          ],
+          [
+            "They need the pads",
+            "for their cargo."
+          ],
+          [
+            "That is how we can",
+            "get past them."
+          ]
+        ]
+      },
+      "MnIceOperations": {
+        "MN_ICE_HQ_DISPATCHLostText": [
+          [
+            "The van is gone.",
+            "You are too late."
+          ]
+        ],
+        "MN_ICE_HQ_DISPATCHSeenText": [
+          [
+            "I sent the van.",
+            "ELLIS was inside."
+          ]
+        ],
+        "MN_ICE_HQ_DISPATCHWonText": [
+          [
+            "I knew where they",
+            "were taking him."
+          ]
+        ],
+        "MN_ICE_HQ_OPERATIONS_GUARDLostText": [
+          [
+            "Get out of here."
+          ]
+        ],
+        "MN_ICE_HQ_OPERATIONS_GUARDSeenText": [
+          [
+            "You are in an",
+            "ICE office now."
+          ]
+        ],
+        "MN_ICE_HQ_OPERATIONS_GUARDWonText": [
+          [
+            "I cannot stop you."
+          ]
+        ],
+        "MN_ICE_HQ_OPERATIONS_PATROLLostText": [
+          [
+            "Visiting hours",
+            "are over."
+          ]
+        ],
+        "MN_ICE_HQ_OPERATIONS_PATROLSeenText": [
+          [
+            "No visitors in",
+            "this office."
+          ]
+        ],
+        "MN_ICE_HQ_OPERATIONS_PATROLWonText": [
+          [
+            "The doors will not",
+            "keep you out."
+          ]
+        ],
+        "MnIceHQDoorOPERATIONSDoneText": [
+          [
+            "The card works.",
+            "The shutter opens."
+          ]
+        ],
+        "MnIceHQDoorOPERATIONSLockedText": [
+          [
+            "A card reader.",
+            "The shutter holds."
+          ]
+        ],
+        "MnIceHQDoorRETURNDoneText": [
+          [
+            "The card works.",
+            "The shutter opens."
+          ]
+        ],
+        "MnIceHQDoorRETURNLockedText": [
+          [
+            "A card reader.",
+            "The shutter holds."
+          ]
+        ],
+        "MnIceOperationsPanelCText": [
+          [
+            "TRANSFER C",
+            "Step onto the pad."
+          ]
+        ],
+        "MnIceOperationsPanelGText": [
+          [
+            "TRANSFER G",
+            "Step onto the pad."
+          ]
+        ],
+        "MnIceOperationsPanelHText": [
+          [
+            "TRANSFER H",
+            "Step onto the pad."
+          ]
+        ],
+        "MnIceOperationsWorkerText": [
+          [
+            "IRA: ICE locked",
+            "the stair doors."
+          ],
+          [
+            "I kept the pads",
+            "running."
+          ],
+          [
+            "They lead into",
+            "the sealed rooms."
+          ],
+          [
+            "Find ADA in the",
+            "records room."
+          ],
+          [
+            "She kept a card",
+            "for those doors."
+          ]
+        ]
+      },
+      "MnIceRecords": {
+        "MN_ICE_HQ_ARCHIVELostText": [
+          [
+            "Your name goes",
+            "in the file."
+          ]
+        ],
+        "MN_ICE_HQ_ARCHIVESeenText": [
+          [
+            "A complaint gives",
+            "us a name to find."
+          ]
+        ],
+        "MN_ICE_HQ_ARCHIVEWonText": [
+          [
+            "That complaint",
+            "was about us."
+          ]
+        ],
+        "MN_ICE_HQ_RECORDS_GUARDLostText": [
+          [
+            "The files stay",
+            "with us."
+          ]
+        ],
+        "MN_ICE_HQ_RECORDS_GUARDSeenText": [
+          [
+            "Those names stay",
+            "in this building."
+          ]
+        ],
+        "MN_ICE_HQ_RECORDS_GUARDWonText": [
+          [
+            "Leave the cabinet",
+            "alone."
+          ]
+        ],
+        "MnIceHQCardAfterText": [
+          [
+            "ADA: Open the",
+            "staff rooms too."
+          ],
+          [
+            "Some of us can",
+            "help you get back."
+          ]
+        ],
+        "MnIceHQCardFullText": [
+          [
+            "ADA: Your KEY ITEM",
+            "POCKET is full."
+          ],
+          [
+            "Make some room.",
+            "I will wait here."
+          ]
+        ],
+        "MnIceHQCardGivenText": [
+          [
+            "You received the",
+            "CARD KEY."
+          ],
+          [
+            "ADA: Use the other",
+            "pad to get back."
+          ],
+          [
+            "Staff can help.",
+            "Open their rooms."
+          ]
+        ],
+        "MnIceHQCardOfferText": [
+          [
+            "ADA: I sort their",
+            "prisoner records."
+          ],
+          [
+            "They never record",
+            "any charges."
+          ],
+          [
+            "ELLIS is upstairs",
+            "in the cell."
+          ],
+          [
+            "This card opens",
+            "the blue shutters."
+          ],
+          [
+            "Will you help him?"
+          ]
+        ],
+        "MnIceHQDoorRESTDoneText": [
+          [
+            "The card works.",
+            "The shutter opens."
+          ]
+        ],
+        "MnIceHQDoorRESTLockedText": [
+          [
+            "A card reader.",
+            "The shutter holds."
+          ]
+        ],
+        "MnIceHQRestDoneText": [
+          [
+            "NORA: All better!",
+            "Take care inside."
+          ]
+        ],
+        "MnIceHQRestText": [
+          [
+            "NORA: Your team",
+            "can rest here."
+          ],
+          [
+            "Shall I treat",
+            "your POKEMON?"
+          ]
+        ],
+        "MnIceRecordsPanelBText": [
+          [
+            "TRANSFER B",
+            "Step onto the pad."
+          ]
+        ],
+        "MnIceRecordsPanelDText": [
+          [
+            "TRANSFER D",
+            "Step onto the pad."
+          ]
+        ],
+        "MnIceRecordsPanelEText": [
+          [
+            "TRANSFER E",
+            "Step onto the pad."
+          ]
+        ],
+        "MnIceRecordsPanelHText": [
+          [
+            "TRANSFER H",
+            "Step onto the pad."
+          ]
+        ]
+      },
+      "MnIceTransfer": {
+        "MN_ICE_HQ_ESCORTLostText": [
+          [
+            "Keep walking."
+          ]
+        ],
+        "MN_ICE_HQ_ESCORTSeenText": [
+          [
+            "No calls.",
+            "No visitors."
+          ]
+        ],
+        "MN_ICE_HQ_ESCORTWonText": [
+          [
+            "I was told to",
+            "keep them here."
+          ]
+        ],
+        "MN_ICE_HQ_TRANSFER_GUARDLostText": [
+          [
+            "No outside calls."
+          ]
+        ],
+        "MN_ICE_HQ_TRANSFER_GUARDSeenText": [
+          [
+            "Nobody calls home",
+            "from this room."
+          ]
+        ],
+        "MN_ICE_HQ_TRANSFER_GUARDWonText": [
+          [
+            "You want them",
+            "to call home?"
+          ]
+        ],
+        "MnIceHQDoorANNEXDoneText": [
+          [
+            "The card works.",
+            "The shutter opens."
+          ]
+        ],
+        "MnIceHQDoorANNEXLockedText": [
+          [
+            "A card reader.",
+            "The shutter holds."
+          ]
+        ],
+        "MnIceHQDoorCELLSDoneText": [
+          [
+            "The card works.",
+            "The shutter opens."
+          ]
+        ],
+        "MnIceHQDoorCELLSLockedText": [
+          [
+            "A card reader.",
+            "The shutter holds."
+          ]
+        ],
+        "MnIceHQTessAfterText": [
+          [
+            "TESS: Clear the",
+            "loading stair."
+          ],
+          [
+            "I will wait here",
+            "until it is safe."
+          ]
+        ],
+        "MnIceHQTessText": [
+          [
+            "TESS: They took me",
+            "outside my shop."
+          ],
+          [
+            "I asked where",
+            "ELLIS had gone."
+          ],
+          [
+            "They put me here",
+            "for asking."
+          ],
+          [
+            "I need the loading",
+            "stair cleared."
+          ],
+          [
+            "I will wait here",
+            "until it is safe."
+          ],
+          [
+            "Tell JO that",
+            "ELLIS is upstairs."
+          ]
+        ],
+        "MnIceTransferPanelAText": [
+          [
+            "TRANSFER A",
+            "Step onto the pad."
+          ]
+        ],
+        "MnIceTransferPanelBText": [
+          [
+            "TRANSFER B",
+            "Step onto the pad."
+          ]
+        ],
+        "MnIceTransferPanelEText": [
+          [
+            "TRANSFER E",
+            "Step onto the pad."
+          ]
+        ],
+        "MnIceTransferPanelFText": [
+          [
+            "TRANSFER F",
+            "Step onto the pad."
+          ]
+        ],
+        "MnIceTransferPanelGText": [
+          [
+            "TRANSFER G",
+            "Step onto the pad."
+          ]
+        ]
+      },
+      "MnIronDrillApproach": {
+        "MN_LODE_ARC_ACCESSLostText": [
+          [
+            "The mine is",
+            "off limits."
+          ]
+        ],
+        "MN_LODE_ARC_ACCESSSeenText": [
+          [
+            "We started before",
+            "posting the signs."
+          ]
+        ],
+        "MN_LODE_ARC_ACCESSWonText": [
+          [
+            "The notices were",
+            "only for show."
+          ]
+        ],
+        "MN_LODE_ARC_SPOILLostText": [
+          [
+            "We are not",
+            "stopping work."
+          ]
+        ],
+        "MN_LODE_ARC_SPOILSeenText": [
+          [
+            "Let the runoff",
+            "go downstream."
+          ]
+        ],
+        "MN_LODE_ARC_SPOILWonText": [
+          [
+            "I knew who lived",
+            "downstream."
+          ]
+        ]
+      },
+      "MnIronHaulage": {
+        "MN_LODE_ARC_CONVEYORLostText": [
+          [
+            "The belt stays on."
+          ]
+        ],
+        "MN_LODE_ARC_CONVEYORSeenText": [
+          [
+            "My orders say",
+            "keep it running."
+          ]
+        ],
+        "MN_LODE_ARC_CONVEYORWonText": [
+          [
+            "I could have",
+            "stopped it."
+          ]
+        ],
+        "MN_LODE_ARC_WEIGHLostText": [
+          [
+            "Move. The trucks",
+            "are waiting."
+          ]
+        ],
+        "MN_LODE_ARC_WEIGHSeenText": [
+          [
+            "Every loaded truck",
+            "gets me a bonus."
+          ]
+        ],
+        "MN_LODE_ARC_WEIGHWonText": [
+          [
+            "That bonus was not",
+            "worth this."
+          ]
+        ],
+        "MnIronHaulageRuthText": [
+          [
+            "RUTH: Two lines",
+            "power this drill."
+          ],
+          [
+            "One runs through",
+            "the vent shaft."
+          ],
+          [
+            "Use the ladder",
+            "to reach the sump."
+          ],
+          [
+            "The far side leads",
+            "back to the valve."
+          ],
+          [
+            "Shut both valves.",
+            "The gate opens."
+          ],
+          [
+            "FINN is inside.",
+            "Please hurry."
+          ]
+        ],
+        "MnIronPressureHAULAfterText": [
+          [
+            "This valve is off."
+          ],
+          [
+            "The crosscut is",
+            "open now."
+          ]
+        ],
+        "MnIronPressureHAULDoneText": [
+          [
+            "The gauge falls."
+          ],
+          [
+            "A crosscut shutter",
+            "slides open."
+          ]
+        ],
+        "MnIronPressureHAULText": [
+          [
+            "This pressure line",
+            "powers the drill."
+          ],
+          [
+            "Close its valve?"
+          ]
+        ]
+      },
+      "MnIronSump": {
+        "MN_LODE_ARC_DRAINLostText": [
+          [
+            "The deadline",
+            "has not changed."
+          ]
+        ],
+        "MN_LODE_ARC_DRAINSeenText": [
+          [
+            "Buy bottled water.",
+            "We cannot be late."
+          ]
+        ],
+        "MN_LODE_ARC_DRAINWonText": [
+          [
+            "People need",
+            "that lake water."
+          ]
+        ],
+        "MN_LODE_ARC_SUMPLostText": [
+          [
+            "Get out of",
+            "this sump."
+          ]
+        ],
+        "MN_LODE_ARC_SUMPSeenText": [
+          [
+            "The water changed.",
+            "So what?"
+          ]
+        ],
+        "MN_LODE_ARC_SUMPWonText": [
+          [
+            "It was clear",
+            "before we came."
+          ]
+        ],
+        "MnIronSumpGateText": [
+          [
+            "Two pressure lines",
+            "hold this shutter."
+          ],
+          [
+            "Close the HAULAGE",
+            "and VENT valves."
+          ]
+        ]
+      },
+      "MnIronVentilation": {
+        "MN_LODE_ARC_SHIFTLostText": [
+          [
+            "I am still",
+            "on the clock."
+          ]
+        ],
+        "MN_LODE_ARC_SHIFTSeenText": [
+          [
+            "My shift ends",
+            "when we finish."
+          ]
+        ],
+        "MN_LODE_ARC_SHIFTWonText": [
+          [
+            "I should have",
+            "left hours ago."
+          ]
+        ],
+        "MN_LODE_ARC_VENTLostText": [
+          [
+            "Keep out of",
+            "this shaft."
+          ]
+        ],
+        "MN_LODE_ARC_VENTSeenText": [
+          [
+            "Crews need air.",
+            "LODE wants ore."
+          ]
+        ],
+        "MN_LODE_ARC_VENTWonText": [
+          [
+            "I should have",
+            "opened the vent."
+          ]
+        ],
+        "MnIronPressureVENTAfterText": [
+          [
+            "This valve is off."
+          ],
+          [
+            "The crosscut is",
+            "open now."
+          ]
+        ],
+        "MnIronPressureVENTDoneText": [
+          [
+            "The gauge falls."
+          ],
+          [
+            "A crosscut shutter",
+            "slides open."
+          ]
+        ],
+        "MnIronPressureVENTText": [
+          [
+            "This pressure line",
+            "powers the drill."
+          ],
+          [
+            "Close its valve?"
+          ]
+        ],
+        "MnIronVentilationVernText": [
+          [
+            "VERN: I used to",
+            "check this shaft."
+          ],
+          [
+            "LODE stopped the",
+            "safety checks."
+          ],
+          [
+            "ICE guards keep",
+            "our crew inside."
+          ],
+          [
+            "The crosscut opens",
+            "from its far side."
+          ],
+          [
+            "The service",
+            "ladders go there."
+          ]
+        ]
+      },
+      "MnWinonaHome2F": {
+        "MN_SMALL_INTERIOR_WINONA_COUSINInteriorText": [
+          [
+            "COUSIN: I'm trying",
+            "your game."
+          ],
+          [
+            "Say hi to your mom",
+            "before you go."
           ]
         ]
       }

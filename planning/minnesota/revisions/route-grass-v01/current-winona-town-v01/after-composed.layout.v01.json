@@ -1,0 +1,523 @@
+{
+  "schema_version": 2,
+  "id": "MnWinona",
+  "tileset": "johto",
+  "compiled_tileset": "johto",
+  "dimensions_metatiles": [
+    16,
+    14
+  ],
+  "shore_fitting": "johto_8_neighbors",
+  "reject_cliff_cuts": true,
+  "source_pixels_modified": false,
+  "layers": [
+    {
+      "name": "Compact home and station clearing",
+      "kind": "polygon",
+      "material": "lawn",
+      "points": [
+        [
+          2,
+          2
+        ],
+        [
+          11,
+          2
+        ],
+        [
+          11,
+          4
+        ],
+        [
+          12,
+          4
+        ],
+        [
+          12,
+          11
+        ],
+        [
+          10,
+          11
+        ],
+        [
+          10,
+          12
+        ],
+        [
+          3,
+          12
+        ],
+        [
+          3,
+          10
+        ],
+        [
+          2,
+          10
+        ]
+      ]
+    },
+    {
+      "name": "Mississippi within native banks",
+      "kind": "polygon",
+      "material": "water",
+      "points": [
+        [
+          13,
+          1
+        ],
+        [
+          14,
+          1
+        ],
+        [
+          14,
+          12
+        ],
+        [
+          13,
+          12
+        ],
+        [
+          13,
+          9
+        ],
+        [
+          14,
+          9
+        ],
+        [
+          14,
+          5
+        ],
+        [
+          13,
+          5
+        ]
+      ]
+    },
+    {
+      "name": "Western trail",
+      "kind": "path",
+      "points": [
+        [
+          1,
+          9
+        ],
+        [
+          7,
+          9
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "name": "Home to the square",
+      "kind": "path",
+      "points": [
+        [
+          3,
+          4
+        ],
+        [
+          7,
+          4
+        ],
+        [
+          7,
+          9
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "name": "Clinic walk",
+      "kind": "path",
+      "points": [
+        [
+          7,
+          4
+        ],
+        [
+          8,
+          4
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "name": "Station walk",
+      "kind": "path",
+      "points": [
+        [
+          7,
+          9
+        ],
+        [
+          7,
+          10
+        ],
+        [
+          9,
+          10
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "name": "Mart turn",
+      "kind": "path",
+      "points": [
+        [
+          7,
+          9
+        ],
+        [
+          7,
+          12
+        ],
+        [
+          3,
+          12
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "name": "River lookout",
+      "kind": "path",
+      "points": [
+        [
+          7,
+          7
+        ],
+        [
+          12,
+          7
+        ],
+        [
+          12,
+          8
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "name": "Oak at the square",
+      "kind": "point",
+      "position": [
+        6,
+        7
+      ],
+      "block": "61"
+    },
+    {
+      "name": "Home flowers",
+      "kind": "rect",
+      "bounds": [
+        3,
+        6,
+        5,
+        7
+      ],
+      "material": "flowers"
+    },
+    {
+      "name": "Station field bed",
+      "kind": "rect",
+      "bounds": [
+        9,
+        11,
+        11,
+        12
+      ],
+      "material": "flowers"
+    },
+    {
+      "name": "Home complete facade",
+      "kind": "point",
+      "position": [
+        3,
+        2
+      ],
+      "block": "18"
+    },
+    {
+      "name": "Home complete facade",
+      "kind": "point",
+      "position": [
+        4,
+        2
+      ],
+      "block": "19"
+    },
+    {
+      "name": "Home complete facade",
+      "kind": "point",
+      "position": [
+        3,
+        3
+      ],
+      "block": "16"
+    },
+    {
+      "name": "Home complete facade",
+      "kind": "point",
+      "position": [
+        4,
+        3
+      ],
+      "block": "1e"
+    },
+    {
+      "name": "Clinic complete facade",
+      "kind": "point",
+      "position": [
+        8,
+        2
+      ],
+      "block": "18"
+    },
+    {
+      "name": "Clinic complete facade",
+      "kind": "point",
+      "position": [
+        9,
+        2
+      ],
+      "block": "19"
+    },
+    {
+      "name": "Clinic complete facade",
+      "kind": "point",
+      "position": [
+        8,
+        3
+      ],
+      "block": "1a"
+    },
+    {
+      "name": "Clinic complete facade",
+      "kind": "point",
+      "position": [
+        9,
+        3
+      ],
+      "block": "1b"
+    },
+    {
+      "name": "Mart complete facade",
+      "kind": "point",
+      "position": [
+        3,
+        10
+      ],
+      "block": "18"
+    },
+    {
+      "name": "Mart complete facade",
+      "kind": "point",
+      "position": [
+        4,
+        10
+      ],
+      "block": "19"
+    },
+    {
+      "name": "Mart complete facade",
+      "kind": "point",
+      "position": [
+        3,
+        11
+      ],
+      "block": "16"
+    },
+    {
+      "name": "Mart complete facade",
+      "kind": "point",
+      "position": [
+        4,
+        11
+      ],
+      "block": "17"
+    },
+    {
+      "name": "Field station complete facade",
+      "kind": "point",
+      "position": [
+        8,
+        8
+      ],
+      "block": "18"
+    },
+    {
+      "name": "Field station complete facade",
+      "kind": "point",
+      "position": [
+        9,
+        8
+      ],
+      "block": "1f"
+    },
+    {
+      "name": "Field station complete facade",
+      "kind": "point",
+      "position": [
+        10,
+        8
+      ],
+      "block": "19"
+    },
+    {
+      "name": "Field station complete facade",
+      "kind": "point",
+      "position": [
+        8,
+        9
+      ],
+      "block": "1c"
+    },
+    {
+      "name": "Field station complete facade",
+      "kind": "point",
+      "position": [
+        9,
+        9
+      ],
+      "block": "77"
+    },
+    {
+      "name": "Field station complete facade",
+      "kind": "point",
+      "position": [
+        10,
+        9
+      ],
+      "block": "1e"
+    },
+    {
+      "name": "MnWHomeSign",
+      "kind": "point",
+      "position": [
+        6,
+        5
+      ],
+      "block": "45"
+    },
+    {
+      "name": "MnWClinicSign",
+      "kind": "point",
+      "position": [
+        10,
+        4
+      ],
+      "block": "45"
+    },
+    {
+      "name": "MnWStationSign",
+      "kind": "point",
+      "position": [
+        12,
+        10
+      ],
+      "block": "45"
+    },
+    {
+      "name": "MnWTownSign",
+      "kind": "point",
+      "position": [
+        7,
+        8
+      ],
+      "block": "45"
+    },
+    {
+      "name": "Complete original native Cherrygrove mart front",
+      "kind": "point",
+      "position": [
+        3,
+        11
+      ],
+      "block": "1a"
+    },
+    {
+      "name": "Existing Mississippi north WATER seam; authored_river_connections and winona_station_edges four-lane guard",
+      "kind": "point",
+      "position": [
+        13,
+        0
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Existing Mississippi north WATER seam; authored_river_connections and winona_station_edges four-lane guard",
+      "kind": "point",
+      "position": [
+        14,
+        0
+      ],
+      "block": "59"
+    },
+    {
+      "name": "winona_station_modpack native station overlay",
+      "kind": "point",
+      "position": [
+        9,
+        5
+      ],
+      "block": "18"
+    },
+    {
+      "name": "winona_station_modpack native station overlay",
+      "kind": "point",
+      "position": [
+        10,
+        5
+      ],
+      "block": "19"
+    },
+    {
+      "name": "winona_station_modpack native station overlay",
+      "kind": "point",
+      "position": [
+        9,
+        6
+      ],
+      "block": "16"
+    },
+    {
+      "name": "winona_station_modpack native station overlay",
+      "kind": "point",
+      "position": [
+        10,
+        6
+      ],
+      "block": "1e"
+    },
+    {
+      "name": "winona_station_modpack native placard",
+      "kind": "point",
+      "position": [
+        11,
+        6
+      ],
+      "block": "45"
+    },
+    {
+      "name": "rochester_connections native west road mouth",
+      "kind": "point",
+      "position": [
+        0,
+        9
+      ],
+      "block": "01"
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "pid": 50482,
+  "source_sha256": {
+    "crates/crystal-assets/src/mankato_mart_facade.rs": "d2c1e0fca5f07ddd0db237c2b330a73abe413132e9a4fc669378b2e9aa980433",
+    "crates/crystal-assets/src/bin/revise_mankato_mart_facade.rs": "0fb5518c769acc1f64893d2ad6eac595cabbd4e1e25b7a521cf47f2d1152af20"
+  },
+  "steps": [
+    {
+      "step": "publisher",
+      "command": [
+        "cargo",
+        "build",
+        "--profile",
+        "wasm-dev",
+        "--locked",
+        "--config",
+        "profile.wasm-dev.package.crystal-assets.opt-level=0",
+        "-p",
+        "crystal-assets",
+        "--bin",
+        "revise_mankato_mart_facade"
+      ],
+      "exit_code": 0,
+      "log": ".local/route-grass-review/mankato-bank-publisher-v02.log",
+      "outputs": [
+        {
+          "path": ".local/route-grass-review/portable-bank-tools-v02/revise_mankato_mart_facade",
+          "sha256": "7749dd286dbd0d818c44d1425fe6b05402aa70790df1ff3cae4375c5005c32be"
+        }
+      ]
+    },
+    {
+      "step": "assets-all-target-clippy",
+      "command": [
+        "cargo",
+        "clippy",
+        "--profile",
+        "wasm-dev",
+        "--locked",
+        "--config",
+        "profile.wasm-dev.package.crystal-assets.opt-level=0",
+        "-p",
+        "crystal-assets",
+        "--all-targets"
+      ],
+      "exit_code": 0,
+      "log": ".local/route-grass-review/mankato-bank-assets-all-target-clippy-v02.log"
+    }
+  ]
+}

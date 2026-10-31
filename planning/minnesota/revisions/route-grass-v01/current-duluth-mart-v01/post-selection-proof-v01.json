@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "selected_revision": "route_grass_duluth_mart_revision",
+  "pack": "content-packs/minnesota-current-duluth-mart-v01.crystalpack",
+  "sha256": "d77baff3e597e6527450400022e0b9acf655b856983cf96e49fbebfe275464f3",
+  "world_only_new_own_revision_selector_and_prior_own_stair_lint_status_changed": true,
+  "canonical_layout_only_two_mart_cells_changed": true,
+  "dossier_only_three_mart_coordinates_changed": true,
+  "full_active_composed_source_matches_native": true,
+  "minneapolis_houses_and_bemidji_stairs_exact": true,
+  "code_lint_pass": true
+}

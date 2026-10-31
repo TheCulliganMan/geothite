@@ -1,0 +1,235 @@
+{
+  "status": "PASS_LOCAL_TERRAIN_ART_WITH_EXPLICIT_OTHER_DIFFERENCES",
+  "pack": "content-packs/minnesota-international-falls-windbreak-v01.crystalpack",
+  "pack_sha256": "7066f05448101c79b4dc761963b0f39a570bad07c4f80e3e777901ac2e207507",
+  "reference_pack": "content-packs/minnesota-game-corner-v06.crystalpack",
+  "reference_acceptance": "planning/minnesota/renders/game-corner-v01/current-all-v12/receipt.json",
+  "maps": [
+    {
+      "map": "MnMinneapolis",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnMinneapolisAnglerHome",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnMinneapolisArrivalInfo",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnMinneapolisArtsStudio",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnMinneapolisBattleClub",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnMinneapolisBoatHouse",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnMinneapolisBookbinder",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnMinneapolisBridgeHome",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnMinneapolisCedarHome",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnMinneapolisCommunityKitchen",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnMinneapolisCommunityLibrary",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnMinneapolisCooperativeFlat",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnMinneapolisCornerHome",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnMinneapolisCouriersDesk",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnMinneapolisDepartmentStore1F",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnMinneapolisDepartmentStore2F",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnMinneapolisDepartmentStore3F",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnMinneapolisDepartmentStore4F",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnMinneapolisDepartmentStore5F",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnMinneapolisDispatchOffice",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnMinneapolisDispatcherHouse",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnMinneapolisFieldClub",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnMinneapolisFoundryMuseum",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnMinneapolisGardenFlat",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnMinneapolisGardenShop",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnMinneapolisGardenersHome",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnMinneapolisGrainExchange",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnMinneapolisGreenhouse",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnMinneapolisGym",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnMinneapolisLakeCabin",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnMinneapolisMart",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnMinneapolisMillForemanHome",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnMinneapolisMillWorkersHouse",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnMinneapolisMusicRoom",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnMinneapolisNortheastHome",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnMinneapolisPatternStudio",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnMinneapolisPokecenter1F",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnMinneapolisPrintShop",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnMinneapolisRiverFamilyHome",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnMinneapolisRiverInn",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnMinneapolisRiverNaturalist",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnMinneapolisSouthMarket",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnMinneapolisSupplyCoop",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnMinneapolisToolFlat",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    },
+    {
+      "map": "MnMinneapolisToolWorkshop",
+      "terrain_and_used_art_exact": true,
+      "changed_fields": []
+    }
+  ],
+  "scope": "Local terrain/used-art comparison, not new gameplay or global runtime equivalence. All differing other map fields listed."
+}

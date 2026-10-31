@@ -57,6 +57,16 @@ fn progression_rewards_bike_badge_denial_real_gift_and_continue_no_duplicate() {
     let (root, r) = load();
     for earned in [false, true] {
         let mut c = fixture(&root, &r, "MnMinneapolisToolWorkshop", (2, 5));
+        // A previously earned key precedes the bicycle in the actual campaign.
+        assert!(
+            c.shell
+                .shell
+                .session_mut()
+                .state_mut()
+                .bag
+                .add_item(&r.data().items["CARD_KEY"], 1)
+                .expect("declared earlier key fixture")
+        );
         c.shell.shell.session_mut().state_mut().badges.johto[0] = earned;
         c.shell
             .shell
@@ -77,6 +87,21 @@ fn progression_rewards_bike_badge_denial_real_gift_and_continue_no_duplicate() {
             talk(&mut c, (2, 4));
             assert_eq!(quantity(&c, "BICYCLE"), 1);
             register_and_ride(&mut c, &r);
+            c = continue_save(root.clone(), r.clone(), &mut c);
+            assert_eq!(
+                c.shell
+                    .shell
+                    .session()
+                    .state()
+                    .registered_key_item
+                    .as_deref(),
+                Some("BICYCLE")
+            );
+            assert_eq!(
+                c.shell.shell.session().overworld().player.mode,
+                crystal_core::world::movement::MovementMode::Bike
+            );
+            assert_eq!(quantity(&c, "CARD_KEY"), 1);
         }
     }
 }
@@ -93,6 +118,18 @@ fn progression_rewards_dex_counts_caught_native_species_not_seen_foreign_or_save
         .filter_map(|k| k.strip_prefix("MN_DEX_MEMBER_"))
         .collect();
     assert!(active.len() >= 100);
+    let fifty = r.data().maps["MnWinonaFieldStation"].scripts["MnRewardDexClaim2"]
+        .as_array()
+        .expect("native research award")
+        .iter()
+        .find(|row| row["command"] == "verbosegiveitem")
+        .expect("reviewed fifty-caught gift");
+    let (fifty_item, fifty_amount) = match (fifty["args"][0].as_str(), fifty["args"][1].as_str()) {
+        (Some("ULTRA_BALL"), Some("10")) => ("ULTRA_BALL", 10),
+        (Some("EXP_SHARE"), Some("1")) => ("EXP_SHARE", 1),
+        other => panic!("unreviewed fifty-caught reward: {other:?}"),
+    };
+
     for caught in [0, 9, 10, 25, 50, 100, active.len() - 1, active.len()] {
         let mut c = fixture(&root, &r, "MnWinonaFieldStation", (2, 8));
         let state = c.shell.shell.session_mut().state_mut();
@@ -126,7 +163,7 @@ fn progression_rewards_dex_counts_caught_native_species_not_seen_foreign_or_save
         for (threshold, item, amount) in [
             (10, "GREAT_BALL", 10),
             (25, "ITEMFINDER", 1),
-            (50, "ULTRA_BALL", 10),
+            (50, fifty_item, fifty_amount),
             (100, "LUCKY_EGG", 1),
             (active.len(), "RARE_CANDY", 10),
         ] {
@@ -136,10 +173,16 @@ fn progression_rewards_dex_counts_caught_native_species_not_seen_foreign_or_save
                 "caught={caught} item={item}"
             );
         }
-        assert_eq!(quantity(&c, "EXP_SHARE"), 0);
+        assert_eq!(
+            quantity(&c, fifty_item),
+            if caught >= 50 { fifty_amount } else { 0 }
+        );
         c = continue_save(root.clone(), r.clone(), &mut c);
         talk(&mut c, (2, 9));
-        assert_eq!(quantity(&c, "EXP_SHARE"), 0);
+        assert_eq!(
+            quantity(&c, fifty_item),
+            if caught >= 50 { fifty_amount } else { 0 }
+        );
         assert_eq!(
             quantity(&c, "GREAT_BALL"),
             if caught >= 10 { 10 } else { 0 }
@@ -152,7 +195,7 @@ fn progression_rewards_dex_counts_caught_native_species_not_seen_foreign_or_save
     }
 }
 
-fn register_and_ride(
+pub(super) fn register_and_ride(
     c: &mut super::super::VisibleShellController,
     r: &crystal_runtime::CrystalRuntime,
 ) {
@@ -192,6 +235,41 @@ fn register_and_ride(
         press(c, GameButton::Right);
     }
     assert_eq!(c.shell.field_pack_pocket, Some(FieldPackPocket::KeyItems));
+    let bicycle = c
+        .snapshot()
+        .expect("carried key items")
+        .bag
+        .key_items
+        .iter()
+        .position(|item| item.item_id == "BICYCLE" && item.quantity > 0)
+        .expect("earned bicycle in the actual pocket");
+    for _ in 0..64 {
+        let selected = c
+            .shell
+            .key_item_cursor
+            .as_ref()
+            .expect("native key-item cursor")
+            .option_index;
+        if selected == bicycle {
+            break;
+        }
+        press(
+            c,
+            if selected < bicycle {
+                GameButton::Down
+            } else {
+                GameButton::Up
+            },
+        );
+    }
+    assert_eq!(
+        c.shell
+            .key_item_cursor
+            .as_ref()
+            .expect("selected key item")
+            .option_index,
+        bicycle
+    );
     press(c, GameButton::A);
     let snapshot = c.snapshot().expect("bicycle actions");
     let actions = super::super::visible_selected_pack_item_actions(
@@ -445,7 +523,14 @@ fn progression_rewards_fifty_ultra_balls_native_toss_retry_and_once() {
 }
 
 fn native_toss_first_ball(c: &mut super::super::VisibleShellController) {
-    use super::super::{FieldPackAction, FieldPackPocket, StartMenuOption};
+    native_toss_first_pocket_item(c, &super::super::FieldPackPocket::Balls);
+}
+
+pub(super) fn native_toss_first_pocket_item(
+    c: &mut super::super::VisibleShellController,
+    pocket: &super::super::FieldPackPocket,
+) {
+    use super::super::{FieldPackAction, StartMenuOption};
     use super::winona::press;
     use crystal_core::input::GameButton;
     press(c, GameButton::Start);
@@ -475,20 +560,16 @@ fn native_toss_first_ball(c: &mut super::super::VisibleShellController) {
         );
     }
     for _ in 0..4 {
-        if c.shell.field_pack_pocket == Some(FieldPackPocket::Balls) {
+        if c.shell.field_pack_pocket.as_ref() == Some(pocket) {
             break;
         }
         press(c, GameButton::Right);
     }
     press(c, GameButton::A);
-    let snapshot = c.snapshot().expect("ball actions");
-    let actions = super::super::visible_selected_pack_item_actions(
-        &snapshot,
-        &c.shell,
-        &FieldPackPocket::Balls,
-        false,
-    )
-    .expect("ball actions");
+    let snapshot = c.snapshot().expect("item actions");
+    let actions =
+        super::super::visible_selected_pack_item_actions(&snapshot, &c.shell, pocket, false)
+            .expect("item actions");
     let target = actions
         .iter()
         .position(|a| *a == FieldPackAction::Toss)

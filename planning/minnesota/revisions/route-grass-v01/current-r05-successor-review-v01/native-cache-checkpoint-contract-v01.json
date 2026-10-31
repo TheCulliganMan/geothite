@@ -1,0 +1,43 @@
+{
+  "pack": "content-packs/minnesota-current-r05-cache-grass-bank-v01.crystalpack",
+  "pack_sha256": "163897117d4a1a4a9c86c64bea0e7eb62c095edb6a9f5f9f3660a6c5bcf4fc52",
+  "map": "MnR05C00R00",
+  "source_dossier": "planning/minnesota/revisions/route-grass-v01/current-r05-successor-review-v01/native-cache-checkpoint-source-v01.json",
+  "start": [
+    37,
+    22
+  ],
+  "badge_count": 4,
+  "event_flags": [],
+  "roads": [],
+  "gates": [],
+  "ledges": [],
+  "doors": [],
+  "fences": [
+    {
+      "stand": [
+        42,
+        20
+      ],
+      "blocked": "left"
+    },
+    {
+      "stand": [
+        39,
+        22
+      ],
+      "blocked": "up"
+    }
+  ],
+  "counts": {
+    "roads": 0,
+    "gates": 0,
+    "ledges": 0,
+    "doors": 0,
+    "fences": 2,
+    "residents": 1,
+    "signs": 0
+  },
+  "arrival_discovery_flags": [],
+  "scope": "Native dry path to river lookout, forest cap denial, low-bank reverse wall and actual Save/Continue. Initial location/partner/four badges are QA setup; new grass, both hops and full-route checks use production input afterward."
+}

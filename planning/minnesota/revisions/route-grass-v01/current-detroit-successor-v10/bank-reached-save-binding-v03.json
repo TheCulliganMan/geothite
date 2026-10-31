@@ -1,0 +1,7 @@
+{
+  "source": ".local/route-grass-review/current-detroit-town-saves-v10/geothite-r10-gallery-78593-1793428776225216000.crystalsave",
+  "production_input": ".local/route-grass-review/current-detroit-town-stdio-input-v02.crystalsave",
+  "sha256": "447c3919ca5bda3d0ddfe2ee60ccaa13b8defe4ee11ecf15d70973a34537477f",
+  "source_case": "native_town_exterior_all_facades_both_returns_and_continue",
+  "scope": "Actual reached Detroit gate-return town save; Mew60 and initial qualifications remain explicit QA fixtures."
+}

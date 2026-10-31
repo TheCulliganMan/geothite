@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "recipe": [
+    "18",
+    "19",
+    "1a",
+    "33"
+  ],
+  "native_reference": "AzaleaTown at10,1",
+  "all_four_rendered_blocks_match_original_johto_modern": true,
+  "source_pixels_modified": false,
+  "dossier_only_mart_door_and_passive_arrival_shift": true,
+  "existing_interior_arrival_and_both_carpet_warp_ids_preserved": true
+}

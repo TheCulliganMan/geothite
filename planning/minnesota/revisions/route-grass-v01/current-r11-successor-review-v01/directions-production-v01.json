@@ -1,0 +1,53 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-r11-grass-and-stairs-v01.crystalpack",
+  "pack_sha256": "ec1334db6bc46f0e1d5dc095c995a83f5c5d145389402b632d08bb0b3a5dbc27",
+  "calls": 72,
+  "cases": [
+    {
+      "label": "MN_R11_PALISADE_SIGNText",
+      "native_test_log": ".local/route-grass-review/r11-palisade-sign-native-v01.log",
+      "phases": [
+        {
+          "phase": "read",
+          "visible": "PALISADE RIDGE Stone stairs west. Climb or descend. on those steps.",
+          "output_save": ".local/route-grass-review/r11-palisade-read-v01-output.crystalsave",
+          "source_unchanged": true,
+          "movement_locked": true,
+          "stderr_bytes": 0
+        },
+        {
+          "phase": "continue",
+          "visible": "PALISADE RIDGE Stone stairs west. Climb or descend. on those steps.",
+          "output_save": ".local/route-grass-review/r11-palisade-continue-v01-output.crystalsave",
+          "source_unchanged": true,
+          "movement_locked": true,
+          "stderr_bytes": 0
+        }
+      ]
+    },
+    {
+      "label": "MN_R11_LESTER_SIGNText",
+      "native_test_log": ".local/route-grass-review/r11-lester-sign-native-v01.log",
+      "phases": [
+        {
+          "phase": "read",
+          "visible": "LESTER GORGE West: lower falls North: the stairs",
+          "output_save": ".local/route-grass-review/r11-lester-read-v01-output.crystalsave",
+          "source_unchanged": true,
+          "movement_locked": true,
+          "stderr_bytes": 0
+        },
+        {
+          "phase": "continue",
+          "visible": "LESTER GORGE West: lower falls North: the stairs",
+          "output_save": ".local/route-grass-review/r11-lester-continue-v01-output.crystalsave",
+          "source_unchanged": true,
+          "movement_locked": true,
+          "stderr_bytes": 0
+        }
+      ]
+    }
+  ],
+  "scope": "Two native local sign/Save/Continue fixtures, each using an explicit partner, eight badges and lighthouse signal as setup; production input verifies exact new text, movement lock, menus and actual Continue. Full shoreline gameplay is separately recorded on terrain-identical pre-text pack."
+}

@@ -892,9 +892,9 @@
     {
       "id": "SURVEY_BANK_RETURN",
       "bounds_core": [
-        20,
+        28,
         24,
-        36,
+        32,
         26
       ],
       "direction": "south",
@@ -917,12 +917,12 @@
       ],
       "side_barriers": [
         [
-          19,
-          25
+          27,
+          24
         ],
         [
-          36,
-          25
+          32,
+          24
         ]
       ],
       "return_passage_core": [
@@ -931,8 +931,8 @@
         16,
         26
       ],
-      "minimum_return_steps": 25,
-      "purpose": "Directed descent from the survey/cedar shore to the main Itasca road; ordinary uphill return uses the western woodland gate."
+      "minimum_return_steps": 53,
+      "purpose": "Four legal dry descent lanes from the survey shore to the Itasca road; ordinary uphill travel crosses at least four grass steps through the western woodland gate. Outer ledge faces with tree-blocked landings are closed with existing pine canopy."
     }
   ],
   "required_grass_crossings": [

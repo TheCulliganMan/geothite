@@ -1,0 +1,6 @@
+{
+  "status": "SIX_PORTAGES_PASS_STAIR_INPUT_LIST_MISSING",
+  "prior_script": ".local/route-grass-review/check_boundary_safari_portages_current_v02.py",
+  "reason": "New parent review input omitted native_cave12_stair_metatiles. Prior source retains the five coordinates, and all six complete maps and used collision are exact. The fresh replay uses parent-v02 and distinct output/progress paths.",
+  "gameplay_changed": false
+}

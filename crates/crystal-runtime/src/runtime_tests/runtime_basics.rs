@@ -1335,6 +1335,7 @@ fn minimal_runtime_data() -> GameDataSet {
         .into_iter()
         .collect(),
         runtime_title_screen: RuntimeTitleScreen {
+            static_title_image: None,
             title_music: Some("MUSIC_ROUTE_29".to_string()),
             program: runtime_title_program(),
         },

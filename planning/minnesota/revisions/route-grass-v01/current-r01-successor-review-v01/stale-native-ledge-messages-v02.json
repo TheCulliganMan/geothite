@@ -1,0 +1,186 @@
+{
+  "status": "REPAIR_REQUIRED",
+  "pack": "content-packs/minnesota-current-brainerd-mart-roof-v01.crystalpack",
+  "pack_sha256": "e343cd9c65f7c876946be4b59878eabc564c9c7f42a7f29f54cb1a2fac89396d",
+  "messages": [
+    {
+      "label": "MN_R01_BLUFF_WALKERText",
+      "commands": [
+        {
+          "args": [
+            "\"The ramp climbs\""
+          ],
+          "command": "text"
+        },
+        {
+          "args": [
+            "\"the low bluff.\""
+          ],
+          "command": "line"
+        },
+        {
+          "args": [
+            "\"The ledge lets\""
+          ],
+          "command": "para"
+        },
+        {
+          "args": [
+            "\"you hop back down.\""
+          ],
+          "command": "line"
+        },
+        {
+          "args": [],
+          "command": "done"
+        }
+      ]
+    },
+    {
+      "label": "MN_R01_SIGN_05Text",
+      "commands": [
+        {
+          "args": [
+            "\"ONE WAY LEDGE\""
+          ],
+          "command": "text"
+        },
+        {
+          "args": [
+            "\"DOWN: TRAIL\""
+          ],
+          "command": "line"
+        },
+        {
+          "args": [
+            "\"UP: EAST RAMP\""
+          ],
+          "command": "para"
+        },
+        {
+          "args": [],
+          "command": "done"
+        }
+      ]
+    },
+    {
+      "label": "MN_R01_T03Won",
+      "commands": [
+        {
+          "args": [
+            "\"The ledge below\""
+          ],
+          "command": "text"
+        },
+        {
+          "args": [
+            "\"is a quick drop.\""
+          ],
+          "command": "line"
+        },
+        {
+          "args": [],
+          "command": "done"
+        }
+      ]
+    },
+    {
+      "label": "MN_R01_T03Lost",
+      "commands": [
+        {
+          "args": [
+            "\"Use the east ramp\""
+          ],
+          "command": "text"
+        },
+        {
+          "args": [
+            "\"to come back up.\""
+          ],
+          "command": "line"
+        },
+        {
+          "args": [],
+          "command": "done"
+        }
+      ]
+    },
+    {
+      "label": "MN_R01_FARMERText",
+      "commands": [
+        {
+          "args": [
+            "\"Wild partners hide\""
+          ],
+          "command": "text"
+        },
+        {
+          "args": [
+            "\"in the tall grass.\""
+          ],
+          "command": "line"
+        },
+        {
+          "args": [
+            "\"Ledges let you hop\""
+          ],
+          "command": "para"
+        },
+        {
+          "args": [
+            "\"down, but not up.\""
+          ],
+          "command": "line"
+        },
+        {
+          "args": [
+            "\"Use the east ramp\""
+          ],
+          "command": "para"
+        },
+        {
+          "args": [
+            "\"to reach the bluff\""
+          ],
+          "command": "line"
+        },
+        {
+          "args": [
+            "\"That BERRY is\""
+          ],
+          "command": "para"
+        },
+        {
+          "args": [
+            "\"for your partner.\""
+          ],
+          "command": "line"
+        },
+        {
+          "args": [
+            "\"Dr Tamarack waits\""
+          ],
+          "command": "para"
+        },
+        {
+          "args": [
+            "\"at the Rochester\""
+          ],
+          "command": "line"
+        },
+        {
+          "args": [
+            "\"clinic out west.\""
+          ],
+          "command": "para"
+        },
+        {
+          "args": [],
+          "command": "done"
+        }
+      ]
+    }
+  ],
+  "native_terrain_and_traversal_pass": true,
+  "reason": "Current closed tall cliff and ordinary native stairs contradict old ledge messages."
+}

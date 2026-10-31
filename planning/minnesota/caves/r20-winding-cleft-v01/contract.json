@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "map": "MnR20Cave1F",
+  "native_module_sha256": "877d5b3d48b337dfed1d71f7675329ca63dabe7f517661f6f69acbef27a50178",
+  "preserved_warps": [
+    {
+      "index": 1,
+      "x": 5,
+      "y": 13,
+      "target_map_constant": "MnR20C00R00",
+      "target_map": "MnR20C00R00",
+      "target_warp_id": 2
+    },
+    {
+      "index": 2,
+      "x": 13,
+      "y": 13,
+      "target_map_constant": "MnR20C01R00",
+      "target_map": "MnR20C01R00",
+      "target_warp_id": 2
+    }
+  ],
+  "purpose": "Keep both exterior index pairings exact while moving only the interior coordinates and rebuilding the complete passage."
+}

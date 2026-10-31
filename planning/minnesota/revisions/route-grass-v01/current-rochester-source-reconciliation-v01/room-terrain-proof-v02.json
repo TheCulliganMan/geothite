@@ -1,0 +1,35 @@
+{
+  "status": "PASS_COMPOSED_ROOM_SOURCE_TERRAIN",
+  "rooms": [
+    {
+      "map": "MnRochesterPokecenter1F",
+      "source_blocks_or_template_exact": true,
+      "template": "GoldenrodPokecenter1F"
+    },
+    {
+      "map": "MnRochesterMart",
+      "source_blocks_or_template_exact": true,
+      "template": "CherrygroveMart"
+    },
+    {
+      "map": "MnRochesterGym",
+      "source_blocks_or_template_exact": false,
+      "template": "VioletGym"
+    },
+    {
+      "map": "MnRochesterClerkHouse",
+      "source_blocks_or_template_exact": true,
+      "template": "VioletNicknameSpeechHouse"
+    },
+    {
+      "map": "MnRochesterPatientHouse",
+      "source_blocks_or_template_exact": true,
+      "template": "VioletNicknameSpeechHouse"
+    }
+  ],
+  "pack": "content-packs/minnesota-international-falls-windbreak-v01.crystalpack",
+  "pack_sha256": "7066f05448101c79b4dc761963b0f39a570bad07c4f80e3e777901ac2e207507",
+  "gym_override_source": "planning/minnesota/gyms/interiors.json",
+  "gym_native_pixels_and_collision_cells_checked": 70,
+  "explanation": "Original town dossier provides base room dimensions/arrivals. Existing gym composer overlays the authored mn_gym_1 glyph plan. Comparing Gym to its bare Violet template alone was incomplete; all70composed native art/collision cells match current gym catalog exactly."
+}

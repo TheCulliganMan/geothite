@@ -875,6 +875,15 @@ fn insert_runtime_title_screen(
 }
 
 pub fn validate_runtime_title_screen(title_screen: &RuntimeTitleScreen) -> Result<()> {
+    if let Some(path) = &title_screen.static_title_image {
+        anyhow::ensure!(
+            path.starts_with("gfx/title/")
+                && path.ends_with(".png")
+                && !path.contains("..")
+                && !path.contains('\\'),
+            "static title image must be a runtime-relative title PNG"
+        );
+    }
     let Some(title_music) = &title_screen.title_music else {
         anyhow::bail!("runtime_title_screen requires title_music");
     };

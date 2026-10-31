@@ -6,8 +6,10 @@ validation; production controller tests own gameplay evidence.
 """
 import argparse
 from collections import deque
+import hashlib
 import json
 from pathlib import Path
+import time
 
 from PIL import Image
 
@@ -113,5 +115,47 @@ if __name__ == '__main__':
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--published', action='store_true')
     parser.add_argument('--room', help='Review one complete room; default remains all nine.')
+    parser.add_argument('--watch', action='store_true',
+                        help='Keep native art loaded; retain a fresh render epoch per source edit.')
     args = parser.parse_args()
-    inspect(load_pack(args.pack), args.directory, args.output, args.published, args.room)
+    pack = load_pack(args.pack)
+    if not args.watch:
+        inspect(pack, args.directory, args.output, args.published, args.room)
+    else:
+        args.output.mkdir(parents=True, exist_ok=True)
+        pack_digest = hashlib.sha256(args.pack.read_bytes()).hexdigest()
+        previous = None
+        while True:
+            files = sorted(p for p in args.directory.glob('*.json')
+                           if not p.name.endswith('.previous.json'))
+            try:
+                source_bytes = {p.name: p.read_bytes() for p in files}
+            except FileNotFoundError:
+                # Editors can replace a file between the directory read and copy.
+                time.sleep(0.25)
+                continue
+            digest = hashlib.sha256(b''.join(
+                name.encode() + b'\0' + raw for name, raw in source_bytes.items())).hexdigest()
+            if digest != previous:
+                started = time.perf_counter()
+                destination = args.output / ('source-' + str(time.time_ns()))
+                destination.mkdir()
+                snapshot = destination / 'source-inputs'
+                snapshot.mkdir()
+                for name, raw in source_bytes.items():
+                    (snapshot / name).write_bytes(raw)
+                result = dict(source_sha256=digest, output=str(destination),
+                              source_snapshot=str(snapshot), pack=str(args.pack),
+                              loaded_pack_sha256=pack_digest)
+                try:
+                    inspect(pack, snapshot, destination, args.published, args.room)
+                    result['status'] = 'PASS_SOURCE_REVIEW'
+                except (AssertionError, KeyError, ValueError, OSError) as error:
+                    result.update(status='SOURCE_ERROR', error=str(error))
+                result['render_seconds'] = round(time.perf_counter() - started, 3)
+                text = json.dumps(result, indent=2) + '\n'
+                (destination / 'watch-result.json').write_text(text)
+                (args.output / 'latest.json').write_text(text)
+                print(json.dumps(result), flush=True)
+                previous = digest
+            time.sleep(0.25)

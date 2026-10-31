@@ -1,0 +1,414 @@
+{
+  "status": "PASS",
+  "explicit_current_composition": [
+    {
+      "at": [
+        1,
+        7
+      ],
+      "source": "35",
+      "native": "55"
+    },
+    {
+      "at": [
+        1,
+        8
+      ],
+      "source": "35",
+      "native": "7a"
+    },
+    {
+      "at": [
+        2,
+        8
+      ],
+      "source": "35",
+      "native": "76"
+    },
+    {
+      "at": [
+        3,
+        8
+      ],
+      "source": "35",
+      "native": "76"
+    },
+    {
+      "at": [
+        4,
+        8
+      ],
+      "source": "35",
+      "native": "76"
+    },
+    {
+      "at": [
+        5,
+        8
+      ],
+      "source": "35",
+      "native": "76"
+    },
+    {
+      "at": [
+        6,
+        8
+      ],
+      "source": "35",
+      "native": "76"
+    },
+    {
+      "at": [
+        7,
+        8
+      ],
+      "source": "35",
+      "native": "76"
+    },
+    {
+      "at": [
+        8,
+        8
+      ],
+      "source": "35",
+      "native": "76"
+    },
+    {
+      "at": [
+        9,
+        8
+      ],
+      "source": "35",
+      "native": "76"
+    },
+    {
+      "at": [
+        10,
+        8
+      ],
+      "source": "35",
+      "native": "55"
+    },
+    {
+      "at": [
+        13,
+        8
+      ],
+      "source": "35",
+      "native": "54"
+    },
+    {
+      "at": [
+        14,
+        8
+      ],
+      "source": "35",
+      "native": "76"
+    },
+    {
+      "at": [
+        15,
+        8
+      ],
+      "source": "35",
+      "native": "76"
+    },
+    {
+      "at": [
+        16,
+        8
+      ],
+      "source": "35",
+      "native": "76"
+    },
+    {
+      "at": [
+        17,
+        8
+      ],
+      "source": "35",
+      "native": "76"
+    },
+    {
+      "at": [
+        18,
+        8
+      ],
+      "source": "35",
+      "native": "76"
+    },
+    {
+      "at": [
+        19,
+        8
+      ],
+      "source": "35",
+      "native": "76"
+    },
+    {
+      "at": [
+        20,
+        8
+      ],
+      "source": "35",
+      "native": "76"
+    },
+    {
+      "at": [
+        21,
+        8
+      ],
+      "source": "35",
+      "native": "76"
+    },
+    {
+      "at": [
+        22,
+        8
+      ],
+      "source": "35",
+      "native": "76"
+    },
+    {
+      "at": [
+        10,
+        9
+      ],
+      "source": "35",
+      "native": "59"
+    },
+    {
+      "at": [
+        13,
+        9
+      ],
+      "source": "35",
+      "native": "58"
+    },
+    {
+      "at": [
+        10,
+        10
+      ],
+      "source": "35",
+      "native": "59"
+    },
+    {
+      "at": [
+        13,
+        10
+      ],
+      "source": "35",
+      "native": "58"
+    },
+    {
+      "at": [
+        20,
+        11
+      ],
+      "source": "35",
+      "native": "58"
+    },
+    {
+      "at": [
+        22,
+        12
+      ],
+      "source": "05",
+      "native": "35"
+    },
+    {
+      "at": [
+        23,
+        12
+      ],
+      "source": "05",
+      "native": "36"
+    },
+    {
+      "at": [
+        22,
+        13
+      ],
+      "source": "05",
+      "native": "35"
+    },
+    {
+      "at": [
+        23,
+        13
+      ],
+      "source": "05",
+      "native": "36"
+    },
+    {
+      "at": [
+        17,
+        14
+      ],
+      "source": "74",
+      "native": "80"
+    },
+    {
+      "at": [
+        22,
+        14
+      ],
+      "source": "05",
+      "native": "35"
+    },
+    {
+      "at": [
+        23,
+        14
+      ],
+      "source": "05",
+      "native": "36"
+    },
+    {
+      "at": [
+        22,
+        15
+      ],
+      "source": "05",
+      "native": "35"
+    },
+    {
+      "at": [
+        23,
+        15
+      ],
+      "source": "05",
+      "native": "36"
+    },
+    {
+      "at": [
+        22,
+        16
+      ],
+      "source": "05",
+      "native": "35"
+    },
+    {
+      "at": [
+        23,
+        16
+      ],
+      "source": "05",
+      "native": "36"
+    },
+    {
+      "at": [
+        22,
+        17
+      ],
+      "source": "05",
+      "native": "35"
+    },
+    {
+      "at": [
+        23,
+        17
+      ],
+      "source": "05",
+      "native": "36"
+    }
+  ],
+  "automatic_refit_attempt": "Rejected because it re-fitted six already installed river-join cells35 to58. Both failed layouts retained. Explicit source edges retain all existing native geometry.",
+  "canonical_changed_cells": [
+    {
+      "at": [
+        4,
+        3
+      ],
+      "after": "19"
+    },
+    {
+      "at": [
+        5,
+        3
+      ],
+      "after": "05"
+    },
+    {
+      "at": [
+        3,
+        4
+      ],
+      "after": "1a"
+    },
+    {
+      "at": [
+        5,
+        4
+      ],
+      "after": "05"
+    },
+    {
+      "at": [
+        8,
+        3
+      ],
+      "after": "19"
+    },
+    {
+      "at": [
+        9,
+        3
+      ],
+      "after": "05"
+    },
+    {
+      "at": [
+        7,
+        4
+      ],
+      "after": "1a"
+    },
+    {
+      "at": [
+        9,
+        4
+      ],
+      "after": "05"
+    }
+  ],
+  "only_collision_changes": [
+    {
+      "at": [
+        6,
+        9
+      ],
+      "before": "DOOR",
+      "after": "WALL"
+    },
+    {
+      "at": [
+        7,
+        9
+      ],
+      "before": "WALL",
+      "after": "DOOR"
+    },
+    {
+      "at": [
+        14,
+        9
+      ],
+      "before": "DOOR",
+      "after": "WALL"
+    },
+    {
+      "at": [
+        15,
+        9
+      ],
+      "before": "WALL",
+      "after": "DOOR"
+    }
+  ],
+  "all_native_art_matches_original": true,
+  "all_ordinary_floor_collision_exact": true,
+  "current_native_stair_and_river_joins_preserved": true,
+  "canonical_and_selected_pack_unchanged": true
+}

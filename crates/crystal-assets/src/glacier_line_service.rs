@@ -58,7 +58,8 @@ impl Station {
 /// restores the departure conductor, plays the supplied Magnet Train special,
 /// and loads the destination's protected Floor. Existing halls, people, story
 /// callbacks, ordinary dialogue, identities, catalogs, art and audio survive.
-/// Red Wing is not part of this five-stop service.
+/// The dry halls use `FISHGROUP_NONE`, removing inherited unused fishing
+/// references. Red Wing is not part of this five-stop service.
 ///
 /// # Errors
 /// Rejects stale or duplicate installation, different stops, unsafe native
@@ -162,6 +163,7 @@ pub fn build_glacier_line_service(
             .get(&station.map)
             .context("installed station")?
             .clone();
+        room.attributes.fishing_group = Some("FISHGROUP_NONE".into());
         crate::glacier_line_scripts::install(&pack, &mut room, &source.stations, i)?;
         crate::authored_town_publication::replace(&mut pack, room)?;
     }

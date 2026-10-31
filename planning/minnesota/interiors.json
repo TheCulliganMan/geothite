@@ -1927,7 +1927,7 @@
       "parent_route": "MN_R10",
       "arrival_core": [
         3,
-        12
+        13
       ],
       "return_trigger_core": [
         3,
@@ -1946,17 +1946,28 @@
         36,
         18
       ],
-      "native_status": "Native510-map tight-gallery review candidate: unchanged18x14/NITE;16 terrain metatiles refine ceiling and lower return. Exact original reader/text, Revive29,23/program/event/quantity, four stairs, both native hop lanes and actual13/15-step ordinary returns, mouth3,13/clear3,12/exterior passive36,18 preserved. Three actual local controller cases PASS7.14s, including both hop lanes/reverse/returns, full-bag refusal/native Potion use/original pickup retry and Continue;150 written-pack checks and eight headless native captures PASS. Root accepted bounded visuals. User final approval and earned Q06/regional progression are not claimed.",
+      "native_status": "Verified complete native24x18 survey-spur refinement; five original actors, optional battles, caches, stairs, drops, spring and exact mouth retained. Local fixture evidence does not prove earned arrival.",
       "native_warp_arrival_core": [
         3,
         13
       ],
       "dimensions_metatiles": [
-        18,
-        14
+        24,
+        18
       ],
       "native_palette": "nite",
-      "candidate_source_sha256": "be41b5fb81f3ef8536214e903a07d28685bd71b4383cb4c3fade9ebf8ab73161"
+      "candidate_source_sha256": "3a5f8604d4ca18c73985818b0fb05e5f88e23fdb852304e7c9d83f42e8d84c56",
+      "clear_arrival_core": [
+        3,
+        12
+      ],
+      "source_design": "caves/r10-survey-spurs-v01/current.json",
+      "native_review_pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33",
+      "validation": "Exact whole-parent preservation of732other maps and all programs/native art/audio. Three production controller cases,2923 stdio calls,12 zero-difference native cameras and two actual reached-save views pass.",
+      "verification": "planning/minnesota/renders/r10-survey-spurs-v681/acceptance-v699.json",
+      "source_file": "caves/r10-survey-spurs-v01/current.json",
+      "source_collision_checked": true,
+      "native_review_pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack"
     },
     {
       "interior": "MnR13Cave1F",
@@ -1997,8 +2008,8 @@
         54
       ],
       "source_collision_checked": true,
-      "source_design": "routes/MN_R13.json",
-      "validation": "Actual CURRENT510 native terrain/preservation and three production-controller cases PASS; original whole Harper/text/native HealParty index4, MAX_ETHER1 event/program and all warp/art/attribute records retained.",
+      "source_design": "caves/r13-cedar-basin-v01/current.json",
+      "validation": "Four production-controller cases,282 stdio calls,8 exact native cameras and2 actual reached-save views. Real fishing battle, HP/status/PP healing, Max Ether use/once and Continue pass. Local fixtures do not prove earned arrival.",
       "mouths": [
         {
           "exterior_door_core": [
@@ -2014,19 +2025,22 @@
           ]
         }
       ],
-      "native_status": "Installed10x8 R13 native review candidate on a85fac64 CURRENT510; original forced NITE. Native two useful stairs both ways, original Harper pages/native HP-status-PP HealParty, genuine passive return, real Max Ether PP use/once/Continue PASS. Regional earned progression and final visual approval remain separate.",
+      "native_status": "Verified10x8 Cedar Shelter bank and fitted30/36 stair pair, forced nativeNITE. All original healing/fishing/item/warp behavior retained.",
       "dimensions_metatiles": [
         10,
         8
       ],
       "native_palette": "nite",
-      "candidate_source_sha256": "e1e78dad0c18007d3b8b29f72097202193bf141b7d8b611cd6bdc7d0f1352e63",
-      "native_review_pack_sha256": "a85fac64ab31c86722c486b50213053eb16ba3f6453f99e41bd81c962badb980",
+      "candidate_source_sha256": "c829d63d0a813c0779b3584227035cfe15cb3e89fe300bb2714d8a36166ff12b",
+      "native_review_pack_sha256": "fa13a621b94a9d3234f3d6fc0154af49cbe1da738370d575b7908295dcbdfb55",
       "runtime_settled_exterior_core": [
         14,
         54
       ],
-      "return_semantics": "Original room warp1 returns directly to exterior passive warp2 at global14,54/local14,6 FLOOR; stable after presentation and walking away/back. Exterior active CAVE warp1 at global14,53/local14,5 deliberately reenters. No warp or automatic-downstep behavior is invented."
+      "return_semantics": "Original room warp1 returns directly to exterior passive warp2 at global14,54/local14,6 FLOOR; stable after presentation and walking away/back. Exterior active CAVE warp1 at global14,53/local14,5 deliberately reenters. No warp or automatic-downstep behavior is invented.",
+      "source_file": "caves/r13-cedar-basin-v01/current.json",
+      "native_review_pack": "content-packs/minnesota-r13-cedar-basin-v01.crystalpack",
+      "verification": "planning/minnesota/renders/r13-cedar-basin-v749/acceptance-v761.json"
     },
     {
       "interior": "MnR17Cave1F",
@@ -2083,8 +2097,8 @@
           ]
         }
       ],
-      "validation": "Actual CURRENT510152-check native preservation/six exact production captures, one real controller case and377audio PASS. Fitted ordinary route, native directional UP_WALL behavior, actual Revive grant/printed Pocket pages/ownership/once/reentry/collected tile/Continue verified. Original whole item/program/flag/warps/art/attributes exact.",
-      "native_status": "Installed7x8 native tor review candidate on4891; forcedNITE. No NPC/stair/ledge/HM additions; original Revive1 at5,5 and passive warp2 retained. Earned regional progression and user visual approval remain separate.",
+      "validation": "Native controller both-arm circuit, researcher ownership, granite blocking, original Revive once-only grant, collected tile, real return/reentry and Continue PASS. Five native camera matches, 199 stdio RPC and native save quantity/flag verification PASS. All original actors/programs/exterior records and all 731 other maps exact.",
+      "native_status": "Installed 7x8 native talus loop with original lichen reader and Revive; 45 free floor cells and unchanged native mouth pair.",
       "dimensions_metatiles": [
         7,
         8
@@ -2098,21 +2112,22 @@
         10,
         44
       ],
-      "candidate_source_sha256": "f590d69e806a4a9e8aae29d03ca2c3b40a386b45ab366755965730ecc67c5437",
-      "native_review_pack_sha256": "4891e6a084e21ea05866740fb04cc8c9891fca2433dbb5a93b58269aed78b72a",
+      "candidate_source_sha256": "aa5bf8d884dde5428e6d0a52a850540d33cd85e7ad09751d96f732cf9f87fb88",
+      "native_review_pack_sha256": "fcfbcffdcab4f953fbe0eca91eb42521c334818e1c1b055a5fcd75d30d962bae",
       "return_semantics": "Original indoor warp1 at9,13 LADDER returns directly to true passive exterior warp2 at10,44 FLOOR; stable through60 presentation frames and walking away/back. Active CAVE warp1 at10,43 deliberately reenters; indoor clear Floor9,12 is distinct from warp arrival9,13.",
-      "item_notice_observation_limit": "VisibleShellController internally settles automatic FoundText and native60-frame fanfare before returning at PocketText. The real input case asserts retained native found payload/ItemBall presentation, both fully printed PocketText pages and movement ownership; it does not claim an intermediate Found/Fanfare snapshot."
+      "item_notice_observation_limit": "VisibleShellController internally settles automatic FoundText and native60-frame fanfare before returning at PocketText. The real input case asserts retained native found payload/ItemBall presentation, both fully printed PocketText pages and movement ownership; it does not claim an intermediate Found/Fanfare snapshot.",
+      "current_cave_source": "planning/minnesota/caves/r17-talus-loop-v01/current.json"
     },
     {
       "interior": "MnR20Cave1F",
       "parent_route": "MN_R20",
       "arrival_core": [
         5,
-        13
+        21
       ],
       "return_trigger_core": [
         5,
-        13
+        21
       ],
       "exterior_anchor_metatile": [
         30,
@@ -2125,16 +2140,16 @@
       "requires_real_collision_check": true,
       "clear_arrival_core": [
         5,
-        12
+        20
       ],
       "return_triggers_core": [
         [
           5,
-          13
+          21
         ],
         [
-          13,
-          13
+          23,
+          21
         ]
       ],
       "exterior_arrival_core": [
@@ -2145,7 +2160,7 @@
         60,
         34
       ],
-      "source_design": "routes/MN_R20.json",
+      "source_design": "caves/r20-winding-cleft-v01/route-dossier.json",
       "source_collision_checked": true,
       "mouths": [
         {
@@ -2159,6 +2174,14 @@
           "safe_exterior_return_core": [
             60,
             34
+          ],
+          "interior_active_core": [
+            5,
+            21
+          ],
+          "interior_clear_core": [
+            5,
+            20
           ]
         },
         {
@@ -2172,18 +2195,26 @@
           "safe_exterior_return_core": [
             76,
             32
+          ],
+          "interior_active_core": [
+            23,
+            21
+          ],
+          "interior_clear_core": [
+            23,
+            20
           ]
         }
       ],
-      "validation": "Actual written 510-map terrain/preservation150, nine native captures and six directional assets PASS; both original mouths/item/flag/program/art/attributes preserved. All three production-controller cases PASS.",
-      "native_status": "Installed dry9x8 Voyageurs cleft on1630ad06; original forced NITE. Leftward two-lane native drop, useful stairs and ordinary returns; no added field-move requirement or SQ03 authority. Native input/once/item use/Continue PASS.",
+      "validation": "Final732-map pack: all731other maps and original programs/reward/exterior ports preserved. Both controller cases,227cross-mouth stdio RPC,55native-fishing RPC and nine source-matched GPU cameras pass.",
+      "native_status": "Verified native14x12 exploration cleft; both relocated interior mouths, stairs, westward drops, original reward/healing and Continue pass. No new regional authority.",
       "dimensions_metatiles": [
-        9,
-        8
+        14,
+        12
       ],
       "native_palette": "nite",
-      "candidate_source_sha256": "05617d4863db095ed7664ce6408f1d7f35e4ce3c6ed360d08bdfd36a35db2577",
-      "native_review_pack_sha256": "1630ad063aa4a1cf252087bdf743ca48a2a8cb6c9c46ad95cb7aceb1c74c3b05",
+      "candidate_source_sha256": "f5ddf035c3a5ca2218b8d457fa3f6bff366acb57e4473cdeede4d7cfd6817012",
+      "native_review_pack_sha256": "bfd4e1091213f558bca8ffc4c86afbc93af8569d16a3145dd9da157c4b1164be",
       "runtime_settled_exterior_cores": [
         [
           60,
@@ -2194,7 +2225,7 @@
           32
         ]
       ],
-      "return_semantics": "Original west room warp1 returns to MnR20C00R00 passive warp2 global60,34 FLOOR; east room warp2 returns to MnR20C01R00 passive warp2 global76,32/local12,32 FLOOR. Active west60,33 targets roomwarp1; active east76,31 targets roomwarp2. Preserve the existing inactive east Floor record's own targetwarp1; no warp records are normalized."
+      "return_semantics": "West interior warp1 at5,21 returns to MnR20C00R00 passive warp2 at60,34; active exterior60,33 reenters at5,21, with north clear step5,20. East interior warp2 at23,21 returns to MnR20C01R00 passive warp2 at12,32; active exterior12,31 reenters at23,21, with north clear step23,20. The original inactive east FLOOR record retains targetwarp1."
     },
     {
       "interior": "MnR12Cave1F",
@@ -2234,8 +2265,8 @@
         16
       ],
       "requires_real_collision_check": true,
-      "validation": "Exact final native paired warp and clear-return collision checked by source promotion.",
-      "source_design": "routes/MN_R12.json",
+      "validation": "Five native gameplay cases,663 public stdio calls,ten zero-difference native views and actual saved Surf view;734other complete maps/programs/wildlife/art/audio retained.",
+      "source_design": "caves/gunflint-grotto-v01/after.json",
       "source_collision_checked": true,
       "mouths": [
         {
@@ -2252,19 +2283,22 @@
           ]
         }
       ],
-      "native_status": "Compact exterior paired return matches final native pack; room local content preserved.",
+      "native_status": "Verified native grotto: both dry circuits, correct30/36 stairs and side wall, preserved acknowledged full-party rest, moved original cache, Surf-gated pillar discovery and real item use, both capacity retries, actual mouth return/reentry and Continue.",
       "dimensions_metatiles": [
-        16,
-        12
+        20,
+        14
       ],
       "native_palette": "nite",
-      "candidate_source_sha256": "7fe83d8e9bd69f01f57c77dd1ea1a7c759de3e6d4ceefdb33d9f42fed8dd9048",
-      "native_review_pack_sha256": "032304d0fd1d51863a2c3bf2562b20728e22c7535d1c194555621bc8e85b4899",
+      "candidate_source_sha256": "3a7eae3bec59ef9cb3713119f1cd30f2a5e443891443a2514cb80ecd9150e067",
+      "native_review_pack_sha256": "45fa571daa78535af329f6c8f26a8770d24c56cbb1a5223942d5fbb1fc0979ca",
       "runtime_settled_exterior_core": [
         40,
         16
       ],
-      "return_semantics": "Original room exits return to compact exterior paired entry; ordinary Down reaches the recorded clear Floor."
+      "return_semantics": "Original room exits return to compact exterior paired entry; ordinary Down reaches the recorded clear Floor.",
+      "source_file": "caves/gunflint-grotto-v01/after.json",
+      "native_review_pack": "content-packs/minnesota-gunflint-grotto-v02.crystalpack",
+      "verification": "planning/minnesota/renders/gunflint-grotto-v898/acceptance-v928.json"
     },
     {
       "interior": "MnR12RangerHut",
@@ -2392,10 +2426,34 @@
         9,
         11
       ],
-      "native_review_pack_sha256": "e549c178f37a3137e8ca7f119aeee79460164f1dbd3ea6d205be8928415fd04c",
-      "candidate_source_sha256": "214bd2388b04598e4bca79834a7ac61684870ceffa301b9dac4580ebd9458243",
-      "native_status": "Installed8x7 limestone hollows: both stairs, guide pages, Antidote pickup/use/once, true passive return and Continue PASS.",
-      "validation": "147 native checks and6 production captures;2 controller cases PASS. Exact original actors/programs/item/ports, all509 other modules and art/audio retained. Local full-bag retry and earned regional progression are not claimed."
+      "native_review_pack_sha256": "3f3d12312ff947ea9f219a9368b98b51f4348ea7a76ed2caf7b062a8ef45316d",
+      "candidate_source_sha256": "f0d360fdff735d0422661632acd775ea7697009f9c9ff90fcb87b23255b46318",
+      "native_status": "Original lit8x7 hollow, guide/HM and Antidote retained; paired stair now serves optional12x10 lower fossil gallery.",
+      "validation": "Three native controller cases,233 stdio calls and9 actual reached native views verify native Flash, clue/cache, capacity retry, passive returns and original outdoor exit. Declared local fixtures.",
+      "source_design": "caves/driftless-fossil-gallery-v01/hollow-current.json",
+      "source_file": "caves/driftless-fossil-gallery-v01/hollow-current.json",
+      "native_geometry_pack": "content-packs/minnesota-driftless-fossil-gallery-v03.crystalpack",
+      "native_geometry_pack_sha256": "3f3d12312ff947ea9f219a9368b98b51f4348ea7a76ed2caf7b062a8ef45316d",
+      "native_review_pack": "content-packs/minnesota-driftless-fossil-gallery-v03.crystalpack",
+      "verification": "planning/minnesota/renders/driftless-fossil-gallery-v774/acceptance-v792.json",
+      "lower_gallery": {
+        "active_warp": 2,
+        "active": [
+          11,
+          9
+        ],
+        "target": "MnDriftlessLampGallery",
+        "target_passive_warp": 2,
+        "target_passive": [
+          18,
+          17
+        ],
+        "return_passive_warp": 3,
+        "return_passive": [
+          10,
+          9
+        ]
+      }
     },
     {
       "interior": "MnR01Farmhouse",
@@ -2571,12 +2629,18 @@
         10
       ],
       "native_palette": "nite",
-      "candidate_source_sha256": "485652d7bdd92e37660acc187a71478d355cffde3e6e106801c22a125339c86b",
-      "native_geometry_pack_sha256": "96a10295af34deeb57cd8ebdaf882d8eb80a70e49f63f8bc27ef84980dc1bcc1",
-      "native_review_pack_sha256": "31258a1788a986b158d0679e4f3a26c4dd476964311f707a6e09c9640cad48c6",
+      "candidate_source_sha256": "8c4cfffba447d49488e9957be7b9ad9d0f287782c3406f6fbabbd72835adb938",
+      "native_geometry_pack_sha256": "71a40f87927ed85404c631869295b091225ac0e26c76fef0d084adf32e5f8d67",
+      "native_review_pack_sha256": "71a40f87927ed85404c631869295b091225ac0e26c76fef0d084adf32e5f8d67",
       "return_semantics": "Original south insidewarp1 at (5,17), clear Floor (5,16), returns to MnR05C00R01 passive exteriorwarp2 at local (16,30), global (16,78). Original north insidewarp2 at (11,5), clear Floor (11,4), returns to MnR05C00R00 passive exteriorwarp2 at (30,28). Active exterior CAVE tiles (16,77) and (30,27) target insidewarps1 and2 respectively. Both inactive passive records retain their original target insidewarp1. No warp record changes; waiting or revisiting actual passive Floor cannot reenter.",
-      "validation": "Source61/thirteen negative variants and actual native163/eight captures PASS; original actors, services, programs, rewards, paired mouths, NITE, art and all unrelated content preserved. Final100 pack inherits all510 geometry modules exactly; only canonical Repel duration/derived identity changes. Both production-controller cases PASS, including original Repel pickup once, actual Pack USE100, walking countdown and Continue.",
-      "native_status": "Installed winding8x10 river-bluff RockCut on96a10295, inherited exact in31258a17 with source-correct100-step Repel; one actual stair, original healer/Repel/two mouths, no new actors, HM, reward or story condition."
+      "validation": "Three native controller cases,263 stdio calls,8 exact native cameras and2 actual lip/landing save views pass. Both warp pairs/passive returns, full-party healing, native Repel use/countdown/once and Continue verified. No earned regional arrival claim.",
+      "native_status": "Verified native8x10 two-mouth RockCut with two downward shelf lanes, original stair return, healer and once-only100-step Repel.",
+      "source_design": "caves/r05-shelf-drop-v01/current.json",
+      "source_file": "caves/r05-shelf-drop-v01/current.json",
+      "source_collision_checked": true,
+      "native_geometry_pack": "content-packs/minnesota-r05-shelf-drop-v01.crystalpack",
+      "native_review_pack": "content-packs/minnesota-r05-shelf-drop-v01.crystalpack",
+      "verification": "planning/minnesota/renders/r05-shelf-drop-v763/acceptance-v772.json"
     },
     {
       "interior": "MnR06NeedleCabin",
@@ -2856,9 +2920,26 @@
       ],
       "exterior_warp_index": 1,
       "exterior_return_warp_index": 2,
-      "exterior_door_status": "Native facade, passive arrival and both carpets published and production-controller verified; see interior-life/DETROIT-LAKES.md. Glacier Line rides remain unfinished.",
+      "exterior_door_status": "Original facade, carpets and passive porch retained. Public road-to-hall/Continue/same-door return pass. Five-stop courier-gated free return service,20 directed rides and protected arrivals verified locally; original room stories/services remain exact. See transit/glacier-current-v01/README.md.",
       "requires_real_collision_check": true,
-      "purpose": "A staffed rail hall with the weather ledger, parcel counter and waiting travelers; passenger service is tracked separately."
+      "purpose": "A staffed rail hall with the weather ledger, parcel counter and waiting travelers; passenger service is tracked separately.",
+      "native_passenger_service": {
+        "source": "transit/glacier-current-v01/service.json",
+        "source_sha256": "875ef994e56d72430052b6bdf8062aec0bdbdbcde31b4ec39f21ebb6023b68c2",
+        "native_review_pack": "content-packs/minnesota-glacier-current-v03.crystalpack",
+        "native_review_pack_sha256": "fffff3a575234c28de03c6efe808fb46f6cd8d7910c76d97ce3e03bf0e5c4c5b",
+        "visit_flag": "EVENT_MN_STATION_DETROIT_LAKES_VISITED",
+        "authority": "EVENT_MN_COURIER_DEFEATED",
+        "free_fare": true,
+        "only_previously_visited_destinations": true,
+        "fishing_group": "FISHGROUP_NONE",
+        "ride_arrival_core": [
+          13,
+          11
+        ],
+        "verification": "planning/minnesota/renders/glacier-current-v794/acceptance-v818.json",
+        "previous_exterior_door_status": "Native facade, passive arrival and both carpets published and production-controller verified; see interior-life/DETROIT-LAKES.md. Glacier Line rides remain unfinished."
+      }
     },
     {
       "interior": "MnDetroitLakesCanoeCabin",
@@ -2970,8 +3051,25 @@
       ],
       "exterior_warp_index": 7,
       "exterior_return_warp_index": 8,
-      "exterior_door_status": "Native facade/passive arrival/both carpets and production-controller course verified. Station rail remains unfinished; see playable/st-cloud.md.",
-      "requires_real_collision_check": true
+      "exterior_door_status": "Original facade, carpets and passive porch retained. Public road-to-hall/Continue/same-door return pass. Five-stop courier-gated free return service,20 directed rides and protected arrivals verified locally; original room stories/services remain exact. See transit/glacier-current-v01/README.md.",
+      "requires_real_collision_check": true,
+      "native_passenger_service": {
+        "source": "transit/glacier-current-v01/service.json",
+        "source_sha256": "875ef994e56d72430052b6bdf8062aec0bdbdbcde31b4ec39f21ebb6023b68c2",
+        "native_review_pack": "content-packs/minnesota-glacier-current-v03.crystalpack",
+        "native_review_pack_sha256": "fffff3a575234c28de03c6efe808fb46f6cd8d7910c76d97ce3e03bf0e5c4c5b",
+        "visit_flag": "EVENT_MN_STATION_ST_CLOUD_VISITED",
+        "authority": "EVENT_MN_COURIER_DEFEATED",
+        "free_fare": true,
+        "only_previously_visited_destinations": true,
+        "fishing_group": "FISHGROUP_NONE",
+        "ride_arrival_core": [
+          11,
+          11
+        ],
+        "verification": "planning/minnesota/renders/glacier-current-v794/acceptance-v818.json",
+        "previous_exterior_door_status": "Native facade/passive arrival/both carpets and production-controller course verified. Station rail remains unfinished; see playable/st-cloud.md."
+      }
     },
     {
       "interior": "MnStPaulCapitolHall",
@@ -3052,8 +3150,25 @@
       ],
       "exterior_warp_index": 1,
       "exterior_return_warp_index": 2,
-      "exterior_door_status": "Native facade/passive arrival/all room carpets published and production-controller verified. Gym4 retains all four internal pad pairs. Depot quest/rail remain unfinished; see playable/st-paul.md.",
-      "requires_real_collision_check": true
+      "exterior_door_status": "Original facade, carpets and passive porch retained. Public road-to-hall/Continue/same-door return pass. Five-stop courier-gated free return service,20 directed rides and protected arrivals verified locally; original room stories/services remain exact. See transit/glacier-current-v01/README.md.",
+      "requires_real_collision_check": true,
+      "native_passenger_service": {
+        "source": "transit/glacier-current-v01/service.json",
+        "source_sha256": "875ef994e56d72430052b6bdf8062aec0bdbdbcde31b4ec39f21ebb6023b68c2",
+        "native_review_pack": "content-packs/minnesota-glacier-current-v03.crystalpack",
+        "native_review_pack_sha256": "fffff3a575234c28de03c6efe808fb46f6cd8d7910c76d97ce3e03bf0e5c4c5b",
+        "visit_flag": "EVENT_MN_STATION_ST_PAUL_VISITED",
+        "authority": "EVENT_MN_COURIER_DEFEATED",
+        "free_fare": true,
+        "only_previously_visited_destinations": true,
+        "fishing_group": "FISHGROUP_NONE",
+        "ride_arrival_core": [
+          17,
+          11
+        ],
+        "verification": "planning/minnesota/renders/glacier-current-v794/acceptance-v818.json",
+        "previous_exterior_door_status": "Native facade/passive arrival/all room carpets published and production-controller verified. Gym4 retains all four internal pad pairs. Depot quest/rail remain unfinished; see playable/st-paul.md."
+      }
     },
     {
       "interior": "MnDuluthHillHouse",
@@ -13870,8 +13985,11 @@
         }
       ],
       "requires_real_collision_check": true,
-      "exterior_door_status": "Verified v02 production input: paired ladders, native slide stops, safe exterior return and same-mouth reentry; Save/Continue and MCP pass. See ice-caves/README.md.",
-      "purpose": "A glacial fissure with its ice guide, teaching slide and separate healing-supply pocket."
+      "exterior_door_status": "Verified current two-floor turning chambers: both controller cases,482production stdio RPC and nine source-matched native GPU views. Original warp records/programs remain exact.",
+      "purpose": "Teaching fissure: an attached southern rock shoulder stops the first eastward slide; the northern tooth turns the next slide east. Separate dry stop pockets lead to the Ice Heal and the lower-floor ladder. The ice remains a substantial connected area.",
+      "source_sha256": "a7b1887d5523a2f52a2bdf4278735c3f58fc3646b2e6379672851ea0f072a819",
+      "native_review_pack_sha256": "0f734df8621b02da80cc45cb905de3d793e28b4f987f98d24203232ddb4cd3b4",
+      "verification": "ice-caves/turning-chambers-v01/README.md"
     },
     {
       "interior": "MnVoyageursIceB1F",
@@ -13910,12 +14028,15 @@
         }
       ],
       "requires_real_collision_check": true,
-      "exterior_door_status": "Verified v02 production input: paired ladders, native slide stops, safe exterior return and same-mouth reentry; Save/Continue and MCP pass. See ice-caves/README.md.",
-      "purpose": "Offset rock teeth lead to two cache shelves; a Voyageurs canoe guide maps winter crossings for his grandson on the dry landing.",
+      "exterior_door_status": "Verified current two-floor turning chambers: both controller cases,482production stdio RPC and nine source-matched native GPU views. Original warp records/programs remain exact.",
+      "purpose": "Offset northern and southern glacier tongues divide two substantial ice basins. The first tooth feeds a northern Max Revive branch; the alternating stops form a turning course to the NeverMeltIce shelf. A central cross-slide reaches the sheltered west bank on return.",
       "story_file": "interior-life/voyageurs-surveyor-v01.json",
       "resident_scripts": [
         "MN_INTERIOR_VOYAGEURS_SURVEYOR"
-      ]
+      ],
+      "source_sha256": "a7b1887d5523a2f52a2bdf4278735c3f58fc3646b2e6379672851ea0f072a819",
+      "native_review_pack_sha256": "0f734df8621b02da80cc45cb905de3d793e28b4f987f98d24203232ddb4cd3b4",
+      "verification": "ice-caves/turning-chambers-v01/README.md"
     },
     {
       "interior": "MnWinonaStation",
@@ -13951,9 +14072,26 @@
       ],
       "exterior_warp_index": 9,
       "exterior_return_warp_index": 10,
-      "exterior_door_status": "Native five-block town overlay, both carpets, four residents, two-clue gift and first-visit callback pass production input; seven paired native views pass. See interior-life/WINONA-STATION.md. Glacier Line rides unfinished.",
+      "exterior_door_status": "Original facade, carpets and passive porch retained. Public road-to-hall/Continue/same-door return pass. Five-stop courier-gated free return service,20 directed rides and protected arrivals verified locally; original room stories/services remain exact. See transit/glacier-current-v01/README.md.",
       "requires_real_collision_check": true,
-      "purpose": "A Winona rail hall with staff and waiting travelers; the five-stop passenger service remains a separate implementation."
+      "purpose": "A Winona rail hall with staff and waiting travelers; the five-stop passenger service remains a separate implementation.",
+      "native_passenger_service": {
+        "source": "transit/glacier-current-v01/service.json",
+        "source_sha256": "875ef994e56d72430052b6bdf8062aec0bdbdbcde31b4ec39f21ebb6023b68c2",
+        "native_review_pack": "content-packs/minnesota-glacier-current-v03.crystalpack",
+        "native_review_pack_sha256": "fffff3a575234c28de03c6efe808fb46f6cd8d7910c76d97ce3e03bf0e5c4c5b",
+        "visit_flag": "EVENT_MN_STATION_WINONA_VISITED",
+        "authority": "EVENT_MN_COURIER_DEFEATED",
+        "free_fare": true,
+        "only_previously_visited_destinations": true,
+        "fishing_group": "FISHGROUP_NONE",
+        "ride_arrival_core": [
+          11,
+          11
+        ],
+        "verification": "planning/minnesota/renders/glacier-current-v794/acceptance-v818.json",
+        "previous_exterior_door_status": "Native five-block town overlay, both carpets, four residents, two-clue gift and first-visit callback pass production input; seven paired native views pass. See interior-life/WINONA-STATION.md. Glacier Line rides unfinished."
+      }
     },
     {
       "interior": "MnDriftlessFishingGuruHouse",
@@ -14153,8 +14291,25 @@
       "exterior_warp_index": 1,
       "exterior_return_warp_index": 2,
       "requires_real_collision_check": true,
-      "exterior_door_status": "Published in minnesota-interiors-staples-v02 on the protected Split Rock lineage: real R15 grass/spur entry, both seam lanes/directions, five residents, ledger, both carpets, parcel purchase/denial and visit Save/Continue pass. Touched-route species are active Minnesota originals, with actual wild battle/RUN. Seven exact native 2D frames; passenger rides unfinished. See interior-life/STAPLES-STATION.md.",
-      "purpose": "A staffed rail junction hall with a ledger, weather conversations and a real parcel purchase; passenger service is tracked separately."
+      "exterior_door_status": "Original facade, carpets and passive porch retained. Public road-to-hall/Continue/same-door return pass. Five-stop courier-gated free return service,20 directed rides and protected arrivals verified locally; original room stories/services remain exact. See transit/glacier-current-v01/README.md.",
+      "purpose": "A staffed rail junction hall with a ledger, weather conversations and a real parcel purchase; passenger service is tracked separately.",
+      "native_passenger_service": {
+        "source": "transit/glacier-current-v01/service.json",
+        "source_sha256": "875ef994e56d72430052b6bdf8062aec0bdbdbcde31b4ec39f21ebb6023b68c2",
+        "native_review_pack": "content-packs/minnesota-glacier-current-v03.crystalpack",
+        "native_review_pack_sha256": "fffff3a575234c28de03c6efe808fb46f6cd8d7910c76d97ce3e03bf0e5c4c5b",
+        "visit_flag": "EVENT_MN_STATION_STAPLES_VISITED",
+        "authority": "EVENT_MN_COURIER_DEFEATED",
+        "free_fare": true,
+        "only_previously_visited_destinations": true,
+        "fishing_group": "FISHGROUP_NONE",
+        "ride_arrival_core": [
+          11,
+          11
+        ],
+        "verification": "planning/minnesota/renders/glacier-current-v794/acceptance-v818.json",
+        "previous_exterior_door_status": "Published in minnesota-interiors-staples-v02 on the protected Split Rock lineage: real R15 grass/spur entry, both seam lanes/directions, five residents, ledger, both carpets, parcel purchase/denial and visit Save/Continue pass. Touched-route species are active Minnesota originals, with actual wild battle/RUN. Seven exact native 2D frames; passenger rides unfinished. See interior-life/STAPLES-STATION.md."
+      }
     },
     {
       "interior": "MnRainyRiverWarmingHut",
@@ -15246,10 +15401,10 @@
     {
       "interior": "MnIronDrillApproach",
       "parent": "MnR09Cave1F",
-      "source_file": "lairs/iron-approach.json",
+      "source_file": "caves/iron-crosscut-v01/after.json",
       "source_room_id": "MnIronDrillApproach",
       "source_kind": "authored_story_floor",
-      "purpose": "Guarded Iron Range cave approach leading into the interleaved mine workings.",
+      "purpose": "Fitted Iron Range ore crosscut with original cache/encounters, real mine/haulage ladders and a standalone native westward return lip.",
       "dimensions_metatiles": [
         16,
         13
@@ -15336,16 +15491,23 @@
         "MN_LODE_ARC_SPOIL"
       ],
       "requires_real_collision_check": true,
-      "native_binding_scope": "Local 729-map current-story/R03 composition; module identities allocate from the actual parent.",
-      "exterior_door_status": "Published and strict-verified in the local current-story composition. Native 2D full-frame/source and whole-layout review covers this floor. Story controller evidence and remaining regional limits are recorded in interior-life/current-story-v01/README.md."
+      "native_binding_scope": "Selected735-map current parent; only this floor terrain changes.",
+      "exterior_door_status": "Both original paired bindings remain exact, including Haulage active5,22 and passive4,23.",
+      "source_design": "caves/iron-crosscut-v01/after.json",
+      "source_collision_checked": true,
+      "candidate_source_sha256": "8416ec3715365d2719408b35bcea723db684ccc7943d1ebdbabd5fb5ffe92ea9",
+      "native_review_pack": "content-packs/minnesota-iron-crosscut-bends-v01.crystalpack",
+      "native_review_pack_sha256": "a69310b47d2e3583d9fb8378784c919584591d6e260d5f548ae10ea0cd3409ce",
+      "native_status": "Four native cases and1420 production calls verify both one-way lanes/reverse/Continue, straight stair, actual paired ladders, both original trainer victories, native Ether use, capacity retry and persistence.",
+      "verification": "planning/minnesota/renders/iron-crosscut-v932/acceptance-v949.json"
     },
     {
       "interior": "MnIronPumpGallery",
       "parent": "MnIronSump",
-      "source_file": "lairs/iron-gallery.json",
+      "source_file": "caves/iron-pump-gallery-v01/current.json",
       "source_room_id": "MnIronPumpGallery",
       "source_kind": "authored_story_floor",
-      "purpose": "Guarded pump gallery connecting the lower workings to the drill control room.",
+      "purpose": "Winding rock maintenance gallery with two guard approaches, native climbs, feed-operated core shaft and a shorter service return.",
       "dimensions_metatiles": [
         16,
         12
@@ -15432,16 +15594,21 @@
         "MN_LODE_ARC_INTAKE"
       ],
       "requires_real_collision_check": true,
-      "native_binding_scope": "Local 729-map current-story/R03 composition; module identities allocate from the actual parent.",
-      "exterior_door_status": "Published and strict-verified in the local current-story composition. Native 2D full-frame/source and whole-layout review covers this floor. Story controller evidence and remaining regional limits are recorded in interior-life/current-story-v01/README.md."
+      "native_binding_scope": "Current 732-map compact/R15 parent; exact original IDs, four warp records and two reciprocal shaft pairs.",
+      "exterior_door_status": "Verified qualified native controller and 846-call stdio course: real pressure controls and guard wins, feed refusal/retry, physical openings, both climbs and shaft pairs, actual core-return guard, Continue and mine-mouth return. Regional arrival and deeper drilling story remain separate.",
+      "native_palette_group": "nite",
+      "source_sha256": "15ff8f77892240f2b1dce4abd02539a2b20f6f7aab96ed7f89353872410b54bc",
+      "review_pack": "content-packs/minnesota-iron-pump-gallery-v02.crystalpack",
+      "review_pack_sha256": "1cbb0d2ce18333433278b9d39134be85e36c93ec8d91b566f1cb3029ff4af455",
+      "verification": "planning/minnesota/renders/iron-pump-gallery-v561/acceptance-v597.json"
     },
     {
       "interior": "MnIronDrillCore",
       "parent": "MnIronPumpGallery",
-      "source_file": "lairs/iron-core.json",
+      "source_file": "caves/iron-drill-core-v01/current.json",
       "source_room_id": "MnIronDrillCore",
       "source_kind": "authored_story_floor",
-      "purpose": "Drill control room with the rival encounter, independent shutdown and mine workers.",
+      "purpose": "A native rock-cut drill bay with its operating machine, northern isolation control, western crew space and lower shaft forecourt.",
       "dimensions_metatiles": [
         12,
         10
@@ -15501,16 +15668,21 @@
         "MN_LODE_ARC_CORE_EAST"
       ],
       "requires_real_collision_check": true,
-      "native_binding_scope": "Local 729-map current-story/R03 composition; module identities allocate from the actual parent.",
-      "exterior_door_status": "Published and strict-verified in the local current-story composition. Native 2D full-frame/source and whole-layout review covers this floor. Story controller evidence and remaining regional limits are recorded in interior-life/current-story-v01/README.md."
+      "native_binding_scope": "Current 732-map compact/R17 parent; original two warp records, reciprocal pump/core shaft and all five actor anchors.",
+      "exterior_door_status": "Verified whole rock chamber, native machine frames, original mine chapter and battles, independent shutdown/recovery choices, both eastern detours, fresh-process Continue and public mine return.",
+      "native_palette_group": "nite",
+      "source_sha256": "7699ef3914d6428edab0e6a3b3947b8779cafc07118843416b9aed6447537e3b",
+      "review_pack": "content-packs/minnesota-iron-drill-core-v04.crystalpack",
+      "review_pack_sha256": "4240537c844bf7e305e99c24f2b7054c314b84a03d17037747cb4ceabdbd17fd",
+      "verification": "planning/minnesota/renders/iron-drill-core-v601/acceptance-v628.json"
     },
     {
       "interior": "MnIronHaulage",
       "parent": "MnIronDrillApproach",
-      "source_file": "lairs/iron-workings/haulage.json",
+      "source_file": "caves/iron-haulage-rock-v01/current.json",
       "source_room_id": "MnIronHaulage",
       "source_kind": "authored_story_floor",
-      "purpose": "Split haulage aisles with a local worker, guards and multiple mining-floor connections.",
+      "purpose": "Native rock galleries, raised workings and pressure crosscut with original Ruth, guards and all five shaft pairs.",
       "dimensions_metatiles": [
         18,
         14
@@ -15688,16 +15860,20 @@
         "MN_LODE_ARC_CONVEYOR"
       ],
       "requires_real_collision_check": true,
-      "native_binding_scope": "Local 729-map current-story/R03 composition; module identities allocate from the actual parent.",
-      "exterior_door_status": "Published and strict-verified in the local current-story composition. Native 2D full-frame/source and whole-layout review covers this floor. Story controller evidence and remaining regional limits are recorded in interior-life/current-story-v01/README.md."
+      "native_binding_scope": "Selected 732-map native rock-floor successor on the current Route6 parent; all original identities and ports retained.",
+      "exterior_door_status": "Native controller original pressure course and all five pairs pass; 578 recorded MCP calls, native save flags and nine source/native camera matches pass. Earned regional access and broader campaign acceptance remain separate.",
+      "native_palette": "nite",
+      "current_source_sha256": "0dfb0b0caae841167d56b4ab6df18c3655a016aa2ab2e59d281ae12a4ae17ce0",
+      "current_native_pack_sha256": "0ec9a1d6fb22f94f2adc62eb09d46f392a9b7debd74230da8c0ce80142a64e82",
+      "current_review_plan": "planning/minnesota/caves/iron-haulage-rock-v01/plan.json"
     },
     {
       "interior": "MnIronSump",
       "parent": "MnIronHaulage",
-      "source_file": "lairs/iron-workings/sump.json",
+      "source_file": "caves/iron-sump-basin-v01/current.json",
       "source_room_id": "MnIronSump",
       "source_kind": "authored_story_floor",
-      "purpose": "Stepped sump galleries form the guarded lower return circuit of the mine.",
+      "purpose": "Flooded western drift below raised workings, with separate eastern pump access.",
       "dimensions_metatiles": [
         20,
         12
@@ -15874,16 +16050,21 @@
         "MN_LODE_ARC_DRAIN"
       ],
       "requires_real_collision_check": true,
-      "native_binding_scope": "Local 729-map current-story/R03 composition; module identities allocate from the actual parent.",
-      "exterior_door_status": "Published and strict-verified in the local current-story composition. Native 2D full-frame/source and whole-layout review covers this floor. Story controller evidence and remaining regional limits are recorded in interior-life/current-story-v01/README.md."
+      "native_binding_scope": "Current 732-map compact parent; all original module IDs, ten warp records and five reciprocal pairs retained.",
+      "exterior_door_status": "Local chapter production controller/MCP traversal, pressure truth table, Surf/Continue, native visual review and full-parent preservation verified; earned regional access and other mining floors remain open.",
+      "native_palette_group": "nite",
+      "source_sha256": "98ceff440b54b4ffea67f24a1acfbdef89742bdb07b6ff0f19ff594aa0afd99d",
+      "review_pack": "content-packs/minnesota-iron-sump-basin-v02.crystalpack",
+      "review_pack_sha256": "39652f276409aad3d256a778897891f03787c4cc2484b1abc42299a6ec2abfab",
+      "verification": "planning/minnesota/renders/iron-sump-basin-v517/acceptance-v531.json"
     },
     {
       "interior": "MnIronVentilation",
       "parent": "MnIronSump",
-      "source_file": "lairs/iron-workings/vent.json",
+      "source_file": "caves/iron-ventilation-cleft-v01/current.json",
       "source_room_id": "MnIronVentilation",
       "source_kind": "authored_story_floor",
-      "purpose": "Ventilation machinery hall with its worker and guarded links between the lower galleries.",
+      "purpose": "A raised western shelf, a rock-fin loop to the retained valve, and a descending eastern service cleft around Vern and the original shift guard.",
       "dimensions_metatiles": [
         18,
         13
@@ -16031,8 +16212,185 @@
         "MN_LODE_ARC_SHIFT"
       ],
       "requires_real_collision_check": true,
-      "native_binding_scope": "Local 729-map current-story/R03 composition; module identities allocate from the actual parent.",
-      "exterior_door_status": "Published and strict-verified in the local current-story composition. Native 2D full-frame/source and whole-layout review covers this floor. Story controller evidence and remaining regional limits are recorded in interior-life/current-story-v01/README.md."
+      "native_binding_scope": "Current 732-map compact parent; exact original IDs, eight warp records and four reciprocal shaft pairs.",
+      "exterior_door_status": "Verified local native controller/MCP course: real guard wins, valve refusal/retry, physical gate, both climbs, both fin branches, all four pairs, pump access and Continue. Earned regional access and deeper floors remain open.",
+      "native_palette_group": "nite",
+      "source_sha256": "08058b115351343905256c16edad7da8ba8e709a0719c4b91f5210e9e8bc9e54",
+      "review_pack": "content-packs/minnesota-iron-ventilation-cleft-v03.crystalpack",
+      "review_pack_sha256": "283c214cda8f5ed04e878bed7e698cc08d9f8a764ae9553161113d4837762330",
+      "verification": "planning/minnesota/renders/iron-ventilation-v534/acceptance-v558.json"
+    },
+    {
+      "interior": "MnNorthShorePieShop",
+      "parent_route": "MN_R11",
+      "exterior_map": "MnR11C00R01",
+      "exterior_door_core": [
+        31,
+        35
+      ],
+      "exterior_safe_return_core": [
+        31,
+        36
+      ],
+      "arrival_core": [
+        3,
+        6
+      ],
+      "return_triggers_core": [
+        [
+          2,
+          7
+        ],
+        [
+          3,
+          7
+        ]
+      ],
+      "interior_passive_arrival_warp": 3,
+      "exterior_warp_indices": [
+        1,
+        2
+      ],
+      "native_registration": {
+        "group_id": 41,
+        "map_id": 11,
+        "constant": "MN_NORTH_SHORE_PIE_SHOP"
+      },
+      "source_design": "landmarks/north-shore-shops.json",
+      "requires_real_collision_check": true,
+      "exterior_door_status": "Verified native door, both carpet returns, staff dialogue, sign, Start and indoor/outdoor Continue through production stdio; native 2D views inspected."
+    },
+    {
+      "interior": "MnNorthShoreSmokehouse",
+      "parent_route": "MN_R11",
+      "exterior_map": "MnR11C00R03",
+      "exterior_door_core": [
+        35,
+        7
+      ],
+      "exterior_safe_return_core": [
+        35,
+        8
+      ],
+      "arrival_core": [
+        3,
+        6
+      ],
+      "return_triggers_core": [
+        [
+          2,
+          7
+        ],
+        [
+          3,
+          7
+        ]
+      ],
+      "interior_passive_arrival_warp": 3,
+      "exterior_warp_indices": [
+        1,
+        2
+      ],
+      "native_registration": {
+        "group_id": 41,
+        "map_id": 12,
+        "constant": "MN_NORTH_SHORE_SMOKEHOUSE"
+      },
+      "source_design": "landmarks/north-shore-shops.json",
+      "requires_real_collision_check": true,
+      "exterior_door_status": "Verified native door, both carpet returns, staff dialogue, sign, Start and indoor/outdoor Continue through production stdio; native 2D views inspected."
+    },
+    {
+      "interior": "MnDriftlessLampGallery",
+      "parent": "MnR01Cave1F",
+      "dimensions_metatiles": [
+        12,
+        10
+      ],
+      "arrival_core": [
+        18,
+        17
+      ],
+      "native_warp_arrival_core": [
+        18,
+        17
+      ],
+      "arrival_warp_index": 2,
+      "return_trigger_core": [
+        19,
+        17
+      ],
+      "return_warp_index": 1,
+      "exterior_map": "MnR01Cave1F",
+      "exterior_door_core": [
+        11,
+        9
+      ],
+      "exterior_return_core": [
+        10,
+        9
+      ],
+      "exterior_warp_index": 2,
+      "exterior_return_warp_index": 3,
+      "palette_group": "dark",
+      "native_phone_service": 20,
+      "source_design": "caves/driftless-fossil-gallery-v01/current.json",
+      "source_file": "caves/driftless-fossil-gallery-v01/current.json",
+      "candidate_source_sha256": "38bccaa0a2c3ec4ff40f27c6e454038f9c6fb9b28570c117f3f16a8aa5eacec3",
+      "requires_real_collision_check": false,
+      "source_collision_checked": true,
+      "native_geometry_pack": "content-packs/minnesota-driftless-fossil-gallery-v03.crystalpack",
+      "native_geometry_pack_sha256": "3f3d12312ff947ea9f219a9368b98b51f4348ea7a76ed2caf7b062a8ef45316d",
+      "native_review_pack": "content-packs/minnesota-driftless-fossil-gallery-v03.crystalpack",
+      "native_review_pack_sha256": "3f3d12312ff947ea9f219a9368b98b51f4348ea7a76ed2caf7b062a8ef45316d",
+      "native_status": "Verified optional dry native12x10 fossil gallery; two fitted stairs, real native Flash, acknowledged fossil clue and once-only native Rare Candy.",
+      "validation": "Three controller cases,233 stdio calls,7 exact lit frames and2 inspected dark views. Full-pocket denial preserves cache; native Toss permits retry; Continue/once/passive returns pass. Local fixtures.",
+      "verification": "planning/minnesota/renders/driftless-fossil-gallery-v774/acceptance-v792.json",
+      "gameplay_contract": {
+        "native_flash_required": true,
+        "acknowledge_all_three_pages": true,
+        "claim_only_after_successful_native_delivery": true,
+        "full_pocket_retry": true,
+        "separate_visibility_flag": true
+      }
+    },
+    {
+      "interior": "MnRochesterFossilLab",
+      "parent": "MnRochester",
+      "arrival_core": [
+        5,
+        8
+      ],
+      "return_trigger_core": [
+        4,
+        9
+      ],
+      "return_triggers_core": [
+        [
+          4,
+          9
+        ],
+        [
+          5,
+          9
+        ]
+      ],
+      "exterior_door_status": "Verified native door11/arrival3, both carpet exits to return12, reentry and Save/Continue through the production controller.",
+      "reserved_town_district": "clinic and mart street",
+      "requires_real_collision_check": true,
+      "source_file": "towns/MnRochester.json",
+      "source_room_id": "MnRochesterFossilLab",
+      "arrival_warp_index": 3,
+      "exterior_door_core": [
+        23,
+        9
+      ],
+      "exterior_safe_return_core": [
+        23,
+        10
+      ],
+      "exterior_warp_index": 11,
+      "exterior_return_warp_index": 12
     }
   ]
 }

@@ -1,0 +1,100 @@
+{
+  "status": "PASS_STATIC_NATIVE_BANK_ICE_MODEL",
+  "pack": "content-packs/minnesota-current-r17-trail-guidance-v02.crystalpack",
+  "pack_sha256": "186c262b18d5174cb7ba9727358d4022bea9fce6d362529405728028ef92c60a",
+  "checks": [
+    {
+      "id": "main-north-south",
+      "start": [
+        36,
+        0
+      ],
+      "end": [
+        32,
+        111
+      ],
+      "bounds": [
+        0,
+        0,
+        64,
+        112
+      ],
+      "measurement": {
+        "status": "MEASURED",
+        "grass_steps": 20,
+        "grass_quadrants_in_contract": 136,
+        "ice_quadrants": 92
+      }
+    },
+    {
+      "id": "main-south-north",
+      "start": [
+        32,
+        111
+      ],
+      "end": [
+        36,
+        0
+      ],
+      "bounds": [
+        0,
+        0,
+        64,
+        112
+      ],
+      "measurement": {
+        "status": "MEASURED",
+        "grass_steps": 20,
+        "grass_quadrants_in_contract": 136,
+        "ice_quadrants": 92
+      }
+    },
+    {
+      "id": "sedge-north-south",
+      "start": [
+        36,
+        0
+      ],
+      "end": [
+        32,
+        111
+      ],
+      "bounds": [
+        22,
+        88,
+        28,
+        92
+      ],
+      "measurement": {
+        "status": "MEASURED",
+        "grass_steps": 4,
+        "grass_quadrants_in_contract": 24,
+        "ice_quadrants": 92
+      }
+    },
+    {
+      "id": "sedge-south-north",
+      "start": [
+        32,
+        111
+      ],
+      "end": [
+        36,
+        0
+      ],
+      "bounds": [
+        22,
+        88,
+        28,
+        92
+      ],
+      "measurement": {
+        "status": "MEASURED",
+        "grass_steps": 4,
+        "grass_quadrants_in_contract": 24,
+        "ice_quadrants": 92
+      }
+    }
+  ],
+  "scope": "Current native collision and forced ice sliding; actors clear and no Surf/Cut. Full native land course recorded separately."
+}

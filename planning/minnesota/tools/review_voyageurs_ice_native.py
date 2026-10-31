@@ -85,8 +85,8 @@ def main():
     private=Path('.local')/f'ice-review-capture-{os.getpid()}'
     shutil.copy2(args.binary,private)
     report={'pack_sha256':digest(pack_path),'binary_sha256':digest(private),'captures':[],
-            'fixture':'Disposable location-tester party fixture, declared position, south facing at noon; native special ice palette.'}
-    env=dict(os.environ,CRYSTAL_RENDER_TEST_HEADLESS='1',CRYSTAL_RENDER_TEST_CAPTURE_TARGET='image',CRYSTAL_RENDER_TEST_WINDOW_SIZE='640x576',CRYSTAL_PREVIEW_MUTE='1')
+            'fixture':'One original Minnesota Cindore, declared position, south facing at noon; native special ice palette.'}
+    env=dict(os.environ,CRYSTAL_RENDER_TEST_HEADLESS='1',CRYSTAL_RENDER_TEST_CAPTURE_TARGET='image',CRYSTAL_RENDER_TEST_WINDOW_SIZE='640x576',CRYSTAL_PREVIEW_MUTE='1',CRYSTAL_RENDER_TEST_PARTY_SPECIES='CINDORE',CRYSTAL_RENDER_TEST_PARTY_SIZE='1')
     env.pop('CRYSTAL_RENDER_TEST_SECOND_VIEW',None)
     try:
         for room in json.loads(args.source.read_text())['rooms']:

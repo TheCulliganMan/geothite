@@ -1,0 +1,50 @@
+{
+  "pid": 66823,
+  "source_sha256": {
+    "crates/crystal-assets/src/r06_south_woods_grass.rs": "82b3c4e6aadf6c8d2d4767afc9b3843551a9920566206b8ccde20506f8c32675",
+    "crates/crystal-assets/src/bin/revise_r06_south_woods_grass.rs": "3393a91fd6618aae12a682f6cc35f8f3a87845ad0cefd0c63b00c71a129c9d84"
+  },
+  "steps": [
+    {
+      "step": "publisher",
+      "command": [
+        "cargo",
+        "build",
+        "--profile",
+        "wasm-dev",
+        "--locked",
+        "--config",
+        "profile.wasm-dev.package.crystal-assets.opt-level=0",
+        "-p",
+        "crystal-assets",
+        "--bin",
+        "revise_r06_south_woods_grass"
+      ],
+      "exit_code": 0,
+      "log": ".local/route-grass-review/r06-south-woods-grass-publisher-v01.log",
+      "outputs": [
+        {
+          "path": ".local/route-grass-review/portable-r06-south-woods-grass-tools-v01/revise_r06_south_woods_grass",
+          "sha256": "c482ac93eb19e0f01a6f731b981347024d4aafaeb7374272decd6272923b847e"
+        }
+      ]
+    },
+    {
+      "step": "assets-all-target-clippy",
+      "command": [
+        "cargo",
+        "clippy",
+        "--profile",
+        "wasm-dev",
+        "--locked",
+        "--config",
+        "profile.wasm-dev.package.crystal-assets.opt-level=0",
+        "-p",
+        "crystal-assets",
+        "--all-targets"
+      ],
+      "exit_code": 0,
+      "log": ".local/route-grass-review/r06-south-woods-grass-assets-all-target-clippy-v01.log"
+    }
+  ]
+}

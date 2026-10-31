@@ -4,6 +4,7 @@ use crystal_runtime::CrystalRuntime;
 
 use super::super::super::super::sellable_carried_item_ids;
 use super::super::super::authored_route_fixture::indoor_walk;
+use super::super::super::native_city_ports::city_port;
 use super::super::super::rochester_earned::checkout;
 use super::super::super::winona::{press, travel};
 use super::{CITY, VisibleShellController};
@@ -144,8 +145,9 @@ pub(super) fn buy(c: &mut VisibleShellController, r: &CrystalRuntime) {
     if needed == 0 || (state.money < u32::from(medicine.price) && sell_tm.is_none()) {
         return;
     }
-    indoor_walk(c, r, (14, 10));
-    travel(c, GameButton::Up, "MnStCloudMart", (6, 5));
+    let (door, arrival) = city_port(r, CITY, "MnStCloudMart");
+    indoor_walk(c, r, door);
+    travel(c, GameButton::Up, "MnStCloudMart", arrival);
     indoor_walk(c, r, (3, 3));
     press(c, GameButton::Left);
     press(c, GameButton::A);
@@ -157,7 +159,7 @@ pub(super) fn buy(c: &mut VisibleShellController, r: &CrystalRuntime) {
     assert!(quantity > 0);
     checkout(c, r, "SUPER_POTION", quantity);
     indoor_walk(c, r, (6, 6));
-    travel(c, GameButton::Down, CITY, (14, 10));
+    travel(c, GameButton::Down, CITY, door);
 }
 
 pub(super) fn wake(c: &mut VisibleShellController, r: &CrystalRuntime) {
@@ -174,8 +176,9 @@ pub(super) fn wake(c: &mut VisibleShellController, r: &CrystalRuntime) {
         count <= state.bag.quantity(balls),
         "ordinary Awakening funding requires carried balls"
     );
-    indoor_walk(c, r, (14, 10));
-    travel(c, GameButton::Up, "MnStCloudMart", (6, 5));
+    let (door, arrival) = city_port(r, CITY, "MnStCloudMart");
+    indoor_walk(c, r, door);
+    travel(c, GameButton::Up, "MnStCloudMart", arrival);
     indoor_walk(c, r, (3, 3));
     press(c, GameButton::Left);
     press(c, GameButton::A);
@@ -184,7 +187,7 @@ pub(super) fn wake(c: &mut VisibleShellController, r: &CrystalRuntime) {
     }
     checkout(c, r, "AWAKENING", 1);
     indoor_walk(c, r, (6, 6));
-    travel(c, GameButton::Down, CITY, (14, 10));
+    travel(c, GameButton::Down, CITY, door);
 }
 
 pub(super) fn balls(c: &mut VisibleShellController, r: &CrystalRuntime) {
@@ -195,12 +198,13 @@ pub(super) fn balls(c: &mut VisibleShellController, r: &CrystalRuntime) {
     }
     let count = (state.money / u32::from(item.price)).min(3) as u16;
     assert!(count > 0, "recruitment needs earned money for native balls");
-    indoor_walk(c, r, (14, 10));
-    travel(c, GameButton::Up, "MnStCloudMart", (6, 5));
+    let (door, arrival) = city_port(r, CITY, "MnStCloudMart");
+    indoor_walk(c, r, door);
+    travel(c, GameButton::Up, "MnStCloudMart", arrival);
     indoor_walk(c, r, (3, 3));
     press(c, GameButton::Left);
     press(c, GameButton::A);
     checkout(c, r, "POKE_BALL", count);
     indoor_walk(c, r, (6, 6));
-    travel(c, GameButton::Down, CITY, (14, 10));
+    travel(c, GameButton::Down, CITY, door);
 }

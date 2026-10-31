@@ -1,0 +1,36 @@
+{
+  "status": "PASS",
+  "kind": "read_only_outpost_grass_composition_review",
+  "parent": {
+    "pack": "content-packs/minnesota-current-r19-detroit-gate-v05.crystalpack",
+    "sha256": "b57516c0b77c7bcf94fa35e60ff8300bfd8a8781782827739742d8fc15b3f437"
+  },
+  "map": "MnStaplesRailJunction",
+  "terrain_changes": 0,
+  "canonical_source": "planning/minnesota/transit/MnStaplesStation.json",
+  "canonical_source_sha256": "618a1f8d5bf6c6a720c76771fe2eac08e98eb4c05d6e668aa533a4119f7948a5",
+  "all160_native_metatiles_equal_source_rows": true,
+  "native_collision_quadrants": {
+    "WALL": 380,
+    "FLOOR": 251,
+    "DOOR": 1,
+    "HEADBUTT_TREE": 8
+  },
+  "native_objects": 1,
+  "native_warps": 2,
+  "encounter_table_absent": true,
+  "approach_native_species": [
+    "BOOMRUFF",
+    "CLINKLAW",
+    "DEWDANT",
+    "GILLPUP",
+    "NOTCHBILL",
+    "PODLET",
+    "RIVVIT",
+    "TICKLET",
+    "ZAPSAP"
+  ],
+  "old_road_fixture_to_spur_minimum_grass_steps": 0,
+  "decision": "Retain the dry station/service yard. Its optional spur leads back to the already-reviewed R15 habitat; do not add decorative encounter grass without a native table or force habitat across the station facade, public conversations and shop.",
+  "scope_limit": "This is a station outpost review, not new terrain or train-service publication. Native fixture tests prove specific visits and an actual R15 wild/RUN, not earned regional access or encounter balance."
+}

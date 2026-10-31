@@ -1,0 +1,92 @@
+{
+  "status": "SOURCE_PREVIEW_NOT_PUBLISHED",
+  "pack": "content-packs/minnesota-iron-drill-core-v04.crystalpack",
+  "pack_sha256": "4240537c844bf7e305e99c24f2b7054c314b84a03d17037747cb4ceabdbd17fd",
+  "patches": [
+    {
+      "map": "MnR19C00R01",
+      "metatile": [
+        12,
+        4
+      ],
+      "before": "01",
+      "after": "0c"
+    },
+    {
+      "map": "MnR19C00R01",
+      "metatile": [
+        13,
+        4
+      ],
+      "before": "02",
+      "after": "0d"
+    },
+    {
+      "map": "MnR19C00R01",
+      "metatile": [
+        12,
+        5
+      ],
+      "before": "02",
+      "after": "08"
+    },
+    {
+      "map": "MnR19C00R01",
+      "metatile": [
+        13,
+        5
+      ],
+      "before": "02",
+      "after": "09"
+    },
+    {
+      "map": "MnDetroitLakes",
+      "metatile": [
+        12,
+        0
+      ],
+      "before": "05",
+      "after": "16"
+    },
+    {
+      "map": "MnDetroitLakes",
+      "metatile": [
+        13,
+        0
+      ],
+      "before": "05",
+      "after": "1e"
+    }
+  ],
+  "native_reference": "Route35 backside0c/0d+08/09 and Goldenrod front16/1e; Detroit16/1e pixels match source johto_modern exactly",
+  "route_active_carpets": [
+    [
+      25,
+      9
+    ],
+    [
+      26,
+      9
+    ]
+  ],
+  "route_passive_arrivals": [
+    [
+      25,
+      8
+    ],
+    [
+      26,
+      8
+    ]
+  ],
+  "town_active_door": [
+    25,
+    1
+  ],
+  "town_passive_arrival": [
+    25,
+    2
+  ],
+  "grass_and_all_other_map_cells_preserved": true,
+  "remaining": "Inspect both images, author paired room warps and guard, guarded Rust publication and native proof"
+}

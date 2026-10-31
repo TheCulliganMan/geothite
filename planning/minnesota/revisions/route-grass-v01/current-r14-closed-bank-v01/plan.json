@@ -1,0 +1,97 @@
+{
+  "status": "SOURCE_CANDIDATE_NOT_PUBLISHED",
+  "parent_revision": "route_grass_st_cloud_fronts_revision",
+  "parent_pack": "content-packs/minnesota-current-st-cloud-fronts-v02.crystalpack",
+  "parent_sha256": "df5e4c47500d84046f542418a203c8d58b0e119e97bc235083434464c8682ef3",
+  "changes": [
+    {
+      "map": "MnR14C00R00",
+      "metatile": [
+        10,
+        12
+      ],
+      "before": "57",
+      "after": "05"
+    },
+    {
+      "map": "MnR14C00R00",
+      "metatile": [
+        11,
+        12
+      ],
+      "before": "57",
+      "after": "05"
+    },
+    {
+      "map": "MnR14C00R00",
+      "metatile": [
+        12,
+        12
+      ],
+      "before": "57",
+      "after": "05"
+    },
+    {
+      "map": "MnR14C00R00",
+      "metatile": [
+        13,
+        12
+      ],
+      "before": "57",
+      "after": "05"
+    },
+    {
+      "map": "MnR14C00R00",
+      "metatile": [
+        16,
+        12
+      ],
+      "before": "57",
+      "after": "05"
+    },
+    {
+      "map": "MnR14C00R00",
+      "metatile": [
+        17,
+        12
+      ],
+      "before": "57",
+      "after": "05"
+    }
+  ],
+  "preimage_materialized_cells": 97,
+  "preserved_working_hop_lips_core": [
+    [
+      28,
+      24
+    ],
+    [
+      29,
+      24
+    ],
+    [
+      30,
+      24
+    ],
+    [
+      31,
+      24
+    ]
+  ],
+  "reason": "Twelve outer hop quadrants have tree-blocked native landings. Extend existing forest over these six ledge metatiles; preserve the four central playable lanes and their grass climb/dry return.",
+  "native_pack_changed": false,
+  "pending": [
+    "guarded Rust publication",
+    "current-parent preservation",
+    "native denied hops and four valid hops",
+    "ordinary grassy return",
+    "save/Continue",
+    "production source pixel match"
+  ],
+  "source_visual_review": {
+    "whole_route_inspected": true,
+    "before_and_candidate_bank_crops_inspected": true,
+    "decision": "Six outer ledge faces become continuous existing pine canopy; the four central working hop lanes remain readable. Grass climb and all other route terrain preserved.",
+    "images": "planning/minnesota/renders/route-grass-v01/current-r14-closed-bank-v01"
+  }
+}

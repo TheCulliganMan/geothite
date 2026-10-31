@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "map": "MnR10Cave1F",
+  "parent_revision": "route_grass_r19_detroit_gate_revision",
+  "parent_pack": "content-packs/minnesota-current-r19-detroit-gate-v05.crystalpack",
+  "parent_pack_sha256": "b57516c0b77c7bcf94fa35e60ff8300bfd8a8781782827739742d8fc15b3f437",
+  "native_module_sha256": "78c6a8da5d58459d672108bb5434042ecc81639e8496c93cb9d270a3affa9025",
+  "purpose": "A connected bedrock spur divides the former broad survey hall; the supply hollow bends around its eastern rock nose. Existing gallery stairs, short drop, optional opponents, caches, spring and ordinary return remain.",
+  "preserved_warps": [
+    {
+      "index": 1,
+      "x": 3,
+      "y": 13,
+      "target_map_constant": "MnR10C00R00",
+      "target_map": "MnR10C00R00",
+      "target_warp_id": 2
+    }
+  ],
+  "preserved_actors": [
+    {
+      "id": "MN_R10_GALLERY_READER",
+      "tile": [
+        9,
+        5
+      ]
+    },
+    {
+      "id": "MN_R10_ITEM_04",
+      "tile": [
+        29,
+        23
+      ]
+    },
+    {
+      "id": "MN_R10_ESCAPE_ROPE",
+      "tile": [
+        39,
+        5
+      ]
+    },
+    {
+      "id": "MN_EXTRA_R10_SURVEY",
+      "tile": [
+        18,
+        15
+      ]
+    },
+    {
+      "id": "MN_EXTRA_R10_SPRING",
+      "tile": [
+        33,
+        24
+      ]
+    }
+  ]
+}

@@ -6,7 +6,7 @@ use super::super::super::{VisibleShellController, mark_runtime_snapshot_dirty};
 use super::super::minnesota_gyms::interact;
 use super::super::northstar_dialogue::{acknowledge, timely_evidence};
 use super::super::northstar_ice_lair::event;
-use super::super::winona::{continue_in_place, finish, press};
+use super::super::winona::{at, continue_in_place, finish, press};
 use super::fixture;
 
 const READING: &str = "EVENT_MN_HEADWATERS_READING";
@@ -58,16 +58,25 @@ fn overhaul_public_reference_and_comparison_do_not_require_the_pine_badge() {
     assert_eq!(c.shell.shell.session().state().bag, before.bag);
     // Accepting evidence does not grant the travel credential or open the mine.
     super::super::authored_route_fixture::indoor_walk(&mut c, &r, (43, 25));
-    press(&mut c, GameButton::Right);
-    assert!(
-        c.snapshot()
-            .expect("mine travel safeguard")
+    for _ in 0..4 {
+        if c.snapshot()
+            .expect("actual checkpoint text")
             .ui
-            .text
-            .and_then(|t| t.asm_text)
-            .is_some_and(|text| text.contains("PINE"))
+            .text_window_open
+        {
+            break;
+        }
+        // The first tap can turn before the following tap enters the trigger.
+        press(&mut c, GameButton::Right);
+    }
+    acknowledge(
+        &mut c,
+        "PACING",
+        "MnBemidjiIronCheckBadgesText",
+        "EVENT_MN_MINE_INSTRUMENT_RECOVERED",
     );
     finish(&mut c);
+    at(&mut c, "MnBemidji", (43, 25));
     assert!(!c.shell.shell.session().state().badges.johto[6]);
     assert!(!event(&c, "EVENT_MN_MINE_INSTRUMENT_RECOVERED"));
 }
@@ -84,6 +93,7 @@ fn overhaul_harbor_accepts_the_pump_log_before_final_gym_training() {
     badges(&mut c, 7);
     let before = c.shell.shell.session().state().clone();
     super::super::authored_route_fixture::indoor_walk(&mut c, &r, (10, 5));
+    continue_in_place(&mut c, &root, &r, "pacing-harbor-seven-badge-ready");
     press(&mut c, GameButton::Right);
     press(&mut c, GameButton::A);
     continue_in_place(&mut c, &root, &r, "pacing-harbor-evidence-before-final-gym");
@@ -203,21 +213,21 @@ fn overhaul_reference_ranger_and_depot_returns_keep_completed_actions() {
         (
             "MnGrandRapidsSurveyDepot",
             "MnGrandRapidsDepotDone",
-            (4, 7),
+            (12, 17),
             vec!["EVENT_MN_DEPOT_CLEARED", SIGNAL],
             "MnOverhaulDepotNorthText",
         ),
         (
             "MnGrandRapidsSurveyDepot",
             "MnGrandRapidsDepotDone",
-            (4, 7),
+            (12, 17),
             vec!["EVENT_MN_DEPOT_CLEARED", SIGNAL, LINK],
             "MnOverhaulDepotIntakeText",
         ),
         (
             "MnGrandRapidsSurveyDepot",
             "MnGrandRapidsDepotDone",
-            (4, 7),
+            (12, 17),
             vec!["EVENT_MN_DEPOT_CLEARED", SIGNAL, LINK, RESTORED],
             "MnOverhaulDepotDoneText",
         ),

@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "map": "MnR20Cave1F",
+      "id": "MN_EXTRA_R20_WAYFINDER",
+      "display_name": "LEIF",
+      "trainer_class": "COOLTRAINERM",
+      "sprite": "SPRITE_COOLTRAINER_M",
+      "tile": [
+        21,
+        17
+      ],
+      "approach": [
+        21,
+        18
+      ],
+      "facing": "south",
+      "optional_battle": true,
+      "sight_range": 1,
+      "defeated_flag": "EVENT_MN_EXTRA_R20_WAYFINDER",
+      "party": [
+        {
+          "species": "WHIRLNUT",
+          "level": 43
+        },
+        {
+          "species": "LUTEBRISK",
+          "level": 44
+        }
+      ],
+      "before_lines": [
+        "I scout both ends.",
+        "Wind above, cold",
+        "water below us.",
+        "Care for a match?"
+      ],
+      "after_lines": [
+        "The dry path goes",
+        "both ways.",
+        "Drop west to skip",
+        "the climb back."
+      ],
+      "loss_lines": [
+        "Good route work!",
+        "Keep your footing."
+      ]
+    }
+  ]
+}

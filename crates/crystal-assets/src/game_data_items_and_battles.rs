@@ -1949,9 +1949,9 @@ impl GameDataSet {
         party_index: usize,
         item_effect: &BattleItemOutcome,
     ) -> Result<()> {
-        let Some(learned_move) = item_effect.pending_move_learns.first() else {
+        if item_effect.pending_move_learns.is_empty() {
             return Ok(());
-        };
+        }
         if state.pending_move_learn.is_some() {
             anyhow::bail!("pending move learn already exists for party index {party_index}");
         }
@@ -1967,22 +1967,23 @@ impl GameDataSet {
                 "pending move learn requires full move list for party index {party_index}"
             );
         }
-        if pokemon
-            .moves
+        let mut pending: Vec<_> = item_effect
+            .pending_move_learns
             .iter()
-            .any(|known| known.name == learned_move.name)
-        {
-            return Ok(());
+            .filter(|learned| !pokemon.moves.iter().any(|known| known.name == learned.name))
+            .map(|learned_move| PendingMoveLearn {
+                party_index,
+                species_id: pokemon.species.id.clone(),
+                level: pokemon.level,
+                learned_move: learned_move.clone(),
+                defer_level_evolution: false,
+            })
+            .collect();
+        if let Some(last) = pending.last_mut() {
+            last.defer_level_evolution = item_effect.deferred_level_evolution;
         }
-        let species_id = pokemon.species.id.clone();
-        let level = pokemon.level;
-        state.pending_move_learn = Some(PendingMoveLearn {
-            party_index,
-            species_id,
-            level,
-            learned_move: learned_move.clone(),
-            defer_level_evolution: item_effect.deferred_level_evolution,
-        });
+        state.pending_move_learn_queue.extend(pending);
+        promote_next_pending_move_learn(state);
         Ok(())
     }
 
@@ -2020,32 +2021,27 @@ impl GameDataSet {
             let pokemon = crate::deferred_evolution::party_member(state, party_index)?;
             let report = check_and_evolve(pokemon, &self.evolutions, &context, true)
                 .map_err(|error| anyhow::anyhow!("resolve deferred level evolution: {error:?}"))?;
-            let pending_move_learn = if let Some(learned_move) = report.pending_move_learns.first()
-            {
-                if pokemon.moves.len() < 4 {
-                    anyhow::bail!(
-                        "pending evolution move learn requires full move list for party index {party_index}"
-                    );
-                }
-                (!pokemon
-                    .moves
-                    .iter()
-                    .any(|known| known.name == learned_move.name))
-                .then(|| PendingMoveLearn {
+            if !report.pending_move_learns.is_empty() && pokemon.moves.len() < 4 {
+                anyhow::bail!(
+                    "pending evolution move learn requires full move list for party index {party_index}"
+                );
+            }
+            let pending_move_learn: Vec<_> = report
+                .pending_move_learns
+                .iter()
+                .filter(|learned| !pokemon.moves.iter().any(|known| known.name == learned.name))
+                .map(|learned_move| PendingMoveLearn {
                     party_index,
                     species_id: pokemon.species.id.clone(),
                     level: pokemon.level,
                     learned_move: learned_move.clone(),
                     defer_level_evolution: false,
                 })
-            } else {
-                None
-            };
+                .collect();
             (report, pending_move_learn)
         };
-        if let Some(pending_move_learn) = pending_move_learn {
-            state.pending_move_learn = Some(pending_move_learn);
-        }
+        state.pending_move_learn_queue.extend(pending_move_learn);
+        promote_next_pending_move_learn(state);
         if report.target_species.is_some() && report.cancel_snapshot.is_none() {
             let evolved_pokemon = state.storage.party.pokemon[party_index]
                 .as_ref()
@@ -4014,15 +4010,11 @@ impl GameDataSet {
             .enumerate()
             .filter_map(|(slot, score)| (*score == best_score).then_some(slot))
             .collect::<BTreeSet<_>>();
-        loop {
-            let slot = usize::from(rng.battle_random_byte() & 3);
-            if best.contains(&slot) {
-                return Ok(EnemyMoveSelection {
-                    slot,
-                    ai_damage_register,
-                });
-            }
-        }
+        let slot = crate::trainer_random_selection::select_scored_move_slot(&best, rng)?;
+        Ok(EnemyMoveSelection {
+            slot,
+            ai_damage_register,
+        })
     }
 
     fn trainer_ai_damage_for_move(

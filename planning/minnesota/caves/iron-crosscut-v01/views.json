@@ -1,0 +1,82 @@
+[
+  {
+    "id": "sheltered-entry",
+    "map": "MnIronDrillApproach",
+    "core": [
+      6,
+      21
+    ]
+  },
+  {
+    "id": "west-operator",
+    "map": "MnIronDrillApproach",
+    "core": [
+      9,
+      13
+    ]
+  },
+  {
+    "id": "ether-bench",
+    "map": "MnIronDrillApproach",
+    "core": [
+      4,
+      5
+    ]
+  },
+  {
+    "id": "bench-stair",
+    "map": "MnIronDrillApproach",
+    "core": [
+      6,
+      9
+    ]
+  },
+  {
+    "id": "northern-traverse",
+    "map": "MnIronDrillApproach",
+    "core": [
+      15,
+      10
+    ]
+  },
+  {
+    "id": "eastern-fault",
+    "map": "MnIronDrillApproach",
+    "core": [
+      19,
+      13
+    ]
+  },
+  {
+    "id": "haulage-ladder",
+    "map": "MnIronDrillApproach",
+    "core": [
+      24,
+      5
+    ]
+  },
+  {
+    "id": "spoil-side",
+    "map": "MnIronDrillApproach",
+    "core": [
+      25,
+      18
+    ]
+  },
+  {
+    "id": "return-lip",
+    "map": "MnIronDrillApproach",
+    "core": [
+      14,
+      18
+    ]
+  },
+  {
+    "id": "west-landing",
+    "map": "MnIronDrillApproach",
+    "core": [
+      11,
+      18
+    ]
+  }
+]

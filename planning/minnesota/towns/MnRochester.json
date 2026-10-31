@@ -13,7 +13,7 @@
   "tileset": "johto_modern",
   "compiled_tileset": "johto_modern",
   "native_constant": "MN_ROCHESTER",
-  "composition": "A public clinic courtyard between two sheltered residential lanes. The eastern arrival forks toward the freight recipient and first gym; flower beds and short paths frame the useful clearings.",
+  "composition": "A public clinic courtyard between two sheltered residential lanes. The eastern arrival forks toward the freight recipient and first gym; flower beds and short paths frame the useful clearings. A signed fossil lab between the clinic and mart restores Driftless specimens indoors.",
   "ports": [
     {
       "route": "MN_R01",
@@ -443,6 +443,102 @@
       ],
       "signs": [],
       "pc": null
+    },
+    {
+      "id": "MnRochesterFossilLab",
+      "kind": "lab",
+      "native_constant": "MN_ROCHESTER_FOSSIL_LAB",
+      "template": "ElmsLab",
+      "tileset": "lab",
+      "dimensions_metatiles": [
+        5,
+        5
+      ],
+      "rows": [
+        "17 08 09 04 04",
+        "18 0c 01 06 07",
+        "01 01 01 0a 0b",
+        "04 01 01 01 04",
+        "01 01 02 01 01"
+      ],
+      "border_block": 0,
+      "passive_arrival": {
+        "index": 3,
+        "tile": [
+          5,
+          8
+        ],
+        "collision": "FLOOR"
+      },
+      "clear_arrival": [
+        5,
+        8
+      ],
+      "exits": [
+        {
+          "index": 1,
+          "tile": [
+            4,
+            9
+          ],
+          "target": "MnRochester",
+          "target_warp": 12,
+          "collision": "WARP_CARPET_DOWN"
+        },
+        {
+          "index": 2,
+          "tile": [
+            5,
+            9
+          ],
+          "target": "MnRochester",
+          "target_warp": 12,
+          "collision": "WARP_CARPET_DOWN"
+        }
+      ],
+      "residents": [
+        {
+          "id": "MnLabFossilResearcher",
+          "sprite": "SPRITE_SCIENTIST",
+          "tile": [
+            3,
+            4
+          ],
+          "facing": "south",
+          "service": "Native fossil restoration; Care Badge and free party slot; item consumed only after gift succeeds."
+        },
+        {
+          "id": "MnRochesterFossilLabAssistant",
+          "sprite": "SPRITE_SCIENTIST",
+          "tile": [
+            7,
+            6
+          ],
+          "facing": "south",
+          "lines": [
+            "Bring a LENS or",
+            "SPIRE FOSSIL from",
+            "DRIFTLESS TRAIL.",
+            "Our scientist can",
+            "restore it."
+          ]
+        }
+      ],
+      "signs": [
+        {
+          "id": "MnLabFossilBench",
+          "tile": [
+            6,
+            3
+          ],
+          "lines": [
+            "RESTORATION BENCH",
+            "LENS: TRILUME",
+            "SPIRE: SIPHLET"
+          ]
+        }
+      ],
+      "source_reference": "landmarks/fossil-lab-v01/lab.json"
     }
   ],
   "doors": [
@@ -540,6 +636,25 @@
         24
       ],
       "collision": "DOOR"
+    },
+    {
+      "warp_index": 11,
+      "return_warp_index": 12,
+      "tile": [
+        23,
+        9
+      ],
+      "target": "MnRochesterFossilLab",
+      "target_warp": 3,
+      "arrival_tile": [
+        5,
+        8
+      ],
+      "return_tile": [
+        23,
+        10
+      ],
+      "collision": "DOOR"
     }
   ],
   "residents": [
@@ -618,13 +733,26 @@
         "ROCHESTER",
         "Please keep a copy."
       ]
+    },
+    {
+      "id": "MnRochesterFossilLabSign",
+      "tile": [
+        26,
+        10
+      ],
+      "lines": [
+        "FOSSIL LAB",
+        "Ancient partners",
+        "restored here."
+      ]
     }
   ],
   "walkable_destinations": [
     "each port landing",
     "every real facade",
     "clinic courtyard",
-    "gym approach"
+    "gym approach",
+    "fossil lab door and sign"
   ],
   "door_contract": "Explicit native facade/arrival/carpet pairs; canonical Gym1 is a source reference. R01 and Winona binding follow town publication.",
   "native_status": "Native town, canonical Gym1 refresh, original-readings delivery and reciprocal R01/Winona links are published on the 526-map candidate. Earned opening/travel/delivery and separate local gym combat checks pass; final client/preservation checks are recorded in playable/rochester.md. R02 remains unbound; an earned first badge and full regional journey remain work.",

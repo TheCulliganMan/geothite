@@ -1,0 +1,77 @@
+[
+  {
+    "label": "MN_R08_BIRCH_WALKERText",
+    "commands": [
+      {
+        "args": [
+          "\"The birch bank\""
+        ],
+        "command": "text"
+      },
+      {
+        "args": [
+          "\"drops to the path.\""
+        ],
+        "command": "line"
+      },
+      {
+        "args": [
+          "\"Climb the ramp\""
+        ],
+        "command": "para"
+      },
+      {
+        "args": [
+          "\"when going north.\""
+        ],
+        "command": "line"
+      },
+      {
+        "args": [],
+        "command": "done"
+      }
+    ]
+  },
+  {
+    "label": "MN_R08_SIGN_03Text",
+    "commands": [
+      {
+        "args": [
+          "\"BIRCH BANK\""
+        ],
+        "command": "text"
+      },
+      {
+        "args": [
+          "\"DROP TO RETURN\""
+        ],
+        "command": "line"
+      },
+      {
+        "args": [],
+        "command": "done"
+      }
+    ]
+  },
+  {
+    "label": "MN_R08_T07Won",
+    "commands": [
+      {
+        "args": [
+          "\"The ledge returns\""
+        ],
+        "command": "text"
+      },
+      {
+        "args": [
+          "\"to the lower path.\""
+        ],
+        "command": "line"
+      },
+      {
+        "args": [],
+        "command": "done"
+      }
+    ]
+  }
+]

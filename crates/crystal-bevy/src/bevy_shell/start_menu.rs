@@ -934,9 +934,16 @@ fn visible_trainer_card_entries(
         const JOHTO_BADGE_NAMES: [&str; 8] = [
             "ZEPHYR", "HIVE", "PLAIN", "FOG", "MINERAL", "STORM", "GLACIER", "RISING",
         ];
-        let mut entries = vec!["BADGES".to_string()];
+        let regional = minnesota_trainer_card(snapshot);
+        let names = if regional {
+            &minnesota_badges::NAMES
+        } else {
+            &JOHTO_BADGE_NAMES
+        };
+        let heading = if regional { "MINNESOTA BADGES" } else { "BADGES" };
+        let mut entries = vec![heading.to_string()];
         entries.extend(
-            JOHTO_BADGE_NAMES
+            names
                 .iter()
                 .zip(snapshot.progression.badges.johto.iter())
                 .filter(|(_, owned)| **owned)
@@ -7122,8 +7129,8 @@ fn spawn_battle_pack_screen(
     );
     let description = items
         .get(selected)
-        .and_then(|(id, _)| snapshot.items.iter().find(|item| item.item_id == *id))
-        .map_or("", |item| item.description.as_str());
+        .and_then(|(id, _)| snapshot.item_description(id))
+        .unwrap_or("");
     let frame = load_visible_field_pack_frame(
         snapshot,
         runtime_shell,

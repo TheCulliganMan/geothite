@@ -1,0 +1,34 @@
+[
+  {
+    "id": "pine-bend",
+    "map": "MnR19C00R00",
+    "core": [
+      49,
+      17
+    ]
+  },
+  {
+    "id": "oak-descent",
+    "map": "MnR19C00R00",
+    "core": [
+      35,
+      32
+    ]
+  },
+  {
+    "id": "western-stairs",
+    "map": "MnR19C00R00",
+    "core": [
+      11,
+      37
+    ]
+  },
+  {
+    "id": "south-habitat",
+    "map": "MnR19C00R01",
+    "core": [
+      24,
+      3
+    ]
+  }
+]

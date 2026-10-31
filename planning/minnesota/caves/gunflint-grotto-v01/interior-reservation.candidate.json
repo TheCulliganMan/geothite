@@ -1,0 +1,73 @@
+{
+  "interior": "MnR12Cave1F",
+  "parent_route": "MN_R12",
+  "arrival_core": [
+    17,
+    23
+  ],
+  "clear_arrival_core": [
+    17,
+    22
+  ],
+  "return_trigger_core": [
+    17,
+    23
+  ],
+  "return_triggers_core": [
+    [
+      17,
+      23
+    ]
+  ],
+  "exterior_anchor_metatile": [
+    20,
+    7
+  ],
+  "exterior_door_core": [
+    40,
+    15
+  ],
+  "exterior_arrival_core": [
+    40,
+    15
+  ],
+  "exterior_clear_return_core": [
+    40,
+    16
+  ],
+  "requires_real_collision_check": true,
+  "validation": "Five native gameplay cases,663 public stdio calls,ten zero-difference native views and actual saved Surf view;734other complete maps/programs/wildlife/art/audio retained.",
+  "source_design": "caves/gunflint-grotto-v01/after.json",
+  "source_collision_checked": true,
+  "mouths": [
+    {
+      "exterior_door_core": [
+        40,
+        15
+      ],
+      "interior_target_warp": 1,
+      "exterior_entry_warp": 1,
+      "exterior_return_warp": 1,
+      "safe_exterior_return_core": [
+        40,
+        16
+      ]
+    }
+  ],
+  "native_status": "Verified native grotto: both dry circuits, correct30/36 stairs and side wall, preserved acknowledged full-party rest, moved original cache, Surf-gated pillar discovery and real item use, both capacity retries, actual mouth return/reentry and Continue.",
+  "dimensions_metatiles": [
+    20,
+    14
+  ],
+  "native_palette": "nite",
+  "candidate_source_sha256": "3a7eae3bec59ef9cb3713119f1cd30f2a5e443891443a2514cb80ecd9150e067",
+  "native_review_pack_sha256": "45fa571daa78535af329f6c8f26a8770d24c56cbb1a5223942d5fbb1fc0979ca",
+  "runtime_settled_exterior_core": [
+    40,
+    16
+  ],
+  "return_semantics": "Original room exits return to compact exterior paired entry; ordinary Down reaches the recorded clear Floor.",
+  "source_file": "caves/gunflint-grotto-v01/after.json",
+  "native_review_pack": "content-packs/minnesota-gunflint-grotto-v02.crystalpack",
+  "verification": "planning/minnesota/renders/gunflint-grotto-v898/acceptance-v928.json"
+}

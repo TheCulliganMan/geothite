@@ -1,0 +1,68 @@
+{
+  "MN_R08_BIRCH_WALKERText": [
+    {
+      "args": [
+        "\"The birch bank\""
+      ],
+      "command": "text"
+    },
+    {
+      "args": [
+        "\"has stone stairs.\""
+      ],
+      "command": "line"
+    },
+    {
+      "args": [
+        "\"Use them to reach\""
+      ],
+      "command": "para"
+    },
+    {
+      "args": [
+        "\"the upper trail.\""
+      ],
+      "command": "line"
+    },
+    {
+      "args": [],
+      "command": "done"
+    }
+  ],
+  "MN_R08_SIGN_03Text": [
+    {
+      "args": [
+        "\"BIRCH BANK\""
+      ],
+      "command": "text"
+    },
+    {
+      "args": [
+        "\"STAIRS BOTH WAYS\""
+      ],
+      "command": "line"
+    },
+    {
+      "args": [],
+      "command": "done"
+    }
+  ],
+  "MN_R08_T07Won": [
+    {
+      "args": [
+        "\"The bank stairs\""
+      ],
+      "command": "text"
+    },
+    {
+      "args": [
+        "\"join both paths.\""
+      ],
+      "command": "line"
+    },
+    {
+      "args": [],
+      "command": "done"
+    }
+  ]
+}

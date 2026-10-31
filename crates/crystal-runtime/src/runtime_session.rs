@@ -473,6 +473,10 @@ impl RuntimeOverworldSession {
         }
 
         impl crystal_core::random::BattleRandomSource for CountingBattleRandom<'_> {
+            fn source_error(&self) -> Option<&str> {
+                self.inner.source_error()
+            }
+
             fn battle_random_byte(&mut self) -> u8 {
                 *self.calls += 1;
                 self.inner.battle_random_byte()

@@ -1,4 +1,7 @@
 //! Ordinary R06 outings prepare an actually carried partner for Lake.
+#[path = "northstar_lake_switch_training.rs"]
+mod switch_training;
+
 use std::collections::BTreeMap;
 
 use crystal_assets::AssetRoot;
@@ -7,7 +10,7 @@ use crystal_runtime::CrystalRuntime;
 
 use super::super::super::authored_route_fixture::{RouteGrid, RouteSpec};
 use super::super::super::rochester::flee;
-use super::super::super::rochester_earned::try_battle;
+use super::super::super::rochester_earned::{train_wild, try_recruit};
 use super::super::super::winona::{continue_in_place, travel};
 use super::super::lake_country_story::try_road_with;
 use super::{CITY, CLINIC, VisibleShellController, care, indoor_walk};
@@ -50,12 +53,136 @@ fn grass(r: &CrystalRuntime) -> [(i16, i16); 2] {
     *pairs.first().expect("reachable adjacent native R06 grass")
 }
 
+fn counter_type(first: &str, second: &str) -> bool {
+    matches!(first, "GRASS" | "ELECTRIC") || matches!(second, "GRASS" | "ELECTRIC")
+}
+
+fn has_counter(c: &mut VisibleShellController) -> bool {
+    c.snapshot()
+        .expect("carried Lake partners")
+        .party
+        .slots
+        .iter()
+        .any(|slot| counter_type(&slot.pokemon.species.type1, &slot.pokemon.species.type2))
+}
+
+fn return_from_grass(c: &mut VisibleShellController, r: &CrystalRuntime) {
+    let map = c
+        .snapshot()
+        .expect("actual grass return")
+        .overworld
+        .map_name;
+    if map.starts_with("MnR06") {
+        assert!(try_road_with(c, r, 6, (42, 0), flee));
+        travel(c, GameButton::Up, CITY, (32, 47));
+        travel(c, GameButton::Up, CITY, (32, 46));
+    } else {
+        assert!(map == CLINIC || map == CITY, "native recovery in {map}");
+    }
+}
+
+/// Recruit a local counter using the actual clock, carried balls and wild RNG.
+/// No Pokemon, money, inventory or progress is supplied by this preparation.
+fn recruit_counter(c: &mut VisibleShellController, r: &CrystalRuntime, root: &AssetRoot) {
+    if has_counter(c) || c.snapshot().expect("party room").party.slots.len() >= 6 {
+        return;
+    }
+    let targets = grass(r);
+    let name = format!("MnR06C00R{:02}", targets[0].1 / 48);
+    let period = c.shell.shell.session().state().time.time_of_day;
+    let available = r.data().wild_encounters[&name]
+        .grass
+        .as_ref()
+        .expect("installed R06 habitat")
+        .slots(period)
+        .iter()
+        .any(|slot| {
+            let species = &r.data().pokemon[&slot.species];
+            counter_type(&species.type1, &species.type2)
+        });
+    if !available {
+        return;
+    }
+    for outing in 0..8 {
+        if has_counter(c)
+            || !c
+                .shell
+                .shell
+                .session()
+                .state()
+                .bag
+                .balls
+                .values()
+                .any(|n| *n > 0)
+        {
+            return;
+        }
+        care(c, r);
+        indoor_walk(c, r, (32, 46));
+        travel(c, GameButton::Down, "MnR06C00R00", (42, 0));
+        for step in 0..192 {
+            let arrived = try_road_with(c, r, 6, targets[step % 2], |c| {
+                let snapshot = c.snapshot().expect("actual R06 encounter");
+                let opponent = &snapshot
+                    .battle
+                    .as_ref()
+                    .expect("wild recruitment encounter")
+                    .enemy_pokemon
+                    .species;
+                if counter_type(&opponent.type1, &opponent.type2)
+                    && snapshot.bag.balls.iter().any(|ball| ball.quantity > 0)
+                {
+                    let _ = try_recruit(c, r);
+                } else {
+                    flee(c);
+                }
+            });
+            if !arrived || has_counter(c) {
+                break;
+            }
+            if !c
+                .shell
+                .shell
+                .session()
+                .state()
+                .bag
+                .balls
+                .values()
+                .any(|n| *n > 0)
+            {
+                break;
+            }
+        }
+        return_from_grass(c, r);
+        continue_in_place(
+            c,
+            root,
+            r,
+            &format!("campaign-lake-counter-search-{outing}"),
+        );
+        if has_counter(c) {
+            eprintln!(
+                "earned Lake counter through actual capture: {:?}",
+                c.snapshot()
+                    .expect("caught party")
+                    .party
+                    .slots
+                    .iter()
+                    .map(|slot| { (&slot.pokemon.species.id, slot.pokemon.level) })
+                    .collect::<Vec<_>>()
+            );
+            return;
+        }
+    }
+}
+
 pub(super) fn prepare(
     c: &mut VisibleShellController,
     r: &CrystalRuntime,
     root: &AssetRoot,
     level: u8,
 ) {
+    recruit_counter(c, r, root);
     let party = c.snapshot().expect("carried Lake team").party;
     let slot = party
         .slots
@@ -92,7 +219,9 @@ pub(super) fn prepare(
                         .hp
                         > 0
                 {
-                    let _ = try_battle(c, r, "WILD", "");
+                    // Preserve the counter as a participant by switching to an
+                    // already stronger carried partner through the battle menu.
+                    let _ = train_wild(c, r);
                     fought += 1;
                 } else {
                     flee(c);
@@ -103,23 +232,7 @@ pub(super) fn prepare(
                 break;
             }
         }
-        if c.snapshot()
-            .expect("outward recovery")
-            .overworld
-            .map_name
-            .starts_with("MnR06")
-        {
-            assert!(try_road_with(c, r, 6, (42, 0), flee));
-            travel(c, GameButton::Up, CITY, (32, 47));
-            travel(c, GameButton::Up, CITY, (32, 46));
-        } else {
-            let map = c
-                .snapshot()
-                .expect("native loss recovery")
-                .overworld
-                .map_name;
-            assert!(map == CLINIC || map == CITY);
-        }
+        return_from_grass(c, r);
         eprintln!(
             "earned Lake training outing {outing}: {:?}",
             c.snapshot()

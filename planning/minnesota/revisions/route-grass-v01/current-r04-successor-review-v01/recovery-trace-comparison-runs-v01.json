@@ -1,0 +1,35 @@
+{
+  "status": "TRACE_COMPARISON_NOT_ACCEPTANCE",
+  "build": {
+    "status": "PASS",
+    "command": "cargo test --locked -p crystal-bevy --lib gunflint_spring_controller --no-run --message-format=json",
+    "source_sha256": {
+      "crates/crystal-bevy/src/bevy_shell/tests/twin_cities_journey.rs": "ec62d2ae7e49417295b0b8b0890bd8895c7bbb1edb3e820006cabc5b50dc6365",
+      "crates/crystal-bevy/src/bevy_shell/tests/authored_route_fixture.rs": "f999e2bd0bb740312175bad35a2861a3bf938536e18f154083c928d6128d65bd"
+    },
+    "shared_build_log": "planning/minnesota/renders/gunflint-spring-v631/controller-build-v634.log",
+    "binary": ".local/route-grass-review/r04-recovery-shared-controller-v01",
+    "binary_sha256": "1d59893e74d2efd2d710f845e4fd569596b455f05113fce0bb9c404e257e8a56",
+    "reuse": "Completed shared full test executable; own active build left running"
+  },
+  "results": [
+    {
+      "label": "historical",
+      "pack": "content-packs/minnesota-current-grass-r04-v02.crystalpack",
+      "pack_sha256": "18d2114538e1c02dba7a05947b75c81cc603934d03ad215ff5a0df941ee71c07",
+      "exit_code": 0,
+      "log": ".local/route-grass-review/r04-recovery-traced-historical-v01.log",
+      "trace": ".local/route-grass-review/r04-recovery-traced-historical-v01.trace",
+      "trace_exists": true
+    },
+    {
+      "label": "current",
+      "pack": "content-packs/minnesota-iron-drill-core-v04.crystalpack",
+      "pack_sha256": "4240537c844bf7e305e99c24f2b7054c314b84a03d17037747cb4ceabdbd17fd",
+      "exit_code": 0,
+      "log": ".local/route-grass-review/r04-recovery-traced-current-v01.log",
+      "trace": ".local/route-grass-review/r04-recovery-traced-current-v01.trace",
+      "trace_exists": true
+    }
+  ]
+}

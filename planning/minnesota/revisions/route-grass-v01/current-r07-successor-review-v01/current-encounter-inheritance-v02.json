@@ -1,0 +1,6 @@
+{
+  "status": "PASS",
+  "current_pack": "content-packs/minnesota-current-r10-grass-and-stairs-v01.crystalpack",
+  "tested_pack": "content-packs/minnesota-current-r07-grass-and-stairs-v01.crystalpack",
+  "both_encounter_tables_and_all_route7_trainer_teams_exact": true
+}

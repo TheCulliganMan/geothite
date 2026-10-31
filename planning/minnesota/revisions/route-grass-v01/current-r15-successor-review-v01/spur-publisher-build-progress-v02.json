@@ -1,0 +1,49 @@
+{
+  "pid": 10144,
+  "source_sha256": {
+    "crates/crystal-assets/src/r15_staples_spur.rs": "f6f810dc1cc3d9003b17e5814487853249503869b9a9f82f1fcd31384adbfec4",
+    "crates/crystal-assets/src/bin/revise_r15_staples_spur.rs": "ef3b4cbf74720e1da547b814bdd4f1c7115670fb867cb24458fa1b8f6f6576c4"
+  },
+  "steps": [
+    {
+      "step": "publisher",
+      "command": [
+        "cargo",
+        "build",
+        "--profile",
+        "wasm-dev",
+        "--locked",
+        "--config",
+        "profile.wasm-dev.package.crystal-assets.opt-level=0",
+        "-p",
+        "crystal-assets",
+        "--bin",
+        "revise_r15_staples_spur"
+      ],
+      "exit_code": 0,
+      "log": ".local/route-grass-review/r15-staples-spur-publisher-v02.log",
+      "outputs": [
+        {
+          "path": ".local/route-grass-review/portable-r15-staples-spur-tools-v02/revise_r15_staples_spur",
+          "sha256": "ee1a9bc957b8d42a06b38e9bf8c35876c57eef21d80ae101c2d05cdeaa8bc298"
+        }
+      ]
+    },
+    {
+      "step": "assets-all-target-clippy",
+      "command": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "-p",
+        "crystal-assets",
+        "--all-targets"
+      ],
+      "exit_code": 0,
+      "log": "planning/minnesota/renders/iron-pump-gallery-v561/crystal-assets-clippy-v584.log",
+      "reused_completed_shared_run": true,
+      "scope_receipt": "planning/minnesota/revisions/route-grass-v01/current-r15-successor-review-v01/shared-current-clippy-v02.json"
+    }
+  ],
+  "duplicate_queued_wrapper_cancelled_after_verified_shared_lint": true
+}

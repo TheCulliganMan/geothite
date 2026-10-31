@@ -1,0 +1,27 @@
+{
+  "status": "PASS",
+  "selected_revision": "r10_survey_spurs_revision",
+  "pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+  "pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33",
+  "complete_map_exact": true,
+  "used_metatiles": [
+    29,
+    30,
+    31,
+    33,
+    34,
+    35,
+    36,
+    38,
+    39,
+    40,
+    60,
+    61,
+    62,
+    63
+  ],
+  "used_pixels_and_collision_exact": true,
+  "ice_quadrants": 692,
+  "grass_quadrants": 56,
+  "prior_acceptance": "planning/minnesota/revisions/route-grass-v01/current-rainy-icefields-v01/acceptance.json"
+}

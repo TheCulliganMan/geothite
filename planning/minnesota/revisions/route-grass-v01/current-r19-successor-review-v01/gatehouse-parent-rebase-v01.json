@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "new_parent_revision": "gunflint_spring_shelter_revision",
+  "pack": "content-packs/minnesota-gunflint-spring-shelter-v02.crystalpack",
+  "pack_sha256": "6a4af10d7d025cb9041878a63855c6d01cf4e5180c2672cf10a07b0ceda5fecb",
+  "compared_complete_maps": [
+    "MnR19C00R00",
+    "MnR19C00R01",
+    "MnDetroitLakes",
+    "Route35GoldenrodGate"
+  ],
+  "all_original_runtime_art_exact": true,
+  "group_map_slot_still_free": true,
+  "new_append_only_spawn": 517
+}

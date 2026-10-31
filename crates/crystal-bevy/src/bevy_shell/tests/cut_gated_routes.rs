@@ -151,8 +151,27 @@ fn fixture(
         .expect("fixture name");
     let mut pokemon = runtime
         .data()
-        .create_pokemon("MEW", 60, Dv::default())
+        .create_pokemon("VOYAGEAR", 60, Dv::default())
         .expect("legal HM-compatible fixture partner");
+    assert!(
+        runtime
+            .data()
+            .story_event_script_constants
+            .global
+            .contains_key("MN_DEX_MEMBER_VOYAGEAR"),
+        "regional field partner must belong to the active Minnesota roster"
+    );
+    for name in moves {
+        assert!(
+            *name == "TACKLE"
+                || pokemon
+                    .species
+                    .tmhm_learnset
+                    .iter()
+                    .any(|known| known == name),
+            "regional field partner must legally learn {name}"
+        );
+    }
     pokemon.moves = moves
         .iter()
         .map(|&name| LearnedMove {

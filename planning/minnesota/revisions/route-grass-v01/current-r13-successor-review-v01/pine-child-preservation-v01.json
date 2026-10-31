@@ -1,0 +1,19 @@
+{
+  "status": "PASS_NATIVE_CHILD_NOT_SELECTED",
+  "parent_revision": "route_grass_r11_current_review_revision",
+  "parent_pack": "content-packs/minnesota-current-r11-stair-guidance-v02.crystalpack",
+  "parent_pack_sha256": "332d6ee5c5b77c028119c898e774043895859929a46ff534ebbd14bc1cc2e5d4",
+  "pack": "content-packs/minnesota-current-r13-south-woods-grass-v01.crystalpack",
+  "pack_sha256": "10cd75cf9de2578966560721755ee761129d84d5e02122e174df07331f84679d",
+  "content_identity": "d1977ad46aeb9734e8c268d857e01c169a031a8abdc3a935e88a60420ce67b9c",
+  "delta": {
+    "maps": [
+      "MnR13C00R02"
+    ],
+    "map_blocks": [
+      "MnR13C00R02_Blocks"
+    ]
+  },
+  "new_grass_quadrants": 16,
+  "all_other_maps_and_all_events_actors_scripts_teams_encounters_items_art_audio_exact": true
+}

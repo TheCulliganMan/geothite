@@ -1,0 +1,127 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-r01-stair-guidance-v01.crystalpack",
+  "pack_sha256": "e6af050b697b6a9d52735713d5eabe0c069110f69ecdc5b81707e181b7ee30b2",
+  "calls": 251,
+  "reads": [
+    {
+      "phase": "directions",
+      "label": "MN_R01_FARMERText",
+      "visible": "Wild partners hide in the tall grass. Grass hides along the bluff steps. Use the east steps to reach the bluff That BERRY is for your partner. Dr Tamarack waits at the Rochester clinic out west.",
+      "movement_blocked": true
+    },
+    {
+      "phase": "continued-repeat",
+      "label": "MN_R01_FARMERText",
+      "visible": "Wild partners hide in the tall grass. Grass hides along the bluff steps. Use the east steps to reach the bluff That BERRY is for your partner. Dr Tamarack waits at the Rochester clinic out west.",
+      "movement_blocked": true
+    },
+    {
+      "phase": "continued-repeat",
+      "label": "MN_R01_BLUFF_WALKERText",
+      "visible": "The east stairs climb this bluff. Use the same steps to head back down.",
+      "movement_blocked": true
+    },
+    {
+      "phase": "continued-repeat",
+      "label": "MN_R01_SIGN_05Text",
+      "visible": "BLUFF STAIRS EAST: UP OR DOWN STAY ON THE STEPS",
+      "movement_blocked": true
+    }
+  ],
+  "cases": [
+    {
+      "phase": "directions",
+      "source_save": ".local/route-grass-review/r01-guidance-directions-v01-output.crystalsave",
+      "input_source_unchanged": true,
+      "output_save": ".local/route-grass-review/r01-guidance-directions-v02-output.crystalsave",
+      "initial": {
+        "badges": 0,
+        "dialogue": false,
+        "facing": "down",
+        "frame": 245,
+        "map": "MnR01Farmhouse",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3180,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 1,
+          "seen": 4
+        },
+        "position": {
+          "x": 4,
+          "y": 9
+        }
+      },
+      "final": {
+        "badges": 0,
+        "dialogue": false,
+        "facing": "up",
+        "frame": 259,
+        "map": "MnR01Farmhouse",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3180,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 1,
+          "seen": 4
+        },
+        "position": {
+          "x": 5,
+          "y": 4
+        }
+      },
+      "stderr_bytes": 0
+    },
+    {
+      "phase": "continued-repeat",
+      "source_save": ".local/route-grass-review/r01-guidance-directions-v02-output.crystalsave",
+      "input_source_unchanged": true,
+      "output_save": ".local/route-grass-review/r01-guidance-continued-repeat-v02-output.crystalsave",
+      "initial": {
+        "badges": 0,
+        "dialogue": false,
+        "facing": "up",
+        "frame": 259,
+        "map": "MnR01Farmhouse",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3180,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 1,
+          "seen": 4
+        },
+        "position": {
+          "x": 5,
+          "y": 4
+        }
+      },
+      "final": {
+        "badges": 0,
+        "dialogue": false,
+        "facing": "up",
+        "frame": 325,
+        "map": "MnR01C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3180,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 1,
+          "seen": 4
+        },
+        "position": {
+          "x": 32,
+          "y": 15
+        }
+      },
+      "stderr_bytes": 0
+    }
+  ],
+  "source_and_input_unchanged": true,
+  "all_reads_acknowledged_and_movement_locked": true,
+  "scope": "Continues the actual child-pack farmhouse save reached through production inputs after the opening; no state edits or retagging. Farmer read and repeated after Continue; walker and sign read in the continued phase. Trainer text cache replacements are independently verified without staging a trainer defeat."
+}

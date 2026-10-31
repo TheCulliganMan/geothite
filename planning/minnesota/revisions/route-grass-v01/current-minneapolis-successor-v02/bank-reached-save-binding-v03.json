@@ -1,0 +1,7 @@
+{
+  "source": ".local/route-grass-review/current-minneapolis-service-saves-v02/ms03-ordinary-services-83358-1793430778251120000.crystalsave",
+  "production_input": ".local/route-grass-review/current-minneapolis-service-stdio-input-v01.crystalsave",
+  "sha256": "7f7e0afcc1fb1c30caf2a2e8dbc5db929adb182277e3bab2d4a49be9500650b6",
+  "source_case": "native_town_exterior_all_facades_both_returns_and_continue",
+  "scope": "Actual reached Detroit gate-return town save; Mew60 and initial qualifications remain explicit QA fixtures."
+}

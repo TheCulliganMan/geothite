@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "map": "MnIronPumpGallery",
+  "native_module_sha256": "f4d8f20f9076b971ada3c0df509f86bdd2e1bfcc6c1ee7456d055da207645329",
+  "parent_revision": "route_grass_r15_open_shore_spur_revision",
+  "parent_pack": "content-packs/minnesota-current-r15-open-shore-and-spur-v02.crystalpack",
+  "parent_pack_sha256": "e02fb85d4db327d146cee269809b1af3e4b387dc2e29240b71cae0ae5837ec4c",
+  "preserved_warps": [
+    {
+      "index": 1,
+      "x": 5,
+      "y": 18,
+      "target_map_constant": "MN_IRON_SUMP",
+      "target_map": "MN_IRON_SUMP",
+      "target_warp_id": 8
+    },
+    {
+      "index": 2,
+      "x": 4,
+      "y": 19,
+      "target_map_constant": "MN_IRON_SUMP",
+      "target_map": "MN_IRON_SUMP",
+      "target_warp_id": 8
+    },
+    {
+      "index": 3,
+      "x": 25,
+      "y": 4,
+      "target_map_constant": "MN_IRON_DRILL_CORE",
+      "target_map": "MN_IRON_DRILL_CORE",
+      "target_warp_id": 2
+    },
+    {
+      "index": 4,
+      "x": 24,
+      "y": 5,
+      "target_map_constant": "MN_IRON_DRILL_CORE",
+      "target_map": "MN_IRON_DRILL_CORE",
+      "target_warp_id": 2
+    }
+  ],
+  "preserved_actor_anchors": [
+    {
+      "id": "MN_LODE_ARC_PUMP",
+      "tile": [
+        12,
+        5
+      ]
+    },
+    {
+      "id": "MN_LODE_ARC_INTAKE",
+      "tile": [
+        25,
+        13
+      ]
+    }
+  ],
+  "pressure_flag": "EVENT_MN_DRILL_FEED_ISOLATED",
+  "gate_metatiles": [
+    [
+      12,
+      3
+    ],
+    [
+      7,
+      8
+    ]
+  ],
+  "open_gate_block": 13,
+  "feed_read_tile": [
+    25,
+    17
+  ],
+  "feed_approach": [
+    25,
+    18
+  ]
+}

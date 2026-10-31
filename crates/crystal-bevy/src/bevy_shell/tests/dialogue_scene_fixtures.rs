@@ -6,6 +6,8 @@ mod actor_visibility;
 mod dispatch_copy;
 #[path = "dialogue_holding_fence.rs"]
 mod holding_fence;
+#[path = "dialogue_legacy_context.rs"]
+mod legacy_context;
 #[path = "dialogue_report_comparison.rs"]
 mod report_comparison;
 #[path = "dialogue_retry_fixture.rs"]

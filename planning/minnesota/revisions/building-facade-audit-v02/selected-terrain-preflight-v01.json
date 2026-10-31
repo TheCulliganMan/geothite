@@ -1,0 +1,128 @@
+{
+  "status": "CURRENT_TERRAIN_FACADE_PREFLIGHT",
+  "selected_revision": "outdoor_terrain_integrated_revision",
+  "pack": "content-packs/minnesota-current-outdoor-composed-towns-v01.crystalpack",
+  "sha256": "fcac136e08876c25d5c8b6250fc7c0fa1aedbfc6977e165504505b2b4d02016f",
+  "remaining_candidates": [
+    {
+      "map": "MnBemidji",
+      "origin": [
+        20,
+        8
+      ],
+      "current_roof": [
+        "18",
+        "19"
+      ],
+      "current_front": [
+        "10",
+        "17"
+      ],
+      "frozen_defect_preimage_still_exact": true,
+      "status": "REPAIR_PENDING_CURRENT_NATIVE_REVIEW",
+      "mankato_candidate": null
+    },
+    {
+      "map": "MnDuluth",
+      "origin": [
+        39,
+        18
+      ],
+      "current_roof": [
+        "18",
+        "19"
+      ],
+      "current_front": [
+        "10",
+        "17"
+      ],
+      "frozen_defect_preimage_still_exact": true,
+      "status": "REPAIR_PENDING_CURRENT_NATIVE_REVIEW",
+      "mankato_candidate": null
+    },
+    {
+      "map": "MnMankato",
+      "origin": [
+        18,
+        12
+      ],
+      "current_roof": [
+        "18",
+        "19"
+      ],
+      "current_front": [
+        "16",
+        "33"
+      ],
+      "frozen_defect_preimage_still_exact": true,
+      "status": "REPAIR_PENDING_CURRENT_NATIVE_REVIEW",
+      "mankato_candidate": "content-packs/minnesota-current-mankato-mart-v02.crystalpack"
+    },
+    {
+      "map": "MnStCloud",
+      "origin": [
+        3,
+        3
+      ],
+      "current_roof": [
+        "18",
+        "1f",
+        "19"
+      ],
+      "current_front": [
+        "17",
+        "1b",
+        "11"
+      ],
+      "frozen_defect_preimage_still_exact": true,
+      "status": "REPAIR_PENDING_CURRENT_NATIVE_REVIEW",
+      "mankato_candidate": null
+    },
+    {
+      "map": "MnStCloud",
+      "origin": [
+        7,
+        3
+      ],
+      "current_roof": [
+        "18",
+        "1f",
+        "19"
+      ],
+      "current_front": [
+        "17",
+        "33",
+        "11"
+      ],
+      "frozen_defect_preimage_still_exact": true,
+      "status": "REPAIR_PENDING_CURRENT_NATIVE_REVIEW",
+      "mankato_candidate": null
+    },
+    {
+      "map": "MnWinona",
+      "origin": [
+        3,
+        10
+      ],
+      "current_roof": [
+        "18",
+        "19"
+      ],
+      "current_front": [
+        "16",
+        "17"
+      ],
+      "frozen_defect_preimage_still_exact": true,
+      "status": "REPAIR_PENDING_CURRENT_NATIVE_REVIEW",
+      "mankato_candidate": null
+    }
+  ],
+  "accepted_town_modules_exact": [
+    "MnGrandRapids",
+    "MnGrandMarais",
+    "MnRochester"
+  ],
+  "state_fair_facades": "USER_ACCEPTED_AND_COMPLETE_MODULE_PRESERVED_EXACTLY",
+  "candidate_selection_changed": false,
+  "scope": "Verifies existing frozen defect preimages and accepted-facade inheritance; does not claim all pending repairs are authored or selected."
+}

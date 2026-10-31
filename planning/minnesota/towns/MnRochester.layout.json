@@ -499,6 +499,78 @@
         4
       ],
       "block": "1a"
+    },
+    {
+      "name": "Fossil lab facade, brick apron and sign",
+      "kind": "point",
+      "position": [
+        11,
+        3
+      ],
+      "block": "18"
+    },
+    {
+      "name": "Fossil lab facade, brick apron and sign",
+      "kind": "point",
+      "position": [
+        12,
+        3
+      ],
+      "block": "19"
+    },
+    {
+      "name": "Fossil lab facade, brick apron and sign",
+      "kind": "point",
+      "position": [
+        11,
+        4
+      ],
+      "block": "16"
+    },
+    {
+      "name": "Fossil lab facade, brick apron and sign",
+      "kind": "point",
+      "position": [
+        12,
+        4
+      ],
+      "block": "1e"
+    },
+    {
+      "name": "Fossil lab facade, brick apron and sign",
+      "kind": "point",
+      "position": [
+        10,
+        5
+      ],
+      "block": "06"
+    },
+    {
+      "name": "Fossil lab facade, brick apron and sign",
+      "kind": "point",
+      "position": [
+        11,
+        5
+      ],
+      "block": "06"
+    },
+    {
+      "name": "Fossil lab facade, brick apron and sign",
+      "kind": "point",
+      "position": [
+        12,
+        5
+      ],
+      "block": "06"
+    },
+    {
+      "name": "Fossil lab facade, brick apron and sign",
+      "kind": "point",
+      "position": [
+        13,
+        5
+      ],
+      "block": "45"
     }
   ]
 }

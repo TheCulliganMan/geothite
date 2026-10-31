@@ -1,0 +1,24 @@
+{
+  "status": "PASS",
+  "source_save": ".local/route-grass-review/current-lower-woods-reached-v01.crystalsave",
+  "source_sha256": "1a9f70ac01002898d1deb61fe14a641bf9833ed24ca56a507d743f5b0d663010",
+  "input_source_unchanged": true,
+  "output_save": ".local/route-grass-review/current-lower-woods-verified-stdio-v03-output-v01.crystalsave",
+  "pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33",
+  "pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+  "save": ".local/route-grass-review/current-lower-woods-verified-stdio-v03-input-v01.crystalsave",
+  "initial_map": "MnMississippiLowerWoodsC01R02",
+  "initial_position": {
+    "x": 21,
+    "y": 6
+  },
+  "moved_position": {
+    "x": 20,
+    "y": 6
+  },
+  "calls_passed": 15,
+  "stderr_bytes": 0,
+  "items_pocket_verified": true,
+  "balls_pocket": true,
+  "returned_to_walking": true
+}

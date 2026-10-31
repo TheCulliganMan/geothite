@@ -22,6 +22,8 @@ def main():
                         help='Show direct source labels and incoming evolution edges for an active species.')
     parser.add_argument('--require-roster-alignment', action='store_true',
                         help='Exit unsuccessfully if species, Dex membership or completion threshold differ from the active source roster.')
+    parser.add_argument('--regional-only', action='store_true',
+                        help='Exclude global trades/roamers and unreferenced fishing tables; follow only regional table references.')
     args = parser.parse_args()
     pack = load_pack(args.pack)
     data = pack['data']
@@ -65,10 +67,41 @@ def main():
         group = room['attributes'].get('fishing_group')
         if group in data['fishing']['groups']:
             collect(data['fishing']['groups'][group], 'regional-fishing:' + group)
-    # These are generous upper bounds, not claims about regional activation.
-    for kind in ['npc_trades', 'roaming_pokemon']:
-        collect(data[kind], 'global-upper-bound:' + kind)
-    collect(data['fishing'].get('time_groups', {}), 'fishing-time-upper-bound')
+    if args.regional_only:
+        fishing = data['fishing']
+        groups = {room['attributes'].get('fishing_group')
+                  for name, room in data['maps'].items() if name.startswith('Mn')}
+        groups.discard(None)
+        groups.discard('FISHGROUP_NONE')
+        while True:
+            expanded = groups | {rule['swarm_group'] for rule in fishing['swarm_rules'].values()
+                                 if rule['base_group'] in groups}
+            if expanded == groups:
+                break
+            groups = expanded
+        for group in sorted(groups):
+            table = fishing['groups'][group]
+            collect(table, 'regional-fishing:' + group)
+            for rod in table['rod_tables'].values():
+                for slot in rod['slots']:
+                    if slot['time_group'] is not None:
+                        collect(fishing['time_groups'][slot['time_group']],
+                                'regional-fishing-time:' + slot['time_group'])
+        for name, room in data['maps'].items():
+            if not name.startswith('Mn'):
+                continue
+            for label, commands in room['scripts'].items():
+                if not isinstance(commands, list):
+                    continue
+                for command in commands:
+                    if command.get('command') == 'trade':
+                        trade = command['args'][0]
+                        collect(data['npc_trades'][trade], name + ':' + label + ':trade:' + trade)
+    else:
+        # These are generous upper bounds, not claims about regional activation.
+        for kind in ['npc_trades', 'roaming_pokemon']:
+            collect(data[kind], 'global-upper-bound:' + kind)
+        collect(data['fishing'].get('time_groups', {}), 'fishing-time-upper-bound')
     # Follow every evolution regardless of item, level, time or trade access.
     # This remains an upper bound and also covers cross-family branch edges.
     reachable = set(potential)
@@ -107,6 +140,13 @@ def main():
         and completion_threshold == len(active)
     report = dict(
         pack=str(args.pack), content_identity=pack['identity']['content_hash'],
+        acquisition_scope=('Minnesota referenced tables and conditional programs only'
+                           if args.regional_only else 'Generous global upper bound'),
+        evolution_methods=sorted({edge['method'] for species in active
+                                  for edge in data['evolutions'].get(species, [])}),
+        maximum_level_evolution=max((edge['level'] for species in active
+                                     for edge in data['evolutions'].get(species, [])
+                                     if edge['method'] == 'LEVEL'), default=None),
         active_species=len(active), active_families=len(families),
         potentially_direct_species=len(potential),
         potentially_available_after_all_evolutions=len(reachable),

@@ -127,6 +127,19 @@ validation; retain that failure and all earlier renders as preimages.
 
 ### Rear-left plateau tile ledger
 
+Current selected review (2026-10-30): the full contour below is installed in
+`r10_fitted_fork_revision`, inherited through the newer Duluth harbor revision.
+Fresh review against `minnesota-current-r10-fitted-fork-v03.crystalpack`
+(`1f16d2b3ca473cc5e937140b7ba6f3e190bcaf3718dd6854b40acd8e98a6ddff`)
+passes all54 contracted placements and all11 stair height checks. The resolved
+source is `../duluth-harbor-platforms-v01/after.layout.json`, not this historical
+pre-harbor layout. Its complete town and enlarged rear-left shelf, plus fresh
+native west/right corner captures, are retained under
+`renders/duluth-left-rear-review-v191/`. Both native captures and the complete
+shelf were visually inspected. This pass confirms the installed repair; it does
+not change terrain or claim a fresh movement replay. Keep the exact tile ledger
+and `rear-left-plateau.contract.json` as the contour reference for later edits.
+
 All coordinates below are32px metatiles in the64×46 source layout. The full
 review is `renders/outdoor-stair-landings-v01/plateau-v16/rear-left-plateau-large-2x.png`.
 

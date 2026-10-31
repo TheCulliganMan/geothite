@@ -1,0 +1,42 @@
+[
+  {
+    "id": "mill-neighborhood",
+    "map": "MnMinneapolis",
+    "core": [
+      12,
+      13
+    ]
+  },
+  {
+    "id": "museum-arts-street",
+    "map": "MnMinneapolis",
+    "core": [
+      12,
+      23
+    ]
+  },
+  {
+    "id": "west-bank-passage",
+    "map": "MnMinneapolis",
+    "core": [
+      13,
+      27
+    ]
+  },
+  {
+    "id": "workshop-court",
+    "map": "MnMinneapolis",
+    "core": [
+      28,
+      19
+    ]
+  },
+  {
+    "id": "bridge-home-bench",
+    "map": "MnMinneapolis",
+    "core": [
+      27,
+      25
+    ]
+  }
+]

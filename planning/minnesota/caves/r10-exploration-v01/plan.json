@@ -1,0 +1,179 @@
+{
+  "schema_version": 1,
+  "status": "verified_and_selected_scoped_native_exploration_rebuild",
+  "scope": "One complete cave redesign; no selected pack changes until native acceptance.",
+  "room": "MnR10Cave1F",
+  "dimensions_metatiles": [
+    24,
+    18
+  ],
+  "mouth": {
+    "active": [
+      3,
+      13
+    ],
+    "preserve_exterior_pair": true,
+    "native_warp_arrival": [
+      3,
+      13
+    ],
+    "clear_north_step": [
+      3,
+      12
+    ]
+  },
+  "retained_reader": [
+    9,
+    5
+  ],
+  "retained_revive": [
+    29,
+    23
+  ],
+  "proposed_opponents": [
+    "MN_EXTRA_R10_SURVEY",
+    "MN_EXTRA_R10_SPRING"
+  ],
+  "new_resource": {
+    "id": "MN_R10_ESCAPE_ROPE",
+    "item": "ESCAPE_ROPE",
+    "quantity": 1,
+    "tile": [
+      39,
+      5
+    ],
+    "flag": "EVENT_MN_R10_ESCAPE_ROPE"
+  },
+  "short_drop": {
+    "approaches": [
+      [
+        14,
+        15
+      ],
+      [
+        15,
+        15
+      ]
+    ],
+    "hop_tiles": [
+      [
+        14,
+        16
+      ],
+      [
+        15,
+        16
+      ]
+    ],
+    "landings": [
+      [
+        14,
+        18
+      ],
+      [
+        15,
+        18
+      ]
+    ],
+    "ordinary_return_steps": [
+      13,
+      15
+    ],
+    "sides_and_reverse": "Must remain solid and be verified by native controller."
+  },
+  "branches": [
+    "Raised survey gallery reached by two native stairways",
+    "Northeast rock-stop supply pocket",
+    "Central one-way shortcut and longer winding ordinary return",
+    "Lower spring bank, existing Revive and second optional opponent"
+  ],
+  "required_acceptance": [
+    "Current full native preimage binding and strict Rust publication",
+    "Every ordinary floor and all actor approaches reachable with bodies",
+    "Both new optional battles: decline, actual selected move/PP, win flag, postbattle input and Continue",
+    "Original reader, both original/new item transactions, full pocket, once-only collection and Continue",
+    "Real outside mouth, both stairs, both short drops, blocked reverse and ordinary returns",
+    "Original Minnesota roster and evolution/move legality",
+    "Actual native 2D camera/source-state comparisons and visual critique",
+    "Complete pack preservation except declared cave, reward/opponents and dimensions mirrors",
+    "Scoped formatting and affected-crate all-target Clippy"
+  ],
+  "source_preview_only_limit": "Current preview graph is static source evidence; it is not actual input or earned progression.",
+  "source_review": {
+    "latest_whole": "planning/minnesota/renders/r10-exploration-v402/59444a1bb7bf-1793389258103508000/whole-2x.png",
+    "floor_preflight": "planning/minnesota/renders/r10-exploration-v402/floor-preflight-v405.log",
+    "scoped_rustfmt": "planning/minnesota/renders/r10-exploration-v402/scoped-rustfmt-v405.log",
+    "source_is_native_play": false,
+    "reusable_tool": "planning/minnesota/tools/review_cave_source.py",
+    "measured_warm_render_seconds": 0.216
+  },
+  "published_candidate": {
+    "parent_revision": "route_grass_r01_stair_guidance_revision",
+    "parent_pack": "content-packs/minnesota-current-r01-stair-guidance-v01.crystalpack",
+    "parent_pack_sha256": "e6af050b697b6a9d52735713d5eabe0c069110f69ecdc5b81707e181b7ee30b2",
+    "parent_source_index": "planning/minnesota/revisions/route-grass-v01/current-r01-successor-review-v01/sources.json",
+    "child_pack": "content-packs/minnesota-r10-exploration-v03.crystalpack",
+    "source_sha256": {
+      "before.json": "c64b59fd073a8f141d0dd038618f5f6367aeea6344d1c9c5d5e7505ba0182cc8",
+      "after.json": "59444a1bb7bfdbff90a4d5b8b425cbb214a7ffe3c1624f08b880260d3d6c13df",
+      "contract.json": "25dece8e823260f99f4cb4f5890fde2d596f420cff95e605097ee1c716f44fdd",
+      "trainers.json": "c94d0056e43af22d7504553acec6d35b21319d082ea7782b39943884e951ec9e"
+    },
+    "child_pack_sha256": "acc5e63d532de34614cbcc0ac4bd414b190d8cdc9e5d319fdf71f3de3302e073"
+  },
+  "fishing_access": {
+    "actual_casting_bank": [
+      36,
+      28
+    ],
+    "facing": "north",
+    "water": [
+      36,
+      27
+    ],
+    "native_group": "FISHGROUP_MN_LAKE",
+    "observed_native_catch": {
+      "species": "SCUTLET",
+      "level": 30
+    },
+    "nora_approach": [
+      33,
+      25
+    ],
+    "camera_name_note": "The source camera spring-fishing-bank at33,25 shows Nora and the spring; the actual cast was tested from36,28."
+  },
+  "production_review": {
+    "whole_room": "planning/minnesota/renders/r10-exploration-v402/published-whole-2x-v410.png",
+    "native_cameras": "planning/minnesota/renders/r10-exploration-v402/native-gpu-v409/MnR10Cave1F-production-cameras.png",
+    "matched_native_camera_pixels": 3317760,
+    "pixel_mismatches": 0,
+    "recorded_rpc_calls": 326,
+    "compound_input_evidence": "planning/minnesota/renders/r10-exploration-v402/compound-input-proof-v428.json",
+    "full_pack_preservation": "planning/minnesota/renders/r10-exploration-v402/whole-root-audit-v433.json",
+    "native_audio_verification": "planning/minnesota/renders/r10-exploration-v402/audio-and-pack-v421.log",
+    "pending": [],
+    "native_controller_cases": "planning/minnesota/renders/r10-exploration-v402/native-results-v434.json",
+    "all_target_clippy": "planning/minnesota/renders/r10-exploration-v402/native-results-v430.json",
+    "acceptance": "planning/minnesota/renders/r10-exploration-v402/acceptance-v435.json"
+  },
+  "qa_fixture": {
+    "scope": "Local mechanic review; does not establish earned campaign progression or battle balance.",
+    "party_initial_order": [
+      "VOYAGEAR",
+      "FORTIGARD",
+      "MUDMENDER",
+      "HAULGEIST"
+    ],
+    "party_initial_level": 48,
+    "badges_before_input": 7,
+    "prior_access_flag": "EVENT_MN_DEPOT_CLEARED",
+    "state_changes_after_first_input": "Production controller input and actual Save/Continue only.",
+    "first_battle_trial": "Mudmender led the original local fixture, beat SILAS, then exhausted its only damaging move. That failed batch is retained as v429; the balanced initial party order is tested fresh in v430."
+  },
+  "selected_revision": "r10_exploration_revision",
+  "current_source": "planning/minnesota/caves/r10-exploration-v01/current.json",
+  "current_source_sha256": "21a1860388c15d4439f7006c1c8ef1f67a2ebdae1c6d4c579aaaacdaee5ab075",
+  "pack": "content-packs/minnesota-r10-exploration-v03.crystalpack",
+  "pack_sha256": "acc5e63d532de34614cbcc0ac4bd414b190d8cdc9e5d319fdf71f3de3302e073",
+  "content_identity": "8db07a6dec7ab53ed6f746d1c7fe6faf2d2138c615f366d2ab24a4515275451a"
+}

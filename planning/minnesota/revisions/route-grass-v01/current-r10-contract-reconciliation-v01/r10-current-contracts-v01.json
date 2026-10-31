@@ -1,0 +1,59 @@
+{
+  "status": "PASS_CURRENT_TYPED_GRASS_CONTRACTS_WITH_STALE_METADATA",
+  "pack": "content-packs/minnesota-current-st-cloud-fronts-v02.crystalpack",
+  "sha256": "df5e4c47500d84046f542418a203c8d58b0e119e97bc235083434464c8682ef3",
+  "dossier": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R10.dossier.json",
+  "dossier_sha256": "f9c9f0ac98b24d3bd639e32d2df230b990dbc0906413acb45720c73509a5812d",
+  "checks": [
+    {
+      "id": "PINE_NECK_HABITAT",
+      "minimum": 6,
+      "actual": 6,
+      "passed": true
+    },
+    {
+      "id": "MN_R10_ITEM_03",
+      "minimum": 4,
+      "actual": 4,
+      "habitat_non_grass_openings": [],
+      "passed": true
+    }
+  ],
+  "obsolete_directional_loop_metadata": [
+    {
+      "id": "CARRIER_GRASS_CLIMB_OR_DRY_DROP",
+      "ledge_id": "CARRIER_BANK_DROP",
+      "outbound_start_core": [
+        25,
+        22
+      ],
+      "outbound_end_core": [
+        25,
+        19
+      ],
+      "grass_regions_core": [
+        [
+          10,
+          14,
+          14,
+          18
+        ]
+      ],
+      "northbound_minimum_grass_steps": 4,
+      "southbound_minimum_grass_steps": 0,
+      "dry_trail_core": [
+        [
+          25,
+          19
+        ],
+        [
+          25,
+          22
+        ]
+      ],
+      "scope": "Carrier-bank upper circuit; the lower road stays dry for the downhill return."
+    }
+  ],
+  "native_r10_hop_quadrants": 0,
+  "scope": "Current cache and pine-neck thresholds, conservatively clearing actor bodies except the reward. R10 currently has no native hops; the copied old directional loop is orphaned source metadata. Native current-stair/reward gameplay still requires its bound production receipts; no old hop acceptance is inherited."
+}

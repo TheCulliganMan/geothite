@@ -329,7 +329,7 @@ fn bemidji_city_controller_six_facades_both_carpets_and_safe_passive_arrivals() 
         ("MnBemidjiShelfHouse", (7, 16), (6, 5), [(6, 7), (7, 7)]),
         (CLINIC, (31, 10), (10, 13), [(10, 15), (11, 15)]),
         ("MnBemidjiNorthHouse", (33, 18), (6, 5), [(6, 7), (7, 7)]),
-        (MART, (42, 20), (6, 5), [(6, 7), (7, 7)]),
+        (MART, (41, 20), (6, 5), [(6, 7), (7, 7)]),
         (
             "MnBemidjiHeritageHouse",
             (9, 38),
@@ -348,31 +348,38 @@ fn bemidji_city_controller_six_facades_both_carpets_and_safe_passive_arrivals() 
 
 #[test]
 #[ignore = "requires the published external three-city pack"]
-fn bemidji_city_controller_downhill_hop_reverse_wall_and_ordinary_return() {
+fn bemidji_city_controller_plateau_stairs_both_directions_side_walls_and_continue() {
+    fn stair_step(c: &mut VisibleShellController, button: GameButton, y: i16) {
+        let before = position(c);
+        for _ in 0..4 {
+            press(c, button);
+            if position(c) == (11, y) {
+                return;
+            }
+            assert_eq!(position(c), before, "a stair tread must not be skipped");
+        }
+        assert_at(c, TOWN, (11, y));
+    }
     let (root, runtime) = load();
     let mut c = fixture(&root, &runtime, TOWN, (11, 19), Partners::Healthy);
-    let mut saw_lip = false;
-    for _ in 0..8 {
-        c.press(GameButton::Down).expect("native downhill input");
-        let at = position(&mut c);
-        assert!(
-            matches!(at, (11, 19) | (11, 20) | (11, 22)),
-            "unexpected hop {at:?}"
-        );
-        saw_lip |= at == (11, 20);
-        if at == (11, 22) {
-            break;
+    // Reach each tread separately: the old two-tile hop must not skip it.
+    for y in [20, 21, 22] {
+        stair_step(&mut c, GameButton::Down, y);
+    }
+    stair_step(&mut c, GameButton::Up, 21);
+    for button in [GameButton::Left, GameButton::Right] {
+        for _ in 0..3 {
+            press(&mut c, button);
+            assert_at(&mut c, TOWN, (11, 21));
         }
     }
-    assert!(saw_lip, "actual HOP_DOWN quadrant must be traversed");
-    assert_at(&mut c, TOWN, (11, 22));
-    for _ in 0..4 {
-        press(&mut c, GameButton::Up);
-        assert_at(&mut c, TOWN, (11, 22));
+    for y in [20, 19] {
+        stair_step(&mut c, GameButton::Up, y);
     }
-    // This planner includes only ordinary FLOOR/carpet, never HOP/WALL.
-    walk(&mut c, &runtime, (20, 24));
-    walk(&mut c, &runtime, (11, 19));
+    c = continue_save(&mut c, &root, &runtime);
+    for y in [20, 21, 22] {
+        stair_step(&mut c, GameButton::Down, y);
+    }
 }
 
 fn exterior_travel(c: &mut VisibleShellController, button: GameButton, map: &str, target: Point) {

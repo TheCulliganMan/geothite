@@ -1,0 +1,103 @@
+{
+  "schema_version": 1,
+  "map": "MnIronVentilation",
+  "native_module_sha256": "129b6544525a6072aa77675b7d804ff3c88738cd9f99a5bf766b39c0260a14f4",
+  "parent_revision": "route_grass_r13_pine_revision",
+  "parent_pack": "content-packs/minnesota-current-r13-south-woods-grass-v01.crystalpack",
+  "parent_pack_sha256": "10cd75cf9de2578966560721755ee761129d84d5e02122e174df07331f84679d",
+  "preserved_warps": [
+    {
+      "index": 1,
+      "x": 5,
+      "y": 20,
+      "target_map_constant": "MN_IRON_SUMP",
+      "target_map": "MN_IRON_SUMP",
+      "target_warp_id": 4
+    },
+    {
+      "index": 2,
+      "x": 4,
+      "y": 21,
+      "target_map_constant": "MN_IRON_SUMP",
+      "target_map": "MN_IRON_SUMP",
+      "target_warp_id": 4
+    },
+    {
+      "index": 3,
+      "x": 7,
+      "y": 4,
+      "target_map_constant": "MN_IRON_HAULAGE",
+      "target_map": "MN_IRON_HAULAGE",
+      "target_warp_id": 6
+    },
+    {
+      "index": 4,
+      "x": 6,
+      "y": 5,
+      "target_map_constant": "MN_IRON_HAULAGE",
+      "target_map": "MN_IRON_HAULAGE",
+      "target_warp_id": 6
+    },
+    {
+      "index": 5,
+      "x": 27,
+      "y": 20,
+      "target_map_constant": "MN_IRON_HAULAGE",
+      "target_map": "MN_IRON_HAULAGE",
+      "target_warp_id": 10
+    },
+    {
+      "index": 6,
+      "x": 26,
+      "y": 21,
+      "target_map_constant": "MN_IRON_HAULAGE",
+      "target_map": "MN_IRON_HAULAGE",
+      "target_warp_id": 10
+    },
+    {
+      "index": 7,
+      "x": 29,
+      "y": 4,
+      "target_map_constant": "MN_IRON_SUMP",
+      "target_map": "MN_IRON_SUMP",
+      "target_warp_id": 10
+    },
+    {
+      "index": 8,
+      "x": 28,
+      "y": 5,
+      "target_map_constant": "MN_IRON_SUMP",
+      "target_map": "MN_IRON_SUMP",
+      "target_warp_id": 10
+    }
+  ],
+  "preserved_actor_anchors": [
+    {
+      "id": "MnIronVentilationVern",
+      "tile": [
+        25,
+        15
+      ]
+    },
+    {
+      "id": "MN_LODE_ARC_VENT",
+      "tile": [
+        10,
+        10
+      ]
+    },
+    {
+      "id": "MN_LODE_ARC_SHIFT",
+      "tile": [
+        29,
+        8
+      ]
+    }
+  ],
+  "closed_gate_metatile": [
+    9,
+    6
+  ],
+  "open_gate_block": 7,
+  "pressure_flag": "EVENT_MN_IRON_VENT_PRESSURE_OFF"
+}

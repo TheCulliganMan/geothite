@@ -1,0 +1,327 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-r17-trail-guidance-v02.crystalpack",
+  "pack_sha256": "186c262b18d5174cb7ba9727358d4022bea9fce6d362529405728028ef92c60a",
+  "calls": 1844,
+  "phases": [
+    {
+      "phase": "walk-save",
+      "initial": {
+        "badges": 0,
+        "dialogue": false,
+        "facing": "up",
+        "frame": 112,
+        "map": "MnR19C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 2
+        },
+        "position": {
+          "x": 47,
+          "y": 13
+        }
+      },
+      "final": {
+        "badges": 0,
+        "dialogue": false,
+        "facing": "down",
+        "frame": 453,
+        "map": "MnR19C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 3
+        },
+        "position": {
+          "x": 47,
+          "y": 13
+        }
+      },
+      "output_save": ".local/route-grass-review/r19-current-course-walk-save-v01-output.crystalsave",
+      "stderr_bytes": 0,
+      "input_unchanged": true
+    },
+    {
+      "phase": "continue-return",
+      "initial": {
+        "badges": 0,
+        "dialogue": false,
+        "facing": "down",
+        "frame": 453,
+        "map": "MnR19C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 3
+        },
+        "position": {
+          "x": 47,
+          "y": 13
+        }
+      },
+      "final": {
+        "badges": 0,
+        "dialogue": false,
+        "facing": "down",
+        "frame": 793,
+        "map": "MnR19C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 5
+        },
+        "position": {
+          "x": 47,
+          "y": 13
+        }
+      },
+      "output_save": ".local/route-grass-review/r19-current-course-continue-return-v01-output.crystalsave",
+      "stderr_bytes": 0,
+      "input_unchanged": true
+    }
+  ],
+  "wild": [
+    {
+      "badges": 0,
+      "dialogue": true,
+      "facing": "down",
+      "frame": 115,
+      "map": "MnR19C00R00",
+      "menu": null,
+      "mode": "wildbattle",
+      "money": 3000,
+      "player": "CHRIS",
+      "pokedex": {
+        "owned": 0,
+        "seen": 2
+      },
+      "position": {
+        "x": 47,
+        "y": 15
+      }
+    },
+    {
+      "badges": 0,
+      "dialogue": true,
+      "facing": "left",
+      "frame": 260,
+      "map": "MnR19C00R00",
+      "menu": null,
+      "mode": "wildbattle",
+      "money": 3000,
+      "player": "CHRIS",
+      "pokedex": {
+        "owned": 0,
+        "seen": 2
+      },
+      "position": {
+        "x": 20,
+        "y": 40
+      }
+    },
+    {
+      "badges": 0,
+      "dialogue": true,
+      "facing": "down",
+      "frame": 306,
+      "map": "MnR19C00R00",
+      "menu": null,
+      "mode": "wildbattle",
+      "money": 3000,
+      "player": "CHRIS",
+      "pokedex": {
+        "owned": 0,
+        "seen": 3
+      },
+      "position": {
+        "x": 19,
+        "y": 38
+      }
+    },
+    {
+      "badges": 0,
+      "dialogue": true,
+      "facing": "up",
+      "frame": 365,
+      "map": "MnR19C00R00",
+      "menu": null,
+      "mode": "wildbattle",
+      "money": 3000,
+      "player": "CHRIS",
+      "pokedex": {
+        "owned": 0,
+        "seen": 3
+      },
+      "position": {
+        "x": 30,
+        "y": 35
+      }
+    },
+    {
+      "badges": 0,
+      "dialogue": true,
+      "facing": "right",
+      "frame": 392,
+      "map": "MnR19C00R00",
+      "menu": null,
+      "mode": "wildbattle",
+      "money": 3000,
+      "player": "CHRIS",
+      "pokedex": {
+        "owned": 0,
+        "seen": 3
+      },
+      "position": {
+        "x": 43,
+        "y": 26
+      }
+    },
+    {
+      "badges": 0,
+      "dialogue": true,
+      "facing": "left",
+      "frame": 554,
+      "map": "MnR19C00R00",
+      "menu": null,
+      "mode": "wildbattle",
+      "money": 3000,
+      "player": "CHRIS",
+      "pokedex": {
+        "owned": 0,
+        "seen": 3
+      },
+      "position": {
+        "x": 31,
+        "y": 34
+      }
+    },
+    {
+      "badges": 0,
+      "dialogue": true,
+      "facing": "left",
+      "frame": 603,
+      "map": "MnR19C00R00",
+      "menu": null,
+      "mode": "wildbattle",
+      "money": 3000,
+      "player": "CHRIS",
+      "pokedex": {
+        "owned": 0,
+        "seen": 3
+      },
+      "position": {
+        "x": 17,
+        "y": 40
+      }
+    },
+    {
+      "badges": 0,
+      "dialogue": true,
+      "facing": "right",
+      "frame": 638,
+      "map": "MnR19C00R00",
+      "menu": null,
+      "mode": "wildbattle",
+      "money": 3000,
+      "player": "CHRIS",
+      "pokedex": {
+        "owned": 0,
+        "seen": 4
+      },
+      "position": {
+        "x": 19,
+        "y": 38
+      }
+    },
+    {
+      "badges": 0,
+      "dialogue": true,
+      "facing": "down",
+      "frame": 646,
+      "map": "MnR19C00R00",
+      "menu": null,
+      "mode": "wildbattle",
+      "money": 3000,
+      "player": "CHRIS",
+      "pokedex": {
+        "owned": 0,
+        "seen": 4
+      },
+      "position": {
+        "x": 19,
+        "y": 38
+      }
+    },
+    {
+      "badges": 0,
+      "dialogue": true,
+      "facing": "right",
+      "frame": 731,
+      "map": "MnR19C00R00",
+      "menu": null,
+      "mode": "wildbattle",
+      "money": 3000,
+      "player": "CHRIS",
+      "pokedex": {
+        "owned": 0,
+        "seen": 5
+      },
+      "position": {
+        "x": 42,
+        "y": 26
+      }
+    },
+    {
+      "badges": 0,
+      "dialogue": true,
+      "facing": "right",
+      "frame": 736,
+      "map": "MnR19C00R00",
+      "menu": null,
+      "mode": "wildbattle",
+      "money": 3000,
+      "player": "CHRIS",
+      "pokedex": {
+        "owned": 0,
+        "seen": 5
+      },
+      "position": {
+        "x": 47,
+        "y": 26
+      }
+    },
+    {
+      "badges": 0,
+      "dialogue": true,
+      "facing": "left",
+      "frame": 750,
+      "map": "MnR19C00R00",
+      "menu": null,
+      "mode": "wildbattle",
+      "money": 3000,
+      "player": "CHRIS",
+      "pokedex": {
+        "owned": 0,
+        "seen": 5
+      },
+      "position": {
+        "x": 47,
+        "y": 16
+      }
+    }
+  ],
+  "scope": "Both R19 chunks, pine grass, two native ledges, reverse and current tree-side denials, ordinary grassy uphill returns, both native stairs and Continue. Initial Mew60 native fixture is setup. Neighbor connections, quest/battle choice and full regional progression remain separate."
+}

@@ -1,0 +1,18 @@
+[
+  {
+    "id": "mart",
+    "map": "MnBrainerd",
+    "core": [
+      19,
+      22
+    ]
+  },
+  {
+    "id": "stairs",
+    "map": "MnBrainerd",
+    "core": [
+      21,
+      39
+    ]
+  }
+]

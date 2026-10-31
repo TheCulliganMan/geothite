@@ -1,4 +1,10 @@
-# Voyageurs Ice Cavern
+# Current Voyageurs ice source
+
+The selected terrain now uses the [turning-chambers revision](turning-chambers-v01/README.md). Resolve `planning/minnesota/world.json` for its current pack and inherited source index. The canonical source contains the current complete floorplans; frozen previous rows and all renders remain retained.
+
+The initial-publication commands and 683-map results below are historical evidence. They do not establish the current turning layout; use the linked current runbook for new work.
+
+# Initial Voyageurs Ice Cavern publication
 
 The requested Minnesota ice dungeon is a new, optional two-floor destination
 beneath the Voyageurs ridge. It uses the supplied pack's original `ice_path`

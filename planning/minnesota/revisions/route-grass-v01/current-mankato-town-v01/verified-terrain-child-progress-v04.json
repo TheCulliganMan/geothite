@@ -1,0 +1,45 @@
+{
+  "pack": "content-packs/minnesota-current-mankato-mart-v02.crystalpack",
+  "sha256": "697d7c2f964a14e5e2795d6e53e15ddec1cf1e228b842e78e5da88f07ab9c6d8",
+  "files": {
+    "crates/crystal-assets/src/mankato_mart_facade.rs": "6746400bb3ee6ffd3270162eb8805fc1bac1e9f18ba1d9cd98ca09f93efbbe2c",
+    "crates/crystal-assets/src/bin/revise_mankato_mart_facade.rs": "0fb5518c769acc1f64893d2ad6eac595cabbd4e1e25b7a521cf47f2d1152af20",
+    "crates/crystal-bevy/src/bevy_shell/tests/prairie_story.rs": "217222bbb45786393d1c70f73e3dd90904716302e04337bcfc3af9a6955a5515",
+    "crates/crystal-bevy/src/bevy_shell/tests/mankato_notebook_review.rs": "b9067ce88b65e112269b96ab2212a627bafd157c475b25ce0dc5195ed8d9e12f",
+    "crates/crystal-bevy/src/bevy_shell/tests/town_exterior_review.rs": "78c044e35c5ae5b4f29cfa59ac436a5c1856b8cc0617dfc524c59d089cf69ae3"
+  },
+  "tools": {
+    "pid": 9724,
+    "steps": [
+      {
+        "step": "publishers",
+        "exit_code": 0,
+        "log": "/Users/ryanculligan/GitHub/geothite/.local/route-grass-review/portable-map-tools-publishers-build-v01.log",
+        "outputs": [
+          {
+            "path": "/Users/ryanculligan/GitHub/geothite/.local/route-grass-review/portable-tools-v01/revise_mankato_mart_facade",
+            "sha256": "4257096351538afaa2465cfbaaf8d01f7dde363a88b0fcb156a68b1d78c66bcb"
+          },
+          {
+            "path": "/Users/ryanculligan/GitHub/geothite/.local/route-grass-review/portable-tools-v01/verify_notebook_acknowledgment",
+            "sha256": "579080d1c26cd3a187dd651ff134706d8234aa67ba21ef4db345e8c1351d8b54"
+          }
+        ]
+      }
+    ],
+    "build_target": "/Users/ryanculligan/GitHub/geothite/.local/route-grass-native-target",
+    "retained_tools": "/Users/ryanculligan/GitHub/geothite/.local/route-grass-review/portable-tools-v01"
+  },
+  "steps": [
+    {
+      "step": "mankato-publisher-negative-controls-v02",
+      "exit_code": 0,
+      "log": ".local/route-grass-review/mankato-publisher-negative-controls-v02.log",
+      "expected_codes": [
+        0
+      ]
+    }
+  ],
+  "selection_changed": false,
+  "visual_inspection_still_required": true
+}

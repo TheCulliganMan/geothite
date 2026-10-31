@@ -1,0 +1,369 @@
+{
+  "schema_version": 1,
+  "map": "MnIronSump",
+  "status": "Verified local native flooded sump successor; user visual acceptance and broader cave work remain open.",
+  "dimensions_metatiles": [
+    20,
+    12
+  ],
+  "coordinate_convention": "Walking tiles are 16px; explicitly labeled metatile positions are 32px.",
+  "terrain_source": "after.json",
+  "preserved_module_contract": "contract.json",
+  "identity": "Flooded western drift below raised workings, with separate eastern pump access.",
+  "composition": [
+    {
+      "area": "West drift",
+      "gameplay": "Arrival from west Haulage follows a bend around the basin. Two separate climbs reach the upper Ventilation shaft. Surf is optional, with a reachable regional fishing bank and a solid visible southern rock lip.",
+      "dry_free_cells": 136,
+      "water_cells": 38
+    },
+    {
+      "area": "East workings",
+      "gameplay": "The native service shafts bring the player around the blocked mine circuits. The drain guard occupies the lower room; the upper gate visibly seals the pump shaft.",
+      "closed_free_cells": 117
+    },
+    {
+      "area": "Pump pocket",
+      "gameplay": "Thirteen free cells and the preserved pump shaft remain inaccessible from east workings until both original valves are closed. The native callback opens the same block13 floor at metatile (16,3).",
+      "closed_free_cells": 13,
+      "open_east_including_gate_and_pocket": 134
+    }
+  ],
+  "ports": [
+    {
+      "parent": "MnIronHaulage",
+      "parent_entry_core": [
+        7,
+        4
+      ],
+      "parent_entry_warp_index": 3,
+      "arrival_core": [
+        4,
+        19
+      ],
+      "arrival_warp_index": 2,
+      "arrival_collision": "FLOOR",
+      "return_trigger_indices": [
+        1
+      ],
+      "return_triggers_core": [
+        [
+          5,
+          18
+        ]
+      ],
+      "parent_safe_returns_core": [
+        [
+          6,
+          5
+        ]
+      ],
+      "pair_kind": "native_story_stairs"
+    },
+    {
+      "parent": "MnIronVentilation",
+      "parent_entry_core": [
+        5,
+        20
+      ],
+      "parent_entry_warp_index": 1,
+      "arrival_core": [
+        8,
+        5
+      ],
+      "arrival_warp_index": 4,
+      "arrival_collision": "FLOOR",
+      "return_trigger_indices": [
+        3
+      ],
+      "return_triggers_core": [
+        [
+          9,
+          4
+        ]
+      ],
+      "parent_safe_returns_core": [
+        [
+          4,
+          21
+        ]
+      ],
+      "pair_kind": "native_story_stairs"
+    },
+    {
+      "parent": "MnIronHaulage",
+      "parent_entry_core": [
+        29,
+        22
+      ],
+      "parent_entry_warp_index": 7,
+      "arrival_core": [
+        30,
+        19
+      ],
+      "arrival_warp_index": 6,
+      "arrival_collision": "FLOOR",
+      "return_trigger_indices": [
+        5
+      ],
+      "return_triggers_core": [
+        [
+          31,
+          18
+        ]
+      ],
+      "parent_safe_returns_core": [
+        [
+          28,
+          23
+        ]
+      ],
+      "pair_kind": "native_story_stairs"
+    },
+    {
+      "parent": "MnIronPumpGallery",
+      "parent_entry_core": [
+        5,
+        18
+      ],
+      "parent_entry_warp_index": 1,
+      "arrival_core": [
+        34,
+        5
+      ],
+      "arrival_warp_index": 8,
+      "arrival_collision": "FLOOR",
+      "return_trigger_indices": [
+        7
+      ],
+      "return_triggers_core": [
+        [
+          35,
+          4
+        ]
+      ],
+      "parent_safe_returns_core": [
+        [
+          4,
+          19
+        ]
+      ],
+      "pair_kind": "native_story_stairs"
+    },
+    {
+      "parent": "MnIronVentilation",
+      "parent_entry_core": [
+        29,
+        4
+      ],
+      "parent_entry_warp_index": 7,
+      "arrival_core": [
+        24,
+        11
+      ],
+      "arrival_warp_index": 10,
+      "arrival_collision": "FLOOR",
+      "return_trigger_indices": [
+        9
+      ],
+      "return_triggers_core": [
+        [
+          25,
+          10
+        ]
+      ],
+      "parent_safe_returns_core": [
+        [
+          28,
+          5
+        ]
+      ],
+      "pair_kind": "native_story_stairs"
+    }
+  ],
+  "guards": [
+    {
+      "script": "MN_LODE_ARC_SUMP",
+      "position": [
+        14,
+        10
+      ],
+      "approach": [
+        13,
+        10
+      ],
+      "facing": "right",
+      "defeat_flag": "EVENT_MN_LODE_ARC_SUMP_DEFEATED",
+      "party": [
+        {
+          "species": "SLUDGESKI",
+          "level": 38
+        },
+        {
+          "species": "LEECHURGE",
+          "level": 39
+        }
+      ]
+    },
+    {
+      "script": "MN_LODE_ARC_DRAIN",
+      "position": [
+        25,
+        17
+      ],
+      "approach": [
+        26,
+        17
+      ],
+      "facing": "left",
+      "defeat_flag": "EVENT_MN_LODE_ARC_DRAIN_DEFEATED",
+      "party": [
+        {
+          "species": "PELLETOR",
+          "level": 39
+        },
+        {
+          "species": "CARTICK",
+          "level": 38
+        }
+      ]
+    }
+  ],
+  "stairs": [
+    {
+      "block": "30",
+      "metatile": [
+        2,
+        3
+      ],
+      "walking_column": 4,
+      "climb_y": [
+        8,
+        7,
+        6,
+        5
+      ]
+    },
+    {
+      "block": "36",
+      "metatile": [
+        6,
+        3
+      ],
+      "walking_column": 12,
+      "climb_y": [
+        8,
+        7,
+        6,
+        5
+      ]
+    }
+  ],
+  "pump_gate": {
+    "closed_block": "41",
+    "open_block": "0d",
+    "metatile": [
+      16,
+      3
+    ],
+    "read_tile": [
+      32,
+      7
+    ],
+    "read_approach": [
+      32,
+      8
+    ],
+    "all_required_flags": [
+      "EVENT_MN_IRON_HAUL_PRESSURE_OFF",
+      "EVENT_MN_IRON_VENT_PRESSURE_OFF"
+    ],
+    "original_programs_unchanged": true
+  },
+  "water": {
+    "bank": [
+      12,
+      12
+    ],
+    "facing": "left",
+    "launch": [
+      11,
+      12
+    ],
+    "southern_test_position": [
+      11,
+      14
+    ],
+    "blocked_down": [
+      11,
+      15
+    ],
+    "surf_cells": 38,
+    "outer_boundary": "All perimeter quadrants are native WALL. Water cannot reach east workings, the pump pocket or a map edge.",
+    "fishing_group": "FISHGROUP_MN_LAKE",
+    "required_for_story": false
+  },
+  "art": {
+    "tileset": "mn_iron_sump_rock",
+    "palette": "nite",
+    "animation_source": "cave",
+    "source_alias_preserved": "mn_iron_haulage_rock",
+    "lower_shores": [
+      {
+        "block": "43",
+        "upper_half": "26",
+        "lower_half": "21",
+        "collision": [
+          "WATER",
+          "WATER",
+          "WALL",
+          "WALL"
+        ]
+      },
+      {
+        "block": "44",
+        "upper_half": "25",
+        "lower_half": "21",
+        "collision": [
+          "WATER",
+          "WATER",
+          "WALL",
+          "WALL"
+        ]
+      }
+    ],
+    "pixels": "Only original native quarters; palette, PNG and 2bpp are unchanged."
+  },
+  "retained_story": "No dialogue, program, quest reward, trainer, item or shaft identity is added. Both original pressure controls, sight battles, defeat flags and later drill/rescue ordering remain native.",
+  "qa_setup": {
+    "access": "Local chapter setup before first input, not earned regional arrival.",
+    "party": [
+      "VOYAGEAR",
+      "CINDORE",
+      "FORTIGARD",
+      "MUDMENDER"
+    ],
+    "initial_level": 55,
+    "badges": "First eight existing native badges",
+    "supplies": {
+      "HYPER_POTION": 10,
+      "MAX_REPEL": 10,
+      "OLD_ROD": 1
+    },
+    "field_setup": "VOYAGEAR has legal Surf and SMOKE_BALL; OLD_ROD registered; initial Repel250.",
+    "journey": "Starts at the original DrillApproach, operates both real pressure controls and wins native guards before Surf/Continue and final return.",
+    "gate_truth_table": "Separate explicit flag fixtures test all four combinations, physical denial and persistence."
+  },
+  "verification_requirements": [
+    "Three native controller cases including all38 WATER cells, original pressure course, guards with PP mutation, both stair climbs, all five shaft pairs both directions and Continue.",
+    "Recorded stdio MCP fishing, Surf boundary, saved Surf Continue, all shafts, input release, zero stderr and unchanged later story flags.",
+    "Ten source/native full-frame camera comparisons, visual inspection of the complete floor and ordinary bank passages.",
+    "Full-pack equality outside owned sump terrain/attributes, private shore alias and publication identity; all audio exact.",
+    "Current-parent rebasing, source-index inheritance and shared reservation before last compare-and-swap selection."
+  ],
+  "unresolved": [
+    "Broader cave work remains active, including Ventilation and the pump/drill floors.",
+    "Local chapter input does not prove earned regional access, campaign balance or a full story playthrough."
+  ],
+  "current_parent_revision": "route_grass_r09_current_contract_revision"
+}

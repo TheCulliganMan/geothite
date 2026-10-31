@@ -1,0 +1,10 @@
+{
+  "status": "REQUIRES_REVIEW",
+  "pack": "content-packs/minnesota-current-r19-detroit-gate-v04.crystalpack",
+  "pack_sha256": "de1add590013c786bd3a2770c58ff46c656930cc3dd3944af203f7480e292e21",
+  "binary": ".local/route-grass-review/r19-gate-controller-v02",
+  "binary_sha256": "cf583c1d8f01beb51f059e18eab2e10156e4aab3b2c8919e9e5f4eec8e98aa21",
+  "log": ".local/route-grass-review/r19-gate-native-v03.log",
+  "exit_code": 101,
+  "scope": "Repeated northbound denial without badge, qualified native room/town/route round trip, inside Save/Continue, free unqualified southbound return. Initial position, badge bits and empty parties isolate geometry; they do not prove earned regional progression or encounters."
+}

@@ -1,0 +1,134 @@
+{
+  "schema_version": 1,
+  "id": "minnesota-native-field-uses-v1",
+  "status": "Authored source only; publication, native traversal and visual acceptance pending",
+  "gallery": {
+    "map": "MnDriftlessLampGallery",
+    "constant": "MN_DRIFTLESS_LAMP_GALLERY",
+    "parent": "MnR01Cave1F",
+    "parent_stair_metatile": [
+      5,
+      4
+    ],
+    "parent_before": "02",
+    "parent_after": "0b",
+    "parent_active": [
+      11,
+      9
+    ],
+    "parent_arrival": [
+      10,
+      9
+    ],
+    "dimensions_metatiles": [
+      8,
+      8
+    ],
+    "palette": "dark",
+    "rows": [
+      "2e 2e 2e 2e 2e 2e 2e 2e",
+      "2e 2e 04 05 06 2e 2e 2e",
+      "2e 04 02 02 02 06 2e 2e",
+      "2e 08 02 1d 02 02 06 2e",
+      "2e 20 02 02 02 02 0a 2e",
+      "2e 2e 20 21 02 02 0a 2e",
+      "2e 2e 2e 2e 0b 02 0a 2e",
+      "2e 2e 2e 2e 2e 2e 2e 2e"
+    ],
+    "active_exit": [
+      9,
+      13
+    ],
+    "passive_arrival": [
+      8,
+      13
+    ],
+    "cache": [
+      8,
+      4
+    ],
+    "reward": "RARE_CANDY",
+    "quantity": 1,
+    "flag": "EVENT_MN_LAMP_GALLERY_CACHE",
+    "read": [
+      6,
+      6
+    ],
+    "read_approach": [
+      5,
+      6
+    ],
+    "read_pages": [
+      [
+        "Roots once grew",
+        "through this seam."
+      ],
+      [
+        "FLASH reveals the",
+        "fine fossil rings."
+      ]
+    ],
+    "read_flag": "EVENT_MN_LAMP_GALLERY_READ",
+    "read_requires_native_flash": true,
+    "time_of_day": "dark",
+    "visibility_flag": "EVENT_MN_LAMP_GALLERY_HIDDEN"
+  },
+  "eddy": {
+    "map": "MnLeechLake",
+    "source_tileset": "mn_headwaters",
+    "source_metatile_count": 134,
+    "cap_metatile": [
+      30,
+      9
+    ],
+    "eddy_metatile": [
+      30,
+      10
+    ],
+    "before": "59",
+    "cap_after": "36",
+    "closed_collision": [
+      "WHIRLPOOL",
+      "BUOY",
+      "WATER",
+      "BUOY"
+    ],
+    "open_collision": [
+      "WATER",
+      "BUOY",
+      "WATER",
+      "BUOY"
+    ],
+    "approach": [
+      59,
+      20
+    ],
+    "current": [
+      60,
+      20
+    ],
+    "cache": [
+      61,
+      20
+    ],
+    "reward": "PP_UP",
+    "quantity": 1,
+    "flag": "EVENT_MN_LEECH_EDDY_CACHE",
+    "native_whirlpool_frame_ticks": 11,
+    "closed_block": "07",
+    "open_block": "36",
+    "cache_approach": [
+      60,
+      20
+    ],
+    "cache_kind": "hiddenitem"
+  },
+  "invariants": [
+    "No existing exterior connection, edge, entrance, actor or story gate moves.",
+    "The lit parent cave stays PALETTE_NITE; only the optional lower gallery is dark.",
+    "The hidden cache has no adjacent interaction approach until native Whirlpool clears the current.",
+    "The cove uses original native whirlpool, water and rock blocks, without new campfire or buoy props.",
+    "Native party/badge/move checks, confirmation, input ownership and map-scoped persistence are required.",
+    "All original art/audio/catalog data and existing maps outside the two terrain sites and Bemidji giver hint stay exact."
+  ]
+}

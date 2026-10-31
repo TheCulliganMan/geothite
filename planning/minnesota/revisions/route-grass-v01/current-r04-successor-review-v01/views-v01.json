@@ -1,0 +1,26 @@
+[
+  {
+    "id": "rose-walk",
+    "map": "MnR04C00R00",
+    "core": [
+      18,
+      11
+    ]
+  },
+  {
+    "id": "bridge",
+    "map": "MnR04C00R00",
+    "core": [
+      28,
+      18
+    ]
+  },
+  {
+    "id": "picnic-grass",
+    "map": "MnR04C00R00",
+    "core": [
+      45,
+      26
+    ]
+  }
+]

@@ -1,0 +1,64 @@
+{
+  "status": "PASS",
+  "parent": {
+    "revision": "r03_fitted_gallery_revision",
+    "pack": "content-packs/minnesota-r03-fitted-gallery-v02.crystalpack",
+    "sha256": "2e23b03fdcfedc0b93a3a03ac347f2a4440965693a52db2b401a0daeb2664580"
+  },
+  "pack": "content-packs/minnesota-current-bemidji-mart-v02.crystalpack",
+  "sha256": "b4a95a5634198e39fd8b9d6528af90b66f1e626fc9582e366b4ba4b6a9588171",
+  "identity": {
+    "stored": "2ed77d12195e330fb6770f2913a91b6bdb4556c64849a2270e53947d90393a8e",
+    "independently_recomputed": "2ed77d12195e330fb6770f2913a91b6bdb4556c64849a2270e53947d90393a8e",
+    "exact": true
+  },
+  "changed_metatiles": [
+    {
+      "at": [
+        20,
+        9
+      ],
+      "before": 16,
+      "after": 26
+    },
+    {
+      "at": [
+        21,
+        9
+      ],
+      "before": 23,
+      "after": 51
+    }
+  ],
+  "paired_mart_warps_shifted_left": [
+    9,
+    10
+  ],
+  "only_collision_changes": [
+    {
+      "at": [
+        41,
+        19
+      ],
+      "before": "WALL",
+      "after": "DOOR"
+    },
+    {
+      "at": [
+        42,
+        19
+      ],
+      "before": "DOOR",
+      "after": "WALL"
+    }
+  ],
+  "all_other_complete_maps_exact": 731,
+  "state_fair_exact": true,
+  "all_art_audio_encounters_trainers_exact": true,
+  "raw_event_mirrors_rebound": true,
+  "all_other_scripts_exact": true,
+  "entire_normalized_pack_exact": true,
+  "raw_event_mirrors_independently_exactly_two_x_arguments_changed": true,
+  "cached_raw_event_commands_independently_exactly_two_x_arguments_changed": true,
+  "all_collision_independently_verified": true
+}

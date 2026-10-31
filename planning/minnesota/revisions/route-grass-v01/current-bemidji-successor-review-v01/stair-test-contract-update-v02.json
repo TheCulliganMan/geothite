@@ -1,0 +1,47 @@
+{
+  "status": "CORRECTED_BOUNDED_INPUT_REBUILD_QUEUED",
+  "source": "crates/crystal-bevy/src/bevy_shell/tests/bemidji_city.rs",
+  "source_sha256": "78241412a54fd4151049a2e81672b10545c822890a10fdc8867d329ac2b1d13f",
+  "retired_case": "bemidji_city_controller_downhill_hop_reverse_wall_and_ordinary_return",
+  "replacement_case": "bemidji_city_controller_plateau_stairs_both_directions_side_walls_and_continue",
+  "required_path": [
+    [
+      11,
+      19
+    ],
+    [
+      11,
+      20
+    ],
+    [
+      11,
+      21
+    ],
+    [
+      11,
+      22
+    ]
+  ],
+  "side_walls": [
+    [
+      10,
+      21
+    ],
+    [
+      12,
+      21
+    ]
+  ],
+  "save_continue_then_descent": true,
+  "gameplay_changed": false,
+  "reason": "The selected user-requested stair repair supersedes the former one-way hop. The obsolete test must not demand a hop or blocked ascent on ordinary stairs.",
+  "first_run": "current-native-cases-v01.json",
+  "first_run_intended_non_stair_cases_passed": 8,
+  "first_run_failures": "New stair test assumed a single direction input commits a tile; runner also matched an unrelated gym case without its environment. No current map failure established.",
+  "correction": "Each stair step allows at most four normal inputs; intermediate position must remain the previous tile, so skipping a tread is still forbidden. Runner now uses fully qualified Bemidji module filter.",
+  "build_session": 26413,
+  "build_wrapper_pid": 70111,
+  "lint_session": 28412,
+  "lint_wrapper_pid": 70122,
+  "next_native_runner": ".local/route-grass-review/check_current_bemidji_v02.py"
+}

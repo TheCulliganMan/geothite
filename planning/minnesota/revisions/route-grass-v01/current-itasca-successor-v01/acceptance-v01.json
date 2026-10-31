@@ -1,0 +1,15 @@
+{
+  "status": "PASS_CURRENT_ITASCA_GRASS_AND_JOURNEY_REVIEW",
+  "pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+  "pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33",
+  "native_cases": 7,
+  "stdio_calls": 15,
+  "grass_quadrants": 76,
+  "ice_quadrants": 0,
+  "eastern_arrival_to_marker_minimum_grass_both_directions": 2,
+  "western_glade_uphill_grass_steps": 2,
+  "dry_downhill_and_reverse_denial": true,
+  "complete_map_used_pixels_and_collision_exact": true,
+  "whole_inherited_map_inspected": "planning/minnesota/renders/route-grass-v01/current-lake-itasca-v01/source-candidate-v01/after.png",
+  "scope": "Fresh marker habitat, glade climb/drop, wild RUN, gatehouse lanes/free returns/badges/notebook, continuous Pine loss/care/retry/marker/report/Iron entry, native and production Continue. Initial party/badges/position are explicit QA fixtures, not earned statewide progression; broader review remains active."
+}

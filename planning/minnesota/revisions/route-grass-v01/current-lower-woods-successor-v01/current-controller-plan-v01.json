@@ -1,0 +1,3795 @@
+{
+  "pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+  "pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33",
+  "cases": [
+    {
+      "kind": "trainer",
+      "id": "MN_RIVER_FUN_LOWER_BANKS",
+      "display_name": "BANKS",
+      "trainer_class": "BIRD_KEEPER",
+      "sprite": "SPRITE_YOUNGSTER",
+      "global_metatile": [
+        37,
+        55
+      ],
+      "facing": "west",
+      "sight_range": 2,
+      "defeated_flag": "EVENT_MN_RIVER_FUN_LOWER_BANKS",
+      "party": [
+        {
+          "species": "NOTCHBILL",
+          "level": 31,
+          "item": null,
+          "moves": [
+            {
+              "name": "HEADBUTT",
+              "current_pp": 15,
+              "pp_ups": 0
+            },
+            {
+              "name": "WING_ATTACK",
+              "current_pp": 35,
+              "pp_ups": 0
+            },
+            {
+              "name": "DETECT",
+              "current_pp": 5,
+              "pp_ups": 0
+            },
+            {
+              "name": "AGILITY",
+              "current_pp": 30,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 9,
+            "defense": 8,
+            "speed": 8,
+            "special": 8,
+            "hp": 8
+          }
+        },
+        {
+          "species": "NOTCHBILL",
+          "level": 32,
+          "item": null,
+          "moves": [
+            {
+              "name": "HEADBUTT",
+              "current_pp": 15,
+              "pp_ups": 0
+            },
+            {
+              "name": "WING_ATTACK",
+              "current_pp": 35,
+              "pp_ups": 0
+            },
+            {
+              "name": "DETECT",
+              "current_pp": 5,
+              "pp_ups": 0
+            },
+            {
+              "name": "AGILITY",
+              "current_pp": 30,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 9,
+            "defense": 8,
+            "speed": 8,
+            "special": 8,
+            "hp": 8
+          }
+        }
+      ],
+      "before_lines": [
+        "You found my spot!",
+        "Time for a battle!"
+      ],
+      "after_lines": [
+        "The grassy trails",
+        "are full of life!"
+      ],
+      "loss_lines": [
+        "Swept downstream!"
+      ],
+      "tile": [
+        11,
+        15
+      ],
+      "map": "MnMississippiLowerWoodsC01R02",
+      "global_tile": [
+        75,
+        111
+      ],
+      "path": [
+        {
+          "map": "MnMississippiLowerWoodsC01R02",
+          "point": [
+            5,
+            21
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R02",
+          "point": [
+            6,
+            21
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R02",
+          "point": [
+            7,
+            21
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R02",
+          "point": [
+            8,
+            21
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R02",
+          "point": [
+            8,
+            20
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R02",
+          "point": [
+            8,
+            19
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R02",
+          "point": [
+            8,
+            18
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R02",
+          "point": [
+            8,
+            17
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R02",
+          "point": [
+            8,
+            16
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R02",
+          "point": [
+            8,
+            15
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R02",
+          "point": [
+            8,
+            14
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R02",
+          "point": [
+            9,
+            14
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R02",
+          "point": [
+            10,
+            14
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R02",
+          "point": [
+            11,
+            14
+          ]
+        }
+      ],
+      "water": {
+        "map": "MnMississippiLowerWoodsC01R02",
+        "point": [
+          5,
+          22
+        ]
+      },
+      "current_native_actor": {
+        "sprite": "SPRITE_YOUNGSTER",
+        "sprite_has_facings": true,
+        "x": 11,
+        "y": 15,
+        "spritemovedata": "SPRITEMOVEDATA_STANDING_LEFT",
+        "move_range_x": 0,
+        "move_range_y": 0,
+        "hram_x": -1,
+        "hram_y": -1,
+        "pal": 0,
+        "object_type": "OBJECTTYPE_TRAINER",
+        "radius": 2,
+        "script": "MN_RIVER_FUN_LOWER_BANKS",
+        "label": null,
+        "event_flag": "-1",
+        "object_identifier": "MN_RIVER_FUN_LOWER_BANKS",
+        "sightline_direction_override": null
+      }
+    },
+    {
+      "kind": "trainer",
+      "id": "MN_RIVER_FUN_LOWER_BEAU",
+      "display_name": "BEAU",
+      "trainer_class": "HIKER",
+      "sprite": "SPRITE_POKEFAN_M",
+      "global_metatile": [
+        45,
+        17
+      ],
+      "facing": "west",
+      "sight_range": 2,
+      "defeated_flag": "EVENT_MN_RIVER_FUN_LOWER_BEAU",
+      "party": [
+        {
+          "species": "BANDRAKE",
+          "level": 30,
+          "item": null,
+          "moves": [
+            {
+              "name": "CONFUSION",
+              "current_pp": 25,
+              "pp_ups": 0
+            },
+            {
+              "name": "ROLLOUT",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "REFLECT",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "ANCIENTPOWER",
+              "current_pp": 5,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 10,
+            "defense": 8,
+            "speed": 8,
+            "special": 8,
+            "hp": 0
+          }
+        },
+        {
+          "species": "HELIKNOCK",
+          "level": 31,
+          "item": null,
+          "moves": [
+            {
+              "name": "MAGNITUDE",
+              "current_pp": 30,
+              "pp_ups": 0
+            },
+            {
+              "name": "LOW_KICK",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "DIG",
+              "current_pp": 10,
+              "pp_ups": 0
+            },
+            {
+              "name": "SCREECH",
+              "current_pp": 40,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 10,
+            "defense": 8,
+            "speed": 8,
+            "special": 8,
+            "hp": 0
+          }
+        }
+      ],
+      "before_lines": [
+        "A riverbank match?",
+        "My team is ready!"
+      ],
+      "after_lines": [
+        "Every bend brings",
+        "a new adventure!"
+      ],
+      "loss_lines": [
+        "What a wild ride!"
+      ],
+      "tile": [
+        27,
+        35
+      ],
+      "map": "MnMississippiLowerWoodsC01R00",
+      "global_tile": [
+        91,
+        35
+      ],
+      "path": [
+        {
+          "map": "MnMississippiLowerWoodsC01R00",
+          "point": [
+            33,
+            33
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R00",
+          "point": [
+            32,
+            33
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R00",
+          "point": [
+            32,
+            34
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R00",
+          "point": [
+            31,
+            34
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R00",
+          "point": [
+            30,
+            34
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R00",
+          "point": [
+            29,
+            34
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R00",
+          "point": [
+            28,
+            34
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R00",
+          "point": [
+            27,
+            34
+          ]
+        }
+      ],
+      "water": {
+        "map": "MnMississippiLowerWoodsC01R00",
+        "point": [
+          34,
+          33
+        ]
+      },
+      "current_native_actor": {
+        "sprite": "SPRITE_POKEFAN_M",
+        "sprite_has_facings": true,
+        "x": 27,
+        "y": 35,
+        "spritemovedata": "SPRITEMOVEDATA_STANDING_LEFT",
+        "move_range_x": 0,
+        "move_range_y": 0,
+        "hram_x": -1,
+        "hram_y": -1,
+        "pal": 0,
+        "object_type": "OBJECTTYPE_TRAINER",
+        "radius": 2,
+        "script": "MN_RIVER_FUN_LOWER_BEAU",
+        "label": null,
+        "event_flag": "-1",
+        "object_identifier": "MN_RIVER_FUN_LOWER_BEAU",
+        "sightline_direction_override": null
+      }
+    },
+    {
+      "kind": "trainer",
+      "id": "MN_RIVER_FUN_LOWER_BIRCH",
+      "display_name": "BIRCH",
+      "trainer_class": "HIKER",
+      "sprite": "SPRITE_POKEFAN_M",
+      "global_metatile": [
+        47,
+        16
+      ],
+      "facing": "west",
+      "sight_range": 2,
+      "defeated_flag": "EVENT_MN_RIVER_FUN_LOWER_BIRCH",
+      "party": [
+        {
+          "species": "AGATOT",
+          "level": 30,
+          "item": null,
+          "moves": [
+            {
+              "name": "ROLLOUT",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "REFLECT",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "ANCIENTPOWER",
+              "current_pp": 5,
+              "pp_ups": 0
+            },
+            {
+              "name": "PSYBEAM",
+              "current_pp": 20,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 10,
+            "defense": 8,
+            "speed": 8,
+            "special": 8,
+            "hp": 0
+          }
+        },
+        {
+          "species": "HELIKNOCK",
+          "level": 31,
+          "item": null,
+          "moves": [
+            {
+              "name": "MAGNITUDE",
+              "current_pp": 30,
+              "pp_ups": 0
+            },
+            {
+              "name": "LOW_KICK",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "DIG",
+              "current_pp": 10,
+              "pp_ups": 0
+            },
+            {
+              "name": "SCREECH",
+              "current_pp": 40,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 10,
+            "defense": 8,
+            "speed": 8,
+            "special": 8,
+            "hp": 0
+          }
+        }
+      ],
+      "before_lines": [
+        "You found my spot!",
+        "Time for a battle!"
+      ],
+      "after_lines": [
+        "The grassy trails",
+        "are full of life!"
+      ],
+      "loss_lines": [
+        "Swept downstream!"
+      ],
+      "tile": [
+        31,
+        33
+      ],
+      "map": "MnMississippiLowerWoodsC01R00",
+      "global_tile": [
+        95,
+        33
+      ],
+      "path": [
+        {
+          "map": "MnMississippiLowerWoodsC01R00",
+          "point": [
+            33,
+            32
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R00",
+          "point": [
+            32,
+            32
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R00",
+          "point": [
+            31,
+            32
+          ]
+        }
+      ],
+      "water": {
+        "map": "MnMississippiLowerWoodsC01R00",
+        "point": [
+          34,
+          32
+        ]
+      },
+      "current_native_actor": {
+        "sprite": "SPRITE_POKEFAN_M",
+        "sprite_has_facings": true,
+        "x": 31,
+        "y": 33,
+        "spritemovedata": "SPRITEMOVEDATA_STANDING_LEFT",
+        "move_range_x": 0,
+        "move_range_y": 0,
+        "hram_x": -1,
+        "hram_y": -1,
+        "pal": 0,
+        "object_type": "OBJECTTYPE_TRAINER",
+        "radius": 2,
+        "script": "MN_RIVER_FUN_LOWER_BIRCH",
+        "label": null,
+        "event_flag": "-1",
+        "object_identifier": "MN_RIVER_FUN_LOWER_BIRCH",
+        "sightline_direction_override": null
+      }
+    },
+    {
+      "kind": "trainer",
+      "id": "MN_RIVER_FUN_LOWER_BROOK",
+      "display_name": "BROOK",
+      "trainer_class": "COOLTRAINERF",
+      "sprite": "SPRITE_COOLTRAINER_F",
+      "global_metatile": [
+        16,
+        59
+      ],
+      "facing": "west",
+      "sight_range": 2,
+      "defeated_flag": "EVENT_MN_RIVER_FUN_LOWER_BROOK",
+      "party": [
+        {
+          "species": "PIKEMAN",
+          "level": 32,
+          "item": null,
+          "moves": [
+            {
+              "name": "WATERFALL",
+              "current_pp": 15,
+              "pp_ups": 0
+            },
+            {
+              "name": "LOW_KICK",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "REVERSAL",
+              "current_pp": 15,
+              "pp_ups": 0
+            },
+            {
+              "name": "SLAM",
+              "current_pp": 20,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 7,
+            "defense": 12,
+            "speed": 12,
+            "special": 8,
+            "hp": 8
+          }
+        },
+        {
+          "species": "REEDRAFT",
+          "level": 33,
+          "item": null,
+          "moves": [
+            {
+              "name": "SWEET_SCENT",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "MEGA_DRAIN",
+              "current_pp": 10,
+              "pp_ups": 0
+            },
+            {
+              "name": "SYNTHESIS",
+              "current_pp": 5,
+              "pp_ups": 0
+            },
+            {
+              "name": "RAZOR_LEAF",
+              "current_pp": 25,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 7,
+            "defense": 12,
+            "speed": 12,
+            "special": 8,
+            "hp": 8
+          }
+        }
+      ],
+      "before_lines": [
+        "A riverbank match?",
+        "My team is ready!"
+      ],
+      "after_lines": [
+        "Every bend brings",
+        "a new adventure!"
+      ],
+      "loss_lines": [
+        "What a wild ride!"
+      ],
+      "tile": [
+        33,
+        23
+      ],
+      "map": "MnMississippiLowerWoodsC00R02",
+      "global_tile": [
+        33,
+        119
+      ],
+      "path": [
+        {
+          "map": "MnMississippiLowerWoodsC00R02",
+          "point": [
+            37,
+            22
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC00R02",
+          "point": [
+            36,
+            22
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC00R02",
+          "point": [
+            35,
+            22
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC00R02",
+          "point": [
+            34,
+            22
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC00R02",
+          "point": [
+            33,
+            22
+          ]
+        }
+      ],
+      "water": {
+        "map": "MnMississippiLowerWoodsC00R02",
+        "point": [
+          38,
+          22
+        ]
+      },
+      "current_native_actor": {
+        "sprite": "SPRITE_COOLTRAINER_F",
+        "sprite_has_facings": true,
+        "x": 33,
+        "y": 23,
+        "spritemovedata": "SPRITEMOVEDATA_STANDING_LEFT",
+        "move_range_x": 0,
+        "move_range_y": 0,
+        "hram_x": -1,
+        "hram_y": -1,
+        "pal": 0,
+        "object_type": "OBJECTTYPE_TRAINER",
+        "radius": 2,
+        "script": "MN_RIVER_FUN_LOWER_BROOK",
+        "label": null,
+        "event_flag": "-1",
+        "object_identifier": "MN_RIVER_FUN_LOWER_BROOK",
+        "sightline_direction_override": null
+      }
+    },
+    {
+      "kind": "trainer",
+      "id": "MN_RIVER_FUN_LOWER_CLAY",
+      "display_name": "CLAY",
+      "trainer_class": "HIKER",
+      "sprite": "SPRITE_POKEFAN_M",
+      "global_metatile": [
+        34,
+        57
+      ],
+      "facing": "west",
+      "sight_range": 2,
+      "defeated_flag": "EVENT_MN_RIVER_FUN_LOWER_CLAY",
+      "party": [
+        {
+          "species": "BURROOT",
+          "level": 31,
+          "item": null,
+          "moves": [
+            {
+              "name": "GROWTH",
+              "current_pp": 40,
+              "pp_ups": 0
+            },
+            {
+              "name": "RAZOR_LEAF",
+              "current_pp": 25,
+              "pp_ups": 0
+            },
+            {
+              "name": "MUD_SLAP",
+              "current_pp": 10,
+              "pp_ups": 0
+            },
+            {
+              "name": "MAGNITUDE",
+              "current_pp": 30,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 10,
+            "defense": 8,
+            "speed": 8,
+            "special": 8,
+            "hp": 0
+          }
+        },
+        {
+          "species": "CACHEEK",
+          "level": 32,
+          "item": null,
+          "moves": [
+            {
+              "name": "DIG",
+              "current_pp": 10,
+              "pp_ups": 0
+            },
+            {
+              "name": "HEADBUTT",
+              "current_pp": 15,
+              "pp_ups": 0
+            },
+            {
+              "name": "THIEF",
+              "current_pp": 10,
+              "pp_ups": 0
+            },
+            {
+              "name": "SUPER_FANG",
+              "current_pp": 10,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 10,
+            "defense": 8,
+            "speed": 8,
+            "special": 8,
+            "hp": 0
+          }
+        }
+      ],
+      "before_lines": [
+        "A riverbank match?",
+        "My team is ready!"
+      ],
+      "after_lines": [
+        "Every bend brings",
+        "a new adventure!"
+      ],
+      "loss_lines": [
+        "What a wild ride!"
+      ],
+      "tile": [
+        5,
+        19
+      ],
+      "map": "MnMississippiLowerWoodsC01R02",
+      "global_tile": [
+        69,
+        115
+      ],
+      "path": [
+        {
+          "map": "MnMississippiLowerWoodsC01R02",
+          "point": [
+            5,
+            21
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R02",
+          "point": [
+            6,
+            21
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R02",
+          "point": [
+            6,
+            20
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R02",
+          "point": [
+            6,
+            19
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R02",
+          "point": [
+            6,
+            18
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R02",
+          "point": [
+            5,
+            18
+          ]
+        }
+      ],
+      "water": {
+        "map": "MnMississippiLowerWoodsC01R02",
+        "point": [
+          5,
+          22
+        ]
+      },
+      "current_native_actor": {
+        "sprite": "SPRITE_POKEFAN_M",
+        "sprite_has_facings": true,
+        "x": 5,
+        "y": 19,
+        "spritemovedata": "SPRITEMOVEDATA_STANDING_LEFT",
+        "move_range_x": 0,
+        "move_range_y": 0,
+        "hram_x": -1,
+        "hram_y": -1,
+        "pal": 0,
+        "object_type": "OBJECTTYPE_TRAINER",
+        "radius": 2,
+        "script": "MN_RIVER_FUN_LOWER_CLAY",
+        "label": null,
+        "event_flag": "-1",
+        "object_identifier": "MN_RIVER_FUN_LOWER_CLAY",
+        "sightline_direction_override": null
+      }
+    },
+    {
+      "kind": "trainer",
+      "id": "MN_RIVER_FUN_LOWER_EDDY",
+      "display_name": "EDDY",
+      "trainer_class": "CAMPER",
+      "sprite": "SPRITE_YOUNGSTER",
+      "global_metatile": [
+        52,
+        38
+      ],
+      "facing": "west",
+      "sight_range": 2,
+      "defeated_flag": "EVENT_MN_RIVER_FUN_LOWER_EDDY",
+      "party": [
+        {
+          "species": "AUGRUB",
+          "level": 30,
+          "item": null,
+          "moves": [
+            {
+              "name": "MAGNITUDE",
+              "current_pp": 30,
+              "pp_ups": 0
+            },
+            {
+              "name": "LOW_KICK",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "DIG",
+              "current_pp": 10,
+              "pp_ups": 0
+            },
+            {
+              "name": "SCREECH",
+              "current_pp": 40,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 9,
+            "defense": 8,
+            "speed": 8,
+            "special": 8,
+            "hp": 8
+          }
+        },
+        {
+          "species": "BRISTUB",
+          "level": 31,
+          "item": null,
+          "moves": [
+            {
+              "name": "BIND",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "HARDEN",
+              "current_pp": 30,
+              "pp_ups": 0
+            },
+            {
+              "name": "TAKE_DOWN",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "PROTECT",
+              "current_pp": 10,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 9,
+            "defense": 8,
+            "speed": 8,
+            "special": 8,
+            "hp": 8
+          }
+        }
+      ],
+      "before_lines": [
+        "You found my spot!",
+        "Time for a battle!"
+      ],
+      "after_lines": [
+        "The grassy trails",
+        "are full of life!"
+      ],
+      "loss_lines": [
+        "Swept downstream!"
+      ],
+      "tile": [
+        41,
+        29
+      ],
+      "map": "MnMississippiLowerWoodsC01R01",
+      "global_tile": [
+        105,
+        77
+      ],
+      "path": [
+        {
+          "map": "MnMississippiLowerWoodsC01R01",
+          "point": [
+            41,
+            28
+          ]
+        }
+      ],
+      "water": {
+        "map": "MnMississippiLowerWoodsC01R01",
+        "point": [
+          42,
+          28
+        ]
+      },
+      "current_native_actor": {
+        "sprite": "SPRITE_YOUNGSTER",
+        "sprite_has_facings": true,
+        "x": 41,
+        "y": 29,
+        "spritemovedata": "SPRITEMOVEDATA_STANDING_LEFT",
+        "move_range_x": 0,
+        "move_range_y": 0,
+        "hram_x": -1,
+        "hram_y": -1,
+        "pal": 0,
+        "object_type": "OBJECTTYPE_TRAINER",
+        "radius": 2,
+        "script": "MN_RIVER_FUN_LOWER_EDDY",
+        "label": null,
+        "event_flag": "-1",
+        "object_identifier": "MN_RIVER_FUN_LOWER_EDDY",
+        "sightline_direction_override": null
+      }
+    },
+    {
+      "kind": "item",
+      "id": "MN_RIVER_FUN_LOWER_ETHER",
+      "item": "ETHER",
+      "quantity": 1,
+      "flag": "EVENT_MN_RIVER_FUN_LOWER_ETHER",
+      "global_metatile": [
+        39,
+        49
+      ],
+      "tile": [
+        15,
+        3
+      ],
+      "map": "MnMississippiLowerWoodsC01R02",
+      "global_tile": [
+        79,
+        99
+      ],
+      "path": [
+        {
+          "map": "MnMississippiLowerWoodsC01R02",
+          "point": [
+            21,
+            6
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R02",
+          "point": [
+            20,
+            6
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R02",
+          "point": [
+            19,
+            6
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R02",
+          "point": [
+            18,
+            6
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R02",
+          "point": [
+            17,
+            6
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R02",
+          "point": [
+            16,
+            6
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R02",
+          "point": [
+            15,
+            6
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R02",
+          "point": [
+            14,
+            6
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R02",
+          "point": [
+            14,
+            5
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R02",
+          "point": [
+            14,
+            4
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R02",
+          "point": [
+            14,
+            3
+          ]
+        }
+      ],
+      "water": {
+        "map": "MnMississippiLowerWoodsC01R02",
+        "point": [
+          22,
+          6
+        ]
+      },
+      "current_native_actor": {
+        "sprite": "SPRITE_POKE_BALL",
+        "sprite_has_facings": true,
+        "x": 15,
+        "y": 3,
+        "spritemovedata": "SPRITEMOVEDATA_STANDING_DOWN",
+        "move_range_x": 0,
+        "move_range_y": 0,
+        "hram_x": -1,
+        "hram_y": -1,
+        "pal": 0,
+        "object_type": "OBJECTTYPE_ITEMBALL",
+        "radius": 0,
+        "script": "MN_RIVER_FUN_LOWER_ETHER",
+        "label": null,
+        "event_flag": "EVENT_MN_RIVER_FUN_LOWER_ETHER",
+        "object_identifier": "MN_RIVER_FUN_LOWER_ETHER",
+        "sightline_direction_override": null
+      }
+    },
+    {
+      "kind": "trainer",
+      "id": "MN_RIVER_FUN_LOWER_FERN",
+      "display_name": "FERN",
+      "trainer_class": "CAMPER",
+      "sprite": "SPRITE_YOUNGSTER",
+      "global_metatile": [
+        34,
+        12
+      ],
+      "facing": "west",
+      "sight_range": 2,
+      "defeated_flag": "EVENT_MN_RIVER_FUN_LOWER_FERN",
+      "party": [
+        {
+          "species": "BRISTUB",
+          "level": 29,
+          "item": null,
+          "moves": [
+            {
+              "name": "HEADBUTT",
+              "current_pp": 15,
+              "pp_ups": 0
+            },
+            {
+              "name": "BIND",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "HARDEN",
+              "current_pp": 30,
+              "pp_ups": 0
+            },
+            {
+              "name": "TAKE_DOWN",
+              "current_pp": 20,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 9,
+            "defense": 8,
+            "speed": 8,
+            "special": 8,
+            "hp": 8
+          }
+        },
+        {
+          "species": "GLISNARE",
+          "level": 30,
+          "item": null,
+          "moves": [
+            {
+              "name": "VINE_WHIP",
+              "current_pp": 10,
+              "pp_ups": 0
+            },
+            {
+              "name": "STUN_SPORE",
+              "current_pp": 30,
+              "pp_ups": 0
+            },
+            {
+              "name": "BITE",
+              "current_pp": 25,
+              "pp_ups": 0
+            },
+            {
+              "name": "MEGA_DRAIN",
+              "current_pp": 10,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 9,
+            "defense": 8,
+            "speed": 8,
+            "special": 8,
+            "hp": 8
+          }
+        }
+      ],
+      "before_lines": [
+        "A riverbank match?",
+        "My team is ready!"
+      ],
+      "after_lines": [
+        "Every bend brings",
+        "a new adventure!"
+      ],
+      "loss_lines": [
+        "What a wild ride!"
+      ],
+      "tile": [
+        5,
+        25
+      ],
+      "map": "MnMississippiLowerWoodsC01R00",
+      "global_tile": [
+        69,
+        25
+      ],
+      "path": [
+        {
+          "map": "MnMississippiLowerWoodsC01R00",
+          "point": [
+            4,
+            27
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R00",
+          "point": [
+            3,
+            27
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R00",
+          "point": [
+            2,
+            27
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R00",
+          "point": [
+            2,
+            26
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R00",
+          "point": [
+            2,
+            25
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R00",
+          "point": [
+            2,
+            24
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R00",
+          "point": [
+            3,
+            24
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R00",
+          "point": [
+            4,
+            24
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R00",
+          "point": [
+            5,
+            24
+          ]
+        }
+      ],
+      "water": {
+        "map": "MnMississippiLowerWoodsC01R00",
+        "point": [
+          4,
+          28
+        ]
+      },
+      "current_native_actor": {
+        "sprite": "SPRITE_YOUNGSTER",
+        "sprite_has_facings": true,
+        "x": 5,
+        "y": 25,
+        "spritemovedata": "SPRITEMOVEDATA_STANDING_LEFT",
+        "move_range_x": 0,
+        "move_range_y": 0,
+        "hram_x": -1,
+        "hram_y": -1,
+        "pal": 0,
+        "object_type": "OBJECTTYPE_TRAINER",
+        "radius": 2,
+        "script": "MN_RIVER_FUN_LOWER_FERN",
+        "label": null,
+        "event_flag": "-1",
+        "object_identifier": "MN_RIVER_FUN_LOWER_FERN",
+        "sightline_direction_override": null
+      }
+    },
+    {
+      "kind": "item",
+      "id": "MN_RIVER_FUN_LOWER_GREAT_BALL",
+      "item": "GREAT_BALL",
+      "quantity": 1,
+      "flag": "EVENT_MN_RIVER_FUN_LOWER_GREAT_BALL",
+      "global_metatile": [
+        32,
+        12
+      ],
+      "tile": [
+        1,
+        25
+      ],
+      "map": "MnMississippiLowerWoodsC01R00",
+      "global_tile": [
+        65,
+        25
+      ],
+      "path": [
+        {
+          "map": "MnMississippiLowerWoodsC00R00",
+          "point": [
+            61,
+            27
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC00R00",
+          "point": [
+            62,
+            27
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC00R00",
+          "point": [
+            63,
+            27
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R00",
+          "point": [
+            0,
+            27
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R00",
+          "point": [
+            0,
+            26
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R00",
+          "point": [
+            0,
+            25
+          ]
+        }
+      ],
+      "water": {
+        "map": "MnMississippiLowerWoodsC00R00",
+        "point": [
+          61,
+          28
+        ]
+      },
+      "current_native_actor": {
+        "sprite": "SPRITE_POKE_BALL",
+        "sprite_has_facings": true,
+        "x": 1,
+        "y": 25,
+        "spritemovedata": "SPRITEMOVEDATA_STANDING_DOWN",
+        "move_range_x": 0,
+        "move_range_y": 0,
+        "hram_x": -1,
+        "hram_y": -1,
+        "pal": 0,
+        "object_type": "OBJECTTYPE_ITEMBALL",
+        "radius": 0,
+        "script": "MN_RIVER_FUN_LOWER_GREAT_BALL",
+        "label": null,
+        "event_flag": "EVENT_MN_RIVER_FUN_LOWER_GREAT_BALL",
+        "object_identifier": "MN_RIVER_FUN_LOWER_GREAT_BALL",
+        "sightline_direction_override": null
+      }
+    },
+    {
+      "kind": "trainer",
+      "id": "MN_RIVER_FUN_LOWER_IRIS",
+      "display_name": "IRIS",
+      "trainer_class": "PICNICKER",
+      "sprite": "SPRITE_LASS",
+      "global_metatile": [
+        41,
+        50
+      ],
+      "facing": "west",
+      "sight_range": 2,
+      "defeated_flag": "EVENT_MN_RIVER_FUN_LOWER_IRIS",
+      "party": [
+        {
+          "species": "SLIPPERINA",
+          "level": 31,
+          "item": null,
+          "moves": [
+            {
+              "name": "RAZOR_LEAF",
+              "current_pp": 25,
+              "pp_ups": 0
+            },
+            {
+              "name": "MIMIC",
+              "current_pp": 10,
+              "pp_ups": 0
+            },
+            {
+              "name": "DAZZLING_GLEAM",
+              "current_pp": 10,
+              "pp_ups": 0
+            },
+            {
+              "name": "PSYBEAM",
+              "current_pp": 20,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 6,
+            "defense": 10,
+            "speed": 10,
+            "special": 8,
+            "hp": 0
+          }
+        },
+        {
+          "species": "FLOSSAIL",
+          "level": 32,
+          "item": null,
+          "moves": [
+            {
+              "name": "COTTON_SPORE",
+              "current_pp": 40,
+              "pp_ups": 0
+            },
+            {
+              "name": "GUST",
+              "current_pp": 35,
+              "pp_ups": 0
+            },
+            {
+              "name": "STUN_SPORE",
+              "current_pp": 30,
+              "pp_ups": 0
+            },
+            {
+              "name": "SLUDGE",
+              "current_pp": 20,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 6,
+            "defense": 10,
+            "speed": 10,
+            "special": 8,
+            "hp": 0
+          }
+        }
+      ],
+      "before_lines": [
+        "A riverbank match?",
+        "My team is ready!"
+      ],
+      "after_lines": [
+        "Every bend brings",
+        "a new adventure!"
+      ],
+      "loss_lines": [
+        "What a wild ride!"
+      ],
+      "tile": [
+        19,
+        5
+      ],
+      "map": "MnMississippiLowerWoodsC01R02",
+      "global_tile": [
+        83,
+        101
+      ],
+      "path": [
+        {
+          "map": "MnMississippiLowerWoodsC01R02",
+          "point": [
+            21,
+            6
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R02",
+          "point": [
+            20,
+            6
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R02",
+          "point": [
+            20,
+            5
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R02",
+          "point": [
+            20,
+            4
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R02",
+          "point": [
+            19,
+            4
+          ]
+        }
+      ],
+      "water": {
+        "map": "MnMississippiLowerWoodsC01R02",
+        "point": [
+          22,
+          6
+        ]
+      },
+      "current_native_actor": {
+        "sprite": "SPRITE_LASS",
+        "sprite_has_facings": true,
+        "x": 19,
+        "y": 5,
+        "spritemovedata": "SPRITEMOVEDATA_STANDING_LEFT",
+        "move_range_x": 0,
+        "move_range_y": 0,
+        "hram_x": -1,
+        "hram_y": -1,
+        "pal": 0,
+        "object_type": "OBJECTTYPE_TRAINER",
+        "radius": 2,
+        "script": "MN_RIVER_FUN_LOWER_IRIS",
+        "label": null,
+        "event_flag": "-1",
+        "object_identifier": "MN_RIVER_FUN_LOWER_IRIS",
+        "sightline_direction_override": null
+      }
+    },
+    {
+      "kind": "trainer",
+      "id": "MN_RIVER_FUN_LOWER_IVY",
+      "display_name": "IVY",
+      "trainer_class": "BIRD_KEEPER",
+      "sprite": "SPRITE_YOUNGSTER",
+      "global_metatile": [
+        37,
+        11
+      ],
+      "facing": "west",
+      "sight_range": 2,
+      "defeated_flag": "EVENT_MN_RIVER_FUN_LOWER_IVY",
+      "party": [
+        {
+          "species": "NOTCHBILL",
+          "level": 29,
+          "item": null,
+          "moves": [
+            {
+              "name": "FURY_ATTACK",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "HEADBUTT",
+              "current_pp": 15,
+              "pp_ups": 0
+            },
+            {
+              "name": "WING_ATTACK",
+              "current_pp": 35,
+              "pp_ups": 0
+            },
+            {
+              "name": "DETECT",
+              "current_pp": 5,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 9,
+            "defense": 8,
+            "speed": 8,
+            "special": 8,
+            "hp": 8
+          }
+        },
+        {
+          "species": "NOTCHBILL",
+          "level": 30,
+          "item": null,
+          "moves": [
+            {
+              "name": "HEADBUTT",
+              "current_pp": 15,
+              "pp_ups": 0
+            },
+            {
+              "name": "WING_ATTACK",
+              "current_pp": 35,
+              "pp_ups": 0
+            },
+            {
+              "name": "DETECT",
+              "current_pp": 5,
+              "pp_ups": 0
+            },
+            {
+              "name": "AGILITY",
+              "current_pp": 30,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 9,
+            "defense": 8,
+            "speed": 8,
+            "special": 8,
+            "hp": 8
+          }
+        }
+      ],
+      "before_lines": [
+        "You found my spot!",
+        "Time for a battle!"
+      ],
+      "after_lines": [
+        "The grassy trails",
+        "are full of life!"
+      ],
+      "loss_lines": [
+        "Swept downstream!"
+      ],
+      "tile": [
+        11,
+        23
+      ],
+      "map": "MnMississippiLowerWoodsC01R00",
+      "global_tile": [
+        75,
+        23
+      ],
+      "path": [
+        {
+          "map": "MnMississippiLowerWoodsC01R00",
+          "point": [
+            12,
+            27
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R00",
+          "point": [
+            12,
+            26
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R00",
+          "point": [
+            12,
+            25
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R00",
+          "point": [
+            12,
+            24
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R00",
+          "point": [
+            12,
+            23
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R00",
+          "point": [
+            12,
+            22
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R00",
+          "point": [
+            11,
+            22
+          ]
+        }
+      ],
+      "water": {
+        "map": "MnMississippiLowerWoodsC01R00",
+        "point": [
+          12,
+          28
+        ]
+      },
+      "current_native_actor": {
+        "sprite": "SPRITE_YOUNGSTER",
+        "sprite_has_facings": true,
+        "x": 11,
+        "y": 23,
+        "spritemovedata": "SPRITEMOVEDATA_STANDING_LEFT",
+        "move_range_x": 0,
+        "move_range_y": 0,
+        "hram_x": -1,
+        "hram_y": -1,
+        "pal": 0,
+        "object_type": "OBJECTTYPE_TRAINER",
+        "radius": 2,
+        "script": "MN_RIVER_FUN_LOWER_IVY",
+        "label": null,
+        "event_flag": "-1",
+        "object_identifier": "MN_RIVER_FUN_LOWER_IVY",
+        "sightline_direction_override": null
+      }
+    },
+    {
+      "kind": "trainer",
+      "id": "MN_RIVER_FUN_LOWER_LARK",
+      "display_name": "LARK",
+      "trainer_class": "HIKER",
+      "sprite": "SPRITE_POKEFAN_M",
+      "global_metatile": [
+        18,
+        56
+      ],
+      "facing": "west",
+      "sight_range": 2,
+      "defeated_flag": "EVENT_MN_RIVER_FUN_LOWER_LARK",
+      "party": [
+        {
+          "species": "AGATOT",
+          "level": 31,
+          "item": null,
+          "moves": [
+            {
+              "name": "ROLLOUT",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "REFLECT",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "ANCIENTPOWER",
+              "current_pp": 5,
+              "pp_ups": 0
+            },
+            {
+              "name": "PSYBEAM",
+              "current_pp": 20,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 10,
+            "defense": 8,
+            "speed": 8,
+            "special": 8,
+            "hp": 0
+          }
+        },
+        {
+          "species": "HELIKNOCK",
+          "level": 32,
+          "item": null,
+          "moves": [
+            {
+              "name": "MAGNITUDE",
+              "current_pp": 30,
+              "pp_ups": 0
+            },
+            {
+              "name": "LOW_KICK",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "DIG",
+              "current_pp": 10,
+              "pp_ups": 0
+            },
+            {
+              "name": "SCREECH",
+              "current_pp": 40,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 10,
+            "defense": 8,
+            "speed": 8,
+            "special": 8,
+            "hp": 0
+          }
+        }
+      ],
+      "before_lines": [
+        "You found my spot!",
+        "Time for a battle!"
+      ],
+      "after_lines": [
+        "The grassy trails",
+        "are full of life!"
+      ],
+      "loss_lines": [
+        "Swept downstream!"
+      ],
+      "tile": [
+        37,
+        17
+      ],
+      "map": "MnMississippiLowerWoodsC00R02",
+      "global_tile": [
+        37,
+        113
+      ],
+      "path": [
+        {
+          "map": "MnMississippiLowerWoodsC00R02",
+          "point": [
+            39,
+            18
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC00R02",
+          "point": [
+            38,
+            18
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC00R02",
+          "point": [
+            38,
+            17
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC00R02",
+          "point": [
+            38,
+            16
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC00R02",
+          "point": [
+            37,
+            16
+          ]
+        }
+      ],
+      "water": {
+        "map": "MnMississippiLowerWoodsC00R02",
+        "point": [
+          40,
+          18
+        ]
+      },
+      "current_native_actor": {
+        "sprite": "SPRITE_POKEFAN_M",
+        "sprite_has_facings": true,
+        "x": 37,
+        "y": 17,
+        "spritemovedata": "SPRITEMOVEDATA_STANDING_LEFT",
+        "move_range_x": 0,
+        "move_range_y": 0,
+        "hram_x": -1,
+        "hram_y": -1,
+        "pal": 0,
+        "object_type": "OBJECTTYPE_TRAINER",
+        "radius": 2,
+        "script": "MN_RIVER_FUN_LOWER_LARK",
+        "label": null,
+        "event_flag": "-1",
+        "object_identifier": "MN_RIVER_FUN_LOWER_LARK",
+        "sightline_direction_override": null
+      }
+    },
+    {
+      "kind": "trainer",
+      "id": "MN_RIVER_FUN_LOWER_LENA",
+      "display_name": "LENA",
+      "trainer_class": "FISHER",
+      "sprite": "SPRITE_FISHER",
+      "global_metatile": [
+        8,
+        29
+      ],
+      "facing": "west",
+      "sight_range": 2,
+      "defeated_flag": "EVENT_MN_RIVER_FUN_LOWER_LENA",
+      "party": [
+        {
+          "species": "SCUTLET",
+          "level": 29,
+          "item": null,
+          "moves": [
+            {
+              "name": "DEFENSE_CURL",
+              "current_pp": 40,
+              "pp_ups": 0
+            },
+            {
+              "name": "SLAM",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "BUBBLEBEAM",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "ANCIENTPOWER",
+              "current_pp": 5,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 9,
+            "defense": 8,
+            "speed": 8,
+            "special": 8,
+            "hp": 8
+          }
+        },
+        {
+          "species": "TORROUT",
+          "level": 30,
+          "item": null,
+          "moves": [
+            {
+              "name": "ENDURE",
+              "current_pp": 10,
+              "pp_ups": 0
+            },
+            {
+              "name": "LOW_KICK",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "WATER_PULSE",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "COUNTER",
+              "current_pp": 20,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 9,
+            "defense": 8,
+            "speed": 8,
+            "special": 8,
+            "hp": 8
+          }
+        }
+      ],
+      "before_lines": [
+        "You found my spot!",
+        "Time for a battle!"
+      ],
+      "after_lines": [
+        "The grassy trails",
+        "are full of life!"
+      ],
+      "loss_lines": [
+        "Swept downstream!"
+      ],
+      "tile": [
+        17,
+        11
+      ],
+      "map": "MnMississippiLowerWoodsC00R01",
+      "global_tile": [
+        17,
+        59
+      ],
+      "path": [
+        {
+          "map": "MnMississippiLowerWoodsC00R01",
+          "point": [
+            23,
+            10
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC00R01",
+          "point": [
+            22,
+            10
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC00R01",
+          "point": [
+            21,
+            10
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC00R01",
+          "point": [
+            20,
+            10
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC00R01",
+          "point": [
+            19,
+            10
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC00R01",
+          "point": [
+            18,
+            10
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC00R01",
+          "point": [
+            17,
+            10
+          ]
+        }
+      ],
+      "water": {
+        "map": "MnMississippiLowerWoodsC00R01",
+        "point": [
+          24,
+          10
+        ]
+      },
+      "current_native_actor": {
+        "sprite": "SPRITE_FISHER",
+        "sprite_has_facings": true,
+        "x": 17,
+        "y": 11,
+        "spritemovedata": "SPRITEMOVEDATA_STANDING_LEFT",
+        "move_range_x": 0,
+        "move_range_y": 0,
+        "hram_x": -1,
+        "hram_y": -1,
+        "pal": 0,
+        "object_type": "OBJECTTYPE_TRAINER",
+        "radius": 2,
+        "script": "MN_RIVER_FUN_LOWER_LENA",
+        "label": null,
+        "event_flag": "-1",
+        "object_identifier": "MN_RIVER_FUN_LOWER_LENA",
+        "sightline_direction_override": null
+      }
+    },
+    {
+      "kind": "trainer",
+      "id": "MN_RIVER_FUN_LOWER_MARSH",
+      "display_name": "MARSH",
+      "trainer_class": "FISHER",
+      "sprite": "SPRITE_FISHER",
+      "global_metatile": [
+        60,
+        28
+      ],
+      "facing": "west",
+      "sight_range": 2,
+      "defeated_flag": "EVENT_MN_RIVER_FUN_LOWER_MARSH",
+      "party": [
+        {
+          "species": "SCUTLET",
+          "level": 30,
+          "item": null,
+          "moves": [
+            {
+              "name": "BUBBLEBEAM",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "ANCIENTPOWER",
+              "current_pp": 5,
+              "pp_ups": 0
+            },
+            {
+              "name": "RAIN_DANCE",
+              "current_pp": 5,
+              "pp_ups": 0
+            },
+            {
+              "name": "DRAGONBREATH",
+              "current_pp": 20,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 9,
+            "defense": 8,
+            "speed": 8,
+            "special": 8,
+            "hp": 8
+          }
+        },
+        {
+          "species": "TORROUT",
+          "level": 31,
+          "item": null,
+          "moves": [
+            {
+              "name": "LOW_KICK",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "WATER_PULSE",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "COUNTER",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "RAIN_DANCE",
+              "current_pp": 5,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 9,
+            "defense": 8,
+            "speed": 8,
+            "special": 8,
+            "hp": 8
+          }
+        }
+      ],
+      "before_lines": [
+        "You found my spot!",
+        "Time for a battle!"
+      ],
+      "after_lines": [
+        "The grassy trails",
+        "are full of life!"
+      ],
+      "loss_lines": [
+        "Swept downstream!"
+      ],
+      "tile": [
+        57,
+        9
+      ],
+      "map": "MnMississippiLowerWoodsC01R01",
+      "global_tile": [
+        121,
+        57
+      ],
+      "path": [
+        {
+          "map": "MnMississippiLowerWoodsC01R01",
+          "point": [
+            52,
+            7
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R01",
+          "point": [
+            53,
+            7
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R01",
+          "point": [
+            54,
+            7
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R01",
+          "point": [
+            55,
+            7
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R01",
+          "point": [
+            56,
+            7
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R01",
+          "point": [
+            57,
+            7
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R01",
+          "point": [
+            57,
+            8
+          ]
+        }
+      ],
+      "water": {
+        "map": "MnMississippiLowerWoodsC01R01",
+        "point": [
+          51,
+          7
+        ]
+      },
+      "current_native_actor": {
+        "sprite": "SPRITE_FISHER",
+        "sprite_has_facings": true,
+        "x": 57,
+        "y": 9,
+        "spritemovedata": "SPRITEMOVEDATA_STANDING_LEFT",
+        "move_range_x": 0,
+        "move_range_y": 0,
+        "hram_x": -1,
+        "hram_y": -1,
+        "pal": 0,
+        "object_type": "OBJECTTYPE_TRAINER",
+        "radius": 2,
+        "script": "MN_RIVER_FUN_LOWER_MARSH",
+        "label": null,
+        "event_flag": "-1",
+        "object_identifier": "MN_RIVER_FUN_LOWER_MARSH",
+        "sightline_direction_override": null
+      }
+    },
+    {
+      "kind": "healer",
+      "id": "MN_RIVER_FUN_LOWER_MEDIC",
+      "sprite": "SPRITE_NURSE",
+      "global_metatile": [
+        48,
+        40
+      ],
+      "lines": [
+        "Rest by the river.",
+        "I can heal your",
+        "weary team."
+      ],
+      "tile": [
+        33,
+        33
+      ],
+      "map": "MnMississippiLowerWoodsC01R01",
+      "global_tile": [
+        97,
+        81
+      ],
+      "path": [
+        {
+          "map": "MnMississippiLowerWoodsC01R01",
+          "point": [
+            41,
+            32
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R01",
+          "point": [
+            40,
+            32
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R01",
+          "point": [
+            39,
+            32
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R01",
+          "point": [
+            38,
+            32
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R01",
+          "point": [
+            37,
+            32
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R01",
+          "point": [
+            36,
+            32
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R01",
+          "point": [
+            35,
+            32
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R01",
+          "point": [
+            34,
+            32
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R01",
+          "point": [
+            33,
+            32
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R01",
+          "point": [
+            32,
+            32
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R01",
+          "point": [
+            32,
+            33
+          ]
+        }
+      ],
+      "water": {
+        "map": "MnMississippiLowerWoodsC01R01",
+        "point": [
+          42,
+          32
+        ]
+      },
+      "current_native_actor": {
+        "sprite": "SPRITE_NURSE",
+        "sprite_has_facings": true,
+        "x": 33,
+        "y": 33,
+        "spritemovedata": "SPRITEMOVEDATA_STANDING_DOWN",
+        "move_range_x": 0,
+        "move_range_y": 0,
+        "hram_x": -1,
+        "hram_y": -1,
+        "pal": 0,
+        "object_type": "OBJECTTYPE_SCRIPT",
+        "radius": 0,
+        "script": "MN_RIVER_FUN_LOWER_MEDIC",
+        "label": null,
+        "event_flag": "-1",
+        "object_identifier": "MN_RIVER_FUN_LOWER_MEDIC",
+        "sightline_direction_override": null
+      }
+    },
+    {
+      "kind": "trainer",
+      "id": "MN_RIVER_FUN_LOWER_MIRA",
+      "display_name": "MIRA",
+      "trainer_class": "PICNICKER",
+      "sprite": "SPRITE_LASS",
+      "global_metatile": [
+        18,
+        25
+      ],
+      "facing": "west",
+      "sight_range": 2,
+      "defeated_flag": "EVENT_MN_RIVER_FUN_LOWER_MIRA",
+      "party": [
+        {
+          "species": "FLOSSAIL",
+          "level": 29,
+          "item": null,
+          "moves": [
+            {
+              "name": "POISONPOWDER",
+              "current_pp": 35,
+              "pp_ups": 0
+            },
+            {
+              "name": "COTTON_SPORE",
+              "current_pp": 40,
+              "pp_ups": 0
+            },
+            {
+              "name": "GUST",
+              "current_pp": 35,
+              "pp_ups": 0
+            },
+            {
+              "name": "STUN_SPORE",
+              "current_pp": 30,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 6,
+            "defense": 10,
+            "speed": 10,
+            "special": 8,
+            "hp": 0
+          }
+        },
+        {
+          "species": "TAPACITOR",
+          "level": 30,
+          "item": null,
+          "moves": [
+            {
+              "name": "THUNDER_WAVE",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "MEGA_DRAIN",
+              "current_pp": 10,
+              "pp_ups": 0
+            },
+            {
+              "name": "SPARK",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "BIDE",
+              "current_pp": 10,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 6,
+            "defense": 10,
+            "speed": 10,
+            "special": 8,
+            "hp": 0
+          }
+        }
+      ],
+      "before_lines": [
+        "A riverbank match?",
+        "My team is ready!"
+      ],
+      "after_lines": [
+        "Every bend brings",
+        "a new adventure!"
+      ],
+      "loss_lines": [
+        "What a wild ride!"
+      ],
+      "tile": [
+        37,
+        3
+      ],
+      "map": "MnMississippiLowerWoodsC00R01",
+      "global_tile": [
+        37,
+        51
+      ],
+      "path": [
+        {
+          "map": "MnMississippiLowerWoodsC00R01",
+          "point": [
+            42,
+            3
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC00R01",
+          "point": [
+            41,
+            3
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC00R01",
+          "point": [
+            40,
+            3
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC00R01",
+          "point": [
+            39,
+            3
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC00R01",
+          "point": [
+            38,
+            3
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC00R01",
+          "point": [
+            38,
+            2
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC00R01",
+          "point": [
+            37,
+            2
+          ]
+        }
+      ],
+      "water": {
+        "map": "MnMississippiLowerWoodsC00R01",
+        "point": [
+          42,
+          4
+        ]
+      },
+      "current_native_actor": {
+        "sprite": "SPRITE_LASS",
+        "sprite_has_facings": true,
+        "x": 37,
+        "y": 3,
+        "spritemovedata": "SPRITEMOVEDATA_STANDING_LEFT",
+        "move_range_x": 0,
+        "move_range_y": 0,
+        "hram_x": -1,
+        "hram_y": -1,
+        "pal": 0,
+        "object_type": "OBJECTTYPE_TRAINER",
+        "radius": 2,
+        "script": "MN_RIVER_FUN_LOWER_MIRA",
+        "label": null,
+        "event_flag": "-1",
+        "object_identifier": "MN_RIVER_FUN_LOWER_MIRA",
+        "sightline_direction_override": null
+      }
+    },
+    {
+      "kind": "trainer",
+      "id": "MN_RIVER_FUN_LOWER_REED",
+      "display_name": "REED",
+      "trainer_class": "BIRD_KEEPER",
+      "sprite": "SPRITE_FALKNER",
+      "global_metatile": [
+        23,
+        19
+      ],
+      "facing": "west",
+      "sight_range": 2,
+      "defeated_flag": "EVENT_MN_RIVER_FUN_LOWER_REED",
+      "party": [
+        {
+          "species": "NOTCHBILL",
+          "level": 30,
+          "item": null,
+          "moves": [
+            {
+              "name": "HEADBUTT",
+              "current_pp": 15,
+              "pp_ups": 0
+            },
+            {
+              "name": "WING_ATTACK",
+              "current_pp": 35,
+              "pp_ups": 0
+            },
+            {
+              "name": "DETECT",
+              "current_pp": 5,
+              "pp_ups": 0
+            },
+            {
+              "name": "AGILITY",
+              "current_pp": 30,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 9,
+            "defense": 8,
+            "speed": 8,
+            "special": 8,
+            "hp": 8
+          }
+        },
+        {
+          "species": "BOOMRUFF",
+          "level": 31,
+          "item": null,
+          "moves": [
+            {
+              "name": "WING_ATTACK",
+              "current_pp": 35,
+              "pp_ups": 0
+            },
+            {
+              "name": "BELLY_DRUM",
+              "current_pp": 10,
+              "pp_ups": 0
+            },
+            {
+              "name": "MAGNITUDE",
+              "current_pp": 30,
+              "pp_ups": 0
+            },
+            {
+              "name": "SWAGGER",
+              "current_pp": 15,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 9,
+            "defense": 8,
+            "speed": 8,
+            "special": 8,
+            "hp": 8
+          }
+        }
+      ],
+      "before_lines": [
+        "A riverbank match?",
+        "My team is ready!"
+      ],
+      "after_lines": [
+        "Every bend brings",
+        "a new adventure!"
+      ],
+      "loss_lines": [
+        "What a wild ride!"
+      ],
+      "tile": [
+        47,
+        39
+      ],
+      "map": "MnMississippiLowerWoodsC00R00",
+      "global_tile": [
+        47,
+        39
+      ],
+      "path": [
+        {
+          "map": "MnMississippiLowerWoodsC00R00",
+          "point": [
+            50,
+            40
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC00R00",
+          "point": [
+            49,
+            40
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC00R00",
+          "point": [
+            48,
+            40
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC00R00",
+          "point": [
+            48,
+            39
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC00R00",
+          "point": [
+            48,
+            38
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC00R00",
+          "point": [
+            47,
+            38
+          ]
+        }
+      ],
+      "water": {
+        "map": "MnMississippiLowerWoodsC00R00",
+        "point": [
+          50,
+          39
+        ]
+      },
+      "current_native_actor": {
+        "sprite": "SPRITE_FALKNER",
+        "sprite_has_facings": true,
+        "x": 47,
+        "y": 39,
+        "spritemovedata": "SPRITEMOVEDATA_STANDING_LEFT",
+        "move_range_x": 0,
+        "move_range_y": 0,
+        "hram_x": -1,
+        "hram_y": -1,
+        "pal": 0,
+        "object_type": "OBJECTTYPE_TRAINER",
+        "radius": 2,
+        "script": "MN_RIVER_FUN_LOWER_REED",
+        "label": null,
+        "event_flag": "-1",
+        "object_identifier": "MN_RIVER_FUN_LOWER_REED",
+        "sightline_direction_override": null
+      }
+    },
+    {
+      "kind": "trainer",
+      "id": "MN_RIVER_FUN_LOWER_RORY",
+      "display_name": "RORY",
+      "trainer_class": "PICNICKER",
+      "sprite": "SPRITE_LASS",
+      "global_metatile": [
+        24,
+        17
+      ],
+      "facing": "west",
+      "sight_range": 2,
+      "defeated_flag": "EVENT_MN_RIVER_FUN_LOWER_RORY",
+      "party": [
+        {
+          "species": "RICELING",
+          "level": 29,
+          "item": null,
+          "moves": [
+            {
+              "name": "VINE_WHIP",
+              "current_pp": 10,
+              "pp_ups": 0
+            },
+            {
+              "name": "SWEET_SCENT",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "MEGA_DRAIN",
+              "current_pp": 10,
+              "pp_ups": 0
+            },
+            {
+              "name": "SYNTHESIS",
+              "current_pp": 5,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 6,
+            "defense": 10,
+            "speed": 10,
+            "special": 8,
+            "hp": 0
+          }
+        },
+        {
+          "species": "TAPACITOR",
+          "level": 30,
+          "item": null,
+          "moves": [
+            {
+              "name": "THUNDER_WAVE",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "MEGA_DRAIN",
+              "current_pp": 10,
+              "pp_ups": 0
+            },
+            {
+              "name": "SPARK",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "BIDE",
+              "current_pp": 10,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 6,
+            "defense": 10,
+            "speed": 10,
+            "special": 8,
+            "hp": 0
+          }
+        }
+      ],
+      "before_lines": [
+        "You found my spot!",
+        "Time for a battle!"
+      ],
+      "after_lines": [
+        "The grassy trails",
+        "are full of life!"
+      ],
+      "loss_lines": [
+        "Swept downstream!"
+      ],
+      "tile": [
+        49,
+        35
+      ],
+      "map": "MnMississippiLowerWoodsC00R00",
+      "global_tile": [
+        49,
+        35
+      ],
+      "path": [
+        {
+          "map": "MnMississippiLowerWoodsC00R00",
+          "point": [
+            49,
+            34
+          ]
+        }
+      ],
+      "water": {
+        "map": "MnMississippiLowerWoodsC00R00",
+        "point": [
+          50,
+          34
+        ]
+      },
+      "current_native_actor": {
+        "sprite": "SPRITE_LASS",
+        "sprite_has_facings": true,
+        "x": 49,
+        "y": 35,
+        "spritemovedata": "SPRITEMOVEDATA_STANDING_LEFT",
+        "move_range_x": 0,
+        "move_range_y": 0,
+        "hram_x": -1,
+        "hram_y": -1,
+        "pal": 0,
+        "object_type": "OBJECTTYPE_TRAINER",
+        "radius": 2,
+        "script": "MN_RIVER_FUN_LOWER_RORY",
+        "label": null,
+        "event_flag": "-1",
+        "object_identifier": "MN_RIVER_FUN_LOWER_RORY",
+        "sightline_direction_override": null
+      }
+    },
+    {
+      "kind": "trainer",
+      "id": "MN_RIVER_FUN_LOWER_ROSE",
+      "display_name": "ROSE",
+      "trainer_class": "PICNICKER",
+      "sprite": "SPRITE_LASS",
+      "global_metatile": [
+        43,
+        48
+      ],
+      "facing": "west",
+      "sight_range": 2,
+      "defeated_flag": "EVENT_MN_RIVER_FUN_LOWER_ROSE",
+      "party": [
+        {
+          "species": "RICELING",
+          "level": 30,
+          "item": null,
+          "moves": [
+            {
+              "name": "SWEET_SCENT",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "MEGA_DRAIN",
+              "current_pp": 10,
+              "pp_ups": 0
+            },
+            {
+              "name": "SYNTHESIS",
+              "current_pp": 5,
+              "pp_ups": 0
+            },
+            {
+              "name": "RAZOR_LEAF",
+              "current_pp": 25,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 6,
+            "defense": 10,
+            "speed": 10,
+            "special": 8,
+            "hp": 0
+          }
+        },
+        {
+          "species": "TAPACITOR",
+          "level": 31,
+          "item": null,
+          "moves": [
+            {
+              "name": "MEGA_DRAIN",
+              "current_pp": 10,
+              "pp_ups": 0
+            },
+            {
+              "name": "SPARK",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "BIDE",
+              "current_pp": 10,
+              "pp_ups": 0
+            },
+            {
+              "name": "LIGHT_SCREEN",
+              "current_pp": 30,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 6,
+            "defense": 10,
+            "speed": 10,
+            "special": 8,
+            "hp": 0
+          }
+        }
+      ],
+      "before_lines": [
+        "You found my spot!",
+        "Time for a battle!"
+      ],
+      "after_lines": [
+        "The grassy trails",
+        "are full of life!"
+      ],
+      "loss_lines": [
+        "Swept downstream!"
+      ],
+      "tile": [
+        23,
+        1
+      ],
+      "map": "MnMississippiLowerWoodsC01R02",
+      "global_tile": [
+        87,
+        97
+      ],
+      "path": [
+        {
+          "map": "MnMississippiLowerWoodsC01R02",
+          "point": [
+            23,
+            0
+          ]
+        }
+      ],
+      "water": {
+        "map": "MnMississippiLowerWoodsC01R02",
+        "point": [
+          24,
+          0
+        ]
+      },
+      "current_native_actor": {
+        "sprite": "SPRITE_LASS",
+        "sprite_has_facings": true,
+        "x": 23,
+        "y": 1,
+        "spritemovedata": "SPRITEMOVEDATA_STANDING_LEFT",
+        "move_range_x": 0,
+        "move_range_y": 0,
+        "hram_x": -1,
+        "hram_y": -1,
+        "pal": 0,
+        "object_type": "OBJECTTYPE_TRAINER",
+        "radius": 2,
+        "script": "MN_RIVER_FUN_LOWER_ROSE",
+        "label": null,
+        "event_flag": "-1",
+        "object_identifier": "MN_RIVER_FUN_LOWER_ROSE",
+        "sightline_direction_override": null
+      }
+    },
+    {
+      "kind": "item",
+      "id": "MN_RIVER_FUN_LOWER_SUPER_POTION",
+      "item": "SUPER_POTION",
+      "quantity": 1,
+      "flag": "EVENT_MN_RIVER_FUN_LOWER_SUPER_POTION",
+      "global_metatile": [
+        8,
+        31
+      ],
+      "tile": [
+        17,
+        15
+      ],
+      "map": "MnMississippiLowerWoodsC00R01",
+      "global_tile": [
+        17,
+        63
+      ],
+      "path": [
+        {
+          "map": "MnMississippiLowerWoodsC00R01",
+          "point": [
+            17,
+            18
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC00R01",
+          "point": [
+            16,
+            18
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC00R01",
+          "point": [
+            16,
+            17
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC00R01",
+          "point": [
+            16,
+            16
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC00R01",
+          "point": [
+            16,
+            15
+          ]
+        }
+      ],
+      "water": {
+        "map": "MnMississippiLowerWoodsC00R01",
+        "point": [
+          18,
+          18
+        ]
+      },
+      "current_native_actor": {
+        "sprite": "SPRITE_POKE_BALL",
+        "sprite_has_facings": true,
+        "x": 17,
+        "y": 15,
+        "spritemovedata": "SPRITEMOVEDATA_STANDING_DOWN",
+        "move_range_x": 0,
+        "move_range_y": 0,
+        "hram_x": -1,
+        "hram_y": -1,
+        "pal": 0,
+        "object_type": "OBJECTTYPE_ITEMBALL",
+        "radius": 0,
+        "script": "MN_RIVER_FUN_LOWER_SUPER_POTION",
+        "label": null,
+        "event_flag": "EVENT_MN_RIVER_FUN_LOWER_SUPER_POTION",
+        "object_identifier": "MN_RIVER_FUN_LOWER_SUPER_POTION",
+        "sightline_direction_override": null
+      }
+    },
+    {
+      "kind": "trainer",
+      "id": "MN_RIVER_FUN_LOWER_TOM",
+      "display_name": "TOM",
+      "trainer_class": "CAMPER",
+      "sprite": "SPRITE_YOUNGSTER",
+      "global_metatile": [
+        20,
+        23
+      ],
+      "facing": "west",
+      "sight_range": 2,
+      "defeated_flag": "EVENT_MN_RIVER_FUN_LOWER_TOM",
+      "party": [
+        {
+          "species": "AUGRUB",
+          "level": 29,
+          "item": null,
+          "moves": [
+            {
+              "name": "RAPID_SPIN",
+              "current_pp": 40,
+              "pp_ups": 0
+            },
+            {
+              "name": "MAGNITUDE",
+              "current_pp": 30,
+              "pp_ups": 0
+            },
+            {
+              "name": "LOW_KICK",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "DIG",
+              "current_pp": 10,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 9,
+            "defense": 8,
+            "speed": 8,
+            "special": 8,
+            "hp": 8
+          }
+        },
+        {
+          "species": "BRISTUB",
+          "level": 30,
+          "item": null,
+          "moves": [
+            {
+              "name": "BIND",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "HARDEN",
+              "current_pp": 30,
+              "pp_ups": 0
+            },
+            {
+              "name": "TAKE_DOWN",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "PROTECT",
+              "current_pp": 10,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 9,
+            "defense": 8,
+            "speed": 8,
+            "special": 8,
+            "hp": 8
+          }
+        }
+      ],
+      "before_lines": [
+        "You found my spot!",
+        "Time for a battle!"
+      ],
+      "after_lines": [
+        "The grassy trails",
+        "are full of life!"
+      ],
+      "loss_lines": [
+        "Swept downstream!"
+      ],
+      "tile": [
+        41,
+        47
+      ],
+      "map": "MnMississippiLowerWoodsC00R00",
+      "global_tile": [
+        41,
+        47
+      ],
+      "path": [
+        {
+          "map": "MnMississippiLowerWoodsC00R01",
+          "point": [
+            42,
+            3
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC00R01",
+          "point": [
+            42,
+            2
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC00R01",
+          "point": [
+            42,
+            1
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC00R01",
+          "point": [
+            42,
+            0
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC00R00",
+          "point": [
+            42,
+            47
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC00R00",
+          "point": [
+            42,
+            46
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC00R00",
+          "point": [
+            41,
+            46
+          ]
+        }
+      ],
+      "water": {
+        "map": "MnMississippiLowerWoodsC00R01",
+        "point": [
+          42,
+          4
+        ]
+      },
+      "current_native_actor": {
+        "sprite": "SPRITE_YOUNGSTER",
+        "sprite_has_facings": true,
+        "x": 41,
+        "y": 47,
+        "spritemovedata": "SPRITEMOVEDATA_STANDING_LEFT",
+        "move_range_x": 0,
+        "move_range_y": 0,
+        "hram_x": -1,
+        "hram_y": -1,
+        "pal": 0,
+        "object_type": "OBJECTTYPE_TRAINER",
+        "radius": 2,
+        "script": "MN_RIVER_FUN_LOWER_TOM",
+        "label": null,
+        "event_flag": "-1",
+        "object_identifier": "MN_RIVER_FUN_LOWER_TOM",
+        "sightline_direction_override": null
+      }
+    },
+    {
+      "kind": "trainer",
+      "id": "MN_RIVER_FUN_LOWER_WADE",
+      "display_name": "WADE",
+      "trainer_class": "FISHER",
+      "sprite": "SPRITE_FISHER",
+      "global_metatile": [
+        58,
+        31
+      ],
+      "facing": "west",
+      "sight_range": 2,
+      "defeated_flag": "EVENT_MN_RIVER_FUN_LOWER_WADE",
+      "party": [
+        {
+          "species": "RILLBOW",
+          "level": 30,
+          "item": null,
+          "moves": [
+            {
+              "name": "ENDURE",
+              "current_pp": 10,
+              "pp_ups": 0
+            },
+            {
+              "name": "LOW_KICK",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "WATER_PULSE",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "COUNTER",
+              "current_pp": 20,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 9,
+            "defense": 8,
+            "speed": 8,
+            "special": 8,
+            "hp": 8
+          }
+        },
+        {
+          "species": "TORROUT",
+          "level": 31,
+          "item": null,
+          "moves": [
+            {
+              "name": "LOW_KICK",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "WATER_PULSE",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "COUNTER",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "RAIN_DANCE",
+              "current_pp": 5,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 9,
+            "defense": 8,
+            "speed": 8,
+            "special": 8,
+            "hp": 8
+          }
+        }
+      ],
+      "before_lines": [
+        "A riverbank match?",
+        "My team is ready!"
+      ],
+      "after_lines": [
+        "Every bend brings",
+        "a new adventure!"
+      ],
+      "loss_lines": [
+        "What a wild ride!"
+      ],
+      "tile": [
+        53,
+        15
+      ],
+      "map": "MnMississippiLowerWoodsC01R01",
+      "global_tile": [
+        117,
+        63
+      ],
+      "path": [
+        {
+          "map": "MnMississippiLowerWoodsC01R01",
+          "point": [
+            50,
+            14
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R01",
+          "point": [
+            51,
+            14
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R01",
+          "point": [
+            52,
+            14
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R01",
+          "point": [
+            53,
+            14
+          ]
+        }
+      ],
+      "water": {
+        "map": "MnMississippiLowerWoodsC01R01",
+        "point": [
+          49,
+          14
+        ]
+      },
+      "current_native_actor": {
+        "sprite": "SPRITE_FISHER",
+        "sprite_has_facings": true,
+        "x": 53,
+        "y": 15,
+        "spritemovedata": "SPRITEMOVEDATA_STANDING_LEFT",
+        "move_range_x": 0,
+        "move_range_y": 0,
+        "hram_x": -1,
+        "hram_y": -1,
+        "pal": 0,
+        "object_type": "OBJECTTYPE_TRAINER",
+        "radius": 2,
+        "script": "MN_RIVER_FUN_LOWER_WADE",
+        "label": null,
+        "event_flag": "-1",
+        "object_identifier": "MN_RIVER_FUN_LOWER_WADE",
+        "sightline_direction_override": null
+      }
+    },
+    {
+      "kind": "trainer",
+      "id": "MN_RIVER_LOWER_BANK_FISHER",
+      "map": "MnMississippiLowerWoodsC00R01",
+      "tile": [
+        21,
+        13
+      ],
+      "global_tile": [
+        21,
+        61
+      ],
+      "path": [
+        {
+          "map": "MnMississippiLowerWoodsC00R01",
+          "point": [
+            20,
+            15
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC00R01",
+          "point": [
+            20,
+            14
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC00R01",
+          "point": [
+            20,
+            13
+          ]
+        }
+      ],
+      "water": {
+        "map": "MnMississippiLowerWoodsC00R01",
+        "point": [
+          20,
+          16
+        ]
+      },
+      "display_name": "ELI",
+      "trainer_class": "FISHER",
+      "party": [
+        {
+          "species": "TORROUT",
+          "level": 30,
+          "item": null,
+          "moves": [
+            {
+              "name": "ENDURE",
+              "current_pp": 10,
+              "pp_ups": 0
+            },
+            {
+              "name": "LOW_KICK",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "WATER_PULSE",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "COUNTER",
+              "current_pp": 20,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 9,
+            "defense": 8,
+            "speed": 8,
+            "special": 8,
+            "hp": 8
+          }
+        },
+        {
+          "species": "RILLBOW",
+          "level": 29,
+          "item": null,
+          "moves": [
+            {
+              "name": "ENDURE",
+              "current_pp": 10,
+              "pp_ups": 0
+            },
+            {
+              "name": "LOW_KICK",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "WATER_PULSE",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "COUNTER",
+              "current_pp": 20,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 9,
+            "defense": 8,
+            "speed": 8,
+            "special": 8,
+            "hp": 8
+          }
+        }
+      ],
+      "defeated_flag": "EVENT_MN_RIVER_LOWER_BANK_FISHER_DEFEATED",
+      "current_native_actor": {
+        "sprite": "SPRITE_FISHER",
+        "sprite_has_facings": true,
+        "x": 21,
+        "y": 13,
+        "spritemovedata": "SPRITEMOVEDATA_STANDING_DOWN",
+        "move_range_x": 0,
+        "move_range_y": 0,
+        "hram_x": -1,
+        "hram_y": -1,
+        "pal": 0,
+        "object_type": "OBJECTTYPE_TRAINER",
+        "radius": 0,
+        "script": "MN_RIVER_LOWER_BANK_FISHER",
+        "label": null,
+        "event_flag": "-1",
+        "object_identifier": "MN_RIVER_LOWER_BANK_FISHER",
+        "sightline_direction_override": null
+      }
+    },
+    {
+      "kind": "trainer",
+      "id": "MN_RIVER_LOWER_PINE_KEEPER",
+      "map": "MnMississippiLowerWoodsC01R01",
+      "tile": [
+        39,
+        35
+      ],
+      "global_tile": [
+        103,
+        83
+      ],
+      "path": [
+        {
+          "map": "MnMississippiLowerWoodsC01R01",
+          "point": [
+            41,
+            35
+          ]
+        },
+        {
+          "map": "MnMississippiLowerWoodsC01R01",
+          "point": [
+            40,
+            35
+          ]
+        }
+      ],
+      "water": {
+        "map": "MnMississippiLowerWoodsC01R01",
+        "point": [
+          42,
+          35
+        ]
+      },
+      "display_name": "ASH",
+      "trainer_class": "BIRD_KEEPER",
+      "party": [
+        {
+          "species": "BOOMRUFF",
+          "level": 31,
+          "item": null,
+          "moves": [
+            {
+              "name": "WING_ATTACK",
+              "current_pp": 35,
+              "pp_ups": 0
+            },
+            {
+              "name": "BELLY_DRUM",
+              "current_pp": 10,
+              "pp_ups": 0
+            },
+            {
+              "name": "MAGNITUDE",
+              "current_pp": 30,
+              "pp_ups": 0
+            },
+            {
+              "name": "SWAGGER",
+              "current_pp": 15,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 9,
+            "defense": 8,
+            "speed": 8,
+            "special": 8,
+            "hp": 8
+          }
+        },
+        {
+          "species": "NOTCHBILL",
+          "level": 30,
+          "item": null,
+          "moves": [
+            {
+              "name": "HEADBUTT",
+              "current_pp": 15,
+              "pp_ups": 0
+            },
+            {
+              "name": "WING_ATTACK",
+              "current_pp": 35,
+              "pp_ups": 0
+            },
+            {
+              "name": "DETECT",
+              "current_pp": 5,
+              "pp_ups": 0
+            },
+            {
+              "name": "AGILITY",
+              "current_pp": 30,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 9,
+            "defense": 8,
+            "speed": 8,
+            "special": 8,
+            "hp": 8
+          }
+        }
+      ],
+      "defeated_flag": "EVENT_MN_RIVER_LOWER_PINE_KEEPER_DEFEATED",
+      "current_native_actor": {
+        "sprite": "SPRITE_YOUNGSTER",
+        "sprite_has_facings": true,
+        "x": 39,
+        "y": 35,
+        "spritemovedata": "SPRITEMOVEDATA_STANDING_DOWN",
+        "move_range_x": 0,
+        "move_range_y": 0,
+        "hram_x": -1,
+        "hram_y": -1,
+        "pal": 0,
+        "object_type": "OBJECTTYPE_TRAINER",
+        "radius": 0,
+        "script": "MN_RIVER_LOWER_PINE_KEEPER",
+        "label": null,
+        "event_flag": "-1",
+        "object_identifier": "MN_RIVER_LOWER_PINE_KEEPER",
+        "sightline_direction_override": null
+      }
+    }
+  ],
+  "scope": "All twenty current Lower Woods trainers, three supplies and one medic; current native parties replace historical foreign-species metadata. Initial local party/placement remains fixture setup.",
+  "inherited_plan": "planning/minnesota/revisions/route-grass-v01/current-lower-woods-v01/current-controller-plan-v02.json",
+  "inherited_plan_sha256": "7e1df876e17f291385f2346c648bac556a9fa44fb398e38f1c16ed1679320a34"
+}

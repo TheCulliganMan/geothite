@@ -61,10 +61,17 @@ fn fixture(
     complete_visible_smoke_player_name_if_needed(&mut controller.shell, Some("CHRIS"))
         .expect("fixture name");
     if headbutt {
+        // Keep original-only source fixtures compatible, while regional review
+        // uses a Minnesota partner that can learn Headbutt.
+        let species = if runtime.data().pokemon.contains_key("NOTCHBILL") {
+            "NOTCHBILL"
+        } else {
+            "MEW"
+        };
         let mut pokemon = runtime
             .data()
-            .create_pokemon("MEW", 60, Dv::default())
-            .expect("source-compatible fixture partner");
+            .create_pokemon(species, 60, Dv::default())
+            .expect("source-compatible native fixture partner");
         pokemon.moves = vec![LearnedMove {
             name: "HEADBUTT".into(),
             current_pp: runtime.data().moves["HEADBUTT"].pp,

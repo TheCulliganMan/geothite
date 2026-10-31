@@ -1,0 +1,21 @@
+{
+  "status": "PASS",
+  "selected_revision": "route_grass_r13_boundary_apron_revision",
+  "pack": "content-packs/minnesota-current-r13-boundary-apron-v03.crystalpack",
+  "pack_sha256": "7d3987bfbf0378aed960495cc20981c0d258eb391f33630b8e3de6c2686e2e7d",
+  "maps": [
+    "MnR14C00R00",
+    "MnR14C00R01",
+    "MnR14C01R00",
+    "MnR14C01R01"
+  ],
+  "all_four_maps_and_native_art_exact_to_accepted_forest_bank": true,
+  "current_layout": {
+    "path": "planning/minnesota/revisions/route-grass-v01/current-r14-closed-bank-v01/after.layout.json",
+    "sha256": "0ba5f853f8457b8cfdd663870818eb3a6ca50545dbbe6447e6d78457a9fc3229"
+  },
+  "current_dossier": {
+    "path": "planning/minnesota/revisions/route-grass-v01/current-r14-closed-bank-v01/MN_R14.dossier.json",
+    "sha256": "4c299f6748b49325c7ea7537aa60c72887cc02c7a6db0d705974273b2d7afd7a"
+  }
+}
