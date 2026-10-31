@@ -158,7 +158,7 @@ pub(super) fn reauthor_frozen(mut pack: CompiledGamePack, source: &str) -> Compi
         super::publish(&mut pack, map)
             .expect("only recompile the reviewed text on the frozen actors and programs");
     }
-    assert_eq!(changes, 138, "reviewed full-story storyboard changes");
+    assert_eq!(changes, 142, "reviewed full-story storyboard changes");
     let supporting_maps = new
         .texts
         .keys()

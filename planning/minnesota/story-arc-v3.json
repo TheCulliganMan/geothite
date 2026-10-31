@@ -39,8 +39,10 @@
       "And ELLIS? What did they do?"
     ],
     "MnNICEReedAcceptText": [
-      "REED: Pay me every Friday.",
-      "And I choose who comes downstairs."
+      "REED: I heard him.",
+      "But I need work.",
+      "Pay me on Friday.",
+      "I will guard it."
     ],
     "MnNICEReedAfterText": [
       "REED: You made me look useless in front of them.",
@@ -81,30 +83,48 @@
       "SERA: Please do not leave me alone with him."
     ],
     "MnArcSCStandText": [
-      "SERA: You are not police. I am going to the ranger.",
-      "REED: Keep your witness. I am due at the drill."
+      "You step between",
+      "REED and SERA.",
+      "SERA: I am going.",
+      "I will get help.",
+      "REED: Fine. Go."
     ],
     "MnArcSCReleasedText": [
-      "SERA: The path is clear. I will get help for the other shift."
+      "SERA: I will tell",
+      "the clinic staff.",
+      "The other shift",
+      "needs help too."
     ],
     "MnArcSCAfterText": [
-      "SERA: The ranger took my account. They cannot call us missing now."
+      "SERA: I know who",
+      "was on that shift.",
+      "I'll tell a nurse",
+      "who is still held."
     ],
     "MnNDrillReedWorkText": [
       "REED: I signed for this run. Keep the drive moving."
     ],
     "MnNDrillReedSeenText": [
-      "REED: They said I could run the next shift.",
-      "FINN: We are still under the head!",
-      "REED: I heard him. The foreman gave the order.",
-      "You do not get to take this from me too."
+      "REED: Next shift,",
+      "I get to lead.",
+      "FINN: We are under",
+      "the drill head!",
+      "REED: I heard him.",
+      "If I stop this,",
+      "I lose that shift.",
+      "Stay away from",
+      "the switch."
     ],
     "MnNDrillReedWonText": [
       "They saw that. There goes the promotion."
     ],
     "MnNDrillReedAfterText": [
-      "REED: The Boundary job is still on.",
-      "When the chief gets that Pokemon, nobody will care about this shift."
+      "REED: My name is",
+      "on that order.",
+      "The chief offered",
+      "me one last job.",
+      "He still promises",
+      "a stronger team."
     ],
     "MnArcHarborIntakeText": [
       "WORKER: That is a locking cradle.",
@@ -125,10 +145,14 @@
       "ELLIS: The intake crew is waiting. The hatch is on your right."
     ],
     "MnArcFinalBeforeText": [
-      "REED: The chief promised a team nobody could beat.",
-      "You get applause for every job I lose.",
-      "IVY: You saw what was in the cage.",
-      "REED: I know what is in it. I am not walking away empty-handed."
+      "REED: The chief",
+      "promised a team",
+      "no one could beat.",
+      "IVY: Look at",
+      "KETTLURK suffer!",
+      "REED: I see it.",
+      "I will not leave",
+      "with nothing now."
     ],
     "MnArcFinalReadyText": [
       "REED is holding the local drive. Your team ready?"
@@ -137,7 +161,8 @@
       "IVY: The medic is upstairs. We will hold here."
     ],
     "MnArcFinalWonText": [
-      "REED: I kept getting stronger. You kept getting in."
+      "REED: They said",
+      "I could beat you."
     ],
     "MnArcFinalAfterText": [
       "REED: Fine. Touch it. See who gets paid for this mess."

@@ -3121,15 +3121,12 @@
         ],
         "MN_MP_DISPATCHER_PARTNERAfterText": [
           [
-            "JO: ELLIS is home!"
+            "JO: He fell asleep",
+            "at the table."
           ],
           [
-            "Thank you for",
-            "bringing him back."
-          ],
-          [
-            "He kept a record",
-            "of the shipment."
+            "I left a light on.",
+            "Thank you."
           ]
         ],
         "MN_MP_RESCUED_DISPATCHERText": [
@@ -3198,12 +3195,15 @@
         ],
         "MnNICEEllisAfterText": [
           [
-            "ELLIS: MINA works",
-            "at UNION DEPOT."
+            "ELLIS: JO kept",
+            "my supper."
           ],
           [
-            "Show her the",
-            "dispatch copy."
+            "I could not eat."
+          ],
+          [
+            "Show MINA my copy",
+            "at ST PAUL depot."
           ]
         ],
         "MnMPEllisSurveyReturnText": [
@@ -3449,8 +3449,8 @@
         ],
         "MnNICEReedAcceptText": [
           [
-            "REED: A wage and",
-            "an ICE badge?"
+            "REED: I heard him.",
+            "But I need work."
           ],
           [
             "Pay me on Friday.",
@@ -4081,8 +4081,8 @@
             "for every lake."
           ],
           [
-            "These places were",
-            "never measured."
+            "These cannot show",
+            "each lake's level."
           ]
         ],
         "MnBemidjiNotebookMatchText": [
@@ -4470,20 +4470,20 @@
         ],
         "MnGrandRapidsDepotReadText": [
           [
-            "TECH: Here is the",
-            "test log."
+            "TECH: Its log",
+            "survived the jam."
           ],
           [
             "The pumps ran. The",
             "water fell."
           ],
           [
-            "Each test shows",
-            "the same thing."
+            "It happened with",
+            "each pump test."
           ],
           [
             "LODE filed these",
-            "as surveys."
+            "as lake surveys."
           ],
           [
             "I will keep the",
@@ -4961,24 +4961,22 @@
       "MnBoundaryIntake": {
         "MnArcFinalBeforeText": [
           [
-            "REED: This is my",
-            "last contract."
+            "REED: The chief",
+            "promised a team"
           ],
           [
-            "The chief paid me",
-            "to guard this."
+            "no one could beat."
           ],
           [
             "IVY: Look at",
             "KETTLURK suffer!"
           ],
           [
-            "REED: I know what",
-            "I signed."
+            "REED: I see it.",
+            "I will not leave"
           ],
           [
-            "Stay away from",
-            "that switch."
+            "with nothing now."
           ]
         ],
         "MnArcFinalReadyText": [
@@ -5104,12 +5102,8 @@
         ],
         "MnArcFinalWonText": [
           [
-            "REED: I kept",
-            "getting stronger."
-          ],
-          [
-            "You kept getting",
-            "in my way."
+            "REED: They said",
+            "I could beat you."
           ]
         ],
         "MnArcIntakeSeenText": [
@@ -5528,8 +5522,8 @@
         ],
         "MnNDrillReedSeenText": [
           [
-            "REED: Stop there.",
-            "I guard this test."
+            "REED: Next shift,",
+            "I get to lead."
           ],
           [
             "FINN: We are under",
@@ -5539,12 +5533,12 @@
             "REED: I heard him."
           ],
           [
-            "The foreman wants",
-            "a full test."
+            "If I stop this,",
+            "I lose that shift."
           ],
           [
-            "I am keeping my",
-            "contract."
+            "Stay away from",
+            "the switch."
           ]
         ],
         "MnNDrillReedWonText": [
@@ -5565,12 +5559,12 @@
             "on that order."
           ],
           [
-            "Now they want me",
-            "at the intake."
+            "The chief offered",
+            "me one last job."
           ],
           [
-            "The chief is",
-            "paying me himself."
+            "He still promises",
+            "a stronger team."
           ]
         ],
         "MnNDrillPowerText": [
@@ -5822,8 +5816,8 @@
             "REED and SERA."
           ],
           [
-            "SERA: I am going",
-            "to the clinic."
+            "SERA: I am going.",
+            "I will get help."
           ],
           [
             "REED: Fine. Go."
@@ -5831,21 +5825,22 @@
         ],
         "MnArcSCReleasedText": [
           [
-            "SERA walks away",
-            "from the transfer."
+            "SERA: I will tell",
+            "the clinic staff."
           ],
           [
-            "REED: LODE will",
-            "hear about this."
+            "The other shift",
+            "needs help too."
           ]
         ],
         "MnArcSCAfterText": [
           [
-            "SERA is safe now."
+            "SERA: I know who",
+            "was on that shift."
           ],
           [
-            "The transfer has",
-            "stopped."
+            "I'll tell a nurse",
+            "who is still held."
           ]
         ],
         "MnArcSeraWaitingText": [
@@ -6874,7 +6869,7 @@
           ],
           [
             "The east steps",
-            "reaches the bluff."
+            "reach the bluff."
           ],
           [
             "That BERRY is",

@@ -1,0 +1,467 @@
+{
+  "schema_version": 1,
+  "texts": {
+    "MnR01Farmhouse": {
+      "MN_R01_FARMERText": [
+        [
+          "FARMER: Watch the",
+          "tall grass."
+        ],
+        [
+          "Wild POKEMON",
+          "hide there."
+        ],
+        [
+          "The east steps",
+          "reach the bluff."
+        ],
+        [
+          "That BERRY is",
+          "for your partner."
+        ],
+        [
+          "IVY works at the",
+          "ROCHESTER clinic."
+        ]
+      ]
+    },
+    "MnWinonaFieldStation": {
+      "MnWTamarackDeliveryReturnText": [
+        [
+          "TAMARACK: IVY",
+          "called. Thank you!"
+        ],
+        [
+          "She has my notes",
+          "safe and sound."
+        ],
+        [
+          "Our aide can offer",
+          "the other starters"
+        ],
+        [
+          "for your research.",
+          "Ask at the desk!"
+        ]
+      ],
+      "MnOverhaulTamarackIntroText": [
+        [
+          "TAMARACK: Hello!",
+          "Thanks for coming."
+        ],
+        [
+          "I study the river",
+          "and its POKEMON."
+        ],
+        [
+          "IVY works at the",
+          "ROCHESTER clinic."
+        ],
+        [
+          "She needs my notes",
+          "on water levels."
+        ],
+        [
+          "Will you take her",
+          "this envelope?"
+        ],
+        [
+          "Wild POKEMON live",
+          "along the trail."
+        ],
+        [
+          "Choose a partner",
+          "for your journey."
+        ]
+      ],
+      "MnNSEReedArrivalText": [
+        [
+          "REED: A delivery?",
+          "Is it paid work?"
+        ],
+        [
+          "I came to ask",
+          "about escort work."
+        ],
+        [
+          "My team can guard",
+          "the field crews."
+        ]
+      ],
+      "MnWReadingsText": [
+        [
+          "TAMARACK: You two",
+          "look ready!"
+        ],
+        [
+          "These are my",
+          "original notes."
+        ],
+        [
+          "You received the",
+          "sealed envelope."
+        ],
+        [
+          "TAMARACK: IVY is",
+          "at the clinic."
+        ],
+        [
+          "Take ROUTE 01 west",
+          "to ROCHESTER."
+        ]
+      ]
+    },
+    "MnStPaulUnionDepot": {
+      "MN_GLACIER_LINE_TIMETABLEText": [
+        [
+          "GLACIER LINE",
+          "DETROIT LAKES"
+        ],
+        [
+          "STAPLES",
+          "ST CLOUD"
+        ],
+        [
+          "ST PAUL",
+          "WINONA"
+        ],
+        [
+          "The conductor has",
+          "return trip times."
+        ]
+      ],
+      "MN_ST_PAUL_DEPOT_CLERKText": [
+        [
+          "CLERK: Welcome to",
+          "UNION DEPOT."
+        ],
+        [
+          "Ask the conductor",
+          "about return trips"
+        ],
+        [
+          "to stations you",
+          "have visited."
+        ],
+        [
+          "The courier case",
+          "must be settled."
+        ]
+      ]
+    },
+    "MnBoundaryIntake": {
+      "MnArcIntakeIvyText": [
+        [
+          "IVY: My crew was",
+          "sent to build this"
+        ],
+        [
+          "intake. REED now",
+          "guards the drive."
+        ],
+        [
+          "Keep clear of the",
+          "green water."
+        ],
+        [
+          "The drill, outlet",
+          "and clean bypass"
+        ],
+        [
+          "have separate",
+          "controls."
+        ]
+      ],
+      "MnArcIntakeFinnText": [
+        [
+          "FINN: Stop the",
+          "drill first."
+        ],
+        [
+          "Seal the dirty",
+          "outlet in the"
+        ],
+        [
+          "lower bay. Then",
+          "open the clean"
+        ],
+        [
+          "bypass beside the",
+          "west drive."
+        ],
+        [
+          "We can get the",
+          "crew clear then."
+        ]
+      ],
+      "MnArcFinalBeforeText": [
+        [
+          "REED: The chief",
+          "promised a team"
+        ],
+        [
+          "no one could beat."
+        ],
+        [
+          "IVY: Look at",
+          "KETTLURK suffer!"
+        ],
+        [
+          "REED: I see it.",
+          "I will not leave"
+        ],
+        [
+          "with nothing now."
+        ]
+      ],
+      "MnArcFinalWonText": [
+        [
+          "REED: They said",
+          "I could beat you."
+        ]
+      ]
+    },
+    "MnLeechLake": {
+      "MN_LEECH_SHORE_FISHERText": [
+        [
+          "FISHER: LODE lists",
+          "last year's catch."
+        ],
+        [
+          "My nets came up",
+          "empty this week."
+        ],
+        [
+          "The pine island's",
+          "landing is west."
+        ],
+        [
+          "WHIRLPOOL opens",
+          "the eastern cove."
+        ],
+        [
+          "Try ITEMFINDER at",
+          "the eastern rocks."
+        ]
+      ],
+      "MN_LEECH_SHORE_WALKERText": [
+        [
+          "WALKER: ICE tried",
+          "to shut the shore."
+        ],
+        [
+          "This is public",
+          "land and water."
+        ],
+        [
+          "We can fish here",
+          "without their say."
+        ],
+        [
+          "The pine path",
+          "joins both cabins."
+        ],
+        [
+          "Watch the grass."
+        ]
+      ]
+    },
+    "MnDuluthHarborWorkshop": {
+      "MnOverhaulHarborDirectionsText": [
+        [
+          "ENGINEER: Take the",
+          "plans and log."
+        ],
+        [
+          "Find the shelter",
+          "past GRAND MARAIS."
+        ],
+        [
+          "Send the records",
+          "over its radio."
+        ],
+        [
+          "We will meet you",
+          "at the intake."
+        ]
+      ]
+    },
+    "MnMinneapolisDispatcherHouse": {
+      "MN_MP_DISPATCHER_PARTNERAfterText": [
+        [
+          "JO: He fell asleep",
+          "at the table."
+        ],
+        [
+          "I left a light on.",
+          "Thank you."
+        ]
+      ],
+      "MnNICEEllisAfterText": [
+        [
+          "ELLIS: JO kept",
+          "my supper."
+        ],
+        [
+          "I could not eat."
+        ],
+        [
+          "Show MINA my copy",
+          "at ST PAUL depot."
+        ]
+      ]
+    },
+    "MnMinneapolisDispatchOffice": {
+      "MnNICEReedAcceptText": [
+        [
+          "REED: I heard him.",
+          "But I need work."
+        ],
+        [
+          "Pay me on Friday.",
+          "I will guard it."
+        ]
+      ]
+    },
+    "MnBemidji": {
+      "MnBemidjiComparisonText": [
+        [
+          "OFFICER: Here is",
+          "the ITASCA log."
+        ],
+        [
+          "Its levels change",
+          "from day to day."
+        ],
+        [
+          "Now look at",
+          "LODE's reports."
+        ],
+        [
+          "Every lake has the",
+          "same numbers."
+        ],
+        [
+          "Even the same",
+          "ink blot!"
+        ],
+        [
+          "One page was used",
+          "for every lake."
+        ],
+        [
+          "These cannot show",
+          "each lake's level."
+        ]
+      ]
+    },
+    "MnGrandRapidsSurveyDepot": {
+      "MnGrandRapidsDepotReadText": [
+        [
+          "TECH: Its log",
+          "survived the jam."
+        ],
+        [
+          "The pumps ran. The",
+          "water fell."
+        ],
+        [
+          "It happened with",
+          "each pump test."
+        ],
+        [
+          "LODE filed these",
+          "as lake surveys."
+        ],
+        [
+          "I will keep the",
+          "meter safe."
+        ],
+        [
+          "You received a",
+          "test log copy."
+        ],
+        [
+          "TECH: Show this at",
+          "DULUTH harbor."
+        ],
+        [
+          "The engineer knows",
+          "these pumps."
+        ]
+      ]
+    },
+    "MnIronDrillCore": {
+      "MnNDrillReedSeenText": [
+        [
+          "REED: Next shift,",
+          "I get to lead."
+        ],
+        [
+          "FINN: We are under",
+          "the drill head!"
+        ],
+        [
+          "REED: I heard him."
+        ],
+        [
+          "If I stop this,",
+          "I lose that shift."
+        ],
+        [
+          "Stay away from",
+          "the switch."
+        ]
+      ],
+      "MnNDrillReedAfterText": [
+        [
+          "REED: My name is",
+          "on that order."
+        ],
+        [
+          "The chief offered",
+          "me one last job."
+        ],
+        [
+          "He still promises",
+          "a stronger team."
+        ]
+      ]
+    },
+    "MnStCloud": {
+      "MnArcSCStandText": [
+        [
+          "You step between",
+          "REED and SERA."
+        ],
+        [
+          "SERA: I am going.",
+          "I will get help."
+        ],
+        [
+          "REED: Fine. Go."
+        ]
+      ],
+      "MnArcSCReleasedText": [
+        [
+          "SERA: I will tell",
+          "the clinic staff."
+        ],
+        [
+          "The other shift",
+          "needs help too."
+        ]
+      ],
+      "MnArcSCAfterText": [
+        [
+          "SERA: I know who",
+          "was on that shift."
+        ],
+        [
+          "I'll tell a nurse",
+          "who is still held."
+        ]
+      ]
+    }
+  }
+}
