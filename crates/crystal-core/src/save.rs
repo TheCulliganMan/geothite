@@ -43,7 +43,8 @@ pub(crate) fn pre_regional_day_care_wire() -> bool {
     roaming_save_v24_wire() || DAY_CARE_SAVE_V25_WIRE.with(std::cell::Cell::get)
 }
 
-fn with_v25_day_care_wire<T>(operation: impl FnOnce() -> T) -> T {
+/// Uses the original v25 wire shape for checked migrations and legacy baselines.
+pub(crate) fn with_v25_day_care_wire<T>(operation: impl FnOnce() -> T) -> T {
     struct Restore(bool);
     impl Drop for Restore {
         fn drop(&mut self) {
@@ -842,29 +843,41 @@ pub fn request_saved_clock_reset_for_modpack(
     let path = path.as_ref();
     let mut save = read_save_game_for_modpack(path, expected, expected_pack_content_hash)?;
     if save.metadata.saved_state_hash != expected_state_hash {
-        return Err(SaveError::InvalidState("saved clock password data changed before confirmation".into()));
+        return Err(SaveError::InvalidState(
+            "saved clock password data changed before confirmation".into(),
+        ));
     }
     save.state.time.rtc_status_flags = crate::systems::time::RTC_RESET;
     save.metadata.saved_state_hash = game_state_checksum(&save.state)
-        .map_err(|error| SaveError::InvalidState(format!("clock reset checksum: {error}")))?.hash();
+        .map_err(|error| SaveError::InvalidState(format!("clock reset checksum: {error}")))?
+        .hash();
     save.validate()?;
     write_save_game(path, &save)
 }
 
 pub fn restart_saved_clock_for_modpack(
-    path: impl AsRef<Path>, expected: &SaveModpackIdentity, expected_pack_content_hash: &str,
-    expected_state_hash: u32, now_date: crate::systems::time::GameDate,
-    now: crate::systems::time::ClockTime, target: crate::systems::time::ClockTime,
+    path: impl AsRef<Path>,
+    expected: &SaveModpackIdentity,
+    expected_pack_content_hash: &str,
+    expected_state_hash: u32,
+    now_date: crate::systems::time::GameDate,
+    now: crate::systems::time::ClockTime,
+    target: crate::systems::time::ClockTime,
 ) -> Result<(), SaveError> {
     let path = path.as_ref();
     let mut save = read_save_game_for_modpack(path, expected, expected_pack_content_hash)?;
     if save.metadata.saved_state_hash != expected_state_hash {
-        return Err(SaveError::InvalidState("saved clock data changed before restart".into()));
+        return Err(SaveError::InvalidState(
+            "saved clock data changed before restart".into(),
+        ));
     }
-    save.state.time.set_manual_time(now_date, now.hour, now.minute, now.second, target);
+    save.state
+        .time
+        .set_manual_time(now_date, now.hour, now.minute, now.second, target);
     save.state.time.normalize_rtc_for_save();
     save.metadata.saved_state_hash = game_state_checksum(&save.state)
-        .map_err(|error| SaveError::InvalidState(format!("clock restart checksum: {error}")))?.hash();
+        .map_err(|error| SaveError::InvalidState(format!("clock restart checksum: {error}")))?
+        .hash();
     save.validate()?;
     write_save_game(path, &save)
 }
@@ -1235,7 +1248,10 @@ mod tests {
             }
             let json = serde_json::to_value(&state.roaming_pokemon[0]).unwrap();
             assert_eq!(json.get("scaled_hp").is_some(), scaled_hp.is_some());
-            let save = test_save(state, SaveModpackIdentity::new("core", pack_content_hash()).unwrap());
+            let save = test_save(
+                state,
+                SaveModpackIdentity::new("core", pack_content_hash()).unwrap(),
+            );
             let bytes = encode_save_game_bytes(&save).unwrap();
             let loaded = read_save_game_bytes(&bytes, "roamer.crystalsave").unwrap();
             assert_eq!(loaded, save);
@@ -1247,29 +1263,45 @@ mod tests {
     fn binary_save_migrates_v24_roamers_with_checksum_validation() {
         let mut state = GameState::default();
         state.money = 1234;
-        state.script_runtime.memory.insert("GEOTHITE_TRAINER_WON_VioletGym_ABE".into(), "1".into());
-        let mut old = test_save(state, SaveModpackIdentity::new("core", pack_content_hash()).unwrap());
+        state
+            .script_runtime
+            .memory
+            .insert("GEOTHITE_TRAINER_WON_VioletGym_ABE".into(), "1".into());
+        let mut old = test_save(
+            state,
+            SaveModpackIdentity::new("core", pack_content_hash()).unwrap(),
+        );
         old.format_version = PRE_SCALED_ROAMING_SAVE_VERSION;
-        old.metadata.saved_state_hash = with_v24_roaming_wire(|| game_state_checksum(&old.state)).unwrap().hash();
+        old.metadata.saved_state_hash = with_v24_roaming_wire(|| game_state_checksum(&old.state))
+            .unwrap()
+            .hash();
         let mut bytes = with_v24_roaming_wire(|| encode_save_game_bytes(&old)).unwrap();
         bytes[SAVE_VERSION_OFFSET..SAVE_VERSION_OFFSET + 2]
             .copy_from_slice(&PRE_SCALED_ROAMING_SAVE_VERSION.to_be_bytes());
         let loaded = read_save_game_bytes(&bytes, "v24.crystalsave").unwrap();
         assert_eq!(loaded.state, old.state);
         assert_eq!(loaded.format_version, SAVE_FORMAT_VERSION);
-        assert_eq!(loaded.metadata.saved_state_hash, game_state_checksum(&loaded.state).unwrap().hash());
+        assert_eq!(
+            loaded.metadata.saved_state_hash,
+            game_state_checksum(&loaded.state).unwrap().hash()
+        );
         assert!(!roaming_save_v24_wire());
 
         // A valid outer frame must not bypass the old state checksum while
         // migration updates the checksum to the new serialization layout.
         old.metadata.saved_state_hash ^= 1;
-        let payload = with_v24_roaming_wire(|| bincode::serde::encode_to_vec(&old, save_binary_config())).unwrap();
+        let payload =
+            with_v24_roaming_wire(|| bincode::serde::encode_to_vec(&old, save_binary_config()))
+                .unwrap();
         let mut corrupt = SAVE_MAGIC.to_vec();
         corrupt.extend_from_slice(&PRE_SCALED_ROAMING_SAVE_VERSION.to_be_bytes());
         corrupt.extend_from_slice(&(payload.len() as u32).to_be_bytes());
         corrupt.extend_from_slice(&fnv1a32_bytes(&payload).to_be_bytes());
         corrupt.extend_from_slice(&payload);
-        assert!(matches!(read_save_game_bytes(&corrupt, "corrupt-v24.crystalsave"), Err(SaveError::Decode(_))));
+        assert!(matches!(
+            read_save_game_bytes(&corrupt, "corrupt-v24.crystalsave"),
+            Err(SaveError::Decode(_))
+        ));
         assert!(!roaming_save_v24_wire());
     }
 
@@ -1505,24 +1537,60 @@ mod tests {
         state.money = 0x010203;
         write_save_game_for_modpack(&path, state, &identity, pack_content_hash()).unwrap();
         let before = read_save_game_for_modpack(&path, &identity, pack_content_hash()).unwrap();
-        request_saved_clock_reset_for_modpack(&path, &identity, pack_content_hash(), before.metadata.saved_state_hash).unwrap();
+        request_saved_clock_reset_for_modpack(
+            &path,
+            &identity,
+            pack_content_hash(),
+            before.metadata.saved_state_hash,
+        )
+        .unwrap();
         let requested = read_save_game_for_modpack(&path, &identity, pack_content_hash()).unwrap();
         let mut expected = before.clone();
         expected.state.time.rtc_status_flags = crate::systems::time::RTC_RESET;
         expected.metadata.saved_state_hash = game_state_checksum(&expected.state).unwrap().hash();
-        assert_eq!(requested, expected, "password confirmation may change only RTC status and checksum");
+        assert_eq!(
+            requested, expected,
+            "password confirmation may change only RTC status and checksum"
+        );
         let bytes = std::fs::read(&path).unwrap();
-        assert!(request_saved_clock_reset_for_modpack(&path, &identity, pack_content_hash(), before.metadata.saved_state_hash).is_err());
-        assert_eq!(std::fs::read(&path).unwrap(), bytes, "stale password must not overwrite a newer save");
+        assert!(
+            request_saved_clock_reset_for_modpack(
+                &path,
+                &identity,
+                pack_content_hash(),
+                before.metadata.saved_state_hash
+            )
+            .is_err()
+        );
+        assert_eq!(
+            std::fs::read(&path).unwrap(),
+            bytes,
+            "stale password must not overwrite a newer save"
+        );
         let target = crate::systems::time::ClockTime::new(2, 13, 27, 0);
         let date = crate::systems::time::GameDate::new(2026, 10, 12);
         let now = crate::systems::time::ClockTime::new(0, 9, 5, 18);
-        restart_saved_clock_for_modpack(&path, &identity, pack_content_hash(), requested.metadata.saved_state_hash, date, now, target).unwrap();
+        restart_saved_clock_for_modpack(
+            &path,
+            &identity,
+            pack_content_hash(),
+            requested.metadata.saved_state_hash,
+            date,
+            now,
+            target,
+        )
+        .unwrap();
         let restarted = read_save_game_for_modpack(&path, &identity, pack_content_hash()).unwrap();
-        expected.state.time.set_manual_time(date, now.hour, now.minute, now.second, target);
+        expected
+            .state
+            .time
+            .set_manual_time(date, now.hour, now.minute, now.second, target);
         expected.state.time.normalize_rtc_for_save();
         expected.metadata.saved_state_hash = game_state_checksum(&expected.state).unwrap().hash();
-        assert_eq!(restarted, expected, "Continue clock restart must preserve the trainer and world");
+        assert_eq!(
+            restarted, expected,
+            "Continue clock restart must preserve the trainer and world"
+        );
         assert_eq!(restarted.state.time.rtc_status_flags, 0);
         erase_save_game(&path).unwrap();
     }

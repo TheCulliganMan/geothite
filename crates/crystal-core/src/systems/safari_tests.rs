@@ -635,14 +635,19 @@ fn safari_legacy_binary_baseline() {
         .script_runtime
         .memory
         .insert("wSafariSteps".into(), "123".into());
-    let checksum = multiplayer::game_state_checksum_unchecked(&state).expect("checksum");
-    let bytes = bincode::serde::encode_to_vec(
-        &state,
-        bincode::config::standard()
-            .with_little_endian()
-            .with_fixed_int_encoding(),
-    )
-    .expect("binary state");
+    // This golden describes v25, before the independently versioned daycare
+    // field. Verify its original wire and checksum rather than v26's new shape.
+    let (checksum, bytes) = save::with_v25_day_care_wire(|| {
+        let checksum = multiplayer::game_state_checksum_unchecked(&state).expect("checksum");
+        let bytes = bincode::serde::encode_to_vec(
+            &state,
+            bincode::config::standard()
+                .with_little_endian()
+                .with_fixed_int_encoding(),
+        )
+        .expect("binary state");
+        (checksum, bytes)
+    });
     assert_eq!(checksum.hash(), 1_987_639_539);
     assert_eq!(bytes.len(), 7135);
     assert_eq!(
