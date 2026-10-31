@@ -131,3 +131,17 @@ route first, and give starting locations and training steps for evolution-only
 entries. Application, full-catalog, desktop and mobile browser checks pass;
 the new field-guide panels were visually inspected. Resolve `world.json` and
 the live Pokédex for selection/publication status.
+
+## Consolidated habitat refinements
+
+The main Grand Marais grass remains in its late North Shore level band. An
+eight-tile western cedar margin at walking tiles (4–5,10–13) retains repeatable
+level 3–7 basic residents, reachable on foot from the Pokémon Center. Existing
+Minnesota encounter scaling keeps an authored-level minority, including this
+pocket, and preserves encounter species. Repel filters low levels normally.
+
+The northern pine chunk MnR11C00R00 favors Latchquill (30%) and Pitchwick (5%).
+The next basalt chunk MnR11C00R01 favors Bandrake (30%) and Agatot (20%).
+Other coastal residents, zones, rates, story gates and terrain remain intact.
+These refinements extend the complete 225-species fauna/progression source;
+final combined-pack validation is recorded by the consolidation runbook.

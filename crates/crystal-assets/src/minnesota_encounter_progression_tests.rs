@@ -69,7 +69,7 @@ fn progression_complete_habitats_preservation_and_rejected_incomplete_plan() {
                 .iter()
                 .map(|z| (&z.id, [z.min_x, z.min_y, z.max_x, z.max_y], &z.grass_rates))
                 .collect::<Vec<_>>(),
-            new.zones
+            new.zones[..old.zones.len()]
                 .iter()
                 .map(|z| (&z.id, [z.min_x, z.min_y, z.max_x, z.max_y], &z.grass_rates))
                 .collect::<Vec<_>>()
@@ -87,6 +87,83 @@ fn progression_complete_habitats_preservation_and_rejected_incomplete_plan() {
             .all(|s| (39..=43).contains(&s.level))
     );
     assert!(town.day.iter().any(|s| s.species == "GOUGECREST"));
+    let pines = child.data.wild_encounters["MnR11C00R00"]
+        .grass
+        .as_ref()
+        .expect("pine grass");
+    let basalt = child.data.wild_encounters["MnR11C00R01"]
+        .grass
+        .as_ref()
+        .expect("basalt grass");
+    let coast = child.data.wild_encounters["MnR11C00R02"]
+        .grass
+        .as_ref()
+        .expect("coastal grass");
+    for (a, b, c) in [
+        (&pines.morning, &basalt.morning, &coast.morning),
+        (&pines.day, &basalt.day, &coast.day),
+        (&pines.night, &basalt.night, &coast.night),
+    ] {
+        assert_eq!(a[1].species, "LATCHQUILL");
+        assert_eq!(a[4].species, "PITCHWICK");
+        assert_eq!(b[1].species, "BANDRAKE");
+        assert_eq!(b[2].species, "AGATOT");
+        assert_eq!(a[0], c[0], "shared common resident remains");
+        assert_eq!(&a[5..], &c[5..], "rarities retain their slots");
+        assert_ne!(a, b);
+        assert_ne!(a, c);
+        assert_eq!(
+            a.iter().map(|s| s.level).collect::<Vec<_>>(),
+            c.iter().map(|s| s.level).collect::<Vec<_>>()
+        );
+    }
+    let young = child.data.wild_encounters["MnGrandMarais"]
+        .zones
+        .iter()
+        .find(|z| z.id == "young-cedar-margin")
+        .expect("repeatable western cedar pocket");
+    assert_eq!(
+        [young.min_x, young.min_y, young.max_x, young.max_y],
+        [4, 10, 5, 13]
+    );
+    assert!(young.grass.day.iter().all(|s| (3..=7).contains(&s.level)));
+    assert!(young.grass.night.iter().any(|s| s.species == "PINIT"));
+    let data = child.data();
+    let mut state = crystal_core::state::GameState::default();
+    state.storage.party.add_pokemon(
+        data.create_pokemon("POUCHID", 80, Default::default())
+            .expect("late party"),
+    );
+    state.sync_party_from_storage();
+    state.badges.johto = [true; 8];
+    for flag in &crystal_core::systems::script_flags::BADGE_ENGINE_FLAGS[..8] {
+        state
+            .flags
+            .set_engine_flag(flag, true)
+            .expect("consistent late-game badge flags");
+    }
+    for slot in young
+        .grass
+        .morning
+        .iter()
+        .chain(&young.grass.day)
+        .chain(&young.grass.night)
+    {
+        let native = data.ordinary_challenge_level(&state, "MnGrandMarais", slot.level, 2, 0);
+        let scaled = data.ordinary_challenge_level(&state, "MnGrandMarais", slot.level, 2, 1);
+        assert_eq!(native, slot.level, "eight badges retain genuine low levels");
+        assert!(scaled >= 77, "the challenge component remains available");
+        for level in [native, scaled] {
+            let mon = data
+                .create_pokemon(&slot.species, level, Default::default())
+                .expect("resident");
+            assert_eq!(
+                mon.species.id, slot.species,
+                "scaling never forces evolution"
+            );
+            assert!(data.saved_wild_encounter_exists("MnGrandMarais", &slot.species, level));
+        }
+    }
     let opening = child.data.wild_encounters["MnR01C00R00"]
         .grass
         .as_ref()
@@ -124,6 +201,19 @@ fn progression_complete_habitats_preservation_and_rejected_incomplete_plan() {
         "level38 final form is earned from the available cookie family"
     );
     assert!(fair_species.contains("CURDLET") && fair_species.contains("SQUEAKURD"));
+    let mut invalid: serde_json::Value = serde_json::from_str(&source).expect("plan JSON");
+    let grand = invalid["groups"]
+        .as_array_mut()
+        .expect("groups")
+        .iter_mut()
+        .find(|g| g["id"] == "grand-marais")
+        .expect("town group");
+    grand["young_grass_zones"][0]["zone"]["minX"] = 34.into();
+    grand["young_grass_zones"][0]["zone"]["maxX"] = 35.into();
+    assert!(
+        build_minnesota_encounter_progression(&base, &invalid.to_string()).is_err(),
+        "a zone painted over inaccessible ground cannot claim a repeatable habitat"
+    );
     let mut plan: serde_json::Value = serde_json::from_str(&source).expect("plan JSON");
     plan["groups"].as_array_mut().expect("groups").pop();
     assert!(

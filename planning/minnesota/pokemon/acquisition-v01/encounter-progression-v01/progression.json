@@ -298,8 +298,6 @@
       "minimum_badges": 8,
       "access": "All eight badges and the completed Harbor signal open the North Shore.",
       "maps": [
-        "MnR11C00R00",
-        "MnR11C00R01",
         "MnR11C00R02",
         "MnR11C00R03",
         "MnR11C01R00",
@@ -323,6 +321,114 @@
       ],
       "promotions": {
         "DOZEBEAR": "DENUMBRA"
+      }
+    },
+    {
+      "id": "north-shore-pines",
+      "minimum_badges": 8,
+      "access": "All eight badges and the completed Harbor signal open the North Shore. Northern Grand Marais pine margin; shared coastal residents plus climbing porcupines and resin pines.",
+      "maps": [
+        "MnR11C00R00"
+      ],
+      "grass": [
+        39,
+        40,
+        41,
+        41,
+        42,
+        43,
+        44
+      ],
+      "surf": [
+        39,
+        41,
+        43
+      ],
+      "promotions": {
+        "DOZEBEAR": "DENUMBRA"
+      },
+      "residents": {
+        "morning": [
+          "NOTCHBILL",
+          "LATCHQUILL",
+          "BANDRAKE",
+          "SLIPPERINA",
+          "PITCHWICK",
+          "CROOKVEIL",
+          "DENUMBRA"
+        ],
+        "day": [
+          "NOTCHBILL",
+          "LATCHQUILL",
+          "BANDRAKE",
+          "SLIPPERINA",
+          "PITCHWICK",
+          "CROOKVEIL",
+          "DENUMBRA"
+        ],
+        "night": [
+          "MISPAIR",
+          "LATCHQUILL",
+          "BANDRAKE",
+          "SKEETEREX",
+          "PITCHWICK",
+          "CROOKVEIL",
+          "DENUMBRA"
+        ]
+      }
+    },
+    {
+      "id": "north-shore-basalt",
+      "minimum_badges": 8,
+      "access": "All eight badges and the completed Harbor signal open the North Shore. Pebble and basalt section before the river gorge; agate residents favor the rocky shoulders.",
+      "maps": [
+        "MnR11C00R01"
+      ],
+      "grass": [
+        39,
+        40,
+        41,
+        41,
+        42,
+        43,
+        44
+      ],
+      "surf": [
+        39,
+        41,
+        43
+      ],
+      "promotions": {
+        "DOZEBEAR": "DENUMBRA"
+      },
+      "residents": {
+        "morning": [
+          "NOTCHBILL",
+          "BANDRAKE",
+          "AGATOT",
+          "SLIPPERINA",
+          "MUDMENDER",
+          "CROOKVEIL",
+          "DENUMBRA"
+        ],
+        "day": [
+          "NOTCHBILL",
+          "BANDRAKE",
+          "AGATOT",
+          "SLIPPERINA",
+          "MUDMENDER",
+          "CROOKVEIL",
+          "DENUMBRA"
+        ],
+        "night": [
+          "MISPAIR",
+          "BANDRAKE",
+          "AGATOT",
+          "SKEETEREX",
+          "MUDMENDER",
+          "CROOKVEIL",
+          "DENUMBRA"
+        ]
       }
     },
     {
@@ -617,7 +723,7 @@
     {
       "id": "grand-marais",
       "minimum_badges": 8,
-      "access": "Rest stop after all eight badges and Harbor signal. Town wildlife shares the late North Shore level band.",
+      "access": "Rest stop after all eight badges and Harbor signal. Main grass follows the late North Shore level band; a small western cedar margin retains young residents at levels 3\u20137.",
       "maps": [
         "MnGrandMarais"
       ],
@@ -663,7 +769,119 @@
           "PINIT",
           "SKEETEREX"
         ]
-      }
+      },
+      "young_grass_zones": [
+        {
+          "zone": {
+            "id": "young-cedar-margin",
+            "minX": 4,
+            "minY": 10,
+            "maxX": 5,
+            "maxY": 13,
+            "grassRates": {
+              "morning": 25,
+              "day": 25,
+              "night": 25
+            },
+            "grass": {
+              "morning": [
+                {
+                  "level": 3,
+                  "species": "PECKIT"
+                },
+                {
+                  "level": 4,
+                  "species": "BRISTUB"
+                },
+                {
+                  "level": 5,
+                  "species": "PECKIT"
+                },
+                {
+                  "level": 4,
+                  "species": "BRISTUB"
+                },
+                {
+                  "level": 5,
+                  "species": "BRISTUB"
+                },
+                {
+                  "level": 6,
+                  "species": "PODLET"
+                },
+                {
+                  "level": 7,
+                  "species": "PODLET"
+                }
+              ],
+              "day": [
+                {
+                  "level": 3,
+                  "species": "PECKIT"
+                },
+                {
+                  "level": 4,
+                  "species": "BRISTUB"
+                },
+                {
+                  "level": 5,
+                  "species": "PECKIT"
+                },
+                {
+                  "level": 4,
+                  "species": "BRISTUB"
+                },
+                {
+                  "level": 5,
+                  "species": "BRISTUB"
+                },
+                {
+                  "level": 6,
+                  "species": "PODLET"
+                },
+                {
+                  "level": 7,
+                  "species": "PODLET"
+                }
+              ],
+              "night": [
+                {
+                  "level": 3,
+                  "species": "PINIT"
+                },
+                {
+                  "level": 4,
+                  "species": "BRISTUB"
+                },
+                {
+                  "level": 5,
+                  "species": "PINIT"
+                },
+                {
+                  "level": 4,
+                  "species": "BRISTUB"
+                },
+                {
+                  "level": 5,
+                  "species": "BRISTUB"
+                },
+                {
+                  "level": 6,
+                  "species": "BRISTUB"
+                },
+                {
+                  "level": 7,
+                  "species": "MIDGEBIT"
+                }
+              ]
+            }
+          },
+          "entrance": [
+            15,
+            10
+          ]
+        }
+      ]
     },
     {
       "id": "fair-food-and-exhibits",
