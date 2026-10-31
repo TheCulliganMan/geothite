@@ -145,3 +145,16 @@ Builds were serialized with the shared Cargo slot, explicitly released to the
 next daycare rebuild before the final capture. All task-owned Cargo caches
 are cleaned after retaining the verified executables and review evidence.
 The candidate remains unselected; no push, merge or deployment was performed.
+
+## Consolidation onto current cities
+
+The newer accepted city layouts moved several former optional floor positions.
+The consolidation rebinds fourteen papers to nearby broad floor areas, keeping
+all twenty-four identities, indices, the seed, six mimic selections, species,
+levels and one-time flags unchanged. The publisher verifies native walking
+reachability and that no other reachable city tile is lost. New papers stay
+away from existing actors, warps and coordinate/background events, with an open
+left approach for the controller interaction fixtures. Full catch/defeat/flee,
+reveal Save/Continue/revisit, ordinary-paper/partyless, blackout and graphical
+Continue cases passed against the current integrated test candidate. Final pack
+provenance and combined acceptance belong to the consolidation runbook.
