@@ -352,8 +352,11 @@ fn validate_group(group: &Group) -> Result<()> {
         "reviewed early farm power correction required"
     );
     ensure!(
-        group.residents.is_empty() || group.maps == ["MnGrandMarais"],
-        "explicit town residents belong to their reviewed table"
+        group.residents.is_empty()
+            || group.maps == ["MnGrandMarais"]
+            || group.maps == ["MnR11C00R00"]
+            || group.maps == ["MnR11C00R01"],
+        "explicit residents belong to their three reviewed North Shore tables"
     );
     ensure!(
         group.residents.is_empty()
@@ -363,7 +366,7 @@ fn validate_group(group: &Group) -> Result<()> {
                 .map(String::as_str)
                 .collect::<BTreeSet<_>>()
                 == BTreeSet::from(["morning", "day", "night"]),
-        "all three town periods must be authored"
+        "all three resident periods must be authored"
     );
     Ok(())
 }
