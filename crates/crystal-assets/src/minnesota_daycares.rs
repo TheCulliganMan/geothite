@@ -173,6 +173,8 @@ fn install(pack: &mut CompiledGamePack) -> Result<()> {
         room.attributes.location = outside.attributes.location.clone();
         room.attributes.music = outside.attributes.music.clone();
         room.attributes.map_group_constant = outside.attributes.map_group_constant.clone();
+        // The dry room must not inherit the template house's foreign rod table.
+        room.attributes.fishing_group = Some("FISHGROUP_NONE".into());
         for tile in [[2, 7], [3, 7], [2, 6]] {
             authoring::warp(&mut room, (tile[0], tile[1]), &outside_constant, exit);
         }

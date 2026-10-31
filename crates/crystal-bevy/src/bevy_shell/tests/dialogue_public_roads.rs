@@ -12,7 +12,10 @@ use super::super::{
 };
 use super::winona::{at, continue_in_place, finish, load, press};
 
-fn fixture(map: &str, tile: (i16, i16)) -> (AssetRoot, CrystalRuntime, VisibleShellController) {
+fn partyless_fixture(
+    map: &str,
+    tile: (i16, i16),
+) -> (AssetRoot, CrystalRuntime, VisibleShellController) {
     let (root, runtime) = load();
     let shell = initialize_bevy_runtime_shell(
         root.clone(),
@@ -32,6 +35,13 @@ fn fixture(map: &str, tile: (i16, i16)) -> (AssetRoot, CrystalRuntime, VisibleSh
     let mut c = VisibleShellController { shell };
     complete_visible_smoke_player_name_if_needed(&mut c.shell, Some("CHRIS"))
         .expect("fixture name");
+    c.set_runtime_journal_enabled(false);
+    mark_runtime_snapshot_dirty(&mut c.shell);
+    (root, runtime, c)
+}
+
+fn fixture(map: &str, tile: (i16, i16)) -> (AssetRoot, CrystalRuntime, VisibleShellController) {
+    let (root, runtime, mut c) = partyless_fixture(map, tile);
     let partner = runtime
         .data()
         .create_pokemon("KINDLIT", 35, Dv::default())
@@ -39,7 +49,6 @@ fn fixture(map: &str, tile: (i16, i16)) -> (AssetRoot, CrystalRuntime, VisibleSh
     let state = c.shell.shell.session_mut().state_mut();
     assert!(state.storage.party.add_pokemon(partner));
     state.sync_party_from_storage();
-    c.set_runtime_journal_enabled(false);
     mark_runtime_snapshot_dirty(&mut c.shell);
     (root, runtime, c)
 }
@@ -140,7 +149,7 @@ fn public_roads_walk_both_lanes_both_directions_without_badges_and_continue() {
 }
 
 #[test]
-#[ignore = "requires final public-roads pack; partner/position are explicit fixtures, starter receipt remains false"]
+#[ignore = "requires final public-roads pack; position is an explicit fixture, party is empty and starter receipt remains false"]
 fn public_roads_keep_the_initial_partner_safeguard() {
     let (_, runtime) = load();
     let map = runtime
@@ -156,7 +165,22 @@ fn public_roads_keep_the_initial_partner_safeguard() {
         i16::try_from(gate.x).expect("x"),
         i16::try_from(gate.y).expect("y"),
     );
-    let (_, _, mut c) = fixture("MnWinona", (x + 1, y));
+    // Begin one tile inside the interception plane, then actually walk onto
+    // it. Starting on the plane and walking into the actor never enters a
+    // coordinate event, irrespective of the party condition.
+    let (_, _, mut c) = partyless_fixture("MnWinona", (x + 2, y));
+    assert!(
+        c.shell
+            .shell
+            .session()
+            .state()
+            .storage
+            .party
+            .pokemon
+            .iter()
+            .all(Option::is_none),
+        "initial safeguard fixture must be partyless"
+    );
     for _ in 0..4 {
         if c.snapshot().expect("partner gate").ui.text_window_open {
             break;
@@ -190,7 +214,31 @@ fn public_roads_keep_real_league_registration_requirements() {
         .iter()
         .find(|o| o.script == "MnElyRegister")
         .expect("real registrar");
-    let arrival = map.events.warps.first().expect("public lobby entrance");
+    // Resolve the real passive indoor arrival from the actual Ely doorway;
+    // the first indoor warp is an active exit at(0,4), not a playable arrival.
+    let exterior = runtime.data().map_module("MnEly").expect("current Ely");
+    let constant = map
+        .attributes
+        .map_constant
+        .as_deref()
+        .expect("lobby constant");
+    let entrance = exterior
+        .events
+        .warps
+        .iter()
+        .find(|w| {
+            w.target_map == constant
+                || w.target_map == "MnLeagueLobby"
+                || w.target_map_constant == constant
+        })
+        .expect("actual Ely-to-lobby doorway");
+    let arrival_index = u16::try_from(entrance.target_warp_id).expect("positive indoor arrival");
+    let arrival = map
+        .events
+        .warps
+        .iter()
+        .find(|w| w.index == arrival_index)
+        .expect("actual passive lobby arrival");
     for count in [0_usize, 8] {
         let (_, runtime, mut c) = fixture(
             "MnLeagueLobby",
@@ -211,7 +259,12 @@ fn public_roads_keep_real_league_registration_requirements() {
         }
         mark_runtime_snapshot_dirty(&mut c.shell);
         let before = c.shell.shell.session().state().clone();
-        super::minnesota_gyms::interact(&mut c, &runtime, (actor.x, actor.y));
+        // Use the proven ely_league::registrar approach: stand two tiles
+        // south, step north and talk across the counter. Resolve its position
+        // from the current actor rather than treating it as an open-floor NPC.
+        super::minnesota_gyms::walk_to(&mut c, &runtime, (actor.x, actor.y + 2));
+        press(&mut c, GameButton::Up);
+        press(&mut c, GameButton::A);
         assert!(
             c.snapshot()
                 .expect("registration refusal")
