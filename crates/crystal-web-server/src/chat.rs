@@ -1,5 +1,4 @@
 use super::*;
-use std::time::{Duration, Instant};
 
 fn validate_channel(channel: &str) -> Result<(), String> {
     if matches!(channel, "say" | "general" | "trade" | "lfg" | "whisper") {
@@ -83,15 +82,32 @@ impl Hub {
         if matches!(channel.as_str(), "say" | "general") && sender.presence.is_none() {
             return Err("enter the world before using local chat".into());
         }
-        let recipients = self
-            .clients
-            .iter()
-            .filter_map(|(peer_id, peer)| {
+        let candidates = match channel.as_str() {
+            "whisper" => [Some(id), whisper]
+                .into_iter()
+                .flatten()
+                .collect::<HashSet<_>>(),
+            "say" => {
+                let presence = sender
+                    .presence
+                    .as_ref()
+                    .expect("local chat presence checked");
+                let mut candidates =
+                    self.presence_candidates(&sender.identity.world, None, presence, id);
+                candidates.insert(id);
+                candidates
+            }
+            _ => self.clients.keys().copied().collect(),
+        };
+        let recipients = candidates
+            .into_iter()
+            .filter(|peer_id| {
+                let peer = &self.clients[peer_id];
                 if peer.identity.world != sender.identity.world {
-                    return None;
+                    return false;
                 }
-                let receives = match channel.as_str() {
-                    "whisper" => *peer_id == id || Some(*peer_id) == whisper,
+                match channel.as_str() {
+                    "whisper" => true,
                     "say" => sender
                         .presence
                         .as_ref()
@@ -106,8 +122,7 @@ impl Hub {
                                 .is_some_and(|(a, b)| a.map == b.map)
                     }
                     _ => peer.chat_channels.contains(&channel),
-                };
-                receives.then_some(*peer_id)
+                }
             })
             .collect::<Vec<_>>();
         let message = ServerMessage::Chat {
@@ -117,15 +132,6 @@ impl Hub {
             target_user_id: target,
             text: text.into(),
         };
-        let sender = self.clients.get_mut(&id).expect("registered client");
-        let now = Instant::now();
-        sender
-            .chat_sent
-            .retain(|sent| now.duration_since(*sent) < Duration::from_secs(5));
-        if sender.chat_sent.len() >= 5 {
-            return Err("chat is too fast; try again shortly".into());
-        }
-        sender.chat_sent.push_back(now);
         Ok(recipients
             .into_iter()
             .map(|peer| deliver(peer, message.clone()))
@@ -209,7 +215,7 @@ mod tests {
     }
 
     #[test]
-    fn custom_membership_leave_and_spam_limits_work() {
+    fn custom_membership_leave_and_chat_validation_work() {
         let (mut hub, ids) = setup();
         assert!(matches!(
             send(&mut hub, ids[0], "custom:friends", None, "No")[0].message,
@@ -237,18 +243,53 @@ mod tests {
             send(&mut hub, ids[0], "custom:friends", None, "Hello").len(),
             1
         );
-        for _ in 0..3 {
-            send(&mut hub, ids[0], "say", None, "Hello");
+        for n in 0..100 {
+            assert!(
+                send(&mut hub, ids[0], "say", None, &format!("Burst {n}"))
+                    .iter()
+                    .all(|delivery| matches!(delivery.message, ServerMessage::Chat { .. }))
+            );
         }
-        assert!(matches!(
-            send(&mut hub, ids[0], "say", None, "Too fast")[0].message,
-            ServerMessage::Error { .. }
-        ));
         for invalid in ["", " \t ", "hello\nworld", &"a".repeat(281)] {
             assert!(matches!(
                 send(&mut hub, ids[1], "say", None, invalid)[0].message,
                 ServerMessage::Error { .. }
             ));
         }
+    }
+    #[test]
+    fn local_chat_crosses_spatial_cells_without_rate_limits() {
+        let (mut hub, ids) = setup();
+        for (id, x) in [(ids[0], -1), (ids[1], 11)] {
+            hub.handle(
+                id,
+                ClientMessage::Presence {
+                    map: "town".into(),
+                    tile_x: x,
+                    tile_y: 0,
+                    direction: "down".into(),
+                },
+            );
+        }
+        assert_eq!(send(&mut hub, ids[0], "say", None, "At the edge").len(), 2);
+        hub.handle(
+            ids[1],
+            ClientMessage::Presence {
+                map: "town".into(),
+                tile_x: 12,
+                tile_y: 0,
+                direction: "down".into(),
+            },
+        );
+        assert_eq!(send(&mut hub, ids[0], "say", None, "Outside").len(), 1);
+        for n in 0..100 {
+            let deliveries = send(&mut hub, ids[0], "say", None, &format!("Burst {n}"));
+            assert_eq!(deliveries.len(), 1);
+            assert!(matches!(deliveries[0].message, ServerMessage::Chat { .. }));
+        }
+        assert_eq!(
+            send(&mut hub, ids[0], "whisper", Some("player-0"), "Self").len(),
+            1
+        );
     }
 }

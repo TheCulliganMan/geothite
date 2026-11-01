@@ -987,6 +987,14 @@ fn press_visible_a_button(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
     // ComeHomeForDSTText had not printed yet.
     let snapshot = runtime_shell.shell.snapshot()?;
     let presentation_snapshot = runtime_shell.shell.presentation_snapshot()?;
+    if runtime_shell.visible_wait_sfx_boundary
+        && presentation_snapshot.ui.text_window_open
+        && visible_field_dialogue_is_fully_revealed(runtime_shell, &presentation_snapshot)
+        && !visible_field_dialogue_is_entirely_consumed(runtime_shell, &presentation_snapshot)
+        && advance_visible_completed_field_text_page(runtime_shell, &presentation_snapshot)?
+    {
+        return Ok(());
+    }
     if advance_visible_wait_sfx_boundary(runtime_shell, &presentation_snapshot, true)? {
         return Ok(());
     }
@@ -2342,6 +2350,14 @@ fn press_visible_b_button(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
     // As with A, B must not resolve a prompt using a stale rendered text body.
     let snapshot = runtime_shell.shell.snapshot()?;
     let presentation_snapshot = runtime_shell.shell.presentation_snapshot()?;
+    if runtime_shell.visible_wait_sfx_boundary
+        && presentation_snapshot.ui.text_window_open
+        && visible_field_dialogue_is_fully_revealed(runtime_shell, &presentation_snapshot)
+        && !visible_field_dialogue_is_entirely_consumed(runtime_shell, &presentation_snapshot)
+        && advance_visible_completed_field_text_page(runtime_shell, &presentation_snapshot)?
+    {
+        return Ok(());
+    }
     if advance_visible_wait_sfx_boundary(runtime_shell, &presentation_snapshot, true)? {
         return Ok(());
     }

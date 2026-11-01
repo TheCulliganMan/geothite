@@ -629,6 +629,10 @@ pub struct VisibleShellController {
     shell: BevyRuntimeShell,
 }
 
+pub use crystal_tui_view::{
+    VisibleBattleReplay, VisibleBattleReplayFrame, VisibleBattleReplayPiece,
+};
+
 impl VisibleShellController {
     /// Start a complete new game, using the same controller as the graphical
     /// frontend. The terminal currently supplies its trainer name up front;
@@ -755,6 +759,26 @@ impl VisibleShellController {
         field_dialogue_resume::save(&mut self.shell, path.as_ref())
     }
 
+    /// SRAM saves do not serialize frontend cursors or an unfinished authored
+    /// scene. Automatic reconnect checkpoints must therefore be taken only at
+    /// an input-ready overworld boundary, never halfway through Mom or rewards.
+    /// Explicit production SAVE remains unchanged.
+    pub fn autosave(&mut self, path: impl AsRef<Path>) -> Result<bool> {
+        let snapshot = self.snapshot()?;
+        if snapshot.phase != RuntimeShellPhase::Overworld
+            || snapshot.battle.is_some()
+            || snapshot.ui.menu.is_some()
+            || snapshot.ui.text_window_open
+            || snapshot.ui.pending_text_wait.is_some()
+            || snapshot.ui.pending_yes_no.is_some()
+            || self.has_pending_script_work()
+        {
+            return Ok(false);
+        }
+        self.save(path)?;
+        Ok(true)
+    }
+
     pub fn press(&mut self, button: GameButton) -> Result<()> {
         self.press_buttons([button])
     }
@@ -766,6 +790,9 @@ impl VisibleShellController {
             return Ok(());
         }
         let mut buttons: Vec<_> = buttons.into_iter().collect();
+        if !buttons.is_empty() && let Some(replays) = self.shell.text_battle_replays.as_mut() {
+            replays.clear();
+        }
         // Match the graphical credits owner: only A/B reach its handlers;
         // directions and Start must never fall through to the runtime map.
         if self.shell.credits_screen.is_some() {
@@ -806,6 +833,13 @@ impl VisibleShellController {
             }
         }
         settle_visible_shell_until_input(&mut self.shell)
+    }
+
+    pub fn take_battle_replays(&mut self) -> Vec<VisibleBattleReplay> {
+        self.shell.text_battle_replays.as_mut().map(std::mem::take).unwrap_or_default()
+    }
+    pub fn set_battle_replay_enabled(&mut self, enabled: bool) {
+        self.shell.text_battle_replays = enabled.then(Vec::new);
     }
 
     pub fn wait_frames(&mut self, frames: usize) -> Result<()> {
@@ -1249,6 +1283,7 @@ struct BevyRuntimeShell {
     visible_move_animations: VecDeque<VisibleMoveAnimation>,
     // Presentation-owned source audio frames, independent of device/mute state.
     visible_move_audio_wait: Option<u16>,
+    text_battle_replays: Option<Vec<VisibleBattleReplay>>,
     battle_fainted_hud: [bool; 2],
     battle_retained_text: Vec<String>,
     visible_send_out_animation: Option<VisibleSendOutAnimation>,
@@ -7893,10 +7928,12 @@ fn settle_visible_shell_controller(
 ) -> Result<()> {
     safari_catch_visible::restore(runtime_shell)?;
     const MAX_IDLE_SETTLE_STEPS: usize = 1024;
+    let mut radio_call_completed = false;
     for _ in 0..MAX_IDLE_SETTLE_STEPS {
         field_text_timing::settle_sound(runtime_shell);
         runtime_shell.pokegear_exit_input_blocked = false;
         if !auto_input {
+            fast_forward_text_client_battle_visuals(runtime_shell);
             // This renderer-neutral controller has no audio device. Preserve
             // music selection and the audit log, but complete transient SFX
             // so authored WaitSFX fences cannot deadlock terminal gameplay.
@@ -7906,18 +7943,55 @@ fn settle_visible_shell_controller(
             runtime_shell.transient_audio_playing = false;
             if runtime_shell.visible_wait_sfx_boundary {
                 let presentation = runtime_shell.shell.presentation_snapshot()?;
-                // WaitSFX may follow farwritetext before any graphical update
-                // has initialized its printer. Advance that same printer
-                // here instead of repeatedly testing an unrevealed page.
-                if visible_field_dialog_pages(&presentation, runtime_shell).is_some()
-                    && !visible_field_dialogue_is_fully_revealed(runtime_shell, &presentation)
-                {
-                    tick_visible_field_text_reveal(runtime_shell, false)?;
-                    continue;
+                // Audio completion does not run the printer. Reveal its
+                // current page before polling the fence, and never consume
+                // a paragraph/CONT acknowledgement on the player's behalf.
+                if visible_field_dialog_pages(&presentation, runtime_shell).is_some() {
+                    if !visible_field_dialogue_is_fully_revealed(runtime_shell, &presentation) {
+                        tick_visible_field_text_reveal(runtime_shell, false)?;
+                        continue;
+                    }
+                    if !visible_field_dialogue_is_entirely_consumed(runtime_shell, &presentation) {
+                        return Ok(());
+                    }
                 }
                 if advance_visible_wait_sfx_boundary(runtime_shell, &presentation, false)? {
                     continue;
                 }
+            }
+            // These source presentation clocks normally run in Bevy Update.
+            // A terminal/BrowserTui has no Update or sound device; finish only
+            // their automatic holds, leaving prompts and call text for A/B.
+            if advance_visible_incoming_phone_sequence(runtime_shell, 1)?
+                || advance_visible_pokegear_phone_call(runtime_shell, 1)?
+            {
+                continue;
+            }
+            if pokedex_input_delay_active(runtime_shell) {
+                advance_visible_pokedex_search(runtime_shell, 1);
+                continue;
+            }
+            if runtime_shell.pokegear_map_radio_delay.is_some_and(|frames| frames != 0) {
+                advance_visible_map_radio_delay(runtime_shell, 1);
+                continue;
+            }
+            if !radio_call_completed && runtime_shell.pokegear_menu_open
+                && runtime_shell.pokegear_page == PokegearPage::Radio
+                && runtime_shell.pokegear_radio_broadcast.is_some()
+            {
+                // Complete one real program/print call per input, not the
+                // endlessly repeating radio show. Never invent a JS timer.
+                advance_visible_radio_broadcast(runtime_shell, 1, false)?;
+                radio_call_completed = !runtime_shell.pokegear_radio_broadcast.as_ref()
+                    .is_some_and(|broadcast| broadcast.playback.call_suspended());
+                if radio_call_completed {
+                    runtime_shell.pokegear_radio_input_blocked = false;
+                }
+                continue;
+            }
+            if runtime_shell.pc_item_move_sequence.is_some() {
+                advance_visible_pc_item_move_sequence(runtime_shell)?;
+                continue;
             }
         }
         if field_notice_effects::advance(runtime_shell, 1)? {
@@ -8057,8 +8131,21 @@ fn settle_visible_shell_controller(
             advance_visible_battle_transition(runtime_shell);
             continue;
         }
+        if !runtime_shell.battle_hp_tween.as_ref().is_some_and(visible_battle_hp_tween_active)
+            && let Some(animation) = runtime_shell.visible_move_animations.front_mut()
+            && (animation.waiting_for_hp
+                || (animation.move_id == "FAINT_MON" && !animation.started
+                    && runtime_shell.battle_messages.front() == Some(&animation.trigger_message)))
+        {
+            animation.waiting_for_hp = false;
+            animation.started = true;
+            mark_runtime_presentation_dirty(runtime_shell);
+        }
         if visible_battle_animation_owns_frame(runtime_shell) {
             advance_visible_battle_animation_frame(runtime_shell)?;
+            continue;
+        }
+        if advance_visible_battle_reward_frame(runtime_shell)? {
             continue;
         }
         if runtime_shell
@@ -8098,7 +8185,7 @@ fn settle_visible_shell_controller(
                 .front()
                 .is_some_and(|stats| stats.active && stats.frames_before_input > 0)
         {
-            advance_visible_battle_reward_frame(runtime_shell);
+            advance_visible_battle_reward_frame(runtime_shell)?;
             continue;
         }
         let field_travel_delay_finished =
@@ -8222,6 +8309,15 @@ fn settle_visible_shell_controller(
                 mark_runtime_presentation_dirty(runtime_shell);
                 continue;
             }
+            return Ok(());
+        }
+        if runtime_shell.battle_level_stats.front().is_some_and(|stats| stats.active) {
+            return Ok(());
+        }
+        if finish_visible_empty_battle_reward_presentation(runtime_shell)? {
+            continue;
+        }
+        if snapshot.battle.is_some() {
             sync_visible_battle_action_cursor(runtime_shell);
             return Ok(());
         }
@@ -8902,6 +8998,7 @@ fn initialize_bevy_runtime_shell(
         visible_capture_animation: None,
         visible_move_animations: VecDeque::new(),
         visible_move_audio_wait: None,
+        text_battle_replays: None,
         battle_fainted_hud: [false; 2],
         battle_retained_text: Vec::new(),
         visible_send_out_animation: None,
@@ -9256,6 +9353,7 @@ mod minneapolis_falls_animation;
 mod seasonal_palette;
 mod tile_foreground;
 mod winter_render_behavior;
+include!("bevy_shell/text_battle_replay.rs");
 include!("bevy_shell/bitmap_font.rs");
 #[path = "bevy_shell/metatile_render_flags.rs"]
 mod metatile_render_flags;

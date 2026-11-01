@@ -1,15 +1,23 @@
 //! Flygon neural runtime. Game rewards can inject current, never choose actions.
-pub const INTERFACE_ID: &str = "flygon-connected-sensory-descending-actor-critic-v4-pooled";
+pub const INTERFACE_ID: &str = "flygon-connected-sensory-descending-actor-critic-v5-signed";
 pub const MODEL_ID: &str = "flygon-lif-kc-dan-ltd-v2";
-mod campaign;
 mod breadcrumbs;
+mod campaign;
 mod checkpoint;
+mod choice_objectives;
 mod circuit;
 mod conditioning;
+mod curriculum;
 #[cfg(test)]
 mod dynamics_tests;
+mod field_objectives;
 mod interface;
+mod objectives;
 mod operant;
+mod pocket_objectives;
+mod recovery_objectives;
+mod sensory;
+mod shop_objectives;
 mod story;
 mod view;
 use serde::{Deserialize, Serialize};
@@ -465,7 +473,8 @@ impl Brain {
         if steps == 0 {
             return Err("Interval smaller than neural step".into());
         }
-        self.tick.checked_add(u64::from(steps) + self.queue.len() as u64)
+        self.tick
+            .checked_add(u64::from(steps) + self.queue.len() as u64)
             .ok_or("Neural clock limit reached")?;
         self.counts.fill(0);
         self.last_window_steps = steps;

@@ -91,3 +91,25 @@ test('online startup calls an unbound browser fetch without the session as its r
   assert.equal((await startOnlineSession(ctx)).playerId, '42');
   assert.equal(calls.length, 3);
 });
+
+
+test('damaged tab credentials recover from persistent storage without changing player identity', () => {
+  const ctx = context(`https://game.test/?token=${signedToken('player-42')}`);
+  prepareSession(ctx);
+  ctx.url = new URL('https://game.test/');
+  for (const damaged of ['{broken', '42', '{"server":"wss://game.test/v1/ws","token":42}']) {
+    ctx.sessionStorage.setItem('crystal.multiplayer.credentials', damaged);
+    const resumed = prepareSession(ctx);
+    assert.equal(resumed.playerId, '42');
+    assert.equal(resumed.hasToken, true);
+  }
+});
+
+test('invalid credential caches and fragmented server URLs fail predictably', () => {
+  const ctx = context();
+  ctx.sessionStorage.setItem('crystal.multiplayer.credentials', '{broken');
+  ctx.localStorage.setItem('crystal.multiplayer.credentials', '{broken');
+  assert.equal(prepareSession(ctx).hasToken, false);
+  ctx.url = new URL('https://game.test/?multiplayer_server=wss%3A%2F%2Fgame.test%2Fv1%2Fws%23fragment');
+  assert.throws(() => prepareSession(ctx), /fragment/);
+});

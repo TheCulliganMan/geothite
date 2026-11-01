@@ -9,8 +9,8 @@ use crystal_bevy::VisibleShellController as RuntimeGameShell;
 use crystal_core::input::GameButton;
 use crystal_runtime::{CrystalRuntime, RuntimeCompiledScriptCursor};
 use geothite::{
-    RuntimeTextRenderer, TerminalAction, TerminalUi, TextSnapshot, TuiTheme, map_key_event,
-    render_snapshot_text,
+    PaintedRenderer, RuntimeTextRenderer, TerminalAction, TerminalCanvas, TerminalUi,
+    TextSnapshot, TuiTheme, map_key_event, render_snapshot_text,
 };
 use ratatui::{Terminal, backend::CrosstermBackend};
 use serde_json::{Value, json};
@@ -18,7 +18,7 @@ use std::{
     env,
     io::{self, BufRead, BufReader, IsTerminal, Stdout, Write},
     path::PathBuf,
-    time::Duration,
+    time::{Duration, Instant},
 };
 
 #[derive(Debug)]
@@ -41,6 +41,11 @@ enum Command {
 
 fn main() -> Result<()> {
     let options = parse_options(env::args().skip(1))?;
+    // Hold ownership before loading, not just during individual writes. Two
+    // MCP/terminal clients must never play divergent copies of the same slot.
+    let _save_lock = if options.command != Command::Dump {
+        options.save.as_deref().map(lock_save_slot).transpose()?
+    } else { None };
     let pack = options
         .pack
         .canonicalize()
@@ -48,8 +53,14 @@ fn main() -> Result<()> {
     let asset_root = AssetRoot::new(pack.parent().context("content pack path has no parent")?);
     let loaded = read_loaded_verified_compiled_game_pack(&pack)
         .with_context(|| format!("load game content pack {}", pack.display()))?;
+    let painter = if options.command == Command::Play {
+        PaintedRenderer::from_pack_assets(loaded.pack().runtime_files())
+    } else {
+        PaintedRenderer::default()
+    };
     let runtime = CrystalRuntime::from_loaded_compiled_pack(&asset_root, loaded)?;
-    let mut game = match &options.load {
+    let resume = options.load.as_ref().or_else(|| options.save.as_ref().filter(|path| path.is_file() || crystal_core::save::save_backup_path(path).is_file()));
+    let mut game = match resume {
         Some(load) => {
             RuntimeGameShell::load_save(asset_root, runtime, load.clone(), options.save.clone())?
         }
@@ -81,7 +92,7 @@ fn main() -> Result<()> {
         io::stdin().is_terminal() && io::stdout().is_terminal(),
         "geothite play requires an interactive terminal; use `geothite dump PACK` for plain text"
     );
-    run_tui(game, theme, options.save)
+    run_tui(game, theme, options.save, painter)
 }
 
 fn parse_options(arguments: impl IntoIterator<Item = String>) -> Result<Options> {
@@ -155,6 +166,7 @@ fn run_mcp(mut game: RuntimeGameShell, save_path: Option<PathBuf>) -> Result<()>
     let mut renderer = RuntimeTextRenderer::default();
     let mut active_cursor = None;
     finish_noninteractive_work(&mut game, &mut active_cursor, &mut renderer)?;
+    save_after_mcp_action(&mut game, save_path.as_ref())?;
     let stdin = io::stdin();
     let mut stdout = io::stdout().lock();
     for line in BufReader::new(stdin.lock()).lines() {
@@ -189,7 +201,7 @@ fn run_mcp(mut game: RuntimeGameShell, save_path: Option<PathBuf>) -> Result<()>
                 &mut renderer,
                 &mut active_cursor,
                 request.pointer("/params/name").and_then(Value::as_str),
-                request.pointer("/params/arguments").unwrap_or(&Value::Null),
+                request.pointer("/params/arguments").unwrap_or(&json!({})),
                 save_path.as_ref(),
             ) {
                 Ok(result) => json!({ "jsonrpc": "2.0", "id": id, "result": result }),
@@ -222,6 +234,16 @@ fn run_mcp(mut game: RuntimeGameShell, save_path: Option<PathBuf>) -> Result<()>
 
 fn mcp_tools() -> Value {
     json!([
+        {
+            "name": "search",
+            "description": "Discover code-mode visible tool schemas (observe, press, move, save). Optional query is a case-insensitive substring. Existing direct tools remain available.",
+            "inputSchema": {"type":"object","properties":{"query":{"type":"string","maxLength":512}},"additionalProperties":false}
+        },
+        {
+            "name": "execute",
+            "description": "Run a JavaScript async function BODY using await tools.observe(), tools.press({button}), tools.move({direction,steps}), tools.save(). Alias: codemode. Return JSON to filter observations. Uses the current visible game session, not engine internals. Await every call sequentially. Max 16KiB source, 128 calls and 250000 VM instructions. Fresh Rust JS context; no filesystem, network or process APIs. For trusted agent code, not a hostile-code sandbox. Errors do not undo earlier inputs; configured native autosaves are preserved.",
+            "inputSchema": {"type":"object","properties":{"code":{"type":"string","maxLength":16384}},"required":["code"],"additionalProperties":false}
+        },
         {
             "name": "observe",
             "description": "Verbose text snapshot of the current game screen, dialogue, menus, and visible surroundings.",
@@ -325,6 +347,46 @@ fn call_mcp_tool(
     save_path: Option<&PathBuf>,
 ) -> Result<Value> {
     match name.context("MCP tools/call is missing params.name")? {
+        "search" => {
+            let object = arguments
+                .as_object()
+                .context("search arguments must be an object")?;
+            anyhow::ensure!(
+                object.keys().all(|k| k == "query"),
+                "Unexpected search argument"
+            );
+            let query = arguments
+                .get("query")
+                .map(|v| v.as_str().context("query must be a string"))
+                .transpose()?
+                .unwrap_or("");
+            anyhow::ensure!(query.len() <= 512, "query exceeds 512 bytes");
+            Ok(mcp_json_result(geothite::code_mode_catalog(query)))
+        }
+        "execute" => {
+            let object = arguments
+                .as_object()
+                .context("execute arguments must be an object")?;
+            anyhow::ensure!(
+                object.keys().all(|k| k == "code"),
+                "Unexpected execute argument"
+            );
+            let code = arguments["code"].as_str().context("execute requires code")?;
+            let result = geothite::execute_code(code, |name, args| {
+                let result = geothite::call_code_mode_tool(game, renderer, name, args, |game| {
+                    game.save(
+                        save_path.context("save requires a session configured with --save")?,
+                    )?;
+                    Ok(())
+                });
+                // Inputs already applied must persist even when a later operation fails.
+                if matches!(name, "press" | "move") {
+                    save_after_mcp_action(game, save_path)?;
+                }
+                result
+            })?;
+            Ok(mcp_json_result(result))
+        }
         "observe" => {
             let source = game.presentation_snapshot()?;
             let snapshot = render_controller_snapshot(game, renderer, &source);
@@ -621,13 +683,74 @@ fn move_exact_tiles(
 
 fn save_after_mcp_action(game: &mut RuntimeGameShell, save_path: Option<&PathBuf>) -> Result<()> {
     if let Some(path) = save_path {
-        game.save(path)?;
+        game.autosave(path)?;
     }
     Ok(())
 }
 
+fn lock_save_slot(path: &std::path::Path) -> Result<std::fs::File> {
+    let parent = path.parent().filter(|p| !p.as_os_str().is_empty()).unwrap_or(std::path::Path::new("."));
+    std::fs::create_dir_all(parent)?;
+    let name = path.file_name().context("Save path needs a filename")?;
+    let canonical = parent.canonicalize()?.join(name);
+    let lock_path = PathBuf::from(format!("{}.lock", canonical.display()));
+    let file = std::fs::OpenOptions::new().create(true).truncate(false).read(true).write(true).open(lock_path)?;
+    file.try_lock().context("This save session is already open. Disconnect its other terminal/MCP client before resuming it.")?;
+    Ok(file)
+}
+
 struct TerminalGuard {
     terminal: Terminal<CrosstermBackend<Stdout>>,
+    canvas: TerminalCanvas,
+}
+
+/// Cosmetic deadlines are independent of input arrival. Never tick the game
+/// here, and never catch up a paused view with a burst of invisible frames.
+struct VisualClock {
+    next: Instant,
+    period: Duration,
+}
+
+impl VisualClock {
+    fn new(now: Instant, period: Duration) -> Self {
+        Self {
+            next: now + period,
+            period,
+        }
+    }
+
+    fn tick(&mut self, now: Instant, enabled: bool) -> bool {
+        if !enabled {
+            self.next = now + self.period;
+            return false;
+        }
+        if now < self.next {
+            return false;
+        }
+        self.next = now + self.period;
+        true
+    }
+
+    fn wait(&self, now: Instant) -> Duration {
+        self.next.saturating_duration_since(now)
+    }
+}
+
+fn terminal_poll_timeout(remaining: Duration) -> Duration {
+    // The use-dev-tty poller skips even buffered keys when its timeout is
+    // zero. Large PNG frames can overrun a visual deadline: always give the
+    // input source time to check readiness instead of starving controls.
+    remaining.max(Duration::from_millis(1))
+}
+
+fn advance_terminal_ink(painter: &mut PaintedRenderer, elapsed: Duration) {
+    // One cosmetic repaint/second, without making the shared travelling wave
+    // four times slower because its resume guard bounds each delta to 250ms.
+    // No rendered intermediate frames, gameplay ticks or catch-up queue.
+    let seconds = elapsed.as_secs_f64().min(1.);
+    for step in 0..4 {
+        painter.advance_ink_by((seconds - f64::from(step) * 0.25).clamp(0., 0.25));
+    }
 }
 
 impl TerminalGuard {
@@ -639,7 +762,10 @@ impl TerminalGuard {
             return Err(error).context("enter alternate terminal screen");
         }
         match Terminal::new(CrosstermBackend::new(stdout)) {
-            Ok(terminal) => Ok(Self { terminal }),
+            Ok(terminal) => Ok(Self {
+                terminal,
+                canvas: TerminalCanvas::detect(),
+            }),
             Err(error) => {
                 let mut stdout = io::stdout();
                 let _ = execute!(stdout, LeaveAlternateScreen);
@@ -652,39 +778,158 @@ impl TerminalGuard {
 
 impl Drop for TerminalGuard {
     fn drop(&mut self) {
+        let _ = self.canvas.clear(self.terminal.backend_mut());
         let _ = disable_raw_mode();
         let _ = execute!(self.terminal.backend_mut(), LeaveAlternateScreen);
         let _ = self.terminal.show_cursor();
     }
 }
 
-fn run_tui(mut game: RuntimeGameShell, theme: TuiTheme, save_path: Option<PathBuf>) -> Result<()> {
+fn run_tui(
+    mut game: RuntimeGameShell,
+    theme: TuiTheme,
+    save_path: Option<PathBuf>,
+    mut painter: PaintedRenderer,
+) -> Result<()> {
     let mut terminal = TerminalGuard::enter()?;
     let mut renderer = RuntimeTextRenderer::default();
     let mut ui = TerminalUi::new(theme);
     let mut active_cursor = None;
     let mut command_buffer: Option<String> = None;
+    let mut painted = true;
+    let reduced_motion = std::env::var("GEOTHITE_REDUCED_MOTION").as_deref() == Ok("1");
+    let mut ink_clock = VisualClock::new(Instant::now(), Duration::from_secs(1));
+    let mut last_ink = Instant::now();
+    let mut replay_clock = VisualClock::new(Instant::now(), Duration::from_millis(50));
+    game.set_battle_replay_enabled(!reduced_motion);
     finish_noninteractive_work(&mut game, &mut active_cursor, &mut renderer)?;
+    save_after_mcp_action(&mut game, save_path.as_ref())?;
+    let mut runtime_snapshot = game.presentation_snapshot()?;
+    let mut snapshot = render_controller_snapshot(&game, &mut renderer, &runtime_snapshot);
+    let mut state_dirty = false;
+    let mut surface_dirty = true;
+    let mut surface = None;
+    let mut painted_this_frame = false;
     'tui: loop {
-        let runtime_snapshot = game.presentation_snapshot()?;
-        let snapshot = render_controller_snapshot(&game, &mut renderer, &runtime_snapshot);
-        terminal
-            .terminal
-            .draw(|frame| ui.draw(frame, &snapshot))
-            .context("draw terminal UI")?;
-        if !event::poll(Duration::from_millis(100)).context("poll terminal input")? {
-            // Timed presentation keeps running while the terminal waits for
-            // input. The production controller retains every A/B boundary.
-            game.wait_frames(6)?;
+        let now = Instant::now();
+        let ink_changed = ink_clock.tick(now, painted && !reduced_motion);
+        if ink_changed {
+            advance_terminal_ink(&mut painter, now.duration_since(last_ink));
+            last_ink = now;
+        } else if !painted || reduced_motion {
+            last_ink = now;
+        }
+        if replay_clock.tick(now, painted && !reduced_motion && painter.replay_active()) {
+            painter.advance_replay();
+            surface_dirty = true;
+        }
+        if state_dirty {
+            runtime_snapshot = game.presentation_snapshot()?;
+            snapshot = render_controller_snapshot(&game, &mut renderer, &runtime_snapshot);
+            state_dirty = false;
+            surface_dirty = true;
+        }
+        let redraw =
+            surface_dirty || (ink_changed && painted_this_frame && !terminal.canvas.enabled());
+        if redraw {
+            terminal
+                .terminal
+                .draw(|frame| {
+                    if painted && frame.area().width >= 40 && frame.area().height >= 24 {
+                        painted_this_frame = true;
+                        let area = frame.area();
+                        if surface_dirty
+                            || surface
+                                .as_ref()
+                                .is_none_or(|b: &ratatui::buffer::Buffer| b.area != area)
+                        {
+                            surface = Some(painter.draw_native_surface(
+                                &runtime_snapshot,
+                                &snapshot,
+                                area.width,
+                                area.height,
+                                ui.notice.as_deref(),
+                                ui.show_help,
+                                terminal.canvas.enabled(),
+                            ));
+                        } else if let Some(buffer) = surface.as_mut() {
+                            painter.refresh_native_dots(buffer);
+                        }
+                        frame
+                            .buffer_mut()
+                            .merge(surface.as_ref().expect("painted surface"));
+                    } else {
+                        painted_this_frame = false;
+                        ui.draw(frame, &snapshot);
+                    }
+                })
+                .context("draw terminal UI")?;
+        }
+        if painted_this_frame && terminal.canvas.enabled() && (surface_dirty || ink_changed) {
+            let bounds = painter.scene_bounds();
+            if let [x, y, width, height] = bounds.as_slice() {
+                let size = crossterm::terminal::window_size().ok();
+                let cw = size
+                    .as_ref()
+                    .filter(|s| s.width >= s.columns && s.columns != 0)
+                    .map_or(12, |s| u32::from(s.width) / u32::from(s.columns));
+                let ch = size
+                    .as_ref()
+                    .filter(|s| s.height >= s.rows && s.rows != 0)
+                    .map_or(24, |s| u32::from(s.height) / u32::from(s.rows));
+                let (pixels_w, pixels_h) =
+                    geothite::terminal_canvas_size(u32::from(*width) * cw, u32::from(*height) * ch);
+                if let Some(image) = painter.circle_image(pixels_w, pixels_h) {
+                    terminal
+                        .canvas
+                        .paint(
+                            terminal.terminal.backend_mut(),
+                            ratatui::layout::Rect::new(*x, *y, *width, *height),
+                            &image,
+                        )
+                        .context("paint terminal dot canvas")?;
+                } else {
+                    terminal.canvas.clear(terminal.terminal.backend_mut())?;
+                }
+            } else {
+                terminal.canvas.clear(terminal.terminal.backend_mut())?;
+            }
+        } else if !painted_this_frame {
+            terminal.canvas.clear(terminal.terminal.backend_mut())?;
+        }
+        surface_dirty = false;
+        if painted {
+            if let Some(viewport) = painter.viewport {
+                renderer.set_viewport(viewport);
+            }
+        } else {
+            renderer.set_viewport(geothite::ViewportSize::default());
+        }
+        let now = Instant::now();
+        let timeout = if painter.replay_active() {
+            ink_clock.wait(now).min(replay_clock.wait(now))
+        } else {
+            ink_clock.wait(now)
+        };
+        if !event::poll(terminal_poll_timeout(timeout)).context("poll terminal input")? {
             continue;
         }
-        let Event::Key(key) = event::read().context("read terminal input")? else {
+        let input = event::read().context("read terminal input")?;
+        if matches!(input, Event::Resize(..)) {
+            surface_dirty = true;
+        }
+        let Event::Key(key) = input else {
             continue;
         };
         if !matches!(key.kind, KeyEventKind::Press | KeyEventKind::Repeat) {
             continue;
         }
+        if painter.replay_active() {
+            surface_dirty = true;
+        }
+        painter.cancel_replay();
         if let Some(buffer) = command_buffer.as_mut() {
+            surface_dirty = true;
             match key.code {
                 KeyCode::Esc => {
                     command_buffer = None;
@@ -723,9 +968,21 @@ fn run_tui(mut game: RuntimeGameShell, theme: TuiTheme, save_path: Option<PathBu
             }
             continue;
         }
-        let modal_selection = !snapshot.menu.is_empty() || !snapshot.prompt.is_empty();
-        match map_key_event(key, modal_selection) {
-            TerminalAction::Quit => break,
+        if matches!(key.code, KeyCode::Char('v' | 'V')) {
+            painted = !painted;
+            surface_dirty = true;
+            continue;
+        }
+        let modal_selection = snapshot.confirmation_input_owned();
+        let action = map_key_event(key, modal_selection);
+        if !matches!(action, TerminalAction::None) {
+            state_dirty = true;
+        }
+        match action {
+            TerminalAction::Quit => {
+                save_after_mcp_action(&mut game, save_path.as_ref())?;
+                break;
+            },
             TerminalAction::BeginCommand => {
                 command_buffer = Some(String::new());
                 ui.notice = Some("COMMAND> :".to_string());
@@ -763,6 +1020,13 @@ fn run_tui(mut game: RuntimeGameShell, theme: TuiTheme, save_path: Option<PathBu
                 finish_noninteractive_work(&mut game, &mut active_cursor, &mut renderer)?;
             }
             TerminalAction::None => {}
+        }
+        if matches!(action, TerminalAction::GameButton(_) | TerminalAction::MoveSelection(_) | TerminalAction::Wait) {
+            save_after_mcp_action(&mut game, save_path.as_ref())?;
+        }
+        let replays = game.take_battle_replays();
+        if painted && !reduced_motion {
+            painter.replay(replays);
         }
     }
     Ok(())
@@ -805,6 +1069,135 @@ mod tests {
     use super::*;
 
     #[test]
+    fn save_slot_lock_rejects_second_writer_and_releases_on_disconnect() {
+        let path = std::env::temp_dir().join(format!("geothite-writer-lock-{}.crystalsave", std::process::id()));
+        let owner = lock_save_slot(&path).unwrap();
+        assert!(lock_save_slot(&path).is_err());
+        let other = path.with_file_name(format!("geothite-other-lock-{}.crystalsave", std::process::id()));
+        let independent = lock_save_slot(&other).unwrap();
+        drop(owner);
+        let resumed = lock_save_slot(&path).unwrap();
+        drop(resumed); drop(independent);
+        for slot in [path, other] { std::fs::remove_file(format!("{}.lock", slot.display())).unwrap(); }
+    }
+
+    #[test]
+    fn one_second_idle_refresh_does_not_wait_for_keys_to_stop() {
+        let start = Instant::now();
+        let mut clock = VisualClock::new(start, Duration::from_secs(1));
+        let frames = (10..=4000)
+            .step_by(10)
+            .filter(|millis| clock.tick(start + Duration::from_millis(*millis), true))
+            .count();
+        assert_eq!(
+            frames, 4,
+            "Only idle cosmetics are throttled; inputs have their own immediate redraw path"
+        );
+    }
+
+    #[test]
+    fn overrun_visual_frames_still_poll_real_input() {
+        let start = Instant::now();
+        let clock = VisualClock::new(start, Duration::from_secs_f64(1. / 30.));
+        let expired = clock.wait(start + Duration::from_millis(80));
+        assert!(
+            expired.is_zero(),
+            "A large frame missed its visual deadline"
+        );
+        assert_eq!(terminal_poll_timeout(expired), Duration::from_millis(1));
+        assert_eq!(
+            terminal_poll_timeout(Duration::from_millis(20)),
+            Duration::from_millis(20)
+        );
+    }
+
+    #[test]
+    fn cosmetic_deadlines_survive_continuous_input() {
+        let start = Instant::now();
+        let mut clock = VisualClock::new(start, Duration::from_millis(100));
+        let mut frames = 0;
+        // Input every 10ms: the old poll-timeout branch never animated here.
+        for millis in (10..=1000).step_by(10) {
+            frames += usize::from(clock.tick(start + Duration::from_millis(millis), true));
+        }
+        assert_eq!(frames, 10);
+        assert_eq!(
+            clock.wait(start + Duration::from_millis(1050)),
+            Duration::from_millis(50)
+        );
+    }
+
+    #[test]
+    fn paused_cosmetic_clocks_do_not_replay_hidden_frames() {
+        let start = Instant::now();
+        let mut clock = VisualClock::new(start, Duration::from_millis(100));
+        assert!(!clock.tick(start + Duration::from_secs(10), false));
+        assert!(!clock.tick(start + Duration::from_millis(10050), true));
+        assert!(clock.tick(start + Duration::from_millis(10100), true));
+        assert!(clock.tick(start + Duration::from_secs(30), true));
+        assert!(!clock.tick(start + Duration::from_secs(30), true));
+    }
+
+    #[test]
+    fn default_theme_needs_no_build_checkout() {
+        let options = parse_options(["play".into(), "game.crystalpack".into()]).unwrap();
+        assert!(options.theme.is_none());
+        let custom = parse_options([
+            "play".into(),
+            "game.crystalpack".into(),
+            "--theme".into(),
+            "custom.json".into(),
+        ])
+        .unwrap();
+        assert_eq!(custom.theme, Some(PathBuf::from("custom.json")));
+    }
+
+    #[test]
+    fn installed_save_resumes_real_movement() {
+        let pack = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("../../content-packs/realtime-clock.browser.crystalpack")
+            .canonicalize()
+            .unwrap();
+        let assets = AssetRoot::new(pack.parent().unwrap());
+        let runtime = CrystalRuntime::from_loaded_compiled_pack(
+            &assets,
+            read_loaded_verified_compiled_game_pack(&pack).unwrap(),
+        )
+        .unwrap();
+        let path = std::env::temp_dir().join(format!(
+            "geothite-install-resume-{}.crystalsave",
+            std::process::id()
+        ));
+        let mut game = RuntimeGameShell::new_game(
+            assets.clone(),
+            runtime.clone(),
+            "CHRIS",
+            Some(path.clone()),
+        )
+        .unwrap();
+        assert!(game.autosave(&path).unwrap(), "New game has a resumable checkpoint");
+        let checkpoint = std::fs::read(&path).unwrap();
+        game.press(GameButton::Start).unwrap();
+        assert!(!game.autosave(&path).unwrap(), "Production menu cursors are not an autosave boundary");
+        assert_eq!(std::fs::read(&path).unwrap(), checkpoint);
+        game.press(GameButton::B).unwrap();
+        game.save(&path).unwrap();
+        let mut resumed =
+            RuntimeGameShell::load_save(assets, runtime, path.clone(), Some(path.clone())).unwrap();
+        let before = resumed.snapshot().unwrap();
+        resumed.press(GameButton::Right).unwrap();
+        resumed.press(GameButton::Right).unwrap();
+        let after = resumed.snapshot().unwrap();
+        std::fs::remove_file(&path).unwrap();
+        std::fs::remove_file(crystal_core::save::save_backup_path(&path)).unwrap();
+        assert_ne!(
+            before.overworld.tile, after.overworld.tile,
+            "resume must move: {:?}",
+            after.phase
+        );
+    }
+
+    #[test]
     fn mcp_exposes_the_play_surface_under_the_geothite_server() {
         let tools = mcp_tools();
         let names = tools
@@ -816,6 +1209,8 @@ mod tests {
         assert_eq!(
             names,
             [
+                "search",
+                "execute",
                 "observe",
                 "status",
                 "move",
@@ -829,6 +1224,153 @@ mod tests {
             ]
         );
         assert_eq!(env!("CARGO_PKG_NAME"), "geothite");
+    }
+
+    #[test]
+    fn mcp_battle_exit_restores_movement_and_start_menu() {
+        let repo = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("../..")
+            .canonicalize()
+            .unwrap();
+        let pack = repo.join("content-packs/text-tui.crystalpack");
+        let assets = AssetRoot::new(pack.parent().unwrap());
+        let loaded = read_loaded_verified_compiled_game_pack(&pack).expect("external TUI pack");
+        let runtime = CrystalRuntime::from_loaded_compiled_pack(&assets, loaded).unwrap();
+        let spawn = runtime.title_new_game_spawn_identifier().unwrap();
+        let mut fixture = crystal_runtime::RuntimeGameShell::new_game_at_runtime_tile(
+            assets.clone(),
+            runtime.clone(),
+            spawn,
+            "Route29",
+            46,
+            12,
+        )
+        .unwrap();
+        fixture
+            .add_party_pokemon(
+                "TOTODILE",
+                50,
+                None,
+                None,
+                "MCP_EXIT",
+                1,
+                crystal_core::models::pokemon::Dv::from_non_hp(10, 10, 10, 10),
+            )
+            .unwrap();
+        let save = env::temp_dir().join(format!(
+            "geothite-mcp-battle-exit-{}.crystalsave",
+            std::process::id()
+        ));
+        fixture.save(&save).unwrap();
+        let loaded = RuntimeGameShell::load_save(assets, runtime, save.clone(), None);
+        std::fs::remove_file(&save).unwrap();
+        let mut game = loaded.unwrap();
+        let mut renderer = RuntimeTextRenderer::default();
+        let mut cursor = None;
+        for step in 0..256 {
+            call_mcp_tool(&mut game, &mut renderer, &mut cursor, Some("move"),
+                &json!({"direction": if (step / 2) % 2 == 0 { "right" } else { "left" }, "steps": 1}), None).unwrap();
+            if game.snapshot().unwrap().battle.is_some() {
+                break;
+            }
+        }
+        assert!(
+            game.snapshot().unwrap().battle.is_some(),
+            "MCP did not enter a grass encounter"
+        );
+        for _ in 0..256 {
+            let shown = game.presentation_snapshot().unwrap();
+            let view = renderer.render(&shown);
+            if shown.battle.is_none() && !view.confirmation_input_owned() {
+                break;
+            }
+            // Level-50 learnsets need not put a damaging move in slot zero.
+            // Choose a displayed attack through the real menu instead of
+            // spending 256 A presses on SCREECH instead of attacking.
+            let attack = view.menu.iter().position(|line| {
+                line.text.contains("PP")
+                    && [
+                        "SLASH",
+                        "WATER GUN",
+                        "HYDRO PUMP",
+                        "RAGE",
+                        "BITE",
+                        "SCRATCH",
+                    ]
+                    .iter()
+                    .any(|name| line.text.contains(name))
+            });
+            let selected = view
+                .menu
+                .iter()
+                .position(|line| line.kind == geothite::LineKind::Selected)
+                .unwrap_or(0);
+            let button = attack
+                .filter(|index| *index != selected)
+                .map_or("a", |index| if index > selected { "down" } else { "up" });
+            call_mcp_tool(
+                &mut game,
+                &mut renderer,
+                &mut cursor,
+                Some("press"),
+                &json!({"button": button}),
+                None,
+            )
+            .unwrap();
+        }
+        let before = game.snapshot().unwrap();
+        assert!(
+            before.battle.is_none(),
+            "MCP battle did not finish: {}",
+            render_snapshot_text(
+                &renderer.render(&game.presentation_snapshot().unwrap()),
+                false
+            )
+        );
+        call_mcp_tool(
+            &mut game,
+            &mut renderer,
+            &mut cursor,
+            Some("move"),
+            &json!({"direction": "up", "steps": 2}),
+            None,
+        )
+        .unwrap();
+        let after = game.snapshot().unwrap();
+        assert_ne!(
+            before.overworld.tile, after.overworld.tile,
+            "MCP movement is blocked after battle"
+        );
+        call_mcp_tool(
+            &mut game,
+            &mut renderer,
+            &mut cursor,
+            Some("press"),
+            &json!({"button": "start"}),
+            None,
+        )
+        .unwrap();
+        let observed = call_mcp_tool(
+            &mut game,
+            &mut renderer,
+            &mut cursor,
+            Some("observe"),
+            &json!({"detail": "compact"}),
+            None,
+        )
+        .unwrap();
+        assert!(
+            observed["structuredContent"]["menu"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .any(|line| {
+                    line["text"]
+                        .as_str()
+                        .is_some_and(|text| text.contains("SAVE"))
+                }),
+            "MCP Start menu is blocked after battle: {observed}"
+        );
     }
 
     #[test]

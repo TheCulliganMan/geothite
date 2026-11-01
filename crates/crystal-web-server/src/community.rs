@@ -108,13 +108,16 @@ impl Hub {
             .active_session_for(connection)
             .ok_or("no active trade session")?;
         let session = self.sessions.get_mut(&session_id).expect("active session");
+        let prefix = format!("{session_id}-trade-");
+        // Require the exact wire spelling: aliases such as +1 and 01 must not
+        // count the same transfer as additional completed trades.
+        let canonical = trade_id
+            .strip_prefix(&prefix)
+            .and_then(|s| s.parse::<u64>().ok().map(|n| s == n.to_string()))
+            .unwrap_or(false);
         if !matches!(session.mode, MatchMode::Trade | MatchMode::TimeCapsule)
-            || !trade_id.starts_with(&format!("{session_id}-trade-"))
             || trade_id.len() > 80
-            || trade_id
-                .strip_prefix(&format!("{session_id}-trade-"))
-                .and_then(|s| s.parse::<u64>().ok())
-                .is_none()
+            || !canonical
         {
             return Err("invalid completed trade".into());
         }

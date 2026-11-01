@@ -1,0 +1,14 @@
+# Retained local verification evidence and compiler scratch, never source.
+*.log
+*.d
+*.before.*
+*.before-*
+*receipt*.json
+*snapshot-provenance*.json
+*inheritance*.json
+*binding-audit*.json
+*scope-gap-audit*.json
+final-requirement-audit*.json
+/current-successor-grass-audit-v*/*.json
+/harbor-successor-grass-audit-v*/*.json
+/terrain-successor-grass-audit-v*/*.json

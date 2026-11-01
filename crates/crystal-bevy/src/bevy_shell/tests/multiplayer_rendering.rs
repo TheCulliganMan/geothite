@@ -64,7 +64,7 @@ fn disconnected_render_multiplayer_fixture() -> MultiplayerRuntime {
 fn multiplayer_render_test_app() -> App {
     let asset_root = AssetRoot::new(
         PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-            .join("../../..")
+            .join("../..")
             .canonicalize()
             .unwrap(),
     );
@@ -101,6 +101,151 @@ fn multiplayer_render_test_app() -> App {
         },
     ));
     app
+}
+
+#[test]
+fn direct_time_capsule_checks_moves_and_mail_without_changing_the_save() {
+    let mut app = multiplayer_render_test_app();
+    let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+    shell
+        .shell
+        .add_party_pokemon(
+            "SQUIRTLE",
+            5,
+            None,
+            None,
+            "TEST",
+            1,
+            crate::core::models::pokemon::Dv::from_non_hp(10, 10, 10, 10),
+        )
+        .unwrap();
+    let mode = crystal_net::hosted::MatchMode::TimeCapsule;
+    assert_eq!(
+        direct_interaction_mode_unavailable(&mut shell, mode).unwrap(),
+        None
+    );
+    {
+        let pokemon = shell.shell.session_mut().state_mut().storage.party.pokemon[0]
+            .as_mut()
+            .unwrap();
+        pokemon.moves[0].name = "PROTECT".into();
+        pokemon.moves[0].current_pp = 10;
+    }
+    let before = shell.shell.snapshot().unwrap().state_checksum;
+    assert_eq!(
+        direct_interaction_mode_unavailable(&mut shell, mode).unwrap(),
+        Some("Time Capsule cannot transfer Gen II moves")
+    );
+    assert_eq!(shell.shell.snapshot().unwrap().state_checksum, before);
+    shell.shell.session_mut().state_mut().storage.party.pokemon[0]
+        .as_mut()
+        .unwrap()
+        .item = Some("FLOWER_MAIL".into());
+    assert_eq!(
+        direct_interaction_mode_unavailable(&mut shell, mode).unwrap(),
+        Some("remove held Mail before using Time Capsule")
+    );
+}
+
+#[test]
+fn new_hosted_match_does_not_replay_earlier_overworld_inputs() {
+    let mut app = multiplayer_render_test_app();
+    let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+    for frame in 1..=150 {
+        shell
+            .deterministic_input_frames
+            .push_back(PlayerInputFrame::new(1, Frame(frame), 0).unwrap());
+    }
+    let mut multiplayer = disconnected_render_multiplayer_fixture();
+    multiplayer.begin_matched_input_stream(&shell);
+    // No transport exists: attempting to resend any old frame would fail here.
+    multiplayer.send_pending_inputs(&shell).unwrap();
+    shell
+        .deterministic_input_frames
+        .push_back(PlayerInputFrame::new(1, Frame(151), 0).unwrap());
+    assert!(
+        multiplayer.send_pending_inputs(&shell).is_err(),
+        "new session inputs must still reach the transport"
+    );
+}
+
+#[test]
+fn direct_link_exit_closes_only_the_trade_owned_surfaces() {
+    let mut app = multiplayer_render_test_app();
+    let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+    shell.party_menu_open = true;
+    shell.pending_script_party_selection = Some(PendingScriptPartySelection::LinkTrade);
+    shell.shell.session_mut().state_mut().link_session.link_mode = 2;
+    close_direct_link_presentation(&mut shell);
+    assert!(!shell.party_menu_open);
+    assert!(shell.pending_script_party_selection.is_none());
+    assert_eq!(shell.shell.session().state().link_session.link_mode, 0);
+    shell.party_menu_open = true;
+    shell.pending_script_party_selection = Some(PendingScriptPartySelection::NameRater);
+    close_direct_link_presentation(&mut shell);
+    assert!(shell.party_menu_open);
+    assert_eq!(
+        shell.pending_script_party_selection,
+        Some(PendingScriptPartySelection::NameRater)
+    );
+}
+
+#[test]
+fn overworld_interactions_preserve_modal_input_and_allow_walking() {
+    let mut app = multiplayer_render_test_app();
+    let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+    shell
+        .shell
+        .add_party_pokemon(
+            "CYNDAQUIL",
+            5,
+            None,
+            None,
+            "TEST",
+            1,
+            crate::core::models::pokemon::Dv::from_non_hp(10, 10, 10, 10),
+        )
+        .unwrap();
+    mark_runtime_snapshot_dirty(&mut shell);
+    assert_eq!(direct_interaction_unavailable(&mut shell).unwrap(), None);
+    let before = shell.shell.snapshot().unwrap().state_checksum;
+    assert_eq!(
+        direct_interaction_mode_unavailable(
+            &mut shell,
+            crystal_net::hosted::MatchMode::TimeCapsule
+        )
+        .unwrap(),
+        Some("Time Capsule requires a party containing only Gen I Pokemon")
+    );
+    assert_eq!(
+        shell.shell.snapshot().unwrap().state_checksum,
+        before,
+        "compatibility checks must not mutate script buffers or gameplay"
+    );
+    assert_eq!(
+        direct_interaction_mode_unavailable(&mut shell, crystal_net::hosted::MatchMode::Trade)
+            .unwrap(),
+        None
+    );
+    shell.player_walk_frame_ticks = 4;
+    assert_eq!(
+        direct_interaction_unavailable(&mut shell).unwrap(),
+        None,
+        "walking alone does not prohibit a nearby invitation"
+    );
+    shell.player_walk_frame_ticks = 0;
+    shell.start_menu_cursor = Some(MenuCursor {
+        surface_id: "ui:start".into(),
+        option_index: 0,
+    });
+    assert_eq!(
+        direct_interaction_unavailable(&mut shell).unwrap(),
+        Some("close the current dialogue or menu first")
+    );
+    assert!(
+        shell.start_menu_cursor.is_some(),
+        "readiness checks must preserve the player's menu"
+    );
 }
 
 #[test]

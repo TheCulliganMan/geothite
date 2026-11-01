@@ -53,6 +53,9 @@ RUN --mount=type=cache,target=/usr/local/cargo/registry,sharing=locked \
     && cargo rustc --locked --profile web-release --package crystal-audio --lib --crate-type cdylib \
         --features browser-synth --target wasm32-unknown-unknown \
     && cargo build --locked --profile web-release --package crystal-flygon --lib --target wasm32-unknown-unknown \
+    && cargo build --locked --profile web-release --package geothite --lib --target wasm32-unknown-unknown \
+    && wasm-bindgen --target web --no-typescript --out-dir /out/web/tui --out-name geothite \
+        target/wasm32-unknown-unknown/web-release/geothite.wasm \
     && cargo run --locked --release -p crystal-voxel-view --bin bundle_open_models -- assets/open-models /out/web/open-models.json \
     && cargo run --locked --release -p crystal-voxel-view --bin bundle_open_people -- assets/open-models /out/web/open-people.json \
     && cp target/release/crystal-web-server /out/crystal-web-server \
@@ -60,6 +63,8 @@ RUN --mount=type=cache,target=/usr/local/cargo/registry,sharing=locked \
         target/wasm32-unknown-unknown/web-release/crystal_audio.wasm \
     && wasm-bindgen --target web --no-typescript --out-dir /out/web/flygon \
         target/wasm32-unknown-unknown/web-release/crystal_flygon.wasm \
+    && wasm-bindgen --target web --no-typescript --out-dir /out/web/tui \
+        target/wasm32-unknown-unknown/web-release/geothite.wasm \
     && gzip -9 -k /out/web/crystal-audio_bg.wasm \
     && gzip -9 -k /out/web/crystal-bevy_bg.wasm
 
@@ -69,6 +74,9 @@ COPY --from=ascii /ascii/node_modules/ascii.rest/dist/mount.js /out/web/tui/asci
 COPY --from=ascii /ascii/node_modules/ascii.rest/LICENSE /out/web/tui/ASCII-LICENSE.txt
 COPY tools/version-tui-bundle.sh /source/version-tui-bundle.sh
 COPY tools/version-browser-bundle.sh /source/version-browser-bundle.sh
+COPY tools/version-tui-bundle.sh /source/version-tui-bundle.sh
+COPY --from=ascii /ascii/node_modules/ascii.rest/dist/mount.js /out/web/tui/ascii-mount.js
+COPY --from=ascii /ascii/node_modules/ascii.rest/LICENSE /out/web/tui/ASCII-LICENSE.txt
 # Supply this ignored file locally; see docs/game-content.md.
 COPY --from=game_content /core-modular.browser.crystalpack /out/web/core-modular.browser.crystalpack
 COPY modpacks/flygon /source/flygon-config
@@ -82,7 +90,7 @@ RUN cp /source/web-client/install.sh /out/web/install.sh \
     && cp /source/flygon-config/ATTRIBUTION.md /out/web/FLYGON-ATTRIBUTION.md \
     && cp /source/flygon-config/README.md /out/web/FLYGON.md \
     && printf '{"local_clock":false,"live_view":false}\n' > /out/web/flygon-dev.json \
-    && cp /source/web-client/tui/ascii-frame.js /out/web/tui/ \
+    && cp /source/web-client/tui/* /out/web/tui/ \
     && sh /source/version-tui-bundle.sh /out/web/tui \
     && sh /source/version-browser-bundle.sh /out/web
 

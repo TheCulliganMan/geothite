@@ -47,3 +47,6 @@ __pycache__/
 
 # Optional static model previews duplicate runtime geometry and stay local.
 *.stl
+
+# Generated Bemidji integration receipt; preserve the authored town contract.
+/planning/minnesota/towns/bemidji-roof-plateau-v01/INTEGRATION.json

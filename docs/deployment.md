@@ -1,7 +1,7 @@
 # Deploy Geothite multiplayer
 
 The live browser game serves [The Northstar Survey](https://geothite.ryanculligan.com/?view=2d)
-in native 2D. See the [2026-10-29 release record](#combined-minnesota-release-2026-10-29)
+in native 2D. See the [2026-11-01 release record](#reviewed-minnesota-release-2026-11-01)
 for the exact pack, image, verification scope and rollback command.
 
 ## Requirements
@@ -48,6 +48,12 @@ Generated pack data should be regenerated through the canonical exporter when
 content changes, not edited by hand.
 
 ## Configuration
+
+The image also serves the Rust/WASM text client at `/tui` and `/tui/`, using
+the same hosted game pack. See [Text UI](tui.md) for build, controls, isolated
+browser saves, WebMCP and real-game browser verification. Keep the entire
+content-addressed TUI bundle together when deploying; do not mix its glue and
+WASM from different builds.
 
 | Variable | Default | Purpose |
 | --- | --- | --- |
@@ -501,6 +507,32 @@ Guarded rollback, provided the service has not changed since publication:
 
 ```sh
 python3 /mnt/homelab/config/geothite/releases/combined-native-2d-itasca-20261029/deploy.py rollback
+```
+
+## Reviewed Minnesota release (2026-11-01)
+
+Published source commit `2344e5294e3bb2ec47743283ead3959ebc98a73c` as
+`geothite:reviewed-v11-20261101t134616z-final`, image
+`sha256:5e1044c307182d6d3a8a1d705e22e77bdaa2ed105f0a1cb091f14d9470c1b46a`.
+It serves the selected 743-map Minnesota v11 pack, including the inland winter
+belt, early fishing access, repaired towns/caves and reviewed route changes.
+Input pack: `content-packs/minnesota-reviewed-maps-v11.crystalpack`, SHA-256
+`d3c16929aade3df2e4b26406dd1bd1c0ac61f05b05be5f569c41e1657c3899d9`.
+The browser was built without voxel features. The service and public HTTPS
+health endpoint are healthy. Broader map acceptance and earned campaign review
+remain separate from this deployment.
+
+Only Geothite was recreated. Signing settings, persistent game data, Flygon,
+Pokédex and terminal download mounts were preserved. Terminal downloads retain
+their existing pinned release; saves were not relabeled or migrated.
+
+Frozen source, build recipes and guarded rollback state are retained under
+`/mnt/homelab/config/geothite/releases/reviewed-v11-20261101t134616z`.
+Inactive build caches were removed after publication. To restore the captured
+previous service, provided its configuration has not changed:
+
+```sh
+python3 /mnt/homelab/config/geothite/releases/reviewed-v11-20261101t134616z/deploy.py rollback
 ```
 
 ## Optional Flygon

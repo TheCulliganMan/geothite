@@ -1046,7 +1046,9 @@ fn apply_keyboard_input(
         return;
     }
     for _ in 0..elapsed_input_ticks {
-        advance_visible_battle_reward_frame(&mut runtime_shell);
+        if let Err(error) = advance_visible_battle_reward_frame(&mut runtime_shell) {
+            record_visible_runtime_error(&mut runtime_shell, &error);
+        }
     }
     if runtime_shell.visible_catch_tutorial.is_some() {
         if let Err(error) = advance_visible_catch_tutorial(&mut runtime_shell, elapsed_input_ticks) {
@@ -2729,6 +2731,59 @@ fn advance_visible_trainer_sight_cutscene(runtime_shell: &mut BevyRuntimeShell) 
     runtime_shell.object_walk_frame_ticks = WALK_FRAME_HOLD_TICKS.saturating_mul(2);
     mark_runtime_snapshot_dirty(runtime_shell);
     Ok(())
+}
+
+/// Text clients have no animation surface or VBlank loop. Finish visual timing
+/// through the normal completion handlers, without dropping narration, scenes,
+/// HP/PP/EXP mutations, capture results, or acknowledgement boundaries.
+fn fast_forward_text_client_battle_visuals(shell: &mut BevyRuntimeShell) {
+    if shell.text_battle_replays.is_some()
+        && let Some(animation) = shell.visible_move_animations.front().filter(|a| a.started && a.frame == 0).cloned()
+    {
+        // Rendering failures must never become gameplay failures. Use precisely
+        // the same command timeline, object VM, OAM and pack graphics as Bevy.
+        if let Ok(snapshot) = shell.shell.presentation_snapshot()
+            && let Ok(replay) = render_text_battle_replay(&shell.asset_root, &snapshot, animation)
+            && let Some(replays) = shell.text_battle_replays.as_mut()
+            && replays.len() < 4
+        { replays.push(replay); }
+    }
+    let changed = visible_battle_animation_owns_frame(shell)
+        || shell.battle_hp_tween.as_ref().is_some_and(visible_battle_hp_tween_active)
+        || shell.battle_exp_tween.as_ref().is_some_and(|tween| tween.started)
+        || shell.battle_level_stats.front().is_some_and(|stats| stats.active && stats.frames_before_input > 0);
+    if let Some(animation) = shell.visible_move_animations.front_mut()
+        && animation.started {
+        animation.frame = animation.total_frames.saturating_sub(1);
+    }
+    if let Some(animation) = shell.visible_capture_animation.as_mut()
+        && animation.started {
+        animation.frame = animation.total_frames().saturating_sub(1);
+    }
+    if let Some(animation) = shell.visible_send_out_animation.as_mut() {
+        animation.frame = animation.total_frames().saturating_sub(1);
+    }
+    if let Some(animation) = shell.visible_trainer_exit_animation.as_mut() {
+        animation.frame = animation.total_frames().saturating_sub(1);
+    }
+    // Frontpic scripts only choose sprite frames; there is no text equivalent.
+    shell.visible_frontpic_animation = None;
+    if let Some((_, frame)) = shell.battle_trainer_result.as_mut() { *frame = u8::MAX; }
+    if let Some(tween) = shell.battle_hp_tween.as_mut() {
+        tween.player_hp = tween.player_target_hp;
+        tween.player_pixels = tween.player_target_pixels;
+        tween.enemy_pixels = tween.enemy_target_pixels;
+        tween.player_frames_until_step = 0;
+        tween.enemy_frames_until_step = 0;
+    }
+    if let Some(tween) = shell.battle_exp_tween.as_mut() && tween.started {
+        tween.pixels = tween.target_pixels;
+        tween.frames_until_step = 0;
+    }
+    if let Some(stats) = shell.battle_level_stats.front_mut() && stats.active {
+        stats.frames_before_input = 0;
+    }
+    if changed { mark_runtime_presentation_dirty(shell); }
 }
 
 fn visible_battle_animation_owns_frame(runtime_shell: &BevyRuntimeShell) -> bool {

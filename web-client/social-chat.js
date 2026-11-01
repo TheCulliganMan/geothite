@@ -1,6 +1,8 @@
 import { loadKeyBindings, keyLabel } from './player-customization.js?v=5';
 
 const aliases = { s: 'say', say: 'say', '1': 'general', general: 'general', '2': 'trade', trade: 'trade', '3': 'lfg', lfg: 'lfg' };
+const interactionLabels = { battle: 'Battle', trade: 'Trade', time_capsule: 'Time Capsule' };
+
 export const channelLabels = { say: 'Say', general: '1. General', trade: '2. Trade', lfg: '3. Looking for Group', whisper: 'Whisper' };
 
 export function channelName(value) {
@@ -21,9 +23,9 @@ export function parseChat(input, selected = 'say', replyTarget = null) {
     const command = match[1].toLowerCase();
     text = (match[2] ?? '').trim();
     if (command === 'cancel') return { type: 'interaction_cancel' };
-    if (command === 'battle' || command === 'tradewith') {
+    if (command === 'battle' || command === 'tradewith' || command === 'timecapsule') {
       if (!text || /\s/.test(text)) throw new Error(`Use /${command} trainer-ID, or click a trainer’s name.`);
-      return { type: 'interaction_request', target_user_id: text, kind: command === 'battle' ? 'battle' : 'trade' };
+      return { type: 'interaction_request', target_user_id: text, kind: command === 'battle' ? 'battle' : command === 'timecapsule' ? 'time_capsule' : 'trade' };
     }
     if (command === 'help') return { help: true };
     if (command === 'join' || command === 'leave') {
@@ -154,7 +156,7 @@ export function mountSocialChat(wasm, { document, window, playerId }) {
   const selfUserId = `player-${playerId}`;
   const speech = mountSpeechBubbles({ document, window, canvas: document.querySelector('canvas'), selfUserId });
   listen(window, 'pagehide', () => speech.clear());
-  const help = '/s say · /1 general · /2 trade · /3 LFG · /w trainer-ID message · /r reply · /battle trainer-ID · /tradewith trainer-ID · /cancel · /join name · /leave name';
+  const help = '/s say · /1 general · /2 trade · /3 LFG · /w trainer-ID message · /r reply · /battle trainer-ID · /tradewith trainer-ID · /timecapsule trainer-ID · /cancel · /join name · /leave name';
   const updateChannels = () => {
     const previous = select.value;
     select.replaceChildren();
@@ -248,12 +250,12 @@ export function mountSocialChat(wasm, { document, window, playerId }) {
       }
     }
     panel.querySelector('.directory-count').textContent = `${directoryTotal} ${directoryQuery ? 'found' : 'users'}`;
-    for (const [selector, offset, total] of [['.directory-pages', directoryOffset, directoryTotal], ['.leaderboard-pages', rankingOffset, rankingTotal]]) {
+    for (const [selector, offset, total, loaded] of [['.directory-pages', directoryOffset, directoryTotal, directoryLoaded], ['.leaderboard-pages', rankingOffset, rankingTotal, rankingsLoaded]]) {
       const footer = panel.querySelector(selector);
       footer.hidden = total <= 100;
       footer.querySelector('span').textContent = `${offset + 1}–${Math.min(offset + 100, total)} of ${total}`;
-      footer.querySelector('[data-page="previous"]').disabled = !connected || offset === 0;
-      footer.querySelector('[data-page="next"]').disabled = !connected || offset + 100 >= total;
+      footer.querySelector('[data-page="previous"]').disabled = !connected || !loaded || offset === 0;
+      footer.querySelector('[data-page="next"]').disabled = !connected || !loaded || offset + 100 >= total;
     }
   };
   const append = (text, channel = 'system', user = null, name = null) => {
@@ -278,7 +280,7 @@ export function mountSocialChat(wasm, { document, window, playerId }) {
   const attempt = fn => { try { fn(); } catch (error) { append(String(error.message ?? error)); } };
   const showPlayer = (id, name) => {
     selectedPlayer = id;
-    if (!open) setOpen(true);
+    setTab('chat', false);
     actions.replaceChildren();
     const title = document.createElement('span'); title.textContent = name;
     const person = directory.find(p => p.user_id === id) ?? rankings.find(p => p.user_id === id);
@@ -286,9 +288,9 @@ export function mountSocialChat(wasm, { document, window, playerId }) {
     const online = connected && (isNearby || person?.online === true || !person);
     const whisper = button('Whisper', 'whisper', () => { setTab('chat', false); input.value = `/w ${id} `; input.focus(); });
     whisper.disabled = !online; actions.append(title, whisper);
-    for (const kind of isNearby && online ? ['battle', 'trade'] : []) actions.append(button(kind === 'battle' ? 'Battle' : 'Trade', kind, () => attempt(() => {
+    for (const kind of isNearby && online ? ['battle', 'trade', 'time_capsule'] : []) actions.append(button(interactionLabels[kind], kind, () => attempt(() => {
       send({ type: 'interaction_request', target_user_id: id, kind });
-      append(`${kind === 'battle' ? 'Battle' : 'Trade'} request sent to ${name}.`);
+      append(`${interactionLabels[kind]} request sent to ${name}.`);
       actions.replaceChildren(button('Cancel request', 'cancel', () => attempt(() => { send({ type: 'interaction_cancel' }); actions.hidden = true; })));
       input.focus();
     })));
@@ -304,7 +306,7 @@ export function mountSocialChat(wasm, { document, window, playerId }) {
       select.value = message.select;
     } else {
       send(message);
-      if (message.type === 'interaction_request') append(`${message.kind === 'battle' ? 'Battle' : 'Trade'} request sent.`);
+      if (message.type === 'interaction_request') append(`${interactionLabels[message.kind]} request sent.`);
     }
     input.value = '';
   });
@@ -317,8 +319,9 @@ export function mountSocialChat(wasm, { document, window, playerId }) {
   for (const [selector, kind] of [['.directory-pages', 'social'], ['.leaderboard-pages', 'leaderboard']]) {
     for (const control of panel.querySelectorAll(`${selector} button`)) listen(control, 'click', () => {
       const delta = control.dataset.page === 'next' ? 100 : -100;
-      if (kind === 'social') directoryOffset = Math.max(0, directoryOffset + delta);
-      else rankingOffset = Math.max(0, rankingOffset + delta);
+      if (kind === 'social') { directoryOffset = Math.max(0, directoryOffset + delta); directoryLoaded = false; }
+      else { rankingOffset = Math.max(0, rankingOffset + delta); rankingsLoaded = false; }
+      renderCommunity();
       requestCommunity(true);
     });
   }
@@ -400,7 +403,7 @@ export function mountSocialChat(wasm, { document, window, playerId }) {
     try {
       const state = JSON.parse(wasm.crystal_social_poll());
       speech.update(state);
-      if (connected && !state.connected) { requests.replaceChildren(); requestCards.clear(); actions.hidden = true; }
+      if (connected && !state.connected) { speech.clear(); requests.replaceChildren(); requestCards.clear(); actions.hidden = true; }
       const connectionChanged = connected !== state.connected;
       connected = state.connected;
       if (connectionChanged) {
@@ -423,9 +426,11 @@ export function mountSocialChat(wasm, { document, window, playerId }) {
         if (player) showPlayer(player.user_id, player.display_name);
       }
       for (const event of state.events) {
-        if (event.type === 'social_users' && event.query === directoryQuery) {
+        if (connected && event.type === 'social_users' && event.query === directoryQuery
+          && event.offset === Math.min(directoryOffset, Math.floor(Math.max(0, event.total - 1) / 100) * 100)) {
           directory = event.users; directoryTotal = event.total; directoryOffset = event.offset; directoryLoaded = true; renderCommunity();
-        } else if (event.type === 'leaderboard' && event.metric === metric.value) {
+        } else if (connected && event.type === 'leaderboard' && event.metric === metric.value
+          && event.offset === Math.min(rankingOffset, Math.floor(Math.max(0, event.total - 1) / 100) * 100)) {
           rankings = event.entries; rankingTotal = event.total; rankingOffset = event.offset; rankingsLoaded = true; renderCommunity();
         } else if (event.type === 'chat') {
           if (event.channel === 'whisper' && event.from_user_id !== selfUserId) replyTarget = event.from_user_id;
@@ -442,7 +447,7 @@ export function mountSocialChat(wasm, { document, window, playerId }) {
           if (event.code === 'social_error' || event.code === 'invalid_request') actions.hidden = true;
         } else if (event.type === 'interaction_request') {
           const card = document.createElement('div');
-          card.append(`${event.from_display_name} · ${event.kind === 'battle' ? 'Battle' : 'Trade'} `);
+          card.append(`${event.from_display_name} · ${interactionLabels[event.kind]} `);
           for (const accepted of [true, false]) card.append(button(accepted ? 'Accept' : 'Decline', accepted ? 'accept' : 'decline', () => attempt(() => {
             send({ type: 'interaction_response', request_id: event.request_id, target_user_id: event.from_user_id, accepted });
             for (const control of card.querySelectorAll('button')) control.disabled = true;

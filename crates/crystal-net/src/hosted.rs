@@ -17,6 +17,8 @@ use crate::{
 pub const PROTOCOL_VERSION: u16 = 2;
 pub const MAX_RELAY_BYTES: usize = 64 * 1024;
 const SESSION_ID_BYTES: usize = 16;
+const MAX_PENDING_MESSAGES: usize = 128;
+const MAX_PROTOCOL_BYTES: usize = MAX_RELAY_BYTES + 4096;
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -60,11 +62,26 @@ pub enum MatchOutcome {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "type", rename_all = "snake_case", deny_unknown_fields)]
 pub enum ClientMessage {
-    SetProfile { display_name: String, player_gender: u8 },
-    SocialList { query: String, offset: usize },
-    Leaderboard { metric: String, offset: usize },
-    GameStats { pve_battles: u64, pve_wins: u64, party_level: u16 },
-    TradeCompleted { trade_id: String },
+    SetProfile {
+        display_name: String,
+        player_gender: u8,
+    },
+    SocialList {
+        query: String,
+        offset: usize,
+    },
+    Leaderboard {
+        metric: String,
+        offset: usize,
+    },
+    GameStats {
+        pve_battles: u64,
+        pve_wins: u64,
+        party_level: u16,
+    },
+    TradeCompleted {
+        trade_id: String,
+    },
     Hello {
         protocol_version: u16,
         identity: ClientIdentity,
@@ -154,8 +171,18 @@ pub struct SocialUser {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub enum ServerMessage {
-    Leaderboard { metric: String, offset: usize, total: usize, entries: Vec<LeaderboardEntry> },
-    SocialUsers { query: String, offset: usize, total: usize, users: Vec<SocialUser> },
+    Leaderboard {
+        metric: String,
+        offset: usize,
+        total: usize,
+        entries: Vec<LeaderboardEntry>,
+    },
+    SocialUsers {
+        query: String,
+        offset: usize,
+        total: usize,
+        users: Vec<SocialUser>,
+    },
     Welcome {
         protocol_version: u16,
         connection_id: Uuid,
@@ -233,6 +260,10 @@ pub enum HostedConnectionError {
     InvalidUrl(String),
     #[error("open hosted WebSocket: {0}")]
     Open(String),
+    #[error("hosted connection pending queue is full")]
+    PendingQueueFull,
+    #[error("hosted protocol message is too large")]
+    MessageTooLarge,
     #[error("hosted WebSocket closed")]
     Closed,
     #[error("hosted WebSocket error: {0}")]
@@ -289,8 +320,7 @@ impl HostedConnection {
 
     pub fn send(&mut self, message: ClientMessage) -> Result<(), HostedConnectionError> {
         if !self.opened {
-            self.pending.push_back(message);
-            return Ok(());
+            return enqueue_pending(&mut self.pending, message);
         }
         self.send_now(message)
     }
@@ -339,7 +369,16 @@ impl HostedConnection {
                 }
                 WsEvent::Message(WsMessage::Text(text)) => {
                     let message = decode_server_message(&text)?;
+                    let matched = matches!(message, ServerMessage::MatchFound { .. });
                     messages.push(message);
+                    // The peer can send its binary hello immediately after
+                    // MatchFound. Leave subsequent socket events for the link
+                    // transport that takes ownership of this exact connection.
+                    // Draining them as lobby messages loses the match and
+                    // rejects a perfectly valid early handshake.
+                    if matched {
+                        break;
+                    }
                 }
                 WsEvent::Message(WsMessage::Ping(payload)) => {
                     self.sender.send(WsMessage::Pong(payload));
@@ -358,11 +397,39 @@ impl HostedConnection {
     }
 
     fn send_now(&mut self, message: ClientMessage) -> Result<(), HostedConnectionError> {
-        let text = serde_json::to_string(&message)
-            .map_err(|error| HostedConnectionError::Decode(error.to_string()))?;
+        let text = encode_client_message(&message)?;
         self.sender.send(WsMessage::Text(text));
         Ok(())
     }
+}
+
+fn encode_client_message(message: &ClientMessage) -> Result<String, HostedConnectionError> {
+    let text = serde_json::to_string(message)
+        .map_err(|error| HostedConnectionError::Decode(error.to_string()))?;
+    if text.len() > MAX_PROTOCOL_BYTES {
+        return Err(HostedConnectionError::MessageTooLarge);
+    }
+    Ok(text)
+}
+
+fn enqueue_pending(
+    queue: &mut VecDeque<ClientMessage>,
+    message: ClientMessage,
+) -> Result<(), HostedConnectionError> {
+    encode_client_message(&message)?;
+    // Consecutive position updates during connection startup only need the
+    // newest location. Never discard commands or reorder them around presence.
+    if matches!(&message, ClientMessage::Presence { .. })
+        && matches!(queue.back(), Some(ClientMessage::Presence { .. }))
+    {
+        *queue.back_mut().expect("checked presence") = message;
+        return Ok(());
+    }
+    if queue.len() >= MAX_PENDING_MESSAGES {
+        return Err(HostedConnectionError::PendingQueueFull);
+    }
+    queue.push_back(message);
+    Ok(())
 }
 
 pub struct HostedLinkTransport {
@@ -394,7 +461,7 @@ impl HostedLinkTransport {
         if !self.connected {
             return Err(TransportError::NotConnected);
         }
-        let text = serde_json::to_string(&message)
+        let text = encode_client_message(&message)
             .map_err(|error| hosted_transport_error(error.to_string()))?;
         self.sender.send(WsMessage::Text(text));
         Ok(())
@@ -446,6 +513,11 @@ impl LinkTransport for HostedLinkTransport {
                 WsEvent::Message(WsMessage::Text(text)) => {
                     let message = decode_server_message(&text)
                         .map_err(|error| hosted_transport_error(error.to_string()))?;
+                    if self.server_messages.len() >= MAX_PENDING_MESSAGES {
+                        return Err(hosted_transport_error(
+                            "undrained hosted server message queue is full",
+                        ));
+                    }
                     self.server_messages.push_back(message);
                 }
                 WsEvent::Message(WsMessage::Ping(payload)) => {
@@ -590,6 +662,22 @@ fn authenticated_url(
             "URL must start with ws:// or wss://".into(),
         ));
     }
+    let authority = url
+        .split_once("://")
+        .expect("scheme checked")
+        .1
+        .split(['/', '?', '#'])
+        .next()
+        .unwrap_or_default();
+    if authority.is_empty()
+        || authority.contains('@')
+        || url.contains('#')
+        || url.chars().any(char::is_whitespace)
+    {
+        return Err(HostedConnectionError::InvalidUrl(
+            "URL must have a host and no embedded credentials, fragment or whitespace".into(),
+        ));
+    }
     if let Some(token) = token.filter(|value| !value.is_empty()) {
         if !token
             .bytes()
@@ -597,6 +685,15 @@ fn authenticated_url(
         {
             return Err(HostedConnectionError::InvalidUrl(
                 "token contains characters that require URL encoding".into(),
+            ));
+        }
+        if url.split_once('?').is_some_and(|(_, query)| {
+            query
+                .split('&')
+                .any(|part| part.split('=').next() == Some("token"))
+        }) {
+            return Err(HostedConnectionError::InvalidUrl(
+                "URL already contains an authentication token".into(),
             ));
         }
         url.push(if url.contains('?') { '&' } else { '?' });
@@ -624,6 +721,77 @@ mod tests {
         );
         assert!(authenticated_url("http://localhost".into(), None).is_err());
         assert!(authenticated_url("wss://example/ws".into(), Some("bad token")).is_err());
+    }
+
+    #[test]
+    fn rejects_ambiguous_authentication_urls() {
+        for url in [
+            "wss://",
+            "wss://?token=x",
+            "wss://user:secret@host/ws",
+            "wss://host/ws#token",
+            "wss://host/ white",
+        ] {
+            assert!(
+                authenticated_url(url.into(), Some("safe-token")).is_err(),
+                "{url}"
+            );
+        }
+        assert!(authenticated_url("wss://host/ws?token=old".into(), Some("new")).is_err());
+        assert_eq!(
+            authenticated_url("wss://host/ws?world=main".into(), Some("new")).unwrap(),
+            "wss://host/ws?world=main&token=new"
+        );
+    }
+
+    #[test]
+    fn startup_buffer_coalesces_positions_without_losing_commands() {
+        let mut queue = VecDeque::new();
+        let presence = |x| ClientMessage::Presence {
+            map: "town".into(),
+            tile_x: x,
+            tile_y: 0,
+            direction: "down".into(),
+        };
+        enqueue_pending(&mut queue, presence(0)).unwrap();
+        enqueue_pending(&mut queue, presence(1)).unwrap();
+        assert_eq!(queue.len(), 1);
+        enqueue_pending(&mut queue, ClientMessage::QueueLeave).unwrap();
+        enqueue_pending(&mut queue, presence(2)).unwrap();
+        enqueue_pending(&mut queue, presence(3)).unwrap();
+        assert_eq!(queue.len(), 3);
+        assert!(matches!(
+            queue[0],
+            ClientMessage::Presence { tile_x: 1, .. }
+        ));
+        assert!(matches!(queue[1], ClientMessage::QueueLeave));
+        assert!(matches!(
+            queue[2],
+            ClientMessage::Presence { tile_x: 3, .. }
+        ));
+        while queue.len() < MAX_PENDING_MESSAGES {
+            enqueue_pending(&mut queue, ClientMessage::Ping { nonce: 1 }).unwrap();
+        }
+        assert!(matches!(
+            enqueue_pending(&mut queue, ClientMessage::QueueLeave),
+            Err(HostedConnectionError::PendingQueueFull)
+        ));
+        assert_eq!(queue.len(), MAX_PENDING_MESSAGES);
+    }
+
+    #[test]
+    fn oversized_commands_are_rejected_before_buffering_or_sending() {
+        let mut queue = VecDeque::new();
+        let oversized = ClientMessage::Chat {
+            channel: "say".into(),
+            target_user_id: None,
+            text: "x".repeat(MAX_PROTOCOL_BYTES),
+        };
+        assert!(matches!(
+            enqueue_pending(&mut queue, oversized),
+            Err(HostedConnectionError::MessageTooLarge)
+        ));
+        assert!(queue.is_empty());
     }
 
     #[test]

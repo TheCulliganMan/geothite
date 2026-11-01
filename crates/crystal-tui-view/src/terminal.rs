@@ -182,7 +182,14 @@ impl TerminalUi {
                 .unwrap_or("? help · :q! quit")
         });
         frame.render_widget(
-            Paragraph::new(hint)
+            Paragraph::new(vec![
+                Line::raw(hint),
+                Line::raw(if area.width >= 96 {
+                    "@ you · N person · D door · # wall · T tree · ║ barrier · ↓↘↙ ledges · ≈ water · \" grass · ? unknown"
+                } else {
+                    "# wall · T tree · ↓ ledge · ║ barrier · ? unknown"
+                }),
+            ])
                 .alignment(Alignment::Center)
                 .style(Style::default().fg(self.theme.muted.into())),
             area,
@@ -287,9 +294,20 @@ impl TerminalUi {
             "TAB             SELECT",
             ".               Wait 8 frames",
             "R               Refresh",
+            #[cfg(not(target_arch = "wasm32"))]
             "F5              Save (when --save is set)",
+            #[cfg(target_arch = "wasm32")]
+            "F5 / Save       Save in this browser",
             "?               Close this help",
+            "MAP: # wall · T tree · D door · N person",
+            "     arrows: one-way ledges · ║ side barrier",
+            "     ≈ water · \" grass · ? unknown terrain",
+            #[cfg(target_arch = "wasm32")]
+            "TOUCH: swipe move · tap A · hold Start · 2 fingers B",
+            #[cfg(not(target_arch = "wasm32"))]
             ":q! / CTRL-C    Quit",
+            #[cfg(target_arch = "wasm32")]
+            "Save before closing this browser tab",
         ]
         .join("\n");
         frame.render_widget(
@@ -420,6 +438,33 @@ use crossterm::event::KeyEventKind;
         assert_eq!(
             map_key_event(key(KeyCode::Char('q')), false),
             TerminalAction::None
+        );
+    }
+
+    #[test]
+    fn lowercase_a_confirms_menu_less_battle_and_dialogue() {
+        let mut view = snapshot();
+        view.menu.clear();
+        let key = KeyEvent::new(KeyCode::Char('a'), KeyModifiers::NONE);
+        assert_eq!(
+            map_key_event(key, view.confirmation_input_owned()),
+            TerminalAction::GameButton(GameButton::Left)
+        );
+        for phase in ["WildBattle", "TrainerBattle", "StaticWildBattle", "Text"] {
+            view.status_line = phase.to_owned();
+            assert_eq!(
+                map_key_event(key, view.confirmation_input_owned()),
+                TerminalAction::GameButton(GameButton::A)
+            );
+        }
+        view.status_line = "Overworld".into();
+        view.dialogue.push(SnapshotLine {
+            text: "Wild RATTATA appeared!".into(),
+            kind: LineKind::Normal,
+        });
+        assert_eq!(
+            map_key_event(key, view.confirmation_input_owned()),
+            TerminalAction::GameButton(GameButton::A)
         );
     }
 

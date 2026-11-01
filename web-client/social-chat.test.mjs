@@ -377,3 +377,61 @@ test('community tabs show a reconnect state before the first connection', () => 
     assert.deepEqual(h.sent, []);
   } finally { h.cleanup(); }
 });
+
+test('Social and Leaderboard pagination ignore earlier pages and recover when totals shrink', () => {
+  for (const [tab, list, pages, type] of [
+    ['social', '.directory-list', '.directory-pages', 'social_users'],
+    ['leaderboard', '.leaderboard-list', '.leaderboard-pages', 'leaderboard'],
+  ]) {
+    const h = chatHarness();
+    try {
+      h.poll({ connected: true, players: [], events: [] });
+      h.document.querySelector('.chat-toggle').click();
+      h.document.querySelector(`[data-tab="${tab}"]`).click();
+      const event = (offset, total, name) => ({
+        type, query: '', metric: 'pvp_wins', offset, total,
+        [tab === 'social' ? 'users' : 'entries']: [
+          { user_id: 'player-2', display_name: name, online: true, rank: offset + 1, value: 10 },
+        ],
+      });
+      const poll = response => h.poll({ connected: true, players: [], events: [response] });
+      poll(event(0, 201, 'FIRST'));
+      const next = h.document.querySelector(`${pages} [data-page="next"]`);
+      next.click();
+      assert.equal(h.sent.at(-1).offset, 100);
+      assert.equal(next.disabled, true);
+      assert.match(h.document.querySelector(list).textContent, /Loading/);
+      poll(event(0, 201, 'STALE'));
+      assert.doesNotMatch(h.document.querySelector(list).textContent, /STALE/);
+      poll(event(100, 201, 'SECOND'));
+      assert.match(h.document.querySelector(list).textContent, /SECOND/);
+      assert.equal(next.disabled, false);
+      next.click();
+      assert.equal(h.sent.at(-1).offset, 200);
+      // The last page disappeared while the request was in flight. Accept the
+      // server's clamped offset rather than remaining stuck on a loading page.
+      poll(event(0, 50, 'RECOVERED'));
+      assert.match(h.document.querySelector(list).textContent, /RECOVERED/);
+      assert.equal(h.document.querySelector(pages).hidden, true);
+    } finally { h.cleanup(); }
+  }
+});
+
+test('facing-player selection opens Chat from another tab and exposes all hosted interactions', () => {
+  const h = chatHarness();
+  try {
+    assert.deepEqual(parseChat('/timecapsule player-2'), { type:'interaction_request',target_user_id:'player-2',kind:'time_capsule' });
+    h.poll({ connected:true, players:[], events:[] });
+    h.document.querySelector('.chat-toggle').click();
+    h.document.querySelector('[data-tab="social"]').click();
+    h.poll({ connected:true, players:[{user_id:'player-2',display_name:'BOB'}], selected_player:'player-2', events:[] });
+    assert.equal(h.document.querySelector('[data-tab="chat"]').getAttribute('aria-selected'), 'true');
+    assert.equal(h.document.querySelector('form').hidden, false);
+    for (const action of ['whisper','battle','trade','time_capsule']) assert.ok(h.document.querySelector(`[data-action="${action}"]`));
+    h.document.querySelector('[data-action="time_capsule"]').click();
+    assert.deepEqual(h.sent.at(-1), {type:'interaction_request',target_user_id:'player-2',kind:'time_capsule'});
+    assert.match(h.document.querySelector('.chat-log').textContent, /Time Capsule request sent/);
+    h.poll({connected:true,players:[],events:[{type:'interaction_request',request_id:'capsule',from_user_id:'player-2',from_display_name:'BOB',kind:'time_capsule'}]});
+    assert.match(h.document.querySelector('.chat-requests').textContent, /Time Capsule/);
+  } finally { h.cleanup(); }
+});

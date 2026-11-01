@@ -601,11 +601,7 @@ fn visible_pokedex_and_pokegear_overlays_do_not_render_debug_detail_rows() {
         .canonicalize()
         .expect("repository root");
     let asset_root = AssetRoot::new(repo_root);
-    let runtime = CrystalRuntime::load_from_compiled_pack(
-        &asset_root,
-        "content-packs/core-modular.crystalpack",
-    )
-    .expect("load compiled pack");
+    let runtime = workspace_desktop_runtime(&asset_root);
     let spawn_identifier = runtime
         .title_new_game_spawn_identifier()
         .expect("title new-game spawn");
@@ -6007,3 +6003,5 @@ fn successful_npc_trade_waits_for_the_cable_prompt_before_exchanging_pokemon() {
 }
 
 include!("menu_and_input_battle_tower.rs");
+
+include!("menu_and_input_text_controller.rs");
