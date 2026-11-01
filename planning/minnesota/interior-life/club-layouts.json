@@ -1,0 +1,815 @@
+{
+  "schema_version": 1,
+  "manifest": "minnesota-interior-layout-clubs-v2",
+  "rooms": [
+    {
+      "map": "MnDuluthBoatClub1F",
+      "intent": "A club gear wall and one briefing table leave an actual open practice floor for Sulo and the next rowing crew.",
+      "before_tileset": "house",
+      "before_rows": [
+        "0a 0a 0a 0a 0a 0a 0a 0a",
+        "0a 04 05 1e 05 04 25 0a",
+        "0a 0f 0f 0f 0f 0f 0f 0a",
+        "0a 01 02 0f 01 02 0f 0a",
+        "0a 0c 0d 0f 0c 0d 0f 0a",
+        "0a 0a 0a 0a 0b 0a 0a 0a"
+      ],
+      "tileset": "house",
+      "border_block": 10,
+      "rows": [
+        "0a 0a 0a 0a 0a 0a 0a 0a",
+        "0a 04 05 0e 05 04 25 0a",
+        "0a 0f 0f 0f 0f 0f 0f 0a",
+        "0a 01 02 0f 0f 0f 06 0a",
+        "0a 0c 0d 0f 0f 0f 0f 0a",
+        "0a 0a 0a 0a 0b 0a 0a 0a"
+      ],
+      "arrival": [
+        8,
+        9
+      ],
+      "actor_approaches": [
+        {
+          "script": "MN_DULUTH_X_BOATCLUB_F1_HOST",
+          "tile": [
+            5,
+            6
+          ]
+        },
+        {
+          "script": "MN_DULUTH_X_T06",
+          "tile": [
+            10,
+            6
+          ]
+        }
+      ],
+      "exhibits": [
+        {
+          "id": "MN_INTERIOR_DETAIL_ROWING_OARS",
+          "tile": [
+            3,
+            3
+          ],
+          "approach": [
+            3,
+            4
+          ],
+          "lines": [
+            "Practice oars are numbered in pairs. The newest pair has two different names and the same muddy handprints."
+          ]
+        },
+        {
+          "id": "MN_INTERIOR_DETAIL_ROWING_PRACTICE",
+          "tile": [
+            11,
+            3
+          ],
+          "approach": [
+            11,
+            4
+          ],
+          "lines": [
+            "The practice board says: Check your partner before checking the clock. SULO has added: A clean loss still teaches you something."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthBoatClub2F",
+      "intent": "A long, complete sail-cover worktable sits between the winter sewing-circle hosts and their cloth cupboards.",
+      "before_tileset": "house",
+      "before_rows": [
+        "0a 0a 0a 0a 0a 0a 0a 0a",
+        "0a 25 05 1e 05 04 1d 0a",
+        "0a 0f 0f 0f 0f 0f 0f 0a",
+        "0a 01 02 0f 01 02 0f 0a",
+        "0a 0c 0d 0f 0c 0d 0f 0a",
+        "0a 0a 0a 0a 0a 0a 0a 0a"
+      ],
+      "tileset": "house",
+      "border_block": 10,
+      "rows": [
+        "0a 0a 0a 0a 0a 0a 0a 0a",
+        "0a 25 05 0e 05 04 04 0a",
+        "0a 0f 0f 01 02 0f 0f 0a",
+        "0a 0f 0f 21 22 0f 0f 0a",
+        "0a 0f 0f 0c 0d 0f 0f 0a",
+        "0a 0a 0a 0a 0a 0a 0a 0a"
+      ],
+      "arrival": [
+        2,
+        3
+      ],
+      "actor_approaches": [
+        {
+          "script": "MN_DULUTH_X_BOATCLUB_F2_HOST",
+          "tile": [
+            5,
+            6
+          ]
+        },
+        {
+          "script": "MN_DL_INTERIOR_SAIL_MENDER",
+          "tile": [
+            10,
+            6
+          ]
+        }
+      ],
+      "exhibits": [
+        {
+          "id": "MN_INTERIOR_DETAIL_SAIL_MENDING",
+          "tile": [
+            7,
+            7
+          ],
+          "approach": [
+            6,
+            7
+          ],
+          "lines": [
+            "A crooked canoe cover is pinned beside careful new stitches. A paper tag reads: Smallest boat. Best fit. Keep the first attempt."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthSailorClub1F",
+      "intent": "A single communal mess table seats the club host beside newcomers; a clear east aisle links the name shelf and stairs.",
+      "before_tileset": "house",
+      "before_rows": [
+        "0a 0a 0a 0a 0a 0a 0a 0a",
+        "0a 04 05 1e 05 04 25 0a",
+        "0a 0f 0f 0f 0f 0f 0f 0a",
+        "0a 01 02 0f 01 02 0f 0a",
+        "0a 0c 0d 0f 0c 0d 0f 0a",
+        "0a 0a 0a 0a 0b 0a 0a 0a"
+      ],
+      "tileset": "house",
+      "border_block": 10,
+      "rows": [
+        "0a 0a 0a 0a 0a 0a 0a 0a",
+        "0a 04 05 0e 05 04 25 0a",
+        "0a 01 02 0f 0f 0f 0f 0a",
+        "0a 21 22 0f 0f 0f 0f 0a",
+        "0a 0c 0d 0f 0f 0f 06 0a",
+        "0a 0a 0a 0a 0b 0a 0a 0a"
+      ],
+      "arrival": [
+        8,
+        9
+      ],
+      "actor_approaches": [
+        {
+          "script": "MN_DULUTH_X_SAILORCLUB_F1_HOST",
+          "tile": [
+            5,
+            6
+          ]
+        },
+        {
+          "script": "MN_DL_INTERIOR_SAILOR_NEWCOMER",
+          "tile": [
+            10,
+            6
+          ]
+        }
+      ],
+      "exhibits": [
+        {
+          "id": "MN_INTERIOR_DETAIL_SAILOR_NAMES",
+          "tile": [
+            11,
+            3
+          ],
+          "approach": [
+            11,
+            4
+          ],
+          "lines": [
+            "The crew book leaves a blank line after every name for what that person taught you. One entry only says: Saved me a seat."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthSailorClub2F",
+      "intent": "A quiet letter table and stored correspondence replace the repeated dining room upstairs.",
+      "before_tileset": "house",
+      "before_rows": [
+        "0a 0a 0a 0a 0a 0a 0a 0a",
+        "0a 25 05 1e 05 04 1d 0a",
+        "0a 0f 0f 0f 0f 0f 0f 0a",
+        "0a 01 02 0f 01 02 0f 0a",
+        "0a 0c 0d 0f 0c 0d 0f 0a",
+        "0a 0a 0a 0a 0a 0a 0a 0a"
+      ],
+      "tileset": "house",
+      "border_block": 10,
+      "rows": [
+        "0a 0a 0a 0a 0a 0a 0a 0a",
+        "0a 25 05 0e 05 04 05 0a",
+        "0a 0f 0f 0f 0f 0f 0f 0a",
+        "0a 04 0f 0f 01 02 0f 0a",
+        "0a 06 0f 0f 0c 0d 0f 0a",
+        "0a 0a 0a 0a 0a 0a 0a 0a"
+      ],
+      "arrival": [
+        2,
+        3
+      ],
+      "actor_approaches": [
+        {
+          "script": "MN_DULUTH_X_SAILORCLUB_F2_HOST",
+          "tile": [
+            5,
+            6
+          ]
+        },
+        {
+          "script": "MN_DL_INTERIOR_LETTER_WRITER",
+          "tile": [
+            10,
+            6
+          ]
+        }
+      ],
+      "exhibits": [
+        {
+          "id": "MN_INTERIOR_DETAIL_LETTER_TABLE",
+          "tile": [
+            9,
+            7
+          ],
+          "approach": [
+            8,
+            7
+          ],
+          "lines": [
+            "Extra paper, a blunt pencil, and postcards of LAKE SUPERIOR. The practice letter begins: Dear Mom, yes, I brought my warm coat."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthLookoutLodge1F",
+      "intent": "A central gathering table and trail cupboard make a ridge walking-room, with separate lanes to both residents and the observation stairs.",
+      "before_tileset": "house",
+      "before_rows": [
+        "0a 0a 0a 0a 0a 0a 0a 0a",
+        "0a 04 1e 05 04 05 25 0a",
+        "0a 0f 0f 0f 0f 0f 0f 0a",
+        "0a 01 02 0f 0f 01 02 0a",
+        "0a 0c 0d 0f 0f 0c 0d 0a",
+        "0a 0a 0a 0a 0b 0a 0a 0a"
+      ],
+      "tileset": "house",
+      "border_block": 10,
+      "rows": [
+        "0a 0a 0a 0a 0a 0a 0a 0a",
+        "0a 04 05 0e 04 05 25 0a",
+        "0a 0f 0f 0f 0f 0f 0f 0a",
+        "0a 0f 0f 01 02 0f 04 0a",
+        "0a 0f 0f 0c 0d 06 0f 0a",
+        "0a 0a 0a 0a 0b 0a 0a 0a"
+      ],
+      "arrival": [
+        8,
+        9
+      ],
+      "actor_approaches": [
+        {
+          "script": "MN_DULUTH_X_LOOKOUTLODGE_F1_HOST",
+          "tile": [
+            5,
+            6
+          ]
+        },
+        {
+          "script": "MN_DL_INTERIOR_LODGE_WALKER",
+          "tile": [
+            10,
+            6
+          ]
+        }
+      ],
+      "exhibits": [
+        {
+          "id": "MN_INTERIOR_DETAIL_RIDGE_WALK_BOOK",
+          "tile": [
+            12,
+            7
+          ],
+          "approach": [
+            11,
+            7
+          ],
+          "lines": [
+            "The lodge trail book lists boots, water, and a layer for the lake wind. A visitor added: Leave enough daylight to hear the long version of a story."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthLookoutLodge2F",
+      "intent": "Window-side sketching table and a slim chart archive give the upstairs weather witness a real observation workspace.",
+      "before_tileset": "house",
+      "before_rows": [
+        "0a 0a 0a 0a 0a 0a 0a 0a",
+        "0a 25 1e 05 04 05 1d 0a",
+        "0a 0f 0f 0f 0f 0f 0f 0a",
+        "0a 01 02 0f 0f 01 02 0a",
+        "0a 0c 0d 0f 0f 0c 0d 0a",
+        "0a 0a 0a 0a 0a 0a 0a 0a"
+      ],
+      "tileset": "house",
+      "border_block": 10,
+      "rows": [
+        "0a 0a 0a 0a 0a 0a 0a 0a",
+        "0a 25 05 05 0e 05 05 0a",
+        "0a 0f 0f 0f 0f 0f 0f 0a",
+        "0a 06 0f 04 0f 01 02 0a",
+        "0a 0f 0f 04 0f 0c 0d 0a",
+        "0a 0a 0a 0a 0a 0a 0a 0a"
+      ],
+      "arrival": [
+        2,
+        3
+      ],
+      "actor_approaches": [
+        {
+          "script": "MN_DULUTH_X_LOOKOUTLODGE_F2_HOST",
+          "tile": [
+            5,
+            6
+          ]
+        },
+        {
+          "script": "MN_DL_INTERIOR_LOOKOUT_SKETCHER",
+          "tile": [
+            10,
+            6
+          ]
+        }
+      ],
+      "exhibits": [
+        {
+          "id": "MN_INTERIOR_DETAIL_LOOKOUT_SKETCHES",
+          "tile": [
+            11,
+            7
+          ],
+          "approach": [
+            10,
+            7
+          ],
+          "lines": [
+            "Weeks of harbor sketches share the same rooftops. The gray pencil is worn shortest. Today, the horizon nearly vanishes."
+          ]
+        },
+        {
+          "id": "MN_INTERIOR_DETAIL_LOOKOUT_CHARTS",
+          "tile": [
+            7,
+            7
+          ],
+          "approach": [
+            8,
+            7
+          ],
+          "lines": [
+            "The chart drawer has separate tabs for RIDGE and LAKE. A note says that one clear window cannot speak for the whole harbor."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthCommunityKitchen",
+      "intent": "A timber kitchen with actual stove and refrigerator art, a complete shared table and serving cupboard retains the original drink counter.",
+      "before_tileset": "house",
+      "before_rows": [
+        "0a 0a 0a 0a 0a 0a 0a 0a",
+        "0a 04 05 1e 05 04 1d 0a",
+        "0a 0f 0f 0f 0f 0f 0f 0a",
+        "0a 01 02 0f 01 02 0f 0a",
+        "0a 0c 0d 0f 0c 0d 0f 0a",
+        "0a 0a 0a 0a 0b 0a 0a 0a"
+      ],
+      "tileset": "players_house",
+      "border_block": 0,
+      "rows": [
+        "00 00 00 00 00 00 00 00",
+        "00 07 0f 01 1b 01 05 00",
+        "00 03 03 03 03 03 03 00",
+        "00 03 03 08 09 03 1b 00",
+        "00 03 03 0c 0d 03 03 00",
+        "00 00 00 00 06 00 00 00"
+      ],
+      "arrival": [
+        8,
+        9
+      ],
+      "actor_approaches": [
+        {
+          "script": "MN_DULUTH_X_COMMUNITYKITCHEN_F1_HOST",
+          "tile": [
+            5,
+            6
+          ]
+        },
+        {
+          "script": "MN_DL_INTERIOR_KITCHEN_VOLUNTEER",
+          "tile": [
+            10,
+            6
+          ]
+        }
+      ],
+      "exhibits": [
+        {
+          "id": "MN_INTERIOR_DETAIL_HOTDISH_RECIPE",
+          "tile": [
+            4,
+            3
+          ],
+          "approach": [
+            4,
+            4
+          ],
+          "lines": [
+            "An index card says: Bring what you can. Wash the pan. Six neighbors have written six different baking times underneath."
+          ]
+        },
+        {
+          "id": "MN_INTERIOR_DETAIL_LATE_SHIFT_SUPPER",
+          "tile": [
+            7,
+            7
+          ],
+          "approach": [
+            6,
+            7
+          ],
+          "lines": [
+            "Wild rice, mushrooms, and a question mark beside the baking time. Someone circled the last instruction: FEED THE LATE SHIFT."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthReadingHall1F",
+      "intent": "Retain the working public book aisles and complete reading table; make the old family borrowing card readable.",
+      "before_tileset": "house",
+      "before_rows": [
+        "0a 0a 0a 0a 0a 0a 0a 0a",
+        "0a 04 04 0e 04 05 25 0a",
+        "0a 1a 0f 0f 04 04 0f 0a",
+        "0a 1a 01 02 0f 0f 06 0a",
+        "0a 0f 0c 0d 0f 0f 0f 0a",
+        "0a 0a 0a 0a 0b 0a 0a 0a"
+      ],
+      "tileset": "house",
+      "border_block": 10,
+      "rows": [
+        "0a 0a 0a 0a 0a 0a 0a 0a",
+        "0a 04 04 0e 04 05 25 0a",
+        "0a 1a 0f 0f 04 04 0f 0a",
+        "0a 1a 01 02 0f 0f 06 0a",
+        "0a 0f 0c 0d 0f 0f 0f 0a",
+        "0a 0a 0a 0a 0b 0a 0a 0a"
+      ],
+      "arrival": [
+        8,
+        9
+      ],
+      "actor_approaches": [
+        {
+          "script": "MN_DULUTH_X_READINGHALL_F1_HOST",
+          "tile": [
+            5,
+            6
+          ]
+        },
+        {
+          "script": "MN_DL_INTERIOR_READING_CHILD",
+          "tile": [
+            7,
+            6
+          ]
+        }
+      ],
+      "exhibits": [
+        {
+          "id": "MN_INTERIOR_DETAIL_LIBRARY_CARD",
+          "tile": [
+            5,
+            7
+          ],
+          "approach": [
+            4,
+            7
+          ],
+          "lines": [
+            "The borrowing card has a grandmother and grandchild on neighboring lines. The same ore-boat book has traveled farther than either expected."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthReadingHall2F",
+      "intent": "Retain the chart archive and weather witness; label the working collection rather than replacing its useful book aisles.",
+      "before_tileset": "house",
+      "before_rows": [
+        "0a 0a 0a 0a 0a 0a 0a 0a",
+        "0a 25 05 04 04 05 1d 0a",
+        "0a 0f 0f 0f 04 0f 06 0a",
+        "0a 0f 0f 1a 04 01 02 0a",
+        "0a 06 0f 0f 0f 0c 0d 0a",
+        "0a 0a 0a 0a 0a 0a 0a 0a"
+      ],
+      "tileset": "house",
+      "border_block": 10,
+      "rows": [
+        "0a 0a 0a 0a 0a 0a 0a 0a",
+        "0a 25 05 04 04 05 1d 0a",
+        "0a 0f 0f 0f 04 0f 06 0a",
+        "0a 0f 0f 1a 04 01 02 0a",
+        "0a 06 0f 0f 0f 0c 0d 0a",
+        "0a 0a 0a 0a 0a 0a 0a 0a"
+      ],
+      "arrival": [
+        2,
+        3
+      ],
+      "actor_approaches": [
+        {
+          "script": "MN_DULUTH_X_READINGHALL_F2_HOST",
+          "tile": [
+            5,
+            6
+          ]
+        },
+        {
+          "script": "MN_DL_INTERIOR_CHART_READER",
+          "tile": [
+            10,
+            6
+          ]
+        }
+      ],
+      "exhibits": [
+        {
+          "id": "MN_INTERIOR_DETAIL_PUBLIC_HARBOR_LOG",
+          "tile": [
+            6,
+            7
+          ],
+          "approach": [
+            6,
+            8
+          ],
+          "lines": [
+            "The harbor-log catalogue separates forecasts from what the watch saw. Its margin reads: Ask the next watch. Leave room for a correction."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthUnionHall1F",
+      "intent": "Retain the welcoming hall and crew shelves; add the late-shift notice that connects the room to its upstairs names archive.",
+      "before_tileset": "house",
+      "before_rows": [
+        "0a 0a 0a 0a 0a 0a 0a 0a",
+        "0a 05 1e 05 04 05 25 0a",
+        "0a 0f 0f 0f 04 0f 0f 0a",
+        "0a 01 02 0f 0f 0f 06 0a",
+        "0a 0c 0d 0f 0f 04 04 0a",
+        "0a 0a 0a 0a 0b 0a 0a 0a"
+      ],
+      "tileset": "house",
+      "border_block": 10,
+      "rows": [
+        "0a 0a 0a 0a 0a 0a 0a 0a",
+        "0a 05 1e 05 04 05 25 0a",
+        "0a 0f 0f 0f 04 0f 0f 0a",
+        "0a 01 02 0f 0f 0f 06 0a",
+        "0a 0c 0d 0f 0f 04 04 0a",
+        "0a 0a 0a 0a 0b 0a 0a 0a"
+      ],
+      "arrival": [
+        8,
+        9
+      ],
+      "actor_approaches": [
+        {
+          "script": "MN_DULUTH_X_UNIONHALL_F1_HOST",
+          "tile": [
+            5,
+            6
+          ]
+        },
+        {
+          "script": "MN_DL_INTERIOR_UNION_NEIGHBOR",
+          "tile": [
+            10,
+            6
+          ]
+        }
+      ],
+      "exhibits": [
+        {
+          "id": "MN_INTERIOR_DETAIL_SHIFT_NOTICE",
+          "tile": [
+            9,
+            5
+          ],
+          "approach": [
+            9,
+            6
+          ],
+          "lines": [
+            "The late-shift notice lists a pot of coffee, dry mittens, and the upstairs recorder. The last line says: A number is not a name."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthUnionHall2F",
+      "intent": "Realign every row of the long archive table, keeping its recorder, retired deckhand and earned history reward.",
+      "before_tileset": "house",
+      "before_rows": [
+        "0a 0a 0a 0a 0a 0a 0a 0a",
+        "0a 25 05 0e 05 04 04 0a",
+        "0a 0f 0f 0f 01 02 06 0a",
+        "0a 0f 0f 0f 21 22 0f 0a",
+        "0a 06 0f 0f 0c 0d 0f 0a",
+        "0a 0a 0a 0a 0a 0a 0a 0a"
+      ],
+      "tileset": "house",
+      "border_block": 10,
+      "rows": [
+        "0a 0a 0a 0a 0a 0a 0a 0a",
+        "0a 25 05 0e 05 04 04 0a",
+        "0a 0f 0f 0f 01 02 06 0a",
+        "0a 0f 0f 0f 21 22 0f 0a",
+        "0a 06 0f 0f 0c 0d 0f 0a",
+        "0a 0a 0a 0a 0a 0a 0a 0a"
+      ],
+      "arrival": [
+        2,
+        3
+      ],
+      "actor_approaches": [
+        {
+          "script": "MN_DULUTH_X_UNIONHALL_F2_HOST",
+          "tile": [
+            5,
+            6
+          ]
+        },
+        {
+          "script": "MN_DL_INTERIOR_HALL_RETIREE",
+          "tile": [
+            12,
+            6
+          ]
+        }
+      ],
+      "exhibits": [
+        {
+          "id": "MN_INTERIOR_DETAIL_RESTORED_NAMES",
+          "tile": [
+            9,
+            7
+          ],
+          "approach": [
+            8,
+            7
+          ],
+          "lines": [
+            "The restored tally has names written beside the shift numbers. One name was carefully erased, then written again in the worker's own spelling."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthWeatherStudy1F",
+      "intent": "Keep the public weather station and native PC/radio; label the separate observation and wish columns.",
+      "before_tileset": "house",
+      "before_rows": [
+        "0a 0a 0a 0a 0a 0a 0a 0a",
+        "0a 1c 0e 05 1d 05 25 0a",
+        "0a 0f 0f 0f 0f 0f 0f 0a",
+        "0a 06 0f 0f 01 02 1a 0a",
+        "0a 0f 0f 0f 0c 0d 1a 0a",
+        "0a 0a 0a 0a 0b 0a 0a 0a"
+      ],
+      "tileset": "house",
+      "border_block": 10,
+      "rows": [
+        "0a 0a 0a 0a 0a 0a 0a 0a",
+        "0a 1c 0e 05 1d 05 25 0a",
+        "0a 0f 0f 0f 0f 0f 0f 0a",
+        "0a 06 0f 0f 01 02 1a 0a",
+        "0a 0f 0f 0f 0c 0d 1a 0a",
+        "0a 0a 0a 0a 0b 0a 0a 0a"
+      ],
+      "arrival": [
+        8,
+        9
+      ],
+      "actor_approaches": [
+        {
+          "script": "MN_DULUTH_X_WEATHERSTUDY_F1_HOST",
+          "tile": [
+            5,
+            6
+          ]
+        },
+        {
+          "script": "MN_DL_INTERIOR_WEATHER_STUDENT",
+          "tile": [
+            10,
+            6
+          ]
+        }
+      ],
+      "exhibits": [
+        {
+          "id": "MN_INTERIOR_DETAIL_WEATHER_COLUMNS",
+          "tile": [
+            12,
+            7
+          ],
+          "approach": [
+            11,
+            7
+          ],
+          "lines": [
+            "A chart has two columns: OBSERVATIONS and WISHES. PICNIC appears in the second. The first has a careful time and a wind direction."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthWeatherStudy2F",
+      "intent": "Keep the weather comparison workspace, both witnesses and its original once-only Mint Berry reward.",
+      "before_tileset": "house",
+      "before_rows": [
+        "0a 0a 0a 0a 0a 0a 0a 0a",
+        "0a 25 1c 05 0e 05 1d 0a",
+        "0a 0f 0f 0f 01 02 1a 0a",
+        "0a 06 0f 0f 0c 0d 1a 0a",
+        "0a 0f 1a 1a 0f 0f 0f 0a",
+        "0a 0a 0a 0a 0a 0a 0a 0a"
+      ],
+      "tileset": "house",
+      "border_block": 10,
+      "rows": [
+        "0a 0a 0a 0a 0a 0a 0a 0a",
+        "0a 25 1c 05 0e 05 1d 0a",
+        "0a 0f 0f 0f 01 02 1a 0a",
+        "0a 06 0f 0f 0c 0d 1a 0a",
+        "0a 0f 1a 1a 0f 0f 0f 0a",
+        "0a 0a 0a 0a 0a 0a 0a 0a"
+      ],
+      "arrival": [
+        2,
+        3
+      ],
+      "actor_approaches": [
+        {
+          "script": "MN_DULUTH_X_WEATHERSTUDY_F2_HOST",
+          "tile": [
+            5,
+            6
+          ]
+        },
+        {
+          "script": "MN_DL_INTERIOR_WEATHER_READER",
+          "tile": [
+            7,
+            7
+          ]
+        }
+      ],
+      "exhibits": [
+        {
+          "id": "MN_INTERIOR_DETAIL_SHARED_FORECAST",
+          "tile": [
+            12,
+            5
+          ],
+          "approach": [
+            11,
+            5
+          ],
+          "lines": [
+            "The file keeps two accounts side by side: clear ridge, foggy harbor. Neither report has been crossed out to make the page look tidier."
+          ]
+        }
+      ]
+    }
+  ]
+}

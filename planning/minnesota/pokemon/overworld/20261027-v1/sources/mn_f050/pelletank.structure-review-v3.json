@@ -1,0 +1,86 @@
+{
+  "species_id": "MN_102",
+  "manifest_sha256": "d96ce044318e73dd6fa4d8b6a6b5b48258b89dabeb62f4101e30def605b7d102",
+  "bank_sha256": "50eed7997340585bbaf53574cf86d616228cf5252817f532be7c6676077f12ef",
+  "source_anatomy_notes": "Three source back pellets remain broad armor lumps at native scale, four short legs with naturally occluded far legs in west, compact inward hip tail. All six silhouettes have one eight-connected component.",
+  "structure": [
+    {
+      "pose": "down_idle",
+      "eight_connected_component_sizes": [
+        77
+      ],
+      "native_bounds": [
+        1,
+        5,
+        12,
+        9
+      ],
+      "opaque_pixel_count": 77
+    },
+    {
+      "pose": "up_idle",
+      "eight_connected_component_sizes": [
+        74
+      ],
+      "native_bounds": [
+        1,
+        5,
+        12,
+        9
+      ],
+      "opaque_pixel_count": 74
+    },
+    {
+      "pose": "left_idle",
+      "eight_connected_component_sizes": [
+        89
+      ],
+      "native_bounds": [
+        1,
+        5,
+        13,
+        10
+      ],
+      "opaque_pixel_count": 89
+    },
+    {
+      "pose": "down_step",
+      "eight_connected_component_sizes": [
+        80
+      ],
+      "native_bounds": [
+        2,
+        5,
+        11,
+        10
+      ],
+      "opaque_pixel_count": 80
+    },
+    {
+      "pose": "up_step",
+      "eight_connected_component_sizes": [
+        77
+      ],
+      "native_bounds": [
+        2,
+        5,
+        10,
+        10
+      ],
+      "opaque_pixel_count": 77
+    },
+    {
+      "pose": "left_step",
+      "eight_connected_component_sizes": [
+        88
+      ],
+      "native_bounds": [
+        1,
+        5,
+        13,
+        10
+      ],
+      "opaque_pixel_count": 88
+    }
+  ]
+}

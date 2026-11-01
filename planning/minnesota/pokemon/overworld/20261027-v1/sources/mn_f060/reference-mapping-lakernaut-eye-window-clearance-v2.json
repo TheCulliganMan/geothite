@@ -1,0 +1,16 @@
+{
+  "input_images": [
+    {
+      "role": "edit target",
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f060/lakernaut.overworld.imagegen-v1.png",
+      "sha256": "1248dbd5e2a413e08dd02916b62cd3b64fe574c7dfb3a0c2189eb0017a928113"
+    },
+    {
+      "role": "native16 logical pixel style only",
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+      "sha256": "4354a639ed1a80fd6686e43b273443ed894e58a84307a8049f638ee9ffa2a099"
+    }
+  ],
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f060/prompt-lakernaut-eye-window-clearance-v2.txt",
+  "fit": 14
+}

@@ -1,0 +1,223 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F143",
+  "status": "native-refinement-reviewed",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f143/prompt-v3-tall-head.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "pokemon_palettes": {
+    "MN_316": {
+      "species_id": "MN_316",
+      "name": "Rondive",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          13,
+          24,
+          25
+        ],
+        [
+          5,
+          9,
+          13
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        26381,
+        13605,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          107,
+          198,
+          206
+        ],
+        [
+          41,
+          74,
+          107
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#6BC6CE",
+        "#294A6B",
+        "#000000"
+      ]
+    }
+  },
+  "source_sha256": "0300bfadaf3596223c7626eed87da433963a03ee71d47e00c6bafddd57d6fbb2",
+  "sprites": [
+    {
+      "id": "mn-316-rondive-v3",
+      "species_id": "MN_316",
+      "view": "front",
+      "source": "sprites/mn-f143/front-back.imagegen-v3.png",
+      "crop": [
+        0,
+        0,
+        910,
+        887
+      ],
+      "fit": [
+        53,
+        49
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        26381,
+        13605,
+        0
+      ],
+      "interior_black_min_samples": 12,
+      "white_detail_min_samples": 4,
+      "exterior_contour": "solid",
+      "pixel_edits": [
+        {
+          "x": 6,
+          "y": 24,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 19,
+          "y": 26,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 7,
+          "y": 27,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 19,
+          "y": 27,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 5,
+          "y": 28,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 6,
+          "y": 28,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 18,
+          "y": 28,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 18,
+          "y": 36,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 19,
+          "y": 36,
+          "from": 0,
+          "to": 3
+        },
+        {
+          "x": 18,
+          "y": 37,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 19,
+          "y": 37,
+          "from": 0,
+          "to": 3
+        },
+        {
+          "x": 6,
+          "y": 38,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 18,
+          "y": 38,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 19,
+          "y": 38,
+          "from": 0,
+          "to": 3
+        },
+        {
+          "x": 5,
+          "y": 39,
+          "from": 3,
+          "to": 0
+        }
+      ]
+    },
+    {
+      "id": "mn-316-rondive-v3",
+      "species_id": "MN_316",
+      "view": "back",
+      "source": "sprites/mn-f143/front-back.imagegen-v3.png",
+      "crop": [
+        910,
+        90,
+        864,
+        730
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        26381,
+        13605,
+        0
+      ],
+      "interior_black_min_samples": 12,
+      "white_detail_min_samples": 4,
+      "exterior_contour": "solid"
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "sheet_sha256": "e4a53a92207219fe29e56b4ec7e4a3772f7850609ccb81156db26bd275c5095c",
+    "outline_profile": "solid-exterior-v1",
+    "notes": "Root inspected third ImageGen source native56front/48close rear. Four large enclosed white eye organs with four distinct black pupils now survive in two tiers separated by cyan seam. Six attached paddle/gripping limbs, short hooks and simple wingcase planes. Rear enlarged upperbody, one matching side eye, no lowerbody. Four exact GBCinks and continuous rims; no handpixel changes. All earlier candidate renders retained. Native refinement: inspected both views against source art; clarified existing facial whites and pupils, retained body geometry and palettes, and verified opponent-facing orientation. Exact guarded edits and previous manifest retained in native-refinement-20261027-v1/."
+  },
+  "native_refinement_note": "Guarded native ink corrections clarify existing eyes and facial details. Source art, fit and per-species palettes retained. Orientation corrections keep enemy fronts facing left and player rear portraits facing upper right."
+}

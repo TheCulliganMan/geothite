@@ -1,0 +1,34 @@
+{
+  "identity_reference": "../front-back.imagegen-v1.png",
+  "new_source": "front-back.imagegen-v1.png",
+  "prompt": "prompt-imagegen-v1.txt",
+  "policy": "Keep accepted identity, individual palette, full front and close cropped head/shoulder rear; new native sampling selected by explicit side-by-side review.",
+  "views": [
+    {
+      "view": "front",
+      "crop": [
+        0,
+        0,
+        930,
+        887
+      ],
+      "fit": [
+        54,
+        54
+      ]
+    },
+    {
+      "view": "back",
+      "crop": [
+        940,
+        0,
+        834,
+        887
+      ],
+      "fit": [
+        46,
+        47
+      ]
+    }
+  ]
+}

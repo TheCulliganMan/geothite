@@ -1,0 +1,26 @@
+{
+  "references": [
+    {
+      "path": "target/minnesota-pokemon/native/MN_F001/line.review.png",
+      "role": "authoritative accepted individual palettes and six native views",
+      "sha256": "80921579241ca341be3e56d90dd8a208b3fc840e2d57950fa6994a4f8e56ebe9"
+    },
+    {
+      "path": "planning/minnesota/pokemon/sprites/mn-f001/mn-001-003.front-back.imagegen-v1.png",
+      "role": "original front pose and orchid anatomy only; superseded shared pink palette not authoritative",
+      "sha256": "906dfe18e5f33ffb75ddc9f9cad1e2c8df58b6c0c90f5692fa89bc0cf510a2c8"
+    },
+    {
+      "path": "planning/minnesota/pokemon/sprites/mn-f001/back-portraits.imagegen-v3.png",
+      "role": "accepted close rear camera, crown/petal attachments and anatomy",
+      "sha256": "829d6a21a885e617c97c1354021852d13e15d7f92010688c0ccd8fc0053043d2"
+    },
+    {
+      "path": "target/minnesota-pokemon/gen2-reference/starters.png",
+      "role": "authentic native Gen2 cluster language and battle framing only",
+      "sha256": "af61f720a75b7e1b8e80ba14e8944612556397eedddd719669dec68b0e0fd534"
+    }
+  ],
+  "attached_to_imagegen": true,
+  "preservation": "All reference files and canonical art unchanged."
+}

@@ -1,0 +1,71 @@
+{
+  "tool": "built-in image_gen",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f037/scraplow-v3-native-pupils",
+  "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f037/manifest-scraplow-v3-native-pupils.json",
+  "normalized_receipt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f037/source-feature-proof-scraplow-v3-native-pupils.json",
+  "all_raws_prompts_rejected_trials_retained": true,
+  "no_native_pixel_painting": true,
+  "no_registry_or_pack_mutation": true,
+  "normal_shiny_boards_actually_viewed": true,
+  "canonical_palettes": [
+    [
+      32767,
+      29460,
+      18824,
+      0
+    ],
+    [
+      32767,
+      25244,
+      12562,
+      0
+    ]
+  ],
+  "native_bounds": [
+    [
+      3,
+      6,
+      10,
+      9
+    ],
+    [
+      3,
+      6,
+      10,
+      9
+    ],
+    [
+      2,
+      6,
+      12,
+      9
+    ],
+    [
+      3,
+      6,
+      10,
+      9
+    ],
+    [
+      4,
+      6,
+      8,
+      9
+    ],
+    [
+      2,
+      6,
+      12,
+      9
+    ]
+  ],
+  "retained_source_hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f037/scraplow.overworld.imagegen-v1.png": "40db234cbc2d04c496b2d0c33c0b1379e02963b618bd3396d0f7fc6fbb5ee5ab",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f037/scraplow.overworld.imagegen-v2-roomy-lamps.png": "3e66009cd4ef4c82d6fa16fe56d0ee0bb4782ee3c67d90f30e43131f1aec92d6",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f037/prompt-scraplow-v2-roomy-lamps.txt": "2956b5418e0e86a61f84c81a662a08a5f79f039ea20e3efebcaef0fcaf9b9158",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f037/prompt-scraplow-v1.txt": "ad900213a988deb404cd655b2936a4aece7582271e2833a03c28f032847a386d",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f037/scraplow.v2-roomy-lamps.original-path.txt": "3e33f486679481f8bde523e01af135f3e556c71f74bfa7569167fbfee72e1679",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f037/scraplow.v1.original-path.txt": "427a22c32659b827c75ed3cb9d4d822b775f2208105f2fd2cf38843188e6a0da"
+  },
+  "status": "root independent visual/context acceptance pending"
+}

@@ -1,0 +1,58 @@
+[
+  {
+    "id": "clinic",
+    "map": "MnBrainerd",
+    "core": [
+      9,
+      22
+    ]
+  },
+  {
+    "id": "mart",
+    "map": "MnBrainerd",
+    "core": [
+      19,
+      22
+    ]
+  },
+  {
+    "id": "gym",
+    "map": "MnBrainerd",
+    "core": [
+      12,
+      36
+    ]
+  },
+  {
+    "id": "ranger",
+    "map": "MnBrainerd",
+    "core": [
+      23,
+      16
+    ]
+  },
+  {
+    "id": "outfitter",
+    "map": "MnBrainerd",
+    "core": [
+      47,
+      36
+    ]
+  },
+  {
+    "id": "ordinary-stairs",
+    "map": "MnBrainerd",
+    "core": [
+      21,
+      39
+    ]
+  },
+  {
+    "id": "closed-gym-cliff",
+    "map": "MnBrainerd",
+    "core": [
+      24,
+      38
+    ]
+  }
+]

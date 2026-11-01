@@ -1,0 +1,7528 @@
+{
+  "id": "MnStPaul",
+  "name": "ST PAUL",
+  "dimensions_metatiles": [
+    40,
+    34
+  ],
+  "reference_anchor_percent": [
+    68,
+    70
+  ],
+  "role": "gym_4",
+  "tileset": "kanto",
+  "composition": "Fair stalls share a short brick market lane and shaded information approach. West Seventh bakery and Center share a rail-bounded care court; the mart and craft frontage sit closer to the garden stall. Existing civic hill, Lowertown Exchange and full connected river remain; larger civic/eastern streets still require composition review.",
+  "ports": [
+    {
+      "route": "MN_R04",
+      "side": "W",
+      "gate_metatile": [
+        1,
+        24
+      ],
+      "landing_metatile": [
+        3,
+        24
+      ]
+    }
+  ],
+  "interiors": [
+    {
+      "id": "MnStPaulPokecenter1F",
+      "kind": "pokecenter",
+      "dimensions_metatiles": [
+        5,
+        4
+      ],
+      "tileset": "pokecenter",
+      "template": "CherrygrovePokecenter1F",
+      "border_block": "00",
+      "rows": [
+        "01 02 03 13 08",
+        "05 06 07 04 0c",
+        "04 04 04 2e 2f",
+        "2d 11 27 2e 2f"
+      ],
+      "exits": [
+        [
+          3,
+          7
+        ],
+        [
+          4,
+          7
+        ]
+      ],
+      "passive_arrival": {
+        "index": 3,
+        "tile": [
+          3,
+          5
+        ]
+      },
+      "exterior_return_warp": 4,
+      "residents": [
+        {
+          "id": "MN_ST_PAUL_NURSE",
+          "sprite": "SPRITE_NURSE",
+          "tile": [
+            3,
+            1
+          ],
+          "facing": "south",
+          "service": "heal_party",
+          "interaction_approach": [
+            3,
+            3
+          ],
+          "native_counter": [
+            3,
+            2
+          ],
+          "lines": [
+            "Welcome! Rest your",
+            "POKEMON here."
+          ]
+        },
+        {
+          "id": "MN_ST_PAUL_CLINIC_FISHER",
+          "sprite": "SPRITE_FISHER",
+          "tile": [
+            2,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "The PC is on the",
+            "right-hand wall."
+          ]
+        },
+        {
+          "id": "MN_ST_PAUL_CLINIC_TEACHER",
+          "sprite": "SPRITE_TEACHER",
+          "tile": [
+            1,
+            5
+          ],
+          "facing": "east",
+          "lines": [
+            "The depot is south",
+            "of the bluff."
+          ]
+        },
+        {
+          "id": "MN_ST_PAUL_CLINIC_GENTLEMAN",
+          "sprite": "SPRITE_GENTLEMAN",
+          "tile": [
+            8,
+            6
+          ],
+          "facing": "west",
+          "lines": [
+            "Take your time.",
+            "The care is free."
+          ]
+        }
+      ],
+      "pc": {
+        "tile": [
+          9,
+          1
+        ],
+        "approach": [
+          9,
+          2
+        ],
+        "native_collision": "PC",
+        "contract": "Use production PC field interaction; no alternate inventory UI."
+      },
+      "source_behavior": "Native free HP/status/PP care, source PC and eventual blackout recovery registration. Original visible upstairs stair replaced by authentic native2d seating, no unbound2F warp.",
+      "native_constant": "MN_ST_PAUL_POKECENTER_1F",
+      "exit_warps": [
+        {
+          "index": 1,
+          "tile": [
+            3,
+            7
+          ],
+          "target": "MnStPaul",
+          "target_warp": 4
+        },
+        {
+          "index": 2,
+          "tile": [
+            4,
+            7
+          ],
+          "target": "MnStPaul",
+          "target_warp": 4
+        }
+      ]
+    },
+    {
+      "id": "MnStPaulMart",
+      "kind": "mart",
+      "dimensions_metatiles": [
+        6,
+        4
+      ],
+      "tileset": "mart",
+      "template": "CherrygroveMart",
+      "border_block": "00",
+      "rows": [
+        "14 27 14 13 13 13",
+        "2b 22 2b 2b 2b 2b",
+        "15 29 13 13 13 28",
+        "2b 2a 2b 2b 2b 23"
+      ],
+      "exits": [
+        [
+          2,
+          7
+        ],
+        [
+          3,
+          7
+        ]
+      ],
+      "passive_arrival": {
+        "index": 3,
+        "tile": [
+          3,
+          5
+        ]
+      },
+      "exterior_return_warp": 6,
+      "residents": [
+        {
+          "id": "MN_ST_PAUL_MART_CLERK",
+          "sprite": "SPRITE_CLERK",
+          "tile": [
+            1,
+            3
+          ],
+          "facing": "east",
+          "service": "native_mart",
+          "interaction_approach": [
+            3,
+            3
+          ],
+          "native_counter": [
+            2,
+            3
+          ],
+          "source_script": "CherrygroveMartClerkScript",
+          "lines": [
+            "Supplies for the",
+            "next journey."
+          ],
+          "stock": [
+            "POKE_BALL",
+            "GREAT_BALL",
+            "SUPER_POTION",
+            "ANTIDOTE",
+            "PARLYZ_HEAL",
+            "ESCAPE_ROPE",
+            "REPEL"
+          ]
+        },
+        {
+          "id": "MN_ST_PAUL_MART_CUSTOMER",
+          "sprite": "SPRITE_COOLTRAINER_M",
+          "tile": [
+            7,
+            6
+          ],
+          "facing": "north",
+          "lines": [
+            "STEEL can stand",
+            "up to most hits."
+          ]
+        },
+        {
+          "id": "MN_ST_PAUL_MART_YOUNGSTER",
+          "sprite": "SPRITE_YOUNGSTER",
+          "tile": [
+            2,
+            5
+          ],
+          "facing": "east",
+          "lines": [
+            "Bring medicine",
+            "for the road."
+          ]
+        }
+      ],
+      "source_behavior": "Retain native clerk economy: show source inventory, require money and bag capacity, deduct only on delivered items. Publication/runtime proof pending.",
+      "native_constant": "MN_ST_PAUL_MART",
+      "exit_warps": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            7
+          ],
+          "target": "MnStPaul",
+          "target_warp": 6
+        },
+        {
+          "index": 2,
+          "tile": [
+            3,
+            7
+          ],
+          "target": "MnStPaul",
+          "target_warp": 6
+        }
+      ]
+    },
+    {
+      "id": "MnStPaulCapitolHall",
+      "kind": "public_records",
+      "dimensions_metatiles": [
+        8,
+        4
+      ],
+      "tileset": "facility",
+      "template": "SilphCo1F",
+      "border_block": "02",
+      "rows": [
+        "35 35 1e 01 01 01 1d 01",
+        "34 34 3f 07 2d 2d 07 0e",
+        "07 07 07 07 2d 10 11 0e",
+        "0d 0c 0e 07 07 14 15 0e"
+      ],
+      "exits": [
+        [
+          2,
+          7
+        ],
+        [
+          3,
+          7
+        ]
+      ],
+      "passive_arrival": {
+        "index": 3,
+        "tile": [
+          3,
+          5
+        ]
+      },
+      "exterior_return_warp": 8,
+      "residents": [
+        {
+          "id": "MN_ST_PAUL_RECORDS_CLERK",
+          "sprite": "SPRITE_RECEPTIONIST",
+          "tile": [
+            4,
+            2
+          ],
+          "facing": "south",
+          "lines": [
+            "Public records.",
+            "The fair road is",
+            "north of town."
+          ],
+          "interaction_approach": [
+            4,
+            4
+          ],
+          "native_counter": [
+            4,
+            3
+          ]
+        },
+        {
+          "id": "MN_ST_PAUL_RECORDS_OFFICER",
+          "sprite": "SPRITE_OFFICER",
+          "tile": [
+            13,
+            1
+          ],
+          "facing": "south",
+          "lines": [
+            "The depot courier",
+            "is indoors today.",
+            "Try UNION DEPOT."
+          ]
+        }
+      ],
+      "source_behavior": "Ordinary public information only. No MS03 dispatch note, TM gift, courier battle or story completion is awarded here; Q03 courier remains in Root-owned depot.",
+      "native_constant": "MN_ST_PAUL_CAPITOL_HALL",
+      "exit_warps": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            7
+          ],
+          "target": "MnStPaul",
+          "target_warp": 8
+        },
+        {
+          "index": 2,
+          "tile": [
+            3,
+            7
+          ],
+          "target": "MnStPaul",
+          "target_warp": 8
+        }
+      ]
+    },
+    {
+      "id": "MnStPaulGym",
+      "kind": "canonical_gym_reference",
+      "dimensions_metatiles": [
+        7,
+        10
+      ],
+      "tileset": "mn_gym_4",
+      "native_constant": "MN_ST_PAUL_GYM",
+      "source_reference": {
+        "path": "planning/minnesota/gyms/interiors.json",
+        "gym_id": "MnStPaulGym",
+        "file_sha256": "69e7d9e5d54f7752570f2a90ffb100576a1255194b9867a102f9580b7d5e7aec",
+        "room_sha256": "95215c67f1fa16dc7baaf13cc480da9272e7f6689152ea216a7fb3c737378eb4",
+        "native_builder": "gym_art::install + gym_publication::room + gym_scripts",
+        "symbol_blocks": {
+          "#": "00",
+          ".": "01",
+          "L": "02",
+          "M": "03",
+          "R": "04",
+          "W": "05",
+          "X": "06",
+          "j": "07",
+          "p": "08",
+          "s": "09",
+          "u": "0a",
+          "v": "0b"
+        }
+      },
+      "exits": [
+        [
+          2,
+          19
+        ],
+        [
+          3,
+          19
+        ]
+      ],
+      "passive_arrival": {
+        "index": 3,
+        "tile": [
+          2,
+          17
+        ]
+      },
+      "exterior_return_warp": 10,
+      "exit_warps": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            19
+          ],
+          "target": "MnStPaul",
+          "target_warp": 10
+        },
+        {
+          "index": 2,
+          "tile": [
+            3,
+            19
+          ],
+          "target": "MnStPaul",
+          "target_warp": 10
+        }
+      ],
+      "source_behavior": "Resolve the canonical four-room pad gym and preserve terrain, actors, parties, puzzle and reward. Bind only carpet/passive records 1..3 to city return 10; preserve all eight internal pad records 4..11 and callbacks."
+    },
+    {
+      "id": "MnStPaulFairFoodHall",
+      "native_constant": "MN_SPX_FAIR_FOOD_HALL",
+      "template": "SaffronMart",
+      "tileset": "mart",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        6,
+        4
+      ],
+      "rows": [
+        "14 27 14 13 13 13",
+        "2b 22 2b 2b 2b 2b",
+        "15 29 13 13 13 28",
+        "2b 2a 2b 2b 2b 23"
+      ],
+      "arrival_core": [
+        3,
+        5
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            7
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 12,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            3,
+            7
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 12,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            3,
+            5
+          ],
+          "target": "MN_SPX_FAIR_FOOD_HALL",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_SPX_FAIRFOODHALL_HOST",
+          "sprite": "SPRITE_POKEFAN_M",
+          "tile": [
+            1,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "Drinks for the mid"
+          ],
+          "service": "pokemart",
+          "stock": [
+            "FRESH_WATER",
+            "SODA_POP",
+            "LEMONADE"
+          ],
+          "approach": [
+            3,
+            3
+          ],
+          "counter_tile": [
+            2,
+            3
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnStPaulFairGardenStand",
+      "native_constant": "MN_SPX_FAIR_GARDEN_STAND",
+      "template": "SaffronMart",
+      "tileset": "mart",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        6,
+        4
+      ],
+      "rows": [
+        "14 27 14 13 13 13",
+        "2b 22 2b 2b 2b 2b",
+        "15 29 13 13 13 28",
+        "2b 2a 2b 2b 2b 23"
+      ],
+      "arrival_core": [
+        3,
+        5
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            7
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 14,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            3,
+            7
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 14,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            3,
+            5
+          ],
+          "target": "MN_SPX_FAIR_GARDEN_STAND",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_SPX_FAIRGARDENSTAND_HOST",
+          "sprite": "SPRITE_POKEFAN_M",
+          "tile": [
+            1,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "Seeds and berry st"
+          ],
+          "service": "pokemart",
+          "stock": [
+            "BERRY",
+            "BITTER_BERRY",
+            "MINT_BERRY",
+            "FLOWER_MAIL"
+          ],
+          "approach": [
+            3,
+            3
+          ],
+          "counter_tile": [
+            2,
+            3
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnStPaulFairAgricultureHall",
+      "native_constant": "MN_SPX_FAIR_AGRICULTURE_HALL",
+      "template": "MrPsychicsHouse",
+      "tileset": "house",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        8,
+        6
+      ],
+      "rows": [
+        "04 05 03 05 03 05 04 1d",
+        "0f 0f 0f 0f 0f 2c 0f 0f",
+        "0f 0f 0f 0f 0f 0f 0f 2c",
+        "0f 0f 2f 0f 30 0f 2c 2c",
+        "0f 0f 0f 0f 30 0f 2c 2c",
+        "06 0b 0f 0f 0f 0f 0f 07"
+      ],
+      "arrival_core": [
+        3,
+        9
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            11
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 16,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            3,
+            11
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 16,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            3,
+            9
+          ],
+          "target": "MN_SPX_FAIR_AGRICULTURE_HALL",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_SPX_FAIRAGRICULTUREHALL_HOST",
+          "sprite": "SPRITE_POKEFAN_M",
+          "tile": [
+            5,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "Crop and water exh"
+          ],
+          "service": null
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnStPaulFairExhibitionHall",
+      "native_constant": "MN_SPX_FAIR_EXHIBITION_HALL",
+      "template": "MrPsychicsHouse",
+      "tileset": "house",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        8,
+        6
+      ],
+      "rows": [
+        "04 05 03 05 03 05 03 05",
+        "0f 0f 0f 0f 0f 1f 1f 27",
+        "0f 0f 0f 0f 0f 0f 0f 27",
+        "0f 0f 14 15 0f 2d 2d 27",
+        "0f 0f 18 19 0f 0f 2e 0f",
+        "06 0b 0f 0f 0f 0f 0f 07"
+      ],
+      "arrival_core": [
+        3,
+        9
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            11
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 18,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            3,
+            11
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 18,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            3,
+            9
+          ],
+          "target": "MN_SPX_FAIR_EXHIBITION_HALL",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_SPX_FAIREXHIBITIONHALL_HOST",
+          "sprite": "SPRITE_POKEFAN_M",
+          "tile": [
+            5,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "A voluntary show m"
+          ],
+          "service": null
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnStPaulFairCraftHouse",
+      "native_constant": "MN_SPX_FAIR_CRAFT_HOUSE",
+      "template": "MrPsychicsHouse",
+      "tileset": "house",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        4,
+        4
+      ],
+      "rows": [
+        "04 1e 05 1d",
+        "0f 01 02 0f",
+        "0f 0c 0d 0f",
+        "06 0b 0f 07"
+      ],
+      "arrival_core": [
+        3,
+        5
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            7
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 20,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            3,
+            7
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 20,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            3,
+            5
+          ],
+          "target": "MN_SPX_FAIR_CRAFT_HOUSE",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_SPX_FAIRCRAFTHOUSE_HOST",
+          "sprite": "SPRITE_POKEFAN_M",
+          "tile": [
+            5,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "Handmade seed ribb"
+          ],
+          "service": null
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnStPaulFairQuizPavilion",
+      "native_constant": "MN_SPX_FAIR_QUIZ_PAVILION",
+      "template": "MrPsychicsHouse",
+      "tileset": "house",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        4,
+        4
+      ],
+      "rows": [
+        "04 1e 05 1d",
+        "0f 01 02 0f",
+        "0f 0c 0d 0f",
+        "06 0b 0f 07"
+      ],
+      "arrival_core": [
+        3,
+        5
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            7
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 22,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            3,
+            7
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 22,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            3,
+            5
+          ],
+          "target": "MN_SPX_FAIR_QUIZ_PAVILION",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_SPX_QUIZ_HOST",
+          "sprite": "SPRITE_POKEFAN_M",
+          "tile": [
+            5,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "Find three records",
+            "then return here."
+          ],
+          "service": null
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {
+        "MN_SPX_QUIZ_HOST": [
+          {
+            "command": "faceplayer",
+            "args": []
+          },
+          {
+            "command": "opentext",
+            "args": []
+          },
+          {
+            "command": "checkevent",
+            "args": [
+              "EVENT_MN_SPX_QUIZ_REWARDED"
+            ]
+          },
+          {
+            "command": "iftrue",
+            "args": [
+              "MN_SPX_QUIZDone"
+            ]
+          },
+          {
+            "command": "writetext",
+            "args": [
+              "MN_SPX_QUIZQuestion1Text"
+            ]
+          },
+          {
+            "command": "yesorno",
+            "args": []
+          },
+          {
+            "command": "iffalse",
+            "args": [
+              "MN_SPX_QUIZWrong"
+            ]
+          },
+          {
+            "command": "writetext",
+            "args": [
+              "MN_SPX_QUIZQuestion2Text"
+            ]
+          },
+          {
+            "command": "yesorno",
+            "args": []
+          },
+          {
+            "command": "iftrue",
+            "args": [
+              "MN_SPX_QUIZWrong"
+            ]
+          },
+          {
+            "command": "writetext",
+            "args": [
+              "MN_SPX_QUIZQuestion3Text"
+            ]
+          },
+          {
+            "command": "yesorno",
+            "args": []
+          },
+          {
+            "command": "iffalse",
+            "args": [
+              "MN_SPX_QUIZWrong"
+            ]
+          },
+          {
+            "command": "giveitem",
+            "args": [
+              "SILVERPOWDER",
+              "1"
+            ]
+          },
+          {
+            "command": "iffalse",
+            "args": [
+              "MN_SPX_QUIZFull"
+            ]
+          },
+          {
+            "command": "setevent",
+            "args": [
+              "EVENT_MN_SPX_QUIZ_REWARDED"
+            ]
+          },
+          {
+            "command": "writetext",
+            "args": [
+              "MN_SPX_QUIZRewardText"
+            ]
+          },
+          {
+            "command": "waitbutton",
+            "args": []
+          },
+          {
+            "command": "closetext",
+            "args": []
+          },
+          {
+            "command": "end",
+            "args": []
+          }
+        ],
+        "MN_SPX_QUIZQuestion1Text": [
+          {
+            "command": "text",
+            "args": [
+              "\"MINT BERRY wakes\""
+            ]
+          },
+          {
+            "command": "line",
+            "args": [
+              "\"a sleeping friend?\""
+            ]
+          },
+          {
+            "command": "done",
+            "args": []
+          }
+        ],
+        "MN_SPX_QUIZQuestion2Text": [
+          {
+            "command": "text",
+            "args": [
+              "\"A POTION restores\""
+            ]
+          },
+          {
+            "command": "line",
+            "args": [
+              "\"a fainted friend?\""
+            ]
+          },
+          {
+            "command": "done",
+            "args": []
+          }
+        ],
+        "MN_SPX_QUIZQuestion3Text": [
+          {
+            "command": "text",
+            "args": [
+              "\"A LURE BALL suits\""
+            ]
+          },
+          {
+            "command": "line",
+            "args": [
+              "\"a fishing catch?\""
+            ]
+          },
+          {
+            "command": "done",
+            "args": []
+          }
+        ],
+        "MN_SPX_QUIZWrongText": [
+          {
+            "command": "text",
+            "args": [
+              "\"Use the field book\""
+            ]
+          },
+          {
+            "command": "line",
+            "args": [
+              "\"and visit again.\""
+            ]
+          },
+          {
+            "command": "done",
+            "args": []
+          }
+        ],
+        "MN_SPX_QUIZWrong": [
+          {
+            "command": "writetext",
+            "args": [
+              "MN_SPX_QUIZWrongText"
+            ]
+          },
+          {
+            "command": "waitbutton",
+            "args": []
+          },
+          {
+            "command": "closetext",
+            "args": []
+          },
+          {
+            "command": "end",
+            "args": []
+          }
+        ],
+        "MN_SPX_QUIZFullText": [
+          {
+            "command": "text",
+            "args": [
+              "\"Your PACK is full.\""
+            ]
+          },
+          {
+            "command": "line",
+            "args": [
+              "\"Return with room.\""
+            ]
+          },
+          {
+            "command": "done",
+            "args": []
+          }
+        ],
+        "MN_SPX_QUIZFull": [
+          {
+            "command": "writetext",
+            "args": [
+              "MN_SPX_QUIZFullText"
+            ]
+          },
+          {
+            "command": "waitbutton",
+            "args": []
+          },
+          {
+            "command": "closetext",
+            "args": []
+          },
+          {
+            "command": "end",
+            "args": []
+          }
+        ],
+        "MN_SPX_QUIZDoneText": [
+          {
+            "command": "text",
+            "args": [
+              "\"All answers right!\""
+            ]
+          },
+          {
+            "command": "line",
+            "args": [
+              "\"Enjoy the fair.\""
+            ]
+          },
+          {
+            "command": "done",
+            "args": []
+          }
+        ],
+        "MN_SPX_QUIZDone": [
+          {
+            "command": "writetext",
+            "args": [
+              "MN_SPX_QUIZDoneText"
+            ]
+          },
+          {
+            "command": "waitbutton",
+            "args": []
+          },
+          {
+            "command": "closetext",
+            "args": []
+          },
+          {
+            "command": "end",
+            "args": []
+          }
+        ],
+        "MN_SPX_QUIZRewardText": [
+          {
+            "command": "text",
+            "args": [
+              "\"All answers right!\""
+            ]
+          },
+          {
+            "command": "line",
+            "args": [
+              "\"SILVERPOWDER gift.\""
+            ]
+          },
+          {
+            "command": "done",
+            "args": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "MnStPaulFairInfoHouse",
+      "native_constant": "MN_SPX_FAIR_INFO_HOUSE",
+      "template": "MrPsychicsHouse",
+      "tileset": "house",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        4,
+        4
+      ],
+      "rows": [
+        "04 1e 05 1d",
+        "0f 01 02 0f",
+        "0f 0c 0d 0f",
+        "06 0b 0f 07"
+      ],
+      "arrival_core": [
+        3,
+        5
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            7
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 24,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            3,
+            7
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 24,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            3,
+            5
+          ],
+          "target": "MN_SPX_FAIR_INFO_HOUSE",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_SPX_FAIRINFOHOUSE_HOST",
+          "sprite": "SPRITE_POKEFAN_M",
+          "tile": [
+            5,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "Public shows open.",
+            "The north annex",
+            "is still closed."
+          ],
+          "service": null
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnStPaulFairBreederBarn",
+      "native_constant": "MN_SPX_FAIR_BREEDER_BARN",
+      "template": "MrPsychicsHouse",
+      "tileset": "house",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        8,
+        6
+      ],
+      "rows": [
+        "04 05 03 05 03 05 04 05",
+        "0f 0f 0f 0f 0f 14 15 0f",
+        "0f 1a 0f 0f 0f 18 19 1a",
+        "0f 0f 0f 0f 0f 0f 0f 1a",
+        "0f 0f 0f 0f 0f 2f 2c 0f",
+        "06 0b 0f 0f 0f 0f 0f 07"
+      ],
+      "arrival_core": [
+        3,
+        9
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            11
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 26,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            3,
+            11
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 26,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            3,
+            9
+          ],
+          "target": "MN_SPX_FAIR_BREEDER_BARN",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_SPX_FAIRBREEDERBARN_HOST",
+          "sprite": "SPRITE_POKEFAN_M",
+          "tile": [
+            5,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "Care before compet"
+          ],
+          "service": null
+        }
+      ],
+      "signs": [],
+      "trainers": [
+        {
+          "id": "MN_SPX_TRAINER_2",
+          "display_name": "JUNE",
+          "trainer_class": "POKEFANF",
+          "sprite": "SPRITE_POKEFAN_F",
+          "tile": [
+            9,
+            7
+          ],
+          "facing": "south",
+          "sight_range": 0,
+          "defeated_flag": "EVENT_MN_SPX_TRAINER_2",
+          "party": [
+            {
+              "species": "SNUBBULL",
+              "level": 20
+            },
+            {
+              "species": "MILTANK",
+              "level": 21
+            }
+          ],
+          "before_lines": [
+            "A friendly match?",
+            "Speak when ready!"
+          ],
+          "after_lines": [
+            "Good preparation!",
+            "Enjoy the city."
+          ],
+          "loss_lines": [
+            "A fine exhibition!"
+          ]
+        }
+      ],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnStPaulFairBerrySnack",
+      "native_constant": "MN_SPX_FAIR_BERRY_SNACK",
+      "template": "SaffronMart",
+      "tileset": "mart",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        6,
+        4
+      ],
+      "rows": [
+        "14 27 14 13 13 13",
+        "2b 22 2b 2b 2b 2b",
+        "15 29 13 13 13 28",
+        "2b 2a 2b 2b 2b 23"
+      ],
+      "arrival_core": [
+        3,
+        5
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            7
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 28,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            3,
+            7
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 28,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            3,
+            5
+          ],
+          "target": "MN_SPX_FAIR_BERRY_SNACK",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_SPX_FAIRBERRYSNACK_HOST",
+          "sprite": "SPRITE_POKEFAN_M",
+          "tile": [
+            1,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "Berries for the mi"
+          ],
+          "service": "pokemart",
+          "stock": [
+            "BERRY_JUICE",
+            "BERRY",
+            "GOLD_BERRY"
+          ],
+          "approach": [
+            3,
+            3
+          ],
+          "counter_tile": [
+            2,
+            3
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnStPaulFairFestivalMail",
+      "native_constant": "MN_SPX_FAIR_FESTIVAL_MAIL",
+      "template": "SaffronMart",
+      "tileset": "mart",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        6,
+        4
+      ],
+      "rows": [
+        "14 27 14 13 13 13",
+        "2b 22 2b 2b 2b 2b",
+        "15 29 13 13 13 28",
+        "2b 2a 2b 2b 2b 23"
+      ],
+      "arrival_core": [
+        3,
+        5
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            7
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 30,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            3,
+            7
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 30,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            3,
+            5
+          ],
+          "target": "MN_SPX_FAIR_FESTIVAL_MAIL",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_SPX_FAIRFESTIVALMAIL_HOST",
+          "sprite": "SPRITE_POKEFAN_M",
+          "tile": [
+            1,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "Send a fair postca"
+          ],
+          "service": "pokemart",
+          "stock": [
+            "FLOWER_MAIL",
+            "SURF_MAIL",
+            "LITEBLUEMAIL"
+          ],
+          "approach": [
+            3,
+            3
+          ],
+          "counter_tile": [
+            2,
+            3
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnStPaulCapitolArchive",
+      "native_constant": "MN_SPX_CAPITOL_ARCHIVE",
+      "template": "MrPsychicsHouse",
+      "tileset": "house",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        8,
+        6
+      ],
+      "rows": [
+        "04 05 03 05 04 04 04 1d",
+        "0f 0f 0f 0f 0f 0f 0f 0f",
+        "0f 0f 0f 1a 0f 1a 0f 1a",
+        "0f 0f 0f 1a 0f 1a 0f 1a",
+        "0f 0f 0f 0f 0f 0f 0f 1a",
+        "06 0b 0f 0f 0f 1a 1a 1a"
+      ],
+      "arrival_core": [
+        3,
+        9
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            11
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 32,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            3,
+            11
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 32,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            3,
+            9
+          ],
+          "target": "MN_SPX_CAPITOL_ARCHIVE",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_SPX_ARCHIVE_HOST",
+          "sprite": "SPRITE_POKEFAN_M",
+          "tile": [
+            5,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "Find three records",
+            "then return here."
+          ],
+          "service": null
+        },
+        {
+          "id": "MN_SPX_ARCHIVE_RECORD_1",
+          "sprite": "SPRITE_POKEFAN_M",
+          "tile": [
+            4,
+            9
+          ],
+          "facing": "south",
+          "lines": [
+            "Early rail roads",
+            "ran by the river."
+          ],
+          "service": null,
+          "approach": [
+            4,
+            8
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {
+        "MN_SPX_ARCHIVE_HOST": [
+          {
+            "command": "faceplayer",
+            "args": []
+          },
+          {
+            "command": "opentext",
+            "args": []
+          },
+          {
+            "command": "checkevent",
+            "args": [
+              "EVENT_MN_SPX_ARCHIVE_REWARDED"
+            ]
+          },
+          {
+            "command": "iftrue",
+            "args": [
+              "MN_SPX_ARCHIVEDone"
+            ]
+          },
+          {
+            "command": "checkevent",
+            "args": [
+              "EVENT_MN_SPX_ARCHIVE_1"
+            ]
+          },
+          {
+            "command": "iffalse",
+            "args": [
+              "MN_SPX_ARCHIVENeed"
+            ]
+          },
+          {
+            "command": "checkevent",
+            "args": [
+              "EVENT_MN_SPX_ARCHIVE_2"
+            ]
+          },
+          {
+            "command": "iffalse",
+            "args": [
+              "MN_SPX_ARCHIVENeed"
+            ]
+          },
+          {
+            "command": "checkevent",
+            "args": [
+              "EVENT_MN_SPX_ARCHIVE_3"
+            ]
+          },
+          {
+            "command": "iffalse",
+            "args": [
+              "MN_SPX_ARCHIVENeed"
+            ]
+          },
+          {
+            "command": "giveitem",
+            "args": [
+              "MAGNET",
+              "1"
+            ]
+          },
+          {
+            "command": "iffalse",
+            "args": [
+              "MN_SPX_ARCHIVEFull"
+            ]
+          },
+          {
+            "command": "setevent",
+            "args": [
+              "EVENT_MN_SPX_ARCHIVE_REWARDED"
+            ]
+          },
+          {
+            "command": "writetext",
+            "args": [
+              "MN_SPX_ARCHIVERewardText"
+            ]
+          },
+          {
+            "command": "waitbutton",
+            "args": []
+          },
+          {
+            "command": "closetext",
+            "args": []
+          },
+          {
+            "command": "end",
+            "args": []
+          }
+        ],
+        "MN_SPX_ARCHIVEDone": [
+          {
+            "command": "writetext",
+            "args": [
+              "MN_SPX_ARCHIVEDoneText"
+            ]
+          },
+          {
+            "command": "waitbutton",
+            "args": []
+          },
+          {
+            "command": "closetext",
+            "args": []
+          },
+          {
+            "command": "end",
+            "args": []
+          }
+        ],
+        "MN_SPX_ARCHIVEDoneText": [
+          {
+            "command": "text",
+            "args": [
+              "\"Our work is saved.\""
+            ]
+          },
+          {
+            "command": "line",
+            "args": [
+              "\"Enjoy the city.\""
+            ]
+          },
+          {
+            "command": "done",
+            "args": []
+          }
+        ],
+        "MN_SPX_ARCHIVENeed": [
+          {
+            "command": "writetext",
+            "args": [
+              "MN_SPX_ARCHIVENeedText"
+            ]
+          },
+          {
+            "command": "waitbutton",
+            "args": []
+          },
+          {
+            "command": "closetext",
+            "args": []
+          },
+          {
+            "command": "end",
+            "args": []
+          }
+        ],
+        "MN_SPX_ARCHIVENeedText": [
+          {
+            "command": "text",
+            "args": [
+              "\"Visit the archive,\""
+            ]
+          },
+          {
+            "command": "line",
+            "args": [
+              "\"museum and annex.\""
+            ]
+          },
+          {
+            "command": "done",
+            "args": []
+          }
+        ],
+        "MN_SPX_ARCHIVEFull": [
+          {
+            "command": "writetext",
+            "args": [
+              "MN_SPX_ARCHIVEFullText"
+            ]
+          },
+          {
+            "command": "waitbutton",
+            "args": []
+          },
+          {
+            "command": "closetext",
+            "args": []
+          },
+          {
+            "command": "end",
+            "args": []
+          }
+        ],
+        "MN_SPX_ARCHIVEFullText": [
+          {
+            "command": "text",
+            "args": [
+              "\"Your PACK is full.\""
+            ]
+          },
+          {
+            "command": "line",
+            "args": [
+              "\"Return with room.\""
+            ]
+          },
+          {
+            "command": "done",
+            "args": []
+          }
+        ],
+        "MN_SPX_ARCHIVERewardText": [
+          {
+            "command": "text",
+            "args": [
+              "\"MAGNET received!\""
+            ]
+          },
+          {
+            "command": "line",
+            "args": [
+              "\"For your records.\""
+            ]
+          },
+          {
+            "command": "done",
+            "args": []
+          }
+        ],
+        "MN_SPX_ARCHIVE_RECORD_1": [
+          {
+            "command": "faceplayer",
+            "args": []
+          },
+          {
+            "command": "opentext",
+            "args": []
+          },
+          {
+            "command": "writetext",
+            "args": [
+              "MN_SPX_ARCHIVE_RECORD_1Text"
+            ]
+          },
+          {
+            "command": "waitbutton",
+            "args": []
+          },
+          {
+            "command": "setevent",
+            "args": [
+              "EVENT_MN_SPX_ARCHIVE_1"
+            ]
+          },
+          {
+            "command": "closetext",
+            "args": []
+          },
+          {
+            "command": "end",
+            "args": []
+          }
+        ],
+        "MN_SPX_ARCHIVE_RECORD_1Text": [
+          {
+            "command": "text",
+            "args": [
+              "\"Early rail roads\""
+            ]
+          },
+          {
+            "command": "line",
+            "args": [
+              "\"ran by the river.\""
+            ]
+          },
+          {
+            "command": "done",
+            "args": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "MnStPaulCapitolLibrary",
+      "native_constant": "MN_SPX_CAPITOL_LIBRARY",
+      "template": "MrPsychicsHouse",
+      "tileset": "house",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        8,
+        6
+      ],
+      "rows": [
+        "04 05 03 05 04 04 04 1d",
+        "0f 0f 0f 0f 0f 0f 0f 0f",
+        "0f 0f 0f 0f 1a 0f 1a 1a",
+        "0f 0f 2d 0f 1a 0f 1a 1a",
+        "0f 0f 0f 0f 0f 0f 0f 1a",
+        "06 0b 0f 0f 1a 1a 0f 07"
+      ],
+      "arrival_core": [
+        3,
+        9
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            11
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 34,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            3,
+            11
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 34,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            3,
+            9
+          ],
+          "target": "MN_SPX_CAPITOL_LIBRARY",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_SPX_CAPITOLLIBRARY_HOST",
+          "sprite": "SPRITE_POKEFAN_M",
+          "tile": [
+            5,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "Reading room and f"
+          ],
+          "service": null
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnStPaulCivicMuseum",
+      "native_constant": "MN_SPX_CIVIC_MUSEUM",
+      "template": "MrPsychicsHouse",
+      "tileset": "house",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        8,
+        6
+      ],
+      "rows": [
+        "04 05 03 05 03 05 04 1d",
+        "0f 0f 0f 0f 0f 1f 0f 0f",
+        "0f 0f 0f 0f 0f 0f 0f 1f",
+        "0f 0f 1f 0f 1f 0f 1f 1f",
+        "0f 0f 0f 0f 0f 0f 0f 0f",
+        "06 0b 0f 0f 0f 0f 0f 07"
+      ],
+      "arrival_core": [
+        3,
+        9
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            11
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 36,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            3,
+            11
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 36,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            3,
+            9
+          ],
+          "target": "MN_SPX_CIVIC_MUSEUM",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_SPX_RIVER_HOST",
+          "sprite": "SPRITE_POKEFAN_M",
+          "tile": [
+            5,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "Find three records",
+            "then return here."
+          ],
+          "service": null
+        },
+        {
+          "id": "MN_SPX_ARCHIVE_RECORD_2",
+          "sprite": "SPRITE_POKEFAN_M",
+          "tile": [
+            11,
+            9
+          ],
+          "facing": "south",
+          "lines": [
+            "The CAPITOL stands",
+            "on the high bluff."
+          ],
+          "service": null
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {
+        "MN_SPX_RIVER_HOST": [
+          {
+            "command": "faceplayer",
+            "args": []
+          },
+          {
+            "command": "opentext",
+            "args": []
+          },
+          {
+            "command": "checkevent",
+            "args": [
+              "EVENT_MN_SPX_RIVER_REWARDED"
+            ]
+          },
+          {
+            "command": "iftrue",
+            "args": [
+              "MN_SPX_RIVERDone"
+            ]
+          },
+          {
+            "command": "checkevent",
+            "args": [
+              "EVENT_MN_SPX_RIVER_1"
+            ]
+          },
+          {
+            "command": "iffalse",
+            "args": [
+              "MN_SPX_RIVERNeed"
+            ]
+          },
+          {
+            "command": "checkevent",
+            "args": [
+              "EVENT_MN_SPX_RIVER_2"
+            ]
+          },
+          {
+            "command": "iffalse",
+            "args": [
+              "MN_SPX_RIVERNeed"
+            ]
+          },
+          {
+            "command": "checkevent",
+            "args": [
+              "EVENT_MN_SPX_RIVER_3"
+            ]
+          },
+          {
+            "command": "iffalse",
+            "args": [
+              "MN_SPX_RIVERNeed"
+            ]
+          },
+          {
+            "command": "giveitem",
+            "args": [
+              "MYSTIC_WATER",
+              "1"
+            ]
+          },
+          {
+            "command": "iffalse",
+            "args": [
+              "MN_SPX_RIVERFull"
+            ]
+          },
+          {
+            "command": "setevent",
+            "args": [
+              "EVENT_MN_SPX_RIVER_REWARDED"
+            ]
+          },
+          {
+            "command": "writetext",
+            "args": [
+              "MN_SPX_RIVERRewardText"
+            ]
+          },
+          {
+            "command": "waitbutton",
+            "args": []
+          },
+          {
+            "command": "closetext",
+            "args": []
+          },
+          {
+            "command": "end",
+            "args": []
+          }
+        ],
+        "MN_SPX_RIVERDone": [
+          {
+            "command": "writetext",
+            "args": [
+              "MN_SPX_RIVERDoneText"
+            ]
+          },
+          {
+            "command": "waitbutton",
+            "args": []
+          },
+          {
+            "command": "closetext",
+            "args": []
+          },
+          {
+            "command": "end",
+            "args": []
+          }
+        ],
+        "MN_SPX_RIVERDoneText": [
+          {
+            "command": "text",
+            "args": [
+              "\"Our work is saved.\""
+            ]
+          },
+          {
+            "command": "line",
+            "args": [
+              "\"Enjoy the city.\""
+            ]
+          },
+          {
+            "command": "done",
+            "args": []
+          }
+        ],
+        "MN_SPX_RIVERNeed": [
+          {
+            "command": "writetext",
+            "args": [
+              "MN_SPX_RIVERNeedText"
+            ]
+          },
+          {
+            "command": "waitbutton",
+            "args": []
+          },
+          {
+            "command": "closetext",
+            "args": []
+          },
+          {
+            "command": "end",
+            "args": []
+          }
+        ],
+        "MN_SPX_RIVERNeedText": [
+          {
+            "command": "text",
+            "args": [
+              "\"Read three river\""
+            ]
+          },
+          {
+            "command": "line",
+            "args": [
+              "\"measurement posts.\""
+            ]
+          },
+          {
+            "command": "done",
+            "args": []
+          }
+        ],
+        "MN_SPX_RIVERFull": [
+          {
+            "command": "writetext",
+            "args": [
+              "MN_SPX_RIVERFullText"
+            ]
+          },
+          {
+            "command": "waitbutton",
+            "args": []
+          },
+          {
+            "command": "closetext",
+            "args": []
+          },
+          {
+            "command": "end",
+            "args": []
+          }
+        ],
+        "MN_SPX_RIVERFullText": [
+          {
+            "command": "text",
+            "args": [
+              "\"Your PACK is full.\""
+            ]
+          },
+          {
+            "command": "line",
+            "args": [
+              "\"Return with room.\""
+            ]
+          },
+          {
+            "command": "done",
+            "args": []
+          }
+        ],
+        "MN_SPX_RIVERRewardText": [
+          {
+            "command": "text",
+            "args": [
+              "\"MYSTIC WATER gift.\""
+            ]
+          },
+          {
+            "command": "line",
+            "args": [
+              "\"For your research.\""
+            ]
+          },
+          {
+            "command": "done",
+            "args": []
+          }
+        ],
+        "MN_SPX_ARCHIVE_RECORD_2": [
+          {
+            "command": "faceplayer",
+            "args": []
+          },
+          {
+            "command": "opentext",
+            "args": []
+          },
+          {
+            "command": "writetext",
+            "args": [
+              "MN_SPX_ARCHIVE_RECORD_2Text"
+            ]
+          },
+          {
+            "command": "waitbutton",
+            "args": []
+          },
+          {
+            "command": "setevent",
+            "args": [
+              "EVENT_MN_SPX_ARCHIVE_2"
+            ]
+          },
+          {
+            "command": "closetext",
+            "args": []
+          },
+          {
+            "command": "end",
+            "args": []
+          }
+        ],
+        "MN_SPX_ARCHIVE_RECORD_2Text": [
+          {
+            "command": "text",
+            "args": [
+              "\"The CAPITOL stands\""
+            ]
+          },
+          {
+            "command": "line",
+            "args": [
+              "\"on the high bluff.\""
+            ]
+          },
+          {
+            "command": "done",
+            "args": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "MnStPaulSummitMoveStudyHouse",
+      "native_constant": "MN_SPX_SUMMIT_MOVE_STUDY_HOUSE",
+      "template": "MrPsychicsHouse",
+      "tileset": "house",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        4,
+        4
+      ],
+      "rows": [
+        "04 1e 05 1d",
+        "0f 01 02 0f",
+        "0f 0c 0d 0f",
+        "06 0b 0f 07"
+      ],
+      "arrival_core": [
+        3,
+        5
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            7
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 38,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            3,
+            7
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 38,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            3,
+            5
+          ],
+          "target": "MN_SPX_SUMMIT_MOVE_STUDY_HOUSE",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_SPX_SUMMITMOVESTUDYHOUSE_HOST",
+          "sprite": "SPRITE_POKEFAN_M",
+          "tile": [
+            5,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "A Headbutt field n"
+          ],
+          "service": null
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [
+        {
+          "id": "MN_SPX_HEADBUTT",
+          "tile": [
+            5,
+            5
+          ],
+          "item": "TM_HEADBUTT",
+          "quantity": 1,
+          "flag": "EVENT_MN_SPX_HEADBUTT"
+        }
+      ],
+      "programs": {}
+    },
+    {
+      "id": "MnStPaulSummitExhibitionClub",
+      "native_constant": "MN_SPX_SUMMIT_EXHIBITION_CLUB",
+      "template": "MrPsychicsHouse",
+      "tileset": "house",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        8,
+        6
+      ],
+      "rows": [
+        "04 05 03 05 03 05 04 05",
+        "0f 0f 0f 0f 0f 01 02 27",
+        "0f 0f 0f 0f 0f 0c 0d 27",
+        "0f 0f 2d 0f 0f 0f 0f 27",
+        "0f 0f 0f 0f 0f 0f 0f 0f",
+        "06 0b 0f 0f 1a 0f 0f 07"
+      ],
+      "arrival_core": [
+        3,
+        9
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            11
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 40,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            3,
+            11
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 40,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            3,
+            9
+          ],
+          "target": "MN_SPX_SUMMIT_EXHIBITION_CLUB",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_SPX_SUMMITEXHIBITIONCLUB_HOST",
+          "sprite": "SPRITE_POKEFAN_M",
+          "tile": [
+            5,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "An optional club m"
+          ],
+          "service": null
+        }
+      ],
+      "signs": [],
+      "trainers": [
+        {
+          "id": "MN_SPX_TRAINER_5",
+          "display_name": "BERT",
+          "trainer_class": "GENTLEMAN",
+          "sprite": "SPRITE_GENTLEMAN",
+          "tile": [
+            9,
+            7
+          ],
+          "facing": "south",
+          "sight_range": 0,
+          "defeated_flag": "EVENT_MN_SPX_TRAINER_5",
+          "party": [
+            {
+              "species": "FARFETCH_D",
+              "level": 21
+            },
+            {
+              "species": "PSYDUCK",
+              "level": 21
+            }
+          ],
+          "before_lines": [
+            "A friendly match?",
+            "Speak when ready!"
+          ],
+          "after_lines": [
+            "Good preparation!",
+            "Enjoy the city."
+          ],
+          "loss_lines": [
+            "A fine exhibition!"
+          ]
+        }
+      ],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnStPaulSummitPressHouse",
+      "native_constant": "MN_SPX_SUMMIT_PRESS_HOUSE",
+      "template": "MrPsychicsHouse",
+      "tileset": "house",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        4,
+        4
+      ],
+      "rows": [
+        "04 1e 05 1d",
+        "0f 01 02 0f",
+        "0f 0c 0d 0f",
+        "06 0b 0f 07"
+      ],
+      "arrival_core": [
+        3,
+        5
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            7
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 42,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            3,
+            7
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 42,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            3,
+            5
+          ],
+          "target": "MN_SPX_SUMMIT_PRESS_HOUSE",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_SPX_SUMMITPRESSHOUSE_HOST",
+          "sprite": "SPRITE_POKEFAN_M",
+          "tile": [
+            5,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "Two bridges link",
+            "the river streets."
+          ],
+          "service": null
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnStPaulWestSeventhBooks",
+      "native_constant": "MN_SPX_WEST_SEVENTH_BOOKS",
+      "template": "MrPsychicsHouse",
+      "tileset": "house",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        8,
+        6
+      ],
+      "rows": [
+        "04 05 03 05 04 04 04 1d",
+        "0f 0f 0f 0f 0f 0f 0f 0f",
+        "0f 1a 0f 0f 1a 0f 1a 1a",
+        "0f 0f 0f 0f 1a 0f 1a 1a",
+        "0f 0f 14 15 0f 0f 0f 1a",
+        "06 0b 18 19 0f 0f 0f 07"
+      ],
+      "arrival_core": [
+        3,
+        9
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            11
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 44,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            3,
+            11
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 44,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            3,
+            9
+          ],
+          "target": "MN_SPX_WEST_SEVENTH_BOOKS",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_SPX_WESTSEVENTHBOOKS_HOST",
+          "sprite": "SPRITE_POKEFAN_M",
+          "tile": [
+            5,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "Secondhand field g"
+          ],
+          "service": null
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnStPaulWestSeventhBakery",
+      "native_constant": "MN_SPX_WEST_SEVENTH_BAKERY",
+      "template": "SaffronMart",
+      "tileset": "mart",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        6,
+        4
+      ],
+      "rows": [
+        "14 27 14 13 13 13",
+        "2b 22 2b 2b 2b 2b",
+        "15 29 13 13 13 28",
+        "2b 2a 2b 2b 2b 23"
+      ],
+      "arrival_core": [
+        3,
+        5
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            7
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 46,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            3,
+            7
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 46,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            3,
+            5
+          ],
+          "target": "MN_SPX_WEST_SEVENTH_BAKERY",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_SPX_WESTSEVENTHBAKERY_HOST",
+          "sprite": "SPRITE_POKEFAN_M",
+          "tile": [
+            1,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "Picnic food for th"
+          ],
+          "service": "pokemart",
+          "stock": [
+            "BERRY_JUICE",
+            "BERRY",
+            "PRZCUREBERRY"
+          ],
+          "approach": [
+            3,
+            3
+          ],
+          "counter_tile": [
+            2,
+            3
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnStPaulStreetGardenHouse",
+      "native_constant": "MN_SPX_STREET_GARDEN_HOUSE",
+      "template": "MrPsychicsHouse",
+      "tileset": "house",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        4,
+        4
+      ],
+      "rows": [
+        "04 1e 05 1d",
+        "0f 01 02 0f",
+        "0f 0c 0d 0f",
+        "06 0b 0f 07"
+      ],
+      "arrival_core": [
+        3,
+        5
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            7
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 48,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            3,
+            7
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 48,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            3,
+            5
+          ],
+          "target": "MN_SPX_STREET_GARDEN_HOUSE",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_SPX_STREETGARDENHOUSE_HOST",
+          "sprite": "SPRITE_POKEFAN_M",
+          "tile": [
+            5,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "Small gardens fit",
+            "between city homes."
+          ],
+          "service": null
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnStPaulLowertownExchange",
+      "native_constant": "MN_SPX_LOWERTOWN_EXCHANGE",
+      "template": "GoldenrodDeptStore1F",
+      "tileset": "mart",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        8,
+        4
+      ],
+      "rows": [
+        "03 03 03 03 08 09 0a 02",
+        "0b 04 04 04 0c 0d 0e 04",
+        "04 07 07 04 04 04 04 04",
+        "0b 07 07 06 25 04 04 04"
+      ],
+      "arrival_core": [
+        7,
+        5
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            7,
+            7
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 50,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            8,
+            7
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 50,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            7,
+            5
+          ],
+          "target": "MN_SPX_LOWERTOWN_EXCHANGE",
+          "target_warp": 3,
+          "passive": true
+        },
+        {
+          "index": 4,
+          "tile": [
+            15,
+            0
+          ],
+          "target": "MN_SPX_LOWERTOWN_EXCHANGE_2F",
+          "target_warp": 4,
+          "passive": false
+        },
+        {
+          "index": 5,
+          "tile": [
+            15,
+            1
+          ],
+          "target": "MN_SPX_LOWERTOWN_EXCHANGE",
+          "target_warp": 5,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_SPX_EXCHANGE_RECEPTION",
+          "sprite": "SPRITE_POKEFAN_M",
+          "tile": [
+            1,
+            5
+          ],
+          "facing": "south",
+          "lines": [
+            "Supplies upstairs.",
+            "Club matches on 3F."
+          ],
+          "service": null
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnStPaulArchiveAnnex",
+      "native_constant": "MN_SPX_ARCHIVE_ANNEX",
+      "template": "MrPsychicsHouse",
+      "tileset": "house",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        8,
+        6
+      ],
+      "rows": [
+        "04 05 03 05 04 04 04 1d",
+        "0f 0f 0f 0f 0f 0f 0f 0f",
+        "0f 1a 0f 1a 0f 0f 1a 1a",
+        "0f 0f 0f 0f 0f 0f 1a 1a",
+        "0f 0f 0f 1a 0f 0f 0f 1a",
+        "06 0b 0f 0f 0f 0f 0f 07"
+      ],
+      "arrival_core": [
+        3,
+        9
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            11
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 52,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            3,
+            11
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 52,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            3,
+            9
+          ],
+          "target": "MN_SPX_ARCHIVE_ANNEX",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_SPX_ARCHIVEANNEX_HOST",
+          "sprite": "SPRITE_POKEFAN_M",
+          "tile": [
+            5,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "A walking archive "
+          ],
+          "service": null
+        },
+        {
+          "id": "MN_SPX_ARCHIVE_RECORD_3",
+          "sprite": "SPRITE_POKEFAN_M",
+          "tile": [
+            11,
+            9
+          ],
+          "facing": "south",
+          "lines": [
+            "Two banks share",
+            "one public city."
+          ],
+          "service": null
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {
+        "MN_SPX_ARCHIVE_RECORD_3": [
+          {
+            "command": "faceplayer",
+            "args": []
+          },
+          {
+            "command": "opentext",
+            "args": []
+          },
+          {
+            "command": "writetext",
+            "args": [
+              "MN_SPX_ARCHIVE_RECORD_3Text"
+            ]
+          },
+          {
+            "command": "waitbutton",
+            "args": []
+          },
+          {
+            "command": "setevent",
+            "args": [
+              "EVENT_MN_SPX_ARCHIVE_3"
+            ]
+          },
+          {
+            "command": "closetext",
+            "args": []
+          },
+          {
+            "command": "end",
+            "args": []
+          }
+        ],
+        "MN_SPX_ARCHIVE_RECORD_3Text": [
+          {
+            "command": "text",
+            "args": [
+              "\"Two banks share\""
+            ]
+          },
+          {
+            "command": "line",
+            "args": [
+              "\"one public city.\""
+            ]
+          },
+          {
+            "command": "done",
+            "args": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "MnStPaulLowertownCrafts",
+      "native_constant": "MN_SPX_LOWERTOWN_CRAFTS",
+      "template": "SaffronMart",
+      "tileset": "mart",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        6,
+        4
+      ],
+      "rows": [
+        "14 27 14 13 13 13",
+        "2b 22 2b 2b 2b 2b",
+        "15 29 13 13 13 28",
+        "2b 2a 2b 2b 2b 23"
+      ],
+      "arrival_core": [
+        3,
+        5
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            7
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 54,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            3,
+            7
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 54,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            3,
+            5
+          ],
+          "target": "MN_SPX_LOWERTOWN_CRAFTS",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_SPX_LOWERTOWNCRAFTS_HOST",
+          "sprite": "SPRITE_POKEFAN_M",
+          "tile": [
+            1,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "Trade supplies and"
+          ],
+          "service": "pokemart",
+          "stock": [
+            "POKE_BALL",
+            "GREAT_BALL",
+            "REPEL",
+            "ESCAPE_ROPE"
+          ],
+          "approach": [
+            3,
+            3
+          ],
+          "counter_tile": [
+            2,
+            3
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnStPaulEastAidClinic",
+      "native_constant": "MN_SPX_EAST_AID_CLINIC",
+      "template": "CherrygrovePokecenter1F",
+      "tileset": "pokecenter",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        5,
+        4
+      ],
+      "rows": [
+        "01 02 03 13 08",
+        "05 06 07 04 0c",
+        "04 04 04 2e 2f",
+        "2d 11 27 2e 2f"
+      ],
+      "arrival_core": [
+        3,
+        5
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            3,
+            7
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 56,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            4,
+            7
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 56,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            3,
+            5
+          ],
+          "target": "MN_SPX_EAST_AID_CLINIC",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_SPX_EAST_AID_NURSE",
+          "sprite": "SPRITE_NURSE",
+          "tile": [
+            3,
+            1
+          ],
+          "facing": "south",
+          "lines": [
+            "Welcome! Rest your",
+            "POKEMON here."
+          ],
+          "service": "heal_party",
+          "approach": [
+            3,
+            3
+          ],
+          "counter_tile": [
+            3,
+            2
+          ]
+        }
+      ],
+      "signs": [
+        {
+          "id": "MN_SPX_EAST_AID_PC",
+          "tile": [
+            9,
+            1
+          ],
+          "lines": [
+            "A public PC."
+          ]
+        }
+      ],
+      "trainers": [],
+      "items": [],
+      "programs": {
+        "MN_SPX_EAST_AID_PC": [
+          {
+            "command": "opentext",
+            "args": []
+          },
+          {
+            "command": "special",
+            "args": [
+              "PokemonCenterPC"
+            ]
+          },
+          {
+            "command": "closetext",
+            "args": []
+          },
+          {
+            "command": "end",
+            "args": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "MnStPaulEastWorkshop",
+      "native_constant": "MN_SPX_EAST_WORKSHOP",
+      "template": "MrPsychicsHouse",
+      "tileset": "house",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        8,
+        6
+      ],
+      "rows": [
+        "04 05 03 05 04 04 04 05",
+        "0f 0f 0f 0f 0f 2d 2d 27",
+        "0f 0f 0f 0f 0f 0f 0f 27",
+        "0f 0f 2d 0f 0f 0f 0f 27",
+        "0f 0f 0f 0f 0f 14 15 0f",
+        "06 0b 0f 0f 0f 18 19 07"
+      ],
+      "arrival_core": [
+        3,
+        9
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            11
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 58,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            3,
+            11
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 58,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            3,
+            9
+          ],
+          "target": "MN_SPX_EAST_WORKSHOP",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_SPX_EASTWORKSHOP_HOST",
+          "sprite": "SPRITE_POKEFAN_M",
+          "tile": [
+            5,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "An optional worksh"
+          ],
+          "service": null
+        }
+      ],
+      "signs": [],
+      "trainers": [
+        {
+          "id": "MN_SPX_TRAINER_3",
+          "display_name": "EDISON",
+          "trainer_class": "SUPER_NERD",
+          "sprite": "SPRITE_SUPER_NERD",
+          "tile": [
+            9,
+            7
+          ],
+          "facing": "south",
+          "sight_range": 0,
+          "defeated_flag": "EVENT_MN_SPX_TRAINER_3",
+          "party": [
+            {
+              "species": "MAGNEMITE",
+              "level": 20
+            },
+            {
+              "species": "PORYGON",
+              "level": 21
+            }
+          ],
+          "before_lines": [
+            "A friendly match?",
+            "Speak when ready!"
+          ],
+          "after_lines": [
+            "Good preparation!",
+            "Enjoy the city."
+          ],
+          "loss_lines": [
+            "A fine exhibition!"
+          ]
+        }
+      ],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnStPaulCommunityHall",
+      "native_constant": "MN_SPX_COMMUNITY_HALL",
+      "template": "MrPsychicsHouse",
+      "tileset": "house",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        8,
+        6
+      ],
+      "rows": [
+        "04 05 03 05 03 05 03 1d",
+        "0f 0f 0f 0f 0f 0f 0f 0f",
+        "1a 0f 0f 14 15 0f 0f 0f",
+        "1a 0f 0f 21 22 0f 1a 0f",
+        "0f 0f 0f 18 19 0f 0f 0f",
+        "06 0b 0f 0f 0f 0f 0f 07"
+      ],
+      "arrival_core": [
+        3,
+        9
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            11
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 60,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            3,
+            11
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 60,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            3,
+            9
+          ],
+          "target": "MN_SPX_COMMUNITY_HALL",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_SPX_COMMUNITYHALL_HOST",
+          "sprite": "SPRITE_POKEFAN_M",
+          "tile": [
+            5,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "Our neighborhood",
+            "meets by the river."
+          ],
+          "service": null
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnStPaulTransitHeritageHouse",
+      "native_constant": "MN_SPX_TRANSIT_HERITAGE_HOUSE",
+      "template": "MrPsychicsHouse",
+      "tileset": "house",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        4,
+        4
+      ],
+      "rows": [
+        "04 1e 05 1d",
+        "0f 01 02 0f",
+        "0f 0c 0d 0f",
+        "06 0b 0f 07"
+      ],
+      "arrival_core": [
+        3,
+        5
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            7
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 62,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            3,
+            7
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 62,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            3,
+            5
+          ],
+          "target": "MN_SPX_TRANSIT_HERITAGE_HOUSE",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_SPX_TRANSITHERITAGEHOUSE_HOST",
+          "sprite": "SPRITE_POKEFAN_M",
+          "tile": [
+            5,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "The depot is east.",
+            "Read its notices",
+            "for real services."
+          ],
+          "service": null
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnStPaulFreightOffice",
+      "native_constant": "MN_SPX_FREIGHT_OFFICE",
+      "template": "MrPsychicsHouse",
+      "tileset": "house",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        8,
+        6
+      ],
+      "rows": [
+        "04 05 03 05 04 04 04 1d",
+        "0f 0f 0f 0f 0f 0f 0f 0f",
+        "0f 1a 0f 0f 14 15 0f 1a",
+        "0f 0f 1a 0f 21 22 0f 1a",
+        "0f 0f 0f 0f 18 19 0f 1a",
+        "06 0b 0f 0f 0f 0f 0f 07"
+      ],
+      "arrival_core": [
+        3,
+        9
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            11
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 64,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            3,
+            11
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 64,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            3,
+            9
+          ],
+          "target": "MN_SPX_FREIGHT_OFFICE",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_SPX_FREIGHTOFFICE_HOST",
+          "sprite": "SPRITE_POKEFAN_M",
+          "tile": [
+            5,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "The manifest stays",
+            "inside UNION DEPOT."
+          ],
+          "service": null
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnStPaulLowertownCafe",
+      "native_constant": "MN_SPX_LOWERTOWN_CAFE",
+      "template": "SaffronMart",
+      "tileset": "mart",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        6,
+        4
+      ],
+      "rows": [
+        "14 27 14 13 13 13",
+        "2b 22 2b 2b 2b 2b",
+        "15 29 13 13 13 28",
+        "2b 2a 2b 2b 2b 23"
+      ],
+      "arrival_core": [
+        3,
+        5
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            7
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 66,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            3,
+            7
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 66,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            3,
+            5
+          ],
+          "target": "MN_SPX_LOWERTOWN_CAFE",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_SPX_LOWERTOWNCAFE_HOST",
+          "sprite": "SPRITE_POKEFAN_M",
+          "tile": [
+            1,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "Rest before the ri"
+          ],
+          "service": "pokemart",
+          "stock": [
+            "SODA_POP",
+            "BERRY_JUICE",
+            "FRESH_WATER"
+          ],
+          "approach": [
+            3,
+            3
+          ],
+          "counter_tile": [
+            2,
+            3
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnStPaulAnglerHouse",
+      "native_constant": "MN_SPX_ANGLER_HOUSE",
+      "template": "MrPsychicsHouse",
+      "tileset": "house",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        8,
+        6
+      ],
+      "rows": [
+        "04 05 03 05 03 05 04 05",
+        "0f 0f 0f 0f 0f 1a 0f 0f",
+        "0f 0f 14 15 0f 0f 0f 1a",
+        "0f 0f 18 19 0f 0f 0f 1a",
+        "0f 0f 0f 0f 0f 2d 0f 0f",
+        "06 0b 0f 0f 0f 0f 0f 07"
+      ],
+      "arrival_core": [
+        3,
+        9
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            11
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 68,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            3,
+            11
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 68,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            3,
+            9
+          ],
+          "target": "MN_SPX_ANGLER_HOUSE",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_SPX_ANGLERHOUSE_HOST",
+          "sprite": "SPRITE_POKEFAN_M",
+          "tile": [
+            5,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "A river fishing ch"
+          ],
+          "service": null
+        }
+      ],
+      "signs": [],
+      "trainers": [
+        {
+          "id": "MN_SPX_TRAINER_6",
+          "display_name": "FINN",
+          "trainer_class": "FISHER",
+          "sprite": "SPRITE_FISHER",
+          "tile": [
+            9,
+            7
+          ],
+          "facing": "south",
+          "sight_range": 0,
+          "defeated_flag": "EVENT_MN_SPX_TRAINER_6",
+          "party": [
+            {
+              "species": "GOLDEEN",
+              "level": 20
+            },
+            {
+              "species": "QWILFISH",
+              "level": 21
+            }
+          ],
+          "before_lines": [
+            "A friendly match?",
+            "Speak when ready!"
+          ],
+          "after_lines": [
+            "Good preparation!",
+            "Enjoy the city."
+          ],
+          "loss_lines": [
+            "A fine exhibition!"
+          ]
+        }
+      ],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnStPaulRiversideSupplies",
+      "native_constant": "MN_SPX_RIVERSIDE_SUPPLIES",
+      "template": "SaffronMart",
+      "tileset": "mart",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        6,
+        4
+      ],
+      "rows": [
+        "14 27 14 13 13 13",
+        "2b 22 2b 2b 2b 2b",
+        "15 29 13 13 13 28",
+        "2b 2a 2b 2b 2b 23"
+      ],
+      "arrival_core": [
+        3,
+        5
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            7
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 70,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            3,
+            7
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 70,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            3,
+            5
+          ],
+          "target": "MN_SPX_RIVERSIDE_SUPPLIES",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_SPX_RIVERSIDESUPPLIES_HOST",
+          "sprite": "SPRITE_POKEFAN_M",
+          "tile": [
+            1,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "River-walk supplie"
+          ],
+          "service": "pokemart",
+          "stock": [
+            "LURE_BALL",
+            "REPEL",
+            "SUPER_REPEL",
+            "AWAKENING"
+          ],
+          "approach": [
+            3,
+            3
+          ],
+          "counter_tile": [
+            2,
+            3
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnStPaulWestsideCommunity",
+      "native_constant": "MN_SPX_WESTSIDE_COMMUNITY",
+      "template": "MrPsychicsHouse",
+      "tileset": "house",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        8,
+        6
+      ],
+      "rows": [
+        "04 05 03 05 03 05 04 1d",
+        "0f 0f 0f 0f 0f 01 02 0f",
+        "0f 2d 0f 0f 0f 0c 0d 1a",
+        "0f 0f 0f 0f 0f 0f 0f 1a",
+        "0f 0f 0f 14 15 0f 0f 0f",
+        "06 0b 0f 18 19 0f 0f 07"
+      ],
+      "arrival_core": [
+        3,
+        9
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            11
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 72,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            3,
+            11
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 72,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            3,
+            9
+          ],
+          "target": "MN_SPX_WESTSIDE_COMMUNITY",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_SPX_WESTSIDECOMMUNITY_HOST",
+          "sprite": "SPRITE_POKEFAN_M",
+          "tile": [
+            5,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "A home for walkers",
+            "on the west bank."
+          ],
+          "service": null
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnStPaulWestsideArena",
+      "native_constant": "MN_SPX_WESTSIDE_ARENA",
+      "template": "MrPsychicsHouse",
+      "tileset": "house",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        8,
+        6
+      ],
+      "rows": [
+        "04 05 03 05 03 05 03 05",
+        "0f 0f 0f 0f 0f 2d 2d 27",
+        "0f 0f 0f 0f 0f 0f 0f 27",
+        "0f 0f 2d 0f 0f 0f 2d 27",
+        "0f 0f 0f 0f 0f 0f 2e 0f",
+        "06 0b 0f 0f 0f 0f 0f 07"
+      ],
+      "arrival_core": [
+        3,
+        9
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            11
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 74,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            3,
+            11
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 74,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            3,
+            9
+          ],
+          "target": "MN_SPX_WESTSIDE_ARENA",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_SPX_WESTSIDEARENA_HOST",
+          "sprite": "SPRITE_POKEFAN_M",
+          "tile": [
+            5,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "A voluntary traini"
+          ],
+          "service": null
+        }
+      ],
+      "signs": [],
+      "trainers": [
+        {
+          "id": "MN_SPX_TRAINER_7",
+          "display_name": "LEE",
+          "trainer_class": "BLACKBELT_T",
+          "sprite": "SPRITE_BLACK_BELT",
+          "tile": [
+            9,
+            7
+          ],
+          "facing": "south",
+          "sight_range": 0,
+          "defeated_flag": "EVENT_MN_SPX_TRAINER_7",
+          "party": [
+            {
+              "species": "MACHOP",
+              "level": 21
+            },
+            {
+              "species": "TYROGUE",
+              "level": 20
+            }
+          ],
+          "before_lines": [
+            "A friendly match?",
+            "Speak when ready!"
+          ],
+          "after_lines": [
+            "Good preparation!",
+            "Enjoy the city."
+          ],
+          "loss_lines": [
+            "A fine exhibition!"
+          ]
+        }
+      ],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnStPaulBoatCoop",
+      "native_constant": "MN_SPX_BOAT_COOP",
+      "template": "MrPsychicsHouse",
+      "tileset": "house",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        4,
+        4
+      ],
+      "rows": [
+        "04 1e 05 1d",
+        "0f 01 02 0f",
+        "0f 0c 0d 0f",
+        "06 0b 0f 07"
+      ],
+      "arrival_core": [
+        3,
+        5
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            7
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 76,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            3,
+            7
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 76,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            3,
+            5
+          ],
+          "target": "MN_SPX_BOAT_COOP",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_SPX_BOATCOOP_HOST",
+          "sprite": "SPRITE_POKEFAN_M",
+          "tile": [
+            5,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "These are working",
+            "boats, not a ferry."
+          ],
+          "service": null
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnStPaulSouthLandingInn",
+      "native_constant": "MN_SPX_SOUTH_LANDING_INN",
+      "template": "MrPsychicsHouse",
+      "tileset": "house",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        8,
+        6
+      ],
+      "rows": [
+        "04 05 03 05 03 05 04 1d",
+        "0f 0f 0f 0f 0f 1a 0f 0f",
+        "0f 0f 0f 14 15 0f 0f 1a",
+        "0f 0f 0f 18 19 0f 14 1a",
+        "0f 0f 0f 0f 0f 0f 18 19",
+        "06 0b 0f 0f 0f 0f 0f 07"
+      ],
+      "arrival_core": [
+        3,
+        9
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            11
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 78,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            3,
+            11
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 78,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            3,
+            9
+          ],
+          "target": "MN_SPX_SOUTH_LANDING_INN",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_SPX_SOUTHLANDINGINN_HOST",
+          "sprite": "SPRITE_POKEFAN_M",
+          "tile": [
+            5,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "Native party rest."
+          ],
+          "service": "heal_party"
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnStPaulSouthLandingSurvey",
+      "native_constant": "MN_SPX_SOUTH_LANDING_SURVEY",
+      "template": "MrPsychicsHouse",
+      "tileset": "house",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        8,
+        6
+      ],
+      "rows": [
+        "04 05 03 05 04 04 04 05",
+        "0f 0f 0f 0f 0f 2d 2d 0f",
+        "0f 0f 0f 0f 0f 0f 0f 1a",
+        "0f 0f 14 15 0f 1a 0f 1a",
+        "0f 0f 18 19 0f 1a 0f 0f",
+        "06 0b 0f 0f 0f 0f 0f 07"
+      ],
+      "arrival_core": [
+        3,
+        9
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            11
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 80,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            3,
+            11
+          ],
+          "target": "MN_ST_PAUL",
+          "target_warp": 80,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            3,
+            9
+          ],
+          "target": "MN_SPX_SOUTH_LANDING_SURVEY",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_SPX_SOUTHLANDINGSURVEY_HOST",
+          "sprite": "SPRITE_POKEFAN_M",
+          "tile": [
+            5,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "A survey team exhi"
+          ],
+          "service": null
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnStPaulLowertownExchange2F",
+      "native_constant": "MN_SPX_LOWERTOWN_EXCHANGE_2F",
+      "template": "GoldenrodDeptStore2F",
+      "tileset": "mart",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        8,
+        4
+      ],
+      "rows": [
+        "03 03 13 13 13 03 18 19",
+        "04 04 04 04 04 04 04 04",
+        "04 12 04 12 04 04 10 2c",
+        "04 12 04 12 04 04 2e 2d"
+      ],
+      "arrival_core": [
+        15,
+        1
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            15,
+            0
+          ],
+          "target": "MN_SPX_LOWERTOWN_EXCHANGE",
+          "target_warp": 5,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            12,
+            0
+          ],
+          "target": "MN_SPX_LOWERTOWN_EXCHANGE_3F",
+          "target_warp": 2,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            12,
+            1
+          ],
+          "target": "MN_SPX_LOWERTOWN_EXCHANGE_2F",
+          "target_warp": 3,
+          "passive": true
+        },
+        {
+          "index": 4,
+          "tile": [
+            15,
+            1
+          ],
+          "target": "MN_SPX_LOWERTOWN_EXCHANGE_2F",
+          "target_warp": 4,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_SPX_EXCHANGE_MEDICINE",
+          "sprite": "SPRITE_POKEFAN_M",
+          "tile": [
+            13,
+            5
+          ],
+          "facing": "south",
+          "lines": [],
+          "service": "pokemart",
+          "stock": [
+            "POTION",
+            "SUPER_POTION",
+            "ANTIDOTE",
+            "PARLYZ_HEAL"
+          ],
+          "approach": [
+            11,
+            5
+          ],
+          "counter_tile": [
+            12,
+            5
+          ]
+        },
+        {
+          "id": "MN_SPX_EXCHANGE_BALLS",
+          "sprite": "SPRITE_POKEFAN_M",
+          "tile": [
+            13,
+            6
+          ],
+          "facing": "south",
+          "lines": [],
+          "service": "pokemart",
+          "stock": [
+            "POKE_BALL",
+            "GREAT_BALL",
+            "LURE_BALL"
+          ],
+          "approach": [
+            11,
+            6
+          ],
+          "counter_tile": [
+            12,
+            6
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnStPaulLowertownExchange3F",
+      "native_constant": "MN_SPX_LOWERTOWN_EXCHANGE_3F",
+      "template": "GoldenrodDeptStore3F",
+      "tileset": "mart",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        8,
+        4
+      ],
+      "rows": [
+        "03 03 17 09 0a 03 01 03",
+        "04 04 0c 0d 0e 04 04 04",
+        "12 04 12 04 12 04 04 04",
+        "12 04 12 04 12 04 13 13"
+      ],
+      "arrival_core": [
+        12,
+        1
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            12,
+            0
+          ],
+          "target": "MN_SPX_LOWERTOWN_EXCHANGE_2F",
+          "target_warp": 3,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            12,
+            1
+          ],
+          "target": "MN_SPX_LOWERTOWN_EXCHANGE_3F",
+          "target_warp": 2,
+          "passive": true
+        }
+      ],
+      "residents": [],
+      "signs": [],
+      "trainers": [
+        {
+          "id": "MN_SPX_TRAINER_4",
+          "display_name": "ROBIN",
+          "trainer_class": "BIRD_KEEPER",
+          "sprite": "SPRITE_YOUNGSTER",
+          "tile": [
+            12,
+            5
+          ],
+          "facing": "south",
+          "sight_range": 0,
+          "defeated_flag": "EVENT_MN_SPX_TRAINER_4",
+          "party": [
+            {
+              "species": "HOOTHOOT",
+              "level": 20
+            },
+            {
+              "species": "NOCTOWL",
+              "level": 22
+            }
+          ],
+          "before_lines": [
+            "A rooftop club",
+            "match indoors?"
+          ],
+          "after_lines": [
+            "Well flown!"
+          ],
+          "loss_lines": [
+            "A fine contest!"
+          ]
+        }
+      ],
+      "items": [],
+      "programs": {}
+    }
+  ],
+  "walkable_destinations": [
+    "each port landing",
+    "every visible exterior door",
+    "central square",
+    "local story NPC"
+  ],
+  "door_contract": "Native source DOOR quadrants, exterior active/passive indices, reciprocal room carpets and safe passive Floor arrivals are explicit; production lowering/roundtrip proof pending.",
+  "status": "Verified local exterior refinement; resolve world.json for current selection.",
+  "native_constant": "MN_ST_PAUL",
+  "compiled_tileset": "kanto",
+  "coordinate_units": "16px core tiles unless metatile suffix",
+  "fairgrounds_port": {
+    "route": "MN_STATE_FAIRGROUNDS",
+    "side": "N",
+    "gate_metatile": [
+      14,
+      1
+    ],
+    "landing_metatile": [
+      14,
+      3
+    ],
+    "edge_core": [
+      [
+        28,
+        0
+      ],
+      [
+        29,
+        0
+      ]
+    ],
+    "status": "Northern annex remains unbound and closed by original guard pair; public fair is playable within city source proposal.",
+    "closed_gate_core": [
+      [
+        28,
+        2
+      ],
+      [
+        29,
+        2
+      ]
+    ]
+  },
+  "residents": [
+    {
+      "id": "MN_ST_PAUL_CIVIC_GUIDE",
+      "sprite": "SPRITE_GENTLEMAN",
+      "tile": [
+        43,
+        13
+      ],
+      "facing": "south",
+      "lines": [
+        "CAPITOL HALL.",
+        "The bluff road",
+        "runs to the depot."
+      ]
+    },
+    {
+      "id": "MN_ST_PAUL_FAIR_STEWARD",
+      "sprite": "SPRITE_POKEFAN_F",
+      "tile": [
+        30,
+        7
+      ],
+      "facing": "west",
+      "lines": [
+        "The public fair",
+        "is down this road.",
+        "North annex shut."
+      ]
+    },
+    {
+      "id": "MN_ST_PAUL_GARDENER",
+      "sprite": "SPRITE_TEACHER",
+      "tile": [
+        17,
+        43
+      ],
+      "facing": "north",
+      "lines": [
+        "A quiet garden",
+        "beside the clinic."
+      ]
+    },
+    {
+      "id": "MN_ST_PAUL_DEPOT_PASSENGER",
+      "sprite": "SPRITE_TEACHER",
+      "tile": [
+        68,
+        48
+      ],
+      "facing": "west",
+      "lines": [
+        "UNION DEPOT.",
+        "The GLACIER LINE",
+        "links the towns."
+      ]
+    },
+    {
+      "id": "MN_ST_PAUL_BLUFF_WALKER",
+      "sprite": "SPRITE_GRAMPS",
+      "tile": [
+        35,
+        21
+      ],
+      "facing": "east",
+      "lines": [
+        "Hop down the bank,",
+        "take the brick",
+        "path back uphill."
+      ]
+    },
+    {
+      "id": "MN_ST_PAUL_RIVER_FISHER",
+      "sprite": "SPRITE_FISHER",
+      "tile": [
+        43,
+        45
+      ],
+      "facing": "west",
+      "lines": [
+        "Watch the river",
+        "from this bank."
+      ]
+    },
+    {
+      "id": "MN_ST_PAUL_STREET_READER",
+      "sprite": "SPRITE_LASS",
+      "tile": [
+        27,
+        37
+      ],
+      "facing": "south",
+      "lines": [
+        "BRANNIC trains",
+        "STEEL types at",
+        "the city GYM."
+      ]
+    },
+    {
+      "id": "MN_ST_PAUL_FAIR_GUARD_WEST",
+      "sprite": "SPRITE_OFFICER",
+      "tile": [
+        28,
+        2
+      ],
+      "facing": "south",
+      "lines": [
+        "North annex shut.",
+        "Public fair opens",
+        "south of this gate."
+      ]
+    },
+    {
+      "id": "MN_ST_PAUL_FAIR_GUARD_EAST",
+      "sprite": "SPRITE_OFFICER",
+      "tile": [
+        29,
+        2
+      ],
+      "facing": "south",
+      "lines": [
+        "North annex shut.",
+        "Public fair opens",
+        "south of this gate."
+      ]
+    }
+  ],
+  "signs": [
+    {
+      "id": "MN_ST_PAUL_SIGN_CLINIC",
+      "tile": [
+        19,
+        41
+      ],
+      "lines": [
+        "POKEMON CENTER",
+        "Free care and PC."
+      ]
+    },
+    {
+      "id": "MN_ST_PAUL_SIGN_MART",
+      "tile": [
+        25,
+        35
+      ],
+      "lines": [
+        "MART",
+        "Supplies here."
+      ]
+    },
+    {
+      "id": "MN_ST_PAUL_SIGN_CAPITOL",
+      "tile": [
+        47,
+        13
+      ],
+      "lines": [
+        "CAPITOL HALL",
+        "Public records."
+      ]
+    },
+    {
+      "id": "MN_ST_PAUL_SIGN_GYM",
+      "tile": [
+        51,
+        33
+      ],
+      "lines": [
+        "ST PAUL GYM",
+        "BRANNIC - STEEL"
+      ]
+    },
+    {
+      "id": "MN_ST_PAUL_SIGN_DEPOT",
+      "tile": [
+        71,
+        49
+      ],
+      "lines": [
+        "UNION DEPOT",
+        "GLACIER LINE"
+      ]
+    },
+    {
+      "id": "MN_ST_PAUL_SIGN_FAIR",
+      "tile": [
+        31,
+        7
+      ],
+      "lines": [
+        "STATE FAIR CAMPUS",
+        "Public shows south.",
+        "North annex shut."
+      ]
+    },
+    {
+      "id": "MN_ST_PAUL_SIGN_RIVER",
+      "tile": [
+        41,
+        45
+      ],
+      "lines": [
+        "RIVER PARK",
+        "Stay on the bank."
+      ]
+    },
+    {
+      "id": "MN_ST_PAUL_SIGN_WAYFINDING",
+      "tile": [
+        29,
+        39
+      ],
+      "lines": [
+        "West: CITY CROSS",
+        "North: CAPITOL",
+        "South: UNION DEPOT"
+      ]
+    }
+  ],
+  "doors": [
+    {
+      "id": "MN_ST_PAUL_DEPOT_DOOR",
+      "tile": [
+        66,
+        47
+      ],
+      "arrival_tile": [
+        66,
+        48
+      ],
+      "return_tile": [
+        66,
+        48
+      ],
+      "warp_index": 1,
+      "return_warp_index": 2,
+      "target": "MnStPaulUnionDepot",
+      "target_warp": 5,
+      "state": "Explicit proposed native ordering; production lowering/roundtrip proof pending",
+      "target_constant": "MN_ST_PAUL_UNION_DEPOT"
+    },
+    {
+      "id": "MN_ST_PAUL_CLINIC_DOOR",
+      "tile": [
+        13,
+        41
+      ],
+      "arrival_tile": [
+        13,
+        42
+      ],
+      "return_tile": [
+        13,
+        42
+      ],
+      "warp_index": 3,
+      "return_warp_index": 4,
+      "target": "MnStPaulPokecenter1F",
+      "target_warp": 3,
+      "state": "Explicit proposed native ordering; production lowering/roundtrip proof pending",
+      "target_constant": "MN_ST_PAUL_POKECENTER_1F"
+    },
+    {
+      "id": "MN_ST_PAUL_MART_DOOR",
+      "tile": [
+        21,
+        33
+      ],
+      "arrival_tile": [
+        21,
+        34
+      ],
+      "return_tile": [
+        21,
+        34
+      ],
+      "warp_index": 5,
+      "return_warp_index": 6,
+      "target": "MnStPaulMart",
+      "target_warp": 3,
+      "state": "Explicit proposed native ordering; production lowering/roundtrip proof pending",
+      "target_constant": "MN_ST_PAUL_MART"
+    },
+    {
+      "id": "MN_ST_PAUL_CAPITOL_DOOR",
+      "tile": [
+        40,
+        11
+      ],
+      "arrival_tile": [
+        40,
+        12
+      ],
+      "return_tile": [
+        40,
+        12
+      ],
+      "warp_index": 7,
+      "return_warp_index": 8,
+      "target": "MnStPaulCapitolHall",
+      "target_warp": 3,
+      "state": "Explicit proposed native ordering; production lowering/roundtrip proof pending",
+      "target_constant": "MN_ST_PAUL_CAPITOL_HALL"
+    },
+    {
+      "id": "MN_ST_PAUL_GYM_DOOR",
+      "tile": [
+        48,
+        31
+      ],
+      "arrival_tile": [
+        48,
+        32
+      ],
+      "return_tile": [
+        48,
+        32
+      ],
+      "warp_index": 9,
+      "return_warp_index": 10,
+      "target": "MnStPaulGym",
+      "target_warp": 3,
+      "state": "Explicit proposed native ordering; production lowering/roundtrip proof pending",
+      "target_constant": "MN_ST_PAUL_GYM"
+    },
+    {
+      "warp_index": 11,
+      "return_warp_index": 12,
+      "tile": [
+        5,
+        11
+      ],
+      "target": "MnStPaulFairFoodHall",
+      "target_warp": 3,
+      "return_tile": [
+        5,
+        12
+      ],
+      "arrival_tile": [
+        5,
+        12
+      ],
+      "collision": "DOOR"
+    },
+    {
+      "warp_index": 13,
+      "return_warp_index": 14,
+      "tile": [
+        17,
+        13
+      ],
+      "target": "MnStPaulFairGardenStand",
+      "target_warp": 3,
+      "return_tile": [
+        17,
+        14
+      ],
+      "arrival_tile": [
+        17,
+        14
+      ],
+      "collision": "DOOR"
+    },
+    {
+      "warp_index": 15,
+      "return_warp_index": 16,
+      "tile": [
+        18,
+        9
+      ],
+      "target": "MnStPaulFairAgricultureHall",
+      "target_warp": 3,
+      "return_tile": [
+        18,
+        10
+      ],
+      "arrival_tile": [
+        18,
+        10
+      ],
+      "collision": "DOOR"
+    },
+    {
+      "warp_index": 17,
+      "return_warp_index": 18,
+      "tile": [
+        6,
+        23
+      ],
+      "target": "MnStPaulFairExhibitionHall",
+      "target_warp": 3,
+      "return_tile": [
+        6,
+        24
+      ],
+      "arrival_tile": [
+        6,
+        24
+      ],
+      "collision": "DOOR"
+    },
+    {
+      "warp_index": 19,
+      "return_warp_index": 20,
+      "tile": [
+        17,
+        25
+      ],
+      "target": "MnStPaulFairCraftHouse",
+      "target_warp": 3,
+      "return_tile": [
+        17,
+        26
+      ],
+      "arrival_tile": [
+        17,
+        26
+      ],
+      "collision": "DOOR"
+    },
+    {
+      "warp_index": 21,
+      "return_warp_index": 22,
+      "tile": [
+        25,
+        15
+      ],
+      "target": "MnStPaulFairQuizPavilion",
+      "target_warp": 3,
+      "return_tile": [
+        25,
+        16
+      ],
+      "arrival_tile": [
+        25,
+        16
+      ],
+      "collision": "DOOR"
+    },
+    {
+      "warp_index": 23,
+      "return_warp_index": 24,
+      "tile": [
+        11,
+        9
+      ],
+      "target": "MnStPaulFairInfoHouse",
+      "target_warp": 3,
+      "return_tile": [
+        11,
+        10
+      ],
+      "arrival_tile": [
+        11,
+        10
+      ],
+      "collision": "DOOR"
+    },
+    {
+      "warp_index": 25,
+      "return_warp_index": 26,
+      "tile": [
+        22,
+        27
+      ],
+      "target": "MnStPaulFairBreederBarn",
+      "target_warp": 3,
+      "return_tile": [
+        22,
+        28
+      ],
+      "arrival_tile": [
+        22,
+        28
+      ],
+      "collision": "DOOR"
+    },
+    {
+      "warp_index": 27,
+      "return_warp_index": 28,
+      "tile": [
+        11,
+        13
+      ],
+      "target": "MnStPaulFairBerrySnack",
+      "target_warp": 3,
+      "return_tile": [
+        11,
+        14
+      ],
+      "arrival_tile": [
+        11,
+        14
+      ],
+      "collision": "DOOR"
+    },
+    {
+      "warp_index": 29,
+      "return_warp_index": 30,
+      "tile": [
+        21,
+        19
+      ],
+      "target": "MnStPaulFairFestivalMail",
+      "target_warp": 3,
+      "return_tile": [
+        21,
+        20
+      ],
+      "arrival_tile": [
+        21,
+        20
+      ],
+      "collision": "DOOR"
+    },
+    {
+      "warp_index": 31,
+      "return_warp_index": 32,
+      "tile": [
+        34,
+        9
+      ],
+      "target": "MnStPaulCapitolArchive",
+      "target_warp": 3,
+      "return_tile": [
+        34,
+        10
+      ],
+      "arrival_tile": [
+        34,
+        10
+      ],
+      "collision": "DOOR"
+    },
+    {
+      "warp_index": 33,
+      "return_warp_index": 34,
+      "tile": [
+        50,
+        11
+      ],
+      "target": "MnStPaulCapitolLibrary",
+      "target_warp": 3,
+      "return_tile": [
+        50,
+        12
+      ],
+      "arrival_tile": [
+        50,
+        12
+      ],
+      "collision": "DOOR"
+    },
+    {
+      "warp_index": 35,
+      "return_warp_index": 36,
+      "tile": [
+        50,
+        21
+      ],
+      "target": "MnStPaulCivicMuseum",
+      "target_warp": 3,
+      "return_tile": [
+        50,
+        22
+      ],
+      "arrival_tile": [
+        50,
+        22
+      ],
+      "collision": "DOOR"
+    },
+    {
+      "warp_index": 37,
+      "return_warp_index": 38,
+      "tile": [
+        59,
+        7
+      ],
+      "target": "MnStPaulSummitMoveStudyHouse",
+      "target_warp": 3,
+      "return_tile": [
+        59,
+        8
+      ],
+      "arrival_tile": [
+        59,
+        8
+      ],
+      "collision": "DOOR"
+    },
+    {
+      "warp_index": 39,
+      "return_warp_index": 40,
+      "tile": [
+        66,
+        11
+      ],
+      "target": "MnStPaulSummitExhibitionClub",
+      "target_warp": 3,
+      "return_tile": [
+        66,
+        12
+      ],
+      "arrival_tile": [
+        66,
+        12
+      ],
+      "collision": "DOOR"
+    },
+    {
+      "warp_index": 41,
+      "return_warp_index": 42,
+      "tile": [
+        59,
+        21
+      ],
+      "target": "MnStPaulSummitPressHouse",
+      "target_warp": 3,
+      "return_tile": [
+        59,
+        22
+      ],
+      "arrival_tile": [
+        59,
+        22
+      ],
+      "collision": "DOOR"
+    },
+    {
+      "warp_index": 43,
+      "return_warp_index": 44,
+      "tile": [
+        6,
+        35
+      ],
+      "target": "MnStPaulWestSeventhBooks",
+      "target_warp": 3,
+      "return_tile": [
+        6,
+        36
+      ],
+      "arrival_tile": [
+        6,
+        36
+      ],
+      "collision": "DOOR"
+    },
+    {
+      "warp_index": 45,
+      "return_warp_index": 46,
+      "tile": [
+        5,
+        39
+      ],
+      "target": "MnStPaulWestSeventhBakery",
+      "target_warp": 3,
+      "return_tile": [
+        5,
+        40
+      ],
+      "arrival_tile": [
+        5,
+        40
+      ],
+      "collision": "DOOR"
+    },
+    {
+      "warp_index": 47,
+      "return_warp_index": 48,
+      "tile": [
+        15,
+        33
+      ],
+      "target": "MnStPaulStreetGardenHouse",
+      "target_warp": 3,
+      "return_tile": [
+        15,
+        34
+      ],
+      "arrival_tile": [
+        15,
+        34
+      ],
+      "collision": "DOOR"
+    },
+    {
+      "warp_index": 49,
+      "return_warp_index": 50,
+      "tile": [
+        32,
+        39
+      ],
+      "target": "MnStPaulLowertownExchange",
+      "target_warp": 3,
+      "return_tile": [
+        32,
+        40
+      ],
+      "arrival_tile": [
+        32,
+        40
+      ],
+      "collision": "DOOR"
+    },
+    {
+      "warp_index": 51,
+      "return_warp_index": 52,
+      "tile": [
+        38,
+        23
+      ],
+      "target": "MnStPaulArchiveAnnex",
+      "target_warp": 3,
+      "return_tile": [
+        38,
+        24
+      ],
+      "arrival_tile": [
+        38,
+        24
+      ],
+      "collision": "DOOR"
+    },
+    {
+      "warp_index": 53,
+      "return_warp_index": 54,
+      "tile": [
+        23,
+        41
+      ],
+      "target": "MnStPaulLowertownCrafts",
+      "target_warp": 3,
+      "return_tile": [
+        23,
+        42
+      ],
+      "arrival_tile": [
+        23,
+        42
+      ],
+      "collision": "DOOR"
+    },
+    {
+      "warp_index": 55,
+      "return_warp_index": 56,
+      "tile": [
+        53,
+        31
+      ],
+      "target": "MnStPaulEastAidClinic",
+      "target_warp": 3,
+      "return_tile": [
+        53,
+        32
+      ],
+      "arrival_tile": [
+        53,
+        32
+      ],
+      "collision": "DOOR"
+    },
+    {
+      "warp_index": 57,
+      "return_warp_index": 58,
+      "tile": [
+        46,
+        41
+      ],
+      "target": "MnStPaulEastWorkshop",
+      "target_warp": 3,
+      "return_tile": [
+        46,
+        42
+      ],
+      "arrival_tile": [
+        46,
+        42
+      ],
+      "collision": "DOOR"
+    },
+    {
+      "warp_index": 59,
+      "return_warp_index": 60,
+      "tile": [
+        64,
+        29
+      ],
+      "target": "MnStPaulCommunityHall",
+      "target_warp": 3,
+      "return_tile": [
+        64,
+        30
+      ],
+      "arrival_tile": [
+        64,
+        30
+      ],
+      "collision": "DOOR"
+    },
+    {
+      "warp_index": 61,
+      "return_warp_index": 62,
+      "tile": [
+        57,
+        45
+      ],
+      "target": "MnStPaulTransitHeritageHouse",
+      "target_warp": 3,
+      "return_tile": [
+        57,
+        46
+      ],
+      "arrival_tile": [
+        57,
+        46
+      ],
+      "collision": "DOOR"
+    },
+    {
+      "warp_index": 63,
+      "return_warp_index": 64,
+      "tile": [
+        64,
+        39
+      ],
+      "target": "MnStPaulFreightOffice",
+      "target_warp": 3,
+      "return_tile": [
+        64,
+        40
+      ],
+      "arrival_tile": [
+        64,
+        40
+      ],
+      "collision": "DOOR"
+    },
+    {
+      "warp_index": 65,
+      "return_warp_index": 66,
+      "tile": [
+        55,
+        39
+      ],
+      "target": "MnStPaulLowertownCafe",
+      "target_warp": 3,
+      "return_tile": [
+        55,
+        40
+      ],
+      "arrival_tile": [
+        55,
+        40
+      ],
+      "collision": "DOOR"
+    },
+    {
+      "warp_index": 67,
+      "return_warp_index": 68,
+      "tile": [
+        5,
+        63
+      ],
+      "target": "MnStPaulAnglerHouse",
+      "target_warp": 3,
+      "return_tile": [
+        5,
+        64
+      ],
+      "arrival_tile": [
+        5,
+        64
+      ],
+      "collision": "DOOR"
+    },
+    {
+      "warp_index": 69,
+      "return_warp_index": 70,
+      "tile": [
+        5,
+        57
+      ],
+      "target": "MnStPaulRiversideSupplies",
+      "target_warp": 3,
+      "return_tile": [
+        5,
+        58
+      ],
+      "arrival_tile": [
+        5,
+        58
+      ],
+      "collision": "DOOR"
+    },
+    {
+      "warp_index": 71,
+      "return_warp_index": 72,
+      "tile": [
+        16,
+        61
+      ],
+      "target": "MnStPaulWestsideCommunity",
+      "target_warp": 3,
+      "return_tile": [
+        16,
+        62
+      ],
+      "arrival_tile": [
+        16,
+        62
+      ],
+      "collision": "DOOR"
+    },
+    {
+      "warp_index": 73,
+      "return_warp_index": 74,
+      "tile": [
+        30,
+        61
+      ],
+      "target": "MnStPaulWestsideArena",
+      "target_warp": 3,
+      "return_tile": [
+        30,
+        62
+      ],
+      "arrival_tile": [
+        30,
+        62
+      ],
+      "collision": "DOOR"
+    },
+    {
+      "warp_index": 75,
+      "return_warp_index": 76,
+      "tile": [
+        43,
+        61
+      ],
+      "target": "MnStPaulBoatCoop",
+      "target_warp": 3,
+      "return_tile": [
+        43,
+        62
+      ],
+      "arrival_tile": [
+        43,
+        62
+      ],
+      "collision": "DOOR"
+    },
+    {
+      "warp_index": 77,
+      "return_warp_index": 78,
+      "tile": [
+        51,
+        61
+      ],
+      "target": "MnStPaulSouthLandingInn",
+      "target_warp": 3,
+      "return_tile": [
+        51,
+        62
+      ],
+      "arrival_tile": [
+        51,
+        62
+      ],
+      "collision": "DOOR"
+    },
+    {
+      "warp_index": 79,
+      "return_warp_index": 80,
+      "tile": [
+        62,
+        61
+      ],
+      "target": "MnStPaulSouthLandingSurvey",
+      "target_warp": 3,
+      "return_tile": [
+        62,
+        62
+      ],
+      "arrival_tile": [
+        62,
+        62
+      ],
+      "collision": "DOOR"
+    }
+  ],
+  "depot_binding": {
+    "source": "planning/minnesota/transit/MnStPaulUnionDepot.json",
+    "target_map": "MnStPaulUnionDepot",
+    "door_core": [
+      66,
+      47
+    ],
+    "safe_return_core": [
+      66,
+      48
+    ],
+    "interior_public_arrival_core": [
+      15,
+      21
+    ],
+    "interior_exit_tiles_core": [
+      [
+        14,
+        23
+      ],
+      [
+        15,
+        23
+      ],
+      [
+        16,
+        23
+      ],
+      [
+        17,
+        23
+      ]
+    ],
+    "contract": "Native original courier/manifest/entire room and all indices exact; only city exterior door is relocated. No rail travel added.",
+    "exterior_entry_warp": 1,
+    "exterior_return_warp": 2,
+    "interior_passive_arrival_warp": 5,
+    "interior_exit_warp_indices": [
+      1,
+      2,
+      3,
+      4
+    ]
+  },
+  "one_way_ledges": [
+    {
+      "id": "CAPITOL_BLUFF_DROP",
+      "bounds_core": [
+        44,
+        14,
+        46,
+        16
+      ],
+      "direction": "down",
+      "approach": [
+        44,
+        13
+      ],
+      "landing": [
+        44,
+        16
+      ],
+      "ordinary_return": "Native05 brick stairs atmeta18,7; authored compact source proves19/21input ordinary uphill returns; no Cut bypass."
+    }
+  ],
+  "viewpoints": [
+    {
+      "id": "WEST_ARRIVAL",
+      "tile": [
+        6,
+        48
+      ]
+    },
+    {
+      "id": "FAIR_FOOD_COURT",
+      "tile": [
+        17,
+        15
+      ]
+    },
+    {
+      "id": "CAPITOL_FRONT",
+      "tile": [
+        40,
+        12
+      ]
+    },
+    {
+      "id": "BLUFF_DROP",
+      "tile": [
+        44,
+        13
+      ]
+    },
+    {
+      "id": "GYM_FRONT",
+      "tile": [
+        48,
+        32
+      ]
+    },
+    {
+      "id": "DEPOT_FRONT",
+      "tile": [
+        66,
+        48
+      ]
+    },
+    {
+      "id": "EXCHANGE_FRONT",
+      "tile": [
+        32,
+        40
+      ]
+    }
+  ],
+  "expansion_contract": "towns/MnStPaul.expansion.contract.json",
+  "expansion_plan": "planning/minnesota/towns/MnStPaul.expansion-plan.json",
+  "new_buildings": [
+    {
+      "id": "FairFoodHall",
+      "origin_metatile": [
+        2,
+        5
+      ],
+      "dimensions_metatiles": [
+        2,
+        1
+      ],
+      "style": "installed_native_kanto_facade",
+      "door_core": [
+        5,
+        11
+      ],
+      "passive_core": [
+        5,
+        12
+      ],
+      "room": "MnStPaulFairFoodHall",
+      "constant": "MN_SPX_FAIR_FOOD_HALL",
+      "activity": "food",
+      "description": "Drinks for the midway.",
+      "creation_footprint": {
+        "origin_metatile": [
+          2,
+          6
+        ],
+        "dimensions_metatiles": [
+          2,
+          1
+        ],
+        "style": "booth"
+      },
+      "native_rows": [
+        "02 03"
+      ]
+    },
+    {
+      "id": "FairGardenStand",
+      "origin_metatile": [
+        8,
+        6
+      ],
+      "dimensions_metatiles": [
+        2,
+        1
+      ],
+      "style": "installed_native_kanto_facade",
+      "door_core": [
+        17,
+        13
+      ],
+      "passive_core": [
+        17,
+        14
+      ],
+      "room": "MnStPaulFairGardenStand",
+      "constant": "MN_SPX_FAIR_GARDEN_STAND",
+      "activity": "garden",
+      "description": "Seeds and berry stock.",
+      "creation_footprint": {
+        "origin_metatile": [
+          10,
+          6
+        ],
+        "dimensions_metatiles": [
+          2,
+          1
+        ],
+        "style": "booth"
+      },
+      "native_rows": [
+        "02 03"
+      ]
+    },
+    {
+      "id": "FairAgricultureHall",
+      "origin_metatile": [
+        8,
+        2
+      ],
+      "dimensions_metatiles": [
+        5,
+        3
+      ],
+      "style": "installed_native_kanto_facade",
+      "door_core": [
+        18,
+        9
+      ],
+      "passive_core": [
+        18,
+        10
+      ],
+      "room": "MnStPaulFairAgricultureHall",
+      "constant": "MN_SPX_FAIR_AGRICULTURE_HALL",
+      "activity": "agriculture",
+      "description": "Crop and water exhibits.",
+      "creation_footprint": {
+        "origin_metatile": [
+          8,
+          2
+        ],
+        "dimensions_metatiles": [
+          5,
+          3
+        ],
+        "style": "commercial"
+      },
+      "native_rows": [
+        "20 54 54 54 21",
+        "68 7f 7f 7f 69",
+        "37 3a 7d 7d 7e"
+      ]
+    },
+    {
+      "id": "FairExhibitionHall",
+      "origin_metatile": [
+        2,
+        9
+      ],
+      "dimensions_metatiles": [
+        6,
+        3
+      ],
+      "style": "installed_native_kanto_facade",
+      "door_core": [
+        6,
+        23
+      ],
+      "passive_core": [
+        6,
+        24
+      ],
+      "room": "MnStPaulFairExhibitionHall",
+      "constant": "MN_SPX_FAIR_EXHIBITION_HALL",
+      "activity": "battle0",
+      "description": "A voluntary show match.",
+      "creation_footprint": {
+        "origin_metatile": [
+          2,
+          9
+        ],
+        "dimensions_metatiles": [
+          6,
+          3
+        ],
+        "style": "commercial"
+      },
+      "native_rows": [
+        "20 54 54 54 54 21",
+        "68 7f 7f 7f 7f 69",
+        "37 3a 7d 7d 7d 7e"
+      ]
+    },
+    {
+      "id": "FairCraftHouse",
+      "origin_metatile": [
+        8,
+        12
+      ],
+      "dimensions_metatiles": [
+        2,
+        1
+      ],
+      "style": "installed_native_kanto_facade",
+      "door_core": [
+        17,
+        25
+      ],
+      "passive_core": [
+        17,
+        26
+      ],
+      "room": "MnStPaulFairCraftHouse",
+      "constant": "MN_SPX_FAIR_CRAFT_HOUSE",
+      "activity": "craft",
+      "description": "Handmade seed ribbons.",
+      "creation_footprint": {
+        "origin_metatile": [
+          8,
+          11
+        ],
+        "dimensions_metatiles": [
+          2,
+          2
+        ],
+        "style": "house"
+      },
+      "native_rows": [
+        "02 03"
+      ]
+    },
+    {
+      "id": "FairQuizPavilion",
+      "origin_metatile": [
+        12,
+        6
+      ],
+      "dimensions_metatiles": [
+        2,
+        2
+      ],
+      "style": "installed_native_kanto_facade",
+      "door_core": [
+        25,
+        15
+      ],
+      "passive_core": [
+        25,
+        16
+      ],
+      "room": "MnStPaulFairQuizPavilion",
+      "constant": "MN_SPX_FAIR_QUIZ_PAVILION",
+      "activity": "quiz",
+      "description": "Three fair questions.",
+      "creation_footprint": {
+        "origin_metatile": [
+          13,
+          6
+        ],
+        "dimensions_metatiles": [
+          2,
+          2
+        ],
+        "style": "house"
+      },
+      "native_rows": [
+        "20 21",
+        "7c 7e"
+      ]
+    },
+    {
+      "id": "FairInfoHouse",
+      "origin_metatile": [
+        5,
+        4
+      ],
+      "dimensions_metatiles": [
+        2,
+        1
+      ],
+      "style": "installed_native_kanto_facade",
+      "door_core": [
+        11,
+        9
+      ],
+      "passive_core": [
+        11,
+        10
+      ],
+      "room": "MnStPaulFairInfoHouse",
+      "constant": "MN_SPX_FAIR_INFO_HOUSE",
+      "activity": "info",
+      "description": "Public fair wayfinding.",
+      "creation_footprint": {
+        "origin_metatile": [
+          2,
+          2
+        ],
+        "dimensions_metatiles": [
+          2,
+          2
+        ],
+        "style": "house"
+      },
+      "native_rows": [
+        "02 03"
+      ]
+    },
+    {
+      "id": "FairBreederBarn",
+      "origin_metatile": [
+        10,
+        11
+      ],
+      "dimensions_metatiles": [
+        4,
+        3
+      ],
+      "style": "installed_native_kanto_facade",
+      "door_core": [
+        22,
+        27
+      ],
+      "passive_core": [
+        22,
+        28
+      ],
+      "room": "MnStPaulFairBreederBarn",
+      "constant": "MN_SPX_FAIR_BREEDER_BARN",
+      "activity": "battle1",
+      "description": "Care before competition.",
+      "creation_footprint": {
+        "origin_metatile": [
+          10,
+          11
+        ],
+        "dimensions_metatiles": [
+          4,
+          3
+        ],
+        "style": "commercial"
+      },
+      "native_rows": [
+        "20 54 54 21",
+        "68 7f 7f 69",
+        "37 3a 7d 7e"
+      ]
+    },
+    {
+      "id": "FairBerrySnack",
+      "origin_metatile": [
+        5,
+        6
+      ],
+      "dimensions_metatiles": [
+        2,
+        1
+      ],
+      "style": "installed_native_kanto_facade",
+      "door_core": [
+        11,
+        13
+      ],
+      "passive_core": [
+        11,
+        14
+      ],
+      "room": "MnStPaulFairBerrySnack",
+      "constant": "MN_SPX_FAIR_BERRY_SNACK",
+      "activity": "berrysnack",
+      "description": "Berries for the midway.",
+      "creation_footprint": {
+        "origin_metatile": [
+          6,
+          6
+        ],
+        "dimensions_metatiles": [
+          2,
+          1
+        ],
+        "style": "booth"
+      },
+      "native_rows": [
+        "02 03"
+      ]
+    },
+    {
+      "id": "FairFestivalMail",
+      "origin_metatile": [
+        10,
+        9
+      ],
+      "dimensions_metatiles": [
+        2,
+        1
+      ],
+      "style": "installed_native_kanto_facade",
+      "door_core": [
+        21,
+        19
+      ],
+      "passive_core": [
+        21,
+        20
+      ],
+      "room": "MnStPaulFairFestivalMail",
+      "constant": "MN_SPX_FAIR_FESTIVAL_MAIL",
+      "activity": "fairmail",
+      "description": "Send a fair postcard.",
+      "creation_footprint": {
+        "origin_metatile": [
+          10,
+          9
+        ],
+        "dimensions_metatiles": [
+          2,
+          1
+        ],
+        "style": "booth"
+      },
+      "native_rows": [
+        "02 03"
+      ]
+    },
+    {
+      "id": "CapitolArchive",
+      "origin_metatile": [
+        16,
+        2
+      ],
+      "dimensions_metatiles": [
+        3,
+        3
+      ],
+      "style": "installed_native_kanto_facade",
+      "door_core": [
+        34,
+        9
+      ],
+      "passive_core": [
+        34,
+        10
+      ],
+      "room": "MnStPaulCapitolArchive",
+      "constant": "MN_SPX_CAPITOL_ARCHIVE",
+      "activity": "archive",
+      "description": "Collect three archive stamps.",
+      "creation_footprint": {
+        "origin_metatile": [
+          16,
+          2
+        ],
+        "dimensions_metatiles": [
+          3,
+          3
+        ],
+        "style": "commercial"
+      },
+      "native_rows": [
+        "20 54 21",
+        "68 7f 69",
+        "37 3a 7e"
+      ]
+    },
+    {
+      "id": "CapitolLibrary",
+      "origin_metatile": [
+        24,
+        1
+      ],
+      "dimensions_metatiles": [
+        4,
+        5
+      ],
+      "style": "installed_native_kanto_facade",
+      "door_core": [
+        50,
+        11
+      ],
+      "passive_core": [
+        50,
+        12
+      ],
+      "room": "MnStPaulCapitolLibrary",
+      "constant": "MN_SPX_CAPITOL_LIBRARY",
+      "activity": "library",
+      "description": "Reading room and field books.",
+      "creation_footprint": {
+        "origin_metatile": [
+          24,
+          1
+        ],
+        "dimensions_metatiles": [
+          4,
+          5
+        ],
+        "style": "commercial"
+      },
+      "native_rows": [
+        "20 54 54 21",
+        "68 7f 7f 69",
+        "68 7f 7f 69",
+        "68 7f 7f 69",
+        "37 3a 7d 7e"
+      ]
+    },
+    {
+      "id": "CivicMuseum",
+      "origin_metatile": [
+        24,
+        8
+      ],
+      "dimensions_metatiles": [
+        4,
+        3
+      ],
+      "style": "installed_native_kanto_facade",
+      "door_core": [
+        50,
+        21
+      ],
+      "passive_core": [
+        50,
+        22
+      ],
+      "room": "MnStPaulCivicMuseum",
+      "constant": "MN_SPX_CIVIC_MUSEUM",
+      "activity": "river",
+      "description": "Read three river measures.",
+      "creation_footprint": {
+        "origin_metatile": [
+          24,
+          8
+        ],
+        "dimensions_metatiles": [
+          4,
+          3
+        ],
+        "style": "commercial"
+      },
+      "native_rows": [
+        "20 54 54 21",
+        "68 7f 7f 69",
+        "37 3a 7d 7e"
+      ]
+    },
+    {
+      "id": "SummitMoveStudyHouse",
+      "origin_metatile": [
+        29,
+        2
+      ],
+      "dimensions_metatiles": [
+        2,
+        2
+      ],
+      "style": "installed_native_kanto_facade",
+      "door_core": [
+        59,
+        7
+      ],
+      "passive_core": [
+        59,
+        8
+      ],
+      "room": "MnStPaulSummitMoveStudyHouse",
+      "constant": "MN_SPX_SUMMIT_MOVE_STUDY_HOUSE",
+      "activity": "headbutt",
+      "description": "A Headbutt field note.",
+      "creation_footprint": {
+        "origin_metatile": [
+          29,
+          2
+        ],
+        "dimensions_metatiles": [
+          2,
+          2
+        ],
+        "style": "house"
+      },
+      "native_rows": [
+        "20 21",
+        "7c 7e"
+      ]
+    },
+    {
+      "id": "SummitExhibitionClub",
+      "origin_metatile": [
+        32,
+        3
+      ],
+      "dimensions_metatiles": [
+        4,
+        3
+      ],
+      "style": "installed_native_kanto_facade",
+      "door_core": [
+        66,
+        11
+      ],
+      "passive_core": [
+        66,
+        12
+      ],
+      "room": "MnStPaulSummitExhibitionClub",
+      "constant": "MN_SPX_SUMMIT_EXHIBITION_CLUB",
+      "activity": "battle4",
+      "description": "An optional club match.",
+      "creation_footprint": {
+        "origin_metatile": [
+          32,
+          3
+        ],
+        "dimensions_metatiles": [
+          4,
+          3
+        ],
+        "style": "commercial"
+      },
+      "native_rows": [
+        "20 54 54 21",
+        "68 7f 7f 69",
+        "37 3a 7d 7e"
+      ]
+    },
+    {
+      "id": "SummitPressHouse",
+      "origin_metatile": [
+        29,
+        10
+      ],
+      "dimensions_metatiles": [
+        2,
+        1
+      ],
+      "style": "installed_native_kanto_facade",
+      "door_core": [
+        59,
+        21
+      ],
+      "passive_core": [
+        59,
+        22
+      ],
+      "room": "MnStPaulSummitPressHouse",
+      "constant": "MN_SPX_SUMMIT_PRESS_HOUSE",
+      "activity": "press",
+      "description": "Local streets in print.",
+      "creation_footprint": {
+        "origin_metatile": [
+          29,
+          9
+        ],
+        "dimensions_metatiles": [
+          2,
+          2
+        ],
+        "style": "house"
+      },
+      "native_rows": [
+        "02 03"
+      ]
+    },
+    {
+      "id": "WestSeventhBooks",
+      "origin_metatile": [
+        2,
+        15
+      ],
+      "dimensions_metatiles": [
+        3,
+        3
+      ],
+      "style": "installed_native_kanto_facade",
+      "door_core": [
+        6,
+        35
+      ],
+      "passive_core": [
+        6,
+        36
+      ],
+      "room": "MnStPaulWestSeventhBooks",
+      "constant": "MN_SPX_WEST_SEVENTH_BOOKS",
+      "activity": "bookshop",
+      "description": "Secondhand field guides.",
+      "creation_footprint": {
+        "origin_metatile": [
+          2,
+          15
+        ],
+        "dimensions_metatiles": [
+          3,
+          3
+        ],
+        "style": "commercial"
+      },
+      "native_rows": [
+        "20 54 21",
+        "68 7f 69",
+        "37 3a 7e"
+      ]
+    },
+    {
+      "id": "WestSeventhBakery",
+      "origin_metatile": [
+        2,
+        19
+      ],
+      "dimensions_metatiles": [
+        2,
+        1
+      ],
+      "style": "installed_native_kanto_facade",
+      "door_core": [
+        5,
+        39
+      ],
+      "passive_core": [
+        5,
+        40
+      ],
+      "room": "MnStPaulWestSeventhBakery",
+      "constant": "MN_SPX_WEST_SEVENTH_BAKERY",
+      "activity": "bakery",
+      "description": "Picnic food for the river.",
+      "creation_footprint": {
+        "origin_metatile": [
+          2,
+          20
+        ],
+        "dimensions_metatiles": [
+          3,
+          2
+        ],
+        "style": "shop"
+      },
+      "native_rows": [
+        "02 03"
+      ]
+    },
+    {
+      "id": "StreetGardenHouse",
+      "origin_metatile": [
+        7,
+        16
+      ],
+      "dimensions_metatiles": [
+        2,
+        1
+      ],
+      "style": "installed_native_kanto_facade",
+      "door_core": [
+        15,
+        33
+      ],
+      "passive_core": [
+        15,
+        34
+      ],
+      "room": "MnStPaulStreetGardenHouse",
+      "constant": "MN_SPX_STREET_GARDEN_HOUSE",
+      "activity": "gardenhouse",
+      "description": "A pocket garden at the bend.",
+      "creation_footprint": {
+        "origin_metatile": [
+          7,
+          15
+        ],
+        "dimensions_metatiles": [
+          2,
+          2
+        ],
+        "style": "house"
+      },
+      "native_rows": [
+        "02 55"
+      ]
+    },
+    {
+      "id": "LowertownExchange",
+      "origin_metatile": [
+        15,
+        14
+      ],
+      "dimensions_metatiles": [
+        5,
+        6
+      ],
+      "style": "installed_native_kanto_facade",
+      "door_core": [
+        32,
+        39
+      ],
+      "passive_core": [
+        32,
+        40
+      ],
+      "room": "MnStPaulLowertownExchange",
+      "constant": "MN_SPX_LOWERTOWN_EXCHANGE",
+      "activity": "exchange",
+      "description": "Three floors of real destinations.",
+      "creation_footprint": {
+        "origin_metatile": [
+          15,
+          14
+        ],
+        "dimensions_metatiles": [
+          5,
+          6
+        ],
+        "style": "commercial"
+      },
+      "native_rows": [
+        "20 54 54 54 21",
+        "68 7f 7f 7f 69",
+        "68 7f 7f 7f 69",
+        "68 7f 7f 7f 69",
+        "68 7f 7f 7f 69",
+        "37 3a 7d 7d 7e"
+      ]
+    },
+    {
+      "id": "ArchiveAnnex",
+      "origin_metatile": [
+        18,
+        9
+      ],
+      "dimensions_metatiles": [
+        4,
+        3
+      ],
+      "style": "installed_native_kanto_facade",
+      "door_core": [
+        38,
+        23
+      ],
+      "passive_core": [
+        38,
+        24
+      ],
+      "room": "MnStPaulArchiveAnnex",
+      "constant": "MN_SPX_ARCHIVE_ANNEX",
+      "activity": "annex",
+      "description": "A walking archive stop.",
+      "creation_footprint": {
+        "origin_metatile": [
+          18,
+          9
+        ],
+        "dimensions_metatiles": [
+          4,
+          3
+        ],
+        "style": "commercial"
+      },
+      "native_rows": [
+        "20 54 54 21",
+        "68 7f 7f 69",
+        "37 3a 7d 7e"
+      ]
+    },
+    {
+      "id": "LowertownCrafts",
+      "origin_metatile": [
+        11,
+        19
+      ],
+      "dimensions_metatiles": [
+        2,
+        2
+      ],
+      "style": "installed_native_kanto_facade",
+      "door_core": [
+        23,
+        41
+      ],
+      "passive_core": [
+        23,
+        42
+      ],
+      "room": "MnStPaulLowertownCrafts",
+      "constant": "MN_SPX_LOWERTOWN_CRAFTS",
+      "activity": "tools",
+      "description": "Trade supplies and craftwork.",
+      "creation_footprint": {
+        "origin_metatile": [
+          11,
+          20
+        ],
+        "dimensions_metatiles": [
+          2,
+          2
+        ],
+        "style": "house"
+      },
+      "native_rows": [
+        "20 21",
+        "7c 7e"
+      ]
+    },
+    {
+      "id": "EastAidClinic",
+      "origin_metatile": [
+        26,
+        14
+      ],
+      "dimensions_metatiles": [
+        2,
+        2
+      ],
+      "style": "installed_native_kanto_facade",
+      "door_core": [
+        53,
+        31
+      ],
+      "passive_core": [
+        53,
+        32
+      ],
+      "room": "MnStPaulEastAidClinic",
+      "constant": "MN_SPX_EAST_AID_CLINIC",
+      "activity": "heal",
+      "description": "Native free care and PC.",
+      "creation_footprint": {
+        "origin_metatile": [
+          26,
+          14
+        ],
+        "dimensions_metatiles": [
+          3,
+          2
+        ],
+        "style": "clinic"
+      },
+      "native_rows": [
+        "20 21",
+        "7c 72"
+      ]
+    },
+    {
+      "id": "EastWorkshop",
+      "origin_metatile": [
+        22,
+        18
+      ],
+      "dimensions_metatiles": [
+        4,
+        3
+      ],
+      "style": "installed_native_kanto_facade",
+      "door_core": [
+        46,
+        41
+      ],
+      "passive_core": [
+        46,
+        42
+      ],
+      "room": "MnStPaulEastWorkshop",
+      "constant": "MN_SPX_EAST_WORKSHOP",
+      "activity": "battle2",
+      "description": "An optional workshop match.",
+      "creation_footprint": {
+        "origin_metatile": [
+          22,
+          18
+        ],
+        "dimensions_metatiles": [
+          4,
+          3
+        ],
+        "style": "commercial"
+      },
+      "native_rows": [
+        "20 54 54 21",
+        "68 7f 7f 69",
+        "37 3a 7d 7e"
+      ]
+    },
+    {
+      "id": "CommunityHall",
+      "origin_metatile": [
+        31,
+        12
+      ],
+      "dimensions_metatiles": [
+        5,
+        3
+      ],
+      "style": "installed_native_kanto_facade",
+      "door_core": [
+        64,
+        29
+      ],
+      "passive_core": [
+        64,
+        30
+      ],
+      "room": "MnStPaulCommunityHall",
+      "constant": "MN_SPX_COMMUNITY_HALL",
+      "activity": "community",
+      "description": "Club notices and river walkers.",
+      "creation_footprint": {
+        "origin_metatile": [
+          31,
+          12
+        ],
+        "dimensions_metatiles": [
+          5,
+          3
+        ],
+        "style": "commercial"
+      },
+      "native_rows": [
+        "20 54 54 54 21",
+        "68 7f 7f 7f 69",
+        "37 3a 7d 7d 7e"
+      ]
+    },
+    {
+      "id": "TransitHeritageHouse",
+      "origin_metatile": [
+        28,
+        21
+      ],
+      "dimensions_metatiles": [
+        2,
+        2
+      ],
+      "style": "installed_native_kanto_facade",
+      "door_core": [
+        57,
+        45
+      ],
+      "passive_core": [
+        57,
+        46
+      ],
+      "room": "MnStPaulTransitHeritageHouse",
+      "constant": "MN_SPX_TRANSIT_HERITAGE_HOUSE",
+      "activity": "transit",
+      "description": "Read actual depot notices.",
+      "creation_footprint": {
+        "origin_metatile": [
+          28,
+          21
+        ],
+        "dimensions_metatiles": [
+          2,
+          2
+        ],
+        "style": "house"
+      },
+      "native_rows": [
+        "20 21",
+        "7c 7e"
+      ]
+    },
+    {
+      "id": "FreightOffice",
+      "origin_metatile": [
+        31,
+        17
+      ],
+      "dimensions_metatiles": [
+        4,
+        3
+      ],
+      "style": "installed_native_kanto_facade",
+      "door_core": [
+        64,
+        39
+      ],
+      "passive_core": [
+        64,
+        40
+      ],
+      "room": "MnStPaulFreightOffice",
+      "constant": "MN_SPX_FREIGHT_OFFICE",
+      "activity": "freight",
+      "description": "Local freight records.",
+      "creation_footprint": {
+        "origin_metatile": [
+          31,
+          17
+        ],
+        "dimensions_metatiles": [
+          4,
+          3
+        ],
+        "style": "commercial"
+      },
+      "native_rows": [
+        "20 54 54 21",
+        "68 7f 7f 69",
+        "37 3a 7d 7e"
+      ]
+    },
+    {
+      "id": "LowertownCafe",
+      "origin_metatile": [
+        27,
+        18
+      ],
+      "dimensions_metatiles": [
+        2,
+        2
+      ],
+      "style": "installed_native_kanto_facade",
+      "door_core": [
+        55,
+        39
+      ],
+      "passive_core": [
+        55,
+        40
+      ],
+      "room": "MnStPaulLowertownCafe",
+      "constant": "MN_SPX_LOWERTOWN_CAFE",
+      "activity": "cafe",
+      "description": "Rest before the river walk.",
+      "creation_footprint": {
+        "origin_metatile": [
+          27,
+          18
+        ],
+        "dimensions_metatiles": [
+          3,
+          2
+        ],
+        "style": "shop"
+      },
+      "native_rows": [
+        "20 21",
+        "7c 7e"
+      ]
+    },
+    {
+      "id": "AnglerHouse",
+      "origin_metatile": [
+        2,
+        31
+      ],
+      "dimensions_metatiles": [
+        2,
+        1
+      ],
+      "style": "installed_native_kanto_facade",
+      "door_core": [
+        5,
+        63
+      ],
+      "passive_core": [
+        5,
+        64
+      ],
+      "room": "MnStPaulAnglerHouse",
+      "constant": "MN_SPX_ANGLER_HOUSE",
+      "activity": "battle5",
+      "description": "A river fishing challenge.",
+      "creation_footprint": {
+        "origin_metatile": [
+          2,
+          30
+        ],
+        "dimensions_metatiles": [
+          2,
+          2
+        ],
+        "style": "house"
+      },
+      "native_rows": [
+        "02 03"
+      ]
+    },
+    {
+      "id": "RiversideSupplies",
+      "origin_metatile": [
+        2,
+        27
+      ],
+      "dimensions_metatiles": [
+        2,
+        2
+      ],
+      "style": "installed_native_kanto_facade",
+      "door_core": [
+        5,
+        57
+      ],
+      "passive_core": [
+        5,
+        58
+      ],
+      "room": "MnStPaulRiversideSupplies",
+      "constant": "MN_SPX_RIVERSIDE_SUPPLIES",
+      "activity": "riverstock",
+      "description": "River-walk supplies.",
+      "creation_footprint": {
+        "origin_metatile": [
+          2,
+          27
+        ],
+        "dimensions_metatiles": [
+          3,
+          2
+        ],
+        "style": "shop"
+      },
+      "native_rows": [
+        "20 21",
+        "7c 73"
+      ]
+    },
+    {
+      "id": "WestsideCommunity",
+      "origin_metatile": [
+        7,
+        28
+      ],
+      "dimensions_metatiles": [
+        5,
+        3
+      ],
+      "style": "installed_native_kanto_facade",
+      "door_core": [
+        16,
+        61
+      ],
+      "passive_core": [
+        16,
+        62
+      ],
+      "room": "MnStPaulWestsideCommunity",
+      "constant": "MN_SPX_WESTSIDE_COMMUNITY",
+      "activity": "westcommunity",
+      "description": "A neighborhood gathering room.",
+      "creation_footprint": {
+        "origin_metatile": [
+          7,
+          28
+        ],
+        "dimensions_metatiles": [
+          5,
+          3
+        ],
+        "style": "commercial"
+      },
+      "native_rows": [
+        "20 54 54 54 21",
+        "68 7f 7f 7f 69",
+        "37 3a 7d 7d 7e"
+      ]
+    },
+    {
+      "id": "WestsideArena",
+      "origin_metatile": [
+        14,
+        28
+      ],
+      "dimensions_metatiles": [
+        4,
+        3
+      ],
+      "style": "installed_native_kanto_facade",
+      "door_core": [
+        30,
+        61
+      ],
+      "passive_core": [
+        30,
+        62
+      ],
+      "room": "MnStPaulWestsideArena",
+      "constant": "MN_SPX_WESTSIDE_ARENA",
+      "activity": "battle6",
+      "description": "A voluntary training bout.",
+      "creation_footprint": {
+        "origin_metatile": [
+          14,
+          28
+        ],
+        "dimensions_metatiles": [
+          4,
+          3
+        ],
+        "style": "commercial"
+      },
+      "native_rows": [
+        "20 54 54 21",
+        "68 7f 7f 69",
+        "37 3a 7d 7e"
+      ]
+    },
+    {
+      "id": "BoatCoop",
+      "origin_metatile": [
+        21,
+        30
+      ],
+      "dimensions_metatiles": [
+        2,
+        1
+      ],
+      "style": "installed_native_kanto_facade",
+      "door_core": [
+        43,
+        61
+      ],
+      "passive_core": [
+        43,
+        62
+      ],
+      "room": "MnStPaulBoatCoop",
+      "constant": "MN_SPX_BOAT_COOP",
+      "activity": "boats",
+      "description": "Boat care on land.",
+      "creation_footprint": {
+        "origin_metatile": [
+          21,
+          29
+        ],
+        "dimensions_metatiles": [
+          2,
+          2
+        ],
+        "style": "house"
+      },
+      "native_rows": [
+        "02 03"
+      ]
+    },
+    {
+      "id": "SouthLandingInn",
+      "origin_metatile": [
+        25,
+        29
+      ],
+      "dimensions_metatiles": [
+        2,
+        2
+      ],
+      "style": "installed_native_kanto_facade",
+      "door_core": [
+        51,
+        61
+      ],
+      "passive_core": [
+        51,
+        62
+      ],
+      "room": "MnStPaulSouthLandingInn",
+      "constant": "MN_SPX_SOUTH_LANDING_INN",
+      "activity": "rest",
+      "description": "Native party rest.",
+      "creation_footprint": {
+        "origin_metatile": [
+          25,
+          29
+        ],
+        "dimensions_metatiles": [
+          3,
+          2
+        ],
+        "style": "shop"
+      },
+      "native_rows": [
+        "20 21",
+        "7c 7e"
+      ]
+    },
+    {
+      "id": "SouthLandingSurvey",
+      "origin_metatile": [
+        30,
+        28
+      ],
+      "dimensions_metatiles": [
+        4,
+        3
+      ],
+      "style": "installed_native_kanto_facade",
+      "door_core": [
+        62,
+        61
+      ],
+      "passive_core": [
+        62,
+        62
+      ],
+      "room": "MnStPaulSouthLandingSurvey",
+      "constant": "MN_SPX_SOUTH_LANDING_SURVEY",
+      "activity": "battle7",
+      "description": "A survey team exhibition.",
+      "creation_footprint": {
+        "origin_metatile": [
+          30,
+          28
+        ],
+        "dimensions_metatiles": [
+          4,
+          3
+        ],
+        "style": "commercial"
+      },
+      "native_rows": [
+        "20 54 54 21",
+        "68 7f 7f 69",
+        "37 3a 7d 7e"
+      ]
+    }
+  ],
+  "new_activities": {
+    "optional_trainers": 8,
+    "shops": 15,
+    "acknowledged_record_errands": [
+      "archive",
+      "river"
+    ],
+    "native_yes_no_quiz": true,
+    "source_only": true,
+    "rail_travel_added": false
+  },
+  "source_review": {
+    "scope": "Current exterior geometry and indexed anchors; room programs remain native parent dependencies.",
+    "native_gameplay_proved": false,
+    "historical_source_review": {
+      "native_gameplay_proved": false,
+      "reference_cities": [
+        "GoldenrodCity",
+        "SaffronCity"
+      ],
+      "old_room_modules_preserved": true,
+      "limits": [
+        "Source-only, no native/controller acceptance",
+        "Every original room/program is an unchanged native dependency",
+        "Foundational activity transactions require native roundtrip/controller tests",
+        "No rail travel or main quest added"
+      ]
+    },
+    "limits": [
+      "No new activities or earned campaign progression are claimed.",
+      "Civic and eastern street composition remains open."
+    ],
+    "exterior_entrances_and_returns_verified": true
+  },
+  "expansion_contract_file": "towns/MnStPaul.expansion.contract.json",
+  "native_status": "All40 exterior door/return pairs, both bridges, relocated service readings, care-court rail openings/denials and Save/Continue verified on final v03. Room transactions, earned progression and complete city composition are not accepted.",
+  "recomposition_contract_file": "towns/MnStPaul.recomposition.contract.json",
+  "recomposition_provenance": {
+    "status": "Native compact40\u00d734 published and local production verification passed; this source preflight is not canonical application or user visual approval.",
+    "native_pack": "content-packs/minnesota-twin-cities-compact-v01.crystalpack",
+    "native_pack_sha256": "2fe6fc2a2c59833886b9ffa2fa04584f1f95841efaf87e865f11230cf4cdf54e",
+    "base_pack": "content-packs/minnesota-minneapolis-compact-falls-v02.crystalpack",
+    "base_pack_sha256": "125ac44497f9fde7a4ebaae3a8326d2d75f626a86d6e838be12ce28d82283fc7",
+    "source_candidate": "planning/minnesota/renders/cities/stpaul-compact-native-v01/inputs",
+    "previous_dossier_file": "revisions/st-paul-compact-v01/before/towns/MnStPaul.json",
+    "previous_dossier_sha256": "04659f5ae211bd362e62ce334c41ccb0e726453efd47101b965fbd12cddfdbc1",
+    "preserved_room_module_sha256": {
+      "MnStPaulPokecenter1F": "a2e020789152ff94e25e89a5c50eb6130fd31fb3619a6deb73dd47d1b9a4240b",
+      "MnStPaulMart": "d91d3dfc39877a602c52086f39efcc8758002e6246d6529293642db892c220f4",
+      "MnStPaulCapitolHall": "0ee96c5fcbd187295620278701677622225a4c29a451352943de2e27772a73de",
+      "MnStPaulGym": "ff6627b8aceefe4f016716aa7e245e19977a7c1bef4865f868409fbc60f6a8c6",
+      "MnStPaulFairFoodHall": "1de86874595a3bc218d1cc13e290a33acff634a2e26ccc3db4110e3cd9929293",
+      "MnStPaulFairGardenStand": "305127c19fc06da3bb93acd4432b119fc88601faca23bcfcf246e67185f88d2e",
+      "MnStPaulFairAgricultureHall": "39c8cc66eb16c4140aaf8413d729fff89216900255f9903dc68154946fc23bbe",
+      "MnStPaulFairExhibitionHall": "e2e4e3b80c3eb3ae8aa381a9974d8be983a2b610795795dbd8ac9be764451701",
+      "MnStPaulFairCraftHouse": "194a44c69ce22af6f3fe4496dd8d2026c9a3f754c331ffe0f9378765c389f1e4",
+      "MnStPaulFairQuizPavilion": "d7dc9d957835d7c9fb92575512df6636ffbe02e9f24a7ca6c193f9d07935b161",
+      "MnStPaulFairInfoHouse": "c1f00288487b17a03b8ce373ae60e9e69998c9e56a25bc3715da14060979380a",
+      "MnStPaulFairBreederBarn": "2b0a836eefb4299be9b69499f0587ef54b2a9998e789420225f5a7f11870d9f3",
+      "MnStPaulFairBerrySnack": "a1473d6ef2a17d410c1a5f865cc164e287a2356b4b4ae0894eec65aad80aa43b",
+      "MnStPaulFairFestivalMail": "177172e5ba45d240cbf1e492c601295a49833b64d006749f90281d600f33fd71",
+      "MnStPaulCapitolArchive": "35dabaca1faded9b88ad3780ef7df958b06b6a2cc92ff7c40f13417c8a95a8da",
+      "MnStPaulCapitolLibrary": "5e772a6ea73927b1c18308f7ce4af9bf98290325a45272c0801eaeb4f6f8a7c3",
+      "MnStPaulCivicMuseum": "720498492b82b541cb188ad8ce13450e1b0b740a53ba46a784d6c7bc58322e98",
+      "MnStPaulSummitMoveStudyHouse": "43e8a9074ceb880c0f7026ad7e531a2a0d010e16d1320ea461ca4ebf1ab7cb55",
+      "MnStPaulSummitExhibitionClub": "cc5165fd45b44cb3f2a0584d906746891da47b144f1bf313ab76b1ec6afd5774",
+      "MnStPaulSummitPressHouse": "2fc36cd5388707c03f27df60c6997e1f2a6a2c54733698fa28ce9fc515c4006b",
+      "MnStPaulWestSeventhBooks": "4003395cb0cec4d1671cd383570d145b3591c1beed013fa49cab67630b7058e3",
+      "MnStPaulWestSeventhBakery": "0a17916cace7ac87fc2e094c14f0a78f00cbd13e71ca68f48acb30ab8b675732",
+      "MnStPaulStreetGardenHouse": "0bc5c8a7f72c67ff88115412480aa47c0deb30a667b4bcd3a41e1bc7254b41c7",
+      "MnStPaulLowertownExchange": "245e83863b5b36c28d24336f35707886ef877878ac69ddb46a892f7160e1ce74",
+      "MnStPaulArchiveAnnex": "39f2d65ace2f2e65844a842ea872189848eed93139c59815b47e08917c88ad33",
+      "MnStPaulLowertownCrafts": "328d81c4fd8822c49eb9d13b6fa75c171022dc6b37cc07f811472af6935bac5d",
+      "MnStPaulEastAidClinic": "dd445805b1674c8f56fb4cc7e91c68d00f9dc5c6f4647ca8cf203e5c91a12cd8",
+      "MnStPaulEastWorkshop": "9f3425d3bc7895496997e7276feb6db24dbc55cf394e4765286954c914f100bb",
+      "MnStPaulCommunityHall": "e596c025b4ad608cc490371e1f471c470d096379de8a8c4d2fb19b4b06e072bf",
+      "MnStPaulTransitHeritageHouse": "82fe4a38a8b1ca005baea174ff4fc693c460f3d02f1e4501f0df9c88245e12ce",
+      "MnStPaulFreightOffice": "25b2f086645e792db15c10a170431034fc6128a76239a55f12db23c9fa6477ff",
+      "MnStPaulLowertownCafe": "f5969dc1b7340cba8995d7a9db2548171f62bc0dab5f706f91dec760002fb74e",
+      "MnStPaulAnglerHouse": "88e2232fdf56d30ea98b652af557ca2aa5d448d6b7847c8697a1660da1be5f0f",
+      "MnStPaulRiversideSupplies": "ae74c32b1ff7d9532f2ff1259d3dc9f675d7c59078c13cd601eeb7d8bbb21b68",
+      "MnStPaulWestsideCommunity": "c0a009fc10792ae22e80a80a6a45fb0087956db583c67b5ce33c1d31de87201f",
+      "MnStPaulWestsideArena": "15f6d20c8ec49265e79906a84032702be6755e12b49b0a56a40cf879fabb65ff",
+      "MnStPaulBoatCoop": "545c7141883d1ebec0da678a105ff3307363c97d897c1e6a3ce619f5b35483cc",
+      "MnStPaulSouthLandingInn": "e51a055bd77341a148f3dd2fa98da6fc9030e15e4e7bdd22811adc3a2b79b578",
+      "MnStPaulSouthLandingSurvey": "6adc0098f32b61b79d8a4a77b840d7a0360be51a3aae48e2e941c0cd41ad4352",
+      "MnStPaulLowertownExchange2F": "7dd7aa63d57a3915cb7c6a64537d61a570e207ff2bba7bdc1e956dea5ac822ce",
+      "MnStPaulLowertownExchange3F": "83030234c435413354fdb203b2efa00f9287825c327a1160cbb8c26801c3e386",
+      "MnStPaulUnionDepot": "c9f1d9d4658ab6ca465e6ad2dc4ee8d41526b560e01bd46806dce3d055cb66ff"
+    },
+    "native_city_module_sha256": "10c8ddb5dd3005d0f586917c6b3b64160d08e08283b4ce83adcf1de067a6dd2b",
+    "inline_source_room_count": 41,
+    "separate_depot_source": "transit/MnStPaulUnionDepot.json",
+    "outdoor_recovery_spawn": {
+      "identifier": 271,
+      "before": [
+        6,
+        48
+      ],
+      "after": [
+        6,
+        48
+      ]
+    },
+    "unchanged_clinic_recovery_identifier": 272,
+    "controller_cases": 9,
+    "production_gpu_views": 15,
+    "evidence": [
+      {
+        "path": "planning/minnesota/renders/route-quality-next/stpaul-native/compact-v01/written-2fe6fc2a/proof-4a0441eaa8db9b330c28f9a7a17b22d204ccb3404b766d491ae662f27db9a408.json",
+        "sha256": "4a0441eaa8db9b330c28f9a7a17b22d204ccb3404b766d491ae662f27db9a408"
+      },
+      {
+        "path": ".local/stpaul-compact-controller-v01/activities.log",
+        "sha256": "bf09ab82df11b5df9ac1df624e6cfc32c1ab2185dde128e321818f997691dd24"
+      },
+      {
+        "path": "planning/minnesota/renders/cities/stpaul-compact-native-v01/production-views/capture-progress.json",
+        "sha256": "726508a455cb691e8839aa25bcf84a47814f510354089bd1ded16408ea8911d5"
+      },
+      {
+        "path": ".local/stpaul-compact-publication-v02.log",
+        "sha256": "de2563a1c1afac756aa5ab12b31c79d43e0b038996fe2d49678c7b623d07ff39"
+      }
+    ],
+    "river_hooks": "Not included. Future water ports/bridges remain in the separate Mississippi connection manifest pending native publication/controller verification."
+  },
+  "installed_objects": [
+    {
+      "id": "MN_ST_PAUL_CIVIC_GUIDE",
+      "tile": [
+        43,
+        13
+      ],
+      "sprite": "SPRITE_GENTLEMAN",
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "event_flag": "-1",
+      "script": "MN_ST_PAUL_CIVIC_GUIDE"
+    },
+    {
+      "id": "MN_ST_PAUL_FAIR_STEWARD",
+      "tile": [
+        30,
+        7
+      ],
+      "sprite": "SPRITE_POKEFAN_F",
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "event_flag": "-1",
+      "script": "MN_ST_PAUL_FAIR_STEWARD"
+    },
+    {
+      "id": "MN_ST_PAUL_GARDENER",
+      "tile": [
+        17,
+        43
+      ],
+      "sprite": "SPRITE_TEACHER",
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "event_flag": "-1",
+      "script": "MN_ST_PAUL_GARDENER"
+    },
+    {
+      "id": "MN_ST_PAUL_DEPOT_PASSENGER",
+      "tile": [
+        68,
+        48
+      ],
+      "sprite": "SPRITE_TEACHER",
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "event_flag": "-1",
+      "script": "MN_ST_PAUL_DEPOT_PASSENGER"
+    },
+    {
+      "id": "MN_ST_PAUL_BLUFF_WALKER",
+      "tile": [
+        35,
+        21
+      ],
+      "sprite": "SPRITE_GRAMPS",
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "event_flag": "-1",
+      "script": "MN_ST_PAUL_BLUFF_WALKER"
+    },
+    {
+      "id": "MN_ST_PAUL_RIVER_FISHER",
+      "tile": [
+        43,
+        45
+      ],
+      "sprite": "SPRITE_FISHER",
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "event_flag": "-1",
+      "script": "MN_ST_PAUL_RIVER_FISHER"
+    },
+    {
+      "id": "MN_ST_PAUL_STREET_READER",
+      "tile": [
+        27,
+        37
+      ],
+      "sprite": "SPRITE_LASS",
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "event_flag": "-1",
+      "script": "MN_ST_PAUL_STREET_READER"
+    },
+    {
+      "id": "MN_ST_PAUL_FAIR_GUARD_WEST",
+      "tile": [
+        28,
+        2
+      ],
+      "sprite": "SPRITE_OFFICER",
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "event_flag": "-1",
+      "script": "MN_ST_PAUL_FAIR_GUARD_WEST"
+    },
+    {
+      "id": "MN_ST_PAUL_FAIR_GUARD_EAST",
+      "tile": [
+        29,
+        2
+      ],
+      "sprite": "SPRITE_OFFICER",
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "event_flag": "-1",
+      "script": "MN_ST_PAUL_FAIR_GUARD_EAST"
+    },
+    {
+      "id": "MN_SPX_MIDWAY_VISITOR",
+      "tile": [
+        17,
+        17
+      ],
+      "sprite": "SPRITE_POKEFAN_M",
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "event_flag": "-1",
+      "script": "MN_SPX_MIDWAY_VISITOR"
+    },
+    {
+      "id": "MN_SPX_BRIDGE_WALKER",
+      "tile": [
+        25,
+        55
+      ],
+      "sprite": "SPRITE_POKEFAN_M",
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "event_flag": "-1",
+      "script": "MN_SPX_BRIDGE_WALKER"
+    },
+    {
+      "id": "MN_SPX_EAST_HARBOR_WALKER",
+      "tile": [
+        59,
+        61
+      ],
+      "sprite": "SPRITE_POKEFAN_M",
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "event_flag": "-1",
+      "script": "MN_SPX_EAST_HARBOR_WALKER"
+    },
+    {
+      "id": "MN_SPX_SUMMIT_READER",
+      "tile": [
+        63,
+        13
+      ],
+      "sprite": "SPRITE_POKEFAN_M",
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "event_flag": "-1",
+      "script": "MN_SPX_SUMMIT_READER"
+    },
+    {
+      "id": "MN_SPX_TRAINER_1",
+      "tile": [
+        19,
+        29
+      ],
+      "sprite": "SPRITE_LASS",
+      "object_type": "OBJECTTYPE_TRAINER",
+      "event_flag": "-1",
+      "script": "MN_SPX_TRAINER_1"
+    },
+    {
+      "id": "MN_SPX_TRAINER_8",
+      "tile": [
+        71,
+        61
+      ],
+      "sprite": "SPRITE_YOUNGSTER",
+      "object_type": "OBJECTTYPE_TRAINER",
+      "event_flag": "-1",
+      "script": "MN_SPX_TRAINER_8"
+    },
+    {
+      "id": "MN_SPX_ITEM_1",
+      "tile": [
+        5,
+        29
+      ],
+      "sprite": "SPRITE_POKE_BALL",
+      "object_type": "OBJECTTYPE_ITEMBALL",
+      "event_flag": "EVENT_MN_SPX_ITEM_1",
+      "script": "MN_SPX_ITEM_1"
+    },
+    {
+      "id": "MN_SPX_ITEM_2",
+      "tile": [
+        29,
+        25
+      ],
+      "sprite": "SPRITE_POKE_BALL",
+      "object_type": "OBJECTTYPE_ITEMBALL",
+      "event_flag": "EVENT_MN_SPX_ITEM_2",
+      "script": "MN_SPX_ITEM_2"
+    },
+    {
+      "id": "MN_SPX_ITEM_3",
+      "tile": [
+        63,
+        3
+      ],
+      "sprite": "SPRITE_POKE_BALL",
+      "object_type": "OBJECTTYPE_ITEMBALL",
+      "event_flag": "EVENT_MN_SPX_ITEM_3",
+      "script": "MN_SPX_ITEM_3"
+    },
+    {
+      "id": "MN_SPX_ITEM_4",
+      "tile": [
+        61,
+        23
+      ],
+      "sprite": "SPRITE_POKE_BALL",
+      "object_type": "OBJECTTYPE_ITEMBALL",
+      "event_flag": "EVENT_MN_SPX_ITEM_4",
+      "script": "MN_SPX_ITEM_4"
+    },
+    {
+      "id": "MN_SPX_ITEM_5",
+      "tile": [
+        27,
+        43
+      ],
+      "sprite": "SPRITE_POKE_BALL",
+      "object_type": "OBJECTTYPE_ITEMBALL",
+      "event_flag": "EVENT_MN_SPX_ITEM_5",
+      "script": "MN_SPX_ITEM_5"
+    },
+    {
+      "id": "MN_SPX_ITEM_6",
+      "tile": [
+        25,
+        63
+      ],
+      "sprite": "SPRITE_POKE_BALL",
+      "object_type": "OBJECTTYPE_ITEMBALL",
+      "event_flag": "EVENT_MN_SPX_ITEM_6",
+      "script": "MN_SPX_ITEM_6"
+    },
+    {
+      "id": "MN_SPX_ITEM_7",
+      "tile": [
+        49,
+        63
+      ],
+      "sprite": "SPRITE_POKE_BALL",
+      "object_type": "OBJECTTYPE_ITEMBALL",
+      "event_flag": "EVENT_MN_SPX_ITEM_7",
+      "script": "MN_SPX_ITEM_7"
+    },
+    {
+      "id": "MN_SPX_ITEM_8",
+      "tile": [
+        73,
+        63
+      ],
+      "sprite": "SPRITE_POKE_BALL",
+      "object_type": "OBJECTTYPE_ITEMBALL",
+      "event_flag": "EVENT_MN_SPX_ITEM_8",
+      "script": "MN_SPX_ITEM_8"
+    }
+  ],
+  "installed_readings": [
+    {
+      "script": "MN_ST_PAUL_SIGN_CLINIC",
+      "tile": [
+        19,
+        41
+      ],
+      "event_type": "BGEVENT_READ"
+    },
+    {
+      "script": "MN_ST_PAUL_SIGN_MART",
+      "tile": [
+        25,
+        35
+      ],
+      "event_type": "BGEVENT_READ"
+    },
+    {
+      "script": "MN_ST_PAUL_SIGN_CAPITOL",
+      "tile": [
+        47,
+        13
+      ],
+      "event_type": "BGEVENT_READ"
+    },
+    {
+      "script": "MN_ST_PAUL_SIGN_GYM",
+      "tile": [
+        51,
+        33
+      ],
+      "event_type": "BGEVENT_READ"
+    },
+    {
+      "script": "MN_ST_PAUL_SIGN_DEPOT",
+      "tile": [
+        71,
+        49
+      ],
+      "event_type": "BGEVENT_READ"
+    },
+    {
+      "script": "MN_ST_PAUL_SIGN_FAIR",
+      "tile": [
+        31,
+        7
+      ],
+      "event_type": "BGEVENT_READ"
+    },
+    {
+      "script": "MN_ST_PAUL_SIGN_RIVER",
+      "tile": [
+        41,
+        45
+      ],
+      "event_type": "BGEVENT_READ"
+    },
+    {
+      "script": "MN_ST_PAUL_SIGN_WAYFINDING",
+      "tile": [
+        29,
+        39
+      ],
+      "event_type": "BGEVENT_READ"
+    },
+    {
+      "script": "MN_SPX_RIVER_RECORD_1",
+      "tile": [
+        19,
+        47
+      ],
+      "event_type": "BGEVENT_READ"
+    },
+    {
+      "script": "MN_SPX_RIVER_RECORD_2",
+      "tile": [
+        59,
+        57
+      ],
+      "event_type": "BGEVENT_READ"
+    },
+    {
+      "script": "MN_SPX_RIVER_RECORD_3",
+      "tile": [
+        47,
+        45
+      ],
+      "event_type": "BGEVENT_READ"
+    }
+  ],
+  "current_revision_contract_file": "revisions/st-paul-inhabited-streets-v02/recomposition.contract.json",
+  "historical_native_status": "Published660-map compact40\u00d734 StPaul in twin-cities-compact-v01; nine local controller cases and15native GPU captures passed. No earned progression or final user visual approval claimed.",
+  "current_pack": {
+    "path": "content-packs/minnesota-st-paul-inhabited-streets-v03.crystalpack",
+    "sha256": "43f491c876f40823ff43da723f33e405d94d2ff59fc49d41b87d929f594d3e9d",
+    "content_identity": "51f0a44e976179272c988681fcc5fae465663a505a17926a84688700ff1ff867"
+  }
+}

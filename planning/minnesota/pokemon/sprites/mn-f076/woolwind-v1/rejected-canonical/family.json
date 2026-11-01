@@ -1,0 +1,86 @@
+{
+  "id": "MN_F076",
+  "region": "north_shore",
+  "classification": "ordinary",
+  "theme": "Winter logging-camp wool and overhead drying lines become a living patchwork ghost. A mitten-shaped hollow grows two sleeve-lift wings, then a broad three-panel quilt body with mitten-hook tips. Solid sewn cloth is the actual creature, not clothing on a hidden person or an animal carrying a prop.",
+  "members": [
+    {
+      "id": "MN_163",
+      "name": "Mitwist",
+      "types": [
+        "GHOST"
+      ],
+      "stage": 1,
+      "evolves_to": "MN_164"
+    },
+    {
+      "id": "MN_164",
+      "name": "Hemhowl",
+      "types": [
+        "GHOST",
+        "FLYING"
+      ],
+      "stage": 2,
+      "evolves_to": "MN_165"
+    },
+    {
+      "id": "MN_165",
+      "name": "Gustitch",
+      "types": [
+        "GHOST",
+        "FLYING"
+      ],
+      "stage": 3,
+      "evolves_to": null
+    }
+  ],
+  "evolution_design": {
+    "regional_evidence": "Minnesota DNR describes wool clothing, including hand coverings, and difficulty drying wet wool overnight in logging camps. MNHS describes garments suspended overhead in bunkhouses.",
+    "original_invention": "A self-sewing ghost turns leftover wool into a wind-catching body. The supernatural being, flight, names and behavior are original fiction; no real haunting, human victim or sacred being is represented.",
+    "body_growth": [
+      {
+        "species_id": "MN_163",
+        "body": "One small rounded mitten body with a large hooked thumb, curled lower cuff and one broad patch seam. A paired large-eyed face belongs to the solid cloth body.",
+        "silhouette": "Compact upright mitten hook with one curled cuff."
+      },
+      {
+        "species_id": "MN_164",
+        "body": "Mitten body unfolds into a hooded center, two broad sleeve-lift wings with curled mitten tips, two offset panels and a short square-cut hem.",
+        "silhouette": "Tall folded center between two lifted rectangular sleeve wings; flight begins."
+      },
+      {
+        "species_id": "MN_165",
+        "body": "Three broad sewn quilt panels form a large kite-like glider body, topped by a rolled collar face. Two thick mitten-hook wing tips and three square-cut lower tabs remain solid, distinct anatomy.",
+        "silhouette": "Wide substantial quilt kite, huge hooked tips, rolled collar head and three squared hem tabs."
+      }
+    ]
+  },
+  "habitat": "Windy clearings and old winter logging-camp margins in the North Shore forest; encounter placement remains a proposal.",
+  "proposed_routes": [
+    {
+      "id": "MN_R11",
+      "placement": "Proposed optional forest-camp clearing branch near the coastal route, subject to separate map authoring.",
+      "status": "encounter concept only; no existing map or script is changed"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Minnesota DNR \u2014 Logging Camps: The Early Years",
+      "url": "https://www.dnr.state.mn.us/forestry/history/logging-camps.html",
+      "supports": "Wool work clothing and hand coverings; wet wool could fail to dry in the bunkhouse overnight.",
+      "source_kind": "primary Minnesota institutional history",
+      "fantasy_extension": "The wool becomes a living mitten, sleeve and quilt-bodied ghost."
+    },
+    {
+      "title": "Minnesota Historical Society \u2014 Logging Industry",
+      "url": "https://www.mnhs.org/foresthistory/learn/logging",
+      "supports": "Logging-camp garments were suspended overhead to dry in bunkhouses.",
+      "source_kind": "primary Minnesota institutional history",
+      "fantasy_extension": "Suspended fabric becomes sleeve-lift flight and a wind-catching patchwork body."
+    }
+  ],
+  "nonduplication": "Unlike Nodcloak's prairie-smoke plant plume, this is dense stitched wool with conspicuous mitten hooks, sleeve wings and broad quilt panels. No generic wisp cloak, feathered bird, cloud, balloon, sacred regalia or human inside a garment. It replaces the seiche wrestler with the same stable F076/MN163\u2013165 identities.",
+  "sprite_constraints": "Native 56\u00d756 front full body facing left; 48\u00d748 close rear portrait facing upper-right. Exactly four flat inks per species, independent stage palettes; large exposed eye windows and black pupils; stepped solid black contours. Current native source_center sampling; no painted facial pixels after conversion.",
+  "design_status": "user-rejected-native-redesign-required",
+  "design_lock": "Not approved for publication. User rejected owl-like silhouette; retain stable IDs and Ghost/Flying types while redesigning cloth anatomy."
+}

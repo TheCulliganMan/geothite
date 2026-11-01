@@ -1,0 +1,40 @@
+{
+  "name": "REN",
+  "role": "Cycle Tourist",
+  "status": "accepted-native-playable",
+  "source": "native-pixels-v2.json",
+  "integration": "placement-v1.json",
+  "controller": "placement-v1.json",
+  "native": "target/trainer-cast/cycle/native-v2",
+  "pack": "content-packs/minnesota-trainer-cast-14-v01.crystalpack",
+  "gameplay": "target/trainer-cast/cycle/gameplay-v1",
+  "log": "target/trainer-cast/cycle/controller-v1.log",
+  "reference_review": "actual-crystal-sprites-common-palette-and-scale",
+  "review_notes": "Vented helmet, red striped jersey, shorts and socks match the cycling identity in both views. Bicycle is battle-only; native spokes, continuous forks/frame, helmet vents and face were hand-refined after conversion. Field poses hand-authored on foot with real arm/foot changes. Actual Crystal comparisons and production captures reviewed. Complete new St Cloud encounter, PP, save/load, victory flag and repeat talk pass.",
+  "fixture": "Three legal level-60 Minnesota starters; adjacent position and explicit prior-access setup. Local encounter/rewards proof, not earned traversal or intended-level balance.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/cast/14-cycle-tourist/native-pixels-v2.json": "4ee3def549a05ae8703b3d9bf140a4087ff5919debe01391d6ad1ce974d137a3",
+    "planning/minnesota/npcs/cast/14-cycle-tourist/placement-v1.json": "e7ec69a0045723f697560554fc989070e5a12a98287037e4049b725bb2308baf",
+    "target/trainer-cast/cycle/native-v2/verification.json": "b7e67233eb4cf35fd11d4b1a5dce095d357b2fcf4d8122d1f965b9d56cfdeaf3",
+    "content-packs/minnesota-trainer-cast-14-v01.crystalpack": "6709779ce4948d7815ccae5bf4c88d7017473679e9f9c98d80bc2a9b7adf6155",
+    "target/trainer-cast/cycle/controller-v1.log": "3e4bb36359128cf173e014ccd037fd8ed47b3bd7225caa269a52a8ead4f1270d",
+    "target/trainer-cast/cycle/gameplay-v1/original-npc-trainer-intro.png": "dc9b49b3e297a5ce617bcb3af1980002f7893b6d9945fa895e4ab9eccb260be5",
+    "target/trainer-cast/cycle/gameplay-v1/original-npc-overworld-state.png": "4fae1c4920041d17035e520ca3ee9e46b2e2ff331f80fadc0d75e6d735cd1741",
+    "target/trainer-cast/cycle/gameplay-v1/original-npc-first-turn.png": "4878a6c503e887e041c7530f36d62d41657d4a99931fc98b549de1c5fa2d74cd",
+    "planning/minnesota/npcs/cast/14-cycle-tourist/battle-reference-prompt.txt": "851d85cf546662e019689d5bb322f874a079e81ba9fab64025753be7b83fc82c",
+    "planning/minnesota/npcs/cast/14-cycle-tourist/battle-reference-v1.png": "696b13355e380cab339362e57250f8dc62981ac58ef7138e336a7c42f2b46989",
+    "target/trainer-cast/cycle/real-comparison.png": "0edcfe23127bb41c1b7f3f528843afd346f148fce7dcc3742eb375e126bc7137",
+    "target/trainer-cast/cycle/battle-real-comparison.png": "d1de6ef0f3337c70c20237592aff49ad28097aa7ecbb1dba0baa28e0a993a380"
+  },
+  "final_pack": "content-packs/minnesota-trainer-cast-36-v01.crystalpack",
+  "final_gameplay": "target/trainer-cast/final-audit/gameplay/14-cycle-tourist",
+  "final_log": "target/trainer-cast/final-audit/gameplay/14-cycle-tourist/controller.log",
+  "final_status": "accepted-native-playable-final-pack",
+  "final_review": "Actual battle intro and field captures inspected on exact final pack; art retains accepted native sources and palette.",
+  "final_evidence_sha256": {
+    "target/trainer-cast/final-audit/gameplay/14-cycle-tourist/controller.log": "4ef5dd92577f33d265211dd0aede3d722568ee924337df9a7d7dcc0a1ee99213",
+    "target/trainer-cast/final-audit/gameplay/14-cycle-tourist/original-npc-trainer-intro.png": "dc9b49b3e297a5ce617bcb3af1980002f7893b6d9945fa895e4ab9eccb260be5",
+    "target/trainer-cast/final-audit/gameplay/14-cycle-tourist/original-npc-overworld-state.png": "f8e57a2b3b61862636287711f6580cd59401c613e6429dc9dd80d0c365a7644d",
+    "target/trainer-cast/final-audit/gameplay/14-cycle-tourist/original-npc-first-turn.png": "4878a6c503e887e041c7530f36d62d41657d4a99931fc98b549de1c5fa2d74cd"
+  }
+}

@@ -1,0 +1,799 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "map": "MnMinneapolis",
+      "approach": [
+        48,
+        21
+      ],
+      "id": "MN_EXTRA_MPLS_CYCLE_01",
+      "display_name": "JULES",
+      "trainer_class": "CAMPER",
+      "sprite": "SPRITE_CHRIS_BIKE",
+      "tile": [
+        48,
+        20
+      ],
+      "facing": "south",
+      "movement": "patrol_clockwise",
+      "sight_range": 1,
+      "defeated_flag": "EVENT_MN_EXTRA_MPLS_CYCLE_01",
+      "party": [
+        {
+          "species": "OATLET",
+          "level": 18
+        },
+        {
+          "species": "BIRCHIT",
+          "level": 20
+        }
+      ],
+      "before_lines": [
+        "Mill loop done!",
+        "Battle, then work?"
+      ],
+      "after_lines": [
+        "You broke my pace!"
+      ],
+      "loss_lines": [
+        "Next lap is yours!"
+      ],
+      "patrol_size": [
+        1,
+        15
+      ],
+      "optional_battle": true
+    },
+    {
+      "map": "MnMinneapolis",
+      "approach": [
+        60,
+        22
+      ],
+      "id": "MN_EXTRA_MPLS_CYCLE_02",
+      "display_name": "MAYA",
+      "trainer_class": "PICNICKER",
+      "sprite": "SPRITE_KRIS_BIKE",
+      "tile": [
+        60,
+        21
+      ],
+      "facing": "south",
+      "movement": "patrol_clockwise",
+      "sight_range": 1,
+      "defeated_flag": "EVENT_MN_EXTRA_MPLS_CYCLE_02",
+      "party": [
+        {
+          "species": "NIBBIN",
+          "level": 19
+        },
+        {
+          "species": "GOOSNIDE",
+          "level": 21
+        }
+      ],
+      "before_lines": [
+        "I bike to work.",
+        "Battle on break?"
+      ],
+      "after_lines": [
+        "My shift is soon."
+      ],
+      "loss_lines": [
+        "A good morning!"
+      ],
+      "patrol_size": [
+        1,
+        15
+      ],
+      "optional_battle": true
+    },
+    {
+      "map": "MnMinneapolis",
+      "approach": [
+        60,
+        36
+      ],
+      "id": "MN_EXTRA_MPLS_CYCLE_03",
+      "display_name": "REED",
+      "trainer_class": "CAMPER",
+      "sprite": "SPRITE_CHRIS_BIKE",
+      "tile": [
+        60,
+        35
+      ],
+      "facing": "south",
+      "movement": "patrol_clockwise",
+      "sight_range": 1,
+      "defeated_flag": "EVENT_MN_EXTRA_MPLS_CYCLE_03",
+      "party": [
+        {
+          "species": "BEETYNAMO",
+          "level": 20
+        },
+        {
+          "species": "CHORIP",
+          "level": 22
+        }
+      ],
+      "before_lines": [
+        "One more lap?",
+        "Battle first?"
+      ],
+      "after_lines": [
+        "Time for a rest!"
+      ],
+      "loss_lines": [
+        "Now for that lap!"
+      ],
+      "patrol_size": [
+        15,
+        1
+      ],
+      "optional_battle": true
+    },
+    {
+      "map": "MnMinneapolis",
+      "approach": [
+        41,
+        22
+      ],
+      "id": "MN_EXTRA_MPLS_CYCLE_04",
+      "display_name": "NORA",
+      "trainer_class": "PICNICKER",
+      "sprite": "SPRITE_KRIS_BIKE",
+      "tile": [
+        40,
+        22
+      ],
+      "facing": "east",
+      "movement": "patrol_clockwise",
+      "sight_range": 1,
+      "defeated_flag": "EVENT_MN_EXTRA_MPLS_CYCLE_04",
+      "party": [
+        {
+          "species": "BIRCHIT",
+          "level": 21
+        },
+        {
+          "species": "AGATOT",
+          "level": 23
+        }
+      ],
+      "before_lines": [
+        "Hear those falls?",
+        "My team roars too!"
+      ],
+      "after_lines": [
+        "That woke us up!"
+      ],
+      "loss_lines": [
+        "What a sound!"
+      ],
+      "patrol_size": [
+        1,
+        15
+      ],
+      "optional_battle": true
+    },
+    {
+      "map": "MnMinneapolis",
+      "approach": [
+        41,
+        23
+      ],
+      "id": "MN_EXTRA_MPLS_CYCLE_05",
+      "display_name": "ELI",
+      "trainer_class": "CAMPER",
+      "sprite": "SPRITE_CHRIS_BIKE",
+      "tile": [
+        40,
+        23
+      ],
+      "facing": "east",
+      "movement": "patrol_clockwise",
+      "sight_range": 1,
+      "defeated_flag": "EVENT_MN_EXTRA_MPLS_CYCLE_05",
+      "party": [
+        {
+          "species": "GOOSNIDE",
+          "level": 18
+        },
+        {
+          "species": "GILLPUP",
+          "level": 20
+        }
+      ],
+      "before_lines": [
+        "I fixed this bike.",
+        "Now to train us!"
+      ],
+      "after_lines": [
+        "More practice!"
+      ],
+      "loss_lines": [
+        "Repairs paid off!"
+      ],
+      "patrol_size": [
+        1,
+        15
+      ],
+      "optional_battle": true
+    },
+    {
+      "map": "MnMinneapolis",
+      "approach": [
+        40,
+        25
+      ],
+      "id": "MN_EXTRA_MPLS_CYCLE_06",
+      "display_name": "TESS",
+      "trainer_class": "PICNICKER",
+      "sprite": "SPRITE_KRIS_BIKE",
+      "tile": [
+        40,
+        24
+      ],
+      "facing": "south",
+      "movement": "patrol_clockwise",
+      "sight_range": 1,
+      "defeated_flag": "EVENT_MN_EXTRA_MPLS_CYCLE_06",
+      "party": [
+        {
+          "species": "CHORIP",
+          "level": 19
+        },
+        {
+          "species": "OATLET",
+          "level": 21
+        }
+      ],
+      "before_lines": [
+        "Ride with care.",
+        "Battle with skill!"
+      ],
+      "after_lines": [
+        "I rushed my turn!"
+      ],
+      "loss_lines": [
+        "Good timing, team!"
+      ],
+      "patrol_size": [
+        1,
+        15
+      ],
+      "optional_battle": true
+    },
+    {
+      "map": "MnMinneapolis",
+      "approach": [
+        60,
+        28
+      ],
+      "id": "MN_EXTRA_MPLS_CYCLE_07",
+      "display_name": "FINN",
+      "trainer_class": "CAMPER",
+      "sprite": "SPRITE_CHRIS_BIKE",
+      "tile": [
+        60,
+        27
+      ],
+      "facing": "south",
+      "movement": "patrol_clockwise",
+      "sight_range": 1,
+      "defeated_flag": "EVENT_MN_EXTRA_MPLS_CYCLE_07",
+      "party": [
+        {
+          "species": "AGATOT",
+          "level": 20
+        },
+        {
+          "species": "NIBBIN",
+          "level": 22
+        }
+      ],
+      "before_lines": [
+        "I brake for folks.",
+        "Battle at a stop?"
+      ],
+      "after_lines": [
+        "Thanks for that!"
+      ],
+      "loss_lines": [
+        "Enjoy the trail!"
+      ],
+      "patrol_size": [
+        15,
+        9
+      ],
+      "optional_battle": true
+    },
+    {
+      "map": "MnMinneapolis",
+      "approach": [
+        61,
+        28
+      ],
+      "id": "MN_EXTRA_MPLS_CYCLE_08",
+      "display_name": "LENA",
+      "trainer_class": "PICNICKER",
+      "sprite": "SPRITE_KRIS_BIKE",
+      "tile": [
+        61,
+        27
+      ],
+      "facing": "south",
+      "movement": "patrol_clockwise",
+      "sight_range": 1,
+      "defeated_flag": "EVENT_MN_EXTRA_MPLS_CYCLE_08",
+      "party": [
+        {
+          "species": "GILLPUP",
+          "level": 21
+        },
+        {
+          "species": "BEETYNAMO",
+          "level": 23
+        }
+      ],
+      "before_lines": [
+        "Hands on the bars!",
+        "No riding tricks.",
+        "My team's tricks?",
+        "Let's battle!"
+      ],
+      "after_lines": [
+        "You earned that!"
+      ],
+      "loss_lines": [
+        "A steady win!"
+      ],
+      "patrol_size": [
+        14,
+        9
+      ],
+      "optional_battle": true
+    },
+    {
+      "map": "MnMinneapolis",
+      "approach": [
+        69,
+        28
+      ],
+      "id": "MN_EXTRA_MPLS_CYCLE_09",
+      "display_name": "KAI",
+      "trainer_class": "CAMPER",
+      "sprite": "SPRITE_CHRIS_BIKE",
+      "tile": [
+        69,
+        27
+      ],
+      "facing": "south",
+      "movement": "patrol_clockwise",
+      "sight_range": 1,
+      "defeated_flag": "EVENT_MN_EXTRA_MPLS_CYCLE_09",
+      "party": [
+        {
+          "species": "OATLET",
+          "level": 18
+        },
+        {
+          "species": "BIRCHIT",
+          "level": 20
+        }
+      ],
+      "before_lines": [
+        "Chain oiled.",
+        "Team ready. You?"
+      ],
+      "after_lines": [
+        "Training next!"
+      ],
+      "loss_lines": [
+        "A smooth ride!"
+      ],
+      "patrol_size": [
+        6,
+        10
+      ],
+      "optional_battle": true
+    },
+    {
+      "map": "MnMinneapolis",
+      "approach": [
+        38,
+        45
+      ],
+      "id": "MN_EXTRA_MPLS_CYCLE_10",
+      "display_name": "RUTH",
+      "trainer_class": "PICNICKER",
+      "sprite": "SPRITE_KRIS_BIKE",
+      "tile": [
+        38,
+        44
+      ],
+      "facing": "south",
+      "movement": "patrol_clockwise",
+      "sight_range": 1,
+      "defeated_flag": "EVENT_MN_EXTRA_MPLS_CYCLE_10",
+      "party": [
+        {
+          "species": "NIBBIN",
+          "level": 19
+        },
+        {
+          "species": "GOOSNIDE",
+          "level": 21
+        }
+      ],
+      "before_lines": [
+        "Friends are late.",
+        "Battle as we wait?"
+      ],
+      "after_lines": [
+        "I'll tell my pals!"
+      ],
+      "loss_lines": [
+        "That passed time!"
+      ],
+      "patrol_size": [
+        15,
+        3
+      ],
+      "optional_battle": true
+    },
+    {
+      "map": "MnMinneapolis",
+      "approach": [
+        37,
+        47
+      ],
+      "id": "MN_EXTRA_MPLS_CYCLE_11",
+      "display_name": "OWEN",
+      "trainer_class": "CAMPER",
+      "sprite": "SPRITE_CHRIS_BIKE",
+      "tile": [
+        37,
+        46
+      ],
+      "facing": "south",
+      "movement": "patrol_clockwise",
+      "sight_range": 1,
+      "defeated_flag": "EVENT_MN_EXTRA_MPLS_CYCLE_11",
+      "party": [
+        {
+          "species": "BEETYNAMO",
+          "level": 20
+        },
+        {
+          "species": "CHORIP",
+          "level": 22
+        }
+      ],
+      "before_lines": [
+        "Bridge lap done!",
+        "A fast battle?"
+      ],
+      "after_lines": [
+        "Out of steam!"
+      ],
+      "loss_lines": [
+        "Some speed left!"
+      ],
+      "patrol_size": [
+        15,
+        1
+      ],
+      "optional_battle": true
+    },
+    {
+      "map": "MnMinneapolis",
+      "approach": [
+        40,
+        45
+      ],
+      "id": "MN_EXTRA_MPLS_CYCLE_12",
+      "display_name": "IRIS",
+      "trainer_class": "PICNICKER",
+      "sprite": "SPRITE_KRIS_BIKE",
+      "tile": [
+        40,
+        44
+      ],
+      "facing": "south",
+      "movement": "patrol_clockwise",
+      "sight_range": 1,
+      "defeated_flag": "EVENT_MN_EXTRA_MPLS_CYCLE_12",
+      "party": [
+        {
+          "species": "BIRCHIT",
+          "level": 21
+        },
+        {
+          "species": "AGATOT",
+          "level": 23
+        }
+      ],
+      "before_lines": [
+        "Just one errand.",
+        "And one battle?"
+      ],
+      "after_lines": [
+        "Off for groceries!"
+      ],
+      "loss_lines": [
+        "One more detour?"
+      ],
+      "patrol_size": [
+        14,
+        3
+      ],
+      "optional_battle": true
+    },
+    {
+      "map": "MnMinneapolis",
+      "approach": [
+        41,
+        45
+      ],
+      "id": "MN_EXTRA_MPLS_CYCLE_13",
+      "display_name": "THEO",
+      "trainer_class": "CAMPER",
+      "sprite": "SPRITE_CHRIS_BIKE",
+      "tile": [
+        41,
+        44
+      ],
+      "facing": "south",
+      "movement": "patrol_clockwise",
+      "sight_range": 1,
+      "defeated_flag": "EVENT_MN_EXTRA_MPLS_CYCLE_13",
+      "party": [
+        {
+          "species": "GOOSNIDE",
+          "level": 18
+        },
+        {
+          "species": "GILLPUP",
+          "level": 20
+        }
+      ],
+      "before_lines": [
+        "My legs need rest.",
+        "My team disagrees!"
+      ],
+      "after_lines": [
+        "Now we all agree."
+      ],
+      "loss_lines": [
+        "They go all day!"
+      ],
+      "patrol_size": [
+        15,
+        3
+      ],
+      "optional_battle": true
+    },
+    {
+      "map": "MnMinneapolis",
+      "approach": [
+        46,
+        45
+      ],
+      "id": "MN_EXTRA_MPLS_CYCLE_14",
+      "display_name": "VERA",
+      "trainer_class": "PICNICKER",
+      "sprite": "SPRITE_KRIS_BIKE",
+      "tile": [
+        46,
+        44
+      ],
+      "facing": "south",
+      "movement": "patrol_clockwise",
+      "sight_range": 1,
+      "defeated_flag": "EVENT_MN_EXTRA_MPLS_CYCLE_14",
+      "party": [
+        {
+          "species": "CHORIP",
+          "level": 19
+        },
+        {
+          "species": "OATLET",
+          "level": 21
+        }
+      ],
+      "before_lines": [
+        "Market loop done!",
+        "Time for a battle?"
+      ],
+      "after_lines": [
+        "Hope my eggs held!"
+      ],
+      "loss_lines": [
+        "Home for dinner!"
+      ],
+      "patrol_size": [
+        1,
+        15
+      ],
+      "optional_battle": true
+    },
+    {
+      "map": "MnMinneapolis",
+      "approach": [
+        42,
+        47
+      ],
+      "id": "MN_EXTRA_MPLS_CYCLE_15",
+      "display_name": "LUKE",
+      "trainer_class": "CAMPER",
+      "sprite": "SPRITE_CHRIS_BIKE",
+      "tile": [
+        42,
+        46
+      ],
+      "facing": "south",
+      "movement": "patrol_clockwise",
+      "sight_range": 1,
+      "defeated_flag": "EVENT_MN_EXTRA_MPLS_CYCLE_15",
+      "party": [
+        {
+          "species": "AGATOT",
+          "level": 20
+        },
+        {
+          "species": "NIBBIN",
+          "level": 22
+        }
+      ],
+      "before_lines": [
+        "Pedal, then coast.",
+        "Battle at a stop?"
+      ],
+      "after_lines": [
+        "Coasting home!"
+      ],
+      "loss_lines": [
+        "Back up to speed!"
+      ],
+      "patrol_size": [
+        15,
+        1
+      ],
+      "optional_battle": true
+    },
+    {
+      "map": "MnMinneapolis",
+      "approach": [
+        38,
+        47
+      ],
+      "id": "MN_EXTRA_MPLS_CYCLE_16",
+      "display_name": "ZOE",
+      "trainer_class": "PICNICKER",
+      "sprite": "SPRITE_KRIS_BIKE",
+      "tile": [
+        38,
+        46
+      ],
+      "facing": "south",
+      "movement": "patrol_clockwise",
+      "sight_range": 1,
+      "defeated_flag": "EVENT_MN_EXTRA_MPLS_CYCLE_16",
+      "party": [
+        {
+          "species": "GILLPUP",
+          "level": 21
+        },
+        {
+          "species": "BEETYNAMO",
+          "level": 23
+        }
+      ],
+      "before_lines": [
+        "Love that breeze!",
+        "A lakeside battle?"
+      ],
+      "after_lines": [
+        "A fair win!"
+      ],
+      "loss_lines": [
+        "A strong finish!"
+      ],
+      "patrol_size": [
+        15,
+        1
+      ],
+      "optional_battle": true
+    },
+    {
+      "map": "MnMinneapolis",
+      "approach": [
+        39,
+        47
+      ],
+      "id": "MN_EXTRA_MPLS_CYCLE_17",
+      "display_name": "SAM",
+      "trainer_class": "CAMPER",
+      "sprite": "SPRITE_CHRIS_BIKE",
+      "tile": [
+        39,
+        46
+      ],
+      "facing": "south",
+      "movement": "patrol_clockwise",
+      "sight_range": 1,
+      "defeated_flag": "EVENT_MN_EXTRA_MPLS_CYCLE_17",
+      "party": [
+        {
+          "species": "OATLET",
+          "level": 18
+        },
+        {
+          "species": "BIRCHIT",
+          "level": 20
+        }
+      ],
+      "before_lines": [
+        "Hills train legs.",
+        "Battles train us!"
+      ],
+      "after_lines": [
+        "That was a climb!"
+      ],
+      "loss_lines": [
+        "Getting stronger!"
+      ],
+      "patrol_size": [
+        15,
+        1
+      ],
+      "optional_battle": true
+    },
+    {
+      "map": "MnMinneapolis",
+      "approach": [
+        41,
+        47
+      ],
+      "id": "MN_EXTRA_MPLS_CYCLE_18",
+      "display_name": "ADA",
+      "trainer_class": "PICNICKER",
+      "sprite": "SPRITE_KRIS_BIKE",
+      "tile": [
+        41,
+        46
+      ],
+      "facing": "south",
+      "movement": "patrol_clockwise",
+      "sight_range": 1,
+      "defeated_flag": "EVENT_MN_EXTRA_MPLS_CYCLE_18",
+      "party": [
+        {
+          "species": "NIBBIN",
+          "level": 19
+        },
+        {
+          "species": "GOOSNIDE",
+          "level": 21
+        }
+      ],
+      "before_lines": [
+        "Last lap!",
+        "One last battle?"
+      ],
+      "after_lines": [
+        "What a finish!"
+      ],
+      "loss_lines": [
+        "See you next ride!"
+      ],
+      "patrol_size": [
+        15,
+        1
+      ],
+      "optional_battle": true
+    }
+  ]
+}

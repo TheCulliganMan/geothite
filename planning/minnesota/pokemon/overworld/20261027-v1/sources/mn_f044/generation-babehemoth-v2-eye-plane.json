@@ -1,0 +1,10 @@
+{
+  "tool": "built-in image_gen",
+  "default_path": "/Users/ryanculligan/.codex/generated_images/01a178da-4cf1-7e01-8516-667a332dc790/exec-389ab5b8-13af-4ea4-8bab-fc5c064d100d.png",
+  "retained_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f044/babehemoth.overworld.imagegen-v2-eye-plane.png",
+  "sha256": "dbd1383375cc30bcb24de3ecdad64d2c49de3ed772518f0d66da7cdb82e78988",
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f044/prompt-babehemoth-eye-plane-v2.txt",
+  "input_target": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f044/babehemoth.overworld.imagegen-v1.png",
+  "input_target_sha256": "f6c31b357aeb7b62104f2f6cd72cddb48aa31e83f78829f20fd22fa53a15058f",
+  "status": "source eye correction; native/context pending"
+}

@@ -1,0 +1,9 @@
+{
+  "owned_files": [
+    "crates/crystal-assets/src/r01_stair_guidance.rs",
+    "crates/crystal-assets/src/bin/revise_r01_stair_guidance.rs"
+  ],
+  "owned_leaves_exit_code": 0,
+  "workspace_exit_code": 1,
+  "workspace_log": ".local/route-grass-review/r01-guidance-workspace-fmt-v01.log"
+}

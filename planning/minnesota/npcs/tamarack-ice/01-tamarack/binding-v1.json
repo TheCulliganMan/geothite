@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "field_only": true,
+  "trainer_class": "MN_PROF_TAMARACK",
+  "class_name": "DR TAMARACK",
+  "trainer_ids": [],
+  "actors": [
+    {
+      "map": "MnWinonaFieldStation",
+      "script": "MN_W_TAMARACK",
+      "tile": [5, 2],
+      "previous_sprite": "SPRITE_ELM"
+    }
+  ]
+}

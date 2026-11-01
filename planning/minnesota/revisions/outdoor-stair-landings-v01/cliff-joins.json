@@ -1,0 +1,515 @@
+{
+  "scope": "Individually reviewed tall-cliff closures, coherent low-bank repairs, and three native36 North Shore corner descents.",
+  "changes": [
+    {
+      "map": "MnBemidji",
+      "tileset": "mn_bemidji",
+      "metatile": [
+        5,
+        10
+      ],
+      "before": "57",
+      "after": "72"
+    },
+    {
+      "map": "MnBemidji",
+      "tileset": "mn_bemidji",
+      "metatile": [
+        6,
+        10
+      ],
+      "before": "57",
+      "after": "72"
+    },
+    {
+      "map": "MnR01C00R00",
+      "tileset": "johto",
+      "metatile": [
+        13,
+        8
+      ],
+      "before": "57",
+      "after": "72"
+    },
+    {
+      "map": "MnR01C00R00",
+      "tileset": "johto",
+      "metatile": [
+        14,
+        8
+      ],
+      "before": "57",
+      "after": "72"
+    },
+    {
+      "map": "MnR03C00R00",
+      "tileset": "mn_headwaters",
+      "metatile": [
+        18,
+        20
+      ],
+      "before": "57",
+      "after": "72"
+    },
+    {
+      "map": "MnR03C00R00",
+      "tileset": "mn_headwaters",
+      "metatile": [
+        19,
+        20
+      ],
+      "before": "57",
+      "after": "72"
+    },
+    {
+      "map": "MnR05C00R00",
+      "tileset": "mn_headwaters",
+      "metatile": [
+        18,
+        20
+      ],
+      "before": "56",
+      "after": "72"
+    },
+    {
+      "map": "MnR05C00R00",
+      "tileset": "mn_headwaters",
+      "metatile": [
+        19,
+        20
+      ],
+      "before": "56",
+      "after": "72"
+    },
+    {
+      "map": "MnR05C00R01",
+      "tileset": "mn_headwaters",
+      "metatile": [
+        18,
+        14
+      ],
+      "before": "56",
+      "after": "72"
+    },
+    {
+      "map": "MnR05C00R01",
+      "tileset": "mn_headwaters",
+      "metatile": [
+        19,
+        14
+      ],
+      "before": "56",
+      "after": "72"
+    },
+    {
+      "map": "MnR06C00R00",
+      "tileset": "mn_headwaters",
+      "metatile": [
+        10,
+        15
+      ],
+      "before": "56",
+      "after": "72"
+    },
+    {
+      "map": "MnR06C00R00",
+      "tileset": "mn_headwaters",
+      "metatile": [
+        11,
+        15
+      ],
+      "before": "56",
+      "after": "72"
+    },
+    {
+      "map": "MnR07C00R01",
+      "tileset": "mn_headwaters",
+      "metatile": [
+        8,
+        3
+      ],
+      "before": "56",
+      "after": "72"
+    },
+    {
+      "map": "MnR07C00R01",
+      "tileset": "mn_headwaters",
+      "metatile": [
+        9,
+        3
+      ],
+      "before": "56",
+      "after": "72"
+    },
+    {
+      "map": "MnR08C00R00",
+      "tileset": "mn_headwaters",
+      "metatile": [
+        14,
+        13
+      ],
+      "before": "57",
+      "after": "72"
+    },
+    {
+      "map": "MnR10C00R00",
+      "tileset": "mn_r10_rockstairs",
+      "metatile": [
+        12,
+        10
+      ],
+      "before": "56",
+      "after": "72"
+    },
+    {
+      "map": "MnR10C00R00",
+      "tileset": "mn_r10_rockstairs",
+      "metatile": [
+        13,
+        10
+      ],
+      "before": "56",
+      "after": "72"
+    },
+    {
+      "map": "MnR11C00R01",
+      "tileset": "mn_north_shore",
+      "metatile": [
+        8,
+        2
+      ],
+      "before": "56",
+      "after": "72"
+    },
+    {
+      "map": "MnR11C00R01",
+      "tileset": "mn_north_shore",
+      "metatile": [
+        9,
+        2
+      ],
+      "before": "56",
+      "after": "72"
+    },
+    {
+      "map": "MnR11C00R01",
+      "tileset": "mn_north_shore",
+      "metatile": [
+        10,
+        2
+      ],
+      "before": "56",
+      "after": "72"
+    },
+    {
+      "map": "MnR11C00R01",
+      "tileset": "mn_north_shore",
+      "metatile": [
+        16,
+        21
+      ],
+      "before": "56",
+      "after": "72"
+    },
+    {
+      "map": "MnR11C00R03",
+      "tileset": "mn_north_shore",
+      "metatile": [
+        16,
+        14
+      ],
+      "before": "56",
+      "after": "72"
+    },
+    {
+      "map": "MnR11C00R03",
+      "tileset": "mn_north_shore",
+      "metatile": [
+        17,
+        14
+      ],
+      "before": "56",
+      "after": "72"
+    },
+    {
+      "map": "MnR11C00R03",
+      "tileset": "mn_north_shore",
+      "metatile": [
+        18,
+        14
+      ],
+      "before": "56",
+      "after": "72"
+    },
+    {
+      "map": "MnR11C00R01",
+      "metatile": [
+        12,
+        0
+      ],
+      "before": "82",
+      "after": "69",
+      "tileset": "mn_north_shore"
+    },
+    {
+      "map": "MnR11C00R01",
+      "metatile": [
+        12,
+        2
+      ],
+      "before": "6d",
+      "after": "83",
+      "tileset": "mn_north_shore"
+    },
+    {
+      "map": "MnR11C00R01",
+      "metatile": [
+        18,
+        20
+      ],
+      "before": "01",
+      "after": "69",
+      "tileset": "mn_north_shore"
+    },
+    {
+      "map": "MnR11C00R01",
+      "metatile": [
+        18,
+        21
+      ],
+      "before": "81",
+      "after": "83",
+      "tileset": "mn_north_shore"
+    },
+    {
+      "map": "MnR11C00R03",
+      "metatile": [
+        19,
+        13
+      ],
+      "before": "81",
+      "after": "69",
+      "tileset": "mn_north_shore"
+    },
+    {
+      "map": "MnR11C00R03",
+      "metatile": [
+        19,
+        14
+      ],
+      "before": "6d",
+      "after": "83",
+      "tileset": "mn_north_shore"
+    },
+    {
+      "map": "MnBoundarySafariC00R01",
+      "tileset": "mn_boundary_safari",
+      "metatile": [
+        17,
+        5
+      ],
+      "before": "57",
+      "after": "72"
+    },
+    {
+      "map": "MnBoundarySafariC01R00",
+      "tileset": "mn_boundary_safari",
+      "metatile": [
+        9,
+        13
+      ],
+      "before": "57",
+      "after": "72"
+    },
+    {
+      "map": "MnBoundarySafariC01R00",
+      "tileset": "mn_boundary_safari",
+      "metatile": [
+        14,
+        9
+      ],
+      "before": "57",
+      "after": "72"
+    },
+    {
+      "map": "MnBoundarySafariC01R00",
+      "tileset": "mn_boundary_safari",
+      "metatile": [
+        21,
+        16
+      ],
+      "before": "57",
+      "after": "72"
+    },
+    {
+      "map": "MnBoundarySafariC01R01",
+      "tileset": "mn_boundary_safari",
+      "metatile": [
+        18,
+        16
+      ],
+      "before": "57",
+      "after": "72"
+    },
+    {
+      "map": "MnBrainerd",
+      "tileset": "johto",
+      "metatile": [
+        12,
+        19
+      ],
+      "before": "4d",
+      "after": "69"
+    },
+    {
+      "map": "MnR08C01R01",
+      "tileset": "mn_headwaters",
+      "metatile": [
+        4,
+        15
+      ],
+      "before": "57",
+      "after": "72"
+    },
+    {
+      "map": "MnR09C00R00",
+      "tileset": "mn_iron_range",
+      "metatile": [
+        19,
+        17
+      ],
+      "before": "56",
+      "after": "72"
+    },
+    {
+      "map": "MnR09C01R00",
+      "tileset": "mn_iron_range",
+      "metatile": [
+        8,
+        20
+      ],
+      "before": "57",
+      "after": "72"
+    },
+    {
+      "map": "MnR13C00R00",
+      "tileset": "mn_winter_north_shore",
+      "metatile": [
+        19,
+        12
+      ],
+      "before": "57",
+      "after": "72"
+    },
+    {
+      "map": "MnR19C00R00",
+      "tileset": "johto",
+      "metatile": [
+        16,
+        16
+      ],
+      "before": "72",
+      "after": "56"
+    },
+    {
+      "map": "MnR19C00R00",
+      "tileset": "johto",
+      "metatile": [
+        18,
+        16
+      ],
+      "before": "72",
+      "after": "61"
+    },
+    {
+      "map": "MnR03C00R00",
+      "tileset": "mn_headwaters",
+      "metatile": [
+        7,
+        10
+      ],
+      "before": "0a",
+      "after": "57"
+    },
+    {
+      "map": "MnBoundarySafariC01R00",
+      "tileset": "mn_boundary_safari",
+      "metatile": [
+        15,
+        10
+      ],
+      "before": "02",
+      "after": "6f"
+    },
+    {
+      "map": "MnBoundarySafariC01R00",
+      "tileset": "mn_boundary_safari",
+      "metatile": [
+        16,
+        10
+      ],
+      "before": "02",
+      "after": "72"
+    }
+  ],
+  "modules": {
+    "MnBemidji": "e1bc53f7d853ca89bcf83b16805aa184c331d907054272e2d03c7cb7b81749ee",
+    "MnBoundarySafariC00R01": "062232aa0ad88340a5fc35ddf660a821821da04121d21851ca00801ae415949c",
+    "MnBoundarySafariC01R00": "c0f070801e90cf2823c40d34e65b7718bd9fe679d5fac1373c20a60afc443be5",
+    "MnBoundarySafariC01R01": "60e3966fa7b644a0c5012606ca20daa21a74e2195adf3bae3dc6d0553c70560e",
+    "MnBrainerd": "c0bde377f2e0df36e99b30798f1fe67505309ad398ab70d798a26edc2a44eaa9",
+    "MnR01C00R00": "756ea94d5269c531374f2c781ae3c89469e2c4f5e77a84bcb1d75ad8825491d4",
+    "MnR03C00R00": "e22b9bdd5cc64e0d96ecae19de78367c2099b638040702f7740e97d2173c5873",
+    "MnR05C00R00": "954581c3101d8febd47912f4514f0c0a483d153a0adb458a43e79c82e2c38544",
+    "MnR05C00R01": "797cc7681d6afd473d4feb78174991ef60284292e60443ff719f5c8e57be7bd5",
+    "MnR06C00R00": "410437acee1fbb39a2fcd16d56b17011ae0471002f7686c755f2a450f009c497",
+    "MnR07C00R01": "656daf22c02ff981b11bde2fa6a2056b3cf508805686eecdffa4baed3d4d05f1",
+    "MnR08C00R00": "f20f8685720486cfd56d55d7a508f6d9afaad1835ce13721c19aba131b5fa65a",
+    "MnR08C01R01": "20ac500cd6e79d8201a23f889240290564f69758deb645c3599b2303b662617e",
+    "MnR09C00R00": "f4f67d0e2777b09cd3735bdc97178752fea1ee8c7640d5ce16d9cd762348fc8f",
+    "MnR09C01R00": "df98d4eeed14f429fd933e61dbf4ea7c438d2b51a5d89bd3562c8e72d80657bb",
+    "MnR10C00R00": "6a831e27ecb6b12752aa827a0af5dcdbcff860c56110cb2c9d52d380c6afae39",
+    "MnR11C00R01": "9233d95ecda54f87c8c72634675cbb7305af1880cf9b1157bb6412438f15b659",
+    "MnR11C00R03": "5aa74fb2f293f0957cc23b033d494bd8dbaf2e5e894dbc8073198f698f68eed5",
+    "MnR13C00R00": "da3044f9cd4701429edc33f645be80873d9c3bdb2780951dc63d10eae94281b7",
+    "MnR19C00R00": "27a09d76291046e312ed5d59116e2e25a8b2ddf289dbe3c1fd54167f27faea2c"
+  },
+  "boulder_moves": [
+    {
+      "map": "MnBoundarySafariC01R00",
+      "tileset": "mn_boundary_safari",
+      "from": [
+        13,
+        9
+      ],
+      "destination_before": "71"
+    },
+    {
+      "map": "MnBoundarySafariC01R00",
+      "tileset": "mn_boundary_safari",
+      "from": [
+        15,
+        9
+      ],
+      "destination_before": "03"
+    },
+    {
+      "map": "MnBoundarySafariC01R00",
+      "tileset": "mn_boundary_safari",
+      "from": [
+        8,
+        13
+      ],
+      "destination_before": "71"
+    },
+    {
+      "map": "MnBoundarySafariC01R00",
+      "tileset": "mn_boundary_safari",
+      "from": [
+        10,
+        13
+      ],
+      "destination_before": "02"
+    }
+  ]
+}

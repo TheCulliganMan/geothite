@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "id": "MN_HOCKEY_CAPTAIN",
+  "name": "CAPTAIN LEIF",
+  "status": "accepted-native-playable",
+  "overworld_frames": 6,
+  "overworld_size": [
+    16,
+    16
+  ],
+  "battle_size": [
+    56,
+    56
+  ],
+  "palette_rgb555": [
+    32767,
+    22431,
+    18693,
+    0
+  ],
+  "source": "native-pixels-v2.json",
+  "placement": "placement-v1.json",
+  "pack": "content-packs/minnesota-npcs-hand-08-v03.crystalpack",
+  "parent": "content-packs/minnesota-npcs-hand-07-v01.crystalpack",
+  "runtime_checks": {
+    "one_controller_test_passed": true,
+    "talk_and_input_ownership": true,
+    "battle_turn_and_pp": true,
+    "battle_save_load": true,
+    "actual_victory_and_defeat_flag_before_render_capture": true,
+    "post_battle_talk": true,
+    "existing_trainers_and_assets_preserved": true
+  },
+  "manual_visual_review": "Hand-redrawn six native grids reviewed at 1x and 8x and in actual St Cloud capture. Larger dark-haired face and navy jersey, distinct rear hair, real walking stride, anatomically consistent stick hand, connected padded glove, taped blade separated from skate. Full controller encounter passed. Battle rows and palette unchanged.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/sprites/07-hockey-captain/native-pixels-v2.json": "798f267dd13582f8d71875dbe880e46e3be4b53bdba137120c5962c100c73c08",
+    "planning/minnesota/npcs/sprites/07-hockey-captain/placement-v1.json": "5db11a7bb012806cc5e919f7cbc5870fc01d95bd0e38a0409949f026b414855c",
+    "content-packs/minnesota-npcs-hand-08-v03.crystalpack": "7e249cff80e3eb06c629e0c6b40ff20d3df75a45b858cfc0dd85f423c47c4383",
+    "target/npc-sprites/hockey/controller-hand-v01.log": "a0bef54a9fc1ef5c4e23533a07274342684f111b299b24be70628ca72f175546",
+    "target/npc-sprites/hockey/gameplay-hand-v01/original-npc-trainer-intro.png": "5105b23bd321f31db51c44808dbe6bbd9db219b536a88e3ac58f3cbcd6dde3d3",
+    "target/npc-sprites/hockey/gameplay-hand-v01/original-npc-first-turn.png": "ab43b6212f70ba785c1f621684aeae42c70f62e419c8a205d177b349ec020de2",
+    "target/npc-sprites/hockey/gameplay-hand-v01/original-npc-overworld-state.png": "b3590f2b81cc35ff1ff4ead9c4f0029bc33f7624972782c667f2440b7ac3aed7",
+    "target/npc-sprites/hockey/hand-v3/comparison.png": "3c4628fd937687acfc9c5574fc20b5f4ae4da5e53f2bc2afb4c4d6b9cd0a0d70",
+    "target/npc-sprites/hockey/hand-v3/overworld-review.png": "9b63b88674c48155d1e60e84f28d7691f23b25cb537cdd3cc1e924e78f0d2411",
+    "target/npc-sprites/hockey/hand-v3/overworld-review-8x.png": "b24a6fb06dda722137121c7e94d0ded122d1cfd746edfe8061d878c6547ba4b0"
+  },
+  "overworld_revision": "hand-edited-v2",
+  "previous_visual_acceptance_reopened_by_user": true
+}

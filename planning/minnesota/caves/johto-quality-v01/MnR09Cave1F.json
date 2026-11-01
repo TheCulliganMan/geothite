@@ -1,0 +1,227 @@
+{
+  "id": "MnR09Cave1F",
+  "template": "UnionCave1F",
+  "dimensions_metatiles": [
+    12,
+    11
+  ],
+  "width_metatiles": 12,
+  "height_metatiles": 11,
+  "tileset": "cave",
+  "border_block": 46,
+  "rows": [
+    "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e",
+    "2e 2e 04 05 05 06 2e 2e 2e 2e 2e 2e",
+    "2e 2e 08 02 02 0a 2e 2e 04 05 06 2e",
+    "2e 2e 20 21 30 02 06 2e 08 02 0a 2e",
+    "2e 2e 2e 04 0a 39 2f 2d 08 02 0a 2e",
+    "2e 2e 08 02 02 02 0a 2e 30 02 0a 2e",
+    "2e 2e 20 21 20 02 2b 21 21 22 2e 2e",
+    "2e 2e 2e 2e 04 30 2f 2e 2e 2e 2e 2e",
+    "2e 2e 2e 2e 08 08 2e 2e 2e 2e 2e 2e",
+    "2e 2e 2e 2e 20 21 07 22 2e 2e 2e 2e",
+    "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e"
+  ],
+  "exits": [
+    [
+      13,
+      19
+    ]
+  ],
+  "clear_arrival": [
+    13,
+    18
+  ],
+  "exit_collision": "LADDER",
+  "exit_doors": [
+    [
+      40,
+      41
+    ]
+  ],
+  "residents": [
+    {
+      "id": "MN_R09_MINE_SCOUT",
+      "sprite": "SPRITE_SCIENTIST",
+      "tile": [
+        19,
+        7
+      ],
+      "facing": "south",
+      "lines": [
+        "The foreman took",
+        "the instrument.",
+        "The upper passage",
+        "reaches his cache."
+      ]
+    }
+  ],
+  "items": [],
+  "signs": [],
+  "mandatory": true,
+  "purpose": "Narrow the upper mining bench against its east face, and turn the southern arrival around the shaft wall before the first climb. Three stepped workings, foreman battle, survey cache and scout remain in place.",
+  "story_trainers": [
+    {
+      "id": "MN_R09_DEPOT_FOREMAN",
+      "tile": [
+        9,
+        5
+      ],
+      "approach": [
+        9,
+        6
+      ],
+      "sprite": "SPRITE_ROCKET",
+      "trainer_class": "GRUNTM",
+      "facing": "south",
+      "sight_range": 0,
+      "party": [
+        {
+          "species": "GRAVELER",
+          "level": 35
+        },
+        {
+          "species": "MACHOKE",
+          "level": 35
+        },
+        {
+          "species": "MAGNETON",
+          "level": 36
+        }
+      ],
+      "defeated_flag": "EVENT_MN_DEPOT_FOREMAN_DEFEATED",
+      "before_lines": [
+        "I read the report.",
+        "We run the test.",
+        "Copper and nickel",
+        "come first.",
+        "That meter stays.",
+        "Move aside."
+      ],
+      "after_lines": [
+        "The meter is in",
+        "the crate.",
+        "The receiver went",
+        "farther north."
+      ],
+      "loss_lines": [
+        "We are still on",
+        "schedule."
+      ],
+      "native_status": "Native prerequisite-checked talk battle in iron_range_story.rs; actual selected PP, victory/loss, repeat and Continue verified. The main story roster is authoritative.",
+      "battle": "MN_LODE_FOREMAN",
+      "interaction": "talk"
+    }
+  ],
+  "story_objects": [
+    {
+      "id": "MN_R09_SURVEY_CACHE",
+      "tile": [
+        7,
+        5
+      ],
+      "approach": [
+        7,
+        4
+      ],
+      "sprite": "SPRITE_POKE_BALL",
+      "kind": "quest instrument cache",
+      "requires": [
+        "EVENT_MN_DEPOT_FOREMAN_DEFEATED"
+      ],
+      "payload": "survey meter and original test log",
+      "denied_lines": [
+        "The foreman guards",
+        "this meter."
+      ],
+      "success_lines": [
+        "You take the meter",
+        "and its test log.",
+        "GRAND RAPIDS can",
+        "read the log."
+      ],
+      "native_status": "Native separate yes/no recovery using EVENT_MN_MINE_INSTRUMENT_RECOVERED; decline, acknowledgment, repeat, Continue and mine return verified. Grand Rapids handover remains separate.",
+      "facing": "south",
+      "recovered_flag": "EVENT_MN_MINE_INSTRUMENT_RECOVERED",
+      "payload_storage": "saved_event"
+    }
+  ],
+  "review_contract": {
+    "quality_revision": "johto-quality-v01",
+    "palette_group": "nite",
+    "native_stair_blocks": [
+      [
+        4,
+        3
+      ],
+      [
+        8,
+        5
+      ],
+      [
+        5,
+        7
+      ]
+    ],
+    "viewpoints": [
+      {
+        "id": "mouth",
+        "tile": [
+          13,
+          18
+        ]
+      },
+      {
+        "id": "shaft-turn",
+        "tile": [
+          9,
+          18
+        ]
+      },
+      {
+        "id": "lower-stair",
+        "tile": [
+          10,
+          14
+        ]
+      },
+      {
+        "id": "middle-working",
+        "tile": [
+          9,
+          11
+        ]
+      },
+      {
+        "id": "foreman",
+        "tile": [
+          8,
+          5
+        ]
+      },
+      {
+        "id": "scout",
+        "tile": [
+          20,
+          7
+        ]
+      },
+      {
+        "id": "drop-approach",
+        "tile": [
+          10,
+          7
+        ]
+      },
+      {
+        "id": "fitted-bench",
+        "tile": [
+          10,
+          5
+        ]
+      }
+    ],
+    "notes": "Narrow the upper mining bench against its east face, and turn the southern arrival around the shaft wall before the first climb. Three stepped workings, foreman battle, survey cache and scout remain in place."
+  },
+  "candidate_status": "Source candidate under whole-room, player-camera and production traversal review."
+}

@@ -1,0 +1,11 @@
+{
+  "id": "minnesota-landmark-habitats-v1",
+  "habitats": [
+    {"id":"MN_HABITAT_HARVEST_OATS_NORTH","map":"MnR02C00R00","label":"Harvest field north margin","rect":[36,6,43,7],"species":"OATLET","level":8},
+    {"id":"MN_HABITAT_HARVEST_OATS_SOUTH","map":"MnR02C00R00","label":"Harvest field south margin","rect":[36,10,39,11],"species":"OATLET","level":8},
+    {"id":"MN_HABITAT_SMOKEHOUSE_BACK","map":"MnR11C00R03","label":"Smokehouse back garden","rect":[32,2,35,3],"species":"CINDERFIN","level":40},
+    {"id":"MN_HABITAT_SMOKEHOUSE_WEST","map":"MnR11C00R03","label":"Smokehouse west grass","rect":[32,4,33,9],"species":"CINDERFIN","level":40},
+    {"id":"MN_HABITAT_SMOKEHOUSE_EAST","map":"MnR11C00R03","label":"Smokehouse east grass","rect":[40,6,41,11],"species":"CINDERFIN","level":40},
+    {"id":"MN_HABITAT_SMOKEHOUSE_PORCH","map":"MnR11C00R03","label":"Smokehouse porch grass","rect":[38,10,39,11],"species":"CINDERFIN","level":40}
+  ]
+}

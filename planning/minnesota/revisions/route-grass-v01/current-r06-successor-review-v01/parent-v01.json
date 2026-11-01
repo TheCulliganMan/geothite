@@ -1,0 +1,9 @@
+{
+  "revision": "route_grass_r11_upper_revision",
+  "pack": "content-packs/minnesota-current-r11-southwest-grass-v01.crystalpack",
+  "pack_sha256": "9f0ff0c7d0f6dd874ef1a581657900984ca75d360ffb04da2c92b00ab58475aa",
+  "maps": [
+    "MnR06C00R00",
+    "MnR06C00R01"
+  ]
+}

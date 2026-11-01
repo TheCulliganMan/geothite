@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "id": "MN_RIVER_FUN_LOWER_LENA",
+      "map": "MnMississippiLowerWoodsC00R01",
+      "actor_script": "MN_RIVER_FUN_LOWER_LENA",
+      "trainer_class": "MN_LAKESIDE_ANGLER",
+      "sprite": "SPRITE_MN_LAKESIDE_ANGLER",
+      "facing": "west",
+      "approach": [
+        16,
+        11
+      ],
+      "defeated_flag": "EVENT_MN_RIVER_FUN_LOWER_LENA"
+    }
+  ]
+}

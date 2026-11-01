@@ -2249,6 +2249,72 @@ fn runtime_applies_script_text_variable_and_control_commands_exactly() {
 }
 
 #[test]
+fn runtime_composed_script_leaves_gifts_for_frontend_presentation() {
+    let root = temp_repository_root("composed-gift-boundary");
+    write_floor_tileset(&root, "johto");
+    let asset_root = AssetRoot::new(&root);
+    let mut data = minimal_runtime_data();
+    let map = data.maps.get_mut("RuntimeMap").expect("runtime map");
+    for gift in ["givepoke", "giveegg"] {
+        let label = format!("Runtime{gift}");
+        map.scripts.insert(
+            label.clone(),
+            serde_json::json!([
+                {"command": "closetext", "args": []},
+                {"command": gift, "args": ["CHIKORITA", "5"]},
+                {"command": "end", "args": []}
+            ]),
+        );
+        map.script_text_commands.push(ScriptTextCommand {
+            command: "closetext".to_string(),
+            text_label: None,
+            source_script: label,
+            command_index: 0,
+        });
+    }
+    let runtime = CrystalRuntime::from_compiled_pack(
+        &asset_root,
+        CompiledGamePack::new_unchecked_for_tests(data, report()),
+        identity(),
+    )
+    .expect("runtime");
+    for gift in ["givepoke", "giveegg"] {
+        let mut shell =
+            RuntimeGameShell::new_game(asset_root.clone(), runtime.clone(), 0).expect("game shell");
+        let before = shell.session().state().storage.clone();
+        let cursor = RuntimeCompiledScriptCursor {
+            origin_map_name: "RuntimeMap".to_string(),
+            source_script: format!("Runtime{gift}"),
+            command_index: 0,
+        };
+        let run = shell
+            .run_compiled_script_until_boundary(
+                cursor.clone(),
+                8,
+                ScriptRuntimeInputs::default(),
+                ScriptPhoneInputs::default(),
+            )
+            .expect("stop before interactive gift");
+        assert_eq!(run.steps.len(), 1);
+        assert_eq!(run.steps[0].command, "closetext");
+        assert_eq!(
+            run.boundary,
+            Some(RuntimeCompiledScriptBoundary::GiftPokemon)
+        );
+        assert_eq!(
+            run.next_cursor,
+            Some(RuntimeCompiledScriptCursor {
+                command_index: 1,
+                ..cursor
+            })
+        );
+        assert!(!run.ended);
+        assert_eq!(shell.session().state().storage, before);
+    }
+    std::fs::remove_dir_all(root).expect("remove temporary fixture");
+}
+
+#[test]
 fn runtime_shell_steps_verified_compiled_script_commands_with_explicit_cursor() {
     let root = temp_repository_root("compiled-script-step");
     write_floor_tileset(&root, "johto");
@@ -4440,6 +4506,53 @@ fn runtime_applies_script_swarm_commands_with_exact_pack_rows() {
 }
 
 #[test]
+fn runtime_walking_encounters_require_a_usable_party_before_battle_commit() {
+    let root = temp_repository_root("walking-encounter-party-eligibility");
+    write_grass_tileset(&root, "johto");
+    write_pcm(&root.join("apps/web/assets/data/content-packs/test/music/MUSIC_ROUTE_29.pcm"));
+    let asset_root = AssetRoot::new(&root);
+    let runtime = CrystalRuntime::from_compiled_pack(
+        &asset_root,
+        CompiledGamePack::new_unchecked_for_tests(
+            minimal_runtime_data_with_grass_encounter(), report()),
+        identity(),
+    ).unwrap();
+    for party in ["empty", "fainted", "starter"] {
+        let mut session = runtime.start_overworld_session(&asset_root, 0).unwrap();
+        if party != "empty" {
+            add_runtime_party_pokemon(&runtime, &mut session);
+            if party == "fainted" {
+                session.state.storage.party.pokemon[0].as_mut().unwrap().hp = 0;
+                session.state.sync_party_from_storage();
+            }
+        }
+        session.divider = crystal_core::random::RuntimeDividerSource::replay(vec![0; 4096]);
+        let mut moved = false;
+        let mut battle_started = false;
+        for _ in 0..16 {
+            let before = session.overworld.player.tile;
+            let direction = if before.x == 0 {GameButton::Right} else {GameButton::Left};
+            let frame = session.apply_buttons(&runtime, &asset_root, [direction]).unwrap();
+            moved |= frame.snapshot.tile != before;
+            if party == "starter" && frame.wild_battle.is_some() {
+                assert!(frame.wild_encounter.is_some());
+                assert!(RuntimeBattleSnapshot::from_state(&session.state).unwrap().is_some());
+                assert_eq!(session.state.battle_active_party_index, Some(0));
+                battle_started = true;
+                break;
+            }
+            assert!(frame.wild_encounter.is_none(), "{party}");
+            assert!(frame.wild_battle.is_none(), "{party}");
+            assert!(RuntimeBattleSnapshot::from_state(&session.state).unwrap().is_none());
+            assert_eq!(session.state.battle_active_party_index, None);
+        }
+        assert!(moved, "{party}: eligibility must not block ordinary walking");
+        assert_eq!(battle_started, party == "starter");
+    }
+    let _ = std::fs::remove_dir_all(root);
+}
+
+#[test]
 fn runtime_overworld_checks_wild_encounters_after_successful_grass_step() {
     let root = temp_repository_root("overworld-encounter");
     write_grass_tileset(&root, "johto");
@@ -5128,9 +5241,16 @@ fn runtime_casts_fishing_rod_from_current_map_compiled_group() {
     assert_eq!(session.state, before_bad_rod_state);
     assert_eq!(session.overworld.snapshot(), before_bad_rod_snapshot);
 
+    let source = session.overworld.snapshot();
+    let checked_target = crystal_core::world::movement::checked_move_by_stride(
+        source.tile, source.facing,
+        crystal_core::world::movement::StepOptions::default().stride_tiles,
+    ).expect("checked facing target");
     let cast = session
         .cast_fishing_rod(&runtime, ROD_GOOD)
         .expect("cast good rod");
+    assert_eq!(cast.checked_water_target, checked_target);
+    assert_ne!(cast.checked_water_target, source.tile);
 
     assert_eq!(cast.session.group.as_deref(), Some("FISHGROUP_RUNTIME"));
     assert_eq!(cast.bite, Some(true));
@@ -5140,6 +5260,7 @@ fn runtime_casts_fishing_rod_from_current_map_compiled_group() {
     assert_eq!(battle.enemy_pokemon.species.id, "CHIKORITA");
     assert_eq!(battle.enemy_pokemon.level, 9);
     assert_eq!(battle.encounter.surface, EncounterSurface::Water);
+    assert_eq!(battle.encounter.tile, source.tile, "core catch coordinates stay on shore");
     assert_eq!(session.state.battle, BattleMemory::from(&battle));
     assert!(session.state.pokedex.has_seen("CHIKORITA"));
     assert_eq!(session.state.battle_active_party_index, Some(0));
@@ -5202,9 +5323,10 @@ fn runtime_fishing_records_and_atomically_replays_the_exact_divider_trace() {
     let replay_base = shell.session().clone();
     let before = shell.session().state().clone();
 
-    shell
+    let cast = shell
         .cast_fishing_rod(ROD_GOOD)
         .expect("stage exact fishing cast");
+    assert_ne!(cast.checked_water_target, cast.wild_battle.as_ref().unwrap().encounter.tile);
 
     let frame = shell.retained_runtime_commands()[0].clone();
     let command = crystal_assets::decode_runtime_mutation_command_frame(&frame, &before)
@@ -5215,10 +5337,24 @@ fn runtime_fishing_records_and_atomically_replays_the_exact_divider_trace() {
     assert_eq!(recorded.divider_trace.samples, vec![0; 10]);
 
     let mut replayed = replay_base.clone();
-    replayed
+    let mutation = replayed
         .apply_runtime_command_frame(&runtime, &frame)
         .expect("replay exact fishing trace");
     assert_eq!(replayed.state, shell.session().state);
+    assert_eq!(replayed.state.random_state, shell.session().state.random_state);
+    let journal_result = replayed.runtime_mutation_result_frame(frame.clone(), &mutation)
+        .expect("journal result");
+    let mut presentation_only_change = mutation.clone();
+    let RuntimeMutationResult::FishingRodCast(ref mut result) = presentation_only_change.result else {
+        panic!("expected fishing result");
+    };
+    result.checked_water_target = TilePosition { x: 999, y: 999 };
+    assert_eq!(
+        replayed.runtime_mutation_result_frame(frame.clone(), &presentation_only_change)
+            .expect("journal ignores presentation metadata"),
+        journal_result,
+        "checked water provenance must not change journal tags, payloads or checksums",
+    );
 
     for (samples, message) in [
         (vec![0; 9], "divider replay exhausted after 9 samples"),
@@ -6652,4 +6788,136 @@ fn runtime_battle_command_routes_player_run_through_wild_turn_resolution() {
     assert_eq!(session.state.battle, BattleMemory::Inactive);
     assert_eq!(session.state.battle_escape_attempts, 0);
     let _ = std::fs::remove_dir_all(root);
+}
+
+#[test]
+fn runtime_composed_script_leaves_uncompleted_trades_for_controller_choices() {
+    let root = temp_repository_root("composed-city-trade");
+    write_floor_tileset(&root, "johto");
+    let asset_root = AssetRoot::new(&root);
+    let mut data = minimal_runtime_data();
+    let map = data.maps.get_mut("RuntimeMap").expect("runtime map");
+    map.scripts.insert(
+        "CityTrade".into(),
+        serde_json::json!([
+            {"command":"closetext", "args":[]},
+            {"command":"trade", "args":["NPC_TRADE_CITY"]},
+            {"command":"end", "args":[]}
+        ]),
+    );
+    map.script_text_commands.push(ScriptTextCommand {
+        command: "closetext".into(),
+        text_label: None,
+        source_script: "CityTrade".into(),
+        command_index: 0,
+    });
+    let runtime = CrystalRuntime::from_compiled_pack(
+        &asset_root,
+        CompiledGamePack::new_unchecked_for_tests(data, report()),
+        identity(),
+    )
+    .expect("runtime");
+    let mut shell = RuntimeGameShell::new_game(asset_root, runtime, 0).expect("game shell");
+    let before = shell.session().state().storage.clone();
+    let run = shell
+        .run_compiled_script_until_boundary(
+            RuntimeCompiledScriptCursor {
+                origin_map_name: "RuntimeMap".into(),
+                source_script: "CityTrade".into(),
+                command_index: 0,
+            },
+            8,
+            ScriptRuntimeInputs {
+                selected_party_index: Some(0),
+                ..Default::default()
+            },
+            ScriptPhoneInputs::default(),
+        )
+        .expect("stop before trade even with a stale party selection");
+    assert_eq!(run.steps.len(), 1);
+    assert_eq!(run.boundary, Some(RuntimeCompiledScriptBoundary::NpcTrade));
+    assert_eq!(run.next_cursor.expect("unexecuted trade").command_index, 1);
+    assert!(!run.ended);
+    assert_eq!(shell.session().state().storage, before);
+    assert!(
+        shell
+            .session()
+            .state()
+            .script_runtime
+            .completed_trades
+            .is_empty()
+    );
+    std::fs::remove_dir_all(root).expect("remove temporary fixture");
+}
+
+#[test]
+fn runtime_composed_script_leaves_day_care_services_for_fresh_controller_choices() {
+    let root = temp_repository_root("composed-day-care");
+    write_floor_tileset(&root, "johto");
+    for routine in ["DayCareMan", "DayCareLady", "DayCareManOutside"] {
+        let asset_root = AssetRoot::new(&root);
+        let mut data = minimal_runtime_data();
+        let map = data.maps.get_mut("RuntimeMap").expect("runtime map");
+        map.scripts.insert(
+            "DayCareService".into(),
+            serde_json::json!([
+                {"command":"closetext", "args":[]},
+                {"command":"special", "args":[routine]},
+                {"command":"end", "args":[]}
+            ]),
+        );
+        map.script_text_commands.push(ScriptTextCommand {
+            command: "closetext".into(),
+            text_label: None,
+            source_script: "DayCareService".into(),
+            command_index: 0,
+        });
+        let runtime = CrystalRuntime::from_compiled_pack(
+            &asset_root,
+            CompiledGamePack::new_unchecked_for_tests(data, report()),
+            identity(),
+        )
+        .expect("runtime");
+        let mut shell = RuntimeGameShell::new_game(asset_root, runtime, 0).expect("game shell");
+        shell
+            .session_mut()
+            .state_mut()
+            .script_runtime
+            .pending_day_care_input = Some(crystal_core::state::DayCareInput::Withdraw {});
+        let before = shell.session().state().clone();
+        let run = shell
+            .run_compiled_script_until_boundary(
+                RuntimeCompiledScriptCursor {
+                    origin_map_name: "RuntimeMap".into(),
+                    source_script: "DayCareService".into(),
+                    command_index: 0,
+                },
+                8,
+                ScriptRuntimeInputs {
+                    selected_party_index: Some(0),
+                    ..Default::default()
+                },
+                ScriptPhoneInputs::default(),
+            )
+            .expect("stop before daycare even with stale service and party choices");
+        assert_eq!(run.steps.len(), 1);
+        assert_eq!(
+            run.boundary,
+            Some(RuntimeCompiledScriptBoundary::DayCarePrompt)
+        );
+        assert_eq!(
+            run.next_cursor.expect("unexecuted daycare").command_index,
+            1
+        );
+        assert!(!run.ended);
+        let after = shell.session().state();
+        assert_eq!(after.storage, before.storage);
+        assert_eq!(after.day_care, before.day_care);
+        assert_eq!(after.day_care_locations, before.day_care_locations);
+        assert_eq!(
+            after.script_runtime.pending_day_care_input,
+            before.script_runtime.pending_day_care_input
+        );
+    }
+    std::fs::remove_dir_all(root).expect("remove temporary fixture");
 }

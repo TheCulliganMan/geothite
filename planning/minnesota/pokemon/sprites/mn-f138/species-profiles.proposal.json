@@ -1,0 +1,394 @@
+{
+  "schema_version": 1,
+  "species": [
+    {
+      "id": "MN_305",
+      "classification": "Chip Chick",
+      "height_inches": 10,
+      "weight_tenths_lb": 45,
+      "dex_pages": [
+        "Its wedge beak @ finds weak spots @ inside dead wood.",
+        "Its stiff tail @ supports its body @ as it climbs bark."
+      ],
+      "base_stats": {
+        "hp": 45,
+        "attack": 55,
+        "defense": 40,
+        "speed": 65,
+        "special_attack": 30,
+        "special_defense": 45
+      },
+      "catch_rate": 255,
+      "base_exp": 56,
+      "gender_ratio": 127,
+      "hatch_cycles": 15,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_FLYING",
+        "EGG_FLYING"
+      ],
+      "level_moves": [
+        [
+          1,
+          "PECK"
+        ],
+        [
+          1,
+          "GROWL"
+        ],
+        [
+          5,
+          "FOCUS_ENERGY"
+        ],
+        [
+          9,
+          "QUICK_ATTACK"
+        ],
+        [
+          13,
+          "FURY_ATTACK"
+        ],
+        [
+          17,
+          "HEADBUTT"
+        ],
+        [
+          21,
+          "WING_ATTACK"
+        ],
+        [
+          25,
+          "DETECT"
+        ],
+        [
+          29,
+          "AGILITY"
+        ],
+        [
+          33,
+          "DRILL_PECK"
+        ],
+        [
+          37,
+          "ENDURE"
+        ],
+        [
+          41,
+          "TAKE_DOWN"
+        ],
+        [
+          49,
+          "SKY_ATTACK"
+        ]
+      ],
+      "tmhm_moves": [
+        "FLY",
+        "TOXIC",
+        "HIDDEN_POWER",
+        "RETURN",
+        "REST",
+        "PROTECT",
+        "ATTRACT",
+        "FRUSTRATION",
+        "ENDURE",
+        "SLEEP_TALK",
+        "STEEL_WING",
+        "SWIFT",
+        "HEADBUTT"
+      ],
+      "egg_moves": [
+        "MIRROR_MOVE",
+        "PURSUIT",
+        "WHIRLWIND"
+      ],
+      "evolution": {
+        "method": "LEVEL",
+        "level": 18
+      },
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_BIRD",
+      "cry": {
+        "cry": "CRY_SPEAROW",
+        "pitch": 24,
+        "length": 128
+      },
+      "shiny_rgb5": [
+        [
+          21,
+          24,
+          28
+        ],
+        [
+          7,
+          12,
+          19
+        ]
+      ],
+      "footprint_species": "SPEAROW"
+    },
+    {
+      "id": "MN_306",
+      "classification": "Notch Beak",
+      "height_inches": 25,
+      "weight_tenths_lb": 230,
+      "dex_pages": [
+        "Its notched bill @ cuts wide openings @ in hollow trunks.",
+        "One folded wing @ forms a sheltering @ arch around nests."
+      ],
+      "base_stats": {
+        "hp": 60,
+        "attack": 75,
+        "defense": 55,
+        "speed": 80,
+        "special_attack": 40,
+        "special_defense": 75
+      },
+      "catch_rate": 120,
+      "base_exp": 129,
+      "gender_ratio": 127,
+      "hatch_cycles": 15,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_FLYING",
+        "EGG_FLYING"
+      ],
+      "level_moves": [
+        [
+          1,
+          "PECK"
+        ],
+        [
+          1,
+          "GROWL"
+        ],
+        [
+          5,
+          "FOCUS_ENERGY"
+        ],
+        [
+          9,
+          "QUICK_ATTACK"
+        ],
+        [
+          13,
+          "FURY_ATTACK"
+        ],
+        [
+          17,
+          "HEADBUTT"
+        ],
+        [
+          21,
+          "WING_ATTACK"
+        ],
+        [
+          26,
+          "DETECT"
+        ],
+        [
+          30,
+          "AGILITY"
+        ],
+        [
+          34,
+          "DRILL_PECK"
+        ],
+        [
+          38,
+          "ENDURE"
+        ],
+        [
+          43,
+          "TAKE_DOWN"
+        ],
+        [
+          50,
+          "SKY_ATTACK"
+        ]
+      ],
+      "tmhm_moves": [
+        "FLY",
+        "TOXIC",
+        "HIDDEN_POWER",
+        "RETURN",
+        "REST",
+        "PROTECT",
+        "ATTRACT",
+        "FRUSTRATION",
+        "ENDURE",
+        "SLEEP_TALK",
+        "STEEL_WING",
+        "SWIFT",
+        "HEADBUTT",
+        "CUT",
+        "ROCK_SMASH"
+      ],
+      "egg_moves": [
+        "MIRROR_MOVE",
+        "PURSUIT",
+        "WHIRLWIND"
+      ],
+      "evolution": {
+        "method": "LEVEL",
+        "level": 36
+      },
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_BIRD",
+      "cry": {
+        "cry": "CRY_SPEAROW",
+        "pitch": -16,
+        "length": 160
+      },
+      "shiny_rgb5": [
+        [
+          28,
+          22,
+          8
+        ],
+        [
+          6,
+          13,
+          9
+        ]
+      ],
+      "footprint_species": "SPEAROW"
+    },
+    {
+      "id": "MN_307",
+      "classification": "Nest Carver",
+      "height_inches": 50,
+      "weight_tenths_lb": 970,
+      "dex_pages": [
+        "Two curved wings @ form hollow arches @ to guard its nest.",
+        "Three tail blades @ brace it while it @ carves new homes."
+      ],
+      "base_stats": {
+        "hp": 80,
+        "attack": 110,
+        "defense": 75,
+        "speed": 105,
+        "special_attack": 45,
+        "special_defense": 95
+      },
+      "catch_rate": 45,
+      "base_exp": 209,
+      "gender_ratio": 127,
+      "hatch_cycles": 15,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_FLYING",
+        "EGG_FLYING"
+      ],
+      "level_moves": [
+        [
+          1,
+          "PECK"
+        ],
+        [
+          1,
+          "GROWL"
+        ],
+        [
+          1,
+          "FOCUS_ENERGY"
+        ],
+        [
+          9,
+          "QUICK_ATTACK"
+        ],
+        [
+          13,
+          "FURY_ATTACK"
+        ],
+        [
+          17,
+          "HEADBUTT"
+        ],
+        [
+          21,
+          "WING_ATTACK"
+        ],
+        [
+          26,
+          "DETECT"
+        ],
+        [
+          30,
+          "AGILITY"
+        ],
+        [
+          34,
+          "DRILL_PECK"
+        ],
+        [
+          36,
+          "MACH_PUNCH"
+        ],
+        [
+          40,
+          "ENDURE"
+        ],
+        [
+          46,
+          "VITAL_THROW"
+        ],
+        [
+          53,
+          "SKY_ATTACK"
+        ]
+      ],
+      "tmhm_moves": [
+        "FLY",
+        "TOXIC",
+        "HIDDEN_POWER",
+        "RETURN",
+        "REST",
+        "PROTECT",
+        "ATTRACT",
+        "FRUSTRATION",
+        "ENDURE",
+        "SLEEP_TALK",
+        "STEEL_WING",
+        "SWIFT",
+        "HEADBUTT",
+        "CUT",
+        "ROCK_SMASH"
+      ],
+      "egg_moves": [
+        "MIRROR_MOVE",
+        "PURSUIT",
+        "WHIRLWIND"
+      ],
+      "evolution": null,
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_BIRD",
+      "cry": {
+        "cry": "CRY_FEAROW",
+        "pitch": -48,
+        "length": 208
+      },
+      "shiny_rgb5": [
+        [
+          9,
+          24,
+          25
+        ],
+        [
+          13,
+          7,
+          19
+        ]
+      ],
+      "footprint_species": "FEAROW"
+    }
+  ]
+}

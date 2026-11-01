@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "tool": "built-in image_gen.imagegen",
+  "intent": "generate",
+  "style_reference": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+  "reference_role": "authentic original16px native walking style only; no battle/high-resolution creature art",
+  "source_image": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/cyprielle.overworld.imagegen-v4.png",
+  "source_sha256": "35ea146bd57fde540b92c25710b0d30c26dacb02ae57842619b846c6d0f45eb1",
+  "original_generated_path": "/Users/ryanculligan/.codex/generated_images/01a17dc9-54bd-7412-bc8a-4d761e4a369e/exec-ae707999-fcc3-4331-ba85-fd29353c2bba.png",
+  "prompt_file": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/prompt-cyprielle-v4.txt",
+  "prompt_sha256": "895720f0ecbee6046a624e35399ed45da6ad7a53d9700a2df5b2bd9b82c8c68e",
+  "native_goal": [
+    16,
+    16
+  ],
+  "frames": 6,
+  "all_outputs_retained": true
+}

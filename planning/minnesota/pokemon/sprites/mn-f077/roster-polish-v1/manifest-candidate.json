@@ -1,0 +1,350 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F077",
+  "status": "native-conversion-pending",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_166": {
+      "species_id": "MN_166",
+      "name": "Icesnap",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          20,
+          28,
+          31
+        ],
+        [
+          7,
+          13,
+          22
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        32660,
+        22951,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          165,
+          231,
+          255
+        ],
+        [
+          57,
+          107,
+          181
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#A5E7FF",
+        "#396BB5",
+        "#000000"
+      ]
+    },
+    "MN_167": {
+      "species_id": "MN_167",
+      "name": "Crickvolt",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          26,
+          30,
+          14
+        ],
+        [
+          7,
+          14,
+          23
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        15322,
+        24007,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          214,
+          247,
+          115
+        ],
+        [
+          57,
+          115,
+          189
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#D6F773",
+        "#3973BD",
+        "#000000"
+      ]
+    },
+    "MN_168": {
+      "species_id": "MN_168",
+      "name": "Thundrift",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          25,
+          9
+        ],
+        [
+          8,
+          14,
+          24
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        10047,
+        25032,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          206,
+          74
+        ],
+        [
+          66,
+          115,
+          198
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FFCE4A",
+        "#4273C6",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f077/prompt-v1.txt",
+  "reference_mapping": "sprites/mn-f077/reference-mapping-v1.json",
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-166-icesnap-v1",
+      "species_id": "MN_166",
+      "view": "front",
+      "source": "sprites/mn-f077/mn-166-168.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        490,
+        510
+      ],
+      "fit": [
+        36,
+        36
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        32660,
+        22951,
+        0
+      ],
+      "interior_black_min_samples": 32,
+      "exterior_contour": "solid",
+      "sampling": "area_vote"
+    },
+    {
+      "id": "mn-166-icesnap-v1",
+      "species_id": "MN_166",
+      "view": "back",
+      "source": "sprites/mn-f077/mn-166-168.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        510,
+        490,
+        514
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        32660,
+        22951,
+        0
+      ],
+      "interior_black_min_samples": 32,
+      "exterior_contour": "solid",
+      "sampling": "area_vote"
+    },
+    {
+      "id": "mn-167-crickvolt-v1",
+      "species_id": "MN_167",
+      "view": "front",
+      "source": "sprites/mn-f077/mn-166-168.front-back.imagegen-v1.png",
+      "crop": [
+        490,
+        0,
+        500,
+        510
+      ],
+      "fit": [
+        44,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        15322,
+        24007,
+        0
+      ],
+      "interior_black_min_samples": 32,
+      "exterior_contour": "solid",
+      "sampling": "area_vote"
+    },
+    {
+      "id": "mn-167-crickvolt-v1",
+      "species_id": "MN_167",
+      "view": "back",
+      "source": "sprites/mn-f077/mn-166-168.front-back.imagegen-v1.png",
+      "crop": [
+        490,
+        510,
+        500,
+        514
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        15322,
+        24007,
+        0
+      ],
+      "interior_black_min_samples": 32,
+      "exterior_contour": "solid",
+      "sampling": "area_vote"
+    },
+    {
+      "id": "mn-168-thundrift-v1",
+      "species_id": "MN_168",
+      "view": "front",
+      "source": "sprites/mn-f077/mn-166-168.front-back.imagegen-v1.png",
+      "crop": [
+        990,
+        0,
+        546,
+        510
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        10047,
+        25032,
+        0
+      ],
+      "interior_black_min_samples": 32,
+      "exterior_contour": "solid",
+      "sampling": "area_vote"
+    },
+    {
+      "id": "mn-168-thundrift-v1",
+      "species_id": "MN_168",
+      "view": "back",
+      "source": "sprites/mn-f077/mn-166-168.front-back.imagegen-v1.png",
+      "crop": [
+        990,
+        510,
+        546,
+        514
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        10047,
+        25032,
+        0
+      ],
+      "interior_black_min_samples": 32,
+      "exterior_contour": "solid",
+      "sampling": "area_vote"
+    }
+  ],
+  "visual_review": {
+    "status": "pending",
+    "reviewer": "root",
+    "notes": "Root inspected six native views: split diamond becomes open V plate arms, then tall offset hooked slabs above a small grounded charge core. White slabs keep stepped black outer anchors and blue shadow planes; charge seams remain green/yellow in each species own palette. Construct-eye glints are visible in the dark central heads; close rear framing retains open lower crops.",
+    "sheet_sha256": "",
+    "outline_profile": "solid-exterior-v1"
+  }
+}

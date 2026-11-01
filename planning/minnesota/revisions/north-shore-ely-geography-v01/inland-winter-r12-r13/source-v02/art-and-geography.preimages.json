@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "status": "FROZEN_NATIVE_ART_AND_EXACT_OPTIONAL_GEOGRAPHY_REBIND",
+  "tilesets_sha256": {
+    "mn_gunflint": "d1d5979e60c4ffd8711268fca6b663de08237031130a6f81f45b01b8c876c5d4",
+    "johto": "d49be2437d396e1a5f69905a3297254b30d6b73d04bbba49ec4e39383dcc1c40",
+    "mn_winter_gunflint": "026daef45738fd1f7bcb4d6d8a5e8b8cef20d5e47f4ae19849b9084d6ee1679b",
+    "mn_winter_north_shore": "7c0741d7e5d90ce29c93d1efd68253e9c154249a00aa9f3ecfadb720e833f0d6"
+  },
+  "runtime_files_sha256": {
+    "data/tilesets/johto_metatiles.bin": "4af44f22edf06b8c4dd949c0acfad0a74a05554d63278d8f5791ba0e7bf13017",
+    "data/tilesets/mn_gunflint.json": "95334e2929e075706013ea8181295790c45afe91d805a1318d4422d3c3e9da6b",
+    "data/tilesets/mn_gunflint_metatiles.bin": "7b0c007df9d81f47c2f38adf760a4700d1c851f58c90d45547e5235ffc71e8b7",
+    "data/tilesets/mn_gunflint_palette_map.json": "afafdf9287f23447b019069fd90c7e87ee2c76640e5c2966c5ab26c6b4c0b7b5",
+    "data/tilesets/mn_winter_gunflint.json": "fd911e71065175d8ef1aa6939215abae416d3eee4cdcc8405e014b2eb84356b9",
+    "data/tilesets/mn_winter_gunflint_foregrounds.json": "0c0fddb047477cf597e4a2578f3530c4f35266a98c61488abf36b52092ff0f52",
+    "data/tilesets/mn_winter_gunflint_metatiles.bin": "64c816184c270411717d123a89c189188da5f843642b4e0815a59d165164a9ed",
+    "data/tilesets/mn_winter_gunflint_palette_map.json": "485f4937ee6159f702058a9bff6ce996e2b3b0fd0733061d428851bd01768fc4",
+    "data/tilesets/mn_winter_north_shore.json": "25bbc35a40416919db45761af238e41fb32b19c35d5f6cfa8778c2830b5debf3",
+    "data/tilesets/mn_winter_north_shore_foregrounds.json": "f7b61544f17e8918b0f528fbb7f5ffb9671b2aa5c26ac1b8fccb44b86b07ca11",
+    "data/tilesets/mn_winter_north_shore_metatiles.bin": "b724528ca90ee71ed72de2275ad9bcfa6d565259f30440b6f47fa7b070838ac4",
+    "data/tilesets/mn_winter_north_shore_palette_map.json": "cc042f6261fdffbd85faf996884e76d49760a12f4017ba77ade3a1763a3bde51",
+    "gfx/tilesets/johto.2bpp": "da7c80d2d52999f84deb38789eba3758a8a3aba25aaf24d1d2da699683cfd019",
+    "gfx/tilesets/johto.png": "1d6ef5d49b5937a1dddeafea52e306544aab210cde10e2e0a7f22d0a6d644f6e",
+    "gfx/tilesets/mn_gunflint.2bpp": "30e210bcb67d874df0f7e7114bccc4f2ad8784f786512484476b16a071565194",
+    "gfx/tilesets/mn_gunflint.png": "4e47fd76fb5f848f892747f99e165a476ce0f56a4151251ec6cbbea389b19df4",
+    "gfx/tilesets/mn_winter_gunflint.2bpp": "93fbec10e71d2d7af81d39588a8ea4221d08fdc2ba14d0d788af65bfa1d5c3fd",
+    "gfx/tilesets/mn_winter_gunflint.png": "fb898acbdd9a754d082c0c3af58446f776bab3c95ba0dc09cee5dabe70e0c8db",
+    "gfx/tilesets/mn_winter_north_shore.2bpp": "bd76d5177c6724e87a71f49e7c4efc13fe0bf103461ee964769a1e21cf3d7591",
+    "gfx/tilesets/mn_winter_north_shore.png": "a062703b8a1ce9977e915f6ba2b0e4d00a173bbc6d8ecd2555753ba66138af24"
+  },
+  "allowed_parent_connection_rebind": {
+    "map": "MnR12C01R01",
+    "before": {
+      "direction": "east",
+      "target_map": "MnGrandMarais",
+      "offset": 0
+    },
+    "after": {
+      "direction": "east",
+      "target_map": "MnMaraisInlandNeck",
+      "offset": 0
+    }
+  },
+  "provenance": "river_native final geography confirmation: exactly one R12 east connection target change, no blocks/events/programs/other attributes; all R13 south Ely attributes already present in1c6 parent."
+}

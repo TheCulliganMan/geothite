@@ -1,0 +1,11 @@
+{
+  "tool": "built-in imagegen",
+  "root_authored": true,
+  "default_path": "/Users/ryanculligan/.codex/generated_images/01a178da-4cf1-7e01-8516-667a332dc790/exec-8938d75d-b37d-497b-baa8-0c4cd171e56d.png",
+  "workspace_path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f060/tugget.overworld.imagegen-v1.png",
+  "sha256": "135cd817700dca34b35f769ec9d78d89a9f8ad81dc990661353cfc75600a44aa",
+  "exact_default_copy_verified": true,
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f060/prompt-tugget-v1.txt",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f060/reference-mapping-tugget-v1.json",
+  "original_generation_receipt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f060/generation-tugget-v1-root-original.json"
+}

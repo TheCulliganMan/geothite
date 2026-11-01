@@ -1,0 +1,48 @@
+{
+  "status": "PASS",
+  "parent": {
+    "revision": "route_grass_bemidji_mart_revision",
+    "pack": "content-packs/minnesota-current-bemidji-mart-v02.crystalpack",
+    "sha256": "b4a95a5634198e39fd8b9d6528af90b66f1e626fc9582e366b4ba4b6a9588171"
+  },
+  "pack": "content-packs/minnesota-current-bemidji-plateau-stairs-v01.crystalpack",
+  "sha256": "6200af583a20de0def7f4611ab59531e43549471cc5cf6ab7a6f4f7e52b832e8",
+  "identity": {
+    "stored": "63f1330753882bf4dfad9eef85e933a48c018d6ab9bc6163f294e0e432e27ff9",
+    "independently_recomputed": "63f1330753882bf4dfad9eef85e933a48c018d6ab9bc6163f294e0e432e27ff9",
+    "exact": true
+  },
+  "changed_native_cells": [
+    {
+      "at": [
+        5,
+        10
+      ],
+      "before": "72",
+      "after": "84"
+    }
+  ],
+  "only_collision_changes": [
+    {
+      "at": [
+        11,
+        21
+      ],
+      "before": "WALL",
+      "after": "FLOOR"
+    }
+  ],
+  "all_other_complete_maps_exact": 731,
+  "original132_blocks_rendered_pixels_exact": true,
+  "all_original_runtime_files_exact": true,
+  "new_private_art_files": [
+    "data/tilesets/mn_bemidji_plateau_stairs.json",
+    "data/tilesets/mn_bemidji_plateau_stairs_metatiles.bin",
+    "data/tilesets/mn_bemidji_plateau_stairs_palette_map.json",
+    "gfx/tilesets/mn_bemidji_plateau_stairs.2bpp",
+    "gfx/tilesets/mn_bemidji_plateau_stairs.png"
+  ],
+  "all_events_scripts_warps_actors_encounters_trainers_audio_exact": true,
+  "state_fair_exact": true,
+  "entire_normalized_pack_exact": true
+}

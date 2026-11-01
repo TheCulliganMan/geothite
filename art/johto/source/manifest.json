@@ -1,0 +1,542 @@
+{
+  "format_version": 4,
+  "sources": [
+    {
+      "file": "actor-props-01.blend",
+      "encoding": "gzip-blend",
+      "bytes": 231660,
+      "sha256": "4c3e5e9ecabb5fd0aa262fc0b5894c2ee7e54f6c0c496750184b2d5185c6aed0",
+      "uncompressed_bytes": 2250276,
+      "uncompressed_sha256": "b89f75a8d9973ab4df6abc49b0809898b5dc7a4ad4601b2c509bd86ce42f8737"
+    },
+    {
+      "file": "actor-props-02.blend",
+      "encoding": "gzip-blend",
+      "bytes": 482358,
+      "sha256": "2cb6882f34bb5ac126bc53ad89b8295fe99cdce0a23e9d73f3d1a24ce658b6a6",
+      "uncompressed_bytes": 4599400,
+      "uncompressed_sha256": "2a0bde0e471d338d14c49a40dda2ac3b544b25157fbd98075ead32dd719ed5df"
+    },
+    {
+      "file": "actor-props-03.blend",
+      "encoding": "gzip-blend",
+      "bytes": 421901,
+      "sha256": "b511b9d61c30ec3ec425e272913cc008d3a200d9f54bde475b3448dc59f8328c",
+      "uncompressed_bytes": 3682936,
+      "uncompressed_sha256": "1ea87217e6fb63cc837a72430f422d1c67b0b9dc3a427c1045924cbf1945e095"
+    },
+    {
+      "file": "actor-props-04.blend",
+      "encoding": "gzip-blend",
+      "bytes": 402095,
+      "sha256": "a77afc7761be50b20a61db1ecadef398e445f25cf225908a31862bd3516132d2",
+      "uncompressed_bytes": 3650096,
+      "uncompressed_sha256": "1e08e9d58e31ba5a09fc4535b3a6dfc92db381b5f87a5dc3ca7c558f20b56d76"
+    },
+    {
+      "file": "actor-props-05.blend",
+      "encoding": "gzip-blend",
+      "bytes": 688826,
+      "sha256": "d6fb7db311a9f665abd77bb3c5b7968b19e1d7c2952ff247faa1199bd0f4d637",
+      "uncompressed_bytes": 5675060,
+      "uncompressed_sha256": "dd0351875258e4ddbf7f1071ea5799aae0db0b8f5c56c1e749809c06731b6eb7"
+    },
+    {
+      "file": "actor-props-06.blend",
+      "encoding": "gzip-blend",
+      "bytes": 694875,
+      "sha256": "82710fe4a3cbde6303cb5a4d3d6881ce736c1419d9ca5a65594740f988758125",
+      "uncompressed_bytes": 5920640,
+      "uncompressed_sha256": "fac6aeec5409de23e0e210c7fbc8a068b2fa345adba07f3a7d45c2d49ba050e4"
+    },
+    {
+      "file": "actor-props-07.blend",
+      "encoding": "gzip-blend",
+      "bytes": 150241,
+      "sha256": "9c0e53571da9b8f9c184ed1d04facce4bae53fba1c07225389b0ab933a2ccc58",
+      "uncompressed_bytes": 1512808,
+      "uncompressed_sha256": "c03bb31d4ed95b3dfc0630e2fe9f24017b80e75d23f1fd6886603e2d440430f9"
+    },
+    {
+      "file": "actor-props-cyndaquil-refinement.blend",
+      "encoding": "gzip-blend",
+      "bytes": 1286945,
+      "sha256": "7f194821f4b339fcd405833543edc241b7fc9041c43946d82fe04559fae51166",
+      "uncompressed_bytes": 3405240,
+      "uncompressed_sha256": "c09e1c71a6836be63b1805284e078480d3e3d7bd9a14fd85ea77c865870f7340"
+    },
+    {
+      "file": "actor-props-fruit-tree-refinement.blend",
+      "encoding": "gzip-blend",
+      "bytes": 554580,
+      "sha256": "4868a34cfdbfabedf4ac34cc918371687e1fdc10d7d7263545ea50c446928d1b",
+      "uncompressed_bytes": 5978320,
+      "uncompressed_sha256": "53004f2f7f58d23f36b4a5a340cbb1b3e57aaff655278ebf790c8c641157e529"
+    },
+    {
+      "file": "actor-props-sudowoodo-refinement.blend",
+      "encoding": "gzip-blend",
+      "bytes": 1646196,
+      "sha256": "5ccb9634aca0e483b988f849939a6a9b1e8b0c3ea59bcde2754b20ada22b1484",
+      "uncompressed_bytes": 5040380,
+      "uncompressed_sha256": "37b9543aad11aee082c2e1f82a99cfdde645d1d7e4a252b6f01fa42932a5d85d"
+    },
+    {
+      "file": "actor-props-totodile-refinement.blend",
+      "encoding": "gzip-blend",
+      "bytes": 1155594,
+      "sha256": "04e7379a8992ebece9357ad97db5df39e9ebb177703214059e2ba52cd38ad256",
+      "uncompressed_bytes": 3331251,
+      "uncompressed_sha256": "dd4a1f7d184c84a3f52d3b08d56e5e11b73f181613dcaa8139ecba32ab236bd0"
+    },
+    {
+      "file": "battle-species-01.blend",
+      "encoding": "gzip-blend",
+      "bytes": 359034,
+      "sha256": "f00c6036d8bf7143b75ba05e98ea14f3c56f2424d7fad5a99ce12c4db64764a1",
+      "uncompressed_bytes": 3549760,
+      "uncompressed_sha256": "a98e17d90339c79b91c29a05c99a686a1dfec80112ec237b11d2dba7a8406175"
+    },
+    {
+      "file": "battle-species-02.blend",
+      "encoding": "gzip-blend",
+      "bytes": 319999,
+      "sha256": "f6a36a4a83ffae90c7e56fa9652a82b519df616e9e484869bc5a3a36c37de2b5",
+      "uncompressed_bytes": 3369404,
+      "uncompressed_sha256": "a3765b86c02fe8651e430ace67aa237c92366d2bfa3919e67d0b98d0fa538019"
+    },
+    {
+      "file": "battle-species-03.blend",
+      "encoding": "gzip-blend",
+      "bytes": 326791,
+      "sha256": "c2c652c6c182f43a7b9f5496f64ec08feac51fa5b65c0b6846d21db85cb096d2",
+      "uncompressed_bytes": 3381260,
+      "uncompressed_sha256": "df10badab210b3681df85e45a406f69ec1642944a14520850080f51e01d31475"
+    },
+    {
+      "file": "battle-species-04.blend",
+      "encoding": "gzip-blend",
+      "bytes": 311915,
+      "sha256": "3a4fcb17f32dae9501b7f6391ae312516ee70e3f64c5341a89c0b479189ec6df",
+      "uncompressed_bytes": 3349248,
+      "uncompressed_sha256": "53afc9ba2be4b489c8446774595f77a12af6614d9da5b11aff8bd7e59ce1a18a"
+    },
+    {
+      "file": "battle-species-05.blend",
+      "encoding": "gzip-blend",
+      "bytes": 326551,
+      "sha256": "63cac0f4a1c6e265b96aa7a682f01c0516c80379aaeba0b39a537fa0b047f024",
+      "uncompressed_bytes": 3330492,
+      "uncompressed_sha256": "976de85cfaecce4724a16fbe56536c65dd5c69423273af9855502d0d44ac67e4"
+    },
+    {
+      "file": "battle-species-06.blend",
+      "encoding": "gzip-blend",
+      "bytes": 336704,
+      "sha256": "c71baf4fb01058215a584a47a3ffb8b2838bd52b06dbad04610fec5d00811d7c",
+      "uncompressed_bytes": 3407856,
+      "uncompressed_sha256": "b2e800f442eb635b9d1b8d0b1ff3c25fed07a5453bdb57ac7f6a84f7bc532ce9"
+    },
+    {
+      "file": "battle-species-07.blend",
+      "encoding": "gzip-blend",
+      "bytes": 356650,
+      "sha256": "c0f2c80c85e6d8360d1ceaafc6ed3cd37745e6a18fcf9d82a14e468cf1cb1404",
+      "uncompressed_bytes": 3291296,
+      "uncompressed_sha256": "84b9458834af3641f9666c5a454f63437685a52313b1f36a1e5de5d84cbe7c89"
+    },
+    {
+      "file": "battle-species-08.blend",
+      "encoding": "gzip-blend",
+      "bytes": 333056,
+      "sha256": "43768d2518124d8de10031feade62a8b07b2b1814c1d8c67eaef354083e1bfae",
+      "uncompressed_bytes": 3266048,
+      "uncompressed_sha256": "c93a9e6b662cad24430ccf5339b0fe6a6d9eb1de8727520471a2eedb607df5de"
+    },
+    {
+      "file": "battle-species-09.blend",
+      "encoding": "gzip-blend",
+      "bytes": 319764,
+      "sha256": "cc7a7b63ea53c95ac5db54cb57d51aaa058216c353ef99c6f5747add8e63084f",
+      "uncompressed_bytes": 2994804,
+      "uncompressed_sha256": "b417b63af8ac43a3fd145f535ae44d37c260097f66b78131a1d416ed6eb3d53e"
+    },
+    {
+      "file": "battle-species-10.blend",
+      "encoding": "gzip-blend",
+      "bytes": 350788,
+      "sha256": "a40df5c66e99feae0048e5b83d9c7f50ff67bf11779b56a6892db6c4b98bb124",
+      "uncompressed_bytes": 3483344,
+      "uncompressed_sha256": "30f69a5765b2ced3506e246e02ae6a8860223932e78a6af79eaabc768eb88f4f"
+    },
+    {
+      "file": "battle-species-11.blend",
+      "encoding": "gzip-blend",
+      "bytes": 295506,
+      "sha256": "83a2397ae8895684cb49bf60f1d59cc8cdf4864b3c0a5f40fe929696c66bfd5e",
+      "uncompressed_bytes": 2970688,
+      "uncompressed_sha256": "6e1d8c52e1fc50912b5265f2bd8331a63918dd9e586c690d27d0b73f41d2d61f"
+    },
+    {
+      "file": "battle-species-12.blend",
+      "encoding": "gzip-blend",
+      "bytes": 365013,
+      "sha256": "25ce0ed5668d88e5d22e78864038c54fe2f4a931841596ca012fae89d619f2b8",
+      "uncompressed_bytes": 3219004,
+      "uncompressed_sha256": "f65058c637a8a0f96985afb5da831a7cc60f2b17d46328e8c521753cd6b94c16"
+    },
+    {
+      "file": "battle-species-13.blend",
+      "encoding": "gzip-blend",
+      "bytes": 350808,
+      "sha256": "bfd522d69856fcb973f5e0e536c4ce9dc7709e450c12dc0959aabe4575fa2e0a",
+      "uncompressed_bytes": 3650132,
+      "uncompressed_sha256": "d6a91d5d4811d76bd6b83835bf1550cbfbe10c4d1eadbbd300594b10af1fc529"
+    },
+    {
+      "file": "battle-species-14.blend",
+      "encoding": "gzip-blend",
+      "bytes": 288305,
+      "sha256": "7768cd07dc21e0305ca577d839736af723cfd4fe8090a1a7ba94b776a267b48b",
+      "uncompressed_bytes": 2806924,
+      "uncompressed_sha256": "9aa037bf75f902073f1306623bf4ccea175503df95964d60952cbce2f1f99e60"
+    },
+    {
+      "file": "battle-species-15.blend",
+      "encoding": "gzip-blend",
+      "bytes": 362001,
+      "sha256": "cc84c03ff1680de6da3f8af0845c86926b5aa007de6aca139e34df42a1136e66",
+      "uncompressed_bytes": 3317900,
+      "uncompressed_sha256": "8a6757cd8a0cc6745f375209372c0fb0b8671031ec326beee02f20637afe9986"
+    },
+    {
+      "file": "battle-species-16.blend",
+      "encoding": "gzip-blend",
+      "bytes": 320688,
+      "sha256": "0874534e8e02f6054676a2a6e5193dfe63da0b5909b19c009d60dcf46bb547c8",
+      "uncompressed_bytes": 3200648,
+      "uncompressed_sha256": "c532a6d9c88135c2b5eac4dbc19742e8ea1d3fb80d84d76e67a61fca82e35957"
+    },
+    {
+      "file": "battle-species-17.blend",
+      "encoding": "gzip-blend",
+      "bytes": 290255,
+      "sha256": "ec186aa35b67faf3ce47c480a386644e2c84c579b7457733e0fb3c9a520980d2",
+      "uncompressed_bytes": 2792716,
+      "uncompressed_sha256": "c3f52660fd4404a2eea55959221b4a2da9294af782c23071d931bad36753f798"
+    },
+    {
+      "file": "battle-species-18.blend",
+      "encoding": "gzip-blend",
+      "bytes": 332362,
+      "sha256": "940e26d0c080087fe3486c9fb04098b224036fbd3997ecab5ee0be9ed6890d32",
+      "uncompressed_bytes": 2947572,
+      "uncompressed_sha256": "098dfb68cc26a009578176a81a6d9b390be0317811e96496d7c20da44b567c89"
+    },
+    {
+      "file": "battle-species-19.blend",
+      "encoding": "gzip-blend",
+      "bytes": 198336,
+      "sha256": "9758c0a4c28f8d6212cee316e5163484920a93bcddec54a02ec73ce05006c769",
+      "uncompressed_bytes": 1855056,
+      "uncompressed_sha256": "2bfbabd4b87d98e9e971d85c86ad5d69e61552d3827733fa50730c30f56c9dfe"
+    },
+    {
+      "file": "battle-species-hero-refinements.blend",
+      "encoding": "gzip-blend",
+      "bytes": 1244532,
+      "sha256": "fbcdf85a062b5657c72677031b1e414c46bc0bce9236fc5fdf9b3ef5e441b0fd",
+      "uncompressed_bytes": 5173104,
+      "uncompressed_sha256": "399cc516f1b1d443564d2e1e85f85ab92828ac7f9ed19c402dddf1274614fd18"
+    },
+    {
+      "file": "bedroom-cloth.blend",
+      "encoding": "gzip-blend",
+      "bytes": 104647,
+      "sha256": "d6bc625f99caf2e1516868d8052e08a3cbb788241887c678876460b9f1fc5fb7",
+      "uncompressed_bytes": 747804,
+      "uncompressed_sha256": "4b9e0edf5ad01db27b6faefc6bea88a324bc77acf3f60367d4ae3973d147ce07"
+    },
+    {
+      "file": "cable-backwalls.blend",
+      "encoding": "gzip-blend",
+      "bytes": 110034,
+      "sha256": "5a47ed4dd24356ee749ddddb175b1cafda849d70338b5a65e9a4b43747f3d99d",
+      "uncompressed_bytes": 823196,
+      "uncompressed_sha256": "06cca1be9e81c6bfd23327afbb930507cd8ac03a353d7f8d7bb06e5450c0a6b9"
+    },
+    {
+      "file": "cable-club.blend",
+      "encoding": "gzip-blend",
+      "bytes": 143524,
+      "sha256": "c3786c5c1eb5e2f2afc3fa6f09172426a5935ce37f0fd870df50598a2ac39004",
+      "uncompressed_bytes": 1432468,
+      "uncompressed_sha256": "43ccd19ab5e6019482c574da2ba57230737dd974a0ba90b135ab11bfce5375f4"
+    },
+    {
+      "file": "city-window-johto.blend",
+      "encoding": "gzip-blend",
+      "bytes": 629891,
+      "sha256": "d252d2a7eb265216bdf19faf3c4581f6af0b94825f33376f2d34d307e1502777",
+      "uncompressed_bytes": 7796585,
+      "uncompressed_sha256": "1c125b0c8179bef2045fb74c787f91a5e3cac79fc7a3be93cdcf2beffc83241e"
+    },
+    {
+      "file": "city-window-kanto.blend",
+      "encoding": "gzip-blend",
+      "bytes": 809483,
+      "sha256": "a4088c228d0cd1e3f2ed898191979240b856617da49aaa6f1d197f16af9e6261",
+      "uncompressed_bytes": 11931312,
+      "uncompressed_sha256": "774e3983edf4fbc0bc46aa04d3b4426c62a94f8d1e08591c7c2dfc3f4a8983c4"
+    },
+    {
+      "file": "city-window-landmarks.blend",
+      "encoding": "gzip-blend",
+      "bytes": 786001,
+      "sha256": "a23aee2bcd7ddbfe039b8899ede62207ba3cdfd9d52b781c0b13768026446642",
+      "uncompressed_bytes": 11444957,
+      "uncompressed_sha256": "729ed374d36ce340774be50da9950e3aef81e10e397c53ca17be44878c0e5f86"
+    },
+    {
+      "file": "city-window-modern.blend",
+      "encoding": "gzip-blend",
+      "bytes": 759119,
+      "sha256": "2aa8e906a4abb9c6dcb7ee9c3f80422427d1376ba6487d835a19576675c3aac8",
+      "uncompressed_bytes": 11197265,
+      "uncompressed_sha256": "9e245e90f37c43072f9eaaaa29bbf4587eff1b8346112a897f794616b1955f5f"
+    },
+    {
+      "file": "city-window-services.blend",
+      "encoding": "gzip-blend",
+      "bytes": 671335,
+      "sha256": "0a5358ce8fd04fd572f5a247e6cd0798c7192f0f4f20230468d53f6cf37c74d8",
+      "uncompressed_bytes": 8333628,
+      "uncompressed_sha256": "c433bff36352d639ae8fa23c318ca1594d79a7eb22676e714154f6652c5e21a5"
+    },
+    {
+      "file": "city-window-towers.blend",
+      "encoding": "gzip-blend",
+      "bytes": 650486,
+      "sha256": "86ef2e07bd8658ecc85a1249e951900d49ec462c90791cc35e5a1e086c92c03b",
+      "uncompressed_bytes": 8905522,
+      "uncompressed_sha256": "c6e4a697e61e5e620023657cb7a35d2a70eafb6a8545a3e2b92720dd19076d95"
+    },
+    {
+      "file": "connected-johto.blend",
+      "encoding": "gzip-blend",
+      "bytes": 1407228,
+      "sha256": "5d4311455f33e9921fb44292fb10f8935dd66416bf2e69e7f0ecb7bf7fea20f7",
+      "uncompressed_bytes": 20996505,
+      "uncompressed_sha256": "cd2e98689750abf676319e0b89b3f22c47f3b2a5620ce1cb012b05e9d238907d"
+    },
+    {
+      "file": "department-store.blend",
+      "encoding": "gzip-blend",
+      "bytes": 189465,
+      "sha256": "83da2afe477c3889f2d8d0c5d27e40106610d2d5c8e149930222a01d531496a1",
+      "uncompressed_bytes": 2028556,
+      "uncompressed_sha256": "626cdb1e1ef6f0b9572910050de0b4f6d1e772c0e6c5baa9fe1aee0052bbcb15"
+    },
+    {
+      "file": "domestic-table.blend",
+      "encoding": "gzip-blend",
+      "bytes": 104138,
+      "sha256": "f7a59a593455df7d64caa3054959dba36cdae0ecf21a450ed35507b8ad4dfe4d",
+      "uncompressed_bytes": 715215,
+      "uncompressed_sha256": "2708caeca32f49be8e71ee3d72466a486ca7b6578b1c1a0837c25d2bc882a2d0"
+    },
+    {
+      "file": "dungeons.blend",
+      "encoding": "gzip-blend",
+      "bytes": 268976,
+      "sha256": "f3d0a467d76577ac91d73768221e5017ab69181c5781e2e29086ff7281fd82aa",
+      "uncompressed_bytes": 3085224,
+      "uncompressed_sha256": "7fa7886c514e57eb8233c6e9903fcc138f93cf50cafc43d7cf0cf32651ae5add"
+    },
+    {
+      "file": "facility-tables.blend",
+      "encoding": "gzip-blend",
+      "bytes": 138767,
+      "sha256": "8cffdfa9dd777bd14f1df14e892c003d678b59c1952d7d39606409c08f650c47",
+      "uncompressed_bytes": 1338524,
+      "uncompressed_sha256": "90bbaf20cca73178a8f2ec68bfdad39bc5b12fa151475f3e3048eb55f09eb8cf"
+    },
+    {
+      "file": "facility-workbench.blend",
+      "encoding": "gzip-blend",
+      "bytes": 118772,
+      "sha256": "dd7dd6ca8c38090b3bf567385ba8cb3693f4d8e8979b07f31df24f2abbac9c11",
+      "uncompressed_bytes": 966456,
+      "uncompressed_sha256": "33cbf96ce338b4d06020308f442341b833eff0ad6ca081a74c7cad043e0bd5f1"
+    },
+    {
+      "file": "foliage-lod.blend",
+      "encoding": "gzip-blend",
+      "bytes": 102328,
+      "sha256": "b5573ec6e5dda131ecb91f81d239565777822970aa5f87629346c468f151835b",
+      "uncompressed_bytes": 640052,
+      "uncompressed_sha256": "37a0d220ea3037a37ef5c4f47c17dd28961893e6dfc783448a32bbe4df935831"
+    },
+    {
+      "file": "gate-counters.blend",
+      "encoding": "gzip-blend",
+      "bytes": 325746,
+      "sha256": "ba856de7a76293a7ce6acb44d8b6c0d52fb0b6fe83b5bbccd1ab42569bf4bb21",
+      "uncompressed_bytes": 5319620,
+      "uncompressed_sha256": "104d779ede2bde5f7568b4cd07106f04742de2873dfd01f49489a865198d47b9"
+    },
+    {
+      "file": "gym-scenery-kit.blend",
+      "encoding": "gzip-blend",
+      "bytes": 223439,
+      "sha256": "679cb0e0afb98c81f20b0f9d192321732af0a8d18696c30f6a4ab73c6041e090",
+      "uncompressed_bytes": 2868916,
+      "uncompressed_sha256": "7e117f38e1d418b8a4c0139f8b4a41073b174c8abe7b94e6b5d254fd21a35524"
+    },
+    {
+      "file": "interiors.blend",
+      "encoding": "gzip-blend",
+      "bytes": 766389,
+      "sha256": "82f1abddd047c884fd1d95de0cfb45f4b6db9e1f6dd2ae111d47d8361b7bd092",
+      "uncompressed_bytes": 12809656,
+      "uncompressed_sha256": "7ff64e7facaf9b3182e96def25c6fbfd912104a9425d318c0ec7c8465f929684"
+    },
+    {
+      "file": "kanto-boundary-rocks.blend",
+      "encoding": "gzip-blend",
+      "bytes": 117512,
+      "sha256": "4b72f489fe6047b9825c55785ec50424f8127e1a8303d2e283d243a9f7ce9f33",
+      "uncompressed_bytes": 937036,
+      "uncompressed_sha256": "75422272e1ce6138a0d32fab81855bc2d5338529ce925adcceb2ba39a04fbc70"
+    },
+    {
+      "file": "kanto-capped-posts.blend",
+      "encoding": "gzip-blend",
+      "bytes": 112630,
+      "sha256": "b4d656a597be1ab18f62b1675214244887a3ef0dafd499c8c0051cbb89886b76",
+      "uncompressed_bytes": 801256,
+      "uncompressed_sha256": "69fa8630a7aef29388dd525d7305d72b6718688948eed4ab72ed4399a67d8d6d"
+    },
+    {
+      "file": "lighthouse-chamber.blend",
+      "encoding": "gzip-blend",
+      "bytes": 154405,
+      "sha256": "ccc85c55aa851264cc36fc164bfd841f00aeb4e013b7dd494c729d34b48150cf",
+      "uncompressed_bytes": 1452904,
+      "uncompressed_sha256": "c49f667b6ee7164dafd483e28c3b3b45e6df3e92a10df730c1351c80dd1b5d50"
+    },
+    {
+      "file": "lighthouse-masonry.blend",
+      "encoding": "gzip-blend",
+      "bytes": 396645,
+      "sha256": "330b43c74bbf584e0ab3ca25c93017c0d82e18d195557d28af7b72c37ec52746",
+      "uncompressed_bytes": 5944552,
+      "uncompressed_sha256": "c7b526e44829c11d409384d4f07ca4217fba9fd089d1d6deff18e593b2619ed6"
+    },
+    {
+      "file": "new-bark-kit.blend",
+      "encoding": "gzip-blend",
+      "bytes": 310716,
+      "sha256": "6f98688dbad7776cbdde59d1026d00b5c1f2b4bb3a6d4aa73dc89048e3ab294d",
+      "uncompressed_bytes": 2248774,
+      "uncompressed_sha256": "5be9ed47112d8b1ed4e8f81249edd377cfa835de0f5c474a54d0f647b943a1a6"
+    },
+    {
+      "file": "outdoor-sign-frames.blend",
+      "encoding": "gzip-blend",
+      "bytes": 166932,
+      "sha256": "1750ea07af3177c40585c1342d45668d57cac12af7d40d807db466f3203890da",
+      "uncompressed_bytes": 1560484,
+      "uncompressed_sha256": "977972a3da650a320f358ffe1e05a37ccf6d84d2a2f3a462fdf9812d5b7c67d0"
+    },
+    {
+      "file": "park-scenery.blend",
+      "encoding": "gzip-blend",
+      "bytes": 124635,
+      "sha256": "9eaed4cec4f767c092b4dc646a1684a9824e321786e838a92bfbf7161c8d7c55",
+      "uncompressed_bytes": 856064,
+      "uncompressed_sha256": "d977190c0d75aa687a38333da9b835a5fa4df9122ec13ea6ec74a14fb8b3db10"
+    },
+    {
+      "file": "player-house.blend",
+      "encoding": "gzip-blend",
+      "bytes": 304834,
+      "sha256": "6adfd1846ad1252579de4598155fee0ec818e7c91d65e511142defca88fae852",
+      "uncompressed_bytes": 3353915,
+      "uncompressed_sha256": "30fe351acf013d42295435cf97ff6010e4a361a8db92a988706b4641ffe9ca36"
+    },
+    {
+      "file": "radio-desks.blend",
+      "encoding": "gzip-blend",
+      "bytes": 188551,
+      "sha256": "ae04b2636d18d5ae74a851b30c71a32e56e1aae7aaab02846d5361161bba4ad2",
+      "uncompressed_bytes": 2239636,
+      "uncompressed_sha256": "c686dcf2e5c3b50e986a79d679dbf944c406372889700e9dbe7c64db6b084c4d"
+    },
+    {
+      "file": "ship-fronts.blend",
+      "encoding": "gzip-blend",
+      "bytes": 126019,
+      "sha256": "a325304b7452361c29533b2697447cbd8525dbc2d3e6e028ae7b07f29a6762a0",
+      "uncompressed_bytes": 1029816,
+      "uncompressed_sha256": "1d17f16f86d338f2e4fbf117e611059d524f05f7d32f04cd30e0cef1c1f4c517"
+    },
+    {
+      "file": "ship-rooms.blend",
+      "encoding": "gzip-blend",
+      "bytes": 196945,
+      "sha256": "134051fdeda0e32a3401476dec47642810e1ce3a46471d1baf6e34ffbb834a16",
+      "uncompressed_bytes": 2165572,
+      "uncompressed_sha256": "a244e7a07d212a3165d8881056bd17aa545b9e6f9d41e030eeb5878c51d9269e"
+    },
+    {
+      "file": "special-environments.blend",
+      "encoding": "gzip-blend",
+      "bytes": 201716,
+      "sha256": "7cb11bbdf17832aa9081b3808ce5df3816f709996419203ec948244259ef289e",
+      "uncompressed_bytes": 1999146,
+      "uncompressed_sha256": "e5831b6c72ab5aa5b3a050efb760f8da8bcf30ada660128d914792cdf51f311d"
+    },
+    {
+      "file": "special-interiors.blend",
+      "encoding": "gzip-blend",
+      "bytes": 403979,
+      "sha256": "b3802133171fa1b0afac3ac4bf930db607129d90a15716a02ef7ecd79da6c624",
+      "uncompressed_bytes": 5430648,
+      "uncompressed_sha256": "d652d6b3e08a8546435c029c381bf7cea38afd2a6e3a22c30dcf56bb12f2bc82"
+    },
+    {
+      "file": "structure-extensions.blend",
+      "encoding": "gzip-blend",
+      "bytes": 485109,
+      "sha256": "5cd3d6ad13602a382662daa219a51e1b06b34cea087043ae8b87318b9bd30e08",
+      "uncompressed_bytes": 7817680,
+      "uncompressed_sha256": "40cd9be0fbb2db6d17837695df5153e1df362731772f1736903329dc922b08de"
+    },
+    {
+      "file": "traditional-room-scenery.blend",
+      "encoding": "gzip-blend",
+      "bytes": 204215,
+      "sha256": "d7c237804f0bfb87b756d6fde9bfecd34b837dfdea293d1adb9f7f081b641641",
+      "uncompressed_bytes": 2451552,
+      "uncompressed_sha256": "9aff138e90b197aa3d07c58823fe258434a0e2bb633f5638f07b1f70c53fdf15"
+    },
+    {
+      "file": "train-station.blend",
+      "encoding": "gzip-blend",
+      "bytes": 208081,
+      "sha256": "387a59b2791627b4adf8c9eede4d762581cbbc019bc4a1932041e756dba1a380",
+      "uncompressed_bytes": 2177018,
+      "uncompressed_sha256": "9b7f782a5f62155168d16e2386e5e964fa6e2119b260666ea862c014cf476770",
+      "runtime_model_sha256": "ccbcc24ddaab84304bcd7fdf353d6241576454bd8efca2ad8d79c7c87b064b0d"
+    },
+    {
+      "file": "world-exteriors.blend",
+      "encoding": "gzip-blend",
+      "bytes": 4012962,
+      "sha256": "bfed2124e05afb511308488a3237fb4ede05790d0ccfb669ec25786db2d0155b",
+      "uncompressed_bytes": 58273182,
+      "uncompressed_sha256": "227f96bf3414d6ddf9662a3f7f36d55afb1aac2cead3cc4cdb7ea05791bd1c97"
+    }
+  ]
+}

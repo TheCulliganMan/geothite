@@ -1,0 +1,20 @@
+{
+  "prompt": "sprites/mn-f006/back-prompt-v2.txt",
+  "references": [
+    {
+      "path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mn-f006/mn-016-018.front-back.imagegen-v2.png",
+      "sha256": "d37c38169438ced6109dfc18328969b31adece00bd1e9102e63bb6f756699403",
+      "role": "original creature anatomy"
+    },
+    {
+      "path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F006/line.review.png",
+      "sha256": "96ceda6583ac758b70870608077f88a9c40307bfb352e8e8da355eb1d2d92afc",
+      "role": "native individual front palettes"
+    },
+    {
+      "path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/gen2-reference/starters.png",
+      "sha256": "af61f720a75b7e1b8e80ba14e8944612556397eedddd719669dec68b0e0fd534",
+      "role": "authentic Gen2 camera and clusters"
+    }
+  ]
+}

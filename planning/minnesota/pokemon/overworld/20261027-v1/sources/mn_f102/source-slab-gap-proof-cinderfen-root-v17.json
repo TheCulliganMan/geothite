@@ -1,0 +1,146 @@
+{
+  "species_id": "MN_223",
+  "result": "held: upper and middle native slabs are joined through hands",
+  "poses": [
+    {
+      "pose": "down_idle",
+      "foreground_components": [
+        {
+          "pixels": 45,
+          "bounds": [
+            3,
+            1,
+            9,
+            8
+          ]
+        },
+        {
+          "pixels": 14,
+          "bounds": [
+            5,
+            10,
+            5,
+            5
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "up_idle",
+      "foreground_components": [
+        {
+          "pixels": 40,
+          "bounds": [
+            3,
+            1,
+            9,
+            8
+          ]
+        },
+        {
+          "pixels": 10,
+          "bounds": [
+            5,
+            10,
+            5,
+            4
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "foreground_components": [
+        {
+          "pixels": 31,
+          "bounds": [
+            5,
+            1,
+            5,
+            8
+          ]
+        },
+        {
+          "pixels": 11,
+          "bounds": [
+            6,
+            10,
+            4,
+            5
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "foreground_components": [
+        {
+          "pixels": 46,
+          "bounds": [
+            3,
+            1,
+            9,
+            8
+          ]
+        },
+        {
+          "pixels": 13,
+          "bounds": [
+            5,
+            10,
+            5,
+            5
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "up_step",
+      "foreground_components": [
+        {
+          "pixels": 44,
+          "bounds": [
+            3,
+            1,
+            9,
+            8
+          ]
+        },
+        {
+          "pixels": 15,
+          "bounds": [
+            5,
+            10,
+            5,
+            5
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "foreground_components": [
+        {
+          "pixels": 32,
+          "bounds": [
+            5,
+            1,
+            5,
+            8
+          ]
+        },
+        {
+          "pixels": 11,
+          "bounds": [
+            6,
+            10,
+            4,
+            4
+          ]
+        }
+      ]
+    }
+  ],
+  "correction": "Earlier visual wording overstated separation. Recorded component bounds show only two main foreground components. This candidate was never accepted; source v20 independently compresses levels and proves three occupied row bands in every pose.",
+  "accepted_replacement": "sources/mn_f102/manifest-cinderfen-v20-pupil-proof.json"
+}

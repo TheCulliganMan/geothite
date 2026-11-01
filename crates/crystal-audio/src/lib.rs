@@ -1,5 +1,7 @@
+pub mod original_cry;
 pub mod pcm;
 pub mod synth;
+pub mod wav;
 
 use std::collections::{BTreeMap, VecDeque};
 use std::path::{Path, PathBuf};

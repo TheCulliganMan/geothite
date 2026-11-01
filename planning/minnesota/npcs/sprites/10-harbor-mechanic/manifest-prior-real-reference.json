@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "id": "MN_HARBOR_MECHANIC",
+  "name": "MECHANIC TOBIN",
+  "status": "accepted-native-playable",
+  "overworld_frames": 6,
+  "overworld_size": [
+    16,
+    16
+  ],
+  "battle_size": [
+    56,
+    56
+  ],
+  "palette_rgb555": [
+    32767,
+    22399,
+    18858,
+    0
+  ],
+  "source": "native-pixels-v2.json",
+  "placement": "placement-v1.json",
+  "pack": "content-packs/minnesota-npcs-hand-11-v01.crystalpack",
+  "parent": "content-packs/minnesota-npcs-hand-10-v01.crystalpack",
+  "runtime_checks": {
+    "one_controller_test_passed": true,
+    "talk_and_input_ownership": true,
+    "battle_turn_and_pp": true,
+    "battle_save_load": true,
+    "actual_victory_and_defeat_flag_before_render_capture": true,
+    "post_battle_talk": true,
+    "existing_trainers_and_assets_preserved": true
+  },
+  "manual_visual_review": "Six directly hand-authored native grids inspected at 1x, 8x comparison and actual Duluth scene. Bald crown, separate forehead goggles/eyes, cream beard, broad slate overalls with buckle/pocket, notched open spanner and opposite-hip tool pouch. Dedicated rear strap and true foot stride preserve tools. Full controller encounter passed against unchanged scaled team; battle art and palette unchanged.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/sprites/10-harbor-mechanic/native-pixels-v2.json": "657282edb4ffcdf22c916069487a209101c2a13aba562f0d8bf0dff9f351dda2",
+    "planning/minnesota/npcs/sprites/10-harbor-mechanic/placement-v1.json": "9018bde9826dae673349ea62b85109cea27319d1455bed85858b66b5b456668b",
+    "content-packs/minnesota-npcs-hand-11-v01.crystalpack": "c873cdb21035e09ad0374727ba87d44aa26e33b7c4416a2dac6d6b57a86c3089",
+    "target/npc-sprites/mechanic/controller-hand-v01.log": "05f075617da8ee1c2e1a57eec37060165bf4f3555c61ffc71dc80de7c8a40712",
+    "target/npc-sprites/mechanic/gameplay-hand-v01/original-npc-trainer-intro.png": "ba24068fae698996e826c4a89a61e5395bc4c9bffe3a5b80a6e9a98005b0c1b9",
+    "target/npc-sprites/mechanic/gameplay-hand-v01/original-npc-first-turn.png": "a6091e271b0d0c9f6994259661ba4db17942dd114f36635f756e5f7790bf3f7c",
+    "target/npc-sprites/mechanic/gameplay-hand-v01/original-npc-overworld-state.png": "2a3d1a157eaac6ab0defcb38616a92941e21fceb74a66da285078d9650e23361",
+    "target/npc-sprites/mechanic/hand-v1/comparison.png": "87974d4e19a4aef629df6efdc5feeb6000b8d7fc46359501dd841f93fa5c05a1",
+    "target/npc-sprites/mechanic/hand-v1/overworld-review.png": "73d924bc117157a1af461c57bb20edc9c1ef85db5550710fdf75f16284cec826",
+    "target/npc-sprites/mechanic/hand-v1/overworld-review-8x.png": "f40319c1d38830a654c9e597bf66e206c65e86f644c21e6d859eeff2b72d3bec"
+  },
+  "overworld_revision": "hand-edited-v2",
+  "previous_visual_acceptance_reopened_by_user": true
+}

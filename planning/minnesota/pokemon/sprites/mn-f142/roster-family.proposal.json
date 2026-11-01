@@ -1,0 +1,27 @@
+{
+  "id": "MN_F142",
+  "members": [
+    {
+      "id": "MN_314",
+      "name": "Dewbit",
+      "types": [
+        "GRASS"
+      ],
+      "stage": 1,
+      "evolves_to": "MN_315"
+    },
+    {
+      "id": "MN_315",
+      "name": "Glisnare",
+      "types": [
+        "GRASS",
+        "DARK"
+      ],
+      "stage": 2,
+      "evolves_to": null
+    }
+  ],
+  "theme": "Sundew \u00d7 finger trap. A sticky three-leaf rosette grows six broad curling leaf arms. Their gland-tipped margins interlock around an apparent inviting face, while small real eyes stay sheltered beneath the central leaf.",
+  "region": "peatlands",
+  "evolution_design": "Sundew \u00d7 finger trap. A sticky three-leaf rosette grows six broad curling leaf arms. Their gland-tipped margins interlock around an apparent inviting face, while small real eyes stay sheltered beneath the central leaf."
+}

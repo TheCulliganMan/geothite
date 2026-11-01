@@ -1,0 +1,14 @@
+{
+  "attempt": "v1",
+  "prompt_file": "sprites/mn-f074/prompt-v1.txt",
+  "status": "no-image-returned",
+  "failure": {
+    "http": 400,
+    "code": "moderation_blocked",
+    "stage": "output",
+    "category": [
+      "other"
+    ],
+    "request_id": "786ae415-109d-4122-9f35-50da7f9b1e44"
+  }
+}

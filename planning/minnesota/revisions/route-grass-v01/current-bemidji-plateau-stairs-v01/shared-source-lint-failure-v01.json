@@ -1,0 +1,13 @@
+{
+  "status": "PREVIOUS_CHECK_FAILED_SHARED_SOURCE_NOW_REPAIRED",
+  "failed_log": ".local/route-grass-review/bemidji-plateau-assets-all-target-clippy-v01.log",
+  "failed_errors": "Seven unresolved helper references in flarkindle_discovery_pack.rs",
+  "current_helper_definitions": [
+    "point",
+    "vacant",
+    "validate_encounter_species"
+  ],
+  "current_shared_source_sha256": "6f20ddb7f7f5bb4ff06c405bbb7381d9ca18712d49315b6d5016cd13be5b2737",
+  "shared_source_modified_by_this_task": false,
+  "retry_required": true
+}

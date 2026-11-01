@@ -1,0 +1,18 @@
+{
+  "status": "PASS_CURRENT_PRESERVE_PINE_GRASS_REVIEW",
+  "pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+  "pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33",
+  "native_cases": 3,
+  "stdio_calls": 15,
+  "grass_quadrants": 28,
+  "ice_quadrants": 0,
+  "northbound_minimum_grass_steps": 13,
+  "southbound_minimum_grass_steps": 6,
+  "ordinary_uphill_grass_steps": 7,
+  "dry_downhill_and_reverse_denial": true,
+  "both_public_seam_lanes_and_free_return": true,
+  "admission_money_and_session_unchanged": true,
+  "complete_map_used_pixels_and_collision_exact": true,
+  "whole_inherited_map_inspected": "planning/minnesota/renders/route-grass-v01/current-preserve-pine-entry-v01/source-candidate-v01/whole.png",
+  "scope": "Fresh native grass/ledge/notice/input/public seam/admission preservation/wild RUN/Continue, plus production replay from an immutable reached save. Explicit initial QA party/badges/position are not earned preserve access; statewide review remains active."
+}

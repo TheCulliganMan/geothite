@@ -1,0 +1,9 @@
+{
+  "tool": "built-in image_gen",
+  "original": "/Users/ryanculligan/.codex/generated_images/01a179bf-dc2b-7352-8975-8b8f3a32e33b/exec-ac41f3ad-650c-4630-bf5b-4c25aca287a2.png",
+  "preserved_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f071/canalarm.overworld.imagegen-v2-neutral.png",
+  "sha256": "4e2caa7576410f85c3f82328a3951445fdbb9d1804ccbfbc9e55330c13860317",
+  "exact_prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f071/prompt-canalarm-neutral-v2.txt",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f071/reference-mapping-canalarm-neutral-v2.json",
+  "status": "preserved; selected frames recorded in frozen manifest"
+}

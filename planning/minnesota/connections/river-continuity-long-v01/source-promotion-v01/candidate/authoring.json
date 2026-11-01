@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "status": "CURRENT_FULL_SOURCE_PROPOSAL_NOT_A_BUILD_MANIFEST",
+  "accepted_native_pack_sha256": "3ddbad16c6538e52f219c12497e4fbe6e41a7f18af5c42589b7b92357cfad243",
+  "source_contract_sha256": "67c451f315baf3939f92ae619aae44c50963c069633dab177076ee18b99cd3cd",
+  "full_current_sources": [
+    {
+      "path": "planning/minnesota/connections/mississippi-long-v01/MnMississippiLowerWoods.layout.json",
+      "sha256": "e6b90ff27a2cc609b3a4290e216fde3254e77bf4d41b52f79e61ce4dc33b07d4",
+      "dimensions_metatiles": [
+        64,
+        68
+      ]
+    },
+    {
+      "path": "planning/minnesota/connections/mississippi-long-v01/MnMississippiUpstreamWoods.layout.json",
+      "sha256": "c1e2cd6899571b4e66054a122ea13489bcefe1adc2063ec655bf094e18df5eb7",
+      "dimensions_metatiles": [
+        64,
+        68
+      ]
+    },
+    {
+      "path": "planning/minnesota/routes/MN_R05.layout.json",
+      "sha256": "b81819939802960511b3871f525a8efa8a95b3c181375c02960c5c760d09f086",
+      "dimensions_metatiles": [
+        32,
+        56
+      ]
+    }
+  ],
+  "historical_actor_connection_encounter_manifest": "planning/minnesota/connections/mississippi-v02/manifest.json",
+  "historical_inputs_remain_immutable": true,
+  "world_route_dossier": "planning/minnesota/routes/MN_R05.json",
+  "rebuild_limits": [
+    "Use the current installed native art for the snapshot source; R05 includes the existing native bridge blocks83\u201385.",
+    "The shared Rust whole-route parser needs a narrow MN_R05 explicit_source_edges allowance before consuming the R05 snapshot.",
+    "The alternative R05 source retains base bridge blocks 44/01/46 for a build stage before native bridge-art installation; applying its three declared derived substitutions reproduces the accepted snapshot.",
+    "Do not run the old frozen river publisher on these new files or claim its historical preimages remain applicable. Historical mississippi-v02 files/manifest stay exact; current terrain publication still needs an explicit reviewed native overlay stage."
+  ]
+}

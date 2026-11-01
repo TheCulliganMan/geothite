@@ -1,0 +1,369 @@
+{
+  "schema_version": 1,
+  "species": [
+    {
+      "id": "MN_186",
+      "classification": "Sticky Note",
+      "height_inches": 5,
+      "weight_tenths_lb": 1,
+      "dex_pages": [
+        "A curled corner @ marks the place @ its owner forgot.",
+        "It sticks gently @ to a lost thing @ until it is found."
+      ],
+      "base_stats": {
+        "hp": 50,
+        "attack": 25,
+        "defense": 45,
+        "speed": 25,
+        "special_attack": 60,
+        "special_defense": 80
+      },
+      "catch_rate": 190,
+      "base_exp": 62,
+      "gender_ratio": 255,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_SLOW",
+      "egg_groups": [
+        "EGG_MINERAL",
+        "EGG_INDETERMINATE"
+      ],
+      "evolution": {
+        "method": "LEVEL",
+        "level": 24
+      },
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_UNOWN",
+      "footprint_species": "UNOWN",
+      "cry": {
+        "cry": "CRY_NATU",
+        "pitch": -48,
+        "length": 144
+      },
+      "shiny_rgb5": [
+        [
+          16,
+          30,
+          28
+        ],
+        [
+          6,
+          13,
+          9
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "POUND"
+        ],
+        [
+          1,
+          "GROWL"
+        ],
+        [
+          5,
+          "CONFUSION"
+        ],
+        [
+          9,
+          "STRING_SHOT"
+        ],
+        [
+          13,
+          "MIMIC"
+        ],
+        [
+          17,
+          "FORESIGHT"
+        ],
+        [
+          22,
+          "PSYBEAM"
+        ],
+        [
+          27,
+          "REFLECT"
+        ],
+        [
+          32,
+          "ENCORE"
+        ],
+        [
+          37,
+          "FUTURE_SIGHT"
+        ],
+        [
+          42,
+          "LIGHT_SCREEN"
+        ],
+        [
+          48,
+          "PSYCHIC_M"
+        ],
+        [
+          56,
+          "RECOVER"
+        ]
+      ],
+      "tmhm_moves": [
+        "PSYCHIC_M",
+        "PSYCH_UP",
+        "FLASH",
+        "SWIFT",
+        "PROTECT",
+        "REST"
+      ],
+      "egg_moves": []
+    },
+    {
+      "id": "MN_187",
+      "classification": "Memo Fold",
+      "height_inches": 16,
+      "weight_tenths_lb": 10,
+      "dex_pages": [
+        "Its three sheets @ trade places to @ sort reminders.",
+        "A note peels free @ when the promise @ on it is kept."
+      ],
+      "base_stats": {
+        "hp": 70,
+        "attack": 35,
+        "defense": 65,
+        "speed": 30,
+        "special_attack": 85,
+        "special_defense": 105
+      },
+      "catch_rate": 90,
+      "base_exp": 112,
+      "gender_ratio": 255,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_SLOW",
+      "egg_groups": [
+        "EGG_MINERAL",
+        "EGG_INDETERMINATE"
+      ],
+      "evolution": {
+        "method": "LEVEL",
+        "level": 44
+      },
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_UNOWN",
+      "footprint_species": "UNOWN",
+      "cry": {
+        "cry": "CRY_NATU",
+        "pitch": -24,
+        "length": 160
+      },
+      "shiny_rgb5": [
+        [
+          30,
+          24,
+          21
+        ],
+        [
+          12,
+          5,
+          11
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "POUND"
+        ],
+        [
+          1,
+          "GROWL"
+        ],
+        [
+          5,
+          "CONFUSION"
+        ],
+        [
+          9,
+          "STRING_SHOT"
+        ],
+        [
+          13,
+          "MIMIC"
+        ],
+        [
+          17,
+          "FORESIGHT"
+        ],
+        [
+          22,
+          "PSYBEAM"
+        ],
+        [
+          24,
+          "DISABLE"
+        ],
+        [
+          27,
+          "REFLECT"
+        ],
+        [
+          32,
+          "ENCORE"
+        ],
+        [
+          37,
+          "FUTURE_SIGHT"
+        ],
+        [
+          42,
+          "LIGHT_SCREEN"
+        ],
+        [
+          48,
+          "PSYCHIC_M"
+        ],
+        [
+          56,
+          "RECOVER"
+        ]
+      ],
+      "tmhm_moves": [
+        "PSYCHIC_M",
+        "PSYCH_UP",
+        "FLASH",
+        "SWIFT",
+        "PROTECT",
+        "REST"
+      ],
+      "egg_moves": []
+    },
+    {
+      "id": "MN_188",
+      "classification": "Memo Keeper",
+      "height_inches": 40,
+      "weight_tenths_lb": 35,
+      "dex_pages": [
+        "It sorts old notes @ into the order @ they are needed.",
+        "Its blank sheets @ remember promises @ for many years."
+      ],
+      "base_stats": {
+        "hp": 90,
+        "attack": 50,
+        "defense": 80,
+        "speed": 45,
+        "special_attack": 110,
+        "special_defense": 125
+      },
+      "catch_rate": 45,
+      "base_exp": 200,
+      "gender_ratio": 255,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_SLOW",
+      "egg_groups": [
+        "EGG_MINERAL",
+        "EGG_INDETERMINATE"
+      ],
+      "evolution": null,
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_UNOWN",
+      "footprint_species": "UNOWN",
+      "cry": {
+        "cry": "CRY_NATU",
+        "pitch": 0,
+        "length": 176
+      },
+      "shiny_rgb5": [
+        [
+          22,
+          29,
+          27
+        ],
+        [
+          20,
+          12,
+          8
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "POUND"
+        ],
+        [
+          1,
+          "GROWL"
+        ],
+        [
+          5,
+          "CONFUSION"
+        ],
+        [
+          9,
+          "STRING_SHOT"
+        ],
+        [
+          13,
+          "MIMIC"
+        ],
+        [
+          17,
+          "FORESIGHT"
+        ],
+        [
+          22,
+          "PSYBEAM"
+        ],
+        [
+          24,
+          "DISABLE"
+        ],
+        [
+          27,
+          "REFLECT"
+        ],
+        [
+          32,
+          "ENCORE"
+        ],
+        [
+          37,
+          "FUTURE_SIGHT"
+        ],
+        [
+          42,
+          "LIGHT_SCREEN"
+        ],
+        [
+          44,
+          "PSYCH_UP"
+        ],
+        [
+          48,
+          "PSYCHIC_M"
+        ],
+        [
+          52,
+          "MIND_READER"
+        ],
+        [
+          56,
+          "RECOVER"
+        ]
+      ],
+      "tmhm_moves": [
+        "PSYCHIC_M",
+        "PSYCH_UP",
+        "FLASH",
+        "SWIFT",
+        "PROTECT",
+        "REST"
+      ],
+      "egg_moves": []
+    }
+  ]
+}

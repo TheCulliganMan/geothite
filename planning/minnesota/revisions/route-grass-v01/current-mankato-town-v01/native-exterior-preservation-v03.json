@@ -1,0 +1,70 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-mankato-native-exterior-v03.crystalpack",
+  "sha256": "4f22dd532f5dc1ca28f63383bb9a66030d4f93ced96ed4daa265b3f36680e02f",
+  "parent": {
+    "revision": "st_paul_civic_east_revision",
+    "pack": "content-packs/minnesota-st-paul-civic-east-v02.crystalpack",
+    "sha256": "92ba2e65ef04f4502cd6c64106d54e429317167573548badc1e1f6a3f2c412c2"
+  },
+  "identity": {
+    "stored": "697f6cddd44680f8d548223a70243e67cedb86810039a16d778614330ca32fdd",
+    "independently_recomputed": "697f6cddd44680f8d548223a70243e67cedb86810039a16d778614330ca32fdd",
+    "exact": true
+  },
+  "changed_metatiles": [
+    {
+      "at": [
+        3,
+        9
+      ],
+      "before": 87,
+      "after": 5
+    },
+    {
+      "at": [
+        4,
+        9
+      ],
+      "before": 87,
+      "after": 5
+    },
+    {
+      "at": [
+        10,
+        9
+      ],
+      "before": 87,
+      "after": 5
+    },
+    {
+      "at": [
+        11,
+        9
+      ],
+      "before": 75,
+      "after": 5
+    },
+    {
+      "at": [
+        18,
+        13
+      ],
+      "before": 22,
+      "after": 26
+    },
+    {
+      "at": [
+        19,
+        13
+      ],
+      "before": 51,
+      "after": 23
+    }
+  ],
+  "other_complete_maps_exact": 731,
+  "state_fair_exact": true,
+  "all_events_scripts_art_audio_encounters_exact": true,
+  "entire_normalized_pack_exact": true,
+  "source_pixels_modified": false
+}

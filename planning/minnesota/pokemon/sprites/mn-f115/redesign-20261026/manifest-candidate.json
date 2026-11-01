@@ -1,0 +1,134 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F115",
+  "status": "native-redesign-candidate-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_249": {
+      "species_id": "MN_249",
+      "name": "Frontagal",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          24,
+          27,
+          30
+        ],
+        [
+          9,
+          10,
+          21
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        31608,
+        21833,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          198,
+          222,
+          247
+        ],
+        [
+          74,
+          82,
+          173
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#C6DEF7",
+        "#4A52AD",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f115/redesign-20261026/prompt-v2.txt",
+  "reference_mapping": "sprites/mn-f115/redesign-20261026/reference-mapping-v2.json",
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-249-frontagal-redesign-v2",
+      "species_id": "MN_249",
+      "view": "front",
+      "source": "sprites/mn-f115/redesign-20261026/mn-249-frontagal.front-back.redesign-v2.png",
+      "crop": [
+        0,
+        0,
+        1145,
+        790
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        31608,
+        21833,
+        0
+      ],
+      "white_detail_min_samples": 48,
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-249-frontagal-redesign-v2",
+      "species_id": "MN_249",
+      "view": "back",
+      "source": "sprites/mn-f115/redesign-20261026/mn-249-frontagal.front-back.redesign-v2.png",
+      "crop": [
+        0,
+        790,
+        1145,
+        584
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        31608,
+        21833,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 16
+    }
+  ],
+  "source_sha256": "4941cc3f196f8750c2ca82984f68ccba494a40012e5ae9a5483fd630be4c430a",
+  "candidate_exports": {
+    "native_sheet": "line.redesign-20261026.native.png",
+    "review_sheet": "line.redesign-20261026.review.png"
+  },
+  "comparison_before": "line.before-redesign-20261026.review.png",
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "notes": "Root inspected raw and both native views: enlarged blunt storm-prow head, deep brow, raised chest and curved shelf wings replace the nearly faceless flat glider. Three heavy fork limbs and short rudder remain. Broad muzzle avoids the first redraw bird beak. Tiny pupils simplify but eye window/brow expression and face remain visible. White32/48/64 variants retained; selected white48/interior16 balances eye/mouth definition.",
+    "sheet_sha256": "8d22766feb3aea63d4fc721490df266cc080349384fe81e8fb7f4354eaa90792",
+    "outline_profile": "source-contour-v1"
+  }
+}

@@ -1,6 +1,7 @@
 // The device wall clock and timezone never participate in the hosted game clock.
 export async function startServerClock({ fetch, monotonicNow = () => performance.now(),
-  schedule = setInterval, onError = () => {} }) {
+  schedule = setInterval, onError = () => {},
+  retryDelay = ms => new Promise(resolve => setTimeout(resolve, ms)) }) {
   let anchor;
   let pending = false;
   let lastSample = 0;
@@ -8,8 +9,21 @@ export async function startServerClock({ fetch, monotonicNow = () => performance
     if (pending) return;
     pending = true;
     try {
-      const started = monotonicNow();
-      const response = await fetch('/v1/clock', { cache: 'no-store', signal: AbortSignal.timeout(10000) });
+      let response, started;
+      for (let attempt = 0; attempt < 3; attempt++) {
+        started = monotonicNow();
+        try {
+          response = await fetch('/v1/clock', { cache: 'no-store', signal: AbortSignal.timeout(15000) });
+          if (response.status >= 500 && attempt < 2) {
+            await retryDelay(250 * (attempt + 1));
+            continue;
+          }
+          break;
+        } catch (error) {
+          if (attempt === 2) throw new Error('Unable to synchronize game time. Check your connection and reload.', { cause: error });
+          await retryDelay(250 * (attempt + 1));
+        }
+      }
       if (!response.ok) throw new Error('Server clock is unavailable.');
       const sample = await response.json();
       const received = monotonicNow();

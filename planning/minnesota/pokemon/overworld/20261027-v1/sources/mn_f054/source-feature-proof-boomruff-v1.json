@@ -1,0 +1,336 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_114",
+  "result": "pass",
+  "manifest_sha256": "86a98857bd2fd63bce604702c83cf514991a9884738381c41d0ab22cbb5a917c",
+  "bank_sha256": "5f78b7a7287d86dfa693677c1b2fb5114a573e9fe1d686b276b749aa043cc4c7",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f054/boomruff.overworld.imagegen-v1.png": "3a4ec9fe07b1f697bf6ed1ab541a2b7a68c9c8922812865110927b712723d6ce"
+  },
+  "canonical_eye_form": "TWO actual isolated south pupils, ONE actual isolated west pupil. Every pixel in each complete native eye cluster maps to the same small anatomical source pupil component.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "down_idle",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f054/boomruff.overworld.imagegen-v1.png",
+        "crop": [
+          71,
+          80,
+          440,
+          390
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            251,
+            297,
+            13,
+            15
+          ],
+          [
+            299,
+            297,
+            13,
+            15
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                7,
+                9
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  9,
+                  5,
+                  1,
+                  253
+                ],
+                "bounds": [
+                  251,
+                  297,
+                  13,
+                  15
+                ],
+                "pixels": 195,
+                "truncated_contour": false,
+                "native_pixel": [
+                  7,
+                  9
+                ],
+                "source_sample_pixel": [
+                  254,
+                  307
+                ]
+              }
+            ]
+          },
+          {
+            "native_cluster": [
+              [
+                9,
+                9
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  5,
+                  2,
+                  0,
+                  253
+                ],
+                "bounds": [
+                  299,
+                  297,
+                  13,
+                  15
+                ],
+                "pixels": 195,
+                "truncated_contour": false,
+                "native_pixel": [
+                  9,
+                  9
+                ],
+                "source_sample_pixel": [
+                  304,
+                  307
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "left_idle",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f054/boomruff.overworld.imagegen-v1.png",
+        "crop": [
+          1048,
+          80,
+          440,
+          390
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            1127,
+            277,
+            15,
+            21
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                3,
+                8
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  7,
+                  3,
+                  0,
+                  253
+                ],
+                "bounds": [
+                  1127,
+                  277,
+                  15,
+                  21
+                ],
+                "pixels": 298,
+                "truncated_contour": false,
+                "native_pixel": [
+                  3,
+                  8
+                ],
+                "source_sample_pixel": [
+                  1130,
+                  281
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "down_step",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f054/boomruff.overworld.imagegen-v1.png",
+        "crop": [
+          71,
+          526,
+          440,
+          390
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            251,
+            742,
+            13,
+            14
+          ],
+          [
+            299,
+            742,
+            13,
+            14
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                7,
+                9
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  12,
+                  6,
+                  1,
+                  253
+                ],
+                "bounds": [
+                  251,
+                  742,
+                  13,
+                  14
+                ],
+                "pixels": 182,
+                "truncated_contour": false,
+                "native_pixel": [
+                  7,
+                  9
+                ],
+                "source_sample_pixel": [
+                  254,
+                  753
+                ]
+              }
+            ]
+          },
+          {
+            "native_cluster": [
+              [
+                9,
+                9
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  4,
+                  1,
+                  0,
+                  254
+                ],
+                "bounds": [
+                  299,
+                  742,
+                  13,
+                  14
+                ],
+                "pixels": 182,
+                "truncated_contour": false,
+                "native_pixel": [
+                  9,
+                  9
+                ],
+                "source_sample_pixel": [
+                  304,
+                  753
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "left_step",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f054/boomruff.overworld.imagegen-v1.png",
+        "crop": [
+          1048,
+          530,
+          440,
+          390
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            1127,
+            720,
+            15,
+            22
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                3,
+                8
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  7,
+                  3,
+                  0,
+                  253
+                ],
+                "bounds": [
+                  1127,
+                  720,
+                  15,
+                  22
+                ],
+                "pixels": 310,
+                "truncated_contour": false,
+                "native_pixel": [
+                  3,
+                  8
+                ],
+                "source_sample_pixel": [
+                  1130,
+                  731
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "notes": "Both native normal/shiny rear poses actually inspected: plain rear head, no copied face. Head anchors stable, 1px transparent outer border, three walk pairs differ."
+  },
+  "detailed_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f054/manifest-boomruff-v1-pupil-proof.proof.json"
+}

@@ -1,0 +1,365 @@
+{
+  "status": "STATIC_NATIVE_BANK_LANE_AUDIT",
+  "pack": "content-packs/minnesota-current-mankato-mart-v03.crystalpack",
+  "sha256": "fa75cf2b83da156751debe1a52f7a24c42d277b845554870f1f9eb79711d9f7d",
+  "lanes": [
+    {
+      "lip": [
+        6,
+        18
+      ],
+      "upper": [
+        6,
+        17
+      ],
+      "upper_kind": "FLOOR",
+      "landing": [
+        6,
+        20
+      ],
+      "landing_kind": "WALL",
+      "upper_has_actor": false,
+      "landing_has_actor": false,
+      "classification": "WALKABLE_APPROACH",
+      "ordinary_return_steps": null,
+      "clinic_can_reach_upper_without_hop": true
+    },
+    {
+      "lip": [
+        7,
+        18
+      ],
+      "upper": [
+        7,
+        17
+      ],
+      "upper_kind": "FLOOR",
+      "landing": [
+        7,
+        20
+      ],
+      "landing_kind": "WALL",
+      "upper_has_actor": false,
+      "landing_has_actor": false,
+      "classification": "WALKABLE_APPROACH",
+      "ordinary_return_steps": null,
+      "clinic_can_reach_upper_without_hop": true
+    },
+    {
+      "lip": [
+        8,
+        18
+      ],
+      "upper": [
+        8,
+        17
+      ],
+      "upper_kind": "FLOOR",
+      "landing": [
+        8,
+        20
+      ],
+      "landing_kind": "WALL",
+      "upper_has_actor": false,
+      "landing_has_actor": false,
+      "classification": "WALKABLE_APPROACH",
+      "ordinary_return_steps": null,
+      "clinic_can_reach_upper_without_hop": true
+    },
+    {
+      "lip": [
+        9,
+        18
+      ],
+      "upper": [
+        9,
+        17
+      ],
+      "upper_kind": "FLOOR",
+      "landing": [
+        9,
+        20
+      ],
+      "landing_kind": "WALL",
+      "upper_has_actor": false,
+      "landing_has_actor": false,
+      "classification": "WALKABLE_APPROACH",
+      "ordinary_return_steps": null,
+      "clinic_can_reach_upper_without_hop": true
+    },
+    {
+      "lip": [
+        10,
+        18
+      ],
+      "upper": [
+        10,
+        17
+      ],
+      "upper_kind": "FLOOR",
+      "landing": [
+        10,
+        20
+      ],
+      "landing_kind": "FLOOR",
+      "upper_has_actor": false,
+      "landing_has_actor": false,
+      "classification": "WALKABLE_APPROACH",
+      "ordinary_return_steps": 35,
+      "clinic_can_reach_upper_without_hop": true
+    },
+    {
+      "lip": [
+        11,
+        18
+      ],
+      "upper": [
+        11,
+        17
+      ],
+      "upper_kind": "FLOOR",
+      "landing": [
+        11,
+        20
+      ],
+      "landing_kind": "FLOOR",
+      "upper_has_actor": false,
+      "landing_has_actor": false,
+      "classification": "WALKABLE_APPROACH",
+      "ordinary_return_steps": 33,
+      "clinic_can_reach_upper_without_hop": true
+    },
+    {
+      "lip": [
+        12,
+        18
+      ],
+      "upper": [
+        12,
+        17
+      ],
+      "upper_kind": "FLOOR",
+      "landing": [
+        12,
+        20
+      ],
+      "landing_kind": "FLOOR",
+      "upper_has_actor": false,
+      "landing_has_actor": false,
+      "classification": "WALKABLE_APPROACH",
+      "ordinary_return_steps": 31,
+      "clinic_can_reach_upper_without_hop": true
+    },
+    {
+      "lip": [
+        13,
+        18
+      ],
+      "upper": [
+        13,
+        17
+      ],
+      "upper_kind": "FLOOR",
+      "landing": [
+        13,
+        20
+      ],
+      "landing_kind": "FLOOR",
+      "upper_has_actor": false,
+      "landing_has_actor": false,
+      "classification": "WALKABLE_APPROACH",
+      "ordinary_return_steps": 29,
+      "clinic_can_reach_upper_without_hop": true
+    },
+    {
+      "lip": [
+        14,
+        18
+      ],
+      "upper": [
+        14,
+        17
+      ],
+      "upper_kind": "FLOOR",
+      "landing": [
+        14,
+        20
+      ],
+      "landing_kind": "FLOOR",
+      "upper_has_actor": false,
+      "landing_has_actor": false,
+      "classification": "WALKABLE_APPROACH",
+      "ordinary_return_steps": 27,
+      "clinic_can_reach_upper_without_hop": true
+    },
+    {
+      "lip": [
+        15,
+        18
+      ],
+      "upper": [
+        15,
+        17
+      ],
+      "upper_kind": "FLOOR",
+      "landing": [
+        15,
+        20
+      ],
+      "landing_kind": "FLOOR",
+      "upper_has_actor": false,
+      "landing_has_actor": false,
+      "classification": "WALKABLE_APPROACH",
+      "ordinary_return_steps": 25,
+      "clinic_can_reach_upper_without_hop": true
+    },
+    {
+      "lip": [
+        16,
+        18
+      ],
+      "upper": [
+        16,
+        17
+      ],
+      "upper_kind": "FLOOR",
+      "landing": [
+        16,
+        20
+      ],
+      "landing_kind": "FLOOR",
+      "upper_has_actor": false,
+      "landing_has_actor": false,
+      "classification": "WALKABLE_APPROACH",
+      "ordinary_return_steps": 23,
+      "clinic_can_reach_upper_without_hop": true
+    },
+    {
+      "lip": [
+        17,
+        18
+      ],
+      "upper": [
+        17,
+        17
+      ],
+      "upper_kind": "FLOOR",
+      "landing": [
+        17,
+        20
+      ],
+      "landing_kind": "FLOOR",
+      "upper_has_actor": false,
+      "landing_has_actor": false,
+      "classification": "WALKABLE_APPROACH",
+      "ordinary_return_steps": 21,
+      "clinic_can_reach_upper_without_hop": true
+    },
+    {
+      "lip": [
+        18,
+        18
+      ],
+      "upper": [
+        18,
+        17
+      ],
+      "upper_kind": "FLOOR",
+      "landing": [
+        18,
+        20
+      ],
+      "landing_kind": "FLOOR",
+      "upper_has_actor": false,
+      "landing_has_actor": false,
+      "classification": "WALKABLE_APPROACH",
+      "ordinary_return_steps": 19,
+      "clinic_can_reach_upper_without_hop": true
+    },
+    {
+      "lip": [
+        19,
+        18
+      ],
+      "upper": [
+        19,
+        17
+      ],
+      "upper_kind": "FLOOR",
+      "landing": [
+        19,
+        20
+      ],
+      "landing_kind": "FLOOR",
+      "upper_has_actor": false,
+      "landing_has_actor": false,
+      "classification": "WALKABLE_APPROACH",
+      "ordinary_return_steps": 17,
+      "clinic_can_reach_upper_without_hop": true
+    },
+    {
+      "lip": [
+        20,
+        18
+      ],
+      "upper": [
+        20,
+        17
+      ],
+      "upper_kind": "FLOOR",
+      "landing": [
+        20,
+        20
+      ],
+      "landing_kind": "WALL",
+      "upper_has_actor": false,
+      "landing_has_actor": false,
+      "classification": "WALKABLE_APPROACH",
+      "ordinary_return_steps": null,
+      "clinic_can_reach_upper_without_hop": true
+    },
+    {
+      "lip": [
+        21,
+        18
+      ],
+      "upper": [
+        21,
+        17
+      ],
+      "upper_kind": "FLOOR",
+      "landing": [
+        21,
+        20
+      ],
+      "landing_kind": "WALL",
+      "upper_has_actor": false,
+      "landing_has_actor": false,
+      "classification": "WALKABLE_APPROACH",
+      "ordinary_return_steps": null,
+      "clinic_can_reach_upper_without_hop": true
+    },
+    {
+      "lip": [
+        22,
+        18
+      ],
+      "upper": [
+        22,
+        17
+      ],
+      "upper_kind": "FLOOR",
+      "landing": [
+        22,
+        20
+      ],
+      "landing_kind": "WALL",
+      "upper_has_actor": false,
+      "landing_has_actor": false,
+      "classification": "WALKABLE_APPROACH",
+      "ordinary_return_steps": null,
+      "clinic_can_reach_upper_without_hop": true
+    }
+  ],
+  "scope": "Native HOP_DOWN lip, true two-beyond-lip landing and ordinary FLOOR-only return with actors present. No Cut, Surf, warps, off-map roads or script movement assumed; blocked approaches are not claimed playable. Runtime circuit coverage remains the separately verified contract."
+}

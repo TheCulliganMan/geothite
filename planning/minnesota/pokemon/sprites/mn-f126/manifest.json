@@ -1,0 +1,131 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F126",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f126/runestone-v1/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "pokemon_palettes": {
+    "MN_277": {
+      "species_id": "MN_277",
+      "name": "Kensigard",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          24,
+          21,
+          16
+        ],
+        [
+          9,
+          10,
+          13
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        17080,
+        13641,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          198,
+          173,
+          132
+        ],
+        [
+          74,
+          82,
+          107
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#C6AD84",
+        "#4A526B",
+        "#000000"
+      ]
+    }
+  },
+  "sprites": [
+    {
+      "id": "mn-277-kensigard-v1",
+      "species_id": "MN_277",
+      "view": "front",
+      "source": "sprites/mn-f126/runestone-v1/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        887,
+        887
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        17080,
+        13641,
+        0
+      ],
+      "interior_black_min_samples": 12,
+      "white_detail_min_samples": 4,
+      "exterior_contour": "solid"
+    },
+    {
+      "id": "mn-277-kensigard-v1",
+      "species_id": "MN_277",
+      "view": "back",
+      "source": "sprites/mn-f126/runestone-v1/front-back.imagegen-v1.png",
+      "crop": [
+        887,
+        135,
+        887,
+        680
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        17080,
+        13641,
+        0
+      ],
+      "interior_black_min_samples": 12,
+      "white_detail_min_samples": 4,
+      "exterior_contour": "solid"
+    }
+  ],
+  "source_sha256": "61892f624a27e585f134dc59dd3fd1285cb784d3924565db4af494c027de2633",
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "sheet_sha256": "4c3c921e9facba3744d859443aaa114168d67ab424ccbbcc42b38bcb1152a6dd",
+    "outline_profile": "solid-exterior-v1",
+    "notes": "Root inspected all four Rust native conversion variants. Area-vote with solid exterior selected for clean continuous slab/arm/foot rims, legible three rune cuts and stoic carved face. Rear is enlarged upper slab with side thickness and weathering cuts; lower body and feet are cropped. Four exact native RGB555 inks, no pixel edits. Original source and all rejected variants retained."
+  },
+  "research_file": "sprites/mn-f126/runestone-v1/research.json"
+}

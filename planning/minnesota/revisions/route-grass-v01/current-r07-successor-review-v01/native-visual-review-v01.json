@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "views_inspected": [
+    "north-crossing",
+    "repel-pocket"
+  ],
+  "pixel_mismatches": 0,
+  "grass_priority_native": true
+}

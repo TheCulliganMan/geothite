@@ -1,0 +1,6 @@
+{
+  "manifest": "manifest-castanake-v3-center.json",
+  "exit_code": 1,
+  "error": "CASTANAKE LeftStep: source bounds [45,36,405,353] touch450x440 crop; isolate complete art",
+  "action": "Retained raw and failed manifest, widened all crops470x440."
+}

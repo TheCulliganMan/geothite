@@ -1,0 +1,4119 @@
+{
+  "species_id": "MN_294",
+  "manifest_sha256": "4ed2ba72a4e15d73d82850ef11dae040f20a8ab77abdf9e4fb6bf82c2d0faf62",
+  "bank_sha256": "08baa9e52a338c93eb238db757409ab382edbdaf5e8c605caa2b64fa06461083",
+  "source_sha256": {
+    "burroot.overworld.imagegen-v2-plant.png": "e9ea527826fd7714ee049c3a98ae2bd7318ccbaac66d6c4e9c4ed85c81a8e515"
+  },
+  "result": "pass",
+  "no_native_painting": true,
+  "canonical_closed_holes": 0,
+  "proof": [
+    {
+      "pose": "down_idle",
+      "features": [
+        {
+          "feature": "oak_leaf_fans",
+          "traces": [
+            {
+              "source_feature_region": [
+                75,
+                145,
+                198,
+                301
+              ],
+              "actual_native_source_samples": [
+                {
+                  "native": [
+                    3,
+                    5
+                  ],
+                  "source_sample": [
+                    131,
+                    177
+                  ],
+                  "rgba": [
+                    53,
+                    107,
+                    59,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    3,
+                    6
+                  ],
+                  "source_sample": [
+                    131,
+                    208
+                  ],
+                  "rgba": [
+                    52,
+                    107,
+                    58,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    5,
+                    6
+                  ],
+                  "source_sample": [
+                    189,
+                    208
+                  ],
+                  "rgba": [
+                    57,
+                    112,
+                    63,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    2,
+                    7
+                  ],
+                  "source_sample": [
+                    101,
+                    238
+                  ],
+                  "rgba": [
+                    52,
+                    108,
+                    59,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    3,
+                    7
+                  ],
+                  "source_sample": [
+                    131,
+                    238
+                  ],
+                  "rgba": [
+                    52,
+                    107,
+                    59,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    4,
+                    7
+                  ],
+                  "source_sample": [
+                    160,
+                    238
+                  ],
+                  "rgba": [
+                    52,
+                    108,
+                    60,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    3,
+                    8
+                  ],
+                  "source_sample": [
+                    131,
+                    269
+                  ],
+                  "rgba": [
+                    52,
+                    108,
+                    58,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    5,
+                    8
+                  ],
+                  "source_sample": [
+                    189,
+                    269
+                  ],
+                  "rgba": [
+                    55,
+                    110,
+                    62,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    3,
+                    9
+                  ],
+                  "source_sample": [
+                    131,
+                    299
+                  ],
+                  "rgba": [
+                    3,
+                    5,
+                    3,
+                    206
+                  ]
+                },
+                {
+                  "native": [
+                    5,
+                    9
+                  ],
+                  "source_sample": [
+                    189,
+                    299
+                  ],
+                  "rgba": [
+                    52,
+                    108,
+                    58,
+                    253
+                  ]
+                }
+              ]
+            },
+            {
+              "source_feature_region": [
+                201,
+                99,
+                315,
+                255
+              ],
+              "actual_native_source_samples": [
+                {
+                  "native": [
+                    8,
+                    3
+                  ],
+                  "source_sample": [
+                    277,
+                    116
+                  ],
+                  "rgba": [
+                    36,
+                    81,
+                    45,
+                    251
+                  ]
+                },
+                {
+                  "native": [
+                    6,
+                    4
+                  ],
+                  "source_sample": [
+                    218,
+                    146
+                  ],
+                  "rgba": [
+                    2,
+                    4,
+                    2,
+                    168
+                  ]
+                },
+                {
+                  "native": [
+                    7,
+                    4
+                  ],
+                  "source_sample": [
+                    247,
+                    146
+                  ],
+                  "rgba": [
+                    52,
+                    104,
+                    57,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    8,
+                    4
+                  ],
+                  "source_sample": [
+                    277,
+                    146
+                  ],
+                  "rgba": [
+                    52,
+                    105,
+                    59,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    9,
+                    4
+                  ],
+                  "source_sample": [
+                    306,
+                    146
+                  ],
+                  "rgba": [
+                    2,
+                    4,
+                    2,
+                    208
+                  ]
+                },
+                {
+                  "native": [
+                    6,
+                    5
+                  ],
+                  "source_sample": [
+                    218,
+                    177
+                  ],
+                  "rgba": [
+                    52,
+                    108,
+                    60,
+                    252
+                  ]
+                },
+                {
+                  "native": [
+                    7,
+                    5
+                  ],
+                  "source_sample": [
+                    247,
+                    177
+                  ],
+                  "rgba": [
+                    53,
+                    107,
+                    60,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    8,
+                    5
+                  ],
+                  "source_sample": [
+                    277,
+                    177
+                  ],
+                  "rgba": [
+                    54,
+                    108,
+                    60,
+                    254
+                  ]
+                },
+                {
+                  "native": [
+                    9,
+                    5
+                  ],
+                  "source_sample": [
+                    306,
+                    177
+                  ],
+                  "rgba": [
+                    51,
+                    105,
+                    59,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    7,
+                    6
+                  ],
+                  "source_sample": [
+                    247,
+                    208
+                  ],
+                  "rgba": [
+                    51,
+                    106,
+                    58,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    8,
+                    6
+                  ],
+                  "source_sample": [
+                    277,
+                    208
+                  ],
+                  "rgba": [
+                    51,
+                    104,
+                    58,
+                    253
+                  ]
+                }
+              ]
+            },
+            {
+              "source_feature_region": [
+                329,
+                145,
+                455,
+                301
+              ],
+              "actual_native_source_samples": [
+                {
+                  "native": [
+                    12,
+                    5
+                  ],
+                  "source_sample": [
+                    393,
+                    177
+                  ],
+                  "rgba": [
+                    53,
+                    105,
+                    58,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    10,
+                    6
+                  ],
+                  "source_sample": [
+                    335,
+                    208
+                  ],
+                  "rgba": [
+                    47,
+                    88,
+                    50,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    12,
+                    6
+                  ],
+                  "source_sample": [
+                    393,
+                    208
+                  ],
+                  "rgba": [
+                    53,
+                    108,
+                    60,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    11,
+                    7
+                  ],
+                  "source_sample": [
+                    364,
+                    238
+                  ],
+                  "rgba": [
+                    52,
+                    106,
+                    59,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    12,
+                    7
+                  ],
+                  "source_sample": [
+                    393,
+                    238
+                  ],
+                  "rgba": [
+                    54,
+                    109,
+                    61,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    13,
+                    7
+                  ],
+                  "source_sample": [
+                    423,
+                    238
+                  ],
+                  "rgba": [
+                    51,
+                    107,
+                    58,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    10,
+                    8
+                  ],
+                  "source_sample": [
+                    335,
+                    269
+                  ],
+                  "rgba": [
+                    54,
+                    99,
+                    61,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    12,
+                    8
+                  ],
+                  "source_sample": [
+                    393,
+                    269
+                  ],
+                  "rgba": [
+                    50,
+                    104,
+                    58,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    10,
+                    9
+                  ],
+                  "source_sample": [
+                    335,
+                    299
+                  ],
+                  "rgba": [
+                    54,
+                    108,
+                    60,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    12,
+                    9
+                  ],
+                  "source_sample": [
+                    393,
+                    299
+                  ],
+                  "rgba": [
+                    2,
+                    4,
+                    2,
+                    213
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "feature": "four_root_supports",
+          "traces": [
+            {
+              "source_feature_region": [
+                110,
+                330,
+                180,
+                395
+              ],
+              "actual_native_source_samples": [
+                {
+                  "native": [
+                    4,
+                    10
+                  ],
+                  "source_sample": [
+                    160,
+                    330
+                  ],
+                  "rgba": [
+                    173,
+                    129,
+                    66,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    4,
+                    11
+                  ],
+                  "source_sample": [
+                    160,
+                    360
+                  ],
+                  "rgba": [
+                    183,
+                    142,
+                    76,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    4,
+                    12
+                  ],
+                  "source_sample": [
+                    160,
+                    391
+                  ],
+                  "rgba": [
+                    184,
+                    142,
+                    75,
+                    253
+                  ]
+                }
+              ]
+            },
+            {
+              "source_feature_region": [
+                345,
+                330,
+                415,
+                395
+              ],
+              "actual_native_source_samples": [
+                {
+                  "native": [
+                    11,
+                    10
+                  ],
+                  "source_sample": [
+                    364,
+                    330
+                  ],
+                  "rgba": [
+                    171,
+                    130,
+                    68,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    11,
+                    11
+                  ],
+                  "source_sample": [
+                    364,
+                    360
+                  ],
+                  "rgba": [
+                    183,
+                    141,
+                    75,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    11,
+                    12
+                  ],
+                  "source_sample": [
+                    364,
+                    391
+                  ],
+                  "rgba": [
+                    187,
+                    144,
+                    75,
+                    253
+                  ]
+                }
+              ]
+            },
+            {
+              "source_feature_region": [
+                85,
+                400,
+                220,
+                465
+              ],
+              "actual_native_source_samples": [
+                {
+                  "native": [
+                    3,
+                    13
+                  ],
+                  "source_sample": [
+                    131,
+                    422
+                  ],
+                  "rgba": [
+                    186,
+                    143,
+                    74,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    4,
+                    13
+                  ],
+                  "source_sample": [
+                    160,
+                    422
+                  ],
+                  "rgba": [
+                    188,
+                    147,
+                    77,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    5,
+                    13
+                  ],
+                  "source_sample": [
+                    189,
+                    422
+                  ],
+                  "rgba": [
+                    182,
+                    141,
+                    78,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    2,
+                    14
+                  ],
+                  "source_sample": [
+                    101,
+                    452
+                  ],
+                  "rgba": [
+                    192,
+                    151,
+                    75,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    3,
+                    14
+                  ],
+                  "source_sample": [
+                    131,
+                    452
+                  ],
+                  "rgba": [
+                    201,
+                    158,
+                    84,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    5,
+                    14
+                  ],
+                  "source_sample": [
+                    189,
+                    452
+                  ],
+                  "rgba": [
+                    184,
+                    143,
+                    74,
+                    253
+                  ]
+                }
+              ]
+            },
+            {
+              "source_feature_region": [
+                300,
+                400,
+                445,
+                465
+              ],
+              "actual_native_source_samples": [
+                {
+                  "native": [
+                    10,
+                    13
+                  ],
+                  "source_sample": [
+                    335,
+                    422
+                  ],
+                  "rgba": [
+                    164,
+                    129,
+                    72,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    11,
+                    13
+                  ],
+                  "source_sample": [
+                    364,
+                    422
+                  ],
+                  "rgba": [
+                    184,
+                    143,
+                    74,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    12,
+                    13
+                  ],
+                  "source_sample": [
+                    393,
+                    422
+                  ],
+                  "rgba": [
+                    186,
+                    144,
+                    76,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    10,
+                    14
+                  ],
+                  "source_sample": [
+                    335,
+                    452
+                  ],
+                  "rgba": [
+                    190,
+                    150,
+                    80,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    12,
+                    14
+                  ],
+                  "source_sample": [
+                    393,
+                    452
+                  ],
+                  "rgba": [
+                    189,
+                    146,
+                    74,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    13,
+                    14
+                  ],
+                  "source_sample": [
+                    423,
+                    452
+                  ],
+                  "rgba": [
+                    201,
+                    160,
+                    87,
+                    253
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "profile_occlusion_note": null
+    },
+    {
+      "pose": "up_idle",
+      "features": [
+        {
+          "feature": "oak_leaf_fans",
+          "traces": [
+            {
+              "source_feature_region": [
+                562,
+                145,
+                706,
+                301
+              ],
+              "actual_native_source_samples": [
+                {
+                  "native": [
+                    2,
+                    5
+                  ],
+                  "source_sample": [
+                    607,
+                    177
+                  ],
+                  "rgba": [
+                    53,
+                    107,
+                    61,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    3,
+                    5
+                  ],
+                  "source_sample": [
+                    637,
+                    177
+                  ],
+                  "rgba": [
+                    52,
+                    105,
+                    59,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    3,
+                    6
+                  ],
+                  "source_sample": [
+                    637,
+                    208
+                  ],
+                  "rgba": [
+                    52,
+                    103,
+                    57,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    4,
+                    6
+                  ],
+                  "source_sample": [
+                    666,
+                    208
+                  ],
+                  "rgba": [
+                    51,
+                    102,
+                    57,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    2,
+                    7
+                  ],
+                  "source_sample": [
+                    607,
+                    238
+                  ],
+                  "rgba": [
+                    52,
+                    107,
+                    59,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    3,
+                    7
+                  ],
+                  "source_sample": [
+                    637,
+                    238
+                  ],
+                  "rgba": [
+                    54,
+                    108,
+                    60,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    4,
+                    7
+                  ],
+                  "source_sample": [
+                    666,
+                    238
+                  ],
+                  "rgba": [
+                    54,
+                    107,
+                    59,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    3,
+                    8
+                  ],
+                  "source_sample": [
+                    637,
+                    269
+                  ],
+                  "rgba": [
+                    54,
+                    111,
+                    60,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    5,
+                    8
+                  ],
+                  "source_sample": [
+                    695,
+                    269
+                  ],
+                  "rgba": [
+                    47,
+                    96,
+                    53,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    5,
+                    9
+                  ],
+                  "source_sample": [
+                    695,
+                    299
+                  ],
+                  "rgba": [
+                    53,
+                    109,
+                    60,
+                    253
+                  ]
+                }
+              ]
+            },
+            {
+              "source_feature_region": [
+                706,
+                99,
+                832,
+                255
+              ],
+              "actual_native_source_samples": [
+                {
+                  "native": [
+                    7,
+                    3
+                  ],
+                  "source_sample": [
+                    753,
+                    116
+                  ],
+                  "rgba": [
+                    55,
+                    111,
+                    62,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    8,
+                    3
+                  ],
+                  "source_sample": [
+                    783,
+                    116
+                  ],
+                  "rgba": [
+                    54,
+                    106,
+                    62,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    7,
+                    4
+                  ],
+                  "source_sample": [
+                    753,
+                    146
+                  ],
+                  "rgba": [
+                    53,
+                    108,
+                    59,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    8,
+                    4
+                  ],
+                  "source_sample": [
+                    783,
+                    146
+                  ],
+                  "rgba": [
+                    53,
+                    107,
+                    59,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    6,
+                    5
+                  ],
+                  "source_sample": [
+                    724,
+                    177
+                  ],
+                  "rgba": [
+                    52,
+                    106,
+                    59,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    7,
+                    5
+                  ],
+                  "source_sample": [
+                    753,
+                    177
+                  ],
+                  "rgba": [
+                    53,
+                    107,
+                    59,
+                    254
+                  ]
+                },
+                {
+                  "native": [
+                    8,
+                    5
+                  ],
+                  "source_sample": [
+                    783,
+                    177
+                  ],
+                  "rgba": [
+                    53,
+                    107,
+                    59,
+                    254
+                  ]
+                },
+                {
+                  "native": [
+                    9,
+                    5
+                  ],
+                  "source_sample": [
+                    812,
+                    177
+                  ],
+                  "rgba": [
+                    53,
+                    106,
+                    60,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    7,
+                    6
+                  ],
+                  "source_sample": [
+                    753,
+                    208
+                  ],
+                  "rgba": [
+                    54,
+                    108,
+                    60,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    8,
+                    6
+                  ],
+                  "source_sample": [
+                    783,
+                    208
+                  ],
+                  "rgba": [
+                    53,
+                    108,
+                    61,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    7,
+                    7
+                  ],
+                  "source_sample": [
+                    753,
+                    238
+                  ],
+                  "rgba": [
+                    56,
+                    109,
+                    59,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    8,
+                    7
+                  ],
+                  "source_sample": [
+                    783,
+                    238
+                  ],
+                  "rgba": [
+                    54,
+                    113,
+                    61,
+                    253
+                  ]
+                }
+              ]
+            },
+            {
+              "source_feature_region": [
+                836,
+                145,
+                973,
+                301
+              ],
+              "actual_native_source_samples": [
+                {
+                  "native": [
+                    12,
+                    5
+                  ],
+                  "source_sample": [
+                    899,
+                    177
+                  ],
+                  "rgba": [
+                    54,
+                    107,
+                    59,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    13,
+                    5
+                  ],
+                  "source_sample": [
+                    929,
+                    177
+                  ],
+                  "rgba": [
+                    52,
+                    105,
+                    61,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    11,
+                    6
+                  ],
+                  "source_sample": [
+                    870,
+                    208
+                  ],
+                  "rgba": [
+                    50,
+                    102,
+                    57,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    12,
+                    6
+                  ],
+                  "source_sample": [
+                    899,
+                    208
+                  ],
+                  "rgba": [
+                    53,
+                    105,
+                    59,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    11,
+                    7
+                  ],
+                  "source_sample": [
+                    870,
+                    238
+                  ],
+                  "rgba": [
+                    53,
+                    107,
+                    59,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    12,
+                    7
+                  ],
+                  "source_sample": [
+                    899,
+                    238
+                  ],
+                  "rgba": [
+                    53,
+                    109,
+                    61,
+                    254
+                  ]
+                },
+                {
+                  "native": [
+                    13,
+                    7
+                  ],
+                  "source_sample": [
+                    929,
+                    238
+                  ],
+                  "rgba": [
+                    54,
+                    108,
+                    60,
+                    254
+                  ]
+                },
+                {
+                  "native": [
+                    10,
+                    8
+                  ],
+                  "source_sample": [
+                    841,
+                    269
+                  ],
+                  "rgba": [
+                    48,
+                    101,
+                    54,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    12,
+                    8
+                  ],
+                  "source_sample": [
+                    899,
+                    269
+                  ],
+                  "rgba": [
+                    53,
+                    110,
+                    58,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    10,
+                    9
+                  ],
+                  "source_sample": [
+                    841,
+                    299
+                  ],
+                  "rgba": [
+                    54,
+                    110,
+                    61,
+                    253
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "feature": "four_root_supports",
+          "traces": [
+            {
+              "source_feature_region": [
+                620,
+                330,
+                690,
+                395
+              ],
+              "actual_native_source_samples": [
+                {
+                  "native": [
+                    4,
+                    10
+                  ],
+                  "source_sample": [
+                    666,
+                    330
+                  ],
+                  "rgba": [
+                    164,
+                    123,
+                    62,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    3,
+                    11
+                  ],
+                  "source_sample": [
+                    637,
+                    360
+                  ],
+                  "rgba": [
+                    135,
+                    96,
+                    48,
+                    253
+                  ]
+                }
+              ]
+            },
+            {
+              "source_feature_region": [
+                845,
+                330,
+                920,
+                395
+              ],
+              "actual_native_source_samples": [
+                {
+                  "native": [
+                    11,
+                    10
+                  ],
+                  "source_sample": [
+                    870,
+                    330
+                  ],
+                  "rgba": [
+                    173,
+                    131,
+                    67,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    12,
+                    11
+                  ],
+                  "source_sample": [
+                    899,
+                    360
+                  ],
+                  "rgba": [
+                    173,
+                    134,
+                    72,
+                    253
+                  ]
+                }
+              ]
+            },
+            {
+              "source_feature_region": [
+                600,
+                400,
+                735,
+                465
+              ],
+              "actual_native_source_samples": [
+                {
+                  "native": [
+                    3,
+                    13
+                  ],
+                  "source_sample": [
+                    637,
+                    422
+                  ],
+                  "rgba": [
+                    182,
+                    139,
+                    72,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    4,
+                    13
+                  ],
+                  "source_sample": [
+                    666,
+                    422
+                  ],
+                  "rgba": [
+                    184,
+                    142,
+                    75,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    5,
+                    13
+                  ],
+                  "source_sample": [
+                    695,
+                    422
+                  ],
+                  "rgba": [
+                    176,
+                    136,
+                    73,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    6,
+                    13
+                  ],
+                  "source_sample": [
+                    724,
+                    422
+                  ],
+                  "rgba": [
+                    184,
+                    142,
+                    75,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    4,
+                    14
+                  ],
+                  "source_sample": [
+                    666,
+                    452
+                  ],
+                  "rgba": [
+                    187,
+                    143,
+                    72,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    5,
+                    14
+                  ],
+                  "source_sample": [
+                    695,
+                    452
+                  ],
+                  "rgba": [
+                    190,
+                    149,
+                    77,
+                    253
+                  ]
+                }
+              ]
+            },
+            {
+              "source_feature_region": [
+                805,
+                400,
+                940,
+                465
+              ],
+              "actual_native_source_samples": [
+                {
+                  "native": [
+                    9,
+                    13
+                  ],
+                  "source_sample": [
+                    812,
+                    422
+                  ],
+                  "rgba": [
+                    190,
+                    147,
+                    76,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    10,
+                    13
+                  ],
+                  "source_sample": [
+                    841,
+                    422
+                  ],
+                  "rgba": [
+                    189,
+                    146,
+                    77,
+                    254
+                  ]
+                },
+                {
+                  "native": [
+                    11,
+                    13
+                  ],
+                  "source_sample": [
+                    870,
+                    422
+                  ],
+                  "rgba": [
+                    185,
+                    143,
+                    75,
+                    254
+                  ]
+                },
+                {
+                  "native": [
+                    12,
+                    13
+                  ],
+                  "source_sample": [
+                    899,
+                    422
+                  ],
+                  "rgba": [
+                    180,
+                    139,
+                    73,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    10,
+                    14
+                  ],
+                  "source_sample": [
+                    841,
+                    452
+                  ],
+                  "rgba": [
+                    187,
+                    144,
+                    72,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    11,
+                    14
+                  ],
+                  "source_sample": [
+                    870,
+                    452
+                  ],
+                  "rgba": [
+                    199,
+                    157,
+                    82,
+                    253
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "profile_occlusion_note": null
+    },
+    {
+      "pose": "left_idle",
+      "features": [
+        {
+          "feature": "oak_leaf_fans",
+          "traces": [
+            {
+              "source_feature_region": [
+                1201,
+                99,
+                1304,
+                255
+              ],
+              "actual_native_source_samples": [
+                {
+                  "native": [
+                    7,
+                    3
+                  ],
+                  "source_sample": [
+                    1272,
+                    116
+                  ],
+                  "rgba": [
+                    56,
+                    111,
+                    64,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    7,
+                    4
+                  ],
+                  "source_sample": [
+                    1272,
+                    146
+                  ],
+                  "rgba": [
+                    52,
+                    107,
+                    58,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    6,
+                    5
+                  ],
+                  "source_sample": [
+                    1243,
+                    177
+                  ],
+                  "rgba": [
+                    51,
+                    104,
+                    57,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    8,
+                    5
+                  ],
+                  "source_sample": [
+                    1302,
+                    177
+                  ],
+                  "rgba": [
+                    47,
+                    97,
+                    54,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    6,
+                    6
+                  ],
+                  "source_sample": [
+                    1243,
+                    208
+                  ],
+                  "rgba": [
+                    51,
+                    104,
+                    57,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    7,
+                    6
+                  ],
+                  "source_sample": [
+                    1272,
+                    208
+                  ],
+                  "rgba": [
+                    51,
+                    102,
+                    57,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    8,
+                    6
+                  ],
+                  "source_sample": [
+                    1302,
+                    208
+                  ],
+                  "rgba": [
+                    51,
+                    105,
+                    58,
+                    254
+                  ]
+                },
+                {
+                  "native": [
+                    8,
+                    7
+                  ],
+                  "source_sample": [
+                    1302,
+                    238
+                  ],
+                  "rgba": [
+                    53,
+                    104,
+                    57,
+                    253
+                  ]
+                }
+              ]
+            },
+            {
+              "source_feature_region": [
+                1280,
+                150,
+                1382,
+                287
+              ],
+              "actual_native_source_samples": [
+                {
+                  "native": [
+                    8,
+                    5
+                  ],
+                  "source_sample": [
+                    1302,
+                    177
+                  ],
+                  "rgba": [
+                    47,
+                    97,
+                    54,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    9,
+                    5
+                  ],
+                  "source_sample": [
+                    1331,
+                    177
+                  ],
+                  "rgba": [
+                    52,
+                    104,
+                    59,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    8,
+                    6
+                  ],
+                  "source_sample": [
+                    1302,
+                    208
+                  ],
+                  "rgba": [
+                    51,
+                    105,
+                    58,
+                    254
+                  ]
+                },
+                {
+                  "native": [
+                    9,
+                    6
+                  ],
+                  "source_sample": [
+                    1331,
+                    208
+                  ],
+                  "rgba": [
+                    51,
+                    105,
+                    58,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    8,
+                    7
+                  ],
+                  "source_sample": [
+                    1302,
+                    238
+                  ],
+                  "rgba": [
+                    53,
+                    104,
+                    57,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    10,
+                    7
+                  ],
+                  "source_sample": [
+                    1360,
+                    238
+                  ],
+                  "rgba": [
+                    51,
+                    108,
+                    57,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    9,
+                    8
+                  ],
+                  "source_sample": [
+                    1331,
+                    269
+                  ],
+                  "rgba": [
+                    51,
+                    105,
+                    57,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    10,
+                    8
+                  ],
+                  "source_sample": [
+                    1360,
+                    269
+                  ],
+                  "rgba": [
+                    50,
+                    104,
+                    57,
+                    253
+                  ]
+                }
+              ]
+            },
+            {
+              "source_feature_region": [
+                1351,
+                190,
+                1449,
+                302
+              ],
+              "actual_native_source_samples": [
+                {
+                  "native": [
+                    11,
+                    6
+                  ],
+                  "source_sample": [
+                    1389,
+                    208
+                  ],
+                  "rgba": [
+                    54,
+                    108,
+                    60,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    12,
+                    6
+                  ],
+                  "source_sample": [
+                    1418,
+                    208
+                  ],
+                  "rgba": [
+                    53,
+                    106,
+                    60,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    10,
+                    7
+                  ],
+                  "source_sample": [
+                    1360,
+                    238
+                  ],
+                  "rgba": [
+                    51,
+                    108,
+                    57,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    11,
+                    7
+                  ],
+                  "source_sample": [
+                    1389,
+                    238
+                  ],
+                  "rgba": [
+                    52,
+                    108,
+                    59,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    12,
+                    7
+                  ],
+                  "source_sample": [
+                    1418,
+                    238
+                  ],
+                  "rgba": [
+                    57,
+                    108,
+                    62,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    10,
+                    8
+                  ],
+                  "source_sample": [
+                    1360,
+                    269
+                  ],
+                  "rgba": [
+                    50,
+                    104,
+                    57,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    11,
+                    8
+                  ],
+                  "source_sample": [
+                    1389,
+                    269
+                  ],
+                  "rgba": [
+                    53,
+                    108,
+                    61,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    12,
+                    8
+                  ],
+                  "source_sample": [
+                    1418,
+                    269
+                  ],
+                  "rgba": [
+                    54,
+                    106,
+                    60,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    12,
+                    9
+                  ],
+                  "source_sample": [
+                    1418,
+                    299
+                  ],
+                  "rgba": [
+                    1,
+                    4,
+                    1,
+                    192
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "profile_occlusion_note": "Two near root feet visible; two far root supports naturally occluded by broad knot body."
+    },
+    {
+      "pose": "down_step",
+      "features": [
+        {
+          "feature": "oak_leaf_fans",
+          "traces": [
+            {
+              "source_feature_region": [
+                75,
+                620,
+                198,
+                775
+              ],
+              "actual_native_source_samples": [
+                {
+                  "native": [
+                    3,
+                    5
+                  ],
+                  "source_sample": [
+                    131,
+                    655
+                  ],
+                  "rgba": [
+                    53,
+                    106,
+                    59,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    2,
+                    6
+                  ],
+                  "source_sample": [
+                    101,
+                    686
+                  ],
+                  "rgba": [
+                    54,
+                    113,
+                    62,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    3,
+                    6
+                  ],
+                  "source_sample": [
+                    131,
+                    686
+                  ],
+                  "rgba": [
+                    53,
+                    107,
+                    59,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    4,
+                    6
+                  ],
+                  "source_sample": [
+                    160,
+                    686
+                  ],
+                  "rgba": [
+                    55,
+                    114,
+                    60,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    5,
+                    6
+                  ],
+                  "source_sample": [
+                    189,
+                    686
+                  ],
+                  "rgba": [
+                    54,
+                    105,
+                    60,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    2,
+                    7
+                  ],
+                  "source_sample": [
+                    101,
+                    716
+                  ],
+                  "rgba": [
+                    52,
+                    105,
+                    60,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    3,
+                    7
+                  ],
+                  "source_sample": [
+                    131,
+                    716
+                  ],
+                  "rgba": [
+                    54,
+                    110,
+                    61,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    4,
+                    7
+                  ],
+                  "source_sample": [
+                    160,
+                    716
+                  ],
+                  "rgba": [
+                    53,
+                    109,
+                    60,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    3,
+                    8
+                  ],
+                  "source_sample": [
+                    131,
+                    747
+                  ],
+                  "rgba": [
+                    52,
+                    107,
+                    58,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    5,
+                    8
+                  ],
+                  "source_sample": [
+                    189,
+                    747
+                  ],
+                  "rgba": [
+                    52,
+                    104,
+                    58,
+                    253
+                  ]
+                }
+              ]
+            },
+            {
+              "source_feature_region": [
+                201,
+                574,
+                315,
+                733
+              ],
+              "actual_native_source_samples": [
+                {
+                  "native": [
+                    8,
+                    3
+                  ],
+                  "source_sample": [
+                    277,
+                    594
+                  ],
+                  "rgba": [
+                    52,
+                    107,
+                    59,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    7,
+                    4
+                  ],
+                  "source_sample": [
+                    247,
+                    624
+                  ],
+                  "rgba": [
+                    54,
+                    111,
+                    62,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    8,
+                    4
+                  ],
+                  "source_sample": [
+                    277,
+                    624
+                  ],
+                  "rgba": [
+                    53,
+                    107,
+                    60,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    6,
+                    5
+                  ],
+                  "source_sample": [
+                    218,
+                    655
+                  ],
+                  "rgba": [
+                    57,
+                    113,
+                    66,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    7,
+                    5
+                  ],
+                  "source_sample": [
+                    247,
+                    655
+                  ],
+                  "rgba": [
+                    53,
+                    107,
+                    60,
+                    254
+                  ]
+                },
+                {
+                  "native": [
+                    8,
+                    5
+                  ],
+                  "source_sample": [
+                    277,
+                    655
+                  ],
+                  "rgba": [
+                    52,
+                    108,
+                    60,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    9,
+                    5
+                  ],
+                  "source_sample": [
+                    306,
+                    655
+                  ],
+                  "rgba": [
+                    50,
+                    103,
+                    57,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    7,
+                    6
+                  ],
+                  "source_sample": [
+                    247,
+                    686
+                  ],
+                  "rgba": [
+                    54,
+                    113,
+                    60,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    8,
+                    6
+                  ],
+                  "source_sample": [
+                    277,
+                    686
+                  ],
+                  "rgba": [
+                    52,
+                    106,
+                    59,
+                    253
+                  ]
+                }
+              ]
+            },
+            {
+              "source_feature_region": [
+                329,
+                620,
+                455,
+                775
+              ],
+              "actual_native_source_samples": [
+                {
+                  "native": [
+                    12,
+                    5
+                  ],
+                  "source_sample": [
+                    393,
+                    655
+                  ],
+                  "rgba": [
+                    53,
+                    107,
+                    59,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    10,
+                    6
+                  ],
+                  "source_sample": [
+                    335,
+                    686
+                  ],
+                  "rgba": [
+                    55,
+                    105,
+                    63,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    11,
+                    6
+                  ],
+                  "source_sample": [
+                    364,
+                    686
+                  ],
+                  "rgba": [
+                    53,
+                    110,
+                    59,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    12,
+                    6
+                  ],
+                  "source_sample": [
+                    393,
+                    686
+                  ],
+                  "rgba": [
+                    52,
+                    108,
+                    59,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    13,
+                    6
+                  ],
+                  "source_sample": [
+                    423,
+                    686
+                  ],
+                  "rgba": [
+                    52,
+                    109,
+                    60,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    11,
+                    7
+                  ],
+                  "source_sample": [
+                    364,
+                    716
+                  ],
+                  "rgba": [
+                    52,
+                    108,
+                    58,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    12,
+                    7
+                  ],
+                  "source_sample": [
+                    393,
+                    716
+                  ],
+                  "rgba": [
+                    53,
+                    109,
+                    60,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    13,
+                    7
+                  ],
+                  "source_sample": [
+                    423,
+                    716
+                  ],
+                  "rgba": [
+                    50,
+                    103,
+                    57,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    10,
+                    8
+                  ],
+                  "source_sample": [
+                    335,
+                    747
+                  ],
+                  "rgba": [
+                    54,
+                    103,
+                    62,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    12,
+                    8
+                  ],
+                  "source_sample": [
+                    393,
+                    747
+                  ],
+                  "rgba": [
+                    52,
+                    108,
+                    58,
+                    253
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "feature": "four_root_supports",
+          "traces": [
+            {
+              "source_feature_region": [
+                110,
+                795,
+                180,
+                865
+              ],
+              "actual_native_source_samples": [
+                {
+                  "native": [
+                    4,
+                    10
+                  ],
+                  "source_sample": [
+                    160,
+                    808
+                  ],
+                  "rgba": [
+                    138,
+                    102,
+                    54,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    4,
+                    11
+                  ],
+                  "source_sample": [
+                    160,
+                    838
+                  ],
+                  "rgba": [
+                    182,
+                    140,
+                    73,
+                    253
+                  ]
+                }
+              ]
+            },
+            {
+              "source_feature_region": [
+                345,
+                795,
+                415,
+                865
+              ],
+              "actual_native_source_samples": [
+                {
+                  "native": [
+                    11,
+                    11
+                  ],
+                  "source_sample": [
+                    364,
+                    838
+                  ],
+                  "rgba": [
+                    180,
+                    137,
+                    72,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    12,
+                    11
+                  ],
+                  "source_sample": [
+                    393,
+                    838
+                  ],
+                  "rgba": [
+                    176,
+                    134,
+                    70,
+                    253
+                  ]
+                }
+              ]
+            },
+            {
+              "source_feature_region": [
+                85,
+                875,
+                220,
+                945
+              ],
+              "actual_native_source_samples": [
+                {
+                  "native": [
+                    3,
+                    13
+                  ],
+                  "source_sample": [
+                    131,
+                    900
+                  ],
+                  "rgba": [
+                    178,
+                    136,
+                    71,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    4,
+                    13
+                  ],
+                  "source_sample": [
+                    160,
+                    900
+                  ],
+                  "rgba": [
+                    174,
+                    134,
+                    73,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    5,
+                    13
+                  ],
+                  "source_sample": [
+                    189,
+                    900
+                  ],
+                  "rgba": [
+                    178,
+                    137,
+                    71,
+                    253
+                  ]
+                }
+              ]
+            },
+            {
+              "source_feature_region": [
+                300,
+                875,
+                445,
+                945
+              ],
+              "actual_native_source_samples": [
+                {
+                  "native": [
+                    11,
+                    13
+                  ],
+                  "source_sample": [
+                    364,
+                    900
+                  ],
+                  "rgba": [
+                    179,
+                    138,
+                    71,
+                    253
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "profile_occlusion_note": null
+    },
+    {
+      "pose": "up_step",
+      "features": [
+        {
+          "feature": "oak_leaf_fans",
+          "traces": [
+            {
+              "source_feature_region": [
+                562,
+                620,
+                706,
+                775
+              ],
+              "actual_native_source_samples": [
+                {
+                  "native": [
+                    2,
+                    5
+                  ],
+                  "source_sample": [
+                    607,
+                    655
+                  ],
+                  "rgba": [
+                    53,
+                    105,
+                    58,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    3,
+                    5
+                  ],
+                  "source_sample": [
+                    637,
+                    655
+                  ],
+                  "rgba": [
+                    53,
+                    106,
+                    59,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    1,
+                    6
+                  ],
+                  "source_sample": [
+                    578,
+                    686
+                  ],
+                  "rgba": [
+                    53,
+                    101,
+                    58,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    2,
+                    6
+                  ],
+                  "source_sample": [
+                    607,
+                    686
+                  ],
+                  "rgba": [
+                    51,
+                    105,
+                    57,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    3,
+                    6
+                  ],
+                  "source_sample": [
+                    637,
+                    686
+                  ],
+                  "rgba": [
+                    52,
+                    104,
+                    58,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    4,
+                    6
+                  ],
+                  "source_sample": [
+                    666,
+                    686
+                  ],
+                  "rgba": [
+                    54,
+                    108,
+                    60,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    2,
+                    7
+                  ],
+                  "source_sample": [
+                    607,
+                    716
+                  ],
+                  "rgba": [
+                    53,
+                    106,
+                    60,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    3,
+                    7
+                  ],
+                  "source_sample": [
+                    637,
+                    716
+                  ],
+                  "rgba": [
+                    52,
+                    108,
+                    59,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    4,
+                    7
+                  ],
+                  "source_sample": [
+                    666,
+                    716
+                  ],
+                  "rgba": [
+                    52,
+                    107,
+                    59,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    5,
+                    7
+                  ],
+                  "source_sample": [
+                    695,
+                    716
+                  ],
+                  "rgba": [
+                    39,
+                    88,
+                    50,
+                    252
+                  ]
+                },
+                {
+                  "native": [
+                    3,
+                    8
+                  ],
+                  "source_sample": [
+                    637,
+                    747
+                  ],
+                  "rgba": [
+                    53,
+                    113,
+                    60,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    5,
+                    8
+                  ],
+                  "source_sample": [
+                    695,
+                    747
+                  ],
+                  "rgba": [
+                    54,
+                    101,
+                    58,
+                    253
+                  ]
+                }
+              ]
+            },
+            {
+              "source_feature_region": [
+                706,
+                574,
+                832,
+                733
+              ],
+              "actual_native_source_samples": [
+                {
+                  "native": [
+                    7,
+                    3
+                  ],
+                  "source_sample": [
+                    753,
+                    594
+                  ],
+                  "rgba": [
+                    50,
+                    106,
+                    56,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    8,
+                    3
+                  ],
+                  "source_sample": [
+                    783,
+                    594
+                  ],
+                  "rgba": [
+                    50,
+                    106,
+                    56,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    7,
+                    4
+                  ],
+                  "source_sample": [
+                    753,
+                    624
+                  ],
+                  "rgba": [
+                    53,
+                    108,
+                    58,
+                    254
+                  ]
+                },
+                {
+                  "native": [
+                    8,
+                    4
+                  ],
+                  "source_sample": [
+                    783,
+                    624
+                  ],
+                  "rgba": [
+                    52,
+                    105,
+                    58,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    6,
+                    5
+                  ],
+                  "source_sample": [
+                    724,
+                    655
+                  ],
+                  "rgba": [
+                    54,
+                    107,
+                    59,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    7,
+                    5
+                  ],
+                  "source_sample": [
+                    753,
+                    655
+                  ],
+                  "rgba": [
+                    52,
+                    107,
+                    59,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    8,
+                    5
+                  ],
+                  "source_sample": [
+                    783,
+                    655
+                  ],
+                  "rgba": [
+                    54,
+                    109,
+                    59,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    9,
+                    5
+                  ],
+                  "source_sample": [
+                    812,
+                    655
+                  ],
+                  "rgba": [
+                    51,
+                    106,
+                    60,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    7,
+                    6
+                  ],
+                  "source_sample": [
+                    753,
+                    686
+                  ],
+                  "rgba": [
+                    53,
+                    108,
+                    60,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    8,
+                    6
+                  ],
+                  "source_sample": [
+                    783,
+                    686
+                  ],
+                  "rgba": [
+                    53,
+                    109,
+                    60,
+                    254
+                  ]
+                },
+                {
+                  "native": [
+                    7,
+                    7
+                  ],
+                  "source_sample": [
+                    753,
+                    716
+                  ],
+                  "rgba": [
+                    52,
+                    111,
+                    60,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    8,
+                    7
+                  ],
+                  "source_sample": [
+                    783,
+                    716
+                  ],
+                  "rgba": [
+                    52,
+                    108,
+                    59,
+                    253
+                  ]
+                }
+              ]
+            },
+            {
+              "source_feature_region": [
+                836,
+                620,
+                973,
+                775
+              ],
+              "actual_native_source_samples": [
+                {
+                  "native": [
+                    12,
+                    5
+                  ],
+                  "source_sample": [
+                    899,
+                    655
+                  ],
+                  "rgba": [
+                    56,
+                    109,
+                    61,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    13,
+                    5
+                  ],
+                  "source_sample": [
+                    929,
+                    655
+                  ],
+                  "rgba": [
+                    54,
+                    107,
+                    62,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    11,
+                    6
+                  ],
+                  "source_sample": [
+                    870,
+                    686
+                  ],
+                  "rgba": [
+                    53,
+                    106,
+                    60,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    12,
+                    6
+                  ],
+                  "source_sample": [
+                    899,
+                    686
+                  ],
+                  "rgba": [
+                    55,
+                    111,
+                    60,
+                    254
+                  ]
+                },
+                {
+                  "native": [
+                    13,
+                    6
+                  ],
+                  "source_sample": [
+                    929,
+                    686
+                  ],
+                  "rgba": [
+                    56,
+                    115,
+                    63,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    14,
+                    6
+                  ],
+                  "source_sample": [
+                    958,
+                    686
+                  ],
+                  "rgba": [
+                    61,
+                    118,
+                    68,
+                    252
+                  ]
+                },
+                {
+                  "native": [
+                    10,
+                    7
+                  ],
+                  "source_sample": [
+                    841,
+                    716
+                  ],
+                  "rgba": [
+                    46,
+                    103,
+                    57,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    11,
+                    7
+                  ],
+                  "source_sample": [
+                    870,
+                    716
+                  ],
+                  "rgba": [
+                    53,
+                    106,
+                    58,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    12,
+                    7
+                  ],
+                  "source_sample": [
+                    899,
+                    716
+                  ],
+                  "rgba": [
+                    52,
+                    107,
+                    58,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    13,
+                    7
+                  ],
+                  "source_sample": [
+                    929,
+                    716
+                  ],
+                  "rgba": [
+                    53,
+                    108,
+                    60,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    10,
+                    8
+                  ],
+                  "source_sample": [
+                    841,
+                    747
+                  ],
+                  "rgba": [
+                    51,
+                    110,
+                    59,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    12,
+                    8
+                  ],
+                  "source_sample": [
+                    899,
+                    747
+                  ],
+                  "rgba": [
+                    53,
+                    113,
+                    60,
+                    253
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "feature": "four_root_supports",
+          "traces": [
+            {
+              "source_feature_region": [
+                620,
+                795,
+                690,
+                865
+              ],
+              "actual_native_source_samples": [
+                {
+                  "native": [
+                    4,
+                    10
+                  ],
+                  "source_sample": [
+                    666,
+                    808
+                  ],
+                  "rgba": [
+                    184,
+                    142,
+                    75,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    3,
+                    11
+                  ],
+                  "source_sample": [
+                    637,
+                    838
+                  ],
+                  "rgba": [
+                    182,
+                    139,
+                    71,
+                    253
+                  ]
+                }
+              ]
+            },
+            {
+              "source_feature_region": [
+                845,
+                795,
+                920,
+                865
+              ],
+              "actual_native_source_samples": [
+                {
+                  "native": [
+                    11,
+                    10
+                  ],
+                  "source_sample": [
+                    870,
+                    808
+                  ],
+                  "rgba": [
+                    184,
+                    143,
+                    74,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    12,
+                    11
+                  ],
+                  "source_sample": [
+                    899,
+                    838
+                  ],
+                  "rgba": [
+                    181,
+                    138,
+                    70,
+                    253
+                  ]
+                }
+              ]
+            },
+            {
+              "source_feature_region": [
+                600,
+                875,
+                735,
+                945
+              ],
+              "actual_native_source_samples": [
+                {
+                  "native": [
+                    4,
+                    13
+                  ],
+                  "source_sample": [
+                    666,
+                    900
+                  ],
+                  "rgba": [
+                    184,
+                    143,
+                    76,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    5,
+                    13
+                  ],
+                  "source_sample": [
+                    695,
+                    900
+                  ],
+                  "rgba": [
+                    180,
+                    144,
+                    80,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    6,
+                    13
+                  ],
+                  "source_sample": [
+                    724,
+                    900
+                  ],
+                  "rgba": [
+                    149,
+                    112,
+                    55,
+                    253
+                  ]
+                }
+              ]
+            },
+            {
+              "source_feature_region": [
+                805,
+                875,
+                940,
+                945
+              ],
+              "actual_native_source_samples": [
+                {
+                  "native": [
+                    9,
+                    13
+                  ],
+                  "source_sample": [
+                    812,
+                    900
+                  ],
+                  "rgba": [
+                    151,
+                    112,
+                    52,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    10,
+                    13
+                  ],
+                  "source_sample": [
+                    841,
+                    900
+                  ],
+                  "rgba": [
+                    191,
+                    148,
+                    77,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    11,
+                    13
+                  ],
+                  "source_sample": [
+                    870,
+                    900
+                  ],
+                  "rgba": [
+                    180,
+                    139,
+                    71,
+                    253
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "profile_occlusion_note": null
+    },
+    {
+      "pose": "left_step",
+      "features": [
+        {
+          "feature": "oak_leaf_fans",
+          "traces": [
+            {
+              "source_feature_region": [
+                1201,
+                574,
+                1304,
+                733
+              ],
+              "actual_native_source_samples": [
+                {
+                  "native": [
+                    7,
+                    3
+                  ],
+                  "source_sample": [
+                    1272,
+                    594
+                  ],
+                  "rgba": [
+                    51,
+                    104,
+                    58,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    7,
+                    4
+                  ],
+                  "source_sample": [
+                    1272,
+                    624
+                  ],
+                  "rgba": [
+                    52,
+                    109,
+                    60,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    6,
+                    5
+                  ],
+                  "source_sample": [
+                    1243,
+                    655
+                  ],
+                  "rgba": [
+                    51,
+                    107,
+                    58,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    7,
+                    5
+                  ],
+                  "source_sample": [
+                    1272,
+                    655
+                  ],
+                  "rgba": [
+                    51,
+                    105,
+                    57,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    8,
+                    5
+                  ],
+                  "source_sample": [
+                    1302,
+                    655
+                  ],
+                  "rgba": [
+                    51,
+                    110,
+                    60,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    6,
+                    6
+                  ],
+                  "source_sample": [
+                    1243,
+                    686
+                  ],
+                  "rgba": [
+                    49,
+                    101,
+                    55,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    7,
+                    6
+                  ],
+                  "source_sample": [
+                    1272,
+                    686
+                  ],
+                  "rgba": [
+                    52,
+                    104,
+                    58,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    8,
+                    6
+                  ],
+                  "source_sample": [
+                    1302,
+                    686
+                  ],
+                  "rgba": [
+                    51,
+                    105,
+                    59,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    7,
+                    7
+                  ],
+                  "source_sample": [
+                    1272,
+                    716
+                  ],
+                  "rgba": [
+                    50,
+                    99,
+                    58,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    8,
+                    7
+                  ],
+                  "source_sample": [
+                    1302,
+                    716
+                  ],
+                  "rgba": [
+                    50,
+                    103,
+                    57,
+                    253
+                  ]
+                }
+              ]
+            },
+            {
+              "source_feature_region": [
+                1280,
+                625,
+                1382,
+                762
+              ],
+              "actual_native_source_samples": [
+                {
+                  "native": [
+                    8,
+                    5
+                  ],
+                  "source_sample": [
+                    1302,
+                    655
+                  ],
+                  "rgba": [
+                    51,
+                    110,
+                    60,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    9,
+                    5
+                  ],
+                  "source_sample": [
+                    1331,
+                    655
+                  ],
+                  "rgba": [
+                    53,
+                    105,
+                    60,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    8,
+                    6
+                  ],
+                  "source_sample": [
+                    1302,
+                    686
+                  ],
+                  "rgba": [
+                    51,
+                    105,
+                    59,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    9,
+                    6
+                  ],
+                  "source_sample": [
+                    1331,
+                    686
+                  ],
+                  "rgba": [
+                    52,
+                    106,
+                    58,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    8,
+                    7
+                  ],
+                  "source_sample": [
+                    1302,
+                    716
+                  ],
+                  "rgba": [
+                    50,
+                    103,
+                    57,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    10,
+                    7
+                  ],
+                  "source_sample": [
+                    1360,
+                    716
+                  ],
+                  "rgba": [
+                    53,
+                    107,
+                    59,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    9,
+                    8
+                  ],
+                  "source_sample": [
+                    1331,
+                    747
+                  ],
+                  "rgba": [
+                    50,
+                    104,
+                    57,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    10,
+                    8
+                  ],
+                  "source_sample": [
+                    1360,
+                    747
+                  ],
+                  "rgba": [
+                    50,
+                    108,
+                    57,
+                    253
+                  ]
+                }
+              ]
+            },
+            {
+              "source_feature_region": [
+                1351,
+                665,
+                1449,
+                777
+              ],
+              "actual_native_source_samples": [
+                {
+                  "native": [
+                    11,
+                    6
+                  ],
+                  "source_sample": [
+                    1389,
+                    686
+                  ],
+                  "rgba": [
+                    53,
+                    110,
+                    60,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    12,
+                    6
+                  ],
+                  "source_sample": [
+                    1418,
+                    686
+                  ],
+                  "rgba": [
+                    54,
+                    107,
+                    60,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    10,
+                    7
+                  ],
+                  "source_sample": [
+                    1360,
+                    716
+                  ],
+                  "rgba": [
+                    53,
+                    107,
+                    59,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    11,
+                    7
+                  ],
+                  "source_sample": [
+                    1389,
+                    716
+                  ],
+                  "rgba": [
+                    52,
+                    107,
+                    59,
+                    254
+                  ]
+                },
+                {
+                  "native": [
+                    10,
+                    8
+                  ],
+                  "source_sample": [
+                    1360,
+                    747
+                  ],
+                  "rgba": [
+                    50,
+                    108,
+                    57,
+                    253
+                  ]
+                },
+                {
+                  "native": [
+                    11,
+                    8
+                  ],
+                  "source_sample": [
+                    1389,
+                    747
+                  ],
+                  "rgba": [
+                    50,
+                    105,
+                    58,
+                    254
+                  ]
+                },
+                {
+                  "native": [
+                    12,
+                    8
+                  ],
+                  "source_sample": [
+                    1418,
+                    747
+                  ],
+                  "rgba": [
+                    54,
+                    108,
+                    61,
+                    253
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "profile_occlusion_note": "Two near root feet visible; two far root supports naturally occluded by broad knot body."
+    }
+  ]
+}

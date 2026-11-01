@@ -1,0 +1,146 @@
+{
+  "status": "PASS_STATIC_NATIVE_MODEL",
+  "pack": "content-packs/minnesota-current-r13-boundary-apron-v03.crystalpack",
+  "pack_sha256": "7d3987bfbf0378aed960495cc20981c0d258eb391f33630b8e3de6c2686e2e7d",
+  "checks": [
+    {
+      "id": "main-west-to-east",
+      "start": [
+        6,
+        42
+      ],
+      "end": [
+        95,
+        26
+      ],
+      "bounds": [
+        56,
+        34,
+        60,
+        42
+      ],
+      "measurement": {
+        "status": "MEASURED",
+        "grass_steps": 4,
+        "grass_quadrants_in_contract": 32,
+        "ice_quadrants": 0
+      }
+    },
+    {
+      "id": "main-east-to-west",
+      "start": [
+        95,
+        26
+      ],
+      "end": [
+        6,
+        42
+      ],
+      "bounds": [
+        56,
+        34,
+        60,
+        42
+      ],
+      "measurement": {
+        "status": "MEASURED",
+        "grass_steps": 4,
+        "grass_quadrants_in_contract": 32,
+        "ice_quadrants": 0
+      }
+    },
+    {
+      "id": "ordinary-uphill-lane-28",
+      "start": [
+        28,
+        26
+      ],
+      "end": [
+        28,
+        23
+      ],
+      "bounds": [
+        0,
+        0,
+        128,
+        96
+      ],
+      "measurement": {
+        "status": "MEASURED",
+        "grass_steps": 4,
+        "grass_quadrants_in_contract": 504,
+        "ice_quadrants": 0
+      }
+    },
+    {
+      "id": "ordinary-uphill-lane-29",
+      "start": [
+        29,
+        26
+      ],
+      "end": [
+        29,
+        23
+      ],
+      "bounds": [
+        0,
+        0,
+        128,
+        96
+      ],
+      "measurement": {
+        "status": "MEASURED",
+        "grass_steps": 4,
+        "grass_quadrants_in_contract": 504,
+        "ice_quadrants": 0
+      }
+    },
+    {
+      "id": "ordinary-uphill-lane-30",
+      "start": [
+        30,
+        26
+      ],
+      "end": [
+        30,
+        23
+      ],
+      "bounds": [
+        0,
+        0,
+        128,
+        96
+      ],
+      "measurement": {
+        "status": "MEASURED",
+        "grass_steps": 4,
+        "grass_quadrants_in_contract": 504,
+        "ice_quadrants": 0
+      }
+    },
+    {
+      "id": "ordinary-uphill-lane-31",
+      "start": [
+        31,
+        26
+      ],
+      "end": [
+        31,
+        23
+      ],
+      "bounds": [
+        0,
+        0,
+        128,
+        96
+      ],
+      "measurement": {
+        "status": "MEASURED",
+        "grass_steps": 4,
+        "grass_quadrants_in_contract": 504,
+        "ice_quadrants": 0
+      }
+    }
+  ],
+  "scope": "Current-tile hops, lateral walking and actual projected connections; actors clear, no Surf/Cut/warps. Paired with current native gameplay; not a campaign completion claim."
+}

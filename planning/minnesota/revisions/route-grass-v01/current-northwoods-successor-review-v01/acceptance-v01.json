@@ -1,0 +1,14 @@
+{
+  "status": "PASS_CURRENT_SELECTED_PACK_REVIEW",
+  "pack": "content-packs/minnesota-current-r19-detroit-gate-v05.crystalpack",
+  "pack_sha256": "b57516c0b77c7bcf94fa35e60ff8300bfd8a8781782827739742d8fc15b3f437",
+  "native_cases": 3,
+  "stdio_calls": 15,
+  "grass_quadrants": 28,
+  "uphill_grass_steps": 5,
+  "dry_downhill_steps": 3,
+  "prior_terrain_art_exact": true,
+  "whole_map_inspected": "planning/minnesota/renders/route-grass-v01/current-bemidji-northwoods-v01/source-candidate-v01/after.png",
+  "prior_native_pixel_evidence": "planning/minnesota/revisions/route-grass-v01/current-bemidji-northwoods-v01/acceptance.json",
+  "scope": "Exact map and used art inheritance plus fresh native gameplay and production Continue. Initial QA setup is not earned progression; statewide review active."
+}

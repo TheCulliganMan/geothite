@@ -8,6 +8,20 @@ or generated pixels.
 
 ## Run it
 
+For the hosted prebuilt client on Apple Silicon macOS or Linux x86_64:
+
+```sh
+curl -fsSL https://geothite.ryanculligan.com/install.sh | sh
+~/.local/share/geothite/bin/geothite mcp
+```
+
+The installer verifies hashes and preserves saves across reinstalls. Set
+`GEOTHITE_HOME` to an absolute path to choose another installation directory.
+The client uses its built-in theme unless `--theme FILE` supplies a custom one;
+it does not require the source checkout at runtime.
+
+To build from source with the external pack:
+
 ```sh
 cargo run --release --locked -p crystal-assets --bin pack_text_tui -- . \
   content-packs/realtime-clock.browser.crystalpack \
@@ -42,7 +56,7 @@ Run the local runtime as a stdio MCP server:
 
 Controls match the established TypeScript CLI: arrows, WASD, or HKL move;
 `Z`/`J`/Space is A; `X`/`K`/`B`/Escape is B; Enter is Start; Tab is Select;
-`.` waits eight frames; `R` refreshes; `?` opens help; F5 saves; and `:q!`
+`Shift` + arrows sends B + direction to run; `.` waits eight frames; `R` refreshes; `?` opens help; F5 saves; and `:q!`
 then Enter quits without saving.
 
 ## Renderer features

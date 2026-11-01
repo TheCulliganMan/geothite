@@ -1,0 +1,263 @@
+{
+  "species_id": "MN_096",
+  "manifest_sha256": "a0c177d6ddf5e59f1b3c3482c2965ad49e43c1d07a8398cc0bf0a3a38335ee07",
+  "bank_sha256": "b45bfba2c9630a70f2686536547639e2acb009a76996552a6e7ee2892da970a6",
+  "shared_transform": {
+    "source_bounds": [
+      12,
+      9,
+      456,
+      424
+    ],
+    "native_size": [
+      14,
+      13
+    ],
+    "native_origin": [
+      1,
+      2
+    ]
+  },
+  "poses": [
+    {
+      "pose": "down_idle",
+      "true_torso_void_samples": [
+        {
+          "native_pixel": [
+            7,
+            8
+          ],
+          "source_sample": [
+            263,
+            291
+          ],
+          "source_alpha": 0
+        },
+        {
+          "native_pixel": [
+            7,
+            9
+          ],
+          "source_sample": [
+            263,
+            323
+          ],
+          "source_alpha": 0
+        },
+        {
+          "native_pixel": [
+            8,
+            9
+          ],
+          "source_sample": [
+            296,
+            323
+          ],
+          "source_alpha": 0
+        },
+        {
+          "native_pixel": [
+            8,
+            10
+          ],
+          "source_sample": [
+            296,
+            356
+          ],
+          "source_alpha": 0
+        }
+      ]
+    },
+    {
+      "pose": "up_idle",
+      "true_torso_void_samples": [
+        {
+          "native_pixel": [
+            6,
+            8
+          ],
+          "source_sample": [
+            743,
+            307
+          ],
+          "source_alpha": 0
+        },
+        {
+          "native_pixel": [
+            7,
+            8
+          ],
+          "source_sample": [
+            775,
+            307
+          ],
+          "source_alpha": 0
+        },
+        {
+          "native_pixel": [
+            7,
+            9
+          ],
+          "source_sample": [
+            775,
+            339
+          ],
+          "source_alpha": 0
+        },
+        {
+          "native_pixel": [
+            8,
+            9
+          ],
+          "source_sample": [
+            808,
+            339
+          ],
+          "source_alpha": 0
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "true_torso_void_samples": [
+        {
+          "native_pixel": [
+            9,
+            8
+          ],
+          "source_sample": [
+            1296,
+            291
+          ],
+          "source_alpha": 0
+        },
+        {
+          "native_pixel": [
+            9,
+            9
+          ],
+          "source_sample": [
+            1296,
+            323
+          ],
+          "source_alpha": 0
+        },
+        {
+          "native_pixel": [
+            9,
+            10
+          ],
+          "source_sample": [
+            1296,
+            356
+          ],
+          "source_alpha": 0
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "true_torso_void_samples": [
+        {
+          "native_pixel": [
+            7,
+            9
+          ],
+          "source_sample": [
+            263,
+            768
+          ],
+          "source_alpha": 0
+        },
+        {
+          "native_pixel": [
+            8,
+            9
+          ],
+          "source_sample": [
+            296,
+            768
+          ],
+          "source_alpha": 0
+        },
+        {
+          "native_pixel": [
+            8,
+            10
+          ],
+          "source_sample": [
+            296,
+            801
+          ],
+          "source_alpha": 0
+        }
+      ]
+    },
+    {
+      "pose": "up_step",
+      "true_torso_void_samples": [
+        {
+          "native_pixel": [
+            6,
+            9
+          ],
+          "source_sample": [
+            743,
+            784
+          ],
+          "source_alpha": 0
+        },
+        {
+          "native_pixel": [
+            7,
+            9
+          ],
+          "source_sample": [
+            775,
+            784
+          ],
+          "source_alpha": 0
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "true_torso_void_samples": [
+        {
+          "native_pixel": [
+            9,
+            8
+          ],
+          "source_sample": [
+            1296,
+            736
+          ],
+          "source_alpha": 0
+        },
+        {
+          "native_pixel": [
+            9,
+            9
+          ],
+          "source_sample": [
+            1296,
+            768
+          ],
+          "source_alpha": 0
+        },
+        {
+          "native_pixel": [
+            9,
+            10
+          ],
+          "source_sample": [
+            1296,
+            801
+          ],
+          "source_alpha": 0
+        }
+      ]
+    }
+  ],
+  "notes": "Read-only source-center trace in anatomically identified torso region. Source and native are truly transparent; not opaque white or dark paint."
+}

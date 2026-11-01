@@ -1,0 +1,118 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_305",
+  "name": "Peckit",
+  "family_id": "MN_F138",
+  "status": "compiled_native_candidate_root_visual_context_acceptance_authoritative",
+  "generation_tool": "built-in image_gen",
+  "prompts": [
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f138/prompt-peckit-v1.txt"
+  ],
+  "sources_selected": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f138/peckit.overworld.imagegen-v1.png",
+      "sha256": "4bc10a8efd49f56dd8f0534c50294a31746838338fd8a896d8ed643d120661b8",
+      "dimensions": [
+        1254,
+        1254
+      ]
+    }
+  ],
+  "default_output_originals": [
+    {
+      "record": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f138/peckit.v1.original-path.txt",
+      "path": "/Users/ryanculligan/.codex/generated_images/01a17dc4-dd75-7642-a1c6-4bf13fda70c6/exec-f5b5b3a8-3828-4ea3-b55f-e51f15b916d2.png"
+    }
+  ],
+  "generation_style_reference_only": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+  "identity_authority": "Currentactivecoverage.json exactcanonicalpalettes,textbodylocks,andvisualinspectionofselectednativefront; no battleartinputforgeneration",
+  "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f138/manifest-peckit-v1-phase-eyes.json",
+  "manifest_sha256": "f5cd83b8197a1312099bf95fc572c181bd7c2bbf1ce3c6382ab8e6389c569eff",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f138/peckit-v1-phase-eyes",
+  "normal_review": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f138/peckit-v1-phase-eyes/review/line.normal-8x.png",
+  "frame_size": [
+    16,
+    16
+  ],
+  "native_bounds": [
+    [
+      4,
+      3,
+      8,
+      12
+    ],
+    [
+      4,
+      3,
+      8,
+      12
+    ],
+    [
+      3,
+      3,
+      11,
+      12
+    ],
+    [
+      4,
+      3,
+      8,
+      11
+    ],
+    [
+      3,
+      3,
+      9,
+      12
+    ],
+    [
+      3,
+      3,
+      11,
+      12
+    ]
+  ],
+  "sampling": "source_center",
+  "normal_palette_rgb555": [
+    32767,
+    18203,
+    6412,
+    0
+  ],
+  "shiny_palette_rgb555": [
+    32767,
+    29461,
+    19847,
+    0
+  ],
+  "alpha_threshold": 128,
+  "transparent_index": 0,
+  "visible_indices": [
+    1,
+    2,
+    3
+  ],
+  "native_pixels_painted": false,
+  "notes": "All6frames strictRustcompiled andretained. Sameper-speciesworldscale/equalcropwindowswithpairedheadregistration. Max14pxopaquefootprint+transparentborder. Rootreviewandruntimecontextproofsdetermineacceptance; thisreceiptisnotacceptance. Noqueue/registry/packwrites.",
+  "selected_sources": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f138/peckit.overworld.imagegen-v1.png",
+      "sha256": "4bc10a8efd49f56dd8f0534c50294a31746838338fd8a896d8ed643d120661b8",
+      "dimensions": [
+        1254,
+        1254
+      ]
+    }
+  ],
+  "default_output_records": [
+    {
+      "record": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f138/peckit.v1.original-path.txt",
+      "path": "/Users/ryanculligan/.codex/generated_images/01a17dc4-dd75-7642-a1c6-4bf13fda70c6/exec-f5b5b3a8-3828-4ea3-b55f-e51f15b916d2.png"
+    }
+  ],
+  "only_generation_reference": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+  "native_frame_size": [
+    16,
+    16
+  ]
+}

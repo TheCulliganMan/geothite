@@ -1,0 +1,34 @@
+[
+  {
+    "id": "hayfield-bank",
+    "map": "MnR16C00R00",
+    "core": [
+      53,
+      15
+    ]
+  },
+  {
+    "id": "cottonwood-neck",
+    "map": "MnR16C01R00",
+    "core": [
+      20,
+      24
+    ]
+  },
+  {
+    "id": "river-bridge",
+    "map": "MnR16C00R00",
+    "core": [
+      19,
+      23
+    ]
+  },
+  {
+    "id": "drainage-bridge",
+    "map": "MnR16C00R00",
+    "core": [
+      63,
+      29
+    ]
+  }
+]

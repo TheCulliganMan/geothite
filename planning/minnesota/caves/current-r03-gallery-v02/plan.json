@@ -1,0 +1,33 @@
+{
+  "map": "MnR03Cave1F",
+  "source_kind": "same-size hand-authored native cave discovery revision",
+  "dimensions_metatiles": [
+    14,
+    8
+  ],
+  "parent_revision": "route_grass_winona_town_revision",
+  "parent_pack": "content-packs/minnesota-current-winona-mart-v01.crystalpack",
+  "parent_pack_sha256": "096585f981c5b0fcbe406f9f85e1454cf2a714d420e3dcf3284d9f3195751760",
+  "pack": "content-packs/minnesota-r03-fitted-gallery-v02.crystalpack",
+  "pack_sha256": "2e23b03fdcfedc0b93a3a03ac347f2a4440965693a52db2b401a0daeb2664580",
+  "before_source": {
+    "path": "planning/minnesota/caves/current-r03-gallery-v02/site-before.json",
+    "sha256": "d43d18631ba17fb46530775d19a20c89b3107e613948584473557aa891e22b84"
+  },
+  "after_source": {
+    "path": "planning/minnesota/caves/current-r03-gallery-v02/site-v02.json",
+    "sha256": "d5d8b658be751170841e386c2c1353389d4fd45c22e9f665d69a0bac32ba21c1"
+  },
+  "changed_metatiles": 20,
+  "ledger": "terrain-ledger-v02.json",
+  "native_contract": "README.md",
+  "original_western_cave_exact": true,
+  "existing_gate": "Strength with Current Badge and learned move; closed even with Surf",
+  "native_controller_cases": 4,
+  "stdio_calls": 121,
+  "native_captures": 3,
+  "pixel_mismatches": 0,
+  "audio_programs": 377,
+  "unrelated_maps_exact": 731,
+  "scope": "Local native terrain and original discovery mechanics; no earned regional progression, save migration, browser deployment or full map-goal acceptance."
+}

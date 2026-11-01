@@ -1,0 +1,2551 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-r10-grass-and-stairs-v01.crystalpack",
+  "pack_sha256": "840dc279fa9e35359f31885010766950d2487dae723eb11c3d5af2fa8e4da6cb",
+  "calls": 507,
+  "reads": [
+    {
+      "phase": "sign-and-real-trainer",
+      "label": "MN_R10_RAMP_SIGNText",
+      "visible": "CARRIER BANK Stairs north. Lower road east.",
+      "movement_locked": true
+    },
+    {
+      "phase": "sign-and-real-trainer",
+      "label": "MN_R10_ROAD_KEEPERText",
+      "visible": "The upper road has stone stairs. Use them to reach the lower road.",
+      "movement_locked": true
+    },
+    {
+      "phase": "sign-and-real-trainer",
+      "label": "MN_R10_T01Won",
+      "visible": "Use the stairs if you head back west",
+      "movement_locked": true
+    },
+    {
+      "phase": "continued-repeat",
+      "label": "MN_R10_T01Won",
+      "visible": "Use the stairs if you head back west",
+      "movement_locked": true
+    },
+    {
+      "phase": "continued-repeat",
+      "label": "MN_R10_RAMP_SIGNText",
+      "visible": "CARRIER BANK Stairs north. Lower road east.",
+      "movement_locked": true
+    }
+  ],
+  "cases": [
+    {
+      "phase": "sign-and-real-trainer",
+      "source_save": ".local/route-grass-review/r10-directions-native-saves-v01/brainerd-80247-1793403719376426000.crystalsave",
+      "input_source_unchanged": true,
+      "output_save": ".local/route-grass-review/r10-directions-sign-and-real-trainer-v01-output.crystalsave",
+      "initial": {
+        "badges": 4,
+        "dialogue": false,
+        "facing": "up",
+        "frame": 42,
+        "map": "MnR10C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 0
+        },
+        "position": {
+          "x": 8,
+          "y": 25
+        }
+      },
+      "final": {
+        "badges": 4,
+        "dialogue": false,
+        "facing": "up",
+        "frame": 153,
+        "map": "MnR10C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 4088,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 2
+        },
+        "position": {
+          "x": 9,
+          "y": 12
+        }
+      },
+      "stderr_bytes": 0
+    },
+    {
+      "phase": "continued-repeat",
+      "source_save": ".local/route-grass-review/r10-directions-sign-and-real-trainer-v01-output.crystalsave",
+      "input_source_unchanged": true,
+      "output_save": ".local/route-grass-review/r10-directions-continued-repeat-v01-output.crystalsave",
+      "initial": {
+        "badges": 4,
+        "dialogue": false,
+        "facing": "up",
+        "frame": 153,
+        "map": "MnR10C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 4088,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 2
+        },
+        "position": {
+          "x": 9,
+          "y": 12
+        }
+      },
+      "final": {
+        "badges": 4,
+        "dialogue": false,
+        "facing": "up",
+        "frame": 185,
+        "map": "MnR10C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 4088,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 3
+        },
+        "position": {
+          "x": 8,
+          "y": 25
+        }
+      },
+      "stderr_bytes": 0
+    }
+  ],
+  "trainer_fight": {
+    "before": {
+      "badges": 4,
+      "dialogue": false,
+      "facing": "left",
+      "frame": 142,
+      "map": "MnR10C00R00",
+      "menu": null,
+      "mode": "overworld",
+      "money": 3000,
+      "player": "CHRIS",
+      "pokedex": {
+        "owned": 0,
+        "seen": 1
+      },
+      "position": {
+        "x": 9,
+        "y": 12
+      }
+    },
+    "after": {
+      "badges": 4,
+      "dialogue": false,
+      "facing": "up",
+      "frame": 147,
+      "map": "MnR10C00R00",
+      "menu": null,
+      "mode": "overworld",
+      "money": 4088,
+      "player": "CHRIS",
+      "pokedex": {
+        "owned": 0,
+        "seen": 2
+      },
+      "position": {
+        "x": 9,
+        "y": 12
+      }
+    },
+    "real_fight_and_surf_move_seen": true,
+    "money_reward": 1088
+  },
+  "battle_views": [
+    {
+      "action_log": [
+        {
+          "kind": "hint",
+          "text": "input: Left"
+        },
+        {
+          "kind": "hint",
+          "text": "input: Left"
+        },
+        {
+          "kind": "hint",
+          "text": "input: Up"
+        },
+        {
+          "kind": "hint",
+          "text": "input: Up"
+        },
+        {
+          "kind": "hint",
+          "text": "input: Up"
+        },
+        {
+          "kind": "hint",
+          "text": "input: Up"
+        },
+        {
+          "kind": "hint",
+          "text": "blocked: Up"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        }
+      ],
+      "competitive_battle": false,
+      "dialogue": [
+        {
+          "kind": "normal",
+          "text": "The old ore road"
+        },
+        {
+          "kind": "normal",
+          "text": "still holds firm."
+        }
+      ],
+      "frame": 147,
+      "info": [
+        {
+          "kind": "heading",
+          "text": "CHRIS \u00b7 $3000"
+        },
+        {
+          "kind": "normal",
+          "text": "Badges 4/16 \u00b7 Dex 0/1"
+        },
+        {
+          "kind": "grass",
+          "text": "  MEW        L60 190/190"
+        }
+      ],
+      "info_title": "Trainer",
+      "input_hints": [
+        {
+          "kind": "hint",
+          "text": "Z/J/Space advance"
+        },
+        {
+          "kind": "hint",
+          "text": "X/K/B skip/back"
+        }
+      ],
+      "marker": [
+        9,
+        12,
+        "@"
+      ],
+      "menu": [],
+      "prompt": [],
+      "status_line": "Text  MnR10C00R00  (9, 12)  facing Up",
+      "viewport": [
+        {
+          "kind": "hint",
+          "text": "   00 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20"
+        },
+        {
+          "kind": "normal",
+          "text": "05 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #"
+        },
+        {
+          "kind": "normal",
+          "text": "06 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #"
+        },
+        {
+          "kind": "normal",
+          "text": "07 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #"
+        },
+        {
+          "kind": "normal",
+          "text": "08 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #"
+        },
+        {
+          "kind": "normal",
+          "text": "09 #  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  #"
+        },
+        {
+          "kind": "normal",
+          "text": "10 .  .  .  .  .  .  .  .  .  .  .  .  #  #  #  #  .  .  .  #  #"
+        },
+        {
+          "kind": "normal",
+          "text": "11 .  .  .  .  .  .  .  .  .  N  .  .  #  #  #  #  .  .  .  #  #"
+        },
+        {
+          "kind": "normal",
+          "text": "12 #  .  .  .  S  .  .  .  .  @^ .  .  .  .  .  .  .  .  .  #  #"
+        },
+        {
+          "kind": "normal",
+          "text": "13 #  #  #  #  .  .  #  #  #  .  .  .  .  .  .  .  .  .  .  #  #"
+        },
+        {
+          "kind": "normal",
+          "text": "14 #  #  #  #  #  #  #  #  #  .  \"  \"  \"  \"  .  .  .  .  .  #  #"
+        },
+        {
+          "kind": "normal",
+          "text": "15 #  #  #  #  #  #  #  #  #  .  \"  \"  \"  \"  .  .  .  .  .  .  ."
+        },
+        {
+          "kind": "normal",
+          "text": "16 #  #  #  #  .  .  .  .  #  .  \"  \"  \"  \"  .  .  .  .  .  .  ."
+        },
+        {
+          "kind": "normal",
+          "text": "17 #  #  #  #  .  .  .  .  #  .  \"  \"  \"  \"  .  #  #  #  #  #  #"
+        },
+        {
+          "kind": "normal",
+          "text": "18 #  #  #  #  .  .  .  .  #  .  .  .  .  .  .  #  \"  \"  \"  \"  \""
+        },
+        {
+          "kind": "normal",
+          "text": "19 #  #  #  #  .  .  .  .  #  .  .  .  .  .  .  #  \"  \"  \"  \"  \""
+        }
+      ],
+      "viewport_title": "MnR10C00R00"
+    },
+    {
+      "action_log": [
+        {
+          "kind": "hint",
+          "text": "input: Left"
+        },
+        {
+          "kind": "hint",
+          "text": "input: Up"
+        },
+        {
+          "kind": "hint",
+          "text": "input: Up"
+        },
+        {
+          "kind": "hint",
+          "text": "input: Up"
+        },
+        {
+          "kind": "hint",
+          "text": "input: Up"
+        },
+        {
+          "kind": "hint",
+          "text": "blocked: Up"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        }
+      ],
+      "competitive_battle": true,
+      "dialogue": [
+        {
+          "kind": "normal",
+          "text": "CALDER"
+        },
+        {
+          "kind": "normal",
+          "text": "wants to battle!"
+        }
+      ],
+      "frame": 147,
+      "info": [
+        {
+          "kind": "heading",
+          "text": "CHRIS \u00b7 $3000"
+        },
+        {
+          "kind": "normal",
+          "text": "Badges 4/16 \u00b7 Dex 0/2"
+        },
+        {
+          "kind": "grass",
+          "text": "\u25b6 MEW        L60 190/190"
+        }
+      ],
+      "info_title": "Trainer",
+      "input_hints": [
+        {
+          "kind": "hint",
+          "text": "Z/J/Space advance"
+        },
+        {
+          "kind": "hint",
+          "text": "X/K/B skip/back"
+        }
+      ],
+      "marker": [
+        9,
+        12,
+        "@"
+      ],
+      "menu": [],
+      "prompt": [],
+      "status_line": "TrainerBattle  MnR10C00R00  (9, 12)  facing Up",
+      "viewport": [
+        {
+          "kind": "grass",
+          "text": "Foe BANDRAKE Lv34 HP 85/85"
+        },
+        {
+          "kind": "grass",
+          "text": "You MEW Lv60 HP 190/190"
+        },
+        {
+          "kind": "hint",
+          "text": "Turn 1  None (0 turns)"
+        }
+      ],
+      "viewport_title": "Battle"
+    },
+    {
+      "action_log": [
+        {
+          "kind": "hint",
+          "text": "input: Up"
+        },
+        {
+          "kind": "hint",
+          "text": "input: Up"
+        },
+        {
+          "kind": "hint",
+          "text": "input: Up"
+        },
+        {
+          "kind": "hint",
+          "text": "input: Up"
+        },
+        {
+          "kind": "hint",
+          "text": "blocked: Up"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        }
+      ],
+      "competitive_battle": true,
+      "dialogue": [
+        {
+          "kind": "normal",
+          "text": "CALDER"
+        },
+        {
+          "kind": "normal",
+          "text": "sent out"
+        }
+      ],
+      "frame": 147,
+      "info": [
+        {
+          "kind": "heading",
+          "text": "CHRIS \u00b7 $3000"
+        },
+        {
+          "kind": "normal",
+          "text": "Badges 4/16 \u00b7 Dex 0/2"
+        },
+        {
+          "kind": "grass",
+          "text": "\u25b6 MEW        L60 190/190"
+        }
+      ],
+      "info_title": "Trainer",
+      "input_hints": [
+        {
+          "kind": "hint",
+          "text": "Z/J/Space advance"
+        },
+        {
+          "kind": "hint",
+          "text": "X/K/B skip/back"
+        }
+      ],
+      "marker": [
+        9,
+        12,
+        "@"
+      ],
+      "menu": [],
+      "prompt": [],
+      "status_line": "TrainerBattle  MnR10C00R00  (9, 12)  facing Up",
+      "viewport": [
+        {
+          "kind": "grass",
+          "text": "Foe BANDRAKE Lv34 HP 85/85"
+        },
+        {
+          "kind": "grass",
+          "text": "You MEW Lv60 HP 190/190"
+        },
+        {
+          "kind": "hint",
+          "text": "Turn 1  None (0 turns)"
+        }
+      ],
+      "viewport_title": "Battle"
+    },
+    {
+      "action_log": [
+        {
+          "kind": "hint",
+          "text": "input: Up"
+        },
+        {
+          "kind": "hint",
+          "text": "input: Up"
+        },
+        {
+          "kind": "hint",
+          "text": "input: Up"
+        },
+        {
+          "kind": "hint",
+          "text": "blocked: Up"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        }
+      ],
+      "competitive_battle": true,
+      "dialogue": [
+        {
+          "kind": "normal",
+          "text": "BANDRAKE!"
+        }
+      ],
+      "frame": 147,
+      "info": [
+        {
+          "kind": "heading",
+          "text": "CHRIS \u00b7 $3000"
+        },
+        {
+          "kind": "normal",
+          "text": "Badges 4/16 \u00b7 Dex 0/2"
+        },
+        {
+          "kind": "grass",
+          "text": "\u25b6 MEW        L60 190/190"
+        }
+      ],
+      "info_title": "Trainer",
+      "input_hints": [
+        {
+          "kind": "hint",
+          "text": "Z/J/Space advance"
+        },
+        {
+          "kind": "hint",
+          "text": "X/K/B skip/back"
+        }
+      ],
+      "marker": [
+        9,
+        12,
+        "@"
+      ],
+      "menu": [],
+      "prompt": [],
+      "status_line": "TrainerBattle  MnR10C00R00  (9, 12)  facing Up",
+      "viewport": [
+        {
+          "kind": "grass",
+          "text": "Foe BANDRAKE Lv34 HP 85/85"
+        },
+        {
+          "kind": "grass",
+          "text": "You MEW Lv60 HP 190/190"
+        },
+        {
+          "kind": "hint",
+          "text": "Turn 1  None (0 turns)"
+        }
+      ],
+      "viewport_title": "Battle"
+    },
+    {
+      "action_log": [
+        {
+          "kind": "hint",
+          "text": "input: Up"
+        },
+        {
+          "kind": "hint",
+          "text": "input: Up"
+        },
+        {
+          "kind": "hint",
+          "text": "blocked: Up"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        }
+      ],
+      "competitive_battle": true,
+      "dialogue": [
+        {
+          "kind": "normal",
+          "text": "Go! MEW!"
+        }
+      ],
+      "frame": 147,
+      "info": [
+        {
+          "kind": "heading",
+          "text": "CHRIS \u00b7 $3000"
+        },
+        {
+          "kind": "normal",
+          "text": "Badges 4/16 \u00b7 Dex 0/2"
+        },
+        {
+          "kind": "grass",
+          "text": "\u25b6 MEW        L60 190/190"
+        }
+      ],
+      "info_title": "Trainer",
+      "input_hints": [
+        {
+          "kind": "hint",
+          "text": "Z/J/Space advance"
+        },
+        {
+          "kind": "hint",
+          "text": "X/K/B skip/back"
+        }
+      ],
+      "marker": [
+        9,
+        12,
+        "@"
+      ],
+      "menu": [],
+      "prompt": [],
+      "status_line": "TrainerBattle  MnR10C00R00  (9, 12)  facing Up",
+      "viewport": [
+        {
+          "kind": "grass",
+          "text": "Foe BANDRAKE Lv34 HP 85/85"
+        },
+        {
+          "kind": "grass",
+          "text": "You MEW Lv60 HP 190/190"
+        },
+        {
+          "kind": "hint",
+          "text": "Turn 1  None (0 turns)"
+        }
+      ],
+      "viewport_title": "Battle"
+    },
+    {
+      "action_log": [
+        {
+          "kind": "hint",
+          "text": "input: Up"
+        },
+        {
+          "kind": "hint",
+          "text": "blocked: Up"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        }
+      ],
+      "competitive_battle": true,
+      "dialogue": [],
+      "frame": 147,
+      "info": [
+        {
+          "kind": "heading",
+          "text": "CHRIS \u00b7 $3000"
+        },
+        {
+          "kind": "normal",
+          "text": "Badges 4/16 \u00b7 Dex 0/2"
+        },
+        {
+          "kind": "grass",
+          "text": "\u25b6 MEW        L60 190/190"
+        }
+      ],
+      "info_title": "Trainer",
+      "input_hints": [
+        {
+          "kind": "hint",
+          "text": "\u2191/\u2193 choose"
+        },
+        {
+          "kind": "hint",
+          "text": "Z/J/Space select"
+        },
+        {
+          "kind": "hint",
+          "text": "X/K/B/Esc back"
+        }
+      ],
+      "marker": [
+        9,
+        12,
+        "@"
+      ],
+      "menu": [
+        {
+          "kind": "selected",
+          "text": "> FIGHT"
+        },
+        {
+          "kind": "normal",
+          "text": "   <PKMN>"
+        },
+        {
+          "kind": "normal",
+          "text": "   PACK"
+        },
+        {
+          "kind": "normal",
+          "text": "   RUN"
+        }
+      ],
+      "prompt": [],
+      "status_line": "TrainerBattle  MnR10C00R00  (9, 12)  facing Up",
+      "viewport": [
+        {
+          "kind": "grass",
+          "text": "Foe BANDRAKE Lv34 HP 85/85"
+        },
+        {
+          "kind": "grass",
+          "text": "You MEW Lv60 HP 190/190"
+        },
+        {
+          "kind": "hint",
+          "text": "Turn 1  None (0 turns)"
+        }
+      ],
+      "viewport_title": "Battle"
+    },
+    {
+      "action_log": [
+        {
+          "kind": "hint",
+          "text": "blocked: Up"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        }
+      ],
+      "competitive_battle": true,
+      "dialogue": [],
+      "frame": 147,
+      "info": [
+        {
+          "kind": "heading",
+          "text": "CHRIS \u00b7 $3000"
+        },
+        {
+          "kind": "normal",
+          "text": "Badges 4/16 \u00b7 Dex 0/2"
+        },
+        {
+          "kind": "grass",
+          "text": "\u25b6 MEW        L60 190/190"
+        }
+      ],
+      "info_title": "Trainer",
+      "input_hints": [
+        {
+          "kind": "hint",
+          "text": "\u2191/\u2193 choose"
+        },
+        {
+          "kind": "hint",
+          "text": "Z/J/Space select"
+        },
+        {
+          "kind": "hint",
+          "text": "X/K/B/Esc back"
+        }
+      ],
+      "marker": [
+        9,
+        12,
+        "@"
+      ],
+      "menu": [
+        {
+          "kind": "selected",
+          "text": "> SURF  PP 15/15"
+        },
+        {
+          "kind": "normal",
+          "text": "   CANCEL"
+        },
+        {
+          "kind": "normal",
+          "text": "  WATER  SPECIAL / SPA vs SPD"
+        },
+        {
+          "kind": "normal",
+          "text": "  Power 95  Base accuracy 100%  Priority +0"
+        },
+        {
+          "kind": "normal",
+          "text": "  Effectiveness x2"
+        },
+        {
+          "kind": "normal",
+          "text": "  Damage on hit: 159-188 (non-critical)"
+        }
+      ],
+      "prompt": [],
+      "status_line": "TrainerBattle  MnR10C00R00  (9, 12)  facing Up",
+      "viewport": [
+        {
+          "kind": "grass",
+          "text": "Foe BANDRAKE Lv34 HP 85/85"
+        },
+        {
+          "kind": "grass",
+          "text": "You MEW Lv60 HP 190/190"
+        },
+        {
+          "kind": "hint",
+          "text": "Turn 1  None (0 turns)"
+        }
+      ],
+      "viewport_title": "Battle"
+    },
+    {
+      "action_log": [
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        }
+      ],
+      "competitive_battle": true,
+      "dialogue": [
+        {
+          "kind": "normal",
+          "text": "MEW"
+        },
+        {
+          "kind": "normal",
+          "text": "used SURF!"
+        }
+      ],
+      "frame": 147,
+      "info": [
+        {
+          "kind": "heading",
+          "text": "CHRIS \u00b7 $3000"
+        },
+        {
+          "kind": "normal",
+          "text": "Badges 4/16 \u00b7 Dex 0/2"
+        },
+        {
+          "kind": "grass",
+          "text": "\u25b6 MEW        L60 190/190"
+        }
+      ],
+      "info_title": "Trainer",
+      "input_hints": [
+        {
+          "kind": "hint",
+          "text": "Z/J/Space advance"
+        },
+        {
+          "kind": "hint",
+          "text": "X/K/B skip/back"
+        }
+      ],
+      "marker": [
+        9,
+        12,
+        "@"
+      ],
+      "menu": [],
+      "prompt": [],
+      "status_line": "TrainerBattle  MnR10C00R00  (9, 12)  facing Up",
+      "viewport": [
+        {
+          "kind": "danger",
+          "text": "Foe BANDRAKE Lv34 HP 0/85"
+        },
+        {
+          "kind": "grass",
+          "text": "You MEW Lv60 HP 190/190"
+        },
+        {
+          "kind": "hint",
+          "text": "Turn 2  None (0 turns)"
+        }
+      ],
+      "viewport_title": "Battle"
+    },
+    {
+      "action_log": [
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        }
+      ],
+      "competitive_battle": true,
+      "dialogue": [
+        {
+          "kind": "normal",
+          "text": "It's super"
+        },
+        {
+          "kind": "normal",
+          "text": "effective!"
+        }
+      ],
+      "frame": 147,
+      "info": [
+        {
+          "kind": "heading",
+          "text": "CHRIS \u00b7 $3000"
+        },
+        {
+          "kind": "normal",
+          "text": "Badges 4/16 \u00b7 Dex 0/2"
+        },
+        {
+          "kind": "grass",
+          "text": "\u25b6 MEW        L60 190/190"
+        }
+      ],
+      "info_title": "Trainer",
+      "input_hints": [
+        {
+          "kind": "hint",
+          "text": "Z/J/Space advance"
+        },
+        {
+          "kind": "hint",
+          "text": "X/K/B skip/back"
+        }
+      ],
+      "marker": [
+        9,
+        12,
+        "@"
+      ],
+      "menu": [],
+      "prompt": [],
+      "status_line": "TrainerBattle  MnR10C00R00  (9, 12)  facing Up",
+      "viewport": [
+        {
+          "kind": "danger",
+          "text": "Foe BANDRAKE Lv34 HP 0/85"
+        },
+        {
+          "kind": "grass",
+          "text": "You MEW Lv60 HP 190/190"
+        },
+        {
+          "kind": "hint",
+          "text": "Turn 2  None (0 turns)"
+        }
+      ],
+      "viewport_title": "Battle"
+    },
+    {
+      "action_log": [
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        }
+      ],
+      "competitive_battle": true,
+      "dialogue": [
+        {
+          "kind": "normal",
+          "text": "Enemy BANDRAKE"
+        },
+        {
+          "kind": "normal",
+          "text": "fainted!"
+        }
+      ],
+      "frame": 147,
+      "info": [
+        {
+          "kind": "heading",
+          "text": "CHRIS \u00b7 $3000"
+        },
+        {
+          "kind": "normal",
+          "text": "Badges 4/16 \u00b7 Dex 0/2"
+        },
+        {
+          "kind": "grass",
+          "text": "\u25b6 MEW        L60 190/190"
+        }
+      ],
+      "info_title": "Trainer",
+      "input_hints": [
+        {
+          "kind": "hint",
+          "text": "Z/J/Space advance"
+        },
+        {
+          "kind": "hint",
+          "text": "X/K/B skip/back"
+        }
+      ],
+      "marker": [
+        9,
+        12,
+        "@"
+      ],
+      "menu": [],
+      "prompt": [],
+      "status_line": "TrainerBattle  MnR10C00R00  (9, 12)  facing Up",
+      "viewport": [
+        {
+          "kind": "danger",
+          "text": "Foe BANDRAKE Lv34 HP 0/85"
+        },
+        {
+          "kind": "grass",
+          "text": "You MEW Lv60 HP 190/190"
+        },
+        {
+          "kind": "hint",
+          "text": "Turn 2  None (0 turns)"
+        }
+      ],
+      "viewport_title": "Battle"
+    },
+    {
+      "action_log": [
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        }
+      ],
+      "competitive_battle": true,
+      "dialogue": [
+        {
+          "kind": "normal",
+          "text": "MEW gained"
+        },
+        {
+          "kind": "normal",
+          "text": "633 EXP. Points!"
+        }
+      ],
+      "frame": 147,
+      "info": [
+        {
+          "kind": "heading",
+          "text": "CHRIS \u00b7 $3000"
+        },
+        {
+          "kind": "normal",
+          "text": "Badges 4/16 \u00b7 Dex 0/2"
+        },
+        {
+          "kind": "grass",
+          "text": "\u25b6 MEW        L60 190/190"
+        }
+      ],
+      "info_title": "Trainer",
+      "input_hints": [
+        {
+          "kind": "hint",
+          "text": "Z/J/Space advance"
+        },
+        {
+          "kind": "hint",
+          "text": "X/K/B skip/back"
+        }
+      ],
+      "marker": [
+        9,
+        12,
+        "@"
+      ],
+      "menu": [],
+      "prompt": [],
+      "status_line": "TrainerBattle  MnR10C00R00  (9, 12)  facing Up",
+      "viewport": [
+        {
+          "kind": "danger",
+          "text": "Foe BANDRAKE Lv34 HP 0/85"
+        },
+        {
+          "kind": "grass",
+          "text": "You MEW Lv60 HP 190/190"
+        },
+        {
+          "kind": "hint",
+          "text": "Turn 2  None (0 turns)"
+        }
+      ],
+      "viewport_title": "Battle"
+    },
+    {
+      "action_log": [
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        }
+      ],
+      "competitive_battle": true,
+      "dialogue": [
+        {
+          "kind": "normal",
+          "text": "CALDER"
+        },
+        {
+          "kind": "normal",
+          "text": "sent out"
+        }
+      ],
+      "frame": 147,
+      "info": [
+        {
+          "kind": "heading",
+          "text": "CHRIS \u00b7 $3000"
+        },
+        {
+          "kind": "normal",
+          "text": "Badges 4/16 \u00b7 Dex 0/2"
+        },
+        {
+          "kind": "grass",
+          "text": "\u25b6 MEW        L60 190/190"
+        }
+      ],
+      "info_title": "Trainer",
+      "input_hints": [
+        {
+          "kind": "hint",
+          "text": "Z/J/Space advance"
+        },
+        {
+          "kind": "hint",
+          "text": "X/K/B skip/back"
+        }
+      ],
+      "marker": [
+        9,
+        12,
+        "@"
+      ],
+      "menu": [],
+      "prompt": [],
+      "status_line": "TrainerBattle  MnR10C00R00  (9, 12)  facing Up",
+      "viewport": [
+        {
+          "kind": "grass",
+          "text": "Foe HELIKNOCK Lv34 HP 98/98"
+        },
+        {
+          "kind": "grass",
+          "text": "You MEW Lv60 HP 190/190"
+        },
+        {
+          "kind": "hint",
+          "text": "Turn 2  None (0 turns)"
+        }
+      ],
+      "viewport_title": "Battle"
+    },
+    {
+      "action_log": [
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        }
+      ],
+      "competitive_battle": true,
+      "dialogue": [
+        {
+          "kind": "normal",
+          "text": "HELIKNOCK!"
+        }
+      ],
+      "frame": 147,
+      "info": [
+        {
+          "kind": "heading",
+          "text": "CHRIS \u00b7 $3000"
+        },
+        {
+          "kind": "normal",
+          "text": "Badges 4/16 \u00b7 Dex 0/2"
+        },
+        {
+          "kind": "grass",
+          "text": "\u25b6 MEW        L60 190/190"
+        }
+      ],
+      "info_title": "Trainer",
+      "input_hints": [
+        {
+          "kind": "hint",
+          "text": "Z/J/Space advance"
+        },
+        {
+          "kind": "hint",
+          "text": "X/K/B skip/back"
+        }
+      ],
+      "marker": [
+        9,
+        12,
+        "@"
+      ],
+      "menu": [],
+      "prompt": [],
+      "status_line": "TrainerBattle  MnR10C00R00  (9, 12)  facing Up",
+      "viewport": [
+        {
+          "kind": "grass",
+          "text": "Foe HELIKNOCK Lv34 HP 98/98"
+        },
+        {
+          "kind": "grass",
+          "text": "You MEW Lv60 HP 190/190"
+        },
+        {
+          "kind": "hint",
+          "text": "Turn 2  None (0 turns)"
+        }
+      ],
+      "viewport_title": "Battle"
+    },
+    {
+      "action_log": [
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        }
+      ],
+      "competitive_battle": true,
+      "dialogue": [],
+      "frame": 147,
+      "info": [
+        {
+          "kind": "heading",
+          "text": "CHRIS \u00b7 $3000"
+        },
+        {
+          "kind": "normal",
+          "text": "Badges 4/16 \u00b7 Dex 0/2"
+        },
+        {
+          "kind": "grass",
+          "text": "\u25b6 MEW        L60 190/190"
+        }
+      ],
+      "info_title": "Trainer",
+      "input_hints": [
+        {
+          "kind": "hint",
+          "text": "\u2191/\u2193 choose"
+        },
+        {
+          "kind": "hint",
+          "text": "Z/J/Space select"
+        },
+        {
+          "kind": "hint",
+          "text": "X/K/B/Esc back"
+        }
+      ],
+      "marker": [
+        9,
+        12,
+        "@"
+      ],
+      "menu": [
+        {
+          "kind": "selected",
+          "text": "> FIGHT"
+        },
+        {
+          "kind": "normal",
+          "text": "   <PKMN>"
+        },
+        {
+          "kind": "normal",
+          "text": "   PACK"
+        },
+        {
+          "kind": "normal",
+          "text": "   RUN"
+        }
+      ],
+      "prompt": [],
+      "status_line": "TrainerBattle  MnR10C00R00  (9, 12)  facing Up",
+      "viewport": [
+        {
+          "kind": "grass",
+          "text": "Foe HELIKNOCK Lv34 HP 98/98"
+        },
+        {
+          "kind": "grass",
+          "text": "You MEW Lv60 HP 190/190"
+        },
+        {
+          "kind": "hint",
+          "text": "Turn 2  None (0 turns)"
+        }
+      ],
+      "viewport_title": "Battle"
+    },
+    {
+      "action_log": [
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        }
+      ],
+      "competitive_battle": true,
+      "dialogue": [],
+      "frame": 147,
+      "info": [
+        {
+          "kind": "heading",
+          "text": "CHRIS \u00b7 $3000"
+        },
+        {
+          "kind": "normal",
+          "text": "Badges 4/16 \u00b7 Dex 0/2"
+        },
+        {
+          "kind": "grass",
+          "text": "\u25b6 MEW        L60 190/190"
+        }
+      ],
+      "info_title": "Trainer",
+      "input_hints": [
+        {
+          "kind": "hint",
+          "text": "\u2191/\u2193 choose"
+        },
+        {
+          "kind": "hint",
+          "text": "Z/J/Space select"
+        },
+        {
+          "kind": "hint",
+          "text": "X/K/B/Esc back"
+        }
+      ],
+      "marker": [
+        9,
+        12,
+        "@"
+      ],
+      "menu": [
+        {
+          "kind": "selected",
+          "text": "> SURF  PP 14/15"
+        },
+        {
+          "kind": "normal",
+          "text": "   CANCEL"
+        },
+        {
+          "kind": "normal",
+          "text": "  WATER  SPECIAL / SPA vs SPD"
+        },
+        {
+          "kind": "normal",
+          "text": "  Power 95  Base accuracy 100%  Priority +0"
+        },
+        {
+          "kind": "normal",
+          "text": "  Effectiveness x2"
+        },
+        {
+          "kind": "normal",
+          "text": "  Damage on hit: 149-176 (non-critical)"
+        }
+      ],
+      "prompt": [],
+      "status_line": "TrainerBattle  MnR10C00R00  (9, 12)  facing Up",
+      "viewport": [
+        {
+          "kind": "grass",
+          "text": "Foe HELIKNOCK Lv34 HP 98/98"
+        },
+        {
+          "kind": "grass",
+          "text": "You MEW Lv60 HP 190/190"
+        },
+        {
+          "kind": "hint",
+          "text": "Turn 2  None (0 turns)"
+        }
+      ],
+      "viewport_title": "Battle"
+    },
+    {
+      "action_log": [
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        }
+      ],
+      "competitive_battle": true,
+      "dialogue": [
+        {
+          "kind": "normal",
+          "text": "MEW"
+        },
+        {
+          "kind": "normal",
+          "text": "used SURF!"
+        }
+      ],
+      "frame": 147,
+      "info": [
+        {
+          "kind": "heading",
+          "text": "CHRIS \u00b7 $3000"
+        },
+        {
+          "kind": "normal",
+          "text": "Badges 4/16 \u00b7 Dex 0/2"
+        },
+        {
+          "kind": "grass",
+          "text": "\u25b6 MEW        L60 190/190"
+        }
+      ],
+      "info_title": "Trainer",
+      "input_hints": [
+        {
+          "kind": "hint",
+          "text": "Z/J/Space advance"
+        },
+        {
+          "kind": "hint",
+          "text": "X/K/B skip/back"
+        }
+      ],
+      "marker": [
+        9,
+        12,
+        "@"
+      ],
+      "menu": [],
+      "prompt": [],
+      "status_line": "TrainerBattle  MnR10C00R00  (9, 12)  facing Up",
+      "viewport": [
+        {
+          "kind": "danger",
+          "text": "Foe HELIKNOCK Lv34 HP 0/98"
+        },
+        {
+          "kind": "grass",
+          "text": "You MEW Lv60 HP 190/190"
+        },
+        {
+          "kind": "hint",
+          "text": "Turn 3  None (0 turns)"
+        }
+      ],
+      "viewport_title": "Battle"
+    },
+    {
+      "action_log": [
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        }
+      ],
+      "competitive_battle": true,
+      "dialogue": [
+        {
+          "kind": "normal",
+          "text": "It's super"
+        },
+        {
+          "kind": "normal",
+          "text": "effective!"
+        }
+      ],
+      "frame": 147,
+      "info": [
+        {
+          "kind": "heading",
+          "text": "CHRIS \u00b7 $3000"
+        },
+        {
+          "kind": "normal",
+          "text": "Badges 4/16 \u00b7 Dex 0/2"
+        },
+        {
+          "kind": "grass",
+          "text": "\u25b6 MEW        L60 190/190"
+        }
+      ],
+      "info_title": "Trainer",
+      "input_hints": [
+        {
+          "kind": "hint",
+          "text": "Z/J/Space advance"
+        },
+        {
+          "kind": "hint",
+          "text": "X/K/B skip/back"
+        }
+      ],
+      "marker": [
+        9,
+        12,
+        "@"
+      ],
+      "menu": [],
+      "prompt": [],
+      "status_line": "TrainerBattle  MnR10C00R00  (9, 12)  facing Up",
+      "viewport": [
+        {
+          "kind": "danger",
+          "text": "Foe HELIKNOCK Lv34 HP 0/98"
+        },
+        {
+          "kind": "grass",
+          "text": "You MEW Lv60 HP 190/190"
+        },
+        {
+          "kind": "hint",
+          "text": "Turn 3  None (0 turns)"
+        }
+      ],
+      "viewport_title": "Battle"
+    },
+    {
+      "action_log": [
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        }
+      ],
+      "competitive_battle": true,
+      "dialogue": [
+        {
+          "kind": "normal",
+          "text": "Enemy HELIKNOCK"
+        },
+        {
+          "kind": "normal",
+          "text": "fainted!"
+        }
+      ],
+      "frame": 147,
+      "info": [
+        {
+          "kind": "heading",
+          "text": "CHRIS \u00b7 $3000"
+        },
+        {
+          "kind": "normal",
+          "text": "Badges 4/16 \u00b7 Dex 0/2"
+        },
+        {
+          "kind": "grass",
+          "text": "\u25b6 MEW        L60 190/190"
+        }
+      ],
+      "info_title": "Trainer",
+      "input_hints": [
+        {
+          "kind": "hint",
+          "text": "Z/J/Space advance"
+        },
+        {
+          "kind": "hint",
+          "text": "X/K/B skip/back"
+        }
+      ],
+      "marker": [
+        9,
+        12,
+        "@"
+      ],
+      "menu": [],
+      "prompt": [],
+      "status_line": "TrainerBattle  MnR10C00R00  (9, 12)  facing Up",
+      "viewport": [
+        {
+          "kind": "danger",
+          "text": "Foe HELIKNOCK Lv34 HP 0/98"
+        },
+        {
+          "kind": "grass",
+          "text": "You MEW Lv60 HP 190/190"
+        },
+        {
+          "kind": "hint",
+          "text": "Turn 3  None (0 turns)"
+        }
+      ],
+      "viewport_title": "Battle"
+    },
+    {
+      "action_log": [
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        }
+      ],
+      "competitive_battle": true,
+      "dialogue": [
+        {
+          "kind": "normal",
+          "text": "MEW gained"
+        },
+        {
+          "kind": "normal",
+          "text": "1500 EXP. Points!"
+        }
+      ],
+      "frame": 147,
+      "info": [
+        {
+          "kind": "heading",
+          "text": "CHRIS \u00b7 $3000"
+        },
+        {
+          "kind": "normal",
+          "text": "Badges 4/16 \u00b7 Dex 0/2"
+        },
+        {
+          "kind": "grass",
+          "text": "\u25b6 MEW        L60 190/190"
+        }
+      ],
+      "info_title": "Trainer",
+      "input_hints": [
+        {
+          "kind": "hint",
+          "text": "Z/J/Space advance"
+        },
+        {
+          "kind": "hint",
+          "text": "X/K/B skip/back"
+        }
+      ],
+      "marker": [
+        9,
+        12,
+        "@"
+      ],
+      "menu": [],
+      "prompt": [],
+      "status_line": "TrainerBattle  MnR10C00R00  (9, 12)  facing Up",
+      "viewport": [
+        {
+          "kind": "danger",
+          "text": "Foe HELIKNOCK Lv34 HP 0/98"
+        },
+        {
+          "kind": "grass",
+          "text": "You MEW Lv60 HP 190/190"
+        },
+        {
+          "kind": "hint",
+          "text": "Turn 3  None (0 turns)"
+        }
+      ],
+      "viewport_title": "Battle"
+    },
+    {
+      "action_log": [
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        }
+      ],
+      "competitive_battle": false,
+      "dialogue": [
+        {
+          "kind": "normal",
+          "text": "Use the stairs if"
+        },
+        {
+          "kind": "normal",
+          "text": "you head back west"
+        }
+      ],
+      "frame": 147,
+      "info": [
+        {
+          "kind": "heading",
+          "text": "CHRIS \u00b7 $4088"
+        },
+        {
+          "kind": "normal",
+          "text": "Badges 4/16 \u00b7 Dex 0/2"
+        },
+        {
+          "kind": "grass",
+          "text": "  MEW        L60 190/190"
+        }
+      ],
+      "info_title": "Trainer",
+      "input_hints": [
+        {
+          "kind": "hint",
+          "text": "Z/J/Space advance"
+        },
+        {
+          "kind": "hint",
+          "text": "X/K/B skip/back"
+        }
+      ],
+      "marker": [
+        9,
+        12,
+        "@"
+      ],
+      "menu": [],
+      "prompt": [],
+      "status_line": "Overworld  MnR10C00R00  (9, 12)  facing Up",
+      "viewport": [
+        {
+          "kind": "hint",
+          "text": "   00 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20"
+        },
+        {
+          "kind": "normal",
+          "text": "05 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #"
+        },
+        {
+          "kind": "normal",
+          "text": "06 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #"
+        },
+        {
+          "kind": "normal",
+          "text": "07 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #"
+        },
+        {
+          "kind": "normal",
+          "text": "08 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #"
+        },
+        {
+          "kind": "normal",
+          "text": "09 #  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  #"
+        },
+        {
+          "kind": "normal",
+          "text": "10 .  .  .  .  .  .  .  .  .  .  .  .  #  #  #  #  .  .  .  #  #"
+        },
+        {
+          "kind": "normal",
+          "text": "11 .  .  .  .  .  .  .  .  .  N  .  .  #  #  #  #  .  .  .  #  #"
+        },
+        {
+          "kind": "normal",
+          "text": "12 #  .  .  .  S  .  .  .  .  @^ .  .  .  .  .  .  .  .  .  #  #"
+        },
+        {
+          "kind": "normal",
+          "text": "13 #  #  #  #  .  .  #  #  #  .  .  .  .  .  .  .  .  .  .  #  #"
+        },
+        {
+          "kind": "normal",
+          "text": "14 #  #  #  #  #  #  #  #  #  .  \"  \"  \"  \"  .  .  .  .  .  #  #"
+        },
+        {
+          "kind": "normal",
+          "text": "15 #  #  #  #  #  #  #  #  #  .  \"  \"  \"  \"  .  .  .  .  .  .  ."
+        },
+        {
+          "kind": "normal",
+          "text": "16 #  #  #  #  .  .  .  .  #  .  \"  \"  \"  \"  .  .  .  .  .  .  ."
+        },
+        {
+          "kind": "normal",
+          "text": "17 #  #  #  #  .  .  .  .  #  .  \"  \"  \"  \"  .  #  #  #  #  #  #"
+        },
+        {
+          "kind": "normal",
+          "text": "18 #  #  #  #  .  .  .  .  #  .  .  .  .  .  .  #  \"  \"  \"  \"  \""
+        },
+        {
+          "kind": "normal",
+          "text": "19 #  #  #  #  .  .  .  .  #  .  .  .  .  .  .  #  \"  \"  \"  \"  \""
+        }
+      ],
+      "viewport_title": "MnR10C00R00"
+    },
+    {
+      "action_log": [
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        }
+      ],
+      "competitive_battle": false,
+      "dialogue": [
+        {
+          "kind": "normal",
+          "text": "CHRIS got \u00a51088"
+        },
+        {
+          "kind": "normal",
+          "text": "for winning!"
+        }
+      ],
+      "frame": 147,
+      "info": [
+        {
+          "kind": "heading",
+          "text": "CHRIS \u00b7 $4088"
+        },
+        {
+          "kind": "normal",
+          "text": "Badges 4/16 \u00b7 Dex 0/2"
+        },
+        {
+          "kind": "grass",
+          "text": "  MEW        L60 190/190"
+        }
+      ],
+      "info_title": "Trainer",
+      "input_hints": [
+        {
+          "kind": "hint",
+          "text": "Z/J/Space advance"
+        },
+        {
+          "kind": "hint",
+          "text": "X/K/B skip/back"
+        }
+      ],
+      "marker": [
+        9,
+        12,
+        "@"
+      ],
+      "menu": [],
+      "prompt": [],
+      "status_line": "Overworld  MnR10C00R00  (9, 12)  facing Up",
+      "viewport": [
+        {
+          "kind": "hint",
+          "text": "   00 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20"
+        },
+        {
+          "kind": "normal",
+          "text": "05 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #"
+        },
+        {
+          "kind": "normal",
+          "text": "06 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #"
+        },
+        {
+          "kind": "normal",
+          "text": "07 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #"
+        },
+        {
+          "kind": "normal",
+          "text": "08 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #"
+        },
+        {
+          "kind": "normal",
+          "text": "09 #  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  #"
+        },
+        {
+          "kind": "normal",
+          "text": "10 .  .  .  .  .  .  .  .  .  .  .  .  #  #  #  #  .  .  .  #  #"
+        },
+        {
+          "kind": "normal",
+          "text": "11 .  .  .  .  .  .  .  .  .  N  .  .  #  #  #  #  .  .  .  #  #"
+        },
+        {
+          "kind": "normal",
+          "text": "12 #  .  .  .  S  .  .  .  .  @^ .  .  .  .  .  .  .  .  .  #  #"
+        },
+        {
+          "kind": "normal",
+          "text": "13 #  #  #  #  .  .  #  #  #  .  .  .  .  .  .  .  .  .  .  #  #"
+        },
+        {
+          "kind": "normal",
+          "text": "14 #  #  #  #  #  #  #  #  #  .  \"  \"  \"  \"  .  .  .  .  .  #  #"
+        },
+        {
+          "kind": "normal",
+          "text": "15 #  #  #  #  #  #  #  #  #  .  \"  \"  \"  \"  .  .  .  .  .  .  ."
+        },
+        {
+          "kind": "normal",
+          "text": "16 #  #  #  #  .  .  .  .  #  .  \"  \"  \"  \"  .  .  .  .  .  .  ."
+        },
+        {
+          "kind": "normal",
+          "text": "17 #  #  #  #  .  .  .  .  #  .  \"  \"  \"  \"  .  #  #  #  #  #  #"
+        },
+        {
+          "kind": "normal",
+          "text": "18 #  #  #  #  .  .  .  .  #  .  .  .  .  .  .  #  \"  \"  \"  \"  \""
+        },
+        {
+          "kind": "normal",
+          "text": "19 #  #  #  #  .  .  .  .  #  .  .  .  .  .  .  #  \"  \"  \"  \"  \""
+        }
+      ],
+      "viewport_title": "MnR10C00R00"
+    },
+    {
+      "action_log": [
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        }
+      ],
+      "competitive_battle": false,
+      "dialogue": [],
+      "frame": 147,
+      "info": [
+        {
+          "kind": "heading",
+          "text": "CHRIS \u00b7 $4088"
+        },
+        {
+          "kind": "normal",
+          "text": "Badges 4/16 \u00b7 Dex 0/2"
+        },
+        {
+          "kind": "grass",
+          "text": "  MEW        L60 190/190"
+        }
+      ],
+      "info_title": "Trainer",
+      "input_hints": [
+        {
+          "kind": "hint",
+          "text": "Arrows/WASD/HKL move"
+        },
+        {
+          "kind": "hint",
+          "text": "Z/J/Space A"
+        },
+        {
+          "kind": "hint",
+          "text": "X/K/B back"
+        },
+        {
+          "kind": "hint",
+          "text": "Enter Start \u00b7 Tab Select"
+        },
+        {
+          "kind": "hint",
+          "text": "? help"
+        }
+      ],
+      "marker": [
+        9,
+        12,
+        "@"
+      ],
+      "menu": [],
+      "prompt": [],
+      "status_line": "Overworld  MnR10C00R00  (9, 12)  facing Up",
+      "viewport": [
+        {
+          "kind": "hint",
+          "text": "   00 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20"
+        },
+        {
+          "kind": "normal",
+          "text": "05 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #"
+        },
+        {
+          "kind": "normal",
+          "text": "06 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #"
+        },
+        {
+          "kind": "normal",
+          "text": "07 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #"
+        },
+        {
+          "kind": "normal",
+          "text": "08 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #"
+        },
+        {
+          "kind": "normal",
+          "text": "09 #  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  #"
+        },
+        {
+          "kind": "normal",
+          "text": "10 .  .  .  .  .  .  .  .  .  .  .  .  #  #  #  #  .  .  .  #  #"
+        },
+        {
+          "kind": "normal",
+          "text": "11 .  .  .  .  .  .  .  .  .  N  .  .  #  #  #  #  .  .  .  #  #"
+        },
+        {
+          "kind": "normal",
+          "text": "12 #  .  .  .  S  .  .  .  .  @^ .  .  .  .  .  .  .  .  .  #  #"
+        },
+        {
+          "kind": "normal",
+          "text": "13 #  #  #  #  .  .  #  #  #  .  .  .  .  .  .  .  .  .  .  #  #"
+        },
+        {
+          "kind": "normal",
+          "text": "14 #  #  #  #  #  #  #  #  #  .  \"  \"  \"  \"  .  .  .  .  .  #  #"
+        },
+        {
+          "kind": "normal",
+          "text": "15 #  #  #  #  #  #  #  #  #  .  \"  \"  \"  \"  .  .  .  .  .  .  ."
+        },
+        {
+          "kind": "normal",
+          "text": "16 #  #  #  #  .  .  .  .  #  .  \"  \"  \"  \"  .  .  .  .  .  .  ."
+        },
+        {
+          "kind": "normal",
+          "text": "17 #  #  #  #  .  .  .  .  #  .  \"  \"  \"  \"  .  #  #  #  #  #  #"
+        },
+        {
+          "kind": "normal",
+          "text": "18 #  #  #  #  .  .  .  .  #  .  .  .  .  .  .  #  \"  \"  \"  \"  \""
+        },
+        {
+          "kind": "normal",
+          "text": "19 #  #  #  #  .  .  .  .  #  .  .  .  .  .  .  #  \"  \"  \"  \"  \""
+        }
+      ],
+      "viewport_title": "MnR10C00R00"
+    }
+  ],
+  "source_and_input_saves_unchanged": true,
+  "scope": "Initial partner, two badges and terrace placement are declared native QA setup. Every later step, real trainer win/reward, repeat text and Continue uses production input without state edits or retagging. No earned regional access claim."
+}

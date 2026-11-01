@@ -1,0 +1,12 @@
+{
+  "accepted": true,
+  "mode": "2D",
+  "pack_sha256": "688f1568e8e5001c6f9b9c544c9f31aa8451dafd992ce67078a229fb5a5cbb10",
+  "whole_route": "planning/minnesota/renders/route-grass-v01/current-r19-v01/source-candidate-v01/whole-route.png",
+  "native_capture": "planning/minnesota/renders/route-grass-v01/current-r19-v01/native-v01/pine-bend.png",
+  "findings": [
+    "The pine trail now turns through grass that follows both bends, contained by the existing forest.",
+    "Whole route keeps the battle/grass choice, oak ledge, prairie seam, bidirectional western ramps, wetland and optional rewards.",
+    "Dry ledge drop and three-step grassy uphill return remain; no extra ledge is needed."
+  ]
+}

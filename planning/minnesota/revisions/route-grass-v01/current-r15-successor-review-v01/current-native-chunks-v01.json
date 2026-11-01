@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "id": "MN_R15",
+  "source_kind": "installed_native_chunk_layout_bundle",
+  "native_binding": {
+    "pack": "content-packs/minnesota-current-r15-open-shore-and-spur-v02.crystalpack",
+    "pack_sha256": "e02fb85d4db327d146cee269809b1af3e4b387dc2e29240b71cae0ae5837ec4c",
+    "content_identity": "b1a9b78a01adff24eb2930b5c78ca1c851a240bf520769dc62da5128e78e0fdc"
+  },
+  "chunks": [
+    {
+      "id": "MnR15C00R00",
+      "origin_metatiles": [
+        0,
+        0
+      ],
+      "dimensions_metatiles": [
+        32,
+        18
+      ],
+      "compiled_tileset": "kanto",
+      "rows": [
+        "0f 0f 0f 0f 0f 0f 0f 0f 0f 6c 6c 6c 6c 01 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f",
+        "0f 0f 0f 0f 0f 0f 0f 0f 0f 01 0f 0f 2d 2d 2d 2d 2d 2d 2d 2d 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f",
+        "0f 0f 0f 0f 0f 0f 0f 0f 0f 01 0f 0f 65 43 43 43 43 43 43 2d 1e 1f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f",
+        "0f 0f 0f 0f 0f 0f 0f 0f 0f 01 0f 1d 2e 43 43 43 43 43 43 43 2d 01 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f",
+        "0f 0f 0f 0f 0f 0f 0f 0f 0f 01 01 01 01 65 43 43 43 43 43 43 2d 01 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f",
+        "0f 0f 0f 0f 0f 0f 74 74 0b 0b 0b 01 01 65 43 43 43 43 43 43 2d 01 0f 0f 0f 01 02 03 0f 01 0f 0f",
+        "0f 0f 0f 0f 0f 0f 01 01 0b 0b 0b 01 01 65 43 43 43 2d 01 01 01 01 01 01 0f 01 31 31 31 01 0f 0f",
+        "0f 0f 0f 0f 0f 0f 01 01 0b 0b 0b 01 01 65 43 43 2d 01 31 31 31 01 01 01 0f 01 31 31 74 01 0f 0f",
+        "0f 0f 0f 0f 0f 0f 01 0b 0f 0f 0f 01 01 65 43 43 2d 1f 01 01 01 01 01 01 0f 01 31 31 31 01 0f 0f",
+        "0f 0f 0f 0f 0f 0f 0f 0b 0f 0f 0f 07 07 65 43 43 43 2d 2d 2d 2d 01 01 01 0f 0f 01 31 79 0f 0f 0f",
+        "74 79 0f 0f 0f 0f 01 01 0f 0f 0f 01 01 65 43 43 43 43 43 43 2d 01 0f 01 01 31 31 31 01 0f 01 0f",
+        "31 01 31 0b 0b 0b 01 01 0f 0f 0f 01 01 0f 0f 65 43 43 2d 0f 0f 01 0f 31 01 0f 0f 31 0f 0f 31 31",
+        "31 31 31 0b 0b 0b 31 31 31 31 31 31 01 0f 0f 65 43 43 2d 0f 0f 0f 0f 31 79 0f 0f 31 31 31 31 31",
+        "31 31 31 0b 0b 0b 31 31 0f 0f 01 31 01 0f 0b 01 01 01 31 01 01 01 01 31 01 0f 0f 0f 0f 0f 0f 0f",
+        "0f 01 0f 0f 0f 0f 0f 0f 0f 0f 01 31 31 0b 0b 31 31 31 31 31 31 31 31 31 01 0f 0f 0f 0f 0f 01 0f",
+        "0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 74 74 01 0f 01 01 01 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f",
+        "0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 2d 2d 2d 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f",
+        "0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f"
+      ]
+    }
+  ],
+  "editable_source": "planning/minnesota/revisions/route-grass-v01/current-r15-successor-review-v01/spur-after-v01.layout.json"
+}

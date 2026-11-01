@@ -171,22 +171,37 @@ pub fn evolution_table_issues(
                         });
                     }
                 }
-                METHOD_ITEM => match entry.item.as_deref() {
-                    Some(item_id) if item_ids.contains(item_id) => {}
-                    Some(item_id) if !is_exact_nonempty_evolution_token(item_id) => {
-                        issues.push(EvolutionTableIssue::InvalidItem {
+                METHOD_ITEM => {
+                    if let Some(item_id) = entry.held_item.as_deref() {
+                        if !is_exact_nonempty_evolution_token(item_id) {
+                            issues.push(EvolutionTableIssue::InvalidItem {
+                                source_species_id: source_species_id.clone(),
+                                item_id: item_id.to_string(),
+                            });
+                        } else if !item_ids.contains(item_id) {
+                            issues.push(EvolutionTableIssue::UnknownItem {
+                                source_species_id: source_species_id.clone(),
+                                item_id: item_id.to_string(),
+                            });
+                        }
+                    }
+                    match entry.item.as_deref() {
+                        Some(item_id) if item_ids.contains(item_id) => {}
+                        Some(item_id) if !is_exact_nonempty_evolution_token(item_id) => {
+                            issues.push(EvolutionTableIssue::InvalidItem {
+                                source_species_id: source_species_id.clone(),
+                                item_id: item_id.to_string(),
+                            });
+                        }
+                        Some(item_id) => issues.push(EvolutionTableIssue::UnknownItem {
                             source_species_id: source_species_id.clone(),
                             item_id: item_id.to_string(),
-                        });
+                        }),
+                        None => issues.push(EvolutionTableIssue::MissingItem {
+                            source_species_id: source_species_id.clone(),
+                        }),
                     }
-                    Some(item_id) => issues.push(EvolutionTableIssue::UnknownItem {
-                        source_species_id: source_species_id.clone(),
-                        item_id: item_id.to_string(),
-                    }),
-                    None => issues.push(EvolutionTableIssue::MissingItem {
-                        source_species_id: source_species_id.clone(),
-                    }),
-                },
+                }
                 METHOD_HAPPINESS => match entry.happiness.as_deref() {
                     Some(window) if is_known_happiness_window(window) => {}
                     Some(window) if !is_exact_nonempty_evolution_token(window) => {
@@ -591,6 +606,17 @@ pub fn find_evolution_candidate<'a>(
                         item_id: required.to_string(),
                     }
                 })?;
+                if let Some(held_item) = entry.held_item.as_deref() {
+                    validate_evolution_runtime_token(held_item).map_err(|_| {
+                        EvolutionError::InvalidItem {
+                            species_id: species_id.to_string(),
+                            item_id: held_item.to_string(),
+                        }
+                    })?;
+                    if pokemon.item.as_deref() != Some(held_item) {
+                        continue;
+                    }
+                }
                 if Some(required) == context.current_item {
                     return Ok(Some(entry));
                 }
@@ -769,7 +795,7 @@ pub fn evolve_pokemon(
     refresh_evolved_stats(pokemon, old_max_hp, old_hp);
     events.push(EvolutionEvent::Text("EvolvedIntoText"));
 
-    if entry.method == METHOD_TRADE {
+    if entry.method == METHOD_TRADE || entry.method == METHOD_ITEM {
         if let Some(required) = entry.held_item.as_deref() {
             if required != TRADE_ANY_ITEM {
                 pokemon.item = None;

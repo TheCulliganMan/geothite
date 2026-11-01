@@ -1,0 +1,211 @@
+{
+  "status": "PASS",
+  "pack_sha256": "d77baff3e597e6527450400022e0b9acf655b856983cf96e49fbebfe275464f3",
+  "actual_production_views_inspected": 3,
+  "source_native_pixel_mismatches": 0,
+  "whole_town_source_before_after_inspected": true,
+  "mart_close_source_before_after_inspected": true,
+  "captures": [
+    {
+      "id": "mart",
+      "map": "MnDuluth",
+      "core": [
+        79,
+        40
+      ],
+      "command": [
+        "/Users/ryanculligan/GitHub/geothite/.local/connected-route-capture-90224",
+        "--pack",
+        "/Users/ryanculligan/GitHub/geothite/content-packs/minnesota-current-duluth-mart-v01.crystalpack",
+        "--map",
+        "MnDuluth",
+        "--x",
+        "79",
+        "--y",
+        "40",
+        "--view",
+        "2d",
+        "--hour",
+        "12",
+        "--screenshot",
+        "/Users/ryanculligan/GitHub/geothite/planning/minnesota/renders/route-grass-v01/current-duluth-mart-v01/native-v01/mart/production.png"
+      ],
+      "production_sha256": "a39746492ddc56e1441fc1a29a1fd89c7bbf747b294fb632e834bbb0a3a195e8",
+      "pixel_mismatches": 0,
+      "compared_pixels": 368640,
+      "consistent_water14_phase": 0,
+      "consistent_falls_scroll_stage": 0,
+      "derived_player_origin": [
+        320,
+        288
+      ],
+      "lcd_origin_8px_cells": [
+        148,
+        71
+      ],
+      "centered_camera_assumption_used": false,
+      "source_foreground_pixels_over_actors": 0,
+      "source_connection_depth": 1,
+      "immediate_native_sources": [
+        {
+          "map": "MnDuluth",
+          "origin_pixels": [
+            0,
+            0
+          ]
+        },
+        {
+          "map": "MnR10C01R00",
+          "origin_pixels": [
+            -512,
+            320
+          ]
+        },
+        {
+          "map": "MnR11C00R03",
+          "origin_pixels": [
+            288,
+            -768
+          ]
+        }
+      ],
+      "raw_gpu_descriptors": [
+        "mart/.render-archive/production.png/gpu-readback-819c9579304f1cde744995d60abfbac951fdaf8d2da1d01d258f1df557a6ef14.json"
+      ]
+    },
+    {
+      "id": "former-door",
+      "map": "MnDuluth",
+      "core": [
+        80,
+        40
+      ],
+      "command": [
+        "/Users/ryanculligan/GitHub/geothite/.local/connected-route-capture-90224",
+        "--pack",
+        "/Users/ryanculligan/GitHub/geothite/content-packs/minnesota-current-duluth-mart-v01.crystalpack",
+        "--map",
+        "MnDuluth",
+        "--x",
+        "80",
+        "--y",
+        "40",
+        "--view",
+        "2d",
+        "--hour",
+        "12",
+        "--screenshot",
+        "/Users/ryanculligan/GitHub/geothite/planning/minnesota/renders/route-grass-v01/current-duluth-mart-v01/native-v01/former-door/production.png"
+      ],
+      "production_sha256": "99a6db511ddbb1b9707aa48e1d9ac339c5f5dd139499090f4620d7aaecbf3a72",
+      "pixel_mismatches": 0,
+      "compared_pixels": 368640,
+      "consistent_water14_phase": 0,
+      "consistent_falls_scroll_stage": 0,
+      "derived_player_origin": [
+        320,
+        288
+      ],
+      "lcd_origin_8px_cells": [
+        150,
+        71
+      ],
+      "centered_camera_assumption_used": false,
+      "source_foreground_pixels_over_actors": 0,
+      "source_connection_depth": 1,
+      "immediate_native_sources": [
+        {
+          "map": "MnDuluth",
+          "origin_pixels": [
+            0,
+            0
+          ]
+        },
+        {
+          "map": "MnR10C01R00",
+          "origin_pixels": [
+            -512,
+            320
+          ]
+        },
+        {
+          "map": "MnR11C00R03",
+          "origin_pixels": [
+            288,
+            -768
+          ]
+        }
+      ],
+      "raw_gpu_descriptors": [
+        "former-door/.render-archive/production.png/gpu-readback-924a03dc94a6abd146e8a687ee0a101840ba3dae6756ddfbf4b1de9124a5edc7.json"
+      ]
+    },
+    {
+      "id": "street-approach",
+      "map": "MnDuluth",
+      "core": [
+        79,
+        42
+      ],
+      "command": [
+        "/Users/ryanculligan/GitHub/geothite/.local/connected-route-capture-90224",
+        "--pack",
+        "/Users/ryanculligan/GitHub/geothite/content-packs/minnesota-current-duluth-mart-v01.crystalpack",
+        "--map",
+        "MnDuluth",
+        "--x",
+        "79",
+        "--y",
+        "42",
+        "--view",
+        "2d",
+        "--hour",
+        "12",
+        "--screenshot",
+        "/Users/ryanculligan/GitHub/geothite/planning/minnesota/renders/route-grass-v01/current-duluth-mart-v01/native-v01/street-approach/production.png"
+      ],
+      "production_sha256": "98f7334dfc881df239aaa81d01749aba2b5a94ba91913cacbe253319333e723e",
+      "pixel_mismatches": 0,
+      "compared_pixels": 368640,
+      "consistent_water14_phase": 0,
+      "consistent_falls_scroll_stage": 0,
+      "derived_player_origin": [
+        320,
+        288
+      ],
+      "lcd_origin_8px_cells": [
+        148,
+        75
+      ],
+      "centered_camera_assumption_used": false,
+      "source_foreground_pixels_over_actors": 0,
+      "source_connection_depth": 1,
+      "immediate_native_sources": [
+        {
+          "map": "MnDuluth",
+          "origin_pixels": [
+            0,
+            0
+          ]
+        },
+        {
+          "map": "MnR10C01R00",
+          "origin_pixels": [
+            -512,
+            320
+          ]
+        },
+        {
+          "map": "MnR11C00R03",
+          "origin_pixels": [
+            288,
+            -768
+          ]
+        }
+      ],
+      "raw_gpu_descriptors": [
+        "street-approach/.render-archive/production.png/gpu-readback-82788d00b044d77db63fb21b22e95b31ff86f192f984b2b76815bd0bdecaeaad.json"
+      ]
+    }
+  ]
+}

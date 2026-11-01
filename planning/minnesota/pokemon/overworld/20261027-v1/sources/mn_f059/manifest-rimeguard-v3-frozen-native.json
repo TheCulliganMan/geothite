@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F059",
+  "species": [
+    {
+      "species_id": "MN_130",
+      "runtime_token": "RIMEGUARD",
+      "palette_rgb555": [
+        32767,
+        31605,
+        16709,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        28350,
+        10416,
+        0
+      ],
+      "fit": [
+        14,
+        14
+      ],
+      "alpha_threshold": 245,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 64,
+      "interior_black_samples": 64,
+      "opaque_interior_minimum_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "rimeguard.overworld.imagegen-v3-roomy-face.png",
+          "crop": [
+            21,
+            100,
+            479,
+            362
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "rimeguard.overworld.imagegen-v3-roomy-face.png",
+          "crop": [
+            540,
+            102,
+            479,
+            362
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "rimeguard.overworld.imagegen-v3-roomy-face.png",
+          "crop": [
+            1056,
+            102,
+            479,
+            362
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "rimeguard.overworld.imagegen-v3-roomy-face.png",
+          "crop": [
+            21,
+            541,
+            479,
+            362
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "rimeguard.overworld.imagegen-v3-roomy-face.png",
+          "crop": [
+            540,
+            544,
+            479,
+            362
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "rimeguard.overworld.imagegen-v3-roomy-face.png",
+          "crop": [
+            1056,
+            548,
+            479,
+            362
+          ]
+        }
+      ]
+    }
+  ]
+}

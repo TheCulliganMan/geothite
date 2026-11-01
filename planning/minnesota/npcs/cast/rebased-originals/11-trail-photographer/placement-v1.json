@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "map": "MnEly",
+      "approach": [
+        22,
+        19
+      ],
+      "id": "MN_EXTRA_NPC_PHOTO_01",
+      "display_name": "LARK",
+      "trainer_class": "MN_TRAIL_PHOTOGRAPHER",
+      "class_name": "PHOTOGRAPHER",
+      "template_class": "PICNICKER",
+      "sprite": "SPRITE_MN_TRAIL_PHOTOGRAPHER",
+      "tile": [
+        22,
+        18
+      ],
+      "facing": "south",
+      "sight_range": 2,
+      "defeated_flag": "EVENT_MN_EXTRA_NPC_PHOTO_01",
+      "party": [
+        {
+          "species": "LOOBIT",
+          "level": 40
+        },
+        {
+          "species": "YODELOON",
+          "level": 42
+        }
+      ],
+      "before_lines": [
+        "Hold that pose!",
+        "Ready for action?"
+      ],
+      "after_lines": [
+        "Picture perfect!",
+        "Let wildlife rest."
+      ],
+      "loss_lines": [
+        "Another snapshot!",
+        "Try a new angle."
+      ]
+    }
+  ]
+}

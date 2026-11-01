@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "status": "proposal-amendments-only",
+  "preserve": [
+    "All Doughlin MN_195 art, stats, palette, name and profile fields stay unchanged.",
+    "MN_196 and MN_197 retain Fire/Dark typing, stats, learnsets and evolution thresholds."
+  ],
+  "species": [
+    {
+      "id": "MN_196",
+      "old_name": "Crumband",
+      "name": "Crumcone",
+      "classification": "Cookie Cone",
+      "dex_pages": [
+        "It folds a cone @ round warm treats @ to guard crumbs.",
+        "Its paper arms @ pinch lost cookies @ before they fall."
+      ],
+      "visual_theme": "A tall white paper cone with one diagonal fold, a face on the white front panel, tiny paper-fold feet and an overflowing heap of chocolate-chip cookies. One curled cookie recalls Doughlin."
+    },
+    {
+      "id": "MN_197",
+      "old_name": "Jarbaron",
+      "name": "Pailbaron",
+      "classification": "Cookie Pail",
+      "dex_pages": [
+        "Its white bucket @ holds a warm heap @ of stolen cookies.",
+        "The handle swings @ to guard its stash @ from hungry paws."
+      ],
+      "visual_theme": "A broad white pail body with a white rolled rim and high white arching handle. Its face sits directly on the pail beneath the overflowing cookies; crescent-cookie clamps and broad paper feet give a heavy final silhouette."
+    }
+  ]
+}

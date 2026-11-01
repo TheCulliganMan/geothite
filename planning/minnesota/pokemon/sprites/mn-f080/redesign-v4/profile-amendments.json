@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "status": "proposal-amendments-only",
+  "preserve": [
+    "Names, IDs, types, base stats, level32 evolution, learnsets, ordinary rarity and individual normal/shiny palettes remain unchanged."
+  ],
+  "families": [
+    {
+      "id": "MN_F080",
+      "theme": "Superior-mirage inversion becomes a two-level trickster whose apparent face is visibly displaced above its small real body.",
+      "evolution_design": {
+        "original_invention": "The elevated pale false face is an optical echo drawn as fixed opaque pixel clusters, separated from the dark real body by white air. A stepped pale refraction streak relates both levels; no shader, transparency or new battle mechanic is needed.",
+        "body_growth": [
+          {
+            "species_id": "MN_174",
+            "body": "A low dark wisp with curled balancing fins and sly white real eyes projects a larger pale teardrop false face above itself. The gap between them is visible at native size.",
+            "silhouette": "Narrow stacked teardrop and small dark real body, with an offset refraction streak."
+          },
+          {
+            "species_id": "MN_175",
+            "body": "The small true body becomes swift and broad, with swept curled lift fins. Its high false face grows into a broad inverted shield with three crown points, repeating horizontal refraction bands and bold misleading eye marks.",
+            "silhouette": "A broad elevated false shield over a very low dark flying body; the white gap and real lower eyes remain distinct."
+          }
+        ]
+      },
+      "supersedes_visual_text": [
+        "Old solid upper lobe supported by a narrow bent neck.",
+        "Old no-ghost-wisps silhouette restriction."
+      ],
+      "reason": "The newly requested redo makes the empty-air displacement itself visible instead of reading as an animal wearing a solid hat."
+    }
+  ],
+  "species": [
+    {
+      "id": "MN_174",
+      "classification": "False Shape",
+      "visual_theme": "Two-level mirage trickster: pale floating teardrop false face above a small dark body with sly true white eyes."
+    },
+    {
+      "id": "MN_175",
+      "classification": "High Mirage",
+      "visual_theme": "A large elevated inverted false shield, repeated refractive horizon bands and a small swift true body with curled lift fins below."
+    }
+  ]
+}

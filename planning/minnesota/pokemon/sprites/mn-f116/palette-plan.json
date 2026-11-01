@@ -1,0 +1,67 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F116",
+  "pokemon_palettes": {
+    "MN_250": {
+      "species_id": "MN_250",
+      "name": "Flarkindle",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          27,
+          23,
+          29
+        ],
+        [
+          7,
+          13,
+          11
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        30459,
+        11687,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          222,
+          189,
+          239
+        ],
+        [
+          57,
+          107,
+          90
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#DEBDEF",
+        "#396B5A",
+        "#000000"
+      ]
+    }
+  },
+  "revision": "Root-directed dark green/lavender palette for fresh compact prompt; failed original plan retained as palette-plan-v1.json."
+}

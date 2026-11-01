@@ -1,0 +1,253 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F024",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_061": {
+      "species_id": "MN_061",
+      "name": "Claylit",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          28,
+          21,
+          17
+        ],
+        [
+          18,
+          8,
+          6
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        18108,
+        6418,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          231,
+          173,
+          140
+        ],
+        [
+          148,
+          66,
+          49
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#E7AD8C",
+        "#944231",
+        "#000000"
+      ]
+    },
+    "MN_062": {
+      "species_id": "MN_062",
+      "name": "Catlisk",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          26,
+          20,
+          17
+        ],
+        [
+          15,
+          7,
+          6
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        18074,
+        6383,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          214,
+          165,
+          140
+        ],
+        [
+          123,
+          57,
+          49
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#D6A58C",
+        "#7B3931",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f024/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "board": "target/minnesota-pokemon/gen2-reference/starters.png"
+  },
+  "sprites": [
+    {
+      "id": "mn-061-claylit-v1",
+      "species_id": "MN_061",
+      "view": "front",
+      "source": "sprites/mn-f024/mn-061-062.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        723,
+        512
+      ],
+      "fit": [
+        40,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        18108,
+        6418,
+        0
+      ]
+    },
+    {
+      "id": "mn-061-claylit-v1",
+      "species_id": "MN_061",
+      "view": "back",
+      "source": "sprites/mn-f024/mn-061-062.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        512,
+        723,
+        512
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        18108,
+        6418,
+        0
+      ]
+    },
+    {
+      "id": "mn-062-catlisk-v1",
+      "species_id": "MN_062",
+      "view": "front",
+      "source": "sprites/mn-f024/mn-061-062.front-back.imagegen-v1.png",
+      "crop": [
+        723,
+        0,
+        813,
+        512
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        18074,
+        6383,
+        0
+      ]
+    },
+    {
+      "id": "mn-062-catlisk-v1",
+      "species_id": "MN_062",
+      "view": "back",
+      "source": "sprites/mn-f024/mn-061-062.front-back.imagegen-v1.png",
+      "crop": [
+        723,
+        512,
+        813,
+        512
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        18074,
+        6383,
+        0
+      ]
+    }
+  ],
+  "palette_adjustments": [
+    {
+      "species_id": "MN_061",
+      "reason": "Native palette recolor separates red clay body from pale quartzite plates while preserving distinct stage palettes. Exact ImageGen prompt and generation palette retained.",
+      "generation_palette_rgb555": [
+        32767,
+        11770,
+        6381,
+        0
+      ],
+      "import_palette_rgb555": [
+        32767,
+        18108,
+        6418,
+        0
+      ],
+      "generation_palette_file": "sprites/mn-f024/palette-plan.generation-v1.json"
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "notes": [
+      "Inspected frozen source-contour-v1 sheet: Claylit red body and pale quartzite plates remain distinct after its documented palette recolor, with a consistent dark silhouette.",
+      "Catlisk armor growth, broad legs and tail read clearly; rear plate overlaps use colored shadow planes and retain the open lower crop. No regression from the contour pass."
+    ],
+    "sheet_sha256": "14c4e4dde337f318349856df0cb17f2f2881445b74126bc9e80325ae11ca97dc",
+    "outline_profile": "source-contour-v1"
+  }
+}

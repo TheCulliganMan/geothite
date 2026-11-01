@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "map": "MnBrainerd",
+      "approach": [
+        42,
+        22
+      ],
+      "id": "MN_EXTRA_NPC_CANOE_GUIDE_01",
+      "display_name": "OREN",
+      "trainer_class": "MN_CANOE_GUIDE",
+      "class_name": "CANOE GUIDE",
+      "template_class": "FISHER",
+      "sprite": "SPRITE_MN_CANOE_GUIDE",
+      "tile": [
+        42,
+        21
+      ],
+      "facing": "south",
+      "sight_range": 2,
+      "defeated_flag": "EVENT_MN_EXTRA_NPC_CANOE_GUIDE_01",
+      "party": [
+        {
+          "species": "BIRCHIT",
+          "level": 28
+        },
+        {
+          "species": "RIVVIT",
+          "level": 30
+        }
+      ],
+      "before_lines": [
+        "Find your rhythm.",
+        "Match my tempo!"
+      ],
+      "after_lines": [
+        "Steady strokes!",
+        "Mind the current."
+      ],
+      "loss_lines": [
+        "Try a calmer pace.",
+        "We can try again."
+      ]
+    }
+  ]
+}

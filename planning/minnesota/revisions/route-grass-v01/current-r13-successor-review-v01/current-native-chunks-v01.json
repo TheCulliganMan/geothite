@@ -1,0 +1,118 @@
+{
+  "schema_version": 1,
+  "id": "MN_R13",
+  "source_kind": "installed_native_chunk_layout_bundle",
+  "native_binding": {
+    "pack": "content-packs/minnesota-current-r13-south-woods-grass-v01.crystalpack",
+    "pack_sha256": "10cd75cf9de2578966560721755ee761129d84d5e02122e174df07331f84679d",
+    "content_identity": "d1977ad46aeb9734e8c268d857e01c169a031a8abdc3a935e88a60420ce67b9c"
+  },
+  "chunks": [
+    {
+      "id": "MnR13C00R00",
+      "origin_metatiles": [
+        0,
+        0
+      ],
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "compiled_tileset": "mn_outdoor_winter_stairs",
+      "rows": [
+        "8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 83 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b",
+        "8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 83 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b",
+        "8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 83 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b",
+        "8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 83 8b 8b 6a 70 70 70 70 70 6b 8b 8b 8b 8b 8b 8b 8b",
+        "8b 8b 54 76 76 76 76 55 8b 8b 8b 8b 8b 8b 8b 83 83 83 68 8b 8b 8b 8b 85 71 70 70 6b 8b 8b 8b 8b",
+        "8b 8b 58 35 35 35 35 7a 76 55 8b 8b 8b 83 83 83 83 83 68 8b 8b 8b 8b 85 71 71 71 69 8b 8b 8b 8b",
+        "8b 8b 58 35 35 35 35 35 35 59 8b 8b 8b 83 88 83 83 83 68 8b 8b 8b 8b 85 83 71 71 69 8b 8b 8b 8b",
+        "8b 8b 58 35 35 35 35 35 35 59 8b 8b 8b 8b 8b 84 8b 84 68 84 84 84 84 85 83 71 71 69 8b 8b 8b 8b",
+        "8b 8b 58 35 35 35 35 35 35 59 8b 8b 8b 8b 8b 83 8b 8b 68 84 84 84 84 83 83 71 71 71 6b 8b 8b 8b",
+        "8b 8b 58 35 35 35 35 35 35 59 8b 8b 8b 8b 8b 83 8b 8b 68 84 84 84 84 83 83 71 71 71 69 8b 8b 8b",
+        "8b 8b 58 35 35 35 35 35 59 8b 8b 8b 8b 8b 8b 83 83 8b 68 71 71 71 71 83 83 71 6f 72 6d 8b 8b 8b",
+        "8b 8b 8b 58 35 35 35 35 59 8b 83 83 83 83 8b 8b 83 8b 68 0a 0a 71 71 71 71 71 69 8b 8b 8b 8b 8b",
+        "8b 8b 8b 8b 83 41 41 41 41 83 83 83 5d 83 8b 8b 88 8b 6c 72 72 72 72 8c 72 72 6d 8b 8b 8b 8b 8b",
+        "8b 8b 8b 8b 83 83 83 83 83 83 83 83 83 83 83 83 83 83 83 83 83 83 84 84 84 83 8b 8b 8b 8b 8b 8b",
+        "8b 8b 8b 8b 0a 83 83 83 84 84 84 84 83 8b 8b 8b 83 83 83 83 83 83 83 83 83 83 8b 8b 8b 8b 8b 8b",
+        "8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 0a 8b 8b 8b 83 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b",
+        "8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 83 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b",
+        "8b 8b 8b 6a 70 70 6b 8b 8b 8b 83 83 83 83 83 83 83 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b",
+        "8b 8b 8b 68 71 71 69 8b 83 83 83 83 8b 0a 70 70 6b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b",
+        "8b 8b 8b 68 71 71 71 6b 83 83 83 83 8b 68 71 71 69 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b",
+        "8b 8b 8b 68 71 71 71 69 83 88 83 83 8b 68 71 71 69 8b 8b 8b 8b 8b 54 76 76 76 76 55 8b 8b 8b 8b",
+        "8b 8b 8b 68 71 71 71 69 8b 84 84 8b 8b 68 71 71 71 6b 8b 8b 8b 8b 58 35 35 35 35 59 8b 8b 8b 8b",
+        "8b 8b 8b 68 71 71 71 69 8b 84 84 8b 8b 68 71 71 71 69 8b 8b 8b 8b 58 35 35 35 35 7a 76 55 8b 8b",
+        "8b 8b 8b 68 71 71 71 69 8b 84 84 8b 8b 68 71 71 71 69 8b 8b 8b 8b 58 35 35 35 35 35 35 59 8b 8b"
+      ]
+    },
+    {
+      "id": "MnR13C00R01",
+      "origin_metatiles": [
+        0,
+        24
+      ],
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "compiled_tileset": "mn_winter_north_shore",
+      "rows": [
+        "8b 8b 8b 68 6a 70 70 6b 8b 83 83 8b 8b 68 71 6f 72 6d 8b 8b 54 76 79 35 35 35 35 35 35 59 8b 8b",
+        "8b 8b 8b 68 68 71 71 71 83 83 83 83 83 6c 72 6d 8b 8b 8b 8b 58 35 35 35 35 35 35 35 35 59 8b 8b",
+        "8b 8b 8b 6c 6c 72 72 73 6d 83 83 83 83 8b 8b 8b 8b 8b 8b 8b 58 35 35 35 35 35 35 35 35 59 8b 8b",
+        "8b 8b 8b 8b 8b 8b 83 83 83 83 83 83 83 83 83 83 83 83 83 83 0a 58 35 35 35 35 35 35 35 59 8b 8b",
+        "8b 8b 8b 8b 8b 8b 83 83 88 83 83 83 83 8b 8b 8b 8b 83 83 83 46 58 35 35 35 35 35 35 35 7a 55 8b",
+        "8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 83 83 84 83 46 58 35 35 35 35 35 35 35 35 59 8b",
+        "8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 83 83 83 83 46 58 35 35 35 35 35 35 35 35 59 8b",
+        "8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 83 83 84 88 46 58 35 35 35 35 35 35 35 35 59 8b",
+        "8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 0a 5d 83 83 83 46 58 35 35 35 35 35 35 35 35 59 8b",
+        "8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 84 84 84 84 0a 58 35 35 35 35 35 35 35 35 59 8b",
+        "8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 83 83 83 83 83 83 8b 83 83 83 8b 58 35 35 35 35 35 35 35 35 59 8b",
+        "8b 8b 8b 6a 70 70 6b 8b 8b 8b 83 83 83 83 83 83 83 83 83 83 8b 8b 8b 58 35 35 35 35 59 8b 8b 8b",
+        "8b 8b 8b 68 71 71 71 70 6b 8b 8b 8b 83 83 6a 70 70 6b 5d 8b 8b 8b 8b 58 35 35 35 35 59 8b 8b 8b",
+        "8b 8b 8b 68 71 71 71 71 69 8b 8b 8b 83 83 68 71 71 71 70 6b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b",
+        "8b 8b 8b 68 71 71 71 71 69 8b 8b 8b 83 83 68 71 6f 72 72 6d 83 8b 8b 8b 8b 8b 6a 70 70 6b 8b 8b",
+        "8b 8b 8b 68 71 71 71 71 69 8b 8b 8b 83 83 6c 72 6d 83 83 83 0a 83 83 83 83 83 68 71 71 69 8b 8b",
+        "8b 8b 8b 68 71 71 6f 72 6d 8b 8b 83 83 83 83 83 83 83 83 83 83 83 83 83 83 83 68 71 71 69 8b 8b",
+        "8b 8b 8b 68 71 71 69 8b 8b 8b 8b 83 83 83 83 83 6a 70 70 6b 83 83 83 83 8b 8b 68 71 71 69 8b 8b",
+        "8b 8b 8b 6c 72 72 6d 8b 8b 8b 8b 83 83 83 83 83 68 71 71 71 6b 84 84 83 8b 8b 68 71 6f 6d 8b 8b",
+        "8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 83 83 83 83 83 68 71 71 71 69 84 84 83 8b 8b 68 71 69 8b 8b 8b",
+        "8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 68 71 71 6f 6d 84 84 83 8b 8b 68 71 69 8b 8b 8b",
+        "8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 6c 72 72 6d 83 83 83 83 8b 8b 68 71 69 8b 8b 8b",
+        "8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 83 83 83 83 83 83 83 83 83 8b 68 71 69 8b 8b 8b",
+        "8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 83 83 83 83 83 83 83 83 83 8b 6c 72 6d 8b 8b 8b"
+      ]
+    },
+    {
+      "id": "MnR13C00R02",
+      "origin_metatiles": [
+        0,
+        48
+      ],
+      "dimensions_metatiles": [
+        32,
+        16
+      ],
+      "compiled_tileset": "mn_winter_north_shore",
+      "rows": [
+        "8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 83 83 83 83 83 83 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b",
+        "8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 83 83 83 83 0a 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b",
+        "8b 8b 8b 8b 8b 8b 8b 8b 8b 83 83 83 83 83 83 83 83 83 83 83 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b",
+        "8b 8b 8b 8b 8b 8b 8b 8b 8b 63 8b 8b 8b 8b 8b 83 84 84 84 83 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b",
+        "8b 8b 8b 8b 8b 8b 8b 84 84 83 83 83 8b 8b 8b 8b 8b 84 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b",
+        "8b 8b 8b 8b 8b 8b 8b 84 83 83 83 83 8b 8b 8b 8b 8b 84 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b",
+        "8b 8b 8b 8b 8b 8b 8b 83 83 83 83 83 8b 8b 8b 8b 8b 84 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b",
+        "8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 84 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b",
+        "8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 5d 8b 8b 83 83 83 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b",
+        "8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 83 83 8b 8b 83 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b",
+        "8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 83 83 83 83 83 8b 8b 83 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b",
+        "8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 84 84 84 8b 8b 83 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b",
+        "8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 83 83 88 83 0a 83 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b",
+        "8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 83 83 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b",
+        "8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 83 83 83 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b",
+        "8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 83 83 83 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b 8b"
+      ]
+    }
+  ]
+}

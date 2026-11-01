@@ -1,0 +1,194 @@
+{
+  "schema_version": 1,
+  "id": "MnR12Cave1F",
+  "tileset": "cave",
+  "dimensions_metatiles": [
+    20,
+    14
+  ],
+  "border_block": 46,
+  "palette_group": "nite",
+  "rows": [
+    "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e",
+    "2e 2e 04 06 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 04 05 06 2e",
+    "2e 04 02 02 06 2e 2e 2e 2e 2e 2e 2e 2e 2e 04 02 02 1c 0a 2e",
+    "2e 08 02 02 0a 2e 2e 2e 2e 2e 2e 2e 2e 04 02 02 02 02 0a 2e",
+    "2e 0c 0d 30 0e 2e 2e 2e 2e 2e 2e 2e 2e 0c 0d 0d 0d 36 2e 2e",
+    "2e 2e 04 02 02 10 0d 11 02 0a 2e 08 02 02 02 02 02 02 06 2e",
+    "2e 04 02 02 02 0a 2e 08 02 06 05 04 02 3e 27 3d 02 02 0a 2e",
+    "2e 08 02 1d 02 0a 2e 08 02 02 02 02 3e 0f 0f 0f 3d 02 0a 2e",
+    "2e 0c 0d 0d 02 06 05 04 02 02 02 26 0f 25 31 26 0f 3d 0a 2e",
+    "2e 2e 2e 2e 08 02 02 02 02 02 02 26 0f 0f 27 0f 0f 25 0a 2e",
+    "2e 2e 2e 2e 0c 0d 0d 0d 02 02 02 02 26 0f 0f 0f 25 02 0a 2e",
+    "2e 2e 2e 2e 2e 2e 2e 2e 24 2e 08 02 02 02 26 25 02 02 0a 2e",
+    "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 0c 0d 0d 0d 0d 0d 0d 0d 0e 2e",
+    "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e"
+  ],
+  "purpose": "A hooked Gunflint spring grotto with a small camper recess, two dry fin passages, a fitted hanging spur, a longer spring circuit and a deeper forked cache alcove. A native blocking spring pillar holds a Surf-only hidden Revive; the original mouth, free rest and Max Ether remain dry-accessible.",
+  "proposed_items": [
+    {
+      "id": "MN_R12_CAVE_CACHE",
+      "tile": [
+        35,
+        3
+      ]
+    }
+  ],
+  "preserved_mouth": {
+    "active": [
+      17,
+      23
+    ],
+    "clear": [
+      17,
+      22
+    ],
+    "exterior_map": "MnR12C00R00",
+    "exterior_active": [
+      40,
+      15
+    ],
+    "exterior_clear": [
+      40,
+      16
+    ]
+  },
+  "preserved_rest": {
+    "actor": "MN_R12_OTTA",
+    "tile": [
+      5,
+      5
+    ],
+    "approach": [
+      6,
+      5
+    ],
+    "source": "planning/minnesota/caves/gunflint-spring-shelter-v01/plan.json"
+  },
+  "moved_cache": {
+    "id": "MN_R12_CAVE_CACHE",
+    "before": [
+      27,
+      5
+    ],
+    "after": [
+      35,
+      3
+    ],
+    "approach": [
+      34,
+      3
+    ],
+    "item": "MAX_ETHER",
+    "quantity": 1,
+    "flag": "EVENT_MN_R12_CAVE_ETHER"
+  },
+  "hidden_item": {
+    "id": "MN_R12_GROTTO_REVIVE",
+    "tile": [
+      28,
+      16
+    ],
+    "approach": [
+      27,
+      16
+    ],
+    "item": "REVIVE",
+    "quantity": 1,
+    "flag": "EVENT_MN_R12_GROTTO_REVIVE",
+    "requires": [
+      "SURF",
+      "native Surf badge"
+    ],
+    "purpose": "Search the blocked spring pillar from the water; both original services and the Max Ether remain accessible without Surf."
+  },
+  "preserved_habitat_points": {
+    "shore": [
+      21,
+      19
+    ],
+    "water": [
+      22,
+      19
+    ],
+    "loop": [
+      23,
+      19
+    ]
+  },
+  "review_contract": {
+    "viewpoints": [
+      {
+        "id": "mouth",
+        "tile": [
+          17,
+          22
+        ]
+      },
+      {
+        "id": "west-fin",
+        "tile": [
+          8,
+          14
+        ]
+      },
+      {
+        "id": "otta-rest",
+        "tile": [
+          6,
+          5
+        ]
+      },
+      {
+        "id": "left-stair",
+        "tile": [
+          6,
+          9
+        ]
+      },
+      {
+        "id": "spring-bank",
+        "tile": [
+          21,
+          19
+        ]
+      },
+      {
+        "id": "east-bank",
+        "tile": [
+          36,
+          18
+        ]
+      },
+      {
+        "id": "cache-recess",
+        "tile": [
+          34,
+          3
+        ]
+      },
+      {
+        "id": "corner-stair",
+        "tile": [
+          34,
+          9
+        ]
+      },
+      {
+        "id": "south-spring-path",
+        "tile": [
+          28,
+          24
+        ]
+      },
+      {
+        "id": "spring-pillar",
+        "tile": [
+          27,
+          16
+        ]
+      }
+    ]
+  },
+  "status": "Authored source v03: distinct alcoves, fitted passage bend, tapered spring and Surf-only pillar discovery. Native acceptance is recorded separately in plan.json and world.json."
+}

@@ -1,0 +1,746 @@
+{
+  "schema_version": 1,
+  "id": "leech-lake-mainland-pines-v1",
+  "status": "Verified local native revision; active selection is authoritative in world.json.",
+  "map": "MnLeechLake",
+  "visual_mode": "native_2d_only",
+  "dimensions_metatiles": [
+    32,
+    24
+  ],
+  "source": "after.json",
+  "source_sha256": "6c314a65e5f0c2feca8171584a701f04ae7a0807851228a4c6c9b3a146a792f4",
+  "contract": "contract-v02.json",
+  "parent_revision": "water_cave_habitats_revision",
+  "parent_pack": "content-packs/minnesota-water-caves-v05.crystalpack",
+  "parent_pack_sha256": "20fcdad6de43bb2e46a41faa49d7a8916cfe5bd2224680709f135166d3d2801b",
+  "composition": "Connected pine groves frame the original two cabin clearings and public shore. A winding grassy link gives a faster cabin-to-cabin trip, with an optional fly-tier and a native repel reward in a side clearing.",
+  "connections": [
+    {
+      "direction": "south",
+      "target_map": "MnR07C00R00",
+      "offset": 6
+    },
+    {
+      "direction": "north",
+      "target_map": "MnR08C00R01",
+      "offset": 3
+    }
+  ],
+  "ports": [
+    {
+      "side": "south",
+      "town": [
+        [
+          32,
+          47
+        ],
+        [
+          33,
+          47
+        ]
+      ],
+      "route": "MnR07C00R00",
+      "route_tiles": [
+        [
+          20,
+          0
+        ],
+        [
+          21,
+          0
+        ]
+      ]
+    },
+    {
+      "side": "north",
+      "town": [
+        [
+          32,
+          0
+        ],
+        [
+          33,
+          0
+        ]
+      ],
+      "route": "MnR08C00R01",
+      "route_tiles": [
+        [
+          26,
+          47
+        ],
+        [
+          27,
+          47
+        ]
+      ],
+      "existing_gate": "ENGINE_MINERALBADGE"
+    }
+  ],
+  "preserved_rooms": [
+    {
+      "room": "MnLeechLakeCareCabin",
+      "exterior_door": [
+        11,
+        13
+      ],
+      "passive_porch": [
+        11,
+        14
+      ],
+      "arrival": [
+        10,
+        13
+      ],
+      "carpets": [
+        [
+          10,
+          15
+        ],
+        [
+          11,
+          15
+        ]
+      ],
+      "service": "Free native full-party HP/PP/status healing and original recovery"
+    },
+    {
+      "room": "MnLeechLakeFisherHouse",
+      "exterior_door": [
+        9,
+        35
+      ],
+      "passive_porch": [
+        9,
+        36
+      ],
+      "arrival": [
+        5,
+        6
+      ],
+      "carpets": [
+        [
+          5,
+          7
+        ],
+        [
+          6,
+          7
+        ]
+      ]
+    }
+  ],
+  "original_pier": {
+    "deck_rows": [
+      21,
+      22
+    ],
+    "deck_x": [
+      28,
+      40
+    ],
+    "end_x": 41,
+    "passing_tile": [
+      35,
+      22
+    ],
+    "fisher": [
+      35,
+      21
+    ]
+  },
+  "preserved_island_plan": {
+    "path": "planning/minnesota/towns/leech-lake-island-v01/plan.json",
+    "sha256": "88d6cd380194486b78f874c00bafa5e10c8ab431b9ce6d09aff94f7687a3d1de",
+    "scope": "Original Surf landing, trainer/reward, one-way ledge, separate Whirlpool cache and their actual native states remain intact."
+  },
+  "woodland_link": {
+    "start": [
+      11,
+      14
+    ],
+    "end": [
+      9,
+      36
+    ],
+    "ordinary_path_steps": 54,
+    "trail_path_steps": 34,
+    "trail_grass_steps": 10,
+    "ordinary_grass_steps": 0,
+    "tradeoff": "Save20 steps by crossing encounter grass, or take the safe original public road.",
+    "ordinary_path": [
+      [
+        11,
+        14
+      ],
+      [
+        12,
+        14
+      ],
+      [
+        13,
+        14
+      ],
+      [
+        14,
+        14
+      ],
+      [
+        15,
+        14
+      ],
+      [
+        15,
+        15
+      ],
+      [
+        16,
+        15
+      ],
+      [
+        17,
+        15
+      ],
+      [
+        18,
+        15
+      ],
+      [
+        19,
+        15
+      ],
+      [
+        20,
+        15
+      ],
+      [
+        21,
+        15
+      ],
+      [
+        22,
+        15
+      ],
+      [
+        23,
+        15
+      ],
+      [
+        24,
+        15
+      ],
+      [
+        25,
+        15
+      ],
+      [
+        26,
+        15
+      ],
+      [
+        26,
+        16
+      ],
+      [
+        26,
+        17
+      ],
+      [
+        26,
+        18
+      ],
+      [
+        25,
+        18
+      ],
+      [
+        24,
+        18
+      ],
+      [
+        24,
+        19
+      ],
+      [
+        24,
+        20
+      ],
+      [
+        23,
+        20
+      ],
+      [
+        22,
+        20
+      ],
+      [
+        22,
+        21
+      ],
+      [
+        22,
+        22
+      ],
+      [
+        22,
+        23
+      ],
+      [
+        22,
+        24
+      ],
+      [
+        22,
+        25
+      ],
+      [
+        22,
+        26
+      ],
+      [
+        22,
+        27
+      ],
+      [
+        22,
+        28
+      ],
+      [
+        22,
+        29
+      ],
+      [
+        22,
+        30
+      ],
+      [
+        22,
+        31
+      ],
+      [
+        22,
+        32
+      ],
+      [
+        22,
+        33
+      ],
+      [
+        22,
+        34
+      ],
+      [
+        22,
+        35
+      ],
+      [
+        22,
+        36
+      ],
+      [
+        21,
+        36
+      ],
+      [
+        20,
+        36
+      ],
+      [
+        19,
+        36
+      ],
+      [
+        18,
+        36
+      ],
+      [
+        17,
+        36
+      ],
+      [
+        16,
+        36
+      ],
+      [
+        15,
+        36
+      ],
+      [
+        14,
+        36
+      ],
+      [
+        13,
+        36
+      ],
+      [
+        12,
+        36
+      ],
+      [
+        11,
+        36
+      ],
+      [
+        10,
+        36
+      ],
+      [
+        9,
+        36
+      ]
+    ],
+    "trail_path": [
+      [
+        11,
+        14
+      ],
+      [
+        12,
+        14
+      ],
+      [
+        13,
+        14
+      ],
+      [
+        14,
+        14
+      ],
+      [
+        15,
+        14
+      ],
+      [
+        15,
+        15
+      ],
+      [
+        15,
+        16
+      ],
+      [
+        15,
+        17
+      ],
+      [
+        15,
+        18
+      ],
+      [
+        15,
+        19
+      ],
+      [
+        15,
+        20
+      ],
+      [
+        16,
+        20
+      ],
+      [
+        16,
+        21
+      ],
+      [
+        16,
+        22
+      ],
+      [
+        16,
+        23
+      ],
+      [
+        16,
+        24
+      ],
+      [
+        15,
+        24
+      ],
+      [
+        14,
+        24
+      ],
+      [
+        14,
+        25
+      ],
+      [
+        14,
+        26
+      ],
+      [
+        14,
+        27
+      ],
+      [
+        14,
+        28
+      ],
+      [
+        13,
+        28
+      ],
+      [
+        12,
+        28
+      ],
+      [
+        12,
+        29
+      ],
+      [
+        12,
+        30
+      ],
+      [
+        12,
+        31
+      ],
+      [
+        12,
+        32
+      ],
+      [
+        12,
+        33
+      ],
+      [
+        12,
+        34
+      ],
+      [
+        12,
+        35
+      ],
+      [
+        12,
+        36
+      ],
+      [
+        11,
+        36
+      ],
+      [
+        10,
+        36
+      ],
+      [
+        9,
+        36
+      ]
+    ],
+    "field_move_required": false
+  },
+  "activities": {
+    "trainer": {
+      "map": "MnLeechLake",
+      "approach": [
+        18,
+        24
+      ],
+      "optional_battle": true,
+      "id": "MN_EXTRA_LEECH_MAINLAND_FLY_TIER",
+      "display_name": "FINN",
+      "trainer_class": "FISHER",
+      "sprite": "SPRITE_FISHER",
+      "tile": [
+        19,
+        24
+      ],
+      "facing": "west",
+      "sight_range": 1,
+      "defeated_flag": "EVENT_MN_EXTRA_LEECH_MAINLAND_FLY_TIER",
+      "party": [
+        {
+          "species": "HATCHRUSH",
+          "level": 34
+        },
+        {
+          "species": "MOTHOSAIC",
+          "level": 35
+        }
+      ],
+      "before_lines": [
+        "Mayflies rise off",
+        "the lake at dusk.",
+        "I tie my own flies",
+        "Want a match?"
+      ],
+      "after_lines": [
+        "The cabin path is",
+        "shorter, but watch",
+        "the grass."
+      ],
+      "loss_lines": [
+        "Read the hatch!"
+      ]
+    },
+    "item": {
+      "id": "MN_LEECH_MAINLAND_REPEL",
+      "tile": [
+        19,
+        26
+      ],
+      "item": "SUPER_REPEL",
+      "quantity": 1,
+      "flag": "EVENT_MN_LEECH_MAINLAND_REPEL"
+    },
+    "habitat": {
+      "id": "MN_LEECH_CABIN_PINES",
+      "minX": 14,
+      "minY": 20,
+      "maxX": 17,
+      "maxY": 27,
+      "grassRates": {
+        "morning": 10,
+        "day": 10,
+        "night": 10
+      },
+      "grass": {
+        "morning": [
+          {
+            "species": "PATCHEBEE",
+            "level": 30
+          },
+          {
+            "species": "SKEETEREX",
+            "level": 31
+          },
+          {
+            "species": "HATCHRUSH",
+            "level": 31
+          },
+          {
+            "species": "VELVAWN",
+            "level": 30
+          },
+          {
+            "species": "SHEDSTAG",
+            "level": 33
+          },
+          {
+            "species": "PATCHEBEE",
+            "level": 35
+          },
+          {
+            "species": "MOTHOSAIC",
+            "level": 35
+          }
+        ],
+        "day": [
+          {
+            "species": "PATCHEBEE",
+            "level": 30
+          },
+          {
+            "species": "SKEETEREX",
+            "level": 31
+          },
+          {
+            "species": "HATCHRUSH",
+            "level": 31
+          },
+          {
+            "species": "VELVAWN",
+            "level": 30
+          },
+          {
+            "species": "SHEDSTAG",
+            "level": 33
+          },
+          {
+            "species": "PATCHEBEE",
+            "level": 35
+          },
+          {
+            "species": "MOTHOSAIC",
+            "level": 35
+          }
+        ],
+        "night": [
+          {
+            "species": "SKEETEREX",
+            "level": 30
+          },
+          {
+            "species": "HATCHRUSH",
+            "level": 31
+          },
+          {
+            "species": "VELVAWN",
+            "level": 30
+          },
+          {
+            "species": "PATCHEBEE",
+            "level": 31
+          },
+          {
+            "species": "SHEDSTAG",
+            "level": 33
+          },
+          {
+            "species": "MOTHOSAIC",
+            "level": 35
+          },
+          {
+            "species": "SKEETEREX",
+            "level": 35
+          }
+        ]
+      }
+    },
+    "walker_hint_append": [
+      "The pine path",
+      "joins both cabins.",
+      "Watch the grass."
+    ]
+  },
+  "story": {
+    "role": "Optional shore travel and activity; no mandatory campaign grants. Original testimony and Mineral Badge wardens remain intact.",
+    "trainer_flag": "EVENT_MN_EXTRA_LEECH_MAINLAND_FLY_TIER",
+    "item_flag": "EVENT_MN_LEECH_MAINLAND_REPEL",
+    "all_original_island_and_whirlpool_state_preserved": true
+  },
+  "implementation": {
+    "builder": "crystal_assets::rebuild_leech_lake_mainland",
+    "cli": "rebuild_leech_mainland",
+    "native_art_and_audio_unchanged": true,
+    "new_interiors": 0,
+    "new_cut_gates": 0,
+    "unconnected_water_boundaries_unchanged": true
+  },
+  "review": {
+    "whole": "../../renders/leech-mainland-v871/whole-final-v893/whole-original.png",
+    "player_scale": "../../renders/leech-mainland-v871/mainland-before-after-player-scale.png",
+    "static_contract": "../../renders/leech-mainland-v871/source-collision-final-v892.json",
+    "style_reference": "../../renders/leech-mainland-v871/native-johto-reference-v876/LakeOfRage-whole-original.png",
+    "warm_source_loop_seconds": 0.157,
+    "personally_inspected_whole_and_camera_sheet": true
+  },
+  "limits": [
+    "Broader town, route and cave quality review remains active.",
+    "Older lawn-position saves are not migrated; retain their matching prior pack.",
+    "Owned formatting passes; unrelated whole-workspace formatting differences remain."
+  ],
+  "pack": "content-packs/minnesota-leech-mainland-v01.crystalpack",
+  "pack_sha256": "bb416c46842b7a32bb213ed2a8e9c5eebdf384150c7dfab4ef8a341458833a87",
+  "content_identity": "c57583608dcee0f195b544afb45c6eb30044c2d44ecf55593542347297f87821",
+  "verification": {
+    "native_controller": "../../renders/leech-mainland-v871/gameplay-v886/controller.log",
+    "controller_cases": 8,
+    "production_mainland_stdio": "../../renders/leech-mainland-v871/mcp-v889/receipt.json",
+    "production_island_stdio": "../../renders/leech-mainland-v871/mcp-island-v890/receipt.json",
+    "stdio_calls": 1202,
+    "preservation": "../../renders/leech-mainland-v871/preservation-final-v891.json",
+    "native_views": "../../renders/leech-mainland-v871/native-v885/capture-progress.json",
+    "visual_review": "../../renders/leech-mainland-v871/visual-review-v887.json",
+    "regional": "../../renders/leech-mainland-v871/regional-v886.json",
+    "final_source_replay": "../../renders/leech-mainland-v871/final-source-replay-v891.json",
+    "audio_programs": 377,
+    "scope": "Declared local no-Surf/prior-badge/party/capacity setup followed only by production input; no earned campaign completion or deployment claim."
+  }
+}

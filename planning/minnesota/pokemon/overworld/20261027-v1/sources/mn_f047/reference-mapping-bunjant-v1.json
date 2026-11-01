@@ -1,0 +1,47 @@
+{
+  "species_id": "MN_098",
+  "family_id": "MN_F047",
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f047/prompt-bunjant-v1.txt",
+  "fit": [
+    14,
+    14
+  ],
+  "palette_binding": {
+    "transparent_index": 0,
+    "visible_indices": [
+      1,
+      2,
+      3
+    ],
+    "normal_rgb555_words": [
+      32767,
+      12049,
+      4394,
+      0
+    ],
+    "shiny_rgb555_words": [
+      32767,
+      25131,
+      9540,
+      0
+    ],
+    "white_body_region_policy": "Simplify formerly white body/highlight regions to light ink1. Index0 is transparent everywhere, not an opaque white paint color."
+  },
+  "references": [
+    {
+      "path": "target/minnesota-pokemon/native/MN_F047/mn-098-bunjant-v1.front.png",
+      "sha256": "5b878dbf94b798b42b009c7d1c196f183ebdb3c8a0a98fa5bf02ef6886da3d00",
+      "role": "exact front identity"
+    },
+    {
+      "path": "target/minnesota-pokemon/native/MN_F047/mn-098-bunjant-v1.back.png",
+      "sha256": "96a4f953d7b0dd580e989a7d254211c66dcb63356b3a4dfc04fe9f19b512c2e3",
+      "role": "exact rear identity; extend full rear naturally"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+      "sha256": "4354a639ed1a80fd6686e43b273443ed894e58a84307a8049f638ee9ffa2a099",
+      "role": "native16 style/scale only"
+    }
+  ]
+}

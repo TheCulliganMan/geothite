@@ -1,0 +1,9 @@
+{
+  "tool": "built-in image_gen",
+  "original": "/Users/ryanculligan/.codex/generated_images/01a179bf-dc2b-7352-8975-8b8f3a32e33b/exec-1f2cdc83-8404-4da1-8d1b-b5689a5aab59.png",
+  "preserved_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f090/crumcone.overworld.imagegen-v2-front-pupil-spacing.png",
+  "sha256": "98cfdddc97ac70a21824568d01ca94f0dbe7e583009041b10e11d05af26c8fbe",
+  "exact_prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f090/prompt-crumcone-front-pupil-spacing-v2.txt",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f090/reference-mapping-crumcone-front-pupil-spacing-v2.json",
+  "status": "preserved; see frozen manifest for pose selection"
+}

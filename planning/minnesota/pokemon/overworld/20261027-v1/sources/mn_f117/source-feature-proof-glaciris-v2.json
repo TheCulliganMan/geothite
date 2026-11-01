@@ -1,0 +1,395 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_252",
+  "result": "pass",
+  "manifest_sha256": "f13cb897d6cef0f6d23548bacd8f02e96e8bb285a54f0d41698dc3f4e46cef77",
+  "bank_sha256": "f8a53bbee8df7638debbbb601ed657ddc1f6d7e5a48b0448a1db17b4044d8419",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f117/glaciris.overworld.imagegen-v1.png": "728c621aeccd1d9e5a578db911d691ddfb29ea2c7f638f7d9f73ee5a1f5c34f8",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f117/glaciris.overworld.imagegen-v2-compact-profile.png": "85a692de045294673605a18986503360000448e1e7afded5107a9d9f7c20b267"
+  },
+  "canonical_eye_form": "TWO actual isolated south pupils, ONE actual isolated west pupil. Every pixel in each complete native eye cluster maps to the same small anatomical source pupil component.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "down_idle",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f117/glaciris.overworld.imagegen-v1.png",
+        "crop": [
+          2,
+          84,
+          470,
+          420
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            191,
+            374,
+            24,
+            35
+          ],
+          [
+            266,
+            374,
+            23,
+            35
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                6,
+                12
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  2,
+                  1,
+                  0,
+                  253
+                ],
+                "bounds": [
+                  191,
+                  374,
+                  24,
+                  35
+                ],
+                "pixels": 840,
+                "truncated_contour": false,
+                "native_pixel": [
+                  6,
+                  12
+                ],
+                "source_sample_pixel": [
+                  205,
+                  387
+                ]
+              }
+            ]
+          },
+          {
+            "native_cluster": [
+              [
+                8,
+                12
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  1,
+                  0,
+                  0,
+                  253
+                ],
+                "bounds": [
+                  266,
+                  374,
+                  23,
+                  35
+                ],
+                "pixels": 805,
+                "truncated_contour": false,
+                "native_pixel": [
+                  8,
+                  12
+                ],
+                "source_sample_pixel": [
+                  275,
+                  387
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "left_idle",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f117/glaciris.overworld.imagegen-v2-compact-profile.png",
+        "crop": [
+          977,
+          146,
+          470,
+          420
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            1089,
+            337,
+            27,
+            49
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                4,
+                9
+              ],
+              [
+                4,
+                10
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  0,
+                  1,
+                  1,
+                  253
+                ],
+                "bounds": [
+                  1089,
+                  337,
+                  27,
+                  49
+                ],
+                "pixels": 1323,
+                "truncated_contour": false,
+                "native_pixel": [
+                  4,
+                  9
+                ],
+                "source_sample_pixel": [
+                  1110,
+                  343
+                ]
+              },
+              {
+                "black": true,
+                "rgba": [
+                  1,
+                  1,
+                  1,
+                  253
+                ],
+                "bounds": [
+                  1089,
+                  337,
+                  27,
+                  49
+                ],
+                "pixels": 1323,
+                "truncated_contour": false,
+                "native_pixel": [
+                  4,
+                  10
+                ],
+                "source_sample_pixel": [
+                  1110,
+                  378
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "down_step",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f117/glaciris.overworld.imagegen-v1.png",
+        "crop": [
+          2,
+          538,
+          470,
+          420
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            191,
+            828,
+            24,
+            34
+          ],
+          [
+            266,
+            828,
+            24,
+            34
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                6,
+                12
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  2,
+                  2,
+                  0,
+                  253
+                ],
+                "bounds": [
+                  191,
+                  828,
+                  24,
+                  34
+                ],
+                "pixels": 816,
+                "truncated_contour": false,
+                "native_pixel": [
+                  6,
+                  12
+                ],
+                "source_sample_pixel": [
+                  205,
+                  841
+                ]
+              }
+            ]
+          },
+          {
+            "native_cluster": [
+              [
+                8,
+                12
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  0,
+                  0,
+                  0,
+                  253
+                ],
+                "bounds": [
+                  266,
+                  828,
+                  24,
+                  34
+                ],
+                "pixels": 816,
+                "truncated_contour": false,
+                "native_pixel": [
+                  8,
+                  12
+                ],
+                "source_sample_pixel": [
+                  275,
+                  841
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "left_step",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f117/glaciris.overworld.imagegen-v2-compact-profile.png",
+        "crop": [
+          976,
+          604,
+          470,
+          420
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            1088,
+            795,
+            26,
+            48
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                4,
+                9
+              ],
+              [
+                4,
+                10
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  1,
+                  2,
+                  2,
+                  253
+                ],
+                "bounds": [
+                  1088,
+                  795,
+                  26,
+                  48
+                ],
+                "pixels": 1248,
+                "truncated_contour": false,
+                "native_pixel": [
+                  4,
+                  9
+                ],
+                "source_sample_pixel": [
+                  1109,
+                  801
+                ]
+              },
+              {
+                "black": true,
+                "rgba": [
+                  1,
+                  2,
+                  2,
+                  254
+                ],
+                "bounds": [
+                  1088,
+                  795,
+                  26,
+                  48
+                ],
+                "pixels": 1248,
+                "truncated_contour": false,
+                "native_pixel": [
+                  4,
+                  10
+                ],
+                "source_sample_pixel": [
+                  1109,
+                  836
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "notes": "Both native normal/shiny rear poses actually inspected: plain rear head, no copied face. Head anchors stable, 1px transparent outer border, three walk pairs differ."
+  },
+  "detailed_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f117/manifest-glaciris-v2-pupil-proof.proof.json"
+}

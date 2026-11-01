@@ -1,0 +1,22 @@
+{
+  "status": "VERIFIED_UNSELECTED",
+  "reason": "User steered to North Shore walking access before shared source-index/reservation/world selection.",
+  "pack": "content-packs/minnesota-iron-ventilation-cleft-v03.crystalpack",
+  "pack_sha256": "283c214cda8f5ed04e878bed7e698cc08d9f8a764ae9553161113d4837762330",
+  "parent_pack": "content-packs/minnesota-current-r13-south-woods-grass-v01.crystalpack",
+  "parent_pack_sha256": "10cd75cf9de2578966560721755ee761129d84d5e02122e174df07331f84679d",
+  "source_sha256": "08058b115351343905256c16edad7da8ba8e709a0719c4b91f5210e9e8bc9e54",
+  "contract_sha256": "e957c8195ec3fb4fafbcee6c4bc5fcb3a9106ae37eaf31c7519e37381c64bca3",
+  "native_controller": "Final-parent full native pressure course, guards with PP, refusal/retry, Continue, both climbs, both fin branches and all four shaft pairs passed.",
+  "mcp_calls": 780,
+  "native_cameras": 11,
+  "camera_pixel_differences": 0,
+  "audio": "All377 PCM hashes, frame counts and loop ranges match.",
+  "lint": "All-target Clippy passed in checks-v544.json; owned formatting passed; workspace formatting has existing differences.",
+  "remaining": [
+    "Inspect final v548 whole/camera images before visual acceptance. Earlier v541 images were inspected and source unchanged.",
+    "Recheck active world parent; rebase again if it advanced.",
+    "Compose inherited source index, shared reservation and last world compare-and-swap after final acceptance."
+  ],
+  "all_renders_retained": true
+}

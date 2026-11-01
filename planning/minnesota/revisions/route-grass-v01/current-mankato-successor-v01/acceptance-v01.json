@@ -1,0 +1,13 @@
+{
+  "status": "PASS_CURRENT_LOCAL_MAP_ART_AND_FOUR_NATIVE_CASES",
+  "pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+  "pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33",
+  "native_cases": 4,
+  "buildings": 3,
+  "exit_carpets": 6,
+  "ledge_lanes": 10,
+  "qualified_road_lanes": 4,
+  "guard_lanes": 2,
+  "visual": "Inherited native-bank-v03 whole-town terrain inspected; coherent native Mart, forest-fitted bank and ordinary return retained exactly.",
+  "scope": "Fresh local controller fixtures and exact used-art/map comparison. Historical notebook/production receipts retain their original pack bindings; no new production check claimed. Broader goal remains active."
+}

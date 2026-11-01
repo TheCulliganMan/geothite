@@ -1,0 +1,310 @@
+{
+  "family_id": "MN_F009",
+  "status": "candidates_author_inspected_root_context_acceptance_pending",
+  "queue_mutated": false,
+  "accepted_assets_mutated": false,
+  "native_pixels_painted": false,
+  "selected_candidates": [
+    {
+      "species_id": "MN_025",
+      "name": "Pinit",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f009/pinit.overworld.imagegen-v2.png",
+      "source_sha256": "ba631da0b601e37ed3ed6ecc87cf9a8eb5ff8dc59cdde29460bde6c747f74457",
+      "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f009/prompt-pinit-v2.txt",
+      "prompt_sha256": "b9999589a2a865d628bc4b6d5a0018131bd4e9a47b6fbcbd2f24b71c621d2802",
+      "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f009/reference-mapping-pinit-v2.json",
+      "proposed_native_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f009/manifest-pinit-v2-native13.json",
+      "manifest_sha256": "56e0fd9a8fc8e949a20070f72df805c0de492cab45289288d0283759a0f7f29a",
+      "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f009/pinit-v2-native13",
+      "normal_review": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f009/pinit-v2-native13/review/line.normal-8x.png",
+      "review_sha256": "05cb16f9afc3885e628be98c80d81161935ce3a3b4d027a12d1e7d1454e88d0a",
+      "native_bounds": [
+        [
+          1,
+          3,
+          13,
+          12
+        ],
+        [
+          1,
+          3,
+          13,
+          12
+        ],
+        [
+          2,
+          3,
+          10,
+          12
+        ],
+        [
+          1,
+          3,
+          13,
+          12
+        ],
+        [
+          1,
+          3,
+          13,
+          12
+        ],
+        [
+          2,
+          3,
+          10,
+          12
+        ]
+      ],
+      "validation_results": {
+        "six_frames_16x16": true,
+        "runtime_png_16x96": true,
+        "native_2bpp_bytes": 384,
+        "tile_decode_matches_png_and_indexed_rows": true,
+        "binary_alpha": true,
+        "transparent_border": true,
+        "three_opaque_inks_only": true,
+        "normal_shiny_palette_words_exact": true,
+        "idle_step_pairs_different": true,
+        "isolated_face_black_points_4connected": {
+          "down_idle": [
+            [
+              6,
+              10
+            ],
+            [
+              8,
+              10
+            ]
+          ],
+          "left_idle": [
+            [
+              3,
+              10
+            ]
+          ],
+          "down_step": [
+            [
+              6,
+              10
+            ],
+            [
+              8,
+              10
+            ]
+          ],
+          "left_step": [
+            [
+              3,
+              10
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "species_id": "MN_026",
+      "name": "Pitchwick",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f009/pitchwick.overworld.imagegen-v2.png",
+      "source_sha256": "b3b8eec3b310f5dc2166104367d8a21d8e2deb38d8b472d7a971455c8cd0730c",
+      "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f009/prompt-pitchwick-v2.txt",
+      "prompt_sha256": "43083c4e30c5dc11dd5d36fd99768efc897eae680da101e075c611533a44d599",
+      "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f009/reference-mapping-pitchwick-v2.json",
+      "proposed_native_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f009/manifest-pitchwick-v2-west-y112.json",
+      "manifest_sha256": "04a5e701458ea3ba6331747557fdc2c02c9e60a95baddd8942f0aed7e3a8c6aa",
+      "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f009/pitchwick-v2-west-y112",
+      "normal_review": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f009/pitchwick-v2-west-y112/review/line.normal-8x.png",
+      "review_sha256": "7614ebae0201695cdad927a8659feb813166afaa0fd40eb69f22acd7259cc860",
+      "native_bounds": [
+        [
+          1,
+          2,
+          14,
+          12
+        ],
+        [
+          1,
+          2,
+          14,
+          13
+        ],
+        [
+          3,
+          1,
+          11,
+          14
+        ],
+        [
+          1,
+          2,
+          14,
+          13
+        ],
+        [
+          1,
+          2,
+          14,
+          13
+        ],
+        [
+          3,
+          1,
+          11,
+          13
+        ]
+      ],
+      "validation_results": {
+        "six_frames_16x16": true,
+        "runtime_png_16x96": true,
+        "native_2bpp_bytes": 384,
+        "tile_decode_matches_png_and_indexed_rows": true,
+        "binary_alpha": true,
+        "transparent_border": true,
+        "three_opaque_inks_only": true,
+        "normal_shiny_palette_words_exact": true,
+        "idle_step_pairs_different": true,
+        "isolated_face_black_points_4connected": {
+          "down_idle": [
+            [
+              6,
+              10
+            ],
+            [
+              9,
+              10
+            ]
+          ],
+          "left_idle": [
+            [
+              5,
+              9
+            ]
+          ],
+          "down_step": [
+            [
+              6,
+              10
+            ],
+            [
+              9,
+              10
+            ]
+          ],
+          "left_step": [
+            [
+              5,
+              9
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "species_id": "MN_027",
+      "name": "Pyropine",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f009/pyropine.overworld.imagegen-v3.png",
+      "source_sha256": "573fcec9eb07d710b22ff15e89424172dab85b39c84ec5d4dab49ac6a815ac95",
+      "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f009/prompt-pyropine-v3.txt",
+      "prompt_sha256": "d0cbd4823abc53b1b3bdd811c2f41585c7a630bca22374fa46be5cc115ff9abb",
+      "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f009/reference-mapping-pyropine-v3.json",
+      "proposed_native_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f009/manifest-pyropine-v3-phase-eyes.json",
+      "manifest_sha256": "7435563b001d65990c59c7a9dce1a56ce8bc88d07a2acc36c422470708fcc239",
+      "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f009/pyropine-v3-phase-eyes",
+      "normal_review": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f009/pyropine-v3-phase-eyes/review/line.normal-8x.png",
+      "review_sha256": "ebdf31cf8d3f09ccdde0c4c98498cf33107c03fd51a690e92d59c039825c0e26",
+      "native_bounds": [
+        [
+          1,
+          2,
+          13,
+          12
+        ],
+        [
+          2,
+          2,
+          13,
+          12
+        ],
+        [
+          4,
+          2,
+          10,
+          12
+        ],
+        [
+          1,
+          3,
+          13,
+          12
+        ],
+        [
+          2,
+          2,
+          13,
+          13
+        ],
+        [
+          4,
+          2,
+          11,
+          13
+        ]
+      ],
+      "validation_results": {
+        "six_frames_16x16": true,
+        "runtime_png_16x96": true,
+        "native_2bpp_bytes": 384,
+        "tile_decode_matches_png_and_indexed_rows": true,
+        "binary_alpha": true,
+        "transparent_border": true,
+        "three_opaque_inks_only": true,
+        "normal_shiny_palette_words_exact": true,
+        "idle_step_pairs_different": true,
+        "isolated_face_black_points_4connected": {
+          "down_idle": [
+            [
+              6,
+              11
+            ],
+            [
+              8,
+              11
+            ]
+          ],
+          "left_idle": [
+            [
+              6,
+              11
+            ]
+          ],
+          "down_step": [
+            [
+              6,
+              11
+            ],
+            [
+              8,
+              11
+            ]
+          ],
+          "left_step": [
+            [
+              6,
+              11
+            ]
+          ]
+        }
+      }
+    }
+  ],
+  "family_review_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f009/manifest-family-native16-v2.json",
+  "family_review_board": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f009/family-native16-v2/review/line.normal-8x.png",
+  "family_review_board_sha256": "fc30af482573e4e3dc61fbfeaf91f572765f6274f395fbde8396a9b4df9cacfb",
+  "source_preservation_audit": {
+    "returned_raw_count_in_owned_new_records": 4,
+    "all_byte_identical_to_tool_original": true,
+    "all_prompt_hashes_match": true,
+    "only_native16_style_input_reference_hashes_match": true,
+    "all_prior_raws_and_native_trials_retained": true
+  }
+}

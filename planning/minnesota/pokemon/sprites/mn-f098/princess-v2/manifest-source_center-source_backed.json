@@ -1,0 +1,246 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F098",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_213": {
+      "species_id": "MN_213",
+      "name": "Chislet",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          28,
+          17
+        ],
+        [
+          11,
+          17,
+          23
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        18335,
+        24107,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          231,
+          140
+        ],
+        [
+          90,
+          140,
+          189
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FFE78C",
+        "#5A8CBD",
+        "#000000"
+      ]
+    },
+    "MN_214": {
+      "species_id": "MN_214",
+      "name": "Buttermuse",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          30,
+          27,
+          15
+        ],
+        [
+          8,
+          14,
+          22
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        16254,
+        22984,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          247,
+          222,
+          123
+        ],
+        [
+          66,
+          115,
+          181
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#F7DE7B",
+        "#4273B5",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f098/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png",
+      "target/minnesota-pokemon/gen2-reference/bugs.png"
+    ]
+  },
+  "sprites": [
+    {
+      "id": "mn-213-chislet-v1",
+      "species_id": "MN_213",
+      "view": "front",
+      "source": "sprites/mn-f098/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        730,
+        505
+      ],
+      "fit": [
+        44,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        18335,
+        24107,
+        0
+      ],
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-213-chislet-v1",
+      "species_id": "MN_213",
+      "view": "back",
+      "source": "sprites/mn-f098/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        505,
+        740,
+        519
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        18335,
+        24107,
+        0
+      ],
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-214-buttermuse-princess-v2",
+      "species_id": "MN_214",
+      "view": "front",
+      "source": "sprites/mn-f098/princess-v2/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        900,
+        887
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        16254,
+        22984,
+        0
+      ],
+      "interior_black_min_samples": 16,
+      "prompt_file": "sprites/mn-f098/princess-v2/prompt-v1.txt",
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 8
+    },
+    {
+      "id": "mn-214-buttermuse-princess-v2",
+      "species_id": "MN_214",
+      "view": "back",
+      "source": "sprites/mn-f098/princess-v2/front-back.imagegen-v1.png",
+      "crop": [
+        1020,
+        70,
+        700,
+        600
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        16254,
+        22984,
+        0
+      ],
+      "interior_black_min_samples": 16,
+      "prompt_file": "sprites/mn-f098/princess-v2/prompt-v1.txt",
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 8
+    }
+  ],
+  "visual_review": {
+    "status": "pending",
+    "sheet_sha256": "",
+    "outline_profile": "source-contour-v1",
+    "notes": "Princess render candidate pending review."
+  }
+}

@@ -1,0 +1,233 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F066",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_143": {
+      "species_id": "MN_143",
+      "name": "Clickit",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          21,
+          26,
+          10
+        ],
+        [
+          7,
+          13,
+          7
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        11093,
+        7591,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          173,
+          214,
+          82
+        ],
+        [
+          57,
+          107,
+          57
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#ADD652",
+        "#396B39",
+        "#000000"
+      ]
+    },
+    "MN_144": {
+      "species_id": "MN_144",
+      "name": "Windhopper",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          30,
+          25,
+          7
+        ],
+        [
+          7,
+          12,
+          10
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        7998,
+        10631,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          247,
+          206,
+          57
+        ],
+        [
+          57,
+          99,
+          82
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#F7CE39",
+        "#396352",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f066/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png",
+      "target/minnesota-pokemon/gen2-reference/bugs.png"
+    ]
+  },
+  "sprites": [
+    {
+      "id": "mn-143-clickit-v1",
+      "species_id": "MN_143",
+      "view": "front",
+      "source": "sprites/mn-f066/mn-143-144.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        646,
+        587
+      ],
+      "fit": [
+        38,
+        38
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        11093,
+        7591,
+        0
+      ]
+    },
+    {
+      "id": "mn-143-clickit-v1",
+      "species_id": "MN_143",
+      "view": "back",
+      "source": "sprites/mn-f066/mn-143-144.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        587,
+        646,
+        558
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        11093,
+        7591,
+        0
+      ]
+    },
+    {
+      "id": "mn-144-windhopper-v1",
+      "species_id": "MN_144",
+      "view": "front",
+      "source": "sprites/mn-f066/mn-143-144.front-back.imagegen-v1.png",
+      "crop": [
+        646,
+        0,
+        728,
+        587
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        7998,
+        10631,
+        0
+      ]
+    },
+    {
+      "id": "mn-144-windhopper-v1",
+      "species_id": "MN_144",
+      "view": "back",
+      "source": "sprites/mn-f066/mn-143-144.front-back.imagegen-v1.png",
+      "crop": [
+        646,
+        587,
+        728,
+        558
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        7998,
+        10631,
+        0
+      ]
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "notes": "Final source-contour-v1 board visually inspected: green grasshopper gains piston hind legs, round generator thorax and two broad ribbed fan wings. Native green leg interiors and yellow generator/wing panels remain readable after black-mass reduction; white eyes and large leg gaps persist. Rear wing attachments, nape and shoulders are close cropped without full lower bodies. No neighboring crop debris observed.",
+    "sheet_sha256": "88bd895fae8db3f10c0fabb03a40646eca55d1a4627615a004180cb2ff7c5bbe",
+    "outline_profile": "source-contour-v1"
+  }
+}

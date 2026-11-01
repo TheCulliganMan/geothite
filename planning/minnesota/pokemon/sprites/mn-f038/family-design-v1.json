@@ -1,0 +1,17 @@
+{
+  "id": "MN_F038",
+  "members": [
+    {
+      "id": "MN_089",
+      "name": "Lutebrisk",
+      "types": [
+        "ICE"
+      ],
+      "stage": 1,
+      "evolves_to": null
+    }
+  ],
+  "theme": "Butter-filled lutefisk creature: a cold translucent jelly body surrounds a golden butter heart; butter ribbons run through its curled feet and draping tail. The butter center is a visual food detail, not fire or heat.",
+  "region": "towns",
+  "design_note": "Pure Ice typing follows the user correction; keep the butter-filled food theme without Fire powers."
+}

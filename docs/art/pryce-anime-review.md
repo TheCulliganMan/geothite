@@ -1,0 +1,22 @@
+# Pryce anime painting review — 2026-10-11
+
+The realistic elderly portrait in `assets/open-models/people/npc-textures/pryce.png` was replaced with drawn blue anime eyes, graphic silver brows/hair, short age lines and simpler skin/cloth tones. The built-in ImageGen edit tool produced two iterations. No CLI/API fallback or raster editing was used. The final selected file is `/Users/ryanculligan/.codex/generated_images/01a1277b-19f5-79f1-b0a2-a2dc008920ef/exec-e1aa2564-d780-40e6-afcc-8dfb8b04b880.png`; its bytes were copied unchanged to the canonical asset (SHA-256 `18c31a78f00cd0a438991daab207d011786ce07b6f1d971257a666b942b0a14e`). A source hash guard prevented overwriting a concurrent painting edit.
+
+The first candidate was rejected after its four-angle Idle image was individually inspected: brown shading around the face wrapped into a visible band across the bald head's rear. The second edit removed those background/neck shadow bands. All three corrected four-angle images were individually inspected: Idle, Run 0.125 and Run 0.625, twelve views. Drawn eyes/nose/mouth remain at intended positions; cyan cardigan, violet trousers and navy shoes retain their islands. The rear band is absent in all three samples.
+
+External captures/logs are under `/Users/ryanculligan/.codex/artifacts/anime-character-review/pending-model-review/`: `captures/pryce-anime-idle/` (rejected), `captures/pryce-anime-v2-{idle,run125,run625}/` (installed), and `captures/pryce-canonical-idle/` (canonical confirmation). These use production weighted meshes/proportions through the reviewer's image target, not a live gameplay window. This pass changes painting bytes, not Rust geometry; no new compilation/test claim is made.
+
+Whole-model approval remains withheld. Lower jaw/nape are squared, small white hair fragments remain at the scalp edge, hands are generic, shirt-shaped cardigan lacks a convincing opening/hem, and cane/scarf geometry are absent. Foot shape/soles and in-game camera context remain unapproved. The full player/NPC roster goal remains active.
+
+The installed canonical-root Idle render was individually inspected and matches the reviewed candidate pixels exactly. The temporary candidate symlink fixture was removed; focused document/source whitespace checks passed.
+
+Exact selected edit prompt (input was the first generated candidate):
+
+```text
+Use case: style-transfer.
+Asset type: flat square UV texture atlas for an animated anime game character.
+Input image: edit target, existing Pryce atlas. Preserve all UV island normalized boundaries, scale and coordinates; facial landmarks must remain centered in exactly the existing places. Output a flat atlas, never a model render.
+Primary request: Replace the realistic elderly portrait with clean graphic Japanese anime game art. Pryce is a stern elderly male ice specialist with sparse silver hair, thick silver brows, and narrow blue almond eyes. Strong single upper eyelid lines, small flat blue irises without glossy highlights, small angular nose line marks, thin closed mouth stroke. Convey age with two forehead strokes and a few short cheek lines, no long realistic folds. Silver hair is broad drawn clumps with two flat tones. Use only three broad warm skin tones; no realistic lips, pores, airbrush gradients, photographic lighting, doll face or storybook rendering. No facial hair.
+Constraints: retain exact eye/nose/mouth/ear/hair placement; keep right neutral skin islands flat and skin-colored, top-right skin patch neutral, dark navy shoes, cyan cardigan and violet trousers in their existing islands. Preserve blue cardigan opening/collar/button positions without adding new props or details. Simplify fabric shading into broad cel tones, no realistic cloth noise. No text, watermark or extra objects.
+Targeted UV correction: In the actual model the broad brown bands around the face wrap onto the back of the bald head. Remove ALL painted shadow wedges, bands and gradients from the background and neck of the large upper-left skin island. Fill all skin around the ears, above hair, sides and below the face with one continuous flat warm skin midtone matching the center forehead. Keep the current drawn face, narrow blue eyes, mouth, silver brows and silver hair clumps exactly positioned. Restrict any facial marks to tiny nose/eyelid/cheek lines; no broad darker cheek, jaw, neck or skull shading. The 3D lighting will supply volume. Keep all other atlas islands unchanged.
+```

@@ -1,0 +1,51 @@
+{
+  "family_id": "MN_F137",
+  "species_id": "MN_303",
+  "prompt_file": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f137/prompt-ticklet-v1.txt",
+  "input_references": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+      "sha256": "4354a639ed1a80fd6686e43b273443ed894e58a84307a8049f638ee9ffa2a099",
+      "role": "Only tool input: authentic native16 map style/coarse blocks/dot eyes."
+    }
+  ],
+  "inspected_identity_context": {
+    "canonical_front": {
+      "path": "target/minnesota-pokemon/native/MN_F137/mn-303-ticklet-v1.front.png",
+      "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F137/mn-303-ticklet-v1.front.png",
+      "sha256": "4599e60249bef93dbaef3bc8d4a6c272140b28ea3cd882c32811d5ef63a516b5"
+    },
+    "canonical_back": {
+      "path": "target/minnesota-pokemon/native/MN_F137/mn-303-ticklet-v1.back.png",
+      "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F137/mn-303-ticklet-v1.back.png",
+      "sha256": "1cf0c3ad5c211ca60c72197566bc5e9873603057861e16e535139b2fbf0a894e"
+    },
+    "invariants": [
+      "Small gold domed freshwater turtle, one raised triangular turquoise gnomon ridge, four attached turquoise webbed feet.",
+      "Low real head sheltered under shell overhang; white eye planes map to broad light gold ink1 field for native dot pupils.",
+      "No literal sundial equipment/markings, no extra faces on shell or genuine north rear."
+    ]
+  },
+  "battle_refs_passed_to_tool": false,
+  "palette_binding": {
+    "transparent_index": 0,
+    "visible_indices": [
+      1,
+      2,
+      3
+    ],
+    "normal_rgb555_words": [
+      32767,
+      10904,
+      21095,
+      0
+    ],
+    "shiny_rgb555_words": [
+      32767,
+      25078,
+      22022,
+      0
+    ],
+    "white_body_region_policy": "Simplify formerly white body/highlight regions to light ink1. Index0 is transparent everywhere, not an opaque white paint color."
+  }
+}

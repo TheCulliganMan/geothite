@@ -1,0 +1,74 @@
+[
+  {
+    "id": "house-73",
+    "map": "MnMinneapolis",
+    "core": [
+      13,
+      10
+    ]
+  },
+  {
+    "id": "house-31",
+    "map": "MnMinneapolis",
+    "core": [
+      53,
+      18
+    ]
+  },
+  {
+    "id": "house-77",
+    "map": "MnMinneapolis",
+    "core": [
+      65,
+      18
+    ]
+  },
+  {
+    "id": "house-41",
+    "map": "MnMinneapolis",
+    "core": [
+      25,
+      22
+    ]
+  },
+  {
+    "id": "house-05",
+    "map": "MnMinneapolis",
+    "core": [
+      71,
+      26
+    ]
+  },
+  {
+    "id": "house-35",
+    "map": "MnMinneapolis",
+    "core": [
+      17,
+      30
+    ]
+  },
+  {
+    "id": "house-69",
+    "map": "MnMinneapolis",
+    "core": [
+      49,
+      52
+    ]
+  },
+  {
+    "id": "house-55",
+    "map": "MnMinneapolis",
+    "core": [
+      5,
+      58
+    ]
+  },
+  {
+    "id": "house-57",
+    "map": "MnMinneapolis",
+    "core": [
+      43,
+      60
+    ]
+  }
+]

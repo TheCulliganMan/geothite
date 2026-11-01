@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "id": "MN_WINTER_COURIER",
+  "name": "COURIER IVAR",
+  "status": "accepted-native-playable",
+  "overworld_frames": 6,
+  "overworld_size": [
+    16,
+    16
+  ],
+  "battle_size": [
+    56,
+    56
+  ],
+  "palette_rgb555": [
+    32767,
+    22431,
+    4500,
+    0
+  ],
+  "source": "native-pixels-v3.json",
+  "placement": "placement-v1.json",
+  "pack": "content-packs/minnesota-npcs-ref-06-v01.crystalpack",
+  "parent": "content-packs/minnesota-npcs-ref-05-v01.crystalpack",
+  "runtime_checks": {
+    "one_controller_test_passed": true,
+    "talk_and_input_ownership": true,
+    "battle_turn_and_pp": true,
+    "battle_save_load": true,
+    "actual_victory_and_defeat_flag_before_render_capture": true,
+    "post_battle_talk": true,
+    "existing_trainers_and_assets_preserved": true
+  },
+  "manual_visual_review": "Direct actual Crystal Fisher/Gentleman/Chris six-pose comparison at equal palette and scale; own-palette 1x/8x and actual snowy International Falls capture inspected. Brown skin and original palette preserved; connected fur-lined hat, clear eye highlights, scarf, dark coat with diagonal strap and brown same-side satchel, pale hem/cuffs and brown boots. Removed crowded letter from overworld only; letter remains in battle art. Dedicated rear hat seam/profile and lifted-foot stride/arm swing. Corrected asymmetric pupil before final encoding. Full encounter passed in 8.31s; battle/palette/gameplay/unrelated assets preserved.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/sprites/06-winter-courier/native-pixels-v3.json": "50acfb8184738bef862aeaf595546b05e0e1549105f0b58bc2f73c6631fdc98b",
+    "planning/minnesota/npcs/sprites/06-winter-courier/placement-v1.json": "287183b95148d388c832cfed9980d92ddca4e5a4161790c2a71b516c4fde2b00",
+    "content-packs/minnesota-npcs-ref-06-v01.crystalpack": "d032623a38647158426362fc6454f928073022086e6275cf00364568290aea5a",
+    "target/npc-sprites/courier/controller-reference-v01.log": "604dc084930cffc636abd56d80b79df3928c8b82680890a6241ed28c3ad3a0c9",
+    "target/npc-sprites/courier/gameplay-reference-v01/original-npc-trainer-intro.png": "22f68ae55213dbba3a1833a9593381cb6991a7b2a8b4336c653b2d1ced026785",
+    "target/npc-sprites/courier/gameplay-reference-v01/original-npc-first-turn.png": "21dba513eeb972a710ae91e4e7ea28d364960f2de585311f6f103a51e5b2b06a",
+    "target/npc-sprites/courier/gameplay-reference-v01/original-npc-overworld-state.png": "1dfcc2584e29dbc5186d880aa51e0282ea35e30a48c13c7c7b5cac1e69559031",
+    "target/npc-sprites/hand-review/courier-real-comparison-v2.png": "c378410d9ca847fa9f3e30a2382309f7b2dac66810068594b967650e1ec38904",
+    "target/npc-sprites/courier/reference-v2/comparison.png": "34c331bf925ad2539ae608ad877b79d4fa1108565ac83073835f717de54632d1",
+    "target/npc-sprites/courier/reference-v2/verification.json": "4cfe450a2f1d04ec04d30daab6eda77abaf7dcbfd40b55c19dd8b7f3c66eecfd",
+    "target/npc-sprites/courier/reference-v2/overworld-review.png": "a44c656d07ec514d5993ef23bf2c300db0bb2c4b51d155661f59faf40132d6e0",
+    "target/npc-sprites/courier/reference-v2/overworld-review-8x.png": "e9b2dbc852551a0d14b66b2f1d05f8059fe75c925dd54ccf76273c7eee778bfe"
+  },
+  "overworld_revision": "real-reference-hand-edited-v3",
+  "reference_review": "actual-crystal-sprites-common-palette-and-scale"
+}

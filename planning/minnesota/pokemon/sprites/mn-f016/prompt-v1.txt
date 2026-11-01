@@ -1,0 +1,17 @@
+Use case: stylized-concept
+Asset type: exact Game Boy Color Generation 2 battle pixel sprite sheet, original Minnesota monster family.
+Primary request: Pancakes and lumberjack breakfasts: a self-flipping pancake becomes a stack with butter eyebrows, syrup beard and a hot griddle belly.
+Style reference: authentic 1999 handheld RPG Generation2 pixel art: coarse visibly square pixels, low native resolution, simple sculpted clusters, selective black outlines, restrained internal dark lines, sparse white highlights, readable eyes. All designs are entirely original. No modern vector look, gradients, antialiasing, soft shadows, textures, excessive tiny details or dithering.
+Composition: 2 columns and exactly 2 rows on pure white, no labels, dividers or text. One species per column in evolutionary order. Top row whole-body FRONT battle view facing LEFT, all extremities inside its cell. Bottom row CLOSE REAR battle PORTRAIT of same species, facing UPPER RIGHT; head and upper back fill the cell, lower torso cut off at bottom. Backs are zoomed-in rear portraits, never small whole-body turnarounds. Maintain broad white gutters. Each cell behaves as a 64x64 logical grid enlarged by nearest neighbor. Fronts ultimately occupy 56x56; backs 48x48.
+GBC color definitions: palette indices 0..3; RGB5 channels are integers0..31; packed RGB555=r|(g<<5)|(b<<10); RGB8 expansion=(v<<3)|(v>>2). Each species has its OWN four-color palette, shared ONLY between its front/back. Do not share one palette across all stages. Use flat exact colors only. Index0 white is also the sheet background.
+Column 1: Flapip (NORMAL) — A self-flipping pancake creature with little folded pancake arms, two butter-corner eyebrows, lively face and curled edge feet, single thick disk body. Front grows in size relative to previous stage. Back must retain its unique anatomy and palette.
+  palette index0: RGB5 [31, 31, 31], packedRGB555 32767 (0x7FFF), expandedRGB8 [255, 255, 255], hex #FFFFFF.
+  palette index1: RGB5 (30, 24, 11), packedRGB555 12062 (0x2F1E), expandedRGB8 [247, 198, 90], hex #F7C65A.
+  palette index2: RGB5 (17, 10, 5), packedRGB555 5457 (0x1551), expandedRGB8 [140, 82, 41], hex #8C5229.
+  palette index3: RGB5 [0, 0, 0], packedRGB555 0 (0x0000), expandedRGB8 [0, 0, 0], hex #000000.
+Column 2: Stackajack (NORMAL/FIRE) — Sturdy stack of three pancakes with butter brows, a broad syrup beard growing directly from face and a dark hot-griddle belly, short chunky feet and spatula-shaped pancake hands. Front grows in size relative to previous stage. Back must retain its unique anatomy and palette.
+  palette index0: RGB5 [31, 31, 31], packedRGB555 32767 (0x7FFF), expandedRGB8 [255, 255, 255], hex #FFFFFF.
+  palette index1: RGB5 (31, 22, 8), packedRGB555 8927 (0x22DF), expandedRGB8 [255, 181, 66], hex #FFB542.
+  palette index2: RGB5 (16, 7, 4), packedRGB555 4336 (0x10F0), expandedRGB8 [132, 57, 33], hex #843921.
+  palette index3: RGB5 [0, 0, 0], packedRGB555 0 (0x0000), expandedRGB8 [0, 0, 0], hex #000000.
+All six/four views are ORIGINAL creature designs that embody the theme in their anatomy. No accessories held by humans, no costumes, no scenery, no ground shadows, no text or palette swatches. Prioritize Gen2 battle readability over illustration detail.

@@ -1,0 +1,182 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F097",
+  "species": [
+    {
+      "species_id": "MN_211",
+      "runtime_token": "PINGLET",
+      "palette_rgb555": [
+        32767,
+        9981,
+        17861,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        24489,
+        14513,
+        0
+      ],
+      "fit": [
+        14,
+        14
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 32,
+      "interior_black_samples": null,
+      "opaque_interior_minimum_samples": 60,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "pinglet.overworld.imagegen-v3.png",
+          "crop": [
+            52,
+            119,
+            462,
+            363
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "pinglet.overworld.imagegen-v3.png",
+          "crop": [
+            536,
+            106,
+            462,
+            363
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "pinglet.overworld.imagegen-v3.png",
+          "crop": [
+            1012,
+            102,
+            462,
+            363
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "pinglet.overworld.imagegen-v3.png",
+          "crop": [
+            52,
+            538,
+            462,
+            363
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "pinglet.overworld.imagegen-v3.png",
+          "crop": [
+            537,
+            529,
+            462,
+            363
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "pinglet.overworld.imagegen-v3.png",
+          "crop": [
+            1011,
+            513,
+            462,
+            363
+          ]
+        }
+      ]
+    },
+    {
+      "species_id": "MN_212",
+      "runtime_token": "PADDARRAY",
+      "palette_rgb555": [
+        32767,
+        29484,
+        21771,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        26012,
+        8565,
+        0
+      ],
+      "fit": [
+        13,
+        14
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 32,
+      "interior_black_samples": null,
+      "opaque_interior_minimum_samples": 60,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "paddarray.overworld.imagegen-v3.png",
+          "crop": [
+            56,
+            226,
+            408,
+            386
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "paddarray.overworld.imagegen-v4.png",
+          "crop": [
+            410,
+            230,
+            408,
+            386
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "paddarray.overworld.imagegen-v3.png",
+          "crop": [
+            813,
+            184,
+            408,
+            386
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "paddarray.overworld.imagegen-v3.png",
+          "crop": [
+            56,
+            643,
+            408,
+            386
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "paddarray.overworld.imagegen-v4.png",
+          "crop": [
+            410,
+            635,
+            408,
+            386
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "paddarray.overworld.imagegen-v3.png",
+          "crop": [
+            805,
+            585,
+            408,
+            386
+          ]
+        }
+      ]
+    }
+  ]
+}

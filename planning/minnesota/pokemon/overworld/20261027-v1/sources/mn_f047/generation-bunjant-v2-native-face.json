@@ -1,0 +1,8 @@
+{
+  "tool": "built-in image_gen",
+  "default_path": "/Users/ryanculligan/.codex/generated_images/01a178da-4cf1-7e01-8516-667a332dc790/exec-ed8e4736-baaa-4b3a-b0fc-fa3c14202fde.png",
+  "retained_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f047/bunjant.overworld.imagegen-v2-native-face.png",
+  "sha256": "2b3966ebbaa44c5ba6c0ba536f10099bfd8ad2616bd84b094897510bca19975e",
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f047/prompt-bunjant-native-face-v2.txt",
+  "accepted": false
+}

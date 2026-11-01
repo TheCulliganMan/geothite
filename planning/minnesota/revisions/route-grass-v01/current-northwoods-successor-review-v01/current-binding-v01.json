@@ -1,0 +1,9 @@
+{
+  "status": "PASS_EXACT_MAP_TILESET_AND_USED_SHARED_ART",
+  "selected_revision": "route_grass_r19_detroit_gate_revision",
+  "pack": "content-packs/minnesota-current-r19-detroit-gate-v05.crystalpack",
+  "pack_sha256": "b57516c0b77c7bcf94fa35e60ff8300bfd8a8781782827739742d8fc15b3f437",
+  "original_acceptance": "planning/minnesota/revisions/route-grass-v01/current-bemidji-northwoods-v01/acceptance.json",
+  "original_acceptance_sha256": "7178dfc39e984d4fce43ed9d942b91208609baef0d83a3ded52a32301b431cc0",
+  "scope": "Local terrain and inspected art inheritance; gameplay rerun separately, no assumption of global encounter equivalence."
+}

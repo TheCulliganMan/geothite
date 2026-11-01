@@ -1,0 +1,11 @@
+{
+  "status": "ImageGen output moderation rejected a benign plant-creature sheet request before result delivery; no returned raw path.",
+  "request_id": "8a567d18-d8c4-41f4-9e90-83c341b97a39",
+  "stage": "output",
+  "category": "other",
+  "attempted_species": [
+    "Burrbud",
+    "Burroot"
+  ],
+  "original_prompts_preserved": true
+}

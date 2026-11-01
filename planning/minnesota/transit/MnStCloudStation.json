@@ -1,0 +1,229 @@
+{
+  "id": "MnStCloudStation",
+  "kind": "train_station",
+  "tileset": "train_station",
+  "template": "GoldenrodMagnetTrainStation",
+  "dimensions_metatiles": [
+    10,
+    10
+  ],
+  "rows": [
+    "0a 16 0a 16 0a 16 0a 16 0a 16",
+    "0f 0b 0b 0b 0b 0b 0b 0b 0b 0f",
+    "0f 14 10 11 15 12 13 14 14 0f",
+    "0f 04 04 04 04 04 04 04 04 0f",
+    "0f 06 06 06 06 07 06 06 06 0f",
+    "0f 24 25 24 03 03 03 03 0c 0f",
+    "0f 1c 1c 1c 03 03 03 03 0c 0f",
+    "0f 26 1c 27 03 01 01 03 0c 0f",
+    "0f 0f 0f 0f 03 03 03 03 0f 0f",
+    "0f 0f 0f 0f 0f 09 0f 0f 0f 0f"
+  ],
+  "clear_arrival": [
+    11,
+    17
+  ],
+  "passive_arrival": {
+    "index": 3,
+    "tile": [
+      11,
+      17
+    ],
+    "collision": "FLOOR"
+  },
+  "exits": [
+    {
+      "index": 1,
+      "tile": [
+        10,
+        19
+      ],
+      "target": "MnStCloud",
+      "target_warp": 8,
+      "collision": "WARP_CARPET_DOWN"
+    },
+    {
+      "index": 2,
+      "tile": [
+        11,
+        19
+      ],
+      "target": "MnStCloud",
+      "target_warp": 8,
+      "collision": "WARP_CARPET_DOWN"
+    }
+  ],
+  "residents": [
+    {
+      "id": "MN_ST_CLOUD_GLACIER_CONDUCTOR",
+      "sprite": "SPRITE_OFFICER",
+      "tile": [
+        11,
+        9
+      ],
+      "facing": "south",
+      "lines": [
+        "GLACIER LINE.",
+        "No trains today."
+      ]
+    },
+    {
+      "id": "MN_ST_CLOUD_STATION_CLERK",
+      "sprite": "SPRITE_RECEPTIONIST",
+      "tile": [
+        3,
+        13
+      ],
+      "facing": "east",
+      "lines": [
+        "A granite depot",
+        "beside the river."
+      ]
+    },
+    {
+      "id": "MN_ST_CLOUD_STATION_PASSENGER",
+      "sprite": "SPRITE_POKEFAN_M",
+      "tile": [
+        14,
+        16
+      ],
+      "facing": "west",
+      "lines": [
+        "North to STAPLES.",
+        "South to ST PAUL."
+      ]
+    }
+  ],
+  "signs": [
+    {
+      "id": "MN_ST_CLOUD_GLACIER_TIMETABLE",
+      "tile": [
+        5,
+        10
+      ],
+      "approach": [
+        5,
+        11
+      ],
+      "lines": [
+        "GLACIER LINE",
+        "X means unvisited.",
+        "Free return rides."
+      ]
+    }
+  ],
+  "status": "Native public station room: real city door, both carpets, Continue and blocked boarding verified. Rail service/visit progression remain unimplemented.",
+  "native_constant": "MN_ST_CLOUD_STATION",
+  "public_arrival_core": [
+    11,
+    17
+  ],
+  "exit_tiles_core": [
+    [
+      10,
+      19
+    ],
+    [
+      11,
+      19
+    ]
+  ],
+  "passive_return_core": [
+    11,
+    17
+  ],
+  "boarding": {
+    "conductor_core": [
+      11,
+      9
+    ],
+    "approach_core": [
+      11,
+      10
+    ],
+    "platform_core": [
+      11,
+      7
+    ],
+    "train_door_core": [
+      6,
+      5
+    ],
+    "other_train_door_core": [
+      11,
+      5
+    ],
+    "ride_arrival_core": [
+      11,
+      11
+    ],
+    "conductor_open_steps": [
+      "up",
+      "up",
+      "right",
+      "right"
+    ],
+    "conductor_restore_steps": [
+      "left",
+      "left",
+      "down",
+      "down"
+    ],
+    "player_board_steps": [
+      "up",
+      "up",
+      "up",
+      "left",
+      "left",
+      "left",
+      "left",
+      "left",
+      "up",
+      "up"
+    ]
+  },
+  "native_script_binding": {
+    "status": "Not installed",
+    "network": "glacier-line.json",
+    "entry_callback": "EVENT_MN_STATION_ST_CLOUD_VISITED",
+    "service_requires": "EVENT_MN_COURIER_DEFEATED",
+    "no_progression_flags_granted_by_ride": true
+  },
+  "exterior_binding": {
+    "hub": "MnStCloud",
+    "door_core": [
+      35,
+      11
+    ],
+    "safe_return_core": [
+      35,
+      12
+    ],
+    "town_active_index": 7,
+    "town_passive_index": 8,
+    "room_passive_index": 3
+  },
+  "viewpoints": [
+    {
+      "name": "boarding throat",
+      "core": [
+        11,
+        11
+      ]
+    },
+    {
+      "name": "wooden waiting nook",
+      "core": [
+        5,
+        13
+      ]
+    },
+    {
+      "name": "quiet blue concourse",
+      "core": [
+        9,
+        16
+      ]
+    }
+  ]
+}

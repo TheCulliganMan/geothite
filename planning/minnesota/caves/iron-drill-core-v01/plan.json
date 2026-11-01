@@ -1,0 +1,282 @@
+{
+  "schema_version": 1,
+  "map": "MnIronDrillCore",
+  "parent": {
+    "revision": "route_grass_r17_trail_guidance_revision",
+    "pack": "content-packs/minnesota-current-r17-trail-guidance-v02.crystalpack",
+    "pack_sha256": "186c262b18d5174cb7ba9727358d4022bea9fce6d362529405728028ef92c60a"
+  },
+  "purpose": "A native rock-cut drill bay with its operating machine, northern isolation control, western crew space and lower shaft forecourt.",
+  "native_art": {
+    "base": "mn_iron_haulage_rock",
+    "private_alias": "mn_iron_core_rock",
+    "source_pixels_modified": false,
+    "machine": "Exact original facility12/13 drive rack and facility16 retracted frame.",
+    "control": "Original facility28 console with only its last floor-glyph row replaced by native mine floor.",
+    "numeric_callbacks": {
+      "18": "private12 is native facility12, all WALL",
+      "22": "private16 is native facility16, all WALL"
+    },
+    "default_static_extended_block": "44",
+    "palette": "nite"
+  },
+  "scene_contract": {
+    "witness_pose": [
+      9,
+      9
+    ],
+    "witness_entries": [
+      {
+        "tile": [
+          3,
+          12
+        ],
+        "movement": "MnNDrillWatchFrom3"
+      },
+      {
+        "tile": [
+          4,
+          12
+        ],
+        "movement": "MnNDrillWatchFrom4"
+      },
+      {
+        "tile": [
+          5,
+          12
+        ],
+        "movement": "MnNDrillWatchFrom5"
+      },
+      {
+        "tile": [
+          6,
+          12
+        ],
+        "movement": "MnNDrillWatchFrom6"
+      },
+      {
+        "tile": [
+          7,
+          12
+        ],
+        "movement": "MnNDrillWatchFrom7"
+      },
+      {
+        "tile": [
+          8,
+          12
+        ],
+        "movement": "MnNDrillWatchFrom8"
+      },
+      {
+        "tile": [
+          9,
+          12
+        ],
+        "movement": "MnNDrillWatchFrom9"
+      },
+      {
+        "tile": [
+          10,
+          12
+        ],
+        "movement": "MnNDrillWatchFrom10"
+      },
+      {
+        "tile": [
+          11,
+          12
+        ],
+        "movement": "MnNDrillWatchFrom11"
+      },
+      {
+        "tile": [
+          12,
+          12
+        ],
+        "movement": "MnNDrillWatchFrom12"
+      },
+      {
+        "tile": [
+          13,
+          12
+        ],
+        "movement": "MnNDrillWatchFrom13"
+      },
+      {
+        "tile": [
+          14,
+          12
+        ],
+        "movement": "MnNDrillWatchFrom14"
+      },
+      {
+        "tile": [
+          15,
+          12
+        ],
+        "movement": "MnNDrillWatchFrom15"
+      },
+      {
+        "tile": [
+          16,
+          12
+        ],
+        "movement": "MnNDrillWatchFrom16"
+      },
+      {
+        "tile": [
+          17,
+          12
+        ],
+        "movement": "MnNDrillWatchFrom17"
+      },
+      {
+        "tile": [
+          19,
+          12
+        ],
+        "movement": "MnNDrillWatchFrom19"
+      },
+      {
+        "tile": [
+          20,
+          12
+        ],
+        "movement": "MnNDrillWatchFrom20"
+      }
+    ],
+    "excluded_entry": "18,12 is occupied by the original core-east guard; its coordinate-event record remains intact.",
+    "eastern_detours": [
+      {
+        "script": "MnNDrillWatchFrom19",
+        "start": [
+          19,
+          12
+        ],
+        "steps": [
+          [
+            "DOWN",
+            1
+          ],
+          [
+            "LEFT",
+            10
+          ],
+          [
+            "UP",
+            4
+          ]
+        ],
+        "end": [
+          9,
+          9
+        ],
+        "reason": "Pass below the original core-east guard at18,12 rather than through its body."
+      },
+      {
+        "script": "MnNDrillWatchFrom20",
+        "start": [
+          20,
+          12
+        ],
+        "steps": [
+          [
+            "DOWN",
+            1
+          ],
+          [
+            "LEFT",
+            11
+          ],
+          [
+            "UP",
+            4
+          ]
+        ],
+        "end": [
+          9,
+          9
+        ],
+        "reason": "Pass below the original core-east guard at18,12 rather than through its body."
+      }
+    ],
+    "crew_start": [
+      15,
+      9
+    ],
+    "crew_finish": [
+      8,
+      7
+    ],
+    "shutdown_start": [
+      16,
+      3
+    ],
+    "player_after_shutdown": [
+      9,
+      9
+    ],
+    "later_result": "Instrument recovery remains a separate acknowledged crew interaction after witnessed drill, rival victory and actual shutdown."
+  },
+  "ports": [
+    {
+      "index": 1,
+      "x": 5,
+      "y": 14,
+      "target_map_constant": "MN_IRON_PUMP_GALLERY",
+      "target_map": "MN_IRON_PUMP_GALLERY",
+      "target_warp_id": 4
+    },
+    {
+      "index": 2,
+      "x": 4,
+      "y": 15,
+      "target_map_constant": "MN_IRON_PUMP_GALLERY",
+      "target_map": "MN_IRON_PUMP_GALLERY",
+      "target_warp_id": 4
+    }
+  ],
+  "actors": [
+    {
+      "id": "MN_NDRILL_REED",
+      "tile": [
+        8,
+        8
+      ]
+    },
+    {
+      "id": "MN_NDRILL_ENGINEER",
+      "tile": [
+        8,
+        5
+      ]
+    },
+    {
+      "id": "MN_NDRILL_FINN",
+      "tile": [
+        15,
+        9
+      ]
+    },
+    {
+      "id": "MN_LODE_ARC_CORE_WEST",
+      "tile": [
+        5,
+        11
+      ]
+    },
+    {
+      "id": "MN_LODE_ARC_CORE_EAST",
+      "tile": [
+        18,
+        12
+      ]
+    }
+  ],
+  "testing": {
+    "main": "Declared prior regional access only; play the real foreman, pressure network, feed choice, witness, rival, shutdown, crew handoff and return.",
+    "rare_entries": "Separate declared pre-input qualified access fixtures for the two eastern entry paths; no scene-result mutation after input."
+  },
+  "status": "Verified native rock chamber; world.json controls selection. Broader map improvement remains active."
+}

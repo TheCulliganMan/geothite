@@ -1,0 +1,210 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F009",
+  "status": "rejected_visual_quality",
+  "accepted_species_count": 0,
+  "technical_checks": [
+    {
+      "species_id": "MN_025",
+      "runtime_token": "PINIT",
+      "fit": [
+        14,
+        11
+      ],
+      "native_bounds_width_height": [
+        [
+          9,
+          11
+        ],
+        [
+          9,
+          11
+        ],
+        [
+          9,
+          11
+        ],
+        [
+          9,
+          11
+        ],
+        [
+          9,
+          11
+        ],
+        [
+          9,
+          11
+        ]
+      ],
+      "png_dimensions": [
+        16,
+        96
+      ],
+      "bank_bytes": 384,
+      "independent_tile_roundtrip": true,
+      "alpha_zero_equals_index_zero": true,
+      "same_crop_size_for_all_poses": true
+    },
+    {
+      "species_id": "MN_026",
+      "runtime_token": "PITCHWICK",
+      "fit": [
+        14,
+        13
+      ],
+      "native_bounds_width_height": [
+        [
+          12,
+          12
+        ],
+        [
+          12,
+          12
+        ],
+        [
+          12,
+          13
+        ],
+        [
+          12,
+          13
+        ],
+        [
+          12,
+          13
+        ],
+        [
+          12,
+          13
+        ]
+      ],
+      "png_dimensions": [
+        16,
+        96
+      ],
+      "bank_bytes": 384,
+      "independent_tile_roundtrip": true,
+      "alpha_zero_equals_index_zero": true,
+      "same_crop_size_for_all_poses": true
+    },
+    {
+      "species_id": "MN_027",
+      "runtime_token": "PYROPINE",
+      "fit": [
+        14,
+        14
+      ],
+      "native_bounds_width_height": [
+        [
+          13,
+          13
+        ],
+        [
+          13,
+          13
+        ],
+        [
+          13,
+          13
+        ],
+        [
+          13,
+          14
+        ],
+        [
+          13,
+          14
+        ],
+        [
+          13,
+          13
+        ]
+      ],
+      "png_dimensions": [
+        16,
+        96
+      ],
+      "bank_bytes": 384,
+      "independent_tile_roundtrip": true,
+      "alpha_zero_equals_index_zero": true,
+      "same_crop_size_for_all_poses": true
+    }
+  ],
+  "viewed_evidence": [
+    "original_source",
+    "normal_1x",
+    "normal_8x",
+    "shiny_8x",
+    "source_center_alternative_normal_8x",
+    "black64_alternative_normal_8x"
+  ],
+  "findings": [
+    "Pinit eye/body disappear into solid black.",
+    "Pitchwick face disappears under branch silhouette.",
+    "Pyropine retains dark green tiered shape and orange lanterns but loses face and anatomy."
+  ],
+  "required_fix": "Regenerate source with truly native 16x16-authored three-visible-ink pixel design; give light face plane and black single-pixel eyes enough area. Keep all poses coarse and reduce detail. Retain original sources and all conversion alternatives.",
+  "evidence": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/native-size-review/MN_F009/source-manifest.json",
+      "sha256": "7cc46b7dedd4ee063f53d42473b45c8b8c5822d8567ab7fa1bfe0ad3ad4acf16"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/native-size-review/MN_F009/compiled-index.json",
+      "sha256": "6368274d32f5b2ed1b9adbecd64721588f02c277bb5b416a748bf7cdf1ed4e25"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/native-size-review/MN_F009/review/line.normal.png",
+      "sha256": "9f9624beec425174b11dbe42c25876c029a5b336f99ac1ef1c9999672d5b9a67"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/native-size-review/MN_F009/review/line.normal-8x.png",
+      "sha256": "46ca55a86f97ca1b664dd2cf413c40cfd6dabd3ac048f3014122b877bb3cc83f"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/native-size-review/MN_F009/review/line.shiny-8x.png",
+      "sha256": "095614f2b28b62740a4b142e474e9546861b6b3ebe6f899bf1a4f8da385b1a06"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/native-size-review-center/MN_F009/source-manifest.json",
+      "sha256": "6147678fd1e315ebcceae30db51121569810c450c6ccf9f67be4b376a387b568"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/native-size-review-center/MN_F009/compiled-index.json",
+      "sha256": "309a87f9caa185e983ba5346df6f1c1cbbaffd55cbd4530dd2e337bea73b6674"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/native-size-review-center/MN_F009/review/line.normal.png",
+      "sha256": "ff3ca4b1cb595c8b9ac341d4b587367728a4eab1753d9e0420440b8b7eae4de2"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/native-size-review-center/MN_F009/review/line.normal-8x.png",
+      "sha256": "1bfb6d0af7e54a6add127d4735250d4ba40a6d33781ca75e76447585516921fd"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/native-size-review-center/MN_F009/review/line.shiny-8x.png",
+      "sha256": "32119398ced3cbc7239402bc02f5e3d45e2b320ce5e9dd9df667d516ad1a7cea"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/native-size-review-black64/MN_F009/source-manifest.json",
+      "sha256": "ca2b578c7c706b593da9feb5ad2ed2de75352074f6d9d3432d8a1642a458e192"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/native-size-review-black64/MN_F009/compiled-index.json",
+      "sha256": "57f62efa1a0a5598472f8d3bb4aa732fd8ea3d675fd5a1d0682641c20a365740"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/native-size-review-black64/MN_F009/review/line.normal.png",
+      "sha256": "9ca31ede09e9cf4c6142cd504c6188bcb79812af756e2ef0e0006ad174f67a5f"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/native-size-review-black64/MN_F009/review/line.normal-8x.png",
+      "sha256": "027aa126db6a9f11cc57286c0a7d4f7fca989e47c5890305ee98836d87e438e6"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/native-size-review-black64/MN_F009/review/line.shiny-8x.png",
+      "sha256": "e78fa87f3e9398503745495cbc0f84a1e52783c666d383f3313ddacb17ecc33c"
+    }
+  ]
+}

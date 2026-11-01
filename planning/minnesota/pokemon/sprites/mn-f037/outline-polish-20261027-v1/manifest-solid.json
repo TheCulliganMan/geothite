@@ -1,0 +1,238 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F037",
+  "status": "candidate-pending-native-review",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_087": {
+      "species_id": "MN_087",
+      "name": "Scraplow",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          20,
+          24,
+          28
+        ],
+        [
+          8,
+          12,
+          18
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        29460,
+        18824,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          165,
+          198,
+          231
+        ],
+        [
+          66,
+          99,
+          148
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#A5C6E7",
+        "#426394",
+        "#000000"
+      ]
+    },
+    "MN_088": {
+      "species_id": "MN_088",
+      "name": "Plowzer",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          21,
+          28,
+          31
+        ],
+        [
+          5,
+          12,
+          21
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        32661,
+        21893,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          173,
+          231,
+          255
+        ],
+        [
+          41,
+          99,
+          173
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#ADE7FF",
+        "#2963AD",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f037/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png",
+      "target/minnesota-pokemon/gen2-reference/bugs.png"
+    ]
+  },
+  "sprites": [
+    {
+      "id": "mn-087-scraplow-v1",
+      "species_id": "MN_087",
+      "view": "front",
+      "source": "sprites/mn-f037/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        625,
+        599
+      ],
+      "fit": [
+        44,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        29460,
+        18824,
+        0
+      ],
+      "exterior_contour": "solid"
+    },
+    {
+      "id": "mn-087-scraplow-v1",
+      "species_id": "MN_087",
+      "view": "back",
+      "source": "sprites/mn-f037/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        599,
+        625,
+        600
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        29460,
+        18824,
+        0
+      ],
+      "exterior_contour": "solid"
+    },
+    {
+      "id": "mn-088-plowzer-v1",
+      "species_id": "MN_088",
+      "view": "front",
+      "source": "sprites/mn-f037/front-back.imagegen-v1.png",
+      "crop": [
+        625,
+        0,
+        687,
+        599
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        32661,
+        21893,
+        0
+      ],
+      "exterior_contour": "solid"
+    },
+    {
+      "id": "mn-088-plowzer-v1",
+      "species_id": "MN_088",
+      "view": "back",
+      "source": "sprites/mn-f037/front-back.imagegen-v1.png",
+      "crop": [
+        625,
+        599,
+        687,
+        600
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        32661,
+        21893,
+        0
+      ],
+      "exterior_contour": "solid"
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "notes": "Inspected frozen v1: shovel-faced Scraplow grows into broad V-jaw Plowzer with packed snow shoulders; metal and white snow silhouettes retain connected dark rims. Backs show close shoulder/head framing.",
+    "sheet_sha256": "d7665301ad3241c793abe06602b272f26b3c1048fbc4c9d9ffdf96f75e71a65e",
+    "outline_profile": "source-contour-v1"
+  }
+}

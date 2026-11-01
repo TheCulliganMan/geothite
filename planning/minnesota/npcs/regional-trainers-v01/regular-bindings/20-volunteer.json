@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "trainer_class": "MN_VOLUNTEER",
+  "class_name": "VOLUNTEER",
+  "trainer_ids": [
+    "MN_R13_T07"
+  ],
+  "actors": [
+    {
+      "map": "MnR13C00R02",
+      "script": "MN_R13_T07",
+      "tile": [
+        17,
+        11
+      ],
+      "previous_sprite": "SPRITE_COOLTRAINER_F"
+    }
+  ]
+}

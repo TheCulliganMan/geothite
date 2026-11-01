@@ -1,0 +1,22 @@
+{
+  "trainers": [
+    {
+      "id": "MN_REED_RELAY",
+      "map": "MnIceRelayFloor",
+      "actor_script": "MN_NICE_RELAY_REED",
+      "approach": [
+        21,
+        5
+      ],
+      "facing": "south",
+      "trainer_class": "MN_RIVAL_REED",
+      "sprite": "SPRITE_MN_RIVAL_REED",
+      "fixture_events": [
+        "EVENT_MN_REED_JOINED_ICE",
+        "EVENT_MN_ICE_CARGO_FEED_OFF"
+      ],
+      "fixture_badges": 3,
+      "defeated_flag": "EVENT_MN_REED_RELAY_DEFEATED"
+    }
+  ]
+}

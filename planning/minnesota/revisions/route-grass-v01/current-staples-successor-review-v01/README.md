@@ -1,0 +1,5 @@
+# Current Staples junction review
+
+Three fresh selected-pack native cases pass both R15 spur lanes/returns, people/signs, station doors/carpets, visit memory without unrelated flags, conductor input release, parcel price/bag change, insufficient-money refusal, a native R15 wild battle/RUN, and Save/Continue. A retained current save passes13 production movement/menu calls with empty stderr and unchanged input. Complete yard/room maps and used native art match the old inspected captures; the whole yard render was inspected again.
+
+The optional R15 road-fixture-to-spur path now has a dry bypass: composition-proof.json measures zero required grass, superseding the older three-step claim. This service outpost remains intentionally dry with no encounter table. The current R15 main route grass/ledge course has separate acceptance; this record does not invent a station grass requirement or claim new train service. Initial position/party/money are QA fixtures. Broader regional review remains active.

@@ -1,0 +1,5 @@
+{
+  "reason": "Initial proposed sign line exceeded 18 characters; corrected before any native source or pack was written. First wrapper stopped on missing preflight output; no Cargo job or portable artifact was created.",
+  "replacement": "Steps to the east.",
+  "native_line_characters": 18
+}

@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "trainer_class": "MN_CAMP_COOK",
+  "class_name": "CAMP COOK",
+  "trainer_ids": [
+    "MN_FAIR_PICNIC_TRAINER"
+  ],
+  "actors": [
+    {
+      "map": "MnStateFairgrounds",
+      "script": "MN_FAIR_PICNIC_TRAINER",
+      "tile": [
+        61,
+        31
+      ],
+      "previous_sprite": "SPRITE_GENTLEMAN"
+    }
+  ]
+}

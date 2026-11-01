@@ -1,0 +1,38 @@
+{
+  "id": "MN_F132",
+  "region": "central_lakes",
+  "theme": "Minnesota common snapping turtles and muddy-bank ambush: a low hatchling develops a huge hooked beak, thick telescoping neck, three broad shell ridges and a long saw-ridged tail. Its shell is living keratin and its low stance follows a real turtle; no cannons or carried objects.",
+  "habitat": "Muddy pond bottoms, slow rivers and shallow vegetated lake margins.",
+  "members": [
+    {
+      "id": "MN_291",
+      "name": "Mudnip",
+      "types": [
+        "WATER",
+        "GROUND"
+      ],
+      "stage": 1,
+      "evolves_to": "MN_292"
+    },
+    {
+      "id": "MN_292",
+      "name": "Bankmaw",
+      "types": [
+        "WATER",
+        "GROUND"
+      ],
+      "stage": 2,
+      "evolves_to": null
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.minneapolisparks.org/park-care-improvements/water_resources/turtles/",
+      "publisher": "Minnesota regional primary source",
+      "evidence": "Common snapping turtles in Minnesota park waters; creature anatomy and powers are fictional.",
+      "fantasy_extension": "All powers, anatomy changes and discovery scenes are original fiction."
+    }
+  ],
+  "design_status": "authored-wildlife-replacement",
+  "replacement_context": "User requested forest wildlife in place of rejected weather families while retaining exactly220 active species. No encounter table or map event is changed."
+}

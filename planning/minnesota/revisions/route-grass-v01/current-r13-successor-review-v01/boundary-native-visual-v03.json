@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-r13-boundary-apron-v03.crystalpack",
+  "pack_sha256": "7d3987bfbf0378aed960495cc20981c0d258eb391f33630b8e3de6c2686e2e7d",
+  "views_inspected": [
+    "route-north-seam",
+    "boundary-south-seam"
+  ],
+  "pixel_mismatches": 0,
+  "source_native_report": ".local/route-grass-review/r13-boundary-native-after-v03/capture-progress.json",
+  "observation": "Native snow-floor apron visibly joins both approaches; tree borders and Boundary Waters guards retained; native 2D only."
+}

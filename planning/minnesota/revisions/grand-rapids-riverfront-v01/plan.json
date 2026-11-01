@@ -1,0 +1,250 @@
+{
+  "schema_version": 1,
+  "map": "MnGrandRapids",
+  "purpose": "A pine-bounded service street and connected riverbank loop, preserving all existing destinations and story checkpoints, with a native stone fishing pier and one optional fisher.",
+  "dimensions_metatiles": [
+    24,
+    24
+  ],
+  "parent": {
+    "parent_revision": "gunflint_spring_shelter_revision",
+    "parent_pack": "content-packs/minnesota-gunflint-spring-shelter-v02.crystalpack",
+    "parent_pack_sha256": "6a4af10d7d025cb9041878a63855c6d01cf4e5180c2672cf10a07b0ceda5fecb"
+  },
+  "whole_source": "after.json",
+  "preserved_facades": [
+    {
+      "origin": [
+        4,
+        4
+      ],
+      "extent": [
+        2,
+        2
+      ],
+      "door_core": [
+        9,
+        11
+      ],
+      "return_core": [
+        9,
+        12
+      ],
+      "room": "MnGrandRapidsPokecenter1F"
+    },
+    {
+      "origin": [
+        13,
+        5
+      ],
+      "extent": [
+        3,
+        2
+      ],
+      "door_core": [
+        27,
+        13
+      ],
+      "return_core": [
+        27,
+        14
+      ],
+      "room": "MnGrandRapidsSurveyDepot"
+    },
+    {
+      "origin": [
+        19,
+        6
+      ],
+      "extent": [
+        2,
+        2
+      ],
+      "door_core": [
+        39,
+        15
+      ],
+      "return_core": [
+        39,
+        16
+      ],
+      "room": "MnGrandRapidsMart"
+    }
+  ],
+  "town_navigation": {
+    "main_street": "Original two-core-tile east/west road and all four guarded lanes remain.",
+    "service_loop": [
+      [
+        4,
+        8
+      ],
+      [
+        10,
+        8
+      ],
+      [
+        10,
+        7
+      ],
+      [
+        16,
+        7
+      ],
+      [
+        16,
+        8
+      ],
+      [
+        19,
+        8
+      ]
+    ],
+    "river_loop": [
+      [
+        8,
+        12
+      ],
+      [
+        8,
+        14
+      ],
+      [
+        9,
+        14
+      ],
+      [
+        9,
+        15
+      ],
+      [
+        10,
+        15
+      ],
+      [
+        10,
+        16
+      ],
+      [
+        18,
+        16
+      ],
+      [
+        18,
+        12
+      ]
+    ],
+    "ordinary_path_width_core": 2
+  },
+  "pier": {
+    "left_native_source": "port2f",
+    "right_native_source": "port2e",
+    "cap_native_source": "port30",
+    "metatiles": [
+      [
+        12,
+        17
+      ],
+      [
+        13,
+        17
+      ],
+      [
+        12,
+        18
+      ],
+      [
+        13,
+        18
+      ],
+      [
+        12,
+        19
+      ],
+      [
+        13,
+        19
+      ]
+    ],
+    "clear_bank_core": [
+      26,
+      33
+    ],
+    "trainer_core": [
+      25,
+      36
+    ],
+    "trainer_approach_core": [
+      26,
+      36
+    ],
+    "fishing_cap_core": [
+      26,
+      38
+    ],
+    "surf_target_core": [
+      26,
+      39
+    ],
+    "cap": "Original gray port paving ends visibly over Water; native Surf prerequisites gate the step off.",
+    "water_boundary": "Original contained river outline and outer city buffers stay exact. No new regional water seam or unconnected outer water."
+  },
+  "native_art": {
+    "base": "johto_modern",
+    "private_alias": "mn_grand_rapids_riverfront",
+    "source_pixels_modified": false,
+    "recipes": [
+      {
+        "id": "80",
+        "source_tileset": "port",
+        "source_block": "2f",
+        "collision": [
+          "WATER",
+          "FLOOR",
+          "WATER",
+          "FLOOR"
+        ]
+      },
+      {
+        "id": "81",
+        "source_tileset": "port",
+        "source_block": "2e",
+        "collision": [
+          "FLOOR",
+          "WATER",
+          "FLOOR",
+          "WATER"
+        ]
+      },
+      {
+        "id": "82",
+        "source_tileset": "port",
+        "source_block": "30",
+        "collision": [
+          "FLOOR",
+          "FLOOR",
+          "WATER",
+          "WATER"
+        ]
+      }
+    ],
+    "animation": "Exact imported port water glyph14 reuses original outdoor animated glyph14, after source pixel/palette equality checks."
+  },
+  "optional_battle": "trainers.json: KNUTE, original Minnesota SCUTLET29 and TORROUT31; existing regional scaling remains. Decline/retry, actual PP/prize/victory and Continue must pass.",
+  "preserve": "All six original actor anchors, three original boards, all six active/passive warp records, four guarded road lanes and scripts, room services, depot handover gates, recovery spawns and both neighbor seams.",
+  "review": {
+    "native_reference": "Complete current town and native Johto/port source sheets inspected.",
+    "warm_source_seconds": 0.086,
+    "full_state_atlas": "planning/minnesota/renders/statewide-current-v658/full-state-native-current.png",
+    "preservation": "planning/minnesota/renders/grand-rapids-riverfront-v659/preservation-v668.json",
+    "negative_publication": "planning/minnesota/renders/grand-rapids-riverfront-v659/negative-v669/receipt.json",
+    "audio": "planning/minnesota/renders/grand-rapids-riverfront-v659/audio-v671.json",
+    "native_static_old_renderer": "planning/minnesota/renders/grand-rapids-riverfront-v659/native-v666/capture-progress.json",
+    "native": "planning/minnesota/renders/grand-rapids-riverfront-v659/native-v673/capture-progress.json",
+    "actual_reached": "planning/minnesota/renders/grand-rapids-riverfront-v659/acted-v676/receipt.json",
+    "visual": "planning/minnesota/renders/grand-rapids-riverfront-v659/visual-inspection-v677.json",
+    "controller": "planning/minnesota/renders/grand-rapids-riverfront-v659/controller-v672.json",
+    "stdio": "planning/minnesota/renders/grand-rapids-riverfront-v659/stdio-v674/receipt.json",
+    "clippy": "planning/minnesota/renders/grand-rapids-riverfront-v659/clippy-v670.json"
+  },
+  "status": "Verified complete town: connected service and winding riverfront loops, native stone fishing pier, optional original Minnesota fisher, animation, all existing services/story gates/seams, Surf denials and Continue. Selection controlled by world.json; broader regional review remains active."
+}

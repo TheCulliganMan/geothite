@@ -1,0 +1,341 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_095",
+  "result": "pass",
+  "manifest_sha256": "ca7ee6d49b8b0757612ab1801a08ad8459a04fc3f479fd6d135011423715320c",
+  "bank_sha256": "24363a38e7ba9a1baac4b31a42cbae7cf26ce883fada4932afa8210864fcb006",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f044/babehemoth.overworld.imagegen-v8-face-clearance.png": "f60ac724423cc2cae60b50899209d94729d8b80c4282a680d8e11c48d2b74884"
+  },
+  "canonical_eye_form": "TWO real black SOUTH pupils and ONE near WEST pupil. Every whole native cluster maps to same small anatomical source pupil component; nostrils/hoof/tail marks not counted.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "down_idle",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f044/babehemoth.overworld.imagegen-v8-face-clearance.png",
+        "crop": [
+          9,
+          117,
+          510,
+          450
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            203,
+            350,
+            27,
+            26
+          ],
+          [
+            306,
+            350,
+            27,
+            26
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                6,
+                9
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  0,
+                  0,
+                  0,
+                  253
+                ],
+                "bounds": [
+                  203,
+                  350,
+                  27,
+                  26
+                ],
+                "pixels": 702,
+                "truncated_contour": false,
+                "native_pixel": [
+                  6,
+                  9
+                ],
+                "source_sample_pixel": [
+                  219,
+                  359
+                ]
+              }
+            ]
+          },
+          {
+            "native_cluster": [
+              [
+                9,
+                9
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  0,
+                  0,
+                  0,
+                  253
+                ],
+                "bounds": [
+                  306,
+                  350,
+                  27,
+                  26
+                ],
+                "pixels": 695,
+                "truncated_contour": false,
+                "native_pixel": [
+                  9,
+                  9
+                ],
+                "source_sample_pixel": [
+                  321,
+                  359
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "left_idle",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f044/babehemoth.overworld.imagegen-v8-face-clearance.png",
+        "crop": [
+          996,
+          71,
+          510,
+          450
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            1116,
+            339,
+            26,
+            26
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                4,
+                10
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  4,
+                  2,
+                  2,
+                  253
+                ],
+                "bounds": [
+                  1116,
+                  339,
+                  26,
+                  26
+                ],
+                "pixels": 676,
+                "truncated_contour": false,
+                "native_pixel": [
+                  4,
+                  10
+                ],
+                "source_sample_pixel": [
+                  1138,
+                  349
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "down_step",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f044/babehemoth.overworld.imagegen-v8-face-clearance.png",
+        "crop": [
+          11,
+          559,
+          510,
+          450
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            203,
+            789,
+            27,
+            26
+          ],
+          [
+            306,
+            789,
+            27,
+            26
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                6,
+                9
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  1,
+                  0,
+                  0,
+                  254
+                ],
+                "bounds": [
+                  203,
+                  789,
+                  27,
+                  26
+                ],
+                "pixels": 702,
+                "truncated_contour": false,
+                "native_pixel": [
+                  6,
+                  9
+                ],
+                "source_sample_pixel": [
+                  221,
+                  801
+                ]
+              }
+            ]
+          },
+          {
+            "native_cluster": [
+              [
+                9,
+                9
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  1,
+                  0,
+                  0,
+                  253
+                ],
+                "bounds": [
+                  306,
+                  789,
+                  27,
+                  26
+                ],
+                "pixels": 696,
+                "truncated_contour": false,
+                "native_pixel": [
+                  9,
+                  9
+                ],
+                "source_sample_pixel": [
+                  323,
+                  801
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "left_step",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f044/babehemoth.overworld.imagegen-v8-face-clearance.png",
+        "crop": [
+          997,
+          511,
+          510,
+          450
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            1115,
+            781,
+            27,
+            26
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                4,
+                10
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  1,
+                  1,
+                  1,
+                  253
+                ],
+                "bounds": [
+                  1115,
+                  781,
+                  27,
+                  26
+                ],
+                "pixels": 692,
+                "truncated_contour": false,
+                "native_pixel": [
+                  4,
+                  10
+                ],
+                "source_sample_pixel": [
+                  1139,
+                  789
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "notes": "Both actual rear poses viewed: blank shaggy hindskull/back, huge crescent horns and curledtail, no false face. Native horns form a broad bar at this scale, horn arch remains readable."
+  },
+  "detailed_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f044/manifest-babehemoth-v11-pupil-proof.proof.json",
+  "signature_anatomy_review": "All six native normal/shiny poses actually viewed: native14x12 giant crescent horns with clear central arch, broad blue ox face with isolated pupils, shaggy blue back, four hoofed legs and curled tufted tail. Source v8 light cheek widening preserves identity and removes competing cheek seam black at eye grid neighbors.",
+  "source_motion_review": {
+    "source_sheet_actually_viewed": true,
+    "notes": "Actual source legs alternate hoof lift and torso/tuft change, not translated idle; all native three direction pairs differ. Eye/head anchors stay fixed."
+  }
+}

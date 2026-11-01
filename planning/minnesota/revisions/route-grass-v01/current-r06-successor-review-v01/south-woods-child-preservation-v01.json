@@ -1,0 +1,19 @@
+{
+  "status": "PASS_NATIVE_CHILD_NOT_SELECTED",
+  "parent_revision": "route_grass_r11_upper_revision",
+  "parent_pack": "content-packs/minnesota-current-r11-southwest-grass-v01.crystalpack",
+  "parent_pack_sha256": "9f0ff0c7d0f6dd874ef1a581657900984ca75d360ffb04da2c92b00ab58475aa",
+  "pack": "content-packs/minnesota-current-r06-south-woods-grass-v01.crystalpack",
+  "pack_sha256": "1d906a7d4998ce8b25332b05413131d9d256961a284230143d82541b24c403d0",
+  "content_identity": "41aad022dd980dc1bf1f5784fb8a8a465648d500c1119ee2ac2cda2946121ffa",
+  "delta": {
+    "maps": [
+      "MnR06C00R01"
+    ],
+    "map_blocks": [
+      "MnR06C00R01_Blocks"
+    ]
+  },
+  "new_grass_quadrants": 20,
+  "all_other_maps_and_all_events_actors_scripts_teams_encounters_items_art_audio_exact": true
+}

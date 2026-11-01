@@ -163,15 +163,11 @@ fn spawn_visible_map_name_sign(
             let frame = &frames[tile_index(row, col)];
             let (x, y) = battle_hud_tile_origin(col as f32, (14 + row) as f32);
             commands.spawn((
-                SpriteBundle {
-                    texture: frame.handle.clone(),
-                    sprite: Sprite {
+                (Sprite { image: frame.handle.clone(),
                         custom_size: Some(frame.size),
                         ..default()
                     },
-                    transform: Transform::from_xyz(x, y, 3.2),
-                    ..default()
-                },
+Transform::from_xyz(x, y, 3.2),),
                 MapNameSignMarker,
                 FieldCommandMarker,
             ));
@@ -182,15 +178,11 @@ fn spawn_visible_map_name_sign(
     for (index, frame) in glyphs.into_iter().enumerate() {
         let (x, y) = battle_hud_tile_origin(start_tile + index as f32, 16.0);
         commands.spawn((
-            SpriteBundle {
-                texture: frame.handle,
-                sprite: Sprite {
+            (Sprite { image: frame.handle,
                     custom_size: Some(frame.size),
                     ..default()
                 },
-                transform: Transform::from_xyz(x, y, 3.3),
-                ..default()
-            },
+Transform::from_xyz(x, y, 3.3),),
             MapNameSignMarker,
             FieldCommandMarker,
         ));
@@ -292,30 +284,20 @@ fn spawn_field_prompt_marker(
         return;
     };
     commands.spawn((
-        SpriteBundle {
-            sprite: Sprite {
+        (Sprite {
                 color: Color::srgba(1.0, 0.92, 0.22, 0.62),
                 custom_size: Some(Vec2::new(TILE_SIZE * 0.88, TILE_SIZE * 0.88)),
                 ..default()
             },
-            transform: Transform::from_xyz(x, y, 2.7),
-            ..default()
-        },
+Transform::from_xyz(x, y, 2.7),),
         FieldPromptMarker,
     ));
     commands.spawn((
-        Text2dBundle {
-            text: Text::from_section(
-                label,
-                TextStyle {
-                    font_size: 13.0,
-                    color: Color::srgb(1.0, 0.98, 0.80),
-                    ..default()
-                },
-            ),
-            transform: Transform::from_xyz(x, y + TILE_SIZE * 0.82, 2.9),
-            ..default()
-        },
+        (Text2d::new(
+                label),
+TextFont::from_font_size(13.0),
+TextColor(Color::srgb(1.0, 0.98, 0.80)),
+Transform::from_xyz(x, y + TILE_SIZE * 0.82, 2.9),),
         FieldPromptMarker,
     ));
 }
@@ -384,7 +366,7 @@ fn field_prompt_context_checked(
                         {
                             return Ok(Some((
                                 interaction.target_tile,
-                                field_object_prompt_label(object),
+                                field_object_prompt_label(runtime_shell, snapshot, object),
                             )));
                         }
                     }
@@ -420,7 +402,7 @@ fn field_prompt_context_checked(
         )? {
             return Ok(Some((
                 TilePosition::new(front_x, front_y),
-                field_object_prompt_label(object),
+                field_object_prompt_label(runtime_shell, snapshot, object),
             )));
         }
     }
@@ -452,7 +434,37 @@ fn field_prompt_context_checked(
     Ok(None)
 }
 
-fn field_object_prompt_label(object: &crate::core::map::ObjectEvent) -> String {
+fn field_object_prompt_label(
+    runtime_shell: &BevyRuntimeShell,
+    snapshot: &RuntimeShellSnapshot,
+    object: &crate::core::map::ObjectEvent,
+) -> String {
+    let resident = match object.sprite.as_str() {
+        "SPRITE_DAY_CARE_MON_1" => Some(&snapshot.day_care.man),
+        "SPRITE_DAY_CARE_MON_2" => Some(&snapshot.day_care.lady),
+        _ => None,
+    };
+    let visible_sprite = resident
+        .filter(|resident| resident.active)
+        .and_then(|resident| resident.pokemon.as_ref())
+        .map(|pokemon| pokemon.species.id.as_str())
+        .unwrap_or(&object.sprite);
+    let bitmap = resolve_visible_object_sprite_asset_id(
+        &runtime_shell.asset_root, visible_sprite,
+        &snapshot.script_events.variable_sprites, &snapshot.presentation.menu_icons,
+    );
+    let source = visible_map_object_model_source_from_data(
+        runtime_shell.shell.runtime().data(),
+        &snapshot.overworld.map_name, object, visible_sprite, &bitmap,
+        &snapshot.script_events.variable_sprites, &snapshot.presentation.menu_icons,
+    );
+    field_object_prompt_for_source(object, &source)
+}
+
+fn field_object_prompt_for_source(object: &crate::core::map::ObjectEvent, source: &str) -> String {
+    if let Some(species) = resolved_object_species_label(source) {
+        return format!("A {species}");
+    }
     let label = object_scene_label(object);
     let kind = match visible_object_kind(object) {
         VisibleObjectKind::ItemBall => "ITEM",
@@ -487,7 +499,8 @@ fn retained_field_fullscreen_active(runtime_shell: &BevyRuntimeShell) -> bool {
         || (runtime_shell.pending_name_choice.is_some()
         && runtime_shell.pending_standard_capture.is_none()
         && runtime_shell.pending_gift_pokemon_nickname.is_none()
-        && runtime_shell.pending_egg_hatch_nickname.is_none())
+        && runtime_shell.pending_egg_hatch_nickname.is_none()
+        && !safari_catch_visible::native_surface_owns(runtime_shell))
         || runtime_shell.pending_name_input.is_some()
         || runtime_shell.pending_mail_input.is_some()
         || runtime_shell.pending_mail_read.is_some()
@@ -914,15 +927,16 @@ fn spawn_field_command_menu(
             images,
         ) {
             commands.spawn((
-                Text2dBundle {
-                    text: Text::from_section(error.to_string(), TextStyle::default()),
-                    transform: Transform::from_xyz(0.0, 0.0, 4.0),
-                    ..default()
-                },
+                (Text2d::new(error.to_string()),
+TextFont::from_font_size(20.0),
+TextColor(Color::WHITE),
+Transform::from_xyz(0.0, 0.0, 4.0),),
                 FieldCommandMarker,
             ));
         }
-        spawn_pc_notice(commands, runtime_shell, rendered_art, asset_root, images);
+        if let Err(error)=spawn_pc_notice(commands, runtime_shell, rendered_art, asset_root, images) {
+            *render_error=Some(error);
+        }
         return;
     }
     let origin_x = PLAYFIELD_LEFT + TILE_SIZE * 11.0;
@@ -939,8 +953,7 @@ fn spawn_field_command_menu(
         window_height as f32,
     );
     commands.spawn((
-        SpriteBundle {
-            sprite: Sprite {
+        (Sprite {
                 color: Color::WHITE,
                 custom_size: Some(Vec2::new(
                     TILE_SIZE * (window_width - 2) as f32,
@@ -948,9 +961,7 @@ fn spawn_field_command_menu(
                 )),
                 ..default()
             },
-            transform: Transform::from_xyz(center_x, center_y, 3.3),
-            ..default()
-        },
+Transform::from_xyz(center_x, center_y, 3.3),),
         FieldCommandMarker,
     ));
     if let Some(frame) = battle_window_frame_art(rendered_art, asset_root, images) {
@@ -1022,15 +1033,12 @@ fn spawn_visible_buena_password_menu(
         .clamp(11, 20);
     let (center_x, center_y) = field_window_center(0.0, 0.0, width as f32, 8.0);
     commands.spawn((
-        SpriteBundle {
-            sprite: Sprite {
+        (Sprite {
                 color: Color::WHITE,
                 custom_size: Some(Vec2::new(TILE_SIZE * (width - 2) as f32, TILE_SIZE * 6.0)),
                 ..default()
             },
-            transform: Transform::from_xyz(center_x, center_y, 3.3),
-            ..default()
-        },
+Transform::from_xyz(center_x, center_y, 3.3),),
         FieldCommandMarker,
     ));
     let frame = battle_window_frame_art(rendered_art, asset_root, images)
@@ -1063,11 +1071,7 @@ fn spawn_visible_battle_tower_challenge_menu(
         .visible_battle_tower_challenge_menu
         .as_ref()
         .context("no Battle Tower challenge menu is open")?;
-    let options: &[&str] = if menu.english {
-        &["CHALLENGE", "EXPLANATION", "CANCEL"]
-    } else {
-        &["NEWS", "NEWS", "???", "CANCEL"]
-    };
+    let options = visible_battle_tower_challenge_options(menu.english);
     let selected = strict_readonly_cursor_index(
         &Some(menu.cursor.clone()),
         "script:battle-tower-challenge",
@@ -1076,15 +1080,12 @@ fn spawn_visible_battle_tower_challenge_menu(
     .context("Battle Tower challenge menu has no valid cursor")?;
     let (center_x, center_y) = field_window_center(0.0, 0.0, 14.0, 8.0);
     commands.spawn((
-        SpriteBundle {
-            sprite: Sprite {
+        (Sprite {
                 color: Color::WHITE,
                 custom_size: Some(Vec2::new(TILE_SIZE * 12.0, TILE_SIZE * 6.0)),
                 ..default()
             },
-            transform: Transform::from_xyz(center_x, center_y, 3.3),
-            ..default()
-        },
+Transform::from_xyz(center_x, center_y, 3.3),),
         FieldCommandMarker,
     ));
     let frame = battle_window_frame_art(rendered_art, asset_root, images)
@@ -1264,7 +1265,6 @@ fn spawn_visible_slot_machine(
     for (text, tile_x, tile_y) in [
         (format!("{:04}", machine.coins), 5.0, 1.0),
         (format!("{:04}", machine.payout), 11.0, 1.0),
-        (machine.message.clone(), 1.0, 15.0),
         (format!("BET {} A:SPIN B:QUIT", machine.bet), 1.0, 17.0),
     ] {
         let (x, y) = battle_hud_tile_origin(tile_x, tile_y);
@@ -1274,6 +1274,24 @@ fn spawn_visible_slot_machine(
             asset_root,
             images,
             &text,
+            x,
+            y,
+            3.7,
+        );
+    }
+    let first_row = if machine.message.contains('\n') {
+        14.0
+    } else {
+        15.0
+    };
+    for (row, line) in machine.message.lines().enumerate() {
+        let (x, y) = battle_hud_tile_origin(1.0, first_row + row as f32 * 2.0);
+        spawn_field_command_bitmap_text(
+            commands,
+            rendered_art,
+            asset_root,
+            images,
+            line,
             x,
             y,
             3.7,
@@ -1314,17 +1332,27 @@ fn spawn_visible_card_flip(
         3.3,
         images,
     )?;
-    let (message_x, message_y) = battle_hud_tile_origin(1.0, 13.0);
-    spawn_field_command_bitmap_text(
+    spawn_game_corner_window(
         commands,
         rendered_art,
         asset_root,
         images,
-        &game.message,
-        message_x,
-        message_y,
-        3.6,
+        [0.0, 12.0, 20.0, 6.0],
+        3.4,
     );
+    for (row, line) in game.message.lines().enumerate() {
+        let (message_x, message_y) = battle_hud_tile_origin(1.0, 13.0 + row as f32 * 2.0);
+        spawn_field_command_bitmap_text(
+            commands,
+            rendered_art,
+            asset_root,
+            images,
+            line,
+            message_x,
+            message_y,
+            3.6,
+        );
+    }
     let (coin_x, coin_y) = battle_hud_tile_origin(10.0, 16.0);
     spawn_field_command_bitmap_text(
         commands,
@@ -1340,6 +1368,14 @@ fn spawn_visible_card_flip(
         game.phase,
         VisibleCardFlipPhase::AskPlay | VisibleCardFlipPhase::PlayAgain
     ) {
+        spawn_game_corner_window(
+            commands,
+            rendered_art,
+            asset_root,
+            images,
+            [12.0, 7.0, 7.0, 5.0],
+            3.5,
+        );
         for (index, option) in ["YES", "NO"].iter().enumerate() {
             let label = if index == game.yes_no_index {
                 format!(">{option}")
@@ -1362,17 +1398,52 @@ fn spawn_visible_card_flip(
     Ok(())
 }
 
+fn spawn_game_corner_window(
+    commands: &mut Commands,
+    rendered_art: &mut RenderedTilesetArt,
+    asset_root: &AssetRoot,
+    images: &mut Assets<Image>,
+    bounds: [f32; 4],
+    z: f32,
+) {
+    let [x, y, width, height] = bounds;
+    let (center_x, center_y) = field_window_center(x, y, width, height);
+    // Betting screens own these windows together with their glyphs. Ordinary
+    // dialogue cleanup must not retire an idle Game Corner prompt or menu.
+    commands.spawn((
+        Sprite {
+            color: Color::WHITE,
+            custom_size: Some(Vec2::new(
+                TILE_SIZE * (width - 2.0),
+                TILE_SIZE * (height - 2.0),
+            )),
+            ..default()
+        },
+        Transform::from_xyz(center_x, center_y, z),
+        FieldCommandMarker,
+    ));
+    if let Some(frame) = battle_window_frame_art(rendered_art, asset_root, images) {
+        spawn_field_command_window_frame_tiles(
+            commands,
+            frame,
+            x,
+            y,
+            width as usize,
+            height as usize,
+            z + 0.05,
+        );
+    }
+}
+
 fn load_card_flip_render_sources(asset_root: &AssetRoot) -> Result<CardFlipRenderSources> {
     const WIDTH: usize = 160;
     const HEIGHT: usize = 144;
     const TILE: usize = 8;
     let root = asset_root.resolve_vendor("gfx/card_flip");
-    let sheet_1 = crate::open_runtime_image(root.join("card_flip_1.png"))
-        .context("decode Card Flip primary sheet")?
-        .to_rgba8();
-    let sheet_2 = crate::open_runtime_image(root.join("card_flip_2.png"))
-        .context("decode Card Flip secondary sheet")?
-        .to_rgba8();
+    // The native tilemap addresses deduplicated compiled banks (62/52 tiles),
+    // while the authored PNGs contain 64/60 tiles in a different order.
+    let sheet_1 = card_flip_art::load(asset_root, "card_flip_1", 128, 32, 62)?;
+    let sheet_2 = card_flip_art::load(asset_root, "card_flip_2", 24, 160, 52)?;
     let sheet_3 = crate::open_runtime_image(root.join("card_flip_3.png"))
         .context("decode Card Flip object sheet")?
         .to_rgba8();
@@ -1428,7 +1499,9 @@ fn load_card_flip_render_sources(asset_root: &AssetRoot) -> Result<CardFlipRende
         }
     }
     for (offset, tile_id) in tilemap.into_iter().enumerate() {
-        let linear_tile = (offset / 12) * 20 + 9 + offset % 12;
+        // CardFlip_CopyToBox uses B=12 rows and C=11 columns. A 12-column
+        // stride wraps the last tile into the left side of the next LCD row.
+        let linear_tile = (offset / 11) * 20 + 9 + offset % 11;
         let tile_x = linear_tile % 20;
         let tile_y = linear_tile / 20;
         let palette_index = card_flip_background_palette(tile_x, tile_y);
@@ -2416,15 +2489,11 @@ fn spawn_visible_unown_printer(
         ) {
             let (x, y) = battle_hud_tile_origin(4.0, 9.0);
             commands.spawn((
-                SpriteBundle {
-                    texture: frontpic.handle,
-                    sprite: Sprite {
+                (Sprite { image: frontpic.handle,
                         custom_size: Some(frontpic.size),
                         ..default()
                     },
-                    transform: Transform::from_xyz(x, y, 3.7),
-                    ..default()
-                },
+Transform::from_xyz(x, y, 3.7),),
                 FieldCommandMarker,
             ));
         }
@@ -2473,15 +2542,11 @@ fn spawn_unown_printer_button(
     image.sampler = ImageSampler::nearest();
     let (x, y) = battle_hud_tile_origin(tile_x, tile_y);
     commands.spawn((
-        SpriteBundle {
-            texture: images.add(image),
-            sprite: Sprite {
+        (Sprite { image: images.add(image),
                 custom_size: Some(Vec2::splat(8.0)),
                 ..default()
             },
-            transform: Transform::from_xyz(x, y, 3.7),
-            ..default()
-        },
+Transform::from_xyz(x, y, 3.7),),
         FieldCommandMarker,
     ));
     Ok(())
@@ -2817,10 +2882,8 @@ fn spawn_visible_kurt_apricorn_menu(
     // ScrollingMenu_UpdateDisplay clears the complete list rectangle without
     // drawing a frame. Names and quantities occupy consecutive rows.
     let (x, y) = field_window_center(1.0, 1.0, 13.0, 10.0);
-    commands.spawn((SpriteBundle {
-        sprite: Sprite { color: Color::WHITE, custom_size: Some(Vec2::new(TILE_SIZE * 13.0, TILE_SIZE * 10.0)), ..default() },
-        transform: Transform::from_xyz(x, y, 4.1), ..default()
-    }, FieldCommandMarker));
+    commands.spawn(((Sprite { color: Color::WHITE, custom_size: Some(Vec2::new(TILE_SIZE * 13.0, TILE_SIZE * 10.0)), ..default() },
+Transform::from_xyz(x, y, 4.1),), FieldCommandMarker));
     let first = selected.saturating_sub(3).min(total.saturating_sub(4));
     for (row, index) in (first..total).take(4).enumerate() {
         let line = choices.get(index).map(|(item, _)| item_display_name(snapshot, item)).unwrap_or_else(|| "CANCEL".into());
@@ -2846,10 +2909,8 @@ fn spawn_visible_kurt_apricorn_menu(
     if let Some(quantity) = quantity {
         let (item, _) = choices.get(selected).context("Kurt quantity has no selected Apricorn")?;
         let (x, y) = field_window_center(6.0, 9.0, 14.0, 4.0);
-        commands.spawn((SpriteBundle {
-            sprite: Sprite { color: Color::WHITE, custom_size: Some(Vec2::new(TILE_SIZE * 12.0, TILE_SIZE * 2.0)), ..default() },
-            transform: Transform::from_xyz(x, y, 4.5), ..default()
-        }, FieldCommandMarker));
+        commands.spawn(((Sprite { color: Color::WHITE, custom_size: Some(Vec2::new(TILE_SIZE * 12.0, TILE_SIZE * 2.0)), ..default() },
+Transform::from_xyz(x, y, 4.5),), FieldCommandMarker));
         let frame = battle_window_frame_art(rendered_art, asset_root, images)
             .context("Kurt quantity window requires frame art")?;
         spawn_field_command_window_frame_tiles(commands, frame, 6.0, 9.0, 14, 4, 4.6);
@@ -3359,7 +3420,7 @@ fn spawn_field_pokedex_screen(
                 .get(&frame.handle)
                 .context("missing Pokédex preview image")?
                 .clone();
-            for pixel in image.data.chunks_exact_mut(4) {
+            for pixel in image.data.as_mut().expect("CPU image pixels").chunks_exact_mut(4) {
                 let level = if pixel[3] == 0 {
                     0
                 } else {
@@ -3374,15 +3435,11 @@ fn spawn_field_pokedex_screen(
             frame.handle = images.add(image);
             let (x, y) = battle_hud_tile_origin(3.375, 4.0);
             commands.spawn((
-                SpriteBundle {
-                    texture: frame.handle,
-                    sprite: Sprite {
+                (Sprite { image: frame.handle,
                         custom_size: Some(frame.size * (TILE_SIZE / SOURCE_TILE_SIZE as f32)),
                         ..default()
                     },
-                    transform: Transform::from_xyz(x, y, 3.8),
-                    ..default()
-                },
+Transform::from_xyz(x, y, 3.8),),
                 FieldCommandMarker,
             ));
         }
@@ -3487,10 +3544,23 @@ fn spawn_field_pokegear_screen(
     images: &mut Assets<Image>,
 ) -> Result<()> {
     if visible_pokegear_exit_palettes_are_clear(runtime_shell) {
-        return commit_presented_fullscreen_solid(commands, rendered_art, [255, 255, 255, 255], 3.4, images);
+        return commit_presented_fullscreen_solid(
+            commands,
+            rendered_art,
+            [255, 255, 255, 255],
+            3.4,
+            images,
+        );
     }
     if runtime_shell.pokegear_map_radio_delay.is_some() {
-        return spawn_furniture_radio_textbox(commands, snapshot, runtime_shell, rendered_art, asset_root, images);
+        return spawn_furniture_radio_textbox(
+            commands,
+            snapshot,
+            runtime_shell,
+            rendered_art,
+            asset_root,
+            images,
+        );
     }
     match runtime_shell.pokegear_page {
         PokegearPage::Clock => {}
@@ -3515,7 +3585,11 @@ fn spawn_field_pokegear_screen(
         if runtime_shell.pokegear_radio_station.is_some() {
             visible_radio_text_rows(runtime_shell)?;
         } else {
-            anyhow::ensure!(runtime_shell.pokegear_radio_tuning_knob <= 80 && runtime_shell.pokegear_radio_tuning_knob % 2 == 0, "invalid radio tuning knob");
+            anyhow::ensure!(
+                runtime_shell.pokegear_radio_tuning_knob <= 80
+                    && runtime_shell.pokegear_radio_tuning_knob % 2 == 0,
+                "invalid radio tuning knob"
+            );
         }
     }
     let tile_palette_map = &snapshot.presentation.pokegear_town_map_palette_map;
@@ -3536,8 +3610,15 @@ fn spawn_field_pokegear_screen(
             .iter()
             .find(|map| map.map_name == snapshot.overworld.map_name)
             .and_then(|map| map.metadata.as_ref())
-            .with_context(|| format!("Pokégear active map {} has no metadata", snapshot.overworld.map_name))?
-            .phone_service >> 4 == 0;
+            .with_context(|| {
+                format!(
+                    "Pokégear active map {} has no metadata",
+                    snapshot.overworld.map_name
+                )
+            })?
+            .phone_service
+            >> 4
+            == 0;
         let frame = pokegear_card_frame_for_art(
             rendered_art,
             asset_root,
@@ -3560,7 +3641,11 @@ fn spawn_field_pokegear_screen(
         )?;
     }
     if runtime_shell.pokegear_page == PokegearPage::Map {
-        let region = visible_pokegear_region(snapshot, runtime_shell.pokegear_standalone_map)?;
+        let region = if minnesota_map_active(snapshot) {
+            "MINNESOTA"
+        } else {
+            visible_pokegear_region(snapshot, runtime_shell.pokegear_standalone_map)?
+        };
         let frame = town_map_frame_for_art(
             rendered_art,
             asset_root,
@@ -3605,7 +3690,9 @@ fn spawn_field_pokegear_screen(
         if !runtime_shell.pokegear_standalone_map {
             spawn_pokegear_card_objects(commands, snapshot, runtime_shell, asset_root, images)?;
         }
-        let landmark = selected_pokegear_landmark(snapshot, runtime_shell.pokegear_cursor)?;
+        let original_landmark =
+            selected_pokegear_landmark(snapshot, runtime_shell.pokegear_cursor)?;
+        let landmark = projected_minnesota_landmark(snapshot, original_landmark);
         for (row, line) in town_map_label_lines(&landmark.name).iter().enumerate() {
             if line.is_empty() {
                 continue;
@@ -3622,15 +3709,29 @@ fn spawn_field_pokegear_screen(
                 3.8,
             );
         }
+        if minnesota_map_active(snapshot) {
+            let (x, y) = battle_hud_tile_origin(2.0, 16.0);
+            spawn_field_command_bitmap_text(
+                commands,
+                rendered_art,
+                asset_root,
+                images,
+                "MINNESOTA",
+                x,
+                y,
+                3.8,
+            );
+        }
         let current = visible_pokegear_player_landmark(snapshot)?;
+        let current = projected_minnesota_landmark(snapshot, current);
         spawn_town_map_markers(
             commands,
             snapshot,
             rendered_art,
             asset_root,
             images,
-            current,
-            landmark,
+            &current,
+            &landmark,
             runtime_shell.pokegear_map_animation_frame / 9,
         )?;
     }
@@ -3756,15 +3857,11 @@ fn spawn_pokegear_card_objects(
         image.sampler = ImageSampler::nearest();
         let (x, y) = battle_hud_tile_origin(left as f32 / 8.0, top as f32 / 8.0);
         commands.spawn((
-            SpriteBundle {
-                texture: images.add(image),
-                sprite: Sprite {
+            (Sprite { image: images.add(image),
                     custom_size: Some(Vec2::splat(TILE_SIZE)),
                     ..default()
                 },
-                transform: Transform::from_xyz(x, y, 3.8),
-                ..default()
-            },
+Transform::from_xyz(x, y, 3.8),),
             FieldCommandMarker,
         ));
     }
@@ -4020,20 +4117,16 @@ fn spawn_town_map_markers(
         .with_context(|| format!("render Town Map player sprite {sprite_id}"))?
     };
     commands.spawn((
-        SpriteBundle {
-            texture: player_frame.handle,
-            sprite: Sprite {
+        (Sprite { image: player_frame.handle,
                 custom_size: Some(player_frame.size),
                 flip_x: pose == 3,
                 ..default()
             },
-            transform: Transform::from_xyz(
+Transform::from_xyz(
                 PLAYFIELD_LEFT + player_center.x * scale,
                 PLAYFIELD_TOP - player_center.y * scale,
                 3.65,
-            ),
-            ..default()
-        },
+            ),),
         FieldCommandMarker,
     ));
     for rect in town_map_marker_rects(player, cursor) {
@@ -4048,19 +4141,16 @@ fn spawn_town_map_markers(
             TownMapMarkerKind::Cursor => 3.64,
         };
         commands.spawn((
-            SpriteBundle {
-                sprite: Sprite {
+            (Sprite {
                     color,
                     custom_size: Some(rect.size * scale),
                     ..default()
                 },
-                transform: Transform::from_xyz(
+Transform::from_xyz(
                     PLAYFIELD_LEFT + rect.center.x * scale,
                     PLAYFIELD_TOP - rect.center.y * scale,
                     z,
-                ),
-                ..default()
-            },
+                ),),
             FieldCommandMarker,
         ));
     }
@@ -4218,7 +4308,25 @@ fn spawn_field_fly_map_screen(
     asset_root: &AssetRoot,
     images: &mut Assets<Image>,
 ) -> Result<()> {
-    commit_presented_fullscreen_solid(commands, rendered_art, [173, 209, 148, 255], 3.4, images)?;
+    if minnesota_map_active(snapshot) {
+        let frame = minnesota_map_frame(snapshot, rendered_art, asset_root, images, true)?;
+        commit_presented_fullscreen_frame(
+            commands,
+            rendered_art,
+            &frame,
+            PresentedFullscreenFrameSource::Cached,
+            3.4,
+            images,
+        )?;
+    } else {
+        commit_presented_fullscreen_solid(
+            commands,
+            rendered_art,
+            [173, 209, 148, 255],
+            3.4,
+            images,
+        )?;
+    }
     let destinations = active_fly_destinations(snapshot, &runtime_shell.shell)?;
     let selected = strict_readonly_cursor_index(
         &runtime_shell.fly_cursor,
@@ -4244,23 +4352,64 @@ fn spawn_field_fly_map_screen(
                     destination.label
                 )
             })?;
+        let landmark = projected_minnesota_landmark(snapshot, landmark);
         let x = (landmark.x as f32 - 8.0).clamp(0.0, 159.0);
         let y = (landmark.y as f32 - 16.0).clamp(0.0, 143.0);
         let is_selected = selected == index;
+        if minnesota_map_active(snapshot) {
+            if is_selected {
+                let scale = TILE_SIZE / SOURCE_TILE_SIZE as f32;
+                for rect in town_map_marker_rects(&landmark, &landmark) {
+                    commands.spawn((
+                        Sprite {
+                            color: Color::BLACK,
+                            custom_size: Some(rect.size * scale),
+                            ..default()
+                        },
+                        Transform::from_xyz(
+                            PLAYFIELD_LEFT + rect.center.x * scale,
+                            PLAYFIELD_TOP - rect.center.y * scale,
+                            3.7,
+                        ),
+                        FieldCommandMarker,
+                    ));
+                }
+                for (row, line) in town_map_label_lines(&landmark.name).iter().enumerate() {
+                    let (x, y) = battle_hud_tile_origin(9.0, row as f32);
+                    spawn_field_command_bitmap_text(
+                        commands,
+                        rendered_art,
+                        asset_root,
+                        images,
+                        line,
+                        x,
+                        y,
+                        3.8,
+                    );
+                }
+            }
+            continue;
+        }
         commands.spawn((
-            SpriteBundle {
-                sprite: Sprite {
+            (
+                Sprite {
                     color: if is_selected {
                         Color::srgb(0.95, 0.12, 0.12)
                     } else {
                         Color::srgb(0.18, 0.42, 0.82)
                     },
-                    custom_size: Some(Vec2::splat(if is_selected { 6.0 } else { 3.0 })),
+                    custom_size: Some(
+                        Vec2::splat(if is_selected { 6.0 } else { 3.0 })
+                            * (TILE_SIZE / SOURCE_TILE_SIZE as f32),
+                    ),
                     ..default()
                 },
-                transform: Transform::from_xyz(PLAYFIELD_LEFT + x, PLAYFIELD_TOP - y, 3.7),
-                ..default()
-            },
+                Transform::from_xyz(
+                    PLAYFIELD_LEFT + x * (TILE_SIZE / SOURCE_TILE_SIZE as f32),
+                    PLAYFIELD_TOP - y * (TILE_SIZE / SOURCE_TILE_SIZE as f32),
+                    3.7,
+                ),
+            ),
             FieldCommandMarker,
         ));
     }
@@ -4268,13 +4417,21 @@ fn spawn_field_fly_map_screen(
         .get(selected)
         .map(fly_destination_label)
         .context("selected FLY destination is missing")?;
-    let (x, y) = battle_hud_tile_origin(1.0, 15.0);
+    let regional = minnesota_map_active(snapshot);
+    let (x, y) = battle_hud_tile_origin(
+        if regional { 2.0 } else { 1.0 },
+        if regional { 16.0 } else { 15.0 },
+    );
     spawn_field_command_bitmap_text(
         commands,
         rendered_art,
         asset_root,
         images,
-        &format!(">{}", compact_scene_label(&label, 17)),
+        &if regional {
+            "FLY TO:".to_string()
+        } else {
+            format!(">{}", compact_scene_label(&label, 17))
+        },
         x,
         y,
         3.8,
@@ -4308,15 +4465,11 @@ fn spawn_field_pokedex_detail(
         let (x, y) = battle_hud_tile_origin(4.0, 4.0);
         let x = x - 5.0 * TILE_SIZE / 8.0;
         commands.spawn((
-            SpriteBundle {
-                texture: frame.handle,
-                sprite: Sprite {
+            (Sprite { image: frame.handle,
                     custom_size: Some(frame.size * (TILE_SIZE / SOURCE_TILE_SIZE as f32)),
                     ..default()
                 },
-                transform: Transform::from_xyz(x, y, 3.8),
-                ..default()
-            },
+Transform::from_xyz(x, y, 3.8),),
             FieldCommandMarker,
         ));
     }
@@ -4525,12 +4678,8 @@ fn spawn_field_pack_screen(
         "Pack cursor is outside its retained scrolling window");
     let description = if let Some((item_id, _)) = items.get(selected) {
         snapshot
-            .items
-            .iter()
-            .find(|item| item.item_id == *item_id)
+            .item_description(item_id)
             .with_context(|| format!("field PACK item {item_id} is missing"))?
-            .description
-            .as_str()
     } else {
         ""
     };
@@ -4632,15 +4781,12 @@ fn spawn_visible_bug_contest_replacement(
     );
     let (center_x, center_y) = field_window_center(0.0, 0.0, 20.0, 18.0);
     commands.spawn((
-        SpriteBundle {
-            sprite: Sprite {
+        (Sprite {
                 color: Color::WHITE,
                 custom_size: Some(Vec2::new(TILE_SIZE * 20.0, TILE_SIZE * 18.0)),
                 ..default()
             },
-            transform: Transform::from_xyz(center_x, center_y, 3.3),
-            ..default()
-        },
+Transform::from_xyz(center_x, center_y, 3.3),),
         FieldCommandMarker,
     ));
     let frame = battle_window_frame_art(rendered_art, asset_root, images)
@@ -4793,21 +4939,17 @@ fn spawn_visible_egg_hatch_tile(
 ) {
     let source_scale = TILE_SIZE / SOURCE_TILE_SIZE as f32;
     commands.spawn((
-        SpriteBundle {
-            texture: tile.handle.clone(),
-            sprite: Sprite {
+        (Sprite { image: tile.handle.clone(),
                 custom_size: Some(tile.size * source_scale),
                 flip_x,
                 flip_y,
                 ..default()
             },
-            transform: Transform::from_xyz(
+Transform::from_xyz(
                 PLAYFIELD_LEFT + (screen_x - 4.0) * source_scale,
                 PLAYFIELD_TOP - (screen_y - 12.0) * source_scale,
                 z,
-            ),
-            ..default()
-        },
+            ),),
         FieldCommandMarker,
     ));
 }
@@ -4917,15 +5059,12 @@ fn spawn_field_move_reorder_screen(
         );
     }
     commands.spawn((
-        SpriteBundle {
-            sprite: Sprite {
+        (Sprite {
                 color: Color::srgb(1.0, 1.0, 1.0),
                 custom_size: Some(Vec2::new(PLAYFIELD_WIDTH, PLAYFIELD_HEIGHT)),
                 ..default()
             },
-            transform: Transform::from_xyz(0.0, 0.0, 3.4),
-            ..default()
-        },
+Transform::from_xyz(0.0, 0.0, 3.4),),
         FieldCommandMarker,
     ));
     let (x, y) = battle_hud_tile_origin(1.0, 1.0);
@@ -5235,6 +5374,7 @@ fn spawn_field_party_menu(
             snapshot,
             slot,
             row_index,
+            runtime_shell.lcd_animation_frame,
             selected == row_index,
             true,
             rendered_art,
@@ -5362,8 +5502,7 @@ fn spawn_start_menu_command_window_fill(
         height_tiles as f32,
     );
     commands.spawn((
-        SpriteBundle {
-            sprite: Sprite {
+        (Sprite {
                 color: Color::srgb(1.0, 1.0, 1.0),
                 custom_size: Some(Vec2::new(
                     width_tiles as f32 * TILE_SIZE,
@@ -5371,9 +5510,7 @@ fn spawn_start_menu_command_window_fill(
                 )),
                 ..default()
             },
-            transform: Transform::from_xyz(x, y, z),
-            ..default()
-        },
+Transform::from_xyz(x, y, z),),
         FieldCommandMarker,
     ));
 }
@@ -5391,8 +5528,7 @@ fn spawn_bug_contest_start_menu_status(
     const HEIGHT: usize = 6;
     let (center_x, center_y) = field_window_center(LEFT, TOP, WIDTH as f32, HEIGHT as f32);
     commands.spawn((
-        SpriteBundle {
-            sprite: Sprite {
+        (Sprite {
                 color: Color::srgb(1.0, 1.0, 1.0),
                 custom_size: Some(Vec2::new(
                     WIDTH as f32 * TILE_SIZE,
@@ -5400,9 +5536,7 @@ fn spawn_bug_contest_start_menu_status(
                 )),
                 ..default()
             },
-            transform: Transform::from_xyz(center_x, center_y, 3.3),
-            ..default()
-        },
+Transform::from_xyz(center_x, center_y, 3.3),),
         FieldCommandMarker,
     ));
     let frame = battle_window_frame_art(rendered_art, asset_root, images)
@@ -5538,8 +5672,7 @@ fn spawn_options_menu_window_fill(commands: &mut Commands, z: f32) {
         OPTIONS_MENU_HEIGHT_TILES as f32,
     );
     commands.spawn((
-        SpriteBundle {
-            sprite: Sprite {
+        (Sprite {
                 color: Color::srgb(1.0, 1.0, 1.0),
                 custom_size: Some(Vec2::new(
                     OPTIONS_MENU_WIDTH_TILES as f32 * TILE_SIZE,
@@ -5547,9 +5680,7 @@ fn spawn_options_menu_window_fill(commands: &mut Commands, z: f32) {
                 )),
                 ..default()
             },
-            transform: Transform::from_xyz(x, y, z),
-            ..default()
-        },
+Transform::from_xyz(x, y, z),),
         FieldCommandMarker,
     ));
 }
@@ -5691,8 +5822,24 @@ fn spawn_scene_dialog(
     if spawn_visible_incoming_phone(commands, snapshot, runtime_shell, rendered_art, asset_root, images)? {
         return Ok(());
     }
-    if visible_pokecenter_pc_text_boundary(runtime_shell).is_some() {
-        spawn_scene_dialog_text_box(commands, rendered_art, asset_root, images, 4.0);
+    if matches!(runtime_shell.pc_confirmation, Some(VisiblePcConfirmation::OakRating)) {
+        return spawn_pc_item_notice(commands, snapshot, runtime_shell, rendered_art, asset_root,
+            images, source_map_text_palette(snapshot, asset_root)?);
+    }
+    if let Some(boundary) = visible_pokecenter_pc_text_boundary(runtime_shell) {
+        if matches!(boundary.label.as_str(), "PokecenterOaksPCText" | "ProfOaksPcBoot" | "OakPCShutdown") {
+            let palette = source_map_text_palette(snapshot, asset_root)?;
+            let frame_id = textbox_frame_id(snapshot.trainer.options.frame);
+            let key = (frame_id, palette);
+            if !rendered_art.pc_window_frame_cache.contains_key(&key) {
+                let frame = load_window_frame_art_with_palette(asset_root, frame_id, &palette, images)?;
+                rendered_art.pc_window_frame_cache.insert(key, frame);
+            }
+            spawn_pc_field_palette_window(commands, &rendered_art.pc_window_frame_cache[&key],
+                palette[0], 0., 12., 20, 6, 4.0);
+        } else {
+            spawn_scene_dialog_text_box(commands, rendered_art, asset_root, images, 4.0);
+        }
         spawn_scene_dialog_text_content(commands, snapshot, runtime_shell, rendered_art, asset_root, images)?;
         return Ok(());
     }
@@ -5848,6 +5995,12 @@ fn spawn_scene_dialog(
             asset_root,
             images,
         )?;
+        // MAIL BOX can retain this chooser underneath its empty-mail notice.
+        // The notice must still own and visibly cover the lower text window.
+        if runtime_shell.pc_notice.is_some() {
+            spawn_pc_item_notice(commands,snapshot,runtime_shell,rendered_art,asset_root,images,
+                source_map_text_palette(snapshot,asset_root)?)?;
+        }
         return Ok(());
     }
     if runtime_shell.bill_pc_box_cursor.is_some() {
@@ -5899,7 +6052,7 @@ fn spawn_scene_dialog(
             let y_tile = top as f32 + 2.0 + index as f32 * 2.0;
             let (x, y) = battle_hud_tile_origin(left as f32 + 2.0, y_tile);
             spawn_scene_dialog_bitmap_text(commands, rendered_art, asset_root, images,
-                option, x, y, 4.4);
+                crate::visible_script_menu_option_label(menu, option), x, y, 4.4);
             if index == selected {
                 let (x, y) = battle_hud_tile_origin(left as f32 + 1.0, y_tile);
                 spawn_scene_dialog_bitmap_text(commands, rendered_art, asset_root, images,
@@ -6006,19 +6159,15 @@ fn spawn_visible_egg_hatch(
     .with_context(|| format!("egg hatch front sprite {species_id} is unavailable"))?;
     let (center_x, center_y) = battle_hud_tile_origin(10.0, 8.0);
     commands.spawn((
-        SpriteBundle {
-            texture: sprite.handle,
-            sprite: Sprite {
+        (Sprite { image: sprite.handle,
                 custom_size: Some(sprite.size * 4.0),
                 ..default()
             },
-            transform: Transform::from_xyz(
+Transform::from_xyz(
                 center_x + f32::from(x_offset) * TILE_SIZE / SOURCE_TILE_SIZE as f32,
                 center_y,
                 6.0,
-            ),
-            ..default()
-        },
+            ),),
         FieldCommandMarker,
     ));
     let tiles = visible_egg_hatch_tiles(rendered_art, asset_root, images)?;
@@ -6170,8 +6319,7 @@ fn spawn_visible_player_pc_action_screen(
     .context("Player PC action screen requires a valid cursor")?;
     let (center_x, center_y) = field_window_center(LEFT, TOP, WIDTH, HEIGHT);
     commands.spawn((
-        SpriteBundle {
-            sprite: Sprite {
+        (Sprite {
                 color: Color::WHITE,
                 custom_size: Some(Vec2::new(
                     TILE_SIZE * (WIDTH - 2.0),
@@ -6179,9 +6327,7 @@ fn spawn_visible_player_pc_action_screen(
                 )),
                 ..default()
             },
-            transform: Transform::from_xyz(center_x, center_y, 4.0),
-            ..default()
-        },
+Transform::from_xyz(center_x, center_y, 4.0),),
         SceneDialogMarker,
         SceneDialogTextBoxBackgroundMarker,
     ));
@@ -6301,8 +6447,7 @@ fn spawn_visible_decoration_screen(
     );
     let (center_x, center_y) = field_window_center(left, top, width, height);
     commands.spawn((
-        SpriteBundle {
-            sprite: Sprite {
+        (Sprite {
                 color: Color::WHITE,
                 custom_size: Some(Vec2::new(
                     TILE_SIZE * (width - 2.0),
@@ -6310,9 +6455,7 @@ fn spawn_visible_decoration_screen(
                 )),
                 ..default()
             },
-            transform: Transform::from_xyz(center_x, center_y, 4.0),
-            ..default()
-        },
+Transform::from_xyz(center_x, center_y, 4.0),),
         SceneDialogMarker,
         SceneDialogTextBoxBackgroundMarker,
     ));
@@ -6506,8 +6649,7 @@ fn spawn_visible_unown_words(
     let height = 6.0;
     let (center_x, center_y) = field_window_center(left, top, width, height);
     commands.spawn((
-        SpriteBundle {
-            sprite: Sprite {
+        (Sprite {
                 color: Color::WHITE,
                 custom_size: Some(Vec2::new(
                     TILE_SIZE * (width - 2.0),
@@ -6515,9 +6657,7 @@ fn spawn_visible_unown_words(
                 )),
                 ..default()
             },
-            transform: Transform::from_xyz(center_x, center_y, 4.1),
-            ..default()
-        },
+Transform::from_xyz(center_x, center_y, 4.1),),
         FieldCommandMarker,
     ));
     if let Some(frame) = window_frame_art(rendered_art, asset_root, images, 2) {
@@ -6815,7 +6955,7 @@ fn composite_visible_magnet_train_player(
 }
 
 #[derive(Component)]
-struct HealMachineWorldSprite;
+struct HealMachineWorldSprite(crystal_render_api::VisualEffectId);
 
 fn spawn_visible_heal_machine(
     commands: &mut Commands,
@@ -6906,46 +7046,38 @@ fn spawn_visible_heal_machine(
     if animation.kind != 2 {
         let elm_x = if animation.kind == 1 { 16.0 } else { 0.0 };
         let elm_y = if animation.kind == 1 { 32.0 } else { 0.0 };
-        for (source_x, source_y) in [(26.0, 16.0), (30.0, 16.0)] {
+        for (slot,(source_x, source_y)) in [(26.0, 16.0), (30.0, 16.0)].into_iter().enumerate() {
             let (x, y) = battle_hud_tile_origin(
                 (source_x + elm_x + camera_x) / SOURCE_TILE_SIZE as f32,
                 (source_y + elm_y + camera_y) / SOURCE_TILE_SIZE as f32,
             );
             commands.spawn((
-                SpriteBundle {
-                    texture: lamps[palette_phase].handle.clone(),
-                    sprite: Sprite {
+                (Sprite { image: lamps[palette_phase].handle.clone(),
                         custom_size: Some(Vec2::splat(TILE_SIZE)),
                         ..default()
                     },
-                    transform: Transform::from_xyz(x, y, 3.8),
-                    ..default()
-                },
+Transform::from_xyz(x, y, 3.8),),
                 FieldCommandMarker,
-                HealMachineWorldSprite,
+                HealMachineWorldSprite(crystal_render_api::VisualEffectId::HealMachineLamp(slot as u8)),
             ));
         }
     }
     let elm_x = if animation.kind == 1 { 16.0 } else { 0.0 };
     let elm_y = if animation.kind == 1 { 32.0 } else { 0.0 };
-    for &(source_x, source_y, flip_x) in positions.iter().take(visible_count.min(positions.len())) {
+    for (slot,&(source_x, source_y, flip_x)) in positions.iter().take(visible_count.min(positions.len())).enumerate() {
         let (x, y) = battle_hud_tile_origin(
             (source_x + elm_x + camera_x) / SOURCE_TILE_SIZE as f32,
             (source_y + elm_y + camera_y) / SOURCE_TILE_SIZE as f32,
         );
         commands.spawn((
-            SpriteBundle {
-                texture: frames[palette_phase].handle.clone(),
-                sprite: Sprite {
+            (Sprite { image: frames[palette_phase].handle.clone(),
                     custom_size: Some(Vec2::splat(TILE_SIZE)),
                     flip_x,
                     ..default()
                 },
-                transform: Transform::from_xyz(x, y, 3.8),
-                ..default()
-            },
+Transform::from_xyz(x, y, 3.8),),
             FieldCommandMarker,
-                HealMachineWorldSprite,
+                HealMachineWorldSprite(crystal_render_api::VisualEffectId::HealMachineBall(slot as u8)),
         ));
     }
     Ok(())
@@ -7132,8 +7264,7 @@ fn spawn_visible_balance_window(
     let (center_x, center_y) =
         field_window_center(tile_x, tile_y, width_tiles as f32, height_tiles as f32);
     commands.spawn((
-        SpriteBundle {
-            sprite: Sprite {
+        (Sprite {
                 color: Color::WHITE,
                 custom_size: Some(Vec2::new(
                     TILE_SIZE * (width_tiles.saturating_sub(2)) as f32,
@@ -7141,9 +7272,7 @@ fn spawn_visible_balance_window(
                 )),
                 ..default()
             },
-            transform: Transform::from_xyz(center_x, center_y, 3.6),
-            ..default()
-        },
+Transform::from_xyz(center_x, center_y, 3.6),),
         SceneDialogMarker,
         SceneDialogTextBoxBackgroundMarker,
     ));
@@ -7307,8 +7436,7 @@ fn spawn_mart_window(
     let (center_x, center_y) = battle_window_center(tile_x, tile_y, width_tiles, height_tiles);
     if width_tiles > 2.0 && height_tiles > 2.0 {
         commands.spawn((
-            SpriteBundle {
-                sprite: Sprite {
+            (Sprite {
                     color: Color::WHITE,
                     custom_size: Some(Vec2::new(
                         TILE_SIZE * (width_tiles - 2.0),
@@ -7316,9 +7444,7 @@ fn spawn_mart_window(
                     )),
                     ..default()
                 },
-                transform: Transform::from_xyz(center_x, center_y, z),
-                ..default()
-            },
+Transform::from_xyz(center_x, center_y, z),),
             SceneDialogMarker,
         ));
     }
@@ -7616,7 +7742,10 @@ fn spawn_field_shop_screen(
             rendered_art.move_description_cache.as_ref().unwrap().get(move_id)
                 .with_context(|| format!("shop TM move description {move_id} is missing"))?.clone()
         } else {
-            item.description.clone()
+            snapshot
+                .item_description(selected_item_id)
+                .context("selected shop item description")?
+                .to_owned()
         };
         for (index, line) in wrap_boot_text_for_box(&description, 18, 2).iter().enumerate() {
             let (x, y) = battle_hud_tile_origin(1.0, 14.0 + index as f32 * 2.0);
@@ -7749,7 +7878,7 @@ fn spawn_field_storage_screen(
     let clear_left_info = (runtime_shell.pc_release_sequence.is_some() || transfer_success.is_some()) && !waiting_for_cry;
     let timed_notice = refusal_notice || clear_left_info;
     if runtime_shell.pc_notice.is_some() && !timed_notice {
-        spawn_pc_notice(commands, runtime_shell, rendered_art, asset_root, images);
+        spawn_pc_notice(commands, runtime_shell, rendered_art, asset_root, images)?;
         return Ok(());
     }
     if let Some(summary) = runtime_shell.bill_pc_pokemon_summary.as_ref() {
@@ -7896,12 +8025,8 @@ fn spawn_field_storage_screen(
             runtime_shell.bill_pc_pokemon_action_cursor.is_some() || runtime_shell.pending_pc_release.is_some()
                 || runtime_shell.bill_pc_move_source.is_some() || move_save.is_some(), images)?;
         let (x, y) = battle_hud_tile_origin(4.0, 7.0);
-        commands.spawn((SpriteBundle {
-            texture: picture.handle,
-            sprite: Sprite { custom_size: Some(Vec2::splat(7.0 * TILE_SIZE)), ..default() },
-            transform: Transform::from_xyz(x, y, 4.2),
-            ..default()
-        }, FieldCommandMarker));
+        commands.spawn(((Sprite { image: picture.handle, custom_size: Some(Vec2::splat(7.0 * TILE_SIZE)), ..default() },
+Transform::from_xyz(x, y, 4.2),), FieldCommandMarker));
         if let Some(pokemon) = info.as_ref() {
             if !pokemon.is_egg {
                 let level = visible_print_level_text(pokemon.level);
@@ -8067,15 +8192,11 @@ fn spawn_pc_extra_tile(
     image.sampler = ImageSampler::nearest();
     let (x, y) = battle_hud_tile_origin(tile_x, tile_y);
     commands.spawn((
-        SpriteBundle {
-            texture: images.add(image),
-            sprite: Sprite {
+        (Sprite { image: images.add(image),
                 custom_size: Some(Vec2::splat(TILE_SIZE)),
                 ..default()
             },
-            transform: Transform::from_xyz(x, y, 4.2),
-            ..default()
-        },
+Transform::from_xyz(x, y, 4.2),),
         FieldCommandMarker,
     ));
     Ok(())
@@ -8278,17 +8399,13 @@ fn spawn_bill_pc_cursor(
             (y as f32 - 16.0 + row as f32 * 16.0) / 8.0,
         );
         commands.spawn((
-            SpriteBundle {
-                texture: tiles[tile].clone(),
-                sprite: Sprite {
+            (Sprite { image: tiles[tile].clone(),
                     custom_size: Some(Vec2::splat(TILE_SIZE)),
                     flip_x,
                     flip_y,
                     ..default()
                 },
-                transform: Transform::from_xyz(x, y, 4.3),
-                ..default()
-            },
+Transform::from_xyz(x, y, 4.3),),
             FieldCommandMarker,
         ));
     }
@@ -8301,7 +8418,16 @@ fn spawn_pc_notice(
     rendered_art: &mut RenderedTilesetArt,
     asset_root: &AssetRoot,
     images: &mut Assets<Image>,
-) {
+) -> Result<()> {
+    if runtime_shell.party_menu_open && (runtime_shell.mailbox_attach_index.is_some()
+        || runtime_shell.mailbox_attach_return_index.is_some()) {
+        // MailboxPC.AttachMail uses PrintText on the white party LCD. Its
+        // authored two baselines replace the small party prompt completely.
+        // Keep the general PC/storage notice layout for its other owners.
+        let snapshot=runtime_shell.shell.presentation_snapshot()?;
+        return spawn_pc_item_notice(commands,&snapshot,runtime_shell,rendered_art,
+            asset_root,images,[[255,255,255],[170,170,170],[85,85,85],[0,0,0]]);
+    }
     if let Some(notice) = runtime_shell.pc_notice.as_deref() {
         let visible_notice = if runtime_shell.pc_release_sequence.is_some()
             || runtime_shell.pc_transfer_sequence.is_some()
@@ -8353,6 +8479,7 @@ fn spawn_pc_notice(
             );
         }
     }
+    Ok(())
 }
 
 // LoadMapPals / LoadSpecialMapPalette retain BG palette 7 for TextboxPalette.
@@ -8432,8 +8559,7 @@ fn spawn_pc_item_palette_window(
 ) {
     let (x, y) = battle_window_center(tile_x, tile_y, width as f32, height as f32);
     commands.spawn((
-        SpriteBundle {
-            sprite: Sprite {
+        (Sprite {
                 color: Color::srgb_u8(background[0], background[1], background[2]),
                 custom_size: Some(Vec2::new(
                     TILE_SIZE * width as f32,
@@ -8441,12 +8567,25 @@ fn spawn_pc_item_palette_window(
                 )),
                 ..default()
             },
-            transform: Transform::from_xyz(x, y, z),
-            ..default()
-        },
+Transform::from_xyz(x, y, z),),
         BattleCommandMarker,
     ));
     spawn_battle_window_frame_tiles(commands, frame, tile_x, tile_y, width, height, z + 0.05);
+}
+
+// Oak's question overlays the room. Item-list windows instead own a full LCD
+// and carry battle-screen markers; using those markers here hides the world.
+fn spawn_pc_field_palette_window(
+    commands: &mut Commands, frame: &WindowFrameArt, background: [u8; 3],
+    tile_x: f32, tile_y: f32, width: usize, height: usize, z: f32,
+) {
+    let (x, y) = battle_window_center(tile_x, tile_y, width as f32, height as f32);
+    commands.spawn((Sprite {
+        color: Color::srgb_u8(background[0], background[1], background[2]),
+        custom_size: Some(Vec2::new(TILE_SIZE * width as f32, TILE_SIZE * height as f32)),
+        ..default()
+    }, Transform::from_xyz(x, y, z), SceneDialogMarker));
+    spawn_scene_dialog_window_frame_tiles(commands, frame, tile_x, tile_y, width, height, z + 0.05);
 }
 
 fn spawn_pc_item_notice(
@@ -8458,6 +8597,11 @@ fn spawn_pc_item_notice(
     images: &mut Assets<Image>,
     palette: Palette,
 ) -> Result<()> {
+    let spawn_window = if matches!(runtime_shell.pc_confirmation, Some(VisiblePcConfirmation::OakRating)) {
+        spawn_pc_field_palette_window
+    } else {
+        spawn_pc_item_palette_window
+    };
     if runtime_shell.pc_notice.is_none() {
         return Ok(());
     }
@@ -8469,7 +8613,7 @@ fn spawn_pc_item_notice(
     }
     if let Some(notice) = runtime_shell.pc_notice.as_deref() {
         let text = visible_revealed_shell_notice_text(runtime_shell, notice);
-        spawn_pc_item_palette_window(
+        spawn_window(
             commands,
             &rendered_art.pc_window_frame_cache[&key],
             palette[0],
@@ -8495,7 +8639,7 @@ fn spawn_pc_item_notice(
         if let Some(quantity) = runtime_shell.pc_item_quantity.as_ref()
             && visible_field_text_reveal_is_complete_for_text(runtime_shell, notice)
         {
-            spawn_pc_item_palette_window(
+            spawn_window(
                 commands,
                 &rendered_art.pc_window_frame_cache[&key],
                 palette[0],
@@ -8516,6 +8660,19 @@ fn spawn_pc_item_notice(
                 y,
                 4.8,
             );
+        } else if visible_pc_uses_source_yes_no(runtime_shell)
+            &&visible_pc_source_yes_no_printed(runtime_shell) {
+            // home/menu.asm _YesNoBox: inclusive (14,7)..(19,11).
+            // PlaceVerticalMenuItems advances two tile rows: YES at8, NO at10.
+            spawn_window(commands,&rendered_art.pc_window_frame_cache[&key],
+                palette[0],14.,7.,6,5,4.6);
+            let selected=strict_readonly_cursor_index(&runtime_shell.yes_no_cursor,"pc:confirmation",2)
+                .context("PC toss YesNoBox requires its production cursor")?;
+            for (i,label) in ["YES","NO"].iter().enumerate() {
+                let (x,y)=battle_hud_tile_origin(15.,8.+i as f32*2.);
+                spawn_scene_dialog_bitmap_text(commands,rendered_art,asset_root,images,
+                    &format!("{}{label}",if i==selected {"▶"}else{" "}),x,y,4.8);
+            }
         }
     }
     Ok(())
@@ -8795,7 +8952,8 @@ fn spawn_scene_dialog_text_content(
     {
         let (x, y) = battle_hud_tile_origin(
             FIELD_TEXT_BOX_TEXT_LEFT_TILE,
-            FIELD_TEXT_BOX_TEXT_TOP_TILE + index as f32 * FIELD_TEXT_BOX_ROW_SPACING_TILES,
+            FIELD_TEXT_BOX_TEXT_TOP_TILE + index as f32 * FIELD_TEXT_BOX_ROW_SPACING_TILES
+                + field_text_timing::scroll_offset(runtime_shell),
         );
         spawn_scene_dialog_bitmap_text(
             commands,
@@ -8840,6 +8998,7 @@ fn field_dialogue_prompt_arrow_visible(
         };
         let page_index = reveal.page_index.min(pages.len().saturating_sub(1));
         return reveal.text == pages.join("\u{1e}")
+            && field_text_timing::complete(runtime_shell)
             && visible_field_text_reveal_is_complete(reveal, &pages[page_index])
             && (page_index + 1 < pages.len()
                 || visible_field_notice_uses_prompt_arrow(runtime_shell))
@@ -8852,7 +9011,8 @@ fn field_dialogue_prompt_arrow_visible(
         && reveal.text == pages.join("\u{1e}")
         && reveal.page_index + 1 < pages.len()
     {
-        return visible_field_text_reveal_is_complete(reveal, &pages[reveal.page_index])
+        return field_text_timing::complete(runtime_shell)
+            && visible_field_text_reveal_is_complete(reveal, &pages[reveal.page_index])
             && visible_vblank_counter_bit4(runtime_shell);
     }
     snapshot.ui.pending_text_wait.is_some()
@@ -8915,6 +9075,7 @@ fn scene_dialog_yes_no_active(
             .as_ref()
             .is_some_and(|toss| toss.confirming)
         || runtime_shell.save_flow.as_ref().is_some_and(|flow| {
+            runtime_shell.special_boundary.is_none() &&
             matches!(
                 flow.stage,
                 VisibleSaveFlowStage::Prompt | VisibleSaveFlowStage::OverwritePrompt
@@ -9064,8 +9225,7 @@ fn spawn_visible_day_of_week_selection(
     let (center_x, center_y) =
         field_window_center(DAY_BOX_LEFT, DAY_BOX_TOP, DAY_BOX_WIDTH, DAY_BOX_HEIGHT);
     commands.spawn((
-        SpriteBundle {
-            sprite: Sprite {
+        (Sprite {
                 color: Color::WHITE,
                 custom_size: Some(Vec2::new(
                     TILE_SIZE * (DAY_BOX_WIDTH - 2.0),
@@ -9073,9 +9233,7 @@ fn spawn_visible_day_of_week_selection(
                 )),
                 ..default()
             },
-            transform: Transform::from_xyz(center_x, center_y, 4.0),
-            ..default()
-        },
+Transform::from_xyz(center_x, center_y, 4.0),),
         SceneDialogMarker,
         SceneDialogTextBoxBackgroundMarker,
     ));
@@ -9151,9 +9309,9 @@ fn spawn_visible_yes_no_prompt_box(
     asset_root: &AssetRoot,
     images: &mut Assets<Image>,
 ) -> Result<()> {
-    // `YesNoBox` in home/menu.asm sets b=SCREEN_WIDTH-6 and c=7, then
-    // `_YesNoBox` anchors at (14,7), and the TypeScript reference renders a
-    // 6x4-tile surface with YES/NO on consecutive interior rows 8 and 9.
+    // home/menu.asm _YesNoBox sets inclusive borders (14,7)..(19,11).
+    // GetMenuTextStartCoord reserves column15 for the cursor and starts the
+    // label at16; PlaceVerticalMenuItems advances two rows, from8 to10.
     let (center_x, center_y) = field_window_center(
         FIELD_YES_NO_LEFT_TILE,
         FIELD_YES_NO_TOP_TILE,
@@ -9161,8 +9319,7 @@ fn spawn_visible_yes_no_prompt_box(
         FIELD_YES_NO_HEIGHT_TILES,
     );
     commands.spawn((
-        SpriteBundle {
-            sprite: Sprite {
+        (Sprite {
                 color: Color::WHITE,
                 custom_size: Some(Vec2::new(
                     TILE_SIZE * (FIELD_YES_NO_WIDTH_TILES - 2.0),
@@ -9170,9 +9327,7 @@ fn spawn_visible_yes_no_prompt_box(
                 )),
                 ..default()
             },
-            transform: Transform::from_xyz(center_x, center_y, 4.25),
-            ..default()
-        },
+Transform::from_xyz(center_x, center_y, 4.25),),
         SceneDialogMarker,
         YesNoPromptMarker,
     ));
@@ -9191,8 +9346,8 @@ fn spawn_visible_yes_no_prompt_box(
     for (index, label) in ["YES", "NO"].into_iter().enumerate() {
         let marker = if index == selected { ">" } else { " " };
         let (x, y) = battle_hud_tile_origin(
-            FIELD_YES_NO_LEFT_TILE,
-            FIELD_YES_NO_TOP_TILE + 1.0 + index as f32,
+            FIELD_YES_NO_LEFT_TILE + 1.0,
+            FIELD_YES_NO_TOP_TILE + 1.0 + index as f32 * 2.0,
         );
         spawn_scene_dialog_bitmap_text(
             commands,
@@ -9245,8 +9400,7 @@ fn spawn_scene_dialog_window(
     // The text plane must not depend on the frame image cache. Otherwise an
     // asset-cache miss exposes map pixels through a dialog for a frame.
     let background = commands.spawn((
-        SpriteBundle {
-            sprite: Sprite {
+        (Sprite {
                 color: Color::WHITE,
                 custom_size: Some(Vec2::new(
                     TILE_SIZE * (width_tiles - 2.0),
@@ -9254,9 +9408,7 @@ fn spawn_scene_dialog_window(
                 )),
                 ..default()
             },
-            transform: Transform::from_xyz(center_x, center_y, z),
-            ..default()
-        },
+Transform::from_xyz(center_x, center_y, z),),
         SceneDialogMarker,
     )).id();
     if let Some(frame) = battle_window_frame_art(rendered_art, asset_root, images) {
@@ -9273,15 +9425,63 @@ fn spawn_scene_dialog_window(
     background
 }
 
+fn visible_name_entry_presentation_input(runtime_shell: &BevyRuntimeShell, input: &PendingNameInput) -> Result<PendingNameInput> {
+    let mut presented = input.clone();
+    if input.label == "POKéMON'S NAME?" {
+        let snapshot = runtime_shell.shell.presentation_snapshot()?;
+        let pokemon = snapshot.party.slots.get(runtime_shell.party_cursor)
+            .context("Name Rater heading lost its selected party Pokemon")?;
+        presented.label = visible_pokemon_nickname_label(&pokemon.pokemon.species.id);
+    }
+    Ok(presented)
+}
+
+fn visible_name_entry_pokemon_art(runtime_shell: &BevyRuntimeShell, input: &PendingNameInput) -> Result<Option<NameEntryPokemonArt>> {
+    let snapshot = runtime_shell.shell.presentation_snapshot()?;
+    let pokemon = if snapshot.safari_catch_presentation.as_ref().is_some_and(|saved|
+        saved.stage == crate::core::systems::safari_catch_presentation::SafariCatchStage::Naming) {
+        let active = snapshot.safari.as_ref().context("Safari naming lost its permit")?;
+        let crate::core::systems::safari::SafariPhase::Presenting { result, .. } = &active.phase else { anyhow::bail!("Safari naming lost its result"); };
+        let crate::core::systems::safari::SafariResolution::Caught(stored) = &result.resolution else { anyhow::bail!("Safari naming lost its actual catch"); };
+        &stored.pokemon
+    } else {
+        if input.label != "POKéMON'S NAME?" { return Ok(None); }
+        &snapshot.party.slots.get(runtime_shell.party_cursor)
+            .context("Name Rater icon lost its selected party Pokemon")?.pokemon
+    };
+    // GetGender combines the Attack and Speed DVs, not Attack alone.
+    let gender_dv = (pokemon.dvs.attack << 4) | pokemon.dvs.speed;
+    let gender = match pokemon.species.gender_ratio {
+        255 => None,
+        254 => Some('♀'),
+        0 => Some('♂'),
+        ratio if gender_dv <= ratio => Some('♀'),
+        _ => Some('♂'),
+    };
+    Ok(Some(NameEntryPokemonArt {
+        icon_id: snapshot.presentation.menu_icons.get(&pokemon.species.id)
+            .context("Name Rater species has no source menu icon")?.clone(),
+        gender,
+        // The original eight-count frame includes its zero-count call, and
+        // NamingScreenJoypadLoop waits two VBlanks per animation call.
+        frame: ((runtime_shell.lcd_animation_frame / 18) & 1) as usize,
+    }))
+}
+
 fn spawn_visible_name_entry_screen(
     commands: &mut Commands,
-    _runtime_shell: &BevyRuntimeShell,
+    runtime_shell: &BevyRuntimeShell,
     rendered_art: &mut RenderedTilesetArt,
     asset_root: &AssetRoot,
     images: &mut Assets<Image>,
     input: &PendingNameInput,
 ) -> Result<()> {
+    let pokemon = visible_name_entry_pokemon_art(runtime_shell, input)?;
+    let presented = visible_name_entry_presentation_input(runtime_shell, input)?;
+    let input = &presented;
     let key = NameEntryArtKey {
+        pokemon: pokemon.clone(),
+        cursor_visible: (runtime_shell.lcd_animation_frame / 4) & 1 == 0,
         label: input.label.clone(),
         value: input.value.clone(),
         cursor_column: input.cursor_column,
@@ -9291,7 +9491,7 @@ fn spawn_visible_name_entry_screen(
     if !rendered_art.name_entry_cache.contains_key(&key)
         && !rendered_art.name_entry_errors.contains_key(&key)
     {
-        match load_name_entry_frame(asset_root, input, images) {
+        match load_name_entry_frame_with_pokemon(asset_root, input, pokemon.as_ref(), key.cursor_visible, images) {
             Ok(frame) => {
                 rendered_art.name_entry_errors.remove(&key);
                 rendered_art.name_entry_cache.insert(key.clone(), frame);
@@ -10454,8 +10654,7 @@ fn spawn_visible_name_choice_screen(
     let (center_x, center_y) =
         field_window_center(left_tile, top_tile, width_tiles as f32, height_tiles as f32);
     commands.spawn((
-        SpriteBundle {
-            sprite: Sprite {
+        (Sprite {
                 color: Color::WHITE,
                 custom_size: Some(Vec2::new(
                     width_tiles as f32 * TILE_SIZE,
@@ -10463,9 +10662,7 @@ fn spawn_visible_name_choice_screen(
                 )),
                 ..default()
             },
-            transform: Transform::from_xyz(center_x, center_y, 5.9),
-            ..default()
-        },
+Transform::from_xyz(center_x, center_y, 5.9),),
         SceneDialogMarker,
     ));
     if let Some(frame) = battle_window_frame_art(rendered_art, asset_root, images) {
@@ -10489,15 +10686,12 @@ fn spawn_visible_name_choice_screen(
         1.0,
     );
     commands.spawn((
-        SpriteBundle {
-            sprite: Sprite {
+        (Sprite {
                 color: Color::WHITE,
                 custom_size: Some(Vec2::new(title_width * TILE_SIZE, TILE_SIZE)),
                 ..default()
             },
-            transform: Transform::from_xyz(title_x, title_y, 6.05),
-            ..default()
-        },
+Transform::from_xyz(title_x, title_y, 6.05),),
         SceneDialogMarker,
     ));
     spawn_scene_dialog_bitmap_text(
@@ -10546,8 +10740,7 @@ fn spawn_player_name_custom_fade_overlay(commands: &mut Commands, alpha: f32) {
         NAME_ENTRY_SCREEN_TILE_HEIGHT as f32,
     );
     commands.spawn((
-        SpriteBundle {
-            sprite: Sprite {
+        (Sprite {
                 color: Color::srgba(1.0, 1.0, 1.0, alpha.clamp(0.0, 1.0)),
                 custom_size: Some(Vec2::new(
                     NAME_ENTRY_SCREEN_TILE_WIDTH as f32 * TILE_SIZE,
@@ -10555,9 +10748,7 @@ fn spawn_player_name_custom_fade_overlay(commands: &mut Commands, alpha: f32) {
                 )),
                 ..default()
             },
-            transform: Transform::from_xyz(center_x, center_y, 6.2),
-            ..default()
-        },
+Transform::from_xyz(center_x, center_y, 6.2),),
         SceneDialogMarker,
     ));
 }
@@ -10701,15 +10892,11 @@ fn spawn_scene_dialog_bitmap_text(
     {
         let key = dialog_glyph_key(x, y, index);
         commands.spawn((
-            SpriteBundle {
-                texture: frame.handle,
-                sprite: Sprite {
+            (Sprite { image: frame.handle,
                     custom_size: Some(frame.size),
                     ..default()
                 },
-                transform: Transform::from_xyz(x + index as f32 * BITMAP_FONT_ADVANCE, y, z),
-                ..default()
-            },
+Transform::from_xyz(x + index as f32 * BITMAP_FONT_ADVANCE, y, z),),
             SceneDialogMarker,
             DialogGlyphMarker { key },
         ));
@@ -10736,7 +10923,6 @@ fn update_scene_dialog_text_content_in_place<F: QueryFilter>(
         (
             Entity,
             &DialogGlyphMarker,
-            &mut Handle<Image>,
             &mut Transform,
             &mut Sprite,
         ),
@@ -10763,7 +10949,8 @@ fn update_scene_dialog_text_content_in_place<F: QueryFilter>(
     {
         let (x, y) = battle_hud_tile_origin(
             FIELD_TEXT_BOX_TEXT_LEFT_TILE,
-            FIELD_TEXT_BOX_TEXT_TOP_TILE + index as f32 * FIELD_TEXT_BOX_ROW_SPACING_TILES,
+            FIELD_TEXT_BOX_TEXT_TOP_TILE + index as f32 * FIELD_TEXT_BOX_ROW_SPACING_TILES
+                + field_text_timing::scroll_offset(runtime_shell),
         );
         for (glyph_index, frame) in bitmap_text_frames(rendered_art, asset_root, images, entry)
             .into_iter()
@@ -10784,8 +10971,8 @@ fn update_scene_dialog_text_content_in_place<F: QueryFilter>(
         for (index, label) in ["YES", "NO"].into_iter().enumerate() {
             let marker = if index == selected { ">" } else { " " };
             let (x, y) = battle_hud_tile_origin(
-                FIELD_YES_NO_LEFT_TILE,
-                FIELD_YES_NO_TOP_TILE + 1.0 + index as f32,
+                FIELD_YES_NO_LEFT_TILE + 1.0,
+                FIELD_YES_NO_TOP_TILE + 1.0 + index as f32 * 2.0,
             );
             let text = format!("{marker}{label}");
             for (glyph_index, frame) in bitmap_text_frames(rendered_art, asset_root, images, &text)
@@ -10826,28 +11013,24 @@ fn update_scene_dialog_text_content_in_place<F: QueryFilter>(
         .into_iter()
         .map(|entry| (entry.0, entry))
         .collect::<HashMap<_, _>>();
-    for (entity, marker, mut texture, mut transform, mut sprite) in glyphs.iter_mut() {
+    for (entity, marker, mut transform, mut sprite) in glyphs.iter_mut() {
         let Some((_, handle, size, next_transform)) = desired.remove(&marker.key) else {
-            commands.entity(entity).despawn_recursive();
+            commands.entity(entity).despawn();
             continue;
         };
-        if texture.id() != handle.id() {
-            *texture = handle;
+        if sprite.image.id() != handle.id() {
+            sprite.image = handle;
         }
         *transform = next_transform;
         sprite.custom_size = Some(size);
     }
     for (key, handle, size, transform) in desired.into_values() {
         commands.spawn((
-            SpriteBundle {
-                texture: handle,
-                sprite: Sprite {
+            (Sprite { image: handle,
                     custom_size: Some(size),
                     ..default()
                 },
-                transform,
-                ..default()
-            },
+transform,),
             SceneDialogMarker,
             DialogGlyphMarker { key },
         ));
@@ -10907,6 +11090,16 @@ fn load_name_entry_frame(
     input: &PendingNameInput,
     images: &mut Assets<Image>,
 ) -> Result<SpriteFrame> {
+    load_name_entry_frame_with_pokemon(asset_root, input, None, true, images)
+}
+
+fn load_name_entry_frame_with_pokemon(
+    asset_root: &AssetRoot,
+    input: &PendingNameInput,
+    pokemon: Option<&NameEntryPokemonArt>,
+    cursor_visible: bool,
+    images: &mut Assets<Image>,
+) -> Result<SpriteFrame> {
     let assets = asset_root.runtime_assets();
     // GetSGBLayout(SCGB_DIPLOMA) first copies DiplomaPalettes, then
     // _CGB_Diploma::CopyFourPalettes overwrites BG palette 0 with the
@@ -10942,7 +11135,10 @@ fn load_name_entry_frame(
         apply_name_entry_background_palette(image, &background_palette);
     }
 
-    let tilemap = build_name_entry_tilemap(input)?;
+    let mut tilemap = build_name_entry_tilemap(input)?;
+    if let Some(gender) = pokemon.and_then(|mon| mon.gender) {
+        tilemap[2][1] = name_entry_char_tile(gender).context("naming gender glyph")?;
+    }
     let width = NAME_ENTRY_SCREEN_TILE_WIDTH * SOURCE_TILE_SIZE;
     let height = NAME_ENTRY_SCREEN_TILE_HEIGHT * SOURCE_TILE_SIZE;
     let mut data = vec![0_u8; width * height * 4];
@@ -10970,7 +11166,20 @@ fn load_name_entry_frame(
             )?;
         }
     }
-    draw_name_entry_cursor(input, &cursor, &mut data)?;
+    if cursor_visible { draw_name_entry_cursor(input, &cursor, &mut data)?; }
+    if let Some(mon) = pokemon {
+        let frames = load_party_icon_frame(asset_root, &mon.icon_id, images)?;
+        let frame = images.get(&frames[mon.frame].handle).context("decoded naming icon")?;
+        let pixels = frame.data.as_ref().context("naming icon CPU pixels")?;
+        // NamingScreen_InitAnimatedMonIcon's depixel 4,4,4,0 plus
+        // OAMData_RedWalk and hardware sprite offsets yield LCD (16,12).
+        for y in 0..16 { for x in 0..16 {
+            let from = (y * 16 + x) * 4;
+            let to = ((12 + y) * width + 16 + x) * 4;
+            if pixels[from + 3] != 0 { data[to..to+4].copy_from_slice(&pixels[from..from+4]); }
+        }}
+        for frame in frames { images.remove(&frame.handle); }
+    }
 
     let mut image = Image::new(
         Extent3d {
@@ -11014,13 +11223,17 @@ fn build_name_entry_tilemap(input: &PendingNameInput) -> Result<Vec<Vec<u8>>> {
     for (line_index, line) in input.label.lines().take(2).enumerate() {
         let line_y = 2 + line_index * 2;
         let line_width = tokenize_name_entry_string(line).len();
-        if line_width > NAME_ENTRY_SCREEN_TILE_WIDTH - NAME_ENTRY_NAME_X {
+        if line_width > NAME_ENTRY_SCREEN_TILE_WIDTH - 2 {
             anyhow::bail!(
                 "naming-screen heading line {line:?} is {line_width} tiles wide, maximum is {}",
-                NAME_ENTRY_SCREEN_TILE_WIDTH - NAME_ENTRY_NAME_X
+                NAME_ENTRY_SCREEN_TILE_WIDTH - 2
             );
         }
-        write_name_entry_string(&mut tilemap, line, NAME_ENTRY_NAME_X, line_y)?;
+        // Long service headings must stay inside both border columns.
+        // Preserve the source offset for short headings, shifting only as
+        // far left as needed for a longer label such as POKéMON'S NAME?.
+        let heading_x = NAME_ENTRY_NAME_X.min(NAME_ENTRY_SCREEN_TILE_WIDTH - 1 - line_width);
+        write_name_entry_string(&mut tilemap, line, heading_x, line_y)?;
     }
 
     let mut name_tiles = vec![NAME_ENTRY_MIDDLE_LINE_TILE; input.max_length];
@@ -11351,15 +11564,11 @@ fn spawn_field_command_bitmap_text(
         .enumerate()
     {
         commands.spawn((
-            SpriteBundle {
-                texture: frame.handle,
-                sprite: Sprite {
+            (Sprite { image: frame.handle,
                     custom_size: Some(frame.size),
                     ..default()
                 },
-                transform: Transform::from_xyz(x + index as f32 * BITMAP_FONT_ADVANCE, y, z),
-                ..default()
-            },
+Transform::from_xyz(x + index as f32 * BITMAP_FONT_ADVANCE, y, z),),
             FieldCommandMarker,
         ));
     }
@@ -11380,15 +11589,11 @@ fn spawn_battle_command_bitmap_text(
         .enumerate()
     {
         commands.spawn((
-            SpriteBundle {
-                texture: frame.handle,
-                sprite: Sprite {
+            (Sprite { image: frame.handle,
                     custom_size: Some(frame.size),
                     ..default()
                 },
-                transform: Transform::from_xyz(x + index as f32 * BITMAP_FONT_ADVANCE, y, z),
-                ..default()
-            },
+Transform::from_xyz(x + index as f32 * BITMAP_FONT_ADVANCE, y, z),),
             BattleCommandMarker,
         ));
     }
@@ -11466,15 +11671,12 @@ fn spawn_active_pokemon_picture(
     const HEIGHT: f32 = 10.0;
     let (window_x, window_y) = field_window_center(LEFT, TOP, WIDTH, HEIGHT);
     commands.spawn((
-        SpriteBundle {
-            sprite: Sprite {
+        (Sprite {
                 color: Color::WHITE,
                 custom_size: Some(Vec2::new(TILE_SIZE * 7.0, TILE_SIZE * 8.0)),
                 ..default()
             },
-            transform: Transform::from_xyz(window_x, window_y, 3.9),
-            ..default()
-        },
+Transform::from_xyz(window_x, window_y, 3.9),),
         PokemonPictureMarker,
     ));
     let window = battle_window_frame_art(rendered_art, asset_root, images)
@@ -11493,15 +11695,11 @@ fn spawn_active_pokemon_picture(
     let picture_x = PLAYFIELD_LEFT + (LEFT + 1.0 + 3.5) * TILE_SIZE;
     let picture_y = PLAYFIELD_TOP - (TOP + 1.0 + 3.5) * TILE_SIZE;
     commands.spawn((
-        SpriteBundle {
-            texture: frame.handle,
-            sprite: Sprite {
+        (Sprite { image: frame.handle,
                 custom_size: Some(frame.size * source_scale),
                 ..default()
             },
-            transform: Transform::from_xyz(picture_x, picture_y, 4.1),
-            ..default()
-        },
+Transform::from_xyz(picture_x, picture_y, 4.1),),
         PokemonPictureMarker,
     ));
     Ok(())
@@ -11519,15 +11717,11 @@ fn spawn_pokepic_window_frame_tiles(
     let mut spawn = |art: &SpriteFrame, x: f32, y: f32| {
         let (x, y) = battle_hud_tile_origin(x, y);
         commands.spawn((
-            SpriteBundle {
-                texture: art.handle.clone(),
-                sprite: Sprite {
+            (Sprite { image: art.handle.clone(),
                     custom_size: Some(art.size),
                     ..default()
                 },
-                transform: Transform::from_xyz(x, y, z),
-                ..default()
-            },
+Transform::from_xyz(x, y, z),),
             PokemonPictureMarker,
         ));
     };
@@ -11694,14 +11888,20 @@ fn visible_field_notice_pages(notice: &str) -> Vec<String> {
         .collect()
 }
 
-// The PC special suspends PCScript with an active core menu. Its messages
-// belong to the field printer, above that menu and any retained script text.
+// Save warnings and the PC special own the field printer above their pending
+// answer or suspended core menu.
 fn visible_pokecenter_pc_text_boundary(
     shell: &BevyRuntimeShell,
 ) -> Option<&SpecialBoundaryDisplay> {
     shell.special_boundary.as_ref().filter(|boundary| {
         (shell.pc_hub_session_open && boundary.label != "HallOfFamePC")
-            || matches!(boundary.label.as_str(), "PokecenterPCCantUseText" | "ProfOaksPcBoot")
+            || matches!(
+                boundary.label.as_str(),
+                "PokecenterPCCantUseText"
+                    | "ProfOaksPcBoot"
+                    | "PokecenterMoveMailText"
+                    | "StartMenuOverwriteWarning"
+            )
     })
 }
 
@@ -11884,7 +12084,8 @@ fn visible_field_dialogue_is_fully_revealed(
         return false;
     }
     let full_text = &pages[reveal.page_index.min(pages.len().saturating_sub(1))];
-    visible_field_text_reveal_is_complete(reveal, &full_text)
+    field_text_timing::complete(runtime_shell)
+        && visible_field_text_reveal_is_complete(reveal, full_text)
 }
 
 fn visible_field_dialogue_is_entirely_consumed(
@@ -11901,7 +12102,8 @@ fn visible_field_dialogue_is_entirely_consumed(
     if reveal.text != text_identity || reveal.page_index + 1 != pages.len() {
         return false;
     }
-    visible_field_text_reveal_is_complete(reveal, &pages[reveal.page_index])
+    field_text_timing::complete(runtime_shell)
+        && visible_field_text_reveal_is_complete(reveal, &pages[reveal.page_index])
 }
 
 fn visible_field_text_reveal_is_complete(
@@ -11936,6 +12138,7 @@ fn tick_visible_field_text_reveal(
             // that transient gap; clearing it reprints the full dialogue.
             return Ok(false);
         }
+        runtime_shell.field_text_timing = None;
         let changed = runtime_shell.field_text_reveal.take().is_some();
         log_visible_dialogue_close(runtime_shell);
         return Ok(changed);
@@ -11961,6 +12164,11 @@ fn tick_visible_field_text_reveal(
         }
         reveal.page_index = reveal.page_index.min(pages.len().saturating_sub(1));
     }
+    field_text_timing::initialize(runtime_shell, &snapshot, &pages);
+    if field_text_timing::advance(runtime_shell, acceleration_requested)? {
+        return Ok(true);
+    }
+    let instant_limit = field_text_timing::reveal_limit(runtime_shell, usize::MAX);
     let page_index = runtime_shell
         .field_text_reveal
         .as_ref()
@@ -11975,7 +12183,7 @@ fn tick_visible_field_text_reveal(
     let text_len = full_text.chars().count();
     if snapshot.trainer.options.no_text_scroll {
         let changed = reveal.visible_chars < text_len;
-        reveal.visible_chars = text_len;
+        reveal.visible_chars = text_len.min(instant_limit);
         reveal.frames_until_next_char = 0;
         queue_visible_completed_oak_rating_sound(runtime_shell)?;
         return Ok(changed);
@@ -12066,6 +12274,9 @@ fn advance_visible_completed_field_text_page(
     runtime_shell: &mut BevyRuntimeShell,
     snapshot: &RuntimeShellSnapshot,
 ) -> Result<bool> {
+    if !field_text_timing::complete(runtime_shell) {
+        return Ok(false);
+    }
     let Some(pages) = visible_field_dialog_pages(snapshot, runtime_shell) else {
         return Ok(false);
     };
@@ -12094,9 +12305,21 @@ fn advance_visible_completed_field_text_page(
     // `<CONT>` scrolls the existing bottom line to the top and then prints
     // only the new bottom line. Starting the next page at zero retyped that
     // carried line, which players saw as Mom repeating her last words.
-    reveal.visible_chars =
-        visible_field_page_initial_chars(&pages[previous_page_index], &pages[reveal.page_index]);
+    let is_scroll = runtime_shell
+        .field_text_timing
+        .as_ref()
+        .and_then(|timing| timing.program.pages.get(reveal.page_index))
+        .is_none_or(|page| page.transition == field_text_program::PageTransition::Scroll);
+    reveal.visible_chars = if is_scroll {
+        visible_field_page_initial_chars(&pages[previous_page_index], &pages[reveal.page_index])
+    } else {
+        0
+    };
     reveal.frames_until_next_char = 0;
+    let page_index = reveal.page_index;
+    if let Some(timing) = runtime_shell.field_text_timing.as_mut() {
+        timing.enter(page_index);
+    }
     mark_runtime_presentation_dirty(runtime_shell);
     Ok(true)
 }
@@ -12292,7 +12515,15 @@ fn visible_scene_dialog_entries(
         return Ok(entries);
     }
     if runtime_shell.pending_name_input.is_some() {
-        push_visible_name_input_entries(&mut entries, runtime_shell);
+        push_visible_name_input_entries(&mut entries, runtime_shell)?;
+        return Ok(entries);
+    }
+    // Bill's save confirmation owns the screen above PCScript's suspended
+    // core chooser. Use this ordering for native rendering as well as the
+    // renderer-neutral controller's projected snapshot.
+    if runtime_shell.save_flow.is_some() {
+        push_visible_save_dialog_entries(&mut entries, snapshot, runtime_shell)?;
+        entries.truncate(SCENE_MENU_VISIBLE_ROWS);
         return Ok(entries);
     }
     if let Some(menu) = &snapshot.ui.menu {
@@ -12327,11 +12558,6 @@ fn visible_scene_dialog_entries(
     }
     if runtime_shell.pending_mail_input.is_some() {
         push_visible_mail_input_entries(&mut entries, runtime_shell);
-        return Ok(entries);
-    }
-    if runtime_shell.save_flow.is_some() {
-        push_visible_save_dialog_entries(&mut entries, snapshot, runtime_shell)?;
-        entries.truncate(SCENE_MENU_VISIBLE_ROWS);
         return Ok(entries);
     }
     let field_dialog_text = visible_field_dialog_text(snapshot, runtime_shell);
@@ -12479,7 +12705,12 @@ fn push_visible_save_dialog_entries(
         VisibleSaveFlowStage::Saved => SAVE_TEXT_SAVED,
         VisibleSaveFlowStage::Error => SAVE_TEXT_CORRUPTED,
     };
-    let text = visible_asm_text(snapshot, label)?;
+    let text = if matches!(
+        flow.stage,
+        VisibleSaveFlowStage::Prompt | VisibleSaveFlowStage::OverwritePrompt
+    ) {
+        save_prompt_pages::final_page(runtime_shell, snapshot, label)?
+    } else {visible_asm_text(snapshot, label)?};
     push_wrapped_scene_dialog_lines(entries, &text);
     if matches!(
         flow.stage,
@@ -12498,13 +12729,7 @@ fn push_visible_save_dialog_entries(
 }
 
 fn visible_asm_text(snapshot: &RuntimeShellSnapshot, label: &str) -> Result<String> {
-    let text = snapshot
-        .presentation
-        .asm_text
-        .get(label)
-        .with_context(|| {
-            format!("ASM text label {label} is missing from the presentation catalog")
-        })?
+    let text = snapshot.presentation.asm_text_for_label(label)?
         .replace("<PLAYER>", &snapshot.trainer.player_name)
         .replace("<PLAY_G>", &snapshot.trainer.player_name);
     Ok(text)
@@ -12564,10 +12789,11 @@ fn push_visible_day_of_week_entries(entries: &mut Vec<String>, runtime_shell: &B
     }
 }
 
-fn push_visible_name_input_entries(entries: &mut Vec<String>, runtime_shell: &BevyRuntimeShell) {
+fn push_visible_name_input_entries(entries: &mut Vec<String>, runtime_shell: &BevyRuntimeShell) -> Result<()> {
     let Some(input) = runtime_shell.pending_name_input.as_ref() else {
-        return;
+        return Ok(());
     };
+    let input = visible_name_entry_presentation_input(runtime_shell, input)?;
     entries.push(compact_scene_label("NAME ENTRY", 30));
     entries.push(compact_scene_label(&input.label, 30));
     let cursor = if input.value.chars().count() < input.max_length {
@@ -12599,6 +12825,7 @@ fn push_visible_name_input_entries(entries: &mut Vec<String>, runtime_shell: &Be
         ),
         30,
     ));
+    Ok(())
 }
 
 fn push_visible_mail_input_entries(entries: &mut Vec<String>, runtime_shell: &BevyRuntimeShell) {
@@ -12932,7 +13159,7 @@ fn push_visible_runtime_menu_dialog_entries(
                         } else {
                             " "
                         };
-                        format!("{marker}{option}")
+                        format!("{marker}{}",crate::visible_script_menu_option_label(menu,option))
                     })
                     .collect::<Vec<_>>()
                     .join(" ");
@@ -12944,7 +13171,7 @@ fn push_visible_runtime_menu_dialog_entries(
             windowed_index_range(cursor_index, vertical.options.len()).map(|index| {
                 let option = &vertical.options[index];
                 let marker = if index == cursor_index { ">" } else { " " };
-                compact_scene_label(&format!("{marker}{option}"), SCENE_DIALOG_TEXT_CHARS)
+                compact_scene_label(&format!("{marker}{}",crate::visible_script_menu_option_label(menu,option)), SCENE_DIALOG_TEXT_CHARS)
             }),
         );
         if entries.len() >= SCENE_MENU_VISIBLE_ROWS {
@@ -12967,6 +13194,36 @@ fn push_visible_shop_dialog_entries(
     }
     if let Some(notice) = runtime_shell.shop_notice.as_deref() {
         entries.extend(notice.lines().map(str::to_string));
+        return Ok(());
+    }
+    if let Some(quantity) = runtime_shell.shop_quantity.as_ref() {
+        let item = snapshot
+            .items
+            .iter()
+            .find(|item| item.item_id == quantity.item_id)
+            .context("shop quantity item is missing from the visible catalog")?;
+        let total = visible_shop_quantity_total(quantity);
+        if let Some(yes) = quantity.confirmation {
+            entries.push(
+                if quantity.selling {
+                    "I can pay you"
+                } else {
+                    "That will be"
+                }
+                .to_string(),
+            );
+            entries.push(format_price(total));
+            entries.push(format!("{}YES", if yes { ">" } else { " " }));
+            entries.push(format!("{}NO", if yes { " " } else { ">" }));
+        } else {
+            entries.push("How many?".to_string());
+            entries.push(format!(
+                "{} ×{:02}",
+                item.name.replace('_', " "),
+                quantity.quantity
+            ));
+            entries.push(format_price(total));
+        }
         return Ok(());
     }
     if let Some(cursor) = runtime_shell.shop_top_cursor.as_ref() {
@@ -13055,30 +13312,20 @@ fn spawn_shell_banner(commands: &mut Commands, message: String, text_color: Colo
     let origin_x = PLAYFIELD_LEFT + TILE_SIZE * 0.75;
     let origin_y = PLAYFIELD_TOP + TILE_SIZE * 0.45;
     commands.spawn((
-        SpriteBundle {
-            sprite: Sprite {
+        (Sprite {
                 color: Color::srgba(0.03, 0.04, 0.05, 0.82),
                 custom_size: Some(Vec2::new(TILE_SIZE * 13.2, TILE_SIZE * 0.86)),
                 ..default()
             },
-            transform: Transform::from_xyz(origin_x + TILE_SIZE * 6.6, origin_y, 4.6),
-            ..default()
-        },
+Transform::from_xyz(origin_x + TILE_SIZE * 6.6, origin_y, 4.6),),
         SceneDialogMarker,
     ));
     commands.spawn((
-        Text2dBundle {
-            text: Text::from_section(
-                message,
-                TextStyle {
-                    font_size: 14.0,
-                    color: text_color,
-                    ..default()
-                },
-            ),
-            transform: Transform::from_xyz(origin_x + TILE_SIZE * 0.25, origin_y, 4.8),
-            ..default()
-        },
+        (Text2d::new(
+                message),
+TextFont::from_font_size(14.0),
+TextColor(text_color),
+Transform::from_xyz(origin_x + TILE_SIZE * 0.25, origin_y, 4.8),),
         SceneDialogMarker,
     ));
 }
@@ -13129,22 +13376,15 @@ fn spawn_audio_status_label(commands: &mut Commands, runtime_shell: &BevyRuntime
         return;
     };
     commands.spawn((
-        Text2dBundle {
-            text: Text::from_section(
-                label,
-                TextStyle {
-                    font_size: 12.0,
-                    color: Color::srgb(0.82, 0.94, 1.0),
-                    ..default()
-                },
-            ),
-            transform: Transform::from_xyz(
+        (Text2d::new(
+                label),
+TextFont::from_font_size(12.0),
+TextColor(Color::srgb(0.82, 0.94, 1.0)),
+Transform::from_xyz(
                 PLAYFIELD_LEFT + TILE_SIZE * 10.2,
                 PLAYFIELD_TOP + TILE_SIZE * 0.92,
                 4.8,
-            ),
-            ..default()
-        },
+            ),),
         SceneDialogMarker,
     ));
 }
@@ -13161,22 +13401,15 @@ fn spawn_map_status_label(commands: &mut Commands, snapshot: &RuntimeShellSnapsh
         46,
     );
     commands.spawn((
-        Text2dBundle {
-            text: Text::from_section(
-                label,
-                TextStyle {
-                    font_size: 12.0,
-                    color: Color::srgb(0.92, 0.96, 0.86),
-                    ..default()
-                },
-            ),
-            transform: Transform::from_xyz(
+        (Text2d::new(
+                label),
+TextFont::from_font_size(12.0),
+TextColor(Color::srgb(0.92, 0.96, 0.86)),
+Transform::from_xyz(
                 PLAYFIELD_LEFT + TILE_SIZE * 0.1,
                 PLAYFIELD_TOP + TILE_SIZE * 0.92,
                 4.8,
-            ),
-            ..default()
-        },
+            ),),
         SceneDialogMarker,
     ));
 }
@@ -13195,22 +13428,15 @@ fn spawn_map_connection_labels(commands: &mut Commands, map: &crate::RuntimeMapC
         62,
     );
     commands.spawn((
-        Text2dBundle {
-            text: Text::from_section(
-                label,
-                TextStyle {
-                    font_size: 10.5,
-                    color: Color::srgb(0.78, 0.88, 0.96),
-                    ..default()
-                },
-            ),
-            transform: Transform::from_xyz(
+        (Text2d::new(
+                label),
+TextFont::from_font_size(10.5),
+TextColor(Color::srgb(0.78, 0.88, 0.96)),
+Transform::from_xyz(
                 PLAYFIELD_LEFT + TILE_SIZE * 0.1,
                 PLAYFIELD_TOP + TILE_SIZE * 0.46,
                 4.8,
-            ),
-            ..default()
-        },
+            ),),
         SceneDialogMarker,
     ));
 }
@@ -13661,11 +13887,8 @@ fn spawn_pokegear_phone_window(
         TextureDimension::D2, pixels, TextureFormat::Rgba8UnormSrgb, RenderAssetUsages::default());
     image.sampler = ImageSampler::nearest();
     let (left, top) = battle_window_center(x as f32, y as f32, width as f32, height as f32);
-    commands.spawn((SpriteBundle {
-        texture: images.add(image),
-        sprite: Sprite { custom_size: Some(Vec2::new(width as f32 * TILE_SIZE, height as f32 * TILE_SIZE)), ..default() },
-        transform: Transform::from_xyz(left, top, 4.0), ..default()
-    }, FieldCommandMarker));
+    commands.spawn(((Sprite { image: images.add(image), custom_size: Some(Vec2::new(width as f32 * TILE_SIZE, height as f32 * TILE_SIZE)), ..default() },
+Transform::from_xyz(left, top, 4.0),), FieldCommandMarker));
     Ok(())
 }
 
@@ -13680,11 +13903,9 @@ fn spawn_furniture_radio_textbox(
     // PlayRadio draws Textbox at (0,12), inner size 18x4. Preserve the map.
     rendered_art.selected_window_frame_id = textbox_frame_id(snapshot.trainer.options.frame);
     let (x, y) = field_window_center(0.0, 12.0, 20.0, 6.0);
-    commands.spawn((SpriteBundle {
-        sprite: Sprite { color: Color::WHITE,
+    commands.spawn(((Sprite { color: Color::WHITE,
             custom_size: Some(Vec2::new(20.0 * TILE_SIZE, 6.0 * TILE_SIZE)), ..default() },
-        transform: Transform::from_xyz(x, y, 3.3), ..default()
-    }, FieldCommandMarker));
+Transform::from_xyz(x, y, 3.3),), FieldCommandMarker));
     let frame = battle_window_frame_art(rendered_art, asset_root, images)
         .context("furniture radio requires source textbox frame")?;
     spawn_field_command_window_frame_tiles(commands, frame, 0.0, 12.0, 20, 6, 3.4);
@@ -13752,15 +13973,11 @@ fn spawn_pokedex_interface_tile(
     image.sampler = ImageSampler::nearest();
     let (x, y) = battle_hud_tile_origin(col, row);
     commands.spawn((
-        SpriteBundle {
-            texture: images.add(image),
-            sprite: Sprite {
+        (Sprite { image: images.add(image),
                 custom_size: Some(Vec2::splat(TILE_SIZE)),
                 ..default()
             },
-            transform: Transform::from_xyz(x, y, 3.8),
-            ..default()
-        },
+Transform::from_xyz(x, y, 3.8),),
         FieldCommandMarker,
     ));
     Ok(())
@@ -13841,19 +14058,15 @@ fn spawn_pokedex_nest_screen(
             .context("render Pokédex area player")?
         };
         commands.spawn((
-            SpriteBundle {
-                texture: frame.handle,
-                sprite: Sprite {
+            (Sprite { image: frame.handle,
                     custom_size: Some(frame.size),
                     ..default()
                 },
-                transform: Transform::from_xyz(
+Transform::from_xyz(
                     PLAYFIELD_LEFT + (player.x as f32 - 8.0) * TILE_SIZE / 8.0,
                     PLAYFIELD_TOP - (player.y as f32 - 16.0) * TILE_SIZE / 8.0,
                     3.8,
-                ),
-                ..default()
-            },
+                ),),
             FieldCommandMarker,
         ));
         return Ok(());
@@ -13887,19 +14100,15 @@ fn spawn_pokedex_nest_screen(
     let handle = images.add(image);
     for landmark in nests {
         commands.spawn((
-            SpriteBundle {
-                texture: handle.clone(),
-                sprite: Sprite {
+            (Sprite { image: handle.clone(),
                     custom_size: Some(Vec2::splat(TILE_SIZE)),
                     ..default()
                 },
-                transform: Transform::from_xyz(
+Transform::from_xyz(
                     PLAYFIELD_LEFT + (landmark.x as f32 - 8.0) * TILE_SIZE / 8.0,
                     PLAYFIELD_TOP - (landmark.y as f32 - 16.0) * TILE_SIZE / 8.0,
                     3.8,
-                ),
-                ..default()
-            },
+                ),),
             FieldCommandMarker,
         ));
     }
@@ -13986,15 +14195,11 @@ fn spawn_pokedex_unown_screen(
         image.sampler = ImageSampler::nearest();
         let (x, y) = battle_hud_tile_origin(f32::from(col), f32::from(row));
         commands.spawn((
-            SpriteBundle {
-                texture: images.add(image),
-                sprite: Sprite {
+            (Sprite { image: images.add(image),
                     custom_size: Some(Vec2::splat(TILE_SIZE)),
                     ..default()
                 },
-                transform: Transform::from_xyz(x, y, 3.8),
-                ..default()
-            },
+Transform::from_xyz(x, y, 3.8),),
             FieldCommandMarker,
         ));
     };
@@ -14034,15 +14239,11 @@ fn spawn_pokedex_unown_screen(
     image.sampler = ImageSampler::nearest();
     let (x, y) = battle_hud_tile_origin(9.0, 8.0);
     commands.spawn((
-        SpriteBundle {
-            texture: images.add(image),
-            sprite: Sprite {
+        (Sprite { image: images.add(image),
                 custom_size: Some(Vec2::splat(width as f32 * TILE_SIZE / 8.0)),
                 ..default()
             },
-            transform: Transform::from_xyz(x, y, 3.8),
-            ..default()
-        },
+Transform::from_xyz(x, y, 3.8),),
         FieldCommandMarker,
     ));
     Ok(())
@@ -14087,15 +14288,11 @@ fn spawn_pokedex_png(
     image.sampler = ImageSampler::nearest();
     let (x, y) = battle_hud_tile_origin(col, row);
     commands.spawn((
-        SpriteBundle {
-            texture: images.add(image),
-            sprite: Sprite {
+        (Sprite { image: images.add(image),
                 custom_size: Some(Vec2::new(width as f32, height as f32) * TILE_SIZE / 8.0),
                 ..default()
             },
-            transform: Transform::from_xyz(x, y, 3.8),
-            ..default()
-        },
+Transform::from_xyz(x, y, 3.8),),
         FieldCommandMarker,
     ));
     Ok(())
@@ -14119,21 +14316,17 @@ fn spawn_pokedex_text(
             art.font_error = Some("Pokédex glyph image is missing".to_string());
             return;
         };
-        for pixel in image.data.chunks_exact_mut(4) {
+        for pixel in image.data.as_mut().expect("CPU image pixels").chunks_exact_mut(4) {
             // Font alpha is ink coverage; the Dex uses black ink on white.
             let white = 255 - pixel[3];
             pixel.copy_from_slice(&[white, white, white, 255]);
         }
         commands.spawn((
-            SpriteBundle {
-                texture: images.add(image),
-                sprite: Sprite {
+            (Sprite { image: images.add(image),
                     custom_size: Some(frame.size),
                     ..default()
                 },
-                transform: Transform::from_xyz(x + index as f32 * BITMAP_FONT_ADVANCE, y, z),
-                ..default()
-            },
+Transform::from_xyz(x + index as f32 * BITMAP_FONT_ADVANCE, y, z),),
             FieldCommandMarker,
         ));
     }
@@ -14216,19 +14409,15 @@ fn spawn_pokedex_list_cursor(
     );
     image.sampler = ImageSampler::nearest();
     commands.spawn((
-        SpriteBundle {
-            texture: images.add(image),
-            sprite: Sprite {
+        (Sprite { image: images.add(image),
                 custom_size: Some(Vec2::new(PLAYFIELD_WIDTH, PLAYFIELD_HEIGHT)),
                 ..default()
             },
-            transform: Transform::from_xyz(
+Transform::from_xyz(
                 PLAYFIELD_LEFT + PLAYFIELD_WIDTH / 2.0,
                 PLAYFIELD_TOP - PLAYFIELD_HEIGHT / 2.0,
                 3.9,
-            ),
-            ..default()
-        },
+            ),),
         FieldCommandMarker,
     ));
     Ok(())
@@ -14367,15 +14556,11 @@ fn spawn_pokedex_search_slowpoke(
     image.sampler = ImageSampler::nearest();
     let (x, y) = battle_hud_tile_origin(9.0, 10.0);
     commands.spawn((
-        SpriteBundle {
-            texture: images.add(image),
-            sprite: Sprite {
+        (Sprite { image: images.add(image),
                 custom_size: Some(Vec2::splat(3.0 * TILE_SIZE)),
                 ..default()
             },
-            transform: Transform::from_xyz(x, y, 3.9),
-            ..default()
-        },
+Transform::from_xyz(x, y, 3.9),),
         FieldCommandMarker,
     ));
     Ok(())
@@ -14391,4 +14576,98 @@ fn queue_visible_completed_oak_rating_sound(shell: &mut BevyRuntimeShell) -> Res
         queue_visible_shell_sound_effect(shell, &sound)?;
     }
     Ok(())
+}
+
+fn minnesota_map_active(snapshot: &RuntimeShellSnapshot) -> bool {
+    snapshot.overworld.map_name.starts_with("Mn")
+}
+
+fn minnesota_map_frame(
+    snapshot: &RuntimeShellSnapshot,
+    art: &mut RenderedTilesetArt,
+    root: &AssetRoot,
+    images: &mut Assets<Image>,
+    standalone: bool,
+) -> Result<SpriteFrame> {
+    let palettes = &snapshot.presentation.pokegear_town_map_palette_map;
+    town_map_frame_for_art(
+        art,
+        root,
+        "MINNESOTA",
+        snapshot.trainer.player_gender,
+        palettes
+            .get("town_map")
+            .context("native Town Map palettes")?,
+        palettes
+            .get("pokegear")
+            .context("native Pokegear palettes")?,
+        standalone,
+        1 | (u8::from(
+            snapshot
+                .progression
+                .active_engine_flags
+                .contains("ENGINE_MAP_CARD"),
+        ) << 1)
+            | (u8::from(
+                snapshot
+                    .progression
+                    .active_engine_flags
+                    .contains("ENGINE_PHONE_CARD"),
+            ) << 2)
+            | (u8::from(
+                snapshot
+                    .progression
+                    .active_engine_flags
+                    .contains("ENGINE_RADIO_CARD"),
+            ) << 3),
+        images,
+    )
+    .context("render native Minnesota atlas")
+}
+
+fn projected_minnesota_landmark(
+    snapshot: &RuntimeShellSnapshot,
+    landmark: &crate::core::models::PokegearLandmark,
+) -> crate::core::models::PokegearLandmark {
+    let mut projected = landmark.clone();
+    if !minnesota_map_active(snapshot) {
+        return projected;
+    }
+    if let Some(name) = landmark.constant.strip_prefix("LANDMARK_MN_") {
+        projected.name = name.replace('_', " ");
+    }
+    let named = snapshot
+        .presentation
+        .pokegear_landmarks
+        .map_to_landmark
+        .iter()
+        .filter(|(map, constant)| map.starts_with("Mn") && *constant == &landmark.constant)
+        .find_map(|(map, _)| {
+            // Resolve towns through their map identifiers as well as display names;
+            // some older packs reuse Johto landmark names for regional towns.
+            let name = map.strip_prefix("Mn")?;
+            let mut words = String::new();
+            for ch in name.chars() {
+                if ch.is_uppercase() && !words.is_empty() {
+                    words.push(' ');
+                }
+                words.push(ch.to_ascii_uppercase());
+            }
+            minnesota_town_map::town_position(&words).map(|position| (words, position))
+        });
+    let (x, y) = if let Some((name, position)) = named {
+        projected.name = name;
+        position
+    } else {
+        minnesota_town_map::position(
+            &landmark.constant,
+            &landmark.name,
+            landmark.x - 8,
+            landmark.y - 16,
+        )
+    };
+    // Native OAM coordinates include the 8px/16px hardware origin.
+    projected.x = x + 8;
+    projected.y = y + 16;
+    projected
 }

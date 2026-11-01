@@ -1,0 +1,23 @@
+{
+  "id": "minnesota-game-corner-v1",
+  "room": "MnMinneapolisCornerHome",
+  "location": "Minneapolis south neighborhood, door (56,51), porch (56,52)",
+  "native_template": "GoldenrodGameCorner",
+  "dimensions_metatiles": [10, 7],
+  "arrival_core": [3, 12],
+  "exits_core": [[2, 13], [3, 13]],
+  "exterior_return_core": [56, 52],
+  "sign_core": [55, 51],
+  "staff": {"coins": [3, 2], "items": [16, 2], "tms": [18, 2], "welcome": [2, 9]},
+  "games": ["SlotMachine", "CardFlip"],
+  "coin_shop": [{"coins": 50, "money": 1000}, {"coins": 500, "money": 10000}],
+  "welcome": {"coin_case": "free", "coins": 20, "event": "EVENT_MN_GAME_CORNER_WELCOME"},
+  "prizes": [
+    {"item": "MOON_STONE", "name": "MOON STONE", "coins": 300},
+    {"item": "RARE_CANDY", "name": "RARE CANDY", "coins": 500},
+    {"item": "PP_UP", "name": "PP UP", "coins": 1000},
+    {"item": "TM_THUNDER", "name": "TM25 THUNDER", "coins": 5500},
+    {"item": "TM_BLIZZARD", "name": "TM14 BLIZZARD", "coins": 5500},
+    {"item": "TM_FIRE_BLAST", "name": "TM38 FIRE", "coins": 5500}
+  ]
+}

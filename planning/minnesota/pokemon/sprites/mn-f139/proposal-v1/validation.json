@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F139",
+  "status": "passed",
+  "production_validator": "MinnesotaPokemonCatalog::load on private six-species overlay; no global authoring mutation",
+  "validation_stdout": "Strict production catalog passed: [\"MN_F135\", \"MN_F139\", \"MN_F141\"]",
+  "selected_review_sha256": "e8116b6302fbd1223bed7dd6cfd88140f663a1557a67609b35f094eccb5522f5",
+  "native_frames": [
+    {
+      "species_id": "MN_308",
+      "view": "front",
+      "dimensions": [
+        56,
+        56
+      ],
+      "palette_rgb555": [
+        32767,
+        8729,
+        9450,
+        0
+      ],
+      "png_sha256": "1d443deaaddf1a784e83ebb8f2fc8c745c849c1f56e23fe7d3eb8d0cbf7ce237",
+      "2bpp_sha256": "4ba9403d036b4777b098825950684a7139a0a61e9103bf2f5ef90b17c7eba730",
+      "source_sha256": "1c39f45125bf3e7eea3eb75b6b91dea552737352fc75bba03d5978f98b2c2307"
+    },
+    {
+      "species_id": "MN_309",
+      "view": "front",
+      "dimensions": [
+        56,
+        56
+      ],
+      "palette_rgb555": [
+        32767,
+        16717,
+        11526,
+        0
+      ],
+      "png_sha256": "e719a649ec916266eed4e2ac09388c228cbd8ac83abc2711e890f543a1aae827",
+      "2bpp_sha256": "22b59966ac67e00171c7962bfa7c56b0bf7a583c8f663403e50b8483d98f24b3",
+      "source_sha256": "62b97fc2e9f4dd8df357f59fcaf8af986b1debfb50a99153051e8debefbbcfe9"
+    },
+    {
+      "species_id": "MN_308",
+      "view": "back",
+      "dimensions": [
+        48,
+        48
+      ],
+      "palette_rgb555": [
+        32767,
+        8729,
+        9450,
+        0
+      ],
+      "png_sha256": "29461ae7989e8df481e009f5332d55341d3a051232dbe8bc6dee821369334fd3",
+      "2bpp_sha256": "b186c3d6c0917163335d6d2414f8d78b5cfce47b8bf8e82563c6a001877ae67b",
+      "source_sha256": "1c39f45125bf3e7eea3eb75b6b91dea552737352fc75bba03d5978f98b2c2307"
+    },
+    {
+      "species_id": "MN_309",
+      "view": "back",
+      "dimensions": [
+        48,
+        48
+      ],
+      "palette_rgb555": [
+        32767,
+        16717,
+        11526,
+        0
+      ],
+      "png_sha256": "5c96eeb0fbecc49b0d4429e4bd0818f23ee0e29e4470a1a0e9ff669a5bd32357",
+      "2bpp_sha256": "9d8f1fec7400a157dcc0b0217094943870bb633132c2cfec2cd5947d1265f466",
+      "source_sha256": "62b97fc2e9f4dd8df357f59fcaf8af986b1debfb50a99153051e8debefbbcfe9"
+    }
+  ],
+  "profile_schema_fields_match_current": true,
+  "source_and_native_candidates_preserved": true,
+  "canonical_palette_registration": "Root integration pending; own manifest/proposal carries exact per-species words.",
+  "limits": "Root still owns actual base-pack move/cry/footprint reference resolution, roster registration, curation and pack build. No game-content pack built by this agent."
+}

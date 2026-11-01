@@ -1,0 +1,40 @@
+{
+  "families": [
+    {
+      "id": "MN_F136",
+      "members": [
+        {
+          "id": "MN_300",
+          "name": "Densy",
+          "types": [
+            "NORMAL"
+          ],
+          "stage": 1,
+          "evolves_to": "MN_301"
+        },
+        {
+          "id": "MN_301",
+          "name": "Dozebear",
+          "types": [
+            "NORMAL",
+            "PSYCHIC"
+          ],
+          "stage": 2,
+          "evolves_to": "MN_302"
+        },
+        {
+          "id": "MN_302",
+          "name": "Denumbra",
+          "types": [
+            "NORMAL",
+            "PSYCHIC"
+          ],
+          "stage": 3,
+          "evolves_to": null
+        }
+      ],
+      "theme": "Black bear and a living dream den. Its own folding body shelters an original luminous dream-face.",
+      "region": "northwoods"
+    }
+  ]
+}

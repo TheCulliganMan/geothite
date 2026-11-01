@@ -1,0 +1,18 @@
+{
+  "status": "PASS_CURRENT_BEMIDJI_COMPOSED_TOWN_AND_STAIRS",
+  "pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+  "pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33",
+  "native_cases": 9,
+  "production_stdio_calls": 15,
+  "six_facades_both_carpets_and_safe_returns": true,
+  "plateau_stairs_each_tread_both_directions": true,
+  "stair_side_walls_and_continue_descent": true,
+  "public_roads_guards_surf_residents_signs": true,
+  "care_pc_shop_actual_mutations": true,
+  "loss_recovery_clinic_memory_and_party_teleport": true,
+  "officer_dialogue_without_fabricated_progress": true,
+  "complete_town_and_six_interiors_used_art_collision_exact": true,
+  "source_checks": "current-source-checks-v02.json",
+  "native_receipt": "current-native-cases-v02.json",
+  "scope": "Fresh local controller fixtures and production Continue; initial party/badges/money/position are explicit QA setup, not earned statewide campaign progression. No gameplay/art/pack selection change; stale hop test updated to installed stairs. Broader review remains active."
+}

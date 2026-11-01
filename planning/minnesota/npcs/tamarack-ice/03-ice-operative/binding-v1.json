@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "trainer_class": "MN_ICE_OPERATIVE",
+  "class_name": "TEAM",
+  "trainer_ids": [
+    "MN_ICE_ARC_INTAKE_RECORDS",
+    "MN_ICE_HQ_ARCHIVE",
+    "MN_ICE_HQ_CARGO_SEARCH",
+    "MN_ICE_HQ_OPERATIONS_PATROL",
+    "MN_ICE_HQ_RELAY_PATROL",
+    "MN_ICE_HQ_WORKSHOP"
+  ],
+  "actors": [
+    {
+      "map": "MnBoundaryIntake",
+      "script": "MN_ICE_ARC_INTAKE_RECORDS",
+      "tile": [
+        5,
+        7
+      ],
+      "previous_sprite": "SPRITE_OFFICER"
+    },
+    {
+      "map": "MnIceCargoBasement",
+      "script": "MN_ICE_HQ_CARGO_SEARCH",
+      "tile": [
+        5,
+        9
+      ],
+      "previous_sprite": "SPRITE_OFFICER"
+    },
+    {
+      "map": "MnIceMaintenance",
+      "script": "MN_ICE_HQ_WORKSHOP",
+      "tile": [
+        28,
+        15
+      ],
+      "previous_sprite": "SPRITE_OFFICER"
+    },
+    {
+      "map": "MnIceOperations",
+      "script": "MN_ICE_HQ_OPERATIONS_PATROL",
+      "tile": [
+        26,
+        11
+      ],
+      "previous_sprite": "SPRITE_OFFICER"
+    },
+    {
+      "map": "MnIceRecords",
+      "script": "MN_ICE_HQ_ARCHIVE",
+      "tile": [
+        8,
+        6
+      ],
+      "previous_sprite": "SPRITE_OFFICER"
+    },
+    {
+      "map": "MnIceRelayFloor",
+      "script": "MN_ICE_HQ_RELAY_PATROL",
+      "tile": [
+        5,
+        6
+      ],
+      "previous_sprite": "SPRITE_OFFICER"
+    }
+  ]
+}

@@ -1,0 +1,739 @@
+{
+  "status": "PASS",
+  "pack_sha256": "b4a95a5634198e39fd8b9d6528af90b66f1e626fc9582e366b4ba4b6a9588171",
+  "actual_production_sheet_inspected": true,
+  "views": [
+    {
+      "id": "mart",
+      "map": "MnBemidji",
+      "core": [
+        41,
+        20
+      ],
+      "command": [
+        "/Users/ryanculligan/GitHub/geothite/.local/connected-route-capture-76416",
+        "--pack",
+        "/Users/ryanculligan/GitHub/geothite/content-packs/minnesota-current-bemidji-mart-v02.crystalpack",
+        "--map",
+        "MnBemidji",
+        "--x",
+        "41",
+        "--y",
+        "20",
+        "--view",
+        "2d",
+        "--hour",
+        "12",
+        "--screenshot",
+        "/Users/ryanculligan/GitHub/geothite/planning/minnesota/renders/route-grass-v01/current-bemidji-mart-v01/native-v02/mart/production.png"
+      ],
+      "production_sha256": "5a50385df09aafe789a0603c2cf6673066c8738e905b3977d1c0d08da90269bb",
+      "pixel_mismatches": 0,
+      "compared_pixels": 368640,
+      "consistent_water14_phase": 0,
+      "consistent_falls_scroll_stage": 0,
+      "derived_player_origin": [
+        320,
+        288
+      ],
+      "lcd_origin_8px_cells": [
+        72,
+        31
+      ],
+      "centered_camera_assumption_used": false,
+      "source_foreground_pixels_over_actors": 0,
+      "source_connection_depth": 1,
+      "immediate_native_sources": [
+        {
+          "map": "MnBemidji",
+          "origin_pixels": [
+            0,
+            0
+          ]
+        },
+        {
+          "map": "MnR08C00R00",
+          "origin_pixels": [
+            0,
+            768
+          ]
+        },
+        {
+          "map": "MnR14C01R00",
+          "origin_pixels": [
+            -512,
+            -32
+          ]
+        },
+        {
+          "map": "MnR09C00R01",
+          "origin_pixels": [
+            768,
+            352
+          ]
+        },
+        {
+          "map": "MnBemidjiNorthwoods",
+          "origin_pixels": [
+            256,
+            -448
+          ]
+        }
+      ],
+      "raw_gpu_descriptors": [
+        "mart/.render-archive/production.png/gpu-readback-03043fc0d1279ab26bd6fa11121f1880591e287bcb7c52ad25ced0f1a1cf5ded.json"
+      ]
+    },
+    {
+      "id": "gym",
+      "map": "MnBemidji",
+      "core": [
+        10,
+        10
+      ],
+      "command": [
+        "/Users/ryanculligan/GitHub/geothite/.local/connected-route-capture-76416",
+        "--pack",
+        "/Users/ryanculligan/GitHub/geothite/content-packs/minnesota-current-bemidji-mart-v02.crystalpack",
+        "--map",
+        "MnBemidji",
+        "--x",
+        "10",
+        "--y",
+        "10",
+        "--view",
+        "2d",
+        "--hour",
+        "12",
+        "--screenshot",
+        "/Users/ryanculligan/GitHub/geothite/planning/minnesota/renders/route-grass-v01/current-bemidji-mart-v01/native-v02/gym/production.png"
+      ],
+      "production_sha256": "2446e3ce20265fcd48699d8461b7a5008d5d86e11c81e7e82e49014572868f5b",
+      "pixel_mismatches": 0,
+      "compared_pixels": 368640,
+      "consistent_water14_phase": 0,
+      "consistent_falls_scroll_stage": 0,
+      "derived_player_origin": [
+        320,
+        288
+      ],
+      "lcd_origin_8px_cells": [
+        10,
+        11
+      ],
+      "centered_camera_assumption_used": false,
+      "source_foreground_pixels_over_actors": 0,
+      "source_connection_depth": 1,
+      "immediate_native_sources": [
+        {
+          "map": "MnBemidji",
+          "origin_pixels": [
+            0,
+            0
+          ]
+        },
+        {
+          "map": "MnR08C00R00",
+          "origin_pixels": [
+            0,
+            768
+          ]
+        },
+        {
+          "map": "MnR14C01R00",
+          "origin_pixels": [
+            -512,
+            -32
+          ]
+        },
+        {
+          "map": "MnR09C00R01",
+          "origin_pixels": [
+            768,
+            352
+          ]
+        },
+        {
+          "map": "MnBemidjiNorthwoods",
+          "origin_pixels": [
+            256,
+            -448
+          ]
+        }
+      ],
+      "raw_gpu_descriptors": [
+        "gym/.render-archive/production.png/gpu-readback-ff8fa8e1dacfff486d19afb5b8c6ae8dec54f64d3e09d835f3a11b2a76d56a7d.json"
+      ]
+    },
+    {
+      "id": "shelf-home",
+      "map": "MnBemidji",
+      "core": [
+        7,
+        16
+      ],
+      "command": [
+        "/Users/ryanculligan/GitHub/geothite/.local/connected-route-capture-76416",
+        "--pack",
+        "/Users/ryanculligan/GitHub/geothite/content-packs/minnesota-current-bemidji-mart-v02.crystalpack",
+        "--map",
+        "MnBemidji",
+        "--x",
+        "7",
+        "--y",
+        "16",
+        "--view",
+        "2d",
+        "--hour",
+        "12",
+        "--screenshot",
+        "/Users/ryanculligan/GitHub/geothite/planning/minnesota/renders/route-grass-v01/current-bemidji-mart-v01/native-v02/shelf-home/production.png"
+      ],
+      "production_sha256": "1e580ebac00aaf47856f4185b9dfdd4bd49687be0338ce3153c0ef956b563a33",
+      "pixel_mismatches": 0,
+      "compared_pixels": 368640,
+      "consistent_water14_phase": 0,
+      "consistent_falls_scroll_stage": 0,
+      "derived_player_origin": [
+        320,
+        288
+      ],
+      "lcd_origin_8px_cells": [
+        4,
+        23
+      ],
+      "centered_camera_assumption_used": false,
+      "source_foreground_pixels_over_actors": 0,
+      "source_connection_depth": 1,
+      "immediate_native_sources": [
+        {
+          "map": "MnBemidji",
+          "origin_pixels": [
+            0,
+            0
+          ]
+        },
+        {
+          "map": "MnR08C00R00",
+          "origin_pixels": [
+            0,
+            768
+          ]
+        },
+        {
+          "map": "MnR14C01R00",
+          "origin_pixels": [
+            -512,
+            -32
+          ]
+        },
+        {
+          "map": "MnR09C00R01",
+          "origin_pixels": [
+            768,
+            352
+          ]
+        },
+        {
+          "map": "MnBemidjiNorthwoods",
+          "origin_pixels": [
+            256,
+            -448
+          ]
+        }
+      ],
+      "raw_gpu_descriptors": [
+        "shelf-home/.render-archive/production.png/gpu-readback-e77711e659f00072dfa8f2e1fcc824ffe2bd2837c3e27935d9dd0bbb71f8bf06.json"
+      ]
+    },
+    {
+      "id": "clinic",
+      "map": "MnBemidji",
+      "core": [
+        31,
+        10
+      ],
+      "command": [
+        "/Users/ryanculligan/GitHub/geothite/.local/connected-route-capture-76416",
+        "--pack",
+        "/Users/ryanculligan/GitHub/geothite/content-packs/minnesota-current-bemidji-mart-v02.crystalpack",
+        "--map",
+        "MnBemidji",
+        "--x",
+        "31",
+        "--y",
+        "10",
+        "--view",
+        "2d",
+        "--hour",
+        "12",
+        "--screenshot",
+        "/Users/ryanculligan/GitHub/geothite/planning/minnesota/renders/route-grass-v01/current-bemidji-mart-v01/native-v02/clinic/production.png"
+      ],
+      "production_sha256": "e001faf2da54b1b8102390151fcaa983c91394b866e40d06fb52740f6610460a",
+      "pixel_mismatches": 0,
+      "compared_pixels": 368640,
+      "consistent_water14_phase": 0,
+      "consistent_falls_scroll_stage": 0,
+      "derived_player_origin": [
+        320,
+        288
+      ],
+      "lcd_origin_8px_cells": [
+        52,
+        11
+      ],
+      "centered_camera_assumption_used": false,
+      "source_foreground_pixels_over_actors": 0,
+      "source_connection_depth": 1,
+      "immediate_native_sources": [
+        {
+          "map": "MnBemidji",
+          "origin_pixels": [
+            0,
+            0
+          ]
+        },
+        {
+          "map": "MnR08C00R00",
+          "origin_pixels": [
+            0,
+            768
+          ]
+        },
+        {
+          "map": "MnR14C01R00",
+          "origin_pixels": [
+            -512,
+            -32
+          ]
+        },
+        {
+          "map": "MnR09C00R01",
+          "origin_pixels": [
+            768,
+            352
+          ]
+        },
+        {
+          "map": "MnBemidjiNorthwoods",
+          "origin_pixels": [
+            256,
+            -448
+          ]
+        }
+      ],
+      "raw_gpu_descriptors": [
+        "clinic/.render-archive/production.png/gpu-readback-4fb510744aaf3da1025bff12442d602697289c3d579887f3817daa4d88987149.json"
+      ]
+    },
+    {
+      "id": "north-home",
+      "map": "MnBemidji",
+      "core": [
+        33,
+        18
+      ],
+      "command": [
+        "/Users/ryanculligan/GitHub/geothite/.local/connected-route-capture-76416",
+        "--pack",
+        "/Users/ryanculligan/GitHub/geothite/content-packs/minnesota-current-bemidji-mart-v02.crystalpack",
+        "--map",
+        "MnBemidji",
+        "--x",
+        "33",
+        "--y",
+        "18",
+        "--view",
+        "2d",
+        "--hour",
+        "12",
+        "--screenshot",
+        "/Users/ryanculligan/GitHub/geothite/planning/minnesota/renders/route-grass-v01/current-bemidji-mart-v01/native-v02/north-home/production.png"
+      ],
+      "production_sha256": "4e40aa4ef375114bd48954a001954374902108bbd90e510c38df8e68cd35db21",
+      "pixel_mismatches": 0,
+      "compared_pixels": 368640,
+      "consistent_water14_phase": 0,
+      "consistent_falls_scroll_stage": 0,
+      "derived_player_origin": [
+        320,
+        288
+      ],
+      "lcd_origin_8px_cells": [
+        56,
+        27
+      ],
+      "centered_camera_assumption_used": false,
+      "source_foreground_pixels_over_actors": 0,
+      "source_connection_depth": 1,
+      "immediate_native_sources": [
+        {
+          "map": "MnBemidji",
+          "origin_pixels": [
+            0,
+            0
+          ]
+        },
+        {
+          "map": "MnR08C00R00",
+          "origin_pixels": [
+            0,
+            768
+          ]
+        },
+        {
+          "map": "MnR14C01R00",
+          "origin_pixels": [
+            -512,
+            -32
+          ]
+        },
+        {
+          "map": "MnR09C00R01",
+          "origin_pixels": [
+            768,
+            352
+          ]
+        },
+        {
+          "map": "MnBemidjiNorthwoods",
+          "origin_pixels": [
+            256,
+            -448
+          ]
+        }
+      ],
+      "raw_gpu_descriptors": [
+        "north-home/.render-archive/production.png/gpu-readback-5ac76fc207bf0a15775e2c2e69cdc8800b9a416244fc375c011082e79ad29b04.json"
+      ]
+    },
+    {
+      "id": "heritage",
+      "map": "MnBemidji",
+      "core": [
+        9,
+        38
+      ],
+      "command": [
+        "/Users/ryanculligan/GitHub/geothite/.local/connected-route-capture-76416",
+        "--pack",
+        "/Users/ryanculligan/GitHub/geothite/content-packs/minnesota-current-bemidji-mart-v02.crystalpack",
+        "--map",
+        "MnBemidji",
+        "--x",
+        "9",
+        "--y",
+        "38",
+        "--view",
+        "2d",
+        "--hour",
+        "12",
+        "--screenshot",
+        "/Users/ryanculligan/GitHub/geothite/planning/minnesota/renders/route-grass-v01/current-bemidji-mart-v01/native-v02/heritage/production.png"
+      ],
+      "production_sha256": "56c365f8042a690438e23171a4db80ef9932f5cae8a6de449d982b68294f0faf",
+      "pixel_mismatches": 0,
+      "compared_pixels": 368640,
+      "consistent_water14_phase": 0,
+      "consistent_falls_scroll_stage": 0,
+      "derived_player_origin": [
+        320,
+        288
+      ],
+      "lcd_origin_8px_cells": [
+        8,
+        67
+      ],
+      "centered_camera_assumption_used": false,
+      "source_foreground_pixels_over_actors": 0,
+      "source_connection_depth": 1,
+      "immediate_native_sources": [
+        {
+          "map": "MnBemidji",
+          "origin_pixels": [
+            0,
+            0
+          ]
+        },
+        {
+          "map": "MnR08C00R00",
+          "origin_pixels": [
+            0,
+            768
+          ]
+        },
+        {
+          "map": "MnR14C01R00",
+          "origin_pixels": [
+            -512,
+            -32
+          ]
+        },
+        {
+          "map": "MnR09C00R01",
+          "origin_pixels": [
+            768,
+            352
+          ]
+        },
+        {
+          "map": "MnBemidjiNorthwoods",
+          "origin_pixels": [
+            256,
+            -448
+          ]
+        }
+      ],
+      "raw_gpu_descriptors": [
+        "heritage/.render-archive/production.png/gpu-readback-3b182231039ddafea9631032a0e4fb0d25ae809827bd512312babed94050bc1c.json"
+      ]
+    },
+    {
+      "id": "closed-cliff-base",
+      "map": "MnBemidji",
+      "core": [
+        11,
+        22
+      ],
+      "command": [
+        "/Users/ryanculligan/GitHub/geothite/.local/connected-route-capture-76416",
+        "--pack",
+        "/Users/ryanculligan/GitHub/geothite/content-packs/minnesota-current-bemidji-mart-v02.crystalpack",
+        "--map",
+        "MnBemidji",
+        "--x",
+        "11",
+        "--y",
+        "22",
+        "--view",
+        "2d",
+        "--hour",
+        "12",
+        "--screenshot",
+        "/Users/ryanculligan/GitHub/geothite/planning/minnesota/renders/route-grass-v01/current-bemidji-mart-v01/native-v02/closed-cliff-base/production.png"
+      ],
+      "production_sha256": "4d26daea322b0734d25a8b3602a90098deddd22d5b42230c657f3810f57eeab7",
+      "pixel_mismatches": 0,
+      "compared_pixels": 368640,
+      "consistent_water14_phase": 0,
+      "consistent_falls_scroll_stage": 0,
+      "derived_player_origin": [
+        320,
+        288
+      ],
+      "lcd_origin_8px_cells": [
+        12,
+        35
+      ],
+      "centered_camera_assumption_used": false,
+      "source_foreground_pixels_over_actors": 0,
+      "source_connection_depth": 1,
+      "immediate_native_sources": [
+        {
+          "map": "MnBemidji",
+          "origin_pixels": [
+            0,
+            0
+          ]
+        },
+        {
+          "map": "MnR08C00R00",
+          "origin_pixels": [
+            0,
+            768
+          ]
+        },
+        {
+          "map": "MnR14C01R00",
+          "origin_pixels": [
+            -512,
+            -32
+          ]
+        },
+        {
+          "map": "MnR09C00R01",
+          "origin_pixels": [
+            768,
+            352
+          ]
+        },
+        {
+          "map": "MnBemidjiNorthwoods",
+          "origin_pixels": [
+            256,
+            -448
+          ]
+        }
+      ],
+      "raw_gpu_descriptors": [
+        "closed-cliff-base/.render-archive/production.png/gpu-readback-2886c3dd13d6327bb9df694fa4e5408787de22434ba3ac30d9240cbb7bdc0b53.json"
+      ]
+    },
+    {
+      "id": "north-trail",
+      "map": "MnBemidji",
+      "core": [
+        24,
+        4
+      ],
+      "command": [
+        "/Users/ryanculligan/GitHub/geothite/.local/connected-route-capture-76416",
+        "--pack",
+        "/Users/ryanculligan/GitHub/geothite/content-packs/minnesota-current-bemidji-mart-v02.crystalpack",
+        "--map",
+        "MnBemidji",
+        "--x",
+        "24",
+        "--y",
+        "4",
+        "--view",
+        "2d",
+        "--hour",
+        "12",
+        "--screenshot",
+        "/Users/ryanculligan/GitHub/geothite/planning/minnesota/renders/route-grass-v01/current-bemidji-mart-v01/native-v02/north-trail/production.png"
+      ],
+      "production_sha256": "785667899f97b401cd16ca65f720c3ec326de240057edbf30be12901e6539ed4",
+      "pixel_mismatches": 0,
+      "compared_pixels": 368640,
+      "consistent_water14_phase": 0,
+      "consistent_falls_scroll_stage": 0,
+      "derived_player_origin": [
+        320,
+        288
+      ],
+      "lcd_origin_8px_cells": [
+        38,
+        -1
+      ],
+      "centered_camera_assumption_used": false,
+      "source_foreground_pixels_over_actors": 0,
+      "source_connection_depth": 1,
+      "immediate_native_sources": [
+        {
+          "map": "MnBemidji",
+          "origin_pixels": [
+            0,
+            0
+          ]
+        },
+        {
+          "map": "MnR08C00R00",
+          "origin_pixels": [
+            0,
+            768
+          ]
+        },
+        {
+          "map": "MnR14C01R00",
+          "origin_pixels": [
+            -512,
+            -32
+          ]
+        },
+        {
+          "map": "MnR09C00R01",
+          "origin_pixels": [
+            768,
+            352
+          ]
+        },
+        {
+          "map": "MnBemidjiNorthwoods",
+          "origin_pixels": [
+            256,
+            -448
+          ]
+        }
+      ],
+      "raw_gpu_descriptors": [
+        "north-trail/.render-archive/production.png/gpu-readback-6cf85beb2976b65eef7a092e5084b018df22a266af2d1e45a78490e34cd971df.json"
+      ]
+    },
+    {
+      "id": "low-launch",
+      "map": "MnBemidji",
+      "core": [
+        28,
+        41
+      ],
+      "command": [
+        "/Users/ryanculligan/GitHub/geothite/.local/connected-route-capture-76416",
+        "--pack",
+        "/Users/ryanculligan/GitHub/geothite/content-packs/minnesota-current-bemidji-mart-v02.crystalpack",
+        "--map",
+        "MnBemidji",
+        "--x",
+        "28",
+        "--y",
+        "41",
+        "--view",
+        "2d",
+        "--hour",
+        "12",
+        "--screenshot",
+        "/Users/ryanculligan/GitHub/geothite/planning/minnesota/renders/route-grass-v01/current-bemidji-mart-v01/native-v02/low-launch/production.png"
+      ],
+      "production_sha256": "38eb5cd74c58ced7b710578bf2eec383aeb669456794efd17f1df6827deb5b9d",
+      "pixel_mismatches": 0,
+      "compared_pixels": 368640,
+      "consistent_water14_phase": 0,
+      "consistent_falls_scroll_stage": 0,
+      "derived_player_origin": [
+        320,
+        288
+      ],
+      "lcd_origin_8px_cells": [
+        46,
+        73
+      ],
+      "centered_camera_assumption_used": false,
+      "source_foreground_pixels_over_actors": 0,
+      "source_connection_depth": 1,
+      "immediate_native_sources": [
+        {
+          "map": "MnBemidji",
+          "origin_pixels": [
+            0,
+            0
+          ]
+        },
+        {
+          "map": "MnR08C00R00",
+          "origin_pixels": [
+            0,
+            768
+          ]
+        },
+        {
+          "map": "MnR14C01R00",
+          "origin_pixels": [
+            -512,
+            -32
+          ]
+        },
+        {
+          "map": "MnR09C00R01",
+          "origin_pixels": [
+            768,
+            352
+          ]
+        },
+        {
+          "map": "MnBemidjiNorthwoods",
+          "origin_pixels": [
+            256,
+            -448
+          ]
+        }
+      ],
+      "raw_gpu_descriptors": [
+        "low-launch/.render-archive/production.png/gpu-readback-f3cd2c57ed091ebd3c6fa7e233ba45b04bafafca30defc9c261e1824c5fc46d0.json"
+      ]
+    }
+  ],
+  "native2d_views": 9,
+  "pixel_mismatches": 0,
+  "scope": "Current-source native renderer; complete town source and nine production views inspected. Plateau stairs requested next and not yet installed."
+}

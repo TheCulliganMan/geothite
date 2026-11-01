@@ -1,0 +1,1190 @@
+{
+  "id": "MN_R05",
+  "native_cave_revision": {
+    "revision": "r05_rock_cut_revision",
+    "room": "MnR05RockCut",
+    "plan": "../caves/current-r05-v01/README.md",
+    "source": "../caves/johto-quality-v01/MnR05RockCut.json",
+    "scope": "Complete8x10 native Rock Cut on the current R09/R10/compact-coast/Ely lineage. Both real hillside mouth pairings, stair, original healer HP/PP/status care, Repel pickup/Pack use/countdown and Continue verified. Cave-only overlay; it does not compose independent outdoor route revisions or change the active world pointer."
+  },
+  "map_prefix": "MnR05",
+  "name": "River Bluffs North",
+  "required_flags": [
+    "BADGE_3",
+    "BADGE_4"
+  ],
+  "quest": "Q03",
+  "encounters": {
+    "grass_rates": {
+      "morning": 10,
+      "day": 10,
+      "night": 10
+    },
+    "grass": {
+      "morning": [
+        {
+          "species": "PIDGEOTTO",
+          "level": 19
+        },
+        {
+          "species": "MAREEP",
+          "level": 20
+        },
+        {
+          "species": "BELLSPROUT",
+          "level": 21
+        },
+        {
+          "species": "HOPPIP",
+          "level": 22
+        },
+        {
+          "species": "ABRA",
+          "level": 23
+        },
+        {
+          "species": "DROWZEE",
+          "level": 23
+        },
+        {
+          "species": "GIRAFARIG",
+          "level": 23
+        }
+      ],
+      "day": [
+        {
+          "species": "PIDGEOTTO",
+          "level": 19
+        },
+        {
+          "species": "MAREEP",
+          "level": 20
+        },
+        {
+          "species": "BELLSPROUT",
+          "level": 21
+        },
+        {
+          "species": "HOPPIP",
+          "level": 22
+        },
+        {
+          "species": "ABRA",
+          "level": 23
+        },
+        {
+          "species": "DROWZEE",
+          "level": 23
+        },
+        {
+          "species": "GIRAFARIG",
+          "level": 23
+        }
+      ],
+      "night": [
+        {
+          "species": "NOCTOWL",
+          "level": 19
+        },
+        {
+          "species": "SPINARAK",
+          "level": 20
+        },
+        {
+          "species": "BELLSPROUT",
+          "level": 21
+        },
+        {
+          "species": "HOPPIP",
+          "level": 22
+        },
+        {
+          "species": "ABRA",
+          "level": 23
+        },
+        {
+          "species": "DROWZEE",
+          "level": 23
+        },
+        {
+          "species": "GIRAFARIG",
+          "level": 23
+        }
+      ]
+    },
+    "water_rate": 4,
+    "water": [
+      {
+        "species": "POLIWAG",
+        "level": 19
+      },
+      {
+        "species": "WOOPER",
+        "level": 20
+      },
+      {
+        "species": "MARILL",
+        "level": 23
+      }
+    ]
+  },
+  "art_constraints": [
+    "Only original packed 8x8 source tiles.",
+    "No painted shadows, enlarged trees or perspective props.",
+    "Fit source shoreline/cliff quadrants; draw source trees in coherent metatile groups."
+  ],
+  "dimensions_metatiles": [
+    32,
+    56
+  ],
+  "chunk_metatiles": [
+    32,
+    24
+  ],
+  "chunk_columns": 1,
+  "chunk_rows": 3,
+  "tileset": "johto",
+  "source_references": [
+    "Route45",
+    "Route42",
+    "DarkCaveVioletEntrance"
+  ],
+  "description": "Two stepped limestone ridges. Northbound walkers climb the switchbacks; southbound walkers can drop down the two ledges. A two-ended dry rock cut, river lookout and fenced fishing pier give different reasons to explore.",
+  "endpoints": [
+    {
+      "place": "MINNEAPOLIS",
+      "side": "S",
+      "gate_metatile": [
+        11,
+        54
+      ],
+      "landing_metatile": [
+        11,
+        52
+      ]
+    },
+    {
+      "place": "ST CLOUD",
+      "side": "N",
+      "gate_metatile": [
+        12,
+        1
+      ],
+      "landing_metatile": [
+        12,
+        3
+      ]
+    }
+  ],
+  "main_path_metatiles": [
+    [
+      11,
+      55
+    ],
+    [
+      11,
+      45
+    ],
+    [
+      6,
+      45
+    ],
+    [
+      6,
+      32
+    ],
+    [
+      14,
+      32
+    ],
+    [
+      14,
+      23
+    ],
+    [
+      7,
+      23
+    ],
+    [
+      7,
+      12
+    ],
+    [
+      12,
+      12
+    ],
+    [
+      12,
+      0
+    ]
+  ],
+  "main_lane_width_gameplay_tiles": 2,
+  "districts": [
+    {
+      "id": "UPPER_RIDGE",
+      "name": "High overlook and rock cut",
+      "bounds_metatiles": [
+        4,
+        0,
+        29,
+        24
+      ],
+      "landmark_metatile": [
+        25,
+        10
+      ],
+      "purpose": "Upper climb, high river view, rock-cut exit and first return ledge"
+    },
+    {
+      "id": "LOWER_RIDGE",
+      "name": "Sunny meadow on the lower bluff",
+      "bounds_metatiles": [
+        4,
+        24,
+        24,
+        42
+      ],
+      "landmark_metatile": [
+        14,
+        32
+      ],
+      "purpose": "A green shelf contrasts the exposed upper ridge; switchback, bird challenge and southern return ledge"
+    },
+    {
+      "id": "TRAILHEAD",
+      "name": "City trailhead and river pier",
+      "bounds_metatiles": [
+        2,
+        41,
+        31,
+        56
+      ],
+      "landmark_metatile": [
+        24,
+        44
+      ],
+      "purpose": "Shared habitat, rest shelf and fenced fishing spur"
+    }
+  ],
+  "loops": [
+    {
+      "id": "LOWER_RETURN",
+      "path_metatiles": [
+        [
+          6,
+          39
+        ],
+        [
+          6,
+          32
+        ],
+        [
+          18,
+          32
+        ],
+        [
+          18,
+          43
+        ],
+        [
+          11,
+          43
+        ],
+        [
+          11,
+          45
+        ],
+        [
+          6,
+          45
+        ],
+        [
+          6,
+          39
+        ]
+      ],
+      "joins_districts": [
+        "LOWER_RIDGE",
+        "TRAILHEAD"
+      ],
+      "entry_rule": "Northbound via western ramp",
+      "return_rule": "Southbound native ledge",
+      "tradeoff": "Short return replaces the lower west switchback."
+    },
+    {
+      "id": "UPPER_RETURN",
+      "path_metatiles": [
+        [
+          7,
+          21
+        ],
+        [
+          7,
+          12
+        ],
+        [
+          12,
+          12
+        ],
+        [
+          12,
+          15
+        ],
+        [
+          18,
+          15
+        ],
+        [
+          18,
+          21
+        ],
+        [
+          14,
+          21
+        ],
+        [
+          14,
+          23
+        ],
+        [
+          7,
+          23
+        ],
+        [
+          7,
+          21
+        ]
+      ],
+      "joins_districts": [
+        "UPPER_RIDGE",
+        "LOWER_RIDGE"
+      ],
+      "entry_rule": "Northbound via western ramp",
+      "return_rule": "Southbound native ledge",
+      "tradeoff": "Short return skips the upper west climb."
+    }
+  ],
+  "minimum_optional_branches": 3,
+  "trainers": [
+    {
+      "id": "MN_R05_T01",
+      "display_name": "LENA",
+      "trainer_class": "HIKER",
+      "sprite": "SPRITE_POKEFAN_M",
+      "tile": [
+        11,
+        85
+      ],
+      "facing": "south",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "GEODUDE",
+          "level": 21
+        },
+        {
+          "species": "MACHOP",
+          "level": 22
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R05_TRAINER_01",
+      "before_lines": [
+        "I warm up before",
+        "the first climb!"
+      ],
+      "after_lines": [
+        "The long path is",
+        "a steady workout."
+      ],
+      "loss_lines": [
+        "Sure footing!"
+      ],
+      "block_main_lane": false
+    },
+    {
+      "id": "MN_R05_T02",
+      "display_name": "OWEN",
+      "trainer_class": "BIRD_KEEPER",
+      "sprite": "SPRITE_YOUNGSTER",
+      "tile": [
+        31,
+        65
+      ],
+      "facing": "east",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "PIDGEOTTO",
+          "level": 22
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R05_TRAINER_02",
+      "before_lines": [
+        "A wing beats the",
+        "wind above us."
+      ],
+      "after_lines": [
+        "The river turns",
+        "before the trail."
+      ],
+      "loss_lines": [
+        "Sure footing!"
+      ],
+      "block_main_lane": false
+    },
+    {
+      "id": "MN_R05_T03",
+      "display_name": "IRIS",
+      "trainer_class": "PICNICKER",
+      "sprite": "SPRITE_LASS",
+      "tile": [
+        19,
+        33
+      ],
+      "facing": "east",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "SKIPLOOM",
+          "level": 22
+        },
+        {
+          "species": "FLAAFFY",
+          "level": 22
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R05_TRAINER_03",
+      "before_lines": [
+        "Grass grows in",
+        "the sunny stone."
+      ],
+      "after_lines": [
+        "I take the bends",
+        "to find partners."
+      ],
+      "loss_lines": [
+        "Sure footing!"
+      ],
+      "block_main_lane": false
+    },
+    {
+      "id": "MN_R05_T04",
+      "display_name": "THEO",
+      "trainer_class": "FIREBREATHER",
+      "sprite": "SPRITE_FISHER",
+      "tile": [
+        29,
+        9
+      ],
+      "facing": "east",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "VULPIX",
+          "level": 23
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R05_TRAINER_04",
+      "before_lines": [
+        "These warm rocks",
+        "are a fine seat."
+      ],
+      "after_lines": [
+        "A good climb keeps",
+        "my team warm."
+      ],
+      "loss_lines": [
+        "Sure footing!"
+      ],
+      "block_main_lane": false
+    },
+    {
+      "id": "MN_R05_T05",
+      "display_name": "WES",
+      "trainer_class": "POKEMANIAC",
+      "sprite": "SPRITE_SUPER_NERD",
+      "tile": [
+        33,
+        29
+      ],
+      "facing": "east",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "GIRAFARIG",
+          "level": 23
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R05_TRAINER_05",
+      "before_lines": [
+        "One head watches",
+        "each cave mouth!"
+      ],
+      "after_lines": [
+        "That dry cut skips",
+        "a lot of climbing."
+      ],
+      "loss_lines": [
+        "Sure footing!"
+      ],
+      "block_main_lane": false
+    }
+  ],
+  "residents": [
+    {
+      "id": "MN_R05_WARDEN",
+      "sprite": "SPRITE_OFFICER",
+      "tile": [
+        19,
+        103
+      ],
+      "facing": "east",
+      "lines": [
+        "The two city gyms",
+        "prepare you for",
+        "the north trail.",
+        "Watch the drops."
+      ]
+    },
+    {
+      "id": "MN_R05_FISHER",
+      "sprite": "SPRITE_FISHER",
+      "tile": [
+        57,
+        89
+      ],
+      "facing": "west",
+      "lines": [
+        "The river is fast.",
+        "Fish on the pier,",
+        "inside the rails."
+      ]
+    },
+    {
+      "id": "MN_R05_LOOKOUT",
+      "sprite": "SPRITE_GRAMPS",
+      "tile": [
+        53,
+        21
+      ],
+      "facing": "south",
+      "lines": [
+        "The river cuts",
+        "through old stone.",
+        "The high path sees",
+        "each bend below."
+      ]
+    }
+  ],
+  "items": [
+    {
+      "id": "MN_R05_ITEM_01",
+      "item": "SUPER_POTION",
+      "quantity": 1,
+      "tile": [
+        9,
+        89
+      ],
+      "flag": "EVENT_MN_R05_ITEM_01"
+    },
+    {
+      "id": "MN_R05_ITEM_02",
+      "item": "GREAT_BALL",
+      "quantity": 1,
+      "tile": [
+        37,
+        19
+      ],
+      "flag": "EVENT_MN_R05_ITEM_02"
+    },
+    {
+      "id": "MN_R05_ITEM_04",
+      "item": "ETHER",
+      "quantity": 1,
+      "tile": [
+        41,
+        81
+      ],
+      "flag": "EVENT_MN_R05_ITEM_04"
+    }
+  ],
+  "signs": [
+    {
+      "id": "MN_R05_SOUTH_SIGN",
+      "tile": [
+        24,
+        106
+      ],
+      "lines": [
+        "RIVER BLUFFS",
+        "ST CLOUD: NORTH"
+      ]
+    },
+    {
+      "id": "MN_R05_RAMP_SIGN",
+      "tile": [
+        12,
+        78
+      ],
+      "lines": [
+        "CLIMB THE BENDS",
+        "DROP TO RETURN"
+      ]
+    },
+    {
+      "id": "MN_R05_CUT_SIGN",
+      "tile": [
+        18,
+        78
+      ],
+      "lines": [
+        "DRY ROCK CUT",
+        "TWO MOUTHS THROUGH",
+        "THE SAME HILL."
+      ]
+    },
+    {
+      "id": "MN_R05_LOOKOUT_SIGN",
+      "tile": [
+        50,
+        18
+      ],
+      "lines": [
+        "MISSISSIPPI VIEW",
+        "KEEP TO THE TRAIL."
+      ]
+    },
+    {
+      "id": "MN_R05_PIER_SIGN",
+      "tile": [
+        46,
+        86
+      ],
+      "lines": [
+        "RIVER PIER",
+        "THE RAILS MARK",
+        "THE WALKING DECK."
+      ]
+    },
+    {
+      "id": "MN_R05_NORTH_SIGN",
+      "tile": [
+        26,
+        4
+      ],
+      "lines": [
+        "ST CLOUD NORTH",
+        "TWIN CITIES SOUTH"
+      ]
+    }
+  ],
+  "doors": [
+    {
+      "id": "MN_R05_LOWER_CUT",
+      "warp_index": 1,
+      "return_warp_index": 2,
+      "tile": [
+        16,
+        77
+      ],
+      "target": "MnR05RockCut",
+      "target_warp": 1,
+      "return_tile": [
+        16,
+        78
+      ],
+      "arrival_tile": [
+        16,
+        78
+      ],
+      "collision": "CAVE"
+    },
+    {
+      "id": "MN_R05_UPPER_CUT",
+      "warp_index": 1,
+      "return_warp_index": 2,
+      "tile": [
+        30,
+        27
+      ],
+      "target": "MnR05RockCut",
+      "target_warp": 2,
+      "return_tile": [
+        30,
+        28
+      ],
+      "arrival_tile": [
+        30,
+        28
+      ],
+      "collision": "CAVE"
+    }
+  ],
+  "interiors": [
+    {
+      "id": "MnR05RockCut",
+      "template": "UnionCave1F",
+      "dimensions_metatiles": [
+        8,
+        10
+      ],
+      "rows": [
+        "2e 2e 2e 2e 2e 2e 2e 2e",
+        "2e 2e 2e 2e 04 06 2e 2e",
+        "2e 2e 04 05 02 07 06 2e",
+        "2e 2e 20 21 12 21 22 2e",
+        "2e 2e 2e 04 2b 0a 2e 2e",
+        "2e 2e 2e 08 22 2e 2e 2e",
+        "2e 04 02 02 0a 2e 2e 2e",
+        "2e 2e 08 21 22 2e 2e 2e",
+        "2e 2e 07 2e 2e 2e 2e 2e",
+        "2e 2e 2e 2e 2e 2e 2e 2e"
+      ],
+      "exits": [
+        [
+          5,
+          17
+        ],
+        [
+          11,
+          5
+        ]
+      ],
+      "exit_doors": [
+        [
+          16,
+          77
+        ],
+        [
+          30,
+          27
+        ]
+      ],
+      "clear_arrival": [
+        5,
+        16
+      ],
+      "exit_collision": "LADDER",
+      "border_block": 46,
+      "residents": [
+        {
+          "id": "MN_R05_CUT_WALKER",
+          "sprite": "SPRITE_POKEFAN_M",
+          "tile": [
+            5,
+            13
+          ],
+          "facing": "east",
+          "lines": [
+            "Rest a while.",
+            "I'll treat them.",
+            "Both mouths join",
+            "the same old hill."
+          ],
+          "service": "heal_party"
+        }
+      ],
+      "items": [
+        {
+          "id": "MN_R05_ITEM_03",
+          "item": "REPEL",
+          "quantity": 1,
+          "flag": "EVENT_MN_R05_ITEM_03",
+          "tile": [
+            5,
+            5
+          ]
+        }
+      ],
+      "signs": [],
+      "purpose": "The connecting neck bends around an attached stone toe; continuous bedrock encloses the healer turnout. Both mouths and the ordinary stair retain their existing function.",
+      "candidate_status": "Source candidate under whole-room, player-camera and production traversal review.",
+      "review_contract": {
+        "quality_revision": "johto-quality-v01",
+        "palette_group": "nite",
+        "native_stair_blocks": [
+          [
+            4,
+            3
+          ]
+        ],
+        "viewpoints": [
+          {
+            "id": "south-mouth",
+            "tile": [
+              5,
+              16
+            ]
+          },
+          {
+            "id": "healer",
+            "tile": [
+              6,
+              13
+            ]
+          },
+          {
+            "id": "bent-neck",
+            "tile": [
+              8,
+              9
+            ]
+          },
+          {
+            "id": "stair",
+            "tile": [
+              9,
+              7
+            ]
+          },
+          {
+            "id": "cache",
+            "tile": [
+              6,
+              5
+            ]
+          },
+          {
+            "id": "north-mouth",
+            "tile": [
+              11,
+              4
+            ]
+          }
+        ],
+        "notes": "The connecting neck bends around an attached stone toe; continuous bedrock encloses the healer turnout. Both mouths and the ordinary stair retain their existing function."
+      }
+    }
+  ],
+  "shortcut": null,
+  "battle_or_grass_choices": [],
+  "required_grass_crossings": [
+    {
+      "id": "CITY_HABITAT",
+      "bounds_core": [
+        20,
+        98,
+        26,
+        102
+      ],
+      "minimum_grass_steps": 4
+    }
+  ],
+  "one_way_ledges": [
+    {
+      "id": "UPPER_DROP",
+      "bounds_core": [
+        36,
+        40,
+        40,
+        42
+      ],
+      "direction": "south",
+      "source_block": "56",
+      "upper_approach": [
+        37,
+        39
+      ],
+      "hop_from": [
+        37,
+        40
+      ],
+      "landing": [
+        37,
+        42
+      ],
+      "reverse_blocked": [
+        37,
+        41
+      ],
+      "side_barriers": [
+        [
+          35,
+          41
+        ],
+        [
+          40,
+          41
+        ]
+      ],
+      "return_passage_core": [
+        14,
+        40,
+        16,
+        42
+      ],
+      "minimum_return_steps": 35,
+      "purpose": "Southbound dry drop; the ordinary western uphill climb crosses encounter habitat. The existing cave is a separate alternate passage."
+    },
+    {
+      "id": "LOWER_DROP",
+      "bounds_core": [
+        36,
+        76,
+        40,
+        78
+      ],
+      "direction": "south",
+      "source_block": "56",
+      "upper_approach": [
+        37,
+        75
+      ],
+      "hop_from": [
+        37,
+        76
+      ],
+      "landing": [
+        37,
+        78
+      ],
+      "reverse_blocked": [
+        37,
+        77
+      ],
+      "side_barriers": [
+        [
+          35,
+          77
+        ],
+        [
+          40,
+          77
+        ]
+      ],
+      "return_passage_core": [
+        12,
+        76,
+        14,
+        78
+      ],
+      "minimum_return_steps": 35,
+      "purpose": "Southbound dry drop; the ordinary western uphill climb crosses encounter habitat. The existing cave is a separate alternate passage."
+    }
+  ],
+  "viewpoints": [
+    {
+      "id": "CITY_HABITAT",
+      "tile": [
+        23,
+        105
+      ]
+    },
+    {
+      "id": "REST_SHELF",
+      "tile": [
+        12,
+        89
+      ]
+    },
+    {
+      "id": "LOWER_RAMP",
+      "tile": [
+        13,
+        77
+      ]
+    },
+    {
+      "id": "LOWER_SWITCHBACK",
+      "tile": [
+        29,
+        65
+      ]
+    },
+    {
+      "id": "ROCK_CUT_LOWER",
+      "tile": [
+        16,
+        78
+      ]
+    },
+    {
+      "id": "LOWER_DROP",
+      "tile": [
+        37,
+        75
+      ]
+    },
+    {
+      "id": "BETWEEN_RIDGES",
+      "tile": [
+        29,
+        47
+      ]
+    },
+    {
+      "id": "UPPER_RAMP",
+      "tile": [
+        15,
+        41
+      ]
+    },
+    {
+      "id": "ROCK_CUT_UPPER",
+      "tile": [
+        30,
+        28
+      ]
+    },
+    {
+      "id": "HIGH_LOOKOUT",
+      "tile": [
+        54,
+        21
+      ]
+    },
+    {
+      "id": "UPPER_DROP",
+      "tile": [
+        37,
+        39
+      ]
+    },
+    {
+      "id": "RIVER_PIER",
+      "tile": [
+        55,
+        89
+      ]
+    },
+    {
+      "id": "ST_CLOUD",
+      "tile": [
+        25,
+        5
+      ]
+    }
+  ],
+  "status": "Current compact R05 grass revision reviewed in minnesota-current-grass-r05-v03.crystalpack, preserving accepted R01/R20 cave terrain and completed League dialogue. Thirty-three grass cells, forced outdoor climbs and dry returns pass exact native/source preservation, directional negatives,2D review,3native controller cases, reached-save production stdio and377audio. Explicit local setup does not establish earned progression. Frozen native parties/room/bank inputs are in revisions/route-grass-v01/compact-rebase-v01; canonical roster rows remain templates for the regional roster layer. The full statewide grass objective remains open.",
+  "anchor_status": "All installed actors, signs, room/warp pairs, ramps, ledges, pier/Surf footing and native connections are preserved. Published through exact installed snapshots so 27 older canonical/native differences remain untouched. Native terrain comparison, both outdoor uphill returns/drops, five trainer wins/seven opponents, healing/medicine, Surf seams/banks and Save/Continue passed.",
+  "native_river_continuation": {
+    "status": "Exact hook-only native continuation; no unpublished route-quality candidate imported.",
+    "recomposition_contract_file": "towns/MnMinneapolis.recomposition.contract.json",
+    "native_map": "MnR05C00R02",
+    "route_edge_core": [
+      [
+        14,
+        15
+      ],
+      [
+        15,
+        15
+      ],
+      [
+        16,
+        15
+      ],
+      [
+        17,
+        15
+      ],
+      [
+        18,
+        15
+      ],
+      [
+        19,
+        15
+      ]
+    ],
+    "city_edge_core": [
+      [
+        32,
+        0
+      ],
+      [
+        33,
+        0
+      ],
+      [
+        34,
+        0
+      ],
+      [
+        35,
+        0
+      ],
+      [
+        36,
+        0
+      ],
+      [
+        37,
+        0
+      ]
+    ],
+    "hook_native_cells": 42,
+    "road_bridge_note": "Actual dry deck and rail collisions separate Surf components; no under-bridge Surf claim.",
+    "existing_native_cap_source_reconciliation": 0
+  },
+  "directional_grass_loops": [
+    {
+      "id": "UPPER_CLIMB_GRASS_OR_DROP",
+      "ledge_id": "UPPER_DROP",
+      "grass_regions_core": [
+        [
+          12,
+          36,
+          20,
+          40
+        ],
+        [
+          16,
+          34,
+          20,
+          36
+        ],
+        [
+          14,
+          42,
+          16,
+          46
+        ]
+      ],
+      "northbound_minimum_grass_steps": 7,
+      "southbound_minimum_grass_steps": 0,
+      "dry_trail_core": [
+        [
+          37,
+          39
+        ],
+        [
+          37,
+          42
+        ]
+      ],
+      "scope": "Ordinary outdoor walking; the existing two-ended cave remains an alternate route."
+    },
+    {
+      "id": "LOWER_CLIMB_GRASS_OR_DROP",
+      "ledge_id": "LOWER_DROP",
+      "grass_regions_core": [
+        [
+          12,
+          68,
+          18,
+          76
+        ],
+        [
+          12,
+          80,
+          14,
+          84
+        ]
+      ],
+      "northbound_minimum_grass_steps": 6,
+      "southbound_minimum_grass_steps": 0,
+      "dry_trail_core": [
+        [
+          37,
+          75
+        ],
+        [
+          37,
+          78
+        ]
+      ],
+      "scope": "Ordinary outdoor walking; the existing two-ended cave remains an alternate route."
+    }
+  ]
+}

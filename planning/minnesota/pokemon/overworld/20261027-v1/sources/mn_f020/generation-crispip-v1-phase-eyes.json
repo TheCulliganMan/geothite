@@ -1,0 +1,98 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_053",
+  "name": "Crispip",
+  "family_id": "MN_F020",
+  "status": "native_compiled_sent_to_root_for_visual_context_acceptance",
+  "generation_tool": "built-in image_gen",
+  "prompts": [
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f020/prompt-crispip-v1.txt"
+  ],
+  "sources_selected": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f020/crispip.overworld.imagegen-v1.png",
+      "sha256": "53f78e1dfc43937ff75658aa03b31d90947b3d56501b4902332e7db5ae557f0c",
+      "dimensions": [
+        1536,
+        1024
+      ]
+    }
+  ],
+  "original_outputs": [
+    {
+      "record": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f020/crispip.v1.original-path.txt",
+      "default_path": "/Users/ryanculligan/.codex/generated_images/01a17dc4-dd75-7642-a1c6-4bf13fda70c6/exec-39e356a0-5f44-472e-b3f0-455c33ade95f.png"
+    }
+  ],
+  "generation_reference_only": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+  "identity_authority": "Currentactivecoverage.json textualtheme,canonicalpalette,visualinspectionofexactselectednativefront; no battleimagesprovidedtoImageGen",
+  "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f020/manifest-crispip-v1-phase-eyes.json",
+  "manifest_sha256": "a35e9d9b6acd05c6bdcc37cd0b406e8bdbb02cab4696df5bee9d5bf7cbb0668a",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f020/crispip-v1-phase-eyes",
+  "normal_review": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f020/crispip-v1-phase-eyes/review/line.normal-8x.png",
+  "frame_size": [
+    16,
+    16
+  ],
+  "native_bounds": [
+    [
+      1,
+      3,
+      13,
+      12
+    ],
+    [
+      1,
+      3,
+      13,
+      12
+    ],
+    [
+      2,
+      3,
+      10,
+      12
+    ],
+    [
+      1,
+      3,
+      13,
+      12
+    ],
+    [
+      1,
+      3,
+      13,
+      12
+    ],
+    [
+      2,
+      3,
+      10,
+      12
+    ]
+  ],
+  "sampling": "source_center",
+  "normal_palette_rgb555": [
+    32767,
+    10813,
+    7754,
+    0
+  ],
+  "shiny_palette_rgb555": [
+    32767,
+    18346,
+    18759,
+    0
+  ],
+  "transparent_index": 0,
+  "visible_indices": [
+    1,
+    2,
+    3
+  ],
+  "alpha_threshold": 128,
+  "native_pixels_painted": false,
+  "same_idle_step_registration": true,
+  "notes": "Sixposes nativecompiled, strictsourcealpha cropsisolated, max14pxopaquefootprints andtransparentborder. Nativeboard inspected andsenttoroot; no globalcoverage orpackwrites. Allraws/prompts/conversionvariantsretained."
+}

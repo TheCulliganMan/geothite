@@ -1,0 +1,40 @@
+{
+  "name": "SLOANE",
+  "role": "Ski Patroller",
+  "status": "accepted-native-playable",
+  "source": "native-pixels-v2.json",
+  "integration": "placement-v1.json",
+  "controller": "placement-v1.json",
+  "native": "target/trainer-cast/ski/native-v2",
+  "pack": "content-packs/minnesota-trainer-cast-21-v01.crystalpack",
+  "gameplay": "target/trainer-cast/ski/gameplay-v1",
+  "log": "target/trainer-cast/ski/controller-v1.log",
+  "reference_review": "actual-crystal-sprites-common-palette-and-scale",
+  "review_notes": "Blue parka, forehead goggles, dark rescue backpack and winter boots in six hand-authored field poses. Rear goggle strap connected to prevent eye-like rear marks; battle face and collar redrawn. Native-scale Crystal and game captures inspected. Grand Marais placement replaces unavailable International Falls geography.",
+  "fixture": "Three legal level-60 Minnesota starters; adjacent position and explicit prior-access setup. Local encounter/rewards proof, not earned traversal or intended-level balance.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/cast/21-ski-patroller/native-pixels-v2.json": "322e204b581560b387eccb13633ed69a278288e72606e5e3267148089913bc74",
+    "planning/minnesota/npcs/cast/21-ski-patroller/placement-v1.json": "94eda94e5f12bab9ac6d05690527bfb600690aad6f2fc28392fda4fa59dee1a6",
+    "target/trainer-cast/ski/native-v2/verification.json": "ffa4a5470edf5ec4aee88a3946182a0449e2ada4fb16f1c51be82157b64c5454",
+    "content-packs/minnesota-trainer-cast-21-v01.crystalpack": "545a03d62f07c6777870611320efc61be183fd07d0909ce33dbf3cf40c13dfd4",
+    "target/trainer-cast/ski/controller-v1.log": "bc8d17c567e769e6244569b3268cfceed189b2a0e0854b795aa6eabf9e616468",
+    "target/trainer-cast/ski/gameplay-v1/original-npc-trainer-intro.png": "9fe28069446fe377f65fd48804b61acecbc8be3bfcf54ab54b1815d760044de8",
+    "target/trainer-cast/ski/gameplay-v1/original-npc-overworld-state.png": "320db8f4cf59256ac721005752758cdb2892d3fa01a1c630912386183c0c5e0d",
+    "target/trainer-cast/ski/gameplay-v1/original-npc-first-turn.png": "e2652475cd06c4ba456541e9410a0c4f77b1aab0d19388b148e559740e3d0c7a",
+    "planning/minnesota/npcs/cast/21-ski-patroller/battle-reference-prompt.txt": "b00d63b5feef8a51a7fe377f6a021d6419e9313170669b83db297ace2dc48684",
+    "planning/minnesota/npcs/cast/21-ski-patroller/battle-reference-v1.png": "be04c6a649c22b28dec45101695ae6c3cb8d04227a87acd53e06543c5e531371",
+    "target/trainer-cast/ski/real-comparison.png": "92a7714e95c9b8c44511435e967d7a2eb0fe87cf5e20220f6c4ba2b94a9a5ce7",
+    "target/trainer-cast/ski/battle-real-comparison.png": "d68bc487fdb30db5240765e719ad34e2e8b7a78e9c3824ab0404f167cb755b00"
+  },
+  "final_pack": "content-packs/minnesota-trainer-cast-36-v01.crystalpack",
+  "final_gameplay": "target/trainer-cast/final-audit/gameplay/21-ski-patroller",
+  "final_log": "target/trainer-cast/final-audit/gameplay/21-ski-patroller/controller.log",
+  "final_status": "accepted-native-playable-final-pack",
+  "final_review": "Actual battle intro and field captures inspected on exact final pack; art retains accepted native sources and palette.",
+  "final_evidence_sha256": {
+    "target/trainer-cast/final-audit/gameplay/21-ski-patroller/controller.log": "89676754127e20f1d005fbc4fef23e27aa62d0d5c13ee43fc2778b858276ad15",
+    "target/trainer-cast/final-audit/gameplay/21-ski-patroller/original-npc-trainer-intro.png": "9fe28069446fe377f65fd48804b61acecbc8be3bfcf54ab54b1815d760044de8",
+    "target/trainer-cast/final-audit/gameplay/21-ski-patroller/original-npc-overworld-state.png": "320db8f4cf59256ac721005752758cdb2892d3fa01a1c630912386183c0c5e0d",
+    "target/trainer-cast/final-audit/gameplay/21-ski-patroller/original-npc-first-turn.png": "e2652475cd06c4ba456541e9410a0c4f77b1aab0d19388b148e559740e3d0c7a"
+  }
+}

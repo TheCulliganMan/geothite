@@ -1,0 +1,129 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F009",
+  "species_id": "MN_026",
+  "name": "Pitchwick",
+  "status": "native_compiled_author_inspected_root_world_context_review_pending",
+  "generation_tool": "built-in image_gen",
+  "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f009/pitchwick.overworld.imagegen-v2.png",
+  "source_sha256": "b3b8eec3b310f5dc2166104367d8a21d8e2deb38d8b472d7a971455c8cd0730c",
+  "original_default_output": "/Users/ryanculligan/.codex/generated_images/01a179bf-dc2b-7352-8975-8b8f3a32e33b/exec-192ed855-3b90-4360-acf2-8fecab9f984a.png",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f009/prompt-pitchwick-v2.txt",
+  "prompt_sha256": "43083c4e30c5dc11dd5d36fd99768efc897eae680da101e075c611533a44d599",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f009/reference-mapping-pitchwick-v2.json",
+  "only_input_image": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+  "proposed_native_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f009/manifest-pitchwick-v2-west-y112.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f009/pitchwick-v2-west-y112",
+  "six_frame_layout": "3columns2rows; down/up/left idle then down/up/left root-step",
+  "conversion": "Rust source_center with equal380x370 crop windows; shared scale/anchor across6poses; no pixel painting",
+  "conversion_result": {
+    "exit_code": 0,
+    "stdout": "Compiled MN_F009: 1 species, 4 literal OBJ runtime files; retained reviews in planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f009/pitchwick-v2-center\n",
+    "stderr": ""
+  },
+  "manifest_sha256": "04a5e701458ea3ba6331747557fdc2c02c9e60a95baddd8942f0aed7e3a8c6aa",
+  "normal_review": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f009/pitchwick-v2-west-y112/review/line.normal-8x.png",
+  "review_sha256": "7614ebae0201695cdad927a8659feb813166afaa0fd40eb69f22acd7259cc860",
+  "native_bounds": [
+    [
+      1,
+      2,
+      14,
+      12
+    ],
+    [
+      1,
+      2,
+      14,
+      13
+    ],
+    [
+      3,
+      1,
+      11,
+      14
+    ],
+    [
+      1,
+      2,
+      14,
+      13
+    ],
+    [
+      1,
+      2,
+      14,
+      13
+    ],
+    [
+      3,
+      1,
+      11,
+      13
+    ]
+  ],
+  "palette_rgb555": [
+    32767,
+    5791,
+    7587,
+    0
+  ],
+  "shiny_palette_rgb555": [
+    32767,
+    21477,
+    13415,
+    0
+  ],
+  "sampling": "source_center",
+  "validation_results": {
+    "six_frames_16x16": true,
+    "runtime_png_16x96": true,
+    "native_2bpp_bytes": 384,
+    "tile_decode_matches_png_and_indexed_rows": true,
+    "binary_alpha": true,
+    "transparent_border": true,
+    "three_opaque_inks_only": true,
+    "normal_shiny_palette_words_exact": true,
+    "idle_step_pairs_different": true,
+    "isolated_face_black_points_4connected": {
+      "down_idle": [
+        [
+          6,
+          10
+        ],
+        [
+          9,
+          10
+        ]
+      ],
+      "left_idle": [
+        [
+          5,
+          9
+        ]
+      ],
+      "down_step": [
+        [
+          6,
+          10
+        ],
+        [
+          9,
+          10
+        ]
+      ],
+      "left_step": [
+        [
+          5,
+          9
+        ]
+      ]
+    }
+  },
+  "notes": "Actual selected native six-frame normal board inspected. Both south faces retain two separated pupils, side faces retain one pupil, rear shows plain cone/pine back without authored eyes. All prior registration/fit trials retained. One shared source_center transform per species, equal-sized source crop windows, zero painted pixels. Root world-context acceptance pending.",
+  "accepted": false
+}

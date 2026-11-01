@@ -1,0 +1,338 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F051",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_104": {
+      "species_id": "MN_104",
+      "name": "Sodcalf",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          24,
+          19,
+          10
+        ],
+        [
+          12,
+          8,
+          4
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        10872,
+        4364,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          198,
+          156,
+          82
+        ],
+        [
+          99,
+          66,
+          33
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#C69C52",
+        "#634221",
+        "#000000"
+      ]
+    },
+    "MN_105": {
+      "species_id": "MN_105",
+      "name": "Rumblehide",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          23,
+          17,
+          8
+        ],
+        [
+          9,
+          7,
+          5
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        8759,
+        5353,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          189,
+          140,
+          66
+        ],
+        [
+          74,
+          57,
+          41
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#BD8C42",
+        "#4A3929",
+        "#000000"
+      ]
+    },
+    "MN_106": {
+      "species_id": "MN_106",
+      "name": "Thundraze",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          25,
+          6
+        ],
+        [
+          10,
+          8,
+          6
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        6975,
+        6410,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          206,
+          49
+        ],
+        [
+          82,
+          66,
+          49
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FFCE31",
+        "#524231",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f051/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png",
+      "target/minnesota-pokemon/gen2-reference/bugs.png"
+    ]
+  },
+  "sprites": [
+    {
+      "id": "mn-104-sodcalf-v1",
+      "species_id": "MN_104",
+      "view": "front",
+      "source": "sprites/mn-f051/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        480,
+        512
+      ],
+      "fit": [
+        36,
+        36
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        10872,
+        4364,
+        0
+      ]
+    },
+    {
+      "id": "mn-104-sodcalf-v1",
+      "species_id": "MN_104",
+      "view": "back",
+      "source": "sprites/mn-f051/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        512,
+        480,
+        512
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        10872,
+        4364,
+        0
+      ]
+    },
+    {
+      "id": "mn-105-rumblehide-v1",
+      "species_id": "MN_105",
+      "view": "front",
+      "source": "sprites/mn-f051/front-back.imagegen-v1.png",
+      "crop": [
+        480,
+        0,
+        500,
+        512
+      ],
+      "fit": [
+        44,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        8759,
+        5353,
+        0
+      ]
+    },
+    {
+      "id": "mn-105-rumblehide-v1",
+      "species_id": "MN_105",
+      "view": "back",
+      "source": "sprites/mn-f051/front-back.imagegen-v1.png",
+      "crop": [
+        480,
+        512,
+        500,
+        512
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        8759,
+        5353,
+        0
+      ]
+    },
+    {
+      "id": "mn-106-thundraze-v1",
+      "species_id": "MN_106",
+      "view": "front",
+      "source": "sprites/mn-f051/front-back.imagegen-v1.png",
+      "crop": [
+        980,
+        0,
+        556,
+        512
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        6975,
+        6410,
+        0
+      ]
+    },
+    {
+      "id": "mn-106-thundraze-v1",
+      "species_id": "MN_106",
+      "view": "back",
+      "source": "sprites/mn-f051/front-back.imagegen-v1.png",
+      "crop": [
+        980,
+        512,
+        556,
+        512
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        6975,
+        6410,
+        0
+      ]
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "notes": "Inspected frozen v1: Sodcalf forelock grows into Rumblehide resonant ridges and Thundraze lightning horn/hump planes. Clear eyes, connected horn/hoof silhouettes, distinct prairie palettes and matching large rear shoulder portraits.",
+    "sheet_sha256": "f15e7f719e1e0aca595c1b5e3e2ceffd5c12fc9408e4eff6decea655ec2ed216",
+    "outline_profile": "source-contour-v1"
+  }
+}

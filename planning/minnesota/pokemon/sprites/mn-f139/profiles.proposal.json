@@ -1,0 +1,235 @@
+{
+  "schema_version": 1,
+  "species": [
+    {
+      "id": "MN_308",
+      "classification": "Crook",
+      "height_inches": 16,
+      "weight_tenths_lb": 95,
+      "dex_pages": [
+        "It crooks its back @ beside fallen @ branches to hide.",
+        "The fork in its @ tail sways like @ a windblown twig."
+      ],
+      "base_stats": {
+        "hp": 45,
+        "attack": 60,
+        "defense": 40,
+        "speed": 75,
+        "special_attack": 35,
+        "special_defense": 50
+      },
+      "catch_rate": 190,
+      "base_exp": 65,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_GROUND",
+        "EGG_GROUND"
+      ],
+      "evolution": {
+        "method": "LEVEL",
+        "level": 30
+      },
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_FOX",
+      "footprint_species": "FURRET",
+      "cry": {
+        "cry": "CRY_SENTRET",
+        "pitch": -24,
+        "length": 144
+      },
+      "shiny_rgb5": [
+        [
+          18,
+          24,
+          13
+        ],
+        [
+          8,
+          10,
+          16
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "SCRATCH"
+        ],
+        [
+          1,
+          "TAIL_WHIP"
+        ],
+        [
+          5,
+          "QUICK_ATTACK"
+        ],
+        [
+          10,
+          "BITE"
+        ],
+        [
+          15,
+          "PURSUIT"
+        ],
+        [
+          20,
+          "DOUBLE_TEAM"
+        ],
+        [
+          25,
+          "SLASH"
+        ],
+        [
+          31,
+          "AGILITY"
+        ],
+        [
+          38,
+          "SCREECH"
+        ],
+        [
+          45,
+          "CRUNCH"
+        ]
+      ],
+      "tmhm_moves": [
+        "HEADBUTT",
+        "SWIFT",
+        "THIEF",
+        "DOUBLE_TEAM",
+        "REST",
+        "PROTECT",
+        "RETURN",
+        "ATTRACT",
+        "FURY_CUTTER"
+      ],
+      "egg_moves": [
+        "BATON_PASS",
+        "CHARM",
+        "REVERSAL"
+      ]
+    },
+    {
+      "id": "MN_309",
+      "classification": "FalseBranch",
+      "height_inches": 38,
+      "weight_tenths_lb": 480,
+      "dex_pages": [
+        "Its angular back @ looks like a @ snapped pine limb.",
+        "Only two eyes @ betray the hunter @ beneath the arch."
+      ],
+      "base_stats": {
+        "hp": 75,
+        "attack": 95,
+        "defense": 60,
+        "speed": 105,
+        "special_attack": 80,
+        "special_defense": 80
+      },
+      "catch_rate": 60,
+      "base_exp": 175,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_GROUND",
+        "EGG_GROUND"
+      ],
+      "evolution": null,
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_FOX",
+      "footprint_species": "FURRET",
+      "cry": {
+        "cry": "CRY_SENTRET",
+        "pitch": 0,
+        "length": 160
+      },
+      "shiny_rgb5": [
+        [
+          21,
+          15,
+          9
+        ],
+        [
+          10,
+          7,
+          13
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "SCRATCH"
+        ],
+        [
+          1,
+          "TAIL_WHIP"
+        ],
+        [
+          1,
+          "PURSUIT"
+        ],
+        [
+          5,
+          "QUICK_ATTACK"
+        ],
+        [
+          10,
+          "BITE"
+        ],
+        [
+          20,
+          "DOUBLE_TEAM"
+        ],
+        [
+          25,
+          "SLASH"
+        ],
+        [
+          30,
+          "FAINT_ATTACK"
+        ],
+        [
+          34,
+          "AGILITY"
+        ],
+        [
+          40,
+          "SCREECH"
+        ],
+        [
+          46,
+          "CRUNCH"
+        ],
+        [
+          53,
+          "BATON_PASS"
+        ]
+      ],
+      "tmhm_moves": [
+        "HEADBUTT",
+        "SWIFT",
+        "THIEF",
+        "DOUBLE_TEAM",
+        "REST",
+        "PROTECT",
+        "RETURN",
+        "ATTRACT",
+        "FURY_CUTTER",
+        "PSYCH_UP"
+      ],
+      "egg_moves": [
+        "BATON_PASS",
+        "CHARM",
+        "REVERSAL"
+      ]
+    }
+  ]
+}

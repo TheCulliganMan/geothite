@@ -1,0 +1,26 @@
+[
+  {
+    "id": "MnFairGrandstand",
+    "map": "MnFairGrandstand",
+    "core": [
+      5,
+      12
+    ]
+  },
+  {
+    "id": "MnFairBarn",
+    "map": "MnFairBarn",
+    "core": [
+      3,
+      6
+    ]
+  },
+  {
+    "id": "MnFairDairy",
+    "map": "MnFairDairy",
+    "core": [
+      3,
+      6
+    ]
+  }
+]

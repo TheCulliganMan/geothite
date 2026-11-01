@@ -1,0 +1,233 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F061",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_133": {
+      "species_id": "MN_133",
+      "name": "Binglint",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          30,
+          24,
+          9
+        ],
+        [
+          13,
+          8,
+          6
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        10014,
+        6413,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          247,
+          198,
+          74
+        ],
+        [
+          107,
+          66,
+          49
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#F7C64A",
+        "#6B4231",
+        "#000000"
+      ]
+    },
+    "MN_134": {
+      "species_id": "MN_134",
+      "name": "Silkflare",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          20,
+          6
+        ],
+        [
+          14,
+          5,
+          4
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        6815,
+        4270,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          165,
+          49
+        ],
+        [
+          115,
+          41,
+          33
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FFA531",
+        "#732921",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f061/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png",
+      "target/minnesota-pokemon/gen2-reference/bugs.png"
+    ]
+  },
+  "sprites": [
+    {
+      "id": "mn-133-binglint-v1",
+      "species_id": "MN_133",
+      "view": "front",
+      "source": "sprites/mn-f061/mn-133-134.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        600,
+        615
+      ],
+      "fit": [
+        38,
+        38
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        10014,
+        6413,
+        0
+      ]
+    },
+    {
+      "id": "mn-133-binglint-v1",
+      "species_id": "MN_133",
+      "view": "back",
+      "source": "sprites/mn-f061/mn-133-134.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        615,
+        600,
+        584
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        10014,
+        6413,
+        0
+      ]
+    },
+    {
+      "id": "mn-134-silkflare-v1",
+      "species_id": "MN_134",
+      "view": "front",
+      "source": "sprites/mn-f061/mn-133-134.front-back.imagegen-v1.png",
+      "crop": [
+        600,
+        0,
+        712,
+        615
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        6815,
+        4270,
+        0
+      ]
+    },
+    {
+      "id": "mn-134-silkflare-v1",
+      "species_id": "MN_134",
+      "view": "back",
+      "source": "sprites/mn-f061/mn-133-134.front-back.imagegen-v1.png",
+      "crop": [
+        600,
+        615,
+        712,
+        584
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        6815,
+        4270,
+        0
+      ]
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "notes": "Final source-contour-v1 board visually inspected: faceted nodule tuft develops three large silkstone mane ridges and heavy mineral paws. White eye glints, angular gold facets and dark rock bodies remain distinct with readable exterior edges. Close rear portraits emphasize mane layers and crystal shoulder, lower body cropped; no source-neighbor fragments observed.",
+    "sheet_sha256": "9c4d1ebbd7bd6dd7bbc3f2338335b4f23a370eb7b63bbc4244300c8a77a6ea6b",
+    "outline_profile": "source-contour-v1"
+  }
+}

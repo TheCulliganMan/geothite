@@ -1,0 +1,20 @@
+[
+  {
+    "id": "southern-road",
+    "map": "MnInternationalFalls",
+    "core": [
+      20,
+      25
+    ],
+    "source_depth": 2
+  },
+  {
+    "id": "winter-outlet",
+    "map": "MnRainyRiverIcefields",
+    "core": [
+      60,
+      45
+    ],
+    "source_depth": 1
+  }
+]

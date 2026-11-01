@@ -1,0 +1,336 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_155",
+  "result": "pass",
+  "manifest_sha256": "7f6a925dd2571ccbb7abda3258b41bfef269b38fc91cc079fcedca2778ee3034",
+  "bank_sha256": "7a7e2e498fd155a7264bc87b5d9e6c1efdffe7dd1b8547d7dc58d264c87b603b",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f073/crosspout.overworld.imagegen-v1.png": "2566281466124c9bd9a71a5ae1a05a1455810ba4082298d993273fbdd5df33e1"
+  },
+  "canonical_eye_form": "TWO real black SOUTH pupils, ONE real near WEST pupil, complete native clusters mapped to the same small source anatomical pupil component. Spout/vent/foot dots are not counted.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "down_idle",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f073/crosspout.overworld.imagegen-v1.png",
+        "crop": [
+          19,
+          94,
+          500,
+          440
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            213,
+            196,
+            25,
+            32
+          ],
+          [
+            295,
+            196,
+            23,
+            32
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                5,
+                5
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  1,
+                  0,
+                  1,
+                  253
+                ],
+                "bounds": [
+                  213,
+                  196,
+                  25,
+                  32
+                ],
+                "pixels": 769,
+                "truncated_contour": false,
+                "native_pixel": [
+                  5,
+                  5
+                ],
+                "source_sample_pixel": [
+                  220,
+                  205
+                ]
+              }
+            ]
+          },
+          {
+            "native_cluster": [
+              [
+                8,
+                5
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  1,
+                  0,
+                  0,
+                  253
+                ],
+                "bounds": [
+                  295,
+                  196,
+                  23,
+                  32
+                ],
+                "pixels": 736,
+                "truncated_contour": false,
+                "native_pixel": [
+                  8,
+                  5
+                ],
+                "source_sample_pixel": [
+                  310,
+                  205
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "left_idle",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f073/crosspout.overworld.imagegen-v1.png",
+        "crop": [
+          1003,
+          68,
+          500,
+          440
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            1192,
+            196,
+            24,
+            32
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                5,
+                6
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  2,
+                  0,
+                  1,
+                  253
+                ],
+                "bounds": [
+                  1192,
+                  196,
+                  24,
+                  32
+                ],
+                "pixels": 747,
+                "truncated_contour": false,
+                "native_pixel": [
+                  5,
+                  6
+                ],
+                "source_sample_pixel": [
+                  1204,
+                  211
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "down_step",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f073/crosspout.overworld.imagegen-v1.png",
+        "crop": [
+          21,
+          554,
+          500,
+          440
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            213,
+            655,
+            24,
+            32
+          ],
+          [
+            294,
+            655,
+            24,
+            32
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                5,
+                5
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  0,
+                  0,
+                  0,
+                  253
+                ],
+                "bounds": [
+                  213,
+                  655,
+                  24,
+                  32
+                ],
+                "pixels": 768,
+                "truncated_contour": false,
+                "native_pixel": [
+                  5,
+                  5
+                ],
+                "source_sample_pixel": [
+                  222,
+                  665
+                ]
+              }
+            ]
+          },
+          {
+            "native_cluster": [
+              [
+                8,
+                5
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  1,
+                  1,
+                  0,
+                  253
+                ],
+                "bounds": [
+                  294,
+                  655,
+                  24,
+                  32
+                ],
+                "pixels": 768,
+                "truncated_contour": false,
+                "native_pixel": [
+                  8,
+                  5
+                ],
+                "source_sample_pixel": [
+                  312,
+                  665
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "left_step",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f073/crosspout.overworld.imagegen-v1.png",
+        "crop": [
+          1004,
+          522,
+          500,
+          440
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            1192,
+            652,
+            24,
+            32
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                5,
+                6
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  1,
+                  0,
+                  0,
+                  253
+                ],
+                "bounds": [
+                  1192,
+                  652,
+                  24,
+                  32
+                ],
+                "pixels": 759,
+                "truncated_contour": false,
+                "native_pixel": [
+                  5,
+                  6
+                ],
+                "source_sample_pixel": [
+                  1205,
+                  665
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "notes": "Both native normal/shiny rear poses actually inspected: plain rear head, no copied face. Head anchors stable, 1px transparent outer border, three walk pairs differ."
+  },
+  "detailed_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f073/manifest-crosspout-v1-pupil-proof.proof.json"
+}

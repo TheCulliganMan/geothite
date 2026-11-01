@@ -1,0 +1,339 @@
+{
+  "species_id": "MN_067",
+  "name": "clinklaw",
+  "status": "native-review-recommended; root independent review and context required",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f027/clinklaw.manifest-native-safe-split-phase-v3.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-clinklaw-safe-split-phase-v3",
+  "shared_transform": {
+    "source_bounds": [
+      43,
+      36,
+      448,
+      403
+    ],
+    "native_size": [
+      14,
+      12
+    ],
+    "native_origin": [
+      1,
+      3
+    ]
+  },
+  "all_four_nonrear_poses_actual_pupils_pass": true,
+  "each_native_eye_cluster_maps_to_one_actual_small_source_pupil_component": true,
+  "actual_source_pupil_proofs": [
+    {
+      "pose": "down_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f027/clinklaw.overworld.imagegen-v3.png",
+      "crop": [
+        19,
+        48,
+        503,
+        467
+      ],
+      "actual_source_eye_bounds": [
+        [
+          180,
+          144,
+          36,
+          36
+        ],
+        [
+          325,
+          144,
+          36,
+          36
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              5,
+              5
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                1,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                180,
+                144,
+                36,
+                36
+              ],
+              "pixels": 1233,
+              "truncated_contour": false,
+              "native_pixel": [
+                5,
+                5
+              ],
+              "source_sample_pixel": [
+                206,
+                167
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              9,
+              5
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                325,
+                144,
+                36,
+                36
+              ],
+              "pixels": 1267,
+              "truncated_contour": false,
+              "native_pixel": [
+                9,
+                5
+              ],
+              "source_sample_pixel": [
+                334,
+                167
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f027/clinklaw.overworld.imagegen-v3.png",
+      "crop": [
+        1014,
+        68,
+        503,
+        467
+      ],
+      "actual_source_eye_bounds": [
+        [
+          1129,
+          145,
+          36,
+          35
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              3,
+              4
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                1129,
+                145,
+                36,
+                35
+              ],
+              "pixels": 1260,
+              "truncated_contour": false,
+              "native_pixel": [
+                3,
+                4
+              ],
+              "source_sample_pixel": [
+                1137,
+                154
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f027/clinklaw.overworld.imagegen-v3.png",
+      "crop": [
+        19,
+        492,
+        503,
+        467
+      ],
+      "actual_source_eye_bounds": [
+        [
+          181,
+          600,
+          35,
+          35
+        ],
+        [
+          325,
+          600,
+          36,
+          35
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              5,
+              5
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                181,
+                600,
+                35,
+                35
+              ],
+              "pixels": 1225,
+              "truncated_contour": false,
+              "native_pixel": [
+                5,
+                5
+              ],
+              "source_sample_pixel": [
+                206,
+                611
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              9,
+              5
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                325,
+                600,
+                36,
+                35
+              ],
+              "pixels": 1260,
+              "truncated_contour": false,
+              "native_pixel": [
+                9,
+                5
+              ],
+              "source_sample_pixel": [
+                334,
+                611
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f027/clinklaw.overworld.imagegen-v3.png",
+      "crop": [
+        997,
+        506,
+        503,
+        467
+      ],
+      "actual_source_eye_bounds": [
+        [
+          1127,
+          594,
+          46,
+          48
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              4,
+              5
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                1127,
+                594,
+                46,
+                48
+              ],
+              "pixels": 2187,
+              "truncated_contour": false,
+              "native_pixel": [
+                4,
+                5
+              ],
+              "source_sample_pixel": [
+                1152,
+                625
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "old_native_poses_preserved_exactly": [],
+  "normal_shiny_runtime_parity": "all1536pixels exact each",
+  "canonical_palette_bytes": "exact",
+  "all_three_walk_pairs_distinct": true,
+  "rear_review": "both rear native poses viewed; no copied face",
+  "normal_shiny_native_boards_actually_viewed": true,
+  "accepted_coverage_native_pack_untouched": true,
+  "manifest_sha256": "e365c2f1c2c6ae62bf29b9f849066523238e1a3041b5b4c796d9a6688abfa9df",
+  "compiled_index_sha256": "2be36f22ac3c892b8625a2a92ba18fba6ebf119f9bc6d96b3779ccc7f1b9a404",
+  "anatomy_review": "Two enlarged open metal pincers remain distinct from six source walking legs, large tan stalk-eye bulbs and segmented slate tail. Three near walking legs in west profile. Native walking-leg colors are compact and partially merged with their contours; root terrain review must judge readability."
+}

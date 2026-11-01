@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F010",
+  "species": [
+    {
+      "species_id": "MN_028",
+      "runtime_token": "OATLET",
+      "palette_rgb555": [
+        32767,
+        13051,
+        5422,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        24428,
+        9669,
+        0
+      ],
+      "fit": [
+        12,
+        12
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 64,
+      "interior_black_samples": 64,
+      "opaque_interior_minimum_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "oatlet.overworld.imagegen-v1.png",
+          "crop": [
+            62,
+            120,
+            440,
+            370
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "oatlet.overworld.imagegen-v1.png",
+          "crop": [
+            550,
+            120,
+            440,
+            370
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "oatlet.overworld.imagegen-v1.png",
+          "crop": [
+            1038,
+            112,
+            440,
+            370
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "oatlet.overworld.imagegen-v1.png",
+          "crop": [
+            62,
+            550,
+            440,
+            370
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "oatlet.overworld.imagegen-v1.png",
+          "crop": [
+            550,
+            550,
+            440,
+            370
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "oatlet.overworld.imagegen-v1.png",
+          "crop": [
+            1038,
+            542,
+            440,
+            370
+          ]
+        }
+      ]
+    }
+  ]
+}

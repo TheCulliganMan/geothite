@@ -1,0 +1,30 @@
+{
+  "pack": "content-packs/minnesota-current-r11-southwest-grass-v01.crystalpack",
+  "pack_sha256": "9f0ff0c7d0f6dd874ef1a581657900984ca75d360ffb04da2c92b00ab58475aa",
+  "map": "MnR11C00R00",
+  "source_dossier": "planning/minnesota/revisions/route-grass-v01/current-r11-successor-review-v01/native-qualified-checkpoint-source-v05.json",
+  "start": [
+    35,
+    17
+  ],
+  "badge_count": 8,
+  "event_flags": [
+    "EVENT_MN_LIGHTHOUSE_SIGNAL"
+  ],
+  "roads": [],
+  "gates": [],
+  "ledges": [],
+  "doors": [],
+  "fences": [],
+  "counts": {
+    "roads": 0,
+    "gates": 0,
+    "ledges": 0,
+    "doors": 0,
+    "fences": 0,
+    "residents": 0,
+    "signs": 0
+  },
+  "arrival_discovery_flags": [],
+  "scope": "Save/Continue at upper passage; grass crossing is checked separately through production MCP. Initial partner, badges and location are local QA setup."
+}

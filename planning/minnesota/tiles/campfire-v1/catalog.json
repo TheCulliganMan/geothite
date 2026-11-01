@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "tileset_id": "mn_campfire",
+  "source_sha256": "9363dfadcdcb676bf6fdb30b741bff14eefa278d2209322fc1a7375121a08d8d",
+  "items": [
+    {
+      "id": "campfire",
+      "name": "Stone-ring campfire",
+      "crop": [
+        3,
+        3,
+        1248,
+        1248
+      ],
+      "palette": 4,
+      "source_colors": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          255,
+          57
+        ],
+        [
+          255,
+          132,
+          8
+        ],
+        [
+          57,
+          57,
+          57
+        ]
+      ],
+      "transparent_background": true,
+      "tile_palettes": [
+        0,
+        4,
+        4,
+        0,
+        0,
+        4,
+        4,
+        0,
+        0,
+        4,
+        4,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "source_colors_by_palette": {
+        "0": [
+          [
+            255,
+            255,
+            255
+          ],
+          [
+            173,
+            173,
+            173
+          ],
+          [
+            107,
+            107,
+            107
+          ],
+          [
+            57,
+            57,
+            57
+          ]
+        ]
+      },
+      "neutral_ink_index": 3,
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ],
+      "placement": "One32px solid campfire block. Clear adjacent floor. Transparent source/cutout, no grass or painted ground. Static art; no healing or fire interaction implied."
+    }
+  ]
+}

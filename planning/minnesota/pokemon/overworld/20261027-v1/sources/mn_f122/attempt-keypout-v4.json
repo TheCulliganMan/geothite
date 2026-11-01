@@ -1,0 +1,9 @@
+{
+  "tool": "built-in image_gen",
+  "original": "/Users/ryanculligan/.codex/generated_images/01a179bf-dc2b-7352-8975-8b8f3a32e33b/exec-647a076d-a36b-4349-a473-584377c51615.png",
+  "preserved_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f122/keypout.overworld.imagegen-v4-front-cheek-clearance.png",
+  "sha256": "644fe845cddb80ccb9a3425a3f0e5aa5d4969a02a59430b2159d382dd59bcca4",
+  "exact_prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f122/prompt-keypout-front-cheek-clearance-v4.txt",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f122/reference-mapping-keypout-front-cheek-clearance-v4.json",
+  "status": "preserved; selected frames recorded in frozen manifest"
+}

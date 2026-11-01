@@ -1,0 +1,1986 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-r10-exploration-v03.crystalpack",
+  "pack_sha256": "acc5e63d532de34614cbcc0ac4bd414b190d8cdc9e5d319fdf71f3de3302e073",
+  "calls": 2022,
+  "banks": [
+    {
+      "lane": 10,
+      "dry_landing": true,
+      "reverse_denied": true,
+      "ordinary_return_grass_entries": 8
+    },
+    {
+      "lane": 11,
+      "dry_landing": true,
+      "reverse_denied": true,
+      "ordinary_return_grass_entries": 8
+    },
+    {
+      "lane": 12,
+      "dry_landing": true,
+      "reverse_denied": true,
+      "ordinary_return_grass_entries": 8
+    },
+    {
+      "lane": 13,
+      "dry_landing": true,
+      "reverse_denied": true,
+      "ordinary_return_grass_entries": 7
+    },
+    {
+      "lane": 14,
+      "dry_landing": true,
+      "reverse_denied": true,
+      "ordinary_return_grass_entries": 6
+    },
+    {
+      "lane": 15,
+      "dry_landing": true,
+      "reverse_denied": true,
+      "ordinary_return_grass_entries": 5
+    }
+  ],
+  "wild_battles": [
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "complete-south-to-north",
+      "map": "MnR03C00R01",
+      "position": {
+        "x": 18,
+        "y": 9
+      }
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "complete-south-to-north",
+      "map": "MnR03C00R00",
+      "position": {
+        "x": 17,
+        "y": 20
+      }
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "woodland-approach",
+      "map": "MnR03C00R00",
+      "position": {
+        "x": 14,
+        "y": 19
+      }
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "ordinary-grass-return",
+      "map": "MnR03C00R00",
+      "position": {
+        "x": 14,
+        "y": 19
+      }
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "ordinary-grass-return",
+      "map": "MnR03C00R00",
+      "position": {
+        "x": 16,
+        "y": 22
+      }
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "map": "MnR03C00R00",
+      "position": {
+        "x": 29,
+        "y": 30
+      }
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "map": "MnR03C00R00",
+      "position": {
+        "x": 17,
+        "y": 26
+      }
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "map": "MnR03C00R00",
+      "position": {
+        "x": 19,
+        "y": 8
+      }
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "map": "MnR03C00R00",
+      "position": {
+        "x": 17,
+        "y": 19
+      }
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "map": "MnR03C00R00",
+      "position": {
+        "x": 33,
+        "y": 34
+      }
+    }
+  ],
+  "actual_grass_entries": [
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "complete-south-to-north",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        41,
+        46
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "complete-south-to-north",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        41,
+        47
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "complete-south-to-north",
+      "lane": null,
+      "map": "MnR03C00R01",
+      "core": [
+        41,
+        0
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "complete-south-to-north",
+      "lane": null,
+      "map": "MnR03C00R01",
+      "core": [
+        41,
+        1
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "complete-south-to-north",
+      "lane": null,
+      "map": "MnR03C00R01",
+      "core": [
+        41,
+        2
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "complete-south-to-north",
+      "lane": null,
+      "map": "MnR03C00R01",
+      "core": [
+        41,
+        3
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "complete-south-to-north",
+      "lane": null,
+      "map": "MnR03C00R01",
+      "core": [
+        18,
+        9
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "complete-south-to-north",
+      "lane": null,
+      "map": "MnR03C00R01",
+      "core": [
+        18,
+        8
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "complete-south-to-north",
+      "lane": null,
+      "map": "MnR03C00R01",
+      "core": [
+        36,
+        3
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "complete-south-to-north",
+      "lane": null,
+      "map": "MnR03C00R01",
+      "core": [
+        36,
+        2
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "complete-south-to-north",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        36,
+        47
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "complete-south-to-north",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        36,
+        46
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "complete-south-to-north",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        33,
+        39
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "complete-south-to-north",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        33,
+        38
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "complete-south-to-north",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        33,
+        37
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "complete-south-to-north",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        33,
+        36
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "complete-south-to-north",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        33,
+        35
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "complete-south-to-north",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        33,
+        34
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "complete-south-to-north",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        31,
+        31
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "complete-south-to-north",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        30,
+        31
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "complete-south-to-north",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        30,
+        30
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "complete-south-to-north",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        29,
+        30
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "complete-south-to-north",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        17,
+        27
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "complete-south-to-north",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        17,
+        26
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "complete-south-to-north",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        17,
+        25
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "complete-south-to-north",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        17,
+        24
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "complete-south-to-north",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        17,
+        23
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "complete-south-to-north",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        17,
+        22
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "complete-south-to-north",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        17,
+        21
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "complete-south-to-north",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        17,
+        20
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "complete-south-to-north",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        17,
+        19
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "complete-south-to-north",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        17,
+        18
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "complete-south-to-north",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        17,
+        11
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "complete-south-to-north",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        17,
+        10
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "complete-south-to-north",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        17,
+        9
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "complete-south-to-north",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        17,
+        8
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "complete-south-to-north",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        18,
+        8
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "complete-south-to-north",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        19,
+        8
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "woodland-approach",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        20,
+        8
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "woodland-approach",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        20,
+        9
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "woodland-approach",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        20,
+        10
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "woodland-approach",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        20,
+        11
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "woodland-approach",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        17,
+        18
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "woodland-approach",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        17,
+        19
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "woodland-approach",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        16,
+        19
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "woodland-approach",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        15,
+        19
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "woodland-approach",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        14,
+        19
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "woodland-approach",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        13,
+        19
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "upper-approach",
+      "lane": 10,
+      "map": "MnR03C00R00",
+      "core": [
+        12,
+        19
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "ordinary-grass-return",
+      "lane": 10,
+      "map": "MnR03C00R00",
+      "core": [
+        16,
+        22
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "ordinary-grass-return",
+      "lane": 10,
+      "map": "MnR03C00R00",
+      "core": [
+        16,
+        21
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "ordinary-grass-return",
+      "lane": 10,
+      "map": "MnR03C00R00",
+      "core": [
+        16,
+        20
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "ordinary-grass-return",
+      "lane": 10,
+      "map": "MnR03C00R00",
+      "core": [
+        16,
+        19
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "ordinary-grass-return",
+      "lane": 10,
+      "map": "MnR03C00R00",
+      "core": [
+        15,
+        19
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "ordinary-grass-return",
+      "lane": 10,
+      "map": "MnR03C00R00",
+      "core": [
+        14,
+        19
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "ordinary-grass-return",
+      "lane": 10,
+      "map": "MnR03C00R00",
+      "core": [
+        13,
+        19
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "ordinary-grass-return",
+      "lane": 10,
+      "map": "MnR03C00R00",
+      "core": [
+        12,
+        19
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "ordinary-grass-return",
+      "lane": 11,
+      "map": "MnR03C00R00",
+      "core": [
+        16,
+        22
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "ordinary-grass-return",
+      "lane": 11,
+      "map": "MnR03C00R00",
+      "core": [
+        16,
+        21
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "ordinary-grass-return",
+      "lane": 11,
+      "map": "MnR03C00R00",
+      "core": [
+        16,
+        20
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "ordinary-grass-return",
+      "lane": 11,
+      "map": "MnR03C00R00",
+      "core": [
+        16,
+        19
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "ordinary-grass-return",
+      "lane": 11,
+      "map": "MnR03C00R00",
+      "core": [
+        15,
+        19
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "ordinary-grass-return",
+      "lane": 11,
+      "map": "MnR03C00R00",
+      "core": [
+        14,
+        19
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "ordinary-grass-return",
+      "lane": 11,
+      "map": "MnR03C00R00",
+      "core": [
+        13,
+        19
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "ordinary-grass-return",
+      "lane": 11,
+      "map": "MnR03C00R00",
+      "core": [
+        12,
+        19
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "upper-approach",
+      "lane": 12,
+      "map": "MnR03C00R00",
+      "core": [
+        12,
+        19
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "ordinary-grass-return",
+      "lane": 12,
+      "map": "MnR03C00R00",
+      "core": [
+        16,
+        22
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "ordinary-grass-return",
+      "lane": 12,
+      "map": "MnR03C00R00",
+      "core": [
+        16,
+        21
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "ordinary-grass-return",
+      "lane": 12,
+      "map": "MnR03C00R00",
+      "core": [
+        16,
+        20
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "ordinary-grass-return",
+      "lane": 12,
+      "map": "MnR03C00R00",
+      "core": [
+        16,
+        19
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "ordinary-grass-return",
+      "lane": 12,
+      "map": "MnR03C00R00",
+      "core": [
+        15,
+        19
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "ordinary-grass-return",
+      "lane": 12,
+      "map": "MnR03C00R00",
+      "core": [
+        14,
+        19
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "ordinary-grass-return",
+      "lane": 12,
+      "map": "MnR03C00R00",
+      "core": [
+        13,
+        19
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "ordinary-grass-return",
+      "lane": 12,
+      "map": "MnR03C00R00",
+      "core": [
+        12,
+        19
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "upper-approach",
+      "lane": 13,
+      "map": "MnR03C00R00",
+      "core": [
+        13,
+        19
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "ordinary-grass-return",
+      "lane": 13,
+      "map": "MnR03C00R00",
+      "core": [
+        16,
+        22
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "ordinary-grass-return",
+      "lane": 13,
+      "map": "MnR03C00R00",
+      "core": [
+        16,
+        21
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "ordinary-grass-return",
+      "lane": 13,
+      "map": "MnR03C00R00",
+      "core": [
+        16,
+        20
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "ordinary-grass-return",
+      "lane": 13,
+      "map": "MnR03C00R00",
+      "core": [
+        16,
+        19
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "ordinary-grass-return",
+      "lane": 13,
+      "map": "MnR03C00R00",
+      "core": [
+        15,
+        19
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "ordinary-grass-return",
+      "lane": 13,
+      "map": "MnR03C00R00",
+      "core": [
+        14,
+        19
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "ordinary-grass-return",
+      "lane": 13,
+      "map": "MnR03C00R00",
+      "core": [
+        13,
+        19
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "upper-approach",
+      "lane": 14,
+      "map": "MnR03C00R00",
+      "core": [
+        14,
+        19
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "ordinary-grass-return",
+      "lane": 14,
+      "map": "MnR03C00R00",
+      "core": [
+        16,
+        22
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "ordinary-grass-return",
+      "lane": 14,
+      "map": "MnR03C00R00",
+      "core": [
+        16,
+        21
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "ordinary-grass-return",
+      "lane": 14,
+      "map": "MnR03C00R00",
+      "core": [
+        16,
+        20
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "ordinary-grass-return",
+      "lane": 14,
+      "map": "MnR03C00R00",
+      "core": [
+        16,
+        19
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "ordinary-grass-return",
+      "lane": 14,
+      "map": "MnR03C00R00",
+      "core": [
+        15,
+        19
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "ordinary-grass-return",
+      "lane": 14,
+      "map": "MnR03C00R00",
+      "core": [
+        14,
+        19
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "upper-approach",
+      "lane": 15,
+      "map": "MnR03C00R00",
+      "core": [
+        15,
+        19
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "ordinary-grass-return",
+      "lane": 15,
+      "map": "MnR03C00R00",
+      "core": [
+        16,
+        22
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "ordinary-grass-return",
+      "lane": 15,
+      "map": "MnR03C00R00",
+      "core": [
+        16,
+        21
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "ordinary-grass-return",
+      "lane": 15,
+      "map": "MnR03C00R00",
+      "core": [
+        16,
+        20
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "ordinary-grass-return",
+      "lane": 15,
+      "map": "MnR03C00R00",
+      "core": [
+        16,
+        19
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "ordinary-grass-return",
+      "lane": 15,
+      "map": "MnR03C00R00",
+      "core": [
+        15,
+        19
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "terrace-stairs",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        16,
+        19
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "terrace-stairs",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        17,
+        19
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "terrace-stairs",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        17,
+        20
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "terrace-stairs",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        17,
+        21
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "terrace-stairs",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        17,
+        22
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "terrace-stairs",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        17,
+        23
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "terrace-stairs",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        17,
+        24
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "terrace-stairs",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        17,
+        25
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "terrace-stairs",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        17,
+        26
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "terrace-stairs",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        17,
+        27
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "terrace-stairs",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        29,
+        30
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "terrace-stairs",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        30,
+        30
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "terrace-stairs",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        30,
+        31
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "terrace-stairs",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        31,
+        31
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "terrace-stairs",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        33,
+        34
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "terrace-stairs",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        33,
+        35
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "terrace-stairs",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        33,
+        36
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "terrace-stairs",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        33,
+        37
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "terrace-stairs",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        33,
+        38
+      ]
+    },
+    {
+      "phase": "route-banks-and-stairs",
+      "segment": "terrace-stairs",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        33,
+        39
+      ]
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        33,
+        39
+      ]
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        33,
+        38
+      ]
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        33,
+        37
+      ]
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        33,
+        36
+      ]
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        33,
+        35
+      ]
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        33,
+        34
+      ]
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        31,
+        31
+      ]
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        30,
+        31
+      ]
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        30,
+        30
+      ]
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        29,
+        30
+      ]
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        17,
+        27
+      ]
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        17,
+        26
+      ]
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        17,
+        25
+      ]
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        17,
+        24
+      ]
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        17,
+        23
+      ]
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        17,
+        22
+      ]
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        17,
+        21
+      ]
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        17,
+        20
+      ]
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        17,
+        19
+      ]
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        17,
+        18
+      ]
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        17,
+        11
+      ]
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        17,
+        10
+      ]
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        17,
+        9
+      ]
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        17,
+        8
+      ]
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        18,
+        8
+      ]
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        19,
+        8
+      ]
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        20,
+        8
+      ]
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        20,
+        9
+      ]
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        20,
+        10
+      ]
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        20,
+        11
+      ]
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        17,
+        18
+      ]
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        17,
+        19
+      ]
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        17,
+        20
+      ]
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        17,
+        21
+      ]
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        17,
+        22
+      ]
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        17,
+        23
+      ]
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        17,
+        24
+      ]
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        17,
+        25
+      ]
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        17,
+        26
+      ]
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        17,
+        27
+      ]
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        29,
+        30
+      ]
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        30,
+        30
+      ]
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        30,
+        31
+      ]
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        31,
+        31
+      ]
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        33,
+        34
+      ]
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        33,
+        35
+      ]
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        33,
+        36
+      ]
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        33,
+        37
+      ]
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        33,
+        38
+      ]
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        33,
+        39
+      ]
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        36,
+        46
+      ]
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        36,
+        47
+      ]
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "lane": null,
+      "map": "MnR03C00R01",
+      "core": [
+        36,
+        2
+      ]
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "lane": null,
+      "map": "MnR03C00R01",
+      "core": [
+        36,
+        3
+      ]
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "lane": null,
+      "map": "MnR03C00R01",
+      "core": [
+        18,
+        9
+      ]
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "lane": null,
+      "map": "MnR03C00R01",
+      "core": [
+        18,
+        8
+      ]
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "lane": null,
+      "map": "MnR03C00R01",
+      "core": [
+        36,
+        3
+      ]
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "lane": null,
+      "map": "MnR03C00R01",
+      "core": [
+        36,
+        2
+      ]
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        36,
+        47
+      ]
+    },
+    {
+      "phase": "continued-return",
+      "segment": "continued-grass-and-bridges",
+      "lane": null,
+      "map": "MnR03C00R00",
+      "core": [
+        36,
+        46
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "phase": "route-banks-and-stairs",
+      "source_save": ".local/route-grass-review/current-r03-terrace-saves-v01/brainerd-46380-1793394379874716000.crystalsave",
+      "input_source_unchanged": true,
+      "output_save": ".local/route-grass-review/r03-route-banks-and-stairs-v01-output.crystalsave",
+      "initial": {
+        "badges": 2,
+        "dialogue": false,
+        "facing": "right",
+        "frame": 246,
+        "map": "MnR03C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 0
+        },
+        "position": {
+          "x": 41,
+          "y": 42
+        }
+      },
+      "final": {
+        "badges": 2,
+        "dialogue": false,
+        "facing": "right",
+        "frame": 811,
+        "map": "MnR03C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 3
+        },
+        "position": {
+          "x": 41,
+          "y": 42
+        }
+      },
+      "stderr_bytes": 0
+    },
+    {
+      "phase": "continued-return",
+      "source_save": ".local/route-grass-review/r03-route-banks-and-stairs-v01-output.crystalsave",
+      "input_source_unchanged": true,
+      "output_save": ".local/route-grass-review/r03-continued-return-v01-output.crystalsave",
+      "initial": {
+        "badges": 2,
+        "dialogue": false,
+        "facing": "right",
+        "frame": 811,
+        "map": "MnR03C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 3
+        },
+        "position": {
+          "x": 41,
+          "y": 42
+        }
+      },
+      "final": {
+        "badges": 2,
+        "dialogue": false,
+        "facing": "right",
+        "frame": 1070,
+        "map": "MnR03C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 5
+        },
+        "position": {
+          "x": 41,
+          "y": 42
+        }
+      },
+      "stderr_bytes": 0
+    }
+  ],
+  "source_and_input_saves_unchanged": true,
+  "all_six_actual_hops_and_reverse_denials": true,
+  "ordinary_stairs_both_directions": true,
+  "closed_tall_cliff_both_directions_denied": true,
+  "actual_reached_save_continued": true,
+  "scope": "Two badges, partner and terrace placement are explicit initial native QA setup; later state is production input only. Actual grass returns, both complete chunks/bridges, both neighboring connections and Continue. No trainer victory or earned regional access claimed. Planner excludes warps and treats native bridge decks as ordinary walkable tiles; game data is never modified."
+}

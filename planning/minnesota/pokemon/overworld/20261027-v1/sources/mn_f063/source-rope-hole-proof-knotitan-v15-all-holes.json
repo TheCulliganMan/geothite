@@ -1,0 +1,316 @@
+{
+  "species": "knotitan",
+  "manifest_sha256": "afb03dacdc42ae1e98d1c44f4b77199bd4ecd82db1b29480d70354757d8b0579",
+  "bank_sha256": "4929e20b9af78f7c19fc9dd4f7645ff84da21993eab496a888d8d554a930b976",
+  "result": "pass",
+  "two_front_rear_loop_holes_one_visible_west_loop_hole": true,
+  "proof": [
+    {
+      "pose": "down_idle",
+      "loop_holes": [
+        {
+          "source_hole_region": [
+            74,
+            325,
+            122,
+            380
+          ],
+          "transparent_native_samples": [
+            {
+              "native": [
+                3,
+                11
+              ],
+              "source_sample": [
+                112,
+                356
+              ],
+              "source_rgba": [
+                62,
+                46,
+                19,
+                9
+              ]
+            }
+          ]
+        },
+        {
+          "source_hole_region": [
+            385,
+            325,
+            435,
+            380
+          ],
+          "transparent_native_samples": [
+            {
+              "native": [
+                11,
+                11
+              ],
+              "source_sample": [
+                397,
+                356
+              ],
+              "source_rgba": [
+                62,
+                45,
+                17,
+                18
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "up_idle",
+      "loop_holes": [
+        {
+          "source_hole_region": [
+            585,
+            325,
+            635,
+            380
+          ],
+          "transparent_native_samples": [
+            {
+              "native": [
+                2,
+                10
+              ],
+              "source_sample": [
+                597,
+                348
+              ],
+              "source_rgba": [
+                47,
+                34,
+                11,
+                86
+              ]
+            }
+          ]
+        },
+        {
+          "source_hole_region": [
+            895,
+            325,
+            945,
+            380
+          ],
+          "transparent_native_samples": [
+            {
+              "native": [
+                11,
+                10
+              ],
+              "source_sample": [
+                917,
+                348
+              ],
+              "source_rgba": [
+                37,
+                27,
+                9,
+                1
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "loop_holes": [
+        {
+          "source_hole_region": [
+            1150,
+            325,
+            1205,
+            385
+          ],
+          "transparent_native_samples": [
+            {
+              "native": [
+                5,
+                11
+              ],
+              "source_sample": [
+                1178,
+                367
+              ],
+              "source_rgba": [
+                64,
+                47,
+                18,
+                5
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "loop_holes": [
+        {
+          "source_hole_region": [
+            65,
+            770,
+            120,
+            830
+          ],
+          "transparent_native_samples": [
+            {
+              "native": [
+                3,
+                11
+              ],
+              "source_sample": [
+                112,
+                799
+              ],
+              "source_rgba": [
+                66,
+                51,
+                21,
+                3
+              ]
+            }
+          ]
+        },
+        {
+          "source_hole_region": [
+            390,
+            780,
+            445,
+            840
+          ],
+          "transparent_native_samples": [
+            {
+              "native": [
+                11,
+                11
+              ],
+              "source_sample": [
+                397,
+                799
+              ],
+              "source_rgba": [
+                58,
+                42,
+                17,
+                9
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "up_step",
+      "loop_holes": [
+        {
+          "source_hole_region": [
+            585,
+            775,
+            635,
+            835
+          ],
+          "transparent_native_samples": [
+            {
+              "native": [
+                2,
+                10
+              ],
+              "source_sample": [
+                597,
+                791
+              ],
+              "source_rgba": [
+                50,
+                37,
+                12,
+                4
+              ]
+            },
+            {
+              "native": [
+                3,
+                10
+              ],
+              "source_sample": [
+                632,
+                791
+              ],
+              "source_rgba": [
+                36,
+                27,
+                9,
+                4
+              ]
+            }
+          ]
+        },
+        {
+          "source_hole_region": [
+            905,
+            790,
+            960,
+            850
+          ],
+          "transparent_native_samples": [
+            {
+              "native": [
+                11,
+                11
+              ],
+              "source_sample": [
+                917,
+                830
+              ],
+              "source_rgba": [
+                46,
+                32,
+                9,
+                5
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "loop_holes": [
+        {
+          "source_hole_region": [
+            1145,
+            770,
+            1205,
+            835
+          ],
+          "transparent_native_samples": [
+            {
+              "native": [
+                5,
+                11
+              ],
+              "source_sample": [
+                1178,
+                809
+              ],
+              "source_rgba": [
+                54,
+                40,
+                14,
+                3
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "no_native_painting": true
+}

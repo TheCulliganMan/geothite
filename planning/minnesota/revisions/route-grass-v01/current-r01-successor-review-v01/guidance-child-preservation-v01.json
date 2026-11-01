@@ -1,0 +1,23 @@
+{
+  "status": "PASS_TEXT_ONLY",
+  "parent": "content-packs/minnesota-current-brainerd-mart-roof-v01.crystalpack",
+  "parent_sha256": "e343cd9c65f7c876946be4b59878eabc564c9c7f42a7f29f54cb1a2fac89396d",
+  "pack": "content-packs/minnesota-current-r01-stair-guidance-v01.crystalpack",
+  "pack_sha256": "e6af050b697b6a9d52735713d5eabe0c069110f69ecdc5b81707e181b7ee30b2",
+  "content_identity": "f5bf4ff4560a959fb639b183b896055359cf08ae6bc219de0b86de6a2be38dd5",
+  "changed_text_labels": [
+    "MN_R01_BLUFF_WALKERText",
+    "MN_R01_FARMERText",
+    "MN_R01_SIGN_05Text",
+    "MN_R01_T03Lost",
+    "MN_R01_T03Won"
+  ],
+  "changed_map_text_caches": [
+    "MnR01C00R00",
+    "MnR01Farmhouse"
+  ],
+  "all730_other_maps_exact": true,
+  "all732_map_geometry_collision_actors_events_teams_encounters_exact": true,
+  "all_art_audio_runtime_files_exact": true,
+  "old_route_production_receipt_inherits_exact_geometry": "production-current-route-v02.json"
+}

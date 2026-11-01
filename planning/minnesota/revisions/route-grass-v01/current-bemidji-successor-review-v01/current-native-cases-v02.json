@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+  "pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33",
+  "binary": ".local/route-grass-review/bemidji-current-controller-v02",
+  "binary_sha256": "1ce6b5f113f3c48d0cb0dd7c75d5f7fdac55e51ff3366b10d8588f744655f1e0",
+  "test_source_sha256": "78241412a54fd4151049a2e81672b10545c822890a10fdc8867d329ac2b1d13f",
+  "log": ".local/route-grass-review/current-bemidji-native-v02.log",
+  "exit_code": 0,
+  "scope": "Six buildings and both exit carpets, plateau stairs each tread/both directions/side walls/Continue, eight road lanes/Surf/guards, residents/signs, real care/PC/shop, loss/recovery/clinic memory, Party Teleport and officer dialogue. Initial local party/badges/money/position are QA fixtures, not earned campaign progression."
+}

@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "map": "MnEly",
+      "approach": [
+        23,
+        19
+      ],
+      "id": "MN_EXTRA_MUSHROOM_FORAGER",
+      "display_name": "MORRIS",
+      "trainer_class": "MN_MUSHROOM_FORAGER",
+      "class_name": "MUSHROOM FORAGER",
+      "template_class": "GENTLEMAN",
+      "sprite": "SPRITE_MN_MUSHROOM_FORAGER",
+      "tile": [
+        23,
+        18
+      ],
+      "facing": "south",
+      "sight_range": 1,
+      "defeated_flag": "EVENT_MN_EXTRA_MUSHROOM_FORAGER",
+      "party": [
+        {
+          "species": "BLUESTIP",
+          "level": 40
+        },
+        {
+          "species": "RICELING",
+          "level": 42
+        }
+      ],
+      "before_lines": [
+        "Look under leaves.",
+        "Good teams grow!"
+      ],
+      "after_lines": [
+        "A choice team!",
+        "Let a few grow."
+      ],
+      "loss_lines": [
+        "Take your time.",
+        "Watch your step."
+      ]
+    }
+  ]
+}

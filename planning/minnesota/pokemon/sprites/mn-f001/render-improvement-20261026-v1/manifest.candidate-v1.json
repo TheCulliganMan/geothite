@@ -1,0 +1,414 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F001",
+  "status": "render-improvement-review-pending",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f001/render-improvement-20261026-v1/prompt-v1.txt",
+  "sprites": [
+    {
+      "id": "mn-001-pouchid-render-20261026-v1",
+      "species_id": "MN_001",
+      "view": "front",
+      "source": "sprites/mn-f001/render-improvement-20261026-v1/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        475,
+        555
+      ],
+      "fit": [
+        36,
+        36
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13151,
+        7686,
+        0
+      ],
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 16,
+      "exterior_contour": "source_backed"
+    },
+    {
+      "id": "mn-001-pouchid-render-20261026-v1",
+      "species_id": "MN_001",
+      "view": "back",
+      "source": "sprites/mn-f001/render-improvement-20261026-v1/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        555,
+        475,
+        469
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13151,
+        7686,
+        0
+      ],
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 16,
+      "exterior_contour": "source_backed"
+    },
+    {
+      "id": "mn-002-slipperina-render-20261026-v1",
+      "species_id": "MN_002",
+      "view": "front",
+      "source": "sprites/mn-f001/render-improvement-20261026-v1/front-back.imagegen-v1.png",
+      "crop": [
+        475,
+        0,
+        540,
+        555
+      ],
+      "fit": [
+        44,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        30264,
+        12675,
+        0
+      ],
+      "white_detail_min_samples": 8,
+      "interior_black_min_samples": 16,
+      "exterior_contour": "source_backed"
+    },
+    {
+      "id": "mn-002-slipperina-render-20261026-v1",
+      "species_id": "MN_002",
+      "view": "back",
+      "source": "sprites/mn-f001/render-improvement-20261026-v1/front-back.imagegen-v1.png",
+      "crop": [
+        475,
+        555,
+        540,
+        469
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        30264,
+        12675,
+        0
+      ],
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 16,
+      "exterior_contour": "source_backed"
+    },
+    {
+      "id": "mn-003-cyprielle-render-20261026-v1",
+      "species_id": "MN_003",
+      "view": "front",
+      "source": "sprites/mn-f001/render-improvement-20261026-v1/front-back.imagegen-v1.png",
+      "crop": [
+        1015,
+        0,
+        521,
+        555
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        24031,
+        7492,
+        0
+      ],
+      "white_detail_min_samples": 8,
+      "interior_black_min_samples": 16,
+      "exterior_contour": "source_backed"
+    },
+    {
+      "id": "mn-003-cyprielle-render-20261026-v1",
+      "species_id": "MN_003",
+      "view": "back",
+      "source": "sprites/mn-f001/render-improvement-20261026-v1/front-back.imagegen-v1.png",
+      "crop": [
+        1015,
+        555,
+        521,
+        469
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        24031,
+        7492,
+        0
+      ],
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 16,
+      "exterior_contour": "source_backed"
+    }
+  ],
+  "visual_review": {
+    "status": "pending",
+    "outline_profile": "source-contour-v1",
+    "notes": "New identity-preserving rendering; native inspection pending."
+  },
+  "pokemon_palettes": {
+    "MN_001": {
+      "species_id": "MN_001",
+      "name": "Pouchid",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          26,
+          12
+        ],
+        [
+          6,
+          16,
+          7
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        13151,
+        7686,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          214,
+          99
+        ],
+        [
+          49,
+          132,
+          57
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FFD663",
+        "#318439",
+        "#000000"
+      ]
+    },
+    "MN_002": {
+      "species_id": "MN_002",
+      "name": "Slipperina",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          24,
+          17,
+          29
+        ],
+        [
+          3,
+          12,
+          12
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        30264,
+        12675,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          198,
+          140,
+          239
+        ],
+        [
+          24,
+          99,
+          99
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#C68CEF",
+        "#186363",
+        "#000000"
+      ]
+    },
+    "MN_003": {
+      "species_id": "MN_003",
+      "name": "Cyprielle",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          14,
+          23
+        ],
+        [
+          4,
+          10,
+          7
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        24031,
+        7492,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          115,
+          189
+        ],
+        [
+          33,
+          82,
+          57
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FF73BD",
+        "#215239",
+        "#000000"
+      ]
+    }
+  },
+  "back_framing": "gen2-close-rear-portrait",
+  "conversion_revision": "Render improvement: exact existing palettes, stronger readable faces and colored planes; previous sources and native versions retained.",
+  "original_source_palette": {
+    "gbc_rgb5": [
+      [
+        31,
+        31,
+        31
+      ],
+      [
+        31,
+        18,
+        24
+      ],
+      [
+        5,
+        13,
+        8
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ],
+    "gbc_rgb555_words": [
+      32767,
+      25183,
+      8613,
+      0
+    ],
+    "rgb8": [
+      [
+        255,
+        255,
+        255
+      ],
+      [
+        255,
+        148,
+        198
+      ],
+      [
+        41,
+        107,
+        66
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ],
+    "hex": [
+      "#FFFFFF",
+      "#FF94C6",
+      "#296B42",
+      "#000000"
+    ]
+  },
+  "back_prompt_file": "sprites/mn-f001/render-improvement-20261026-v1/prompt-v1.txt",
+  "back_reference_mapping": "sprites/mn-f001/render-improvement-20261026-v1/reference-mapping-v1.json",
+  "reference_mapping": "sprites/mn-f001/render-improvement-20261026-v1/reference-mapping-v1.json",
+  "source_sha256": "b0fd026ebcdc7ed41e4d17774af52eb645e751584e93193c24fba9d521aef852",
+  "raw_generation": {
+    "original_tool_path": "/Users/ryanculligan/.codex/generated_images/01a17abf-77f2-7b80-bc2a-d5aed1c72b88/exec-3157e36b-b76b-42b2-be84-88f01703f918.png",
+    "sha256": "b0fd026ebcdc7ed41e4d17774af52eb645e751584e93193c24fba9d521aef852"
+  }
+}

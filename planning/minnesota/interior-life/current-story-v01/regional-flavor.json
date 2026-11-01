@@ -1,0 +1,171 @@
+{
+  "schema_version": 1,
+  "manifest": "minnesota-interior-life-active-regional-flavor-v1",
+  "all_installed_interiors": false,
+  "rooms": [
+    {
+      "map": "MnDuluthFieldClinic",
+      "purpose": "Preserve the local room story while naming only active Minnesota partners and habitats.",
+      "texts": [
+        {
+          "label": "MN_DL_INTERIOR_CLINIC_VISITORInteriorText",
+          "lines": [
+            "My AUGRUB hauled",
+            "nets all morning",
+            "and still tried to",
+            "carry my lunch.",
+            "The nurse told us",
+            "both to sit down.",
+            "Apparently I",
+            "needed the",
+            "reminder more."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthHillRanger",
+      "purpose": "Preserve the local room story while naming only active Minnesota partners and habitats.",
+      "texts": [
+        {
+          "label": "MN_DL_INTERIOR_OWL_LISTENERInteriorText",
+          "lines": [
+            "I heard a PIPBOOM",
+            "while we swept the",
+            "steps. The ranger",
+            "asked me to draw",
+            "where it perched.",
+            "My bird looks like",
+            "a potato. My map",
+            "is excellent."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthOreWarehouse1F",
+      "purpose": "Preserve the local room story while naming only active Minnesota partners and habitats.",
+      "texts": [
+        {
+          "label": "MN_DL_INTERIOR_WAREHOUSE_WORKERInteriorText",
+          "lines": [
+            "I work this",
+            "loading floor with",
+            "my AUGRUB. We both",
+            "stop to clear the",
+            "aisle before the",
+            "next cart comes.",
+            "My partner checks",
+            "my work. I check",
+            "the ledger. A good",
+            "crew catches the",
+            "little things",
+            "together."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnMinneapolisAnglerHome",
+      "purpose": "Preserve the local room story while naming only active Minnesota partners and habitats.",
+      "texts": [
+        {
+          "label": "MN_MP_INTERIOR_ANGLER_CHILDInteriorText",
+          "lines": [
+            "I drew a GILLPUP in",
+            "the journal. Dad",
+            "wrote: caught one",
+            "excellent drawing.",
+            "The GILLPUP got",
+            "away, but the",
+            "compliment is",
+            "staying in the",
+            "book."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnMinneapolisFieldClub",
+      "purpose": "Preserve the local room story while naming only active Minnesota partners and habitats.",
+      "texts": [
+        {
+          "label": "MN_MP_FIELDCLUB_HOSTText",
+          "lines": [
+            "We count birds",
+            "around the lake.",
+            "GOOSNIDE visits",
+            "after sunset,",
+            "which is why the",
+            "notebook has a",
+            "time column.",
+            "If two people",
+            "disagree, we",
+            "compare where they",
+            "stood. The lake",
+            "has more than one",
+            "good place to",
+            "look."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnMinneapolisRiverNaturalist",
+      "purpose": "Preserve the local room story while naming only active Minnesota partners and habitats.",
+      "texts": [
+        {
+          "label": "MN_MP_INTERIOR_NATURE_STUDENTInteriorText",
+          "lines": [
+            "I drew the whole",
+            "bank before I drew",
+            "the GILLPUP.",
+            "Now I can remember",
+            "where to look",
+            "again. My first",
+            "notebook was just",
+            "a page of",
+            "delighted faces."
+          ]
+        },
+        {
+          "label": "MN_MP_RIVERNATURALIST_HOSTText",
+          "lines": [
+            "The river joins",
+            "several habitats.",
+            "GILLPUP favors the",
+            "quiet banks rather",
+            "than the loud",
+            "center of the",
+            "falls.",
+            "Look for the",
+            "conditions a",
+            "partner likes, not",
+            "just the place its",
+            "name appeared in a",
+            "notebook."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnStPaulFairCraftHouse",
+      "purpose": "Preserve the local room story while naming only active Minnesota partners and habitats.",
+      "texts": [
+        {
+          "label": "MN_SP_INTERIOR_CRAFT_LEARNERInteriorText",
+          "lines": [
+            "Mine is supposed",
+            "to be a sunflower.",
+            "It looks like a",
+            "surprised PINIT.",
+            "The craft teacher",
+            "says surprised",
+            "flowers deserve",
+            "ribbons, too."
+          ]
+        }
+      ]
+    }
+  ]
+}

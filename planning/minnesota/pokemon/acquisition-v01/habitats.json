@@ -1,0 +1,607 @@
+{
+  "schema_version": 1,
+  "id": "minnesota-species-habitats-v2",
+  "scope": "Existing native grass and Surf water, plus private Good/Super Rod groups for the seven water habitats. Base grass, Old Rod tables, old per-map species, original fishing groups/time tables/swarm semantics are preserved. No terrain, actor, trainer, story, art or audio changes.",
+  "grass": [
+    {
+      "id": "driftless-seep",
+      "map": "MnR01C00R00",
+      "rect": [
+        30,
+        22,
+        35,
+        27
+      ],
+      "anchor": [
+        63,
+        24
+      ],
+      "theme": "Limestone seep and caddisfly cases beside the Driftless trail.",
+      "level": 3,
+      "residents": {
+        "morning": [
+          "TESSLARV",
+          "DEWBIT"
+        ],
+        "day": [
+          "DRIPTIP",
+          "MIDGEBIT"
+        ],
+        "night": [
+          "DRIPTIP",
+          "TESSLARV"
+        ]
+      },
+      "rare": {}
+    },
+    {
+      "id": "prairie-stitch",
+      "map": "MnR02C00R00",
+      "rect": [
+        8,
+        28,
+        13,
+        33
+      ],
+      "anchor": [
+        59,
+        15
+      ],
+      "theme": "Big bluestem shelter and grass-stitching skipper larvae.",
+      "level": 7,
+      "residents": {
+        "morning": [
+          "PASQUIB",
+          "BLUESTIP"
+        ],
+        "day": [
+          "BLUESTIP",
+          "TUSSNIP"
+        ],
+        "night": [
+          "SODCALF",
+          "BLUESTIP"
+        ]
+      },
+      "rare": {}
+    },
+    {
+      "id": "harvest-wind",
+      "map": "MnR02C00R00",
+      "rect": [
+        18,
+        6,
+        23,
+        9
+      ],
+      "anchor": [
+        59,
+        15
+      ],
+      "theme": "Wind-polished field margins, grain lookouts and night scarecrows.",
+      "level": 8,
+      "residents": {
+        "morning": [
+          "VANECHICK",
+          "DUSTIP"
+        ],
+        "day": [
+          "SKIRRIT",
+          "DUSTIP"
+        ],
+        "night": [
+          "CROWSCARE",
+          "KNOTLET"
+        ]
+      },
+      "rare": {}
+    },
+    {
+      "id": "river-hatch",
+      "map": "MnR03C00R00",
+      "rect": [
+        26,
+        34,
+        33,
+        39
+      ],
+      "anchor": [
+        21,
+        0
+      ],
+      "theme": "Mayfly hatch and living electrical rhythms on the metro river approach.",
+      "level": 12,
+      "residents": {
+        "morning": [
+          "MAYQUIP"
+        ],
+        "day": [
+          "PIPULSE"
+        ],
+        "night": [
+          "MAYQUIP",
+          "PIPULSE"
+        ]
+      },
+      "rare": {}
+    },
+    {
+      "id": "bluff-warning",
+      "map": "MnR04C00R00",
+      "rect": [
+        16,
+        8,
+        19,
+        13
+      ],
+      "anchor": [
+        55,
+        18
+      ],
+      "theme": "Rattling warning calls in the sunny river bluff grass.",
+      "level": 17,
+      "residents": {
+        "morning": [
+          "HUSHISS"
+        ],
+        "day": [
+          "HUSHISS"
+        ],
+        "night": [
+          "HUSHISS"
+        ]
+      },
+      "rare": {}
+    },
+    {
+      "id": "territorial-geese",
+      "map": "MnR04C00R00",
+      "rect": [
+        44,
+        24,
+        47,
+        29
+      ],
+      "anchor": [
+        55,
+        18
+      ],
+      "theme": "Territorial geese on a separate bluff-side verge.",
+      "level": 18,
+      "residents": {
+        "morning": [
+          "GOOSNIDE"
+        ],
+        "day": [
+          "GOOSNIDE"
+        ],
+        "night": [
+          "GOOSNIDE"
+        ]
+      },
+      "rare": {}
+    },
+    {
+      "id": "roadside-rink",
+      "map": "MnR05C00R01",
+      "rect": [
+        12,
+        20,
+        17,
+        27
+      ],
+      "anchor": [
+        29,
+        0
+      ],
+      "theme": "Cold-bodied hockey and slush creatures beside a shaded roadside; no terrain ice is added.",
+      "level": 22,
+      "residents": {
+        "morning": [
+          "PUCKLET"
+        ],
+        "day": [
+          "PUCKLET"
+        ],
+        "night": [
+          "SLUDGESKI"
+        ]
+      },
+      "rare": {}
+    },
+    {
+      "id": "echo-logs",
+      "map": "MnR06C00R00",
+      "rect": [
+        44,
+        24,
+        49,
+        29
+      ],
+      "anchor": [
+        41,
+        47
+      ],
+      "theme": "Lake-call echoes by day; haunted logging tools after dusk.",
+      "level": 25,
+      "residents": {
+        "morning": [
+          "LOOBIT",
+          "BRISTUB"
+        ],
+        "day": [
+          "LOOBIT"
+        ],
+        "night": [
+          "HATCHIT"
+        ]
+      },
+      "rare": {}
+    },
+    {
+      "id": "peat-pump",
+      "map": "MnR08C00R00",
+      "rect": [
+        34,
+        28,
+        39,
+        31
+      ],
+      "anchor": [
+        63,
+        24
+      ],
+      "theme": "Warm peat crust shelters EMBERM; the mosquito pump larva is a rare night discovery.",
+      "level": 31,
+      "residents": {
+        "morning": [
+          "EMBERM"
+        ],
+        "day": [
+          "EMBERM"
+        ],
+        "night": [
+          "EMBERM"
+        ]
+      },
+      "rare": {
+        "night": "WRIGGLET"
+      }
+    },
+    {
+      "id": "ore-air",
+      "map": "MnR09C00R00",
+      "rect": [
+        40,
+        24,
+        41,
+        33
+      ],
+      "anchor": [
+        34,
+        47
+      ],
+      "theme": "Ore-yard grass: furnace ore creatures and luminous air-warning birds.",
+      "level": 34,
+      "residents": {
+        "morning": [
+          "CANALARM",
+          "TACONIB"
+        ],
+        "day": [
+          "CINDORE"
+        ],
+        "night": [
+          "CINDORE",
+          "CANALARM"
+        ]
+      },
+      "rare": {}
+    },
+    {
+      "id": "lift-approach",
+      "map": "MnR11C00R00",
+      "rect": [
+        42,
+        26,
+        47,
+        29
+      ],
+      "anchor": [
+        63,
+        13
+      ],
+      "theme": "Living lift-truss creatures near the southern harbor approach.",
+      "level": 40,
+      "residents": {
+        "morning": [
+          "SPANLET"
+        ],
+        "day": [
+          "SPANLET"
+        ],
+        "night": [
+          "SPANLET"
+        ]
+      },
+      "rare": {}
+    },
+    {
+      "id": "lighthouse-heath",
+      "map": "MnR11C00R02",
+      "rect": [
+        34,
+        42,
+        37,
+        45
+      ],
+      "anchor": [
+        34,
+        47
+      ],
+      "theme": "Wick spirits and prism crests beside the North Shore lighthouse route.",
+      "level": 41,
+      "residents": {
+        "morning": [
+          "WICKIT"
+        ],
+        "day": [
+          "WICKIT"
+        ],
+        "night": [
+          "WICKIT"
+        ]
+      },
+      "rare": {}
+    },
+    {
+      "id": "cedar-cutover",
+      "map": "MnMaraisCedarApproach",
+      "rect": [
+        32,
+        16,
+        33,
+        19
+      ],
+      "anchor": [
+        26,
+        23
+      ],
+      "theme": "Cedar stumps and drifting sawdust beside the southern gatehouse approach.",
+      "level": 40,
+      "residents": {
+        "morning": [
+          "KNOTHUCK"
+        ],
+        "day": [
+          "KNOTHUCK"
+        ],
+        "night": [
+          "MITWIST",
+          "CROOKIT"
+        ]
+      },
+      "rare": {}
+    },
+    {
+      "id": "moose-reeds",
+      "map": "MnR17C00R01",
+      "rect": [
+        22,
+        40,
+        27,
+        43
+      ],
+      "anchor": [
+        25,
+        47
+      ],
+      "theme": "Moose calves forage through the Leech Lake reeds.",
+      "level": 36,
+      "residents": {
+        "morning": [
+          "WADEBUD"
+        ],
+        "day": [
+          "WADEBUD"
+        ],
+        "night": [
+          "WADEBUD"
+        ]
+      },
+      "rare": {}
+    }
+  ],
+  "water": [
+    {
+      "id": "river-paddlefish",
+      "map": "MnR03C00R00",
+      "time": "day",
+      "slot": 1,
+      "species": "PINGLET",
+      "level": 12,
+      "anchor": [
+        21,
+        0
+      ],
+      "sample": [
+        12,
+        6
+      ]
+    },
+    {
+      "id": "lake-lure",
+      "map": "MnR06C00R00",
+      "time": "day",
+      "slot": 1,
+      "species": "JIGLET",
+      "level": 24,
+      "anchor": [
+        41,
+        47
+      ],
+      "sample": [
+        17,
+        32
+      ]
+    },
+    {
+      "id": "surface-lookout",
+      "map": "MnR06C00R01",
+      "time": "morning",
+      "slot": 1,
+      "species": "RONDIVE",
+      "level": 24,
+      "anchor": [
+        17,
+        39
+      ],
+      "sample": [
+        20,
+        7
+      ]
+    },
+    {
+      "id": "ore-freighter",
+      "map": "MnR09C00R01",
+      "time": "day",
+      "slot": 1,
+      "species": "TUGGET",
+      "level": 33,
+      "anchor": [
+        34,
+        0
+      ],
+      "sample": [
+        33,
+        4
+      ]
+    },
+    {
+      "id": "tip-up-lake",
+      "map": "MnR19C00R00",
+      "time": "day",
+      "slot": 1,
+      "species": "WINKFIN",
+      "level": 29,
+      "anchor": [
+        31,
+        47
+      ],
+      "sample": [
+        48,
+        30
+      ]
+    },
+    {
+      "id": "northern-pike",
+      "map": "MnR18C01R00",
+      "time": "morning",
+      "slot": 1,
+      "species": "PIKELING",
+      "level": 27,
+      "anchor": [
+        0,
+        32
+      ],
+      "sample": [
+        1,
+        31
+      ]
+    },
+    {
+      "id": "wreck-bell",
+      "map": "MnR12C00R01",
+      "time": "night",
+      "slot": 1,
+      "species": "WRECKQUIEM",
+      "level": 41,
+      "anchor": [
+        34,
+        0
+      ],
+      "sample": [
+        33,
+        1
+      ]
+    }
+  ],
+  "deferred": {
+    "fair_families": [
+      "MN_F010",
+      "MN_F016",
+      "MN_F020",
+      "MN_F032",
+      "MN_F033",
+      "MN_F038",
+      "MN_F042",
+      "MN_F083",
+      "MN_F090",
+      "MN_F098",
+      "MN_F105"
+    ],
+    "fair_reason": "Use existing authored fair habitats in the completed interior composition; do not replace them with generic route spawns.",
+    "fossils": [
+      "MN_F018",
+      "MN_F092",
+      "MN_F093"
+    ],
+    "fossil_reason": "Require an actual fossil discovery/revival service, not ordinary grass.",
+    "landmark": [
+      "MN_F126"
+    ],
+    "landmark_reason": "Kensigard needs its own runestone discovery.",
+    "legendary_and_mythical": [
+      "MN_F044",
+      "MN_F045",
+      "MN_F046",
+      "MN_F047",
+      "MN_F114",
+      "MN_F049",
+      "MN_F116"
+    ],
+    "rare_reason": "Require individual optional discovery/capture events. Existing Vergloom is preserved."
+  },
+  "targets": {
+    "MN_F002": "CINDORE",
+    "MN_F012": "PUCKLET",
+    "MN_F014": "LOOBIT",
+    "MN_F015": "JIGLET",
+    "MN_F017": "HATCHIT",
+    "MN_F025": "MAYQUIP",
+    "MN_F030": "SPANLET",
+    "MN_F031": "WICKIT",
+    "MN_F039": "SLUDGESKI",
+    "MN_F040": "GOOSNIDE",
+    "MN_F043": "WRECKQUIEM",
+    "MN_F052": "TUSSNIP",
+    "MN_F055": "BLUESTIP",
+    "MN_F057": "DUSTIP",
+    "MN_F060": "TUGGET",
+    "MN_F062": "VANECHICK",
+    "MN_F068": "CROWSCARE",
+    "MN_F071": "CANALARM",
+    "MN_F076": "MITWIST",
+    "MN_F078": "KNOTHUCK",
+    "MN_F089": "DRIPTIP",
+    "MN_F091": "PIPULSE",
+    "MN_F097": "PINGLET",
+    "MN_F099": "TESSLARV",
+    "MN_F102": "EMBERM",
+    "MN_F112": "SKIRRIT",
+    "MN_F117": "WINKFIN",
+    "MN_F120": "HUSHISS",
+    "MN_F123": "PIKELING",
+    "MN_F072": "WRIGGLET",
+    "MN_F134": "WADEBUD",
+    "MN_F143": "RONDIVE",
+    "MN_F026": "MIDGEBIT",
+    "MN_F050": "TACONIB",
+    "MN_F051": "SODCALF",
+    "MN_F056": "PASQUIB",
+    "MN_F063": "KNOTLET",
+    "MN_F135": "BRISTUB",
+    "MN_F139": "CROOKIT",
+    "MN_F142": "DEWBIT"
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "tool": "built-in image_gen",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f133/burrbud-v3-native-pupils",
+  "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f133/manifest-burrbud-v3-native-pupils.json",
+  "normalized_receipt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f133/source-feature-proof-burrbud-v3-native-pupils.json",
+  "all_raws_prompts_rejected_trials_retained": true,
+  "no_native_pixel_painting": true,
+  "no_registry_or_pack_mutation": true,
+  "normal_shiny_boards_actually_viewed": true,
+  "canonical_palettes": [
+    [
+      32767,
+      12985,
+      8746,
+      0
+    ],
+    [
+      32767,
+      22316,
+      17736,
+      0
+    ]
+  ],
+  "native_bounds": [
+    [
+      2,
+      3,
+      11,
+      12
+    ],
+    [
+      3,
+      3,
+      9,
+      12
+    ],
+    [
+      2,
+      3,
+      11,
+      12
+    ],
+    [
+      2,
+      3,
+      11,
+      12
+    ],
+    [
+      3,
+      3,
+      9,
+      11
+    ],
+    [
+      2,
+      3,
+      11,
+      12
+    ]
+  ],
+  "retained_source_hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f133/burrbud.overworld.imagegen-v2-plant.png": "d28a1e0e1b905140a51e228213957eff4871b776bdeb9cda5b3d0a8c011735ba",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f133/prompt-burrbud-v1.txt": "9e5c4e2f40e3af35078e796ee1150f8367aa8e8e597ceb1d27d073ccae330742",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f133/prompt-burrbud-v2-plant.txt": "1452bd8e7b46c9046a46e647f6b29dbbddaf30daf593dc22b45f52b84565f9e1",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f133/burrbud.v2-plant.original-path.txt": "f418b970de950758caf7fa58bc99582eb91d820b8e1f8529626857e6544f2aab"
+  },
+  "status": "root independent visual/context acceptance pending"
+}

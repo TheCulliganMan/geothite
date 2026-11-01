@@ -1,0 +1,21 @@
+{
+  "status": "PASS",
+  "command": [
+    "cargo",
+    "test",
+    "--locked",
+    "--profile",
+    "wasm-dev",
+    "--config",
+    "profile.wasm-dev.package.crystal-bevy.opt-level=0",
+    "-p",
+    "crystal-bevy",
+    "--lib",
+    "--no-run",
+    "--message-format=json"
+  ],
+  "source": "crates/crystal-bevy/src/bevy_shell/tests/detroit_lakes.rs",
+  "source_sha256": "de8538976a1d3a1b581a4aac0f8fc9979c4d9ad72c907a5f7758268ca6d96144",
+  "binary": ".local/route-grass-review/detroit-current-controller-v07",
+  "binary_sha256": "363b1881efaa7890954595386c0d3efe3dd9abc946d8421757d1f2dafdc7713a"
+}

@@ -1,0 +1,235 @@
+{
+  "family_id": "MN_F079",
+  "selected": "SourceCenter + SourceBacked",
+  "rejected_comparisons": [
+    "AreaVote+Solid white16/black32",
+    "AreaVote+Solid white64/black24"
+  ],
+  "canonical_sheet_sha256": "d2e27878772d623f36e0a8af4210f9463162d3e8ed111a01936a589aca34f60c",
+  "original_palettes_unchanged": true,
+  "selected_native_bytes_match": true,
+  "views": [
+    {
+      "species_id": "MN_172",
+      "view": "front",
+      "size": [
+        56,
+        56
+      ],
+      "palette_rgb555": [
+        32767,
+        7999,
+        18855,
+        0
+      ],
+      "pixel_edits": [],
+      "enclosed_white_features": [
+        {
+          "white_pixels": 12,
+          "bbox": [
+            19,
+            31,
+            23,
+            35
+          ],
+          "dark_pixels_inside_bbox": 3
+        },
+        {
+          "white_pixels": 2,
+          "bbox": [
+            28,
+            31,
+            30,
+            32
+          ],
+          "dark_pixels_inside_bbox": 0
+        },
+        {
+          "white_pixels": 10,
+          "bbox": [
+            27,
+            32,
+            31,
+            36
+          ],
+          "dark_pixels_inside_bbox": 4
+        },
+        {
+          "white_pixels": 1,
+          "bbox": [
+            31,
+            44,
+            32,
+            45
+          ],
+          "dark_pixels_inside_bbox": 0
+        },
+        {
+          "white_pixels": 1,
+          "bbox": [
+            25,
+            46,
+            26,
+            47
+          ],
+          "dark_pixels_inside_bbox": 0
+        }
+      ]
+    },
+    {
+      "species_id": "MN_172",
+      "view": "back",
+      "size": [
+        48,
+        48
+      ],
+      "palette_rgb555": [
+        32767,
+        7999,
+        18855,
+        0
+      ],
+      "pixel_edits": []
+    },
+    {
+      "species_id": "MN_173",
+      "view": "front",
+      "size": [
+        56,
+        56
+      ],
+      "palette_rgb555": [
+        32767,
+        9949,
+        22794,
+        0
+      ],
+      "pixel_edits": [],
+      "enclosed_white_features": [
+        {
+          "white_pixels": 1,
+          "bbox": [
+            44,
+            13,
+            45,
+            14
+          ],
+          "dark_pixels_inside_bbox": 0
+        },
+        {
+          "white_pixels": 1,
+          "bbox": [
+            28,
+            15,
+            29,
+            16
+          ],
+          "dark_pixels_inside_bbox": 0
+        },
+        {
+          "white_pixels": 4,
+          "bbox": [
+            26,
+            18,
+            28,
+            20
+          ],
+          "dark_pixels_inside_bbox": 0
+        },
+        {
+          "white_pixels": 2,
+          "bbox": [
+            16,
+            22,
+            18,
+            23
+          ],
+          "dark_pixels_inside_bbox": 0
+        },
+        {
+          "white_pixels": 2,
+          "bbox": [
+            36,
+            22,
+            38,
+            23
+          ],
+          "dark_pixels_inside_bbox": 0
+        },
+        {
+          "white_pixels": 1,
+          "bbox": [
+            45,
+            24,
+            46,
+            25
+          ],
+          "dark_pixels_inside_bbox": 0
+        },
+        {
+          "white_pixels": 24,
+          "bbox": [
+            20,
+            25,
+            25,
+            31
+          ],
+          "dark_pixels_inside_bbox": 6
+        },
+        {
+          "white_pixels": 24,
+          "bbox": [
+            29,
+            25,
+            34,
+            31
+          ],
+          "dark_pixels_inside_bbox": 6
+        },
+        {
+          "white_pixels": 1,
+          "bbox": [
+            26,
+            42,
+            27,
+            43
+          ],
+          "dark_pixels_inside_bbox": 0
+        },
+        {
+          "white_pixels": 1,
+          "bbox": [
+            33,
+            43,
+            34,
+            44
+          ],
+          "dark_pixels_inside_bbox": 0
+        }
+      ]
+    },
+    {
+      "species_id": "MN_173",
+      "view": "back",
+      "size": [
+        48,
+        48
+      ],
+      "palette_rgb555": [
+        32767,
+        9949,
+        22794,
+        0
+      ],
+      "pixel_edits": []
+    }
+  ],
+  "no_canonical_profile_or_rust_changes": true,
+  "current_shared_graphics_leaf": {
+    "result": "passed",
+    "runtime_files": 14,
+    "species": 2,
+    "pixel_edits": "none",
+    "log": "target/agent-roster-contour/F079-redesign-v2/production-graphics-validation.log"
+  }
+}

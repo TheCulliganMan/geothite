@@ -1,0 +1,39 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-r07-grass-and-stairs-v02.crystalpack",
+  "pack_sha256": "7b0aea48dc662368dfa4a2482d6dce75c94f2b18e4f9f3ea2b94861f9c409316",
+  "content_identity": "ee9f8bafe7a31f4f7cb0aee63d6c51f39922edd2345583eb49374963741e6962",
+  "grass_parent": {
+    "status": "PASS_NATIVE_CHILD_NOT_SELECTED",
+    "parent_revision": "iron_haulage_rock_revision",
+    "parent_pack": "content-packs/minnesota-iron-haulage-rock-v03.crystalpack",
+    "parent_pack_sha256": "0ec9a1d6fb22f94f2adc62eb09d46f392a9b7debd74230da8c0ce80142a64e82",
+    "pack": "content-packs/minnesota-current-r07-north-pocket-grass-v01.crystalpack",
+    "pack_sha256": "c753bb07a5db598d7ee50c638767e2b81bd4366d3e37a8f85229fb1960a57f9b",
+    "content_identity": "3f3496f70a5615cf6c58e97ed9b908213d9a0112848e48dba748fcbbb2a4f3eb",
+    "delta": {
+      "maps": [
+        "MnR07C00R00"
+      ],
+      "map_blocks": [
+        "MnR07C00R00_Blocks"
+      ]
+    },
+    "new_grass_quadrants": 32,
+    "all_other_maps_and_all_events_actors_scripts_teams_encounters_items_art_audio_exact": true
+  },
+  "delta": {
+    "maps": [
+      "MnR07C00R00",
+      "MnR07C00R01"
+    ],
+    "map_scripts": [
+      "MN_R07_DROP_SIGNText",
+      "MN_R07_T02Won"
+    ]
+  },
+  "all_terrain_actors_events_items_encounters_and_battle_inputs_exact": true,
+  "original_tested_pack": "content-packs/minnesota-current-r07-grass-and-stairs-v01.crystalpack",
+  "current_parent_revision": "iron_haulage_rock_revision",
+  "complete_r07_test_inputs_exact_to_tested_child": true
+}

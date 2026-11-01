@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "manifest": "minnesota-courier-story-v1",
+  "base_content_hash": "f98c5446760288142f6e56727f910b585d9dc67cbd9eaec5674c4bc542960821",
+  "town": "MnMinneapolis",
+  "route": "MnR04C00R00",
+  "offset": 3,
+  "mouth_metatile": [
+    31,
+    12
+  ],
+  "town_edge": [
+    [
+      63,
+      24
+    ],
+    [
+      63,
+      25
+    ]
+  ],
+  "route_edge": [
+    [
+      0,
+      18
+    ],
+    [
+      0,
+      19
+    ]
+  ],
+  "courier": {
+    "map": "MnStPaulUnionDepot",
+    "id": "MN_ST_PAUL_DEPOT_COURIER",
+    "tile": [
+      20,
+      16
+    ],
+    "approach": [
+      19,
+      16
+    ]
+  },
+  "record": {
+    "id": "MN_SP_DEEP_BORE_MANIFEST",
+    "tile": [
+      18,
+      16
+    ],
+    "approach": [
+      19,
+      16
+    ]
+  }
+}

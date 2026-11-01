@@ -1,0 +1,152 @@
+{
+  "scope": "Explicit noon source/native fixtures for accepted compact Gunflint and snowline approach. Actual reached saves are separate controller evidence; this is not earned progression.",
+  "cameras": [
+    {
+      "name": "gunflint-east-arrival",
+      "map": "MnR12C00R01",
+      "x": 59,
+      "y": 6,
+      "hour": 12,
+      "source": "planning/minnesota/renders/gunflint-quality-v01/source-v06/cameras/east-arrival/source160.png"
+    },
+    {
+      "name": "gunflint-ranger-shore",
+      "map": "MnR12C00R01",
+      "x": 49,
+      "y": 1,
+      "hour": 12,
+      "source": "planning/minnesota/renders/gunflint-quality-v01/source-v06/cameras/ranger-shore/source160.png"
+    },
+    {
+      "name": "gunflint-loons-east-bank",
+      "map": "MnR12C00R00",
+      "x": 50,
+      "y": 28,
+      "hour": 12,
+      "source": "planning/minnesota/renders/gunflint-quality-v01/source-v06/cameras/loons-east-bank/source160.png"
+    },
+    {
+      "name": "gunflint-lake-west-bank",
+      "map": "MnR12C00R00",
+      "x": 23,
+      "y": 27,
+      "hour": 12,
+      "source": "planning/minnesota/renders/gunflint-quality-v01/source-v06/cameras/lake-west-bank/source160.png"
+    },
+    {
+      "name": "gunflint-frost-entry",
+      "map": "MnR12C00R00",
+      "x": 38,
+      "y": 17,
+      "hour": 12,
+      "source": "planning/minnesota/renders/gunflint-quality-v01/source-v06/cameras/frost-entry/source160.png"
+    },
+    {
+      "name": "gunflint-frost-rim",
+      "map": "MnR12C00R00",
+      "x": 55,
+      "y": 19,
+      "hour": 12,
+      "source": "planning/minnesota/renders/gunflint-quality-v01/source-v06/cameras/frost-rim/source160.png"
+    },
+    {
+      "name": "gunflint-raven-shelter",
+      "map": "MnR12C00R00",
+      "x": 40,
+      "y": 16,
+      "hour": 12,
+      "source": "planning/minnesota/renders/gunflint-quality-v01/source-v06/cameras/raven-shelter/source160.png"
+    },
+    {
+      "name": "gunflint-cut-approach",
+      "map": "MnR12C00R00",
+      "x": 14,
+      "y": 18,
+      "hour": 12,
+      "source": "planning/minnesota/renders/gunflint-quality-v01/source-v06/cameras/cut-approach/source160.png"
+    },
+    {
+      "name": "gunflint-bog-neck",
+      "map": "MnR12C00R01",
+      "x": 22,
+      "y": 1,
+      "hour": 12,
+      "source": "planning/minnesota/renders/gunflint-quality-v01/source-v06/cameras/bog-neck/source160.png"
+    },
+    {
+      "name": "gunflint-hammock",
+      "map": "MnR12C00R01",
+      "x": 23,
+      "y": 6,
+      "hour": 12,
+      "source": "planning/minnesota/renders/gunflint-quality-v01/source-v06/cameras/hammock/source160.png"
+    },
+    {
+      "name": "gunflint-west-exit",
+      "map": "MnR12C00R00",
+      "x": 3,
+      "y": 28,
+      "hour": 12,
+      "source": "planning/minnesota/renders/gunflint-quality-v01/source-v06/cameras/west-exit/source160.png"
+    },
+    {
+      "name": "cedar-west-arrival",
+      "map": "MnMaraisCedarApproach",
+      "x": 5,
+      "y": 14,
+      "hour": 12,
+      "source": "planning/minnesota/renders/superior-gunflint-quality-v01/cedar-source-v02/cameras/west-arrival/source160.png"
+    },
+    {
+      "name": "cedar-grass-turn",
+      "map": "MnMaraisCedarApproach",
+      "x": 14,
+      "y": 10,
+      "hour": 12,
+      "source": "planning/minnesota/renders/superior-gunflint-quality-v01/cedar-source-v02/cameras/grass-turn/source160.png"
+    },
+    {
+      "name": "cedar-ledge-choice",
+      "map": "MnMaraisCedarApproach",
+      "x": 26,
+      "y": 16,
+      "hour": 12,
+      "source": "planning/minnesota/renders/superior-gunflint-quality-v01/cedar-source-v02/cameras/ledge-choice/source160.png"
+    },
+    {
+      "name": "cedar-south-arrival",
+      "map": "MnMaraisCedarApproach",
+      "x": 26,
+      "y": 21,
+      "hour": 12,
+      "source": "planning/minnesota/renders/superior-gunflint-quality-v01/cedar-source-v02/cameras/south-arrival/source160.png"
+    },
+    {
+      "name": "coast-original-trail",
+      "map": "MnR11C00R00",
+      "x": 40,
+      "y": 6,
+      "hour": 12,
+      "source": "planning/minnesota/renders/north-shore-ely-geography-v01/coast-quality-v01/compact-bend-v02/original-trail-source-camera-original.png",
+      "source_scope": "Connected terrain-only source reference; native frame adds actual player/NPC presentation."
+    },
+    {
+      "name": "coast-short-turn",
+      "map": "MnR11C01R00",
+      "x": 1,
+      "y": 11,
+      "hour": 12,
+      "source": "planning/minnesota/renders/north-shore-ely-geography-v01/coast-quality-v01/compact-bend-v02/short-turn-source-camera-original.png",
+      "source_scope": "Connected terrain-only source reference; native frame adds actual player/NPC presentation."
+    },
+    {
+      "name": "coast-town-arrival",
+      "map": "MnGrandMarais",
+      "x": 1,
+      "y": 8,
+      "hour": 12,
+      "source": "planning/minnesota/renders/north-shore-ely-geography-v01/coast-quality-v01/compact-bend-v02/town-arrival-source-camera-original.png",
+      "source_scope": "Connected terrain-only source reference; native frame adds actual player/NPC presentation."
+    }
+  ]
+}

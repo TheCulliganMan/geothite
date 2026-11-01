@@ -1,0 +1,47 @@
+{
+  "name": "ANGLER NETTA",
+  "role": "preserved original NPC",
+  "status": "accepted-native-playable-rebased",
+  "source": "native-pixels-v3.json",
+  "source_path": "planning/minnesota/npcs/sprites/05-lakeside-angler/native-pixels-v3.json",
+  "integration": "placement-v1.json",
+  "controller": "placement-v1.json",
+  "native": "target/npc-sprites/angler/reference-v2",
+  "pack": "content-packs/minnesota-trainer-cast-26-v01.crystalpack",
+  "gameplay": "target/trainer-cast/rebase/05-lakeside-angler/gameplay",
+  "log": "target/trainer-cast/rebase/05-lakeside-angler/controller.log",
+  "original_placement": "planning/minnesota/npcs/sprites/05-lakeside-angler/placement-v1.json",
+  "old_map": "MnBemidji",
+  "new_map": "MnBemidji",
+  "old_tile": [
+    28,
+    35
+  ],
+  "new_tile": [
+    27,
+    35
+  ],
+  "scope": "Exact accepted original art, palette, party, class and dialogue. Placement rebased to safe compact geography; original geography not transplanted.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/cast/rebased-originals/05-lakeside-angler/placement-v1.json": "85d4c3b286d8c4f7c72e604f93cb30dd5cfa50667350c1ab4bcbcb6f041ec030",
+    "planning/minnesota/npcs/sprites/05-lakeside-angler/native-pixels-v3.json": "aa448ccb1d5406bf87794aec1805e5b161c1c65d61882f7834707cb5e9a4738c",
+    "planning/minnesota/npcs/sprites/05-lakeside-angler/manifest.json": "85bff9723b325dae5aebed7dc8d8f5002d032e07252ab7b6975eb267614f9280",
+    "target/trainer-cast/rebase/05-lakeside-angler/controller.log": "c20e75f7d22598e242ebea14bc7b6341cbdd152f1d9aab30efed67d2bc0c53b3",
+    "content-packs/minnesota-trainer-cast-26-v01.crystalpack": "01b6e11c8c4a526c27b14ceab80e41719c5e4b5a35e8db8e1065c3bfba9dfa9a",
+    "target/npc-sprites/angler/reference-v2/verification.json": "fec8b5a042f02cc8f9e7633c1f06cbef6d97f89935652abbd6e3627deec35c59",
+    "target/trainer-cast/rebase/05-lakeside-angler/gameplay/original-npc-trainer-intro.png": "5258277e76475c3469359db6f89f75346fc62e38d1fd780778845798b3fac4e8",
+    "target/trainer-cast/rebase/05-lakeside-angler/gameplay/original-npc-overworld-state.png": "12d8329b4183db76df69f1b56d5e6cf323c110a930543e70531152a9a4dea1c6",
+    "target/trainer-cast/rebase/05-lakeside-angler/gameplay/original-npc-first-turn.png": "7d7a4384ae6e6b736fbf3c7408db206c89be4778790e698f1e95af0f1279fea5"
+  },
+  "final_pack": "content-packs/minnesota-trainer-cast-36-v01.crystalpack",
+  "final_gameplay": "target/trainer-cast/final-audit/gameplay/rebased-originals-05-lakeside-angler",
+  "final_log": "target/trainer-cast/final-audit/gameplay/rebased-originals-05-lakeside-angler/controller.log",
+  "final_status": "accepted-native-playable-final-pack",
+  "final_review": "Actual battle intro and field captures inspected on exact final pack; art retains accepted native sources and palette.",
+  "final_evidence_sha256": {
+    "target/trainer-cast/final-audit/gameplay/rebased-originals-05-lakeside-angler/controller.log": "69561280f821ad2b53279b62e17b1f2ef91b30d13d92540997285b5c642ffb57",
+    "target/trainer-cast/final-audit/gameplay/rebased-originals-05-lakeside-angler/original-npc-trainer-intro.png": "5258277e76475c3469359db6f89f75346fc62e38d1fd780778845798b3fac4e8",
+    "target/trainer-cast/final-audit/gameplay/rebased-originals-05-lakeside-angler/original-npc-overworld-state.png": "12d8329b4183db76df69f1b56d5e6cf323c110a930543e70531152a9a4dea1c6",
+    "target/trainer-cast/final-audit/gameplay/rebased-originals-05-lakeside-angler/original-npc-first-turn.png": "7d7a4384ae6e6b736fbf3c7408db206c89be4778790e698f1e95af0f1279fea5"
+  }
+}

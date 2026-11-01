@@ -1,0 +1,336 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_097",
+  "result": "pass",
+  "manifest_sha256": "7dbf89702ea8f0dd3c7c891361b5d28c7380c99e8dcf9edbd842f70156fc81ee",
+  "bank_sha256": "94ccf76737c2d7ee3c42025b37a5d1bfc370cea71e840ca7c0cec752506c6d26",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f046/pepivern.overworld.imagegen-v3-solid-outline.png": "663713c8f3f440fc566498d8c81001f9ac36e6186bdee5df8dad3fee81b6bcea"
+  },
+  "canonical_eye_form": "Two actual black source pupils on broad light dragon head in front; one actual near black pupil in west. Source eye positions were widened before conversion, no invented native pixels.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "down_idle",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f046/pepivern.overworld.imagegen-v3-solid-outline.png",
+        "crop": [
+          41,
+          44,
+          500,
+          460
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            191,
+            196,
+            26,
+            33
+          ],
+          [
+            272,
+            196,
+            27,
+            33
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                5,
+                6
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  0,
+                  0,
+                  0,
+                  253
+                ],
+                "bounds": [
+                  191,
+                  196,
+                  26,
+                  33
+                ],
+                "pixels": 858,
+                "truncated_contour": false,
+                "native_pixel": [
+                  5,
+                  6
+                ],
+                "source_sample_pixel": [
+                  208,
+                  204
+                ]
+              }
+            ]
+          },
+          {
+            "native_cluster": [
+              [
+                7,
+                6
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  1,
+                  0,
+                  0,
+                  253
+                ],
+                "bounds": [
+                  272,
+                  196,
+                  27,
+                  33
+                ],
+                "pixels": 890,
+                "truncated_contour": false,
+                "native_pixel": [
+                  7,
+                  6
+                ],
+                "source_sample_pixel": [
+                  278,
+                  204
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "left_idle",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f046/pepivern.overworld.imagegen-v3-solid-outline.png",
+        "crop": [
+          1028,
+          66,
+          500,
+          460
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            1120,
+            184,
+            27,
+            35
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                3,
+                5
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  3,
+                  4,
+                  6,
+                  253
+                ],
+                "bounds": [
+                  1120,
+                  184,
+                  27,
+                  35
+                ],
+                "pixels": 900,
+                "truncated_contour": false,
+                "native_pixel": [
+                  3,
+                  5
+                ],
+                "source_sample_pixel": [
+                  1125,
+                  191
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "down_step",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f046/pepivern.overworld.imagegen-v3-solid-outline.png",
+        "crop": [
+          41,
+          525,
+          500,
+          460
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            191,
+            676,
+            26,
+            33
+          ],
+          [
+            272,
+            676,
+            27,
+            33
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                5,
+                6
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  1,
+                  0,
+                  0,
+                  253
+                ],
+                "bounds": [
+                  191,
+                  676,
+                  26,
+                  33
+                ],
+                "pixels": 858,
+                "truncated_contour": false,
+                "native_pixel": [
+                  5,
+                  6
+                ],
+                "source_sample_pixel": [
+                  208,
+                  685
+                ]
+              }
+            ]
+          },
+          {
+            "native_cluster": [
+              [
+                7,
+                6
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  0,
+                  0,
+                  0,
+                  253
+                ],
+                "bounds": [
+                  272,
+                  676,
+                  27,
+                  33
+                ],
+                "pixels": 891,
+                "truncated_contour": false,
+                "native_pixel": [
+                  7,
+                  6
+                ],
+                "source_sample_pixel": [
+                  278,
+                  685
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "left_step",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f046/pepivern.overworld.imagegen-v3-solid-outline.png",
+        "crop": [
+          1028,
+          548,
+          500,
+          460
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            1120,
+            665,
+            27,
+            34
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                3,
+                5
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  0,
+                  2,
+                  3,
+                  253
+                ],
+                "bounds": [
+                  1120,
+                  665,
+                  27,
+                  34
+                ],
+                "pixels": 867,
+                "truncated_contour": false,
+                "native_pixel": [
+                  3,
+                  5
+                ],
+                "source_sample_pixel": [
+                  1125,
+                  673
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "notes": "Both full rear poses have solid rear head with wake crests, dark neck stripe, complete coiled body, attached organic fins, three wake ridges and curled tail. No copied face, eyes or legs."
+  },
+  "detailed_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f046/pepivern.manifest-native-v4-flex.proof.json"
+}

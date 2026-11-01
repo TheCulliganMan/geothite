@@ -1,0 +1,132 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F039",
+  "status": "candidate-pending-native-review",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_090": {
+      "species_id": "MN_090",
+      "name": "Sludgeski",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          20,
+          25,
+          27
+        ],
+        [
+          11,
+          9,
+          15
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        28468,
+        15659,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          165,
+          206,
+          222
+        ],
+        [
+          90,
+          74,
+          123
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#A5CEDE",
+        "#5A4A7B",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f039/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png",
+      "target/minnesota-pokemon/gen2-reference/bugs.png"
+    ]
+  },
+  "sprites": [
+    {
+      "id": "mn-090-sludgeski-v1",
+      "species_id": "MN_090",
+      "view": "front",
+      "source": "sprites/mn-f039/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        1145,
+        687
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        28468,
+        15659,
+        0
+      ],
+      "exterior_contour": "solid"
+    },
+    {
+      "id": "mn-090-sludgeski-v1",
+      "species_id": "MN_090",
+      "view": "back",
+      "source": "sprites/mn-f039/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        687,
+        1145,
+        687
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        28468,
+        15659,
+        0
+      ],
+      "exterior_contour": "solid"
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "notes": "Inspected frozen v1: Sludgeski snow brow/back and ski tips have connected black rims, with dark slush belly and salt teeth retained. Large shoulder/head rear portrait keeps body cropped, without a bottom black cap.",
+    "sheet_sha256": "e304c022d437f62a70a17ca5c756053de37737ca5729acbc48bc2285bdbd76f8",
+    "outline_profile": "source-contour-v1"
+  }
+}

@@ -74,7 +74,7 @@ export function mountTouchControls({ document, window, canvas, onInput = () => {
     event.preventDefault(); event.stopImmediatePropagation();
     if (event.type === 'keydown' && !event.repeat && !heldKeyboard.has(event.code)) {
       if (event.isTrusted) document.body?.classList.add('controller-active');
-      onInput(); heldKeyboard.add(event.code); state.set(id, movement[event.code]);
+      onInput(event); heldKeyboard.add(event.code); state.set(id, movement[event.code]);
     }
   };
   window.addEventListener('keydown', keyboard, { capture: true });
@@ -84,7 +84,7 @@ export function mountTouchControls({ document, window, canvas, onInput = () => {
     element.addEventListener('pointerdown', event => {
       if (event.button !== 0 || pad.disabled || blocked()) return;
       event.preventDefault();
-      onInput();
+      onInput(event);
       canvas.focus({ preventScroll: true });
       element.setPointerCapture(event.pointerId);
       window.clearTimeout(pendingReleases.get(event.pointerId));
@@ -117,13 +117,13 @@ export function mountTouchControls({ document, window, canvas, onInput = () => {
       });
     }
   };
-  bind(dpad, event => directionAt(dpad.getBoundingClientRect(), event.clientX, event.clientY));
+  if (dpad) bind(dpad, event => directionAt(dpad.getBoundingClientRect(), event.clientX, event.clientY));
   for (const button of pad.querySelectorAll('[data-game-button]')) {
-    if (!dpad.contains(button)) bind(button, () => button.dataset.gameButton);
+    if (!dpad?.contains(button)) bind(button, () => button.dataset.gameButton);
     // Keyboard / assistive activation emits a short press; pointer input uses holds.
     button.addEventListener('click', event => {
       if (event.detail !== 0 || pad.disabled || blocked()) return;
-      onInput();
+      onInput(event);
       canvas.focus({ preventScroll: true });
       const id = Symbol('activation');
       state.set(id, button.dataset.gameButton);

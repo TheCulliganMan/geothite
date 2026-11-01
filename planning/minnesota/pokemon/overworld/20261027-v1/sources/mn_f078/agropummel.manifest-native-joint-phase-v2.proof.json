@@ -1,0 +1,345 @@
+{
+  "species_id": "MN_171",
+  "name": "agropummel",
+  "status": "native-review-recommended; root independent review and context required",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f078/agropummel.manifest-native-joint-phase-v2.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-agropummel-joint-phase-v2",
+  "shared_transform": {
+    "source_bounds": [
+      12,
+      12,
+      466,
+      373
+    ],
+    "native_size": [
+      14,
+      11
+    ],
+    "native_origin": [
+      1,
+      4
+    ]
+  },
+  "all_four_nonrear_poses_actual_pupils_pass": true,
+  "each_native_eye_cluster_maps_to_one_actual_small_source_pupil_component": true,
+  "actual_source_pupil_proofs": [
+    {
+      "pose": "down_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f078/agropummel.overworld.imagegen-v2.png",
+      "crop": [
+        36,
+        92,
+        490,
+        397
+      ],
+      "actual_source_eye_bounds": [
+        [
+          191,
+          283,
+          35,
+          39
+        ],
+        [
+          296,
+          283,
+          34,
+          39
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              5,
+              9
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                191,
+                283,
+                35,
+                39
+              ],
+              "pixels": 1339,
+              "truncated_contour": false,
+              "native_pixel": [
+                5,
+                9
+              ],
+              "source_sample_pixel": [
+                197,
+                290
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              8,
+              9
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                5,
+                2,
+                2,
+                253
+              ],
+              "bounds": [
+                296,
+                283,
+                34,
+                39
+              ],
+              "pixels": 1294,
+              "truncated_contour": false,
+              "native_pixel": [
+                8,
+                9
+              ],
+              "source_sample_pixel": [
+                297,
+                290
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f078/agropummel.overworld.imagegen-v2.png",
+      "crop": [
+        1044,
+        92,
+        490,
+        397
+      ],
+      "actual_source_eye_bounds": [
+        [
+          1207,
+          268,
+          33,
+          37
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              9
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                4,
+                1,
+                0,
+                253
+              ],
+              "bounds": [
+                1207,
+                268,
+                33,
+                37
+              ],
+              "pixels": 1219,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                9
+              ],
+              "source_sample_pixel": [
+                1239,
+                290
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f078/agropummel.overworld.imagegen-v2.png",
+      "crop": [
+        36,
+        539,
+        490,
+        397
+      ],
+      "actual_source_eye_bounds": [
+        [
+          191,
+          731,
+          35,
+          38
+        ],
+        [
+          296,
+          731,
+          34,
+          38
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              5,
+              9
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                191,
+                731,
+                35,
+                38
+              ],
+              "pixels": 1330,
+              "truncated_contour": false,
+              "native_pixel": [
+                5,
+                9
+              ],
+              "source_sample_pixel": [
+                197,
+                737
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              8,
+              9
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                4,
+                1,
+                1,
+                253
+              ],
+              "bounds": [
+                296,
+                731,
+                34,
+                38
+              ],
+              "pixels": 1292,
+              "truncated_contour": false,
+              "native_pixel": [
+                8,
+                9
+              ],
+              "source_sample_pixel": [
+                297,
+                737
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f078/agropummel.overworld.imagegen-v2.png",
+      "crop": [
+        1044,
+        539,
+        490,
+        397
+      ],
+      "actual_source_eye_bounds": [
+        [
+          1208,
+          719,
+          32,
+          34
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              9
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                1208,
+                719,
+                32,
+                34
+              ],
+              "pixels": 1088,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                9
+              ],
+              "source_sample_pixel": [
+                1239,
+                737
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "old_native_poses_preserved_exactly": [
+    "down_idle",
+    "up_idle",
+    "left_idle",
+    "down_step",
+    "up_step",
+    "left_step"
+  ],
+  "normal_shiny_runtime_parity": "all1536pixels exact each",
+  "canonical_palette_bytes": "exact",
+  "all_three_walk_pairs_distinct": true,
+  "rear_review": "both rear native poses viewed; no copied face",
+  "normal_shiny_native_boards_actually_viewed": true,
+  "accepted_coverage_native_pack_untouched": true,
+  "manifest_sha256": "3e3ab719074f71251df5217b5d4f4c1bd182c57a871f92d29feb72f475d56069",
+  "compiled_index_sha256": "cdf0a61d5cb169fea30a93d2af87786733202ef0c2f8e84249be085dfe31a4a6"
+}

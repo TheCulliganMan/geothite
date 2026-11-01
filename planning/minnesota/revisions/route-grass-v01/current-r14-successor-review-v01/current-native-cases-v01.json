@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-r13-boundary-apron-v03.crystalpack",
+  "pack_sha256": "7d3987bfbf0378aed960495cc20981c0d258eb391f33630b8e3de6c2686e2e7d",
+  "exit_code": 0,
+  "log": ".local/route-grass-review/r14-current-native-v01.log",
+  "reached_save": ".local/route-grass-review/r14-current-woodland-reached-v01.crystalsave",
+  "scope": "Existing native geometry across four chunks, boardwalk barriers, grassy ordinary return and dry ledge/Continue, new-grass encounter/RUN/Continue, actual Mara trainer battle/PP/Continue, and Cut permission/opening/reset. Explicit local QA setup; not earned regional progression."
+}

@@ -71,42 +71,33 @@ fn map_setup_callbacks_are_not_replayed_as_visible_scripts() {
 
 #[test]
 fn visible_newloadmap_commits_the_staged_destination_before_map_setup() {
-    let mut runtime_shell = core_modular_title_shell_for_test();
-    let initial = runtime_shell.shell.snapshot().expect("initial snapshot");
-    let target = initial
-        .spawn_points
-        .iter()
-        .find(|spawn| spawn.map_name != initial.overworld.map_name)
-        .cloned()
-        .expect("a spawn on another map");
-    let target_tile = TilePosition::new(target.tile_x, target.tile_y);
-    {
-        let state = runtime_shell.shell.session_mut().state_mut();
-        state.script_runtime.pending_script_warp = Some(crystal_core::state::ScriptWarpRequest {
-            target_map: target.map_name.clone(),
-            tile: target_tile,
-            facing: None,
-            source_script: "WarpToSpawnPoint".to_string(),
-            command_index: 0,
-        });
-        state.script_runtime.pending_map_load = Some(crystal_core::state::ScriptMapLoadRequest {
-            command: "newloadmap".to_string(),
-            map_setup: Some("MAPSETUP_FLY".to_string()),
-            source_script: ".FlyScript@FlyFunction".to_string(),
-            command_index: 8,
-        });
-    }
+    let root=AssetRoot::new(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../.."));
+    let runtime=workspace_desktop_runtime(&root);
+    let map="GoldenrodMagnetTrainStation";
+    let load=runtime.data().maps[map].script_map_commands.iter()
+        .find(|command|command.command=="newloadmap").unwrap().clone();
+    let warp_index=runtime.compiled_script_commands(&load.source_script).unwrap().iter()
+        .position(|command|command["command"]=="warpcheck").unwrap();
+    let spawn_identifier=runtime.title_new_game_spawn_identifier().unwrap();
+    let mut runtime_shell=initialize_bevy_runtime_shell(root,runtime,
+        BevyShellStart::NewGameAtRuntimeTile {spawn_identifier,map_name:map.into(),tile_x:6,tile_y:5},
+        BevyShellConfig::default()).unwrap();
+    // The authored route supplies both pending requests to the dispatcher.
+    runtime_shell.shell.step_compiled_script_command(map,&load.source_script,warp_index,
+        ScriptRuntimeInputs::default(),ScriptPhoneInputs::default()).unwrap();
+    let step=runtime_shell.shell.step_compiled_script_command(map,&load.source_script,load.command_index,
+        ScriptRuntimeInputs::default(),ScriptPhoneInputs::default()).unwrap();
+    arm_visible_active_script_cursor_from_run(&mut runtime_shell,step.next_cursor);
     mark_runtime_snapshot_dirty(&mut runtime_shell);
-    let staged = runtime_shell.shell.snapshot().expect("staged snapshot");
-
-    assert!(
-        advance_visible_next_pending_script_request(&mut runtime_shell, &staged)
-            .expect("advance newloadmap")
-    );
-
-    let arrived = runtime_shell.shell.snapshot().expect("arrival snapshot");
-    assert_eq!(arrived.overworld.map_name, target.map_name);
-    assert_eq!(arrived.overworld.tile, target_tile);
+    let staged=runtime_shell.shell.snapshot().expect("source-authenticated staged snapshot");
+    let target=staged.script_events.pending_script_warp.as_ref().unwrap().clone();
+    assert!(staged.script_events.pending_map_load.is_some());
+    assert!(advance_visible_next_pending_script_request(&mut runtime_shell,&staged)
+        .expect("advance authored newloadmap before ordinary warp"));
+    let arrived=runtime_shell.shell.snapshot().unwrap();
+    assert_ne!(arrived.overworld.map_name,map);
+    assert_eq!(arrived.overworld.map_name,target.target_map);
+    assert_eq!(arrived.overworld.tile,target.tile);
     assert!(arrived.script_events.pending_script_warp.is_none());
     assert!(arrived.script_events.pending_map_load.is_none());
 }
@@ -1436,11 +1427,11 @@ fn oak_intro_prompt_arrow_dark_pixels(image: &Image) -> usize {
         })
         .filter(|(x, y)| {
             let offset = (y * width + x) * 4;
-            offset + 3 < image.data.len()
-                && image.data[offset] < 32
-                && image.data[offset + 1] < 32
-                && image.data[offset + 2] < 32
-                && image.data[offset + 3] == 255
+            offset + 3 < image.data.as_ref().expect("CPU image pixels").len()
+                && image.data.as_ref().expect("CPU image pixels")[offset] < 32
+                && image.data.as_ref().expect("CPU image pixels")[offset + 1] < 32
+                && image.data.as_ref().expect("CPU image pixels")[offset + 2] < 32
+                && image.data.as_ref().expect("CPU image pixels")[offset + 3] == 255
         })
         .count()
 }
@@ -1676,6 +1667,7 @@ fn interruption_emotes_consume_every_bounded_catch_up_tick() {
 #[test]
 fn transient_audio_queue_obeys_asm_sfx_priority_order() {
     let command = |audio_id: &str, kind: ModpackAudioKind| BevyAudioCommand {
+        battle_sound: None,
         cry_parameters: None,
         audio_id: audio_id.to_string(),
         kind,
@@ -1738,6 +1730,7 @@ fn transient_audio_queue_obeys_asm_sfx_priority_order() {
 #[test]
 fn pending_music_guard_rejects_duplicate_track_but_not_transition() {
     let command = |audio_id: &str, kind: ModpackAudioKind| BevyAudioCommand {
+        battle_sound: None,
         cry_parameters: None,
         audio_id: audio_id.to_string(),
         kind,
@@ -1766,8 +1759,8 @@ fn yes_no_prompt_owns_all_yes_no_text_variants() {
             FIELD_YES_NO_WIDTH_TILES,
             FIELD_YES_NO_HEIGHT_TILES,
         ),
-        (14.0, 7.0, 6.0, 4.0),
-        "ASM/TypeScript YesNoBox uses the 6x4 outer window at tile (14, 7)"
+        (14.0, 7.0, 6.0, 5.0),
+        "home/menu.asm _YesNoBox has inclusive borders (14,7)..(19,11)"
     );
     assert!(is_visible_yes_no_prompt_entry("YES"));
     assert!(is_visible_yes_no_prompt_entry(">NO"));
@@ -2097,7 +2090,7 @@ fn interactive_bevy_schedule_performance_benchmark() {
         )
     }
     let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../..")
+        .join("../..")
         .canonicalize()
         .expect("repository root");
     let asset_root = AssetRoot::new(repo_root);
@@ -2429,10 +2422,10 @@ fn renderer_readiness_cannot_switch_the_manually_selected_world_view_to_2d() {
     let hidden_layers = app
         .world()
         .entity(classic_world)
-        .get::<bevy::render::view::RenderLayers>()
+        .get::<bevy::camera::visibility::RenderLayers>()
         .expect("manual 2.5D selection must park the classic overworld");
     assert!(
-        hidden_layers.intersects(&bevy::render::view::RenderLayers::layer(
+        hidden_layers.intersects(&bevy::camera::visibility::RenderLayers::layer(
             crystal_voxel_view::HIDDEN_CLASSIC_WORLD_RENDER_LAYER,
         ))
     );
@@ -2442,8 +2435,8 @@ fn renderer_readiness_cannot_switch_the_manually_selected_world_view_to_2d() {
     assert!(
         app.world()
             .entity(subsequently_spawned_world)
-            .get::<bevy::render::view::RenderLayers>()
-            .is_some_and(|layers| layers.intersects(&bevy::render::view::RenderLayers::layer(
+            .get::<bevy::camera::visibility::RenderLayers>()
+            .is_some_and(|layers| layers.intersects(&bevy::camera::visibility::RenderLayers::layer(
                 crystal_voxel_view::HIDDEN_CLASSIC_WORLD_RENDER_LAYER,
             ))),
         "new classic-world entities must inherit the selected layer without rescanning every retained entity"
@@ -2454,7 +2447,7 @@ fn renderer_readiness_cannot_switch_the_manually_selected_world_view_to_2d() {
     assert!(
         !app.world()
             .entity(classic_world)
-            .get_ref::<bevy::render::view::RenderLayers>()
+            .get_ref::<bevy::camera::visibility::RenderLayers>()
             .expect("retained classic-world layer")
             .is_changed(),
         "an unchanged view selection must not rewrite every retained entity each frame"
@@ -2470,7 +2463,7 @@ fn renderer_readiness_cannot_switch_the_manually_selected_world_view_to_2d() {
     assert!(
         app.world()
             .entity(classic_world)
-            .get::<bevy::render::view::RenderLayers>()
+            .get::<bevy::camera::visibility::RenderLayers>()
             .is_none(),
         "manual 2D selection must restore the classic overworld to layer 0"
     );
@@ -2584,4 +2577,36 @@ fn field_dialogue_cursor_updates_retained_glyphs_at_asm_border_tile() {
             "cursor must follow VBlank bit 4 at tile (18,17), frame {frame}"
         );
     }
+}
+#[cfg(feature = "location-tester")]
+#[test]
+fn passive_paired_capture_holds_authoritative_clock_and_input_then_resumes() {
+    let shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    let mut app = App::new();
+    app.add_plugins(MinimalPlugins)
+        .insert_resource(bevy::time::TimeUpdateStrategy::ManualDuration(
+            std::time::Duration::from_millis(100),
+        ))
+        .insert_resource(shell)
+        .insert_resource(native_rtc_source_for_test())
+        .insert_resource(RuntimeTickTimer::new(0.0))
+        .insert_resource(ButtonInput::<KeyCode>::default())
+        .insert_resource(render_capture::PairedCaptureHold { frozen: true })
+        .add_systems(Update, apply_keyboard_input);
+    app.world_mut().resource_mut::<Time<Virtual>>().pause();
+    app.world_mut().resource_mut::<ButtonInput<KeyCode>>().press(KeyCode::ArrowRight);
+    let before = app.world().resource::<BevyRuntimeShell>().shell.snapshot().unwrap();
+    let lcd = app.world().resource::<BevyRuntimeShell>().lcd_animation_frame;
+    for _ in 0..10 { app.update(); }
+    let held = app.world().resource::<BevyRuntimeShell>();
+    assert_eq!(held.shell.snapshot().unwrap().state_checksum, before.state_checksum);
+    assert_eq!(held.lcd_animation_frame, lcd);
+    assert!(held.pending_ui_button_presses.is_empty());
+    assert_eq!(app.world().resource::<Time<Virtual>>().elapsed(), std::time::Duration::ZERO);
+    app.world_mut().resource_mut::<render_capture::PairedCaptureHold>().frozen = false;
+    app.world_mut().resource_mut::<Time<Virtual>>().unpause();
+    app.update();
+    assert!(app.world().resource::<BevyRuntimeShell>().lcd_animation_frame > lcd);
+    assert_ne!(app.world().resource::<BevyRuntimeShell>().shell.snapshot().unwrap().state_checksum,
+        before.state_checksum, "ordinary authoritative time must resume outside the paired hold");
 }

@@ -1,0 +1,64 @@
+{
+  "status": "PASS",
+  "selected_revision": "route_grass_st_cloud_fronts_revision",
+  "publication": {
+    "kind": "native_clinic_and_mart_fronts_with_paired_doors",
+    "parent_revision": "city_cyclist_overworld_revision",
+    "parent_pack": "content-packs/minnesota-city-cyclists-v01.crystalpack",
+    "parent_pack_sha256": "d2b51c4317a56d1aabafc7528342cfb120fa9b1600e60bfe9a79af87508e364d",
+    "pack": "content-packs/minnesota-current-st-cloud-fronts-v02.crystalpack",
+    "pack_sha256": "df5e4c47500d84046f542418a203c8d58b0e119e97bc235083434464c8682ef3",
+    "content_identity": "c5aed96947142bccfb8242be53b6e99d083ff9bba5d176ba553684428acd6765",
+    "maps": 732,
+    "map": "MnStCloud",
+    "changed_native_metatiles": 8,
+    "clinic_door": [
+      7,
+      9
+    ],
+    "clinic_passive_return": [
+      7,
+      10
+    ],
+    "mart_door": [
+      15,
+      9
+    ],
+    "mart_passive_return": [
+      15,
+      10
+    ],
+    "all_four_buildings_both_returns_verified": true,
+    "room_exit_carpets_verified": 8,
+    "old_doors_denied": 2,
+    "reached_save_continue_and_menus_verified": true,
+    "native_controller_cases_passed": 1,
+    "production_stdio_calls": 92,
+    "actual_fresh_native2d_views_inspected": 6,
+    "source_native_pixel_mismatches": 0,
+    "all_ordinary_floor_collision_preserved": true,
+    "installed_stairs_and_river_joins_preserved": true,
+    "all1728_collision_quadrants_verified": true,
+    "parsed_cached_and_raw_warp_pairs_rebound": true,
+    "other_complete_maps_preserved_exact": 731,
+    "state_fair_preserved_exact": true,
+    "bemidji_stairs_duluth_mart_minneapolis_streets_and_cyclists_preserved_exact": true,
+    "all_art_audio_encounters_trainers_and_other_scripts_exact": true,
+    "authoring_source_index": "planning/minnesota/revisions/route-grass-v01/current-st-cloud-fronts-v01/sources-v02.json",
+    "authoring_source_index_sha256": "146eed5183b00a37bbd1ab67a7f1e42c3cf9df53e1029bcf183f68a8902982a9",
+    "runbook": "revisions/route-grass-v01/current-st-cloud-fronts-v01/README.md",
+    "status": "Verified native clinic/Mart fronts, four buildings/eight returns, old-door denials, Continue/menus and six inspected matching native2D views.",
+    "code_lint_status": "PASS",
+    "remaining_original_frozen_facade_flags": 0,
+    "scope_limit": "Original flagged facade repairs are resolved. Broader route/outdoor/current-source acceptance stays active. Initial party/eight badges are QA fixtures; no earned statewide campaign or save migration claim."
+  },
+  "preservation": "fronts-child-preservation-v02.json",
+  "native_log": ".local/route-grass-review/st-cloud-fronts-native-facades-v02.log",
+  "production": "production-fronts-continue-review-v02.json",
+  "visual": "native-visual-acceptance-v02.json",
+  "publisher_controls": "publisher-negative-receipt-v02.json",
+  "build_and_all_target_clippy": "fronts-publisher-build-progress-v01.json",
+  "formatting": "format-and-owned-lint-v01.json",
+  "source_index": "sources-v02.json",
+  "goal_complete": false
+}

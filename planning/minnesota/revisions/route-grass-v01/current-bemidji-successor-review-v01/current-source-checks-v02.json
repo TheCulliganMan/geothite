@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "command": [
+    "cargo",
+    "clippy",
+    "--locked",
+    "--profile",
+    "wasm-dev",
+    "-p",
+    "crystal-bevy",
+    "--all-targets"
+  ],
+  "exit_code": 0,
+  "log": ".local/route-grass-review/bemidji-current-bevy-all-target-clippy-v02.log",
+  "source_sha256": {
+    "crates/crystal-bevy/src/bevy_shell/tests/bemidji_city.rs": "78241412a54fd4151049a2e81672b10545c822890a10fdc8867d329ac2b1d13f"
+  },
+  "owned_leaf_format_exit_code": 0
+}

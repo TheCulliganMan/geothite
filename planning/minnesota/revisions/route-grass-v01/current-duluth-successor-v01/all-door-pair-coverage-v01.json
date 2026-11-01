@@ -1,0 +1,504 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+  "pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33",
+  "building_pairs": 38,
+  "indoor_exit_carpets": 76,
+  "doors": [
+    {
+      "room": "MnDuluthHillHouse",
+      "active_door": [
+        41,
+        31
+      ],
+      "passive_return": [
+        41,
+        32
+      ],
+      "exit_carpets": 2,
+      "passive_arrival_anchors": 1
+    },
+    {
+      "room": "MnDuluthGym",
+      "active_door": [
+        48,
+        31
+      ],
+      "passive_return": [
+        48,
+        32
+      ],
+      "exit_carpets": 2,
+      "passive_arrival_anchors": 1
+    },
+    {
+      "room": "MnDuluthPokecenter1F",
+      "active_door": [
+        69,
+        31
+      ],
+      "passive_return": [
+        69,
+        32
+      ],
+      "exit_carpets": 2,
+      "passive_arrival_anchors": 1
+    },
+    {
+      "room": "MnDuluthMart",
+      "active_door": [
+        79,
+        39
+      ],
+      "passive_return": [
+        79,
+        40
+      ],
+      "exit_carpets": 2,
+      "passive_arrival_anchors": 1
+    },
+    {
+      "room": "MnDuluthHarborHouse",
+      "active_door": [
+        39,
+        51
+      ],
+      "passive_return": [
+        39,
+        52
+      ],
+      "exit_carpets": 2,
+      "passive_arrival_anchors": 1
+    },
+    {
+      "room": "MnDuluthHistoryHouse",
+      "active_door": [
+        51,
+        49
+      ],
+      "passive_return": [
+        51,
+        50
+      ],
+      "exit_carpets": 2,
+      "passive_arrival_anchors": 1
+    },
+    {
+      "room": "MnDuluthHarborWorkshop",
+      "active_door": [
+        72,
+        41
+      ],
+      "passive_return": [
+        72,
+        42
+      ],
+      "exit_carpets": 2,
+      "passive_arrival_anchors": 1
+    },
+    {
+      "room": "MnDuluthLookoutLodge1F",
+      "active_door": [
+        8,
+        9
+      ],
+      "passive_return": [
+        8,
+        10
+      ],
+      "exit_carpets": 2,
+      "passive_arrival_anchors": 0
+    },
+    {
+      "room": "MnDuluthPotteryHouse",
+      "active_door": [
+        19,
+        9
+      ],
+      "passive_return": [
+        19,
+        10
+      ],
+      "exit_carpets": 2,
+      "passive_arrival_anchors": 0
+    },
+    {
+      "room": "MnDuluthQuarryPractice",
+      "active_door": [
+        30,
+        9
+      ],
+      "passive_return": [
+        30,
+        10
+      ],
+      "exit_carpets": 2,
+      "passive_arrival_anchors": 0
+    },
+    {
+      "room": "MnDuluthHillGardenHouse",
+      "active_door": [
+        39,
+        7
+      ],
+      "passive_return": [
+        39,
+        8
+      ],
+      "exit_carpets": 2,
+      "passive_arrival_anchors": 0
+    },
+    {
+      "room": "MnDuluthTerraceHome",
+      "active_door": [
+        53,
+        15
+      ],
+      "passive_return": [
+        53,
+        16
+      ],
+      "exit_carpets": 2,
+      "passive_arrival_anchors": 0
+    },
+    {
+      "room": "MnDuluthHillRanger",
+      "active_door": [
+        9,
+        19
+      ],
+      "passive_return": [
+        9,
+        20
+      ],
+      "exit_carpets": 2,
+      "passive_arrival_anchors": 0
+    },
+    {
+      "room": "MnDuluthReadingHall1F",
+      "active_door": [
+        46,
+        9
+      ],
+      "passive_return": [
+        46,
+        10
+      ],
+      "exit_carpets": 2,
+      "passive_arrival_anchors": 0
+    },
+    {
+      "room": "MnDuluthHillsideHostel1F",
+      "active_door": [
+        72,
+        9
+      ],
+      "passive_return": [
+        72,
+        10
+      ],
+      "exit_carpets": 2,
+      "passive_arrival_anchors": 0
+    },
+    {
+      "room": "MnDuluthHillSupplies",
+      "active_door": [
+        86,
+        9
+      ],
+      "passive_return": [
+        86,
+        10
+      ],
+      "exit_carpets": 2,
+      "passive_arrival_anchors": 0
+    },
+    {
+      "room": "MnDuluthCommunityKitchen",
+      "active_door": [
+        74,
+        19
+      ],
+      "passive_return": [
+        74,
+        20
+      ],
+      "exit_carpets": 2,
+      "passive_arrival_anchors": 0
+    },
+    {
+      "room": "MnDuluthWeatherStudy1F",
+      "active_door": [
+        100,
+        9
+      ],
+      "passive_return": [
+        100,
+        10
+      ],
+      "exit_carpets": 2,
+      "passive_arrival_anchors": 0
+    },
+    {
+      "room": "MnDuluthLakesideHome",
+      "active_door": [
+        111,
+        9
+      ],
+      "passive_return": [
+        111,
+        10
+      ],
+      "exit_carpets": 2,
+      "passive_arrival_anchors": 0
+    },
+    {
+      "room": "MnDuluthLakeOutfitter",
+      "active_door": [
+        116,
+        21
+      ],
+      "passive_return": [
+        116,
+        22
+      ],
+      "exit_carpets": 2,
+      "passive_arrival_anchors": 0
+    },
+    {
+      "room": "MnDuluthFieldClinic",
+      "active_door": [
+        102,
+        25
+      ],
+      "passive_return": [
+        102,
+        26
+      ],
+      "exit_carpets": 2,
+      "passive_arrival_anchors": 0
+    },
+    {
+      "room": "MnDuluthBoatBuilder",
+      "active_door": [
+        102,
+        37
+      ],
+      "passive_return": [
+        102,
+        38
+      ],
+      "exit_carpets": 2,
+      "passive_arrival_anchors": 0
+    },
+    {
+      "room": "MnDuluthUnionHall1F",
+      "active_door": [
+        6,
+        29
+      ],
+      "passive_return": [
+        6,
+        30
+      ],
+      "exit_carpets": 2,
+      "passive_arrival_anchors": 0
+    },
+    {
+      "room": "MnDuluthOreWarehouse1F",
+      "active_door": [
+        18,
+        37
+      ],
+      "passive_return": [
+        18,
+        38
+      ],
+      "exit_carpets": 2,
+      "passive_arrival_anchors": 0
+    },
+    {
+      "room": "MnDuluthToolExchange",
+      "active_door": [
+        24,
+        43
+      ],
+      "passive_return": [
+        24,
+        44
+      ],
+      "exit_carpets": 2,
+      "passive_arrival_anchors": 0
+    },
+    {
+      "room": "MnDuluthTrainingAnnex",
+      "active_door": [
+        6,
+        51
+      ],
+      "passive_return": [
+        6,
+        52
+      ],
+      "exit_carpets": 2,
+      "passive_arrival_anchors": 0
+    },
+    {
+      "room": "MnDuluthForemanHome",
+      "active_door": [
+        23,
+        57
+      ],
+      "passive_return": [
+        23,
+        58
+      ],
+      "exit_carpets": 2,
+      "passive_arrival_anchors": 0
+    },
+    {
+      "room": "MnDuluthMaritimeCoop1F",
+      "active_door": [
+        106,
+        57
+      ],
+      "passive_return": [
+        106,
+        58
+      ],
+      "exit_carpets": 2,
+      "passive_arrival_anchors": 0
+    },
+    {
+      "room": "MnDuluthCargoOffice",
+      "active_door": [
+        8,
+        65
+      ],
+      "passive_return": [
+        8,
+        66
+      ],
+      "exit_carpets": 2,
+      "passive_arrival_anchors": 0
+    },
+    {
+      "room": "MnDuluthSailorClub1F",
+      "active_door": [
+        20,
+        69
+      ],
+      "passive_return": [
+        20,
+        70
+      ],
+      "exit_carpets": 2,
+      "passive_arrival_anchors": 0
+    },
+    {
+      "room": "MnDuluthDockSupplies",
+      "active_door": [
+        12,
+        77
+      ],
+      "passive_return": [
+        12,
+        78
+      ],
+      "exit_carpets": 2,
+      "passive_arrival_anchors": 0
+    },
+    {
+      "room": "MnDuluthSlipHouse",
+      "active_door": [
+        23,
+        81
+      ],
+      "passive_return": [
+        23,
+        82
+      ],
+      "exit_carpets": 2,
+      "passive_arrival_anchors": 0
+    },
+    {
+      "room": "MnDuluthBeachShelter",
+      "active_door": [
+        81,
+        71
+      ],
+      "passive_return": [
+        81,
+        72
+      ],
+      "exit_carpets": 2,
+      "passive_arrival_anchors": 0
+    },
+    {
+      "room": "MnDuluthPointOutfitter",
+      "active_door": [
+        90,
+        77
+      ],
+      "passive_return": [
+        90,
+        78
+      ],
+      "exit_carpets": 2,
+      "passive_arrival_anchors": 0
+    },
+    {
+      "room": "MnDuluthSandHouse",
+      "active_door": [
+        99,
+        77
+      ],
+      "passive_return": [
+        99,
+        78
+      ],
+      "exit_carpets": 2,
+      "passive_arrival_anchors": 0
+    },
+    {
+      "room": "MnDuluthBoatClub1F",
+      "active_door": [
+        106,
+        83
+      ],
+      "passive_return": [
+        106,
+        84
+      ],
+      "exit_carpets": 2,
+      "passive_arrival_anchors": 0
+    },
+    {
+      "room": "MnDuluthFisherCottage",
+      "active_door": [
+        117,
+        85
+      ],
+      "passive_return": [
+        117,
+        86
+      ],
+      "exit_carpets": 2,
+      "passive_arrival_anchors": 0
+    },
+    {
+      "room": "MnDuluthPointGardenHome",
+      "active_door": [
+        97,
+        83
+      ],
+      "passive_return": [
+        97,
+        84
+      ],
+      "exit_carpets": 2,
+      "passive_arrival_anchors": 0
+    }
+  ],
+  "scope": "Packed active exit carpets classified by native collision; passive FLOOR arrival anchors are counted separately. Fresh native paired-return case exercises the room returns."
+}

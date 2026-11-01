@@ -1,0 +1,87 @@
+{
+  "id": "MN_F076",
+  "region": "north_shore",
+  "classification": "ordinary",
+  "theme": "Winter logging-camp drying wool becomes living cloth: a compact diagonal mitten unfolds into a long hollow sleeve, then unfurls as a broad three-panel quilt riding the wind. Asymmetry, rolled cuffs and off-center seam faces define the actual anatomy; no animal or concealed person.",
+  "members": [
+    {
+      "id": "MN_163",
+      "name": "Mitwist",
+      "types": [
+        "GHOST"
+      ],
+      "stage": 1,
+      "evolves_to": "MN_164"
+    },
+    {
+      "id": "MN_164",
+      "name": "Hemhowl",
+      "types": [
+        "GHOST",
+        "FLYING"
+      ],
+      "stage": 2,
+      "evolves_to": "MN_165"
+    },
+    {
+      "id": "MN_165",
+      "name": "Gustitch",
+      "types": [
+        "GHOST",
+        "FLYING"
+      ],
+      "stage": 3,
+      "evolves_to": null
+    }
+  ],
+  "evolution_design": {
+    "regional_evidence": "Minnesota DNR describes wool clothing, including hand coverings, and difficulty drying wet wool overnight in logging camps. MNHS describes garments suspended overhead in bunkhouses.",
+    "original_invention": "A self-sewing ghost turns leftover wool into a wind-catching body. The supernatural being, flight, names and behavior are original fiction; no real haunting, human victim or sacred being is represented.",
+    "body_growth": [
+      {
+        "species_id": "MN_163",
+        "body": "One compact bent mitten body, conspicuous thumb hook and rolled open cuff. Two staggered rectangular eye windows are embedded along its side seam.",
+        "silhouette": "Diagonal hooked mitten, no separate head or feet."
+      },
+      {
+        "species_id": "MN_164",
+        "body": "Long open sleeve/cuff tube slants down-left from a rolled upper opening. One short loop and one longer low trailing flap break symmetry; its face lies low along the side seam.",
+        "silhouette": "Tall asymmetric folded tube with hanging fringe, no central head or paired raised arms."
+      },
+      {
+        "species_id": "MN_165",
+        "body": "Three sewn quilt panels form a broad diagonally billowing sail. Upper corner unfurls high; opposite corner rolls under; three square fringe tabs trail below. Face remains off-center on far-left seam.",
+        "silhouette": "Wide rising-diagonal patchwork body with rolled corners; no animal head, wings, claws or feet."
+      }
+    ]
+  },
+  "habitat": "Windy clearings and old winter logging-camp margins in the North Shore forest; encounter placement remains a proposal.",
+  "proposed_routes": [
+    {
+      "id": "MN_R11",
+      "placement": "Proposed optional forest-camp clearing branch near the coastal route, subject to separate map authoring.",
+      "status": "encounter concept only; no existing map or script is changed"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Minnesota DNR \u2014 Logging Camps: The Early Years",
+      "url": "https://www.dnr.state.mn.us/forestry/history/logging-camps.html",
+      "supports": "Wool work clothing and hand coverings; wet wool could fail to dry in the bunkhouse overnight.",
+      "source_kind": "primary Minnesota institutional history",
+      "fantasy_extension": "The wool becomes a living mitten, sleeve and quilt-bodied ghost."
+    },
+    {
+      "title": "Minnesota Historical Society \u2014 Logging Industry",
+      "url": "https://www.mnhs.org/foresthistory/learn/logging",
+      "supports": "Logging-camp garments were suspended overhead to dry in bunkhouses.",
+      "source_kind": "primary Minnesota institutional history",
+      "fantasy_extension": "Suspended fabric becomes sleeve-lift flight and a wind-catching patchwork body."
+    }
+  ],
+  "nonduplication": "Dense solid sewn wool with asymmetrical cuffs and quilt panels; unlike Nodcloak prairie-smoke plume. No central round hood, facial disk, beak, symmetrical feather wings, feet, animal under clothing or person wearing a cape.",
+  "sprite_constraints": "Native 56\u00d756 front full body facing left; 48\u00d748 close rear portrait facing upper-right. Exactly four flat inks per species, independent stage palettes; large exposed eye windows and black pupils; stepped solid black contours. Current native source_center sampling; no painted facial pixels after conversion.",
+  "design_status": "root-reviewed-locked-for-art",
+  "silhouette_concept": "Compact diagonal mitten -> long open sleeve tube -> broad diagonal three-panel quilt.",
+  "design_lock": "Root approved all six asymmetric mitten/sleeve/diagonal-quilt native views; stable F076 and MN163\u2013165 IDs retained."
+}

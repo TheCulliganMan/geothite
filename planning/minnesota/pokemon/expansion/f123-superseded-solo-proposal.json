@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "families": [
+    {
+      "id": "MN_F123",
+      "region": "central_lakes",
+      "theme": "Northern pike and living reed ambush blinds: a solitary long-jawed hunter grows broad reed-blade fins that fold flush to hide its outline, then snap open to funnel water into a short lunging burst. Its vegetation is integral living fin anatomy, not worn reeds.",
+      "members": [
+        {
+          "id": "MN_263",
+          "name": "Pikethorn",
+          "types": [
+            "WATER",
+            "GRASS"
+          ],
+          "stage": 1,
+          "evolves_to": null
+        }
+      ],
+      "evolution_design": [
+        "Single-stage long, slim NORTHERN PIKE with a broad flat duckbill-like snout, two large white eyes and a few broad pale side bars. Two large attached reed-leaf pectoral fins and a tall broad tapered reed dorsal fold over its body to form a living ambush blind; they are rooted in normal fin positions and open into strong sharp leaf silhouettes. Long narrow body, strong forked leaf-tip tail, cunning alert face. No limbs, props, leaf clothing, crown or tiny thorns."
+      ],
+      "habitat": "Vegetated quiet lake margins and slow river backwaters.",
+      "proposed_routes": [
+        "MN_R06",
+        "MN_R10",
+        "MN_R12"
+      ],
+      "sources": [
+        {
+          "title": "Minnesota DNR: Northern pike species profile",
+          "url": "https://www.dnr.state.mn.us/minnaqua/speciesprofile/northern_pike.html",
+          "supports": "Pike inhabit vegetation in quiet/slow water and are lie-in-wait predators.",
+          "fantasy_extension": "Reed-blade fin gates and jet-funneling ambush blind are original creature anatomy."
+        },
+        {
+          "title": "Minnesota DNR: How to catch northern pike",
+          "url": "https://www.dnr.state.mn.us/gofishing/how-catch-northern-pike.html",
+          "supports": "Weedbed concealment, slimy body and rocket-like ambush acceleration.",
+          "fantasy_extension": "Integrated plant fins are original fantasy, not biological claims."
+        }
+      ],
+      "design_status": "root-authored-locked-for-art"
+    }
+  ],
+  "status": "superseded-before-render-by-user-request-for-northern-in-walleye-line"
+}

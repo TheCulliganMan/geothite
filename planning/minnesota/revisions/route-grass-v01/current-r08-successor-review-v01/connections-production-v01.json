@@ -1,0 +1,209 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-r08-grass-and-stairs-v01.crystalpack",
+  "pack_sha256": "1e1f2e2f40fdea4207e7ada6b34a85d33065cbe254a73864e47b8db4f0726e13",
+  "calls": 2261,
+  "wild": [
+    {
+      "phase": "grass-and-save",
+      "map": "MnR08C00R00",
+      "position": {
+        "x": 44,
+        "y": 27
+      }
+    },
+    {
+      "phase": "grass-and-save",
+      "map": "MnR08C00R00",
+      "position": {
+        "x": 44,
+        "y": 31
+      }
+    },
+    {
+      "phase": "grass-and-save",
+      "map": "MnR08C00R01",
+      "position": {
+        "x": 19,
+        "y": 18
+      }
+    },
+    {
+      "phase": "grass-and-save",
+      "map": "MnR08C00R01",
+      "position": {
+        "x": 26,
+        "y": 45
+      }
+    },
+    {
+      "phase": "grass-and-save",
+      "map": "MnR08C00R01",
+      "position": {
+        "x": 19,
+        "y": 20
+      }
+    },
+    {
+      "phase": "continue-and-repeat",
+      "map": "MnR08C00R00",
+      "position": {
+        "x": 44,
+        "y": 28
+      }
+    },
+    {
+      "phase": "continue-and-repeat",
+      "map": "MnR08C00R00",
+      "position": {
+        "x": 44,
+        "y": 26
+      }
+    },
+    {
+      "phase": "continue-and-repeat",
+      "map": "MnR08C00R01",
+      "position": {
+        "x": 25,
+        "y": 10
+      }
+    },
+    {
+      "phase": "continue-and-repeat",
+      "map": "MnR08C00R01",
+      "position": {
+        "x": 19,
+        "y": 21
+      }
+    },
+    {
+      "phase": "continue-and-repeat",
+      "map": "MnR08C00R01",
+      "position": {
+        "x": 26,
+        "y": 42
+      }
+    },
+    {
+      "phase": "continue-and-repeat",
+      "map": "MnR08C00R00",
+      "position": {
+        "x": 36,
+        "y": 30
+      }
+    }
+  ],
+  "phases": [
+    {
+      "phase": "grass-and-save",
+      "initial": {
+        "badges": 4,
+        "dialogue": false,
+        "facing": "up",
+        "frame": 42,
+        "map": "MnR08C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 0
+        },
+        "position": {
+          "x": 30,
+          "y": 29
+        }
+      },
+      "final": {
+        "badges": 4,
+        "dialogue": false,
+        "facing": "left",
+        "frame": 421,
+        "map": "MnR08C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 3
+        },
+        "position": {
+          "x": 30,
+          "y": 29
+        }
+      },
+      "output_save": ".local/route-grass-review/r08-full-route-grass-and-save-connections-v01-output.crystalsave",
+      "source_unchanged": true,
+      "stderr_bytes": 0
+    },
+    {
+      "phase": "continue-and-repeat",
+      "initial": {
+        "badges": 4,
+        "dialogue": false,
+        "facing": "left",
+        "frame": 421,
+        "map": "MnR08C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 3
+        },
+        "position": {
+          "x": 30,
+          "y": 29
+        }
+      },
+      "final": {
+        "badges": 4,
+        "dialogue": false,
+        "facing": "left",
+        "frame": 800,
+        "map": "MnR08C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 6
+        },
+        "position": {
+          "x": 30,
+          "y": 29
+        }
+      },
+      "output_save": ".local/route-grass-review/r08-full-route-continue-and-repeat-connections-v01-output.crystalsave",
+      "source_unchanged": true,
+      "stderr_bytes": 0
+    }
+  ],
+  "scope": "Actual production walking into MnBemidji through the north connection and back, then into MnLeechLake through the south connection and back. Repeated after Save/Continue, with wild RUN and menus. Initial local partner, badges and placement are QA fixtures.",
+  "verified_connections": [
+    {
+      "inside": [
+        "MnR08C00R00",
+        24,
+        0
+      ],
+      "neighbor": "MnBemidji",
+      "out": "up",
+      "back": "down"
+    },
+    {
+      "inside": [
+        "MnR08C00R01",
+        26,
+        47
+      ],
+      "neighbor": "MnLeechLake",
+      "out": "down",
+      "back": "up"
+    }
+  ]
+}

@@ -71,7 +71,8 @@ fn apply_save_management(
         let result = (|| -> Result<serde_json::Value> {
             use crystal_core::save::{read_save_game_for_modpack, read_save_game_bytes_for_modpack, encode_save_game_bytes, erase_save_game};
             let path = runtime.quick_save_path.clone().context("No save slot is available.")?;
-            let can_save = customization_can_edit(&runtime, multiplayer.as_deref()).unwrap_or(false);
+            let can_save = customization_can_edit(&mut runtime, multiplayer.as_deref(), true)
+                .unwrap_or(false);
             let online_safe = multiplayer.as_ref().is_none_or(|online| {
                 online.session.is_none() && online.queued_mode.is_none()
                     && online.direct_mode.is_none() && online.pending_interaction.is_none()

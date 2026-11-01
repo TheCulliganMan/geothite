@@ -1,0 +1,68 @@
+{
+  "tool": "built-in image_gen",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f012/skatuff-v2-native-pupils",
+  "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f012/manifest-skatuff-v2-native-pupils.json",
+  "normalized_receipt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f012/source-feature-proof-skatuff-v2-native-pupils.json",
+  "all_raws_prompts_rejected_trials_retained": true,
+  "no_native_pixel_painting": true,
+  "no_registry_or_pack_mutation": true,
+  "normal_shiny_boards_actually_viewed": true,
+  "canonical_palettes": [
+    [
+      32767,
+      30546,
+      18822,
+      0
+    ],
+    [
+      32767,
+      27229,
+      12498,
+      0
+    ]
+  ],
+  "native_bounds": [
+    [
+      3,
+      2,
+      9,
+      13
+    ],
+    [
+      4,
+      2,
+      8,
+      13
+    ],
+    [
+      4,
+      2,
+      8,
+      13
+    ],
+    [
+      3,
+      2,
+      8,
+      13
+    ],
+    [
+      4,
+      2,
+      8,
+      13
+    ],
+    [
+      4,
+      2,
+      8,
+      13
+    ]
+  ],
+  "retained_source_hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f012/skatuff.overworld.imagegen-v1.png": "150df2284f40c6a78fb1ea826e4043d8dc91b60654376c30275758d5807ca729",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f012/prompt-skatuff-v1.txt": "f454ac7f9f11443d8c23a5d38298e3fed7e25de9a1f57a86ba9918bf3de97c1e",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f012/skatuff.v1.original-path.txt": "72899728ad69a8ac08774847749670ba5157e77df65d8456a7152e4e1db2562a"
+  },
+  "status": "root independent visual/context acceptance pending"
+}

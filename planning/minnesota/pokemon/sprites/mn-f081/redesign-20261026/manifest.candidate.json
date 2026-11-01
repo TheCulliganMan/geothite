@@ -1,0 +1,260 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F081",
+  "status": "native-redesign-candidate-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_176": {
+      "species_id": "MN_176",
+      "name": "Runnelisk",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          23,
+          24,
+          13
+        ],
+        [
+          11,
+          12,
+          8
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        14103,
+        8587,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          189,
+          198,
+          107
+        ],
+        [
+          90,
+          99,
+          66
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#BDC66B",
+        "#5A6342",
+        "#000000"
+      ]
+    },
+    "MN_177": {
+      "species_id": "MN_177",
+      "name": "Dividra",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          23,
+          20,
+          10
+        ],
+        [
+          8,
+          13,
+          13
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        10903,
+        13736,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          189,
+          165,
+          82
+        ],
+        [
+          66,
+          107,
+          107
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#BDA552",
+        "#426B6B",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f081/redesign-20261026/prompt-v2.txt",
+  "reference_mapping": "sprites/mn-f081/redesign-20261026/reference-mapping-v2.json",
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-176-runnelisk-v2",
+      "species_id": "MN_176",
+      "view": "front",
+      "source": "sprites/mn-f081/mn-176-177.front-back.imagegen-v2.png",
+      "crop": [
+        0,
+        0,
+        700,
+        530
+      ],
+      "fit": [
+        40,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        14103,
+        8587,
+        0
+      ],
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-176-runnelisk-v2",
+      "species_id": "MN_176",
+      "view": "back",
+      "source": "sprites/mn-f081/mn-176-177.front-back.imagegen-v2.png",
+      "crop": [
+        0,
+        530,
+        768,
+        494
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        14103,
+        8587,
+        0
+      ],
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-177-dividra-redesign-v1",
+      "species_id": "MN_177",
+      "view": "front",
+      "source": "sprites/mn-f081/redesign-20261026/mn-177-dividra.front-back.redesign-v2.png",
+      "crop": [
+        0,
+        0,
+        1536,
+        520
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        10903,
+        13736,
+        0
+      ],
+      "interior_black_min_samples": 32,
+      "white_detail_min_samples": 16
+    },
+    {
+      "id": "mn-177-dividra-redesign-v1",
+      "species_id": "MN_177",
+      "view": "back",
+      "source": "sprites/mn-f081/redesign-20261026/mn-177-dividra.front-back.redesign-v2.png",
+      "crop": [
+        0,
+        520,
+        1536,
+        504
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        10903,
+        13736,
+        0
+      ],
+      "interior_black_min_samples": 32,
+      "white_detail_min_samples": 16
+    }
+  ],
+  "style_reference": {
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png"
+    ]
+  },
+  "prompt_sources_by_species": {
+    "MN_176": "sprites/mn-f081/prompt-v2.txt",
+    "MN_177": "sprites/mn-f081/redesign-20261026/prompt-v2.txt"
+  },
+  "candidate_note": "Separate user-requested redesign comparison only; canonical250 and young Runnelisk retained. Selected raw attempt2, candidate sprite revision1.",
+  "redesign_target": "MN_177",
+  "candidate_review": {
+    "status": "inspected-awaiting-user-comparison",
+    "sheet_sha256": "52b5b10bf2641c33fd5adc60ed9bb997b934888107d7367ab264d02653a928df",
+    "outline_profile": "source-contour-v1",
+    "notes": [
+      "Inspected separate candidate board. Young Runnelisk is byte-identical. New Dividra has a substantially taller central ridge, raised chest, broad supporting buttress legs, larger expressive blunt head, and a short split gutter tail with a visible white V gap.",
+      "Two broad ochre/slate flank planes remain readable at56px; close rear portrait emphasizes the high ridge/shoulder mass and a larger face turned upper-right. Black outside anchors remain stepped; body is clearly bulkier than old low horizontal source.",
+      "Minor black flecks remain on the rear flank; tiny eye/toe details simplify. These are candidate comparison limitations, no replacement approval implied. Canonical frame/board hashes restored exactly after candidate export."
+    ]
+  },
+  "candidate_exports": {
+    "native_sheet": "line.redesign-20261026.native.png",
+    "review_sheet": "line.redesign-20261026.review.png"
+  },
+  "comparison_before": "line.before-redesign-20261026.review.png",
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "notes": "Root inspected all four native views: young Runnelisk unchanged. Dividra has substantially elevated opposed watershed slopes, four broad buttress legs, a bigger expressive face and clear split gutter tail. Close back preserves the two broad slope planes; sparse tiny flank flecks simplify at native scale. Earlier low-body redraw retained.",
+    "sheet_sha256": "52b5b10bf2641c33fd5adc60ed9bb997b934888107d7367ab264d02653a928df",
+    "outline_profile": "source-contour-v1"
+  }
+}

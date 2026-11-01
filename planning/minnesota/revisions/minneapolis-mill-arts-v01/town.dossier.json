@@ -1,0 +1,2259 @@
+{
+  "schema_version": 1,
+  "id": "MnMinneapolis",
+  "name": "MINNEAPOLIS",
+  "dimensions_metatiles": [
+    40,
+    32
+  ],
+  "native_constant": "MN_MINNEAPOLIS",
+  "tileset": "mn_minneapolis_city",
+  "compiled_tileset": "mn_minneapolis_city",
+  "composition": "Native mill neighborhood, shared museum/arts street and short west-bank passage to the boathouse. Intact existing facades; all40 room destinations, river bridges and Falls retained.",
+  "status": "Unselected street candidate; corrected native house fronts; must rebase against selected normal-house repair before publication",
+  "parent_pack": "content-packs/minnesota-current-bemidji-mart-v02.crystalpack",
+  "parent_pack_sha256": "b4a95a5634198e39fd8b9d6528af90b66f1e626fc9582e366b4ba4b6a9588171",
+  "doors": [
+    {
+      "id": "MnMinneapolisPokecenter1FDoor",
+      "target": "MnMinneapolisPokecenter1F",
+      "tile": [
+        63,
+        25
+      ],
+      "return_tile": [
+        63,
+        26
+      ],
+      "arrival_tile": [
+        63,
+        26
+      ],
+      "warp_index": 1,
+      "return_warp_index": 2,
+      "target_warp": 3,
+      "retained_native_room_module_sha256": "7983006ea05f7aaa5848f8ad2ca30ee2a29e58a33e9d99f6746555f6cf9bcc07"
+    },
+    {
+      "id": "MnMinneapolisGymDoor",
+      "target": "MnMinneapolisGym",
+      "tile": [
+        64,
+        33
+      ],
+      "return_tile": [
+        64,
+        34
+      ],
+      "arrival_tile": [
+        64,
+        34
+      ],
+      "warp_index": 3,
+      "return_warp_index": 4,
+      "target_warp": 3,
+      "retained_native_room_module_sha256": "97d43b3ec61d948dd0ec4e5c594f6e0df391cb991440c350478f1286b6037da3"
+    },
+    {
+      "id": "MnMinneapolisMartDoor",
+      "target": "MnMinneapolisMart",
+      "tile": [
+        71,
+        25
+      ],
+      "return_tile": [
+        71,
+        26
+      ],
+      "arrival_tile": [
+        71,
+        26
+      ],
+      "warp_index": 5,
+      "return_warp_index": 6,
+      "target_warp": 3,
+      "retained_native_room_module_sha256": "6d15ed59fff9490f112002367b119e3b32397c2e0d656edda22064fc0a09f3b2"
+    },
+    {
+      "id": "MnMinneapolisDispatchOfficeDoor",
+      "target": "MnMinneapolisDispatchOffice",
+      "tile": [
+        25,
+        33
+      ],
+      "return_tile": [
+        25,
+        34
+      ],
+      "arrival_tile": [
+        25,
+        34
+      ],
+      "warp_index": 7,
+      "return_warp_index": 8,
+      "target_warp": 3,
+      "retained_native_room_module_sha256": "f3b8caffd6e4ce8546db2c458e6a9510dc4d9eb0ff5aec5b17b69f4bdf30e303"
+    },
+    {
+      "id": "MnMinneapolisDispatcherHouseDoor",
+      "target": "MnMinneapolisDispatcherHouse",
+      "tile": [
+        23,
+        41
+      ],
+      "return_tile": [
+        23,
+        42
+      ],
+      "arrival_tile": [
+        23,
+        42
+      ],
+      "warp_index": 9,
+      "return_warp_index": 10,
+      "target_warp": 3,
+      "retained_native_room_module_sha256": "24bd0b8486267f248c5dfbb6444c9b87edd3f39aa1acd7abbe5f0592273c6249"
+    },
+    {
+      "id": "MnMinneapolisSupplyCoopDoor",
+      "target": "MnMinneapolisSupplyCoop",
+      "tile": [
+        9,
+        11
+      ],
+      "return_tile": [
+        9,
+        12
+      ],
+      "arrival_tile": [
+        9,
+        12
+      ],
+      "warp_index": 11,
+      "return_warp_index": 12,
+      "target_warp": 3,
+      "retained_native_room_module_sha256": "60517c432a248c6f3b5d3edb3c2b69d49f78981dc2bbd63d0bbf5fa8dae7bc9a"
+    },
+    {
+      "id": "MnMinneapolisGrainExchangeDoor",
+      "target": "MnMinneapolisGrainExchange",
+      "tile": [
+        22,
+        9
+      ],
+      "return_tile": [
+        22,
+        10
+      ],
+      "arrival_tile": [
+        22,
+        10
+      ],
+      "warp_index": 13,
+      "return_warp_index": 14,
+      "target_warp": 3,
+      "retained_native_room_module_sha256": "7282f5f8fdd48b691e57235742d869e5daacc79e311c5af22e7572c61a6e6135"
+    },
+    {
+      "id": "MnMinneapolisToolWorkshopDoor",
+      "target": "MnMinneapolisToolWorkshop",
+      "tile": [
+        24,
+        17
+      ],
+      "return_tile": [
+        24,
+        18
+      ],
+      "arrival_tile": [
+        24,
+        18
+      ],
+      "warp_index": 15,
+      "return_warp_index": 16,
+      "target_warp": 3,
+      "retained_native_room_module_sha256": "13c42681d41ce2ab5fd5adedf37d277854c65eace3617a58fe87cba038a51935"
+    },
+    {
+      "id": "MnMinneapolisPrintShopDoor",
+      "target": "MnMinneapolisPrintShop",
+      "tile": [
+        47,
+        9
+      ],
+      "return_tile": [
+        47,
+        10
+      ],
+      "arrival_tile": [
+        47,
+        10
+      ],
+      "warp_index": 17,
+      "return_warp_index": 18,
+      "target_warp": 3,
+      "retained_native_room_module_sha256": "d6e2ece067d28a557f8859781ba84583a59a2e6cf6cdde9ef6300db8a10e2c59"
+    },
+    {
+      "id": "MnMinneapolisFoundryMuseumDoor",
+      "target": "MnMinneapolisFoundryMuseum",
+      "tile": [
+        10,
+        21
+      ],
+      "return_tile": [
+        10,
+        22
+      ],
+      "arrival_tile": [
+        10,
+        22
+      ],
+      "warp_index": 19,
+      "return_warp_index": 20,
+      "target_warp": 3,
+      "retained_native_room_module_sha256": "ac3b50675c52a791e60c073a2614e15679f6a2a9da1ad8cf3299352481324762"
+    },
+    {
+      "id": "MnMinneapolisArtsStudioDoor",
+      "target": "MnMinneapolisArtsStudio",
+      "tile": [
+        19,
+        21
+      ],
+      "return_tile": [
+        19,
+        22
+      ],
+      "arrival_tile": [
+        19,
+        22
+      ],
+      "warp_index": 21,
+      "return_warp_index": 22,
+      "target_warp": 3,
+      "retained_native_room_module_sha256": "a6d875423569fbae0b572a328c3701b69da93797e5333784f5e44bc9b085e9c2"
+    },
+    {
+      "id": "MnMinneapolisMusicRoomDoor",
+      "target": "MnMinneapolisMusicRoom",
+      "tile": [
+        57,
+        9
+      ],
+      "return_tile": [
+        57,
+        10
+      ],
+      "arrival_tile": [
+        57,
+        10
+      ],
+      "warp_index": 23,
+      "return_warp_index": 24,
+      "target_warp": 3,
+      "retained_native_room_module_sha256": "bf36244b47569cf8096a306c5c56130157631ce9191b0b7ba064c5a14bc780e1"
+    },
+    {
+      "id": "MnMinneapolisCommunityLibraryDoor",
+      "target": "MnMinneapolisCommunityLibrary",
+      "tile": [
+        66,
+        9
+      ],
+      "return_tile": [
+        66,
+        10
+      ],
+      "arrival_tile": [
+        66,
+        10
+      ],
+      "warp_index": 25,
+      "return_warp_index": 26,
+      "target_warp": 3,
+      "retained_native_room_module_sha256": "7c9508ab27fc392fbbf7bb2c2bb69725d51b58db30b6aeb08ba70d38c4387895"
+    },
+    {
+      "id": "MnMinneapolisNortheastHomeDoor",
+      "target": "MnMinneapolisNortheastHome",
+      "tile": [
+        74,
+        9
+      ],
+      "return_tile": [
+        74,
+        10
+      ],
+      "arrival_tile": [
+        74,
+        10
+      ],
+      "warp_index": 27,
+      "return_warp_index": 28,
+      "target_warp": 3,
+      "retained_native_room_module_sha256": "f69ef1f8b1e6c7f4c2752e261ff4b7adc5deefa3050ef5eccf81a376615e9605"
+    },
+    {
+      "id": "MnMinneapolisGardenShopDoor",
+      "target": "MnMinneapolisGardenShop",
+      "tile": [
+        47,
+        17
+      ],
+      "return_tile": [
+        47,
+        18
+      ],
+      "arrival_tile": [
+        47,
+        18
+      ],
+      "warp_index": 29,
+      "return_warp_index": 30,
+      "target_warp": 3,
+      "retained_native_room_module_sha256": "973772328756e0664c243d6e664a3f677baf8aefe024cb2b12e5640d64c00ac2"
+    },
+    {
+      "id": "MnMinneapolisRiverNaturalistDoor",
+      "target": "MnMinneapolisRiverNaturalist",
+      "tile": [
+        53,
+        17
+      ],
+      "return_tile": [
+        53,
+        18
+      ],
+      "arrival_tile": [
+        53,
+        18
+      ],
+      "warp_index": 31,
+      "return_warp_index": 32,
+      "target_warp": 3,
+      "retained_native_room_module_sha256": "c58fa9bac56abfb320203657babf5ba37ab43a1371dee114de1beaa05176dc7f"
+    },
+    {
+      "id": "MnMinneapolisBoatHouseDoor",
+      "target": "MnMinneapolisBoatHouse",
+      "tile": [
+        9,
+        29
+      ],
+      "return_tile": [
+        9,
+        30
+      ],
+      "arrival_tile": [
+        9,
+        30
+      ],
+      "warp_index": 33,
+      "return_warp_index": 34,
+      "target_warp": 3,
+      "retained_native_room_module_sha256": "69c8fcfe322c4a647fef4a5fb6d5c581654a695b50b3aa8d0d8c329a83b0e22d"
+    },
+    {
+      "id": "MnMinneapolisAnglerHomeDoor",
+      "target": "MnMinneapolisAnglerHome",
+      "tile": [
+        17,
+        29
+      ],
+      "return_tile": [
+        17,
+        30
+      ],
+      "arrival_tile": [
+        17,
+        30
+      ],
+      "warp_index": 35,
+      "return_warp_index": 36,
+      "target_warp": 3,
+      "retained_native_room_module_sha256": "f6f93ad391a03d5b349c8bc543c75cfc19afccf8e1f400085cb2b4829549ecc3"
+    },
+    {
+      "id": "MnMinneapolisLakeCabinDoor",
+      "target": "MnMinneapolisLakeCabin",
+      "tile": [
+        7,
+        45
+      ],
+      "return_tile": [
+        7,
+        46
+      ],
+      "arrival_tile": [
+        7,
+        46
+      ],
+      "warp_index": 37,
+      "return_warp_index": 38,
+      "target_warp": 3,
+      "retained_native_room_module_sha256": "86af0f3a5e6cf8aab33ea63c6d2f5ff55bcc0f25c9a3b99a44302bb548f0ed9f"
+    },
+    {
+      "id": "MnMinneapolisGreenhouseDoor",
+      "target": "MnMinneapolisGreenhouse",
+      "tile": [
+        25,
+        55
+      ],
+      "return_tile": [
+        25,
+        56
+      ],
+      "arrival_tile": [
+        25,
+        56
+      ],
+      "warp_index": 39,
+      "return_warp_index": 40,
+      "target_warp": 3,
+      "retained_native_room_module_sha256": "3c4411eeb6192ce84b7096a25bb6ba26bd7bf3282ce36372db53e5b02c71c781"
+    },
+    {
+      "id": "MnMinneapolisBridgeHomeDoor",
+      "target": "MnMinneapolisBridgeHome",
+      "tile": [
+        25,
+        23
+      ],
+      "return_tile": [
+        25,
+        24
+      ],
+      "arrival_tile": [
+        25,
+        24
+      ],
+      "warp_index": 41,
+      "return_warp_index": 42,
+      "target_warp": 3,
+      "retained_native_room_module_sha256": "56618d2e3937ca2885db8fc3fdd3a4aaca76cdcbb6aed59e1a90fb131e1bdfe5"
+    },
+    {
+      "id": "MnMinneapolisDepartmentStore1FDoor",
+      "target": "MnMinneapolisDepartmentStore1F",
+      "tile": [
+        54,
+        35
+      ],
+      "return_tile": [
+        54,
+        36
+      ],
+      "arrival_tile": [
+        54,
+        36
+      ],
+      "warp_index": 43,
+      "return_warp_index": 44,
+      "target_warp": 3,
+      "retained_native_room_module_sha256": "140a98de399d733cf66047bfebdcf87baaff0be5fcba89f32c9713935e866afa"
+    },
+    {
+      "id": "MnMinneapolisBattleClubDoor",
+      "target": "MnMinneapolisBattleClub",
+      "tile": [
+        70,
+        45
+      ],
+      "return_tile": [
+        70,
+        46
+      ],
+      "arrival_tile": [
+        70,
+        46
+      ],
+      "warp_index": 45,
+      "return_warp_index": 46,
+      "target_warp": 3,
+      "retained_native_room_module_sha256": "10fcad340468a46e6059e632b13ab72771d526d524f11f159d7b0ace066fc048"
+    },
+    {
+      "id": "MnMinneapolisCedarHomeDoor",
+      "target": "MnMinneapolisCedarHome",
+      "tile": [
+        63,
+        51
+      ],
+      "return_tile": [
+        63,
+        52
+      ],
+      "arrival_tile": [
+        63,
+        52
+      ],
+      "warp_index": 47,
+      "return_warp_index": 48,
+      "target_warp": 3,
+      "retained_native_room_module_sha256": "2b0b305e7ca7bc6d4a875bbc524c5b32e2dc9025378bee78a159bcd9299ad3cc"
+    },
+    {
+      "id": "MnMinneapolisCommunityKitchenDoor",
+      "target": "MnMinneapolisCommunityKitchen",
+      "tile": [
+        73,
+        53
+      ],
+      "return_tile": [
+        73,
+        54
+      ],
+      "arrival_tile": [
+        73,
+        54
+      ],
+      "warp_index": 49,
+      "return_warp_index": 50,
+      "target_warp": 3,
+      "retained_native_room_module_sha256": "392c36cd4b748507f5cbf76cd4361ee2a11a2544304c17c74485b486a536b943"
+    },
+    {
+      "id": "MnMinneapolisCouriersDeskDoor",
+      "target": "MnMinneapolisCouriersDesk",
+      "tile": [
+        76,
+        59
+      ],
+      "return_tile": [
+        76,
+        60
+      ],
+      "arrival_tile": [
+        76,
+        60
+      ],
+      "warp_index": 51,
+      "return_warp_index": 52,
+      "target_warp": 3,
+      "retained_native_room_module_sha256": "bc649ade95193985fa20b2286222bb5401b057ce174540686df3c01ca0ea680d"
+    },
+    {
+      "id": "MnMinneapolisFieldClubDoor",
+      "target": "MnMinneapolisFieldClub",
+      "tile": [
+        17,
+        51
+      ],
+      "return_tile": [
+        17,
+        52
+      ],
+      "arrival_tile": [
+        17,
+        52
+      ],
+      "warp_index": 53,
+      "return_warp_index": 54,
+      "target_warp": 3,
+      "retained_native_room_module_sha256": "a87422f4c05f4b9c300a6de61582fd875aff24be2e495482cdf0d335140b5cdc"
+    },
+    {
+      "id": "MnMinneapolisGardenersHomeDoor",
+      "target": "MnMinneapolisGardenersHome",
+      "tile": [
+        5,
+        57
+      ],
+      "return_tile": [
+        5,
+        58
+      ],
+      "arrival_tile": [
+        5,
+        58
+      ],
+      "warp_index": 55,
+      "return_warp_index": 56,
+      "target_warp": 3,
+      "retained_native_room_module_sha256": "ef8d34b528ff9e6c6581f9e3fd7fb92b7ee1353872c79e8ff13e87574569cae8"
+    },
+    {
+      "id": "MnMinneapolisArrivalInfoDoor",
+      "target": "MnMinneapolisArrivalInfo",
+      "tile": [
+        43,
+        59
+      ],
+      "return_tile": [
+        43,
+        60
+      ],
+      "arrival_tile": [
+        43,
+        60
+      ],
+      "warp_index": 57,
+      "return_warp_index": 58,
+      "target_warp": 3,
+      "retained_native_room_module_sha256": "2ad93161e03cb5386f4289907756e41ff883de015a3e3ebc26e1bf125c0d0543"
+    },
+    {
+      "id": "MnMinneapolisRiverInnDoor",
+      "target": "MnMinneapolisRiverInn",
+      "tile": [
+        53,
+        59
+      ],
+      "return_tile": [
+        53,
+        60
+      ],
+      "arrival_tile": [
+        53,
+        60
+      ],
+      "warp_index": 59,
+      "return_warp_index": 60,
+      "target_warp": 3,
+      "retained_native_room_module_sha256": "baa50f6077058004959b8747b9e4ce9894f26c9866f3e7148df927d094d32fdd"
+    },
+    {
+      "id": "MnMinneapolisSouthMarketDoor",
+      "target": "MnMinneapolisSouthMarket",
+      "tile": [
+        62,
+        59
+      ],
+      "return_tile": [
+        62,
+        60
+      ],
+      "arrival_tile": [
+        62,
+        60
+      ],
+      "warp_index": 61,
+      "return_warp_index": 62,
+      "target_warp": 3,
+      "retained_native_room_module_sha256": "ecf9c7150165571bbb2aa9dbdc8346b1b7b01c2b322af6d58d906cbb8433ff84"
+    },
+    {
+      "id": "MnMinneapolisMillWorkersHouseDoor",
+      "target": "MnMinneapolisMillWorkersHouse",
+      "tile": [
+        71,
+        59
+      ],
+      "return_tile": [
+        71,
+        60
+      ],
+      "arrival_tile": [
+        71,
+        60
+      ],
+      "warp_index": 63,
+      "return_warp_index": 64,
+      "target_warp": 3,
+      "retained_native_room_module_sha256": "2fa44fc7278f6f2b3b56122998852d630fe1ed776009dc32d6efacb004268575"
+    },
+    {
+      "id": "MnMinneapolisBookbinderDoor",
+      "target": "MnMinneapolisBookbinder",
+      "tile": [
+        74,
+        17
+      ],
+      "return_tile": [
+        74,
+        18
+      ],
+      "arrival_tile": [
+        74,
+        18
+      ],
+      "warp_index": 65,
+      "return_warp_index": 66,
+      "target_warp": 3,
+      "retained_native_room_module_sha256": "1d6a4b47bb74252973b5080f897972612cad991e74863ba252cfc9649bef61d2"
+    },
+    {
+      "id": "MnMinneapolisCooperativeFlatDoor",
+      "target": "MnMinneapolisCooperativeFlat",
+      "tile": [
+        44,
+        51
+      ],
+      "return_tile": [
+        44,
+        52
+      ],
+      "arrival_tile": [
+        44,
+        52
+      ],
+      "warp_index": 67,
+      "return_warp_index": 68,
+      "target_warp": 3,
+      "retained_native_room_module_sha256": "c0d75258801cfecd4cb552b55dff9e8e75c75c406a54fc718257a56663c3cdac"
+    },
+    {
+      "id": "MnMinneapolisToolFlatDoor",
+      "target": "MnMinneapolisToolFlat",
+      "tile": [
+        49,
+        51
+      ],
+      "return_tile": [
+        49,
+        52
+      ],
+      "arrival_tile": [
+        49,
+        52
+      ],
+      "warp_index": 69,
+      "return_warp_index": 70,
+      "target_warp": 3,
+      "retained_native_room_module_sha256": "4d93696c6f9fef8d7c5af1635f970328d141eabfe2e75311b21989ec674d8502"
+    },
+    {
+      "id": "MnMinneapolisCornerHomeDoor",
+      "target": "MnMinneapolisCornerHome",
+      "tile": [
+        56,
+        51
+      ],
+      "return_tile": [
+        56,
+        52
+      ],
+      "arrival_tile": [
+        56,
+        52
+      ],
+      "warp_index": 71,
+      "return_warp_index": 72,
+      "target_warp": 3,
+      "retained_native_room_module_sha256": "75adf379b408ce58f2d5f9e5075ee1f186b51fde41372fbceb4bc82b39dabe89"
+    },
+    {
+      "id": "MnMinneapolisRiverFamilyHomeDoor",
+      "target": "MnMinneapolisRiverFamilyHome",
+      "tile": [
+        15,
+        11
+      ],
+      "return_tile": [
+        15,
+        12
+      ],
+      "arrival_tile": [
+        15,
+        12
+      ],
+      "warp_index": 73,
+      "return_warp_index": 74,
+      "target_warp": 3,
+      "retained_native_room_module_sha256": "0f70525cedbd3509dc60a4ab8df6b49a4c6ca2e881098b6f503995d988c9b16f"
+    },
+    {
+      "id": "MnMinneapolisGardenFlatDoor",
+      "target": "MnMinneapolisGardenFlat",
+      "tile": [
+        60,
+        17
+      ],
+      "return_tile": [
+        60,
+        18
+      ],
+      "arrival_tile": [
+        60,
+        18
+      ],
+      "warp_index": 75,
+      "return_warp_index": 76,
+      "target_warp": 3,
+      "retained_native_room_module_sha256": "3b9b05d5258a09724c1e4a7fec5455e8dc34901b34cd5b3ee18924afa9f82f87"
+    },
+    {
+      "id": "MnMinneapolisPatternStudioDoor",
+      "target": "MnMinneapolisPatternStudio",
+      "tile": [
+        65,
+        17
+      ],
+      "return_tile": [
+        65,
+        18
+      ],
+      "arrival_tile": [
+        65,
+        18
+      ],
+      "warp_index": 77,
+      "return_warp_index": 78,
+      "target_warp": 3,
+      "retained_native_room_module_sha256": "030bbb8f8f00e6dfb3cc3e37fd6bd97666b7828b02f6751b3754a24b00773d30"
+    },
+    {
+      "id": "MnMinneapolisMillForemanHomeDoor",
+      "target": "MnMinneapolisMillForemanHome",
+      "tile": [
+        60,
+        45
+      ],
+      "return_tile": [
+        60,
+        46
+      ],
+      "arrival_tile": [
+        60,
+        46
+      ],
+      "warp_index": 79,
+      "return_warp_index": 80,
+      "target_warp": 3,
+      "retained_native_room_module_sha256": "996d7db288b5fa951c974d983672bb8632e1c522dc091d102d3de5eb94faf01f"
+    }
+  ],
+  "objects_native": [
+    {
+      "sprite": "SPRITE_TEACHER",
+      "sprite_has_facings": true,
+      "x": 42,
+      "y": 45,
+      "spritemovedata": "SPRITEMOVEDATA_STANDING_LEFT",
+      "move_range_x": 0,
+      "move_range_y": 0,
+      "hram_x": -1,
+      "hram_y": -1,
+      "pal": 0,
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "radius": 0,
+      "script": "MN_MP_ARRIVAL_GUIDE",
+      "label": null,
+      "event_flag": "-1",
+      "object_identifier": "MN_MP_ARRIVAL_GUIDE",
+      "sightline_direction_override": null
+    },
+    {
+      "sprite": "SPRITE_GENTLEMAN",
+      "sprite_has_facings": true,
+      "x": 27,
+      "y": 35,
+      "spritemovedata": "SPRITEMOVEDATA_STANDING_RIGHT",
+      "move_range_x": 0,
+      "move_range_y": 0,
+      "hram_x": -1,
+      "hram_y": -1,
+      "pal": 0,
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "radius": 0,
+      "script": "MN_MP_PARK_WITNESS",
+      "label": null,
+      "event_flag": "-1",
+      "object_identifier": "MN_MP_PARK_WITNESS",
+      "sightline_direction_override": null
+    },
+    {
+      "sprite": "SPRITE_FISHER",
+      "sprite_has_facings": true,
+      "x": 43,
+      "y": 12,
+      "spritemovedata": "SPRITEMOVEDATA_STANDING_DOWN",
+      "move_range_x": 0,
+      "move_range_y": 0,
+      "hram_x": -1,
+      "hram_y": -1,
+      "pal": 0,
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "radius": 0,
+      "script": "MN_MP_NORTH_GUIDE",
+      "label": null,
+      "event_flag": "-1",
+      "object_identifier": "MN_MP_NORTH_GUIDE",
+      "sightline_direction_override": null
+    },
+    {
+      "sprite": "SPRITE_OFFICER",
+      "sprite_has_facings": true,
+      "x": 77,
+      "y": 36,
+      "spritemovedata": "SPRITEMOVEDATA_STANDING_LEFT",
+      "move_range_x": 0,
+      "move_range_y": 0,
+      "hram_x": -1,
+      "hram_y": -1,
+      "pal": 0,
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "radius": 0,
+      "script": "MnMPEastCheck",
+      "label": null,
+      "event_flag": "-1",
+      "object_identifier": "MN_MP_EAST_WARDEN_NORTH",
+      "sightline_direction_override": null
+    },
+    {
+      "sprite": "SPRITE_OFFICER",
+      "sprite_has_facings": true,
+      "x": 77,
+      "y": 37,
+      "spritemovedata": "SPRITEMOVEDATA_STANDING_LEFT",
+      "move_range_x": 0,
+      "move_range_y": 0,
+      "hram_x": -1,
+      "hram_y": -1,
+      "pal": 0,
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "radius": 0,
+      "script": "MnMPEastCheck",
+      "label": null,
+      "event_flag": "-1",
+      "object_identifier": "MN_MP_EAST_WARDEN_SOUTH",
+      "sightline_direction_override": null
+    },
+    {
+      "sprite": "SPRITE_OFFICER",
+      "sprite_has_facings": true,
+      "x": 40,
+      "y": 2,
+      "spritemovedata": "SPRITEMOVEDATA_STANDING_DOWN",
+      "move_range_x": 0,
+      "move_range_y": 0,
+      "hram_x": -1,
+      "hram_y": -1,
+      "pal": 0,
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "radius": 0,
+      "script": "MnMPNorthCheck",
+      "label": null,
+      "event_flag": "-1",
+      "object_identifier": "MN_MP_NORTH_WARDEN_WEST",
+      "sightline_direction_override": null
+    },
+    {
+      "sprite": "SPRITE_OFFICER",
+      "sprite_has_facings": true,
+      "x": 41,
+      "y": 2,
+      "spritemovedata": "SPRITEMOVEDATA_STANDING_DOWN",
+      "move_range_x": 0,
+      "move_range_y": 0,
+      "hram_x": -1,
+      "hram_y": -1,
+      "pal": 0,
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "radius": 0,
+      "script": "MnMPNorthCheck",
+      "label": null,
+      "event_flag": "-1",
+      "object_identifier": "MN_MP_NORTH_WARDEN_EAST",
+      "sightline_direction_override": null
+    },
+    {
+      "sprite": "SPRITE_FISHER",
+      "sprite_has_facings": true,
+      "x": 39,
+      "y": 13,
+      "spritemovedata": "SPRITEMOVEDATA_STANDING_LEFT",
+      "move_range_x": 0,
+      "move_range_y": 0,
+      "hram_x": -1,
+      "hram_y": -1,
+      "pal": 0,
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "radius": 0,
+      "script": "MN_MP_UPPER_BRIDGE_GUIDE",
+      "label": null,
+      "event_flag": "-1",
+      "object_identifier": "MN_MP_UPPER_BRIDGE_GUIDE",
+      "sightline_direction_override": null
+    },
+    {
+      "sprite": "SPRITE_TEACHER",
+      "sprite_has_facings": true,
+      "x": 61,
+      "y": 37,
+      "spritemovedata": "SPRITEMOVEDATA_STANDING_LEFT",
+      "move_range_x": 0,
+      "move_range_y": 0,
+      "hram_x": -1,
+      "hram_y": -1,
+      "pal": 0,
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "radius": 0,
+      "script": "MN_MP_CEDAR_GUIDE",
+      "label": null,
+      "event_flag": "-1",
+      "object_identifier": "MN_MP_CEDAR_GUIDE",
+      "sightline_direction_override": null
+    },
+    {
+      "sprite": "SPRITE_GENTLEMAN",
+      "sprite_has_facings": true,
+      "x": 19,
+      "y": 57,
+      "spritemovedata": "SPRITEMOVEDATA_STANDING_RIGHT",
+      "move_range_x": 0,
+      "move_range_y": 0,
+      "hram_x": -1,
+      "hram_y": -1,
+      "pal": 0,
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "radius": 0,
+      "script": "MN_MP_SOUTH_PARK_GUIDE",
+      "label": null,
+      "event_flag": "-1",
+      "object_identifier": "MN_MP_SOUTH_PARK_GUIDE",
+      "sightline_direction_override": null
+    },
+    {
+      "sprite": "SPRITE_FISHER",
+      "sprite_has_facings": true,
+      "x": 13,
+      "y": 35,
+      "spritemovedata": "SPRITEMOVEDATA_STANDING_DOWN",
+      "move_range_x": 0,
+      "move_range_y": 0,
+      "hram_x": -1,
+      "hram_y": -1,
+      "pal": 0,
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "radius": 0,
+      "script": "MN_MP_LAKE_FISHER",
+      "label": null,
+      "event_flag": "-1",
+      "object_identifier": "MN_MP_LAKE_FISHER",
+      "sightline_direction_override": null
+    },
+    {
+      "sprite": "SPRITE_GENTLEMAN",
+      "sprite_has_facings": true,
+      "x": 15,
+      "y": 13,
+      "spritemovedata": "SPRITEMOVEDATA_STANDING_RIGHT",
+      "move_range_x": 0,
+      "move_range_y": 0,
+      "hram_x": -1,
+      "hram_y": -1,
+      "pal": 0,
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "radius": 0,
+      "script": "MN_MP_NORTH_LOOP_VENDOR",
+      "label": null,
+      "event_flag": "-1",
+      "object_identifier": "MN_MP_NORTH_LOOP_VENDOR",
+      "sightline_direction_override": null
+    },
+    {
+      "sprite": "SPRITE_LASS",
+      "sprite_has_facings": true,
+      "x": 71,
+      "y": 13,
+      "spritemovedata": "SPRITEMOVEDATA_STANDING_LEFT",
+      "move_range_x": 0,
+      "move_range_y": 0,
+      "hram_x": -1,
+      "hram_y": -1,
+      "pal": 0,
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "radius": 0,
+      "script": "MN_MP_LIBRARY_READER",
+      "label": null,
+      "event_flag": "-1",
+      "object_identifier": "MN_MP_LIBRARY_READER",
+      "sightline_direction_override": null
+    },
+    {
+      "sprite": "SPRITE_TEACHER",
+      "sprite_has_facings": true,
+      "x": 17,
+      "y": 23,
+      "spritemovedata": "SPRITEMOVEDATA_STANDING_LEFT",
+      "move_range_x": 0,
+      "move_range_y": 0,
+      "hram_x": -1,
+      "hram_y": -1,
+      "pal": 0,
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "radius": 0,
+      "script": "MN_MP_MUSEUM_VISITOR",
+      "label": null,
+      "event_flag": "-1",
+      "object_identifier": "MN_MP_MUSEUM_VISITOR",
+      "sightline_direction_override": null
+    },
+    {
+      "sprite": "SPRITE_ROCKER",
+      "sprite_has_facings": true,
+      "x": 65,
+      "y": 45,
+      "spritemovedata": "SPRITEMOVEDATA_STANDING_LEFT",
+      "move_range_x": 0,
+      "move_range_y": 0,
+      "hram_x": -1,
+      "hram_y": -1,
+      "pal": 0,
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "radius": 0,
+      "script": "MN_MP_BATTLE_CLUB_FAN",
+      "label": null,
+      "event_flag": "-1",
+      "object_identifier": "MN_MP_BATTLE_CLUB_FAN",
+      "sightline_direction_override": null
+    },
+    {
+      "sprite": "SPRITE_TEACHER",
+      "sprite_has_facings": true,
+      "x": 25,
+      "y": 57,
+      "spritemovedata": "SPRITEMOVEDATA_STANDING_UP",
+      "move_range_x": 0,
+      "move_range_y": 0,
+      "hram_x": -1,
+      "hram_y": -1,
+      "pal": 0,
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "radius": 0,
+      "script": "MN_MP_LAKE_GARDENER",
+      "label": null,
+      "event_flag": "-1",
+      "object_identifier": "MN_MP_LAKE_GARDENER",
+      "sightline_direction_override": null
+    },
+    {
+      "sprite": "SPRITE_LASS",
+      "sprite_has_facings": true,
+      "x": 51,
+      "y": 13,
+      "spritemovedata": "SPRITEMOVEDATA_STANDING_DOWN",
+      "move_range_x": 0,
+      "move_range_y": 0,
+      "hram_x": -1,
+      "hram_y": -1,
+      "pal": 0,
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "radius": 0,
+      "script": "MN_MP_NORTH_ARTIST",
+      "label": null,
+      "event_flag": "-1",
+      "object_identifier": "MN_MP_NORTH_ARTIST",
+      "sightline_direction_override": null
+    },
+    {
+      "sprite": "SPRITE_CLERK",
+      "sprite_has_facings": true,
+      "x": 43,
+      "y": 45,
+      "spritemovedata": "SPRITEMOVEDATA_STANDING_DOWN",
+      "move_range_x": 0,
+      "move_range_y": 0,
+      "hram_x": -1,
+      "hram_y": -1,
+      "pal": 0,
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "radius": 0,
+      "script": "MN_MP_MARKET_SNACK",
+      "label": null,
+      "event_flag": "-1",
+      "object_identifier": "MN_MP_MARKET_SNACK",
+      "sightline_direction_override": null
+    },
+    {
+      "sprite": "SPRITE_CLERK",
+      "sprite_has_facings": true,
+      "x": 49,
+      "y": 45,
+      "spritemovedata": "SPRITEMOVEDATA_STANDING_DOWN",
+      "move_range_x": 0,
+      "move_range_y": 0,
+      "hram_x": -1,
+      "hram_y": -1,
+      "pal": 0,
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "radius": 0,
+      "script": "MN_MP_MARKET_BERRY",
+      "label": null,
+      "event_flag": "-1",
+      "object_identifier": "MN_MP_MARKET_BERRY",
+      "sightline_direction_override": null
+    },
+    {
+      "sprite": "SPRITE_CLERK",
+      "sprite_has_facings": true,
+      "x": 55,
+      "y": 45,
+      "spritemovedata": "SPRITEMOVEDATA_STANDING_DOWN",
+      "move_range_x": 0,
+      "move_range_y": 0,
+      "hram_x": -1,
+      "hram_y": -1,
+      "pal": 0,
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "radius": 0,
+      "script": "MN_MP_MARKET_TRAIL",
+      "label": null,
+      "event_flag": "-1",
+      "object_identifier": "MN_MP_MARKET_TRAIL",
+      "sightline_direction_override": null
+    },
+    {
+      "sprite": "SPRITE_POKE_BALL",
+      "sprite_has_facings": true,
+      "x": 27,
+      "y": 11,
+      "spritemovedata": "SPRITEMOVEDATA_STANDING_DOWN",
+      "move_range_x": 0,
+      "move_range_y": 0,
+      "hram_x": -1,
+      "hram_y": -1,
+      "pal": 0,
+      "object_type": "OBJECTTYPE_ITEMBALL",
+      "radius": 0,
+      "script": "MN_MP_FIND_UPPER_BANK",
+      "label": null,
+      "event_flag": "EVENT_MN_MP_FIND_UPPER_BANK",
+      "object_identifier": "MN_MP_FIND_UPPER_BANK",
+      "sightline_direction_override": null
+    },
+    {
+      "sprite": "SPRITE_POKE_BALL",
+      "sprite_has_facings": true,
+      "x": 22,
+      "y": 23,
+      "spritemovedata": "SPRITEMOVEDATA_STANDING_DOWN",
+      "move_range_x": 0,
+      "move_range_y": 0,
+      "hram_x": -1,
+      "hram_y": -1,
+      "pal": 0,
+      "object_type": "OBJECTTYPE_ITEMBALL",
+      "radius": 0,
+      "script": "MN_MP_FIND_MUSEUM_ALLEY",
+      "label": null,
+      "event_flag": "EVENT_MN_MP_FIND_MUSEUM_ALLEY",
+      "object_identifier": "MN_MP_FIND_MUSEUM_ALLEY",
+      "sightline_direction_override": null
+    },
+    {
+      "sprite": "SPRITE_POKE_BALL",
+      "sprite_has_facings": true,
+      "x": 3,
+      "y": 40,
+      "spritemovedata": "SPRITEMOVEDATA_STANDING_DOWN",
+      "move_range_x": 0,
+      "move_range_y": 0,
+      "hram_x": -1,
+      "hram_y": -1,
+      "pal": 0,
+      "object_type": "OBJECTTYPE_ITEMBALL",
+      "radius": 0,
+      "script": "MN_MP_FIND_WEST_LAKE",
+      "label": null,
+      "event_flag": "EVENT_MN_MP_FIND_WEST_LAKE",
+      "object_identifier": "MN_MP_FIND_WEST_LAKE",
+      "sightline_direction_override": null
+    },
+    {
+      "sprite": "SPRITE_POKE_BALL",
+      "sprite_has_facings": true,
+      "x": 43,
+      "y": 55,
+      "spritemovedata": "SPRITEMOVEDATA_STANDING_DOWN",
+      "move_range_x": 0,
+      "move_range_y": 0,
+      "hram_x": -1,
+      "hram_y": -1,
+      "pal": 0,
+      "object_type": "OBJECTTYPE_ITEMBALL",
+      "radius": 0,
+      "script": "MN_MP_FIND_LOWER_BRIDGE",
+      "label": null,
+      "event_flag": "EVENT_MN_MP_FIND_LOWER_BRIDGE",
+      "object_identifier": "MN_MP_FIND_LOWER_BRIDGE",
+      "sightline_direction_override": null
+    },
+    {
+      "sprite": "SPRITE_POKE_BALL",
+      "sprite_has_facings": true,
+      "x": 77,
+      "y": 55,
+      "spritemovedata": "SPRITEMOVEDATA_STANDING_DOWN",
+      "move_range_x": 0,
+      "move_range_y": 0,
+      "hram_x": -1,
+      "hram_y": -1,
+      "pal": 0,
+      "object_type": "OBJECTTYPE_ITEMBALL",
+      "radius": 0,
+      "script": "MN_MP_FIND_CEDAR_COURT",
+      "label": null,
+      "event_flag": "EVENT_MN_MP_FIND_CEDAR_COURT",
+      "object_identifier": "MN_MP_FIND_CEDAR_COURT",
+      "sightline_direction_override": null
+    },
+    {
+      "sprite": "SPRITE_POKE_BALL",
+      "sprite_has_facings": true,
+      "x": 19,
+      "y": 59,
+      "spritemovedata": "SPRITEMOVEDATA_STANDING_DOWN",
+      "move_range_x": 0,
+      "move_range_y": 0,
+      "hram_x": -1,
+      "hram_y": -1,
+      "pal": 0,
+      "object_type": "OBJECTTYPE_ITEMBALL",
+      "radius": 0,
+      "script": "MN_MP_FIND_PARK_POND",
+      "label": null,
+      "event_flag": "EVENT_MN_MP_FIND_PARK_POND",
+      "object_identifier": "MN_MP_FIND_PARK_POND",
+      "sightline_direction_override": null
+    },
+    {
+      "sprite": "SPRITE_POKE_BALL",
+      "sprite_has_facings": true,
+      "x": 71,
+      "y": 21,
+      "spritemovedata": "SPRITEMOVEDATA_STANDING_DOWN",
+      "move_range_x": 0,
+      "move_range_y": 0,
+      "hram_x": -1,
+      "hram_y": -1,
+      "pal": 0,
+      "object_type": "OBJECTTYPE_ITEMBALL",
+      "radius": 0,
+      "script": "MN_MP_FIND_NORTH_GARDEN",
+      "label": null,
+      "event_flag": "EVENT_MN_MP_FIND_NORTH_GARDEN",
+      "object_identifier": "MN_MP_FIND_NORTH_GARDEN",
+      "sightline_direction_override": null
+    },
+    {
+      "sprite": "SPRITE_POKE_BALL",
+      "sprite_has_facings": true,
+      "x": 75,
+      "y": 61,
+      "spritemovedata": "SPRITEMOVEDATA_STANDING_DOWN",
+      "move_range_x": 0,
+      "move_range_y": 0,
+      "hram_x": -1,
+      "hram_y": -1,
+      "pal": 0,
+      "object_type": "OBJECTTYPE_ITEMBALL",
+      "radius": 0,
+      "script": "MN_MP_FIND_SOUTH_LANE",
+      "label": null,
+      "event_flag": "EVENT_MN_MP_FIND_SOUTH_LANE",
+      "object_identifier": "MN_MP_FIND_SOUTH_LANE",
+      "sightline_direction_override": null
+    },
+    {
+      "sprite": "SPRITE_CHRIS_BIKE",
+      "sprite_has_facings": true,
+      "x": 48,
+      "y": 20,
+      "spritemovedata": "SPRITEMOVEDATA_PATROL_CLOCKWISE",
+      "move_range_x": 1,
+      "move_range_y": 15,
+      "hram_x": -1,
+      "hram_y": -1,
+      "pal": 0,
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "radius": 0,
+      "script": "MN_EXTRA_MPLS_CYCLE_01",
+      "label": null,
+      "event_flag": "-1",
+      "object_identifier": "MN_EXTRA_MPLS_CYCLE_01",
+      "sightline_direction_override": null
+    },
+    {
+      "sprite": "SPRITE_KRIS_BIKE",
+      "sprite_has_facings": true,
+      "x": 60,
+      "y": 21,
+      "spritemovedata": "SPRITEMOVEDATA_PATROL_CLOCKWISE",
+      "move_range_x": 1,
+      "move_range_y": 15,
+      "hram_x": -1,
+      "hram_y": -1,
+      "pal": 0,
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "radius": 0,
+      "script": "MN_EXTRA_MPLS_CYCLE_02",
+      "label": null,
+      "event_flag": "-1",
+      "object_identifier": "MN_EXTRA_MPLS_CYCLE_02",
+      "sightline_direction_override": null
+    },
+    {
+      "sprite": "SPRITE_CHRIS_BIKE",
+      "sprite_has_facings": true,
+      "x": 60,
+      "y": 35,
+      "spritemovedata": "SPRITEMOVEDATA_PATROL_CLOCKWISE",
+      "move_range_x": 15,
+      "move_range_y": 1,
+      "hram_x": -1,
+      "hram_y": -1,
+      "pal": 0,
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "radius": 0,
+      "script": "MN_EXTRA_MPLS_CYCLE_03",
+      "label": null,
+      "event_flag": "-1",
+      "object_identifier": "MN_EXTRA_MPLS_CYCLE_03",
+      "sightline_direction_override": null
+    },
+    {
+      "sprite": "SPRITE_KRIS_BIKE",
+      "sprite_has_facings": true,
+      "x": 40,
+      "y": 22,
+      "spritemovedata": "SPRITEMOVEDATA_PATROL_CLOCKWISE",
+      "move_range_x": 1,
+      "move_range_y": 15,
+      "hram_x": -1,
+      "hram_y": -1,
+      "pal": 0,
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "radius": 0,
+      "script": "MN_EXTRA_MPLS_CYCLE_04",
+      "label": null,
+      "event_flag": "-1",
+      "object_identifier": "MN_EXTRA_MPLS_CYCLE_04",
+      "sightline_direction_override": null
+    },
+    {
+      "sprite": "SPRITE_CHRIS_BIKE",
+      "sprite_has_facings": true,
+      "x": 40,
+      "y": 23,
+      "spritemovedata": "SPRITEMOVEDATA_PATROL_CLOCKWISE",
+      "move_range_x": 1,
+      "move_range_y": 15,
+      "hram_x": -1,
+      "hram_y": -1,
+      "pal": 0,
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "radius": 0,
+      "script": "MN_EXTRA_MPLS_CYCLE_05",
+      "label": null,
+      "event_flag": "-1",
+      "object_identifier": "MN_EXTRA_MPLS_CYCLE_05",
+      "sightline_direction_override": null
+    },
+    {
+      "sprite": "SPRITE_KRIS_BIKE",
+      "sprite_has_facings": true,
+      "x": 40,
+      "y": 24,
+      "spritemovedata": "SPRITEMOVEDATA_PATROL_CLOCKWISE",
+      "move_range_x": 1,
+      "move_range_y": 15,
+      "hram_x": -1,
+      "hram_y": -1,
+      "pal": 0,
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "radius": 0,
+      "script": "MN_EXTRA_MPLS_CYCLE_06",
+      "label": null,
+      "event_flag": "-1",
+      "object_identifier": "MN_EXTRA_MPLS_CYCLE_06",
+      "sightline_direction_override": null
+    },
+    {
+      "sprite": "SPRITE_CHRIS_BIKE",
+      "sprite_has_facings": true,
+      "x": 60,
+      "y": 27,
+      "spritemovedata": "SPRITEMOVEDATA_PATROL_CLOCKWISE",
+      "move_range_x": 15,
+      "move_range_y": 9,
+      "hram_x": -1,
+      "hram_y": -1,
+      "pal": 0,
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "radius": 0,
+      "script": "MN_EXTRA_MPLS_CYCLE_07",
+      "label": null,
+      "event_flag": "-1",
+      "object_identifier": "MN_EXTRA_MPLS_CYCLE_07",
+      "sightline_direction_override": null
+    },
+    {
+      "sprite": "SPRITE_KRIS_BIKE",
+      "sprite_has_facings": true,
+      "x": 61,
+      "y": 27,
+      "spritemovedata": "SPRITEMOVEDATA_PATROL_CLOCKWISE",
+      "move_range_x": 14,
+      "move_range_y": 9,
+      "hram_x": -1,
+      "hram_y": -1,
+      "pal": 0,
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "radius": 0,
+      "script": "MN_EXTRA_MPLS_CYCLE_08",
+      "label": null,
+      "event_flag": "-1",
+      "object_identifier": "MN_EXTRA_MPLS_CYCLE_08",
+      "sightline_direction_override": null
+    },
+    {
+      "sprite": "SPRITE_CHRIS_BIKE",
+      "sprite_has_facings": true,
+      "x": 69,
+      "y": 27,
+      "spritemovedata": "SPRITEMOVEDATA_PATROL_CLOCKWISE",
+      "move_range_x": 6,
+      "move_range_y": 10,
+      "hram_x": -1,
+      "hram_y": -1,
+      "pal": 0,
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "radius": 0,
+      "script": "MN_EXTRA_MPLS_CYCLE_09",
+      "label": null,
+      "event_flag": "-1",
+      "object_identifier": "MN_EXTRA_MPLS_CYCLE_09",
+      "sightline_direction_override": null
+    },
+    {
+      "sprite": "SPRITE_KRIS_BIKE",
+      "sprite_has_facings": true,
+      "x": 38,
+      "y": 44,
+      "spritemovedata": "SPRITEMOVEDATA_PATROL_CLOCKWISE",
+      "move_range_x": 15,
+      "move_range_y": 3,
+      "hram_x": -1,
+      "hram_y": -1,
+      "pal": 0,
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "radius": 0,
+      "script": "MN_EXTRA_MPLS_CYCLE_10",
+      "label": null,
+      "event_flag": "-1",
+      "object_identifier": "MN_EXTRA_MPLS_CYCLE_10",
+      "sightline_direction_override": null
+    },
+    {
+      "sprite": "SPRITE_CHRIS_BIKE",
+      "sprite_has_facings": true,
+      "x": 37,
+      "y": 46,
+      "spritemovedata": "SPRITEMOVEDATA_PATROL_CLOCKWISE",
+      "move_range_x": 15,
+      "move_range_y": 1,
+      "hram_x": -1,
+      "hram_y": -1,
+      "pal": 0,
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "radius": 0,
+      "script": "MN_EXTRA_MPLS_CYCLE_11",
+      "label": null,
+      "event_flag": "-1",
+      "object_identifier": "MN_EXTRA_MPLS_CYCLE_11",
+      "sightline_direction_override": null
+    },
+    {
+      "sprite": "SPRITE_KRIS_BIKE",
+      "sprite_has_facings": true,
+      "x": 40,
+      "y": 44,
+      "spritemovedata": "SPRITEMOVEDATA_PATROL_CLOCKWISE",
+      "move_range_x": 14,
+      "move_range_y": 3,
+      "hram_x": -1,
+      "hram_y": -1,
+      "pal": 0,
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "radius": 0,
+      "script": "MN_EXTRA_MPLS_CYCLE_12",
+      "label": null,
+      "event_flag": "-1",
+      "object_identifier": "MN_EXTRA_MPLS_CYCLE_12",
+      "sightline_direction_override": null
+    },
+    {
+      "sprite": "SPRITE_CHRIS_BIKE",
+      "sprite_has_facings": true,
+      "x": 41,
+      "y": 44,
+      "spritemovedata": "SPRITEMOVEDATA_PATROL_CLOCKWISE",
+      "move_range_x": 15,
+      "move_range_y": 3,
+      "hram_x": -1,
+      "hram_y": -1,
+      "pal": 0,
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "radius": 0,
+      "script": "MN_EXTRA_MPLS_CYCLE_13",
+      "label": null,
+      "event_flag": "-1",
+      "object_identifier": "MN_EXTRA_MPLS_CYCLE_13",
+      "sightline_direction_override": null
+    },
+    {
+      "sprite": "SPRITE_KRIS_BIKE",
+      "sprite_has_facings": true,
+      "x": 46,
+      "y": 44,
+      "spritemovedata": "SPRITEMOVEDATA_PATROL_CLOCKWISE",
+      "move_range_x": 1,
+      "move_range_y": 15,
+      "hram_x": -1,
+      "hram_y": -1,
+      "pal": 0,
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "radius": 0,
+      "script": "MN_EXTRA_MPLS_CYCLE_14",
+      "label": null,
+      "event_flag": "-1",
+      "object_identifier": "MN_EXTRA_MPLS_CYCLE_14",
+      "sightline_direction_override": null
+    },
+    {
+      "sprite": "SPRITE_CHRIS_BIKE",
+      "sprite_has_facings": true,
+      "x": 42,
+      "y": 46,
+      "spritemovedata": "SPRITEMOVEDATA_PATROL_CLOCKWISE",
+      "move_range_x": 15,
+      "move_range_y": 1,
+      "hram_x": -1,
+      "hram_y": -1,
+      "pal": 0,
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "radius": 0,
+      "script": "MN_EXTRA_MPLS_CYCLE_15",
+      "label": null,
+      "event_flag": "-1",
+      "object_identifier": "MN_EXTRA_MPLS_CYCLE_15",
+      "sightline_direction_override": null
+    },
+    {
+      "sprite": "SPRITE_KRIS_BIKE",
+      "sprite_has_facings": true,
+      "x": 38,
+      "y": 46,
+      "spritemovedata": "SPRITEMOVEDATA_PATROL_CLOCKWISE",
+      "move_range_x": 15,
+      "move_range_y": 1,
+      "hram_x": -1,
+      "hram_y": -1,
+      "pal": 0,
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "radius": 0,
+      "script": "MN_EXTRA_MPLS_CYCLE_16",
+      "label": null,
+      "event_flag": "-1",
+      "object_identifier": "MN_EXTRA_MPLS_CYCLE_16",
+      "sightline_direction_override": null
+    },
+    {
+      "sprite": "SPRITE_CHRIS_BIKE",
+      "sprite_has_facings": true,
+      "x": 39,
+      "y": 46,
+      "spritemovedata": "SPRITEMOVEDATA_PATROL_CLOCKWISE",
+      "move_range_x": 15,
+      "move_range_y": 1,
+      "hram_x": -1,
+      "hram_y": -1,
+      "pal": 0,
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "radius": 0,
+      "script": "MN_EXTRA_MPLS_CYCLE_17",
+      "label": null,
+      "event_flag": "-1",
+      "object_identifier": "MN_EXTRA_MPLS_CYCLE_17",
+      "sightline_direction_override": null
+    },
+    {
+      "sprite": "SPRITE_KRIS_BIKE",
+      "sprite_has_facings": true,
+      "x": 41,
+      "y": 46,
+      "spritemovedata": "SPRITEMOVEDATA_PATROL_CLOCKWISE",
+      "move_range_x": 15,
+      "move_range_y": 1,
+      "hram_x": -1,
+      "hram_y": -1,
+      "pal": 0,
+      "object_type": "OBJECTTYPE_SCRIPT",
+      "radius": 0,
+      "script": "MN_EXTRA_MPLS_CYCLE_18",
+      "label": null,
+      "event_flag": "-1",
+      "object_identifier": "MN_EXTRA_MPLS_CYCLE_18",
+      "sightline_direction_override": null
+    }
+  ],
+  "readings_native": [
+    {
+      "x": 38,
+      "y": 48,
+      "event_type": "BGEVENT_READ",
+      "script": "MN_MP_TOWN_SIGN"
+    },
+    {
+      "x": 22,
+      "y": 34,
+      "event_type": "BGEVENT_READ",
+      "script": "MN_MP_DISPATCH_SIGN"
+    },
+    {
+      "x": 68,
+      "y": 34,
+      "event_type": "BGEVENT_READ",
+      "script": "MN_MP_GYM_SIGN"
+    },
+    {
+      "x": 58,
+      "y": 46,
+      "event_type": "BGEVENT_READ",
+      "script": "MN_MP_EAST_SIGN"
+    },
+    {
+      "x": 4,
+      "y": 12,
+      "event_type": "BGEVENT_READ",
+      "script": "MN_MP_SUPPLYCOOP_SIGN"
+    },
+    {
+      "x": 18,
+      "y": 12,
+      "event_type": "BGEVENT_READ",
+      "script": "MN_MP_GRAINEXCHANGE_SIGN"
+    },
+    {
+      "x": 22,
+      "y": 18,
+      "event_type": "BGEVENT_READ",
+      "script": "MN_MP_TOOLWORKSHOP_SIGN"
+    },
+    {
+      "x": 42,
+      "y": 10,
+      "event_type": "BGEVENT_READ",
+      "script": "MN_MP_PRINTSHOP_SIGN"
+    },
+    {
+      "x": 4,
+      "y": 22,
+      "event_type": "BGEVENT_READ",
+      "script": "MN_MP_FOUNDRYMUSEUM_SIGN"
+    },
+    {
+      "x": 14,
+      "y": 22,
+      "event_type": "BGEVENT_READ",
+      "script": "MN_MP_ARTSSTUDIO_SIGN"
+    },
+    {
+      "x": 50,
+      "y": 10,
+      "event_type": "BGEVENT_READ",
+      "script": "MN_MP_MUSICROOM_SIGN"
+    },
+    {
+      "x": 60,
+      "y": 10,
+      "event_type": "BGEVENT_READ",
+      "script": "MN_MP_COMMUNITYLIBRARY_SIGN"
+    },
+    {
+      "x": 70,
+      "y": 10,
+      "event_type": "BGEVENT_READ",
+      "script": "MN_MP_NORTHEASTHOME_SIGN"
+    },
+    {
+      "x": 42,
+      "y": 18,
+      "event_type": "BGEVENT_READ",
+      "script": "MN_MP_GARDENSHOP_SIGN"
+    },
+    {
+      "x": 50,
+      "y": 18,
+      "event_type": "BGEVENT_READ",
+      "script": "MN_MP_RIVERNATURALIST_SIGN"
+    },
+    {
+      "x": 2,
+      "y": 30,
+      "event_type": "BGEVENT_READ",
+      "script": "MN_MP_BOATHOUSE_SIGN"
+    },
+    {
+      "x": 14,
+      "y": 30,
+      "event_type": "BGEVENT_READ",
+      "script": "MN_MP_ANGLERHOME_SIGN"
+    },
+    {
+      "x": 2,
+      "y": 46,
+      "event_type": "BGEVENT_READ",
+      "script": "MN_MP_LAKECABIN_SIGN"
+    },
+    {
+      "x": 18,
+      "y": 56,
+      "event_type": "BGEVENT_READ",
+      "script": "MN_MP_GREENHOUSE_SIGN"
+    },
+    {
+      "x": 22,
+      "y": 24,
+      "event_type": "BGEVENT_READ",
+      "script": "MN_MP_BRIDGEHOME_SIGN"
+    },
+    {
+      "x": 48,
+      "y": 36,
+      "event_type": "BGEVENT_READ",
+      "script": "MN_MP_DEPARTMENTSTORE1F_SIGN"
+    },
+    {
+      "x": 64,
+      "y": 46,
+      "event_type": "BGEVENT_READ",
+      "script": "MN_MP_BATTLECLUB_SIGN"
+    },
+    {
+      "x": 58,
+      "y": 52,
+      "event_type": "BGEVENT_READ",
+      "script": "MN_MP_CEDARHOME_SIGN"
+    },
+    {
+      "x": 66,
+      "y": 54,
+      "event_type": "BGEVENT_READ",
+      "script": "MN_MP_COMMUNITYKITCHEN_SIGN"
+    },
+    {
+      "x": 72,
+      "y": 60,
+      "event_type": "BGEVENT_READ",
+      "script": "MN_MP_COURIERSDESK_SIGN"
+    },
+    {
+      "x": 10,
+      "y": 52,
+      "event_type": "BGEVENT_READ",
+      "script": "MN_MP_FIELDCLUB_SIGN"
+    },
+    {
+      "x": 2,
+      "y": 58,
+      "event_type": "BGEVENT_READ",
+      "script": "MN_MP_GARDENERSHOME_SIGN"
+    },
+    {
+      "x": 40,
+      "y": 60,
+      "event_type": "BGEVENT_READ",
+      "script": "MN_MP_ARRIVALINFO_SIGN"
+    },
+    {
+      "x": 46,
+      "y": 60,
+      "event_type": "BGEVENT_READ",
+      "script": "MN_MP_RIVERINN_SIGN"
+    },
+    {
+      "x": 56,
+      "y": 60,
+      "event_type": "BGEVENT_READ",
+      "script": "MN_MP_SOUTHMARKET_SIGN"
+    },
+    {
+      "x": 66,
+      "y": 60,
+      "event_type": "BGEVENT_READ",
+      "script": "MN_MP_MILLWORKERSHOUSE_SIGN"
+    },
+    {
+      "x": 28,
+      "y": 12,
+      "event_type": "BGEVENT_READ",
+      "script": "MN_MP_MILL_WATER_PLAQUE"
+    },
+    {
+      "x": 26,
+      "y": 42,
+      "event_type": "BGEVENT_READ",
+      "script": "MN_MP_MILL_GRAIN_PLAQUE"
+    },
+    {
+      "x": 42,
+      "y": 54,
+      "event_type": "BGEVENT_READ",
+      "script": "MN_MP_MILL_WORKERS_PLAQUE"
+    }
+  ],
+  "fixed_coordinate_events": [
+    {
+      "x": 76,
+      "y": 36,
+      "scene_id": "-1",
+      "script_name": "MnMPEastCheck"
+    },
+    {
+      "x": 78,
+      "y": 36,
+      "scene_id": "-1",
+      "script_name": "MnMPEastCheckInward"
+    },
+    {
+      "x": 76,
+      "y": 37,
+      "scene_id": "-1",
+      "script_name": "MnMPEastCheck"
+    },
+    {
+      "x": 78,
+      "y": 37,
+      "scene_id": "-1",
+      "script_name": "MnMPEastCheckInward"
+    },
+    {
+      "x": 40,
+      "y": 3,
+      "scene_id": "-1",
+      "script_name": "MnMPNorthCheck"
+    },
+    {
+      "x": 40,
+      "y": 1,
+      "scene_id": "-1",
+      "script_name": "MnMPNorthCheckInward"
+    },
+    {
+      "x": 41,
+      "y": 3,
+      "scene_id": "-1",
+      "script_name": "MnMPNorthCheck"
+    },
+    {
+      "x": 41,
+      "y": 1,
+      "scene_id": "-1",
+      "script_name": "MnMPNorthCheckInward"
+    },
+    {
+      "x": 32,
+      "y": 1,
+      "scene_id": "-1",
+      "script_name": "MnMPUpperPoolBuoyCheck"
+    },
+    {
+      "x": 33,
+      "y": 1,
+      "scene_id": "-1",
+      "script_name": "MnMPUpperPoolBuoyCheck"
+    },
+    {
+      "x": 34,
+      "y": 1,
+      "scene_id": "-1",
+      "script_name": "MnMPUpperPoolBuoyCheck"
+    },
+    {
+      "x": 35,
+      "y": 1,
+      "scene_id": "-1",
+      "script_name": "MnMPUpperPoolBuoyCheck"
+    },
+    {
+      "x": 36,
+      "y": 1,
+      "scene_id": "-1",
+      "script_name": "MnMPUpperPoolBuoyCheck"
+    },
+    {
+      "x": 37,
+      "y": 1,
+      "scene_id": "-1",
+      "script_name": "MnMPUpperPoolBuoyCheck"
+    },
+    {
+      "x": 32,
+      "y": 4,
+      "scene_id": "-1",
+      "script_name": "MnMPUpperPoolBuoyCheck"
+    },
+    {
+      "x": 33,
+      "y": 4,
+      "scene_id": "-1",
+      "script_name": "MnMPUpperPoolBuoyCheck"
+    },
+    {
+      "x": 34,
+      "y": 4,
+      "scene_id": "-1",
+      "script_name": "MnMPUpperPoolBuoyCheck"
+    },
+    {
+      "x": 35,
+      "y": 4,
+      "scene_id": "-1",
+      "script_name": "MnMPUpperPoolBuoyCheck"
+    },
+    {
+      "x": 36,
+      "y": 4,
+      "scene_id": "-1",
+      "script_name": "MnMPUpperPoolBuoyCheck"
+    },
+    {
+      "x": 37,
+      "y": 4,
+      "scene_id": "-1",
+      "script_name": "MnMPUpperPoolBuoyCheck"
+    }
+  ],
+  "facade_moves": [
+    {
+      "name": "Supply Cooperative",
+      "warp": 11,
+      "box": [
+        2,
+        3,
+        5,
+        5
+      ],
+      "to": [
+        3,
+        4
+      ],
+      "native_rows": [
+        [
+          24,
+          159,
+          25
+        ],
+        [
+          16,
+          164,
+          17
+        ]
+      ]
+    },
+    {
+      "name": "River Family Home",
+      "warp": 73,
+      "box": [
+        6,
+        3,
+        8,
+        5
+      ],
+      "to": [
+        7,
+        4
+      ],
+      "native_rows": [
+        [
+          24,
+          25
+        ],
+        [
+          16,
+          157
+        ]
+      ]
+    },
+    {
+      "name": "Foundry Museum",
+      "warp": 19,
+      "box": [
+        2,
+        7,
+        7,
+        10
+      ],
+      "to": [
+        3,
+        8
+      ],
+      "native_rows": [
+        [
+          128,
+          130,
+          130,
+          130,
+          129
+        ],
+        [
+          132,
+          137,
+          137,
+          137,
+          133
+        ],
+        [
+          131,
+          135,
+          138,
+          135,
+          136
+        ]
+      ]
+    },
+    {
+      "name": "Arts Studio",
+      "warp": 21,
+      "box": [
+        8,
+        8,
+        11,
+        10
+      ],
+      "to": [
+        8,
+        9
+      ],
+      "native_rows": [
+        [
+          24,
+          159,
+          25
+        ],
+        [
+          16,
+          164,
+          17
+        ]
+      ]
+    },
+    {
+      "name": "Tool Workshop",
+      "warp": 15,
+      "box": [
+        11,
+        6,
+        14,
+        8
+      ],
+      "to": [
+        11,
+        7
+      ],
+      "native_rows": [
+        [
+          128,
+          130,
+          129
+        ],
+        [
+          131,
+          138,
+          136
+        ]
+      ]
+    },
+    {
+      "name": "Bridge Home",
+      "warp": 41,
+      "box": [
+        12,
+        9,
+        14,
+        11
+      ],
+      "to": [
+        12,
+        10
+      ],
+      "native_rows": [
+        [
+          24,
+          25
+        ],
+        [
+          16,
+          157
+        ]
+      ]
+    }
+  ],
+  "native_programs": "Retained byte-for-byte from the bound current pack, including all18 cycling reload dispatches and north-pool callback. No new content programs.",
+  "activity_contracts": [
+    {
+      "id": "museum-mill-trail",
+      "room": "MnMinneapolisFoundryMuseum",
+      "source": "Original bound native host script and three outdoor plaque events",
+      "markers": [
+        [
+          28,
+          12
+        ],
+        [
+          26,
+          42
+        ],
+        [
+          42,
+          54
+        ]
+      ],
+      "reward": "MAGNET x1",
+      "reward_flag": "EVENT_MN_MP_MILL_TRAIL_REWARDED",
+      "status": "Existing native program, fresh current-input verification pending"
+    },
+    {
+      "id": "original-forty-room-returns",
+      "status": "Native modules preserved, fresh roundtrip tour pending"
+    }
+  ],
+  "camera_probes": [
+    {
+      "id": "mill-neighborhood",
+      "map": "MnMinneapolis",
+      "core": [
+        12,
+        13
+      ]
+    },
+    {
+      "id": "museum-arts-street",
+      "map": "MnMinneapolis",
+      "core": [
+        12,
+        23
+      ]
+    },
+    {
+      "id": "west-bank-passage",
+      "map": "MnMinneapolis",
+      "core": [
+        13,
+        27
+      ]
+    },
+    {
+      "id": "workshop-court",
+      "map": "MnMinneapolis",
+      "core": [
+        28,
+        19
+      ]
+    },
+    {
+      "id": "bridge-home-bench",
+      "map": "MnMinneapolis",
+      "core": [
+        27,
+        25
+      ]
+    }
+  ],
+  "house_frontage_correction": "../minneapolis-normal-houses-v01/plan.json"
+}

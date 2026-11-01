@@ -1,0 +1,1752 @@
+{
+  "id": "MN_R01",
+  "map_prefix": "MnR01",
+  "name": "Driftless Trail",
+  "dimensions_metatiles": [
+    32,
+    20
+  ],
+  "chunk_metatiles": [
+    32,
+    24
+  ],
+  "chunk_columns": 1,
+  "chunk_rows": 1,
+  "endpoints": [
+    {
+      "place": "WINONA",
+      "side": "E",
+      "gate_metatile": [
+        30,
+        12
+      ],
+      "landing_metatile": [
+        29,
+        12
+      ]
+    },
+    {
+      "place": "ROCHESTER",
+      "side": "W",
+      "gate_metatile": [
+        1,
+        12
+      ],
+      "landing_metatile": [
+        3,
+        12
+      ]
+    }
+  ],
+  "required_flags": [
+    "EVENT_MN_STARTER_RECEIVED"
+  ],
+  "quest": "Q01",
+  "tileset": "johto",
+  "source_references": [
+    "Route29",
+    "Route30",
+    "Route42"
+  ],
+  "description": "A hand-authored compact starter route: a short grass road below a low limestone bench, a longer eastern ramp with a one-way return ledge, Nelsons farm tutorial and Berry, a two-hollow cave, and a small fenced creek dock. No HM is required.",
+  "main_path_metatiles": [
+    [
+      30,
+      12
+    ],
+    [
+      26,
+      12
+    ],
+    [
+      26,
+      15
+    ],
+    [
+      20,
+      15
+    ],
+    [
+      20,
+      12
+    ],
+    [
+      12,
+      12
+    ],
+    [
+      12,
+      14
+    ],
+    [
+      7,
+      14
+    ],
+    [
+      7,
+      12
+    ],
+    [
+      1,
+      12
+    ]
+  ],
+  "main_lane_width_gameplay_tiles": 2,
+  "districts": [
+    {
+      "id": "FARM",
+      "name": "Winona approach and Nelson farm",
+      "bounds_metatiles": [
+        23,
+        5,
+        32,
+        17
+      ],
+      "landmark_metatile": [
+        24,
+        8
+      ],
+      "purpose": "Shared grass gate and an optional tutorial/care gift."
+    },
+    {
+      "id": "BLUFF",
+      "name": "Low limestone bench and hollow",
+      "bounds_metatiles": [
+        6,
+        2,
+        23,
+        12
+      ],
+      "landmark_metatile": [
+        13,
+        8
+      ],
+      "purpose": "East ramp, optional lookout practice battle, Potion and one-way descent; a small enterable hollow below."
+    },
+    {
+      "id": "MEADOW",
+      "name": "Rochester meadow and creek",
+      "bounds_metatiles": [
+        0,
+        10,
+        24,
+        20
+      ],
+      "landmark_metatile": [
+        7,
+        14
+      ],
+      "purpose": "Short grass road, two optional practice battles and a fenced creek dock with a Pokeball."
+    }
+  ],
+  "loops": [
+    {
+      "id": "BLUFF_AND_MEADOW",
+      "path_metatiles": [
+        [
+          20,
+          12
+        ],
+        [
+          20,
+          10
+        ],
+        [
+          20,
+          8
+        ],
+        [
+          17,
+          8
+        ],
+        [
+          17,
+          6
+        ],
+        [
+          14,
+          6
+        ],
+        [
+          14,
+          8
+        ],
+        [
+          14,
+          9
+        ],
+        [
+          13,
+          9
+        ],
+        [
+          13,
+          10
+        ],
+        [
+          12,
+          10
+        ],
+        [
+          12,
+          12
+        ],
+        [
+          20,
+          12
+        ]
+      ],
+      "joins_districts": [
+        "BLUFF",
+        "MEADOW"
+      ],
+      "entry_rule": "east ramp uphill",
+      "return_rule": "southward ledge hop",
+      "tradeoff": "A longer low-bluff walk and a Potion versus the short grass crossing. The ledge cannot be climbed in reverse."
+    }
+  ],
+  "minimum_optional_branches": 6,
+  "trainers": [
+    {
+      "id": "MN_R01_T01",
+      "display_name": "BROOK",
+      "trainer_class": "YOUNGSTER",
+      "sprite": "SPRITE_YOUNGSTER",
+      "tile": [
+        45,
+        27
+      ],
+      "anchor_metatile": [
+        22,
+        13
+      ],
+      "facing": "south",
+      "sight_range": 2,
+      "party": [
+        {
+          "species": "SENTRET",
+          "level": 2
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R01_TRAINER_01",
+      "block_main_lane": false,
+      "before_lines": [
+        "My SENTRET is",
+        "learning the road.",
+        "Want to practice?"
+      ],
+      "after_lines": [
+        "A little practice",
+        "goes a long way."
+      ],
+      "loss_lines": [
+        "The farm is close.",
+        "Take a short rest."
+      ]
+    },
+    {
+      "id": "MN_R01_T02",
+      "display_name": "LENA",
+      "trainer_class": "LASS",
+      "sprite": "SPRITE_LASS",
+      "tile": [
+        25,
+        29
+      ],
+      "anchor_metatile": [
+        12,
+        14
+      ],
+      "facing": "east",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "CATERPIE",
+          "level": 3
+        },
+        {
+          "species": "PIDGEY",
+          "level": 3
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R01_TRAINER_02",
+      "block_main_lane": false,
+      "before_lines": [
+        "My partners like",
+        "different paths.",
+        "Which do you like?"
+      ],
+      "after_lines": [
+        "Both paths lead",
+        "to Rochester."
+      ],
+      "loss_lines": [
+        "Look for the",
+        "westward sign."
+      ]
+    },
+    {
+      "id": "MN_R01_T03",
+      "display_name": "PAT",
+      "trainer_class": "CAMPER",
+      "sprite": "SPRITE_YOUNGSTER",
+      "tile": [
+        33,
+        13
+      ],
+      "anchor_metatile": [
+        16,
+        6
+      ],
+      "facing": "west",
+      "sight_range": 2,
+      "party": [
+        {
+          "species": "RATTATA",
+          "level": 4
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R01_TRAINER_03",
+      "block_main_lane": false,
+      "before_lines": [
+        "We climbed up",
+        "for the view!",
+        "A short battle?"
+      ],
+      "after_lines": [
+        "The ledge below",
+        "is a quick drop."
+      ],
+      "loss_lines": [
+        "Use the east ramp",
+        "to come back up."
+      ]
+    }
+  ],
+  "items": [
+    {
+      "id": "MN_R01_ITEM_01",
+      "item": "POTION",
+      "quantity": 1,
+      "tile": [
+        19,
+        11
+      ],
+      "anchor_metatile": [
+        9,
+        5
+      ],
+      "flag": "EVENT_MN_R01_ITEM_01",
+      "access": "Explore the upper limestone bench."
+    },
+    {
+      "id": "MN_R01_ITEM_02",
+      "item": "POKE_BALL",
+      "quantity": 1,
+      "tile": [
+        13,
+        35
+      ],
+      "anchor_metatile": [
+        6,
+        17
+      ],
+      "flag": "EVENT_MN_R01_ITEM_02",
+      "access": "Walk to the closed end of the small dock."
+    }
+  ],
+  "encounters": {
+    "grass_rates": {
+      "morning": 10,
+      "day": 10,
+      "night": 10
+    },
+    "grass": {
+      "morning": [
+        {
+          "species": "SENTRET",
+          "level": 2
+        },
+        {
+          "species": "PIDGEY",
+          "level": 2
+        },
+        {
+          "species": "CATERPIE",
+          "level": 3
+        },
+        {
+          "species": "HOPPIP",
+          "level": 3
+        },
+        {
+          "species": "RATTATA",
+          "level": 3
+        },
+        {
+          "species": "LEDYBA",
+          "level": 4
+        },
+        {
+          "species": "SUNKERN",
+          "level": 4
+        }
+      ],
+      "day": [
+        {
+          "species": "SENTRET",
+          "level": 2
+        },
+        {
+          "species": "PIDGEY",
+          "level": 2
+        },
+        {
+          "species": "RATTATA",
+          "level": 3
+        },
+        {
+          "species": "HOPPIP",
+          "level": 3
+        },
+        {
+          "species": "CATERPIE",
+          "level": 3
+        },
+        {
+          "species": "SUNKERN",
+          "level": 4
+        },
+        {
+          "species": "SENTRET",
+          "level": 4
+        }
+      ],
+      "night": [
+        {
+          "species": "HOOTHOOT",
+          "level": 2
+        },
+        {
+          "species": "SPINARAK",
+          "level": 2
+        },
+        {
+          "species": "RATTATA",
+          "level": 3
+        },
+        {
+          "species": "HOOTHOOT",
+          "level": 3
+        },
+        {
+          "species": "HOPPIP",
+          "level": 3
+        },
+        {
+          "species": "SPINARAK",
+          "level": 4
+        },
+        {
+          "species": "HOOTHOOT",
+          "level": 4
+        }
+      ]
+    },
+    "water_rate": 4,
+    "water": [
+      {
+        "species": "POLIWAG",
+        "level": 2
+      },
+      {
+        "species": "WOOPER",
+        "level": 3
+      },
+      {
+        "species": "MARILL",
+        "level": 5
+      }
+    ]
+  },
+  "interiors": [
+    {
+      "id": "MnR01Cave1F",
+      "template": "UnionCave1F",
+      "dimensions_metatiles": [
+        8,
+        7
+      ],
+      "width_metatiles": 8,
+      "height_metatiles": 7,
+      "tileset": "cave",
+      "border_block": 46,
+      "exterior_anchor_metatile": [
+        9,
+        8
+      ],
+      "mandatory": false,
+      "purpose": "Retain the newly published upper cycle and both climbs; round the spine toe into the mouth court instead of a sheer square end. Continuous native bedrock encloses the hollow.",
+      "rows": [
+        "2e 2e 2e 2e 2e 2e 2e 2e",
+        "2e 2e 04 05 05 06 06 2e",
+        "2e 04 02 0a 04 02 0a 2e",
+        "2e 08 02 0a 2f 30 22 2e",
+        "2e 20 12 2d 28 02 0a 2e",
+        "2e 2e 20 21 07 21 22 2e",
+        "2e 2e 2e 2e 2e 2e 2e 2e"
+      ],
+      "exits": [
+        [
+          9,
+          11
+        ]
+      ],
+      "clear_arrival": [
+        9,
+        10
+      ],
+      "exit_collision": "LADDER",
+      "residents": [
+        {
+          "id": "MN_R01_HOLLOW_GUIDE",
+          "sprite": "SPRITE_POKEFAN_M",
+          "tile": [
+            5,
+            5
+          ],
+          "facing": "south",
+          "lines": [
+            "Two small hollows",
+            "meet by the exit.",
+            "Take either path.",
+            "The little ball",
+            "holds an ANTIDOTE."
+          ]
+        }
+      ],
+      "items": [
+        {
+          "id": "MN_R01_ITEM_03",
+          "item": "ANTIDOTE",
+          "quantity": 1,
+          "tile": [
+            11,
+            5
+          ],
+          "flag": "EVENT_MN_R01_ITEM_03"
+        }
+      ],
+      "signs": [],
+      "review_contract": {
+        "quality_revision": "johto-quality-v01",
+        "palette_group": "nite",
+        "native_stair_blocks": [
+          [
+            5,
+            3
+          ],
+          [
+            2,
+            4
+          ]
+        ],
+        "viewpoints": [
+          {
+            "id": "mouth",
+            "tile": [
+              9,
+              10
+            ]
+          },
+          {
+            "id": "guide",
+            "tile": [
+              4,
+              5
+            ]
+          },
+          {
+            "id": "upper-cycle",
+            "tile": [
+              7,
+              3
+            ]
+          },
+          {
+            "id": "east-stair",
+            "tile": [
+              10,
+              7
+            ]
+          },
+          {
+            "id": "spine-toe",
+            "tile": [
+              9,
+              8
+            ]
+          },
+          {
+            "id": "west-stair",
+            "tile": [
+              5,
+              9
+            ]
+          }
+        ],
+        "notes": "Retain the newly published upper cycle and both climbs; round the spine toe into the mouth court instead of a sheer square end. Continuous native bedrock encloses the hollow."
+      },
+      "candidate_status": "Source candidate under whole-room, player-camera and production traversal review."
+    },
+    {
+      "id": "MnR01Farmhouse",
+      "template": "GuideGentsHouse",
+      "dimensions_metatiles": [
+        6,
+        5
+      ],
+      "width_metatiles": 6,
+      "height_metatiles": 5,
+      "tileset": "house",
+      "border_block": 0,
+      "exterior_anchor_metatile": [
+        24,
+        7
+      ],
+      "mandatory": false,
+      "purpose": "Berry keeper teaches grass, ledges and the Rochester delivery destination.",
+      "rows": [
+        "03 08 0e 03 08 1d",
+        "06 0f 0f 0f 0f 07",
+        "06 0f 01 02 0f 07",
+        "06 0f 0c 0d 0f 07",
+        "06 0f 0b 0f 0f 07"
+      ],
+      "exits": [
+        [
+          4,
+          9
+        ],
+        [
+          5,
+          9
+        ]
+      ],
+      "clear_arrival": [
+        4,
+        8
+      ],
+      "exit_collision": "WARP_CARPET_DOWN",
+      "residents": [
+        {
+          "id": "MN_R01_FARMER",
+          "sprite": "SPRITE_GRAMPS",
+          "tile": [
+            5,
+            3
+          ],
+          "facing": "south",
+          "lines": [
+            "Wild partners hide",
+            "in the tall grass.",
+            "Ledges let you hop",
+            "down, but not up.",
+            "Use the east ramp",
+            "to reach the bluff",
+            "That BERRY is",
+            "for your partner.",
+            "Dr Tamarack waits",
+            "at the Rochester",
+            "clinic out west."
+          ]
+        }
+      ],
+      "items": [
+        {
+          "id": "MN_R01_ITEM_04",
+          "item": "BERRY",
+          "quantity": 1,
+          "tile": [
+            8,
+            7
+          ],
+          "flag": "EVENT_MN_R01_ITEM_04"
+        }
+      ],
+      "signs": [
+        {
+          "id": "MN_R01_FARM_NOTICE",
+          "tile": [
+            4,
+            0
+          ],
+          "lines": [
+            "TAMARACK'S NOTE",
+            "ROCHESTER CLINIC",
+            "FOLLOW WEST ROAD"
+          ]
+        }
+      ]
+    }
+  ],
+  "shortcut": null,
+  "art_constraints": [
+    "Only original packed 8x8 source tiles.",
+    "No painted shadows, enlarged trees or perspective props.",
+    "Fit source shoreline/cliff quadrants; draw source trees in coherent metatile groups."
+  ],
+  "status": "Existing hand-authored32\u00d720route with bounded south creek closure and ordinary canopy repair; new native republication pending.",
+  "anchor_status": "Route 1 actor/pickup reservations are checked for floor/grass reachability against the source-collision blockout. Actual sprite occupancy, script ownership, battle and warp behavior still require the production controller.",
+  "residents": [
+    {
+      "id": "MN_R01_BLUFF_WALKER",
+      "sprite": "SPRITE_TEACHER",
+      "tile": [
+        41,
+        21
+      ],
+      "facing": "west",
+      "lines": [
+        "The ramp climbs",
+        "the low bluff.",
+        "The ledge lets",
+        "you hop back down."
+      ]
+    },
+    {
+      "id": "MN_R01_CREEK_CHILD",
+      "sprite": "SPRITE_YOUNGSTER",
+      "tile": [
+        23,
+        35
+      ],
+      "facing": "west",
+      "lines": [
+        "The fence keeps",
+        "my feet on land.",
+        "I watch the creek",
+        "from this dock."
+      ]
+    }
+  ],
+  "signs": [
+    {
+      "id": "MN_R01_SIGN_01",
+      "tile": [
+        60,
+        20
+      ],
+      "lines": [
+        "DRIFTLESS TRAIL",
+        "WEST: ROCHESTER",
+        "EAST: WINONA"
+      ]
+    },
+    {
+      "id": "MN_R01_SIGN_02",
+      "tile": [
+        52,
+        16
+      ],
+      "lines": [
+        "NELSON FARM",
+        "VISITORS WELCOME"
+      ]
+    },
+    {
+      "id": "MN_R01_SIGN_03",
+      "tile": [
+        16,
+        20
+      ],
+      "lines": [
+        "LIMESTONE HOLLOW",
+        "PASSAGES REJOIN"
+      ]
+    },
+    {
+      "id": "MN_R01_SIGN_04",
+      "tile": [
+        4,
+        26
+      ],
+      "lines": [
+        "ROCHESTER: WEST",
+        "CLINIC IN TOWN"
+      ]
+    },
+    {
+      "id": "MN_R01_SIGN_05",
+      "tile": [
+        32,
+        14
+      ],
+      "lines": [
+        "ONE WAY LEDGE",
+        "DOWN: TRAIL",
+        "UP: EAST RAMP"
+      ]
+    }
+  ],
+  "doors": [
+    {
+      "id": "LIMESTONE_HOLLOW",
+      "warp_index": 1,
+      "return_warp_index": 2,
+      "tile": [
+        18,
+        17
+      ],
+      "arrival_tile": [
+        18,
+        18
+      ],
+      "return_tile": [
+        18,
+        18
+      ],
+      "target": "MnR01Cave1F",
+      "target_warp": 1,
+      "collision": "CAVE"
+    },
+    {
+      "id": "NELSON_FARM",
+      "warp_index": 3,
+      "return_warp_index": 4,
+      "tile": [
+        49,
+        15
+      ],
+      "arrival_tile": [
+        49,
+        16
+      ],
+      "return_tile": [
+        49,
+        16
+      ],
+      "target": "MnR01Farmhouse",
+      "target_warp": 1,
+      "collision": "DOOR"
+    }
+  ],
+  "required_grass_crossings": [
+    {
+      "id": "WINONA_GRASS_GATE",
+      "bounds_core": [
+        54,
+        22,
+        58,
+        28
+      ],
+      "minimum_grass_steps": 4
+    }
+  ],
+  "viewpoints": [
+    {
+      "id": "WINONA_GRASS",
+      "tile": [
+        59,
+        25
+      ]
+    },
+    {
+      "id": "NELSON_FARM",
+      "tile": [
+        49,
+        17
+      ]
+    },
+    {
+      "id": "EAST_RAMP",
+      "tile": [
+        41,
+        19
+      ]
+    },
+    {
+      "id": "LIMESTONE_BENCH",
+      "tile": [
+        29,
+        15
+      ]
+    },
+    {
+      "id": "HOLLOW_ENTRANCE",
+      "tile": [
+        19,
+        19
+      ]
+    },
+    {
+      "id": "LOWER_MEADOW",
+      "tile": [
+        27,
+        25
+      ]
+    },
+    {
+      "id": "CREEK_DOCK",
+      "tile": [
+        17,
+        35
+      ]
+    },
+    {
+      "id": "ROCHESTER_GATE",
+      "tile": [
+        7,
+        25
+      ]
+    }
+  ],
+  "implementation": {
+    "layout": "MN_R01.layout.json",
+    "scope": "One 32 by 20 exterior, one 8 by 7 hollow and one 6 by 5 farmhouse.",
+    "state": "Current source-native repair published; geometry, preservation, fresh stdio MCP and audio verification pass. Regional starter gate remains pending.",
+    "trainer_density": "Three named optional trainers replace six generic reservations. Flags 04\u201306 remain unused; Q01 depends on none of them."
+  },
+  "cut_gates": [],
+  "superseded_one_way_ledges": [
+    {
+      "id": "BLUFF_RETURN",
+      "bounds_core": [
+        26,
+        16,
+        30,
+        18
+      ],
+      "direction": "south",
+      "source_block": "57",
+      "upper_approach": [
+        29,
+        15
+      ],
+      "hop_from": [
+        29,
+        16
+      ],
+      "landing": [
+        29,
+        18
+      ],
+      "reverse_blocked": [
+        29,
+        17
+      ],
+      "purpose": "Descend from the long bluff path; returning uphill uses the eastern ramp.",
+      "side_barriers": [
+        [
+          25,
+          17
+        ],
+        [
+          30,
+          17
+        ]
+      ],
+      "return_passage_core": [
+        40,
+        18,
+        42,
+        20
+      ],
+      "minimum_return_steps": 35
+    }
+  ],
+  "one_way_ledges": [],
+  "superseded_directional_grass_loops": [
+    {
+      "id": "BLUFF_GRASS_CLIMB_DRY_DROP",
+      "ledge_id": "BLUFF_RETURN",
+      "outbound_start_core": [
+        29,
+        18
+      ],
+      "outbound_end_core": [
+        29,
+        15
+      ],
+      "grass_regions_core": [
+        [
+          38,
+          20,
+          40,
+          24
+        ],
+        [
+          42,
+          20,
+          46,
+          24
+        ],
+        [
+          40,
+          22,
+          42,
+          24
+        ]
+      ],
+      "northbound_minimum_grass_steps": 2,
+      "southbound_minimum_grass_steps": 0,
+      "dry_trail_core": [
+        [
+          29,
+          18
+        ],
+        [
+          28,
+          18
+        ],
+        [
+          27,
+          18
+        ],
+        [
+          26,
+          18
+        ],
+        [
+          26,
+          19
+        ],
+        [
+          26,
+          20
+        ],
+        [
+          26,
+          21
+        ],
+        [
+          25,
+          21
+        ],
+        [
+          25,
+          22
+        ],
+        [
+          25,
+          23
+        ],
+        [
+          25,
+          24
+        ]
+      ],
+      "all_ledge_lanes_minimum_grass_steps": 2,
+      "scope": "Bluff loop: grass across the ordinary ramp approach, dry southward ledge return to the lower trail. Existing walker dry pad and ramp preserved."
+    }
+  ],
+  "directional_grass_loops": [],
+  "closed_high_cliff": {
+    "wall_tiles": [
+      [
+        26,
+        17
+      ],
+      [
+        27,
+        17
+      ],
+      [
+        28,
+        17
+      ],
+      [
+        29,
+        17
+      ]
+    ],
+    "walkable_upper_lip": [
+      [
+        26,
+        16
+      ],
+      [
+        27,
+        16
+      ],
+      [
+        28,
+        16
+      ],
+      [
+        29,
+        16
+      ]
+    ],
+    "reason": "Former tall-cliff hop replaced by installed solid bluff edge; ordinary uphill and downhill use native cave stairs."
+  },
+  "current_native_stairs": {
+    "metatile": [
+      20,
+      9
+    ],
+    "block": "80",
+    "upper": [
+      41,
+      17
+    ],
+    "lower": [
+      41,
+      20
+    ],
+    "bidirectional": true,
+    "grass_approach": true
+  },
+  "current_native_binding": {
+    "revision": "route_grass_boundary_safari_sources_revision",
+    "pack": "content-packs/minnesota-iron-crosscut-rock-cache-v02.crystalpack",
+    "pack_sha256": "bc38b8920bdc6d5e3c0e18ddac283aa4087e0020d694861f277d10314a3875d1",
+    "map": "MnR01C00R00",
+    "tileset": "mn_outdoor_johto_stairs",
+    "width": 32,
+    "height": 20,
+    "native_blocks": [
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      106,
+      112,
+      107,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      104,
+      113,
+      105,
+      5,
+      5,
+      106,
+      112,
+      112,
+      107,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      106,
+      113,
+      113,
+      113,
+      112,
+      112,
+      113,
+      113,
+      113,
+      113,
+      112,
+      106,
+      112,
+      107,
+      5,
+      5,
+      24,
+      25,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      108,
+      110,
+      113,
+      113,
+      113,
+      1,
+      1,
+      113,
+      69,
+      113,
+      108,
+      114,
+      114,
+      109,
+      5,
+      68,
+      22,
+      30,
+      5,
+      70,
+      94,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      115,
+      114,
+      114,
+      114,
+      114,
+      114,
+      110,
+      113,
+      113,
+      113,
+      113,
+      113,
+      105,
+      5,
+      68,
+      1,
+      1,
+      69,
+      70,
+      61,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      1,
+      1,
+      4,
+      4,
+      3,
+      2,
+      2,
+      108,
+      114,
+      114,
+      114,
+      114,
+      128,
+      109,
+      5,
+      68,
+      1,
+      4,
+      4,
+      70,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      60,
+      5,
+      5,
+      5,
+      69,
+      1,
+      1,
+      1,
+      1,
+      2,
+      61,
+      5,
+      5,
+      5,
+      5,
+      3,
+      2,
+      3,
+      3,
+      5,
+      73,
+      1,
+      73,
+      5,
+      5,
+      5,
+      69,
+      5,
+      5,
+      4,
+      4,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      2,
+      2,
+      5,
+      3,
+      3,
+      3,
+      5,
+      3,
+      3,
+      3,
+      3,
+      2,
+      2,
+      2,
+      1,
+      3,
+      3,
+      5,
+      1,
+      5,
+      1,
+      1,
+      1,
+      1,
+      3,
+      3,
+      3,
+      1,
+      5,
+      5,
+      5,
+      5,
+      2,
+      2,
+      1,
+      3,
+      3,
+      3,
+      1,
+      2,
+      2,
+      5,
+      5,
+      5,
+      5,
+      5,
+      1,
+      3,
+      3,
+      1,
+      1,
+      1,
+      5,
+      5,
+      69,
+      5,
+      5,
+      5,
+      5,
+      1,
+      5,
+      5,
+      5,
+      5,
+      3,
+      5,
+      5,
+      3,
+      3,
+      3,
+      5,
+      5,
+      1,
+      5,
+      2,
+      2,
+      5,
+      5,
+      1,
+      3,
+      3,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      1,
+      1,
+      1,
+      1,
+      3,
+      2,
+      3,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      1,
+      5,
+      2,
+      2,
+      5,
+      5,
+      1,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      84,
+      118,
+      118,
+      118,
+      85,
+      68,
+      5,
+      24,
+      25,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      2,
+      1,
+      1,
+      3,
+      3,
+      3,
+      1,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      84,
+      118,
+      118,
+      85,
+      64,
+      65,
+      65,
+      65,
+      65,
+      68,
+      4,
+      22,
+      30,
+      92,
+      93,
+      5,
+      5,
+      3,
+      3,
+      2,
+      5,
+      4,
+      4,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      88,
+      53,
+      53,
+      89,
+      68,
+      1,
+      1,
+      1,
+      1,
+      2,
+      2,
+      1,
+      69,
+      97,
+      5,
+      5,
+      2,
+      2,
+      2,
+      2,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      88,
+      53,
+      53,
+      89,
+      72,
+      73,
+      73,
+      73,
+      73,
+      68,
+      2,
+      2,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      56,
+      57,
+      57,
+      57,
+      57,
+      57,
+      57,
+      57,
+      57,
+      68,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5
+    ]
+  },
+  "review_status": "Visual and static current review pass; production traversal pending"
+}

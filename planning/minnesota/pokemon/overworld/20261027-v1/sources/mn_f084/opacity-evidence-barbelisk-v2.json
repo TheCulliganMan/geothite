@@ -1,0 +1,114 @@
+{
+  "schema_version": 1,
+  "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f084/barbelisk.overworld.imagegen-v2-clear-source-pupils.png",
+  "source_sha256": "496bddffb9c79b5594770d55b98fc6ebb1a2d22a17085e21a5f26ae58adc9a12",
+  "trial_alpha_threshold": 245,
+  "why": "ImageGen eye edit returned semitransparent black background haze with corner alpha166/204. Actual eye cores250\u2013252. Threshold245 tested without painting alpha; actual native proof and visual checks required.",
+  "samples": [
+    {
+      "source_pixel": [
+        0,
+        0
+      ],
+      "rgba": [
+        1,
+        0,
+        0,
+        204
+      ],
+      "retained_at245": false
+    },
+    {
+      "source_pixel": [
+        500,
+        500
+      ],
+      "rgba": [
+        0,
+        3,
+        4,
+        5
+      ],
+      "retained_at245": false
+    },
+    {
+      "source_pixel": [
+        1000,
+        500
+      ],
+      "rgba": [
+        2,
+        4,
+        5,
+        5
+      ],
+      "retained_at245": false
+    },
+    {
+      "source_pixel": [
+        243,
+        390
+      ],
+      "rgba": [
+        0,
+        0,
+        0,
+        251
+      ],
+      "retained_at245": true
+    },
+    {
+      "source_pixel": [
+        331,
+        390
+      ],
+      "rgba": [
+        0,
+        0,
+        0,
+        252
+      ],
+      "retained_at245": true
+    },
+    {
+      "source_pixel": [
+        1123,
+        355
+      ],
+      "rgba": [
+        0,
+        0,
+        0,
+        252
+      ],
+      "retained_at245": true
+    },
+    {
+      "source_pixel": [
+        250,
+        420
+      ],
+      "rgba": [
+        144,
+        198,
+        216,
+        252
+      ],
+      "retained_at245": true
+    },
+    {
+      "source_pixel": [
+        280,
+        280
+      ],
+      "rgba": [
+        133,
+        191,
+        211,
+        252
+      ],
+      "retained_at245": true
+    }
+  ],
+  "tradeoff": "Some genuine softened colored edges/core patches are below245 and may disappear. Do not infer acceptance from this opacity receipt alone."
+}

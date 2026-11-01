@@ -1,0 +1,23 @@
+Use case: stylized-concept. Original 1999 handheld RPG pixel sprites. Create ONE evolution family sheet with3columns and2rows on white. Exactly6isolated sprites, no text, no dividers. Top row: full-body front views facing LEFT. Bottom row: large CLOSE REAR head-and-upper-body portraits facing upper-right, lower body cut off at bottom. The rear portraits must fill their cells, not small whole-body copies.
+Style: authentic Generation2 coarse square pixel clusters, selective black outlines, simple shapes, readable dark eyes with white glints. Native fronts56x56, backs48x48, enlarged by nearest-neighbor. Flat four-color shading per creature; no gradients, smooth edges, tiny texture, scenery or shadows.
+Theme: living prairie snow-fence creatures that catch blowing snow and shelter the grasslands. All are friendly fantasy ice beings, with fence shapes grown as body anatomy.
+Column1 Driftpeg (ICE): small squat ice peg, wedge-shaped head, two short chunky feet, tiny side fins, rounded snow cap and alert eyes.
+Column2 Fencicle (ICE/FIGHTING): sturdy ice creature with a wider two-slat torso, short bracing forelimbs and two firmly planted feet. Head is a simple little ice wedge above the slats.
+Column3 Rimeguard (ICE/FIGHTING): largest broad ice creature, three curved horizontal fence slats form a fan-shaped torso with clear gaps, broad stabilizing forelimbs, thick planted legs and a small central snow-capped head. Clear growth from peg to slats to broad shelter fan.
+Each species has its OWN exact four colors shared only with its front/back. Palette indices0white,1light,2dark,3black. GBC RGB5 channels0..31; RGB555=r|(g<<5)|(b<<10); RGB8=(v<<3)|(v>>2).
+Driftpeg palette:
+index0: RGB5(31, 31, 31); packedRGB55532767 (0x7FFF); expandedRGB8(255, 255, 255); #FFFFFF.
+index1: RGB5(20, 26, 29); packedRGB55530548 (0x7754); expandedRGB8(165, 214, 239); #A5D6EF.
+index2: RGB5(8, 13, 18); packedRGB55518856 (0x49A8); expandedRGB8(66, 107, 148); #426B94.
+index3: RGB5(0, 0, 0); packedRGB5550 (0x0000); expandedRGB8(0, 0, 0); #000000.
+Fencicle palette:
+index0: RGB5(31, 31, 31); packedRGB55532767 (0x7FFF); expandedRGB8(255, 255, 255); #FFFFFF.
+index1: RGB5(17, 24, 28); packedRGB55529457 (0x7311); expandedRGB8(140, 198, 231); #8CC6E7.
+index2: RGB5(7, 11, 17); packedRGB55517767 (0x4567); expandedRGB8(57, 90, 140); #395A8C.
+index3: RGB5(0, 0, 0); packedRGB5550 (0x0000); expandedRGB8(0, 0, 0); #000000.
+Rimeguard palette:
+index0: RGB5(31, 31, 31); packedRGB55532767 (0x7FFF); expandedRGB8(255, 255, 255); #FFFFFF.
+index1: RGB5(21, 27, 30); packedRGB55531605 (0x7B75); expandedRGB8(173, 222, 247); #ADDEF7.
+index2: RGB5(5, 10, 16); packedRGB55516709 (0x4145); expandedRGB8(41, 82, 132); #295284.
+index3: RGB5(0, 0, 0); packedRGB5550 (0x0000); expandedRGB8(0, 0, 0); #000000.
+Use these exact colors as hard pixel clusters. Fronts increase36/44/54logical pixels across the stages. Each back is a distinct enlarged REAR portrait with lower body cropped, matching the corresponding front anatomy and its individual palette. Deliver only clean pixel sprites.

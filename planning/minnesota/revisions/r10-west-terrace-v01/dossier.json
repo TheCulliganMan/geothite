@@ -1,0 +1,1139 @@
+{
+  "id": "MN_R10",
+  "native_cave_revision": {
+    "revision": "r10_rock_gallery_revision",
+    "room": "MnR10Cave1F",
+    "plan": "../caves/current-iron-v01/README.md",
+    "source": "../caves/johto-quality-v01/MnR10Cave1F.json",
+    "scope": "The canonical18x14 cave is now published on the compact-coast/Ely/waterfront lineage, with native stairs, both ledges, reader, Revive and mouth/Continue verified. This link does not compose the separately accepted outdoor carrier-bank grass revision."
+  },
+  "map_prefix": "MnR10",
+  "name": "Iron Range Descent",
+  "required_flags": [
+    "BADGE_7",
+    "EVENT_MN_DEPOT_CLEARED"
+  ],
+  "quest": "Q06",
+  "encounters": {
+    "grass_rates": {
+      "morning": 10,
+      "day": 10,
+      "night": 10
+    },
+    "grass": {
+      "morning": [
+        {
+          "species": "GRAVELER",
+          "level": 34
+        },
+        {
+          "species": "MAGNEMITE",
+          "level": 35
+        },
+        {
+          "species": "MACHOKE",
+          "level": 36
+        },
+        {
+          "species": "TEDDIURSA",
+          "level": 37
+        },
+        {
+          "species": "STANTLER",
+          "level": 38
+        },
+        {
+          "species": "GLIGAR",
+          "level": 38
+        },
+        {
+          "species": "SKARMORY",
+          "level": 38
+        }
+      ],
+      "day": [
+        {
+          "species": "GRAVELER",
+          "level": 34
+        },
+        {
+          "species": "MAGNEMITE",
+          "level": 35
+        },
+        {
+          "species": "MACHOKE",
+          "level": 36
+        },
+        {
+          "species": "TEDDIURSA",
+          "level": 37
+        },
+        {
+          "species": "STANTLER",
+          "level": 38
+        },
+        {
+          "species": "GLIGAR",
+          "level": 38
+        },
+        {
+          "species": "SKARMORY",
+          "level": 38
+        }
+      ],
+      "night": [
+        {
+          "species": "GRAVELER",
+          "level": 34
+        },
+        {
+          "species": "ARIADOS",
+          "level": 35
+        },
+        {
+          "species": "MACHOKE",
+          "level": 36
+        },
+        {
+          "species": "TEDDIURSA",
+          "level": 37
+        },
+        {
+          "species": "STANTLER",
+          "level": 38
+        },
+        {
+          "species": "GLIGAR",
+          "level": 38
+        },
+        {
+          "species": "SKARMORY",
+          "level": 38
+        }
+      ]
+    },
+    "water_rate": 4,
+    "water": [
+      {
+        "species": "POLIWAG",
+        "level": 34
+      },
+      {
+        "species": "WOOPER",
+        "level": 35
+      },
+      {
+        "species": "MARILL",
+        "level": 38
+      }
+    ]
+  },
+  "art_constraints": [
+    "Only original packed 8x8 source tiles.",
+    "No painted shadows, enlarged trees or perspective props.",
+    "Fit source shoreline/cliff quadrants; draw source trees in coherent metatile groups."
+  ],
+  "dimensions_metatiles": [
+    48,
+    20
+  ],
+  "chunk_metatiles": [
+    32,
+    24
+  ],
+  "chunk_columns": 2,
+  "chunk_rows": 1,
+  "tileset": "johto",
+  "source_references": [
+    "Route45",
+    "Route42",
+    "Route34"
+  ],
+  "description": "A pale gravel haul road descends between exposed ore ribs and a contoured carrier bank. Joined erratic crests and scree aprons frame the ore-inspection reward, actual ramp and directed bank return; the dry mine-foot cleft leads through a short grassy rock-and-pine saddle to a protected Superior headland. All existing actors, release flags, ports and mine returns remain at their native coordinates.",
+  "endpoints": [
+    {
+      "place": "GRAND RAPIDS",
+      "side": "W",
+      "gate_metatile": [
+        1,
+        5
+      ],
+      "landing_metatile": [
+        3,
+        5
+      ]
+    },
+    {
+      "place": "DULUTH",
+      "side": "E",
+      "gate_metatile": [
+        46,
+        12
+      ],
+      "landing_metatile": [
+        44,
+        12
+      ]
+    }
+  ],
+  "main_path_metatiles": [
+    [
+      1,
+      5
+    ],
+    [
+      5,
+      5
+    ],
+    [
+      5,
+      11
+    ],
+    [
+      23,
+      11
+    ],
+    [
+      23,
+      10
+    ],
+    [
+      29,
+      10
+    ],
+    [
+      29,
+      12
+    ],
+    [
+      46,
+      12
+    ]
+  ],
+  "main_lane_width_gameplay_tiles": 2,
+  "districts": [
+    {
+      "id": "CARRIER_BENCH",
+      "name": "Rock-rib carrier bench",
+      "bounds_metatiles": [
+        0,
+        2,
+        24,
+        11
+      ],
+      "landmark_metatile": [
+        12,
+        9
+      ],
+      "purpose": "Pale gravel through exposed bedrock ribs, optional ore-inspection habitat/cache and native ramp/ledge return"
+    },
+    {
+      "id": "MINE_FOOT",
+      "name": "Scree apron and dry mine cleft",
+      "bounds_metatiles": [
+        1,
+        8,
+        29,
+        17
+      ],
+      "landmark_metatile": [
+        18,
+        9
+      ],
+      "purpose": "Useful rest/cache turnouts between contoured rock toes, the preserved gallery and short required habitat saddle"
+    },
+    {
+      "id": "SUPERIOR_EDGE",
+      "name": "Public Superior shore",
+      "bounds_metatiles": [
+        27,
+        6,
+        48,
+        20
+      ],
+      "landmark_metatile": [
+        33,
+        13
+      ],
+      "purpose": "Protected Superior shore beneath exposed headland walls, optional bird habitat and the unchanged Duluth road"
+    }
+  ],
+  "loops": [],
+  "minimum_optional_branches": 4,
+  "trainers": [
+    {
+      "id": "MN_R10_T01",
+      "display_name": "CALDER",
+      "trainer_class": "HIKER",
+      "sprite": "SPRITE_POKEFAN_M",
+      "tile": [
+        9,
+        11
+      ],
+      "facing": "east",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "BANDRAKE",
+          "level": 34
+        },
+        {
+          "species": "HELIKNOCK",
+          "level": 34
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R10_TRAINER_01",
+      "before_lines": [
+        "The old ore road",
+        "still holds firm."
+      ],
+      "after_lines": [
+        "Use the ramp if",
+        "you head back west"
+      ],
+      "loss_lines": [
+        "Good footing!"
+      ]
+    },
+    {
+      "id": "MN_R10_T02",
+      "display_name": "RUSK",
+      "trainer_class": "FIREBREATHER",
+      "sprite": "SPRITE_FISHER",
+      "tile": [
+        15,
+        25
+      ],
+      "facing": "west",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "EMBERM",
+          "level": 34
+        },
+        {
+          "species": "KINDLIT",
+          "level": 35
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R10_TRAINER_02",
+      "before_lines": [
+        "My team likes the",
+        "warm rock faces."
+      ],
+      "after_lines": [
+        "The lake breeze",
+        "cools us down."
+      ],
+      "loss_lines": [
+        "Good footing!"
+      ]
+    },
+    {
+      "id": "MN_R10_T03",
+      "display_name": "ANSEL",
+      "trainer_class": "BIRD_KEEPER",
+      "sprite": "SPRITE_YOUNGSTER",
+      "tile": [
+        75,
+        19
+      ],
+      "facing": "east",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "NOTCHBILL",
+          "level": 35
+        },
+        {
+          "species": "LATCHQUILL",
+          "level": 36
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R10_TRAINER_03",
+      "before_lines": [
+        "Look above the",
+        "shore before dusk."
+      ],
+      "after_lines": [
+        "Those wings turn",
+        "with the wind."
+      ],
+      "loss_lines": [
+        "Good footing!"
+      ]
+    },
+    {
+      "id": "MN_R10_T04",
+      "display_name": "MARIN",
+      "trainer_class": "SAILOR",
+      "sprite": "SPRITE_SAILOR",
+      "tile": [
+        85,
+        25
+      ],
+      "facing": "south",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "CARTICK",
+          "level": 35
+        },
+        {
+          "species": "HELIKNOCK",
+          "level": 35
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R10_TRAINER_04",
+      "before_lines": [
+        "DULUTH is close.",
+        "One quick battle?"
+      ],
+      "after_lines": [
+        "The shore road",
+        "takes you there."
+      ],
+      "loss_lines": [
+        "Good footing!"
+      ]
+    },
+    {
+      "id": "MN_R10_T05",
+      "display_name": "IVA",
+      "trainer_class": "HIKER",
+      "sprite": "SPRITE_POKEFAN_M",
+      "tile": [
+        37,
+        13
+      ],
+      "facing": "west",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "WHIRLNUT",
+          "level": 36
+        },
+        {
+          "species": "PELLETANK",
+          "level": 35
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R10_TRAINER_05",
+      "before_lines": [
+        "I check the old",
+        "gallery each week."
+      ],
+      "after_lines": [
+        "Only dry passage",
+        "lies beyond here."
+      ],
+      "loss_lines": [
+        "Good footing!"
+      ]
+    },
+    {
+      "id": "MN_R10_T06",
+      "display_name": "WREN",
+      "trainer_class": "PICNICKER",
+      "sprite": "SPRITE_LASS",
+      "tile": [
+        39,
+        29
+      ],
+      "facing": "east",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "SHEDSTAG",
+          "level": 36
+        },
+        {
+          "species": "DENSY",
+          "level": 36
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R10_TRAINER_06",
+      "before_lines": [
+        "A quiet turn off",
+        "the carrier road."
+      ],
+      "after_lines": [
+        "The grass grows",
+        "back every spring"
+      ],
+      "loss_lines": [
+        "Good footing!"
+      ]
+    }
+  ],
+  "residents": [
+    {
+      "id": "MN_R10_SURVEY_WALKER",
+      "sprite": "SPRITE_OFFICER",
+      "tile": [
+        7,
+        25
+      ],
+      "facing": "east",
+      "lines": [
+        "The depot sent",
+        "word ahead of you.",
+        "DULUTH lies east."
+      ]
+    },
+    {
+      "id": "MN_R10_ROAD_KEEPER",
+      "sprite": "SPRITE_POKEFAN_M",
+      "tile": [
+        41,
+        23
+      ],
+      "facing": "south",
+      "lines": [
+        "The upper road",
+        "drops at the bank.",
+        "Use the west ramp",
+        "to climb back up."
+      ]
+    },
+    {
+      "id": "MN_R10_LAKE_WATCHER",
+      "sprite": "SPRITE_GRAMPS",
+      "tile": [
+        67,
+        25
+      ],
+      "facing": "south",
+      "lines": [
+        "That is SUPERIOR.",
+        "The rails mark",
+        "the public bank."
+      ]
+    }
+  ],
+  "items": [
+    {
+      "id": "MN_R10_ITEM_01",
+      "item": "HYPER_POTION",
+      "quantity": 1,
+      "flag": "EVENT_MN_R10_ITEM_01",
+      "tile": [
+        17,
+        27
+      ]
+    },
+    {
+      "id": "MN_R10_ITEM_02",
+      "item": "ULTRA_BALL",
+      "quantity": 1,
+      "flag": "EVENT_MN_R10_ITEM_02",
+      "tile": [
+        85,
+        19
+      ]
+    },
+    {
+      "id": "MN_R10_ITEM_03",
+      "item": "MAX_REPEL",
+      "quantity": 1,
+      "flag": "EVENT_MN_R10_ITEM_03",
+      "tile": [
+        27,
+        9
+      ]
+    }
+  ],
+  "signs": [
+    {
+      "id": "MN_R10_WEST_SIGN",
+      "tile": [
+        4,
+        12
+      ],
+      "lines": [
+        "GRAND RAPIDS WEST",
+        "DULUTH EAST"
+      ]
+    },
+    {
+      "id": "MN_R10_RAMP_SIGN",
+      "tile": [
+        8,
+        24
+      ],
+      "lines": [
+        "CARRIER BANK",
+        "Ramp north.",
+        "Lower road east."
+      ]
+    },
+    {
+      "id": "MN_R10_MINE_SIGN",
+      "tile": [
+        38,
+        24
+      ],
+      "lines": [
+        "DRY MINE GALLERY",
+        "The depot work",
+        "is already done."
+      ]
+    },
+    {
+      "id": "MN_R10_PINE_SIGN",
+      "tile": [
+        48,
+        22
+      ],
+      "lines": [
+        "PINE NECK",
+        "Stay on the trail."
+      ]
+    },
+    {
+      "id": "MN_R10_DULUTH_SIGN",
+      "tile": [
+        90,
+        22
+      ],
+      "lines": [
+        "DULUTH AHEAD",
+        "SUPERIOR SHORE"
+      ]
+    },
+    {
+      "id": "MN_R10_SURF_SIGN",
+      "tile": [
+        76,
+        28
+      ],
+      "lines": [
+        "PUBLIC LANDING",
+        "Use SURF here.",
+        "Keep off the rocks"
+      ]
+    }
+  ],
+  "doors": [
+    {
+      "id": "DRY_MINE_GALLERY",
+      "warp_index": 1,
+      "return_warp_index": 2,
+      "tile": [
+        36,
+        17
+      ],
+      "arrival_tile": [
+        36,
+        18
+      ],
+      "return_tile": [
+        36,
+        18
+      ],
+      "target": "MnR10Cave1F",
+      "target_warp": 1,
+      "collision": "CAVE"
+    }
+  ],
+  "interiors": [
+    {
+      "id": "MnR10Cave1F",
+      "template": "UnionCave1F",
+      "dimensions_metatiles": [
+        18,
+        14
+      ],
+      "rows": [
+        "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e",
+        "2e 2e 2e 2e 04 05 06 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e",
+        "2e 2e 2e 04 09 09 02 04 06 04 05 06 2e 2e 2e 2e 2e 2e",
+        "2e 2e 2e 08 21 21 39 21 21 21 36 0a 2e 2e 2e 2e 2e 2e",
+        "2e 04 05 12 02 02 02 2e 2f 08 36 02 05 06 2e 2e 2e 2e",
+        "2e 08 02 02 02 0a 2d 2e 2e 2f 02 02 02 3e 3d 2e 2e 2e",
+        "2e 07 21 02 02 0a 2d 2e 2e 2f 08 02 3e 0f 25 0a 2e 2e",
+        "2e 2e 2e 12 2e 2e 2d 2e 2f 08 02 02 26 0f 25 0a 2e 2e",
+        "2e 2e 2e 08 02 05 2d 2f 04 05 08 02 3e 0f 25 0a 2e 2e",
+        "2e 2e 2e 08 02 02 31 2e 08 02 2e 08 26 0f 33 0a 2e 2e",
+        "2e 2e 2e 20 21 20 02 19 02 02 02 02 32 33 02 0a 2e 2e",
+        "2e 2e 2e 2e 2e 2e 20 21 21 21 21 0c 02 02 02 0a 2e 2e",
+        "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 20 21 21 22 2e 2e",
+        "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e"
+      ],
+      "exits": [
+        [
+          3,
+          13
+        ]
+      ],
+      "clear_arrival": [
+        3,
+        12
+      ],
+      "exit_collision": "LADDER",
+      "border_block": 46,
+      "residents": [
+        {
+          "id": "MN_R10_GALLERY_READER",
+          "sprite": "SPRITE_SUPER_NERD",
+          "tile": [
+            9,
+            5
+          ],
+          "facing": "east",
+          "lines": [
+            "Both passages",
+            "circle the pillar.",
+            "The foreman was",
+            "at the west mine."
+          ]
+        }
+      ],
+      "items": [
+        {
+          "id": "MN_R10_ITEM_04",
+          "item": "REVIVE",
+          "quantity": 1,
+          "flag": "EVENT_MN_R10_ITEM_04",
+          "tile": [
+            29,
+            23
+          ]
+        }
+      ],
+      "signs": [],
+      "purpose": "Replace the broad empty east chamber with a long stepped spring fed below a pinched upper gallery. A dry bank descends beside it to the Revive. Keep the four ordinary stairs, split ore spine, two-lane drop and both return paths.",
+      "candidate_status": "Source candidate under whole-room, player-camera and production traversal review.",
+      "review_contract": {
+        "quality_revision": "johto-quality-v01",
+        "palette_group": "nite",
+        "native_stair_blocks": [
+          [
+            10,
+            3
+          ],
+          [
+            3,
+            4
+          ],
+          [
+            10,
+            4
+          ],
+          [
+            3,
+            7
+          ]
+        ],
+        "viewpoints": [
+          {
+            "id": "mouth",
+            "tile": [
+              3,
+              12
+            ]
+          },
+          {
+            "id": "reader",
+            "tile": [
+              8,
+              5
+            ]
+          },
+          {
+            "id": "pinched-gallery",
+            "tile": [
+              17,
+              6
+            ]
+          },
+          {
+            "id": "east-stair",
+            "tile": [
+              20,
+              9
+            ]
+          },
+          {
+            "id": "spring-bank",
+            "tile": [
+              23,
+              17
+            ]
+          },
+          {
+            "id": "rock-nose",
+            "tile": [
+              23,
+              19
+            ]
+          },
+          {
+            "id": "revive",
+            "tile": [
+              28,
+              23
+            ]
+          },
+          {
+            "id": "west-return",
+            "tile": [
+              17,
+              19
+            ]
+          },
+          {
+            "id": "widest-fork",
+            "tile": [
+              11,
+              9
+            ]
+          }
+        ],
+        "notes": "Replace the broad empty east chamber with a long stepped spring fed below a pinched upper gallery. A dry bank descends beside it to the Revive. Keep the four ordinary stairs, split ore spine, two-lane drop and both return paths."
+      }
+    }
+  ],
+  "shortcut": null,
+  "cut_gates": [],
+  "viewpoints": [
+    {
+      "id": "GRAND_RAPIDS_BENCH",
+      "tile": [
+        6,
+        10
+      ]
+    },
+    {
+      "id": "UPPER_WIND_GRASS",
+      "tile": [
+        27,
+        11
+      ]
+    },
+    {
+      "id": "CARRIER_BANK_DROP",
+      "tile": [
+        25,
+        19
+      ]
+    },
+    {
+      "id": "WESTERN_RAMP",
+      "tile": [
+        11,
+        22
+      ]
+    },
+    {
+      "id": "DRY_MINE_CLEFT",
+      "tile": [
+        36,
+        18
+      ]
+    },
+    {
+      "id": "PINE_HABITAT",
+      "tile": [
+        49,
+        21
+      ]
+    },
+    {
+      "id": "EASTERN_SEAM",
+      "tile": [
+        63,
+        24
+      ]
+    },
+    {
+      "id": "SUPERIOR_GLIMPSE",
+      "tile": [
+        67,
+        26
+      ]
+    },
+    {
+      "id": "SHORE_LANDING",
+      "tile": [
+        73,
+        29
+      ]
+    },
+    {
+      "id": "DULUTH_APPROACH",
+      "tile": [
+        91,
+        25
+      ]
+    },
+    {
+      "id": "WIDEST_CARRIER_BEND",
+      "tile": [
+        17,
+        15
+      ]
+    },
+    {
+      "id": "ROUTINE_CARRIER_CENTER",
+      "tile": [
+        17,
+        17
+      ]
+    },
+    {
+      "id": "WEST_ROUTINE_LANE",
+      "tile": [
+        7,
+        11
+      ]
+    },
+    {
+      "id": "SCREE_LOWER_ROAD",
+      "tile": [
+        32,
+        23
+      ]
+    },
+    {
+      "id": "NECK_ROCK_FACE",
+      "tile": [
+        53,
+        19
+      ]
+    },
+    {
+      "id": "SHORE_ROCK_HEADWALL",
+      "tile": [
+        81,
+        25
+      ]
+    }
+  ],
+  "required_grass_crossings": [
+    {
+      "id": "PINE_NECK_HABITAT",
+      "bounds_core": [
+        50,
+        18,
+        56,
+        22
+      ],
+      "minimum_grass_steps": 6
+    }
+  ],
+  "one_way_ledges": [],
+  "status": "Carrier-bank grass revision accepted in isolated minnesota-route-grass-r10-v01.crystalpack, identity 3d7362f74a63; native grass encounters, stair/ledge/mine, Surf, Calder/PP, Continue, stdio and preservation/audio checks pass. Shared current-game integration and earned regional progression remain open.",
+  "anchor_status": "Exact existing native actors, doors, parties and story preserved; terrain-only geography revision and current production-controller proof recorded in playable/geography-revisions.md.",
+  "unused_reservations": {
+    "trainers": [
+      "MN_R10_T07",
+      "MN_R10_T08",
+      "MN_R10_T09",
+      "MN_R10_T10"
+    ],
+    "trainer_flags": [
+      "EVENT_MN_R10_TRAINER_07",
+      "EVENT_MN_R10_TRAINER_08",
+      "EVENT_MN_R10_TRAINER_09",
+      "EVENT_MN_R10_TRAINER_10"
+    ],
+    "shortcut": "MN_R10_SHORTCUT is unused; no decorative Cut gate is placed.",
+    "extent": "Ten unused former chunks are removed rather than padded with repeated terrain."
+  },
+  "surf_viewpoints": [
+    {
+      "id": "SOUTH_WATER_ROCKS",
+      "tile": [
+        70,
+        35
+      ]
+    },
+    {
+      "id": "EAST_WATER_ROCKS",
+      "tile": [
+        91,
+        33
+      ]
+    }
+  ],
+  "optional_grass_rewards": [
+    {
+      "actor_id": "MN_R10_ITEM_03",
+      "bounds_core": [
+        24,
+        10,
+        34,
+        12
+      ],
+      "minimum_grass_steps": 4,
+      "purpose": "The closed upper cache terrace is entered through its native southern stair or the mine forecourt grass. The inside west cliff lip is encounter grass; at least four real encounter steps remain before the reward.",
+      "additional_bounds_core": [
+        [
+          34,
+          8,
+          42,
+          12
+        ],
+        [
+          22,
+          8,
+          24,
+          12
+        ],
+        [
+          24,
+          12,
+          32,
+          14
+        ]
+      ]
+    }
+  ],
+  "bench_width_probes": [
+    {
+      "id": "WEST_CARRIER",
+      "x": 7,
+      "y_start": 9,
+      "y_end": 13,
+      "walking_tiles": 4
+    },
+    {
+      "id": "CROSS_BENCH",
+      "x": 17,
+      "y_start": 15,
+      "y_end": 19,
+      "walking_tiles": 4
+    }
+  ],
+  "rocky_revision_contract": {
+    "baseline_layout": ".local/r10-rocky-before.layout.json",
+    "preserve_extent_ports_actors_parties_flags_rooms": true,
+    "gravel_native_block": "01",
+    "exposed_rock_native_block": "71",
+    "crest_native_block": "0a",
+    "formation_names": [
+      "North carrier bedrock rib connected to the ore rise",
+      "Contoured rock rib south of the carrier road",
+      "Dry mine-foot compact rock rib inside the cache return",
+      "Exposed neck buttress ending above the required grass saddle",
+      "Superior headland rock rib replacing the rectangular coastal grove",
+      "Continuous native rocky headwall between the upper turnout and shore road"
+    ],
+    "palette": "Unmodified original Johto source pixels; no new art or derived tiles",
+    "no_new_cut_or_ledge": true,
+    "protected_native_anchors": {
+      "ramp_metatile": [
+        5,
+        10
+      ],
+      "ledge_metatiles": [
+        [
+          12,
+          10
+        ],
+        [
+          13,
+          10
+        ]
+      ],
+      "cave_metatile": [
+        18,
+        8
+      ],
+      "required_grass_bounds_core": [
+        50,
+        18,
+        56,
+        22
+      ],
+      "surf_launch_core": [
+        73,
+        29
+      ]
+    }
+  },
+  "directional_grass_loops": [
+    {
+      "id": "CARRIER_GRASS_CLIMB_OR_DRY_DROP",
+      "ledge_id": "CARRIER_BANK_DROP",
+      "outbound_start_core": [
+        25,
+        22
+      ],
+      "outbound_end_core": [
+        25,
+        19
+      ],
+      "grass_regions_core": [
+        [
+          10,
+          14,
+          14,
+          18
+        ]
+      ],
+      "northbound_minimum_grass_steps": 4,
+      "southbound_minimum_grass_steps": 0,
+      "dry_trail_core": [
+        [
+          25,
+          19
+        ],
+        [
+          25,
+          22
+        ]
+      ],
+      "scope": "Carrier-bank upper circuit; the lower road stays dry for the downhill return."
+    }
+  ],
+  "closed_high_cliffs": [
+    {
+      "id": "CARRIER_BANK_DROP",
+      "bounds_core": [
+        24,
+        20,
+        28,
+        22
+      ],
+      "direction": "south",
+      "source_block": "56",
+      "upper_approach": [
+        25,
+        19
+      ],
+      "hop_from": [
+        25,
+        20
+      ],
+      "landing": [
+        25,
+        22
+      ],
+      "reverse_blocked": [
+        25,
+        21
+      ],
+      "side_barriers": [
+        [
+          23,
+          21
+        ],
+        [
+          28,
+          21
+        ]
+      ],
+      "return_passage_core": [
+        10,
+        20,
+        12,
+        22
+      ],
+      "minimum_return_steps": 25,
+      "purpose": "Return from the upper cache to the lower carrier road; ordinary uphill travel goes west to the actual ramp."
+    }
+  ],
+  "cache_return_rule": "Return from the cache through its grass and the existing western native stair; the former high-cliff hop is closed in the native parent."
+}

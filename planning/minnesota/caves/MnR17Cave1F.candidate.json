@@ -1,0 +1,226 @@
+{
+  "id": "MnR17Cave1F",
+  "template": "UnionCave1F",
+  "dimensions_metatiles": [
+    7,
+    8
+  ],
+  "width_metatiles": 7,
+  "height_metatiles": 8,
+  "tileset": "cave",
+  "border_block": 1,
+  "rows": [
+    "01 01 01 01 01 01 01",
+    "01 01 04 06 01 01 01",
+    "01 04 02 0a 01 01 01",
+    "01 20 02 2d 01 01 01",
+    "01 01 08 2e 01 01 01",
+    "01 01 20 02 0a 01 01",
+    "01 01 01 20 07 22 01",
+    "01 01 01 01 01 01 01"
+  ],
+  "exits": [
+    [
+      9,
+      13
+    ]
+  ],
+  "clear_arrival": [
+    9,
+    12
+  ],
+  "exit_collision": "LADDER",
+  "exit_doors": [
+    [
+      10,
+      43
+    ]
+  ],
+  "residents": [],
+  "items": [
+    {
+      "id": "MN_R17_ITEM_04",
+      "item": "REVIVE",
+      "quantity": 1,
+      "flag": "EVENT_MN_R17_ITEM_04",
+      "access": "Optional granite den; native room return required",
+      "tile": [
+        5,
+        5
+      ]
+    }
+  ],
+  "signs": [],
+  "mandatory": false,
+  "purpose": "A short hooked talus den under the border pines. The mouth turns west around an attached granite tongue, then the low skirt opens directly onto the original Revive tucked into the fitted northern overhang. The return retraces the short readable bend. One continuous floor; no empty circuit, service, new actor, artificial tier, stair/drop or HM quota.",
+  "candidate_status": "SOURCE ONLY; original7x8 native room/Revive/program/return retained; native terrain revision and controller acceptance pending.",
+  "review_contract": {
+    "palette_group": "nite",
+    "identity": "Attached granite tongue with one hooked low approach and a fitted Revive pocket; a short ordinary return, not a floating island loop.",
+    "stairs": [],
+    "viewpoints": [
+      {
+        "id": "mouth-left-turn",
+        "tile": [
+          9,
+          12
+        ]
+      },
+      {
+        "id": "fitted-low-bend",
+        "tile": [
+          7,
+          11
+        ]
+      },
+      {
+        "id": "tongue-skirt",
+        "tile": [
+          5,
+          9
+        ]
+      },
+      {
+        "id": "revive-discovery",
+        "tile": [
+          5,
+          6
+        ]
+      },
+      {
+        "id": "widest-reward-pocket",
+        "tile": [
+          4,
+          5
+        ]
+      },
+      {
+        "id": "worst-overhang",
+        "tile": [
+          6,
+          5
+        ]
+      }
+    ],
+    "native_stair_blocks": [],
+    "unpublished": true,
+    "controller_probes": {
+      "ordinary_route_core": [
+        [
+          9,
+          12
+        ],
+        [
+          8,
+          12
+        ],
+        [
+          8,
+          11
+        ],
+        [
+          7,
+          11
+        ],
+        [
+          7,
+          10
+        ],
+        [
+          6,
+          10
+        ],
+        [
+          5,
+          10
+        ],
+        [
+          5,
+          9
+        ],
+        [
+          5,
+          8
+        ],
+        [
+          5,
+          7
+        ],
+        [
+          5,
+          6
+        ]
+      ],
+      "directional_roof_walk_core": [
+        [
+          5,
+          3
+        ],
+        [
+          5,
+          2
+        ],
+        [
+          6,
+          2
+        ],
+        [
+          6,
+          3
+        ]
+      ],
+      "directional_roof_tokens": [
+        "FLOOR",
+        "UP_WALL",
+        "UP_WALL",
+        "FLOOR"
+      ],
+      "roof_blocked_up": {
+        "from": [
+          5,
+          2
+        ],
+        "target": [
+          5,
+          1
+        ]
+      },
+      "second_roof_probe": {
+        "from": [
+          3,
+          5
+        ],
+        "roof": [
+          3,
+          4
+        ]
+      },
+      "item_approach": [
+        5,
+        6
+      ],
+      "item_facing": "up",
+      "item_tile": [
+        5,
+        5
+      ],
+      "mouth": [
+        9,
+        13
+      ],
+      "clear_arrival": [
+        9,
+        12
+      ],
+      "exterior_active": [
+        10,
+        43
+      ],
+      "exterior_passive": [
+        10,
+        44
+      ]
+    },
+    "preservation": "Every original non-row/noneditorial whole-source field exact, including noNPC, Revive1/id/event/anchor, mouth/exit_doors and native7x8. Sourceonly until Root publishes and actual controller/capture proofs pass."
+  }
+}

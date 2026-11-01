@@ -1,0 +1,122 @@
+{
+  "status": "canonical source/native art,474/270 pack, balance/web/3production tests and public release13 verified",
+  "authorization": "User explicitly requested restoration; root approved validated redesign20261027v2 one\u2192three\u2192seven notes, all pure Psychic. No replacement cuts.",
+  "restored_family": "MN_F087",
+  "restored_species": [
+    "MN_186",
+    "MN_187",
+    "MN_188"
+  ],
+  "source_species": 313,
+  "active_species": 223,
+  "active_families": 101,
+  "cut_species": 90,
+  "evolution_mix": {
+    "three_stage_families": 40,
+    "two_stage_families": 42,
+    "single_stage_species": 19,
+    "legendary_species": 6,
+    "mythical_species": 2
+  },
+  "type_counts": {
+    "BUG": 27,
+    "DARK": 23,
+    "DRAGON": 11,
+    "ELECTRIC": 15,
+    "FAIRY": 13,
+    "FIGHTING": 22,
+    "FIRE": 27,
+    "FLYING": 17,
+    "GHOST": 15,
+    "GRASS": 28,
+    "GROUND": 17,
+    "ICE": 19,
+    "NORMAL": 29,
+    "POISON": 19,
+    "PSYCHIC": 16,
+    "ROCK": 17,
+    "STEEL": 21,
+    "WATER": 42
+  },
+  "unrelated_global_records_preserved": true,
+  "baseline_files": [
+    "roster-curation.json",
+    "roster.json",
+    "species-profiles.json",
+    "movesets.json",
+    "palettes.json",
+    "POKEDEX.md",
+    "README.md",
+    "ROSTER.md",
+    "COVERAGE.md",
+    "BALANCE.md"
+  ],
+  "files_sha256": {
+    "roster-curation.json": "ed636627f70768b940049b52d6172f0fdb9284ab934d1038c0675b8c4294febc",
+    "roster.json": "27d41154b2e0e731bdb8fc4d402a8784a9cd3faee2b52bb592896028dc43b1e3",
+    "species-profiles.json": "6949b25e1e8e67ae0cdd7df2a85c615170458e1718fd9a6be9590dafe0fd5333",
+    "movesets.json": "a4efa09f4fa4d8e2bef8e542bae825c527a74d020d3297cc309126525b525bdc",
+    "palettes.json": "534616622ff8500d8ee36699b5fa6a753a2dd8023a8d5da371ad46a7e41f2087",
+    "POKEDEX.md": "e6982eb3b17c00741460344e4e2a378a308623ccd4f4b343a0ddc64e9cb17941",
+    "README.md": "66f82d27b4f2cd94935c3d646b5834fb2131b1a7bb6769db6ffad86ac1bca66e",
+    "ROSTER.md": "ea14a30b441930dbb56463e62450ec3844ee546d682bb88b25e2e0fbe3c722ea",
+    "COVERAGE.md": "3e21dde2f6ee39abeba836d48cb687e9f201c3790f75923a86834f7e99bd3bf7",
+    "BALANCE.md": "9d794de1b4763b6b82e9d3c28b2fc4dbd4060a377187d60b0bf4866ae4c16663"
+  },
+  "prepack_audit": {
+    "passed": true,
+    "findings": 0,
+    "default_move_sets": 22300,
+    "battles_spending_pp_and_dealing_damage": 631,
+    "evolution_boundaries": 122,
+    "log": "progression-prepack.log",
+    "mode": "--check; current profiles in memory against frozen animated-v2 mechanics; not a new pack validation"
+  },
+  "web_test_source": "Totals and evolution mix derive from source/curation; exact F087 restoration/ordinary adjacency/profile/type assertions added. All19 animation contracts preserved. Syntax passed; awaiting new export for integration.",
+  "final_pack": {
+    "path": "content-packs/northwoods-sticky-v1.crystalpack",
+    "species": 474,
+    "moves": 270,
+    "sha256": "77a7a72b41b289d8cb14161fc57b81aaab394feae6cb855cf55efad7a51b8ddc",
+    "check_pack_passed": true,
+    "progression_findings": 0,
+    "default_move_sets": 22300,
+    "real_pp_damage_battles": 631,
+    "evolution_boundaries": 122
+  },
+  "web_candidate": {
+    "release": "20261027-sticky-13",
+    "full_jsdom_passed": true,
+    "source_contact_still_parity": 76,
+    "animation_files_exact_vs12": 152,
+    "unrelated_sprite_pngs_exact_vs12": 1240,
+    "changed_f087_sprite_pngs": 12,
+    "old_active_identities_and_relative_order_preserved": true,
+    "rare_tail_identical": true,
+    "proof_root": "planning/minnesota/renders/sticky-note-20261027-v2/verification"
+  },
+  "runbook": "docs/northwoods-sticky-notes.md",
+  "native_production_tests": {
+    "passed": 3,
+    "failed": 0,
+    "seconds": 9.81,
+    "normal_shiny_battle_captures": 6,
+    "native_front_back_extracts": 12,
+    "log": "planning/minnesota/renders/sticky-note-20261027-v2/production-tests.log",
+    "root_visual_review": "accepted all six",
+    "receipt": "planning/minnesota/renders/sticky-note-20261027-v2/verification-summary.json"
+  },
+  "deployment": {
+    "release": "20261027-sticky-13",
+    "published": true,
+    "service_configuration_preserved": true,
+    "root_and_game_health_passed": true,
+    "full_public_sweep": {
+      "passed": true,
+      "exact_byte_checks": 2038,
+      "status_checks": 6,
+      "failures": 0,
+      "receipt": "planning/minnesota/renders/sticky-note-20261027-v2/verification/public-byte-summary.json"
+    }
+  }
+}

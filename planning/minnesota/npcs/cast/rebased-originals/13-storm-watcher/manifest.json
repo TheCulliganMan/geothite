@@ -1,0 +1,47 @@
+{
+  "name": "STORM WATCHER GALE",
+  "role": "preserved original NPC",
+  "status": "accepted-native-playable-rebased",
+  "source": "native-pixels-v1.json",
+  "source_path": "planning/minnesota/npcs/sprites/13-storm-watcher/native-pixels-v1.json",
+  "integration": "placement-v1.json",
+  "controller": "placement-v1.json",
+  "native": "target/npc-sprites/storm/native-v4",
+  "pack": "content-packs/minnesota-trainer-cast-34-v01.crystalpack",
+  "gameplay": "target/trainer-cast/rebase/13-storm-watcher/gameplay",
+  "log": "target/trainer-cast/rebase/13-storm-watcher/controller.log",
+  "original_placement": "planning/minnesota/npcs/sprites/13-storm-watcher/placement-v1.json",
+  "old_map": "MnMoorhead",
+  "new_map": "MnStCloud",
+  "old_tile": [
+    16,
+    13
+  ],
+  "new_tile": [
+    16,
+    13
+  ],
+  "scope": "Exact accepted original art, palette, party, class and dialogue. Placement rebased to safe compact geography; original geography not transplanted.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/cast/rebased-originals/13-storm-watcher/placement-v1.json": "45d8dfb1dc0c5ba400726dcbfa3eec2f2331c1f9862db78787f81b585e6160b5",
+    "planning/minnesota/npcs/sprites/13-storm-watcher/native-pixels-v1.json": "9977e591522496171c2f080e26ceba8b974cf1da81d8124688c48e2cec2954bd",
+    "planning/minnesota/npcs/sprites/13-storm-watcher/manifest.json": "65a6d039027f8a46eff1fb576f622a5caf81c63ca39b07d6c3a6ff6b08e08641",
+    "target/trainer-cast/rebase/13-storm-watcher/controller.log": "5916ffc374e89af290dce7cb0d6408dc78a8a1a0232828ee16428a34595f4bdc",
+    "content-packs/minnesota-trainer-cast-34-v01.crystalpack": "6b959689b486075b1a8ba80325a19e8fa50e4e7fbf66f1ab3fda5c48f833c326",
+    "target/npc-sprites/storm/native-v4/verification.json": "fc44d8dba36d3f534a73616c5edbef0634c8316dda77b6f573926d3a48e97690",
+    "target/trainer-cast/rebase/13-storm-watcher/gameplay/original-npc-trainer-intro.png": "2c708e3da21015d54318c8fc808d3013a39787df047573f0f76e7c05c5ef368f",
+    "target/trainer-cast/rebase/13-storm-watcher/gameplay/original-npc-overworld-state.png": "380ec380d3ad11220689e199c3c7cd7dcfc11bf47a6c8f9b9259da2e4a66f822",
+    "target/trainer-cast/rebase/13-storm-watcher/gameplay/original-npc-first-turn.png": "2315c54b08cbd1a51d3eba7efa82fb2ffa5c493ea8c9e2aa0e39809d4cb4e6a7"
+  },
+  "final_pack": "content-packs/minnesota-trainer-cast-36-v01.crystalpack",
+  "final_gameplay": "target/trainer-cast/final-audit/gameplay/rebased-originals-13-storm-watcher",
+  "final_log": "target/trainer-cast/final-audit/gameplay/rebased-originals-13-storm-watcher/controller.log",
+  "final_status": "accepted-native-playable-final-pack",
+  "final_review": "Actual battle intro and field captures inspected on exact final pack; art retains accepted native sources and palette.",
+  "final_evidence_sha256": {
+    "target/trainer-cast/final-audit/gameplay/rebased-originals-13-storm-watcher/controller.log": "1b7b6a742a9fcb6171c5e63dbdc6ebf4737335a54e3522d569d7000ed54b6b4b",
+    "target/trainer-cast/final-audit/gameplay/rebased-originals-13-storm-watcher/original-npc-trainer-intro.png": "2c708e3da21015d54318c8fc808d3013a39787df047573f0f76e7c05c5ef368f",
+    "target/trainer-cast/final-audit/gameplay/rebased-originals-13-storm-watcher/original-npc-overworld-state.png": "380ec380d3ad11220689e199c3c7cd7dcfc11bf47a6c8f9b9259da2e4a66f822",
+    "target/trainer-cast/final-audit/gameplay/rebased-originals-13-storm-watcher/original-npc-first-turn.png": "2315c54b08cbd1a51d3eba7efa82fb2ffa5c493ea8c9e2aa0e39809d4cb4e6a7"
+  }
+}

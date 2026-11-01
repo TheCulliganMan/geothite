@@ -1,0 +1,11 @@
+{
+  "name": "mudmender",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f140/mudmender-v9-joint-phase",
+  "literal_bank": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f140/mudmender-v9-joint-phase/gfx/pokemon/mudmender/overworld.2bpp",
+  "literal_bank_bytes": 384,
+  "all1536decoded_indices_match_compiled_frame_rows": true,
+  "actual_source_pupil_proof_revalidated": true,
+  "receipt_correction_cause": "Previous bank_sha256 hashed the equivalent indexed PNG, rather than literal2bpp bytes. No sprite asset changed.",
+  "previous_png_sha256": "09baa0189d681f5c8db34699cbe5e0d31908f2c93fde00f830ebceb9c89ad615",
+  "correct_bank_sha256": "bcb9dfd09bdafb0dc5db62a7c255dccb72410edd0f39c621769701c8365845e7"
+}

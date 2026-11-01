@@ -1,0 +1,19 @@
+{
+  "status": "INCOMPLETE",
+  "pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+  "pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33",
+  "binary_sha256": "31752b82c236e16cc07dc19a962ae432fed26d7df9209cf8eac58942893d9b8c",
+  "results": [
+    {
+      "case": "native_town_exterior_all_facades_both_returns_and_continue",
+      "status": "PASS",
+      "log": "planning/minnesota/revisions/route-grass-v01/current-ely-town-successor-v01/native_town_exterior_all_facades_both_returns_and_continue-v01.log"
+    },
+    {
+      "case": "native_town_exterior_public_paths_qualified_roads_and_water_boundary",
+      "status": "REQUIRES_REVIEW",
+      "log": "planning/minnesota/revisions/route-grass-v01/current-ely-town-successor-v01/native_town_exterior_public_paths_qualified_roads_and_water_boundary-v01.log"
+    }
+  ],
+  "scope": "Clinic/Mart two carpets each, public resident/signs and four road lanes. League sideways entrances retain separate pending review; no league progression acceptance."
+}

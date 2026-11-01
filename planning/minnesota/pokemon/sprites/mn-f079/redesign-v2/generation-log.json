@@ -1,0 +1,21 @@
+{
+  "tool": "built-in image_gen",
+  "attempts": [
+    {
+      "prompt": "prompt-v1.txt",
+      "status": "failed_no_image",
+      "metadata": "generation-failure-v1.json"
+    },
+    {
+      "prompt": "prompt-v1.txt",
+      "status": "failed_no_image_unchanged_retry",
+      "metadata": "generation-failure-v1-retry.json"
+    },
+    {
+      "prompt": "prompt-v2.txt",
+      "status": "succeeded_root_provided",
+      "file": "front-back.imagegen-v2.png",
+      "sha256": "d4d9f92dc16d3558a744c1185459d7d6b4d3df475c7d80e9e33e9d799539ebb2"
+    }
+  ]
+}

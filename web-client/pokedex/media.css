@@ -1,0 +1,70 @@
+.species-media {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 52px;
+  gap: 12px;
+  padding: 0 15px 9px;
+}
+.portrait-panel > .species-media {
+  justify-content: center;
+  gap: 22px;
+  padding: 8px 18px;
+  border-top: 1px solid #d4dac6;
+}
+.walking-thumbnail {
+  display: block;
+  flex: 0 0 48px;
+  width: 48px;
+  height: 48px;
+  overflow: hidden;
+}
+.walking-thumbnail img {
+  display: block;
+  width: 192px;
+  height: 48px;
+  max-width: none;
+  image-rendering: pixelated;
+  transform: translateX(0);
+}
+.walking-thumbnail[data-sprite-running] img {
+  animation: native-walk .8s steps(4, end) infinite;
+}
+@keyframes native-walk {
+  to { transform: translateX(-100%); }
+}
+.cry-button, .motion-button {
+  border: 1px solid #cbd3bf;
+  border-radius: 4px;
+  background: #f5f6ed;
+  color: #335541;
+  padding: 8px 11px;
+  min-height: 36px;
+  font-size: 10px;
+  font-weight: 650;
+  white-space: nowrap;
+}
+.cry-button[aria-pressed=true] {
+  background: #315740;
+  border-color: #315740;
+  color: #fff;
+}
+.cry-button:hover, .motion-button:hover { border-color: #597c45; }
+.cry-button:focus-visible, .motion-button:focus-visible {
+  outline: 2px solid #b75c3e;
+  outline-offset: 3px;
+}
+.motion-button { min-height: 29px; padding: 5px 8px; font-size: 9px; }
+.motion-button:disabled { opacity: .6; }
+.results-heading { height: auto; min-height: 31px; flex-wrap: wrap; }
+.media-status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+@media (prefers-reduced-motion: reduce) {
+  .walking-thumbnail[data-sprite-running] img { animation: none; transform: none; }
+}

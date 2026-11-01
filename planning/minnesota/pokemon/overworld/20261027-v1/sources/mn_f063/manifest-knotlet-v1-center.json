@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F063",
+  "species": [
+    {
+      "species_id": "MN_137",
+      "runtime_token": "KNOTLET",
+      "palette_rgb555": [
+        32767,
+        11996,
+        5388,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        23435,
+        8581,
+        0
+      ],
+      "fit": [
+        12,
+        12
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 64,
+      "interior_black_samples": 64,
+      "opaque_interior_minimum_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "knotlet.overworld.imagegen-v1.png",
+          "crop": [
+            90,
+            83,
+            440,
+            417
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "knotlet.overworld.imagegen-v1.png",
+          "crop": [
+            563,
+            84,
+            440,
+            417
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "knotlet.overworld.imagegen-v1.png",
+          "crop": [
+            1036,
+            90,
+            440,
+            417
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "knotlet.overworld.imagegen-v1.png",
+          "crop": [
+            90,
+            545,
+            440,
+            417
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "knotlet.overworld.imagegen-v1.png",
+          "crop": [
+            563,
+            539,
+            440,
+            417
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "knotlet.overworld.imagegen-v1.png",
+          "crop": [
+            1036,
+            564,
+            440,
+            417
+          ]
+        }
+      ]
+    }
+  ]
+}

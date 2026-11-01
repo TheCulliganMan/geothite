@@ -76,23 +76,36 @@ fn spawn_object_label(
     object: &crate::core::map::ObjectEvent,
     x: f32,
     y: f32,
+    model_source_id: &str,
 ) {
-    let label = compact_scene_label(&object_scene_label(object), 18);
+    let label = compact_scene_label(&resolved_object_scene_label(object, model_source_id), 18);
     commands.spawn((
-        Text2dBundle {
-            text: Text::from_section(
-                label,
-                TextStyle {
-                    font_size: 10.5,
-                    color: Color::srgb(0.98, 0.98, 0.86),
-                    ..default()
-                },
-            ),
-            transform: Transform::from_xyz(x - TILE_SIZE * 0.62, y + TILE_SIZE * 0.78, 2.6),
-            ..default()
-        },
+        (Text2d::new(
+                label),
+TextFont::from_font_size(10.5),
+TextColor(Color::srgb(0.98, 0.98, 0.86)),
+Transform::from_xyz(x - TILE_SIZE * 0.62, y + TILE_SIZE * 0.78, 2.6),),
         ObjectMarker,
     ));
+}
+
+/// Labels share the renderer's resolved species identity, including shared NPC art.
+fn resolved_object_scene_label(
+    object: &crate::core::map::ObjectEvent,
+    model_source_id: &str,
+) -> String {
+    resolved_object_species_label(model_source_id).unwrap_or_else(|| object_scene_label(object))
+}
+
+fn resolved_object_species_label(model_source_id: &str) -> Option<String> {
+    let (identity, display)=model_source_id.strip_prefix("species:").map(|id|(id,false))
+        .or_else(||model_source_id.strip_prefix("display:").map(|id|(id,true)))?;
+    let (species, art)=identity.split_once(':')?;
+    if display && species=="PIKACHU" && art=="surfing_pikachu" {
+        return Some("SURFING PIKACHU DOLL".into());
+    }
+    let name=crate::core::models::pokemon_species_display_name(species);
+    Some(if display {format!("{name} DOLL")}else{name})
 }
 
 fn object_scene_label(object: &crate::core::map::ObjectEvent) -> String {
@@ -153,22 +166,15 @@ fn spawn_bg_event_label(
     let label = compact_scene_label(&bg.script, 18);
     let (tile_x, tile_y) = render_tile_playfield_position(view_x, view_y);
     commands.spawn((
-        Text2dBundle {
-            text: Text::from_section(
-                label,
-                TextStyle {
-                    font_size: 9.5,
-                    color: Color::srgb(0.92, 0.92, 0.78),
-                    ..default()
-                },
-            ),
-            transform: Transform::from_xyz(
+        (Text2d::new(
+                label),
+TextFont::from_font_size(9.5),
+TextColor(Color::srgb(0.92, 0.92, 0.78)),
+Transform::from_xyz(
                 tile_x - TILE_SIZE * 0.56,
                 tile_y + TILE_SIZE * 0.52,
                 2.4,
-            ),
-            ..default()
-        },
+            ),),
         EventMarker,
     ));
 }
@@ -194,22 +200,15 @@ fn spawn_warp_event_label(
     );
     let (tile_x, tile_y) = render_tile_playfield_position(view_x, view_y);
     commands.spawn((
-        Text2dBundle {
-            text: Text::from_section(
-                label,
-                TextStyle {
-                    font_size: 9.5,
-                    color: Color::srgb(0.72, 0.84, 1.0),
-                    ..default()
-                },
-            ),
-            transform: Transform::from_xyz(
+        (Text2d::new(
+                label),
+TextFont::from_font_size(9.5),
+TextColor(Color::srgb(0.72, 0.84, 1.0)),
+Transform::from_xyz(
                 tile_x - TILE_SIZE * 0.58,
                 tile_y - TILE_SIZE * 0.58,
                 2.4,
-            ),
-            ..default()
-        },
+            ),),
         EventMarker,
     ));
 }
@@ -232,18 +231,11 @@ fn spawn_coord_event_label(
     let label = compact_scene_label(&coord.script_name, 18);
     let (tile_x, tile_y) = render_tile_playfield_position(view_x, view_y);
     commands.spawn((
-        Text2dBundle {
-            text: Text::from_section(
-                label,
-                TextStyle {
-                    font_size: 9.5,
-                    color: Color::srgb(0.90, 0.74, 1.0),
-                    ..default()
-                },
-            ),
-            transform: Transform::from_xyz(tile_x - TILE_SIZE * 0.58, tile_y, 2.4),
-            ..default()
-        },
+        (Text2d::new(
+                label),
+TextFont::from_font_size(9.5),
+TextColor(Color::srgb(0.90, 0.74, 1.0)),
+Transform::from_xyz(tile_x - TILE_SIZE * 0.58, tile_y, 2.4),),
         EventMarker,
     ));
 }
@@ -353,15 +345,12 @@ fn spawn_event_marker(
     };
 
     commands.spawn((
-        SpriteBundle {
-            sprite: Sprite {
+        (Sprite {
                 color,
                 custom_size: Some(Vec2::new(size, size)),
                 ..default()
             },
-            transform: Transform::from_xyz(x, y, z),
-            ..default()
-        },
+Transform::from_xyz(x, y, z),),
         EventMarker,
     ));
 }
@@ -562,6 +551,7 @@ fn bevy_audio_action(kind: &RuntimeResolvedAudioPlaybackKind) -> Option<BevyAudi
         }
         RuntimeResolvedAudioPlaybackKind::Play { audio_id, playback } => {
             Some(BevyAudioAction::Play(BevyAudioCommand {
+                battle_sound: None,
                 cry_parameters: None,
                 audio_id: audio_id.clone(),
                 kind: playback.kind,
@@ -591,6 +581,8 @@ fn play_pending_audio(
     mut runtime_shell: ResMut<BevyRuntimeShell>,
     music_audio: Query<Entity, With<MusicAudioMarker>>,
     transient_audio: Query<Entity, With<TransientAudioMarker>>,
+    #[cfg(all(not(test), target_os = "macos", feature = "desktop-app"))]
+    desktop_settings: Option<Res<desktop_settings::DesktopSettings>>,
     #[cfg(all(not(test), not(target_arch = "wasm32")))] mut native_audio: NonSendMut<
         NativeAudioBackend,
     >,
@@ -611,6 +603,8 @@ fn play_pending_audio(
     }
     #[cfg(all(not(test), not(target_arch = "wasm32")))]
     {
+        #[cfg(all(target_os = "macos", feature = "desktop-app"))]
+        native_audio.set_master_volume(desktop_settings.as_ref().map_or(1.0, |settings| settings.gain()));
         native_audio.set_music_volume(runtime_shell.music_volume);
         runtime_shell.transient_audio_playing = !native_audio.transient_finished();
         if !runtime_shell.transient_audio_playing {
@@ -710,25 +704,7 @@ fn play_pending_audio(
         let audio = if let Some(audio) = runtime_shell.audio_source_cache.get(&cache_key) {
             audio.clone()
         } else {
-            let source = match match command.kind {
-                ModpackAudioKind::Music => runtime_shell
-                    .shell
-                    .runtime()
-                    .audio()
-                    .require_music(&command.audio_id),
-                ModpackAudioKind::SoundEffect => runtime_shell
-                    .shell
-                    .runtime()
-                    .audio()
-                    .require_sound_effect(&command.audio_id),
-                ModpackAudioKind::Cry => runtime_shell
-                    .shell
-                    .runtime()
-                    .audio()
-                    .require_cry(&command.audio_id),
-            }
-            .map(|program| program.source.clone())
-            {
+            let source = match source_for_visible_audio_command(runtime_shell.shell.runtime(),&command) {
                 Ok(source) => source,
                 Err(error) => {
                     clear_failed_music_playback_state(&mut runtime_shell, &command);
@@ -1094,6 +1070,37 @@ fn pcm_samples_for_sound_option(samples: &Arc<[i16]>, sound: Sound) -> Arc<[i16]
     )
 }
 
+// Derived cries use the source program already embedded in the supplied pack,
+// including when ordinary playback storage is PCM/gzip. No alias catalog or
+// regenerated PCM is required. The decoder verifies its canonical PCM first.
+fn source_for_visible_audio_command(
+    runtime: &CrystalRuntime,
+    command: &BevyAudioCommand,
+) -> Result<AudioProgramSource> {
+    let program=match command.kind {
+        ModpackAudioKind::Music=>runtime.audio().require_music(&command.audio_id)?,
+        ModpackAudioKind::SoundEffect=>runtime.audio().require_sound_effect(&command.audio_id)?,
+        ModpackAudioKind::Cry=>runtime.audio().require_cry(&command.audio_id)?,
+    };
+    if command.cry_parameters.is_none() { return Ok(program.source.clone()); }
+    anyhow::ensure!(command.kind==ModpackAudioKind::Cry,"cry registers require a cry program");
+    let asset=runtime.data().audio.iter().find(|asset|asset.id==command.audio_id)
+        .context("parameterized cry has no pack asset")?;
+    anyhow::ensure!(asset.loop_start_sample.is_none() && asset.loop_end_sample.is_none(),
+        "parameterized cry must not loop");
+    let format=asset.pcm_format.as_ref().context("cry source has no PCM format")?;
+    let frame_size=usize::from(format.channels)*usize::from(format.bits_per_sample/8);
+    let byte_len=asset.pcm_frame_count.context("cry source has no frame count")?
+        .checked_mul(frame_size).context("cry source byte count overflows")?;
+    Ok(AudioProgramSource::Midi {
+        midi_base64:asset.midi_program.as_ref().context("cry source has no bundled program")?.midi_base64.clone(),
+        format:AudioPcmFormat {sample_rate_hz:format.sample_rate_hz,channels:format.channels,
+            bits_per_sample:format.bits_per_sample},
+        byte_len,payload_hash:asset.payload_hash.clone().context("cry source has no PCM hash")?,
+        loop_start_sample:None,loop_end_sample:None,
+    })
+}
+
 #[cfg(not(target_arch = "wasm32"))]
 fn decoded_audio_program_source(
     command: &BevyAudioCommand,
@@ -1129,7 +1136,7 @@ fn refresh_status_text(
     mut query: Query<&mut Text, With<StatusText>>,
     mut last_key: Local<Option<(u64, bool, u64)>>,
 ) {
-    let mut text = query.single_mut();
+    let Ok(mut text) = query.single_mut() else { return; };
     let debug_overlays = runtime_debug_overlays_enabled();
     let animation_key = visible_overlay_animation_key(&runtime_shell);
     let key = (
@@ -1142,36 +1149,36 @@ fn refresh_status_text(
     }
     *last_key = Some(key);
     if !debug_overlays {
-        if !text.sections[0].value.is_empty() {
-            text.sections[0].value.clear();
+        if !text.0.is_empty() {
+            text.0.clear();
         }
         return;
     }
     if runtime_shell.intro_screen.is_some() {
-        text.sections[0].value = format_intro_status(&runtime_shell);
+        text.0 = format_intro_status(&runtime_shell);
         return;
     }
     if runtime_shell.credits_screen.is_some() {
-        text.sections[0].value = format_credits_status(&runtime_shell);
+        text.0 = format_credits_status(&runtime_shell);
         return;
     }
     if runtime_shell.pending_time_set.is_some() {
-        text.sections[0].value = format_time_set_status(&runtime_shell);
+        text.0 = format_time_set_status(&runtime_shell);
         return;
     }
     if runtime_shell.pending_oak_intro.is_some() {
-        text.sections[0].value = format_oak_intro_status(&runtime_shell);
+        text.0 = format_oak_intro_status(&runtime_shell);
         return;
     }
     if runtime_shell.pending_gender_selection.is_some() {
-        text.sections[0].value = format_gender_status(&runtime_shell);
+        text.0 = format_gender_status(&runtime_shell);
         return;
     }
     if runtime_shell.title_menu.is_some() {
-        text.sections[0].value = format_title_status(&runtime_shell);
+        text.0 = format_title_status(&runtime_shell);
         return;
     }
-    text.sections[0].value = match cached_runtime_snapshot(&mut runtime_shell) {
+    text.0 = match cached_runtime_snapshot(&mut runtime_shell) {
         Ok(snapshot) => format_snapshot(&snapshot, &runtime_shell, *mode),
         Err(error) => format!("snapshot error: {error}"),
     };
@@ -1182,7 +1189,7 @@ fn refresh_dialog_text(
     mut query: Query<&mut Text, With<DialogText>>,
     mut last_key: Local<Option<(u64, bool, u64)>>,
 ) {
-    let mut text = query.single_mut();
+    let Ok(mut text) = query.single_mut() else { return; };
     let debug_overlays = runtime_debug_overlays_enabled();
     let animation_key = visible_overlay_animation_key(&runtime_shell);
     let key = (
@@ -1195,36 +1202,36 @@ fn refresh_dialog_text(
     }
     *last_key = Some(key);
     if !debug_overlays {
-        if !text.sections[0].value.is_empty() {
-            text.sections[0].value.clear();
+        if !text.0.is_empty() {
+            text.0.clear();
         }
         return;
     }
     if runtime_shell.intro_screen.is_some() {
-        text.sections[0].value = format_intro_dialog(&runtime_shell);
+        text.0 = format_intro_dialog(&runtime_shell);
         return;
     }
     if runtime_shell.credits_screen.is_some() {
-        text.sections[0].value = format_credits_dialog(&runtime_shell);
+        text.0 = format_credits_dialog(&runtime_shell);
         return;
     }
     if runtime_shell.pending_time_set.is_some() {
-        text.sections[0].value = format_time_set_dialog_overlay(&runtime_shell);
+        text.0 = format_time_set_dialog_overlay(&runtime_shell);
         return;
     }
     if runtime_shell.pending_oak_intro.is_some() {
-        text.sections[0].value = format_oak_intro_dialog_overlay(&runtime_shell);
+        text.0 = format_oak_intro_dialog_overlay(&runtime_shell);
         return;
     }
     if runtime_shell.pending_gender_selection.is_some() {
-        text.sections[0].value = format_gender_dialog(&runtime_shell);
+        text.0 = format_gender_dialog(&runtime_shell);
         return;
     }
     if runtime_shell.title_menu.is_some() {
-        text.sections[0].value = format_title_dialog(&runtime_shell);
+        text.0 = format_title_dialog(&runtime_shell);
         return;
     }
-    text.sections[0].value = match cached_runtime_snapshot(&mut runtime_shell) {
+    text.0 = match cached_runtime_snapshot(&mut runtime_shell) {
         Ok(snapshot) => format_dialog_overlay(&snapshot, &runtime_shell),
         Err(_) => String::new(),
     };
@@ -1235,7 +1242,7 @@ fn refresh_battle_text(
     mut query: Query<&mut Text, With<BattleText>>,
     mut last_key: Local<Option<(u64, bool, u64)>>,
 ) {
-    let mut text = query.single_mut();
+    let Ok(mut text) = query.single_mut() else { return; };
     let debug_overlays = runtime_debug_overlays_enabled();
     let animation_key = visible_overlay_animation_key(&runtime_shell);
     let key = (
@@ -1248,8 +1255,8 @@ fn refresh_battle_text(
     }
     *last_key = Some(key);
     if !debug_overlays {
-        if !text.sections[0].value.is_empty() {
-            text.sections[0].value.clear();
+        if !text.0.is_empty() {
+            text.0.clear();
         }
         return;
     }
@@ -1260,10 +1267,10 @@ fn refresh_battle_text(
         || runtime_shell.pending_oak_intro.is_some()
         || runtime_shell.pending_gender_selection.is_some()
     {
-        text.sections[0].value = String::new();
+        text.0 = String::new();
         return;
     }
-    text.sections[0].value = match cached_runtime_snapshot(&mut runtime_shell) {
+    text.0 = match cached_runtime_snapshot(&mut runtime_shell) {
         Ok(snapshot) => format_battle_overlay(&snapshot, &runtime_shell),
         Err(_) => String::new(),
     };
@@ -1526,8 +1533,14 @@ fn format_oak_intro_dialog_overlay(runtime_shell: &BevyRuntimeShell) -> String {
     };
     let mut lines = vec![
         match oak_intro.mode {
-            VisibleOakIntroMode::Intro => "OAK INTRO".to_string(),
-            VisibleOakIntroMode::Final => "OAK FINALE".to_string(),
+            VisibleOakIntroMode::Intro => format!(
+                "{} INTRO",
+                visible_intro_professor_name(runtime_shell.runtime.title_presentation_program())
+            ),
+            VisibleOakIntroMode::Final => format!(
+                "{} FINALE",
+                visible_intro_professor_name(runtime_shell.runtime.title_presentation_program())
+            ),
         },
         format!(
             "SPRITE: {}",
@@ -1830,111 +1843,11 @@ pub(super) fn render_visible_script_text_pages(
     rival_name: &str,
     day_of_week: u8,
 ) -> Vec<String> {
-    let mut pages = Vec::new();
-    let mut lines = Vec::new();
-    let mut current = String::new();
-    let flush_line = |lines: &mut Vec<String>, current: &mut String| {
-        if !current.is_empty() {
-            lines.push(std::mem::take(current));
-        }
-    };
-    let flush_page = |pages: &mut Vec<String>, lines: &mut Vec<String>, current: &mut String| {
-        flush_line(lines, current);
-        if !lines.is_empty() {
-            pages.push(normalize_visible_script_text_with_context(
-                &lines.join("\n"),
-                player_name,
-                rival_name,
-                day_of_week,
-            ));
-            lines.clear();
-        }
-    };
-    for command in &body.commands {
-        let rendered = match command.command.as_str() {
-            "text_ram" | "text_decimal" => {
-                render_named_text_buffer(command.args.first().map(String::as_str), named_buffers)
-            }
-            _ => render_script_text_args(&command.args),
-        };
-        match command.command.as_str() {
-            "text" | "text_start" | "text_block" | "text_ram" | "text_decimal" => {
-                // These commands all write at the current ASM text cursor.
-                // Inserting a host newline between a text_ram buffer and the
-                // following punctuation produced impossible extra rows.
-                current.push_str(&rendered);
-            }
-            "text_today" => current.push_str("<TODAY>"),
-            "text_pause" | "text_asm" => {}
-            "text_low" => {
-                // TX_LOW relocates BC to the standard bottom baseline.  It
-                // prints nothing, but subsequent chunks must not concatenate
-                // onto the top baseline's text.
-                flush_line(&mut lines, &mut current);
-            }
-            // The field renderer resolves TX_FAR through the runtime text
-            // catalog before calling this interpreter. Its pointer label is
-            // never player-visible text.
-            "text_far" => {}
-            "line" | "next" => {
-                flush_line(&mut lines, &mut current);
-                // `<LINE>` and `<NEXT>` both add two tile rows in
-                // `home/text.asm` (`LineChar` and `NextLineChar`). The visual
-                // renderer owns that two-tile baseline spacing; inserting a
-                // blank logical line here created four apparent text rows.
-                current.push_str(&rendered);
-            }
-            "para" => {
-                flush_page(&mut pages, &mut lines, &mut current);
-                current.push_str(&rendered);
-            }
-            "cont" => {
-                // `<CONT>` prompts, scrolls the box up two rows, then starts
-                // the continuation at the third interior row. Keep the last
-                // displayed row as the new top row. The visual renderer owns
-                // the two-tile baseline spacing.
-                flush_line(&mut lines, &mut current);
-                let carry = lines.iter().rev().find(|line| !line.is_empty()).cloned();
-                if !lines.is_empty() {
-                    pages.push(normalize_visible_script_text_with_context(
-                        &lines.join("\n"),
-                        player_name,
-                        rival_name,
-                        day_of_week,
-                    ));
-                }
-                lines.clear();
-                if let Some(carry) = carry {
-                    lines.push(carry);
-                }
-                current.push_str(&rendered);
-            }
-            "text_promptbutton" => {
-                flush_page(&mut pages, &mut lines, &mut current);
-            }
-            "prompt" | "done" | "text_end" => {
-                // These terminate PrintText. Unlabelled bytes after the
-                // terminator (including NurseGoodbyeText's unused copy)
-                // belong to no part of this dialogue stream.
-                flush_page(&mut pages, &mut lines, &mut current);
-                break;
-            }
-            opcode if opcode.starts_with("sound_") => {}
-            _ => {
-                flush_line(&mut lines, &mut current);
-                if rendered.is_empty() {
-                    lines.push(format!("[{}]", command.command));
-                } else {
-                    lines.push(format!("[{} {rendered}]", command.command));
-                }
-            }
-        }
-    }
-    flush_page(&mut pages, &mut lines, &mut current);
-    if pages.is_empty() {
-        pages.push(String::new());
-    }
-    pages
+    field_text_program::compile(body, named_buffers, player_name, rival_name, day_of_week)
+        .pages
+        .into_iter()
+        .map(|page| page.text)
+        .collect()
 }
 
 fn render_script_text_args(args: &[String]) -> String {
@@ -1942,7 +1855,17 @@ fn render_script_text_args(args: &[String]) -> String {
         // `@` is the charmap string terminator, not a visible glyph. Text
         // bodies use it for empty cursor moves (`line "@"`) and to end a
         // chunk after punctuation (`text "!@"`).
-        .map(|arg| arg.trim().trim_matches('"').trim_end_matches('@'))
+        .map(|arg| {
+            let trimmed = arg.trim();
+            // Whitespace inside a text chunk is authored content. In
+            // particular, a chunk after text_pause can start with the space
+            // separating the next word from the preceding chunk.
+            trimmed
+                .strip_prefix('"')
+                .and_then(|quoted| quoted.strip_suffix('"'))
+                .unwrap_or(arg)
+                .trim_end_matches('@')
+        })
         .collect::<Vec<_>>()
         .join(" ")
 }
@@ -3383,49 +3306,53 @@ fn selected_field_pack_item_label(
     }
 }
 
-// The engine's loaded object structs intentionally cover the original LCD and
-// govern movement, interaction and RNG. The expanded camera also presents map
-// objects outside that simulation range, retaining their last loaded pose.
-// Never insert these extra actors into the authoritative object roster.
-#[cfg(any(feature = "fullscreen-scaling", feature = "voxel-view"))]
-fn expand_fullscreen_object_presentation(
-    snapshot: &mut RuntimeShellSnapshot,
-    runtime: &BevyRuntimeShell,
-) -> Result<()> {
-    let world = runtime.shell.session().overworld();
-    if snapshot.battle.is_some() || snapshot.overworld.map_name != world.map.name {
-        return Ok(());
-    }
-    for (index, object) in world.objects.iter().enumerate() {
-        if snapshot.visible_object_slots.contains(&index)
-            || world.object_has_loaded_struct(index)
-            || !world.object_is_eligible_for_expanded_view(index)
-            || object
-                .object_identifier
-                .as_ref()
-                .is_some_and(|id| world.invisible_object_struct_identifiers.contains(id))
-        {
-            continue;
-        }
-        let mut tile = world
-            .object_runtime_tile_checked(index, object)
-            .context("resolve distant fullscreen NPC coordinates")?;
-        if let Some(id) = object.object_identifier.as_ref() {
-            let mut facing =
-                world.object_facings.get(id).copied().with_context(|| {
-                    format!("fullscreen NPC {id} has no source-initialized facing")
-                })?;
-            if let Some((last_tile, last_facing)) = world.unloaded_object_presentation.get(id) {
-                tile = *last_tile;
-                facing = *last_facing;
-            }
-            snapshot
-                .visible_object_runtime_tiles
-                .insert(id.clone(), tile);
-            snapshot.visible_object_facings.insert(id.clone(), facing);
-        }
-        snapshot.visible_objects.push(object.clone());
-        snapshot.visible_object_slots.push(index);
-    }
-    Ok(())
+/// The ordinary compositor and speculative destination use identical source
+/// and foreground selection, including finite-map borders and animation art.
+fn source_tile_art(
+    source: &ResolvedRenderSource<'_>,
+    art: &TilesetArt,
+    x: i32,
+    y: i32,
+    frame: u64,
+    restless: bool,
+) -> Result<(u16, usize, usize, u8, Handle<Image>, bool, bool)> {
+    let sub_x = x.rem_euclid(4) as usize;
+    let sub_y = y.rem_euclid(4) as usize;
+    let block = if x >= 0 && y >= 0 && x < source.width && y < source.height {
+        source.map.blocks[y as usize / 4 * source.map.attributes.width as usize + x as usize / 4]
+    } else {
+        inland_winter_render::forest_border_block(
+            &source.map.attributes.tileset_name,
+            source.map.attributes.width,
+            source.map.attributes.height,
+            &source.map.blocks,
+            x,
+            y,
+        )
+        .unwrap_or_else(|| {
+            exterior_border_block(
+                &source.map.map_name,
+                &source.map.attributes.tileset_name,
+                source.map.attributes.border_block,
+                source.width,
+                x,
+                y,
+            )
+        })
+    };
+    let index = *art
+        .metatile_layout
+        .get(block as usize * 16 + sub_y * 4 + sub_x)
+        .context("source metatile art")?;
+    let texture = art
+        .tile_handle_at_frame(block, sub_x, sub_y, frame, restless)
+        .context("source tile image")?;
+    let (priority, foreground) = art.render_flags.resolve(
+        source.tileset,
+        art.metatile_layout.len().div_ceil(METATILE_TILE_COUNT),
+        block,
+        sub_x,
+        sub_y,
+    )?;
+    Ok((block, sub_x, sub_y, index, texture, priority, foreground))
 }

@@ -1,0 +1,17 @@
+Use case: stylized-concept
+Asset type: exact Game Boy Color Generation 2 battle pixel sprite sheet, original Minnesota monster family.
+Primary request: Thomsonite and fortune-telling: a concentric stone eye becomes independently rotating eye-nodules watching possible futures.
+Style reference: authentic 1999 handheld RPG Generation2 pixel art: coarse visibly square pixels, low native resolution, simple sculpted clusters, selective black outlines, restrained internal dark lines, sparse white highlights, readable eyes. All designs are entirely original. No modern vector look, gradients, antialiasing, soft shadows, textures, excessive tiny details or dithering.
+Composition: 2 columns and exactly 2 rows on pure white, no labels, dividers or text. One species per column in evolutionary order. Top row whole-body FRONT battle view facing LEFT, all extremities inside its cell. Bottom row CLOSE REAR battle PORTRAIT of same species, facing UPPER RIGHT; head and upper back fill the cell, lower torso cut off at bottom. Backs are zoomed-in rear portraits, never small whole-body turnarounds. Maintain broad white gutters. Each cell behaves as a 64x64 logical grid enlarged by nearest neighbor. Fronts ultimately occupy 56x56; backs 48x48.
+GBC color definitions: palette indices 0..3; RGB5 channels are integers0..31; packed RGB555=r|(g<<5)|(b<<10); RGB8 expansion=(v<<3)|(v>>2). Each species has its OWN four-color palette, shared ONLY between its front/back. Do not share one palette across all stages. Use flat exact colors only. Index0 white is also the sheet background.
+Column 1: Thomblip (ROCK) — A small rounded thomsonite nodule creature, concentric oval stone eye, little pebble feet and side nodules, naturally banded rather than shiny jewels. Front grows in size relative to previous stage. Back must retain its unique anatomy and palette.
+  palette index0: RGB5 [31, 31, 31], packedRGB555 32767 (0x7FFF), expandedRGB8 [255, 255, 255], hex #FFFFFF.
+  palette index1: RGB5 (29, 21, 19), packedRGB555 20157 (0x4EBD), expandedRGB8 [239, 173, 156], hex #EFAD9C.
+  palette index2: RGB5 (14, 11, 10), packedRGB555 10606 (0x296E), expandedRGB8 [115, 90, 82], hex #735A52.
+  palette index3: RGB5 [0, 0, 0], packedRGB555 0 (0x0000), expandedRGB8 [0, 0, 0], hex #000000.
+Column 2: Thomseer (ROCK/PSYCHIC) — A psychic thomsonite sentinel, large central eye nodule with two independently hovering smaller eye nodules joined by bent stone arms, concentric rings and stout rocky lower body. Front grows in size relative to previous stage. Back must retain its unique anatomy and palette.
+  palette index0: RGB5 [31, 31, 31], packedRGB555 32767 (0x7FFF), expandedRGB8 [255, 255, 255], hex #FFFFFF.
+  palette index1: RGB5 (27, 20, 24), packedRGB555 25243 (0x629B), expandedRGB8 [222, 165, 198], hex #DEA5C6.
+  palette index2: RGB5 (12, 8, 17), packedRGB555 17676 (0x450C), expandedRGB8 [99, 66, 140], hex #63428C.
+  palette index3: RGB5 [0, 0, 0], packedRGB555 0 (0x0000), expandedRGB8 [0, 0, 0], hex #000000.
+All six/four views are ORIGINAL creature designs that embody the theme in their anatomy. No accessories held by humans, no costumes, no scenery, no ground shadows, no text or palette swatches. Prioritize Gen2 battle readability over illustration detail.

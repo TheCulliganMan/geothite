@@ -1,0 +1,2092 @@
+{
+  "schema_version": 1,
+  "id": "MINNEAPOLIS_WATERFRONT_V1",
+  "base_pack_sha256": "1f5604a6c743904e5b0c8fbfe36b32ef056f50dab309a42795aa639457ac0bf3",
+  "base_identity": "1d3d63099937c03ad2c390ef2910ddfe23de232321cfdcb226aa26e250df6347",
+  "base_module_sha256": "a49875c21ba99c179440ff60a62b6355f27e0d923bf31e1725c9808e421408c9",
+  "base_definition_sha256": "175ccd1db1c07efb43b2125010f9375fa2d24fbb84f321ffb7f44ae92daba987",
+  "map": "MnMinneapolis",
+  "tileset": "mn_minneapolis_city",
+  "expected_blocks": 169,
+  "new_metatiles": [
+    {
+      "target": 169,
+      "glyphs": [
+        {
+          "tileset": "johto",
+          "block": 44,
+          "x": 0,
+          "y": 0
+        },
+        {
+          "tileset": "johto",
+          "block": 44,
+          "x": 1,
+          "y": 0
+        },
+        {
+          "tileset": "johto",
+          "block": 44,
+          "x": 2,
+          "y": 0
+        },
+        {
+          "tileset": "johto",
+          "block": 44,
+          "x": 3,
+          "y": 0
+        },
+        {
+          "tileset": "johto",
+          "block": 44,
+          "x": 0,
+          "y": 1
+        },
+        {
+          "tileset": "johto",
+          "block": 44,
+          "x": 1,
+          "y": 1
+        },
+        {
+          "tileset": "johto",
+          "block": 44,
+          "x": 2,
+          "y": 1
+        },
+        {
+          "tileset": "johto",
+          "block": 44,
+          "x": 3,
+          "y": 1
+        },
+        {
+          "tileset": "johto",
+          "block": 44,
+          "x": 0,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 44,
+          "x": 1,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 44,
+          "x": 2,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 44,
+          "x": 3,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 44,
+          "x": 0,
+          "y": 3
+        },
+        {
+          "tileset": "johto",
+          "block": 44,
+          "x": 1,
+          "y": 3
+        },
+        {
+          "tileset": "johto",
+          "block": 44,
+          "x": 2,
+          "y": 3
+        },
+        {
+          "tileset": "johto",
+          "block": 44,
+          "x": 3,
+          "y": 3
+        }
+      ],
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "target": 170,
+      "glyphs": [
+        {
+          "tileset": "johto",
+          "block": 42,
+          "x": 0,
+          "y": 0
+        },
+        {
+          "tileset": "johto",
+          "block": 42,
+          "x": 1,
+          "y": 0
+        },
+        {
+          "tileset": "johto",
+          "block": 42,
+          "x": 2,
+          "y": 0
+        },
+        {
+          "tileset": "johto",
+          "block": 42,
+          "x": 3,
+          "y": 0
+        },
+        {
+          "tileset": "johto",
+          "block": 42,
+          "x": 0,
+          "y": 1
+        },
+        {
+          "tileset": "johto",
+          "block": 42,
+          "x": 1,
+          "y": 1
+        },
+        {
+          "tileset": "johto",
+          "block": 42,
+          "x": 2,
+          "y": 1
+        },
+        {
+          "tileset": "johto",
+          "block": 42,
+          "x": 3,
+          "y": 1
+        },
+        {
+          "tileset": "johto",
+          "block": 42,
+          "x": 0,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 42,
+          "x": 1,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 42,
+          "x": 2,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 42,
+          "x": 3,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 42,
+          "x": 0,
+          "y": 3
+        },
+        {
+          "tileset": "johto",
+          "block": 42,
+          "x": 1,
+          "y": 3
+        },
+        {
+          "tileset": "johto",
+          "block": 42,
+          "x": 2,
+          "y": 3
+        },
+        {
+          "tileset": "johto",
+          "block": 42,
+          "x": 3,
+          "y": 3
+        }
+      ],
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "target": 171,
+      "glyphs": [
+        {
+          "tileset": "johto",
+          "block": 45,
+          "x": 0,
+          "y": 0
+        },
+        {
+          "tileset": "johto",
+          "block": 45,
+          "x": 1,
+          "y": 0
+        },
+        {
+          "tileset": "johto",
+          "block": 45,
+          "x": 2,
+          "y": 0
+        },
+        {
+          "tileset": "johto",
+          "block": 45,
+          "x": 3,
+          "y": 0
+        },
+        {
+          "tileset": "johto",
+          "block": 45,
+          "x": 0,
+          "y": 1
+        },
+        {
+          "tileset": "johto",
+          "block": 45,
+          "x": 1,
+          "y": 1
+        },
+        {
+          "tileset": "johto",
+          "block": 45,
+          "x": 2,
+          "y": 1
+        },
+        {
+          "tileset": "johto",
+          "block": 45,
+          "x": 3,
+          "y": 1
+        },
+        {
+          "tileset": "johto",
+          "block": 45,
+          "x": 0,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 45,
+          "x": 1,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 45,
+          "x": 2,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 45,
+          "x": 3,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 45,
+          "x": 0,
+          "y": 3
+        },
+        {
+          "tileset": "johto",
+          "block": 45,
+          "x": 1,
+          "y": 3
+        },
+        {
+          "tileset": "johto",
+          "block": 45,
+          "x": 2,
+          "y": 3
+        },
+        {
+          "tileset": "johto",
+          "block": 45,
+          "x": 3,
+          "y": 3
+        }
+      ],
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "target": 172,
+      "glyphs": [
+        {
+          "tileset": "johto",
+          "block": 38,
+          "x": 0,
+          "y": 0
+        },
+        {
+          "tileset": "johto",
+          "block": 38,
+          "x": 2,
+          "y": 0
+        },
+        {
+          "tileset": "johto",
+          "block": 38,
+          "x": 1,
+          "y": 0
+        },
+        {
+          "tileset": "johto",
+          "block": 38,
+          "x": 2,
+          "y": 0
+        },
+        {
+          "tileset": "johto",
+          "block": 38,
+          "x": 0,
+          "y": 1
+        },
+        {
+          "tileset": "johto",
+          "block": 38,
+          "x": 2,
+          "y": 1
+        },
+        {
+          "tileset": "johto",
+          "block": 38,
+          "x": 1,
+          "y": 1
+        },
+        {
+          "tileset": "johto",
+          "block": 38,
+          "x": 2,
+          "y": 1
+        },
+        {
+          "tileset": "johto",
+          "block": 38,
+          "x": 0,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 1,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 1,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 39,
+          "x": 3,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 38,
+          "x": 0,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 1,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 1,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 1,
+          "y": 2
+        }
+      ],
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "target": 173,
+      "glyphs": [
+        {
+          "tileset": "johto",
+          "block": 38,
+          "x": 1,
+          "y": 0
+        },
+        {
+          "tileset": "johto",
+          "block": 38,
+          "x": 2,
+          "y": 0
+        },
+        {
+          "tileset": "johto",
+          "block": 38,
+          "x": 1,
+          "y": 0
+        },
+        {
+          "tileset": "johto",
+          "block": 38,
+          "x": 2,
+          "y": 0
+        },
+        {
+          "tileset": "johto",
+          "block": 38,
+          "x": 1,
+          "y": 1
+        },
+        {
+          "tileset": "johto",
+          "block": 38,
+          "x": 2,
+          "y": 1
+        },
+        {
+          "tileset": "johto",
+          "block": 38,
+          "x": 1,
+          "y": 1
+        },
+        {
+          "tileset": "johto",
+          "block": 38,
+          "x": 2,
+          "y": 1
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 1,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 1,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 1,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 39,
+          "x": 3,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 1,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 1,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 1,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 1,
+          "y": 2
+        }
+      ],
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "target": 174,
+      "glyphs": [
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 1,
+          "y": 0
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 2,
+          "y": 0
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 1,
+          "y": 0
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 3,
+          "y": 0
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 1,
+          "y": 1
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 2,
+          "y": 1
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 1,
+          "y": 1
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 3,
+          "y": 1
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 1,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 1,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 1,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 3,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 1,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 1,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 1,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 3,
+          "y": 2
+        }
+      ],
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "target": 175,
+      "glyphs": [
+        {
+          "tileset": "johto",
+          "block": 38,
+          "x": 0,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 1,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 1,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 39,
+          "x": 3,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 38,
+          "x": 0,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 1,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 1,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 1,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 38,
+          "x": 0,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 0,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 0,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 0,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 38,
+          "x": 0,
+          "y": 3
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 0,
+          "y": 3
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 0,
+          "y": 3
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 0,
+          "y": 3
+        }
+      ],
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "target": 176,
+      "glyphs": [
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 1,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 1,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 1,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 39,
+          "x": 3,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 1,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 1,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 1,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 1,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 0,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 0,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 0,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 0,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 0,
+          "y": 3
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 0,
+          "y": 3
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 0,
+          "y": 3
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 0,
+          "y": 3
+        }
+      ],
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "target": 177,
+      "glyphs": [
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 1,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 1,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 1,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 39,
+          "x": 3,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 1,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 1,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 1,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 1,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 0,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 0,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 46,
+          "x": 2,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 46,
+          "x": 3,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 0,
+          "y": 3
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 0,
+          "y": 3
+        },
+        {
+          "tileset": "johto",
+          "block": 46,
+          "x": 2,
+          "y": 3
+        },
+        {
+          "tileset": "johto",
+          "block": 46,
+          "x": 3,
+          "y": 3
+        }
+      ],
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "DOOR"
+      ]
+    },
+    {
+      "target": 178,
+      "glyphs": [
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 1,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 1,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 1,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 3,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 1,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 1,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 1,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 3,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 0,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 0,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 0,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 3,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 0,
+          "y": 3
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 0,
+          "y": 3
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 0,
+          "y": 3
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 3,
+          "y": 3
+        }
+      ],
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "target": 179,
+      "glyphs": [
+        {
+          "tileset": "kanto",
+          "block": 56,
+          "x": 0,
+          "y": 0
+        },
+        {
+          "tileset": "kanto",
+          "block": 56,
+          "x": 1,
+          "y": 0
+        },
+        {
+          "tileset": "kanto",
+          "block": 56,
+          "x": 2,
+          "y": 0
+        },
+        {
+          "tileset": "kanto",
+          "block": 56,
+          "x": 3,
+          "y": 0
+        },
+        {
+          "tileset": "kanto",
+          "block": 56,
+          "x": 0,
+          "y": 1
+        },
+        {
+          "tileset": "kanto",
+          "block": 56,
+          "x": 1,
+          "y": 1
+        },
+        {
+          "tileset": "kanto",
+          "block": 56,
+          "x": 2,
+          "y": 1
+        },
+        {
+          "tileset": "kanto",
+          "block": 56,
+          "x": 3,
+          "y": 1
+        },
+        {
+          "tileset": "kanto",
+          "block": 56,
+          "x": 0,
+          "y": 2
+        },
+        {
+          "tileset": "kanto",
+          "block": 56,
+          "x": 1,
+          "y": 2
+        },
+        {
+          "tileset": "kanto",
+          "block": 56,
+          "x": 2,
+          "y": 2
+        },
+        {
+          "tileset": "kanto",
+          "block": 56,
+          "x": 3,
+          "y": 2
+        },
+        {
+          "tileset": "kanto",
+          "block": 56,
+          "x": 0,
+          "y": 3
+        },
+        {
+          "tileset": "kanto",
+          "block": 56,
+          "x": 1,
+          "y": 3
+        },
+        {
+          "tileset": "kanto",
+          "block": 56,
+          "x": 2,
+          "y": 3
+        },
+        {
+          "tileset": "kanto",
+          "block": 56,
+          "x": 3,
+          "y": 3
+        }
+      ],
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "target": 180,
+      "glyphs": [
+        {
+          "tileset": "kanto",
+          "block": 57,
+          "x": 0,
+          "y": 0
+        },
+        {
+          "tileset": "kanto",
+          "block": 57,
+          "x": 1,
+          "y": 0
+        },
+        {
+          "tileset": "kanto",
+          "block": 57,
+          "x": 2,
+          "y": 0
+        },
+        {
+          "tileset": "kanto",
+          "block": 57,
+          "x": 3,
+          "y": 0
+        },
+        {
+          "tileset": "kanto",
+          "block": 57,
+          "x": 0,
+          "y": 1
+        },
+        {
+          "tileset": "kanto",
+          "block": 57,
+          "x": 1,
+          "y": 1
+        },
+        {
+          "tileset": "kanto",
+          "block": 57,
+          "x": 2,
+          "y": 1
+        },
+        {
+          "tileset": "kanto",
+          "block": 57,
+          "x": 3,
+          "y": 1
+        },
+        {
+          "tileset": "kanto",
+          "block": 57,
+          "x": 0,
+          "y": 2
+        },
+        {
+          "tileset": "kanto",
+          "block": 57,
+          "x": 1,
+          "y": 2
+        },
+        {
+          "tileset": "kanto",
+          "block": 57,
+          "x": 2,
+          "y": 2
+        },
+        {
+          "tileset": "kanto",
+          "block": 57,
+          "x": 3,
+          "y": 2
+        },
+        {
+          "tileset": "kanto",
+          "block": 57,
+          "x": 0,
+          "y": 3
+        },
+        {
+          "tileset": "kanto",
+          "block": 57,
+          "x": 1,
+          "y": 3
+        },
+        {
+          "tileset": "kanto",
+          "block": 57,
+          "x": 2,
+          "y": 3
+        },
+        {
+          "tileset": "kanto",
+          "block": 57,
+          "x": 3,
+          "y": 3
+        }
+      ],
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "target": 181,
+      "glyphs": [
+        {
+          "tileset": "kanto",
+          "block": 60,
+          "x": 0,
+          "y": 0
+        },
+        {
+          "tileset": "kanto",
+          "block": 60,
+          "x": 1,
+          "y": 0
+        },
+        {
+          "tileset": "kanto",
+          "block": 60,
+          "x": 2,
+          "y": 0
+        },
+        {
+          "tileset": "kanto",
+          "block": 60,
+          "x": 3,
+          "y": 0
+        },
+        {
+          "tileset": "kanto",
+          "block": 60,
+          "x": 0,
+          "y": 1
+        },
+        {
+          "tileset": "kanto",
+          "block": 60,
+          "x": 1,
+          "y": 1
+        },
+        {
+          "tileset": "kanto",
+          "block": 60,
+          "x": 2,
+          "y": 1
+        },
+        {
+          "tileset": "kanto",
+          "block": 60,
+          "x": 3,
+          "y": 1
+        },
+        {
+          "tileset": "kanto",
+          "block": 60,
+          "x": 0,
+          "y": 2
+        },
+        {
+          "tileset": "kanto",
+          "block": 60,
+          "x": 1,
+          "y": 2
+        },
+        {
+          "tileset": "kanto",
+          "block": 60,
+          "x": 2,
+          "y": 2
+        },
+        {
+          "tileset": "kanto",
+          "block": 60,
+          "x": 3,
+          "y": 2
+        },
+        {
+          "tileset": "kanto",
+          "block": 60,
+          "x": 0,
+          "y": 3
+        },
+        {
+          "tileset": "kanto",
+          "block": 60,
+          "x": 1,
+          "y": 3
+        },
+        {
+          "tileset": "kanto",
+          "block": 60,
+          "x": 2,
+          "y": 3
+        },
+        {
+          "tileset": "kanto",
+          "block": 60,
+          "x": 3,
+          "y": 3
+        }
+      ],
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "DOOR"
+      ]
+    },
+    {
+      "target": 182,
+      "glyphs": [
+        {
+          "tileset": "kanto",
+          "block": 61,
+          "x": 0,
+          "y": 0
+        },
+        {
+          "tileset": "kanto",
+          "block": 61,
+          "x": 1,
+          "y": 0
+        },
+        {
+          "tileset": "kanto",
+          "block": 61,
+          "x": 2,
+          "y": 0
+        },
+        {
+          "tileset": "kanto",
+          "block": 61,
+          "x": 3,
+          "y": 0
+        },
+        {
+          "tileset": "kanto",
+          "block": 61,
+          "x": 0,
+          "y": 1
+        },
+        {
+          "tileset": "kanto",
+          "block": 61,
+          "x": 1,
+          "y": 1
+        },
+        {
+          "tileset": "kanto",
+          "block": 61,
+          "x": 2,
+          "y": 1
+        },
+        {
+          "tileset": "kanto",
+          "block": 61,
+          "x": 3,
+          "y": 1
+        },
+        {
+          "tileset": "kanto",
+          "block": 61,
+          "x": 0,
+          "y": 2
+        },
+        {
+          "tileset": "kanto",
+          "block": 61,
+          "x": 1,
+          "y": 2
+        },
+        {
+          "tileset": "kanto",
+          "block": 61,
+          "x": 2,
+          "y": 2
+        },
+        {
+          "tileset": "kanto",
+          "block": 61,
+          "x": 3,
+          "y": 2
+        },
+        {
+          "tileset": "kanto",
+          "block": 61,
+          "x": 0,
+          "y": 3
+        },
+        {
+          "tileset": "kanto",
+          "block": 61,
+          "x": 1,
+          "y": 3
+        },
+        {
+          "tileset": "kanto",
+          "block": 61,
+          "x": 2,
+          "y": 3
+        },
+        {
+          "tileset": "kanto",
+          "block": 61,
+          "x": 3,
+          "y": 3
+        }
+      ],
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "target": 183,
+      "glyphs": [
+        {
+          "tileset": "johto",
+          "block": 38,
+          "x": 0,
+          "y": 0
+        },
+        {
+          "tileset": "johto",
+          "block": 38,
+          "x": 1,
+          "y": 0
+        },
+        {
+          "tileset": "johto",
+          "block": 38,
+          "x": 2,
+          "y": 0
+        },
+        {
+          "tileset": "johto",
+          "block": 38,
+          "x": 3,
+          "y": 0
+        },
+        {
+          "tileset": "johto",
+          "block": 38,
+          "x": 0,
+          "y": 1
+        },
+        {
+          "tileset": "johto",
+          "block": 38,
+          "x": 1,
+          "y": 1
+        },
+        {
+          "tileset": "johto",
+          "block": 38,
+          "x": 2,
+          "y": 1
+        },
+        {
+          "tileset": "johto",
+          "block": 38,
+          "x": 3,
+          "y": 1
+        },
+        {
+          "tileset": "johto",
+          "block": 38,
+          "x": 0,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 38,
+          "x": 1,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 38,
+          "x": 2,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 38,
+          "x": 3,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 38,
+          "x": 0,
+          "y": 3
+        },
+        {
+          "tileset": "johto",
+          "block": 38,
+          "x": 1,
+          "y": 3
+        },
+        {
+          "tileset": "johto",
+          "block": 38,
+          "x": 2,
+          "y": 3
+        },
+        {
+          "tileset": "johto",
+          "block": 38,
+          "x": 3,
+          "y": 3
+        }
+      ],
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "target": 184,
+      "glyphs": [
+        {
+          "tileset": "johto",
+          "block": 39,
+          "x": 0,
+          "y": 0
+        },
+        {
+          "tileset": "johto",
+          "block": 39,
+          "x": 1,
+          "y": 0
+        },
+        {
+          "tileset": "johto",
+          "block": 39,
+          "x": 2,
+          "y": 0
+        },
+        {
+          "tileset": "johto",
+          "block": 39,
+          "x": 3,
+          "y": 0
+        },
+        {
+          "tileset": "johto",
+          "block": 39,
+          "x": 0,
+          "y": 1
+        },
+        {
+          "tileset": "johto",
+          "block": 39,
+          "x": 1,
+          "y": 1
+        },
+        {
+          "tileset": "johto",
+          "block": 39,
+          "x": 2,
+          "y": 1
+        },
+        {
+          "tileset": "johto",
+          "block": 39,
+          "x": 3,
+          "y": 1
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 0,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 1,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 46,
+          "x": 2,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 46,
+          "x": 3,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 0,
+          "y": 3
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 1,
+          "y": 3
+        },
+        {
+          "tileset": "johto",
+          "block": 46,
+          "x": 2,
+          "y": 3
+        },
+        {
+          "tileset": "johto",
+          "block": 46,
+          "x": 3,
+          "y": 3
+        }
+      ],
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "DOOR"
+      ]
+    },
+    {
+      "target": 185,
+      "glyphs": [
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 0,
+          "y": 0
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 1,
+          "y": 0
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 2,
+          "y": 0
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 3,
+          "y": 0
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 0,
+          "y": 1
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 1,
+          "y": 1
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 2,
+          "y": 1
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 3,
+          "y": 1
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 0,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 1,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 2,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 3,
+          "y": 2
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 0,
+          "y": 3
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 1,
+          "y": 3
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 2,
+          "y": 3
+        },
+        {
+          "tileset": "johto",
+          "block": 47,
+          "x": 3,
+          "y": 3
+        }
+      ],
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    }
+  ],
+  "cells": [
+    {
+      "metatile": [
+        2,
+        12
+      ],
+      "before": 24,
+      "after": 169
+    },
+    {
+      "metatile": [
+        3,
+        12
+      ],
+      "before": 159,
+      "after": 170
+    },
+    {
+      "metatile": [
+        4,
+        12
+      ],
+      "before": 159,
+      "after": 170
+    },
+    {
+      "metatile": [
+        5,
+        12
+      ],
+      "before": 25,
+      "after": 171
+    },
+    {
+      "metatile": [
+        2,
+        13
+      ],
+      "before": 160,
+      "after": 172
+    },
+    {
+      "metatile": [
+        3,
+        13
+      ],
+      "before": 161,
+      "after": 173
+    },
+    {
+      "metatile": [
+        4,
+        13
+      ],
+      "before": 161,
+      "after": 173
+    },
+    {
+      "metatile": [
+        5,
+        13
+      ],
+      "before": 162,
+      "after": 174
+    },
+    {
+      "metatile": [
+        2,
+        14
+      ],
+      "before": 16,
+      "after": 175
+    },
+    {
+      "metatile": [
+        3,
+        14
+      ],
+      "before": 163,
+      "after": 176
+    },
+    {
+      "metatile": [
+        4,
+        14
+      ],
+      "before": 164,
+      "after": 177
+    },
+    {
+      "metatile": [
+        5,
+        14
+      ],
+      "before": 17,
+      "after": 178
+    },
+    {
+      "metatile": [
+        8,
+        13
+      ],
+      "before": 24,
+      "after": 179
+    },
+    {
+      "metatile": [
+        9,
+        13
+      ],
+      "before": 25,
+      "after": 180
+    },
+    {
+      "metatile": [
+        11,
+        19
+      ],
+      "before": 24,
+      "after": 179
+    },
+    {
+      "metatile": [
+        12,
+        19
+      ],
+      "before": 25,
+      "after": 180
+    },
+    {
+      "metatile": [
+        11,
+        20
+      ],
+      "before": 26,
+      "after": 181
+    },
+    {
+      "metatile": [
+        12,
+        20
+      ],
+      "before": 165,
+      "after": 182
+    },
+    {
+      "metatile": [
+        2,
+        21
+      ],
+      "before": 24,
+      "after": 169
+    },
+    {
+      "metatile": [
+        3,
+        21
+      ],
+      "before": 159,
+      "after": 170
+    },
+    {
+      "metatile": [
+        4,
+        21
+      ],
+      "before": 25,
+      "after": 171
+    },
+    {
+      "metatile": [
+        2,
+        22
+      ],
+      "before": 16,
+      "after": 183
+    },
+    {
+      "metatile": [
+        3,
+        22
+      ],
+      "before": 164,
+      "after": 184
+    },
+    {
+      "metatile": [
+        4,
+        22
+      ],
+      "before": 17,
+      "after": 185
+    }
+  ],
+  "fronts": [
+    {
+      "id": "BoatHouse",
+      "origin": [
+        2,
+        12
+      ],
+      "door": [
+        9,
+        29
+      ],
+      "camera": [
+        9,
+        30
+      ],
+      "role": "Public timber waterfront meeting house; existing host, no rental service"
+    },
+    {
+      "id": "AnglerHome",
+      "origin": [
+        8,
+        13
+      ],
+      "door": [
+        19,
+        29
+      ],
+      "camera": [
+        19,
+        30
+      ],
+      "role": "Small inhabited brick angler home; existing fishing advice"
+    },
+    {
+      "id": "DispatcherHouse",
+      "origin": [
+        11,
+        19
+      ],
+      "door": [
+        23,
+        41
+      ],
+      "camera": [
+        23,
+        42
+      ],
+      "role": "Compact weatherboard family home; rescue witness remains"
+    },
+    {
+      "id": "LakeCabin",
+      "origin": [
+        2,
+        21
+      ],
+      "door": [
+        7,
+        45
+      ],
+      "camera": [
+        7,
+        46
+      ],
+      "role": "Low timber lake cabin; existing host, no new inn service"
+    }
+  ]
+}

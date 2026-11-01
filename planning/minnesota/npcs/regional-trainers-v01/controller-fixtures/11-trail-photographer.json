@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "id": "MN_RIVER_FUN_LOWER_LARK",
+      "map": "MnMississippiLowerWoodsC00R02",
+      "actor_script": "MN_RIVER_FUN_LOWER_LARK",
+      "trainer_class": "MN_TRAIL_PHOTOGRAPHER",
+      "sprite": "SPRITE_MN_TRAIL_PHOTOGRAPHER",
+      "facing": "west",
+      "approach": [
+        36,
+        17
+      ],
+      "defeated_flag": "EVENT_MN_RIVER_FUN_LOWER_LARK"
+    }
+  ]
+}

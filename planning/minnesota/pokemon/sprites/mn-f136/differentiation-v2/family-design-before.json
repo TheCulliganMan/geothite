@@ -1,0 +1,270 @@
+{
+  "family_id": "MN_F136",
+  "status": "unregistered-proposal",
+  "theme": "Black bear and a living dream den. Its own folding body shelters an original luminous dream-face.",
+  "visible_evolution": [
+    "A cub curls behind small crescent forepaws.",
+    "Large folding forearms protect a newly developed chest recess.",
+    "An enormous dark bear folds crescent arms around its hollow chest, enclosing a small luminous dream-face."
+  ],
+  "members": [
+    {
+      "id": "MN_300",
+      "name": "Densy",
+      "types": [
+        "NORMAL"
+      ],
+      "base_stats": {
+        "hp": 65,
+        "attack": 55,
+        "defense": 55,
+        "speed": 30,
+        "special_attack": 45,
+        "special_defense": 50
+      },
+      "bst": 300
+    },
+    {
+      "id": "MN_301",
+      "name": "Dozebear",
+      "types": [
+        "NORMAL",
+        "PSYCHIC"
+      ],
+      "base_stats": {
+        "hp": 85,
+        "attack": 65,
+        "defense": 65,
+        "speed": 35,
+        "special_attack": 75,
+        "special_defense": 85
+      },
+      "bst": 410
+    },
+    {
+      "id": "MN_302",
+      "name": "Denumbra",
+      "types": [
+        "NORMAL",
+        "PSYCHIC"
+      ],
+      "base_stats": {
+        "hp": 110,
+        "attack": 85,
+        "defense": 80,
+        "speed": 40,
+        "special_attack": 105,
+        "special_defense": 110
+      },
+      "bst": 530
+    }
+  ],
+  "evolution_levels": [
+    24,
+    40
+  ],
+  "source_urls": [
+    "https://www.dnr.state.mn.us/mammals/blackbear.html"
+  ],
+  "research_fact_distinction": "Natural-history source supplies regional identity; described supernatural anatomy/powers are original fiction.",
+  "palettes": {
+    "MN_300": {
+      "species_id": "MN_300",
+      "name": "Densy",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          23,
+          17,
+          11
+        ],
+        [
+          8,
+          11,
+          16
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        11831,
+        16744,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          189,
+          140,
+          90
+        ],
+        [
+          66,
+          90,
+          132
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#BD8C5A",
+        "#425A84",
+        "#000000"
+      ]
+    },
+    "MN_301": {
+      "species_id": "MN_301",
+      "name": "Dozebear",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          17,
+          12,
+          20
+        ],
+        [
+          29,
+          25,
+          17
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        20881,
+        18237,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          140,
+          99,
+          165
+        ],
+        [
+          239,
+          206,
+          140
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#8C63A5",
+        "#EFCE8C",
+        "#000000"
+      ]
+    },
+    "MN_302": {
+      "species_id": "MN_302",
+      "name": "Denumbra",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          8,
+          7,
+          14
+        ],
+        [
+          29,
+          24,
+          13
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        14568,
+        14109,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          66,
+          57,
+          115
+        ],
+        [
+          239,
+          198,
+          107
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#423973",
+        "#EFC66B",
+        "#000000"
+      ]
+    }
+  },
+  "planned_native_move_pool": [
+    "TACKLE",
+    "GROWL",
+    "DEFENSE_CURL",
+    "LICK",
+    "CONFUSION",
+    "REST",
+    "HEADBUTT",
+    "PSYBEAM",
+    "SNORE",
+    "AMNESIA",
+    "SLEEP_TALK",
+    "PSYCHIC_M",
+    "DREAM_EATER",
+    "BODY_SLAM"
+  ],
+  "standalone_profile_batch": "species-profiles.proposal.json",
+  "standalone_roster_batch": "roster-family.proposal.json"
+}

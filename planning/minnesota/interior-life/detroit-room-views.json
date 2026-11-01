@@ -1,0 +1,98 @@
+[
+  {
+    "id": "clinic-arrival",
+    "map": "MnDetroitLakesPokecenter1F",
+    "core": [
+      8,
+      13
+    ]
+  },
+  {
+    "id": "clinic-counter",
+    "map": "MnDetroitLakesPokecenter1F",
+    "core": [
+      7,
+      5
+    ]
+  },
+  {
+    "id": "clinic-pc",
+    "map": "MnDetroitLakesPokecenter1F",
+    "core": [
+      13,
+      4
+    ]
+  },
+  {
+    "id": "mart-arrival",
+    "map": "MnDetroitLakesMart",
+    "core": [
+      3,
+      6
+    ]
+  },
+  {
+    "id": "mart-counter",
+    "map": "MnDetroitLakesMart",
+    "core": [
+      3,
+      3
+    ]
+  },
+  {
+    "id": "station-arrival",
+    "map": "MnDetroitLakesStation",
+    "core": [
+      11,
+      17
+    ]
+  },
+  {
+    "id": "station-throat",
+    "map": "MnDetroitLakesStation",
+    "core": [
+      13,
+      10
+    ]
+  },
+  {
+    "id": "station-waiting",
+    "map": "MnDetroitLakesStation",
+    "core": [
+      10,
+      15
+    ]
+  },
+  {
+    "id": "canoe-arrival",
+    "map": "MnDetroitLakesCanoeCabin",
+    "core": [
+      4,
+      5
+    ]
+  },
+  {
+    "id": "canoe-paddle-story",
+    "map": "MnDetroitLakesCanoeCabin",
+    "core": [
+      3,
+      4
+    ]
+  },
+  {
+    "id": "ranger-arrival",
+    "map": "MnDetroitLakesRangerCabin",
+    "core": [
+      4,
+      5
+    ]
+  },
+  {
+    "id": "ranger-hand-in",
+    "map": "MnDetroitLakesRangerCabin",
+    "core": [
+      6,
+      4
+    ]
+  }
+]

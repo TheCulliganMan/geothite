@@ -1,0 +1,21 @@
+{
+  "status": "PASS",
+  "command": [
+    "cargo",
+    "test",
+    "--locked",
+    "--profile",
+    "wasm-dev",
+    "--config",
+    "profile.wasm-dev.package.crystal-bevy.opt-level=0",
+    "-p",
+    "crystal-bevy",
+    "--lib",
+    "--no-run",
+    "--message-format=json"
+  ],
+  "source": "crates/crystal-bevy/src/bevy_shell/tests/duluth_city.rs",
+  "source_sha256": "bc47ab6926967a623f38bfbf3927ecd752ffe9e5c14bcfb23d39ca5db6d50809",
+  "binary": ".local/route-grass-review/duluth-current-controller-v01",
+  "binary_sha256": "b8b2931aa932ff0be38bd7deb8386e84a67b61c771a6e6cda5b0ab9fe4c18813"
+}

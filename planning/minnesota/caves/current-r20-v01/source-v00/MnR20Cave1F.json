@@ -1,0 +1,145 @@
+{
+  "id": "MnR20Cave1F",
+  "template": "UnionCave1F",
+  "dimensions_metatiles": [
+    9,
+    8
+  ],
+  "width_metatiles": 9,
+  "height_metatiles": 8,
+  "tileset": "cave",
+  "border_block": 46,
+  "rows": [
+    "2e 2e 2e 2e 2e 2e 2e 2e 2e",
+    "2e 2e 04 06 2e 2e 2e 2e 2e",
+    "2e 04 02 0a 2e 2e 2e 2e 2e",
+    "2e 20 30 21 2d 05 06 2e 2e",
+    "2e 3d 02 02 3b 02 1e 2e 2e",
+    "2e 33 02 0a 2d 12 22 2e 2e",
+    "2e 2e 07 21 21 21 07 2e 2e",
+    "2e 2e 2e 2e 2e 2e 2e 2e 2e"
+  ],
+  "exits": [
+    [
+      5,
+      13
+    ],
+    [
+      13,
+      13
+    ]
+  ],
+  "clear_arrival": [
+    5,
+    12
+  ],
+  "exit_collision": "LADDER",
+  "exit_doors": [
+    [
+      60,
+      33
+    ],
+    [
+      76,
+      31
+    ]
+  ],
+  "residents": [],
+  "items": [
+    {
+      "id": "MN_R20_ITEM_01",
+      "item": "HYPER_POTION",
+      "quantity": 1,
+      "flag": "EVENT_MN_R20_ITEM_01",
+      "tile": [
+        5,
+        5
+      ],
+      "access": "Optional two-chamber granite passage; saved pickup flag retained."
+    }
+  ],
+  "signs": [],
+  "mandatory": false,
+  "purpose": "A recessed west-wall seep shapes the lower cleft. Widen the upper lip by one walking tile for a visible landing before the lateral drop. Both real mouths, opposite climbs and supply shelf remain useful.",
+  "candidate_status": "Source candidate under whole-room, player-camera and production traversal review.",
+  "review_contract": {
+    "quality_revision": "johto-quality-v01",
+    "palette_group": "nite",
+    "native_stair_blocks": [
+      [
+        2,
+        3
+      ],
+      [
+        5,
+        5
+      ]
+    ],
+    "viewpoints": [
+      {
+        "id": "west-mouth",
+        "tile": [
+          5,
+          12
+        ]
+      },
+      {
+        "id": "east-mouth",
+        "tile": [
+          13,
+          12
+        ]
+      },
+      {
+        "id": "seep",
+        "tile": [
+          4,
+          9
+        ]
+      },
+      {
+        "id": "west-stair",
+        "tile": [
+          4,
+          7
+        ]
+      },
+      {
+        "id": "cache",
+        "tile": [
+          4,
+          5
+        ]
+      },
+      {
+        "id": "drop-landing",
+        "tile": [
+          7,
+          9
+        ]
+      },
+      {
+        "id": "upper-lip",
+        "tile": [
+          10,
+          7
+        ]
+      },
+      {
+        "id": "east-stair",
+        "tile": [
+          11,
+          11
+        ]
+      },
+      {
+        "id": "east-approach",
+        "tile": [
+          12,
+          9
+        ]
+      }
+    ],
+    "notes": "A recessed west-wall seep shapes the lower cleft. Widen the upper lip by one walking tile for a visible landing before the lateral drop. Both real mouths, opposite climbs and supply shelf remain useful."
+  }
+}

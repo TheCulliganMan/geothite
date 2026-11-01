@@ -1,0 +1,25 @@
+{
+  "status": "PASS_CURRENT_TYPED_GRASS_CONTRACTS",
+  "pack": "content-packs/minnesota-current-st-cloud-fronts-v02.crystalpack",
+  "sha256": "df5e4c47500d84046f542418a203c8d58b0e119e97bc235083434464c8682ef3",
+  "dossier": "planning/minnesota/revisions/route-grass-v01/current-r10-contract-reconciliation-v01/MN_R10.dossier.json",
+  "dossier_sha256": "0afdc56a3a73af5570a477cb17bc66abf2abf2dcf8a22afbb43c7848a0fe601f",
+  "checks": [
+    {
+      "id": "PINE_NECK_HABITAT",
+      "minimum": 6,
+      "actual": 6,
+      "passed": true
+    },
+    {
+      "id": "MN_R10_ITEM_03",
+      "minimum": 4,
+      "actual": 4,
+      "habitat_non_grass_openings": [],
+      "passed": true
+    }
+  ],
+  "obsolete_directional_loop_metadata": [],
+  "native_r10_hop_quadrants": 0,
+  "scope": "Current cache and pine-neck thresholds, conservatively clearing actor bodies except the reward. R10 currently has no native hops; the copied old directional loop is orphaned source metadata. Native current-stair/reward gameplay still requires its bound production receipts; no old hop acceptance is inherited."
+}

@@ -1,0 +1,345 @@
+{
+  "species_id": "MN_277",
+  "name": "kensigard",
+  "status": "native-review-recommended; root independent review and context required",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f126/kensigard.manifest-native-joint-phase-v2.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-kensigard-joint-phase-v2",
+  "shared_transform": {
+    "source_bounds": [
+      12,
+      12,
+      370,
+      396
+    ],
+    "native_size": [
+      13,
+      14
+    ],
+    "native_origin": [
+      1,
+      1
+    ]
+  },
+  "all_four_nonrear_poses_actual_pupils_pass": true,
+  "each_native_eye_cluster_maps_to_one_actual_small_source_pupil_component": true,
+  "actual_source_pupil_proofs": [
+    {
+      "pose": "down_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f126/kensigard.overworld.imagegen-v2.png",
+      "crop": [
+        96,
+        45,
+        394,
+        420
+      ],
+      "actual_source_eye_bounds": [
+        [
+          230,
+          194,
+          30,
+          31
+        ],
+        [
+          328,
+          194,
+          30,
+          31
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              5,
+              6
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                1,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                230,
+                194,
+                30,
+                31
+              ],
+              "pixels": 925,
+              "truncated_contour": false,
+              "native_pixel": [
+                5,
+                6
+              ],
+              "source_sample_pixel": [
+                236,
+                212
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              9,
+              6
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                254
+              ],
+              "bounds": [
+                328,
+                194,
+                30,
+                31
+              ],
+              "pixels": 930,
+              "truncated_contour": false,
+              "native_pixel": [
+                9,
+                6
+              ],
+              "source_sample_pixel": [
+                349,
+                212
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f126/kensigard.overworld.imagegen-v2.png",
+      "crop": [
+        1082,
+        53,
+        394,
+        420
+      ],
+      "actual_source_eye_bounds": [
+        [
+          1215,
+          194,
+          30,
+          31
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              5,
+              6
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                254
+              ],
+              "bounds": [
+                1215,
+                194,
+                30,
+                31
+              ],
+              "pixels": 904,
+              "truncated_contour": false,
+              "native_pixel": [
+                5,
+                6
+              ],
+              "source_sample_pixel": [
+                1222,
+                220
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f126/kensigard.overworld.imagegen-v2.png",
+      "crop": [
+        97,
+        529,
+        394,
+        420
+      ],
+      "actual_source_eye_bounds": [
+        [
+          228,
+          660,
+          31,
+          31
+        ],
+        [
+          329,
+          662,
+          30,
+          30
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              5,
+              5
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                228,
+                660,
+                31,
+                31
+              ],
+              "pixels": 934,
+              "truncated_contour": false,
+              "native_pixel": [
+                5,
+                5
+              ],
+              "source_sample_pixel": [
+                237,
+                668
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              9,
+              5
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                1,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                329,
+                662,
+                30,
+                30
+              ],
+              "pixels": 900,
+              "truncated_contour": false,
+              "native_pixel": [
+                9,
+                5
+              ],
+              "source_sample_pixel": [
+                350,
+                668
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f126/kensigard.overworld.imagegen-v2.png",
+      "crop": [
+        1092,
+        537,
+        394,
+        420
+      ],
+      "actual_source_eye_bounds": [
+        [
+          1215,
+          661,
+          30,
+          31
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              5,
+              5
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                1,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                1215,
+                661,
+                30,
+                31
+              ],
+              "pixels": 920,
+              "truncated_contour": false,
+              "native_pixel": [
+                5,
+                5
+              ],
+              "source_sample_pixel": [
+                1232,
+                676
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "old_native_poses_preserved_exactly": [
+    "down_idle",
+    "up_idle",
+    "left_idle",
+    "down_step",
+    "up_step",
+    "left_step"
+  ],
+  "normal_shiny_runtime_parity": "all1536pixels exact each",
+  "canonical_palette_bytes": "exact",
+  "all_three_walk_pairs_distinct": true,
+  "rear_review": "both rear native poses viewed; no copied face",
+  "normal_shiny_native_boards_actually_viewed": true,
+  "accepted_coverage_native_pack_untouched": true,
+  "manifest_sha256": "89a0f98fb9e5301fd2dd3edbcf28453808b0bee1d9f94a2c678de0c548482084",
+  "compiled_index_sha256": "00d8649b3265ae71453dc0c1daa10e40654e1daaddefa0a6d04a0faa18b9276c"
+}

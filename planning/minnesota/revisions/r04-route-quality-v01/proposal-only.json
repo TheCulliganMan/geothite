@@ -1,0 +1,264 @@
+{
+  "status": "BOUNDED_PROPOSAL_ONLY_NOT_APPLIED_OR_ACCEPTED",
+  "source_candidate_contract_sha256": "871977bb33b45ff06d7159e679843df778331b142e2c6d5d920ed8bbf456088f",
+  "patches": [
+    {
+      "metatile": [
+        19,
+        8
+      ],
+      "before": "02",
+      "after": "00",
+      "purpose": "north shoulder below eastern flower display"
+    },
+    {
+      "metatile": [
+        20,
+        8
+      ],
+      "before": "02",
+      "after": "00",
+      "purpose": "north shoulder narrows broad ordinary apron"
+    },
+    {
+      "metatile": [
+        21,
+        8
+      ],
+      "before": "02",
+      "after": "00",
+      "purpose": "join shoulder to existing elm tongue"
+    },
+    {
+      "metatile": [
+        24,
+        8
+      ],
+      "before": "02",
+      "after": "00",
+      "purpose": "shade north shoulder of east exit"
+    },
+    {
+      "metatile": [
+        25,
+        8
+      ],
+      "before": "02",
+      "after": "00",
+      "purpose": "continue north shoulder beside existing east sign"
+    },
+    {
+      "metatile": [
+        24,
+        10
+      ],
+      "before": "02",
+      "after": "00",
+      "purpose": "close unused lower shoulder after bend"
+    }
+  ],
+  "changed_metatiles": 6,
+  "ordinary_floor_quadrants_removed": 24,
+  "minimum_grass_to_existing_cache_approach_before": 4,
+  "minimum_grass_to_existing_cache_approach_proposed": 4,
+  "actor_footing_unchanged": true,
+  "actor_interaction_adjacencies": [
+    {
+      "id": "MN_R04_T01",
+      "core": [
+        19,
+        18
+      ],
+      "before_reachable_adjacent": 4,
+      "after_reachable_adjacent": 4
+    },
+    {
+      "id": "MN_R04_T02",
+      "core": [
+        41,
+        25
+      ],
+      "before_reachable_adjacent": 4,
+      "after_reachable_adjacent": 4
+    },
+    {
+      "id": "MN_R04_GARDENER",
+      "core": [
+        7,
+        25
+      ],
+      "before_reachable_adjacent": 3,
+      "after_reachable_adjacent": 3
+    },
+    {
+      "id": "MN_R04_BRIDGE_KEEPER",
+      "core": [
+        23,
+        23
+      ],
+      "before_reachable_adjacent": 2,
+      "after_reachable_adjacent": 2
+    },
+    {
+      "id": "MN_R04_ITEM_01",
+      "core": [
+        7,
+        13
+      ],
+      "before_reachable_adjacent": 1,
+      "after_reachable_adjacent": 1
+    },
+    {
+      "id": "MN_R04_ITEM_02",
+      "core": [
+        49,
+        27
+      ],
+      "before_reachable_adjacent": 3,
+      "after_reachable_adjacent": 3
+    },
+    {
+      "id": "MN_R04_ITEM_04",
+      "core": [
+        9,
+        27
+      ],
+      "before_reachable_adjacent": 4,
+      "after_reachable_adjacent": 4
+    }
+  ],
+  "sign_interaction_adjacencies": [
+    {
+      "id": "MN_R04_WEST_SIGN",
+      "core": [
+        2,
+        16
+      ],
+      "before_reachable_adjacent": 2,
+      "after_reachable_adjacent": 2
+    },
+    {
+      "id": "MN_R04_EAST_SIGN",
+      "core": [
+        52,
+        16
+      ],
+      "before_reachable_adjacent": 4,
+      "after_reachable_adjacent": 3
+    },
+    {
+      "id": "MN_R04_GARDEN_SIGN",
+      "core": [
+        12,
+        8
+      ],
+      "before_reachable_adjacent": 2,
+      "after_reachable_adjacent": 2
+    },
+    {
+      "id": "MN_R04_BRIDGE_SIGN",
+      "core": [
+        36,
+        14
+      ],
+      "before_reachable_adjacent": 3,
+      "after_reachable_adjacent": 3
+    },
+    {
+      "id": "MN_R04_PICNIC_SIGN",
+      "core": [
+        42,
+        24
+      ],
+      "before_reachable_adjacent": 3,
+      "after_reachable_adjacent": 3
+    }
+  ],
+  "ordinary_walking_widths": [
+    {
+      "core": [
+        40,
+        18
+      ],
+      "before": {
+        "y_range_inclusive": [
+          16,
+          27
+        ],
+        "walking_tiles": 12
+      },
+      "proposal": {
+        "y_range_inclusive": [
+          18,
+          27
+        ],
+        "walking_tiles": 10
+      }
+    },
+    {
+      "core": [
+        42,
+        18
+      ],
+      "before": {
+        "y_range_inclusive": [
+          16,
+          22
+        ],
+        "walking_tiles": 7
+      },
+      "proposal": {
+        "y_range_inclusive": [
+          18,
+          22
+        ],
+        "walking_tiles": 5
+      }
+    },
+    {
+      "core": [
+        50,
+        18
+      ],
+      "before": {
+        "y_range_inclusive": [
+          14,
+          19
+        ],
+        "walking_tiles": 6
+      },
+      "proposal": {
+        "y_range_inclusive": [
+          18,
+          19
+        ],
+        "walking_tiles": 2
+      }
+    }
+  ],
+  "item_core": [
+    49,
+    27
+  ],
+  "item_approach_core": [
+    48,
+    27
+  ],
+  "existing_picnic_bench_metatile": [
+    24,
+    12
+  ],
+  "picnic_cache_and_entire_southern_habitat_exactly_unchanged": true,
+  "west_trainer_and_grass_route_exactly_unchanged": true,
+  "west_east_walk_before_steps": 59,
+  "west_east_walk_proposed_steps": 59,
+  "pond_bridge_seams_unchanged": true,
+  "new_canopy_collision": [
+    "WALL",
+    "WALL",
+    "WALL",
+    "WALL"
+  ],
+  "incidental_cut_quadrants": 0,
+  "source_or_pack_writes": 0
+}

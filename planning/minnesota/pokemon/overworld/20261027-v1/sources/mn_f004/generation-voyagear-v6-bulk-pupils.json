@@ -1,0 +1,73 @@
+{
+  "tool": "built-in image_gen",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f004/voyagear-v6-bulk-pupils",
+  "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f004/manifest-voyagear-v6-bulk-pupils.json",
+  "normalized_receipt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f004/source-feature-proof-voyagear-v6-bulk-pupils.json",
+  "all_raws_prompts_rejected_trials_retained": true,
+  "no_native_pixel_painting": true,
+  "no_registry_or_pack_mutation": true,
+  "normal_shiny_boards_actually_viewed": true,
+  "canonical_palettes": [
+    [
+      32767,
+      5428,
+      17668,
+      0
+    ],
+    [
+      32767,
+      9861,
+      8337,
+      0
+    ]
+  ],
+  "native_bounds": [
+    [
+      1,
+      3,
+      13,
+      12
+    ],
+    [
+      1,
+      3,
+      14,
+      12
+    ],
+    [
+      2,
+      3,
+      12,
+      12
+    ],
+    [
+      1,
+      3,
+      13,
+      12
+    ],
+    [
+      2,
+      3,
+      13,
+      12
+    ],
+    [
+      2,
+      3,
+      13,
+      12
+    ]
+  ],
+  "retained_source_hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f004/voyagear.overworld.imagegen-v4.png": "1b8b8d40a12b37b6a9da37ede7db09e2fb877d7020f9980e81af8d95b0b96cf9",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f004/voyagear.overworld.imagegen-v5-bulk.png": "766f89db3a290fe6ad787f823e06617011f31978b227ecea26f4398ac053b7d1",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f004/voyagear.overworld.imagegen-v3.png": "0f386a3f9d770bbc759f5ca70455611065901af34ec91dd5c0acaad31f10b071",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f004/voyagear.v5-bulk.original-path.txt": "0a311acdac780f3f82e4f8c4412b133036b7bdc48eb2b22bc17aab016ecab46e"
+  },
+  "status": "root independent visual/context acceptance pending",
+  "root_generation_prompt": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f004/voyagear.prompt-v5-bulk.txt",
+    "sha256": "d8fc96746c3075a3f157b8e9ab4bb6977041c2d612a587981b6bd33b7b99a5b4"
+  }
+}

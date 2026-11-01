@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "selected_revision": "route_grass_bemidji_plateau_stairs_revision",
+  "pack": "content-packs/minnesota-current-bemidji-plateau-stairs-v01.crystalpack",
+  "pack_sha256": "6200af583a20de0def7f4611ab59531e43549471cc5cf6ab7a6f4f7e52b832e8",
+  "world_only_own_revision_and_selector_changed": true,
+  "canonical_layout_and_dossier_exact": true,
+  "all_native_source_blocks_exact": true,
+  "code_lint_status": "QUEUED_LIVE_BUILD_WRAPPER"
+}

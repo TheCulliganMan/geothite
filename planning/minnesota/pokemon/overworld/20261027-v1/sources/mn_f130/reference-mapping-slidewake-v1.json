@@ -1,0 +1,51 @@
+{
+  "family_id": "MN_F130",
+  "species_id": "MN_288",
+  "prompt_file": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f130/prompt-slidewake-v1.txt",
+  "input_references": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+      "sha256": "4354a639ed1a80fd6686e43b273443ed894e58a84307a8049f638ee9ffa2a099",
+      "role": "Only tool input: authentic native16 map camera/coarse clusters/dot eyes."
+    }
+  ],
+  "inspected_identity_context": {
+    "canonical_front": {
+      "path": "target/minnesota-pokemon/native/MN_F130/mn-288-slidewake-v1.front.png",
+      "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F130/mn-288-slidewake-v1.front.png",
+      "sha256": "d22bd6990a1b9151e3b7bac3490ed39022bbde4c0fb232a07bee0098f516a202"
+    },
+    "canonical_back": {
+      "path": "target/minnesota-pokemon/native/MN_F130/mn-288-slidewake-v1.back.png",
+      "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F130/mn-288-slidewake-v1.back.png",
+      "sha256": "f60e6b9a90eabc110c1031a8e92864d518e47eafee82fb55724562d8b3f41255"
+    },
+    "invariants": [
+      "Long low mature teal otter, broad shoulder muscle folds, four squat webbed paws, small round ears and broad tan muzzle/face/bib.",
+      "One thick looping rudder tail with transparent opening; heavier/longer than Rivvit. No held props, costume, extra tails or human hands.",
+      "Stable head anchors, isolated real pupils, genuine plain north rear."
+    ]
+  },
+  "battle_refs_passed_to_tool": false,
+  "palette_binding": {
+    "transparent_index": 0,
+    "visible_indices": [
+      1,
+      2,
+      3
+    ],
+    "normal_rgb555_words": [
+      32767,
+      13973,
+      13670,
+      0
+    ],
+    "shiny_rgb555_words": [
+      32767,
+      21165,
+      11469,
+      0
+    ],
+    "white_body_region_policy": "Simplify formerly white body/highlight regions to light ink1. Index0 is transparent everywhere, not an opaque white paint color."
+  }
+}

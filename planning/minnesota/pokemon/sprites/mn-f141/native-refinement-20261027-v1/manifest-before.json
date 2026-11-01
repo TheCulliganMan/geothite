@@ -1,0 +1,246 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F141",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f141/proposal-v1/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "pokemon_palettes": {
+    "MN_312": {
+      "species_id": "MN_312",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          25,
+          19,
+          11
+        ],
+        [
+          9,
+          16,
+          7
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        11897,
+        7689,
+        0
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#CE9C5A",
+        "#4A8439",
+        "#000000"
+      ],
+      "name": "Velvawn",
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          206,
+          156,
+          90
+        ],
+        [
+          74,
+          132,
+          57
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    "MN_313": {
+      "species_id": "MN_313",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          15,
+          20,
+          17
+        ],
+        [
+          10,
+          8,
+          15
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        18063,
+        15626,
+        0
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#7BA58C",
+        "#52427B",
+        "#000000"
+      ],
+      "name": "Shedstag",
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          123,
+          165,
+          140
+        ],
+        [
+          82,
+          66,
+          123
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ]
+    }
+  },
+  "sprites": [
+    {
+      "id": "mn-312-velvawn-v1",
+      "species_id": "MN_312",
+      "view": "front",
+      "source": "sprites/mn-f141/proposal-v1/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        540,
+        630
+      ],
+      "fit": [
+        40,
+        42
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        11897,
+        7689,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 12,
+      "sampling": "area_vote",
+      "exterior_contour": "solid"
+    },
+    {
+      "id": "mn-313-shedstag-v1",
+      "species_id": "MN_313",
+      "view": "front",
+      "source": "sprites/mn-f141/proposal-v1/front-back.imagegen-v1.png",
+      "crop": [
+        540,
+        0,
+        772,
+        630
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        18063,
+        15626,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 12,
+      "sampling": "area_vote",
+      "exterior_contour": "solid"
+    },
+    {
+      "id": "mn-312-velvawn-v1",
+      "species_id": "MN_312",
+      "view": "back",
+      "source": "sprites/mn-f141/proposal-v1/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        635,
+        550,
+        539
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        11897,
+        7689,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 12,
+      "sampling": "area_vote",
+      "exterior_contour": "solid"
+    },
+    {
+      "id": "mn-313-shedstag-v1",
+      "species_id": "MN_313",
+      "view": "back",
+      "source": "sprites/mn-f141/proposal-v1/front-back.imagegen-v1.png",
+      "crop": [
+        560,
+        635,
+        752,
+        539
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        18063,
+        15626,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 12,
+      "sampling": "area_vote",
+      "exterior_contour": "solid"
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "sheet_sha256": "a542792813f9e97fb62ca3c3c1a10d92e47669b291008c246fec64961517cbcb",
+    "outline_profile": "solid-exterior-v1",
+    "notes": "Root approved AreaVote + Solid, white16/black12. Continuous black rims contain both white shed-antler planes and connected tail fan. Native front has four legs and two intentionally hovering antler limbs. Large rear ears/upper back with cropped lower body. All original sources, prompts and rejected variants retained. No pixel edits."
+  },
+  "source_sha256": {
+    "sprites/mn-f141/proposal-v1/front-back.imagegen-v1.png": "4d085d58c0347ee13a516e443ed0de68a2d4fd5dbf49ce502d8bc5b124c4d71d"
+  }
+}

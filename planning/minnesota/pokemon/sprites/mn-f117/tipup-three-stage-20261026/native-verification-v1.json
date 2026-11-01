@@ -1,0 +1,94 @@
+{
+  "status": "passed",
+  "candidate_review_sha256": "d58b46674c1ea6df953d8c279ebb5e038b3019a93d49314a51ea52571b988ccf",
+  "frames": [
+    {
+      "species_id": "MN_251",
+      "view": "front",
+      "png": "target/minnesota-pokemon/native/MN_F117/mn-251-winkfin-tipup-v1.front.png",
+      "png_sha256": "11c2c5b4e9a8276c2a61f399cf214586dd28a16957fd8f2ec0076e66dfc95316",
+      "native_2bpp": "target/minnesota-pokemon/native/MN_F117/mn-251-winkfin-tipup-v1.front.2bpp",
+      "native_2bpp_sha256": "980d08026ae76e61bb61799981d2809f958e7e32c629d7db481f54d348615f13",
+      "dimensions": [
+        56,
+        56
+      ],
+      "palette_colors_used": 4,
+      "bytes": 784
+    },
+    {
+      "species_id": "MN_251",
+      "view": "back",
+      "png": "target/minnesota-pokemon/native/MN_F117/mn-251-winkfin-tipup-v1.back.png",
+      "png_sha256": "bb1a6ec13b2befbb7455c5ee9976542d3097b3ab04e2597d9e5be3e8f7f693fc",
+      "native_2bpp": "target/minnesota-pokemon/native/MN_F117/mn-251-winkfin-tipup-v1.back.2bpp",
+      "native_2bpp_sha256": "027cb6d3ba54e6a745b97d90cf9a1d277c6bcdcd1f12c2333bca8ab52d3d34c2",
+      "dimensions": [
+        48,
+        48
+      ],
+      "palette_colors_used": 4,
+      "bytes": 576
+    },
+    {
+      "species_id": "MN_252",
+      "view": "front",
+      "png": "target/minnesota-pokemon/native/MN_F117/mn-252-glaciris-tipup-v1.front.png",
+      "png_sha256": "bc6897e48fb6543da90962e1d1ab71fd4ce702e411ac53d0783d13740eff64d0",
+      "native_2bpp": "target/minnesota-pokemon/native/MN_F117/mn-252-glaciris-tipup-v1.front.2bpp",
+      "native_2bpp_sha256": "f07a4f5221da518843faec9ddfd6803662dcc5e48e97b4b476bc0b9036134c0c",
+      "dimensions": [
+        56,
+        56
+      ],
+      "palette_colors_used": 4,
+      "bytes": 784
+    },
+    {
+      "species_id": "MN_252",
+      "view": "back",
+      "png": "target/minnesota-pokemon/native/MN_F117/mn-252-glaciris-tipup-v1.back.png",
+      "png_sha256": "deebd8a042a1b67783022a8d946b87625ecc941795b6988a71623d9108332bac",
+      "native_2bpp": "target/minnesota-pokemon/native/MN_F117/mn-252-glaciris-tipup-v1.back.2bpp",
+      "native_2bpp_sha256": "aa783209f5cde9ef378fbb44e1162337a7d1da002f7ea79f8d3fb95a9bdd22a6",
+      "dimensions": [
+        48,
+        48
+      ],
+      "palette_colors_used": 4,
+      "bytes": 576
+    },
+    {
+      "species_id": "MN_266",
+      "view": "front",
+      "png": "target/minnesota-pokemon/native/MN_F117/mn-266-tipulord-tipup-v1.front.png",
+      "png_sha256": "34698fe57cbf5e1268d3843c27d5cff58b9f1467276646fcc1cdfedd0cbc066f",
+      "native_2bpp": "target/minnesota-pokemon/native/MN_F117/mn-266-tipulord-tipup-v1.front.2bpp",
+      "native_2bpp_sha256": "114dd11444c2dd38d01d83726ddc84923dea544e96652215b4397dc3cf5f3003",
+      "dimensions": [
+        56,
+        56
+      ],
+      "palette_colors_used": 4,
+      "bytes": 784
+    },
+    {
+      "species_id": "MN_266",
+      "view": "back",
+      "png": "target/minnesota-pokemon/native/MN_F117/mn-266-tipulord-tipup-v1.back.png",
+      "png_sha256": "8726c1387678cce95c2d1928e551a57642340feadd15685986988ab49324b661",
+      "native_2bpp": "target/minnesota-pokemon/native/MN_F117/mn-266-tipulord-tipup-v1.back.2bpp",
+      "native_2bpp_sha256": "01a4885322355700428a01f3e49197dcc1821d22cdf4b559a5b456d111e94ae5",
+      "dimensions": [
+        48,
+        48
+      ],
+      "palette_colors_used": 4,
+      "bytes": 576
+    }
+  ],
+  "canonical_restore": {
+    "hashes_checked": 10,
+    "mismatches": []
+  }
+}

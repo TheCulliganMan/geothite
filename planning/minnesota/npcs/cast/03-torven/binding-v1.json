@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "trainer_class": "MN_LEADER_TORVEN",
+  "class_name": "LEADER",
+  "trainer_ids": [
+    "MN_GYM_2"
+  ],
+  "actors": [
+    {
+      "map": "MnMankatoGym",
+      "script": "MnMankatoGymLeader",
+      "tile": [
+        11,
+        3
+      ],
+      "previous_sprite": "SPRITE_POKEFAN_M"
+    }
+  ]
+}

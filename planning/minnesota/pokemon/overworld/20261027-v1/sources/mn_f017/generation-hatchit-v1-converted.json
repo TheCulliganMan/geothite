@@ -1,0 +1,18 @@
+{
+  "species_id": "MN_047",
+  "name": "Hatchit",
+  "family_id": "MN_F017",
+  "tool": "built-in image_gen",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f017/manifest-hatchit-v1-pupil-proof.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f017/hatchit-v1-pupil-proof",
+  "normalized_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f017/source-feature-proof-hatchit-v1.json",
+  "detailed_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f017/manifest-hatchit-v1-pupil-proof.proof.json",
+  "sources": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f017/hatchit.overworld.imagegen-v1.png": "f471e7ecbdc4449b982a14db934b74f70fc3ea96ffd3eb69600e57ac616fa20c"
+  },
+  "preserved_attempt_receipts": [
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f017/attempt-hatchit-v1.json"
+  ],
+  "status": "frozen native candidate; actual normal/shiny source features reviewed; root context pending",
+  "accepted": false
+}

@@ -1,0 +1,34 @@
+{
+  "status": "PASS_EXISTING_CURRENT_ALL_TARGET_CRATE_LINT",
+  "actual_command": [
+    "cargo",
+    "clippy",
+    "--locked",
+    "-p",
+    "crystal-assets",
+    "--all-targets"
+  ],
+  "target_dir": "target/northstar-story",
+  "log": ".local/dialogue-overhaul/storyboard-assets-clippy-v27-v03.log",
+  "log_sha256": "351dc7862d6de7c2f06c71b711a15bebb5fce0ba04a8c9bcc7db7c07aec8cac9",
+  "master": ".local/dialogue-overhaul/storyboard-integration-v27-v03.log",
+  "master_sha256": "009016eaea916891ed3ce1da9154c38c21ae310822c79b99791eab137208e5a6",
+  "owned_source_sha256": {
+    "crates/crystal-assets/src/brainerd_mart_facade.rs": "f6c017078e943573572831fcea66d8e91111ae5c65b0bae2f30085ca171b78b0",
+    "crates/crystal-assets/src/bin/revise_brainerd_mart_facade.rs": "966105abd1cfa0bd14f1fbc4cd4d75849e0cef6401d04f96d22035527f9ce272"
+  },
+  "source_unchanged_since_guarded_build_binding": true,
+  "explicit_brainerd_binary_clippy_artifacts": [
+    {
+      "path": "target/northstar-story/debug/deps/librevise_brainerd_mart_facade-3e08a06b7eba115a.rmeta",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mtime": 1793391112.9318404
+    },
+    {
+      "path": "target/northstar-story/debug/deps/librevise_brainerd_mart_facade-c9e7ad2f6ec9cb1a.rmeta",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mtime": 1793391084.4170306
+    }
+  ],
+  "notes": "Completed shared-checkout all-target lint includes both newly added Brainerd bin targets after their source timestamps; source hashes still match the pre-build binding. Existing unrelated warnings retained. No claim that a new duplicate lint command ran."
+}

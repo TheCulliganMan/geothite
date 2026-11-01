@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "historical_parent_file_sha256": "ebea77ccb9b9dbe54aa5101e32590c1b075ed8130f6e7fcfe2d8c8451dab11d8",
+  "target_tileset": "mn_winter_north_shore",
+  "source_tileset": "johto",
+  "source_definition_sha256": {
+    "johto": "d49be2437d396e1a5f69905a3297254b30d6b73d04bbba49ec4e39383dcc1c40",
+    "mn_winter_north_shore": "2f84cb2a617ae52d416afbc598e821dbd52c0ecf353da1d556e9b3516785aec1"
+  },
+  "source_file_sha256": {
+    "data/tilesets/mn_winter_north_shore_metatiles.bin": "d0dec8542592547471d107ccbc7f0e5b110e18d55277d7a141184e2e67a936d3",
+    "data/tilesets/mn_winter_north_shore.json": "eebd852b4c3a87c0b3a63a5d033d6650ba0a2c0fc7e022f6102ed8dd4959b327",
+    "data/tilesets/mn_winter_north_shore_palette_map.json": "fcdf7824e670c81a916e4e8ea11981c1eaa777f9304de36d221772e60b092654",
+    "data/tilesets/mn_winter_north_shore_foregrounds.json": "89eeaa76d71ffb1762c3d76860df0319fdd85e2ef6d581556580d8bfef978be4",
+    "gfx/tilesets/mn_winter_north_shore.2bpp": "f1445a0c889bb3e34f98de2796859cfc91ec378dac4fd8620efcd4360d673c56",
+    "gfx/tilesets/mn_winter_north_shore.png": "35b339a418fb2d5812d88dcef67f5598e090782b28f542822403ed900921dae4",
+    "gfx/tilesets/johto.2bpp": "da7c80d2d52999f84deb38789eba3758a8a3aba25aaf24d1d2da699683cfd019",
+    "data/tilesets/johto_metatiles.bin": "4af44f22edf06b8c4dd949c0acfad0a74a05554d63278d8f5791ba0e7bf13017",
+    "gfx/tilesets/bg_tiles.pal": "83ff1f3f9ab57e9d9cb021acb7689c169a7b1d6ebe78da4a294b8f4f7dc11bed"
+  },
+  "expected_original_blocks": 139,
+  "glyphs": [
+    {
+      "source": 46,
+      "target": 254,
+      "remapped_pixels_sha256": "fd2da9d172ba8d0b206dce53bd4ea66ea44985bd118f90b1bf4a042f7b40d12d"
+    },
+    {
+      "source": 47,
+      "target": 255,
+      "remapped_pixels_sha256": "4f14028a0a5e9eb83a17d6688b44ee75604c5db1dd8f62fed802d19bcd251d40"
+    }
+  ],
+  "source_block": 5,
+  "target_block": 139,
+  "glyph_recipe": [
+    250,
+    251,
+    250,
+    251,
+    254,
+    255,
+    254,
+    255,
+    254,
+    255,
+    254,
+    255,
+    252,
+    253,
+    252,
+    253
+  ],
+  "collision": [
+    "WALL",
+    "WALL",
+    "WALL",
+    "WALL"
+  ],
+  "foregrounds": [
+    [
+      239,
+      255,
+      255
+    ],
+    [
+      90,
+      140,
+      132
+    ],
+    [
+      41,
+      74,
+      66
+    ]
+  ]
+}

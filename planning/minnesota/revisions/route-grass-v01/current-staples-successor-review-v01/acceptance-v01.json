@@ -1,0 +1,14 @@
+{
+  "status": "PASS_CURRENT_DRY_STATION_AND_APPROACH_REVIEW",
+  "pack": "content-packs/minnesota-current-r19-detroit-gate-v05.crystalpack",
+  "pack_sha256": "b57516c0b77c7bcf94fa35e60ff8300bfd8a8781782827739742d8fc15b3f437",
+  "native_cases": 3,
+  "stdio_calls": 13,
+  "station_grass_quadrants": 0,
+  "station_encounter_table_absent": true,
+  "optional_spur_minimum_grass_steps": 0,
+  "older_three_grass_approach_claim_superseded": true,
+  "decision": "Keep the dry station/service yard and optional dry spur. Main R15 grass and downhill ledges have their own accepted full-route review.",
+  "r15_grass_review": "planning/minnesota/revisions/route-grass-v01/current-r15-successor-review-v01/current-grass-native-model-v01.json",
+  "scope": "Both spur lanes, native room/carpets, visits, parcel price/bag change, insufficient money, wild RUN on R15 and Continue pass. Explicit fixtures are not earned regional access; statewide objective remains active."
+}

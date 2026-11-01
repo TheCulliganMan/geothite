@@ -1,0 +1,3017 @@
+{
+  "planning/minnesota/routes/MN_R14.layout.json": {
+    "sha256": "a75443f448a2ba6c182bad8de98d6b7a32579e8338cb12dfbd975dcc9eb8d76f",
+    "contents": {
+      "schema_version": 2,
+      "id": "MN_R14",
+      "tileset": "johto",
+      "compiled_tileset": "mn_headwaters",
+      "dimensions_metatiles": [
+        48,
+        32
+      ],
+      "shore_fitting": "johto_8_neighbors",
+      "reject_cliff_cuts": true,
+      "derived_blocks": [
+        {
+          "id": "80",
+          "source_tileset": "kanto",
+          "source_block": "78",
+          "collision": "WATER",
+          "required_typed_extension": "headwaters_art::build_headwaters_art_pack"
+        },
+        {
+          "id": "81",
+          "source_tileset": "kanto",
+          "source_block": "77",
+          "collision": "FLOOR/FLOOR/WALL/WALL",
+          "required_typed_extension": "headwaters_art::build_headwaters_art_pack"
+        },
+        {
+          "id": "82",
+          "source_tileset": "kanto",
+          "source_block": "77",
+          "tile_row_order": [
+            2,
+            3,
+            0,
+            1
+          ],
+          "collision_source_tileset": "johto",
+          "collision_source_block": "75",
+          "required_typed_extension": "headwaters_art::build_headwaters_art_pack"
+        }
+      ],
+      "additional_water_blocks": [
+        "30",
+        "31",
+        "32",
+        "38",
+        "39",
+        "3a"
+      ],
+      "layers": [
+        {
+          "name": "Survey pond crooked shoreline",
+          "kind": "polygon",
+          "points": [
+            [
+              3,
+              3
+            ],
+            [
+              7,
+              3
+            ],
+            [
+              7,
+              4
+            ],
+            [
+              8,
+              4
+            ],
+            [
+              8,
+              7
+            ],
+            [
+              7,
+              7
+            ],
+            [
+              7,
+              10
+            ],
+            [
+              4,
+              10
+            ],
+            [
+              4,
+              9
+            ],
+            [
+              3,
+              9
+            ],
+            [
+              3,
+              6
+            ],
+            [
+              2,
+              6
+            ],
+            [
+              2,
+              4
+            ],
+            [
+              3,
+              4
+            ]
+          ],
+          "material": "water"
+        },
+        {
+          "name": "Young Mississippi and northern reed basin",
+          "kind": "polygon",
+          "points": [
+            [
+              22,
+              1
+            ],
+            [
+              24,
+              1
+            ],
+            [
+              24,
+              5
+            ],
+            [
+              27,
+              5
+            ],
+            [
+              27,
+              9
+            ],
+            [
+              26,
+              9
+            ],
+            [
+              26,
+              12
+            ],
+            [
+              24,
+              12
+            ],
+            [
+              24,
+              18
+            ],
+            [
+              25,
+              18
+            ],
+            [
+              25,
+              24
+            ],
+            [
+              24,
+              24
+            ],
+            [
+              24,
+              30
+            ],
+            [
+              22,
+              30
+            ],
+            [
+              22,
+              25
+            ],
+            [
+              23,
+              25
+            ],
+            [
+              23,
+              20
+            ],
+            [
+              22,
+              20
+            ],
+            [
+              22,
+              14
+            ],
+            [
+              20,
+              14
+            ],
+            [
+              20,
+              11
+            ],
+            [
+              18,
+              11
+            ],
+            [
+              18,
+              7
+            ],
+            [
+              20,
+              7
+            ],
+            [
+              20,
+              5
+            ],
+            [
+              22,
+              5
+            ]
+          ],
+          "material": "water"
+        },
+        {
+          "name": "Eastern fen pool",
+          "kind": "polygon",
+          "points": [
+            [
+              39,
+              23
+            ],
+            [
+              42,
+              23
+            ],
+            [
+              42,
+              24
+            ],
+            [
+              43,
+              24
+            ],
+            [
+              43,
+              26
+            ],
+            [
+              41,
+              26
+            ],
+            [
+              41,
+              25
+            ],
+            [
+              39,
+              25
+            ]
+          ],
+          "material": "water"
+        },
+        {
+          "name": "West survey shore",
+          "kind": "polygon",
+          "points": [
+            [
+              9,
+              4
+            ],
+            [
+              11,
+              4
+            ],
+            [
+              11,
+              7
+            ],
+            [
+              13,
+              7
+            ],
+            [
+              13,
+              9
+            ],
+            [
+              16,
+              9
+            ],
+            [
+              16,
+              11
+            ],
+            [
+              10,
+              11
+            ],
+            [
+              10,
+              9
+            ],
+            [
+              9,
+              9
+            ]
+          ],
+          "material": "lawn"
+        },
+        {
+          "name": "West trail junction",
+          "kind": "polygon",
+          "points": [
+            [
+              7,
+              15
+            ],
+            [
+              10,
+              15
+            ],
+            [
+              10,
+              16
+            ],
+            [
+              12,
+              16
+            ],
+            [
+              12,
+              18
+            ],
+            [
+              16,
+              18
+            ],
+            [
+              16,
+              20
+            ],
+            [
+              13,
+              20
+            ],
+            [
+              13,
+              22
+            ],
+            [
+              7,
+              22
+            ]
+          ],
+          "material": "lawn"
+        },
+        {
+          "name": "Fern hollow wind shelter",
+          "kind": "polygon",
+          "points": [
+            [
+              5,
+              24
+            ],
+            [
+              9,
+              24
+            ],
+            [
+              9,
+              25
+            ],
+            [
+              12,
+              25
+            ],
+            [
+              12,
+              24
+            ],
+            [
+              15,
+              24
+            ],
+            [
+              15,
+              27
+            ],
+            [
+              14,
+              27
+            ],
+            [
+              14,
+              29
+            ],
+            [
+              8,
+              29
+            ],
+            [
+              8,
+              28
+            ],
+            [
+              5,
+              28
+            ]
+          ],
+          "material": "lawn"
+        },
+        {
+          "name": "East camp bay",
+          "kind": "polygon",
+          "points": [
+            [
+              38,
+              13
+            ],
+            [
+              41,
+              13
+            ],
+            [
+              41,
+              15
+            ],
+            [
+              42,
+              15
+            ],
+            [
+              42,
+              17
+            ],
+            [
+              39,
+              17
+            ],
+            [
+              39,
+              16
+            ],
+            [
+              38,
+              16
+            ]
+          ],
+          "material": "lawn"
+        },
+        {
+          "name": "North pine light gap",
+          "kind": "polygon",
+          "points": [
+            [
+              31,
+              5
+            ],
+            [
+              34,
+              5
+            ],
+            [
+              34,
+              6
+            ],
+            [
+              38,
+              6
+            ],
+            [
+              38,
+              5
+            ],
+            [
+              40,
+              5
+            ],
+            [
+              40,
+              8
+            ],
+            [
+              37,
+              8
+            ],
+            [
+              37,
+              9
+            ],
+            [
+              34,
+              9
+            ],
+            [
+              34,
+              8
+            ],
+            [
+              31,
+              8
+            ]
+          ],
+          "material": "lawn"
+        },
+        {
+          "name": "Southern fen observation bank",
+          "kind": "polygon",
+          "points": [
+            [
+              34,
+              22
+            ],
+            [
+              37,
+              22
+            ],
+            [
+              37,
+              23
+            ],
+            [
+              39,
+              23
+            ],
+            [
+              39,
+              25
+            ],
+            [
+              38,
+              25
+            ],
+            [
+              38,
+              27
+            ],
+            [
+              42,
+              27
+            ],
+            [
+              42,
+              29
+            ],
+            [
+              36,
+              29
+            ],
+            [
+              36,
+              28
+            ],
+            [
+              34,
+              28
+            ]
+          ],
+          "material": "lawn"
+        },
+        {
+          "name": "Bemidji wooded threshold",
+          "kind": "polygon",
+          "points": [
+            [
+              43,
+              12
+            ],
+            [
+              47,
+              12
+            ],
+            [
+              47,
+              15
+            ],
+            [
+              45,
+              15
+            ],
+            [
+              45,
+              14
+            ],
+            [
+              43,
+              14
+            ]
+          ],
+          "material": "lawn"
+        },
+        {
+          "name": "Survey shore reed tongue",
+          "kind": "polygon",
+          "points": [
+            [
+              10,
+              7
+            ],
+            [
+              12,
+              7
+            ],
+            [
+              12,
+              9
+            ],
+            [
+              14,
+              9
+            ],
+            [
+              14,
+              11
+            ],
+            [
+              12,
+              11
+            ],
+            [
+              12,
+              10
+            ],
+            [
+              10,
+              10
+            ]
+          ],
+          "material": "encounter"
+        },
+        {
+          "name": "Cedar pocket habitat",
+          "kind": "polygon",
+          "points": [
+            [
+              14,
+              6
+            ],
+            [
+              16,
+              6
+            ],
+            [
+              16,
+              9
+            ],
+            [
+              14,
+              9
+            ]
+          ],
+          "material": "encounter"
+        },
+        {
+          "name": "West junction fern shoulder",
+          "kind": "polygon",
+          "points": [
+            [
+              8,
+              16
+            ],
+            [
+              10,
+              16
+            ],
+            [
+              10,
+              17
+            ],
+            [
+              12,
+              17
+            ],
+            [
+              12,
+              19
+            ],
+            [
+              10,
+              19
+            ],
+            [
+              10,
+              20
+            ],
+            [
+              8,
+              20
+            ]
+          ],
+          "material": "encounter"
+        },
+        {
+          "name": "Hollow southern fern fan",
+          "kind": "polygon",
+          "points": [
+            [
+              7,
+              25
+            ],
+            [
+              10,
+              25
+            ],
+            [
+              10,
+              26
+            ],
+            [
+              12,
+              26
+            ],
+            [
+              12,
+              28
+            ],
+            [
+              9,
+              28
+            ],
+            [
+              9,
+              29
+            ],
+            [
+              7,
+              29
+            ]
+          ],
+          "material": "encounter"
+        },
+        {
+          "name": "North seed meadow",
+          "kind": "polygon",
+          "points": [
+            [
+              40,
+              4
+            ],
+            [
+              42,
+              4
+            ],
+            [
+              42,
+              5
+            ],
+            [
+              43,
+              5
+            ],
+            [
+              43,
+              8
+            ],
+            [
+              41,
+              8
+            ],
+            [
+              41,
+              7
+            ],
+            [
+              40,
+              7
+            ]
+          ],
+          "material": "encounter"
+        },
+        {
+          "name": "East camp understory",
+          "kind": "polygon",
+          "points": [
+            [
+              40,
+              15
+            ],
+            [
+              43,
+              15
+            ],
+            [
+              43,
+              17
+            ],
+            [
+              41,
+              17
+            ],
+            [
+              41,
+              18
+            ],
+            [
+              40,
+              18
+            ]
+          ],
+          "material": "encounter"
+        },
+        {
+          "name": "Southern fen reeds",
+          "kind": "polygon",
+          "points": [
+            [
+              35,
+              23
+            ],
+            [
+              38,
+              23
+            ],
+            [
+              38,
+              25
+            ],
+            [
+              37,
+              25
+            ],
+            [
+              37,
+              27
+            ],
+            [
+              40,
+              27
+            ],
+            [
+              40,
+              28
+            ],
+            [
+              37,
+              28
+            ],
+            [
+              37,
+              29
+            ],
+            [
+              35,
+              29
+            ]
+          ],
+          "material": "encounter"
+        },
+        {
+          "name": "Eastern fen reward habitat",
+          "kind": "polygon",
+          "points": [
+            [
+              44,
+              24
+            ],
+            [
+              46,
+              24
+            ],
+            [
+              46,
+              28
+            ],
+            [
+              43,
+              28
+            ],
+            [
+              43,
+              27
+            ],
+            [
+              44,
+              27
+            ]
+          ],
+          "material": "encounter"
+        },
+        {
+          "name": "Fen circuit actual entry",
+          "kind": "path",
+          "points": [
+            [
+              33,
+              19
+            ],
+            [
+              35,
+              19
+            ]
+          ],
+          "material": "floor",
+          "width_metatiles": 1
+        },
+        {
+          "name": "Mature pine circuit inward root finger",
+          "kind": "rect",
+          "bounds": [
+            37,
+            8,
+            39,
+            10
+          ],
+          "material": "forest"
+        },
+        {
+          "name": "Free Itasca woodland road",
+          "kind": "path",
+          "points": [
+            [
+              0,
+              21
+            ],
+            [
+              10,
+              21
+            ],
+            [
+              10,
+              18
+            ],
+            [
+              15,
+              18
+            ],
+            [
+              15,
+              19
+            ],
+            [
+              21,
+              19
+            ]
+          ],
+          "material": "floor",
+          "width_metatiles": 1
+        },
+        {
+          "name": "Free Bemidji woodland road",
+          "kind": "path",
+          "points": [
+            [
+              47,
+              13
+            ],
+            [
+              39,
+              13
+            ],
+            [
+              39,
+              16
+            ],
+            [
+              33,
+              16
+            ],
+            [
+              33,
+              19
+            ],
+            [
+              26,
+              19
+            ]
+          ],
+          "material": "floor",
+          "width_metatiles": 1
+        },
+        {
+          "name": "Upper mature pine circuit",
+          "kind": "path",
+          "points": [
+            [
+              33,
+              16
+            ],
+            [
+              31,
+              16
+            ],
+            [
+              31,
+              13
+            ],
+            [
+              39,
+              13
+            ],
+            [
+              39,
+              6
+            ],
+            [
+              31,
+              6
+            ],
+            [
+              31,
+              8
+            ],
+            [
+              35,
+              8
+            ],
+            [
+              35,
+              9
+            ]
+          ],
+          "material": "floor",
+          "width_metatiles": 1
+        },
+        {
+          "name": "Cut upper spur",
+          "kind": "path",
+          "points": [
+            [
+              35,
+              8
+            ],
+            [
+              35,
+              9
+            ]
+          ],
+          "material": "floor",
+          "width_metatiles": 1
+        },
+        {
+          "name": "Cut lower spur",
+          "kind": "path",
+          "points": [
+            [
+              35,
+              11
+            ],
+            [
+              35,
+              13
+            ],
+            [
+              35,
+              16
+            ]
+          ],
+          "material": "floor",
+          "width_metatiles": 1
+        },
+        {
+          "name": "West pond approach and ordinary bank return",
+          "kind": "path",
+          "points": [
+            [
+              7,
+              21
+            ],
+            [
+              7,
+              11
+            ],
+            [
+              10,
+              11
+            ],
+            [
+              10,
+              8
+            ],
+            [
+              9,
+              8
+            ],
+            [
+              9,
+              5
+            ]
+          ],
+          "material": "floor",
+          "width_metatiles": 1
+        },
+        {
+          "name": "Cedar resource spur",
+          "kind": "path",
+          "points": [
+            [
+              10,
+              8
+            ],
+            [
+              15,
+              8
+            ],
+            [
+              15,
+              7
+            ]
+          ],
+          "material": "floor",
+          "width_metatiles": 1
+        },
+        {
+          "name": "Bank upper approach",
+          "kind": "path",
+          "points": [
+            [
+              10,
+              11
+            ],
+            [
+              14,
+              11
+            ]
+          ],
+          "material": "floor",
+          "width_metatiles": 1
+        },
+        {
+          "name": "Bank landing connection",
+          "kind": "path",
+          "points": [
+            [
+              14,
+              13
+            ],
+            [
+              15,
+              13
+            ],
+            [
+              15,
+              18
+            ]
+          ],
+          "material": "floor",
+          "width_metatiles": 1
+        },
+        {
+          "name": "Sheltered fern hollow circuit",
+          "kind": "path",
+          "points": [
+            [
+              10,
+              21
+            ],
+            [
+              10,
+              24
+            ],
+            [
+              6,
+              24
+            ],
+            [
+              6,
+              28
+            ],
+            [
+              15,
+              28
+            ],
+            [
+              15,
+              24
+            ],
+            [
+              10,
+              24
+            ]
+          ],
+          "material": "floor",
+          "width_metatiles": 1
+        },
+        {
+          "name": "Fen and picnic circuit",
+          "kind": "path",
+          "points": [
+            [
+              35,
+              19
+            ],
+            [
+              35,
+              22
+            ],
+            [
+              42,
+              22
+            ],
+            [
+              42,
+              27
+            ],
+            [
+              35,
+              27
+            ],
+            [
+              35,
+              22
+            ]
+          ],
+          "material": "floor",
+          "width_metatiles": 1
+        },
+        {
+          "name": "Fen reward spur",
+          "kind": "path",
+          "points": [
+            [
+              42,
+              27
+            ],
+            [
+              45,
+              27
+            ]
+          ],
+          "material": "floor",
+          "width_metatiles": 1
+        },
+        {
+          "name": "Young river watch",
+          "kind": "path",
+          "points": [
+            [
+              27,
+              19
+            ],
+            [
+              27,
+              15
+            ],
+            [
+              25,
+              15
+            ]
+          ],
+          "material": "floor",
+          "width_metatiles": 1
+        },
+        {
+          "name": "North required-understory woodland",
+          "kind": "rect",
+          "bounds": [
+            28,
+            0,
+            30,
+            17
+          ],
+          "material": "forest"
+        },
+        {
+          "name": "South required-understory woodland",
+          "kind": "rect",
+          "bounds": [
+            28,
+            21,
+            30,
+            32
+          ],
+          "material": "forest"
+        },
+        {
+          "name": "Required young-river grass neck",
+          "kind": "rect",
+          "bounds": [
+            28,
+            17,
+            30,
+            21
+          ],
+          "material": "encounter"
+        },
+        {
+          "name": "Northern pine shortcut canopy band",
+          "kind": "rect",
+          "bounds": [
+            30,
+            10,
+            39,
+            11
+          ],
+          "material": "forest"
+        },
+        {
+          "name": "Native shortcut tree",
+          "kind": "point",
+          "position": [
+            35,
+            10
+          ],
+          "block": "5b"
+        },
+        {
+          "name": "Low survey bank west anchor",
+          "kind": "rect",
+          "bounds": [
+            0,
+            12,
+            10,
+            13
+          ],
+          "material": "forest"
+        },
+        {
+          "name": "Low survey bank east anchor",
+          "kind": "rect",
+          "bounds": [
+            18,
+            12,
+            22,
+            13
+          ],
+          "material": "forest"
+        },
+        {
+          "name": "Low survey native drop",
+          "kind": "block_rect",
+          "bounds": [
+            10,
+            12,
+            18,
+            13
+          ],
+          "block": "57"
+        },
+        {
+          "name": "Only ordinary bank return gate",
+          "kind": "point",
+          "position": [
+            7,
+            12
+          ],
+          "block": "01"
+        },
+        {
+          "name": "Young river north post rail",
+          "kind": "block_rect",
+          "bounds": [
+            21,
+            18,
+            27,
+            19
+          ],
+          "block": "82"
+        },
+        {
+          "name": "Young river south post rail",
+          "kind": "block_rect",
+          "bounds": [
+            21,
+            19,
+            27,
+            20
+          ],
+          "block": "81"
+        },
+        {
+          "name": "Survey observation north rail",
+          "kind": "block_rect",
+          "bounds": [
+            6,
+            8,
+            10,
+            9
+          ],
+          "block": "82"
+        },
+        {
+          "name": "Survey observation south rail",
+          "kind": "block_rect",
+          "bounds": [
+            6,
+            9,
+            10,
+            10
+          ],
+          "block": "81"
+        },
+        {
+          "name": "Survey landing north closure",
+          "kind": "point",
+          "position": [
+            5,
+            8
+          ],
+          "block": "40"
+        },
+        {
+          "name": "Survey landing south closure",
+          "kind": "point",
+          "position": [
+            5,
+            9
+          ],
+          "block": "48"
+        },
+        {
+          "name": "Survey deck bank approach",
+          "kind": "path",
+          "points": [
+            [
+              9,
+              9
+            ],
+            [
+              10,
+              9
+            ],
+            [
+              10,
+              11
+            ]
+          ],
+          "material": "floor",
+          "width_metatiles": 1
+        },
+        {
+          "name": "North river rock cap 22",
+          "kind": "point",
+          "position": [
+            22,
+            1
+          ],
+          "block": "30"
+        },
+        {
+          "name": "North river rock cap 23",
+          "kind": "point",
+          "position": [
+            23,
+            1
+          ],
+          "block": "31"
+        },
+        {
+          "name": "North river rock cap 24",
+          "kind": "point",
+          "position": [
+            24,
+            1
+          ],
+          "block": "32"
+        },
+        {
+          "name": "South river rock cap 22",
+          "kind": "point",
+          "position": [
+            22,
+            30
+          ],
+          "block": "38"
+        },
+        {
+          "name": "South river rock cap 23",
+          "kind": "point",
+          "position": [
+            23,
+            30
+          ],
+          "block": "39"
+        },
+        {
+          "name": "South river rock cap 24",
+          "kind": "point",
+          "position": [
+            24,
+            30
+          ],
+          "block": "3a"
+        },
+        {
+          "name": "Survey bird birch",
+          "kind": "point",
+          "position": [
+            11,
+            5
+          ],
+          "block": "3d"
+        },
+        {
+          "name": "Hollow wind tree",
+          "kind": "point",
+          "position": [
+            12,
+            27
+          ],
+          "block": "5d"
+        },
+        {
+          "name": "Old pine upper crown",
+          "kind": "point",
+          "position": [
+            33,
+            7
+          ],
+          "block": "61"
+        },
+        {
+          "name": "Old pine lower crown",
+          "kind": "point",
+          "position": [
+            33,
+            8
+          ],
+          "block": "65"
+        },
+        {
+          "name": "Camp shelter crown",
+          "kind": "point",
+          "position": [
+            41,
+            14
+          ],
+          "block": "5d"
+        },
+        {
+          "name": "Fen bank tree",
+          "kind": "point",
+          "position": [
+            38,
+            26
+          ],
+          "block": "3d"
+        },
+        {
+          "name": "Hollow light flowers",
+          "kind": "rect",
+          "bounds": [
+            12,
+            25,
+            14,
+            26
+          ],
+          "material": "flowers"
+        },
+        {
+          "name": "Old pine botanist flowers",
+          "kind": "rect",
+          "bounds": [
+            31,
+            5,
+            33,
+            6
+          ],
+          "material": "flowers"
+        },
+        {
+          "name": "MN_R14_T01 standing tile",
+          "kind": "point",
+          "position": [
+            40,
+            15
+          ],
+          "block": "02"
+        },
+        {
+          "name": "MN_R14_T02 standing tile",
+          "kind": "point",
+          "position": [
+            36,
+            6
+          ],
+          "block": "02"
+        },
+        {
+          "name": "MN_R14_T03 standing tile",
+          "kind": "point",
+          "position": [
+            9,
+            8
+          ],
+          "block": "02"
+        },
+        {
+          "name": "MN_R14_T04 standing tile",
+          "kind": "point",
+          "position": [
+            14,
+            26
+          ],
+          "block": "02"
+        },
+        {
+          "name": "MN_R14_T05 standing tile",
+          "kind": "point",
+          "position": [
+            40,
+            27
+          ],
+          "block": "02"
+        },
+        {
+          "name": "MN_R14_T06 standing tile",
+          "kind": "point",
+          "position": [
+            35,
+            22
+          ],
+          "block": "02"
+        },
+        {
+          "name": "MN_R14_TRAIL_GUIDE standing tile",
+          "kind": "point",
+          "position": [
+            44,
+            13
+          ],
+          "block": "02"
+        },
+        {
+          "name": "MN_R14_BOTANIST standing tile",
+          "kind": "point",
+          "position": [
+            32,
+            7
+          ],
+          "block": "02"
+        },
+        {
+          "name": "MN_R14_POND_WATCHER standing tile",
+          "kind": "point",
+          "position": [
+            9,
+            5
+          ],
+          "block": "02"
+        },
+        {
+          "name": "MN_R14_BRIDGE_KEEPER standing tile",
+          "kind": "point",
+          "position": [
+            27,
+            18
+          ],
+          "block": "02"
+        },
+        {
+          "name": "MN_R14_HOLLOW_WALKER standing tile",
+          "kind": "point",
+          "position": [
+            8,
+            27
+          ],
+          "block": "02"
+        },
+        {
+          "name": "MN_R14_MARSH_WATCHER standing tile",
+          "kind": "point",
+          "position": [
+            39,
+            22
+          ],
+          "block": "02"
+        },
+        {
+          "name": "MN_R14_ITEM_01 standing tile",
+          "kind": "point",
+          "position": [
+            15,
+            7
+          ],
+          "block": "02"
+        },
+        {
+          "name": "MN_R14_ITEM_02 standing tile",
+          "kind": "point",
+          "position": [
+            42,
+            6
+          ],
+          "block": "02"
+        },
+        {
+          "name": "MN_R14_ITEM_03 standing tile",
+          "kind": "point",
+          "position": [
+            5,
+            28
+          ],
+          "block": "02"
+        },
+        {
+          "name": "MN_R14_ITEM_04 standing tile",
+          "kind": "point",
+          "position": [
+            45,
+            27
+          ],
+          "block": "02"
+        },
+        {
+          "name": "MN_R14_SIGN_01",
+          "kind": "point",
+          "position": [
+            45,
+            12
+          ],
+          "block": "45"
+        },
+        {
+          "name": "MN_R14_SIGN_02",
+          "kind": "point",
+          "position": [
+            34,
+            5
+          ],
+          "block": "45"
+        },
+        {
+          "name": "MN_R14_SIGN_03",
+          "kind": "point",
+          "position": [
+            27,
+            17
+          ],
+          "block": "45"
+        },
+        {
+          "name": "MN_R14_SIGN_04",
+          "kind": "point",
+          "position": [
+            10,
+            6
+          ],
+          "block": "45"
+        },
+        {
+          "name": "MN_R14_SIGN_05",
+          "kind": "point",
+          "position": [
+            13,
+            25
+          ],
+          "block": "45"
+        },
+        {
+          "name": "MN_R14_SIGN_06",
+          "kind": "point",
+          "position": [
+            38,
+            22
+          ],
+          "block": "45"
+        },
+        {
+          "name": "West exterior anchor",
+          "kind": "block_rect",
+          "bounds": [
+            0,
+            0,
+            1,
+            32
+          ],
+          "block": "05"
+        },
+        {
+          "name": "East exterior anchor",
+          "kind": "block_rect",
+          "bounds": [
+            47,
+            0,
+            48,
+            32
+          ],
+          "block": "05"
+        },
+        {
+          "name": "Actual Itasca walking edge",
+          "kind": "point",
+          "position": [
+            0,
+            21
+          ],
+          "block": "01"
+        },
+        {
+          "name": "Actual Bemidji walking edge",
+          "kind": "point",
+          "position": [
+            47,
+            13
+          ],
+          "block": "01"
+        },
+        {
+          "kind": "point",
+          "name": "Preserve installed Lake Itasca connection",
+          "position": [
+            4,
+            18
+          ],
+          "block": "01"
+        },
+        {
+          "kind": "point",
+          "name": "Preserve installed Lake Itasca connection",
+          "position": [
+            5,
+            18
+          ],
+          "block": "01"
+        },
+        {
+          "kind": "point",
+          "name": "Preserve installed Lake Itasca connection",
+          "position": [
+            6,
+            18
+          ],
+          "block": "01"
+        },
+        {
+          "kind": "point",
+          "name": "Preserve installed Lake Itasca connection",
+          "position": [
+            0,
+            19
+          ],
+          "block": "01"
+        },
+        {
+          "kind": "point",
+          "name": "Preserve installed Lake Itasca connection",
+          "position": [
+            1,
+            19
+          ],
+          "block": "01"
+        },
+        {
+          "kind": "point",
+          "name": "Preserve installed Lake Itasca connection",
+          "position": [
+            2,
+            19
+          ],
+          "block": "01"
+        },
+        {
+          "kind": "point",
+          "name": "Preserve installed Lake Itasca connection",
+          "position": [
+            3,
+            19
+          ],
+          "block": "01"
+        },
+        {
+          "kind": "point",
+          "name": "Preserve installed Lake Itasca connection",
+          "position": [
+            4,
+            19
+          ],
+          "block": "01"
+        },
+        {
+          "kind": "point",
+          "name": "Preserve installed Lake Itasca connection",
+          "position": [
+            0,
+            20
+          ],
+          "block": "08"
+        },
+        {
+          "kind": "point",
+          "name": "Preserve installed Lake Itasca connection",
+          "position": [
+            1,
+            20
+          ],
+          "block": "09"
+        },
+        {
+          "kind": "point",
+          "name": "Preserve installed Lake Itasca connection",
+          "position": [
+            0,
+            21
+          ],
+          "block": "10"
+        },
+        {
+          "kind": "point",
+          "name": "Preserve installed Lake Itasca connection",
+          "position": [
+            1,
+            21
+          ],
+          "block": "11"
+        },
+        {
+          "kind": "point",
+          "name": "Preserve installed Lake Itasca connection",
+          "position": [
+            2,
+            21
+          ],
+          "block": "0b"
+        },
+        {
+          "kind": "point",
+          "name": "Survey-bank uphill grass; dry ledge return",
+          "position": [
+            7,
+            12
+          ],
+          "block": "03"
+        },
+        {
+          "kind": "point",
+          "name": "Survey-bank uphill grass; dry ledge return",
+          "position": [
+            7,
+            13
+          ],
+          "block": "03"
+        }
+      ],
+      "crossings": [
+        {
+          "id": "YOUNG_MISSISSIPPI_BOARDWALK",
+          "north_rail_blocks": [
+            [
+              21,
+              18
+            ],
+            [
+              22,
+              18
+            ],
+            [
+              23,
+              18
+            ],
+            [
+              24,
+              18
+            ],
+            [
+              25,
+              18
+            ],
+            [
+              26,
+              18
+            ]
+          ],
+          "south_rail_blocks": [
+            [
+              21,
+              19
+            ],
+            [
+              22,
+              19
+            ],
+            [
+              23,
+              19
+            ],
+            [
+              24,
+              19
+            ],
+            [
+              25,
+              19
+            ],
+            [
+              26,
+              19
+            ]
+          ],
+          "core_walk_line": [
+            [
+              42,
+              38
+            ],
+            [
+              43,
+              38
+            ],
+            [
+              44,
+              38
+            ],
+            [
+              45,
+              38
+            ],
+            [
+              46,
+              38
+            ],
+            [
+              47,
+              38
+            ],
+            [
+              48,
+              38
+            ],
+            [
+              49,
+              38
+            ],
+            [
+              50,
+              38
+            ],
+            [
+              51,
+              38
+            ],
+            [
+              52,
+              38
+            ],
+            [
+              53,
+              38
+            ]
+          ]
+        }
+      ],
+      "source_pixels_modified": false,
+      "art_authority": "Unchanged Johto Route30/Route29 native art and existing original Kanto rail recipes; explicitly authored terrain."
+    }
+  },
+  "planning/minnesota/routes/MN_R14.json": {
+    "sha256": "876976f2b23d9c642b5b0f8c0502791b53c4c0b115bba1d9c1c95e7b4e0a4878",
+    "contents": {
+      "id": "MN_R14",
+      "map_prefix": "MnR14",
+      "name": "Headwaters Trail",
+      "dimensions_metatiles": [
+        48,
+        32
+      ],
+      "chunk_metatiles": [
+        32,
+        24
+      ],
+      "chunk_columns": 2,
+      "chunk_rows": 2,
+      "endpoints": [
+        {
+          "place": "BEMIDJI",
+          "side": "E",
+          "gate_metatile": [
+            46,
+            13
+          ],
+          "landing_metatile": [
+            44,
+            13
+          ]
+        },
+        {
+          "place": "LAKE ITASCA",
+          "side": "W",
+          "gate_metatile": [
+            3,
+            21
+          ],
+          "landing_metatile": [
+            3,
+            21
+          ],
+          "native_gate_note": "Current installed Itasca gatehouse approach at core(6,42); facade at former source endpoint(2,42) is WALL. Native gatehouse warps(4,42)/(4,43), room return and regional connection are preserved."
+        }
+      ],
+      "required_flags": [
+        "BADGE_6"
+      ],
+      "quest": "Q05",
+      "tileset": "mn_headwaters",
+      "source_references": [
+        "Route29",
+        "Route30",
+        "Route12",
+        "IlexForest"
+      ],
+      "description": "A forest-understory and young-river route, built around one necessary narrow boardwalk, a survey-pond landing, a native low bank with western return, mature-pine circuit with a measured Cut shortcut, and a smaller southern fen loop. Original story/actor/item identities retained; no false cabin or mandatory field move.",
+      "main_path_metatiles": [
+        [
+          46,
+          13
+        ],
+        [
+          39,
+          13
+        ],
+        [
+          39,
+          16
+        ],
+        [
+          33,
+          16
+        ],
+        [
+          33,
+          19
+        ],
+        [
+          21,
+          19
+        ],
+        [
+          15,
+          19
+        ],
+        [
+          15,
+          18
+        ],
+        [
+          10,
+          18
+        ],
+        [
+          10,
+          21
+        ],
+        [
+          1,
+          21
+        ]
+      ],
+      "main_lane_width_gameplay_tiles": 2,
+      "districts": [
+        {
+          "id": "SURVEY",
+          "name": "Survey Pond and cedar bank",
+          "bounds_metatiles": [
+            1,
+            2,
+            22,
+            15
+          ],
+          "purpose": "Native water landing, bird observations and a directed low-bank descent."
+        },
+        {
+          "id": "ITASCA",
+          "name": "Itasca road and fern hollow",
+          "bounds_metatiles": [
+            0,
+            14,
+            22,
+            31
+          ],
+          "purpose": "Continuous free road with small returning fern habitat and rest clearing."
+        },
+        {
+          "id": "RIVER",
+          "name": "Young river crossing",
+          "bounds_metatiles": [
+            18,
+            1,
+            30,
+            31
+          ],
+          "purpose": "One narrow protected crossing and grass-lined river-bank approach."
+        },
+        {
+          "id": "PINES",
+          "name": "Mature pine circuit",
+          "bounds_metatiles": [
+            30,
+            3,
+            47,
+            20
+          ],
+          "purpose": "Optional seed meadow, botanist and actual Cut-shortened return."
+        },
+        {
+          "id": "FEN",
+          "name": "Southern fen loop",
+          "bounds_metatiles": [
+            31,
+            20,
+            47,
+            31
+          ],
+          "purpose": "Reed pool, bank fishing, insect habitat and resource spur."
+        }
+      ],
+      "loops": [],
+      "minimum_optional_branches": 5,
+      "trainers": [
+        {
+          "id": "MN_R14_T01",
+          "display_name": "MARA",
+          "trainer_class": "CAMPER",
+          "sprite": "SPRITE_YOUNGSTER",
+          "tile": [
+            81,
+            31
+          ],
+          "facing": "east",
+          "sight_range": 1,
+          "party": [
+            {
+              "species": "CLINKLAW",
+              "level": 27
+            },
+            {
+              "species": "VELVAWN",
+              "level": 28
+            }
+          ],
+          "defeated_flag": "EVENT_MN_R14_TRAINER_01",
+          "block_main_lane": false,
+          "before_lines": [
+            "The pines make a",
+            "fine camp spot.",
+            "My partners know",
+            "every root here!"
+          ],
+          "after_lines": [
+            "We will take a",
+            "quiet walk now."
+          ],
+          "loss_lines": [
+            "A soft path beats",
+            "a stony road."
+          ]
+        },
+        {
+          "id": "MN_R14_T02",
+          "display_name": "ROSIE",
+          "trainer_class": "PICNICKER",
+          "sprite": "SPRITE_LASS",
+          "tile": [
+            73,
+            13
+          ],
+          "facing": "east",
+          "sight_range": 1,
+          "party": [
+            {
+              "species": "FLOSSAIL",
+              "level": 28
+            },
+            {
+              "species": "PITCHWICK",
+              "level": 29
+            }
+          ],
+          "defeated_flag": "EVENT_MN_R14_TRAINER_02",
+          "block_main_lane": false,
+          "before_lines": [
+            "These flowers turn",
+            "toward the light.",
+            "Watch how my team",
+            "follows the light!"
+          ],
+          "after_lines": [
+            "A bright battle",
+            "for a shady path."
+          ],
+          "loss_lines": [
+            "Look for flowers",
+            "beside the trail."
+          ]
+        },
+        {
+          "id": "MN_R14_T03",
+          "display_name": "WADE",
+          "trainer_class": "BUG_CATCHER",
+          "sprite": "SPRITE_BUG_CATCHER",
+          "tile": [
+            19,
+            17
+          ],
+          "facing": "north",
+          "sight_range": 1,
+          "party": [
+            {
+              "species": "CLICKIT",
+              "level": 27
+            },
+            {
+              "species": "REGALARCH",
+              "level": 28
+            }
+          ],
+          "defeated_flag": "EVENT_MN_R14_TRAINER_03",
+          "block_main_lane": false,
+          "before_lines": [
+            "See the ripples?",
+            "A bug just landed.",
+            "My team is quick",
+            "on its feet too!"
+          ],
+          "after_lines": [
+            "You saw our moves",
+            "before they came."
+          ],
+          "loss_lines": [
+            "Please keep clear",
+            "of the pond reeds."
+          ]
+        },
+        {
+          "id": "MN_R14_T04",
+          "display_name": "LUCY",
+          "trainer_class": "COOLTRAINERF",
+          "sprite": "SPRITE_COOLTRAINER_F",
+          "tile": [
+            29,
+            53
+          ],
+          "facing": "south",
+          "sight_range": 1,
+          "party": [
+            {
+              "species": "VELVAWN",
+              "level": 30
+            },
+            {
+              "species": "NOTCHBILL",
+              "level": 31
+            }
+          ],
+          "defeated_flag": "EVENT_MN_R14_TRAINER_04",
+          "block_main_lane": false,
+          "before_lines": [
+            "This hollow keeps",
+            "the wind away.",
+            "We can practice",
+            "without a chill."
+          ],
+          "after_lines": [
+            "Your team looks",
+            "ready to travel."
+          ],
+          "loss_lines": [
+            "The west gate is",
+            "past these pines."
+          ]
+        },
+        {
+          "id": "MN_R14_T05",
+          "display_name": "BEN",
+          "trainer_class": "FISHER",
+          "sprite": "SPRITE_FISHER",
+          "tile": [
+            81,
+            55
+          ],
+          "facing": "west",
+          "sight_range": 1,
+          "party": [
+            {
+              "species": "MUDMENDER",
+              "level": 30
+            },
+            {
+              "species": "TORROUT",
+              "level": 29
+            }
+          ],
+          "defeated_flag": "EVENT_MN_R14_TRAINER_05",
+          "block_main_lane": false,
+          "before_lines": [
+            "A little patience",
+            "helps at the pond.",
+            "Does your team",
+            "know how to wait?"
+          ],
+          "after_lines": [
+            "That was worth",
+            "the quiet wait.",
+            "Try the ROD GURU!",
+            "His house is above",
+            "the lakeside deck",
+            "on PINE COUNTRY RD",
+            "south of BRAINERD.",
+            "A free SUPER ROD!"
+          ],
+          "loss_lines": [
+            "I will stay here",
+            "and watch the bank"
+          ]
+        },
+        {
+          "id": "MN_R14_T06",
+          "display_name": "SEL",
+          "trainer_class": "BUG_CATCHER",
+          "sprite": "SPRITE_BUG_CATCHER",
+          "tile": [
+            71,
+            45
+          ],
+          "facing": "east",
+          "sight_range": 1,
+          "party": [
+            {
+              "species": "TESSLARV",
+              "level": 29
+            },
+            {
+              "species": "WINDHOPPER",
+              "level": 30
+            }
+          ],
+          "defeated_flag": "EVENT_MN_R14_TRAINER_06",
+          "block_main_lane": false,
+          "before_lines": [
+            "The marsh hums",
+            "in the warm sun.",
+            "Let us add a",
+            "battle song!"
+          ],
+          "after_lines": [
+            "Even the bugs",
+            "fell quiet for us."
+          ],
+          "loss_lines": [
+            "A dry loop leads",
+            "round the reeds."
+          ]
+        }
+      ],
+      "items": [
+        {
+          "id": "MN_R14_ITEM_01",
+          "item": "HYPER_POTION",
+          "quantity": 1,
+          "tile": [
+            31,
+            15
+          ],
+          "flag": "EVENT_MN_R14_ITEM_01",
+          "access": "Cedar survey spur; native bank gives a useful descent."
+        },
+        {
+          "id": "MN_R14_ITEM_02",
+          "item": "ULTRA_BALL",
+          "quantity": 1,
+          "tile": [
+            85,
+            13
+          ],
+          "flag": "EVENT_MN_R14_ITEM_02",
+          "access": "Grass-priced northern seed meadow."
+        },
+        {
+          "id": "MN_R14_ITEM_03",
+          "item": "MAX_REPEL",
+          "quantity": 1,
+          "tile": [
+            11,
+            57
+          ],
+          "flag": "EVENT_MN_R14_ITEM_03",
+          "access": "Sheltered fern hollow southern loop."
+        },
+        {
+          "id": "MN_R14_ITEM_04",
+          "item": "REVIVE",
+          "quantity": 1,
+          "tile": [
+            91,
+            55
+          ],
+          "flag": "EVENT_MN_R14_ITEM_04",
+          "access": "Eastern fen habitat beyond the shore circuit."
+        }
+      ],
+      "encounters": {
+        "grass_rates": {
+          "day": 10,
+          "morning": 10,
+          "night": 10
+        },
+        "grass": {
+          "morning": [
+            {
+              "level": 27,
+              "species": "RICELING"
+            },
+            {
+              "level": 28,
+              "species": "CLINKLAW"
+            },
+            {
+              "level": 29,
+              "species": "FLOSSAIL"
+            },
+            {
+              "level": 30,
+              "species": "GILLPUP"
+            },
+            {
+              "level": 31,
+              "species": "VELVAWN"
+            },
+            {
+              "level": 32,
+              "species": "WINDHOPPER"
+            },
+            {
+              "level": 33,
+              "species": "NOTCHBILL"
+            }
+          ],
+          "day": [
+            {
+              "level": 27,
+              "species": "RICELING"
+            },
+            {
+              "level": 28,
+              "species": "CLINKLAW"
+            },
+            {
+              "level": 29,
+              "species": "FLOSSAIL"
+            },
+            {
+              "level": 30,
+              "species": "GILLPUP"
+            },
+            {
+              "level": 31,
+              "species": "VELVAWN"
+            },
+            {
+              "level": 32,
+              "species": "WINDHOPPER"
+            },
+            {
+              "level": 33,
+              "species": "NOTCHBILL"
+            }
+          ],
+          "night": [
+            {
+              "level": 27,
+              "species": "BOOMRUFF"
+            },
+            {
+              "level": 28,
+              "species": "BARRICANT"
+            },
+            {
+              "level": 29,
+              "species": "FLOSSAIL"
+            },
+            {
+              "level": 30,
+              "species": "GILLPUP"
+            },
+            {
+              "level": 31,
+              "species": "VELVAWN"
+            },
+            {
+              "level": 32,
+              "species": "WINDHOPPER"
+            },
+            {
+              "level": 33,
+              "species": "NOTCHBILL"
+            }
+          ]
+        },
+        "water_rate": 4,
+        "water": [
+          {
+            "level": 27,
+            "species": "CHORIP"
+          },
+          {
+            "level": 28,
+            "species": "GILLPUP"
+          },
+          {
+            "level": 33,
+            "species": "RIVVIT"
+          }
+        ]
+      },
+      "interiors": [],
+      "shortcut": {
+        "id": "MN_R14_SHORTCUT",
+        "kind": "Native Cut opens the short pine-circuit connection",
+        "requires": [
+          "MOVE_CUT",
+          "CUT_FIELD_PERMISSION"
+        ],
+        "mandatory": false,
+        "rejoins_main_route": true,
+        "tile": [
+          71,
+          20
+        ],
+        "approach": [
+          71,
+          21
+        ],
+        "native_block": "5b",
+        "opens_block": "3c",
+        "near_join": [
+          35,
+          11
+        ],
+        "far_join": [
+          35,
+          9
+        ],
+        "compare_from": [
+          71,
+          21
+        ],
+        "compare_to": [
+          71,
+          19
+        ],
+        "minimum_saved_steps": 12
+      },
+      "art_constraints": [
+        "Only original packed 8x8 source tiles.",
+        "No painted shadows, enlarged trees or perspective props.",
+        "Fit source shoreline/cliff quadrants; draw source trees in coherent metatile groups."
+      ],
+      "status": "Replacement source proposal in active visual review; old nine-map native evidence is historical and does not verify these dimensions.",
+      "anchor_status": "New source anchors require native publication and production-controller proof; original parties/item IDs/event flags retained.",
+      "residents": [
+        {
+          "id": "MN_R14_TRAIL_GUIDE",
+          "sprite": "SPRITE_TEACHER",
+          "tile": [
+            89,
+            27
+          ],
+          "facing": "west",
+          "lines": [
+            "Lake Itasca lies",
+            "west of this path.",
+            "Our survey marks",
+            "follow the trail."
+          ]
+        },
+        {
+          "id": "MN_R14_BOTANIST",
+          "sprite": "SPRITE_SCIENTIST",
+          "tile": [
+            65,
+            15
+          ],
+          "facing": "south",
+          "lines": [
+            "These pines shade",
+            "the small flowers.",
+            "A clear path keeps",
+            "their roots safe."
+          ]
+        },
+        {
+          "id": "MN_R14_POND_WATCHER",
+          "sprite": "SPRITE_GRAMPS",
+          "tile": [
+            19,
+            11
+          ],
+          "facing": "west",
+          "lines": [
+            "I count the birds",
+            "from the dry bank.",
+            "Itasca has more",
+            "places to explore."
+          ]
+        },
+        {
+          "id": "MN_R14_BRIDGE_KEEPER",
+          "sprite": "SPRITE_POKEFAN_M",
+          "tile": [
+            55,
+            37
+          ],
+          "facing": "west",
+          "lines": [
+            "This small stream",
+            "has so far to go.",
+            "Use the boardwalk.",
+            "Leave the reeds."
+          ]
+        },
+        {
+          "id": "MN_R14_HOLLOW_WALKER",
+          "sprite": "SPRITE_LASS",
+          "tile": [
+            17,
+            55
+          ],
+          "facing": "north",
+          "lines": [
+            "We pause in this",
+            "hollow as we walk.",
+            "There is no shop",
+            "among these pines."
+          ]
+        },
+        {
+          "id": "MN_R14_MARSH_WATCHER",
+          "sprite": "SPRITE_COOLTRAINER_M",
+          "tile": [
+            79,
+            45
+          ],
+          "facing": "east",
+          "lines": [
+            "WINDHOPPER skim",
+            "across",
+            "the marsh water.",
+            "I stay on the bank",
+            "watch them turn."
+          ]
+        }
+      ],
+      "signs": [
+        {
+          "id": "MN_R14_SIGN_01",
+          "tile": [
+            90,
+            24
+          ],
+          "lines": [
+            "HEADWATERS TRAIL",
+            "ITASCA: WEST"
+          ]
+        },
+        {
+          "id": "MN_R14_SIGN_02",
+          "tile": [
+            68,
+            10
+          ],
+          "lines": [
+            "OLD PINE WALK",
+            "FOLLOW THE GAPS"
+          ]
+        },
+        {
+          "id": "MN_R14_SIGN_03",
+          "tile": [
+            54,
+            34
+          ],
+          "lines": [
+            "YOUNG MISSISSIPPI",
+            "USE THE BOARDWALK"
+          ]
+        },
+        {
+          "id": "MN_R14_SIGN_04",
+          "tile": [
+            20,
+            12
+          ],
+          "lines": [
+            "SURVEY POND",
+            "WATCH FROM SHORE"
+          ]
+        },
+        {
+          "id": "MN_R14_SIGN_05",
+          "tile": [
+            26,
+            50
+          ],
+          "lines": [
+            "FERN HOLLOW",
+            "REST IN THE SHADE"
+          ]
+        },
+        {
+          "id": "MN_R14_SIGN_06",
+          "tile": [
+            76,
+            44
+          ],
+          "lines": [
+            "MARSH OBSERVATION",
+            "PROTECT THE REEDS"
+          ]
+        }
+      ],
+      "doors": [],
+      "viewpoints": [
+        {
+          "id": "BEMIDJI_GATE",
+          "tile": [
+            89,
+            26
+          ]
+        },
+        {
+          "id": "OLD_PINES",
+          "tile": [
+            69,
+            15
+          ]
+        },
+        {
+          "id": "CUT_RETURN",
+          "tile": [
+            71,
+            21
+          ]
+        },
+        {
+          "id": "SEED_MEADOW",
+          "tile": [
+            83,
+            13
+          ]
+        },
+        {
+          "id": "YOUNG_RIVER",
+          "tile": [
+            53,
+            31
+          ]
+        },
+        {
+          "id": "BOARDWALK",
+          "tile": [
+            47,
+            38
+          ]
+        },
+        {
+          "id": "SURVEY_LANDING",
+          "tile": [
+            15,
+            18
+          ]
+        },
+        {
+          "id": "SURVEY_POND",
+          "tile": [
+            19,
+            13
+          ]
+        },
+        {
+          "id": "CEDAR_SPUR",
+          "tile": [
+            31,
+            16
+          ]
+        },
+        {
+          "id": "LOW_BANK",
+          "tile": [
+            29,
+            23
+          ]
+        },
+        {
+          "id": "FERN_HOLLOW",
+          "tile": [
+            23,
+            55
+          ]
+        },
+        {
+          "id": "MARSH_LOOKOUT",
+          "tile": [
+            79,
+            44
+          ]
+        },
+        {
+          "id": "FEN_PICNIC",
+          "tile": [
+            81,
+            54
+          ]
+        },
+        {
+          "id": "ITASCA_GATE",
+          "tile": [
+            9,
+            42
+          ]
+        }
+      ],
+      "implementation": {
+        "layout": "MN_R14.layout.json",
+        "scope": "48 by 32 metatiles across four clipped chunks.",
+        "art_review": "../renders/headwaters/whole-route.png",
+        "state": "Current four-chunk native publication matches all 1536 exterior blocks/events. Three native asset tests and all three geometry/Cut/battle/Continue controller tests pass. Hub gates and earned Q05 remain pending.",
+        "trainer_density": "Six optional local trainers replace ten generic reservations. Reserved flags 07-10 stay unused; they grant no progression."
+      },
+      "cut_gates": [
+        {
+          "id": "MN_R14_SHORTCUT",
+          "tile": [
+            71,
+            20
+          ],
+          "approach": [
+            71,
+            21
+          ],
+          "replacement_block": "3c",
+          "targets": [
+            [
+              71,
+              20
+            ]
+          ],
+          "gated_actor_ids": []
+        }
+      ],
+      "one_way_ledges": [
+        {
+          "id": "SURVEY_BANK_RETURN",
+          "bounds_core": [
+            20,
+            24,
+            36,
+            26
+          ],
+          "direction": "south",
+          "source_block": "57",
+          "upper_approach": [
+            29,
+            23
+          ],
+          "hop_from": [
+            29,
+            24
+          ],
+          "landing": [
+            29,
+            26
+          ],
+          "reverse_blocked": [
+            29,
+            25
+          ],
+          "side_barriers": [
+            [
+              19,
+              25
+            ],
+            [
+              36,
+              25
+            ]
+          ],
+          "return_passage_core": [
+            14,
+            24,
+            16,
+            26
+          ],
+          "minimum_return_steps": 25,
+          "purpose": "Directed descent from the survey/cedar shore to the main Itasca road; ordinary uphill return uses the western woodland gate."
+        }
+      ],
+      "required_grass_crossings": [
+        {
+          "id": "YOUNG_RIVER_UNDERSTORY",
+          "bounds_core": [
+            56,
+            34,
+            60,
+            42
+          ],
+          "minimum_grass_steps": 4,
+          "purpose": "The river-side woodland neck prices the approach in four native grass steps; no dry bypass."
+        }
+      ],
+      "story_contract": {
+        "quest": "Q05",
+        "route_access": "Original BADGE_6 route requirement retained.",
+        "reading": "Lake Itasca marker grants EVENT_MN_HEADWATERS_READING on accessible dry ground; route residents do not grant it.",
+        "report": "Bemidji field officer turns actual reading into EVENT_MN_HEADWATERS_REPORT; reading alone never opens Iron Range.",
+        "quest_permission": "Q05 requires BADGE_7 in the existing story; preserve this independently from the route BADGE_6 access condition."
+      },
+      "grass_return_review_contract": {
+        "ledge_id": "SURVEY_BANK_RETURN",
+        "uphill_gate": {
+          "id": "SURVEY_BANK_UPHILL_WOODLAND_GATE",
+          "bounds_core": [
+            14,
+            24,
+            16,
+            28
+          ],
+          "minimum_grass_steps": 4,
+          "purpose": "Ordinary climb crosses woodland grass; native southbound survey ledge returns dry."
+        },
+        "ordinary_climb_minimum_grass_steps": 4,
+        "dry_drop_grass_steps": 0,
+        "verification": "Separate local uphill/downhill source proof and production-controller replay; original global YOUNG_RIVER_UNDERSTORY crossing retained."
+      }
+    }
+  }
+}

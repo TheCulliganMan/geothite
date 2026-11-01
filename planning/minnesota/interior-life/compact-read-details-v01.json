@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "manifest": "minnesota-interior-layout-compact-reads-v1",
+  "rooms": [
+    {
+      "map": "MnBrainerdOutfitter",
+      "intent": "Align the existing read-only detail with visible solid native furniture and preserve the whole room.",
+      "before_tileset": "house",
+      "before_rows": [
+        "0a 04 05 0e 04 0a",
+        "0a 0f 01 02 0f 0a",
+        "0a 0f 0c 0d 0f 0a",
+        "0a 0a 0a 0b 0a 0a"
+      ],
+      "tileset": "house",
+      "border_block": 10,
+      "rows": [
+        "0a 04 05 0e 04 0a",
+        "0a 0f 01 02 0f 0a",
+        "0a 0f 0c 0d 0f 0a",
+        "0a 0a 0a 0b 0a 0a"
+      ],
+      "arrival": [
+        6,
+        5
+      ],
+      "actor_approaches": [
+        {
+          "script": "MN_BRAINERD_GEAR_KEEPER",
+          "tile": [
+            3,
+            4
+          ]
+        },
+        {
+          "script": "MN_BRAINERD_CAMP_HELPER",
+          "tile": [
+            9,
+            5
+          ]
+        }
+      ],
+      "read_relocations": [
+        {
+          "script": "MN_BRAINERD_CAMP_GUIDE",
+          "before": [
+            4,
+            1
+          ],
+          "tile": [
+            3,
+            1
+          ],
+          "approach": [
+            3,
+            2
+          ]
+        }
+      ]
+    }
+  ]
+}

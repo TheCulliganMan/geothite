@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "cases": [
+    {
+      "case": "wrong-sha",
+      "exit_code": 1,
+      "stderr": "Error: parent SHA drift",
+      "no_output": true
+    },
+    {
+      "case": "overlong-line",
+      "exit_code": 1,
+      "stderr": "Error: native line must fit 18 characters",
+      "no_output": true
+    }
+  ]
+}

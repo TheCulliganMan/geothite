@@ -1,0 +1,34 @@
+{
+  "status": "PASS",
+  "command": [
+    "cargo",
+    "clippy",
+    "--locked",
+    "-p",
+    "crystal-assets",
+    "--all-targets"
+  ],
+  "exit_code": 0,
+  "shared_receipt": "planning/minnesota/renders/iron-pump-gallery-v561/checks-v584.json",
+  "log": "planning/minnesota/renders/iron-pump-gallery-v561/crystal-assets-clippy-v584.log",
+  "source_sha256": {
+    "crates/crystal-assets/src/r15_staples_spur.rs": "f6f810dc1cc3d9003b17e5814487853249503869b9a9f82f1fcd31384adbfec4",
+    "crates/crystal-assets/src/bin/revise_r15_staples_spur.rs": "ef3b4cbf74720e1da547b814bdd4f1c7115670fb867cb24458fa1b8f6f6576c4"
+  },
+  "compiled_bin_metadata": [
+    "target/verdigrim-scene/debug/deps/librevise_r15_staples_spur-08a38a34f49e6d38.rmeta",
+    "target/verdigrim-scene/debug/deps/librevise_r15_staples_spur-8e225ded55a13c7e.rmeta",
+    "target/verdigrim-scene/debug/deps/librevise_r15_staples_spur-ed79fb2ae12efbf4.rmeta",
+    "target/verdigrim-scene/debug/deps/librevise_r15_staples_spur-0c9231f084582d5d.rmeta"
+  ],
+  "compiled_library_dependency_records": [
+    "target/verdigrim-scene/debug/deps/crystal_assets-39a487cd2619c69b.d",
+    "target/verdigrim-scene/debug/deps/crystal_assets-3bead89e9e06a9c8.d",
+    "target/verdigrim-scene/debug/deps/crystal_assets-f32add06614e8929.d",
+    "target/verdigrim-scene/debug/deps/crystal_assets-945ae3d888f2fe89.d",
+    "target/verdigrim-scene/debug/deps/crystal_assets-0305c4850377f92d.d",
+    "target/verdigrim-scene/debug/deps/crystal_assets-8d9847e8b854726f.d",
+    "target/verdigrim-scene/debug/deps/crystal_assets-892f8c13183d3921.d"
+  ],
+  "scope": "Completed exact affected-crate all-target Clippy, including the current owned source and CLI metadata; replaces a duplicate queued run. Publisher was freshly compiled independently and reproduced the native-tested pack byte for byte."
+}

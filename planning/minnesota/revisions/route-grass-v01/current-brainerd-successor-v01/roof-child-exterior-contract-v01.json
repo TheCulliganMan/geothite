@@ -1,0 +1,373 @@
+{
+  "pack": "content-packs/minnesota-current-brainerd-mart-roof-v01.crystalpack",
+  "pack_sha256": "e343cd9c65f7c876946be4b59878eabc564c9c7f42a7f29f54cb1a2fac89396d",
+  "map": "MnBrainerd",
+  "source_dossier": "planning/minnesota/towns/MnBrainerd.json",
+  "start": [
+    32,
+    24
+  ],
+  "badge_count": 6,
+  "event_flags": [],
+  "roads": [
+    {
+      "inside": [
+        4,
+        24
+      ],
+      "out": "left",
+      "neighbor": "MnR15C00R00",
+      "there": [
+        63,
+        24
+      ]
+    },
+    {
+      "inside": [
+        59,
+        24
+      ],
+      "out": "right",
+      "neighbor": "MnR18C00R00",
+      "there": [
+        0,
+        10
+      ]
+    },
+    {
+      "inside": [
+        32,
+        4
+      ],
+      "out": "up",
+      "neighbor": "MnR07C00R01",
+      "there": [
+        20,
+        47
+      ]
+    },
+    {
+      "inside": [
+        32,
+        44
+      ],
+      "out": "down",
+      "neighbor": "MnR06C00R00",
+      "there": [
+        42,
+        0
+      ]
+    },
+    {
+      "inside": [
+        4,
+        25
+      ],
+      "out": "left",
+      "neighbor": "MnR15C00R00",
+      "there": [
+        63,
+        25
+      ]
+    },
+    {
+      "inside": [
+        59,
+        25
+      ],
+      "out": "right",
+      "neighbor": "MnR18C00R00",
+      "there": [
+        0,
+        11
+      ]
+    },
+    {
+      "inside": [
+        33,
+        4
+      ],
+      "out": "up",
+      "neighbor": "MnR07C00R01",
+      "there": [
+        21,
+        47
+      ]
+    },
+    {
+      "inside": [
+        33,
+        44
+      ],
+      "out": "down",
+      "neighbor": "MnR06C00R00",
+      "there": [
+        43,
+        0
+      ]
+    }
+  ],
+  "gates": [
+    {
+      "inside": [
+        4,
+        24
+      ],
+      "out": "left",
+      "neighbor": "MnR15C00R00",
+      "there": [
+        63,
+        24
+      ],
+      "script_root": "MnCohesionBrainerdWest",
+      "required_flags": [
+        "ENGINE_MINERALBADGE"
+      ]
+    },
+    {
+      "inside": [
+        59,
+        24
+      ],
+      "out": "right",
+      "neighbor": "MnR18C00R00",
+      "there": [
+        0,
+        10
+      ],
+      "script_root": "MnCohesionBrainerdEast",
+      "required_flags": [
+        "ENGINE_MINERALBADGE"
+      ]
+    },
+    {
+      "inside": [
+        32,
+        4
+      ],
+      "out": "up",
+      "neighbor": "MnR07C00R01",
+      "there": [
+        20,
+        47
+      ],
+      "script_root": "MnBrainerdLakeCheck",
+      "required_flags": [
+        "ENGINE_MINERALBADGE"
+      ]
+    },
+    {
+      "inside": [
+        4,
+        25
+      ],
+      "out": "left",
+      "neighbor": "MnR15C00R00",
+      "there": [
+        63,
+        25
+      ],
+      "script_root": "MnCohesionBrainerdWest",
+      "required_flags": [
+        "ENGINE_MINERALBADGE"
+      ]
+    },
+    {
+      "inside": [
+        59,
+        25
+      ],
+      "out": "right",
+      "neighbor": "MnR18C00R00",
+      "there": [
+        0,
+        11
+      ],
+      "script_root": "MnCohesionBrainerdEast",
+      "required_flags": [
+        "ENGINE_MINERALBADGE"
+      ]
+    },
+    {
+      "inside": [
+        33,
+        4
+      ],
+      "out": "up",
+      "neighbor": "MnR07C00R01",
+      "there": [
+        21,
+        47
+      ],
+      "script_root": "MnBrainerdLakeCheck",
+      "required_flags": [
+        "ENGINE_MINERALBADGE"
+      ]
+    }
+  ],
+  "ledges": [],
+  "doors": [
+    {
+      "room": "MnBrainerdPokecenter1F",
+      "outside": [
+        9,
+        22
+      ],
+      "arrival": [
+        10,
+        13
+      ],
+      "carpets": [
+        [
+          10,
+          15
+        ],
+        [
+          11,
+          15
+        ]
+      ]
+    },
+    {
+      "room": "MnBrainerdMart",
+      "outside": [
+        19,
+        22
+      ],
+      "arrival": [
+        6,
+        5
+      ],
+      "carpets": [
+        [
+          6,
+          7
+        ],
+        [
+          7,
+          7
+        ]
+      ]
+    },
+    {
+      "room": "MnBrainerdGym",
+      "outside": [
+        12,
+        36
+      ],
+      "arrival": [
+        4,
+        14
+      ],
+      "carpets": [
+        [
+          4,
+          15
+        ],
+        [
+          5,
+          15
+        ]
+      ]
+    },
+    {
+      "room": "MnBrainerdRangerStation",
+      "outside": [
+        23,
+        16
+      ],
+      "arrival": [
+        8,
+        9
+      ],
+      "carpets": [
+        [
+          8,
+          11
+        ],
+        [
+          9,
+          11
+        ]
+      ]
+    },
+    {
+      "room": "MnBrainerdOutfitter",
+      "outside": [
+        47,
+        36
+      ],
+      "arrival": [
+        6,
+        5
+      ],
+      "carpets": [
+        [
+          6,
+          7
+        ],
+        [
+          7,
+          7
+        ]
+      ]
+    }
+  ],
+  "fences": [
+    {
+      "stand": [
+        48,
+        17
+      ],
+      "blocked": "right"
+    }
+  ],
+  "surf": {
+    "bank": [
+      40,
+      18
+    ],
+    "out": "up",
+    "water": [
+      40,
+      17
+    ],
+    "steps": [
+      {
+        "input": "right",
+        "at": [
+          41,
+          17
+        ]
+      },
+      {
+        "input": "left",
+        "at": [
+          40,
+          17
+        ]
+      },
+      {
+        "input": "down",
+        "at": [
+          40,
+          18
+        ]
+      }
+    ]
+  },
+  "fixture_note": "Prior six badges and Mew60/Surf are explicit local QA setup, not earned story access. Every later action is native input.",
+  "counts": {
+    "roads": 8,
+    "gates": 6,
+    "ledges": 0,
+    "doors": 5,
+    "fences": 1,
+    "residents": 6,
+    "signs": 7
+  },
+  "arrival_discovery_flags": [
+    "ENGINE_FLYPOINT_MN_BRAINERD"
+  ],
+  "scope": "Current public roads, residents/signs, guards, door returns and lake edge. Retired high-cliff hop is excluded; current ordinary stairs are reviewed separately."
+}

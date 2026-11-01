@@ -1,0 +1,438 @@
+{
+  "status": "Eleven south-facing stairs with clean outdoor72 landings. Complete map preimages follow the43-cell cliff/corner/bank phase; the two Boundary Waters boulder setbacks affect no ramp-map guard. Static38-crossing audit passes after restoring Brainerd right wall. Native verification pending.",
+  "placements": [
+    {
+      "map": "MnBrainerd",
+      "tileset": "johto",
+      "metatile": [
+        10,
+        20
+      ],
+      "before": "74",
+      "upper_rows": {
+        "source_tileset": "johto",
+        "source_block": "72",
+        "source_rows": [
+          0,
+          1
+        ]
+      },
+      "lower_rows": {
+        "source_tileset": "cave",
+        "source_block": "12",
+        "source_rows": [
+          2,
+          3
+        ]
+      },
+      "collision": [
+        "FLOOR",
+        "FLOOR",
+        "WALL",
+        "FLOOR"
+      ]
+    },
+    {
+      "map": "MnR01C00R00",
+      "tileset": "johto",
+      "metatile": [
+        20,
+        9
+      ],
+      "before": "74",
+      "upper_rows": {
+        "source_tileset": "johto",
+        "source_block": "72",
+        "source_rows": [
+          0,
+          1
+        ]
+      },
+      "lower_rows": {
+        "source_tileset": "cave",
+        "source_block": "12",
+        "source_rows": [
+          2,
+          3
+        ]
+      },
+      "collision": [
+        "FLOOR",
+        "FLOOR",
+        "WALL",
+        "FLOOR"
+      ]
+    },
+    {
+      "map": "MnR03C00R00",
+      "tileset": "mn_headwaters",
+      "metatile": [
+        20,
+        20
+      ],
+      "before": "74",
+      "upper_rows": {
+        "source_tileset": "mn_headwaters",
+        "source_block": "72",
+        "source_rows": [
+          0,
+          1
+        ]
+      },
+      "lower_rows": {
+        "source_tileset": "cave",
+        "source_block": "12",
+        "source_rows": [
+          2,
+          3
+        ]
+      },
+      "collision": [
+        "FLOOR",
+        "FLOOR",
+        "WALL",
+        "FLOOR"
+      ]
+    },
+    {
+      "map": "MnR05C00R00",
+      "tileset": "mn_headwaters",
+      "metatile": [
+        7,
+        20
+      ],
+      "before": "74",
+      "upper_rows": {
+        "source_tileset": "mn_headwaters",
+        "source_block": "72",
+        "source_rows": [
+          0,
+          1
+        ]
+      },
+      "lower_rows": {
+        "source_tileset": "cave",
+        "source_block": "12",
+        "source_rows": [
+          2,
+          3
+        ]
+      },
+      "collision": [
+        "FLOOR",
+        "FLOOR",
+        "WALL",
+        "FLOOR"
+      ]
+    },
+    {
+      "map": "MnR05C00R01",
+      "tileset": "mn_headwaters",
+      "metatile": [
+        6,
+        14
+      ],
+      "before": "74",
+      "upper_rows": {
+        "source_tileset": "mn_headwaters",
+        "source_block": "72",
+        "source_rows": [
+          0,
+          1
+        ]
+      },
+      "lower_rows": {
+        "source_tileset": "cave",
+        "source_block": "12",
+        "source_rows": [
+          2,
+          3
+        ]
+      },
+      "collision": [
+        "FLOOR",
+        "FLOOR",
+        "WALL",
+        "FLOOR"
+      ]
+    },
+    {
+      "map": "MnR06C00R00",
+      "tileset": "mn_headwaters",
+      "metatile": [
+        14,
+        15
+      ],
+      "before": "74",
+      "upper_rows": {
+        "source_tileset": "mn_headwaters",
+        "source_block": "72",
+        "source_rows": [
+          0,
+          1
+        ]
+      },
+      "lower_rows": {
+        "source_tileset": "cave",
+        "source_block": "12",
+        "source_rows": [
+          2,
+          3
+        ]
+      },
+      "collision": [
+        "FLOOR",
+        "FLOOR",
+        "WALL",
+        "FLOOR"
+      ]
+    },
+    {
+      "map": "MnR08C00R00",
+      "tileset": "mn_headwaters",
+      "metatile": [
+        17,
+        13
+      ],
+      "before": "74",
+      "upper_rows": {
+        "source_tileset": "mn_headwaters",
+        "source_block": "72",
+        "source_rows": [
+          0,
+          1
+        ]
+      },
+      "lower_rows": {
+        "source_tileset": "cave",
+        "source_block": "12",
+        "source_rows": [
+          2,
+          3
+        ]
+      },
+      "collision": [
+        "FLOOR",
+        "FLOOR",
+        "WALL",
+        "FLOOR"
+      ]
+    },
+    {
+      "map": "MnR13C00R00",
+      "tileset": "mn_winter_north_shore",
+      "metatile": [
+        23,
+        12
+      ],
+      "before": "74",
+      "upper_rows": {
+        "source_tileset": "mn_winter_north_shore",
+        "source_block": "72",
+        "source_rows": [
+          0,
+          1
+        ]
+      },
+      "lower_rows": {
+        "source_tileset": "cave",
+        "source_block": "12",
+        "source_rows": [
+          2,
+          3
+        ]
+      },
+      "collision": [
+        "FLOOR",
+        "FLOOR",
+        "WALL",
+        "FLOOR"
+      ]
+    },
+    {
+      "map": "MnR19C00R00",
+      "tileset": "johto",
+      "metatile": [
+        5,
+        18
+      ],
+      "before": "74",
+      "upper_rows": {
+        "source_tileset": "johto",
+        "source_block": "72",
+        "source_rows": [
+          0,
+          1
+        ]
+      },
+      "lower_rows": {
+        "source_tileset": "cave",
+        "source_block": "12",
+        "source_rows": [
+          2,
+          3
+        ]
+      },
+      "collision": [
+        "FLOOR",
+        "FLOOR",
+        "WALL",
+        "FLOOR"
+      ]
+    },
+    {
+      "map": "MnR19C00R00",
+      "tileset": "johto",
+      "metatile": [
+        9,
+        18
+      ],
+      "before": "74",
+      "upper_rows": {
+        "source_tileset": "johto",
+        "source_block": "72",
+        "source_rows": [
+          0,
+          1
+        ]
+      },
+      "lower_rows": {
+        "source_tileset": "cave",
+        "source_block": "12",
+        "source_rows": [
+          2,
+          3
+        ]
+      },
+      "collision": [
+        "FLOOR",
+        "FLOOR",
+        "WALL",
+        "FLOOR"
+      ]
+    },
+    {
+      "map": "MnStCloud",
+      "tileset": "johto_modern",
+      "metatile": [
+        17,
+        14
+      ],
+      "before": "74",
+      "upper_rows": {
+        "source_tileset": "johto_modern",
+        "source_block": "72",
+        "source_rows": [
+          0,
+          1
+        ]
+      },
+      "lower_rows": {
+        "source_tileset": "cave",
+        "source_block": "12",
+        "source_rows": [
+          2,
+          3
+        ]
+      },
+      "collision": [
+        "FLOOR",
+        "FLOOR",
+        "WALL",
+        "FLOOR"
+      ]
+    }
+  ],
+  "source_art_rules": {
+    "outdoor_upper_rows": [
+      0,
+      1
+    ],
+    "native_cave12_lower_rows": [
+      2,
+      3
+    ],
+    "collision": [
+      "FLOOR",
+      "FLOOR",
+      "WALL",
+      "FLOOR"
+    ]
+  },
+  "aliases": [
+    {
+      "source": "johto",
+      "alias": "mn_outdoor_johto_stairs",
+      "native_metatile_count": 128
+    },
+    {
+      "source": "johto_modern",
+      "alias": "mn_outdoor_modern_stairs",
+      "native_metatile_count": 128
+    },
+    {
+      "source": "mn_headwaters",
+      "alias": "mn_outdoor_headwaters_stairs",
+      "native_metatile_count": 134
+    },
+    {
+      "source": "mn_winter_north_shore",
+      "alias": "mn_outdoor_winter_stairs",
+      "native_metatile_count": 140
+    }
+  ],
+  "modules": {
+    "MnBrainerd": "63eee15c15b4e4bad6fb7807985acda8d1f2b30646d902dea8814b0a320efc46",
+    "MnR01C00R00": "5882fe3b377a9b1988d41229623e2fc2c3211b6f36f398bea7eb28b2519e664b",
+    "MnR03C00R00": "1ab58b36fc3134e25d4967a91019a75dfead8b80f1a3188a07de658f9e632d1d",
+    "MnR05C00R00": "a7b4caad302720a7bffca88b180b64662378a5b0bdf8db6e74f031233090934f",
+    "MnR05C00R01": "6531bdd7635a654b94d2ce14c87b195b793dd59e4d745c2a0cc4b0bacbfa4849",
+    "MnR06C00R00": "6d197b5b20e319d4ff1a9b8a82a69e48029aca98aecaf3ceaae7b454cc6f2807",
+    "MnR08C00R00": "df8bbe96c68be86f597b38070dc42d9ad21bd58033c176ca10f7b0c5e86a9441",
+    "MnR13C00R00": "772acea7eb14eadef18bf4a501e598d7688103cd7e3dca16e7f26b5ca2944478",
+    "MnR19C00R00": "c0f3ba517ffcb2a6b6d079a3eb223469de35a9ea276645c3cd29b3f9630c811e",
+    "MnStCloud": "3c383b8df824afe17d80a69501045d0193546bb8f71ec6f9f2fd175e77f53f67"
+  },
+  "retained_north_ramps": [
+    {
+      "map": "MnR05C00R00",
+      "tileset": "mn_headwaters",
+      "metatile": [
+        12,
+        7
+      ],
+      "block": "74",
+      "reason": "Existing north-facing ramp, matched by adjoining native70. Do not graft a south-facing stair under its upper rock lip."
+    },
+    {
+      "map": "MnR05C00R00",
+      "tileset": "mn_headwaters",
+      "metatile": [
+        18,
+        13
+      ],
+      "block": "74",
+      "reason": "Existing north-facing ramp, matched by adjoining native70. Do not graft a south-facing stair under its upper rock lip."
+    },
+    {
+      "map": "MnR05C00R01",
+      "tileset": "mn_headwaters",
+      "metatile": [
+        14,
+        2
+      ],
+      "block": "74",
+      "reason": "Existing north-facing ramp, matched by adjoining native70. Do not graft a south-facing stair under its upper rock lip."
+    },
+    {
+      "map": "MnR07C00R00",
+      "tileset": "mn_headwaters",
+      "metatile": [
+        8,
+        21
+      ],
+      "block": "74",
+      "reason": "Existing north-facing ramp, matched by adjoining native70. Do not graft a south-facing stair under its upper rock lip."
+    }
+  ]
+}

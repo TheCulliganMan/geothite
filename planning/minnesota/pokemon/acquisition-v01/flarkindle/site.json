@@ -1,0 +1,181 @@
+{
+  "schema_version": 1,
+  "id": "minnesota-flarkindle-fen-site-v1",
+  "status": "Native lower loop lifted one row to retain a closed13-row footprint in the empty northwoods-west pocket; whole-world preservation and native replay pending.",
+  "parent": "MnBemidjiNorthwoods",
+  "parent_opening": {
+    "metatiles": [
+      [
+        0,
+        8
+      ],
+      [
+        1,
+        8
+      ]
+    ],
+    "before": [
+      "05",
+      "05"
+    ],
+    "after": "01",
+    "west_offset": 0
+  },
+  "fen": {
+    "map": "MnLayeredFen",
+    "constant": "MN_LAYERED_FEN",
+    "dimensions_metatiles": [
+      20,
+      13
+    ],
+    "tileset": "johto",
+    "east_offset": 0,
+    "rows": [
+      "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+      "05 05 05 05 05 05 05 05 05 05 05 05 05 05 02 02 02 02 05 05",
+      "05 05 05 05 05 05 05 05 05 05 05 05 05 05 04 04 04 04 05 05",
+      "05 05 05 05 05 05 05 05 05 05 05 05 05 05 04 04 04 04 05 05",
+      "05 05 05 05 05 05 05 05 05 05 05 01 01 05 01 01 01 01 05 05",
+      "05 05 05 05 05 05 02 02 02 05 05 02 02 05 05 05 05 05 05 05",
+      "05 05 05 05 03 02 61 02 02 05 05 02 02 02 02 68 02 05 05 05",
+      "05 05 05 02 03 02 61 02 02 02 02 02 02 02 68 02 02 05 05 05",
+      "05 05 05 02 02 02 02 02 02 01 01 01 01 01 01 01 01 01 01 01",
+      "05 05 05 02 02 02 54 55 02 02 02 02 05 02 02 02 02 05 05 05",
+      "05 05 05 02 02 02 58 59 02 02 02 02 05 02 02 03 02 05 05 05",
+      "05 05 05 02 02 02 02 02 02 02 02 02 01 02 02 03 02 05 05 05",
+      "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05"
+    ],
+    "arrival": [
+      39,
+      16
+    ],
+    "observer": [
+      36,
+      17
+    ],
+    "observer_approach": [
+      35,
+      17
+    ],
+    "reads": {
+      "root": {
+        "at": [
+          12,
+          12
+        ],
+        "approach": [
+          11,
+          12
+        ],
+        "script": "MnFenReadRoot",
+        "kind": "HEADBUTT_TREE"
+      },
+      "pool": {
+        "at": [
+          12,
+          18
+        ],
+        "approach": [
+          11,
+          18
+        ],
+        "script": "MnFenReadPool",
+        "kind": "WATER"
+      },
+      "rib": {
+        "at": [
+          30,
+          12
+        ],
+        "approach": [
+          29,
+          12
+        ],
+        "script": "MnFenReadRib",
+        "kind": "WALL"
+      },
+      "choose_root": {
+        "at": [
+          12,
+          15
+        ],
+        "approach": [
+          11,
+          15
+        ],
+        "script": "MnFenChooseRoot",
+        "kind": "HEADBUTT_TREE"
+      },
+      "choose_pool": {
+        "at": [
+          12,
+          20
+        ],
+        "approach": [
+          11,
+          20
+        ],
+        "script": "MnFenChoosePool",
+        "kind": "WATER"
+      },
+      "choose_rib": {
+        "at": [
+          28,
+          14
+        ],
+        "approach": [
+          27,
+          14
+        ],
+        "script": "MnFenChooseRib",
+        "kind": "WALL"
+      }
+    },
+    "gate": {
+      "metatile": [
+        13,
+        4
+      ],
+      "closed": "05",
+      "open": "01",
+      "hook": "MnFenOpenPath",
+      "tiles_callback": "MnFenTiles"
+    },
+    "creature": [
+      32,
+      5
+    ],
+    "creature_approach": [
+      32,
+      6
+    ]
+  },
+  "static_review": {
+    "closed_dry_tiles": 327,
+    "open_dry_tiles": 394,
+    "all_six_reads_reachable_before_solution": true,
+    "creature_approach_requires_gate": true,
+    "reachable_surf_boundary": "east x39,y16/17 only; actual walking seam",
+    "incidental_cut_quadrants": 0,
+    "buoy_quadrants": 0,
+    "surf_cannot_bypass_gate": true,
+    "native_shore_blocks": [
+      "54",
+      "55",
+      "58",
+      "59"
+    ],
+    "footprint": "20x13 fits the empty pocket above R14; global publication and native replay remain required."
+  },
+  "production_acceptance": [
+    "reciprocal walking seam and unchanged north/south corridor",
+    "held clues/Continue and observer comparison",
+    "early and wrong sequence spend nothing, reset only sequence flags",
+    "acknowledged final rib opens native terrain and creature",
+    "Continue and physical reentry restore open terrain",
+    "voluntary refusal RUN KO blackout actual clinic recovery retry",
+    "capture PC full storage once-only",
+    "production MCP",
+    "full native 2D review"
+  ]
+}

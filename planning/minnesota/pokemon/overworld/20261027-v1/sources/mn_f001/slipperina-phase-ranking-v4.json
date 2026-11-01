@@ -1,0 +1,722 @@
+[
+  {
+    "score": 212,
+    "eyes": [
+      [
+        [
+          5,
+          6
+        ],
+        [
+          10,
+          6
+        ],
+        [
+          6,
+          7
+        ]
+      ],
+      [
+        [
+          5,
+          6
+        ],
+        [
+          10,
+          6
+        ],
+        [
+          6,
+          7
+        ]
+      ]
+    ],
+    "dx": -8,
+    "dy": 4,
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/slipperina-v4-phase-x-8-y4.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/slipperina-candidate-v4-phase-x-8-y4"
+  },
+  {
+    "score": 212,
+    "eyes": [
+      [
+        [
+          5,
+          6
+        ],
+        [
+          10,
+          6
+        ],
+        [
+          6,
+          7
+        ]
+      ],
+      [
+        [
+          5,
+          6
+        ],
+        [
+          10,
+          6
+        ],
+        [
+          6,
+          7
+        ]
+      ]
+    ],
+    "dx": -8,
+    "dy": 8,
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/slipperina-v4-phase-x-8-y8.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/slipperina-candidate-v4-phase-x-8-y8"
+  },
+  {
+    "score": 212,
+    "eyes": [
+      [
+        [
+          5,
+          6
+        ],
+        [
+          10,
+          6
+        ],
+        [
+          6,
+          7
+        ]
+      ],
+      [
+        [
+          5,
+          6
+        ],
+        [
+          10,
+          6
+        ],
+        [
+          6,
+          7
+        ]
+      ]
+    ],
+    "dx": -4,
+    "dy": 4,
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/slipperina-v4-phase-x-4-y4.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/slipperina-candidate-v4-phase-x-4-y4"
+  },
+  {
+    "score": 212,
+    "eyes": [
+      [
+        [
+          5,
+          6
+        ],
+        [
+          10,
+          6
+        ],
+        [
+          6,
+          7
+        ]
+      ],
+      [
+        [
+          5,
+          6
+        ],
+        [
+          10,
+          6
+        ],
+        [
+          6,
+          7
+        ]
+      ]
+    ],
+    "dx": -4,
+    "dy": 8,
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/slipperina-v4-phase-x-4-y8.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/slipperina-candidate-v4-phase-x-4-y8"
+  },
+  {
+    "score": 212,
+    "eyes": [
+      [
+        [
+          5,
+          6
+        ],
+        [
+          10,
+          6
+        ],
+        [
+          6,
+          7
+        ]
+      ],
+      [
+        [
+          5,
+          6
+        ],
+        [
+          10,
+          6
+        ],
+        [
+          6,
+          7
+        ]
+      ]
+    ],
+    "dx": 0,
+    "dy": 4,
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/slipperina-v4-phase-x0-y4.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/slipperina-candidate-v4-phase-x0-y4"
+  },
+  {
+    "score": 212,
+    "eyes": [
+      [
+        [
+          5,
+          6
+        ],
+        [
+          10,
+          6
+        ],
+        [
+          6,
+          7
+        ]
+      ],
+      [
+        [
+          5,
+          6
+        ],
+        [
+          10,
+          6
+        ],
+        [
+          6,
+          7
+        ]
+      ]
+    ],
+    "dx": 0,
+    "dy": 8,
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/slipperina-v4-phase-x0-y8.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/slipperina-candidate-v4-phase-x0-y8"
+  },
+  {
+    "score": 212,
+    "eyes": [
+      [
+        [
+          5,
+          6
+        ],
+        [
+          10,
+          6
+        ],
+        [
+          6,
+          7
+        ]
+      ],
+      [
+        [
+          5,
+          6
+        ],
+        [
+          10,
+          6
+        ],
+        [
+          6,
+          7
+        ]
+      ]
+    ],
+    "dx": 4,
+    "dy": 4,
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/slipperina-v4-phase-x4-y4.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/slipperina-candidate-v4-phase-x4-y4"
+  },
+  {
+    "score": 212,
+    "eyes": [
+      [
+        [
+          5,
+          6
+        ],
+        [
+          10,
+          6
+        ],
+        [
+          6,
+          7
+        ]
+      ],
+      [
+        [
+          5,
+          6
+        ],
+        [
+          10,
+          6
+        ],
+        [
+          6,
+          7
+        ]
+      ]
+    ],
+    "dx": 4,
+    "dy": 8,
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/slipperina-v4-phase-x4-y8.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/slipperina-candidate-v4-phase-x4-y8"
+  },
+  {
+    "score": 212,
+    "eyes": [
+      [
+        [
+          5,
+          6
+        ],
+        [
+          10,
+          6
+        ],
+        [
+          6,
+          7
+        ]
+      ],
+      [
+        [
+          5,
+          6
+        ],
+        [
+          10,
+          6
+        ],
+        [
+          6,
+          7
+        ]
+      ]
+    ],
+    "dx": 8,
+    "dy": 4,
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/slipperina-v4-phase-x8-y4.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/slipperina-candidate-v4-phase-x8-y4"
+  },
+  {
+    "score": 212,
+    "eyes": [
+      [
+        [
+          5,
+          6
+        ],
+        [
+          10,
+          6
+        ],
+        [
+          6,
+          7
+        ]
+      ],
+      [
+        [
+          5,
+          6
+        ],
+        [
+          10,
+          6
+        ],
+        [
+          6,
+          7
+        ]
+      ]
+    ],
+    "dx": 8,
+    "dy": 8,
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/slipperina-v4-phase-x8-y8.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/slipperina-candidate-v4-phase-x8-y8"
+  },
+  {
+    "score": 208,
+    "eyes": [
+      [
+        [
+          6,
+          6
+        ],
+        [
+          9,
+          6
+        ]
+      ],
+      [
+        [
+          6,
+          6
+        ],
+        [
+          9,
+          6
+        ]
+      ]
+    ],
+    "dx": -8,
+    "dy": -8,
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/slipperina-v4-phase-x-8-y-8.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/slipperina-candidate-v4-phase-x-8-y-8"
+  },
+  {
+    "score": 208,
+    "eyes": [
+      [
+        [
+          6,
+          6
+        ],
+        [
+          9,
+          6
+        ]
+      ],
+      [
+        [
+          6,
+          6
+        ],
+        [
+          9,
+          6
+        ]
+      ]
+    ],
+    "dx": -4,
+    "dy": -8,
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/slipperina-v4-phase-x-4-y-8.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/slipperina-candidate-v4-phase-x-4-y-8"
+  },
+  {
+    "score": 208,
+    "eyes": [
+      [
+        [
+          6,
+          6
+        ],
+        [
+          9,
+          6
+        ]
+      ],
+      [
+        [
+          6,
+          6
+        ],
+        [
+          9,
+          6
+        ]
+      ]
+    ],
+    "dx": 0,
+    "dy": -8,
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/slipperina-v4-phase-x0-y-8.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/slipperina-candidate-v4-phase-x0-y-8"
+  },
+  {
+    "score": 208,
+    "eyes": [
+      [
+        [
+          6,
+          6
+        ],
+        [
+          9,
+          6
+        ]
+      ],
+      [
+        [
+          6,
+          6
+        ],
+        [
+          9,
+          6
+        ]
+      ]
+    ],
+    "dx": 4,
+    "dy": -8,
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/slipperina-v4-phase-x4-y-8.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/slipperina-candidate-v4-phase-x4-y-8"
+  },
+  {
+    "score": 208,
+    "eyes": [
+      [
+        [
+          6,
+          6
+        ],
+        [
+          9,
+          6
+        ]
+      ],
+      [
+        [
+          6,
+          6
+        ],
+        [
+          9,
+          6
+        ]
+      ]
+    ],
+    "dx": 8,
+    "dy": -8,
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/slipperina-v4-phase-x8-y-8.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/slipperina-candidate-v4-phase-x8-y-8"
+  },
+  {
+    "score": 106,
+    "eyes": [
+      [
+        [
+          6,
+          6
+        ],
+        [
+          9,
+          6
+        ]
+      ],
+      [
+        [
+          9,
+          6
+        ]
+      ]
+    ],
+    "dx": -8,
+    "dy": -4,
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/slipperina-v4-phase-x-8-y-4.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/slipperina-candidate-v4-phase-x-8-y-4"
+  },
+  {
+    "score": 106,
+    "eyes": [
+      [
+        [
+          6,
+          6
+        ],
+        [
+          9,
+          6
+        ]
+      ],
+      [
+        [
+          9,
+          6
+        ]
+      ]
+    ],
+    "dx": -4,
+    "dy": -4,
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/slipperina-v4-phase-x-4-y-4.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/slipperina-candidate-v4-phase-x-4-y-4"
+  },
+  {
+    "score": 106,
+    "eyes": [
+      [
+        [
+          6,
+          6
+        ],
+        [
+          9,
+          6
+        ]
+      ],
+      [
+        [
+          9,
+          6
+        ]
+      ]
+    ],
+    "dx": 0,
+    "dy": -4,
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/slipperina-v4-phase-x0-y-4.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/slipperina-candidate-v4-phase-x0-y-4"
+  },
+  {
+    "score": 106,
+    "eyes": [
+      [
+        [
+          6,
+          6
+        ],
+        [
+          9,
+          6
+        ]
+      ],
+      [
+        [
+          9,
+          6
+        ]
+      ]
+    ],
+    "dx": 4,
+    "dy": -4,
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/slipperina-v4-phase-x4-y-4.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/slipperina-candidate-v4-phase-x4-y-4"
+  },
+  {
+    "score": 106,
+    "eyes": [
+      [
+        [
+          6,
+          6
+        ],
+        [
+          9,
+          6
+        ]
+      ],
+      [
+        [
+          9,
+          6
+        ]
+      ]
+    ],
+    "dx": 8,
+    "dy": -4,
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/slipperina-v4-phase-x8-y-4.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/slipperina-candidate-v4-phase-x8-y-4"
+  },
+  {
+    "score": 2,
+    "eyes": [
+      [],
+      [
+        [
+          9,
+          6
+        ]
+      ]
+    ],
+    "dx": -8,
+    "dy": 0,
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/slipperina-v4-phase-x-8-y0.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/slipperina-candidate-v4-phase-x-8-y0"
+  },
+  {
+    "score": 2,
+    "eyes": [
+      [],
+      [
+        [
+          9,
+          6
+        ]
+      ]
+    ],
+    "dx": -4,
+    "dy": 0,
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/slipperina-v4-phase-x-4-y0.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/slipperina-candidate-v4-phase-x-4-y0"
+  },
+  {
+    "score": 2,
+    "eyes": [
+      [],
+      [
+        [
+          9,
+          6
+        ]
+      ]
+    ],
+    "dx": 0,
+    "dy": 0,
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/slipperina-v4-phase-x0-y0.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/slipperina-candidate-v4-phase-x0-y0"
+  },
+  {
+    "score": 2,
+    "eyes": [
+      [],
+      [
+        [
+          9,
+          6
+        ]
+      ]
+    ],
+    "dx": 4,
+    "dy": 0,
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/slipperina-v4-phase-x4-y0.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/slipperina-candidate-v4-phase-x4-y0"
+  },
+  {
+    "score": 2,
+    "eyes": [
+      [],
+      [
+        [
+          9,
+          6
+        ]
+      ]
+    ],
+    "dx": 8,
+    "dy": 0,
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/slipperina-v4-phase-x8-y0.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/slipperina-candidate-v4-phase-x8-y0"
+  }
+]

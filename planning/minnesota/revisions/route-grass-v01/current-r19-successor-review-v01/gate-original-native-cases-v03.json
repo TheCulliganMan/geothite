@@ -1,0 +1,7 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-r19-detroit-gate-v05.crystalpack",
+  "pack_sha256": "b57516c0b77c7bcf94fa35e60ff8300bfd8a8781782827739742d8fc15b3f437",
+  "log": ".local/route-grass-review/r19-gate-original-native-v03.log",
+  "scope": "Pine grass wild RUN/Continue and battle-versus-grass choice. Native initial fixture setup; current ledge/tree replacement and paired connection course checked separately."
+}

@@ -1,0 +1,234 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F030",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_073": {
+      "species_id": "MN_073",
+      "name": "Spanlet",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          24,
+          25,
+          24
+        ],
+        [
+          9,
+          12,
+          16
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        25400,
+        16777,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          198,
+          206,
+          198
+        ],
+        [
+          74,
+          99,
+          132
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#C6CEC6",
+        "#4A6384",
+        "#000000"
+      ]
+    },
+    "MN_074": {
+      "species_id": "MN_074",
+      "name": "Liftruss",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          18,
+          25,
+          27
+        ],
+        [
+          8,
+          11,
+          17
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        28466,
+        17768,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          148,
+          206,
+          222
+        ],
+        [
+          66,
+          90,
+          140
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#94CEDE",
+        "#425A8C",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f030/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "board": "target/minnesota-pokemon/gen2-reference/starters.png"
+  },
+  "sprites": [
+    {
+      "id": "mn-073-spanlet-v1",
+      "species_id": "MN_073",
+      "view": "front",
+      "source": "sprites/mn-f030/mn-073-074.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        720,
+        512
+      ],
+      "fit": [
+        40,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        25400,
+        16777,
+        0
+      ]
+    },
+    {
+      "id": "mn-073-spanlet-v1",
+      "species_id": "MN_073",
+      "view": "back",
+      "source": "sprites/mn-f030/mn-073-074.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        512,
+        720,
+        512
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        25400,
+        16777,
+        0
+      ]
+    },
+    {
+      "id": "mn-074-liftruss-v1",
+      "species_id": "MN_074",
+      "view": "front",
+      "source": "sprites/mn-f030/mn-073-074.front-back.imagegen-v1.png",
+      "crop": [
+        720,
+        0,
+        816,
+        512
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        28466,
+        17768,
+        0
+      ]
+    },
+    {
+      "id": "mn-074-liftruss-v1",
+      "species_id": "MN_074",
+      "view": "back",
+      "source": "sprites/mn-f030/mn-073-074.front-back.imagegen-v1.png",
+      "crop": [
+        720,
+        512,
+        816,
+        512
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        28466,
+        17768,
+        0
+      ]
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "notes": [
+      "Inspected frozen source-contour-v1 sheet: triangular truss head and lifted bridge torso retain clear dark boundaries, with colored girder faces restored instead of excessive interior black.",
+      "Raised counterweight fists, bright central eye marks and large arch opening stay readable; rear upper-truss portraits retain their open bottom crop and separate arms."
+    ],
+    "sheet_sha256": "b7a2844c1bad45b72bbe50193850775de44e95b61d890ce4ee15d0b2991f8e72",
+    "outline_profile": "source-contour-v1"
+  }
+}

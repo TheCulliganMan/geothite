@@ -1,0 +1,16 @@
+{
+  "status": "PASS_CYCLING_ONLY_LEGACY_SERVICE_FAILURE_RETAINED",
+  "pack": "content-packs/minnesota-international-falls-windbreak-v01.crystalpack",
+  "pack_sha256": "7066f05448101c79b4dc761963b0f39a570bad07c4f80e3e777901ac2e207507",
+  "binary_sha256": "b19fdc28b1ea8970af2a59d753273929b10f80eb1267d435d3dc19135053da79",
+  "results": [
+    {
+      "case": "minneapolis_citywide_cyclists_complete_distinct_routes_and_continue",
+      "status": "PASS",
+      "log": "planning/minnesota/revisions/route-grass-v01/current-minneapolis-successor-v01/cycling-native-v01.log"
+    }
+  ],
+  "riders": 18,
+  "all_two_laps_and_midroute_continue": true,
+  "scope": "Explicit observer fixture. Existing service test fails outdated45,12 exterior destination and is not counted as passing."
+}

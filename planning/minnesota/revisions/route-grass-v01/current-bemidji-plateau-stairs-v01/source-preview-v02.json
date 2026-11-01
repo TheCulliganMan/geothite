@@ -1,0 +1,8 @@
+{
+  "status": "STATIC_NATIVE_STAIR_RECIPE_PREVIEW",
+  "installed_recipe_tileset": "mn_outdoor_modern_stairs",
+  "installed_recipe_block": "80",
+  "upper_landing_pixels_exact": true,
+  "prior_preview_rejected": "v01 selected original native6e from collision/top match; it was not the appended stair block. Use explicit installed128 recipe. Both original previews retained.",
+  "scope": "Planned source view from existing native recipe; final new-alias GPU verification remains."
+}

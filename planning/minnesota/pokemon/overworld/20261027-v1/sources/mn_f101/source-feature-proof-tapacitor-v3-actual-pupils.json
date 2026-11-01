@@ -1,0 +1,215 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_219",
+  "result": "pass",
+  "manifest_sha256": "7205171d2fd07f0e0ab34764a7a8fba3620484b53654dae42b259af78f6d4501",
+  "bank_sha256": "5e586d60d4b02d64f3511a517675732fdb9e92c7546f634dd7926dd53f6f1643",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f101/tapacitor.overworld.imagegen-v1.png": "1b83170453d9e2cb8f0e8b01e1bd13dec711805da3d7735a7e382ad5400720d8"
+  },
+  "canonical_eye_form": "Two isolated actual black pupil dots south and one isolated actual black pupil west; source eye components verified in all four nonrear poses.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            6,
+            9
+          ],
+          "source_sample": [
+            302,
+            332
+          ],
+          "source_component": [
+            291,
+            313,
+            18,
+            24
+          ],
+          "component_pixels": 432,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            254
+          ]
+        },
+        {
+          "native": [
+            8,
+            9
+          ],
+          "source_sample": [
+            354,
+            332
+          ],
+          "source_component": [
+            354,
+            313,
+            18,
+            24
+          ],
+          "component_pixels": 432,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            8,
+            6,
+            1,
+            254
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            4,
+            7
+          ],
+          "source_sample": [
+            1157,
+            280
+          ],
+          "source_component": [
+            1151,
+            280,
+            18,
+            24
+          ],
+          "component_pixels": 432,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            2,
+            2,
+            0,
+            254
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            6,
+            8
+          ],
+          "source_sample": [
+            302,
+            691
+          ],
+          "source_component": [
+            289,
+            683,
+            18,
+            25
+          ],
+          "component_pixels": 449,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            4,
+            4,
+            3,
+            254
+          ]
+        },
+        {
+          "native": [
+            8,
+            8
+          ],
+          "source_sample": [
+            354,
+            691
+          ],
+          "source_component": [
+            353,
+            683,
+            18,
+            25
+          ],
+          "component_pixels": 449,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            2,
+            2,
+            1,
+            254
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            4,
+            7
+          ],
+          "source_sample": [
+            1157,
+            673
+          ],
+          "source_component": [
+            1153,
+            671,
+            18,
+            26
+          ],
+          "component_pixels": 466,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            8,
+            7,
+            3,
+            254
+          ]
+        }
+      ]
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "notes": "Both rears viewed normal/shiny: plain pale-gold storage bulb back, large folded green leaf shoulder terminals, thick conducting root forearms and split rootfeet. No copied face or paired interior pupil-like marks. Shared scale and equal source windows. Frontal step has a one-native-pixel eye/body bob; west eyes remain registered in both poses."
+  }
+}

@@ -1,0 +1,353 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F010",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_028": {
+      "species_id": "MN_028",
+      "name": "Oatlet",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          27,
+          23,
+          12
+        ],
+        [
+          14,
+          9,
+          5
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        13051,
+        5422,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          222,
+          189,
+          99
+        ],
+        [
+          115,
+          74,
+          41
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#DEBD63",
+        "#734A29",
+        "#000000"
+      ]
+    },
+    "MN_029": {
+      "species_id": "MN_029",
+      "name": "Millimp",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          24,
+          20,
+          12
+        ],
+        [
+          11,
+          9,
+          7
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        12952,
+        7467,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          198,
+          165,
+          99
+        ],
+        [
+          90,
+          74,
+          57
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#C6A563",
+        "#5A4A39",
+        "#000000"
+      ]
+    },
+    "MN_030": {
+      "species_id": "MN_030",
+      "name": "Flourgeist",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          26,
+          24,
+          21
+        ],
+        [
+          12,
+          10,
+          17
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        22298,
+        17740,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          214,
+          198,
+          173
+        ],
+        [
+          99,
+          82,
+          140
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#D6C6AD",
+        "#63528C",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f010/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "board": "target/minnesota-pokemon/gen2-reference/starters.png"
+  },
+  "sprites": [
+    {
+      "id": "mn-028-oatlet-v1",
+      "species_id": "MN_028",
+      "view": "front",
+      "source": "sprites/mn-f010/mn-028-030.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        480,
+        512
+      ],
+      "fit": [
+        36,
+        36
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13051,
+        5422,
+        0
+      ]
+    },
+    {
+      "id": "mn-028-oatlet-v1",
+      "species_id": "MN_028",
+      "view": "back",
+      "source": "sprites/mn-f010/mn-028-030.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        512,
+        480,
+        512
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13051,
+        5422,
+        0
+      ]
+    },
+    {
+      "id": "mn-029-millimp-v1",
+      "species_id": "MN_029",
+      "view": "front",
+      "source": "sprites/mn-f010/mn-028-030.front-back.imagegen-v1.png",
+      "crop": [
+        480,
+        0,
+        520,
+        512
+      ],
+      "fit": [
+        44,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        12952,
+        7467,
+        0
+      ]
+    },
+    {
+      "id": "mn-029-millimp-v1",
+      "species_id": "MN_029",
+      "view": "back",
+      "source": "sprites/mn-f010/mn-028-030.front-back.imagegen-v1.png",
+      "crop": [
+        480,
+        512,
+        520,
+        512
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        12952,
+        7467,
+        0
+      ]
+    },
+    {
+      "id": "mn-030-flourgeist-polish-v1",
+      "species_id": "MN_030",
+      "view": "front",
+      "source": "sprites/mn-f010/outline-polish-20261027-v1/flourgeist.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        960,
+        887
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        22298,
+        17740,
+        0
+      ],
+      "prompt_file": "sprites/mn-f010/outline-polish-20261027-v1/prompt-flourgeist-v1.txt",
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 12,
+      "exterior_contour": "source_backed"
+    },
+    {
+      "id": "mn-030-flourgeist-polish-v1",
+      "species_id": "MN_030",
+      "view": "back",
+      "source": "sprites/mn-f010/outline-polish-20261027-v1/flourgeist.imagegen-v1.png",
+      "crop": [
+        970,
+        0,
+        804,
+        887
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        22298,
+        17740,
+        0
+      ],
+      "prompt_file": "sprites/mn-f010/outline-polish-20261027-v1/prompt-flourgeist-v1.txt",
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 12,
+      "exterior_contour": "source_backed"
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "notes": "Full six-view native board reviewed. Targeted ImageGen preserves Flourgeist flour vortex, grain crest, curling ribbons and two rotating millstones while replacing stipple with broad white wheel arcs, clear eyes and connected black crest/ribbon contours. First two species remain byte-identical. Exact per-species palettes and all prior sources/candidates retained.",
+    "sheet_sha256": "018ff6126e91f35aba8464442a1abc803d154a67afe600d4fef11777048bd630",
+    "outline_profile": "source-contour-v1",
+    "reviewer": "future_moves; root approved Flourgeist native candidate",
+    "native_sheet_sha256": "c6aa1d3b11577b9898e0f33a10b15926502e6808f167ca7a81de4fcc33be221f"
+  },
+  "back_prompt_file": "sprites/mn-f010/prompt-mn-030-outline-v2.txt",
+  "source_prompt_files": {
+    "sprites/mn-f010/mn-030-flourgeist.outline-alternate-v2.imagegen.png": "sprites/mn-f010/prompt-mn-030-outline-v2.txt",
+    "sprites/mn-f010/mn-028-030.front-back.imagegen-v1.png": "sprites/mn-f010/prompt-v1.txt"
+  },
+  "source_revision_notes": [
+    "MN_030 front and close back use the targeted ImageGen outline alternate; original family source and all prior native renders retained."
+  ]
+}

@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F139",
+  "species": [
+    {
+      "species_id": "MN_308",
+      "runtime_token": "CROOKIT",
+      "palette_rgb555": [
+        32767,
+        8729,
+        9450,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        14098,
+        16712,
+        0
+      ],
+      "fit": [
+        12,
+        12
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 64,
+      "interior_black_samples": 64,
+      "opaque_interior_minimum_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "crookit.overworld.imagegen-v2-eyes.png",
+          "crop": [
+            75,
+            101,
+            477,
+            1064
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "crookit.overworld.imagegen-v1.png",
+          "crop": [
+            512,
+            114,
+            477,
+            1064
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "crookit.overworld.imagegen-v2-eyes.png",
+          "crop": [
+            972,
+            137,
+            477,
+            1064
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "crookit.overworld.imagegen-v2-eyes.png",
+          "crop": [
+            75,
+            -20,
+            477,
+            1064
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "crookit.overworld.imagegen-v1.png",
+          "crop": [
+            512,
+            548,
+            477,
+            1064
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "crookit.overworld.imagegen-v2-eyes.png",
+          "crop": [
+            972,
+            566,
+            477,
+            1064
+          ]
+        }
+      ]
+    }
+  ]
+}

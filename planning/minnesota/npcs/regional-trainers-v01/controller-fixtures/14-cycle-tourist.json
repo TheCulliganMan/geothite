@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "id": "MN_R11_T02",
+      "map": "MnR11C00R02",
+      "actor_script": "MN_R11_T02",
+      "trainer_class": "MN_CYCLE_TOURIST",
+      "sprite": "SPRITE_MN_CYCLE_TOURIST",
+      "facing": "east",
+      "approach": [
+        42,
+        25
+      ],
+      "defeated_flag": "EVENT_MN_R11_TRAINER_02"
+    }
+  ]
+}

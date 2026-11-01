@@ -1,0 +1,244 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F133",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f133/prompt-v1.txt",
+  "pokemon_palettes": {
+    "MN_293": {
+      "species_id": "MN_293",
+      "name": "Burrbud",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          25,
+          21,
+          12
+        ],
+        [
+          10,
+          17,
+          8
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        12985,
+        8746,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          206,
+          173,
+          99
+        ],
+        [
+          82,
+          140,
+          66
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#CEAD63",
+        "#528C42",
+        "#000000"
+      ]
+    },
+    "MN_294": {
+      "species_id": "MN_294",
+      "name": "Burroot",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          22,
+          18,
+          10
+        ],
+        [
+          7,
+          14,
+          8
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        10838,
+        8647,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          181,
+          148,
+          82
+        ],
+        [
+          57,
+          115,
+          66
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#B59452",
+        "#397342",
+        "#000000"
+      ]
+    }
+  },
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png"
+    ]
+  },
+  "sprites": [
+    {
+      "id": "mn-293-burrbud-v1",
+      "species_id": "MN_293",
+      "view": "front",
+      "source": "sprites/mn-f133/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        659,
+        513
+      ],
+      "fit": [
+        32,
+        36
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        12985,
+        8746,
+        0
+      ],
+      "exterior_contour": "solid",
+      "interior_black_min_samples": 8,
+      "white_detail_min_samples": 4
+    },
+    {
+      "id": "mn-294-burroot-v1",
+      "species_id": "MN_294",
+      "view": "front",
+      "source": "sprites/mn-f133/front-back.imagegen-v1.png",
+      "crop": [
+        659,
+        0,
+        877,
+        513
+      ],
+      "fit": [
+        54,
+        46
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        10838,
+        8647,
+        0
+      ],
+      "exterior_contour": "solid",
+      "interior_black_min_samples": 8,
+      "white_detail_min_samples": 4
+    },
+    {
+      "id": "mn-293-burrbud-v1",
+      "species_id": "MN_293",
+      "view": "back",
+      "source": "sprites/mn-f133/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        513,
+        708,
+        511
+      ],
+      "fit": [
+        38,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        12985,
+        8746,
+        0
+      ],
+      "exterior_contour": "solid",
+      "interior_black_min_samples": 8,
+      "white_detail_min_samples": 4
+    },
+    {
+      "id": "mn-294-burroot-v1",
+      "species_id": "MN_294",
+      "view": "back",
+      "source": "sprites/mn-f133/front-back.imagegen-v1.png",
+      "crop": [
+        708,
+        513,
+        828,
+        511
+      ],
+      "fit": [
+        46,
+        46
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        10838,
+        8647,
+        0
+      ],
+      "exterior_contour": "solid",
+      "interior_black_min_samples": 8,
+      "white_detail_min_samples": 4
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "outline_profile": "solid-exterior-v1",
+    "sheet_sha256": "5934dbf45344327ec4035b7d9fdebc6351fadcaba1ad531994de0af2d4cf0c4c",
+    "review_note": "Inspected all four native views. Small fringed acorn and broad four-root adult have different proportions. Leaf fans, root gaps and face remain readable; adult is a low spreading plant rather than a humanoid tree. Close backs preserve the matching cup/canopy anatomy."
+  }
+}

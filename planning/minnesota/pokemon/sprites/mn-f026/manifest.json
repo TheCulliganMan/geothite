@@ -1,0 +1,234 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F026",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_065": {
+      "species_id": "MN_065",
+      "name": "Midgebit",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          24,
+          18,
+          16
+        ],
+        [
+          12,
+          9,
+          13
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        16984,
+        13612,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          198,
+          148,
+          132
+        ],
+        [
+          99,
+          74,
+          107
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#C69484",
+        "#634A6B",
+        "#000000"
+      ]
+    },
+    "MN_066": {
+      "species_id": "MN_066",
+      "name": "Skeeterex",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          27,
+          9,
+          12
+        ],
+        [
+          9,
+          6,
+          14
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        12603,
+        14537,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          222,
+          74,
+          99
+        ],
+        [
+          74,
+          49,
+          115
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#DE4A63",
+        "#4A3173",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f026/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "board": "target/minnesota-pokemon/gen2-reference/bugs.png"
+  },
+  "sprites": [
+    {
+      "id": "mn-065-midgebit-v1",
+      "species_id": "MN_065",
+      "view": "front",
+      "source": "sprites/mn-f026/mn-065-066.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        609,
+        620
+      ],
+      "fit": [
+        40,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        16984,
+        13612,
+        0
+      ]
+    },
+    {
+      "id": "mn-065-midgebit-v1",
+      "species_id": "MN_065",
+      "view": "back",
+      "source": "sprites/mn-f026/mn-065-066.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        620,
+        609,
+        620
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        16984,
+        13612,
+        0
+      ]
+    },
+    {
+      "id": "mn-066-skeeterex-v1",
+      "species_id": "MN_066",
+      "view": "front",
+      "source": "sprites/mn-f026/mn-065-066.front-back.imagegen-v1.png",
+      "crop": [
+        609,
+        0,
+        660,
+        620
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        12603,
+        14537,
+        0
+      ]
+    },
+    {
+      "id": "mn-066-skeeterex-v1",
+      "species_id": "MN_066",
+      "view": "back",
+      "source": "sprites/mn-f026/mn-065-066.front-back.imagegen-v1.png",
+      "crop": [
+        609,
+        620,
+        660,
+        620
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        12603,
+        14537,
+        0
+      ]
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "notes": [
+      "Inspected frozen source-contour-v1 sheet: Midgebit legs and proboscis regain colored cores, while pale wing tips have distinct dark anchors instead of dissolving entirely into the white backdrop.",
+      "Some long white trailing edges remain selectively interrupted at native scale; the wing shape stays readable. Skeeterex cloak gaps, red abdomen and close rear framing remain intact without thick black shoulder knots."
+    ],
+    "sheet_sha256": "e474b06cc333eb0f65ba6b9f1784ab1d220388496a285f9cd4031a297905656f",
+    "outline_profile": "source-contour-v1"
+  }
+}

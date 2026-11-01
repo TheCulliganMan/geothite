@@ -1,0 +1,1979 @@
+{
+  "schema_version": 1,
+  "parent_revision": "r10_fitted_fork_revision",
+  "parent_pack": "content-packs/minnesota-current-r10-fitted-fork-v03.crystalpack",
+  "parent_pack_sha256": "1f16d2b3ca473cc5e937140b7ba6f3e190bcaf3718dd6854b40acd8e98a6ddff",
+  "shore_before": "planning/minnesota/revisions/duluth-harbor-platforms-v01/after.layout.json",
+  "shore_after": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MnDuluth.after.layout.json",
+  "rocks": [
+    [
+      61,
+      10
+    ],
+    [
+      59,
+      13
+    ],
+    [
+      59,
+      14
+    ],
+    [
+      60,
+      20
+    ],
+    [
+      60,
+      23
+    ],
+    [
+      60,
+      26
+    ],
+    [
+      60,
+      30
+    ],
+    [
+      48,
+      23
+    ],
+    [
+      48,
+      26
+    ],
+    [
+      49,
+      30
+    ],
+    [
+      55,
+      33
+    ],
+    [
+      31,
+      28
+    ],
+    [
+      15,
+      31
+    ],
+    [
+      14,
+      33
+    ],
+    [
+      13,
+      35
+    ],
+    [
+      2,
+      34
+    ],
+    [
+      2,
+      35
+    ],
+    [
+      2,
+      38
+    ],
+    [
+      3,
+      41
+    ],
+    [
+      5,
+      43
+    ],
+    [
+      6,
+      43
+    ],
+    [
+      9,
+      43
+    ],
+    [
+      12,
+      42
+    ],
+    [
+      39,
+      34
+    ],
+    [
+      40,
+      38
+    ],
+    [
+      42,
+      39
+    ],
+    [
+      45,
+      41
+    ],
+    [
+      46,
+      41
+    ],
+    [
+      45,
+      34
+    ],
+    [
+      47,
+      35
+    ],
+    [
+      51,
+      37
+    ],
+    [
+      52,
+      37
+    ],
+    [
+      57,
+      38
+    ],
+    [
+      59,
+      40
+    ],
+    [
+      60,
+      40
+    ],
+    [
+      61,
+      42
+    ],
+    [
+      54,
+      43
+    ],
+    [
+      55,
+      44
+    ]
+  ],
+  "routes": [
+    {
+      "id": "MN_R10",
+      "before": "planning/minnesota/revisions/r10-carrier-plateau-v02/after.layout.json",
+      "after": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R10.after.layout.json",
+      "dossier": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R10.dossier.json",
+      "changes": [
+        {
+          "metatile": [
+            27,
+            13
+          ],
+          "before": "48",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            28,
+            13
+          ],
+          "before": "49",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            29,
+            13
+          ],
+          "before": "49",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            30,
+            13
+          ],
+          "before": "49",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            31,
+            13
+          ],
+          "before": "49",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            32,
+            13
+          ],
+          "before": "49",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            33,
+            13
+          ],
+          "before": "49",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            34,
+            13
+          ],
+          "before": "4a",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            40,
+            13
+          ],
+          "before": "48",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            41,
+            13
+          ],
+          "before": "49",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            42,
+            13
+          ],
+          "before": "49",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            43,
+            13
+          ],
+          "before": "49",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            44,
+            13
+          ],
+          "before": "49",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            45,
+            13
+          ],
+          "before": "49",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            46,
+            13
+          ],
+          "before": "4a",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            35,
+            14
+          ],
+          "before": "44",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            37,
+            14
+          ],
+          "before": "46",
+          "after": "01"
+        }
+      ]
+    },
+    {
+      "id": "MN_R12",
+      "before": "planning/minnesota/routes/MN_R12.layout.json",
+      "after": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R12.after.layout.json",
+      "dossier": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R12.dossier.json",
+      "changes": []
+    },
+    {
+      "id": "MN_R15",
+      "before": "planning/minnesota/routes/MN_R15.layout.json",
+      "after": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R15.after.layout.json",
+      "dossier": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R15.dossier.json",
+      "changes": [
+        {
+          "metatile": [
+            9,
+            0
+          ],
+          "before": "51",
+          "after": "0f"
+        },
+        {
+          "metatile": [
+            10,
+            0
+          ],
+          "before": "51",
+          "after": "0f"
+        },
+        {
+          "metatile": [
+            11,
+            0
+          ],
+          "before": "51",
+          "after": "0f"
+        },
+        {
+          "metatile": [
+            12,
+            0
+          ],
+          "before": "51",
+          "after": "0f"
+        },
+        {
+          "metatile": [
+            12,
+            1
+          ],
+          "before": "6b",
+          "after": "2d"
+        },
+        {
+          "metatile": [
+            13,
+            1
+          ],
+          "before": "6b",
+          "after": "2d"
+        },
+        {
+          "metatile": [
+            14,
+            1
+          ],
+          "before": "6b",
+          "after": "2d"
+        },
+        {
+          "metatile": [
+            15,
+            1
+          ],
+          "before": "6b",
+          "after": "2d"
+        },
+        {
+          "metatile": [
+            16,
+            1
+          ],
+          "before": "6b",
+          "after": "2d"
+        },
+        {
+          "metatile": [
+            17,
+            1
+          ],
+          "before": "6b",
+          "after": "2d"
+        },
+        {
+          "metatile": [
+            18,
+            1
+          ],
+          "before": "6b",
+          "after": "2d"
+        },
+        {
+          "metatile": [
+            19,
+            1
+          ],
+          "before": "6b",
+          "after": "2d"
+        },
+        {
+          "metatile": [
+            20,
+            3
+          ],
+          "before": "64",
+          "after": "2d"
+        },
+        {
+          "metatile": [
+            21,
+            3
+          ],
+          "before": "1b",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            10,
+            4
+          ],
+          "before": "6d",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            20,
+            4
+          ],
+          "before": "64",
+          "after": "2d"
+        },
+        {
+          "metatile": [
+            21,
+            4
+          ],
+          "before": "1b",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            20,
+            5
+          ],
+          "before": "64",
+          "after": "2d"
+        },
+        {
+          "metatile": [
+            21,
+            5
+          ],
+          "before": "1b",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            25,
+            5
+          ],
+          "before": "1b",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            29,
+            5
+          ],
+          "before": "5f",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            17,
+            6
+          ],
+          "before": "64",
+          "after": "2d"
+        },
+        {
+          "metatile": [
+            18,
+            6
+          ],
+          "before": "51",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            19,
+            6
+          ],
+          "before": "51",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            20,
+            6
+          ],
+          "before": "51",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            21,
+            6
+          ],
+          "before": "1b",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            25,
+            6
+          ],
+          "before": "1b",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            29,
+            6
+          ],
+          "before": "5f",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            16,
+            7
+          ],
+          "before": "64",
+          "after": "2d"
+        },
+        {
+          "metatile": [
+            17,
+            7
+          ],
+          "before": "1b",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            25,
+            7
+          ],
+          "before": "1b",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            29,
+            7
+          ],
+          "before": "5f",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            18,
+            8
+          ],
+          "before": "77",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            19,
+            8
+          ],
+          "before": "77",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            20,
+            8
+          ],
+          "before": "77",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            21,
+            8
+          ],
+          "before": "1b",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            25,
+            8
+          ],
+          "before": "1b",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            29,
+            8
+          ],
+          "before": "5f",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            6,
+            9
+          ],
+          "before": "6f",
+          "after": "0f"
+        },
+        {
+          "metatile": [
+            18,
+            9
+          ],
+          "before": "78",
+          "after": "2d"
+        },
+        {
+          "metatile": [
+            19,
+            9
+          ],
+          "before": "78",
+          "after": "2d"
+        },
+        {
+          "metatile": [
+            20,
+            9
+          ],
+          "before": "78",
+          "after": "2d"
+        },
+        {
+          "metatile": [
+            21,
+            9
+          ],
+          "before": "1b",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            22,
+            9
+          ],
+          "before": "6f",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            26,
+            9
+          ],
+          "before": "77",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            28,
+            9
+          ],
+          "before": "56",
+          "after": "79"
+        },
+        {
+          "metatile": [
+            1,
+            10
+          ],
+          "before": "56",
+          "after": "79"
+        },
+        {
+          "metatile": [
+            20,
+            10
+          ],
+          "before": "64",
+          "after": "2d"
+        },
+        {
+          "metatile": [
+            21,
+            10
+          ],
+          "before": "1b",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            24,
+            10
+          ],
+          "before": "6c",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            28,
+            10
+          ],
+          "before": "6f",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            30,
+            10
+          ],
+          "before": "1c",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            12,
+            11
+          ],
+          "before": "5f",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            18,
+            11
+          ],
+          "before": "64",
+          "after": "2d"
+        },
+        {
+          "metatile": [
+            21,
+            11
+          ],
+          "before": "1b",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            24,
+            11
+          ],
+          "before": "6f",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            12,
+            12
+          ],
+          "before": "5f",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            18,
+            12
+          ],
+          "before": "64",
+          "after": "2d"
+        },
+        {
+          "metatile": [
+            24,
+            12
+          ],
+          "before": "56",
+          "after": "79"
+        },
+        {
+          "metatile": [
+            10,
+            13
+          ],
+          "before": "6d",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            12,
+            13
+          ],
+          "before": "5f",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            15,
+            13
+          ],
+          "before": "51",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            16,
+            13
+          ],
+          "before": "51",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            17,
+            13
+          ],
+          "before": "51",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            19,
+            13
+          ],
+          "before": "6c",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            20,
+            13
+          ],
+          "before": "6c",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            21,
+            13
+          ],
+          "before": "6c",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            22,
+            13
+          ],
+          "before": "6c",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            1,
+            14
+          ],
+          "before": "51",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            10,
+            14
+          ],
+          "before": "6d",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            24,
+            14
+          ],
+          "before": "4d",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            30,
+            14
+          ],
+          "before": "51",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            13,
+            15
+          ],
+          "before": "6e",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            15,
+            15
+          ],
+          "before": "77",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            16,
+            15
+          ],
+          "before": "77",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            17,
+            15
+          ],
+          "before": "77",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            15,
+            16
+          ],
+          "before": "78",
+          "after": "2d"
+        },
+        {
+          "metatile": [
+            16,
+            16
+          ],
+          "before": "78",
+          "after": "2d"
+        },
+        {
+          "metatile": [
+            17,
+            16
+          ],
+          "before": "78",
+          "after": "2d"
+        },
+        {
+          "metatile": [
+            15,
+            17
+          ],
+          "before": "6b",
+          "after": "0f"
+        },
+        {
+          "metatile": [
+            16,
+            17
+          ],
+          "before": "6b",
+          "after": "0f"
+        },
+        {
+          "metatile": [
+            17,
+            17
+          ],
+          "before": "6b",
+          "after": "0f"
+        }
+      ]
+    },
+    {
+      "id": "MN_R16",
+      "before": "planning/minnesota/routes/MN_R16.layout.json",
+      "after": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R16.after.layout.json",
+      "dossier": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R16.dossier.json",
+      "changes": [
+        {
+          "metatile": [
+            6,
+            1
+          ],
+          "before": "30",
+          "after": "35"
+        },
+        {
+          "metatile": [
+            7,
+            1
+          ],
+          "before": "31",
+          "after": "35"
+        },
+        {
+          "metatile": [
+            8,
+            1
+          ],
+          "before": "31",
+          "after": "35"
+        },
+        {
+          "metatile": [
+            9,
+            1
+          ],
+          "before": "31",
+          "after": "35"
+        },
+        {
+          "metatile": [
+            10,
+            1
+          ],
+          "before": "31",
+          "after": "35"
+        },
+        {
+          "metatile": [
+            11,
+            1
+          ],
+          "before": "32",
+          "after": "35"
+        },
+        {
+          "metatile": [
+            31,
+            1
+          ],
+          "before": "30",
+          "after": "35"
+        },
+        {
+          "metatile": [
+            32,
+            1
+          ],
+          "before": "32",
+          "after": "35"
+        },
+        {
+          "metatile": [
+            36,
+            3
+          ],
+          "before": "41",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            37,
+            3
+          ],
+          "before": "41",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            35,
+            4
+          ],
+          "before": "44",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            39,
+            4
+          ],
+          "before": "46",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            35,
+            5
+          ],
+          "before": "44",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            35,
+            6
+          ],
+          "before": "44",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            39,
+            6
+          ],
+          "before": "46",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            3,
+            7
+          ],
+          "before": "82",
+          "after": "70"
+        },
+        {
+          "metatile": [
+            4,
+            7
+          ],
+          "before": "82",
+          "after": "70"
+        },
+        {
+          "metatile": [
+            5,
+            7
+          ],
+          "before": "82",
+          "after": "70"
+        },
+        {
+          "metatile": [
+            6,
+            7
+          ],
+          "before": "82",
+          "after": "70"
+        },
+        {
+          "metatile": [
+            7,
+            7
+          ],
+          "before": "82",
+          "after": "70"
+        },
+        {
+          "metatile": [
+            8,
+            7
+          ],
+          "before": "82",
+          "after": "70"
+        },
+        {
+          "metatile": [
+            9,
+            7
+          ],
+          "before": "42",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            35,
+            7
+          ],
+          "before": "44",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            39,
+            7
+          ],
+          "before": "49",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            3,
+            8
+          ],
+          "before": "81",
+          "after": "72"
+        },
+        {
+          "metatile": [
+            4,
+            8
+          ],
+          "before": "81",
+          "after": "72"
+        },
+        {
+          "metatile": [
+            5,
+            8
+          ],
+          "before": "81",
+          "after": "72"
+        },
+        {
+          "metatile": [
+            6,
+            8
+          ],
+          "before": "81",
+          "after": "72"
+        },
+        {
+          "metatile": [
+            7,
+            8
+          ],
+          "before": "81",
+          "after": "72"
+        },
+        {
+          "metatile": [
+            8,
+            8
+          ],
+          "before": "81",
+          "after": "72"
+        },
+        {
+          "metatile": [
+            9,
+            8
+          ],
+          "before": "4a",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            16,
+            8
+          ],
+          "before": "49",
+          "after": "72"
+        },
+        {
+          "metatile": [
+            17,
+            8
+          ],
+          "before": "49",
+          "after": "72"
+        },
+        {
+          "metatile": [
+            18,
+            8
+          ],
+          "before": "49",
+          "after": "72"
+        },
+        {
+          "metatile": [
+            19,
+            8
+          ],
+          "before": "49",
+          "after": "72"
+        },
+        {
+          "metatile": [
+            20,
+            8
+          ],
+          "before": "49",
+          "after": "72"
+        },
+        {
+          "metatile": [
+            21,
+            8
+          ],
+          "before": "49",
+          "after": "72"
+        },
+        {
+          "metatile": [
+            22,
+            8
+          ],
+          "before": "49",
+          "after": "72"
+        },
+        {
+          "metatile": [
+            23,
+            8
+          ],
+          "before": "49",
+          "after": "72"
+        },
+        {
+          "metatile": [
+            24,
+            8
+          ],
+          "before": "49",
+          "after": "72"
+        },
+        {
+          "metatile": [
+            25,
+            8
+          ],
+          "before": "49",
+          "after": "72"
+        },
+        {
+          "metatile": [
+            27,
+            8
+          ],
+          "before": "49",
+          "after": "72"
+        },
+        {
+          "metatile": [
+            35,
+            8
+          ],
+          "before": "49",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            1,
+            10
+          ],
+          "before": "41",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            2,
+            10
+          ],
+          "before": "41",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            3,
+            10
+          ],
+          "before": "41",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            43,
+            10
+          ],
+          "before": "41",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            44,
+            10
+          ],
+          "before": "41",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            45,
+            10
+          ],
+          "before": "41",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            46,
+            10
+          ],
+          "before": "41",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            5,
+            11
+          ],
+          "before": "82",
+          "after": "70"
+        },
+        {
+          "metatile": [
+            6,
+            11
+          ],
+          "before": "82",
+          "after": "70"
+        },
+        {
+          "metatile": [
+            7,
+            11
+          ],
+          "before": "82",
+          "after": "70"
+        },
+        {
+          "metatile": [
+            8,
+            11
+          ],
+          "before": "82",
+          "after": "70"
+        },
+        {
+          "metatile": [
+            9,
+            11
+          ],
+          "before": "82",
+          "after": "70"
+        },
+        {
+          "metatile": [
+            10,
+            11
+          ],
+          "before": "82",
+          "after": "70"
+        },
+        {
+          "metatile": [
+            11,
+            11
+          ],
+          "before": "82",
+          "after": "70"
+        },
+        {
+          "metatile": [
+            12,
+            11
+          ],
+          "before": "82",
+          "after": "70"
+        },
+        {
+          "metatile": [
+            13,
+            11
+          ],
+          "before": "82",
+          "after": "70"
+        },
+        {
+          "metatile": [
+            38,
+            11
+          ],
+          "before": "41",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            40,
+            11
+          ],
+          "before": "41",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            5,
+            12
+          ],
+          "before": "81",
+          "after": "72"
+        },
+        {
+          "metatile": [
+            6,
+            12
+          ],
+          "before": "81",
+          "after": "72"
+        },
+        {
+          "metatile": [
+            7,
+            12
+          ],
+          "before": "81",
+          "after": "72"
+        },
+        {
+          "metatile": [
+            8,
+            12
+          ],
+          "before": "81",
+          "after": "72"
+        },
+        {
+          "metatile": [
+            9,
+            12
+          ],
+          "before": "81",
+          "after": "72"
+        },
+        {
+          "metatile": [
+            10,
+            12
+          ],
+          "before": "81",
+          "after": "72"
+        },
+        {
+          "metatile": [
+            11,
+            12
+          ],
+          "before": "81",
+          "after": "72"
+        },
+        {
+          "metatile": [
+            12,
+            12
+          ],
+          "before": "81",
+          "after": "72"
+        },
+        {
+          "metatile": [
+            13,
+            12
+          ],
+          "before": "81",
+          "after": "72"
+        },
+        {
+          "metatile": [
+            19,
+            13
+          ],
+          "before": "49",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            20,
+            13
+          ],
+          "before": "49",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            21,
+            13
+          ],
+          "before": "49",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            22,
+            13
+          ],
+          "before": "49",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            24,
+            13
+          ],
+          "before": "49",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            25,
+            13
+          ],
+          "before": "49",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            26,
+            13
+          ],
+          "before": "49",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            27,
+            13
+          ],
+          "before": "49",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            37,
+            13
+          ],
+          "before": "46",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            1,
+            14
+          ],
+          "before": "49",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            2,
+            14
+          ],
+          "before": "49",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            3,
+            14
+          ],
+          "before": "49",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            30,
+            14
+          ],
+          "before": "82",
+          "after": "70"
+        },
+        {
+          "metatile": [
+            31,
+            14
+          ],
+          "before": "82",
+          "after": "70"
+        },
+        {
+          "metatile": [
+            32,
+            14
+          ],
+          "before": "82",
+          "after": "70"
+        },
+        {
+          "metatile": [
+            33,
+            14
+          ],
+          "before": "82",
+          "after": "70"
+        },
+        {
+          "metatile": [
+            34,
+            14
+          ],
+          "before": "41",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            35,
+            14
+          ],
+          "before": "41",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            36,
+            14
+          ],
+          "before": "41",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            37,
+            14
+          ],
+          "before": "42",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            43,
+            14
+          ],
+          "before": "49",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            44,
+            14
+          ],
+          "before": "49",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            46,
+            14
+          ],
+          "before": "49",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            30,
+            15
+          ],
+          "before": "81",
+          "after": "72"
+        },
+        {
+          "metatile": [
+            31,
+            15
+          ],
+          "before": "81",
+          "after": "72"
+        },
+        {
+          "metatile": [
+            32,
+            15
+          ],
+          "before": "81",
+          "after": "72"
+        },
+        {
+          "metatile": [
+            33,
+            15
+          ],
+          "before": "81",
+          "after": "72"
+        },
+        {
+          "metatile": [
+            35,
+            15
+          ],
+          "before": "49",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            36,
+            15
+          ],
+          "before": "49",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            37,
+            15
+          ],
+          "before": "49",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            38,
+            16
+          ],
+          "before": "40",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            39,
+            16
+          ],
+          "before": "41",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            7,
+            22
+          ],
+          "before": "38",
+          "after": "35"
+        },
+        {
+          "metatile": [
+            8,
+            22
+          ],
+          "before": "39",
+          "after": "35"
+        },
+        {
+          "metatile": [
+            9,
+            22
+          ],
+          "before": "39",
+          "after": "35"
+        },
+        {
+          "metatile": [
+            10,
+            22
+          ],
+          "before": "39",
+          "after": "35"
+        },
+        {
+          "metatile": [
+            11,
+            22
+          ],
+          "before": "39",
+          "after": "35"
+        },
+        {
+          "metatile": [
+            12,
+            22
+          ],
+          "before": "39",
+          "after": "35"
+        },
+        {
+          "metatile": [
+            13,
+            22
+          ],
+          "before": "3a",
+          "after": "35"
+        },
+        {
+          "metatile": [
+            30,
+            22
+          ],
+          "before": "38",
+          "after": "35"
+        },
+        {
+          "metatile": [
+            31,
+            22
+          ],
+          "before": "39",
+          "after": "35"
+        },
+        {
+          "metatile": [
+            32,
+            22
+          ],
+          "before": "39",
+          "after": "35"
+        },
+        {
+          "metatile": [
+            33,
+            22
+          ],
+          "before": "3a",
+          "after": "35"
+        }
+      ]
+    },
+    {
+      "id": "MN_R17",
+      "before": "planning/minnesota/routes/MN_R17.layout.json",
+      "after": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R17.after.layout.json",
+      "dossier": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R17.dossier.json",
+      "changes": [
+        {
+          "metatile": [
+            14,
+            29
+          ],
+          "before": "3b",
+          "after": "3c"
+        },
+        {
+          "metatile": [
+            14,
+            30
+          ],
+          "before": "3a",
+          "after": "3c"
+        },
+        {
+          "metatile": [
+            11,
+            32
+          ],
+          "before": "3b",
+          "after": "3c"
+        },
+        {
+          "metatile": [
+            12,
+            32
+          ],
+          "before": "3b",
+          "after": "3c"
+        },
+        {
+          "metatile": [
+            13,
+            32
+          ],
+          "before": "3b",
+          "after": "3c"
+        },
+        {
+          "metatile": [
+            14,
+            32
+          ],
+          "before": "3b",
+          "after": "3c"
+        },
+        {
+          "metatile": [
+            11,
+            33
+          ],
+          "before": "3a",
+          "after": "3c"
+        },
+        {
+          "metatile": [
+            12,
+            33
+          ],
+          "before": "3a",
+          "after": "3c"
+        },
+        {
+          "metatile": [
+            13,
+            33
+          ],
+          "before": "3a",
+          "after": "3c"
+        },
+        {
+          "metatile": [
+            14,
+            33
+          ],
+          "before": "3a",
+          "after": "3c"
+        }
+      ]
+    }
+  ]
+}

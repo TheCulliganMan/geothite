@@ -1,0 +1,14 @@
+{
+  "tool": "built-in image_gen",
+  "original_tool_path": "/Users/ryanculligan/.codex/generated_images/01a17dcc-4f1a-77a2-9d21-0df036061346/exec-58a9b93b-b1cb-42af-9f73-9888a42334f0.png",
+  "source_size": [
+    2170,
+    725
+  ],
+  "sha256": "c7abff1db2bde089684e1f62bb77968b23ff92eb2011fd5c5f153e87ee459185",
+  "reference_paths": [
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-birchit-v6/MN_F004/review/line.normal-8x.png"
+  ],
+  "prompt": "birchit.prompt-v7.txt",
+  "review": "Black mouth removed; opaque black contour and pupils need restoration because generated black paint became transparent."
+}

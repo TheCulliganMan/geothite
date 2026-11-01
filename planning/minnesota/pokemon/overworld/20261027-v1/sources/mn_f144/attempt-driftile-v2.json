@@ -1,0 +1,9 @@
+{
+  "tool": "built-in image_gen",
+  "original": "/Users/ryanculligan/.codex/generated_images/01a179bf-dc2b-7352-8975-8b8f3a32e33b/exec-9c1b6703-03fa-429c-b6e9-e3f8a8a1ce70.png",
+  "preserved_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f144/driftile.overworld.imagegen-v2-eight-plates-four-roots.png",
+  "sha256": "f083ca3142942ec6448a8de4a1cb55a71cccecd2e8409e85580ccc700cc548f8",
+  "exact_prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f144/prompt-driftile-eight-plates-four-roots-v2.txt",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f144/reference-mapping-driftile-eight-plates-four-roots-v2.json",
+  "status": "preserved; selected frames recorded in frozen manifest"
+}

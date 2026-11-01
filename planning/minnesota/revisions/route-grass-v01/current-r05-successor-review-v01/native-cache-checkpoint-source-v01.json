@@ -1,0 +1,15 @@
+{
+  "id": "MnR05C00R00",
+  "source_kind": "scoped_native_cache_checkpoint",
+  "residents": [
+    {
+      "id": "MN_R05_LOOKOUT",
+      "tile": [
+        53,
+        21
+      ],
+      "facing": "west"
+    }
+  ],
+  "signs": []
+}

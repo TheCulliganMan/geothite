@@ -1,0 +1,26 @@
+[
+  {
+    "id": "MnInternationalFallsPokecenter1F",
+    "map": "MnInternationalFallsPokecenter1F",
+    "core": [
+      3,
+      8
+    ]
+  },
+  {
+    "id": "MnInternationalFallsMart",
+    "map": "MnInternationalFallsMart",
+    "core": [
+      3,
+      6
+    ]
+  },
+  {
+    "id": "lichen-alcove",
+    "map": "MnR17Cave1F",
+    "core": [
+      5,
+      10
+    ]
+  }
+]

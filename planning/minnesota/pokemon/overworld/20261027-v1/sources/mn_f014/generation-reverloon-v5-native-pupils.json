@@ -1,0 +1,71 @@
+{
+  "tool": "built-in image_gen",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f014/reverloon-v5-native-pupils",
+  "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f014/manifest-reverloon-v5-native-pupils.json",
+  "normalized_receipt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f014/source-feature-proof-reverloon-v5-native-pupils.json",
+  "all_raws_prompts_rejected_trials_retained": true,
+  "no_native_pixel_painting": true,
+  "no_registry_or_pack_mutation": true,
+  "normal_shiny_boards_actually_viewed": true,
+  "canonical_palettes": [
+    [
+      32767,
+      30447,
+      16584,
+      0
+    ],
+    [
+      32767,
+      24061,
+      6416,
+      0
+    ]
+  ],
+  "native_bounds": [
+    [
+      1,
+      3,
+      14,
+      12
+    ],
+    [
+      1,
+      3,
+      12,
+      11
+    ],
+    [
+      3,
+      3,
+      12,
+      12
+    ],
+    [
+      1,
+      3,
+      14,
+      12
+    ],
+    [
+      1,
+      3,
+      12,
+      11
+    ],
+    [
+      3,
+      3,
+      12,
+      12
+    ]
+  ],
+  "retained_source_hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f014/reverloon.overworld.imagegen-v2-broad-face.png": "59fd1acac1eecc8248ce8e6802303eeda21fb70a9125b41920f71b5dabb914d9",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f014/reverloon.overworld.imagegen-v1.png": "0cee1c78cfe6ffeb654b26a0b9b5fb01f2e21c96aaaf1c95ebb88dab40d73562",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f014/prompt-reverloon-v1.txt": "ec4458d2f7b3fdd10d92d1b38cd1c744d8a697c890fecb4f937d37749ff59c26",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f014/prompt-reverloon-v2-broad-face.txt": "0b449dfb2ce85c7794c71aab7910a1024c83c65dfb027bba7cd3c986cd367732",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f014/reverloon.v1.original-path.txt": "c075d843ea4395b487c6458c6f3dd77b2f6bc5cf3896da0cfbdef13171bc0b54",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f014/reverloon.v2-broad-face.original-path.txt": "1bb013b0c0768bc948067da0636d97a4dd9cf5cc9cf61ef2a58334d45dc7b505"
+  },
+  "status": "root independent visual/context acceptance pending"
+}

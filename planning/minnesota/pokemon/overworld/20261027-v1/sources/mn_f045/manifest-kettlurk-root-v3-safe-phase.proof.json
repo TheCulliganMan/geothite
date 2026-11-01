@@ -1,0 +1,352 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_096",
+  "status": "source-proof-pass; root visual/context acceptance required",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f045/manifest-kettlurk-root-v3-safe-phase.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f045/kettlurk-root-v3-safe-phase",
+  "shared_transform": {
+    "source_bounds": [
+      12,
+      9,
+      456,
+      424
+    ],
+    "native_size": [
+      14,
+      13
+    ],
+    "native_origin": [
+      1,
+      2
+    ]
+  },
+  "native_head_anchors_idle_walk_equal": true,
+  "validation": {
+    "runtime_2bpp_384_bytes_exact_allpixels": true,
+    "runtime_png16x96_index_parity": true,
+    "normal_shiny_palettebanks_exact": true,
+    "normal_shiny_all1536pixels_exact": true,
+    "transparent_border": true,
+    "idle_walk_pairs_distinct": true
+  },
+  "sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f045/kettlurk-root-v3-safe-phase/gfx/pokemon/kettlurk/overworld-shiny.gbcpal": "1726ae2d77224e0be81c91d978af098f2e2e88b1339be66de88ef35662bfcc2a",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f045/kettlurk-root-v3-safe-phase/gfx/pokemon/kettlurk/overworld.2bpp": "b45bfba2c9630a70f2686536547639e2acb009a76996552a6e7ee2892da970a6",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f045/manifest-kettlurk-root-v3-safe-phase.json": "a0c177d6ddf5e59f1b3c3482c2965ad49e43c1d07a8398cc0bf0a3a38335ee07",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f045/kettlurk-root-v3-safe-phase/compiled-index.json": "2eadace8fb490e1c3fec06987d0bd978794eb731ba4f02df2b863bdd0618573f",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f045/kettlurk-root-v3-safe-phase/gfx/pokemon/kettlurk/overworld.png": "c1c54b44da2e19abb869490a57097d59b10616afc58fce3cd4056a9919368016",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f045/kettlurk.overworld.imagegen-v1.png": "3c2d503e35f6d7f662b15a1544055c267264183beab1f2c23858945a61e59585",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f045/kettlurk-root-v3-safe-phase/gfx/pokemon/kettlurk/overworld.gbcpal": "fbfade1dd11f4bfa79bb7445d1662e9bb1492679b3af734c703987eb4cb234e4",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f045/kettlurk-root-v3-safe-phase/review/line.normal-8x.png": "7af402496d90d3f00b2fbe9f6dc30f30cc4a8381c7a5eeeb4d9a82cc8fe8ab07",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f045/kettlurk-root-v3-safe-phase/review/line.shiny-8x.png": "04d8b7774c2eb8d45a3601f6ae355d336c06fe77af4b4b46b9c771b3593ab123"
+  },
+  "actual_native_boards_viewed": true,
+  "rear_review": "plain rear head, no copied face; actual normal/shiny viewed",
+  "canonical_eye_form": "TWO angular black anatomical eye slots in south views, ONE near eye slot in west. Their tiny source glints simplify to light ink1. These are actual eye features, not shoulder/body contours.",
+  "actual_source_eye_proofs": [
+    {
+      "pose": "down_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f045/kettlurk.overworld.imagegen-v1.png",
+      "crop": [
+        40,
+        70,
+        480,
+        450
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          240,
+          206,
+          24,
+          46
+        ],
+        [
+          312,
+          205,
+          24,
+          47
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              7,
+              6
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                5,
+                8,
+                253
+              ],
+              "bounds": [
+                240,
+                206,
+                24,
+                46
+              ],
+              "pixels": 745,
+              "truncated_contour": false,
+              "native_pixel": [
+                7,
+                6
+              ],
+              "source_sample_pixel": [
+                263,
+                225
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              9,
+              6
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                312,
+                205,
+                24,
+                47
+              ],
+              "pixels": 747,
+              "truncated_contour": false,
+              "native_pixel": [
+                9,
+                6
+              ],
+              "source_sample_pixel": [
+                328,
+                225
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f045/kettlurk.overworld.imagegen-v1.png",
+      "crop": [
+        1008,
+        70,
+        480,
+        450
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          1152,
+          209,
+          36,
+          43
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              5,
+              6
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                5,
+                10,
+                10,
+                253
+              ],
+              "bounds": [
+                1152,
+                209,
+                36,
+                43
+              ],
+              "pixels": 995,
+              "truncated_contour": false,
+              "native_pixel": [
+                5,
+                6
+              ],
+              "source_sample_pixel": [
+                1166,
+                225
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f045/kettlurk.overworld.imagegen-v1.png",
+      "crop": [
+        40,
+        515,
+        480,
+        450
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          240,
+          649,
+          24,
+          43
+        ],
+        [
+          312,
+          648,
+          24,
+          44
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              7,
+              6
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                8,
+                13,
+                253
+              ],
+              "bounds": [
+                240,
+                649,
+                24,
+                43
+              ],
+              "pixels": 713,
+              "truncated_contour": false,
+              "native_pixel": [
+                7,
+                6
+              ],
+              "source_sample_pixel": [
+                263,
+                670
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              9,
+              6
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                252
+              ],
+              "bounds": [
+                312,
+                648,
+                24,
+                44
+              ],
+              "pixels": 721,
+              "truncated_contour": false,
+              "native_pixel": [
+                9,
+                6
+              ],
+              "source_sample_pixel": [
+                328,
+                670
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f045/kettlurk.overworld.imagegen-v1.png",
+      "crop": [
+        1008,
+        515,
+        480,
+        450
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          1152,
+          654,
+          36,
+          41
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              5,
+              6
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                1,
+                6,
+                7,
+                252
+              ],
+              "bounds": [
+                1152,
+                654,
+                36,
+                41
+              ],
+              "pixels": 928,
+              "truncated_contour": false,
+              "native_pixel": [
+                5,
+                6
+              ],
+              "source_sample_pixel": [
+                1166,
+                670
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "all_four_nonrear_poses_have_actual_source_eye_features": true,
+  "every_native_eye_cluster_maps_to_same_small_anatomical_source_eye_component": true
+}

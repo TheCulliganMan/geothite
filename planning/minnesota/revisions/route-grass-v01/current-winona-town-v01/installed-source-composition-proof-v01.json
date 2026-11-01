@@ -1,0 +1,105 @@
+{
+  "status": "PASS_NATIVE_SOURCE_COMPOSITION",
+  "parent": {
+    "revision": "route_grass_mankato_town_revision",
+    "pack": "content-packs/minnesota-current-mankato-native-exterior-v03.crystalpack",
+    "sha256": "4f22dd532f5dc1ca28f63383bb9a66030d4f93ced96ed4daa265b3f36680e02f"
+  },
+  "retained_patches": [
+    {
+      "at": [
+        13,
+        0
+      ],
+      "before": "05",
+      "after": "58",
+      "source": "Existing Mississippi north WATER seam; authored_river_connections and winona_station_edges four-lane guard"
+    },
+    {
+      "at": [
+        14,
+        0
+      ],
+      "before": "05",
+      "after": "59",
+      "source": "Existing Mississippi north WATER seam; authored_river_connections and winona_station_edges four-lane guard"
+    },
+    {
+      "at": [
+        9,
+        5
+      ],
+      "before": "02",
+      "after": "18",
+      "source": "winona_station_modpack native station overlay"
+    },
+    {
+      "at": [
+        10,
+        5
+      ],
+      "before": "02",
+      "after": "19",
+      "source": "winona_station_modpack native station overlay"
+    },
+    {
+      "at": [
+        9,
+        6
+      ],
+      "before": "02",
+      "after": "16",
+      "source": "winona_station_modpack native station overlay"
+    },
+    {
+      "at": [
+        10,
+        6
+      ],
+      "before": "02",
+      "after": "1e",
+      "source": "winona_station_modpack native station overlay"
+    },
+    {
+      "at": [
+        11,
+        6
+      ],
+      "before": "02",
+      "after": "45",
+      "source": "winona_station_modpack native placard"
+    },
+    {
+      "at": [
+        0,
+        9
+      ],
+      "before": "05",
+      "after": "01",
+      "source": "rochester_connections native west road mouth"
+    }
+  ],
+  "complete_native_preimage_exact": true,
+  "only_new_cell": {
+    "at": [
+      3,
+      11
+    ],
+    "before": "16",
+    "after": "1a"
+  },
+  "all_collision_quadrants_exact": true,
+  "native_reference": "CherrygroveCity mart complete2x2",
+  "door_and_return_unchanged": [
+    [
+      7,
+      23
+    ],
+    [
+      7,
+      24
+    ]
+  ],
+  "canonical_layout_changed": false,
+  "native_pack_changed": false
+}

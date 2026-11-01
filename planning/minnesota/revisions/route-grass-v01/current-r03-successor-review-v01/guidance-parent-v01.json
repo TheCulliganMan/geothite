@@ -1,0 +1,9 @@
+{
+  "revision": "r10_exploration_revision",
+  "pack": "content-packs/minnesota-r10-exploration-v03.crystalpack",
+  "pack_sha256": "acc5e63d532de34614cbcc0ac4bd414b190d8cdc9e5d319fdf71f3de3302e073",
+  "maps": [
+    "MnR03C00R00",
+    "MnR03C00R01"
+  ]
+}

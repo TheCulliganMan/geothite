@@ -1,0 +1,68 @@
+{
+  "tool": "built-in image_gen",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f002/cindore-v2-native-pupils",
+  "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f002/manifest-cindore-v2-native-pupils.json",
+  "normalized_receipt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f002/source-feature-proof-cindore-v2-native-pupils.json",
+  "all_raws_prompts_rejected_trials_retained": true,
+  "no_native_pixel_painting": true,
+  "no_registry_or_pack_mutation": true,
+  "normal_shiny_boards_actually_viewed": true,
+  "canonical_palettes": [
+    [
+      32767,
+      3519,
+      8424,
+      0
+    ],
+    [
+      32767,
+      14307,
+      7432,
+      0
+    ]
+  ],
+  "native_bounds": [
+    [
+      2,
+      3,
+      11,
+      11
+    ],
+    [
+      2,
+      3,
+      10,
+      12
+    ],
+    [
+      2,
+      3,
+      10,
+      11
+    ],
+    [
+      2,
+      3,
+      11,
+      12
+    ],
+    [
+      2,
+      3,
+      10,
+      11
+    ],
+    [
+      2,
+      3,
+      10,
+      12
+    ]
+  ],
+  "retained_source_hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f002/cindore.overworld.imagegen-v1.png": "b70680083180be59bcf443cae461a8525b87e9efe60ee4fece7d641b39c5c243",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f002/prompt-cindore-v1.txt": "4620b44fc56f820ddd12dd84264bd3209af0e5798423ece7495c13c163e61293",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f002/cindore.v1.original-path.txt": "4a34c2f661b7dbc0cae4bb9986184163611a48c325d0c03d5180c95e0ec30041"
+  },
+  "status": "root independent visual/context acceptance pending"
+}

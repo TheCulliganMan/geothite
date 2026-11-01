@@ -1,0 +1,68 @@
+{
+  "id": "MnInternationalFalls",
+  "name": "INTERNATIONAL FALLS",
+  "dimensions_metatiles": [
+    24,
+    24
+  ],
+  "reference_anchor_percent": [
+    46,
+    13
+  ],
+  "role": "town",
+  "tileset": "johto",
+  "composition": "Border-side ranger base, colder palette and south/east walking exits.",
+  "ports": [
+    {
+      "route": "MN_R17",
+      "side": "S",
+      "gate_metatile": [
+        12,
+        22
+      ],
+      "landing_metatile": [
+        12,
+        20
+      ]
+    },
+    {
+      "route": "MN_R20",
+      "side": "E",
+      "gate_metatile": [
+        22,
+        12
+      ],
+      "landing_metatile": [
+        20,
+        12
+      ]
+    }
+  ],
+  "interiors": [
+    {
+      "id": "MnInternationalFallsPokecenter1F",
+      "kind": "pokecenter",
+      "dimensions_metatiles": [
+        10,
+        8
+      ],
+      "source_behavior": "canonical healing, PC and blackout recovery"
+    },
+    {
+      "id": "MnInternationalFallsMart",
+      "kind": "mart",
+      "dimensions_metatiles": [
+        6,
+        4
+      ],
+      "source_behavior": "canonical clerk, money deduction and inventory"
+    }
+  ],
+  "walkable_destinations": [
+    "each port landing",
+    "every visible exterior door",
+    "central square",
+    "local story NPC"
+  ],
+  "door_contract": "Assign exterior core-tile door coordinates only after selecting authentic facade quadrants; record reciprocal warp indices and indoor floor arrivals before export."
+}

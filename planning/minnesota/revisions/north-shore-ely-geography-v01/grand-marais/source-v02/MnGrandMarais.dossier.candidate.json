@@ -1,0 +1,115 @@
+{
+  "id": "MnGrandMarais",
+  "name": "GRAND MARAIS",
+  "dimensions_metatiles": [
+    20,
+    19
+  ],
+  "reference_anchor_percent": [
+    87,
+    26
+  ],
+  "role": "town",
+  "tileset": "mn_marais_shore",
+  "composition": "Warm Superior harbor. Direct North Shore arrival from west; separate north Gunflint/Ely inland departure.",
+  "ports": [
+    {
+      "route": "MN_R11",
+      "side": "W",
+      "gate_metatile": [
+        1,
+        4
+      ],
+      "landing_metatile": [
+        0,
+        4
+      ],
+      "native_connection": "MnR11C01R00 east / town west offsets0; Foot core8/9 and Superior Water16..35."
+    },
+    {
+      "route": "MN_R12",
+      "side": "N",
+      "gate_metatile": [
+        9,
+        1
+      ],
+      "landing_metatile": [
+        9,
+        0
+      ],
+      "native_connection": "Town north offset-19 to Cedar south+19; town core18/19 to Cedar56/57. Winter begins inland."
+    }
+  ],
+  "interiors": [
+    {
+      "id": "MnGrandMaraisFieldStation",
+      "kind": "field_station",
+      "dimensions_metatiles": [
+        5,
+        4
+      ],
+      "source_behavior": "Preserve installed native room module and services exactly; no alternate seventh gatehouse lineage."
+    },
+    {
+      "id": "MnGrandMaraisPokecenter",
+      "kind": "pokecenter",
+      "dimensions_metatiles": [
+        5,
+        4
+      ],
+      "source_behavior": "Preserve installed native room module and services exactly; no alternate seventh gatehouse lineage."
+    },
+    {
+      "id": "MnGrandMaraisMart",
+      "kind": "mart",
+      "dimensions_metatiles": [
+        6,
+        4
+      ],
+      "source_behavior": "Preserve installed native room module and services exactly; no alternate seventh gatehouse lineage."
+    },
+    {
+      "id": "MnGrandMaraisArtistHouse",
+      "kind": "house",
+      "dimensions_metatiles": [
+        4,
+        4
+      ],
+      "source_behavior": "Preserve installed native room module and services exactly; no alternate seventh gatehouse lineage."
+    },
+    {
+      "id": "MnGrandMaraisFisherHouse",
+      "kind": "house",
+      "dimensions_metatiles": [
+        4,
+        4
+      ],
+      "source_behavior": "Preserve installed native room module and services exactly; no alternate seventh gatehouse lineage."
+    },
+    {
+      "id": "MnGrandMaraisLighthouse",
+      "kind": "lighthouse",
+      "dimensions_metatiles": [
+        5,
+        5
+      ],
+      "source_behavior": "Preserve installed native room module and services exactly; no alternate seventh gatehouse lineage."
+    }
+  ],
+  "walkable_destinations": [
+    "each port landing",
+    "every visible exterior door",
+    "central square",
+    "local story NPC"
+  ],
+  "door_contract": "Six original indexed facade/room pairs and native exit steps unchanged.",
+  "implementation": {
+    "design": "../playable/grand-marais.json",
+    "map_constant": "MN_GRAND_MARAIS",
+    "scope": "Regional North Shore candidate; verification in playable/north-shore-story.md",
+    "interiors": 7,
+    "review": "../playable/north-shore-story.md",
+    "connections": "MnGrandMarais.connections.json"
+  },
+  "native_connections_source": "MnGrandMarais.connections.candidate.json"
+}

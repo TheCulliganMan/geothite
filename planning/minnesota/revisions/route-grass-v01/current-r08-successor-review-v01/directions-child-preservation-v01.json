@@ -1,0 +1,36 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-r08-grass-and-stairs-v01.crystalpack",
+  "pack_sha256": "1e1f2e2f40fdea4207e7ada6b34a85d33065cbe254a73864e47b8db4f0726e13",
+  "content_identity": "66bf8c7f11c17ce5c8eee4a69f7dc07c28b79dcfc67d336dd2c9b2baf9b79d4c",
+  "grass_parent": {
+    "status": "PASS_NATIVE_CHILD_NOT_SELECTED",
+    "parent_revision": "route_grass_r07_north_pocket_revision",
+    "parent_pack": "content-packs/minnesota-current-r07-grass-and-stairs-v02.crystalpack",
+    "parent_pack_sha256": "7b0aea48dc662368dfa4a2482d6dce75c94f2b18e4f9f3ea2b94861f9c409316",
+    "pack": "content-packs/minnesota-current-r08-south-woods-grass-v01.crystalpack",
+    "pack_sha256": "6618f3c280a789b0654997638ef38776d238141b8704124db5ae1eae7d7b4305",
+    "content_identity": "69060a051a6087ecc629c98772835c7263757eae6c2a2ba9d10e6059a3b8bbbf",
+    "delta": {
+      "maps": [
+        "MnR08C00R01"
+      ],
+      "map_blocks": [
+        "MnR08C00R01_Blocks"
+      ]
+    },
+    "new_grass_quadrants": 12,
+    "all_other_maps_and_all_events_actors_scripts_teams_encounters_items_art_audio_exact": true
+  },
+  "delta": {
+    "maps": [
+      "MnR08C00R00"
+    ],
+    "map_scripts": [
+      "MN_R08_BIRCH_WALKERText",
+      "MN_R08_SIGN_03Text",
+      "MN_R08_T07Won"
+    ]
+  },
+  "all_terrain_actors_events_items_encounters_and_battle_inputs_exact": true
+}

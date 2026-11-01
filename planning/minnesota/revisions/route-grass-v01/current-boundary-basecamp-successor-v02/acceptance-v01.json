@@ -1,0 +1,13 @@
+{
+  "status": "PASS_TESTED_BASECAMP_WITH_EXACT_SELECTED_LOCAL_INHERITANCE",
+  "pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+  "pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33",
+  "native_cases": 5,
+  "production_continue_calls": 15,
+  "guarded_road_crossings": 12,
+  "selected_pack": "content-packs/minnesota-international-falls-windbreak-v01.crystalpack",
+  "selected_pack_sha256": "7066f05448101c79b4dc761963b0f39a570bad07c4f80e3e777901ac2e207507",
+  "selected_local_inheritance": "selected-successor-inheritance-v01.json",
+  "pine_seam_review": "planning/minnesota/revisions/route-grass-v01/current-preserve-pine-successor-v01/acceptance-v01.json",
+  "scope": "Guarded crossings/reentry/Continue, all missing requirements, free inbound/transverse care, Surf cannot bypass checkpoints. Native/production receipts stay bound to tested R10 pack; exact basecamp/shelter/Pine map and used-art inheritance verified on new selected Falls windbreak successor. No fresh successor/global-runtime execution claim. No paid Safari/capture or earned progression."
+}

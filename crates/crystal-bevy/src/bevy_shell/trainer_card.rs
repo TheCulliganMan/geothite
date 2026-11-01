@@ -1,3 +1,12 @@
+fn minnesota_trainer_card(snapshot: &RuntimeShellSnapshot) -> bool {
+    snapshot
+        .boot
+        .modpack_id
+        .split('+')
+        .any(|id| id.starts_with("minnesota"))
+        || snapshot.maps.iter().any(|map| map.map_name.starts_with("Mn"))
+}
+
 fn open_visible_trainer_card(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
     runtime_shell.trainer_card_return_start_menu_cursor = runtime_shell.start_menu_cursor.clone();
     let frame_phase = runtime_shell.shell.session().state().vblank_counter & 0x3f;
@@ -197,6 +206,7 @@ fn open_visible_field_pack(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
         FieldPackPocket::Items
     };
     open_visible_field_pack_pocket(runtime_shell, pocket.clone())?;
+    stage_visible_fishing_pack_scene(runtime_shell, &snapshot);
     runtime_shell.last_audio_events.push(format!(
         "opened Pack pocket {}",
         field_pack_pocket_label(&pocket)
@@ -828,12 +838,17 @@ fn finish_visible_pokegear_menu(runtime_shell: &mut BevyRuntimeShell) {
 }
 
 fn move_visible_pokegear_cursor(runtime_shell: &mut BevyRuntimeShell, delta: isize) -> Result<()> {
-    if runtime_shell.pokegear_map_radio_delay.is_some() { return Ok(()); }
+    if runtime_shell.pokegear_map_radio_delay.is_some() {
+        return Ok(());
+    }
     if let Some(menu) = runtime_shell.pokegear_phone_menu.as_mut() {
         if let Some(cursor) = menu.delete_confirmation.as_mut() {
             *cursor = cursor.saturating_add_signed(delta).min(1);
         } else {
-            menu.cursor = menu.cursor.saturating_add_signed(delta).min(if menu.can_delete { 2 } else { 1 });
+            menu.cursor = menu
+                .cursor
+                .saturating_add_signed(delta)
+                .min(if menu.can_delete { 2 } else { 1 });
         }
         mark_runtime_presentation_dirty(runtime_shell);
         return Ok(());
@@ -872,7 +887,10 @@ fn move_visible_pokegear_cursor(runtime_shell: &mut BevyRuntimeShell, delta: isi
     if runtime_shell.pokegear_page == PokegearPage::Phone {
         visible_pokegear_phone_window(runtime_shell)?;
         visible_pokegear_phone_slots(&snapshot)?;
-        let next = runtime_shell.pokegear_phone_cursor.saturating_add_signed(delta).min(9);
+        let next = runtime_shell
+            .pokegear_phone_cursor
+            .saturating_add_signed(delta)
+            .min(9);
         runtime_shell.pokegear_phone_cursor = next;
         if next < runtime_shell.pokegear_phone_scroll {
             runtime_shell.pokegear_phone_scroll = next;
@@ -884,13 +902,31 @@ fn move_visible_pokegear_cursor(runtime_shell: &mut BevyRuntimeShell, delta: isi
         return Ok(());
     }
     let landmarks = &snapshot.presentation.pokegear_landmarks.landmarks;
-    let region_indices = visible_pokegear_landmark_indices(&snapshot, runtime_shell.pokegear_standalone_map)?;
+    let region_indices =
+        visible_pokegear_landmark_indices(&snapshot, runtime_shell.pokegear_standalone_map)?;
     if region_indices.is_empty() {
         anyhow::bail!("compiled pack has no Pokegear landmarks for the active region");
     }
-    let current = landmarks.get(runtime_shell.pokegear_cursor)
-        .with_context(|| format!("Pokegear landmark cursor {} is outside the catalog", runtime_shell.pokegear_cursor))?;
-    let current_id = u8::try_from(current.id).context("Pokegear landmark ID exceeds a source byte")?;
+    if minnesota_map_active(&snapshot) {
+        let current = region_indices
+            .iter()
+            .position(|index| *index == runtime_shell.pokegear_cursor)
+            .context("Minnesota cursor is outside regional landmarks")?;
+        let next = (current as isize - delta).rem_euclid(region_indices.len() as isize) as usize;
+        runtime_shell.pokegear_cursor = region_indices[next];
+        mark_runtime_presentation_dirty(runtime_shell);
+        return Ok(());
+    }
+    let current = landmarks
+        .get(runtime_shell.pokegear_cursor)
+        .with_context(|| {
+            format!(
+                "Pokegear landmark cursor {} is outside the catalog",
+                runtime_shell.pokegear_cursor
+            )
+        })?;
+    let current_id =
+        u8::try_from(current.id).context("Pokegear landmark ID exceeds a source byte")?;
     let first = landmarks[region_indices[0]].id;
     let last = landmarks[*region_indices.last().unwrap()].id;
     // Both PokegearMap_ContinueMap and _TownMap increment on Up and
@@ -898,20 +934,28 @@ fn move_visible_pokegear_cursor(runtime_shell: &mut BevyRuntimeShell, delta: isi
     // Source Up compares >= the last ID, while Down compares == the first.
     // An initial ship cursor may lie outside the ordinary traversal limits.
     let next_id = if delta < 0 {
-        if current.id >= last { first } else { current.id + 1 }
+        if current.id >= last {
+            first
+        } else {
+            current.id + 1
+        }
     } else if delta > 0 {
-        if current.id == first { last } else { u16::from(current_id.wrapping_sub(1)) }
+        if current.id == first {
+            last
+        } else {
+            u16::from(current_id.wrapping_sub(1))
+        }
     } else {
         return Ok(());
     };
-    let next = landmarks.iter().position(|landmark| landmark.id == next_id)
+    let next = landmarks
+        .iter()
+        .position(|landmark| landmark.id == next_id)
         .with_context(|| format!("source Pokegear cursor landmark {next_id} is missing"))?;
     runtime_shell.pokegear_cursor = next;
     runtime_shell.last_audio_events.push(format!(
         "Pokegear cursor {}->{} {}",
-        current.id,
-        next_id,
-        landmarks[next].constant
+        current.id, next_id, landmarks[next].constant
     ));
     trim_event_log(&mut runtime_shell.last_audio_events);
     Ok(())
@@ -967,19 +1011,50 @@ fn visible_pokegear_region(snapshot: &RuntimeShellSnapshot, standalone_map: bool
     Ok(if standalone_map && constant == "LANDMARK_FAST_SHIP" { "KANTO" } else { landmark.region.as_str() })
 }
 
-fn visible_pokegear_landmark_indices(snapshot: &RuntimeShellSnapshot, standalone_map: bool) -> Result<Vec<usize>> {
+fn visible_pokegear_landmark_indices(
+    snapshot: &RuntimeShellSnapshot,
+    standalone_map: bool,
+) -> Result<Vec<usize>> {
+    if minnesota_map_active(snapshot) {
+        let catalog = &snapshot.presentation.pokegear_landmarks;
+        let indices = catalog
+            .landmarks
+            .iter()
+            .enumerate()
+            .filter(|(_, landmark)| {
+                catalog
+                    .map_to_landmark
+                    .iter()
+                    .any(|(map, constant)| map.starts_with("Mn") && !map.contains("Review") && !map.contains("Gallery")
+                        && constant == &landmark.constant)
+            })
+            .map(|(index, _)| index)
+            .collect::<Vec<_>>();
+        anyhow::ensure!(!indices.is_empty(), "Minnesota has no mapped landmarks");
+        return Ok(indices);
+    }
     let region = visible_pokegear_region(snapshot, standalone_map)?;
     let (first, last) = match region {
         "JOHTO" => ("LANDMARK_NEW_BARK_TOWN", "LANDMARK_SILVER_CAVE"),
-        "KANTO" if snapshot.progression.active_engine_flags.contains("ENGINE_CREDITS_SKIP") =>
-            ("LANDMARK_PALLET_TOWN", "LANDMARK_ROUTE_28"),
+        "KANTO"
+            if snapshot
+                .progression
+                .active_engine_flags
+                .contains("ENGINE_CREDITS_SKIP") =>
+        {
+            ("LANDMARK_PALLET_TOWN", "LANDMARK_ROUTE_28")
+        }
         "KANTO" => ("LANDMARK_VICTORY_ROAD", "LANDMARK_ROUTE_28"),
         _ => unreachable!("visible_pokegear_region validates the region"),
     };
     let landmarks = &snapshot.presentation.pokegear_landmarks.landmarks;
-    let boundary = |constant| landmarks.iter().find(|landmark| landmark.constant == constant)
-        .map(|landmark| landmark.id)
-        .with_context(|| format!("Pokegear cursor boundary {constant} is missing"));
+    let boundary = |constant| {
+        landmarks
+            .iter()
+            .find(|landmark| landmark.constant == constant)
+            .map(|landmark| landmark.id)
+            .with_context(|| format!("Pokegear cursor boundary {constant} is missing"))
+    };
     let first = boundary(first)?;
     let last = boundary(last)?;
     let mut indices = snapshot
@@ -1415,7 +1490,7 @@ fn visible_pokegear_radio_exit_song(shell: &BevyRuntimeShell) -> Result<Option<S
 
 fn queue_visible_pokegear_restored_music(shell: &mut BevyRuntimeShell, song: String) -> Result<()> {
     let playback = shell.shell.runtime().audio().require_playback_entry(AudioKind::Music, &song)?;
-    let command = BevyAudioCommand { cry_parameters: None,audio_id: song.clone(), kind: ModpackAudioKind::Music, mode: playback.mode,
+    let command = BevyAudioCommand { battle_sound: None, cry_parameters: None,audio_id: song.clone(), kind: ModpackAudioKind::Music, mode: playback.mode,
         looped: matches!(playback.loop_policy, crate::assets::ModpackAudioLoopPolicy::Loop)};
     enqueue_bevy_audio_command(&mut shell.pending_audio, command);
     shell.active_music = Some(song);
@@ -2336,6 +2411,13 @@ fn open_visible_save_menu(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
             .is_ok(),
         yes_no_index: 0,
     });
+    let snapshot = runtime_shell.shell.presentation_snapshot()?;
+    save_prompt_pages::begin(
+        runtime_shell,
+        &snapshot,
+        SAVE_TEXT_WOULD_YOU_LIKE,
+        SAVE_TEXT_WOULD_YOU_LIKE,
+    )?;
     close_visible_party_detail_state(runtime_shell);
     runtime_shell.pokedex_menu_open = false;
     runtime_shell.pokedex_detail_open = false;
@@ -2366,6 +2448,9 @@ fn close_visible_save_menu(runtime_shell: &mut BevyRuntimeShell) {
 }
 
 fn confirm_visible_save_menu(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
+    if runtime_shell.special_boundary.is_some() {
+        return close_visible_special_boundary(runtime_shell);
+    }
     let Some(flow) = runtime_shell.save_flow.as_ref().cloned() else {
         anyhow::bail!("Save confirmation requested without an active Save flow");
     };
@@ -2380,6 +2465,18 @@ fn confirm_visible_save_menu(runtime_shell: &mut BevyRuntimeShell) -> Result<()>
                     active_flow.stage = VisibleSaveFlowStage::OverwritePrompt;
                     active_flow.yes_no_index = 0;
                 }
+                let snapshot = runtime_shell.shell.presentation_snapshot()?;
+                let display_label = match flow.origin {
+                    VisibleSaveFlowOrigin::StartMenu => "StartMenuOverwriteWarning",
+                    VisibleSaveFlowOrigin::BillsPcMove => "PokecenterMoveSaveText",
+                    VisibleSaveFlowOrigin::BillsPcChangeBox { .. } => "PokecenterChangeBoxSaveText",
+                };
+                save_prompt_pages::begin(
+                    runtime_shell,
+                    &snapshot,
+                    SAVE_TEXT_ALREADY_EXISTS,
+                    display_label,
+                )?;
                 record_visible_runtime_action(runtime_shell, "menu:save:overwrite_prompt")?;
                 return Ok(());
             }
@@ -2444,6 +2541,9 @@ fn confirm_visible_save_menu(runtime_shell: &mut BevyRuntimeShell) -> Result<()>
 }
 
 fn cancel_visible_save_menu(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
+    if runtime_shell.special_boundary.is_some() {
+        return close_visible_special_boundary(runtime_shell);
+    }
     let Some(flow) = runtime_shell.save_flow.as_ref().cloned() else {
         anyhow::bail!("Save cancel requested without an active Save flow");
     };
@@ -2498,6 +2598,9 @@ fn move_visible_save_prompt_cursor(
     runtime_shell: &mut BevyRuntimeShell,
     delta: isize,
 ) -> Result<()> {
+    if runtime_shell.special_boundary.is_some() {
+        return Ok(());
+    }
     let Some(flow) = runtime_shell.save_flow.as_mut() else {
         anyhow::bail!("Save cursor requested without an active Save flow");
     };
@@ -2730,17 +2833,18 @@ fn close_visible_special_boundary(runtime_shell: &mut BevyRuntimeShell) -> Resul
     {
         let party_index = selected_party_index(runtime_shell)?;
         let snapshot = runtime_shell.shell.snapshot()?;
-        let nickname = snapshot
+        snapshot
             .party
             .slots
             .iter()
             .find(|slot| slot.index == party_index)
-            .map(|slot| slot.pokemon.nickname.clone())
             .context("Name Rater selection is no longer in the party")?;
         runtime_shell.pending_script_party_selection = None;
         runtime_shell.pending_name_input = Some(PendingNameInput {
             label: "POKéMON'S NAME?".to_string(),
-            value: nickname,
+            // NamingScreen_InitNameEntry clears its destination. An empty
+            // submission is handled later by NameRater's same-name branch.
+            value: String::new(),
             max_length: 10,
             cursor_column: 0,
             cursor_row: 0,
@@ -2877,7 +2981,8 @@ fn close_visible_special_boundary(runtime_shell: &mut BevyRuntimeShell) -> Resul
     }
     if matches!(
         boundary.label.as_str(),
-        "PokecenterBillsPCText" | "PokecenterPlayersPCText"
+        "PokecenterBillsPCText" | "PokecenterPlayersPCText" | "PokecenterChangeBoxSaveText" | "PokecenterMoveSaveText"
+            | "PokecenterMoveMailText"
     ) {
         mark_runtime_snapshot_dirty(runtime_shell);
         return Ok(());
@@ -2894,8 +2999,14 @@ fn close_visible_special_boundary(runtime_shell: &mut BevyRuntimeShell) -> Resul
         }
         return continue_visible_script_after_prompt(runtime_shell);
     }
+    if runtime_shell.pc_hub_session_open && boundary.label == "PokecenterOaksPCText" {
+        return open_visible_oak_rating_question(runtime_shell);
+    }
+    if runtime_shell.pc_hub_session_open && boundary.label == "ProfOaksPcBoot" {
+        return open_visible_oak_pc_shutdown(runtime_shell);
+    }
     if runtime_shell.pc_hub_session_open
-        && matches!(boundary.label.as_str(), "ProfOaksPcBoot" | "HallOfFamePC")
+        && matches!(boundary.label.as_str(), "OakPCShutdown" | "HallOfFamePC")
     {
         runtime_shell.hall_of_fame_pc_index = None;
         runtime_shell.pc_hub_cursor = Some(MenuCursor {
@@ -4150,7 +4261,17 @@ fn open_visible_fly_destination_menu(runtime_shell: &mut BevyRuntimeShell) -> Re
 }
 
 fn confirm_visible_fly_destination(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
-    let result = use_visible_fly(runtime_shell);
+    let result = match use_visible_fly(runtime_shell) {
+        Err(error) if party_field_move_error_is_play_refusal(&error) => {
+            handle_visible_field_action_refusal(
+                runtime_shell,
+                "FLY",
+                "FLY CAN'T BE USED HERE",
+                error,
+            )
+        }
+        result => result,
+    };
     if result.is_ok() {
         runtime_shell.party_menu_open = false;
         runtime_shell.party_summary_open = false;
@@ -4255,7 +4376,12 @@ fn selected_party_species_label(
 }
 
 fn move_visible_primary_cursor_up(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
-    if !runtime_shell.battle_messages.is_empty() {
+    if safari_visible::press(runtime_shell, GameButton::Up)? { return Ok(()); }
+    // PC PrintText/CONT owns directions even when the Bill/save cursor is
+    // already retained underneath it. Both keyboard and controller use these
+    // direction helpers, so neither frontend can change that hidden choice.
+    if runtime_shell.pending_mail_read.is_some() || !runtime_shell.battle_messages.is_empty()
+        || visible_pokecenter_pc_text_boundary(runtime_shell).is_some() {
         return Ok(());
     }
     if runtime_shell.visible_slot_machine.is_some() {
@@ -4265,7 +4391,9 @@ fn move_visible_primary_cursor_up(runtime_shell: &mut BevyRuntimeShell) -> Resul
 }
 
 fn move_visible_primary_cursor_down(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
-    if !runtime_shell.battle_messages.is_empty() {
+    if safari_visible::press(runtime_shell, GameButton::Down)? { return Ok(()); }
+    if runtime_shell.pending_mail_read.is_some() || !runtime_shell.battle_messages.is_empty()
+        || visible_pokecenter_pc_text_boundary(runtime_shell).is_some() {
         return Ok(());
     }
     if runtime_shell.visible_slot_machine.is_some() {
@@ -4275,7 +4403,9 @@ fn move_visible_primary_cursor_down(runtime_shell: &mut BevyRuntimeShell) -> Res
 }
 
 fn move_visible_primary_cursor_left(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
-    if !runtime_shell.battle_messages.is_empty() {
+    if safari_visible::press(runtime_shell, GameButton::Left)? { return Ok(()); }
+    if runtime_shell.pending_mail_read.is_some() || !runtime_shell.battle_messages.is_empty()
+        || visible_pokecenter_pc_text_boundary(runtime_shell).is_some() {
         return Ok(());
     }
     if runtime_shell.visible_buena_password.is_some()
@@ -4326,7 +4456,7 @@ fn move_visible_primary_cursor_left(runtime_shell: &mut BevyRuntimeShell) -> Res
         return move_visible_delete_save_cursor(runtime_shell);
     }
     if runtime_shell.pending_clock_reset.is_some() {
-        return move_visible_clock_reset_cursor(runtime_shell, -1);
+        return move_visible_clock_reset_horizontal(runtime_shell, -1);
     }
     if runtime_shell.title_menu.is_some() {
         return move_visible_title_menu_cursor(runtime_shell, -1);
@@ -4356,6 +4486,8 @@ fn move_visible_primary_cursor_left(runtime_shell: &mut BevyRuntimeShell) -> Res
         return Ok(());
     }
     if runtime_shell.pc_confirmation.is_some() {
+        if visible_pc_uses_source_yes_no(runtime_shell) {return Ok(());}
+        if !visible_pc_toss_confirmation_ready(runtime_shell) {return Ok(());}
         return move_visible_cursor_slot(
             &mut runtime_shell.yes_no_cursor,
             "pc:confirmation".to_string(),
@@ -4548,7 +4680,9 @@ fn move_visible_primary_cursor_left(runtime_shell: &mut BevyRuntimeShell) -> Res
 }
 
 fn move_visible_primary_cursor_right(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
-    if !runtime_shell.battle_messages.is_empty() {
+    if safari_visible::press(runtime_shell, GameButton::Right)? { return Ok(()); }
+    if runtime_shell.pending_mail_read.is_some() || !runtime_shell.battle_messages.is_empty()
+        || visible_pokecenter_pc_text_boundary(runtime_shell).is_some() {
         return Ok(());
     }
     if runtime_shell.visible_buena_password.is_some()
@@ -4599,7 +4733,7 @@ fn move_visible_primary_cursor_right(runtime_shell: &mut BevyRuntimeShell) -> Re
         return move_visible_delete_save_cursor(runtime_shell);
     }
     if runtime_shell.pending_clock_reset.is_some() {
-        return move_visible_clock_reset_cursor(runtime_shell, 1);
+        return move_visible_clock_reset_horizontal(runtime_shell, 1);
     }
     if runtime_shell.title_menu.is_some() {
         return move_visible_title_menu_cursor(runtime_shell, 1);
@@ -4629,6 +4763,8 @@ fn move_visible_primary_cursor_right(runtime_shell: &mut BevyRuntimeShell) -> Re
         return Ok(());
     }
     if runtime_shell.pc_confirmation.is_some() {
+        if visible_pc_uses_source_yes_no(runtime_shell) {return Ok(());}
+        if !visible_pc_toss_confirmation_ready(runtime_shell) {return Ok(());}
         return move_visible_cursor_slot(
             &mut runtime_shell.yes_no_cursor,
             "pc:confirmation".to_string(),
@@ -5137,6 +5273,10 @@ fn move_visible_primary_cursor(runtime_shell: &mut BevyRuntimeShell, delta: isiz
         return move_visible_mailbox_confirmation_cursor(runtime_shell, delta);
     }
     if runtime_shell.pc_confirmation.is_some() {
+        if visible_pc_uses_source_yes_no(runtime_shell) {
+            return move_visible_pc_toss_confirmation_cursor(runtime_shell,delta);
+        }
+        if !visible_pc_toss_confirmation_ready(runtime_shell) {return Ok(());}
         return move_visible_cursor_slot(
             &mut runtime_shell.yes_no_cursor,
             "pc:confirmation".to_string(),
@@ -5236,6 +5376,9 @@ fn move_visible_primary_cursor(runtime_shell: &mut BevyRuntimeShell, delta: isiz
         return move_visible_yes_no_cursor(runtime_shell, delta);
     }
     if snapshot.pending_move_learn.is_some() {
+        if runtime_shell.special_boundary.is_some() {
+            return Ok(());
+        }
         return move_visible_pending_move_learn_cursor(runtime_shell, delta);
     }
     if runtime_shell.tmhm_teach_prompt_cursor.is_some() {
@@ -5400,7 +5543,7 @@ fn move_visible_primary_cursor(runtime_shell: &mut BevyRuntimeShell, delta: isiz
     if runtime_shell.pokegear_menu_open {
         return move_visible_pokegear_cursor(runtime_shell, delta);
     }
-    if visible_field_pack_is_open(runtime_shell) {
+    if snapshot.battle.is_none() && visible_field_pack_is_open(runtime_shell) {
         if runtime_shell.field_pack_target_mode.is_some() {
             return move_visible_field_pack_target_cursor(runtime_shell, delta);
         }

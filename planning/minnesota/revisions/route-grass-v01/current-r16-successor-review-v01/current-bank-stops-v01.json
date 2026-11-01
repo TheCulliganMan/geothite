@@ -1,0 +1,102 @@
+{
+  "status": "SOURCE_EXPECTATIONS_REQUIRE_NATIVE_PLAY",
+  "checks": [
+    {
+      "stand": [
+        19,
+        23
+      ],
+      "direction": "up",
+      "expected_stop": [
+        19,
+        22
+      ],
+      "collision_at_stop": "UP_WALL"
+    },
+    {
+      "stand": [
+        19,
+        24
+      ],
+      "direction": "down",
+      "expected_stop": [
+        19,
+        24
+      ],
+      "collision_at_stop": "FLOOR"
+    },
+    {
+      "stand": [
+        63,
+        29
+      ],
+      "direction": "up",
+      "expected_stop": [
+        63,
+        28
+      ],
+      "collision_at_stop": "UP_WALL"
+    },
+    {
+      "stand": [
+        63,
+        30
+      ],
+      "direction": "down",
+      "expected_stop": [
+        63,
+        30
+      ],
+      "collision_at_stop": "FLOOR"
+    },
+    {
+      "stand": [
+        18,
+        15
+      ],
+      "direction": "right",
+      "expected_stop": [
+        19,
+        15
+      ],
+      "collision_at_stop": "FLOOR"
+    },
+    {
+      "stand": [
+        18,
+        16
+      ],
+      "direction": "right",
+      "expected_stop": [
+        19,
+        16
+      ],
+      "collision_at_stop": "FLOOR"
+    },
+    {
+      "stand": [
+        16,
+        15
+      ],
+      "direction": "up",
+      "expected_stop": [
+        16,
+        14
+      ],
+      "collision_at_stop": "UP_WALL"
+    },
+    {
+      "stand": [
+        16,
+        16
+      ],
+      "direction": "down",
+      "expected_stop": [
+        16,
+        16
+      ],
+      "collision_at_stop": "FLOOR"
+    }
+  ],
+  "model": ".local/route-grass-review/native_land_bank_surface_v01.py"
+}

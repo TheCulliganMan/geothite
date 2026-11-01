@@ -1,0 +1,15 @@
+{
+  "generation": "new original artwork",
+  "input_images": [],
+  "text_style_reference_boards": [
+    "target/minnesota-pokemon/gen2-reference/starters.png",
+    "target/minnesota-pokemon/gen2-reference/bugs.png"
+  ],
+  "regional_sources": [
+    {
+      "url": "https://www.dnr.state.mn.us/waters/groundwater_section/mapping/springs.html",
+      "institution": "Minnesota DNR",
+      "supports": "Karst includes caves, sinkholes, sinking drainage, springs and cave windows in southeast Minnesota; the hunting creature is fiction."
+    }
+  ]
+}

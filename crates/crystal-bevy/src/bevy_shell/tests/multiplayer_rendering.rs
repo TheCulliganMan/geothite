@@ -91,7 +91,7 @@ fn multiplayer_render_test_app() -> App {
         })
         .init_resource::<RenderedTilesetArt>()
         .init_resource::<Assets<Image>>()
-        .insert_non_send_resource(disconnected_render_multiplayer_fixture())
+        .insert_non_send(disconnected_render_multiplayer_fixture())
         .add_systems(Update, sync_multiplayer_ghosts);
     app.world_mut().spawn((
         PlayerMarker,
@@ -252,7 +252,7 @@ fn overworld_interactions_preserve_modal_input_and_allow_walking() {
 fn multiplayer_render_reuses_presentation_snapshot_and_refreshes_after_runtime_tick() {
     let mut app = multiplayer_render_test_app();
     app.world_mut()
-        .non_send_resource_mut::<MultiplayerRuntime>()
+        .non_send_mut::<MultiplayerRuntime>()
         .remote_presences
         .insert(
             "player-2".into(),

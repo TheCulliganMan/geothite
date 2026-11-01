@@ -441,7 +441,7 @@ pub enum RoamingWildBattleMaterializationError {
     #[error("roaming battle divider source failed: {error}")]
     Divider { error: String },
     #[error("saved roaming HP {hp} exceeds materialized max HP {max_hp}")]
-    SavedHpExceedsMaximum { hp: u8, max_hp: u16 },
+    SavedHpExceedsMaximum { hp: u16, max_hp: u16 },
     #[error("fresh roaming max HP {max_hp} does not fit the source low-byte field")]
     FreshHpByteOverflow { max_hp: u16 },
 }
@@ -500,7 +500,12 @@ pub fn wild_dvs_from_rng(rng: &mut Random) -> Dv {
     )
 }
 
-fn wild_held_item_from_crystal_random<S>(
+/// Select ordinary wild held items using native RNG and item thresholds.
+/// Capture-only expeditions reuse this without constructing a combatant.
+///
+/// # Errors
+/// Returns a native divider error if hardware samples are unavailable.
+pub fn wild_held_item_from_crystal_random<S>(
     species: &PokemonSpecies,
     battle_type: &str,
     rng: &mut CrystalRandom<&mut S>,
@@ -534,7 +539,11 @@ where
     })
 }
 
-fn wild_dvs_from_crystal_random<S>(
+/// Sample the two native wild DV bytes without starting a battle.
+///
+/// # Errors
+/// Returns a native divider error if hardware samples are unavailable.
+pub fn wild_dvs_from_crystal_random<S>(
     rng: &mut CrystalRandom<&mut S>,
 ) -> Result<Dv, StaticWildBattleError>
 where
@@ -852,10 +861,10 @@ where
             crate::models::pokemon::StatExperience::default(),
         )
         .max_hp;
-        if u16::from(roaming.hp) > max_hp {
+        if roaming.current_hp() > max_hp {
             return Err(
                 RoamingWildBattleMaterializationError::SavedHpExceedsMaximum {
-                    hp: roaming.hp,
+                    hp: roaming.current_hp(),
                     max_hp,
                 },
             );
@@ -910,11 +919,15 @@ where
     enemy.original_trainer_id = 0;
     enemy.item = item;
     if roaming.hp == 0 {
-        roaming_after.hp = u8::try_from(enemy.hp).map_err(|_| {
-            RoamingWildBattleMaterializationError::FreshHpByteOverflow { max_hp: enemy.hp }
-        })?;
+        if roaming.scaled_hp.is_some() {
+            roaming_after.set_current_hp(enemy.hp);
+        } else {
+            roaming_after.hp = u8::try_from(enemy.hp).map_err(|_| {
+                RoamingWildBattleMaterializationError::FreshHpByteOverflow { max_hp: enemy.hp }
+            })?;
+        }
     } else {
-        enemy.hp = u16::from(roaming.hp);
+        enemy.hp = roaming.current_hp();
     }
     Ok(RoamingWildBattleMaterialization {
         enemy_pokemon: enemy,
@@ -1609,6 +1622,16 @@ pub fn switch_active_battle_enemy_party_index(
 pub fn advance_active_trainer_battle(
     state: &mut GameState,
 ) -> Result<TrainerBattleAdvanceOutcome, ActiveBattleEnemyError> {
+    advance_active_trainer_battle_with_replacement(state, None)
+}
+
+/// Select a living replacement without changing party order or reward indexes.
+/// Entry effects use the same production path as ordinary trainer advancement.
+/// Link opponents must continue to supply their choice through the link API.
+pub fn advance_active_trainer_battle_with_replacement(
+    state: &mut GameState,
+    replacement: Option<usize>,
+) -> Result<TrainerBattleAdvanceOutcome, ActiveBattleEnemyError> {
     let current_enemy_index = require_active_battle_enemy_party_index(state)?;
     if !state
         .battle_rewarded_enemy_party_indices
@@ -1621,6 +1644,7 @@ pub fn advance_active_trainer_battle(
     let BattleMemory::Trainer {
         enemy_pokemon,
         enemy_party,
+        battle_type,
         ..
     } = &mut state.battle
     else {
@@ -1634,9 +1658,26 @@ pub fn advance_active_trainer_battle(
             index: current_enemy_index,
         });
     }
+    if let Some(index) = replacement {
+        if battle_type == "BATTLETYPE_LINK" {
+            return Err(ActiveBattleEnemyError::MissingActiveTrainerBattle);
+        }
+        let selected = enemy_party
+            .get(index)
+            .ok_or(ActiveBattleEnemyError::EnemyPartyIndexOutOfRange { index })?;
+        if selected.is_egg || selected.species.id == "EGG" {
+            return Err(ActiveBattleEnemyError::EggEnemyPartySlot { index });
+        }
+        if selected.hp == 0 || index == current_enemy_index {
+            return Err(ActiveBattleEnemyError::FaintedEnemyPartySlot { index });
+        }
+    }
     enemy_party[current_enemy_index] = enemy_pokemon.clone();
     let next = enemy_party.iter().enumerate().find_map(|(index, pokemon)| {
-        (index != current_enemy_index && pokemon.hp > 0).then_some((index, pokemon.clone()))
+        (index != current_enemy_index
+            && pokemon.hp > 0
+            && replacement.is_none_or(|selected| selected == index))
+            .then_some((index, pokemon.clone()))
     });
     if let Some((index, pokemon)) = next {
         let mut entered = pokemon;
@@ -2159,6 +2200,7 @@ mod tests {
 
     fn roaming_state(hp: u8) -> RoamingPokemonState {
         RoamingPokemonState {
+            scaled_hp: None,
             species: Some("PIDGEY".to_string()),
             level: 2,
             map_group: 1,
@@ -2417,7 +2459,7 @@ mod tests {
         impossible_hp.hp = u8::MAX;
         assert!(matches!(
             assert_empty_trace_error(&encounter, 0, &impossible_hp, &species),
-            Err(RoamingWildBattleMaterializationError::SavedHpExceedsMaximum { hp: u8::MAX, .. })
+            Err(RoamingWildBattleMaterializationError::SavedHpExceedsMaximum { hp: 255, .. })
         ));
         assert_eq!(roaming, roaming_state(10));
     }

@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "id": "MnIronDrillApproach",
+  "tileset": "cave",
+  "dimensions_metatiles": [
+    16,
+    13
+  ],
+  "border_block": 46,
+  "palette_group": "nite",
+  "rows": [
+    "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e",
+    "2e 18 19 19 19 19 1a 2e 18 19 19 19 19 1a 2e 2e",
+    "2e 20 02 02 02 02 22 2e 20 02 02 02 07 22 2e 2e",
+    "2e 20 02 2d 2d 02 22 2e 20 02 2d 2d 02 22 2e 2e",
+    "2e 28 29 29 20 02 22 2e 20 02 22 2e 20 02 1a 2e",
+    "2e 2e 2e 18 02 02 19 19 02 02 22 2e 20 02 22 2e",
+    "2e 18 19 02 02 02 02 02 02 02 22 2e 20 02 22 2e",
+    "2e 20 02 02 2d 2d 2d 2d 2d 02 22 2e 20 02 22 2e",
+    "2e 20 02 02 02 02 02 02 02 02 02 19 02 02 22 2e",
+    "2e 20 02 2d 2d 2d 2d 2d 2d 2d 02 02 02 02 22 2e",
+    "2e 20 02 07 02 22 2e 2e 2e 2e 28 29 29 29 2a 2e",
+    "2e 28 29 29 29 2a 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e",
+    "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e"
+  ]
+}

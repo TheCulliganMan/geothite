@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F027",
+  "species": [
+    {
+      "species_id": "MN_068",
+      "runtime_token": "TRAPNACK",
+      "palette_rgb555": [
+        32767,
+        23284,
+        13641,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        24214,
+        10541,
+        0
+      ],
+      "fit": [
+        14,
+        14
+      ],
+      "alpha_threshold": 245,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 32,
+      "interior_black_samples": null,
+      "opaque_interior_minimum_samples": 60,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "trapnack.overworld.imagegen-v6.png",
+          "crop": [
+            33,
+            55,
+            478,
+            454
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "trapnack.overworld.imagegen-v6.png",
+          "crop": [
+            529,
+            55,
+            478,
+            454
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "trapnack.overworld.imagegen-v6.png",
+          "crop": [
+            1017,
+            55,
+            478,
+            454
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "trapnack.overworld.imagegen-v6.png",
+          "crop": [
+            33,
+            535,
+            478,
+            454
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "trapnack.overworld.imagegen-v6.png",
+          "crop": [
+            529,
+            536,
+            478,
+            454
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "trapnack.overworld.imagegen-v6.png",
+          "crop": [
+            1017,
+            536,
+            478,
+            454
+          ]
+        }
+      ]
+    }
+  ]
+}

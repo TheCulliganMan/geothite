@@ -1,0 +1,337 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_196",
+  "result": "pass",
+  "manifest_sha256": "71f4cc7684a9a67ed8414f162a4f7382cef28011aa568f627cb89d76ecef8d7a",
+  "bank_sha256": "414cdf066cfee72fcc2d4b591b16eb3f177dc829d25d7f34f70083dbe247b9c4",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f090/crumcone.overworld.imagegen-v2-front-pupil-spacing.png": "98cfdddc97ac70a21824568d01ca94f0dbe7e583009041b10e11d05af26c8fbe",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f090/crumcone.overworld.imagegen-v1.png": "123375185391d7628c9a696aca1f3d70797420564c093bbde39d3d885a664b11"
+  },
+  "canonical_eye_form": "TWO actual isolated south pupils, ONE actual isolated west pupil. Every pixel in each complete native eye cluster maps to the same small anatomical source pupil component.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "down_idle",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f090/crumcone.overworld.imagegen-v2-front-pupil-spacing.png",
+        "crop": [
+          169,
+          42,
+          360,
+          465
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            279,
+            294,
+            30,
+            28
+          ],
+          [
+            335,
+            294,
+            30,
+            28
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                6,
+                9
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  3,
+                  2,
+                  1,
+                  253
+                ],
+                "bounds": [
+                  279,
+                  294,
+                  30,
+                  28
+                ],
+                "pixels": 839,
+                "truncated_contour": false,
+                "native_pixel": [
+                  6,
+                  9
+                ],
+                "source_sample_pixel": [
+                  290,
+                  318
+                ]
+              }
+            ]
+          },
+          {
+            "native_cluster": [
+              [
+                8,
+                9
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  3,
+                  2,
+                  1,
+                  254
+                ],
+                "bounds": [
+                  335,
+                  294,
+                  30,
+                  28
+                ],
+                "pixels": 840,
+                "truncated_contour": false,
+                "native_pixel": [
+                  8,
+                  9
+                ],
+                "source_sample_pixel": [
+                  355,
+                  318
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "left_idle",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f090/crumcone.overworld.imagegen-v1.png",
+        "crop": [
+          981,
+          49,
+          360,
+          465
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            1126,
+            293,
+            18,
+            21
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                7,
+                8
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  12,
+                  8,
+                  2,
+                  253
+                ],
+                "bounds": [
+                  1126,
+                  293,
+                  18,
+                  21
+                ],
+                "pixels": 378,
+                "truncated_contour": false,
+                "native_pixel": [
+                  7,
+                  8
+                ],
+                "source_sample_pixel": [
+                  1134,
+                  293
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "down_step",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f090/crumcone.overworld.imagegen-v2-front-pupil-spacing.png",
+        "crop": [
+          169,
+          516,
+          360,
+          465
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            279,
+            768,
+            30,
+            28
+          ],
+          [
+            335,
+            768,
+            30,
+            28
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                6,
+                9
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  1,
+                  1,
+                  0,
+                  254
+                ],
+                "bounds": [
+                  279,
+                  768,
+                  30,
+                  28
+                ],
+                "pixels": 839,
+                "truncated_contour": false,
+                "native_pixel": [
+                  6,
+                  9
+                ],
+                "source_sample_pixel": [
+                  290,
+                  792
+                ]
+              }
+            ]
+          },
+          {
+            "native_cluster": [
+              [
+                8,
+                9
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  4,
+                  3,
+                  1,
+                  254
+                ],
+                "bounds": [
+                  335,
+                  768,
+                  30,
+                  28
+                ],
+                "pixels": 840,
+                "truncated_contour": false,
+                "native_pixel": [
+                  8,
+                  9
+                ],
+                "source_sample_pixel": [
+                  355,
+                  792
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "left_step",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f090/crumcone.overworld.imagegen-v1.png",
+        "crop": [
+          980,
+          520,
+          360,
+          465
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            1125,
+            764,
+            18,
+            22
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                7,
+                8
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  10,
+                  8,
+                  3,
+                  253
+                ],
+                "bounds": [
+                  1125,
+                  764,
+                  18,
+                  22
+                ],
+                "pixels": 396,
+                "truncated_contour": false,
+                "native_pixel": [
+                  7,
+                  8
+                ],
+                "source_sample_pixel": [
+                  1133,
+                  764
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "notes": "Both native normal/shiny rear poses actually inspected: plain rear head, no copied face. Head anchors stable, 1px transparent outer border, three walk pairs differ."
+  },
+  "detailed_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f090/manifest-crumcone-v2-pupil-proof.proof.json"
+}

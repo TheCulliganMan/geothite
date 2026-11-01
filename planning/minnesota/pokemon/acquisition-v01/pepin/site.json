@@ -1,0 +1,101 @@
+{
+  "schema_version": 1,
+  "id": "minnesota-pepin-three-wakes-site-v1",
+  "status": "reviewed native collision candidates; not installed; final-parent controller and visual acceptance pending",
+  "terrain_changes": false,
+  "custom_art": false,
+  "anchors": {
+    "observer": {
+      "map": "MnMississippiLowerWoodsC00R01",
+      "at": [
+        22,
+        10
+      ],
+      "approach": [
+        22,
+        11
+      ],
+      "collision": "FLOOR",
+      "approach_collision": "FLOOR",
+      "world_approach": [
+        22,
+        59
+      ]
+    },
+    "eddy": {
+      "map": "MnMississippiLowerWoodsC00R01",
+      "at": [
+        24,
+        10
+      ],
+      "approach": [
+        23,
+        10
+      ],
+      "collision": "WATER",
+      "approach_collision": "FLOOR",
+      "world_approach": [
+        23,
+        58
+      ]
+    },
+    "operator": {
+      "map": "MnMississippiLowerWoodsC01R01",
+      "at": [
+        50,
+        16
+      ],
+      "approach": [
+        51,
+        16
+      ],
+      "collision": "FLOOR",
+      "approach_collision": "FLOOR",
+      "world_approach": [
+        115,
+        64
+      ]
+    },
+    "reeds": {
+      "map": "MnMississippiLowerWoodsC01R01",
+      "at": [
+        50,
+        20
+      ],
+      "approach": [
+        49,
+        20
+      ],
+      "collision": "WALL",
+      "approach_collision": "WATER",
+      "world_approach": [
+        113,
+        68
+      ],
+      "land_refusal_approach": [
+        50,
+        19
+      ]
+    },
+    "pepivern": {
+      "map": "MnMississippiLowerWoodsC01R00",
+      "at": [
+        24,
+        21
+      ],
+      "approach": [
+        24,
+        22
+      ],
+      "collision": "WATER",
+      "approach_collision": "WATER",
+      "world_approach": [
+        88,
+        22
+      ]
+    }
+  },
+  "callbacks_map": "MnMississippiLowerWoodsC01R00",
+  "geometry_contract": "Preserve every map block, attribute, connection, original actor/event/script and river fishing/trainer activity. Add two ordinary native people, two background observation reads and one native water creature only. Bind observations from the specified approaches; the reed read requires real Surf movement state. No buoy, marker, table or campfire props.",
+  "review_parent": "northwoods-tall-tales-review-v02.crystalpack"
+}

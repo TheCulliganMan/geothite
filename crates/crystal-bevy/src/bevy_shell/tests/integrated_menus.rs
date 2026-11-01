@@ -1,4 +1,42 @@
 #[test]
+fn title_observation_handles_main_menu_entry_transition() {
+    let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("../..")
+        .canonicalize()
+        .expect("repository root");
+    let pack = std::env::var_os("CRYSTAL_RENDER_TEST_PACK")
+        .map(PathBuf::from)
+        .unwrap_or_else(|| repo_root.join("content-packs/text-tui.crystalpack"));
+    let asset_root = AssetRoot::new(pack.parent().expect("pack parent"));
+    let loaded = crystal_assets::read_loaded_verified_compiled_game_pack(&pack)
+        .expect("read external title pack");
+    let runtime = CrystalRuntime::from_loaded_compiled_pack(&asset_root, loaded)
+        .expect("load external title pack");
+    let spawn_identifier = runtime
+        .title_new_game_spawn_identifier()
+        .expect("title new-game spawn");
+    let runtime_shell = initialize_bevy_runtime_shell(
+        asset_root,
+        runtime,
+        BevyShellStart::Title {
+            spawn_identifier,
+            save_path: None,
+        },
+        BevyShellConfig::default(),
+    )
+    .expect("initialize title shell");
+
+    let mut shell = runtime_shell;
+    let mut title = shell.title_menu.take().expect("title menu");
+    title.presentation_machine.memory.insert("wJumptableIndex".into(), 0x80);
+    title.presentation_machine.memory.insert("wTitleScreenSelectedOption".into(), 0);
+    title.main_menu_phase_interpreter = None;
+    assert_eq!(title.source_phase(), VisibleTitlePhase::MainMenu);
+    assert!(!visible_title_main_menu_active(&title));
+    assert_eq!(visible_title_menu_entries(&shell, &title).expect("transition observation"), vec!["TITLE TRANSITION"]);
+}
+
+#[test]
 fn integrated_title_launch_schedule_renders_menu_and_starts_music() {
     let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
         .join("../..")
@@ -274,7 +312,7 @@ fn integrated_title_to_overworld_schedule_accepts_name_renders_music_and_movemen
         let mut tiles =
             world.query_filtered::<Entity, (With<PlayfieldTile>, Without<PlayfieldPriorityTile>)>();
         tiles
-            .get_single(world)
+            .single(world)
             .expect("overworld should have one retained playfield entity before movement")
     };
 
@@ -321,7 +359,7 @@ fn integrated_title_to_overworld_schedule_accepts_name_renders_music_and_movemen
         world.query_filtered::<Entity, (With<PlayfieldTile>, Without<PlayfieldPriorityTile>)>();
     assert_eq!(
         tiles
-            .get_single(world)
+            .single(world)
             .expect("overworld should retain one playfield entity after movement"),
         initial_playfield_entity,
         "walking must update the active LCD texture in place instead of exposing a blank frame between despawn and respawn"
@@ -456,9 +494,9 @@ fn integrated_players_house_pc_opens_its_menu_from_the_live_compiled_pack() {
             "TypeScript/ASM Player PC action window must be 16x13 tiles"
         );
         let mut glyphs = world
-            .query::<(&DialogGlyphMarker, &Handle<Image>)>()
+            .query::<(&DialogGlyphMarker, &Sprite)>()
             .iter(world)
-            .map(|(marker, texture)| (marker.key, format!("{:?}", texture.id())))
+            .map(|(marker, texture)| (marker.key, format!("{:?}", texture.image.id())))
             .collect::<Vec<_>>();
         glyphs.sort();
         glyphs
@@ -478,9 +516,9 @@ fn integrated_players_house_pc_opens_its_menu_from_the_live_compiled_pack() {
     let rendered_after = {
         let world = app.world_mut();
         let mut glyphs = world
-            .query::<(&DialogGlyphMarker, &Handle<Image>)>()
+            .query::<(&DialogGlyphMarker, &Sprite)>()
             .iter(world)
-            .map(|(marker, texture)| (marker.key, format!("{:?}", texture.id())))
+            .map(|(marker, texture)| (marker.key, format!("{:?}", texture.image.id())))
             .collect::<Vec<_>>();
         glyphs.sort();
         glyphs
@@ -1428,7 +1466,7 @@ fn integrated_house_tv_map_and_radio_render_and_progress_from_live_collision_scr
                     let has_map_surface = {
                         let world = app.world_mut();
                         world
-                            .query::<(&Handle<Image>, &Transform)>()
+                            .query::<(&Sprite, &Transform)>()
                             .iter(world)
                             .any(|(_, transform)| {
                                 (transform.translation.z - 3.4).abs() < f32::EPSILON
@@ -1442,12 +1480,12 @@ fn integrated_house_tv_map_and_radio_render_and_progress_from_live_collision_scr
                 let presented_handle = {
                     let world = app.world_mut();
                     let handles = world
-                        .query::<(&Handle<Image>, &Transform)>()
+                        .query::<(&Sprite, &Transform)>()
                         .iter(world)
                         .filter(|(_, transform)| {
                             (transform.translation.z - 3.4).abs() < f32::EPSILON
                         })
-                        .map(|(handle, _)| handle.clone())
+                        .map(|(sprite, _)| sprite.image.clone())
                         .collect::<Vec<_>>();
                     let images = world.resource::<Assets<Image>>();
                     handles
@@ -1456,7 +1494,7 @@ fn integrated_house_tv_map_and_radio_render_and_progress_from_live_collision_scr
                         .max_by_key(|handle| {
                             images
                                 .get(handle)
-                                .map(|image| image.data.len())
+                                .map(|image| image.data.as_ref().expect("CPU image pixels").len())
                                 .unwrap_or_default()
                         })
                         .expect("TownMapScript must render a Town Map field surface")
@@ -1467,7 +1505,7 @@ fn integrated_house_tv_map_and_radio_render_and_progress_from_live_collision_scr
                     .get(&presented_handle)
                     .expect("live town-map presenter image");
                 let distinct_colors = image
-                    .data
+                    .data.as_ref().expect("CPU image pixels")
                     .chunks_exact(4)
                     .map(|pixel| [pixel[0], pixel[1], pixel[2], pixel[3]])
                     .collect::<std::collections::HashSet<_>>();
@@ -1707,7 +1745,7 @@ fn trainer_card_border_uses_the_asm_opposite_gender_palette() {
         .expect("render trainer card");
         let image = images.get(&frame.handle).expect("trainer-card image");
 
-        assert_eq!(&image.data[0..4], &expected, "gender {gender}");
+        assert_eq!(&image.data.as_ref().expect("CPU image pixels")[0..4], &expected, "gender {gender}");
     }
 }
 
@@ -2382,11 +2420,7 @@ fn integrated_title_to_save_menu_schedule_renders_and_writes_with_live_keys() {
     ));
     let _ = std::fs::remove_file(&save_path);
     let asset_root = AssetRoot::new(repo_root);
-    let runtime = CrystalRuntime::load_from_compiled_pack(
-        &asset_root,
-        "content-packs/core-modular.crystalpack",
-    )
-    .expect("load compiled pack");
+    let runtime = workspace_desktop_runtime(&asset_root);
     let spawn_identifier = runtime
         .title_new_game_spawn_identifier()
         .expect("title new-game spawn");
@@ -2405,6 +2439,14 @@ fn integrated_title_to_save_menu_schedule_renders_and_writes_with_live_keys() {
     .expect("initialize title shell");
 
     let mut app = integrated_shell_test_app(runtime_shell);
+    // The verified desktop pack includes the source boot splash before the
+    // Crystal intro. Let its real Start input and schedule finish first.
+    for _ in 0..512 {
+        if app.world().resource::<BevyRuntimeShell>().splash_screen.is_none() {break;}
+        press_key_for_runtime_hotkey_app(&mut app, KeyCode::Enter);
+        for _ in 0..8 {app.update();}
+    }
+    assert!(app.world().resource::<BevyRuntimeShell>().splash_screen.is_none());
     open_title_main_menu_for_test(&mut app);
     press_key_for_runtime_hotkey_app(&mut app, KeyCode::KeyZ);
     confirm_gender_for_test(&mut app, VisiblePlayerGender::Boy);
@@ -2564,11 +2606,7 @@ fn integrated_title_continue_schedule_loads_saved_game_with_live_keys() {
         std::process::id()
     ));
     let _ = std::fs::remove_file(&save_path);
-    let runtime = CrystalRuntime::load_from_compiled_pack(
-        &AssetRoot::new(repo_root.clone()),
-        "content-packs/core-modular.crystalpack",
-    )
-    .expect("load compiled pack for save");
+    let runtime = workspace_desktop_runtime(&AssetRoot::new(repo_root.clone()));
     let spawn_identifier = runtime
         .title_new_game_spawn_identifier()
         .expect("title new-game spawn");
@@ -2617,11 +2655,7 @@ fn integrated_title_continue_schedule_loads_saved_game_with_live_keys() {
     let saved_pack_hash = saved_snapshot.boot.pack_content_hash.clone();
     drop(save_app);
 
-    let runtime = CrystalRuntime::load_from_compiled_pack(
-        &AssetRoot::new(repo_root.clone()),
-        "content-packs/core-modular.crystalpack",
-    )
-    .expect("load compiled pack for continue");
+    let runtime = workspace_desktop_runtime(&AssetRoot::new(repo_root.clone()));
     let spawn_identifier = runtime
         .title_new_game_spawn_identifier()
         .expect("title new-game spawn");
@@ -2674,6 +2708,10 @@ fn integrated_title_continue_schedule_loads_saved_game_with_live_keys() {
         let runtime_shell = continue_app.world().resource::<BevyRuntimeShell>();
         assert!(runtime_shell.title_menu.is_some());
         assert!(runtime_shell.visible_continue_screen.is_some());
+    }
+    {
+        let mut runtime_shell = continue_app.world_mut().resource_mut::<BevyRuntimeShell>();
+        settle_visible_continue_summary_for_test(&mut runtime_shell);
     }
     press_key_for_runtime_hotkey_app(&mut continue_app, KeyCode::KeyZ);
     {
@@ -3055,8 +3093,8 @@ fn integrated_title_mystery_gift_entry_requires_unlocked_save() {
 
 fn save_live_pc_dialog_for_test(world: &mut World, name: &str) {
     let Ok(directory) = std::env::var("POKEGEAR_PC_RENDER_DIR") else { return; };
-    let sprites = world.query_filtered::<(&Sprite, &Transform, &Handle<Image>), With<SceneDialogMarker>>()
-        .iter(world).map(|(sprite, transform, image)| (sprite.clone(), *transform, image.clone()))
+    let sprites = world.query_filtered::<(&Sprite, &Transform), With<SceneDialogMarker>>()
+        .iter(world).map(|(sprite, transform)| (sprite.clone(), *transform))
         .collect::<Vec<_>>();
     let mut dialog = World::new();
     for sprite in sprites { dialog.spawn(sprite); }

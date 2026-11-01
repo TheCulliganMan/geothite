@@ -1,0 +1,35 @@
+{
+  "status": "FIXTURE_CORRECTION_NO_NATIVE_MAP_CHANGE",
+  "failed_log": ".local/route-grass-review/r14-forest-bank-native-denials-review-v01.log",
+  "cause": "Two old east upper approaches (34,23),(35,23) are WALL in parent and child; cannot walk fixtures onto them.",
+  "native_reachable_closed_faces": [
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    32,
+    33
+  ],
+  "inaccessible_old_upper_approaches": [
+    [
+      34,
+      23
+    ],
+    [
+      35,
+      23
+    ]
+  ],
+  "native_east_canopy_denial": {
+    "stand": [
+      33,
+      23
+    ],
+    "input": "right"
+  },
+  "all_twelve_closed_hop_faces_static_wall": true
+}

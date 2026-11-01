@@ -1,0 +1,18 @@
+{
+  "species_id": "MN_089",
+  "name": "Lutebrisk",
+  "family_id": "MN_F038",
+  "tool": "built-in image_gen",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f038/manifest-lutebrisk-v1-pupil-proof.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f038/lutebrisk-v1-pupil-proof",
+  "normalized_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f038/source-feature-proof-lutebrisk-v1.json",
+  "detailed_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f038/manifest-lutebrisk-v1-pupil-proof.proof.json",
+  "sources": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f038/lutebrisk.overworld.imagegen-v1.png": "742802dff2ef4abd663cacc94b0bed185db56420ee69ca3a2de84eefb559d7d4"
+  },
+  "preserved_attempt_receipts": [
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f038/attempt-lutebrisk-v1.json"
+  ],
+  "status": "frozen native candidate; actual normal/shiny source features reviewed; root context pending",
+  "accepted": false
+}

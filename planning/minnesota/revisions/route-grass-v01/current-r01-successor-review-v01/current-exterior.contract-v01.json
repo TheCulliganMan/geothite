@@ -1,0 +1,261 @@
+{
+  "schema_version": 1,
+  "source_kind": "installed_route_exterior_review_contract",
+  "id": "MN_R01",
+  "map_prefix": "MnR01",
+  "native_binding": {
+    "pack": "content-packs/minnesota-current-r01-stair-guidance-v01.crystalpack",
+    "pack_sha256": "e6af050b697b6a9d52735713d5eabe0c069110f69ecdc5b81707e181b7ee30b2",
+    "content_identity": "f5bf4ff4560a959fb639b183b896055359cf08ae6bc219de0b86de6a2be38dd5"
+  },
+  "dimensions_metatiles": [
+    32,
+    20
+  ],
+  "compiled_tileset": "mn_outdoor_johto_stairs",
+  "source_pixels_modified": false,
+  "layout": "planning/minnesota/revisions/route-grass-v01/current-r01-successor-review-v01/current-native-v02.layout.json",
+  "endpoints": [
+    {
+      "map": "MnR01C00R00",
+      "core": [
+        0,
+        24
+      ],
+      "neighbor": "MnRochester"
+    },
+    {
+      "map": "MnR01C00R00",
+      "core": [
+        63,
+        24
+      ],
+      "neighbor": "MnWinona"
+    }
+  ],
+  "required_grass_crossings": [
+    {
+      "id": "WINONA_GRASS_GATE",
+      "bounds_core": [
+        54,
+        22,
+        58,
+        28
+      ],
+      "minimum_grass_steps": 4
+    }
+  ],
+  "grass_quadrants": 136,
+  "one_way_ledges": [],
+  "directional_grass_loops": [],
+  "superseded_one_way_ledges": [
+    {
+      "id": "BLUFF_RETURN",
+      "bounds_core": [
+        26,
+        16,
+        30,
+        18
+      ],
+      "direction": "south",
+      "source_block": "57",
+      "upper_approach": [
+        29,
+        15
+      ],
+      "hop_from": [
+        29,
+        16
+      ],
+      "landing": [
+        29,
+        18
+      ],
+      "reverse_blocked": [
+        29,
+        17
+      ],
+      "purpose": "Descend from the long bluff path; returning uphill uses the eastern ramp.",
+      "side_barriers": [
+        [
+          25,
+          17
+        ],
+        [
+          30,
+          17
+        ]
+      ],
+      "return_passage_core": [
+        40,
+        18,
+        42,
+        20
+      ],
+      "minimum_return_steps": 35
+    }
+  ],
+  "superseded_directional_grass_loops": [
+    {
+      "id": "BLUFF_GRASS_CLIMB_DRY_DROP",
+      "ledge_id": "BLUFF_RETURN",
+      "outbound_start_core": [
+        29,
+        18
+      ],
+      "outbound_end_core": [
+        29,
+        15
+      ],
+      "grass_regions_core": [
+        [
+          38,
+          20,
+          40,
+          24
+        ],
+        [
+          42,
+          20,
+          46,
+          24
+        ],
+        [
+          40,
+          22,
+          42,
+          24
+        ]
+      ],
+      "northbound_minimum_grass_steps": 2,
+      "southbound_minimum_grass_steps": 0,
+      "dry_trail_core": [
+        [
+          29,
+          18
+        ],
+        [
+          28,
+          18
+        ],
+        [
+          27,
+          18
+        ],
+        [
+          26,
+          18
+        ],
+        [
+          26,
+          19
+        ],
+        [
+          26,
+          20
+        ],
+        [
+          26,
+          21
+        ],
+        [
+          25,
+          21
+        ],
+        [
+          25,
+          22
+        ],
+        [
+          25,
+          23
+        ],
+        [
+          25,
+          24
+        ]
+      ],
+      "all_ledge_lanes_minimum_grass_steps": 2,
+      "scope": "Bluff loop: grass across the ordinary ramp approach, dry southward ledge return to the lower trail. Existing walker dry pad and ramp preserved."
+    }
+  ],
+  "closed_high_cliffs": [
+    {
+      "wall_tiles": [
+        [
+          26,
+          17
+        ],
+        [
+          27,
+          17
+        ],
+        [
+          28,
+          17
+        ],
+        [
+          29,
+          17
+        ]
+      ],
+      "walkable_upper_lip": [
+        [
+          26,
+          16
+        ],
+        [
+          27,
+          16
+        ],
+        [
+          28,
+          16
+        ],
+        [
+          29,
+          16
+        ]
+      ]
+    }
+  ],
+  "ordinary_stairs": [
+    {
+      "metatile": [
+        20,
+        9
+      ],
+      "native_block": "80",
+      "upper": [
+        41,
+        17
+      ],
+      "treads": [
+        [
+          41,
+          18
+        ],
+        [
+          41,
+          19
+        ]
+      ],
+      "lower": [
+        41,
+        20
+      ],
+      "bidirectional": true
+    }
+  ],
+  "local_guidance_source": "planning/minnesota/revisions/route-grass-v01/current-r01-successor-review-v01/guidance-after-v01.json",
+  "historical_base_phase_dossier": "planning/minnesota/routes/MN_R01.json",
+  "native_actors_encounters_interiors_authority": "Unchanged compiled map and encounter tables in the bound native pack; this exterior review contract does not replace the original full-route builder schema.",
+  "review": {
+    "production_traversal": "production-current-route-v02.json",
+    "traversal_pack": "content-packs/minnesota-iron-crosscut-rock-cache-v02.crystalpack",
+    "child_text_only_inheritance": "guidance-child-preservation-v01.json",
+    "native_visual": "native-visual-acceptance-v01.json",
+    "actual_child_guidance": "guidance-production-v02.json"
+  },
+  "scope": "Current installed exterior, required grass, ordinary stairs, closed cliff and local directions. Original base-phase and rejected-source artifacts remain historical. All native actors, progression, rooms and roster preserved."
+}

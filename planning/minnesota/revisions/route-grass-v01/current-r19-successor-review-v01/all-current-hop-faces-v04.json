@@ -1,0 +1,95 @@
+{
+  "status": "CURRENT_NATIVE_HOP_INVENTORY",
+  "pack": "content-packs/minnesota-current-r19-detroit-gate-v04.crystalpack",
+  "pack_sha256": "de1add590013c786bd3a2770c58ff46c656930cc3dd3944af203f7480e292e21",
+  "faces": [
+    {
+      "lip": [
+        32,
+        32
+      ],
+      "upper": [
+        32,
+        31
+      ],
+      "upper_kind": "FLOOR",
+      "landing": [
+        32,
+        34
+      ],
+      "can_enter_from_above": true,
+      "uphill": {
+        "status": "MEASURED",
+        "grass_steps": 3,
+        "grass_quadrants_in_contract": 156,
+        "ice_quadrants": 0
+      }
+    },
+    {
+      "lip": [
+        33,
+        32
+      ],
+      "upper": [
+        33,
+        31
+      ],
+      "upper_kind": "FLOOR",
+      "landing": [
+        33,
+        34
+      ],
+      "can_enter_from_above": true,
+      "uphill": {
+        "status": "MEASURED",
+        "grass_steps": 3,
+        "grass_quadrants_in_contract": 156,
+        "ice_quadrants": 0
+      }
+    },
+    {
+      "lip": [
+        34,
+        32
+      ],
+      "upper": [
+        34,
+        31
+      ],
+      "upper_kind": "FLOOR",
+      "landing": [
+        34,
+        34
+      ],
+      "can_enter_from_above": true,
+      "uphill": {
+        "status": "MEASURED",
+        "grass_steps": 3,
+        "grass_quadrants_in_contract": 156,
+        "ice_quadrants": 0
+      }
+    },
+    {
+      "lip": [
+        35,
+        32
+      ],
+      "upper": [
+        35,
+        31
+      ],
+      "upper_kind": "FLOOR",
+      "landing": [
+        35,
+        34
+      ],
+      "can_enter_from_above": true,
+      "uphill": {
+        "status": "MEASURED",
+        "grass_steps": 3,
+        "grass_quadrants_in_contract": 156,
+        "ice_quadrants": 0
+      }
+    }
+  ]
+}

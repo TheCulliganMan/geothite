@@ -4,9 +4,7 @@ use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use thiserror::Error;
 
 use crate::battle::turn::BattleAction;
-use crate::input::{
-    B_PAD_A, B_PAD_B, B_PAD_DOWN, B_PAD_LEFT, B_PAD_RIGHT, B_PAD_SELECT, B_PAD_START, B_PAD_UP,
-};
+use crate::input::{B_PAD_DOWN, B_PAD_LEFT, B_PAD_RIGHT, B_PAD_UP};
 use crate::models::{PARTY_SIZE, Party, Pokemon};
 use crate::random::{LinkBattleRandom, LinkBattleRandomState};
 use crate::save::{SaveGameSummary, SaveModpackIdentity, validate_pack_content_hash};
@@ -1228,6 +1226,24 @@ fn validate_multiplayer_token(
     Ok(())
 }
 
+// Script menu identities retain qualified assembly labels such as
+// .MenuHeader@CeladonDeptStore6FVendingMachine. Keep the exact identity on the
+// wire; local-label separators are specific to menus, not other link tokens.
+fn validate_menu_choice_identity(value: &str) -> Result<(), MultiplayerMessageError> {
+    let field = "menu_choice.menu_id";
+    if value.is_empty() {
+        return Err(MultiplayerMessageError::EmptyText { field });
+    }
+    let source_label=value.strip_prefix('.').and_then(|local|local.split_once('@'))
+        .is_some_and(|(local,parent)|is_exact_multiplayer_token(parent)
+            &&local.split('.').all(|part|!part.is_empty()&&part.bytes().all(|byte|
+                byte.is_ascii_alphanumeric()||matches!(byte,b'_'|b'-'|b':'))));
+    if !is_exact_multiplayer_token(value)&&!source_label {
+        return Err(MultiplayerMessageError::InvalidText { field });
+    }
+    Ok(())
+}
+
 fn validate_multiplayer_user_id(
     field: &'static str,
     value: &str,
@@ -1303,21 +1319,7 @@ fn validate_command_event_joypad_mask(
     field: &str,
     mask: u8,
 ) -> Result<(), MultiplayerMessageError> {
-    const VALID_JOYPAD_MASK: u8 = B_PAD_A
-        | B_PAD_B
-        | B_PAD_SELECT
-        | B_PAD_START
-        | B_PAD_RIGHT
-        | B_PAD_LEFT
-        | B_PAD_UP
-        | B_PAD_DOWN;
-    if mask & !VALID_JOYPAD_MASK != 0 {
-        return Err(MultiplayerMessageError::InvalidCommandChecksumEvent {
-            message: format!(
-                "command checksum event {index} {field} mask {mask:#010b} contains invalid button bits"
-            ),
-        });
-    }
+    // All eight bits name buttons; direction combinations are validated below.
     validate_lockstep_joypad_mask(mask).map_err(|error| {
         MultiplayerMessageError::InvalidCommandChecksumEvent {
             message: format!("command checksum event {index} {field}: {error}"),
@@ -1751,7 +1753,7 @@ impl MenuChoiceFrame {
                 frame: self.frame,
             });
         }
-        validate_multiplayer_token("menu_choice.menu_id", &self.menu_id)?;
+        validate_menu_choice_identity(&self.menu_id)?;
         Ok(())
     }
 
@@ -6832,6 +6834,7 @@ pub fn latest_remote_presence<'a>(
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::input::B_PAD_A;
     use crate::models::{BaseStats, Dv, PokemonSpecies};
 
     fn test_modpack(id: &str, hash: &str) -> SaveModpackIdentity {
@@ -7224,6 +7227,22 @@ mod tests {
                 field: "menu_choice.menu_id"
             })
         );
+    }
+
+    #[test]
+    fn menu_choices_preserve_qualified_source_labels_without_relaxing_link_tokens() {
+        let id = ".MenuHeader@CeladonDeptStore6FVendingMachine";
+        let choice = MenuChoiceFrame::new(2, Frame(144), id, 0, 4).unwrap();
+        let message = LinkMessage::MenuChoice(choice);
+        let encoded = serde_json::to_string(&message).unwrap();
+        assert!(encoded.contains(id));
+        assert_eq!(serde_json::from_str::<LinkMessage>(&encoded).unwrap(), message);
+        assert!(validate_multiplayer_token("session_id", id).is_err());
+        for invalid in [".MenuHeader", ".MenuHeader@", ".@Script", ".Menu@@Script",
+            ".Menu@Script@Other", ".Menu Header@Script", " .Menu@Script", ".Menu@Script\n",
+            ".Menu/Name@Script", ".Menu@fallback-script", ".Menu@legacy-script", "Script.Menu"] {
+            assert!(MenuChoiceFrame::new(2, Frame(144), invalid, 0, 4).is_err(), "{invalid:?}");
+        }
     }
 
     #[test]

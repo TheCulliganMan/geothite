@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F002",
+  "species": [
+    {
+      "species_id": "MN_005",
+      "runtime_token": "PELLETOR",
+      "palette_rgb555": [
+        32767,
+        5823,
+        7436,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        22501,
+        8583,
+        0
+      ],
+      "fit": [
+        13,
+        13
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 64,
+      "interior_black_samples": 64,
+      "opaque_interior_minimum_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "pelletor.overworld.imagegen-v1.png",
+          "crop": [
+            74,
+            84,
+            465,
+            401
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "pelletor.overworld.imagegen-v1.png",
+          "crop": [
+            536,
+            100,
+            465,
+            401
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "pelletor.overworld.imagegen-v2-profile-face.png",
+          "crop": [
+            1025,
+            98,
+            465,
+            401
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "pelletor.overworld.imagegen-v1.png",
+          "crop": [
+            74,
+            527,
+            465,
+            401
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "pelletor.overworld.imagegen-v1.png",
+          "crop": [
+            536,
+            547,
+            465,
+            401
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "pelletor.overworld.imagegen-v2-profile-face.png",
+          "crop": [
+            1025,
+            536,
+            465,
+            401
+          ]
+        }
+      ]
+    }
+  ]
+}

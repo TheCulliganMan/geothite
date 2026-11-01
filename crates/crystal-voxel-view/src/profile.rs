@@ -25,7 +25,9 @@ use crate::sign::sign_shape;
 use crate::tower::tower_shape;
 
 pub const GROUND_HEIGHT: f32 = 0.0;
-pub const WATER_HEIGHT: f32 = -2.0;
+// Standing water meets its shoreline with a short lip (1/16 of a tile).
+// Keep this shared by water planes, shore closures and water-bound props.
+pub const WATER_HEIGHT: f32 = -0.5;
 pub const COMPACT_BUILDING_HEIGHT: f32 = 16.0;
 pub const LARGE_BUILDING_HEIGHT: f32 = 32.0;
 pub const MOUNTAIN_LEDGE_HEIGHT: f32 = 16.0;
@@ -36,7 +38,8 @@ pub const MOUNTAIN_CLIFF_HEIGHT: f32 = 16.0;
 // rock platform or cliff course.
 pub const JUMP_LEDGE_HEIGHT: f32 = 6.0;
 pub const MAX_PROFILE_HEIGHT: f32 = LARGE_BUILDING_HEIGHT;
-pub const MIN_PROFILE_HEIGHT: f32 = WATER_HEIGHT;
+// Keep the camera's conservative framing envelope independent of water depth.
+pub const MIN_PROFILE_HEIGHT: f32 = -2.0;
 pub const SOURCE_TILE_HEIGHT: f32 = 8.0;
 
 const JOHTO_TILESET: &str = "johto";
@@ -115,7 +118,7 @@ pub enum CellShape {
         base_height: f32,
     },
     /// Exact rocky shore artwork remains on the land cap and also supplies
-    /// the cropped two-pixel land-to-water face.
+    /// the cropped shallow land-to-water face.
     ShoreBand,
     RaisedTop {
         height: f32,
@@ -201,6 +204,62 @@ pub fn supports_frame_profile(frame: &VisualWorldFrame) -> bool {
     !frame.map_id.is_empty() && !frame.tiles.is_empty()
 }
 
+fn side_jump_ledge_shape(source: &VisualTileSource) -> Option<CellShape> {
+    if source.tileset_id.as_ref() != JOHTO_TILESET
+        || !(0x4c..=0x53).contains(&source.metatile_id)
+        || source.subtile_column >= 4
+        || source.subtile_row >= 4
+    {
+        return None;
+    }
+    let west = source.metatile_id % 2 == 0;
+    let corner = source.metatile_id >= 0x50;
+    let ground = if matches!(source.metatile_id, 0x4c | 0x4d | 0x50 | 0x51) {
+        6
+    } else {
+        5
+    };
+    let side = source.subtile_column == if west { 0 } else { 3 };
+    let front = corner && source.subtile_row == 3;
+    let expected = if front {
+        if side {
+            if west { 0x4b } else { 0x4d }
+        } else {
+            0x4c
+        }
+    } else if side {
+        if west { 0x3b } else { 0x3d }
+    } else {
+        ground
+    };
+    if source.tile_index != expected {
+        return None;
+    }
+    Some(if front || side {
+        CellShape::LedgeBand {
+            face: if front {
+                LedgeFace::South
+            } else if west {
+                LedgeFace::West
+            } else {
+                LedgeFace::East
+            },
+            plane_subtile: if front || !west { 4 } else { 0 },
+            band_from_top: 0,
+            band_count: 1,
+            // The inked side/corner includes a grassy verge even when the
+            // interior cap uses pale path paint.
+            top_tile_index: if side { 5 } else { ground },
+            height: JUMP_LEDGE_HEIGHT,
+        }
+    } else {
+        CellShape::RaisedTop {
+            height: JUMP_LEDGE_HEIGHT,
+            solid: SolidKind::Bank,
+        }
+    })
+}
+
 fn jump_ledge_top_tile(source: &VisualTileSource) -> Option<u16> {
     match source.metatile_id {
         0x4b if source.subtile_column < 2 => Some(0x05),
@@ -230,6 +289,9 @@ pub fn shape_for_source(source: &VisualTileSource) -> CellShape {
     if let Some(shape) = park_shape(source) {
         return shape;
     }
+    if crate::battle_tower::cliff_source(source) {
+        return CellShape::RaisedTop {height:MOUNTAIN_CLIFF_HEIGHT,solid:SolidKind::Bank};
+    }
     if let Some(shape) = kanto_cliff_shape(source) {
         return shape;
     }
@@ -246,6 +308,9 @@ pub fn shape_for_source(source: &VisualTileSource) -> CellShape {
         return shape;
     }
     if let Some(shape) = forest_ledge_shape(source) {
+        return shape;
+    }
+    if let Some(shape) = crate::forest::forest_shore_shape(source) {
         return shape;
     }
     if let Some(shape) = cut_tree_shape(source) {
@@ -273,6 +338,9 @@ pub fn shape_for_source(source: &VisualTileSource) -> CellShape {
         return shape;
     }
     if let Some(shape) = crate::house::traditional_mixed_wall_shape(source) {
+        return shape;
+    }
+    if let Some(shape) = crate::interior::mansion_stair_shape(source) {
         return shape;
     }
     if let Some(shape) = crate::players_house::stair_shape(source) {
@@ -464,6 +532,9 @@ pub fn shape_for_source(source: &VisualTileSource) -> CellShape {
     if source.tileset_id.as_ref() != JOHTO_TILESET {
         return CellShape::Flat;
     }
+    if let Some(shape) = side_jump_ledge_shape(source) {
+        return shape;
+    }
 
     // Johto's complete mountain transition family shares the same universal
     // mountain datum as every other outdoor cliff. The profile determines
@@ -506,7 +577,7 @@ pub fn shape_for_source(source: &VisualTileSource) -> CellShape {
 
     // Johto shoreline blocks mix animated $14 water with one-cell rocky cap
     // drawings. The cap stays top-facing and its outer rows also fold into
-    // the shallow two-pixel drop, preserving the visible stone shoreline.
+    // the short land-to-water drop, preserving the visible stone shoreline.
     if matches!(
         source.metatile_id,
         0x54 | 0x55 | 0x58 | 0x59 | 0x76 | 0x79 | 0x7a
@@ -783,13 +854,27 @@ pub fn shape_for_source(source: &VisualTileSource) -> CellShape {
 /// interiors reuse an atlas for unrelated objects (notably Game Corners and
 /// Vermilion Gym), so tileset identity alone is not sufficient evidence.
 pub(crate) fn shape_for_source_on_map(map_id: &str, source: &VisualTileSource) -> CellShape {
+    if crate::mesh::traditional_tatami_floor_source(map_id, source) {
+        // Mixed cushion/table drawings retain zero-height tatami. The generic
+        // atlas relief rule otherwise mistakes their weave for prop geometry.
+        return CellShape::Flat;
+    }
+    if crate::port::cerulean_floor_source(map_id, source) {
+        // Gray pool-side paving is horizontal walking ground, not the
+        // atlas-wide shallow fixture relief. Both retain zero actor footing.
+        return CellShape::Flat;
+    }
     // Map-aware Center structures must win over the atlas-wide generic
     // interior relief rules. The same source tiles are walls, counters, and
     // grouped machines here, not anonymous low fixtures.
     if let Some(shape) = crate::pokecenter::shape(map_id, source) {
         return shape;
     }
-    if let Some(shape) = crate::interior::trainer_house_b1f_stair_shape(map_id, source) {
+    if let Some((column,_,_)) = crate::house::wise_trios_stair_local(map_id,source) {
+        return CellShape::RampEast{west_height:-16.+column as f32*8.,
+            east_height:-8.+column as f32*8.};
+    }
+    if let Some(shape) = crate::interior::facility_stair_shape(map_id, source) {
         return shape;
     }
     if let Some(shape) = crate::facility::shape(source) {
@@ -876,6 +961,7 @@ pub(crate) fn shape_for_source_on_map(map_id: &str, source: &VisualTileSource) -
     if let Some(shape) = crate::underground_path::shape(map_id, source) {
         return shape;
     }
+    if crate::casino::safari_office_floor(map_id,source) {return CellShape::Flat;}
     if crate::casino::is_game_corner_map(map_id)
         && let Some(shape) = casino_shape_on_map(map_id, source)
     {
@@ -895,6 +981,9 @@ fn shape_for_source_without_casino(source: &VisualTileSource) -> CellShape {
 /// Presentation footing never puts actors on roofs, trees, sign cards, or the
 /// recessed water surface. Gameplay remains two-dimensional and authoritative.
 pub fn support_height(source: &VisualTileSource, tile_height: f32) -> f32 {
+    if let Some(shape) = side_jump_ledge_shape(source) {
+        return shape.surface_height(tile_height);
+    }
     if let Some(shape) = cave_shape(source) {
         if (shape.surface_height(SOURCE_TILE_HEIGHT) - crate::cave::CAVE_SHELF_HEIGHT).abs()
             < f32::EPSILON
@@ -935,6 +1024,31 @@ mod tests {
 
     use super::*;
 
+    #[test]
+    fn johto_side_jump_ink_is_vertical_and_unknown_drawing_stays_flat() {
+        for block in 0x4c..=0x4f {
+            let west = block % 2 == 0;
+            let ground = if block < 0x4e { 6 } else { 5 };
+            let side = source_for_tileset(
+                JOHTO_TILESET,
+                block,
+                if west { 0 } else { 3 },
+                1,
+                if west { 0x3b } else { 0x3d },
+            );
+            assert!(
+                matches!(shape_for_source(&side),CellShape::LedgeBand {face,..} if face==if west {LedgeFace::West} else {LedgeFace::East})
+            );
+            let cap = source_for_tileset(JOHTO_TILESET, block, 1, 1, ground);
+            assert!(
+                matches!(shape_for_source(&cap),CellShape::RaisedTop {height,..} if height==JUMP_LEDGE_HEIGHT)
+            );
+            assert_eq!(support_height(&cap, 8.), JUMP_LEDGE_HEIGHT);
+            let unknown = source_for_tileset(JOHTO_TILESET, block, 1, 1, 0xff);
+            assert_eq!(shape_for_source(&unknown), CellShape::Flat);
+        }
+    }
+
     fn source(metatile_id: u16, column: u8, row: u8) -> VisualTileSource {
         source_for_tileset(JOHTO_TILESET, metatile_id, column, row, 0)
     }
@@ -961,10 +1075,14 @@ mod tests {
         VisualWorldFrame {
             map_id: Arc::from(map_id),
             tiles: vec![VisualTile {
+                animation_frames: None,
                 column: 0,
                 row: 0,
                 source: tile_source,
-                texture: Handle::<Image>::weak_from_u128(1),
+                texture: Handle::<Image>::Uuid(
+                    bevy::asset::uuid::Uuid::from_u128(1),
+                    std::marker::PhantomData,
+                ),
                 priority: false,
             }],
             ..Default::default()
@@ -1108,11 +1226,11 @@ mod tests {
     }
 
     #[test]
-    fn cave_ladder_drawing_joins_the_visual_shelf_height() {
+    fn cave_wall_backed_ladder_drawing_keeps_the_lower_floor_height() {
         let up = source_for_tileset("cave", 0x14, 2, 2, 0x2a);
         let down = source_for_tileset("cave", 0x15, 2, 2, 0x22);
-        assert_eq!(support_height(&up, 8.0), crate::cave::CAVE_SHELF_HEIGHT);
-        assert_eq!(support_height(&down, 8.0), crate::cave::CAVE_SHELF_HEIGHT);
+        assert_eq!(support_height(&up, 8.0), 0.0);
+        assert_eq!(support_height(&down, 8.0), 0.0);
     }
 
     #[test]
@@ -1265,7 +1383,7 @@ mod tests {
                 band_from_top: 1,
                 band_count: 2,
                 ground_tile_index: 0x06,
-                solid: SolidKind::Prop,
+                solid: SolidKind::Fence,
             }
         );
         assert_eq!(

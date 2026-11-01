@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "trainer_class": "MN_LAKESIDE_ANGLER",
+  "class_name": "ANGLER",
+  "trainer_ids": [
+    "MN_RIVER_FUN_LOWER_LENA"
+  ],
+  "actors": [
+    {
+      "map": "MnMississippiLowerWoodsC00R01",
+      "script": "MN_RIVER_FUN_LOWER_LENA",
+      "tile": [
+        17,
+        11
+      ],
+      "previous_sprite": "SPRITE_FISHER"
+    }
+  ]
+}

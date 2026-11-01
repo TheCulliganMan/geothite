@@ -1,0 +1,9 @@
+{
+  "tool": "built-in image_gen",
+  "original": "/Users/ryanculligan/.codex/generated_images/01a179bf-dc2b-7352-8975-8b8f3a32e33b/exec-234c12b1-bd05-42fc-99de-08d9604f3536.png",
+  "preserved_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f144/driftile.overworld.imagegen-v5-west-step-true-pupil.png",
+  "sha256": "40b3087ce7355b842a5ae0ebc482ed2a0aa16d633b7ea190a95ad26f3d5b796a",
+  "exact_prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f144/prompt-driftile-west-step-true-pupil-v5.txt",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f144/reference-mapping-driftile-west-step-true-pupil-v5.json",
+  "status": "preserved; selected frames recorded in frozen manifest"
+}

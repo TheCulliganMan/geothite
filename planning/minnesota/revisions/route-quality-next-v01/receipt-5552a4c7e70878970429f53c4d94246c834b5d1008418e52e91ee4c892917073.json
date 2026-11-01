@@ -1,0 +1,55 @@
+{
+  "mode": "apply",
+  "pack_sha256": "1186a24371251f741db88cf35a7863145ed5423da4ad3d7c6485c8f242753ecb",
+  "controller_proof_sha256": "f71e0d0ed848d40ffa03e699a0a19dedfb04d1c8059a3a0dacb1fd58be9283bf",
+  "files": [
+    {
+      "path": "routes/MN_R04.layout.json",
+      "before_sha256": "64cc4a744294b3a55f3b6d3aebf98e369bae8650f53a883b7475f3c6eddce194",
+      "after_sha256": "9780c196a18861966d66aedde38df7b2784f6989a3dd43fa208c351f9704fa21",
+      "frozen_candidate": "r04/v04/after.layout.json"
+    },
+    {
+      "path": "routes/MN_R04.json",
+      "before_sha256": "44385ef2e2eecd87aa82033cb39eab8a1c9c018093e606ef4323f80f935ecfb4",
+      "after_sha256": "bf8b70b8154f45ee7e9c9317a4340de3e297da2b3f6ee661f7e94e9d1d5f21fe",
+      "frozen_candidate": "r04/v04/dossier.json"
+    },
+    {
+      "path": "routes/MN_R08.layout.json",
+      "before_sha256": "8726e94af84f408395a19cbd5e1334be9f92eeb886bba215b3b2ce08ca30b3c7",
+      "after_sha256": "574b3a17ca754da95dd341a28ae79425bcd05db5bce86fc8227291eaf0981dd0",
+      "frozen_candidate": "r08/v05/MN_R08.candidate.layout.json"
+    },
+    {
+      "path": "routes/MN_R08.json",
+      "before_sha256": "da7bf43b1ee5bdbb981e1214ab599ab68ad4dda366d891b72c7ab7068af9c552",
+      "after_sha256": "095f2af6e8f480e72c064a88c8f6aa48ce72dbef3bb0ae16e6470ccde5efa820",
+      "frozen_candidate": "r08/v05/MN_R08.candidate.json"
+    },
+    {
+      "path": "routes/MN_R18.layout.json",
+      "before_sha256": "bb122560bb6f12cba044a9caa710c3146e63d58810ddcce674e05c13f4b535f5",
+      "after_sha256": "430293bcec87ba8f0560d529f60f025b101d2ac38172552c8470dbf06591cb00",
+      "frozen_candidate": "r18/v03/MN_R18.layout.candidate.json"
+    },
+    {
+      "path": "routes/MN_R18.json",
+      "before_sha256": "c8b56362ddd07924284e7b2004d1a566cfef02cf141e66d7afa0fbc1aed69e91",
+      "after_sha256": "fd7fdc053ade00b9a529f9739b2781d00c314b3461569c3f7e1f6585e0385bf5",
+      "frozen_candidate": "r18/v03/MN_R18.candidate.json"
+    },
+    {
+      "path": "routes/MN_R19.layout.json",
+      "before_sha256": "75b15b4fbc2cec8fe9e1890d8936b726e5f51027ef73ca7c0973b11178ccbfb5",
+      "after_sha256": "54dd40350bc07cd42d7d9b54fbad84cb055fd99bb9d857d0c6328ca476e4ea0b",
+      "frozen_candidate": "r19/v07-pine-habitat-watch/MN_R19.layout.candidate.json"
+    },
+    {
+      "path": "routes/MN_R19.json",
+      "before_sha256": "94312842d9155b6597cb2339e6843fe858e44dcd75024063f3df1d5cd9533d8d",
+      "after_sha256": "1136ed27192e6e1f39b8d91838351402258587e668a5dbafa1494709f608ded4",
+      "frozen_candidate": "r19/v07-pine-habitat-watch/MN_R19.candidate.json"
+    }
+  ]
+}

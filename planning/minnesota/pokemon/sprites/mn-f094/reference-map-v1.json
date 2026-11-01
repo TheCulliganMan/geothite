@@ -1,0 +1,25 @@
+{
+  "generation": "new original artwork",
+  "input_images": [],
+  "text_style_reference_boards": [
+    "target/minnesota-pokemon/gen2-reference/starters.png",
+    "target/minnesota-pokemon/gen2-reference/bugs.png"
+  ],
+  "regional_sources": [
+    {
+      "url": "https://www.redwingstoneware.com/",
+      "institution": "Red Wing Stoneware and Pottery",
+      "supports": "Manufacturer history traces stoneware production to local clay deposits and river transport."
+    },
+    {
+      "url": "https://potterymuseumredwing.org/about",
+      "institution": "Pottery Museum of Red Wing",
+      "supports": "Museum holds stoneware, pottery, manufacturing photographs and worker-made folk-art pieces."
+    },
+    {
+      "url": "https://redwingcollectors.org/red-wing-pottery-products/red-wing-stoneware/salt-glaze/",
+      "institution": "Red Wing Collectors Society",
+      "supports": "Tan salt glaze and cobalt decoration support restrained clay/blue palette inspiration."
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "status": "PASS_CURRENT_CEDAR_GRASS_AND_COASTAL_TRAVEL_REVIEW",
+  "pack": "content-packs/minnesota-current-r19-detroit-gate-v05.crystalpack",
+  "pack_sha256": "b57516c0b77c7bcf94fa35e60ff8300bfd8a8781782827739742d8fc15b3f437",
+  "grass_quadrants": 16,
+  "ice_quadrants": 0,
+  "western_minimum_grass_steps_each_direction": 3,
+  "eastern_uphill_minimum_grass_steps": 4,
+  "dry_drop_and_reverse_denial": true,
+  "native_cases": 5,
+  "stdio_calls": 15,
+  "used_pixels_and_collision_exact": true,
+  "whole_inherited_scene_inspected": "planning/minnesota/renders/route-grass-v01/current-cedar-successor-v01/whole-cedar-current-v01.png",
+  "scope": "Cedar actual grass battle/RUN, climb/drop/Continue plus coastal room pairs, guards, care and Surf boundaries. Explicit initial QA position/party/badges are not earned progression; statewide review active."
+}

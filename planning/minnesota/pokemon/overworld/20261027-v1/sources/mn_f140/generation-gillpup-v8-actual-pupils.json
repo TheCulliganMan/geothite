@@ -1,0 +1,12 @@
+{
+  "name": "Gillpup",
+  "tool": "built-in image_gen",
+  "candidate": "candidates/mn_f140/gillpup-v8-actual-pupils",
+  "selected_manifest": "manifest-gillpup-v8-actual-pupils.json",
+  "proof": "proof-gillpup-v8-actual-pupils-actual-source.json",
+  "status": "native source proof passes; root context acceptance pending",
+  "all_raws_prompts_retained": true,
+  "no_native_pixel_painting": true,
+  "source_sha256": "2cbbf2a789367d52faff3b60ceae5dfee0f8db43a924853d9bcc63c5aa10af49",
+  "normal_and_shiny_boards_viewed": true
+}

@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "status": "PREPARED_NOT_APPLIED",
+  "pack_sha256": "ef208246a9cccfe0aa722401d07374457fba68fc1fe301b50c2a32b7652f70b3",
+  "content_identity": "b18189a369824295fadff612f8d194f79b3d021438fe22d83eee0b4f47b85739",
+  "source_sha256": {
+    "/Users/ryanculligan/GitHub/geothite/planning/minnesota/revisions/north-shore-ely-geography-v01/coast-quality-v01/source-v04/MN_R11.layout.candidate.json": "21edec135e1bf2367b1651f882e4e8db3335e9b6716a74ae74d06979183dc6c6",
+    "/Users/ryanculligan/GitHub/geothite/planning/minnesota/revisions/north-shore-ely-geography-v01/coast-quality-v01/source-v04/MN_R11.dossier.candidate.json": "661987b1551c484a380a93d833aa16af8e2026639c3ae8de4e2136252fa83fe8",
+    "/Users/ryanculligan/GitHub/geothite/planning/minnesota/revisions/superior-gunflint-quality-v01/cedar-source-v02/MnMaraisCedarApproach.candidate.layout.json": "163fa816344903b9bee6599801d3b56089831838be409c2d12ef53d34ae97e63",
+    "/Users/ryanculligan/GitHub/geothite/planning/minnesota/revisions/superior-gunflint-quality-v01/cedar-source-v02/MnMaraisCedarApproach.candidate.json": "30c36c5a5f0bcc3b1e2f978addaff6da84123761fbd359f0a19813e6a9dcf0a2",
+    "planning/minnesota/revisions/gunflint-quality-v01/source-v09/MN_R12.candidate.layout.json": "760537313a4fe083ec62ffea1e7ed6142c4cd837bc7ab67dc09c0d2b5e856b59",
+    "planning/minnesota/revisions/gunflint-quality-v01/source-v09/MN_R12.candidate.json": "53f040424a2a6bbd43da660eb850532524a74443f29ae7103a4bb31d6ec7477f"
+  },
+  "replay_contract_sha256": "171013d5959c7b5909a2b51d5800db2590c45166e52356498103341b04f56e39",
+  "files": {
+    "planning/minnesota/routes/MN_R11.layout.json": {
+      "before": "00-MN_R11.layout.json.before",
+      "before_sha256": "2efe424f20799606aee61e2f474b921c87819eb96b1498cfe48cfa55c0c7f37d",
+      "candidate": "00-MN_R11.layout.json.candidate",
+      "candidate_sha256": "21edec135e1bf2367b1651f882e4e8db3335e9b6716a74ae74d06979183dc6c6"
+    },
+    "planning/minnesota/routes/MN_R11.json": {
+      "before": "01-MN_R11.json.before",
+      "before_sha256": "d168fea56c8811fbeea2351bf5f2a6d9a816a3823ce4f9776ce6b4ca4ade1f43",
+      "candidate": "01-MN_R11.json.candidate",
+      "candidate_sha256": "ad9244fa93e561a71440117784a14e3090ee2aabe4641f6a57064ce014b89e25"
+    },
+    "planning/minnesota/routes/MN_R12.layout.json": {
+      "before": "02-MN_R12.layout.json.before",
+      "before_sha256": "d69d4621d66da01d1950de452e88755f9f750d23c99f05cab9d019e26e396a20",
+      "candidate": "02-MN_R12.layout.json.candidate",
+      "candidate_sha256": "760537313a4fe083ec62ffea1e7ed6142c4cd837bc7ab67dc09c0d2b5e856b59"
+    },
+    "planning/minnesota/routes/MN_R12.json": {
+      "before": "03-MN_R12.json.before",
+      "before_sha256": "bf79fbc1b897a483b5bf85138c6d736d7eeb01e4d8cc4ce3375753b9ed47bde8",
+      "candidate": "03-MN_R12.json.candidate",
+      "candidate_sha256": "bd2152dc41de44b8ca8da99570180b64eeedc660857b088f337f1fe9089a533e"
+    },
+    "planning/minnesota/towns/MnMaraisCedarApproach.layout.json": {
+      "before": "04-MnMaraisCedarApproach.layout.json.before",
+      "before_sha256": "2edc9fc248d0772d9e5cd18a7abe3061021a5fb0763ae23645494effffa21b0f",
+      "candidate": "04-MnMaraisCedarApproach.layout.json.candidate",
+      "candidate_sha256": "af354846ebc0077021a4175948d3aa5f3b025d2df4f67039d223ef47f0fd2b35"
+    },
+    "planning/minnesota/towns/MnMaraisCedarApproach.json": {
+      "before": "05-MnMaraisCedarApproach.json.before",
+      "before_sha256": "b1f0d67976629380bcd35acd3c5929f462f30fe75af913488cb7ccbb1b9c11cb",
+      "candidate": "05-MnMaraisCedarApproach.json.candidate",
+      "candidate_sha256": "6567bd14e1755129798274a7de8ae42a60b45ddef96ddd6bdbc84aed0e67632a"
+    },
+    "planning/minnesota/towns/MnGrandMarais.json": {
+      "before": "06-MnGrandMarais.json.before",
+      "before_sha256": "10117f8473997ea08e1764141530d6ad76e8d463c890223506f96eaab07ab18f",
+      "candidate": "06-MnGrandMarais.json.candidate",
+      "candidate_sha256": "d6f01f3e25f86d132e924d316d9afc3fe90baf7575b65b8718a34031d19e0292"
+    },
+    "planning/minnesota/towns/MnGrandMarais.connections.json": {
+      "before": "07-MnGrandMarais.connections.json.before",
+      "before_sha256": "898394617a686b0c790b4317c9571a6be9c9ada1b3581e3bb0b2677670a4b946",
+      "candidate": "07-MnGrandMarais.connections.json.candidate",
+      "candidate_sha256": "97c261536c187728634c77f93bffc56779885877888d644245dc310e5463346d"
+    },
+    "planning/minnesota/towns/MnBoundaryWaters.json": {
+      "before": "08-MnBoundaryWaters.json.before",
+      "before_sha256": "d088542abded9da3a3cd39b749931a82d0e01c6ddc5dba317edfa62d120a5e54",
+      "candidate": "08-MnBoundaryWaters.json.candidate",
+      "candidate_sha256": "0a87ea284148349c83498b6307fb2a90c9febf9221e2ff760877b6a0c9b9d76c"
+    },
+    "planning/minnesota/towns/MnMaraisInlandNeck.json": {
+      "before": "09-MnMaraisInlandNeck.json.before",
+      "before_sha256": "b2fc764dd12913f73a3c4f58294c36e7955c4eb17a9c3f20be98d13f7b7f53a4",
+      "candidate": "09-MnMaraisInlandNeck.json.candidate",
+      "candidate_sha256": "cd54579271843f5356495627ffe236f7a5450e9ac25737fdf0522a6c65bb2437"
+    },
+    "planning/minnesota/interiors.json": {
+      "before": "10-interiors.json.before",
+      "before_sha256": "817e6707f8f224423cd991f8795811e87d9b9f1f1b4cf6a9c19c97ba0dfda30f",
+      "candidate": "10-interiors.json.candidate",
+      "candidate_sha256": "a27583471f187097a333b4c1d077e5ea4ebb99dd53f36fcfc4b46abf988aa7b0"
+    },
+    "planning/minnesota/world.json": {
+      "before": "11-world.json.before",
+      "before_sha256": "2edf565228b985da0a499613a18886cc4c081d2efe6f51e83dd344e443524552",
+      "candidate": "11-world.json.candidate",
+      "candidate_sha256": "16fb2624343fcb1f3e01234c1ffb212cf06ee355386f0a73354ac139e1cc6a0f"
+    }
+  }
+}

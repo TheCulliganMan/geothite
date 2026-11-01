@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "purpose": "Additive exact dossier bindings for source promotion; frozen candidates remain immutable.",
+  "candidate_sha256": {
+    "MN_R11.dossier.candidate.json": "34e5715982444218c3d707b40e4d2810554157dc277df46c37f8462dd3c679da",
+    "MnMaraisCedarApproach.dossier.candidate.json": "36bc17127d755c63da82102adbf5a143bdb646669890cf9546bbe8af45d8d28f",
+    "MnMaraisInlandNeck.dossier.candidate.json": "49c7822019f78870ab8f1c688da6a2ee589f55664b9d29f8ce034d317b78437e"
+  }
+}

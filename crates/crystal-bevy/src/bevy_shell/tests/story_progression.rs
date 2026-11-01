@@ -79,7 +79,7 @@ fn hall_of_fame_saves_champion_team_and_continue_returns_home() {
             if let Ok(directory) = std::env::var("POKEGEAR_PC_RENDER_DIR") {
                 std::fs::create_dir_all(&directory).unwrap();
                 let pixels = images.get(&frame.handle).unwrap();
-                let native = image::RgbaImage::from_raw(160, 144, pixels.data.clone()).unwrap();
+                let native = image::RgbaImage::from_raw(160, 144, pixels.data.as_ref().expect("CPU image pixels").clone()).unwrap();
                 image::imageops::resize(&native, 640, 576, image::imageops::FilterType::Nearest)
                     .save(PathBuf::from(directory).join(format!("hof-{}.png", phase.replace([' ', '{', '}', ':'], "")))).unwrap();
             }
@@ -2083,7 +2083,7 @@ fn assert_rendered_field_dialogue_page(world: &mut World, expected_page: &str) {
         })
         .collect::<Vec<_>>();
     let mut actual = world
-        .query::<(&DialogGlyphMarker, &Handle<Image>, &Transform)>()
+        .query::<(&DialogGlyphMarker, &Sprite, &Transform)>()
         .iter(world)
         .filter(|(_, _, transform)| {
             expected_y
@@ -2091,7 +2091,7 @@ fn assert_rendered_field_dialogue_page(world: &mut World, expected_page: &str) {
                 .any(|expected| (transform.translation.y - expected).abs() < f32::EPSILON)
         })
         .filter(|(marker, _, _)| marker.key != prompt_arrow_key)
-        .map(|(marker, texture, _)| (marker.key, format!("{:?}", texture.id())))
+        .map(|(marker, texture, _)| (marker.key, format!("{:?}", texture.image.id())))
         .collect::<Vec<_>>();
     actual.sort();
     expected.sort();
@@ -2104,15 +2104,11 @@ fn assert_rendered_field_dialogue_page(world: &mut World, expected_page: &str) {
 #[test]
 fn visible_new_game_completes_mom_walks_to_elms_lab_and_gets_rendered_starter() {
     let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../..")
+        .join("../..")
         .canonicalize()
         .expect("repository root");
     let asset_root = AssetRoot::new(repo_root);
-    let runtime = CrystalRuntime::load_from_compiled_pack(
-        &asset_root,
-        "content-packs/core-modular.crystalpack",
-    )
-    .expect("load compiled pack");
+    let runtime = workspace_desktop_runtime(&asset_root);
     let spawn_identifier = runtime
         .title_new_game_spawn_identifier()
         .expect("title new-game spawn");
@@ -2183,7 +2179,9 @@ fn visible_new_game_completes_mom_walks_to_elms_lab_and_gets_rendered_starter() 
     let mut was_pending_yes_no = false;
     let mut saw_yes_no_prompt_cleared = false;
     let mut saw_yes_no_frame_cleared = false;
-    let baseline_live_entities = app.world().entities().len();
+    // Entities::len counts allocated indices (including freed slots), not
+    // live entities in Bevy0.20. Keep the leak bound on actually spawned entities.
+    let baseline_live_entities = app.world().entity_count();
     let mut peak_live_entities = baseline_live_entities;
     let mut previous_progress_signature = None;
     let mut previous_semantic_trace = None;
@@ -2209,7 +2207,7 @@ fn visible_new_game_completes_mom_walks_to_elms_lab_and_gets_rendered_starter() 
                 .reset(KeyCode::KeyZ);
             release_scheduled_a_after_observation = false;
         }
-        peak_live_entities = peak_live_entities.max(app.world().entities().len());
+        peak_live_entities = peak_live_entities.max(app.world().entity_count());
         let shell = app.world().resource::<BevyRuntimeShell>();
         assert_eq!(
             shell.last_error, None,
@@ -2982,7 +2980,7 @@ fn visible_new_game_completes_mom_walks_to_elms_lab_and_gets_rendered_starter() 
         saw_reward_waitsfx_complete_without_input,
         "ReceiveItemScript's waitsfx never resumed after SFX_ITEM completed unless the player supplied unrelated input"
     );
-    let final_live_entities = app.world().entities().len();
+    let final_live_entities = app.world().entity_count();
     assert!(
         peak_live_entities < 1024 && final_live_entities <= baseline_live_entities + 32,
         "Mom dialogue leaked live render entities; baseline={baseline_live_entities} peak={peak_live_entities} final={final_live_entities}"
@@ -3046,64 +3044,8 @@ fn visible_new_game_completes_mom_walks_to_elms_lab_and_gets_rendered_starter() 
     // Derive the front-door route from the compiled collision map, then
     // replay every tile through the production Bevy keyboard path.
     let exit_path = {
-        let shell = app.world().resource::<BevyRuntimeShell>();
-        let start = shell.shell.session().overworld().clone();
-        let mut queue = std::collections::VecDeque::from([(start.clone(), Vec::new())]);
-        let mut visited =
-            std::collections::BTreeSet::from([(start.player.tile.x, start.player.tile.y)]);
-        let mut found = None;
-        while let Some((session, path)) = queue.pop_front() {
-            for direction in [
-                Direction::Up,
-                Direction::Down,
-                Direction::Left,
-                Direction::Right,
-            ] {
-                let mut next = session.clone();
-                let Ok(mut step) = next.step_and_check_warp_checked(
-                    direction,
-                    crate::core::world::movement::StepOptions::default(),
-                ) else {
-                    continue;
-                };
-                if matches!(
-                    step.outcome,
-                    crate::core::world::movement::StepOutcome::Turned { .. }
-                ) {
-                    let Ok(second) = next.step_and_check_warp_checked(
-                        direction,
-                        crate::core::world::movement::StepOptions::default(),
-                    ) else {
-                        continue;
-                    };
-                    step = second;
-                }
-                if !matches!(
-                    step.outcome,
-                    crate::core::world::movement::StepOutcome::Moved { .. }
-                ) {
-                    continue;
-                }
-                let mut next_path = path.clone();
-                next_path.push(direction);
-                if let Some(warp) = step.warp.as_ref() {
-                    if warp.warp.target_map == "NEW_BARK_TOWN"
-                        || warp.warp.target_map == "NewBarkTown"
-                    {
-                        found = Some(next_path);
-                        break;
-                    }
-                    continue;
-                }
-                if visited.insert((next.player.tile.x, next.player.tile.y)) {
-                    queue.push_back((next, next_path));
-                }
-            }
-            if found.is_some() {
-                break;
-            }
-        }
-        found.expect("compiled Player's House collision must reach its front-door warp")
+        let shell=app.world().resource::<BevyRuntimeShell>();
+        collision_path_to_map_warp(shell.shell.session().overworld(), "NEW_BARK_TOWN")
     };
     for direction in exit_path {
         let key = match direction {
@@ -4353,6 +4295,16 @@ fn collision_path_to_map_warp(
     start: &crate::core::world::session::OverworldSession,
     target_map: &str,
 ) -> Vec<Direction> {
+    // Map arrival can already place the player on a directional door.
+    // Its next ordinary outward input is the goal action, not another loop
+    // off the door and back onto it.
+    if start.map_events.warps.iter().any(|warp|
+        (warp.target_map==target_map||warp.target_map_constant==target_map)
+        && crate::core::world::session::warp_tile_position_checked(warp)==Some(start.player.tile))
+        && let Some(facing)=crate::core::world::collision::sample_collision(&start.map,&start.tileset,start.player.tile)
+            .and_then(|tile|crate::core::world::collision::directional_warp_facing(tile.permission)) {
+        return vec![facing];
+    }
     let mut queue = std::collections::VecDeque::from([(start.clone(), Vec::new())]);
     let mut visited =
         std::collections::BTreeSet::from([(start.player.tile.x, start.player.tile.y)]);
@@ -4389,6 +4341,23 @@ fn collision_path_to_map_warp(
             }
             let mut next_path = path.clone();
             next_path.push(direction);
+            // The geometry-only checked step leaves directional warps to the
+            // production controller. Detect its authored target/facing here
+            // solely to plan the route; keyboard replay still performs it.
+            if let Some(warp) = next.map_events.warps.iter().find(|warp|
+                crate::core::world::session::warp_tile_position_checked(warp)==Some(next.player.tile)) {
+                let required = crate::core::world::collision::sample_collision(&next.map,&next.tileset,next.player.tile)
+                    .and_then(|tile|crate::core::world::collision::directional_warp_facing(tile.permission));
+                if required.is_none_or(|facing|facing==direction) {
+                    if warp.target_map==target_map || warp.target_map_constant==target_map {
+                        // Directional doors transfer when the next input
+                        // attempts to leave their edge tile, not on arrival.
+                        if let Some(facing)=required {next_path.push(facing);}
+                        return next_path;
+                    }
+                    continue;
+                }
+            }
             if let Some(warp) = step.warp {
                 if warp.warp.target_map == target_map || warp.warp.target_map_constant == target_map
                 {
@@ -5204,7 +5173,7 @@ fn renderer_neutral_controller_plays_mom_and_new_bark_gate() {
             let before = controller.snapshot().expect("movement start snapshot");
             let mut moved = false;
             for _ in 0..4 {
-                controller.press(button).expect("directional input");
+                controller.press_buttons([GameButton::B, button]).expect("running directional input");
                 let after = controller.snapshot().expect("movement result snapshot");
                 if after.overworld.map_name != before.overworld.map_name
                     || after.overworld.tile != before.overworld.tile
@@ -5226,7 +5195,12 @@ fn renderer_neutral_controller_plays_mom_and_new_bark_gate() {
         .join("../..")
         .canonicalize()
         .expect("repository root");
-    let pack_path = repo_root.join("content-packs/text-tui.crystalpack");
+    let explicit_pack = std::env::var_os("CRYSTAL_RENDER_TEST_PACK");
+    let pack_path = explicit_pack
+        .as_ref()
+        .map(PathBuf::from)
+        .unwrap_or_else(|| repo_root.join("content-packs/text-tui.crystalpack"));
+    assert!(explicit_pack.is_none() || pack_path.is_file(), "CRYSTAL_RENDER_TEST_PACK must identify an existing pack: {}", pack_path.display());
     if !pack_path.exists() {
         eprintln!(
             "skipping external-pack controller regression; build {} first",
@@ -5239,6 +5213,8 @@ fn renderer_neutral_controller_plays_mom_and_new_bark_gate() {
         .expect("read text TUI pack");
     let runtime = CrystalRuntime::from_loaded_compiled_pack(&asset_root, loaded)
         .expect("load text TUI pack");
+    runtime.data().script_flag_command("PlayersHouse1F", "MeetMomScript", 5)
+        .expect("authored Mom Pokegear grant must retain its typed engine-flag mutation");
     let mut controller = VisibleShellController::new_game(
         asset_root,
         runtime,
@@ -5377,6 +5353,51 @@ fn renderer_neutral_controller_plays_mom_and_new_bark_gate() {
 }
 
 #[test]
+fn renderer_neutral_controller_starts_research_center_with_scene_callback() {
+    let explicit_pack = std::env::var_os("CRYSTAL_RENDER_TEST_PACK");
+    let pack = explicit_pack.as_ref().map(PathBuf::from).unwrap_or_else(|| {
+        PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("../../content-packs/text-tui.crystalpack")
+    });
+    assert!(explicit_pack.is_none() || pack.is_file(),
+        "CRYSTAL_RENDER_TEST_PACK must identify an existing pack: {}", pack.display());
+    if !pack.is_file() {
+        eprintln!("skipping external-pack Research Center regression; build {} first", pack.display());
+        return;
+    }
+    let asset_root = AssetRoot::new(pack.parent().expect("pack parent"));
+    let loaded = crystal_assets::read_loaded_verified_compiled_game_pack(&pack)
+        .expect("verify external pack");
+    let runtime = CrystalRuntime::from_loaded_compiled_pack(&asset_root, loaded)
+        .expect("load external pack");
+    let spawn_identifier = runtime.title_new_game_spawn_identifier().unwrap();
+    // This location fixture uses normal startup callbacks. In particular the
+    // Scientist callback must evaluate its named scene operand even on scene 0.
+    let shell = initialize_bevy_runtime_shell(
+        asset_root,
+        runtime,
+        BevyShellStart::NewGameAtRuntimeTile {
+            spawn_identifier,
+            map_name: "RuinsOfAlphResearchCenter".into(),
+            tile_x: 4,
+            tile_y: 3,
+        },
+        BevyShellConfig::default(),
+    ).expect("Research Center startup must execute its scene callback");
+    let mut controller = VisibleShellController { shell };
+    settle_visible_shell_until_input(&mut controller.shell)
+        .expect("settle Research Center through the production controller");
+    let snapshot = controller.snapshot().unwrap();
+    assert_eq!(snapshot.overworld.map_name, "RuinsOfAlphResearchCenter");
+    assert_eq!(snapshot.overworld.tile, TilePosition { x: 4, y: 3 });
+    assert_eq!(snapshot.phase, RuntimeShellPhase::Overworld);
+    assert!(snapshot.ui.text.is_none());
+    controller.press(GameButton::Start).expect("Start input after scene callback");
+    assert!(controller.snapshot().unwrap().ui.menu.is_some(),
+        "completed startup must release input to the production Start menu");
+}
+
+#[test]
 fn elms_lab_callback_places_elm_at_asm_intro_position() {
     let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
         .join("../../..")
@@ -5480,15 +5501,15 @@ fn adjacent_scripted_npc_dispatches_when_the_player_faces_it() {
 #[test]
 fn elm_dialogue_keeps_the_optional_world_frame_active_on_every_render_update() {
     let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../..")
+        .join("../..")
         .canonicalize()
         .expect("repository root");
+    let pack=std::env::var_os("CRYSTAL_RENDER_TEST_PACK").map(PathBuf::from)
+        .unwrap_or_else(||repo_root.join("content-packs/core-modular.crystalpack"));
     let asset_root = AssetRoot::new(repo_root);
-    let runtime = CrystalRuntime::load_from_compiled_pack(
-        &asset_root,
-        "content-packs/core-modular.crystalpack",
-    )
-    .expect("load compiled pack");
+    let runtime = CrystalRuntime::from_loaded_compiled_pack(&asset_root,
+        crystal_assets::read_loaded_verified_compiled_game_pack(pack).expect("read compiled pack"))
+        .expect("load compiled pack");
     let spawn_identifier = runtime
         .title_new_game_spawn_identifier()
         .expect("title new-game spawn");
@@ -6131,14 +6152,73 @@ fn hall_of_fame_member_panel_renders_shiny_identity_from_pack() {
         &shell.asset_root, &mut images).unwrap();
     let pixels = images.get(&frame.handle).unwrap();
     assert_eq!(frame.size, Vec2::new(160.0, 144.0));
-    assert!(pixels.data.chunks_exact(4).any(|pixel| pixel[0] != pixel[1]));
+    assert!(pixels.data.as_ref().expect("CPU image pixels").chunks_exact(4).any(|pixel| pixel[0] != pixel[1]));
     if let Ok(directory) = std::env::var("POKEGEAR_PC_RENDER_DIR") {
         std::fs::create_dir_all(&directory).unwrap();
-        let native = image::RgbaImage::from_raw(160, 144, pixels.data.clone()).unwrap();
+        let native = image::RgbaImage::from_raw(160, 144, pixels.data.as_ref().expect("CPU image pixels").clone()).unwrap();
         image::imageops::resize(&native, 640, 576, image::imageops::FilterType::Nearest)
             .save(PathBuf::from(directory).join("hall-of-fame-shiny-member.png")).unwrap();
     }
     pokemon.is_egg = true;
     assert!(render_visible_hall_of_fame_member(&pokemon, 0, &mut art,
         &shell.asset_root, &mut images).is_err());
+}
+
+#[test]
+fn renderer_neutral_controller_running_shoes_with_b_and_menu_ownership() {
+    let root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("../..")
+        .canonicalize()
+        .unwrap();
+    let pack_path = std::env::var_os("CRYSTAL_RENDER_TEST_PACK")
+        .map(PathBuf::from)
+        .unwrap_or_else(|| root.join("content-packs/text-tui.crystalpack"));
+    if !pack_path.exists() {
+        return;
+    }
+    let asset_root = AssetRoot::new(pack_path.parent().unwrap());
+    let loaded = crystal_assets::read_loaded_verified_compiled_game_pack(&pack_path).unwrap();
+    let runtime = CrystalRuntime::from_loaded_compiled_pack(&asset_root, loaded).unwrap();
+    let mut controller =
+        VisibleShellController::new_game(asset_root, runtime, "CHRIS", None).unwrap();
+    let start = controller.snapshot().unwrap().overworld.tile;
+    for _ in 0..2 {
+        controller
+            .press_buttons([GameButton::B, GameButton::Down])
+            .unwrap();
+        if matches!(
+            controller.shell.shell.last_frame().unwrap().movement,
+            Some(StepOutcome::Moved { .. })
+        ) {
+            break;
+        }
+    }
+    let frame = controller.shell.shell.last_frame().unwrap();
+    assert!(matches!(
+        frame.movement,
+        Some(StepOutcome::Moved {
+            speed_multiplier: 2,
+            ..
+        })
+    ));
+    assert_eq!(
+        controller.snapshot().unwrap().overworld.tile,
+        TilePosition::new(start.x, start.y + 1)
+    );
+    controller.press(GameButton::Down).unwrap();
+    assert!(matches!(
+        controller.shell.shell.last_frame().unwrap().movement,
+        Some(StepOutcome::Moved {
+            speed_multiplier: 1,
+            ..
+        })
+    ));
+    let before_menu = controller.snapshot().unwrap().overworld.tile;
+    controller.press(GameButton::Start).unwrap();
+    assert!(controller.snapshot().unwrap().ui.menu.is_some());
+    controller
+        .press_buttons([GameButton::B, GameButton::Right])
+        .unwrap();
+    assert_eq!(controller.snapshot().unwrap().overworld.tile, before_menu);
+    assert!(controller.snapshot().unwrap().ui.menu.is_none());
 }

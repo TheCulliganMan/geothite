@@ -1,0 +1,22 @@
+Use case: stylized-concept
+Asset type: exact Game Boy Color Generation 2 battle pixel sprite sheet, original Minnesota monster family.
+Primary request: Loon calls and lake echoes: a resonating throat grows until its body can separate into overlapping echo silhouettes.
+Style reference: authentic 1999 handheld RPG Generation2 pixel art: coarse visibly square pixels, low native resolution, simple sculpted clusters, selective black outlines, restrained internal dark lines, sparse white highlights, readable eyes. All designs are entirely original. No modern vector look, gradients, antialiasing, soft shadows, textures, excessive tiny details or dithering.
+Composition: 3 columns and exactly 2 rows on pure white, no labels, dividers or text. One species per column in evolutionary order. Top row whole-body FRONT battle view facing LEFT, all extremities inside its cell. Bottom row CLOSE REAR battle PORTRAIT of same species, facing UPPER RIGHT; head and upper back fill the cell, lower torso cut off at bottom. Backs are zoomed-in rear portraits, never small whole-body turnarounds. Maintain broad white gutters. Each cell behaves as a 64x64 logical grid enlarged by nearest neighbor. Fronts ultimately occupy 56x56; backs 48x48.
+GBC color definitions: palette indices 0..3; RGB5 channels are integers0..31; packed RGB555=r|(g<<5)|(b<<10); RGB8 expansion=(v<<3)|(v>>2). Each species has its OWN four-color palette, shared ONLY between its front/back. Do not share one palette across all stages. Use flat exact colors only. Index0 white is also the sheet background.
+Column 1: Loobit (WATER) — A round loon chick with oversized resonating throat pouch, compact little wings, webbed feet, pointed loon bill and large bright eye. Front grows in size relative to previous stage. Back must retain its unique anatomy and palette.
+  palette index0: RGB5 [31, 31, 31], packedRGB555 32767 (0x7FFF), expandedRGB8 [255, 255, 255], hex #FFFFFF.
+  palette index1: RGB5 (18, 24, 27), packedRGB555 28434 (0x6F12), expandedRGB8 [148, 198, 222], hex #94C6DE.
+  palette index2: RGB5 (6, 10, 14), packedRGB555 14662 (0x3946), expandedRGB8 [49, 82, 115], hex #315273.
+  palette index3: RGB5 [0, 0, 0], packedRGB555 0 (0x0000), expandedRGB8 [0, 0, 0], hex #000000.
+Column 2: Yodeloon (WATER/GHOST) — A tall loon with bell-shaped white-marked throat, long curved neck, swept wing and wavy echo tail, clearly supernatural rather than ordinary bird. Front grows in size relative to previous stage. Back must retain its unique anatomy and palette.
+  palette index0: RGB5 [31, 31, 31], packedRGB555 32767 (0x7FFF), expandedRGB8 [255, 255, 255], hex #FFFFFF.
+  palette index1: RGB5 (13, 22, 26), packedRGB555 27341 (0x6ACD), expandedRGB8 [107, 181, 214], hex #6BB5D6.
+  palette index2: RGB5 (7, 8, 17), packedRGB555 17671 (0x4507), expandedRGB8 [57, 66, 140], hex #39428C.
+  palette index3: RGB5 [0, 0, 0], packedRGB555 0 (0x0000), expandedRGB8 [0, 0, 0], hex #000000.
+Column 3: Reverloon (WATER/GHOST) — A spectral loon with resonator rings in its enlarged throat and two overlapping feather-echo lobes forming broad ghost wings, long neck and hook-shaped echo tail. Front grows in size relative to previous stage. Back must retain its unique anatomy and palette.
+  palette index0: RGB5 [31, 31, 31], packedRGB555 32767 (0x7FFF), expandedRGB8 [255, 255, 255], hex #FFFFFF.
+  palette index1: RGB5 (15, 23, 29), packedRGB555 30447 (0x76EF), expandedRGB8 [123, 189, 239], hex #7BBDEF.
+  palette index2: RGB5 (8, 6, 16), packedRGB555 16584 (0x40C8), expandedRGB8 [66, 49, 132], hex #423184.
+  palette index3: RGB5 [0, 0, 0], packedRGB555 0 (0x0000), expandedRGB8 [0, 0, 0], hex #000000.
+All six/four views are ORIGINAL creature designs that embody the theme in their anatomy. No accessories held by humans, no costumes, no scenery, no ground shadows, no text or palette swatches. Prioritize Gen2 battle readability over illustration detail.

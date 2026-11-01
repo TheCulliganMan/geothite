@@ -1,0 +1,548 @@
+{
+  "schema_version": 1,
+  "id": "minnesota-reviewed-maps-sources-v2",
+  "status": "Verified reproducible continuation; unselected. Parent contracts remain inherited; current layout bindings below supersede their old terrain.",
+  "parent_revision": "north_shore_passing_width_revision",
+  "parent_source_index": "planning/minnesota/revisions/north-shore-passing-width-v01/sources.json",
+  "parent_source_index_sha256": "e6fad9d5fbbb4662cc4f4f5ebd2705a91fe81ffbb453617702e5c2eb51000065",
+  "pack": "content-packs/minnesota-reviewed-maps-v02.crystalpack",
+  "pack_sha256": "110e658e66449fd6ca3dc52fb7de5fa3f0f2bd827d8103aa838a32d63193229c",
+  "build_recipe": {
+    "path": "planning/minnesota/revisions/reviewed-maps-v01/recipe-v02.json",
+    "sha256": "da0b34a501451333e655e5f5c3b17beed0c183e121fce094641036acb0d86316"
+  },
+  "current_layouts": {
+    "MnDuluth": {
+      "path": "planning/minnesota/revisions/north-shore-passing-width-v01/MnDuluth.rows.json",
+      "sha256": "f351950cf5aa9a18d36cf8e6e9355ea7ba6bf5080e43f8367e5b3fa7a9b30775",
+      "source_kind": "installed_native_row_layout"
+    },
+    "MN_R10": {
+      "source_kind": "current_native_layout_group",
+      "native_maps": [
+        "MnR10C00R00",
+        "MnR10C01R00"
+      ]
+    },
+    "MN_R12": {
+      "path": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R12.after.layout.json",
+      "sha256": "51df4d5ff1a923c79c99f089eea790b1f71210e5118520a192dc2b85c694f163"
+    },
+    "MN_R15": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r15-successor-review-v01/current-native-chunks-v01.json",
+      "sha256": "7a827c82739e251db33a655a7479cd8e911e1f3723788eff53b7f03eaec60c22",
+      "source_kind": "installed_native_chunk_layout_bundle"
+    },
+    "MN_R16": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r16-successor-review-v01/current-native-chunks-v01.json",
+      "sha256": "64bb1fd8d97e21b7b692a319544bb0a828454981dca322a852e75362dec380b3",
+      "source_kind": "installed_native_chunk_layout_bundle"
+    },
+    "MN_R17": {
+      "source_kind": "current_native_layout_group",
+      "native_maps": [
+        "MnR17C00R00",
+        "MnR17C00R01",
+        "MnR17C00R02"
+      ]
+    },
+    "MnStPaul": {
+      "path": "planning/minnesota/revisions/st-paul-southbank-v01/after.layout.json",
+      "sha256": "a2208d44eff5fb3d49703904cacdf2bf83f3912e1a50585ca887308e66da0a38"
+    },
+    "MnMankato": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-mankato-town-v01/after-bank-composed.layout.v02.json",
+      "sha256": "df65e676b2e3f8b18a5ac291b5dde0b2f265c1630a744f6e9d6c36b17da47bf5"
+    },
+    "MnWinona": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-winona-town-v01/after-composed.layout.v01.json",
+      "sha256": "f34aa9ebe4358534542bbc13ff758f5626c302e780c8ec43c50692637f658afd"
+    },
+    "MnBemidji": {
+      "source_kind": "source_bound_native_rows",
+      "path": "planning/minnesota/regions/inland-winter-belt-v01/winter-belt-source-v04.json",
+      "sha256": "3d31a594112a725ce86422ecce325608a9cc13e2bf861510875c3b1618b14691",
+      "rows_pointer": "/maps/0/rows",
+      "dimensions_metatiles": [
+        24,
+        24
+      ],
+      "tileset": "mn_winter_bemidji",
+      "stage": "inland_winter_belt"
+    },
+    "MnMinneapolis": {
+      "path": "planning/minnesota/revisions/minneapolis-mill-arts-v02/after.layout.json",
+      "sha256": "3cb9c8e2b23cc51f9f5ba3fa7fadc6fec32de869344e699523c9e4772cc18d85"
+    },
+    "MnStCloud": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-st-cloud-fronts-v01/after.layout.json",
+      "sha256": "11da4c6d1d49aef07a7e3fefd0d6332916af4fd0b85682ecaacdd20c9bc252ff"
+    },
+    "MN_R14": {
+      "source_kind": "current_native_layout_group",
+      "native_maps": [
+        "MnR14C00R00",
+        "MnR14C00R01",
+        "MnR14C01R00",
+        "MnR14C01R01"
+      ]
+    },
+    "MN_BOUNDARY_WATERS_SAFARI": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-boundary-safari-successor-v01/current-native-v02.layout.json",
+      "sha256": "e9de8401952ff31eed86e6c361cc37fcbcbcb07086bc1d89c384f4f1f48ad914"
+    },
+    "MnBrainerd": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-brainerd-successor-v01/roof-after.layout.json",
+      "sha256": "83ac64424c38c6465b39870947cba6745f732330a5d19fa1ed41c621600f567b"
+    },
+    "MN_R01": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r01-successor-review-v01/current-native-v02.layout.json",
+      "sha256": "113541d12824d9950114ab219b4ea2776e17118ac1585c10dd68f7783423e7f6"
+    },
+    "MN_R03": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r03-successor-review-v01/current-native-chunks-v01.json",
+      "sha256": "188e50dd366e013e0aeaa7ace104f3157a442fb23345a256cfaf7f403475da9e",
+      "source_kind": "installed_native_chunk_layout_bundle"
+    },
+    "MN_R05": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r05-successor-review-v01/current-native-chunks-v03.json",
+      "sha256": "c81e429b8706850ffba76f564f40493b814b37c37ea52de222e22dfe9ced0d27",
+      "source_kind": "installed_native_chunk_layout_bundle"
+    },
+    "MN_R09": {
+      "source_kind": "current_native_layout_group",
+      "native_maps": [
+        "MnR09C00R00",
+        "MnR09C00R01",
+        "MnR09C01R00",
+        "MnR09C01R01"
+      ]
+    },
+    "MN_R11": {
+      "path": "planning/minnesota/revisions/north-shore-passing-width-v01/current-route-chunks.json",
+      "sha256": "403c6ec19a18c1701d81bae4cda39b623b2b091b27ae7117bd25cafd9d266d18",
+      "source_kind": "installed_native_chunk_layout_bundle"
+    },
+    "MN_R06": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r06-successor-review-v01/current-native-chunks-v01.json",
+      "sha256": "b82b2b42d752572442b257c6609c94a4f85af9205851ca6d0882d5f8f043a031",
+      "source_kind": "installed_native_chunk_layout_bundle"
+    },
+    "MN_R07": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r07-successor-review-v01/current-native-chunks-v01.json",
+      "sha256": "2d650eabd07b8a75b2b3dfb86dc56b66b2ad60cdc6561cf7d9b3634a0cf10504",
+      "source_kind": "installed_native_chunk_layout_bundle"
+    },
+    "MN_R08": {
+      "source_kind": "current_native_layout_group",
+      "native_maps": [
+        "MnR08C00R00",
+        "MnR08C00R01",
+        "MnR08C01R00",
+        "MnR08C01R01"
+      ]
+    },
+    "MN_R13": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r13-successor-review-v01/current-native-chunks-v02.json",
+      "sha256": "ebe40ad8d8aaf4d4e1fda6c203edae20ba503cf05d675a43b1adf120fcdf530e",
+      "source_kind": "installed_native_chunk_layout_bundle"
+    },
+    "MN_R04": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r04-successor-review-v01/current-native-chunks-v01.json",
+      "sha256": "bbf2735398cbaaa21bba128a0be3f2385cb4d7f97ac7cc3b4741dc2721303909",
+      "source_kind": "installed_native_chunk_layout_bundle"
+    },
+    "MnGrandRapids": {
+      "source_kind": "source_bound_native_rows",
+      "path": "planning/minnesota/regions/inland-winter-belt-v01/winter-belt-source-v04.json",
+      "sha256": "3d31a594112a725ce86422ecce325608a9cc13e2bf861510875c3b1618b14691",
+      "rows_pointer": "/maps/2/rows",
+      "dimensions_metatiles": [
+        24,
+        24
+      ],
+      "tileset": "mn_winter_grand_rapids",
+      "stage": "inland_winter_belt"
+    },
+    "MN_R19": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r19-successor-review-v01/gate-current-native-chunks-v01.json",
+      "sha256": "3468a84d5f719e303344f5aa1c7ceb4fef2c5c256f83bbf55f042513a6d4ce9c",
+      "source_kind": "installed_native_chunk_layout_bundle"
+    },
+    "MnInternationalFalls": {
+      "path": "planning/minnesota/revisions/international-falls-windbreak-v01/after.json",
+      "sha256": "cdbc1c0e8c6807ed9b2be484219643dcac8b9716442356b5d4e0f02420d4aac6",
+      "source_kind": "explicit_native_town_rows_and_art_recipes"
+    },
+    "MnLeechLake": {
+      "path": "planning/minnesota/towns/leech-lake-mainland-v01/after.json",
+      "sha256": "6c314a65e5f0c2feca8171584a701f04ae7a0807851228a4c6c9b3a146a792f4",
+      "source_kind": "complete_native_town_geometry_and_additive_mainland_activities"
+    },
+    "MnGrandMarais": {
+      "path": "planning/minnesota/revisions/north-shore-passing-width-v01/MnGrandMarais.rows.json",
+      "sha256": "0177143fb4359c4fdea070aa5798a1f1734d24856c272e5259436c46e95f9ae7",
+      "source_kind": "installed_native_row_layout"
+    },
+    "MnBemidjiNorthwoods": {
+      "source_kind": "source_bound_native_rows",
+      "path": "planning/minnesota/regions/inland-winter-belt-v01/winter-belt-source-v04.json",
+      "sha256": "3d31a594112a725ce86422ecce325608a9cc13e2bf861510875c3b1618b14691",
+      "rows_pointer": "/maps/1/rows",
+      "dimensions_metatiles": [
+        8,
+        14
+      ],
+      "tileset": "mn_winter_bemidji_northwoods",
+      "stage": "inland_winter_belt"
+    },
+    "MnEly": {
+      "source_kind": "source_bound_native_rows",
+      "path": "planning/minnesota/towns/ely-pine-camp-v01/after.json",
+      "sha256": "5b3bb60de855283a42637e68090a2b8f69370f61cc6b34c4eb262821f719c306",
+      "rows_pointer": "/rows",
+      "dimensions_metatiles": [
+        20,
+        18
+      ],
+      "tileset": "mn_ely_snow",
+      "stage": "ely_pine_camp",
+      "border_block": 131
+    },
+    "MnInnerBasin": {
+      "source_kind": "source_bound_native_rows",
+      "path": "planning/minnesota/caves/inner-basin-bedrock-v01/source-v03.json",
+      "sha256": "13c1312655b95c6fd5c1bb8103a56602d1c13e9a6f0bd7790d8ccb05df1631e4",
+      "rows_pointer": "/rows",
+      "dimensions_metatiles": [
+        14,
+        14
+      ],
+      "tileset": "cave",
+      "stage": "inner_basin_bedrock",
+      "border_block": 46
+    },
+    "MN_R20": {
+      "source_kind": "current_native_layout_group",
+      "native_maps": [
+        "MnR20C00R00",
+        "MnR20C00R01",
+        "MnR20C01R00",
+        "MnR20C01R01"
+      ]
+    },
+    "MnIronHaulage": {
+      "source_kind": "source_bound_native_rows",
+      "path": "planning/minnesota/caves/haulage-rock-clearance-v01/source-v01.json",
+      "sha256": "1257acaf832e1986da0849e9cea2721e98bcf90eb0e2006de063557c5a46eaf2",
+      "rows_pointer": "/rows",
+      "dimensions_metatiles": [
+        18,
+        14
+      ],
+      "tileset": "mn_iron_haulage_rock",
+      "stage": "haulage_rock_clearance"
+    }
+  },
+  "current_native_layouts": {
+    "MnBemidji": {
+      "path": "planning/minnesota/regions/inland-winter-belt-v01/winter-belt-source-v04.json",
+      "sha256": "3d31a594112a725ce86422ecce325608a9cc13e2bf861510875c3b1618b14691",
+      "rows_pointer": "/maps/0/rows",
+      "dimensions_metatiles": [
+        24,
+        24
+      ],
+      "tileset": "mn_winter_bemidji",
+      "stage": "inland_winter_belt"
+    },
+    "MnBemidjiNorthwoods": {
+      "path": "planning/minnesota/regions/inland-winter-belt-v01/winter-belt-source-v04.json",
+      "sha256": "3d31a594112a725ce86422ecce325608a9cc13e2bf861510875c3b1618b14691",
+      "rows_pointer": "/maps/1/rows",
+      "dimensions_metatiles": [
+        8,
+        14
+      ],
+      "tileset": "mn_winter_bemidji_northwoods",
+      "stage": "inland_winter_belt"
+    },
+    "MnEly": {
+      "path": "planning/minnesota/towns/ely-pine-camp-v01/after.json",
+      "sha256": "5b3bb60de855283a42637e68090a2b8f69370f61cc6b34c4eb262821f719c306",
+      "rows_pointer": "/rows",
+      "dimensions_metatiles": [
+        20,
+        18
+      ],
+      "tileset": "mn_ely_snow",
+      "stage": "ely_pine_camp",
+      "border_block": 131
+    },
+    "MnGrandRapids": {
+      "path": "planning/minnesota/regions/inland-winter-belt-v01/winter-belt-source-v04.json",
+      "sha256": "3d31a594112a725ce86422ecce325608a9cc13e2bf861510875c3b1618b14691",
+      "rows_pointer": "/maps/2/rows",
+      "dimensions_metatiles": [
+        24,
+        24
+      ],
+      "tileset": "mn_winter_grand_rapids",
+      "stage": "inland_winter_belt"
+    },
+    "MnInnerBasin": {
+      "path": "planning/minnesota/caves/inner-basin-bedrock-v01/source-v03.json",
+      "sha256": "13c1312655b95c6fd5c1bb8103a56602d1c13e9a6f0bd7790d8ccb05df1631e4",
+      "rows_pointer": "/rows",
+      "dimensions_metatiles": [
+        14,
+        14
+      ],
+      "tileset": "cave",
+      "stage": "inner_basin_bedrock",
+      "border_block": 46
+    },
+    "MnIronHaulage": {
+      "path": "planning/minnesota/caves/haulage-rock-clearance-v01/source-v01.json",
+      "sha256": "1257acaf832e1986da0849e9cea2721e98bcf90eb0e2006de063557c5a46eaf2",
+      "rows_pointer": "/rows",
+      "dimensions_metatiles": [
+        18,
+        14
+      ],
+      "tileset": "mn_iron_haulage_rock",
+      "stage": "haulage_rock_clearance"
+    },
+    "MnR08C00R00": {
+      "path": "planning/minnesota/revisions/headwaters-rock-clearance-v01/source-v01.json",
+      "sha256": "e80f053d3035ad03e764cf96179a245e327bd3dfc2b87546b3840f5812531c18",
+      "rows_pointer": "/maps/0/after_rows",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "tileset": "mn_winter_headwaters_stairs",
+      "stage": "headwaters_rock_clearance"
+    },
+    "MnR08C00R01": {
+      "path": "planning/minnesota/regions/headwaters-snowline-v01/source-v01.json",
+      "sha256": "efac4a83335a645163ceb89c364a31c4efdd8461b5011731369bb30bec3739c5",
+      "rows_pointer": "/maps/1/after_rows",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "tileset": "mn_headwaters_thaw",
+      "stage": "headwaters_snowline"
+    },
+    "MnR08C01R00": {
+      "path": "planning/minnesota/regions/headwaters-snowline-v01/source-v01.json",
+      "sha256": "efac4a83335a645163ceb89c364a31c4efdd8461b5011731369bb30bec3739c5",
+      "rows_pointer": "/maps/2/after_rows",
+      "dimensions_metatiles": [
+        8,
+        24
+      ],
+      "tileset": "mn_winter_headwaters",
+      "stage": "headwaters_snowline"
+    },
+    "MnR08C01R01": {
+      "path": "planning/minnesota/regions/headwaters-snowline-v01/source-v01.json",
+      "sha256": "efac4a83335a645163ceb89c364a31c4efdd8461b5011731369bb30bec3739c5",
+      "rows_pointer": "/maps/3/after_rows",
+      "dimensions_metatiles": [
+        8,
+        24
+      ],
+      "tileset": "mn_headwaters_thaw",
+      "stage": "headwaters_snowline"
+    },
+    "MnR09C00R00": {
+      "path": "planning/minnesota/revisions/iron-rock-clearance-v01/source-v02.json",
+      "sha256": "d879a62cfa7e4220b4b05321e1555c58e9c0995842b79440c356fac5e3992dc2",
+      "rows_pointer": "/maps/0/after_rows",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "tileset": "mn_winter_iron_range",
+      "stage": "iron_rock_clearance"
+    },
+    "MnR09C00R01": {
+      "path": "planning/minnesota/revisions/iron-rock-clearance-v01/source-v02.json",
+      "sha256": "d879a62cfa7e4220b4b05321e1555c58e9c0995842b79440c356fac5e3992dc2",
+      "rows_pointer": "/maps/2/after_rows",
+      "dimensions_metatiles": [
+        32,
+        12
+      ],
+      "tileset": "mn_winter_iron_range",
+      "stage": "iron_rock_clearance"
+    },
+    "MnR09C01R00": {
+      "path": "planning/minnesota/revisions/iron-rock-clearance-v01/source-v02.json",
+      "sha256": "d879a62cfa7e4220b4b05321e1555c58e9c0995842b79440c356fac5e3992dc2",
+      "rows_pointer": "/maps/1/after_rows",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "tileset": "mn_winter_iron_range",
+      "stage": "iron_rock_clearance"
+    },
+    "MnR09C01R01": {
+      "path": "planning/minnesota/revisions/iron-rock-clearance-v01/source-v02.json",
+      "sha256": "d879a62cfa7e4220b4b05321e1555c58e9c0995842b79440c356fac5e3992dc2",
+      "rows_pointer": "/maps/3/after_rows",
+      "dimensions_metatiles": [
+        32,
+        12
+      ],
+      "tileset": "mn_winter_iron_range",
+      "stage": "iron_rock_clearance"
+    },
+    "MnR10C00R00": {
+      "path": "planning/minnesota/revisions/descent-rock-clearance-v01/source-v01.json",
+      "sha256": "4423204b844096d957cd20c8878a3ec0c8b00dd2d5afd53f0f8c78303e0fa51b",
+      "rows_pointer": "/maps/0/after_rows",
+      "dimensions_metatiles": [
+        32,
+        20
+      ],
+      "tileset": "mn_iron_descent_thaw",
+      "stage": "descent_rock_clearance"
+    },
+    "MnR10C01R00": {
+      "path": "planning/minnesota/regions/iron-descent-snowline-v01/source-v01.json",
+      "sha256": "83009e35f33336350e22b0d0d5ea2ba56dfcd19cbda2e5a4c73d37bb75b4ef29",
+      "rows_pointer": "/maps/1/after_rows",
+      "dimensions_metatiles": [
+        16,
+        20
+      ],
+      "tileset": "mn_iron_descent_thaw",
+      "stage": "iron_descent_snowline"
+    },
+    "MnR14C00R00": {
+      "path": "planning/minnesota/regions/itasca-snowline-v01/source-v02.json",
+      "sha256": "ced7b7a8196f401200c19982a63bb6487feafe1e97c2407b4eb920cdd2e5f52d",
+      "rows_pointer": "/maps/0/after_rows",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "tileset": "mn_itasca_thaw",
+      "stage": "itasca_snowline"
+    },
+    "MnR14C00R01": {
+      "path": "planning/minnesota/regions/itasca-snowline-v01/source-v02.json",
+      "sha256": "ced7b7a8196f401200c19982a63bb6487feafe1e97c2407b4eb920cdd2e5f52d",
+      "rows_pointer": "/maps/1/after_rows",
+      "dimensions_metatiles": [
+        32,
+        8
+      ],
+      "tileset": "mn_itasca_thaw",
+      "stage": "itasca_snowline"
+    },
+    "MnR14C01R00": {
+      "path": "planning/minnesota/regions/itasca-snowline-v01/source-v02.json",
+      "sha256": "ced7b7a8196f401200c19982a63bb6487feafe1e97c2407b4eb920cdd2e5f52d",
+      "rows_pointer": "/maps/2/after_rows",
+      "dimensions_metatiles": [
+        16,
+        24
+      ],
+      "tileset": "mn_winter_itasca_trail",
+      "stage": "itasca_snowline"
+    },
+    "MnR14C01R01": {
+      "path": "planning/minnesota/regions/itasca-snowline-v01/source-v02.json",
+      "sha256": "ced7b7a8196f401200c19982a63bb6487feafe1e97c2407b4eb920cdd2e5f52d",
+      "rows_pointer": "/maps/3/after_rows",
+      "dimensions_metatiles": [
+        16,
+        8
+      ],
+      "tileset": "mn_winter_itasca_trail",
+      "stage": "itasca_snowline"
+    },
+    "MnR17C00R00": {
+      "path": "planning/minnesota/regions/inland-winter-belt-v01/winter-belt-source-v04.json",
+      "sha256": "3d31a594112a725ce86422ecce325608a9cc13e2bf861510875c3b1618b14691",
+      "rows_pointer": "/maps/7/rows",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "tileset": "mn_winter_border_pines",
+      "stage": "inland_winter_belt"
+    },
+    "MnR17C00R01": {
+      "path": "planning/minnesota/regions/inland-winter-belt-v01/winter-belt-source-v04.json",
+      "sha256": "3d31a594112a725ce86422ecce325608a9cc13e2bf861510875c3b1618b14691",
+      "rows_pointer": "/maps/8/rows",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "tileset": "mn_winter_border_pines",
+      "stage": "inland_winter_belt"
+    },
+    "MnR17C00R02": {
+      "path": "planning/minnesota/regions/inland-winter-belt-v01/winter-belt-source-v04.json",
+      "sha256": "3d31a594112a725ce86422ecce325608a9cc13e2bf861510875c3b1618b14691",
+      "rows_pointer": "/maps/9/rows",
+      "dimensions_metatiles": [
+        32,
+        8
+      ],
+      "tileset": "mn_winter_border_pines_south",
+      "stage": "inland_winter_belt"
+    },
+    "MnR20C00R00": {
+      "path": "planning/minnesota/regions/tamarack-snowline-v01/source-v04.json",
+      "sha256": "d34e0e85dcbe8a69f92073c3f17b801161f1bb261b6c0a14cbf81e3c143d7831",
+      "rows_pointer": "/maps/0/after_rows",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "tileset": "mn_winter_tamarack",
+      "stage": "tamarack_snowline"
+    },
+    "MnR20C00R01": {
+      "path": "planning/minnesota/regions/tamarack-snowline-v01/source-v04.json",
+      "sha256": "d34e0e85dcbe8a69f92073c3f17b801161f1bb261b6c0a14cbf81e3c143d7831",
+      "rows_pointer": "/maps/2/after_rows",
+      "dimensions_metatiles": [
+        32,
+        8
+      ],
+      "tileset": "mn_winter_tamarack",
+      "stage": "tamarack_snowline"
+    },
+    "MnR20C01R00": {
+      "path": "planning/minnesota/regions/tamarack-snowline-v01/source-v04.json",
+      "sha256": "d34e0e85dcbe8a69f92073c3f17b801161f1bb261b6c0a14cbf81e3c143d7831",
+      "rows_pointer": "/maps/1/after_rows",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "tileset": "mn_tamarack_thaw",
+      "stage": "tamarack_snowline"
+    },
+    "MnR20C01R01": {
+      "path": "planning/minnesota/regions/tamarack-snowline-v01/source-v04.json",
+      "sha256": "d34e0e85dcbe8a69f92073c3f17b801161f1bb261b6c0a14cbf81e3c143d7831",
+      "rows_pointer": "/maps/3/after_rows",
+      "dimensions_metatiles": [
+        32,
+        8
+      ],
+      "tileset": "mn_tamarack_thaw",
+      "stage": "tamarack_snowline"
+    }
+  }
+}

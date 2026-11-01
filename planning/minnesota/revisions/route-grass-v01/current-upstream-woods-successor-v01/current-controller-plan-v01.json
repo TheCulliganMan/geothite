@@ -1,0 +1,3739 @@
+{
+  "pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+  "pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33",
+  "cases": [
+    {
+      "kind": "trainer",
+      "id": "MN_RIVER_FUN_UPSTREAM_ALDER",
+      "display_name": "ALDER",
+      "trainer_class": "CAMPER",
+      "sprite": "SPRITE_YOUNGSTER",
+      "global_metatile": [
+        44,
+        30
+      ],
+      "facing": "south",
+      "sight_range": 2,
+      "defeated_flag": "EVENT_MN_RIVER_FUN_UPSTREAM_ALDER",
+      "party": [
+        {
+          "species": "BRISTUB",
+          "level": 32,
+          "item": null,
+          "moves": [
+            {
+              "name": "BIND",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "HARDEN",
+              "current_pp": 30,
+              "pp_ups": 0
+            },
+            {
+              "name": "TAKE_DOWN",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "PROTECT",
+              "current_pp": 10,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 9,
+            "defense": 8,
+            "speed": 8,
+            "special": 8,
+            "hp": 8
+          }
+        },
+        {
+          "species": "HISSIP",
+          "level": 33,
+          "item": null,
+          "moves": [
+            {
+              "name": "SWAGGER",
+              "current_pp": 15,
+              "pp_ups": 0
+            },
+            {
+              "name": "FLAME_WHEEL",
+              "current_pp": 25,
+              "pp_ups": 0
+            },
+            {
+              "name": "SCARY_FACE",
+              "current_pp": 10,
+              "pp_ups": 0
+            },
+            {
+              "name": "FAINT_ATTACK",
+              "current_pp": 20,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 9,
+            "defense": 8,
+            "speed": 8,
+            "special": 8,
+            "hp": 8
+          }
+        }
+      ],
+      "before_lines": [
+        "A riverbank match?",
+        "My team is ready!"
+      ],
+      "after_lines": [
+        "Every bend brings",
+        "a new adventure!"
+      ],
+      "loss_lines": [
+        "What a wild ride!"
+      ],
+      "tile": [
+        25,
+        13
+      ],
+      "map": "MnMississippiUpstreamWoodsC01R01",
+      "global_tile": [
+        89,
+        61
+      ],
+      "path": [
+        {
+          "map": "MnMississippiUpstreamWoodsC01R01",
+          "point": [
+            24,
+            13
+          ]
+        }
+      ],
+      "water": {
+        "map": "MnMississippiUpstreamWoodsC01R01",
+        "point": [
+          23,
+          13
+        ]
+      },
+      "current_native_actor": {
+        "sprite": "SPRITE_YOUNGSTER",
+        "sprite_has_facings": true,
+        "x": 25,
+        "y": 13,
+        "spritemovedata": "SPRITEMOVEDATA_STANDING_DOWN",
+        "move_range_x": 0,
+        "move_range_y": 0,
+        "hram_x": -1,
+        "hram_y": -1,
+        "pal": 0,
+        "object_type": "OBJECTTYPE_TRAINER",
+        "radius": 2,
+        "script": "MN_RIVER_FUN_UPSTREAM_ALDER",
+        "label": null,
+        "event_flag": "-1",
+        "object_identifier": "MN_RIVER_FUN_UPSTREAM_ALDER",
+        "sightline_direction_override": null
+      }
+    },
+    {
+      "kind": "trainer",
+      "id": "MN_RIVER_FUN_UPSTREAM_COVE",
+      "display_name": "COVE",
+      "trainer_class": "BIRD_KEEPER",
+      "sprite": "SPRITE_YOUNGSTER",
+      "global_metatile": [
+        47,
+        54
+      ],
+      "facing": "west",
+      "sight_range": 2,
+      "defeated_flag": "EVENT_MN_RIVER_FUN_UPSTREAM_COVE",
+      "party": [
+        {
+          "species": "NOTCHBILL",
+          "level": 31,
+          "item": null,
+          "moves": [
+            {
+              "name": "HEADBUTT",
+              "current_pp": 15,
+              "pp_ups": 0
+            },
+            {
+              "name": "WING_ATTACK",
+              "current_pp": 35,
+              "pp_ups": 0
+            },
+            {
+              "name": "DETECT",
+              "current_pp": 5,
+              "pp_ups": 0
+            },
+            {
+              "name": "AGILITY",
+              "current_pp": 30,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 9,
+            "defense": 8,
+            "speed": 8,
+            "special": 8,
+            "hp": 8
+          }
+        },
+        {
+          "species": "NOTCHBILL",
+          "level": 32,
+          "item": null,
+          "moves": [
+            {
+              "name": "HEADBUTT",
+              "current_pp": 15,
+              "pp_ups": 0
+            },
+            {
+              "name": "WING_ATTACK",
+              "current_pp": 35,
+              "pp_ups": 0
+            },
+            {
+              "name": "DETECT",
+              "current_pp": 5,
+              "pp_ups": 0
+            },
+            {
+              "name": "AGILITY",
+              "current_pp": 30,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 9,
+            "defense": 8,
+            "speed": 8,
+            "special": 8,
+            "hp": 8
+          }
+        }
+      ],
+      "before_lines": [
+        "You found my spot!",
+        "Time for a battle!"
+      ],
+      "after_lines": [
+        "The grassy trails",
+        "are full of life!"
+      ],
+      "loss_lines": [
+        "Swept downstream!"
+      ],
+      "tile": [
+        31,
+        13
+      ],
+      "map": "MnMississippiUpstreamWoodsC01R02",
+      "global_tile": [
+        95,
+        109
+      ],
+      "path": [
+        {
+          "map": "MnMississippiUpstreamWoodsC01R02",
+          "point": [
+            33,
+            18
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R02",
+          "point": [
+            32,
+            18
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R02",
+          "point": [
+            32,
+            17
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R02",
+          "point": [
+            32,
+            16
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R02",
+          "point": [
+            32,
+            15
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R02",
+          "point": [
+            32,
+            14
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R02",
+          "point": [
+            32,
+            13
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R02",
+          "point": [
+            32,
+            12
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R02",
+          "point": [
+            31,
+            12
+          ]
+        }
+      ],
+      "water": {
+        "map": "MnMississippiUpstreamWoodsC01R02",
+        "point": [
+          34,
+          18
+        ]
+      },
+      "current_native_actor": {
+        "sprite": "SPRITE_YOUNGSTER",
+        "sprite_has_facings": true,
+        "x": 31,
+        "y": 13,
+        "spritemovedata": "SPRITEMOVEDATA_STANDING_LEFT",
+        "move_range_x": 0,
+        "move_range_y": 0,
+        "hram_x": -1,
+        "hram_y": -1,
+        "pal": 0,
+        "object_type": "OBJECTTYPE_TRAINER",
+        "radius": 2,
+        "script": "MN_RIVER_FUN_UPSTREAM_COVE",
+        "label": null,
+        "event_flag": "-1",
+        "object_identifier": "MN_RIVER_FUN_UPSTREAM_COVE",
+        "sightline_direction_override": null
+      }
+    },
+    {
+      "kind": "trainer",
+      "id": "MN_RIVER_FUN_UPSTREAM_DAWN",
+      "display_name": "DAWN",
+      "trainer_class": "BIRD_KEEPER",
+      "sprite": "SPRITE_YOUNGSTER",
+      "global_metatile": [
+        42,
+        9
+      ],
+      "facing": "west",
+      "sight_range": 2,
+      "defeated_flag": "EVENT_MN_RIVER_FUN_UPSTREAM_DAWN",
+      "party": [
+        {
+          "species": "NOTCHBILL",
+          "level": 33,
+          "item": null,
+          "moves": [
+            {
+              "name": "HEADBUTT",
+              "current_pp": 15,
+              "pp_ups": 0
+            },
+            {
+              "name": "WING_ATTACK",
+              "current_pp": 35,
+              "pp_ups": 0
+            },
+            {
+              "name": "DETECT",
+              "current_pp": 5,
+              "pp_ups": 0
+            },
+            {
+              "name": "AGILITY",
+              "current_pp": 30,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 9,
+            "defense": 8,
+            "speed": 8,
+            "special": 8,
+            "hp": 8
+          }
+        },
+        {
+          "species": "NOTCHBILL",
+          "level": 34,
+          "item": null,
+          "moves": [
+            {
+              "name": "WING_ATTACK",
+              "current_pp": 35,
+              "pp_ups": 0
+            },
+            {
+              "name": "DETECT",
+              "current_pp": 5,
+              "pp_ups": 0
+            },
+            {
+              "name": "AGILITY",
+              "current_pp": 30,
+              "pp_ups": 0
+            },
+            {
+              "name": "DRILL_PECK",
+              "current_pp": 20,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 9,
+            "defense": 8,
+            "speed": 8,
+            "special": 8,
+            "hp": 8
+          }
+        }
+      ],
+      "before_lines": [
+        "You found my spot!",
+        "Time for a battle!"
+      ],
+      "after_lines": [
+        "The grassy trails",
+        "are full of life!"
+      ],
+      "loss_lines": [
+        "Swept downstream!"
+      ],
+      "tile": [
+        21,
+        19
+      ],
+      "map": "MnMississippiUpstreamWoodsC01R00",
+      "global_tile": [
+        85,
+        19
+      ],
+      "path": [
+        {
+          "map": "MnMississippiUpstreamWoodsC01R00",
+          "point": [
+            22,
+            25
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R00",
+          "point": [
+            22,
+            24
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R00",
+          "point": [
+            22,
+            23
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R00",
+          "point": [
+            22,
+            22
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R00",
+          "point": [
+            22,
+            21
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R00",
+          "point": [
+            22,
+            20
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R00",
+          "point": [
+            22,
+            19
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R00",
+          "point": [
+            22,
+            18
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R00",
+          "point": [
+            21,
+            18
+          ]
+        }
+      ],
+      "water": {
+        "map": "MnMississippiUpstreamWoodsC01R00",
+        "point": [
+          22,
+          26
+        ]
+      },
+      "current_native_actor": {
+        "sprite": "SPRITE_YOUNGSTER",
+        "sprite_has_facings": true,
+        "x": 21,
+        "y": 19,
+        "spritemovedata": "SPRITEMOVEDATA_STANDING_LEFT",
+        "move_range_x": 0,
+        "move_range_y": 0,
+        "hram_x": -1,
+        "hram_y": -1,
+        "pal": 0,
+        "object_type": "OBJECTTYPE_TRAINER",
+        "radius": 2,
+        "script": "MN_RIVER_FUN_UPSTREAM_DAWN",
+        "label": null,
+        "event_flag": "-1",
+        "object_identifier": "MN_RIVER_FUN_UPSTREAM_DAWN",
+        "sightline_direction_override": null
+      }
+    },
+    {
+      "kind": "item",
+      "id": "MN_RIVER_FUN_UPSTREAM_ETHER",
+      "item": "ETHER",
+      "quantity": 1,
+      "flag": "EVENT_MN_RIVER_FUN_UPSTREAM_ETHER",
+      "global_metatile": [
+        37,
+        10
+      ],
+      "tile": [
+        11,
+        21
+      ],
+      "map": "MnMississippiUpstreamWoodsC01R00",
+      "global_tile": [
+        75,
+        21
+      ],
+      "path": [
+        {
+          "map": "MnMississippiUpstreamWoodsC01R00",
+          "point": [
+            7,
+            25
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R00",
+          "point": [
+            8,
+            25
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R00",
+          "point": [
+            9,
+            25
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R00",
+          "point": [
+            10,
+            25
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R00",
+          "point": [
+            10,
+            24
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R00",
+          "point": [
+            10,
+            23
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R00",
+          "point": [
+            10,
+            22
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R00",
+          "point": [
+            10,
+            21
+          ]
+        }
+      ],
+      "water": {
+        "map": "MnMississippiUpstreamWoodsC01R00",
+        "point": [
+          7,
+          26
+        ]
+      },
+      "current_native_actor": {
+        "sprite": "SPRITE_POKE_BALL",
+        "sprite_has_facings": true,
+        "x": 11,
+        "y": 21,
+        "spritemovedata": "SPRITEMOVEDATA_STANDING_DOWN",
+        "move_range_x": 0,
+        "move_range_y": 0,
+        "hram_x": -1,
+        "hram_y": -1,
+        "pal": 0,
+        "object_type": "OBJECTTYPE_ITEMBALL",
+        "radius": 0,
+        "script": "MN_RIVER_FUN_UPSTREAM_ETHER",
+        "label": null,
+        "event_flag": "EVENT_MN_RIVER_FUN_UPSTREAM_ETHER",
+        "object_identifier": "MN_RIVER_FUN_UPSTREAM_ETHER",
+        "sightline_direction_override": null
+      }
+    },
+    {
+      "kind": "trainer",
+      "id": "MN_RIVER_FUN_UPSTREAM_FINN",
+      "display_name": "FINN",
+      "trainer_class": "FISHER",
+      "sprite": "SPRITE_FISHER",
+      "global_metatile": [
+        9,
+        64
+      ],
+      "facing": "west",
+      "sight_range": 2,
+      "defeated_flag": "EVENT_MN_RIVER_FUN_UPSTREAM_FINN",
+      "party": [
+        {
+          "species": "TORROUT",
+          "level": 31,
+          "item": null,
+          "moves": [
+            {
+              "name": "LOW_KICK",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "WATER_PULSE",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "COUNTER",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "RAIN_DANCE",
+              "current_pp": 5,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 9,
+            "defense": 8,
+            "speed": 8,
+            "special": 8,
+            "hp": 8
+          }
+        },
+        {
+          "species": "MUDMENDER",
+          "level": 32,
+          "item": null,
+          "moves": [
+            {
+              "name": "CONFUSION",
+              "current_pp": 25,
+              "pp_ups": 0
+            },
+            {
+              "name": "SAFEGUARD",
+              "current_pp": 25,
+              "pp_ups": 0
+            },
+            {
+              "name": "BUBBLEBEAM",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "LIGHT_SCREEN",
+              "current_pp": 30,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 9,
+            "defense": 8,
+            "speed": 8,
+            "special": 8,
+            "hp": 8
+          }
+        }
+      ],
+      "before_lines": [
+        "A riverbank match?",
+        "My team is ready!"
+      ],
+      "after_lines": [
+        "Every bend brings",
+        "a new adventure!"
+      ],
+      "loss_lines": [
+        "What a wild ride!"
+      ],
+      "tile": [
+        19,
+        33
+      ],
+      "map": "MnMississippiUpstreamWoodsC00R02",
+      "global_tile": [
+        19,
+        129
+      ],
+      "path": [
+        {
+          "map": "MnMississippiUpstreamWoodsC00R02",
+          "point": [
+            13,
+            33
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC00R02",
+          "point": [
+            14,
+            33
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC00R02",
+          "point": [
+            15,
+            33
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC00R02",
+          "point": [
+            16,
+            33
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC00R02",
+          "point": [
+            16,
+            32
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC00R02",
+          "point": [
+            17,
+            32
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC00R02",
+          "point": [
+            18,
+            32
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC00R02",
+          "point": [
+            19,
+            32
+          ]
+        }
+      ],
+      "water": {
+        "map": "MnMississippiUpstreamWoodsC00R02",
+        "point": [
+          13,
+          34
+        ]
+      },
+      "current_native_actor": {
+        "sprite": "SPRITE_FISHER",
+        "sprite_has_facings": true,
+        "x": 19,
+        "y": 33,
+        "spritemovedata": "SPRITEMOVEDATA_STANDING_LEFT",
+        "move_range_x": 0,
+        "move_range_y": 0,
+        "hram_x": -1,
+        "hram_y": -1,
+        "pal": 0,
+        "object_type": "OBJECTTYPE_TRAINER",
+        "radius": 2,
+        "script": "MN_RIVER_FUN_UPSTREAM_FINN",
+        "label": null,
+        "event_flag": "-1",
+        "object_identifier": "MN_RIVER_FUN_UPSTREAM_FINN",
+        "sightline_direction_override": null
+      }
+    },
+    {
+      "kind": "trainer",
+      "id": "MN_RIVER_FUN_UPSTREAM_FLINT",
+      "display_name": "FLINT",
+      "trainer_class": "HIKER",
+      "sprite": "SPRITE_POKEFAN_M",
+      "global_metatile": [
+        58,
+        34
+      ],
+      "facing": "west",
+      "sight_range": 2,
+      "defeated_flag": "EVENT_MN_RIVER_FUN_UPSTREAM_FLINT",
+      "party": [
+        {
+          "species": "PELLETANK",
+          "level": 32,
+          "item": null,
+          "moves": [
+            {
+              "name": "DRAGON_RAGE",
+              "current_pp": 10,
+              "pp_ups": 0
+            },
+            {
+              "name": "SLAM",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "DRAGONBREATH",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "IRON_TAIL",
+              "current_pp": 15,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 10,
+            "defense": 8,
+            "speed": 8,
+            "special": 8,
+            "hp": 0
+          }
+        },
+        {
+          "species": "BANDRAKE",
+          "level": 33,
+          "item": null,
+          "moves": [
+            {
+              "name": "ROLLOUT",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "REFLECT",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "ANCIENTPOWER",
+              "current_pp": 5,
+              "pp_ups": 0
+            },
+            {
+              "name": "PSYBEAM",
+              "current_pp": 20,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 10,
+            "defense": 8,
+            "speed": 8,
+            "special": 8,
+            "hp": 0
+          }
+        }
+      ],
+      "before_lines": [
+        "A riverbank match?",
+        "My team is ready!"
+      ],
+      "after_lines": [
+        "Every bend brings",
+        "a new adventure!"
+      ],
+      "loss_lines": [
+        "What a wild ride!"
+      ],
+      "tile": [
+        53,
+        21
+      ],
+      "map": "MnMississippiUpstreamWoodsC01R01",
+      "global_tile": [
+        117,
+        69
+      ],
+      "path": [
+        {
+          "map": "MnMississippiUpstreamWoodsC01R01",
+          "point": [
+            49,
+            23
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R01",
+          "point": [
+            50,
+            23
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R01",
+          "point": [
+            50,
+            22
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R01",
+          "point": [
+            50,
+            21
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R01",
+          "point": [
+            50,
+            20
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R01",
+          "point": [
+            51,
+            20
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R01",
+          "point": [
+            52,
+            20
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R01",
+          "point": [
+            53,
+            20
+          ]
+        }
+      ],
+      "water": {
+        "map": "MnMississippiUpstreamWoodsC01R01",
+        "point": [
+          49,
+          24
+        ]
+      },
+      "current_native_actor": {
+        "sprite": "SPRITE_POKEFAN_M",
+        "sprite_has_facings": true,
+        "x": 53,
+        "y": 21,
+        "spritemovedata": "SPRITEMOVEDATA_STANDING_LEFT",
+        "move_range_x": 0,
+        "move_range_y": 0,
+        "hram_x": -1,
+        "hram_y": -1,
+        "pal": 0,
+        "object_type": "OBJECTTYPE_TRAINER",
+        "radius": 2,
+        "script": "MN_RIVER_FUN_UPSTREAM_FLINT",
+        "label": null,
+        "event_flag": "-1",
+        "object_identifier": "MN_RIVER_FUN_UPSTREAM_FLINT",
+        "sightline_direction_override": null
+      }
+    },
+    {
+      "kind": "trainer",
+      "id": "MN_RIVER_FUN_UPSTREAM_GUS",
+      "display_name": "GUS",
+      "trainer_class": "BIRD_KEEPER",
+      "sprite": "SPRITE_FALKNER",
+      "global_metatile": [
+        23,
+        21
+      ],
+      "facing": "west",
+      "sight_range": 2,
+      "defeated_flag": "EVENT_MN_RIVER_FUN_UPSTREAM_GUS",
+      "party": [
+        {
+          "species": "NOTCHBILL",
+          "level": 32,
+          "item": null,
+          "moves": [
+            {
+              "name": "HEADBUTT",
+              "current_pp": 15,
+              "pp_ups": 0
+            },
+            {
+              "name": "WING_ATTACK",
+              "current_pp": 35,
+              "pp_ups": 0
+            },
+            {
+              "name": "DETECT",
+              "current_pp": 5,
+              "pp_ups": 0
+            },
+            {
+              "name": "AGILITY",
+              "current_pp": 30,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 9,
+            "defense": 8,
+            "speed": 8,
+            "special": 8,
+            "hp": 8
+          }
+        },
+        {
+          "species": "NOTCHBILL",
+          "level": 33,
+          "item": null,
+          "moves": [
+            {
+              "name": "HEADBUTT",
+              "current_pp": 15,
+              "pp_ups": 0
+            },
+            {
+              "name": "WING_ATTACK",
+              "current_pp": 35,
+              "pp_ups": 0
+            },
+            {
+              "name": "DETECT",
+              "current_pp": 5,
+              "pp_ups": 0
+            },
+            {
+              "name": "AGILITY",
+              "current_pp": 30,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 9,
+            "defense": 8,
+            "speed": 8,
+            "special": 8,
+            "hp": 8
+          }
+        }
+      ],
+      "before_lines": [
+        "A riverbank match?",
+        "My team is ready!"
+      ],
+      "after_lines": [
+        "Every bend brings",
+        "a new adventure!"
+      ],
+      "loss_lines": [
+        "What a wild ride!"
+      ],
+      "tile": [
+        47,
+        43
+      ],
+      "map": "MnMississippiUpstreamWoodsC00R00",
+      "global_tile": [
+        47,
+        43
+      ],
+      "path": [
+        {
+          "map": "MnMississippiUpstreamWoodsC00R00",
+          "point": [
+            48,
+            39
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC00R00",
+          "point": [
+            48,
+            40
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC00R00",
+          "point": [
+            47,
+            40
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC00R00",
+          "point": [
+            47,
+            41
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC00R00",
+          "point": [
+            47,
+            42
+          ]
+        }
+      ],
+      "water": {
+        "map": "MnMississippiUpstreamWoodsC00R00",
+        "point": [
+          47,
+          39
+        ]
+      },
+      "current_native_actor": {
+        "sprite": "SPRITE_FALKNER",
+        "sprite_has_facings": true,
+        "x": 47,
+        "y": 43,
+        "spritemovedata": "SPRITEMOVEDATA_STANDING_LEFT",
+        "move_range_x": 0,
+        "move_range_y": 0,
+        "hram_x": -1,
+        "hram_y": -1,
+        "pal": 0,
+        "object_type": "OBJECTTYPE_TRAINER",
+        "radius": 2,
+        "script": "MN_RIVER_FUN_UPSTREAM_GUS",
+        "label": null,
+        "event_flag": "-1",
+        "object_identifier": "MN_RIVER_FUN_UPSTREAM_GUS",
+        "sightline_direction_override": null
+      }
+    },
+    {
+      "kind": "trainer",
+      "id": "MN_RIVER_FUN_UPSTREAM_HANK",
+      "display_name": "HANK",
+      "trainer_class": "HIKER",
+      "sprite": "SPRITE_POKEFAN_M",
+      "global_metatile": [
+        52,
+        41
+      ],
+      "facing": "west",
+      "sight_range": 2,
+      "defeated_flag": "EVENT_MN_RIVER_FUN_UPSTREAM_HANK",
+      "party": [
+        {
+          "species": "AGATOT",
+          "level": 32,
+          "item": null,
+          "moves": [
+            {
+              "name": "ROLLOUT",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "REFLECT",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "ANCIENTPOWER",
+              "current_pp": 5,
+              "pp_ups": 0
+            },
+            {
+              "name": "PSYBEAM",
+              "current_pp": 20,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 10,
+            "defense": 8,
+            "speed": 8,
+            "special": 8,
+            "hp": 0
+          }
+        },
+        {
+          "species": "HELIKNOCK",
+          "level": 33,
+          "item": null,
+          "moves": [
+            {
+              "name": "MAGNITUDE",
+              "current_pp": 30,
+              "pp_ups": 0
+            },
+            {
+              "name": "LOW_KICK",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "DIG",
+              "current_pp": 10,
+              "pp_ups": 0
+            },
+            {
+              "name": "SCREECH",
+              "current_pp": 40,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 10,
+            "defense": 8,
+            "speed": 8,
+            "special": 8,
+            "hp": 0
+          }
+        }
+      ],
+      "before_lines": [
+        "You found my spot!",
+        "Time for a battle!"
+      ],
+      "after_lines": [
+        "The grassy trails",
+        "are full of life!"
+      ],
+      "loss_lines": [
+        "Swept downstream!"
+      ],
+      "tile": [
+        41,
+        35
+      ],
+      "map": "MnMississippiUpstreamWoodsC01R01",
+      "global_tile": [
+        105,
+        83
+      ],
+      "path": [
+        {
+          "map": "MnMississippiUpstreamWoodsC01R01",
+          "point": [
+            43,
+            34
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R01",
+          "point": [
+            42,
+            34
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R01",
+          "point": [
+            41,
+            34
+          ]
+        }
+      ],
+      "water": {
+        "map": "MnMississippiUpstreamWoodsC01R01",
+        "point": [
+          44,
+          34
+        ]
+      },
+      "current_native_actor": {
+        "sprite": "SPRITE_POKEFAN_M",
+        "sprite_has_facings": true,
+        "x": 41,
+        "y": 35,
+        "spritemovedata": "SPRITEMOVEDATA_STANDING_LEFT",
+        "move_range_x": 0,
+        "move_range_y": 0,
+        "hram_x": -1,
+        "hram_y": -1,
+        "pal": 0,
+        "object_type": "OBJECTTYPE_TRAINER",
+        "radius": 2,
+        "script": "MN_RIVER_FUN_UPSTREAM_HANK",
+        "label": null,
+        "event_flag": "-1",
+        "object_identifier": "MN_RIVER_FUN_UPSTREAM_HANK",
+        "sightline_direction_override": null
+      }
+    },
+    {
+      "kind": "trainer",
+      "id": "MN_RIVER_FUN_UPSTREAM_HOLLY",
+      "display_name": "HOLLY",
+      "trainer_class": "COOLTRAINERF",
+      "sprite": "SPRITE_COOLTRAINER_F",
+      "global_metatile": [
+        46,
+        22
+      ],
+      "facing": "west",
+      "sight_range": 2,
+      "defeated_flag": "EVENT_MN_RIVER_FUN_UPSTREAM_HOLLY",
+      "party": [
+        {
+          "species": "REEDRAFT",
+          "level": 33,
+          "item": null,
+          "moves": [
+            {
+              "name": "SWEET_SCENT",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "MEGA_DRAIN",
+              "current_pp": 10,
+              "pp_ups": 0
+            },
+            {
+              "name": "SYNTHESIS",
+              "current_pp": 5,
+              "pp_ups": 0
+            },
+            {
+              "name": "RAZOR_LEAF",
+              "current_pp": 25,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 7,
+            "defense": 12,
+            "speed": 12,
+            "special": 8,
+            "hp": 8
+          }
+        },
+        {
+          "species": "PIKEMAN",
+          "level": 34,
+          "item": null,
+          "moves": [
+            {
+              "name": "WATERFALL",
+              "current_pp": 15,
+              "pp_ups": 0
+            },
+            {
+              "name": "LOW_KICK",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "REVERSAL",
+              "current_pp": 15,
+              "pp_ups": 0
+            },
+            {
+              "name": "SLAM",
+              "current_pp": 20,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 7,
+            "defense": 12,
+            "speed": 12,
+            "special": 8,
+            "hp": 8
+          }
+        }
+      ],
+      "before_lines": [
+        "A riverbank match?",
+        "My team is ready!"
+      ],
+      "after_lines": [
+        "Every bend brings",
+        "a new adventure!"
+      ],
+      "loss_lines": [
+        "What a wild ride!"
+      ],
+      "tile": [
+        29,
+        45
+      ],
+      "map": "MnMississippiUpstreamWoodsC01R00",
+      "global_tile": [
+        93,
+        45
+      ],
+      "path": [
+        {
+          "map": "MnMississippiUpstreamWoodsC01R00",
+          "point": [
+            31,
+            44
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R00",
+          "point": [
+            30,
+            44
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R00",
+          "point": [
+            29,
+            44
+          ]
+        }
+      ],
+      "water": {
+        "map": "MnMississippiUpstreamWoodsC01R00",
+        "point": [
+          32,
+          44
+        ]
+      },
+      "current_native_actor": {
+        "sprite": "SPRITE_COOLTRAINER_F",
+        "sprite_has_facings": true,
+        "x": 29,
+        "y": 45,
+        "spritemovedata": "SPRITEMOVEDATA_STANDING_LEFT",
+        "move_range_x": 0,
+        "move_range_y": 0,
+        "hram_x": -1,
+        "hram_y": -1,
+        "pal": 0,
+        "object_type": "OBJECTTYPE_TRAINER",
+        "radius": 2,
+        "script": "MN_RIVER_FUN_UPSTREAM_HOLLY",
+        "label": null,
+        "event_flag": "-1",
+        "object_identifier": "MN_RIVER_FUN_UPSTREAM_HOLLY",
+        "sightline_direction_override": null
+      }
+    },
+    {
+      "kind": "trainer",
+      "id": "MN_RIVER_FUN_UPSTREAM_JET",
+      "display_name": "JET",
+      "trainer_class": "FISHER",
+      "sprite": "SPRITE_FISHER",
+      "global_metatile": [
+        10,
+        62
+      ],
+      "facing": "west",
+      "sight_range": 2,
+      "defeated_flag": "EVENT_MN_RIVER_FUN_UPSTREAM_JET",
+      "party": [
+        {
+          "species": "SCUTLET",
+          "level": 31,
+          "item": null,
+          "moves": [
+            {
+              "name": "BUBBLEBEAM",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "ANCIENTPOWER",
+              "current_pp": 5,
+              "pp_ups": 0
+            },
+            {
+              "name": "RAIN_DANCE",
+              "current_pp": 5,
+              "pp_ups": 0
+            },
+            {
+              "name": "DRAGONBREATH",
+              "current_pp": 20,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 9,
+            "defense": 8,
+            "speed": 8,
+            "special": 8,
+            "hp": 8
+          }
+        },
+        {
+          "species": "TORROUT",
+          "level": 32,
+          "item": null,
+          "moves": [
+            {
+              "name": "LOW_KICK",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "WATER_PULSE",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "COUNTER",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "RAIN_DANCE",
+              "current_pp": 5,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 9,
+            "defense": 8,
+            "speed": 8,
+            "special": 8,
+            "hp": 8
+          }
+        }
+      ],
+      "before_lines": [
+        "You found my spot!",
+        "Time for a battle!"
+      ],
+      "after_lines": [
+        "The grassy trails",
+        "are full of life!"
+      ],
+      "loss_lines": [
+        "Swept downstream!"
+      ],
+      "tile": [
+        21,
+        29
+      ],
+      "map": "MnMississippiUpstreamWoodsC00R02",
+      "global_tile": [
+        21,
+        125
+      ],
+      "path": [
+        {
+          "map": "MnMississippiUpstreamWoodsC00R02",
+          "point": [
+            21,
+            28
+          ]
+        }
+      ],
+      "water": {
+        "map": "MnMississippiUpstreamWoodsC00R02",
+        "point": [
+          22,
+          28
+        ]
+      },
+      "current_native_actor": {
+        "sprite": "SPRITE_FISHER",
+        "sprite_has_facings": true,
+        "x": 21,
+        "y": 29,
+        "spritemovedata": "SPRITEMOVEDATA_STANDING_LEFT",
+        "move_range_x": 0,
+        "move_range_y": 0,
+        "hram_x": -1,
+        "hram_y": -1,
+        "pal": 0,
+        "object_type": "OBJECTTYPE_TRAINER",
+        "radius": 2,
+        "script": "MN_RIVER_FUN_UPSTREAM_JET",
+        "label": null,
+        "event_flag": "-1",
+        "object_identifier": "MN_RIVER_FUN_UPSTREAM_JET",
+        "sightline_direction_override": null
+      }
+    },
+    {
+      "kind": "trainer",
+      "id": "MN_RIVER_FUN_UPSTREAM_KIP",
+      "display_name": "KIP",
+      "trainer_class": "HIKER",
+      "sprite": "SPRITE_POKEFAN_M",
+      "global_metatile": [
+        26,
+        20
+      ],
+      "facing": "west",
+      "sight_range": 2,
+      "defeated_flag": "EVENT_MN_RIVER_FUN_UPSTREAM_KIP",
+      "party": [
+        {
+          "species": "AGATOT",
+          "level": 33,
+          "item": null,
+          "moves": [
+            {
+              "name": "ROLLOUT",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "REFLECT",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "ANCIENTPOWER",
+              "current_pp": 5,
+              "pp_ups": 0
+            },
+            {
+              "name": "PSYBEAM",
+              "current_pp": 20,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 10,
+            "defense": 8,
+            "speed": 8,
+            "special": 8,
+            "hp": 0
+          }
+        },
+        {
+          "species": "HELIKNOCK",
+          "level": 34,
+          "item": null,
+          "moves": [
+            {
+              "name": "MAGNITUDE",
+              "current_pp": 30,
+              "pp_ups": 0
+            },
+            {
+              "name": "LOW_KICK",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "DIG",
+              "current_pp": 10,
+              "pp_ups": 0
+            },
+            {
+              "name": "SCREECH",
+              "current_pp": 40,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 10,
+            "defense": 8,
+            "speed": 8,
+            "special": 8,
+            "hp": 0
+          }
+        }
+      ],
+      "before_lines": [
+        "You found my spot!",
+        "Time for a battle!"
+      ],
+      "after_lines": [
+        "The grassy trails",
+        "are full of life!"
+      ],
+      "loss_lines": [
+        "Swept downstream!"
+      ],
+      "tile": [
+        53,
+        41
+      ],
+      "map": "MnMississippiUpstreamWoodsC00R00",
+      "global_tile": [
+        53,
+        41
+      ],
+      "path": [
+        {
+          "map": "MnMississippiUpstreamWoodsC00R00",
+          "point": [
+            53,
+            38
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC00R00",
+          "point": [
+            53,
+            39
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC00R00",
+          "point": [
+            53,
+            40
+          ]
+        }
+      ],
+      "water": {
+        "map": "MnMississippiUpstreamWoodsC00R00",
+        "point": [
+          53,
+          37
+        ]
+      },
+      "current_native_actor": {
+        "sprite": "SPRITE_POKEFAN_M",
+        "sprite_has_facings": true,
+        "x": 53,
+        "y": 41,
+        "spritemovedata": "SPRITEMOVEDATA_STANDING_LEFT",
+        "move_range_x": 0,
+        "move_range_y": 0,
+        "hram_x": -1,
+        "hram_y": -1,
+        "pal": 0,
+        "object_type": "OBJECTTYPE_TRAINER",
+        "radius": 2,
+        "script": "MN_RIVER_FUN_UPSTREAM_KIP",
+        "label": null,
+        "event_flag": "-1",
+        "object_identifier": "MN_RIVER_FUN_UPSTREAM_KIP",
+        "sightline_direction_override": null
+      }
+    },
+    {
+      "kind": "trainer",
+      "id": "MN_RIVER_FUN_UPSTREAM_MAPLE",
+      "display_name": "MAPLE",
+      "trainer_class": "CAMPER",
+      "sprite": "SPRITE_YOUNGSTER",
+      "global_metatile": [
+        21,
+        64
+      ],
+      "facing": "west",
+      "sight_range": 2,
+      "defeated_flag": "EVENT_MN_RIVER_FUN_UPSTREAM_MAPLE",
+      "party": [
+        {
+          "species": "AUGRUB",
+          "level": 31,
+          "item": null,
+          "moves": [
+            {
+              "name": "MAGNITUDE",
+              "current_pp": 30,
+              "pp_ups": 0
+            },
+            {
+              "name": "LOW_KICK",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "DIG",
+              "current_pp": 10,
+              "pp_ups": 0
+            },
+            {
+              "name": "SCREECH",
+              "current_pp": 40,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 9,
+            "defense": 8,
+            "speed": 8,
+            "special": 8,
+            "hp": 8
+          }
+        },
+        {
+          "species": "BRISTUB",
+          "level": 32,
+          "item": null,
+          "moves": [
+            {
+              "name": "BIND",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "HARDEN",
+              "current_pp": 30,
+              "pp_ups": 0
+            },
+            {
+              "name": "TAKE_DOWN",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "PROTECT",
+              "current_pp": 10,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 9,
+            "defense": 8,
+            "speed": 8,
+            "special": 8,
+            "hp": 8
+          }
+        }
+      ],
+      "before_lines": [
+        "You found my spot!",
+        "Time for a battle!"
+      ],
+      "after_lines": [
+        "The grassy trails",
+        "are full of life!"
+      ],
+      "loss_lines": [
+        "Swept downstream!"
+      ],
+      "tile": [
+        43,
+        33
+      ],
+      "map": "MnMississippiUpstreamWoodsC00R02",
+      "global_tile": [
+        43,
+        129
+      ],
+      "path": [
+        {
+          "map": "MnMississippiUpstreamWoodsC00R02",
+          "point": [
+            43,
+            32
+          ]
+        }
+      ],
+      "water": {
+        "map": "MnMississippiUpstreamWoodsC00R02",
+        "point": [
+          43,
+          31
+        ]
+      },
+      "current_native_actor": {
+        "sprite": "SPRITE_YOUNGSTER",
+        "sprite_has_facings": true,
+        "x": 43,
+        "y": 33,
+        "spritemovedata": "SPRITEMOVEDATA_STANDING_LEFT",
+        "move_range_x": 0,
+        "move_range_y": 0,
+        "hram_x": -1,
+        "hram_y": -1,
+        "pal": 0,
+        "object_type": "OBJECTTYPE_TRAINER",
+        "radius": 2,
+        "script": "MN_RIVER_FUN_UPSTREAM_MAPLE",
+        "label": null,
+        "event_flag": "-1",
+        "object_identifier": "MN_RIVER_FUN_UPSTREAM_MAPLE",
+        "sightline_direction_override": null
+      }
+    },
+    {
+      "kind": "healer",
+      "id": "MN_RIVER_FUN_UPSTREAM_MEDIC",
+      "sprite": "SPRITE_NURSE",
+      "global_metatile": [
+        52,
+        43
+      ],
+      "lines": [
+        "Rest by the river.",
+        "I can heal your",
+        "weary team."
+      ],
+      "tile": [
+        41,
+        39
+      ],
+      "map": "MnMississippiUpstreamWoodsC01R01",
+      "global_tile": [
+        105,
+        87
+      ],
+      "path": [
+        {
+          "map": "MnMississippiUpstreamWoodsC01R01",
+          "point": [
+            43,
+            38
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R01",
+          "point": [
+            42,
+            38
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R01",
+          "point": [
+            41,
+            38
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R01",
+          "point": [
+            40,
+            38
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R01",
+          "point": [
+            40,
+            39
+          ]
+        }
+      ],
+      "water": {
+        "map": "MnMississippiUpstreamWoodsC01R01",
+        "point": [
+          44,
+          38
+        ]
+      },
+      "current_native_actor": {
+        "sprite": "SPRITE_NURSE",
+        "sprite_has_facings": true,
+        "x": 41,
+        "y": 39,
+        "spritemovedata": "SPRITEMOVEDATA_STANDING_DOWN",
+        "move_range_x": 0,
+        "move_range_y": 0,
+        "hram_x": -1,
+        "hram_y": -1,
+        "pal": 0,
+        "object_type": "OBJECTTYPE_SCRIPT",
+        "radius": 0,
+        "script": "MN_RIVER_FUN_UPSTREAM_MEDIC",
+        "label": null,
+        "event_flag": "-1",
+        "object_identifier": "MN_RIVER_FUN_UPSTREAM_MEDIC",
+        "sightline_direction_override": null
+      }
+    },
+    {
+      "kind": "trainer",
+      "id": "MN_RIVER_FUN_UPSTREAM_NELL",
+      "display_name": "NELL",
+      "trainer_class": "PICNICKER",
+      "sprite": "SPRITE_LASS",
+      "global_metatile": [
+        32,
+        58
+      ],
+      "facing": "west",
+      "sight_range": 2,
+      "defeated_flag": "EVENT_MN_RIVER_FUN_UPSTREAM_NELL",
+      "party": [
+        {
+          "species": "RICELING",
+          "level": 31,
+          "item": null,
+          "moves": [
+            {
+              "name": "SWEET_SCENT",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "MEGA_DRAIN",
+              "current_pp": 10,
+              "pp_ups": 0
+            },
+            {
+              "name": "SYNTHESIS",
+              "current_pp": 5,
+              "pp_ups": 0
+            },
+            {
+              "name": "RAZOR_LEAF",
+              "current_pp": 25,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 6,
+            "defense": 10,
+            "speed": 10,
+            "special": 8,
+            "hp": 0
+          }
+        },
+        {
+          "species": "TAPACITOR",
+          "level": 32,
+          "item": null,
+          "moves": [
+            {
+              "name": "MEGA_DRAIN",
+              "current_pp": 10,
+              "pp_ups": 0
+            },
+            {
+              "name": "SPARK",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "BIDE",
+              "current_pp": 10,
+              "pp_ups": 0
+            },
+            {
+              "name": "LIGHT_SCREEN",
+              "current_pp": 30,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 6,
+            "defense": 10,
+            "speed": 10,
+            "special": 8,
+            "hp": 0
+          }
+        }
+      ],
+      "before_lines": [
+        "You found my spot!",
+        "Time for a battle!"
+      ],
+      "after_lines": [
+        "The grassy trails",
+        "are full of life!"
+      ],
+      "loss_lines": [
+        "Swept downstream!"
+      ],
+      "tile": [
+        1,
+        21
+      ],
+      "map": "MnMississippiUpstreamWoodsC01R02",
+      "global_tile": [
+        65,
+        117
+      ],
+      "path": [
+        {
+          "map": "MnMississippiUpstreamWoodsC01R02",
+          "point": [
+            3,
+            24
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R02",
+          "point": [
+            2,
+            24
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R02",
+          "point": [
+            2,
+            23
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R02",
+          "point": [
+            2,
+            22
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R02",
+          "point": [
+            2,
+            21
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R02",
+          "point": [
+            2,
+            20
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R02",
+          "point": [
+            1,
+            20
+          ]
+        }
+      ],
+      "water": {
+        "map": "MnMississippiUpstreamWoodsC01R02",
+        "point": [
+          4,
+          24
+        ]
+      },
+      "current_native_actor": {
+        "sprite": "SPRITE_LASS",
+        "sprite_has_facings": true,
+        "x": 1,
+        "y": 21,
+        "spritemovedata": "SPRITEMOVEDATA_STANDING_LEFT",
+        "move_range_x": 0,
+        "move_range_y": 0,
+        "hram_x": -1,
+        "hram_y": -1,
+        "pal": 0,
+        "object_type": "OBJECTTYPE_TRAINER",
+        "radius": 2,
+        "script": "MN_RIVER_FUN_UPSTREAM_NELL",
+        "label": null,
+        "event_flag": "-1",
+        "object_identifier": "MN_RIVER_FUN_UPSTREAM_NELL",
+        "sightline_direction_override": null
+      }
+    },
+    {
+      "kind": "trainer",
+      "id": "MN_RIVER_FUN_UPSTREAM_OTTO",
+      "display_name": "OTTO",
+      "trainer_class": "FISHER",
+      "sprite": "SPRITE_FISHER",
+      "global_metatile": [
+        53,
+        43
+      ],
+      "facing": "west",
+      "sight_range": 2,
+      "defeated_flag": "EVENT_MN_RIVER_FUN_UPSTREAM_OTTO",
+      "party": [
+        {
+          "species": "PIKEMAN",
+          "level": 32,
+          "item": null,
+          "moves": [
+            {
+              "name": "WATERFALL",
+              "current_pp": 15,
+              "pp_ups": 0
+            },
+            {
+              "name": "LOW_KICK",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "REVERSAL",
+              "current_pp": 15,
+              "pp_ups": 0
+            },
+            {
+              "name": "SLAM",
+              "current_pp": 20,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 9,
+            "defense": 8,
+            "speed": 8,
+            "special": 8,
+            "hp": 8
+          }
+        },
+        {
+          "species": "TORROUT",
+          "level": 33,
+          "item": null,
+          "moves": [
+            {
+              "name": "LOW_KICK",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "WATER_PULSE",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "COUNTER",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "RAIN_DANCE",
+              "current_pp": 5,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 9,
+            "defense": 8,
+            "speed": 8,
+            "special": 8,
+            "hp": 8
+          }
+        }
+      ],
+      "before_lines": [
+        "A riverbank match?",
+        "My team is ready!"
+      ],
+      "after_lines": [
+        "Every bend brings",
+        "a new adventure!"
+      ],
+      "loss_lines": [
+        "What a wild ride!"
+      ],
+      "tile": [
+        43,
+        39
+      ],
+      "map": "MnMississippiUpstreamWoodsC01R01",
+      "global_tile": [
+        107,
+        87
+      ],
+      "path": [
+        {
+          "map": "MnMississippiUpstreamWoodsC01R01",
+          "point": [
+            43,
+            38
+          ]
+        }
+      ],
+      "water": {
+        "map": "MnMississippiUpstreamWoodsC01R01",
+        "point": [
+          44,
+          38
+        ]
+      },
+      "current_native_actor": {
+        "sprite": "SPRITE_FISHER",
+        "sprite_has_facings": true,
+        "x": 43,
+        "y": 39,
+        "spritemovedata": "SPRITEMOVEDATA_STANDING_LEFT",
+        "move_range_x": 0,
+        "move_range_y": 0,
+        "hram_x": -1,
+        "hram_y": -1,
+        "pal": 0,
+        "object_type": "OBJECTTYPE_TRAINER",
+        "radius": 2,
+        "script": "MN_RIVER_FUN_UPSTREAM_OTTO",
+        "label": null,
+        "event_flag": "-1",
+        "object_identifier": "MN_RIVER_FUN_UPSTREAM_OTTO",
+        "sightline_direction_override": null
+      }
+    },
+    {
+      "kind": "trainer",
+      "id": "MN_RIVER_FUN_UPSTREAM_PETAL",
+      "display_name": "PETAL",
+      "trainer_class": "CAMPER",
+      "sprite": "SPRITE_YOUNGSTER",
+      "global_metatile": [
+        47,
+        28
+      ],
+      "facing": "west",
+      "sight_range": 2,
+      "defeated_flag": "EVENT_MN_RIVER_FUN_UPSTREAM_PETAL",
+      "party": [
+        {
+          "species": "AUGRUB",
+          "level": 32,
+          "item": null,
+          "moves": [
+            {
+              "name": "MAGNITUDE",
+              "current_pp": 30,
+              "pp_ups": 0
+            },
+            {
+              "name": "LOW_KICK",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "DIG",
+              "current_pp": 10,
+              "pp_ups": 0
+            },
+            {
+              "name": "SCREECH",
+              "current_pp": 40,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 9,
+            "defense": 8,
+            "speed": 8,
+            "special": 8,
+            "hp": 8
+          }
+        },
+        {
+          "species": "BRISTUB",
+          "level": 33,
+          "item": null,
+          "moves": [
+            {
+              "name": "BIND",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "HARDEN",
+              "current_pp": 30,
+              "pp_ups": 0
+            },
+            {
+              "name": "TAKE_DOWN",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "PROTECT",
+              "current_pp": 10,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 9,
+            "defense": 8,
+            "speed": 8,
+            "special": 8,
+            "hp": 8
+          }
+        }
+      ],
+      "before_lines": [
+        "You found my spot!",
+        "Time for a battle!"
+      ],
+      "after_lines": [
+        "The grassy trails",
+        "are full of life!"
+      ],
+      "loss_lines": [
+        "Swept downstream!"
+      ],
+      "tile": [
+        31,
+        9
+      ],
+      "map": "MnMississippiUpstreamWoodsC01R01",
+      "global_tile": [
+        95,
+        57
+      ],
+      "path": [
+        {
+          "map": "MnMississippiUpstreamWoodsC01R01",
+          "point": [
+            31,
+            6
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R01",
+          "point": [
+            31,
+            7
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R01",
+          "point": [
+            31,
+            8
+          ]
+        }
+      ],
+      "water": {
+        "map": "MnMississippiUpstreamWoodsC01R01",
+        "point": [
+          31,
+          5
+        ]
+      },
+      "current_native_actor": {
+        "sprite": "SPRITE_YOUNGSTER",
+        "sprite_has_facings": true,
+        "x": 31,
+        "y": 9,
+        "spritemovedata": "SPRITEMOVEDATA_STANDING_LEFT",
+        "move_range_x": 0,
+        "move_range_y": 0,
+        "hram_x": -1,
+        "hram_y": -1,
+        "pal": 0,
+        "object_type": "OBJECTTYPE_TRAINER",
+        "radius": 2,
+        "script": "MN_RIVER_FUN_UPSTREAM_PETAL",
+        "label": null,
+        "event_flag": "-1",
+        "object_identifier": "MN_RIVER_FUN_UPSTREAM_PETAL",
+        "sightline_direction_override": null
+      }
+    },
+    {
+      "kind": "trainer",
+      "id": "MN_RIVER_FUN_UPSTREAM_ROWAN",
+      "display_name": "ROWAN",
+      "trainer_class": "PICNICKER",
+      "sprite": "SPRITE_LASS",
+      "global_metatile": [
+        47,
+        20
+      ],
+      "facing": "west",
+      "sight_range": 2,
+      "defeated_flag": "EVENT_MN_RIVER_FUN_UPSTREAM_ROWAN",
+      "party": [
+        {
+          "species": "RICELING",
+          "level": 32,
+          "item": null,
+          "moves": [
+            {
+              "name": "SWEET_SCENT",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "MEGA_DRAIN",
+              "current_pp": 10,
+              "pp_ups": 0
+            },
+            {
+              "name": "SYNTHESIS",
+              "current_pp": 5,
+              "pp_ups": 0
+            },
+            {
+              "name": "RAZOR_LEAF",
+              "current_pp": 25,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 6,
+            "defense": 10,
+            "speed": 10,
+            "special": 8,
+            "hp": 0
+          }
+        },
+        {
+          "species": "TAPACITOR",
+          "level": 33,
+          "item": null,
+          "moves": [
+            {
+              "name": "MEGA_DRAIN",
+              "current_pp": 10,
+              "pp_ups": 0
+            },
+            {
+              "name": "SPARK",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "BIDE",
+              "current_pp": 10,
+              "pp_ups": 0
+            },
+            {
+              "name": "LIGHT_SCREEN",
+              "current_pp": 30,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 6,
+            "defense": 10,
+            "speed": 10,
+            "special": 8,
+            "hp": 0
+          }
+        }
+      ],
+      "before_lines": [
+        "You found my spot!",
+        "Time for a battle!"
+      ],
+      "after_lines": [
+        "The grassy trails",
+        "are full of life!"
+      ],
+      "loss_lines": [
+        "Swept downstream!"
+      ],
+      "tile": [
+        31,
+        41
+      ],
+      "map": "MnMississippiUpstreamWoodsC01R00",
+      "global_tile": [
+        95,
+        41
+      ],
+      "path": [
+        {
+          "map": "MnMississippiUpstreamWoodsC01R00",
+          "point": [
+            33,
+            40
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R00",
+          "point": [
+            32,
+            40
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R00",
+          "point": [
+            31,
+            40
+          ]
+        }
+      ],
+      "water": {
+        "map": "MnMississippiUpstreamWoodsC01R00",
+        "point": [
+          34,
+          40
+        ]
+      },
+      "current_native_actor": {
+        "sprite": "SPRITE_LASS",
+        "sprite_has_facings": true,
+        "x": 31,
+        "y": 41,
+        "spritemovedata": "SPRITEMOVEDATA_STANDING_LEFT",
+        "move_range_x": 0,
+        "move_range_y": 0,
+        "hram_x": -1,
+        "hram_y": -1,
+        "pal": 0,
+        "object_type": "OBJECTTYPE_TRAINER",
+        "radius": 2,
+        "script": "MN_RIVER_FUN_UPSTREAM_ROWAN",
+        "label": null,
+        "event_flag": "-1",
+        "object_identifier": "MN_RIVER_FUN_UPSTREAM_ROWAN",
+        "sightline_direction_override": null
+      }
+    },
+    {
+      "kind": "trainer",
+      "id": "MN_RIVER_FUN_UPSTREAM_SAGE",
+      "display_name": "SAGE",
+      "trainer_class": "PICNICKER",
+      "sprite": "SPRITE_LASS",
+      "global_metatile": [
+        43,
+        56
+      ],
+      "facing": "west",
+      "sight_range": 2,
+      "defeated_flag": "EVENT_MN_RIVER_FUN_UPSTREAM_SAGE",
+      "party": [
+        {
+          "species": "FLOSSAIL",
+          "level": 31,
+          "item": null,
+          "moves": [
+            {
+              "name": "COTTON_SPORE",
+              "current_pp": 40,
+              "pp_ups": 0
+            },
+            {
+              "name": "GUST",
+              "current_pp": 35,
+              "pp_ups": 0
+            },
+            {
+              "name": "STUN_SPORE",
+              "current_pp": 30,
+              "pp_ups": 0
+            },
+            {
+              "name": "SLUDGE",
+              "current_pp": 20,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 6,
+            "defense": 10,
+            "speed": 10,
+            "special": 8,
+            "hp": 0
+          }
+        },
+        {
+          "species": "TAPACITOR",
+          "level": 32,
+          "item": null,
+          "moves": [
+            {
+              "name": "MEGA_DRAIN",
+              "current_pp": 10,
+              "pp_ups": 0
+            },
+            {
+              "name": "SPARK",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "BIDE",
+              "current_pp": 10,
+              "pp_ups": 0
+            },
+            {
+              "name": "LIGHT_SCREEN",
+              "current_pp": 30,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 6,
+            "defense": 10,
+            "speed": 10,
+            "special": 8,
+            "hp": 0
+          }
+        }
+      ],
+      "before_lines": [
+        "A riverbank match?",
+        "My team is ready!"
+      ],
+      "after_lines": [
+        "Every bend brings",
+        "a new adventure!"
+      ],
+      "loss_lines": [
+        "What a wild ride!"
+      ],
+      "tile": [
+        23,
+        17
+      ],
+      "map": "MnMississippiUpstreamWoodsC01R02",
+      "global_tile": [
+        87,
+        113
+      ],
+      "path": [
+        {
+          "map": "MnMississippiUpstreamWoodsC01R02",
+          "point": [
+            23,
+            19
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R02",
+          "point": [
+            24,
+            19
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R02",
+          "point": [
+            24,
+            18
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R02",
+          "point": [
+            24,
+            17
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R02",
+          "point": [
+            24,
+            16
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R02",
+          "point": [
+            23,
+            16
+          ]
+        }
+      ],
+      "water": {
+        "map": "MnMississippiUpstreamWoodsC01R02",
+        "point": [
+          23,
+          20
+        ]
+      },
+      "current_native_actor": {
+        "sprite": "SPRITE_LASS",
+        "sprite_has_facings": true,
+        "x": 23,
+        "y": 17,
+        "spritemovedata": "SPRITEMOVEDATA_STANDING_LEFT",
+        "move_range_x": 0,
+        "move_range_y": 0,
+        "hram_x": -1,
+        "hram_y": -1,
+        "pal": 0,
+        "object_type": "OBJECTTYPE_TRAINER",
+        "radius": 2,
+        "script": "MN_RIVER_FUN_UPSTREAM_SAGE",
+        "label": null,
+        "event_flag": "-1",
+        "object_identifier": "MN_RIVER_FUN_UPSTREAM_SAGE",
+        "sightline_direction_override": null
+      }
+    },
+    {
+      "kind": "trainer",
+      "id": "MN_RIVER_FUN_UPSTREAM_STONE",
+      "display_name": "STONE",
+      "trainer_class": "FISHER",
+      "sprite": "SPRITE_FISHER",
+      "global_metatile": [
+        60,
+        32
+      ],
+      "facing": "west",
+      "sight_range": 2,
+      "defeated_flag": "EVENT_MN_RIVER_FUN_UPSTREAM_STONE",
+      "party": [
+        {
+          "species": "SCUTLET",
+          "level": 32,
+          "item": null,
+          "moves": [
+            {
+              "name": "BUBBLEBEAM",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "ANCIENTPOWER",
+              "current_pp": 5,
+              "pp_ups": 0
+            },
+            {
+              "name": "RAIN_DANCE",
+              "current_pp": 5,
+              "pp_ups": 0
+            },
+            {
+              "name": "DRAGONBREATH",
+              "current_pp": 20,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 9,
+            "defense": 8,
+            "speed": 8,
+            "special": 8,
+            "hp": 8
+          }
+        },
+        {
+          "species": "TORROUT",
+          "level": 33,
+          "item": null,
+          "moves": [
+            {
+              "name": "LOW_KICK",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "WATER_PULSE",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "COUNTER",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "RAIN_DANCE",
+              "current_pp": 5,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 9,
+            "defense": 8,
+            "speed": 8,
+            "special": 8,
+            "hp": 8
+          }
+        }
+      ],
+      "before_lines": [
+        "You found my spot!",
+        "Time for a battle!"
+      ],
+      "after_lines": [
+        "The grassy trails",
+        "are full of life!"
+      ],
+      "loss_lines": [
+        "Swept downstream!"
+      ],
+      "tile": [
+        57,
+        17
+      ],
+      "map": "MnMississippiUpstreamWoodsC01R01",
+      "global_tile": [
+        121,
+        65
+      ],
+      "path": [
+        {
+          "map": "MnMississippiUpstreamWoodsC01R01",
+          "point": [
+            49,
+            23
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R01",
+          "point": [
+            50,
+            23
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R01",
+          "point": [
+            51,
+            23
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R01",
+          "point": [
+            52,
+            23
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R01",
+          "point": [
+            53,
+            23
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R01",
+          "point": [
+            54,
+            23
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R01",
+          "point": [
+            54,
+            22
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R01",
+          "point": [
+            54,
+            21
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R01",
+          "point": [
+            54,
+            20
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R01",
+          "point": [
+            54,
+            19
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R01",
+          "point": [
+            54,
+            18
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R01",
+          "point": [
+            54,
+            17
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R01",
+          "point": [
+            54,
+            16
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R01",
+          "point": [
+            55,
+            16
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R01",
+          "point": [
+            56,
+            16
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R01",
+          "point": [
+            57,
+            16
+          ]
+        }
+      ],
+      "water": {
+        "map": "MnMississippiUpstreamWoodsC01R01",
+        "point": [
+          49,
+          24
+        ]
+      },
+      "current_native_actor": {
+        "sprite": "SPRITE_FISHER",
+        "sprite_has_facings": true,
+        "x": 57,
+        "y": 17,
+        "spritemovedata": "SPRITEMOVEDATA_STANDING_LEFT",
+        "move_range_x": 0,
+        "move_range_y": 0,
+        "hram_x": -1,
+        "hram_y": -1,
+        "pal": 0,
+        "object_type": "OBJECTTYPE_TRAINER",
+        "radius": 2,
+        "script": "MN_RIVER_FUN_UPSTREAM_STONE",
+        "label": null,
+        "event_flag": "-1",
+        "object_identifier": "MN_RIVER_FUN_UPSTREAM_STONE",
+        "sightline_direction_override": null
+      }
+    },
+    {
+      "kind": "item",
+      "id": "MN_RIVER_FUN_UPSTREAM_SUPER_POTION",
+      "item": "SUPER_POTION",
+      "quantity": 1,
+      "flag": "EVENT_MN_RIVER_FUN_UPSTREAM_SUPER_POTION",
+      "global_metatile": [
+        18,
+        65
+      ],
+      "tile": [
+        37,
+        35
+      ],
+      "map": "MnMississippiUpstreamWoodsC00R02",
+      "global_tile": [
+        37,
+        131
+      ],
+      "path": [
+        {
+          "map": "MnMississippiUpstreamWoodsC00R02",
+          "point": [
+            36,
+            30
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC00R02",
+          "point": [
+            36,
+            31
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC00R02",
+          "point": [
+            36,
+            32
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC00R02",
+          "point": [
+            36,
+            33
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC00R02",
+          "point": [
+            36,
+            34
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC00R02",
+          "point": [
+            36,
+            35
+          ]
+        }
+      ],
+      "water": {
+        "map": "MnMississippiUpstreamWoodsC00R02",
+        "point": [
+          36,
+          29
+        ]
+      },
+      "current_native_actor": {
+        "sprite": "SPRITE_POKE_BALL",
+        "sprite_has_facings": true,
+        "x": 37,
+        "y": 35,
+        "spritemovedata": "SPRITEMOVEDATA_STANDING_DOWN",
+        "move_range_x": 0,
+        "move_range_y": 0,
+        "hram_x": -1,
+        "hram_y": -1,
+        "pal": 0,
+        "object_type": "OBJECTTYPE_ITEMBALL",
+        "radius": 0,
+        "script": "MN_RIVER_FUN_UPSTREAM_SUPER_POTION",
+        "label": null,
+        "event_flag": "EVENT_MN_RIVER_FUN_UPSTREAM_SUPER_POTION",
+        "object_identifier": "MN_RIVER_FUN_UPSTREAM_SUPER_POTION",
+        "sightline_direction_override": null
+      }
+    },
+    {
+      "kind": "item",
+      "id": "MN_RIVER_FUN_UPSTREAM_ULTRA_BALL",
+      "item": "ULTRA_BALL",
+      "quantity": 1,
+      "flag": "EVENT_MN_RIVER_FUN_UPSTREAM_ULTRA_BALL",
+      "global_metatile": [
+        41,
+        55
+      ],
+      "tile": [
+        19,
+        15
+      ],
+      "map": "MnMississippiUpstreamWoodsC01R02",
+      "global_tile": [
+        83,
+        111
+      ],
+      "path": [
+        {
+          "map": "MnMississippiUpstreamWoodsC01R02",
+          "point": [
+            22,
+            19
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R02",
+          "point": [
+            21,
+            19
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R02",
+          "point": [
+            20,
+            19
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R02",
+          "point": [
+            19,
+            19
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R02",
+          "point": [
+            18,
+            19
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R02",
+          "point": [
+            18,
+            18
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R02",
+          "point": [
+            18,
+            17
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R02",
+          "point": [
+            18,
+            16
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R02",
+          "point": [
+            18,
+            15
+          ]
+        }
+      ],
+      "water": {
+        "map": "MnMississippiUpstreamWoodsC01R02",
+        "point": [
+          22,
+          20
+        ]
+      },
+      "current_native_actor": {
+        "sprite": "SPRITE_POKE_BALL",
+        "sprite_has_facings": true,
+        "x": 19,
+        "y": 15,
+        "spritemovedata": "SPRITEMOVEDATA_STANDING_DOWN",
+        "move_range_x": 0,
+        "move_range_y": 0,
+        "hram_x": -1,
+        "hram_y": -1,
+        "pal": 0,
+        "object_type": "OBJECTTYPE_ITEMBALL",
+        "radius": 0,
+        "script": "MN_RIVER_FUN_UPSTREAM_ULTRA_BALL",
+        "label": null,
+        "event_flag": "EVENT_MN_RIVER_FUN_UPSTREAM_ULTRA_BALL",
+        "object_identifier": "MN_RIVER_FUN_UPSTREAM_ULTRA_BALL",
+        "sightline_direction_override": null
+      }
+    },
+    {
+      "kind": "trainer",
+      "id": "MN_RIVER_FUN_UPSTREAM_WREN",
+      "display_name": "WREN",
+      "trainer_class": "BIRD_KEEPER",
+      "sprite": "SPRITE_FALKNER",
+      "global_metatile": [
+        29,
+        60
+      ],
+      "facing": "west",
+      "sight_range": 2,
+      "defeated_flag": "EVENT_MN_RIVER_FUN_UPSTREAM_WREN",
+      "party": [
+        {
+          "species": "NOTCHBILL",
+          "level": 32,
+          "item": null,
+          "moves": [
+            {
+              "name": "HEADBUTT",
+              "current_pp": 15,
+              "pp_ups": 0
+            },
+            {
+              "name": "WING_ATTACK",
+              "current_pp": 35,
+              "pp_ups": 0
+            },
+            {
+              "name": "DETECT",
+              "current_pp": 5,
+              "pp_ups": 0
+            },
+            {
+              "name": "AGILITY",
+              "current_pp": 30,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 9,
+            "defense": 8,
+            "speed": 8,
+            "special": 8,
+            "hp": 8
+          }
+        },
+        {
+          "species": "BOOMRUFF",
+          "level": 33,
+          "item": null,
+          "moves": [
+            {
+              "name": "WING_ATTACK",
+              "current_pp": 35,
+              "pp_ups": 0
+            },
+            {
+              "name": "BELLY_DRUM",
+              "current_pp": 10,
+              "pp_ups": 0
+            },
+            {
+              "name": "MAGNITUDE",
+              "current_pp": 30,
+              "pp_ups": 0
+            },
+            {
+              "name": "SWAGGER",
+              "current_pp": 15,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 9,
+            "defense": 8,
+            "speed": 8,
+            "special": 8,
+            "hp": 8
+          }
+        }
+      ],
+      "before_lines": [
+        "A riverbank match?",
+        "My team is ready!"
+      ],
+      "after_lines": [
+        "Every bend brings",
+        "a new adventure!"
+      ],
+      "loss_lines": [
+        "What a wild ride!"
+      ],
+      "tile": [
+        59,
+        25
+      ],
+      "map": "MnMississippiUpstreamWoodsC00R02",
+      "global_tile": [
+        59,
+        121
+      ],
+      "path": [
+        {
+          "map": "MnMississippiUpstreamWoodsC00R02",
+          "point": [
+            59,
+            27
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC00R02",
+          "point": [
+            60,
+            27
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC00R02",
+          "point": [
+            60,
+            26
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC00R02",
+          "point": [
+            60,
+            25
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC00R02",
+          "point": [
+            60,
+            24
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC00R02",
+          "point": [
+            59,
+            24
+          ]
+        }
+      ],
+      "water": {
+        "map": "MnMississippiUpstreamWoodsC00R02",
+        "point": [
+          59,
+          28
+        ]
+      },
+      "current_native_actor": {
+        "sprite": "SPRITE_FALKNER",
+        "sprite_has_facings": true,
+        "x": 59,
+        "y": 25,
+        "spritemovedata": "SPRITEMOVEDATA_STANDING_LEFT",
+        "move_range_x": 0,
+        "move_range_y": 0,
+        "hram_x": -1,
+        "hram_y": -1,
+        "pal": 0,
+        "object_type": "OBJECTTYPE_TRAINER",
+        "radius": 2,
+        "script": "MN_RIVER_FUN_UPSTREAM_WREN",
+        "label": null,
+        "event_flag": "-1",
+        "object_identifier": "MN_RIVER_FUN_UPSTREAM_WREN",
+        "sightline_direction_override": null
+      }
+    },
+    {
+      "kind": "trainer",
+      "id": "MN_RIVER_UPSTREAM_BANK_FISHER",
+      "map": "MnMississippiUpstreamWoodsC00R02",
+      "tile": [
+        33,
+        35
+      ],
+      "global_tile": [
+        33,
+        131
+      ],
+      "path": [
+        {
+          "map": "MnMississippiUpstreamWoodsC00R02",
+          "point": [
+            28,
+            35
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC00R02",
+          "point": [
+            29,
+            35
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC00R02",
+          "point": [
+            30,
+            35
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC00R02",
+          "point": [
+            31,
+            35
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC00R02",
+          "point": [
+            32,
+            35
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC00R02",
+          "point": [
+            32,
+            36
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC00R02",
+          "point": [
+            33,
+            36
+          ]
+        }
+      ],
+      "water": {
+        "map": "MnMississippiUpstreamWoodsC00R02",
+        "point": [
+          27,
+          35
+        ]
+      },
+      "display_name": "DALE",
+      "trainer_class": "FISHER",
+      "party": [
+        {
+          "species": "TORROUT",
+          "level": 31,
+          "item": null,
+          "moves": [
+            {
+              "name": "LOW_KICK",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "WATER_PULSE",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "COUNTER",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "RAIN_DANCE",
+              "current_pp": 5,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 9,
+            "defense": 8,
+            "speed": 8,
+            "special": 8,
+            "hp": 8
+          }
+        },
+        {
+          "species": "MUDMENDER",
+          "level": 32,
+          "item": null,
+          "moves": [
+            {
+              "name": "CONFUSION",
+              "current_pp": 25,
+              "pp_ups": 0
+            },
+            {
+              "name": "SAFEGUARD",
+              "current_pp": 25,
+              "pp_ups": 0
+            },
+            {
+              "name": "BUBBLEBEAM",
+              "current_pp": 20,
+              "pp_ups": 0
+            },
+            {
+              "name": "LIGHT_SCREEN",
+              "current_pp": 30,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 9,
+            "defense": 8,
+            "speed": 8,
+            "special": 8,
+            "hp": 8
+          }
+        }
+      ],
+      "defeated_flag": "EVENT_MN_RIVER_UPSTREAM_BANK_FISHER_DEFEATED",
+      "current_native_actor": {
+        "sprite": "SPRITE_FISHER",
+        "sprite_has_facings": true,
+        "x": 33,
+        "y": 35,
+        "spritemovedata": "SPRITEMOVEDATA_STANDING_DOWN",
+        "move_range_x": 0,
+        "move_range_y": 0,
+        "hram_x": -1,
+        "hram_y": -1,
+        "pal": 0,
+        "object_type": "OBJECTTYPE_TRAINER",
+        "radius": 0,
+        "script": "MN_RIVER_UPSTREAM_BANK_FISHER",
+        "label": null,
+        "event_flag": "-1",
+        "object_identifier": "MN_RIVER_UPSTREAM_BANK_FISHER",
+        "sightline_direction_override": null
+      }
+    },
+    {
+      "kind": "trainer",
+      "id": "MN_RIVER_UPSTREAM_WOODS_KEEPER",
+      "map": "MnMississippiUpstreamWoodsC01R00",
+      "tile": [
+        5,
+        23
+      ],
+      "global_tile": [
+        69,
+        23
+      ],
+      "path": [
+        {
+          "map": "MnMississippiUpstreamWoodsC01R00",
+          "point": [
+            6,
+            25
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R00",
+          "point": [
+            5,
+            25
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R00",
+          "point": [
+            4,
+            25
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R00",
+          "point": [
+            4,
+            24
+          ]
+        },
+        {
+          "map": "MnMississippiUpstreamWoodsC01R00",
+          "point": [
+            4,
+            23
+          ]
+        }
+      ],
+      "water": {
+        "map": "MnMississippiUpstreamWoodsC01R00",
+        "point": [
+          6,
+          26
+        ]
+      },
+      "display_name": "PINE",
+      "trainer_class": "BIRD_KEEPER",
+      "party": [
+        {
+          "species": "BOOMRUFF",
+          "level": 32,
+          "item": null,
+          "moves": [
+            {
+              "name": "WING_ATTACK",
+              "current_pp": 35,
+              "pp_ups": 0
+            },
+            {
+              "name": "BELLY_DRUM",
+              "current_pp": 10,
+              "pp_ups": 0
+            },
+            {
+              "name": "MAGNITUDE",
+              "current_pp": 30,
+              "pp_ups": 0
+            },
+            {
+              "name": "SWAGGER",
+              "current_pp": 15,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 9,
+            "defense": 8,
+            "speed": 8,
+            "special": 8,
+            "hp": 8
+          }
+        },
+        {
+          "species": "NOTCHBILL",
+          "level": 31,
+          "item": null,
+          "moves": [
+            {
+              "name": "HEADBUTT",
+              "current_pp": 15,
+              "pp_ups": 0
+            },
+            {
+              "name": "WING_ATTACK",
+              "current_pp": 35,
+              "pp_ups": 0
+            },
+            {
+              "name": "DETECT",
+              "current_pp": 5,
+              "pp_ups": 0
+            },
+            {
+              "name": "AGILITY",
+              "current_pp": 30,
+              "pp_ups": 0
+            }
+          ],
+          "dvs": {
+            "attack": 9,
+            "defense": 8,
+            "speed": 8,
+            "special": 8,
+            "hp": 8
+          }
+        }
+      ],
+      "defeated_flag": "EVENT_MN_RIVER_UPSTREAM_WOODS_KEEPER_DEFEATED",
+      "current_native_actor": {
+        "sprite": "SPRITE_YOUNGSTER",
+        "sprite_has_facings": true,
+        "x": 5,
+        "y": 23,
+        "spritemovedata": "SPRITEMOVEDATA_STANDING_DOWN",
+        "move_range_x": 0,
+        "move_range_y": 0,
+        "hram_x": -1,
+        "hram_y": -1,
+        "pal": 0,
+        "object_type": "OBJECTTYPE_TRAINER",
+        "radius": 0,
+        "script": "MN_RIVER_UPSTREAM_WOODS_KEEPER",
+        "label": null,
+        "event_flag": "-1",
+        "object_identifier": "MN_RIVER_UPSTREAM_WOODS_KEEPER",
+        "sightline_direction_override": null
+      }
+    }
+  ],
+  "scope": "All twenty current Upstream Woods trainers, three supplies and one medic; current native parties replace historical foreign-species metadata. Initial local party/placement remains fixture setup.",
+  "inherited_plan": "planning/minnesota/revisions/route-grass-v01/current-upstream-woods-v01/current-controller-plan-v02.json",
+  "inherited_plan_sha256": "68cad290f07b4fe1e75abeae39838f519a177deabc4ab1f02ac652060076178c"
+}

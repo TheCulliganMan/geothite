@@ -1,0 +1,13 @@
+{
+  "tool": "built-in image_gen",
+  "original_tool_path": "/Users/ryanculligan/.codex/generated_images/01a17dcc-4f1a-77a2-9d21-0df036061346/exec-d57d89de-a107-42b6-a6cb-d4cc3ddf25a6.png",
+  "source_size": [
+    1536,
+    1024
+  ],
+  "sha256": "2cc93944ac0984b023574627f138c9742d60edeb167636bf948792bc4f95746e",
+  "reference_paths": [
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-portabeau-v3/MN_F004/review/line.normal-8x.png"
+  ],
+  "prompt": "portabeau.prompt-v4.txt"
+}

@@ -1,0 +1,45 @@
+{
+  "id": "MN_F129",
+  "region": "northwoods",
+  "theme": "Minnesota gray wolves, coordinated tracking and long-distance pack calls: a large-eared pup becomes a lanky tracker, then a powerful quadrupedal wolf whose paired folded neck ruffs aim sound toward its ears. Its Dark typing expresses stealth and coordination; no ice, storms, moon emblems or costume.",
+  "habitat": "Quiet forest trails and connected northern woodland clearings.",
+  "members": [
+    {
+      "id": "MN_284",
+      "name": "Yipup",
+      "types": [
+        "DARK"
+      ],
+      "stage": 1,
+      "evolves_to": "MN_285"
+    },
+    {
+      "id": "MN_285",
+      "name": "Loperuff",
+      "types": [
+        "DARK"
+      ],
+      "stage": 2,
+      "evolves_to": "MN_286"
+    },
+    {
+      "id": "MN_286",
+      "name": "Timberhowl",
+      "types": [
+        "DARK"
+      ],
+      "stage": 3,
+      "evolves_to": null
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.dnr.state.mn.us/mammals/index.html",
+      "publisher": "Minnesota regional primary source",
+      "evidence": "Minnesota gray-wolf inspiration; sound-guiding fur and all creature powers are original fiction.",
+      "fantasy_extension": "All powers, anatomy changes and discovery scenes are original fiction."
+    }
+  ],
+  "design_status": "authored-wildlife-replacement",
+  "replacement_context": "User requested forest wildlife in place of rejected weather families while retaining exactly220 active species. No encounter table or map event is changed."
+}

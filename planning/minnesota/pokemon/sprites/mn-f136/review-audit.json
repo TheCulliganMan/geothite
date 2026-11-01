@@ -1,0 +1,131 @@
+{
+  "family_id": "MN_F136",
+  "status": "root-reviewed-ready-for-root-registration",
+  "registered_globally": false,
+  "generated_images": 1,
+  "generation_tool": "built-in image_gen",
+  "source": "sprites/mn-f136/front-back.imagegen-v1.png",
+  "source_sha256": "05a83c569dfc6e001690f1bfe04bdfdb3dd70f55aca6ae419eef0ba458b1ece7",
+  "prompt": "prompt-v1.txt",
+  "selected_native_candidate": "v2-area",
+  "profile_count": 3,
+  "evolution_levels": [
+    24,
+    40
+  ],
+  "profile_contract": "PASS: production catalog load, complete schema, two pages of three lines <=18 chars, classification <=11 chars, evolution closure",
+  "native_graphics_contract": "PASS: production catalog load against actual canonical native directories; reviewed full-board hash, source/import/palette/index/PNG/2bpp verification",
+  "reference_audit": "PASS: all proposed native level/TM/egg moves, growth curves and footprint donors exist in completed v5 pack; no extension/export built",
+  "native_views": [
+    {
+      "species_id": "MN_300",
+      "view": "front",
+      "size": 56,
+      "sampling": "area_vote",
+      "contour": "solid",
+      "palette_rgb555": [
+        32767,
+        11831,
+        16744,
+        0
+      ],
+      "source_sha256": "05a83c569dfc6e001690f1bfe04bdfdb3dd70f55aca6ae419eef0ba458b1ece7"
+    },
+    {
+      "species_id": "MN_300",
+      "view": "back",
+      "size": 48,
+      "sampling": "area_vote",
+      "contour": "solid",
+      "palette_rgb555": [
+        32767,
+        11831,
+        16744,
+        0
+      ],
+      "source_sha256": "05a83c569dfc6e001690f1bfe04bdfdb3dd70f55aca6ae419eef0ba458b1ece7"
+    },
+    {
+      "species_id": "MN_301",
+      "view": "front",
+      "size": 56,
+      "sampling": "area_vote",
+      "contour": "solid",
+      "palette_rgb555": [
+        32767,
+        20881,
+        18237,
+        0
+      ],
+      "source_sha256": "05a83c569dfc6e001690f1bfe04bdfdb3dd70f55aca6ae419eef0ba458b1ece7"
+    },
+    {
+      "species_id": "MN_301",
+      "view": "back",
+      "size": 48,
+      "sampling": "area_vote",
+      "contour": "solid",
+      "palette_rgb555": [
+        32767,
+        20881,
+        18237,
+        0
+      ],
+      "source_sha256": "05a83c569dfc6e001690f1bfe04bdfdb3dd70f55aca6ae419eef0ba458b1ece7"
+    },
+    {
+      "species_id": "MN_302",
+      "view": "front",
+      "size": 56,
+      "sampling": "area_vote",
+      "contour": "solid",
+      "palette_rgb555": [
+        32767,
+        14568,
+        14109,
+        0
+      ],
+      "source_sha256": "05a83c569dfc6e001690f1bfe04bdfdb3dd70f55aca6ae419eef0ba458b1ece7"
+    },
+    {
+      "species_id": "MN_302",
+      "view": "back",
+      "size": 48,
+      "sampling": "area_vote",
+      "contour": "solid",
+      "palette_rgb555": [
+        32767,
+        14568,
+        14109,
+        0
+      ],
+      "source_sha256": "05a83c569dfc6e001690f1bfe04bdfdb3dd70f55aca6ae419eef0ba458b1ece7"
+    }
+  ],
+  "selected_output_hashes": {
+    "mn-300-densy-v1.front.png": "cb4cebe406b63e3a11d1e2e53d0c284e58749a4c84a1e5441ce0dc9b94836c18",
+    "mn-300-densy-v1.front.2bpp": "af94af0bc3717d3e40da422bdf401f9abb47a7273f7aa9724d08c70f21d1754a",
+    "mn-300-densy-v1.front.json": "e6be5e9fe9e7a74d7c7a59b8d01ae86c54a6633386ab24f7406388d2e43158ae",
+    "mn-300-densy-v1.back.png": "8164aa50cb537fc8cd9a8f3e6954475d36fb987db6e78919260b7f060fa86ef0",
+    "mn-300-densy-v1.back.2bpp": "08095f146f8b81c43e82356e2c90309c1144cc0f67e9212ba8e67e16575f6353",
+    "mn-300-densy-v1.back.json": "46101676f003d07881280b2d812adc82ae7b35ada38d00855958935287608201",
+    "mn-301-dozebear-v1.front.png": "cd0b91c92f6a6a56e66b11d4d305230c702f2de23335d05d3563387d8c7c1754",
+    "mn-301-dozebear-v1.front.2bpp": "49f3c30b691b6daa51e521f8cc6b7bc6c9ec2066d97b7f66c4921bf5e16269ab",
+    "mn-301-dozebear-v1.front.json": "375f252f8d6b84ec0ff673e74eeb4b729167bb5bdde5f93160b4e943a287f9ea",
+    "mn-301-dozebear-v1.back.png": "c10cbe858047d6ac2c1bf742a6ba30bad3e857994e07a43ef934fff2e12905e4",
+    "mn-301-dozebear-v1.back.2bpp": "1820576776db551da8c90d05c711892455486e1ab898713f158c1f20676220a1",
+    "mn-301-dozebear-v1.back.json": "1a9cea99bdf20488fcaf175f55653ca6ab646569caa2cdf5f579e37a8f476326",
+    "mn-302-denumbra-v1.front.png": "893862ccfc9e7eb7f8078b383d860dc280d59c49df5fc8bebc08c21917d6b9fd",
+    "mn-302-denumbra-v1.front.2bpp": "fa1ca36cd89ab51deb6db14ae530b44569a4ffe64615eff988558dd53d00ab2c",
+    "mn-302-denumbra-v1.front.json": "4cde92f1c55daa38f8545610c794aa5859ad4b46529e8688a81ce9b0840b449e",
+    "mn-302-denumbra-v1.back.png": "bd732b218adceff9bd05105946d11419a72017f83519e0a78df371e9235508ad",
+    "mn-302-denumbra-v1.back.2bpp": "7eb1d3397fe66d27e012eaec3326946227c1f3b97ae419506f8a707354913cf6",
+    "mn-302-denumbra-v1.back.json": "6eebff99a769343cb4ffe8bd6402064be8bf7e492c37ffc7653c17e5b2a30378",
+    "line.native.png": "b2702810acc4197c0c44b64211f037acaf53404eacfd1f2a2e505c29de0ce479",
+    "line.review.png": "03473798ca29bfde092efdc81376a5da718ab7bddd6b686e6eb9bd4165be66f2"
+  },
+  "manifest_sha256": "1e248d42871e306582864a889c1ed1f863817e689c6ca0bbc430854a9f93f275",
+  "profiles_sha256": "942c11a45e635ec927bf40334ceb4878b1c672415d859ab3f44230bf17ad3807",
+  "roster_family_sha256": "3c53a14a84cbdf5291dc7e31e52a7303f1efffe3344daa0e5a62128401844c3c",
+  "retention": "All generated sources/prompts and all native conversion candidates, including rejected initial crops and SourceCenter variants, are retained under this family directory and renders/."
+}

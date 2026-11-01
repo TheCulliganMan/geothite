@@ -1,0 +1,9 @@
+{
+  "status": "AUTHORED_TEXT_CORRECTION_NOT_PUBLISHED",
+  "reason": "Current outdoor hop inventory has no Route7 lanes; source image shows the old bank uses native stairs.",
+  "labels": [
+    "MN_R07_DROP_SIGNText",
+    "MN_R07_T02Won"
+  ],
+  "require_native_text_acknowledgment": true
+}

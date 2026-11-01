@@ -1,0 +1,9 @@
+{
+  "tool": "built-in image_gen",
+  "original_tool_render": "/Users/ryanculligan/.codex/generated_images/01a179bf-dc2b-7352-8975-8b8f3a32e33b/exec-072ce0b8-8e49-4045-bee7-ac896ea19073.png",
+  "preserved_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/rumblehide.overworld.imagegen-v2-front-eyes.png",
+  "source_sha256": "808a90adc678a9f5ffd9d55df1cb78589ba3a86c381e56c194fb1536dc4429e2",
+  "exact_prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/prompt-rumblehide-front-eyes-v2.txt",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/reference-mapping-rumblehide-front-eyes-v2.json",
+  "selected_native_status": "pending; original retained regardless of selection"
+}

@@ -1,0 +1,50 @@
+{
+  "pid": 71361,
+  "source_sha256": {
+    "crates/crystal-assets/src/r07_north_pocket_grass.rs": "5007118d9ea3917a8bd837edc064081fe15cc4989d5c127a396d58533896fb99",
+    "crates/crystal-assets/src/bin/revise_r07_north_pocket_grass.rs": "89a3eab9c28289d07f284b47af940101ede2c9c604d225779bf3bcc431a730a9"
+  },
+  "steps": [
+    {
+      "step": "publisher",
+      "command": [
+        "cargo",
+        "build",
+        "--profile",
+        "wasm-dev",
+        "--locked",
+        "--config",
+        "profile.wasm-dev.package.crystal-assets.opt-level=0",
+        "-p",
+        "crystal-assets",
+        "--bin",
+        "revise_r07_north_pocket_grass"
+      ],
+      "exit_code": 0,
+      "log": ".local/route-grass-review/r07-north-pocket-grass-publisher-v03.log",
+      "outputs": [
+        {
+          "path": ".local/route-grass-review/portable-r07-north-pocket-grass-tools-v03/revise_r07_north_pocket_grass",
+          "sha256": "c18dc742ce3c6cc0f0075c86272e04bd9f01995d840ef2b39ec17e6c9bc78188"
+        }
+      ]
+    },
+    {
+      "step": "assets-all-target-clippy",
+      "command": [
+        "cargo",
+        "clippy",
+        "--profile",
+        "wasm-dev",
+        "--locked",
+        "--config",
+        "profile.wasm-dev.package.crystal-assets.opt-level=0",
+        "-p",
+        "crystal-assets",
+        "--all-targets"
+      ],
+      "exit_code": 0,
+      "log": ".local/route-grass-review/r07-north-pocket-grass-assets-all-target-clippy-v03.log"
+    }
+  ]
+}

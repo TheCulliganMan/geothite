@@ -1,0 +1,31 @@
+{
+  "family_id": "MN_F121",
+  "prompt_file": "sprites/mn-f121/prompt-v1.txt",
+  "input_images": [],
+  "regional_sources": [
+    {
+      "url": "https://www.dnr.state.mn.us/minnaqua/speciesprofile/brooktrout.html",
+      "publisher": "Minnesota DNR",
+      "supports": "Brook trout in Minnesota cold clean headwaters and spring-fed gravelly riffles; a light belly, squarish tail and dark body support the source silhouette.",
+      "fantasy_extension": "Integral elastic bow fins, stored recoil and staged monster evolution are original fiction, not biological trout capabilities."
+    },
+    {
+      "url": "https://files.dnr.state.mn.us/recreation/fishing/fin/fish_id_placemat.pdf?v=2025.06.30-12.11.14",
+      "publisher": "Minnesota DNR",
+      "supports": "Fish identification reference distinguishes trout forms, including brook-trout white leading edges on lower fins and square tail.",
+      "fantasy_extension": "Broad simplified fin planes and enlarged gill collar are original monster design."
+    }
+  ],
+  "textual_style_reference": [
+    {
+      "path": "target/minnesota-pokemon/gen2-reference/starters.png",
+      "sha256": "af61f720a75b7e1b8e80ba14e8944612556397eedddd719669dec68b0e0fd534",
+      "role": "inspected authentic Gen2 pixel-cluster language and close rear framing only"
+    },
+    {
+      "path": "target/minnesota-pokemon/gen2-reference/bugs.png",
+      "sha256": "407fe86151d762ca6a2e4dfaa9e556a7da55fc9eecdf927c3c1600798b4e0884",
+      "role": "inspected authentic Gen2 pixel-cluster language and close rear framing only"
+    }
+  ]
+}

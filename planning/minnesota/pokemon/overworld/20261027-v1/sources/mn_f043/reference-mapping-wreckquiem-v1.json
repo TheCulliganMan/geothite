@@ -1,0 +1,47 @@
+{
+  "species_id": "MN_094",
+  "family_id": "MN_F043",
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f043/prompt-wreckquiem-v1.txt",
+  "fit": [
+    14,
+    14
+  ],
+  "palette_binding": {
+    "transparent_index": 0,
+    "visible_indices": [
+      1,
+      2,
+      3
+    ],
+    "normal_rgb555_words": [
+      32767,
+      26389,
+      7436,
+      0
+    ],
+    "shiny_rgb555_words": [
+      32767,
+      25273,
+      8583,
+      0
+    ],
+    "white_body_region_policy": "Simplify formerly white body/highlight regions to light ink1. Index0 is transparent everywhere, not an opaque white paint color."
+  },
+  "references": [
+    {
+      "path": "target/minnesota-pokemon/native/MN_F043/mn-094-wreckquiem-v1.front.png",
+      "sha256": "76adab52a1be4a41dd975c1615249dacf5cfa344f1c3293ef757097c9abf91da",
+      "role": "exact front identity"
+    },
+    {
+      "path": "target/minnesota-pokemon/native/MN_F043/mn-094-wreckquiem-v1.back.png",
+      "sha256": "20a8b83fd56729edf56cf4c55a29c6b99726708557204cd98b4344b3c9de92bd",
+      "role": "exact rear identity; extend full rear naturally"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+      "sha256": "4354a639ed1a80fd6686e43b273443ed894e58a84307a8049f638ee9ffa2a099",
+      "role": "native16 style/scale only"
+    }
+  ]
+}

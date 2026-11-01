@@ -1,0 +1,18 @@
+{
+  "status": "REJECTED_MART_ROOF",
+  "selected_revision": "route_grass_boundary_safari_sources_revision",
+  "pack": "content-packs/minnesota-iron-crosscut-rock-cache-v02.crystalpack",
+  "pack_sha256": "bc38b8920bdc6d5e3c0e18ddac283aa4087e0020d694861f277d10314a3875d1",
+  "actual_native_views_inspected": [
+    "clinic",
+    "mart",
+    "gym",
+    "ranger",
+    "outfitter",
+    "ordinary-stairs",
+    "closed-gym-cliff"
+  ],
+  "defect": "Mart upper right roof is replaced by native tree canopy. Repair roof before visual acceptance.",
+  "stairs_and_closed_cliff_visual": "PASS",
+  "goal_complete": false
+}

@@ -1,0 +1,32 @@
+{
+  "status": "PASS",
+  "command": [
+    "cargo",
+    "clippy",
+    "--locked",
+    "-p",
+    "crystal-bevy",
+    "--all-targets"
+  ],
+  "exit_code": 0,
+  "shared_checks": "planning/minnesota/renders/gunflint-spring-v631/checks-v641.json",
+  "shared_checks_sha256": "f21d06695db0b338febfe19f0e899efe3967ba344233fe02562550ff0cc394a6",
+  "log": "planning/minnesota/renders/gunflint-spring-v631/crystal-bevy-clippy-v641.log",
+  "log_sha256": "c1babc7e0931ba848f7b31b82f60c280107565deb1a772aebfb95f35412c7e99",
+  "source_sha256": {
+    "crates/crystal-bevy/src/bevy_shell/tests/twin_cities_journey.rs": "ec62d2ae7e49417295b0b8b0890bd8895c7bbb1edb3e820006cabc5b50dc6365",
+    "crates/crystal-bevy/src/bevy_shell/tests/authored_route_fixture.rs": "f999e2bd0bb740312175bad35a2861a3bf938536e18f154083c928d6128d65bd"
+  },
+  "dependency_file": "target/verdigrim-scene/debug/deps/crystal_bevy-83d1d560afffcbb9.d",
+  "metadata_file": "target/verdigrim-scene/debug/deps/libcrystal_bevy-83d1d560afffcbb9.rmeta",
+  "owned_leaf_format_exit_code": 0,
+  "owned_source_warnings": 0,
+  "reused_completed_shared_run": true,
+  "cancelled_only_redundant_owned_process_tree": [
+    33494,
+    34723,
+    34724,
+    35210
+  ],
+  "workspace_format_note": "Shared workspace fmt exit1 is pre-existing; owned leaves pass scoped rustfmt."
+}

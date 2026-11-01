@@ -1,0 +1,4 @@
+[
+  {"id":"gate-west-snow-approach","map":"MnMaraisCedarApproach","core":[18,14],"source_depth":2},
+  {"id":"gate-east-snow-approach","map":"MnMaraisCedarApproach","core":[25,14],"source_depth":2}
+]

@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "id": "MN_NORTHWOODS_RANGER",
+  "name": "RANGER ROWAN",
+  "status": "accepted-native-playable",
+  "overworld_frames": 6,
+  "overworld_size": [
+    16,
+    16
+  ],
+  "battle_size": [
+    56,
+    56
+  ],
+  "palette_rgb555": [
+    32767,
+    18239,
+    10794,
+    0
+  ],
+  "source": "native-pixels-v2.json",
+  "placement": "placement-v2.json",
+  "pack": "content-packs/minnesota-npcs-hand-02-v01.crystalpack",
+  "parent": "content-packs/minnesota-original-npcs-12-v04.crystalpack",
+  "runtime_checks": {
+    "one_controller_test_passed": true,
+    "talk_and_input_ownership": true,
+    "battle_turn_and_pp": true,
+    "battle_save_load": true,
+    "actual_victory_and_defeat_flag_before_render_capture": true,
+    "post_battle_talk": true,
+    "existing_trainers_and_assets_preserved": true
+  },
+  "manual_visual_review": "User reopened visual quality. Hand-redrew all six grids with native head/body proportions, two-pixel eyes, dark hair framing, hat/brim separation, chest binoculars, a dedicated rear braid and real leading/rear-foot stride with hand swing. Reviewed native-size/enlarged pose strips and the actual post-win forest-route capture. Battle rows and palette unchanged; verified art-only publication preserved gameplay, audio and every unrelated file.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/sprites/01-northwoods-ranger/native-pixels-v2.json": "f391c51bb50d056da68775a9bf1266b2d22b7510d1c869f3203441cff73c1dec",
+    "planning/minnesota/npcs/sprites/01-northwoods-ranger/placement-v2.json": "3ccf0ed0d9333f2d59c51792cac0f712cadf7730522e6b89fd862ca1374630ce",
+    "content-packs/minnesota-npcs-hand-02-v01.crystalpack": "9b603d99df623bdde24c8629714f7f3cce078136cdfa86280b399800e140f6e6",
+    "target/npc-sprites/ranger/controller-hand-v01.log": "049735c83c1cae1f72a9376cd8b12ab2e261cde4243b743df96c45892a3e4aab",
+    "target/npc-sprites/ranger/gameplay-hand-v01/original-npc-trainer-intro.png": "e8fb90ea6d78a8442e4a7140b14761ffd502bffc424a275c9fca93c123b619ab",
+    "target/npc-sprites/ranger/gameplay-hand-v01/original-npc-first-turn.png": "7c0fec99f087f07cf2e1438717732b4199cf85f0fa0b179839e114fc86b59231",
+    "target/npc-sprites/ranger/gameplay-hand-v01/original-npc-overworld-state.png": "223a4d4b9171b6e27fae0174b7527c4f2307e6848121e1a91e77e18c33c9e417",
+    "target/npc-sprites/ranger/hand-v1/comparison.png": "715a40cd9894f2c976cbb9dcc13dfcb1159fcd6a833e9de6587f84016f0382be",
+    "target/npc-sprites/ranger/hand-v1/overworld-review.png": "ca9813bf0b43e89a2fb225dda4d0553690daa5fecb915b18a17eeef2fd77a4e2",
+    "target/npc-sprites/ranger/hand-v1/overworld-review-8x.png": "3b82abaf311ef3df1cc34495b2d725b2142f715596190de478d9722a1f33848c"
+  },
+  "overworld_revision": "hand-edited-v2",
+  "previous_visual_acceptance_reopened_by_user": true
+}

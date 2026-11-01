@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "selected_revision": "route_grass_r13_boundary_apron_revision",
+  "pack_sha256": "7d3987bfbf0378aed960495cc20981c0d258eb391f33630b8e3de6c2686e2e7d",
+  "native_source_metatiles_exact": 2048,
+  "all_three_chunks_bound": true,
+  "grass_quadrants": 208,
+  "inland_ice_quadrants": 16,
+  "actual_maps_observed": [
+    "MnBoundaryWaters",
+    "MnEly",
+    "MnElyPokecenter1F",
+    "MnR13C00R00",
+    "MnR13C00R01",
+    "MnR13C00R02"
+  ],
+  "goal_complete": false
+}

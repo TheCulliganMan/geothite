@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F009",
+  "species_id": "MN_027",
+  "name": "Pyropine",
+  "status": "retained_source_and_native_eye_readability_revision_needed",
+  "generation_tool": "built-in image_gen",
+  "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f009/pyropine.overworld.imagegen-v2.png",
+  "source_sha256": "2b491ac548b80b2e00af4d53d4f99c1b265fb289ee746ec22f186696906807b4",
+  "original_default_output": "/Users/ryanculligan/.codex/generated_images/01a179bf-dc2b-7352-8975-8b8f3a32e33b/exec-e56b161f-e184-4e7f-a0af-23a683ea75f4.png",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f009/prompt-pyropine-v2.txt",
+  "prompt_sha256": "c7b872664865ce9422f4953cbfca04e7ef298805fad05a333d005ae42ebff94e",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f009/reference-mapping-pyropine-v2.json",
+  "only_input_image": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+  "proposed_native_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f009/manifest-pyropine-v2-center.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f009/pyropine-v2-center",
+  "six_frame_layout": "3columns2rows; down/up/left idle then down/up/left root-step",
+  "conversion": "Rust source_center with equal420x390 crop windows; shared scale/anchor across6poses; no pixel painting",
+  "conversion_result": {
+    "exit_code": 0,
+    "stdout": "Compiled MN_F009: 1 species, 4 literal OBJ runtime files; retained reviews in planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f009/pyropine-v2-center\n",
+    "stderr": ""
+  },
+  "accepted": false,
+  "visual_note": "First native face band merges pupils with rim; read-only candidate registration analysis retained but did not qualify all four visible faces. Targeted sourcev3 follows; no painted pixels."
+}

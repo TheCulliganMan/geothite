@@ -1,0 +1,9 @@
+{
+  "status": "PASS_VISUAL",
+  "actual_native_images_inspected": 5,
+  "whole_current_two_chunk_source_inspected": true,
+  "source_native_pixel_mismatches": 0,
+  "capture_receipt": "planning/minnesota/renders/route-grass-v01/current-r03-successor-review-v01/native-v01/capture-progress.json",
+  "composition": "Six low woodland hop lanes land on a dry return trail; grass covers the ordinary uphill approaches. Tall eastern terrace uses imported native stairs with solid cliff edges. The fishing house retains a clear native facade and grass approach.",
+  "source_pixels_modified": false
+}

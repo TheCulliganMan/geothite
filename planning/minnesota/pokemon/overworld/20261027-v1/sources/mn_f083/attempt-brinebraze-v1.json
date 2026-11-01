@@ -1,0 +1,9 @@
+{
+  "tool": "built-in image_gen",
+  "original": "/Users/ryanculligan/.codex/generated_images/01a179bf-dc2b-7352-8975-8b8f3a32e33b/exec-6ce3455d-1f5e-4a5a-819d-e4aa8370d860.png",
+  "preserved_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f083/brinebraze.overworld.imagegen-v1.png",
+  "sha256": "af342d3bf99ee1729f9e4d40b28c8e6768d75a03bfd514f77a75290608d72757",
+  "exact_prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f083/prompt-brinebraze-v1.txt",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f083/reference-mapping-brinebraze-v1.json",
+  "status": "preserved; selected frames recorded in frozen manifest"
+}

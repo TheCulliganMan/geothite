@@ -1,0 +1,9 @@
+{
+  "tool": "built-in image_gen",
+  "original": "/Users/ryanculligan/.codex/generated_images/01a179bf-dc2b-7352-8975-8b8f3a32e33b/exec-934b0453-7a47-4fd7-9f39-760d48a3a643.png",
+  "preserved_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f102/cinderfen.overworld.imagegen-v19-separated-levels.png",
+  "sha256": "81b0b7bcb1e0fdc85081f8d2eab97e3879466864bee4baf74b6f05892f459bfe",
+  "exact_prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f102/prompt-cinderfen-v19-separated-levels.txt",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f102/reference-mapping-cinderfen-v19-separated-levels.json",
+  "status": "preserved; selected frames recorded in frozen manifest"
+}

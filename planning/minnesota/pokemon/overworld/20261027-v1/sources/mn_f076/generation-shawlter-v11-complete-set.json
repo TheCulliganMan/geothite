@@ -1,0 +1,84 @@
+{
+  "tool": "built-in image_gen",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f076/shawlter-v11-complete-set",
+  "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/manifest-shawlter-v11-complete-set.json",
+  "normalized_receipt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/source-feature-proof-shawlter-v11-complete-set.json",
+  "all_raws_prompts_rejected_trials_retained": true,
+  "no_native_pixel_painting": true,
+  "no_registry_or_pack_mutation": true,
+  "normal_shiny_boards_actually_viewed": true,
+  "canonical_palettes": [
+    [
+      32767,
+      13086,
+      24168,
+      0
+    ],
+    [
+      32767,
+      23067,
+      14758,
+      0
+    ]
+  ],
+  "native_bounds": [
+    [
+      2,
+      4,
+      13,
+      11
+    ],
+    [
+      1,
+      3,
+      14,
+      11
+    ],
+    [
+      3,
+      3,
+      10,
+      11
+    ],
+    [
+      2,
+      4,
+      13,
+      11
+    ],
+    [
+      1,
+      3,
+      14,
+      11
+    ],
+    [
+      3,
+      3,
+      10,
+      10
+    ]
+  ],
+  "retained_source_hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/shawlter.overworld.imagegen-v6-bold-smile.png": "06a48062441ce1008986c489572cd43ecc90b379d5644dee5e1c08f58546bc02",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/shawlter.overworld.imagegen-v4-rear-finish.png": "b4cf76e4da4c17968271d942aecce41ec598c93426b7b08395d088e333131e5c",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/shawlter.overworld.imagegen-v7-front-cuffs.png": "03748a5ac696fb0f08fa2059f2b9d3320e6c0e0accd0238ed25bd0b4b254c611",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/shawlter.overworld.imagegen-v1.png": "46507ac4a205a0ff7159b12267f61337f8b525c75cf67d2609df61aebe49020a",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/shawlter.overworld.imagegen-v3-rear-thumbs.png": "004ccca7abdfd480d512f17c2f977877d3cb2eae6646d09508bffecba6bdc46d",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/shawlter.overworld.imagegen-v5-clear-alpha.png": "957f1a42cb2e1d4e3eb3673f532dd672f75a14ab6c8c6a3a296623e98e46d2d5",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/shawlter.overworld.imagegen-v2-outline-pupils.png": "321f1006cd42ace0e3956f8e83660fd9b19b70db47f58127dcabf80bd3f18046",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/prompt-shawlter-v4-rear-finish.txt": "6b5ee6b3d0949d30a3ebb27edd17a462ebddf01a45fc98b60e8131527aabf534",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/prompt-shawlter-v7-front-cuffs.txt": "0f57eb5fb6d9bbd4aedc6bad5ec9bcae1cf0c130b0ce2fc0c783f878886a8f9f",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/prompt-shawlter-v5-clear-alpha.txt": "c943044c11f98574dc471c0196a1272c31c5c68c97b2063007e5dec08372a3d0",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/prompt-shawlter-v3-rear-thumbs.txt": "81dbb641f855f41a49365f4768e33234df63a9e080a9a482ff2e7c9265e5cc13",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/prompt-shawlter-v6-bold-smile.txt": "4e7fadd0afed7c9ca2bbf2f5f42d0e592896772a4b1cf2bfab5255efbd0bd80a",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/prompt-shawlter-v1.txt": "b68adc56b8c1afae7d4b9f2e65b0e8f69a1ecc55ec2b206848a8bceb5352ff11",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/prompt-shawlter-outline-pupils-v2.txt": "f094f202664677f86027aac15ea018dc2b5a129dd06dcc2f278abdbf8295f31b",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/shawlter.v4-rear-finish.original-path.txt": "295723b320d1f1e4c0fd26dd90dc777d0bf482d695025bd2a01f41e8a0f17657",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/shawlter.v3-rear-thumbs.original-path.txt": "558adbd687df80239a3572d8de1c89688914b697d5d73aa7645346047000a0ff",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/shawlter.v5-clear-alpha.original-path.txt": "e49a1ebc055b32498c03b4cbcac424dc26f1c7355505fb6ce46f5f9789b93637",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/shawlter.v7-front-cuffs.original-path.txt": "415f8703afd6fd7ad74a09de1864b7051cfae3941008b7d8e216853cee249842",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/shawlter.v6-bold-smile.original-path.txt": "f73eb563b7466af0419ea90621e64c4402291cbc644e04a53f03ae405cc27560"
+  },
+  "status": "root independent visual/context acceptance pending"
+}

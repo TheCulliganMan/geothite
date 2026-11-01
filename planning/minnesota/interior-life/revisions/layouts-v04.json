@@ -1,0 +1,1432 @@
+{
+  "schema_version": 1,
+  "manifest": "minnesota-interior-layout-v4",
+  "rooms": [
+    {
+      "map": "MnBrainerdOutfitter",
+      "intent": "A compact pack-checking table between back-wall gear shelves; replace the black walkable floor with the actual native house floor.",
+      "before_tileset": "house",
+      "before_rows": [
+        "0a 03 04 0e 08 0a",
+        "0a 00 01 02 00 0a",
+        "0a 00 00 00 00 0a",
+        "0a 0a 0a 0b 0a 0a"
+      ],
+      "tileset": "house",
+      "border_block": 10,
+      "rows": [
+        "0a 04 05 0e 04 0a",
+        "0a 0f 01 02 0f 0a",
+        "0a 0f 0c 0d 0f 0a",
+        "0a 0a 0a 0b 0a 0a"
+      ],
+      "arrival": [
+        6,
+        5
+      ],
+      "actor_approaches": [
+        {
+          "script": "MN_BRAINERD_GEAR_KEEPER",
+          "tile": [
+            3,
+            4
+          ]
+        },
+        {
+          "script": "MN_BRAINERD_CAMP_HELPER",
+          "tile": [
+            9,
+            5
+          ]
+        }
+      ],
+      "exhibits": [
+        {
+          "id": "MN_INTERIOR_DETAIL_BRAINERD_GEAR_TABLE",
+          "tile": [
+            5,
+            3
+          ],
+          "approach": [
+            5,
+            2
+          ],
+          "lines": [
+            "A mended pack and a dry checklist: straps, medicine, a way home. Someone underlined LUNCH twice."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthHillsideHostel1F",
+      "intent": "Warm timber kitchen and communal dining reception, with a clear route to free care, luggage shelf and the upstairs dormitory.",
+      "before_tileset": "facility",
+      "before_rows": [
+        "17 17 17 17 17 17 17 17",
+        "17 01 01 01 01 01 04 17",
+        "17 1b 1b 1b 1b 1b 1b 17",
+        "17 1a 1b 1b 1b 1a 1b 17",
+        "17 1b 1b 1b 1b 1b 1b 17",
+        "17 17 17 17 0c 17 17 17"
+      ],
+      "tileset": "players_house",
+      "border_block": 0,
+      "rows": [
+        "00 00 00 00 00 00 00 00",
+        "00 07 01 1b 01 05 0a 00",
+        "00 03 03 03 03 03 03 00",
+        "00 03 08 09 03 03 1b 00",
+        "00 03 0c 0d 03 03 03 00",
+        "00 00 00 00 06 00 00 00"
+      ],
+      "arrival": [
+        8,
+        9
+      ],
+      "actor_approaches": [
+        {
+          "script": "MN_DULUTH_X_HILLSIDEHOSTEL_F1_HOST",
+          "tile": [
+            5,
+            6
+          ]
+        },
+        {
+          "script": "MN_DL_INTERIOR_HOSTEL_COOK",
+          "tile": [
+            9,
+            5
+          ]
+        }
+      ],
+      "exhibits": [
+        {
+          "id": "MN_INTERIOR_DETAIL_HOSTEL_KETTLE",
+          "tile": [
+            3,
+            3
+          ],
+          "approach": [
+            3,
+            4
+          ],
+          "lines": [
+            "The hostel kettle is warm. A note asks guests to fill it for the next shift before taking the last cup."
+          ]
+        },
+        {
+          "id": "MN_INTERIOR_DETAIL_HOSTEL_LUGGAGE",
+          "tile": [
+            12,
+            7
+          ],
+          "approach": [
+            11,
+            7
+          ],
+          "lines": [
+            "Luggage tags from WINONA, ST CLOUD and the IRON RANGE hang from the shared shelf. Each bag has room for a story."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthHillsideHostel2F",
+      "intent": "A six-cot sleeping room with two unobstructed aisles, a native stair return and quiet guest conversations.",
+      "before_tileset": "facility",
+      "before_rows": [
+        "17 17 17 17 17 17 17 17",
+        "17 05 01 01 01 01 01 17",
+        "17 1b 1b 1b 1b 1b 1b 17",
+        "17 1a 1b 1b 1b 1a 1b 17",
+        "17 1b 1b 1b 1b 1b 1b 17",
+        "17 17 17 17 17 17 17 17"
+      ],
+      "tileset": "players_house",
+      "border_block": 0,
+      "rows": [
+        "00 00 00 00 00 00 00 00",
+        "00 0b 01 1b 01 05 01 00",
+        "00 1c 03 1c 03 03 1c 00",
+        "00 03 03 03 03 03 03 00",
+        "00 1c 03 1c 03 03 1c 00",
+        "00 00 00 00 00 00 00 00"
+      ],
+      "arrival": [
+        3,
+        3
+      ],
+      "actor_approaches": [
+        {
+          "script": "MN_DULUTH_X_HILLSIDEHOSTEL_F2_HOST",
+          "tile": [
+            5,
+            6
+          ]
+        },
+        {
+          "script": "MN_DL_INTERIOR_HOSTEL_POSTCARD",
+          "tile": [
+            9,
+            5
+          ]
+        }
+      ],
+      "exhibits": [
+        {
+          "id": "MN_INTERIOR_DETAIL_HOSTEL_COT",
+          "tile": [
+            2,
+            4
+          ],
+          "approach": [
+            3,
+            4
+          ],
+          "lines": [
+            "A clean blanket is folded on the cot. The card reads: Early shift resting. Quiet feet, kind voices."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthBoatBuilder",
+      "intent": "A long repair bench on the west side, north tool storage and an open east work lane; visitors can speak to both craftsperson and apprentice.",
+      "before_tileset": "facility",
+      "before_rows": [
+        "17 17 17 17 17 17 17 17",
+        "17 10 08 08 10 08 10 17",
+        "17 1b 1b 1b 1b 1b 1b 17",
+        "17 0f 22 1b 1b 21 0f 17",
+        "17 1b 1b 1b 1b 1b 1b 17",
+        "17 17 17 17 0c 17 17 17"
+      ],
+      "tileset": "facility",
+      "border_block": 23,
+      "rows": [
+        "17 17 17 17 17 17 17 17",
+        "17 08 06 06 08 01 01 17",
+        "17 1b 1b 1b 1b 1b 1b 17",
+        "17 24 26 25 1b 1b 1b 17",
+        "17 1b 1b 1b 1b 1b 1b 17",
+        "17 17 17 17 0c 17 17 17"
+      ],
+      "arrival": [
+        8,
+        9
+      ],
+      "actor_approaches": [
+        {
+          "script": "MN_DULUTH_X_BOATBUILDER_F1_HOST",
+          "tile": [
+            5,
+            6
+          ]
+        },
+        {
+          "script": "MN_DL_INTERIOR_BOAT_APPRENTICE",
+          "tile": [
+            9,
+            5
+          ]
+        }
+      ],
+      "exhibits": [
+        {
+          "id": "MN_INTERIOR_DETAIL_BOAT_REPAIR_BENCH",
+          "tile": [
+            5,
+            7
+          ],
+          "approach": [
+            5,
+            6
+          ],
+          "lines": [
+            "A cedar rib is clamped beside a worn boat plan. The repair marks are neat; the old wood keeps its grain."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthCargoOffice",
+      "intent": "A warm timber document office: a complete west ledger table, back-wall filing and east sorting shelves, clear of the retained requisition host.",
+      "before_tileset": "facility",
+      "before_rows": [
+        "17 17 17 17 17 17 17 17",
+        "17 10 08 08 10 08 10 17",
+        "17 1b 1b 1b 1b 1b 1b 17",
+        "17 0f 22 1b 1b 21 0f 17",
+        "17 1b 1b 1b 1b 1b 1b 17",
+        "17 17 17 17 0c 17 17 17"
+      ],
+      "tileset": "players_house",
+      "border_block": 0,
+      "rows": [
+        "00 00 00 00 00 00 00 00",
+        "00 1b 01 05 1b 01 1b 00",
+        "00 03 03 03 03 03 03 00",
+        "00 03 08 09 03 03 1b 00",
+        "00 03 0c 0d 03 03 03 00",
+        "00 00 00 00 06 00 00 00"
+      ],
+      "arrival": [
+        8,
+        9
+      ],
+      "actor_approaches": [
+        {
+          "script": "MN_DULUTH_X_CARGOOFFICE_F1_HOST",
+          "tile": [
+            5,
+            6
+          ]
+        },
+        {
+          "script": "MN_DL_INTERIOR_CARGO_CHECKER",
+          "tile": [
+            9,
+            5
+          ]
+        }
+      ],
+      "exhibits": [
+        {
+          "id": "MN_INTERIOR_DETAIL_CARGO_MANIFEST_DESK",
+          "tile": [
+            5,
+            7
+          ],
+          "approach": [
+            5,
+            6
+          ],
+          "lines": [
+            "The everyday cargo list includes clinic bandages, seed orders and replacement kettle lids. A harbor moves ordinary life, too."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthOreWarehouse1F",
+      "intent": "Paired cargo stacks create two loading aisles joined by an open cross-aisle; keep the central entrance clear.",
+      "before_tileset": "facility",
+      "before_rows": [
+        "17 17 17 17 17 17 17 17",
+        "17 10 08 08 10 08 04 17",
+        "17 1b 1b 1b 1b 1b 1b 17",
+        "17 0f 22 1b 1b 21 0f 17",
+        "17 1b 1b 1b 1b 1b 1b 17",
+        "17 17 17 17 0c 17 17 17"
+      ],
+      "tileset": "facility",
+      "border_block": 23,
+      "rows": [
+        "17 17 17 17 17 17 17 17",
+        "17 08 08 06 06 08 04 17",
+        "17 1b 1b 1b 1b 1b 1b 17",
+        "17 08 06 1b 1b 08 06 17",
+        "17 1b 1b 1b 1b 1b 1b 17",
+        "17 17 17 17 0c 17 17 17"
+      ],
+      "arrival": [
+        8,
+        9
+      ],
+      "actor_approaches": [
+        {
+          "script": "MN_DULUTH_X_OREWAREHOUSE_F1_HOST",
+          "tile": [
+            5,
+            4
+          ]
+        },
+        {
+          "script": "MN_DL_INTERIOR_WAREHOUSE_WORKER",
+          "tile": [
+            9,
+            5
+          ]
+        }
+      ],
+      "exhibits": [
+        {
+          "id": "MN_INTERIOR_DETAIL_WAREHOUSE_TAGS",
+          "tile": [
+            4,
+            7
+          ],
+          "approach": [
+            4,
+            8
+          ],
+          "lines": [
+            "Crate tags list weight, destination and the loading crew. A separate pencil note says: Thank the night shift."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthOreWarehouse2F",
+      "intent": "A quieter tally loft: records on opposite corners and a central reading space, paired to the original downstairs stair.",
+      "before_tileset": "facility",
+      "before_rows": [
+        "17 17 17 17 17 17 17 17",
+        "17 05 08 08 10 08 10 17",
+        "17 1b 1b 1b 1b 1b 1b 17",
+        "17 0f 22 1b 1b 21 0f 17",
+        "17 1b 1b 1b 1b 1b 1b 17",
+        "17 17 17 17 17 17 17 17"
+      ],
+      "tileset": "facility",
+      "border_block": 23,
+      "rows": [
+        "17 17 17 17 17 17 17 17",
+        "17 05 01 08 06 01 01 17",
+        "17 1b 1b 1b 1b 1b 1b 17",
+        "17 1b 1b 1b 1b 08 06 17",
+        "17 08 06 1b 1b 1b 1b 17",
+        "17 17 17 17 17 17 17 17"
+      ],
+      "arrival": [
+        3,
+        3
+      ],
+      "actor_approaches": [
+        {
+          "script": "MN_DULUTH_X_OREWAREHOUSE_F2_HOST",
+          "tile": [
+            5,
+            6
+          ]
+        },
+        {
+          "script": "MN_DL_INTERIOR_TALLY_APPRENTICE",
+          "tile": [
+            9,
+            5
+          ]
+        }
+      ],
+      "exhibits": [
+        {
+          "id": "MN_INTERIOR_DETAIL_WAREHOUSE_TALLY",
+          "tile": [
+            12,
+            7
+          ],
+          "approach": [
+            11,
+            7
+          ],
+          "lines": [
+            "The restored tally has full names written beside each shift. Several hands have checked the spelling."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthFisherCottage",
+      "intent": "A net-mending household with two private beds and a small supper table, instead of a single generic reception table.",
+      "before_tileset": "house",
+      "before_rows": [
+        "0a 0a 0a 0a 0a 0a",
+        "0a 04 1e 05 1d 0a",
+        "0a 0f 0f 0f 0f 0a",
+        "0a 01 02 0f 0f 0a",
+        "0a 0c 0d 0f 0f 0a",
+        "0a 0a 0a 0b 0a 0a"
+      ],
+      "tileset": "players_house",
+      "border_block": 0,
+      "rows": [
+        "00 00 00 00 00 00",
+        "00 01 1b 01 05 00",
+        "00 1c 03 03 03 00",
+        "00 1c 03 08 09 00",
+        "00 03 03 0c 0d 00",
+        "00 00 00 06 00 00"
+      ],
+      "arrival": [
+        6,
+        9
+      ],
+      "actor_approaches": [
+        {
+          "script": "MN_DULUTH_X_FISHERCOTTAGE_F1_HOST",
+          "tile": [
+            5,
+            6
+          ]
+        },
+        {
+          "script": "MN_DL_INTERIOR_FISHER_GRANDKID",
+          "tile": [
+            8,
+            6
+          ]
+        }
+      ],
+      "exhibits": [
+        {
+          "id": "MN_INTERIOR_DETAIL_FISHER_KNOT_BOOK",
+          "tile": [
+            4,
+            3
+          ],
+          "approach": [
+            4,
+            4
+          ],
+          "lines": [
+            "A net diagram is tucked into a school notebook. Grandpa has drawn one careful knot beside a grandchild's much larger fish."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthForemanHome",
+      "intent": "An off-duty timber home with a family photo shelf, one bed and a supper table away from the work talk.",
+      "before_tileset": "house",
+      "before_rows": [
+        "0a 0a 0a 0a 0a 0a",
+        "0a 04 1e 05 1d 0a",
+        "0a 0f 0f 0f 0f 0a",
+        "0a 01 02 0f 0f 0a",
+        "0a 0c 0d 0f 0f 0a",
+        "0a 0a 0a 0b 0a 0a"
+      ],
+      "tileset": "players_house",
+      "border_block": 0,
+      "rows": [
+        "00 00 00 00 00 00",
+        "00 1b 01 05 01 00",
+        "00 03 03 03 03 00",
+        "00 08 09 03 1c 00",
+        "00 0c 0d 03 03 00",
+        "00 00 00 06 00 00"
+      ],
+      "arrival": [
+        6,
+        9
+      ],
+      "actor_approaches": [
+        {
+          "script": "MN_DULUTH_X_FOREMANHOME_F1_HOST",
+          "tile": [
+            5,
+            6
+          ]
+        },
+        {
+          "script": "MN_DL_INTERIOR_FOREMAN_FAMILY",
+          "tile": [
+            8,
+            4
+          ]
+        }
+      ],
+      "exhibits": [
+        {
+          "id": "MN_INTERIOR_DETAIL_FOREMAN_CREW_PHOTO",
+          "tile": [
+            2,
+            3
+          ],
+          "approach": [
+            2,
+            4
+          ],
+          "lines": [
+            "A photo of the ship's cooks sits beside the family pictures. Someone has labeled every person."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthSandHouse",
+      "intent": "A timber Park Point home with two sleeping alcoves and the family's shore-find shelf.",
+      "before_tileset": "house",
+      "before_rows": [
+        "0a 0a 0a 0a 0a 0a",
+        "0a 04 1e 05 1d 0a",
+        "0a 0f 0f 0f 0f 0a",
+        "0a 01 02 0f 0f 0a",
+        "0a 0c 0d 0f 0f 0a",
+        "0a 0a 0a 0b 0a 0a"
+      ],
+      "tileset": "players_house",
+      "border_block": 0,
+      "rows": [
+        "00 00 00 00 00 00",
+        "00 01 01 1b 05 00",
+        "00 03 03 03 03 00",
+        "00 1c 03 03 1c 00",
+        "00 03 03 03 03 00",
+        "00 00 00 06 00 00"
+      ],
+      "arrival": [
+        6,
+        9
+      ],
+      "actor_approaches": [
+        {
+          "script": "MN_DULUTH_X_SANDHOUSE_F1_HOST",
+          "tile": [
+            5,
+            6
+          ]
+        },
+        {
+          "script": "MN_DL_INTERIOR_SAND_SIBLING",
+          "tile": [
+            8,
+            4
+          ]
+        }
+      ],
+      "exhibits": [
+        {
+          "id": "MN_INTERIOR_DETAIL_SAND_FIND_SHELF",
+          "tile": [
+            7,
+            3
+          ],
+          "approach": [
+            7,
+            4
+          ],
+          "lines": [
+            "A fishing float, a polished stone and a very clean spoon rest on the shelf. The driftwood was left for the bugs."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthPotteryHouse",
+      "intent": "A display of native stone-and-clay pieces behind the potter, with a southeast worktable and an apprentice's open approach.",
+      "before_tileset": "house",
+      "before_rows": [
+        "0a 0a 0a 0a 0a 0a",
+        "0a 04 1e 05 1d 0a",
+        "0a 0f 0f 0f 0f 0a",
+        "0a 01 02 0f 0f 0a",
+        "0a 0c 0d 0f 0f 0a",
+        "0a 0a 0a 0b 0a 0a"
+      ],
+      "tileset": "house",
+      "border_block": 10,
+      "rows": [
+        "0a 0a 0a 0a 0a 0a",
+        "0a 04 1f 1f 05 0a",
+        "0a 0f 0f 0f 0f 0a",
+        "0a 0f 0f 01 02 0a",
+        "0a 04 0f 0c 0d 0a",
+        "0a 0a 0a 0b 0a 0a"
+      ],
+      "arrival": [
+        6,
+        9
+      ],
+      "actor_approaches": [
+        {
+          "script": "MN_DULUTH_X_POTTERYHOUSE_F1_HOST",
+          "tile": [
+            5,
+            6
+          ]
+        },
+        {
+          "script": "MN_DL_INTERIOR_POTTER_APPRENTICE",
+          "tile": [
+            8,
+            6
+          ]
+        }
+      ],
+      "exhibits": [
+        {
+          "id": "MN_INTERIOR_DETAIL_POTTER_FIRST_BOWL",
+          "tile": [
+            3,
+            9
+          ],
+          "approach": [
+            4,
+            9
+          ],
+          "lines": [
+            "A lopsided bowl holds the shop keys. The potter wrote a date on its base and never replaced it."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthHillGardenHouse",
+      "intent": "Back-wall seed storage and staggered native flower planters leave the seed saver and host in a bright, connected garden room.",
+      "before_tileset": "house",
+      "before_rows": [
+        "0a 0a 0a 0a 0a 0a",
+        "0a 04 1e 05 1d 0a",
+        "0a 0f 0f 0f 0f 0a",
+        "0a 01 02 0f 0f 0a",
+        "0a 0c 0d 0f 0f 0a",
+        "0a 0a 0a 0b 0a 0a"
+      ],
+      "tileset": "house",
+      "border_block": 10,
+      "rows": [
+        "0a 0a 0a 0a 0a 0a",
+        "0a 04 05 04 05 0a",
+        "0a 0f 0f 0f 0f 0a",
+        "0a 2c 0f 0f 2f 0a",
+        "0a 30 0f 0f 31 0a",
+        "0a 0a 0a 0b 0a 0a"
+      ],
+      "arrival": [
+        6,
+        9
+      ],
+      "actor_approaches": [
+        {
+          "script": "MN_DULUTH_X_HILLGARDENHOUSE_F1_HOST",
+          "tile": [
+            5,
+            6
+          ]
+        },
+        {
+          "script": "MN_DL_INTERIOR_HILL_SEED_SAVER",
+          "tile": [
+            8,
+            4
+          ]
+        }
+      ],
+      "exhibits": [
+        {
+          "id": "MN_INTERIOR_DETAIL_HILL_SEED_RECORD",
+          "tile": [
+            3,
+            3
+          ],
+          "approach": [
+            3,
+            4
+          ],
+          "lines": [
+            "Seed envelopes list the neighbor who shared each batch. A coffee-tin sketch marks the first windowsill harvest."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthPointGardenHome",
+      "intent": "A narrower bank of sand-tolerant planters runs along the east wall; the west side holds a small potting table.",
+      "before_tileset": "house",
+      "before_rows": [
+        "0a 0a 0a 0a 0a 0a",
+        "0a 04 1e 05 1d 0a",
+        "0a 0f 0f 0f 0f 0a",
+        "0a 01 02 0f 0f 0a",
+        "0a 0c 0d 0f 0f 0a",
+        "0a 0a 0a 0b 0a 0a"
+      ],
+      "tileset": "house",
+      "border_block": 10,
+      "rows": [
+        "0a 0a 0a 0a 0a 0a",
+        "0a 05 04 05 04 0a",
+        "0a 0f 0f 0f 0f 0a",
+        "0a 01 02 0f 2c 0a",
+        "0a 0c 0d 0f 30 0a",
+        "0a 0a 0a 0b 0a 0a"
+      ],
+      "arrival": [
+        6,
+        9
+      ],
+      "actor_approaches": [
+        {
+          "script": "MN_DULUTH_X_POINTGARDENHOME_F1_HOST",
+          "tile": [
+            5,
+            6
+          ]
+        },
+        {
+          "script": "MN_DL_INTERIOR_POINT_GARDENER",
+          "tile": [
+            8,
+            4
+          ]
+        }
+      ],
+      "exhibits": [
+        {
+          "id": "MN_INTERIOR_DETAIL_POINT_GROWER_NOTES",
+          "tile": [
+            8,
+            6
+          ],
+          "approach": [
+            7,
+            6
+          ],
+          "lines": [
+            "The pot labels compare sheltered beds with wind-exposed sand. Each entry has a date, a neighbor's initials and a patient correction."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthLakesideHome",
+      "intent": "A lake-observation table near the west windows and a separate notebook shelf, clear of both family members.",
+      "before_tileset": "house",
+      "before_rows": [
+        "0a 0a 0a 0a 0a 0a",
+        "0a 04 1e 05 1d 0a",
+        "0a 0f 0f 0f 0f 0a",
+        "0a 01 02 0f 0f 0a",
+        "0a 0c 0d 0f 0f 0a",
+        "0a 0a 0a 0b 0a 0a"
+      ],
+      "tileset": "house",
+      "border_block": 10,
+      "rows": [
+        "0a 0a 0a 0a 0a 0a",
+        "0a 05 08 0e 04 0a",
+        "0a 0f 0f 0f 0f 0a",
+        "0a 01 02 0f 04 0a",
+        "0a 0c 0d 0f 0f 0a",
+        "0a 0a 0a 0b 0a 0a"
+      ],
+      "arrival": [
+        6,
+        9
+      ],
+      "actor_approaches": [
+        {
+          "script": "MN_DULUTH_X_LAKESIDEHOME_F1_HOST",
+          "tile": [
+            5,
+            6
+          ]
+        },
+        {
+          "script": "MN_DL_INTERIOR_ICE_NOTEBOOK",
+          "tile": [
+            8,
+            4
+          ]
+        }
+      ],
+      "exhibits": [
+        {
+          "id": "MN_INTERIOR_DETAIL_LAKE_ICE_NOTEBOOK",
+          "tile": [
+            8,
+            9
+          ],
+          "approach": [
+            7,
+            9
+          ],
+          "lines": [
+            "Ice-out dates share the page with bird drawings. This year's gull has a sandwich in its beak."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthTerraceHome",
+      "intent": "A long household supper table sits to the southwest, with a porch-gift shelf in the opposite corner.",
+      "before_tileset": "house",
+      "before_rows": [
+        "0a 0a 0a 0a 0a 0a",
+        "0a 04 1e 05 1d 0a",
+        "0a 0f 0f 0f 0f 0a",
+        "0a 01 02 0f 0f 0a",
+        "0a 0c 0d 0f 0f 0a",
+        "0a 0a 0a 0b 0a 0a"
+      ],
+      "tileset": "house",
+      "border_block": 10,
+      "rows": [
+        "0a 0a 0a 0a 0a 0a",
+        "0a 04 03 05 04 0a",
+        "0a 0f 0f 0f 0f 0a",
+        "0a 01 02 0f 0f 0a",
+        "0a 0c 0d 0f 04 0a",
+        "0a 0a 0a 0b 0a 0a"
+      ],
+      "arrival": [
+        6,
+        9
+      ],
+      "actor_approaches": [
+        {
+          "script": "MN_DULUTH_X_TERRACEHOME_F1_HOST",
+          "tile": [
+            5,
+            6
+          ]
+        },
+        {
+          "script": "MN_DL_INTERIOR_TERRACE_BAKER",
+          "tile": [
+            8,
+            6
+          ]
+        }
+      ],
+      "exhibits": [
+        {
+          "id": "MN_INTERIOR_DETAIL_TERRACE_PIE_LIST",
+          "tile": [
+            8,
+            9
+          ],
+          "approach": [
+            7,
+            9
+          ],
+          "lines": [
+            "A pie tally has more neighbors than pies. The baker has added another line: Ask who has spare rhubarb."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthSlipHouse",
+      "intent": "A boat family keeps a chart wall above a western mending corner, leaving a broad approach to the door.",
+      "before_tileset": "house",
+      "before_rows": [
+        "0a 0a 0a 0a 0a 0a",
+        "0a 04 1e 05 1d 0a",
+        "0a 0f 0f 0f 0f 0a",
+        "0a 01 02 0f 0f 0a",
+        "0a 0c 0d 0f 0f 0a",
+        "0a 0a 0a 0b 0a 0a"
+      ],
+      "tileset": "house",
+      "border_block": 10,
+      "rows": [
+        "0a 0a 0a 0a 0a 0a",
+        "0a 0e 05 04 0e 0a",
+        "0a 0f 0f 0f 0f 0a",
+        "0a 01 02 0f 0f 0a",
+        "0a 0c 0d 0f 04 0a",
+        "0a 0a 0a 0b 0a 0a"
+      ],
+      "arrival": [
+        6,
+        9
+      ],
+      "actor_approaches": [
+        {
+          "script": "MN_DULUTH_X_SLIPHOUSE_F1_HOST",
+          "tile": [
+            5,
+            6
+          ]
+        },
+        {
+          "script": "MN_DL_INTERIOR_SLIP_NEIGHBOR",
+          "tile": [
+            8,
+            4
+          ]
+        }
+      ],
+      "exhibits": [
+        {
+          "id": "MN_INTERIOR_DETAIL_SLIP_COFFEE_BOOK",
+          "tile": [
+            3,
+            3
+          ],
+          "approach": [
+            3,
+            4
+          ],
+          "lines": [
+            "A chart margin lists who took coffee to the night crew. The grandmother's name is the oldest entry."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthHillRanger",
+      "intent": "A public trail room with a western map bench and east records, instead of the same household dining layout.",
+      "before_tileset": "house",
+      "before_rows": [
+        "0a 0a 0a 0a 0a 0a",
+        "0a 04 1e 05 1d 0a",
+        "0a 0f 0f 0f 0f 0a",
+        "0a 01 02 0f 0f 0a",
+        "0a 0c 0d 0f 0f 0a",
+        "0a 0a 0a 0b 0a 0a"
+      ],
+      "tileset": "house",
+      "border_block": 10,
+      "rows": [
+        "0a 0a 0a 0a 0a 0a",
+        "0a 0e 04 0e 05 0a",
+        "0a 0f 0f 0f 0f 0a",
+        "0a 01 02 0f 04 0a",
+        "0a 0c 0d 0f 04 0a",
+        "0a 0a 0a 0b 0a 0a"
+      ],
+      "arrival": [
+        6,
+        9
+      ],
+      "actor_approaches": [
+        {
+          "script": "MN_DULUTH_X_HILLRANGER_F1_HOST",
+          "tile": [
+            5,
+            6
+          ]
+        },
+        {
+          "script": "MN_DL_INTERIOR_OWL_LISTENER",
+          "tile": [
+            8,
+            4
+          ]
+        }
+      ],
+      "exhibits": [
+        {
+          "id": "MN_INTERIOR_DETAIL_RANGER_OWL_DRAWING",
+          "tile": [
+            8,
+            9
+          ],
+          "approach": [
+            7,
+            9
+          ],
+          "lines": [
+            "An excellent trail map has a potato-shaped owl drawn beside the steps. The ranger has stamped it FIELD OBSERVATION."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnStPaulCapitolLibrary",
+      "intent": "Two real book aisles face a shared reading table; replace the scattered stacks and unused center with a legible public lending room.",
+      "before_tileset": "house",
+      "before_rows": [
+        "04 05 03 05 04 04 04 1d",
+        "0f 0f 0f 0f 0f 0f 0f 0f",
+        "0f 0f 0f 0f 1a 0f 1a 1a",
+        "0f 0f 2d 0f 1a 0f 1a 1a",
+        "0f 0f 0f 0f 0f 0f 0f 1a",
+        "06 0b 0f 0f 1a 1a 0f 07"
+      ],
+      "tileset": "house",
+      "border_block": 10,
+      "rows": [
+        "0a 0a 0a 0a 0a 0a 0a 0a",
+        "0a 04 03 08 04 05 04 0a",
+        "0a 04 0f 0f 04 0f 04 0a",
+        "0a 01 02 0f 04 0f 04 0a",
+        "0a 0c 0d 0f 0f 0f 0f 0a",
+        "0a 0b 0a 0a 0a 0a 0a 0a"
+      ],
+      "arrival": [
+        3,
+        9
+      ],
+      "actor_approaches": [
+        {
+          "script": "MN_SPX_CAPITOLLIBRARY_HOST",
+          "tile": [
+            5,
+            4
+          ]
+        },
+        {
+          "script": "MN_SP_INTERIOR_LIBRARY_READER",
+          "tile": [
+            7,
+            6
+          ]
+        }
+      ],
+      "exhibits": [
+        {
+          "id": "MN_INTERIOR_DETAIL_CAPITOL_LENDING_SHELF",
+          "tile": [
+            8,
+            7
+          ],
+          "approach": [
+            7,
+            7
+          ],
+          "lines": [
+            "The field-guide shelf has room for notes in more than one language. A card asks readers to keep each contributor's name beside their observations."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnStPaulCommunityHall",
+      "intent": "A warm timber meeting room pairs a communal supper table with east-side coat storage and a clear west entrance.",
+      "before_tileset": "house",
+      "before_rows": [
+        "04 05 03 05 03 05 03 1d",
+        "0f 0f 0f 0f 0f 0f 0f 0f",
+        "1a 0f 0f 14 15 0f 0f 0f",
+        "1a 0f 0f 21 22 0f 1a 0f",
+        "0f 0f 0f 18 19 0f 0f 0f",
+        "06 0b 0f 0f 0f 0f 0f 07"
+      ],
+      "tileset": "players_house",
+      "border_block": 0,
+      "rows": [
+        "00 00 00 00 00 00 00 00",
+        "00 1b 01 05 01 1b 01 00",
+        "00 03 03 03 03 03 1b 00",
+        "00 03 08 09 03 03 1b 00",
+        "00 03 0c 0d 03 03 03 00",
+        "00 06 00 00 00 00 00 00"
+      ],
+      "arrival": [
+        3,
+        9
+      ],
+      "actor_approaches": [
+        {
+          "script": "MN_SPX_COMMUNITYHALL_HOST",
+          "tile": [
+            5,
+            4
+          ]
+        },
+        {
+          "script": "MN_SP_INTERIOR_COAT_VOLUNTEER",
+          "tile": [
+            10,
+            6
+          ]
+        }
+      ],
+      "exhibits": [
+        {
+          "id": "MN_INTERIOR_DETAIL_COMMUNITY_COAT_SHELF",
+          "tile": [
+            12,
+            7
+          ],
+          "approach": [
+            11,
+            7
+          ],
+          "lines": [
+            "Coats are sorted by size. The mitten box says TAKE A PAIR, LEAVE A PAIR IF YOU CAN. No names or explanations are requested."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnStPaulSouthLandingInn",
+      "intent": "A timber river inn with a dining table and an actual guest bed; keep the original free recovery host and riverside return.",
+      "before_tileset": "house",
+      "before_rows": [
+        "04 05 03 05 03 05 04 1d",
+        "0f 0f 0f 0f 0f 1a 0f 0f",
+        "0f 0f 0f 14 15 0f 0f 1a",
+        "0f 0f 0f 18 19 0f 14 1a",
+        "0f 0f 0f 0f 0f 0f 18 19",
+        "06 0b 0f 0f 0f 0f 0f 07"
+      ],
+      "tileset": "players_house",
+      "border_block": 0,
+      "rows": [
+        "00 00 00 00 00 00 00 00",
+        "00 1b 01 05 01 05 01 00",
+        "00 03 03 03 03 03 03 00",
+        "00 03 08 09 03 03 1c 00",
+        "00 03 0c 0d 03 03 03 00",
+        "00 06 00 00 00 00 00 00"
+      ],
+      "arrival": [
+        3,
+        9
+      ],
+      "actor_approaches": [
+        {
+          "script": "MN_SPX_SOUTHLANDINGINN_HOST",
+          "tile": [
+            5,
+            4
+          ]
+        },
+        {
+          "script": "MN_SP_INTERIOR_INN_TRAVELER",
+          "tile": [
+            10,
+            6
+          ]
+        }
+      ],
+      "exhibits": [
+        {
+          "id": "MN_INTERIOR_DETAIL_LANDING_INN_REGISTER",
+          "tile": [
+            2,
+            3
+          ],
+          "approach": [
+            2,
+            4
+          ],
+          "lines": [
+            "The inn register asks where guests are headed. Someone has written: Across the river, after one more story."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnStPaulSouthLandingSurvey",
+      "intent": "River charts and a northeast field-work table face a west file stack; a connected lower cross-aisle replaces the empty center.",
+      "before_tileset": "house",
+      "before_rows": [
+        "04 05 03 05 04 04 04 05",
+        "0f 0f 0f 0f 0f 2d 2d 0f",
+        "0f 0f 0f 0f 0f 0f 0f 1a",
+        "0f 0f 14 15 0f 1a 0f 1a",
+        "0f 0f 18 19 0f 1a 0f 0f",
+        "06 0b 0f 0f 0f 0f 0f 07"
+      ],
+      "tileset": "house",
+      "border_block": 10,
+      "rows": [
+        "0a 0a 0a 0a 0a 0a 0a 0a",
+        "0a 0e 03 0e 04 05 04 0a",
+        "0a 0f 0f 0f 0f 01 02 0a",
+        "0a 04 0f 0f 0f 0c 0d 0a",
+        "0a 0f 0f 0f 0f 0f 04 0a",
+        "0a 0b 0a 0a 0a 0a 0a 0a"
+      ],
+      "arrival": [
+        3,
+        9
+      ],
+      "actor_approaches": [
+        {
+          "script": "MN_SPX_SOUTHLANDINGSURVEY_HOST",
+          "tile": [
+            5,
+            4
+          ]
+        },
+        {
+          "script": "MN_SP_INTERIOR_SURVEY_VOLUNTEER",
+          "tile": [
+            7,
+            6
+          ]
+        }
+      ],
+      "exhibits": [
+        {
+          "id": "MN_INTERIOR_DETAIL_LANDING_SURVEY_FILES",
+          "tile": [
+            2,
+            7
+          ],
+          "approach": [
+            2,
+            8
+          ],
+          "lines": [
+            "The same river bend appears on several dated charts. Water levels are recorded beside the place and time of each observation."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnStPaulFreightOffice",
+      "intent": "A timber freight office pairs west filing cupboards with a complete southeast parcel table; keep the real Depot manifest in its original building.",
+      "before_tileset": "house",
+      "before_rows": [
+        "04 05 03 05 04 04 04 1d",
+        "0f 0f 0f 0f 0f 0f 0f 0f",
+        "0f 1a 0f 0f 14 15 0f 1a",
+        "0f 0f 1a 0f 21 22 0f 1a",
+        "0f 0f 0f 0f 18 19 0f 1a",
+        "06 0b 0f 0f 0f 0f 0f 07"
+      ],
+      "tileset": "players_house",
+      "border_block": 0,
+      "rows": [
+        "00 00 00 00 00 00 00 00",
+        "00 1b 01 1b 01 05 01 00",
+        "00 1b 03 03 03 03 03 00",
+        "00 1b 03 03 08 09 03 00",
+        "00 03 03 03 0c 0d 03 00",
+        "00 06 00 00 00 00 00 00"
+      ],
+      "arrival": [
+        3,
+        9
+      ],
+      "actor_approaches": [
+        {
+          "script": "MN_SPX_FREIGHTOFFICE_HOST",
+          "tile": [
+            5,
+            4
+          ]
+        },
+        {
+          "script": "MN_SP_INTERIOR_FREIGHT_SENDER",
+          "tile": [
+            7,
+            6
+          ]
+        }
+      ],
+      "exhibits": [
+        {
+          "id": "MN_INTERIOR_DETAIL_FREIGHT_WAFFLE_PARCEL",
+          "tile": [
+            9,
+            7
+          ],
+          "approach": [
+            9,
+            6
+          ],
+          "lines": [
+            "A small repair parcel is addressed to WINONA. The sender has drawn a waffle beside the return address. Ordinary freight, very important breakfast."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnStPaulFairAgricultureHall",
+      "intent": "Three native planter displays and a shared comparison counter form a small crop exhibition with two connected aisles.",
+      "before_tileset": "house",
+      "before_rows": [
+        "04 05 03 05 03 05 04 1d",
+        "0f 0f 0f 0f 0f 2c 0f 0f",
+        "0f 0f 0f 0f 0f 0f 0f 2c",
+        "0f 0f 2f 0f 30 0f 2c 2c",
+        "0f 0f 0f 0f 30 0f 2c 2c",
+        "06 0b 0f 0f 0f 0f 0f 07"
+      ],
+      "tileset": "house",
+      "border_block": 10,
+      "rows": [
+        "0a 0a 0a 0a 0a 0a 0a 0a",
+        "0a 04 03 0e 05 04 05 0a",
+        "0a 2c 0f 0f 2f 0f 2c 0a",
+        "0a 30 0f 0f 31 0f 30 0a",
+        "0a 0f 2d 0f 0f 0f 0f 0a",
+        "0a 0b 0a 0a 0a 0a 0a 0a"
+      ],
+      "arrival": [
+        3,
+        9
+      ],
+      "actor_approaches": [
+        {
+          "script": "MN_SPX_FAIRAGRICULTUREHALL_HOST",
+          "tile": [
+            5,
+            4
+          ]
+        },
+        {
+          "script": "MN_SP_INTERIOR_CROP_GROWER",
+          "tile": [
+            7,
+            6
+          ]
+        }
+      ],
+      "exhibits": [
+        {
+          "id": "MN_INTERIOR_DETAIL_FAIR_GROWER_EXPERIMENT",
+          "tile": [
+            8,
+            4
+          ],
+          "approach": [
+            7,
+            4
+          ],
+          "lines": [
+            "Two growers planted the same seed in different soil. The cards record what changed, what did not, and what they plan to try next spring."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnStPaulFairExhibitionHall",
+      "intent": "A west demonstration table, two east casting displays and a south project shelf create a clockwise exhibition walk.",
+      "before_tileset": "house",
+      "before_rows": [
+        "04 05 03 05 03 05 03 05",
+        "0f 0f 0f 0f 0f 1f 1f 27",
+        "0f 0f 0f 0f 0f 0f 0f 27",
+        "0f 0f 14 15 0f 2d 2d 27",
+        "0f 0f 18 19 0f 0f 2e 0f",
+        "06 0b 0f 0f 0f 0f 0f 07"
+      ],
+      "tileset": "house",
+      "border_block": 10,
+      "rows": [
+        "0a 0a 0a 0a 0a 0a 0a 0a",
+        "0a 05 03 08 04 04 05 0a",
+        "0a 01 02 0f 0f 1f 0f 0a",
+        "0a 0c 0d 0f 0f 0f 1f 0a",
+        "0a 0f 0f 0f 04 0f 0f 0a",
+        "0a 0b 0a 0a 0a 0a 0a 0a"
+      ],
+      "arrival": [
+        3,
+        9
+      ],
+      "actor_approaches": [
+        {
+          "script": "MN_SPX_FAIREXHIBITIONHALL_HOST",
+          "tile": [
+            5,
+            4
+          ]
+        },
+        {
+          "script": "MN_SP_INTERIOR_FIRST_EXHIBITOR",
+          "tile": [
+            7,
+            6
+          ]
+        }
+      ],
+      "exhibits": [
+        {
+          "id": "MN_INTERIOR_DETAIL_FAIR_FIRST_CASTING",
+          "tile": [
+            10,
+            5
+          ],
+          "approach": [
+            9,
+            5
+          ],
+          "lines": [
+            "One stone casting is labeled FIRST TRY. Its maker explains which part cracked and how they repaired it. The repair has its own little ribbon."
+          ]
+        }
+      ]
+    }
+  ]
+}

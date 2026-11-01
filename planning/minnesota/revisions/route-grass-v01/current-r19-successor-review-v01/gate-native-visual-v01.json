@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-r19-detroit-gate-v02.crystalpack",
+  "pack_sha256": "c1fe385603e2a10a8fc2bb49b87a8d73e9bbb57905b6b7c1b95d5269fa29e9e7",
+  "outdoor_report": "planning/minnesota/renders/route-grass-v01/current-r19-successor-review-v01/gate-native-v03/capture-progress.json",
+  "outdoor_report_sha256": "15dc63cf48176e6cc9138c3df1aa6c7c5f78e258a70803783a19523e059e539e",
+  "outdoor_accepted_view_ids": [
+    "route-gate",
+    "town-gate"
+  ],
+  "interior_report": "planning/minnesota/renders/route-grass-v01/current-r19-successor-review-v01/gate-room-native-v01/capture-progress.json",
+  "interior_report_sha256": "ba848a23b41cdf7e7333958b8188a1fed3a451e89314ae3c4d7e31d2d6dcf45c",
+  "actual_native_2d_views_inspected": 3,
+  "pixel_mismatches": 0,
+  "rejected_comparison": "Outdoor comparator does not model gate indoor palette/camera; its interior result retained as rejected harness use. Dedicated strict room comparator matches every pixel.",
+  "scope": "Visual and native-art comparison only; traversal/guard acceptance remains pending."
+}

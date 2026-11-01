@@ -1,0 +1,170 @@
+{
+  "schema_version": 1,
+  "seed": 20261030,
+  "mimic_numerator": 1,
+  "mimic_denominator": 4,
+  "cities": [
+    {
+      "map": "MnMinneapolis",
+      "code": "MPLS",
+      "entry": [
+        10,
+        12
+      ],
+      "notes": [
+        [
+          20,
+          11
+        ],
+        [
+          19,
+          31
+        ],
+        [
+          46,
+          12
+        ],
+        [
+          63,
+          11
+        ],
+        [
+          66,
+          35
+        ],
+        [
+          71,
+          36
+        ],
+        [
+          51,
+          46
+        ],
+        [
+          17,
+          58
+        ]
+      ],
+      "encounters": [
+        {
+          "species": "JOTLET",
+          "level": 6,
+          "scale_level": false
+        },
+        {
+          "species": "MEMOFOLD",
+          "level": 24,
+          "scale_level": true
+        }
+      ]
+    },
+    {
+      "map": "MnStPaul",
+      "code": "STPAUL",
+      "entry": [
+        10,
+        16
+      ],
+      "notes": [
+        [
+          9,
+          15
+        ],
+        [
+          22,
+          16
+        ],
+        [
+          36,
+          12
+        ],
+        [
+          52,
+          25
+        ],
+        [
+          37,
+          41
+        ],
+        [
+          58,
+          48
+        ],
+        [
+          15,
+          63
+        ],
+        [
+          53,
+          63
+        ]
+      ],
+      "encounters": [
+        {
+          "species": "JOTLET",
+          "level": 6,
+          "scale_level": false
+        },
+        {
+          "species": "JOTLET",
+          "level": 12,
+          "scale_level": true
+        }
+      ]
+    },
+    {
+      "map": "MnDuluth",
+      "code": "DULUTH",
+      "entry": [
+        10,
+        13
+      ],
+      "notes": [
+        [
+          10,
+          12
+        ],
+        [
+          31,
+          12
+        ],
+        [
+          73,
+          12
+        ],
+        [
+          103,
+          12
+        ],
+        [
+          22,
+          45
+        ],
+        [
+          77,
+          41
+        ],
+        [
+          12,
+          69
+        ],
+        [
+          110,
+          59
+        ]
+      ],
+      "encounters": [
+        {
+          "species": "JOTLET",
+          "level": 6,
+          "scale_level": false
+        },
+        {
+          "species": "RECALLISK",
+          "level": 44,
+          "scale_level": true
+        }
+      ]
+    }
+  ]
+}

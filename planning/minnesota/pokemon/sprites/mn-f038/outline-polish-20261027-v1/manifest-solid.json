@@ -1,0 +1,136 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F038",
+  "status": "candidate-pending-native-review",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_089": {
+      "species_id": "MN_089",
+      "name": "Lutebrisk",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          29,
+          27,
+          12
+        ],
+        [
+          11,
+          20,
+          25
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        13181,
+        26251,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          239,
+          222,
+          99
+        ],
+        [
+          90,
+          165,
+          206
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#EFDE63",
+        "#5AA5CE",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f038/prompt-v2.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png",
+      "target/minnesota-pokemon/gen2-reference/bugs.png"
+    ]
+  },
+  "sprites": [
+    {
+      "id": "mn-089-lutebrisk-v2",
+      "species_id": "MN_089",
+      "view": "front",
+      "source": "sprites/mn-f038/front-back.imagegen-v2.png",
+      "crop": [
+        0,
+        0,
+        1215,
+        647
+      ],
+      "fit": [
+        54,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13181,
+        26251,
+        0
+      ],
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 20,
+      "exterior_contour": "solid"
+    },
+    {
+      "id": "mn-089-lutebrisk-v2",
+      "species_id": "MN_089",
+      "view": "back",
+      "source": "sprites/mn-f038/front-back.imagegen-v2.png",
+      "crop": [
+        0,
+        647,
+        1215,
+        648
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13181,
+        26251,
+        0
+      ],
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 20,
+      "exterior_contour": "solid"
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "sheet_sha256": "2a47a7e20dead3a8f9c3c5e7075e9d9c2d73e8d7301f618b2cbc9cf725b2fb43",
+    "outline_profile": "source-contour-v1",
+    "notes": "Cod anatomy retained in native front/back: chin barbel, dorsal and pectoral fins, forked tail, white flakes and butter core; original version archived."
+  }
+}

@@ -1,0 +1,247 @@
+{
+  "schema_version": 1,
+  "base_content_hash": "0e7ac6c11897562e296c76512ec223f57a4ea6f82e8040126bcc5a73e440399b",
+  "hm_price": 3000,
+  "hidden_caches": [
+    {
+      "map": "MnR01Cave1F",
+      "tile": [
+        12,
+        4
+      ],
+      "approach": [
+        12,
+        3
+      ],
+      "item": "TM_MUD_SLAP"
+    },
+    {
+      "map": "MnR02C00R00",
+      "tile": [
+        21,
+        10
+      ],
+      "approach": [
+        20,
+        10
+      ],
+      "item": "TM_SUNNY_DAY"
+    },
+    {
+      "map": "MnR03Cave1F",
+      "tile": [
+        11,
+        3
+      ],
+      "approach": [
+        11,
+        4
+      ],
+      "item": "TM_DIG"
+    },
+    {
+      "map": "MnR04C00R00",
+      "tile": [
+        10,
+        29
+      ],
+      "approach": [
+        9,
+        29
+      ],
+      "item": "TM_RETURN"
+    },
+    {
+      "map": "MnR05C00R01",
+      "tile": [
+        43,
+        34
+      ],
+      "approach": [
+        42,
+        34
+      ],
+      "item": "TM_STEEL_WING"
+    },
+    {
+      "map": "MnR06C00R01",
+      "tile": [
+        56,
+        3
+      ],
+      "approach": [
+        56,
+        4
+      ],
+      "item": "TM_ROLLOUT"
+    },
+    {
+      "map": "MnR07C00R01",
+      "tile": [
+        13,
+        32
+      ],
+      "approach": [
+        12,
+        32
+      ],
+      "item": "TM_HEADBUTT"
+    },
+    {
+      "map": "MnR08C01R00",
+      "tile": [
+        3,
+        26
+      ],
+      "approach": [
+        2,
+        26
+      ],
+      "item": "TM_ICE_PUNCH"
+    },
+    {
+      "map": "MnR09C01R00",
+      "tile": [
+        54,
+        18
+      ],
+      "approach": [
+        54,
+        19
+      ],
+      "item": "TM_EARTHQUAKE"
+    },
+    {
+      "map": "MnR10Cave1F",
+      "tile": [
+        28,
+        21
+      ],
+      "approach": [
+        28,
+        22
+      ],
+      "item": "TM_SHADOW_BALL"
+    },
+    {
+      "map": "MnR11C00R03",
+      "tile": [
+        30,
+        27
+      ],
+      "approach": [
+        30,
+        26
+      ],
+      "item": "TM_RAIN_DANCE"
+    },
+    {
+      "map": "MnR12C01R00",
+      "tile": [
+        51,
+        14
+      ],
+      "approach": [
+        50,
+        14
+      ],
+      "item": "TM_BLIZZARD"
+    },
+    {
+      "map": "MnR13C00R02",
+      "tile": [
+        23,
+        12
+      ],
+      "approach": [
+        22,
+        12
+      ],
+      "item": "TM_HYPER_BEAM"
+    },
+    {
+      "map": "MnR14C01R01",
+      "tile": [
+        25,
+        6
+      ],
+      "approach": [
+        26,
+        6
+      ],
+      "item": "TM_SOLARBEAM"
+    },
+    {
+      "map": "MnR15C00R00",
+      "tile": [
+        39,
+        14
+      ],
+      "approach": [
+        38,
+        14
+      ],
+      "item": "TM_THUNDERPUNCH"
+    },
+    {
+      "map": "MnR16C01R00",
+      "tile": [
+        14,
+        41
+      ],
+      "approach": [
+        14,
+        40
+      ],
+      "item": "TM_PROTECT"
+    },
+    {
+      "map": "MnR17Cave1F",
+      "tile": [
+        4,
+        7
+      ],
+      "approach": [
+        4,
+        6
+      ],
+      "item": "TM_TOXIC"
+    },
+    {
+      "map": "MnR18C01R00",
+      "tile": [
+        11,
+        10
+      ],
+      "approach": [
+        10,
+        10
+      ],
+      "item": "TM_SANDSTORM"
+    },
+    {
+      "map": "MnR19C00R00",
+      "tile": [
+        32,
+        40
+      ],
+      "approach": [
+        32,
+        41
+      ],
+      "item": "TM_THIEF"
+    },
+    {
+      "map": "MnR20Cave1F",
+      "tile": [
+        6,
+        3
+      ],
+      "approach": [
+        6,
+        4
+      ],
+      "item": "TM_NIGHTMARE"
+    }
+  ]
+}

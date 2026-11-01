@@ -1,0 +1,216 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_046",
+  "result": "pass",
+  "manifest_sha256": "b9284e618d550d0fa608d33be4d7547786a91412e56bfa7224b8194f2d1a44a0",
+  "bank_sha256": "642780c35e7e8ea151aa47851119df29a1711c01306b609d1042edd6bbc9ea34",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f016/stackajack.overworld.imagegen-v4-coarse-outline.png": "189c4d4ad15dc906cc053fe1129fa5c9a423ca592de5f19db62db5f49de66886",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f016/stackajack.overworld.imagegen-v5-isolated-profiles.png": "7daf17dc93c70b5ec89170a98331fe10f305dc17f3cf10951443452cda2e8c18"
+  },
+  "canonical_eye_form": "Two isolated actual black pupil dots south and one isolated actual black pupil west; source eye components verified in all four nonrear poses.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            7,
+            8
+          ],
+          "source_sample": [
+            255,
+            235
+          ],
+          "source_component": [
+            230,
+            232,
+            29,
+            28
+          ],
+          "component_pixels": 796,
+          "native_neighbors": [
+            1,
+            1,
+            2,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            254
+          ]
+        },
+        {
+          "native": [
+            9,
+            8
+          ],
+          "source_sample": [
+            329,
+            235
+          ],
+          "source_component": [
+            318,
+            232,
+            28,
+            28
+          ],
+          "component_pixels": 784,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            254
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            6,
+            8
+          ],
+          "source_sample": [
+            1206,
+            237
+          ],
+          "source_component": [
+            1185,
+            231,
+            29,
+            30
+          ],
+          "component_pixels": 849,
+          "native_neighbors": [
+            1,
+            1,
+            2,
+            1
+          ],
+          "source_rgba": [
+            2,
+            2,
+            1,
+            254
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            7,
+            8
+          ],
+          "source_sample": [
+            255,
+            676
+          ],
+          "source_component": [
+            230,
+            673,
+            29,
+            29
+          ],
+          "component_pixels": 821,
+          "native_neighbors": [
+            1,
+            1,
+            2,
+            1
+          ],
+          "source_rgba": [
+            8,
+            6,
+            1,
+            253
+          ]
+        },
+        {
+          "native": [
+            9,
+            8
+          ],
+          "source_sample": [
+            329,
+            676
+          ],
+          "source_component": [
+            317,
+            673,
+            29,
+            30
+          ],
+          "component_pixels": 863,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            6,
+            4,
+            1,
+            254
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            6,
+            8
+          ],
+          "source_sample": [
+            1206,
+            681
+          ],
+          "source_component": [
+            1186,
+            676,
+            28,
+            29
+          ],
+          "component_pixels": 812,
+          "native_neighbors": [
+            1,
+            1,
+            2,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            254
+          ]
+        }
+      ]
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "notes": "Genuine north back remains pancake tiers and syrup cascade without eyes. Coarse source contour edit retained original pancake/body proportions, butter eyebrows, syrup beard and arms/feet; source profile isolation removed other columns to permit full equal-size548x433 source windows, without cropping retained art. All six crops retain complete alpha silhouettes, shared14 fit and no per-pose scale. South step head crop registered seven source pixels and west step two source pixels to align actual eyes; any one native pixel walk bob is retained. Enlarged source pupil components proven in all four nonrear poses. Normal/shiny boards actually viewed; all raw edits and rejected sampling trials retained."
+  }
+}

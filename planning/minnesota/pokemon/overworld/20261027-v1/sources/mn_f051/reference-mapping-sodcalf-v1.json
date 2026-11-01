@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_104",
+  "family_id": "MN_F051",
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/prompt-sodcalf-v1.txt",
+  "input_images": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+      "role": "ONLY input: authentic native16 overworld STYLE, not identity",
+      "sha256": "4354a639ed1a80fd6686e43b273443ed894e58a84307a8049f638ee9ffa2a099"
+    }
+  ],
+  "identity_reviewed_not_supplied_to_imagegen": [
+    {
+      "path": "target/minnesota-pokemon/native/MN_F051/mn-104-sodcalf-v1.front.png",
+      "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F051/mn-104-sodcalf-v1.front.png",
+      "sha256": "a5e17302b6060dc97f89c071a85ab4b7e70dfcb050d58feada3eefbf7983eaac"
+    },
+    {
+      "path": "target/minnesota-pokemon/native/MN_F051/mn-104-sodcalf-v1.back.png",
+      "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F051/mn-104-sodcalf-v1.back.png",
+      "sha256": "a5ef88de25555e0abbe8e8906a1097710b89fb3f45d9220aaf10ea073ce9604d"
+    }
+  ],
+  "canonical_theme": "Prairie bison and rolling thunder: a dusty calf develops a resonating shoulder hump, then stores the thunder of its charge between broad horn tips.",
+  "palette_binding": {
+    "transparent_index": 0,
+    "visible_indices": [
+      1,
+      2,
+      3
+    ],
+    "normal_rgb555_words": [
+      32767,
+      10872,
+      4364,
+      0
+    ],
+    "shiny_rgb555_words": [
+      32767,
+      20234,
+      8580,
+      0
+    ],
+    "white_body_region_policy": "Simplify formerly white body/highlight regions to light ink1. Index0 is transparent everywhere, not an opaque white paint color."
+  },
+  "fit": 13,
+  "prompt_requested_fit": 12,
+  "native_sampling_rationale": "Native12 joins pupil neighbors to muzzle rim; native13 allows actual isolated anatomical pupils without image edits. Small calf remains low10px profile with little hump; later stages grow shoulder/horn mass."
+}

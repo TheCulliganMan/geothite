@@ -1,0 +1,8 @@
+{
+  "status": "REQUIRES_REVIEW",
+  "pack": "content-packs/minnesota-iron-drill-core-v04.crystalpack",
+  "pack_sha256": "4240537c844bf7e305e99c24f2b7054c314b84a03d17037747cb4ceabdbd17fd",
+  "log": ".local/route-grass-review/r04-current-native-v01.log",
+  "exit_code": 101,
+  "scope": "Park native geometry/events plus populated bypass, actual trainer wins, item use and Continue. Initial local party/permissions/position are explicit QA setup."
+}

@@ -1,0 +1,9 @@
+{
+  "tool": "built-in image_gen",
+  "original": "/Users/ryanculligan/.codex/generated_images/01a179bf-dc2b-7352-8975-8b8f3a32e33b/exec-31c96a32-e7ab-4ef1-a376-2a861b0f051c.png",
+  "preserved_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f031/splitbeam.overworld.imagegen-v1.png",
+  "sha256": "3e701430a04c8e38ee379e445072dfd90e344efd6a2eae4dcfe07af6c7e6958b",
+  "exact_prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f031/prompt-splitbeam-v1.txt",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f031/reference-mapping-splitbeam-v1.json",
+  "status": "preserved; selected frames recorded in frozen manifest"
+}

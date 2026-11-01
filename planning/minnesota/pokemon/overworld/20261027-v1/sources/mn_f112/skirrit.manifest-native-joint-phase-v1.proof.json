@@ -1,0 +1,495 @@
+{
+  "species_id": "MN_245",
+  "name": "skirrit",
+  "status": "native-review-recommended; root independent review and context required",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f112/skirrit.manifest-native-joint-phase-v1.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-skirrit-joint-phase-v1",
+  "shared_transform": {
+    "source_bounds": [
+      12,
+      12,
+      333,
+      298
+    ],
+    "native_size": [
+      14,
+      12
+    ],
+    "native_origin": [
+      1,
+      3
+    ]
+  },
+  "all_four_nonrear_poses_actual_pupils_pass": true,
+  "each_native_eye_cluster_maps_to_one_actual_small_source_pupil_component": true,
+  "actual_source_pupil_proofs": [
+    {
+      "pose": "down_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f112/skirrit.overworld.imagegen-v1.png",
+      "crop": [
+        86,
+        127,
+        357,
+        322
+      ],
+      "actual_source_eye_bounds": [
+        [
+          262,
+          299,
+          41,
+          41
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              8,
+              9
+            ],
+            [
+              8,
+              10
+            ],
+            [
+              9,
+              9
+            ],
+            [
+              9,
+              10
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                4,
+                3,
+                3,
+                254
+              ],
+              "bounds": [
+                262,
+                299,
+                41,
+                41
+              ],
+              "pixels": 1681,
+              "truncated_contour": false,
+              "native_pixel": [
+                8,
+                9
+              ],
+              "source_sample_pixel": [
+                276,
+                300
+              ]
+            },
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                262,
+                299,
+                41,
+                41
+              ],
+              "pixels": 1681,
+              "truncated_contour": false,
+              "native_pixel": [
+                8,
+                10
+              ],
+              "source_sample_pixel": [
+                276,
+                325
+              ]
+            },
+            {
+              "black": true,
+              "rgba": [
+                10,
+                8,
+                7,
+                254
+              ],
+              "bounds": [
+                262,
+                299,
+                41,
+                41
+              ],
+              "pixels": 1681,
+              "truncated_contour": false,
+              "native_pixel": [
+                9,
+                9
+              ],
+              "source_sample_pixel": [
+                300,
+                300
+              ]
+            },
+            {
+              "black": true,
+              "rgba": [
+                3,
+                2,
+                2,
+                253
+              ],
+              "bounds": [
+                262,
+                299,
+                41,
+                41
+              ],
+              "pixels": 1681,
+              "truncated_contour": false,
+              "native_pixel": [
+                9,
+                10
+              ],
+              "source_sample_pixel": [
+                300,
+                325
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f112/skirrit.overworld.imagegen-v1.png",
+      "crop": [
+        1093,
+        127,
+        357,
+        322
+      ],
+      "actual_source_eye_bounds": [
+        [
+          1208,
+          298,
+          43,
+          41
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              5,
+              9
+            ],
+            [
+              5,
+              10
+            ],
+            [
+              6,
+              9
+            ],
+            [
+              6,
+              10
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                6,
+                5,
+                5,
+                253
+              ],
+              "bounds": [
+                1208,
+                298,
+                43,
+                41
+              ],
+              "pixels": 1761,
+              "truncated_contour": false,
+              "native_pixel": [
+                5,
+                9
+              ],
+              "source_sample_pixel": [
+                1212,
+                300
+              ]
+            },
+            {
+              "black": true,
+              "rgba": [
+                2,
+                2,
+                1,
+                253
+              ],
+              "bounds": [
+                1208,
+                298,
+                43,
+                41
+              ],
+              "pixels": 1761,
+              "truncated_contour": false,
+              "native_pixel": [
+                5,
+                10
+              ],
+              "source_sample_pixel": [
+                1212,
+                325
+              ]
+            },
+            {
+              "black": true,
+              "rgba": [
+                3,
+                2,
+                2,
+                254
+              ],
+              "bounds": [
+                1208,
+                298,
+                43,
+                41
+              ],
+              "pixels": 1761,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                9
+              ],
+              "source_sample_pixel": [
+                1235,
+                300
+              ]
+            },
+            {
+              "black": true,
+              "rgba": [
+                1,
+                1,
+                1,
+                253
+              ],
+              "bounds": [
+                1208,
+                298,
+                43,
+                41
+              ],
+              "pixels": 1761,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                10
+              ],
+              "source_sample_pixel": [
+                1235,
+                325
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f112/skirrit.overworld.imagegen-v1.png",
+      "crop": [
+        86,
+        598,
+        357,
+        322
+      ],
+      "actual_source_eye_bounds": [
+        [
+          262,
+          751,
+          41,
+          41
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              8,
+              9
+            ],
+            [
+              9,
+              9
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                262,
+                751,
+                41,
+                41
+              ],
+              "pixels": 1681,
+              "truncated_contour": false,
+              "native_pixel": [
+                8,
+                9
+              ],
+              "source_sample_pixel": [
+                276,
+                771
+              ]
+            },
+            {
+              "black": true,
+              "rgba": [
+                2,
+                1,
+                1,
+                253
+              ],
+              "bounds": [
+                262,
+                751,
+                41,
+                41
+              ],
+              "pixels": 1681,
+              "truncated_contour": false,
+              "native_pixel": [
+                9,
+                9
+              ],
+              "source_sample_pixel": [
+                300,
+                771
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f112/skirrit.overworld.imagegen-v1.png",
+      "crop": [
+        1093,
+        598,
+        357,
+        322
+      ],
+      "actual_source_eye_bounds": [
+        [
+          1208,
+          751,
+          43,
+          41
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              5,
+              9
+            ],
+            [
+              6,
+              9
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                2,
+                2,
+                2,
+                253
+              ],
+              "bounds": [
+                1208,
+                751,
+                43,
+                41
+              ],
+              "pixels": 1763,
+              "truncated_contour": false,
+              "native_pixel": [
+                5,
+                9
+              ],
+              "source_sample_pixel": [
+                1212,
+                771
+              ]
+            },
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                254
+              ],
+              "bounds": [
+                1208,
+                751,
+                43,
+                41
+              ],
+              "pixels": 1763,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                9
+              ],
+              "source_sample_pixel": [
+                1235,
+                771
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "old_native_poses_preserved_exactly": [
+    "down_idle",
+    "up_idle",
+    "left_idle",
+    "down_step",
+    "up_step",
+    "left_step"
+  ],
+  "normal_shiny_runtime_parity": "all1536pixels exact each",
+  "canonical_palette_bytes": "exact",
+  "all_three_walk_pairs_distinct": true,
+  "rear_review": "both rear native poses viewed; no copied face",
+  "normal_shiny_native_boards_actually_viewed": true,
+  "accepted_coverage_native_pack_untouched": true,
+  "manifest_sha256": "c0a75fb393a94746513da55752e5065ce7811f0ed1684c11d432274bbf14f81c",
+  "compiled_index_sha256": "43a202979fe9b244f962886303d0a80a237d032da3889c43dfcf29f256a25900"
+}

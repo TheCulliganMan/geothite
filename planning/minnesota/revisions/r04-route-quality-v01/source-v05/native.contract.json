@@ -1,0 +1,663 @@
+{
+  "schema_version": 1,
+  "base_pack_sha256": "3ddbad16c6538e52f219c12497e4fbe6e41a7f18af5c42589b7b92357cfad243",
+  "base_identity": "3ead916d12c705f2c0559c98b983f5af4760c9a8f557d8e31f62b36ea197e29a",
+  "base_map_count": 683,
+  "map": "MnR04C00R00",
+  "tileset": "mn_river_park",
+  "expected_blocks": 68,
+  "base_module_sha256": "ca7e08ba7ec44571661298e28ab8d21560f5287eccfee5d5797983f68d47d6ca",
+  "base_definition_sha256": "4c0d5bbdbde5b09fea33007ba4d5a997be07054acd450ce547291cc98a147483",
+  "source_files_sha256": {
+    "data/tilesets/mn_river_park.json": "7bec5862855c98225a20cd410f6af544b03a07ceee82cd5a3476bdcaeb400097",
+    "data/tilesets/mn_river_park_metatiles.bin": "d1056f688c780e84da89ec8fbbb3ce95bb9bedf562dfb16a3825f155440c4594",
+    "data/tilesets/mn_river_park_palette_map.json": "fa96528e42e3585353b98a0267d275836a7a731b9377ac44ea287290c05b1bb8",
+    "gfx/tilesets/mn_river_park.2bpp": "545ca3d39e05298ed27b47a5c30f4987819d86fb8efa60e2873c1afd6509d276",
+    "gfx/tilesets/mn_river_park.png": "0409c0f27bd8681a08913d56e447da653d8e05e97fbd3f7234561d05f976eded"
+  },
+  "blocks": [
+    {
+      "target": 68,
+      "glyphs": [
+        21,
+        21,
+        21,
+        21,
+        20,
+        20,
+        20,
+        20,
+        20,
+        20,
+        20,
+        20,
+        20,
+        20,
+        20,
+        20
+      ],
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ],
+      "row_sources": [
+        {
+          "block": 58,
+          "row": 0
+        },
+        {
+          "block": 7,
+          "row": 1
+        },
+        {
+          "block": 7,
+          "row": 2
+        },
+        {
+          "block": 7,
+          "row": 3
+        }
+      ]
+    },
+    {
+      "target": 69,
+      "glyphs": [
+        20,
+        20,
+        20,
+        20,
+        20,
+        20,
+        20,
+        20,
+        20,
+        20,
+        20,
+        20,
+        21,
+        21,
+        21,
+        21
+      ],
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ],
+      "row_sources": [
+        {
+          "block": 7,
+          "row": 0
+        },
+        {
+          "block": 7,
+          "row": 1
+        },
+        {
+          "block": 7,
+          "row": 2
+        },
+        {
+          "block": 58,
+          "row": 3
+        }
+      ]
+    },
+    {
+      "target": 70,
+      "glyphs": [
+        20,
+        20,
+        20,
+        20,
+        20,
+        20,
+        20,
+        20,
+        35,
+        36,
+        35,
+        36,
+        51,
+        52,
+        51,
+        52
+      ],
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ],
+      "row_sources": [
+        {
+          "block": 7,
+          "row": 0
+        },
+        {
+          "block": 7,
+          "row": 1
+        },
+        {
+          "block": 25,
+          "row": 2
+        },
+        {
+          "block": 25,
+          "row": 3
+        }
+      ]
+    },
+    {
+      "target": 71,
+      "glyphs": [
+        35,
+        36,
+        35,
+        36,
+        51,
+        52,
+        51,
+        52,
+        20,
+        20,
+        20,
+        20,
+        20,
+        20,
+        20,
+        20
+      ],
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ],
+      "row_sources": [
+        {
+          "block": 25,
+          "row": 2
+        },
+        {
+          "block": 25,
+          "row": 3
+        },
+        {
+          "block": 7,
+          "row": 2
+        },
+        {
+          "block": 7,
+          "row": 3
+        }
+      ]
+    }
+  ],
+  "cells": [
+    {
+      "metatile": [
+        12,
+        0
+      ],
+      "before": 65,
+      "after": 0
+    },
+    {
+      "metatile": [
+        13,
+        0
+      ],
+      "before": 7,
+      "after": 0
+    },
+    {
+      "metatile": [
+        14,
+        0
+      ],
+      "before": 7,
+      "after": 0
+    },
+    {
+      "metatile": [
+        15,
+        0
+      ],
+      "before": 7,
+      "after": 0
+    },
+    {
+      "metatile": [
+        16,
+        0
+      ],
+      "before": 66,
+      "after": 0
+    },
+    {
+      "metatile": [
+        12,
+        1
+      ],
+      "before": 65,
+      "after": 0
+    },
+    {
+      "metatile": [
+        13,
+        1
+      ],
+      "before": 7,
+      "after": 0
+    },
+    {
+      "metatile": [
+        14,
+        1
+      ],
+      "before": 7,
+      "after": 0
+    },
+    {
+      "metatile": [
+        15,
+        1
+      ],
+      "before": 7,
+      "after": 0
+    },
+    {
+      "metatile": [
+        16,
+        1
+      ],
+      "before": 66,
+      "after": 0
+    },
+    {
+      "metatile": [
+        12,
+        2
+      ],
+      "before": 65,
+      "after": 0
+    },
+    {
+      "metatile": [
+        13,
+        2
+      ],
+      "before": 7,
+      "after": 0
+    },
+    {
+      "metatile": [
+        14,
+        2
+      ],
+      "before": 7,
+      "after": 0
+    },
+    {
+      "metatile": [
+        15,
+        2
+      ],
+      "before": 7,
+      "after": 0
+    },
+    {
+      "metatile": [
+        16,
+        2
+      ],
+      "before": 66,
+      "after": 0
+    },
+    {
+      "metatile": [
+        12,
+        3
+      ],
+      "before": 65,
+      "after": 8
+    },
+    {
+      "metatile": [
+        13,
+        3
+      ],
+      "before": 7,
+      "after": 68
+    },
+    {
+      "metatile": [
+        14,
+        3
+      ],
+      "before": 7,
+      "after": 68
+    },
+    {
+      "metatile": [
+        15,
+        3
+      ],
+      "before": 7,
+      "after": 68
+    },
+    {
+      "metatile": [
+        16,
+        3
+      ],
+      "before": 66,
+      "after": 9
+    },
+    {
+      "metatile": [
+        13,
+        8
+      ],
+      "before": 64,
+      "after": 70
+    },
+    {
+      "metatile": [
+        14,
+        8
+      ],
+      "before": 64,
+      "after": 70
+    },
+    {
+      "metatile": [
+        15,
+        8
+      ],
+      "before": 64,
+      "after": 70
+    },
+    {
+      "metatile": [
+        13,
+        10
+      ],
+      "before": 67,
+      "after": 71
+    },
+    {
+      "metatile": [
+        14,
+        10
+      ],
+      "before": 67,
+      "after": 71
+    },
+    {
+      "metatile": [
+        15,
+        10
+      ],
+      "before": 67,
+      "after": 71
+    },
+    {
+      "metatile": [
+        12,
+        13
+      ],
+      "before": 65,
+      "after": 12
+    },
+    {
+      "metatile": [
+        13,
+        13
+      ],
+      "before": 7,
+      "after": 69
+    },
+    {
+      "metatile": [
+        14,
+        13
+      ],
+      "before": 7,
+      "after": 69
+    },
+    {
+      "metatile": [
+        15,
+        13
+      ],
+      "before": 7,
+      "after": 69
+    },
+    {
+      "metatile": [
+        16,
+        13
+      ],
+      "before": 66,
+      "after": 13
+    },
+    {
+      "metatile": [
+        12,
+        14
+      ],
+      "before": 65,
+      "after": 0
+    },
+    {
+      "metatile": [
+        13,
+        14
+      ],
+      "before": 7,
+      "after": 0
+    },
+    {
+      "metatile": [
+        14,
+        14
+      ],
+      "before": 7,
+      "after": 0
+    },
+    {
+      "metatile": [
+        15,
+        14
+      ],
+      "before": 7,
+      "after": 0
+    },
+    {
+      "metatile": [
+        16,
+        14
+      ],
+      "before": 66,
+      "after": 0
+    },
+    {
+      "metatile": [
+        12,
+        15
+      ],
+      "before": 65,
+      "after": 0
+    },
+    {
+      "metatile": [
+        13,
+        15
+      ],
+      "before": 7,
+      "after": 0
+    },
+    {
+      "metatile": [
+        14,
+        15
+      ],
+      "before": 7,
+      "after": 0
+    },
+    {
+      "metatile": [
+        15,
+        15
+      ],
+      "before": 7,
+      "after": 0
+    },
+    {
+      "metatile": [
+        16,
+        15
+      ],
+      "before": 66,
+      "after": 0
+    },
+    {
+      "metatile": [
+        12,
+        16
+      ],
+      "before": 65,
+      "after": 0
+    },
+    {
+      "metatile": [
+        13,
+        16
+      ],
+      "before": 7,
+      "after": 0
+    },
+    {
+      "metatile": [
+        14,
+        16
+      ],
+      "before": 7,
+      "after": 0
+    },
+    {
+      "metatile": [
+        15,
+        16
+      ],
+      "before": 7,
+      "after": 0
+    },
+    {
+      "metatile": [
+        16,
+        16
+      ],
+      "before": 66,
+      "after": 0
+    },
+    {
+      "metatile": [
+        12,
+        17
+      ],
+      "before": 65,
+      "after": 0
+    },
+    {
+      "metatile": [
+        13,
+        17
+      ],
+      "before": 7,
+      "after": 0
+    },
+    {
+      "metatile": [
+        14,
+        17
+      ],
+      "before": 7,
+      "after": 0
+    },
+    {
+      "metatile": [
+        15,
+        17
+      ],
+      "before": 7,
+      "after": 0
+    },
+    {
+      "metatile": [
+        16,
+        17
+      ],
+      "before": 66,
+      "after": 0
+    },
+    {
+      "metatile": [
+        19,
+        8
+      ],
+      "before": 2,
+      "after": 0
+    },
+    {
+      "metatile": [
+        20,
+        8
+      ],
+      "before": 2,
+      "after": 0
+    },
+    {
+      "metatile": [
+        21,
+        8
+      ],
+      "before": 2,
+      "after": 0
+    },
+    {
+      "metatile": [
+        24,
+        8
+      ],
+      "before": 2,
+      "after": 0
+    },
+    {
+      "metatile": [
+        25,
+        8
+      ],
+      "before": 2,
+      "after": 0
+    },
+    {
+      "metatile": [
+        24,
+        10
+      ],
+      "before": 2,
+      "after": 0
+    }
+  ],
+  "sign_text_label": "MN_R04_BRIDGE_SIGNText",
+  "sign_before": "\"MISSISSIPPI BRIDGE\"",
+  "sign_after": "\"PARK POND BRIDGE\"",
+  "base_sign_raw_sha256": "3522e9a7c0b70960dacdac94929cd1c1bb480555a899dea5a3dfc495e235c406",
+  "base_sign_body_sha256": "ef2f63cd7debc2c3ca0e92b308c70656a531e716016ad62e8ad5a0b387f1e9c2"
+}

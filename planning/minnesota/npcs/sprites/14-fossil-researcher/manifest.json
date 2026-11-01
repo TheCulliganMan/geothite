@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "id": "MN_FOSSIL_RESEARCHER",
+  "name": "FOSSIL RESEARCHER FARA",
+  "status": "accepted-native-playable",
+  "overworld_frames": 6,
+  "overworld_size": [
+    16,
+    16
+  ],
+  "battle_size": [
+    56,
+    56
+  ],
+  "palette_rgb555": [
+    32767,
+    22399,
+    15763,
+    0
+  ],
+  "source": "native-pixels-v1.json",
+  "placement": "placement-v1.json",
+  "pack": "content-packs/minnesota-original-npcs-14-v02.crystalpack",
+  "parent": "content-packs/minnesota-npcs-ref-12-v01.crystalpack",
+  "runtime_checks": {
+    "one_controller_test_passed": true,
+    "talk_and_input_ownership": true,
+    "battle_turn_and_pp": true,
+    "battle_save_load": true,
+    "actual_victory_and_defeat_flag_before_render_capture": true,
+    "post_battle_talk": true,
+    "existing_trainers_and_assets_preserved": true
+  },
+  "manual_visual_review": "Original FARA battle reference retained; native 56x56 face, segmented three-lobed fossil slab, brush, pouch, coat folds and boot highlights refined directly. Six 16x16 overworld grids hand-authored, with high bun, plum field coat, same-hand specimen slab, dedicated rear/profile, real lifted-foot stride and free-arm swing. Rear isolated hair dots removed after actual Crystal Scientist/Pokefan F/Chris comparison; battle compared against actual Scientist/Fisher at 1x and equal enlargement. Own-palette strips and final Winona world, trainer intro and first-turn captures reviewed. TRILUME/SIPHLET verified active native fossil families. First candidate encounter passed in 8.44s; final walking-arm revision passed in 8.09s. Prior 13 trainers/assets/gameplay preserved.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/sprites/14-fossil-researcher/native-pixels-v1.json": "74e606bebeee4cbef212c50e315e279ae3366709f938954e9d1ba03f240595f5",
+    "planning/minnesota/npcs/sprites/14-fossil-researcher/placement-v1.json": "835bd4562e11c54c9049287831032f81cd1fd50bba3cebf8caf563b41cbb3e10",
+    "content-packs/minnesota-original-npcs-14-v02.crystalpack": "9510f9b485d586b666115f6b4f63bcde57a9d08f8f49a6b4d1f3727dec73cacc",
+    "target/npc-sprites/fossil/controller-v02.log": "0ecf9ff27c2f9105448f6477c91ebc3a7ede3a16a6b663df14bbd80429851feb",
+    "target/npc-sprites/fossil/gameplay-v02/original-npc-trainer-intro.png": "9a092775f8010b21cf22cdad1cbbd47ed95bc245f415c1f2ebe8912cf9013526",
+    "target/npc-sprites/fossil/gameplay-v02/original-npc-first-turn.png": "36f0cfc5c83404481c5c2754cca0921b1400b01a68855fa0003acf7fa2336d4f",
+    "target/npc-sprites/fossil/gameplay-v02/original-npc-overworld-state.png": "8239a97985efa8a6734ab2031a94ffc054121fc12da6d68f2dae8053c53a1887",
+    "planning/minnesota/npcs/sprites/14-fossil-researcher/battle-source-v1.png": "42be86d152599ad2bd364fef868423400ca049cf99f320f47993bdc3b0f56dfb",
+    "planning/minnesota/npcs/sprites/14-fossil-researcher/prompt-battle-v1.txt": "22a39c2c4ef4bb007762f8d0c10cda08f54090ca9b405091abf9f86244e6d5de",
+    "target/npc-sprites/hand-review/fossil-real-comparison-v6.png": "55b97d8dd2f93e260f68d75f82ee0da711e1ced06b30b93c8693c689af939f78",
+    "target/npc-sprites/hand-review/fossil-battle-real-comparison-v5.png": "b4fca26a750a82cad21fe1de2d7314f5aeab34a30d7e22b5f2141f7d5634c86a",
+    "target/npc-sprites/fossil/native-v6/verification.json": "a57d1f18441bfcc602826bdbb28ec4487504980dbe2aa787eef2d03d97de6dd5",
+    "target/npc-sprites/fossil/native-v6/overworld-review.png": "8fb7db73870ff4af17f79d164061e197a73c92a9382c4728f72d267afb2a46da",
+    "target/npc-sprites/fossil/native-v6/overworld-review-8x.png": "80a6486198b74de68c3228f07ffe174048e50cb31632f27c5e6e186219eaef0c"
+  },
+  "overworld_authoring": "direct-native-pixel-grids",
+  "reference_review": "actual-crystal-sprites-common-palette-and-scale"
+}

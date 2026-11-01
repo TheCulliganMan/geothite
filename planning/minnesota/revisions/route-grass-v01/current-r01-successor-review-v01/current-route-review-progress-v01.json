@@ -1,0 +1,34 @@
+{
+  "status": "TERRAIN_AND_PRODUCTION_PASS_GUIDANCE_REPAIR_IN_PROGRESS",
+  "production_receipt": "production-current-route-v02.json",
+  "production_calls": 1651,
+  "actual_wild_battles": 10,
+  "actual_observed_stair_tiles": [
+    [
+      41,
+      17
+    ],
+    [
+      41,
+      18
+    ],
+    [
+      41,
+      19
+    ],
+    [
+      41,
+      20
+    ]
+  ],
+  "actual_closed_cliff_upper_and_lower_observed": true,
+  "all_source_and_input_saves_unchanged": true,
+  "three_native_views_inspected": true,
+  "required_main_crossing_grass_steps_each_direction": 4,
+  "remaining": "Publish and inspect five corrected local stair-direction texts; do not restore obsolete tall-cliff hops.",
+  "guidance_source_before": "guidance-before-v01.json",
+  "guidance_source_after": "guidance-after-v01.json",
+  "native_opening_old_helper_failure_retained": true,
+  "first_stdio_harness_mode_assertion_failure_retained": true,
+  "goal_complete": false
+}

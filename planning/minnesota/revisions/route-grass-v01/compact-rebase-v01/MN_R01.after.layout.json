@@ -1,0 +1,1393 @@
+{
+  "schema_version": 2,
+  "id": "MN_R01",
+  "tileset": "johto",
+  "compiled_tileset": "johto",
+  "dimensions_metatiles": [
+    32,
+    20
+  ],
+  "coordinate_units": "32px metatiles, zero based",
+  "materials": {
+    "floor": "01",
+    "lawn": "02",
+    "encounter": "03",
+    "flowers": "04",
+    "forest": "05",
+    "water": "35",
+    "boulder": "0a",
+    "sign": "45"
+  },
+  "shore_fitting": "johto_8_neighbors",
+  "reject_cliff_cuts": true,
+  "layers": [
+    {
+      "kind": "polygon",
+      "name": "Small creek bend at the Rochester side",
+      "material": "water",
+      "points": [
+        [
+          1,
+          16
+        ],
+        [
+          5,
+          16
+        ],
+        [
+          5,
+          15
+        ],
+        [
+          9,
+          15
+        ],
+        [
+          9,
+          16
+        ],
+        [
+          10,
+          16
+        ],
+        [
+          10,
+          19
+        ],
+        [
+          1,
+          19
+        ]
+      ]
+    },
+    {
+      "kind": "cliff_polygon",
+      "name": "Uneven fitted limestone ridge and original Potion pocket",
+      "points": [
+        [
+          9,
+          4
+        ],
+        [
+          11,
+          4
+        ],
+        [
+          11,
+          6
+        ],
+        [
+          14,
+          6
+        ],
+        [
+          14,
+          5
+        ],
+        [
+          17,
+          5
+        ],
+        [
+          17,
+          6
+        ],
+        [
+          21,
+          6
+        ],
+        [
+          21,
+          9
+        ],
+        [
+          15,
+          9
+        ],
+        [
+          15,
+          8
+        ],
+        [
+          9,
+          8
+        ],
+        [
+          9,
+          7
+        ],
+        [
+          8,
+          7
+        ],
+        [
+          8,
+          6
+        ],
+        [
+          9,
+          6
+        ]
+      ]
+    },
+    {
+      "kind": "path",
+      "name": "Continuous two-tile starter road",
+      "material": "floor",
+      "points": [
+        [
+          31,
+          12
+        ],
+        [
+          26,
+          12
+        ],
+        [
+          26,
+          15
+        ],
+        [
+          20,
+          15
+        ],
+        [
+          20,
+          12
+        ],
+        [
+          12,
+          12
+        ],
+        [
+          12,
+          14
+        ],
+        [
+          7,
+          14
+        ],
+        [
+          7,
+          12
+        ],
+        [
+          0,
+          12
+        ]
+      ],
+      "width_metatiles": 1
+    },
+    {
+      "kind": "path",
+      "name": "Farm porch path",
+      "material": "floor",
+      "points": [
+        [
+          26,
+          12
+        ],
+        [
+          26,
+          8
+        ],
+        [
+          24,
+          8
+        ]
+      ],
+      "width_metatiles": 1
+    },
+    {
+      "kind": "rect",
+      "name": "Small farm porch",
+      "material": "floor",
+      "bounds": [
+        24,
+        8,
+        27,
+        10
+      ]
+    },
+    {
+      "kind": "block_rect",
+      "name": "Farm left side fence",
+      "bounds": [
+        23,
+        7,
+        24,
+        10
+      ],
+      "block": "44"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Farm right side fence",
+      "bounds": [
+        27,
+        7,
+        28,
+        10
+      ],
+      "block": "46"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Farm front left rail",
+      "bounds": [
+        24,
+        10,
+        25,
+        11
+      ],
+      "block": "49"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Farm front right rail",
+      "bounds": [
+        26,
+        10,
+        27,
+        11
+      ],
+      "block": "49"
+    },
+    {
+      "kind": "path",
+      "name": "Farm gate and road join",
+      "material": "floor",
+      "points": [
+        [
+          25,
+          9
+        ],
+        [
+          25,
+          11
+        ],
+        [
+          26,
+          11
+        ],
+        [
+          26,
+          12
+        ]
+      ],
+      "width_metatiles": 1
+    },
+    {
+      "kind": "path",
+      "name": "Bluff uphill approach from the eastern road",
+      "material": "lawn",
+      "points": [
+        [
+          20,
+          12
+        ],
+        [
+          20,
+          10
+        ]
+      ],
+      "width_metatiles": 2
+    },
+    {
+      "kind": "path",
+      "name": "Foot of the bluff from the farm gate",
+      "material": "lawn",
+      "points": [
+        [
+          25,
+          11
+        ],
+        [
+          22,
+          11
+        ],
+        [
+          22,
+          10
+        ],
+        [
+          20,
+          10
+        ]
+      ],
+      "width_metatiles": 1
+    },
+    {
+      "kind": "point",
+      "name": "Source-authenticated half-width limestone ramp",
+      "position": [
+        20,
+        9
+      ],
+      "block": "74"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Worn landing at top of ledge",
+      "bounds": [
+        13,
+        7,
+        15,
+        8
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Native southward return ledge west half",
+      "position": [
+        13,
+        8
+      ],
+      "block": "57"
+    },
+    {
+      "kind": "point",
+      "name": "Native southward return ledge east half",
+      "position": [
+        14,
+        8
+      ],
+      "block": "57"
+    },
+    {
+      "kind": "path",
+      "name": "Lower ledge landing rejoins the short road",
+      "material": "lawn",
+      "points": [
+        [
+          13,
+          9
+        ],
+        [
+          13,
+          10
+        ],
+        [
+          12,
+          10
+        ],
+        [
+          12,
+          12
+        ]
+      ],
+      "width_metatiles": 2
+    },
+    {
+      "kind": "path",
+      "name": "Cave approach beneath the bench",
+      "material": "floor",
+      "points": [
+        [
+          12,
+          10
+        ],
+        [
+          9,
+          10
+        ],
+        [
+          9,
+          9
+        ]
+      ],
+      "width_metatiles": 2
+    },
+    {
+      "kind": "point",
+      "name": "Cave entrance embedded in south limestone face",
+      "position": [
+        9,
+        8
+      ],
+      "block": "73"
+    },
+    {
+      "kind": "rect",
+      "name": "Central grass crossing on the short road",
+      "material": "encounter",
+      "bounds": [
+        15,
+        11,
+        18,
+        14
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Shared eastern grass gate before either branch",
+      "material": "encounter",
+      "bounds": [
+        27,
+        11,
+        29,
+        14
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Small southern grass shoulder",
+      "material": "encounter",
+      "bounds": [
+        18,
+        16,
+        21,
+        18
+      ]
+    },
+    {
+      "kind": "path",
+      "name": "Southern seed meadow spur",
+      "material": "lawn",
+      "points": [
+        [
+          20,
+          15
+        ],
+        [
+          20,
+          17
+        ],
+        [
+          17,
+          17
+        ]
+      ],
+      "width_metatiles": 1
+    },
+    {
+      "kind": "path",
+      "name": "Creek bank branch",
+      "material": "lawn",
+      "points": [
+        [
+          12,
+          14
+        ],
+        [
+          12,
+          17
+        ],
+        [
+          9,
+          17
+        ]
+      ],
+      "width_metatiles": 2
+    },
+    {
+      "kind": "rect",
+      "name": "Creek-side small passing bay",
+      "material": "lawn",
+      "bounds": [
+        10,
+        16,
+        12,
+        18
+      ]
+    },
+    {
+      "kind": "point",
+      "name": "Dock north native rail 6",
+      "position": [
+        6,
+        16
+      ],
+      "block": "41"
+    },
+    {
+      "kind": "point",
+      "name": "Dock pale stone deck 6",
+      "position": [
+        6,
+        17
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Dock south native rail 6",
+      "position": [
+        6,
+        18
+      ],
+      "block": "49"
+    },
+    {
+      "kind": "point",
+      "name": "Dock north native rail 7",
+      "position": [
+        7,
+        16
+      ],
+      "block": "41"
+    },
+    {
+      "kind": "point",
+      "name": "Dock pale stone deck 7",
+      "position": [
+        7,
+        17
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Dock south native rail 7",
+      "position": [
+        7,
+        18
+      ],
+      "block": "49"
+    },
+    {
+      "kind": "point",
+      "name": "Dock north native rail 8",
+      "position": [
+        8,
+        16
+      ],
+      "block": "41"
+    },
+    {
+      "kind": "point",
+      "name": "Dock pale stone deck 8",
+      "position": [
+        8,
+        17
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Dock south native rail 8",
+      "position": [
+        8,
+        18
+      ],
+      "block": "49"
+    },
+    {
+      "kind": "point",
+      "name": "Dock north native rail 9",
+      "position": [
+        9,
+        16
+      ],
+      "block": "41"
+    },
+    {
+      "kind": "point",
+      "name": "Dock pale stone deck 9",
+      "position": [
+        9,
+        17
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Dock south native rail 9",
+      "position": [
+        9,
+        18
+      ],
+      "block": "49"
+    },
+    {
+      "kind": "point",
+      "name": "Dock closed western end",
+      "position": [
+        5,
+        17
+      ],
+      "block": "44"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Creek bank fence north of dock gate",
+      "bounds": [
+        10,
+        15,
+        11,
+        17
+      ],
+      "block": "44"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Creek bank fence below the dock gate",
+      "bounds": [
+        10,
+        18,
+        11,
+        20
+      ],
+      "block": "44"
+    },
+    {
+      "kind": "point",
+      "name": "Farm roof left",
+      "position": [
+        24,
+        6
+      ],
+      "block": "18"
+    },
+    {
+      "kind": "point",
+      "name": "Farm roof right",
+      "position": [
+        25,
+        6
+      ],
+      "block": "19"
+    },
+    {
+      "kind": "point",
+      "name": "Farm door wall",
+      "position": [
+        24,
+        7
+      ],
+      "block": "16"
+    },
+    {
+      "kind": "point",
+      "name": "Farm window wall",
+      "position": [
+        25,
+        7
+      ],
+      "block": "1e"
+    },
+    {
+      "kind": "rect",
+      "name": "West gate flowers",
+      "material": "flowers",
+      "bounds": [
+        1,
+        11,
+        3,
+        12
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Farm flower bed",
+      "material": "flowers",
+      "bounds": [
+        25,
+        9,
+        27,
+        10
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Bluff foot flowers",
+      "material": "flowers",
+      "bounds": [
+        10,
+        9,
+        12,
+        10
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Southern road flowers",
+      "material": "flowers",
+      "bounds": [
+        22,
+        16,
+        24,
+        17
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Creek bank flowers",
+      "material": "flowers",
+      "bounds": [
+        11,
+        16,
+        12,
+        17
+      ]
+    },
+    {
+      "kind": "point",
+      "name": "West gate tree toe",
+      "position": [
+        4,
+        10
+      ],
+      "block": "3c"
+    },
+    {
+      "kind": "point",
+      "name": "Ordinary meadow tree toe without incidental Cut",
+      "position": [
+        14,
+        10
+      ],
+      "block": "3d"
+    },
+    {
+      "kind": "point",
+      "name": "Farm orchard crown",
+      "position": [
+        28,
+        7
+      ],
+      "block": "5e"
+    },
+    {
+      "kind": "point",
+      "name": "Farm orchard trunk",
+      "position": [
+        28,
+        8
+      ],
+      "block": "3d"
+    },
+    {
+      "kind": "point",
+      "name": "Southern oak cluster left",
+      "position": [
+        14,
+        16
+      ],
+      "block": "5c"
+    },
+    {
+      "kind": "point",
+      "name": "Southern oak cluster right",
+      "position": [
+        15,
+        16
+      ],
+      "block": "5d"
+    },
+    {
+      "kind": "point",
+      "name": "Southern oak lower edge",
+      "position": [
+        14,
+        17
+      ],
+      "block": "61"
+    },
+    {
+      "kind": "rect",
+      "name": "MN_R01_T01 clear passing bay",
+      "material": "lawn",
+      "bounds": [
+        22,
+        13,
+        24,
+        15
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "MN_R01_T02 clear passing bay",
+      "material": "lawn",
+      "bounds": [
+        12,
+        14,
+        14,
+        16
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "MN_R01_BLUFF_WALKER clear passing bay",
+      "material": "lawn",
+      "bounds": [
+        20,
+        10,
+        22,
+        12
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "MN_R01_CREEK_CHILD clear passing bay",
+      "material": "lawn",
+      "bounds": [
+        11,
+        17,
+        13,
+        19
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Restore the common eastern grass gate",
+      "material": "encounter",
+      "bounds": [
+        27,
+        11,
+        29,
+        14
+      ]
+    },
+    {
+      "kind": "point",
+      "name": "Native ground sign 01",
+      "position": [
+        30,
+        10
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "path",
+      "name": "Eastern sign reading step",
+      "material": "floor",
+      "points": [
+        [
+          30,
+          11
+        ],
+        [
+          30,
+          12
+        ]
+      ],
+      "width_metatiles": 1
+    },
+    {
+      "kind": "point",
+      "name": "Native ground sign 02",
+      "position": [
+        26,
+        8
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "Native ground sign 03",
+      "position": [
+        8,
+        10
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "Native ground sign 04",
+      "position": [
+        2,
+        13
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "point",
+      "name": "Native ground sign 05",
+      "position": [
+        16,
+        7
+      ],
+      "block": "45"
+    },
+    {
+      "kind": "block_rect",
+      "name": "Native water beneath gray dock rail",
+      "bounds": [
+        6,
+        19,
+        10,
+        20
+      ],
+      "block": "43"
+    },
+    {
+      "kind": "point",
+      "name": "South creek visible native water-rock closure",
+      "position": [
+        1,
+        19
+      ],
+      "block": "38"
+    },
+    {
+      "kind": "point",
+      "name": "South creek visible native water-rock closure",
+      "position": [
+        2,
+        19
+      ],
+      "block": "39"
+    },
+    {
+      "kind": "point",
+      "name": "South creek visible native water-rock closure",
+      "position": [
+        3,
+        19
+      ],
+      "block": "39"
+    },
+    {
+      "kind": "point",
+      "name": "South creek visible native water-rock closure",
+      "position": [
+        4,
+        19
+      ],
+      "block": "39"
+    },
+    {
+      "kind": "point",
+      "name": "South creek visible native water-rock closure",
+      "position": [
+        5,
+        19
+      ],
+      "block": "39"
+    },
+    {
+      "kind": "point",
+      "name": "South creek visible native water-rock closure",
+      "position": [
+        6,
+        19
+      ],
+      "block": "39"
+    },
+    {
+      "kind": "point",
+      "name": "South creek visible native water-rock closure",
+      "position": [
+        7,
+        19
+      ],
+      "block": "39"
+    },
+    {
+      "kind": "point",
+      "name": "South creek visible native water-rock closure",
+      "position": [
+        8,
+        19
+      ],
+      "block": "39"
+    },
+    {
+      "kind": "point",
+      "name": "South creek visible native water-rock closure",
+      "position": [
+        9,
+        19
+      ],
+      "block": "39"
+    },
+    {
+      "kind": "point",
+      "name": "Source north-west dock corner closes diagonal rail gap",
+      "position": [
+        5,
+        16
+      ],
+      "block": "40"
+    },
+    {
+      "kind": "point",
+      "name": "Source south-west dock corner closes diagonal rail gap",
+      "position": [
+        5,
+        18
+      ],
+      "block": "48"
+    },
+    {
+      "kind": "point",
+      "name": "Attached fitted limestone shoulder",
+      "position": [
+        19,
+        6
+      ],
+      "block": "6a"
+    },
+    {
+      "kind": "point",
+      "name": "Attached fitted limestone shoulder",
+      "position": [
+        20,
+        6
+      ],
+      "block": "70"
+    },
+    {
+      "kind": "point",
+      "name": "Attached fitted limestone shoulder",
+      "position": [
+        21,
+        6
+      ],
+      "block": "6b"
+    },
+    {
+      "kind": "point",
+      "name": "Attached fitted limestone shoulder",
+      "position": [
+        18,
+        7
+      ],
+      "block": "6c"
+    },
+    {
+      "kind": "point",
+      "name": "Attached fitted limestone shoulder",
+      "position": [
+        19,
+        7
+      ],
+      "block": "72"
+    },
+    {
+      "kind": "point",
+      "name": "Attached fitted limestone shoulder",
+      "position": [
+        20,
+        7
+      ],
+      "block": "72"
+    },
+    {
+      "kind": "point",
+      "name": "Attached fitted limestone shoulder",
+      "position": [
+        21,
+        7
+      ],
+      "block": "6d"
+    },
+    {
+      "kind": "point",
+      "name": "Preserved original west ledge shoulder",
+      "position": [
+        12,
+        8
+      ],
+      "block": "72"
+    },
+    {
+      "kind": "point",
+      "name": "Preserved original east ledge shoulder",
+      "position": [
+        15,
+        8
+      ],
+      "block": "6e"
+    },
+    {
+      "kind": "point",
+      "name": "Reviewed useful grass delta 12,9",
+      "position": [
+        12,
+        9
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Reviewed useful grass delta 19,10",
+      "position": [
+        19,
+        10
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Reviewed useful grass delta 21,10",
+      "position": [
+        21,
+        10
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Reviewed useful grass delta 22,10",
+      "position": [
+        22,
+        10
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Reviewed useful grass delta 19,11",
+      "position": [
+        19,
+        11
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Reviewed useful grass delta 20,11",
+      "position": [
+        20,
+        11
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Reviewed useful grass delta 21,11",
+      "position": [
+        21,
+        11
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Reviewed useful grass delta 22,11",
+      "position": [
+        22,
+        11
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Reviewed useful grass delta 4,12",
+      "position": [
+        4,
+        12
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Reviewed useful grass delta 5,12",
+      "position": [
+        5,
+        12
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Reviewed useful grass delta 6,12",
+      "position": [
+        6,
+        12
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Reviewed useful grass delta 12,13",
+      "position": [
+        12,
+        13
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Reviewed useful grass delta 11,14",
+      "position": [
+        11,
+        14
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Reviewed useful grass delta 13,14",
+      "position": [
+        13,
+        14
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Reviewed useful grass delta 12,15",
+      "position": [
+        12,
+        15
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Reviewed useful grass delta 13,15",
+      "position": [
+        13,
+        15
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Reviewed useful grass delta 23,15",
+      "position": [
+        23,
+        15
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Reviewed useful grass delta 24,15",
+      "position": [
+        24,
+        15
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Reviewed useful grass delta 25,15",
+      "position": [
+        25,
+        15
+      ],
+      "block": "03"
+    }
+  ],
+  "crossings": [
+    {
+      "id": "CREEK_DOCK",
+      "deck_blocks": [
+        [
+          6,
+          17
+        ],
+        [
+          7,
+          17
+        ],
+        [
+          8,
+          17
+        ],
+        [
+          9,
+          17
+        ]
+      ],
+      "north_rail_blocks": [
+        [
+          6,
+          16
+        ],
+        [
+          7,
+          16
+        ],
+        [
+          8,
+          16
+        ],
+        [
+          9,
+          16
+        ]
+      ],
+      "south_rail_blocks": [
+        [
+          6,
+          18
+        ],
+        [
+          7,
+          18
+        ],
+        [
+          8,
+          18
+        ],
+        [
+          9,
+          18
+        ]
+      ],
+      "core_walk_line": [
+        [
+          11,
+          35
+        ],
+        [
+          12,
+          35
+        ],
+        [
+          13,
+          35
+        ],
+        [
+          14,
+          35
+        ],
+        [
+          15,
+          35
+        ],
+        [
+          16,
+          35
+        ],
+        [
+          17,
+          35
+        ],
+        [
+          18,
+          35
+        ],
+        [
+          19,
+          35
+        ],
+        [
+          20,
+          35
+        ]
+      ]
+    }
+  ],
+  "art_authority": "Original Johto source tiles. Low limestone, native ledge, source farmhouse and actual fence collision.",
+  "source_pixels_modified": false,
+  "status": "Root accepted scoped native R01 cedar-ridge terrain, preserved gameplay and matched native source pixels on the exact linked pack. Earned regional campaign progression and whole-region final visual acceptance are not claimed.",
+  "required_before_regional_release": [
+    "Fit Winona and Rochester hub ports; preserve starter gate and Q01 parcel sequence.",
+    "Prove native ramp, ledge, both room returns, encounters, battles and persistence.",
+    "Complete visual and pacing review across all twenty routes."
+  ],
+  "additional_water_blocks": [
+    "30",
+    "31",
+    "32",
+    "34",
+    "36",
+    "38",
+    "39",
+    "3a",
+    "43"
+  ],
+  "native_evidence": {
+    "pack_sha256": "3d1cbdd18b05ce10ed66db7ab56d41f0032f6e045a0e72ad753064c5dc6ec8df",
+    "acceptance": "planning/minnesota/renders/outdoor-connections/native-cohesion-harbor-water-v01/root-review-v01/acceptance.json",
+    "acceptance_sha256": "de1787505e570998e070587c5b76c0eb44dbe8917e04b65840afe3166d8e8056",
+    "candidate_layout_sha256": "3c4f20df1226896b3ec8916efc42974486e5f25c3627724b2013b1eeb02d5348"
+  }
+}

@@ -1,4 +1,4 @@
-//! Build the same encounter expansion served by the multiplayer application.
+//! Build the shared default solo-completion pack served by the application.
 use anyhow::{Context, Result, ensure};
 
 fn main() -> Result<()> {

@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "source_kind": "native_template_contract",
+  "interiors": [
+    {
+      "id": "MnSplitRockPokecenter1F",
+      "native_constant": "MN_SPLIT_ROCK_POKECENTER_1F",
+      "template": "CherrygrovePokecenter1F",
+      "tileset": "pokecenter",
+      "dimensions_metatiles": [
+        5,
+        4
+      ],
+      "authoritative_builder": "build_ely_shore_pass_pack",
+      "template_changes": [
+        {
+          "position_metatiles": [
+            0,
+            3
+          ],
+          "block": "04",
+          "reason": "Replace unused link-club stair with ordinary room floor."
+        }
+      ],
+      "passive_arrival": {
+        "index": 3,
+        "tile": [
+          3,
+          5
+        ]
+      },
+      "exits": [
+        {
+          "index": 1,
+          "tile": [
+            3,
+            7
+          ],
+          "target": "MnR11C00R02",
+          "target_warp": 4
+        },
+        {
+          "index": 2,
+          "tile": [
+            4,
+            7
+          ],
+          "target": "MnR11C00R02",
+          "target_warp": 4
+        }
+      ],
+      "nurse": {
+        "tile": [
+          3,
+          1
+        ],
+        "approach": [
+          3,
+          3
+        ],
+        "service": "Production PokecenterNurseScript restores HP, PP and status; binds the clinic recovery point."
+      },
+      "pc": {
+        "tile": [
+          8,
+          0
+        ],
+        "approach": [
+          8,
+          1
+        ],
+        "service": "Production PokemonCenterPC hub and storage."
+      },
+      "story": "Public free care on the North Shore below Split Rock. No badges, survey state, items or money are granted."
+    }
+  ]
+}

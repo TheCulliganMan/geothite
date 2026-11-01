@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "id": "MnInnerBasin",
+  "tileset": "cave",
+  "dimensions_metatiles": [
+    14,
+    14
+  ],
+  "border_block": 46,
+  "palette_group": "nite",
+  "rows": [
+    "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e",
+    "2e 2e 04 05 0f 0f 02 02 02 0f 0f 06 2e 2e",
+    "2e 2e 08 02 0f 0f 02 02 02 0f 0f 0a 2e 2e",
+    "2e 2e 0c 0d 0d 0d 0d 1d 0d 0d 0d 0e 2e 2e",
+    "2e 2e 2e 2e 2e 04 05 02 05 05 05 06 2e 2e",
+    "2e 2e 2e 2e 1d 02 02 02 02 02 02 0a 2e 2e",
+    "2e 2e 2e 04 02 02 02 02 02 0d 0d 0e 2e 2e",
+    "2e 2e 04 02 02 02 02 02 02 1d 2e 2e 2e 2e",
+    "2e 2e 08 02 02 02 02 02 02 0a 2e 2e 2e 2e",
+    "2e 2e 0c 0d 0d 1d 02 02 02 06 2e 2e 2e 2e",
+    "2e 2e 2e 2e 2e 2e 08 0c 02 02 05 06 2e 2e",
+    "2e 04 05 05 05 05 02 02 02 02 02 0a 2e 2e",
+    "2e 0b 02 02 02 02 02 02 0d 0d 0d 0e 2e 2e",
+    "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e"
+  ]
+}

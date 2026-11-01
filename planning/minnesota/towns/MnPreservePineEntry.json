@@ -1,0 +1,256 @@
+{
+  "id": "MnPreservePineEntry",
+  "ports": [
+    {
+      "side": "north",
+      "core": [
+        [
+          16,
+          0
+        ],
+        [
+          17,
+          0
+        ]
+      ]
+    },
+    {
+      "side": "south",
+      "core": [
+        [
+          16,
+          31
+        ],
+        [
+          17,
+          31
+        ]
+      ]
+    }
+  ],
+  "actors": [],
+  "signs": [
+    {
+      "id": "MN_COHESION_PRESERVE_NOTICE",
+      "tile": [
+        13,
+        11
+      ],
+      "lines": [
+        "PRESERVE ENTRY",
+        "Expeditions closed.",
+        "No fee is charged."
+      ]
+    }
+  ],
+  "views": [
+    {
+      "id": "north-court-approach",
+      "core": [
+        16,
+        5
+      ]
+    },
+    {
+      "id": "ranger-reading",
+      "core": [
+        16,
+        13
+      ]
+    },
+    {
+      "id": "south-pine-turn",
+      "core": [
+        14,
+        27
+      ]
+    }
+  ],
+  "current_revision": "route_grass_preserve_pine_revision",
+  "current_native_source": "planning/minnesota/towns/MnPreservePineEntry.layout.json",
+  "composition": "Public pine approach with encounter bends, a grassy uphill loop and a dry native southbound return. Preserve court admission remains closed and free access stays unchanged.",
+  "native_installed_actors": [],
+  "native_installed_connections": [
+    {
+      "direction": "south",
+      "target_map": "MnBoundaryWaters",
+      "offset": -8
+    },
+    {
+      "direction": "north",
+      "target_map": "MnBoundarySafariC00R02",
+      "offset": 1
+    }
+  ],
+  "native_installed_events": {
+    "warps": [],
+    "coord_events": [],
+    "bg_events": [
+      {
+        "x": 13,
+        "y": 11,
+        "event_type": "BGEVENT_READ",
+        "script": "MN_COHESION_PRESERVE_NOTICE"
+      }
+    ]
+  },
+  "encounter_grass_contract": {
+    "northbound_minimum": 13,
+    "southbound_minimum": 6,
+    "ordinary_uphill": 7,
+    "native_downhill": 0
+  },
+  "native_grass_and_water_encounters": {
+    "map_name": "MnPreservePineEntry",
+    "grass_rates": {
+      "day": 10,
+      "morning": 10,
+      "night": 10
+    },
+    "water_rate": 4,
+    "grass": {
+      "morning": [
+        {
+          "level": 42,
+          "species": "DOZEBEAR"
+        },
+        {
+          "level": 43,
+          "species": "BOOMRUFF"
+        },
+        {
+          "level": 44,
+          "species": "MUDMENDER"
+        },
+        {
+          "level": 45,
+          "species": "REEDRAFT"
+        },
+        {
+          "level": 46,
+          "species": "CROOKVEIL"
+        },
+        {
+          "level": 47,
+          "species": "LATCHQUILL"
+        },
+        {
+          "level": 48,
+          "species": "LASSERP"
+        }
+      ],
+      "day": [
+        {
+          "level": 42,
+          "species": "DOZEBEAR"
+        },
+        {
+          "level": 43,
+          "species": "BOOMRUFF"
+        },
+        {
+          "level": 44,
+          "species": "MUDMENDER"
+        },
+        {
+          "level": 45,
+          "species": "REEDRAFT"
+        },
+        {
+          "level": 46,
+          "species": "CROOKVEIL"
+        },
+        {
+          "level": 47,
+          "species": "LATCHQUILL"
+        },
+        {
+          "level": 48,
+          "species": "LASSERP"
+        }
+      ],
+      "night": [
+        {
+          "level": 42,
+          "species": "BOOMRUFF"
+        },
+        {
+          "level": 43,
+          "species": "BARRICANT"
+        },
+        {
+          "level": 44,
+          "species": "MUDMENDER"
+        },
+        {
+          "level": 45,
+          "species": "REEDRAFT"
+        },
+        {
+          "level": 46,
+          "species": "CROOKVEIL"
+        },
+        {
+          "level": 47,
+          "species": "LATCHQUILL"
+        },
+        {
+          "level": 48,
+          "species": "LASSERP"
+        }
+      ]
+    },
+    "water": {
+      "morning": [
+        {
+          "level": 42,
+          "species": "CHORIP"
+        },
+        {
+          "level": 43,
+          "species": "GILLPUP"
+        },
+        {
+          "level": 48,
+          "species": "RIVVIT"
+        }
+      ],
+      "day": [
+        {
+          "level": 42,
+          "species": "CHORIP"
+        },
+        {
+          "level": 43,
+          "species": "GILLPUP"
+        },
+        {
+          "level": 48,
+          "species": "RIVVIT"
+        }
+      ],
+      "night": [
+        {
+          "level": 42,
+          "species": "CHORIP"
+        },
+        {
+          "level": 43,
+          "species": "GILLPUP"
+        },
+        {
+          "level": 48,
+          "species": "RIVVIT"
+        }
+      ]
+    }
+  },
+  "public_trail_policy": "Ordinary regional wild encounters on the approach; no fee, timer, Safari capture session or admission unlock. Historical frozen cohesion source describes the previous dry approach.",
+  "revision_runbook": "revisions/route-grass-v01/current-preserve-pine-entry-v01/README.md",
+  "name": "PRESERVE PINE ENTRY",
+  "compiled_tileset": "johto",
+  "dimensions_metatiles": [
+    24,
+    16
+  ]
+}

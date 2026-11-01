@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "id": "MN_R13_T07",
+      "map": "MnR13C00R02",
+      "actor_script": "MN_R13_T07",
+      "trainer_class": "MN_VOLUNTEER",
+      "sprite": "SPRITE_MN_VOLUNTEER",
+      "facing": "east",
+      "approach": [
+        18,
+        11
+      ],
+      "defeated_flag": "EVENT_MN_R13_TRAINER_07"
+    }
+  ]
+}

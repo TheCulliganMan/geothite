@@ -1,0 +1,3859 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-r08-grass-and-stairs-v01.crystalpack",
+  "pack_sha256": "1e1f2e2f40fdea4207e7ada6b34a85d33065cbe254a73864e47b8db4f0726e13",
+  "calls": 464,
+  "reads": [
+    {
+      "phase": "sign-and-real-trainer",
+      "label": "MN_R08_SIGN_03Text",
+      "visible": "BIRCH BANK STAIRS BOTH WAYS",
+      "movement_locked": true
+    },
+    {
+      "phase": "sign-and-real-trainer",
+      "label": "MN_R08_BIRCH_WALKERText",
+      "visible": "The birch bank has stone stairs. Use them to reach the upper trail.",
+      "movement_locked": true
+    },
+    {
+      "phase": "sign-and-real-trainer",
+      "label": "MN_R08_T07Won",
+      "visible": "The bank stairs join both paths.",
+      "movement_locked": true
+    },
+    {
+      "phase": "continued-repeat",
+      "label": "MN_R08_T07Won",
+      "visible": "The bank stairs join both paths.",
+      "movement_locked": true
+    },
+    {
+      "phase": "continued-repeat",
+      "label": "MN_R08_SIGN_03Text",
+      "visible": "BIRCH BANK STAIRS BOTH WAYS",
+      "movement_locked": true
+    }
+  ],
+  "cases": [
+    {
+      "phase": "sign-and-real-trainer",
+      "source_save": ".local/route-grass-review/r08-directions-native-saves-v01/brainerd-77341-1793402898567407000.crystalsave",
+      "input_source_unchanged": true,
+      "output_save": ".local/route-grass-review/r08-directions-sign-and-real-trainer-v01-output.crystalsave",
+      "initial": {
+        "badges": 4,
+        "dialogue": false,
+        "facing": "up",
+        "frame": 42,
+        "map": "MnR08C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 0
+        },
+        "position": {
+          "x": 30,
+          "y": 29
+        }
+      },
+      "final": {
+        "badges": 4,
+        "dialogue": false,
+        "facing": "up",
+        "frame": 127,
+        "map": "MnR08C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3640,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 3
+        },
+        "position": {
+          "x": 27,
+          "y": 18
+        }
+      },
+      "stderr_bytes": 0
+    },
+    {
+      "phase": "continued-repeat",
+      "source_save": ".local/route-grass-review/r08-directions-sign-and-real-trainer-v01-output.crystalsave",
+      "input_source_unchanged": true,
+      "output_save": ".local/route-grass-review/r08-directions-continued-repeat-v01-output.crystalsave",
+      "initial": {
+        "badges": 4,
+        "dialogue": false,
+        "facing": "up",
+        "frame": 127,
+        "map": "MnR08C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3640,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 3
+        },
+        "position": {
+          "x": 27,
+          "y": 18
+        }
+      },
+      "final": {
+        "badges": 4,
+        "dialogue": false,
+        "facing": "up",
+        "frame": 169,
+        "map": "MnR08C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3640,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 3
+        },
+        "position": {
+          "x": 30,
+          "y": 29
+        }
+      },
+      "stderr_bytes": 0
+    }
+  ],
+  "trainer_fight": {
+    "before": {
+      "badges": 4,
+      "dialogue": false,
+      "facing": "left",
+      "frame": 116,
+      "map": "MnR08C00R00",
+      "menu": null,
+      "mode": "overworld",
+      "money": 3000,
+      "player": "CHRIS",
+      "pokedex": {
+        "owned": 0,
+        "seen": 1
+      },
+      "position": {
+        "x": 27,
+        "y": 18
+      }
+    },
+    "after": {
+      "badges": 4,
+      "dialogue": false,
+      "facing": "up",
+      "frame": 121,
+      "map": "MnR08C00R00",
+      "menu": null,
+      "mode": "overworld",
+      "money": 3640,
+      "player": "CHRIS",
+      "pokedex": {
+        "owned": 0,
+        "seen": 3
+      },
+      "position": {
+        "x": 27,
+        "y": 18
+      }
+    },
+    "real_fight_and_surf_move_seen": true,
+    "money_reward": 640
+  },
+  "battle_views": [
+    {
+      "action_log": [
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: Left"
+        },
+        {
+          "kind": "hint",
+          "text": "input: Up"
+        },
+        {
+          "kind": "hint",
+          "text": "input: Up"
+        },
+        {
+          "kind": "hint",
+          "text": "input: Up"
+        },
+        {
+          "kind": "hint",
+          "text": "input: Up"
+        },
+        {
+          "kind": "hint",
+          "text": "blocked: Up"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        }
+      ],
+      "competitive_battle": false,
+      "dialogue": [
+        {
+          "kind": "normal",
+          "text": "Climb up slowly."
+        },
+        {
+          "kind": "normal",
+          "text": "Race me back down!"
+        }
+      ],
+      "frame": 121,
+      "info": [
+        {
+          "kind": "heading",
+          "text": "CHRIS \u00b7 $3000"
+        },
+        {
+          "kind": "normal",
+          "text": "Badges 4/16 \u00b7 Dex 0/1"
+        },
+        {
+          "kind": "grass",
+          "text": "  MEW        L60 190/190"
+        }
+      ],
+      "info_title": "Trainer",
+      "input_hints": [
+        {
+          "kind": "hint",
+          "text": "Z/J/Space advance"
+        },
+        {
+          "kind": "hint",
+          "text": "X/K/B skip/back"
+        }
+      ],
+      "marker": [
+        27,
+        18,
+        "@"
+      ],
+      "menu": [],
+      "prompt": [],
+      "status_line": "Text  MnR08C00R00  (27, 18)  facing Up",
+      "viewport": [
+        {
+          "kind": "hint",
+          "text": "   17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37"
+        },
+        {
+          "kind": "normal",
+          "text": "11 \u2248  \u2248  \u2248  .  .  .  .  #  .  .  .  .  .  .  .  .  #  .  .  .  ."
+        },
+        {
+          "kind": "normal",
+          "text": "12 \u2248  \u2248  \u2248  .  .  .  .  #  .  .  .  .  .  .  .  .  #  .  .  .  ."
+        },
+        {
+          "kind": "normal",
+          "text": "13 \u2248  \u2248  \u2248  .  .  .  .  #  .  .  .  .  .  .  .  .  #  .  .  .  ."
+        },
+        {
+          "kind": "normal",
+          "text": "14 \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  #  .  .  .  .  .  .  .  .  .  #  #  #  #"
+        },
+        {
+          "kind": "normal",
+          "text": "15 \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  #  .  .  .  .  .  .  N  .  .  .  .  #  #"
+        },
+        {
+          "kind": "normal",
+          "text": "16 #  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  #  .  .  .  .  .  .  .  .  .  .  .  #  #"
+        },
+        {
+          "kind": "normal",
+          "text": "17 #  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  #  .  .  N  .  .  .  .  .  .  .  .  #  #"
+        },
+        {
+          "kind": "normal",
+          "text": "18 #  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  #  .  \"  @^ \"  \"  .  .  .  .  .  .  .  ."
+        },
+        {
+          "kind": "normal",
+          "text": "19 #  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  #  .  \"  \"  \"  \"  .  .  .  .  .  .  .  ."
+        },
+        {
+          "kind": "normal",
+          "text": "20 #  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  #  .  \"  \"  .  .  .  .  .  .  .  .  .  ."
+        },
+        {
+          "kind": "normal",
+          "text": "21 #  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  #  .  \"  \"  .  .  .  .  .  .  .  .  .  ."
+        },
+        {
+          "kind": "normal",
+          "text": "22 \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  #  .  \"  \"  .  .  .  .  .  .  .  .  .  ."
+        },
+        {
+          "kind": "normal",
+          "text": "23 \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  #  .  \"  \"  .  .  .  .  .  .  .  .  .  ."
+        },
+        {
+          "kind": "normal",
+          "text": "24 \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  #  .  #  #  .  .  .  .  .  .  .  .  .  ."
+        },
+        {
+          "kind": "normal",
+          "text": "25 \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  #  .  #  #  .  .  .  .  .  .  .  .  .  ."
+        }
+      ],
+      "viewport_title": "MnR08C00R00"
+    },
+    {
+      "action_log": [
+        {
+          "kind": "hint",
+          "text": "input: Left"
+        },
+        {
+          "kind": "hint",
+          "text": "input: Up"
+        },
+        {
+          "kind": "hint",
+          "text": "input: Up"
+        },
+        {
+          "kind": "hint",
+          "text": "input: Up"
+        },
+        {
+          "kind": "hint",
+          "text": "input: Up"
+        },
+        {
+          "kind": "hint",
+          "text": "blocked: Up"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        }
+      ],
+      "competitive_battle": true,
+      "dialogue": [
+        {
+          "kind": "normal",
+          "text": "BRAM"
+        },
+        {
+          "kind": "normal",
+          "text": "wants to battle!"
+        }
+      ],
+      "frame": 121,
+      "info": [
+        {
+          "kind": "heading",
+          "text": "CHRIS \u00b7 $3000"
+        },
+        {
+          "kind": "normal",
+          "text": "Badges 4/16 \u00b7 Dex 0/2"
+        },
+        {
+          "kind": "grass",
+          "text": "\u25b6 MEW        L60 190/190"
+        }
+      ],
+      "info_title": "Trainer",
+      "input_hints": [
+        {
+          "kind": "hint",
+          "text": "Z/J/Space advance"
+        },
+        {
+          "kind": "hint",
+          "text": "X/K/B skip/back"
+        }
+      ],
+      "marker": [
+        27,
+        18,
+        "@"
+      ],
+      "menu": [],
+      "prompt": [],
+      "status_line": "TrainerBattle  MnR08C00R00  (27, 18)  facing Up",
+      "viewport": [
+        {
+          "kind": "grass",
+          "text": "Foe GLISNARE Lv32 HP 95/95"
+        },
+        {
+          "kind": "grass",
+          "text": "You MEW Lv60 HP 190/190"
+        },
+        {
+          "kind": "hint",
+          "text": "Turn 1  None (0 turns)"
+        }
+      ],
+      "viewport_title": "Battle"
+    },
+    {
+      "action_log": [
+        {
+          "kind": "hint",
+          "text": "input: Up"
+        },
+        {
+          "kind": "hint",
+          "text": "input: Up"
+        },
+        {
+          "kind": "hint",
+          "text": "input: Up"
+        },
+        {
+          "kind": "hint",
+          "text": "input: Up"
+        },
+        {
+          "kind": "hint",
+          "text": "blocked: Up"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        }
+      ],
+      "competitive_battle": true,
+      "dialogue": [
+        {
+          "kind": "normal",
+          "text": "BRAM"
+        },
+        {
+          "kind": "normal",
+          "text": "sent out"
+        }
+      ],
+      "frame": 121,
+      "info": [
+        {
+          "kind": "heading",
+          "text": "CHRIS \u00b7 $3000"
+        },
+        {
+          "kind": "normal",
+          "text": "Badges 4/16 \u00b7 Dex 0/2"
+        },
+        {
+          "kind": "grass",
+          "text": "\u25b6 MEW        L60 190/190"
+        }
+      ],
+      "info_title": "Trainer",
+      "input_hints": [
+        {
+          "kind": "hint",
+          "text": "Z/J/Space advance"
+        },
+        {
+          "kind": "hint",
+          "text": "X/K/B skip/back"
+        }
+      ],
+      "marker": [
+        27,
+        18,
+        "@"
+      ],
+      "menu": [],
+      "prompt": [],
+      "status_line": "TrainerBattle  MnR08C00R00  (27, 18)  facing Up",
+      "viewport": [
+        {
+          "kind": "grass",
+          "text": "Foe GLISNARE Lv32 HP 95/95"
+        },
+        {
+          "kind": "grass",
+          "text": "You MEW Lv60 HP 190/190"
+        },
+        {
+          "kind": "hint",
+          "text": "Turn 1  None (0 turns)"
+        }
+      ],
+      "viewport_title": "Battle"
+    },
+    {
+      "action_log": [
+        {
+          "kind": "hint",
+          "text": "input: Up"
+        },
+        {
+          "kind": "hint",
+          "text": "input: Up"
+        },
+        {
+          "kind": "hint",
+          "text": "input: Up"
+        },
+        {
+          "kind": "hint",
+          "text": "blocked: Up"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        }
+      ],
+      "competitive_battle": true,
+      "dialogue": [
+        {
+          "kind": "normal",
+          "text": "GLISNARE!"
+        }
+      ],
+      "frame": 121,
+      "info": [
+        {
+          "kind": "heading",
+          "text": "CHRIS \u00b7 $3000"
+        },
+        {
+          "kind": "normal",
+          "text": "Badges 4/16 \u00b7 Dex 0/2"
+        },
+        {
+          "kind": "grass",
+          "text": "\u25b6 MEW        L60 190/190"
+        }
+      ],
+      "info_title": "Trainer",
+      "input_hints": [
+        {
+          "kind": "hint",
+          "text": "Z/J/Space advance"
+        },
+        {
+          "kind": "hint",
+          "text": "X/K/B skip/back"
+        }
+      ],
+      "marker": [
+        27,
+        18,
+        "@"
+      ],
+      "menu": [],
+      "prompt": [],
+      "status_line": "TrainerBattle  MnR08C00R00  (27, 18)  facing Up",
+      "viewport": [
+        {
+          "kind": "grass",
+          "text": "Foe GLISNARE Lv32 HP 95/95"
+        },
+        {
+          "kind": "grass",
+          "text": "You MEW Lv60 HP 190/190"
+        },
+        {
+          "kind": "hint",
+          "text": "Turn 1  None (0 turns)"
+        }
+      ],
+      "viewport_title": "Battle"
+    },
+    {
+      "action_log": [
+        {
+          "kind": "hint",
+          "text": "input: Up"
+        },
+        {
+          "kind": "hint",
+          "text": "input: Up"
+        },
+        {
+          "kind": "hint",
+          "text": "blocked: Up"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        }
+      ],
+      "competitive_battle": true,
+      "dialogue": [
+        {
+          "kind": "normal",
+          "text": "Go! MEW!"
+        }
+      ],
+      "frame": 121,
+      "info": [
+        {
+          "kind": "heading",
+          "text": "CHRIS \u00b7 $3000"
+        },
+        {
+          "kind": "normal",
+          "text": "Badges 4/16 \u00b7 Dex 0/2"
+        },
+        {
+          "kind": "grass",
+          "text": "\u25b6 MEW        L60 190/190"
+        }
+      ],
+      "info_title": "Trainer",
+      "input_hints": [
+        {
+          "kind": "hint",
+          "text": "Z/J/Space advance"
+        },
+        {
+          "kind": "hint",
+          "text": "X/K/B skip/back"
+        }
+      ],
+      "marker": [
+        27,
+        18,
+        "@"
+      ],
+      "menu": [],
+      "prompt": [],
+      "status_line": "TrainerBattle  MnR08C00R00  (27, 18)  facing Up",
+      "viewport": [
+        {
+          "kind": "grass",
+          "text": "Foe GLISNARE Lv32 HP 95/95"
+        },
+        {
+          "kind": "grass",
+          "text": "You MEW Lv60 HP 190/190"
+        },
+        {
+          "kind": "hint",
+          "text": "Turn 1  None (0 turns)"
+        }
+      ],
+      "viewport_title": "Battle"
+    },
+    {
+      "action_log": [
+        {
+          "kind": "hint",
+          "text": "input: Up"
+        },
+        {
+          "kind": "hint",
+          "text": "blocked: Up"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        }
+      ],
+      "competitive_battle": true,
+      "dialogue": [],
+      "frame": 121,
+      "info": [
+        {
+          "kind": "heading",
+          "text": "CHRIS \u00b7 $3000"
+        },
+        {
+          "kind": "normal",
+          "text": "Badges 4/16 \u00b7 Dex 0/2"
+        },
+        {
+          "kind": "grass",
+          "text": "\u25b6 MEW        L60 190/190"
+        }
+      ],
+      "info_title": "Trainer",
+      "input_hints": [
+        {
+          "kind": "hint",
+          "text": "\u2191/\u2193 choose"
+        },
+        {
+          "kind": "hint",
+          "text": "Z/J/Space select"
+        },
+        {
+          "kind": "hint",
+          "text": "X/K/B/Esc back"
+        }
+      ],
+      "marker": [
+        27,
+        18,
+        "@"
+      ],
+      "menu": [
+        {
+          "kind": "selected",
+          "text": "> FIGHT"
+        },
+        {
+          "kind": "normal",
+          "text": "   <PKMN>"
+        },
+        {
+          "kind": "normal",
+          "text": "   PACK"
+        },
+        {
+          "kind": "normal",
+          "text": "   RUN"
+        }
+      ],
+      "prompt": [],
+      "status_line": "TrainerBattle  MnR08C00R00  (27, 18)  facing Up",
+      "viewport": [
+        {
+          "kind": "grass",
+          "text": "Foe GLISNARE Lv32 HP 95/95"
+        },
+        {
+          "kind": "grass",
+          "text": "You MEW Lv60 HP 190/190"
+        },
+        {
+          "kind": "hint",
+          "text": "Turn 1  None (0 turns)"
+        }
+      ],
+      "viewport_title": "Battle"
+    },
+    {
+      "action_log": [
+        {
+          "kind": "hint",
+          "text": "blocked: Up"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        }
+      ],
+      "competitive_battle": true,
+      "dialogue": [],
+      "frame": 121,
+      "info": [
+        {
+          "kind": "heading",
+          "text": "CHRIS \u00b7 $3000"
+        },
+        {
+          "kind": "normal",
+          "text": "Badges 4/16 \u00b7 Dex 0/2"
+        },
+        {
+          "kind": "grass",
+          "text": "\u25b6 MEW        L60 190/190"
+        }
+      ],
+      "info_title": "Trainer",
+      "input_hints": [
+        {
+          "kind": "hint",
+          "text": "\u2191/\u2193 choose"
+        },
+        {
+          "kind": "hint",
+          "text": "Z/J/Space select"
+        },
+        {
+          "kind": "hint",
+          "text": "X/K/B/Esc back"
+        }
+      ],
+      "marker": [
+        27,
+        18,
+        "@"
+      ],
+      "menu": [
+        {
+          "kind": "selected",
+          "text": "> SURF  PP 15/15"
+        },
+        {
+          "kind": "normal",
+          "text": "   CANCEL"
+        },
+        {
+          "kind": "normal",
+          "text": "  WATER  SPECIAL / SPA vs SPD"
+        },
+        {
+          "kind": "normal",
+          "text": "  Power 95  Base accuracy 100%  Priority +0"
+        },
+        {
+          "kind": "normal",
+          "text": "  Effectiveness x1/2"
+        },
+        {
+          "kind": "normal",
+          "text": "  Damage on hit: 43-51 (non-critical)"
+        }
+      ],
+      "prompt": [],
+      "status_line": "TrainerBattle  MnR08C00R00  (27, 18)  facing Up",
+      "viewport": [
+        {
+          "kind": "grass",
+          "text": "Foe GLISNARE Lv32 HP 95/95"
+        },
+        {
+          "kind": "grass",
+          "text": "You MEW Lv60 HP 190/190"
+        },
+        {
+          "kind": "hint",
+          "text": "Turn 1  None (0 turns)"
+        }
+      ],
+      "viewport_title": "Battle"
+    },
+    {
+      "action_log": [
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        }
+      ],
+      "competitive_battle": true,
+      "dialogue": [
+        {
+          "kind": "normal",
+          "text": "MEW"
+        },
+        {
+          "kind": "normal",
+          "text": "used SURF!"
+        }
+      ],
+      "frame": 121,
+      "info": [
+        {
+          "kind": "heading",
+          "text": "CHRIS \u00b7 $3000"
+        },
+        {
+          "kind": "normal",
+          "text": "Badges 4/16 \u00b7 Dex 0/2"
+        },
+        {
+          "kind": "grass",
+          "text": "\u25b6 MEW        L60 190/190"
+        }
+      ],
+      "info_title": "Trainer",
+      "input_hints": [
+        {
+          "kind": "hint",
+          "text": "Z/J/Space advance"
+        },
+        {
+          "kind": "hint",
+          "text": "X/K/B skip/back"
+        }
+      ],
+      "marker": [
+        27,
+        18,
+        "@"
+      ],
+      "menu": [],
+      "prompt": [],
+      "status_line": "TrainerBattle  MnR08C00R00  (27, 18)  facing Up",
+      "viewport": [
+        {
+          "kind": "grass",
+          "text": "Foe GLISNARE Lv32 HP 45/95"
+        },
+        {
+          "kind": "grass",
+          "text": "You MEW Lv60 HP 190/190"
+        },
+        {
+          "kind": "hint",
+          "text": "Turn 2  None (0 turns)"
+        }
+      ],
+      "viewport_title": "Battle"
+    },
+    {
+      "action_log": [
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        }
+      ],
+      "competitive_battle": true,
+      "dialogue": [
+        {
+          "kind": "normal",
+          "text": "It's not very"
+        },
+        {
+          "kind": "normal",
+          "text": "effective..."
+        }
+      ],
+      "frame": 121,
+      "info": [
+        {
+          "kind": "heading",
+          "text": "CHRIS \u00b7 $3000"
+        },
+        {
+          "kind": "normal",
+          "text": "Badges 4/16 \u00b7 Dex 0/2"
+        },
+        {
+          "kind": "grass",
+          "text": "\u25b6 MEW        L60 190/190"
+        }
+      ],
+      "info_title": "Trainer",
+      "input_hints": [
+        {
+          "kind": "hint",
+          "text": "Z/J/Space advance"
+        },
+        {
+          "kind": "hint",
+          "text": "X/K/B skip/back"
+        }
+      ],
+      "marker": [
+        27,
+        18,
+        "@"
+      ],
+      "menu": [],
+      "prompt": [],
+      "status_line": "TrainerBattle  MnR08C00R00  (27, 18)  facing Up",
+      "viewport": [
+        {
+          "kind": "grass",
+          "text": "Foe GLISNARE Lv32 HP 45/95"
+        },
+        {
+          "kind": "grass",
+          "text": "You MEW Lv60 HP 190/190"
+        },
+        {
+          "kind": "hint",
+          "text": "Turn 2  None (0 turns)"
+        }
+      ],
+      "viewport_title": "Battle"
+    },
+    {
+      "action_log": [
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        }
+      ],
+      "competitive_battle": true,
+      "dialogue": [
+        {
+          "kind": "normal",
+          "text": "GLISNARE"
+        },
+        {
+          "kind": "normal",
+          "text": "used STUN SPORE!"
+        }
+      ],
+      "frame": 121,
+      "info": [
+        {
+          "kind": "heading",
+          "text": "CHRIS \u00b7 $3000"
+        },
+        {
+          "kind": "normal",
+          "text": "Badges 4/16 \u00b7 Dex 0/2"
+        },
+        {
+          "kind": "grass",
+          "text": "\u25b6 MEW        L60 190/190"
+        }
+      ],
+      "info_title": "Trainer",
+      "input_hints": [
+        {
+          "kind": "hint",
+          "text": "Z/J/Space advance"
+        },
+        {
+          "kind": "hint",
+          "text": "X/K/B skip/back"
+        }
+      ],
+      "marker": [
+        27,
+        18,
+        "@"
+      ],
+      "menu": [],
+      "prompt": [],
+      "status_line": "TrainerBattle  MnR08C00R00  (27, 18)  facing Up",
+      "viewport": [
+        {
+          "kind": "grass",
+          "text": "Foe GLISNARE Lv32 HP 45/95"
+        },
+        {
+          "kind": "grass",
+          "text": "You MEW Lv60 HP 190/190"
+        },
+        {
+          "kind": "hint",
+          "text": "Turn 2  None (0 turns)"
+        }
+      ],
+      "viewport_title": "Battle"
+    },
+    {
+      "action_log": [
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        }
+      ],
+      "competitive_battle": true,
+      "dialogue": [
+        {
+          "kind": "normal",
+          "text": "GLISNARE's"
+        },
+        {
+          "kind": "normal",
+          "text": "attack missed!"
+        }
+      ],
+      "frame": 121,
+      "info": [
+        {
+          "kind": "heading",
+          "text": "CHRIS \u00b7 $3000"
+        },
+        {
+          "kind": "normal",
+          "text": "Badges 4/16 \u00b7 Dex 0/2"
+        },
+        {
+          "kind": "grass",
+          "text": "\u25b6 MEW        L60 190/190"
+        }
+      ],
+      "info_title": "Trainer",
+      "input_hints": [
+        {
+          "kind": "hint",
+          "text": "Z/J/Space advance"
+        },
+        {
+          "kind": "hint",
+          "text": "X/K/B skip/back"
+        }
+      ],
+      "marker": [
+        27,
+        18,
+        "@"
+      ],
+      "menu": [],
+      "prompt": [],
+      "status_line": "TrainerBattle  MnR08C00R00  (27, 18)  facing Up",
+      "viewport": [
+        {
+          "kind": "grass",
+          "text": "Foe GLISNARE Lv32 HP 45/95"
+        },
+        {
+          "kind": "grass",
+          "text": "You MEW Lv60 HP 190/190"
+        },
+        {
+          "kind": "hint",
+          "text": "Turn 2  None (0 turns)"
+        }
+      ],
+      "viewport_title": "Battle"
+    },
+    {
+      "action_log": [
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        }
+      ],
+      "competitive_battle": true,
+      "dialogue": [],
+      "frame": 121,
+      "info": [
+        {
+          "kind": "heading",
+          "text": "CHRIS \u00b7 $3000"
+        },
+        {
+          "kind": "normal",
+          "text": "Badges 4/16 \u00b7 Dex 0/2"
+        },
+        {
+          "kind": "grass",
+          "text": "\u25b6 MEW        L60 190/190"
+        }
+      ],
+      "info_title": "Trainer",
+      "input_hints": [
+        {
+          "kind": "hint",
+          "text": "\u2191/\u2193 choose"
+        },
+        {
+          "kind": "hint",
+          "text": "Z/J/Space select"
+        },
+        {
+          "kind": "hint",
+          "text": "X/K/B/Esc back"
+        }
+      ],
+      "marker": [
+        27,
+        18,
+        "@"
+      ],
+      "menu": [
+        {
+          "kind": "selected",
+          "text": "> FIGHT"
+        },
+        {
+          "kind": "normal",
+          "text": "   <PKMN>"
+        },
+        {
+          "kind": "normal",
+          "text": "   PACK"
+        },
+        {
+          "kind": "normal",
+          "text": "   RUN"
+        }
+      ],
+      "prompt": [],
+      "status_line": "TrainerBattle  MnR08C00R00  (27, 18)  facing Up",
+      "viewport": [
+        {
+          "kind": "grass",
+          "text": "Foe GLISNARE Lv32 HP 45/95"
+        },
+        {
+          "kind": "grass",
+          "text": "You MEW Lv60 HP 190/190"
+        },
+        {
+          "kind": "hint",
+          "text": "Turn 2  None (0 turns)"
+        }
+      ],
+      "viewport_title": "Battle"
+    },
+    {
+      "action_log": [
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        }
+      ],
+      "competitive_battle": true,
+      "dialogue": [],
+      "frame": 121,
+      "info": [
+        {
+          "kind": "heading",
+          "text": "CHRIS \u00b7 $3000"
+        },
+        {
+          "kind": "normal",
+          "text": "Badges 4/16 \u00b7 Dex 0/2"
+        },
+        {
+          "kind": "grass",
+          "text": "\u25b6 MEW        L60 190/190"
+        }
+      ],
+      "info_title": "Trainer",
+      "input_hints": [
+        {
+          "kind": "hint",
+          "text": "\u2191/\u2193 choose"
+        },
+        {
+          "kind": "hint",
+          "text": "Z/J/Space select"
+        },
+        {
+          "kind": "hint",
+          "text": "X/K/B/Esc back"
+        }
+      ],
+      "marker": [
+        27,
+        18,
+        "@"
+      ],
+      "menu": [
+        {
+          "kind": "selected",
+          "text": "> SURF  PP 14/15"
+        },
+        {
+          "kind": "normal",
+          "text": "   CANCEL"
+        },
+        {
+          "kind": "normal",
+          "text": "  WATER  SPECIAL / SPA vs SPD"
+        },
+        {
+          "kind": "normal",
+          "text": "  Power 95  Base accuracy 100%  Priority +0"
+        },
+        {
+          "kind": "normal",
+          "text": "  Effectiveness x1/2"
+        },
+        {
+          "kind": "normal",
+          "text": "  Damage on hit: 43-51 (non-critical)"
+        }
+      ],
+      "prompt": [],
+      "status_line": "TrainerBattle  MnR08C00R00  (27, 18)  facing Up",
+      "viewport": [
+        {
+          "kind": "grass",
+          "text": "Foe GLISNARE Lv32 HP 45/95"
+        },
+        {
+          "kind": "grass",
+          "text": "You MEW Lv60 HP 190/190"
+        },
+        {
+          "kind": "hint",
+          "text": "Turn 2  None (0 turns)"
+        }
+      ],
+      "viewport_title": "Battle"
+    },
+    {
+      "action_log": [
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        }
+      ],
+      "competitive_battle": true,
+      "dialogue": [
+        {
+          "kind": "normal",
+          "text": "MEW"
+        },
+        {
+          "kind": "normal",
+          "text": "used SURF!"
+        }
+      ],
+      "frame": 121,
+      "info": [
+        {
+          "kind": "heading",
+          "text": "CHRIS \u00b7 $3000"
+        },
+        {
+          "kind": "normal",
+          "text": "Badges 4/16 \u00b7 Dex 0/2"
+        },
+        {
+          "kind": "grass",
+          "text": "\u25b6 MEW        L60 190/190"
+        }
+      ],
+      "info_title": "Trainer",
+      "input_hints": [
+        {
+          "kind": "hint",
+          "text": "Z/J/Space advance"
+        },
+        {
+          "kind": "hint",
+          "text": "X/K/B skip/back"
+        }
+      ],
+      "marker": [
+        27,
+        18,
+        "@"
+      ],
+      "menu": [],
+      "prompt": [],
+      "status_line": "TrainerBattle  MnR08C00R00  (27, 18)  facing Up",
+      "viewport": [
+        {
+          "kind": "danger",
+          "text": "Foe GLISNARE Lv32 HP 0/95"
+        },
+        {
+          "kind": "grass",
+          "text": "You MEW Lv60 HP 190/190"
+        },
+        {
+          "kind": "hint",
+          "text": "Turn 3  None (0 turns)"
+        }
+      ],
+      "viewport_title": "Battle"
+    },
+    {
+      "action_log": [
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        }
+      ],
+      "competitive_battle": true,
+      "dialogue": [
+        {
+          "kind": "normal",
+          "text": "It's not very"
+        },
+        {
+          "kind": "normal",
+          "text": "effective..."
+        }
+      ],
+      "frame": 121,
+      "info": [
+        {
+          "kind": "heading",
+          "text": "CHRIS \u00b7 $3000"
+        },
+        {
+          "kind": "normal",
+          "text": "Badges 4/16 \u00b7 Dex 0/2"
+        },
+        {
+          "kind": "grass",
+          "text": "\u25b6 MEW        L60 190/190"
+        }
+      ],
+      "info_title": "Trainer",
+      "input_hints": [
+        {
+          "kind": "hint",
+          "text": "Z/J/Space advance"
+        },
+        {
+          "kind": "hint",
+          "text": "X/K/B skip/back"
+        }
+      ],
+      "marker": [
+        27,
+        18,
+        "@"
+      ],
+      "menu": [],
+      "prompt": [],
+      "status_line": "TrainerBattle  MnR08C00R00  (27, 18)  facing Up",
+      "viewport": [
+        {
+          "kind": "danger",
+          "text": "Foe GLISNARE Lv32 HP 0/95"
+        },
+        {
+          "kind": "grass",
+          "text": "You MEW Lv60 HP 190/190"
+        },
+        {
+          "kind": "hint",
+          "text": "Turn 3  None (0 turns)"
+        }
+      ],
+      "viewport_title": "Battle"
+    },
+    {
+      "action_log": [
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        }
+      ],
+      "competitive_battle": true,
+      "dialogue": [
+        {
+          "kind": "normal",
+          "text": "Enemy GLISNARE"
+        },
+        {
+          "kind": "normal",
+          "text": "fainted!"
+        }
+      ],
+      "frame": 121,
+      "info": [
+        {
+          "kind": "heading",
+          "text": "CHRIS \u00b7 $3000"
+        },
+        {
+          "kind": "normal",
+          "text": "Badges 4/16 \u00b7 Dex 0/2"
+        },
+        {
+          "kind": "grass",
+          "text": "\u25b6 MEW        L60 190/190"
+        }
+      ],
+      "info_title": "Trainer",
+      "input_hints": [
+        {
+          "kind": "hint",
+          "text": "Z/J/Space advance"
+        },
+        {
+          "kind": "hint",
+          "text": "X/K/B skip/back"
+        }
+      ],
+      "marker": [
+        27,
+        18,
+        "@"
+      ],
+      "menu": [],
+      "prompt": [],
+      "status_line": "TrainerBattle  MnR08C00R00  (27, 18)  facing Up",
+      "viewport": [
+        {
+          "kind": "danger",
+          "text": "Foe GLISNARE Lv32 HP 0/95"
+        },
+        {
+          "kind": "grass",
+          "text": "You MEW Lv60 HP 190/190"
+        },
+        {
+          "kind": "hint",
+          "text": "Turn 3  None (0 turns)"
+        }
+      ],
+      "viewport_title": "Battle"
+    },
+    {
+      "action_log": [
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        }
+      ],
+      "competitive_battle": true,
+      "dialogue": [
+        {
+          "kind": "normal",
+          "text": "MEW gained"
+        },
+        {
+          "kind": "normal",
+          "text": "1200 EXP. Points!"
+        }
+      ],
+      "frame": 121,
+      "info": [
+        {
+          "kind": "heading",
+          "text": "CHRIS \u00b7 $3000"
+        },
+        {
+          "kind": "normal",
+          "text": "Badges 4/16 \u00b7 Dex 0/2"
+        },
+        {
+          "kind": "grass",
+          "text": "\u25b6 MEW        L60 190/190"
+        }
+      ],
+      "info_title": "Trainer",
+      "input_hints": [
+        {
+          "kind": "hint",
+          "text": "Z/J/Space advance"
+        },
+        {
+          "kind": "hint",
+          "text": "X/K/B skip/back"
+        }
+      ],
+      "marker": [
+        27,
+        18,
+        "@"
+      ],
+      "menu": [],
+      "prompt": [],
+      "status_line": "TrainerBattle  MnR08C00R00  (27, 18)  facing Up",
+      "viewport": [
+        {
+          "kind": "danger",
+          "text": "Foe GLISNARE Lv32 HP 0/95"
+        },
+        {
+          "kind": "grass",
+          "text": "You MEW Lv60 HP 190/190"
+        },
+        {
+          "kind": "hint",
+          "text": "Turn 3  None (0 turns)"
+        }
+      ],
+      "viewport_title": "Battle"
+    },
+    {
+      "action_log": [
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        }
+      ],
+      "competitive_battle": true,
+      "dialogue": [
+        {
+          "kind": "normal",
+          "text": "BRAM"
+        },
+        {
+          "kind": "normal",
+          "text": "sent out"
+        }
+      ],
+      "frame": 121,
+      "info": [
+        {
+          "kind": "heading",
+          "text": "CHRIS \u00b7 $3000"
+        },
+        {
+          "kind": "normal",
+          "text": "Badges 4/16 \u00b7 Dex 0/3"
+        },
+        {
+          "kind": "grass",
+          "text": "\u25b6 MEW        L60 190/190"
+        }
+      ],
+      "info_title": "Trainer",
+      "input_hints": [
+        {
+          "kind": "hint",
+          "text": "Z/J/Space advance"
+        },
+        {
+          "kind": "hint",
+          "text": "X/K/B skip/back"
+        }
+      ],
+      "marker": [
+        27,
+        18,
+        "@"
+      ],
+      "menu": [],
+      "prompt": [],
+      "status_line": "TrainerBattle  MnR08C00R00  (27, 18)  facing Up",
+      "viewport": [
+        {
+          "kind": "grass",
+          "text": "Foe CLINKLAW Lv32 HP 72/72"
+        },
+        {
+          "kind": "grass",
+          "text": "You MEW Lv60 HP 190/190"
+        },
+        {
+          "kind": "hint",
+          "text": "Turn 3  None (0 turns)"
+        }
+      ],
+      "viewport_title": "Battle"
+    },
+    {
+      "action_log": [
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        }
+      ],
+      "competitive_battle": true,
+      "dialogue": [
+        {
+          "kind": "normal",
+          "text": "CLINKLAW!"
+        }
+      ],
+      "frame": 121,
+      "info": [
+        {
+          "kind": "heading",
+          "text": "CHRIS \u00b7 $3000"
+        },
+        {
+          "kind": "normal",
+          "text": "Badges 4/16 \u00b7 Dex 0/3"
+        },
+        {
+          "kind": "grass",
+          "text": "\u25b6 MEW        L60 190/190"
+        }
+      ],
+      "info_title": "Trainer",
+      "input_hints": [
+        {
+          "kind": "hint",
+          "text": "Z/J/Space advance"
+        },
+        {
+          "kind": "hint",
+          "text": "X/K/B skip/back"
+        }
+      ],
+      "marker": [
+        27,
+        18,
+        "@"
+      ],
+      "menu": [],
+      "prompt": [],
+      "status_line": "TrainerBattle  MnR08C00R00  (27, 18)  facing Up",
+      "viewport": [
+        {
+          "kind": "grass",
+          "text": "Foe CLINKLAW Lv32 HP 72/72"
+        },
+        {
+          "kind": "grass",
+          "text": "You MEW Lv60 HP 190/190"
+        },
+        {
+          "kind": "hint",
+          "text": "Turn 3  None (0 turns)"
+        }
+      ],
+      "viewport_title": "Battle"
+    },
+    {
+      "action_log": [
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        }
+      ],
+      "competitive_battle": true,
+      "dialogue": [],
+      "frame": 121,
+      "info": [
+        {
+          "kind": "heading",
+          "text": "CHRIS \u00b7 $3000"
+        },
+        {
+          "kind": "normal",
+          "text": "Badges 4/16 \u00b7 Dex 0/3"
+        },
+        {
+          "kind": "grass",
+          "text": "\u25b6 MEW        L60 190/190"
+        }
+      ],
+      "info_title": "Trainer",
+      "input_hints": [
+        {
+          "kind": "hint",
+          "text": "\u2191/\u2193 choose"
+        },
+        {
+          "kind": "hint",
+          "text": "Z/J/Space select"
+        },
+        {
+          "kind": "hint",
+          "text": "X/K/B/Esc back"
+        }
+      ],
+      "marker": [
+        27,
+        18,
+        "@"
+      ],
+      "menu": [
+        {
+          "kind": "selected",
+          "text": "> FIGHT"
+        },
+        {
+          "kind": "normal",
+          "text": "   <PKMN>"
+        },
+        {
+          "kind": "normal",
+          "text": "   PACK"
+        },
+        {
+          "kind": "normal",
+          "text": "   RUN"
+        }
+      ],
+      "prompt": [],
+      "status_line": "TrainerBattle  MnR08C00R00  (27, 18)  facing Up",
+      "viewport": [
+        {
+          "kind": "grass",
+          "text": "Foe CLINKLAW Lv32 HP 72/72"
+        },
+        {
+          "kind": "grass",
+          "text": "You MEW Lv60 HP 190/190"
+        },
+        {
+          "kind": "hint",
+          "text": "Turn 3  None (0 turns)"
+        }
+      ],
+      "viewport_title": "Battle"
+    },
+    {
+      "action_log": [
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        }
+      ],
+      "competitive_battle": true,
+      "dialogue": [],
+      "frame": 121,
+      "info": [
+        {
+          "kind": "heading",
+          "text": "CHRIS \u00b7 $3000"
+        },
+        {
+          "kind": "normal",
+          "text": "Badges 4/16 \u00b7 Dex 0/3"
+        },
+        {
+          "kind": "grass",
+          "text": "\u25b6 MEW        L60 190/190"
+        }
+      ],
+      "info_title": "Trainer",
+      "input_hints": [
+        {
+          "kind": "hint",
+          "text": "\u2191/\u2193 choose"
+        },
+        {
+          "kind": "hint",
+          "text": "Z/J/Space select"
+        },
+        {
+          "kind": "hint",
+          "text": "X/K/B/Esc back"
+        }
+      ],
+      "marker": [
+        27,
+        18,
+        "@"
+      ],
+      "menu": [
+        {
+          "kind": "selected",
+          "text": "> SURF  PP 13/15"
+        },
+        {
+          "kind": "normal",
+          "text": "   CANCEL"
+        },
+        {
+          "kind": "normal",
+          "text": "  WATER  SPECIAL / SPA vs SPD"
+        },
+        {
+          "kind": "normal",
+          "text": "  Power 95  Base accuracy 100%  Priority +0"
+        },
+        {
+          "kind": "normal",
+          "text": "  Effectiveness x1"
+        },
+        {
+          "kind": "normal",
+          "text": "  Damage on hit: 132-156 (non-critical)"
+        }
+      ],
+      "prompt": [],
+      "status_line": "TrainerBattle  MnR08C00R00  (27, 18)  facing Up",
+      "viewport": [
+        {
+          "kind": "grass",
+          "text": "Foe CLINKLAW Lv32 HP 72/72"
+        },
+        {
+          "kind": "grass",
+          "text": "You MEW Lv60 HP 190/190"
+        },
+        {
+          "kind": "hint",
+          "text": "Turn 3  None (0 turns)"
+        }
+      ],
+      "viewport_title": "Battle"
+    },
+    {
+      "action_log": [
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        }
+      ],
+      "competitive_battle": true,
+      "dialogue": [
+        {
+          "kind": "normal",
+          "text": "CLINKLAW"
+        },
+        {
+          "kind": "normal",
+          "text": "used PROTECT!"
+        }
+      ],
+      "frame": 121,
+      "info": [
+        {
+          "kind": "heading",
+          "text": "CHRIS \u00b7 $3000"
+        },
+        {
+          "kind": "normal",
+          "text": "Badges 4/16 \u00b7 Dex 0/3"
+        },
+        {
+          "kind": "grass",
+          "text": "\u25b6 MEW        L60 190/190"
+        }
+      ],
+      "info_title": "Trainer",
+      "input_hints": [
+        {
+          "kind": "hint",
+          "text": "Z/J/Space advance"
+        },
+        {
+          "kind": "hint",
+          "text": "X/K/B skip/back"
+        }
+      ],
+      "marker": [
+        27,
+        18,
+        "@"
+      ],
+      "menu": [],
+      "prompt": [],
+      "status_line": "TrainerBattle  MnR08C00R00  (27, 18)  facing Up",
+      "viewport": [
+        {
+          "kind": "grass",
+          "text": "Foe CLINKLAW Lv32 HP 72/72"
+        },
+        {
+          "kind": "grass",
+          "text": "You MEW Lv60 HP 190/190"
+        },
+        {
+          "kind": "hint",
+          "text": "Turn 4  None (0 turns)"
+        }
+      ],
+      "viewport_title": "Battle"
+    },
+    {
+      "action_log": [
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        }
+      ],
+      "competitive_battle": true,
+      "dialogue": [
+        {
+          "kind": "normal",
+          "text": "CLINKLAW"
+        },
+        {
+          "kind": "normal",
+          "text": "PROTECTED itself!"
+        }
+      ],
+      "frame": 121,
+      "info": [
+        {
+          "kind": "heading",
+          "text": "CHRIS \u00b7 $3000"
+        },
+        {
+          "kind": "normal",
+          "text": "Badges 4/16 \u00b7 Dex 0/3"
+        },
+        {
+          "kind": "grass",
+          "text": "\u25b6 MEW        L60 190/190"
+        }
+      ],
+      "info_title": "Trainer",
+      "input_hints": [
+        {
+          "kind": "hint",
+          "text": "Z/J/Space advance"
+        },
+        {
+          "kind": "hint",
+          "text": "X/K/B skip/back"
+        }
+      ],
+      "marker": [
+        27,
+        18,
+        "@"
+      ],
+      "menu": [],
+      "prompt": [],
+      "status_line": "TrainerBattle  MnR08C00R00  (27, 18)  facing Up",
+      "viewport": [
+        {
+          "kind": "grass",
+          "text": "Foe CLINKLAW Lv32 HP 72/72"
+        },
+        {
+          "kind": "grass",
+          "text": "You MEW Lv60 HP 190/190"
+        },
+        {
+          "kind": "hint",
+          "text": "Turn 4  None (0 turns)"
+        }
+      ],
+      "viewport_title": "Battle"
+    },
+    {
+      "action_log": [
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        }
+      ],
+      "competitive_battle": true,
+      "dialogue": [
+        {
+          "kind": "normal",
+          "text": "MEW"
+        },
+        {
+          "kind": "normal",
+          "text": "used SURF!"
+        }
+      ],
+      "frame": 121,
+      "info": [
+        {
+          "kind": "heading",
+          "text": "CHRIS \u00b7 $3000"
+        },
+        {
+          "kind": "normal",
+          "text": "Badges 4/16 \u00b7 Dex 0/3"
+        },
+        {
+          "kind": "grass",
+          "text": "\u25b6 MEW        L60 190/190"
+        }
+      ],
+      "info_title": "Trainer",
+      "input_hints": [
+        {
+          "kind": "hint",
+          "text": "Z/J/Space advance"
+        },
+        {
+          "kind": "hint",
+          "text": "X/K/B skip/back"
+        }
+      ],
+      "marker": [
+        27,
+        18,
+        "@"
+      ],
+      "menu": [],
+      "prompt": [],
+      "status_line": "TrainerBattle  MnR08C00R00  (27, 18)  facing Up",
+      "viewport": [
+        {
+          "kind": "grass",
+          "text": "Foe CLINKLAW Lv32 HP 72/72"
+        },
+        {
+          "kind": "grass",
+          "text": "You MEW Lv60 HP 190/190"
+        },
+        {
+          "kind": "hint",
+          "text": "Turn 4  None (0 turns)"
+        }
+      ],
+      "viewport_title": "Battle"
+    },
+    {
+      "action_log": [
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        }
+      ],
+      "competitive_battle": true,
+      "dialogue": [
+        {
+          "kind": "normal",
+          "text": "CLINKLAW's"
+        },
+        {
+          "kind": "normal",
+          "text": "PROTECTING itself!"
+        }
+      ],
+      "frame": 121,
+      "info": [
+        {
+          "kind": "heading",
+          "text": "CHRIS \u00b7 $3000"
+        },
+        {
+          "kind": "normal",
+          "text": "Badges 4/16 \u00b7 Dex 0/3"
+        },
+        {
+          "kind": "grass",
+          "text": "\u25b6 MEW        L60 190/190"
+        }
+      ],
+      "info_title": "Trainer",
+      "input_hints": [
+        {
+          "kind": "hint",
+          "text": "Z/J/Space advance"
+        },
+        {
+          "kind": "hint",
+          "text": "X/K/B skip/back"
+        }
+      ],
+      "marker": [
+        27,
+        18,
+        "@"
+      ],
+      "menu": [],
+      "prompt": [],
+      "status_line": "TrainerBattle  MnR08C00R00  (27, 18)  facing Up",
+      "viewport": [
+        {
+          "kind": "grass",
+          "text": "Foe CLINKLAW Lv32 HP 72/72"
+        },
+        {
+          "kind": "grass",
+          "text": "You MEW Lv60 HP 190/190"
+        },
+        {
+          "kind": "hint",
+          "text": "Turn 4  None (0 turns)"
+        }
+      ],
+      "viewport_title": "Battle"
+    },
+    {
+      "action_log": [
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        }
+      ],
+      "competitive_battle": true,
+      "dialogue": [],
+      "frame": 121,
+      "info": [
+        {
+          "kind": "heading",
+          "text": "CHRIS \u00b7 $3000"
+        },
+        {
+          "kind": "normal",
+          "text": "Badges 4/16 \u00b7 Dex 0/3"
+        },
+        {
+          "kind": "grass",
+          "text": "\u25b6 MEW        L60 190/190"
+        }
+      ],
+      "info_title": "Trainer",
+      "input_hints": [
+        {
+          "kind": "hint",
+          "text": "\u2191/\u2193 choose"
+        },
+        {
+          "kind": "hint",
+          "text": "Z/J/Space select"
+        },
+        {
+          "kind": "hint",
+          "text": "X/K/B/Esc back"
+        }
+      ],
+      "marker": [
+        27,
+        18,
+        "@"
+      ],
+      "menu": [
+        {
+          "kind": "selected",
+          "text": "> FIGHT"
+        },
+        {
+          "kind": "normal",
+          "text": "   <PKMN>"
+        },
+        {
+          "kind": "normal",
+          "text": "   PACK"
+        },
+        {
+          "kind": "normal",
+          "text": "   RUN"
+        }
+      ],
+      "prompt": [],
+      "status_line": "TrainerBattle  MnR08C00R00  (27, 18)  facing Up",
+      "viewport": [
+        {
+          "kind": "grass",
+          "text": "Foe CLINKLAW Lv32 HP 72/72"
+        },
+        {
+          "kind": "grass",
+          "text": "You MEW Lv60 HP 190/190"
+        },
+        {
+          "kind": "hint",
+          "text": "Turn 4  None (0 turns)"
+        }
+      ],
+      "viewport_title": "Battle"
+    },
+    {
+      "action_log": [
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        }
+      ],
+      "competitive_battle": true,
+      "dialogue": [],
+      "frame": 121,
+      "info": [
+        {
+          "kind": "heading",
+          "text": "CHRIS \u00b7 $3000"
+        },
+        {
+          "kind": "normal",
+          "text": "Badges 4/16 \u00b7 Dex 0/3"
+        },
+        {
+          "kind": "grass",
+          "text": "\u25b6 MEW        L60 190/190"
+        }
+      ],
+      "info_title": "Trainer",
+      "input_hints": [
+        {
+          "kind": "hint",
+          "text": "\u2191/\u2193 choose"
+        },
+        {
+          "kind": "hint",
+          "text": "Z/J/Space select"
+        },
+        {
+          "kind": "hint",
+          "text": "X/K/B/Esc back"
+        }
+      ],
+      "marker": [
+        27,
+        18,
+        "@"
+      ],
+      "menu": [
+        {
+          "kind": "selected",
+          "text": "> SURF  PP 12/15"
+        },
+        {
+          "kind": "normal",
+          "text": "   CANCEL"
+        },
+        {
+          "kind": "normal",
+          "text": "  WATER  SPECIAL / SPA vs SPD"
+        },
+        {
+          "kind": "normal",
+          "text": "  Power 95  Base accuracy 100%  Priority +0"
+        },
+        {
+          "kind": "normal",
+          "text": "  Effectiveness x1"
+        },
+        {
+          "kind": "normal",
+          "text": "  Damage on hit: 132-156 (non-critical)"
+        }
+      ],
+      "prompt": [],
+      "status_line": "TrainerBattle  MnR08C00R00  (27, 18)  facing Up",
+      "viewport": [
+        {
+          "kind": "grass",
+          "text": "Foe CLINKLAW Lv32 HP 72/72"
+        },
+        {
+          "kind": "grass",
+          "text": "You MEW Lv60 HP 190/190"
+        },
+        {
+          "kind": "hint",
+          "text": "Turn 4  None (0 turns)"
+        }
+      ],
+      "viewport_title": "Battle"
+    },
+    {
+      "action_log": [
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        }
+      ],
+      "competitive_battle": true,
+      "dialogue": [
+        {
+          "kind": "normal",
+          "text": "CLINKLAW"
+        },
+        {
+          "kind": "normal",
+          "text": "used PROTECT!"
+        }
+      ],
+      "frame": 121,
+      "info": [
+        {
+          "kind": "heading",
+          "text": "CHRIS \u00b7 $3000"
+        },
+        {
+          "kind": "normal",
+          "text": "Badges 4/16 \u00b7 Dex 0/3"
+        },
+        {
+          "kind": "grass",
+          "text": "\u25b6 MEW        L60 190/190"
+        }
+      ],
+      "info_title": "Trainer",
+      "input_hints": [
+        {
+          "kind": "hint",
+          "text": "Z/J/Space advance"
+        },
+        {
+          "kind": "hint",
+          "text": "X/K/B skip/back"
+        }
+      ],
+      "marker": [
+        27,
+        18,
+        "@"
+      ],
+      "menu": [],
+      "prompt": [],
+      "status_line": "TrainerBattle  MnR08C00R00  (27, 18)  facing Up",
+      "viewport": [
+        {
+          "kind": "danger",
+          "text": "Foe CLINKLAW Lv32 HP 0/72"
+        },
+        {
+          "kind": "grass",
+          "text": "You MEW Lv60 HP 190/190"
+        },
+        {
+          "kind": "hint",
+          "text": "Turn 5  None (0 turns)"
+        }
+      ],
+      "viewport_title": "Battle"
+    },
+    {
+      "action_log": [
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        }
+      ],
+      "competitive_battle": true,
+      "dialogue": [
+        {
+          "kind": "normal",
+          "text": "But it failed!"
+        }
+      ],
+      "frame": 121,
+      "info": [
+        {
+          "kind": "heading",
+          "text": "CHRIS \u00b7 $3000"
+        },
+        {
+          "kind": "normal",
+          "text": "Badges 4/16 \u00b7 Dex 0/3"
+        },
+        {
+          "kind": "grass",
+          "text": "\u25b6 MEW        L60 190/190"
+        }
+      ],
+      "info_title": "Trainer",
+      "input_hints": [
+        {
+          "kind": "hint",
+          "text": "Z/J/Space advance"
+        },
+        {
+          "kind": "hint",
+          "text": "X/K/B skip/back"
+        }
+      ],
+      "marker": [
+        27,
+        18,
+        "@"
+      ],
+      "menu": [],
+      "prompt": [],
+      "status_line": "TrainerBattle  MnR08C00R00  (27, 18)  facing Up",
+      "viewport": [
+        {
+          "kind": "danger",
+          "text": "Foe CLINKLAW Lv32 HP 0/72"
+        },
+        {
+          "kind": "grass",
+          "text": "You MEW Lv60 HP 190/190"
+        },
+        {
+          "kind": "hint",
+          "text": "Turn 5  None (0 turns)"
+        }
+      ],
+      "viewport_title": "Battle"
+    },
+    {
+      "action_log": [
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        }
+      ],
+      "competitive_battle": true,
+      "dialogue": [
+        {
+          "kind": "normal",
+          "text": "MEW"
+        },
+        {
+          "kind": "normal",
+          "text": "used SURF!"
+        }
+      ],
+      "frame": 121,
+      "info": [
+        {
+          "kind": "heading",
+          "text": "CHRIS \u00b7 $3000"
+        },
+        {
+          "kind": "normal",
+          "text": "Badges 4/16 \u00b7 Dex 0/3"
+        },
+        {
+          "kind": "grass",
+          "text": "\u25b6 MEW        L60 190/190"
+        }
+      ],
+      "info_title": "Trainer",
+      "input_hints": [
+        {
+          "kind": "hint",
+          "text": "Z/J/Space advance"
+        },
+        {
+          "kind": "hint",
+          "text": "X/K/B skip/back"
+        }
+      ],
+      "marker": [
+        27,
+        18,
+        "@"
+      ],
+      "menu": [],
+      "prompt": [],
+      "status_line": "TrainerBattle  MnR08C00R00  (27, 18)  facing Up",
+      "viewport": [
+        {
+          "kind": "danger",
+          "text": "Foe CLINKLAW Lv32 HP 0/72"
+        },
+        {
+          "kind": "grass",
+          "text": "You MEW Lv60 HP 190/190"
+        },
+        {
+          "kind": "hint",
+          "text": "Turn 5  None (0 turns)"
+        }
+      ],
+      "viewport_title": "Battle"
+    },
+    {
+      "action_log": [
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        }
+      ],
+      "competitive_battle": true,
+      "dialogue": [
+        {
+          "kind": "normal",
+          "text": "Enemy CLINKLAW"
+        },
+        {
+          "kind": "normal",
+          "text": "fainted!"
+        }
+      ],
+      "frame": 121,
+      "info": [
+        {
+          "kind": "heading",
+          "text": "CHRIS \u00b7 $3000"
+        },
+        {
+          "kind": "normal",
+          "text": "Badges 4/16 \u00b7 Dex 0/3"
+        },
+        {
+          "kind": "grass",
+          "text": "\u25b6 MEW        L60 190/190"
+        }
+      ],
+      "info_title": "Trainer",
+      "input_hints": [
+        {
+          "kind": "hint",
+          "text": "Z/J/Space advance"
+        },
+        {
+          "kind": "hint",
+          "text": "X/K/B skip/back"
+        }
+      ],
+      "marker": [
+        27,
+        18,
+        "@"
+      ],
+      "menu": [],
+      "prompt": [],
+      "status_line": "TrainerBattle  MnR08C00R00  (27, 18)  facing Up",
+      "viewport": [
+        {
+          "kind": "danger",
+          "text": "Foe CLINKLAW Lv32 HP 0/72"
+        },
+        {
+          "kind": "grass",
+          "text": "You MEW Lv60 HP 190/190"
+        },
+        {
+          "kind": "hint",
+          "text": "Turn 5  None (0 turns)"
+        }
+      ],
+      "viewport_title": "Battle"
+    },
+    {
+      "action_log": [
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        }
+      ],
+      "competitive_battle": true,
+      "dialogue": [
+        {
+          "kind": "normal",
+          "text": "MEW gained"
+        },
+        {
+          "kind": "normal",
+          "text": "403 EXP. Points!"
+        }
+      ],
+      "frame": 121,
+      "info": [
+        {
+          "kind": "heading",
+          "text": "CHRIS \u00b7 $3000"
+        },
+        {
+          "kind": "normal",
+          "text": "Badges 4/16 \u00b7 Dex 0/3"
+        },
+        {
+          "kind": "grass",
+          "text": "\u25b6 MEW        L60 190/190"
+        }
+      ],
+      "info_title": "Trainer",
+      "input_hints": [
+        {
+          "kind": "hint",
+          "text": "Z/J/Space advance"
+        },
+        {
+          "kind": "hint",
+          "text": "X/K/B skip/back"
+        }
+      ],
+      "marker": [
+        27,
+        18,
+        "@"
+      ],
+      "menu": [],
+      "prompt": [],
+      "status_line": "TrainerBattle  MnR08C00R00  (27, 18)  facing Up",
+      "viewport": [
+        {
+          "kind": "danger",
+          "text": "Foe CLINKLAW Lv32 HP 0/72"
+        },
+        {
+          "kind": "grass",
+          "text": "You MEW Lv60 HP 190/190"
+        },
+        {
+          "kind": "hint",
+          "text": "Turn 5  None (0 turns)"
+        }
+      ],
+      "viewport_title": "Battle"
+    },
+    {
+      "action_log": [
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        }
+      ],
+      "competitive_battle": false,
+      "dialogue": [
+        {
+          "kind": "normal",
+          "text": "The bank stairs"
+        },
+        {
+          "kind": "normal",
+          "text": "join both paths."
+        }
+      ],
+      "frame": 121,
+      "info": [
+        {
+          "kind": "heading",
+          "text": "CHRIS \u00b7 $3640"
+        },
+        {
+          "kind": "normal",
+          "text": "Badges 4/16 \u00b7 Dex 0/3"
+        },
+        {
+          "kind": "grass",
+          "text": "  MEW        L60 190/190"
+        }
+      ],
+      "info_title": "Trainer",
+      "input_hints": [
+        {
+          "kind": "hint",
+          "text": "Z/J/Space advance"
+        },
+        {
+          "kind": "hint",
+          "text": "X/K/B skip/back"
+        }
+      ],
+      "marker": [
+        27,
+        18,
+        "@"
+      ],
+      "menu": [],
+      "prompt": [],
+      "status_line": "Overworld  MnR08C00R00  (27, 18)  facing Up",
+      "viewport": [
+        {
+          "kind": "hint",
+          "text": "   17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37"
+        },
+        {
+          "kind": "normal",
+          "text": "11 \u2248  \u2248  \u2248  .  .  .  .  #  .  .  .  .  .  .  .  .  #  .  .  .  ."
+        },
+        {
+          "kind": "normal",
+          "text": "12 \u2248  \u2248  \u2248  .  .  .  .  #  .  .  .  .  .  .  .  .  #  .  .  .  ."
+        },
+        {
+          "kind": "normal",
+          "text": "13 \u2248  \u2248  \u2248  .  .  .  .  #  .  .  .  .  .  .  .  .  #  .  .  .  ."
+        },
+        {
+          "kind": "normal",
+          "text": "14 \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  #  .  .  .  .  .  .  .  .  .  #  #  #  #"
+        },
+        {
+          "kind": "normal",
+          "text": "15 \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  #  .  .  .  .  .  .  N  .  .  .  .  #  #"
+        },
+        {
+          "kind": "normal",
+          "text": "16 #  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  #  .  .  .  .  .  .  .  .  .  .  .  #  #"
+        },
+        {
+          "kind": "normal",
+          "text": "17 #  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  #  .  .  N  .  .  .  .  .  .  .  .  #  #"
+        },
+        {
+          "kind": "normal",
+          "text": "18 #  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  #  .  \"  @^ \"  \"  .  .  .  .  .  .  .  ."
+        },
+        {
+          "kind": "normal",
+          "text": "19 #  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  #  .  \"  \"  \"  \"  .  .  .  .  .  .  .  ."
+        },
+        {
+          "kind": "normal",
+          "text": "20 #  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  #  .  \"  \"  .  .  .  .  .  .  .  .  .  ."
+        },
+        {
+          "kind": "normal",
+          "text": "21 #  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  #  .  \"  \"  .  .  .  .  .  .  .  .  .  ."
+        },
+        {
+          "kind": "normal",
+          "text": "22 \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  #  .  \"  \"  .  .  .  .  .  .  .  .  .  ."
+        },
+        {
+          "kind": "normal",
+          "text": "23 \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  #  .  \"  \"  .  .  .  .  .  .  .  .  .  ."
+        },
+        {
+          "kind": "normal",
+          "text": "24 \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  #  .  #  #  .  .  .  .  .  .  .  .  .  ."
+        },
+        {
+          "kind": "normal",
+          "text": "25 \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  #  .  #  #  .  .  .  .  .  .  .  .  .  ."
+        }
+      ],
+      "viewport_title": "MnR08C00R00"
+    },
+    {
+      "action_log": [
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        }
+      ],
+      "competitive_battle": false,
+      "dialogue": [
+        {
+          "kind": "normal",
+          "text": "CHRIS got \u00a5640"
+        },
+        {
+          "kind": "normal",
+          "text": "for winning!"
+        }
+      ],
+      "frame": 121,
+      "info": [
+        {
+          "kind": "heading",
+          "text": "CHRIS \u00b7 $3640"
+        },
+        {
+          "kind": "normal",
+          "text": "Badges 4/16 \u00b7 Dex 0/3"
+        },
+        {
+          "kind": "grass",
+          "text": "  MEW        L60 190/190"
+        }
+      ],
+      "info_title": "Trainer",
+      "input_hints": [
+        {
+          "kind": "hint",
+          "text": "Z/J/Space advance"
+        },
+        {
+          "kind": "hint",
+          "text": "X/K/B skip/back"
+        }
+      ],
+      "marker": [
+        27,
+        18,
+        "@"
+      ],
+      "menu": [],
+      "prompt": [],
+      "status_line": "Overworld  MnR08C00R00  (27, 18)  facing Up",
+      "viewport": [
+        {
+          "kind": "hint",
+          "text": "   17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37"
+        },
+        {
+          "kind": "normal",
+          "text": "11 \u2248  \u2248  \u2248  .  .  .  .  #  .  .  .  .  .  .  .  .  #  .  .  .  ."
+        },
+        {
+          "kind": "normal",
+          "text": "12 \u2248  \u2248  \u2248  .  .  .  .  #  .  .  .  .  .  .  .  .  #  .  .  .  ."
+        },
+        {
+          "kind": "normal",
+          "text": "13 \u2248  \u2248  \u2248  .  .  .  .  #  .  .  .  .  .  .  .  .  #  .  .  .  ."
+        },
+        {
+          "kind": "normal",
+          "text": "14 \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  #  .  .  .  .  .  .  .  .  .  #  #  #  #"
+        },
+        {
+          "kind": "normal",
+          "text": "15 \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  #  .  .  .  .  .  .  N  .  .  .  .  #  #"
+        },
+        {
+          "kind": "normal",
+          "text": "16 #  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  #  .  .  .  .  .  .  .  .  .  .  .  #  #"
+        },
+        {
+          "kind": "normal",
+          "text": "17 #  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  #  .  .  N  .  .  .  .  .  .  .  .  #  #"
+        },
+        {
+          "kind": "normal",
+          "text": "18 #  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  #  .  \"  @^ \"  \"  .  .  .  .  .  .  .  ."
+        },
+        {
+          "kind": "normal",
+          "text": "19 #  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  #  .  \"  \"  \"  \"  .  .  .  .  .  .  .  ."
+        },
+        {
+          "kind": "normal",
+          "text": "20 #  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  #  .  \"  \"  .  .  .  .  .  .  .  .  .  ."
+        },
+        {
+          "kind": "normal",
+          "text": "21 #  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  #  .  \"  \"  .  .  .  .  .  .  .  .  .  ."
+        },
+        {
+          "kind": "normal",
+          "text": "22 \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  #  .  \"  \"  .  .  .  .  .  .  .  .  .  ."
+        },
+        {
+          "kind": "normal",
+          "text": "23 \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  #  .  \"  \"  .  .  .  .  .  .  .  .  .  ."
+        },
+        {
+          "kind": "normal",
+          "text": "24 \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  #  .  #  #  .  .  .  .  .  .  .  .  .  ."
+        },
+        {
+          "kind": "normal",
+          "text": "25 \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  #  .  #  #  .  .  .  .  .  .  .  .  .  ."
+        }
+      ],
+      "viewport_title": "MnR08C00R00"
+    },
+    {
+      "action_log": [
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        },
+        {
+          "kind": "hint",
+          "text": "input: A"
+        }
+      ],
+      "competitive_battle": false,
+      "dialogue": [],
+      "frame": 121,
+      "info": [
+        {
+          "kind": "heading",
+          "text": "CHRIS \u00b7 $3640"
+        },
+        {
+          "kind": "normal",
+          "text": "Badges 4/16 \u00b7 Dex 0/3"
+        },
+        {
+          "kind": "grass",
+          "text": "  MEW        L60 190/190"
+        }
+      ],
+      "info_title": "Trainer",
+      "input_hints": [
+        {
+          "kind": "hint",
+          "text": "Arrows/WASD/HKL move"
+        },
+        {
+          "kind": "hint",
+          "text": "Z/J/Space A"
+        },
+        {
+          "kind": "hint",
+          "text": "X/K/B back"
+        },
+        {
+          "kind": "hint",
+          "text": "Enter Start \u00b7 Tab Select"
+        },
+        {
+          "kind": "hint",
+          "text": "? help"
+        }
+      ],
+      "marker": [
+        27,
+        18,
+        "@"
+      ],
+      "menu": [],
+      "prompt": [],
+      "status_line": "Overworld  MnR08C00R00  (27, 18)  facing Up",
+      "viewport": [
+        {
+          "kind": "hint",
+          "text": "   17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37"
+        },
+        {
+          "kind": "normal",
+          "text": "11 \u2248  \u2248  \u2248  .  .  .  .  #  .  .  .  .  .  .  .  .  #  .  .  .  ."
+        },
+        {
+          "kind": "normal",
+          "text": "12 \u2248  \u2248  \u2248  .  .  .  .  #  .  .  .  .  .  .  .  .  #  .  .  .  ."
+        },
+        {
+          "kind": "normal",
+          "text": "13 \u2248  \u2248  \u2248  .  .  .  .  #  .  .  .  .  .  .  .  .  #  .  .  .  ."
+        },
+        {
+          "kind": "normal",
+          "text": "14 \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  #  .  .  .  .  .  .  .  .  .  #  #  #  #"
+        },
+        {
+          "kind": "normal",
+          "text": "15 \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  #  .  .  .  .  .  .  N  .  .  .  .  #  #"
+        },
+        {
+          "kind": "normal",
+          "text": "16 #  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  #  .  .  .  .  .  .  .  .  .  .  .  #  #"
+        },
+        {
+          "kind": "normal",
+          "text": "17 #  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  #  .  .  N  .  .  .  .  .  .  .  .  #  #"
+        },
+        {
+          "kind": "normal",
+          "text": "18 #  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  #  .  \"  @^ \"  \"  .  .  .  .  .  .  .  ."
+        },
+        {
+          "kind": "normal",
+          "text": "19 #  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  #  .  \"  \"  \"  \"  .  .  .  .  .  .  .  ."
+        },
+        {
+          "kind": "normal",
+          "text": "20 #  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  #  .  \"  \"  .  .  .  .  .  .  .  .  .  ."
+        },
+        {
+          "kind": "normal",
+          "text": "21 #  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  #  .  \"  \"  .  .  .  .  .  .  .  .  .  ."
+        },
+        {
+          "kind": "normal",
+          "text": "22 \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  #  .  \"  \"  .  .  .  .  .  .  .  .  .  ."
+        },
+        {
+          "kind": "normal",
+          "text": "23 \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  #  .  \"  \"  .  .  .  .  .  .  .  .  .  ."
+        },
+        {
+          "kind": "normal",
+          "text": "24 \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  #  .  #  #  .  .  .  .  .  .  .  .  .  ."
+        },
+        {
+          "kind": "normal",
+          "text": "25 \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  \u2248  #  .  #  #  .  .  .  .  .  .  .  .  .  ."
+        }
+      ],
+      "viewport_title": "MnR08C00R00"
+    }
+  ],
+  "source_and_input_saves_unchanged": true,
+  "scope": "Initial partner, two badges and terrace placement are declared native QA setup. Every later step, real trainer win/reward, repeat text and Continue uses production input without state edits or retagging. No earned regional access claim."
+}

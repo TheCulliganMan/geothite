@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "views_inspected": [
+    "upper-grass",
+    "south-turnout"
+  ],
+  "pixel_mismatches": 0,
+  "clear_turnout": true,
+  "coastal_ice": 0
+}

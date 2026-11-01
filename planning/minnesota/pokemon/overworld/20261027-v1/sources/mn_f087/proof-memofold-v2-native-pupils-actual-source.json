@@ -1,0 +1,212 @@
+{
+  "species": "memofold",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f087/memofold-v2-native-pupils",
+  "status": "actual-source native proof passes; root visual/context acceptance pending",
+  "all_four_nonrear_actual_isolated_source_pupils": true,
+  "six16px_alpha_border_normal_shiny_runtime_parity": true,
+  "canonical_palettes": true,
+  "literal_2bpp_all1536indices_exact": true,
+  "bank_sha256": "ee3601e3d45de79ac5938b596f567d83fa810f7a3a05feb028a4a12e39afa6fe",
+  "proof": [
+    {
+      "pose": "down_idle",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            5,
+            10
+          ],
+          "source_sample": [
+            213,
+            306
+          ],
+          "source_component": [
+            203,
+            283,
+            39,
+            39
+          ],
+          "component_pixels": 1520,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            1,
+            0,
+            0,
+            253
+          ]
+        },
+        {
+          "native": [
+            8,
+            10
+          ],
+          "source_sample": [
+            306,
+            306
+          ],
+          "source_component": [
+            295,
+            283,
+            39,
+            39
+          ],
+          "component_pixels": 1521,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            5,
+            9
+          ],
+          "source_sample": [
+            1217,
+            289
+          ],
+          "source_component": [
+            1209,
+            283,
+            39,
+            39
+          ],
+          "component_pixels": 1521,
+          "native_neighbors": [
+            1,
+            2,
+            1,
+            1
+          ],
+          "source_rgba": [
+            1,
+            0,
+            0,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            5,
+            10
+          ],
+          "source_sample": [
+            213,
+            729
+          ],
+          "source_component": [
+            203,
+            708,
+            39,
+            39
+          ],
+          "component_pixels": 1521,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            1,
+            0,
+            0,
+            253
+          ]
+        },
+        {
+          "native": [
+            8,
+            10
+          ],
+          "source_sample": [
+            306,
+            729
+          ],
+          "source_component": [
+            298,
+            708,
+            39,
+            40
+          ],
+          "component_pixels": 1521,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            5,
+            9
+          ],
+          "source_sample": [
+            1217,
+            710
+          ],
+          "source_component": [
+            1203,
+            705,
+            39,
+            39
+          ],
+          "component_pixels": 1521,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            2
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ]
+        }
+      ]
+    }
+  ],
+  "hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f087/memofold-v2-native-pupils/compiled-index.json": "2ecb10aba7da1f6f2e4ceab22d67d6682bdb707e9c9c75ad3c93a9e5730a34b8",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f087/memofold.overworld.imagegen-v1.png": "c252db612c3a5427820f8343b6f11120b259cb4a37dd06c63edd011cb440ce4b",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f087/memofold-v2-native-pupils/gfx/pokemon/memofold/overworld.2bpp": "ee3601e3d45de79ac5938b596f567d83fa810f7a3a05feb028a4a12e39afa6fe"
+  },
+  "no_native_pixel_painting": true
+}

@@ -1,0 +1,35 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-r16-bank-guidance-v02.crystalpack",
+  "pack_sha256": "e47cfeeff4baf0e2fd9654d9859e2fd094d856f8d34bede6c1c333c8209bce26",
+  "content_identity": "2306f83ca53691eef46de0d36c606773a04665e130ab98c11cea856bc7eba838",
+  "parent": {
+    "status": "PASS",
+    "selected_revision": "iron_pump_gallery_revision",
+    "pack": "content-packs/minnesota-iron-pump-gallery-v02.crystalpack",
+    "pack_sha256": "1cbb0d2ce18333433278b9d39134be85e36c93ec8d91b566f1cb3029ff4af455",
+    "maps": [
+      "MnR16C00R00",
+      "MnR16C01R00"
+    ],
+    "current_layout": {
+      "path": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R16.after.layout.json",
+      "sha256": "14170b8d63a3209b0c72f1aadbb94fd515bc105827d7b1ff8485cfa0e9f26d28"
+    },
+    "current_dossier": {
+      "path": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R16.dossier.json",
+      "sha256": "3d428be5a64e7111eb11326b449119c04b9c7cdba4a39d44ba4fdf01d68e3af4"
+    }
+  },
+  "delta": {
+    "maps": [
+      "MnR16C00R00"
+    ],
+    "map_scripts": [
+      "MN_R16_RIVER_WARDENText",
+      "MN_R16_SIGN_DRAINText"
+    ]
+  },
+  "all_terrain_actors_events_items_encounters_and_battle_inputs_exact": true,
+  "iron_pump_gallery_and_all731_other_complete_maps_preserved": true
+}

@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "manifest": "minnesota-interior-life-voyageurs-surveyor-v1",
+  "all_installed_interiors": false,
+  "rooms": [
+    {
+      "map": "MnVoyageursIceB1F",
+      "purpose": "A summer Voyageurs canoe guide maps winter crossings for his grandson from the sheltered lower landing.",
+      "texts": [],
+      "conversations": [
+        {
+          "script": "MN_INTERIOR_VOYAGEURS_SURVEYOR",
+          "actor": {
+            "sprite": "SPRITE_GRAMPS",
+            "tile": [3, 20],
+            "approach": [4, 20]
+          },
+          "lines": [
+            "All summer I",
+            "guide canoes at",
+            "Voyageurs.",
+            "Winter is when I",
+            "draw these",
+            "crossings for",
+            "my grandson.",
+            "He says my arrows",
+            "look like a",
+            "dancing loon.",
+            "I told him a loon",
+            "would take fewer",
+            "wrong turns!"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1708 @@
+{
+  "schema_version": 1,
+  "id": "MN_MISSISSIPPI_CONNECTIONS",
+  "status": "hand-authored source candidate; not a published playable pack",
+  "base_pack": "content-packs/minnesota-twin-cities-compact-v01.crystalpack",
+  "base_pack_sha256": "2fe6fc2a2c59833886b9ffa2fa04584f1f95841efaf87e865f11230cf4cdf54e",
+  "registry": {
+    "group_id": 82,
+    "group_name": "MINNESOTA_MISSISSIPPI",
+    "map_group_constant": "MAPGROUP_MINNESOTA_MISSISSIPPI",
+    "reservation_evidence": "82 absent from actual2fe6 runtime metadata and checked-in registrations;80Fair/81Ely intentionally left reserved. Publisher must recheck fresh parent."
+  },
+  "new_maps": [
+    {
+      "id": "MnMississippiConfluenceC00R00",
+      "map_id": 1,
+      "map_constant": "MN_MISSISSIPPI_CONFLUENCE_C00_R00",
+      "layout": "planning/minnesota/connections/mississippi-v01/MnMississippiConfluence.layout.json",
+      "layout_sha256": "44af6a195461a3b3c18b741c91f1dbbce61af74c6263ac8f33c9ed5dd1c9d4d7",
+      "source_origin_metatiles": [
+        0,
+        0
+      ],
+      "dimensions_metatiles": [
+        32,
+        12
+      ],
+      "world_origin_metatiles": [
+        34,
+        28
+      ],
+      "tileset": "johto",
+      "environment": "ROUTE",
+      "music": "MUSIC_ROUTE_30",
+      "connections": [
+        {
+          "direction": "west",
+          "target_map": "MnR03C00R00",
+          "offset": 4
+        },
+        {
+          "direction": "east",
+          "target_map": "MnMississippiConfluenceC01R00",
+          "offset": 0
+        }
+      ],
+      "source_blocks_sha256": "63bea70bf5cf20451cc79222f47ce6dad3b0631824735eefe6ba894f5bbceef3"
+    },
+    {
+      "id": "MnMississippiConfluenceC01R00",
+      "map_id": 2,
+      "map_constant": "MN_MISSISSIPPI_CONFLUENCE_C01_R00",
+      "layout": "planning/minnesota/connections/mississippi-v01/MnMississippiConfluence.layout.json",
+      "layout_sha256": "44af6a195461a3b3c18b741c91f1dbbce61af74c6263ac8f33c9ed5dd1c9d4d7",
+      "source_origin_metatiles": [
+        32,
+        0
+      ],
+      "dimensions_metatiles": [
+        32,
+        12
+      ],
+      "world_origin_metatiles": [
+        66,
+        28
+      ],
+      "tileset": "johto",
+      "environment": "ROUTE",
+      "music": "MUSIC_ROUTE_30",
+      "connections": [
+        {
+          "direction": "west",
+          "target_map": "MnMississippiConfluenceC00R00",
+          "offset": 0
+        },
+        {
+          "direction": "east",
+          "target_map": "MnMississippiConfluenceC02R00",
+          "offset": 0
+        }
+      ],
+      "source_blocks_sha256": "536fa107125776fda21ea273eee1964cb867424ce3f1adfb74355412e85f16f6"
+    },
+    {
+      "id": "MnMississippiConfluenceC02R00",
+      "map_id": 3,
+      "map_constant": "MN_MISSISSIPPI_CONFLUENCE_C02_R00",
+      "layout": "planning/minnesota/connections/mississippi-v01/MnMississippiConfluence.layout.json",
+      "layout_sha256": "44af6a195461a3b3c18b741c91f1dbbce61af74c6263ac8f33c9ed5dd1c9d4d7",
+      "source_origin_metatiles": [
+        64,
+        0
+      ],
+      "dimensions_metatiles": [
+        5,
+        12
+      ],
+      "world_origin_metatiles": [
+        98,
+        28
+      ],
+      "tileset": "johto",
+      "environment": "ROUTE",
+      "music": "MUSIC_ROUTE_30",
+      "connections": [
+        {
+          "direction": "west",
+          "target_map": "MnMississippiConfluenceC01R00",
+          "offset": 0
+        },
+        {
+          "direction": "east",
+          "target_map": "MnMississippiPepin",
+          "offset": 0
+        }
+      ],
+      "source_blocks_sha256": "d86d540627edadfe27edcc632434509a286f42ce74cf95d1635f6f7512aa9ce0"
+    },
+    {
+      "id": "MnMississippiPepin",
+      "map_id": 4,
+      "map_constant": "MN_MISSISSIPPI_PEPIN",
+      "layout": "planning/minnesota/connections/mississippi-v01/MnMississippiPepin.layout.json",
+      "layout_sha256": "2ca3adecd7bffc3c34f38b826b2e286a0da0e51a02a6b11cab926bd5e2bf4e0a",
+      "source_origin_metatiles": [
+        0,
+        0
+      ],
+      "dimensions_metatiles": [
+        26,
+        24
+      ],
+      "world_origin_metatiles": [
+        103,
+        28
+      ],
+      "tileset": "johto",
+      "environment": "ROUTE",
+      "music": "MUSIC_ROUTE_30",
+      "connections": [
+        {
+          "direction": "west",
+          "target_map": "MnMississippiConfluenceC02R00",
+          "offset": 0
+        },
+        {
+          "direction": "north",
+          "target_map": "MnStPaul",
+          "offset": -35
+        },
+        {
+          "direction": "south",
+          "target_map": "MnMississippiWinonaMouth",
+          "offset": 10
+        }
+      ],
+      "source_blocks_sha256": "557ce32375865c0497d8e04282d260c03b7b00f89a781f19b960f9cae1dc8e5c"
+    },
+    {
+      "id": "MnMississippiWinonaMouth",
+      "map_id": 5,
+      "map_constant": "MN_MISSISSIPPI_WINONA_MOUTH",
+      "layout": "planning/minnesota/connections/mississippi-v01/MnMississippiWinonaMouth.layout.json",
+      "layout_sha256": "0f96c82f33a36475599809df634ffa83d5db0dc29b07c3fc7f0cc54f400bfd48",
+      "source_origin_metatiles": [
+        0,
+        0
+      ],
+      "dimensions_metatiles": [
+        16,
+        4
+      ],
+      "world_origin_metatiles": [
+        113,
+        52
+      ],
+      "tileset": "johto",
+      "environment": "ROUTE",
+      "music": "MUSIC_ROUTE_30",
+      "connections": [
+        {
+          "direction": "north",
+          "target_map": "MnMississippiPepin",
+          "offset": -10
+        },
+        {
+          "direction": "south",
+          "target_map": "MnWinona",
+          "offset": 0
+        }
+      ],
+      "source_blocks_sha256": "82e364e864a0064d476f6504190cc4b8a6148478837230c58c7960df5278bd7a"
+    }
+  ],
+  "terrain_revisions": [
+    {
+      "map": "MnStPaul",
+      "native_module_sha256": "10c8ddb5dd3005d0f586917c6b3b64160d08e08283b4ce83adcf1de067a6dd2b",
+      "dimensions_metatiles": [
+        40,
+        34
+      ],
+      "changes": [
+        {
+          "metatile": [
+            37,
+            28
+          ],
+          "before": 1,
+          "after": 67
+        },
+        {
+          "metatile": [
+            38,
+            28
+          ],
+          "before": 1,
+          "after": 100
+        },
+        {
+          "metatile": [
+            37,
+            29
+          ],
+          "before": 1,
+          "after": 67
+        },
+        {
+          "metatile": [
+            38,
+            29
+          ],
+          "before": 1,
+          "after": 100
+        },
+        {
+          "metatile": [
+            37,
+            30
+          ],
+          "before": 1,
+          "after": 67
+        },
+        {
+          "metatile": [
+            38,
+            30
+          ],
+          "before": 1,
+          "after": 100
+        },
+        {
+          "metatile": [
+            37,
+            31
+          ],
+          "before": 85,
+          "after": 67
+        },
+        {
+          "metatile": [
+            38,
+            31
+          ],
+          "before": 1,
+          "after": 100
+        },
+        {
+          "metatile": [
+            37,
+            32
+          ],
+          "before": 1,
+          "after": 67
+        },
+        {
+          "metatile": [
+            38,
+            32
+          ],
+          "before": 1,
+          "after": 100
+        },
+        {
+          "metatile": [
+            37,
+            33
+          ],
+          "before": 19,
+          "after": 67
+        },
+        {
+          "metatile": [
+            38,
+            33
+          ],
+          "before": 19,
+          "after": 100
+        }
+      ],
+      "anchor_preimages": {
+        "objects": [
+          [
+            43,
+            13
+          ],
+          [
+            30,
+            7
+          ],
+          [
+            17,
+            47
+          ],
+          [
+            68,
+            48
+          ],
+          [
+            35,
+            21
+          ],
+          [
+            43,
+            45
+          ],
+          [
+            27,
+            37
+          ],
+          [
+            28,
+            2
+          ],
+          [
+            29,
+            2
+          ],
+          [
+            17,
+            17
+          ],
+          [
+            25,
+            55
+          ],
+          [
+            59,
+            61
+          ],
+          [
+            63,
+            13
+          ],
+          [
+            19,
+            29
+          ],
+          [
+            71,
+            61
+          ],
+          [
+            5,
+            29
+          ],
+          [
+            29,
+            25
+          ],
+          [
+            63,
+            3
+          ],
+          [
+            61,
+            23
+          ],
+          [
+            27,
+            43
+          ],
+          [
+            25,
+            63
+          ],
+          [
+            49,
+            63
+          ],
+          [
+            73,
+            63
+          ]
+        ],
+        "backgrounds": [
+          [
+            19,
+            45
+          ],
+          [
+            29,
+            35
+          ],
+          [
+            47,
+            13
+          ],
+          [
+            51,
+            33
+          ],
+          [
+            71,
+            49
+          ],
+          [
+            31,
+            7
+          ],
+          [
+            41,
+            45
+          ],
+          [
+            29,
+            39
+          ],
+          [
+            19,
+            47
+          ],
+          [
+            59,
+            57
+          ],
+          [
+            47,
+            45
+          ]
+        ],
+        "coordinates": [],
+        "warps": [
+          [
+            66,
+            47
+          ],
+          [
+            66,
+            48
+          ],
+          [
+            13,
+            45
+          ],
+          [
+            13,
+            46
+          ],
+          [
+            25,
+            33
+          ],
+          [
+            25,
+            34
+          ],
+          [
+            40,
+            11
+          ],
+          [
+            40,
+            12
+          ],
+          [
+            48,
+            31
+          ],
+          [
+            48,
+            32
+          ],
+          [
+            5,
+            13
+          ],
+          [
+            5,
+            14
+          ],
+          [
+            21,
+            13
+          ],
+          [
+            21,
+            14
+          ],
+          [
+            18,
+            9
+          ],
+          [
+            18,
+            10
+          ],
+          [
+            6,
+            23
+          ],
+          [
+            6,
+            24
+          ],
+          [
+            18,
+            25
+          ],
+          [
+            18,
+            26
+          ],
+          [
+            28,
+            15
+          ],
+          [
+            28,
+            16
+          ],
+          [
+            6,
+            7
+          ],
+          [
+            6,
+            8
+          ],
+          [
+            22,
+            27
+          ],
+          [
+            22,
+            28
+          ],
+          [
+            13,
+            13
+          ],
+          [
+            13,
+            14
+          ],
+          [
+            21,
+            19
+          ],
+          [
+            21,
+            20
+          ],
+          [
+            34,
+            9
+          ],
+          [
+            34,
+            10
+          ],
+          [
+            50,
+            11
+          ],
+          [
+            50,
+            12
+          ],
+          [
+            50,
+            21
+          ],
+          [
+            50,
+            22
+          ],
+          [
+            60,
+            7
+          ],
+          [
+            60,
+            8
+          ],
+          [
+            66,
+            11
+          ],
+          [
+            66,
+            12
+          ],
+          [
+            60,
+            21
+          ],
+          [
+            60,
+            22
+          ],
+          [
+            6,
+            35
+          ],
+          [
+            6,
+            36
+          ],
+          [
+            5,
+            43
+          ],
+          [
+            5,
+            44
+          ],
+          [
+            16,
+            33
+          ],
+          [
+            16,
+            34
+          ],
+          [
+            32,
+            39
+          ],
+          [
+            32,
+            40
+          ],
+          [
+            38,
+            23
+          ],
+          [
+            38,
+            24
+          ],
+          [
+            24,
+            43
+          ],
+          [
+            24,
+            44
+          ],
+          [
+            53,
+            31
+          ],
+          [
+            53,
+            32
+          ],
+          [
+            46,
+            41
+          ],
+          [
+            46,
+            42
+          ],
+          [
+            64,
+            29
+          ],
+          [
+            64,
+            30
+          ],
+          [
+            58,
+            45
+          ],
+          [
+            58,
+            46
+          ],
+          [
+            64,
+            39
+          ],
+          [
+            64,
+            40
+          ],
+          [
+            55,
+            39
+          ],
+          [
+            55,
+            40
+          ],
+          [
+            6,
+            63
+          ],
+          [
+            6,
+            64
+          ],
+          [
+            5,
+            57
+          ],
+          [
+            5,
+            58
+          ],
+          [
+            16,
+            61
+          ],
+          [
+            16,
+            62
+          ],
+          [
+            30,
+            61
+          ],
+          [
+            30,
+            62
+          ],
+          [
+            44,
+            61
+          ],
+          [
+            44,
+            62
+          ],
+          [
+            51,
+            61
+          ],
+          [
+            51,
+            62
+          ],
+          [
+            62,
+            61
+          ],
+          [
+            62,
+            62
+          ]
+        ]
+      }
+    },
+    {
+      "map": "MnWinona",
+      "native_module_sha256": "e385a15723f968bf15340d507e08750b9fcf05f365eff4c11d36fa443a6957fd",
+      "dimensions_metatiles": [
+        16,
+        14
+      ],
+      "changes": [
+        {
+          "metatile": [
+            13,
+            0
+          ],
+          "before": 5,
+          "after": 88
+        },
+        {
+          "metatile": [
+            14,
+            0
+          ],
+          "before": 5,
+          "after": 89
+        }
+      ],
+      "anchor_preimages": {
+        "objects": [
+          [
+            24,
+            15
+          ],
+          [
+            10,
+            17
+          ],
+          [
+            2,
+            18
+          ],
+          [
+            2,
+            19
+          ]
+        ],
+        "backgrounds": [
+          [
+            12,
+            10
+          ],
+          [
+            20,
+            8
+          ],
+          [
+            24,
+            20
+          ],
+          [
+            14,
+            16
+          ]
+        ],
+        "coordinates": [
+          [
+            3,
+            18
+          ],
+          [
+            1,
+            18
+          ],
+          [
+            3,
+            19
+          ],
+          [
+            1,
+            19
+          ]
+        ],
+        "warps": [
+          [
+            7,
+            7
+          ],
+          [
+            7,
+            8
+          ],
+          [
+            17,
+            7
+          ],
+          [
+            17,
+            8
+          ],
+          [
+            7,
+            23
+          ],
+          [
+            7,
+            24
+          ],
+          [
+            18,
+            19
+          ],
+          [
+            18,
+            20
+          ]
+        ]
+      }
+    },
+    {
+      "map": "MnR03C00R00",
+      "native_module_sha256": "b34e904f8380fdcb73e6728f68bac51412dddc530f6736705c84b64993796065",
+      "dimensions_metatiles": [
+        24,
+        24
+      ],
+      "changes": [
+        {
+          "metatile": [
+            18,
+            1
+          ],
+          "before": 89,
+          "after": 53
+        },
+        {
+          "metatile": [
+            19,
+            1
+          ],
+          "before": 5,
+          "after": 118
+        },
+        {
+          "metatile": [
+            20,
+            1
+          ],
+          "before": 5,
+          "after": 118
+        },
+        {
+          "metatile": [
+            21,
+            1
+          ],
+          "before": 5,
+          "after": 118
+        },
+        {
+          "metatile": [
+            22,
+            1
+          ],
+          "before": 5,
+          "after": 118
+        },
+        {
+          "metatile": [
+            23,
+            1
+          ],
+          "before": 5,
+          "after": 118
+        },
+        {
+          "metatile": [
+            18,
+            2
+          ],
+          "before": 89,
+          "after": 53
+        },
+        {
+          "metatile": [
+            19,
+            2
+          ],
+          "before": 5,
+          "after": 53
+        },
+        {
+          "metatile": [
+            20,
+            2
+          ],
+          "before": 5,
+          "after": 53
+        },
+        {
+          "metatile": [
+            21,
+            2
+          ],
+          "before": 5,
+          "after": 53
+        },
+        {
+          "metatile": [
+            22,
+            2
+          ],
+          "before": 5,
+          "after": 53
+        },
+        {
+          "metatile": [
+            23,
+            2
+          ],
+          "before": 5,
+          "after": 53
+        }
+      ],
+      "anchor_preimages": {
+        "objects": [
+          [
+            15,
+            17
+          ],
+          [
+            15,
+            29
+          ],
+          [
+            37,
+            37
+          ],
+          [
+            13,
+            13
+          ],
+          [
+            39,
+            35
+          ]
+        ],
+        "backgrounds": [
+          [
+            22,
+            4
+          ],
+          [
+            12,
+            36
+          ],
+          [
+            28,
+            26
+          ],
+          [
+            40,
+            44
+          ]
+        ],
+        "coordinates": [],
+        "warps": [
+          [
+            8,
+            37
+          ],
+          [
+            8,
+            38
+          ]
+        ]
+      }
+    },
+    {
+      "map": "MnStCloud",
+      "native_module_sha256": "4c3fa80507d482ea7163a56f94f77d8881bd4e53c2b70c56e6b7fd3c77a2fe72",
+      "dimensions_metatiles": [
+        24,
+        18
+      ],
+      "changes": [
+        {
+          "metatile": [
+            22,
+            12
+          ],
+          "before": 5,
+          "after": 53
+        },
+        {
+          "metatile": [
+            23,
+            12
+          ],
+          "before": 5,
+          "after": 54
+        },
+        {
+          "metatile": [
+            22,
+            13
+          ],
+          "before": 5,
+          "after": 53
+        },
+        {
+          "metatile": [
+            23,
+            13
+          ],
+          "before": 5,
+          "after": 54
+        },
+        {
+          "metatile": [
+            22,
+            14
+          ],
+          "before": 5,
+          "after": 53
+        },
+        {
+          "metatile": [
+            23,
+            14
+          ],
+          "before": 5,
+          "after": 54
+        },
+        {
+          "metatile": [
+            22,
+            15
+          ],
+          "before": 5,
+          "after": 53
+        },
+        {
+          "metatile": [
+            23,
+            15
+          ],
+          "before": 5,
+          "after": 54
+        },
+        {
+          "metatile": [
+            22,
+            16
+          ],
+          "before": 5,
+          "after": 53
+        },
+        {
+          "metatile": [
+            23,
+            16
+          ],
+          "before": 5,
+          "after": 54
+        },
+        {
+          "metatile": [
+            22,
+            17
+          ],
+          "before": 5,
+          "after": 53
+        },
+        {
+          "metatile": [
+            23,
+            17
+          ],
+          "before": 5,
+          "after": 54
+        }
+      ],
+      "anchor_preimages": {
+        "objects": [
+          [
+            18,
+            13
+          ],
+          [
+            37,
+            13
+          ],
+          [
+            29,
+            24
+          ],
+          [
+            37,
+            25
+          ],
+          [
+            19,
+            29
+          ],
+          [
+            24,
+            2
+          ],
+          [
+            25,
+            2
+          ]
+        ],
+        "backgrounds": [
+          [
+            4,
+            10
+          ],
+          [
+            4,
+            28
+          ],
+          [
+            40,
+            12
+          ],
+          [
+            28,
+            24
+          ],
+          [
+            38,
+            26
+          ],
+          [
+            26,
+            6
+          ]
+        ],
+        "coordinates": [
+          [
+            24,
+            3
+          ],
+          [
+            24,
+            1
+          ],
+          [
+            25,
+            3
+          ],
+          [
+            25,
+            1
+          ]
+        ],
+        "warps": [
+          [
+            6,
+            9
+          ],
+          [
+            6,
+            10
+          ],
+          [
+            14,
+            9
+          ],
+          [
+            14,
+            10
+          ],
+          [
+            8,
+            27
+          ],
+          [
+            8,
+            28
+          ],
+          [
+            35,
+            11
+          ],
+          [
+            35,
+            12
+          ]
+        ]
+      }
+    },
+    {
+      "map": "MnR05C00R00",
+      "native_module_sha256": "949d72000f2e09df76e974329cd2837564d2a009960ca2de23b7339271a779cd",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "changes": [
+        {
+          "metatile": [
+            22,
+            0
+          ],
+          "before": 5,
+          "after": 53
+        },
+        {
+          "metatile": [
+            23,
+            0
+          ],
+          "before": 5,
+          "after": 54
+        },
+        {
+          "metatile": [
+            22,
+            1
+          ],
+          "before": 5,
+          "after": 88
+        },
+        {
+          "metatile": [
+            23,
+            1
+          ],
+          "before": 5,
+          "after": 118
+        },
+        {
+          "metatile": [
+            24,
+            1
+          ],
+          "before": 5,
+          "after": 118
+        },
+        {
+          "metatile": [
+            25,
+            1
+          ],
+          "before": 5,
+          "after": 118
+        },
+        {
+          "metatile": [
+            26,
+            1
+          ],
+          "before": 5,
+          "after": 118
+        },
+        {
+          "metatile": [
+            27,
+            1
+          ],
+          "before": 5,
+          "after": 118
+        },
+        {
+          "metatile": [
+            22,
+            2
+          ],
+          "before": 5,
+          "after": 88
+        },
+        {
+          "metatile": [
+            23,
+            2
+          ],
+          "before": 5,
+          "after": 53
+        },
+        {
+          "metatile": [
+            24,
+            2
+          ],
+          "before": 5,
+          "after": 53
+        },
+        {
+          "metatile": [
+            25,
+            2
+          ],
+          "before": 5,
+          "after": 53
+        },
+        {
+          "metatile": [
+            26,
+            2
+          ],
+          "before": 5,
+          "after": 53
+        },
+        {
+          "metatile": [
+            27,
+            2
+          ],
+          "before": 5,
+          "after": 53
+        }
+      ],
+      "anchor_preimages": {
+        "objects": [
+          [
+            19,
+            33
+          ],
+          [
+            29,
+            9
+          ],
+          [
+            33,
+            29
+          ],
+          [
+            53,
+            21
+          ],
+          [
+            37,
+            19
+          ]
+        ],
+        "backgrounds": [
+          [
+            50,
+            18
+          ],
+          [
+            26,
+            4
+          ]
+        ],
+        "coordinates": [],
+        "warps": [
+          [
+            30,
+            27
+          ],
+          [
+            30,
+            28
+          ]
+        ]
+      }
+    }
+  ],
+  "existing_connection_additions": [
+    {
+      "map": "MnR03C00R00",
+      "direction": "east",
+      "target_map": "MnMississippiConfluenceC00R00",
+      "offset": -4
+    },
+    {
+      "map": "MnStPaul",
+      "direction": "south",
+      "target_map": "MnMississippiPepin",
+      "offset": 35
+    },
+    {
+      "map": "MnWinona",
+      "direction": "north",
+      "target_map": "MnMississippiWinonaMouth",
+      "offset": 0
+    }
+  ],
+  "bridge_inventory": "planning/minnesota/connections/mississippi-v01/bridge-inventory.json",
+  "objects": [
+    {
+      "id": "MN_MISSISSIPPI_BLUFF_NATURALIST",
+      "map": "MnMississippiConfluenceC00R00",
+      "core": [
+        25,
+        3
+      ],
+      "sprite": "SPRITE_GRAMPS",
+      "role": "dialogue",
+      "facing": "south",
+      "text": [
+        "The rivers meet",
+        "below the bluffs.",
+        "Try the quiet bays"
+      ]
+    },
+    {
+      "id": "MN_MISSISSIPPI_BRAID_ETHER",
+      "map": "MnMississippiConfluenceC00R00",
+      "core": [
+        45,
+        21
+      ],
+      "sprite": "SPRITE_POKE_BALL",
+      "role": "pickup",
+      "facing": "south",
+      "text": [],
+      "item": "ETHER",
+      "quantity": 1,
+      "event_flag": "EVENT_MN_MISSISSIPPI_BRAID_ETHER"
+    },
+    {
+      "id": "MN_MISSISSIPPI_ISLAND_PP_UP",
+      "map": "MnMississippiConfluenceC00R00",
+      "core": [
+        61,
+        15
+      ],
+      "sprite": "SPRITE_POKE_BALL",
+      "role": "pickup",
+      "facing": "south",
+      "text": [],
+      "item": "PP_UP",
+      "quantity": 1,
+      "event_flag": "EVENT_MN_MISSISSIPPI_ISLAND_PP_UP"
+    },
+    {
+      "id": "MN_MISSISSIPPI_SURVEY_HEALER",
+      "map": "MnMississippiConfluenceC01R00",
+      "core": [
+        29,
+        3
+      ],
+      "sprite": "SPRITE_SCIENTIST",
+      "role": "healer",
+      "facing": "south",
+      "text": [
+        "Long river trip?",
+        "Rest at our camp."
+      ],
+      "native_special": "HealParty"
+    },
+    {
+      "id": "MN_MISSISSIPPI_PINE_ANGLER",
+      "map": "MnMississippiConfluenceC01R00",
+      "core": [
+        55,
+        5
+      ],
+      "sprite": "SPRITE_FISHER",
+      "role": "dialogue",
+      "facing": "south",
+      "text": [
+        "Fish gather behind",
+        "the rocky shoals.",
+        "Face the water."
+      ]
+    },
+    {
+      "id": "MN_PEPIN_UPPER_ANGLER",
+      "map": "MnMississippiPepin",
+      "core": [
+        19,
+        5
+      ],
+      "sprite": "SPRITE_FISHER",
+      "role": "dialogue",
+      "facing": "south",
+      "text": [
+        "Those cottonwoods",
+        "mark the island.",
+        "Grass hides loot."
+      ]
+    },
+    {
+      "id": "MN_PEPIN_BANK_FISHER",
+      "map": "MnMississippiPepin",
+      "core": [
+        11,
+        21
+      ],
+      "sprite": "SPRITE_FISHER",
+      "role": "optional_trainer",
+      "facing": "east",
+      "text": [
+        "A river road!",
+        "Let's battle!"
+      ],
+      "trainer_class": "FISHER",
+      "trainer_name": "REED",
+      "party": [
+        {
+          "species": "GOLDEEN",
+          "level": 29
+        },
+        {
+          "species": "QUAGSIRE",
+          "level": 30
+        }
+      ],
+      "event_flag": "EVENT_MN_PEPIN_BANK_FISHER_DEFEATED"
+    },
+    {
+      "id": "MN_PEPIN_ISLAND_NUGGET",
+      "map": "MnMississippiPepin",
+      "core": [
+        35,
+        25
+      ],
+      "sprite": "SPRITE_POKE_BALL",
+      "role": "pickup",
+      "facing": "south",
+      "text": [],
+      "item": "NUGGET",
+      "quantity": 1,
+      "event_flag": "EVENT_MN_PEPIN_ISLAND_NUGGET"
+    },
+    {
+      "id": "MN_PEPIN_PROMONTORY_PICNICKER",
+      "map": "MnMississippiPepin",
+      "core": [
+        45,
+        33
+      ],
+      "sprite": "SPRITE_TEACHER",
+      "role": "once_item",
+      "facing": "west",
+      "text": [
+        "Use the main flow.",
+        "Take this for the",
+        "trip upstream."
+      ],
+      "item": "REPEL",
+      "quantity": 1,
+      "event_flag": "EVENT_MN_PEPIN_PROMONTORY_REPEL"
+    },
+    {
+      "id": "MN_WINONA_MOUTH_ANGLER",
+      "map": "MnMississippiWinonaMouth",
+      "core": [
+        17,
+        2
+      ],
+      "sprite": "SPRITE_FISHER",
+      "role": "dialogue",
+      "facing": "south",
+      "text": [
+        "Winona is ahead.",
+        "Use the main flow."
+      ]
+    }
+  ],
+  "backgrounds": [],
+  "gameplay_prerequisites": {
+    "surf": "native Surf move and FogBadge; no grants in this authoring",
+    "waterfall_ascent": "native Waterfall move and RisingBadge; no altered current behavior",
+    "minneapolis_north_gate": "existing PlainBadge+FogBadge buoy gate preserved",
+    "story_gates": "Root must check any newly reachable chapter boundary; new water connections are not blanket permission to skip road prerequisites."
+  },
+  "encounter_contracts": [
+    {
+      "map": "MnMississippiConfluenceC00R00",
+      "terrain": "grass",
+      "habitat": "wet cottonwood island",
+      "slots": [
+        {
+          "species": "WOOPER",
+          "level": 27,
+          "weight": 40
+        },
+        {
+          "species": "NOCTOWL",
+          "level": 29,
+          "weight": 30
+        },
+        {
+          "species": "ARIADOS",
+          "level": 28,
+          "weight": 30
+        }
+      ]
+    },
+    {
+      "map": "MnMississippiPepin",
+      "terrain": "grass",
+      "habitat": "island grass saddle and bank meadow",
+      "slots": [
+        {
+          "species": "QUAGSIRE",
+          "level": 30,
+          "weight": 40
+        },
+        {
+          "species": "FARFETCH_D",
+          "level": 28,
+          "weight": 30
+        },
+        {
+          "species": "NOCTOWL",
+          "level": 29,
+          "weight": 30
+        }
+      ]
+    },
+    {
+      "maps": [
+        "MnMississippiConfluenceC00R00",
+        "MnMississippiConfluenceC01R00",
+        "MnMississippiConfluenceC02R00",
+        "MnMississippiPepin",
+        "MnMississippiWinonaMouth"
+      ],
+      "terrain": "surf",
+      "habitat": "connected Mississippi waters",
+      "slots": [
+        {
+          "species": "PSYDUCK",
+          "level": 27,
+          "weight": 50
+        },
+        {
+          "species": "QUAGSIRE",
+          "level": 30,
+          "weight": 30
+        },
+        {
+          "species": "GOLDEEN",
+          "level": 28,
+          "weight": 20
+        }
+      ]
+    }
+  ],
+  "notes": [
+    "All proposed species/items are present in this251-species native parent; do not assume separate regional species pack is already merged.",
+    "Trainer moves use native level-derived learnsets; no invented move or illegal custom party.",
+    "The lower16\u00d74mouth is a real shore/angler/slough transition preserving the nonoverlapping existingR01 and Winona footprints.",
+    "One healer, optional Fisher battle, three pickups and a one-time Repel provide actual landing utility; no fake facade or unimplemented door.",
+    "Core/world/metatile coordinate conventions and output/receipt references are documented in OUTDOORS.md."
+  ]
+}

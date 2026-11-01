@@ -1,0 +1,1375 @@
+{
+  "status": "CURRENT_ALL_MINNESOTA_OUTDOOR_HOP_LANDING_INVENTORY",
+  "pack": "content-packs/minnesota-current-r14-forest-bank-v01.crystalpack",
+  "sha256": "e9f4108d3b0a35f04145e4928446c03845982e1f13d7ff8f34e383bd701757d5",
+  "outdoor_maps_reviewed": 103,
+  "hop_quadrants": 62,
+  "rows": [
+    {
+      "map": "MnBemidjiNorthwoods",
+      "lip": [
+        6,
+        14
+      ],
+      "kind": "HOP_DOWN",
+      "upper": [
+        "MnBemidjiNorthwoods",
+        6,
+        13
+      ],
+      "upper_collision": "FLOOR",
+      "landing": [
+        "MnBemidjiNorthwoods",
+        6,
+        16
+      ],
+      "landing_collision": "FLOOR",
+      "landing_actors": [],
+      "status": "VALID_STATIC_APPROACH_AND_LANDING"
+    },
+    {
+      "map": "MnBemidjiNorthwoods",
+      "lip": [
+        7,
+        14
+      ],
+      "kind": "HOP_DOWN",
+      "upper": [
+        "MnBemidjiNorthwoods",
+        7,
+        13
+      ],
+      "upper_collision": "FLOOR",
+      "landing": [
+        "MnBemidjiNorthwoods",
+        7,
+        16
+      ],
+      "landing_collision": "FLOOR",
+      "landing_actors": [],
+      "status": "VALID_STATIC_APPROACH_AND_LANDING"
+    },
+    {
+      "map": "MnDetroitLakesApproach",
+      "lip": [
+        14,
+        18
+      ],
+      "kind": "HOP_DOWN",
+      "upper": [
+        "MnDetroitLakesApproach",
+        14,
+        17
+      ],
+      "upper_collision": "FLOOR",
+      "landing": [
+        "MnDetroitLakesApproach",
+        14,
+        20
+      ],
+      "landing_collision": "FLOOR",
+      "landing_actors": [],
+      "status": "VALID_STATIC_APPROACH_AND_LANDING"
+    },
+    {
+      "map": "MnDetroitLakesApproach",
+      "lip": [
+        15,
+        18
+      ],
+      "kind": "HOP_DOWN",
+      "upper": [
+        "MnDetroitLakesApproach",
+        15,
+        17
+      ],
+      "upper_collision": "FLOOR",
+      "landing": [
+        "MnDetroitLakesApproach",
+        15,
+        20
+      ],
+      "landing_collision": "FLOOR",
+      "landing_actors": [],
+      "status": "VALID_STATIC_APPROACH_AND_LANDING"
+    },
+    {
+      "map": "MnLakeItasca",
+      "lip": [
+        12,
+        28
+      ],
+      "kind": "HOP_DOWN",
+      "upper": [
+        "MnLakeItasca",
+        12,
+        27
+      ],
+      "upper_collision": "FLOOR",
+      "landing": [
+        "MnLakeItasca",
+        12,
+        30
+      ],
+      "landing_collision": "FLOOR",
+      "landing_actors": [],
+      "status": "VALID_STATIC_APPROACH_AND_LANDING"
+    },
+    {
+      "map": "MnLakeItasca",
+      "lip": [
+        13,
+        28
+      ],
+      "kind": "HOP_DOWN",
+      "upper": [
+        "MnLakeItasca",
+        13,
+        27
+      ],
+      "upper_collision": "FLOOR",
+      "landing": [
+        "MnLakeItasca",
+        13,
+        30
+      ],
+      "landing_collision": "FLOOR",
+      "landing_actors": [],
+      "status": "VALID_STATIC_APPROACH_AND_LANDING"
+    },
+    {
+      "map": "MnMankato",
+      "lip": [
+        10,
+        18
+      ],
+      "kind": "HOP_DOWN",
+      "upper": [
+        "MnMankato",
+        10,
+        17
+      ],
+      "upper_collision": "FLOOR",
+      "landing": [
+        "MnMankato",
+        10,
+        20
+      ],
+      "landing_collision": "FLOOR",
+      "landing_actors": [],
+      "status": "VALID_STATIC_APPROACH_AND_LANDING"
+    },
+    {
+      "map": "MnMankato",
+      "lip": [
+        11,
+        18
+      ],
+      "kind": "HOP_DOWN",
+      "upper": [
+        "MnMankato",
+        11,
+        17
+      ],
+      "upper_collision": "FLOOR",
+      "landing": [
+        "MnMankato",
+        11,
+        20
+      ],
+      "landing_collision": "FLOOR",
+      "landing_actors": [],
+      "status": "VALID_STATIC_APPROACH_AND_LANDING"
+    },
+    {
+      "map": "MnMankato",
+      "lip": [
+        12,
+        18
+      ],
+      "kind": "HOP_DOWN",
+      "upper": [
+        "MnMankato",
+        12,
+        17
+      ],
+      "upper_collision": "FLOOR",
+      "landing": [
+        "MnMankato",
+        12,
+        20
+      ],
+      "landing_collision": "FLOOR",
+      "landing_actors": [],
+      "status": "VALID_STATIC_APPROACH_AND_LANDING"
+    },
+    {
+      "map": "MnMankato",
+      "lip": [
+        13,
+        18
+      ],
+      "kind": "HOP_DOWN",
+      "upper": [
+        "MnMankato",
+        13,
+        17
+      ],
+      "upper_collision": "FLOOR",
+      "landing": [
+        "MnMankato",
+        13,
+        20
+      ],
+      "landing_collision": "FLOOR",
+      "landing_actors": [],
+      "status": "VALID_STATIC_APPROACH_AND_LANDING"
+    },
+    {
+      "map": "MnMankato",
+      "lip": [
+        14,
+        18
+      ],
+      "kind": "HOP_DOWN",
+      "upper": [
+        "MnMankato",
+        14,
+        17
+      ],
+      "upper_collision": "FLOOR",
+      "landing": [
+        "MnMankato",
+        14,
+        20
+      ],
+      "landing_collision": "FLOOR",
+      "landing_actors": [],
+      "status": "VALID_STATIC_APPROACH_AND_LANDING"
+    },
+    {
+      "map": "MnMankato",
+      "lip": [
+        15,
+        18
+      ],
+      "kind": "HOP_DOWN",
+      "upper": [
+        "MnMankato",
+        15,
+        17
+      ],
+      "upper_collision": "FLOOR",
+      "landing": [
+        "MnMankato",
+        15,
+        20
+      ],
+      "landing_collision": "FLOOR",
+      "landing_actors": [],
+      "status": "VALID_STATIC_APPROACH_AND_LANDING"
+    },
+    {
+      "map": "MnMankato",
+      "lip": [
+        16,
+        18
+      ],
+      "kind": "HOP_DOWN",
+      "upper": [
+        "MnMankato",
+        16,
+        17
+      ],
+      "upper_collision": "FLOOR",
+      "landing": [
+        "MnMankato",
+        16,
+        20
+      ],
+      "landing_collision": "FLOOR",
+      "landing_actors": [],
+      "status": "VALID_STATIC_APPROACH_AND_LANDING"
+    },
+    {
+      "map": "MnMankato",
+      "lip": [
+        17,
+        18
+      ],
+      "kind": "HOP_DOWN",
+      "upper": [
+        "MnMankato",
+        17,
+        17
+      ],
+      "upper_collision": "FLOOR",
+      "landing": [
+        "MnMankato",
+        17,
+        20
+      ],
+      "landing_collision": "FLOOR",
+      "landing_actors": [],
+      "status": "VALID_STATIC_APPROACH_AND_LANDING"
+    },
+    {
+      "map": "MnMankato",
+      "lip": [
+        18,
+        18
+      ],
+      "kind": "HOP_DOWN",
+      "upper": [
+        "MnMankato",
+        18,
+        17
+      ],
+      "upper_collision": "FLOOR",
+      "landing": [
+        "MnMankato",
+        18,
+        20
+      ],
+      "landing_collision": "FLOOR",
+      "landing_actors": [],
+      "status": "VALID_STATIC_APPROACH_AND_LANDING"
+    },
+    {
+      "map": "MnMankato",
+      "lip": [
+        19,
+        18
+      ],
+      "kind": "HOP_DOWN",
+      "upper": [
+        "MnMankato",
+        19,
+        17
+      ],
+      "upper_collision": "FLOOR",
+      "landing": [
+        "MnMankato",
+        19,
+        20
+      ],
+      "landing_collision": "FLOOR",
+      "landing_actors": [],
+      "status": "VALID_STATIC_APPROACH_AND_LANDING"
+    },
+    {
+      "map": "MnMaraisCedarApproach",
+      "lip": [
+        26,
+        18
+      ],
+      "kind": "HOP_DOWN",
+      "upper": [
+        "MnMaraisCedarApproach",
+        26,
+        17
+      ],
+      "upper_collision": "FLOOR",
+      "landing": [
+        "MnMaraisCedarApproach",
+        26,
+        20
+      ],
+      "landing_collision": "FLOOR",
+      "landing_actors": [],
+      "status": "VALID_STATIC_APPROACH_AND_LANDING"
+    },
+    {
+      "map": "MnMaraisCedarApproach",
+      "lip": [
+        27,
+        18
+      ],
+      "kind": "HOP_DOWN",
+      "upper": [
+        "MnMaraisCedarApproach",
+        27,
+        17
+      ],
+      "upper_collision": "FLOOR",
+      "landing": [
+        "MnMaraisCedarApproach",
+        27,
+        20
+      ],
+      "landing_collision": "FLOOR",
+      "landing_actors": [],
+      "status": "VALID_STATIC_APPROACH_AND_LANDING"
+    },
+    {
+      "map": "MnMilleLacs",
+      "lip": [
+        16,
+        18
+      ],
+      "kind": "HOP_DOWN",
+      "upper": [
+        "MnMilleLacs",
+        16,
+        17
+      ],
+      "upper_collision": "FLOOR",
+      "landing": [
+        "MnMilleLacs",
+        16,
+        20
+      ],
+      "landing_collision": "FLOOR",
+      "landing_actors": [],
+      "status": "VALID_STATIC_APPROACH_AND_LANDING"
+    },
+    {
+      "map": "MnMilleLacs",
+      "lip": [
+        17,
+        18
+      ],
+      "kind": "HOP_DOWN",
+      "upper": [
+        "MnMilleLacs",
+        17,
+        17
+      ],
+      "upper_collision": "FLOOR",
+      "landing": [
+        "MnMilleLacs",
+        17,
+        20
+      ],
+      "landing_collision": "FLOOR",
+      "landing_actors": [],
+      "status": "VALID_STATIC_APPROACH_AND_LANDING"
+    },
+    {
+      "map": "MnMississippiConfluenceC02R00",
+      "lip": [
+        40,
+        6
+      ],
+      "kind": "HOP_DOWN",
+      "upper": [
+        "MnMississippiConfluenceC02R00",
+        40,
+        5
+      ],
+      "upper_collision": "TALL_GRASS",
+      "landing": [
+        "MnMississippiConfluenceC02R00",
+        40,
+        8
+      ],
+      "landing_collision": "FLOOR",
+      "landing_actors": [],
+      "status": "VALID_STATIC_APPROACH_AND_LANDING"
+    },
+    {
+      "map": "MnMississippiConfluenceC02R00",
+      "lip": [
+        41,
+        6
+      ],
+      "kind": "HOP_DOWN",
+      "upper": [
+        "MnMississippiConfluenceC02R00",
+        41,
+        5
+      ],
+      "upper_collision": "TALL_GRASS",
+      "landing": [
+        "MnMississippiConfluenceC02R00",
+        41,
+        8
+      ],
+      "landing_collision": "FLOOR",
+      "landing_actors": [],
+      "status": "VALID_STATIC_APPROACH_AND_LANDING"
+    },
+    {
+      "map": "MnMississippiLowerWoodsC01R01",
+      "lip": [
+        26,
+        30
+      ],
+      "kind": "HOP_DOWN",
+      "upper": [
+        "MnMississippiLowerWoodsC01R01",
+        26,
+        29
+      ],
+      "upper_collision": "FLOOR",
+      "landing": [
+        "MnMississippiLowerWoodsC01R01",
+        26,
+        32
+      ],
+      "landing_collision": "FLOOR",
+      "landing_actors": [],
+      "status": "VALID_STATIC_APPROACH_AND_LANDING"
+    },
+    {
+      "map": "MnMississippiLowerWoodsC01R01",
+      "lip": [
+        27,
+        30
+      ],
+      "kind": "HOP_DOWN",
+      "upper": [
+        "MnMississippiLowerWoodsC01R01",
+        27,
+        29
+      ],
+      "upper_collision": "FLOOR",
+      "landing": [
+        "MnMississippiLowerWoodsC01R01",
+        27,
+        32
+      ],
+      "landing_collision": "FLOOR",
+      "landing_actors": [],
+      "status": "VALID_STATIC_APPROACH_AND_LANDING"
+    },
+    {
+      "map": "MnMississippiUpstreamWoodsC01R00",
+      "lip": [
+        9,
+        18
+      ],
+      "kind": "HOP_LEFT",
+      "upper": [
+        "MnMississippiUpstreamWoodsC01R00",
+        10,
+        18
+      ],
+      "upper_collision": "FLOOR",
+      "landing": [
+        "MnMississippiUpstreamWoodsC01R00",
+        7,
+        18
+      ],
+      "landing_collision": "FLOOR",
+      "landing_actors": [],
+      "status": "VALID_STATIC_APPROACH_AND_LANDING"
+    },
+    {
+      "map": "MnMississippiUpstreamWoodsC01R00",
+      "lip": [
+        9,
+        19
+      ],
+      "kind": "HOP_LEFT",
+      "upper": [
+        "MnMississippiUpstreamWoodsC01R00",
+        10,
+        19
+      ],
+      "upper_collision": "FLOOR",
+      "landing": [
+        "MnMississippiUpstreamWoodsC01R00",
+        7,
+        19
+      ],
+      "landing_collision": "FLOOR",
+      "landing_actors": [],
+      "status": "VALID_STATIC_APPROACH_AND_LANDING"
+    },
+    {
+      "map": "MnPreservePineEntry",
+      "lip": [
+        16,
+        22
+      ],
+      "kind": "HOP_DOWN",
+      "upper": [
+        "MnPreservePineEntry",
+        16,
+        21
+      ],
+      "upper_collision": "FLOOR",
+      "landing": [
+        "MnPreservePineEntry",
+        16,
+        24
+      ],
+      "landing_collision": "FLOOR",
+      "landing_actors": [],
+      "status": "VALID_STATIC_APPROACH_AND_LANDING"
+    },
+    {
+      "map": "MnPreservePineEntry",
+      "lip": [
+        17,
+        22
+      ],
+      "kind": "HOP_DOWN",
+      "upper": [
+        "MnPreservePineEntry",
+        17,
+        21
+      ],
+      "upper_collision": "FLOOR",
+      "landing": [
+        "MnPreservePineEntry",
+        17,
+        24
+      ],
+      "landing_collision": "FLOOR",
+      "landing_actors": [],
+      "status": "VALID_STATIC_APPROACH_AND_LANDING"
+    },
+    {
+      "map": "MnR02C00R00",
+      "lip": [
+        47,
+        14
+      ],
+      "kind": "HOP_LEFT",
+      "upper": [
+        "MnR02C00R00",
+        48,
+        14
+      ],
+      "upper_collision": "FLOOR",
+      "landing": [
+        "MnR02C00R00",
+        45,
+        14
+      ],
+      "landing_collision": "FLOOR",
+      "landing_actors": [],
+      "status": "VALID_STATIC_APPROACH_AND_LANDING"
+    },
+    {
+      "map": "MnR02C00R00",
+      "lip": [
+        47,
+        15
+      ],
+      "kind": "HOP_LEFT",
+      "upper": [
+        "MnR02C00R00",
+        48,
+        15
+      ],
+      "upper_collision": "FLOOR",
+      "landing": [
+        "MnR02C00R00",
+        45,
+        15
+      ],
+      "landing_collision": "FLOOR",
+      "landing_actors": [],
+      "status": "VALID_STATIC_APPROACH_AND_LANDING"
+    },
+    {
+      "map": "MnR02C00R00",
+      "lip": [
+        47,
+        16
+      ],
+      "kind": "HOP_LEFT",
+      "upper": [
+        "MnR02C00R00",
+        48,
+        16
+      ],
+      "upper_collision": "FLOOR",
+      "landing": [
+        "MnR02C00R00",
+        45,
+        16
+      ],
+      "landing_collision": "FLOOR",
+      "landing_actors": [],
+      "status": "VALID_STATIC_APPROACH_AND_LANDING"
+    },
+    {
+      "map": "MnR02C00R00",
+      "lip": [
+        47,
+        17
+      ],
+      "kind": "HOP_LEFT",
+      "upper": [
+        "MnR02C00R00",
+        48,
+        17
+      ],
+      "upper_collision": "FLOOR",
+      "landing": [
+        "MnR02C00R00",
+        45,
+        17
+      ],
+      "landing_collision": "FLOOR",
+      "landing_actors": [],
+      "status": "VALID_STATIC_APPROACH_AND_LANDING"
+    },
+    {
+      "map": "MnR03C00R00",
+      "lip": [
+        10,
+        20
+      ],
+      "kind": "HOP_DOWN",
+      "upper": [
+        "MnR03C00R00",
+        10,
+        19
+      ],
+      "upper_collision": "FLOOR",
+      "landing": [
+        "MnR03C00R00",
+        10,
+        22
+      ],
+      "landing_collision": "FLOOR",
+      "landing_actors": [],
+      "status": "VALID_STATIC_APPROACH_AND_LANDING"
+    },
+    {
+      "map": "MnR03C00R00",
+      "lip": [
+        11,
+        20
+      ],
+      "kind": "HOP_DOWN",
+      "upper": [
+        "MnR03C00R00",
+        11,
+        19
+      ],
+      "upper_collision": "FLOOR",
+      "landing": [
+        "MnR03C00R00",
+        11,
+        22
+      ],
+      "landing_collision": "FLOOR",
+      "landing_actors": [],
+      "status": "VALID_STATIC_APPROACH_AND_LANDING"
+    },
+    {
+      "map": "MnR03C00R00",
+      "lip": [
+        12,
+        20
+      ],
+      "kind": "HOP_DOWN",
+      "upper": [
+        "MnR03C00R00",
+        12,
+        19
+      ],
+      "upper_collision": "TALL_GRASS",
+      "landing": [
+        "MnR03C00R00",
+        12,
+        22
+      ],
+      "landing_collision": "FLOOR",
+      "landing_actors": [],
+      "status": "VALID_STATIC_APPROACH_AND_LANDING"
+    },
+    {
+      "map": "MnR03C00R00",
+      "lip": [
+        13,
+        20
+      ],
+      "kind": "HOP_DOWN",
+      "upper": [
+        "MnR03C00R00",
+        13,
+        19
+      ],
+      "upper_collision": "TALL_GRASS",
+      "landing": [
+        "MnR03C00R00",
+        13,
+        22
+      ],
+      "landing_collision": "FLOOR",
+      "landing_actors": [],
+      "status": "VALID_STATIC_APPROACH_AND_LANDING"
+    },
+    {
+      "map": "MnR03C00R00",
+      "lip": [
+        14,
+        20
+      ],
+      "kind": "HOP_DOWN",
+      "upper": [
+        "MnR03C00R00",
+        14,
+        19
+      ],
+      "upper_collision": "TALL_GRASS",
+      "landing": [
+        "MnR03C00R00",
+        14,
+        22
+      ],
+      "landing_collision": "FLOOR",
+      "landing_actors": [],
+      "status": "VALID_STATIC_APPROACH_AND_LANDING"
+    },
+    {
+      "map": "MnR03C00R00",
+      "lip": [
+        15,
+        20
+      ],
+      "kind": "HOP_DOWN",
+      "upper": [
+        "MnR03C00R00",
+        15,
+        19
+      ],
+      "upper_collision": "TALL_GRASS",
+      "landing": [
+        "MnR03C00R00",
+        15,
+        22
+      ],
+      "landing_collision": "FLOOR",
+      "landing_actors": [],
+      "status": "VALID_STATIC_APPROACH_AND_LANDING"
+    },
+    {
+      "map": "MnR06C00R00",
+      "lip": [
+        44,
+        10
+      ],
+      "kind": "HOP_DOWN",
+      "upper": [
+        "MnR06C00R00",
+        44,
+        9
+      ],
+      "upper_collision": "FLOOR",
+      "landing": [
+        "MnR06C00R00",
+        44,
+        12
+      ],
+      "landing_collision": "FLOOR",
+      "landing_actors": [],
+      "status": "VALID_STATIC_APPROACH_AND_LANDING"
+    },
+    {
+      "map": "MnR06C00R00",
+      "lip": [
+        45,
+        10
+      ],
+      "kind": "HOP_DOWN",
+      "upper": [
+        "MnR06C00R00",
+        45,
+        9
+      ],
+      "upper_collision": "FLOOR",
+      "landing": [
+        "MnR06C00R00",
+        45,
+        12
+      ],
+      "landing_collision": "FLOOR",
+      "landing_actors": [],
+      "status": "VALID_STATIC_APPROACH_AND_LANDING"
+    },
+    {
+      "map": "MnR11C00R02",
+      "lip": [
+        23,
+        34
+      ],
+      "kind": "HOP_LEFT",
+      "upper": [
+        "MnR11C00R02",
+        24,
+        34
+      ],
+      "upper_collision": "FLOOR",
+      "landing": [
+        "MnR11C00R02",
+        21,
+        34
+      ],
+      "landing_collision": "FLOOR",
+      "landing_actors": [],
+      "status": "VALID_STATIC_APPROACH_AND_LANDING"
+    },
+    {
+      "map": "MnR11C00R02",
+      "lip": [
+        23,
+        35
+      ],
+      "kind": "HOP_LEFT",
+      "upper": [
+        "MnR11C00R02",
+        24,
+        35
+      ],
+      "upper_collision": "FLOOR",
+      "landing": [
+        "MnR11C00R02",
+        21,
+        35
+      ],
+      "landing_collision": "FLOOR",
+      "landing_actors": [],
+      "status": "VALID_STATIC_APPROACH_AND_LANDING"
+    },
+    {
+      "map": "MnR14C00R00",
+      "lip": [
+        28,
+        24
+      ],
+      "kind": "HOP_DOWN",
+      "upper": [
+        "MnR14C00R00",
+        28,
+        23
+      ],
+      "upper_collision": "FLOOR",
+      "landing": [
+        "MnR14C00R00",
+        28,
+        26
+      ],
+      "landing_collision": "FLOOR",
+      "landing_actors": [],
+      "status": "VALID_STATIC_APPROACH_AND_LANDING"
+    },
+    {
+      "map": "MnR14C00R00",
+      "lip": [
+        29,
+        24
+      ],
+      "kind": "HOP_DOWN",
+      "upper": [
+        "MnR14C00R00",
+        29,
+        23
+      ],
+      "upper_collision": "FLOOR",
+      "landing": [
+        "MnR14C00R00",
+        29,
+        26
+      ],
+      "landing_collision": "FLOOR",
+      "landing_actors": [],
+      "status": "VALID_STATIC_APPROACH_AND_LANDING"
+    },
+    {
+      "map": "MnR14C00R00",
+      "lip": [
+        30,
+        24
+      ],
+      "kind": "HOP_DOWN",
+      "upper": [
+        "MnR14C00R00",
+        30,
+        23
+      ],
+      "upper_collision": "FLOOR",
+      "landing": [
+        "MnR14C00R00",
+        30,
+        26
+      ],
+      "landing_collision": "FLOOR",
+      "landing_actors": [],
+      "status": "VALID_STATIC_APPROACH_AND_LANDING"
+    },
+    {
+      "map": "MnR14C00R00",
+      "lip": [
+        31,
+        24
+      ],
+      "kind": "HOP_DOWN",
+      "upper": [
+        "MnR14C00R00",
+        31,
+        23
+      ],
+      "upper_collision": "FLOOR",
+      "landing": [
+        "MnR14C00R00",
+        31,
+        26
+      ],
+      "landing_collision": "FLOOR",
+      "landing_actors": [],
+      "status": "VALID_STATIC_APPROACH_AND_LANDING"
+    },
+    {
+      "map": "MnR15C00R00",
+      "lip": [
+        22,
+        18
+      ],
+      "kind": "HOP_DOWN",
+      "upper": [
+        "MnR15C00R00",
+        22,
+        17
+      ],
+      "upper_collision": "FLOOR",
+      "landing": [
+        "MnR15C00R00",
+        22,
+        20
+      ],
+      "landing_collision": "FLOOR",
+      "landing_actors": [],
+      "status": "VALID_STATIC_APPROACH_AND_LANDING"
+    },
+    {
+      "map": "MnR15C00R00",
+      "lip": [
+        23,
+        18
+      ],
+      "kind": "HOP_DOWN",
+      "upper": [
+        "MnR15C00R00",
+        23,
+        17
+      ],
+      "upper_collision": "FLOOR",
+      "landing": [
+        "MnR15C00R00",
+        23,
+        20
+      ],
+      "landing_collision": "FLOOR",
+      "landing_actors": [],
+      "status": "VALID_STATIC_APPROACH_AND_LANDING"
+    },
+    {
+      "map": "MnR15C00R00",
+      "lip": [
+        24,
+        18
+      ],
+      "kind": "HOP_DOWN",
+      "upper": [
+        "MnR15C00R00",
+        24,
+        17
+      ],
+      "upper_collision": "FLOOR",
+      "landing": [
+        "MnR15C00R00",
+        24,
+        20
+      ],
+      "landing_collision": "FLOOR",
+      "landing_actors": [],
+      "status": "VALID_STATIC_APPROACH_AND_LANDING"
+    },
+    {
+      "map": "MnR15C00R00",
+      "lip": [
+        25,
+        18
+      ],
+      "kind": "HOP_DOWN",
+      "upper": [
+        "MnR15C00R00",
+        25,
+        17
+      ],
+      "upper_collision": "FLOOR",
+      "landing": [
+        "MnR15C00R00",
+        25,
+        20
+      ],
+      "landing_collision": "FLOOR",
+      "landing_actors": [],
+      "status": "VALID_STATIC_APPROACH_AND_LANDING"
+    },
+    {
+      "map": "MnR16C00R00",
+      "lip": [
+        52,
+        16
+      ],
+      "kind": "HOP_DOWN",
+      "upper": [
+        "MnR16C00R00",
+        52,
+        15
+      ],
+      "upper_collision": "FLOOR",
+      "landing": [
+        "MnR16C00R00",
+        52,
+        18
+      ],
+      "landing_collision": "FLOOR",
+      "landing_actors": [],
+      "status": "VALID_STATIC_APPROACH_AND_LANDING"
+    },
+    {
+      "map": "MnR16C00R00",
+      "lip": [
+        53,
+        16
+      ],
+      "kind": "HOP_DOWN",
+      "upper": [
+        "MnR16C00R00",
+        53,
+        15
+      ],
+      "upper_collision": "FLOOR",
+      "landing": [
+        "MnR16C00R00",
+        53,
+        18
+      ],
+      "landing_collision": "FLOOR",
+      "landing_actors": [],
+      "status": "VALID_STATIC_APPROACH_AND_LANDING"
+    },
+    {
+      "map": "MnR19C00R00",
+      "lip": [
+        32,
+        32
+      ],
+      "kind": "HOP_DOWN",
+      "upper": [
+        "MnR19C00R00",
+        32,
+        31
+      ],
+      "upper_collision": "FLOOR",
+      "landing": [
+        "MnR19C00R00",
+        32,
+        34
+      ],
+      "landing_collision": "FLOOR",
+      "landing_actors": [],
+      "status": "VALID_STATIC_APPROACH_AND_LANDING"
+    },
+    {
+      "map": "MnR19C00R00",
+      "lip": [
+        33,
+        32
+      ],
+      "kind": "HOP_DOWN",
+      "upper": [
+        "MnR19C00R00",
+        33,
+        31
+      ],
+      "upper_collision": "FLOOR",
+      "landing": [
+        "MnR19C00R00",
+        33,
+        34
+      ],
+      "landing_collision": "FLOOR",
+      "landing_actors": [],
+      "status": "VALID_STATIC_APPROACH_AND_LANDING"
+    },
+    {
+      "map": "MnR19C00R00",
+      "lip": [
+        34,
+        32
+      ],
+      "kind": "HOP_DOWN",
+      "upper": [
+        "MnR19C00R00",
+        34,
+        31
+      ],
+      "upper_collision": "FLOOR",
+      "landing": [
+        "MnR19C00R00",
+        34,
+        34
+      ],
+      "landing_collision": "FLOOR",
+      "landing_actors": [],
+      "status": "VALID_STATIC_APPROACH_AND_LANDING"
+    },
+    {
+      "map": "MnR19C00R00",
+      "lip": [
+        35,
+        32
+      ],
+      "kind": "HOP_DOWN",
+      "upper": [
+        "MnR19C00R00",
+        35,
+        31
+      ],
+      "upper_collision": "FLOOR",
+      "landing": [
+        "MnR19C00R00",
+        35,
+        34
+      ],
+      "landing_collision": "FLOOR",
+      "landing_actors": [],
+      "status": "VALID_STATIC_APPROACH_AND_LANDING"
+    },
+    {
+      "map": "MnR20C00R01",
+      "lip": [
+        18,
+        2
+      ],
+      "kind": "HOP_DOWN",
+      "upper": [
+        "MnR20C00R01",
+        18,
+        1
+      ],
+      "upper_collision": "FLOOR",
+      "landing": [
+        "MnR20C00R01",
+        18,
+        4
+      ],
+      "landing_collision": "FLOOR",
+      "landing_actors": [],
+      "status": "VALID_STATIC_APPROACH_AND_LANDING"
+    },
+    {
+      "map": "MnR20C00R01",
+      "lip": [
+        19,
+        2
+      ],
+      "kind": "HOP_DOWN",
+      "upper": [
+        "MnR20C00R01",
+        19,
+        1
+      ],
+      "upper_collision": "FLOOR",
+      "landing": [
+        "MnR20C00R01",
+        19,
+        4
+      ],
+      "landing_collision": "FLOOR",
+      "landing_actors": [],
+      "status": "VALID_STATIC_APPROACH_AND_LANDING"
+    },
+    {
+      "map": "MnR20C00R01",
+      "lip": [
+        20,
+        2
+      ],
+      "kind": "HOP_DOWN",
+      "upper": [
+        "MnR20C00R01",
+        20,
+        1
+      ],
+      "upper_collision": "TALL_GRASS",
+      "landing": [
+        "MnR20C00R01",
+        20,
+        4
+      ],
+      "landing_collision": "FLOOR",
+      "landing_actors": [],
+      "status": "VALID_STATIC_APPROACH_AND_LANDING"
+    },
+    {
+      "map": "MnR20C00R01",
+      "lip": [
+        21,
+        2
+      ],
+      "kind": "HOP_DOWN",
+      "upper": [
+        "MnR20C00R01",
+        21,
+        1
+      ],
+      "upper_collision": "TALL_GRASS",
+      "landing": [
+        "MnR20C00R01",
+        21,
+        4
+      ],
+      "landing_collision": "FLOOR",
+      "landing_actors": [],
+      "status": "VALID_STATIC_APPROACH_AND_LANDING"
+    },
+    {
+      "map": "MnStPaul",
+      "lip": [
+        44,
+        14
+      ],
+      "kind": "HOP_DOWN",
+      "upper": [
+        "MnStPaul",
+        44,
+        13
+      ],
+      "upper_collision": "FLOOR",
+      "landing": [
+        "MnStPaul",
+        44,
+        16
+      ],
+      "landing_collision": "FLOOR",
+      "landing_actors": [],
+      "status": "VALID_STATIC_APPROACH_AND_LANDING"
+    },
+    {
+      "map": "MnStPaul",
+      "lip": [
+        45,
+        14
+      ],
+      "kind": "HOP_DOWN",
+      "upper": [
+        "MnStPaul",
+        45,
+        13
+      ],
+      "upper_collision": "FLOOR",
+      "landing": [
+        "MnStPaul",
+        45,
+        16
+      ],
+      "landing_collision": "FLOOR",
+      "landing_actors": [],
+      "status": "VALID_STATIC_APPROACH_AND_LANDING"
+    }
+  ],
+  "requires_review": [],
+  "scope": "Every Minnesota TOWN/ROUTE native hop quadrant, actual connection offsets and native two-tile-beyond-lip landing. Actor occupancy conservative (includes conditional objects). No ordinary-return, access qualification or new visual/runtime acceptance is implied. R14 child remains unselected until code lint passes."
+}

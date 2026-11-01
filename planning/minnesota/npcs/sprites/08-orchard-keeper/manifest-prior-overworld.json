@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "id": "MN_ORCHARD_KEEPER",
+  "name": "ORCHARD KEEPER POMONA",
+  "status": "accepted-native-playable",
+  "overworld_frames": 6,
+  "overworld_size": [
+    16,
+    16
+  ],
+  "battle_size": [
+    56,
+    56
+  ],
+  "palette_rgb555": [
+    32767,
+    22399,
+    8372,
+    0
+  ],
+  "source": "native-pixels-v1.json",
+  "placement": "placement-v1.json",
+  "pack": "content-packs/minnesota-original-npcs-08-v01.crystalpack",
+  "parent": "content-packs/minnesota-original-npcs-07-v01.crystalpack",
+  "runtime_checks": {
+    "one_controller_test_passed": true,
+    "talk_and_input_ownership": true,
+    "battle_turn_and_pp": true,
+    "battle_save_load": true,
+    "actual_victory_and_defeat_flag_before_render_capture": true,
+    "post_battle_talk": true,
+    "existing_trainers_and_assets_preserved": true
+  },
+  "manual_visual_review": "Reviewed six poses and native battle art; repaired facial eye spacing and small internal transparency leaks while retaining basket-handle openings. Actual battle intro and Rochester post-win capture preserve broad straw hat, twin braids, burgundy apron, raised apple, basket and separate boots. Warm original palette remains readable beside the player.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/sprites/08-orchard-keeper/native-pixels-v1.json": "e7bfbeec5137089234354bda970e4a177ac48a0fb9db61173751e1293c178503",
+    "planning/minnesota/npcs/sprites/08-orchard-keeper/placement-v1.json": "455618c403978e9af421520f382ceaf7a5c90f018dd1f890830c9bf527a803e8",
+    "content-packs/minnesota-original-npcs-08-v01.crystalpack": "6bce98db56299b6b4df682b4adaa627271c522d043a0b6da9723ca14f370128d",
+    "target/npc-sprites/orchard/controller-v01.log": "85a06ab2a5c736b9c110f6e3769b150203d9cb9ce2ae7bd1e49848933f0d2d22",
+    "target/npc-sprites/orchard/gameplay-v01/original-npc-trainer-intro.png": "1a9949a9d10183c2f0d19bb67ab03ab474f14feb2310cdb7faac3bac41f4700c",
+    "target/npc-sprites/orchard/gameplay-v01/original-npc-first-turn.png": "aedd3754c579f7a1208c45a60114c9144d2da061a0a68f7e446980269d25ceed",
+    "target/npc-sprites/orchard/gameplay-v01/original-npc-overworld-state.png": "488790abf04382cc331d4dd70b5ae5adf134b0697cc49585300977e442d5d04a"
+  }
+}

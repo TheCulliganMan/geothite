@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F052",
+  "species": [
+    {
+      "species_id": "MN_109",
+      "runtime_token": "DAKOTASKIP",
+      "palette_rgb555": [
+        32767,
+        7902,
+        4332,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        23495,
+        7556,
+        0
+      ],
+      "fit": [
+        14,
+        14
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 64,
+      "interior_black_samples": 64,
+      "opaque_interior_minimum_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "dakotaskip.overworld.imagegen-v2.png",
+          "crop": [
+            60,
+            108,
+            392,
+            363
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "dakotaskip.overworld.imagegen-v2.png",
+          "crop": [
+            573,
+            125,
+            392,
+            363
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "dakotaskip.overworld.imagegen-v2.png",
+          "crop": [
+            1080,
+            107,
+            392,
+            363
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "dakotaskip.overworld.imagegen-v2.png",
+          "crop": [
+            60,
+            572,
+            392,
+            363
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "dakotaskip.overworld.imagegen-v2.png",
+          "crop": [
+            573,
+            570,
+            392,
+            363
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "dakotaskip.overworld.imagegen-v2.png",
+          "crop": [
+            1080,
+            570,
+            392,
+            363
+          ]
+        }
+      ]
+    }
+  ]
+}

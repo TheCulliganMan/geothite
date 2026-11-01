@@ -1,0 +1,131 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F115",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_249": {
+      "species_id": "MN_249",
+      "name": "Frontagal",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          29,
+          25,
+          12
+        ],
+        [
+          5,
+          9,
+          17
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        13117,
+        17701,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          239,
+          206,
+          99
+        ],
+        [
+          41,
+          74,
+          140
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#EFCE63",
+        "#294A8C",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f115/redesign-v3/prompt-v1.txt",
+  "reference_mapping": "sprites/mn-f115/redesign-v3/reference-mapping.json",
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-249-frontagal-v3",
+      "species_id": "MN_249",
+      "view": "front",
+      "source": "sprites/mn-f115/redesign-v3/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        1254,
+        680
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13117,
+        17701,
+        0
+      ],
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 16,
+      "exterior_contour": "solid"
+    },
+    {
+      "id": "mn-249-frontagal-v3",
+      "species_id": "MN_249",
+      "view": "back",
+      "source": "sprites/mn-f115/redesign-v3/front-back.imagegen-v1.png",
+      "crop": [
+        350,
+        700,
+        740,
+        554
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13117,
+        17701,
+        0
+      ],
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 16,
+      "exterior_contour": "solid"
+    }
+  ],
+  "source_sha256": "4ce8d3363ce61bace4ff265dfc4587dea527ba81c2afb89b53fab8b15d419df7",
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "roster_cut_review",
+    "outline_profile": "solid-exterior-v1",
+    "sheet_sha256": "8a8e4a4470e87e94bcdda04e6b4c6d99758fef4ecda69f7cd45382fd3ca070c5",
+    "notes": "Reviewed the complete native front/back sheet: a continuous gold-lit prairie horizon wedge, two long shelf wings, three heavy descending air vents, and a narrow sheltered face. Closed wing and vent contours retain readable white eyes. The close rear enlarges the pressure ridge and crops wing tips and lower limbs consistently. Front 56\u00d756 and back 48\u00d748 use the selected individual four-ink palette."
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "kind": "guarded_authoring_source_integration",
+  "status": "Applied after exact native review and current-parent guards; all previous world records preserved.",
+  "parent_revision": "outdoor_terrain_integrated_revision",
+  "parent_pack": "content-packs/minnesota-current-outdoor-composed-towns-v01.crystalpack",
+  "parent_pack_sha256": "fcac136e08876c25d5c8b6250fc7c0fa1aedbfc6977e165504505b2b4d02016f",
+  "canonical_cave_before": {
+    "path": "planning/minnesota/caves/johto-quality-v01/MnR10Cave1F.json",
+    "sha256": "edd3c9f12223cae55aa59ea8e6a69d610522fa13fa2728ffc2374c895c6b46cd"
+  },
+  "reviewed_cave_after": {
+    "path": "planning/minnesota/caves/current-r10-fitted-fork-v01/source-v01/MnR10Cave1F.json",
+    "sha256": "24bcdb1afbe781df33a58811cdf612da9d354e87f15174dede65092f6219468c"
+  },
+  "current_route_dossier_before": {
+    "path": "planning/minnesota/revisions/r10-carrier-plateau-v02/dossier.json",
+    "sha256": "d052e7b2900a1936d4d8674a355ec48e5b7a3f3aac083b956309a53d60c28303"
+  },
+  "current_route_dossier_after": {
+    "path": "planning/minnesota/caves/current-r10-fitted-fork-v01/route-dossier.candidate.json",
+    "sha256": "cb59feeebe07757b56ed6900995d44ba8b8e0883f91aea55339112ac0179b54c"
+  },
+  "required_before_selection": [
+    "Fresh native GPU image comparison and visual inspection of every cave camera",
+    "Normal Cargo builder byte-equivalence check",
+    "Re-read actual world selection and preserve every independent accepted child",
+    "Replace guarded canonical cave source only after review; retain its frozen preimage",
+    "Extend inherited source index with current cave source and updated route dossier",
+    "Change active world pointer last and verify all unrelated records are exact"
+  ],
+  "scope": "Source consistency for the same one-cave terrain revision. The candidate dossier preserves all exterior geometry, gates, encounters, actors, rewards and rooms except the reviewed cave rows/editorial fields.",
+  "selected_revision": "r10_fitted_fork_revision",
+  "selected_pack": "content-packs/minnesota-current-r10-fitted-fork-v03.crystalpack",
+  "selected_pack_sha256": "1f16d2b3ca473cc5e937140b7ba6f3e190bcaf3718dd6854b40acd8e98a6ddff",
+  "selected_parent_revision": "duluth_harbor_platforms_revision",
+  "final_source": "source-v02/MnR10Cave1F.json",
+  "final_route_dossier": "route-dossier.json",
+  "final_source_index": "sources.json",
+  "verification": "planning/minnesota/renders/caves/r10-fork-v158/final-local-review-v185.json"
+}

@@ -1,0 +1,66 @@
+[
+  {
+    "id": "care-clearing",
+    "map": "MnLeechLake",
+    "core": [
+      13,
+      15
+    ]
+  },
+  {
+    "id": "north-trail",
+    "map": "MnLeechLake",
+    "core": [
+      15,
+      20
+    ]
+  },
+  {
+    "id": "grass-footing",
+    "map": "MnLeechLake",
+    "core": [
+      16,
+      22
+    ]
+  },
+  {
+    "id": "fly-tying-pocket",
+    "map": "MnLeechLake",
+    "core": [
+      18,
+      24
+    ]
+  },
+  {
+    "id": "south-trail",
+    "map": "MnLeechLake",
+    "core": [
+      13,
+      30
+    ]
+  },
+  {
+    "id": "fisher-clearing",
+    "map": "MnLeechLake",
+    "core": [
+      11,
+      36
+    ]
+  },
+  {
+    "id": "public-lane",
+    "map": "MnLeechLake",
+    "core": [
+      23,
+      27
+    ]
+  },
+  {
+    "id": "south-welcome",
+    "map": "MnLeechLake",
+    "core": [
+      32,
+      40
+    ]
+  }
+]

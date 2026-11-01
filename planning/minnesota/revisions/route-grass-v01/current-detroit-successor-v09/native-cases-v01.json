@@ -1,0 +1,29 @@
+{
+  "status": "INCOMPLETE_OR_REQUIRES_REVIEW",
+  "pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+  "pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33",
+  "binary_sha256": "363b1881efaa7890954595386c0d3efe3dd9abc946d8421757d1f2dafdc7713a",
+  "results": [
+    {
+      "case": "all_rooms_residents_carpets_and_two_real_roads",
+      "status": "PASS",
+      "log": "planning/minnesota/revisions/route-grass-v01/current-detroit-successor-v09/all_rooms_residents_carpets_and_two_real_roads.log"
+    },
+    {
+      "case": "native_care_pc_and_priced_shop",
+      "status": "PASS",
+      "log": "planning/minnesota/revisions/route-grass-v01/current-detroit-successor-v09/native_care_pc_and_priced_shop.log"
+    },
+    {
+      "case": "ranger_denies_each_missing_requirement",
+      "status": "PASS",
+      "log": "planning/minnesota/revisions/route-grass-v01/current-detroit-successor-v09/ranger_denies_each_missing_requirement.log"
+    },
+    {
+      "case": "observations_persist_on_the_real_itasca_return",
+      "status": "REQUIRES_REVIEW",
+      "log": "planning/minnesota/revisions/route-grass-v01/current-detroit-successor-v09/observations_persist_on_the_real_itasca_return.log"
+    }
+  ],
+  "scope": "Explicit local fixtures; all subsequent movement/dialogue/services/rewards native. Existing town and Itasca scopes; new R19 gatehouse retains its separate accepted review."
+}

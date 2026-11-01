@@ -18,6 +18,15 @@ class TraceTests(unittest.TestCase):
         self.assertEqual(names[(1, 2)], 'render')
         self.assertEqual(incomplete, 0)
 
+    def test_frame_markers_keep_source_ids_for_drill_down(self):
+        spans, _, _ = decode([
+            dict(ph='B', name='audit_frame_marker', ts=10, args={'frame_id': 42}),
+            dict(ph='E', ts=11),
+        ])
+        self.assertEqual(spans[0]['args']['frame_id'], 42)
+        formatted, _, _ = decode([dict(ph='X', name='audit_frame_marker: frame_id=73 measured=true', ts=12, dur=1)])
+        self.assertEqual(formatted[0]['args']['frame_id'], 73)
+
     def test_unfinished_work_is_reported_not_invented(self):
         spans, _, incomplete = decode([
             dict(ph='E', ts=0), dict(ph='B', name='unfinished', ts=1),

@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F091",
+  "species": [
+    {
+      "species_id": "MN_199",
+      "runtime_token": "CADENSET",
+      "palette_rgb555": [
+        32767,
+        9917,
+        20837,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        22441,
+        11444,
+        0
+      ],
+      "fit": [
+        14,
+        14
+      ],
+      "alpha_threshold": 245,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 32,
+      "interior_black_samples": null,
+      "opaque_interior_minimum_samples": 60,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "cadenset.overworld.imagegen-v2.png",
+          "crop": [
+            53,
+            51,
+            418,
+            401
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "cadenset.overworld.imagegen-v2.png",
+          "crop": [
+            560,
+            51,
+            418,
+            401
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "cadenset.overworld.imagegen-v2.png",
+          "crop": [
+            1083,
+            55,
+            418,
+            401
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "cadenset.overworld.imagegen-v2.png",
+          "crop": [
+            60,
+            565,
+            418,
+            401
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "cadenset.overworld.imagegen-v2.png",
+          "crop": [
+            568,
+            552,
+            418,
+            401
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "cadenset.overworld.imagegen-v2.png",
+          "crop": [
+            1095,
+            565,
+            418,
+            401
+          ]
+        }
+      ]
+    }
+  ]
+}

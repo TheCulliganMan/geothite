@@ -1,0 +1,989 @@
+{
+  "status": "CURRENT_INVENTORY_NOT_ACCEPTANCE",
+  "selected_revision": "iron_drill_core_revision",
+  "pack": "content-packs/minnesota-iron-drill-core-v04.crystalpack",
+  "pack_sha256": "4240537c844bf7e305e99c24f2b7054c314b84a03d17037747cb4ceabdbd17fd",
+  "prior_inventory": "planning/minnesota/revisions/route-grass-v01/remaining-outdoor-review-inventory-after-terrain-v01.json",
+  "prior_pack": "content-packs/minnesota-current-outdoor-composed-towns-v01.crystalpack",
+  "maps": [
+    {
+      "map": "MnBemidji",
+      "review_group": "MnBemidji",
+      "prior_status": "CHANGED_BY_SELECTED_TERRAIN_SEPARATE_REVALIDATION_REQUIRED",
+      "prior_acceptance": "planning/minnesota/revisions/route-grass-v01/current-bemidji-town-v01/acceptance.json",
+      "complete_map_and_tileset_exact_to_inventory_pack": false,
+      "status": "CURRENT_COMPOSED_TOWN_NATIVE_AND_PRODUCTION_REVIEW_PASS",
+      "dimensions_metatiles": [
+        24,
+        24
+      ],
+      "grass_quadrants": 0,
+      "ice_quadrants": 0,
+      "objects": 11,
+      "facade_policy": null,
+      "current_review_folder": "planning/minnesota/revisions/route-grass-v01/current-bemidji-successor-review-v01",
+      "current_acceptance": "planning/minnesota/revisions/route-grass-v01/current-bemidji-successor-review-v01/acceptance-v01.json",
+      "current_acceptance_sha256": "adcd15833386dcb07672d52925e02908f28ff3566a8d5224de4f8c7ab705a209",
+      "current_pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+      "current_pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33"
+    },
+    {
+      "map": "MnBemidjiNorthwoods",
+      "review_group": "MnBemidjiNorthwoods",
+      "prior_status": "PRIOR_ACCEPTANCE_EXACTLY_PRESERVED",
+      "prior_acceptance": "planning/minnesota/revisions/route-grass-v01/current-bemidji-northwoods-v01/acceptance.json",
+      "complete_map_and_tileset_exact_to_inventory_pack": true,
+      "status": "CURRENT_NATIVE_AND_PRODUCTION_REVIEW_PASS",
+      "dimensions_metatiles": [
+        8,
+        14
+      ],
+      "grass_quadrants": 28,
+      "ice_quadrants": 0,
+      "objects": 0,
+      "facade_policy": null,
+      "current_acceptance": "planning/minnesota/revisions/route-grass-v01/current-northwoods-successor-review-v01/acceptance-v01.json",
+      "current_acceptance_sha256": "68d1cfbf23bf27c0fd967b60288ee378d31dfeaad35ff3b8cdf80f5cd320008f",
+      "current_pack": "content-packs/minnesota-current-r19-detroit-gate-v05.crystalpack",
+      "current_pack_sha256": "b57516c0b77c7bcf94fa35e60ff8300bfd8a8781782827739742d8fc15b3f437"
+    },
+    {
+      "map": "MnBoundarySafariC00R00",
+      "review_group": "MnBoundarySafari",
+      "prior_status": "PRIOR_ACCEPTANCE_EXACTLY_PRESERVED",
+      "prior_acceptance": "planning/minnesota/revisions/route-grass-v01/current-boundary-safari-v01/acceptance.json",
+      "complete_map_and_tileset_exact_to_inventory_pack": true,
+      "status": "CURRENT_LOCAL_GRASS_STAIRS_AND_TRAVERSAL_PASS",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "grass_quadrants": 116,
+      "ice_quadrants": 0,
+      "objects": 4,
+      "facade_policy": null,
+      "current_acceptance": "planning/minnesota/revisions/route-grass-v01/current-boundary-safari-successor-v02/acceptance-v01.json",
+      "current_acceptance_sha256": "894a573b7d65991ba24bd6535119551cb98224e77239a6cde05f5ff39634b985",
+      "current_pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+      "current_pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33"
+    },
+    {
+      "map": "MnBoundarySafariC00R01",
+      "review_group": "MnBoundarySafari",
+      "prior_status": "CHANGED_BY_SELECTED_TERRAIN_SEPARATE_REVALIDATION_REQUIRED",
+      "prior_acceptance": "planning/minnesota/revisions/route-grass-v01/current-boundary-safari-v01/acceptance.json",
+      "complete_map_and_tileset_exact_to_inventory_pack": true,
+      "status": "CURRENT_LOCAL_GRASS_STAIRS_AND_TRAVERSAL_PASS",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "grass_quadrants": 44,
+      "ice_quadrants": 0,
+      "objects": 0,
+      "facade_policy": null,
+      "current_acceptance": "planning/minnesota/revisions/route-grass-v01/current-boundary-safari-successor-v02/acceptance-v01.json",
+      "current_acceptance_sha256": "894a573b7d65991ba24bd6535119551cb98224e77239a6cde05f5ff39634b985",
+      "current_pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+      "current_pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33"
+    },
+    {
+      "map": "MnBoundarySafariC00R02",
+      "review_group": "MnBoundarySafari",
+      "prior_status": "PRIOR_ACCEPTANCE_EXACTLY_PRESERVED",
+      "prior_acceptance": "planning/minnesota/revisions/route-grass-v01/current-boundary-safari-v01/acceptance.json",
+      "complete_map_and_tileset_exact_to_inventory_pack": true,
+      "status": "CURRENT_LOCAL_GRASS_STAIRS_AND_TRAVERSAL_PASS",
+      "dimensions_metatiles": [
+        32,
+        8
+      ],
+      "grass_quadrants": 8,
+      "ice_quadrants": 0,
+      "objects": 7,
+      "facade_policy": null,
+      "current_acceptance": "planning/minnesota/revisions/route-grass-v01/current-boundary-safari-successor-v02/acceptance-v01.json",
+      "current_acceptance_sha256": "894a573b7d65991ba24bd6535119551cb98224e77239a6cde05f5ff39634b985",
+      "current_pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+      "current_pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33"
+    },
+    {
+      "map": "MnBoundarySafariC01R00",
+      "review_group": "MnBoundarySafari",
+      "prior_status": "CHANGED_BY_SELECTED_TERRAIN_SEPARATE_REVALIDATION_REQUIRED",
+      "prior_acceptance": "planning/minnesota/revisions/route-grass-v01/current-boundary-safari-v01/acceptance.json",
+      "complete_map_and_tileset_exact_to_inventory_pack": true,
+      "status": "CURRENT_LOCAL_GRASS_STAIRS_AND_TRAVERSAL_PASS",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "grass_quadrants": 60,
+      "ice_quadrants": 0,
+      "objects": 5,
+      "facade_policy": null,
+      "current_acceptance": "planning/minnesota/revisions/route-grass-v01/current-boundary-safari-successor-v02/acceptance-v01.json",
+      "current_acceptance_sha256": "894a573b7d65991ba24bd6535119551cb98224e77239a6cde05f5ff39634b985",
+      "current_pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+      "current_pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33"
+    },
+    {
+      "map": "MnBoundarySafariC01R01",
+      "review_group": "MnBoundarySafari",
+      "prior_status": "CHANGED_BY_SELECTED_TERRAIN_SEPARATE_REVALIDATION_REQUIRED",
+      "prior_acceptance": "planning/minnesota/revisions/route-grass-v01/current-boundary-safari-v01/acceptance.json",
+      "complete_map_and_tileset_exact_to_inventory_pack": true,
+      "status": "CURRENT_LOCAL_GRASS_STAIRS_AND_TRAVERSAL_PASS",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "grass_quadrants": 68,
+      "ice_quadrants": 0,
+      "objects": 3,
+      "facade_policy": null,
+      "current_acceptance": "planning/minnesota/revisions/route-grass-v01/current-boundary-safari-successor-v02/acceptance-v01.json",
+      "current_acceptance_sha256": "894a573b7d65991ba24bd6535119551cb98224e77239a6cde05f5ff39634b985",
+      "current_pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+      "current_pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33"
+    },
+    {
+      "map": "MnBoundarySafariC01R02",
+      "review_group": "MnBoundarySafari",
+      "prior_status": "PRIOR_ACCEPTANCE_EXACTLY_PRESERVED",
+      "prior_acceptance": "planning/minnesota/revisions/route-grass-v01/current-boundary-safari-v01/acceptance.json",
+      "complete_map_and_tileset_exact_to_inventory_pack": true,
+      "status": "CURRENT_LOCAL_GRASS_STAIRS_AND_TRAVERSAL_PASS",
+      "dimensions_metatiles": [
+        32,
+        8
+      ],
+      "grass_quadrants": 20,
+      "ice_quadrants": 0,
+      "objects": 3,
+      "facade_policy": null,
+      "current_acceptance": "planning/minnesota/revisions/route-grass-v01/current-boundary-safari-successor-v02/acceptance-v01.json",
+      "current_acceptance_sha256": "894a573b7d65991ba24bd6535119551cb98224e77239a6cde05f5ff39634b985",
+      "current_pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+      "current_pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33"
+    },
+    {
+      "map": "MnBoundaryWaters",
+      "review_group": "MnBoundaryWaters",
+      "prior_status": "PENDING_CURRENT_TOWN_OR_OUTDOOR_REVIEW",
+      "prior_acceptance": null,
+      "complete_map_and_tileset_exact_to_inventory_pack": true,
+      "status": "PRIOR_EVIDENCE_REQUIRES_BINDING_AUDIT",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "grass_quadrants": 40,
+      "ice_quadrants": 0,
+      "objects": 12,
+      "facade_policy": null
+    },
+    {
+      "map": "MnBrainerd",
+      "review_group": "MnBrainerd",
+      "prior_status": "CHANGED_BY_SELECTED_TERRAIN_SEPARATE_REVALIDATION_REQUIRED",
+      "prior_acceptance": "planning/minnesota/revisions/route-grass-v01/current-brainerd-town-v01/acceptance.json",
+      "complete_map_and_tileset_exact_to_inventory_pack": false,
+      "status": "CURRENT_COMPOSED_TOWN_NATIVE_AND_PRODUCTION_REVIEW_PASS",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "grass_quadrants": 0,
+      "ice_quadrants": 0,
+      "objects": 12,
+      "facade_policy": null,
+      "current_acceptance": "planning/minnesota/revisions/route-grass-v01/current-brainerd-successor-v02/acceptance-v01.json",
+      "current_acceptance_sha256": "7c394f520874b34f2751742377865e531d69369ba460b39eea59020f94700b8b",
+      "current_pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+      "current_pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33"
+    },
+    {
+      "map": "MnDetroitLakes",
+      "review_group": "MnDetroitLakes",
+      "prior_status": "PRIOR_ACCEPTANCE_EXACTLY_PRESERVED",
+      "prior_acceptance": "planning/minnesota/revisions/route-grass-v01/current-detroit-town-v01/acceptance.json",
+      "complete_map_and_tileset_exact_to_inventory_pack": true,
+      "status": "PRIOR_EVIDENCE_REQUIRES_BINDING_AUDIT",
+      "dimensions_metatiles": [
+        24,
+        18
+      ],
+      "grass_quadrants": 0,
+      "ice_quadrants": 0,
+      "objects": 5,
+      "facade_policy": null
+    },
+    {
+      "map": "MnDetroitLakesApproach",
+      "review_group": "MnDetroitLakesApproach",
+      "prior_status": "PRIOR_ACCEPTANCE_EXACTLY_PRESERVED",
+      "prior_acceptance": "planning/minnesota/revisions/route-grass-v01/current-detroit-approach-v01/acceptance.json",
+      "complete_map_and_tileset_exact_to_inventory_pack": true,
+      "status": "CURRENT_NATIVE_AND_PRODUCTION_REVIEW_PASS",
+      "dimensions_metatiles": [
+        24,
+        18
+      ],
+      "grass_quadrants": 44,
+      "ice_quadrants": 0,
+      "objects": 2,
+      "facade_policy": null,
+      "current_acceptance": "planning/minnesota/revisions/route-grass-v01/current-detroit-approach-successor-review-v01/acceptance-v01.json",
+      "current_acceptance_sha256": "578eab7c195bf045e7a4752d14319774398a8a66524fb2595be6f4d5684b8ace",
+      "current_pack": "content-packs/minnesota-current-r19-detroit-gate-v05.crystalpack",
+      "current_pack_sha256": "b57516c0b77c7bcf94fa35e60ff8300bfd8a8781782827739742d8fc15b3f437"
+    },
+    {
+      "map": "MnDuluth",
+      "review_group": "MnDuluth",
+      "prior_status": "PENDING_CURRENT_TOWN_OR_OUTDOOR_REVIEW",
+      "prior_acceptance": null,
+      "complete_map_and_tileset_exact_to_inventory_pack": false,
+      "status": "CURRENT_EXPANDED_TOWN_NATIVE_AND_PRODUCTION_REVIEW_PASS",
+      "dimensions_metatiles": [
+        64,
+        46
+      ],
+      "grass_quadrants": 0,
+      "ice_quadrants": 0,
+      "objects": 29,
+      "facade_policy": null,
+      "current_acceptance": "planning/minnesota/revisions/route-grass-v01/current-duluth-successor-v01/acceptance-v01.json",
+      "current_binding_comparison": "planning/minnesota/revisions/route-grass-v01/current-route-ledge-review-v01/current-four-town-inheritance-v01.json",
+      "limits": "Original native receipts retain their original tested pack bindings; exact current map/art inheritance is verified. New global runtime/encounter changes are not covered by geometry equality.",
+      "current_acceptance_sha256": "dca66cea11e671c9d68f52a86f5cf318d2b11bce421e520762b21021dd9c760d",
+      "current_pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+      "current_pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33"
+    },
+    {
+      "map": "MnEly",
+      "review_group": "MnEly",
+      "prior_status": "PENDING_CURRENT_TOWN_OR_OUTDOOR_REVIEW",
+      "prior_acceptance": null,
+      "complete_map_and_tileset_exact_to_inventory_pack": true,
+      "status": "PRIOR_EVIDENCE_REQUIRES_BINDING_AUDIT",
+      "dimensions_metatiles": [
+        20,
+        18
+      ],
+      "grass_quadrants": 0,
+      "ice_quadrants": 0,
+      "objects": 1,
+      "facade_policy": null
+    },
+    {
+      "map": "MnElyShorePass",
+      "review_group": "MnElyShorePass",
+      "prior_status": "PRIOR_ACCEPTANCE_EXACTLY_PRESERVED",
+      "prior_acceptance": "planning/minnesota/revisions/route-grass-v01/current-ely-shore-pass-v01/acceptance.json",
+      "complete_map_and_tileset_exact_to_inventory_pack": true,
+      "status": "CURRENT_NATIVE_AND_PRODUCTION_REVIEW_PASS",
+      "dimensions_metatiles": [
+        7,
+        12
+      ],
+      "grass_quadrants": 16,
+      "ice_quadrants": 0,
+      "objects": 1,
+      "facade_policy": null,
+      "current_acceptance": "planning/minnesota/revisions/route-grass-v01/current-ely-pass-successor-v01/acceptance-v01.json",
+      "current_acceptance_sha256": "7a9a582763c64138ddd2c568cc1af701f4c0d8e73dae6c6a623a527e2d892d3c",
+      "current_pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+      "current_pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33"
+    },
+    {
+      "map": "MnGrandMarais",
+      "review_group": "MnGrandMarais",
+      "prior_status": "PRIOR_ACCEPTANCE_EXACTLY_PRESERVED",
+      "prior_acceptance": "planning/minnesota/revisions/route-grass-v01/current-grand-marais-town-v01/acceptance.json",
+      "complete_map_and_tileset_exact_to_inventory_pack": true,
+      "status": "CURRENT_LOCAL_INHERITANCE_OF_TESTED_COASTAL_REVIEW_PASS",
+      "dimensions_metatiles": [
+        20,
+        19
+      ],
+      "grass_quadrants": 28,
+      "ice_quadrants": 0,
+      "objects": 11,
+      "facade_policy": null,
+      "current_binding_comparison": "planning/minnesota/revisions/route-grass-v01/current-grand-marais-successor-v01/inheritance-v01.json",
+      "current_pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+      "current_pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33",
+      "current_acceptance": "planning/minnesota/revisions/route-grass-v01/current-cedar-successor-v02/acceptance-v01.json",
+      "limits": "Exact complete local maps and used native art/collision retain five-case Cedar/coastal review. No new gameplay run or global runtime equivalence claimed. North Shore local ICE remains zero; wider regional completion unproven."
+    },
+    {
+      "map": "MnGrandRapids",
+      "review_group": "MnGrandRapids",
+      "prior_status": "PRIOR_ACCEPTANCE_EXACTLY_PRESERVED",
+      "prior_acceptance": "planning/minnesota/revisions/route-grass-v01/current-grand-rapids-town-v01/acceptance.json",
+      "complete_map_and_tileset_exact_to_inventory_pack": true,
+      "status": "CURRENT_LOCAL_INHERITANCE_OF_ACCEPTED_RIVERFRONT_PASS",
+      "dimensions_metatiles": [
+        24,
+        24
+      ],
+      "grass_quadrants": 0,
+      "ice_quadrants": 0,
+      "objects": 6,
+      "facade_policy": null,
+      "current_binding_comparison": "planning/minnesota/revisions/route-grass-v01/current-grand-rapids-successor-v01/inheritance-v01.json",
+      "current_acceptance": "planning/minnesota/renders/grand-rapids-riverfront-v659/acceptance-v678.json",
+      "current_pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+      "current_pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33",
+      "limits": "Later riverfront acceptance supersedes old town exterior snapshot. Exact local map/art inheritance, not new global gameplay acceptance."
+    },
+    {
+      "map": "MnInternationalFalls",
+      "review_group": "MnInternationalFalls",
+      "prior_status": "PENDING_CURRENT_TOWN_OR_OUTDOOR_REVIEW",
+      "prior_acceptance": null,
+      "complete_map_and_tileset_exact_to_inventory_pack": true,
+      "status": "PRIOR_EVIDENCE_REQUIRES_BINDING_AUDIT",
+      "dimensions_metatiles": [
+        16,
+        14
+      ],
+      "grass_quadrants": 0,
+      "ice_quadrants": 0,
+      "objects": 4,
+      "facade_policy": null
+    },
+    {
+      "map": "MnLakeItasca",
+      "review_group": "MnLakeItasca",
+      "prior_status": "PRIOR_ACCEPTANCE_EXACTLY_PRESERVED",
+      "prior_acceptance": "planning/minnesota/revisions/route-grass-v01/current-lake-itasca-v01/acceptance.json",
+      "complete_map_and_tileset_exact_to_inventory_pack": true,
+      "status": "CURRENT_NATIVE_AND_PRODUCTION_REVIEW_PASS",
+      "dimensions_metatiles": [
+        24,
+        24
+      ],
+      "grass_quadrants": 76,
+      "ice_quadrants": 0,
+      "objects": 4,
+      "facade_policy": null,
+      "current_acceptance": "planning/minnesota/revisions/route-grass-v01/current-itasca-successor-v01/acceptance-v01.json",
+      "current_acceptance_sha256": "af3d503c2dcc1a76e1b434bc6c83b2bcdf9929f3900cd3826d357fe345518702",
+      "current_pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+      "current_pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33"
+    },
+    {
+      "map": "MnLeechLake",
+      "review_group": "MnLeechLake",
+      "prior_status": "PENDING_CURRENT_TOWN_OR_OUTDOOR_REVIEW",
+      "prior_acceptance": null,
+      "complete_map_and_tileset_exact_to_inventory_pack": true,
+      "status": "PRIOR_EVIDENCE_REQUIRES_BINDING_AUDIT",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "grass_quadrants": 0,
+      "ice_quadrants": 0,
+      "objects": 4,
+      "facade_policy": null
+    },
+    {
+      "map": "MnMankato",
+      "review_group": "MnMankato",
+      "prior_status": "PENDING_CURRENT_TOWN_OR_OUTDOOR_REVIEW",
+      "prior_acceptance": null,
+      "complete_map_and_tileset_exact_to_inventory_pack": false,
+      "status": "CURRENT_LOCAL_MAP_ART_AND_NATIVE_REVIEW_PASS",
+      "dimensions_metatiles": [
+        24,
+        18
+      ],
+      "grass_quadrants": 0,
+      "ice_quadrants": 0,
+      "objects": 5,
+      "facade_policy": null,
+      "current_acceptance": "planning/minnesota/revisions/route-grass-v01/current-mankato-successor-v01/acceptance-v01.json",
+      "current_binding_comparison": "planning/minnesota/revisions/route-grass-v01/current-route-ledge-review-v01/current-four-town-inheritance-v01.json",
+      "limits": "Fresh local controller fixtures and exact used-art/map comparison. Historical notebook/production receipts retain their original pack bindings; no new production check claimed. Broader goal remains active.",
+      "current_acceptance_sha256": "1e6508b6738a84ed8bc0a28745e472e11530caa04481fcd1930f3467c1e216e5",
+      "current_pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+      "current_pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33"
+    },
+    {
+      "map": "MnMaraisCedarApproach",
+      "review_group": "MnMaraisCedarApproach",
+      "prior_status": "CHANGED_BY_SELECTED_TERRAIN_SEPARATE_REVALIDATION_REQUIRED",
+      "prior_acceptance": "planning/minnesota/revisions/route-grass-v01/current-cedar-grass-review-v01/acceptance.json",
+      "complete_map_and_tileset_exact_to_inventory_pack": false,
+      "status": "CURRENT_NATIVE_AND_PRODUCTION_REVIEW_PASS",
+      "dimensions_metatiles": [
+        20,
+        12
+      ],
+      "grass_quadrants": 16,
+      "ice_quadrants": 0,
+      "objects": 2,
+      "facade_policy": null,
+      "current_acceptance": "planning/minnesota/revisions/route-grass-v01/current-cedar-successor-v02/acceptance-v01.json",
+      "current_acceptance_sha256": "1c48351f99f3ef7428cdb80ba90a8435216b91f8fb83a165f5935c3bf2805633",
+      "current_pack": "content-packs/minnesota-current-r19-detroit-gate-v05.crystalpack",
+      "current_pack_sha256": "b57516c0b77c7bcf94fa35e60ff8300bfd8a8781782827739742d8fc15b3f437"
+    },
+    {
+      "map": "MnMilleLacs",
+      "review_group": "MnMilleLacs",
+      "prior_status": "PRIOR_ACCEPTANCE_EXACTLY_PRESERVED",
+      "prior_acceptance": "planning/minnesota/revisions/route-grass-v01/current-mille-lacs-v01/acceptance.json",
+      "complete_map_and_tileset_exact_to_inventory_pack": true,
+      "status": "CURRENT_NATIVE_AND_PRODUCTION_REVIEW_PASS",
+      "dimensions_metatiles": [
+        24,
+        20
+      ],
+      "grass_quadrants": 48,
+      "ice_quadrants": 0,
+      "objects": 6,
+      "facade_policy": null,
+      "current_acceptance": "planning/minnesota/revisions/route-grass-v01/current-mille-lacs-successor-v01/acceptance-v01.json",
+      "current_acceptance_sha256": "e0852b20bf2e0ddbcc9c89e28783f7a19d6e5f7c531eaddd68eb54f085685bf5",
+      "current_pack": "content-packs/minnesota-current-r19-detroit-gate-v05.crystalpack",
+      "current_pack_sha256": "b57516c0b77c7bcf94fa35e60ff8300bfd8a8781782827739742d8fc15b3f437"
+    },
+    {
+      "map": "MnMinneapolis",
+      "review_group": "MnMinneapolis",
+      "prior_status": "PENDING_CURRENT_TOWN_OR_OUTDOOR_REVIEW",
+      "prior_acceptance": null,
+      "complete_map_and_tileset_exact_to_inventory_pack": false,
+      "status": "CURRENT_CHANGED_MAP_REQUIRES_REVIEW",
+      "dimensions_metatiles": [
+        40,
+        32
+      ],
+      "grass_quadrants": 0,
+      "ice_quadrants": 0,
+      "objects": 46,
+      "facade_policy": null
+    },
+    {
+      "map": "MnMississippiConfluenceC00R00",
+      "review_group": "MnMississippiConfluence",
+      "prior_status": "PRIOR_ACCEPTANCE_EXACTLY_PRESERVED",
+      "prior_acceptance": "planning/minnesota/revisions/route-grass-v01/current-confluence-v01/acceptance.json",
+      "complete_map_and_tileset_exact_to_inventory_pack": true,
+      "status": "CURRENT_NATIVE_AND_PRODUCTION_REVIEW_PASS",
+      "dimensions_metatiles": [
+        6,
+        8
+      ],
+      "grass_quadrants": 0,
+      "ice_quadrants": 0,
+      "objects": 0,
+      "facade_policy": null,
+      "current_acceptance": "planning/minnesota/revisions/route-grass-v01/current-confluence-successor-v01/acceptance-v01.json",
+      "current_acceptance_sha256": "62ca0fd6b4269ebeda452529ea822ed24f33c1195d6bb239d99fa04ed0924385",
+      "current_pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+      "current_pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33"
+    },
+    {
+      "map": "MnMississippiConfluenceC01R00",
+      "review_group": "MnMississippiConfluence",
+      "prior_status": "PRIOR_ACCEPTANCE_EXACTLY_PRESERVED",
+      "prior_acceptance": "planning/minnesota/revisions/route-grass-v01/current-confluence-v01/acceptance.json",
+      "complete_map_and_tileset_exact_to_inventory_pack": true,
+      "status": "CURRENT_NATIVE_AND_PRODUCTION_REVIEW_PASS",
+      "dimensions_metatiles": [
+        32,
+        12
+      ],
+      "grass_quadrants": 48,
+      "ice_quadrants": 0,
+      "objects": 1,
+      "facade_policy": null,
+      "current_acceptance": "planning/minnesota/revisions/route-grass-v01/current-confluence-successor-v01/acceptance-v01.json",
+      "current_acceptance_sha256": "62ca0fd6b4269ebeda452529ea822ed24f33c1195d6bb239d99fa04ed0924385",
+      "current_pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+      "current_pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33"
+    },
+    {
+      "map": "MnMississippiConfluenceC02R00",
+      "review_group": "MnMississippiConfluence",
+      "prior_status": "PRIOR_ACCEPTANCE_EXACTLY_PRESERVED",
+      "prior_acceptance": "planning/minnesota/revisions/route-grass-v01/current-confluence-v01/acceptance.json",
+      "complete_map_and_tileset_exact_to_inventory_pack": true,
+      "status": "CURRENT_NATIVE_AND_PRODUCTION_REVIEW_PASS",
+      "dimensions_metatiles": [
+        32,
+        12
+      ],
+      "grass_quadrants": 36,
+      "ice_quadrants": 0,
+      "objects": 0,
+      "facade_policy": null,
+      "current_acceptance": "planning/minnesota/revisions/route-grass-v01/current-confluence-successor-v01/acceptance-v01.json",
+      "current_acceptance_sha256": "62ca0fd6b4269ebeda452529ea822ed24f33c1195d6bb239d99fa04ed0924385",
+      "current_pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+      "current_pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33"
+    },
+    {
+      "map": "MnMississippiConfluenceC03R00",
+      "review_group": "MnMississippiConfluence",
+      "prior_status": "PRIOR_ACCEPTANCE_EXACTLY_PRESERVED",
+      "prior_acceptance": "planning/minnesota/revisions/route-grass-v01/current-confluence-v01/acceptance.json",
+      "complete_map_and_tileset_exact_to_inventory_pack": true,
+      "status": "CURRENT_NATIVE_AND_PRODUCTION_REVIEW_PASS",
+      "dimensions_metatiles": [
+        4,
+        12
+      ],
+      "grass_quadrants": 0,
+      "ice_quadrants": 0,
+      "objects": 0,
+      "facade_policy": null,
+      "current_acceptance": "planning/minnesota/revisions/route-grass-v01/current-confluence-successor-v01/acceptance-v01.json",
+      "current_acceptance_sha256": "62ca0fd6b4269ebeda452529ea822ed24f33c1195d6bb239d99fa04ed0924385",
+      "current_pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+      "current_pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33"
+    },
+    {
+      "map": "MnMississippiLowerWoodsC00R00",
+      "review_group": "MnMississippiLowerWoods",
+      "prior_status": "PRIOR_ACCEPTANCE_EXACTLY_PRESERVED",
+      "prior_acceptance": "planning/minnesota/revisions/route-grass-v01/current-lower-woods-v01/acceptance.json",
+      "complete_map_and_tileset_exact_to_inventory_pack": true,
+      "status": "CURRENT_NATIVE_AND_PRODUCTION_REVIEW_PASS",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "grass_quadrants": 200,
+      "ice_quadrants": 0,
+      "objects": 3,
+      "facade_policy": null,
+      "current_acceptance": "planning/minnesota/revisions/route-grass-v01/current-lower-woods-successor-v01/acceptance-v01.json",
+      "current_acceptance_sha256": "17459643a51d051654569996fda679d201c2cae53205728e4ee86c6091f47ee9",
+      "current_pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+      "current_pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33"
+    },
+    {
+      "map": "MnMississippiLowerWoodsC00R01",
+      "review_group": "MnMississippiLowerWoods",
+      "prior_status": "PRIOR_ACCEPTANCE_EXACTLY_PRESERVED",
+      "prior_acceptance": "planning/minnesota/revisions/route-grass-v01/current-lower-woods-v01/acceptance.json",
+      "complete_map_and_tileset_exact_to_inventory_pack": true,
+      "status": "CURRENT_NATIVE_AND_PRODUCTION_REVIEW_PASS",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "grass_quadrants": 112,
+      "ice_quadrants": 0,
+      "objects": 4,
+      "facade_policy": null,
+      "current_acceptance": "planning/minnesota/revisions/route-grass-v01/current-lower-woods-successor-v01/acceptance-v01.json",
+      "current_acceptance_sha256": "17459643a51d051654569996fda679d201c2cae53205728e4ee86c6091f47ee9",
+      "current_pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+      "current_pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33"
+    },
+    {
+      "map": "MnMississippiLowerWoodsC00R02",
+      "review_group": "MnMississippiLowerWoods",
+      "prior_status": "PRIOR_ACCEPTANCE_EXACTLY_PRESERVED",
+      "prior_acceptance": "planning/minnesota/revisions/route-grass-v01/current-lower-woods-v01/acceptance.json",
+      "complete_map_and_tileset_exact_to_inventory_pack": true,
+      "status": "CURRENT_NATIVE_AND_PRODUCTION_REVIEW_PASS",
+      "dimensions_metatiles": [
+        32,
+        20
+      ],
+      "grass_quadrants": 88,
+      "ice_quadrants": 0,
+      "objects": 2,
+      "facade_policy": null,
+      "current_acceptance": "planning/minnesota/revisions/route-grass-v01/current-lower-woods-successor-v01/acceptance-v01.json",
+      "current_acceptance_sha256": "17459643a51d051654569996fda679d201c2cae53205728e4ee86c6091f47ee9",
+      "current_pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+      "current_pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33"
+    },
+    {
+      "map": "MnMississippiLowerWoodsC01R00",
+      "review_group": "MnMississippiLowerWoods",
+      "prior_status": "PRIOR_ACCEPTANCE_EXACTLY_PRESERVED",
+      "prior_acceptance": "planning/minnesota/revisions/route-grass-v01/current-lower-woods-v01/acceptance.json",
+      "complete_map_and_tileset_exact_to_inventory_pack": true,
+      "status": "CURRENT_NATIVE_AND_PRODUCTION_REVIEW_PASS",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "grass_quadrants": 132,
+      "ice_quadrants": 0,
+      "objects": 5,
+      "facade_policy": null,
+      "current_acceptance": "planning/minnesota/revisions/route-grass-v01/current-lower-woods-successor-v01/acceptance-v01.json",
+      "current_acceptance_sha256": "17459643a51d051654569996fda679d201c2cae53205728e4ee86c6091f47ee9",
+      "current_pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+      "current_pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33"
+    },
+    {
+      "map": "MnMississippiLowerWoodsC01R01",
+      "review_group": "MnMississippiLowerWoods",
+      "prior_status": "PRIOR_ACCEPTANCE_EXACTLY_PRESERVED",
+      "prior_acceptance": "planning/minnesota/revisions/route-grass-v01/current-lower-woods-v01/acceptance.json",
+      "complete_map_and_tileset_exact_to_inventory_pack": true,
+      "status": "CURRENT_NATIVE_AND_PRODUCTION_REVIEW_PASS",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "grass_quadrants": 220,
+      "ice_quadrants": 0,
+      "objects": 5,
+      "facade_policy": null,
+      "current_acceptance": "planning/minnesota/revisions/route-grass-v01/current-lower-woods-successor-v01/acceptance-v01.json",
+      "current_acceptance_sha256": "17459643a51d051654569996fda679d201c2cae53205728e4ee86c6091f47ee9",
+      "current_pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+      "current_pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33"
+    },
+    {
+      "map": "MnMississippiLowerWoodsC01R02",
+      "review_group": "MnMississippiLowerWoods",
+      "prior_status": "PRIOR_ACCEPTANCE_EXACTLY_PRESERVED",
+      "prior_acceptance": "planning/minnesota/revisions/route-grass-v01/current-lower-woods-v01/acceptance.json",
+      "complete_map_and_tileset_exact_to_inventory_pack": true,
+      "status": "CURRENT_NATIVE_AND_PRODUCTION_REVIEW_PASS",
+      "dimensions_metatiles": [
+        32,
+        20
+      ],
+      "grass_quadrants": 208,
+      "ice_quadrants": 0,
+      "objects": 5,
+      "facade_policy": null,
+      "current_acceptance": "planning/minnesota/revisions/route-grass-v01/current-lower-woods-successor-v01/acceptance-v01.json",
+      "current_acceptance_sha256": "17459643a51d051654569996fda679d201c2cae53205728e4ee86c6091f47ee9",
+      "current_pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+      "current_pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33"
+    },
+    {
+      "map": "MnMississippiUpstreamWoodsC00R00",
+      "review_group": "MnMississippiUpstreamWoods",
+      "prior_status": "PRIOR_ACCEPTANCE_EXACTLY_PRESERVED",
+      "prior_acceptance": "planning/minnesota/revisions/route-grass-v01/current-upstream-woods-v01/acceptance.json",
+      "complete_map_and_tileset_exact_to_inventory_pack": true,
+      "status": "CURRENT_NATIVE_AND_PRODUCTION_REVIEW_PASS",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "grass_quadrants": 32,
+      "ice_quadrants": 0,
+      "objects": 2,
+      "facade_policy": null,
+      "current_acceptance": "planning/minnesota/revisions/route-grass-v01/current-upstream-woods-successor-v01/acceptance-v01.json",
+      "current_acceptance_sha256": "106884ee01358e14c8726c61fca5252c9ea2b3bb1eb93d1c676cf3581d0ba5da",
+      "current_pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+      "current_pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33"
+    },
+    {
+      "map": "MnMississippiUpstreamWoodsC00R01",
+      "review_group": "MnMississippiUpstreamWoods",
+      "prior_status": "PRIOR_ACCEPTANCE_EXACTLY_PRESERVED",
+      "prior_acceptance": "planning/minnesota/revisions/route-grass-v01/current-upstream-woods-v01/acceptance.json",
+      "complete_map_and_tileset_exact_to_inventory_pack": true,
+      "status": "CURRENT_NATIVE_AND_PRODUCTION_REVIEW_PASS",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "grass_quadrants": 32,
+      "ice_quadrants": 0,
+      "objects": 0,
+      "facade_policy": null,
+      "current_acceptance": "planning/minnesota/revisions/route-grass-v01/current-upstream-woods-successor-v01/acceptance-v01.json",
+      "current_acceptance_sha256": "106884ee01358e14c8726c61fca5252c9ea2b3bb1eb93d1c676cf3581d0ba5da",
+      "current_pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+      "current_pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33"
+    },
+    {
+      "map": "MnMississippiUpstreamWoodsC00R02",
+      "review_group": "MnMississippiUpstreamWoods",
+      "prior_status": "PRIOR_ACCEPTANCE_EXACTLY_PRESERVED",
+      "prior_acceptance": "planning/minnesota/revisions/route-grass-v01/current-upstream-woods-v01/acceptance.json",
+      "complete_map_and_tileset_exact_to_inventory_pack": true,
+      "status": "CURRENT_NATIVE_AND_PRODUCTION_REVIEW_PASS",
+      "dimensions_metatiles": [
+        32,
+        20
+      ],
+      "grass_quadrants": 284,
+      "ice_quadrants": 0,
+      "objects": 6,
+      "facade_policy": null,
+      "current_acceptance": "planning/minnesota/revisions/route-grass-v01/current-upstream-woods-successor-v01/acceptance-v01.json",
+      "current_acceptance_sha256": "106884ee01358e14c8726c61fca5252c9ea2b3bb1eb93d1c676cf3581d0ba5da",
+      "current_pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+      "current_pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33"
+    },
+    {
+      "map": "MnMississippiUpstreamWoodsC01R00",
+      "review_group": "MnMississippiUpstreamWoods",
+      "prior_status": "PRIOR_ACCEPTANCE_EXACTLY_PRESERVED",
+      "prior_acceptance": "planning/minnesota/revisions/route-grass-v01/current-upstream-woods-v01/acceptance.json",
+      "complete_map_and_tileset_exact_to_inventory_pack": true,
+      "status": "CURRENT_NATIVE_AND_PRODUCTION_REVIEW_PASS",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "grass_quadrants": 128,
+      "ice_quadrants": 0,
+      "objects": 5,
+      "facade_policy": null,
+      "current_acceptance": "planning/minnesota/revisions/route-grass-v01/current-upstream-woods-successor-v01/acceptance-v01.json",
+      "current_acceptance_sha256": "106884ee01358e14c8726c61fca5252c9ea2b3bb1eb93d1c676cf3581d0ba5da",
+      "current_pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+      "current_pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33"
+    },
+    {
+      "map": "MnMississippiUpstreamWoodsC01R01",
+      "review_group": "MnMississippiUpstreamWoods",
+      "prior_status": "PRIOR_ACCEPTANCE_EXACTLY_PRESERVED",
+      "prior_acceptance": "planning/minnesota/revisions/route-grass-v01/current-upstream-woods-v01/acceptance.json",
+      "complete_map_and_tileset_exact_to_inventory_pack": true,
+      "status": "CURRENT_NATIVE_AND_PRODUCTION_REVIEW_PASS",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "grass_quadrants": 180,
+      "ice_quadrants": 0,
+      "objects": 7,
+      "facade_policy": null,
+      "current_acceptance": "planning/minnesota/revisions/route-grass-v01/current-upstream-woods-successor-v01/acceptance-v01.json",
+      "current_acceptance_sha256": "106884ee01358e14c8726c61fca5252c9ea2b3bb1eb93d1c676cf3581d0ba5da",
+      "current_pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+      "current_pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33"
+    },
+    {
+      "map": "MnMississippiUpstreamWoodsC01R02",
+      "review_group": "MnMississippiUpstreamWoods",
+      "prior_status": "PRIOR_ACCEPTANCE_EXACTLY_PRESERVED",
+      "prior_acceptance": "planning/minnesota/revisions/route-grass-v01/current-upstream-woods-v01/acceptance.json",
+      "complete_map_and_tileset_exact_to_inventory_pack": true,
+      "status": "CURRENT_NATIVE_AND_PRODUCTION_REVIEW_PASS",
+      "dimensions_metatiles": [
+        32,
+        20
+      ],
+      "grass_quadrants": 140,
+      "ice_quadrants": 0,
+      "objects": 4,
+      "facade_policy": null,
+      "current_acceptance": "planning/minnesota/revisions/route-grass-v01/current-upstream-woods-successor-v01/acceptance-v01.json",
+      "current_acceptance_sha256": "106884ee01358e14c8726c61fca5252c9ea2b3bb1eb93d1c676cf3581d0ba5da",
+      "current_pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+      "current_pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33"
+    },
+    {
+      "map": "MnMississippiWinonaMouth",
+      "review_group": "MnMississippiWinonaMouth",
+      "prior_status": "PRIOR_ACCEPTANCE_EXACTLY_PRESERVED",
+      "prior_acceptance": "planning/minnesota/revisions/route-grass-v01/current-winona-mouth-v01/acceptance.json",
+      "complete_map_and_tileset_exact_to_inventory_pack": true,
+      "status": "CURRENT_DRY_LANDING_NATIVE_AND_PRODUCTION_REVIEW_PASS",
+      "dimensions_metatiles": [
+        16,
+        4
+      ],
+      "grass_quadrants": 0,
+      "ice_quadrants": 0,
+      "objects": 0,
+      "facade_policy": null,
+      "current_acceptance": "planning/minnesota/revisions/route-grass-v01/current-winona-mouth-successor-v01/acceptance-v01.json",
+      "current_acceptance_sha256": "81cc2c182908c290de175ec7ed0c6b8a439270d59831d8f6725d38fc2bd5b3d0",
+      "current_pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+      "current_pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33"
+    },
+    {
+      "map": "MnMoorhead",
+      "review_group": "MnMoorhead",
+      "prior_status": "PRIOR_ACCEPTANCE_EXACTLY_PRESERVED",
+      "prior_acceptance": "planning/minnesota/revisions/route-grass-v01/current-moorhead-v01/acceptance.json",
+      "complete_map_and_tileset_exact_to_inventory_pack": true,
+      "status": "PRIOR_EVIDENCE_REQUIRES_BINDING_AUDIT",
+      "dimensions_metatiles": [
+        16,
+        12
+      ],
+      "grass_quadrants": 0,
+      "ice_quadrants": 0,
+      "objects": 5,
+      "facade_policy": null
+    },
+    {
+      "map": "MnPreservePineEntry",
+      "review_group": "MnPreservePineEntry",
+      "prior_status": "PRIOR_ACCEPTANCE_EXACTLY_PRESERVED",
+      "prior_acceptance": "planning/minnesota/revisions/route-grass-v01/current-preserve-pine-entry-v01/acceptance.json",
+      "complete_map_and_tileset_exact_to_inventory_pack": true,
+      "status": "CURRENT_NATIVE_AND_PRODUCTION_REVIEW_PASS",
+      "dimensions_metatiles": [
+        24,
+        16
+      ],
+      "grass_quadrants": 28,
+      "ice_quadrants": 0,
+      "objects": 0,
+      "facade_policy": null,
+      "current_acceptance": "planning/minnesota/revisions/route-grass-v01/current-preserve-pine-successor-v01/acceptance-v01.json",
+      "current_acceptance_sha256": "fce21d9f973e8fd6e0cbc35354e8cf28c549448e0e94cdc430313460c383cecc",
+      "current_pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+      "current_pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33"
+    },
+    {
+      "map": "MnRainyRiverIcefields",
+      "review_group": "MnRainyRiverIcefields",
+      "prior_status": "PRIOR_ACCEPTANCE_EXACTLY_PRESERVED",
+      "prior_acceptance": "planning/minnesota/revisions/route-grass-v01/current-rainy-icefields-v01/acceptance.json",
+      "complete_map_and_tileset_exact_to_inventory_pack": true,
+      "status": "CURRENT_NATIVE_AND_PRODUCTION_REVIEW_PASS",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "grass_quadrants": 56,
+      "ice_quadrants": 692,
+      "objects": 5,
+      "facade_policy": null,
+      "current_acceptance": "planning/minnesota/revisions/route-grass-v01/current-rainy-successor-v01/acceptance-v01.json",
+      "current_acceptance_sha256": "0b31708a83f22d2a19ee55461f7256cc9fd13b364f99668f5f24a03538c2797e",
+      "current_pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+      "current_pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33"
+    },
+    {
+      "map": "MnRochester",
+      "review_group": "MnRochester",
+      "prior_status": "PRIOR_ACCEPTANCE_EXACTLY_PRESERVED",
+      "prior_acceptance": "planning/minnesota/revisions/route-grass-v01/current-rochester-town-v01/acceptance.json",
+      "complete_map_and_tileset_exact_to_inventory_pack": true,
+      "status": "CURRENT_LOCAL_NATIVE_REVIEW_PASS_SOURCE_POINTER_UNRESOLVED",
+      "dimensions_metatiles": [
+        20,
+        16
+      ],
+      "grass_quadrants": 0,
+      "ice_quadrants": 0,
+      "objects": 5,
+      "facade_policy": null,
+      "current_acceptance": "planning/minnesota/revisions/route-grass-v01/current-rochester-successor-v01/acceptance-v01.json",
+      "current_acceptance_sha256": "a832d10a95e7f8714f9e837d2f2387260ad6357f8bf35ec524056a3077f6268d",
+      "current_pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+      "current_pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33",
+      "limits": "Complete local maps/used native art equal accepted Mart repair; fresh doors/Continue, public paths and guards pass. No fresh production or visual capture claimed. World still points at proposed gates dossier while installed original gym remains; source integration unresolved. Broader goal active."
+    },
+    {
+      "map": "MnStCloud",
+      "review_group": "MnStCloud",
+      "prior_status": "PENDING_CURRENT_TOWN_OR_OUTDOOR_REVIEW",
+      "prior_acceptance": null,
+      "complete_map_and_tileset_exact_to_inventory_pack": false,
+      "status": "CURRENT_COMPOSED_TOWN_NATIVE_AND_PRODUCTION_REVIEW_PASS",
+      "dimensions_metatiles": [
+        24,
+        18
+      ],
+      "grass_quadrants": 0,
+      "ice_quadrants": 0,
+      "objects": 9,
+      "facade_policy": null,
+      "current_acceptance": "planning/minnesota/revisions/route-grass-v01/current-st-cloud-successor-v01/acceptance-v01.json",
+      "current_binding_comparison": "planning/minnesota/revisions/route-grass-v01/current-route-ledge-review-v01/current-four-town-inheritance-v01.json",
+      "limits": "Original native receipts retain their original tested pack bindings; exact current map/art inheritance is verified. New global runtime/encounter changes are not covered by geometry equality.",
+      "current_acceptance_sha256": "1fc6d43d75240b2c04fd96302a472cfc94802261c750c9affbea49fdc13432fd",
+      "current_pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+      "current_pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33"
+    },
+    {
+      "map": "MnStPaul",
+      "review_group": "MnStPaul",
+      "prior_status": "PENDING_CURRENT_TOWN_OR_OUTDOOR_REVIEW",
+      "prior_acceptance": null,
+      "complete_map_and_tileset_exact_to_inventory_pack": false,
+      "status": "CURRENT_CHANGED_MAP_REQUIRES_REVIEW",
+      "dimensions_metatiles": [
+        40,
+        34
+      ],
+      "grass_quadrants": 0,
+      "ice_quadrants": 0,
+      "objects": 23,
+      "facade_policy": null
+    },
+    {
+      "map": "MnStaplesRailJunction",
+      "review_group": "MnStaplesRailJunction",
+      "prior_status": "PRIOR_ACCEPTANCE_EXACTLY_PRESERVED",
+      "prior_acceptance": "planning/minnesota/revisions/route-grass-v01/current-staples-junction-review-v01/acceptance.json",
+      "complete_map_and_tileset_exact_to_inventory_pack": true,
+      "status": "CURRENT_DRY_SERVICE_OUTPOST_NATIVE_REVIEW_PASS",
+      "dimensions_metatiles": [
+        16,
+        10
+      ],
+      "grass_quadrants": 0,
+      "ice_quadrants": 0,
+      "objects": 1,
+      "facade_policy": null,
+      "current_acceptance": "planning/minnesota/revisions/route-grass-v01/current-staples-successor-review-v01/acceptance-v01.json",
+      "current_acceptance_sha256": "41a37a7e625fd05314e6c3f093bf0fc76e4106c61184aebe07028c436eddc72a",
+      "current_pack": "content-packs/minnesota-current-r19-detroit-gate-v05.crystalpack",
+      "current_pack_sha256": "b57516c0b77c7bcf94fa35e60ff8300bfd8a8781782827739742d8fc15b3f437"
+    },
+    {
+      "map": "MnStateFairgrounds",
+      "review_group": "MnStateFairgrounds",
+      "prior_status": "PENDING_CURRENT_TOWN_OR_OUTDOOR_REVIEW",
+      "prior_acceptance": null,
+      "complete_map_and_tileset_exact_to_inventory_pack": true,
+      "status": "PRIOR_EVIDENCE_REQUIRES_BINDING_AUDIT",
+      "dimensions_metatiles": [
+        48,
+        36
+      ],
+      "grass_quadrants": 432,
+      "ice_quadrants": 0,
+      "objects": 255,
+      "facade_policy": "USER_ACCEPTED_PRESERVE_ALL_STATE_FAIR_FACADES"
+    },
+    {
+      "map": "MnWinona",
+      "review_group": "MnWinona",
+      "prior_status": "PENDING_CURRENT_TOWN_OR_OUTDOOR_REVIEW",
+      "prior_acceptance": null,
+      "complete_map_and_tileset_exact_to_inventory_pack": false,
+      "status": "CURRENT_COMPOSED_TOWN_NATIVE_AND_PRODUCTION_REVIEW_PASS",
+      "dimensions_metatiles": [
+        16,
+        14
+      ],
+      "grass_quadrants": 0,
+      "ice_quadrants": 0,
+      "objects": 4,
+      "facade_policy": null,
+      "current_acceptance": "planning/minnesota/revisions/route-grass-v01/current-winona-successor-v01/acceptance-v01.json",
+      "current_binding_comparison": "planning/minnesota/revisions/route-grass-v01/current-winona-successor-v01/map-art-inheritance-v01.json",
+      "limits": "Local town acceptance; native visual evidence inherited through exact map/used-art equality. Fixture state is not earned statewide progress. Broader route review remains active.",
+      "current_pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+      "current_pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33",
+      "current_native_cases": "planning/minnesota/revisions/route-grass-v01/current-winona-successor-v01/native-cases-v01.json",
+      "current_acceptance_sha256": "b184cea500d55589ba1a69119f77c54d458309ae842dce0aa1b8813a0323f416"
+    }
+  ],
+  "limits": "Current metrics and full module/tileset equality only. Exact geometry does not establish current battle/encounter/story behavior; changed maps and old pending reviews remain open. State Fair facades stay user accepted.",
+  "note": "Fourteen local route/link/park groups plus Bemidji, Brainerd, Duluth and StCloud have fresh pack-bound reviews. Each row keeps its tested pack. Remaining town/source/final scope is active."
+}

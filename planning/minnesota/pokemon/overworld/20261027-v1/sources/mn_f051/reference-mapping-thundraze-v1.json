@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_106",
+  "family_id": "MN_F051",
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/prompt-thundraze-v1.txt",
+  "input_images": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+      "role": "ONLY input: authentic native16 overworld STYLE, not identity",
+      "sha256": "4354a639ed1a80fd6686e43b273443ed894e58a84307a8049f638ee9ffa2a099"
+    }
+  ],
+  "identity_reviewed_not_supplied_to_imagegen": [
+    {
+      "path": "target/minnesota-pokemon/native/MN_F051/mn-106-thundraze-v1.front.png",
+      "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F051/mn-106-thundraze-v1.front.png",
+      "sha256": "bf19b596f30da035dec40a299f9baf61ea9ba1a050e81bc8f172a7b07bb0cb83"
+    },
+    {
+      "path": "target/minnesota-pokemon/native/MN_F051/mn-106-thundraze-v1.back.png",
+      "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F051/mn-106-thundraze-v1.back.png",
+      "sha256": "a75ffa603a82b1aad811597ec3bd1b75b05a279accb9e23d99c86e7d647df90f"
+    }
+  ],
+  "canonical_theme": "Prairie bison and rolling thunder: a dusty calf develops a resonating shoulder hump, then stores the thunder of its charge between broad horn tips.",
+  "palette_binding": {
+    "transparent_index": 0,
+    "visible_indices": [
+      1,
+      2,
+      3
+    ],
+    "normal_rgb555_words": [
+      32767,
+      6975,
+      6410,
+      0
+    ],
+    "shiny_rgb555_words": [
+      32767,
+      26598,
+      8518,
+      0
+    ],
+    "white_body_region_policy": "Simplify formerly white body/highlight regions to light ink1. Index0 is transparent everywhere, not an opaque white paint color."
+  },
+  "fit": 14
+}

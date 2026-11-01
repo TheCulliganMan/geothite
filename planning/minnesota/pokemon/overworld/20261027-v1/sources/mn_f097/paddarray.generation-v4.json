@@ -1,0 +1,13 @@
+{
+  "tool": "image_gen.imagegen",
+  "original_path": "/Users/ryanculligan/.codex/generated_images/01a17dcc-4f1a-77a2-9d21-0df036061346/exec-e1b2c6e2-8b84-4fe6-b7e6-bceddf586ced.png",
+  "source_size": [
+    1254,
+    1254
+  ],
+  "sha256": "35f9546207057753d8cc86a612b6520f929ba3546af549607e2714fcb3765ef1",
+  "reference_paths": [
+    "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f097/paddarray.overworld.imagegen-v3.png"
+  ],
+  "prompt": "paddarray.prompt-v4.txt"
+}

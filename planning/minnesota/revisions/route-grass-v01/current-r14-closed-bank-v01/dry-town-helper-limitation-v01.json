@@ -1,0 +1,8 @@
+{
+  "status": "ROUTE_GRASS_RETURN_REQUIRES_ENCOUNTER_AWARE_HELPER",
+  "failed_log": ".local/route-grass-review/r14-forest-bank-native-ledges-review-v01.log",
+  "source": "crates/crystal-bevy/src/bevy_shell/tests/brainerd_city.rs:129",
+  "cause": "town walk uses indoor_walk, which excludes TALL_GRASS; it cannot plan the deliberately required grassy uphill path.",
+  "replacement": "Five existing encounter-aware Headwaters cases, including grassy survey climb/dry drop/Continue, plus four actual production MCP hop lanes and four continued lower saves.",
+  "map_changed": false
+}

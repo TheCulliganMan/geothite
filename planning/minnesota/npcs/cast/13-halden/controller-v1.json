@@ -1,0 +1,25 @@
+{
+  "trainers": [
+    {
+      "id": "MN_LEAGUE_4",
+      "map": "MnLeagueRoom4",
+      "approach": [
+        5,
+        8
+      ],
+      "facing": "south",
+      "trainer_class": "MN_ELITE_HALDEN",
+      "sprite": "SPRITE_MN_ELITE_HALDEN",
+      "actor_script": "MnLeagueRoom4Challenge",
+      "fixture_events": [
+        "EVENT_MN_LEAGUE_RUN_ACTIVE"
+      ],
+      "fixture_memory": {
+        "wMnLeagueRun": "3"
+      },
+      "completion_memory": {
+        "wMnLeagueRun": "4"
+      }
+    }
+  ]
+}

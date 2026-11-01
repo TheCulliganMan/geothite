@@ -1,0 +1,233 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F064",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_139": {
+      "species_id": "MN_139",
+      "name": "Chorip",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          15,
+          24,
+          22
+        ],
+        [
+          8,
+          9,
+          17
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        23311,
+        17704,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          123,
+          198,
+          181
+        ],
+        [
+          66,
+          74,
+          140
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#7BC6B5",
+        "#424A8C",
+        "#000000"
+      ]
+    },
+    "MN_140": {
+      "species_id": "MN_140",
+      "name": "Choirbog",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          23,
+          16,
+          26
+        ],
+        [
+          10,
+          7,
+          16
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        27159,
+        16618,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          189,
+          132,
+          214
+        ],
+        [
+          82,
+          57,
+          132
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#BD84D6",
+        "#523984",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f064/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png",
+      "target/minnesota-pokemon/gen2-reference/bugs.png"
+    ]
+  },
+  "sprites": [
+    {
+      "id": "mn-139-chorip-v1",
+      "species_id": "MN_139",
+      "view": "front",
+      "source": "sprites/mn-f064/mn-139-140.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        560,
+        616
+      ],
+      "fit": [
+        38,
+        38
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        23311,
+        17704,
+        0
+      ]
+    },
+    {
+      "id": "mn-139-chorip-v1",
+      "species_id": "MN_139",
+      "view": "back",
+      "source": "sprites/mn-f064/mn-139-140.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        616,
+        615,
+        583
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        23311,
+        17704,
+        0
+      ]
+    },
+    {
+      "id": "mn-140-choirbog-v1",
+      "species_id": "MN_140",
+      "view": "front",
+      "source": "sprites/mn-f064/mn-139-140.front-back.imagegen-v1.png",
+      "crop": [
+        560,
+        0,
+        752,
+        616
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        27159,
+        16618,
+        0
+      ]
+    },
+    {
+      "id": "mn-140-choirbog-v1",
+      "species_id": "MN_140",
+      "view": "back",
+      "source": "sprites/mn-f064/mn-139-140.front-back.imagegen-v1.png",
+      "crop": [
+        615,
+        616,
+        697,
+        583
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        27159,
+        16618,
+        0
+      ]
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "notes": "Final source-contour-v1 board visually inspected: single mint resonance balloon grows three purple throat sacs, heavy limbs and crescent brow. Eye whites and distinct round sacs stay readable with solid colored interiors; outline follows sacs without black flooding. Rear spotted shoulders and side sacs fill close portrait crop, front faces turned away. No crop fragments observed.",
+    "sheet_sha256": "e9f0d111f845daa867851aec36ed9294f709321522bed9d16b7fb6b8a3d8cd32",
+    "outline_profile": "source-contour-v1"
+  }
+}

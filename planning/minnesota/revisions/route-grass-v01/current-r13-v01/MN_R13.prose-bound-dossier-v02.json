@@ -1,0 +1,1244 @@
+{
+  "id": "MN_R13",
+  "map_prefix": "MnR13",
+  "name": "League Approach",
+  "dimensions_metatiles": [
+    32,
+    64
+  ],
+  "chunk_metatiles": [
+    32,
+    24
+  ],
+  "chunk_columns": 1,
+  "chunk_rows": 3,
+  "endpoints": [
+    {
+      "place": "BOUNDARY WATERS",
+      "side": "N",
+      "gate_metatile": [
+        15,
+        1
+      ],
+      "landing_metatile": [
+        15,
+        3
+      ]
+    },
+    {
+      "place": "ELY",
+      "side": "S",
+      "gate_metatile": [
+        17,
+        62
+      ],
+      "landing_metatile": [
+        17,
+        60
+      ]
+    }
+  ],
+  "required_flags": [
+    "BADGE_1",
+    "BADGE_2",
+    "BADGE_3",
+    "BADGE_4",
+    "BADGE_5",
+    "BADGE_6",
+    "BADGE_7",
+    "BADGE_8",
+    "EVENT_MN_SURVEY_RESTORED"
+  ],
+  "quest": "Q08",
+  "tileset": "johto",
+  "source_references": [
+    "Route34",
+    "Route42",
+    "Route45"
+  ],
+  "description": "A hand-authored late-game granite passage. Wind Tor offers a real ramp/drop circuit above a shore turnout; a grass saddle and Cedar Shelter break the central ridge walk; Long Lake is visible beside the high-bank detour, and a Cut-sealed pine refuge sits off the final approach. The final League building remains in Ely. No field move gates the main passage.",
+  "main_path_metatiles": [
+    [
+      15,
+      1
+    ],
+    [
+      15,
+      10
+    ],
+    [
+      16,
+      10
+    ],
+    [
+      16,
+      17
+    ],
+    [
+      10,
+      17
+    ],
+    [
+      10,
+      27
+    ],
+    [
+      17,
+      27
+    ],
+    [
+      17,
+      35
+    ],
+    [
+      12,
+      35
+    ],
+    [
+      12,
+      40
+    ],
+    [
+      23,
+      40
+    ],
+    [
+      23,
+      46
+    ],
+    [
+      17,
+      46
+    ],
+    [
+      17,
+      62
+    ]
+  ],
+  "main_lane_width_gameplay_tiles": 2,
+  "districts": [
+    {
+      "id": "D1",
+      "name": "Border Lake and Wind Tor",
+      "bounds_metatiles": [
+        0,
+        0,
+        32,
+        17
+      ],
+      "landmark_metatile": [
+        23,
+        9
+      ],
+      "purpose": "A lake-facing turnout and real climb/drop circuit give the north end two different excursions."
+    },
+    {
+      "id": "D2",
+      "name": "Grass saddle and Cedar Shelter",
+      "bounds_metatiles": [
+        2,
+        17,
+        19,
+        33
+      ],
+      "landmark_metatile": [
+        7,
+        27
+      ],
+      "purpose": "The four-tile saddle requires six encounter steps; a side shelter restores the team before the final challengers."
+    },
+    {
+      "id": "D3",
+      "name": "Long Lake high bank",
+      "bounds_metatiles": [
+        14,
+        19,
+        32,
+        39
+      ],
+      "landmark_metatile": [
+        19,
+        30
+      ],
+      "purpose": "Protected lookout, grassy bank alternative and a deliberate lake-side resource spur."
+    },
+    {
+      "id": "D4",
+      "name": "Dry granite pass",
+      "bounds_metatiles": [
+        3,
+        34,
+        29,
+        49
+      ],
+      "landmark_metatile": [
+        23,
+        42
+      ],
+      "purpose": "Close granite ribs and a trainer/grass choice shape a short final practice pass."
+    },
+    {
+      "id": "D5",
+      "name": "Cedar refuge and Ely arrival",
+      "bounds_metatiles": [
+        3,
+        48,
+        29,
+        64
+      ],
+      "landmark_metatile": [
+        17,
+        59
+      ],
+      "purpose": "A useful Cut-sealed late-team resource/refuge and the final mentor before Ely."
+    }
+  ],
+  "loops": [],
+  "minimum_optional_branches": 4,
+  "trainers": [
+    {
+      "id": "MN_R13_T01",
+      "display_name": "ADA",
+      "trainer_class": "COOLTRAINERF",
+      "sprite": "SPRITE_COOLTRAINER_F",
+      "tile": [
+        23,
+        25
+      ],
+      "anchor_metatile": [
+        11,
+        12
+      ],
+      "facing": "west",
+      "sight_range": 3,
+      "party": [
+        {
+          "species": "BUOYOSTIC",
+          "level": 43
+        },
+        {
+          "species": "REEDRAFT",
+          "level": 43
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R13_TRAINER_01",
+      "block_main_lane": false,
+      "before_lines": [
+        "Hear that shore?",
+        "It carries sound.",
+        "My team listens",
+        "before we move."
+      ],
+      "after_lines": [
+        "You heard our",
+        "rhythm right away."
+      ],
+      "loss_lines": [
+        "The lake is loud",
+        "when we are quiet."
+      ]
+    },
+    {
+      "id": "MN_R13_T02",
+      "display_name": "REID",
+      "trainer_class": "HIKER",
+      "sprite": "SPRITE_POKEFAN_M",
+      "tile": [
+        17,
+        39
+      ],
+      "anchor_metatile": [
+        8,
+        19
+      ],
+      "facing": "east",
+      "sight_range": 3,
+      "party": [
+        {
+          "species": "BANDRAKE",
+          "level": 44
+        },
+        {
+          "species": "HELIKNOCK",
+          "level": 43
+        },
+        {
+          "species": "PLOWZER",
+          "level": 44
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R13_TRAINER_02",
+      "block_main_lane": false,
+      "before_lines": [
+        "These long ridges",
+        "were worn by ice.",
+        "My team has stood",
+        "its ground too!"
+      ],
+      "after_lines": [
+        "Even granite",
+        "yields in time."
+      ],
+      "loss_lines": [
+        "A deep crack can",
+        "split solid rock."
+      ]
+    },
+    {
+      "id": "MN_R13_T03",
+      "display_name": "NELL",
+      "trainer_class": "COOLTRAINERF",
+      "sprite": "SPRITE_COOLTRAINER_F",
+      "tile": [
+        49,
+        17
+      ],
+      "anchor_metatile": [
+        24,
+        8
+      ],
+      "facing": "west",
+      "sight_range": 3,
+      "party": [
+        {
+          "species": "LATCHQUILL",
+          "level": 44
+        },
+        {
+          "species": "BOOMRUFF",
+          "level": 44
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R13_TRAINER_03",
+      "block_main_lane": false,
+      "before_lines": [
+        "Up here, the wind",
+        "changes each turn.",
+        "Can you read it",
+        "before I attack?"
+      ],
+      "after_lines": [
+        "You kept your",
+        "balance up here."
+      ],
+      "loss_lines": [
+        "The lake lies low.",
+        "I train up high."
+      ]
+    },
+    {
+      "id": "MN_R13_T04",
+      "display_name": "CAL",
+      "trainer_class": "BLACKBELT_T",
+      "sprite": "SPRITE_BLACK_BELT",
+      "tile": [
+        47,
+        85
+      ],
+      "anchor_metatile": [
+        23,
+        42
+      ],
+      "facing": "west",
+      "sight_range": 4,
+      "party": [
+        {
+          "species": "GREYTAG",
+          "level": 45
+        },
+        {
+          "species": "BOUGHLASH",
+          "level": 44
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R13_TRAINER_04",
+      "block_main_lane": false,
+      "before_lines": [
+        "A narrow pass",
+        "needs calm feet.",
+        "Show me a steady",
+        "battle stance!"
+      ],
+      "after_lines": [
+        "Your team gave",
+        "each other space."
+      ],
+      "loss_lines": [
+        "Breathe. Then let",
+        "your team move."
+      ]
+    },
+    {
+      "id": "MN_R13_T05",
+      "display_name": "FAY",
+      "trainer_class": "COOLTRAINERF",
+      "sprite": "SPRITE_COOLTRAINER_F",
+      "tile": [
+        33,
+        63
+      ],
+      "anchor_metatile": [
+        16,
+        31
+      ],
+      "facing": "east",
+      "sight_range": 3,
+      "party": [
+        {
+          "species": "SOLSTORT",
+          "level": 45
+        },
+        {
+          "species": "RECALLISK",
+          "level": 45
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R13_TRAINER_05",
+      "block_main_lane": false,
+      "before_lines": [
+        "The balcony has",
+        "two ways around.",
+        "I always plan for",
+        "a second option."
+      ],
+      "after_lines": [
+        "You found a way",
+        "I had not seen."
+      ],
+      "loss_lines": [
+        "A safe return is",
+        "part of the plan."
+      ]
+    },
+    {
+      "id": "MN_R13_T07",
+      "display_name": "IVY",
+      "trainer_class": "COOLTRAINERF",
+      "sprite": "SPRITE_COOLTRAINER_F",
+      "tile": [
+        17,
+        107
+      ],
+      "anchor_metatile": [
+        8,
+        53
+      ],
+      "facing": "east",
+      "sight_range": 3,
+      "party": [
+        {
+          "species": "PARAFLOSS",
+          "level": 46
+        },
+        {
+          "species": "SLIDEWAKE",
+          "level": 45
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R13_TRAINER_07",
+      "block_main_lane": false,
+      "before_lines": [
+        "The high bank",
+        "keeps my feet dry.",
+        "My team likes",
+        "the lake breeze."
+      ],
+      "after_lines": [
+        "That battle made",
+        "quite a splash!"
+      ],
+      "loss_lines": [
+        "You can follow",
+        "this bank south."
+      ]
+    },
+    {
+      "id": "MN_R13_T10",
+      "display_name": "TOMAS",
+      "trainer_class": "COOLTRAINERM",
+      "sprite": "SPRITE_COOLTRAINER_M",
+      "tile": [
+        37,
+        117
+      ],
+      "anchor_metatile": [
+        18,
+        58
+      ],
+      "facing": "west",
+      "sight_range": 3,
+      "party": [
+        {
+          "species": "PLOWZER",
+          "level": 47
+        },
+        {
+          "species": "SILOHAWK",
+          "level": 47
+        },
+        {
+          "species": "GOUGECREST",
+          "level": 48
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R13_TRAINER_10",
+      "block_main_lane": false,
+      "before_lines": [
+        "Eight badges!",
+        "We both made it.",
+        "One last practice",
+        "before the League?"
+      ],
+      "after_lines": [
+        "Your team belongs",
+        "at the League."
+      ],
+      "loss_lines": [
+        "Trust the partners",
+        "who got you here."
+      ]
+    }
+  ],
+  "items": [
+    {
+      "id": "MN_R13_ITEM_01",
+      "item": "HYPER_POTION",
+      "quantity": 1,
+      "tile": [
+        13,
+        27
+      ],
+      "anchor_metatile": [
+        6,
+        13
+      ],
+      "flag": "EVENT_MN_R13_ITEM_01",
+      "access": "Optional lake-facing bank spur."
+    },
+    {
+      "id": "MN_R13_ITEM_02",
+      "item": "ULTRA_BALL",
+      "quantity": 1,
+      "tile": [
+        53,
+        19
+      ],
+      "anchor_metatile": [
+        26,
+        9
+      ],
+      "flag": "EVENT_MN_R13_ITEM_02",
+      "access": "Wind Tor grass-side lookout; return via ramp or real south drop."
+    },
+    {
+      "id": "MN_R13_ITEM_03",
+      "item": "MAX_REPEL",
+      "quantity": 1,
+      "tile": [
+        37,
+        61
+      ],
+      "anchor_metatile": [
+        18,
+        30
+      ],
+      "flag": "EVENT_MN_R13_ITEM_03",
+      "access": "Protected Long Lake bank spur."
+    },
+    {
+      "id": "MN_R13_ITEM_04",
+      "item": "REVIVE",
+      "quantity": 1,
+      "tile": [
+        21,
+        109
+      ],
+      "anchor_metatile": [
+        10,
+        54
+      ],
+      "flag": "EVENT_MN_R13_ITEM_04",
+      "access": "Pine refuge sealed by the native Cut tree; useful late-route recovery."
+    }
+  ],
+  "encounters": {
+    "grass_rates": {
+      "morning": 10,
+      "day": 10,
+      "night": 10
+    },
+    "grass": {
+      "morning": [
+        {
+          "species": "URSARING",
+          "level": 43
+        },
+        {
+          "species": "GRAVELER",
+          "level": 44
+        },
+        {
+          "species": "GOLBAT",
+          "level": 45
+        },
+        {
+          "species": "TANGELA",
+          "level": 46
+        },
+        {
+          "species": "SNEASEL",
+          "level": 47
+        },
+        {
+          "species": "SKARMORY",
+          "level": 48
+        },
+        {
+          "species": "DRAGONAIR",
+          "level": 48
+        }
+      ],
+      "day": [
+        {
+          "species": "URSARING",
+          "level": 43
+        },
+        {
+          "species": "GRAVELER",
+          "level": 44
+        },
+        {
+          "species": "GOLBAT",
+          "level": 45
+        },
+        {
+          "species": "TANGELA",
+          "level": 46
+        },
+        {
+          "species": "SNEASEL",
+          "level": 47
+        },
+        {
+          "species": "SKARMORY",
+          "level": 48
+        },
+        {
+          "species": "DRAGONAIR",
+          "level": 48
+        }
+      ],
+      "night": [
+        {
+          "species": "NOCTOWL",
+          "level": 43
+        },
+        {
+          "species": "ARIADOS",
+          "level": 44
+        },
+        {
+          "species": "GOLBAT",
+          "level": 45
+        },
+        {
+          "species": "TANGELA",
+          "level": 46
+        },
+        {
+          "species": "SNEASEL",
+          "level": 47
+        },
+        {
+          "species": "SKARMORY",
+          "level": 48
+        },
+        {
+          "species": "DRAGONAIR",
+          "level": 48
+        }
+      ]
+    },
+    "water_rate": 4,
+    "water": [
+      {
+        "species": "POLIWAG",
+        "level": 43
+      },
+      {
+        "species": "WOOPER",
+        "level": 44
+      },
+      {
+        "species": "MARILL",
+        "level": 48
+      }
+    ]
+  },
+  "interiors": [
+    {
+      "id": "MnR13Cave1F",
+      "template": "UnionCave1F",
+      "width_metatiles": 10,
+      "height_metatiles": 8,
+      "dimensions_metatiles": [
+        10,
+        8
+      ],
+      "tileset": "cave",
+      "border_block": 46,
+      "exterior_anchor_metatile": [
+        7,
+        26
+      ],
+      "mandatory": false,
+      "purpose": "A four-block spring fills the former empty western approach; walk its eastern bank to the protected healing terrace or take the separate short climb to the Ether notch.",
+      "rows": [
+        "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e",
+        "2e 2e 2e 2e 2e 04 05 06 2e 2e",
+        "2e 2e 2e 2e 04 02 02 0a 2e 2e",
+        "2e 2e 2e 2e 2d 12 21 22 2e 2e",
+        "2e 2e 3e 3d 2d 02 0a 2e 2e 2e",
+        "2e 2e 32 33 02 0a 36 02 0a 2e",
+        "2e 2e 20 02 21 22 21 21 22 2e",
+        "2e 2e 2e 07 2e 2e 2e 2e 2e 2e"
+      ],
+      "exits": [
+        [
+          7,
+          15
+        ]
+      ],
+      "clear_arrival": [
+        7,
+        14
+      ],
+      "exit_collision": "LADDER",
+      "residents": [
+        {
+          "id": "MN_R13_HARPER",
+          "sprite": "SPRITE_POKEFAN_M",
+          "tile": [
+            13,
+            5
+          ],
+          "facing": "south",
+          "lines": [
+            "Rest in the rock.",
+            "I will tend to",
+            "your whole team.",
+            "Ely is not far."
+          ],
+          "service": "heal_party"
+        }
+      ],
+      "items": [
+        {
+          "id": "MN_R13_SHELTER_ETHER",
+          "item": "MAX_ETHER",
+          "quantity": 1,
+          "tile": [
+            15,
+            11
+          ],
+          "flag": "EVENT_MN_R13_SHELTER_ETHER"
+        }
+      ],
+      "signs": [],
+      "candidate_status": "Source candidate under whole-room, player-camera and production traversal review.",
+      "review_contract": {
+        "quality_revision": "johto-quality-v01",
+        "palette_group": "nite",
+        "native_stair_blocks": [
+          [
+            5,
+            3
+          ],
+          [
+            6,
+            5
+          ]
+        ],
+        "viewpoints": [
+          {
+            "id": "mouth",
+            "tile": [
+              7,
+              14
+            ]
+          },
+          {
+            "id": "spring-bank",
+            "tile": [
+              9,
+              11
+            ]
+          },
+          {
+            "id": "healer",
+            "tile": [
+              12,
+              5
+            ]
+          },
+          {
+            "id": "healer-stair",
+            "tile": [
+              11,
+              7
+            ]
+          },
+          {
+            "id": "upper-shelter",
+            "tile": [
+              10,
+              5
+            ]
+          },
+          {
+            "id": "cache-stair",
+            "tile": [
+              12,
+              11
+            ]
+          },
+          {
+            "id": "ether",
+            "tile": [
+              14,
+              11
+            ]
+          },
+          {
+            "id": "widest-approach",
+            "tile": [
+              9,
+              12
+            ]
+          }
+        ],
+        "notes": "A four-block spring fills the former empty western approach; walk its eastern bank to the protected healing terrace or take the separate short climb to the Ether notch."
+      }
+    }
+  ],
+  "shortcut": null,
+  "art_constraints": [
+    "Only original packed 8x8 source tiles.",
+    "No painted shadows, enlarged trees or perspective props.",
+    "Fit source shoreline/cliff quadrants; draw source trees in coherent metatile groups."
+  ],
+  "status": "Canonical seasonal source matches all native terrain in the verified final geography publication.",
+  "anchor_status": "Frozen original/candidate bytes and all nine native module guards checked during source promotion; controller and visual evidence are recorded in the final geography receipt.",
+  "residents": [
+    {
+      "id": "MN_R13_RUTH",
+      "sprite": "SPRITE_GRANNY",
+      "tile": [
+        31,
+        9
+      ],
+      "facing": "west",
+      "lines": [
+        "Eight badges now!",
+        "The survey lights",
+        "show the safe way."
+      ]
+    },
+    {
+      "id": "MN_R13_LEIF",
+      "sprite": "SPRITE_FISHER",
+      "tile": [
+        19,
+        27
+      ],
+      "facing": "north",
+      "lines": [
+        "A sheltered bay",
+        "under the tor.",
+        "The fence marks",
+        "a safe lake view."
+      ]
+    },
+    {
+      "id": "MN_R13_GEOLOGIST",
+      "sprite": "SPRITE_SCIENTIST",
+      "tile": [
+        17,
+        57
+      ],
+      "facing": "east",
+      "lines": [
+        "Ice shaped the gap",
+        "between the ribs.",
+        "The shelter has",
+        "room for the team."
+      ]
+    },
+    {
+      "id": "MN_R13_FINN",
+      "sprite": "SPRITE_YOUNGSTER",
+      "tile": [
+        27,
+        71
+      ],
+      "facing": "north",
+      "lines": [
+        "The cave keeper",
+        "can heal the team.",
+        "Check your moves",
+        "before Ely."
+      ]
+    },
+    {
+      "id": "MN_R13_BIRD_WATCHER",
+      "sprite": "SPRITE_COOLTRAINER_M",
+      "tile": [
+        39,
+        65
+      ],
+      "facing": "east",
+      "lines": [
+        "BOOMRUFF follow",
+        "the lake bank.",
+        "You can see water",
+        "from this rail."
+      ]
+    },
+    {
+      "id": "MN_R13_SCOUT",
+      "sprite": "SPRITE_LASS",
+      "tile": [
+        33,
+        121
+      ],
+      "facing": "north",
+      "lines": [
+        "Ely is just south.",
+        "Your team carried",
+        "you all this way."
+      ]
+    }
+  ],
+  "signs": [
+    {
+      "id": "MN_R13_SIGN_01",
+      "tile": [
+        28,
+        12
+      ],
+      "lines": [
+        "LEAGUE APPROACH",
+        "ELY: FOLLOW SOUTH"
+      ]
+    },
+    {
+      "id": "MN_R13_SIGN_02",
+      "tile": [
+        32,
+        24
+      ],
+      "lines": [
+        "BORDER LAKE: WEST",
+        "WIND TOR: EAST",
+        "ELY: SOUTH"
+      ]
+    },
+    {
+      "id": "MN_R13_SIGN_03",
+      "tile": [
+        18,
+        40
+      ],
+      "lines": [
+        "GRASS SADDLE",
+        "CEDAR SHELTER: S"
+      ]
+    },
+    {
+      "id": "MN_R13_SIGN_04",
+      "tile": [
+        16,
+        56
+      ],
+      "lines": [
+        "CEDAR SHELTER",
+        "REST / CHECK MOVES"
+      ]
+    },
+    {
+      "id": "MN_R13_SIGN_05",
+      "tile": [
+        38,
+        62
+      ],
+      "lines": [
+        "LONG LAKE",
+        "STAY BEHIND RAIL"
+      ]
+    },
+    {
+      "id": "MN_R13_SIGN_06",
+      "tile": [
+        36,
+        120
+      ],
+      "lines": [
+        "ELY: SOUTH",
+        "LEAGUE GATE AHEAD"
+      ]
+    }
+  ],
+  "doors": [
+    {
+      "id": "CEDAR_SHELTER",
+      "warp_index": 1,
+      "tile": [
+        14,
+        53
+      ],
+      "arrival_tile": [
+        14,
+        54
+      ],
+      "return_tile": [
+        14,
+        54
+      ],
+      "return_warp_index": 2,
+      "target": "MnR13Cave1F",
+      "target_warp": 1,
+      "collision": "CAVE"
+    }
+  ],
+  "viewpoints": [
+    {
+      "id": "NORTH_ARRIVAL",
+      "tile": [
+        31,
+        7
+      ]
+    },
+    {
+      "id": "BORDER_LAKE",
+      "tile": [
+        18,
+        25
+      ]
+    },
+    {
+      "id": "WIND_TOR",
+      "tile": [
+        47,
+        17
+      ]
+    },
+    {
+      "id": "TOR_RAMP",
+      "tile": [
+        47,
+        26
+      ]
+    },
+    {
+      "id": "GRASS_SADDLE",
+      "tile": [
+        20,
+        41
+      ]
+    },
+    {
+      "id": "CEDAR_SHELTER",
+      "tile": [
+        15,
+        55
+      ]
+    },
+    {
+      "id": "LONG_LAKE",
+      "tile": [
+        40,
+        60
+      ]
+    },
+    {
+      "id": "DRY_PASS",
+      "tile": [
+        47,
+        83
+      ]
+    },
+    {
+      "id": "CEDAR_REFUGE_GATE",
+      "tile": [
+        18,
+        102
+      ]
+    },
+    {
+      "id": "CEDAR_REFUGE",
+      "tile": [
+        20,
+        108
+      ]
+    },
+    {
+      "id": "ELY_ARRIVAL",
+      "tile": [
+        35,
+        119
+      ]
+    }
+  ],
+  "implementation": {
+    "layout": "MN_R13.layout.json",
+    "scope": "32 by 64 metatiles across three clipped exterior maps plus one 10 by 8 refuge.",
+    "art_review": "../renders/league-approach/whole-route.png",
+    "state": "Current three-chunk native overlay and refuge match source. Geometry, native Cut, actual battle/PP, refuge rest, Continue, stdio MCP, text-client and audio checks pass. Hub gates and earned Q08 remain pending.",
+    "superseded_native_extent": [
+      96,
+      144
+    ]
+  },
+  "retired_trainers": [
+    {
+      "id": "MN_R13_T06",
+      "defeated_flag": "EVENT_MN_R13_TRAINER_06",
+      "status": "Reserved unused; removed from the eighteen-chunk reserve rather than forcing another battle."
+    },
+    {
+      "id": "MN_R13_T08",
+      "defeated_flag": "EVENT_MN_R13_TRAINER_08",
+      "status": "Reserved unused; removed from the eighteen-chunk reserve rather than forcing another battle."
+    },
+    {
+      "id": "MN_R13_T09",
+      "defeated_flag": "EVENT_MN_R13_TRAINER_09",
+      "status": "Reserved unused; removed from the eighteen-chunk reserve rather than forcing another battle."
+    }
+  ],
+  "required_grass_crossings": [
+    {
+      "id": "SADDLE_HABITAT",
+      "bounds_core": [
+        18,
+        42,
+        22,
+        48
+      ],
+      "minimum_grass_steps": 6
+    },
+    {
+      "id": "SOUTHERN_PINE_NECK",
+      "bounds_core": [
+        34,
+        106,
+        36,
+        112
+      ],
+      "minimum_grass_steps": 6
+    }
+  ],
+  "cut_gates": [
+    {
+      "id": "CEDAR_REFUGE_GATE",
+      "tile": [
+        18,
+        103
+      ],
+      "approach": [
+        18,
+        102
+      ],
+      "replacement_block": "3f",
+      "targets": [
+        [
+          17,
+          106
+        ],
+        [
+          20,
+          109
+        ]
+      ],
+      "gated_actor_ids": [
+        "MN_R13_T07",
+        "MN_R13_ITEM_04"
+      ]
+    }
+  ],
+  "one_way_ledges": [
+    {
+      "id": "WIND_TOR_DROP",
+      "bounds_core": [
+        38,
+        24,
+        40,
+        26
+      ],
+      "direction": "south",
+      "upper_approach": [
+        39,
+        23
+      ],
+      "hop_from": [
+        39,
+        24
+      ],
+      "landing": [
+        39,
+        26
+      ],
+      "reverse_blocked": [
+        39,
+        25
+      ],
+      "return_passage_core": [
+        46,
+        24,
+        48,
+        26
+      ],
+      "minimum_return_steps": 19,
+      "side_barriers": [
+        [
+          37,
+          24
+        ],
+        [
+          40,
+          24
+        ]
+      ]
+    }
+  ],
+  "battle_or_grass_choices": [
+    {
+      "id": "DRY_PASS_CAL",
+      "trainer_id": "MN_R13_T04",
+      "bounds_core": [
+        42,
+        84,
+        46,
+        90
+      ],
+      "minimum_grass_steps": 6
+    }
+  ],
+  "compiled_tileset": "mn_winter_north_shore",
+  "inland_winter_review": {
+    "status": "NATIVE_TERRAIN_VERIFIED_CANONICAL_SOURCE",
+    "instruction": "Warm Superior coast and Grand Marais; substantial winter inland near Ely.",
+    "baseline_pack_sha256": "1c6ba5d59097546ff8b94e09c809d270727ce1272acb93759b89f3b3c7d9b90a",
+    "full_region_metatiles": [
+      32,
+      64
+    ],
+    "unchanged": "Native water, cliffs, gates, actors, scripts, story, rooms, ledges and ports. Ice alters only listed original Floor quadrants.",
+    "authored_strokes_retained": 99,
+    "native_reconciliation_points": 65,
+    "seasonal_points": 1553,
+    "published_pack_sha256": "65cf6f98e65ada839ec5afaa57728bf8289d3a50ba53ba6b9b50f08d3620bb17",
+    "published_identity": "f34280a5fc5d6ab8ccc3ec4ef4317a6ea9321070df342ea95aca5745514a0223",
+    "verification_scope": "Full native modules, exact source raster, seasonal cells and final inland connection. Production controller and visual acceptance remain separate evidence in the final geography receipt."
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "trainer_class": "MN_SKI_PATROLLER",
+  "class_name": "SKI PATROLLER",
+  "trainer_ids": [
+    "MN_ICE_SKIER_ELSA"
+  ],
+  "actors": [
+    {
+      "map": "MnRainyRiverIcefields",
+      "script": "MN_ICE_SKIER_ELSA",
+      "tile": [
+        47,
+        22
+      ],
+      "previous_sprite": "SPRITE_COOLTRAINER_F"
+    }
+  ]
+}

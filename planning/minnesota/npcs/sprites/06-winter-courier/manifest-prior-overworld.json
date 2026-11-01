@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "id": "MN_WINTER_COURIER",
+  "name": "COURIER IVAR",
+  "status": "accepted-native-playable",
+  "overworld_frames": 6,
+  "overworld_size": [
+    16,
+    16
+  ],
+  "battle_size": [
+    56,
+    56
+  ],
+  "palette_rgb555": [
+    32767,
+    22431,
+    4500,
+    0
+  ],
+  "source": "native-pixels-v1.json",
+  "placement": "placement-v1.json",
+  "pack": "content-packs/minnesota-original-npcs-06-v01.crystalpack",
+  "parent": "content-packs/minnesota-original-npcs-05-v01.crystalpack",
+  "runtime_checks": {
+    "one_controller_test_passed": true,
+    "talk_and_input_ownership": true,
+    "battle_turn_and_pp": true,
+    "battle_save_load": true,
+    "actual_victory_and_defeat_flag_before_render_capture": true,
+    "post_battle_talk": true,
+    "existing_trainers_and_assets_preserved": true
+  },
+  "manual_visual_review": "Reviewed six native poses, repaired separated eyes on brown skin, fur/scarf transparency and envelope. Actual battle intro and snowy post-win map show the same earflap hat, warm dark coat with cream trim, trailing scarf, letter and crossbody satchel. Both native walking states and clean rear hat view passed review.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/sprites/06-winter-courier/native-pixels-v1.json": "500e64cbcd5d34d1819aa2fed54e6a4feacd29066798650532462e3afe2ba9b9",
+    "planning/minnesota/npcs/sprites/06-winter-courier/placement-v1.json": "287183b95148d388c832cfed9980d92ddca4e5a4161790c2a71b516c4fde2b00",
+    "content-packs/minnesota-original-npcs-06-v01.crystalpack": "65a455bbe10f6518d0706d2e8fb866bf382ac920b4016960708dea04319c47d2",
+    "target/npc-sprites/courier/controller-v01.log": "1cb7d6d7b6bb313270ef6606f3da70876d21f0aa80c89d76b3a0c3345904003b",
+    "target/npc-sprites/courier/gameplay-v01/original-npc-trainer-intro.png": "22f68ae55213dbba3a1833a9593381cb6991a7b2a8b4336c653b2d1ced026785",
+    "target/npc-sprites/courier/gameplay-v01/original-npc-first-turn.png": "1565628f21126a6607f8aeda27da329569082c7c6c764f3b1bf44b86161c8b32",
+    "target/npc-sprites/courier/gameplay-v01/original-npc-overworld-state.png": "f5338f45e3386202ff9b1acd47b1a5ff922a9a61a164a2cf31fac0e1fc63b8df"
+  }
+}

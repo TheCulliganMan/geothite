@@ -1,0 +1,130 @@
+{
+  "exterior_buildings": [
+    {
+      "outside": [
+        10,
+        10
+      ],
+      "room": "MnBemidjiGym",
+      "arrival": [
+        4,
+        17
+      ],
+      "carpets": [
+        [
+          4,
+          19
+        ],
+        [
+          5,
+          19
+        ]
+      ]
+    },
+    {
+      "outside": [
+        7,
+        16
+      ],
+      "room": "MnBemidjiShelfHouse",
+      "arrival": [
+        6,
+        5
+      ],
+      "carpets": [
+        [
+          6,
+          7
+        ],
+        [
+          7,
+          7
+        ]
+      ]
+    },
+    {
+      "outside": [
+        31,
+        10
+      ],
+      "room": "MnBemidjiPokecenter1F",
+      "arrival": [
+        10,
+        13
+      ],
+      "carpets": [
+        [
+          10,
+          15
+        ],
+        [
+          11,
+          15
+        ]
+      ]
+    },
+    {
+      "outside": [
+        33,
+        18
+      ],
+      "room": "MnBemidjiNorthHouse",
+      "arrival": [
+        6,
+        5
+      ],
+      "carpets": [
+        [
+          6,
+          7
+        ],
+        [
+          7,
+          7
+        ]
+      ]
+    },
+    {
+      "outside": [
+        41,
+        20
+      ],
+      "room": "MnBemidjiMart",
+      "arrival": [
+        6,
+        5
+      ],
+      "carpets": [
+        [
+          6,
+          7
+        ],
+        [
+          7,
+          7
+        ]
+      ]
+    },
+    {
+      "outside": [
+        9,
+        38
+      ],
+      "room": "MnBemidjiHeritageHouse",
+      "arrival": [
+        8,
+        9
+      ],
+      "carpets": [
+        [
+          8,
+          11
+        ],
+        [
+          9,
+          11
+        ]
+      ]
+    }
+  ]
+}

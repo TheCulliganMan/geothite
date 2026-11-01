@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F076",
+  "species": [
+    {
+      "species_id": "MN_164",
+      "runtime_token": "MISPAIR",
+      "palette_rgb555": [
+        32767,
+        19260,
+        25196,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        15068,
+        12744,
+        0
+      ],
+      "fit": [
+        12,
+        12
+      ],
+      "alpha_threshold": 200,
+      "sampling": "area_vote",
+      "minimum_foreground_samples": 32,
+      "black_priority_samples": 24,
+      "interior_black_samples": null,
+      "opaque_interior_minimum_samples": 60,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "mispair.overworld.imagegen-v1.png",
+          "crop": [
+            29,
+            66,
+            480,
+            380
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "mispair.overworld.imagegen-v1.png",
+          "crop": [
+            529,
+            64,
+            480,
+            380
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "mispair.overworld.imagegen-v1.png",
+          "crop": [
+            1037,
+            79,
+            480,
+            380
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "mispair.overworld.imagegen-v1.png",
+          "crop": [
+            30,
+            561,
+            480,
+            380
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "mispair.overworld.imagegen-v1.png",
+          "crop": [
+            531,
+            553,
+            480,
+            380
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "mispair.overworld.imagegen-v1.png",
+          "crop": [
+            1041,
+            573,
+            480,
+            380
+          ]
+        }
+      ]
+    }
+  ]
+}

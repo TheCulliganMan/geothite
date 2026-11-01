@@ -1,0 +1,26 @@
+{
+  "pid": 81623,
+  "steps": [
+    {
+      "step": "publication-wrapper",
+      "exit_code": 0,
+      "log": ".local/route-grass-review/bemidji-plateau-publication-wrapper-v01.log"
+    },
+    {
+      "step": "native-public",
+      "exit_code": 0,
+      "log": ".local/route-grass-review/bemidji-plateau-native-public-v01.log"
+    },
+    {
+      "step": "production-inputs",
+      "exit_code": 0,
+      "log": ".local/route-grass-review/bemidji-plateau-production-inputs-v01.log"
+    },
+    {
+      "step": "native-renders",
+      "exit_code": 0,
+      "log": ".local/route-grass-review/bemidji-plateau-native-renders-v01.log"
+    }
+  ],
+  "scope": "Automated native publication and verification only. Actual image inspection and selection remain manual followups."
+}

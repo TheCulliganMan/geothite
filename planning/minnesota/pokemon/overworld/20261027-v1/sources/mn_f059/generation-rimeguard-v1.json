@@ -1,0 +1,9 @@
+{
+  "tool": "built-in ImageGen",
+  "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f059/rimeguard.overworld.imagegen-v1.png",
+  "default_original": "/Users/ryanculligan/.codex/generated_images/01a17dc4-dd75-7642-a1c6-4bf13fda70c6/exec-43c1d1ec-cbd4-4580-8a09-6f3ae2c962f1.png",
+  "sha256": "2416f561e56efe8b56af9a84f2688f2ff7788eb16698231e9df85bf7c9ca390c",
+  "one_species_per_call": true,
+  "genuine16_style_only_input": true,
+  "initial_review": "HOLD: two rails instead of three; needs source correction"
+}

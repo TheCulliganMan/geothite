@@ -1,0 +1,131 @@
+{
+  "family_id": "MN_F134",
+  "status": "root-reviewed-ready-for-root-registration",
+  "registered_globally": false,
+  "generated_images": 1,
+  "generation_tool": "built-in image_gen",
+  "source": "sprites/mn-f134/front-back.imagegen-v1.png",
+  "source_sha256": "3976e3e178287b1ed3fec59075d6af568311bf443b42df5afb7441e62beec1e7",
+  "prompt": "prompt-v1.txt",
+  "selected_native_candidate": "v2-area",
+  "profile_count": 3,
+  "evolution_levels": [
+    20,
+    38
+  ],
+  "profile_contract": "PASS: production catalog load, complete schema, two pages of three lines <=18 chars, classification <=11 chars, evolution closure",
+  "native_graphics_contract": "PASS: production catalog load against actual canonical native directories; reviewed full-board hash, source/import/palette/index/PNG/2bpp verification",
+  "reference_audit": "PASS: all proposed native level/TM/egg moves, growth curves and footprint donors exist in completed v5 pack; no extension/export built",
+  "native_views": [
+    {
+      "species_id": "MN_295",
+      "view": "front",
+      "size": 56,
+      "sampling": "area_vote",
+      "contour": "solid",
+      "palette_rgb555": [
+        32767,
+        17146,
+        9770,
+        0
+      ],
+      "source_sha256": "3976e3e178287b1ed3fec59075d6af568311bf443b42df5afb7441e62beec1e7"
+    },
+    {
+      "species_id": "MN_295",
+      "view": "back",
+      "size": 48,
+      "sampling": "area_vote",
+      "contour": "solid",
+      "palette_rgb555": [
+        32767,
+        17146,
+        9770,
+        0
+      ],
+      "source_sha256": "3976e3e178287b1ed3fec59075d6af568311bf443b42df5afb7441e62beec1e7"
+    },
+    {
+      "species_id": "MN_296",
+      "view": "front",
+      "size": 56,
+      "sampling": "area_vote",
+      "contour": "solid",
+      "palette_rgb555": [
+        32767,
+        13106,
+        16837,
+        0
+      ],
+      "source_sha256": "3976e3e178287b1ed3fec59075d6af568311bf443b42df5afb7441e62beec1e7"
+    },
+    {
+      "species_id": "MN_296",
+      "view": "back",
+      "size": 48,
+      "sampling": "area_vote",
+      "contour": "solid",
+      "palette_rgb555": [
+        32767,
+        13106,
+        16837,
+        0
+      ],
+      "source_sha256": "3976e3e178287b1ed3fec59075d6af568311bf443b42df5afb7441e62beec1e7"
+    },
+    {
+      "species_id": "MN_297",
+      "view": "front",
+      "size": 56,
+      "sampling": "area_vote",
+      "contour": "solid",
+      "palette_rgb555": [
+        32767,
+        14133,
+        15716,
+        0
+      ],
+      "source_sha256": "3976e3e178287b1ed3fec59075d6af568311bf443b42df5afb7441e62beec1e7"
+    },
+    {
+      "species_id": "MN_297",
+      "view": "back",
+      "size": 48,
+      "sampling": "area_vote",
+      "contour": "solid",
+      "palette_rgb555": [
+        32767,
+        14133,
+        15716,
+        0
+      ],
+      "source_sha256": "3976e3e178287b1ed3fec59075d6af568311bf443b42df5afb7441e62beec1e7"
+    }
+  ],
+  "selected_output_hashes": {
+    "mn-295-wadebud-v1.front.png": "cb31d5a2f317ad2effa42375c58f786026130ca0e6f1e70d8b891aee082a601c",
+    "mn-295-wadebud-v1.front.2bpp": "b00991ba835041cad23c3679a0fce855604a7844e32f5c2650db8377a2c7b6bf",
+    "mn-295-wadebud-v1.front.json": "89e6cdbd2371744f1274b73991444355b345636d0e291bfcd89c02721bbe5d54",
+    "mn-295-wadebud-v1.back.png": "adbaebf55d61376f1b71f8eeabeaed65bacd21125feb5736140787d37b445164",
+    "mn-295-wadebud-v1.back.2bpp": "a2dd464252a1761014d34204a8e5fc48af32fd262e07c0e3c5a16b9b11351dda",
+    "mn-295-wadebud-v1.back.json": "d0748910e25ed60bcbcb66f787f155df4d76df099fe4c4db03622012bae3e706",
+    "mn-296-rakehorn-v1.front.png": "6f67a60b5ea8861c121038d0d0e59624cf5cd50db1d0c808f09344f19a19cdc8",
+    "mn-296-rakehorn-v1.front.2bpp": "a38c6df850f7235877fa5764dbe7ab8e3eca1822cbcce924a46e2fd1c56bd3a5",
+    "mn-296-rakehorn-v1.front.json": "95b7825156b28a3e03555a5bf32f2e0b17ca0e80e9874d70d7306c24dbf20d7a",
+    "mn-296-rakehorn-v1.back.png": "7ed6ae0882d2406c285074e279ccaf0618f9c07a0107facac4bbb0dc96e282b7",
+    "mn-296-rakehorn-v1.back.2bpp": "af392b002867fe0d7b1f6113679060dbc4ca75aedd884608f6c98c5f16366a00",
+    "mn-296-rakehorn-v1.back.json": "b946b7b856fad9375f4b755fda7bdce2ee7dbe219249a049c3e8e41ae511ef1a",
+    "mn-297-marshrack-v1.front.png": "38c799f32654a8d73d30d14c687bb0204411f2168d8d3262ec236a6f5ae78932",
+    "mn-297-marshrack-v1.front.2bpp": "49ad4d8416400a831887adb74f693bddeaacea97b39e01926053cf2bbe644fe8",
+    "mn-297-marshrack-v1.front.json": "9670e2057c1000f6c95e91e286f468de90f9c199cb079924a437f6b7bb10305a",
+    "mn-297-marshrack-v1.back.png": "77331082be5e1815c89143da631b48fc78d8ba96bf0f2c9faa21499c993d44c5",
+    "mn-297-marshrack-v1.back.2bpp": "b8885b2e4da14c12077e1af680db23024692c633e5362895aaf414c1b341e04e",
+    "mn-297-marshrack-v1.back.json": "794a89d82617af9ad28558181b39f799b7cbd636c74804e19a1760f47b75feff",
+    "line.native.png": "ef5527fd3e0e4aecc2a19a4246b87ef59128c3fbb4771ed113456421f97d84a0",
+    "line.review.png": "6886b0f12213a33f466aaa4fcb4165c9679924e0dc15fbb92ec8d78fc35bf36b"
+  },
+  "manifest_sha256": "c990deb6d91a13ab3b088d0106da004fca5286d06bbd0d5091d79920fcfc7040",
+  "profiles_sha256": "a5d7027a80ec4cc5d200f7576d8a423d7667fbacd1d460b00df80055aadab8ba",
+  "roster_family_sha256": "bc67eedf41e85c7f0eea272b13c88cde713dd461ce07aa93e0d4c532a90c316e",
+  "retention": "All generated sources/prompts and all native conversion candidates, including rejected initial crops and SourceCenter variants, are retained under this family directory and renders/."
+}

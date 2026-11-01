@@ -1,0 +1,14 @@
+{
+  "status": "READ_ONLY_INCOMING_HABITAT_PREFLIGHT_NOT_SELECTED",
+  "incoming_pack": "content-packs/minnesota-interiors-habitats-r13-v01.crystalpack",
+  "sha256": "6ba11c1c2d879fabe8990f3e8acbf1bc10252a805f8fcb47e07b55d9a3a61a62",
+  "changed_data_catalogs": [
+    "fishing",
+    "map_attributes",
+    "maps",
+    "wild_encounters"
+  ],
+  "all_four_r14_map_modules_exact": true,
+  "r14_encounter_changes": [],
+  "required_action": "Preserve incoming habitats and rebind source encounters when composing R14 after final habitat/cyclist selection. Never replace them with old R13 encounter tables."
+}

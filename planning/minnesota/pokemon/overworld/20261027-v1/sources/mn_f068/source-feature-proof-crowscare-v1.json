@@ -1,0 +1,342 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_147",
+  "result": "pass",
+  "manifest_sha256": "6839ca5eea851efab85569b77e9d0fcb0e68911f6fa29f2545ec0afcdbeac5fe",
+  "bank_sha256": "d7e77d80cd6498b1f857809eab256c0c765922fb9205ec5afb2645c3f5e2b436",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f068/crowscare.overworld.imagegen-v1.png": "20379f5ea719a88545e7fa75312fc5b716582b9544bde14e27eb56868a319b25"
+  },
+  "canonical_eye_form": "TWO short bright gold eyes in a dark hollow straw-head cavity; ONE profile bright eye. No ordinary black pupils. Rear has no eye cavity.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "down_idle",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f068/crowscare.overworld.imagegen-v1.png",
+        "crop": [
+          75,
+          70,
+          440,
+          450
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            240,
+            275,
+            12,
+            24
+          ],
+          [
+            300,
+            275,
+            12,
+            24
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                6,
+                8
+              ]
+            ],
+            "samples": [
+              {
+                "rgba": [
+                  222,
+                  172,
+                  73,
+                  254
+                ],
+                "bounds": [
+                  240,
+                  275,
+                  12,
+                  24
+                ],
+                "pixels": 276,
+                "truncated_contour": false,
+                "native_pixel": [
+                  6,
+                  8
+                ],
+                "source_sample_pixel": [
+                  248,
+                  291
+                ],
+                "quantized_feature_ink": 1,
+                "matches_expected_feature_ink": true
+              }
+            ]
+          },
+          {
+            "native_cluster": [
+              [
+                8,
+                8
+              ]
+            ],
+            "samples": [
+              {
+                "rgba": [
+                  218,
+                  166,
+                  67,
+                  254
+                ],
+                "bounds": [
+                  300,
+                  275,
+                  12,
+                  24
+                ],
+                "pixels": 285,
+                "truncated_contour": false,
+                "native_pixel": [
+                  8,
+                  8
+                ],
+                "source_sample_pixel": [
+                  307,
+                  291
+                ],
+                "quantized_feature_ink": 1,
+                "matches_expected_feature_ink": true
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "left_idle",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f068/crowscare.overworld.imagegen-v1.png",
+        "crop": [
+          1055,
+          83,
+          440,
+          450
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            1189,
+            270,
+            12,
+            29
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                5,
+                7
+              ]
+            ],
+            "samples": [
+              {
+                "rgba": [
+                  231,
+                  176,
+                  79,
+                  253
+                ],
+                "bounds": [
+                  1189,
+                  270,
+                  12,
+                  29
+                ],
+                "pixels": 331,
+                "truncated_contour": false,
+                "native_pixel": [
+                  5,
+                  7
+                ],
+                "source_sample_pixel": [
+                  1198,
+                  276
+                ],
+                "quantized_feature_ink": 1,
+                "matches_expected_feature_ink": true
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "down_step",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f068/crowscare.overworld.imagegen-v1.png",
+        "crop": [
+          75,
+          538,
+          440,
+          450
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            240,
+            743,
+            12,
+            23
+          ],
+          [
+            300,
+            743,
+            12,
+            23
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                6,
+                8
+              ]
+            ],
+            "samples": [
+              {
+                "rgba": [
+                  225,
+                  176,
+                  74,
+                  254
+                ],
+                "bounds": [
+                  240,
+                  743,
+                  12,
+                  23
+                ],
+                "pixels": 276,
+                "truncated_contour": false,
+                "native_pixel": [
+                  6,
+                  8
+                ],
+                "source_sample_pixel": [
+                  248,
+                  759
+                ],
+                "quantized_feature_ink": 1,
+                "matches_expected_feature_ink": true
+              }
+            ]
+          },
+          {
+            "native_cluster": [
+              [
+                8,
+                8
+              ]
+            ],
+            "samples": [
+              {
+                "rgba": [
+                  223,
+                  170,
+                  71,
+                  254
+                ],
+                "bounds": [
+                  300,
+                  743,
+                  12,
+                  23
+                ],
+                "pixels": 276,
+                "truncated_contour": false,
+                "native_pixel": [
+                  8,
+                  8
+                ],
+                "source_sample_pixel": [
+                  307,
+                  759
+                ],
+                "quantized_feature_ink": 1,
+                "matches_expected_feature_ink": true
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "left_step",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f068/crowscare.overworld.imagegen-v1.png",
+        "crop": [
+          1043,
+          545,
+          440,
+          450
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            1177,
+            732,
+            13,
+            34
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                5,
+                7
+              ]
+            ],
+            "samples": [
+              {
+                "rgba": [
+                  216,
+                  164,
+                  72,
+                  253
+                ],
+                "bounds": [
+                  1177,
+                  732,
+                  13,
+                  34
+                ],
+                "pixels": 438,
+                "truncated_contour": false,
+                "native_pixel": [
+                  5,
+                  7
+                ],
+                "source_sample_pixel": [
+                  1186,
+                  738
+                ],
+                "quantized_feature_ink": 1,
+                "matches_expected_feature_ink": true
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "notes": "Both native normal/shiny rear poses actually inspected: plain rear head, no copied face. Head anchors stable, 1px transparent outer border, three walk pairs differ."
+  },
+  "detailed_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f068/manifest-crowscare-v1-feature-proof.proof.json"
+}

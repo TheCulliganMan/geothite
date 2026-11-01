@@ -1,0 +1,234 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F028",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_069": {
+      "species_id": "MN_069",
+      "name": "Barnib",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          27,
+          23,
+          16
+        ],
+        [
+          13,
+          9,
+          6
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        17147,
+        6445,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          222,
+          189,
+          132
+        ],
+        [
+          107,
+          74,
+          49
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#DEBD84",
+        "#6B4A31",
+        "#000000"
+      ]
+    },
+    "MN_070": {
+      "species_id": "MN_070",
+      "name": "Owsilo",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          23,
+          24,
+          26
+        ],
+        [
+          10,
+          8,
+          16
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        27415,
+        16650,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          189,
+          198,
+          214
+        ],
+        [
+          82,
+          66,
+          132
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#BDC6D6",
+        "#524284",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f028/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "board": "target/minnesota-pokemon/gen2-reference/starters.png"
+  },
+  "sprites": [
+    {
+      "id": "mn-069-barnib-v1",
+      "species_id": "MN_069",
+      "view": "front",
+      "source": "sprites/mn-f028/mn-069-070.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        629,
+        599
+      ],
+      "fit": [
+        40,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        17147,
+        6445,
+        0
+      ]
+    },
+    {
+      "id": "mn-069-barnib-v1",
+      "species_id": "MN_069",
+      "view": "back",
+      "source": "sprites/mn-f028/mn-069-070.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        599,
+        629,
+        600
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        17147,
+        6445,
+        0
+      ]
+    },
+    {
+      "id": "mn-070-owsilo-v1",
+      "species_id": "MN_070",
+      "view": "front",
+      "source": "sprites/mn-f028/mn-069-070.front-back.imagegen-v1.png",
+      "crop": [
+        629,
+        0,
+        683,
+        599
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        27415,
+        16650,
+        0
+      ]
+    },
+    {
+      "id": "mn-070-owsilo-v1",
+      "species_id": "MN_070",
+      "view": "back",
+      "source": "sprites/mn-f028/mn-069-070.front-back.imagegen-v1.png",
+      "crop": [
+        629,
+        599,
+        683,
+        600
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        27415,
+        16650,
+        0
+      ]
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "notes": [
+      "Inspected frozen source-contour-v1 sheet: barn owl heart face, pupil points and feather silhouette remain clear; silo owl chest openings and facial-disk panels retain distinct light/dark shapes.",
+      "Close rear head/shoulder portraits preserve white feather details and crop correctly; exterior anchors are consistent without blackening broad interior feather planes."
+    ],
+    "sheet_sha256": "ee222de02e92c124aee1c8a873667bf4077c2c9579ee0cb16582911be6abbd59",
+    "outline_profile": "source-contour-v1"
+  }
+}

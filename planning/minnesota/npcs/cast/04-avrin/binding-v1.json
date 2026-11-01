@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "trainer_class": "MN_LEADER_AVRIN",
+  "class_name": "LEADER",
+  "trainer_ids": [
+    "MN_GYM_3"
+  ],
+  "actors": [
+    {
+      "map": "MnMinneapolisGym",
+      "script": "MnMinneapolisGymLeader",
+      "tile": [
+        4,
+        3
+      ],
+      "previous_sprite": "SPRITE_LASS"
+    }
+  ]
+}

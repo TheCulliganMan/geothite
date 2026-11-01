@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "trainer_class": "MN_STATE_FAIR_BAKER",
+  "class_name": "BAKER",
+  "trainer_ids": [
+    "MN_FAIR_EXHIBITOR_03_TRAINER"
+  ],
+  "actors": [
+    {
+      "map": "MnStateFairgrounds",
+      "script": "MN_FAIR_EXHIBITOR_03_TRAINER",
+      "tile": [
+        27,
+        26
+      ],
+      "previous_sprite": "SPRITE_POKEFAN_F"
+    }
+  ]
+}

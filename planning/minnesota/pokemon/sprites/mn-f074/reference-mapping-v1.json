@@ -1,0 +1,11 @@
+{
+  "references": [
+    {
+      "path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/gen2-reference/starters.png",
+      "sha256": "af61f720a75b7e1b8e80ba14e8944612556397eedddd719669dec68b0e0fd534",
+      "role": "Authentic Gen2 pixel economy, battle front/back camera and cropped rear portraits; no character copying."
+    }
+  ],
+  "regional_source": "https://www.govinfo.gov/content/pkg/GOVPUB-I29-PURL-gpo79318/pdf/GOVPUB-I29-PURL-gpo79318.pdf",
+  "palette_plan": "sprites/mn-f074/palette-plan.json"
+}

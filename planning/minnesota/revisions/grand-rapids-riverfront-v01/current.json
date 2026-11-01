@@ -1,0 +1,311 @@
+{
+  "schema_version": 1,
+  "id": "MnGrandRapids",
+  "source_kind": "native_town_exterior_review_contract",
+  "dimensions_metatiles": [
+    24,
+    24
+  ],
+  "compiled_tileset": "mn_grand_rapids_riverfront",
+  "pack": "content-packs/minnesota-grand-rapids-riverfront-v01.crystalpack",
+  "pack_sha256": "806a77f8542b0d69f62929690a69b554204ed3784636e2d8a2b5799c91b2e536",
+  "parent_revision": "gunflint_spring_shelter_revision",
+  "parent_pack": "content-packs/minnesota-gunflint-spring-shelter-v02.crystalpack",
+  "parent_pack_sha256": "6a4af10d7d025cb9041878a63855c6d01cf4e5180c2672cf10a07b0ceda5fecb",
+  "terrain": {
+    "path": "planning/minnesota/revisions/grand-rapids-riverfront-v01/after.json",
+    "sha256": "66c8daf93186471ca64bbddf66baab80c8b50067f96c503e1c034bf3f5379f3f",
+    "source_kind": "explicit_native_town_rows_and_art_recipes"
+  },
+  "plan": {
+    "path": "planning/minnesota/revisions/grand-rapids-riverfront-v01/plan.json",
+    "sha256": "71a4eb2af02010a83c4e9dbbfc94f275d876d061a06b81f1c3fc293465310eef"
+  },
+  "original_story_rooms_and_ports": {
+    "path": "planning/minnesota/towns/MnGrandRapids.json",
+    "sha256": "a165aa3593111728b3013c800af3aaef2cb5d9818c7e66429e3b6bee757db17a",
+    "note": "All original authored rooms, door records and story-gate programs remain exact in the built pack. This exterior source supersedes the old town layout only."
+  },
+  "native_warps": [
+    {
+      "index": 1,
+      "x": 9,
+      "y": 11,
+      "target_map_constant": "MN_GRAND_RAPIDS_POKECENTER_1F",
+      "target_map": "MN_GRAND_RAPIDS_POKECENTER_1F",
+      "target_warp_id": 3
+    },
+    {
+      "index": 2,
+      "x": 9,
+      "y": 12,
+      "target_map_constant": "MN_GRAND_RAPIDS",
+      "target_map": "MN_GRAND_RAPIDS",
+      "target_warp_id": 2
+    },
+    {
+      "index": 3,
+      "x": 39,
+      "y": 15,
+      "target_map_constant": "MN_GRAND_RAPIDS_MART",
+      "target_map": "MN_GRAND_RAPIDS_MART",
+      "target_warp_id": 3
+    },
+    {
+      "index": 4,
+      "x": 39,
+      "y": 16,
+      "target_map_constant": "MN_GRAND_RAPIDS",
+      "target_map": "MN_GRAND_RAPIDS",
+      "target_warp_id": 4
+    },
+    {
+      "index": 5,
+      "x": 27,
+      "y": 13,
+      "target_map_constant": "MN_GRAND_RAPIDS_SURVEY_DEPOT",
+      "target_map": "MN_GRAND_RAPIDS_SURVEY_DEPOT",
+      "target_warp_id": 3
+    },
+    {
+      "index": 6,
+      "x": 27,
+      "y": 14,
+      "target_map_constant": "MN_GRAND_RAPIDS",
+      "target_map": "MN_GRAND_RAPIDS",
+      "target_warp_id": 6
+    }
+  ],
+  "native_coordinate_events": [
+    {
+      "x": 3,
+      "y": 24,
+      "scene_id": "",
+      "script_name": "MnGrandRapidsWestCheck"
+    },
+    {
+      "x": 1,
+      "y": 24,
+      "scene_id": "",
+      "script_name": "MnGrandRapidsWestCheckInward"
+    },
+    {
+      "x": 3,
+      "y": 25,
+      "scene_id": "",
+      "script_name": "MnGrandRapidsWestCheck"
+    },
+    {
+      "x": 1,
+      "y": 25,
+      "scene_id": "",
+      "script_name": "MnGrandRapidsWestCheckInward"
+    },
+    {
+      "x": 44,
+      "y": 24,
+      "scene_id": "",
+      "script_name": "MnGrandRapidsEastCheck"
+    },
+    {
+      "x": 46,
+      "y": 24,
+      "scene_id": "",
+      "script_name": "MnGrandRapidsEastCheckInward"
+    },
+    {
+      "x": 44,
+      "y": 25,
+      "scene_id": "",
+      "script_name": "MnGrandRapidsEastCheck"
+    },
+    {
+      "x": 46,
+      "y": 25,
+      "scene_id": "",
+      "script_name": "MnGrandRapidsEastCheckInward"
+    }
+  ],
+  "native_boards": [
+    {
+      "x": 14,
+      "y": 22,
+      "event_type": "BGEVENT_READ",
+      "script": "MN_GR_WEST_SIGN"
+    },
+    {
+      "x": 38,
+      "y": 22,
+      "event_type": "BGEVENT_READ",
+      "script": "MN_GR_EAST_SIGN"
+    },
+    {
+      "x": 22,
+      "y": 12,
+      "event_type": "BGEVENT_READ",
+      "script": "MN_GR_DEPOT_SIGN"
+    }
+  ],
+  "original_actor_anchors": [
+    {
+      "id": "MN_GR_WORKER",
+      "script": "MN_GR_WORKER",
+      "tile": [
+        17,
+        25
+      ]
+    },
+    {
+      "id": "MN_GR_RIVER_WATCHER",
+      "script": "MN_GR_RIVER_WATCHER",
+      "tile": [
+        31,
+        32
+      ]
+    },
+    {
+      "id": "MN_GRAND_RAPIDS_WEST_GUARD_NORTH",
+      "script": "MnGrandRapidsWestCheck",
+      "tile": [
+        2,
+        24
+      ]
+    },
+    {
+      "id": "MN_GRAND_RAPIDS_WEST_GUARD_SOUTH",
+      "script": "MnGrandRapidsWestCheck",
+      "tile": [
+        2,
+        25
+      ]
+    },
+    {
+      "id": "MN_GRAND_RAPIDS_EAST_GUARD_NORTH",
+      "script": "MnGrandRapidsEastCheck",
+      "tile": [
+        45,
+        24
+      ]
+    },
+    {
+      "id": "MN_GRAND_RAPIDS_EAST_GUARD_SOUTH",
+      "script": "MnGrandRapidsEastCheck",
+      "tile": [
+        45,
+        25
+      ]
+    }
+  ],
+  "regional_ports": [
+    {
+      "route": "MN_R09",
+      "side": "W",
+      "gate_metatile": [
+        1,
+        12
+      ],
+      "landing_metatile": [
+        3,
+        12
+      ],
+      "native_connection": {
+        "target_map": "MnR09C01R00",
+        "direction": "west",
+        "offset_metatiles": 0,
+        "reciprocal_offset_metatiles": 0,
+        "checkpoint": "MnGrandRapidsWestCheck"
+      }
+    },
+    {
+      "route": "MN_R10",
+      "side": "E",
+      "gate_metatile": [
+        22,
+        12
+      ],
+      "landing_metatile": [
+        20,
+        12
+      ],
+      "native_connection": {
+        "target_map": "MnR10C00R00",
+        "direction": "east",
+        "offset_metatiles": 7,
+        "reciprocal_offset_metatiles": -7,
+        "checkpoint": "MnGrandRapidsEastCheck"
+      }
+    }
+  ],
+  "optional_fisher": {
+    "path": "planning/minnesota/revisions/grand-rapids-riverfront-v01/trainers.json",
+    "sha256": "497c68ef5b0afbe346dfb543dbac621d8b0b3ae9e12403283808f8ae31780d79",
+    "completion_event": "EVENT_MN_EXTRA_GR_BANK_FISHER",
+    "story_progress_granted": false
+  },
+  "pier": {
+    "left_native_source": "port2f",
+    "right_native_source": "port2e",
+    "cap_native_source": "port30",
+    "metatiles": [
+      [
+        12,
+        17
+      ],
+      [
+        13,
+        17
+      ],
+      [
+        12,
+        18
+      ],
+      [
+        13,
+        18
+      ],
+      [
+        12,
+        19
+      ],
+      [
+        13,
+        19
+      ]
+    ],
+    "clear_bank_core": [
+      26,
+      33
+    ],
+    "trainer_core": [
+      25,
+      36
+    ],
+    "trainer_approach_core": [
+      26,
+      36
+    ],
+    "fishing_cap_core": [
+      26,
+      38
+    ],
+    "surf_target_core": [
+      26,
+      39
+    ],
+    "cap": "Original gray port paving ends visibly over Water; native Surf prerequisites gate the step off.",
+    "water_boundary": "Original contained river outline and outer city buffers stay exact. No new regional water seam or unconnected outer water."
+  },
+  "native_animation_source": "johto_modern",
+  "verification": {
+    "preservation": "planning/minnesota/renders/grand-rapids-riverfront-v659/preservation-v668.json",
+    "controller": "planning/minnesota/renders/grand-rapids-riverfront-v659/controller-v672.json",
+    "stdio": "planning/minnesota/renders/grand-rapids-riverfront-v659/stdio-v674/receipt.json",
+    "native": "planning/minnesota/renders/grand-rapids-riverfront-v659/native-v673/capture-progress.json",
+    "actual_reached_views": "planning/minnesota/renders/grand-rapids-riverfront-v659/acted-v676/receipt.json",
+    "visual_inspection": "planning/minnesota/renders/grand-rapids-riverfront-v659/visual-inspection-v677.json",
+    "audio": "planning/minnesota/renders/grand-rapids-riverfront-v659/audio-v671.json",
+    "negative_publication": "planning/minnesota/renders/grand-rapids-riverfront-v659/negative-v669/receipt.json"
+  },
+  "selection": "Verified complete exterior; world.json controls selection. Broader regional goal remains active.",
+  "broader_goal_complete": false
+}

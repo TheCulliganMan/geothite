@@ -1,0 +1,69 @@
+{
+  "id": "MnPreservePineEntry",
+  "ports": [
+    {
+      "side": "north",
+      "core": [
+        [
+          16,
+          0
+        ],
+        [
+          17,
+          0
+        ]
+      ]
+    },
+    {
+      "side": "south",
+      "core": [
+        [
+          16,
+          31
+        ],
+        [
+          17,
+          31
+        ]
+      ]
+    }
+  ],
+  "actors": [],
+  "signs": [
+    {
+      "id": "MN_COHESION_PRESERVE_NOTICE",
+      "tile": [
+        13,
+        11
+      ],
+      "lines": [
+        "PRESERVE ENTRY",
+        "Expeditions closed.",
+        "No fee is charged."
+      ]
+    }
+  ],
+  "views": [
+    {
+      "id": "north-court-approach",
+      "core": [
+        16,
+        5
+      ]
+    },
+    {
+      "id": "ranger-reading",
+      "core": [
+        16,
+        13
+      ]
+    },
+    {
+      "id": "south-pine-turn",
+      "core": [
+        14,
+        27
+      ]
+    }
+  ]
+}

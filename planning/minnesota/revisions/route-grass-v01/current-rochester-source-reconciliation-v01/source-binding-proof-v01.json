@@ -1,0 +1,51 @@
+{
+  "status": "PASS_SOURCE_POINTER_MATCHES_INSTALLED_FIVE_ROOMS",
+  "pack": "content-packs/minnesota-international-falls-windbreak-v01.crystalpack",
+  "pack_sha256": "7066f05448101c79b4dc761963b0f39a570bad07c4f80e3e777901ac2e207507",
+  "world_before_sha256": "d556d79ddd2a9431091ce24183313249b7e0b0044239f8a8ae66bf2b5d0de18f",
+  "world_after_sha256": "588e3e0347f8eb222db41c795b5b2963d73a87d2e668903e56240db64c3e9efc",
+  "checks": [
+    {
+      "map": "MnRochesterPokecenter1F",
+      "dimensions": [
+        10,
+        8
+      ],
+      "match": true
+    },
+    {
+      "map": "MnRochesterMart",
+      "dimensions": [
+        6,
+        4
+      ],
+      "match": true
+    },
+    {
+      "map": "MnRochesterGym",
+      "dimensions": [
+        7,
+        10
+      ],
+      "match": true
+    },
+    {
+      "map": "MnRochesterClerkHouse",
+      "dimensions": [
+        5,
+        4
+      ],
+      "match": true
+    },
+    {
+      "map": "MnRochesterPatientHouse",
+      "dimensions": [
+        5,
+        4
+      ],
+      "match": true
+    }
+  ],
+  "changes": "Six authoring pointers now name matching installed original dossier; Gym dimensions7x10 and unselected gate-revision pointer removed. Proposed gate source files remain untouched.",
+  "scope": "Source metadata alignment only; no pack, selector, native room, actor, encounter, terrain or gameplay change. Existing original-room native acceptance retained."
+}

@@ -303,10 +303,17 @@ fn fill_native_tile(target: &mut [u8], tile_x: usize, tile_y: usize, rgb: [u8; 3
 }
 
 fn draw_paletted_2bpp_tile(
-    source: &[u8], tile_index: usize, palette: &Palette, tile_x: usize, tile_y: usize, target: &mut [u8],
+    source: &[u8],
+    tile_index: usize,
+    palette: &Palette,
+    tile_x: usize,
+    tile_y: usize,
+    target: &mut [u8],
 ) -> Result<()> {
     let start = tile_index * 16;
-    let tile = source.get(start..start + 16).with_context(|| format!("2bpp tile {tile_index} is missing"))?;
+    let tile = source
+        .get(start..start + 16)
+        .with_context(|| format!("2bpp tile {tile_index} is missing"))?;
     for row in 0..8 {
         let lo = tile[row * 2];
         let hi = tile[row * 2 + 1];
@@ -322,13 +329,21 @@ fn draw_paletted_2bpp_tile(
 }
 
 fn draw_paletted_png_tile(
-    source: &image::RgbaImage, tile_index: usize, palette: &Palette, tile_x: usize, tile_y: usize, target: &mut [u8],
+    source: &image::RgbaImage,
+    tile_index: usize,
+    palette: &Palette,
+    tile_x: usize,
+    tile_y: usize,
+    target: &mut [u8],
 ) -> Result<()> {
     let columns = source.width() as usize / 8;
     anyhow::ensure!(columns > 0, "font tile sheet has no columns");
     let source_x = tile_index % columns * 8;
     let source_y = tile_index / columns * 8;
-    anyhow::ensure!(source_y + 8 <= source.height() as usize, "font tile {tile_index} is missing");
+    anyhow::ensure!(
+        source_y + 8 <= source.height() as usize,
+        "font tile {tile_index} is missing"
+    );
     for row in 0..8 {
         for col in 0..8 {
             let gray = source.get_pixel((source_x + col) as u32, (source_y + row) as u32)[0];
@@ -571,7 +586,11 @@ fn draw_native_hp_bar(target: &mut [u8], x: usize, y: usize, hp: u16, max_hp: u1
     for row in 0..4 {
         for col in 0..48 {
             let offset = ((y + row) * 160 + x + col) * 4;
-            target[offset..offset + 3].copy_from_slice(if col < pixels { &color } else { &[180, 180, 180] });
+            target[offset..offset + 3].copy_from_slice(if col < pixels {
+                &color
+            } else {
+                &[180, 180, 180]
+            });
             target[offset + 3] = 255;
         }
     }
@@ -631,7 +650,7 @@ fn load_visible_title_main_menu_frame(
         let y = visible_title_main_menu_item_tile_y(title, index) * SOURCE_TILE_SIZE;
         if index == selected {
             draw_time_set_text(
-                &font,
+                font,
                 "▶",
                 (title.main_menu.left + 1) * SOURCE_TILE_SIZE,
                 y,
@@ -639,7 +658,7 @@ fn load_visible_title_main_menu_frame(
             )?;
         }
         draw_time_set_text(
-            &font,
+            font,
             visible_title_menu_option_label(option),
             (title.main_menu.left + 2) * SOURCE_TILE_SIZE,
             y,
@@ -659,14 +678,14 @@ fn load_visible_title_main_menu_frame(
         let snapshot = runtime_shell.shell.snapshot()?;
         let (day_text, time_text) = visible_title_main_menu_clock_strings(&snapshot);
         draw_time_set_text(
-            &font,
+            font,
             &day_text,
             (TITLE_MAIN_MENU_TIME_BOX_X + 1) * SOURCE_TILE_SIZE,
             (TITLE_MAIN_MENU_TIME_BOX_Y + 1) * SOURCE_TILE_SIZE,
             &mut data,
         )?;
         draw_time_set_text(
-            &font,
+            font,
             &time_text,
             (TITLE_MAIN_MENU_TIME_BOX_X + 4) * SOURCE_TILE_SIZE,
             (TITLE_MAIN_MENU_TIME_BOX_Y + 2) * SOURCE_TILE_SIZE,
@@ -828,9 +847,16 @@ fn spawn_visible_credits_screen(
     images: &mut Assets<Image>,
 ) -> Result<()> {
     if let Some(ceremony) = credits.hall_of_fame.as_ref() {
-        let frame = render_visible_hall_of_fame_screen(runtime_shell, ceremony, rendered_art, images)?;
-        commit_presented_fullscreen_frame(commands, rendered_art, &frame,
-            PresentedFullscreenFrameSource::Transient, PRESENTED_FULLSCREEN_BASE_Z, images)?;
+        let frame =
+            render_visible_hall_of_fame_screen(runtime_shell, ceremony, rendered_art, images)?;
+        commit_presented_fullscreen_frame(
+            commands,
+            rendered_art,
+            &frame,
+            PresentedFullscreenFrameSource::Transient,
+            PRESENTED_FULLSCREEN_BASE_Z,
+            images,
+        )?;
         return Ok(());
     }
     if rendered_art.credits_sources.is_none() && rendered_art.credits_source_error.is_none() {
@@ -900,8 +926,8 @@ const DELETE_SAVE_PROMPT_BOX_X: usize = 1;
 const DELETE_SAVE_PROMPT_BOX_Y: usize = 6;
 const DELETE_SAVE_PROMPT_BOX_WIDTH: usize = 18;
 const DELETE_SAVE_PROMPT_BOX_HEIGHT: usize = 4;
-const DELETE_SAVE_OPTION_BOX_X: usize = 11;
-const DELETE_SAVE_OPTION_BOX_Y: usize = 9;
+const DELETE_SAVE_OPTION_BOX_X: usize = 14;
+const DELETE_SAVE_OPTION_BOX_Y: usize = 7;
 const DELETE_SAVE_OPTION_BOX_WIDTH: usize = 6;
 const DELETE_SAVE_OPTION_BOX_HEIGHT: usize = 4;
 
@@ -946,14 +972,14 @@ fn load_delete_save_frame(
     let selected = delete_save.selected_index.min(1);
     draw_time_set_text(
         &font,
-        if selected == 0 { "▶YES" } else { " YES" },
+        if selected == 0 { "▶NO" } else { " NO" },
         (DELETE_SAVE_OPTION_BOX_X + 1) * SOURCE_TILE_SIZE,
         (DELETE_SAVE_OPTION_BOX_Y + 1) * SOURCE_TILE_SIZE,
         &mut data,
     )?;
     draw_time_set_text(
         &font,
-        if selected == 1 { "▶NO" } else { " NO" },
+        if selected == 1 { "▶YES" } else { " YES" },
         (DELETE_SAVE_OPTION_BOX_X + 1) * SOURCE_TILE_SIZE,
         (DELETE_SAVE_OPTION_BOX_Y + 2) * SOURCE_TILE_SIZE,
         &mut data,
@@ -1060,6 +1086,8 @@ fn trainer_card_art_key(
 ) -> TrainerCardArtKey {
     TrainerCardArtKey {
         page,
+        minnesota: minnesota_trainer_card(snapshot),
+        owned_badges: snapshot.progression.badges.johto,
         badge_frame: if page == VisibleTrainerCardPage::JohtoBadges {
             badge_frame & 0x07
         } else {
@@ -1149,6 +1177,12 @@ fn load_trainer_card_frame(
     colon_visible: bool,
     images: &mut Assets<Image>,
 ) -> Result<SpriteFrame> {
+    if page == VisibleTrainerCardPage::JohtoBadges && minnesota_trainer_card(snapshot) {
+        return Ok(trainer_card_sprite_frame(
+            minnesota_badges::render(&snapshot.progression.badges.johto, badge_frame),
+            images,
+        ));
+    }
     let assets = asset_root.runtime_assets();
     let trainer_card_dir = assets.join("gfx/trainer_card");
     let font = crate::open_runtime_image(assets.join("gfx/font/font.png"))
@@ -1337,6 +1371,12 @@ fn load_trainer_card_frame(
         draw_owned_trainer_card_badges(snapshot, badges, asset_root, badge_frame, &mut data)?;
     }
 
+    Ok(trainer_card_sprite_frame(data, images))
+}
+
+fn trainer_card_sprite_frame(data: Vec<u8>, images: &mut Assets<Image>) -> SpriteFrame {
+    let width = TRAINER_CARD_TILE_WIDTH * SOURCE_TILE_SIZE;
+    let height = TRAINER_CARD_TILE_HEIGHT * SOURCE_TILE_SIZE;
     let mut image = Image::new(
         Extent3d {
             width: width as u32,
@@ -1349,10 +1389,10 @@ fn load_trainer_card_frame(
         RenderAssetUsages::default(),
     );
     image.sampler = ImageSampler::nearest();
-    Ok(SpriteFrame {
+    SpriteFrame {
         handle: images.add(image),
         size: Vec2::new(width as f32, height as f32),
-    })
+    }
 }
 
 fn validate_trainer_card_source(
@@ -1906,14 +1946,14 @@ fn spawn_visible_clock_reset_screen(
     Ok(())
 }
 
-const CLOCK_RESET_PROMPT_BOX_X: usize = 1;
-const CLOCK_RESET_PROMPT_BOX_Y: usize = 6;
-const CLOCK_RESET_PROMPT_BOX_WIDTH: usize = 18;
-const CLOCK_RESET_PROMPT_BOX_HEIGHT: usize = 4;
+const CLOCK_RESET_PROMPT_BOX_X: usize = 0;
+const CLOCK_RESET_PROMPT_BOX_Y: usize = 12;
+const CLOCK_RESET_PROMPT_BOX_WIDTH: usize = 20;
+const CLOCK_RESET_PROMPT_BOX_HEIGHT: usize = 6;
 const CLOCK_RESET_YES_NO_BOX_X: usize = 14;
 const CLOCK_RESET_YES_NO_BOX_Y: usize = 7;
 const CLOCK_RESET_YES_NO_BOX_WIDTH: usize = 6;
-const CLOCK_RESET_YES_NO_BOX_HEIGHT: usize = 4;
+const CLOCK_RESET_YES_NO_BOX_HEIGHT: usize = 5;
 const CLOCK_RESET_VALUE_BOX_X: usize = 11;
 const CLOCK_RESET_VALUE_BOX_Y: usize = 9;
 const CLOCK_RESET_VALUE_BOX_WIDTH: usize = 6;
@@ -1928,6 +1968,9 @@ fn load_clock_reset_frame(
     let assets = asset_root.runtime_assets();
     let font = crate::open_runtime_image(assets.join("gfx/font/font.png"))
         .context("decode clock-reset font PNG")?
+        .to_rgba8();
+    let up_arrow = crate::open_runtime_image(assets.join("gfx/font/up_arrow.png"))
+        .context("decode source clock-reset up-arrow PNG")?
         .to_rgba8();
     let frame = crate::open_runtime_image(assets.join("gfx/frames/1.png"))
         .context("decode clock-reset textbox frame PNG")?
@@ -1945,7 +1988,7 @@ fn load_clock_reset_frame(
             draw_time_set_textbox(
                 &font,
                 &frame,
-                "Reset clock?",
+                clock_reset.prompt_pages.get(clock_reset.prompt_page).context("clock reset missing authored prompt")?,
                 CLOCK_RESET_PROMPT_BOX_X,
                 CLOCK_RESET_PROMPT_BOX_Y,
                 CLOCK_RESET_PROMPT_BOX_WIDTH,
@@ -1963,48 +2006,44 @@ fn load_clock_reset_frame(
             let selected = clock_reset.confirm_selection.min(1);
             draw_time_set_text(
                 &font,
-                if selected == 0 { "▶YES" } else { " YES" },
+                if selected == 0 { "▶NO" } else { " NO" },
                 (CLOCK_RESET_YES_NO_BOX_X + 1) * SOURCE_TILE_SIZE,
                 (CLOCK_RESET_YES_NO_BOX_Y + 1) * SOURCE_TILE_SIZE,
                 &mut data,
             )?;
             draw_time_set_text(
                 &font,
-                if selected == 1 { "▶NO" } else { " NO" },
+                if selected == 1 { "▶YES" } else { " YES" },
                 (CLOCK_RESET_YES_NO_BOX_X + 1) * SOURCE_TILE_SIZE,
                 (CLOCK_RESET_YES_NO_BOX_Y + 2) * SOURCE_TILE_SIZE,
                 &mut data,
             )?;
         }
-        VisibleClockResetPhase::SetDay => {
-            draw_clock_reset_value_prompt(
-                &font,
-                &frame,
-                "What day is it?",
-                &format!(
-                    "{}DAY",
-                    CLOCK_RESET_DAY_NAMES[usize::from(clock_reset.day % 7)]
-                ),
-                &mut data,
-            )?;
+        VisibleClockResetPhase::SetDay | VisibleClockResetPhase::SetHour | VisibleClockResetPhase::SetMinute => {
+            draw_visible_restart_clock_values(&font, &frame, &up_arrow, clock_reset, &mut data)?;
         }
-        VisibleClockResetPhase::SetHour => {
-            draw_clock_reset_value_prompt(
-                &font,
-                &frame,
-                "What hour is it?",
-                &format!("{:02}", clock_reset.hour % 24),
-                &mut data,
-            )?;
-        }
-        VisibleClockResetPhase::SetMinute => {
-            draw_clock_reset_value_prompt(
-                &font,
-                &frame,
-                "What minute?",
-                &format!("{:02}", clock_reset.minute % 60),
-                &mut data,
-            )?;
+        VisibleClockResetPhase::Password | VisibleClockResetPhase::WrongPassword
+        | VisibleClockResetPhase::Requested | VisibleClockResetPhase::TimeConfirm
+        | VisibleClockResetPhase::TimeWarning | VisibleClockResetPhase::TimeResetDone => {
+            draw_time_set_textbox(&font, &frame,
+                clock_reset.prompt_pages.get(clock_reset.prompt_page).context("clock reset missing authored prompt")?,
+                0, 12, 20, 6, &mut data)?;
+            if clock_reset.phase == VisibleClockResetPhase::Password {
+                let digits = clock_reset.password_digits.iter().map(|digit| char::from(b'0' + digit)).collect::<String>();
+                draw_time_set_text(&font, &digits, 14 * SOURCE_TILE_SIZE, 15 * SOURCE_TILE_SIZE, &mut data)?;
+                blit_time_set_tile_image_clipped(&up_arrow, 0, 0,
+                    (14 + clock_reset.password_cursor.min(4)) * SOURCE_TILE_SIZE,
+                    16 * SOURCE_TILE_SIZE, false, false, true, None, &mut data);
+            }
+            if clock_reset.phase == VisibleClockResetPhase::TimeResetDone {
+                draw_visible_restart_clock_values(&font, &frame, &up_arrow, clock_reset, &mut data)?;
+            }
+            if clock_reset.phase == VisibleClockResetPhase::TimeConfirm {
+                draw_visible_restart_clock_values(&font, &frame, &up_arrow, clock_reset, &mut data)?;
+                draw_time_set_window(&frame, 14, 7, 6, 5, &mut data)?;
+                draw_time_set_text(&font, if clock_reset.confirm_selection == 0 { "▶YES" } else { " YES" }, 15 * SOURCE_TILE_SIZE, 8 * SOURCE_TILE_SIZE, &mut data)?;
+                draw_time_set_text(&font, if clock_reset.confirm_selection == 1 { "▶NO" } else { " NO" }, 15 * SOURCE_TILE_SIZE, 9 * SOURCE_TILE_SIZE, &mut data)?;
+            }
         }
     }
 
@@ -2156,7 +2195,11 @@ fn load_gender_selection_frame_with_black_fade(
         &mut data,
     )?;
     for (index, label) in menu.items.iter().enumerate() {
-        let cursor = if index == gender.selected_index { '▶' } else { ' ' };
+        let cursor = if index == gender.selected_index {
+            '▶'
+        } else {
+            ' '
+        };
         draw_time_set_text(
             &font,
             &format!("{cursor}{}", label.to_uppercase()),
@@ -2227,7 +2270,8 @@ fn load_gender_selection_background(
             colors.len()
         )
     })?;
-    let tile = crate::read_runtime_asset(tile_path).with_context(|| format!("read {}", tile_path.display()))?;
+    let tile = crate::read_runtime_asset(tile_path)
+        .with_context(|| format!("read {}", tile_path.display()))?;
     if tile.len() != SOURCE_TILE_SIZE * 2 {
         anyhow::bail!(
             "gender background tile {} must contain exactly {} bytes, found {}",
@@ -2370,9 +2414,7 @@ fn load_time_set_frame(
         );
     }
     let assets = asset_root.runtime_assets();
-    let font = crate::open_runtime_image(assets.join("gfx/font/font.png"))
-        .context("decode time-set font PNG")?
-        .to_rgba8();
+    let font = boot_font::BootFont::load(asset_root)?;
     let frame = crate::open_runtime_image(assets.join("gfx/frames/1.png"))
         .context("decode time-set textbox frame PNG")?
         .to_rgba8();
@@ -2551,7 +2593,7 @@ fn visible_time_set_palette_black_alpha(step: u8, steps: u8, fade_in: bool) -> u
 }
 
 fn draw_time_set_textbox(
-    font: &image::RgbaImage,
+    font: &impl boot_font::BootFontSource,
     frame: &image::RgbaImage,
     text: &str,
     x_tiles: usize,
@@ -2620,8 +2662,8 @@ fn wrap_boot_text_for_box(text: &str, max_chars_per_line: usize, max_lines: usiz
                 current = candidate;
             } else if boot_text_tile_len(&word) > max_chars_per_line {
                 if !current.is_empty() {
-                    let available = max_chars_per_line
-                        .saturating_sub(boot_text_tile_len(&current) + 1);
+                    let available =
+                        max_chars_per_line.saturating_sub(boot_text_tile_len(&current) + 1);
                     if available > 0 {
                         let (prefix, remainder) = split_boot_word_prefix(&word, available);
                         current.push(' ');
@@ -2635,8 +2677,7 @@ fn wrap_boot_text_for_box(text: &str, max_chars_per_line: usize, max_lines: usiz
                     }
                 }
                 while boot_text_tile_len(&word) > max_chars_per_line {
-                    let (prefix, remainder) =
-                        split_boot_word_prefix(&word, max_chars_per_line);
+                    let (prefix, remainder) = split_boot_word_prefix(&word, max_chars_per_line);
                     lines.push(prefix);
                     word = remainder;
                     if lines.len() >= max_lines {
@@ -2846,7 +2887,7 @@ fn draw_time_set_arrows(
 }
 
 fn draw_time_set_text(
-    font: &image::RgbaImage,
+    font: &impl boot_font::BootFontSource,
     text: &str,
     x_px: usize,
     y_px: usize,
@@ -2856,7 +2897,7 @@ fn draw_time_set_text(
 }
 
 fn draw_time_set_text_clipped(
-    font: &image::RgbaImage,
+    font: &impl boot_font::BootFontSource,
     text: &str,
     x_px: usize,
     y_px: usize,
@@ -2871,8 +2912,9 @@ fn draw_time_set_text_clipped(
             cursor_y += SOURCE_TILE_SIZE;
             continue;
         }
-        let tile_id = name_entry_token_tile(&token)
-            .with_context(|| format!("unsupported time-set glyph {token:?}"))?;
+        let tile_id = font
+            .token_tile(&token)
+            .with_context(|| format!("unsupported boot text glyph {token:?}"))?;
         draw_time_set_font_tile_clipped(font, tile_id, cursor_x, cursor_y, clip, target)?;
         cursor_x += SOURCE_TILE_SIZE;
     }
@@ -2880,7 +2922,7 @@ fn draw_time_set_text_clipped(
 }
 
 fn draw_time_set_font_tile_clipped(
-    font: &image::RgbaImage,
+    font: &impl boot_font::BootFontSource,
     tile_id: u8,
     dest_x: usize,
     dest_y: usize,
@@ -2890,10 +2932,7 @@ fn draw_time_set_font_tile_clipped(
     if tile_id == 0 || tile_id == NAME_ENTRY_SPACE_TILE {
         return Ok(());
     }
-    if tile_id < 0x80 {
-        anyhow::bail!("time-set glyph tile 0x{tile_id:02x} is outside font.png");
-    }
-    let font_index = usize::from(tile_id - 0x80);
+    let (font, font_index) = font.glyph(tile_id)?;
     let tiles_per_row = font.width() as usize / SOURCE_TILE_SIZE;
     if tiles_per_row == 0 {
         anyhow::bail!("time-set font has invalid width {}", font.width());
@@ -3097,9 +3136,7 @@ fn load_oak_intro_screen_frame(
     images: &mut Assets<Image>,
 ) -> Result<SpriteFrame> {
     let assets = asset_root.runtime_assets();
-    let font = crate::open_runtime_image(assets.join("gfx/font/font.png"))
-        .context("decode Oak intro font PNG")?
-        .to_rgba8();
+    let font = boot_font::BootFont::load(asset_root)?;
     let textbox_frame = crate::open_runtime_image(assets.join("gfx/frames/1.png"))
         .context("decode Oak intro textbox frame PNG")?
         .to_rgba8();
@@ -3205,13 +3242,13 @@ fn blit_sprite_frame_image(
                 continue;
             }
             let source_offset = (row * source_width + col) * 4;
-            if source_offset + 3 >= source.data.len() || source.data[source_offset + 3] == 0 {
+            if source_offset + 3 >= source.data.as_ref().expect("CPU image pixels").len() || source.data.as_ref().expect("CPU image pixels")[source_offset + 3] == 0 {
                 continue;
             }
             let target_offset = (dy * target_width + dx) * 4;
-            target[target_offset] = source.data[source_offset];
-            target[target_offset + 1] = source.data[source_offset + 1];
-            target[target_offset + 2] = source.data[source_offset + 2];
+            target[target_offset] = source.data.as_ref().expect("CPU image pixels")[source_offset];
+            target[target_offset + 1] = source.data.as_ref().expect("CPU image pixels")[source_offset + 1];
+            target[target_offset + 2] = source.data.as_ref().expect("CPU image pixels")[source_offset + 2];
             target[target_offset + 3] = 255;
         }
     }
@@ -3560,9 +3597,10 @@ fn draw_visible_credits_text(
         let draw_y = row * SOURCE_TILE_SIZE;
         for tile_id in &displayed.tiles {
             if *tile_id != 0x7f {
-                let levels = sources.font.levels.get(tile_id).with_context(|| {
-                    format!("credits font tile 0x{tile_id:02x} unavailable")
-                })?;
+                let levels =
+                    sources.font.levels.get(tile_id).with_context(|| {
+                        format!("credits font tile 0x{tile_id:02x} unavailable")
+                    })?;
                 blit_visible_credits_levels(
                     target,
                     levels,
@@ -3904,9 +3942,9 @@ fn scripted_actor_has_active_jump(
 ) -> bool {
     frames_remaining > 1
         && movement.is_some_and(|movement| {
-        (movement.object_id == object_id && movement.active_jump_duration.is_some())
-            || (movement.follower_object_id.as_deref() == Some(object_id)
-                && movement.follower_active_jump_duration.is_some())
+            (movement.object_id == object_id && movement.active_jump_duration.is_some())
+                || (movement.follower_object_id.as_deref() == Some(object_id)
+                    && movement.follower_active_jump_duration.is_some())
         })
 }
 
@@ -3934,19 +3972,11 @@ fn spawn_overworld_jump_shadow(
         actor_direction,
     );
     commands.spawn((
-        SpriteBundle {
-            texture: shadow.handle,
-            sprite: Sprite {
+        (Sprite { image: shadow.handle,
                 custom_size: Some(shadow.size),
                 ..default()
             },
-            transform: Transform::from_xyz(
-                shadow_x,
-                shadow_y,
-                actor_depth - 0.000_001,
-            ),
-            ..default()
-        },
+Transform::from_xyz(shadow_x, shadow_y, actor_depth - 0.000_001),),
         PlayerFacingMarker,
         JumpShadowMarker {
             actor_id: actor_id.to_string(),
@@ -4048,8 +4078,14 @@ fn visible_emote_target_movement(
 
 fn visible_credits_screen_lines(credits: &VisibleCreditsScreen) -> Vec<String> {
     if let Some(ceremony) = credits.hall_of_fame.as_ref() {
-        return vec![format!("HALL OF FAME {:?}", ceremony.sequence.phase()),
-            ceremony.rating_text.chars().take(ceremony.rating_visible).collect()];
+        return vec![
+            format!("HALL OF FAME {:?}", ceremony.sequence.phase()),
+            ceremony
+                .rating_text
+                .chars()
+                .take(ceremony.rating_visible)
+                .collect(),
+        ];
     }
     let mut lines = credits
         .lines
@@ -4068,7 +4104,8 @@ fn visible_credits_screen_lines(credits: &VisibleCreditsScreen) -> Vec<String> {
 #[derive(SystemParam)]
 struct RenderEntityQueries<'w, 's> {
     tiles: Query<'w, 's, Entity, With<PlayfieldTile>>,
-    map_base_surfaces: Query<'w, 's, (), (With<PlayfieldTile>, Without<PlayfieldPriorityTile>)>,
+    map_base_surfaces: Query<'w, 's, (), (With<PlayfieldTile>, Without<PlayfieldPriorityTile>, Without<PlayfieldBridgeTile>)>,
+    bridge_surfaces: Query<'w, 's, Entity, With<PlayfieldBridgeTile>>,
     map_priority_surfaces: Query<'w, 's, (), (With<PlayfieldTile>, With<PlayfieldPriorityTile>)>,
     map_sprites: Query<
         'w,
@@ -4087,7 +4124,6 @@ struct RenderEntityQueries<'w, 's> {
         'w,
         's,
         (
-            &'static mut Handle<Image>,
             &'static mut Transform,
             &'static mut Sprite,
             &'static mut PlayerSpriteFrames,
@@ -4117,7 +4153,6 @@ struct RenderEntityQueries<'w, 's> {
         (
             Entity,
             &'static mut VisibleObjectSprite,
-            &'static mut Handle<Image>,
             &'static mut Transform,
             &'static mut Sprite,
         ),
@@ -4126,6 +4161,7 @@ struct RenderEntityQueries<'w, 's> {
     events: Query<'w, 's, Entity, With<EventMarker>>,
     prompts: Query<'w, 's, Entity, With<FieldPromptMarker>>,
     field_commands: Query<'w, 's, Entity, With<FieldCommandMarker>>,
+    healing_effects: Query<'w,'s,Entity,With<HealMachineWorldSprite>>,
     scene_dialogs: Query<'w, 's, Entity, With<SceneDialogMarker>>,
     dialog_glyphs: Query<
         'w,
@@ -4133,7 +4169,6 @@ struct RenderEntityQueries<'w, 's> {
         (
             Entity,
             &'static DialogGlyphMarker,
-            &'static mut Handle<Image>,
             &'static mut Transform,
             &'static mut Sprite,
         ),
@@ -4150,8 +4185,8 @@ struct RenderEntityQueries<'w, 's> {
     intro_surfaces: Query<
         'w,
         's,
-        (Entity, &'static mut Handle<Image>),
-        (With<VisibleIntroSurface>, Without<PlayerMarker>),
+        (Entity, &'static mut Sprite),
+        (With<VisibleIntroSurface>, Without<PlayerMarker>, Without<JumpShadowMarker>),
     >,
     pokemon_pictures: Query<'w, 's, Entity, With<PokemonPictureMarker>>,
     // Generic title cleanup must never remove the one retained LCD entity.
@@ -4199,7 +4234,6 @@ fn update_player_facing_art_in_place(
     images: &mut Assets<Image>,
     player_sprites: &mut Query<
         (
-            &mut Handle<Image>,
             &mut Transform,
             &mut Sprite,
             &mut PlayerSpriteFrames,
@@ -4214,8 +4248,7 @@ fn update_player_facing_art_in_place(
     if snapshot.overworld_player_hidden {
         return Ok(false);
     }
-    let Ok((mut texture, _, mut sprite, mut retained_frames)) =
-        player_sprites.get_single_mut()
+    let Ok((_, mut sprite, mut retained_frames)) = player_sprites.single_mut()
     else {
         return Ok(false);
     };
@@ -4237,6 +4270,22 @@ fn update_player_facing_art_in_place(
             "SPRITE_CHRIS_BIKE",
             snapshot.trainer.player_palette_id,
         ),
+        MovementMode::Surf
+            if snapshot
+                .script_events
+                .memory
+                .contains_key(crate::core::systems::field_moves::CANOE_ACTIVE_MEMORY) =>
+        {
+            (
+                if female {
+                    "mn_canoe_kris"
+                } else {
+                    "mn_canoe_chris"
+                },
+                "SPRITE_SURF",
+                1,
+            )
+        }
         MovementMode::Surf => ("surf", "SPRITE_SURF", 1),
         MovementMode::SurfPika => ("surfing_pikachu", "SPRITE_SURFING_PIKACHU", 0),
     };
@@ -4271,21 +4320,50 @@ fn update_player_facing_art_in_place(
     let Some(walking) = walking else {
         anyhow::bail!("player overworld sprite {sprite_id} has no required action frame");
     };
-    *texture = standing.handle.clone();
+    sprite.image = standing.handle.clone();
     sprite.custom_size = Some(standing.size);
     sprite.flip_x = false;
     #[cfg(feature = "voxel-view")]
-    { retained_frames.directional_frames = [Direction::Down, Direction::Left, Direction::Up, Direction::Right]
-        .into_iter().filter_map(|direction| {
-            let standing = sprite_frame_for_art(tileset_art, &runtime_shell.asset_root,
-                sprite_id, palette_id, effective_time_of_day, direction, false, images)?;
-            let walking = sprite_frame_for_art(tileset_art, &runtime_shell.asset_root,
-                sprite_id, palette_id, effective_time_of_day, direction, true, images)?;
+    {
+        retained_frames.directional_frames = [
+            Direction::Down,
+            Direction::Left,
+            Direction::Up,
+            Direction::Right,
+        ]
+        .into_iter()
+        .filter_map(|direction| {
+            let standing = sprite_frame_for_art(
+                tileset_art,
+                &runtime_shell.asset_root,
+                sprite_id,
+                palette_id,
+                effective_time_of_day,
+                direction,
+                false,
+                images,
+            )?;
+            let walking = sprite_frame_for_art(
+                tileset_art,
+                &runtime_shell.asset_root,
+                sprite_id,
+                palette_id,
+                effective_time_of_day,
+                direction,
+                true,
+                images,
+            )?;
             Some((standing.handle, walking.handle))
-        }).collect(); }
+        })
+        .collect();
+    }
+    if retained_frames.source_id.as_ref() != sprite_id {
+        retained_frames.source_id = Arc::from(sprite_id);
+    }
     retained_frames.standing = standing.handle;
     retained_frames.walking = Some(walking.handle);
-    retained_frames.mirror_walking = matches!(snapshot.overworld.facing, Direction::Up | Direction::Down);
+    retained_frames.mirror_walking =
+        matches!(snapshot.overworld.facing, Direction::Up | Direction::Down);
     Ok(true)
 }
 
@@ -4320,8 +4398,19 @@ fn queue_existing_entity_despawn(
     // despawn leaves dead IDs in Children; each new glyph then scans a list
     // that grows for the whole battle. Remove the hierarchy link as well.
     if queued.insert(entity) {
-        commands.entity(entity).despawn_recursive();
+        commands.entity(entity).despawn();
     }
+}
+
+fn clear_intro_surface_ownership(commands: &mut Commands, entity: Entity,
+    queued_despawns: &std::collections::HashSet<Entity>, clear_visible: bool) {
+    // Queries still contain an entity retired earlier in this render pass.
+    // Its ownership disappears with the entity; do not queue stale removals.
+    if queued_despawns.contains(&entity) { return; }
+    commands.entity(entity).queue(move |mut surface: EntityWorldMut| {
+        surface.remove::<TitleScreenMarker>();
+        if clear_visible { surface.remove::<VisibleIntroSurface>(); }
+    });
 }
 
 fn visual_world_grid_dimensions(_enabled: bool) -> (i16, i16, i16) {
@@ -4338,6 +4427,63 @@ fn visual_world_grid_dimensions(_enabled: bool) -> (i16, i16, i16) {
         CLASSIC_SCROLL_TILES_X,
         CLASSIC_SCROLL_TILES_Y,
     )
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+struct VisualWorldWindow {
+    origin: IVec2,
+    size: UVec2,
+}
+
+fn visual_world_grid_window(enabled: bool, viewport_origin: IVec2) -> VisualWorldWindow {
+    let (halo, width, height) = visual_world_grid_dimensions(enabled);
+    let native = viewport_origin - IVec2::splat(i32::from(halo));
+    if cfg!(feature = "voxel-view") && enabled {
+        // A source metatile is 4x4. Retain the complete drawing at every
+        // edge; clipped crown cells otherwise survive as floating 2D shards.
+        // Fixed dimensions cover all four phases without resizing on a step.
+        VisualWorldWindow {
+            origin: IVec2::new(native.x.div_euclid(4) * 4, native.y.div_euclid(4) * 4),
+            size: UVec2::new((width as u32 + 6) / 4 * 4, (height as u32 + 6) / 4 * 4),
+        }
+    } else {
+        VisualWorldWindow { origin: native, size: UVec2::new(width as u32, height as u32) }
+    }
+}
+
+// Rooms keep their existing context; the larger resident acreage belongs to
+// outdoor views, including forests whose environment is distinct from routes.
+fn visual_world_map_window(
+    enabled: bool,
+    viewport_origin: IVec2,
+    map: &crate::RuntimeMapCatalogSnapshot,
+) -> VisualWorldWindow {
+    let outdoor = map
+        .attributes
+        .environment
+        .as_deref()
+        .or_else(|| {
+            map.metadata
+                .as_ref()
+                .map(|metadata| metadata.environment.as_str())
+        })
+        .is_some_and(|environment| {
+            ["town", "route", "forest"]
+                .iter()
+                .any(|kind| environment.eq_ignore_ascii_case(kind))
+        });
+    if enabled && !outdoor && cfg!(feature = "voxel-view") {
+        let halo = CLASSIC_SCROLL_HALO_TILES.max(32);
+        let native = viewport_origin - IVec2::splat(i32::from(halo));
+        return VisualWorldWindow {
+            origin: IVec2::new(native.x.div_euclid(4) * 4, native.y.div_euclid(4) * 4),
+            size: UVec2::new(
+                (VIEWPORT_TILES_X as u32 + halo as u32 * 2 + 6) / 4 * 4,
+                (VIEWPORT_TILES_Y as u32 + halo as u32 * 2 + 6) / 4 * 4,
+            ),
+        };
+    }
+    visual_world_grid_window(enabled, viewport_origin)
 }
 
 fn retained_field_dialog_structure_matches(
@@ -4363,11 +4509,15 @@ fn acknowledge_rendered_field_text(
     runtime_shell: &mut BevyRuntimeShell,
     snapshot: &RuntimeShellSnapshot,
 ) {
-    runtime_shell.rendered_field_text_identity = visible_field_dialog_pages(snapshot, runtime_shell)
-        .and_then(|pages| {
+    runtime_shell.rendered_field_text_identity =
+        visible_field_dialog_pages(snapshot, runtime_shell).and_then(|pages| {
             let reveal = runtime_shell.field_text_reveal.as_ref()?;
-            visible_field_dialogue_is_entirely_consumed(runtime_shell, snapshot)
-                .then(|| (reveal.text.clone(), reveal.page_index.min(pages.len().saturating_sub(1))))
+            visible_field_dialogue_is_entirely_consumed(runtime_shell, snapshot).then(|| {
+                (
+                    reveal.text.clone(),
+                    reveal.page_index.min(pages.len().saturating_sub(1)),
+                )
+            })
         });
 }
 
@@ -4382,23 +4532,43 @@ fn render_playfield(
     #[cfg(feature = "voxel-view")] voxel_settings: Option<
         Res<crystal_voxel_view::VoxelViewSettings>,
     >,
+    #[cfg(feature = "location-tester")] capture_hold: Option<Res<render_capture::PairedCaptureHold>>,
+    #[cfg(feature = "voxel-view")] world_status: Option<Res<crystal_voxel_view::VoxelViewStatus>>,
 ) {
+    if let Err(error) = safari_catch_visible::restore(&mut runtime_shell) {
+        record_visible_render_error(&mut commands, &mut runtime_shell, error);
+        return;
+    }
+    #[cfg(feature = "voxel-view")]
+    let modeled_entry = voxel_settings.as_ref().is_some_and(|settings| settings.enabled)
+        && world_status.as_ref().is_some_and(|status| status.active);
+    #[cfg(not(feature = "voxel-view"))]
+    let modeled_entry = false;
     let movement_subframe = tick_timer.map_or(0.0, |timer| timer.presentation_subframe());
     #[cfg(feature = "voxel-view")]
     // Production always installs the setting. Feature-gated extraction tests
     // that invoke this system in isolation intentionally request the complete
     // optional frame by omitting it.
-    let visual_world_enabled = voxel_settings.map_or(true, |settings| settings.enabled);
+    let visual_world_enabled = voxel_settings.map_or(true, |settings| settings.enabled) || {
+        // A passive comparison needs the same source atlas and actor extraction
+        // in both views. Preparing that read-only atlas does not enable 3D.
+        #[cfg(feature = "location-tester")]
+        { capture_hold.as_ref().is_some_and(|hold| hold.frozen) }
+        #[cfg(not(feature = "location-tester"))]
+        { false }
+    };
     #[cfg(not(feature = "voxel-view"))]
     let visual_world_enabled = false;
     #[cfg(feature = "voxel-view")]
-    let visual_world_mode_unchanged = rendered.visual_world_enabled == visual_world_enabled;
+    let visual_world_mode_unchanged = rendered.visual_world_enabled == visual_world_enabled
+        && (runtime_shell.visible_battle_transition.is_none() || rendered.transition_modeled == modeled_entry);
     #[cfg(not(feature = "voxel-view"))]
     let visual_world_mode_unchanged = true;
     let RenderEntityQueries {
         tiles,
         map_base_surfaces,
         map_priority_surfaces,
+        bridge_surfaces,
         mut map_sprites,
         players,
         mut player_sprites,
@@ -4408,6 +4578,7 @@ fn render_playfield(
         events,
         prompts,
         field_commands,
+        healing_effects,
         scene_dialogs,
         mut dialog_glyphs,
         dialog_frame_tiles,
@@ -4421,6 +4592,27 @@ fn render_playfield(
         fixed_battle_canvases,
     } = entity_queries;
     let mut queued_despawns = std::collections::HashSet::new();
+    if let Some(splash) = runtime_shell.splash_screen.as_ref() {
+        let key = shell_render_key(&runtime_shell);
+        if rendered.title_active && rendered.shell_render_key == Some(key) { return; }
+        match splash_screen_frame(&runtime_shell, splash, &mut images) {
+            Ok(frame) => {
+                for entity in tiles.iter().chain(players.iter()).chain(objects.iter()).chain(events.iter())
+                    .chain(prompts.iter()).chain(field_commands.iter()).chain(scene_dialogs.iter())
+                    .chain(pokemon_pictures.iter()).chain(title_markers.iter()).chain(battlers.iter()).chain(battle_commands.iter()) {
+                    queue_existing_entity_despawn(&mut commands, &mut queued_despawns, entity);
+                }
+                if let Err(error) = commit_presented_fullscreen_frame(&mut commands, &mut tileset_art, &frame,
+                    PresentedFullscreenFrameSource::Transient, PRESENTED_FULLSCREEN_BASE_Z, &mut images) {
+                    record_visible_render_error(&mut commands, &mut runtime_shell, error); return;
+                }
+                rendered.map_name = None; rendered.tile = None; rendered.state_hash = None;
+                rendered.title_active = true; rendered.shell_render_key = Some(key);
+            }
+            Err(error) => record_visible_render_error(&mut commands, &mut runtime_shell, error),
+        }
+        return;
+    }
     if let Some(current_intro) = runtime_shell.intro_screen.clone() {
         let mut intro = runtime_shell
             .intro_display_screen
@@ -4455,8 +4647,8 @@ fn render_playfield(
                 &mut images,
             ) {
                 Some(frame) => {
-                    if let Ok((_, mut texture)) = intro_surfaces.get_single_mut() {
-                        *texture = frame.handle;
+                    if let Ok((_, mut sprite)) = intro_surfaces.single_mut() {
+                        sprite.image = frame.handle;
                         // A title/options/debug overlay can still be present
                         // on the first retained title -> intro handoff. Clear
                         // every predecessor except the retained LCD entity;
@@ -4476,7 +4668,11 @@ fn render_playfield(
                             .chain(battle_commands.iter())
                         {
                             if despawned.insert(entity) {
-                                queue_existing_entity_despawn(&mut commands, &mut queued_despawns, entity);
+                                queue_existing_entity_despawn(
+                                    &mut commands,
+                                    &mut queued_despawns,
+                                    entity,
+                                );
                             }
                         }
                         rendered.shell_render_key = Some(shell_render_key);
@@ -4484,6 +4680,13 @@ fn render_playfield(
                     }
                 }
                 None => {
+                    for entity in scene_dialogs.iter() {
+                        queue_existing_entity_despawn(
+                            &mut commands,
+                            &mut queued_despawns,
+                            entity,
+                        );
+                    }
                     let key = intro_scene_art_key(&intro);
                     let error = tileset_art
                         .intro_scene_errors
@@ -4997,6 +5200,7 @@ fn render_playfield(
             runtime_shell.pending_standard_capture.is_none()
                 && runtime_shell.pending_gift_pokemon_nickname.is_none()
                 && runtime_shell.pending_egg_hatch_nickname.is_none()
+                && !safari_visible::owns(&runtime_shell)
         })
         .cloned();
     let player_name_input = runtime_shell
@@ -5065,13 +5269,16 @@ fn render_playfield(
     // path. Retire its presenter here too: that path never reaches the full
     // compositor's release step. A different map still waits for staging.
     let returning_to_staged_field = rendered.map_name.as_deref()
-            == Some(runtime_shell.shell.session().overworld().map.name.as_str());
+        == Some(runtime_shell.shell.session().overworld().map.name.as_str());
     if tileset_art.presented_fullscreen_entity.is_some()
         && (tileset_art.presented_fullscreen_release_pending || returning_to_staged_field)
         && !retained_field_fullscreen_active(&runtime_shell)
         && map_base_surfaces.iter().next().is_some()
         && map_priority_surfaces.iter().next().is_some()
     {
+        if let Some(entity) = tileset_art.presented_fullscreen_entity {
+            queued_despawns.insert(entity);
+        }
         remove_presented_fullscreen_entity(&mut commands, &mut tileset_art);
     }
     let object_motion_active = runtime_shell.object_walk_frame_ticks > 0
@@ -5107,6 +5314,9 @@ fn render_playfield(
         .as_ref()
         .filter(|_| {
             runtime_shell.field_notice.is_some()
+                // Fishing commits its battle before Cast/Hook/Pause finish.
+                // Keep the original field visible until its bite text is acknowledged.
+                || runtime_shell.visible_fishing_animation.is_some()
                 || runtime_shell.pending_field_notice_effect_frames.is_some()
                 || matches!(
                     runtime_shell.visible_fly_animation,
@@ -5152,7 +5362,8 @@ fn render_playfield(
     };
     #[cfg(any(feature = "fullscreen-scaling", feature = "voxel-view"))]
     if snapshot.battle.is_none()
-        && let Err(error) = expand_fullscreen_object_presentation(Arc::make_mut(&mut snapshot), &runtime_shell) {
+        && let Err(error) = object_presentation::expand_shared(&mut snapshot, &runtime_shell)
+    {
         record_visible_render_error(&mut commands, &mut runtime_shell, error);
         return;
     }
@@ -5184,10 +5395,32 @@ fn render_playfield(
     let battle_canvas_active = runtime_shell.visible_battle_transition.is_none()
         && !capture_pokedex_active
         && (snapshot.battle.is_some() || terminal_battle_scene.is_some());
+    #[cfg(feature = "voxel-view")]
+    if !battle_canvas_active && !visual_world_enabled {
+        commands.insert_resource(crystal_render_api::VisualBattleFrame::default());
+    } else if let Err(error) = capture_presented_battle(
+        &mut commands,
+        &snapshot,
+        &runtime_shell,
+        battle_canvas_active,
+        &mut tileset_art,
+        &mut images,
+    ) {
+        record_visible_render_error(&mut commands, &mut runtime_shell, error);
+    }
     let state_hash = snapshot.visual_state_hash;
+    let safari_surface_owned = safari_visible::snapshot_owns(&snapshot);
+    let safari_surface_missing = safari_surface_owned && battle_commands.iter().next().is_none();
     runtime_shell.battle_lcd_animation_active = snapshot.battle.is_some();
-    let shell_render_key = battle_animated_shell_render_key(&snapshot, &runtime_shell);
-    let map_block_identity = visible_map_block_identity(&snapshot);
+    let shell_render_key = safari_visible::render_key(
+        &snapshot,
+        battle_animated_shell_render_key(&snapshot, &runtime_shell),
+    );
+    let map_block_identity = if cfg!(feature = "voxel-view") && visual_world_enabled {
+        connected_world_sources::block_identity(&snapshot.overworld.map_name, &snapshot.maps)
+    } else {
+        visible_map_block_identity(&snapshot)
+    };
     let position_key = overworld_render_position_key(&snapshot);
     let appearance_key = overworld_render_appearance_key(&snapshot);
     let world_key = overworld_render_world_key_from_parts(
@@ -5198,21 +5431,38 @@ fn render_playfield(
     );
     let scene_dialog_entries = visible_scene_dialog_entries(&snapshot, &runtime_shell);
     let dialog_key = scene_dialog_entries.as_ref().ok().map(|entries| {
-            let mut hasher = std::collections::hash_map::DefaultHasher::new();
-            entries.hash(&mut hasher);
-            // Shop entries describe the complete message, while its pixels
-            // come from the typewriter. Do not retain the initial blank page
-            // when only the revealed character count has changed.
-            if snapshot.pending_shop.is_some() {
-                runtime_shell.field_text_reveal.as_ref()
-                    .map(|reveal| (&reveal.text, reveal.page_index, reveal.visible_chars))
-                    .hash(&mut hasher);
-            }
-            field_dialogue_prompt_arrow_visible(&snapshot, &runtime_shell).hash(&mut hasher);
-            strict_readonly_cursor_index(&runtime_shell.yes_no_cursor, "ui:yes-no", 2)
+        let mut hasher = std::collections::hash_map::DefaultHasher::new();
+        entries.hash(&mut hasher);
+        // Shop entries describe the complete message, while its pixels
+        // come from the typewriter. Do not retain the initial blank page
+        // when only the revealed character count has changed.
+        if snapshot.pending_shop.is_some() || runtime_shell.pc_notice.is_some() {
+            runtime_shell
+                .field_text_reveal
+                .as_ref()
+                .map(|reveal| (&reveal.text, reveal.page_index, reveal.visible_chars))
                 .hash(&mut hasher);
-            hasher.finish()
-        });
+            // PC item entries retain the inventory while their overlaid text,
+            // quantity and YesNoBox change. Those pixels must invalidate the
+            // dialog cache even when the selected inventory row is unchanged.
+            runtime_shell.pc_notice.hash(&mut hasher);
+            runtime_shell.pc_item_quantity.hash(&mut hasher);
+            runtime_shell.pc_confirmation.hash(&mut hasher);
+            if runtime_shell.pc_confirmation.is_some() {
+                runtime_shell.yes_no_cursor.as_ref().map(|cursor|
+                    (&cursor.surface_id,cursor.option_index)).hash(&mut hasher);
+            }
+        }
+        runtime_shell
+            .field_text_timing
+            .as_ref()
+            .map(|timing| timing.frames_remaining)
+            .hash(&mut hasher);
+        field_dialogue_prompt_arrow_visible(&snapshot, &runtime_shell).hash(&mut hasher);
+        strict_readonly_cursor_index(&runtime_shell.yes_no_cursor, "ui:yes-no", 2)
+            .hash(&mut hasher);
+        hasher.finish()
+    });
     if object_motion_just_landed
         && rendered.map_name.as_ref() == Some(&snapshot.overworld.map_name)
         && let Some((start_x, start_y)) = rendered.viewport_origin
@@ -5224,6 +5474,7 @@ fn render_playfield(
         // the new snapshot revision and returns early.
         let _ = update_overworld_sprite_positions(
             &snapshot,
+            rendered.bridge_scene,
             movement_subframe,
             runtime_shell.visible_ledge_jump,
             runtime_shell.player_walk_from,
@@ -5248,7 +5499,19 @@ fn render_playfield(
     // sprites, and images) for each character was the source of the 100%+
     // CPU spikes and the apparent one-FPS runtime. Refresh only the dialog
     // layer when the world itself is unchanged.
-    let dialog_only_update = rendered.title_active == false
+    let stale_healing_effects=runtime_shell.visible_heal_machine.is_none()
+        &&healing_effects.iter().next().is_some();
+    let dialog_only_update = !stale_healing_effects && rendered.title_active == false
+        // Capture notices belong to the Safari canvas above the field dialog.
+        // Its retained command box must be rebuilt when that notice changes.
+        && snapshot.safari_prompt.is_none()
+        && snapshot.safari.as_ref().is_none_or(|active|
+            matches!(active.phase, crate::core::systems::safari::SafariPhase::Exploring))
+        // Returning from a full-LCD PC box list needs one complete field
+        // compositor pass. Updating only text leaves its old modal canvas
+        // and menu frame alive behind the new source save introduction.
+        && intro_surfaces.iter().next().is_none()
+        && title_markers.iter().next().is_none()
         && visual_world_mode_unchanged
         && rendered.map_name.as_ref() == Some(&snapshot.overworld.map_name)
         && rendered.tile == Some(snapshot.overworld.tile)
@@ -5285,7 +5548,7 @@ fn render_playfield(
             desired_yes_no_prompt,
         );
         // Every field dialog owns one 20x6 frame and, while yes/no is active,
-        // exactly one additional 6x4 frame. Looking only for any retained
+        // exactly one additional 6x5 frame. Looking only for any retained
         // frame mistook orphaned YesNoBox tiles for the next field textbox;
         // its blank surface then survived while the text fast path updated no
         // usable glyphs. Validate the complete layer before mutating it.
@@ -5397,7 +5660,9 @@ fn render_playfield(
     // changing any pixels in the overworld. Retain the existing map, player,
     // and object entities in that case; rebuilding them here was the other
     // major source of frame stalls after the tile layer was composited.
-    let world_only_update = !rendered.title_active
+    let world_only_update = !stale_healing_effects && !rendered.title_active
+        && !safari_surface_owned
+        && battle_commands.iter().next().is_none()
         && visual_world_mode_unchanged
         && rendered.map_name.as_ref() == Some(&snapshot.overworld.map_name)
         && rendered.tile == Some(snapshot.overworld.tile)
@@ -5437,6 +5702,7 @@ fn render_playfield(
         // A changed shell key means an overlay was opened or closed.  Let the
         // normal rebuild path remove stale command-window entities.
         && rendered.shell_render_key == Some(shell_render_key);
+    let mut retained_movement_needs_reconcile = false;
     if world_only_update
         && rendered.player_sprite_facing == Some(snapshot.overworld.facing)
         && rendered.player_sprite_mode == Some(snapshot.overworld.mode)
@@ -5452,6 +5718,7 @@ fn render_playfield(
         if let Some((start_x, start_y)) = rendered.viewport_origin
             && update_overworld_sprite_positions(
                 &snapshot,
+                rendered.bridge_scene,
                 movement_subframe,
                 runtime_shell.visible_ledge_jump,
                 runtime_shell.player_walk_from,
@@ -5482,8 +5749,14 @@ fn render_playfield(
             rendered.shell_render_key = Some(shell_render_key);
             return;
         }
+        // The semantic snapshot can be unchanged even when a retained actor
+        // is missing or the roster no longer matches. Reconcile the scene
+        // below rather than letting an idle acknowledgement retain a stale
+        // camera and partially updated actor transforms for the whole step.
+        retained_movement_needs_reconcile = true;
     }
     if world_only_update
+        && !retained_movement_needs_reconcile
         && rendered.player_sprite_facing == Some(snapshot.overworld.facing)
         && rendered.player_sprite_mode == Some(snapshot.overworld.mode)
     {
@@ -5493,6 +5766,8 @@ fn render_playfield(
         return;
     }
     if rendered.map_name.as_ref() == Some(&snapshot.overworld.map_name)
+        && !safari_surface_missing
+        && !retained_movement_needs_reconcile
         && visual_world_mode_unchanged
         && rendered.tile == Some(snapshot.overworld.tile)
         && rendered.world_key == Some(world_key)
@@ -5595,11 +5870,8 @@ fn render_playfield(
         // overworld LCD surface later in this system. Retire only its
         // full-screen ownership markers; despawning it would invalidate the
         // queued map texture/transform updates applied at the command flush.
-        let mut retained_surface = commands.entity(entity);
-        retained_surface.remove::<TitleScreenMarker>();
-        if map_layers_were_query_visible && !retained_field_fullscreen_active(&runtime_shell) {
-            retained_surface.remove::<VisibleIntroSurface>();
-        }
+        clear_intro_surface_ownership(&mut commands, entity, &queued_despawns,
+            map_layers_were_query_visible && !retained_field_fullscreen_active(&runtime_shell));
     }
     for entity in battlers.iter() {
         queue_existing_entity_despawn(&mut commands, &mut queued_despawns, entity);
@@ -5619,18 +5891,19 @@ fn render_playfield(
     }
     if battle_canvas_active && retained_fixed_battle_canvas.is_none() {
         commands.spawn((
-            SpriteBundle {
-                sprite: Sprite {
-                    // Pokemon palette color zero expands to full white. Keep
-                    // the battle canvas identical so enclosed white sprite
-                    // details do not show as a mismatched rectangle/halo.
+
+// Pokemon palette color zero expands to full white. Keep
+// the battle canvas identical so enclosed white sprite
+// details do not show as a mismatched rectangle/halo.
+(Sprite {
+
+
+
                     color: Color::WHITE,
                     custom_size: Some(Vec2::new(PLAYFIELD_WIDTH, PLAYFIELD_HEIGHT)),
                     ..default()
                 },
-                transform: Transform::from_xyz(0.0, 0.0, 2.7),
-                ..default()
-            },
+Transform::from_xyz(0.0, 0.0, 2.7),),
             BattleCommandMarker,
             FixedBattleCanvasMarker,
         ));
@@ -5772,6 +6045,28 @@ fn render_playfield(
     let tileset_art_key = TilesetArtKey {
         tileset_id: tileset.tileset_id.clone(),
         time_of_day: effective_time_of_day.to_string(),
+        palette_map: tileset.palette_map.clone(),
+    };
+    // Resolve every region inside the preload area, even when several small
+    // intervening maps put it beyond the regular connection neighborhood.
+    let connected_maps = match if cfg!(feature = "voxel-view") && visual_world_enabled {
+        connected_world_sources::placements(
+            &map.map_name,
+            &snapshot.maps,
+            visual_world_map_window(
+                true,
+                IVec2::new(i32::from(start_x), i32::from(start_y)),
+                map,
+            ),
+        )
+    } else {
+        connected_render_map_placements(&map.map_name, &snapshot.maps)
+    } {
+        Ok(maps) => maps,
+        Err(error) => {
+            record_visible_render_error(&mut commands, &mut runtime_shell, error);
+            return;
+        }
     };
     let map_visual_key =
         {
@@ -5785,26 +6080,23 @@ fn render_playfield(
             map.attributes.tileset_name.hash(&mut hasher);
             tileset_art_key.time_of_day.hash(&mut hasher);
             map.attributes.border_block.hash(&mut hasher);
+            snapshot
+                .progression
+                .active_engine_flags
+                .contains("ENGINE_FOREST_IS_RESTLESS")
+                .hash(&mut hasher);
             tileset.palette_map.hash(&mut hasher);
-            for connection in &map.attributes.connections {
-                connection.direction.hash(&mut hasher);
-                connection.target_map.hash(&mut hasher);
-                connection.offset.hash(&mut hasher);
-                if let Some(target_map) = snapshot
-                    .maps
-                    .iter()
-                    .find(|candidate| candidate.map_name == connection.target_map)
-                {
-                    target_map.attributes.tileset_name.hash(&mut hasher);
-                    target_map.attributes.border_block.hash(&mut hasher);
-                    visible_effective_map_time_of_day(target_map, live_time_of_day, flash_active)
-                        .hash(&mut hasher);
-                    if let Some(target_tileset) = snapshot.tilesets.iter().find(|candidate| {
-                        candidate.tileset_id == target_map.attributes.tileset_name
-                    }) {
-                        target_tileset.palette_map.hash(&mut hasher);
-                    }
-                }
+            for &(target_map, origin_x, origin_y) in connected_maps.iter().skip(1) {
+                target_map.map_name.hash(&mut hasher);
+                target_map.blocks.hash(&mut hasher);
+                (origin_x,origin_y).hash(&mut hasher);
+                target_map.attributes.tileset_name.hash(&mut hasher);
+                target_map.attributes.border_block.hash(&mut hasher);
+                visible_effective_map_time_of_day(target_map, live_time_of_day, flash_active)
+                    .hash(&mut hasher);
+                if let Some(target_tileset) = snapshot.tilesets.iter().find(|candidate| {
+                    candidate.tileset_id == target_map.attributes.tileset_name
+                }) { target_tileset.palette_map.hash(&mut hasher); }
             }
             hasher.finish()
         };
@@ -5813,6 +6105,8 @@ fn render_playfield(
     // cases: despawning it before a replacement GPU texture is available
     // makes macOS present the clear (black) surface for one frame.
     let can_update_positions_in_place = !rendered.title_active
+        && !safari_surface_owned
+        && battle_commands.iter().next().is_none()
         && rendered.map_name.as_ref() == Some(&snapshot.overworld.map_name)
         // Position-only retention cannot choose new directional sprite art.
         // A turn must fall through to the retained-player redraw below, which
@@ -5850,6 +6144,7 @@ fn render_playfield(
         && rendered.viewport_origin == Some((start_x, start_y))
         && update_overworld_sprite_positions(
             &snapshot,
+            rendered.bridge_scene,
             movement_subframe,
             runtime_shell.visible_ledge_jump,
             runtime_shell.player_walk_from,
@@ -5930,6 +6225,7 @@ fn render_playfield(
     if facing_only_update
         && update_overworld_sprite_positions(
             &snapshot,
+            rendered.bridge_scene,
             movement_subframe,
             runtime_shell.visible_ledge_jump,
             runtime_shell.player_walk_from,
@@ -6024,23 +6320,7 @@ fn render_playfield(
         width: i32::from(width),
         height: i32::from(height),
     });
-    for connection in &map.attributes.connections {
-        let Some(target_map) = snapshot
-            .maps
-            .iter()
-            .find(|candidate| candidate.map_name == connection.target_map)
-        else {
-            record_visible_render_error(
-                &mut commands,
-                &mut runtime_shell,
-                anyhow::anyhow!(
-                    "connection target {} referenced by {} is missing from the map catalog",
-                    connection.target_map,
-                    map.map_name,
-                ),
-            );
-            return;
-        };
+    for &(target_map, origin_x, origin_y) in connected_maps.iter().skip(1) {
         let Some(target_tileset) = snapshot
             .tilesets
             .iter()
@@ -6065,6 +6345,7 @@ fn render_playfield(
                 flash_active,
             )
             .to_string(),
+            palette_map: target_tileset.palette_map.clone(),
         };
         if !tileset_art.cache.contains_key(&target_art_key) {
             match load_tileset_art(
@@ -6103,20 +6384,10 @@ fn render_playfield(
             );
             return;
         }
-        let target_width = i32::from(target_map.attributes.width)
-            * i32::from(RENDER_METATILE_WIDTH);
-        let target_height = i32::from(target_map.attributes.height)
-            * i32::from(RENDER_METATILE_WIDTH);
-        let offset = connection
-            .offset
-            .saturating_mul(i32::from(RENDER_METATILE_WIDTH));
-        let (origin_x, origin_y) = match connection.direction.to_ascii_lowercase().as_str() {
-            "north" => (offset, -target_height),
-            "south" => (offset, i32::from(height)),
-            "west" => (-target_width, offset),
-            "east" => (i32::from(width), offset),
-            _ => continue,
-        };
+        let target_width =
+            i32::from(target_map.attributes.width) * i32::from(RENDER_METATILE_WIDTH);
+        let target_height =
+            i32::from(target_map.attributes.height) * i32::from(RENDER_METATILE_WIDTH);
         render_sources.push(ResolvedRenderSource {
             map: target_map,
             tileset: target_tileset,
@@ -6128,10 +6399,30 @@ fn render_playfield(
         });
     }
 
+    // Resolve immutable tileset art once per source map. The visual halo can
+    // contain thousands of subtiles; hashing the complete palette key for every
+    // texture, animation and priority lookup dominated walking CPU profiles.
+    // Keep exact palette/time identity at this boundary, then borrow that same
+    // art throughout this scan without changing source or animation selection.
+    let source_art_by_map: HashMap<_, _> = render_sources
+        .iter()
+        .map(|source| {
+            (source.map.map_name.as_str(), tileset_art.cache.get(&source.art_key))
+        })
+        .collect();
+
     // Keep the map layer as one retained sprite instead of 360 independent
     // Bevy entities.  The old per-tile entity churn was the dominant cost on
     // every camera step and was the reason the shell could fall to one FPS.
     // Objects, player, dialog, and battle overlays remain separate layers.
+    rendered.bridge_scene = match bridge_source_overlay::scene_has_bridge(&render_sources) {
+        Ok(enabled) => enabled,
+        Err(error) => {
+            record_visible_render_error(&mut commands, &mut runtime_shell, error);
+            return;
+        }
+    };
+    let mut bridge_viewport_tiles = Vec::new();
     let mut transition_tiles = Vec::new();
     let mut viewport_tile_handles = Vec::with_capacity(
         usize::try_from(CLASSIC_SCROLL_TILES_X * CLASSIC_SCROLL_TILES_Y).unwrap_or_default(),
@@ -6139,30 +6430,68 @@ fn render_playfield(
     let mut priority_viewport_tiles = Vec::with_capacity(
         usize::try_from(CLASSIC_SCROLL_TILES_X * CLASSIC_SCROLL_TILES_Y).unwrap_or_default(),
     );
-    let (visual_world_halo, visual_world_tiles_x, visual_world_tiles_y) =
-        visual_world_grid_dimensions(visual_world_enabled);
-    #[cfg(any(test, feature = "voxel-view"))]
-    let mut visual_tiles = Vec::with_capacity(
-        usize::try_from(visual_world_tiles_x * visual_world_tiles_y).unwrap_or_default(),
+    let visual_window = visual_world_map_window(
+        visual_world_enabled,
+        IVec2::new(i32::from(start_x), i32::from(start_y)),
+        map,
     );
     #[cfg(feature = "voxel-view")]
-    let mut visual_world_tile_handles = Vec::with_capacity(
-        if visual_world_enabled {
-            usize::try_from(visual_world_tiles_x * visual_world_tiles_y).unwrap_or_default()
-        } else {
-            0
-        },
+    let (visual_window, retain_visual_world) = source_window::select(
+        rendered
+            .visual_world_texture
+            .as_ref()
+            .map(|_| VisualWorldWindow {
+                origin: rendered.visual_world_grid_origin,
+                size: rendered.visual_world_grid_size,
+            }),
+        visual_window,
+        visual_world_enabled
+            && rendered.visual_world_enabled
+            && rendered.map_name.as_deref() == Some(map.map_name.as_str())
+            && rendered.map_visual_key == Some(map_visual_key)
+            && rendered.visual_tiles_revision.is_some()
+            && !rendered.visual_tiles.is_empty(),
     );
+    #[cfg(not(feature = "voxel-view"))]
+    let retain_visual_world = false;
+    let visual_world_tiles_x = visual_window.size.x as i16;
+    let visual_world_tiles_y = visual_window.size.y as i16;
+    let visual_padding_x = i32::from(start_x) - visual_window.origin.x;
+    let visual_padding_y = i32::from(start_y) - visual_window.origin.y;
     #[cfg(any(test, feature = "voxel-view"))]
-    let mut visual_tileset_ids = HashMap::<&str, Arc<str>>::new();
+    let mut visual_tiles = if retain_visual_world {
+        std::mem::take(&mut rendered.visual_tiles)
+    } else {
+        Vec::with_capacity(visual_window.size.x as usize * visual_window.size.y as usize)
+    };
+    #[cfg(feature = "voxel-view")]
+    let mut visual_world_tile_handles = Vec::with_capacity(if visual_world_enabled {
+        visual_window.size.x as usize * visual_window.size.y as usize
+    } else {
+        0
+    });
+    #[cfg(any(test, feature = "voxel-view"))]
+    let mut visual_sources = authored_visual_sources::Projection::default();
     #[cfg(test)]
     {
         rendered.terrain_scan_count = rendered.terrain_scan_count.saturating_add(1);
     }
-    for visual_y in 0..visual_world_tiles_y {
-        for visual_x in 0..visual_world_tiles_x {
-            let x = visual_x - visual_world_halo;
-            let y = visual_y - visual_world_halo;
+    // Retained outdoor source art stays anchored while the LCD scrolls. Only
+    // scan the classic surface here; it must keep exact source animation/OAM.
+    let (scan_min, scan_max) = if retain_visual_world {
+        let min = IVec2::new(visual_padding_x, visual_padding_y)
+            - IVec2::splat(i32::from(CLASSIC_SCROLL_HALO_TILES));
+        (
+            min,
+            min + IVec2::new(CLASSIC_SCROLL_TILES_X as i32, CLASSIC_SCROLL_TILES_Y as i32),
+        )
+    } else {
+        (IVec2::ZERO, visual_window.size.as_ivec2())
+    };
+    for visual_y in scan_min.y as i16..scan_max.y as i16 {
+        for visual_x in scan_min.x as i16..scan_max.x as i16 {
+            let x = visual_x - visual_padding_x as i16;
+            let y = visual_y - visual_padding_y as i16;
             let inside_scroll_surface = x >= -CLASSIC_SCROLL_HALO_TILES
                 && y >= -CLASSIC_SCROLL_HALO_TILES
                 && x < VIEWPORT_TILES_X + CLASSIC_SCROLL_HALO_TILES
@@ -6171,71 +6500,50 @@ fn render_playfield(
             let map_y = i32::from(start_y) + i32::from(y);
             let (source, source_x, source_y) =
                 resolved_render_source_at(&render_sources, map_x, map_y);
-            let source_map = source.map;
-            let source_tileset = source.tileset;
-            let source_art_key = &source.art_key;
-            let (block, sub_x, sub_y) = if source_x >= 0
-                && source_y >= 0
-                && source_x < source.width
-                && source_y < source.height
-            {
-                let block_x = source_x.div_euclid(i32::from(RENDER_METATILE_WIDTH));
-                let block_y = source_y.div_euclid(i32::from(RENDER_METATILE_WIDTH));
-                let sub_x = source_x.rem_euclid(i32::from(RENDER_METATILE_WIDTH)) as usize;
-                let sub_y = source_y.rem_euclid(i32::from(RENDER_METATILE_WIDTH)) as usize;
-                let index =
-                    (block_y as usize * source_map.attributes.width as usize) + block_x as usize;
-                (source_map.blocks[index], sub_x, sub_y)
-            } else {
-                let sub_x = source_x.rem_euclid(i32::from(RENDER_METATILE_WIDTH)) as usize;
-                let sub_y = source_y.rem_euclid(i32::from(RENDER_METATILE_WIDTH)) as usize;
-                (source_map.attributes.border_block as u16, sub_x, sub_y)
-            };
-            let Some((source_tile_index, tile_handle)) =
-                tileset_art.cache.get(source_art_key).and_then(|art| {
-                    let offset = usize::from(block)
-                        .checked_mul(METATILE_TILE_COUNT)?
-                        .checked_add(sub_y.checked_mul(RENDER_METATILE_WIDTH as usize)?)?
-                        .checked_add(sub_x)?;
-                    let tile_index = *art.metatile_layout.get(offset)?;
-                    let handle = art.tile_handle_at_frame(
-                        block,
-                        sub_x,
-                        sub_y,
-                        runtime_shell.lcd_animation_frame,
-                        snapshot
-                            .progression
-                            .active_engine_flags
-                            .contains("ENGINE_FOREST_IS_RESTLESS"),
-                    )?;
-                    Some((tile_index, handle))
-                })
-            else {
-                record_visible_render_error(
-                    &mut commands,
-                    &mut runtime_shell,
-                    anyhow::anyhow!(
-                        "required tileset art {} missing metatile {} sub-tile ({}, {})",
-                        source_art_key.tileset_id,
-                        block,
-                        sub_x,
-                        sub_y
-                    ),
-                );
-                return;
+            let source_art = source_art_by_map.get(source.map.map_name.as_str()).copied().flatten();
+            let resolved = source_art.context("required tileset art is missing").and_then(|art|
+                source_tile_art(source, art, source_x, source_y, runtime_shell.lcd_animation_frame,
+                    snapshot.progression.active_engine_flags.contains("ENGINE_FOREST_IS_RESTLESS")));
+            let (block, sub_x, sub_y, source_tile_index, tile_handle, priority, foreground_bottom) = match resolved {
+                Ok(tile) => tile,
+                Err(error) => {
+                    record_visible_render_error(&mut commands, &mut runtime_shell, error);
+                    return;
+                }
             };
             if inside_scroll_surface {
                 viewport_tile_handles.push(tile_handle.clone());
-                if let Some(art) = tileset_art.cache.get(source_art_key) {
+                let bridge = if rendered.bridge_scene {
+                    match bridge_source_overlay::overlay_spec(
+                        source.tileset, block, sub_x, sub_y, &tile_handle,
+                    ) {
+                        Ok(spec) => spec,
+                        Err(error) => {
+                            record_visible_render_error(&mut commands, &mut runtime_shell, error);
+                            return;
+                        }
+                    }
+                } else {
+                    None
+                };
+                bridge_viewport_tiles.push(bridge);
+
+                if let Some(art) = source_art {
                     let mut tile = art.transition_tiles[source_tile_index as usize].clone();
                     // Animated tiles retain their current frame. Prefer the
                     // source index for equal colours, including colour zero.
-                    if art.animated_tiles.contains_key(&(source_tile_index as usize))
+                    if art
+                        .animated_tiles
+                        .contains_key(&(source_tile_index as usize))
                         && let Some(image) = images.get(&tile_handle)
                     {
-                        for (index, pixel) in tile.indices.iter_mut().zip(image.data.chunks_exact(4)) {
+                        for (index, pixel) in
+                            tile.indices.iter_mut().zip(image.data.as_ref().expect("CPU image pixels").chunks_exact(4))
+                        {
                             if pixel[..3] != tile.palette[*index as usize] {
-                                if let Some(found) = tile.palette.iter().position(|rgb| pixel[..3] == *rgb) {
+                                if let Some(found) =
+                                    tile.palette.iter().position(|rgb| pixel[..3] == *rgb)
+                                {
                                     *index = found as u8;
                                 }
                             }
@@ -6244,72 +6552,47 @@ fn render_playfield(
                     transition_tiles.push(tile);
                 }
             }
-            #[cfg(feature = "voxel-view")]
-            if visual_world_enabled {
-                visual_world_tile_handles.push(tile_handle.clone());
-            }
-            // Collision data remains private to the faithful 2D compositor:
-            // it selects the classic foreground-priority layer, but is never
-            // exported as optional-renderer height or shape information.
-            let Some(collision) = tileset_collision_tokens(source_tileset, block) else {
-                record_visible_render_error(
-                    &mut commands,
-                    &mut runtime_shell,
-                    anyhow::anyhow!(
-                        "required tileset {} collision row {} is missing",
-                        source_tileset.tileset_id,
-                        block,
-                    ),
-                );
-                return;
-            };
-            if collision.len() != 4 {
-                record_visible_render_error(
-                    &mut commands,
-                    &mut runtime_shell,
-                    anyhow::anyhow!(
-                        "tileset {} collision row {} has {} quadrants instead of 4",
-                        source_tileset.tileset_id,
-                        block,
-                        collision.len(),
-                    ),
-                );
-                return;
-            }
-            let foreground_bottom = collision[0] == "FLOOR"
-                && collision[1] == "FLOOR"
-                && collision[2..4]
-                    .iter()
-                    .all(|token| token == "WALL" || priority_collision_token(token));
-            let collision_index = (if sub_y < 2 { 0 } else { 2 }) + if sub_x < 2 { 0 } else { 1 };
-            let priority = priority_collision_token(&collision[collision_index])
-                || (foreground_bottom && sub_y >= 1);
             #[cfg(any(test, feature = "voxel-view"))]
-            {
-                let visual_tileset_id = visual_tileset_ids
-                    .entry(source_tileset.tileset_id.as_str())
-                    .or_insert_with(|| Arc::from(source_tileset.tileset_id.as_str()))
-                    .clone();
+            if !retain_visual_world {
+                let (visual_source,sx,sy)=if visual_world_enabled {
+                    resolved_visual_render_source_at(&render_sources,map_x,map_y)
+                } else {(source,source_x,source_y)};
+                let source_tileset=visual_source.tileset;
+                let source_art=source_art_by_map.get(visual_source.map.map_name.as_str()).copied().flatten();
+                let resolved=if std::ptr::eq(visual_source,source) && sx==source_x && sy==source_y {
+                    Ok((block,sub_x,sub_y,source_tile_index,tile_handle.clone(),priority,foreground_bottom))
+                } else {
+                    source_art.context("required visual border art is missing").and_then(|art|
+                        source_tile_art(visual_source,art,sx,sy,runtime_shell.lcd_animation_frame,
+                            snapshot.progression.active_engine_flags.contains("ENGINE_FOREST_IS_RESTLESS")))
+                };
+                let (block,sub_x,sub_y,source_tile_index,tile_handle,priority,_)=match resolved {
+                    Ok(tile)=>tile,
+                    Err(error)=>{record_visible_render_error(&mut commands,&mut runtime_shell,error);return;}
+                };
+                #[cfg(feature="voxel-view")]
+                if visual_world_enabled {visual_world_tile_handles.push(tile_handle.clone());}
+                let visual_source=match visual_sources.source(&runtime_shell.asset_root,
+                    &source_tileset.tileset_id,block,sub_x,sub_y,source_tile_index) {
+                    Ok(source)=>source,
+                    Err(error)=>{record_visible_render_error(&mut commands,&mut runtime_shell,error);return;}
+                };
                 visual_tiles.push(crystal_render_api::VisualTile {
                     column: visual_x as u32,
                     row: visual_y as u32,
-                    source: crystal_render_api::VisualTileSource {
-                        tileset_id: visual_tileset_id,
-                        metatile_id: block,
-                        subtile_column: u8::try_from(sub_x)
-                            .expect("4x4 metatile column always fits u8"),
-                        subtile_row: u8::try_from(sub_y)
-                            .expect("4x4 metatile row always fits u8"),
-                        tile_index: u16::from(source_tile_index),
-                    },
+                    source: visual_source,
                     texture: tile_handle.clone(),
+                    animation_frames: source_art.and_then(|art| {
+                        art.animated_tiles
+                            .get(&(source_tile_index as usize))
+                            .filter(|animation| !animation.frames.is_empty())
+                            .map(|animation| Arc::clone(&animation.frames))
+                    }),
                     priority,
                 });
             }
             let priority_spec = if priority {
-                let Some(handle) = tileset_art
-                    .cache
-                    .get(source_art_key)
+                let Some(handle) = source_art
                     .and_then(|art| art.priority_tile_handle(block, sub_x, sub_y))
                 else {
                     record_visible_render_error(
@@ -6317,7 +6600,7 @@ fn render_playfield(
                         &mut runtime_shell,
                         anyhow::anyhow!(
                             "required priority art {} missing metatile {} sub-tile ({}, {})",
-                            source_art_key.tileset_id,
+                            source.art_key.tileset_id,
                             block,
                             sub_x,
                             sub_y,
@@ -6344,6 +6627,44 @@ fn render_playfield(
             }
         }
     }
+    #[cfg(feature = "voxel-view")]
+    if retain_visual_world {
+        // Refresh only authenticated animated cells. The renderer publishes
+        // these sparse phases into its retained immutable terrain atlas.
+        for tile in visual_tiles
+            .iter_mut()
+            .filter(|tile| tile.animation_frames.is_some())
+        {
+            let point = visual_window.origin + IVec2::new(tile.column as i32, tile.row as i32);
+            let (source, x, y) =
+                resolved_visual_render_source_at(&render_sources, point.x, point.y);
+            let resolved = source_art_by_map
+                .get(source.map.map_name.as_str())
+                .copied()
+                .flatten()
+                .context("retained source animation art is missing")
+                .and_then(|art| {
+                    source_tile_art(
+                        source,
+                        art,
+                        x,
+                        y,
+                        runtime_shell.lcd_animation_frame,
+                        snapshot
+                            .progression
+                            .active_engine_flags
+                            .contains("ENGINE_FOREST_IS_RESTLESS"),
+                    )
+                });
+            match resolved {
+                Ok((_, _, _, _, texture, _, _)) => tile.texture = texture,
+                Err(error) => {
+                    record_visible_render_error(&mut commands, &mut runtime_shell, error);
+                    return;
+                }
+            }
+        }
+    }
     let previous_viewport_origin = rendered.viewport_origin;
     let tile_frame_key = {
         let mut hasher = std::collections::hash_map::DefaultHasher::new();
@@ -6351,7 +6672,13 @@ fn render_playfield(
             handle.id().hash(&mut hasher);
         }
         for spec in &priority_viewport_tiles {
-            spec.as_ref().map(|(handle, clip_top)| (handle.id(), *clip_top)).hash(&mut hasher);
+            spec.as_ref()
+                .map(|(handle, clip_top)| (handle.id(), *clip_top))
+                .hash(&mut hasher);
+        }
+        rendered.bridge_scene.hash(&mut hasher);
+        for spec in &bridge_viewport_tiles {
+            spec.as_ref().map(|(handle, row)| (handle.id(), *row)).hash(&mut hasher);
         }
         #[cfg(feature = "voxel-view")]
         for handle in &visual_world_tile_handles {
@@ -6416,14 +6743,45 @@ fn render_playfield(
             &mut images,
         )
     };
+    // Once allocated, retain a transparent surface on ordinary maps. This
+    // keeps deferred entities/handles coherent without changing native pixels.
+    let bridge_viewport_texture = if rendered.bridge_scene || rendered.map_bridge_texture.is_some() {
+        Some(if facing_only_redraw || retained_texture_content {
+            rendered.map_bridge_texture.clone().unwrap_or_else(|| {
+                compose_priority_tile_grid(
+                    &bridge_viewport_tiles,
+                    CLASSIC_SCROLL_TILES_X as usize,
+                    CLASSIC_SCROLL_TILES_Y as usize,
+                    None,
+                    &mut images,
+                )
+            })
+        } else {
+            compose_priority_tile_grid(
+                &bridge_viewport_tiles,
+                CLASSIC_SCROLL_TILES_X as usize,
+                CLASSIC_SCROLL_TILES_Y as usize,
+                rendered.map_bridge_texture.clone(),
+                &mut images,
+            )
+        })
+    } else {
+        None
+    };
+    rendered.map_bridge_texture.clone_from(&bridge_viewport_texture);
     if !transition_tiles.is_empty() {
         rendered.transition_tiles = transition_tiles;
+        rendered.transition_bridge_mask = bridge_viewport_tiles.iter().map(Option::is_some).collect();
     }
     rendered.map_texture = Some(viewport_texture.clone());
     rendered.map_priority_texture = Some(priority_viewport_texture.clone());
     #[cfg(feature = "voxel-view")]
     {
-        if visual_world_enabled && !facing_only_redraw && !retained_texture_content {
+        if visual_world_enabled
+            && !retain_visual_world
+            && !facing_only_redraw
+            && !retained_texture_content
+        {
             // Fullscreen 2D and 2.5D often request exactly the same grid.
             // Reuse its complete image instead of composing and uploading a
             // second identical multi-megabyte atlas on every camera step.
@@ -6447,17 +6805,46 @@ fn render_playfield(
                 },
             );
         }
-        rendered.visual_world_grid_size = UVec2::new(
-            visual_world_tiles_x as u32,
-            visual_world_tiles_y as u32,
-        );
+        rendered.visual_world_grid_size =
+            UVec2::new(visual_world_tiles_x as u32, visual_world_tiles_y as u32);
+        rendered.visual_world_grid_origin = visual_window.origin;
         rendered.visual_world_enabled = visual_world_enabled;
+        rendered.transition_modeled = modeled_entry;
     }
     #[cfg(any(test, feature = "voxel-view"))]
     {
-        rendered.visual_tiles_revision = visual_tile_grid_is_complete(&visual_tiles)
-            .then(|| visual_terrain_revision(map_visual_key, (start_x, start_y), &visual_tiles));
+        rendered.visual_jump_ledges = match terrain_ledges::collect(
+            &render_sources, runtime_shell.shell.runtime().data()) {
+            Ok(ledges) => ledges,
+            Err(error) => {
+                record_visible_render_error(&mut commands, &mut runtime_shell, error);
+                return;
+            }
+        };
+        #[cfg(feature="voxel-view")]
+        if rendered.map_visual_key!=Some(map_visual_key) {
+            // Full native domains depend on map/connection identity, not on
+            // the camera crop or a live water-animation frame.
+            rendered.visual_terrace_datum=match terrain_ledges::datum(&render_sources,
+                runtime_shell.shell.runtime(),&rendered.visual_jump_ledges) {
+            Ok(datum)=>datum,
+            Err(error)=>{record_visible_render_error(&mut commands,&mut runtime_shell,error);return;}
+        }; }
+        if !retain_visual_world {
+            rendered.visual_tiles_revision =
+                visual_tile_grid_is_complete(&visual_tiles, visual_window.size).then(|| {
+                    visual_terrain_revision(map_visual_key, (start_x, start_y), &visual_tiles)
+                });
+        }
         rendered.visual_tiles = visual_tiles;
+        rendered.visual_source_regions = visual_source_regions(&render_sources);
+        // Capture the verified bounds of the map used for THIS terrain build.
+        // The live session can already point elsewhere during a retained scene;
+        // neither its current map nor the padded viewport defines source bounds.
+        rendered.source_map_size_core_tiles = runtime_shell.shell.runtime().data()
+            .saved_map_tile_bounds(&map.map_name)
+            .filter(|(width, height)| *width > 0 && *height > 0)
+            .map(|(width, height)| UVec2::new(u32::from(width), u32::from(height)));
     }
     rendered.viewport_origin = Some((start_x, start_y));
     rendered.walk_viewport_origin = next_walk_viewport_origin;
@@ -6482,6 +6869,7 @@ fn render_playfield(
                     flash_active,
                 )
                 .to_string(),
+                palette_map: target_tileset.palette_map.clone(),
             });
         }
     }
@@ -6489,6 +6877,7 @@ fn render_playfield(
         left.tileset_id
             .cmp(&right.tileset_id)
             .then_with(|| left.time_of_day.cmp(&right.time_of_day))
+            .then_with(|| left.palette_map.cmp(&right.palette_map))
     });
     visible_tileset_art_keys.dedup();
     runtime_shell.ambient_tileset_animation_active = visible_tileset_art_keys.iter().any(|key| {
@@ -6522,17 +6911,29 @@ fn render_playfield(
     let camera_offset =
         visible_overworld_camera_offset(&rendered, &runtime_shell, movement_subframe);
     set_overworld_map_scroll(&mut map_sprites, camera_offset);
-    let transition_replaces_map = runtime_shell.visible_battle_transition.is_some_and(|transition| {
-        transition.frame >= if transition.trainer_battle { 2 } else { 3 }
-    }) && !matches!(runtime_shell.pending_overworld_step_boundary, Some(PendingOverworldStepBoundary::WildBattle));
-    let map_visibility = if transition_replaces_map { Visibility::Hidden } else { Visibility::Inherited };
+    let transition_replaces_map =
+        runtime_shell
+            .visible_battle_transition
+            .is_some_and(|transition| {
+                transition.frame >= if transition.trainer_battle { 2 } else { 3 }
+            })
+            && !matches!(
+                runtime_shell.pending_overworld_step_boundary,
+                Some(PendingOverworldStepBoundary::WildBattle)
+            );
+    let map_visibility = if transition_replaces_map {
+        Visibility::Hidden
+    } else {
+        Visibility::Inherited
+    };
     for entity in tiles.iter() {
         commands.entity(entity).insert(map_visibility);
     }
     if can_update_positions_in_place
-        && tiles.iter().count() == 2
+        && tiles.iter().count() == 2 + usize::from(rendered.map_bridge_texture.is_some())
         && update_overworld_sprite_positions(
             &snapshot,
+            rendered.bridge_scene,
             movement_subframe,
             runtime_shell.visible_ledge_jump,
             runtime_shell.player_walk_from,
@@ -6562,33 +6963,41 @@ fn render_playfield(
     }
     if tiles.iter().next().is_none() {
         commands.spawn((
-            SpriteBundle {
-                texture: viewport_texture,
-                visibility: map_visibility,
-                sprite: Sprite {
+
+// Image pixel (0, 0) is already the playfield's top-left;
+// center the complete 640x576 composite on the camera.
+(Sprite { image: viewport_texture,
                     custom_size: Some(Vec2::new(CLASSIC_SCROLL_WIDTH, CLASSIC_SCROLL_HEIGHT)),
                     ..default()
                 },
-                // Image pixel (0, 0) is already the playfield's top-left;
-                // center the complete 640x576 composite on the camera.
-                transform: Transform::from_xyz(0.0, 0.0, 0.0),
-                ..default()
-            },
+map_visibility,
+Transform::from_xyz(0.0, 0.0, 0.0),),
             PlayfieldTile,
         ));
         commands.spawn((
-            SpriteBundle {
-                texture: priority_viewport_texture,
-                visibility: map_visibility,
-                sprite: Sprite {
+            (Sprite { image: priority_viewport_texture,
                     custom_size: Some(Vec2::new(CLASSIC_SCROLL_WIDTH, CLASSIC_SCROLL_HEIGHT)),
                     ..default()
                 },
-                transform: Transform::from_xyz(0.0, 0.0, 2.4),
-                ..default()
-            },
+map_visibility,
+Transform::from_xyz(0.0, 0.0, 2.4),),
             PlayfieldTile,
             PlayfieldPriorityTile,
+        ));
+    }
+    if let Some(texture) = bridge_viewport_texture
+        && bridge_surfaces.iter().next().is_none()
+    {
+        commands.spawn((
+            Sprite {
+                image: texture,
+                custom_size: Some(Vec2::new(CLASSIC_SCROLL_WIDTH, CLASSIC_SCROLL_HEIGHT)),
+                ..default()
+            },
+            map_visibility,
+            Transform::from_xyz(camera_offset.x, camera_offset.y, bridge_source_overlay::OVERLAY_DEPTH),
+            PlayfieldTile,
+            PlayfieldBridgeTile,
         ));
     }
     {
@@ -6681,12 +7090,39 @@ fn render_playfield(
             } else {
                 object.sprite.as_str()
             };
-            let sprite_id = resolve_visible_object_sprite_asset_id(
+            let mut sprite_id = resolve_visible_object_sprite_asset_id(
                 &runtime_shell.asset_root,
                 resolved_object_sprite,
                 &snapshot.script_events.variable_sprites,
                 &snapshot.presentation.menu_icons,
             );
+            if resident
+                .and_then(|resident| resident.pokemon.as_ref())
+                .is_some_and(visible_pokemon_is_shiny)
+                && let Some(shiny) = pokemon_overworld_art::shiny_variant(&sprite_id)
+            {
+                sprite_id = shiny;
+            }
+            let model_source_id = visible_map_object_model_source_from_data(
+                runtime_shell.shell.runtime().data(),
+                &snapshot.overworld.map_name,
+                object,
+                resolved_object_sprite,
+                &sprite_id,
+                &snapshot.script_events.variable_sprites,
+                &snapshot.presentation.menu_icons,
+            );
+            let model_palette = match visible_map_object_model_palette(
+                &runtime_shell.asset_root, &snapshot.overworld.map_name, object,
+                resolved_object_sprite, &model_source_id,
+                &snapshot.script_events.variable_sprites,
+            ) {
+                Ok(palette) => palette,
+                Err(error) => {
+                    record_visible_render_error(&mut commands, &mut runtime_shell, error);
+                    return;
+                }
+            };
             // ASM object_event palette 0 means "use the sprite's compiled
             // default", not palette bank 0.  The TS renderer resolves this
             // before instantiating the animation; doing a raw `pal & 7` here
@@ -6875,10 +7311,10 @@ fn render_playfield(
                     if objects_above_priority.contains(&index) {
                         2.41
                     } else {
-                        overworld_entity_depth(
-                            object_tile,
-                            Some(source_object_slot),
-                            (start_x, start_y),
+                        bridge_source_overlay::actor_depth(
+                            overworld_entity_depth(object_tile, Some(source_object_slot), (start_x, start_y)),
+                            rendered.bridge_scene,
+                            bridge_source_overlay::object_traversal(&object.spritemovedata),
                         )
                     },
                 );
@@ -6914,7 +7350,9 @@ fn render_playfield(
                             record_visible_render_error(
                                 &mut commands,
                                 &mut runtime_shell,
-                                anyhow::anyhow!("required scripted jump shadow could not be rendered: {error}"),
+                                anyhow::anyhow!(
+                                    "required scripted jump shadow could not be rendered: {error}"
+                                ),
                             );
                             return;
                         };
@@ -6931,27 +7369,50 @@ fn render_playfield(
                     }
                 }
                 #[cfg(feature = "voxel-view")]
-                let directional_frames = [Direction::Down, Direction::Left, Direction::Up, Direction::Right]
-                    .into_iter()
-                    .filter_map(|view_direction| {
-                        let standing = sprite_frame_for_art(
-                            &mut tileset_art, &runtime_shell.asset_root, &render_sprite_id,
-                            palette_id, effective_time_of_day, view_direction, false, &mut images,
-                        )?;
-                        let walking = animated.then(|| sprite_frame_for_art(
-                            &mut tileset_art, &runtime_shell.asset_root, &render_sprite_id,
-                            palette_id, effective_time_of_day, view_direction, true, &mut images,
-                        )).flatten().map(|frame| frame.handle);
-                        Some((standing.handle, walking))
-                    }).collect();
+                let directional_frames = [
+                    Direction::Down,
+                    Direction::Left,
+                    Direction::Up,
+                    Direction::Right,
+                ]
+                .into_iter()
+                .filter_map(|view_direction| {
+                    let standing = sprite_frame_for_art(
+                        &mut tileset_art,
+                        &runtime_shell.asset_root,
+                        &render_sprite_id,
+                        palette_id,
+                        effective_time_of_day,
+                        view_direction,
+                        false,
+                        &mut images,
+                    )?;
+                    let walking = animated
+                        .then(|| {
+                            sprite_frame_for_art(
+                                &mut tileset_art,
+                                &runtime_shell.asset_root,
+                                &render_sprite_id,
+                                palette_id,
+                                effective_time_of_day,
+                                view_direction,
+                                true,
+                                &mut images,
+                            )
+                        })
+                        .flatten()
+                        .map(|frame| frame.handle);
+                    Some((standing.handle, walking))
+                })
+                .collect();
                 let next_visible = VisibleObjectSprite {
                     #[cfg(feature = "voxel-view")]
                     directional_frames,
-                    #[cfg(feature = "voxel-view")]
                     world_facing: direction,
                     object_index: index,
                     object_identifier: object.object_identifier.clone(),
-                    source_id: Arc::from(render_sprite_id.as_str()),
+                    source_id: Arc::from(model_source_id.as_str()),
+                    model_palette,
                     above_priority: objects_above_priority.contains(&index),
                     standing: frame.handle.clone(),
                     walking: walking_frame.as_ref().map(|frame| frame.handle.clone()),
@@ -6962,25 +7423,20 @@ fn render_playfield(
                     .then(|| {
                         object_sprites
                             .iter_mut()
-                            .find(|(_, rendered, _, _, _)| rendered.object_index == index)
+                            .find(|(_, rendered, _, _)| rendered.object_index == index)
                     })
                     .flatten();
-                if let Some((entity, mut rendered, mut texture, mut transform, mut sprite)) =
+                if let Some((entity, mut rendered, mut transform, mut sprite)) =
                     retained
                 {
                     *rendered = next_visible;
-                    *texture = display_frame.handle.clone();
                     *transform = next_transform;
-                    *sprite = next_sprite;
+                    *sprite = Sprite { image: display_frame.handle.clone(), ..next_sprite };
                     reconciled_object_entities.insert(entity);
                 } else {
                     commands.spawn((
-                        SpriteBundle {
-                            texture: display_frame.handle.clone(),
-                            sprite: next_sprite,
-                            transform: next_transform,
-                            ..default()
-                        },
+                        (Sprite { image: display_frame.handle.clone(), ..next_sprite },
+next_transform,),
                         ObjectMarker,
                         next_visible,
                     ));
@@ -7010,11 +7466,11 @@ fn render_playfield(
             }
             if runtime_debug_overlays_enabled() {
                 let (object_tile_x, object_tile_y) = render_tile_playfield_position(view_x, view_y);
-                spawn_object_label(&mut commands, object, object_tile_x, object_tile_y);
+                spawn_object_label(&mut commands, object, object_tile_x, object_tile_y, &model_source_id);
             }
         }
         if retain_object_sprites {
-            for (entity, _, _, _, _) in object_sprites.iter_mut() {
+            for (entity, _, _, _) in object_sprites.iter_mut() {
                 if !reconciled_object_entities.contains(&entity) {
                     queue_existing_entity_despawn(&mut commands, &mut queued_despawns, entity);
                 }
@@ -7133,21 +7589,18 @@ fn render_playfield(
                     frame.size,
                 );
                 commands.spawn((
-                    SpriteBundle {
-                        texture: frame.handle.clone(),
-                        sprite: Sprite {
+
+// SPRITEMOVEDATA_BOULDERDUST carries LOW_PRIORITY, so
+// keep it immediately behind its tracked boulder.
+(Sprite { image: frame.handle.clone(),
                             custom_size: Some(frame.size),
                             ..default()
                         },
-                        // SPRITEMOVEDATA_BOULDERDUST carries LOW_PRIORITY, so
-                        // keep it immediately behind its tracked boulder.
-                        transform: Transform::from_xyz(
+Transform::from_xyz(
                             x,
                             y,
                             overworld_entity_depth(target, None, (start_x, start_y)) - 0.000_001,
-                        ),
-                        ..default()
-                    },
+                        ),),
                     ObjectMarker,
                     BoulderDustMarker,
                 ));
@@ -7212,15 +7665,11 @@ fn render_playfield(
                         let (emote_x, emote_y) =
                             overworld_emote_position_from_base(x, y, frame.size);
                         commands.spawn((
-                            SpriteBundle {
-                                texture: frame.handle,
-                                sprite: Sprite {
+                            (Sprite { image: frame.handle,
                                     custom_size: Some(frame.size),
                                     ..default()
                                 },
-                                transform: Transform::from_xyz(emote_x, emote_y, 3.2),
-                                ..default()
-                            },
+Transform::from_xyz(emote_x, emote_y, 3.2),),
                             ObjectMarker,
                         ));
                     }
@@ -7363,6 +7812,22 @@ fn render_playfield(
                     )
                 }
             }
+            MovementMode::Surf
+                if snapshot
+                    .script_events
+                    .memory
+                    .contains_key(crate::core::systems::field_moves::CANOE_ACTIVE_MEMORY) =>
+            {
+                (
+                    if female {
+                        "mn_canoe_kris"
+                    } else {
+                        "mn_canoe_chris"
+                    },
+                    "SPRITE_SURF",
+                    1,
+                )
+            }
             MovementMode::Surf => ("surf", "SPRITE_SURF", 1),
             MovementMode::SurfPika => ("surfing_pikachu", "SPRITE_SURFING_PIKACHU", 0),
         };
@@ -7409,14 +7874,37 @@ fn render_playfield(
     } else if let Some(standing_frame) = player_art.0 {
         let walking_frame = player_art.1;
         #[cfg(feature = "voxel-view")]
-        let directional_frames = [Direction::Down, Direction::Left, Direction::Up, Direction::Right]
-        .into_iter().filter_map(|direction| {
-            let standing = sprite_frame_for_art(&mut tileset_art, &runtime_shell.asset_root,
-                player_sprite_id, player_palette_id, effective_time_of_day, direction, false, &mut images)?;
-            let walking = sprite_frame_for_art(&mut tileset_art, &runtime_shell.asset_root,
-                player_sprite_id, player_palette_id, effective_time_of_day, direction, true, &mut images)?;
+        let directional_frames = [
+            Direction::Down,
+            Direction::Left,
+            Direction::Up,
+            Direction::Right,
+        ]
+        .into_iter()
+        .filter_map(|direction| {
+            let standing = sprite_frame_for_art(
+                &mut tileset_art,
+                &runtime_shell.asset_root,
+                player_sprite_id,
+                player_palette_id,
+                effective_time_of_day,
+                direction,
+                false,
+                &mut images,
+            )?;
+            let walking = sprite_frame_for_art(
+                &mut tileset_art,
+                &runtime_shell.asset_root,
+                player_sprite_id,
+                player_palette_id,
+                effective_time_of_day,
+                direction,
+                true,
+                &mut images,
+            )?;
             Some((standing.handle, walking.handle))
-        }).collect();
+        })
+        .collect();
         let fishing_frame = if runtime_shell.visible_fishing_animation.is_some() {
             match fishing_player_frame(
                 &mut tileset_art,
@@ -7436,17 +7924,18 @@ fn render_playfield(
         } else {
             None
         };
-        let player_is_moving = !runtime_shell
-            .visible_script_movement
-            .as_ref()
-            .is_some_and(|movement| {
-                (movement.object_id == "PLAYER" && movement.active_uses_standing_frame)
-                    || (movement.follower_object_id.as_deref() == Some("PLAYER")
-                        && movement.follower_active_uses_standing_frame
-                        && runtime_shell.player_walk_frame_ticks > 0)
-            })
-            && (runtime_shell.visible_ledge_jump.is_some()
-                || runtime_shell.player_walk_frame_ticks > 0);
+        let player_is_moving =
+            !runtime_shell
+                .visible_script_movement
+                .as_ref()
+                .is_some_and(|movement| {
+                    (movement.object_id == "PLAYER" && movement.active_uses_standing_frame)
+                        || (movement.follower_object_id.as_deref() == Some("PLAYER")
+                            && movement.follower_active_uses_standing_frame
+                            && runtime_shell.player_walk_frame_ticks > 0)
+                })
+                && (runtime_shell.visible_ledge_jump.is_some()
+                    || runtime_shell.player_walk_frame_ticks > 0);
         let player_uses_action_frame =
             player_is_moving && player_walk_uses_action_frame(runtime_shell.player_walk_stride);
         let frame = if let Some(frame) = fishing_frame.as_ref() {
@@ -7522,53 +8011,65 @@ fn render_playfield(
                     .and_then(|jump| visible_jump_direction(jump.from, jump.to))
                     .unwrap_or(snapshot.overworld.facing),
                 "PLAYER",
-                overworld_entity_depth(player_depth_tile, None, (start_x, start_y)),
+                bridge_source_overlay::actor_depth(
+                        overworld_entity_depth(player_depth_tile, None, (start_x, start_y)),
+                        rendered.bridge_scene,
+                        snapshot.overworld.mode.traversal_state(),
+                    ),
             );
         }
         let player_flip_x = player_uses_action_frame
             && runtime_shell.player_walk_mirror_stride
             && matches!(snapshot.overworld.facing, Direction::Up | Direction::Down);
         if retain_player_sprite && runtime_shell.visible_fly_animation.is_none() {
-            if let Ok((mut texture, mut transform, mut sprite, mut frames)) =
-                player_sprites.get_single_mut()
+            if let Ok((mut transform, mut sprite, mut frames)) =
+                player_sprites.single_mut()
             {
-                *texture = frame.handle.clone();
+                sprite.image = frame.handle.clone();
                 *transform = Transform::from_xyz(
                     player_x,
                     player_y,
-                    overworld_entity_depth(player_depth_tile, None, (start_x, start_y)),
+                    bridge_source_overlay::actor_depth(
+                        overworld_entity_depth(player_depth_tile, None, (start_x, start_y)),
+                        rendered.bridge_scene,
+                        snapshot.overworld.mode.traversal_state(),
+                    ),
                 );
                 sprite.custom_size = Some(frame.size);
                 sprite.flip_x = player_flip_x;
                 #[cfg(feature = "voxel-view")]
-                { frames.directional_frames = directional_frames; }
+                {
+                    frames.directional_frames = directional_frames;
+                }
+                if frames.source_id.as_ref() != player_sprite_id {
+                    frames.source_id = Arc::from(player_sprite_id);
+                }
                 frames.standing = standing_frame.handle.clone();
                 frames.walking = walking_frame.as_ref().map(|frame| frame.handle.clone());
-                frames.mirror_walking = matches!(
-                    snapshot.overworld.facing,
-                    Direction::Up | Direction::Down
-                );
+                frames.mirror_walking =
+                    matches!(snapshot.overworld.facing, Direction::Up | Direction::Down);
                 rendered.player_sprite_facing = Some(snapshot.overworld.facing);
                 rendered.player_sprite_mode = Some(snapshot.overworld.mode);
             }
         } else if !retain_player_sprite && runtime_shell.visible_fly_animation.is_none() {
             commands.spawn((
-                SpriteBundle {
-                    texture: frame.handle.clone(),
-                    sprite: Sprite {
+                (Sprite { image: frame.handle.clone(),
                         custom_size: Some(frame.size),
                         flip_x: player_flip_x,
                         ..default()
                     },
-                    transform: Transform::from_xyz(
+Transform::from_xyz(
                         player_x,
                         player_y,
+                        bridge_source_overlay::actor_depth(
                         overworld_entity_depth(player_depth_tile, None, (start_x, start_y)),
+                        rendered.bridge_scene,
+                        snapshot.overworld.mode.traversal_state(),
                     ),
-                    ..default()
-                },
+                    ),),
                 PlayerMarker,
                 PlayerSpriteFrames {
+                    source_id: Arc::from(player_sprite_id),
                     #[cfg(feature = "voxel-view")]
                     directional_frames,
                     standing: standing_frame.handle.clone(),
@@ -7601,13 +8102,20 @@ fn render_playfield(
                 .map_or(true, |jump| jump.frame >= WALK_FRAME_HOLD_TICKS)
         }) {
             let time_of_day = effective_time_of_day;
+            let rustle_tileset = winter_render_behavior::rustle_tileset_at(
+                &tileset_art_key.tileset_id,
+                map.attributes.width,
+                &map.blocks,
+                rustle.tile,
+            );
             let Some(frames) = grass_rustle_frames_for_art(
                 &mut tileset_art,
                 &runtime_shell.asset_root,
+                rustle_tileset,
                 time_of_day,
                 &mut images,
             ) else {
-                let key = normalize_tileset_time_of_day(time_of_day);
+                let key = grass_rustle_art_key(rustle_tileset, time_of_day);
                 let error = tileset_art
                     .grass_rustle_errors
                     .get(&key)
@@ -7628,19 +8136,15 @@ fn render_playfield(
                 rustle_frame.size,
             );
             commands.spawn((
-                SpriteBundle {
-                    texture: rustle_frame.handle.clone(),
-                    sprite: Sprite {
+                (Sprite { image: rustle_frame.handle.clone(),
                         custom_size: Some(rustle_frame.size),
                         ..default()
                     },
-                    transform: Transform::from_xyz(
+Transform::from_xyz(
                         rustle_x,
                         rustle_y,
                         2.5 + f32::from(rustle.tile.y) * 0.001,
-                    ),
-                    ..default()
-                },
+                    ),),
                 PlayerFacingMarker,
                 GrassRustleMarker,
             ));
@@ -7671,19 +8175,16 @@ fn render_playfield(
     if runtime_debug_overlays_enabled() {
         let (facing_dx, facing_dy) = snapshot.overworld.facing.delta();
         commands.spawn((
-            SpriteBundle {
-                sprite: Sprite {
+            (Sprite {
                     color: Color::srgb(1.0, 0.95, 0.32),
                     custom_size: Some(player_facing_marker_size(facing_dx, facing_dy)),
                     ..default()
                 },
-                transform: Transform::from_xyz(
+Transform::from_xyz(
                     player_x + facing_dx as f32 * TILE_SIZE * 0.28,
                     player_y_base - facing_dy as f32 * TILE_SIZE * 0.28,
                     2.2,
-                ),
-                ..default()
-            },
+                ),),
             PlayerFacingMarker,
         ));
     }
@@ -7694,6 +8195,7 @@ fn render_playfield(
     }
 
     if let Some(transition) = runtime_shell.visible_battle_transition
+        && !modeled_entry
         && !matches!(
             runtime_shell.pending_overworld_step_boundary,
             Some(PendingOverworldStepBoundary::WildBattle)
@@ -7701,38 +8203,71 @@ fn render_playfield(
     {
         let dark = visible_effective_map_time_of_day(map, live_time_of_day, flash_active)
             .eq_ignore_ascii_case("dark");
-        let textures = (|| -> Result<(Handle<Image>, Handle<Image>)> {
+        let textures = (|| -> Result<(Handle<Image>, Handle<Image>, Option<Handle<Image>>)> {
             let base = prepare_battle_transition_texture(
-                &runtime_shell.asset_root, transition, &rendered.transition_tiles,
-                camera_offset, dark, false, rendered.transition_texture.clone(), &mut images,
+                &runtime_shell.asset_root,
+                transition,
+                &rendered.transition_tiles,
+                camera_offset,
+                dark,
+                false,
+                rendered.transition_texture.clone(),
+                &mut images,
             )?;
             let priority = prepare_battle_transition_texture(
-                &runtime_shell.asset_root, transition, &rendered.transition_tiles,
-                camera_offset, dark, true, rendered.transition_priority_texture.clone(), &mut images,
+                &runtime_shell.asset_root,
+                transition,
+                &rendered.transition_tiles,
+                camera_offset,
+                dark,
+                true,
+                rendered.transition_priority_texture.clone(),
+                &mut images,
             )?;
-            Ok((base, priority))
+            let bridge = if rendered.bridge_scene {
+                Some(bridge_source_overlay::transition_overlay(
+                    &base,
+                    &rendered.transition_bridge_mask,
+                    camera_offset,
+                    rendered.transition_bridge_texture.clone(),
+                    &mut images,
+                )?)
+            } else {
+                None
+            };
+            Ok((base, priority, bridge))
         })();
         match textures {
-            Ok((texture, priority)) => {
+            Ok((texture, priority, bridge)) => {
+                rendered.transition_bridge_texture.clone_from(&bridge);
                 rendered.transition_texture = Some(texture.clone());
                 rendered.transition_priority_texture = Some(priority.clone());
                 let wave_start = (if transition.trainer_battle { 4 } else { 3 }) + 75 + 2;
-                let wave = transition.cave_environment && !transition.stronger_enemy
+                let wave = transition.cave_environment
+                    && !transition.stronger_enemy
                     && transition.frame >= wave_start;
                 if transition_replaces_map && !wave {
-                    for (texture, z) in [(texture.clone(), 0.0), (priority.clone(), 2.4)] {
-                        commands.spawn((SpriteBundle {
-                            texture,
-                            sprite: Sprite {
-                                custom_size: Some(Vec2::new(PLAYFIELD_WIDTH, PLAYFIELD_HEIGHT)),
-                                ..default()
-                            },
-                            transform: Transform::from_xyz(0.0, 0.0, z),
-                            ..default()
-                        }, BattleCommandMarker));
+                    for (texture, z) in [(texture.clone(), 0.0), (priority.clone(), 2.4)]
+                        .into_iter()
+                        .chain(bridge.map(|texture| (texture, bridge_source_overlay::OVERLAY_DEPTH)))
+                    {
+                        commands.spawn((
+                            (Sprite { image: texture,
+                                    custom_size: Some(Vec2::new(PLAYFIELD_WIDTH, PLAYFIELD_HEIGHT)),
+                                    ..default()
+                                },
+Transform::from_xyz(0.0, 0.0, z),),
+                            BattleCommandMarker,
+                            BattleTransitionMarker,
+                        ));
                     }
                 }
-                spawn_visible_battle_transition(&mut commands, transition, Some(texture), Some(priority));
+                spawn_visible_battle_transition(
+                    &mut commands,
+                    transition,
+                    Some(texture),
+                    Some(priority),
+                );
             }
             Err(error) => record_visible_render_error(&mut commands, &mut runtime_shell, error),
         }
@@ -7812,21 +8347,22 @@ fn render_playfield(
             && !runtime_shell.battle_party_summary_open
             && !visible_wild_entrance_animation_active(&runtime_shell)
             && let Err(error) = spawn_battle_hud(
-            &mut commands,
-            &snapshot,
-            battle,
-            runtime_shell.battle_entry_messages_remaining,
-            runtime_shell.battle_enemy_send_out_pending
+                &mut commands,
+                &snapshot,
+                battle,
+                runtime_shell.battle_entry_messages_remaining,
+                runtime_shell.battle_enemy_send_out_pending
                     || visible_trainer_result_frame(&runtime_shell).is_some(),
-            player_send_out_pending,
-            runtime_shell.visible_trainer_exit_animation.is_some(),
-            runtime_shell.battle_hp_tween.as_ref(),
-            runtime_shell.battle_exp_tween.as_ref(),
-            runtime_shell.shell.runtime().growth_rates(),
-            &mut tileset_art,
-            &runtime_shell.asset_root,
-            &mut images,
-        ) {
+                player_send_out_pending,
+                runtime_shell.visible_trainer_exit_animation.is_some(),
+                runtime_shell.battle_hp_tween.as_ref(),
+                runtime_shell.battle_exp_tween.as_ref(),
+                runtime_shell.shell.runtime().growth_rates(),
+                &mut tileset_art,
+                &runtime_shell.asset_root,
+                &mut images,
+            )
+        {
             record_visible_render_error(&mut commands, &mut runtime_shell, error);
             return;
         }
@@ -7875,7 +8411,7 @@ fn render_playfield(
                 scene,
                 battle,
                 runtime_shell.battle_entry_messages_remaining,
-            visible_trainer_result_frame(&runtime_shell),
+                visible_trainer_result_frame(&runtime_shell),
                 runtime_shell.battle_enemy_send_out_pending,
                 runtime_shell.battle_player_send_out_pending,
                 runtime_shell
@@ -7903,22 +8439,23 @@ fn render_playfield(
                 return;
             }
             if !visible_wild_entrance_animation_active(&runtime_shell)
-            && let Err(error) = spawn_battle_hud(
-                &mut commands,
-                scene,
-                battle,
-                runtime_shell.battle_entry_messages_remaining,
-                runtime_shell.battle_enemy_send_out_pending
-                    || visible_trainer_result_frame(&runtime_shell).is_some(),
-                runtime_shell.battle_player_send_out_pending,
-                runtime_shell.visible_trainer_exit_animation.is_some(),
-                runtime_shell.battle_hp_tween.as_ref(),
-                runtime_shell.battle_exp_tween.as_ref(),
-                runtime_shell.shell.runtime().growth_rates(),
-                &mut tileset_art,
-                &runtime_shell.asset_root,
-                &mut images,
-            ) {
+                && let Err(error) = spawn_battle_hud(
+                    &mut commands,
+                    scene,
+                    battle,
+                    runtime_shell.battle_entry_messages_remaining,
+                    runtime_shell.battle_enemy_send_out_pending
+                        || visible_trainer_result_frame(&runtime_shell).is_some(),
+                    runtime_shell.battle_player_send_out_pending,
+                    runtime_shell.visible_trainer_exit_animation.is_some(),
+                    runtime_shell.battle_hp_tween.as_ref(),
+                    runtime_shell.battle_exp_tween.as_ref(),
+                    runtime_shell.shell.runtime().growth_rates(),
+                    &mut tileset_art,
+                    &runtime_shell.asset_root,
+                    &mut images,
+                )
+            {
                 record_visible_render_error(&mut commands, &mut runtime_shell, error);
                 return;
             }
@@ -8031,6 +8568,13 @@ fn render_playfield(
         record_visible_render_error(&mut commands, &mut runtime_shell, error);
         return;
     }
+    if let Err(error) = safari_visible::render(
+        &mut commands, &snapshot, &runtime_shell, &mut tileset_art,
+        &runtime_shell.asset_root, &mut images,
+    ) {
+        record_visible_render_error(&mut commands, &mut runtime_shell, error);
+        return;
+    }
     if runtime_shell.last_error.is_some() {
         spawn_shell_error_banner(&mut commands, &runtime_shell);
     } else if runtime_debug_overlays_enabled() {
@@ -8056,6 +8600,12 @@ fn render_playfield(
     }
 
     rendered.map_name = Some(snapshot.overworld.map_name.clone());
+    rendered.visual_lighting = crystal_render_api::VisualWorldLighting::from_source_palette(effective_time_of_day);
+    // Rooftops keep native fixed-palette pixels but expose the RTC to the 3D sky.
+    rendered.visual_clock_enabled = (map.attributes.time_of_day.is_none()
+        && map.attributes.environment.as_deref().is_some_and(|environment|
+            environment.eq_ignore_ascii_case("town") || environment.eq_ignore_ascii_case("route")))
+        || crystal_render_api::is_open_air_rooftop(&snapshot.overworld.map_name,&map.attributes.tileset_name);
     rendered.tile = Some(snapshot.overworld.tile);
     rendered.world_key = Some(world_key);
     rendered.position_key = Some(position_key);
@@ -8069,6 +8619,7 @@ fn render_playfield(
     #[cfg(feature = "voxel-view")]
     {
         rendered.visual_world_enabled = visual_world_enabled;
+        rendered.transition_modeled = modeled_entry;
     }
 }
 
@@ -8254,16 +8805,12 @@ fn spawn_visible_fly_animation(
     let x = player_origin_x + (i32::from(player.x) + player.x_offset - 84) as f32 * scale;
     let y = player_origin_y - i32::from(player.y.wrapping_sub(origin_y) as i8) as f32 * scale;
     commands.spawn((
-        SpriteBundle {
-            texture: icon.handle,
-            sprite: Sprite {
+        (Sprite { image: icon.handle,
                 custom_size: Some(icon.size),
                 flip_x: icon_flip_x,
                 ..default()
             },
-            transform: Transform::from_xyz(x, y, 3.2),
-            ..default()
-        },
+Transform::from_xyz(x, y, 3.2),),
         ObjectMarker,
     ));
     Ok(())
@@ -8305,6 +8852,13 @@ fn spawn_visible_headbutt_animation(
     let tileset_key = TilesetArtKey {
         tileset_id: map.attributes.tileset_name.clone(),
         time_of_day: time_of_day.to_string(),
+        palette_map: snapshot
+            .tilesets
+            .iter()
+            .find(|tileset| tileset.tileset_id == map.attributes.tileset_name)
+            .context("HEADBUTT requires the source tileset palette map")?
+            .palette_map
+            .clone(),
     };
     let grass = rendered_art
         .cache
@@ -8317,15 +8871,11 @@ fn spawn_visible_headbutt_animation(
         let x = source_origin_x + (spawn_x + piece_x + 4) as f32 * scale;
         let y = source_origin_y - (spawn_y + piece_y + 4) as f32 * scale;
         commands.spawn((
-            SpriteBundle {
-                texture: grass.clone(),
-                sprite: Sprite {
+            (Sprite { image: grass.clone(),
                     custom_size: Some(Vec2::splat(TILE_SIZE)),
                     ..default()
                 },
-                transform: Transform::from_xyz(x, y, 3.05),
-                ..default()
-            },
+Transform::from_xyz(x, y, 3.05),),
             ObjectMarker,
         ));
     }
@@ -8536,15 +9086,11 @@ fn spawn_visible_field_move_oam(
         let x = source_origin_x + (object_x + piece_x + 4) as f32 * scale;
         let y = source_origin_y - (object_y + piece_y + 4) as f32 * scale;
         commands.spawn((
-            SpriteBundle {
-                texture: frame.handle.clone(),
-                sprite: Sprite {
+            (Sprite { image: frame.handle.clone(),
                     custom_size: Some(frame.size),
                     ..default()
                 },
-                transform: Transform::from_xyz(x, y, 3.1),
-                ..default()
-            },
+Transform::from_xyz(x, y, 3.1),),
             ObjectMarker,
         ));
     }

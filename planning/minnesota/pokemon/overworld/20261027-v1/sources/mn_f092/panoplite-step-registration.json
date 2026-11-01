@@ -1,0 +1,177 @@
+[
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f092/manifest-panoplite-v1-step-x0-y-4.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f092/panoplite-v1-step-x0-y-4",
+    "score": 0,
+    "head_pixel_differences": 0,
+    "unmodified_pose_penalty": 0
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f092/manifest-panoplite-v1-step-x0-y-8.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f092/panoplite-v1-step-x0-y-8",
+    "score": 4,
+    "head_pixel_differences": 4,
+    "unmodified_pose_penalty": 0
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f092/manifest-panoplite-v1-step-x4-y-4.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f092/panoplite-v1-step-x4-y-4",
+    "score": 6,
+    "head_pixel_differences": 6,
+    "unmodified_pose_penalty": 0
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f092/manifest-panoplite-v1-step-x4-y-8.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f092/panoplite-v1-step-x4-y-8",
+    "score": 10,
+    "head_pixel_differences": 10,
+    "unmodified_pose_penalty": 0
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f092/manifest-panoplite-v1-step-x8-y-8.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f092/panoplite-v1-step-x8-y-8",
+    "score": 12,
+    "head_pixel_differences": 12,
+    "unmodified_pose_penalty": 0
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f092/manifest-panoplite-v1-step-x8-y-4.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f092/panoplite-v1-step-x8-y-4",
+    "score": 12,
+    "head_pixel_differences": 12,
+    "unmodified_pose_penalty": 0
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f092/manifest-panoplite-v1-step-x0-y0.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f092/panoplite-v1-step-x0-y0",
+    "score": 15,
+    "head_pixel_differences": 15,
+    "unmodified_pose_penalty": 0
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f092/manifest-panoplite-v1-step-x4-y0.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f092/panoplite-v1-step-x4-y0",
+    "score": 17,
+    "head_pixel_differences": 17,
+    "unmodified_pose_penalty": 0
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f092/manifest-panoplite-v1-step-x8-y0.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f092/panoplite-v1-step-x8-y0",
+    "score": 25,
+    "head_pixel_differences": 25,
+    "unmodified_pose_penalty": 0
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f092/manifest-panoplite-v1-step-x-4-y-4.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f092/panoplite-v1-step-x-4-y-4",
+    "score": 155,
+    "head_pixel_differences": 5,
+    "unmodified_pose_penalty": 150
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f092/manifest-panoplite-v1-step-x-4-y-8.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f092/panoplite-v1-step-x-4-y-8",
+    "score": 156,
+    "head_pixel_differences": 6,
+    "unmodified_pose_penalty": 150
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f092/manifest-panoplite-v1-step-x-4-y0.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f092/panoplite-v1-step-x-4-y0",
+    "score": 169,
+    "head_pixel_differences": 19,
+    "unmodified_pose_penalty": 150
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f092/manifest-panoplite-v1-step-x-8-y-4.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f092/panoplite-v1-step-x-8-y-4",
+    "score": 332,
+    "head_pixel_differences": 12,
+    "unmodified_pose_penalty": 320
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f092/manifest-panoplite-v1-step-x-8-y-8.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f092/panoplite-v1-step-x-8-y-8",
+    "score": 334,
+    "head_pixel_differences": 14,
+    "unmodified_pose_penalty": 320
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f092/manifest-panoplite-v1-step-x-8-y0.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f092/panoplite-v1-step-x-8-y0",
+    "score": 344,
+    "head_pixel_differences": 24,
+    "unmodified_pose_penalty": 320
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f092/manifest-panoplite-v1-step-x0-y4.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f092/panoplite-v1-step-x0-y4",
+    "score": 432,
+    "head_pixel_differences": 22,
+    "unmodified_pose_penalty": 410
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f092/manifest-panoplite-v1-step-x4-y4.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f092/panoplite-v1-step-x4-y4",
+    "score": 435,
+    "head_pixel_differences": 25,
+    "unmodified_pose_penalty": 410
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f092/manifest-panoplite-v1-step-x8-y4.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f092/panoplite-v1-step-x8-y4",
+    "score": 441,
+    "head_pixel_differences": 31,
+    "unmodified_pose_penalty": 410
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f092/manifest-panoplite-v1-step-x-4-y4.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f092/panoplite-v1-step-x-4-y4",
+    "score": 556,
+    "head_pixel_differences": 26,
+    "unmodified_pose_penalty": 530
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f092/manifest-panoplite-v1-step-x0-y8.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f092/panoplite-v1-step-x0-y8",
+    "score": 567,
+    "head_pixel_differences": 27,
+    "unmodified_pose_penalty": 540
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f092/manifest-panoplite-v1-step-x4-y8.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f092/panoplite-v1-step-x4-y8",
+    "score": 569,
+    "head_pixel_differences": 29,
+    "unmodified_pose_penalty": 540
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f092/manifest-panoplite-v1-step-x8-y8.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f092/panoplite-v1-step-x8-y8",
+    "score": 573,
+    "head_pixel_differences": 33,
+    "unmodified_pose_penalty": 540
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f092/manifest-panoplite-v1-step-x-4-y8.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f092/panoplite-v1-step-x-4-y8",
+    "score": 660,
+    "head_pixel_differences": 30,
+    "unmodified_pose_penalty": 630
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f092/manifest-panoplite-v1-step-x-8-y4.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f092/panoplite-v1-step-x-8-y4",
+    "score": 679,
+    "head_pixel_differences": 29,
+    "unmodified_pose_penalty": 650
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f092/manifest-panoplite-v1-step-x-8-y8.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f092/panoplite-v1-step-x-8-y8",
+    "score": 792,
+    "head_pixel_differences": 32,
+    "unmodified_pose_penalty": 760
+  }
+]

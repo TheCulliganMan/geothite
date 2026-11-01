@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-r17-trail-guidance-v02.crystalpack",
+  "pack_sha256": "186c262b18d5174cb7ba9727358d4022bea9fce6d362529405728028ef92c60a",
+  "report": "planning/minnesota/renders/route-grass-v01/current-r17-successor-review-v01/native-v01/capture-progress.json",
+  "report_sha256": "63223c45ed72224ddd2ab730c2be84c417f739e755a21e3388b23de1dc85c367",
+  "actual_native_2d_views_inspected": 3,
+  "pixel_mismatches": 0,
+  "findings": "Required grass crosses the northern opening, narrow marsh passage and southern forest bend. Whole-route source and all three production close-ups inspected. No terrain change in this guidance candidate."
+}

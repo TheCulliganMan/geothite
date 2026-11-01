@@ -1,0 +1,24 @@
+{
+  "status": "PASS",
+  "source_save": ".local/route-grass-review/current-brainerd-reached-v01.crystalsave",
+  "source_sha256": "e0cb59fad0bcc3f3947b0b42e7b7c2c2eec0503eaf92d920e7c73e4bfde42f82",
+  "input_source_unchanged": true,
+  "output_save": ".local/route-grass-review/current-brainerd-verified-stdio-v03-output-v01.crystalsave",
+  "pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33",
+  "pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+  "save": ".local/route-grass-review/current-brainerd-verified-stdio-v03-input-v01.crystalsave",
+  "initial_map": "MnBrainerd",
+  "initial_position": {
+    "x": 9,
+    "y": 22
+  },
+  "moved_position": {
+    "x": 8,
+    "y": 22
+  },
+  "calls_passed": 13,
+  "stderr_bytes": 0,
+  "items_pocket_verified": true,
+  "balls_pocket": true,
+  "returned_to_walking": true
+}

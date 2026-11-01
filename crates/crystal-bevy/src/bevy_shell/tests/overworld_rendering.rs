@@ -239,6 +239,7 @@ fn grass_rustle_art_composes_the_complete_source_oam_canvas() {
     let frames = grass_rustle_frames_for_art(
         &mut rendered_art,
         &asset_root,
+        "johto",
         "day",
         &mut images,
     )
@@ -447,6 +448,7 @@ fn overworld_emote_targets_use_each_actors_independent_live_stride() {
 #[test]
 fn finite_pcm_music_does_not_restart_when_its_playback_plan_requests_looping() {
     let pcm_music = BevyAudioCommand {
+        battle_sound: None,
         cry_parameters: None,
         audio_id: "MUSIC_CRYSTAL_OPENING".to_string(),
         kind: ModpackAudioKind::Music,
@@ -623,9 +625,9 @@ fn viewport_tile_composite_preserves_native_tile_grid_for_gpu_scaling() {
     let image = images.get(&composite).expect("composited viewport image");
     assert_eq!(image.texture_descriptor.size.width, 160);
     assert_eq!(image.texture_descriptor.size.height, 144);
-    assert_eq!(&image.data[0..4], &[0xff, 0x00, 0x00, 0xff]);
+    assert_eq!(&image.data.as_ref().expect("CPU image pixels")[0..4], &[0xff, 0x00, 0x00, 0xff]);
     let last = (144 * 160 - 1) * 4;
-    assert_eq!(&image.data[last..last + 4], &[0xff, 0x00, 0x00, 0xff]);
+    assert_eq!(&image.data.as_ref().expect("CPU image pixels")[last..last + 4], &[0xff, 0x00, 0x00, 0xff]);
 }
 
 #[test]
@@ -743,11 +745,11 @@ fn window_frames_use_the_selected_asset_and_typescript_textbox_palette() {
     let textbox_palette = [[255, 255, 255], [140, 156, 255], [115, 132, 255], [0, 0, 0]];
 
     assert_ne!(
-        one.data, two.data,
+        one.data.as_ref().expect("CPU image pixels"), two.data.as_ref().expect("CPU image pixels"),
         "frame selection must change the rendered border art"
     );
     for image in [one, two] {
-        assert!(image.data.chunks_exact(4).all(|pixel| {
+        assert!(image.data.as_ref().expect("CPU image pixels").chunks_exact(4).all(|pixel| {
             pixel[3] == 255 && textbox_palette.iter().any(|color| pixel[0..3] == color[..])
         }));
     }
@@ -1006,7 +1008,7 @@ fn forced_full_redraw_does_not_jump_the_walking_player_transform() {
         let world = app.world_mut();
         let mut players = world.query_filtered::<&Transform, With<PlayerMarker>>();
         players
-            .get_single(world)
+            .single(world)
             .expect("player before forced redraw")
             .translation
     };
@@ -1020,7 +1022,7 @@ fn forced_full_redraw_does_not_jump_the_walking_player_transform() {
         let world = app.world_mut();
         let mut players = world.query_filtered::<&Transform, With<PlayerMarker>>();
         players
-            .get_single(world)
+            .single(world)
             .expect("player after forced redraw")
             .translation
     };
@@ -1073,7 +1075,7 @@ fn new_bark_full_width_back_and_forth_has_no_transform_spikes() {
                 let world = app.world_mut();
                 let mut players = world.query_filtered::<&Transform, With<PlayerMarker>>();
                 players
-                    .get_single(world)
+                    .single(world)
                     .expect("player before full-width update")
                     .translation
             };
@@ -1087,7 +1089,7 @@ fn new_bark_full_width_back_and_forth_has_no_transform_spikes() {
                 let world = app.world_mut();
                 let mut players = world.query_filtered::<&Transform, With<PlayerMarker>>();
                 players
-                    .get_single(world)
+                    .single(world)
                     .expect("player after full-width update")
                     .translation
             };
@@ -1132,6 +1134,179 @@ fn host_frames_interpolate_between_authoritative_walk_ticks() {
     assert!(halfway_to_next_tick < at_next_tick);
     assert_eq!(halfway_to_next_tick, (at_tick + at_next_tick) * 0.5);
     assert_eq!(visible_movement_progress_with_subframe(0, 8, 0.5), 1.0);
+}
+
+#[cfg(feature = "voxel-view")]
+#[test]
+fn ledge_hop_lands_without_replaying_a_walk_at_slow_host_cadences() {
+    for host_hz in [60.0, 30.0, 9.0] {
+        let asset_root = AssetRoot::new(PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("../../..").canonicalize().unwrap());
+        let runtime = workspace_desktop_runtime(&asset_root);
+        let shell = initialize_bevy_runtime_shell(asset_root, runtime,
+            BevyShellStart::NewGameAtRuntimeTile {
+                spawn_identifier: 14, map_name: "Route29".into(), tile_x: 25, tile_y: 8,
+            }, BevyShellConfig::default()).unwrap();
+        let mut app = menu_render_test_app(shell);
+        app.init_resource::<crystal_render_api::VisualWorldFrame>()
+            .init_resource::<crystal_render_api::VisualPlayerTraversal>()
+            .add_systems(Update, sync_visible_ledge_jump.after(render_playfield).after(sync_visible_player_sprite))
+            .add_systems(Update, publish_visual_world_frame.after(sync_visible_ledge_jump));
+        app.update();
+        app.update();
+        app.insert_resource(RuntimeTickTimer::new(f64::from(GAME_TICK_SECONDS)));
+        app.insert_resource(bevy::time::TimeUpdateStrategy::ManualDuration(
+            Duration::from_secs_f64(1.0 / host_hz)));
+        app.world_mut().resource_mut::<ButtonInput<KeyCode>>().press(KeyCode::ArrowDown);
+        let mut saw_jump = false;
+        let mut previous_y = None;
+        let mut landed = false;
+        for _ in 0..40 {
+            app.update();
+            let world = app.world();
+            let shell = world.resource::<BevyRuntimeShell>();
+            assert_eq!(shell.last_error, None);
+            let frame = world.resource::<crystal_render_api::VisualWorldFrame>();
+            assert!(frame.active);
+            let player = frame.actors.iter().find(|a| a.id == crystal_render_api::VisualActorId::Player).unwrap();
+            let foot = player.center - Vec2::Y * player.size.y * 0.5;
+            let map_y = foot.y - frame.center.y - frame.grid_origin.y as f32 * TILE_SIZE;
+            if let Some(previous) = previous_y {
+                assert!(map_y <= previous + 0.001, "{host_hz} Hz hop rewound its ground position: {previous} -> {map_y}");
+            }
+            previous_y = Some(map_y);
+            if shell.visible_ledge_jump.is_some() {
+                saw_jump = true;
+                assert!(shell.player_walk_frame_ticks > 0, "the camera scroll stays active during the hop");
+                assert!(world.resource::<crystal_render_api::VisualPlayerTraversal>().step.unwrap().ledge_jump);
+            } else if saw_jump {
+                assert_eq!(shell.shell.session().overworld().player.tile, TilePosition::new(25, 10));
+                assert_eq!(shell.player_walk_frame_ticks, 0);
+                assert!(world.resource::<crystal_render_api::VisualPlayerTraversal>().step.is_none());
+                landed = true;
+                break;
+            }
+            if saw_jump {
+                app.world_mut().resource_mut::<ButtonInput<KeyCode>>().reset_all();
+            }
+        }
+        assert!(saw_jump && landed, "{host_hz} Hz must complete the production pack's ledge hop");
+    }
+}
+
+#[cfg(feature = "voxel-view")]
+#[test]
+fn expanded_world_walk_publishes_every_host_frame_at_60_30_and_9_hz() {
+    for host_hz in [60.0, 30.0, 9.0] {
+        let asset_root = AssetRoot::new(
+            PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+                .join("../../..")
+                .canonicalize()
+                .unwrap(),
+        );
+        let runtime = workspace_desktop_runtime(&asset_root);
+        let shell = initialize_bevy_runtime_shell(
+            asset_root,
+            runtime,
+            BevyShellStart::NewGameAtRuntimeTile {
+                spawn_identifier: 14,
+                map_name: "CherrygroveCity".into(),
+                tile_x: 29,
+                tile_y: 4,
+            },
+            BevyShellConfig::default(),
+        )
+        .unwrap();
+        let mut app = integrated_shell_test_app(shell);
+        app.init_resource::<crystal_render_api::VisualWorldFrame>()
+            .init_resource::<crystal_render_api::VisualPlayerTraversal>()
+            .add_systems(
+                Update,
+                publish_visual_world_frame
+                    .after(render_playfield)
+                    .after(sync_visible_player_sprite)
+                    .after(sync_visible_object_sprites),
+            );
+        app.update();
+        app.update();
+        app.insert_resource(RuntimeTickTimer::new(f64::from(GAME_TICK_SECONDS)));
+        app.insert_resource(bevy::time::TimeUpdateStrategy::ManualDuration(
+            Duration::from_secs_f64(1.0 / host_hz),
+        ));
+        app.world_mut()
+            .resource_mut::<ButtonInput<KeyCode>>()
+            .press(KeyCode::ArrowLeft);
+
+        let mut samples = 0;
+        let mut previous = None;
+        let mut minimum_delta = f32::INFINITY;
+        let mut maximum_delta = 0.0_f32;
+        let mut sampled_distance = 0.0_f32;
+        for host_frame in 0..64 {
+            app.update();
+            let world = app.world();
+            let shell = world.resource::<BevyRuntimeShell>();
+            assert_eq!(shell.last_error, None);
+            let rendered = world.resource::<RenderedViewport>();
+            let published = world.resource::<crystal_render_api::VisualWorldFrame>();
+            let subframe = world.resource::<RuntimeTickTimer>().presentation_subframe();
+            let expected = visible_overworld_camera_offset(rendered, shell, subframe);
+            // The source window can have unequal padding while retaining
+            // complete metatiles. Compare camera scroll in the classic
+            // viewport's coordinates, independently of that fixed padding.
+            let (vx,vy)=rendered.viewport_origin.unwrap();
+            let grid_center=published.grid_origin.as_vec2()+published.grid_size.as_vec2()*0.5;
+            let viewport_center=Vec2::new(vx as f32,vy as f32)
+                +Vec2::new(VIEWPORT_TILES_X as f32,VIEWPORT_TILES_Y as f32)*0.5;
+            let source_padding=(grid_center-viewport_center)*Vec2::new(TILE_SIZE,-TILE_SIZE);
+            assert!(published.active);
+            let traversal = world.resource::<crystal_render_api::VisualPlayerTraversal>();
+            if shell.player_walk_frame_ticks > 0 && shell.player_walk_from.is_some() {
+                let step = traversal.step.expect("accepted walk publishes its hop endpoints");
+                let player = published.actors.iter().find(|a| a.id == crystal_render_api::VisualActorId::Player).unwrap();
+                let foot = player.center - Vec2::Y * player.size.y * 0.5;
+                assert!(step.from.lerp(step.to, step.progress).abs_diff_eq(foot, 0.001));
+                assert!(!step.ledge_jump);
+                assert!(((step.to - step.from).length() - TILE_SIZE * f32::from(RENDER_TILES_PER_RUNTIME_TILE)).abs() < 0.001);
+                assert_eq!(traversal.map_id, published.map_id);
+            }
+
+            assert!(
+                (published.center - published.view_center - source_padding).abs_diff_eq(expected, 0.001),
+                "{host_hz} Hz frame {host_frame}: movement timer advanced to {}, but published camera froze at {:?} instead of {expected:?}",
+                shell.player_walk_frame_ticks,
+                published.center - published.view_center - source_padding,
+            );
+            let player = published.actors.iter()
+                .find(|actor| actor.id == crystal_render_api::VisualActorId::Player)
+                .expect("published player");
+            // Remove camera scroll and restore the map origin before measuring
+            // distance. A camera pan cannot manufacture actor travel.
+            let player_world_x = player.center.x - published.center.x
+                + published.grid_origin.x as f32 * TILE_SIZE;
+            if shell.player_walk_frame_ticks > 0 {
+                if let Some(previous) = previous {
+                    let delta = previous - player_world_x;
+                    assert!(delta > 0.0, "{host_hz} Hz frame {host_frame} retained a walking sample: delta={delta}");
+                    assert!(delta <= 2.0 * TILE_SIZE * f32::from(RENDER_TILES_PER_RUNTIME_TILE)
+                        / f32::from(WALK_FRAME_HOLD_TICKS) + 0.001,
+                        "{host_hz} Hz frame {host_frame} skipped presentation samples: delta={delta}");
+                    minimum_delta = minimum_delta.min(delta);
+                    maximum_delta = maximum_delta.max(delta);
+                    sampled_distance += delta;
+                    samples += 1;
+                }
+                previous = Some(player_world_x);
+            } else {
+                previous = None;
+            }
+        }
+        assert!(samples >= 48, "{host_hz} Hz did not exercise enough live walking samples: {samples}");
+        let gameplay_tile_size = TILE_SIZE * f32::from(RENDER_TILES_PER_RUNTIME_TILE);
+        let tiles_per_second = sampled_distance / gameplay_tile_size
+            / (samples as f32 / host_hz as f32);
+        println!("expanded-world walk: {host_hz} Hz, {samples} moving samples, delta range {minimum_delta:.3}..{maximum_delta:.3}, speed {tiles_per_second:.4} gameplay tiles/s");
+    }
 }
 
 #[test]
@@ -1766,7 +1941,7 @@ fn live_walk_retains_the_viewport_texture_and_updates_every_lcd_frame() {
             let world = app.world_mut();
             let mut players = world.query_filtered::<&Transform, With<PlayerMarker>>();
             players
-                .get_single(world)
+                .single(world)
                 .expect("player sprite remains retained while walking")
                 .translation
                 .x
@@ -2043,9 +2218,9 @@ fn buffered_reversal_refreshes_facing_on_the_next_step_without_replacing_the_lcd
     }
     let right_texture = {
         let world = app.world_mut();
-        let mut players = world.query_filtered::<&Handle<Image>, With<PlayerMarker>>();
+        let mut players = world.query_filtered::<&Sprite, With<PlayerMarker>>();
         players
-            .get_single(world)
+            .single(world)
             .expect("rightward walking player")
             .clone()
     };
@@ -2093,9 +2268,9 @@ fn buffered_reversal_refreshes_facing_on_the_next_step_without_replacing_the_lcd
     let (viewport_after_turn, left_texture) = {
         let world = app.world_mut();
         let viewport = retained_map_surface_pair(world);
-        let mut players = world.query_filtered::<&Handle<Image>, With<PlayerMarker>>();
+        let mut players = world.query_filtered::<&Sprite, With<PlayerMarker>>();
         let player = players
-            .get_single(world)
+            .single(world)
             .expect("turned player sprite")
             .clone();
         (viewport, player)
@@ -2282,25 +2457,25 @@ fn fullscreen_room_and_dialogue_resize_independently() {
         BevyShellStart::NewGameAtRuntimeTile { spawn_identifier: 14, map_name: "PlayersHouse1F".into(), tile_x: 7, tile_y: 4 },
         BevyShellConfig::default()).unwrap();
     let mut app = integrated_shell_test_app(shell);
-    app.world_mut().spawn((Window { resolution: WindowResolution::new(1920.0, 1080.0).with_scale_factor_override(1.0), ..default() }, bevy::window::PrimaryWindow));
+    app.world_mut().spawn((Window { resolution: WindowResolution::new(1920, 1080).with_scale_factor_override(1.0), ..default() }, bevy::window::PrimaryWindow));
     app.add_systems(Startup, setup_fullscreen_scene).add_systems(PostUpdate,
         (sync_fullscreen_scaling, sync_fullscreen_scene_layout, sync_fullscreen_world_layout).chain());
     app.update();
     app.update();
     let world = app.world_mut();
-    let root = *world.query_filtered::<&Transform, With<FullscreenWorldRoot>>().single(world);
+    let root = *world.query_filtered::<&Transform, With<FullscreenWorldRoot>>().single(world).unwrap();
     assert!(root.scale.x > 1.5, "small rooms must use the viewport height");
-    let dialogue = world.query_filtered::<&Transform, With<FullscreenDialogRoot>>().single(world);
+    let dialogue = world.query_filtered::<&Transform, With<FullscreenDialogRoot>>().single(world).unwrap();
     assert_eq!(dialogue.scale, Vec3::ONE);
     assert!(dialogue.translation.y < -400.0, "dialogue belongs at the viewport bottom");
     assert!(dialogue.translation.x > 800.0, "wide-screen field panels belong beside the room");
-    assert!(world.query_filtered::<&Parent, With<PlayerMarker>>().iter(world).count() > 0);
-    world.query::<&mut Window>().single_mut(world).resolution.set(800.0, 1000.0);
+    assert!(world.query_filtered::<&ChildOf, With<PlayerMarker>>().iter(world).count() > 0);
+    world.query::<&mut Window>().single_mut(world).unwrap().resolution.set(800.0, 1000.0);
     app.update();
     let world = app.world_mut();
-    let resized = world.query_filtered::<&Transform, With<FullscreenWorldRoot>>().single(world);
+    let resized = world.query_filtered::<&Transform, With<FullscreenWorldRoot>>().single(world).unwrap();
     assert!(resized.scale.x < root.scale.x);
-    let dialogue = world.query_filtered::<&Transform, With<FullscreenDialogRoot>>().single(world);
+    let dialogue = world.query_filtered::<&Transform, With<FullscreenDialogRoot>>().single(world).unwrap();
     assert_eq!(dialogue.scale, Vec3::ONE);
     assert_eq!(dialogue.translation.x, 0.0, "portrait dialogue returns to the bottom center");
     #[cfg(feature = "voxel-view")]
@@ -2311,10 +2486,10 @@ fn fullscreen_room_and_dialogue_resize_independently() {
         });
         for (width, height) in [(800.0, 1000.0), (1920.0, 1080.0), (320.0, 568.0)] {
             let world = app.world_mut();
-            world.query::<&mut Window>().single_mut(world).resolution.set(width, height);
+            world.query::<&mut Window>().single_mut(world).unwrap().resolution.set(width, height);
             app.update();
             let world = app.world_mut();
-            let dialogue = world.query_filtered::<&Transform, With<FullscreenDialogRoot>>().single(world);
+            let dialogue = world.query_filtered::<&Transform, With<FullscreenDialogRoot>>().single(world).unwrap();
             let physical = Vec2::new(width, height);
             let view = physical / fullscreen_pixels_per_world_unit(physical, 1.0);
             assert_eq!(dialogue.translation.y - PLAYFIELD_HEIGHT * 0.5, -view.y * 0.5 + 16.0,
@@ -2323,7 +2498,7 @@ fn fullscreen_room_and_dialogue_resize_independently() {
                 (view.x - PLAYFIELD_WIDTH) * 0.5 - 16.0
             } else { 0.0 }, "voxel panels must follow the same responsive docking");
             assert_eq!(dialogue.scale, Vec3::ONE);
-            let terrain = world.query_filtered::<&Transform, With<FullscreenWorldRoot>>().single(world);
+            let terrain = world.query_filtered::<&Transform, With<FullscreenWorldRoot>>().single(world).unwrap();
             assert_eq!(*terrain, Transform::IDENTITY, "voxel terrain must not receive 2D room scaling");
         }
     }
@@ -2371,21 +2546,21 @@ fn fullscreen_distant_npcs_respect_hidden_flags_without_mutating_gameplay() {
     let id = shell.shell.session().overworld().objects[index].object_identifier.clone().unwrap();
     let before = shell.shell.snapshot().unwrap();
     let mut expanded = before.clone();
-    expand_fullscreen_object_presentation(&mut expanded, &shell).unwrap();
+    object_presentation::expand_fullscreen_object_presentation(&mut expanded, &shell).unwrap();
     assert!(expanded.visible_object_runtime_tiles.contains_key(&id));
     let count = expanded.visible_objects.len();
-    expand_fullscreen_object_presentation(&mut expanded, &shell).unwrap();
+    object_presentation::expand_fullscreen_object_presentation(&mut expanded, &shell).unwrap();
     assert_eq!(expanded.visible_objects.len(), count);
     assert_eq!(before.state_checksum, shell.shell.snapshot().unwrap().state_checksum);
     assert!(!shell.shell.session().overworld().object_has_loaded_struct(index));
     shell.shell.session_mut().overworld_mut().hidden_object_identifiers.insert(id.clone());
     let mut hidden = before.clone();
-    expand_fullscreen_object_presentation(&mut hidden, &shell).unwrap();
+    object_presentation::expand_fullscreen_object_presentation(&mut hidden, &shell).unwrap();
     assert!(!hidden.visible_object_runtime_tiles.contains_key(&id));
     shell.shell.session_mut().overworld_mut().hidden_object_identifiers.remove(&id);
     shell.shell.session_mut().overworld_mut().invisible_object_struct_identifiers.insert(id.clone());
     let mut invisible = before;
-    expand_fullscreen_object_presentation(&mut invisible, &shell).unwrap();
+    object_presentation::expand_fullscreen_object_presentation(&mut invisible, &shell).unwrap();
     assert!(!invisible.visible_object_runtime_tiles.contains_key(&id));
 }
 
@@ -2407,7 +2582,7 @@ fn fullscreen_does_not_spawn_moms_next_map_load_replacement() {
     let original = snapshot.visible_object_slots.clone();
     assert!(original.contains(&0));
     assert!(!original.iter().any(|slot| (1..=3).contains(slot)));
-    expand_fullscreen_object_presentation(&mut snapshot, &shell).unwrap();
+    object_presentation::expand_fullscreen_object_presentation(&mut snapshot, &shell).unwrap();
     assert_eq!(snapshot.visible_object_slots, original, "fullscreen must not materialize Mom's replacement while the original is still talking");
 }
 
@@ -2430,7 +2605,7 @@ fn fullscreen_elm_keeps_his_position_when_leaving_the_lab() {
     assert!(!world.object_has_loaded_struct(index));
     let before = shell.shell.snapshot().unwrap();
     let mut expanded = before.clone();
-    expand_fullscreen_object_presentation(&mut expanded, &shell).unwrap();
+    object_presentation::expand_fullscreen_object_presentation(&mut expanded, &shell).unwrap();
     assert_eq!(expanded.visible_object_runtime_tiles.get("ELMSLAB_ELM"), Some(&TilePosition::new(5, 2)));
     assert_eq!(expanded.visible_object_facings.get("ELMSLAB_ELM"), Some(&Direction::Right));
     assert_eq!(before.state_checksum, shell.shell.snapshot().unwrap().state_checksum);
@@ -2483,4 +2658,163 @@ fn asm_script_jump_samples_height_before_incrementing() {
             );
         }
     }
+}
+
+#[test]
+fn running_shoes_keyboard_uses_four_frame_walk_and_releases_to_eight() {
+    let root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("../..")
+        .canonicalize()
+        .unwrap();
+    let path = std::env::var_os("CRYSTAL_RENDER_TEST_PACK")
+        .map(PathBuf::from)
+        .unwrap_or_else(|| root.join("content-packs/text-tui.crystalpack"));
+    if !path.exists() {
+        return;
+    }
+    let asset_root = AssetRoot::new(path.parent().unwrap());
+    let loaded = crystal_assets::read_loaded_verified_compiled_game_pack(&path).unwrap();
+    let runtime = CrystalRuntime::from_loaded_compiled_pack(&asset_root, loaded).unwrap();
+    let controller = VisibleShellController::new_game(asset_root, runtime, "CHRIS", None).unwrap();
+    let mut app = integrated_shell_test_app(controller.shell);
+    app.update();
+    app.world_mut()
+        .resource_mut::<ButtonInput<KeyCode>>()
+        .press(KeyCode::KeyX);
+    app.world_mut().resource_mut::<HeldArrowRightTestFrames>().0 = 16;
+    let mut running_step = false;
+    for _ in 0..16 {
+        app.update();
+        let shell = app.world().resource::<BevyRuntimeShell>();
+        if shell.player_walk_frame_ticks > 0 {
+            assert_eq!(shell.player_walk_total_ticks, 4);
+            running_step = true;
+            break;
+        }
+    }
+    assert!(running_step, "held B + direction must start a running step");
+    app.world_mut()
+        .resource_mut::<ButtonInput<KeyCode>>()
+        .release(KeyCode::KeyX);
+    let mut walking_step = false;
+    for _ in 0..16 {
+        app.update();
+        let shell = app.world().resource::<BevyRuntimeShell>();
+        if shell.player_walk_frame_ticks > 0 && shell.player_walk_total_ticks == 8 {
+            walking_step = true;
+            break;
+        }
+    }
+    assert!(
+        walking_step,
+        "releasing B must restore walking on the next step"
+    );
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+#[test]
+fn handheld_gamepad_drives_production_running_and_start_menu() {
+    let root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("../..")
+        .canonicalize()
+        .unwrap();
+    let path = std::env::var_os("CRYSTAL_RENDER_TEST_PACK")
+        .map(PathBuf::from)
+        .unwrap_or_else(|| root.join("content-packs/text-tui.crystalpack"));
+    if !path.exists() {
+        return;
+    }
+    let asset_root = AssetRoot::new(path.parent().unwrap());
+    let loaded = crystal_assets::read_loaded_verified_compiled_game_pack(&path).unwrap();
+    let runtime = CrystalRuntime::from_loaded_compiled_pack(&asset_root, loaded).unwrap();
+    let controller = VisibleShellController::new_game(asset_root, runtime, "CHRIS", None).unwrap();
+    let mut app = integrated_shell_test_app(controller.shell);
+    app.add_plugins(bevy::input::InputPlugin);
+    handheld_input::install(&mut app);
+    let pad = app.world_mut().spawn_empty().id();
+    app.world_mut()
+        .write_message(bevy::input::gamepad::GamepadConnectionEvent::new(
+            pad,
+            bevy::input::gamepad::GamepadConnection::Connected {
+                name: "Steam Deck virtual gamepad".into(),
+                vendor_id: None,
+                product_id: None,
+            },
+        ));
+    app.update();
+    assert!(app.world().get::<Gamepad>(pad).is_some());
+    {
+        let mut gamepad = app.world_mut().get_mut::<Gamepad>(pad).unwrap();
+        let buttons = gamepad.digital_mut();
+        buttons.press(GamepadButton::East);
+        buttons.press(GamepadButton::DPadRight);
+    }
+    let mut moved = false;
+    for _ in 0..16 {
+        app.update();
+        let shell = app.world().resource::<BevyRuntimeShell>();
+        if shell.player_walk_frame_ticks > 0 {
+            assert_eq!(shell.player_walk_total_ticks, 4);
+            assert!(matches!(
+                shell.shell.last_frame().unwrap().movement,
+                Some(StepOutcome::Moved {
+                    speed_multiplier: 2,
+                    ..
+                })
+            ));
+            moved = true;
+            break;
+        }
+    }
+    assert!(
+        moved,
+        "gamepad B + D-pad must run through the production controller"
+    );
+    app.world_mut()
+        .get_mut::<Gamepad>(pad)
+        .unwrap()
+        .digital_mut()
+        .reset_all();
+    for _ in 0..8 {
+        app.update();
+    }
+    let tile = app
+        .world()
+        .resource::<BevyRuntimeShell>()
+        .shell
+        .session()
+        .snapshot()
+        .tile;
+    app.world_mut()
+        .get_mut::<Gamepad>(pad)
+        .unwrap()
+        .digital_mut()
+        .press(GamepadButton::Start);
+    app.update();
+    assert!(
+        app.world()
+            .resource::<BevyRuntimeShell>()
+            .start_menu_cursor
+            .is_some()
+    );
+    app.world_mut()
+        .get_mut::<Gamepad>(pad)
+        .unwrap()
+        .digital_mut()
+        .reset_all();
+    app.update();
+    app.world_mut()
+        .get_mut::<Gamepad>(pad)
+        .unwrap()
+        .digital_mut()
+        .press(GamepadButton::East);
+    app.world_mut()
+        .get_mut::<Gamepad>(pad)
+        .unwrap()
+        .digital_mut()
+        .press(GamepadButton::DPadRight);
+    app.update();
+    let shell = app.world().resource::<BevyRuntimeShell>();
+    assert!(shell.start_menu_cursor.is_none());
+    assert_eq!(shell.shell.session().snapshot().tile, tile);
 }

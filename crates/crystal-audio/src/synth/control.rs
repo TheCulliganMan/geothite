@@ -171,6 +171,7 @@ mod tests {
             profile: "pokecrystal-midi-v1".into(),
             cry_pitch: None,
             cry_length: None,
+            output_envelope: None,
             music_data: MusicData {
                 channel_count: 1,
                 channels: BTreeMap::from([(
@@ -262,6 +263,7 @@ mod linking_tests {
             profile: "pokecrystal-midi-v1".into(),
             cry_pitch: None,
             cry_length: None,
+            output_envelope: None,
             music_data: MusicData {
                 channel_count: 1,
                 channels: BTreeMap::from([(

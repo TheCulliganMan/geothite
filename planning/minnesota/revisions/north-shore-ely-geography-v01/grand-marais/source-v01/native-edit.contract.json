@@ -1,0 +1,1785 @@
+{
+  "schema_version": 1,
+  "status": "DETACHED_SOURCE_PROPOSAL_NOT_ACCEPTED_OR_NATIVE",
+  "base_pack_sha256": "ebea77ccb9b9dbe54aa5101e32590c1b075ed8130f6e7fcfe2d8c8451dab11d8",
+  "base_identity": "5009f2898563ecf699d7036b19d988ef5f4d43a8b39cbd48f8616cc9c45eca32",
+  "map": "MnGrandMarais",
+  "base_module_sha256": "377210a771f41efaa9c5bd18a9035462a61a14da7e34e0967d79421b5e6c93c1",
+  "dimensions_metatiles": [
+    20,
+    19
+  ],
+  "proposed_world_origin": [
+    202,
+    -419
+  ],
+  "native_alias": "mn_marais_shore",
+  "native_alias_parent": "johto",
+  "native_art_recipes": [
+    {
+      "id": "80",
+      "base": "54",
+      "quadrants": [
+        {
+          "index": 1,
+          "source": "36"
+        },
+        {
+          "index": 3,
+          "source": "36"
+        }
+      ],
+      "role": "existing reviewed native reef recipe",
+      "glyphs": [
+        92,
+        76,
+        88,
+        88,
+        61,
+        20,
+        88,
+        88,
+        61,
+        20,
+        88,
+        88,
+        61,
+        20,
+        88,
+        88
+      ],
+      "collision": [
+        "WATER",
+        "BUOY",
+        "WATER",
+        "BUOY"
+      ]
+    },
+    {
+      "id": "81",
+      "base": "58",
+      "quadrants": [
+        {
+          "index": 1,
+          "source": "36"
+        },
+        {
+          "index": 3,
+          "source": "36"
+        }
+      ],
+      "role": "existing reviewed native reef recipe",
+      "glyphs": [
+        61,
+        20,
+        88,
+        88,
+        61,
+        20,
+        88,
+        88,
+        61,
+        20,
+        88,
+        88,
+        61,
+        20,
+        88,
+        88
+      ],
+      "collision": [
+        "WATER",
+        "BUOY",
+        "WATER",
+        "BUOY"
+      ]
+    },
+    {
+      "id": "82",
+      "base": "59",
+      "quadrants": [
+        {
+          "index": 0,
+          "source": "34"
+        },
+        {
+          "index": 2,
+          "source": "34"
+        }
+      ],
+      "role": "existing reviewed native reef recipe",
+      "glyphs": [
+        88,
+        88,
+        20,
+        59,
+        88,
+        88,
+        20,
+        59,
+        88,
+        88,
+        20,
+        59,
+        88,
+        88,
+        20,
+        59
+      ],
+      "collision": [
+        "BUOY",
+        "WATER",
+        "BUOY",
+        "WATER"
+      ]
+    },
+    {
+      "id": "83",
+      "base": "7a",
+      "quadrants": [
+        {
+          "index": 0,
+          "source": "34"
+        },
+        {
+          "index": 2,
+          "source": "34"
+        }
+      ],
+      "role": "existing reviewed native reef recipe",
+      "glyphs": [
+        88,
+        88,
+        20,
+        75,
+        88,
+        88,
+        20,
+        20,
+        88,
+        88,
+        20,
+        20,
+        88,
+        88,
+        20,
+        20
+      ],
+      "collision": [
+        "BUOY",
+        "WATER",
+        "BUOY",
+        "WATER"
+      ]
+    },
+    {
+      "id": "84",
+      "base": "35",
+      "quadrants": [
+        {
+          "index": 0,
+          "source": "34"
+        },
+        {
+          "index": 2,
+          "source": "34"
+        }
+      ],
+      "role": "existing reviewed native reef recipe",
+      "glyphs": [
+        88,
+        88,
+        20,
+        20,
+        88,
+        88,
+        20,
+        20,
+        88,
+        88,
+        20,
+        20,
+        88,
+        88,
+        20,
+        20
+      ],
+      "collision": [
+        "BUOY",
+        "WATER",
+        "BUOY",
+        "WATER"
+      ]
+    },
+    {
+      "id": "85",
+      "base": "79",
+      "quadrants": [
+        {
+          "index": 1,
+          "source": "36"
+        },
+        {
+          "index": 3,
+          "source": "36"
+        }
+      ],
+      "role": "existing reviewed native reef recipe",
+      "glyphs": [
+        77,
+        20,
+        88,
+        88,
+        20,
+        20,
+        88,
+        88,
+        20,
+        20,
+        88,
+        88,
+        20,
+        20,
+        88,
+        88
+      ],
+      "collision": [
+        "WATER",
+        "BUOY",
+        "WATER",
+        "BUOY"
+      ]
+    },
+    {
+      "id": "86",
+      "base": "35",
+      "quadrants": [
+        {
+          "index": 1,
+          "source": "36"
+        },
+        {
+          "index": 3,
+          "source": "36"
+        }
+      ],
+      "role": "existing reviewed native reef recipe",
+      "glyphs": [
+        20,
+        20,
+        88,
+        88,
+        20,
+        20,
+        88,
+        88,
+        20,
+        20,
+        88,
+        88,
+        20,
+        20,
+        88,
+        88
+      ],
+      "collision": [
+        "WATER",
+        "BUOY",
+        "WATER",
+        "BUOY"
+      ]
+    },
+    {
+      "id": "87",
+      "base": "35",
+      "quadrants": [
+        {
+          "index": 0,
+          "source": "34"
+        },
+        {
+          "index": 2,
+          "source": "39"
+        },
+        {
+          "index": 3,
+          "source": "39"
+        }
+      ],
+      "role": "existing reviewed native reef recipe",
+      "glyphs": [
+        88,
+        88,
+        20,
+        20,
+        88,
+        88,
+        20,
+        20,
+        88,
+        88,
+        88,
+        88,
+        88,
+        88,
+        88,
+        88
+      ],
+      "collision": [
+        "BUOY",
+        "WATER",
+        "BUOY",
+        "BUOY"
+      ]
+    },
+    {
+      "id": "88",
+      "base": "35",
+      "quadrants": [
+        {
+          "index": 2,
+          "source": "39"
+        },
+        {
+          "index": 3,
+          "source": "39"
+        }
+      ],
+      "role": "existing reviewed native reef recipe",
+      "glyphs": [
+        20,
+        20,
+        20,
+        20,
+        20,
+        20,
+        20,
+        20,
+        88,
+        88,
+        88,
+        88,
+        88,
+        88,
+        88,
+        88
+      ],
+      "collision": [
+        "WATER",
+        "WATER",
+        "BUOY",
+        "BUOY"
+      ]
+    },
+    {
+      "id": "89",
+      "base": "35",
+      "quadrants": [
+        {
+          "index": 1,
+          "source": "36"
+        },
+        {
+          "index": 2,
+          "source": "39"
+        },
+        {
+          "index": 3,
+          "source": "39"
+        }
+      ],
+      "role": "existing reviewed native reef recipe",
+      "glyphs": [
+        20,
+        20,
+        88,
+        88,
+        20,
+        20,
+        88,
+        88,
+        88,
+        88,
+        88,
+        88,
+        88,
+        88,
+        88,
+        88
+      ],
+      "collision": [
+        "WATER",
+        "BUOY",
+        "BUOY",
+        "BUOY"
+      ]
+    },
+    {
+      "id": "8a",
+      "base": "35",
+      "quadrants": [
+        {
+          "index": 1,
+          "source": "46"
+        },
+        {
+          "index": 3,
+          "source": "46"
+        }
+      ],
+      "role": "quay west rail: water outside, blocking native fence inside",
+      "glyphs": [
+        20,
+        20,
+        6,
+        74,
+        20,
+        20,
+        6,
+        74,
+        20,
+        20,
+        6,
+        74,
+        20,
+        20,
+        6,
+        74
+      ],
+      "collision": [
+        "WATER",
+        "WALL",
+        "WATER",
+        "WALL"
+      ]
+    },
+    {
+      "id": "8b",
+      "base": "35",
+      "quadrants": [
+        {
+          "index": 0,
+          "source": "44"
+        },
+        {
+          "index": 2,
+          "source": "44"
+        }
+      ],
+      "role": "quay east rail: blocking native fence inside, water outside",
+      "glyphs": [
+        74,
+        6,
+        20,
+        20,
+        74,
+        6,
+        20,
+        20,
+        74,
+        6,
+        20,
+        20,
+        74,
+        6,
+        20,
+        20
+      ],
+      "collision": [
+        "WALL",
+        "WATER",
+        "WALL",
+        "WATER"
+      ]
+    },
+    {
+      "id": "8c",
+      "base": "35",
+      "quadrants": [
+        {
+          "index": 1,
+          "source": "46"
+        },
+        {
+          "index": 3,
+          "source": "46"
+        },
+        {
+          "index": 2,
+          "source": "39"
+        }
+      ],
+      "role": "west quay foot cap; unmatched south outer-water quadrant becomes native BUOY",
+      "glyphs": [
+        20,
+        20,
+        6,
+        74,
+        20,
+        20,
+        6,
+        74,
+        88,
+        88,
+        6,
+        74,
+        88,
+        88,
+        6,
+        74
+      ],
+      "collision": [
+        "WATER",
+        "WALL",
+        "BUOY",
+        "WALL"
+      ]
+    },
+    {
+      "id": "8d",
+      "base": "35",
+      "quadrants": [
+        {
+          "index": 0,
+          "source": "44"
+        },
+        {
+          "index": 2,
+          "source": "44"
+        },
+        {
+          "index": 3,
+          "source": "39"
+        }
+      ],
+      "role": "east quay foot cap; unmatched south outer-water quadrant becomes native BUOY",
+      "glyphs": [
+        74,
+        6,
+        20,
+        20,
+        74,
+        6,
+        20,
+        20,
+        74,
+        6,
+        88,
+        88,
+        74,
+        6,
+        88,
+        88
+      ],
+      "collision": [
+        "WALL",
+        "WATER",
+        "WALL",
+        "BUOY"
+      ]
+    },
+    {
+      "id": "8e",
+      "base": "55",
+      "quadrants": [
+        {
+          "index": 0,
+          "source": "34"
+        },
+        {
+          "index": 2,
+          "source": "34"
+        }
+      ],
+      "role": "preserve the native northwest harbor corner while closing its west-facing water",
+      "glyphs": [
+        88,
+        88,
+        76,
+        93,
+        88,
+        88,
+        20,
+        59,
+        88,
+        88,
+        20,
+        59,
+        88,
+        88,
+        20,
+        59
+      ],
+      "collision": [
+        "BUOY",
+        "WATER",
+        "BUOY",
+        "WATER"
+      ]
+    }
+  ],
+  "cells": [
+    {
+      "metatile": [
+        19,
+        6
+      ],
+      "before": "01",
+      "after": "05",
+      "purpose": "close obsolete east foot port visibly with ordinary native pine canopy"
+    },
+    {
+      "metatile": [
+        19,
+        7
+      ],
+      "before": "54",
+      "after": "80",
+      "purpose": "close unmatched east Superior boundary after removing Cedar east detour"
+    },
+    {
+      "metatile": [
+        0,
+        8
+      ],
+      "before": "55",
+      "after": "8e",
+      "purpose": "close unmatched west harbor water beside the inland-only neighbor"
+    },
+    {
+      "metatile": [
+        19,
+        8
+      ],
+      "before": "58",
+      "after": "81",
+      "purpose": "close unmatched east Superior boundary after removing Cedar east detour"
+    },
+    {
+      "metatile": [
+        0,
+        9
+      ],
+      "before": "59",
+      "after": "82",
+      "purpose": "close unmatched west harbor water beside the inland-only neighbor"
+    },
+    {
+      "metatile": [
+        19,
+        9
+      ],
+      "before": "58",
+      "after": "81",
+      "purpose": "close unmatched east Superior boundary after removing Cedar east detour"
+    },
+    {
+      "metatile": [
+        0,
+        10
+      ],
+      "before": "59",
+      "after": "82",
+      "purpose": "close unmatched west harbor water beside the inland-only neighbor"
+    },
+    {
+      "metatile": [
+        19,
+        10
+      ],
+      "before": "58",
+      "after": "81",
+      "purpose": "close unmatched east Superior boundary after removing Cedar east detour"
+    },
+    {
+      "metatile": [
+        0,
+        11
+      ],
+      "before": "59",
+      "after": "82",
+      "purpose": "close unmatched west harbor water beside the inland-only neighbor"
+    },
+    {
+      "metatile": [
+        19,
+        11
+      ],
+      "before": "58",
+      "after": "81",
+      "purpose": "close unmatched east Superior boundary after removing Cedar east detour"
+    },
+    {
+      "metatile": [
+        0,
+        12
+      ],
+      "before": "7a",
+      "after": "83",
+      "purpose": "close unmatched west harbor water beside the inland-only neighbor"
+    },
+    {
+      "metatile": [
+        19,
+        12
+      ],
+      "before": "58",
+      "after": "81",
+      "purpose": "close unmatched east Superior boundary after removing Cedar east detour"
+    },
+    {
+      "metatile": [
+        0,
+        13
+      ],
+      "before": "35",
+      "after": "84",
+      "purpose": "close unmatched west harbor water beside the inland-only neighbor"
+    },
+    {
+      "metatile": [
+        19,
+        13
+      ],
+      "before": "58",
+      "after": "81",
+      "purpose": "close unmatched east Superior boundary after removing Cedar east detour"
+    },
+    {
+      "metatile": [
+        0,
+        14
+      ],
+      "before": "35",
+      "after": "84",
+      "purpose": "close unmatched west harbor water beside the inland-only neighbor"
+    },
+    {
+      "metatile": [
+        19,
+        14
+      ],
+      "before": "79",
+      "after": "85",
+      "purpose": "close unmatched east Superior boundary after removing Cedar east detour"
+    },
+    {
+      "metatile": [
+        0,
+        15
+      ],
+      "before": "35",
+      "after": "84",
+      "purpose": "close unmatched west harbor water beside the inland-only neighbor"
+    },
+    {
+      "metatile": [
+        7,
+        15
+      ],
+      "before": "76",
+      "after": "8a",
+      "purpose": "native fenced west edge of narrow coastal quay"
+    },
+    {
+      "metatile": [
+        8,
+        15
+      ],
+      "before": "76",
+      "after": "01",
+      "purpose": "stone quay links lighthouse headland directly to the R11 coastal road"
+    },
+    {
+      "metatile": [
+        9,
+        15
+      ],
+      "before": "76",
+      "after": "8b",
+      "purpose": "native fenced east edge of narrow coastal quay"
+    },
+    {
+      "metatile": [
+        19,
+        15
+      ],
+      "before": "35",
+      "after": "86",
+      "purpose": "close unmatched east Superior boundary after removing Cedar east detour"
+    },
+    {
+      "metatile": [
+        0,
+        16
+      ],
+      "before": "35",
+      "after": "84",
+      "purpose": "close unmatched west harbor water beside the inland-only neighbor"
+    },
+    {
+      "metatile": [
+        7,
+        16
+      ],
+      "before": "35",
+      "after": "8a",
+      "purpose": "native fenced west edge of narrow coastal quay"
+    },
+    {
+      "metatile": [
+        8,
+        16
+      ],
+      "before": "35",
+      "after": "01",
+      "purpose": "stone quay links lighthouse headland directly to the R11 coastal road"
+    },
+    {
+      "metatile": [
+        9,
+        16
+      ],
+      "before": "35",
+      "after": "8b",
+      "purpose": "native fenced east edge of narrow coastal quay"
+    },
+    {
+      "metatile": [
+        19,
+        16
+      ],
+      "before": "35",
+      "after": "86",
+      "purpose": "close unmatched east Superior boundary after removing Cedar east detour"
+    },
+    {
+      "metatile": [
+        0,
+        17
+      ],
+      "before": "35",
+      "after": "84",
+      "purpose": "close unmatched west harbor water beside the inland-only neighbor"
+    },
+    {
+      "metatile": [
+        7,
+        17
+      ],
+      "before": "35",
+      "after": "8a",
+      "purpose": "native fenced west edge of narrow coastal quay"
+    },
+    {
+      "metatile": [
+        8,
+        17
+      ],
+      "before": "35",
+      "after": "01",
+      "purpose": "stone quay links lighthouse headland directly to the R11 coastal road"
+    },
+    {
+      "metatile": [
+        9,
+        17
+      ],
+      "before": "35",
+      "after": "8b",
+      "purpose": "native fenced east edge of narrow coastal quay"
+    },
+    {
+      "metatile": [
+        19,
+        17
+      ],
+      "before": "35",
+      "after": "86",
+      "purpose": "close unmatched east Superior boundary after removing Cedar east detour"
+    },
+    {
+      "metatile": [
+        7,
+        18
+      ],
+      "before": "39",
+      "after": "8c",
+      "purpose": "native fenced west edge of narrow coastal quay"
+    },
+    {
+      "metatile": [
+        8,
+        18
+      ],
+      "before": "39",
+      "after": "01",
+      "purpose": "stone quay links lighthouse headland directly to the R11 coastal road"
+    },
+    {
+      "metatile": [
+        9,
+        18
+      ],
+      "before": "39",
+      "after": "8d",
+      "purpose": "native fenced east edge of narrow coastal quay"
+    },
+    {
+      "metatile": [
+        12,
+        18
+      ],
+      "before": "39",
+      "after": "35",
+      "purpose": "open the broad same-Lake-Superior seam to actual R11 north water"
+    },
+    {
+      "metatile": [
+        13,
+        18
+      ],
+      "before": "39",
+      "after": "35",
+      "purpose": "open the broad same-Lake-Superior seam to actual R11 north water"
+    },
+    {
+      "metatile": [
+        14,
+        18
+      ],
+      "before": "39",
+      "after": "35",
+      "purpose": "open the broad same-Lake-Superior seam to actual R11 north water"
+    },
+    {
+      "metatile": [
+        15,
+        18
+      ],
+      "before": "39",
+      "after": "35",
+      "purpose": "open the broad same-Lake-Superior seam to actual R11 north water"
+    },
+    {
+      "metatile": [
+        16,
+        18
+      ],
+      "before": "39",
+      "after": "35",
+      "purpose": "open the broad same-Lake-Superior seam to actual R11 north water"
+    },
+    {
+      "metatile": [
+        17,
+        18
+      ],
+      "before": "39",
+      "after": "35",
+      "purpose": "open the broad same-Lake-Superior seam to actual R11 north water"
+    },
+    {
+      "metatile": [
+        18,
+        18
+      ],
+      "before": "39",
+      "after": "35",
+      "purpose": "open the broad same-Lake-Superior seam to actual R11 north water"
+    }
+  ],
+  "connections_before": [
+    {
+      "direction": "east",
+      "target_map": "MnMaraisCedarApproach",
+      "offset": 0
+    },
+    {
+      "direction": "west",
+      "target_map": "MnR12C01R01",
+      "offset": 0
+    }
+  ],
+  "connections_after": [
+    {
+      "direction": "south",
+      "target_map": "MnR11C00R00",
+      "offset": -12
+    },
+    {
+      "direction": "west",
+      "target_map": "MnMaraisCedarApproach",
+      "offset": 0
+    }
+  ],
+  "preserved_doors": [
+    {
+      "index": 1,
+      "core": [
+        6,
+        7
+      ],
+      "approach_core": [
+        6,
+        8
+      ],
+      "target": "MN_GRAND_MARAIS_FIELD_STATION",
+      "unchanged": true
+    },
+    {
+      "index": 2,
+      "core": [
+        15,
+        9
+      ],
+      "approach_core": [
+        15,
+        10
+      ],
+      "target": "MN_GRAND_MARAIS_POKECENTER",
+      "unchanged": true
+    },
+    {
+      "index": 3,
+      "core": [
+        21,
+        9
+      ],
+      "approach_core": [
+        21,
+        10
+      ],
+      "target": "MN_GRAND_MARAIS_MART",
+      "unchanged": true
+    },
+    {
+      "index": 4,
+      "core": [
+        9,
+        15
+      ],
+      "approach_core": [
+        9,
+        16
+      ],
+      "target": "MN_GRAND_MARAIS_ARTIST_HOUSE",
+      "unchanged": true
+    },
+    {
+      "index": 5,
+      "core": [
+        27,
+        15
+      ],
+      "approach_core": [
+        27,
+        16
+      ],
+      "target": "MN_GRAND_MARAIS_FISHER_HOUSE",
+      "unchanged": true
+    },
+    {
+      "index": 6,
+      "core": [
+        15,
+        27
+      ],
+      "approach_core": [
+        15,
+        28
+      ],
+      "target": "MN_GRAND_MARAIS_LIGHTHOUSE",
+      "unchanged": true
+    }
+  ],
+  "preserved_rooms_sha256": {
+    "MnGrandMaraisArtistHouse": "8648320530764f0bbd340510aec38b75423692b8a56d8425f50d620d7751f03b",
+    "MnGrandMaraisFieldStation": "c69cd1d45327462fdf422ee804efc4bbd9d45dcce1bcb71390b1a67420b9eea2",
+    "MnGrandMaraisFisherHouse": "acea7fcbbfba733d6310a362b7a81d9bde5b99a87be486b196cd511c28c14d26",
+    "MnGrandMaraisLighthouse": "9eba9a7ce9f2308d9e1883d87f0e5bb3efa1a810df6bcf217978610b3e22e0e4",
+    "MnGrandMaraisMart": "1d890bf859d3b5df69f4cf062a6e6b34716d23382dc9a1dddfda1eb45215f66e",
+    "MnGrandMaraisPokecenter": "c67da0dab59c865c4ac2166be59ca95a0bc0de4c6a6a795e510ebe74e84b8dc2"
+  },
+  "guard_relocations": [
+    {
+      "id": "MNCOHESIONMARAISEAST_A",
+      "before_core": [
+        37,
+        12
+      ],
+      "after_core": [
+        16,
+        35
+      ],
+      "after_movement": "SPRITEMOVEDATA_STANDING_UP"
+    },
+    {
+      "id": "MNCOHESIONMARAISEAST_B",
+      "before_core": [
+        37,
+        13
+      ],
+      "after_core": [
+        17,
+        35
+      ],
+      "after_movement": "SPRITEMOVEDATA_STANDING_UP"
+    }
+  ],
+  "gate_rotation": {
+    "root": "MnCohesionMaraisEast",
+    "prerequisites": "unchanged all eight native badges and EVENT_MN_LIGHTHOUSE_SIGNAL; local lamp flag remains separate",
+    "outbound_land_core": [
+      [
+        16,
+        34
+      ],
+      [
+        17,
+        34
+      ]
+    ],
+    "inward_land_core": [
+      [
+        16,
+        36
+      ],
+      [
+        17,
+        36
+      ]
+    ],
+    "argument_edits": [
+      {
+        "label": "MnCohesionMaraisEastInward",
+        "command_index": 1,
+        "arg_index": 0,
+        "before": "RIGHT",
+        "after": "DOWN"
+      },
+      {
+        "label": "MnCohesionMaraisEastOneStep",
+        "command_index": 0,
+        "arg_index": 0,
+        "before": "LEFT",
+        "after": "UP"
+      },
+      {
+        "label": "MnCohesionMaraisEastTwoSteps",
+        "command_index": 0,
+        "arg_index": 0,
+        "before": "LEFT",
+        "after": "UP"
+      },
+      {
+        "label": "MnCohesionMaraisEastTwoSteps",
+        "command_index": 1,
+        "arg_index": 0,
+        "before": "LEFT",
+        "after": "UP"
+      }
+    ]
+  },
+  "water_gate": {
+    "outbound_core": [
+      [
+        1,
+        35
+      ],
+      [
+        2,
+        35
+      ],
+      [
+        3,
+        35
+      ],
+      [
+        4,
+        35
+      ],
+      [
+        5,
+        35
+      ],
+      [
+        6,
+        35
+      ],
+      [
+        7,
+        35
+      ],
+      [
+        8,
+        35
+      ],
+      [
+        9,
+        35
+      ],
+      [
+        10,
+        35
+      ],
+      [
+        11,
+        35
+      ],
+      [
+        12,
+        35
+      ],
+      [
+        13,
+        35
+      ],
+      [
+        14,
+        35
+      ],
+      [
+        19,
+        35
+      ],
+      [
+        20,
+        35
+      ],
+      [
+        21,
+        35
+      ],
+      [
+        22,
+        35
+      ],
+      [
+        23,
+        35
+      ],
+      [
+        24,
+        35
+      ],
+      [
+        25,
+        35
+      ],
+      [
+        26,
+        35
+      ],
+      [
+        27,
+        35
+      ],
+      [
+        28,
+        35
+      ],
+      [
+        29,
+        35
+      ],
+      [
+        30,
+        35
+      ],
+      [
+        31,
+        35
+      ],
+      [
+        32,
+        35
+      ],
+      [
+        33,
+        35
+      ],
+      [
+        34,
+        35
+      ],
+      [
+        35,
+        35
+      ],
+      [
+        36,
+        35
+      ],
+      [
+        37,
+        35
+      ],
+      [
+        38,
+        35
+      ]
+    ],
+    "inward_core": [
+      [
+        1,
+        36
+      ],
+      [
+        2,
+        36
+      ],
+      [
+        3,
+        36
+      ],
+      [
+        4,
+        36
+      ],
+      [
+        5,
+        36
+      ],
+      [
+        6,
+        36
+      ],
+      [
+        7,
+        36
+      ],
+      [
+        8,
+        36
+      ],
+      [
+        9,
+        36
+      ],
+      [
+        10,
+        36
+      ],
+      [
+        11,
+        36
+      ],
+      [
+        12,
+        36
+      ],
+      [
+        13,
+        36
+      ],
+      [
+        14,
+        36
+      ],
+      [
+        19,
+        36
+      ],
+      [
+        20,
+        36
+      ],
+      [
+        21,
+        36
+      ],
+      [
+        22,
+        36
+      ],
+      [
+        23,
+        36
+      ],
+      [
+        24,
+        36
+      ],
+      [
+        25,
+        36
+      ],
+      [
+        26,
+        36
+      ],
+      [
+        27,
+        36
+      ],
+      [
+        28,
+        36
+      ],
+      [
+        29,
+        36
+      ],
+      [
+        30,
+        36
+      ],
+      [
+        31,
+        36
+      ],
+      [
+        32,
+        36
+      ],
+      [
+        33,
+        36
+      ],
+      [
+        34,
+        36
+      ],
+      [
+        35,
+        36
+      ],
+      [
+        36,
+        36
+      ],
+      [
+        37,
+        36
+      ],
+      [
+        38,
+        36
+      ]
+    ],
+    "outbound_wrapper": {
+      "label": "MnMaraisCoastWaterOut",
+      "native_commands": [
+        {
+          "command": "readvar",
+          "args": [
+            "VAR_FACING"
+          ]
+        },
+        {
+          "command": "ifequal",
+          "args": [
+            "DOWN",
+            "MnCohesionMaraisEast"
+          ]
+        },
+        {
+          "command": "end",
+          "args": []
+        }
+      ]
+    },
+    "inward_wrapper": {
+      "label": "MnMaraisCoastWaterIn",
+      "native_commands": [
+        {
+          "command": "readvar",
+          "args": [
+            "VAR_FACING"
+          ]
+        },
+        {
+          "command": "ifequal",
+          "args": [
+            "UP",
+            "MnCohesionMaraisEastInward"
+          ]
+        },
+        {
+          "command": "end",
+          "args": []
+        }
+      ]
+    },
+    "purpose": "full-width directional water checkpoint; free inward scripted two-step crossing; no Surf bypass around land officers"
+  },
+  "wayfinding_sign": {
+    "label": "MnGrandMaraisSign1Text",
+    "core": [
+      12,
+      14
+    ],
+    "before_lines": [
+      "HARBOR PARK",
+      "FOLLOW SHORE EAST"
+    ],
+    "after_lines": [
+      "SUPERIOR HARBOR",
+      "NORTH SHORE: SOUTH",
+      "GUNFLINT: WEST",
+      "ELY: INLAND SNOW"
+    ]
+  },
+  "shared_geometry_owner": "river_native; placement-v01 proof; R11/Cedar/neck edits are not owned here",
+  "all_other_town_and_room_scripts_events_services_quests_and_audio": "unchanged except exact declared gate rotation/wrappers/event bindings and one existing sign text",
+  "r11_counterpart_required": {
+    "owner": "river_native",
+    "native_module_before_sha256": "6a6ec704034d19bc369102b3f20cd29e858750f9539e0e652b9912299acf25e9",
+    "required_source_cells": [
+      {
+        "metatile": [
+          24,
+          0
+        ],
+        "before": "30",
+        "after": "58"
+      },
+      {
+        "metatile": [
+          25,
+          0
+        ],
+        "before": "31",
+        "after": "35"
+      },
+      {
+        "metatile": [
+          26,
+          0
+        ],
+        "before": "31",
+        "after": "35"
+      },
+      {
+        "metatile": [
+          27,
+          0
+        ],
+        "before": "31",
+        "after": "35"
+      },
+      {
+        "metatile": [
+          28,
+          0
+        ],
+        "before": "31",
+        "after": "35"
+      },
+      {
+        "metatile": [
+          29,
+          0
+        ],
+        "before": "31",
+        "after": "35"
+      },
+      {
+        "metatile": [
+          30,
+          0
+        ],
+        "before": "31",
+        "after": "35"
+      }
+    ],
+    "foot_core": [
+      {
+        "town": [
+          16,
+          37
+        ],
+        "r11": [
+          40,
+          0
+        ],
+        "town_collision": "FLOOR",
+        "r11_candidate_collision": "FLOOR"
+      },
+      {
+        "town": [
+          17,
+          37
+        ],
+        "r11": [
+          41,
+          0
+        ],
+        "town_collision": "FLOOR",
+        "r11_candidate_collision": "FLOOR"
+      }
+    ],
+    "water_core": [
+      {
+        "town": [
+          24,
+          37
+        ],
+        "r11": [
+          48,
+          0
+        ],
+        "town_collision": "WATER",
+        "r11_candidate_collision": "WATER"
+      },
+      {
+        "town": [
+          25,
+          37
+        ],
+        "r11": [
+          49,
+          0
+        ],
+        "town_collision": "WATER",
+        "r11_candidate_collision": "WATER"
+      },
+      {
+        "town": [
+          26,
+          37
+        ],
+        "r11": [
+          50,
+          0
+        ],
+        "town_collision": "WATER",
+        "r11_candidate_collision": "WATER"
+      },
+      {
+        "town": [
+          27,
+          37
+        ],
+        "r11": [
+          51,
+          0
+        ],
+        "town_collision": "WATER",
+        "r11_candidate_collision": "WATER"
+      },
+      {
+        "town": [
+          28,
+          37
+        ],
+        "r11": [
+          52,
+          0
+        ],
+        "town_collision": "WATER",
+        "r11_candidate_collision": "WATER"
+      },
+      {
+        "town": [
+          29,
+          37
+        ],
+        "r11": [
+          53,
+          0
+        ],
+        "town_collision": "WATER",
+        "r11_candidate_collision": "WATER"
+      },
+      {
+        "town": [
+          30,
+          37
+        ],
+        "r11": [
+          54,
+          0
+        ],
+        "town_collision": "WATER",
+        "r11_candidate_collision": "WATER"
+      },
+      {
+        "town": [
+          31,
+          37
+        ],
+        "r11": [
+          55,
+          0
+        ],
+        "town_collision": "WATER",
+        "r11_candidate_collision": "WATER"
+      },
+      {
+        "town": [
+          32,
+          37
+        ],
+        "r11": [
+          56,
+          0
+        ],
+        "town_collision": "WATER",
+        "r11_candidate_collision": "WATER"
+      },
+      {
+        "town": [
+          33,
+          37
+        ],
+        "r11": [
+          57,
+          0
+        ],
+        "town_collision": "WATER",
+        "r11_candidate_collision": "WATER"
+      },
+      {
+        "town": [
+          34,
+          37
+        ],
+        "r11": [
+          58,
+          0
+        ],
+        "town_collision": "WATER",
+        "r11_candidate_collision": "WATER"
+      },
+      {
+        "town": [
+          35,
+          37
+        ],
+        "r11": [
+          59,
+          0
+        ],
+        "town_collision": "WATER",
+        "r11_candidate_collision": "WATER"
+      },
+      {
+        "town": [
+          36,
+          37
+        ],
+        "r11": [
+          60,
+          0
+        ],
+        "town_collision": "WATER",
+        "r11_candidate_collision": "WATER"
+      },
+      {
+        "town": [
+          37,
+          37
+        ],
+        "r11": [
+          61,
+          0
+        ],
+        "town_collision": "WATER",
+        "r11_candidate_collision": "WATER"
+      }
+    ],
+    "native_water_before": "BUOY: must apply the seven explicit R11 patches before publishing connections"
+  }
+}

@@ -1,0 +1,452 @@
+{
+  "schema_version": 1,
+  "status": "Source candidate; not selected or native-published",
+  "parent_revision": "r10_fitted_fork_revision",
+  "parent_pack": "content-packs/minnesota-current-r10-fitted-fork-v03.crystalpack",
+  "parent_pack_sha256": "1f16d2b3ca473cc5e937140b7ba6f3e190bcaf3718dd6854b40acd8e98a6ddff",
+  "source_sync_cells": 178,
+  "changed_cells": 114,
+  "complete_facade_moves": [
+    {
+      "name": "Fair information booth",
+      "warp": 23,
+      "box": [
+        2,
+        3,
+        4,
+        4
+      ],
+      "to": [
+        5,
+        4
+      ],
+      "native_rows": [
+        [
+          2,
+          3
+        ]
+      ]
+    },
+    {
+      "name": "Food hall stall",
+      "warp": 11,
+      "box": [
+        2,
+        6,
+        4,
+        7
+      ],
+      "to": [
+        2,
+        5
+      ],
+      "native_rows": [
+        [
+          2,
+          3
+        ]
+      ]
+    },
+    {
+      "name": "Berry snack stall",
+      "warp": 27,
+      "box": [
+        6,
+        6,
+        8,
+        7
+      ],
+      "to": [
+        5,
+        6
+      ],
+      "native_rows": [
+        [
+          2,
+          3
+        ]
+      ]
+    },
+    {
+      "name": "Garden stand stall",
+      "warp": 13,
+      "box": [
+        10,
+        6,
+        12,
+        7
+      ],
+      "to": [
+        8,
+        6
+      ],
+      "native_rows": [
+        [
+          2,
+          3
+        ]
+      ]
+    },
+    {
+      "name": "Quiz pavilion",
+      "warp": 21,
+      "box": [
+        13,
+        6,
+        15,
+        8
+      ],
+      "to": [
+        12,
+        6
+      ],
+      "native_rows": [
+        [
+          32,
+          33
+        ],
+        [
+          124,
+          126
+        ]
+      ]
+    },
+    {
+      "name": "West Seventh bakery",
+      "warp": 45,
+      "box": [
+        2,
+        21,
+        4,
+        22
+      ],
+      "to": [
+        2,
+        19
+      ],
+      "native_rows": [
+        [
+          2,
+          3
+        ]
+      ]
+    },
+    {
+      "name": "Main Pokemon Center",
+      "warp": 3,
+      "box": [
+        6,
+        21,
+        8,
+        23
+      ],
+      "to": [
+        6,
+        19
+      ],
+      "native_rows": [
+        [
+          32,
+          33
+        ],
+        [
+          124,
+          114
+        ]
+      ]
+    },
+    {
+      "name": "Main mart",
+      "warp": 5,
+      "box": [
+        12,
+        15,
+        14,
+        17
+      ],
+      "to": [
+        10,
+        15
+      ],
+      "native_rows": [
+        [
+          32,
+          33
+        ],
+        [
+          124,
+          115
+        ]
+      ]
+    }
+  ],
+  "preserved": [
+    "40 destinations and reciprocal room identities",
+    "all scripts, story, trainers, rewards and interiors",
+    "entire map perimeter, river, bridges and all three connection offsets",
+    "all stair and ledge terrain"
+  ],
+  "changed_anchors": [
+    {
+      "kind": "object",
+      "index": 2,
+      "before": [
+        17,
+        47
+      ],
+      "after": [
+        17,
+        43
+      ]
+    },
+    {
+      "kind": "background",
+      "index": 0,
+      "before": [
+        19,
+        45
+      ],
+      "after": [
+        19,
+        41
+      ]
+    },
+    {
+      "kind": "background",
+      "index": 1,
+      "before": [
+        29,
+        35
+      ],
+      "after": [
+        25,
+        35
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 2,
+      "before": [
+        13,
+        45
+      ],
+      "after": [
+        13,
+        41
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 3,
+      "before": [
+        13,
+        46
+      ],
+      "after": [
+        13,
+        42
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 4,
+      "before": [
+        25,
+        33
+      ],
+      "after": [
+        21,
+        33
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 5,
+      "before": [
+        25,
+        34
+      ],
+      "after": [
+        21,
+        34
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 10,
+      "before": [
+        5,
+        13
+      ],
+      "after": [
+        5,
+        11
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 11,
+      "before": [
+        5,
+        14
+      ],
+      "after": [
+        5,
+        12
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 12,
+      "before": [
+        21,
+        13
+      ],
+      "after": [
+        17,
+        13
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 13,
+      "before": [
+        21,
+        14
+      ],
+      "after": [
+        17,
+        14
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 20,
+      "before": [
+        27,
+        15
+      ],
+      "after": [
+        25,
+        15
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 21,
+      "before": [
+        27,
+        16
+      ],
+      "after": [
+        25,
+        16
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 22,
+      "before": [
+        5,
+        7
+      ],
+      "after": [
+        11,
+        9
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 23,
+      "before": [
+        5,
+        8
+      ],
+      "after": [
+        11,
+        10
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 26,
+      "before": [
+        13,
+        13
+      ],
+      "after": [
+        11,
+        13
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 27,
+      "before": [
+        13,
+        14
+      ],
+      "after": [
+        11,
+        14
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 44,
+      "before": [
+        5,
+        43
+      ],
+      "after": [
+        5,
+        39
+      ]
+    },
+    {
+      "kind": "warp",
+      "index": 45,
+      "before": [
+        5,
+        44
+      ],
+      "after": [
+        5,
+        40
+      ]
+    }
+  ],
+  "validation": {
+    "errors": [],
+    "ordinary_reachable_tiles": 2506,
+    "bridge_deck_semantics": "Native deck is FLOOR for Foot; rail is WALL",
+    "walking_distances": [
+      {
+        "link": "food to berry",
+        "before": 8,
+        "after": 8
+      },
+      {
+        "link": "berry to garden",
+        "before": 8,
+        "after": 6
+      },
+      {
+        "link": "bakery to Center",
+        "before": 10,
+        "after": 10
+      },
+      {
+        "link": "garden stall to mart",
+        "before": 10,
+        "after": 6
+      }
+    ]
+  },
+  "next": [
+    "Inspect full town and both changed district cameras",
+    "Revise composition from visual review",
+    "Publish with existing Rust recompose_authored_city path",
+    "Verify exact unrelated preservation and production traversal, services, room returns, Continue, river seams and native captures before selection"
+  ]
+}

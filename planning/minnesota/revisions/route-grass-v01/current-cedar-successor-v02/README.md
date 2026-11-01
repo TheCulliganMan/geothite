@@ -1,0 +1,5 @@
+# Current Cedar Approach review
+
+The selected Route19 gate pack retains Cedar's complete native map and every used native metatile pixel/collision from the prior accepted successor. The full inherited route image was inspected again. Cedar has16grass quadrants and zero ICE. Three western grass steps remain required in either direction; the eastern ordinary climb crosses four grass steps and the native downhill drop is dry with reverse denial.
+
+Five fresh native cases pass grass/wild RUN/resources/Continue, six coastal room pairs, badge/signal denials, actual west/north/free inward/care routes and Surf gate/seam/boundary checks. The fresh grass save passes15 production movement/menu calls with empty stderr, separate output and unchanged source/input. The original native pixel captures keep their original pack binding; current-used-art-proof-v01.json proves used-surface inheritance. No terrain or engine changes were needed here. Initial QA fixtures do not establish earned regional access; statewide review remains active.

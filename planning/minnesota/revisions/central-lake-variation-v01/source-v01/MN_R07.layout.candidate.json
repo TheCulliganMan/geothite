@@ -1,0 +1,4047 @@
+{
+  "schema_version": 2,
+  "id": "MN_R07",
+  "tileset": "johto",
+  "compiled_tileset": "mn_headwaters",
+  "dimensions_metatiles": [
+    32,
+    48
+  ],
+  "shore_fitting": "johto_8_neighbors",
+  "reject_cliff_cuts": true,
+  "source_pixels_modified": false,
+  "derived_blocks": [
+    {
+      "id": "80",
+      "source_tileset": "kanto",
+      "source_block": "78",
+      "collision": "WATER",
+      "required_typed_extension": "headwaters_art::build_headwaters_art_pack"
+    },
+    {
+      "id": "81",
+      "source_tileset": "kanto",
+      "source_block": "77",
+      "collision": "FLOOR/FLOOR/WALL/WALL",
+      "required_typed_extension": "headwaters_art::build_headwaters_art_pack"
+    },
+    {
+      "id": "82",
+      "source_tileset": "kanto",
+      "source_block": "77",
+      "tile_row_order": [
+        2,
+        3,
+        0,
+        1
+      ],
+      "collision_source_tileset": "johto",
+      "collision_source_block": "75",
+      "required_typed_extension": "headwaters_art::build_headwaters_art_pack"
+    }
+  ],
+  "crossings": [
+    {
+      "id": "SOUTH_CAUSEWAY",
+      "deck_blocks": [
+        [
+          13,
+          34
+        ],
+        [
+          14,
+          34
+        ],
+        [
+          15,
+          34
+        ],
+        [
+          16,
+          34
+        ],
+        [
+          17,
+          34
+        ],
+        [
+          18,
+          34
+        ],
+        [
+          19,
+          34
+        ],
+        [
+          20,
+          34
+        ],
+        [
+          21,
+          34
+        ]
+      ],
+      "north_rail_blocks": [
+        [
+          13,
+          33
+        ],
+        [
+          14,
+          33
+        ],
+        [
+          15,
+          33
+        ],
+        [
+          16,
+          33
+        ],
+        [
+          17,
+          33
+        ],
+        [
+          18,
+          33
+        ],
+        [
+          19,
+          33
+        ],
+        [
+          20,
+          33
+        ],
+        [
+          21,
+          33
+        ]
+      ],
+      "south_rail_blocks": [
+        [
+          13,
+          35
+        ],
+        [
+          14,
+          35
+        ],
+        [
+          15,
+          35
+        ],
+        [
+          16,
+          35
+        ],
+        [
+          17,
+          35
+        ],
+        [
+          18,
+          35
+        ],
+        [
+          19,
+          35
+        ],
+        [
+          20,
+          35
+        ],
+        [
+          21,
+          35
+        ]
+      ],
+      "water_under_rail_blocks": [
+        [
+          13,
+          36
+        ],
+        [
+          14,
+          36
+        ],
+        [
+          15,
+          36
+        ],
+        [
+          16,
+          36
+        ],
+        [
+          17,
+          36
+        ],
+        [
+          18,
+          36
+        ],
+        [
+          19,
+          36
+        ],
+        [
+          20,
+          36
+        ],
+        [
+          21,
+          36
+        ]
+      ],
+      "core_walk_line": [
+        [
+          24,
+          69
+        ],
+        [
+          25,
+          69
+        ],
+        [
+          26,
+          69
+        ],
+        [
+          27,
+          69
+        ],
+        [
+          28,
+          69
+        ],
+        [
+          29,
+          69
+        ],
+        [
+          30,
+          69
+        ],
+        [
+          31,
+          69
+        ],
+        [
+          32,
+          69
+        ],
+        [
+          33,
+          69
+        ],
+        [
+          34,
+          69
+        ],
+        [
+          35,
+          69
+        ],
+        [
+          36,
+          69
+        ],
+        [
+          37,
+          69
+        ],
+        [
+          38,
+          69
+        ],
+        [
+          39,
+          69
+        ],
+        [
+          40,
+          69
+        ],
+        [
+          41,
+          69
+        ],
+        [
+          42,
+          69
+        ],
+        [
+          43,
+          69
+        ],
+        [
+          44,
+          69
+        ],
+        [
+          45,
+          69
+        ]
+      ]
+    },
+    {
+      "id": "NORTH_OUTLET_BRIDGE",
+      "deck_blocks": [],
+      "north_rail_blocks": [
+        [
+          12,
+          18
+        ],
+        [
+          13,
+          18
+        ],
+        [
+          14,
+          18
+        ],
+        [
+          15,
+          18
+        ],
+        [
+          16,
+          18
+        ],
+        [
+          17,
+          18
+        ],
+        [
+          18,
+          18
+        ],
+        [
+          19,
+          18
+        ],
+        [
+          20,
+          18
+        ],
+        [
+          21,
+          18
+        ]
+      ],
+      "south_rail_blocks": [
+        [
+          12,
+          19
+        ],
+        [
+          13,
+          19
+        ],
+        [
+          14,
+          19
+        ],
+        [
+          15,
+          19
+        ],
+        [
+          16,
+          19
+        ],
+        [
+          17,
+          19
+        ],
+        [
+          18,
+          19
+        ],
+        [
+          19,
+          19
+        ],
+        [
+          20,
+          19
+        ],
+        [
+          21,
+          19
+        ]
+      ],
+      "water_under_rail_blocks": [
+        [
+          12,
+          20
+        ],
+        [
+          13,
+          20
+        ],
+        [
+          14,
+          20
+        ],
+        [
+          15,
+          20
+        ],
+        [
+          16,
+          20
+        ],
+        [
+          17,
+          20
+        ],
+        [
+          18,
+          20
+        ],
+        [
+          19,
+          20
+        ],
+        [
+          20,
+          20
+        ],
+        [
+          21,
+          20
+        ]
+      ],
+      "core_walk_line": [
+        [
+          22,
+          37
+        ],
+        [
+          23,
+          37
+        ],
+        [
+          24,
+          37
+        ],
+        [
+          25,
+          37
+        ],
+        [
+          26,
+          37
+        ],
+        [
+          27,
+          37
+        ],
+        [
+          28,
+          37
+        ],
+        [
+          29,
+          37
+        ],
+        [
+          30,
+          37
+        ],
+        [
+          31,
+          37
+        ],
+        [
+          32,
+          37
+        ],
+        [
+          33,
+          37
+        ],
+        [
+          34,
+          37
+        ],
+        [
+          35,
+          37
+        ],
+        [
+          36,
+          37
+        ],
+        [
+          37,
+          37
+        ],
+        [
+          38,
+          37
+        ],
+        [
+          39,
+          37
+        ],
+        [
+          40,
+          37
+        ],
+        [
+          41,
+          37
+        ],
+        [
+          42,
+          37
+        ],
+        [
+          43,
+          37
+        ],
+        [
+          44,
+          37
+        ],
+        [
+          45,
+          37
+        ]
+      ],
+      "walking_width_core_tiles": 2
+    },
+    {
+      "id": "FISHING_LANDING",
+      "deck_blocks": [
+        [
+          16,
+          7
+        ],
+        [
+          17,
+          7
+        ],
+        [
+          18,
+          7
+        ],
+        [
+          19,
+          7
+        ],
+        [
+          20,
+          7
+        ],
+        [
+          21,
+          7
+        ],
+        [
+          22,
+          7
+        ]
+      ],
+      "north_rail_blocks": [
+        [
+          16,
+          6
+        ],
+        [
+          17,
+          6
+        ],
+        [
+          18,
+          6
+        ],
+        [
+          19,
+          6
+        ],
+        [
+          20,
+          6
+        ],
+        [
+          21,
+          6
+        ],
+        [
+          22,
+          6
+        ]
+      ],
+      "south_rail_blocks": [
+        [
+          16,
+          8
+        ],
+        [
+          17,
+          8
+        ],
+        [
+          18,
+          8
+        ],
+        [
+          19,
+          8
+        ],
+        [
+          20,
+          8
+        ],
+        [
+          21,
+          8
+        ],
+        [
+          22,
+          8
+        ]
+      ],
+      "water_under_rail_blocks": [
+        [
+          16,
+          9
+        ],
+        [
+          17,
+          9
+        ],
+        [
+          18,
+          9
+        ],
+        [
+          19,
+          9
+        ],
+        [
+          20,
+          9
+        ],
+        [
+          21,
+          9
+        ],
+        [
+          22,
+          9
+        ]
+      ],
+      "core_walk_line": [
+        [
+          28,
+          15
+        ],
+        [
+          29,
+          15
+        ],
+        [
+          30,
+          15
+        ],
+        [
+          31,
+          15
+        ],
+        [
+          32,
+          15
+        ],
+        [
+          33,
+          15
+        ],
+        [
+          34,
+          15
+        ],
+        [
+          35,
+          15
+        ],
+        [
+          36,
+          15
+        ],
+        [
+          37,
+          15
+        ],
+        [
+          38,
+          15
+        ],
+        [
+          39,
+          15
+        ],
+        [
+          40,
+          15
+        ],
+        [
+          41,
+          15
+        ],
+        [
+          42,
+          15
+        ],
+        [
+          43,
+          15
+        ],
+        [
+          44,
+          15
+        ],
+        [
+          45,
+          15
+        ]
+      ]
+    }
+  ],
+  "layers": [
+    {
+      "kind": "polygon",
+      "material": "water",
+      "points": [
+        [
+          13,
+          9
+        ],
+        [
+          19,
+          9
+        ],
+        [
+          19,
+          6
+        ],
+        [
+          25,
+          6
+        ],
+        [
+          25,
+          9
+        ],
+        [
+          30,
+          9
+        ],
+        [
+          30,
+          12
+        ],
+        [
+          31,
+          12
+        ],
+        [
+          31,
+          39
+        ],
+        [
+          26,
+          39
+        ],
+        [
+          26,
+          43
+        ],
+        [
+          18,
+          43
+        ],
+        [
+          18,
+          40
+        ],
+        [
+          13,
+          40
+        ],
+        [
+          13,
+          36
+        ],
+        [
+          12,
+          36
+        ],
+        [
+          12,
+          29
+        ],
+        [
+          14,
+          29
+        ],
+        [
+          14,
+          23
+        ],
+        [
+          12,
+          23
+        ],
+        [
+          12,
+          15
+        ],
+        [
+          13,
+          15
+        ]
+      ],
+      "name": "Irregular lake outlet"
+    },
+    {
+      "kind": "polygon",
+      "material": "lawn",
+      "points": [
+        [
+          7,
+          0
+        ],
+        [
+          12,
+          0
+        ],
+        [
+          12,
+          6
+        ],
+        [
+          15,
+          6
+        ],
+        [
+          15,
+          9
+        ],
+        [
+          12,
+          9
+        ],
+        [
+          12,
+          13
+        ],
+        [
+          10,
+          13
+        ],
+        [
+          10,
+          16
+        ],
+        [
+          12,
+          16
+        ],
+        [
+          12,
+          20
+        ],
+        [
+          11,
+          20
+        ],
+        [
+          11,
+          24
+        ],
+        [
+          7,
+          24
+        ],
+        [
+          7,
+          21
+        ],
+        [
+          4,
+          21
+        ],
+        [
+          4,
+          16
+        ],
+        [
+          6,
+          16
+        ],
+        [
+          6,
+          12
+        ],
+        [
+          4,
+          12
+        ],
+        [
+          4,
+          8
+        ],
+        [
+          7,
+          8
+        ]
+      ],
+      "name": "Northern bird-bank clearing"
+    },
+    {
+      "kind": "polygon",
+      "material": "lawn",
+      "points": [
+        [
+          8,
+          28
+        ],
+        [
+          11,
+          28
+        ],
+        [
+          11,
+          31
+        ],
+        [
+          13,
+          31
+        ],
+        [
+          13,
+          36
+        ],
+        [
+          12,
+          36
+        ],
+        [
+          12,
+          40
+        ],
+        [
+          15,
+          40
+        ],
+        [
+          15,
+          44
+        ],
+        [
+          12,
+          44
+        ],
+        [
+          12,
+          47
+        ],
+        [
+          8,
+          47
+        ],
+        [
+          8,
+          44
+        ],
+        [
+          4,
+          44
+        ],
+        [
+          4,
+          40
+        ],
+        [
+          5,
+          40
+        ],
+        [
+          5,
+          36
+        ],
+        [
+          7,
+          36
+        ],
+        [
+          7,
+          32
+        ],
+        [
+          8,
+          32
+        ]
+      ],
+      "name": "Brainerd rest and drop landing"
+    },
+    {
+      "kind": "polygon",
+      "material": "lawn",
+      "points": [
+        [
+          23,
+          12
+        ],
+        [
+          27,
+          12
+        ],
+        [
+          27,
+          16
+        ],
+        [
+          29,
+          16
+        ],
+        [
+          29,
+          22
+        ],
+        [
+          27,
+          22
+        ],
+        [
+          27,
+          27
+        ],
+        [
+          29,
+          27
+        ],
+        [
+          29,
+          34
+        ],
+        [
+          26,
+          34
+        ],
+        [
+          26,
+          37
+        ],
+        [
+          22,
+          37
+        ],
+        [
+          22,
+          33
+        ],
+        [
+          23,
+          33
+        ],
+        [
+          23,
+          29
+        ],
+        [
+          21,
+          29
+        ],
+        [
+          21,
+          24
+        ],
+        [
+          23,
+          24
+        ],
+        [
+          23,
+          21
+        ],
+        [
+          22,
+          21
+        ],
+        [
+          22,
+          17
+        ],
+        [
+          23,
+          17
+        ]
+      ],
+      "name": "Pine peninsula outline"
+    },
+    {
+      "kind": "path",
+      "material": "floor",
+      "points": [
+        [
+          10,
+          0
+        ],
+        [
+          10,
+          7
+        ],
+        [
+          8,
+          7
+        ],
+        [
+          8,
+          18
+        ],
+        [
+          11,
+          18
+        ]
+      ],
+      "width_metatiles": 1,
+      "name": "Northern walking lane"
+    },
+    {
+      "kind": "block_rect",
+      "block": "05",
+      "bounds": [
+        10,
+        15,
+        12,
+        17
+      ],
+      "name": "Source pine island: west bird hollow"
+    },
+    {
+      "kind": "block_rect",
+      "block": "05",
+      "bounds": [
+        9,
+        9,
+        12,
+        11
+      ],
+      "name": "Source pine island: peninsula fork"
+    },
+    {
+      "kind": "block_rect",
+      "block": "05",
+      "bounds": [
+        23,
+        26,
+        25,
+        28
+      ],
+      "name": "Small canopy: peninsula west crown"
+    },
+    {
+      "kind": "point",
+      "block": "5d",
+      "position": [
+        25,
+        27
+      ],
+      "name": "Small canopy: peninsula east crown"
+    },
+    {
+      "kind": "point",
+      "block": "5e",
+      "position": [
+        26,
+        27
+      ],
+      "name": "Small canopy: north landing west"
+    },
+    {
+      "kind": "point",
+      "block": "5d",
+      "position": [
+        6,
+        8
+      ],
+      "name": "Small canopy: north landing east"
+    },
+    {
+      "kind": "point",
+      "block": "5e",
+      "position": [
+        7,
+        8
+      ],
+      "name": "Native 5e at 7,8"
+    },
+    {
+      "kind": "path",
+      "material": "floor",
+      "points": [
+        [
+          10,
+          7
+        ],
+        [
+          13,
+          7
+        ]
+      ],
+      "width_metatiles": 1,
+      "name": "Floor trail [10, 7] to [13, 7]"
+    },
+    {
+      "kind": "path",
+      "material": "floor",
+      "points": [
+        [
+          8,
+          18
+        ],
+        [
+          8,
+          22
+        ]
+      ],
+      "width_metatiles": 1,
+      "name": "Floor trail [8, 18] to [8, 22]"
+    },
+    {
+      "kind": "path",
+      "material": "floor",
+      "points": [
+        [
+          10,
+          47
+        ],
+        [
+          10,
+          41
+        ],
+        [
+          8,
+          41
+        ],
+        [
+          8,
+          34
+        ],
+        [
+          12,
+          34
+        ]
+      ],
+      "width_metatiles": 1,
+      "name": "Floor trail [10, 47] to [10, 41] to [8, 41] to [8, 34] to [12, 34]"
+    },
+    {
+      "kind": "path",
+      "material": "floor",
+      "points": [
+        [
+          8,
+          41
+        ],
+        [
+          5,
+          41
+        ]
+      ],
+      "width_metatiles": 1,
+      "name": "Floor trail [8, 41] to [5, 41]"
+    },
+    {
+      "kind": "path",
+      "material": "floor",
+      "points": [
+        [
+          8,
+          34
+        ],
+        [
+          9,
+          34
+        ],
+        [
+          9,
+          29
+        ]
+      ],
+      "width_metatiles": 1,
+      "name": "Floor trail [8, 34] to [9, 34] to [9, 29]"
+    },
+    {
+      "kind": "path",
+      "material": "floor",
+      "points": [
+        [
+          22,
+          34
+        ],
+        [
+          25,
+          34
+        ],
+        [
+          25,
+          29
+        ],
+        [
+          24,
+          29
+        ],
+        [
+          24,
+          25
+        ],
+        [
+          25,
+          25
+        ],
+        [
+          25,
+          20
+        ],
+        [
+          23,
+          20
+        ],
+        [
+          23,
+          18
+        ]
+      ],
+      "width_metatiles": 1,
+      "name": "Floor trail [22, 34] to [25, 34] to [25, 29] to [24, 29] to [24, 25] to [25, 25] to [25, 20] to [23, 20] to [23, 18]"
+    },
+    {
+      "kind": "path",
+      "material": "floor",
+      "points": [
+        [
+          25,
+          29
+        ],
+        [
+          27,
+          29
+        ],
+        [
+          27,
+          32
+        ]
+      ],
+      "width_metatiles": 1,
+      "name": "Floor trail [25, 29] to [27, 29] to [27, 32]"
+    },
+    {
+      "kind": "path",
+      "material": "floor",
+      "points": [
+        [
+          25,
+          25
+        ],
+        [
+          22,
+          25
+        ]
+      ],
+      "width_metatiles": 1,
+      "name": "Floor trail [25, 25] to [22, 25]"
+    },
+    {
+      "kind": "path",
+      "material": "floor",
+      "points": [
+        [
+          25,
+          20
+        ],
+        [
+          27,
+          20
+        ],
+        [
+          27,
+          17
+        ]
+      ],
+      "width_metatiles": 1,
+      "name": "Floor trail [25, 20] to [27, 20] to [27, 17]"
+    },
+    {
+      "kind": "path",
+      "material": "floor",
+      "points": [
+        [
+          8,
+          14
+        ],
+        [
+          6,
+          14
+        ],
+        [
+          6,
+          11
+        ]
+      ],
+      "width_metatiles": 1,
+      "name": "Floor trail [8, 14] to [6, 14] to [6, 11]"
+    },
+    {
+      "kind": "path",
+      "material": "floor",
+      "points": [
+        [
+          10,
+          6
+        ],
+        [
+          12,
+          6
+        ]
+      ],
+      "width_metatiles": 1,
+      "name": "Floor trail [10, 6] to [12, 6]"
+    },
+    {
+      "kind": "rect",
+      "material": "encounter",
+      "bounds": [
+        22,
+        22,
+        28,
+        24
+      ],
+      "name": "encounter fitting [22, 22, 28, 24]"
+    },
+    {
+      "kind": "rect",
+      "material": "forest",
+      "bounds": [
+        28,
+        22,
+        30,
+        24
+      ],
+      "name": "forest fitting [28, 22, 30, 24]"
+    },
+    {
+      "kind": "rect",
+      "material": "water",
+      "bounds": [
+        20,
+        22,
+        22,
+        24
+      ],
+      "name": "water fitting [20, 22, 22, 24]"
+    },
+    {
+      "kind": "rect",
+      "material": "encounter",
+      "bounds": [
+        6,
+        10,
+        8,
+        12
+      ],
+      "name": "encounter fitting [6, 10, 8, 12]"
+    },
+    {
+      "kind": "rect",
+      "material": "encounter",
+      "bounds": [
+        5,
+        17,
+        7,
+        19
+      ],
+      "name": "encounter fitting [5, 17, 7, 19]"
+    },
+    {
+      "kind": "rect",
+      "material": "encounter",
+      "bounds": [
+        26,
+        30,
+        28,
+        33
+      ],
+      "name": "encounter fitting [26, 30, 28, 33]"
+    },
+    {
+      "kind": "rect",
+      "material": "encounter",
+      "bounds": [
+        10,
+        41,
+        13,
+        43
+      ],
+      "name": "encounter fitting [10, 41, 13, 43]"
+    },
+    {
+      "kind": "rect",
+      "material": "flowers",
+      "bounds": [
+        5,
+        40,
+        7,
+        41
+      ],
+      "name": "flowers fitting [5, 40, 7, 41]"
+    },
+    {
+      "kind": "rect",
+      "material": "flowers",
+      "bounds": [
+        11,
+        4,
+        13,
+        5
+      ],
+      "name": "flowers fitting [11, 4, 13, 5]"
+    },
+    {
+      "kind": "rect",
+      "material": "flowers",
+      "bounds": [
+        26,
+        16,
+        28,
+        17
+      ],
+      "name": "flowers fitting [26, 16, 28, 17]"
+    },
+    {
+      "kind": "rect",
+      "material": "flowers",
+      "bounds": [
+        22,
+        35,
+        24,
+        37
+      ],
+      "name": "flowers fitting [22, 35, 24, 37]"
+    },
+    {
+      "kind": "cliff_polygon",
+      "points": [
+        [
+          7,
+          21
+        ],
+        [
+          10,
+          21
+        ],
+        [
+          10,
+          24
+        ],
+        [
+          11,
+          24
+        ],
+        [
+          11,
+          27
+        ],
+        [
+          6,
+          27
+        ],
+        [
+          6,
+          25
+        ],
+        [
+          7,
+          25
+        ]
+      ],
+      "name": "Irregular low sandbank return"
+    },
+    {
+      "kind": "block_rect",
+      "block": "05",
+      "bounds": [
+        6,
+        22,
+        8,
+        25
+      ],
+      "name": "05 fitting [6, 22, 8, 25]"
+    },
+    {
+      "kind": "point",
+      "block": "0a",
+      "position": [
+        6,
+        25
+      ],
+      "name": "Native 0a at 6,25"
+    },
+    {
+      "kind": "block_rect",
+      "block": "03",
+      "bounds": [
+        9,
+        23,
+        10,
+        25
+      ],
+      "name": "03 fitting [9, 23, 10, 25]"
+    },
+    {
+      "kind": "point",
+      "block": "74",
+      "position": [
+        8,
+        21
+      ],
+      "name": "Native 74 at 8,21"
+    },
+    {
+      "kind": "point",
+      "block": "56",
+      "position": [
+        8,
+        27
+      ],
+      "name": "Native 56 at 8,27"
+    },
+    {
+      "kind": "point",
+      "block": "56",
+      "position": [
+        9,
+        27
+      ],
+      "name": "Native 56 at 9,27"
+    },
+    {
+      "kind": "block_rect",
+      "block": "71",
+      "bounds": [
+        8,
+        25,
+        10,
+        27
+      ],
+      "name": "71 fitting [8, 25, 10, 27]"
+    },
+    {
+      "kind": "point",
+      "block": "01",
+      "position": [
+        8,
+        28
+      ],
+      "name": "Native 01 at 8,28"
+    },
+    {
+      "kind": "point",
+      "block": "01",
+      "position": [
+        9,
+        28
+      ],
+      "name": "Native 01 at 9,28"
+    },
+    {
+      "kind": "point",
+      "block": "80",
+      "position": [
+        13,
+        10
+      ],
+      "name": "Native 80 at 13,10"
+    },
+    {
+      "kind": "point",
+      "block": "80",
+      "position": [
+        15,
+        11
+      ],
+      "name": "Native 80 at 15,11"
+    },
+    {
+      "kind": "point",
+      "block": "80",
+      "position": [
+        19,
+        15
+      ],
+      "name": "Native 80 at 19,15"
+    },
+    {
+      "kind": "point",
+      "block": "80",
+      "position": [
+        18,
+        30
+      ],
+      "name": "Native 80 at 18,30"
+    },
+    {
+      "kind": "point",
+      "block": "80",
+      "position": [
+        16,
+        36
+      ],
+      "name": "Native 80 at 16,36"
+    },
+    {
+      "kind": "point",
+      "block": "80",
+      "position": [
+        29,
+        24
+      ],
+      "name": "Native 80 at 29,24"
+    },
+    {
+      "kind": "point",
+      "block": "80",
+      "position": [
+        30,
+        35
+      ],
+      "name": "Native 80 at 30,35"
+    },
+    {
+      "kind": "point",
+      "block": "5d",
+      "position": [
+        5,
+        9
+      ],
+      "name": "Native 5d at 5,9 \u2014 ordinary canopy, no Cut gate"
+    },
+    {
+      "kind": "point",
+      "block": "5d",
+      "position": [
+        4,
+        13
+      ],
+      "name": "Native 5d at 4,13 \u2014 ordinary canopy, no Cut gate"
+    },
+    {
+      "kind": "point",
+      "block": "5d",
+      "position": [
+        5,
+        20
+      ],
+      "name": "Native 5d at 5,20 \u2014 ordinary canopy, no Cut gate"
+    },
+    {
+      "kind": "point",
+      "block": "5d",
+      "position": [
+        11,
+        12
+      ],
+      "name": "Native 5d at 11,12 \u2014 ordinary canopy, no Cut gate"
+    },
+    {
+      "kind": "point",
+      "block": "5d",
+      "position": [
+        11,
+        39
+      ],
+      "name": "Native 5d at 11,39 \u2014 ordinary canopy, no Cut gate"
+    },
+    {
+      "kind": "point",
+      "block": "5d",
+      "position": [
+        4,
+        42
+      ],
+      "name": "Native 5d at 4,42 \u2014 ordinary canopy, no Cut gate"
+    },
+    {
+      "kind": "point",
+      "block": "5d",
+      "position": [
+        14,
+        43
+      ],
+      "name": "Native 5d at 14,43 \u2014 ordinary canopy, no Cut gate"
+    },
+    {
+      "kind": "point",
+      "block": "5d",
+      "position": [
+        22,
+        30
+      ],
+      "name": "Native 5d at 22,30 \u2014 ordinary canopy, no Cut gate"
+    },
+    {
+      "kind": "point",
+      "block": "5d",
+      "position": [
+        28,
+        15
+      ],
+      "name": "Native 5d at 28,15 \u2014 ordinary canopy, no Cut gate"
+    },
+    {
+      "kind": "point",
+      "block": "5d",
+      "position": [
+        28,
+        33
+      ],
+      "name": "Native 5d at 28,33 \u2014 ordinary canopy, no Cut gate"
+    },
+    {
+      "kind": "point",
+      "block": "5c",
+      "position": [
+        6,
+        9
+      ],
+      "name": "Native 5c at 6,9"
+    },
+    {
+      "kind": "point",
+      "block": "5c",
+      "position": [
+        5,
+        13
+      ],
+      "name": "Native 5c at 5,13"
+    },
+    {
+      "kind": "point",
+      "block": "5c",
+      "position": [
+        6,
+        20
+      ],
+      "name": "Native 5c at 6,20"
+    },
+    {
+      "kind": "point",
+      "block": "5c",
+      "position": [
+        12,
+        12
+      ],
+      "name": "Native 5c at 12,12"
+    },
+    {
+      "kind": "point",
+      "block": "5c",
+      "position": [
+        12,
+        39
+      ],
+      "name": "Native 5c at 12,39"
+    },
+    {
+      "kind": "point",
+      "block": "5c",
+      "position": [
+        5,
+        42
+      ],
+      "name": "Native 5c at 5,42"
+    },
+    {
+      "kind": "point",
+      "block": "5c",
+      "position": [
+        15,
+        43
+      ],
+      "name": "Native 5c at 15,43"
+    },
+    {
+      "kind": "point",
+      "block": "5c",
+      "position": [
+        23,
+        30
+      ],
+      "name": "Native 5c at 23,30"
+    },
+    {
+      "kind": "point",
+      "block": "5c",
+      "position": [
+        29,
+        15
+      ],
+      "name": "Native 5c at 29,15"
+    },
+    {
+      "kind": "point",
+      "block": "5c",
+      "position": [
+        29,
+        33
+      ],
+      "name": "Native 5c at 29,33"
+    },
+    {
+      "kind": "point",
+      "block": "0a",
+      "position": [
+        6,
+        37
+      ],
+      "name": "Native 0a at 6,37"
+    },
+    {
+      "kind": "point",
+      "block": "0a",
+      "position": [
+        12,
+        43
+      ],
+      "name": "Native 0a at 12,43"
+    },
+    {
+      "kind": "point",
+      "block": "0a",
+      "position": [
+        26,
+        13
+      ],
+      "name": "Native 0a at 26,13"
+    },
+    {
+      "kind": "point",
+      "block": "0a",
+      "position": [
+        28,
+        28
+      ],
+      "name": "Native 0a at 28,28"
+    },
+    {
+      "kind": "point",
+      "block": "0a",
+      "position": [
+        26,
+        36
+      ],
+      "name": "Native 0a at 26,36"
+    },
+    {
+      "kind": "point",
+      "block": "0a",
+      "position": [
+        14,
+        8
+      ],
+      "name": "Native 0a at 14,8"
+    },
+    {
+      "kind": "point",
+      "block": "01",
+      "position": [
+        13,
+        34
+      ],
+      "name": "Native 01 at 13,34"
+    },
+    {
+      "kind": "point",
+      "block": "82",
+      "position": [
+        13,
+        33
+      ],
+      "name": "Native 82 at 13,33"
+    },
+    {
+      "kind": "point",
+      "block": "81",
+      "position": [
+        13,
+        35
+      ],
+      "name": "Native 81 at 13,35"
+    },
+    {
+      "kind": "point",
+      "block": "80",
+      "position": [
+        13,
+        36
+      ],
+      "name": "Native 80 at 13,36"
+    },
+    {
+      "kind": "point",
+      "block": "01",
+      "position": [
+        14,
+        34
+      ],
+      "name": "Native 01 at 14,34"
+    },
+    {
+      "kind": "point",
+      "block": "82",
+      "position": [
+        14,
+        33
+      ],
+      "name": "Native 82 at 14,33"
+    },
+    {
+      "kind": "point",
+      "block": "81",
+      "position": [
+        14,
+        35
+      ],
+      "name": "Native 81 at 14,35"
+    },
+    {
+      "kind": "point",
+      "block": "80",
+      "position": [
+        14,
+        36
+      ],
+      "name": "Native 80 at 14,36"
+    },
+    {
+      "kind": "point",
+      "block": "01",
+      "position": [
+        15,
+        34
+      ],
+      "name": "Native 01 at 15,34"
+    },
+    {
+      "kind": "point",
+      "block": "82",
+      "position": [
+        15,
+        33
+      ],
+      "name": "Native 82 at 15,33"
+    },
+    {
+      "kind": "point",
+      "block": "81",
+      "position": [
+        15,
+        35
+      ],
+      "name": "Native 81 at 15,35"
+    },
+    {
+      "kind": "point",
+      "block": "80",
+      "position": [
+        15,
+        36
+      ],
+      "name": "Native 80 at 15,36"
+    },
+    {
+      "kind": "point",
+      "block": "01",
+      "position": [
+        16,
+        34
+      ],
+      "name": "Native 01 at 16,34"
+    },
+    {
+      "kind": "point",
+      "block": "82",
+      "position": [
+        16,
+        33
+      ],
+      "name": "Native 82 at 16,33"
+    },
+    {
+      "kind": "point",
+      "block": "81",
+      "position": [
+        16,
+        35
+      ],
+      "name": "Native 81 at 16,35"
+    },
+    {
+      "kind": "point",
+      "block": "80",
+      "position": [
+        16,
+        36
+      ],
+      "name": "Native 80 at 16,36"
+    },
+    {
+      "kind": "point",
+      "block": "01",
+      "position": [
+        17,
+        34
+      ],
+      "name": "Native 01 at 17,34"
+    },
+    {
+      "kind": "point",
+      "block": "82",
+      "position": [
+        17,
+        33
+      ],
+      "name": "Native 82 at 17,33"
+    },
+    {
+      "kind": "point",
+      "block": "81",
+      "position": [
+        17,
+        35
+      ],
+      "name": "Native 81 at 17,35"
+    },
+    {
+      "kind": "point",
+      "block": "80",
+      "position": [
+        17,
+        36
+      ],
+      "name": "Native 80 at 17,36"
+    },
+    {
+      "kind": "point",
+      "block": "01",
+      "position": [
+        18,
+        34
+      ],
+      "name": "Native 01 at 18,34"
+    },
+    {
+      "kind": "point",
+      "block": "82",
+      "position": [
+        18,
+        33
+      ],
+      "name": "Native 82 at 18,33"
+    },
+    {
+      "kind": "point",
+      "block": "81",
+      "position": [
+        18,
+        35
+      ],
+      "name": "Native 81 at 18,35"
+    },
+    {
+      "kind": "point",
+      "block": "80",
+      "position": [
+        18,
+        36
+      ],
+      "name": "Native 80 at 18,36"
+    },
+    {
+      "kind": "point",
+      "block": "01",
+      "position": [
+        19,
+        34
+      ],
+      "name": "Native 01 at 19,34"
+    },
+    {
+      "kind": "point",
+      "block": "82",
+      "position": [
+        19,
+        33
+      ],
+      "name": "Native 82 at 19,33"
+    },
+    {
+      "kind": "point",
+      "block": "81",
+      "position": [
+        19,
+        35
+      ],
+      "name": "Native 81 at 19,35"
+    },
+    {
+      "kind": "point",
+      "block": "80",
+      "position": [
+        19,
+        36
+      ],
+      "name": "Native 80 at 19,36"
+    },
+    {
+      "kind": "point",
+      "block": "01",
+      "position": [
+        20,
+        34
+      ],
+      "name": "Native 01 at 20,34"
+    },
+    {
+      "kind": "point",
+      "block": "82",
+      "position": [
+        20,
+        33
+      ],
+      "name": "Native 82 at 20,33"
+    },
+    {
+      "kind": "point",
+      "block": "81",
+      "position": [
+        20,
+        35
+      ],
+      "name": "Native 81 at 20,35"
+    },
+    {
+      "kind": "point",
+      "block": "80",
+      "position": [
+        20,
+        36
+      ],
+      "name": "Native 80 at 20,36"
+    },
+    {
+      "kind": "point",
+      "block": "01",
+      "position": [
+        21,
+        34
+      ],
+      "name": "Native 01 at 21,34"
+    },
+    {
+      "kind": "point",
+      "block": "82",
+      "position": [
+        21,
+        33
+      ],
+      "name": "Native 82 at 21,33"
+    },
+    {
+      "kind": "point",
+      "block": "81",
+      "position": [
+        21,
+        35
+      ],
+      "name": "Native 81 at 21,35"
+    },
+    {
+      "kind": "point",
+      "block": "80",
+      "position": [
+        21,
+        36
+      ],
+      "name": "Native 80 at 21,36"
+    },
+    {
+      "kind": "point",
+      "block": "01",
+      "position": [
+        12,
+        18
+      ],
+      "name": "Native 01 at 12,18"
+    },
+    {
+      "kind": "point",
+      "block": "82",
+      "position": [
+        12,
+        17
+      ],
+      "name": "Native 82 at 12,17"
+    },
+    {
+      "kind": "point",
+      "block": "81",
+      "position": [
+        12,
+        19
+      ],
+      "name": "Native 81 at 12,19"
+    },
+    {
+      "kind": "point",
+      "block": "80",
+      "position": [
+        12,
+        20
+      ],
+      "name": "Native 80 at 12,20"
+    },
+    {
+      "kind": "point",
+      "block": "01",
+      "position": [
+        13,
+        18
+      ],
+      "name": "Native 01 at 13,18"
+    },
+    {
+      "kind": "point",
+      "block": "82",
+      "position": [
+        13,
+        17
+      ],
+      "name": "Native 82 at 13,17"
+    },
+    {
+      "kind": "point",
+      "block": "81",
+      "position": [
+        13,
+        19
+      ],
+      "name": "Native 81 at 13,19"
+    },
+    {
+      "kind": "point",
+      "block": "80",
+      "position": [
+        13,
+        20
+      ],
+      "name": "Native 80 at 13,20"
+    },
+    {
+      "kind": "point",
+      "block": "01",
+      "position": [
+        14,
+        18
+      ],
+      "name": "Native 01 at 14,18"
+    },
+    {
+      "kind": "point",
+      "block": "82",
+      "position": [
+        14,
+        17
+      ],
+      "name": "Native 82 at 14,17"
+    },
+    {
+      "kind": "point",
+      "block": "81",
+      "position": [
+        14,
+        19
+      ],
+      "name": "Native 81 at 14,19"
+    },
+    {
+      "kind": "point",
+      "block": "80",
+      "position": [
+        14,
+        20
+      ],
+      "name": "Native 80 at 14,20"
+    },
+    {
+      "kind": "point",
+      "block": "01",
+      "position": [
+        15,
+        18
+      ],
+      "name": "Native 01 at 15,18"
+    },
+    {
+      "kind": "point",
+      "block": "82",
+      "position": [
+        15,
+        17
+      ],
+      "name": "Native 82 at 15,17"
+    },
+    {
+      "kind": "point",
+      "block": "81",
+      "position": [
+        15,
+        19
+      ],
+      "name": "Native 81 at 15,19"
+    },
+    {
+      "kind": "point",
+      "block": "80",
+      "position": [
+        15,
+        20
+      ],
+      "name": "Native 80 at 15,20"
+    },
+    {
+      "kind": "point",
+      "block": "01",
+      "position": [
+        16,
+        18
+      ],
+      "name": "Native 01 at 16,18"
+    },
+    {
+      "kind": "point",
+      "block": "82",
+      "position": [
+        16,
+        17
+      ],
+      "name": "Native 82 at 16,17"
+    },
+    {
+      "kind": "point",
+      "block": "81",
+      "position": [
+        16,
+        19
+      ],
+      "name": "Native 81 at 16,19"
+    },
+    {
+      "kind": "point",
+      "block": "80",
+      "position": [
+        16,
+        20
+      ],
+      "name": "Native 80 at 16,20"
+    },
+    {
+      "kind": "point",
+      "block": "01",
+      "position": [
+        17,
+        18
+      ],
+      "name": "Native 01 at 17,18"
+    },
+    {
+      "kind": "point",
+      "block": "82",
+      "position": [
+        17,
+        17
+      ],
+      "name": "Native 82 at 17,17"
+    },
+    {
+      "kind": "point",
+      "block": "81",
+      "position": [
+        17,
+        19
+      ],
+      "name": "Native 81 at 17,19"
+    },
+    {
+      "kind": "point",
+      "block": "80",
+      "position": [
+        17,
+        20
+      ],
+      "name": "Native 80 at 17,20"
+    },
+    {
+      "kind": "point",
+      "block": "01",
+      "position": [
+        18,
+        18
+      ],
+      "name": "Native 01 at 18,18"
+    },
+    {
+      "kind": "point",
+      "block": "82",
+      "position": [
+        18,
+        17
+      ],
+      "name": "Native 82 at 18,17"
+    },
+    {
+      "kind": "point",
+      "block": "81",
+      "position": [
+        18,
+        19
+      ],
+      "name": "Native 81 at 18,19"
+    },
+    {
+      "kind": "point",
+      "block": "80",
+      "position": [
+        18,
+        20
+      ],
+      "name": "Native 80 at 18,20"
+    },
+    {
+      "kind": "point",
+      "block": "01",
+      "position": [
+        19,
+        18
+      ],
+      "name": "Native 01 at 19,18"
+    },
+    {
+      "kind": "point",
+      "block": "82",
+      "position": [
+        19,
+        17
+      ],
+      "name": "Native 82 at 19,17"
+    },
+    {
+      "kind": "point",
+      "block": "81",
+      "position": [
+        19,
+        19
+      ],
+      "name": "Native 81 at 19,19"
+    },
+    {
+      "kind": "point",
+      "block": "80",
+      "position": [
+        19,
+        20
+      ],
+      "name": "Native 80 at 19,20"
+    },
+    {
+      "kind": "point",
+      "block": "01",
+      "position": [
+        20,
+        18
+      ],
+      "name": "Native 01 at 20,18"
+    },
+    {
+      "kind": "point",
+      "block": "82",
+      "position": [
+        20,
+        17
+      ],
+      "name": "Native 82 at 20,17"
+    },
+    {
+      "kind": "point",
+      "block": "81",
+      "position": [
+        20,
+        19
+      ],
+      "name": "Native 81 at 20,19"
+    },
+    {
+      "kind": "point",
+      "block": "80",
+      "position": [
+        20,
+        20
+      ],
+      "name": "Native 80 at 20,20"
+    },
+    {
+      "kind": "point",
+      "block": "01",
+      "position": [
+        21,
+        18
+      ],
+      "name": "Native 01 at 21,18"
+    },
+    {
+      "kind": "point",
+      "block": "82",
+      "position": [
+        21,
+        17
+      ],
+      "name": "Native 82 at 21,17"
+    },
+    {
+      "kind": "point",
+      "block": "81",
+      "position": [
+        21,
+        19
+      ],
+      "name": "Native 81 at 21,19"
+    },
+    {
+      "kind": "point",
+      "block": "80",
+      "position": [
+        21,
+        20
+      ],
+      "name": "Native 80 at 21,20"
+    },
+    {
+      "kind": "point",
+      "block": "01",
+      "position": [
+        16,
+        7
+      ],
+      "name": "Native 01 at 16,7"
+    },
+    {
+      "kind": "point",
+      "block": "82",
+      "position": [
+        16,
+        6
+      ],
+      "name": "Native 82 at 16,6"
+    },
+    {
+      "kind": "point",
+      "block": "81",
+      "position": [
+        16,
+        8
+      ],
+      "name": "Native 81 at 16,8"
+    },
+    {
+      "kind": "point",
+      "block": "80",
+      "position": [
+        16,
+        9
+      ],
+      "name": "Native 80 at 16,9"
+    },
+    {
+      "kind": "point",
+      "block": "01",
+      "position": [
+        17,
+        7
+      ],
+      "name": "Native 01 at 17,7"
+    },
+    {
+      "kind": "point",
+      "block": "82",
+      "position": [
+        17,
+        6
+      ],
+      "name": "Native 82 at 17,6"
+    },
+    {
+      "kind": "point",
+      "block": "81",
+      "position": [
+        17,
+        8
+      ],
+      "name": "Native 81 at 17,8"
+    },
+    {
+      "kind": "point",
+      "block": "80",
+      "position": [
+        17,
+        9
+      ],
+      "name": "Native 80 at 17,9"
+    },
+    {
+      "kind": "point",
+      "block": "01",
+      "position": [
+        18,
+        7
+      ],
+      "name": "Native 01 at 18,7"
+    },
+    {
+      "kind": "point",
+      "block": "82",
+      "position": [
+        18,
+        6
+      ],
+      "name": "Native 82 at 18,6"
+    },
+    {
+      "kind": "point",
+      "block": "81",
+      "position": [
+        18,
+        8
+      ],
+      "name": "Native 81 at 18,8"
+    },
+    {
+      "kind": "point",
+      "block": "80",
+      "position": [
+        18,
+        9
+      ],
+      "name": "Native 80 at 18,9"
+    },
+    {
+      "kind": "point",
+      "block": "01",
+      "position": [
+        19,
+        7
+      ],
+      "name": "Native 01 at 19,7"
+    },
+    {
+      "kind": "point",
+      "block": "82",
+      "position": [
+        19,
+        6
+      ],
+      "name": "Native 82 at 19,6"
+    },
+    {
+      "kind": "point",
+      "block": "81",
+      "position": [
+        19,
+        8
+      ],
+      "name": "Native 81 at 19,8"
+    },
+    {
+      "kind": "point",
+      "block": "80",
+      "position": [
+        19,
+        9
+      ],
+      "name": "Native 80 at 19,9"
+    },
+    {
+      "kind": "point",
+      "block": "01",
+      "position": [
+        20,
+        7
+      ],
+      "name": "Native 01 at 20,7"
+    },
+    {
+      "kind": "point",
+      "block": "82",
+      "position": [
+        20,
+        6
+      ],
+      "name": "Native 82 at 20,6"
+    },
+    {
+      "kind": "point",
+      "block": "81",
+      "position": [
+        20,
+        8
+      ],
+      "name": "Native 81 at 20,8"
+    },
+    {
+      "kind": "point",
+      "block": "80",
+      "position": [
+        20,
+        9
+      ],
+      "name": "Native 80 at 20,9"
+    },
+    {
+      "kind": "point",
+      "block": "01",
+      "position": [
+        21,
+        7
+      ],
+      "name": "Native 01 at 21,7"
+    },
+    {
+      "kind": "point",
+      "block": "82",
+      "position": [
+        21,
+        6
+      ],
+      "name": "Native 82 at 21,6"
+    },
+    {
+      "kind": "point",
+      "block": "81",
+      "position": [
+        21,
+        8
+      ],
+      "name": "Native 81 at 21,8"
+    },
+    {
+      "kind": "point",
+      "block": "80",
+      "position": [
+        21,
+        9
+      ],
+      "name": "Native 80 at 21,9"
+    },
+    {
+      "kind": "point",
+      "block": "01",
+      "position": [
+        22,
+        7
+      ],
+      "name": "Native 01 at 22,7"
+    },
+    {
+      "kind": "point",
+      "block": "82",
+      "position": [
+        22,
+        6
+      ],
+      "name": "Native 82 at 22,6"
+    },
+    {
+      "kind": "point",
+      "block": "81",
+      "position": [
+        22,
+        8
+      ],
+      "name": "Native 81 at 22,8"
+    },
+    {
+      "kind": "point",
+      "block": "80",
+      "position": [
+        22,
+        9
+      ],
+      "name": "Native 80 at 22,9"
+    },
+    {
+      "kind": "path",
+      "material": "floor",
+      "points": [
+        [
+          13,
+          7
+        ],
+        [
+          15,
+          7
+        ]
+      ],
+      "width_metatiles": 1,
+      "name": "Floor trail [13, 7] to [15, 7]"
+    },
+    {
+      "kind": "point",
+      "block": "46",
+      "position": [
+        23,
+        7
+      ],
+      "name": "Native 46 at 23,7"
+    },
+    {
+      "kind": "point",
+      "block": "46",
+      "position": [
+        15,
+        4
+      ],
+      "name": "Native 46 at 15,4"
+    },
+    {
+      "kind": "point",
+      "block": "46",
+      "position": [
+        15,
+        5
+      ],
+      "name": "Native 46 at 15,5"
+    },
+    {
+      "kind": "point",
+      "block": "46",
+      "position": [
+        15,
+        6
+      ],
+      "name": "Native 46 at 15,6"
+    },
+    {
+      "kind": "point",
+      "block": "46",
+      "position": [
+        15,
+        8
+      ],
+      "name": "Native 46 at 15,8"
+    },
+    {
+      "kind": "point",
+      "block": "46",
+      "position": [
+        15,
+        9
+      ],
+      "name": "Native 46 at 15,9"
+    },
+    {
+      "kind": "point",
+      "block": "46",
+      "position": [
+        15,
+        10
+      ],
+      "name": "Native 46 at 15,10"
+    },
+    {
+      "kind": "point",
+      "block": "75",
+      "position": [
+        4,
+        39
+      ],
+      "name": "Native 75 at 4,39"
+    },
+    {
+      "kind": "point",
+      "block": "75",
+      "position": [
+        5,
+        39
+      ],
+      "name": "Native 75 at 5,39"
+    },
+    {
+      "kind": "point",
+      "block": "75",
+      "position": [
+        6,
+        39
+      ],
+      "name": "Native 75 at 6,39"
+    },
+    {
+      "kind": "point",
+      "block": "75",
+      "position": [
+        27,
+        13
+      ],
+      "name": "Native 75 at 27,13"
+    },
+    {
+      "kind": "point",
+      "block": "75",
+      "position": [
+        28,
+        13
+      ],
+      "name": "Native 75 at 28,13"
+    },
+    {
+      "name": "Pine shoulder beside north arrival",
+      "kind": "rect",
+      "material": "forest",
+      "bounds": [
+        7,
+        0,
+        10,
+        5
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "North lobe frames the landing turn",
+      "bounds": [
+        7,
+        5,
+        9,
+        6
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Close unused east arrival shoulder",
+      "kind": "rect",
+      "material": "forest",
+      "bounds": [
+        12,
+        0,
+        13,
+        4
+      ]
+    },
+    {
+      "name": "Wooded tongue narrows the bird-bank walk",
+      "kind": "rect",
+      "material": "forest",
+      "bounds": [
+        9,
+        11,
+        12,
+        16
+      ]
+    },
+    {
+      "name": "Trees close the broad south bridge apron",
+      "kind": "rect",
+      "material": "forest",
+      "bounds": [
+        9,
+        19,
+        12,
+        21
+      ]
+    },
+    {
+      "name": "Small signed sandbank decision turnout",
+      "kind": "rect",
+      "material": "lawn",
+      "bounds": [
+        9,
+        20,
+        11,
+        21
+      ]
+    },
+    {
+      "name": "West trees tighten southern walking corridor",
+      "kind": "rect",
+      "material": "forest",
+      "bounds": [
+        5,
+        35,
+        8,
+        39
+      ]
+    },
+    {
+      "name": "East trees tighten southern walking corridor",
+      "kind": "rect",
+      "material": "forest",
+      "bounds": [
+        10,
+        35,
+        13,
+        39
+      ]
+    },
+    {
+      "name": "Pines flank Brainerd departure west",
+      "kind": "rect",
+      "material": "forest",
+      "bounds": [
+        8,
+        45,
+        10,
+        48
+      ]
+    },
+    {
+      "name": "Pines flank Brainerd departure east",
+      "kind": "rect",
+      "material": "forest",
+      "bounds": [
+        12,
+        45,
+        13,
+        48
+      ]
+    },
+    {
+      "name": "Close unused lawn beyond the rest bay",
+      "kind": "rect",
+      "material": "forest",
+      "bounds": [
+        13,
+        41,
+        16,
+        45
+      ]
+    },
+    {
+      "name": "Northern inlet leaves a narrow pine spit",
+      "kind": "rect",
+      "material": "water",
+      "bounds": [
+        26,
+        12,
+        30,
+        16
+      ]
+    },
+    {
+      "name": "East reed bay interrupts the upper shoreline",
+      "kind": "rect",
+      "material": "water",
+      "bounds": [
+        28,
+        20,
+        31,
+        22
+      ]
+    },
+    {
+      "name": "West inlet pinches the middle peninsula trail",
+      "kind": "rect",
+      "material": "water",
+      "bounds": [
+        21,
+        26,
+        24,
+        29
+      ]
+    },
+    {
+      "name": "East inlet faces the middle bend",
+      "kind": "rect",
+      "material": "water",
+      "bounds": [
+        28,
+        27,
+        31,
+        29
+      ]
+    },
+    {
+      "name": "Southern cove shapes the flower-point discovery",
+      "kind": "rect",
+      "material": "water",
+      "bounds": [
+        25,
+        35,
+        30,
+        39
+      ]
+    },
+    {
+      "name": "Refit the upper outlet as a two-tile footbridge",
+      "kind": "rect",
+      "material": "water",
+      "bounds": [
+        12,
+        17,
+        22,
+        21
+      ]
+    },
+    {
+      "name": "Upper footbridge north guardrail",
+      "kind": "point",
+      "block": "82",
+      "position": [
+        12,
+        18
+      ]
+    },
+    {
+      "name": "Upper footbridge south guardrail",
+      "kind": "point",
+      "block": "81",
+      "position": [
+        12,
+        19
+      ]
+    },
+    {
+      "name": "Water underneath upper footbridge",
+      "kind": "point",
+      "block": "80",
+      "position": [
+        12,
+        20
+      ]
+    },
+    {
+      "name": "Upper footbridge north guardrail",
+      "kind": "point",
+      "block": "82",
+      "position": [
+        13,
+        18
+      ]
+    },
+    {
+      "name": "Upper footbridge south guardrail",
+      "kind": "point",
+      "block": "81",
+      "position": [
+        13,
+        19
+      ]
+    },
+    {
+      "name": "Water underneath upper footbridge",
+      "kind": "point",
+      "block": "80",
+      "position": [
+        13,
+        20
+      ]
+    },
+    {
+      "name": "Upper footbridge north guardrail",
+      "kind": "point",
+      "block": "82",
+      "position": [
+        14,
+        18
+      ]
+    },
+    {
+      "name": "Upper footbridge south guardrail",
+      "kind": "point",
+      "block": "81",
+      "position": [
+        14,
+        19
+      ]
+    },
+    {
+      "name": "Water underneath upper footbridge",
+      "kind": "point",
+      "block": "80",
+      "position": [
+        14,
+        20
+      ]
+    },
+    {
+      "name": "Upper footbridge north guardrail",
+      "kind": "point",
+      "block": "82",
+      "position": [
+        15,
+        18
+      ]
+    },
+    {
+      "name": "Upper footbridge south guardrail",
+      "kind": "point",
+      "block": "81",
+      "position": [
+        15,
+        19
+      ]
+    },
+    {
+      "name": "Water underneath upper footbridge",
+      "kind": "point",
+      "block": "80",
+      "position": [
+        15,
+        20
+      ]
+    },
+    {
+      "name": "Upper footbridge north guardrail",
+      "kind": "point",
+      "block": "82",
+      "position": [
+        16,
+        18
+      ]
+    },
+    {
+      "name": "Upper footbridge south guardrail",
+      "kind": "point",
+      "block": "81",
+      "position": [
+        16,
+        19
+      ]
+    },
+    {
+      "name": "Water underneath upper footbridge",
+      "kind": "point",
+      "block": "80",
+      "position": [
+        16,
+        20
+      ]
+    },
+    {
+      "name": "Upper footbridge north guardrail",
+      "kind": "point",
+      "block": "82",
+      "position": [
+        17,
+        18
+      ]
+    },
+    {
+      "name": "Upper footbridge south guardrail",
+      "kind": "point",
+      "block": "81",
+      "position": [
+        17,
+        19
+      ]
+    },
+    {
+      "name": "Water underneath upper footbridge",
+      "kind": "point",
+      "block": "80",
+      "position": [
+        17,
+        20
+      ]
+    },
+    {
+      "name": "Upper footbridge north guardrail",
+      "kind": "point",
+      "block": "82",
+      "position": [
+        18,
+        18
+      ]
+    },
+    {
+      "name": "Upper footbridge south guardrail",
+      "kind": "point",
+      "block": "81",
+      "position": [
+        18,
+        19
+      ]
+    },
+    {
+      "name": "Water underneath upper footbridge",
+      "kind": "point",
+      "block": "80",
+      "position": [
+        18,
+        20
+      ]
+    },
+    {
+      "name": "Upper footbridge north guardrail",
+      "kind": "point",
+      "block": "82",
+      "position": [
+        19,
+        18
+      ]
+    },
+    {
+      "name": "Upper footbridge south guardrail",
+      "kind": "point",
+      "block": "81",
+      "position": [
+        19,
+        19
+      ]
+    },
+    {
+      "name": "Water underneath upper footbridge",
+      "kind": "point",
+      "block": "80",
+      "position": [
+        19,
+        20
+      ]
+    },
+    {
+      "name": "Upper footbridge north guardrail",
+      "kind": "point",
+      "block": "82",
+      "position": [
+        20,
+        18
+      ]
+    },
+    {
+      "name": "Upper footbridge south guardrail",
+      "kind": "point",
+      "block": "81",
+      "position": [
+        20,
+        19
+      ]
+    },
+    {
+      "name": "Water underneath upper footbridge",
+      "kind": "point",
+      "block": "80",
+      "position": [
+        20,
+        20
+      ]
+    },
+    {
+      "name": "Upper footbridge north guardrail",
+      "kind": "point",
+      "block": "82",
+      "position": [
+        21,
+        18
+      ]
+    },
+    {
+      "name": "Upper footbridge south guardrail",
+      "kind": "point",
+      "block": "81",
+      "position": [
+        21,
+        19
+      ]
+    },
+    {
+      "name": "Water underneath upper footbridge",
+      "kind": "point",
+      "block": "80",
+      "position": [
+        21,
+        20
+      ]
+    },
+    {
+      "name": "Upper crossing grass shoulder",
+      "kind": "point",
+      "block": "02",
+      "position": [
+        9,
+        18
+      ]
+    },
+    {
+      "name": "Upper crossing grass shoulder",
+      "kind": "point",
+      "block": "02",
+      "position": [
+        10,
+        18
+      ]
+    },
+    {
+      "name": "West upper crossing mouth",
+      "kind": "point",
+      "block": "01",
+      "position": [
+        11,
+        18
+      ]
+    },
+    {
+      "name": "East upper crossing mouth",
+      "kind": "point",
+      "block": "01",
+      "position": [
+        22,
+        18
+      ]
+    },
+    {
+      "kind": "point",
+      "block": "45",
+      "position": [
+        11,
+        45
+      ],
+      "name": "Native 45 at 11,45"
+    },
+    {
+      "kind": "point",
+      "block": "45",
+      "position": [
+        6,
+        39
+      ],
+      "name": "Native 45 at 6,39"
+    },
+    {
+      "kind": "point",
+      "block": "45",
+      "position": [
+        10,
+        20
+      ],
+      "name": "Native 45 at 10,20"
+    },
+    {
+      "kind": "point",
+      "block": "45",
+      "position": [
+        22,
+        32
+      ],
+      "name": "Native 45 at 22,32"
+    },
+    {
+      "kind": "point",
+      "block": "45",
+      "position": [
+        27,
+        25
+      ],
+      "name": "Native 45 at 27,25"
+    },
+    {
+      "kind": "point",
+      "block": "45",
+      "position": [
+        11,
+        2
+      ],
+      "name": "Native 45 at 11,2"
+    },
+    {
+      "kind": "point",
+      "block": "45",
+      "position": [
+        14,
+        6
+      ],
+      "name": "Native 45 at 14,6"
+    },
+    {
+      "kind": "point",
+      "block": "01",
+      "position": [
+        6,
+        41
+      ],
+      "name": "Native 01 at 6,41"
+    },
+    {
+      "kind": "point",
+      "block": "01",
+      "position": [
+        9,
+        31
+      ],
+      "name": "Native 01 at 9,31"
+    },
+    {
+      "kind": "point",
+      "block": "01",
+      "position": [
+        27,
+        32
+      ],
+      "name": "Native 01 at 27,32"
+    },
+    {
+      "kind": "point",
+      "block": "01",
+      "position": [
+        22,
+        25
+      ],
+      "name": "Native 01 at 22,25"
+    },
+    {
+      "kind": "point",
+      "block": "01",
+      "position": [
+        6,
+        15
+      ],
+      "name": "Native 01 at 6,15"
+    },
+    {
+      "kind": "point",
+      "block": "01",
+      "position": [
+        20,
+        7
+      ],
+      "name": "Native 01 at 20,7"
+    },
+    {
+      "kind": "point",
+      "block": "01",
+      "position": [
+        6,
+        6
+      ],
+      "name": "Native 01 at 6,6"
+    },
+    {
+      "kind": "point",
+      "block": "01",
+      "position": [
+        5,
+        39
+      ],
+      "name": "Native 01 at 5,39"
+    },
+    {
+      "kind": "point",
+      "block": "01",
+      "position": [
+        6,
+        11
+      ],
+      "name": "Native 01 at 6,11"
+    },
+    {
+      "kind": "point",
+      "block": "01",
+      "position": [
+        12,
+        6
+      ],
+      "name": "Native 01 at 12,6"
+    },
+    {
+      "kind": "point",
+      "block": "01",
+      "position": [
+        11,
+        44
+      ],
+      "name": "Native 01 at 11,44"
+    },
+    {
+      "kind": "point",
+      "block": "01",
+      "position": [
+        6,
+        19
+      ],
+      "name": "Native 01 at 6,19"
+    },
+    {
+      "kind": "point",
+      "block": "01",
+      "position": [
+        25,
+        19
+      ],
+      "name": "Native 01 at 25,19"
+    },
+    {
+      "name": "Retire empty east shore spur",
+      "kind": "rect",
+      "material": "lawn",
+      "bounds": [
+        27,
+        17,
+        28,
+        21
+      ]
+    },
+    {
+      "name": "Pine spit walking spur",
+      "kind": "path",
+      "material": "floor",
+      "points": [
+        [
+          23,
+          18
+        ],
+        [
+          24,
+          18
+        ],
+        [
+          24,
+          13
+        ]
+      ],
+      "width_metatiles": 1
+    },
+    {
+      "name": "Pine spit north-west canopy",
+      "kind": "point",
+      "block": "05",
+      "position": [
+        23,
+        12
+      ]
+    },
+    {
+      "name": "Pine spit north-east canopy",
+      "kind": "point",
+      "block": "05",
+      "position": [
+        25,
+        12
+      ]
+    },
+    {
+      "name": "Pine spit west shelter",
+      "kind": "point",
+      "block": "05",
+      "position": [
+        23,
+        14
+      ]
+    },
+    {
+      "name": "Pine spit east shelter",
+      "kind": "point",
+      "block": "05",
+      "position": [
+        25,
+        14
+      ]
+    },
+    {
+      "name": "Nell picnic turnout",
+      "kind": "point",
+      "block": "01",
+      "position": [
+        25,
+        15
+      ]
+    },
+    {
+      "name": "Pine spit GREAT BALL footing",
+      "kind": "point",
+      "block": "01",
+      "position": [
+        24,
+        13
+      ]
+    },
+    {
+      "name": "Bird hollow north seal",
+      "kind": "block_rect",
+      "block": "05",
+      "bounds": [
+        4,
+        8,
+        8,
+        9
+      ]
+    },
+    {
+      "name": "Bird hollow south seal",
+      "kind": "block_rect",
+      "block": "05",
+      "bounds": [
+        4,
+        14,
+        8,
+        15
+      ]
+    },
+    {
+      "name": "Bird hollow west seal",
+      "kind": "block_rect",
+      "block": "05",
+      "bounds": [
+        4,
+        8,
+        5,
+        15
+      ]
+    },
+    {
+      "name": "Bird hollow east seal",
+      "kind": "block_rect",
+      "block": "05",
+      "bounds": [
+        7,
+        8,
+        8,
+        15
+      ]
+    },
+    {
+      "name": "Single native Cut entrance to Ether hollow",
+      "kind": "point",
+      "block": "5f",
+      "position": [
+        7,
+        11
+      ]
+    },
+    {
+      "name": "Lake outer east native water-rock wall",
+      "kind": "block_rect",
+      "block": "36",
+      "bounds": [
+        31,
+        13,
+        32,
+        39
+      ]
+    },
+    {
+      "name": "Lake outer east north rock cap",
+      "kind": "point",
+      "block": "32",
+      "position": [
+        31,
+        12
+      ]
+    },
+    {
+      "name": "Lake outer east south rock cap",
+      "kind": "point",
+      "block": "3a",
+      "position": [
+        31,
+        39
+      ]
+    },
+    {
+      "kind": "block_remap",
+      "name": "Wet meadow northern trail crossing",
+      "bounds": [
+        22,
+        21,
+        28,
+        22
+      ],
+      "from": "01",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Wet meadow northern trail crossing",
+      "bounds": [
+        22,
+        21,
+        28,
+        22
+      ],
+      "from": "02",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Wet meadow southern trail crossing",
+      "bounds": [
+        22,
+        24,
+        28,
+        25
+      ],
+      "from": "01",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Wet meadow southern trail crossing",
+      "bounds": [
+        22,
+        24,
+        28,
+        25
+      ],
+      "from": "02",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Peninsula trail joins the southern grass",
+      "bounds": [
+        25,
+        30,
+        26,
+        32
+      ],
+      "from": "01",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Southern rest-pocket grass connection",
+      "bounds": [
+        9,
+        41,
+        10,
+        43
+      ],
+      "from": "01",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Southern rest-pocket grass connection",
+      "bounds": [
+        9,
+        41,
+        10,
+        43
+      ],
+      "from": "02",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Bird hollow grass edge beside the west road",
+      "bounds": [
+        7,
+        17,
+        8,
+        19
+      ],
+      "from": "02",
+      "to": "03"
+    },
+    {
+      "kind": "block_remap",
+      "name": "Wet meadow closes the lower bank corner",
+      "bounds": [
+        21,
+        24,
+        22,
+        25
+      ],
+      "from": "02",
+      "to": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Exact installed native preimage",
+      "position": [
+        11,
+        0
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Exact installed native preimage",
+      "position": [
+        11,
+        47
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "rect",
+      "name": "Southern bay shore forest pushes into broad apron",
+      "material": "forest",
+      "bounds": [
+        10,
+        40,
+        13,
+        41
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Peninsula southern headland pines",
+      "material": "forest",
+      "bounds": [
+        27,
+        31,
+        29,
+        32
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Peninsula western low cape",
+      "material": "water",
+      "bounds": [
+        20,
+        27,
+        22,
+        29
+      ]
+    },
+    {
+      "kind": "rect",
+      "name": "Long shore road shelter shapes the lower west bank",
+      "material": "forest",
+      "bounds": [
+        10,
+        30,
+        12,
+        32
+      ]
+    }
+  ],
+  "review_contract": {
+    "ordinary_road_width_core_tiles": 2,
+    "crossing_width_core_tiles": "Southern causeway has a two-tile deck and inside rail footing; upper footbridge has only two FLOOR rows between adjoining guardrail blocks.",
+    "required_grass": "Four gameplay steps across the only dry peninsula neck.",
+    "directional_return": "Native south drop saves116 ordinary walking steps across the forest divide; current ordinary walk119 steps.",
+    "source_fidelity": "Original Johto 128 blocks preserved; same bounded native pier recipes 80..82 already used by Headwaters/River Valley.",
+    "native_status": "Root integration owner publishes and verifies; source inspection does not establish playability.",
+    "cut_gate": "The sole CUT_TREE quadrant at15,23 seals all Ether interaction approaches; native5f\u21923d opens a one-tile gate after CUT+BADGE_2. No incidental Cut canopy remains.",
+    "surf_boundary": "Native blue-water rocks32/36/3a close east corex63,y24..79 with BUOY collision. No WATER quadrant reaches any unconnected exterior edge. Internal north/south water seams require the actual reciprocal R00/R01 connection."
+  },
+  "additional_water_blocks": [
+    "32",
+    "36",
+    "3a"
+  ]
+}

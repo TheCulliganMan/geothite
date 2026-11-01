@@ -1,0 +1,67 @@
+{
+  "tool": "built-in image_gen",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f079/buoyostic-v2-native-pupils",
+  "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f079/manifest-buoyostic-v2-native-pupils.json",
+  "normalized_receipt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f079/source-feature-proof-buoyostic-v2-native-pupils.json",
+  "all_raws_prompts_rejected_trials_retained": true,
+  "no_native_pixel_painting": true,
+  "no_registry_or_pack_mutation": true,
+  "normal_shiny_boards_actually_viewed": true,
+  "canonical_palettes": [
+    [
+      32767,
+      9949,
+      22794,
+      0
+    ],
+    [
+      32767,
+      23465,
+      8534,
+      0
+    ]
+  ],
+  "native_bounds": [
+    [
+      1,
+      2,
+      14,
+      13
+    ],
+    [
+      1,
+      2,
+      14,
+      13
+    ],
+    [
+      2,
+      2,
+      12,
+      13
+    ],
+    [
+      1,
+      2,
+      14,
+      13
+    ],
+    [
+      1,
+      2,
+      14,
+      12
+    ],
+    [
+      2,
+      2,
+      12,
+      12
+    ]
+  ],
+  "retained_source_hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f079/buoyostic.overworld.imagegen-v1.png": "bc486b196902c268b9390db95df4f862cf7a8283a8cdd53e2aed2475f18be042",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f079/prompt-buoyostic-v1.txt": "7279a2c149b97bab3f631d81925dcf6a6fe7763a75aa04ada7aa0804d52d9645"
+  },
+  "status": "root independent visual/context acceptance pending"
+}

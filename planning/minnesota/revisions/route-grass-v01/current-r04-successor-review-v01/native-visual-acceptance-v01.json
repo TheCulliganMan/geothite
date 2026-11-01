@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-iron-drill-core-v04.crystalpack",
+  "pack_sha256": "4240537c844bf7e305e99c24f2b7054c314b84a03d17037747cb4ceabdbd17fd",
+  "report": "planning/minnesota/renders/route-grass-v01/current-r04-successor-review-v01/native-v01/capture-progress.json",
+  "report_sha256": "2430ea89bdcbf7c6a4e67eb9e9fdc372a3c16d657600aa9d479d65f8150c16f3",
+  "views_inspected": 3,
+  "pixel_mismatches": 0,
+  "findings": "Rose-walk bypass crosses grass; picnic entrance/reward approach includes habitat; protected bridge stays dry. No invented ledge in the flat park."
+}

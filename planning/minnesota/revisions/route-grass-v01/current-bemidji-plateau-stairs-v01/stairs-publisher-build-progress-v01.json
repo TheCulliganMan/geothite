@@ -1,0 +1,50 @@
+{
+  "pid": 78849,
+  "source_sha256": {
+    "crates/crystal-assets/src/bemidji_plateau_stairs.rs": "5a206d8ce9c7a8cab4e318ae032bb4cfa3043c9f00853536b40ff1d343b83bf0",
+    "crates/crystal-assets/src/bin/revise_bemidji_plateau_stairs.rs": "4e6a32b694e072f9075d2d56f8cdd4f24cce0cd34ad02ddbcb318b33d69e42d0"
+  },
+  "steps": [
+    {
+      "step": "publisher",
+      "command": [
+        "cargo",
+        "build",
+        "--profile",
+        "wasm-dev",
+        "--locked",
+        "--config",
+        "profile.wasm-dev.package.crystal-assets.opt-level=0",
+        "-p",
+        "crystal-assets",
+        "--bin",
+        "revise_bemidji_plateau_stairs"
+      ],
+      "exit_code": 0,
+      "log": ".local/route-grass-review/bemidji-plateau-publisher-v01.log",
+      "outputs": [
+        {
+          "path": ".local/route-grass-review/portable-bemidji-plateau-tools-v01/revise_bemidji_plateau_stairs",
+          "sha256": "edabfc932feb9e07b579fa08ee71b4dc7603430e9332ef7f2dc3f8a94fbacd70"
+        }
+      ]
+    },
+    {
+      "step": "assets-all-target-clippy",
+      "command": [
+        "cargo",
+        "clippy",
+        "--profile",
+        "wasm-dev",
+        "--locked",
+        "--config",
+        "profile.wasm-dev.package.crystal-assets.opt-level=0",
+        "-p",
+        "crystal-assets",
+        "--all-targets"
+      ],
+      "exit_code": 101,
+      "log": ".local/route-grass-review/bemidji-plateau-assets-all-target-clippy-v01.log"
+    }
+  ]
+}

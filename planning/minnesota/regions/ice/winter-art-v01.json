@@ -1,0 +1,203 @@
+{
+  "schema_version": 1,
+  "source_file_sha256": {
+    "gfx/tilesets/mn_border_pines.2bpp": "69ae9730105cec8d1a80fde5c2dbece8668b82b0574f761582ba993e44960146",
+    "data/tilesets/mn_border_pines_metatiles.bin": "db9244ac11a8cb27b0ca64c35500904323fb6c58e73e5a6c1efd46bff7c97e8d",
+    "gfx/tilesets/mn_north_shore.2bpp": "72661575e29288cb9ecc73e14ce0b63aef763b2a085b900f2f910c2a2c89f49d",
+    "data/tilesets/mn_north_shore_metatiles.bin": "1c735fded81b29e8920ead944b89bce687179dea04d4e40080a3fea6f397e049",
+    "gfx/tilesets/johto.2bpp": "da7c80d2d52999f84deb38789eba3758a8a3aba25aaf24d1d2da699683cfd019",
+    "data/tilesets/johto_metatiles.bin": "4af44f22edf06b8c4dd949c0acfad0a74a05554d63278d8f5791ba0e7bf13017",
+    "gfx/tilesets/ice_path.2bpp": "0e696c7fe19b570a3e020b75f6b5be163552a1a188f11f54172f01629455769a",
+    "data/tilesets/ice_path_metatiles.bin": "18a78a0d41e46445d7214445275995017233dfdd5d7e551c3c80a37817cc73d2"
+  },
+  "targets": [
+    {
+      "source": "mn_border_pines",
+      "target": "mn_winter_outdoor",
+      "expected_blocks": 60
+    },
+    {
+      "source": "mn_north_shore",
+      "target": "mn_winter_north_shore",
+      "expected_blocks": 131
+    }
+  ],
+  "recipes": [
+    {
+      "name": "WALKABLE_SNOW",
+      "source_tileset": "ice_path",
+      "source_block": "02",
+      "collision": [
+        "FLOOR",
+        "FLOOR",
+        "FLOOR",
+        "FLOOR"
+      ],
+      "foregrounds": [
+        [
+          239,
+          255,
+          255
+        ],
+        [
+          206,
+          231,
+          239
+        ],
+        [
+          181,
+          214,
+          222
+        ]
+      ],
+      "index_map": [
+        1,
+        2,
+        3,
+        3
+      ]
+    },
+    {
+      "name": "ICY_TALL_GRASS",
+      "source_tileset": "johto",
+      "source_block": "03",
+      "collision": [
+        "TALL_GRASS",
+        "TALL_GRASS",
+        "TALL_GRASS",
+        "TALL_GRASS"
+      ],
+      "foregrounds": [
+        [
+          214,
+          239,
+          239
+        ],
+        [
+          140,
+          181,
+          190
+        ],
+        [
+          57,
+          90,
+          107
+        ]
+      ],
+      "index_map": [
+        0,
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "name": "SLIDING_ICE",
+      "source_tileset": "ice_path",
+      "source_block": "1f",
+      "collision": [
+        "ICE",
+        "ICE",
+        "ICE",
+        "ICE"
+      ],
+      "foregrounds": [
+        [
+          239,
+          255,
+          255
+        ],
+        [
+          115,
+          198,
+          222
+        ],
+        [
+          57,
+          90,
+          123
+        ]
+      ],
+      "index_map": [
+        1,
+        2,
+        1,
+        3
+      ]
+    },
+    {
+      "name": "SNOW_DENSE_CANOPY",
+      "source_tileset": "mn_border_pines",
+      "source_block": "05",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ],
+      "foregrounds": [
+        [
+          239,
+          255,
+          255
+        ],
+        [
+          90,
+          140,
+          132
+        ],
+        [
+          41,
+          74,
+          66
+        ]
+      ],
+      "index_map": [
+        1,
+        2,
+        3,
+        3
+      ]
+    },
+    {
+      "name": "SNOW_SINGLE_TREE",
+      "source_tileset": "mn_border_pines",
+      "source_block": "00",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ],
+      "foregrounds": [
+        [
+          239,
+          255,
+          255
+        ],
+        [
+          90,
+          140,
+          132
+        ],
+        [
+          41,
+          74,
+          66
+        ]
+      ],
+      "index_map": [
+        1,
+        2,
+        3,
+        3
+      ]
+    }
+  ],
+  "source_definition_sha256": {
+    "mn_border_pines": "6ce701854287c8bcb3798b9dc336bfad8090ecde9ad0e6e6466efb89a4bf9765",
+    "mn_north_shore": "979d36ed12ff70200b7796722471921775a544bb13b97bd29bd0622c18e7787e",
+    "johto": "d49be2437d396e1a5f69905a3297254b30d6b73d04bbba49ec4e39383dcc1c40",
+    "ice_path": "3ff648ff4a4d65f7a00c322b76da7cd5ac19cda4636e01acb338cb03fc99a10c"
+  }
+}

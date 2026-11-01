@@ -1,0 +1,359 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_076",
+  "status": "source-proof-pass; root visual/context acceptance required",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f031/manifest-splitbeam-v1-pupil-proof.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f031/splitbeam-v1-pupil-proof",
+  "shared_transform": {
+    "source_bounds": [
+      24,
+      10,
+      376,
+      366
+    ],
+    "native_size": [
+      14,
+      13
+    ],
+    "native_origin": [
+      1,
+      2
+    ]
+  },
+  "native_head_anchors_idle_walk_equal": true,
+  "validation": {
+    "runtime_2bpp_384_bytes_exact_allpixels": true,
+    "runtime_png16x96_index_parity": true,
+    "normal_shiny_palettebanks_exact": true,
+    "normal_shiny_all1536pixels_exact": true,
+    "transparent_border": true,
+    "idle_walk_pairs_distinct": true
+  },
+  "sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f031/splitbeam-v1-pupil-proof/compiled-index.json": "d04746f10133746bb7ef130750332e3d7c7e183ffe54bf27c86da0246ad608a7",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f031/splitbeam-v1-pupil-proof/gfx/pokemon/splitbeam/overworld.2bpp": "2fb93b9ea2ed32ec0729129f584d61b348477d30742886df3ddb33ca8f1483d2",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f031/splitbeam-v1-pupil-proof/gfx/pokemon/splitbeam/overworld.png": "915f7c1a4d1b31707da952f509f32c92c9c10fbcaf1d456f8a6b604019b312d1",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f031/splitbeam-v1-pupil-proof/review/line.normal-8x.png": "4bae6f4474fd6d363edee274a79573b238779c8657f8329f3a6424b03b23cc11",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f031/splitbeam-v1-pupil-proof/review/line.shiny-8x.png": "95a5f5b6e9e84b0b77213ebd5db49d88d0a81a10056eebede560748d341ed210",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f031/splitbeam-v1-pupil-proof/gfx/pokemon/splitbeam/overworld.gbcpal": "b18d0fa25be61966b302795b6bd060899519cfaf68588867d58249b119d2ce98",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f031/manifest-splitbeam-v1-pupil-proof.json": "d4599de679b0a28a06dd77e05cf665f1744cb2456460e346367484aa7d95f832",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f031/splitbeam-v1-pupil-proof/gfx/pokemon/splitbeam/overworld-shiny.gbcpal": "db697279ae6feaaaf9aae0cbbda3060bb2edc6be8c1a52bd90b79d26a92eb937",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f031/splitbeam.overworld.imagegen-v1.png": "3e701430a04c8e38ee379e445072dfd90e344efd6a2eae4dcfe07af6c7e6958b"
+  },
+  "actual_native_boards_viewed": true,
+  "rear_review": "Both actual normal/shiny rear poses viewed: solid navy rear prism/torso, ridge/shoulders/twofeet, blank navy stalk backs, no luminous lens pair/face.",
+  "canonical_eye_form": "TWO actual bright gold anatomical eye LENSES on navy side stalks SOUTH, ONE WEST. No black pupils invented. Every whole native gold lens feature maps to its same small actual source eye-lens component, never chest lens, prism ridge or shoulder fin.",
+  "all_four_nonrear_poses_have_actual_source_eye_features": true,
+  "every_native_eye_cluster_maps_to_same_small_anatomical_source_eye_component": true,
+  "actual_source_eye_proofs": [
+    {
+      "pose": "down_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f031/splitbeam.overworld.imagegen-v1.png",
+      "crop": [
+        43,
+        95,
+        420,
+        410
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          119,
+          214,
+          38,
+          44
+        ],
+        [
+          383,
+          214,
+          38,
+          44
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              3,
+              6
+            ]
+          ],
+          "samples": [
+            {
+              "rgba": [
+                255,
+                217,
+                54,
+                253
+              ],
+              "bounds": [
+                119,
+                214,
+                38,
+                44
+              ],
+              "pixels": 1334,
+              "truncated_contour": false,
+              "native_pixel": [
+                3,
+                6
+              ],
+              "source_sample_pixel": [
+                134,
+                231
+              ],
+              "quantized_feature_ink": 1,
+              "matches_expected_feature_ink": true
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              13,
+              6
+            ]
+          ],
+          "samples": [
+            {
+              "rgba": [
+                254,
+                217,
+                54,
+                253
+              ],
+              "bounds": [
+                383,
+                214,
+                38,
+                44
+              ],
+              "pixels": 1331,
+              "truncated_contour": false,
+              "native_pixel": [
+                13,
+                6
+              ],
+              "source_sample_pixel": [
+                402,
+                231
+              ],
+              "quantized_feature_ink": 1,
+              "matches_expected_feature_ink": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f031/splitbeam.overworld.imagegen-v1.png",
+      "crop": [
+        1049,
+        99,
+        420,
+        410
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          1123,
+          213,
+          34,
+          49
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              3,
+              6
+            ]
+          ],
+          "samples": [
+            {
+              "rgba": [
+                255,
+                220,
+                58,
+                253
+              ],
+              "bounds": [
+                1123,
+                213,
+                34,
+                49
+              ],
+              "pixels": 1302,
+              "truncated_contour": false,
+              "native_pixel": [
+                3,
+                6
+              ],
+              "source_sample_pixel": [
+                1140,
+                235
+              ],
+              "quantized_feature_ink": 1,
+              "matches_expected_feature_ink": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f031/splitbeam.overworld.imagegen-v1.png",
+      "crop": [
+        43,
+        565,
+        420,
+        410
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          119,
+          684,
+          38,
+          43
+        ],
+        [
+          383,
+          684,
+          38,
+          43
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              3,
+              6
+            ]
+          ],
+          "samples": [
+            {
+              "rgba": [
+                254,
+                217,
+                53,
+                253
+              ],
+              "bounds": [
+                119,
+                684,
+                38,
+                43
+              ],
+              "pixels": 1310,
+              "truncated_contour": false,
+              "native_pixel": [
+                3,
+                6
+              ],
+              "source_sample_pixel": [
+                134,
+                701
+              ],
+              "quantized_feature_ink": 1,
+              "matches_expected_feature_ink": true
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              13,
+              6
+            ]
+          ],
+          "samples": [
+            {
+              "rgba": [
+                254,
+                217,
+                57,
+                253
+              ],
+              "bounds": [
+                383,
+                684,
+                38,
+                43
+              ],
+              "pixels": 1310,
+              "truncated_contour": false,
+              "native_pixel": [
+                13,
+                6
+              ],
+              "source_sample_pixel": [
+                402,
+                701
+              ],
+              "quantized_feature_ink": 1,
+              "matches_expected_feature_ink": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f031/splitbeam.overworld.imagegen-v1.png",
+      "crop": [
+        1049,
+        566,
+        420,
+        410
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          1123,
+          678,
+          34,
+          49
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              3,
+              6
+            ]
+          ],
+          "samples": [
+            {
+              "rgba": [
+                253,
+                217,
+                55,
+                253
+              ],
+              "bounds": [
+                1123,
+                678,
+                34,
+                49
+              ],
+              "pixels": 1293,
+              "truncated_contour": false,
+              "native_pixel": [
+                3,
+                6
+              ],
+              "source_sample_pixel": [
+                1140,
+                702
+              ],
+              "quantized_feature_ink": 1,
+              "matches_expected_feature_ink": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "signature_anatomy_review": "All6 native normal/shiny views actually viewed. Native14x13, tall four-point navy/gold prism, paired stalk lenses, broad triangular shoulder fins, distinct larger chest lens/two rockfeet. Back-stalks navy/blank, no rear gold eye pair. Gait feet/shoulder fins change while head features stable."
+}

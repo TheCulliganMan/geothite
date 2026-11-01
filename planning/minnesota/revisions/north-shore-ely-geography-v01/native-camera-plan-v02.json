@@ -1,0 +1,293 @@
+{
+  "scope": "17 winter +3 Cedar +6 coastal bend +5 warm town views; explicit visual fixtures, actual controller journey separate.",
+  "cameras": [
+    {
+      "name": "warm-west-snowline",
+      "map": "MnR12C00R01",
+      "x": 6,
+      "y": 8,
+      "hour": 12,
+      "facing": "south",
+      "source": "planning/minnesota/renders/north-shore-ely-geography-v01/inland-winter-r12-r13/source-v02/MnR12/candidate/cameras/warm-west-snowline/source160.png"
+    },
+    {
+      "name": "loons-ice-entry",
+      "map": "MnR12C01R00",
+      "x": 29,
+      "y": 13,
+      "hour": 12,
+      "facing": "south",
+      "source": "planning/minnesota/renders/north-shore-ely-geography-v01/inland-winter-r12-r13/source-v02/MnR12/candidate/cameras/loons-ice-entry/source160.png"
+    },
+    {
+      "name": "loons-ice-stop",
+      "map": "MnR12C01R00",
+      "x": 36,
+      "y": 12,
+      "hour": 12,
+      "facing": "south",
+      "source": "planning/minnesota/renders/north-shore-ely-geography-v01/inland-winter-r12-r13/source-v02/MnR12/candidate/cameras/loons-ice-stop/source160.png"
+    },
+    {
+      "name": "cut-clearing-approach",
+      "map": "MnR12C00R00",
+      "x": 54,
+      "y": 24,
+      "hour": 12,
+      "facing": "south",
+      "source": "planning/minnesota/renders/north-shore-ely-geography-v01/inland-winter-r12-r13/source-v02/MnR12/candidate/cameras/cut-clearing-approach/source160.png"
+    },
+    {
+      "name": "raven-rock-granite",
+      "map": "MnR12C01R00",
+      "x": 2,
+      "y": 24,
+      "hour": 12,
+      "facing": "south",
+      "source": "planning/minnesota/renders/north-shore-ely-geography-v01/inland-winter-r12-r13/source-v02/MnR12/candidate/cameras/raven-rock-granite/source160.png"
+    },
+    {
+      "name": "bog-ice-entry",
+      "map": "MnR12C00R01",
+      "x": 33,
+      "y": 23,
+      "hour": 12,
+      "facing": "south",
+      "source": "planning/minnesota/renders/north-shore-ely-geography-v01/inland-winter-r12-r13/source-v02/MnR12/candidate/cameras/bog-ice-entry/source160.png"
+    },
+    {
+      "name": "bog-grass-portage",
+      "map": "MnR12C00R01",
+      "x": 33,
+      "y": 31,
+      "hour": 12,
+      "facing": "south",
+      "source": "planning/minnesota/renders/north-shore-ely-geography-v01/inland-winter-r12-r13/source-v02/MnR12/candidate/cameras/bog-grass-portage/source160.png"
+    },
+    {
+      "name": "southern-ranger-bay",
+      "map": "MnR12C01R01",
+      "x": 21,
+      "y": 36,
+      "hour": 12,
+      "facing": "south",
+      "source": "planning/minnesota/renders/north-shore-ely-geography-v01/inland-winter-r12-r13/source-v02/MnR12/candidate/cameras/southern-ranger-bay/source160.png"
+    },
+    {
+      "name": "inland-east-port",
+      "map": "MnR12C01R01",
+      "x": 62,
+      "y": 8,
+      "hour": 12,
+      "facing": "south",
+      "source": "planning/minnesota/renders/north-shore-ely-geography-v01/inland-winter-r12-r13/source-v02/MnR12/candidate/cameras/inland-east-port/source160.png"
+    },
+    {
+      "name": "wind-tor-ice-entry",
+      "map": "MnR13C00R00",
+      "x": 46,
+      "y": 7,
+      "hour": 12,
+      "facing": "south",
+      "source": "planning/minnesota/renders/north-shore-ely-geography-v01/inland-winter-r12-r13/source-v02/MnR13/candidate/cameras/wind-tor-ice-entry/source160.png"
+    },
+    {
+      "name": "wind-tor-ice-stop",
+      "map": "MnR13C00R00",
+      "x": 47,
+      "y": 16,
+      "hour": 12,
+      "facing": "south",
+      "source": "planning/minnesota/renders/north-shore-ely-geography-v01/inland-winter-r12-r13/source-v02/MnR13/candidate/cameras/wind-tor-ice-stop/source160.png"
+    },
+    {
+      "name": "wind-tor-ledge",
+      "map": "MnR13C00R00",
+      "x": 39,
+      "y": 23,
+      "hour": 12,
+      "facing": "south",
+      "source": "planning/minnesota/renders/north-shore-ely-geography-v01/inland-winter-r12-r13/source-v02/MnR13/candidate/cameras/wind-tor-ledge/source160.png"
+    },
+    {
+      "name": "cedar-shelter-return",
+      "map": "MnR13C00R01",
+      "x": 14,
+      "y": 6,
+      "hour": 12,
+      "facing": "south",
+      "source": "planning/minnesota/renders/north-shore-ely-geography-v01/inland-winter-r12-r13/source-v02/MnR13/candidate/cameras/cedar-shelter-return/source160.png"
+    },
+    {
+      "name": "required-ridge-grass",
+      "map": "MnR13C00R00",
+      "x": 19,
+      "y": 41,
+      "hour": 12,
+      "facing": "south",
+      "source": "planning/minnesota/renders/north-shore-ely-geography-v01/inland-winter-r12-r13/source-v02/MnR13/candidate/cameras/required-ridge-grass/source160.png"
+    },
+    {
+      "name": "long-lake-high-bank",
+      "map": "MnR13C00R01",
+      "x": 47,
+      "y": 36,
+      "hour": 12,
+      "facing": "south",
+      "source": "planning/minnesota/renders/north-shore-ely-geography-v01/inland-winter-r12-r13/source-v02/MnR13/candidate/cameras/long-lake-high-bank/source160.png"
+    },
+    {
+      "name": "cut-refuge-approach",
+      "map": "MnR13C00R02",
+      "x": 18,
+      "y": 6,
+      "hour": 12,
+      "facing": "south",
+      "source": "planning/minnesota/renders/north-shore-ely-geography-v01/inland-winter-r12-r13/source-v02/MnR13/candidate/cameras/cut-refuge-approach/source160.png"
+    },
+    {
+      "name": "ely-snow-approach",
+      "map": "MnR13C00R02",
+      "x": 34,
+      "y": 30,
+      "hour": 12,
+      "facing": "south",
+      "source": "planning/minnesota/renders/north-shore-ely-geography-v01/inland-winter-r12-r13/source-v02/MnR13/candidate/cameras/ely-snow-approach/source160.png"
+    },
+    {
+      "name": "cedar-snowline",
+      "map": "MnMaraisCedarApproach",
+      "x": 47,
+      "y": 29,
+      "hour": 12,
+      "facing": "south",
+      "source": "planning/minnesota/renders/north-shore-ely-geography-v01/west-inland-v02/cedar-snowline-native160.png",
+      "source_has_player": false
+    },
+    {
+      "name": "town-side-warm-exit",
+      "map": "MnMaraisCedarApproach",
+      "x": 56,
+      "y": 33,
+      "hour": 12,
+      "facing": "south",
+      "source": "planning/minnesota/renders/north-shore-ely-geography-v01/west-inland-v02/town-side-warm-exit-native160.png",
+      "source_has_player": false
+    },
+    {
+      "name": "cedar-west-arrival",
+      "map": "MnMaraisCedarApproach",
+      "x": 3,
+      "y": 12,
+      "hour": 12,
+      "facing": "south",
+      "source": "planning/minnesota/renders/north-shore-ely-geography-v01/west-inland-v02/cedar-west-arrival-native160.png",
+      "source_has_player": false
+    },
+    {
+      "name": "coast-existing-trail-turn",
+      "map": "MnR11C00R00",
+      "x": 42,
+      "y": 6,
+      "hour": 12,
+      "facing": "south",
+      "source_has_player": false,
+      "source": "planning/minnesota/renders/north-shore-ely-geography-v01/west-r11-headland-v02/existing-trail-turn-native160.png"
+    },
+    {
+      "name": "coast-first-grass-saddle",
+      "map": "MnR11C00R00",
+      "x": 57,
+      "y": 8,
+      "hour": 12,
+      "facing": "south",
+      "source_has_player": false,
+      "source": "planning/minnesota/renders/north-shore-ely-geography-v01/west-r11-headland-v02/first-grass-saddle-native160.png"
+    },
+    {
+      "name": "coast-middle-bank-bend",
+      "map": "MnR11C01R00",
+      "x": 6,
+      "y": 12,
+      "hour": 12,
+      "facing": "south",
+      "source_has_player": false,
+      "source": "planning/minnesota/renders/north-shore-ely-geography-v01/west-r11-headland-v02/middle-bank-bend-native160.png"
+    },
+    {
+      "name": "coast-second-pine-bend",
+      "map": "MnR11C01R00",
+      "x": 16,
+      "y": 6,
+      "hour": 12,
+      "facing": "south",
+      "source_has_player": false,
+      "source": "planning/minnesota/renders/north-shore-ely-geography-v01/west-r11-headland-v02/second-pine-bend-native160.png"
+    },
+    {
+      "name": "coast-fenced-Superior-view",
+      "map": "MnR11C01R00",
+      "x": 34,
+      "y": 12,
+      "hour": 12,
+      "facing": "south",
+      "source_has_player": false,
+      "source": "planning/minnesota/renders/north-shore-ely-geography-v01/west-r11-headland-v02/fenced-Superior-view-native160.png"
+    },
+    {
+      "name": "coast-town-west-arrival",
+      "map": "MnR11C01R00",
+      "x": 42,
+      "y": 8,
+      "hour": 12,
+      "facing": "south",
+      "source_has_player": false,
+      "source": "planning/minnesota/renders/north-shore-ely-geography-v01/west-r11-headland-v02/town-west-arrival-native160.png"
+    },
+    {
+      "name": "town-services",
+      "map": "MnGrandMarais",
+      "x": 15,
+      "y": 11,
+      "hour": 12,
+      "facing": "south",
+      "source": "planning/minnesota/renders/north-shore-ely-geography-v01/grand-marais/west-proposal-v02/west-north-proposal-closed/views/services/source160.png"
+    },
+    {
+      "name": "town-west-arrival",
+      "map": "MnGrandMarais",
+      "x": 4,
+      "y": 8,
+      "hour": 12,
+      "facing": "south",
+      "source": "planning/minnesota/renders/north-shore-ely-geography-v01/grand-marais/west-proposal-v02/west-north-proposal-closed/views/west-arrival/source160.png"
+    },
+    {
+      "name": "town-lighthouse",
+      "map": "MnGrandMarais",
+      "x": 15,
+      "y": 28,
+      "hour": 12,
+      "facing": "south",
+      "source": "planning/minnesota/renders/north-shore-ely-geography-v01/grand-marais/west-proposal-v02/west-north-proposal-closed/views/lighthouse/source160.png"
+    },
+    {
+      "name": "town-north-inland-lane",
+      "map": "MnGrandMarais",
+      "x": 18,
+      "y": 4,
+      "hour": 12,
+      "facing": "south",
+      "source": "planning/minnesota/renders/north-shore-ely-geography-v01/grand-marais/west-proposal-v02/west-north-proposal-closed/views/north-inland-lane/source160.png"
+    },
+    {
+      "name": "town-west-lookout",
+      "map": "MnGrandMarais",
+      "x": 4,
+      "y": 20,
+      "hour": 12,
+      "facing": "south",
+      "source": "planning/minnesota/renders/north-shore-ely-geography-v01/grand-marais/west-proposal-v02/west-north-proposal-closed/views/west-lookout/source160.png"
+    }
+  ]
+}

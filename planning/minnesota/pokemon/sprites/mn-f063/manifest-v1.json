@@ -1,0 +1,233 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F063",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_137": {
+      "species_id": "MN_137",
+      "name": "Knotlet",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          28,
+          22,
+          11
+        ],
+        [
+          12,
+          8,
+          5
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        11996,
+        5388,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          231,
+          181,
+          90
+        ],
+        [
+          99,
+          66,
+          41
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#E7B55A",
+        "#634229",
+        "#000000"
+      ]
+    },
+    "MN_138": {
+      "species_id": "MN_138",
+      "name": "Lasserp",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          26,
+          19,
+          8
+        ],
+        [
+          10,
+          6,
+          4
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        8826,
+        4298,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          214,
+          156,
+          66
+        ],
+        [
+          82,
+          49,
+          33
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#D69C42",
+        "#523121",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f063/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png",
+      "target/minnesota-pokemon/gen2-reference/bugs.png"
+    ]
+  },
+  "sprites": [
+    {
+      "id": "mn-137-knotlet-v1",
+      "species_id": "MN_137",
+      "view": "front",
+      "source": "sprites/mn-f063/mn-137-138.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        600,
+        589
+      ],
+      "fit": [
+        38,
+        38
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        11996,
+        5388,
+        0
+      ]
+    },
+    {
+      "id": "mn-137-knotlet-v1",
+      "species_id": "MN_137",
+      "view": "back",
+      "source": "sprites/mn-f063/mn-137-138.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        589,
+        600,
+        562
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        11996,
+        5388,
+        0
+      ]
+    },
+    {
+      "id": "mn-138-lasserp-v1",
+      "species_id": "MN_138",
+      "view": "front",
+      "source": "sprites/mn-f063/mn-137-138.front-back.imagegen-v1.png",
+      "crop": [
+        600,
+        0,
+        767,
+        589
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        8826,
+        4298,
+        0
+      ]
+    },
+    {
+      "id": "mn-138-lasserp-v1",
+      "species_id": "MN_138",
+      "view": "back",
+      "source": "sprites/mn-f063/mn-137-138.front-back.imagegen-v1.png",
+      "crop": [
+        600,
+        589,
+        767,
+        562
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        8826,
+        4298,
+        0
+      ]
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "notes": "Final source-contour-v1 board visually inspected: knotted hay dragon grows strong forearms, broad head, two open loops and lasso. Broad diagonal braid bands, white loop openings and outer edges remain legible with colored rope interiors restored. Rear portraits show nape bands, shoulder loops and straw tail, lower coils cropped. No neighboring sprites intrude into crops.",
+    "sheet_sha256": "7f87c1a8402ee0d22688e29a35081573aa95997b0a279021a1e09a53a16b782d",
+    "outline_profile": "source-contour-v1"
+  }
+}

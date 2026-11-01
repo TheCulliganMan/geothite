@@ -1,0 +1,44 @@
+{
+  "production_mapping": "authored_route_events.rs: Seen=before_lines, Won=after_lines, Lost=loss_lines",
+  "changes": [
+    {
+      "actor": "MN_R13_LEIF",
+      "field": "lines",
+      "old": [
+        "A sheltered bay",
+        "under the tor.",
+        "The fence marks",
+        "a safe lake view."
+      ],
+      "native": [
+        "A sheltered bay",
+        "under the tor.",
+        "The fence marks",
+        "a safe lake view.",
+        "Try the ROD GURU!",
+        "His house is above",
+        "the lakeside deck",
+        "on PINE COUNTRY RD",
+        "south of BRAINERD.",
+        "A free SUPER ROD!"
+      ]
+    },
+    {
+      "actor": "MN_R13_BIRD_WATCHER",
+      "field": "lines",
+      "old": [
+        "Noctowl follow",
+        "the lake bank.",
+        "You can see water",
+        "from this rail."
+      ],
+      "native": [
+        "BOOMRUFF follow",
+        "the lake bank.",
+        "You can see water",
+        "from this rail."
+      ]
+    }
+  ],
+  "native_programs_changed": false
+}

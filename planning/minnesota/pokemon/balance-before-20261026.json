@@ -1,0 +1,775 @@
+{
+  "reason": "Preserved profiles before user-authorized evolution-curve and final-power balance pass",
+  "species": [
+    {
+      "id": "MN_131",
+      "classification": "Harbor Heat",
+      "height_inches": 20,
+      "weight_tenths_lb": 520,
+      "dex_pages": [
+        "It drinks cold @ lake water to @ cool its boiler.",
+        "A thirsty one @ whistles even @ while asleep."
+      ],
+      "base_stats": {
+        "hp": 62,
+        "attack": 48,
+        "defense": 53,
+        "speed": 20,
+        "special_attack": 64,
+        "special_defense": 45
+      },
+      "catch_rate": 190,
+      "base_exp": 64,
+      "gender_ratio": 127,
+      "hatch_cycles": 40,
+      "growth_rate": "GROWTH_SLOW",
+      "egg_groups": [
+        "EGG_WATER_1",
+        "EGG_MINERAL"
+      ],
+      "evolution": {
+        "method": "LEVEL",
+        "level": 36
+      },
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_LAPRAS",
+      "footprint_species": "BLASTOISE",
+      "cry": {
+        "cry": "CRY_BLASTOISE",
+        "pitch": -24,
+        "length": 144
+      },
+      "shiny_rgb5": [
+        [
+          6,
+          29,
+          17
+        ],
+        [
+          16,
+          7,
+          12
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "TACKLE"
+        ],
+        [
+          1,
+          "LEER"
+        ],
+        [
+          5,
+          "EMBER"
+        ],
+        [
+          9,
+          "WATER_GUN"
+        ],
+        [
+          13,
+          "SMOKESCREEN"
+        ],
+        [
+          17,
+          "BUBBLEBEAM"
+        ],
+        [
+          22,
+          "STOMP"
+        ],
+        [
+          27,
+          "FIRE_SPIN"
+        ],
+        [
+          32,
+          "BODY_SLAM"
+        ],
+        [
+          37,
+          "RAIN_DANCE"
+        ],
+        [
+          42,
+          "FLAMETHROWER"
+        ],
+        [
+          48,
+          "VITAL_THROW"
+        ],
+        [
+          55,
+          "HYDRO_PUMP"
+        ],
+        [
+          62,
+          "FIRE_BLAST"
+        ]
+      ],
+      "tmhm_moves": [
+        "SURF",
+        "WATERFALL",
+        "WHIRLPOOL",
+        "FIRE_BLAST",
+        "FLAMETHROWER",
+        "ROCK_SMASH",
+        "STRENGTH",
+        "RAIN_DANCE",
+        "PROTECT",
+        "REST"
+      ],
+      "egg_moves": [
+        "AMNESIA",
+        "COUNTER",
+        "HAZE"
+      ]
+    },
+    {
+      "id": "MN_132",
+      "classification": "Lake Hauler",
+      "height_inches": 112,
+      "weight_tenths_lb": 12000,
+      "dex_pages": [
+        "Steam lets its @ heavy arms lift @ sunken ore.",
+        "It follows the @ deepest channels @ through fog."
+      ],
+      "base_stats": {
+        "hp": 110,
+        "attack": 85,
+        "defense": 95,
+        "speed": 35,
+        "special_attack": 115,
+        "special_defense": 80
+      },
+      "catch_rate": 90,
+      "base_exp": 218,
+      "gender_ratio": 127,
+      "hatch_cycles": 40,
+      "growth_rate": "GROWTH_SLOW",
+      "egg_groups": [
+        "EGG_WATER_1",
+        "EGG_MINERAL"
+      ],
+      "evolution": {
+        "method": "LEVEL",
+        "level": 44
+      },
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_LAPRAS",
+      "footprint_species": "BLASTOISE",
+      "cry": {
+        "cry": "CRY_BLASTOISE",
+        "pitch": 0,
+        "length": 160
+      },
+      "shiny_rgb5": [
+        [
+          7,
+          31,
+          19
+        ],
+        [
+          15,
+          6,
+          10
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "TACKLE"
+        ],
+        [
+          1,
+          "LEER"
+        ],
+        [
+          1,
+          "EMBER"
+        ],
+        [
+          11,
+          "WATER_GUN"
+        ],
+        [
+          15,
+          "SMOKESCREEN"
+        ],
+        [
+          19,
+          "BUBBLEBEAM"
+        ],
+        [
+          24,
+          "STOMP"
+        ],
+        [
+          29,
+          "FIRE_SPIN"
+        ],
+        [
+          34,
+          "BODY_SLAM"
+        ],
+        [
+          39,
+          "RAIN_DANCE"
+        ],
+        [
+          44,
+          "FLAMETHROWER"
+        ],
+        [
+          50,
+          "VITAL_THROW"
+        ],
+        [
+          57,
+          "HYDRO_PUMP"
+        ],
+        [
+          64,
+          "FIRE_BLAST"
+        ]
+      ],
+      "tmhm_moves": [
+        "SURF",
+        "WATERFALL",
+        "WHIRLPOOL",
+        "FIRE_BLAST",
+        "FLAMETHROWER",
+        "ROCK_SMASH",
+        "STRENGTH",
+        "RAIN_DANCE",
+        "PROTECT",
+        "REST"
+      ],
+      "egg_moves": [
+        "AMNESIA",
+        "COUNTER",
+        "HAZE"
+      ]
+    },
+    {
+      "id": "MN_137",
+      "classification": "Hay Knot",
+      "height_inches": 22,
+      "weight_tenths_lb": 100,
+      "dex_pages": [
+        "It knots its body @ before sleeping @ in tall grass.",
+        "Only a friendly @ voice can make @ it loosen."
+      ],
+      "base_stats": {
+        "hp": 48,
+        "attack": 64,
+        "defense": 45,
+        "speed": 56,
+        "special_attack": 25,
+        "special_defense": 48
+      },
+      "catch_rate": 190,
+      "base_exp": 63,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_SLOW",
+      "egg_groups": [
+        "EGG_DRAGON",
+        "EGG_HUMANSHAPE"
+      ],
+      "evolution": {
+        "method": "LEVEL",
+        "level": 34
+      },
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_SERPENT",
+      "footprint_species": "EKANS",
+      "cry": {
+        "cry": "CRY_EKANS",
+        "pitch": -24,
+        "length": 144
+      },
+      "shiny_rgb5": [
+        [
+          11,
+          28,
+          22
+        ],
+        [
+          5,
+          12,
+          8
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "WRAP"
+        ],
+        [
+          1,
+          "LEER"
+        ],
+        [
+          5,
+          "DRAGON_RAGE"
+        ],
+        [
+          9,
+          "FOCUS_ENERGY"
+        ],
+        [
+          13,
+          "BIND"
+        ],
+        [
+          17,
+          "TWISTER"
+        ],
+        [
+          22,
+          "SLAM"
+        ],
+        [
+          27,
+          "GLARE"
+        ],
+        [
+          32,
+          "DRAGONBREATH"
+        ],
+        [
+          37,
+          "VITAL_THROW"
+        ],
+        [
+          42,
+          "SUBMISSION"
+        ],
+        [
+          48,
+          "ENDURE"
+        ],
+        [
+          55,
+          "OUTRAGE"
+        ],
+        [
+          62,
+          "REVERSAL"
+        ]
+      ],
+      "tmhm_moves": [
+        "DRAGONBREATH",
+        "ROCK_SMASH",
+        "STRENGTH",
+        "IRON_TAIL",
+        "HEADBUTT",
+        "ENDURE",
+        "PROTECT",
+        "REST"
+      ],
+      "egg_moves": [
+        "COUNTER",
+        "CRUNCH",
+        "SCREECH"
+      ]
+    },
+    {
+      "id": "MN_138",
+      "classification": "Rope Drake",
+      "height_inches": 104,
+      "weight_tenths_lb": 920,
+      "dex_pages": [
+        "It drops a loop @ of its body over @ passing foes.",
+        "Struggling only @ pulls its living @ braid tighter."
+      ],
+      "base_stats": {
+        "hp": 85,
+        "attack": 115,
+        "defense": 80,
+        "speed": 100,
+        "special_attack": 45,
+        "special_defense": 85
+      },
+      "catch_rate": 90,
+      "base_exp": 214,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_SLOW",
+      "egg_groups": [
+        "EGG_DRAGON",
+        "EGG_HUMANSHAPE"
+      ],
+      "evolution": {
+        "method": "LEVEL",
+        "level": 44
+      },
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_SERPENT",
+      "footprint_species": "EKANS",
+      "cry": {
+        "cry": "CRY_EKANS",
+        "pitch": 0,
+        "length": 160
+      },
+      "shiny_rgb5": [
+        [
+          8,
+          26,
+          19
+        ],
+        [
+          4,
+          10,
+          6
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "WRAP"
+        ],
+        [
+          1,
+          "LEER"
+        ],
+        [
+          1,
+          "DRAGON_RAGE"
+        ],
+        [
+          11,
+          "FOCUS_ENERGY"
+        ],
+        [
+          15,
+          "BIND"
+        ],
+        [
+          19,
+          "TWISTER"
+        ],
+        [
+          24,
+          "SLAM"
+        ],
+        [
+          29,
+          "GLARE"
+        ],
+        [
+          34,
+          "DRAGONBREATH"
+        ],
+        [
+          39,
+          "VITAL_THROW"
+        ],
+        [
+          44,
+          "SUBMISSION"
+        ],
+        [
+          50,
+          "ENDURE"
+        ],
+        [
+          57,
+          "OUTRAGE"
+        ],
+        [
+          64,
+          "REVERSAL"
+        ]
+      ],
+      "tmhm_moves": [
+        "DRAGONBREATH",
+        "ROCK_SMASH",
+        "STRENGTH",
+        "IRON_TAIL",
+        "HEADBUTT",
+        "ENDURE",
+        "PROTECT",
+        "REST"
+      ],
+      "egg_moves": [
+        "COUNTER",
+        "CRUNCH",
+        "SCREECH"
+      ]
+    },
+    {
+      "id": "MN_269",
+      "classification": "Ore Hauler",
+      "height_inches": 180,
+      "weight_tenths_lb": 31000,
+      "dex_pages": [
+        "Its boiler lets @ it haul ore too @ heavy for ships.",
+        "Twin steam horns @ sound before it @ enters a harbor."
+      ],
+      "base_stats": {
+        "hp": 120,
+        "attack": 95,
+        "defense": 105,
+        "speed": 35,
+        "special_attack": 120,
+        "special_defense": 85
+      },
+      "catch_rate": 45,
+      "base_exp": 240,
+      "gender_ratio": 127,
+      "hatch_cycles": 40,
+      "growth_rate": "GROWTH_SLOW",
+      "egg_groups": [
+        "EGG_WATER_1",
+        "EGG_MINERAL"
+      ],
+      "evolution": null,
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_LAPRAS",
+      "footprint_species": "BLASTOISE",
+      "cry": {
+        "cry": "CRY_BLASTOISE",
+        "pitch": -12,
+        "length": 176
+      },
+      "shiny_rgb5": [
+        [
+          13,
+          29,
+          24
+        ],
+        [
+          15,
+          6,
+          10
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "TACKLE"
+        ],
+        [
+          1,
+          "LEER"
+        ],
+        [
+          1,
+          "EMBER"
+        ],
+        [
+          1,
+          "WATER_GUN"
+        ],
+        [
+          15,
+          "SMOKESCREEN"
+        ],
+        [
+          19,
+          "BUBBLEBEAM"
+        ],
+        [
+          24,
+          "STOMP"
+        ],
+        [
+          29,
+          "FIRE_SPIN"
+        ],
+        [
+          34,
+          "BODY_SLAM"
+        ],
+        [
+          39,
+          "RAIN_DANCE"
+        ],
+        [
+          44,
+          "FLAMETHROWER"
+        ],
+        [
+          50,
+          "VITAL_THROW"
+        ],
+        [
+          57,
+          "HYDRO_PUMP"
+        ],
+        [
+          64,
+          "FIRE_BLAST"
+        ]
+      ],
+      "tmhm_moves": [
+        "SURF",
+        "WATERFALL",
+        "WHIRLPOOL",
+        "FIRE_BLAST",
+        "FLAMETHROWER",
+        "ROCK_SMASH",
+        "STRENGTH",
+        "RAIN_DANCE",
+        "PROTECT",
+        "REST"
+      ],
+      "egg_moves": [
+        "AMNESIA",
+        "COUNTER",
+        "HAZE"
+      ]
+    },
+    {
+      "id": "MN_270",
+      "classification": "Twine Titan",
+      "height_inches": 144,
+      "weight_tenths_lb": 16800,
+      "dex_pages": [
+        "Its vast body is @ wound from one @ unbroken braid.",
+        "A loose end can @ unravel a whole @ hillside of twine."
+      ],
+      "base_stats": {
+        "hp": 105,
+        "attack": 125,
+        "defense": 100,
+        "speed": 95,
+        "special_attack": 45,
+        "special_defense": 90
+      },
+      "catch_rate": 45,
+      "base_exp": 240,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_SLOW",
+      "egg_groups": [
+        "EGG_DRAGON",
+        "EGG_HUMANSHAPE"
+      ],
+      "evolution": null,
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_SERPENT",
+      "footprint_species": "EKANS",
+      "cry": {
+        "cry": "CRY_EKANS",
+        "pitch": -16,
+        "length": 176
+      },
+      "shiny_rgb5": [
+        [
+          14,
+          28,
+          24
+        ],
+        [
+          5,
+          10,
+          13
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "WRAP"
+        ],
+        [
+          1,
+          "LEER"
+        ],
+        [
+          1,
+          "DRAGON_RAGE"
+        ],
+        [
+          1,
+          "DEFENSE_CURL"
+        ],
+        [
+          11,
+          "FOCUS_ENERGY"
+        ],
+        [
+          15,
+          "BIND"
+        ],
+        [
+          19,
+          "TWISTER"
+        ],
+        [
+          24,
+          "SLAM"
+        ],
+        [
+          29,
+          "GLARE"
+        ],
+        [
+          34,
+          "DRAGONBREATH"
+        ],
+        [
+          39,
+          "VITAL_THROW"
+        ],
+        [
+          44,
+          "ROLLOUT"
+        ],
+        [
+          49,
+          "SUBMISSION"
+        ],
+        [
+          54,
+          "ENDURE"
+        ],
+        [
+          59,
+          "OUTRAGE"
+        ],
+        [
+          66,
+          "REVERSAL"
+        ]
+      ],
+      "tmhm_moves": [
+        "DRAGONBREATH",
+        "ROCK_SMASH",
+        "STRENGTH",
+        "IRON_TAIL",
+        "HEADBUTT",
+        "ENDURE",
+        "PROTECT",
+        "REST"
+      ],
+      "egg_moves": [
+        "COUNTER",
+        "CRUNCH",
+        "SCREECH"
+      ]
+    }
+  ]
+}

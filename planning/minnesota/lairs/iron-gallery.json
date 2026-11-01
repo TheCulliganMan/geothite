@@ -1,0 +1,81 @@
+{
+  "id": "MnIronPumpGallery",
+  "template": "GoldenrodUndergroundWarehouse",
+  "tileset": "underground",
+  "status": "SOURCE CANDIDATE; native traversal pending",
+  "dimensions_metatiles": [
+    16,
+    12
+  ],
+  "border_block": "00",
+  "rows": [
+    "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00",
+    "00 08 09 09 0b 09 09 0b 09 09 09 2c 2c 2c 0a 00",
+    "00 06 0d 0d 0b 0d 0d 0b 0d 0d 0d 38 03 38 0e 00",
+    "00 06 0d 0d 0b 0d 0d 0d 0d 0b 0d 0b 38 0b 0e 00",
+    "00 06 0d 0d 0b 0d 0b 0b 0b 0b 0d 0d 0d 0d 0e 00",
+    "00 06 0d 0d 0d 0d 0d 0d 0d 0b 0b 0b 0b 0d 0e 00",
+    "00 06 0d 0b 0b 0b 0d 0b 0d 0b 0d 0d 0d 0d 0e 00",
+    "00 06 0d 0d 0d 0b 0d 0b 0d 0b 0d 0b 0d 0d 0e 00",
+    "00 06 0d 0b 0d 0d 0d 38 0d 0d 0d 0b 2b 0d 0e 00",
+    "00 06 02 0b 0d 0b 0b 0b 0b 0b 0d 0b 0d 0d 0e 00",
+    "00 16 2c 2c 2c 2c 2c 2c 2c 2c 2c 2c 2c 2c 17 00",
+    "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00"
+  ],
+  "entrance": {
+    "active": [
+      5,
+      18
+    ],
+    "passive": [
+      4,
+      19
+    ]
+  },
+  "core_stair": {
+    "active": [
+      25,
+      4
+    ],
+    "passive": [
+      24,
+      5
+    ]
+  },
+  "feed": {
+    "read_tile": [
+      25,
+      17
+    ],
+    "approach": [
+      25,
+      18
+    ]
+  },
+  "block_changes": [
+    {
+      "metatile": [
+        12,
+        3
+      ],
+      "closed": "38",
+      "open": "0d",
+      "purpose": "drill access shutter"
+    },
+    {
+      "metatile": [
+        7,
+        8
+      ],
+      "closed": "38",
+      "open": "0d",
+      "purpose": "short service return after feed isolation"
+    }
+  ],
+  "contract": [
+    "The pump banks force a winding route to the feed, with a loop through the central crosscut.",
+    "Core stairs are physically sealed until the feed is isolated.",
+    "Both feed refusal and ordinary return remain possible; isolation opens a useful shorter return.",
+    "All shutters use the native underground shutter; no crates or boulders vanish when power is cut."
+  ]
+}

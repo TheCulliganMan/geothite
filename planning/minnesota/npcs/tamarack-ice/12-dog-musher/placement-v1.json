@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "map": "MnEly",
+      "approach": [
+        23,
+        19
+      ],
+      "id": "MN_EXTRA_DOG_MUSHER",
+      "display_name": "OTTO",
+      "trainer_class": "MN_DOG_MUSHER",
+      "class_name": "DOG MUSHER",
+      "template_class": "SUPER_NERD",
+      "sprite": "SPRITE_MN_DOG_MUSHER",
+      "tile": [
+        23,
+        18
+      ],
+      "facing": "south",
+      "sight_range": 1,
+      "defeated_flag": "EVENT_MN_EXTRA_DOG_MUSHER",
+      "party": [
+        {
+          "species": "RIMEPELT",
+          "level": 40
+        },
+        {
+          "species": "DRIFTPEG",
+          "level": 42
+        }
+      ],
+      "before_lines": [
+        "A good team pulls",
+        "together. Show me!"
+      ],
+      "after_lines": [
+        "You held the line!",
+        "A fine team there."
+      ],
+      "loss_lines": [
+        "Rest up your team.",
+        "We can try again."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "tool": "built-in image_gen",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f015/trollure-v4-coarse-hooks",
+  "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f015/manifest-trollure-v4-coarse-hooks.json",
+  "normalized_receipt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f015/source-feature-proof-trollure-v4-coarse-hooks.json",
+  "all_raws_prompts_rejected_trials_retained": true,
+  "no_native_pixel_painting": true,
+  "no_registry_or_pack_mutation": true,
+  "normal_shiny_boards_actually_viewed": true,
+  "canonical_palettes": [
+    [
+      32767,
+      8764,
+      16709,
+      0
+    ],
+    [
+      32767,
+      18312,
+      10416,
+      0
+    ]
+  ],
+  "native_bounds": [
+    [
+      1,
+      3,
+      13,
+      11
+    ],
+    [
+      1,
+      3,
+      12,
+      12
+    ],
+    [
+      1,
+      3,
+      14,
+      12
+    ],
+    [
+      1,
+      3,
+      13,
+      11
+    ],
+    [
+      1,
+      3,
+      12,
+      12
+    ],
+    [
+      1,
+      3,
+      14,
+      12
+    ]
+  ],
+  "retained_source_hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f015/trollure.overworld.imagegen-v2-coarse-hooks.png": "e926c0cf04fd1f6ee2db5c2a0f7d48b22b60f43eb3bcd7b92dbfb419c8df298c",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f015/trollure.overworld.imagegen-v1.png": "5719f4e9bdd39cc74a21d18b7889c7e248188278b977a9335d783fc16f17a155",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f015/prompt-trollure-v1.txt": "3f546736437abf8ecb3bf33871190fe5f0cdd86fe40780d1cff38097851c5346",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f015/prompt-trollure-v2-coarse-hooks.txt": "129b3b16f939d0ee534dad826adef82a145f7399532ece6fe5a4f5c872d53f8a",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f015/trollure.v2-coarse-hooks.original-path.txt": "bf3ec0fee3fef429433ad890ec1ec1684ba33e3a25f6722dbfcbbb49cdb19354",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f015/trollure.v1.original-path.txt": "befbe7cfe2e4aefaff45876a941d0ca8be198129874855a7535bf219fa12db5c"
+  },
+  "status": "root independent visual/context acceptance pending"
+}

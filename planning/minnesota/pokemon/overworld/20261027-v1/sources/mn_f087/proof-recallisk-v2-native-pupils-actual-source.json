@@ -1,0 +1,212 @@
+{
+  "species": "recallisk",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f087/recallisk-v2-native-pupils",
+  "status": "actual-source native proof passes; root visual/context acceptance pending",
+  "all_four_nonrear_actual_isolated_source_pupils": true,
+  "six16px_alpha_border_normal_shiny_runtime_parity": true,
+  "canonical_palettes": true,
+  "literal_2bpp_all1536indices_exact": true,
+  "bank_sha256": "26712e30e8134f8cb731930ea44536d14fd24ed9b8f040dbd233d31900bcb6b5",
+  "proof": [
+    {
+      "pose": "down_idle",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            6,
+            9
+          ],
+          "source_sample": [
+            240,
+            273
+          ],
+          "source_component": [
+            229,
+            268,
+            27,
+            31
+          ],
+          "component_pixels": 837,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            3,
+            2,
+            0,
+            253
+          ]
+        },
+        {
+          "native": [
+            9,
+            9
+          ],
+          "source_sample": [
+            333,
+            273
+          ],
+          "source_component": [
+            317,
+            268,
+            28,
+            31
+          ],
+          "component_pixels": 868,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            7,
+            9
+          ],
+          "source_sample": [
+            1270,
+            273
+          ],
+          "source_component": [
+            1256,
+            268,
+            22,
+            31
+          ],
+          "component_pixels": 682,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            254
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            6,
+            9
+          ],
+          "source_sample": [
+            240,
+            721
+          ],
+          "source_component": [
+            230,
+            713,
+            27,
+            30
+          ],
+          "component_pixels": 810,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ]
+        },
+        {
+          "native": [
+            9,
+            9
+          ],
+          "source_sample": [
+            333,
+            721
+          ],
+          "source_component": [
+            318,
+            713,
+            28,
+            30
+          ],
+          "component_pixels": 840,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            2,
+            1,
+            0,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            7,
+            9
+          ],
+          "source_sample": [
+            1270,
+            716
+          ],
+          "source_component": [
+            1249,
+            712,
+            23,
+            31
+          ],
+          "component_pixels": 694,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            4,
+            4,
+            3,
+            253
+          ]
+        }
+      ]
+    }
+  ],
+  "hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f087/recallisk-v2-native-pupils/compiled-index.json": "3c1ee2edbd758b774302b3d6364ed490c75b4ff1ae02b517646c0232464fea13",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f087/recallisk.overworld.imagegen-v1.png": "3c0a4407202dfd8e80189da9564d244e7ff64aa7754e50b4f89109b28c8f5327",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f087/recallisk-v2-native-pupils/gfx/pokemon/recallisk/overworld.2bpp": "26712e30e8134f8cb731930ea44536d14fd24ed9b8f040dbd233d31900bcb6b5"
+  },
+  "no_native_pixel_painting": true
+}

@@ -1,0 +1,29 @@
+{
+  "status": "ORIGINAL_FROZEN_FACADE_FLAGS_RESOLVED",
+  "selected_revision": "route_grass_st_cloud_fronts_revision",
+  "pack": "content-packs/minnesota-current-st-cloud-fronts-v02.crystalpack",
+  "sha256": "df5e4c47500d84046f542418a203c8d58b0e119e97bc235083434464c8682ef3",
+  "prior_resolved_lineage": "selected-duluth-resolution-v01.json",
+  "newly_resolved": [
+    {
+      "map": "MnStCloud",
+      "building": "clinic",
+      "former_origin": [
+        3,
+        3
+      ]
+    },
+    {
+      "map": "MnStCloud",
+      "building": "mart",
+      "former_origin": [
+        7,
+        3
+      ]
+    }
+  ],
+  "remaining_original_frozen_candidates": 0,
+  "remaining_original_maps": {},
+  "state_fair": "User-accepted facades preserved exactly.",
+  "scope": "All original frozen facade flags are repaired and verified through the linked acceptance chain. New/current city content has separate owner receipts. Broader outdoor/route/source review remains active."
+}

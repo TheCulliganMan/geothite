@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "family": {
+    "id": "MN_F121",
+    "status": "new-family-proposal-for-root-review",
+    "user_correction": "Trout-only two-stage line; northern pike and muskellunge form the separate three-stage F123 family. No trout-to-pike evolution.",
+    "region": "cold_streams",
+    "theme": "Current bow and stream recoil: a springy trout leaper flexes its own broad fins and muscles into a drawn bow, then releases the stored curve in a powerful upstream leap. It grows visibly integrated tension/recoil anatomy, never a weapon or machine.",
+    "habitat": "Cold clean spring-fed headwaters and flowing riffles. Proposed MN_R01 Driftless stream edges and MN_R11 North Shore tributary habitat only, not new registered encounters.",
+    "proposed_routes": [
+      "MN_R01",
+      "MN_R11"
+    ],
+    "members": [
+      {
+        "id": "MN_259",
+        "name": "Rillbow",
+        "types": [
+          "WATER",
+          "FIGHTING"
+        ],
+        "stage": 1,
+        "evolves_to": "MN_260",
+        "evolution_condition": {
+          "method": "LEVEL",
+          "level": 28
+        },
+        "body_growth": "A cute short-snouted trout with a large expressive eye, light belly, squared tail and broad white-edged lower fins. Its body curls into a compact leap, and its flexible dorsal and ventral fins each form a thick elastic bow-shaped arc grown continuously from its body. A small rounded adipose fin remains behind the dorsal.",
+        "silhouette": "Large blunt trout head, compact C-curved body, two broad bow-arc fins and braced squarish tail."
+      },
+      {
+        "id": "MN_260",
+        "name": "Torrout",
+        "types": [
+          "WATER",
+          "FIGHTING"
+        ],
+        "stage": 2,
+        "evolves_to": null,
+        "evolution_condition": null,
+        "body_growth": "Clearly a mature trout, with a blunt short trout muzzle, stronger forward body and thick gill collar, large eye and squared tail. A massive attached arcing ventral fin grows under the belly; a broad taut ventral membrane fills its inner curve as living flexible fin tissue. The tail braces upward behind the body, drawing the muscular flank into a deeper spring curve before it lunges upstream. Dorsal fin and small rounded adipose fin preserve the trout silhouette.",
+        "silhouette": "Heavy blunt trout forebody over one huge integrated underbelly bow-fin/membrane, compact drawn C-curve and squared braced tail; never pike snout, archery gear or thin strings."
+      }
+    ],
+    "sprite_design": "Trout identities must remain recognizable at both stages: blunt muzzle, light belly, square tail and white leading edges on broad lower fins. Show rounded short juvenile bow fins growing into one dominant arcing ventral fin with taut thick membrane and muscular gill/forward body. Two or three broad pale flank marks maximum. No normal realistic fish recolors, metal, machinery, arrow/spear props, bows held by fins, thin strings or detached current particles. Big expressive eyes and broad readable native clusters. Each species own exact four-ink GBC palette; front56x56/back48x48 close rear head/gill/near fin, lower body cropped.",
+    "sources": [
+      {
+        "url": "https://www.dnr.state.mn.us/minnaqua/speciesprofile/brooktrout.html",
+        "publisher": "Minnesota DNR",
+        "supports": "Brook trout in Minnesota cold clean headwaters and spring-fed gravelly riffles; a light belly, squarish tail and dark body support the source silhouette.",
+        "fantasy_extension": "Integral elastic bow fins, stored recoil and staged monster evolution are original fiction, not biological trout capabilities."
+      },
+      {
+        "url": "https://files.dnr.state.mn.us/recreation/fishing/fin/fish_id_placemat.pdf?v=2025.06.30-12.11.14",
+        "publisher": "Minnesota DNR",
+        "supports": "Fish identification reference distinguishes trout forms, including brook-trout white leading edges on lower fins and square tail.",
+        "fantasy_extension": "Broad simplified fin planes and enlarged gill collar are original monster design."
+      }
+    ],
+    "implementation_boundary": "New authoring proposal and native sprite candidate only; root owns catalog, palette merge, registration and gameplay."
+  }
+}

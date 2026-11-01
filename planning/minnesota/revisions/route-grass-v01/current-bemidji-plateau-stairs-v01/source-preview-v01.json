@@ -1,0 +1,7 @@
+{
+  "status": "STATIC_NATIVE_RECIPE_PREVIEW",
+  "installed_recipe_tileset": "mn_outdoor_headwaters_stairs",
+  "installed_recipe_block": "6e",
+  "upper_landing_pixels_exact": true,
+  "scope": "Planned source render using an already installed original-native stair recipe with identical upper landing; not a new native-pack/GPU capture. Final private-alias output still requires pixel/native verification."
+}

@@ -1,0 +1,18 @@
+{
+  "id": "MN_F143",
+  "region": "northern_lakes",
+  "classification": "ordinary",
+  "theme": "Surface-skating whirligig beetles and opposing lookout stations: four eye organs straddle a strong horizontal seam while offset paddle pairs sweep in opposite directions.",
+  "members": [
+    {
+      "id": "MN_316",
+      "name": "Rondive",
+      "stage": 1,
+      "types": [
+        "BUG",
+        "WATER"
+      ],
+      "evolves_to": null
+    }
+  ]
+}

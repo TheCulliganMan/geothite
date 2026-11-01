@@ -1,0 +1,758 @@
+{
+  "MnDuluth": {
+    "before": [
+      {
+        "x": 3,
+        "y": 44,
+        "scene_id": "",
+        "script_name": "MnDuluthRangeCheck"
+      },
+      {
+        "x": 1,
+        "y": 44,
+        "scene_id": "",
+        "script_name": "MnDuluthRangeCheckInward"
+      },
+      {
+        "x": 3,
+        "y": 45,
+        "scene_id": "",
+        "script_name": "MnDuluthRangeCheck"
+      },
+      {
+        "x": 1,
+        "y": 45,
+        "scene_id": "",
+        "script_name": "MnDuluthRangeCheckInward"
+      },
+      {
+        "x": 64,
+        "y": 3,
+        "scene_id": "",
+        "script_name": "MnDuluthShoreCheck"
+      },
+      {
+        "x": 64,
+        "y": 1,
+        "scene_id": "",
+        "script_name": "MnDuluthShoreCheckInward"
+      },
+      {
+        "x": 65,
+        "y": 3,
+        "scene_id": "",
+        "script_name": "MnDuluthShoreCheck"
+      },
+      {
+        "x": 65,
+        "y": 1,
+        "scene_id": "",
+        "script_name": "MnDuluthShoreCheckInward"
+      }
+    ],
+    "after": [
+      {
+        "x": 3,
+        "y": 44,
+        "scene_id": "",
+        "script_name": "MnDuluthRangeCheck"
+      },
+      {
+        "x": 1,
+        "y": 44,
+        "scene_id": "",
+        "script_name": "MnDuluthRangeCheckInward"
+      },
+      {
+        "x": 3,
+        "y": 45,
+        "scene_id": "",
+        "script_name": "MnDuluthRangeCheck"
+      },
+      {
+        "x": 1,
+        "y": 45,
+        "scene_id": "",
+        "script_name": "MnDuluthRangeCheckInward"
+      },
+      {
+        "x": 64,
+        "y": 3,
+        "scene_id": "",
+        "script_name": "MnDuluthShoreCheck"
+      },
+      {
+        "x": 64,
+        "y": 1,
+        "scene_id": "",
+        "script_name": "MnDuluthShoreCheckInward"
+      },
+      {
+        "x": 65,
+        "y": 3,
+        "scene_id": "",
+        "script_name": "MnDuluthShoreCheck"
+      },
+      {
+        "x": 65,
+        "y": 1,
+        "scene_id": "",
+        "script_name": "MnDuluthShoreCheckInward"
+      },
+      {
+        "x": 66,
+        "y": 3,
+        "scene_id": "",
+        "script_name": "MnDuluthShoreCheck"
+      },
+      {
+        "x": 66,
+        "y": 1,
+        "scene_id": "",
+        "script_name": "MnDuluthShoreCheckInward"
+      },
+      {
+        "x": 67,
+        "y": 3,
+        "scene_id": "",
+        "script_name": "MnDuluthShoreCheck"
+      },
+      {
+        "x": 67,
+        "y": 1,
+        "scene_id": "",
+        "script_name": "MnDuluthShoreCheckInward"
+      }
+    ]
+  },
+  "MnGrandMarais": {
+    "before": [
+      {
+        "x": 3,
+        "y": 8,
+        "scene_id": "-1",
+        "script_name": "MnCohesionMaraisWest"
+      },
+      {
+        "x": 1,
+        "y": 8,
+        "scene_id": "-1",
+        "script_name": "MnCohesionMaraisWestInward"
+      },
+      {
+        "x": 3,
+        "y": 9,
+        "scene_id": "-1",
+        "script_name": "MnCohesionMaraisWest"
+      },
+      {
+        "x": 1,
+        "y": 9,
+        "scene_id": "-1",
+        "script_name": "MnCohesionMaraisWestInward"
+      },
+      {
+        "x": 18,
+        "y": 3,
+        "scene_id": "-1",
+        "script_name": "MnCohesionMaraisEast"
+      },
+      {
+        "x": 18,
+        "y": 1,
+        "scene_id": "-1",
+        "script_name": "MnCohesionMaraisEastInward"
+      },
+      {
+        "x": 19,
+        "y": 3,
+        "scene_id": "-1",
+        "script_name": "MnCohesionMaraisEast"
+      },
+      {
+        "x": 19,
+        "y": 1,
+        "scene_id": "-1",
+        "script_name": "MnCohesionMaraisEastInward"
+      },
+      {
+        "x": 2,
+        "y": 16,
+        "scene_id": "-1",
+        "script_name": "MnCohesionMaraisWest"
+      },
+      {
+        "x": 2,
+        "y": 17,
+        "scene_id": "-1",
+        "script_name": "MnCohesionMaraisWest"
+      },
+      {
+        "x": 2,
+        "y": 18,
+        "scene_id": "-1",
+        "script_name": "MnCohesionMaraisWest"
+      },
+      {
+        "x": 2,
+        "y": 19,
+        "scene_id": "-1",
+        "script_name": "MnCohesionMaraisWest"
+      },
+      {
+        "x": 2,
+        "y": 20,
+        "scene_id": "-1",
+        "script_name": "MnCohesionMaraisWest"
+      },
+      {
+        "x": 2,
+        "y": 21,
+        "scene_id": "-1",
+        "script_name": "MnCohesionMaraisWest"
+      },
+      {
+        "x": 2,
+        "y": 22,
+        "scene_id": "-1",
+        "script_name": "MnCohesionMaraisWest"
+      },
+      {
+        "x": 2,
+        "y": 23,
+        "scene_id": "-1",
+        "script_name": "MnCohesionMaraisWest"
+      },
+      {
+        "x": 2,
+        "y": 24,
+        "scene_id": "-1",
+        "script_name": "MnCohesionMaraisWest"
+      },
+      {
+        "x": 2,
+        "y": 25,
+        "scene_id": "-1",
+        "script_name": "MnCohesionMaraisWest"
+      },
+      {
+        "x": 2,
+        "y": 26,
+        "scene_id": "-1",
+        "script_name": "MnCohesionMaraisWest"
+      },
+      {
+        "x": 2,
+        "y": 27,
+        "scene_id": "-1",
+        "script_name": "MnCohesionMaraisWest"
+      },
+      {
+        "x": 2,
+        "y": 28,
+        "scene_id": "-1",
+        "script_name": "MnCohesionMaraisWest"
+      },
+      {
+        "x": 2,
+        "y": 29,
+        "scene_id": "-1",
+        "script_name": "MnCohesionMaraisWest"
+      },
+      {
+        "x": 2,
+        "y": 30,
+        "scene_id": "-1",
+        "script_name": "MnCohesionMaraisWest"
+      },
+      {
+        "x": 2,
+        "y": 31,
+        "scene_id": "-1",
+        "script_name": "MnCohesionMaraisWest"
+      },
+      {
+        "x": 2,
+        "y": 32,
+        "scene_id": "-1",
+        "script_name": "MnCohesionMaraisWest"
+      },
+      {
+        "x": 2,
+        "y": 33,
+        "scene_id": "-1",
+        "script_name": "MnCohesionMaraisWest"
+      },
+      {
+        "x": 2,
+        "y": 34,
+        "scene_id": "-1",
+        "script_name": "MnCohesionMaraisWest"
+      },
+      {
+        "x": 2,
+        "y": 35,
+        "scene_id": "-1",
+        "script_name": "MnCohesionMaraisWest"
+      },
+      {
+        "x": 2,
+        "y": 36,
+        "scene_id": "-1",
+        "script_name": "MnCohesionMaraisWest"
+      },
+      {
+        "x": 1,
+        "y": 16,
+        "scene_id": "-1",
+        "script_name": "MnMaraisCoastWaterIn"
+      },
+      {
+        "x": 1,
+        "y": 17,
+        "scene_id": "-1",
+        "script_name": "MnMaraisCoastWaterIn"
+      },
+      {
+        "x": 1,
+        "y": 18,
+        "scene_id": "-1",
+        "script_name": "MnMaraisCoastWaterIn"
+      },
+      {
+        "x": 1,
+        "y": 19,
+        "scene_id": "-1",
+        "script_name": "MnMaraisCoastWaterIn"
+      },
+      {
+        "x": 1,
+        "y": 20,
+        "scene_id": "-1",
+        "script_name": "MnMaraisCoastWaterIn"
+      },
+      {
+        "x": 1,
+        "y": 21,
+        "scene_id": "-1",
+        "script_name": "MnMaraisCoastWaterIn"
+      },
+      {
+        "x": 1,
+        "y": 22,
+        "scene_id": "-1",
+        "script_name": "MnMaraisCoastWaterIn"
+      },
+      {
+        "x": 1,
+        "y": 23,
+        "scene_id": "-1",
+        "script_name": "MnMaraisCoastWaterIn"
+      },
+      {
+        "x": 1,
+        "y": 24,
+        "scene_id": "-1",
+        "script_name": "MnMaraisCoastWaterIn"
+      },
+      {
+        "x": 1,
+        "y": 25,
+        "scene_id": "-1",
+        "script_name": "MnMaraisCoastWaterIn"
+      },
+      {
+        "x": 1,
+        "y": 26,
+        "scene_id": "-1",
+        "script_name": "MnMaraisCoastWaterIn"
+      },
+      {
+        "x": 1,
+        "y": 27,
+        "scene_id": "-1",
+        "script_name": "MnMaraisCoastWaterIn"
+      },
+      {
+        "x": 1,
+        "y": 28,
+        "scene_id": "-1",
+        "script_name": "MnMaraisCoastWaterIn"
+      },
+      {
+        "x": 1,
+        "y": 29,
+        "scene_id": "-1",
+        "script_name": "MnMaraisCoastWaterIn"
+      },
+      {
+        "x": 1,
+        "y": 30,
+        "scene_id": "-1",
+        "script_name": "MnMaraisCoastWaterIn"
+      },
+      {
+        "x": 1,
+        "y": 31,
+        "scene_id": "-1",
+        "script_name": "MnMaraisCoastWaterIn"
+      },
+      {
+        "x": 1,
+        "y": 32,
+        "scene_id": "-1",
+        "script_name": "MnMaraisCoastWaterIn"
+      },
+      {
+        "x": 1,
+        "y": 33,
+        "scene_id": "-1",
+        "script_name": "MnMaraisCoastWaterIn"
+      },
+      {
+        "x": 1,
+        "y": 34,
+        "scene_id": "-1",
+        "script_name": "MnMaraisCoastWaterIn"
+      },
+      {
+        "x": 1,
+        "y": 35,
+        "scene_id": "-1",
+        "script_name": "MnMaraisCoastWaterIn"
+      },
+      {
+        "x": 1,
+        "y": 36,
+        "scene_id": "-1",
+        "script_name": "MnMaraisCoastWaterIn"
+      }
+    ],
+    "after": [
+      {
+        "x": 3,
+        "y": 8,
+        "scene_id": "-1",
+        "script_name": "MnCohesionMaraisWest"
+      },
+      {
+        "x": 1,
+        "y": 8,
+        "scene_id": "-1",
+        "script_name": "MnCohesionMaraisWestInward"
+      },
+      {
+        "x": 3,
+        "y": 9,
+        "scene_id": "-1",
+        "script_name": "MnCohesionMaraisWest"
+      },
+      {
+        "x": 1,
+        "y": 9,
+        "scene_id": "-1",
+        "script_name": "MnCohesionMaraisWestInward"
+      },
+      {
+        "x": 18,
+        "y": 3,
+        "scene_id": "-1",
+        "script_name": "MnCohesionMaraisEast"
+      },
+      {
+        "x": 18,
+        "y": 1,
+        "scene_id": "-1",
+        "script_name": "MnCohesionMaraisEastInward"
+      },
+      {
+        "x": 19,
+        "y": 3,
+        "scene_id": "-1",
+        "script_name": "MnCohesionMaraisEast"
+      },
+      {
+        "x": 19,
+        "y": 1,
+        "scene_id": "-1",
+        "script_name": "MnCohesionMaraisEastInward"
+      },
+      {
+        "x": 2,
+        "y": 16,
+        "scene_id": "-1",
+        "script_name": "MnCohesionMaraisWest"
+      },
+      {
+        "x": 2,
+        "y": 17,
+        "scene_id": "-1",
+        "script_name": "MnCohesionMaraisWest"
+      },
+      {
+        "x": 2,
+        "y": 18,
+        "scene_id": "-1",
+        "script_name": "MnCohesionMaraisWest"
+      },
+      {
+        "x": 2,
+        "y": 19,
+        "scene_id": "-1",
+        "script_name": "MnCohesionMaraisWest"
+      },
+      {
+        "x": 2,
+        "y": 20,
+        "scene_id": "-1",
+        "script_name": "MnCohesionMaraisWest"
+      },
+      {
+        "x": 2,
+        "y": 21,
+        "scene_id": "-1",
+        "script_name": "MnCohesionMaraisWest"
+      },
+      {
+        "x": 2,
+        "y": 22,
+        "scene_id": "-1",
+        "script_name": "MnCohesionMaraisWest"
+      },
+      {
+        "x": 2,
+        "y": 23,
+        "scene_id": "-1",
+        "script_name": "MnCohesionMaraisWest"
+      },
+      {
+        "x": 2,
+        "y": 24,
+        "scene_id": "-1",
+        "script_name": "MnCohesionMaraisWest"
+      },
+      {
+        "x": 2,
+        "y": 25,
+        "scene_id": "-1",
+        "script_name": "MnCohesionMaraisWest"
+      },
+      {
+        "x": 2,
+        "y": 26,
+        "scene_id": "-1",
+        "script_name": "MnCohesionMaraisWest"
+      },
+      {
+        "x": 2,
+        "y": 27,
+        "scene_id": "-1",
+        "script_name": "MnCohesionMaraisWest"
+      },
+      {
+        "x": 2,
+        "y": 28,
+        "scene_id": "-1",
+        "script_name": "MnCohesionMaraisWest"
+      },
+      {
+        "x": 2,
+        "y": 29,
+        "scene_id": "-1",
+        "script_name": "MnCohesionMaraisWest"
+      },
+      {
+        "x": 2,
+        "y": 30,
+        "scene_id": "-1",
+        "script_name": "MnCohesionMaraisWest"
+      },
+      {
+        "x": 2,
+        "y": 31,
+        "scene_id": "-1",
+        "script_name": "MnCohesionMaraisWest"
+      },
+      {
+        "x": 2,
+        "y": 32,
+        "scene_id": "-1",
+        "script_name": "MnCohesionMaraisWest"
+      },
+      {
+        "x": 2,
+        "y": 33,
+        "scene_id": "-1",
+        "script_name": "MnCohesionMaraisWest"
+      },
+      {
+        "x": 2,
+        "y": 34,
+        "scene_id": "-1",
+        "script_name": "MnCohesionMaraisWest"
+      },
+      {
+        "x": 2,
+        "y": 35,
+        "scene_id": "-1",
+        "script_name": "MnCohesionMaraisWest"
+      },
+      {
+        "x": 2,
+        "y": 36,
+        "scene_id": "-1",
+        "script_name": "MnCohesionMaraisWest"
+      },
+      {
+        "x": 1,
+        "y": 16,
+        "scene_id": "-1",
+        "script_name": "MnMaraisCoastWaterIn"
+      },
+      {
+        "x": 1,
+        "y": 17,
+        "scene_id": "-1",
+        "script_name": "MnMaraisCoastWaterIn"
+      },
+      {
+        "x": 1,
+        "y": 18,
+        "scene_id": "-1",
+        "script_name": "MnMaraisCoastWaterIn"
+      },
+      {
+        "x": 1,
+        "y": 19,
+        "scene_id": "-1",
+        "script_name": "MnMaraisCoastWaterIn"
+      },
+      {
+        "x": 1,
+        "y": 20,
+        "scene_id": "-1",
+        "script_name": "MnMaraisCoastWaterIn"
+      },
+      {
+        "x": 1,
+        "y": 21,
+        "scene_id": "-1",
+        "script_name": "MnMaraisCoastWaterIn"
+      },
+      {
+        "x": 1,
+        "y": 22,
+        "scene_id": "-1",
+        "script_name": "MnMaraisCoastWaterIn"
+      },
+      {
+        "x": 1,
+        "y": 23,
+        "scene_id": "-1",
+        "script_name": "MnMaraisCoastWaterIn"
+      },
+      {
+        "x": 1,
+        "y": 24,
+        "scene_id": "-1",
+        "script_name": "MnMaraisCoastWaterIn"
+      },
+      {
+        "x": 1,
+        "y": 25,
+        "scene_id": "-1",
+        "script_name": "MnMaraisCoastWaterIn"
+      },
+      {
+        "x": 1,
+        "y": 26,
+        "scene_id": "-1",
+        "script_name": "MnMaraisCoastWaterIn"
+      },
+      {
+        "x": 1,
+        "y": 27,
+        "scene_id": "-1",
+        "script_name": "MnMaraisCoastWaterIn"
+      },
+      {
+        "x": 1,
+        "y": 28,
+        "scene_id": "-1",
+        "script_name": "MnMaraisCoastWaterIn"
+      },
+      {
+        "x": 1,
+        "y": 29,
+        "scene_id": "-1",
+        "script_name": "MnMaraisCoastWaterIn"
+      },
+      {
+        "x": 1,
+        "y": 30,
+        "scene_id": "-1",
+        "script_name": "MnMaraisCoastWaterIn"
+      },
+      {
+        "x": 1,
+        "y": 31,
+        "scene_id": "-1",
+        "script_name": "MnMaraisCoastWaterIn"
+      },
+      {
+        "x": 1,
+        "y": 32,
+        "scene_id": "-1",
+        "script_name": "MnMaraisCoastWaterIn"
+      },
+      {
+        "x": 1,
+        "y": 33,
+        "scene_id": "-1",
+        "script_name": "MnMaraisCoastWaterIn"
+      },
+      {
+        "x": 1,
+        "y": 34,
+        "scene_id": "-1",
+        "script_name": "MnMaraisCoastWaterIn"
+      },
+      {
+        "x": 1,
+        "y": 35,
+        "scene_id": "-1",
+        "script_name": "MnMaraisCoastWaterIn"
+      },
+      {
+        "x": 1,
+        "y": 36,
+        "scene_id": "-1",
+        "script_name": "MnMaraisCoastWaterIn"
+      },
+      {
+        "x": 3,
+        "y": 10,
+        "scene_id": "-1",
+        "script_name": "MnCohesionMaraisWest"
+      },
+      {
+        "x": 1,
+        "y": 10,
+        "scene_id": "-1",
+        "script_name": "MnCohesionMaraisWestInward"
+      },
+      {
+        "x": 3,
+        "y": 11,
+        "scene_id": "-1",
+        "script_name": "MnCohesionMaraisWest"
+      },
+      {
+        "x": 1,
+        "y": 11,
+        "scene_id": "-1",
+        "script_name": "MnCohesionMaraisWestInward"
+      }
+    ]
+  }
+}

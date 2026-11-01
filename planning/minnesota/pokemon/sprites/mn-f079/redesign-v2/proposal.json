@@ -1,0 +1,28 @@
+{
+  "family_id": "MN_F079",
+  "species_ids": [
+    "MN_172",
+    "MN_173"
+  ],
+  "status": "canonical-native-front-back-reviewed",
+  "source": "front-back.imagegen-v2.png",
+  "prompt_file": "prompt-v2.txt",
+  "source_provenance": "Root generated the successful revised source using built-in ImageGen and saved it into the project. Earlier unchanged generation failures remain preserved.",
+  "source_sha256": "d4d9f92dc16d3558a744c1185459d7d6b4d3df475c7d80e9e33e9d799539ebb2",
+  "selected_manifest": "manifest-selected.json",
+  "native_review": "native-review.json",
+  "sampling": "source_center",
+  "exterior_contour": "source_backed",
+  "palettes": "Original individual MN_172 and MN_173 palettes retained exactly.",
+  "pixel_edits": [],
+  "canonical_changes": [
+    "sprites/mn-f079/manifest.json"
+  ],
+  "canonical_profile_or_rust_changes": false,
+  "archive": "planning/minnesota/renders/proposals-20261026-v1/f079-redesign-v2",
+  "earlier_generation_failures": [
+    "generation-failure-v1.json",
+    "generation-failure-v1-retry.json"
+  ],
+  "native_sheet_sha256": "d2e27878772d623f36e0a8af4210f9463162d3e8ed111a01936a589aca34f60c"
+}

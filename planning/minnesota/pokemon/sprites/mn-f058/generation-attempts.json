@@ -1,0 +1,17 @@
+{
+  "family_id": "MN_F058",
+  "prompt": "prompt-v1.txt",
+  "failed_attempts": [
+    {
+      "request_id": "5dd0ed26-9337-4692-8e3f-c6b8ef7be76c",
+      "code": "moderation_blocked",
+      "stage": "output",
+      "categories": [
+        "other"
+      ],
+      "returned_image": null
+    }
+  ],
+  "eventual_success": true,
+  "notes": "All retries used unchanged original benign art prompt. No CLI fallback. No image was returned for failed output moderation attempts."
+}

@@ -1,0 +1,19 @@
+{
+  "status": "FRESH_PARENT_REBASE_IN_PROGRESS",
+  "latest_selected_revision": "outdoor_terrain_integrated_revision",
+  "latest_selected_pack": "content-packs/minnesota-current-outdoor-composed-towns-v01.crystalpack",
+  "latest_selected_sha256": "fcac136e08876c25d5c8b6250fc7c0fa1aedbfc6977e165504505b2b4d02016f",
+  "mankato_module_and_tileset_unchanged": true,
+  "latest_terrain_maps_preserved": 23,
+  "completed_old_child_native_cases": 6,
+  "completed_old_child_production_calls": 58,
+  "completed_old_child_native_2d_captures": 9,
+  "all_target_clippy_both_crates_passed": true,
+  "missing_disposable_build_products": [
+    "target/route-grass/wasm-dev",
+    "target/interior-life/wasm-dev"
+  ],
+  "portable_tools_rebuild": "portable-tools-build-progress-v01.json",
+  "fresh_parent_preflight": "terrain-parent-preflight-v02.json",
+  "scope": "No older pack is selected over the terrain integration. New publisher/client/controller/renderer tools are retained outside disposable build-profile directories; fresh-parent native and capture checks are required before final selection. The23 modified route/town terrain maps also require final grass/coverage inheritance audit."
+}

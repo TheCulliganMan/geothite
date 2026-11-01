@@ -1,0 +1,3938 @@
+{
+  "schema_version": 1,
+  "status": "complete; final v2 pack, progression, battle/controller/animation, web and public publication checks passed",
+  "scope": "Minnesota Fairy mod only. No species, stats, art, palettes, learnsets, registry, order, encounters or base-game types changed by this roster edit.",
+  "authorization": "Root approved exact13species/8families; Crowscare remains Dark/Ghost; final Shawlter becomes Fairy/Flying while firsttwo remain Ghost/Fairy.",
+  "regional_fairy_species": 13,
+  "regional_fairy_families": 8,
+  "regional_fairy_percent": 5.91,
+  "canonical_returning_fairy_species_owned_by_root": 13,
+  "combined_target_fairy_species": 26,
+  "active_species": 220,
+  "active_families": 100,
+  "source_species": 313,
+  "changes": [
+    {
+      "family_id": "MN_F001",
+      "species_id": "MN_002",
+      "name": "Slipperina",
+      "before_types": [
+        "GRASS",
+        "PSYCHIC"
+      ],
+      "after_types": [
+        "GRASS",
+        "FAIRY"
+      ],
+      "rationale": "Orchid slippers and unfolding dance glamour embody enchantment; plant identity stays Grass."
+    },
+    {
+      "family_id": "MN_F001",
+      "species_id": "MN_003",
+      "name": "Cyprielle",
+      "before_types": [
+        "GRASS",
+        "PSYCHIC"
+      ],
+      "after_types": [
+        "GRASS",
+        "FAIRY"
+      ],
+      "rationale": "Orchid slippers and unfolding dance glamour embody enchantment; plant identity stays Grass."
+    },
+    {
+      "family_id": "MN_F042",
+      "species_id": "MN_093",
+      "name": "Tiltawisp",
+      "before_types": [
+        "ELECTRIC",
+        "GHOST"
+      ],
+      "after_types": [
+        "ELECTRIC",
+        "FAIRY"
+      ],
+      "rationale": "The level-faced carnival spirit creates playful impossible motion and glamour. Its Electric ride-energy origin remains."
+    },
+    {
+      "family_id": "MN_F064",
+      "species_id": "MN_140",
+      "name": "Choirbog",
+      "before_types": [
+        "POISON",
+        "PSYCHIC"
+      ],
+      "after_types": [
+        "POISON",
+        "FAIRY"
+      ],
+      "rationale": "The mature poison-sac chorus gains entrancing lullaby magic; Poison remains a usable Fairy counter. Chorip stays Water/Psychic."
+    },
+    {
+      "family_id": "MN_F076",
+      "species_id": "MN_163",
+      "name": "Mitwist",
+      "before_types": [
+        "GHOST"
+      ],
+      "after_types": [
+        "GHOST",
+        "FAIRY"
+      ],
+      "rationale": "Unmatched clothing begins as lost haunted objects; reunion completes an enchanted flying wardrobe, releasing the final lost-object Ghost typing while keeping shawl flight."
+    },
+    {
+      "family_id": "MN_F076",
+      "species_id": "MN_164",
+      "name": "Mispair",
+      "before_types": [
+        "GHOST"
+      ],
+      "after_types": [
+        "GHOST",
+        "FAIRY"
+      ],
+      "rationale": "Unmatched clothing begins as lost haunted objects; reunion completes an enchanted flying wardrobe, releasing the final lost-object Ghost typing while keeping shawl flight."
+    },
+    {
+      "family_id": "MN_F076",
+      "species_id": "MN_165",
+      "name": "Shawlter",
+      "before_types": [
+        "GHOST",
+        "FLYING"
+      ],
+      "after_types": [
+        "FAIRY",
+        "FLYING"
+      ],
+      "rationale": "Unmatched clothing begins as lost haunted objects; reunion completes an enchanted flying wardrobe, releasing the final lost-object Ghost typing while keeping shawl flight."
+    },
+    {
+      "family_id": "MN_F098",
+      "species_id": "MN_213",
+      "name": "Chislet",
+      "before_types": [
+        "NORMAL",
+        "ICE"
+      ],
+      "after_types": [
+        "ICE",
+        "FAIRY"
+      ],
+      "rationale": "Chilled butter carving becomes enchanted dairy royalty; Ice remains the material identity."
+    },
+    {
+      "family_id": "MN_F098",
+      "species_id": "MN_214",
+      "name": "Buttermuse",
+      "before_types": [
+        "NORMAL",
+        "ICE"
+      ],
+      "after_types": [
+        "ICE",
+        "FAIRY"
+      ],
+      "rationale": "Chilled butter carving becomes enchanted dairy royalty; Ice remains the material identity."
+    },
+    {
+      "family_id": "MN_F044",
+      "species_id": "MN_095",
+      "name": "Babehemoth",
+      "before_types": [
+        "GROUND",
+        "FIGHTING"
+      ],
+      "after_types": [
+        "GROUND",
+        "FAIRY"
+      ],
+      "rationale": "The impossible cobalt ox and landscape-shaped hoofprints express tall-tale enchantment; its terrain-forming Ground identity remains."
+    },
+    {
+      "family_id": "MN_F116",
+      "species_id": "MN_250",
+      "name": "Flarkindle",
+      "before_types": [
+        "GHOST",
+        "PSYCHIC"
+      ],
+      "after_types": [
+        "GHOST",
+        "FAIRY"
+      ],
+      "rationale": "A tiny original fen-memory keeper embodies old-path enchantment while its spectral memory remains Ghost."
+    },
+    {
+      "family_id": "MN_F136",
+      "species_id": "MN_301",
+      "name": "Dozebear",
+      "before_types": [
+        "NORMAL",
+        "PSYCHIC"
+      ],
+      "after_types": [
+        "NORMAL",
+        "FAIRY"
+      ],
+      "rationale": "The living dream den shelters a companion dream-face through calming enchantment; its bear anatomy stays Normal."
+    },
+    {
+      "family_id": "MN_F136",
+      "species_id": "MN_302",
+      "name": "Denumbra",
+      "before_types": [
+        "NORMAL",
+        "PSYCHIC"
+      ],
+      "after_types": [
+        "NORMAL",
+        "FAIRY"
+      ],
+      "rationale": "The living dream den shelters a companion dream-face through calming enchantment; its bear anatomy stays Normal."
+    }
+  ],
+  "type_counts_before": {
+    "BUG": 27,
+    "DARK": 23,
+    "DRAGON": 11,
+    "ELECTRIC": 15,
+    "FIGHTING": 23,
+    "FIRE": 27,
+    "FLYING": 17,
+    "GHOST": 17,
+    "GRASS": 28,
+    "GROUND": 17,
+    "ICE": 19,
+    "NORMAL": 31,
+    "POISON": 19,
+    "PSYCHIC": 19,
+    "ROCK": 17,
+    "STEEL": 21,
+    "WATER": 42
+  },
+  "type_counts_after": {
+    "BUG": 27,
+    "DARK": 23,
+    "DRAGON": 11,
+    "ELECTRIC": 15,
+    "FAIRY": 13,
+    "FIGHTING": 22,
+    "FIRE": 27,
+    "FLYING": 17,
+    "GHOST": 15,
+    "GRASS": 28,
+    "GROUND": 17,
+    "ICE": 19,
+    "NORMAL": 29,
+    "POISON": 19,
+    "PSYCHIC": 13,
+    "ROCK": 17,
+    "STEEL": 21,
+    "WATER": 42
+  },
+  "poison_and_steel_species_preserved": {
+    "POISON": 19,
+    "STEEL": 21
+  },
+  "unchanged_guardrails": [
+    "Crowscare DARK/GHOST gains a real Fairy weakness.",
+    "All Dragon species retained; Taconarch remains Steel/Dragon, Knotitan remains Dragon/Fighting.",
+    "All220species and100families retained.",
+    "Original4color palettes, front/back anatomy, all313source records and all inactive families preserved.",
+    "No automatic assumption that every Fairy gets Moonblast."
+  ],
+  "availability_plan": {
+    "early": [
+      "Chislet Ice/Fairy is a stage1 town/dairy candidate; FairyWind or DisarmingVoice aroundLv8\u201312.",
+      "Grass-starter Slipperina gains Fairy at its existing first evolution; low-power Fairy attacks aroundLv12\u201318.",
+      "Mitwist Ghost/Fairy is a stage1 winter lost-object candidate; low-power voice/glamour attacks aroundLv10\u201316."
+    ],
+    "mid": [
+      "Dozebear and Denumbra acquire Normal/Fairy through dream-den growth.",
+      "Choirbog Poison/Fairy is a dual-role midgame Fairy and Poison counter at its existingLv30evolution.",
+      "Tiltawisp Electric/Fairy provides a separate carnival route and Ground/Poison counterplay."
+    ],
+    "late": [
+      "Shawlter Fairy/Flying completes the wardrobe while retaining a real Flying slot.",
+      "Babehemoth and Flarkindle remain rare optional late-game Fairy examples."
+    ],
+    "boundary": "These are availability bands and learnset suggestions, not verified new map encounters. No encounter placement changed here."
+  },
+  "counter_coverage_audit": {
+    "verified_source": "Actual v6 compiled move metadata and modern per-move damage categories.",
+    "poison_gap": "PoisonSting is physical15; Smog20/70, Acid40, Sludge65 and SludgeBomb90 are special. Attack-heavy Barricant, Castanake and Mosquitan lack substantial physical Poison STAB. Toxic/status do not count as damage.",
+    "steel_gap": "MetalClaw50/95 is reliable early chip; IronTail100/75 alone is not reliable late coverage. Existing IronHead80/100 extension reaches most Steel families; Latchquill lacks it.",
+    "native_profile_level_changes_proposed": [
+      {
+        "species_id": "MN_019",
+        "name": "Stripillar",
+        "move": "ACID",
+        "old_level": 27,
+        "new_level": 7,
+        "action": "move_existing_level_entry"
+      },
+      {
+        "species_id": "MN_020",
+        "name": "Giltalis",
+        "move": "ACID",
+        "old_level": 28,
+        "new_level": 12,
+        "action": "move_existing_level_entry"
+      },
+      {
+        "species_id": "MN_241",
+        "name": "Dewdant",
+        "move": "ACID",
+        "old_level": 17,
+        "new_level": 9,
+        "action": "move_existing_level_entry"
+      },
+      {
+        "species_id": "MN_242",
+        "name": "Barricant",
+        "move": "ACID",
+        "old_level": 19,
+        "new_level": 12,
+        "action": "move_existing_level_entry"
+      },
+      {
+        "species_id": "MN_053",
+        "name": "Crispip",
+        "move": "ACID",
+        "old_level": 22,
+        "new_level": 13,
+        "action": "move_existing_level_entry"
+      },
+      {
+        "species_id": "MN_054",
+        "name": "Cidermaw",
+        "move": "ACID",
+        "old_level": 24,
+        "new_level": 20,
+        "action": "move_existing_level_entry"
+      },
+      {
+        "species_id": "MN_090",
+        "name": "Sludgeski",
+        "move": "SLUDGE",
+        "old_level": 27,
+        "new_level": 20,
+        "action": "move_existing_level_entry"
+      },
+      {
+        "species_id": "MN_257",
+        "name": "Hushiss",
+        "move": "SLUDGE",
+        "old_level": 28,
+        "new_level": 20,
+        "action": "move_existing_level_entry"
+      },
+      {
+        "species_id": "MN_258",
+        "name": "Castanake",
+        "move": "SLUDGE",
+        "old_level": 28,
+        "new_level": 24,
+        "action": "move_existing_level_entry"
+      },
+      {
+        "species_id": "MN_023",
+        "name": "Patchebee",
+        "move": "METAL_CLAW",
+        "old_level": 24,
+        "new_level": 18,
+        "action": "move_existing_level_entry"
+      },
+      {
+        "species_id": "MN_035",
+        "name": "Skatuff",
+        "move": "METAL_CLAW",
+        "old_level": 24,
+        "new_level": 22,
+        "action": "move_existing_level_entry"
+      }
+    ],
+    "native_profile_additions_proposed": [
+      {
+        "species_id": "MN_054",
+        "name": "Cidermaw",
+        "move": "SLUDGE",
+        "level": 30,
+        "reason": "Give special Poison STAB between Acid andLv47SludgeBomb."
+      }
+    ],
+    "extension_import_proposed": {
+      "id": "POISON_JAB",
+      "power": 80,
+      "accuracy": 100,
+      "pp": 20,
+      "category": "physical",
+      "effect": "POISON_HIT",
+      "effect_chance": 30,
+      "animation_donor": "POISON_STING",
+      "learners": [
+        {
+          "species_id": "MN_242",
+          "runtime_name": "BARRICANT",
+          "level": 32
+        },
+        {
+          "species_id": "MN_258",
+          "runtime_name": "CASTANAKE",
+          "level": 32
+        },
+        {
+          "species_id": "MN_153",
+          "runtime_name": "MOSQUITAN",
+          "level": 46
+        }
+      ],
+      "reason": "A real physical Poison answer uses the existing ordinary poison-hit mechanic; do not put the imported token into native-profile egg lists."
+    },
+    "existing_extension_learner_additions_proposed": [
+      {
+        "move": "IRON_HEAD",
+        "species_id": "MN_299",
+        "runtime_name": "LATCHQUILL",
+        "level": 36
+      }
+    ],
+    "implementation_review": {
+      "status": "approved implemented; authored-source checks passed",
+      "checks": [
+        {
+          "id": "MN_019",
+          "move": "ACID",
+          "level": 7,
+          "profile_exact_single_entry": true,
+          "moveset_exact_single_entry": true
+        },
+        {
+          "id": "MN_020",
+          "move": "ACID",
+          "level": 12,
+          "profile_exact_single_entry": true,
+          "moveset_exact_single_entry": true
+        },
+        {
+          "id": "MN_241",
+          "move": "ACID",
+          "level": 9,
+          "profile_exact_single_entry": true,
+          "moveset_exact_single_entry": true
+        },
+        {
+          "id": "MN_242",
+          "move": "ACID",
+          "level": 12,
+          "profile_exact_single_entry": true,
+          "moveset_exact_single_entry": true
+        },
+        {
+          "id": "MN_053",
+          "move": "ACID",
+          "level": 13,
+          "profile_exact_single_entry": true,
+          "moveset_exact_single_entry": true
+        },
+        {
+          "id": "MN_054",
+          "move": "ACID",
+          "level": 20,
+          "profile_exact_single_entry": true,
+          "moveset_exact_single_entry": true
+        },
+        {
+          "id": "MN_090",
+          "move": "SLUDGE",
+          "level": 20,
+          "profile_exact_single_entry": true,
+          "moveset_exact_single_entry": true
+        },
+        {
+          "id": "MN_257",
+          "move": "SLUDGE",
+          "level": 20,
+          "profile_exact_single_entry": true,
+          "moveset_exact_single_entry": true
+        },
+        {
+          "id": "MN_258",
+          "move": "SLUDGE",
+          "level": 24,
+          "profile_exact_single_entry": true,
+          "moveset_exact_single_entry": true
+        },
+        {
+          "id": "MN_023",
+          "move": "METAL_CLAW",
+          "level": 18,
+          "profile_exact_single_entry": true,
+          "moveset_exact_single_entry": true
+        },
+        {
+          "id": "MN_035",
+          "move": "METAL_CLAW",
+          "level": 22,
+          "profile_exact_single_entry": true,
+          "moveset_exact_single_entry": true
+        },
+        {
+          "id": "MN_054",
+          "move": "SLUDGE",
+          "level": 30,
+          "profile_exact_single_entry": true,
+          "moveset_exact_single_entry": true
+        },
+        {
+          "id": "MN_242",
+          "move": "POISON_JAB",
+          "level": 32,
+          "extension_learner_present": true
+        },
+        {
+          "id": "MN_258",
+          "move": "POISON_JAB",
+          "level": 32,
+          "extension_learner_present": true
+        },
+        {
+          "id": "MN_153",
+          "move": "POISON_JAB",
+          "level": 46,
+          "extension_learner_present": true
+        },
+        {
+          "id": "MN_299",
+          "move": "IRON_HEAD",
+          "level": 36,
+          "extension_learner_present": true
+        }
+      ],
+      "all313_existing_base_stats_unchanged": true,
+      "poison_jab": {
+        "source_index": 270,
+        "name": "POISON_JAB",
+        "type": "POISON",
+        "power": 80,
+        "accuracy": 100,
+        "pp": 20,
+        "effect": "POISON_HIT",
+        "effect_chance": 30,
+        "stat": null,
+        "amount": null
+      },
+      "slipper_waltz_type": "FAIRY",
+      "all_current_poison_steel_species": [
+        {
+          "id": "MN_006",
+          "name": "Mesablast",
+          "type": "STEEL",
+          "earliest_40plus_level": {
+            "level": 29,
+            "move": "METAL_CLAW",
+            "power": 50,
+            "source": "native"
+          },
+          "attacks": [
+            {
+              "level": 29,
+              "move": "METAL_CLAW",
+              "power": 50,
+              "source": "native"
+            },
+            {
+              "level": 36,
+              "move": "IRON_TAIL",
+              "power": 100,
+              "source": "native"
+            },
+            {
+              "level": 36,
+              "move": "IRON_HEAD",
+              "power": 80,
+              "source": "extension"
+            }
+          ]
+        },
+        {
+          "id": "MN_019",
+          "name": "Stripillar",
+          "type": "POISON",
+          "earliest_40plus_level": {
+            "level": 7,
+            "move": "ACID",
+            "power": 40,
+            "source": "native"
+          },
+          "attacks": [
+            {
+              "level": 5,
+              "move": "POISON_STING",
+              "power": 15,
+              "source": "native"
+            },
+            {
+              "level": 7,
+              "move": "ACID",
+              "power": 40,
+              "source": "native"
+            }
+          ]
+        },
+        {
+          "id": "MN_020",
+          "name": "Giltalis",
+          "type": "POISON",
+          "earliest_40plus_level": {
+            "level": 12,
+            "move": "ACID",
+            "power": 40,
+            "source": "native"
+          },
+          "attacks": [
+            {
+              "level": 1,
+              "move": "POISON_STING",
+              "power": 15,
+              "source": "native"
+            },
+            {
+              "level": 12,
+              "move": "ACID",
+              "power": 40,
+              "source": "native"
+            }
+          ]
+        },
+        {
+          "id": "MN_023",
+          "name": "Patchebee",
+          "type": "STEEL",
+          "earliest_40plus_level": {
+            "level": 18,
+            "move": "METAL_CLAW",
+            "power": 50,
+            "source": "native"
+          },
+          "attacks": [
+            {
+              "level": 18,
+              "move": "METAL_CLAW",
+              "power": 50,
+              "source": "native"
+            },
+            {
+              "level": 38,
+              "move": "IRON_TAIL",
+              "power": 100,
+              "source": "native"
+            },
+            {
+              "level": 40,
+              "move": "IRON_HEAD",
+              "power": 80,
+              "source": "extension"
+            }
+          ]
+        },
+        {
+          "id": "MN_024",
+          "name": "Rivetqueen",
+          "type": "STEEL",
+          "earliest_40plus_level": {
+            "level": 26,
+            "move": "METAL_CLAW",
+            "power": 50,
+            "source": "native"
+          },
+          "attacks": [
+            {
+              "level": 26,
+              "move": "METAL_CLAW",
+              "power": 50,
+              "source": "native"
+            },
+            {
+              "level": 40,
+              "move": "IRON_TAIL",
+              "power": 100,
+              "source": "native"
+            },
+            {
+              "level": 40,
+              "move": "IRON_HEAD",
+              "power": 80,
+              "source": "extension"
+            }
+          ]
+        },
+        {
+          "id": "MN_035",
+          "name": "Skatuff",
+          "type": "STEEL",
+          "earliest_40plus_level": {
+            "level": 22,
+            "move": "METAL_CLAW",
+            "power": 50,
+            "source": "native"
+          },
+          "attacks": [
+            {
+              "level": 22,
+              "move": "METAL_CLAW",
+              "power": 50,
+              "source": "native"
+            },
+            {
+              "level": 34,
+              "move": "IRON_HEAD",
+              "power": 80,
+              "source": "extension"
+            }
+          ]
+        },
+        {
+          "id": "MN_036",
+          "name": "Goalossus",
+          "type": "STEEL",
+          "earliest_40plus_level": {
+            "level": 26,
+            "move": "METAL_CLAW",
+            "power": 50,
+            "source": "native"
+          },
+          "attacks": [
+            {
+              "level": 26,
+              "move": "METAL_CLAW",
+              "power": 50,
+              "source": "native"
+            },
+            {
+              "level": 34,
+              "move": "IRON_HEAD",
+              "power": 80,
+              "source": "extension"
+            }
+          ]
+        },
+        {
+          "id": "MN_043",
+          "name": "Jiglet",
+          "type": "STEEL",
+          "earliest_40plus_level": {
+            "level": 9,
+            "move": "METAL_CLAW",
+            "power": 50,
+            "source": "native"
+          },
+          "attacks": [
+            {
+              "level": 9,
+              "move": "METAL_CLAW",
+              "power": 50,
+              "source": "native"
+            },
+            {
+              "level": 34,
+              "move": "IRON_HEAD",
+              "power": 80,
+              "source": "extension"
+            },
+            {
+              "level": 37,
+              "move": "IRON_TAIL",
+              "power": 100,
+              "source": "native"
+            }
+          ]
+        },
+        {
+          "id": "MN_044",
+          "name": "Trollure",
+          "type": "STEEL",
+          "earliest_40plus_level": {
+            "level": 15,
+            "move": "METAL_CLAW",
+            "power": 50,
+            "source": "native"
+          },
+          "attacks": [
+            {
+              "level": 15,
+              "move": "METAL_CLAW",
+              "power": 50,
+              "source": "native"
+            },
+            {
+              "level": 34,
+              "move": "IRON_HEAD",
+              "power": 80,
+              "source": "extension"
+            },
+            {
+              "level": 38,
+              "move": "IRON_TAIL",
+              "power": 100,
+              "source": "native"
+            }
+          ]
+        },
+        {
+          "id": "MN_047",
+          "name": "Hatchit",
+          "type": "STEEL",
+          "earliest_40plus_level": {
+            "level": 5,
+            "move": "METAL_CLAW",
+            "power": 50,
+            "source": "native"
+          },
+          "attacks": [
+            {
+              "level": 5,
+              "move": "METAL_CLAW",
+              "power": 50,
+              "source": "native"
+            },
+            {
+              "level": 34,
+              "move": "IRON_HEAD",
+              "power": 80,
+              "source": "extension"
+            }
+          ]
+        },
+        {
+          "id": "MN_048",
+          "name": "Doublehex",
+          "type": "STEEL",
+          "earliest_40plus_level": {
+            "level": 1,
+            "move": "METAL_CLAW",
+            "power": 50,
+            "source": "native"
+          },
+          "attacks": [
+            {
+              "level": 1,
+              "move": "METAL_CLAW",
+              "power": 50,
+              "source": "native"
+            },
+            {
+              "level": 34,
+              "move": "IRON_HEAD",
+              "power": 80,
+              "source": "extension"
+            }
+          ]
+        },
+        {
+          "id": "MN_054",
+          "name": "Cidermaw",
+          "type": "POISON",
+          "earliest_40plus_level": {
+            "level": 20,
+            "move": "ACID",
+            "power": 40,
+            "source": "native"
+          },
+          "attacks": [
+            {
+              "level": 20,
+              "move": "ACID",
+              "power": 40,
+              "source": "native"
+            },
+            {
+              "level": 30,
+              "move": "SLUDGE",
+              "power": 65,
+              "source": "native"
+            },
+            {
+              "level": 47,
+              "move": "SLUDGE_BOMB",
+              "power": 90,
+              "source": "native"
+            }
+          ]
+        },
+        {
+          "id": "MN_067",
+          "name": "Clinklaw",
+          "type": "STEEL",
+          "earliest_40plus_level": {
+            "level": 13,
+            "move": "METAL_CLAW",
+            "power": 50,
+            "source": "native"
+          },
+          "attacks": [
+            {
+              "level": 13,
+              "move": "METAL_CLAW",
+              "power": 50,
+              "source": "native"
+            },
+            {
+              "level": 34,
+              "move": "IRON_TAIL",
+              "power": 100,
+              "source": "native"
+            }
+          ]
+        },
+        {
+          "id": "MN_068",
+          "name": "Trapnack",
+          "type": "STEEL",
+          "earliest_40plus_level": {
+            "level": 15,
+            "move": "METAL_CLAW",
+            "power": 50,
+            "source": "native"
+          },
+          "attacks": [
+            {
+              "level": 15,
+              "move": "METAL_CLAW",
+              "power": 50,
+              "source": "native"
+            },
+            {
+              "level": 35,
+              "move": "IRON_TAIL",
+              "power": 100,
+              "source": "native"
+            }
+          ]
+        },
+        {
+          "id": "MN_073",
+          "name": "Spanlet",
+          "type": "STEEL",
+          "earliest_40plus_level": {
+            "level": 9,
+            "move": "METAL_CLAW",
+            "power": 50,
+            "source": "native"
+          },
+          "attacks": [
+            {
+              "level": 9,
+              "move": "METAL_CLAW",
+              "power": 50,
+              "source": "native"
+            },
+            {
+              "level": 34,
+              "move": "IRON_TAIL",
+              "power": 100,
+              "source": "native"
+            },
+            {
+              "level": 34,
+              "move": "IRON_HEAD",
+              "power": 80,
+              "source": "extension"
+            }
+          ]
+        },
+        {
+          "id": "MN_074",
+          "name": "Liftruss",
+          "type": "STEEL",
+          "earliest_40plus_level": {
+            "level": 15,
+            "move": "METAL_CLAW",
+            "power": 50,
+            "source": "native"
+          },
+          "attacks": [
+            {
+              "level": 15,
+              "move": "METAL_CLAW",
+              "power": 50,
+              "source": "native"
+            },
+            {
+              "level": 34,
+              "move": "IRON_HEAD",
+              "power": 80,
+              "source": "extension"
+            },
+            {
+              "level": 35,
+              "move": "IRON_TAIL",
+              "power": 100,
+              "source": "native"
+            }
+          ]
+        },
+        {
+          "id": "MN_087",
+          "name": "Scraplow",
+          "type": "STEEL",
+          "earliest_40plus_level": {
+            "level": 9,
+            "move": "METAL_CLAW",
+            "power": 50,
+            "source": "native"
+          },
+          "attacks": [
+            {
+              "level": 9,
+              "move": "METAL_CLAW",
+              "power": 50,
+              "source": "native"
+            },
+            {
+              "level": 34,
+              "move": "IRON_HEAD",
+              "power": 80,
+              "source": "extension"
+            },
+            {
+              "level": 37,
+              "move": "IRON_TAIL",
+              "power": 100,
+              "source": "native"
+            }
+          ]
+        },
+        {
+          "id": "MN_088",
+          "name": "Plowzer",
+          "type": "STEEL",
+          "earliest_40plus_level": {
+            "level": 15,
+            "move": "METAL_CLAW",
+            "power": 50,
+            "source": "native"
+          },
+          "attacks": [
+            {
+              "level": 15,
+              "move": "METAL_CLAW",
+              "power": 50,
+              "source": "native"
+            },
+            {
+              "level": 34,
+              "move": "IRON_HEAD",
+              "power": 80,
+              "source": "extension"
+            },
+            {
+              "level": 38,
+              "move": "IRON_TAIL",
+              "power": 100,
+              "source": "native"
+            }
+          ]
+        },
+        {
+          "id": "MN_090",
+          "name": "Sludgeski",
+          "type": "POISON",
+          "earliest_40plus_level": {
+            "level": 20,
+            "move": "SLUDGE",
+            "power": 65,
+            "source": "native"
+          },
+          "attacks": [
+            {
+              "level": 9,
+              "move": "SMOG",
+              "power": 20,
+              "source": "native"
+            },
+            {
+              "level": 20,
+              "move": "SLUDGE",
+              "power": 65,
+              "source": "native"
+            },
+            {
+              "level": 46,
+              "move": "SLUDGE_BOMB",
+              "power": 90,
+              "source": "native"
+            }
+          ]
+        },
+        {
+          "id": "MN_094",
+          "name": "Wreckquiem",
+          "type": "STEEL",
+          "earliest_40plus_level": {
+            "level": 5,
+            "move": "METAL_CLAW",
+            "power": 50,
+            "source": "native"
+          },
+          "attacks": [
+            {
+              "level": 5,
+              "move": "METAL_CLAW",
+              "power": 50,
+              "source": "native"
+            },
+            {
+              "level": 27,
+              "move": "IRON_TAIL",
+              "power": 100,
+              "source": "native"
+            },
+            {
+              "level": 34,
+              "move": "IRON_HEAD",
+              "power": 80,
+              "source": "extension"
+            }
+          ]
+        },
+        {
+          "id": "MN_102",
+          "name": "Pelletank",
+          "type": "STEEL",
+          "earliest_40plus_level": {
+            "level": 15,
+            "move": "METAL_CLAW",
+            "power": 50,
+            "source": "native"
+          },
+          "attacks": [
+            {
+              "level": 15,
+              "move": "METAL_CLAW",
+              "power": 50,
+              "source": "native"
+            },
+            {
+              "level": 31,
+              "move": "IRON_TAIL",
+              "power": 100,
+              "source": "native"
+            },
+            {
+              "level": 34,
+              "move": "IRON_HEAD",
+              "power": 80,
+              "source": "extension"
+            }
+          ]
+        },
+        {
+          "id": "MN_103",
+          "name": "Taconarch",
+          "type": "STEEL",
+          "earliest_40plus_level": {
+            "level": 17,
+            "move": "METAL_CLAW",
+            "power": 50,
+            "source": "native"
+          },
+          "attacks": [
+            {
+              "level": 17,
+              "move": "METAL_CLAW",
+              "power": 50,
+              "source": "native"
+            },
+            {
+              "level": 33,
+              "move": "IRON_TAIL",
+              "power": 100,
+              "source": "native"
+            },
+            {
+              "level": 34,
+              "move": "IRON_HEAD",
+              "power": 80,
+              "source": "extension"
+            }
+          ]
+        },
+        {
+          "id": "MN_125",
+          "name": "Podlet",
+          "type": "POISON",
+          "earliest_40plus_level": {
+            "level": 5,
+            "move": "ACID",
+            "power": 40,
+            "source": "native"
+          },
+          "attacks": [
+            {
+              "level": 5,
+              "move": "ACID",
+              "power": 40,
+              "source": "native"
+            },
+            {
+              "level": 30,
+              "move": "SLUDGE",
+              "power": 65,
+              "source": "native"
+            },
+            {
+              "level": 46,
+              "move": "SLUDGE_BOMB",
+              "power": 90,
+              "source": "native"
+            }
+          ]
+        },
+        {
+          "id": "MN_126",
+          "name": "Flossail",
+          "type": "POISON",
+          "earliest_40plus_level": {
+            "level": 1,
+            "move": "ACID",
+            "power": 40,
+            "source": "native"
+          },
+          "attacks": [
+            {
+              "level": 1,
+              "move": "ACID",
+              "power": 40,
+              "source": "native"
+            },
+            {
+              "level": 31,
+              "move": "SLUDGE",
+              "power": 65,
+              "source": "native"
+            },
+            {
+              "level": 47,
+              "move": "SLUDGE_BOMB",
+              "power": 90,
+              "source": "native"
+            }
+          ]
+        },
+        {
+          "id": "MN_127",
+          "name": "Parafloss",
+          "type": "POISON",
+          "earliest_40plus_level": {
+            "level": 1,
+            "move": "ACID",
+            "power": 40,
+            "source": "native"
+          },
+          "attacks": [
+            {
+              "level": 1,
+              "move": "ACID",
+              "power": 40,
+              "source": "native"
+            },
+            {
+              "level": 33,
+              "move": "SLUDGE",
+              "power": 65,
+              "source": "native"
+            },
+            {
+              "level": 48,
+              "move": "SLUDGE_BOMB",
+              "power": 90,
+              "source": "native"
+            }
+          ]
+        },
+        {
+          "id": "MN_140",
+          "name": "Choirbog",
+          "type": "POISON",
+          "earliest_40plus_level": {
+            "level": 28,
+            "move": "SLUDGE",
+            "power": 65,
+            "source": "native"
+          },
+          "attacks": [
+            {
+              "level": 28,
+              "move": "SLUDGE",
+              "power": 65,
+              "source": "native"
+            },
+            {
+              "level": 38,
+              "move": "SLUDGE_BOMB",
+              "power": 90,
+              "source": "native"
+            }
+          ]
+        },
+        {
+          "id": "MN_145",
+          "name": "Cartick",
+          "type": "POISON",
+          "earliest_40plus_level": {
+            "level": 22,
+            "move": "SLUDGE",
+            "power": 65,
+            "source": "native"
+          },
+          "attacks": [
+            {
+              "level": 5,
+              "move": "SMOG",
+              "power": 20,
+              "source": "native"
+            },
+            {
+              "level": 22,
+              "move": "SLUDGE",
+              "power": 65,
+              "source": "native"
+            },
+            {
+              "level": 37,
+              "move": "SLUDGE_BOMB",
+              "power": 90,
+              "source": "native"
+            }
+          ]
+        },
+        {
+          "id": "MN_145",
+          "name": "Cartick",
+          "type": "STEEL",
+          "earliest_40plus_level": {
+            "level": 9,
+            "move": "METAL_CLAW",
+            "power": 50,
+            "source": "native"
+          },
+          "attacks": [
+            {
+              "level": 9,
+              "move": "METAL_CLAW",
+              "power": 50,
+              "source": "native"
+            },
+            {
+              "level": 34,
+              "move": "IRON_TAIL",
+              "power": 100,
+              "source": "native"
+            }
+          ]
+        },
+        {
+          "id": "MN_146",
+          "name": "Haulgeist",
+          "type": "POISON",
+          "earliest_40plus_level": {
+            "level": 24,
+            "move": "SLUDGE",
+            "power": 65,
+            "source": "native"
+          },
+          "attacks": [
+            {
+              "level": 1,
+              "move": "SMOG",
+              "power": 20,
+              "source": "native"
+            },
+            {
+              "level": 24,
+              "move": "SLUDGE",
+              "power": 65,
+              "source": "native"
+            },
+            {
+              "level": 38,
+              "move": "SLUDGE_BOMB",
+              "power": 90,
+              "source": "native"
+            }
+          ]
+        },
+        {
+          "id": "MN_149",
+          "name": "Pothollow",
+          "type": "POISON",
+          "earliest_40plus_level": {
+            "level": 13,
+            "move": "SLUDGE",
+            "power": 65,
+            "source": "native"
+          },
+          "attacks": [
+            {
+              "level": 13,
+              "move": "SLUDGE",
+              "power": 65,
+              "source": "native"
+            },
+            {
+              "level": 37,
+              "move": "SLUDGE_BOMB",
+              "power": 90,
+              "source": "native"
+            }
+          ]
+        },
+        {
+          "id": "MN_150",
+          "name": "Canalarm",
+          "type": "POISON",
+          "earliest_40plus_level": {
+            "level": 9,
+            "move": "ACID",
+            "power": 40,
+            "source": "native"
+          },
+          "attacks": [
+            {
+              "level": 9,
+              "move": "ACID",
+              "power": 40,
+              "source": "native"
+            },
+            {
+              "level": 27,
+              "move": "SLUDGE",
+              "power": 65,
+              "source": "native"
+            },
+            {
+              "level": 41,
+              "move": "SLUDGE_BOMB",
+              "power": 90,
+              "source": "native"
+            }
+          ]
+        },
+        {
+          "id": "MN_222",
+          "name": "Smoulden",
+          "type": "POISON",
+          "earliest_40plus_level": {
+            "level": 28,
+            "move": "SLUDGE",
+            "power": 65,
+            "source": "native"
+          },
+          "attacks": [
+            {
+              "level": 11,
+              "move": "SMOG",
+              "power": 20,
+              "source": "native"
+            },
+            {
+              "level": 28,
+              "move": "SLUDGE",
+              "power": 65,
+              "source": "native"
+            }
+          ]
+        },
+        {
+          "id": "MN_241",
+          "name": "Dewdant",
+          "type": "POISON",
+          "earliest_40plus_level": {
+            "level": 9,
+            "move": "ACID",
+            "power": 40,
+            "source": "native"
+          },
+          "attacks": [
+            {
+              "level": 1,
+              "move": "POISON_STING",
+              "power": 15,
+              "source": "native"
+            },
+            {
+              "level": 9,
+              "move": "ACID",
+              "power": 40,
+              "source": "native"
+            },
+            {
+              "level": 30,
+              "move": "SLUDGE",
+              "power": 65,
+              "source": "native"
+            },
+            {
+              "level": 50,
+              "move": "SLUDGE_BOMB",
+              "power": 90,
+              "source": "native"
+            }
+          ]
+        },
+        {
+          "id": "MN_242",
+          "name": "Barricant",
+          "type": "POISON",
+          "earliest_40plus_level": {
+            "level": 12,
+            "move": "ACID",
+            "power": 40,
+            "source": "native"
+          },
+          "attacks": [
+            {
+              "level": 1,
+              "move": "POISON_STING",
+              "power": 15,
+              "source": "native"
+            },
+            {
+              "level": 12,
+              "move": "ACID",
+              "power": 40,
+              "source": "native"
+            },
+            {
+              "level": 31,
+              "move": "SLUDGE",
+              "power": 65,
+              "source": "native"
+            },
+            {
+              "level": 32,
+              "move": "POISON_JAB",
+              "power": 80,
+              "source": "extension"
+            },
+            {
+              "level": 51,
+              "move": "SLUDGE_BOMB",
+              "power": 90,
+              "source": "native"
+            }
+          ]
+        },
+        {
+          "id": "MN_257",
+          "name": "Hushiss",
+          "type": "POISON",
+          "earliest_40plus_level": {
+            "level": 20,
+            "move": "SLUDGE",
+            "power": 65,
+            "source": "native"
+          },
+          "attacks": [
+            {
+              "level": 1,
+              "move": "POISON_STING",
+              "power": 15,
+              "source": "native"
+            },
+            {
+              "level": 20,
+              "move": "SLUDGE",
+              "power": 65,
+              "source": "native"
+            },
+            {
+              "level": 40,
+              "move": "SLUDGE_BOMB",
+              "power": 90,
+              "source": "native"
+            }
+          ]
+        },
+        {
+          "id": "MN_258",
+          "name": "Castanake",
+          "type": "POISON",
+          "earliest_40plus_level": {
+            "level": 24,
+            "move": "SLUDGE",
+            "power": 65,
+            "source": "native"
+          },
+          "attacks": [
+            {
+              "level": 1,
+              "move": "POISON_STING",
+              "power": 15,
+              "source": "native"
+            },
+            {
+              "level": 24,
+              "move": "SLUDGE",
+              "power": 65,
+              "source": "native"
+            },
+            {
+              "level": 32,
+              "move": "POISON_JAB",
+              "power": 80,
+              "source": "extension"
+            },
+            {
+              "level": 40,
+              "move": "SLUDGE_BOMB",
+              "power": 90,
+              "source": "native"
+            }
+          ]
+        },
+        {
+          "id": "MN_265",
+          "name": "Musketunge",
+          "type": "STEEL",
+          "earliest_40plus_level": {
+            "level": 40,
+            "move": "IRON_TAIL",
+            "power": 100,
+            "source": "native"
+          },
+          "attacks": [
+            {
+              "level": 40,
+              "move": "IRON_TAIL",
+              "power": 100,
+              "source": "native"
+            },
+            {
+              "level": 44,
+              "move": "IRON_HEAD",
+              "power": 80,
+              "source": "extension"
+            }
+          ]
+        },
+        {
+          "id": "MN_152",
+          "name": "Pupump",
+          "type": "POISON",
+          "earliest_40plus_level": {
+            "level": 28,
+            "move": "ACID",
+            "power": 40,
+            "source": "native"
+          },
+          "attacks": [
+            {
+              "level": 19,
+              "move": "POISON_STING",
+              "power": 15,
+              "source": "native"
+            },
+            {
+              "level": 28,
+              "move": "ACID",
+              "power": 40,
+              "source": "native"
+            },
+            {
+              "level": 38,
+              "move": "SLUDGE",
+              "power": 65,
+              "source": "native"
+            },
+            {
+              "level": 47,
+              "move": "SLUDGE_BOMB",
+              "power": 90,
+              "source": "native"
+            }
+          ]
+        },
+        {
+          "id": "MN_153",
+          "name": "Mosquitan",
+          "type": "POISON",
+          "earliest_40plus_level": {
+            "level": 29,
+            "move": "ACID",
+            "power": 40,
+            "source": "native"
+          },
+          "attacks": [
+            {
+              "level": 21,
+              "move": "POISON_STING",
+              "power": 15,
+              "source": "native"
+            },
+            {
+              "level": 29,
+              "move": "ACID",
+              "power": 40,
+              "source": "native"
+            },
+            {
+              "level": 40,
+              "move": "SLUDGE",
+              "power": 65,
+              "source": "native"
+            },
+            {
+              "level": 46,
+              "move": "POISON_JAB",
+              "power": 80,
+              "source": "extension"
+            },
+            {
+              "level": 48,
+              "move": "SLUDGE_BOMB",
+              "power": 90,
+              "source": "native"
+            }
+          ]
+        },
+        {
+          "id": "MN_299",
+          "name": "Latchquill",
+          "type": "STEEL",
+          "earliest_40plus_level": {
+            "level": 28,
+            "move": "METAL_CLAW",
+            "power": 50,
+            "source": "native"
+          },
+          "attacks": [
+            {
+              "level": 28,
+              "move": "METAL_CLAW",
+              "power": 50,
+              "source": "native"
+            },
+            {
+              "level": 36,
+              "move": "IRON_HEAD",
+              "power": 80,
+              "source": "extension"
+            },
+            {
+              "level": 45,
+              "move": "IRON_TAIL",
+              "power": 100,
+              "source": "native"
+            }
+          ]
+        }
+      ],
+      "remaining_limits": "Level-up availability is authored, not proof of early encounter placement; late evolutions retain earlier level entries but move inheritance/relearning depends on engine/gameplay. Not every Poison/Steel attacker must beat every Fairy dual type. Final compiled effect whitelist, move animation and battle application remain root validation.",
+      "result_summary": "All 11 native level shifts, 1 Sludge addition and 4 extension learners match exactly in profiles/movesets/catalogs. All 313 existing base_stats are unchanged. Every active Poison/Steel species has a 40+ power level-up STAB option; early bases receive Acid/MetalClaw, while physical Barricant/Castanake/Mosquitan receive PoisonJab at levels 32/32/46. No further mandatory coverage patch found; late evolutions and the pseudo-legendary mature later.",
+      "reviewed_source_sha256": {
+        "species-profiles.json": "04c671d84a1c4caaae69bef41d73353e9961e192979c7f808370a6f91f576f44",
+        "movesets.json": "07f19751f48e6a2ee8a7b9e5f945791d18342adcbaafc5b2adc9779f82305fdc",
+        "northwoods-moves.json": "10ad1c64bbad7b98559d64f81eddc350fe8a31e11ee72b7e32939d2077466d4f",
+        "fairy-moves.json": "82bff403f37283a5c881a1adf60abd62b93fc19cdca5b0bc9e162b4e4df5203f"
+      }
+    }
+  },
+  "modern_chart_source": "https://sg.portal-pokemon.com/game/type-chart/",
+  "modern_steel_rule": "In this mod only, Steel no longer resists Dark or Ghost. Existing Steel/Dragon remains neutral to Fairy. Steel/Ghost becomes2xweak to Ghost/Dark instead of the old neutral interaction.",
+  "before_hashes": {
+    "roster.json": "502fd32c93d5b58e608420512b81328bbcaadedb5987f04f51666d418d47aae0",
+    "roster-curation.json": "d549867d1b5cf5466c507da5e6da140946fb7f86268a56ce79c02823464064d5"
+  },
+  "after_hashes": {
+    "roster.json": "c7f5017762126b2d6cd40d2f4d761e65046aae9ae15bd85588955a07a74a88cf",
+    "roster-curation.json": "3f7d195c1743f5c0f3bf5ed3b4edf449a622d5044898aa7c822ea9548fa9d1ab"
+  },
+  "backup_directory": "planning/minnesota/pokemon/expansion/fairy-before-20261027",
+  "matchup_audit": {
+    "chart": "standard modern18types; mod-only Steel/Dark/Ghost resistance removal",
+    "source": "https://sg.portal-pokemon.com/game/type-chart/",
+    "regional_fairy_count": 13,
+    "fairy_poison_weak_species": 8,
+    "fairy_steel_weak_species": 12,
+    "fairy_defensive_matchups": [
+      {
+        "species_id": "MN_002",
+        "name": "Slipperina",
+        "types": [
+          "GRASS",
+          "FAIRY"
+        ],
+        "incoming_poison": 4,
+        "incoming_steel": 2,
+        "incoming_dragon": 0,
+        "immunities": [
+          "DRAGON"
+        ],
+        "weaknesses": {
+          "FIRE": 2,
+          "ICE": 2,
+          "POISON": 4,
+          "FLYING": 2,
+          "STEEL": 2
+        }
+      },
+      {
+        "species_id": "MN_003",
+        "name": "Cyprielle",
+        "types": [
+          "GRASS",
+          "FAIRY"
+        ],
+        "incoming_poison": 4,
+        "incoming_steel": 2,
+        "incoming_dragon": 0,
+        "immunities": [
+          "DRAGON"
+        ],
+        "weaknesses": {
+          "FIRE": 2,
+          "ICE": 2,
+          "POISON": 4,
+          "FLYING": 2,
+          "STEEL": 2
+        }
+      },
+      {
+        "species_id": "MN_093",
+        "name": "Tiltawisp",
+        "types": [
+          "ELECTRIC",
+          "FAIRY"
+        ],
+        "incoming_poison": 2,
+        "incoming_steel": 1.0,
+        "incoming_dragon": 0,
+        "immunities": [
+          "DRAGON"
+        ],
+        "weaknesses": {
+          "POISON": 2,
+          "GROUND": 2
+        }
+      },
+      {
+        "species_id": "MN_140",
+        "name": "Choirbog",
+        "types": [
+          "POISON",
+          "FAIRY"
+        ],
+        "incoming_poison": 1.0,
+        "incoming_steel": 2,
+        "incoming_dragon": 0,
+        "immunities": [
+          "DRAGON"
+        ],
+        "weaknesses": {
+          "GROUND": 2,
+          "PSYCHIC": 2,
+          "STEEL": 2
+        }
+      },
+      {
+        "species_id": "MN_163",
+        "name": "Mitwist",
+        "types": [
+          "GHOST",
+          "FAIRY"
+        ],
+        "incoming_poison": 1.0,
+        "incoming_steel": 2,
+        "incoming_dragon": 0,
+        "immunities": [
+          "NORMAL",
+          "FIGHTING",
+          "DRAGON"
+        ],
+        "weaknesses": {
+          "GHOST": 2,
+          "STEEL": 2
+        }
+      },
+      {
+        "species_id": "MN_164",
+        "name": "Mispair",
+        "types": [
+          "GHOST",
+          "FAIRY"
+        ],
+        "incoming_poison": 1.0,
+        "incoming_steel": 2,
+        "incoming_dragon": 0,
+        "immunities": [
+          "NORMAL",
+          "FIGHTING",
+          "DRAGON"
+        ],
+        "weaknesses": {
+          "GHOST": 2,
+          "STEEL": 2
+        }
+      },
+      {
+        "species_id": "MN_165",
+        "name": "Shawlter",
+        "types": [
+          "FAIRY",
+          "FLYING"
+        ],
+        "incoming_poison": 2,
+        "incoming_steel": 2,
+        "incoming_dragon": 0,
+        "immunities": [
+          "GROUND",
+          "DRAGON"
+        ],
+        "weaknesses": {
+          "ELECTRIC": 2,
+          "ICE": 2,
+          "POISON": 2,
+          "ROCK": 2,
+          "STEEL": 2
+        }
+      },
+      {
+        "species_id": "MN_213",
+        "name": "Chislet",
+        "types": [
+          "ICE",
+          "FAIRY"
+        ],
+        "incoming_poison": 2,
+        "incoming_steel": 4,
+        "incoming_dragon": 0,
+        "immunities": [
+          "DRAGON"
+        ],
+        "weaknesses": {
+          "FIRE": 2,
+          "POISON": 2,
+          "ROCK": 2,
+          "STEEL": 4
+        }
+      },
+      {
+        "species_id": "MN_214",
+        "name": "Buttermuse",
+        "types": [
+          "ICE",
+          "FAIRY"
+        ],
+        "incoming_poison": 2,
+        "incoming_steel": 4,
+        "incoming_dragon": 0,
+        "immunities": [
+          "DRAGON"
+        ],
+        "weaknesses": {
+          "FIRE": 2,
+          "POISON": 2,
+          "ROCK": 2,
+          "STEEL": 4
+        }
+      },
+      {
+        "species_id": "MN_095",
+        "name": "Babehemoth",
+        "types": [
+          "GROUND",
+          "FAIRY"
+        ],
+        "incoming_poison": 1.0,
+        "incoming_steel": 2,
+        "incoming_dragon": 0,
+        "immunities": [
+          "ELECTRIC",
+          "DRAGON"
+        ],
+        "weaknesses": {
+          "WATER": 2,
+          "GRASS": 2,
+          "ICE": 2,
+          "STEEL": 2
+        }
+      },
+      {
+        "species_id": "MN_250",
+        "name": "Flarkindle",
+        "types": [
+          "GHOST",
+          "FAIRY"
+        ],
+        "incoming_poison": 1.0,
+        "incoming_steel": 2,
+        "incoming_dragon": 0,
+        "immunities": [
+          "NORMAL",
+          "FIGHTING",
+          "DRAGON"
+        ],
+        "weaknesses": {
+          "GHOST": 2,
+          "STEEL": 2
+        }
+      },
+      {
+        "species_id": "MN_301",
+        "name": "Dozebear",
+        "types": [
+          "NORMAL",
+          "FAIRY"
+        ],
+        "incoming_poison": 2,
+        "incoming_steel": 2,
+        "incoming_dragon": 0,
+        "immunities": [
+          "GHOST",
+          "DRAGON"
+        ],
+        "weaknesses": {
+          "POISON": 2,
+          "STEEL": 2
+        }
+      },
+      {
+        "species_id": "MN_302",
+        "name": "Denumbra",
+        "types": [
+          "NORMAL",
+          "FAIRY"
+        ],
+        "incoming_poison": 2,
+        "incoming_steel": 2,
+        "incoming_dragon": 0,
+        "immunities": [
+          "GHOST",
+          "DRAGON"
+        ],
+        "weaknesses": {
+          "POISON": 2,
+          "STEEL": 2
+        }
+      }
+    ],
+    "regional_attack_coverage": {
+      "NORMAL": {
+        "super_effective_species": 0,
+        "immune_species": 15,
+        "resistant_species": 36
+      },
+      "FIRE": {
+        "super_effective_species": 66,
+        "immune_species": 0,
+        "resistant_species": 68
+      },
+      "WATER": {
+        "super_effective_species": 50,
+        "immune_species": 0,
+        "resistant_species": 66
+      },
+      "ELECTRIC": {
+        "super_effective_species": 53,
+        "immune_species": 17,
+        "resistant_species": 42
+      },
+      "GRASS": {
+        "super_effective_species": 47,
+        "immune_species": 0,
+        "resistant_species": 100
+      },
+      "ICE": {
+        "super_effective_species": 59,
+        "immune_species": 0,
+        "resistant_species": 86
+      },
+      "FIGHTING": {
+        "super_effective_species": 64,
+        "immune_species": 15,
+        "resistant_species": 40
+      },
+      "POISON": {
+        "super_effective_species": 31,
+        "immune_species": 21,
+        "resistant_species": 56
+      },
+      "GROUND": {
+        "super_effective_species": 70,
+        "immune_species": 17,
+        "resistant_species": 34
+      },
+      "FLYING": {
+        "super_effective_species": 62,
+        "immune_species": 0,
+        "resistant_species": 41
+      },
+      "PSYCHIC": {
+        "super_effective_species": 38,
+        "immune_species": 23,
+        "resistant_species": 33
+      },
+      "BUG": {
+        "super_effective_species": 41,
+        "immune_species": 0,
+        "resistant_species": 97
+      },
+      "ROCK": {
+        "super_effective_species": 72,
+        "immune_species": 0,
+        "resistant_species": 44
+      },
+      "GHOST": {
+        "super_effective_species": 26,
+        "immune_species": 29,
+        "resistant_species": 22
+      },
+      "DRAGON": {
+        "super_effective_species": 9,
+        "immune_species": 13,
+        "resistant_species": 19
+      },
+      "DARK": {
+        "super_effective_species": 24,
+        "immune_species": 0,
+        "resistant_species": 52
+      },
+      "STEEL": {
+        "super_effective_species": 37,
+        "immune_species": 0,
+        "resistant_species": 87
+      },
+      "FAIRY": {
+        "super_effective_species": 43,
+        "immune_species": 0,
+        "resistant_species": 55
+      }
+    },
+    "steel_mod_only_resistance_removal": {
+      "steel_species_affected": 21,
+      "species": [
+        {
+          "species_id": "MN_006",
+          "name": "Mesablast",
+          "types": [
+            "FIRE",
+            "STEEL"
+          ],
+          "incoming_dark_before": 0.5,
+          "incoming_dark_after": 1,
+          "incoming_ghost_before": 0.5,
+          "incoming_ghost_after": 1
+        },
+        {
+          "species_id": "MN_023",
+          "name": "Patchebee",
+          "types": [
+            "BUG",
+            "STEEL"
+          ],
+          "incoming_dark_before": 0.5,
+          "incoming_dark_after": 1,
+          "incoming_ghost_before": 0.5,
+          "incoming_ghost_after": 1
+        },
+        {
+          "species_id": "MN_024",
+          "name": "Rivetqueen",
+          "types": [
+            "BUG",
+            "STEEL"
+          ],
+          "incoming_dark_before": 0.5,
+          "incoming_dark_after": 1,
+          "incoming_ghost_before": 0.5,
+          "incoming_ghost_after": 1
+        },
+        {
+          "species_id": "MN_035",
+          "name": "Skatuff",
+          "types": [
+            "ICE",
+            "STEEL"
+          ],
+          "incoming_dark_before": 0.5,
+          "incoming_dark_after": 1,
+          "incoming_ghost_before": 0.5,
+          "incoming_ghost_after": 1
+        },
+        {
+          "species_id": "MN_036",
+          "name": "Goalossus",
+          "types": [
+            "ICE",
+            "STEEL"
+          ],
+          "incoming_dark_before": 0.5,
+          "incoming_dark_after": 1,
+          "incoming_ghost_before": 0.5,
+          "incoming_ghost_after": 1
+        },
+        {
+          "species_id": "MN_043",
+          "name": "Jiglet",
+          "types": [
+            "STEEL",
+            "WATER"
+          ],
+          "incoming_dark_before": 0.5,
+          "incoming_dark_after": 1,
+          "incoming_ghost_before": 0.5,
+          "incoming_ghost_after": 1
+        },
+        {
+          "species_id": "MN_044",
+          "name": "Trollure",
+          "types": [
+            "STEEL",
+            "WATER"
+          ],
+          "incoming_dark_before": 0.5,
+          "incoming_dark_after": 1,
+          "incoming_ghost_before": 0.5,
+          "incoming_ghost_after": 1
+        },
+        {
+          "species_id": "MN_047",
+          "name": "Hatchit",
+          "types": [
+            "STEEL"
+          ],
+          "incoming_dark_before": 0.5,
+          "incoming_dark_after": 1,
+          "incoming_ghost_before": 0.5,
+          "incoming_ghost_after": 1
+        },
+        {
+          "species_id": "MN_048",
+          "name": "Doublehex",
+          "types": [
+            "STEEL",
+            "GHOST"
+          ],
+          "incoming_dark_before": 1.0,
+          "incoming_dark_after": 2,
+          "incoming_ghost_before": 1.0,
+          "incoming_ghost_after": 2
+        },
+        {
+          "species_id": "MN_067",
+          "name": "Clinklaw",
+          "types": [
+            "BUG",
+            "STEEL"
+          ],
+          "incoming_dark_before": 0.5,
+          "incoming_dark_after": 1,
+          "incoming_ghost_before": 0.5,
+          "incoming_ghost_after": 1
+        },
+        {
+          "species_id": "MN_068",
+          "name": "Trapnack",
+          "types": [
+            "BUG",
+            "STEEL"
+          ],
+          "incoming_dark_before": 0.5,
+          "incoming_dark_after": 1,
+          "incoming_ghost_before": 0.5,
+          "incoming_ghost_after": 1
+        },
+        {
+          "species_id": "MN_073",
+          "name": "Spanlet",
+          "types": [
+            "STEEL"
+          ],
+          "incoming_dark_before": 0.5,
+          "incoming_dark_after": 1,
+          "incoming_ghost_before": 0.5,
+          "incoming_ghost_after": 1
+        },
+        {
+          "species_id": "MN_074",
+          "name": "Liftruss",
+          "types": [
+            "STEEL",
+            "WATER"
+          ],
+          "incoming_dark_before": 0.5,
+          "incoming_dark_after": 1,
+          "incoming_ghost_before": 0.5,
+          "incoming_ghost_after": 1
+        },
+        {
+          "species_id": "MN_087",
+          "name": "Scraplow",
+          "types": [
+            "STEEL"
+          ],
+          "incoming_dark_before": 0.5,
+          "incoming_dark_after": 1,
+          "incoming_ghost_before": 0.5,
+          "incoming_ghost_after": 1
+        },
+        {
+          "species_id": "MN_088",
+          "name": "Plowzer",
+          "types": [
+            "STEEL",
+            "ICE"
+          ],
+          "incoming_dark_before": 0.5,
+          "incoming_dark_after": 1,
+          "incoming_ghost_before": 0.5,
+          "incoming_ghost_after": 1
+        },
+        {
+          "species_id": "MN_094",
+          "name": "Wreckquiem",
+          "types": [
+            "STEEL",
+            "GHOST"
+          ],
+          "incoming_dark_before": 1.0,
+          "incoming_dark_after": 2,
+          "incoming_ghost_before": 1.0,
+          "incoming_ghost_after": 2
+        },
+        {
+          "species_id": "MN_102",
+          "name": "Pelletank",
+          "types": [
+            "STEEL",
+            "DRAGON"
+          ],
+          "incoming_dark_before": 0.5,
+          "incoming_dark_after": 1,
+          "incoming_ghost_before": 0.5,
+          "incoming_ghost_after": 1
+        },
+        {
+          "species_id": "MN_103",
+          "name": "Taconarch",
+          "types": [
+            "STEEL",
+            "DRAGON"
+          ],
+          "incoming_dark_before": 0.5,
+          "incoming_dark_after": 1,
+          "incoming_ghost_before": 0.5,
+          "incoming_ghost_after": 1
+        },
+        {
+          "species_id": "MN_145",
+          "name": "Cartick",
+          "types": [
+            "STEEL",
+            "POISON"
+          ],
+          "incoming_dark_before": 0.5,
+          "incoming_dark_after": 1,
+          "incoming_ghost_before": 0.5,
+          "incoming_ghost_after": 1
+        },
+        {
+          "species_id": "MN_265",
+          "name": "Musketunge",
+          "types": [
+            "WATER",
+            "STEEL"
+          ],
+          "incoming_dark_before": 0.5,
+          "incoming_dark_after": 1,
+          "incoming_ghost_before": 0.5,
+          "incoming_ghost_after": 1
+        },
+        {
+          "species_id": "MN_299",
+          "name": "Latchquill",
+          "types": [
+            "NORMAL",
+            "STEEL"
+          ],
+          "incoming_dark_before": 0.5,
+          "incoming_dark_after": 1,
+          "incoming_ghost_before": 0.0,
+          "incoming_ghost_after": 0
+        }
+      ],
+      "native_base_pack_change": "none; root builds separate mod overlay"
+    },
+    "specific_checks": {
+      "Crowscare_DarkGhost_new_Fairy_weakness": 2,
+      "Taconarch_SteelDragon_Fairy_neutral": 1.0,
+      "Knotitan_DragonFighting_Fairy_weakness": 4,
+      "Doublehex_SteelGhost_Dark_weakness": 2,
+      "Doublehex_SteelGhost_Ghost_weakness": 2
+    },
+    "limits": "Type-only coverage; speed, base stats, actual move availability, items and encounter locations are separate. Poison/Steel attack recommendations address actual moves, not just type labels."
+  },
+  "defensive_spread_audit": {
+    "status": "source and native-chart reviewed; final Fairy pack validation owned by root",
+    "native_chart_source": "Verified northwoods-moves-v6.crystalpack GameDataSet.type_effectiveness; 108 ordinary entries plus 2 Foresight-sensitive immunities; normal battles without Foresight. All 289 native single-type cells exactly match the known Gen2 chart. No raw pack data is committed.",
+    "modern_source": "https://sg.portal-pokemon.com/game/type-chart/",
+    "method": "Multiply dual defenses, counting each attack type once per species. Before uses the same active220 IDs with backed-up old typings and actual native Gen2 chart. After uses approved13 retypes, Fairy column and removal of Steel Dark/Ghost resistances. The same17 comparison isolates roster/Steel changes; after18 also includes the new attack type. No stats, speed, availability, STAB power, abilities, items or usage weighting are assumed.",
+    "whole_roster": {
+      "before17": {
+        "species": 220,
+        "attack_types": 17,
+        "matchup_cells": 3740,
+        "weak_matchups": 751,
+        "weak_2x": 707,
+        "weak_4x": 44,
+        "resistant_matchups": 955,
+        "immune_matchups": 143,
+        "neutral_matchups": 1891,
+        "mean_weak_attack_types": 3.4136,
+        "mean_resistant_attack_types": 4.3409,
+        "mean_immune_attack_types": 0.65,
+        "weak_fraction_of_cells": 0.200802,
+        "weakness_count_distribution": {
+          "0": 1,
+          "1": 22,
+          "2": 35,
+          "3": 60,
+          "4": 52,
+          "5": 34,
+          "6": 11,
+          "7": 5
+        }
+      },
+      "after_same17": {
+        "species": 220,
+        "attack_types": 17,
+        "matchup_cells": 3740,
+        "weak_matchups": 749,
+        "weak_2x": 707,
+        "weak_4x": 42,
+        "resistant_matchups": 923,
+        "immune_matchups": 150,
+        "neutral_matchups": 1918,
+        "mean_weak_attack_types": 3.4045,
+        "mean_resistant_attack_types": 4.1955,
+        "mean_immune_attack_types": 0.6818,
+        "weak_fraction_of_cells": 0.200267,
+        "weakness_count_distribution": {
+          "0": 1,
+          "1": 22,
+          "2": 34,
+          "3": 59,
+          "4": 55,
+          "5": 35,
+          "6": 11,
+          "7": 3
+        }
+      },
+      "after18": {
+        "species": 220,
+        "attack_types": 18,
+        "matchup_cells": 3960,
+        "weak_matchups": 792,
+        "weak_2x": 746,
+        "weak_4x": 46,
+        "resistant_matchups": 978,
+        "immune_matchups": 150,
+        "neutral_matchups": 2040,
+        "mean_weak_attack_types": 3.6,
+        "mean_resistant_attack_types": 4.4455,
+        "mean_immune_attack_types": 0.6818,
+        "weak_fraction_of_cells": 0.2,
+        "weakness_count_distribution": {
+          "1": 21,
+          "2": 26,
+          "3": 63,
+          "4": 52,
+          "5": 35,
+          "6": 14,
+          "7": 9
+        }
+      }
+    },
+    "focus_current_type_cohorts": {
+      "DRAGON": {
+        "current_species": 11,
+        "before_type_label_count": 11,
+        "fixed_current_cohort_ids": [
+          "MN_101",
+          "MN_102",
+          "MN_103",
+          "MN_123",
+          "MN_124",
+          "MN_137",
+          "MN_138",
+          "MN_270",
+          "MN_183",
+          "MN_097",
+          "MN_248"
+        ],
+        "before17": {
+          "species": 11,
+          "attack_types": 17,
+          "matchup_cells": 187,
+          "weak_matchups": 27,
+          "weak_2x": 24,
+          "weak_4x": 3,
+          "resistant_matchups": 60,
+          "immune_matchups": 5,
+          "neutral_matchups": 95,
+          "mean_weak_attack_types": 2.4545,
+          "mean_resistant_attack_types": 5.4545,
+          "mean_immune_attack_types": 0.4545,
+          "weak_fraction_of_cells": 0.144385,
+          "weakness_count_distribution": {
+            "1": 2,
+            "2": 6,
+            "4": 2,
+            "5": 1
+          }
+        },
+        "after_same17": {
+          "species": 11,
+          "attack_types": 17,
+          "matchup_cells": 187,
+          "weak_matchups": 27,
+          "weak_2x": 24,
+          "weak_4x": 3,
+          "resistant_matchups": 56,
+          "immune_matchups": 5,
+          "neutral_matchups": 99,
+          "mean_weak_attack_types": 2.4545,
+          "mean_resistant_attack_types": 5.0909,
+          "mean_immune_attack_types": 0.4545,
+          "weak_fraction_of_cells": 0.144385,
+          "weakness_count_distribution": {
+            "1": 2,
+            "2": 6,
+            "4": 2,
+            "5": 1
+          }
+        },
+        "after18": {
+          "species": 11,
+          "attack_types": 18,
+          "matchup_cells": 198,
+          "weak_matchups": 36,
+          "weak_2x": 31,
+          "weak_4x": 5,
+          "resistant_matchups": 56,
+          "immune_matchups": 5,
+          "neutral_matchups": 101,
+          "mean_weak_attack_types": 3.2727,
+          "mean_resistant_attack_types": 5.0909,
+          "mean_immune_attack_types": 0.4545,
+          "weak_fraction_of_cells": 0.181818,
+          "weakness_count_distribution": {
+            "2": 4,
+            "3": 4,
+            "5": 2,
+            "6": 1
+          }
+        },
+        "incoming_fairy_multiplier_species_counts": {
+          "1.0": 2,
+          "2": 7,
+          "4": 2
+        },
+        "this_type_STAB_target_spread": {
+          "before": {
+            "neutral": 192,
+            "resistant": 19,
+            "weak_2x": 9
+          },
+          "after": {
+            "neutral": 179,
+            "immune": 13,
+            "resistant": 19,
+            "weak_2x": 9
+          }
+        }
+      },
+      "DARK": {
+        "current_species": 23,
+        "before_type_label_count": 23,
+        "fixed_current_cohort_ids": [
+          "MN_052",
+          "MN_066",
+          "MN_091",
+          "MN_111",
+          "MN_112",
+          "MN_135",
+          "MN_136",
+          "MN_147",
+          "MN_155",
+          "MN_156",
+          "MN_169",
+          "MN_170",
+          "MN_171",
+          "MN_181",
+          "MN_193",
+          "MN_194",
+          "MN_196",
+          "MN_197",
+          "MN_203",
+          "MN_204",
+          "MN_099",
+          "MN_309",
+          "MN_315"
+        ],
+        "before17": {
+          "species": 23,
+          "attack_types": 17,
+          "matchup_cells": 391,
+          "weak_matchups": 91,
+          "weak_2x": 85,
+          "weak_4x": 6,
+          "resistant_matchups": 104,
+          "immune_matchups": 30,
+          "neutral_matchups": 166,
+          "mean_weak_attack_types": 3.9565,
+          "mean_resistant_attack_types": 4.5217,
+          "mean_immune_attack_types": 1.3043,
+          "weak_fraction_of_cells": 0.232737,
+          "weakness_count_distribution": {
+            "0": 1,
+            "2": 4,
+            "3": 3,
+            "4": 7,
+            "5": 2,
+            "6": 6
+          }
+        },
+        "after_same17": {
+          "species": 23,
+          "attack_types": 17,
+          "matchup_cells": 391,
+          "weak_matchups": 91,
+          "weak_2x": 85,
+          "weak_4x": 6,
+          "resistant_matchups": 104,
+          "immune_matchups": 30,
+          "neutral_matchups": 166,
+          "mean_weak_attack_types": 3.9565,
+          "mean_resistant_attack_types": 4.5217,
+          "mean_immune_attack_types": 1.3043,
+          "weak_fraction_of_cells": 0.232737,
+          "weakness_count_distribution": {
+            "0": 1,
+            "2": 4,
+            "3": 3,
+            "4": 7,
+            "5": 2,
+            "6": 6
+          }
+        },
+        "after18": {
+          "species": 23,
+          "attack_types": 18,
+          "matchup_cells": 414,
+          "weak_matchups": 109,
+          "weak_2x": 101,
+          "weak_4x": 8,
+          "resistant_matchups": 104,
+          "immune_matchups": 30,
+          "neutral_matchups": 171,
+          "mean_weak_attack_types": 4.7391,
+          "mean_resistant_attack_types": 4.5217,
+          "mean_immune_attack_types": 1.3043,
+          "weak_fraction_of_cells": 0.263285,
+          "weakness_count_distribution": {
+            "1": 1,
+            "3": 4,
+            "4": 8,
+            "5": 2,
+            "6": 2,
+            "7": 6
+          }
+        },
+        "incoming_fairy_multiplier_species_counts": {
+          "1.0": 5,
+          "2": 16,
+          "4": 2
+        },
+        "this_type_STAB_target_spread": {
+          "before": {
+            "neutral": 126,
+            "weak_2x": 31,
+            "resistant": 62,
+            "weak_4x": 1
+          },
+          "after": {
+            "neutral": 144,
+            "resistant": 52,
+            "weak_2x": 24
+          }
+        }
+      },
+      "FIGHTING": {
+        "current_species": 22,
+        "before_type_label_count": 23,
+        "fixed_current_cohort_ids": [
+          "MN_012",
+          "MN_080",
+          "MN_268",
+          "MN_092",
+          "MN_117",
+          "MN_118",
+          "MN_129",
+          "MN_130",
+          "MN_138",
+          "MN_270",
+          "MN_170",
+          "MN_171",
+          "MN_179",
+          "MN_199",
+          "MN_200",
+          "MN_231",
+          "MN_232",
+          "MN_259",
+          "MN_260",
+          "MN_264",
+          "MN_098",
+          "MN_307"
+        ],
+        "before17": {
+          "species": 22,
+          "attack_types": 17,
+          "matchup_cells": 374,
+          "weak_matchups": 83,
+          "weak_2x": 80,
+          "weak_4x": 3,
+          "resistant_matchups": 111,
+          "immune_matchups": 7,
+          "neutral_matchups": 173,
+          "mean_weak_attack_types": 3.7727,
+          "mean_resistant_attack_types": 5.0455,
+          "mean_immune_attack_types": 0.3182,
+          "weak_fraction_of_cells": 0.221925,
+          "weakness_count_distribution": {
+            "2": 4,
+            "3": 3,
+            "4": 9,
+            "5": 6
+          }
+        },
+        "after_same17": {
+          "species": 22,
+          "attack_types": 17,
+          "matchup_cells": 374,
+          "weak_matchups": 83,
+          "weak_2x": 80,
+          "weak_4x": 3,
+          "resistant_matchups": 111,
+          "immune_matchups": 7,
+          "neutral_matchups": 173,
+          "mean_weak_attack_types": 3.7727,
+          "mean_resistant_attack_types": 5.0455,
+          "mean_immune_attack_types": 0.3182,
+          "weak_fraction_of_cells": 0.221925,
+          "weakness_count_distribution": {
+            "2": 4,
+            "3": 3,
+            "4": 9,
+            "5": 6
+          }
+        },
+        "after18": {
+          "species": 22,
+          "attack_types": 18,
+          "matchup_cells": 396,
+          "weak_matchups": 103,
+          "weak_2x": 96,
+          "weak_4x": 7,
+          "resistant_matchups": 111,
+          "immune_matchups": 7,
+          "neutral_matchups": 175,
+          "mean_weak_attack_types": 4.6818,
+          "mean_resistant_attack_types": 5.0455,
+          "mean_immune_attack_types": 0.3182,
+          "weak_fraction_of_cells": 0.260101,
+          "weakness_count_distribution": {
+            "3": 4,
+            "4": 5,
+            "5": 7,
+            "6": 6
+          }
+        },
+        "incoming_fairy_multiplier_species_counts": {
+          "1.0": 2,
+          "2": 16,
+          "4": 4
+        },
+        "this_type_STAB_target_spread": {
+          "before": {
+            "neutral": 100,
+            "resistant": 37,
+            "weak_2x": 55,
+            "immune": 17,
+            "weak_4x": 11
+          },
+          "after": {
+            "neutral": 101,
+            "resistant": 40,
+            "weak_2x": 55,
+            "immune": 15,
+            "weak_4x": 9
+          }
+        }
+      },
+      "POISON": {
+        "current_species": 19,
+        "before_type_label_count": 19,
+        "fixed_current_cohort_ids": [
+          "MN_019",
+          "MN_020",
+          "MN_054",
+          "MN_090",
+          "MN_125",
+          "MN_126",
+          "MN_127",
+          "MN_140",
+          "MN_145",
+          "MN_146",
+          "MN_149",
+          "MN_150",
+          "MN_222",
+          "MN_241",
+          "MN_242",
+          "MN_257",
+          "MN_258",
+          "MN_152",
+          "MN_153"
+        ],
+        "before17": {
+          "species": 19,
+          "attack_types": 17,
+          "matchup_cells": 323,
+          "weak_matchups": 65,
+          "weak_2x": 62,
+          "weak_4x": 3,
+          "resistant_matchups": 87,
+          "immune_matchups": 7,
+          "neutral_matchups": 164,
+          "mean_weak_attack_types": 3.4211,
+          "mean_resistant_attack_types": 4.5789,
+          "mean_immune_attack_types": 0.3684,
+          "weak_fraction_of_cells": 0.201238,
+          "weakness_count_distribution": {
+            "2": 5,
+            "3": 2,
+            "4": 11,
+            "5": 1
+          }
+        },
+        "after_same17": {
+          "species": 19,
+          "attack_types": 17,
+          "matchup_cells": 323,
+          "weak_matchups": 65,
+          "weak_2x": 62,
+          "weak_4x": 3,
+          "resistant_matchups": 86,
+          "immune_matchups": 8,
+          "neutral_matchups": 164,
+          "mean_weak_attack_types": 3.4211,
+          "mean_resistant_attack_types": 4.5263,
+          "mean_immune_attack_types": 0.4211,
+          "weak_fraction_of_cells": 0.201238,
+          "weakness_count_distribution": {
+            "2": 5,
+            "3": 2,
+            "4": 11,
+            "5": 1
+          }
+        },
+        "after18": {
+          "species": 19,
+          "attack_types": 18,
+          "matchup_cells": 342,
+          "weak_matchups": 65,
+          "weak_2x": 62,
+          "weak_4x": 3,
+          "resistant_matchups": 105,
+          "immune_matchups": 8,
+          "neutral_matchups": 164,
+          "mean_weak_attack_types": 3.4211,
+          "mean_resistant_attack_types": 5.5263,
+          "mean_immune_attack_types": 0.4211,
+          "weak_fraction_of_cells": 0.190058,
+          "weakness_count_distribution": {
+            "2": 5,
+            "3": 2,
+            "4": 11,
+            "5": 1
+          }
+        },
+        "incoming_fairy_multiplier_species_counts": {
+          "0.25": 2,
+          "0.5": 17
+        },
+        "this_type_STAB_target_spread": {
+          "before": {
+            "weak_2x": 25,
+            "neutral": 111,
+            "resistant": 63,
+            "immune": 21
+          },
+          "after": {
+            "weak_2x": 29,
+            "weak_4x": 2,
+            "neutral": 112,
+            "resistant": 56,
+            "immune": 21
+          }
+        }
+      },
+      "STEEL": {
+        "current_species": 21,
+        "before_type_label_count": 21,
+        "fixed_current_cohort_ids": [
+          "MN_006",
+          "MN_023",
+          "MN_024",
+          "MN_035",
+          "MN_036",
+          "MN_043",
+          "MN_044",
+          "MN_047",
+          "MN_048",
+          "MN_067",
+          "MN_068",
+          "MN_073",
+          "MN_074",
+          "MN_087",
+          "MN_088",
+          "MN_094",
+          "MN_102",
+          "MN_103",
+          "MN_145",
+          "MN_265",
+          "MN_299"
+        ],
+        "before17": {
+          "species": 21,
+          "attack_types": 17,
+          "matchup_cells": 357,
+          "weak_matchups": 50,
+          "weak_2x": 37,
+          "weak_4x": 13,
+          "resistant_matchups": 208,
+          "immune_matchups": 26,
+          "neutral_matchups": 73,
+          "mean_weak_attack_types": 2.381,
+          "mean_resistant_attack_types": 9.9048,
+          "mean_immune_attack_types": 1.2381,
+          "weak_fraction_of_cells": 0.140056,
+          "weakness_count_distribution": {
+            "1": 4,
+            "2": 5,
+            "3": 12
+          }
+        },
+        "after_same17": {
+          "species": 21,
+          "attack_types": 17,
+          "matchup_cells": 357,
+          "weak_matchups": 54,
+          "weak_2x": 41,
+          "weak_4x": 13,
+          "resistant_matchups": 171,
+          "immune_matchups": 26,
+          "neutral_matchups": 106,
+          "mean_weak_attack_types": 2.5714,
+          "mean_resistant_attack_types": 8.1429,
+          "mean_immune_attack_types": 1.2381,
+          "weak_fraction_of_cells": 0.151261,
+          "weakness_count_distribution": {
+            "1": 4,
+            "2": 3,
+            "3": 12,
+            "4": 2
+          }
+        },
+        "after18": {
+          "species": 21,
+          "attack_types": 18,
+          "matchup_cells": 378,
+          "weak_matchups": 54,
+          "weak_2x": 41,
+          "weak_4x": 13,
+          "resistant_matchups": 190,
+          "immune_matchups": 26,
+          "neutral_matchups": 108,
+          "mean_weak_attack_types": 2.5714,
+          "mean_resistant_attack_types": 9.0476,
+          "mean_immune_attack_types": 1.2381,
+          "weak_fraction_of_cells": 0.142857,
+          "weakness_count_distribution": {
+            "1": 4,
+            "2": 3,
+            "3": 12,
+            "4": 2
+          }
+        },
+        "incoming_fairy_multiplier_species_counts": {
+          "0.25": 2,
+          "0.5": 17,
+          "1.0": 2
+        },
+        "this_type_STAB_target_spread": {
+          "before": {
+            "neutral": 105,
+            "resistant": 88,
+            "weak_2x": 27
+          },
+          "after": {
+            "neutral": 96,
+            "weak_2x": 35,
+            "resistant": 87,
+            "weak_4x": 2
+          }
+        }
+      }
+    },
+    "attack_type_target_spread": {
+      "NORMAL": {
+        "before": {
+          "neutral": 167,
+          "resistant": 36,
+          "immune": 17
+        },
+        "after": {
+          "neutral": 169,
+          "resistant": 36,
+          "immune": 15
+        }
+      },
+      "FIRE": {
+        "before": {
+          "weak_2x": 59,
+          "resistant": 68,
+          "neutral": 86,
+          "weak_4x": 7
+        },
+        "after": {
+          "weak_2x": 59,
+          "resistant": 68,
+          "neutral": 86,
+          "weak_4x": 7
+        }
+      },
+      "WATER": {
+        "before": {
+          "resistant": 66,
+          "weak_2x": 49,
+          "weak_4x": 1,
+          "neutral": 104
+        },
+        "after": {
+          "resistant": 66,
+          "weak_2x": 49,
+          "weak_4x": 1,
+          "neutral": 104
+        }
+      },
+      "ELECTRIC": {
+        "before": {
+          "resistant": 42,
+          "neutral": 108,
+          "weak_2x": 53,
+          "immune": 17
+        },
+        "after": {
+          "resistant": 42,
+          "neutral": 108,
+          "weak_2x": 53,
+          "immune": 17
+        }
+      },
+      "GRASS": {
+        "before": {
+          "resistant": 100,
+          "neutral": 73,
+          "weak_2x": 46,
+          "weak_4x": 1
+        },
+        "after": {
+          "resistant": 100,
+          "neutral": 73,
+          "weak_2x": 46,
+          "weak_4x": 1
+        }
+      },
+      "ICE": {
+        "before": {
+          "weak_2x": 54,
+          "resistant": 86,
+          "neutral": 75,
+          "weak_4x": 5
+        },
+        "after": {
+          "weak_2x": 54,
+          "resistant": 86,
+          "neutral": 75,
+          "weak_4x": 5
+        }
+      },
+      "FIGHTING": {
+        "before": {
+          "neutral": 100,
+          "resistant": 37,
+          "weak_2x": 55,
+          "immune": 17,
+          "weak_4x": 11
+        },
+        "after": {
+          "neutral": 101,
+          "resistant": 40,
+          "weak_2x": 55,
+          "immune": 15,
+          "weak_4x": 9
+        }
+      },
+      "POISON": {
+        "before": {
+          "weak_2x": 25,
+          "neutral": 111,
+          "resistant": 63,
+          "immune": 21
+        },
+        "after": {
+          "weak_2x": 29,
+          "weak_4x": 2,
+          "neutral": 112,
+          "resistant": 56,
+          "immune": 21
+        }
+      },
+      "GROUND": {
+        "before": {
+          "resistant": 34,
+          "weak_2x": 64,
+          "weak_4x": 6,
+          "neutral": 99,
+          "immune": 17
+        },
+        "after": {
+          "resistant": 34,
+          "weak_2x": 64,
+          "weak_4x": 6,
+          "neutral": 99,
+          "immune": 17
+        }
+      },
+      "FLYING": {
+        "before": {
+          "weak_2x": 60,
+          "neutral": 116,
+          "resistant": 41,
+          "weak_4x": 3
+        },
+        "after": {
+          "weak_2x": 59,
+          "neutral": 117,
+          "resistant": 41,
+          "weak_4x": 3
+        }
+      },
+      "PSYCHIC": {
+        "before": {
+          "neutral": 121,
+          "resistant": 38,
+          "weak_2x": 38,
+          "immune": 23
+        },
+        "after": {
+          "neutral": 126,
+          "resistant": 33,
+          "weak_2x": 38,
+          "immune": 23
+        }
+      },
+      "BUG": {
+        "before": {
+          "weak_2x": 40,
+          "weak_4x": 5,
+          "resistant": 91,
+          "neutral": 84
+        },
+        "after": {
+          "weak_2x": 38,
+          "neutral": 82,
+          "resistant": 97,
+          "weak_4x": 3
+        }
+      },
+      "ROCK": {
+        "before": {
+          "neutral": 104,
+          "weak_2x": 69,
+          "resistant": 44,
+          "weak_4x": 3
+        },
+        "after": {
+          "neutral": 104,
+          "weak_2x": 69,
+          "resistant": 44,
+          "weak_4x": 3
+        }
+      },
+      "GHOST": {
+        "before": {
+          "neutral": 120,
+          "weak_2x": 28,
+          "resistant": 40,
+          "immune": 31,
+          "weak_4x": 1
+        },
+        "after": {
+          "neutral": 143,
+          "immune": 29,
+          "weak_2x": 26,
+          "resistant": 22
+        }
+      },
+      "DRAGON": {
+        "before": {
+          "neutral": 192,
+          "resistant": 19,
+          "weak_2x": 9
+        },
+        "after": {
+          "neutral": 179,
+          "immune": 13,
+          "resistant": 19,
+          "weak_2x": 9
+        }
+      },
+      "DARK": {
+        "before": {
+          "neutral": 126,
+          "weak_2x": 31,
+          "resistant": 62,
+          "weak_4x": 1
+        },
+        "after": {
+          "neutral": 144,
+          "resistant": 52,
+          "weak_2x": 24
+        }
+      },
+      "STEEL": {
+        "before": {
+          "neutral": 105,
+          "resistant": 88,
+          "weak_2x": 27
+        },
+        "after": {
+          "neutral": 96,
+          "weak_2x": 35,
+          "resistant": 87,
+          "weak_4x": 2
+        }
+      },
+      "FAIRY": {
+        "before": "absent",
+        "after": {
+          "neutral": 122,
+          "resistant": 55,
+          "weak_2x": 39,
+          "weak_4x": 4
+        }
+      }
+    },
+    "all13_fairy_before_after": [
+      {
+        "id": "MN_002",
+        "name": "Slipperina",
+        "before": {
+          "types": [
+            "GRASS",
+            "PSYCHIC"
+          ],
+          "weaknesses": {
+            "FIRE": 2.0,
+            "ICE": 2.0,
+            "POISON": 2.0,
+            "FLYING": 2.0,
+            "BUG": 4.0,
+            "GHOST": 2.0,
+            "DARK": 2.0
+          },
+          "resistances": {
+            "WATER": 0.5,
+            "ELECTRIC": 0.5,
+            "GRASS": 0.5,
+            "FIGHTING": 0.5,
+            "GROUND": 0.5,
+            "PSYCHIC": 0.5
+          },
+          "immunities": []
+        },
+        "after": {
+          "types": [
+            "GRASS",
+            "FAIRY"
+          ],
+          "weaknesses": {
+            "FIRE": 2,
+            "ICE": 2,
+            "POISON": 4,
+            "FLYING": 2,
+            "STEEL": 2
+          },
+          "resistances": {
+            "WATER": 0.5,
+            "ELECTRIC": 0.5,
+            "GRASS": 0.5,
+            "FIGHTING": 0.5,
+            "GROUND": 0.5,
+            "DARK": 0.5
+          },
+          "immunities": [
+            "DRAGON"
+          ]
+        }
+      },
+      {
+        "id": "MN_003",
+        "name": "Cyprielle",
+        "before": {
+          "types": [
+            "GRASS",
+            "PSYCHIC"
+          ],
+          "weaknesses": {
+            "FIRE": 2.0,
+            "ICE": 2.0,
+            "POISON": 2.0,
+            "FLYING": 2.0,
+            "BUG": 4.0,
+            "GHOST": 2.0,
+            "DARK": 2.0
+          },
+          "resistances": {
+            "WATER": 0.5,
+            "ELECTRIC": 0.5,
+            "GRASS": 0.5,
+            "FIGHTING": 0.5,
+            "GROUND": 0.5,
+            "PSYCHIC": 0.5
+          },
+          "immunities": []
+        },
+        "after": {
+          "types": [
+            "GRASS",
+            "FAIRY"
+          ],
+          "weaknesses": {
+            "FIRE": 2,
+            "ICE": 2,
+            "POISON": 4,
+            "FLYING": 2,
+            "STEEL": 2
+          },
+          "resistances": {
+            "WATER": 0.5,
+            "ELECTRIC": 0.5,
+            "GRASS": 0.5,
+            "FIGHTING": 0.5,
+            "GROUND": 0.5,
+            "DARK": 0.5
+          },
+          "immunities": [
+            "DRAGON"
+          ]
+        }
+      },
+      {
+        "id": "MN_093",
+        "name": "Tiltawisp",
+        "before": {
+          "types": [
+            "ELECTRIC",
+            "GHOST"
+          ],
+          "weaknesses": {
+            "GROUND": 2.0,
+            "GHOST": 2.0,
+            "DARK": 2.0
+          },
+          "resistances": {
+            "ELECTRIC": 0.5,
+            "POISON": 0.5,
+            "FLYING": 0.5,
+            "BUG": 0.5,
+            "STEEL": 0.5
+          },
+          "immunities": [
+            "NORMAL",
+            "FIGHTING"
+          ]
+        },
+        "after": {
+          "types": [
+            "ELECTRIC",
+            "FAIRY"
+          ],
+          "weaknesses": {
+            "POISON": 2,
+            "GROUND": 2
+          },
+          "resistances": {
+            "ELECTRIC": 0.5,
+            "FIGHTING": 0.5,
+            "FLYING": 0.5,
+            "BUG": 0.5,
+            "DARK": 0.5
+          },
+          "immunities": [
+            "DRAGON"
+          ]
+        }
+      },
+      {
+        "id": "MN_140",
+        "name": "Choirbog",
+        "before": {
+          "types": [
+            "POISON",
+            "PSYCHIC"
+          ],
+          "weaknesses": {
+            "GROUND": 2.0,
+            "GHOST": 2.0,
+            "DARK": 2.0
+          },
+          "resistances": {
+            "GRASS": 0.5,
+            "FIGHTING": 0.25,
+            "POISON": 0.5
+          },
+          "immunities": []
+        },
+        "after": {
+          "types": [
+            "POISON",
+            "FAIRY"
+          ],
+          "weaknesses": {
+            "GROUND": 2,
+            "PSYCHIC": 2,
+            "STEEL": 2
+          },
+          "resistances": {
+            "GRASS": 0.5,
+            "FIGHTING": 0.25,
+            "BUG": 0.25,
+            "DARK": 0.5,
+            "FAIRY": 0.5
+          },
+          "immunities": [
+            "DRAGON"
+          ]
+        }
+      },
+      {
+        "id": "MN_163",
+        "name": "Mitwist",
+        "before": {
+          "types": [
+            "GHOST"
+          ],
+          "weaknesses": {
+            "GHOST": 2.0,
+            "DARK": 2.0
+          },
+          "resistances": {
+            "POISON": 0.5,
+            "BUG": 0.5
+          },
+          "immunities": [
+            "NORMAL",
+            "FIGHTING"
+          ]
+        },
+        "after": {
+          "types": [
+            "GHOST",
+            "FAIRY"
+          ],
+          "weaknesses": {
+            "GHOST": 2,
+            "STEEL": 2
+          },
+          "resistances": {
+            "BUG": 0.25
+          },
+          "immunities": [
+            "NORMAL",
+            "FIGHTING",
+            "DRAGON"
+          ]
+        }
+      },
+      {
+        "id": "MN_164",
+        "name": "Mispair",
+        "before": {
+          "types": [
+            "GHOST"
+          ],
+          "weaknesses": {
+            "GHOST": 2.0,
+            "DARK": 2.0
+          },
+          "resistances": {
+            "POISON": 0.5,
+            "BUG": 0.5
+          },
+          "immunities": [
+            "NORMAL",
+            "FIGHTING"
+          ]
+        },
+        "after": {
+          "types": [
+            "GHOST",
+            "FAIRY"
+          ],
+          "weaknesses": {
+            "GHOST": 2,
+            "STEEL": 2
+          },
+          "resistances": {
+            "BUG": 0.25
+          },
+          "immunities": [
+            "NORMAL",
+            "FIGHTING",
+            "DRAGON"
+          ]
+        }
+      },
+      {
+        "id": "MN_165",
+        "name": "Shawlter",
+        "before": {
+          "types": [
+            "GHOST",
+            "FLYING"
+          ],
+          "weaknesses": {
+            "ELECTRIC": 2.0,
+            "ICE": 2.0,
+            "ROCK": 2.0,
+            "GHOST": 2.0,
+            "DARK": 2.0
+          },
+          "resistances": {
+            "GRASS": 0.5,
+            "POISON": 0.5,
+            "BUG": 0.25
+          },
+          "immunities": [
+            "NORMAL",
+            "FIGHTING",
+            "GROUND"
+          ]
+        },
+        "after": {
+          "types": [
+            "FAIRY",
+            "FLYING"
+          ],
+          "weaknesses": {
+            "ELECTRIC": 2,
+            "ICE": 2,
+            "POISON": 2,
+            "ROCK": 2,
+            "STEEL": 2
+          },
+          "resistances": {
+            "GRASS": 0.5,
+            "FIGHTING": 0.25,
+            "BUG": 0.25,
+            "DARK": 0.5
+          },
+          "immunities": [
+            "GROUND",
+            "DRAGON"
+          ]
+        }
+      },
+      {
+        "id": "MN_213",
+        "name": "Chislet",
+        "before": {
+          "types": [
+            "NORMAL",
+            "ICE"
+          ],
+          "weaknesses": {
+            "FIRE": 2.0,
+            "FIGHTING": 4.0,
+            "ROCK": 2.0,
+            "STEEL": 2.0
+          },
+          "resistances": {
+            "ICE": 0.5
+          },
+          "immunities": [
+            "GHOST"
+          ]
+        },
+        "after": {
+          "types": [
+            "ICE",
+            "FAIRY"
+          ],
+          "weaknesses": {
+            "FIRE": 2,
+            "POISON": 2,
+            "ROCK": 2,
+            "STEEL": 4
+          },
+          "resistances": {
+            "ICE": 0.5,
+            "BUG": 0.5,
+            "DARK": 0.5
+          },
+          "immunities": [
+            "DRAGON"
+          ]
+        }
+      },
+      {
+        "id": "MN_214",
+        "name": "Buttermuse",
+        "before": {
+          "types": [
+            "NORMAL",
+            "ICE"
+          ],
+          "weaknesses": {
+            "FIRE": 2.0,
+            "FIGHTING": 4.0,
+            "ROCK": 2.0,
+            "STEEL": 2.0
+          },
+          "resistances": {
+            "ICE": 0.5
+          },
+          "immunities": [
+            "GHOST"
+          ]
+        },
+        "after": {
+          "types": [
+            "ICE",
+            "FAIRY"
+          ],
+          "weaknesses": {
+            "FIRE": 2,
+            "POISON": 2,
+            "ROCK": 2,
+            "STEEL": 4
+          },
+          "resistances": {
+            "ICE": 0.5,
+            "BUG": 0.5,
+            "DARK": 0.5
+          },
+          "immunities": [
+            "DRAGON"
+          ]
+        }
+      },
+      {
+        "id": "MN_095",
+        "name": "Babehemoth",
+        "before": {
+          "types": [
+            "GROUND",
+            "FIGHTING"
+          ],
+          "weaknesses": {
+            "WATER": 2.0,
+            "GRASS": 2.0,
+            "ICE": 2.0,
+            "FLYING": 2.0,
+            "PSYCHIC": 2.0
+          },
+          "resistances": {
+            "POISON": 0.5,
+            "BUG": 0.5,
+            "ROCK": 0.25,
+            "DARK": 0.5
+          },
+          "immunities": [
+            "ELECTRIC"
+          ]
+        },
+        "after": {
+          "types": [
+            "GROUND",
+            "FAIRY"
+          ],
+          "weaknesses": {
+            "WATER": 2,
+            "GRASS": 2,
+            "ICE": 2,
+            "STEEL": 2
+          },
+          "resistances": {
+            "FIGHTING": 0.5,
+            "BUG": 0.5,
+            "ROCK": 0.5,
+            "DARK": 0.5
+          },
+          "immunities": [
+            "ELECTRIC",
+            "DRAGON"
+          ]
+        }
+      },
+      {
+        "id": "MN_250",
+        "name": "Flarkindle",
+        "before": {
+          "types": [
+            "GHOST",
+            "PSYCHIC"
+          ],
+          "weaknesses": {
+            "GHOST": 4.0,
+            "DARK": 4.0
+          },
+          "resistances": {
+            "POISON": 0.5,
+            "PSYCHIC": 0.5
+          },
+          "immunities": [
+            "NORMAL",
+            "FIGHTING"
+          ]
+        },
+        "after": {
+          "types": [
+            "GHOST",
+            "FAIRY"
+          ],
+          "weaknesses": {
+            "GHOST": 2,
+            "STEEL": 2
+          },
+          "resistances": {
+            "BUG": 0.25
+          },
+          "immunities": [
+            "NORMAL",
+            "FIGHTING",
+            "DRAGON"
+          ]
+        }
+      },
+      {
+        "id": "MN_301",
+        "name": "Dozebear",
+        "before": {
+          "types": [
+            "NORMAL",
+            "PSYCHIC"
+          ],
+          "weaknesses": {
+            "BUG": 2.0,
+            "DARK": 2.0
+          },
+          "resistances": {
+            "PSYCHIC": 0.5
+          },
+          "immunities": [
+            "GHOST"
+          ]
+        },
+        "after": {
+          "types": [
+            "NORMAL",
+            "FAIRY"
+          ],
+          "weaknesses": {
+            "POISON": 2,
+            "STEEL": 2
+          },
+          "resistances": {
+            "BUG": 0.5,
+            "DARK": 0.5
+          },
+          "immunities": [
+            "GHOST",
+            "DRAGON"
+          ]
+        }
+      },
+      {
+        "id": "MN_302",
+        "name": "Denumbra",
+        "before": {
+          "types": [
+            "NORMAL",
+            "PSYCHIC"
+          ],
+          "weaknesses": {
+            "BUG": 2.0,
+            "DARK": 2.0
+          },
+          "resistances": {
+            "PSYCHIC": 0.5
+          },
+          "immunities": [
+            "GHOST"
+          ]
+        },
+        "after": {
+          "types": [
+            "NORMAL",
+            "FAIRY"
+          ],
+          "weaknesses": {
+            "POISON": 2,
+            "STEEL": 2
+          },
+          "resistances": {
+            "BUG": 0.5,
+            "DARK": 0.5
+          },
+          "immunities": [
+            "GHOST",
+            "DRAGON"
+          ]
+        }
+      }
+    ],
+    "interpretation": [
+      "Overall weakness incidence stays essentially flat after adding the eighteenth attack type: 751/3740 (20.0802%) native cells versus 792/3960 (20.0000%) after. Mean weaknesses per species rise from 3.4136 to 3.6 because there is one more attack type. On the same 17 attack types, weaknesses slightly fall from 751 to 749; resistance cells fall from 955 to 923, and immunities rise from 143 to 150.",
+      "Fairy meaningfully targets the requested strong cohorts: 9/11 Dragons, 18/23 Dark and 20/22 Fighting species are Fairy-weak. Two Dragon/Fighting and two Dark/Fighting species are 4x weak; the four Fighting 4x species overlap those Dragon/Dark cohorts and must not be counted twice. Pelletank and Taconarch are Fairy-neutral rather than automatically weak just because they are Dragon.",
+      "Poison targets expand from 25 to 31 super-effective species; Steel from 27 to 37. All 19 Poison species resist Fairy (17 half, 2 quarter). Nineteen of 21 Steel species resist Fairy; two Steel/Dragon species remain neutral. Among the 13 new Fairies, 8 are Poison-weak and 12 Steel-weak; two Grass/Fairy species take 4x Poison, two Ice/Fairy 4x Steel. These distinct dual-type risks preserve counterplay.",
+      "Steel is still robust but pays a real defensive cost: its 21 members have 50 weakness cells before and 54 after; the same 17-type resistance cells decline from 208 to 171 before 19 new Fairy resistances bring the 18-type total to 190. Steel/Ghost Doublehex and Wreckquiem become 2x weak to both Dark and Ghost. The nerf also improves Dark/Ghost offense against Steel, so it is not a pure Dark nerf.",
+      "Dragon STAB keeps 9 super-effective targets but gains 13 immune targets. Dark super-effective targets fall from 32 to 24 despite Steel resistance removal because several Psychic typings become Fairy. Fighting targets fall from 66 to 64; Fairy is a targeted extra answer, not removal of every existing matchup. Crowscare gains a real 2x Fairy weakness and no active species remains without a type weakness.",
+      "Type-only accounting is not a metagame simulation. Stats are unchanged; move power/category, speed, encounter placement, held items, prediction, and level progression remain relevant. The proposed encounter timing remains a plan, not verified map authoring."
+    ]
+  },
+  "web_explanation_review": {
+    "status": "all web-facing strings in the eight Fairy families and thirteen species profiles reviewed",
+    "minimal_change_applied": "MN_F076 evolution_design.original_invention: earlier mitten stages are Ghost/Fairy, and the completed shawl becomes Fairy/Flying. Removed stale pure Ghost sentence with root approval.",
+    "no_further_materially_false_typing_labels_found": true,
+    "note": "Hypnotic dance, lullabies, dreams and memory remain valid flavor; Psychic attacks can remain coverage after a Fairy retype. Historical source/art proposal records are preserved.",
+    "reviewed_sources": [
+      "roster.json eight Fairy family string fields, including nested evolution_design/source/habitat text",
+      "species-profiles.json thirteen Fairy classification/dex pages",
+      "web-client/pokedex/app.js uses generated data-types rather than hardcoded species typings",
+      "crates/crystal-assets/src/bin/export_minnesota_pokedex_web.rs uses current roster member types, family theme, classification and dex pages"
+    ]
+  },
+  "v2_earned_progression_repairs": {
+    "reason": "The full engine audit caught evolution-stage acquisition gaps plus existing default-move/Grass/Ghost/Bug coverage gaps in the eleven new families. Preserve stats and strengthen earned moves; do not relax the audit.",
+    "before_pack": "northwoods-fairy-v1.crystalpack",
+    "native_changes": [
+      {
+        "species_id": "MN_298",
+        "move": "HEADBUTT",
+        "before_level": null,
+        "after_level": 14
+      },
+      {
+        "species_id": "MN_299",
+        "move": "HEADBUTT",
+        "before_level": null,
+        "after_level": 10
+      },
+      {
+        "species_id": "MN_313",
+        "move": "SHADOW_BALL",
+        "before_level": 36,
+        "after_level": 32
+      },
+      {
+        "species_id": "MN_314",
+        "move": "MEGA_DRAIN",
+        "before_level": null,
+        "after_level": 25
+      },
+      {
+        "species_id": "MN_314",
+        "move": "GIGA_DRAIN",
+        "before_level": null,
+        "after_level": 43
+      },
+      {
+        "species_id": "MN_315",
+        "move": "MEGA_DRAIN",
+        "before_level": 34,
+        "after_level": 28
+      },
+      {
+        "species_id": "MN_315",
+        "move": "GIGA_DRAIN",
+        "before_level": 46,
+        "after_level": 43
+      },
+      {
+        "species_id": "MN_316",
+        "move": "TWINEEDLE",
+        "before_level": 25,
+        "after_level": 9
+      }
+    ],
+    "extension_changes": [
+      "Slipperina/Cyprielle FairyWind16",
+      "Chorip DisarmingVoice18 then Choirbog30",
+      "Densy DisarmingVoice16 then Dozebear28",
+      "Babehemoth PlayRough30"
+    ],
+    "backup_directory": "planning/minnesota/pokemon/expansion/fairy-before-progression-v2-20261027"
+  },
+  "verified_pack": {
+    "path": "content-packs/northwoods-fairy-v2.crystalpack",
+    "sha256": "7a5de8c0d568f0c57a04b879ad121e6e726ae471360a9860896a2c2329a6d6b2",
+    "species": 471,
+    "active_regional_species": 220,
+    "fairy_species": 26,
+    "moves": 270
+  },
+  "verified_balance": {
+    "progression_findings": 0,
+    "default_move_sets": 22000,
+    "battles_with_real_damage_and_pp": 623,
+    "evolution_boundaries": 120,
+    "log": "../renders/fairy-balance-20261027-v1/verification/balance-check-pack-v2.log"
+  },
+  "verified_animation": {
+    "pack": "northwoods-fairy-v2.crystalpack",
+    "fairy_move_controllers": 5,
+    "poison_jab_controller_and_2x_damage": true,
+    "signature_move_controllers": 5,
+    "signature_variants": 20,
+    "retained_capture_files": 1456,
+    "native_gust_frames": 91,
+    "local_label_forms": "colon and no-colon native labels produce identical events/timing",
+    "root": "../renders/fairy-balance-20261027-v2"
+  },
+  "published_pokedex": {
+    "url": "https://geothite.ryanculligan.com/pokedex/?type=FAIRY",
+    "release": "20261027-northwoods-10",
+    "exact_public_byte_checks": 1926,
+    "health_and_private_route_checks": 6,
+    "failed_checks": 0,
+    "proof": "../renders/fairy-balance-20261027-v1/web-proof/public-verification10.json"
+  }
+}

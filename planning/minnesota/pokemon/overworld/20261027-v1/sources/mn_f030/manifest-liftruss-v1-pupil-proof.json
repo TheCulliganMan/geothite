@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F030",
+  "species": [
+    {
+      "species_id": "MN_074",
+      "runtime_token": "LIFTRUSS",
+      "palette_rgb555": [
+        32767,
+        28466,
+        17768,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        26203,
+        11537,
+        0
+      ],
+      "fit": [
+        14,
+        14
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 64,
+      "interior_black_samples": 64,
+      "opaque_interior_minimum_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "liftruss.overworld.imagegen-v1.png",
+          "crop": [
+            9,
+            63,
+            460,
+            410
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "liftruss.overworld.imagegen-v1.png",
+          "crop": [
+            556,
+            44,
+            460,
+            410
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "liftruss.overworld.imagegen-v1.png",
+          "crop": [
+            1048,
+            66,
+            460,
+            410
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "liftruss.overworld.imagegen-v1.png",
+          "crop": [
+            9,
+            539,
+            460,
+            410
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "liftruss.overworld.imagegen-v1.png",
+          "crop": [
+            556,
+            538,
+            460,
+            410
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "liftruss.overworld.imagegen-v1.png",
+          "crop": [
+            1061,
+            542,
+            460,
+            410
+          ]
+        }
+      ]
+    }
+  ]
+}

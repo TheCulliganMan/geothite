@@ -1,0 +1,51 @@
+{
+  "status": "NATIVE_GAMEPLAY_AND_VISUAL_PASS",
+  "selected_revision": "route_grass_duluth_mart_revision",
+  "publication": {
+    "kind": "native_mart_facade_and_paired_door_revision",
+    "parent_revision": "minneapolis_normal_houses_revision",
+    "parent_pack": "content-packs/minnesota-minneapolis-normal-houses-v02.crystalpack",
+    "parent_pack_sha256": "9480368160e25c53d01162a4dbdbe301a7b7215e0a5027df58d700906612be99",
+    "pack": "content-packs/minnesota-current-duluth-mart-v01.crystalpack",
+    "pack_sha256": "d77baff3e597e6527450400022e0b9acf655b856983cf96e49fbebfe275464f3",
+    "content_identity": "28964cb553126e972f5fa16d11327a45c0f9440de16519a6c29c47305ca6536e",
+    "maps": 732,
+    "map": "MnDuluth",
+    "changed_native_metatiles": 2,
+    "door": [
+      79,
+      39
+    ],
+    "passive_return": [
+      79,
+      40
+    ],
+    "both_room_carpets_verified": 2,
+    "old_door_denial_verified": true,
+    "reached_save_continue_and_menus_verified": true,
+    "native_controller_cases_passed": 1,
+    "production_stdio_calls": 46,
+    "actual_native2d_views_inspected": 3,
+    "source_native_pixel_mismatches": 0,
+    "raw_and_cached_event_mirrors_rebound": true,
+    "all11776_collision_quadrants_verified": true,
+    "other_complete_maps_preserved_exact": 731,
+    "state_fair_preserved_exact": true,
+    "selected_bemidji_stairs_and_minneapolis_houses_preserved_exact": true,
+    "all_art_audio_encounters_trainers_and_other_scripts_exact": true,
+    "authoring_source_index": "planning/minnesota/revisions/route-grass-v01/current-duluth-mart-v01/sources.json",
+    "authoring_source_index_sha256": "4bc47180cfc6948429851bb5121790fc65cd594ecf156677b6e0ecfc30421691",
+    "runbook": "revisions/route-grass-v01/current-duluth-mart-v01/README.md",
+    "status": "Native2D Mart facade and paired door verified: both carpets, old-door denial, Continue, menu/walking and three inspected matching views.",
+    "code_lint_status": "PASS",
+    "scope_limit": "Single Mart repair, not complete Duluth town/story acceptance. Two original facade flags remain in St Cloud. Broader route/town/source goal stays active. Initial party/badges are explicit QA fixtures."
+  },
+  "code_lint_status": "PASS",
+  "code_lint_progress": "mart-publisher-build-progress-v02.json",
+  "preservation": "mart-child-preservation-v01.json",
+  "native": "verified-progress-v01.json",
+  "production": "production-mart-continue-review-v01.json",
+  "visual": "native-visual-acceptance-v01.json",
+  "controls": "publisher-negative-receipt-v01.json",
+  "goal_complete": false
+}

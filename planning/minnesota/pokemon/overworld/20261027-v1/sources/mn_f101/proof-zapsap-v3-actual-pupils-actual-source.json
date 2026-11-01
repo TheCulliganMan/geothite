@@ -1,0 +1,209 @@
+{
+  "species": "zapsap",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f101/zapsap-v3-actual-pupils",
+  "status": "actual-source native proof passes; root visual/context acceptance pending",
+  "all_four_nonrear_actual_isolated_source_pupils": true,
+  "six16px_alpha_border_normal_shiny_runtime_parity": true,
+  "canonical_palettes": true,
+  "proof": [
+    {
+      "pose": "down_idle",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            7,
+            10
+          ],
+          "source_sample": [
+            287,
+            356
+          ],
+          "source_component": [
+            271,
+            336,
+            17,
+            22
+          ],
+          "component_pixels": 374,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            6,
+            7,
+            3,
+            254
+          ]
+        },
+        {
+          "native": [
+            9,
+            10
+          ],
+          "source_sample": [
+            346,
+            356
+          ],
+          "source_component": [
+            334,
+            336,
+            18,
+            22
+          ],
+          "component_pixels": 396,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            3,
+            4,
+            1,
+            254
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            5,
+            10
+          ],
+          "source_sample": [
+            1167,
+            358
+          ],
+          "source_component": [
+            1166,
+            336,
+            17,
+            25
+          ],
+          "component_pixels": 425,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            8,
+            8,
+            3,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            7,
+            10
+          ],
+          "source_sample": [
+            287,
+            746
+          ],
+          "source_component": [
+            272,
+            724,
+            17,
+            23
+          ],
+          "component_pixels": 391,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            45,
+            43,
+            21,
+            254
+          ]
+        },
+        {
+          "native": [
+            9,
+            10
+          ],
+          "source_sample": [
+            346,
+            746
+          ],
+          "source_component": [
+            334,
+            724,
+            17,
+            23
+          ],
+          "component_pixels": 390,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            34,
+            33,
+            15,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            5,
+            10
+          ],
+          "source_sample": [
+            1188,
+            747
+          ],
+          "source_component": [
+            1187,
+            724,
+            16,
+            24
+          ],
+          "component_pixels": 384,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            32,
+            32,
+            18,
+            254
+          ]
+        }
+      ]
+    }
+  ],
+  "hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f101/zapsap-v3-actual-pupils/compiled-index.json": "1819220ebd98451a5dff1be91610bb088d33960627378ded81fdb543faf6715e",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f101/zapsap.overworld.imagegen-v1.png": "6d819fa532ff3c8e383affc995465394dcf6e136621edf5fd851eb5cb4a4c062"
+  },
+  "no_native_pixel_painting": true
+}

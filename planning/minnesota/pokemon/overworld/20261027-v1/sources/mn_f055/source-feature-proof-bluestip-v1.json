@@ -1,0 +1,336 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_116",
+  "result": "pass",
+  "manifest_sha256": "f10053ec756658cb49dc2e8492f48319918a7596782e5c6cbfc1edbc1c5753f3",
+  "bank_sha256": "3edb667ab460dabb07c7887c96f1772ef7b8bf92f8cc035c0971b8e1f72da6f4",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f055/bluestip.overworld.imagegen-v1.png": "fcc785cb63a6c23dd2e61a0181f429bd1932dc7f1be36522771382a18a3ca8f7"
+  },
+  "canonical_eye_form": "TWO actual isolated south pupils, ONE actual isolated west pupil. Every pixel in each complete native eye cluster maps to the same small anatomical source pupil component.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "down_idle",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f055/bluestip.overworld.imagegen-v1.png",
+        "crop": [
+          75,
+          60,
+          410,
+          440
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            245,
+            298,
+            18,
+            20
+          ],
+          [
+            337,
+            298,
+            19,
+            20
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                6,
+                9
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  1,
+                  1,
+                  1,
+                  253
+                ],
+                "bounds": [
+                  245,
+                  298,
+                  18,
+                  20
+                ],
+                "pixels": 360,
+                "truncated_contour": false,
+                "native_pixel": [
+                  6,
+                  9
+                ],
+                "source_sample_pixel": [
+                  252,
+                  314
+                ]
+              }
+            ]
+          },
+          {
+            "native_cluster": [
+              [
+                9,
+                9
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  3,
+                  4,
+                  2,
+                  254
+                ],
+                "bounds": [
+                  337,
+                  298,
+                  19,
+                  20
+                ],
+                "pixels": 374,
+                "truncated_contour": false,
+                "native_pixel": [
+                  9,
+                  9
+                ],
+                "source_sample_pixel": [
+                  354,
+                  314
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "left_idle",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f055/bluestip.overworld.imagegen-v1.png",
+        "crop": [
+          1034,
+          70,
+          410,
+          440
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            1196,
+            300,
+            18,
+            33
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                6,
+                9
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  3,
+                  3,
+                  2,
+                  253
+                ],
+                "bounds": [
+                  1196,
+                  300,
+                  18,
+                  33
+                ],
+                "pixels": 588,
+                "truncated_contour": false,
+                "native_pixel": [
+                  6,
+                  9
+                ],
+                "source_sample_pixel": [
+                  1211,
+                  324
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "down_step",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f055/bluestip.overworld.imagegen-v1.png",
+        "crop": [
+          75,
+          497,
+          410,
+          440
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            245,
+            735,
+            18,
+            19
+          ],
+          [
+            337,
+            735,
+            19,
+            19
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                6,
+                9
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  3,
+                  4,
+                  3,
+                  253
+                ],
+                "bounds": [
+                  245,
+                  735,
+                  18,
+                  19
+                ],
+                "pixels": 342,
+                "truncated_contour": false,
+                "native_pixel": [
+                  6,
+                  9
+                ],
+                "source_sample_pixel": [
+                  252,
+                  751
+                ]
+              }
+            ]
+          },
+          {
+            "native_cluster": [
+              [
+                9,
+                9
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  5,
+                  10,
+                  5,
+                  253
+                ],
+                "bounds": [
+                  337,
+                  735,
+                  19,
+                  19
+                ],
+                "pixels": 345,
+                "truncated_contour": false,
+                "native_pixel": [
+                  9,
+                  9
+                ],
+                "source_sample_pixel": [
+                  354,
+                  751
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "left_step",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f055/bluestip.overworld.imagegen-v1.png",
+        "crop": [
+          1034,
+          497,
+          410,
+          440
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            1197,
+            733,
+            19,
+            27
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                6,
+                9
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  4,
+                  5,
+                  3,
+                  253
+                ],
+                "bounds": [
+                  1197,
+                  733,
+                  19,
+                  27
+                ],
+                "pixels": 488,
+                "truncated_contour": false,
+                "native_pixel": [
+                  6,
+                  9
+                ],
+                "source_sample_pixel": [
+                  1211,
+                  751
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "notes": "Both native normal/shiny rear poses actually inspected: plain rear head, no copied face. Head anchors stable, 1px transparent outer border, three walk pairs differ."
+  },
+  "detailed_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f055/manifest-bluestip-v1-pupil-proof.proof.json"
+}

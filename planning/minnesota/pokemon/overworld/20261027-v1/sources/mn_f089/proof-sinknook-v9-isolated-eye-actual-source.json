@@ -1,0 +1,151 @@
+{
+  "species": "sinknook",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f089/sinknook-v9-isolated-eye",
+  "status": "actual-source native proof passes; root visual/context acceptance pending",
+  "all_four_nonrear_actual_isolated_source_pupils": true,
+  "six16px_alpha_border_normal_shiny_runtime_parity": true,
+  "canonical_palettes": true,
+  "proof": [
+    {
+      "pose": "down_idle",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            7,
+            11
+          ],
+          "source_sample": [
+            247,
+            303
+          ],
+          "source_component": [
+            238,
+            282,
+            27,
+            28
+          ],
+          "component_pixels": 756,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            2,
+            1,
+            1,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            4,
+            10
+          ],
+          "source_sample": [
+            1180,
+            299
+          ],
+          "source_component": [
+            1166,
+            278,
+            27,
+            28
+          ],
+          "component_pixels": 756,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            7,
+            11
+          ],
+          "source_sample": [
+            247,
+            803
+          ],
+          "source_component": [
+            238,
+            782,
+            27,
+            27
+          ],
+          "component_pixels": 729,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            4,
+            2,
+            0,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            4,
+            10
+          ],
+          "source_sample": [
+            1180,
+            800
+          ],
+          "source_component": [
+            1167,
+            781,
+            27,
+            28
+          ],
+          "component_pixels": 756,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ]
+        }
+      ]
+    }
+  ],
+  "hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f089/sinknook-v9-isolated-eye/compiled-index.json": "9268edff33c8a447056c821d48f3605d9075f3f16972010422a99c1d4859fdbb",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f089/sinknook.overworld.imagegen-v3-clean-notch.png": "b387197fcb975cc189bcc38d9850b69479e64a16b89a029829de740e84122729"
+  },
+  "no_native_pixel_painting": true
+}

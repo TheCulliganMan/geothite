@@ -1,0 +1,27 @@
+{
+  "attempts": [
+    {
+      "attempt": 1,
+      "prompt": "prompt-v1.txt",
+      "result": "no_image",
+      "http_status": 400,
+      "code": "moderation_blocked",
+      "stage": "output",
+      "categories": [
+        "other"
+      ],
+      "request_id": "10be4b6d-c88c-4944-aad6-bb59c6159b18",
+      "message": "Your request was rejected by the safety system."
+    },
+    {
+      "attempt": 2,
+      "prompt": "prompt-v1.txt",
+      "prompt_unchanged": true,
+      "result": "success",
+      "tool": "built-in image_gen",
+      "original_path": "/Users/ryanculligan/.codex/generated_images/01a17aa2-ca0b-7cc0-8219-cddf2150b02b/exec-cc63c272-a761-48de-87ff-00f7d5d2ede4.png",
+      "saved_path": "front-back.imagegen-v1.png",
+      "sha256": "49287cd57cb9d5b246b0e4f5d17458000b4e6e773b1e47c4ab0d54dc73561bb7"
+    }
+  ]
+}

@@ -1,0 +1,6695 @@
+{
+  "schema_version": 2,
+  "status": "Implementation plan, not a compiled pack.",
+  "style_authority": "reference/johto-kanto-original.png",
+  "deprecated_art": "Earlier ImageGen region and route illustrations do not define scale, assets, collision or topology.",
+  "start_map": "MnWinonaHome2F",
+  "starter_species": [
+    "CHIKORITA",
+    "CYNDAQUIL",
+    "TOTODILE"
+  ],
+  "starter_level": 5,
+  "trainer_selection": "production requested trainer",
+  "coordinate_system": {
+    "metatile_pixels": 32,
+    "core_tile_pixels": 16,
+    "source_tile_pixels": 8,
+    "chunk_metatiles": [
+      32,
+      24
+    ],
+    "native_viewport_pixels": [
+      160,
+      144
+    ]
+  },
+  "towns": [
+    {
+      "id": "MnWinona",
+      "name": "WINONA",
+      "dimensions_metatiles": [
+        16,
+        14
+      ],
+      "reference_anchor_percent": [
+        87,
+        87
+      ],
+      "role": "starter",
+      "tileset": "johto",
+      "composition": "A riverbank field station, home above the small oak square, western trail road and a short east-bank lookout. Four distinct native facades share one compact walking loop.",
+      "ports": [
+        {
+          "route": "MN_R01",
+          "side": "W",
+          "gate_metatile": [
+            1,
+            9
+          ],
+          "landing_metatile": [
+            3,
+            9
+          ]
+        }
+      ],
+      "interiors": [
+        {
+          "id": "MnWinonaHome1F",
+          "kind": "home",
+          "dimensions_metatiles": [
+            5,
+            4
+          ],
+          "authoring_file": "towns/MnWinona.json"
+        },
+        {
+          "id": "MnWinonaHome2F",
+          "kind": "start",
+          "dimensions_metatiles": [
+            4,
+            3
+          ],
+          "authoring_file": "towns/MnWinona.json",
+          "access_kind": "internal_stairs"
+        },
+        {
+          "id": "MnWinonaPokecenter1F",
+          "kind": "pokecenter",
+          "dimensions_metatiles": [
+            5,
+            4
+          ],
+          "authoring_file": "towns/MnWinona.json"
+        },
+        {
+          "id": "MnWinonaMart",
+          "kind": "mart",
+          "dimensions_metatiles": [
+            6,
+            4
+          ],
+          "authoring_file": "towns/MnWinona.json"
+        },
+        {
+          "id": "MnWinonaFieldStation",
+          "kind": "starter_lab",
+          "dimensions_metatiles": [
+            5,
+            6
+          ],
+          "authoring_file": "towns/MnWinona.json"
+        }
+      ],
+      "walkable_destinations": [
+        "each port landing",
+        "every visible exterior door",
+        "central square",
+        "local story NPC"
+      ],
+      "door_contract": "Assign exterior core-tile door coordinates only after selecting authentic facade quadrants; record reciprocal warp indices and indoor floor arrivals before export.",
+      "authoring_file": "towns/MnWinona.json",
+      "layout_file": "towns/MnWinona.layout.json"
+    },
+    {
+      "id": "MnRochester",
+      "name": "ROCHESTER",
+      "dimensions_metatiles": [
+        20,
+        16
+      ],
+      "reference_anchor_percent": [
+        70,
+        86
+      ],
+      "role": "gym_1",
+      "tileset": "johto_modern",
+      "composition": "A public clinic courtyard between two sheltered residential lanes. The eastern arrival forks toward the freight recipient and first gym; flower beds and short paths frame the useful clearings.",
+      "ports": [
+        {
+          "route": "MN_R01",
+          "side": "E",
+          "gate_metatile": [
+            18,
+            9
+          ],
+          "landing_metatile": [
+            16,
+            9
+          ]
+        },
+        {
+          "route": "MN_R02",
+          "side": "W",
+          "gate_metatile": [
+            1,
+            9
+          ],
+          "landing_metatile": [
+            3,
+            9
+          ]
+        }
+      ],
+      "interiors": [
+        {
+          "id": "MnRochesterPokecenter1F",
+          "kind": "pokecenter",
+          "dimensions_metatiles": [
+            10,
+            8
+          ],
+          "authoring_file": "towns/MnRochester.json"
+        },
+        {
+          "id": "MnRochesterMart",
+          "kind": "mart",
+          "dimensions_metatiles": [
+            6,
+            4
+          ],
+          "authoring_file": "towns/MnRochester.json"
+        },
+        {
+          "id": "MnRochesterGym",
+          "kind": "gym_1",
+          "dimensions_metatiles": [
+            7,
+            10
+          ],
+          "authoring_file": "towns/MnRochester.json"
+        },
+        {
+          "id": "MnRochesterClerkHouse",
+          "kind": "house",
+          "dimensions_metatiles": [
+            5,
+            4
+          ],
+          "authoring_file": "towns/MnRochester.json"
+        },
+        {
+          "id": "MnRochesterPatientHouse",
+          "kind": "house",
+          "dimensions_metatiles": [
+            5,
+            4
+          ],
+          "authoring_file": "towns/MnRochester.json"
+        }
+      ],
+      "walkable_destinations": [
+        "each port landing",
+        "every visible exterior door",
+        "central square",
+        "local story NPC"
+      ],
+      "door_contract": "Assign exterior core-tile door coordinates only after selecting authentic facade quadrants; record reciprocal warp indices and indoor floor arrivals before export.",
+      "authoring_file": "towns/MnRochester.json",
+      "layout_file": "towns/MnRochester.layout.json"
+    },
+    {
+      "id": "MnMankato",
+      "name": "MANKATO",
+      "dimensions_metatiles": [
+        24,
+        18
+      ],
+      "reference_anchor_percent": [
+        44,
+        84
+      ],
+      "role": "gym_2",
+      "tileset": "johto",
+      "composition": "A low gym terrace above the prairie lane. Hop down toward the university garden and mart; the eastern ramp is the ordinary uphill return.",
+      "ports": [
+        {
+          "route": "MN_R02",
+          "side": "E",
+          "gate_metatile": [
+            22,
+            9
+          ],
+          "landing_metatile": [
+            20,
+            9
+          ]
+        },
+        {
+          "route": "MN_R03",
+          "side": "N",
+          "gate_metatile": [
+            12,
+            1
+          ],
+          "landing_metatile": [
+            12,
+            3
+          ]
+        }
+      ],
+      "interiors": [
+        {
+          "id": "MnMankatoPokecenter1F",
+          "kind": "pokecenter",
+          "dimensions_metatiles": [
+            10,
+            8
+          ],
+          "source_behavior": "canonical healing, PC and blackout recovery"
+        },
+        {
+          "id": "MnMankatoMart",
+          "kind": "mart",
+          "dimensions_metatiles": [
+            6,
+            4
+          ],
+          "source_behavior": "canonical clerk, money deduction and inventory"
+        },
+        {
+          "id": "MnMankatoGym",
+          "kind": "gym_2",
+          "dimensions_metatiles": [
+            8,
+            10
+          ]
+        }
+      ],
+      "walkable_destinations": [
+        "each port landing",
+        "every visible exterior door",
+        "central square",
+        "local story NPC"
+      ],
+      "door_contract": "Assign exterior core-tile door coordinates only after selecting authentic facade quadrants; record reciprocal warp indices and indoor floor arrivals before export.",
+      "source_file": "towns/MnMankato.json",
+      "layout_file": "towns/MnMankato.layout.json",
+      "native_status": "Local 483-map candidate and gym/care/PC/priced-mart/room-return controller checks pass; R02/R03 seams remain unbound."
+    },
+    {
+      "id": "MnMinneapolis",
+      "name": "MINNEAPOLIS",
+      "dimensions_metatiles": [
+        64,
+        48
+      ],
+      "reference_anchor_percent": [
+        54,
+        70
+      ],
+      "role": "gym_3",
+      "tileset": "johto_modern",
+      "composition": "Smaller, tighter64x48 Minneapolis. Inhabited North Loop and Northeast streets share courts and rear alleys; old clinic/gym/ICE core remains central, compact market connects department store and battle club, lake neighborhood and south pond walks have actual piers/bridges.",
+      "ports": [
+        {
+          "route": "MN_R03",
+          "side": "S",
+          "gate_metatile": [
+            32,
+            47
+          ],
+          "landing_metatile": [
+            32,
+            44
+          ]
+        },
+        {
+          "route": "MN_R04",
+          "side": "E",
+          "gate_metatile": [
+            63,
+            24
+          ],
+          "landing_metatile": [
+            60,
+            24
+          ]
+        },
+        {
+          "route": "MN_R05",
+          "side": "N",
+          "gate_metatile": [
+            32,
+            0
+          ],
+          "landing_metatile": [
+            32,
+            4
+          ]
+        }
+      ],
+      "interiors": [
+        {
+          "id": "MnMinneapolisPokecenter1F",
+          "kind": "pokecenter",
+          "dimensions_metatiles": [
+            10,
+            8
+          ]
+        },
+        {
+          "id": "MnMinneapolisGym",
+          "kind": "gym_3",
+          "dimensions_metatiles": [
+            5,
+            9
+          ],
+          "native_constant": "MN_MINNEAPOLIS_GYM",
+          "template": "installed_native",
+          "tileset": "mn_gym_3",
+          "border_block": 0,
+          "rows": [],
+          "passive_arrival": {
+            "index": 3,
+            "tile": [
+              4,
+              15
+            ]
+          },
+          "exits": [
+            {
+              "index": 1,
+              "tile": [
+                4,
+                17
+              ],
+              "target": "MnMinneapolis",
+              "target_warp": 4
+            },
+            {
+              "index": 2,
+              "tile": [
+                5,
+                17
+              ],
+              "target": "MnMinneapolis",
+              "target_warp": 4
+            }
+          ],
+          "residents": [],
+          "signs": [],
+          "pc": null,
+          "source_reference": {
+            "pack": "content-packs/minnesota-gyms-minneapolis.crystalpack",
+            "file_sha256": "4facc79c0078ecc3648794a7dd42e07f8ff72852573545e4cce1839ce10ae206",
+            "native_content_sha256": "895908cb2cc75dd4b716aa1d51f5da288a41adc76e26bc11c69440e9063b67f9",
+            "hash_excludes": [
+              "events.warps",
+              "map_event_section_commands.warp_event"
+            ],
+            "status": "Canonical original-style switch-pair gym. The city binds its two carpets and passive arrival while preserving terrain, actors, puzzle, parties and rewards."
+          }
+        },
+        {
+          "id": "MnMinneapolisMart",
+          "kind": "mart",
+          "dimensions_metatiles": [
+            6,
+            4
+          ]
+        },
+        {
+          "id": "MnMinneapolisDispatchOffice",
+          "kind": "story_dispatch",
+          "dimensions_metatiles": [
+            10,
+            8
+          ]
+        },
+        {
+          "id": "MnMinneapolisDispatcherHouse",
+          "kind": "witness_home",
+          "dimensions_metatiles": [
+            5,
+            4
+          ]
+        },
+        {
+          "id": "MnMinneapolisSupplyCoop",
+          "kind": "new_paid_shop",
+          "dimensions_metatiles": [
+            6,
+            4
+          ],
+          "authoring_file": "towns/MnMinneapolis.json",
+          "expansion_contract_file": "towns/MnMinneapolis.expansion.contract.json",
+          "source_room_id": "MnMinneapolisSupplyCoop"
+        },
+        {
+          "id": "MnMinneapolisGrainExchange",
+          "kind": "new_ordinary_room",
+          "dimensions_metatiles": [
+            5,
+            4
+          ],
+          "authoring_file": "towns/MnMinneapolis.json",
+          "expansion_contract_file": "towns/MnMinneapolis.expansion.contract.json",
+          "source_room_id": "MnMinneapolisGrainExchange"
+        },
+        {
+          "id": "MnMinneapolisToolWorkshop",
+          "kind": "new_ordinary_room",
+          "dimensions_metatiles": [
+            4,
+            4
+          ],
+          "authoring_file": "towns/MnMinneapolis.json",
+          "expansion_contract_file": "towns/MnMinneapolis.expansion.contract.json",
+          "source_room_id": "MnMinneapolisToolWorkshop"
+        },
+        {
+          "id": "MnMinneapolisPrintShop",
+          "kind": "new_ordinary_room",
+          "dimensions_metatiles": [
+            4,
+            4
+          ],
+          "authoring_file": "towns/MnMinneapolis.json",
+          "expansion_contract_file": "towns/MnMinneapolis.expansion.contract.json",
+          "source_room_id": "MnMinneapolisPrintShop"
+        },
+        {
+          "id": "MnMinneapolisFoundryMuseum",
+          "kind": "new_ordinary_room",
+          "dimensions_metatiles": [
+            4,
+            4
+          ],
+          "authoring_file": "towns/MnMinneapolis.json",
+          "expansion_contract_file": "towns/MnMinneapolis.expansion.contract.json",
+          "source_room_id": "MnMinneapolisFoundryMuseum"
+        },
+        {
+          "id": "MnMinneapolisArtsStudio",
+          "kind": "new_ordinary_room",
+          "dimensions_metatiles": [
+            4,
+            4
+          ],
+          "authoring_file": "towns/MnMinneapolis.json",
+          "expansion_contract_file": "towns/MnMinneapolis.expansion.contract.json",
+          "source_room_id": "MnMinneapolisArtsStudio"
+        },
+        {
+          "id": "MnMinneapolisMusicRoom",
+          "kind": "new_ordinary_room",
+          "dimensions_metatiles": [
+            6,
+            7
+          ],
+          "authoring_file": "towns/MnMinneapolis.json",
+          "expansion_contract_file": "towns/MnMinneapolis.expansion.contract.json",
+          "source_room_id": "MnMinneapolisMusicRoom"
+        },
+        {
+          "id": "MnMinneapolisCommunityLibrary",
+          "kind": "new_ordinary_room",
+          "dimensions_metatiles": [
+            6,
+            5
+          ],
+          "authoring_file": "towns/MnMinneapolis.json",
+          "expansion_contract_file": "towns/MnMinneapolis.expansion.contract.json",
+          "source_room_id": "MnMinneapolisCommunityLibrary"
+        },
+        {
+          "id": "MnMinneapolisNortheastHome",
+          "kind": "new_ordinary_room",
+          "dimensions_metatiles": [
+            4,
+            4
+          ],
+          "authoring_file": "towns/MnMinneapolis.json",
+          "expansion_contract_file": "towns/MnMinneapolis.expansion.contract.json",
+          "source_room_id": "MnMinneapolisNortheastHome"
+        },
+        {
+          "id": "MnMinneapolisGardenShop",
+          "kind": "new_paid_shop",
+          "dimensions_metatiles": [
+            6,
+            4
+          ],
+          "authoring_file": "towns/MnMinneapolis.json",
+          "expansion_contract_file": "towns/MnMinneapolis.expansion.contract.json",
+          "source_room_id": "MnMinneapolisGardenShop"
+        },
+        {
+          "id": "MnMinneapolisRiverNaturalist",
+          "kind": "new_ordinary_room",
+          "dimensions_metatiles": [
+            4,
+            4
+          ],
+          "authoring_file": "towns/MnMinneapolis.json",
+          "expansion_contract_file": "towns/MnMinneapolis.expansion.contract.json",
+          "source_room_id": "MnMinneapolisRiverNaturalist"
+        },
+        {
+          "id": "MnMinneapolisBoatHouse",
+          "kind": "new_ordinary_room",
+          "dimensions_metatiles": [
+            4,
+            4
+          ],
+          "authoring_file": "towns/MnMinneapolis.json",
+          "expansion_contract_file": "towns/MnMinneapolis.expansion.contract.json",
+          "source_room_id": "MnMinneapolisBoatHouse"
+        },
+        {
+          "id": "MnMinneapolisAnglerHome",
+          "kind": "new_ordinary_room",
+          "dimensions_metatiles": [
+            4,
+            4
+          ],
+          "authoring_file": "towns/MnMinneapolis.json",
+          "expansion_contract_file": "towns/MnMinneapolis.expansion.contract.json",
+          "source_room_id": "MnMinneapolisAnglerHome"
+        },
+        {
+          "id": "MnMinneapolisLakeCabin",
+          "kind": "new_ordinary_room",
+          "dimensions_metatiles": [
+            4,
+            4
+          ],
+          "authoring_file": "towns/MnMinneapolis.json",
+          "expansion_contract_file": "towns/MnMinneapolis.expansion.contract.json",
+          "source_room_id": "MnMinneapolisLakeCabin"
+        },
+        {
+          "id": "MnMinneapolisGreenhouse",
+          "kind": "new_ordinary_room",
+          "dimensions_metatiles": [
+            4,
+            4
+          ],
+          "authoring_file": "towns/MnMinneapolis.json",
+          "expansion_contract_file": "towns/MnMinneapolis.expansion.contract.json",
+          "source_room_id": "MnMinneapolisGreenhouse"
+        },
+        {
+          "id": "MnMinneapolisBridgeHome",
+          "kind": "new_ordinary_room",
+          "dimensions_metatiles": [
+            4,
+            4
+          ],
+          "authoring_file": "towns/MnMinneapolis.json",
+          "expansion_contract_file": "towns/MnMinneapolis.expansion.contract.json",
+          "source_room_id": "MnMinneapolisBridgeHome"
+        },
+        {
+          "id": "MnMinneapolisDepartmentStore1F",
+          "kind": "new_department_floor",
+          "dimensions_metatiles": [
+            8,
+            4
+          ],
+          "authoring_file": "towns/MnMinneapolis.json",
+          "expansion_contract_file": "towns/MnMinneapolis.expansion.contract.json",
+          "source_room_id": "MnMinneapolisDepartmentStore1F"
+        },
+        {
+          "id": "MnMinneapolisBattleClub",
+          "kind": "optional_battle_club",
+          "dimensions_metatiles": [
+            10,
+            8
+          ],
+          "authoring_file": "towns/MnMinneapolis.json",
+          "expansion_contract_file": "towns/MnMinneapolis.expansion.contract.json",
+          "source_room_id": "MnMinneapolisBattleClub"
+        },
+        {
+          "id": "MnMinneapolisCedarHome",
+          "kind": "new_ordinary_room",
+          "dimensions_metatiles": [
+            4,
+            4
+          ],
+          "authoring_file": "towns/MnMinneapolis.json",
+          "expansion_contract_file": "towns/MnMinneapolis.expansion.contract.json",
+          "source_room_id": "MnMinneapolisCedarHome"
+        },
+        {
+          "id": "MnMinneapolisCommunityKitchen",
+          "kind": "new_ordinary_room",
+          "dimensions_metatiles": [
+            4,
+            4
+          ],
+          "authoring_file": "towns/MnMinneapolis.json",
+          "expansion_contract_file": "towns/MnMinneapolis.expansion.contract.json",
+          "source_room_id": "MnMinneapolisCommunityKitchen"
+        },
+        {
+          "id": "MnMinneapolisCouriersDesk",
+          "kind": "new_ordinary_room",
+          "dimensions_metatiles": [
+            4,
+            4
+          ],
+          "authoring_file": "towns/MnMinneapolis.json",
+          "expansion_contract_file": "towns/MnMinneapolis.expansion.contract.json",
+          "source_room_id": "MnMinneapolisCouriersDesk"
+        },
+        {
+          "id": "MnMinneapolisFieldClub",
+          "kind": "new_ordinary_room",
+          "dimensions_metatiles": [
+            6,
+            5
+          ],
+          "authoring_file": "towns/MnMinneapolis.json",
+          "expansion_contract_file": "towns/MnMinneapolis.expansion.contract.json",
+          "source_room_id": "MnMinneapolisFieldClub"
+        },
+        {
+          "id": "MnMinneapolisGardenersHome",
+          "kind": "new_ordinary_room",
+          "dimensions_metatiles": [
+            4,
+            4
+          ],
+          "authoring_file": "towns/MnMinneapolis.json",
+          "expansion_contract_file": "towns/MnMinneapolis.expansion.contract.json",
+          "source_room_id": "MnMinneapolisGardenersHome"
+        },
+        {
+          "id": "MnMinneapolisArrivalInfo",
+          "kind": "new_ordinary_room",
+          "dimensions_metatiles": [
+            4,
+            4
+          ],
+          "authoring_file": "towns/MnMinneapolis.json",
+          "expansion_contract_file": "towns/MnMinneapolis.expansion.contract.json",
+          "source_room_id": "MnMinneapolisArrivalInfo"
+        },
+        {
+          "id": "MnMinneapolisRiverInn",
+          "kind": "new_ordinary_room",
+          "dimensions_metatiles": [
+            4,
+            4
+          ],
+          "authoring_file": "towns/MnMinneapolis.json",
+          "expansion_contract_file": "towns/MnMinneapolis.expansion.contract.json",
+          "source_room_id": "MnMinneapolisRiverInn"
+        },
+        {
+          "id": "MnMinneapolisSouthMarket",
+          "kind": "new_paid_shop",
+          "dimensions_metatiles": [
+            6,
+            4
+          ],
+          "authoring_file": "towns/MnMinneapolis.json",
+          "expansion_contract_file": "towns/MnMinneapolis.expansion.contract.json",
+          "source_room_id": "MnMinneapolisSouthMarket"
+        },
+        {
+          "id": "MnMinneapolisMillWorkersHouse",
+          "kind": "new_ordinary_room",
+          "dimensions_metatiles": [
+            4,
+            4
+          ],
+          "authoring_file": "towns/MnMinneapolis.json",
+          "expansion_contract_file": "towns/MnMinneapolis.expansion.contract.json",
+          "source_room_id": "MnMinneapolisMillWorkersHouse"
+        },
+        {
+          "id": "MnMinneapolisDepartmentStore2F",
+          "kind": "new_department_floor",
+          "dimensions_metatiles": [
+            8,
+            4
+          ],
+          "authoring_file": "towns/MnMinneapolis.json",
+          "expansion_contract_file": "towns/MnMinneapolis.expansion.contract.json",
+          "source_room_id": "MnMinneapolisDepartmentStore2F"
+        },
+        {
+          "id": "MnMinneapolisDepartmentStore3F",
+          "kind": "new_department_floor",
+          "dimensions_metatiles": [
+            8,
+            4
+          ],
+          "authoring_file": "towns/MnMinneapolis.json",
+          "expansion_contract_file": "towns/MnMinneapolis.expansion.contract.json",
+          "source_room_id": "MnMinneapolisDepartmentStore3F"
+        },
+        {
+          "id": "MnMinneapolisDepartmentStore4F",
+          "kind": "new_department_floor",
+          "dimensions_metatiles": [
+            8,
+            4
+          ],
+          "authoring_file": "towns/MnMinneapolis.json",
+          "expansion_contract_file": "towns/MnMinneapolis.expansion.contract.json",
+          "source_room_id": "MnMinneapolisDepartmentStore4F"
+        },
+        {
+          "id": "MnMinneapolisDepartmentStore5F",
+          "kind": "new_department_floor",
+          "dimensions_metatiles": [
+            8,
+            4
+          ],
+          "authoring_file": "towns/MnMinneapolis.json",
+          "expansion_contract_file": "towns/MnMinneapolis.expansion.contract.json",
+          "source_room_id": "MnMinneapolisDepartmentStore5F"
+        },
+        {
+          "id": "MnMinneapolisBookbinder",
+          "kind": "new_occupied_neighborhood_room",
+          "dimensions_metatiles": [
+            4,
+            4
+          ],
+          "authoring_file": "towns/MnMinneapolis.json",
+          "expansion_contract_file": "towns/MnMinneapolis.expansion.contract.json",
+          "source_room_id": "MnMinneapolisBookbinder"
+        },
+        {
+          "id": "MnMinneapolisCooperativeFlat",
+          "kind": "new_occupied_neighborhood_room",
+          "dimensions_metatiles": [
+            4,
+            4
+          ],
+          "authoring_file": "towns/MnMinneapolis.json",
+          "expansion_contract_file": "towns/MnMinneapolis.expansion.contract.json",
+          "source_room_id": "MnMinneapolisCooperativeFlat"
+        },
+        {
+          "id": "MnMinneapolisToolFlat",
+          "kind": "new_occupied_neighborhood_room",
+          "dimensions_metatiles": [
+            4,
+            4
+          ],
+          "authoring_file": "towns/MnMinneapolis.json",
+          "expansion_contract_file": "towns/MnMinneapolis.expansion.contract.json",
+          "source_room_id": "MnMinneapolisToolFlat"
+        },
+        {
+          "id": "MnMinneapolisCornerHome",
+          "kind": "new_occupied_neighborhood_room",
+          "dimensions_metatiles": [
+            4,
+            4
+          ],
+          "authoring_file": "towns/MnMinneapolis.json",
+          "expansion_contract_file": "towns/MnMinneapolis.expansion.contract.json",
+          "source_room_id": "MnMinneapolisCornerHome"
+        },
+        {
+          "id": "MnMinneapolisRiverFamilyHome",
+          "kind": "new_occupied_neighborhood_room",
+          "dimensions_metatiles": [
+            4,
+            4
+          ],
+          "authoring_file": "towns/MnMinneapolis.json",
+          "expansion_contract_file": "towns/MnMinneapolis.expansion.contract.json",
+          "source_room_id": "MnMinneapolisRiverFamilyHome"
+        },
+        {
+          "id": "MnMinneapolisGardenFlat",
+          "kind": "new_occupied_neighborhood_room",
+          "dimensions_metatiles": [
+            4,
+            4
+          ],
+          "authoring_file": "towns/MnMinneapolis.json",
+          "expansion_contract_file": "towns/MnMinneapolis.expansion.contract.json",
+          "source_room_id": "MnMinneapolisGardenFlat"
+        },
+        {
+          "id": "MnMinneapolisPatternStudio",
+          "kind": "new_occupied_neighborhood_room",
+          "dimensions_metatiles": [
+            4,
+            4
+          ],
+          "authoring_file": "towns/MnMinneapolis.json",
+          "expansion_contract_file": "towns/MnMinneapolis.expansion.contract.json",
+          "source_room_id": "MnMinneapolisPatternStudio"
+        },
+        {
+          "id": "MnMinneapolisMillForemanHome",
+          "kind": "new_occupied_neighborhood_room",
+          "dimensions_metatiles": [
+            4,
+            4
+          ],
+          "authoring_file": "towns/MnMinneapolis.json",
+          "expansion_contract_file": "towns/MnMinneapolis.expansion.contract.json",
+          "source_room_id": "MnMinneapolisMillForemanHome"
+        }
+      ],
+      "walkable_destinations": [
+        "each port landing",
+        "every visible exterior door",
+        "central square",
+        "local story NPC",
+        "Team ICE counterfeit inspection and dispatcher witness",
+        "separate dispatch-copy interaction after the enforcer battle"
+      ],
+      "door_contract": "Expanded SOURCE candidate:40 real exterior facade pairs and five department floors; all old1..10 town warp IDs/oldfive rooms/story are preserved. New native publication and controller acceptance pending.",
+      "layout_file": "towns/MnMinneapolis.layout.json",
+      "compiled_tileset": "mn_minneapolis_city",
+      "authoring_file": "towns/MnMinneapolis.json",
+      "expansion_contract_file": "towns/MnMinneapolis.expansion.contract.json"
+    },
+    {
+      "id": "MnStPaul",
+      "name": "ST PAUL",
+      "dimensions_metatiles": [
+        64,
+        48
+      ],
+      "reference_anchor_percent": [
+        68,
+        70
+      ],
+      "role": "gym_4",
+      "tileset": "kanto",
+      "composition": "Compact fair booth lanes, Capitol low bluff, three-floor Lowertown Exchange, dense Summit blocks, two guarded river crossings and actual unchanged Union Depot story interior.",
+      "ports": [
+        {
+          "route": "MN_R04",
+          "side": "W",
+          "gate_metatile": [
+            1,
+            24
+          ],
+          "landing_metatile": [
+            3,
+            24
+          ]
+        }
+      ],
+      "interiors": [
+        {
+          "id": "MnStPaulPokecenter1F",
+          "kind": "pokecenter",
+          "dimensions_metatiles": [
+            5,
+            4
+          ],
+          "source_behavior": "canonical healing, PC and blackout recovery",
+          "authoring_file": "towns/MnStPaul.json"
+        },
+        {
+          "id": "MnStPaulMart",
+          "kind": "mart",
+          "dimensions_metatiles": [
+            6,
+            4
+          ],
+          "source_behavior": "canonical clerk, money deduction and inventory",
+          "authoring_file": "towns/MnStPaul.json"
+        },
+        {
+          "id": "MnStPaulGym",
+          "kind": "canonical_gym_reference",
+          "dimensions_metatiles": [
+            7,
+            10
+          ],
+          "authoring_file": "towns/MnStPaul.json",
+          "tileset": "mn_gym_4",
+          "native_constant": "MN_ST_PAUL_GYM",
+          "source_reference": {
+            "path": "planning/minnesota/gyms/interiors.json",
+            "gym_id": "MnStPaulGym",
+            "file_sha256": "441d1312d8e94080c7bae58fe93d0dfce3be3dfabf9094c107064ec56c6ecbb7",
+            "room_sha256": "95215c67f1fa16dc7baaf13cc480da9272e7f6689152ea216a7fb3c737378eb4",
+            "native_builder": "gym_art::install + gym_publication::room + gym_scripts",
+            "symbol_blocks": {
+              "#": "00",
+              ".": "01",
+              "L": "02",
+              "M": "03",
+              "R": "04",
+              "W": "05",
+              "X": "06",
+              "j": "07",
+              "p": "08",
+              "s": "09",
+              "u": "0a",
+              "v": "0b"
+            }
+          },
+          "exits": [
+            [
+              2,
+              19
+            ],
+            [
+              3,
+              19
+            ]
+          ],
+          "passive_arrival": {
+            "index": 3,
+            "tile": [
+              2,
+              17
+            ]
+          },
+          "exterior_return_warp": 10,
+          "exit_warps": [
+            {
+              "index": 1,
+              "tile": [
+                2,
+                19
+              ],
+              "target": "MnStPaul",
+              "target_warp": 10
+            },
+            {
+              "index": 2,
+              "tile": [
+                3,
+                19
+              ],
+              "target": "MnStPaul",
+              "target_warp": 10
+            }
+          ],
+          "source_behavior": "Resolve the canonical four-room pad gym and preserve terrain, actors, parties, puzzle and reward. Bind only carpet/passive records 1..3 to city return 10; preserve all eight internal pad records 4..11 and callbacks."
+        },
+        {
+          "id": "MnStPaulCapitolHall",
+          "kind": "public_records",
+          "dimensions_metatiles": [
+            8,
+            4
+          ],
+          "source_behavior": "Ordinary public information only. No MS03 dispatch note, TM gift, courier battle or story completion is awarded here; Q03 courier remains in Root-owned depot.",
+          "authoring_file": "towns/MnStPaul.json"
+        },
+        {
+          "id": "MnStPaulUnionDepot",
+          "kind": "train_station",
+          "dimensions_metatiles": [
+            16,
+            12
+          ],
+          "authoring_file": "transit/MnStPaulUnionDepot.json"
+        },
+        {
+          "id": "MnStPaulFairFoodHall",
+          "kind": "authored_expansion_room",
+          "dimensions_metatiles": [
+            6,
+            4
+          ],
+          "authoring_file": "towns/MnStPaul.json",
+          "expansion_contract_file": "towns/MnStPaul.expansion.contract.json",
+          "source_room_id": "MnStPaulFairFoodHall"
+        },
+        {
+          "id": "MnStPaulFairGardenStand",
+          "kind": "authored_expansion_room",
+          "dimensions_metatiles": [
+            6,
+            4
+          ],
+          "authoring_file": "towns/MnStPaul.json",
+          "expansion_contract_file": "towns/MnStPaul.expansion.contract.json",
+          "source_room_id": "MnStPaulFairGardenStand"
+        },
+        {
+          "id": "MnStPaulFairAgricultureHall",
+          "kind": "authored_expansion_room",
+          "dimensions_metatiles": [
+            8,
+            6
+          ],
+          "authoring_file": "towns/MnStPaul.json",
+          "expansion_contract_file": "towns/MnStPaul.expansion.contract.json",
+          "source_room_id": "MnStPaulFairAgricultureHall"
+        },
+        {
+          "id": "MnStPaulFairExhibitionHall",
+          "kind": "authored_expansion_room",
+          "dimensions_metatiles": [
+            8,
+            6
+          ],
+          "authoring_file": "towns/MnStPaul.json",
+          "expansion_contract_file": "towns/MnStPaul.expansion.contract.json",
+          "source_room_id": "MnStPaulFairExhibitionHall"
+        },
+        {
+          "id": "MnStPaulFairCraftHouse",
+          "kind": "authored_expansion_room",
+          "dimensions_metatiles": [
+            4,
+            4
+          ],
+          "authoring_file": "towns/MnStPaul.json",
+          "expansion_contract_file": "towns/MnStPaul.expansion.contract.json",
+          "source_room_id": "MnStPaulFairCraftHouse"
+        },
+        {
+          "id": "MnStPaulFairQuizPavilion",
+          "kind": "authored_expansion_room",
+          "dimensions_metatiles": [
+            4,
+            4
+          ],
+          "authoring_file": "towns/MnStPaul.json",
+          "expansion_contract_file": "towns/MnStPaul.expansion.contract.json",
+          "source_room_id": "MnStPaulFairQuizPavilion"
+        },
+        {
+          "id": "MnStPaulFairInfoHouse",
+          "kind": "authored_expansion_room",
+          "dimensions_metatiles": [
+            4,
+            4
+          ],
+          "authoring_file": "towns/MnStPaul.json",
+          "expansion_contract_file": "towns/MnStPaul.expansion.contract.json",
+          "source_room_id": "MnStPaulFairInfoHouse"
+        },
+        {
+          "id": "MnStPaulFairBreederBarn",
+          "kind": "authored_expansion_room",
+          "dimensions_metatiles": [
+            8,
+            6
+          ],
+          "authoring_file": "towns/MnStPaul.json",
+          "expansion_contract_file": "towns/MnStPaul.expansion.contract.json",
+          "source_room_id": "MnStPaulFairBreederBarn"
+        },
+        {
+          "id": "MnStPaulFairBerrySnack",
+          "kind": "authored_expansion_room",
+          "dimensions_metatiles": [
+            6,
+            4
+          ],
+          "authoring_file": "towns/MnStPaul.json",
+          "expansion_contract_file": "towns/MnStPaul.expansion.contract.json",
+          "source_room_id": "MnStPaulFairBerrySnack"
+        },
+        {
+          "id": "MnStPaulFairFestivalMail",
+          "kind": "authored_expansion_room",
+          "dimensions_metatiles": [
+            6,
+            4
+          ],
+          "authoring_file": "towns/MnStPaul.json",
+          "expansion_contract_file": "towns/MnStPaul.expansion.contract.json",
+          "source_room_id": "MnStPaulFairFestivalMail"
+        },
+        {
+          "id": "MnStPaulCapitolArchive",
+          "kind": "authored_expansion_room",
+          "dimensions_metatiles": [
+            8,
+            6
+          ],
+          "authoring_file": "towns/MnStPaul.json",
+          "expansion_contract_file": "towns/MnStPaul.expansion.contract.json",
+          "source_room_id": "MnStPaulCapitolArchive"
+        },
+        {
+          "id": "MnStPaulCapitolLibrary",
+          "kind": "authored_expansion_room",
+          "dimensions_metatiles": [
+            8,
+            6
+          ],
+          "authoring_file": "towns/MnStPaul.json",
+          "expansion_contract_file": "towns/MnStPaul.expansion.contract.json",
+          "source_room_id": "MnStPaulCapitolLibrary"
+        },
+        {
+          "id": "MnStPaulCivicMuseum",
+          "kind": "authored_expansion_room",
+          "dimensions_metatiles": [
+            8,
+            6
+          ],
+          "authoring_file": "towns/MnStPaul.json",
+          "expansion_contract_file": "towns/MnStPaul.expansion.contract.json",
+          "source_room_id": "MnStPaulCivicMuseum"
+        },
+        {
+          "id": "MnStPaulSummitMoveStudyHouse",
+          "kind": "authored_expansion_room",
+          "dimensions_metatiles": [
+            4,
+            4
+          ],
+          "authoring_file": "towns/MnStPaul.json",
+          "expansion_contract_file": "towns/MnStPaul.expansion.contract.json",
+          "source_room_id": "MnStPaulSummitMoveStudyHouse"
+        },
+        {
+          "id": "MnStPaulSummitExhibitionClub",
+          "kind": "authored_expansion_room",
+          "dimensions_metatiles": [
+            8,
+            6
+          ],
+          "authoring_file": "towns/MnStPaul.json",
+          "expansion_contract_file": "towns/MnStPaul.expansion.contract.json",
+          "source_room_id": "MnStPaulSummitExhibitionClub"
+        },
+        {
+          "id": "MnStPaulSummitPressHouse",
+          "kind": "authored_expansion_room",
+          "dimensions_metatiles": [
+            4,
+            4
+          ],
+          "authoring_file": "towns/MnStPaul.json",
+          "expansion_contract_file": "towns/MnStPaul.expansion.contract.json",
+          "source_room_id": "MnStPaulSummitPressHouse"
+        },
+        {
+          "id": "MnStPaulWestSeventhBooks",
+          "kind": "authored_expansion_room",
+          "dimensions_metatiles": [
+            8,
+            6
+          ],
+          "authoring_file": "towns/MnStPaul.json",
+          "expansion_contract_file": "towns/MnStPaul.expansion.contract.json",
+          "source_room_id": "MnStPaulWestSeventhBooks"
+        },
+        {
+          "id": "MnStPaulWestSeventhBakery",
+          "kind": "authored_expansion_room",
+          "dimensions_metatiles": [
+            6,
+            4
+          ],
+          "authoring_file": "towns/MnStPaul.json",
+          "expansion_contract_file": "towns/MnStPaul.expansion.contract.json",
+          "source_room_id": "MnStPaulWestSeventhBakery"
+        },
+        {
+          "id": "MnStPaulStreetGardenHouse",
+          "kind": "authored_expansion_room",
+          "dimensions_metatiles": [
+            4,
+            4
+          ],
+          "authoring_file": "towns/MnStPaul.json",
+          "expansion_contract_file": "towns/MnStPaul.expansion.contract.json",
+          "source_room_id": "MnStPaulStreetGardenHouse"
+        },
+        {
+          "id": "MnStPaulLowertownExchange",
+          "kind": "authored_expansion_room",
+          "dimensions_metatiles": [
+            8,
+            4
+          ],
+          "authoring_file": "towns/MnStPaul.json",
+          "expansion_contract_file": "towns/MnStPaul.expansion.contract.json",
+          "source_room_id": "MnStPaulLowertownExchange"
+        },
+        {
+          "id": "MnStPaulArchiveAnnex",
+          "kind": "authored_expansion_room",
+          "dimensions_metatiles": [
+            8,
+            6
+          ],
+          "authoring_file": "towns/MnStPaul.json",
+          "expansion_contract_file": "towns/MnStPaul.expansion.contract.json",
+          "source_room_id": "MnStPaulArchiveAnnex"
+        },
+        {
+          "id": "MnStPaulLowertownCrafts",
+          "kind": "authored_expansion_room",
+          "dimensions_metatiles": [
+            6,
+            4
+          ],
+          "authoring_file": "towns/MnStPaul.json",
+          "expansion_contract_file": "towns/MnStPaul.expansion.contract.json",
+          "source_room_id": "MnStPaulLowertownCrafts"
+        },
+        {
+          "id": "MnStPaulEastAidClinic",
+          "kind": "authored_expansion_room",
+          "dimensions_metatiles": [
+            5,
+            4
+          ],
+          "authoring_file": "towns/MnStPaul.json",
+          "expansion_contract_file": "towns/MnStPaul.expansion.contract.json",
+          "source_room_id": "MnStPaulEastAidClinic"
+        },
+        {
+          "id": "MnStPaulEastWorkshop",
+          "kind": "authored_expansion_room",
+          "dimensions_metatiles": [
+            8,
+            6
+          ],
+          "authoring_file": "towns/MnStPaul.json",
+          "expansion_contract_file": "towns/MnStPaul.expansion.contract.json",
+          "source_room_id": "MnStPaulEastWorkshop"
+        },
+        {
+          "id": "MnStPaulCommunityHall",
+          "kind": "authored_expansion_room",
+          "dimensions_metatiles": [
+            8,
+            6
+          ],
+          "authoring_file": "towns/MnStPaul.json",
+          "expansion_contract_file": "towns/MnStPaul.expansion.contract.json",
+          "source_room_id": "MnStPaulCommunityHall"
+        },
+        {
+          "id": "MnStPaulTransitHeritageHouse",
+          "kind": "authored_expansion_room",
+          "dimensions_metatiles": [
+            4,
+            4
+          ],
+          "authoring_file": "towns/MnStPaul.json",
+          "expansion_contract_file": "towns/MnStPaul.expansion.contract.json",
+          "source_room_id": "MnStPaulTransitHeritageHouse"
+        },
+        {
+          "id": "MnStPaulFreightOffice",
+          "kind": "authored_expansion_room",
+          "dimensions_metatiles": [
+            8,
+            6
+          ],
+          "authoring_file": "towns/MnStPaul.json",
+          "expansion_contract_file": "towns/MnStPaul.expansion.contract.json",
+          "source_room_id": "MnStPaulFreightOffice"
+        },
+        {
+          "id": "MnStPaulLowertownCafe",
+          "kind": "authored_expansion_room",
+          "dimensions_metatiles": [
+            6,
+            4
+          ],
+          "authoring_file": "towns/MnStPaul.json",
+          "expansion_contract_file": "towns/MnStPaul.expansion.contract.json",
+          "source_room_id": "MnStPaulLowertownCafe"
+        },
+        {
+          "id": "MnStPaulAnglerHouse",
+          "kind": "authored_expansion_room",
+          "dimensions_metatiles": [
+            8,
+            6
+          ],
+          "authoring_file": "towns/MnStPaul.json",
+          "expansion_contract_file": "towns/MnStPaul.expansion.contract.json",
+          "source_room_id": "MnStPaulAnglerHouse"
+        },
+        {
+          "id": "MnStPaulRiversideSupplies",
+          "kind": "authored_expansion_room",
+          "dimensions_metatiles": [
+            6,
+            4
+          ],
+          "authoring_file": "towns/MnStPaul.json",
+          "expansion_contract_file": "towns/MnStPaul.expansion.contract.json",
+          "source_room_id": "MnStPaulRiversideSupplies"
+        },
+        {
+          "id": "MnStPaulWestsideCommunity",
+          "kind": "authored_expansion_room",
+          "dimensions_metatiles": [
+            8,
+            6
+          ],
+          "authoring_file": "towns/MnStPaul.json",
+          "expansion_contract_file": "towns/MnStPaul.expansion.contract.json",
+          "source_room_id": "MnStPaulWestsideCommunity"
+        },
+        {
+          "id": "MnStPaulWestsideArena",
+          "kind": "authored_expansion_room",
+          "dimensions_metatiles": [
+            8,
+            6
+          ],
+          "authoring_file": "towns/MnStPaul.json",
+          "expansion_contract_file": "towns/MnStPaul.expansion.contract.json",
+          "source_room_id": "MnStPaulWestsideArena"
+        },
+        {
+          "id": "MnStPaulBoatCoop",
+          "kind": "authored_expansion_room",
+          "dimensions_metatiles": [
+            4,
+            4
+          ],
+          "authoring_file": "towns/MnStPaul.json",
+          "expansion_contract_file": "towns/MnStPaul.expansion.contract.json",
+          "source_room_id": "MnStPaulBoatCoop"
+        },
+        {
+          "id": "MnStPaulSouthLandingInn",
+          "kind": "authored_expansion_room",
+          "dimensions_metatiles": [
+            8,
+            6
+          ],
+          "authoring_file": "towns/MnStPaul.json",
+          "expansion_contract_file": "towns/MnStPaul.expansion.contract.json",
+          "source_room_id": "MnStPaulSouthLandingInn"
+        },
+        {
+          "id": "MnStPaulSouthLandingSurvey",
+          "kind": "authored_expansion_room",
+          "dimensions_metatiles": [
+            8,
+            6
+          ],
+          "authoring_file": "towns/MnStPaul.json",
+          "expansion_contract_file": "towns/MnStPaul.expansion.contract.json",
+          "source_room_id": "MnStPaulSouthLandingSurvey"
+        },
+        {
+          "id": "MnStPaulLowertownExchange2F",
+          "kind": "authored_expansion_room",
+          "dimensions_metatiles": [
+            8,
+            4
+          ],
+          "authoring_file": "towns/MnStPaul.json",
+          "expansion_contract_file": "towns/MnStPaul.expansion.contract.json",
+          "source_room_id": "MnStPaulLowertownExchange2F"
+        },
+        {
+          "id": "MnStPaulLowertownExchange3F",
+          "kind": "authored_expansion_room",
+          "dimensions_metatiles": [
+            8,
+            4
+          ],
+          "authoring_file": "towns/MnStPaul.json",
+          "expansion_contract_file": "towns/MnStPaul.expansion.contract.json",
+          "source_room_id": "MnStPaulLowertownExchange3F"
+        }
+      ],
+      "walkable_destinations": [
+        "each port landing",
+        "every visible exterior door",
+        "central square",
+        "local story NPC"
+      ],
+      "door_contract": "Native source DOOR quadrants, exterior active/passive indices, reciprocal room carpets and safe passive Floor arrivals are explicit; production lowering/roundtrip proof pending.",
+      "authoring_file": "towns/MnStPaul.json",
+      "layout_file": "towns/MnStPaul.layout.json",
+      "native_status": "Local 488-map candidate: five public facades, canonical gym/pad/reward/Continue/service checks and both R04 crossing lanes pass. Courier/rail and regional progression remain unfinished.",
+      "compiled_tileset": "kanto",
+      "expansion_contract_file": "towns/MnStPaul.expansion.contract.json"
+    },
+    {
+      "id": "MnStCloud",
+      "name": "ST CLOUD",
+      "dimensions_metatiles": [
+        24,
+        18
+      ],
+      "reference_anchor_percent": [
+        44,
+        58
+      ],
+      "role": "gym_5",
+      "tileset": "johto",
+      "composition": "River overlook, oak park and northern trailhead.",
+      "ports": [
+        {
+          "route": "MN_R05",
+          "side": "S",
+          "gate_metatile": [
+            12,
+            16
+          ],
+          "landing_metatile": [
+            12,
+            14
+          ]
+        },
+        {
+          "route": "MN_R06",
+          "side": "N",
+          "gate_metatile": [
+            12,
+            1
+          ],
+          "landing_metatile": [
+            12,
+            3
+          ]
+        }
+      ],
+      "interiors": [
+        {
+          "id": "MnStCloudPokecenter1F",
+          "kind": "pokecenter",
+          "dimensions_metatiles": [
+            10,
+            8
+          ],
+          "source_behavior": "canonical healing, PC and blackout recovery",
+          "authoring_file": "towns/MnStCloud.json"
+        },
+        {
+          "id": "MnStCloudMart",
+          "kind": "mart",
+          "dimensions_metatiles": [
+            6,
+            4
+          ],
+          "source_behavior": "canonical clerk, money deduction and inventory",
+          "authoring_file": "towns/MnStCloud.json"
+        },
+        {
+          "id": "MnStCloudGym",
+          "kind": "canonical_gym_reference",
+          "dimensions_metatiles": [
+            9,
+            11
+          ],
+          "authoring_file": "towns/MnStCloud.json",
+          "clear_arrival": [
+            4,
+            19
+          ],
+          "passive_arrival": {
+            "index": 3,
+            "tile": [
+              4,
+              19
+            ],
+            "collision": "FLOOR"
+          },
+          "exits": [
+            {
+              "index": 1,
+              "tile": [
+                4,
+                21
+              ],
+              "target": "MnStCloud",
+              "target_warp": 6,
+              "collision": "WARP_CARPET_DOWN"
+            },
+            {
+              "index": 2,
+              "tile": [
+                5,
+                21
+              ],
+              "target": "MnStCloud",
+              "target_warp": 6,
+              "collision": "WARP_CARPET_DOWN"
+            }
+          ],
+          "native_constant": "MN_ST_CLOUD_GYM",
+          "tileset": "mn_gym_5",
+          "source_reference": {
+            "path": "planning/minnesota/gyms/interiors.json",
+            "gym_id": "MnStCloudGym",
+            "room_sha256": "4c0aae779e7fd5ed2dac92dce0a911b8dfc3ff7abee6443ec734d41ab15ba08d",
+            "file_sha256_informational": "441d1312d8e94080c7bae58fe93d0dfce3be3dfabf9094c107064ec56c6ecbb7",
+            "symbol_blocks": {
+              "#": "00",
+              ".": "01",
+              "<": "02",
+              ">": "03",
+              "A": "04",
+              "B": "05",
+              "L": "06",
+              "R": "07",
+              "b": "08",
+              "f": "09",
+              "s": "0a",
+              "t": "0b"
+            },
+            "native_builder": "gym_art::install + gym_publication::room + gym_scripts",
+            "scope": "This canonical Gym5 object alone is authoritative; whole-file hash is informational and unrelated gym edits do not invalidate it."
+          },
+          "status": "Canonical blue-walkway wind gym published and controller-verified as a standalone interior; city-door binding remains pending.",
+          "source_behavior": "Resolve canonical Gym5 directly: native wind slats, Wyrel then Hallen, both required trainer battles, Saven and retryable TM_SWIFT. No alternate room, party, sprite, puzzle or reward is owned by this city descriptor.",
+          "native_rebinding_contract": "Preserve canonical MnStCloudGym module geometry, source art allocation, actors/scripts/flags/parties/reward and native warp indices1,2,3. Root retargets only review-hall exterior destinations to MN_ST_CLOUD passive exterior warp6. Existing city gym door5 targets canonical room passive3.",
+          "viewpoints": [
+            {
+              "id": "arrival-closed",
+              "tile": [
+                4,
+                19
+              ],
+              "phase": "ARRIVAL_CLOSED"
+            },
+            {
+              "id": "lower-crossing-open",
+              "tile": [
+                7,
+                13
+              ],
+              "phase": "MN_GYM_5_TRAINER_1"
+            },
+            {
+              "id": "upper-crossing-open",
+              "tile": [
+                12,
+                9
+              ],
+              "phase": "MN_GYM_5_TRAINER_2"
+            },
+            {
+              "id": "leader-open",
+              "tile": [
+                3,
+                4
+              ],
+              "phase": "MN_GYM_5_TRAINER_2"
+            },
+            {
+              "id": "return-open",
+              "tile": [
+                12,
+                17
+              ],
+              "phase": "MN_GYM_5_TRAINER_2"
+            }
+          ]
+        },
+        {
+          "id": "MnStCloudStation",
+          "kind": "train_station",
+          "dimensions_metatiles": [
+            10,
+            10
+          ],
+          "source_behavior": "Authored Granite Bank depot; train service/callback/door publication pending",
+          "authoring_file": "transit/MnStCloudStation.json"
+        }
+      ],
+      "walkable_destinations": [
+        "each port landing",
+        "every visible exterior door",
+        "central square",
+        "local story NPC"
+      ],
+      "door_contract": "Assign exterior core-tile door coordinates only after selecting authentic facade quadrants; record reciprocal warp indices and indoor floor arrivals before export.",
+      "authoring_file": "towns/MnStCloud.json",
+      "layout_file": "towns/MnStCloud.layout.json",
+      "native_status": "Native 492-map local candidate: all four facades, canonical wind gym/trainer/reward/Continue, native services and reciprocal two-lane R05/R06 seams pass. Rail and continuous regional progression remain unfinished."
+    },
+    {
+      "id": "MnBrainerd",
+      "name": "BRAINERD",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "reference_anchor_percent": [
+        47,
+        46
+      ],
+      "role": "gym_6",
+      "tileset": "johto",
+      "composition": "Four-way lake-country hub with shore, ranger station and camp street.",
+      "ports": [
+        {
+          "route": "MN_R06",
+          "side": "S",
+          "gate_metatile": [
+            16,
+            22
+          ],
+          "landing_metatile": [
+            16,
+            20
+          ]
+        },
+        {
+          "route": "MN_R07",
+          "side": "N",
+          "gate_metatile": [
+            16,
+            1
+          ],
+          "landing_metatile": [
+            16,
+            3
+          ]
+        },
+        {
+          "route": "MN_R15",
+          "side": "W",
+          "gate_metatile": [
+            1,
+            12
+          ],
+          "landing_metatile": [
+            3,
+            12
+          ]
+        },
+        {
+          "route": "MN_R18",
+          "side": "E",
+          "gate_metatile": [
+            30,
+            12
+          ],
+          "landing_metatile": [
+            28,
+            12
+          ]
+        }
+      ],
+      "interiors": [
+        {
+          "id": "MnBrainerdPokecenter1F",
+          "kind": "pokecenter",
+          "dimensions_metatiles": [
+            10,
+            8
+          ],
+          "source_behavior": "canonical healing, PC and blackout recovery",
+          "authoring_file": "towns/MnBrainerd.json"
+        },
+        {
+          "id": "MnBrainerdMart",
+          "kind": "mart",
+          "dimensions_metatiles": [
+            6,
+            4
+          ],
+          "source_behavior": "canonical clerk, money deduction and inventory",
+          "authoring_file": "towns/MnBrainerd.json"
+        },
+        {
+          "id": "MnBrainerdGym",
+          "kind": "gym_6",
+          "dimensions_metatiles": [
+            5,
+            8
+          ]
+        },
+        {
+          "id": "MnBrainerdRangerStation",
+          "kind": "ranger_station",
+          "dimensions_metatiles": [
+            8,
+            6
+          ],
+          "source_behavior": "Hand-authored survey archive interior using exact native lab workbench, lockers and report cabinet. Story reward remains outdoors at25,19.",
+          "authoring_file": "towns/MnBrainerd.json"
+        },
+        {
+          "id": "MnBrainerdOutfitter",
+          "kind": "camp_supply",
+          "dimensions_metatiles": [
+            6,
+            4
+          ],
+          "source_behavior": "Hand-authored small camp-supply cabin: table, gear lockers, map, two residents and success-only first aid gift; no duplicate laboratory interior.",
+          "authoring_file": "towns/MnBrainerd.json"
+        }
+      ],
+      "walkable_destinations": [
+        "each port landing",
+        "every visible exterior door",
+        "central square",
+        "local story NPC"
+      ],
+      "door_contract": "Assign exterior core-tile door coordinates only after selecting authentic facade quadrants; record reciprocal warp indices and indoor floor arrivals before export.",
+      "authoring_file": "towns/MnBrainerd.json",
+      "layout_file": "towns/MnBrainerd.layout.json"
+    },
+    {
+      "id": "MnLeechLake",
+      "name": "LEECH LAKE",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "reference_anchor_percent": [
+        42,
+        35
+      ],
+      "role": "landmark",
+      "tileset": "johto",
+      "composition": "A sheltered shore stop between two long lake routes: two timber cabins on a bent inland path, a railed public fishing pier, separate canoe launch and a broad enclosed lake. No field move is required for either route or public care.",
+      "ports": [
+        {
+          "route": "MN_R07",
+          "side": "S",
+          "gate_metatile": [
+            16,
+            22
+          ],
+          "landing_metatile": [
+            16,
+            20
+          ]
+        },
+        {
+          "route": "MN_R08",
+          "side": "N",
+          "gate_metatile": [
+            16,
+            1
+          ],
+          "landing_metatile": [
+            16,
+            3
+          ]
+        }
+      ],
+      "interiors": [
+        {
+          "id": "MnLeechLakeCareCabin",
+          "kind": "pokecenter",
+          "dimensions_metatiles": [
+            10,
+            8
+          ],
+          "authoring_file": "towns/MnLeechLake.json"
+        },
+        {
+          "id": "MnLeechLakeFisherHouse",
+          "kind": "house",
+          "dimensions_metatiles": [
+            5,
+            4
+          ],
+          "authoring_file": "towns/MnLeechLake.json"
+        }
+      ],
+      "walkable_destinations": [
+        "each port landing",
+        "every visible exterior door",
+        "central square",
+        "local story NPC"
+      ],
+      "door_contract": "Two native cabin doors pair with passive room arrivals and both safe-return carpets. Public care and both regional connections are published; the earned regional journey remains unproven.",
+      "authoring_file": "towns/MnLeechLake.json",
+      "layout_file": "towns/MnLeechLake.layout.json",
+      "compiled_tileset": "mn_headwaters",
+      "native_constant": "MN_LEECH_LAKE_SHORE"
+    },
+    {
+      "id": "MnBemidji",
+      "name": "BEMIDJI",
+      "dimensions_metatiles": [
+        24,
+        24
+      ],
+      "reference_anchor_percent": [
+        35,
+        25
+      ],
+      "role": "gym_7",
+      "tileset": "johto",
+      "composition": "Lake square, sawmill scenery and pine trailheads.",
+      "ports": [
+        {
+          "route": "MN_R08",
+          "side": "S",
+          "gate_metatile": [
+            12,
+            22
+          ],
+          "landing_metatile": [
+            12,
+            20
+          ]
+        },
+        {
+          "route": "MN_R09",
+          "side": "E",
+          "gate_metatile": [
+            22,
+            12
+          ],
+          "landing_metatile": [
+            20,
+            12
+          ]
+        },
+        {
+          "route": "MN_R14",
+          "side": "W",
+          "gate_metatile": [
+            1,
+            12
+          ],
+          "landing_metatile": [
+            3,
+            12
+          ]
+        },
+        {
+          "route": "MN_R17",
+          "side": "N",
+          "gate_metatile": [
+            12,
+            1
+          ],
+          "landing_metatile": [
+            12,
+            3
+          ]
+        }
+      ],
+      "interiors": [
+        {
+          "id": "MnBemidjiPokecenter1F",
+          "kind": "pokecenter",
+          "dimensions_metatiles": [
+            10,
+            8
+          ],
+          "source_behavior": "canonical healing, PC and blackout recovery",
+          "authoring_file": "towns/MnBemidji.json"
+        },
+        {
+          "id": "MnBemidjiMart",
+          "kind": "mart",
+          "dimensions_metatiles": [
+            6,
+            4
+          ],
+          "source_behavior": "canonical clerk, money deduction and inventory",
+          "authoring_file": "towns/MnBemidji.json"
+        },
+        {
+          "id": "MnBemidjiGym",
+          "kind": "gym_7",
+          "dimensions_metatiles": [
+            6,
+            10
+          ]
+        },
+        {
+          "id": "MnBemidjiShelfHouse",
+          "kind": "house",
+          "dimensions_metatiles": [
+            6,
+            4
+          ],
+          "authoring_file": "towns/MnBemidji.json"
+        },
+        {
+          "id": "MnBemidjiNorthHouse",
+          "kind": "house",
+          "dimensions_metatiles": [
+            6,
+            4
+          ],
+          "authoring_file": "towns/MnBemidji.json"
+        },
+        {
+          "id": "MnBemidjiHeritageHouse",
+          "kind": "history_house",
+          "dimensions_metatiles": [
+            8,
+            6
+          ],
+          "authoring_file": "towns/MnBemidji.json"
+        }
+      ],
+      "walkable_destinations": [
+        "each port landing",
+        "every visible exterior door",
+        "central square",
+        "local story NPC"
+      ],
+      "door_contract": "Assign exterior core-tile door coordinates only after selecting authentic facade quadrants; record reciprocal warp indices and indoor floor arrivals before export.",
+      "authoring_file": "towns/MnBemidji.json",
+      "layout_file": "towns/MnBemidji.layout.json"
+    },
+    {
+      "id": "MnGrandRapids",
+      "name": "GRAND RAPIDS",
+      "dimensions_metatiles": [
+        24,
+        24
+      ],
+      "reference_anchor_percent": [
+        57,
+        36
+      ],
+      "role": "story_hub",
+      "tileset": "johto_modern",
+      "composition": "Working survey depot and civic services above a protected river walk.",
+      "ports": [
+        {
+          "route": "MN_R09",
+          "side": "W",
+          "gate_metatile": [
+            1,
+            12
+          ],
+          "landing_metatile": [
+            3,
+            12
+          ],
+          "native_connection": {
+            "target_map": "MnR09C01R00",
+            "direction": "west",
+            "offset_metatiles": 0,
+            "reciprocal_offset_metatiles": 0,
+            "checkpoint": "MnGrandRapidsWestCheck"
+          }
+        },
+        {
+          "route": "MN_R10",
+          "side": "E",
+          "gate_metatile": [
+            22,
+            12
+          ],
+          "landing_metatile": [
+            20,
+            12
+          ],
+          "native_connection": {
+            "target_map": "MnR10C00R00",
+            "direction": "east",
+            "offset_metatiles": 7,
+            "reciprocal_offset_metatiles": -7,
+            "checkpoint": "MnGrandRapidsEastCheck"
+          }
+        }
+      ],
+      "interiors": [
+        {
+          "id": "MnGrandRapidsPokecenter1F",
+          "kind": "pokecenter",
+          "dimensions_metatiles": [
+            10,
+            8
+          ],
+          "source_behavior": "canonical healing, PC and blackout recovery",
+          "authoring_file": "towns/MnGrandRapids.json"
+        },
+        {
+          "id": "MnGrandRapidsMart",
+          "kind": "mart",
+          "dimensions_metatiles": [
+            6,
+            4
+          ],
+          "source_behavior": "canonical clerk, money deduction and inventory",
+          "authoring_file": "towns/MnGrandRapids.json"
+        },
+        {
+          "id": "MnGrandRapidsSurveyDepot",
+          "kind": "story",
+          "dimensions_metatiles": [
+            12,
+            10
+          ],
+          "authoring_file": "towns/MnGrandRapids.json"
+        }
+      ],
+      "walkable_destinations": [
+        "each port landing",
+        "every visible exterior door",
+        "central square",
+        "local story NPC"
+      ],
+      "door_contract": "Assign exterior core-tile door coordinates only after selecting authentic facade quadrants; record reciprocal warp indices and indoor floor arrivals before export.",
+      "authoring_file": "towns/MnGrandRapids.json",
+      "layout_file": "towns/MnGrandRapids.layout.json"
+    },
+    {
+      "id": "MnDuluth",
+      "name": "DULUTH",
+      "dimensions_metatiles": [
+        64,
+        48
+      ],
+      "reference_anchor_percent": [
+        72,
+        45
+      ],
+      "role": "gym_8",
+      "tileset": "johto_modern",
+      "composition": "A compact inhabited bluff and winding hillside street meet Lincoln Park work blocks, the original civic/canal quarter, a large enterable maritime co-op, Bayfront slips and a bent Park Point neighborhood.",
+      "ports": [
+        {
+          "route": "MN_R10",
+          "side": "W",
+          "gate_metatile": [
+            1,
+            24
+          ],
+          "landing_metatile": [
+            3,
+            24
+          ]
+        },
+        {
+          "route": "MN_R11",
+          "side": "N",
+          "gate_metatile": [
+            32,
+            1
+          ],
+          "landing_metatile": [
+            32,
+            3
+          ]
+        }
+      ],
+      "interiors": [
+        {
+          "id": "MnDuluthPokecenter1F",
+          "kind": "pokecenter",
+          "dimensions_metatiles": [
+            10,
+            8
+          ],
+          "source_behavior": "canonical healing, PC and blackout recovery",
+          "authoring_file": "towns/MnDuluth.json"
+        },
+        {
+          "id": "MnDuluthMart",
+          "kind": "mart",
+          "dimensions_metatiles": [
+            6,
+            4
+          ],
+          "source_behavior": "canonical clerk, money deduction and inventory",
+          "authoring_file": "towns/MnDuluth.json"
+        },
+        {
+          "id": "MnDuluthGym",
+          "kind": "canonical_gym_reference",
+          "dimensions_metatiles": [
+            7,
+            10
+          ],
+          "authoring_file": "towns/MnDuluth.json",
+          "clear_arrival": [
+            6,
+            17
+          ],
+          "passive_arrival": {
+            "index": 3,
+            "tile": [
+              6,
+              17
+            ],
+            "collision": "FLOOR"
+          },
+          "exits": [
+            {
+              "index": 1,
+              "tile": [
+                6,
+                19
+              ],
+              "target": "MnDuluth",
+              "target_warp": 4,
+              "collision": "WARP_CARPET_DOWN"
+            },
+            {
+              "index": 2,
+              "tile": [
+                7,
+                19
+              ],
+              "target": "MnDuluth",
+              "target_warp": 4,
+              "collision": "WARP_CARPET_DOWN"
+            }
+          ],
+          "native_constant": "MN_DULUTH_GYM",
+          "tileset": "mn_gym_8",
+          "source_reference": {
+            "path": "planning/minnesota/gyms/interiors.json",
+            "gym_id": "MnDuluthGym",
+            "room_sha256": "1e16fc8a72cff43af098f8f630e2ef9cece5df1c877f74e8c25a1098c0cc1f68",
+            "file_sha256_informational": "441d1312d8e94080c7bae58fe93d0dfce3be3dfabf9094c107064ec56c6ecbb7",
+            "symbol_blocks": {
+              "#": "00",
+              ".": "01",
+              "B": "02",
+              "I": "03",
+              "L": "04",
+              "R": "05",
+              "V": "06",
+              "W": "07",
+              "X": "08",
+              "Y": "09",
+              "Z": "0a",
+              "a": "0b",
+              "b": "0c",
+              "l": "0d",
+              "r": "0e",
+              "s": "0f"
+            },
+            "native_builder": "gym_art::install + gym_publication::room + gym_scripts",
+            "scope": "Canonical Gym8 object alone is authoritative; unrelated gyms and whole-file metadata do not invalidate this reference."
+          },
+          "status": "Canonical 7x10 ice-course remake and native Duluth facade published and controller-verified, including earned badge8 and receiver acknowledgement after explicit upstream fixtures.",
+          "native_rebinding_contract": "Preserve canonical Gym8 module rows, art, objects, flags, scripts, parties, TM and warp indices. Root must retarget existing review-hall destinations on native warp indices1,2,3 to MN_DULUTH passive exterior warp4; exterior gym door3 continues targeting native room passive3.",
+          "source_behavior": "Resolve canonical Gym8 directly. No alternative rows, art, residents, party, stations, gates or reward are owned by this city source.",
+          "viewpoints": [
+            {
+              "id": "arrival",
+              "tile": [
+                6,
+                17
+              ],
+              "phase": "ARRIVAL_CLOSED"
+            },
+            {
+              "id": "west-ice-launch",
+              "tile": [
+                2,
+                16
+              ],
+              "phase": "ARRIVAL_CLOSED"
+            },
+            {
+              "id": "west-ice-stop",
+              "tile": [
+                2,
+                8
+              ],
+              "phase": "ARRIVAL_CLOSED"
+            },
+            {
+              "id": "west-patch",
+              "tile": [
+                4,
+                8
+              ],
+              "phase": "ARRIVAL_CLOSED"
+            },
+            {
+              "id": "east-ice-launch",
+              "tile": [
+                11,
+                16
+              ],
+              "phase": "MN_GYM_8_TRAINER_1"
+            },
+            {
+              "id": "east-patch",
+              "tile": [
+                9,
+                10
+              ],
+              "phase": "MN_GYM_8_TRAINER_1"
+            },
+            {
+              "id": "cross-passage",
+              "tile": [
+                6,
+                7
+              ],
+              "phase": "MN_GYM_8_TRAINER_2"
+            },
+            {
+              "id": "leader",
+              "tile": [
+                7,
+                3
+              ],
+              "phase": "MN_GYM_8_TRAINER_3"
+            }
+          ]
+        },
+        {
+          "id": "MnDuluthHarborWorkshop",
+          "kind": "story",
+          "dimensions_metatiles": [
+            8,
+            6
+          ],
+          "authoring_file": "towns/MnDuluth.json"
+        },
+        {
+          "id": "MnDuluthHillHouse",
+          "kind": "house",
+          "dimensions_metatiles": [
+            5,
+            4
+          ],
+          "authoring_file": "towns/MnDuluth.json"
+        },
+        {
+          "id": "MnDuluthHarborHouse",
+          "kind": "house",
+          "dimensions_metatiles": [
+            5,
+            4
+          ],
+          "authoring_file": "towns/MnDuluth.json"
+        },
+        {
+          "id": "MnDuluthHistoryHouse",
+          "kind": "house",
+          "dimensions_metatiles": [
+            6,
+            5
+          ],
+          "authoring_file": "towns/MnDuluth.json"
+        },
+        {
+          "id": "MnDuluthLookoutLodge1F",
+          "kind": "lodge",
+          "dimensions_metatiles": [
+            8,
+            6
+          ],
+          "authoring_file": "towns/MnDuluth.json",
+          "expansion_contract_file": "towns/MnDuluth.expansion.contract.json",
+          "source_room_id": "MnDuluthLookoutLodge1F"
+        },
+        {
+          "id": "MnDuluthLookoutLodge2F",
+          "kind": "lodge",
+          "dimensions_metatiles": [
+            8,
+            6
+          ],
+          "authoring_file": "towns/MnDuluth.json",
+          "expansion_contract_file": "towns/MnDuluth.expansion.contract.json",
+          "source_room_id": "MnDuluthLookoutLodge2F"
+        },
+        {
+          "id": "MnDuluthPotteryHouse",
+          "kind": "home",
+          "dimensions_metatiles": [
+            6,
+            6
+          ],
+          "authoring_file": "towns/MnDuluth.json",
+          "expansion_contract_file": "towns/MnDuluth.expansion.contract.json",
+          "source_room_id": "MnDuluthPotteryHouse"
+        },
+        {
+          "id": "MnDuluthQuarryPractice",
+          "kind": "practice",
+          "dimensions_metatiles": [
+            8,
+            6
+          ],
+          "authoring_file": "towns/MnDuluth.json",
+          "expansion_contract_file": "towns/MnDuluth.expansion.contract.json",
+          "source_room_id": "MnDuluthQuarryPractice"
+        },
+        {
+          "id": "MnDuluthHillGardenHouse",
+          "kind": "home",
+          "dimensions_metatiles": [
+            6,
+            6
+          ],
+          "authoring_file": "towns/MnDuluth.json",
+          "expansion_contract_file": "towns/MnDuluth.expansion.contract.json",
+          "source_room_id": "MnDuluthHillGardenHouse"
+        },
+        {
+          "id": "MnDuluthTerraceHome",
+          "kind": "home",
+          "dimensions_metatiles": [
+            6,
+            6
+          ],
+          "authoring_file": "towns/MnDuluth.json",
+          "expansion_contract_file": "towns/MnDuluth.expansion.contract.json",
+          "source_room_id": "MnDuluthTerraceHome"
+        },
+        {
+          "id": "MnDuluthHillRanger",
+          "kind": "ranger",
+          "dimensions_metatiles": [
+            6,
+            6
+          ],
+          "authoring_file": "towns/MnDuluth.json",
+          "expansion_contract_file": "towns/MnDuluth.expansion.contract.json",
+          "source_room_id": "MnDuluthHillRanger"
+        },
+        {
+          "id": "MnDuluthReadingHall1F",
+          "kind": "library",
+          "dimensions_metatiles": [
+            8,
+            6
+          ],
+          "authoring_file": "towns/MnDuluth.json",
+          "expansion_contract_file": "towns/MnDuluth.expansion.contract.json",
+          "source_room_id": "MnDuluthReadingHall1F"
+        },
+        {
+          "id": "MnDuluthReadingHall2F",
+          "kind": "library",
+          "dimensions_metatiles": [
+            8,
+            6
+          ],
+          "authoring_file": "towns/MnDuluth.json",
+          "expansion_contract_file": "towns/MnDuluth.expansion.contract.json",
+          "source_room_id": "MnDuluthReadingHall2F"
+        },
+        {
+          "id": "MnDuluthHillsideHostel1F",
+          "kind": "hostel",
+          "dimensions_metatiles": [
+            8,
+            6
+          ],
+          "authoring_file": "towns/MnDuluth.json",
+          "expansion_contract_file": "towns/MnDuluth.expansion.contract.json",
+          "source_room_id": "MnDuluthHillsideHostel1F"
+        },
+        {
+          "id": "MnDuluthHillsideHostel2F",
+          "kind": "hostel",
+          "dimensions_metatiles": [
+            8,
+            6
+          ],
+          "authoring_file": "towns/MnDuluth.json",
+          "expansion_contract_file": "towns/MnDuluth.expansion.contract.json",
+          "source_room_id": "MnDuluthHillsideHostel2F"
+        },
+        {
+          "id": "MnDuluthHillSupplies",
+          "kind": "supply",
+          "dimensions_metatiles": [
+            7,
+            6
+          ],
+          "authoring_file": "towns/MnDuluth.json",
+          "expansion_contract_file": "towns/MnDuluth.expansion.contract.json",
+          "source_room_id": "MnDuluthHillSupplies"
+        },
+        {
+          "id": "MnDuluthCommunityKitchen",
+          "kind": "kitchen",
+          "dimensions_metatiles": [
+            8,
+            6
+          ],
+          "authoring_file": "towns/MnDuluth.json",
+          "expansion_contract_file": "towns/MnDuluth.expansion.contract.json",
+          "source_room_id": "MnDuluthCommunityKitchen"
+        },
+        {
+          "id": "MnDuluthWeatherStudy1F",
+          "kind": "library",
+          "dimensions_metatiles": [
+            8,
+            6
+          ],
+          "authoring_file": "towns/MnDuluth.json",
+          "expansion_contract_file": "towns/MnDuluth.expansion.contract.json",
+          "source_room_id": "MnDuluthWeatherStudy1F"
+        },
+        {
+          "id": "MnDuluthWeatherStudy2F",
+          "kind": "library",
+          "dimensions_metatiles": [
+            8,
+            6
+          ],
+          "authoring_file": "towns/MnDuluth.json",
+          "expansion_contract_file": "towns/MnDuluth.expansion.contract.json",
+          "source_room_id": "MnDuluthWeatherStudy2F"
+        },
+        {
+          "id": "MnDuluthLakesideHome",
+          "kind": "home",
+          "dimensions_metatiles": [
+            6,
+            6
+          ],
+          "authoring_file": "towns/MnDuluth.json",
+          "expansion_contract_file": "towns/MnDuluth.expansion.contract.json",
+          "source_room_id": "MnDuluthLakesideHome"
+        },
+        {
+          "id": "MnDuluthLakeOutfitter",
+          "kind": "supply",
+          "dimensions_metatiles": [
+            7,
+            6
+          ],
+          "authoring_file": "towns/MnDuluth.json",
+          "expansion_contract_file": "towns/MnDuluth.expansion.contract.json",
+          "source_room_id": "MnDuluthLakeOutfitter"
+        },
+        {
+          "id": "MnDuluthFieldClinic",
+          "kind": "clinic",
+          "dimensions_metatiles": [
+            8,
+            6
+          ],
+          "authoring_file": "towns/MnDuluth.json",
+          "expansion_contract_file": "towns/MnDuluth.expansion.contract.json",
+          "source_room_id": "MnDuluthFieldClinic"
+        },
+        {
+          "id": "MnDuluthBoatBuilder",
+          "kind": "workshop",
+          "dimensions_metatiles": [
+            8,
+            6
+          ],
+          "authoring_file": "towns/MnDuluth.json",
+          "expansion_contract_file": "towns/MnDuluth.expansion.contract.json",
+          "source_room_id": "MnDuluthBoatBuilder"
+        },
+        {
+          "id": "MnDuluthUnionHall1F",
+          "kind": "hall",
+          "dimensions_metatiles": [
+            8,
+            6
+          ],
+          "authoring_file": "towns/MnDuluth.json",
+          "expansion_contract_file": "towns/MnDuluth.expansion.contract.json",
+          "source_room_id": "MnDuluthUnionHall1F"
+        },
+        {
+          "id": "MnDuluthUnionHall2F",
+          "kind": "hall",
+          "dimensions_metatiles": [
+            8,
+            6
+          ],
+          "authoring_file": "towns/MnDuluth.json",
+          "expansion_contract_file": "towns/MnDuluth.expansion.contract.json",
+          "source_room_id": "MnDuluthUnionHall2F"
+        },
+        {
+          "id": "MnDuluthOreWarehouse1F",
+          "kind": "warehouse",
+          "dimensions_metatiles": [
+            8,
+            6
+          ],
+          "authoring_file": "towns/MnDuluth.json",
+          "expansion_contract_file": "towns/MnDuluth.expansion.contract.json",
+          "source_room_id": "MnDuluthOreWarehouse1F"
+        },
+        {
+          "id": "MnDuluthOreWarehouse2F",
+          "kind": "warehouse",
+          "dimensions_metatiles": [
+            8,
+            6
+          ],
+          "authoring_file": "towns/MnDuluth.json",
+          "expansion_contract_file": "towns/MnDuluth.expansion.contract.json",
+          "source_room_id": "MnDuluthOreWarehouse2F"
+        },
+        {
+          "id": "MnDuluthToolExchange",
+          "kind": "battle_supply",
+          "dimensions_metatiles": [
+            7,
+            6
+          ],
+          "authoring_file": "towns/MnDuluth.json",
+          "expansion_contract_file": "towns/MnDuluth.expansion.contract.json",
+          "source_room_id": "MnDuluthToolExchange"
+        },
+        {
+          "id": "MnDuluthTrainingAnnex",
+          "kind": "practice",
+          "dimensions_metatiles": [
+            8,
+            6
+          ],
+          "authoring_file": "towns/MnDuluth.json",
+          "expansion_contract_file": "towns/MnDuluth.expansion.contract.json",
+          "source_room_id": "MnDuluthTrainingAnnex"
+        },
+        {
+          "id": "MnDuluthForemanHome",
+          "kind": "home",
+          "dimensions_metatiles": [
+            6,
+            6
+          ],
+          "authoring_file": "towns/MnDuluth.json",
+          "expansion_contract_file": "towns/MnDuluth.expansion.contract.json",
+          "source_room_id": "MnDuluthForemanHome"
+        },
+        {
+          "id": "MnDuluthMaritimeCoop1F",
+          "kind": "coop",
+          "dimensions_metatiles": [
+            8,
+            6
+          ],
+          "authoring_file": "towns/MnDuluth.json",
+          "expansion_contract_file": "towns/MnDuluth.expansion.contract.json",
+          "source_room_id": "MnDuluthMaritimeCoop1F"
+        },
+        {
+          "id": "MnDuluthMaritimeCoop2F",
+          "kind": "coop",
+          "dimensions_metatiles": [
+            8,
+            6
+          ],
+          "authoring_file": "towns/MnDuluth.json",
+          "expansion_contract_file": "towns/MnDuluth.expansion.contract.json",
+          "source_room_id": "MnDuluthMaritimeCoop2F"
+        },
+        {
+          "id": "MnDuluthMaritimeCoop3F",
+          "kind": "coop",
+          "dimensions_metatiles": [
+            8,
+            6
+          ],
+          "authoring_file": "towns/MnDuluth.json",
+          "expansion_contract_file": "towns/MnDuluth.expansion.contract.json",
+          "source_room_id": "MnDuluthMaritimeCoop3F"
+        },
+        {
+          "id": "MnDuluthCargoOffice",
+          "kind": "cargo",
+          "dimensions_metatiles": [
+            8,
+            6
+          ],
+          "authoring_file": "towns/MnDuluth.json",
+          "expansion_contract_file": "towns/MnDuluth.expansion.contract.json",
+          "source_room_id": "MnDuluthCargoOffice"
+        },
+        {
+          "id": "MnDuluthSailorClub1F",
+          "kind": "club",
+          "dimensions_metatiles": [
+            8,
+            6
+          ],
+          "authoring_file": "towns/MnDuluth.json",
+          "expansion_contract_file": "towns/MnDuluth.expansion.contract.json",
+          "source_room_id": "MnDuluthSailorClub1F"
+        },
+        {
+          "id": "MnDuluthSailorClub2F",
+          "kind": "club",
+          "dimensions_metatiles": [
+            8,
+            6
+          ],
+          "authoring_file": "towns/MnDuluth.json",
+          "expansion_contract_file": "towns/MnDuluth.expansion.contract.json",
+          "source_room_id": "MnDuluthSailorClub2F"
+        },
+        {
+          "id": "MnDuluthDockSupplies",
+          "kind": "supply",
+          "dimensions_metatiles": [
+            7,
+            6
+          ],
+          "authoring_file": "towns/MnDuluth.json",
+          "expansion_contract_file": "towns/MnDuluth.expansion.contract.json",
+          "source_room_id": "MnDuluthDockSupplies"
+        },
+        {
+          "id": "MnDuluthSlipHouse",
+          "kind": "home",
+          "dimensions_metatiles": [
+            6,
+            6
+          ],
+          "authoring_file": "towns/MnDuluth.json",
+          "expansion_contract_file": "towns/MnDuluth.expansion.contract.json",
+          "source_room_id": "MnDuluthSlipHouse"
+        },
+        {
+          "id": "MnDuluthBeachShelter",
+          "kind": "ranger",
+          "dimensions_metatiles": [
+            6,
+            6
+          ],
+          "authoring_file": "towns/MnDuluth.json",
+          "expansion_contract_file": "towns/MnDuluth.expansion.contract.json",
+          "source_room_id": "MnDuluthBeachShelter"
+        },
+        {
+          "id": "MnDuluthPointOutfitter",
+          "kind": "supply",
+          "dimensions_metatiles": [
+            7,
+            6
+          ],
+          "authoring_file": "towns/MnDuluth.json",
+          "expansion_contract_file": "towns/MnDuluth.expansion.contract.json",
+          "source_room_id": "MnDuluthPointOutfitter"
+        },
+        {
+          "id": "MnDuluthSandHouse",
+          "kind": "home",
+          "dimensions_metatiles": [
+            6,
+            6
+          ],
+          "authoring_file": "towns/MnDuluth.json",
+          "expansion_contract_file": "towns/MnDuluth.expansion.contract.json",
+          "source_room_id": "MnDuluthSandHouse"
+        },
+        {
+          "id": "MnDuluthBoatClub1F",
+          "kind": "club",
+          "dimensions_metatiles": [
+            8,
+            6
+          ],
+          "authoring_file": "towns/MnDuluth.json",
+          "expansion_contract_file": "towns/MnDuluth.expansion.contract.json",
+          "source_room_id": "MnDuluthBoatClub1F"
+        },
+        {
+          "id": "MnDuluthBoatClub2F",
+          "kind": "club",
+          "dimensions_metatiles": [
+            8,
+            6
+          ],
+          "authoring_file": "towns/MnDuluth.json",
+          "expansion_contract_file": "towns/MnDuluth.expansion.contract.json",
+          "source_room_id": "MnDuluthBoatClub2F"
+        },
+        {
+          "id": "MnDuluthFisherCottage",
+          "kind": "home",
+          "dimensions_metatiles": [
+            6,
+            6
+          ],
+          "authoring_file": "towns/MnDuluth.json",
+          "expansion_contract_file": "towns/MnDuluth.expansion.contract.json",
+          "source_room_id": "MnDuluthFisherCottage"
+        },
+        {
+          "id": "MnDuluthPointGardenHome",
+          "kind": "home",
+          "dimensions_metatiles": [
+            6,
+            6
+          ],
+          "authoring_file": "towns/MnDuluth.json",
+          "expansion_contract_file": "towns/MnDuluth.expansion.contract.json",
+          "source_room_id": "MnDuluthPointGardenHome"
+        }
+      ],
+      "walkable_destinations": [
+        "both actual guarded regional walking seams",
+        "38 real exterior doors and safe passive returns",
+        "41 newly authored rooms plus seven original whole native room modules",
+        "five native outdoor stairs and two new useful short drops",
+        "the original Gym8/care/shop/harbor receiver programs",
+        "three-floor co-op vendors and optional trainer reward",
+        "cargo requisition with full-bag retry",
+        "railed working/public piers and closed outer Surf boundary"
+      ],
+      "door_contract": "Every native exterior DOOR has one indexed active warp and separate Floor return. Original indices1..14 remain unchanged; new indices15..76 append. New upper floors have explicit contiguous paired stairs and non-triggering arrivals; the executable contract is authoritative. Native gameplay acceptance belongs to Root.",
+      "authoring_file": "towns/MnDuluth.json",
+      "layout_file": "towns/MnDuluth.layout.json",
+      "native_connections_source": "towns/MnDuluth.expansion.contract.json",
+      "compiled_tileset": "mn_duluth_expanded",
+      "expansion_contract_file": "towns/MnDuluth.expansion.contract.json"
+    },
+    {
+      "id": "MnGrandMarais",
+      "name": "GRAND MARAIS",
+      "dimensions_metatiles": [
+        20,
+        19
+      ],
+      "reference_anchor_percent": [
+        87,
+        26
+      ],
+      "role": "town",
+      "tileset": "mn_marais_shore",
+      "composition": "Fishing harbor, artist row and inland trailhead.",
+      "ports": [
+        {
+          "route": "MN_R11",
+          "side": "S",
+          "gate_metatile": [
+            2,
+            9
+          ],
+          "landing_metatile": [
+            4,
+            9
+          ],
+          "physical_facade": "west side building; paired east-west gate warps connect the northern coast trail"
+        },
+        {
+          "route": "MN_R12",
+          "side": "W",
+          "gate_metatile": [
+            0,
+            4
+          ],
+          "landing_metatile": [
+            2,
+            4
+          ],
+          "native_connection": "MnR12C01R01 east; offsets 0/0; core rows 8/9"
+        }
+      ],
+      "interiors": [
+        {
+          "id": "MnGrandMaraisFieldStation",
+          "kind": "field_station",
+          "dimensions_metatiles": [
+            5,
+            4
+          ],
+          "source_behavior": "Optional spare lamp part; native demo starter/supplies retired."
+        },
+        {
+          "id": "MnGrandMaraisPokecenter",
+          "kind": "pokecenter",
+          "dimensions_metatiles": [
+            5,
+            4
+          ],
+          "source_behavior": "Native nurse healing and existing recovery record."
+        },
+        {
+          "id": "MnGrandMaraisMart",
+          "kind": "mart",
+          "dimensions_metatiles": [
+            6,
+            4
+          ],
+          "source_behavior": "Original native shop inventory and clerk."
+        },
+        {
+          "id": "MnGrandMaraisArtistHouse",
+          "kind": "house",
+          "dimensions_metatiles": [
+            4,
+            4
+          ],
+          "source_behavior": "Original artist conversation."
+        },
+        {
+          "id": "MnGrandMaraisFisherHouse",
+          "kind": "house",
+          "dimensions_metatiles": [
+            4,
+            4
+          ],
+          "source_behavior": "Original fisher conversation."
+        },
+        {
+          "id": "MnGrandMaraisLighthouse",
+          "kind": "lighthouse",
+          "dimensions_metatiles": [
+            5,
+            5
+          ],
+          "source_behavior": "Optional part repair, distinct local lamp flag and once-only Super Potion."
+        },
+        {
+          "id": "MnGrandMaraisShoreGate",
+          "kind": "gatehouse",
+          "dimensions_metatiles": [
+            5,
+            4
+          ],
+          "source_behavior": "Authentic IlexForestAzaleaGate floorplan; two passive arrival lanes at each side."
+        }
+      ],
+      "walkable_destinations": [
+        "each port landing",
+        "every visible exterior door",
+        "central square",
+        "local story NPC"
+      ],
+      "door_contract": "Six original native indexed facade/room pairs are preserved, with automatic outdoor exit steps. The separate coast gate uses four passive room arrivals and two inside-checkpoint town returns.",
+      "native_connections_source": "planning/minnesota/towns/MnGrandMarais.connections.json"
+    },
+    {
+      "id": "MnBoundaryWaters",
+      "name": "BOUNDARY WATERS",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "reference_anchor_percent": [
+        77,
+        16
+      ],
+      "role": "safari_basecamp_and_story_hub",
+      "tileset": "johto",
+      "composition": "Free ranger basecamp and Q07 survey shelter at the edge of a Safari preserve made mostly of connected lakes, pine/grass shores and real portages.",
+      "ports": [
+        {
+          "route": "MN_R12",
+          "side": "E",
+          "gate_metatile": [
+            30,
+            12
+          ],
+          "landing_metatile": [
+            28,
+            12
+          ],
+          "native_connection": {
+            "target_map": "MnR12C00R01",
+            "direction": "east",
+            "offset_metatiles": 8,
+            "reciprocal_offset_metatiles": -8,
+            "checkpoint": "gunflint"
+          }
+        },
+        {
+          "route": "MN_R13",
+          "side": "S",
+          "gate_metatile": [
+            16,
+            22
+          ],
+          "landing_metatile": [
+            16,
+            20
+          ],
+          "native_connection": {
+            "target_map": "MnR13C00R00",
+            "direction": "south",
+            "offset_metatiles": 1,
+            "reciprocal_offset_metatiles": -1,
+            "checkpoint": "league"
+          }
+        },
+        {
+          "route": "MN_R20",
+          "side": "W",
+          "gate_metatile": [
+            1,
+            12
+          ],
+          "landing_metatile": [
+            3,
+            12
+          ],
+          "native_connection": {
+            "target_map": "MnR20C01R00",
+            "direction": "west",
+            "offset_metatiles": -6,
+            "reciprocal_offset_metatiles": 6,
+            "checkpoint": "voyageurs"
+          }
+        }
+      ],
+      "interiors": [
+        {
+          "id": "MnBoundaryWatersSurveyShelter",
+          "kind": "story",
+          "dimensions_metatiles": [
+            8,
+            6
+          ]
+        }
+      ],
+      "walkable_destinations": [
+        "each route port landing without paid entry",
+        "survey shelter and Q07 story actor without paid entry",
+        "ranger check-in",
+        "protected public canoe dock",
+        "free early-return arrival"
+      ],
+      "door_contract": "Assign exterior core-tile door coordinates only after selecting authentic facade quadrants; record reciprocal warp indices and indoor floor arrivals before export.",
+      "safari_zone_file": "zones/boundary-waters-safari.json"
+    },
+    {
+      "id": "MnEly",
+      "name": "ELY",
+      "dimensions_metatiles": [
+        24,
+        24
+      ],
+      "reference_anchor_percent": [
+        68,
+        22
+      ],
+      "role": "league",
+      "tileset": "johto",
+      "composition": "League forecourt and northern expedition base.",
+      "ports": [
+        {
+          "route": "MN_R13",
+          "side": "N",
+          "gate_metatile": [
+            12,
+            1
+          ],
+          "landing_metatile": [
+            12,
+            3
+          ]
+        }
+      ],
+      "interiors": [
+        {
+          "id": "MnElyPokecenter1F",
+          "kind": "pokecenter",
+          "dimensions_metatiles": [
+            10,
+            8
+          ],
+          "source_behavior": "canonical healing, PC and blackout recovery"
+        },
+        {
+          "id": "MnElyMart",
+          "kind": "mart",
+          "dimensions_metatiles": [
+            6,
+            4
+          ],
+          "source_behavior": "canonical clerk, money deduction and inventory"
+        },
+        {
+          "id": "MnLeagueLobby",
+          "kind": "league",
+          "dimensions_metatiles": [
+            10,
+            8
+          ]
+        },
+        {
+          "id": "MnLeagueRoom1",
+          "kind": "league",
+          "dimensions_metatiles": [
+            10,
+            8
+          ]
+        },
+        {
+          "id": "MnLeagueRoom2",
+          "kind": "league",
+          "dimensions_metatiles": [
+            10,
+            8
+          ]
+        },
+        {
+          "id": "MnLeagueRoom3",
+          "kind": "league",
+          "dimensions_metatiles": [
+            10,
+            8
+          ]
+        },
+        {
+          "id": "MnLeagueRoom4",
+          "kind": "league",
+          "dimensions_metatiles": [
+            10,
+            8
+          ]
+        },
+        {
+          "id": "MnLeagueChampion",
+          "kind": "league",
+          "dimensions_metatiles": [
+            10,
+            8
+          ]
+        }
+      ],
+      "walkable_destinations": [
+        "each port landing",
+        "every visible exterior door",
+        "central square",
+        "local story NPC"
+      ],
+      "door_contract": "Assign exterior core-tile door coordinates only after selecting authentic facade quadrants; record reciprocal warp indices and indoor floor arrivals before export."
+    },
+    {
+      "id": "MnLakeItasca",
+      "name": "LAKE ITASCA",
+      "dimensions_metatiles": [
+        24,
+        24
+      ],
+      "reference_anchor_percent": [
+        24,
+        33
+      ],
+      "role": "landmark",
+      "tileset": "johto",
+      "composition": "A quiet reference site: pine banks, a northern lake feeding a narrow brook, one short railed crossing and a dry-land survey plaque. Visiting is possible after Lake; only the Pine-qualified, acknowledged marker records the independent reading. The future western trail remains visibly closed. The eastern arrival passes through the authentic Ilex Forest–Azalea gatehouse floorplan, with two native side-carpet lanes and separate safe arrivals on both sides.",
+      "ports": [
+        {
+          "route": "MN_R14",
+          "side": "E",
+          "gate_metatile": [
+            21,
+            12
+          ],
+          "landing_metatile": [
+            20,
+            12
+          ]
+        },
+        {
+          "route": "MN_R19",
+          "side": "W",
+          "gate_metatile": [
+            1,
+            12
+          ],
+          "landing_metatile": [
+            3,
+            12
+          ]
+        }
+      ],
+      "interiors": [
+        {
+          "id": "MnItascaGatehouse",
+          "name": "ITASCA GATEHOUSE",
+          "dimensions_metatiles": [
+            5,
+            4
+          ],
+          "tileset": "gate",
+          "authoring_file": "towns/MnLakeItasca.json",
+          "access_kind": "side_gatehouse"
+        }
+      ],
+      "walkable_destinations": [
+        "native eastern gatehouse",
+        "dry survey marker",
+        "short railed brook crossing",
+        "both witnesses",
+        "closed western trail sign"
+      ],
+      "door_contract": "Two native side-carpet lanes via the original IlexForestAzaleaGate floorplan. Four separate passive room arrivals and safe exterior returns; see gatehouse_contract.",
+      "authoring_file": "towns/MnLakeItasca.json",
+      "compiled_tileset": "mn_headwaters"
+    },
+    {
+      "id": "MnDetroitLakes",
+      "name": "DETROIT LAKES",
+      "dimensions_metatiles": [
+        24,
+        18
+      ],
+      "reference_anchor_percent": [
+        28,
+        44
+      ],
+      "role": "town",
+      "tileset": "johto",
+      "composition": "Meadow edge, cabin street and public beach.",
+      "ports": [
+        {
+          "route": "MN_R15",
+          "side": "E",
+          "gate_metatile": [
+            22,
+            9
+          ],
+          "landing_metatile": [
+            20,
+            9
+          ]
+        },
+        {
+          "route": "MN_R16",
+          "side": "W",
+          "gate_metatile": [
+            1,
+            9
+          ],
+          "landing_metatile": [
+            3,
+            9
+          ]
+        },
+        {
+          "route": "MN_R19",
+          "side": "N",
+          "gate_metatile": [
+            12,
+            1
+          ],
+          "landing_metatile": [
+            12,
+            3
+          ]
+        }
+      ],
+      "interiors": [
+        {
+          "id": "MnDetroitLakesPokecenter1F",
+          "kind": "pokecenter",
+          "dimensions_metatiles": [
+            10,
+            8
+          ],
+          "source_behavior": "canonical healing, PC and blackout recovery",
+          "authoring_file": "towns/MnDetroitLakes.json"
+        },
+        {
+          "id": "MnDetroitLakesMart",
+          "kind": "mart",
+          "dimensions_metatiles": [
+            6,
+            4
+          ],
+          "source_behavior": "canonical clerk, money deduction and inventory",
+          "authoring_file": "towns/MnDetroitLakes.json"
+        },
+        {
+          "id": "MnDetroitLakesStation",
+          "kind": "train_station",
+          "dimensions_metatiles": [
+            12,
+            10
+          ],
+          "source_behavior": "Glacier Line source reservation; no visit flag or ride is installed.",
+          "authoring_file": "transit/MnDetroitLakesStation.json"
+        },
+        {
+          "id": "MnDetroitLakesCanoeCabin",
+          "kind": "house",
+          "dimensions_metatiles": [
+            5,
+            4
+          ],
+          "authoring_file": "towns/MnDetroitLakes.json"
+        },
+        {
+          "id": "MnDetroitLakesRangerCabin",
+          "kind": "quest",
+          "dimensions_metatiles": [
+            5,
+            4
+          ],
+          "authoring_file": "towns/MnDetroitLakes.json"
+        }
+      ],
+      "walkable_destinations": [
+        "each port landing",
+        "every visible exterior door",
+        "central square",
+        "local story NPC"
+      ],
+      "door_contract": "Assign exterior core-tile door coordinates only after selecting authentic facade quadrants; record reciprocal warp indices and indoor floor arrivals before export.",
+      "authoring_file": "towns/MnDetroitLakes.json",
+      "layout_file": "towns/MnDetroitLakes.layout.json"
+    },
+    {
+      "id": "MnMoorhead",
+      "name": "MOORHEAD",
+      "dimensions_metatiles": [
+        24,
+        18
+      ],
+      "reference_anchor_percent": [
+        12,
+        42
+      ],
+      "role": "town",
+      "tileset": "johto_modern",
+      "composition": "Red River square, rail bridge scenery and prairie edge.",
+      "ports": [
+        {
+          "route": "MN_R16",
+          "side": "E",
+          "gate_metatile": [
+            22,
+            9
+          ],
+          "landing_metatile": [
+            20,
+            9
+          ]
+        }
+      ],
+      "interiors": [
+        {
+          "id": "MnMoorheadPokecenter1F",
+          "kind": "pokecenter",
+          "dimensions_metatiles": [
+            10,
+            8
+          ],
+          "source_behavior": "canonical healing, PC and blackout recovery"
+        },
+        {
+          "id": "MnMoorheadMart",
+          "kind": "mart",
+          "dimensions_metatiles": [
+            6,
+            4
+          ],
+          "source_behavior": "canonical clerk, money deduction and inventory"
+        }
+      ],
+      "walkable_destinations": [
+        "each port landing",
+        "every visible exterior door",
+        "central square",
+        "local story NPC"
+      ],
+      "door_contract": "Assign exterior core-tile door coordinates only after selecting authentic facade quadrants; record reciprocal warp indices and indoor floor arrivals before export."
+    },
+    {
+      "id": "MnInternationalFalls",
+      "name": "INTERNATIONAL FALLS",
+      "dimensions_metatiles": [
+        24,
+        24
+      ],
+      "reference_anchor_percent": [
+        46,
+        13
+      ],
+      "role": "town",
+      "tileset": "johto",
+      "composition": "Border-side ranger base, colder palette and south/east walking exits.",
+      "ports": [
+        {
+          "route": "MN_R17",
+          "side": "S",
+          "gate_metatile": [
+            12,
+            22
+          ],
+          "landing_metatile": [
+            12,
+            20
+          ]
+        },
+        {
+          "route": "MN_R20",
+          "side": "E",
+          "gate_metatile": [
+            22,
+            12
+          ],
+          "landing_metatile": [
+            20,
+            12
+          ]
+        }
+      ],
+      "interiors": [
+        {
+          "id": "MnInternationalFallsPokecenter1F",
+          "kind": "pokecenter",
+          "dimensions_metatiles": [
+            10,
+            8
+          ],
+          "source_behavior": "canonical healing, PC and blackout recovery"
+        },
+        {
+          "id": "MnInternationalFallsMart",
+          "kind": "mart",
+          "dimensions_metatiles": [
+            6,
+            4
+          ],
+          "source_behavior": "canonical clerk, money deduction and inventory"
+        }
+      ],
+      "walkable_destinations": [
+        "each port landing",
+        "every visible exterior door",
+        "central square",
+        "local story NPC"
+      ],
+      "door_contract": "Assign exterior core-tile door coordinates only after selecting authentic facade quadrants; record reciprocal warp indices and indoor floor arrivals before export."
+    },
+    {
+      "id": "MnMilleLacs",
+      "name": "MILLE LACS",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "reference_anchor_percent": [
+        57,
+        53
+      ],
+      "role": "landmark",
+      "tileset": "johto",
+      "composition": "Shore park, dock and optional water circuit.",
+      "ports": [
+        {
+          "route": "MN_R18",
+          "side": "W",
+          "gate_metatile": [
+            1,
+            12
+          ],
+          "landing_metatile": [
+            3,
+            12
+          ]
+        }
+      ],
+      "interiors": [],
+      "walkable_destinations": [
+        "each port landing",
+        "every visible exterior door",
+        "central square",
+        "local story NPC"
+      ],
+      "door_contract": "Assign exterior core-tile door coordinates only after selecting authentic facade quadrants; record reciprocal warp indices and indoor floor arrivals before export."
+    }
+  ],
+  "routes": [
+    {
+      "id": "MN_R01",
+      "file": "routes/MN_R01.json",
+      "dimensions_metatiles": [
+        32,
+        20
+      ]
+    },
+    {
+      "id": "MN_R02",
+      "file": "routes/MN_R02.json",
+      "dimensions_metatiles": [
+        30,
+        22
+      ]
+    },
+    {
+      "id": "MN_R03",
+      "file": "routes/MN_R03.json",
+      "dimensions_metatiles": [
+        24,
+        32
+      ]
+    },
+    {
+      "id": "MN_R04",
+      "file": "routes/MN_R04.json",
+      "dimensions_metatiles": [
+        28,
+        18
+      ]
+    },
+    {
+      "id": "MN_R05",
+      "file": "routes/MN_R05.json",
+      "dimensions_metatiles": [
+        32,
+        56
+      ]
+    },
+    {
+      "id": "MN_R06",
+      "file": "routes/MN_R06.json",
+      "dimensions_metatiles": [
+        32,
+        44
+      ]
+    },
+    {
+      "id": "MN_R07",
+      "file": "routes/MN_R07.json",
+      "dimensions_metatiles": [
+        32,
+        48
+      ]
+    },
+    {
+      "id": "MN_R08",
+      "file": "routes/MN_R08.json",
+      "dimensions_metatiles": [
+        40,
+        48
+      ]
+    },
+    {
+      "id": "MN_R09",
+      "file": "routes/MN_R09.json",
+      "dimensions_metatiles": [
+        64,
+        36
+      ]
+    },
+    {
+      "id": "MN_R10",
+      "file": "routes/MN_R10.json",
+      "dimensions_metatiles": [
+        48,
+        20
+      ]
+    },
+    {
+      "id": "MN_R11",
+      "file": "routes/MN_R11.json",
+      "dimensions_metatiles": [
+        56,
+        96
+      ],
+      "native_additions_source": "planning/minnesota/playable/ryans-house.json"
+    },
+    {
+      "id": "MN_R12",
+      "file": "routes/MN_R12.json",
+      "dimensions_metatiles": [
+        64,
+        56
+      ]
+    },
+    {
+      "id": "MN_R13",
+      "file": "routes/MN_R13.json",
+      "dimensions_metatiles": [
+        32,
+        64
+      ]
+    },
+    {
+      "id": "MN_R14",
+      "file": "routes/MN_R14.json",
+      "dimensions_metatiles": [
+        48,
+        32
+      ]
+    },
+    {
+      "id": "MN_R15",
+      "file": "routes/MN_R15.json",
+      "dimensions_metatiles": [
+        32,
+        18
+      ]
+    },
+    {
+      "id": "MN_R16",
+      "file": "routes/MN_R16.json",
+      "dimensions_metatiles": [
+        48,
+        24
+      ]
+    },
+    {
+      "id": "MN_R17",
+      "file": "routes/MN_R17.json",
+      "dimensions_metatiles": [
+        32,
+        56
+      ]
+    },
+    {
+      "id": "MN_R18",
+      "file": "routes/MN_R18.json",
+      "dimensions_metatiles": [
+        40,
+        24
+      ]
+    },
+    {
+      "id": "MN_R19",
+      "file": "routes/MN_R19.json",
+      "dimensions_metatiles": [
+        32,
+        30
+      ]
+    },
+    {
+      "id": "MN_R20",
+      "file": "routes/MN_R20.json",
+      "dimensions_metatiles": [
+        64,
+        32
+      ]
+    }
+  ],
+  "chunks": [
+    {
+      "id": "MnR01C00R00",
+      "route": "MN_R01",
+      "column": 0,
+      "row": 0,
+      "dimensions_metatiles": [
+        32,
+        20
+      ]
+    },
+    {
+      "id": "MnR02C00R00",
+      "route": "MN_R02",
+      "column": 0,
+      "row": 0,
+      "dimensions_metatiles": [
+        30,
+        22
+      ]
+    },
+    {
+      "id": "MnR03C00R00",
+      "route": "MN_R03",
+      "column": 0,
+      "row": 0,
+      "dimensions_metatiles": [
+        24,
+        24
+      ]
+    },
+    {
+      "id": "MnR03C00R01",
+      "route": "MN_R03",
+      "column": 0,
+      "row": 1,
+      "dimensions_metatiles": [
+        24,
+        8
+      ]
+    },
+    {
+      "id": "MnR04C00R00",
+      "route": "MN_R04",
+      "column": 0,
+      "row": 0,
+      "dimensions_metatiles": [
+        28,
+        18
+      ]
+    },
+    {
+      "id": "MnR05C00R00",
+      "route": "MN_R05",
+      "column": 0,
+      "row": 0,
+      "dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "id": "MnR05C00R01",
+      "route": "MN_R05",
+      "column": 0,
+      "row": 1,
+      "dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "id": "MnR05C00R02",
+      "route": "MN_R05",
+      "column": 0,
+      "row": 2,
+      "dimensions_metatiles": [
+        32,
+        8
+      ]
+    },
+    {
+      "id": "MnR06C00R00",
+      "route": "MN_R06",
+      "column": 0,
+      "row": 0,
+      "dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "id": "MnR06C00R01",
+      "route": "MN_R06",
+      "column": 0,
+      "row": 1,
+      "dimensions_metatiles": [
+        32,
+        20
+      ]
+    },
+    {
+      "id": "MnR07C00R00",
+      "route": "MN_R07",
+      "column": 0,
+      "row": 0,
+      "dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "id": "MnR07C00R01",
+      "route": "MN_R07",
+      "column": 0,
+      "row": 1,
+      "dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "id": "MnR08C00R00",
+      "route": "MN_R08",
+      "column": 0,
+      "row": 0,
+      "dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "id": "MnR08C01R00",
+      "route": "MN_R08",
+      "column": 1,
+      "row": 0,
+      "dimensions_metatiles": [
+        8,
+        24
+      ]
+    },
+    {
+      "id": "MnR08C00R01",
+      "route": "MN_R08",
+      "column": 0,
+      "row": 1,
+      "dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "id": "MnR08C01R01",
+      "route": "MN_R08",
+      "column": 1,
+      "row": 1,
+      "dimensions_metatiles": [
+        8,
+        24
+      ]
+    },
+    {
+      "id": "MnR09C00R00",
+      "route": "MN_R09",
+      "column": 0,
+      "row": 0,
+      "dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "id": "MnR09C01R00",
+      "route": "MN_R09",
+      "column": 1,
+      "row": 0,
+      "dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "id": "MnR09C00R01",
+      "route": "MN_R09",
+      "column": 0,
+      "row": 1,
+      "dimensions_metatiles": [
+        32,
+        12
+      ]
+    },
+    {
+      "id": "MnR09C01R01",
+      "route": "MN_R09",
+      "column": 1,
+      "row": 1,
+      "dimensions_metatiles": [
+        32,
+        12
+      ]
+    },
+    {
+      "id": "MnR10C00R00",
+      "route": "MN_R10",
+      "column": 0,
+      "row": 0,
+      "dimensions_metatiles": [
+        32,
+        20
+      ]
+    },
+    {
+      "id": "MnR10C01R00",
+      "route": "MN_R10",
+      "column": 1,
+      "row": 0,
+      "dimensions_metatiles": [
+        16,
+        20
+      ]
+    },
+    {
+      "id": "MnR11C00R00",
+      "route": "MN_R11",
+      "column": 0,
+      "row": 0,
+      "dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "id": "MnR11C00R01",
+      "route": "MN_R11",
+      "column": 0,
+      "row": 1,
+      "dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "id": "MnR11C00R02",
+      "route": "MN_R11",
+      "column": 0,
+      "row": 2,
+      "dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "id": "MnR12C00R00",
+      "route": "MN_R12",
+      "column": 0,
+      "row": 0,
+      "dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "id": "MnR12C01R00",
+      "route": "MN_R12",
+      "column": 1,
+      "row": 0,
+      "dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "id": "MnR12C00R01",
+      "route": "MN_R12",
+      "column": 0,
+      "row": 1,
+      "dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "id": "MnR12C01R01",
+      "route": "MN_R12",
+      "column": 1,
+      "row": 1,
+      "dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "id": "MnR12C00R02",
+      "route": "MN_R12",
+      "column": 0,
+      "row": 2,
+      "dimensions_metatiles": [
+        32,
+        8
+      ]
+    },
+    {
+      "id": "MnR12C01R02",
+      "route": "MN_R12",
+      "column": 1,
+      "row": 2,
+      "dimensions_metatiles": [
+        32,
+        8
+      ]
+    },
+    {
+      "id": "MnR13C00R00",
+      "route": "MN_R13",
+      "column": 0,
+      "row": 0,
+      "dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "id": "MnR13C00R01",
+      "route": "MN_R13",
+      "column": 0,
+      "row": 1,
+      "dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "id": "MnR13C00R02",
+      "route": "MN_R13",
+      "column": 0,
+      "row": 2,
+      "dimensions_metatiles": [
+        32,
+        16
+      ]
+    },
+    {
+      "id": "MnR14C00R00",
+      "route": "MN_R14",
+      "column": 0,
+      "row": 0,
+      "dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "id": "MnR14C01R00",
+      "route": "MN_R14",
+      "column": 1,
+      "row": 0,
+      "dimensions_metatiles": [
+        16,
+        24
+      ]
+    },
+    {
+      "id": "MnR14C00R01",
+      "route": "MN_R14",
+      "column": 0,
+      "row": 1,
+      "dimensions_metatiles": [
+        32,
+        8
+      ]
+    },
+    {
+      "id": "MnR14C01R01",
+      "route": "MN_R14",
+      "column": 1,
+      "row": 1,
+      "dimensions_metatiles": [
+        16,
+        8
+      ]
+    },
+    {
+      "id": "MnR15C00R00",
+      "route": "MN_R15",
+      "column": 0,
+      "row": 0,
+      "dimensions_metatiles": [
+        32,
+        18
+      ]
+    },
+    {
+      "id": "MnR16C00R00",
+      "route": "MN_R16",
+      "column": 0,
+      "row": 0,
+      "dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "id": "MnR16C01R00",
+      "route": "MN_R16",
+      "column": 1,
+      "row": 0,
+      "dimensions_metatiles": [
+        16,
+        24
+      ]
+    },
+    {
+      "id": "MnR17C00R00",
+      "route": "MN_R17",
+      "column": 0,
+      "row": 0,
+      "dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "id": "MnR17C00R01",
+      "route": "MN_R17",
+      "column": 0,
+      "row": 1,
+      "dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "id": "MnR17C00R02",
+      "route": "MN_R17",
+      "column": 0,
+      "row": 2,
+      "dimensions_metatiles": [
+        32,
+        8
+      ]
+    },
+    {
+      "id": "MnR18C00R00",
+      "route": "MN_R18",
+      "column": 0,
+      "row": 0,
+      "dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "id": "MnR18C01R00",
+      "route": "MN_R18",
+      "column": 1,
+      "row": 0,
+      "dimensions_metatiles": [
+        8,
+        24
+      ]
+    },
+    {
+      "id": "MnR19C00R00",
+      "route": "MN_R19",
+      "column": 0,
+      "row": 0,
+      "dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "id": "MnR19C00R01",
+      "route": "MN_R19",
+      "column": 0,
+      "row": 1,
+      "dimensions_metatiles": [
+        32,
+        6
+      ]
+    },
+    {
+      "id": "MnR20C00R00",
+      "route": "MN_R20",
+      "column": 0,
+      "row": 0,
+      "dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "id": "MnR20C01R00",
+      "route": "MN_R20",
+      "column": 1,
+      "row": 0,
+      "dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "id": "MnR20C00R01",
+      "route": "MN_R20",
+      "column": 0,
+      "row": 1,
+      "dimensions_metatiles": [
+        32,
+        8
+      ]
+    },
+    {
+      "id": "MnR20C01R01",
+      "route": "MN_R20",
+      "column": 1,
+      "row": 1,
+      "dimensions_metatiles": [
+        32,
+        8
+      ]
+    },
+    {
+      "id": "MnR11C01R00",
+      "route": "MN_R11",
+      "column": 1,
+      "row": 0,
+      "dimensions_metatiles": [
+        24,
+        24
+      ]
+    },
+    {
+      "id": "MnR11C01R01",
+      "route": "MN_R11",
+      "column": 1,
+      "row": 1,
+      "dimensions_metatiles": [
+        24,
+        24
+      ]
+    },
+    {
+      "id": "MnR11C01R02",
+      "route": "MN_R11",
+      "column": 1,
+      "row": 2,
+      "dimensions_metatiles": [
+        24,
+        24
+      ]
+    },
+    {
+      "id": "MnR11C00R03",
+      "route": "MN_R11",
+      "column": 0,
+      "row": 3,
+      "dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "id": "MnR11C01R03",
+      "route": "MN_R11",
+      "column": 1,
+      "row": 3,
+      "dimensions_metatiles": [
+        24,
+        24
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "kind": "gatehouse_warp",
+      "route": "MN_R01",
+      "a": "MnR01C00R00",
+      "a_gate_local_metatile": [
+        30,
+        12
+      ],
+      "a_arrival_local_metatile": [
+        29,
+        12
+      ],
+      "b": "MnWinona",
+      "b_gate_metatile": [
+        1,
+        9
+      ],
+      "b_arrival_metatile": [
+        3,
+        9
+      ],
+      "requires_flags": [
+        "EVENT_MN_STARTER_RECEIVED"
+      ],
+      "gate_script": "MnR01EntryGateScript",
+      "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+    },
+    {
+      "kind": "gatehouse_warp",
+      "route": "MN_R01",
+      "a": "MnR01C00R00",
+      "a_gate_local_metatile": [
+        1,
+        12
+      ],
+      "a_arrival_local_metatile": [
+        3,
+        12
+      ],
+      "b": "MnRochester",
+      "b_gate_metatile": [
+        22,
+        9
+      ],
+      "b_arrival_metatile": [
+        20,
+        9
+      ],
+      "requires_flags": [
+        "EVENT_MN_STARTER_RECEIVED"
+      ],
+      "gate_script": "MnR01EntryGateScript",
+      "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+    },
+    {
+      "kind": "gatehouse_warp",
+      "route": "MN_R02",
+      "a": "MnR02C00R00",
+      "a_gate_local_metatile": [
+        29,
+        7
+      ],
+      "a_arrival_local_metatile": [
+        27,
+        7
+      ],
+      "b": "MnRochester",
+      "b_gate_metatile": [
+        1,
+        9
+      ],
+      "b_arrival_metatile": [
+        3,
+        9
+      ],
+      "requires_flags": [
+        "BADGE_1"
+      ],
+      "gate_script": "MnR02EntryGateScript",
+      "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+    },
+    {
+      "kind": "gatehouse_warp",
+      "route": "MN_R02",
+      "a": "MnR02C00R00",
+      "a_gate_local_metatile": [
+        1,
+        15
+      ],
+      "a_arrival_local_metatile": [
+        3,
+        15
+      ],
+      "b": "MnMankato",
+      "b_gate_metatile": [
+        22,
+        9
+      ],
+      "b_arrival_metatile": [
+        20,
+        9
+      ],
+      "requires_flags": [
+        "BADGE_1"
+      ],
+      "gate_script": "MnR02EntryGateScript",
+      "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+    },
+    {
+      "kind": "gatehouse_warp",
+      "route": "MN_R03",
+      "a": "MnR03C00R01",
+      "a_gate_local_metatile": [
+        9,
+        6
+      ],
+      "a_arrival_local_metatile": [
+        9,
+        4
+      ],
+      "b": "MnMankato",
+      "b_gate_metatile": [
+        12,
+        1
+      ],
+      "b_arrival_metatile": [
+        12,
+        3
+      ],
+      "requires_flags": [
+        "BADGE_2"
+      ],
+      "gate_script": "MnR03EntryGateScript",
+      "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+    },
+    {
+      "kind": "connection",
+      "route": "MN_R03",
+      "a": "MnR03C00R00",
+      "b": "MnMinneapolis",
+      "legacy_planned_gate": {
+        "a_gate_local_metatile": [
+          10,
+          1
+        ],
+        "a_arrival_local_metatile": [
+          10,
+          3
+        ],
+        "b_gate_metatile": [
+          16,
+          22
+        ],
+        "b_arrival_metatile": [
+          16,
+          20
+        ],
+        "requires_flags": [
+          "BADGE_2"
+        ],
+        "gate_script": "MnR03EntryGateScript",
+        "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+      },
+      "direction_a": "north",
+      "direction_b": "south",
+      "offset_a": -22,
+      "offset_b": 22,
+      "offset_units": "32px_metatiles",
+      "a_edge_core": [
+        [
+          20,
+          0
+        ],
+        [
+          21,
+          0
+        ]
+      ],
+      "b_edge_core": [
+        [
+          64,
+          95
+        ],
+        [
+          65,
+          95
+        ]
+      ],
+      "qualification_source": "Existing compiled native checkpoints preserved; legacy planning flags are not newly implemented prerequisites.",
+      "expansion_contract_file": "towns/MnMinneapolis.expansion.contract.json"
+    },
+    {
+      "kind": "connection",
+      "route": "MN_R04",
+      "a": "MnR04C00R00",
+      "b": "MnMinneapolis",
+      "legacy_planned_gate": {
+        "a_gate_local_metatile": [
+          1,
+          9
+        ],
+        "a_arrival_local_metatile": [
+          3,
+          9
+        ],
+        "b_gate_metatile": [
+          30,
+          12
+        ],
+        "b_arrival_metatile": [
+          28,
+          12
+        ],
+        "requires_flags": [
+          "BADGE_3"
+        ],
+        "gate_script": "MnR04EntryGateScript",
+        "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+      },
+      "direction_a": "west",
+      "direction_b": "east",
+      "offset_a": -15,
+      "offset_b": 15,
+      "offset_units": "32px_metatiles",
+      "a_edge_core": [
+        [
+          0,
+          18
+        ],
+        [
+          0,
+          19
+        ]
+      ],
+      "b_edge_core": [
+        [
+          127,
+          48
+        ],
+        [
+          127,
+          49
+        ]
+      ],
+      "qualification_source": "Existing compiled native checkpoints preserved; legacy planning flags are not newly implemented prerequisites.",
+      "expansion_contract_file": "towns/MnMinneapolis.expansion.contract.json"
+    },
+    {
+      "kind": "connection",
+      "route": "MN_R04",
+      "a": "MnR04C00R00",
+      "b": "MnStPaul",
+      "legacy_planned_gate": {
+        "a_gate_local_metatile": [
+          26,
+          9
+        ],
+        "a_arrival_local_metatile": [
+          24,
+          9
+        ],
+        "b_gate_metatile": [
+          1,
+          12
+        ],
+        "b_arrival_metatile": [
+          3,
+          12
+        ],
+        "requires_flags": [
+          "BADGE_3"
+        ],
+        "gate_script": "MnR04EntryGateScript",
+        "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+      },
+      "direction_a": "east",
+      "direction_b": "west",
+      "offset_a": -15,
+      "offset_b": 15,
+      "offset_units": "32px_metatiles",
+      "a_edge_core": [
+        [
+          55,
+          18
+        ],
+        [
+          55,
+          19
+        ]
+      ],
+      "b_edge_core": [
+        [
+          0,
+          48
+        ],
+        [
+          0,
+          49
+        ]
+      ],
+      "qualification_source": "Existing compiled native checkpoints preserved; legacy planning flags are not newly implemented prerequisites.",
+      "expansion_contract_file": "towns/MnStPaul.expansion.contract.json"
+    },
+    {
+      "kind": "connection",
+      "route": "MN_R05",
+      "a": "MnR05C00R02",
+      "b": "MnMinneapolis",
+      "legacy_planned_gate": {
+        "a_gate_local_metatile": [
+          11,
+          6
+        ],
+        "a_arrival_local_metatile": [
+          11,
+          4
+        ],
+        "b_gate_metatile": [
+          16,
+          1
+        ],
+        "b_arrival_metatile": [
+          16,
+          3
+        ],
+        "requires_flags": [
+          "BADGE_3",
+          "BADGE_4"
+        ],
+        "gate_script": "MnR05EntryGateScript",
+        "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+      },
+      "direction_a": "south",
+      "direction_b": "north",
+      "offset_a": -21,
+      "offset_b": 21,
+      "offset_units": "32px_metatiles",
+      "a_edge_core": [
+        [
+          22,
+          15
+        ],
+        [
+          23,
+          15
+        ]
+      ],
+      "b_edge_core": [
+        [
+          64,
+          0
+        ],
+        [
+          65,
+          0
+        ]
+      ],
+      "qualification_source": "Existing compiled native checkpoints preserved; legacy planning flags are not newly implemented prerequisites.",
+      "expansion_contract_file": "towns/MnMinneapolis.expansion.contract.json"
+    },
+    {
+      "kind": "gatehouse_warp",
+      "route": "MN_R05",
+      "a": "MnR05C00R00",
+      "a_gate_local_metatile": [
+        12,
+        1
+      ],
+      "a_arrival_local_metatile": [
+        12,
+        3
+      ],
+      "b": "MnStCloud",
+      "b_gate_metatile": [
+        12,
+        16
+      ],
+      "b_arrival_metatile": [
+        12,
+        14
+      ],
+      "requires_flags": [
+        "BADGE_3",
+        "BADGE_4"
+      ],
+      "gate_script": "MnR05EntryGateScript",
+      "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+    },
+    {
+      "kind": "gatehouse_warp",
+      "route": "MN_R06",
+      "a": "MnR06C00R01",
+      "a_gate_local_metatile": [
+        8,
+        18
+      ],
+      "a_arrival_local_metatile": [
+        8,
+        16
+      ],
+      "b": "MnStCloud",
+      "b_gate_metatile": [
+        12,
+        1
+      ],
+      "b_arrival_metatile": [
+        12,
+        3
+      ],
+      "requires_flags": [
+        "BADGE_5"
+      ],
+      "gate_script": "MnR06EntryGateScript",
+      "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+    },
+    {
+      "kind": "gatehouse_warp",
+      "route": "MN_R06",
+      "a": "MnR06C00R00",
+      "a_gate_local_metatile": [
+        21,
+        1
+      ],
+      "a_arrival_local_metatile": [
+        21,
+        3
+      ],
+      "b": "MnBrainerd",
+      "b_gate_metatile": [
+        16,
+        22
+      ],
+      "b_arrival_metatile": [
+        16,
+        20
+      ],
+      "requires_flags": [
+        "BADGE_5"
+      ],
+      "gate_script": "MnR06EntryGateScript",
+      "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+    },
+    {
+      "kind": "gatehouse_warp",
+      "route": "MN_R07",
+      "a": "MnR07C00R01",
+      "a_gate_local_metatile": [
+        10,
+        22
+      ],
+      "a_arrival_local_metatile": [
+        10,
+        20
+      ],
+      "b": "MnBrainerd",
+      "b_gate_metatile": [
+        16,
+        1
+      ],
+      "b_arrival_metatile": [
+        16,
+        3
+      ],
+      "requires_flags": [
+        "BADGE_6"
+      ],
+      "gate_script": "MnR07EntryGateScript",
+      "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+    },
+    {
+      "kind": "gatehouse_warp",
+      "route": "MN_R07",
+      "a": "MnR07C00R00",
+      "a_gate_local_metatile": [
+        10,
+        1
+      ],
+      "a_arrival_local_metatile": [
+        10,
+        3
+      ],
+      "b": "MnLeechLake",
+      "b_gate_metatile": [
+        16,
+        22
+      ],
+      "b_arrival_metatile": [
+        16,
+        20
+      ],
+      "requires_flags": [
+        "BADGE_6"
+      ],
+      "gate_script": "MnR07EntryGateScript",
+      "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+    },
+    {
+      "kind": "gatehouse_warp",
+      "route": "MN_R08",
+      "a": "MnR08C00R01",
+      "a_gate_local_metatile": [
+        13,
+        23
+      ],
+      "a_arrival_local_metatile": [
+        13,
+        20
+      ],
+      "b": "MnLeechLake",
+      "b_gate_metatile": [
+        16,
+        1
+      ],
+      "b_arrival_metatile": [
+        16,
+        3
+      ],
+      "requires_flags": [
+        "BADGE_6"
+      ],
+      "gate_script": "MnR08EntryGateScript",
+      "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+    },
+    {
+      "kind": "gatehouse_warp",
+      "route": "MN_R08",
+      "a": "MnR08C00R00",
+      "a_gate_local_metatile": [
+        20,
+        0
+      ],
+      "a_arrival_local_metatile": [
+        20,
+        3
+      ],
+      "b": "MnBemidji",
+      "b_gate_metatile": [
+        12,
+        22
+      ],
+      "b_arrival_metatile": [
+        12,
+        20
+      ],
+      "requires_flags": [
+        "BADGE_6"
+      ],
+      "gate_script": "MnR08EntryGateScript",
+      "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+    },
+    {
+      "kind": "guarded_connection",
+      "route": "MN_R09",
+      "a": "MnR09C00R01",
+      "b": "MnBemidji",
+      "requires_flags": [
+        "BADGE_7",
+        "EVENT_MN_HEADWATERS_REPORT"
+      ],
+      "direction_a": "west",
+      "direction_b": "east",
+      "offset_a": -11,
+      "offset_b": 11,
+      "offset_units": "32px_metatiles",
+      "a_edge_core": [
+        [
+          0,
+          2
+        ],
+        [
+          0,
+          3
+        ]
+      ],
+      "b_edge_core": [
+        [
+          47,
+          24
+        ],
+        [
+          47,
+          25
+        ]
+      ],
+      "gate_script": "MnBemidjiIronCheck",
+      "gate_map": "MnBemidji",
+      "requires_apply_to": "town_departure",
+      "fee": 0,
+      "inbound_requires_flags": [],
+      "inbound_access": "free_care",
+      "inbound_facing_policy": "escort_unless_outward",
+      "native_status": "Native controller/Continue and stdio evidence in playable/itasca-story.md; marker reading alone never substitutes for completed comparison."
+    },
+    {
+      "kind": "guarded_connection",
+      "route": "MN_R09",
+      "a": "MnR09C01R00",
+      "b": "MnGrandRapids",
+      "requires_flags": [
+        "BADGE_7",
+        "EVENT_MN_HEADWATERS_REPORT"
+      ],
+      "gate_script": "MnGrandRapidsWestCheck",
+      "gate_map": "MnGrandRapids",
+      "direction_a": "east",
+      "direction_b": "west",
+      "offset_a": 0,
+      "offset_b": 0,
+      "offset_units": "32px_metatiles",
+      "a_edge_core": [
+        [
+          63,
+          24
+        ],
+        [
+          63,
+          25
+        ]
+      ],
+      "b_edge_core": [
+        [
+          0,
+          24
+        ],
+        [
+          0,
+          25
+        ]
+      ],
+      "requires_apply_to": "town_departure",
+      "fee": 0,
+      "inbound_requires_flags": [],
+      "inbound_access": "free_care",
+      "inbound_facing_policy": "escort_unless_outward",
+      "authoring_file": "planning/minnesota/towns/MnGrandRapids.json",
+      "native_status": "NATIVE VERIFIED: paired walking seams, exact badge/report/depot checks, no walking/Surf bypass, earned handover release, inbound care, both directions and Continue."
+    },
+    {
+      "kind": "guarded_connection",
+      "route": "MN_R10",
+      "a": "MnR10C00R00",
+      "b": "MnGrandRapids",
+      "requires_flags": [
+        "BADGE_7",
+        "EVENT_MN_DEPOT_CLEARED"
+      ],
+      "gate_script": "MnGrandRapidsEastCheck",
+      "gate_map": "MnGrandRapids",
+      "direction_a": "west",
+      "direction_b": "east",
+      "offset_a": -7,
+      "offset_b": 7,
+      "offset_units": "32px_metatiles",
+      "a_edge_core": [
+        [
+          0,
+          10
+        ],
+        [
+          0,
+          11
+        ]
+      ],
+      "b_edge_core": [
+        [
+          47,
+          24
+        ],
+        [
+          47,
+          25
+        ]
+      ],
+      "requires_apply_to": "town_departure",
+      "fee": 0,
+      "inbound_requires_flags": [],
+      "inbound_access": "free_care",
+      "inbound_facing_policy": "escort_unless_outward",
+      "authoring_file": "planning/minnesota/towns/MnGrandRapids.json",
+      "native_status": "NATIVE VERIFIED: paired walking seams, exact badge/report/depot checks, no walking/Surf bypass, earned handover release, inbound care, both directions and Continue."
+    },
+    {
+      "kind": "connection",
+      "route": "MN_R10",
+      "a": "MnR10C01R00",
+      "b": "MnDuluth",
+      "direction_a": "east",
+      "direction_b": "west",
+      "offset_a": -12,
+      "offset_b": 12,
+      "offset_units": "32px_metatiles",
+      "a_edge_core": [
+        [
+          31,
+          24
+        ],
+        [
+          31,
+          25
+        ]
+      ],
+      "b_edge_core": [
+        [
+          0,
+          48
+        ],
+        [
+          0,
+          49
+        ]
+      ],
+      "requires_apply_to": "town_departure",
+      "fee": 0,
+      "inbound_requires_flags": [],
+      "inbound_access": "free_care",
+      "inbound_facing_policy": "escort_unless_outward",
+      "authoring_file": "planning/minnesota/towns/MnDuluth.connections.json",
+      "native_status": "Native publication and production-controller verification of expanded R11 binding in progress.",
+      "legacy_planned_gate": {
+        "requires_flags": [
+          "BADGE_7",
+          "EVENT_MN_DEPOT_CLEARED"
+        ],
+        "gate_script": "MnDuluthRangeCheck",
+        "gate_map": "MnDuluth"
+      },
+      "qualification_source": "Existing compiled native checkpoints preserved; legacy planning flags are not newly implemented prerequisites.",
+      "expansion_contract_file": "towns/MnDuluth.expansion.contract.json"
+    },
+    {
+      "kind": "connection",
+      "route": "MN_R11",
+      "a": "MnR11C00R03",
+      "b": "MnDuluth",
+      "direction_a": "south",
+      "direction_b": "north",
+      "offset_a": -9,
+      "offset_b": 9,
+      "offset_units": "32px_metatiles",
+      "a_edge_core": [
+        [
+          46,
+          47
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "b_edge_core": [
+        [
+          64,
+          0
+        ],
+        [
+          65,
+          0
+        ]
+      ],
+      "requires_apply_to": "town_departure",
+      "fee": 0,
+      "inbound_requires_flags": [],
+      "inbound_access": "free_care",
+      "inbound_facing_policy": "escort_unless_outward",
+      "authoring_file": "planning/minnesota/towns/MnDuluth.connections.json",
+      "native_status": "Native publication and production-controller verification of expanded R11 binding in progress.",
+      "legacy_planned_gate": {
+        "requires_flags": [
+          "BADGE_1",
+          "BADGE_2",
+          "BADGE_3",
+          "BADGE_4",
+          "BADGE_5",
+          "BADGE_6",
+          "BADGE_7",
+          "BADGE_8",
+          "EVENT_MN_LIGHTHOUSE_SIGNAL"
+        ],
+        "gate_script": "MnDuluthShoreCheck",
+        "gate_map": "MnDuluth"
+      },
+      "qualification_source": "Existing compiled native checkpoints preserved; legacy planning flags are not newly implemented prerequisites.",
+      "expansion_contract_file": "towns/MnDuluth.expansion.contract.json"
+    },
+    {
+      "kind": "guarded_connection",
+      "route": "MN_R12",
+      "a": "MnR12C00R01",
+      "b": "MnBoundaryWaters",
+      "direction_a": "west",
+      "direction_b": "east",
+      "offset_a": -8,
+      "offset_b": 8,
+      "offset_units": "32px_metatiles",
+      "a_edge_core": [
+        [
+          0,
+          8
+        ],
+        [
+          0,
+          9
+        ]
+      ],
+      "b_edge_core": [
+        [
+          63,
+          24
+        ],
+        [
+          63,
+          25
+        ]
+      ],
+      "gate_map": "MnBoundaryWaters",
+      "gate_script": "MnBoundaryGunflintCheck",
+      "checkpoint": "gunflint",
+      "requires_flags": [
+        "BADGE_1",
+        "BADGE_2",
+        "BADGE_3",
+        "BADGE_4",
+        "BADGE_5",
+        "BADGE_6",
+        "BADGE_7",
+        "BADGE_8",
+        "EVENT_MN_LIGHTHOUSE_SIGNAL"
+      ],
+      "requires_apply_to": "camp_departure",
+      "fee": 0,
+      "inbound_requires_flags": [],
+      "inbound_access": "free_care",
+      "inbound_facing_policy": "escort_unless_outward"
+    },
+    {
+      "kind": "guarded_connection",
+      "route": "MN_R13",
+      "a": "MnR13C00R00",
+      "b": "MnBoundaryWaters",
+      "direction_a": "north",
+      "direction_b": "south",
+      "offset_a": -1,
+      "offset_b": 1,
+      "offset_units": "32px_metatiles",
+      "a_edge_core": [
+        [
+          30,
+          0
+        ],
+        [
+          31,
+          0
+        ]
+      ],
+      "b_edge_core": [
+        [
+          32,
+          47
+        ],
+        [
+          33,
+          47
+        ]
+      ],
+      "gate_map": "MnBoundaryWaters",
+      "gate_script": "MnBoundaryLeagueCheck",
+      "checkpoint": "league",
+      "requires_flags": [
+        "BADGE_1",
+        "BADGE_2",
+        "BADGE_3",
+        "BADGE_4",
+        "BADGE_5",
+        "BADGE_6",
+        "BADGE_7",
+        "BADGE_8",
+        "EVENT_MN_LIGHTHOUSE_SIGNAL",
+        "EVENT_MN_SURVEY_RESTORED"
+      ],
+      "requires_apply_to": "camp_departure",
+      "fee": 0,
+      "inbound_requires_flags": [],
+      "inbound_access": "free_care",
+      "inbound_facing_policy": "escort_unless_outward"
+    },
+    {
+      "kind": "gatehouse_warp",
+      "route": "MN_R13",
+      "a": "MnR13C00R02",
+      "a_gate_local_metatile": [
+        17,
+        14
+      ],
+      "a_arrival_local_metatile": [
+        17,
+        12
+      ],
+      "b": "MnEly",
+      "b_gate_metatile": [
+        12,
+        1
+      ],
+      "b_arrival_metatile": [
+        12,
+        3
+      ],
+      "requires_flags": [
+        "BADGE_1",
+        "BADGE_2",
+        "BADGE_3",
+        "BADGE_4",
+        "BADGE_5",
+        "BADGE_6",
+        "BADGE_7",
+        "BADGE_8",
+        "EVENT_MN_SURVEY_RESTORED"
+      ],
+      "gate_script": "MnR13EntryGateScript",
+      "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+    },
+    {
+      "kind": "guarded_connection",
+      "route": "MN_R14",
+      "a": "MnR14C01R00",
+      "b": "MnBemidji",
+      "requires_flags": [
+        "BADGE_6"
+      ],
+      "direction_a": "east",
+      "direction_b": "west",
+      "offset_a": 1,
+      "offset_b": -1,
+      "offset_units": "32px_metatiles",
+      "a_edge_core": [
+        [
+          31,
+          26
+        ],
+        [
+          31,
+          27
+        ]
+      ],
+      "b_edge_core": [
+        [
+          0,
+          24
+        ],
+        [
+          0,
+          25
+        ]
+      ],
+      "gate_script": "MnBemidjiItascaCheck",
+      "gate_map": "MnBemidji",
+      "requires_apply_to": "town_departure",
+      "fee": 0,
+      "inbound_requires_flags": [],
+      "inbound_access": "free_care",
+      "inbound_facing_policy": "escort_unless_outward",
+      "native_status": "Native controller/Continue and stdio evidence in playable/itasca-story.md; marker reading alone never substitutes for completed comparison."
+    },
+    {
+      "kind": "gatehouse_warp",
+      "route": "MN_R14",
+      "a": "MnR14C00R00",
+      "b": "MnItascaGatehouse",
+      "requires_flags": [],
+      "a_gate_core": [
+        [
+          4,
+          42
+        ],
+        [
+          4,
+          43
+        ]
+      ],
+      "a_safe_return_core": [
+        [
+          5,
+          42
+        ],
+        [
+          5,
+          43
+        ]
+      ],
+      "a_active_warps": [
+        1,
+        2
+      ],
+      "a_passive_warps": [
+        3,
+        4
+      ],
+      "b_arrivals_core": [
+        [
+          8,
+          4
+        ],
+        [
+          8,
+          5
+        ]
+      ],
+      "b_arrival_warps": [
+        7,
+        8
+      ],
+      "b_exit_core": [
+        [
+          9,
+          4
+        ],
+        [
+          9,
+          5
+        ]
+      ],
+      "b_exit_warps": [
+        3,
+        4
+      ],
+      "native_status": "Published native two-lane gatehouse; controller/Continue verification in playable/itasca-story.md. No fee or return prerequisite."
+    },
+    {
+      "kind": "gatehouse_warp",
+      "route": "MN_R14",
+      "a": "MnItascaGatehouse",
+      "b": "MnLakeItasca",
+      "requires_flags": [],
+      "a_exit_core": [
+        [
+          0,
+          4
+        ],
+        [
+          0,
+          5
+        ]
+      ],
+      "a_exit_warps": [
+        1,
+        2
+      ],
+      "a_arrivals_core": [
+        [
+          1,
+          4
+        ],
+        [
+          1,
+          5
+        ]
+      ],
+      "a_arrival_warps": [
+        5,
+        6
+      ],
+      "b_gate_core": [
+        [
+          43,
+          24
+        ],
+        [
+          43,
+          25
+        ]
+      ],
+      "b_safe_return_core": [
+        [
+          42,
+          24
+        ],
+        [
+          42,
+          25
+        ]
+      ],
+      "b_active_warps": [
+        1,
+        2
+      ],
+      "b_passive_warps": [
+        3,
+        4
+      ],
+      "native_status": "Native Ilex-Azalea room and side facade. Both same-mouth returns and passive arrival/Continue verified."
+    },
+    {
+      "kind": "gatehouse_warp",
+      "route": "MN_R15",
+      "a": "MnR15C00R00",
+      "a_gate_local_metatile": [
+        30,
+        12
+      ],
+      "a_arrival_local_metatile": [
+        28,
+        12
+      ],
+      "b": "MnBrainerd",
+      "b_gate_metatile": [
+        1,
+        12
+      ],
+      "b_arrival_metatile": [
+        3,
+        12
+      ],
+      "requires_flags": [
+        "BADGE_6"
+      ],
+      "gate_script": "MnR15EntryGateScript",
+      "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+    },
+    {
+      "kind": "gatehouse_warp",
+      "route": "MN_R15",
+      "a": "MnR15C00R00",
+      "a_gate_local_metatile": [
+        1,
+        12
+      ],
+      "a_arrival_local_metatile": [
+        2,
+        12
+      ],
+      "b": "MnDetroitLakes",
+      "b_gate_metatile": [
+        22,
+        9
+      ],
+      "b_arrival_metatile": [
+        20,
+        9
+      ],
+      "requires_flags": [
+        "BADGE_6"
+      ],
+      "gate_script": "MnR15EntryGateScript",
+      "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+    },
+    {
+      "kind": "gatehouse_warp",
+      "route": "MN_R16",
+      "a": "MnR16C01R00",
+      "a_gate_local_metatile": [
+        14,
+        12
+      ],
+      "a_arrival_local_metatile": [
+        12,
+        12
+      ],
+      "b": "MnDetroitLakes",
+      "b_gate_metatile": [
+        1,
+        9
+      ],
+      "b_arrival_metatile": [
+        3,
+        9
+      ],
+      "requires_flags": [
+        "BADGE_6"
+      ],
+      "gate_script": "MnR16EntryGateScript",
+      "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+    },
+    {
+      "kind": "gatehouse_warp",
+      "route": "MN_R16",
+      "a": "MnR16C00R00",
+      "a_gate_local_metatile": [
+        1,
+        12
+      ],
+      "a_arrival_local_metatile": [
+        3,
+        12
+      ],
+      "b": "MnMoorhead",
+      "b_gate_metatile": [
+        22,
+        9
+      ],
+      "b_arrival_metatile": [
+        20,
+        9
+      ],
+      "requires_flags": [
+        "BADGE_6"
+      ],
+      "gate_script": "MnR16EntryGateScript",
+      "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+    },
+    {
+      "kind": "gatehouse_warp",
+      "route": "MN_R17",
+      "a": "MnR17C00R02",
+      "a_gate_local_metatile": [
+        16,
+        6
+      ],
+      "a_arrival_local_metatile": [
+        16,
+        4
+      ],
+      "b": "MnBemidji",
+      "b_gate_metatile": [
+        12,
+        1
+      ],
+      "b_arrival_metatile": [
+        12,
+        3
+      ],
+      "requires_flags": [
+        "BADGE_7"
+      ],
+      "gate_script": "MnR17EntryGateScript",
+      "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+    },
+    {
+      "kind": "gatehouse_warp",
+      "route": "MN_R17",
+      "a": "MnR17C00R00",
+      "a_gate_local_metatile": [
+        18,
+        1
+      ],
+      "a_arrival_local_metatile": [
+        18,
+        3
+      ],
+      "b": "MnInternationalFalls",
+      "b_gate_metatile": [
+        12,
+        22
+      ],
+      "b_arrival_metatile": [
+        12,
+        20
+      ],
+      "requires_flags": [
+        "BADGE_7"
+      ],
+      "gate_script": "MnR17EntryGateScript",
+      "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+    },
+    {
+      "kind": "gatehouse_warp",
+      "route": "MN_R18",
+      "a": "MnR18C00R00",
+      "a_gate_local_metatile": [
+        1,
+        5
+      ],
+      "a_arrival_local_metatile": [
+        3,
+        5
+      ],
+      "b": "MnBrainerd",
+      "b_gate_metatile": [
+        30,
+        12
+      ],
+      "b_arrival_metatile": [
+        28,
+        12
+      ],
+      "requires_flags": [
+        "BADGE_6"
+      ],
+      "gate_script": "MnR18EntryGateScript",
+      "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+    },
+    {
+      "kind": "gatehouse_warp",
+      "route": "MN_R18",
+      "a": "MnR18C01R00",
+      "a_gate_local_metatile": [
+        6,
+        5
+      ],
+      "a_arrival_local_metatile": [
+        4,
+        5
+      ],
+      "b": "MnMilleLacs",
+      "b_gate_metatile": [
+        1,
+        12
+      ],
+      "b_arrival_metatile": [
+        3,
+        12
+      ],
+      "requires_flags": [
+        "BADGE_6"
+      ],
+      "gate_script": "MnR18EntryGateScript",
+      "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+    },
+    {
+      "kind": "gatehouse_warp",
+      "route": "MN_R19",
+      "a": "MnR19C00R00",
+      "a_gate_local_metatile": [
+        30,
+        6
+      ],
+      "a_arrival_local_metatile": [
+        28,
+        6
+      ],
+      "b": "MnLakeItasca",
+      "b_gate_metatile": [
+        1,
+        12
+      ],
+      "b_arrival_metatile": [
+        3,
+        12
+      ],
+      "requires_flags": [
+        "BADGE_6"
+      ],
+      "gate_script": "MnR19EntryGateScript",
+      "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+    },
+    {
+      "kind": "gatehouse_warp",
+      "route": "MN_R19",
+      "a": "MnR19C00R01",
+      "a_gate_local_metatile": [
+        12,
+        4
+      ],
+      "a_arrival_local_metatile": [
+        12,
+        2
+      ],
+      "b": "MnDetroitLakes",
+      "b_gate_metatile": [
+        12,
+        1
+      ],
+      "b_arrival_metatile": [
+        12,
+        3
+      ],
+      "requires_flags": [
+        "BADGE_6"
+      ],
+      "gate_script": "MnR19EntryGateScript",
+      "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+    },
+    {
+      "kind": "gatehouse_warp",
+      "route": "MN_R20",
+      "a": "MnR20C00R00",
+      "a_gate_local_metatile": [
+        1,
+        22
+      ],
+      "a_arrival_local_metatile": [
+        3,
+        22
+      ],
+      "b": "MnInternationalFalls",
+      "b_gate_metatile": [
+        22,
+        12
+      ],
+      "b_arrival_metatile": [
+        20,
+        12
+      ],
+      "requires_flags": [
+        "BADGE_1",
+        "BADGE_2",
+        "BADGE_3",
+        "BADGE_4",
+        "BADGE_5",
+        "BADGE_6",
+        "BADGE_7",
+        "BADGE_8",
+        "EVENT_MN_LIGHTHOUSE_SIGNAL"
+      ],
+      "gate_script": "MnR20EntryGateScript",
+      "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+    },
+    {
+      "kind": "guarded_connection",
+      "route": "MN_R20",
+      "a": "MnR20C01R00",
+      "b": "MnBoundaryWaters",
+      "direction_a": "east",
+      "direction_b": "west",
+      "offset_a": 6,
+      "offset_b": -6,
+      "offset_units": "32px_metatiles",
+      "a_edge_core": [
+        [
+          63,
+          36
+        ],
+        [
+          63,
+          37
+        ]
+      ],
+      "b_edge_core": [
+        [
+          0,
+          24
+        ],
+        [
+          0,
+          25
+        ]
+      ],
+      "gate_map": "MnBoundaryWaters",
+      "gate_script": "MnBoundaryVoyageursCheck",
+      "checkpoint": "voyageurs",
+      "requires_flags": [
+        "BADGE_1",
+        "BADGE_2",
+        "BADGE_3",
+        "BADGE_4",
+        "BADGE_5",
+        "BADGE_6",
+        "BADGE_7",
+        "BADGE_8",
+        "EVENT_MN_LIGHTHOUSE_SIGNAL"
+      ],
+      "requires_apply_to": "camp_departure",
+      "fee": 0,
+      "inbound_requires_flags": [],
+      "inbound_access": "free_care",
+      "inbound_facing_policy": "escort_unless_outward"
+    },
+    {
+      "kind": "connection",
+      "a": "MnR03C00R00",
+      "direction_a": "south",
+      "b": "MnR03C00R01",
+      "direction_b": "north",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR05C00R00",
+      "direction_a": "south",
+      "b": "MnR05C00R01",
+      "direction_b": "north",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR05C00R01",
+      "direction_a": "south",
+      "b": "MnR05C00R02",
+      "direction_b": "north",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR06C00R00",
+      "direction_a": "south",
+      "b": "MnR06C00R01",
+      "direction_b": "north",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR07C00R00",
+      "direction_a": "south",
+      "b": "MnR07C00R01",
+      "direction_b": "north",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR08C00R00",
+      "direction_a": "east",
+      "b": "MnR08C01R00",
+      "direction_b": "west",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR08C00R00",
+      "direction_a": "south",
+      "b": "MnR08C00R01",
+      "direction_b": "north",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR08C01R00",
+      "direction_a": "south",
+      "b": "MnR08C01R01",
+      "direction_b": "north",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR08C00R01",
+      "direction_a": "east",
+      "b": "MnR08C01R01",
+      "direction_b": "west",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR09C00R00",
+      "direction_a": "east",
+      "b": "MnR09C01R00",
+      "direction_b": "west",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR09C00R00",
+      "direction_a": "south",
+      "b": "MnR09C00R01",
+      "direction_b": "north",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR09C01R00",
+      "direction_a": "south",
+      "b": "MnR09C01R01",
+      "direction_b": "north",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR09C00R01",
+      "direction_a": "east",
+      "b": "MnR09C01R01",
+      "direction_b": "west",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR10C00R00",
+      "direction_a": "east",
+      "b": "MnR10C01R00",
+      "direction_b": "west",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR11C00R00",
+      "direction_a": "south",
+      "b": "MnR11C00R01",
+      "direction_b": "north",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR11C00R01",
+      "direction_a": "south",
+      "b": "MnR11C00R02",
+      "direction_b": "north",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR12C00R00",
+      "direction_a": "east",
+      "b": "MnR12C01R00",
+      "direction_b": "west",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR12C00R00",
+      "direction_a": "south",
+      "b": "MnR12C00R01",
+      "direction_b": "north",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR12C01R00",
+      "direction_a": "south",
+      "b": "MnR12C01R01",
+      "direction_b": "north",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR12C00R01",
+      "direction_a": "east",
+      "b": "MnR12C01R01",
+      "direction_b": "west",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR12C00R01",
+      "direction_a": "south",
+      "b": "MnR12C00R02",
+      "direction_b": "north",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR12C01R01",
+      "direction_a": "south",
+      "b": "MnR12C01R02",
+      "direction_b": "north",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR12C00R02",
+      "direction_a": "east",
+      "b": "MnR12C01R02",
+      "direction_b": "west",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR13C00R00",
+      "direction_a": "south",
+      "b": "MnR13C00R01",
+      "direction_b": "north",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR13C00R01",
+      "direction_a": "south",
+      "b": "MnR13C00R02",
+      "direction_b": "north",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR14C00R00",
+      "direction_a": "east",
+      "b": "MnR14C01R00",
+      "direction_b": "west",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR14C00R00",
+      "direction_a": "south",
+      "b": "MnR14C00R01",
+      "direction_b": "north",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR14C01R00",
+      "direction_a": "south",
+      "b": "MnR14C01R01",
+      "direction_b": "north",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR14C00R01",
+      "direction_a": "east",
+      "b": "MnR14C01R01",
+      "direction_b": "west",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR16C00R00",
+      "direction_a": "east",
+      "b": "MnR16C01R00",
+      "direction_b": "west",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR17C00R00",
+      "direction_a": "south",
+      "b": "MnR17C00R01",
+      "direction_b": "north",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR17C00R01",
+      "direction_a": "south",
+      "b": "MnR17C00R02",
+      "direction_b": "north",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR18C00R00",
+      "direction_a": "east",
+      "b": "MnR18C01R00",
+      "direction_b": "west",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR19C00R00",
+      "direction_a": "south",
+      "b": "MnR19C00R01",
+      "direction_b": "north",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR20C00R00",
+      "direction_a": "east",
+      "b": "MnR20C01R00",
+      "direction_b": "west",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR20C00R00",
+      "direction_a": "south",
+      "b": "MnR20C00R01",
+      "direction_b": "north",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR20C01R00",
+      "direction_a": "south",
+      "b": "MnR20C01R01",
+      "direction_b": "north",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR20C00R01",
+      "direction_a": "east",
+      "b": "MnR20C01R01",
+      "direction_b": "west",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR11C00R00",
+      "direction_a": "east",
+      "b": "MnR11C01R00",
+      "direction_b": "west",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR11C01R00",
+      "direction_a": "south",
+      "b": "MnR11C01R01",
+      "direction_b": "north",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR11C00R01",
+      "direction_a": "east",
+      "b": "MnR11C01R01",
+      "direction_b": "west",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR11C01R01",
+      "direction_a": "south",
+      "b": "MnR11C01R02",
+      "direction_b": "north",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR11C00R02",
+      "direction_a": "east",
+      "b": "MnR11C01R02",
+      "direction_b": "west",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR11C00R02",
+      "direction_a": "south",
+      "b": "MnR11C00R03",
+      "direction_b": "north",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR11C01R02",
+      "direction_a": "south",
+      "b": "MnR11C01R03",
+      "direction_b": "north",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR11C00R03",
+      "direction_a": "east",
+      "b": "MnR11C01R03",
+      "direction_b": "west",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "gatehouse_warp",
+      "route": "MN_R11",
+      "a": "MnR11C00R00",
+      "b": "MnGrandMaraisShoreGate",
+      "requires_flags": [],
+      "a_gate_core": [
+        [
+          43,
+          4
+        ],
+        [
+          43,
+          5
+        ]
+      ],
+      "a_safe_return_core": [
+        [
+          42,
+          4
+        ],
+        [
+          42,
+          5
+        ]
+      ],
+      "a_active_warps": [
+        3,
+        4
+      ],
+      "a_passive_warps": [
+        5,
+        6
+      ],
+      "b_arrivals_core": [
+        [
+          1,
+          4
+        ],
+        [
+          1,
+          5
+        ]
+      ],
+      "b_arrival_warps": [
+        5,
+        6
+      ],
+      "b_exit_core": [
+        [
+          0,
+          4
+        ],
+        [
+          0,
+          5
+        ]
+      ],
+      "b_exit_warps": [
+        1,
+        2
+      ],
+      "native_status": "544-map candidate; see playable/north-shore-story.md. Inbound free; outbound town checks only eight badges and Duluth harbor signal."
+    },
+    {
+      "kind": "gatehouse_warp",
+      "route": "MN_R11",
+      "a": "MnGrandMarais",
+      "b": "MnGrandMaraisShoreGate",
+      "requires_flags": [
+        "BADGE_1",
+        "BADGE_2",
+        "BADGE_3",
+        "BADGE_4",
+        "BADGE_5",
+        "BADGE_6",
+        "BADGE_7",
+        "BADGE_8",
+        "EVENT_MN_LIGHTHOUSE_SIGNAL"
+      ],
+      "a_gate_core": [
+        [
+          4,
+          18
+        ],
+        [
+          4,
+          19
+        ]
+      ],
+      "a_safe_return_core": [
+        [
+          8,
+          18
+        ],
+        [
+          8,
+          19
+        ]
+      ],
+      "a_active_warps": [
+        7,
+        8
+      ],
+      "a_passive_warps": [
+        9,
+        10
+      ],
+      "b_arrivals_core": [
+        [
+          8,
+          4
+        ],
+        [
+          8,
+          5
+        ]
+      ],
+      "b_arrival_warps": [
+        7,
+        8
+      ],
+      "b_exit_core": [
+        [
+          9,
+          4
+        ],
+        [
+          9,
+          5
+        ]
+      ],
+      "b_exit_warps": [
+        3,
+        4
+      ],
+      "native_status": "544-map candidate; see playable/north-shore-story.md. Inbound free; outbound town checks only eight badges and Duluth harbor signal."
+    },
+    {
+      "kind": "guarded_connection",
+      "route": "MN_R12",
+      "a": "MnR12C01R01",
+      "b": "MnGrandMarais",
+      "direction_a": "east",
+      "direction_b": "west",
+      "offset_a": 0,
+      "offset_b": 0,
+      "a_edge_core": [
+        [
+          63,
+          8
+        ],
+        [
+          63,
+          9
+        ]
+      ],
+      "b_edge_core": [
+        [
+          0,
+          8
+        ],
+        [
+          0,
+          9
+        ]
+      ],
+      "requires_flags": [
+        "BADGE_1",
+        "BADGE_2",
+        "BADGE_3",
+        "BADGE_4",
+        "BADGE_5",
+        "BADGE_6",
+        "BADGE_7",
+        "BADGE_8",
+        "EVENT_MN_LIGHTHOUSE_SIGNAL"
+      ],
+      "gate_script": "MnMaraisGunflintCheck",
+      "native_status": "544-map candidate; free inbound, no local lamp or part prerequisite."
+    }
+  ],
+  "map_id_policy": "Allocate unused group/map/spawn IDs from the actual base; persist the registry; do not hard-code 250 or collide with other overlays.",
+  "pack_names": [
+    "minnesota.crystalpack",
+    "minnesota.browser.crystalpack",
+    "minnesota.text-tui.crystalpack"
+  ],
+  "story_file": "story.json",
+  "planned_flags": [
+    "EVENT_MN_BORDER_CIRCUIT_REWARDED",
+    "EVENT_MN_BORDER_REPORT",
+    "EVENT_MN_BRAINERD_REPORT",
+    "EVENT_MN_COURIER_DEFEATED",
+    "EVENT_MN_DELIVERED_ROCHESTER_PARCEL",
+    "EVENT_MN_DEPOT_CLEARED",
+    "EVENT_MN_DEPOT_FOREMAN_DEFEATED",
+    "EVENT_MN_DISPATCH_NOTE",
+    "EVENT_MN_GYM_1_DEFEATED",
+    "EVENT_MN_GYM_2_DEFEATED",
+    "EVENT_MN_GYM_3_DEFEATED",
+    "EVENT_MN_GYM_4_DEFEATED",
+    "EVENT_MN_GYM_5_DEFEATED",
+    "EVENT_MN_GYM_6_DEFEATED",
+    "EVENT_MN_GYM_7_DEFEATED",
+    "EVENT_MN_GYM_8_DEFEATED",
+    "EVENT_MN_HEADWATERS_READING",
+    "EVENT_MN_HEADWATERS_REPORT",
+    "EVENT_MN_HOME_INTRO",
+    "EVENT_MN_LAKE_OBSERVATIONS_REWARDED",
+    "EVENT_MN_LEAGUE_CHAMPION",
+    "EVENT_MN_LIGHTHOUSE_SIGNAL",
+    "EVENT_MN_PRAIRIE_CIRCUIT_REWARDED",
+    "EVENT_MN_PRAIRIE_NOTEBOOK",
+    "EVENT_MN_R01_ITEM_01",
+    "EVENT_MN_R01_ITEM_02",
+    "EVENT_MN_R01_ITEM_03",
+    "EVENT_MN_R01_ITEM_04",
+    "EVENT_MN_R01_PARCEL_RECEIVED",
+    "EVENT_MN_R01_TRAINER_01",
+    "EVENT_MN_R01_TRAINER_02",
+    "EVENT_MN_R01_TRAINER_03",
+    "EVENT_MN_R01_TRAINER_04",
+    "EVENT_MN_R01_TRAINER_05",
+    "EVENT_MN_R01_TRAINER_06",
+    "EVENT_MN_R02_ITEM_01",
+    "EVENT_MN_R02_ITEM_02",
+    "EVENT_MN_R02_ITEM_03",
+    "EVENT_MN_R02_ITEM_04",
+    "EVENT_MN_R02_TRAINER_01",
+    "EVENT_MN_R02_TRAINER_02",
+    "EVENT_MN_R02_TRAINER_03",
+    "EVENT_MN_R02_TRAINER_04",
+    "EVENT_MN_R02_TRAINER_05",
+    "EVENT_MN_R02_TRAINER_06",
+    "EVENT_MN_R03_ITEM_01",
+    "EVENT_MN_R03_ITEM_02",
+    "EVENT_MN_R03_ITEM_03",
+    "EVENT_MN_R03_ITEM_04",
+    "EVENT_MN_R03_TRAINER_01",
+    "EVENT_MN_R03_TRAINER_02",
+    "EVENT_MN_R03_TRAINER_03",
+    "EVENT_MN_R03_TRAINER_04",
+    "EVENT_MN_R03_TRAINER_05",
+    "EVENT_MN_R03_TRAINER_06",
+    "EVENT_MN_R03_TRAINER_07",
+    "EVENT_MN_R03_TRAINER_08",
+    "EVENT_MN_R04_ITEM_01",
+    "EVENT_MN_R04_ITEM_02",
+    "EVENT_MN_R04_ITEM_03",
+    "EVENT_MN_R04_ITEM_04",
+    "EVENT_MN_R04_TRAINER_01",
+    "EVENT_MN_R04_TRAINER_02",
+    "EVENT_MN_R04_TRAINER_03",
+    "EVENT_MN_R04_TRAINER_04",
+    "EVENT_MN_R04_TRAINER_05",
+    "EVENT_MN_R04_TRAINER_06",
+    "EVENT_MN_R04_TRAINER_07",
+    "EVENT_MN_R04_TRAINER_08",
+    "EVENT_MN_R05_ITEM_01",
+    "EVENT_MN_R05_ITEM_02",
+    "EVENT_MN_R05_ITEM_03",
+    "EVENT_MN_R05_ITEM_04",
+    "EVENT_MN_R05_TRAINER_01",
+    "EVENT_MN_R05_TRAINER_02",
+    "EVENT_MN_R05_TRAINER_03",
+    "EVENT_MN_R05_TRAINER_04",
+    "EVENT_MN_R05_TRAINER_05",
+    "EVENT_MN_R05_TRAINER_06",
+    "EVENT_MN_R05_TRAINER_07",
+    "EVENT_MN_R05_TRAINER_08",
+    "EVENT_MN_R06_ITEM_01",
+    "EVENT_MN_R06_ITEM_02",
+    "EVENT_MN_R06_ITEM_03",
+    "EVENT_MN_R06_ITEM_04",
+    "EVENT_MN_R06_TRAINER_01",
+    "EVENT_MN_R06_TRAINER_02",
+    "EVENT_MN_R06_TRAINER_03",
+    "EVENT_MN_R06_TRAINER_04",
+    "EVENT_MN_R06_TRAINER_05",
+    "EVENT_MN_R06_TRAINER_06",
+    "EVENT_MN_R06_TRAINER_07",
+    "EVENT_MN_R06_TRAINER_08",
+    "EVENT_MN_R07_ITEM_01",
+    "EVENT_MN_R07_ITEM_02",
+    "EVENT_MN_R07_ITEM_03",
+    "EVENT_MN_R07_ITEM_04",
+    "EVENT_MN_R07_TRAINER_01",
+    "EVENT_MN_R07_TRAINER_02",
+    "EVENT_MN_R07_TRAINER_03",
+    "EVENT_MN_R07_TRAINER_04",
+    "EVENT_MN_R07_TRAINER_05",
+    "EVENT_MN_R07_TRAINER_06",
+    "EVENT_MN_R07_TRAINER_07",
+    "EVENT_MN_R07_TRAINER_08",
+    "EVENT_MN_R08_ITEM_01",
+    "EVENT_MN_R08_ITEM_02",
+    "EVENT_MN_R08_ITEM_03",
+    "EVENT_MN_R08_ITEM_04",
+    "EVENT_MN_R08_TRAINER_01",
+    "EVENT_MN_R08_TRAINER_02",
+    "EVENT_MN_R08_TRAINER_03",
+    "EVENT_MN_R08_TRAINER_04",
+    "EVENT_MN_R08_TRAINER_05",
+    "EVENT_MN_R08_TRAINER_06",
+    "EVENT_MN_R08_TRAINER_07",
+    "EVENT_MN_R08_TRAINER_08",
+    "EVENT_MN_R09_ITEM_01",
+    "EVENT_MN_R09_ITEM_02",
+    "EVENT_MN_R09_ITEM_03",
+    "EVENT_MN_R09_ITEM_04",
+    "EVENT_MN_R09_TRAINER_01",
+    "EVENT_MN_R09_TRAINER_02",
+    "EVENT_MN_R09_TRAINER_03",
+    "EVENT_MN_R09_TRAINER_04",
+    "EVENT_MN_R09_TRAINER_05",
+    "EVENT_MN_R09_TRAINER_06",
+    "EVENT_MN_R09_TRAINER_07",
+    "EVENT_MN_R09_TRAINER_08",
+    "EVENT_MN_R09_TRAINER_09",
+    "EVENT_MN_R09_TRAINER_10",
+    "EVENT_MN_R10_ITEM_01",
+    "EVENT_MN_R10_ITEM_02",
+    "EVENT_MN_R10_ITEM_03",
+    "EVENT_MN_R10_ITEM_04",
+    "EVENT_MN_R10_TRAINER_01",
+    "EVENT_MN_R10_TRAINER_02",
+    "EVENT_MN_R10_TRAINER_03",
+    "EVENT_MN_R10_TRAINER_04",
+    "EVENT_MN_R10_TRAINER_05",
+    "EVENT_MN_R10_TRAINER_06",
+    "EVENT_MN_R10_TRAINER_07",
+    "EVENT_MN_R10_TRAINER_08",
+    "EVENT_MN_R10_TRAINER_09",
+    "EVENT_MN_R10_TRAINER_10",
+    "EVENT_MN_R11_ITEM_01",
+    "EVENT_MN_R11_ITEM_02",
+    "EVENT_MN_R11_ITEM_03",
+    "EVENT_MN_R11_ITEM_04",
+    "EVENT_MN_R11_TRAINER_01",
+    "EVENT_MN_R11_TRAINER_02",
+    "EVENT_MN_R11_TRAINER_03",
+    "EVENT_MN_R11_TRAINER_04",
+    "EVENT_MN_R11_TRAINER_05",
+    "EVENT_MN_R11_TRAINER_06",
+    "EVENT_MN_R11_TRAINER_07",
+    "EVENT_MN_R11_TRAINER_08",
+    "EVENT_MN_R11_TRAINER_09",
+    "EVENT_MN_R11_TRAINER_10",
+    "EVENT_MN_R12_ITEM_01",
+    "EVENT_MN_R12_ITEM_02",
+    "EVENT_MN_R12_ITEM_03",
+    "EVENT_MN_R12_ITEM_04",
+    "EVENT_MN_R12_TRAINER_01",
+    "EVENT_MN_R12_TRAINER_02",
+    "EVENT_MN_R12_TRAINER_03",
+    "EVENT_MN_R12_TRAINER_04",
+    "EVENT_MN_R12_TRAINER_05",
+    "EVENT_MN_R12_TRAINER_06",
+    "EVENT_MN_R12_TRAINER_07",
+    "EVENT_MN_R12_TRAINER_08",
+    "EVENT_MN_R12_TRAINER_09",
+    "EVENT_MN_R12_TRAINER_10",
+    "EVENT_MN_R13_ITEM_01",
+    "EVENT_MN_R13_ITEM_02",
+    "EVENT_MN_R13_ITEM_03",
+    "EVENT_MN_R13_ITEM_04",
+    "EVENT_MN_R13_TRAINER_01",
+    "EVENT_MN_R13_TRAINER_02",
+    "EVENT_MN_R13_TRAINER_03",
+    "EVENT_MN_R13_TRAINER_04",
+    "EVENT_MN_R13_TRAINER_05",
+    "EVENT_MN_R13_TRAINER_06",
+    "EVENT_MN_R13_TRAINER_07",
+    "EVENT_MN_R13_TRAINER_08",
+    "EVENT_MN_R13_TRAINER_09",
+    "EVENT_MN_R13_TRAINER_10",
+    "EVENT_MN_R14_ITEM_01",
+    "EVENT_MN_R14_ITEM_02",
+    "EVENT_MN_R14_ITEM_03",
+    "EVENT_MN_R14_ITEM_04",
+    "EVENT_MN_R14_TRAINER_01",
+    "EVENT_MN_R14_TRAINER_02",
+    "EVENT_MN_R14_TRAINER_03",
+    "EVENT_MN_R14_TRAINER_04",
+    "EVENT_MN_R14_TRAINER_05",
+    "EVENT_MN_R14_TRAINER_06",
+    "EVENT_MN_R14_TRAINER_07",
+    "EVENT_MN_R14_TRAINER_08",
+    "EVENT_MN_R14_TRAINER_09",
+    "EVENT_MN_R14_TRAINER_10",
+    "EVENT_MN_R15_ITEM_01",
+    "EVENT_MN_R15_ITEM_02",
+    "EVENT_MN_R15_ITEM_03",
+    "EVENT_MN_R15_ITEM_04",
+    "EVENT_MN_R15_TRAINER_01",
+    "EVENT_MN_R15_TRAINER_02",
+    "EVENT_MN_R15_TRAINER_03",
+    "EVENT_MN_R15_TRAINER_04",
+    "EVENT_MN_R15_TRAINER_05",
+    "EVENT_MN_R15_TRAINER_06",
+    "EVENT_MN_R15_TRAINER_07",
+    "EVENT_MN_R15_TRAINER_08",
+    "EVENT_MN_R15_TRAINER_09",
+    "EVENT_MN_R15_TRAINER_10",
+    "EVENT_MN_R16_ITEM_01",
+    "EVENT_MN_R16_ITEM_02",
+    "EVENT_MN_R16_ITEM_03",
+    "EVENT_MN_R16_ITEM_04",
+    "EVENT_MN_R16_TRAINER_01",
+    "EVENT_MN_R16_TRAINER_02",
+    "EVENT_MN_R16_TRAINER_03",
+    "EVENT_MN_R16_TRAINER_04",
+    "EVENT_MN_R16_TRAINER_05",
+    "EVENT_MN_R16_TRAINER_06",
+    "EVENT_MN_R16_TRAINER_07",
+    "EVENT_MN_R16_TRAINER_08",
+    "EVENT_MN_R16_TRAINER_09",
+    "EVENT_MN_R16_TRAINER_10",
+    "EVENT_MN_R17_ITEM_01",
+    "EVENT_MN_R17_ITEM_02",
+    "EVENT_MN_R17_ITEM_03",
+    "EVENT_MN_R17_ITEM_04",
+    "EVENT_MN_R17_TRAINER_01",
+    "EVENT_MN_R17_TRAINER_02",
+    "EVENT_MN_R17_TRAINER_03",
+    "EVENT_MN_R17_TRAINER_04",
+    "EVENT_MN_R17_TRAINER_05",
+    "EVENT_MN_R17_TRAINER_06",
+    "EVENT_MN_R17_TRAINER_07",
+    "EVENT_MN_R17_TRAINER_08",
+    "EVENT_MN_R17_TRAINER_09",
+    "EVENT_MN_R17_TRAINER_10",
+    "EVENT_MN_R18_ITEM_01",
+    "EVENT_MN_R18_ITEM_02",
+    "EVENT_MN_R18_ITEM_03",
+    "EVENT_MN_R18_ITEM_04",
+    "EVENT_MN_R18_TRAINER_01",
+    "EVENT_MN_R18_TRAINER_02",
+    "EVENT_MN_R18_TRAINER_03",
+    "EVENT_MN_R18_TRAINER_04",
+    "EVENT_MN_R18_TRAINER_05",
+    "EVENT_MN_R18_TRAINER_06",
+    "EVENT_MN_R18_TRAINER_07",
+    "EVENT_MN_R18_TRAINER_08",
+    "EVENT_MN_R18_TRAINER_09",
+    "EVENT_MN_R18_TRAINER_10",
+    "EVENT_MN_R19_ITEM_01",
+    "EVENT_MN_R19_ITEM_02",
+    "EVENT_MN_R19_ITEM_03",
+    "EVENT_MN_R19_ITEM_04",
+    "EVENT_MN_R19_TRAINER_01",
+    "EVENT_MN_R19_TRAINER_02",
+    "EVENT_MN_R19_TRAINER_03",
+    "EVENT_MN_R19_TRAINER_04",
+    "EVENT_MN_R19_TRAINER_05",
+    "EVENT_MN_R19_TRAINER_06",
+    "EVENT_MN_R19_TRAINER_07",
+    "EVENT_MN_R19_TRAINER_08",
+    "EVENT_MN_R19_TRAINER_09",
+    "EVENT_MN_R19_TRAINER_10",
+    "EVENT_MN_R20_ITEM_01",
+    "EVENT_MN_R20_ITEM_02",
+    "EVENT_MN_R20_ITEM_03",
+    "EVENT_MN_R20_ITEM_04",
+    "EVENT_MN_R20_TRAINER_01",
+    "EVENT_MN_R20_TRAINER_02",
+    "EVENT_MN_R20_TRAINER_03",
+    "EVENT_MN_R20_TRAINER_04",
+    "EVENT_MN_R20_TRAINER_05",
+    "EVENT_MN_R20_TRAINER_06",
+    "EVENT_MN_R20_TRAINER_07",
+    "EVENT_MN_R20_TRAINER_08",
+    "EVENT_MN_R20_TRAINER_09",
+    "EVENT_MN_R20_TRAINER_10",
+    "EVENT_MN_SHORE_WATCH_REWARDED",
+    "EVENT_MN_STARTER_RECEIVED",
+    "EVENT_MN_SURF_GIFT_RECEIVED",
+    "EVENT_MN_SURVEY_CHIEF_DEFEATED",
+    "EVENT_MN_SURVEY_RESTORED",
+    "EVENT_MN_R12_CAVE_ETHER",
+    "EVENT_MN_R11_ITEM_05",
+    "EVENT_MN_R11_ITEM_06",
+    "EVENT_MN_MARAIS_SPARE_PART_RECEIVED"
+  ],
+  "regional_destinations": [
+    {
+      "id": "MN_STATE_FAIRGROUNDS",
+      "file": "zones/state-fairgrounds.json",
+      "parent_hub": "MnStPaul",
+      "kind": "planned_fairgrounds",
+      "status": "Dedicated playable destination in scope; St. Paul walking entrance reserved during current town authoring. Terrain and native gameplay are not published."
+    }
+  ],
+  "transit_networks": [
+    {
+      "id": "MN_GLACIER_LINE",
+      "file": "transit/glacier-line.json",
+      "kind": "planned_rail_service",
+      "status": "Six-stop source contract; St. Paul station interior has hand-authored rows and collision review. Cities, station doors and native train service are not installed."
+    }
+  ],
+  "special_zones": [
+    {
+      "id": "MN_BOUNDARY_WATERS_SAFARI",
+      "hub": "MnBoundaryWaters",
+      "file": "zones/boundary-waters-safari.json",
+      "status": "Expanded v17 source contract reserves six preserve chunks (group61 exterior IDs1–4 and6–7) and the unchanged cabin map5. Record the actual 505-map native publication and controller evidence separately. Free regional basecamp/story access is independent; Safari admission stays closed without fees and session/capture rules remain unimplemented."
+    }
+  ]
+}

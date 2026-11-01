@@ -1,0 +1,633 @@
+{
+  "name": "jotlet",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f087/jotlet-v1-center",
+  "status": "actual complete source pupil cluster proof passes; root visual/context acceptance pending",
+  "all_four_nonrear_actual_isolated_source_pupils": true,
+  "native_pupil_cluster_policy": "One or two connected native black pixels allowed ONLY when every pixel samples the same actual small source pupil component, and full external native boundary is bodycolor.",
+  "six16px_alpha_border_normal_shiny_runtime_parity": true,
+  "literal_2bpp_all1536indices_exact": true,
+  "canonical_palettes": true,
+  "bank_sha256": "ba41ea283e1647a0c6f4cc50ff33135d5da4ce12abe92714e65b5b3c4c233170",
+  "proof": [
+    {
+      "pose": "down_idle",
+      "actual_small_isolated_pupils": [
+        {
+          "native_cluster": [
+            [
+              6,
+              8
+            ],
+            [
+              6,
+              9
+            ]
+          ],
+          "actual_source_pupil_component": [
+            209,
+            241,
+            42,
+            46
+          ],
+          "component_pixels": 1928,
+          "samples": [
+            {
+              "native": [
+                6,
+                8
+              ],
+              "source_sample": [
+                231,
+                241
+              ],
+              "source_rgba": [
+                32,
+                29,
+                13,
+                253
+              ],
+              "actual_source_pupil_component": [
+                209,
+                241,
+                42,
+                46
+              ],
+              "component_pixels": 1928
+            },
+            {
+              "native": [
+                6,
+                9
+              ],
+              "source_sample": [
+                231,
+                270
+              ],
+              "source_rgba": [
+                0,
+                0,
+                0,
+                254
+              ],
+              "actual_source_pupil_component": [
+                209,
+                241,
+                42,
+                46
+              ],
+              "component_pixels": 1928
+            }
+          ],
+          "native_boundary_neighbors": [
+            [
+              5,
+              8,
+              1
+            ],
+            [
+              5,
+              9,
+              1
+            ],
+            [
+              6,
+              7,
+              1
+            ],
+            [
+              6,
+              10,
+              1
+            ],
+            [
+              7,
+              8,
+              1
+            ],
+            [
+              7,
+              9,
+              1
+            ]
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              9,
+              8
+            ],
+            [
+              9,
+              9
+            ]
+          ],
+          "actual_source_pupil_component": [
+            294,
+            241,
+            41,
+            46
+          ],
+          "component_pixels": 1886,
+          "samples": [
+            {
+              "native": [
+                9,
+                8
+              ],
+              "source_sample": [
+                315,
+                241
+              ],
+              "source_rgba": [
+                33,
+                31,
+                14,
+                254
+              ],
+              "actual_source_pupil_component": [
+                294,
+                241,
+                41,
+                46
+              ],
+              "component_pixels": 1886
+            },
+            {
+              "native": [
+                9,
+                9
+              ],
+              "source_sample": [
+                315,
+                270
+              ],
+              "source_rgba": [
+                0,
+                0,
+                0,
+                254
+              ],
+              "actual_source_pupil_component": [
+                294,
+                241,
+                41,
+                46
+              ],
+              "component_pixels": 1886
+            }
+          ],
+          "native_boundary_neighbors": [
+            [
+              8,
+              8,
+              1
+            ],
+            [
+              8,
+              9,
+              1
+            ],
+            [
+              9,
+              7,
+              1
+            ],
+            [
+              9,
+              10,
+              1
+            ],
+            [
+              10,
+              8,
+              1
+            ],
+            [
+              10,
+              9,
+              1
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "actual_small_isolated_pupils": [
+        {
+          "native_cluster": [
+            [
+              6,
+              9
+            ],
+            [
+              7,
+              9
+            ]
+          ],
+          "actual_source_pupil_component": [
+            1227,
+            248,
+            43,
+            46
+          ],
+          "component_pixels": 1966,
+          "samples": [
+            {
+              "native": [
+                6,
+                9
+              ],
+              "source_sample": [
+                1241,
+                270
+              ],
+              "source_rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "actual_source_pupil_component": [
+                1227,
+                248,
+                43,
+                46
+              ],
+              "component_pixels": 1966
+            },
+            {
+              "native": [
+                7,
+                9
+              ],
+              "source_sample": [
+                1269,
+                270
+              ],
+              "source_rgba": [
+                1,
+                1,
+                0,
+                253
+              ],
+              "actual_source_pupil_component": [
+                1227,
+                248,
+                43,
+                46
+              ],
+              "component_pixels": 1966
+            }
+          ],
+          "native_boundary_neighbors": [
+            [
+              5,
+              9,
+              1
+            ],
+            [
+              6,
+              8,
+              1
+            ],
+            [
+              6,
+              10,
+              1
+            ],
+            [
+              7,
+              8,
+              1
+            ],
+            [
+              7,
+              10,
+              1
+            ],
+            [
+              8,
+              9,
+              1
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "actual_small_isolated_pupils": [
+        {
+          "native_cluster": [
+            [
+              6,
+              8
+            ],
+            [
+              6,
+              9
+            ]
+          ],
+          "actual_source_pupil_component": [
+            212,
+            730,
+            42,
+            45
+          ],
+          "component_pixels": 1846,
+          "samples": [
+            {
+              "native": [
+                6,
+                8
+              ],
+              "source_sample": [
+                231,
+                732
+              ],
+              "source_rgba": [
+                5,
+                5,
+                2,
+                253
+              ],
+              "actual_source_pupil_component": [
+                212,
+                730,
+                42,
+                45
+              ],
+              "component_pixels": 1846
+            },
+            {
+              "native": [
+                6,
+                9
+              ],
+              "source_sample": [
+                231,
+                761
+              ],
+              "source_rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "actual_source_pupil_component": [
+                212,
+                730,
+                42,
+                45
+              ],
+              "component_pixels": 1846
+            }
+          ],
+          "native_boundary_neighbors": [
+            [
+              5,
+              8,
+              1
+            ],
+            [
+              5,
+              9,
+              1
+            ],
+            [
+              6,
+              7,
+              1
+            ],
+            [
+              6,
+              10,
+              1
+            ],
+            [
+              7,
+              8,
+              1
+            ],
+            [
+              7,
+              9,
+              1
+            ]
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              9,
+              8
+            ],
+            [
+              9,
+              9
+            ]
+          ],
+          "actual_source_pupil_component": [
+            296,
+            729,
+            42,
+            46
+          ],
+          "component_pixels": 1902,
+          "samples": [
+            {
+              "native": [
+                9,
+                8
+              ],
+              "source_sample": [
+                315,
+                732
+              ],
+              "source_rgba": [
+                4,
+                4,
+                2,
+                253
+              ],
+              "actual_source_pupil_component": [
+                296,
+                729,
+                42,
+                46
+              ],
+              "component_pixels": 1902
+            },
+            {
+              "native": [
+                9,
+                9
+              ],
+              "source_sample": [
+                315,
+                761
+              ],
+              "source_rgba": [
+                0,
+                1,
+                0,
+                253
+              ],
+              "actual_source_pupil_component": [
+                296,
+                729,
+                42,
+                46
+              ],
+              "component_pixels": 1902
+            }
+          ],
+          "native_boundary_neighbors": [
+            [
+              8,
+              8,
+              1
+            ],
+            [
+              8,
+              9,
+              1
+            ],
+            [
+              9,
+              7,
+              1
+            ],
+            [
+              9,
+              10,
+              1
+            ],
+            [
+              10,
+              8,
+              1
+            ],
+            [
+              10,
+              9,
+              1
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "actual_small_isolated_pupils": [
+        {
+          "native_cluster": [
+            [
+              6,
+              9
+            ],
+            [
+              7,
+              9
+            ]
+          ],
+          "actual_source_pupil_component": [
+            1228,
+            732,
+            42,
+            45
+          ],
+          "component_pixels": 1890,
+          "samples": [
+            {
+              "native": [
+                6,
+                9
+              ],
+              "source_sample": [
+                1241,
+                757
+              ],
+              "source_rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "actual_source_pupil_component": [
+                1228,
+                732,
+                42,
+                45
+              ],
+              "component_pixels": 1890
+            },
+            {
+              "native": [
+                7,
+                9
+              ],
+              "source_sample": [
+                1269,
+                757
+              ],
+              "source_rgba": [
+                1,
+                2,
+                0,
+                254
+              ],
+              "actual_source_pupil_component": [
+                1228,
+                732,
+                42,
+                45
+              ],
+              "component_pixels": 1890
+            }
+          ],
+          "native_boundary_neighbors": [
+            [
+              5,
+              9,
+              1
+            ],
+            [
+              6,
+              8,
+              1
+            ],
+            [
+              6,
+              10,
+              1
+            ],
+            [
+              7,
+              8,
+              1
+            ],
+            [
+              7,
+              10,
+              1
+            ],
+            [
+              8,
+              9,
+              1
+            ]
+          ]
+        }
+      ]
+    }
+  ],
+  "hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f087/jotlet-v1-center/compiled-index.json": "3efe57a0b3604f78de1a2cc326e3983588074460a734a60a82ec7b38d8fa4cfe",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f087/jotlet.overworld.imagegen-v1.png": "bccaa22aeb2316764c9f75a1d8f107ff515e91e559b50532883ff0f3381ba9eb",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f087/jotlet-v1-center/gfx/pokemon/jotlet/overworld.2bpp": "ba41ea283e1647a0c6f4cc50ff33135d5da4ce12abe92714e65b5b3c4c233170"
+  },
+  "no_native_pixel_painting": true
+}

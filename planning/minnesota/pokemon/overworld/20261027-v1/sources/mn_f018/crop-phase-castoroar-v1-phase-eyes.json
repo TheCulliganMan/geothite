@@ -1,0 +1,38 @@
+{
+  "paired_dx_dy": [
+    13,
+    -12
+  ],
+  "same_idle_step_shift": true,
+  "native_pixels_painted": false,
+  "source_pupil_boxes": [
+    [
+      [
+        224,
+        232,
+        242,
+        250
+      ],
+      [
+        290,
+        232,
+        308,
+        250
+      ]
+    ],
+    [
+      [
+        224,
+        634,
+        242,
+        652
+      ],
+      [
+        290,
+        634,
+        308,
+        652
+      ]
+    ]
+  ]
+}

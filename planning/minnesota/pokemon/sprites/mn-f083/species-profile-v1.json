@@ -1,0 +1,257 @@
+[
+  {
+    "id": "MN_180",
+    "classification": "Ember Fin",
+    "height_inches": 14,
+    "weight_tenths_lb": 110,
+    "dex_pages": [
+      "A coal-like @ glow warms its @ little belly.",
+      "Its ribbed fins @ vent a savory @ wisp of smoke."
+    ],
+    "base_stats": {
+      "hp": 42,
+      "attack": 53,
+      "defense": 36,
+      "speed": 50,
+      "special_attack": 56,
+      "special_defense": 42
+    },
+    "catch_rate": 190,
+    "base_exp": 61,
+    "gender_ratio": 127,
+    "hatch_cycles": 20,
+    "growth_rate": "GROWTH_MEDIUM_FAST",
+    "egg_groups": [
+      "EGG_WATER_2",
+      "EGG_WATER_2"
+    ],
+    "evolution": {
+      "method": "LEVEL",
+      "level": 30
+    },
+    "held_items": [
+      null,
+      null
+    ],
+    "menu_icon": "ICON_FISH",
+    "footprint_species": "GOLDEEN",
+    "cry": {
+      "cry": "CRY_SEEL",
+      "pitch": -24,
+      "length": 144
+    },
+    "shiny_rgb5": [
+      [
+        11,
+        31,
+        18
+      ],
+      [
+        8,
+        11,
+        7
+      ]
+    ],
+    "level_moves": [
+      [
+        1,
+        "TACKLE"
+      ],
+      [
+        1,
+        "LEER"
+      ],
+      [
+        5,
+        "EMBER"
+      ],
+      [
+        9,
+        "SMOKESCREEN"
+      ],
+      [
+        13,
+        "WATER_GUN"
+      ],
+      [
+        17,
+        "BITE"
+      ],
+      [
+        22,
+        "SMOG"
+      ],
+      [
+        27,
+        "HAZE"
+      ],
+      [
+        32,
+        "FIRE_SPIN"
+      ],
+      [
+        37,
+        "FAINT_ATTACK"
+      ],
+      [
+        42,
+        "FLAMETHROWER"
+      ],
+      [
+        48,
+        "CRUNCH"
+      ],
+      [
+        55,
+        "AMNESIA"
+      ],
+      [
+        62,
+        "FIRE_BLAST"
+      ]
+    ],
+    "tmhm_moves": [
+      "FIRE_BLAST",
+      "FLAMETHROWER",
+      "SUNNY_DAY",
+      "SURF",
+      "WHIRLPOOL",
+      "THIEF",
+      "SWAGGER",
+      "ENDURE",
+      "PROTECT",
+      "REST"
+    ],
+    "egg_moves": [
+      "PURSUIT",
+      "MIST",
+      "FLAIL"
+    ]
+  },
+  {
+    "id": "MN_181",
+    "classification": "Brine Kiln",
+    "height_inches": 48,
+    "weight_tenths_lb": 690,
+    "dex_pages": [
+      "Salt gathers @ along its hot, @ kiln-rib fins.",
+      "It seals its @ coal heart behind @ a smoky crust."
+    ],
+    "base_stats": {
+      "hp": 75,
+      "attack": 95,
+      "defense": 65,
+      "speed": 90,
+      "special_attack": 100,
+      "special_defense": 75
+    },
+    "catch_rate": 90,
+    "base_exp": 210,
+    "gender_ratio": 127,
+    "hatch_cycles": 20,
+    "growth_rate": "GROWTH_MEDIUM_FAST",
+    "egg_groups": [
+      "EGG_WATER_2",
+      "EGG_WATER_2"
+    ],
+    "evolution": null,
+    "held_items": [
+      null,
+      null
+    ],
+    "menu_icon": "ICON_FISH",
+    "footprint_species": "GOLDEEN",
+    "cry": {
+      "cry": "CRY_SEEL",
+      "pitch": 0,
+      "length": 160
+    },
+    "shiny_rgb5": [
+      [
+        8,
+        27,
+        11
+      ],
+      [
+        10,
+        9,
+        6
+      ]
+    ],
+    "level_moves": [
+      [
+        1,
+        "TACKLE"
+      ],
+      [
+        1,
+        "LEER"
+      ],
+      [
+        1,
+        "EMBER"
+      ],
+      [
+        11,
+        "SMOKESCREEN"
+      ],
+      [
+        15,
+        "WATER_GUN"
+      ],
+      [
+        19,
+        "BITE"
+      ],
+      [
+        24,
+        "SMOG"
+      ],
+      [
+        29,
+        "HAZE"
+      ],
+      [
+        34,
+        "FIRE_SPIN"
+      ],
+      [
+        39,
+        "FAINT_ATTACK"
+      ],
+      [
+        44,
+        "FLAMETHROWER"
+      ],
+      [
+        50,
+        "CRUNCH"
+      ],
+      [
+        57,
+        "AMNESIA"
+      ],
+      [
+        64,
+        "FIRE_BLAST"
+      ]
+    ],
+    "tmhm_moves": [
+      "FIRE_BLAST",
+      "FLAMETHROWER",
+      "SUNNY_DAY",
+      "SURF",
+      "WHIRLPOOL",
+      "THIEF",
+      "SWAGGER",
+      "ENDURE",
+      "PROTECT",
+      "REST"
+    ],
+    "egg_moves": [
+      "PURSUIT",
+      "MIST",
+      "FLAIL"
+    ]
+  }
+]

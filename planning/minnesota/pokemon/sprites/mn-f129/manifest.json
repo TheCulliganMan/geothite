@@ -1,0 +1,370 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F129",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f129/prompt-v1.txt",
+  "pokemon_palettes": {
+    "MN_284": {
+      "species_id": "MN_284",
+      "name": "Yipup",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          24,
+          25,
+          25
+        ],
+        [
+          9,
+          11,
+          15
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        26424,
+        15721,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          198,
+          206,
+          206
+        ],
+        [
+          74,
+          90,
+          123
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#C6CECE",
+        "#4A5A7B",
+        "#000000"
+      ]
+    },
+    "MN_285": {
+      "species_id": "MN_285",
+      "name": "Loperuff",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          22,
+          24,
+          24
+        ],
+        [
+          8,
+          10,
+          14
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        25366,
+        14664,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          181,
+          198,
+          198
+        ],
+        [
+          66,
+          82,
+          115
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#B5C6C6",
+        "#425273",
+        "#000000"
+      ]
+    },
+    "MN_286": {
+      "species_id": "MN_286",
+      "name": "Timberhowl",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          20,
+          23,
+          23
+        ],
+        [
+          7,
+          9,
+          13
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        24308,
+        13607,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          165,
+          189,
+          189
+        ],
+        [
+          57,
+          74,
+          107
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#A5BDBD",
+        "#394A6B",
+        "#000000"
+      ]
+    }
+  },
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png"
+    ]
+  },
+  "sprites": [
+    {
+      "id": "mn-284-yipup-v1",
+      "species_id": "MN_284",
+      "view": "front",
+      "source": "sprites/mn-f129/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        488,
+        512
+      ],
+      "fit": [
+        34,
+        36
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        26424,
+        15721,
+        0
+      ],
+      "exterior_contour": "solid",
+      "interior_black_min_samples": 8,
+      "white_detail_min_samples": 4
+    },
+    {
+      "id": "mn-285-loperuff-v1",
+      "species_id": "MN_285",
+      "view": "front",
+      "source": "sprites/mn-f129/front-back.imagegen-v1.png",
+      "crop": [
+        488,
+        0,
+        499,
+        512
+      ],
+      "fit": [
+        47,
+        41
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        25366,
+        14664,
+        0
+      ],
+      "exterior_contour": "solid",
+      "interior_black_min_samples": 8,
+      "white_detail_min_samples": 4,
+      "pixel_edits": [
+        {
+          "x": 50,
+          "y": 29,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 50,
+          "y": 30,
+          "from": 3,
+          "to": 0
+        }
+      ],
+      "sampling": "source_center"
+    },
+    {
+      "id": "mn-286-timberhowl-v1",
+      "species_id": "MN_286",
+      "view": "front",
+      "source": "sprites/mn-f129/front-back.imagegen-v1.png",
+      "crop": [
+        987,
+        0,
+        549,
+        512
+      ],
+      "fit": [
+        54,
+        48
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        24308,
+        13607,
+        0
+      ],
+      "exterior_contour": "solid",
+      "interior_black_min_samples": 8,
+      "white_detail_min_samples": 4
+    },
+    {
+      "id": "mn-284-yipup-v1",
+      "species_id": "MN_284",
+      "view": "back",
+      "source": "sprites/mn-f129/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        512,
+        488,
+        512
+      ],
+      "fit": [
+        38,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        26424,
+        15721,
+        0
+      ],
+      "exterior_contour": "solid",
+      "interior_black_min_samples": 8,
+      "white_detail_min_samples": 4
+    },
+    {
+      "id": "mn-285-loperuff-v1",
+      "species_id": "MN_285",
+      "view": "back",
+      "source": "sprites/mn-f129/front-back.imagegen-v1.png",
+      "crop": [
+        488,
+        512,
+        536,
+        512
+      ],
+      "fit": [
+        46,
+        46
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        25366,
+        14664,
+        0
+      ],
+      "exterior_contour": "solid",
+      "interior_black_min_samples": 8,
+      "white_detail_min_samples": 4
+    },
+    {
+      "id": "mn-286-timberhowl-v1",
+      "species_id": "MN_286",
+      "view": "back",
+      "source": "sprites/mn-f129/front-back.imagegen-v1.png",
+      "crop": [
+        1024,
+        512,
+        512,
+        512
+      ],
+      "fit": [
+        46,
+        46
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        24308,
+        13607,
+        0
+      ],
+      "exterior_contour": "solid",
+      "interior_black_min_samples": 8,
+      "white_detail_min_samples": 4
+    }
+  ],
+  "native_refinement_note": "The adjacent adult nose overlaps the adolescent tail bounding box in source X. Remove only its two isolated native pixels from Loperuff; the complete adolescent tail and all other anatomy remain source-backed.",
+  "visual_review": {
+    "status": "reviewed",
+    "outline_profile": "solid-exterior-v1",
+    "sheet_sha256": "82842b6f7605a24311f9e959f8416596ed9be58b1c1314972ae7500056d0d438",
+    "review_note": "Inspected the final six native views after removing two pixels from the neighboring adult nose in the adolescent crop. Tiny pup, lanky tracker and powerful adult have distinct proportions and paired fur folds. Low tails and four legs remain readable, and close rear portraits match their fronts. Area sampling retained except the explicitly guarded adolescent source-center refinement."
+  }
+}

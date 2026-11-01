@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "views_inspected": [
+    "west-grass-entry",
+    "neck-sign",
+    "north-grass-entry"
+  ],
+  "pixel_mismatches": 0,
+  "sign_approach_clear": true
+}

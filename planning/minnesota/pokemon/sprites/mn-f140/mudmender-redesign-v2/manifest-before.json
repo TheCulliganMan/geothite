@@ -1,0 +1,309 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F140",
+  "status": "native-refinement-reviewed",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f140/prompt-v1.txt",
+  "back_framing": "independent-gen2-close-upper-rear-portrait",
+  "pokemon_palettes": {
+    "MN_310": {
+      "species_id": "MN_310",
+      "name": "Gillpup",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          12,
+          24,
+          25
+        ],
+        [
+          23,
+          8,
+          12
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        26380,
+        12567,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          99,
+          198,
+          206
+        ],
+        [
+          189,
+          66,
+          99
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#63C6CE",
+        "#BD4263",
+        "#000000"
+      ]
+    },
+    "MN_311": {
+      "species_id": "MN_311",
+      "name": "Mudmender",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          18,
+          22,
+          29
+        ],
+        [
+          15,
+          5,
+          17
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        30418,
+        17583,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          148,
+          181,
+          239
+        ],
+        [
+          123,
+          41,
+          140
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#94B5EF",
+        "#7B298C",
+        "#000000"
+      ]
+    }
+  },
+  "sprites": [
+    {
+      "id": "mn-310-gillpup-v1",
+      "species_id": "MN_310",
+      "view": "front",
+      "source": "sprites/mn-f140/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        720,
+        550
+      ],
+      "fit": [
+        44,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        26380,
+        12567,
+        0
+      ],
+      "sampling": "area_vote",
+      "exterior_contour": "solid",
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 12,
+      "pixel_edits": [
+        {
+          "x": 17,
+          "y": 43,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 17,
+          "y": 44,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 17,
+          "y": 45,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 20,
+          "y": 45,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 19,
+          "y": 46,
+          "from": 3,
+          "to": 0
+        }
+      ]
+    },
+    {
+      "id": "mn-310-gillpup-v1",
+      "species_id": "MN_310",
+      "view": "back",
+      "source": "sprites/mn-f140/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        550,
+        720,
+        474
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        26380,
+        12567,
+        0
+      ],
+      "sampling": "area_vote",
+      "exterior_contour": "solid",
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 12
+    },
+    {
+      "id": "mn-311-mudmender-v1",
+      "species_id": "MN_311",
+      "view": "front",
+      "source": "sprites/mn-f140/front-back.imagegen-v1.png",
+      "crop": [
+        720,
+        0,
+        816,
+        550
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        30418,
+        17583,
+        0
+      ],
+      "sampling": "area_vote",
+      "exterior_contour": "solid",
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 12,
+      "pixel_edits": [
+        {
+          "x": 8,
+          "y": 37,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 18,
+          "y": 37,
+          "from": 0,
+          "to": 3
+        },
+        {
+          "x": 18,
+          "y": 38,
+          "from": 0,
+          "to": 3
+        },
+        {
+          "x": 17,
+          "y": 39,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 18,
+          "y": 40,
+          "from": 3,
+          "to": 0
+        }
+      ]
+    },
+    {
+      "id": "mn-311-mudmender-v1",
+      "species_id": "MN_311",
+      "view": "back",
+      "source": "sprites/mn-f140/front-back.imagegen-v1.png",
+      "crop": [
+        720,
+        550,
+        816,
+        474
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        30418,
+        17583,
+        0
+      ],
+      "sampling": "area_vote",
+      "exterior_contour": "solid",
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 12
+    }
+  ],
+  "source_sha256": "834c2436313e3cc7a071c7d0d3dd20b8834d356edfddef1dd9e059e50a1780d8",
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "outline_profile": "solid-exterior-v1",
+    "sheet_sha256": "b8fce4a0e279ffea02437238b5775b39178f3c335a32cbc7533a5c9bd5022f04",
+    "notes": "Root approved AreaVote/Solid actual native board: small gill fans grow into large shelter panels and tail cradle, proper close backs. All source/candidate/rejected variants retained. No native pixel edits. Native refinement: inspected both views against source art; clarified existing facial whites and pupils, retained body geometry and palettes, and verified opponent-facing orientation. Exact guarded edits and previous manifest retained in native-refinement-20261027-v1/."
+  },
+  "native_refinement_note": "Guarded native ink corrections clarify existing eyes and facial details. Source art, fit and per-species palettes retained. Orientation corrections keep enemy fronts facing left and player rear portraits facing upper right."
+}

@@ -1,0 +1,12 @@
+bind	01-tamarack	native-pixels-v4.json	binding-v1.json	granny
+bind	02-ice-agent	native-pixels-v3.json	binding-v1.json	rocket
+bind	03-ice-operative	native-pixels-v2.json	binding-v1.json	rocket_girl
+bind	04-ice-enforcer	native-pixels-v3.json	binding-v1.json	surge
+new	05-maple-tapper	native-pixels-v3.json	placement-v1.json	fisher
+new	06-roller-skater	native-pixels-v1.json	placement-v1.json	lass
+new	07-curler	native-pixels-v1.json	placement-v1.json	cooltrainer_m
+new	08-lifeguard	native-pixels-v2.json	placement-v1.json	sailor
+new	09-port-pilot	native-pixels-v1.json	placement-v1.json	teacher
+new	10-trail-runner	native-pixels-v1.json	placement-v1.json	cooltrainer_f
+new	11-camp-cook	native-pixels-v2.json	placement-v1.json	pokefan_m
+new	12-dog-musher	native-pixels-v1.json	placement-v1.json	super_nerd

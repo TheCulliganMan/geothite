@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "map": "MnDuluth",
+      "approach": [
+        54,
+        60
+      ],
+      "id": "MN_EXTRA_PORT_PILOT",
+      "display_name": "GRETA",
+      "trainer_class": "MN_PORT_PILOT",
+      "class_name": "PORT PILOT",
+      "template_class": "TEACHER",
+      "sprite": "SPRITE_MN_PORT_PILOT",
+      "tile": [
+        54,
+        59
+      ],
+      "facing": "south",
+      "sight_range": 1,
+      "defeated_flag": "EVENT_MN_EXTRA_PORT_PILOT",
+      "party": [
+        {
+          "species": "TUGGET",
+          "level": 36
+        },
+        {
+          "species": "LOOBIT",
+          "level": 38
+        }
+      ],
+      "before_lines": [
+        "Mind the current.",
+        "I know this port!"
+      ],
+      "after_lines": [
+        "A clean passage!",
+        "You read it well."
+      ],
+      "loss_lines": [
+        "Hold a steady",
+        "course next time."
+      ]
+    }
+  ]
+}

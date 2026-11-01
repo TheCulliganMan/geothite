@@ -1,0 +1,237 @@
+{
+  "schema_version": 1,
+  "id": "MnIronDrillCore",
+  "tileset": "mn_iron_core_rock",
+  "base_tileset": "mn_iron_haulage_rock",
+  "dimensions_metatiles": [
+    12,
+    10
+  ],
+  "border_block": 46,
+  "palette_group": "nite",
+  "purpose": "A native rock-cut drill bay with its operating machine, northern isolation control, western crew space and lower shaft forecourt.",
+  "rows": [
+    "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e",
+    "2e 2e 2e 04 05 05 05 05 46 06 2e 2e",
+    "2e 2e 04 0d 0d 0d 0d 0d 0d 1e 2e 2e",
+    "2e 04 0d 0d 0d 44 43 0d 0d 0d 06 2e",
+    "2e 08 1d 0d 0d 44 43 0d 0d 0d 1e 2e",
+    "2e 08 0d 0d 0d 44 43 0d 0d 0d 1e 2e",
+    "2e 08 0d 0d 0d 0d 0d 0d 0d 0d 1e 2e",
+    "2e 08 42 0d 0d 0d 0d 1d 0d 1e 2e 2e",
+    "2e 20 21 21 21 21 21 21 21 22 2e 2e",
+    "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e"
+  ],
+  "source_pixels_modified": false,
+  "derived_blocks": [
+    {
+      "id": "43",
+      "source_tileset": "facility",
+      "source_block": "13",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "id": "44",
+      "source_tileset": "facility",
+      "source_block": "12",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "id": "45",
+      "source_tileset": "facility",
+      "source_block": "16",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "id": "46",
+      "source_tileset": "facility",
+      "source_block": "28",
+      "collision": [
+        "WALL",
+        "WALL",
+        "FLOOR",
+        "FLOOR"
+      ],
+      "tile_row_sources": [
+        {
+          "source_tileset": "facility",
+          "source_block": "28",
+          "source_row": 0
+        },
+        {
+          "source_tileset": "facility",
+          "source_block": "28",
+          "source_row": 1
+        },
+        {
+          "source_tileset": "facility",
+          "source_block": "28",
+          "source_row": 2
+        },
+        {
+          "source_tileset": "mn_iron_haulage_rock",
+          "source_block": "0d",
+          "source_row": 3
+        }
+      ]
+    }
+  ],
+  "block_overrides": [
+    {
+      "id": "12",
+      "source_tileset": "facility",
+      "source_block": "12",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ],
+      "reason": "Retain original numeric18 extended drilling frame in the private alias."
+    },
+    {
+      "id": "16",
+      "source_tileset": "facility",
+      "source_block": "16",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ],
+      "reason": "Retain original numeric22 retracted/shutdown frame in the private alias."
+    }
+  ],
+  "default_hidden_actors": [
+    "MN_NDRILL_FINN"
+  ],
+  "movement_detours": [
+    {
+      "script": "MnNDrillWatchFrom19",
+      "start": [
+        19,
+        12
+      ],
+      "steps": [
+        [
+          "DOWN",
+          1
+        ],
+        [
+          "LEFT",
+          10
+        ],
+        [
+          "UP",
+          4
+        ]
+      ],
+      "end": [
+        9,
+        9
+      ],
+      "reason": "Pass below the original core-east guard at18,12 rather than through its body."
+    },
+    {
+      "script": "MnNDrillWatchFrom20",
+      "start": [
+        20,
+        12
+      ],
+      "steps": [
+        [
+          "DOWN",
+          1
+        ],
+        [
+          "LEFT",
+          11
+        ],
+        [
+          "UP",
+          4
+        ]
+      ],
+      "end": [
+        9,
+        9
+      ],
+      "reason": "Pass below the original core-east guard at18,12 rather than through its body."
+    }
+  ],
+  "review_contract": {
+    "viewpoints": [
+      {
+        "id": "shaft-arrival",
+        "tile": [
+          4,
+          15
+        ]
+      },
+      {
+        "id": "west-guard",
+        "tile": [
+          6,
+          11
+        ]
+      },
+      {
+        "id": "crew-space",
+        "tile": [
+          8,
+          6
+        ]
+      },
+      {
+        "id": "witness-machine",
+        "tile": [
+          9,
+          9
+        ]
+      },
+      {
+        "id": "control",
+        "tile": [
+          16,
+          3
+        ]
+      },
+      {
+        "id": "east-bay",
+        "tile": [
+          17,
+          10
+        ]
+      },
+      {
+        "id": "eastern-entry",
+        "tile": [
+          20,
+          13
+        ]
+      },
+      {
+        "id": "south-return",
+        "tile": [
+          12,
+          15
+        ]
+      }
+    ]
+  }
+}

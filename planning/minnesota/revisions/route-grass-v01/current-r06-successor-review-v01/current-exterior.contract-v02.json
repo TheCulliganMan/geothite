@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "id": "MN_R06",
+  "source_kind": "installed_route_exterior_review_contract",
+  "native_binding": {
+    "pack": "content-packs/minnesota-current-r06-south-woods-grass-v01.crystalpack",
+    "pack_sha256": "1d906a7d4998ce8b25332b05413131d9d256961a284230143d82541b24c403d0",
+    "content_identity": "41aad022dd980dc1bf1f5784fb8a8a465648d500c1119ee2ac2cda2946121ffa"
+  },
+  "new_grass_quadrants": 20,
+  "route_grass_quadrants": 216,
+  "approach_core": [
+    [
+      16,
+      72
+    ],
+    [
+      16,
+      81
+    ]
+  ],
+  "minimum_added_approach_grass_steps": 2,
+  "existing_cliffs_stairs_actors_and_signs_preserved": true,
+  "scope": "Current Route6 exterior: complete two-chunk traversal both directions, both neighboring town boundaries and back, two actual ledge lanes/reverses/ordinary grass returns, Cut terrace and once-only Ether, woodland grass, native cameras, menus and Continue. Explicit local qualifications are QA setup, not earned statewide progression.",
+  "retired_historical_ledge_contracts": [
+    "PINE_LOOKOUT_RETURN"
+  ],
+  "active_ledge_lanes": [
+    {
+      "upper": [
+        44,
+        9
+      ],
+      "lip": [
+        44,
+        10
+      ],
+      "landing": [
+        44,
+        12
+      ],
+      "reverse_denials": 4
+    },
+    {
+      "upper": [
+        45,
+        9
+      ],
+      "lip": [
+        45,
+        10
+      ],
+      "landing": [
+        45,
+        12
+      ],
+      "reverse_denials": 4
+    }
+  ],
+  "ordinary_ledge_return_minimum_grass_steps": 8,
+  "terrace": {
+    "approach": [
+      29,
+      33
+    ],
+    "existing_cut_gate": [
+      29,
+      32
+    ],
+    "stair_tread": [
+      29,
+      31
+    ],
+    "upper": [
+      29,
+      30
+    ],
+    "reward": "ETHER"
+  }
+}

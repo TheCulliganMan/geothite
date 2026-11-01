@@ -1,0 +1,216 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_172",
+  "result": "pass",
+  "manifest_sha256": "84dd0919f1f3553dab87ca760173faec0ddff9fccdccb25b483ac52a6b8a558c",
+  "bank_sha256": "636587e2666ee80da3e799d187c8878ad45f66db9f2099a661fc32e1fb339ff2",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f079/bobcast.overworld.imagegen-v2-clear-eyes.png": "c26f07d1f437134a1ba118d0010855ad906c131c26b0b9b16576f5319fdbe3a2",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f079/bobcast.overworld.imagegen-v1.png": "e8b1a79dee0ca2b3670218d1af6a534555379708e5006ca72815c26ee96159ea"
+  },
+  "canonical_eye_form": "Two isolated actual black pupil dots south and one isolated actual black pupil west; source eye components verified in all four nonrear poses.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            6,
+            8
+          ],
+          "source_sample": [
+            270,
+            295
+          ],
+          "source_component": [
+            249,
+            284,
+            37,
+            41
+          ],
+          "component_pixels": 1517,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            252
+          ]
+        },
+        {
+          "native": [
+            8,
+            8
+          ],
+          "source_sample": [
+            332,
+            295
+          ],
+          "source_component": [
+            323,
+            284,
+            37,
+            41
+          ],
+          "component_pixels": 1517,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            252
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            5,
+            8
+          ],
+          "source_sample": [
+            1177,
+            294
+          ],
+          "source_component": [
+            1168,
+            279,
+            40,
+            45
+          ],
+          "component_pixels": 1800,
+          "native_neighbors": [
+            2,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            252
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            6,
+            8
+          ],
+          "source_sample": [
+            270,
+            718
+          ],
+          "source_component": [
+            244,
+            701,
+            37,
+            41
+          ],
+          "component_pixels": 1517,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            251
+          ]
+        },
+        {
+          "native": [
+            8,
+            8
+          ],
+          "source_sample": [
+            332,
+            718
+          ],
+          "source_component": [
+            318,
+            701,
+            37,
+            41
+          ],
+          "component_pixels": 1517,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            251
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            5,
+            8
+          ],
+          "source_sample": [
+            1177,
+            722
+          ],
+          "source_component": [
+            1168,
+            701,
+            40,
+            45
+          ],
+          "component_pixels": 1800,
+          "native_neighbors": [
+            2,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            252
+          ]
+        }
+      ]
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "notes": "Original plain rear sheet retained; single floating ring, split-color mast and suspended tether/plummet, zero limbs. Source-only eye-panel simplification preserves exactly two front and one west actual pupil. Alpha threshold200 excludes edited black background166\u2013177 while solid eye/body252 remains."
+  }
+}

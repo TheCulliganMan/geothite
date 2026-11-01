@@ -1,0 +1,209 @@
+{
+  "species": "flourgeist",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/flourgeist-v8-actual-pupils",
+  "status": "actual-source native proof passes; root visual/context acceptance pending",
+  "all_four_nonrear_actual_isolated_source_pupils": true,
+  "six16px_alpha_border_normal_shiny_runtime_parity": true,
+  "canonical_palettes": true,
+  "proof": [
+    {
+      "pose": "down_idle",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            7,
+            7
+          ],
+          "source_sample": [
+            268,
+            276
+          ],
+          "source_component": [
+            246,
+            256,
+            26,
+            27
+          ],
+          "component_pixels": 699,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            6,
+            6,
+            5,
+            253
+          ]
+        },
+        {
+          "native": [
+            9,
+            7
+          ],
+          "source_sample": [
+            325,
+            276
+          ],
+          "source_component": [
+            303,
+            256,
+            26,
+            27
+          ],
+          "component_pixels": 701,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            5,
+            5,
+            4,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            4,
+            7
+          ],
+          "source_sample": [
+            1174,
+            269
+          ],
+          "source_component": [
+            1150,
+            246,
+            25,
+            25
+          ],
+          "component_pixels": 625,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            23,
+            21,
+            20,
+            254
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            7,
+            7
+          ],
+          "source_sample": [
+            268,
+            716
+          ],
+          "source_component": [
+            248,
+            701,
+            26,
+            26
+          ],
+          "component_pixels": 673,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            1,
+            1,
+            1,
+            253
+          ]
+        },
+        {
+          "native": [
+            9,
+            7
+          ],
+          "source_sample": [
+            325,
+            716
+          ],
+          "source_component": [
+            303,
+            701,
+            26,
+            26
+          ],
+          "component_pixels": 676,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            7,
+            6,
+            5,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            4,
+            7
+          ],
+          "source_sample": [
+            1174,
+            709
+          ],
+          "source_component": [
+            1150,
+            691,
+            25,
+            24
+          ],
+          "component_pixels": 600,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            10,
+            10,
+            7,
+            253
+          ]
+        }
+      ]
+    }
+  ],
+  "hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/flourgeist-v8-actual-pupils/compiled-index.json": "af8598a2a550a0acfa3986b30ec62915cd055eb063c3c55b6f9167fdb0b9f9fb",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f010/flourgeist.overworld.imagegen-v2-eyes.png": "7f3ff7d510781b32020caae2c29710eea81352af65092220923d4757774361e9"
+  },
+  "no_native_pixel_painting": true
+}

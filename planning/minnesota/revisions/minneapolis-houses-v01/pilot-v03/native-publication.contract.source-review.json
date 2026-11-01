@@ -1,0 +1,1510 @@
+{
+  "status": "SOURCE_REVIEW_FREEZE_NOT_PUBLISHED",
+  "contract_sha256": "891e0030e1c5baed9d8fc4b6bb4941a8df33d7427597f3a6905c74f821a65600",
+  "source_contract_sha256": "606d19f8cc0b90038bad8e8b6c2612167e96f238a476545a4cf6c06e50b0a74b",
+  "source_contract": "planning/minnesota/revisions/minneapolis-houses-v01/pilot-v03/house-exteriors.contract.json",
+  "new_glyphs": 27,
+  "metatiles": 13,
+  "map_cells": 16,
+  "new_logical_slots": [
+    "e0",
+    "e1",
+    "e2",
+    "e3",
+    "e4",
+    "e5",
+    "e6",
+    "e7",
+    "e8",
+    "e9",
+    "ea",
+    "eb",
+    "ec",
+    "ed",
+    "ee",
+    "ef",
+    "f0",
+    "f1",
+    "f2",
+    "f3",
+    "f4",
+    "f5",
+    "f6",
+    "f7",
+    "f8",
+    "f9",
+    "fa"
+  ],
+  "source_rgb_reuse_witnesses": [
+    {
+      "target": 0,
+      "source": {
+        "tileset": "kanto",
+        "block": "38",
+        "glyph": [
+          0,
+          0
+        ]
+      },
+      "four_bank_rgb_sha256": "e490250f758c9716f1a703d492e73f6ac18ce27ffee1d109afbff13e4ce42109"
+    },
+    {
+      "target": 0,
+      "source": {
+        "tileset": "kanto",
+        "block": "38",
+        "glyph": [
+          1,
+          0
+        ]
+      },
+      "four_bank_rgb_sha256": "e490250f758c9716f1a703d492e73f6ac18ce27ffee1d109afbff13e4ce42109"
+    },
+    {
+      "target": 0,
+      "source": {
+        "tileset": "kanto",
+        "block": "38",
+        "glyph": [
+          2,
+          0
+        ]
+      },
+      "four_bank_rgb_sha256": "e490250f758c9716f1a703d492e73f6ac18ce27ffee1d109afbff13e4ce42109"
+    },
+    {
+      "target": 0,
+      "source": {
+        "tileset": "kanto",
+        "block": "38",
+        "glyph": [
+          3,
+          0
+        ]
+      },
+      "four_bank_rgb_sha256": "e490250f758c9716f1a703d492e73f6ac18ce27ffee1d109afbff13e4ce42109"
+    },
+    {
+      "target": 6,
+      "source": {
+        "tileset": "kanto",
+        "block": "38",
+        "glyph": [
+          0,
+          1
+        ]
+      },
+      "four_bank_rgb_sha256": "294d8d5e843489aee210652a4c918730822bc8d171f9137daa353e67ed985d88"
+    },
+    {
+      "target": 0,
+      "source": {
+        "tileset": "kanto",
+        "block": "38",
+        "glyph": [
+          1,
+          1
+        ]
+      },
+      "four_bank_rgb_sha256": "e490250f758c9716f1a703d492e73f6ac18ce27ffee1d109afbff13e4ce42109"
+    },
+    {
+      "target": 0,
+      "source": {
+        "tileset": "kanto",
+        "block": "38",
+        "glyph": [
+          2,
+          1
+        ]
+      },
+      "four_bank_rgb_sha256": "e490250f758c9716f1a703d492e73f6ac18ce27ffee1d109afbff13e4ce42109"
+    },
+    {
+      "target": 0,
+      "source": {
+        "tileset": "kanto",
+        "block": "38",
+        "glyph": [
+          3,
+          1
+        ]
+      },
+      "four_bank_rgb_sha256": "e490250f758c9716f1a703d492e73f6ac18ce27ffee1d109afbff13e4ce42109"
+    },
+    {
+      "target": 0,
+      "source": {
+        "tileset": "kanto",
+        "block": "39",
+        "glyph": [
+          0,
+          0
+        ]
+      },
+      "four_bank_rgb_sha256": "e490250f758c9716f1a703d492e73f6ac18ce27ffee1d109afbff13e4ce42109"
+    },
+    {
+      "target": 0,
+      "source": {
+        "tileset": "kanto",
+        "block": "39",
+        "glyph": [
+          1,
+          0
+        ]
+      },
+      "four_bank_rgb_sha256": "e490250f758c9716f1a703d492e73f6ac18ce27ffee1d109afbff13e4ce42109"
+    },
+    {
+      "target": 0,
+      "source": {
+        "tileset": "kanto",
+        "block": "39",
+        "glyph": [
+          2,
+          0
+        ]
+      },
+      "four_bank_rgb_sha256": "e490250f758c9716f1a703d492e73f6ac18ce27ffee1d109afbff13e4ce42109"
+    },
+    {
+      "target": 0,
+      "source": {
+        "tileset": "kanto",
+        "block": "39",
+        "glyph": [
+          3,
+          0
+        ]
+      },
+      "four_bank_rgb_sha256": "e490250f758c9716f1a703d492e73f6ac18ce27ffee1d109afbff13e4ce42109"
+    },
+    {
+      "target": 6,
+      "source": {
+        "tileset": "kanto",
+        "block": "39",
+        "glyph": [
+          0,
+          1
+        ]
+      },
+      "four_bank_rgb_sha256": "294d8d5e843489aee210652a4c918730822bc8d171f9137daa353e67ed985d88"
+    },
+    {
+      "target": 0,
+      "source": {
+        "tileset": "kanto",
+        "block": "39",
+        "glyph": [
+          1,
+          1
+        ]
+      },
+      "four_bank_rgb_sha256": "e490250f758c9716f1a703d492e73f6ac18ce27ffee1d109afbff13e4ce42109"
+    },
+    {
+      "target": 0,
+      "source": {
+        "tileset": "kanto",
+        "block": "39",
+        "glyph": [
+          2,
+          1
+        ]
+      },
+      "four_bank_rgb_sha256": "e490250f758c9716f1a703d492e73f6ac18ce27ffee1d109afbff13e4ce42109"
+    },
+    {
+      "target": 0,
+      "source": {
+        "tileset": "kanto",
+        "block": "39",
+        "glyph": [
+          3,
+          1
+        ]
+      },
+      "four_bank_rgb_sha256": "e490250f758c9716f1a703d492e73f6ac18ce27ffee1d109afbff13e4ce42109"
+    },
+    {
+      "target": 141,
+      "source": {
+        "tileset": "kanto",
+        "block": "3c",
+        "glyph": [
+          2,
+          0
+        ]
+      },
+      "four_bank_rgb_sha256": "31b2fe5eef4f9423462a306924d1e8e20ba9d6e662ba39b7515229d96a76a5b9"
+    },
+    {
+      "target": 132,
+      "source": {
+        "tileset": "kanto",
+        "block": "3c",
+        "glyph": [
+          0,
+          1
+        ]
+      },
+      "four_bank_rgb_sha256": "30727f3c358c3a44b606b91c8346ae0a8ebdc37556b60ff61964a4726e7a64f2"
+    },
+    {
+      "target": 140,
+      "source": {
+        "tileset": "kanto",
+        "block": "3c",
+        "glyph": [
+          0,
+          2
+        ]
+      },
+      "four_bank_rgb_sha256": "b82f89644fd0876e7cdaccf04a113d0ba9d58a177e381a323274d93e26296907"
+    },
+    {
+      "target": 142,
+      "source": {
+        "tileset": "kanto",
+        "block": "3d",
+        "glyph": [
+          0,
+          2
+        ]
+      },
+      "four_bank_rgb_sha256": "9228ddb6186deb094cebc5e2e1980fa46510b1ceeb92b42a1cd8ee5a295d6ae1"
+    },
+    {
+      "target": 142,
+      "source": {
+        "tileset": "kanto",
+        "block": "3d",
+        "glyph": [
+          1,
+          2
+        ]
+      },
+      "four_bank_rgb_sha256": "9228ddb6186deb094cebc5e2e1980fa46510b1ceeb92b42a1cd8ee5a295d6ae1"
+    },
+    {
+      "target": 144,
+      "source": {
+        "tileset": "kanto",
+        "block": "3c",
+        "glyph": [
+          0,
+          3
+        ]
+      },
+      "four_bank_rgb_sha256": "0e10f5edd7c701d06bb5c2445c3c41d3cba32d33fb1ce3d12f9b9bf8fceec307"
+    },
+    {
+      "target": 145,
+      "source": {
+        "tileset": "kanto",
+        "block": "3c",
+        "glyph": [
+          1,
+          3
+        ]
+      },
+      "four_bank_rgb_sha256": "a367027d54667ebcb16b8a87472ed50ebc9bb0095d4610cd6c67c5ffb75dbc04"
+    },
+    {
+      "target": 145,
+      "source": {
+        "tileset": "kanto",
+        "block": "3d",
+        "glyph": [
+          0,
+          3
+        ]
+      },
+      "four_bank_rgb_sha256": "a367027d54667ebcb16b8a87472ed50ebc9bb0095d4610cd6c67c5ffb75dbc04"
+    },
+    {
+      "target": 145,
+      "source": {
+        "tileset": "kanto",
+        "block": "3d",
+        "glyph": [
+          1,
+          3
+        ]
+      },
+      "four_bank_rgb_sha256": "a367027d54667ebcb16b8a87472ed50ebc9bb0095d4610cd6c67c5ffb75dbc04"
+    },
+    {
+      "target": 141,
+      "source": {
+        "tileset": "kanto",
+        "block": "3d",
+        "glyph": [
+          0,
+          0
+        ]
+      },
+      "four_bank_rgb_sha256": "31b2fe5eef4f9423462a306924d1e8e20ba9d6e662ba39b7515229d96a76a5b9"
+    },
+    {
+      "target": 141,
+      "source": {
+        "tileset": "kanto",
+        "block": "3d",
+        "glyph": [
+          1,
+          0
+        ]
+      },
+      "four_bank_rgb_sha256": "31b2fe5eef4f9423462a306924d1e8e20ba9d6e662ba39b7515229d96a76a5b9"
+    },
+    {
+      "target": 139,
+      "source": {
+        "tileset": "kanto",
+        "block": "3d",
+        "glyph": [
+          3,
+          1
+        ]
+      },
+      "four_bank_rgb_sha256": "7a88a9a9f5f8294181b3aacbbd10cbe1b2fee3d76c5cc3d40240f2fd43879639"
+    },
+    {
+      "target": 160,
+      "source": {
+        "tileset": "kanto",
+        "block": "3c",
+        "glyph": [
+          2,
+          2
+        ]
+      },
+      "four_bank_rgb_sha256": "8fbdd90df3147c75269ea5724c141a3b989b5b2bacfeff655d74597fcb9fc8e8"
+    },
+    {
+      "target": 161,
+      "source": {
+        "tileset": "kanto",
+        "block": "3c",
+        "glyph": [
+          3,
+          2
+        ]
+      },
+      "four_bank_rgb_sha256": "6f9946eb3d37182652412c52bd9d46af64ad435595eb626d2bedf93bb68b4928"
+    },
+    {
+      "target": 146,
+      "source": {
+        "tileset": "kanto",
+        "block": "3d",
+        "glyph": [
+          3,
+          2
+        ]
+      },
+      "four_bank_rgb_sha256": "224749bb5e218304fc5c75ba4ee0467d3705ae0883ac217054c22f7dcba8c284"
+    },
+    {
+      "target": 162,
+      "source": {
+        "tileset": "kanto",
+        "block": "3c",
+        "glyph": [
+          2,
+          3
+        ]
+      },
+      "four_bank_rgb_sha256": "ce7ffa95fb7ff82d207633642bd268af707e1788aea2d9fe2d17642bfe8b123e"
+    },
+    {
+      "target": 163,
+      "source": {
+        "tileset": "kanto",
+        "block": "3c",
+        "glyph": [
+          3,
+          3
+        ]
+      },
+      "four_bank_rgb_sha256": "41db22d01f173081d1ceabea4a643fe9b75bc647f4ae1aee51bc8ac2c4f2fbd2"
+    },
+    {
+      "target": 145,
+      "source": {
+        "tileset": "kanto",
+        "block": "3d",
+        "glyph": [
+          2,
+          3
+        ]
+      },
+      "four_bank_rgb_sha256": "a367027d54667ebcb16b8a87472ed50ebc9bb0095d4610cd6c67c5ffb75dbc04"
+    },
+    {
+      "target": 159,
+      "source": {
+        "tileset": "kanto",
+        "block": "3d",
+        "glyph": [
+          3,
+          3
+        ]
+      },
+      "four_bank_rgb_sha256": "0e463a26177bd3541fd0c0976cebcb60d95b8bc4ae92f41c76344aced7992f72"
+    },
+    {
+      "target": 141,
+      "source": {
+        "tileset": "kanto",
+        "block": "3d",
+        "glyph": [
+          0,
+          0
+        ]
+      },
+      "four_bank_rgb_sha256": "31b2fe5eef4f9423462a306924d1e8e20ba9d6e662ba39b7515229d96a76a5b9"
+    },
+    {
+      "target": 141,
+      "source": {
+        "tileset": "kanto",
+        "block": "3d",
+        "glyph": [
+          1,
+          0
+        ]
+      },
+      "four_bank_rgb_sha256": "31b2fe5eef4f9423462a306924d1e8e20ba9d6e662ba39b7515229d96a76a5b9"
+    },
+    {
+      "target": 139,
+      "source": {
+        "tileset": "kanto",
+        "block": "3d",
+        "glyph": [
+          3,
+          1
+        ]
+      },
+      "four_bank_rgb_sha256": "7a88a9a9f5f8294181b3aacbbd10cbe1b2fee3d76c5cc3d40240f2fd43879639"
+    },
+    {
+      "target": 142,
+      "source": {
+        "tileset": "kanto",
+        "block": "3d",
+        "glyph": [
+          0,
+          2
+        ]
+      },
+      "four_bank_rgb_sha256": "9228ddb6186deb094cebc5e2e1980fa46510b1ceeb92b42a1cd8ee5a295d6ae1"
+    },
+    {
+      "target": 142,
+      "source": {
+        "tileset": "kanto",
+        "block": "3d",
+        "glyph": [
+          1,
+          2
+        ]
+      },
+      "four_bank_rgb_sha256": "9228ddb6186deb094cebc5e2e1980fa46510b1ceeb92b42a1cd8ee5a295d6ae1"
+    },
+    {
+      "target": 160,
+      "source": {
+        "tileset": "kanto",
+        "block": "3c",
+        "glyph": [
+          2,
+          2
+        ]
+      },
+      "four_bank_rgb_sha256": "8fbdd90df3147c75269ea5724c141a3b989b5b2bacfeff655d74597fcb9fc8e8"
+    },
+    {
+      "target": 161,
+      "source": {
+        "tileset": "kanto",
+        "block": "3c",
+        "glyph": [
+          3,
+          2
+        ]
+      },
+      "four_bank_rgb_sha256": "6f9946eb3d37182652412c52bd9d46af64ad435595eb626d2bedf93bb68b4928"
+    },
+    {
+      "target": 145,
+      "source": {
+        "tileset": "kanto",
+        "block": "3d",
+        "glyph": [
+          0,
+          3
+        ]
+      },
+      "four_bank_rgb_sha256": "a367027d54667ebcb16b8a87472ed50ebc9bb0095d4610cd6c67c5ffb75dbc04"
+    },
+    {
+      "target": 145,
+      "source": {
+        "tileset": "kanto",
+        "block": "3d",
+        "glyph": [
+          1,
+          3
+        ]
+      },
+      "four_bank_rgb_sha256": "a367027d54667ebcb16b8a87472ed50ebc9bb0095d4610cd6c67c5ffb75dbc04"
+    },
+    {
+      "target": 162,
+      "source": {
+        "tileset": "kanto",
+        "block": "3c",
+        "glyph": [
+          2,
+          3
+        ]
+      },
+      "four_bank_rgb_sha256": "ce7ffa95fb7ff82d207633642bd268af707e1788aea2d9fe2d17642bfe8b123e"
+    },
+    {
+      "target": 163,
+      "source": {
+        "tileset": "kanto",
+        "block": "3c",
+        "glyph": [
+          3,
+          3
+        ]
+      },
+      "four_bank_rgb_sha256": "41db22d01f173081d1ceabea4a643fe9b75bc647f4ae1aee51bc8ac2c4f2fbd2"
+    },
+    {
+      "target": 65,
+      "source": {
+        "tileset": "johto",
+        "block": "26",
+        "glyph": [
+          0,
+          0
+        ]
+      },
+      "four_bank_rgb_sha256": "fdaaab77522c890cb779cabf94d27d1a478a2226cffb4597c36c01a1b9225ece"
+    },
+    {
+      "target": 81,
+      "source": {
+        "tileset": "johto",
+        "block": "26",
+        "glyph": [
+          0,
+          1
+        ]
+      },
+      "four_bank_rgb_sha256": "6a863aa48bc9e9ce9857e943a6ed099eb64700e3cd9916bac3d45ed4f9ce7bfd"
+    },
+    {
+      "target": 82,
+      "source": {
+        "tileset": "johto",
+        "block": "26",
+        "glyph": [
+          1,
+          1
+        ]
+      },
+      "four_bank_rgb_sha256": "8a5eeeb5ce5ded3e4c2118dc0f2513c75af63c335802d3a2af17b5ea834b7cd8"
+    },
+    {
+      "target": 82,
+      "source": {
+        "tileset": "johto",
+        "block": "26",
+        "glyph": [
+          2,
+          1
+        ]
+      },
+      "four_bank_rgb_sha256": "8a5eeeb5ce5ded3e4c2118dc0f2513c75af63c335802d3a2af17b5ea834b7cd8"
+    },
+    {
+      "target": 82,
+      "source": {
+        "tileset": "johto",
+        "block": "26",
+        "glyph": [
+          3,
+          1
+        ]
+      },
+      "four_bank_rgb_sha256": "8a5eeeb5ce5ded3e4c2118dc0f2513c75af63c335802d3a2af17b5ea834b7cd8"
+    },
+    {
+      "target": 26,
+      "source": {
+        "tileset": "johto",
+        "block": "26",
+        "glyph": [
+          0,
+          2
+        ]
+      },
+      "four_bank_rgb_sha256": "1fc07373e3b5ceddabca499cfa19695799bbbbd17a7e63dd8a67682fdac96239"
+    },
+    {
+      "target": 0,
+      "source": {
+        "tileset": "johto",
+        "block": "26",
+        "glyph": [
+          2,
+          2
+        ]
+      },
+      "four_bank_rgb_sha256": "e490250f758c9716f1a703d492e73f6ac18ce27ffee1d109afbff13e4ce42109"
+    },
+    {
+      "target": 82,
+      "source": {
+        "tileset": "johto",
+        "block": "27",
+        "glyph": [
+          0,
+          1
+        ]
+      },
+      "four_bank_rgb_sha256": "8a5eeeb5ce5ded3e4c2118dc0f2513c75af63c335802d3a2af17b5ea834b7cd8"
+    },
+    {
+      "target": 82,
+      "source": {
+        "tileset": "johto",
+        "block": "27",
+        "glyph": [
+          1,
+          1
+        ]
+      },
+      "four_bank_rgb_sha256": "8a5eeeb5ce5ded3e4c2118dc0f2513c75af63c335802d3a2af17b5ea834b7cd8"
+    },
+    {
+      "target": 82,
+      "source": {
+        "tileset": "johto",
+        "block": "27",
+        "glyph": [
+          2,
+          1
+        ]
+      },
+      "four_bank_rgb_sha256": "8a5eeeb5ce5ded3e4c2118dc0f2513c75af63c335802d3a2af17b5ea834b7cd8"
+    },
+    {
+      "target": 82,
+      "source": {
+        "tileset": "johto",
+        "block": "27",
+        "glyph": [
+          3,
+          1
+        ]
+      },
+      "four_bank_rgb_sha256": "8a5eeeb5ce5ded3e4c2118dc0f2513c75af63c335802d3a2af17b5ea834b7cd8"
+    },
+    {
+      "target": 0,
+      "source": {
+        "tileset": "johto",
+        "block": "27",
+        "glyph": [
+          3,
+          2
+        ]
+      },
+      "four_bank_rgb_sha256": "e490250f758c9716f1a703d492e73f6ac18ce27ffee1d109afbff13e4ce42109"
+    },
+    {
+      "target": 16,
+      "source": {
+        "tileset": "johto_modern",
+        "block": "12",
+        "glyph": [
+          0,
+          0
+        ]
+      },
+      "four_bank_rgb_sha256": "b9e2141c06e1df0bf7f6d5edb3440f5f992f24fab4276a117e225d2c37bda588"
+    },
+    {
+      "target": 17,
+      "source": {
+        "tileset": "johto_modern",
+        "block": "12",
+        "glyph": [
+          1,
+          0
+        ]
+      },
+      "four_bank_rgb_sha256": "9e02edc6bfb436150b26bf49cd9d03e5f7e6c3a8f1028f4149dc85b78c5d7f41"
+    },
+    {
+      "target": 17,
+      "source": {
+        "tileset": "johto_modern",
+        "block": "12",
+        "glyph": [
+          2,
+          0
+        ]
+      },
+      "four_bank_rgb_sha256": "9e02edc6bfb436150b26bf49cd9d03e5f7e6c3a8f1028f4149dc85b78c5d7f41"
+    },
+    {
+      "target": 17,
+      "source": {
+        "tileset": "johto_modern",
+        "block": "12",
+        "glyph": [
+          3,
+          0
+        ]
+      },
+      "four_bank_rgb_sha256": "9e02edc6bfb436150b26bf49cd9d03e5f7e6c3a8f1028f4149dc85b78c5d7f41"
+    },
+    {
+      "target": 10,
+      "source": {
+        "tileset": "johto_modern",
+        "block": "12",
+        "glyph": [
+          0,
+          1
+        ]
+      },
+      "four_bank_rgb_sha256": "64972fc9a7e06b539cdacd849806a3b914455ba050f56624ea79a71b0a36162d"
+    },
+    {
+      "target": 11,
+      "source": {
+        "tileset": "johto_modern",
+        "block": "12",
+        "glyph": [
+          1,
+          1
+        ]
+      },
+      "four_bank_rgb_sha256": "89dd89bbeaf51d2aa1cb4623b9f1bbf941c44410248af1bd1d587879eea46f27"
+    },
+    {
+      "target": 11,
+      "source": {
+        "tileset": "johto_modern",
+        "block": "12",
+        "glyph": [
+          2,
+          1
+        ]
+      },
+      "four_bank_rgb_sha256": "89dd89bbeaf51d2aa1cb4623b9f1bbf941c44410248af1bd1d587879eea46f27"
+    },
+    {
+      "target": 11,
+      "source": {
+        "tileset": "johto_modern",
+        "block": "12",
+        "glyph": [
+          3,
+          1
+        ]
+      },
+      "four_bank_rgb_sha256": "89dd89bbeaf51d2aa1cb4623b9f1bbf941c44410248af1bd1d587879eea46f27"
+    },
+    {
+      "target": 218,
+      "source": {
+        "tileset": "johto_modern",
+        "block": "20",
+        "glyph": [
+          0,
+          0
+        ]
+      },
+      "four_bank_rgb_sha256": "38752c3ce26551c2f758cd919d29ec3c51e2f024197b3b0ec810765ac6c91c1d"
+    },
+    {
+      "target": 220,
+      "source": {
+        "tileset": "johto_modern",
+        "block": "20",
+        "glyph": [
+          1,
+          0
+        ]
+      },
+      "four_bank_rgb_sha256": "c7d81cf84d0dd455d13f9fe9ce71b14e9013d10570b292bd13eea758f0cfd93d"
+    },
+    {
+      "target": 220,
+      "source": {
+        "tileset": "johto_modern",
+        "block": "20",
+        "glyph": [
+          2,
+          0
+        ]
+      },
+      "four_bank_rgb_sha256": "c7d81cf84d0dd455d13f9fe9ce71b14e9013d10570b292bd13eea758f0cfd93d"
+    },
+    {
+      "target": 220,
+      "source": {
+        "tileset": "johto_modern",
+        "block": "20",
+        "glyph": [
+          3,
+          0
+        ]
+      },
+      "four_bank_rgb_sha256": "c7d81cf84d0dd455d13f9fe9ce71b14e9013d10570b292bd13eea758f0cfd93d"
+    },
+    {
+      "target": 218,
+      "source": {
+        "tileset": "johto_modern",
+        "block": "20",
+        "glyph": [
+          0,
+          1
+        ]
+      },
+      "four_bank_rgb_sha256": "38752c3ce26551c2f758cd919d29ec3c51e2f024197b3b0ec810765ac6c91c1d"
+    },
+    {
+      "target": 216,
+      "source": {
+        "tileset": "johto_modern",
+        "block": "20",
+        "glyph": [
+          1,
+          1
+        ]
+      },
+      "four_bank_rgb_sha256": "8701cb2a0457dc52ab0ce82e57b94bac23823ddffa5ccd5aa774b4c75b88968a"
+    },
+    {
+      "target": 216,
+      "source": {
+        "tileset": "johto_modern",
+        "block": "20",
+        "glyph": [
+          2,
+          1
+        ]
+      },
+      "four_bank_rgb_sha256": "8701cb2a0457dc52ab0ce82e57b94bac23823ddffa5ccd5aa774b4c75b88968a"
+    },
+    {
+      "target": 216,
+      "source": {
+        "tileset": "johto_modern",
+        "block": "20",
+        "glyph": [
+          3,
+          1
+        ]
+      },
+      "four_bank_rgb_sha256": "8701cb2a0457dc52ab0ce82e57b94bac23823ddffa5ccd5aa774b4c75b88968a"
+    },
+    {
+      "target": 17,
+      "source": {
+        "tileset": "johto_modern",
+        "block": "13",
+        "glyph": [
+          0,
+          0
+        ]
+      },
+      "four_bank_rgb_sha256": "9e02edc6bfb436150b26bf49cd9d03e5f7e6c3a8f1028f4149dc85b78c5d7f41"
+    },
+    {
+      "target": 17,
+      "source": {
+        "tileset": "johto_modern",
+        "block": "13",
+        "glyph": [
+          1,
+          0
+        ]
+      },
+      "four_bank_rgb_sha256": "9e02edc6bfb436150b26bf49cd9d03e5f7e6c3a8f1028f4149dc85b78c5d7f41"
+    },
+    {
+      "target": 17,
+      "source": {
+        "tileset": "johto_modern",
+        "block": "13",
+        "glyph": [
+          2,
+          0
+        ]
+      },
+      "four_bank_rgb_sha256": "9e02edc6bfb436150b26bf49cd9d03e5f7e6c3a8f1028f4149dc85b78c5d7f41"
+    },
+    {
+      "target": 18,
+      "source": {
+        "tileset": "johto_modern",
+        "block": "13",
+        "glyph": [
+          3,
+          0
+        ]
+      },
+      "four_bank_rgb_sha256": "83733588022bf013a86fc926a067f12935097e9284625ae4f6be11560777d3e7"
+    },
+    {
+      "target": 11,
+      "source": {
+        "tileset": "johto_modern",
+        "block": "13",
+        "glyph": [
+          0,
+          1
+        ]
+      },
+      "four_bank_rgb_sha256": "89dd89bbeaf51d2aa1cb4623b9f1bbf941c44410248af1bd1d587879eea46f27"
+    },
+    {
+      "target": 11,
+      "source": {
+        "tileset": "johto_modern",
+        "block": "13",
+        "glyph": [
+          1,
+          1
+        ]
+      },
+      "four_bank_rgb_sha256": "89dd89bbeaf51d2aa1cb4623b9f1bbf941c44410248af1bd1d587879eea46f27"
+    },
+    {
+      "target": 11,
+      "source": {
+        "tileset": "johto_modern",
+        "block": "13",
+        "glyph": [
+          2,
+          1
+        ]
+      },
+      "four_bank_rgb_sha256": "89dd89bbeaf51d2aa1cb4623b9f1bbf941c44410248af1bd1d587879eea46f27"
+    },
+    {
+      "target": 12,
+      "source": {
+        "tileset": "johto_modern",
+        "block": "13",
+        "glyph": [
+          3,
+          1
+        ]
+      },
+      "four_bank_rgb_sha256": "ae6365e7a369992f4e9a080784f105079620a2a11f73ad34661175cff247dd9b"
+    },
+    {
+      "target": 218,
+      "source": {
+        "tileset": "johto_modern",
+        "block": "20",
+        "glyph": [
+          0,
+          0
+        ]
+      },
+      "four_bank_rgb_sha256": "38752c3ce26551c2f758cd919d29ec3c51e2f024197b3b0ec810765ac6c91c1d"
+    },
+    {
+      "target": 220,
+      "source": {
+        "tileset": "johto_modern",
+        "block": "20",
+        "glyph": [
+          1,
+          0
+        ]
+      },
+      "four_bank_rgb_sha256": "c7d81cf84d0dd455d13f9fe9ce71b14e9013d10570b292bd13eea758f0cfd93d"
+    },
+    {
+      "target": 220,
+      "source": {
+        "tileset": "johto_modern",
+        "block": "20",
+        "glyph": [
+          2,
+          0
+        ]
+      },
+      "four_bank_rgb_sha256": "c7d81cf84d0dd455d13f9fe9ce71b14e9013d10570b292bd13eea758f0cfd93d"
+    },
+    {
+      "target": 220,
+      "source": {
+        "tileset": "johto_modern",
+        "block": "20",
+        "glyph": [
+          3,
+          0
+        ]
+      },
+      "four_bank_rgb_sha256": "c7d81cf84d0dd455d13f9fe9ce71b14e9013d10570b292bd13eea758f0cfd93d"
+    },
+    {
+      "target": 218,
+      "source": {
+        "tileset": "johto_modern",
+        "block": "20",
+        "glyph": [
+          0,
+          1
+        ]
+      },
+      "four_bank_rgb_sha256": "38752c3ce26551c2f758cd919d29ec3c51e2f024197b3b0ec810765ac6c91c1d"
+    },
+    {
+      "target": 216,
+      "source": {
+        "tileset": "johto_modern",
+        "block": "20",
+        "glyph": [
+          1,
+          1
+        ]
+      },
+      "four_bank_rgb_sha256": "8701cb2a0457dc52ab0ce82e57b94bac23823ddffa5ccd5aa774b4c75b88968a"
+    },
+    {
+      "target": 216,
+      "source": {
+        "tileset": "johto_modern",
+        "block": "20",
+        "glyph": [
+          2,
+          1
+        ]
+      },
+      "four_bank_rgb_sha256": "8701cb2a0457dc52ab0ce82e57b94bac23823ddffa5ccd5aa774b4c75b88968a"
+    },
+    {
+      "target": 216,
+      "source": {
+        "tileset": "johto_modern",
+        "block": "20",
+        "glyph": [
+          3,
+          1
+        ]
+      },
+      "four_bank_rgb_sha256": "8701cb2a0457dc52ab0ce82e57b94bac23823ddffa5ccd5aa774b4c75b88968a"
+    },
+    {
+      "target": 26,
+      "source": {
+        "tileset": "johto_modern",
+        "block": "10",
+        "glyph": [
+          0,
+          0
+        ]
+      },
+      "four_bank_rgb_sha256": "1fc07373e3b5ceddabca499cfa19695799bbbbd17a7e63dd8a67682fdac96239"
+    },
+    {
+      "target": 7,
+      "source": {
+        "tileset": "johto_modern",
+        "block": "10",
+        "glyph": [
+          1,
+          0
+        ]
+      },
+      "four_bank_rgb_sha256": "350d1c1551162dff4654f306066ad419e6b96fad20607a7f348796527ec6a979"
+    },
+    {
+      "target": 7,
+      "source": {
+        "tileset": "johto_modern",
+        "block": "10",
+        "glyph": [
+          2,
+          0
+        ]
+      },
+      "four_bank_rgb_sha256": "350d1c1551162dff4654f306066ad419e6b96fad20607a7f348796527ec6a979"
+    },
+    {
+      "target": 7,
+      "source": {
+        "tileset": "johto_modern",
+        "block": "10",
+        "glyph": [
+          3,
+          0
+        ]
+      },
+      "four_bank_rgb_sha256": "350d1c1551162dff4654f306066ad419e6b96fad20607a7f348796527ec6a979"
+    },
+    {
+      "target": 26,
+      "source": {
+        "tileset": "johto_modern",
+        "block": "10",
+        "glyph": [
+          0,
+          1
+        ]
+      },
+      "four_bank_rgb_sha256": "1fc07373e3b5ceddabca499cfa19695799bbbbd17a7e63dd8a67682fdac96239"
+    },
+    {
+      "target": 38,
+      "source": {
+        "tileset": "johto_modern",
+        "block": "10",
+        "glyph": [
+          1,
+          1
+        ]
+      },
+      "four_bank_rgb_sha256": "8abb1b0656da31ddef2931c4d02eae0b01e2aac9ca2ebf836511139bed94340a"
+    },
+    {
+      "target": 38,
+      "source": {
+        "tileset": "johto_modern",
+        "block": "10",
+        "glyph": [
+          2,
+          1
+        ]
+      },
+      "four_bank_rgb_sha256": "8abb1b0656da31ddef2931c4d02eae0b01e2aac9ca2ebf836511139bed94340a"
+    },
+    {
+      "target": 7,
+      "source": {
+        "tileset": "johto_modern",
+        "block": "10",
+        "glyph": [
+          3,
+          1
+        ]
+      },
+      "four_bank_rgb_sha256": "350d1c1551162dff4654f306066ad419e6b96fad20607a7f348796527ec6a979"
+    },
+    {
+      "target": 26,
+      "source": {
+        "tileset": "johto_modern",
+        "block": "10",
+        "glyph": [
+          0,
+          2
+        ]
+      },
+      "four_bank_rgb_sha256": "1fc07373e3b5ceddabca499cfa19695799bbbbd17a7e63dd8a67682fdac96239"
+    },
+    {
+      "target": 7,
+      "source": {
+        "tileset": "johto_modern",
+        "block": "10",
+        "glyph": [
+          1,
+          2
+        ]
+      },
+      "four_bank_rgb_sha256": "350d1c1551162dff4654f306066ad419e6b96fad20607a7f348796527ec6a979"
+    },
+    {
+      "target": 7,
+      "source": {
+        "tileset": "johto_modern",
+        "block": "10",
+        "glyph": [
+          2,
+          2
+        ]
+      },
+      "four_bank_rgb_sha256": "350d1c1551162dff4654f306066ad419e6b96fad20607a7f348796527ec6a979"
+    },
+    {
+      "target": 7,
+      "source": {
+        "tileset": "johto_modern",
+        "block": "10",
+        "glyph": [
+          3,
+          2
+        ]
+      },
+      "four_bank_rgb_sha256": "350d1c1551162dff4654f306066ad419e6b96fad20607a7f348796527ec6a979"
+    },
+    {
+      "target": 1,
+      "source": {
+        "tileset": "johto_modern",
+        "block": "10",
+        "glyph": [
+          0,
+          3
+        ]
+      },
+      "four_bank_rgb_sha256": "6b92bb058b9cfe85519fd4e21900acecb31dd2a0718f94c65eae7f02f48646ba"
+    },
+    {
+      "target": 2,
+      "source": {
+        "tileset": "johto_modern",
+        "block": "10",
+        "glyph": [
+          1,
+          3
+        ]
+      },
+      "four_bank_rgb_sha256": "4efc14fb7650f9c4273d458436b88c4e9f01637ba0bb92c4c0859e693d14d726"
+    },
+    {
+      "target": 2,
+      "source": {
+        "tileset": "johto_modern",
+        "block": "10",
+        "glyph": [
+          2,
+          3
+        ]
+      },
+      "four_bank_rgb_sha256": "4efc14fb7650f9c4273d458436b88c4e9f01637ba0bb92c4c0859e693d14d726"
+    },
+    {
+      "target": 2,
+      "source": {
+        "tileset": "johto_modern",
+        "block": "10",
+        "glyph": [
+          3,
+          3
+        ]
+      },
+      "four_bank_rgb_sha256": "4efc14fb7650f9c4273d458436b88c4e9f01637ba0bb92c4c0859e693d14d726"
+    },
+    {
+      "target": 7,
+      "source": {
+        "tileset": "johto_modern",
+        "block": "11",
+        "glyph": [
+          0,
+          0
+        ]
+      },
+      "four_bank_rgb_sha256": "350d1c1551162dff4654f306066ad419e6b96fad20607a7f348796527ec6a979"
+    },
+    {
+      "target": 7,
+      "source": {
+        "tileset": "johto_modern",
+        "block": "11",
+        "glyph": [
+          1,
+          0
+        ]
+      },
+      "four_bank_rgb_sha256": "350d1c1551162dff4654f306066ad419e6b96fad20607a7f348796527ec6a979"
+    },
+    {
+      "target": 7,
+      "source": {
+        "tileset": "johto_modern",
+        "block": "11",
+        "glyph": [
+          2,
+          0
+        ]
+      },
+      "four_bank_rgb_sha256": "350d1c1551162dff4654f306066ad419e6b96fad20607a7f348796527ec6a979"
+    },
+    {
+      "target": 28,
+      "source": {
+        "tileset": "johto_modern",
+        "block": "11",
+        "glyph": [
+          3,
+          0
+        ]
+      },
+      "four_bank_rgb_sha256": "c2ebc2830880f2d41de811675f8af0da56e49fa29a9dae4db393f749fb4f0c4b"
+    },
+    {
+      "target": 7,
+      "source": {
+        "tileset": "johto_modern",
+        "block": "11",
+        "glyph": [
+          0,
+          1
+        ]
+      },
+      "four_bank_rgb_sha256": "350d1c1551162dff4654f306066ad419e6b96fad20607a7f348796527ec6a979"
+    },
+    {
+      "target": 38,
+      "source": {
+        "tileset": "johto_modern",
+        "block": "11",
+        "glyph": [
+          1,
+          1
+        ]
+      },
+      "four_bank_rgb_sha256": "8abb1b0656da31ddef2931c4d02eae0b01e2aac9ca2ebf836511139bed94340a"
+    },
+    {
+      "target": 38,
+      "source": {
+        "tileset": "johto_modern",
+        "block": "11",
+        "glyph": [
+          2,
+          1
+        ]
+      },
+      "four_bank_rgb_sha256": "8abb1b0656da31ddef2931c4d02eae0b01e2aac9ca2ebf836511139bed94340a"
+    },
+    {
+      "target": 28,
+      "source": {
+        "tileset": "johto_modern",
+        "block": "11",
+        "glyph": [
+          3,
+          1
+        ]
+      },
+      "four_bank_rgb_sha256": "c2ebc2830880f2d41de811675f8af0da56e49fa29a9dae4db393f749fb4f0c4b"
+    },
+    {
+      "target": 7,
+      "source": {
+        "tileset": "johto_modern",
+        "block": "11",
+        "glyph": [
+          0,
+          2
+        ]
+      },
+      "four_bank_rgb_sha256": "350d1c1551162dff4654f306066ad419e6b96fad20607a7f348796527ec6a979"
+    },
+    {
+      "target": 7,
+      "source": {
+        "tileset": "johto_modern",
+        "block": "11",
+        "glyph": [
+          1,
+          2
+        ]
+      },
+      "four_bank_rgb_sha256": "350d1c1551162dff4654f306066ad419e6b96fad20607a7f348796527ec6a979"
+    },
+    {
+      "target": 55,
+      "source": {
+        "tileset": "johto_modern",
+        "block": "1a",
+        "glyph": [
+          2,
+          2
+        ]
+      },
+      "four_bank_rgb_sha256": "0328fc5df2b0124e37388a7121d3de18ab52850626fa41caff6e09359c2fbcbf"
+    },
+    {
+      "target": 56,
+      "source": {
+        "tileset": "johto_modern",
+        "block": "1a",
+        "glyph": [
+          3,
+          2
+        ]
+      },
+      "four_bank_rgb_sha256": "57fda414264da00edb339d61022c4ad82800211a3e969c478250d4b43c2dea80"
+    },
+    {
+      "target": 2,
+      "source": {
+        "tileset": "johto_modern",
+        "block": "11",
+        "glyph": [
+          0,
+          3
+        ]
+      },
+      "four_bank_rgb_sha256": "4efc14fb7650f9c4273d458436b88c4e9f01637ba0bb92c4c0859e693d14d726"
+    },
+    {
+      "target": 2,
+      "source": {
+        "tileset": "johto_modern",
+        "block": "11",
+        "glyph": [
+          1,
+          3
+        ]
+      },
+      "four_bank_rgb_sha256": "4efc14fb7650f9c4273d458436b88c4e9f01637ba0bb92c4c0859e693d14d726"
+    },
+    {
+      "target": 57,
+      "source": {
+        "tileset": "johto_modern",
+        "block": "1a",
+        "glyph": [
+          2,
+          3
+        ]
+      },
+      "four_bank_rgb_sha256": "4ea36b0fa2cedd4edbe909fcea2d1b9ec8459ae9a0744875f0d5594961df6fc0"
+    },
+    {
+      "target": 58,
+      "source": {
+        "tileset": "johto_modern",
+        "block": "1a",
+        "glyph": [
+          3,
+          3
+        ]
+      },
+      "four_bank_rgb_sha256": "327476cfd54997f31a91811e7ad7bbbb7c25006b8fc9f9da9497c60717954523"
+    }
+  ],
+  "four_native_banks": [
+    "morn",
+    "day",
+    "nite",
+    "dark"
+  ]
+}

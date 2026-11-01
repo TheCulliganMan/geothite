@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "current_content_hash": "e62dea32b3bf8383e94593df729292ab363ddac47f3d356aff776cfa7e33d602",
+  "accepted_base_content_hash": "ace6ef74e659105ed429a2e550551005a6c3f887d72103a6bac15ef4cb39a941",
+  "accepted_child_content_hash": "b04a7ba2bbfe1c930eef15d41662e0a7c7bbd1bc64923da4fb1b10d47305f37f",
+  "manifest": "minnesota-interior-terrain-sync-v6",
+  "maps": [
+    "MnR05C00R00",
+    "MnR05C00R01"
+  ]
+}

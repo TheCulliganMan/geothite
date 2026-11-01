@@ -1,0 +1,198 @@
+{
+  "schema_version": 1,
+  "family": {
+    "id": "MN_F145",
+    "members": [
+      {
+        "id": "MN_319",
+        "name": "Verdigrim",
+        "types": [
+          "STEEL",
+          "POISON"
+        ],
+        "stage": 1,
+        "evolves_to": null
+      }
+    ],
+    "theme": "Minnesota timber wolves and glacial float copper become an imposing native-copper wolf. Ojibwe wolf-as-companion teachings inform its guardian character. Team Lode exposes the buried mass while stripping overburden; green poisonous discharge and a crushing tail choke Kettlurk's returning current.",
+    "region": "iron_range",
+    "rarity": "legendary",
+    "location": "Buried glacial copper mass exposed during Team Lode overburden removal at a northeastern Minnesota worksite; exact playable placement pending.",
+    "story_contract": "verdigrim-story.json",
+    "sprite_design": "Highly stylized wolf formed from one irregular glacial float-copper mass: rounded merged shoulder and chest lobes, short strong wolf legs, huge nugget paws, a broad heavy tail, a powerful canine muzzle and two tall ears. Deep green weathering crust covers broad surfaces; smooth exposed reddish copper follows the high points. Few large pits and white glints. Native 2D only.",
+    "sources": [
+      {
+        "title": "1854 Treaty Authority: Wolf Research",
+        "url": "https://www.1854treatyauthority.org/management/biological-resources/wildlife/wolf-research",
+        "supports": "Ma\u2019iingan and wolf research near Duluth and in northeastern Minnesota."
+      },
+      {
+        "title": "1854 Treaty Authority: Climate Adaptation Plan (2016), section 4.11.3",
+        "url": "https://www.1854treatyauthority.org/images/ClimateAdaptationPlan_Final-July_2016-optimized%281%29.pdf",
+        "supports": "Minnesota Ojibwe context for the wolf as a companion whose fate is linked with people. The copper coat, poison and Kettlurk conflict are original game fiction."
+      },
+      {
+        "title": "University of Minnesota mineral guide: Native Copper, page35",
+        "url": "https://conservancy.umn.edu/bitstreams/7452b0d6-8260-4e78-9b7a-a22cf0b0070a/download",
+        "supports": "Rare native copper in Minnesota glacial drift; exposed metal weathers from rose/copper-red to brown or green. The giant living wolf is fiction."
+      }
+    ],
+    "inspiration_boundary": "Original fictional wolf species. The Ojibwe wolf tradition informs its companion/guardian character; copper anatomy, poison powers, Team Lode excavation and the Kettlurk rivalry are game inventions, not an attributed traditional story. Use its original species name without fabricated Indigenous translations or copied ceremonial imagery."
+  },
+  "species_profiles": [
+    {
+      "id": "MN_319",
+      "classification": "Copper Howl",
+      "height_inches": 112,
+      "weight_tenths_lb": 7940,
+      "dex_pages": [
+        "Its copper coat @ leaks poison that @ turns water green.",
+        "It seals currents @ with its wide tail @ before it sleeps."
+      ],
+      "base_stats": {
+        "hp": 110,
+        "attack": 120,
+        "defense": 130,
+        "speed": 60,
+        "special_attack": 80,
+        "special_defense": 100
+      },
+      "catch_rate": 3,
+      "base_exp": 255,
+      "gender_ratio": 255,
+      "hatch_cycles": 120,
+      "growth_rate": "GROWTH_SLOW",
+      "egg_groups": [
+        "EGG_NONE",
+        "EGG_NONE"
+      ],
+      "evolution": null,
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_MONSTER",
+      "footprint_species": "RAIKOU",
+      "cry": {
+        "cry": "CRY_RAIKOU",
+        "pitch": -12,
+        "length": 176
+      },
+      "shiny_rgb5": [
+        [
+          24,
+          27,
+          20
+        ],
+        [
+          12,
+          7,
+          19
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "TACKLE"
+        ],
+        [
+          1,
+          "HARDEN"
+        ],
+        [
+          1,
+          "POISON_GAS"
+        ],
+        [
+          8,
+          "BITE"
+        ],
+        [
+          15,
+          "METAL_CLAW"
+        ],
+        [
+          22,
+          "GLARE"
+        ],
+        [
+          29,
+          "SLUDGE"
+        ],
+        [
+          36,
+          "PROTECT"
+        ],
+        [
+          40,
+          "CRUNCH"
+        ],
+        [
+          44,
+          "POISON_JAB"
+        ],
+        [
+          50,
+          "IRON_TAIL"
+        ],
+        [
+          57,
+          "SLUDGE_BOMB"
+        ],
+        [
+          64,
+          "HAZE"
+        ]
+      ],
+      "tmhm_moves": [
+        "TOXIC",
+        "PROTECT",
+        "REST",
+        "SLEEP_TALK",
+        "SNORE",
+        "RETURN",
+        "FRUSTRATION",
+        "DOUBLE_TEAM",
+        "ENDURE",
+        "HIDDEN_POWER",
+        "IRON_TAIL",
+        "SLUDGE_BOMB",
+        "EARTHQUAKE",
+        "ROCK_SMASH",
+        "STRENGTH"
+      ],
+      "egg_moves": []
+    }
+  ],
+  "superseded_art": [
+    {
+      "source": "sprites/mn-f145/front-back.imagegen-v1.png",
+      "prompt": "sprites/mn-f145/prompt-v1.txt",
+      "reason": "User rejected dragon-like anatomy."
+    },
+    {
+      "source": "sprites/mn-f145/front-back.imagegen-v2.png",
+      "prompt": "sprites/mn-f145/prompt-v2.txt",
+      "reason": "User requested a wolf to fill the active roster gap."
+    },
+    {
+      "source": "sprites/mn-f145/front-back.imagegen-v3.png",
+      "prompt": "sprites/mn-f145/prompt-v3.txt",
+      "reason": "User requested more stylization around natural native float copper rather than pointed fur-shaped metal."
+    }
+  ],
+  "overworld_art": {
+    "selected_manifest": "overworld/20261027-v1/sources/mn_f145/verdigrim.manifest-v3-eye-registration.json",
+    "actor_sprite": "SPRITE_VERDIGRIM",
+    "status": "accepted-native-normal-shiny-and-production-context"
+  },
+  "unique_cry": {
+    "source": "cry-designs.json",
+    "family_id": "MN_F145",
+    "species_id": "MN_319",
+    "runtime_id": "CRY_MN_319",
+    "pitch": 0,
+    "length": 256,
+    "status": "runtime-verified-listening-acceptance-open"
+  }
+}

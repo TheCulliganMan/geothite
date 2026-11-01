@@ -1,0 +1,436 @@
+{
+  "schema_version": 2,
+  "id": "MnMississippiWinonaMouth",
+  "tileset": "johto",
+  "compiled_tileset": "johto",
+  "dimensions_metatiles": [
+    16,
+    4
+  ],
+  "shore_fitting": "johto_8_neighbors",
+  "source_pixels_modified": false,
+  "layers": [
+    {
+      "name": "Winona main river mouth",
+      "kind": "rect",
+      "material": "water",
+      "bounds": [
+        13,
+        0,
+        15,
+        4
+      ]
+    },
+    {
+      "name": "Shallow bank slough joining the main mouth",
+      "kind": "polygon",
+      "material": "water",
+      "points": [
+        [
+          4,
+          1
+        ],
+        [
+          6,
+          1
+        ],
+        [
+          7,
+          2
+        ],
+        [
+          11,
+          2
+        ],
+        [
+          13,
+          1
+        ],
+        [
+          14,
+          1
+        ],
+        [
+          14,
+          3
+        ],
+        [
+          11,
+          3
+        ],
+        [
+          9,
+          2
+        ],
+        [
+          5,
+          2
+        ]
+      ]
+    },
+    {
+      "name": "Pine-backed angler bank",
+      "kind": "rect",
+      "material": "lawn",
+      "bounds": [
+        6,
+        0,
+        11,
+        2
+      ]
+    },
+    {
+      "name": "Old river rod landing",
+      "kind": "path",
+      "material": "floor",
+      "points": [
+        [
+          7,
+          0
+        ],
+        [
+          8,
+          1
+        ],
+        [
+          9,
+          1
+        ]
+      ],
+      "width_metatiles": 1
+    },
+    {
+      "name": "Landing fence end",
+      "kind": "point",
+      "position": [
+        9,
+        1
+      ],
+      "block": "49"
+    },
+    {
+      "name": "North pine closure",
+      "kind": "point",
+      "position": [
+        0,
+        0
+      ],
+      "block": "05"
+    },
+    {
+      "name": "South pine closure",
+      "kind": "point",
+      "position": [
+        0,
+        3
+      ],
+      "block": "05"
+    },
+    {
+      "name": "North pine closure",
+      "kind": "point",
+      "position": [
+        1,
+        0
+      ],
+      "block": "05"
+    },
+    {
+      "name": "South pine closure",
+      "kind": "point",
+      "position": [
+        1,
+        3
+      ],
+      "block": "05"
+    },
+    {
+      "name": "North pine closure",
+      "kind": "point",
+      "position": [
+        2,
+        0
+      ],
+      "block": "05"
+    },
+    {
+      "name": "South pine closure",
+      "kind": "point",
+      "position": [
+        2,
+        3
+      ],
+      "block": "05"
+    },
+    {
+      "name": "North pine closure",
+      "kind": "point",
+      "position": [
+        3,
+        0
+      ],
+      "block": "05"
+    },
+    {
+      "name": "South pine closure",
+      "kind": "point",
+      "position": [
+        3,
+        3
+      ],
+      "block": "05"
+    },
+    {
+      "name": "North pine closure",
+      "kind": "point",
+      "position": [
+        4,
+        0
+      ],
+      "block": "05"
+    },
+    {
+      "name": "South pine closure",
+      "kind": "point",
+      "position": [
+        4,
+        3
+      ],
+      "block": "05"
+    },
+    {
+      "name": "North pine closure",
+      "kind": "point",
+      "position": [
+        5,
+        0
+      ],
+      "block": "05"
+    },
+    {
+      "name": "South pine closure",
+      "kind": "point",
+      "position": [
+        5,
+        3
+      ],
+      "block": "05"
+    },
+    {
+      "name": "North pine closure",
+      "kind": "point",
+      "position": [
+        6,
+        0
+      ],
+      "block": "05"
+    },
+    {
+      "name": "South pine closure",
+      "kind": "point",
+      "position": [
+        6,
+        3
+      ],
+      "block": "05"
+    },
+    {
+      "name": "North pine closure",
+      "kind": "point",
+      "position": [
+        7,
+        0
+      ],
+      "block": "05"
+    },
+    {
+      "name": "South pine closure",
+      "kind": "point",
+      "position": [
+        7,
+        3
+      ],
+      "block": "05"
+    },
+    {
+      "name": "North pine closure",
+      "kind": "point",
+      "position": [
+        8,
+        0
+      ],
+      "block": "05"
+    },
+    {
+      "name": "South pine closure",
+      "kind": "point",
+      "position": [
+        8,
+        3
+      ],
+      "block": "05"
+    },
+    {
+      "name": "North pine closure",
+      "kind": "point",
+      "position": [
+        9,
+        0
+      ],
+      "block": "05"
+    },
+    {
+      "name": "South pine closure",
+      "kind": "point",
+      "position": [
+        9,
+        3
+      ],
+      "block": "05"
+    },
+    {
+      "name": "North pine closure",
+      "kind": "point",
+      "position": [
+        10,
+        0
+      ],
+      "block": "05"
+    },
+    {
+      "name": "South pine closure",
+      "kind": "point",
+      "position": [
+        10,
+        3
+      ],
+      "block": "05"
+    },
+    {
+      "name": "North pine closure",
+      "kind": "point",
+      "position": [
+        11,
+        0
+      ],
+      "block": "05"
+    },
+    {
+      "name": "South pine closure",
+      "kind": "point",
+      "position": [
+        11,
+        3
+      ],
+      "block": "05"
+    },
+    {
+      "name": "North pine closure",
+      "kind": "point",
+      "position": [
+        12,
+        0
+      ],
+      "block": "05"
+    },
+    {
+      "name": "South pine closure",
+      "kind": "point",
+      "position": [
+        12,
+        3
+      ],
+      "block": "05"
+    },
+    {
+      "name": "North pine closure",
+      "kind": "point",
+      "position": [
+        15,
+        0
+      ],
+      "block": "05"
+    },
+    {
+      "name": "South pine closure",
+      "kind": "point",
+      "position": [
+        15,
+        3
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West pine closure",
+      "kind": "point",
+      "position": [
+        0,
+        0
+      ],
+      "block": "05"
+    },
+    {
+      "name": "East pine closure",
+      "kind": "point",
+      "position": [
+        15,
+        0
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West pine closure",
+      "kind": "point",
+      "position": [
+        0,
+        1
+      ],
+      "block": "05"
+    },
+    {
+      "name": "East pine closure",
+      "kind": "point",
+      "position": [
+        15,
+        1
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West pine closure",
+      "kind": "point",
+      "position": [
+        0,
+        2
+      ],
+      "block": "05"
+    },
+    {
+      "name": "East pine closure",
+      "kind": "point",
+      "position": [
+        15,
+        2
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West pine closure",
+      "kind": "point",
+      "position": [
+        0,
+        3
+      ],
+      "block": "05"
+    },
+    {
+      "name": "East pine closure",
+      "kind": "point",
+      "position": [
+        15,
+        3
+      ],
+      "block": "05"
+    }
+  ]
+}

@@ -1,0 +1,338 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F014",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_040": {
+      "species_id": "MN_040",
+      "name": "Loobit",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          18,
+          24,
+          27
+        ],
+        [
+          6,
+          10,
+          14
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        28434,
+        14662,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          148,
+          198,
+          222
+        ],
+        [
+          49,
+          82,
+          115
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#94C6DE",
+        "#315273",
+        "#000000"
+      ]
+    },
+    "MN_041": {
+      "species_id": "MN_041",
+      "name": "Yodeloon",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          13,
+          22,
+          26
+        ],
+        [
+          7,
+          8,
+          17
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        27341,
+        17671,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          107,
+          181,
+          214
+        ],
+        [
+          57,
+          66,
+          140
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#6BB5D6",
+        "#39428C",
+        "#000000"
+      ]
+    },
+    "MN_042": {
+      "species_id": "MN_042",
+      "name": "Reverloon",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          15,
+          23,
+          29
+        ],
+        [
+          8,
+          6,
+          16
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        30447,
+        16584,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          123,
+          189,
+          239
+        ],
+        [
+          66,
+          49,
+          132
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#7BBDEF",
+        "#423184",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f014/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "board": "target/minnesota-pokemon/gen2-reference/starters.png"
+  },
+  "sprites": [
+    {
+      "id": "mn-040-loobit-v1",
+      "species_id": "MN_040",
+      "view": "front",
+      "source": "sprites/mn-f014/mn-040-042.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        469,
+        512
+      ],
+      "fit": [
+        36,
+        36
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        28434,
+        14662,
+        0
+      ]
+    },
+    {
+      "id": "mn-040-loobit-v1",
+      "species_id": "MN_040",
+      "view": "back",
+      "source": "sprites/mn-f014/mn-040-042.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        512,
+        469,
+        512
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        28434,
+        14662,
+        0
+      ]
+    },
+    {
+      "id": "mn-041-yodeloon-v1",
+      "species_id": "MN_041",
+      "view": "front",
+      "source": "sprites/mn-f014/mn-040-042.front-back.imagegen-v1.png",
+      "crop": [
+        469,
+        0,
+        492,
+        512
+      ],
+      "fit": [
+        44,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        27341,
+        17671,
+        0
+      ]
+    },
+    {
+      "id": "mn-041-yodeloon-v1",
+      "species_id": "MN_041",
+      "view": "back",
+      "source": "sprites/mn-f014/mn-040-042.front-back.imagegen-v1.png",
+      "crop": [
+        469,
+        512,
+        492,
+        512
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        27341,
+        17671,
+        0
+      ]
+    },
+    {
+      "id": "mn-042-reverloon-v1",
+      "species_id": "MN_042",
+      "view": "front",
+      "source": "sprites/mn-f014/mn-040-042.front-back.imagegen-v1.png",
+      "crop": [
+        961,
+        0,
+        575,
+        512
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        30447,
+        16584,
+        0
+      ]
+    },
+    {
+      "id": "mn-042-reverloon-v1",
+      "species_id": "MN_042",
+      "view": "back",
+      "source": "sprites/mn-f014/mn-040-042.front-back.imagegen-v1.png",
+      "crop": [
+        961,
+        512,
+        575,
+        512
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        30447,
+        16584,
+        0
+      ]
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "notes": [
+      "Inspected frozen source-contour-v1 sheet: loon bill, head, body and feet have firm dark outlines, while spectral echo wings intentionally retain the raw source light-blue/violet contour treatment.",
+      "Throat ring is readable as a small concentric mark; close rear neck/wing portraits retain white feather spots and crop cleanly. Colored effect edges are source intent rather than missing black samples."
+    ],
+    "sheet_sha256": "78ca9a80d9e36b3da9351aec6bffad58669093ad7de19916c292dcc943877fee",
+    "outline_profile": "source-contour-v1"
+  }
+}

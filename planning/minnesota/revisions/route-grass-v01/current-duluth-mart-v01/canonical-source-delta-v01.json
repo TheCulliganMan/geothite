@@ -1,0 +1,22 @@
+{
+  "status": "PASS",
+  "changes": [
+    {
+      "at": [
+        39,
+        19
+      ],
+      "before": "10",
+      "after": "1a"
+    },
+    {
+      "at": [
+        40,
+        19
+      ],
+      "before": "17",
+      "after": "33"
+    }
+  ],
+  "scope": "Only the two Mart cells change in canonical source. Complete active peer layout is separately retained in the child source index."
+}

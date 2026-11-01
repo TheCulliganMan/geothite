@@ -1,0 +1,60 @@
+{
+  "id": "MnR03Cave1F",
+  "template": "UnionCave1F",
+  "dimensions_metatiles": [
+    8,
+    6
+  ],
+  "rows": [
+    "01 01 01 01 01 01 01 01",
+    "01 04 05 05 06 04 06 01",
+    "01 08 02 02 02 02 0a 01",
+    "01 08 02 18 1a 02 0a 01",
+    "01 20 21 07 21 21 22 01",
+    "01 01 01 01 01 01 01 01"
+  ],
+  "exits": [
+    [
+      7,
+      9
+    ]
+  ],
+  "clear_arrival": [
+    7,
+    8
+  ],
+  "exit_collision": "LADDER",
+  "border_block": 1,
+  "residents": [
+    {
+      "id": "MN_R03_CAVE_WALKER",
+      "sprite": "SPRITE_POKEFAN_M",
+      "tile": [
+        5,
+        5
+      ],
+      "facing": "south",
+      "lines": [
+        "A pocket of dry",
+        "stone by the bank.",
+        "The path curves",
+        "around that rock.",
+        "Take the far cache",
+        "and circle back."
+      ]
+    }
+  ],
+  "items": [
+    {
+      "id": "MN_R03_ITEM_02",
+      "item": "GREAT_BALL",
+      "quantity": 1,
+      "flag": "EVENT_MN_R03_ITEM_02",
+      "tile": [
+        12,
+        5
+      ]
+    }
+  ],
+  "signs": []
+}

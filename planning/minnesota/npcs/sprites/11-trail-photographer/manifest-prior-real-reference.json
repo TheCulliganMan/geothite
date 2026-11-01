@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "id": "MN_TRAIL_PHOTOGRAPHER",
+  "name": "PHOTOGRAPHER LARK",
+  "status": "accepted-native-playable",
+  "overworld_frames": 6,
+  "overworld_size": [
+    16,
+    16
+  ],
+  "battle_size": [
+    56,
+    56
+  ],
+  "palette_rgb555": [
+    32767,
+    22399,
+    6583,
+    0
+  ],
+  "source": "native-pixels-v2.json",
+  "placement": "placement-v1.json",
+  "pack": "content-packs/minnesota-npcs-hand-12-v01.crystalpack",
+  "parent": "content-packs/minnesota-npcs-hand-11-v01.crystalpack",
+  "runtime_checks": {
+    "one_controller_test_passed": true,
+    "talk_and_input_ownership": true,
+    "battle_turn_and_pp": true,
+    "battle_save_load": true,
+    "actual_victory_and_defeat_flag_before_render_capture": true,
+    "post_battle_talk": true,
+    "existing_trainers_and_assets_preserved": true
+  },
+  "manual_visual_review": "Six directly hand-authored native grids inspected at 1x, 8x and actual Ely capture. Messy pale hair with dark bangs, larger face, rust vest, simple camera body and clear light lens held in both hands, distinct squared rear daypack and real lifted-foot stride. Rear hair marks consolidated to avoid false eyes. First full test blacked out; retained controller-hand-v01.log. Second unchanged-pack/team/driver run passed full encounter in 15.04s. Battle rows/palette unchanged.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/sprites/11-trail-photographer/native-pixels-v2.json": "cba695eb9d9186e6c4d3ee453f2eb74ccc1ec2b0334797e42f8377d2b9478047",
+    "planning/minnesota/npcs/sprites/11-trail-photographer/placement-v1.json": "cc9afa3536ae9e3d54c42bcd0e425e28ba9b39560a0aabc12fa5e3d270e92e50",
+    "content-packs/minnesota-npcs-hand-12-v01.crystalpack": "bdf749f5abb9e12a0dfb8873cc635b19787ca03494cd176a8cc672da9279f453",
+    "target/npc-sprites/photo/controller-hand-v02.log": "144cbf3e89c333a3a97c866828819dd0f5ac6010d506d1b1c1ee24659cf22111",
+    "target/npc-sprites/photo/gameplay-hand-v02/original-npc-trainer-intro.png": "e3d88ef3406f9c66e0d034a060b251b8de4fb376bc86a6c057eec88f831906f4",
+    "target/npc-sprites/photo/gameplay-hand-v02/original-npc-first-turn.png": "4b7cc91c7cddf362fa9271157071b0cec823ebe9dc43f339d910d2b8a73216a5",
+    "target/npc-sprites/photo/gameplay-hand-v02/original-npc-overworld-state.png": "613c0d0a59f2d4e14d48ca207ec4ec1ed49fab40ebdfe9608e1906bdfcd38af8",
+    "target/npc-sprites/photo/hand-v3/comparison.png": "3860b2e2f4e070286a36b3c466ca1e7d5ae69718d7eba42f8d33ee024f5e75f7",
+    "target/npc-sprites/photo/hand-v3/overworld-review.png": "0a7013a70f3bb0487653da4618fe14a7015bbe7e7324cddcb30c78118b9397a2",
+    "target/npc-sprites/photo/hand-v3/overworld-review-8x.png": "ab3652b082a06aa065f18d78c00c7745ab155406333999520ca2ca5a060341fd"
+  },
+  "overworld_revision": "hand-edited-v2",
+  "previous_visual_acceptance_reopened_by_user": true
+}

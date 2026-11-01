@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "id": "MN_HOCKEY_CAPTAIN",
+  "name": "CAPTAIN LEIF",
+  "status": "accepted-native-playable",
+  "overworld_frames": 6,
+  "overworld_size": [
+    16,
+    16
+  ],
+  "battle_size": [
+    56,
+    56
+  ],
+  "palette_rgb555": [
+    32767,
+    22431,
+    18693,
+    0
+  ],
+  "source": "native-pixels-v3.json",
+  "placement": "placement-v1.json",
+  "pack": "content-packs/minnesota-npcs-ref-07-v01.crystalpack",
+  "parent": "content-packs/minnesota-npcs-ref-06-v01.crystalpack",
+  "runtime_checks": {
+    "one_controller_test_passed": true,
+    "talk_and_input_ownership": true,
+    "battle_turn_and_pp": true,
+    "battle_save_load": true,
+    "actual_victory_and_defeat_flag_before_render_capture": true,
+    "post_battle_talk": true,
+    "existing_trainers_and_assets_preserved": true
+  },
+  "manual_visual_review": "Direct actual Crystal Cooltrainer/Youngster/Chris six-pose comparison at equal palette/scale, own-palette 1x/8x and actual St Cloud scene reviewed. Swept dark hair with connected navy highlights, young face, padded jersey with cream chest stripe, gloves, shorts, striped socks and light skate highlights. Removed isolated rear hair dots that resembled eyes. Stick retained in unchanged battle art only to avoid merged stick/skates in 16x16. Dedicated rear/profile and true stride/arm movement. Full encounter passed in 7.84s; battle/palette/gameplay/unrelated assets preserved.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/sprites/07-hockey-captain/native-pixels-v3.json": "47812c97e7f043e3f56fe6283d467bdad22f0ae15103efa8ef002d07ede04581",
+    "planning/minnesota/npcs/sprites/07-hockey-captain/placement-v1.json": "5db11a7bb012806cc5e919f7cbc5870fc01d95bd0e38a0409949f026b414855c",
+    "content-packs/minnesota-npcs-ref-07-v01.crystalpack": "c87ee716aa7c72da88def302b11405d4d0ba1cb700d6ccf2df24a7a5cbce20bf",
+    "target/npc-sprites/hockey/controller-reference-v01.log": "e8c391d108d34f2b3d4fa21df775ee231c3dca75441ff5676534109228470dff",
+    "target/npc-sprites/hockey/gameplay-reference-v01/original-npc-trainer-intro.png": "5105b23bd321f31db51c44808dbe6bbd9db219b536a88e3ac58f3cbcd6dde3d3",
+    "target/npc-sprites/hockey/gameplay-reference-v01/original-npc-first-turn.png": "ab43b6212f70ba785c1f621684aeae42c70f62e419c8a205d177b349ec020de2",
+    "target/npc-sprites/hockey/gameplay-reference-v01/original-npc-overworld-state.png": "2a2c40861f4b55d0c783b5eb86d7c4a898c34f9a8566ed338dcc5f2c370b6550",
+    "target/npc-sprites/hand-review/hockey-real-comparison-v2.png": "d32420316c845935616356a0562bb574ed214044e27ea120230b52b2dcdfe622",
+    "target/npc-sprites/hockey/reference-v2/comparison.png": "4ffc03ce8ee26d6c9cd10ef358e22540c89c25537ece98047b470441cb706a9d",
+    "target/npc-sprites/hockey/reference-v2/verification.json": "7222447c30c40e6eada7d2d5422552e9954012adfbc86b338409715e4e2994b2",
+    "target/npc-sprites/hockey/reference-v2/overworld-review.png": "e947234c178fe0496447041c27be315a53f18802d3ba4e8bf92f94b64e153db0",
+    "target/npc-sprites/hockey/reference-v2/overworld-review-8x.png": "84a8f63a70f452f27b19313ddd6052cd1100edb841bd731f7349f16603a114f0"
+  },
+  "overworld_revision": "real-reference-hand-edited-v3",
+  "reference_review": "actual-crystal-sprites-common-palette-and-scale"
+}

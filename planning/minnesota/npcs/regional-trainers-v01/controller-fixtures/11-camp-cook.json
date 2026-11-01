@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "id": "MN_FAIR_PICNIC_TRAINER",
+      "map": "MnStateFairgrounds",
+      "actor_script": "MN_FAIR_PICNIC_TRAINER",
+      "trainer_class": "MN_CAMP_COOK",
+      "sprite": "SPRITE_MN_CAMP_COOK",
+      "facing": "south",
+      "approach": [
+        61,
+        32
+      ],
+      "defeated_flag": "EVENT_MN_FAIR_PICNIC_DEFEATED"
+    }
+  ]
+}

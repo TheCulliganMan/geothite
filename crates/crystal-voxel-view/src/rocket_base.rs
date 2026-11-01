@@ -5,7 +5,7 @@ use crystal_render_api::VisualTileSource;
 const MAP: &str = "TeamRocketBaseB1F";
 const TILESET: &str = "underground";
 pub(crate) const FLOOR_TILE: u16 = 0x10;
-pub(crate) const WALL_HEIGHT: f32 = 16.0;
+pub(crate) const WALL_HEIGHT: f32 = 32.0;
 
 pub(crate) fn is_wall_cell(map_id: &str, source: &VisualTileSource) -> bool {
     map_id == MAP

@@ -1,0 +1,7 @@
+{
+  "parent_revision": "fossil_lab_revision",
+  "parent_pack": "content-packs/minnesota-fossil-lab-v01.crystalpack",
+  "parent_pack_sha256": "4329e491655cd8d6c787a34266a5fa51e222b8cdbd596e56c3b046219c5df5db",
+  "native_module_sha256": "d0ae82fddcc67631bf1a1d31102e37ef413099ee947c0f3abcc12b15576e925b",
+  "schema_version": 1
+}

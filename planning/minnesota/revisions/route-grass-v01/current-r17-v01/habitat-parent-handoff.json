@@ -1,0 +1,51 @@
+{
+  "old_parent": {
+    "revision": "route_grass_r15_revision",
+    "pack": "content-packs/minnesota-current-grass-r15-v01.crystalpack",
+    "sha256": "73bd0948be600b55d93842e1348c1fdcdd93423ef74295650d9cfa33b49badf1"
+  },
+  "new_parent": {
+    "revision": "species_habitats_cyclists_revision",
+    "pack": "content-packs/minnesota-current-habitats-cyclists-r15-v01.crystalpack",
+    "sha256": "25b7c1dfd8715a90a0675a07e992f0d10a7432e745e0c19e4ebab5890f4957cf"
+  },
+  "R17": [
+    {
+      "map": "MnR17C00R00",
+      "terrain_actors_scripts_art_alias_exact": true,
+      "full_native_module_exact": true,
+      "wild_encounters_exact": true,
+      "field_encounters_exact": true
+    },
+    {
+      "map": "MnR17C00R01",
+      "terrain_actors_scripts_art_alias_exact": true,
+      "full_native_module_exact": true,
+      "wild_encounters_exact": false,
+      "field_encounters_exact": true
+    },
+    {
+      "map": "MnR17C00R02",
+      "terrain_actors_scripts_art_alias_exact": true,
+      "full_native_module_exact": true,
+      "wild_encounters_exact": true,
+      "field_encounters_exact": true
+    }
+  ],
+  "R16": [
+    {
+      "map": "MnR16C00R00",
+      "terrain_actors_scripts_art_alias_exact": true,
+      "full_native_module_exact": true,
+      "wild_encounters_exact": true,
+      "field_encounters_exact": true
+    },
+    {
+      "map": "MnR16C01R00",
+      "terrain_actors_scripts_art_alias_exact": true,
+      "full_native_module_exact": true,
+      "wild_encounters_exact": true,
+      "field_encounters_exact": true
+    }
+  ]
+}

@@ -1,0 +1,177 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-r07-grass-and-stairs-v01.crystalpack",
+  "pack_sha256": "7ef19b17ebfe6ff9298a89c795c43cf4b9f25999038024fcf80b7afbd2614e20",
+  "calls": 2773,
+  "wild": [
+    {
+      "phase": "grass-and-save",
+      "map": "MnR07C00R00",
+      "position": {
+        "x": 48,
+        "y": 43
+      }
+    },
+    {
+      "phase": "grass-and-save",
+      "map": "MnR07C00R01",
+      "position": {
+        "x": 20,
+        "y": 34
+      }
+    },
+    {
+      "phase": "grass-and-save",
+      "map": "MnR07C00R01",
+      "position": {
+        "x": 48,
+        "y": 0
+      }
+    },
+    {
+      "phase": "grass-and-save",
+      "map": "MnR07C00R00",
+      "position": {
+        "x": 20,
+        "y": 6
+      }
+    },
+    {
+      "phase": "continue-and-repeat",
+      "map": "MnR07C00R00",
+      "position": {
+        "x": 48,
+        "y": 46
+      }
+    },
+    {
+      "phase": "continue-and-repeat",
+      "map": "MnR07C00R01",
+      "position": {
+        "x": 20,
+        "y": 37
+      }
+    },
+    {
+      "phase": "continue-and-repeat",
+      "map": "MnR07C00R01",
+      "position": {
+        "x": 20,
+        "y": 35
+      }
+    }
+  ],
+  "phases": [
+    {
+      "phase": "grass-and-save",
+      "initial": {
+        "badges": 4,
+        "dialogue": false,
+        "facing": "up",
+        "frame": 42,
+        "map": "MnR07C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 0
+        },
+        "position": {
+          "x": 20,
+          "y": 41
+        }
+      },
+      "final": {
+        "badges": 4,
+        "dialogue": false,
+        "facing": "right",
+        "frame": 519,
+        "map": "MnR07C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 3
+        },
+        "position": {
+          "x": 20,
+          "y": 41
+        }
+      },
+      "output_save": ".local/route-grass-review/r07-full-route-grass-and-save-full-v02-output.crystalsave",
+      "source_unchanged": true,
+      "stderr_bytes": 0
+    },
+    {
+      "phase": "continue-and-repeat",
+      "initial": {
+        "badges": 4,
+        "dialogue": false,
+        "facing": "right",
+        "frame": 519,
+        "map": "MnR07C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 3
+        },
+        "position": {
+          "x": 20,
+          "y": 41
+        }
+      },
+      "final": {
+        "badges": 4,
+        "dialogue": false,
+        "facing": "right",
+        "frame": 996,
+        "map": "MnR07C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 4
+        },
+        "position": {
+          "x": 20,
+          "y": 41
+        }
+      },
+      "output_save": ".local/route-grass-review/r07-full-route-continue-and-repeat-full-v02-output.crystalsave",
+      "source_unchanged": true,
+      "stderr_bytes": 0
+    }
+  ],
+  "scope": "Both Route7 chunks, two-way terrace stairs and actual round trips into Leech Lake and Brainerd, repeated after Continue. Initial local partner, badges and placement are QA fixtures. Tested prior publication; complete current Route7 and neighboring town maps plus used Route7 art and battle inputs are exact.",
+  "verified_connections": [
+    {
+      "inside": [
+        "MnR07C00R00",
+        20,
+        0
+      ],
+      "neighbor": "MnLeechLake",
+      "out": "up",
+      "back": "down"
+    },
+    {
+      "inside": [
+        "MnR07C00R01",
+        20,
+        47
+      ],
+      "neighbor": "MnBrainerd",
+      "out": "down",
+      "back": "up"
+    }
+  ]
+}

@@ -1,0 +1,345 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F102",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_221": {
+      "species_id": "MN_221",
+      "name": "Emberm",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          30,
+          18,
+          8
+        ],
+        [
+          12,
+          6,
+          7
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        8798,
+        7372,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          247,
+          148,
+          66
+        ],
+        [
+          99,
+          49,
+          57
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#F79442",
+        "#633139",
+        "#000000"
+      ]
+    },
+    "MN_222": {
+      "species_id": "MN_222",
+      "name": "Smoulden",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          28,
+          16,
+          10
+        ],
+        [
+          10,
+          5,
+          12
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        10780,
+        12458,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          231,
+          132,
+          82
+        ],
+        [
+          82,
+          41,
+          99
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#E78452",
+        "#522963",
+        "#000000"
+      ]
+    },
+    "MN_223": {
+      "species_id": "MN_223",
+      "name": "Cinderfen",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          29,
+          17,
+          9
+        ],
+        [
+          11,
+          7,
+          15
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        9789,
+        15595,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          239,
+          140,
+          74
+        ],
+        [
+          90,
+          57,
+          123
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#EF8C4A",
+        "#5A397B",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f102/prompt-v1.txt",
+  "reference_mapping": "sprites/mn-f102/reference-mapping-v1.json",
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-221-emberm-v1",
+      "species_id": "MN_221",
+      "view": "front",
+      "source": "sprites/mn-f102/mn-221-223.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        490,
+        536
+      ],
+      "fit": [
+        36,
+        36
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        8798,
+        7372,
+        0
+      ],
+      "white_detail_min_samples": 8
+    },
+    {
+      "id": "mn-221-emberm-v1",
+      "species_id": "MN_221",
+      "view": "back",
+      "source": "sprites/mn-f102/mn-221-223.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        536,
+        490,
+        488
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        8798,
+        7372,
+        0
+      ],
+      "white_detail_min_samples": 8
+    },
+    {
+      "id": "mn-222-smoulden-v1",
+      "species_id": "MN_222",
+      "view": "front",
+      "source": "sprites/mn-f102/mn-221-223.front-back.imagegen-v1.png",
+      "crop": [
+        490,
+        0,
+        518,
+        536
+      ],
+      "fit": [
+        48,
+        48
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        10780,
+        12458,
+        0
+      ],
+      "white_detail_min_samples": 8
+    },
+    {
+      "id": "mn-222-smoulden-v1",
+      "species_id": "MN_222",
+      "view": "back",
+      "source": "sprites/mn-f102/mn-221-223.front-back.imagegen-v1.png",
+      "crop": [
+        490,
+        536,
+        518,
+        488
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        10780,
+        12458,
+        0
+      ],
+      "white_detail_min_samples": 8
+    },
+    {
+      "id": "mn-223-cinderfen-v1",
+      "species_id": "MN_223",
+      "view": "front",
+      "source": "sprites/mn-f102/mn-221-223.front-back.imagegen-v1.png",
+      "crop": [
+        1008,
+        0,
+        528,
+        536
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        9789,
+        15595,
+        0
+      ],
+      "white_detail_min_samples": 8
+    },
+    {
+      "id": "mn-223-cinderfen-v1",
+      "species_id": "MN_223",
+      "view": "back",
+      "source": "sprites/mn-f102/mn-221-223.front-back.imagegen-v1.png",
+      "crop": [
+        1008,
+        536,
+        528,
+        488
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        9789,
+        15595,
+        0
+      ],
+      "white_detail_min_samples": 8
+    }
+  ],
+  "source_sha256": "99e1e0a7123b6bafc9d6315f44544554944061e3f87ad82d90c2e65e11991050",
+  "candidate_review": {
+    "status": "native-review-pending",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "8ef0f9b1b4b090deb4b2dc6e0be7da0b28d11c1749e324b20be9f0c6f18649c3",
+    "notes": "Inspected actual native sheet: crumb36 to four-root vented crust48 to separated ghost slabs54 gives clear growth. Single white eye remains visible in each front and all close rear portraits; three dorsal vents readable. Broad stepped rims and colored interiors retained. Final flame wisps and detached peat crumbs exceed the strictly four-slab core design but remain readable; root final judgment pending."
+  },
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "notes": "Root inspected native front/back sequence: peat crumb becomes vented four-root crust, then floating layered slabs around an ember face and heavy root spiral. Middle fume slots and final separated plate/arm masses read clearly. Small source-authored ember crumbs remain sparse; warm highlights and dark peat planes stay exact four-color fields. White eyes and close rear crops accepted.",
+    "sheet_sha256": "8ef0f9b1b4b090deb4b2dc6e0be7da0b28d11c1749e324b20be9f0c6f18649c3",
+    "outline_profile": "source-contour-v1"
+  }
+}

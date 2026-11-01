@@ -1,0 +1,70 @@
+{
+  "id": "MnR13Cave1F",
+  "template": "UnionCave1F",
+  "width_metatiles": 10,
+  "height_metatiles": 8,
+  "dimensions_metatiles": [
+    10,
+    8
+  ],
+  "tileset": "cave",
+  "border_block": 1,
+  "exterior_anchor_metatile": [
+    7,
+    26
+  ],
+  "mandatory": false,
+  "purpose": "A compact rock refuge with a native keeper/rest, two fitted granite ribs, supplies and Max Ether. It is optional and has one honest exterior mouth.",
+  "rows": [
+    "01 01 01 01 01 01 01 01 01 01",
+    "01 04 05 05 05 05 05 05 06 01",
+    "01 08 02 02 02 02 02 02 0a 01",
+    "01 08 02 29 02 02 02 02 0a 01",
+    "01 08 02 02 02 2a 02 02 0a 01",
+    "01 08 02 02 02 02 02 02 0a 01",
+    "01 20 21 02 21 21 21 21 22 01",
+    "01 01 01 07 01 01 01 01 01 01"
+  ],
+  "exits": [
+    [
+      7,
+      15
+    ]
+  ],
+  "clear_arrival": [
+    7,
+    14
+  ],
+  "exit_collision": "LADDER",
+  "residents": [
+    {
+      "id": "MN_R13_HARPER",
+      "sprite": "SPRITE_POKEFAN_M",
+      "tile": [
+        13,
+        5
+      ],
+      "facing": "south",
+      "lines": [
+        "Rest in the rock.",
+        "I will tend to",
+        "your whole team.",
+        "Ely is not far."
+      ],
+      "service": "heal_party"
+    }
+  ],
+  "items": [
+    {
+      "id": "MN_R13_SHELTER_ETHER",
+      "item": "MAX_ETHER",
+      "quantity": 1,
+      "tile": [
+        15,
+        11
+      ],
+      "flag": "EVENT_MN_R13_SHELTER_ETHER"
+    }
+  ],
+  "signs": []
+}

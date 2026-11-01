@@ -1,0 +1,14 @@
+{
+  "tool": "built-in image_gen",
+  "original_tool_path": "/Users/ryanculligan/.codex/generated_images/01a17dcc-4f1a-77a2-9d21-0df036061346/exec-db275b4c-5559-446f-b80c-3fbcd0e40695.png",
+  "source_size": [
+    1536,
+    1024
+  ],
+  "sha256": "5e3901aff71d5c82e8d2c3039f6895b1c56af5ce0d10712a10a3dcc52a48e0ae",
+  "reference_paths": [
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-whirlnut-center-v4/MN_F119/review/whirlnut.normal-8x.png"
+  ],
+  "prompt": "prompt-v5-whirlnut.txt",
+  "visual_rejection": "Raw generated invisible eyes/black contours plus strong glow; rejected before conversion, all raw retained."
+}

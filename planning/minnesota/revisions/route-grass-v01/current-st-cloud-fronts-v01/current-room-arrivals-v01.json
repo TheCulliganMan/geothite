@@ -1,0 +1,88 @@
+{
+  "exterior_buildings": [
+    {
+      "room": "MnStCloudPokecenter1F",
+      "outside": [
+        7,
+        10
+      ],
+      "arrival": [
+        10,
+        13
+      ],
+      "carpets": [
+        [
+          10,
+          15
+        ],
+        [
+          11,
+          15
+        ]
+      ]
+    },
+    {
+      "room": "MnStCloudMart",
+      "outside": [
+        15,
+        10
+      ],
+      "arrival": [
+        6,
+        5
+      ],
+      "carpets": [
+        [
+          6,
+          7
+        ],
+        [
+          7,
+          7
+        ]
+      ]
+    },
+    {
+      "room": "MnStCloudGym",
+      "outside": [
+        8,
+        28
+      ],
+      "arrival": [
+        4,
+        19
+      ],
+      "carpets": [
+        [
+          4,
+          21
+        ],
+        [
+          5,
+          21
+        ]
+      ]
+    },
+    {
+      "room": "MnStCloudStation",
+      "outside": [
+        35,
+        12
+      ],
+      "arrival": [
+        11,
+        17
+      ],
+      "carpets": [
+        [
+          10,
+          19
+        ],
+        [
+          11,
+          19
+        ]
+      ]
+    }
+  ]
+}

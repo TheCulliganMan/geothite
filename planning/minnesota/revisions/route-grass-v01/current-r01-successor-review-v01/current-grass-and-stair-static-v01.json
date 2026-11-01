@@ -1,0 +1,27 @@
+{
+  "status": "PASS_STATIC_ONLY",
+  "pack": "content-packs/minnesota-iron-crosscut-rock-cache-v02.crystalpack",
+  "sha256": "bc38b8920bdc6d5e3c0e18ddac283aa4087e0020d694861f277d10314a3875d1",
+  "crossings": [
+    {
+      "contract": "WINONA_GRASS_GATE",
+      "minimum": 4,
+      "forward": {
+        "status": "MEASURED",
+        "grass_steps": 4,
+        "grass_quadrants_in_contract": 24,
+        "ice_quadrants": 0
+      },
+      "reverse": {
+        "status": "MEASURED",
+        "grass_steps": 4,
+        "grass_quadrants_in_contract": 24,
+        "ice_quadrants": 0
+      }
+    }
+  ],
+  "grass_quadrants": 136,
+  "hop_quadrants": 0,
+  "retired_old_native_grass_test_reason": "Historical four-hop plateau is now a closed tall cliff with ordinary cave12 stairs. Old test binary also contains a stale planner that indexes the original Johto collision bank, causing missing-key failure for the appended stair block. Neither failure is counted as passing current traversal.",
+  "scope": "Read-only ordinary collision/connection model, actors conservatively clear; actual production-input successor verification remains required."
+}

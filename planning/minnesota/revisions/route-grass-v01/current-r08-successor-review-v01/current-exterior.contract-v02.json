@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "id": "MN_R08",
+  "source_kind": "installed_route_exterior_review_contract",
+  "native_binding": {
+    "pack": "content-packs/minnesota-current-r08-grass-and-stairs-v01.crystalpack",
+    "pack_sha256": "1e1f2e2f40fdea4207e7ada6b34a85d33065cbe254a73864e47b8db4f0726e13",
+    "content_identity": "66bf8c7f11c17ce5c8eee4a69f7dc07c28b79dcfc67d336dd2c9b2baf9b79d4c"
+  },
+  "new_grass_quadrants": 12,
+  "route_grass_quadrants": 372,
+  "entrance_core": [
+    [
+      25,
+      54
+    ],
+    [
+      27,
+      63
+    ]
+  ],
+  "minimum_entrance_grass_steps": 6,
+  "active_native_hop_lanes": [],
+  "retired_historical_ledge_contracts": [
+    "BIRCH_RETURN_DROP",
+    "CEDAR_PIER_BANK_DROP"
+  ],
+  "native_stair_metatile": [
+    17,
+    13
+  ],
+  "stair_block": "86",
+  "corrected_text_labels": [
+    "MN_R08_BIRCH_WALKERText",
+    "MN_R08_SIGN_03Text",
+    "MN_R08_T07Won"
+  ],
+  "scope": "Current Route8 land traversal across all four chunks, both gate/town round trips, stair ascent/descent, Cut permissions and Great Ball once, new grass encounters/RUN, corrected three text programs and actual trainer victory, menus and Continue. Initial local qualifications are QA setup; no earned regional progress or new Surf proof is claimed.",
+  "all_four_chunks_walked_and_observed": true,
+  "native_stair_upper": [
+    35,
+    25
+  ],
+  "native_stair_lower": [
+    35,
+    28
+  ],
+  "neighbor_connections": [
+    {
+      "inside": [
+        "MnR08C00R00",
+        24,
+        0
+      ],
+      "neighbor": "MnBemidji",
+      "out": "up",
+      "back": "down"
+    },
+    {
+      "inside": [
+        "MnR08C00R01",
+        26,
+        47
+      ],
+      "neighbor": "MnLeechLake",
+      "out": "down",
+      "back": "up"
+    }
+  ]
+}

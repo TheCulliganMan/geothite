@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F084",
+  "species": [
+    {
+      "species_id": "MN_183",
+      "runtime_token": "BARBELISK",
+      "palette_rgb555": [
+        32767,
+        25329,
+        17734,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        24120,
+        10449,
+        0
+      ],
+      "fit": [
+        14,
+        14
+      ],
+      "alpha_threshold": 245,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 64,
+      "interior_black_samples": 64,
+      "opaque_interior_minimum_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "barbelisk.overworld.imagegen-v2-clear-source-pupils.png",
+          "crop": [
+            80,
+            95,
+            500,
+            440
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "barbelisk.overworld.imagegen-v2-clear-source-pupils.png",
+          "crop": [
+            501,
+            82,
+            500,
+            440
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "barbelisk.overworld.imagegen-v2-clear-source-pupils.png",
+          "crop": [
+            996,
+            121,
+            500,
+            440
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "barbelisk.overworld.imagegen-v2-clear-source-pupils.png",
+          "crop": [
+            78,
+            551,
+            500,
+            440
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "barbelisk.overworld.imagegen-v2-clear-source-pupils.png",
+          "crop": [
+            489,
+            551,
+            500,
+            440
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "barbelisk.overworld.imagegen-v2-clear-source-pupils.png",
+          "crop": [
+            995,
+            577,
+            500,
+            440
+          ]
+        }
+      ]
+    }
+  ]
+}

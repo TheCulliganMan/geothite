@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "map": "MnStPaul",
+      "approach": [
+        27,
+        21
+      ],
+      "id": "MN_EXTRA_VOLUNTEER",
+      "display_name": "TESS",
+      "trainer_class": "MN_VOLUNTEER",
+      "class_name": "VOLUNTEER",
+      "template_class": "PICNICKER",
+      "sprite": "SPRITE_MN_VOLUNTEER",
+      "tile": [
+        27,
+        20
+      ],
+      "facing": "south",
+      "sight_range": 1,
+      "defeated_flag": "EVENT_MN_EXTRA_VOLUNTEER",
+      "party": [
+        {
+          "species": "POUCHID",
+          "level": 28
+        },
+        {
+          "species": "BIRCHIT",
+          "level": 30
+        }
+      ],
+      "before_lines": [
+        "One clean trail.",
+        "One fair battle!"
+      ],
+      "after_lines": [
+        "Nice teamwork!",
+        "Leave no litter."
+      ],
+      "loss_lines": [
+        "Lend a hand!",
+        "Then try again."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,215 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_043",
+  "result": "pass",
+  "manifest_sha256": "b1fce4b112fdc3cce20cd67ae4560372d57270c4c4a848933bfef9787c76f7ec",
+  "bank_sha256": "a345a39bcdf818f91ac55df8d1a16dd6b177f12c9d52f8d67f25fecd35471c22",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f015/jiglet.overworld.imagegen-v1.png": "5a5fef45a23cfb3919b7e6626788e4693d76c9a4422dc9a4b03e087c471d81cd"
+  },
+  "canonical_eye_form": "Two isolated actual black pupil dots south and one isolated actual black pupil west; source eye components verified in all four nonrear poses.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            6,
+            11
+          ],
+          "source_sample": [
+            251,
+            417
+          ],
+          "source_component": [
+            251,
+            407,
+            24,
+            36
+          ],
+          "component_pixels": 864,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            5,
+            3,
+            0,
+            253
+          ]
+        },
+        {
+          "native": [
+            9,
+            11
+          ],
+          "source_sample": [
+            338,
+            417
+          ],
+          "source_component": [
+            324,
+            407,
+            25,
+            36
+          ],
+          "component_pixels": 899,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            1,
+            0,
+            0,
+            254
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            5,
+            11
+          ],
+          "source_sample": [
+            1188,
+            432
+          ],
+          "source_component": [
+            1166,
+            417,
+            24,
+            34
+          ],
+          "component_pixels": 816,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            1,
+            0,
+            0,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            6,
+            11
+          ],
+          "source_sample": [
+            251,
+            778
+          ],
+          "source_component": [
+            251,
+            767,
+            25,
+            35
+          ],
+          "component_pixels": 874,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ]
+        },
+        {
+          "native": [
+            9,
+            11
+          ],
+          "source_sample": [
+            338,
+            778
+          ],
+          "source_component": [
+            326,
+            767,
+            24,
+            35
+          ],
+          "component_pixels": 840,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            5,
+            11
+          ],
+          "source_sample": [
+            1188,
+            789
+          ],
+          "source_component": [
+            1166,
+            782,
+            24,
+            35
+          ],
+          "component_pixels": 838,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            3,
+            2,
+            1,
+            253
+          ]
+        }
+      ]
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "notes": "Painted golden/blue metal jig shell, top towing eyelet knob, two broad low fin blades and attached single C-hook tail retained. Hook is naturally occluded by shell in some down/north angles; curved shaft/tip visible in profile. Rear has unmarked lure shell, original hook silhouette/paint planes retained, no facial organs. Towing-eyelet dark hole is mechanical anatomy and never substituted for a pupil. All four actual source pupil components proven, commonfit12 and normal/shiny boards reviewed; source registration only."
+  }
+}

@@ -1,0 +1,2197 @@
+{
+  "schema_version": 1,
+  "status": "CORRECTIVE_TILE_JOIN_SOURCE_NOT_NATIVE_PUBLICATION",
+  "map": "MnMinneapolis",
+  "tileset": "mn_minneapolis_city",
+  "parent_pack_sha256": "57eefb675b9cb32ac66a01819f56961392e51678a6f9dd959888fbb9427e4e62",
+  "new_bitmap_glyphs": 0,
+  "source_metatile_count": 157,
+  "new_metatiles": [
+    {
+      "id": "9d",
+      "glyphs": [
+        7,
+        7,
+        7,
+        28,
+        7,
+        7,
+        7,
+        28,
+        7,
+        7,
+        55,
+        56,
+        2,
+        2,
+        57,
+        58
+      ],
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "DOOR"
+      ],
+      "first_building": "RiverFamilyHome"
+    },
+    {
+      "id": "9e",
+      "glyphs": [
+        141,
+        143,
+        143,
+        146,
+        143,
+        143,
+        143,
+        146,
+        160,
+        161,
+        142,
+        146,
+        162,
+        163,
+        145,
+        159
+      ],
+      "collision": [
+        "WALL",
+        "WALL",
+        "DOOR",
+        "WALL"
+      ],
+      "first_building": "NortheastHome"
+    },
+    {
+      "id": "9f",
+      "glyphs": [
+        17,
+        17,
+        17,
+        17,
+        14,
+        14,
+        14,
+        14,
+        14,
+        14,
+        14,
+        14,
+        11,
+        11,
+        11,
+        11
+      ],
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ],
+      "first_building": "BoatHouse"
+    },
+    {
+      "id": "a0",
+      "glyphs": [
+        26,
+        7,
+        7,
+        7,
+        26,
+        7,
+        7,
+        7,
+        26,
+        38,
+        38,
+        38,
+        26,
+        7,
+        7,
+        7
+      ],
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ],
+      "first_building": "BoatHouse"
+    },
+    {
+      "id": "a1",
+      "glyphs": [
+        7,
+        7,
+        7,
+        7,
+        7,
+        7,
+        7,
+        7,
+        38,
+        38,
+        38,
+        38,
+        7,
+        7,
+        7,
+        7
+      ],
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ],
+      "first_building": "BoatHouse"
+    },
+    {
+      "id": "a2",
+      "glyphs": [
+        7,
+        7,
+        7,
+        28,
+        7,
+        7,
+        7,
+        28,
+        38,
+        38,
+        38,
+        28,
+        7,
+        7,
+        7,
+        28
+      ],
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ],
+      "first_building": "BoatHouse"
+    },
+    {
+      "id": "a3",
+      "glyphs": [
+        7,
+        7,
+        7,
+        7,
+        7,
+        38,
+        38,
+        7,
+        7,
+        7,
+        7,
+        7,
+        2,
+        2,
+        2,
+        2
+      ],
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ],
+      "first_building": "BoatHouse"
+    },
+    {
+      "id": "a4",
+      "glyphs": [
+        7,
+        7,
+        7,
+        7,
+        7,
+        7,
+        7,
+        7,
+        7,
+        7,
+        55,
+        56,
+        2,
+        2,
+        57,
+        58
+      ],
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "DOOR"
+      ],
+      "first_building": "BoatHouse"
+    },
+    {
+      "id": "a5",
+      "glyphs": [
+        7,
+        7,
+        7,
+        28,
+        7,
+        38,
+        38,
+        28,
+        7,
+        7,
+        7,
+        28,
+        2,
+        2,
+        2,
+        22
+      ],
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ],
+      "first_building": "DispatcherHouse"
+    },
+    {
+      "id": "a6",
+      "glyphs": [
+        26,
+        7,
+        7,
+        7,
+        26,
+        7,
+        7,
+        7,
+        24,
+        25,
+        7,
+        7,
+        23,
+        23,
+        2,
+        2
+      ],
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ],
+      "first_building": "Mart"
+    },
+    {
+      "id": "a7",
+      "glyphs": [
+        26,
+        7,
+        7,
+        7,
+        26,
+        216,
+        216,
+        216,
+        26,
+        7,
+        7,
+        7,
+        1,
+        2,
+        2,
+        2
+      ],
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ],
+      "first_building": "DispatchOffice"
+    },
+    {
+      "id": "a8",
+      "glyphs": [
+        7,
+        7,
+        7,
+        28,
+        216,
+        216,
+        216,
+        28,
+        7,
+        7,
+        7,
+        28,
+        2,
+        2,
+        2,
+        22
+      ],
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ],
+      "first_building": "DispatchOffice"
+    }
+  ],
+  "map_patches": [
+    {
+      "metatile": [
+        7,
+        4
+      ],
+      "before": "1a",
+      "after": "9d",
+      "building": "RiverFamilyHome",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "DOOR"
+      ]
+    },
+    {
+      "metatile": [
+        37,
+        4
+      ],
+      "before": "8a",
+      "after": "9e",
+      "building": "NortheastHome",
+      "collision": [
+        "WALL",
+        "WALL",
+        "DOOR",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        30,
+        8
+      ],
+      "before": "8a",
+      "after": "9e",
+      "building": "GardenFlat",
+      "collision": [
+        "WALL",
+        "WALL",
+        "DOOR",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        13,
+        10
+      ],
+      "before": "1a",
+      "after": "9d",
+      "building": "BridgeHome",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "DOOR"
+      ]
+    },
+    {
+      "metatile": [
+        3,
+        12
+      ],
+      "before": "18",
+      "after": "9f",
+      "building": "BoatHouse",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        4,
+        12
+      ],
+      "before": "18",
+      "after": "9f",
+      "building": "BoatHouse",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        2,
+        13
+      ],
+      "before": "20",
+      "after": "a0",
+      "building": "BoatHouse",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        3,
+        13
+      ],
+      "before": "20",
+      "after": "a1",
+      "building": "BoatHouse",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        4,
+        13
+      ],
+      "before": "20",
+      "after": "a1",
+      "building": "BoatHouse",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        5,
+        13
+      ],
+      "before": "20",
+      "after": "a2",
+      "building": "BoatHouse",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        3,
+        14
+      ],
+      "before": "11",
+      "after": "a3",
+      "building": "BoatHouse",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        4,
+        14
+      ],
+      "before": "1a",
+      "after": "a4",
+      "building": "BoatHouse",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "DOOR"
+      ]
+    },
+    {
+      "metatile": [
+        9,
+        14
+      ],
+      "before": "1a",
+      "after": "9d",
+      "building": "AnglerHome",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "DOOR"
+      ]
+    },
+    {
+      "metatile": [
+        12,
+        20
+      ],
+      "before": "10",
+      "after": "a5",
+      "building": "DispatcherHouse",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        3,
+        21
+      ],
+      "before": "18",
+      "after": "9f",
+      "building": "LakeCabin",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        3,
+        22
+      ],
+      "before": "1a",
+      "after": "a4",
+      "building": "LakeCabin",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "DOOR"
+      ]
+    },
+    {
+      "metatile": [
+        30,
+        22
+      ],
+      "before": "8a",
+      "after": "9e",
+      "building": "MillForemanHome",
+      "collision": [
+        "WALL",
+        "WALL",
+        "DOOR",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        22,
+        25
+      ],
+      "before": "8a",
+      "after": "9e",
+      "building": "CooperativeFlat",
+      "collision": [
+        "WALL",
+        "WALL",
+        "DOOR",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        25,
+        25
+      ],
+      "before": "1a",
+      "after": "9d",
+      "building": "ToolFlat",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "DOOR"
+      ]
+    },
+    {
+      "metatile": [
+        28,
+        25
+      ],
+      "before": "8a",
+      "after": "9e",
+      "building": "CornerHome",
+      "collision": [
+        "WALL",
+        "WALL",
+        "DOOR",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        31,
+        24
+      ],
+      "before": "18",
+      "after": "9f",
+      "building": "CedarHome",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        31,
+        25
+      ],
+      "before": "1a",
+      "after": "a4",
+      "building": "CedarHome",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "DOOR"
+      ]
+    },
+    {
+      "metatile": [
+        3,
+        28
+      ],
+      "before": "1a",
+      "after": "9d",
+      "building": "GardenersHome",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "DOOR"
+      ]
+    },
+    {
+      "metatile": [
+        25,
+        27
+      ],
+      "before": "18",
+      "after": "9f",
+      "building": "RiverInn",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        26,
+        27
+      ],
+      "before": "18",
+      "after": "9f",
+      "building": "RiverInn",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        24,
+        28
+      ],
+      "before": "20",
+      "after": "a0",
+      "building": "RiverInn",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        25,
+        28
+      ],
+      "before": "20",
+      "after": "a1",
+      "building": "RiverInn",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        26,
+        28
+      ],
+      "before": "20",
+      "after": "a1",
+      "building": "RiverInn",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        27,
+        28
+      ],
+      "before": "20",
+      "after": "a2",
+      "building": "RiverInn",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        25,
+        29
+      ],
+      "before": "11",
+      "after": "a3",
+      "building": "RiverInn",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        26,
+        29
+      ],
+      "before": "1a",
+      "after": "a4",
+      "building": "RiverInn",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "DOOR"
+      ]
+    },
+    {
+      "metatile": [
+        35,
+        28
+      ],
+      "before": "18",
+      "after": "9f",
+      "building": "MillWorkersHouse",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        35,
+        29
+      ],
+      "before": "1a",
+      "after": "a4",
+      "building": "MillWorkersHouse",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "DOOR"
+      ]
+    },
+    {
+      "metatile": [
+        27,
+        2
+      ],
+      "before": "18",
+      "after": "9f",
+      "building": "MusicRoom",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        28,
+        2
+      ],
+      "before": "18",
+      "after": "9f",
+      "building": "MusicRoom",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        26,
+        3
+      ],
+      "before": "20",
+      "after": "a0",
+      "building": "MusicRoom",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        27,
+        3
+      ],
+      "before": "20",
+      "after": "a1",
+      "building": "MusicRoom",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        28,
+        3
+      ],
+      "before": "20",
+      "after": "a1",
+      "building": "MusicRoom",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        29,
+        3
+      ],
+      "before": "20",
+      "after": "a2",
+      "building": "MusicRoom",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        27,
+        4
+      ],
+      "before": "11",
+      "after": "a3",
+      "building": "MusicRoom",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        28,
+        4
+      ],
+      "before": "1a",
+      "after": "a4",
+      "building": "MusicRoom",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "DOOR"
+      ]
+    },
+    {
+      "metatile": [
+        3,
+        3
+      ],
+      "before": "18",
+      "after": "9f",
+      "building": "SupplyCoop",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        3,
+        4
+      ],
+      "before": "1a",
+      "after": "a4",
+      "building": "SupplyCoop",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "DOOR"
+      ]
+    },
+    {
+      "metatile": [
+        23,
+        3
+      ],
+      "before": "18",
+      "after": "9f",
+      "building": "PrintShop",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        23,
+        4
+      ],
+      "before": "1a",
+      "after": "a4",
+      "building": "PrintShop",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "DOOR"
+      ]
+    },
+    {
+      "metatile": [
+        23,
+        7
+      ],
+      "before": "18",
+      "after": "9f",
+      "building": "GardenShop",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        23,
+        8
+      ],
+      "before": "1a",
+      "after": "a4",
+      "building": "GardenShop",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "DOOR"
+      ]
+    },
+    {
+      "metatile": [
+        27,
+        8
+      ],
+      "before": "1a",
+      "after": "9d",
+      "building": "RiverNaturalist",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "DOOR"
+      ]
+    },
+    {
+      "metatile": [
+        33,
+        8
+      ],
+      "before": "1a",
+      "after": "9d",
+      "building": "PatternStudio",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "DOOR"
+      ]
+    },
+    {
+      "metatile": [
+        37,
+        8
+      ],
+      "before": "8a",
+      "after": "9e",
+      "building": "Bookbinder",
+      "collision": [
+        "WALL",
+        "WALL",
+        "DOOR",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        9,
+        8
+      ],
+      "before": "18",
+      "after": "9f",
+      "building": "ArtsStudio",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        9,
+        9
+      ],
+      "before": "1a",
+      "after": "a4",
+      "building": "ArtsStudio",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "DOOR"
+      ]
+    },
+    {
+      "metatile": [
+        35,
+        12
+      ],
+      "before": "33",
+      "after": "a6",
+      "building": "Mart",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        36,
+        12
+      ],
+      "before": "1a",
+      "after": "9d",
+      "building": "Mart",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "DOOR"
+      ]
+    },
+    {
+      "metatile": [
+        11,
+        16
+      ],
+      "before": "20",
+      "after": "a7",
+      "building": "DispatchOffice",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        12,
+        16
+      ],
+      "before": "1a",
+      "after": "a4",
+      "building": "DispatchOffice",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "DOOR"
+      ]
+    },
+    {
+      "metatile": [
+        13,
+        16
+      ],
+      "before": "20",
+      "after": "a8",
+      "building": "DispatchOffice",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        32,
+        14
+      ],
+      "before": "18",
+      "after": "9f",
+      "building": "Gym",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        31,
+        15
+      ],
+      "before": "20",
+      "after": "a0",
+      "building": "Gym",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        32,
+        15
+      ],
+      "before": "20",
+      "after": "a1",
+      "building": "Gym",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        33,
+        15
+      ],
+      "before": "20",
+      "after": "a2",
+      "building": "Gym",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        7,
+        23
+      ],
+      "before": "18",
+      "after": "9f",
+      "building": "FieldClub",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        8,
+        23
+      ],
+      "before": "18",
+      "after": "9f",
+      "building": "FieldClub",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        6,
+        24
+      ],
+      "before": "20",
+      "after": "a0",
+      "building": "FieldClub",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        7,
+        24
+      ],
+      "before": "20",
+      "after": "a1",
+      "building": "FieldClub",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        8,
+        24
+      ],
+      "before": "20",
+      "after": "a1",
+      "building": "FieldClub",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        9,
+        24
+      ],
+      "before": "20",
+      "after": "a2",
+      "building": "FieldClub",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        7,
+        25
+      ],
+      "before": "11",
+      "after": "a3",
+      "building": "FieldClub",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        8,
+        25
+      ],
+      "before": "1a",
+      "after": "a4",
+      "building": "FieldClub",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "DOOR"
+      ]
+    },
+    {
+      "metatile": [
+        35,
+        24
+      ],
+      "before": "18",
+      "after": "9f",
+      "building": "CommunityKitchen",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        36,
+        24
+      ],
+      "before": "18",
+      "after": "9f",
+      "building": "CommunityKitchen",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        34,
+        25
+      ],
+      "before": "20",
+      "after": "a0",
+      "building": "CommunityKitchen",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        35,
+        25
+      ],
+      "before": "20",
+      "after": "a1",
+      "building": "CommunityKitchen",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        36,
+        25
+      ],
+      "before": "20",
+      "after": "a1",
+      "building": "CommunityKitchen",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        37,
+        25
+      ],
+      "before": "20",
+      "after": "a2",
+      "building": "CommunityKitchen",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        35,
+        26
+      ],
+      "before": "11",
+      "after": "a3",
+      "building": "CommunityKitchen",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        36,
+        26
+      ],
+      "before": "1a",
+      "after": "a4",
+      "building": "CommunityKitchen",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "DOOR"
+      ]
+    },
+    {
+      "metatile": [
+        11,
+        26
+      ],
+      "before": "18",
+      "after": "9f",
+      "building": "Greenhouse",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        12,
+        26
+      ],
+      "before": "18",
+      "after": "9f",
+      "building": "Greenhouse",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        11,
+        27
+      ],
+      "before": "11",
+      "after": "a3",
+      "building": "Greenhouse",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        12,
+        27
+      ],
+      "before": "1a",
+      "after": "a4",
+      "building": "Greenhouse",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "DOOR"
+      ]
+    },
+    {
+      "metatile": [
+        22,
+        29
+      ],
+      "before": "1a",
+      "after": "9d",
+      "building": "ArrivalInfo",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "DOOR"
+      ]
+    },
+    {
+      "metatile": [
+        38,
+        29
+      ],
+      "before": "8a",
+      "after": "9e",
+      "building": "CouriersDesk",
+      "collision": [
+        "WALL",
+        "WALL",
+        "DOOR",
+        "WALL"
+      ]
+    }
+  ],
+  "building_audit": [
+    {
+      "id": "RiverFamilyHome",
+      "style": "blue",
+      "changed_metatiles": 1,
+      "footprint_metatiles": [
+        6,
+        3,
+        8,
+        5
+      ],
+      "door_core": [
+        15,
+        9
+      ]
+    },
+    {
+      "id": "NortheastHome",
+      "style": "masonry",
+      "changed_metatiles": 1,
+      "footprint_metatiles": [
+        36,
+        3,
+        38,
+        5
+      ],
+      "door_core": [
+        74,
+        9
+      ]
+    },
+    {
+      "id": "GardenFlat",
+      "style": "masonry",
+      "changed_metatiles": 1,
+      "footprint_metatiles": [
+        29,
+        7,
+        31,
+        9
+      ],
+      "door_core": [
+        60,
+        17
+      ]
+    },
+    {
+      "id": "BridgeHome",
+      "style": "blue",
+      "changed_metatiles": 1,
+      "footprint_metatiles": [
+        12,
+        9,
+        14,
+        11
+      ],
+      "door_core": [
+        27,
+        21
+      ]
+    },
+    {
+      "id": "BoatHouse",
+      "style": "blue",
+      "changed_metatiles": 8,
+      "footprint_metatiles": [
+        2,
+        12,
+        6,
+        15
+      ],
+      "door_core": [
+        9,
+        29
+      ]
+    },
+    {
+      "id": "AnglerHome",
+      "style": "blue",
+      "changed_metatiles": 1,
+      "footprint_metatiles": [
+        8,
+        13,
+        10,
+        15
+      ],
+      "door_core": [
+        19,
+        29
+      ]
+    },
+    {
+      "id": "DispatcherHouse",
+      "style": "blue",
+      "changed_metatiles": 1,
+      "footprint_metatiles": [
+        11,
+        19,
+        13,
+        21
+      ],
+      "door_core": [
+        23,
+        41
+      ]
+    },
+    {
+      "id": "LakeCabin",
+      "style": "blue",
+      "changed_metatiles": 2,
+      "footprint_metatiles": [
+        2,
+        21,
+        5,
+        23
+      ],
+      "door_core": [
+        7,
+        45
+      ]
+    },
+    {
+      "id": "MillForemanHome",
+      "style": "masonry",
+      "changed_metatiles": 1,
+      "footprint_metatiles": [
+        29,
+        21,
+        31,
+        23
+      ],
+      "door_core": [
+        60,
+        45
+      ]
+    },
+    {
+      "id": "CooperativeFlat",
+      "style": "masonry",
+      "changed_metatiles": 1,
+      "footprint_metatiles": [
+        21,
+        24,
+        23,
+        26
+      ],
+      "door_core": [
+        44,
+        51
+      ]
+    },
+    {
+      "id": "ToolFlat",
+      "style": "blue",
+      "changed_metatiles": 1,
+      "footprint_metatiles": [
+        24,
+        24,
+        26,
+        26
+      ],
+      "door_core": [
+        51,
+        51
+      ]
+    },
+    {
+      "id": "CornerHome",
+      "style": "masonry",
+      "changed_metatiles": 1,
+      "footprint_metatiles": [
+        27,
+        24,
+        29,
+        26
+      ],
+      "door_core": [
+        56,
+        51
+      ]
+    },
+    {
+      "id": "CedarHome",
+      "style": "blue",
+      "changed_metatiles": 2,
+      "footprint_metatiles": [
+        30,
+        24,
+        33,
+        26
+      ],
+      "door_core": [
+        63,
+        51
+      ]
+    },
+    {
+      "id": "GardenersHome",
+      "style": "blue",
+      "changed_metatiles": 1,
+      "footprint_metatiles": [
+        2,
+        27,
+        4,
+        29
+      ],
+      "door_core": [
+        7,
+        57
+      ]
+    },
+    {
+      "id": "RiverInn",
+      "style": "blue",
+      "changed_metatiles": 8,
+      "footprint_metatiles": [
+        24,
+        27,
+        28,
+        30
+      ],
+      "door_core": [
+        53,
+        59
+      ]
+    },
+    {
+      "id": "MillWorkersHouse",
+      "style": "blue",
+      "changed_metatiles": 2,
+      "footprint_metatiles": [
+        34,
+        28,
+        37,
+        30
+      ],
+      "door_core": [
+        71,
+        59
+      ]
+    },
+    {
+      "id": "GrainExchange",
+      "style": "masonry",
+      "changed_metatiles": 0,
+      "footprint_metatiles": [
+        9,
+        1,
+        14,
+        5
+      ],
+      "door_core": [
+        22,
+        9
+      ]
+    },
+    {
+      "id": "CommunityLibrary",
+      "style": "masonry",
+      "changed_metatiles": 0,
+      "footprint_metatiles": [
+        31,
+        1,
+        36,
+        5
+      ],
+      "door_core": [
+        66,
+        9
+      ]
+    },
+    {
+      "id": "MusicRoom",
+      "style": "blue",
+      "changed_metatiles": 8,
+      "footprint_metatiles": [
+        26,
+        2,
+        30,
+        5
+      ],
+      "door_core": [
+        57,
+        9
+      ]
+    },
+    {
+      "id": "SupplyCoop",
+      "style": "blue",
+      "changed_metatiles": 2,
+      "footprint_metatiles": [
+        2,
+        3,
+        5,
+        5
+      ],
+      "door_core": [
+        7,
+        9
+      ]
+    },
+    {
+      "id": "PrintShop",
+      "style": "blue",
+      "changed_metatiles": 2,
+      "footprint_metatiles": [
+        22,
+        3,
+        25,
+        5
+      ],
+      "door_core": [
+        47,
+        9
+      ]
+    },
+    {
+      "id": "ToolWorkshop",
+      "style": "masonry",
+      "changed_metatiles": 0,
+      "footprint_metatiles": [
+        11,
+        6,
+        14,
+        8
+      ],
+      "door_core": [
+        24,
+        15
+      ]
+    },
+    {
+      "id": "FoundryMuseum",
+      "style": "masonry",
+      "changed_metatiles": 0,
+      "footprint_metatiles": [
+        2,
+        7,
+        7,
+        10
+      ],
+      "door_core": [
+        8,
+        19
+      ]
+    },
+    {
+      "id": "GardenShop",
+      "style": "blue",
+      "changed_metatiles": 2,
+      "footprint_metatiles": [
+        22,
+        7,
+        25,
+        9
+      ],
+      "door_core": [
+        47,
+        17
+      ]
+    },
+    {
+      "id": "RiverNaturalist",
+      "style": "blue",
+      "changed_metatiles": 1,
+      "footprint_metatiles": [
+        26,
+        7,
+        28,
+        9
+      ],
+      "door_core": [
+        55,
+        17
+      ]
+    },
+    {
+      "id": "PatternStudio",
+      "style": "blue",
+      "changed_metatiles": 1,
+      "footprint_metatiles": [
+        32,
+        7,
+        34,
+        9
+      ],
+      "door_core": [
+        67,
+        17
+      ]
+    },
+    {
+      "id": "Bookbinder",
+      "style": "masonry",
+      "changed_metatiles": 1,
+      "footprint_metatiles": [
+        36,
+        7,
+        38,
+        9
+      ],
+      "door_core": [
+        74,
+        17
+      ]
+    },
+    {
+      "id": "ArtsStudio",
+      "style": "blue",
+      "changed_metatiles": 2,
+      "footprint_metatiles": [
+        8,
+        8,
+        11,
+        10
+      ],
+      "door_core": [
+        19,
+        19
+      ]
+    },
+    {
+      "id": "DepartmentStore1F",
+      "style": "masonry",
+      "changed_metatiles": 0,
+      "footprint_metatiles": [
+        25,
+        11,
+        30,
+        18
+      ],
+      "door_core": [
+        54,
+        35
+      ]
+    },
+    {
+      "id": "Pokecenter1F",
+      "style": "blue",
+      "changed_metatiles": 0,
+      "footprint_metatiles": [
+        31,
+        11,
+        33,
+        13
+      ],
+      "door_core": [
+        63,
+        25
+      ]
+    },
+    {
+      "id": "Mart",
+      "style": "blue",
+      "changed_metatiles": 2,
+      "footprint_metatiles": [
+        35,
+        11,
+        37,
+        13
+      ],
+      "door_core": [
+        73,
+        25
+      ]
+    },
+    {
+      "id": "DispatchOffice",
+      "style": "special",
+      "changed_metatiles": 3,
+      "footprint_metatiles": [
+        11,
+        14,
+        14,
+        17
+      ],
+      "door_core": [
+        25,
+        33
+      ]
+    },
+    {
+      "id": "Gym",
+      "style": "blue",
+      "changed_metatiles": 4,
+      "footprint_metatiles": [
+        31,
+        14,
+        34,
+        17
+      ],
+      "door_core": [
+        64,
+        33
+      ]
+    },
+    {
+      "id": "BattleClub",
+      "style": "masonry",
+      "changed_metatiles": 0,
+      "footprint_metatiles": [
+        33,
+        19,
+        38,
+        23
+      ],
+      "door_core": [
+        70,
+        45
+      ]
+    },
+    {
+      "id": "FieldClub",
+      "style": "blue",
+      "changed_metatiles": 8,
+      "footprint_metatiles": [
+        6,
+        23,
+        10,
+        26
+      ],
+      "door_core": [
+        17,
+        51
+      ]
+    },
+    {
+      "id": "CommunityKitchen",
+      "style": "blue",
+      "changed_metatiles": 8,
+      "footprint_metatiles": [
+        34,
+        24,
+        38,
+        27
+      ],
+      "door_core": [
+        73,
+        53
+      ]
+    },
+    {
+      "id": "Greenhouse",
+      "style": "blue",
+      "changed_metatiles": 4,
+      "footprint_metatiles": [
+        10,
+        26,
+        14,
+        28
+      ],
+      "door_core": [
+        25,
+        55
+      ]
+    },
+    {
+      "id": "SouthMarket",
+      "style": "masonry",
+      "changed_metatiles": 0,
+      "footprint_metatiles": [
+        29,
+        27,
+        33,
+        30
+      ],
+      "door_core": [
+        62,
+        59
+      ]
+    },
+    {
+      "id": "ArrivalInfo",
+      "style": "blue",
+      "changed_metatiles": 1,
+      "footprint_metatiles": [
+        21,
+        28,
+        23,
+        30
+      ],
+      "door_core": [
+        45,
+        59
+      ]
+    },
+    {
+      "id": "CouriersDesk",
+      "style": "masonry",
+      "changed_metatiles": 1,
+      "footprint_metatiles": [
+        37,
+        28,
+        39,
+        30
+      ],
+      "door_core": [
+        76,
+        59
+      ]
+    }
+  ],
+  "grammar": "Roof caps and wall caps only at true exterior sides; no native ground-foundation rows above ground storey; preserve actual doors, footprints, every collision quadrant, all existing scripts/services/story."
+}

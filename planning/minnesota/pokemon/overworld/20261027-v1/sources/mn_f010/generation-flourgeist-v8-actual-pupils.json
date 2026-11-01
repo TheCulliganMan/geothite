@@ -1,0 +1,37 @@
+{
+  "name": "flourgeist",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/flourgeist-v8-actual-pupils",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f010/manifest-flourgeist-v8-actual-pupils.json",
+  "tool": "built-in image_gen",
+  "status": "source-generated/native-proven; root owns acceptance and context gate",
+  "native_frame_size": [
+    16,
+    16
+  ],
+  "canonical_normal_palette": [
+    32767,
+    22298,
+    17740,
+    0
+  ],
+  "canonical_shiny_palette": [
+    32767,
+    25429,
+    10641,
+    0
+  ],
+  "fit": [
+    14,
+    14
+  ],
+  "all_raw_renders_and_prompts_retained": true,
+  "no_native_pixel_painting": true,
+  "no_registry_or_pack_changes": true,
+  "retained_source_hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f010/flourgeist.overworld.imagegen-v2-eyes.png": "7f3ff7d510781b32020caae2c29710eea81352af65092220923d4757774361e9",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f010/flourgeist.overworld.imagegen-v1.png": "134b0142d16f196d8bed6798f1a284ce21940476441a6efa873e97cd65db79da",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f010/prompt-flourgeist-v1.txt": "13f0f356efa8c92f830a762e18f1dfec3afdfb7fb8b88addc9002228f545a49d",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f010/prompt-flourgeist-v2-eyes.txt": "e3940680315695d33af6dfab54f710cdee3607d611b707f2b68bda1826dd4f82"
+  },
+  "proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f010/proof-flourgeist-v8-actual-pupils-actual-source.json"
+}

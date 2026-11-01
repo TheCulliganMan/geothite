@@ -1,0 +1,3 @@
+PASS: production catalog load, complete schema, two pages of three lines <=18 chars, classification <=11 chars, evolution closure
+PASS: production catalog load against actual canonical native directories; reviewed full-board hash, source/import/palette/index/PNG/2bpp verification
+PASS: all proposed native level/TM/egg moves, growth curves and footprint donors exist in completed v5 pack; no extension/export built

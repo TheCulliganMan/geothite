@@ -1,0 +1,217 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_264",
+  "result": "pass",
+  "manifest_sha256": "e26a32e115670617a9d95efaad5b7e607e32b717469809b19d174c13ccb3c11d",
+  "bank_sha256": "bf8482f1af44d8a10e684146dc24c3c256e7675650149ea43742c7e01f41cd47",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f123/pikeman.overworld.imagegen-v3-clean-cheeks.png": "edeb62e55923008111793fbce88365c53f24a386097e133b816311174eced7f1",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f123/pikeman.overworld.imagegen-v1.png": "5c0b79a374118a1f8cbf98a88b1836b22160aebed7de3688d3d503b65b237ecb",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f123/pikeman.overworld.imagegen-v4-profile-pupils.png": "8484e34d66d4df144fe394241d6e35caa1dd08b4b7b78c29029ed18b3fa96e2b"
+  },
+  "canonical_eye_form": "Two isolated actual black pupil dots south and one isolated actual black pupil west; source eye components verified in all four nonrear poses.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            5,
+            11
+          ],
+          "source_sample": [
+            185,
+            333
+          ],
+          "source_component": [
+            167,
+            304,
+            30,
+            36
+          ],
+          "component_pixels": 1080,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ]
+        },
+        {
+          "native": [
+            7,
+            11
+          ],
+          "source_sample": [
+            263,
+            333
+          ],
+          "source_component": [
+            263,
+            304,
+            30,
+            36
+          ],
+          "component_pixels": 1080,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            8,
+            9,
+            3,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            4,
+            9
+          ],
+          "source_sample": [
+            1064,
+            316
+          ],
+          "source_component": [
+            1060,
+            303,
+            42,
+            36
+          ],
+          "component_pixels": 1512,
+          "native_neighbors": [
+            1,
+            1,
+            2,
+            1
+          ],
+          "source_rgba": [
+            1,
+            0,
+            0,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            5,
+            11
+          ],
+          "source_sample": [
+            185,
+            806
+          ],
+          "source_component": [
+            166,
+            772,
+            31,
+            35
+          ],
+          "component_pixels": 1085,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            254
+          ]
+        },
+        {
+          "native": [
+            7,
+            11
+          ],
+          "source_sample": [
+            263,
+            806
+          ],
+          "source_component": [
+            263,
+            772,
+            30,
+            35
+          ],
+          "component_pixels": 1050,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            9,
+            9,
+            1,
+            254
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            4,
+            9
+          ],
+          "source_sample": [
+            1064,
+            782
+          ],
+          "source_component": [
+            1060,
+            768,
+            42,
+            36
+          ],
+          "component_pixels": 1510,
+          "native_neighbors": [
+            1,
+            1,
+            2,
+            1
+          ],
+          "source_rgba": [
+            1,
+            1,
+            0,
+            253
+          ]
+        }
+      ]
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "notes": "Middle northern-pike lance jaw, teal back/hooked flank bands, rear-set dorsal, pectoral/pelvic fins and fork tail preserved. Compact authored profiles fix original600px overlong silhouette; front source cheeks broadened below original pupils, true west pupil blocks widened. Original north source poses retained and nape/back is plain; tiny source fin-base notches remain anatomy, no copied rear face. All four actual isolated pupil components proven. Equal518x442 source windows retain complete shapes, commonfit13, normal/shiny boards reviewed, current-source Rust converter used. No per-pose native rescale or pixel painting."
+  }
+}

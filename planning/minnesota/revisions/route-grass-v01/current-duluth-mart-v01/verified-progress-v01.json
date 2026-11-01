@@ -1,0 +1,31 @@
+{
+  "pid": 88219,
+  "steps": [
+    {
+      "step": "publication-wrapper",
+      "exit_code": 0,
+      "log": ".local/route-grass-review/duluth-mart-publication-wrapper-v01.log"
+    },
+    {
+      "step": "native-facades",
+      "exit_code": 0,
+      "log": ".local/route-grass-review/duluth-mart-native-facades-v01.log"
+    },
+    {
+      "step": "production-inputs",
+      "exit_code": 0,
+      "log": ".local/route-grass-review/duluth-mart-production-inputs-v01.log"
+    },
+    {
+      "step": "publisher-negatives",
+      "exit_code": 0,
+      "log": ".local/route-grass-review/duluth-mart-publisher-negatives-v01.log"
+    },
+    {
+      "step": "native-renders",
+      "exit_code": 0,
+      "log": ".local/route-grass-review/duluth-mart-native-renders-v01.log"
+    }
+  ],
+  "scope": "Single Mart repair; no broad Duluth town acceptance. Actual native-image inspection, strict source guards and selection remain manual followups."
+}

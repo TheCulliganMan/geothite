@@ -1,0 +1,9 @@
+{
+  "tool": "built-in image_gen",
+  "status": "succeeded",
+  "prompt_file": "prompt-imagegen-v1.txt",
+  "source_reference": "../front-back.imagegen-v1.png",
+  "original_tool_path": "/Users/ryanculligan/.codex/generated_images/01a17aa2-ca0b-7cc0-8219-cddf2150b02b/exec-bbe4d88f-4ad3-4839-a47b-8415456f6d2e.png",
+  "saved_path": "planning/minnesota/pokemon/sprites/mn-f047/roster-polish-v1/front-back.imagegen-v1.png",
+  "sha256": "78554e881de3086145b2a21ceda9bce7b84de2d493786c8844cd92be2ceef05d"
+}

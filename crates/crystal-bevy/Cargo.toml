@@ -7,41 +7,54 @@ repository.workspace = true
 rust-version.workspace = true
 
 [dependencies]
+sha2.workspace = true
 anyhow.workspace = true
-bevy = { version = "0.14", optional = true, default-features = false, features = [
+bevy = { workspace = true, optional = true, features = [
     "bevy_asset",
     "bevy_core_pipeline",
     "bevy_render",
     "bevy_sprite",
+    "bevy_sprite_render",
+    "bevy_log",
     "bevy_text",
+    "default_font",
     "bevy_ui",
+    "bevy_ui_render",
     "bevy_winit",
     "webgl2",
 ] }
 chrono.workspace = true
-crystal-assets = { path = "../crystal-assets" }
-crystal-audio = { path = "../crystal-audio" }
-crystal-core = { path = "../crystal-core" }
-crystal-runtime = { path = "../crystal-runtime" }
-crystal-net = { path = "../crystal-net" }
-crystal-render-api = { path = "../crystal-render-api", optional = true }
-crystal-voxel-view = { path = "../crystal-voxel-view", optional = true }
-image = { version = "0.25.10", default-features = false, features = ["png"] }
+crystal-assets.workspace = true
+crystal-audio.workspace = true
+crystal-core.workspace = true
+crystal-runtime.workspace = true
+crystal-net.workspace = true
+ratatui = { version = "0.30", default-features = false }
+crystal-tui-view.workspace = true
+crystal-render-api = { workspace = true, optional = true }
+crystal-voxel-view = { workspace = true, optional = true }
+image.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 thiserror.workspace = true
-uuid = { version = "1", features = ["js"] }
+naga = { version = "30.0.1", features = ["wgsl-in", "wgsl-out"], optional = true }
+wgpu = { version = "30.0.1", default-features = false, optional = true }
+uuid = { workspace = true, features = ["js"] }
 
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
-bevy = { version = "0.14", optional = true, default-features = false, features = ["multi_threaded", "x11"] }
+bevy = { workspace = true, optional = true, features = ["multi_threaded", "x11", "bevy_gilrs"] }
 rodio = { version = "0.18.1", default-features = false }
+
+[target.'cfg(target_os = "macos")'.dependencies]
+objc2 = { version = "0.5.2", optional = true }
+objc2-foundation = { version = "0.2.2", features = ["NSString", "NSGeometry"], optional = true }
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 getrandom = { version = "0.3", features = ["wasm_js"] }
-js-sys = "0.3"
-wasm-bindgen = "0.2"
-wasm-bindgen-futures = "0.4"
-web-sys = { version = "0.3", features = [
+js-sys.workspace = true
+wasm-bindgen.workspace = true
+wasm-bindgen-futures.workspace = true
+web-sys = { workspace = true, features = [
     "AudioBuffer",
     "AudioBufferSourceNode",
     "AudioContext",
@@ -51,6 +64,8 @@ web-sys = { version = "0.3", features = [
     "AudioParam",
     "GainNode",
     "Location",
+    "RequestCache",
+    "RequestInit",
     "Response",
     "Storage",
     "UrlSearchParams",
@@ -58,13 +73,31 @@ web-sys = { version = "0.3", features = [
 ] }
 
 [features]
-default = ["bevy-shell"]
+default = ["bevy-shell", "fullscreen-scaling"]
 bevy-shell = ["dep:bevy", "dep:crystal-render-api"]
+intro-certification = ["bevy-shell", "crystal-assets/test-fixtures", "crystal-runtime/test-fixtures"]
 fullscreen-scaling = ["bevy-shell"]
+# Installed desktop app: per-user saves; Windows omits the console window.
+desktop-app = ["bevy-shell", "dep:objc2", "dep:objc2-foundation"]
 voxel-view = ["bevy-shell", "dep:crystal-voxel-view"]
-location-tester = ["crystal-runtime/location-tester", "voxel-view", "crystal-assets/test-fixtures"]
+# Automatic adapter selection keeps WebGL available when WebGPU is absent.
+browser-webgpu = ["bevy-shell", "bevy/webgpu", "dep:naga"]
+location-tester = ["crystal-runtime/location-tester", "crystal-runtime/test-fixtures", "voxel-view", "crystal-assets/test-fixtures"]
+performance-audit = ["location-tester", "dep:wgpu"]
+# Normal previews use System directly; allocation diagnostics are explicit.
+allocation-tester = ["location-tester"]
+# Opt-in same-binary runtime tree entity benchmark controls.
+tree-entity-qa = ["location-tester"]
+# Dedicated terrain CPU worker is opt-in at compile time and ?terrainWorker=1.
+terrain-worker-qa = ["voxel-view", "crystal-voxel-view/terrain-worker-browser"]
+actor-worker-qa = ["voxel-view", "crystal-voxel-view/actor-worker-browser"]
 # Opt-in per-system and render tracing; native captures use TRACE_CHROME.
 operation-trace = ["crystal-runtime/operation-trace", "bevy-shell", "bevy/trace_chrome", "bevy/detailed_trace", "crystal-voxel-view?/operation-trace"]
+# Select tools individually: Bevy's `dev` group enables file watching,
+# which cannot compile on the browser target.
+# Render debugging also needs PBR's view layouts when the client uses 2D cameras.
+dev-tools = ["dev-diagrams", "bevy-shell", "bevy/debug", "bevy/bevy_dev_tools", "bevy/render_dev_tools", "bevy/bevy_pbr", "bevy/bevy_ui_debug", "bevy/default_font"]
+dev-diagrams = ["bevy-shell", "bevy/bevy_dev_tools", "bevy/schedule_data"]
 meshtastic = ["crystal-net/meshtastic"]
 
 [[example]]
@@ -72,11 +105,56 @@ name = "render_at_location"
 required-features = ["location-tester"]
 
 [[example]]
+name = "performance_audit"
+required-features = ["performance-audit"]
+
+[[example]]
+name = "input_timing"
+required-features = ["bevy-shell"]
+
+[[example]]
+name = "render_saved_session"
+required-features = ["location-tester"]
+
+[[example]]
+name = "source_sprite_regression"
+required-features = ["bevy-shell"]
+
+[[example]]
 name = "audit_voxel_coverage"
 required-features = ["location-tester"]
 
 [dev-dependencies]
-crystal-runtime = { path = "../crystal-runtime", features = ["test-fixtures"] }
-crystal-assets = { path = "../crystal-assets", features = ["test-fixtures"] }
-crystal-core = { path = "../crystal-core", features = ["test-fixtures"] }
-sha2.workspace = true
+crystal-runtime = { workspace = true, features = ["test-fixtures"] }
+crystal-assets = { workspace = true, features = ["test-fixtures"] }
+crystal-core = { workspace = true, features = ["test-fixtures"] }
+
+[[example]]
+name = "new_bark_3d"
+required-features = ["location-tester"]
+
+[[example]]
+name = "audit_authored_assets"
+required-features = ["location-tester"]
+
+[[example]]
+name = "immersive_battle_3d"
+required-features = ["location-tester"]
+
+[[example]]
+name = "verify_train_station"
+required-features = ["location-tester"]
+
+[[bin]]
+name = "crystal-bevy"
+path = "src/main.rs"
+required-features = ["bevy-shell"]
+
+[[bin]]
+name = "certify_intro"
+path = "src/bin/certify_intro.rs"
+required-features = ["intro-certification"]
+
+[[example]]
+name = "review_native_league"
+required-features = ["location-tester"]

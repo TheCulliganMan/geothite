@@ -1,0 +1,301 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F087",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f087/redesign-20261027-v2/prompt-v2.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-186-jotlet-v2",
+      "species_id": "MN_186",
+      "view": "front",
+      "source": "sprites/mn-f087/redesign-20261027-v2/front-back.imagegen-v2.png",
+      "crop": [
+        0,
+        0,
+        420,
+        512
+      ],
+      "fit": [
+        40,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        17310,
+        6445,
+        0
+      ],
+      "white_detail_min_samples": 8,
+      "interior_black_min_samples": 8,
+      "sampling": "area_vote",
+      "exterior_contour": "solid"
+    },
+    {
+      "id": "mn-186-jotlet-v2",
+      "species_id": "MN_186",
+      "view": "back",
+      "source": "sprites/mn-f087/redesign-20261027-v2/front-back.imagegen-v2.png",
+      "crop": [
+        0,
+        512,
+        480,
+        512
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        17310,
+        6445,
+        0
+      ],
+      "white_detail_min_samples": 8,
+      "interior_black_min_samples": 8,
+      "sampling": "area_vote",
+      "exterior_contour": "solid"
+    },
+    {
+      "id": "mn-187-memofold-v2",
+      "species_id": "MN_187",
+      "view": "front",
+      "source": "sprites/mn-f087/redesign-20261027-v2/front-back.imagegen-v2.png",
+      "crop": [
+        420,
+        0,
+        510,
+        512
+      ],
+      "fit": [
+        48,
+        48
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        27324,
+        14572,
+        0
+      ],
+      "white_detail_min_samples": 8,
+      "interior_black_min_samples": 8,
+      "sampling": "area_vote",
+      "exterior_contour": "solid"
+    },
+    {
+      "id": "mn-187-memofold-v2",
+      "species_id": "MN_187",
+      "view": "back",
+      "source": "sprites/mn-f087/redesign-20261027-v2/front-back.imagegen-v2.png",
+      "crop": [
+        480,
+        512,
+        495,
+        512
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        27324,
+        14572,
+        0
+      ],
+      "white_detail_min_samples": 8,
+      "interior_black_min_samples": 8,
+      "sampling": "area_vote",
+      "exterior_contour": "solid"
+    },
+    {
+      "id": "mn-188-recallisk-v2",
+      "species_id": "MN_188",
+      "view": "front",
+      "source": "sprites/mn-f087/redesign-20261027-v2/front-back.imagegen-v2.png",
+      "crop": [
+        930,
+        0,
+        606,
+        512
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        23421,
+        15944,
+        0
+      ],
+      "white_detail_min_samples": 8,
+      "interior_black_min_samples": 8,
+      "sampling": "area_vote",
+      "exterior_contour": "solid"
+    },
+    {
+      "id": "mn-188-recallisk-v2",
+      "species_id": "MN_188",
+      "view": "back",
+      "source": "sprites/mn-f087/redesign-20261027-v2/front-back.imagegen-v2.png",
+      "crop": [
+        975,
+        512,
+        561,
+        512
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        23421,
+        15944,
+        0
+      ],
+      "white_detail_min_samples": 8,
+      "interior_black_min_samples": 8,
+      "sampling": "area_vote",
+      "exterior_contour": "solid"
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root + independent roster review",
+    "outline_profile": "solid-exterior-v1",
+    "sheet_sha256": "323f976da8223b6c64ce6e716e6b1a4069a8881fa09e173c25bf1caf4fd1cda3",
+    "review_sheet_sha256": "323f976da8223b6c64ce6e716e6b1a4069a8881fa09e173c25bf1caf4fd1cda3",
+    "notes": "Root and independent reviewer accepted all six area-vote/solid source-authored views. Jotlet40px single peel note, Memofold48px linked paper notes, Recallisk54px broad note keeper; source-connected growth has no animal/dragon body. White eye windows retain black pupils and separate mouths. All48px rear portraits are close, eye-free folded-sheet backs. Independent palettes are exact4 RGB555 inks per species. No pixel edits or hand painting. All sources and six sampling/fit candidates retained in redesign-20261027-v2.",
+    "independent_receipt": "sprites/mn-f087/redesign-20261027-v2/independent-quality-review.json"
+  },
+  "raw_generation": {
+    "sha256": "1515412d67e16bb010453b031bfca7445c57ee0294ca6908f6a27d87527bff00",
+    "source_size": [
+      1536,
+      1024
+    ],
+    "source_file": "sprites/mn-f087/redesign-20261027-v2/front-back.imagegen-v2.png",
+    "prompt_file": "sprites/mn-f087/redesign-20261027-v2/prompt-v2.txt",
+    "tool": "built-in image_gen"
+  },
+  "pokemon_palettes": {
+    "MN_186": {
+      "species_id": "MN_186",
+      "name": "Jotlet",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          30,
+          28,
+          16
+        ],
+        [
+          13,
+          9,
+          6
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        17310,
+        6445,
+        0
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#F7E784",
+        "#6B4A31",
+        "#000000"
+      ]
+    },
+    "MN_187": {
+      "species_id": "MN_187",
+      "name": "Memofold",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          28,
+          21,
+          26
+        ],
+        [
+          12,
+          7,
+          14
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        27324,
+        14572,
+        0
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#E7ADD6",
+        "#633973",
+        "#000000"
+      ]
+    },
+    "MN_188": {
+      "species_id": "MN_188",
+      "name": "Recallisk",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          29,
+          27,
+          22
+        ],
+        [
+          8,
+          18,
+          15
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        23421,
+        15944,
+        0
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#EFDEB5",
+        "#42947B",
+        "#000000"
+      ]
+    }
+  }
+}

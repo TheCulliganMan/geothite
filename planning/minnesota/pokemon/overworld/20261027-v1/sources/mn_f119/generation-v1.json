@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F119",
+  "status": "source_generated_native_conversion_and_visual_review_pending",
+  "generation_tool": "built-in image_gen",
+  "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f119/overworld.imagegen-v1.png",
+  "source_sha256": "f7cd41b0f3d3d98f7d754bf5ba014bde265735fb61cf8d31f55a480e650f47a5",
+  "original_default_output": "/Users/ryanculligan/.codex/generated_images/01a17dc4-dd75-7642-a1c6-4bf13fda70c6/exec-f17087af-9de7-42e5-a59b-0ea2a1b59e41.png",
+  "dimensions": [
+    2172,
+    724
+  ],
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f119/prompt-v1.txt",
+  "sheet_columns": 6,
+  "sheet_rows": 2,
+  "column_order": [
+    "down_idle",
+    "up_idle",
+    "left_idle",
+    "down_step",
+    "up_step",
+    "left_step"
+  ],
+  "row_species": [
+    "MN_255",
+    "MN_256"
+  ],
+  "canonical_reference_paths": [
+    "target/minnesota-pokemon/native/MN_F119/mn-255-whirlnut-v1.front.png",
+    "target/minnesota-pokemon/native/MN_F119/mn-256-samurrel-v1.front.png"
+  ],
+  "native_target": {
+    "cell": [
+      16,
+      16
+    ],
+    "opaque_maximum": [
+      14,
+      14
+    ],
+    "border": 1,
+    "first_stage_height": 11,
+    "middle_height": 13,
+    "final_height": 14,
+    "transparent_index": 0,
+    "visible_indices": [
+      1,
+      2,
+      3
+    ],
+    "ground_anchor_y": 14
+  },
+  "palettes": [
+    {
+      "species_id": "MN_255",
+      "normal_rgb555": [
+        32767,
+        15068,
+        6411,
+        0
+      ],
+      "opaque_hex": [
+        "#E7B573",
+        "#5A4231",
+        "#000000"
+      ]
+    },
+    {
+      "species_id": "MN_256",
+      "normal_rgb555": [
+        32767,
+        10842,
+        9449,
+        0
+      ],
+      "opaque_hex": [
+        "#D69452",
+        "#4A394A",
+        "#000000"
+      ]
+    }
+  ],
+  "review_note": "Raw output saved intact. Identity and full-body directional layout inspected, but generated source remains denser than native16px and contains white highlight pixels despite exact3opaqueink prompt. Canonical converter must remap highlights to lightink; root must inspect actual native sheet, geometry, idle-step coherence and edge padding before acceptance. This metadata is not native acceptance."
+}

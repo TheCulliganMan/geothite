@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "selected_revision": "r10_survey_spurs_revision",
+  "pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+  "pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33",
+  "binary": ".local/route-grass-review/r19-gate-controller-v11",
+  "binary_sha256": "517d0e806984d1ed3eaf5e0a6a08159a46c1f4f963eb76bcbbb4acfb225f440f",
+  "log": ".local/route-grass-review/current-itasca-native-v02.log",
+  "exit_code": 0,
+  "scope": "Itasca habitat crossings, grass/wild RUN, uphill/dry ledge return and Continue; explicit initial fixtures, not earned regional progression."
+}

@@ -1,0 +1,110 @@
+{
+  "status": "MEASURED_REQUIRES_REVIEW",
+  "pack": "content-packs/minnesota-current-r13-boundary-apron-v03.crystalpack",
+  "pack_sha256": "7d3987bfbf0378aed960495cc20981c0d258eb391f33630b8e3de6c2686e2e7d",
+  "checks": [
+    {
+      "id": "main-west-east",
+      "start": [
+        0,
+        24
+      ],
+      "end": [
+        63,
+        24
+      ],
+      "measurement": {
+        "status": "MEASURED",
+        "grass_steps": 9,
+        "grass_quadrants_in_contract": 92,
+        "ice_quadrants": 0
+      }
+    },
+    {
+      "id": "main-east-west",
+      "start": [
+        63,
+        24
+      ],
+      "end": [
+        0,
+        24
+      ],
+      "measurement": {
+        "status": "MEASURED",
+        "grass_steps": 9,
+        "grass_quadrants_in_contract": 92,
+        "ice_quadrants": 0
+      }
+    },
+    {
+      "id": "uphill-22",
+      "start": [
+        22,
+        20
+      ],
+      "end": [
+        22,
+        17
+      ],
+      "measurement": {
+        "status": "MEASURED",
+        "grass_steps": 6,
+        "grass_quadrants_in_contract": 92,
+        "ice_quadrants": 0
+      }
+    },
+    {
+      "id": "uphill-23",
+      "start": [
+        23,
+        20
+      ],
+      "end": [
+        23,
+        17
+      ],
+      "measurement": {
+        "status": "MEASURED",
+        "grass_steps": 6,
+        "grass_quadrants_in_contract": 92,
+        "ice_quadrants": 0
+      }
+    },
+    {
+      "id": "uphill-24",
+      "start": [
+        24,
+        20
+      ],
+      "end": [
+        24,
+        17
+      ],
+      "measurement": {
+        "status": "MEASURED",
+        "grass_steps": 6,
+        "grass_quadrants_in_contract": 92,
+        "ice_quadrants": 0
+      }
+    },
+    {
+      "id": "uphill-25",
+      "start": [
+        25,
+        20
+      ],
+      "end": [
+        25,
+        17
+      ],
+      "measurement": {
+        "status": "MEASURED",
+        "grass_steps": 6,
+        "grass_quadrants_in_contract": 92,
+        "ice_quadrants": 0
+      }
+    }
+  ],
+  "scope": "Current-tile hop and lateral movement; actors clear, no Surf/Cut/interior shortcuts. Separate native tests include the installed trainer battle."
+}

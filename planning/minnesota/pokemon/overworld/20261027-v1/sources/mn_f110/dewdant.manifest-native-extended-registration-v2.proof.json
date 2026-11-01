@@ -1,0 +1,338 @@
+{
+  "species_id": "MN_241",
+  "name": "dewdant",
+  "status": "native-review-recommended; root independent review and context required",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f110/dewdant.manifest-native-extended-registration-v2.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-dewdant-extended-registration-v2",
+  "shared_transform": {
+    "source_bounds": [
+      13,
+      12,
+      440,
+      401
+    ],
+    "native_size": [
+      14,
+      12
+    ],
+    "native_origin": [
+      1,
+      3
+    ]
+  },
+  "all_four_nonrear_poses_actual_pupils_pass": true,
+  "each_native_eye_cluster_maps_to_one_actual_small_source_pupil_component": true,
+  "actual_source_pupil_proofs": [
+    {
+      "pose": "down_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f110/dewdant.overworld.imagegen-v1.png",
+      "crop": [
+        33,
+        94,
+        462,
+        424
+      ],
+      "actual_source_eye_bounds": [
+        [
+          213,
+          384,
+          23,
+          31
+        ],
+        [
+          291,
+          384,
+          24,
+          31
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              11
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                4,
+                3,
+                3,
+                253
+              ],
+              "bounds": [
+                213,
+                384,
+                23,
+                31
+              ],
+              "pixels": 713,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                11
+              ],
+              "source_sample_pixel": [
+                218,
+                390
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              9,
+              11
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                291,
+                384,
+                24,
+                31
+              ],
+              "pixels": 715,
+              "truncated_contour": false,
+              "native_pixel": [
+                9,
+                11
+              ],
+              "source_sample_pixel": [
+                313,
+                390
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f110/dewdant.overworld.imagegen-v2.png",
+      "crop": [
+        1031,
+        83,
+        462,
+        424
+      ],
+      "actual_source_eye_bounds": [
+        [
+          1153,
+          327,
+          26,
+          33
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              4,
+              10
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                1,
+                0,
+                253
+              ],
+              "bounds": [
+                1153,
+                327,
+                26,
+                33
+              ],
+              "pixels": 858,
+              "truncated_contour": false,
+              "native_pixel": [
+                4,
+                10
+              ],
+              "source_sample_pixel": [
+                1154,
+                345
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f110/dewdant.overworld.imagegen-v1.png",
+      "crop": [
+        34,
+        507,
+        462,
+        424
+      ],
+      "actual_source_eye_bounds": [
+        [
+          215,
+          798,
+          22,
+          30
+        ],
+        [
+          293,
+          798,
+          23,
+          30
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              11
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                3,
+                2,
+                1,
+                253
+              ],
+              "bounds": [
+                215,
+                798,
+                22,
+                30
+              ],
+              "pixels": 660,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                11
+              ],
+              "source_sample_pixel": [
+                219,
+                803
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              9,
+              11
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                293,
+                798,
+                23,
+                30
+              ],
+              "pixels": 690,
+              "truncated_contour": false,
+              "native_pixel": [
+                9,
+                11
+              ],
+              "source_sample_pixel": [
+                314,
+                803
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f110/dewdant.overworld.imagegen-v2.png",
+      "crop": [
+        1028,
+        495,
+        462,
+        424
+      ],
+      "actual_source_eye_bounds": [
+        [
+          1157,
+          736,
+          26,
+          35
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              5,
+              10
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                1157,
+                736,
+                26,
+                35
+              ],
+              "pixels": 906,
+              "truncated_contour": false,
+              "native_pixel": [
+                5,
+                10
+              ],
+              "source_sample_pixel": [
+                1182,
+                757
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "old_native_poses_preserved_exactly": [],
+  "normal_shiny_runtime_parity": "all1536pixels exact each",
+  "canonical_palette_bytes": "exact",
+  "all_three_walk_pairs_distinct": true,
+  "rear_review": "both rear native poses viewed; no copied face",
+  "normal_shiny_native_boards_actually_viewed": true,
+  "accepted_coverage_native_pack_untouched": true,
+  "manifest_sha256": "cdc0c07eeed8a06664e5c0793911ae57a6304bcde9bdce55225256358fbd2fd0",
+  "compiled_index_sha256": "3791e7a43b1a933327f57926fd626d333f0a35cb8a8705d7c6610262872b8256"
+}

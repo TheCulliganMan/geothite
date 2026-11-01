@@ -1,0 +1,4 @@
+interface:
+  display_name: "Pokémon Cry Authoring"
+  short_description: "Study and design original cries from sound primitives"
+  default_prompt: "Use $pokemon-cry-authoring to study and synthesize original creature cries from first principles."

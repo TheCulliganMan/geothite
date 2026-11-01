@@ -1,0 +1,232 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F083",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_180": {
+      "species_id": "MN_180",
+      "name": "Cinderfin",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          18,
+          11
+        ],
+        [
+          11,
+          7,
+          8
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        11871,
+        8427,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          148,
+          90
+        ],
+        [
+          90,
+          57,
+          66
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FF945A",
+        "#5A3942",
+        "#000000"
+      ]
+    },
+    "MN_181": {
+      "species_id": "MN_181",
+      "name": "Brinebraze",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          27,
+          11,
+          8
+        ],
+        [
+          9,
+          6,
+          10
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        8571,
+        10441,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          222,
+          90,
+          66
+        ],
+        [
+          74,
+          49,
+          82
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#DE5A42",
+        "#4A3152",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f083/prompt-v1.txt",
+  "reference_mapping": "sprites/mn-f083/reference-mapping-v1.json",
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-180-cinderfin-v1",
+      "species_id": "MN_180",
+      "view": "front",
+      "source": "sprites/mn-f083/mn-180-181.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        768,
+        520
+      ],
+      "fit": [
+        40,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        11871,
+        8427,
+        0
+      ],
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-180-cinderfin-v1",
+      "species_id": "MN_180",
+      "view": "back",
+      "source": "sprites/mn-f083/mn-180-181.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        520,
+        768,
+        504
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        11871,
+        8427,
+        0
+      ],
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-181-brinebraze-v1",
+      "species_id": "MN_181",
+      "view": "front",
+      "source": "sprites/mn-f083/mn-180-181.front-back.imagegen-v1.png",
+      "crop": [
+        768,
+        0,
+        768,
+        520
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        8571,
+        10441,
+        0
+      ],
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-181-brinebraze-v1",
+      "species_id": "MN_181",
+      "view": "back",
+      "source": "sprites/mn-f083/mn-180-181.front-back.imagegen-v1.png",
+      "crop": [
+        768,
+        520,
+        768,
+        504
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        8571,
+        10441,
+        0
+      ],
+      "interior_black_min_samples": 32
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "notes": "Root inspected both pairs: compact salt-brow ember fish with crescent tail becomes upright fin-footed smoke-chamber creature with three broad ribs and a slotted fan bellows tail. The theme appears in actual anatomy; no cooker prop or flame aura. Sparse eye glints, exact salmon/umber and ember/violet planes, and cropped close backs retain a clean stepped silhouette.",
+    "sheet_sha256": "23ded3f60e38384ab2dea73b919d0142cabb36a95ae7990b1b9837de3c8a3fab",
+    "outline_profile": "source-contour-v1"
+  }
+}

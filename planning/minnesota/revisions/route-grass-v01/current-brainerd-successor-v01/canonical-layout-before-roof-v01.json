@@ -1,0 +1,1308 @@
+{
+  "schema_version": 2,
+  "id": "MnBrainerd",
+  "tileset": "johto",
+  "compiled_tileset": "johto",
+  "dimensions_metatiles": [
+    32,
+    24
+  ],
+  "coordinate_units": "32px metatiles; events are 16px core",
+  "shore_fitting": "johto_8_neighbors",
+  "reject_cliff_cuts": true,
+  "source_pixels_modified": false,
+  "layers": [
+    {
+      "name": "Lake-country civic clearing",
+      "kind": "polygon",
+      "points": [
+        [
+          2,
+          9
+        ],
+        [
+          10,
+          9
+        ],
+        [
+          10,
+          5
+        ],
+        [
+          14,
+          5
+        ],
+        [
+          14,
+          2
+        ],
+        [
+          18,
+          2
+        ],
+        [
+          18,
+          7
+        ],
+        [
+          20,
+          7
+        ],
+        [
+          20,
+          10
+        ],
+        [
+          29,
+          10
+        ],
+        [
+          29,
+          14
+        ],
+        [
+          27,
+          14
+        ],
+        [
+          27,
+          20
+        ],
+        [
+          22,
+          20
+        ],
+        [
+          22,
+          17
+        ],
+        [
+          18,
+          17
+        ],
+        [
+          18,
+          22
+        ],
+        [
+          14,
+          22
+        ],
+        [
+          14,
+          15
+        ],
+        [
+          2,
+          15
+        ]
+      ],
+      "material": "lawn"
+    },
+    {
+      "name": "Northern camp pocket within pines",
+      "kind": "polygon",
+      "points": [
+        [
+          3,
+          3
+        ],
+        [
+          8,
+          3
+        ],
+        [
+          8,
+          6
+        ],
+        [
+          9,
+          6
+        ],
+        [
+          9,
+          8
+        ],
+        [
+          6,
+          8
+        ],
+        [
+          6,
+          10
+        ],
+        [
+          3,
+          10
+        ]
+      ],
+      "material": "lawn"
+    },
+    {
+      "name": "Lake irregular basin",
+      "kind": "polygon",
+      "points": [
+        [
+          21,
+          2
+        ],
+        [
+          28,
+          2
+        ],
+        [
+          28,
+          4
+        ],
+        [
+          30,
+          4
+        ],
+        [
+          30,
+          8
+        ],
+        [
+          28,
+          8
+        ],
+        [
+          28,
+          10
+        ],
+        [
+          22,
+          10
+        ],
+        [
+          22,
+          8
+        ],
+        [
+          20,
+          8
+        ],
+        [
+          20,
+          5
+        ],
+        [
+          21,
+          5
+        ]
+      ],
+      "material": "water"
+    },
+    {
+      "name": "North port street",
+      "kind": "block_rect",
+      "bounds": [
+        16,
+        0,
+        17,
+        13
+      ],
+      "block": "01"
+    },
+    {
+      "name": "South port street",
+      "kind": "block_rect",
+      "bounds": [
+        16,
+        12,
+        17,
+        24
+      ],
+      "block": "01"
+    },
+    {
+      "name": "West east connected town street",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        12,
+        32,
+        13
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Western service short porch",
+      "kind": "block_rect",
+      "bounds": [
+        4,
+        11,
+        12,
+        12
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Western clinic lane",
+      "kind": "block_rect",
+      "bounds": [
+        5,
+        11,
+        6,
+        13
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Mart lane",
+      "kind": "block_rect",
+      "bounds": [
+        10,
+        11,
+        11,
+        13
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Ranger north lodge approach",
+      "kind": "block_rect",
+      "bounds": [
+        11,
+        8,
+        17,
+        9
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Report forecourt",
+      "kind": "block_rect",
+      "bounds": [
+        12,
+        9,
+        16,
+        10
+      ],
+      "block": "01"
+    },
+    {
+      "name": "North report connector",
+      "kind": "block_rect",
+      "bounds": [
+        15,
+        8,
+        16,
+        12
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Camp path",
+      "kind": "block_rect",
+      "bounds": [
+        5,
+        7,
+        6,
+        11
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Camp to clinic path",
+      "kind": "block_rect",
+      "bounds": [
+        5,
+        10,
+        7,
+        11
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Lake launch fork",
+      "kind": "block_rect",
+      "bounds": [
+        18,
+        11,
+        27,
+        12
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Launch fork join",
+      "kind": "block_rect",
+      "bounds": [
+        18,
+        11,
+        19,
+        13
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Eastern camp street",
+      "kind": "block_rect",
+      "bounds": [
+        25,
+        13,
+        26,
+        19
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Outfitter porch",
+      "kind": "block_rect",
+      "bounds": [
+        23,
+        18,
+        27,
+        19
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Gym granite terrace",
+      "kind": "cliff_polygon",
+      "points": [
+        [
+          3,
+          16
+        ],
+        [
+          9,
+          16
+        ],
+        [
+          9,
+          17
+        ],
+        [
+          12,
+          17
+        ],
+        [
+          12,
+          20
+        ],
+        [
+          3,
+          20
+        ]
+      ]
+    },
+    {
+      "name": "Gym terrace court",
+      "kind": "block_rect",
+      "bounds": [
+        4,
+        16,
+        10,
+        20
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Gym terrace arrival",
+      "kind": "block_rect",
+      "bounds": [
+        9,
+        18,
+        12,
+        20
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Gym single ordinary ramp",
+      "kind": "point",
+      "position": [
+        10,
+        20
+      ],
+      "block": "74"
+    },
+    {
+      "name": "Gym lower ramp approach",
+      "kind": "block_rect",
+      "bounds": [
+        10,
+        21,
+        17,
+        22
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Gym ledge landing spur",
+      "kind": "block_rect",
+      "bounds": [
+        12,
+        19,
+        17,
+        20
+      ],
+      "block": "01"
+    },
+    {
+      "name": "POKECENTER facade",
+      "kind": "point",
+      "position": [
+        4,
+        9
+      ],
+      "block": "18"
+    },
+    {
+      "name": "POKECENTER facade",
+      "kind": "point",
+      "position": [
+        5,
+        9
+      ],
+      "block": "19"
+    },
+    {
+      "name": "POKECENTER facade",
+      "kind": "point",
+      "position": [
+        4,
+        10
+      ],
+      "block": "1a"
+    },
+    {
+      "name": "POKECENTER facade",
+      "kind": "point",
+      "position": [
+        5,
+        10
+      ],
+      "block": "1b"
+    },
+    {
+      "name": "MART facade",
+      "kind": "point",
+      "position": [
+        9,
+        9
+      ],
+      "block": "18"
+    },
+    {
+      "name": "MART facade",
+      "kind": "point",
+      "position": [
+        10,
+        9
+      ],
+      "block": "19"
+    },
+    {
+      "name": "MART facade",
+      "kind": "point",
+      "position": [
+        9,
+        10
+      ],
+      "block": "1a"
+    },
+    {
+      "name": "MART facade",
+      "kind": "point",
+      "position": [
+        10,
+        10
+      ],
+      "block": "17"
+    },
+    {
+      "name": "Ranger lodge facade",
+      "kind": "point",
+      "position": [
+        11,
+        6
+      ],
+      "block": "18"
+    },
+    {
+      "name": "Ranger lodge facade",
+      "kind": "point",
+      "position": [
+        12,
+        6
+      ],
+      "block": "19"
+    },
+    {
+      "name": "Ranger lodge facade",
+      "kind": "point",
+      "position": [
+        11,
+        7
+      ],
+      "block": "16"
+    },
+    {
+      "name": "Ranger lodge facade",
+      "kind": "point",
+      "position": [
+        12,
+        7
+      ],
+      "block": "1e"
+    },
+    {
+      "name": "SIVREN Water Gym facade",
+      "kind": "point",
+      "position": [
+        5,
+        16
+      ],
+      "block": "18"
+    },
+    {
+      "name": "SIVREN Water Gym facade",
+      "kind": "point",
+      "position": [
+        6,
+        16
+      ],
+      "block": "1f"
+    },
+    {
+      "name": "SIVREN Water Gym facade",
+      "kind": "point",
+      "position": [
+        7,
+        16
+      ],
+      "block": "19"
+    },
+    {
+      "name": "SIVREN Water Gym facade",
+      "kind": "point",
+      "position": [
+        5,
+        17
+      ],
+      "block": "1c"
+    },
+    {
+      "name": "SIVREN Water Gym facade",
+      "kind": "point",
+      "position": [
+        6,
+        17
+      ],
+      "block": "1d"
+    },
+    {
+      "name": "SIVREN Water Gym facade",
+      "kind": "point",
+      "position": [
+        7,
+        17
+      ],
+      "block": "1e"
+    },
+    {
+      "name": "Pier western rail with legal walking quadrant",
+      "kind": "block_rect",
+      "bounds": [
+        23,
+        7,
+        24,
+        10
+      ],
+      "block": "44"
+    },
+    {
+      "name": "Pier eastern rail with legal walking quadrant",
+      "kind": "block_rect",
+      "bounds": [
+        24,
+        7,
+        25,
+        10
+      ],
+      "block": "46"
+    },
+    {
+      "name": "Pier closed north head",
+      "kind": "block_rect",
+      "bounds": [
+        23,
+        6,
+        25,
+        7
+      ],
+      "block": "40"
+    },
+    {
+      "name": "Pier closed south rail shoulder",
+      "kind": "block_rect",
+      "bounds": [
+        23,
+        10,
+        25,
+        11
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Pier foot ordinary approach",
+      "kind": "point",
+      "position": [
+        24,
+        10
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Pier foot link",
+      "kind": "block_rect",
+      "bounds": [
+        24,
+        10,
+        25,
+        12
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Lake launch west bollard",
+      "kind": "point",
+      "position": [
+        21,
+        10
+      ],
+      "block": "45"
+    },
+    {
+      "name": "Lake launch east bollard",
+      "kind": "point",
+      "position": [
+        23,
+        10
+      ],
+      "block": "45"
+    },
+    {
+      "name": "Lake launch floor",
+      "kind": "point",
+      "position": [
+        22,
+        10
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Clinic west attached pines",
+      "kind": "block_rect",
+      "bounds": [
+        2,
+        9,
+        4,
+        12
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Clinic rear attached pines",
+      "kind": "block_rect",
+      "bounds": [
+        3,
+        8,
+        10,
+        9
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Service porch flowers",
+      "kind": "block_rect",
+      "bounds": [
+        7,
+        11,
+        9,
+        12
+      ],
+      "block": "04"
+    },
+    {
+      "name": "Central crossing southwest attached forest",
+      "kind": "block_rect",
+      "bounds": [
+        11,
+        13,
+        15,
+        16
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Northern street west attached forest",
+      "kind": "block_rect",
+      "bounds": [
+        14,
+        0,
+        16,
+        7
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Northern street east attached forest",
+      "kind": "block_rect",
+      "bounds": [
+        17,
+        0,
+        19,
+        7
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Southeast forest separates camp street from south spine",
+      "kind": "block_rect",
+      "bounds": [
+        18,
+        14,
+        23,
+        18
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Southern spine west forest",
+      "kind": "block_rect",
+      "bounds": [
+        13,
+        16,
+        16,
+        21
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Camp picnic garden",
+      "kind": "point",
+      "position": [
+        4,
+        5
+      ],
+      "block": "04"
+    },
+    {
+      "name": "Camp supply flower step",
+      "kind": "point",
+      "position": [
+        26,
+        18
+      ],
+      "block": "04"
+    },
+    {
+      "name": "Ranger porch flower step",
+      "kind": "point",
+      "position": [
+        13,
+        8
+      ],
+      "block": "04"
+    },
+    {
+      "name": "Clinic sign",
+      "kind": "point",
+      "position": [
+        3,
+        11
+      ],
+      "block": "45"
+    },
+    {
+      "name": "Gym sign",
+      "kind": "point",
+      "position": [
+        4,
+        19
+      ],
+      "block": "45"
+    },
+    {
+      "name": "Lake sign",
+      "kind": "point",
+      "position": [
+        27,
+        11
+      ],
+      "block": "45"
+    },
+    {
+      "name": "Ranger sign",
+      "kind": "point",
+      "position": [
+        11,
+        9
+      ],
+      "block": "45"
+    },
+    {
+      "name": "Camp sign",
+      "kind": "point",
+      "position": [
+        6,
+        7
+      ],
+      "block": "45"
+    },
+    {
+      "name": "South direction sign",
+      "kind": "point",
+      "position": [
+        17,
+        21
+      ],
+      "block": "45"
+    },
+    {
+      "name": "East direction sign",
+      "kind": "point",
+      "position": [
+        28,
+        13
+      ],
+      "block": "45"
+    },
+    {
+      "name": "North perimeter",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        0,
+        32,
+        1
+      ],
+      "block": "05"
+    },
+    {
+      "name": "North exact reserved route opening",
+      "kind": "point",
+      "position": [
+        16,
+        0
+      ],
+      "block": "01"
+    },
+    {
+      "name": "South perimeter",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        23,
+        32,
+        24
+      ],
+      "block": "05"
+    },
+    {
+      "name": "South exact reserved route opening",
+      "kind": "point",
+      "position": [
+        16,
+        23
+      ],
+      "block": "01"
+    },
+    {
+      "name": "West perimeter",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        0,
+        1,
+        24
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West exact reserved route opening",
+      "kind": "point",
+      "position": [
+        0,
+        12
+      ],
+      "block": "01"
+    },
+    {
+      "name": "East perimeter",
+      "kind": "block_rect",
+      "bounds": [
+        31,
+        0,
+        32,
+        24
+      ],
+      "block": "05"
+    },
+    {
+      "name": "East exact reserved route opening",
+      "kind": "point",
+      "position": [
+        31,
+        12
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Gym native eastward drop at terrace edge",
+      "kind": "point",
+      "position": [
+        12,
+        19
+      ],
+      "block": "4d"
+    },
+    {
+      "name": "Gym landing short ordinary return spur",
+      "kind": "block_rect",
+      "bounds": [
+        13,
+        19,
+        17,
+        20
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Camp supply low cabin authentic facade",
+      "kind": "point",
+      "position": [
+        23,
+        17
+      ],
+      "block": "14"
+    },
+    {
+      "name": "Camp supply low cabin authentic facade",
+      "kind": "point",
+      "position": [
+        24,
+        17
+      ],
+      "block": "15"
+    },
+    {
+      "name": "Camp northern attached pine roof",
+      "kind": "block_rect",
+      "bounds": [
+        3,
+        3,
+        7,
+        5
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Camp eastern attached pine roof",
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        5,
+        9,
+        7
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Camp southern attached grove",
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        8,
+        10,
+        9
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Camp west attached grove",
+      "kind": "block_rect",
+      "bounds": [
+        3,
+        7,
+        5,
+        9
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Report lane close eastern grove",
+      "kind": "block_rect",
+      "bounds": [
+        17,
+        8,
+        20,
+        11
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Ranger rear northwest attached grove",
+      "kind": "block_rect",
+      "bounds": [
+        10,
+        5,
+        11,
+        8
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Ranger porch west attached grove",
+      "kind": "block_rect",
+      "bounds": [
+        10,
+        8,
+        11,
+        10
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Camp cabin northern attached grove",
+      "kind": "block_rect",
+      "bounds": [
+        23,
+        14,
+        25,
+        17
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Camp cabin eastern attached grove",
+      "kind": "block_rect",
+      "bounds": [
+        27,
+        14,
+        29,
+        19
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Camp lane western attached grove",
+      "kind": "block_rect",
+      "bounds": [
+        23,
+        19,
+        25,
+        21
+      ],
+      "block": "05"
+    },
+    {
+      "name": "South port west attached grove",
+      "kind": "block_rect",
+      "bounds": [
+        11,
+        22,
+        16,
+        23
+      ],
+      "block": "05"
+    },
+    {
+      "name": "South port east attached grove",
+      "kind": "block_rect",
+      "bounds": [
+        17,
+        20,
+        22,
+        23
+      ],
+      "block": "05"
+    },
+    {
+      "name": "West lane southern pine edge",
+      "kind": "block_rect",
+      "bounds": [
+        2,
+        14,
+        11,
+        15
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Clinic and MART gap pinefinger",
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        9,
+        9,
+        11
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Clinic MART gap front flowers",
+      "kind": "point",
+      "position": [
+        7,
+        11
+      ],
+      "block": "04"
+    },
+    {
+      "name": "Ranger public reading turnout west hedge",
+      "kind": "block_rect",
+      "bounds": [
+        13,
+        10,
+        15,
+        11
+      ],
+      "block": "05"
+    },
+    {
+      "name": "South civic street west low fence",
+      "kind": "block_rect",
+      "bounds": [
+        2,
+        13,
+        10,
+        14
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Lake promenade inner low fence",
+      "kind": "block_rect",
+      "bounds": [
+        19,
+        12,
+        24,
+        13
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Gym western attached terrace canopy",
+      "kind": "block_rect",
+      "bounds": [
+        4,
+        18,
+        5,
+        20
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Gym rear terrace border garden",
+      "kind": "block_rect",
+      "bounds": [
+        8,
+        16,
+        10,
+        18
+      ],
+      "block": "04"
+    },
+    {
+      "name": "Gym southern low fence",
+      "kind": "block_rect",
+      "bounds": [
+        4,
+        19,
+        9,
+        20
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Gym spectator free tile",
+      "kind": "point",
+      "position": [
+        8,
+        18
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Camp narrow sitting pocket",
+      "kind": "point",
+      "position": [
+        4,
+        6
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Camp sign beside path",
+      "kind": "point",
+      "position": [
+        6,
+        7
+      ],
+      "block": "45"
+    },
+    {
+      "name": "South direction sign beside route",
+      "kind": "point",
+      "position": [
+        17,
+        21
+      ],
+      "block": "45"
+    },
+    {
+      "name": "Pine camp useful eastern trail",
+      "kind": "block_rect",
+      "bounds": [
+        5,
+        7,
+        11,
+        8
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Pine camp trail bends to report lane",
+      "kind": "point",
+      "position": [
+        10,
+        8
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Pine camp sign retained on trail verge",
+      "kind": "point",
+      "position": [
+        6,
+        7
+      ],
+      "block": "45"
+    },
+    {
+      "name": "Gym physical sign retained beside southern fence",
+      "kind": "point",
+      "position": [
+        4,
+        19
+      ],
+      "block": "45"
+    },
+    {
+      "name": "Gym eastern attached upper pine ledge cap",
+      "kind": "block_rect",
+      "bounds": [
+        10,
+        16,
+        12,
+        18
+      ],
+      "block": "05"
+    }
+  ]
+}

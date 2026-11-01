@@ -1,0 +1,19 @@
+{
+  "accepted": true,
+  "mode": "2D",
+  "pack_sha256": "5106942eab3b77f877150d9238cddbb877ed8002d9bfbcba378228ab2ed64e46",
+  "reviewed": [
+    "native-before-v01/whole-route.png",
+    "source-candidate-v01/whole-route.png",
+    "source-candidate-v01/marsh-trail-4x.png",
+    "native-v01/north-arrival.png",
+    "native-v01/marsh-trail.png",
+    "native-v01/southern-green-bend.png"
+  ],
+  "findings": [
+    "Required northern frosted grass sits across the existing arrival path.",
+    "Frosted marsh grass fills the ordinary narrow trail without touching ice or native Cut return.",
+    "Southern grass keeps the existing green-pine alias and wraps the readable forest bend."
+  ],
+  "scope": "Visual acceptance only. Native gameplay, current-parent selection guard, audio, stdio and lint remain required."
+}

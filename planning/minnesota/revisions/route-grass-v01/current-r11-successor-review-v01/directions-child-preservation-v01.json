@@ -1,0 +1,36 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-r11-grass-and-stairs-v01.crystalpack",
+  "pack_sha256": "ec1334db6bc46f0e1d5dc095c995a83f5c5d145389402b632d08bb0b3a5dbc27",
+  "content_identity": "72cc9a91543f9de52c4b89e77357db5b38998d40cc3f7904945d61515f205229",
+  "grass_parent": {
+    "status": "PASS_NATIVE_CHILD_NOT_SELECTED",
+    "parent_revision": "route_grass_r09_southwest_revision",
+    "parent_pack": "content-packs/minnesota-current-r09-southwest-grass-v01.crystalpack",
+    "parent_pack_sha256": "0d04630cac6239d4e4f544d73fc3c32af0d33c5c680605c32f41c36cc9f30880",
+    "pack": "content-packs/minnesota-current-r11-southwest-grass-v01.crystalpack",
+    "pack_sha256": "9f0ff0c7d0f6dd874ef1a581657900984ca75d360ffb04da2c92b00ab58475aa",
+    "content_identity": "76a702233ab6f9e154909031967ca44d51aec511ad2bf2cafad23d0a5966ee21",
+    "delta": {
+      "maps": [
+        "MnR11C00R00"
+      ],
+      "map_blocks": [
+        "MnR11C00R00_Blocks"
+      ]
+    },
+    "new_grass_quadrants": 20,
+    "all_other_maps_and_all_events_actors_scripts_teams_encounters_items_art_audio_exact": true
+  },
+  "delta": {
+    "maps": [
+      "MnR11C00R01",
+      "MnR11C00R03"
+    ],
+    "map_scripts": [
+      "MN_R11_LESTER_SIGNText",
+      "MN_R11_PALISADE_SIGNText"
+    ]
+  },
+  "all_terrain_actors_events_items_encounters_and_battle_inputs_exact": true
+}

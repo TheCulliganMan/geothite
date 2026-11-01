@@ -1,0 +1,23 @@
+{
+  "trainers": [
+    {
+      "id": "MN_GYM_2",
+      "map": "MnMankatoGym",
+      "approach": [
+        11,
+        4
+      ],
+      "facing": "south",
+      "trainer_class": "MN_LEADER_TORVEN",
+      "sprite": "SPRITE_MN_LEADER_TORVEN",
+      "actor_script": "MnMankatoGymLeader",
+      "fixture_events": [
+        "EVENT_MN_GYM_2_COURT_OPEN"
+      ],
+      "fixture_badges": 1,
+      "defeated_flag": "EVENT_MN_GYM_2_DEFEATED",
+      "badge_slot": 2,
+      "reward_item": "TM_MUD_SLAP"
+    }
+  ]
+}

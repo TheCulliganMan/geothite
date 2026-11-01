@@ -1,0 +1,23 @@
+{
+  "species_id": "MN_105",
+  "name": "Rumblehide",
+  "family_id": "MN_F051",
+  "tool": "built-in image_gen",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/manifest-rumblehide-v3-pupil-proof.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f051/rumblehide-v3-pupil-proof",
+  "normalized_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/source-feature-proof-rumblehide-v3.json",
+  "detailed_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/manifest-rumblehide-v3-pupil-proof.proof.json",
+  "sources": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/rumblehide.overworld.imagegen-v2-front-eyes.png": "808a90adc678a9f5ffd9d55df1cb78589ba3a86c381e56c194fb1536dc4429e2",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/rumblehide.overworld.imagegen-v1.png": "858e7778373633ea0f2f32b8a5fdb6dfd2a105ebb6c2b0bedec16043794595b8",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/rumblehide.overworld.imagegen-v3-profile-step-eye.png": "317d70e178b5a7a63d00e608f3b032ba3524e7bbf8ba0bc369823ce8baa5d8c1"
+  },
+  "preserved_attempt_receipts": [
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/attempt-rumblehide-v1.json",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/attempt-rumblehide-v2.json",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/attempt-rumblehide-v3.json"
+  ],
+  "status": "frozen native candidate; actual native normal/shiny and allfour source eyes reviewed; root context pending",
+  "notes": "Stocky curved two-ridge shoulder hump, broad root horns, goldface and throat beard. Rear crop phase avoids isolated hip seams resembling an eye pair; original rear art retained. Native13x11 vs low13x10 calf; growth via shoulder height, horn span and body mass.",
+  "accepted": false
+}

@@ -1,0 +1,38 @@
+{
+  "route": "MN_R10",
+  "parent_revision": "r10-carrier-plateau-v01",
+  "changes": [
+    {
+      "position": [
+        14,
+        12
+      ],
+      "before": "0a",
+      "after": "6b",
+      "reason": "Restore the native northeast turn instead of using a boulder as the rim"
+    },
+    {
+      "position": [
+        14,
+        13
+      ],
+      "before": "71",
+      "after": "85",
+      "reason": "Join the vertical face to the lower north rim with the reviewed native inward corner"
+    },
+    {
+      "position": [
+        13,
+        13
+      ],
+      "before": "71",
+      "after": "0a",
+      "reason": "Set the retained boulder back on flat interior ground away from the exposed corner"
+    }
+  ],
+  "status": "REJECTED_VISUAL_LOWER_RIM: movement and preservation passed, but private85 adds an extra north-rim stripe below its vertical face; retain all results as preimages.",
+  "scope": "Three cells only; retain the inaccessible natural ridge boundary and move the boulder inside it. Public approach stays on the lower road.",
+  "parent": "content-packs/minnesota-current-r10-carrier-plateau-v01.crystalpack",
+  "parent_sha256": "8f9d79f7d8f29cb63df1eec7a411109fd7708ecdef0722fa1fb267911021759d",
+  "superseded_by": "r10-carrier-plateau-v02"
+}

@@ -1,0 +1,34 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+  "pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33",
+  "binary_sha256": "b19fdc28b1ea8970af2a59d753273929b10f80eb1267d435d3dc19135053da79",
+  "results": [
+    {
+      "case": "twelve_walk_seams_reentry_and_continue",
+      "status": "PASS",
+      "log": "planning/minnesota/revisions/route-grass-v01/current-boundary-basecamp-successor-v02/twelve_walk_seams_reentry_and_continue.log"
+    },
+    {
+      "case": "every_badge_signal_and_restoration_refusal",
+      "status": "PASS",
+      "log": "planning/minnesota/revisions/route-grass-v01/current-boundary-basecamp-successor-v02/every_badge_signal_and_restoration_refusal.log"
+    },
+    {
+      "case": "unqualified_inbound_care_dock_heal_and_continue",
+      "status": "PASS",
+      "log": "planning/minnesota/revisions/route-grass-v01/current-boundary-basecamp-successor-v02/unqualified_inbound_care_dock_heal_and_continue.log"
+    },
+    {
+      "case": "transverse_outer_arrivals_escort_to_free_care",
+      "status": "PASS",
+      "log": "planning/minnesota/revisions/route-grass-v01/current-boundary-basecamp-successor-v02/transverse_outer_arrivals_escort_to_free_care.log"
+    },
+    {
+      "case": "public_surf_banks_cannot_open_signal_checkpoints",
+      "status": "PASS",
+      "log": "planning/minnesota/revisions/route-grass-v01/current-boundary-basecamp-successor-v02/public_surf_banks_cannot_open_signal_checkpoints.log"
+    }
+  ],
+  "scope": "Explicit local fixtures; all subsequent movement/dialogue/services/rewards native. Boundary Waters basecamp walking seams, guard requirements, inbound free care and public water boundaries; no Safari admission/capture claim."
+}

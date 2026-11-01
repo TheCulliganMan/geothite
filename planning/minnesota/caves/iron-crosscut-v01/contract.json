@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "map": "MnIronDrillApproach",
+  "parent_revision": "gunflint_spring_grotto_revision",
+  "parent_pack": "content-packs/minnesota-gunflint-grotto-v02.crystalpack",
+  "parent_pack_sha256": "45fa571daa78535af329f6c8f26a8770d24c56cbb1a5223942d5fbb1fc0979ca",
+  "native_module_sha256": "152e2f840f4cf68d6ffb15f141bdf1d934f52ab69a78ff3eaf2cfaf6b6f635c0",
+  "preserved_warps": [
+    {
+      "index": 1,
+      "x": 7,
+      "y": 21,
+      "target_map_constant": "MnR09Cave1F",
+      "target_map": "MnR09Cave1F",
+      "target_warp_id": 2
+    },
+    {
+      "index": 2,
+      "x": 6,
+      "y": 21,
+      "target_map_constant": "MnR09Cave1F",
+      "target_map": "MnR09Cave1F",
+      "target_warp_id": 2
+    },
+    {
+      "index": 3,
+      "x": 25,
+      "y": 5,
+      "target_map_constant": "MN_IRON_HAULAGE",
+      "target_map": "MN_IRON_HAULAGE",
+      "target_warp_id": 2
+    },
+    {
+      "index": 4,
+      "x": 24,
+      "y": 5,
+      "target_map_constant": "MN_IRON_HAULAGE",
+      "target_map": "MN_IRON_HAULAGE",
+      "target_warp_id": 2
+    }
+  ],
+  "preserved_actors": [
+    {
+      "id": "MN_LODE_ARC_ACCESS",
+      "tile": [
+        10,
+        12
+      ]
+    },
+    {
+      "id": "MN_LODE_ARC_SPOIL",
+      "tile": [
+        26,
+        18
+      ]
+    },
+    {
+      "id": "MN_IRON_APPROACH_ETHER",
+      "tile": [
+        5,
+        5
+      ]
+    }
+  ]
+}

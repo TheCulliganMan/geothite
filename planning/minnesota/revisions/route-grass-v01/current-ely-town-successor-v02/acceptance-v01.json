@@ -1,0 +1,11 @@
+{
+  "status": "PASS_CURRENT_ELY_PUBLIC_PATHS_SERVICES_AND_EXISTING_BUILDING_REVIEW",
+  "pack": "content-packs/minnesota-international-falls-windbreak-v01.crystalpack",
+  "pack_sha256": "7066f05448101c79b4dc761963b0f39a570bad07c4f80e3e777901ac2e207507",
+  "fresh_native_cases": 2,
+  "production_continue_calls": 13,
+  "prior_building_review": "planning/minnesota/revisions/route-grass-v01/current-ely-town-successor-v01/local-exterior-review-v01.json",
+  "prior_grass_pass_review": "planning/minnesota/revisions/route-grass-v01/current-ely-pass-successor-v01/acceptance-v01.json",
+  "source_checks": "current-source-checks-v01.json",
+  "scope": "Both actual signs/readable labels, resident, four road lanes/Continue and League registration/service fixture pass. Case-only denial text comparison corrected; walkable signs use actual A interaction without solid-collision assumption. Previous clinic/Mart/dual League entrances and grassy pass evidence retained. No gameplay/pack/terrain change, no earned campaign claim."
+}

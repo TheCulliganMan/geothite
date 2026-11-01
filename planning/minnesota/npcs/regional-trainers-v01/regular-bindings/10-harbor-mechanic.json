@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "trainer_class": "MN_HARBOR_MECHANIC",
+  "class_name": "MECHANIC",
+  "trainer_ids": [
+    "MN_DULUTH_X_T07"
+  ],
+  "actors": [
+    {
+      "map": "MnDuluth",
+      "script": "MN_DULUTH_X_T07",
+      "tile": [
+        35,
+        19
+      ],
+      "previous_sprite": "SPRITE_POKEFAN_M"
+    }
+  ]
+}

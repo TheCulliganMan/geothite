@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "trainer_class": "MN_ROLLER_SKATER",
+  "class_name": "ROLLER SKATER",
+  "trainer_ids": [
+    "MN_R11_T03"
+  ],
+  "actors": [
+    {
+      "map": "MnR11C00R02",
+      "script": "MN_R11_T03",
+      "tile": [
+        49,
+        7
+      ],
+      "previous_sprite": "SPRITE_COOLTRAINER_F"
+    }
+  ]
+}

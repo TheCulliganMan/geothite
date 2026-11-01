@@ -1,0 +1,31 @@
+{
+  "family_id": "MN_F119",
+  "prompt_file": "sprites/mn-f119/prompt-v1.txt",
+  "input_images": [],
+  "regional_sources": [
+    {
+      "url": "https://www.dnr.state.mn.us/mammals/flyingsquirrel.html",
+      "publisher": "Minnesota DNR",
+      "supports": "Both northern and southern flying squirrels occur in Minnesota; broad planing membrane extends front to hind feet, flattened tail and large eyes, tree-hollow/forest habitat.",
+      "fantasy_extension": "The maple-key tail and samara-shaped autorotating patagia/seed-dispersal winds are original monster anatomy/powers, not documented squirrel behavior."
+    },
+    {
+      "url": "https://www.dnr.state.mn.us/trees/sugar-maple.html",
+      "publisher": "Minnesota DNR",
+      "supports": "Sugar-maple seeds form paired slightly connected winged samaras carried by wind; sugar maple grows in cool rich eastern Minnesota locations.",
+      "fantasy_extension": "The creature borrows the paired seed-wing silhouette; it is neither a plant costume nor a claim of natural squirrel-controlled autorotation."
+    }
+  ],
+  "textual_style_reference": [
+    {
+      "path": "target/minnesota-pokemon/gen2-reference/starters.png",
+      "sha256": "af61f720a75b7e1b8e80ba14e8944612556397eedddd719669dec68b0e0fd534",
+      "role": "inspected Gen2 pixel clusters and close back framing only"
+    },
+    {
+      "path": "target/minnesota-pokemon/gen2-reference/bugs.png",
+      "sha256": "407fe86151d762ca6a2e4dfaa9e556a7da55fc9eecdf927c3c1600798b4e0884",
+      "role": "inspected Gen2 pixel clusters and close back framing only"
+    }
+  ]
+}

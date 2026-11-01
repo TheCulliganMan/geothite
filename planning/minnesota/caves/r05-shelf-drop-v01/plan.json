@@ -1,0 +1,190 @@
+{
+  "schema_version": 1,
+  "map": "MnR05RockCut",
+  "dimensions_metatiles": [
+    8,
+    10
+  ],
+  "purpose": "Two-mouth limestone rock cut: climb the ordinary fitted stairs to the upper Repel shelf; take a short native downward drop into the lower passage on the return. The original sheltered healer and both hillside mouths remain useful.",
+  "hand_edits": [
+    {
+      "metatile": [
+        2,
+        3
+      ],
+      "before": "20",
+      "after": "2d",
+      "reason": "Close the shelf end without stranding an ordinary floor tile behind the item actor."
+    },
+    {
+      "metatile": [
+        3,
+        3
+      ],
+      "before": "21",
+      "after": "39",
+      "reason": "Two ordinary native downward ledge lips."
+    },
+    {
+      "metatile": [
+        3,
+        4
+      ],
+      "before": "04",
+      "after": "02",
+      "reason": "Provide two clear lower landings connected to the original stairs."
+    }
+  ],
+  "connections": [
+    {
+      "inside_warp": 1,
+      "inside": [
+        5,
+        17
+      ],
+      "clear": [
+        5,
+        16
+      ],
+      "exterior": "MnR05C00R01",
+      "active": [
+        16,
+        29
+      ],
+      "passive": [
+        16,
+        30
+      ]
+    },
+    {
+      "inside_warp": 2,
+      "inside": [
+        11,
+        5
+      ],
+      "clear": [
+        11,
+        4
+      ],
+      "exterior": "MnR05C00R00",
+      "active": [
+        30,
+        27
+      ],
+      "passive": [
+        30,
+        28
+      ]
+    }
+  ],
+  "drop": {
+    "approaches": [
+      [
+        6,
+        5
+      ],
+      [
+        7,
+        5
+      ]
+    ],
+    "lips": [
+      [
+        6,
+        6
+      ],
+      [
+        7,
+        6
+      ]
+    ],
+    "courses": [
+      [
+        6,
+        7
+      ],
+      [
+        7,
+        7
+      ]
+    ],
+    "landings": [
+      [
+        6,
+        8
+      ],
+      [
+        7,
+        8
+      ]
+    ],
+    "reverse_button": "up",
+    "ordinary_return": [
+      [
+        7,
+        8
+      ],
+      [
+        8,
+        8
+      ],
+      [
+        9,
+        8
+      ],
+      [
+        9,
+        7
+      ],
+      [
+        9,
+        6
+      ],
+      [
+        9,
+        5
+      ],
+      [
+        8,
+        5
+      ],
+      [
+        7,
+        5
+      ],
+      [
+        6,
+        5
+      ]
+    ]
+  },
+  "story": "Existing optional two-mouth bluff passage and safe recovery stop. No new gate, battle, HM requirement, story flag or reward.",
+  "original_healer": {
+    "id": "MN_R05_CUT_WALKER",
+    "core": [
+      5,
+      13
+    ],
+    "approach": [
+      6,
+      13
+    ],
+    "effect": "Native acknowledged HealParty; full HP/status/all PP."
+  },
+  "original_reward": {
+    "id": "MN_R05_ITEM_03",
+    "core": [
+      5,
+      5
+    ],
+    "approach": [
+      6,
+      5
+    ],
+    "item": "REPEL",
+    "quantity": 1,
+    "event": "EVENT_MN_R05_ITEM_03",
+    "effect": "Once-only pickup, native100-step use and persistent countdown."
+  },
+  "status": "Verified and selected local native shelf-drop revision. Full map objective remains active."
+}

@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F049",
+  "species": [
+    {
+      "species_id": "MN_100",
+      "runtime_token": "ICEMYTH",
+      "palette_rgb555": [
+        32767,
+        32628,
+        21866,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        28319,
+        11605,
+        0
+      ],
+      "fit": [
+        14,
+        14
+      ],
+      "alpha_threshold": 245,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 64,
+      "interior_black_samples": 64,
+      "opaque_interior_minimum_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "icemyth.overworld.imagegen-v2-eye-plane.png",
+          "crop": [
+            40,
+            60,
+            480,
+            460
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "icemyth.overworld.imagegen-v2-eye-plane.png",
+          "crop": [
+            536,
+            60,
+            480,
+            460
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "icemyth.overworld.imagegen-v2-eye-plane.png",
+          "crop": [
+            1032,
+            60,
+            480,
+            460
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "icemyth.overworld.imagegen-v2-eye-plane.png",
+          "crop": [
+            40,
+            524,
+            480,
+            460
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "icemyth.overworld.imagegen-v2-eye-plane.png",
+          "crop": [
+            536,
+            520,
+            480,
+            460
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "icemyth.overworld.imagegen-v2-eye-plane.png",
+          "crop": [
+            1032,
+            517,
+            480,
+            460
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "status": "PASS",
+  "source_save": ".local/route-grass-review/current-cedar-reached-v02.crystalsave",
+  "source_sha256": "acb8e04d46e0b66d85bca2f864e3d27e44684dc3ec6a7a12a85b60d9585a40dd",
+  "input_source_unchanged": true,
+  "output_save": ".local/route-grass-review/current-cedar-verified-stdio-v02-output-v01.crystalsave",
+  "pack_sha256": "b57516c0b77c7bcf94fa35e60ff8300bfd8a8781782827739742d8fc15b3f437",
+  "pack": "content-packs/minnesota-current-r19-detroit-gate-v05.crystalpack",
+  "save": ".local/route-grass-review/current-cedar-verified-stdio-v02-input-v01.crystalsave",
+  "initial_map": "MnMaraisCedarApproach",
+  "initial_position": {
+    "x": 13,
+    "y": 10
+  },
+  "moved_position": {
+    "x": 14,
+    "y": 10
+  },
+  "calls_passed": 15,
+  "stderr_bytes": 0,
+  "items_pocket_verified": true,
+  "balls_pocket": true,
+  "returned_to_walking": true
+}

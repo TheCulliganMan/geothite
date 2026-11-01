@@ -1,0 +1,22 @@
+{
+  "pack": "content-packs/minnesota-current-r19-detroit-gate-v05.crystalpack",
+  "save": ".local/route-grass-review/current-northwoods-stdio-input-v01.crystalsave",
+  "initial_map": "MnBemidjiNorthwoods",
+  "initial_position": {
+    "x": 8,
+    "y": 2
+  },
+  "moved_position": {
+    "x": 8,
+    "y": 1
+  },
+  "calls_passed": 15,
+  "stderr_bytes": 0,
+  "items_pocket_verified": true,
+  "balls_pocket": true,
+  "returned_to_walking": true,
+  "status": "PASS",
+  "pack_sha256": "b57516c0b77c7bcf94fa35e60ff8300bfd8a8781782827739742d8fc15b3f437",
+  "reached_save_unchanged": true,
+  "separate_output_save": ".local/route-grass-review/current-northwoods-stdio-output-v01.crystalsave"
+}

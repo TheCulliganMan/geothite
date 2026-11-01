@@ -30,7 +30,6 @@ fn real_rival_pack_honors_canlose_in_existing_metadata_and_recompilation() {
             .unwrap();
         let saved_request = data
             .saved_trainer_battle_request(&battle.source_script, &battle.request.trainer_id)
-            .expect("resolve saved trainer metadata")
             .expect("saved trainer request");
         assert_eq!(saved_request.battle_type, request.battle_type);
         assert_eq!(

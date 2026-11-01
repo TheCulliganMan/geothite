@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "id": "MN_R11_T08",
+      "map": "MnR11C00R01",
+      "actor_script": "MN_R11_T08",
+      "trainer_class": "MN_TRAIL_RUNNER",
+      "sprite": "SPRITE_MN_TRAIL_RUNNER",
+      "facing": "south",
+      "approach": [
+        45,
+        8
+      ],
+      "defeated_flag": "EVENT_MN_R11_TRAINER_08"
+    }
+  ]
+}

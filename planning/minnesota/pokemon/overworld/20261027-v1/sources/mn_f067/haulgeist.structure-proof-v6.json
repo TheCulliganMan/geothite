@@ -1,0 +1,39 @@
+{
+  "species_id": "MN_146",
+  "result": "pass",
+  "manifest_sha256": "a1c16fe4a953d7f5115bbf43d00fcad8c6d7509f864309e56675540576bf4e6e",
+  "bank_sha256": "157109b457eb88665fad5f73877f659e87b4f31ce4e31623435b95d58fd3b006",
+  "structure": [
+    {
+      "pose": "down_idle",
+      "single_eight_connected_silhouette": true,
+      "opaque_pixel_count": 86
+    },
+    {
+      "pose": "up_idle",
+      "single_eight_connected_silhouette": true,
+      "opaque_pixel_count": 83
+    },
+    {
+      "pose": "left_idle",
+      "single_eight_connected_silhouette": true,
+      "opaque_pixel_count": 79
+    },
+    {
+      "pose": "down_step",
+      "single_eight_connected_silhouette": true,
+      "opaque_pixel_count": 90
+    },
+    {
+      "pose": "up_step",
+      "single_eight_connected_silhouette": true,
+      "opaque_pixel_count": 80
+    },
+    {
+      "pose": "left_step",
+      "single_eight_connected_silhouette": true,
+      "opaque_pixel_count": 83
+    }
+  ],
+  "notes": "All native fume curls, hooks and ghost tendrils stay attached to the same eight-connected silhouette. Source tiny curl details simplify under a single shared transform; no added native pixels."
+}

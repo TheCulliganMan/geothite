@@ -1,0 +1,78 @@
+{
+  "id": "MnIronDrillCore",
+  "template": "TeamRocketBaseB2F",
+  "tileset": "facility",
+  "status": "SOURCE CANDIDATE; no native drilling claim",
+  "dimensions_metatiles": [
+    12,
+    10
+  ],
+  "border_block": "17",
+  "rows": [
+    "17 17 17 17 17 17 17 17 17 17 17 17",
+    "17 21 01 01 01 01 01 01 28 01 3c 17",
+    "17 22 07 07 07 07 07 07 07 07 33 17",
+    "17 22 07 07 07 12 13 07 07 07 33 17",
+    "17 22 07 07 07 12 13 07 07 07 33 17",
+    "17 22 07 07 07 12 13 07 07 07 33 17",
+    "17 22 07 07 07 07 07 07 07 07 33 17",
+    "17 22 04 07 07 07 07 07 07 07 33 17",
+    "17 23 20 20 20 20 20 20 20 20 24 17",
+    "17 17 17 17 17 17 17 17 17 17 17 17"
+  ],
+  "entrance": {
+    "active": [
+      5,
+      14
+    ],
+    "passive": [
+      4,
+      15
+    ]
+  },
+  "witness_pose": [
+    9,
+    9
+  ],
+  "reed": {
+    "tile": [
+      8,
+      8
+    ],
+    "approach": [
+      8,
+      9
+    ]
+  },
+  "foreman": {
+    "tile": [
+      8,
+      5
+    ]
+  },
+  "piston": {
+    "metatile": [
+      5,
+      4
+    ],
+    "extended": "12",
+    "retracted": "16",
+    "collision": "WALL in every frame"
+  },
+  "controls": {
+    "read_tile": [
+      16,
+      2
+    ],
+    "approach": [
+      16,
+      3
+    ]
+  },
+  "contract": [
+    "At the witnessed pose, both piston halves and Reed fit the native player camera above the dialogue box.",
+    "Use native machine metatiles, existing SFX_STRENGTH, earthquake and supported frame pauses; do not synthesize or export new audio.",
+    "A witnessed operating sequence is required before its result flag, not a message saying drilling happened elsewhere.",
+    "Cargo apparatus recovery remains a separate action after feed isolation, rival victory and actual drill shutdown."
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "id": "MnBemidjiNorthwoods",
+  "ports": [
+    {
+      "side": "north",
+      "core": [
+        [
+          8,
+          0
+        ],
+        [
+          9,
+          0
+        ]
+      ]
+    },
+    {
+      "side": "south",
+      "core": [
+        [
+          8,
+          27
+        ],
+        [
+          9,
+          27
+        ]
+      ]
+    }
+  ],
+  "actors": [],
+  "signs": [],
+  "views": [
+    {
+      "id": "south-pine-entry",
+      "core": [
+        8,
+        23
+      ]
+    },
+    {
+      "id": "middle-grass-bend",
+      "core": [
+        7,
+        11
+      ]
+    },
+    {
+      "id": "north-forest-turn",
+      "core": [
+        9,
+        4
+      ]
+    }
+  ],
+  "current_revision": "route_grass_bemidji_northwoods_revision",
+  "current_native_source": "planning/minnesota/towns/MnBemidjiNorthwoods.layout.json",
+  "grass_contract": {
+    "northbound": 11,
+    "southbound": 8,
+    "local_uphill": 5,
+    "local_downhill": 0
+  },
+  "revision_runbook": "revisions/route-grass-v01/current-bemidji-northwoods-v01/README.md"
+}

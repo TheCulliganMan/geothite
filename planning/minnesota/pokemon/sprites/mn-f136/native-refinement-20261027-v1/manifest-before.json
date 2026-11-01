@@ -1,0 +1,360 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F136",
+  "status": "root-reviewed-unregistered-family",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_300": {
+      "species_id": "MN_300",
+      "name": "Densy",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          23,
+          17,
+          11
+        ],
+        [
+          8,
+          11,
+          16
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        11831,
+        16744,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          189,
+          140,
+          90
+        ],
+        [
+          66,
+          90,
+          132
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#BD8C5A",
+        "#425A84",
+        "#000000"
+      ]
+    },
+    "MN_301": {
+      "species_id": "MN_301",
+      "name": "Dozebear",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          17,
+          12,
+          20
+        ],
+        [
+          29,
+          25,
+          17
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        20881,
+        18237,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          140,
+          99,
+          165
+        ],
+        [
+          239,
+          206,
+          140
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#8C63A5",
+        "#EFCE8C",
+        "#000000"
+      ]
+    },
+    "MN_302": {
+      "species_id": "MN_302",
+      "name": "Denumbra",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          8,
+          7,
+          14
+        ],
+        [
+          29,
+          24,
+          13
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        14568,
+        14109,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          66,
+          57,
+          115
+        ],
+        [
+          239,
+          198,
+          107
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#423973",
+        "#EFC66B",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f136/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "role": "pixel-art style only",
+    "board": "target/minnesota-pokemon/gen2-reference/starters.png"
+  },
+  "sprites": [
+    {
+      "id": "mn-300-densy-v1",
+      "species_id": "MN_300",
+      "view": "front",
+      "source": "sprites/mn-f136/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        460,
+        550
+      ],
+      "fit": [
+        38,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        11831,
+        16744,
+        0
+      ],
+      "sampling": "area_vote",
+      "exterior_contour": "solid",
+      "white_detail_min_samples": 8,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-300-densy-v1",
+      "species_id": "MN_300",
+      "view": "back",
+      "source": "sprites/mn-f136/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        550,
+        460,
+        474
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        11831,
+        16744,
+        0
+      ],
+      "sampling": "area_vote",
+      "exterior_contour": "solid",
+      "white_detail_min_samples": 8,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-301-dozebear-v1",
+      "species_id": "MN_301",
+      "view": "front",
+      "source": "sprites/mn-f136/front-back.imagegen-v1.png",
+      "crop": [
+        460,
+        0,
+        510,
+        550
+      ],
+      "fit": [
+        48,
+        48
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        20881,
+        18237,
+        0
+      ],
+      "sampling": "area_vote",
+      "exterior_contour": "solid",
+      "white_detail_min_samples": 8,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-301-dozebear-v1",
+      "species_id": "MN_301",
+      "view": "back",
+      "source": "sprites/mn-f136/front-back.imagegen-v1.png",
+      "crop": [
+        460,
+        550,
+        510,
+        474
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        20881,
+        18237,
+        0
+      ],
+      "sampling": "area_vote",
+      "exterior_contour": "solid",
+      "white_detail_min_samples": 8,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-302-denumbra-v1",
+      "species_id": "MN_302",
+      "view": "front",
+      "source": "sprites/mn-f136/front-back.imagegen-v1.png",
+      "crop": [
+        970,
+        0,
+        566,
+        550
+      ],
+      "fit": [
+        54,
+        52
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        14568,
+        14109,
+        0
+      ],
+      "sampling": "area_vote",
+      "exterior_contour": "solid",
+      "white_detail_min_samples": 8,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-302-denumbra-v1",
+      "species_id": "MN_302",
+      "view": "back",
+      "source": "sprites/mn-f136/front-back.imagegen-v1.png",
+      "crop": [
+        970,
+        550,
+        566,
+        474
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        14568,
+        14109,
+        0
+      ],
+      "sampling": "area_vote",
+      "exterior_contour": "solid",
+      "white_detail_min_samples": 8,
+      "interior_black_min_samples": 32
+    }
+  ],
+  "source_sha256": "05a83c569dfc6e001690f1bfe04bdfdb3dd70f55aca6ae419eef0ba458b1ece7",
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root + signature_animation",
+    "outline_profile": "solid-exterior-v1",
+    "notes": "Root approved all six native views: small crescent paws grow folding forearms and a chest recess, then a large sheltered dream-face. Outer bear anatomy remains readable; rear head/upperback has no front chest-face copy. Stage palettes independent.",
+    "sheet_sha256": "03473798ca29bfde092efdc81376a5da718ab7bddd6b686e6eb9bd4165be66f2"
+  }
+}

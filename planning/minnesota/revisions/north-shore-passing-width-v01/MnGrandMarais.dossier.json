@@ -1,0 +1,153 @@
+{
+  "id": "MnGrandMarais",
+  "name": "GRAND MARAIS",
+  "dimensions_metatiles": [
+    20,
+    19
+  ],
+  "reference_anchor_percent": [
+    87,
+    26
+  ],
+  "role": "town",
+  "tileset": "mn_marais_shore",
+  "composition": "Warm Superior harbor. Direct North Shore arrival from west; separate north Gunflint/Ely inland departure.",
+  "ports": [
+    {
+      "route": "MN_R11",
+      "side": "W",
+      "gate_metatile": [
+        1,
+        4
+      ],
+      "landing_metatile": [
+        0,
+        4
+      ],
+      "native_connection": "MnR11C01R00 east / town west offsets0; Foot core8/9 and Superior Water16..35."
+    },
+    {
+      "route": "MN_R12",
+      "side": "N",
+      "gate_metatile": [
+        9,
+        1
+      ],
+      "landing_metatile": [
+        9,
+        0
+      ],
+      "native_connection": "Town north offset-4 to Cedar south+4; town core18/19 to Cedar26/27. Winter begins inland."
+    }
+  ],
+  "interiors": [
+    {
+      "id": "MnGrandMaraisFieldStation",
+      "kind": "field_station",
+      "dimensions_metatiles": [
+        5,
+        4
+      ],
+      "source_behavior": "Preserve installed native room module and services exactly; no alternate seventh gatehouse lineage."
+    },
+    {
+      "id": "MnGrandMaraisPokecenter",
+      "kind": "pokecenter",
+      "dimensions_metatiles": [
+        5,
+        4
+      ],
+      "source_behavior": "Preserve installed native room module and services exactly; no alternate seventh gatehouse lineage."
+    },
+    {
+      "id": "MnGrandMaraisMart",
+      "kind": "mart",
+      "dimensions_metatiles": [
+        6,
+        4
+      ],
+      "source_behavior": "Preserve installed native room module and services exactly; no alternate seventh gatehouse lineage."
+    },
+    {
+      "id": "MnGrandMaraisArtistHouse",
+      "kind": "house",
+      "dimensions_metatiles": [
+        4,
+        4
+      ],
+      "source_behavior": "Preserve installed native room module and services exactly; no alternate seventh gatehouse lineage."
+    },
+    {
+      "id": "MnGrandMaraisFisherHouse",
+      "kind": "house",
+      "dimensions_metatiles": [
+        4,
+        4
+      ],
+      "source_behavior": "Preserve installed native room module and services exactly; no alternate seventh gatehouse lineage."
+    },
+    {
+      "id": "MnGrandMaraisLighthouse",
+      "kind": "lighthouse",
+      "dimensions_metatiles": [
+        5,
+        5
+      ],
+      "source_behavior": "Preserve installed native room module and services exactly; no alternate seventh gatehouse lineage."
+    }
+  ],
+  "walkable_destinations": [
+    "each port landing",
+    "every visible exterior door",
+    "central square",
+    "local story NPC"
+  ],
+  "door_contract": "Six original indexed facade/room pairs and native exit steps unchanged.",
+  "implementation": {
+    "design": "../playable/grand-marais.json",
+    "map_constant": "MN_GRAND_MARAIS",
+    "scope": "Warm west-entry Superior town; north inland branch.",
+    "interiors": 6,
+    "review": "../revisions/superior-gunflint-quality-v01/VERIFICATION.md",
+    "connections": "MnGrandMarais.connections.json"
+  },
+  "native_connections_source": "MnGrandMarais.connections.json",
+  "layout": "MnGrandMarais.layout.json",
+  "native_geography_publication": {
+    "status": "VERIFIED_COASTAL_PASSING_WIDTH",
+    "final_pack_sha256": "e951fddafee3a0c09a2356d4dd683890ac498e23daeb266d08c5f12d79ec1167",
+    "content_identity": "544539b3c51802c03cc284ae7ec3d683ea251596af80c71ef6f886ef4888aa16",
+    "verification": "planning/minnesota/renders/north-shore-width-fauna-v1029/acceptance-v1035.json",
+    "progression_scope": "Explicit local qualifications do not establish earned campaign progression."
+  },
+  "world_origin_proposed": [
+    226,
+    -400
+  ],
+  "native_passing_width": {
+    "revision": "north_shore_passing_width_revision",
+    "native_binding": {
+      "pack": "content-packs/minnesota-north-shore-passing-width-fauna-v02.crystalpack",
+      "pack_sha256": "e951fddafee3a0c09a2356d4dd683890ac498e23daeb266d08c5f12d79ec1167",
+      "content_identity": "544539b3c51802c03cc284ae7ec3d683ea251596af80c71ef6f886ef4888aa16"
+    },
+    "current_terrain": "planning/minnesota/revisions/north-shore-passing-width-v01/MnGrandMarais.rows.json",
+    "source_kind": "installed_native_row_layout",
+    "plan": "planning/minnesota/revisions/north-shore-passing-width-v01/plan.json",
+    "gate_coordinates": "planning/minnesota/revisions/north-shore-passing-width-v01/gate-coordinates.json",
+    "preserved_story_source": "planning/minnesota/towns/MnGrandMarais.json",
+    "requires": [
+      "ALL_EIGHT_NATIVE_ENGINE_BADGES",
+      "EVENT_MN_LIGHTHOUSE_SIGNAL"
+    ],
+    "scope": "Four-tile coastal town mouth; original town identity, activities, actors, doors and programs preserved.",
+    "verification": "planning/minnesota/renders/north-shore-width-fauna-v1029/acceptance-v1035.json",
+    "preserved_geography_publication": {
+      "status": "MATCHES_COMPOSED_NATIVE_GEOGRAPHY",
+      "final_pack_sha256": "032304d0fd1d51863a2c3bf2562b20728e22c7535d1c194555621bc8e85b4899",
+      "content_identity": "f2ac93f14af05a2935947e1696385a26a16b2d2bd509e5da3e9223af02f98d63",
+      "verification": "revisions/superior-gunflint-quality-v01/VERIFICATION.md",
+      "progression_scope": "Explicit local fixtures do not establish earned campaign progression."
+    }
+  }
+}

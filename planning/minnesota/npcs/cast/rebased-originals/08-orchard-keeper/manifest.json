@@ -1,0 +1,47 @@
+{
+  "name": "ORCHARD KEEPER POMONA",
+  "role": "preserved original NPC",
+  "status": "accepted-native-playable-rebased",
+  "source": "native-pixels-v3.json",
+  "source_path": "planning/minnesota/npcs/sprites/08-orchard-keeper/native-pixels-v3.json",
+  "integration": "placement-v1.json",
+  "controller": "placement-v1.json",
+  "native": "target/npc-sprites/orchard/reference-v2",
+  "pack": "content-packs/minnesota-trainer-cast-29-v01.crystalpack",
+  "gameplay": "target/trainer-cast/rebase/08-orchard-keeper/gameplay",
+  "log": "target/trainer-cast/rebase/08-orchard-keeper/controller.log",
+  "original_placement": "planning/minnesota/npcs/sprites/08-orchard-keeper/placement-v1.json",
+  "old_map": "MnRochester",
+  "new_map": "MnRochester",
+  "old_tile": [
+    23,
+    12
+  ],
+  "new_tile": [
+    22,
+    12
+  ],
+  "scope": "Exact accepted original art, palette, party, class and dialogue. Placement rebased to safe compact geography; original geography not transplanted.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/cast/rebased-originals/08-orchard-keeper/placement-v1.json": "a98db6e263258f122cd6f3550145c0e9bae5c8f46eca64887709acecd08265c5",
+    "planning/minnesota/npcs/sprites/08-orchard-keeper/native-pixels-v3.json": "e5d5857b0e0f5deac662845eae949edbed7364de206d041492942d73657f00fb",
+    "planning/minnesota/npcs/sprites/08-orchard-keeper/manifest.json": "8b1965767a1c8a227803bcdbe17815d7a2c0bbc4a33811d4d298a6e69a230e9f",
+    "target/trainer-cast/rebase/08-orchard-keeper/controller.log": "0c1b29c326ed7f06b4b5cabf08b99d7861c23ea3f4799e53633e266b594627ee",
+    "content-packs/minnesota-trainer-cast-29-v01.crystalpack": "e5c2f4205f6e6d0d97a236c7550f30ec9ed4e745eb311106d1380da72dd4cd95",
+    "target/npc-sprites/orchard/reference-v2/verification.json": "d0ac1ea4e7a828bc26e9ca00c6404d970f8a0d8724b87af94df2dd5a2ed6288e",
+    "target/trainer-cast/rebase/08-orchard-keeper/gameplay/original-npc-trainer-intro.png": "1a9949a9d10183c2f0d19bb67ab03ab474f14feb2310cdb7faac3bac41f4700c",
+    "target/trainer-cast/rebase/08-orchard-keeper/gameplay/original-npc-overworld-state.png": "84a5c5423a9448db0a613ec7396fde1e680578ff7c4f2caa94059e561673fb3c",
+    "target/trainer-cast/rebase/08-orchard-keeper/gameplay/original-npc-first-turn.png": "4989acca6e4dd3b83ffc6bf5fddd0d8090bb35654ffd3d2d6d7db65688e55e5f"
+  },
+  "final_pack": "content-packs/minnesota-trainer-cast-36-v01.crystalpack",
+  "final_gameplay": "target/trainer-cast/final-audit/gameplay/rebased-originals-08-orchard-keeper",
+  "final_log": "target/trainer-cast/final-audit/gameplay/rebased-originals-08-orchard-keeper/controller.log",
+  "final_status": "accepted-native-playable-final-pack",
+  "final_review": "Actual battle intro and field captures inspected on exact final pack; art retains accepted native sources and palette.",
+  "final_evidence_sha256": {
+    "target/trainer-cast/final-audit/gameplay/rebased-originals-08-orchard-keeper/controller.log": "8865a688e9b3ae0dd7c593f109073d328e5688b9640746b3299b106e65c32722",
+    "target/trainer-cast/final-audit/gameplay/rebased-originals-08-orchard-keeper/original-npc-trainer-intro.png": "1a9949a9d10183c2f0d19bb67ab03ab474f14feb2310cdb7faac3bac41f4700c",
+    "target/trainer-cast/final-audit/gameplay/rebased-originals-08-orchard-keeper/original-npc-overworld-state.png": "84a5c5423a9448db0a613ec7396fde1e680578ff7c4f2caa94059e561673fb3c",
+    "target/trainer-cast/final-audit/gameplay/rebased-originals-08-orchard-keeper/original-npc-first-turn.png": "4989acca6e4dd3b83ffc6bf5fddd0d8090bb35654ffd3d2d6d7db65688e55e5f"
+  }
+}

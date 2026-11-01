@@ -1,0 +1,4339 @@
+{
+  "schema_version": 1,
+  "manifest": "minnesota-interior-life-v3",
+  "rooms": [
+    {
+      "map": "MnDuluthBeachShelter",
+      "purpose": "Free care and a Park Point beach-cleanup warming stop.",
+      "texts": [
+        {
+          "label": "MN_DULUTH_X_BEACHSHELTER_F1_HOSTText",
+          "lines": [
+            "You made it down the point! Warm up while I tend your partners.",
+            "We leave a kettle on for the beach-cleanup crew, even when the lake is gray."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_DL_INTERIOR_BEACHCOMBER",
+          "actor": {
+            "sprite": "SPRITE_FISHER",
+            "tile": [
+              8,
+              5
+            ],
+            "approach": [
+              8,
+              6
+            ]
+          },
+          "lines": [
+            "I came looking for agates. Found three bottle caps and a mitten instead.",
+            "The caps go in my litter sack. The mitten gets a place by the kettle. Somebody will be back."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthBoatBuilder",
+      "purpose": "A working boat-repair shop; apprentice explains why cedar craft need maintenance.",
+      "texts": [
+        {
+          "label": "MN_DULUTH_X_BOATBUILDER_F1_HOSTText",
+          "lines": [
+            "I mend cedar boats between freight shifts. Wood swells and shrinks; a good repair has to let it move.",
+            "My apprentice is learning to listen for the loose rib before reaching for the hammer."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_DL_INTERIOR_BOAT_APPRENTICE",
+          "actor": {
+            "sprite": "SPRITE_YOUNGSTER",
+            "tile": [
+              10,
+              5
+            ],
+            "approach": [
+              9,
+              5
+            ]
+          },
+          "lines": [
+            "I named my first canoe OPE. I said it every time I bumped the workbench.",
+            "We patched the rib instead of throwing the boat out. It still has a whole lake in it."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthBoatClub1F",
+      "purpose": "Optional existing Sulo match and a rowing club with neighborhood stakes.",
+      "texts": [
+        {
+          "label": "MN_DULUTH_X_BOATCLUB_F1_HOSTText",
+          "lines": [
+            "SULO helps coach the little boats when he is not battling here.",
+            "He calls a clean loss good practice. A muddy landing gets a longer lecture."
+          ]
+        }
+      ],
+      "conversations": []
+    },
+    {
+      "map": "MnDuluthBoatClub2F",
+      "purpose": "Boat-club winter repair circle; second half of the apprentice story.",
+      "texts": [
+        {
+          "label": "MN_DULUTH_X_BOATCLUB_F2_HOSTText",
+          "lines": [
+            "This is where we stitch sail covers all winter. Nobody gets charged for the first lesson.",
+            "Downstairs, SULO says teamwork wins matches. Upstairs, it keeps your stitches straight."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_DL_INTERIOR_SAIL_MENDER",
+          "actor": {
+            "sprite": "SPRITE_TEACHER",
+            "tile": [
+              10,
+              5
+            ],
+            "approach": [
+              10,
+              6
+            ]
+          },
+          "lines": [
+            "The boat shop apprentice brought us a crooked canoe cover.",
+            "We put it on the smallest boat. Perfect fit! Please tell the apprentice we kept it."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthCargoOffice",
+      "purpose": "Retained native X Defend requisition with a working harbor ledger.",
+      "texts": [
+        {
+          "label": "MN_DULUTH_X_CARGOOFFICE_F1_HOSTText",
+          "lines": [
+            "The crew needs an X DEFEND for practice. Our requisition desk can exchange one for an HP UP.",
+            "The ore ledger upstairs at the warehouse tells you whose work gets these cargoes moving."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_DL_INTERIOR_CARGO_CHECKER",
+          "actor": {
+            "sprite": "SPRITE_GENTLEMAN",
+            "tile": [
+              10,
+              5
+            ],
+            "approach": [
+              9,
+              5
+            ]
+          },
+          "lines": [
+            "Every crate has a weight. Every shift has names.",
+            "If the weights make the ledger but the names do not, it is an unfinished ledger. Ask the union hall."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthCommunityKitchen",
+      "purpose": "Existing food service with a volunteer cook and hotdish conversation.",
+      "texts": [],
+      "conversations": [
+        {
+          "script": "MN_DL_INTERIOR_KITCHEN_VOLUNTEER",
+          "actor": {
+            "sprite": "SPRITE_TEACHER",
+            "tile": [
+              10,
+              5
+            ],
+            "approach": [
+              10,
+              6
+            ]
+          },
+          "lines": [
+            "Our harbor hotdish uses whatever the crew brings. Today it is wild rice and mushrooms.",
+            "Someone always asks for the recipe. First instruction: find six neighbors who will argue about it."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthDockSupplies",
+      "purpose": "Existing dock shop with a worker choosing provisions.",
+      "texts": [],
+      "conversations": [
+        {
+          "script": "MN_DL_INTERIOR_DOCK_CUSTOMER",
+          "actor": {
+            "sprite": "SPRITE_SAILOR",
+            "tile": [
+              8,
+              7
+            ],
+            "approach": [
+              9,
+              7
+            ]
+          },
+          "lines": [
+            "I buy supplies before a shift, not after my partners are worn out.",
+            "A lake wind does not care that payday is tomorrow. The co-op and I plan ahead."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthFieldClinic",
+      "purpose": "Existing free party care for harbor workers and traveling trainers.",
+      "texts": [
+        {
+          "label": "MN_DULUTH_X_FIELDCLINIC_F1_HOSTText",
+          "lines": [
+            "Bring your partners in before the next harbor shift. We can rest them here.",
+            "Our waiting room is for everyone: deck crews, hill walkers, and the kid on their very first trip."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_DL_INTERIOR_CLINIC_VISITOR",
+          "actor": {
+            "sprite": "SPRITE_POKEFAN_M",
+            "tile": [
+              10,
+              5
+            ],
+            "approach": [
+              9,
+              5
+            ]
+          },
+          "lines": [
+            "My MACHOP hauled nets all morning and still tried to carry my lunch.",
+            "The nurse told us both to sit down. Apparently I needed the reminder more."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthFisherCottage",
+      "purpose": "A net-mender household remembering the changing seasons on Superior.",
+      "texts": [
+        {
+          "label": "MN_DULUTH_X_FISHERCOTTAGE_F1_HOSTText",
+          "lines": [
+            "I used to measure a year in net repairs. Now my grandkid measures it in school terms.",
+            "We still meet here to mend the spring tears together. A lake can make room for both calendars."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_DL_INTERIOR_FISHER_GRANDKID",
+          "actor": {
+            "sprite": "SPRITE_TWIN",
+            "tile": [
+              8,
+              5
+            ],
+            "approach": [
+              8,
+              6
+            ]
+          },
+          "lines": [
+            "Grandpa says every knot remembers who tied it.",
+            "Mine must remember a very confused person. But he keeps asking me back to help."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthForemanHome",
+      "purpose": "Off-duty foreman sharing credit with the cargo crews.",
+      "texts": [
+        {
+          "label": "MN_DULUTH_X_FOREMANHOME_F1_HOSTText",
+          "lines": [
+            "At work I count loads. At home my daughter makes me name everyone who moved them.",
+            "Try the cargo office, then the warehouse loft, then the union hall. That is the story of a shipment."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_DL_INTERIOR_FOREMAN_FAMILY",
+          "actor": {
+            "sprite": "SPRITE_LASS",
+            "tile": [
+              8,
+              5
+            ],
+            "approach": [
+              8,
+              4
+            ]
+          },
+          "lines": [
+            "Dad brought home a picture of a huge ore boat.",
+            "I asked where the cooks were. He went back and got a picture of the cooks. Better picture."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthHarborHouse",
+      "purpose": "Small harbor household with a fog memory.",
+      "texts": [
+        {
+          "label": "MnDuluthHarborHouse_MN_DULUTH_HARBOR_HOSTText",
+          "lines": [
+            "We could hear the boats before we could see them this morning.",
+            "My brother used to answer the foghorn with his trombone. The neighbors still bring it up."
+          ]
+        }
+      ],
+      "conversations": []
+    },
+    {
+      "map": "MnDuluthHarborWorkshop",
+      "purpose": "Preserved main-story signal receiver with a neighbor maintaining its records.",
+      "texts": [
+        {
+          "label": "MN_HARBOR_RECEIVERText",
+          "lines": [
+            "We keep the receiver ready for the harbor signal.",
+            "The crews share weather notes, too. The reading hall keeps the older entries where anyone can check them."
+          ]
+        }
+      ],
+      "conversations": []
+    },
+    {
+      "map": "MnDuluthHillGardenHouse",
+      "purpose": "A hillside seed-saving household with an optional once-only Berry.",
+      "texts": [
+        {
+          "label": "MN_DULUTH_X_HILLGARDENHOUSE_F1_HOSTText",
+          "lines": [
+            "These seedlings grew in old coffee tins through the last cold snap.",
+            "A south window is prime real estate in a DULUTH spring. The cat is filing an appeal."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_DL_INTERIOR_HILL_SEED_SAVER",
+          "actor": {
+            "sprite": "SPRITE_TEACHER",
+            "tile": [
+              8,
+              5
+            ],
+            "approach": [
+              8,
+              4
+            ]
+          },
+          "lines": [
+            "A BERRY from our windowsill harvest, for the road.",
+            "We save seed and share the fruit. Take care of your partners and visit the point garden sometime."
+          ],
+          "remember": "EVENT_MN_INTERIOR_WINDOWSILL_BERRY",
+          "reward": "BERRY",
+          "repeat": [
+            "The next seedlings are not ready yet. Your BERRY was from this year's first harvest. Give our regards to the point gardeners."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthHillHouse",
+      "purpose": "A compact elder household with local neighborly humor.",
+      "texts": [
+        {
+          "label": "MnDuluthHillHouse_MN_DULUTH_HILL_HOSTText",
+          "lines": [
+            "The east ramp is easier on my knees. My neighbor shovels it before I wake up.",
+            "They insist it was the wind. Most helpful wind I have ever met."
+          ]
+        }
+      ],
+      "conversations": []
+    },
+    {
+      "map": "MnDuluthHillRanger",
+      "purpose": "A hill trail caretaker remembering an owl call.",
+      "texts": [
+        {
+          "label": "MN_DULUTH_X_HILLRANGER_F1_HOSTText",
+          "lines": [
+            "I check the stone steps after each thaw. Loose grit makes a fine little sled out of your boots.",
+            "The trick is fixing the trail before the first school group gets ambitious."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_DL_INTERIOR_OWL_LISTENER",
+          "actor": {
+            "sprite": "SPRITE_YOUNGSTER",
+            "tile": [
+              8,
+              5
+            ],
+            "approach": [
+              8,
+              4
+            ]
+          },
+          "lines": [
+            "I heard a HOOTHOOT while we swept the steps. The ranger asked me to draw where it perched.",
+            "My owl looks like a potato. My map is excellent."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthHillSupplies",
+      "purpose": "Existing medicine counter and a snow-shoveling customer.",
+      "texts": [],
+      "conversations": [
+        {
+          "script": "MN_DL_INTERIOR_HILL_CUSTOMER",
+          "actor": {
+            "sprite": "SPRITE_POKEFAN_F",
+            "tile": [
+              8,
+              7
+            ],
+            "approach": [
+              9,
+              7
+            ]
+          },
+          "lines": [
+            "I carry supplies uphill for the older neighbors. They repay me in soup containers.",
+            "I own more soup containers than plates. Every lid is from a different decade."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthHillsideHostel1F",
+      "purpose": "Existing party rest and a hostel desk for traveling workers.",
+      "texts": [
+        {
+          "label": "MN_DULUTH_X_HILLSIDEHOSTEL_F1_HOSTText",
+          "lines": [
+            "Boots by the door, partners by the warm spot. I can help everyone rest.",
+            "The early shift sleeps upstairs. We keep the tea quiet and the welcome loud."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_DL_INTERIOR_HOSTEL_COOK",
+          "actor": {
+            "sprite": "SPRITE_TEACHER",
+            "tile": [
+              10,
+              5
+            ],
+            "approach": [
+              9,
+              5
+            ]
+          },
+          "lines": [
+            "A guest from WINONA sent us a bread recipe. The loaf came out shaped like a bluff.",
+            "We ate the experiment and kept the letter. That is how a hostel gets its cookbook."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthHillsideHostel2F",
+      "purpose": "Guest stories: one traveler staying to help with the thaw.",
+      "texts": [
+        {
+          "label": "MN_DULUTH_X_HILLSIDEHOSTEL_F2_HOSTText",
+          "lines": [
+            "I booked one night before the thaw. Then I offered to help clear the neighbor ramps.",
+            "It has been four nights. I may live here now."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_DL_INTERIOR_HOSTEL_POSTCARD",
+          "actor": {
+            "sprite": "SPRITE_LASS",
+            "tile": [
+              10,
+              5
+            ],
+            "approach": [
+              9,
+              5
+            ]
+          },
+          "lines": [
+            "My postcard says: DULUTH is lovely. Bring another sweater.",
+            "I wrote it indoors, wearing two sweaters. Accuracy matters."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthHistoryHouse",
+      "purpose": "Taconite interpretation anchored in workers and families.",
+      "texts": [
+        {
+          "label": "MnDuluthHistoryHouse_MN_DULUTH_HISTORY_HOSTText",
+          "lines": [
+            "This taconite sample came from the Iron Range. Follow it from the mine to rail to ship.",
+            "Then ask who cooked the shift meals and repaired the tracks. History needs those names, too."
+          ]
+        }
+      ],
+      "conversations": []
+    },
+    {
+      "map": "MnDuluthLakeOutfitter",
+      "purpose": "Existing lake equipment shop and a visitor planning a shore walk.",
+      "texts": [],
+      "conversations": [
+        {
+          "script": "MN_DL_INTERIOR_LAKE_CUSTOMER",
+          "actor": {
+            "sprite": "SPRITE_FISHER",
+            "tile": [
+              8,
+              7
+            ],
+            "approach": [
+              9,
+              7
+            ]
+          },
+          "lines": [
+            "I used to pack for the weather I wanted.",
+            "Now I pack for the lake we have. More socks, fewer heroic speeches."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthLakesideHome",
+      "purpose": "A family maintaining a yearly ice-out notebook.",
+      "texts": [
+        {
+          "label": "MN_DULUTH_X_LAKESIDEHOME_F1_HOSTText",
+          "lines": [
+            "We write the first open-water day in a notebook every year. No contest, just paying attention.",
+            "My mother wrote about the birds on the same page. I like her records best."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_DL_INTERIOR_ICE_NOTEBOOK",
+          "actor": {
+            "sprite": "SPRITE_LASS",
+            "tile": [
+              8,
+              5
+            ],
+            "approach": [
+              8,
+              4
+            ]
+          },
+          "lines": [
+            "I drew the gull that stole my sandwich next to this year's ice-out date.",
+            "That bird has become an important historical source."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthLookoutLodge1F",
+      "purpose": "Directions to an upstairs weather witness and public reading records.",
+      "texts": [
+        {
+          "label": "MN_DULUTH_X_LOOKOUTLODGE_F1_HOSTText",
+          "lines": [
+            "Welcome up the ridge. A lookout upstairs has this morning's harbor observation.",
+            "Compare it with the old log at the READING HALL, then visit WEATHER STUDY upstairs. They keep the shared record."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_DL_INTERIOR_LODGE_WALKER",
+          "actor": {
+            "sprite": "SPRITE_POKEFAN_M",
+            "tile": [
+              10,
+              5
+            ],
+            "approach": [
+              10,
+              6
+            ]
+          },
+          "lines": [
+            "I climbed for the view and stayed for the stories.",
+            "A sailor downstairs could name every vessel from its silhouette. I could name the snack wrapper in my pocket."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthLookoutLodge2F",
+      "purpose": "First optional harbor-weather witness: a visible fog bank.",
+      "texts": [],
+      "conversations": [
+        {
+          "script": "MN_DL_INTERIOR_LOOKOUT_SKETCHER",
+          "actor": {
+            "sprite": "SPRITE_LASS",
+            "tile": [
+              10,
+              5
+            ],
+            "approach": [
+              10,
+              6
+            ]
+          },
+          "lines": [
+            "I draw the same harbor every week. The roofs stay put; the horizon does not.",
+            "Today I used half a page of gray. It still feels like I missed a shade."
+          ]
+        },
+        {
+          "script": "MN_DULUTH_X_LOOKOUTLODGE_F2_HOST",
+          "lines": [
+            "From up here I watched fog cover the lower harbor while the ridge stayed clear.",
+            "Tell the weather readers: clear on the hill did not mean clear on the lake."
+          ],
+          "remember": "EVENT_MN_INTERIOR_FOG_LOOKOUT",
+          "repeat": [
+            "Still clear on the ridge, fog down below. Take that observation to WEATHER STUDY upstairs when you have checked the reading hall log."
+          ],
+          "requires": [],
+          "need": [],
+          "reward": null
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthMaritimeCoop1F",
+      "purpose": "Retained native supply service; cooperative ownership explained by a member.",
+      "texts": [],
+      "conversations": [
+        {
+          "script": "MN_DL_INTERIOR_COOP_MEMBER",
+          "actor": {
+            "sprite": "SPRITE_SAILOR",
+            "tile": [
+              8,
+              7
+            ],
+            "approach": [
+              9,
+              7
+            ]
+          },
+          "lines": [
+            "We own a little piece of this co-op together. The boring meeting is part of the bargain.",
+            "The useful part is knowing why the prices changed, and getting a say in the answer."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthMaritimeCoop2F",
+      "purpose": "Retained second-floor shop and a first-time shopper learning held-item care.",
+      "texts": [],
+      "conversations": [
+        {
+          "script": "MN_DL_INTERIOR_COOP_SHOPPER",
+          "actor": {
+            "sprite": "SPRITE_YOUNGSTER",
+            "tile": [
+              8,
+              5
+            ],
+            "approach": [
+              9,
+              5
+            ]
+          },
+          "lines": [
+            "I came for one useful thing for my partner. That was the plan.",
+            "The clerk made me read what it does before I spent my allowance. Good clerk. Dangerous to impulse buys."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthMaritimeCoop3F",
+      "purpose": "Existing two-battle Metal Coat award and a training-room neighbor.",
+      "texts": [
+        {
+          "label": "MN_DULUTH_X_MARITIMECOOP_F3_HOSTText",
+          "lines": [
+            "NILS and IVAR run the crew practice here. Their METAL COAT award is still earned in fair matches.",
+            "The co-op pays for a place to learn without a badge at stake. Everybody starts somewhere."
+          ]
+        }
+      ],
+      "conversations": []
+    },
+    {
+      "map": "MnDuluthMart",
+      "purpose": "A retained general store with a shopper buying for more than one household.",
+      "texts": [],
+      "conversations": [
+        {
+          "script": "MN_DL_INTERIOR_MART_NEIGHBOR",
+          "actor": {
+            "sprite": "SPRITE_TEACHER",
+            "tile": [
+              7,
+              5
+            ],
+            "approach": [
+              7,
+              6
+            ]
+          },
+          "lines": [
+            "My shopping list says POTION, milk, and return Len's casserole dish.",
+            "One of those errands has been on the list since February. I am afraid of the conversation."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthOreWarehouse1F",
+      "purpose": "A working freight floor and a link to the upstairs tally keeper.",
+      "texts": [
+        {
+          "label": "MN_DULUTH_X_OREWAREHOUSE_F1_HOSTText",
+          "lines": [
+            "We tally every outgoing load here. The upstairs clerk keeps the shift notes as well as the weights.",
+            "Take the clear aisle. A warehouse is still a workplace, even when the crew welcomes visitors."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_DL_INTERIOR_WAREHOUSE_WORKER",
+          "actor": {
+            "sprite": "SPRITE_BLACK_BELT",
+            "tile": [
+              10,
+              5
+            ],
+            "approach": [
+              9,
+              5
+            ]
+          },
+          "lines": [
+            "I work this loading floor with my MACHOP. We both stop to clear the aisle before the next cart comes.",
+            "My partner checks my work. I check the ledger. A good crew catches the little things together."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthOreWarehouse2F",
+      "purpose": "Second labor-history witness: restored names in a shift tally.",
+      "texts": [],
+      "conversations": [
+        {
+          "script": "MN_DL_INTERIOR_TALLY_APPRENTICE",
+          "actor": {
+            "sprite": "SPRITE_YOUNGSTER",
+            "tile": [
+              10,
+              5
+            ],
+            "approach": [
+              9,
+              5
+            ]
+          },
+          "lines": [
+            "The old ledger taught me long division. The people in it taught me to ask better questions.",
+            "Numbers are not the whole story. They can help you notice a missing part."
+          ]
+        },
+        {
+          "script": "MN_DULUTH_X_OREWAREHOUSE_F2_HOST",
+          "lines": [
+            "I found a shift listed only as night crew. I asked around until we had every name.",
+            "Bring that news to the UNION HALL upstairs. People deserve more than a total at the bottom."
+          ],
+          "remember": "EVENT_MN_INTERIOR_SHIFT_NAMES",
+          "repeat": [
+            "Every night-shift name is back in the tally. The UNION HALL upstairs recorder will want to hear that."
+          ],
+          "requires": [],
+          "need": [],
+          "reward": null
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthPointGardenHome",
+      "purpose": "A Park Point gardener sharing cold-frame knowledge and visiting the hill growers.",
+      "texts": [
+        {
+          "label": "MN_DULUTH_X_POINTGARDENHOME_F1_HOSTText",
+          "lines": [
+            "Sand drains fast. We keep the roots covered and shelter seedlings from the lake wind.",
+            "The hill growers save seed in coffee tins. Ask them for a BERRY if you are heading back up."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_DL_INTERIOR_POINT_GARDENER",
+          "actor": {
+            "sprite": "SPRITE_POKEFAN_F",
+            "tile": [
+              8,
+              5
+            ],
+            "approach": [
+              8,
+              4
+            ]
+          },
+          "lines": [
+            "We planted the same beans in two neighbors' gardens. One plot sprouted a week later.",
+            "Our grand experiment concluded that MINNESOTA has a lot of different springs."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthPointOutfitter",
+      "purpose": "Existing point shop and a parent preparing for an ordinary long walk.",
+      "texts": [],
+      "conversations": [
+        {
+          "script": "MN_DL_INTERIOR_POINT_CUSTOMER",
+          "actor": {
+            "sprite": "SPRITE_POKEFAN_M",
+            "tile": [
+              8,
+              7
+            ],
+            "approach": [
+              9,
+              7
+            ]
+          },
+          "lines": [
+            "The beach walk sounded short when my kid described it.",
+            "I am buying provisions based on the version with all the detours included."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthPokecenter1F",
+      "purpose": "Existing clinic; recovery as a local routine, not just a trainer stop.",
+      "texts": [],
+      "conversations": []
+    },
+    {
+      "map": "MnDuluthPotteryHouse",
+      "purpose": "A working local pottery household and an apprentice keeping imperfect work.",
+      "texts": [
+        {
+          "label": "MN_DULUTH_X_POTTERYHOUSE_F1_HOSTText",
+          "lines": [
+            "I make bowls with bands the color of shore stones. No two batches come out quite alike.",
+            "My first lopsided bowl holds the shop keys. It has done honest work for twenty years."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_DL_INTERIOR_POTTER_APPRENTICE",
+          "actor": {
+            "sprite": "SPRITE_LASS",
+            "tile": [
+              8,
+              5
+            ],
+            "approach": [
+              8,
+              6
+            ]
+          },
+          "lines": [
+            "I tried to make a mug shaped like a loon. The beak leaks.",
+            "My teacher calls it a flower vase. I call it a career change."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthQuarryPractice",
+      "purpose": "Existing optional Veska battle and a practiced local explanation.",
+      "texts": [
+        {
+          "label": "MN_DULUTH_X_QUARRYPRACTICE_F1_HOSTText",
+          "lines": [
+            "VESKA practices here after the quarry shift. Ask for a match when your team is ready.",
+            "No badge, no crowd. Just room to try something and learn why it did not work."
+          ]
+        }
+      ],
+      "conversations": []
+    },
+    {
+      "map": "MnDuluthReadingHall1F",
+      "purpose": "Public lending room with navigation to the upstairs weather archive.",
+      "texts": [
+        {
+          "label": "MN_DULUTH_X_READINGHALL_F1_HOSTText",
+          "lines": [
+            "Maps upstairs, stories down here. Library cards are free and wet boots are forgiven.",
+            "If you are comparing harbor weather, ask the upstairs reader for the old fog entry."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_DL_INTERIOR_READING_CHILD",
+          "actor": {
+            "sprite": "SPRITE_TWIN",
+            "tile": [
+              7,
+              5
+            ],
+            "approach": [
+              7,
+              6
+            ]
+          },
+          "lines": [
+            "I borrowed a book about ore boats. My grandma borrowed the same one when she was little.",
+            "Her name is still on the old card. I put mine right underneath."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthReadingHall2F",
+      "purpose": "Second weather witness: the difference between a forecast and a field observation.",
+      "texts": [],
+      "conversations": [
+        {
+          "script": "MN_DL_INTERIOR_CHART_READER",
+          "actor": {
+            "sprite": "SPRITE_GENTLEMAN",
+            "tile": [
+              10,
+              5
+            ],
+            "approach": [
+              10,
+              6
+            ]
+          },
+          "lines": [
+            "The margin says: Ask the next watch what they actually saw.",
+            "That is my favorite sentence in the whole chart collection."
+          ]
+        },
+        {
+          "script": "MN_DULUTH_X_READINGHALL_F2_HOST",
+          "lines": [
+            "This old harbor log says fog at the mouth, sun on the ridge. A forecast cannot see every shore.",
+            "Compare it with the LOOKOUT LODGE upstairs. Then take both observations to WEATHER STUDY upstairs."
+          ],
+          "remember": "EVENT_MN_INTERIOR_FOG_ARCHIVE",
+          "repeat": [
+            "The old log separates the ridge from the harbor. Compare the LOOKOUT LODGE upstairs account, then visit WEATHER STUDY upstairs."
+          ],
+          "requires": [],
+          "need": [],
+          "reward": null
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthSailorClub1F",
+      "purpose": "Local sailors inviting visitors to the upstairs letter circle.",
+      "texts": [
+        {
+          "label": "MN_DULUTH_X_SAILORCLUB_F1_HOSTText",
+          "lines": [
+            "The upstairs table is for letters home. We keep extra paper for crews between shifts.",
+            "Somebody always tries to fit the whole lake onto one postcard."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_DL_INTERIOR_SAILOR_NEWCOMER",
+          "actor": {
+            "sprite": "SPRITE_SAILOR",
+            "tile": [
+              10,
+              5
+            ],
+            "approach": [
+              10,
+              6
+            ]
+          },
+          "lines": [
+            "First week at the harbor. I can tie the knots, but I cannot remember everyone's names.",
+            "The club says that part takes practice, too. They saved me a seat."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthSailorClub2F",
+      "purpose": "Letters home and a retired deckhand reconnecting with the next crew.",
+      "texts": [
+        {
+          "label": "MN_DULUTH_X_SAILORCLUB_F2_HOSTText",
+          "lines": [
+            "I spent years writing home from other harbors. Now I help young deckhands write their first letter.",
+            "They keep asking what to say. Start with who made your day easier."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_DL_INTERIOR_LETTER_WRITER",
+          "actor": {
+            "sprite": "SPRITE_LASS",
+            "tile": [
+              10,
+              5
+            ],
+            "approach": [
+              10,
+              6
+            ]
+          },
+          "lines": [
+            "Dear Mom: the lake really is that big. Yes, I have my warm coat.",
+            "There. Now she will know which question to ask in the next letter."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthSandHouse",
+      "purpose": "A Park Point resident keeping storm-washed objects without stripping the dunes.",
+      "texts": [
+        {
+          "label": "MN_DULUTH_X_SANDHOUSE_F1_HOSTText",
+          "lines": [
+            "The shore rearranged itself again. We move our footpath instead of making the dunes obey.",
+            "The little grass roots hold more sand than my shovel ever could."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_DL_INTERIOR_SAND_SIBLING",
+          "actor": {
+            "sprite": "SPRITE_YOUNGSTER",
+            "tile": [
+              8,
+              5
+            ],
+            "approach": [
+              8,
+              4
+            ]
+          },
+          "lines": [
+            "We keep a box of things that wash up. Fishing floats, old wood, one very clean spoon.",
+            "We leave the driftwood homes for the bugs. The spoon has joined the kitchen."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthSlipHouse",
+      "purpose": "A slip-house family with a remembered workboat named after their grandmother.",
+      "texts": [
+        {
+          "label": "MN_DULUTH_X_SLIPHOUSE_F1_HOSTText",
+          "lines": [
+            "That little workboat is named after my grandmother. Stubborn hull. Excellent name.",
+            "She used to bring coffee to the night crew, then stay until everyone had told one good story."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_DL_INTERIOR_SLIP_NEIGHBOR",
+          "actor": {
+            "sprite": "SPRITE_FISHER",
+            "tile": [
+              8,
+              5
+            ],
+            "approach": [
+              8,
+              4
+            ]
+          },
+          "lines": [
+            "They let me mend nets here out of the wind. I pay rent in stories.",
+            "The landlord says the last one was a little short. I have been practicing the ending."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthTerraceHome",
+      "purpose": "A hillside family whose shortcut home becomes a neighbor ritual.",
+      "texts": [
+        {
+          "label": "MN_DULUTH_X_TERRACEHOME_F1_HOSTText",
+          "lines": [
+            "Going down for supplies is easy. The climb back is how we hear everybody's news.",
+            "We stop at three porches, trade two rumors, and usually come home with rhubarb."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_DL_INTERIOR_TERRACE_BAKER",
+          "actor": {
+            "sprite": "SPRITE_TEACHER",
+            "tile": [
+              8,
+              5
+            ],
+            "approach": [
+              8,
+              6
+            ]
+          },
+          "lines": [
+            "I promised to use up the rhubarb. The neighbors heard about it and brought more.",
+            "My pie plan has become a neighborhood infrastructure project."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthToolExchange",
+      "purpose": "Retained tool counter with repair-first advice from a customer.",
+      "texts": [],
+      "conversations": [
+        {
+          "script": "MN_DL_INTERIOR_TOOL_CUSTOMER",
+          "actor": {
+            "sprite": "SPRITE_POKEFAN_M",
+            "tile": [
+              8,
+              7
+            ],
+            "approach": [
+              9,
+              7
+            ]
+          },
+          "lines": [
+            "My shovel only needed a handle. That seemed too small a repair until I priced a new shovel.",
+            "The boat builder says the same thing about old boats, with more feeling."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthTrainingAnnex",
+      "purpose": "Existing optional battle and a crew culture of asking for help.",
+      "texts": [
+        {
+          "label": "MN_DULUTH_X_TRAININGANNEX_F1_HOSTText",
+          "lines": [
+            "The annex match is a chance to practice, not a test you must pass to belong here.",
+            "Good crews ask for help before they get exhausted. Good trainers can learn that habit, too."
+          ]
+        }
+      ],
+      "conversations": []
+    },
+    {
+      "map": "MnDuluthUnionHall1F",
+      "purpose": "First labor-history witness: why the hall records names and shares care.",
+      "texts": [],
+      "conversations": [
+        {
+          "script": "MN_DL_INTERIOR_UNION_NEIGHBOR",
+          "actor": {
+            "sprite": "SPRITE_TEACHER",
+            "tile": [
+              10,
+              5
+            ],
+            "approach": [
+              10,
+              6
+            ]
+          },
+          "lines": [
+            "I brought an extra pan of hotdish for the late shift.",
+            "Someone labeled it UNION DISH. That makes it sound more organized than my kitchen."
+          ]
+        },
+        {
+          "script": "MN_DULUTH_X_UNIONHALL_F1_HOST",
+          "lines": [
+            "We keep the hall open between shifts. There is coffee, a notice board, and someone who knows your name.",
+            "Ask the warehouse loft about its old tally, then visit our upstairs recorder. Numbers should remember people."
+          ],
+          "remember": "EVENT_MN_INTERIOR_UNION_WELCOME",
+          "repeat": [
+            "The warehouse loft keeps the shift tally. Bring its story to our upstairs recorder. Everyone deserves a name in the record."
+          ],
+          "requires": [],
+          "need": [],
+          "reward": null
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthUnionHall2F",
+      "purpose": "A once-only labor-history reward after talking to the hall and warehouse witnesses.",
+      "texts": [],
+      "conversations": [
+        {
+          "script": "MN_DL_INTERIOR_HALL_RETIREE",
+          "actor": {
+            "sprite": "SPRITE_GENTLEMAN",
+            "tile": [
+              12,
+              7
+            ],
+            "approach": [
+              12,
+              6
+            ]
+          },
+          "lines": [
+            "My first shift was recorded in pencil. The clerk still found me in the book.",
+            "I thought I had forgotten the crew. Then I read the names and remembered every voice."
+          ]
+        },
+        {
+          "script": "MN_DULUTH_X_UNIONHALL_F2_HOST",
+          "lines": [
+            "The names are back in the record. A little care in the paperwork is care for the people in it.",
+            "The crew set aside an ETHER for your travels. You took the time to listen."
+          ],
+          "remember": "EVENT_MN_INTERIOR_UNION_REWARD",
+          "repeat": [
+            "We kept the copy with the names restored. Your ETHER was the crew's thanks for listening."
+          ],
+          "requires": [
+            "EVENT_MN_INTERIOR_UNION_WELCOME",
+            "EVENT_MN_INTERIOR_SHIFT_NAMES"
+          ],
+          "need": [
+            "Our hall greeter downstairs and the ORE WAREHOUSE upstairs tally keeper have two parts of a story. Hear both and return. The crew has an ETHER set aside."
+          ],
+          "reward": "ETHER"
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthWeatherStudy1F",
+      "purpose": "Public local weather-reading project linking three real interiors.",
+      "texts": [
+        {
+          "label": "MN_DULUTH_X_WEATHERSTUDY_F1_HOSTText",
+          "lines": [
+            "We compare what people saw, not who guessed the sky best.",
+            "Visit the LOOKOUT LODGE upstairs and the READING HALL upstairs. Our upstairs reader will put the two accounts together."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_DL_INTERIOR_WEATHER_STUDENT",
+          "actor": {
+            "sprite": "SPRITE_YOUNGSTER",
+            "tile": [
+              10,
+              5
+            ],
+            "approach": [
+              10,
+              6
+            ]
+          },
+          "lines": [
+            "I predicted sun because I wanted a picnic.",
+            "Now I write my observations in one column and my wishes in another. The picnic still has its column."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthWeatherStudy2F",
+      "purpose": "A once-only weather study reward for comparing the current lookout and old public log.",
+      "texts": [],
+      "conversations": [
+        {
+          "script": "MN_DL_INTERIOR_WEATHER_READER",
+          "actor": {
+            "sprite": "SPRITE_SCIENTIST",
+            "tile": [
+              8,
+              7
+            ],
+            "approach": [
+              7,
+              7
+            ]
+          },
+          "lines": [
+            "Nobody here can promise tomorrow's sky. We can promise to keep our observations where others can check them.",
+            "That is why a public reading room belongs in a harbor town."
+          ]
+        },
+        {
+          "script": "MN_DULUTH_X_WEATHERSTUDY_F2_HOST",
+          "lines": [
+            "A clear ridge and a foggy harbor can share one morning. Your two accounts belong together.",
+            "Take this MINT BERRY for the road. Keep asking people what they saw before trusting a neat answer."
+          ],
+          "remember": "EVENT_MN_INTERIOR_FOG_REWARD",
+          "repeat": [
+            "Your two accounts are filed together. Keep the MINT BERRY handy for a sleepy partner."
+          ],
+          "requires": [
+            "EVENT_MN_INTERIOR_FOG_LOOKOUT",
+            "EVENT_MN_INTERIOR_FOG_ARCHIVE"
+          ],
+          "need": [
+            "Could you compare two accounts for me? Ask the LOOKOUT LODGE upstairs observer and the READING HALL upstairs reader, then return here. A MINT BERRY waits for the completed study."
+          ],
+          "reward": "MINT_BERRY"
+        }
+      ]
+    },
+    {
+      "map": "MnBoundaryRootBeerCabin",
+      "purpose": "Dorothy welcomes paddlers at the Root Beer Cabin; repeatable free native party care, with no fee or expedition reset.",
+      "conversations": [
+        {
+          "script": "MN_INTERIOR_DOROTHY",
+          "actor": {
+            "sprite": "SPRITE_GRANNY",
+            "tile": [
+              5,
+              3
+            ],
+            "approach": [
+              5,
+              4
+            ]
+          },
+          "lines": [
+            "Well, come on in! I am DOROTHY. Set your pack down. There is always room for another paddler.",
+            "Folks call me the ROOT BEER LADY. I keep this cabin as a friendly stop between the portages.",
+            "Rest your partners a spell. Then carry your empty bottles out with you, all right?"
+          ],
+          "heal": true
+        },
+        {
+          "script": "MN_INTERIOR_CABIN_PADDLER",
+          "actor": {
+            "sprite": "SPRITE_FISHER",
+            "tile": [
+              7,
+              5
+            ],
+            "approach": [
+              7,
+              4
+            ]
+          },
+          "lines": [
+            "We paddled in just to say hello. Then the wind picked up, so we stayed to listen.",
+            "DOROTHY remembers everybody's canoe. Mine has a patch shaped like MINNESOTA. It is a very memorable patch."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnStPaulAnglerHouse",
+      "purpose": "Existing optional angler match with a household learning the Mississippi.",
+      "texts": [
+        {
+          "label": "MN_SPX_ANGLERHOUSE_HOSTText",
+          "lines": [
+            "We practice here so a young trainer can learn without getting stranded on the river. Ask our angler for a friendly match.",
+            "My family keeps a fishing notebook. Most entries say what we learned, not what we caught."
+          ]
+        }
+      ],
+      "conversations": []
+    },
+    {
+      "map": "MnStPaulArchiveAnnex",
+      "purpose": "One of the existing three native archive records, with an archivist who preserves ordinary lives.",
+      "texts": [
+        {
+          "label": "MN_SPX_ARCHIVEANNEX_HOSTText",
+          "lines": [
+            "Our record here is part of the three-stop archive walk. The CAPITOL ARCHIVE clerk collects the complete set of readings.",
+            "I file lunch menus beside survey notes. Future readers should know that people had to eat between great events."
+          ]
+        }
+      ],
+      "conversations": []
+    },
+    {
+      "map": "MnStPaulBoatCoop",
+      "purpose": "A working river-boat cooperative with a member explaining repair before travel.",
+      "texts": [
+        {
+          "label": "MN_SPX_BOATCOOP_HOSTText",
+          "lines": [
+            "These are our working boats. The river route is for trainers with their own prepared water partners; we do not run a ferry.",
+            "We share repair tools here. An hour spent checking a seam beats a long afternoon bailing water."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_SP_INTERIOR_BOAT_MEMBER",
+          "actor": {
+            "sprite": "SPRITE_SAILOR",
+            "tile": [
+              2,
+              3
+            ],
+            "approach": [
+              2,
+              4
+            ]
+          },
+          "lines": [
+            "We used to label tools with our names. Then someone put EVERYBODY on the good screwdriver.",
+            "It still comes back to the same hook. That is the best part."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnStPaulCapitolArchive",
+      "purpose": "Existing three-record Magnet award; archival work made legible to players.",
+      "texts": [
+        {
+          "label": "MN_SPX_ARCHIVE_HOSTText",
+          "lines": [
+            "Read our rail record here, the civic museum record, and the archive annex record. Then bring your complete reading back to me.",
+            "The MAGNET award is for doing the research. Public records stay public even after you collect it."
+          ]
+        }
+      ],
+      "conversations": []
+    },
+    {
+      "map": "MnStPaulCapitolHall",
+      "purpose": "Existing Capitol records office and Union Depot story direction.",
+      "texts": [
+        {
+          "label": "MN_ST_PAUL_RECORDS_CLERKText",
+          "lines": [
+            "These are public records. You do not need a fancy title to ask a question.",
+            "The fair road is north of town. For the missing freight paperwork, try UNION DEPOT. The clerk there has the actual file."
+          ]
+        }
+      ],
+      "conversations": []
+    },
+    {
+      "map": "MnStPaulCapitolLibrary",
+      "purpose": "A public reading room for prairie, city and river field guides.",
+      "texts": [
+        {
+          "label": "MN_SPX_CAPITOLLIBRARY_HOSTText",
+          "lines": [
+            "Choose a field guide by where you are going, then read the notes from people who live there.",
+            "A prairie, a city garden, and a northern portage each ask different things of a traveler."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_SP_INTERIOR_LIBRARY_READER",
+          "actor": {
+            "sprite": "SPRITE_TEACHER",
+            "tile": [
+              7,
+              5
+            ],
+            "approach": [
+              7,
+              6
+            ]
+          },
+          "lines": [
+            "I am helping my aunt learn the bird names she hears in English. She is helping me with the names she grew up using.",
+            "Our notebook has two columns and a lot of laughing in the margins."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnStPaulCivicMuseum",
+      "purpose": "Retained three river-measurement Mystic Water award and city flood history.",
+      "texts": [
+        {
+          "label": "MN_SPX_RIVER_HOSTText",
+          "lines": [
+            "The three river measurement posts tell one story together. Read them all, then come back for our MYSTIC WATER award.",
+            "A river is a neighbor with a very long memory. We keep the old flood marks where everyone can read them."
+          ]
+        }
+      ],
+      "conversations": []
+    },
+    {
+      "map": "MnStPaulCommunityHall",
+      "purpose": "A neighborhood meeting room and coat-drive sorting stop.",
+      "texts": [
+        {
+          "label": "MN_SPX_COMMUNITYHALL_HOSTText",
+          "lines": [
+            "The meeting starts after the coat sorting. Bring a question, or just help us find matching mittens.",
+            "Our best motions usually begin with: Who already knows how to fix this?"
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_SP_INTERIOR_COAT_VOLUNTEER",
+          "actor": {
+            "sprite": "SPRITE_POKEFAN_F",
+            "tile": [
+              10,
+              5
+            ],
+            "approach": [
+              10,
+              6
+            ]
+          },
+          "lines": [
+            "We put spare mittens in pairs. Nobody has to explain why they need a pair.",
+            "One box is all left hands. Somewhere out there is the most optimistic box of right hands."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnStPaulEastAidClinic",
+      "purpose": "Retained free party care and PC at an east-bank neighborhood clinic.",
+      "texts": [
+        {
+          "label": "MN_SPX_EAST_AID_NURSEText",
+          "lines": [
+            "Come in and let your partners rest. The care is free, and the PC is here if you need to change your traveling team.",
+            "The east-bank neighbors keep this stop ready for people crossing the river."
+          ]
+        }
+      ],
+      "conversations": []
+    },
+    {
+      "map": "MnStPaulEastWorkshop",
+      "purpose": "Existing optional workshop battle and a repair-first craft lesson.",
+      "texts": [
+        {
+          "label": "MN_SPX_EASTWORKSHOP_HOSTText",
+          "lines": [
+            "Our workshop match is optional. The trainer is happy to practice when you are ready.",
+            "I fix lantern handles here. Holding onto a useful old thing can be its own kind of skill."
+          ]
+        }
+      ],
+      "conversations": []
+    },
+    {
+      "map": "MnStPaulFairAgricultureHall",
+      "purpose": "A fair crop exhibition staffed by growers comparing soil and water.",
+      "texts": [
+        {
+          "label": "MN_SPX_FAIRAGRICULTUREHALL_HOSTText",
+          "lines": [
+            "Welcome to the crop tables! Our growers compare what a wet spring did to the low fields and what a dry week did to the ridge.",
+            "The best ribbon is the conversation you can take home and use next season."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_SP_INTERIOR_CROP_GROWER",
+          "actor": {
+            "sprite": "SPRITE_POKEFAN_M",
+            "tile": [
+              7,
+              5
+            ],
+            "approach": [
+              7,
+              6
+            ]
+          },
+          "lines": [
+            "My beans came from seed my neighbor saved. Their tomatoes came from seed I saved.",
+            "Neither of us can decide who owes the other dinner. We keep having dinner about it."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnStPaulFairBerrySnack",
+      "purpose": "Retained Berry snack shop and a family picking provisions.",
+      "texts": [],
+      "conversations": [
+        {
+          "script": "MN_SP_INTERIOR_BERRY_CUSTOMER",
+          "actor": {
+            "sprite": "SPRITE_LASS",
+            "tile": [
+              5,
+              3
+            ],
+            "approach": [
+              5,
+              2
+            ]
+          },
+          "lines": [
+            "I am choosing a snack for my partner before the show.",
+            "It inspected every BERRY, then looked at me like I should already know its favorite. Fair enough."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnStPaulFairBreederBarn",
+      "purpose": "Existing breeder practice battle; care before competitive display.",
+      "texts": [
+        {
+          "label": "MN_SPX_FAIRBREEDERBARN_HOSTText",
+          "lines": [
+            "A bright ribbon means less than a partner that trusts you. Brush, rest, and water come first here.",
+            "Our breeder offers an optional practice match. Check your team's condition before you ask."
+          ]
+        }
+      ],
+      "conversations": []
+    },
+    {
+      "map": "MnStPaulFairCraftHouse",
+      "purpose": "A seed-ribbon demonstration with a young maker.",
+      "texts": [
+        {
+          "label": "MN_SPX_FAIRCRAFTHOUSE_HOSTText",
+          "lines": [
+            "I weave little seed patterns into ribbons. My grandmother taught me to leave enough slack for the cloth to move.",
+            "A tight stitch can look neat and still make a poor ribbon. The same is true of a plan."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_SP_INTERIOR_CRAFT_LEARNER",
+          "actor": {
+            "sprite": "SPRITE_TWIN",
+            "tile": [
+              2,
+              3
+            ],
+            "approach": [
+              2,
+              4
+            ]
+          },
+          "lines": [
+            "Mine is supposed to be a sunflower. It looks like a surprised SUNKERN.",
+            "The craft teacher says surprised flowers deserve ribbons, too."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnStPaulFairExhibitionHall",
+      "purpose": "A public fair exhibition room welcoming first-time entrants.",
+      "texts": [
+        {
+          "label": "MN_SPX_FAIREXHIBITIONHALL_HOSTText",
+          "lines": [
+            "This hall is for showing what you have learned. Ask questions; nobody expects a first project to look like a tenth one.",
+            "An exhibition is better when people explain the mistakes as well as the polished part."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_SP_INTERIOR_FIRST_EXHIBITOR",
+          "actor": {
+            "sprite": "SPRITE_YOUNGSTER",
+            "tile": [
+              7,
+              5
+            ],
+            "approach": [
+              7,
+              6
+            ]
+          },
+          "lines": [
+            "I nearly left my entry at home. Then someone asked how I made it, and I forgot to be nervous.",
+            "Next year I want to be the person who asks the new kid first."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnStPaulFairFestivalMail",
+      "purpose": "Retained native mail shop with a fairgoer writing home.",
+      "texts": [],
+      "conversations": [
+        {
+          "script": "MN_SP_INTERIOR_MAIL_CUSTOMER",
+          "actor": {
+            "sprite": "SPRITE_POKEFAN_F",
+            "tile": [
+              5,
+              3
+            ],
+            "approach": [
+              5,
+              2
+            ]
+          },
+          "lines": [
+            "I promised a postcard before buying another snack.",
+            "This card now says: Having a lovely time. Please disregard the mustard."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnStPaulFairFoodHall",
+      "purpose": "Retained food counter with Minnesota fair food debate.",
+      "texts": [],
+      "conversations": [
+        {
+          "script": "MN_SP_INTERIOR_FOOD_CUSTOMER",
+          "actor": {
+            "sprite": "SPRITE_POKEFAN_M",
+            "tile": [
+              5,
+              3
+            ],
+            "approach": [
+              5,
+              2
+            ]
+          },
+          "lines": [
+            "My family divided the fair into snack territories. I was assigned this hall.",
+            "I have submitted a request for additional napkins and a smaller committee."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnStPaulFairGardenStand",
+      "purpose": "Retained garden counter with a cold-frame grower.",
+      "texts": [],
+      "conversations": [
+        {
+          "script": "MN_SP_INTERIOR_GARDEN_CUSTOMER",
+          "actor": {
+            "sprite": "SPRITE_TEACHER",
+            "tile": [
+              5,
+              3
+            ],
+            "approach": [
+              5,
+              2
+            ]
+          },
+          "lines": [
+            "I want something for the narrow strip beside our apartment.",
+            "The grower asked how much sun it gets before trying to sell me anything. I like this stand."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnStPaulFairInfoHouse",
+      "purpose": "Fair wayfinding that distinguishes the public neighborhood halls from the closed annex.",
+      "texts": [
+        {
+          "label": "MN_SPX_FAIRINFOHOUSE_HOSTText",
+          "lines": [
+            "The public halls, food counters, and quiz are open. The north annex has its own entry and may still be closed.",
+            "If you want to practice, try the breeder barn. For questions, the quiz pavilion will let you try again."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_SP_INTERIOR_INFO_VISITOR",
+          "actor": {
+            "sprite": "SPRITE_GENTLEMAN",
+            "tile": [
+              2,
+              3
+            ],
+            "approach": [
+              2,
+              4
+            ]
+          },
+          "lines": [
+            "I used to work the information desk. I still give directions when nobody asks.",
+            "The clerk made me a visitor badge. It says PLEASE ENJOY THE FAIR. A fair request."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnStPaulFairQuizPavilion",
+      "purpose": "Existing three-question SilverPowder prize; corrected host explains the actual quiz.",
+      "texts": [
+        {
+          "label": "MN_SPX_QUIZ_HOSTText",
+          "lines": [
+            "Ready for three questions about caring for your partners and choosing supplies?",
+            "Answer them all correctly for SILVERPOWDER. A wrong answer is a reason to learn and try again, not to stop visiting."
+          ]
+        }
+      ],
+      "conversations": []
+    },
+    {
+      "map": "MnStPaulFreightOffice",
+      "purpose": "Depot freight context without moving the original Team Lode manifest.",
+      "texts": [
+        {
+          "label": "MN_SPX_FREIGHTOFFICE_HOSTText",
+          "lines": [
+            "The original manifest is inside UNION DEPOT. We keep this desk for questions about ordinary cargo.",
+            "Freight is somebody's seed order, medicine, or repair part before it is a line on our schedule."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_SP_INTERIOR_FREIGHT_SENDER",
+          "actor": {
+            "sprite": "SPRITE_POKEFAN_M",
+            "tile": [
+              7,
+              5
+            ],
+            "approach": [
+              7,
+              6
+            ]
+          },
+          "lines": [
+            "This parcel is a repaired waffle iron for my sister in WINONA.",
+            "The clerk asked if it was urgent. I said that depends on how breakfast is going."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnStPaulLowertownCafe",
+      "purpose": "Retained cafe service with an artist warming up between studio shifts.",
+      "texts": [],
+      "conversations": [
+        {
+          "script": "MN_SP_INTERIOR_CAFE_ARTIST",
+          "actor": {
+            "sprite": "SPRITE_BEAUTY",
+            "tile": [
+              5,
+              3
+            ],
+            "approach": [
+              5,
+              2
+            ]
+          },
+          "lines": [
+            "I draw the depot while I wait for my tea to cool.",
+            "The trains change. The person reminding me that my tea is cold does not."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnStPaulLowertownCrafts",
+      "purpose": "Retained crafts counter with a maker choosing ordinary useful supplies.",
+      "texts": [],
+      "conversations": [
+        {
+          "script": "MN_SP_INTERIOR_CRAFT_CUSTOMER",
+          "actor": {
+            "sprite": "SPRITE_LASS",
+            "tile": [
+              5,
+              3
+            ],
+            "approach": [
+              5,
+              2
+            ]
+          },
+          "lines": [
+            "I repair my stage clothes instead of buying a new outfit for every show.",
+            "A bright patch can tell a better story than a perfect sleeve."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnStPaulLowertownExchange",
+      "purpose": "Existing multi-floor market: supplies on 2F and a voluntary trainer on 3F.",
+      "texts": [
+        {
+          "label": "MN_SPX_EXCHANGE_RECEPTIONText",
+          "lines": [
+            "Welcome to the exchange. The second floor has medicine and BALL counters; the third has a trainer who accepts friendly matches.",
+            "Take your time. A useful purchase starts with knowing what your team actually needs."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_SP_INTERIOR_EXCHANGE_VISITOR",
+          "actor": {
+            "sprite": "SPRITE_YOUNGSTER",
+            "tile": [
+              6,
+              3
+            ],
+            "approach": [
+              6,
+              2
+            ]
+          },
+          "lines": [
+            "I walked all three floors before spending anything.",
+            "It felt strange. Usually my allowance is gone before I find the stairs."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnStPaulLowertownExchange2F",
+      "purpose": "Retained dual native medicine and Ball counters with local shopping context.",
+      "texts": [],
+      "conversations": []
+    },
+    {
+      "map": "MnStPaulLowertownExchange3F",
+      "purpose": "Retained optional native battle at the exchange; no gym or badge added.",
+      "texts": [],
+      "conversations": []
+    },
+    {
+      "map": "MnStPaulMart",
+      "purpose": "Retained native general store with local customers.",
+      "texts": [],
+      "conversations": []
+    },
+    {
+      "map": "MnStPaulPokecenter1F",
+      "purpose": "Retained native free recovery, PC, and four local people with clinic wayfinding.",
+      "texts": [],
+      "conversations": []
+    },
+    {
+      "map": "MnStPaulRiversideSupplies",
+      "purpose": "Retained riverside counter and a canoe-repair volunteer.",
+      "texts": [],
+      "conversations": [
+        {
+          "script": "MN_SP_INTERIOR_RIVER_CUSTOMER",
+          "actor": {
+            "sprite": "SPRITE_FISHER",
+            "tile": [
+              5,
+              3
+            ],
+            "approach": [
+              5,
+              2
+            ]
+          },
+          "lines": [
+            "I promised the boat co-op I would stop fixing things with borrowed string.",
+            "I am buying my own string. We are calling that progress."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnStPaulSouthLandingInn",
+      "purpose": "Retained free native party rest, described as an actual riverside inn.",
+      "texts": [
+        {
+          "label": "MN_SPX_SOUTHLANDINGINN_HOSTText",
+          "lines": [
+            "Come in from the landing. Let your partners rest while you warm up.",
+            "We hear stories from both riverbanks. The best ones get retold over breakfast with permission from the teller."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_SP_INTERIOR_INN_TRAVELER",
+          "actor": {
+            "sprite": "SPRITE_GENTLEMAN",
+            "tile": [
+              10,
+              5
+            ],
+            "approach": [
+              10,
+              6
+            ]
+          },
+          "lines": [
+            "I was going to rush north this morning. Then the innkeeper asked whether I had seen the river yet.",
+            "A journey should have a little room for the place you are in."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnStPaulSouthLandingSurvey",
+      "purpose": "River survey team explains measurement rather than a truncated exhibition label.",
+      "texts": [
+        {
+          "label": "MN_SPX_SOUTHLANDINGSURVEY_HOSTText",
+          "lines": [
+            "We compare river measurements from different landings. One reading alone can hide what changed upstream.",
+            "The CIVIC MUSEUM has a project using three public posts. Ask there if you want to help with a complete set."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_SP_INTERIOR_SURVEY_VOLUNTEER",
+          "actor": {
+            "sprite": "SPRITE_SCIENTIST",
+            "tile": [
+              7,
+              5
+            ],
+            "approach": [
+              7,
+              6
+            ]
+          },
+          "lines": [
+            "My first notebook had no dates. The supervisor asked when any of it happened.",
+            "Now I put the date on the page before I write the clever part."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnStPaulStreetGardenHouse",
+      "purpose": "A city garden household sharing space and food between neighbors.",
+      "texts": [
+        {
+          "label": "MN_SPX_STREETGARDENHOUSE_HOSTText",
+          "lines": [
+            "Our garden fills the sunny gap between two homes. One neighbor grows herbs for pho; another grows peppers for a family recipe.",
+            "We spend half the summer carrying little bowls across the fence."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_SP_INTERIOR_CITY_GARDENER",
+          "actor": {
+            "sprite": "SPRITE_TEACHER",
+            "tile": [
+              2,
+              3
+            ],
+            "approach": [
+              2,
+              4
+            ]
+          },
+          "lines": [
+            "The garden plan said one zucchini plant. It has interpreted that as one zucchini neighborhood.",
+            "If you hear a knock, please answer. We are running out of porch space."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnStPaulSummitExhibitionClub",
+      "purpose": "Existing optional exhibition battle explained as a voluntary neighborhood activity.",
+      "texts": [
+        {
+          "label": "MN_SPX_SUMMITEXHIBITIONCLUB_HOSTText",
+          "lines": [
+            "The exhibition trainer takes friendly challenges here. You can watch, prepare, or ask for a match.",
+            "Our club cheers when somebody tries a new idea, even if that idea immediately needs revision."
+          ]
+        }
+      ],
+      "conversations": []
+    },
+    {
+      "map": "MnStPaulSummitMoveStudyHouse",
+      "purpose": "Existing native Headbutt field note with a reader explaining its purpose.",
+      "texts": [
+        {
+          "label": "MN_SPX_SUMMITMOVESTUDYHOUSE_HOSTText",
+          "lines": [
+            "Our field note teaches HEADBUTT. Read it with a partner that can learn the move.",
+            "Tree study takes patience. First notice the tree, then learn whether it has anyone living in it."
+          ]
+        }
+      ],
+      "conversations": []
+    },
+    {
+      "map": "MnStPaulSummitPressHouse",
+      "purpose": "A small local press printing neighborhood work and river news.",
+      "texts": [
+        {
+          "label": "MN_SPX_SUMMITPRESSHOUSE_HOSTText",
+          "lines": [
+            "We print river news, school plays, and the occasional lost-scarf notice.",
+            "The most popular issue had the bridge work schedule and a recipe for rhubarb bars on the same sheet."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_SP_INTERIOR_PRESS_READER",
+          "actor": {
+            "sprite": "SPRITE_GENTLEMAN",
+            "tile": [
+              2,
+              3
+            ],
+            "approach": [
+              2,
+              4
+            ]
+          },
+          "lines": [
+            "The printer let me correct a letter I sent in.",
+            "It turns out a very strong opinion still needs the street name spelled correctly."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnStPaulTransitHeritageHouse",
+      "purpose": "An oral-history room linking real native Union Depot service to ordinary railway lives.",
+      "texts": [
+        {
+          "label": "MN_SPX_TRANSITHERITAGEHOUSE_HOSTText",
+          "lines": [
+            "The public notices in UNION DEPOT explain the train service that is actually running.",
+            "Here we collect the stories behind the schedules: porters, cooks, track crews, and the relatives who waited at the platform."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_SP_INTERIOR_TRANSIT_RETIREE",
+          "actor": {
+            "sprite": "SPRITE_GRAMPS",
+            "tile": [
+              2,
+              3
+            ],
+            "approach": [
+              2,
+              4
+            ]
+          },
+          "lines": [
+            "I remember the station by the lunches people carried.",
+            "Somebody once crossed the platform with a whole hotdish. We all suddenly remembered a reason to say hello."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnStPaulUnionDepot",
+      "purpose": "Existing train service, courier confrontation and manifest; keep every original control program.",
+      "texts": [],
+      "conversations": []
+    },
+    {
+      "map": "MnStPaulWestSeventhBakery",
+      "purpose": "Retained bakery counter and a neighborhood regular buying cardamom treats.",
+      "texts": [],
+      "conversations": [
+        {
+          "script": "MN_SP_INTERIOR_BAKERY_REGULAR",
+          "actor": {
+            "sprite": "SPRITE_GRANNY",
+            "tile": [
+              5,
+              3
+            ],
+            "approach": [
+              5,
+              2
+            ]
+          },
+          "lines": [
+            "My neighbor and I disagree about how much cardamom goes in a bun.",
+            "We settle it the MINNESOTA way: bring both batches, cut them smaller, invite everyone."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnStPaulWestSeventhBooks",
+      "purpose": "A secondhand field-guide room where annotations connect generations.",
+      "texts": [
+        {
+          "label": "MN_SPX_WESTSEVENTHBOOKS_HOSTText",
+          "lines": [
+            "These field guides have walked more miles than the shelves suggest.",
+            "Check the margins. Someone may have recorded the bird you are looking for on the same trail twenty springs ago."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_SP_INTERIOR_BOOK_READER",
+          "actor": {
+            "sprite": "SPRITE_LASS",
+            "tile": [
+              7,
+              5
+            ],
+            "approach": [
+              7,
+              6
+            ]
+          },
+          "lines": [
+            "This guide has a recipe tucked inside the bird chapter.",
+            "It is for pancakes. I respect a field researcher who plans the morning properly."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnStPaulWestsideArena",
+      "purpose": "Existing optional arena match with a host who explains its voluntary rules.",
+      "texts": [
+        {
+          "label": "MN_SPX_WESTSIDEARENA_HOSTText",
+          "lines": [
+            "The trainer here offers a voluntary practice match. Rest your partners first, and ask when you feel ready.",
+            "A good arena gives you room to learn without making a loss feel like the end of the road."
+          ]
+        }
+      ],
+      "conversations": []
+    },
+    {
+      "map": "MnStPaulWestsideCommunity",
+      "purpose": "A west-bank neighborhood room with tamale-making and river community life.",
+      "texts": [
+        {
+          "label": "MN_SPX_WESTSIDECOMMUNITY_HOSTText",
+          "lines": [
+            "We fold tamales here for the neighborhood supper. New hands get a patient teacher and the easy end of the table.",
+            "The river divides the streets. Dinner keeps giving us reasons to cross it."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_SP_INTERIOR_SUPPER_VOLUNTEER",
+          "actor": {
+            "sprite": "SPRITE_POKEFAN_M",
+            "tile": [
+              7,
+              5
+            ],
+            "approach": [
+              7,
+              6
+            ]
+          },
+          "lines": [
+            "My job is to set out chairs. Every time I finish, another cousin arrives.",
+            "We have decided that a successful supper is a chair problem."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnMinneapolisAnglerHome",
+      "purpose": "River angler household: bank access and a family fish journal.",
+      "texts": [
+        {
+          "label": "MN_MP_ANGLERHOME_HOSTText",
+          "lines": [
+            "My family keeps a fish journal. We write down where we stood and what we noticed, even when we caught nothing.",
+            "Cast from a clear bank or a pier. The bridge rails are there to stay on this side of."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_MP_INTERIOR_ANGLER_CHILD",
+          "actor": {
+            "sprite": "SPRITE_YOUNGSTER",
+            "tile": [
+              5,
+              5
+            ],
+            "approach": [
+              5,
+              6
+            ]
+          },
+          "lines": [
+            "I drew a WOOPER in the journal. Dad wrote: caught one excellent drawing.",
+            "The WOOPER got away, but the compliment is staying in the book."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnMinneapolisArrivalInfo",
+      "purpose": "A staffed information room with correct compact-city clinic directions.",
+      "texts": [
+        {
+          "label": "MN_MP_ARRIVALINFO_HOSTText",
+          "lines": [
+            "Welcome to MINNEAPOLIS. The clinic is north of the powerhouse GYM in the center.",
+            "The department store has five floors. The river library can start you on the mill-plaque walk, if you want a reason to explore."
+          ]
+        }
+      ],
+      "conversations": []
+    },
+    {
+      "map": "MnMinneapolisArtsStudio",
+      "purpose": "A river painter and a neighbor modeling the local light.",
+      "texts": [
+        {
+          "label": "MN_MP_ARTSSTUDIO_HOSTText",
+          "lines": [
+            "I paint the same river bend at different hours. The water turns copper at dusk, then the whole picture cools down.",
+            "The city is good practice for noticing change without forgetting what stayed."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_MP_INTERIOR_ARTS_MODEL",
+          "actor": {
+            "sprite": "SPRITE_BEAUTY",
+            "tile": [
+              5,
+              5
+            ],
+            "approach": [
+              5,
+              6
+            ]
+          },
+          "lines": [
+            "I agreed to sit for one quick sketch. The painter has spent an hour getting my mitten right.",
+            "It is a very good mitten. I may frame just that part."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnMinneapolisBoatHouse",
+      "purpose": "A neighborhood boathouse emphasizing the actual lake piers and river boundary.",
+      "texts": [
+        {
+          "label": "MN_MP_BOATHOUSE_HOSTText",
+          "lines": [
+            "The lake piers are shared. Our repair table is shared, too, if you put the tools back.",
+            "The river rock line marks a closed stretch. A pretty view is not permission to paddle through a barrier."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_MP_INTERIOR_BOAT_VOLUNTEER",
+          "actor": {
+            "sprite": "SPRITE_SAILOR",
+            "tile": [
+              5,
+              5
+            ],
+            "approach": [
+              5,
+              6
+            ]
+          },
+          "lines": [
+            "A school group painted our paddle rack. Every hook is a different color.",
+            "Returning equipment has become the one sorting task I look forward to."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnMinneapolisBookbinder",
+      "purpose": "A binding workshop connected to the existing mill-history plaque activity.",
+      "texts": [
+        {
+          "label": "MN_MP_BOOKBINDER_HOSTText",
+          "lines": [
+            "I repair the library's field books. Wet covers, loose pages, the occasional very flattened leaf.",
+            "Read the three mill plaques along the river, then visit the history hall. A city's story needs all its pages."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_MP_INTERIOR_BINDING_APPRENTICE",
+          "actor": {
+            "sprite": "SPRITE_LASS",
+            "tile": [
+              5,
+              5
+            ],
+            "approach": [
+              5,
+              6
+            ]
+          },
+          "lines": [
+            "I found a note inside a torn guide: Please return this; my sister drew the maps.",
+            "The maps were the best part. We repaired it very carefully."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnMinneapolisBridgeHome",
+      "purpose": "A bridge-side home remembering the city through regular crossings.",
+      "texts": [
+        {
+          "label": "MN_MP_BRIDGEHOME_HOSTText",
+          "lines": [
+            "Three bridges connect our neighborhoods. The middle one meets the powerhouse road.",
+            "My morning walk crosses one way for bread and another way for news. I get home with plenty of both."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_MP_INTERIOR_BRIDGE_NEIGHBOR",
+          "actor": {
+            "sprite": "SPRITE_GRAMPS",
+            "tile": [
+              5,
+              5
+            ],
+            "approach": [
+              5,
+              6
+            ]
+          },
+          "lines": [
+            "When the wind comes off the river, everybody suddenly walks with purpose.",
+            "In summer we remember how to stop halfway and talk again."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnMinneapolisCedarHome",
+      "purpose": "A home whose neighborly food exchange points to the real community kitchen.",
+      "texts": [
+        {
+          "label": "MN_MP_CEDARHOME_HOSTText",
+          "lines": [
+            "Our neighbors cook at the community kitchen. There is warm food and a safe rest for partners.",
+            "I sent over one pan years ago. It came back full, and we have been exchanging dinner ever since."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_MP_INTERIOR_CEDAR_NEIGHBOR",
+          "actor": {
+            "sprite": "SPRITE_TEACHER",
+            "tile": [
+              5,
+              5
+            ],
+            "approach": [
+              5,
+              6
+            ]
+          },
+          "lines": [
+            "Someone left soup at our door during the cold snap. No name, just a note saying return the bowl whenever.",
+            "We returned it with bread. I think we found the right door."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnMinneapolisCommunityKitchen",
+      "purpose": "Existing native food and party rest with a local communal identity.",
+      "texts": [
+        {
+          "label": "MN_MP_COMMUNITYKITCHEN_HOSTText",
+          "lines": [
+            "Come in from the river. There is warm food and a place for your partners to rest.",
+            "The menu changes with whoever is cooking. The welcome is the part we keep consistent."
+          ]
+        }
+      ],
+      "conversations": []
+    },
+    {
+      "map": "MnMinneapolisCommunityLibrary",
+      "purpose": "Existing three-plaque activity directions with a usable public reading room.",
+      "texts": [
+        {
+          "label": "MN_MP_COMMUNITYLIBRARY_HOSTText",
+          "lines": [
+            "Three mill plaques stand along the river. Read them in any order, then visit the history hall for the complete account.",
+            "We lend more than maps here. Ask the quiet reader what they found in a book someone else almost discarded."
+          ]
+        }
+      ],
+      "conversations": []
+    },
+    {
+      "map": "MnMinneapolisCooperativeFlat",
+      "purpose": "Existing free rest in an apartment shared by neighboring workers.",
+      "texts": [
+        {
+          "label": "MN_MP_COOPERATIVEFLAT_HOSTText",
+          "lines": [
+            "We share this room for meetings and a quiet rest for partners. The key rule is to leave it ready for the next person.",
+            "Everybody helped choose the furniture. That explains the long meeting and the extremely sturdy table."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_MP_INTERIOR_FLAT_NEIGHBOR",
+          "actor": {
+            "sprite": "SPRITE_POKEFAN_F",
+            "tile": [
+              5,
+              5
+            ],
+            "approach": [
+              5,
+              6
+            ]
+          },
+          "lines": [
+            "I came to one co-op meeting to complain about a draft.",
+            "We fixed the window together. Now I am on the window committee, which is apparently just me and a screwdriver."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnMinneapolisCornerHome",
+      "purpose": "A corner household with real market directions and small-city hospitality.",
+      "texts": [
+        {
+          "label": "MN_MP_CORNERHOME_HOSTText",
+          "lines": [
+            "The south market sells drinks and BERRIES. The clinic is north of the powerhouse.",
+            "We sit by the corner because everyone eventually passes by. Some errands arrive already half discussed."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_MP_INTERIOR_CORNER_CHILD",
+          "actor": {
+            "sprite": "SPRITE_TWIN",
+            "tile": [
+              5,
+              5
+            ],
+            "approach": [
+              5,
+              6
+            ]
+          },
+          "lines": [
+            "I am counting how many people say nice weather today.",
+            "It is raining. We have reached twelve."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnMinneapolisCouriersDesk",
+      "purpose": "Neighborhood courier room preserving the main dispatch story elsewhere.",
+      "texts": [
+        {
+          "label": "MN_MP_COURIERSDESK_HOSTText",
+          "lines": [
+            "This desk handles everyday deliveries. The print shop is across the river; use the upper bridge when the wind is kind.",
+            "A good courier learns which door has a working bell and which neighbor will take a parcel in."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_MP_INTERIOR_COURIER_HELPER",
+          "actor": {
+            "sprite": "SPRITE_YOUNGSTER",
+            "tile": [
+              5,
+              5
+            ],
+            "approach": [
+              5,
+              6
+            ]
+          },
+          "lines": [
+            "I delivered a letter to the right street and the wrong grandpa.",
+            "He knew the other grandpa. We fixed it over cocoa. I am still checking the house number twice now."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnMinneapolisDepartmentStore1F",
+      "purpose": "Retained native department-store floor 1 counter and a shopper making an informed choice.",
+      "texts": [],
+      "conversations": [
+        {
+          "script": "MN_MP_INTERIOR_DEPT_1_CUSTOMER",
+          "actor": {
+            "sprite": "SPRITE_TEACHER",
+            "tile": [
+              6,
+              3
+            ],
+            "approach": [
+              6,
+              2
+            ]
+          },
+          "lines": [
+            "I start on the first floor and read the signs before shopping.",
+            "Five floors is plenty of room to spend money on the wrong problem."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnMinneapolisDepartmentStore2F",
+      "purpose": "Retained native department-store floor 2 counter and a shopper making an informed choice.",
+      "texts": [],
+      "conversations": [
+        {
+          "script": "MN_MP_INTERIOR_DEPT_2_CUSTOMER",
+          "actor": {
+            "sprite": "SPRITE_POKEFAN_M",
+            "tile": [
+              5,
+              3
+            ],
+            "approach": [
+              5,
+              2
+            ]
+          },
+          "lines": [
+            "The medicine is for a trip with my daughter. She made the packing list.",
+            "She put check your partner first above every item. I think she is ready."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnMinneapolisDepartmentStore3F",
+      "purpose": "Retained native department-store floor 3 counter and a shopper making an informed choice.",
+      "texts": [],
+      "conversations": [
+        {
+          "script": "MN_MP_INTERIOR_DEPT_3_CUSTOMER",
+          "actor": {
+            "sprite": "SPRITE_YOUNGSTER",
+            "tile": [
+              3,
+              3
+            ],
+            "approach": [
+              3,
+              2
+            ]
+          },
+          "lines": [
+            "I compared what our team already knows before buying anything.",
+            "Turns out I needed a plan more than another bag full of supplies."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnMinneapolisDepartmentStore4F",
+      "purpose": "Retained native department-store floor 4 counter and a shopper making an informed choice.",
+      "texts": [],
+      "conversations": [
+        {
+          "script": "MN_MP_INTERIOR_DEPT_4_CUSTOMER",
+          "actor": {
+            "sprite": "SPRITE_LASS",
+            "tile": [
+              5,
+              2
+            ],
+            "approach": [
+              5,
+              3
+            ]
+          },
+          "lines": [
+            "My friend and I are making separate wish lists, then explaining each choice.",
+            "We have crossed out half the lists. This may be the cheapest afternoon we have spent here."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnMinneapolisDepartmentStore5F",
+      "purpose": "Retained native department-store floor 5 counter and a shopper making an informed choice.",
+      "texts": [],
+      "conversations": [
+        {
+          "script": "MN_MP_INTERIOR_DEPT_5_CUSTOMER",
+          "actor": {
+            "sprite": "SPRITE_GENTLEMAN",
+            "tile": [
+              4,
+              4
+            ],
+            "approach": [
+              4,
+              3
+            ]
+          },
+          "lines": [
+            "I keep a field notebook beside my shopping list. A machine is useful when the right partner can learn it.",
+            "The clerk has the actual stock. I have opinions, which are free and less reliable."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnMinneapolisDispatcherHouse",
+      "purpose": "Preserved missing-dispatcher story with family members and their native progress conditions.",
+      "texts": [],
+      "conversations": []
+    },
+    {
+      "map": "MnMinneapolisFieldClub",
+      "purpose": "A lake bird-count room where timing and observation give return visits a purpose.",
+      "texts": [
+        {
+          "label": "MN_MP_FIELDCLUB_HOSTText",
+          "lines": [
+            "We count birds around the lake. MURKROW visits after sunset, which is why the notebook has a time column.",
+            "If two people disagree, we compare where they stood. The lake has more than one good place to look."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_MP_INTERIOR_BIRD_COUNTER",
+          "actor": {
+            "sprite": "SPRITE_LASS",
+            "tile": [
+              8,
+              5
+            ],
+            "approach": [
+              8,
+              6
+            ]
+          },
+          "lines": [
+            "I thought I saw the same bird six times. The club asked whether it might have flown around me.",
+            "The notebook now says: one very busy bird."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnMinneapolisFoundryMuseum",
+      "purpose": "A foundry curator connecting the falls to manufacturing and workers.",
+      "texts": [
+        {
+          "label": "MN_MP_FOUNDRYMUSEUM_HOSTText",
+          "lines": [
+            "The river powered wheels; the foundry made the parts that kept them turning. Neither worked for long without people tending them.",
+            "Look at ST ANTHONY FALLS when you leave. The landmark makes more sense when you remember the work around it."
+          ]
+        }
+      ],
+      "conversations": []
+    },
+    {
+      "map": "MnMinneapolisGardenFlat",
+      "purpose": "Existing Berry gift in a gardener's apartment; no second reward source added.",
+      "texts": [
+        {
+          "label": "MN_MP_GARDENFLAT_HOSTText",
+          "lines": [
+            "This little garden feeds our partners. The BERRIES I share come from a lot of very patient windowsill work.",
+            "A small place can still grow something worth passing along."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_MP_INTERIOR_GARDEN_FLAT_GUEST",
+          "actor": {
+            "sprite": "SPRITE_POKEFAN_M",
+            "tile": [
+              5,
+              5
+            ],
+            "approach": [
+              5,
+              6
+            ]
+          },
+          "lines": [
+            "I watered the plants while my neighbor was away. They left a list longer than their trip itinerary.",
+            "Every pot has a name. I now know them all."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnMinneapolisGardenShop",
+      "purpose": "Existing native garden counter with a practical pollinator gardener.",
+      "texts": [],
+      "conversations": [
+        {
+          "script": "MN_MP_INTERIOR_GARDEN_SHOPPER",
+          "actor": {
+            "sprite": "SPRITE_TEACHER",
+            "tile": [
+              5,
+              3
+            ],
+            "approach": [
+              5,
+              2
+            ]
+          },
+          "lines": [
+            "I leave a rough corner for bugs beside my tidy flower bed.",
+            "My neighbor asked whether I forgot to finish. I told them that was the finished part."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnMinneapolisGardenersHome",
+      "purpose": "A pond-side household growing around an existing shore.",
+      "texts": [
+        {
+          "label": "MN_MP_GARDENERSHOME_HOSTText",
+          "lines": [
+            "The pond was here before our street. We fitted the garden around the shore instead of trying to straighten it.",
+            "The frogs seem pleased. They have not attended the neighborhood meeting to confirm."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_MP_INTERIOR_POND_CHILD",
+          "actor": {
+            "sprite": "SPRITE_YOUNGSTER",
+            "tile": [
+              5,
+              5
+            ],
+            "approach": [
+              5,
+              6
+            ]
+          },
+          "lines": [
+            "We count frog calls from the porch. I made a chart.",
+            "My little sister added a column for very loud frogs. It is the most useful column."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnMinneapolisGrainExchange",
+      "purpose": "A grain-records room showing how prairie harvests become river-city work.",
+      "texts": [
+        {
+          "label": "MN_MP_GRAINEXCHANGE_HOSTText",
+          "lines": [
+            "Each grain receipt started in a field somewhere. Rain, soil, a harvest crew, then railcars and mill doors.",
+            "I keep a map beside the figures so a good year never becomes just a large number."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_MP_INTERIOR_GRAIN_CLERK",
+          "actor": {
+            "sprite": "SPRITE_GENTLEMAN",
+            "tile": [
+              7,
+              5
+            ],
+            "approach": [
+              7,
+              6
+            ]
+          },
+          "lines": [
+            "A farmer wrote tell the mill crew thanks on the delivery slip.",
+            "We pinned it up where the crew could read it. Best document I filed all week."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnMinneapolisGreenhouse",
+      "purpose": "A city growing room connecting bugs, birds and impatient spring gardeners.",
+      "texts": [
+        {
+          "label": "MN_MP_GREENHOUSE_HOSTText",
+          "lines": [
+            "We start seedlings before the outdoor beds are ready. A MINNESOTA spring rewards patience, then tests it again.",
+            "The flowers outside feed bugs and birds. That is part of the garden's job, too."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_MP_INTERIOR_GREENHOUSE_HELPER",
+          "actor": {
+            "sprite": "SPRITE_TWIN",
+            "tile": [
+              5,
+              5
+            ],
+            "approach": [
+              5,
+              6
+            ]
+          },
+          "lines": [
+            "I am in charge of turning the pots toward the light.",
+            "The seedlings keep leaning back. We are having a very slow disagreement."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnMinneapolisLakeCabin",
+      "purpose": "A neighborhood lake meeting cabin with a child's walking journal.",
+      "texts": [
+        {
+          "label": "MN_MP_LAKECABIN_HOSTText",
+          "lines": [
+            "The east pier is where our neighbors meet after work. You do not need a grand plan to take a lake walk.",
+            "The same loop can feel different when you finally notice what is growing beside it."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_MP_INTERIOR_LAKE_WALKER",
+          "actor": {
+            "sprite": "SPRITE_POKEFAN_F",
+            "tile": [
+              5,
+              5
+            ],
+            "approach": [
+              5,
+              6
+            ]
+          },
+          "lines": [
+            "We walk the lake every week and name one thing we missed last time.",
+            "This week it was how quiet my kid gets when a bird starts singing."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnMinneapolisMart",
+      "purpose": "Retained native general store and existing local customer.",
+      "texts": [],
+      "conversations": []
+    },
+    {
+      "map": "MnMinneapolisMillForemanHome",
+      "purpose": "A mill foreman's home distinguishing family time from the mill office.",
+      "texts": [
+        {
+          "label": "MN_MP_MILLFOREMANHOME_HOSTText",
+          "lines": [
+            "The office is on the central bank. Here I am off shift, at least until someone asks why the kitchen chair squeaks.",
+            "The crew gathers at the community kitchen later. You hear more useful things when nobody is holding a clipboard."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_MP_INTERIOR_FOREMAN_CHILD",
+          "actor": {
+            "sprite": "SPRITE_YOUNGSTER",
+            "tile": [
+              5,
+              5
+            ],
+            "approach": [
+              5,
+              6
+            ]
+          },
+          "lines": [
+            "I asked what Dad does at the mill. He gave a long answer.",
+            "Mom said: makes sure everyone gets home. That answer made more sense."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnMinneapolisMillWorkersHouse",
+      "purpose": "A mill-worker family whose history stays tied to the river.",
+      "texts": [
+        {
+          "label": "MN_MP_MILLWORKERSHOUSE_HOSTText",
+          "lines": [
+            "My family worked beside the river for years. The current stayed; the work and the people changed.",
+            "The library's plaque walk tells part of it. Our dinner table tells the rest."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_MP_INTERIOR_MILL_DESCENDANT",
+          "actor": {
+            "sprite": "SPRITE_LASS",
+            "tile": [
+              5,
+              5
+            ],
+            "approach": [
+              5,
+              6
+            ]
+          },
+          "lines": [
+            "Grandma kept her lunch tin from the mill. I carry my art supplies in it now.",
+            "She says it is good that it still goes to work."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnMinneapolisMusicRoom",
+      "purpose": "Existing small-stage activity with local rhythm and audience.",
+      "texts": [
+        {
+          "label": "MN_MP_MUSICROOM_HOSTText",
+          "lines": [
+            "The river keeps its own rhythm. Our little stage borrows the beat and adds whatever the neighborhood brings.",
+            "An audience that listens is part of the music. There is room for that kind of practice here, too."
+          ]
+        }
+      ],
+      "conversations": []
+    },
+    {
+      "map": "MnMinneapolisNortheastHome",
+      "purpose": "A northeast household with real St Cloud directions and generational memory.",
+      "texts": [
+        {
+          "label": "MN_MP_NORTHEASTHOME_HOSTText",
+          "lines": [
+            "The north gate leads toward ST CLOUD. Our family takes the upper bridge when we head out together.",
+            "Someone always remembers a shorter trip from years ago. Someone else always insists we packed better snacks then."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_MP_INTERIOR_NORTHEAST_NEIGHBOR",
+          "actor": {
+            "sprite": "SPRITE_GRAMPS",
+            "tile": [
+              5,
+              5
+            ],
+            "approach": [
+              5,
+              6
+            ]
+          },
+          "lines": [
+            "I used to know every shopkeeper on this walk. Now my grandkid introduces me to the new ones.",
+            "Knowing a neighborhood is something you keep doing."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnMinneapolisPatternStudio",
+      "purpose": "A local textile studio preserving cultural variety through individual makers.",
+      "texts": [
+        {
+          "label": "MN_MP_PATTERNSTUDIO_HOSTText",
+          "lines": [
+            "I print patterns one layer at a time. My neighbors bring their own colors and stories to the worktable.",
+            "We ask before using another maker's design. Admiration is a good start to a conversation, not permission to skip it."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_MP_INTERIOR_PATTERN_MAKER",
+          "actor": {
+            "sprite": "SPRITE_BEAUTY",
+            "tile": [
+              5,
+              5
+            ],
+            "approach": [
+              5,
+              6
+            ]
+          },
+          "lines": [
+            "My aunt taught me a stitch she learned from her aunt. I keep the sample pinned by my machine.",
+            "A little square can hold a surprisingly large family."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnMinneapolisPokecenter1F",
+      "purpose": "Retained free party recovery, PC and existing clinic visitors.",
+      "texts": [
+        {
+          "label": "MN_MP_NURSEText",
+          "lines": [
+            "Welcome in from the city. We can rest your partners here.",
+            "A busy day of walking counts as a busy day for them, too. Give everyone time to recover."
+          ]
+        }
+      ],
+      "conversations": []
+    },
+    {
+      "map": "MnMinneapolisPrintShop",
+      "purpose": "A neighborhood printer connecting useful information to the river city.",
+      "texts": [
+        {
+          "label": "MN_MP_PRINTSHOP_HOSTText",
+          "lines": [
+            "We print seed-swap notices, show bills, and directions that have to survive a little rain.",
+            "The courier desk brings neighborhood news across the bridges. Good printing helps it arrive readable."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_MP_INTERIOR_PRINT_APPRENTICE",
+          "actor": {
+            "sprite": "SPRITE_YOUNGSTER",
+            "tile": [
+              5,
+              5
+            ],
+            "approach": [
+              5,
+              6
+            ]
+          },
+          "lines": [
+            "My first poster said COMMUINTY SUPPER. Everyone still came.",
+            "The next poster had the letters right. The cook said the important part was the supper."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnMinneapolisRiverFamilyHome",
+      "purpose": "Existing held-item gift with a family river-cleanup story.",
+      "texts": [
+        {
+          "label": "MN_MP_RIVERFAMILYHOME_HOSTText",
+          "lines": [
+            "We found our little gift during a quiet-bank cleanup. A water partner can hold it.",
+            "Most of what we carried home was litter. The interesting find was a nice surprise, not why we went."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_MP_INTERIOR_RIVER_FAMILY_CHILD",
+          "actor": {
+            "sprite": "SPRITE_TWIN",
+            "tile": [
+              5,
+              5
+            ],
+            "approach": [
+              5,
+              6
+            ]
+          },
+          "lines": [
+            "Our cleanup rule is simple: bring back more wrappers than you took out.",
+            "Dad says that makes the snack mathematically responsible."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnMinneapolisRiverInn",
+      "purpose": "A small river inn remembering mill workers and present-day walkers.",
+      "texts": [
+        {
+          "label": "MN_MP_RIVERINN_HOSTText",
+          "lines": [
+            "Workers once came for the flour mills. Now guests come for the river walk, and some stay to talk about the mills.",
+            "The best inn register has room for where people are going as well as where they came from."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_MP_INTERIOR_INN_GUEST",
+          "actor": {
+            "sprite": "SPRITE_GENTLEMAN",
+            "tile": [
+              5,
+              5
+            ],
+            "approach": [
+              5,
+              6
+            ]
+          },
+          "lines": [
+            "I planned one bridge crossing before breakfast. Three conversations later I had crossed all three.",
+            "This city is hard on a strict timetable and good for a walk."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnMinneapolisRiverNaturalist",
+      "purpose": "A field naturalist explaining actual quiet-bank WOOPER habitat.",
+      "texts": [
+        {
+          "label": "MN_MP_RIVERNATURALIST_HOSTText",
+          "lines": [
+            "The river joins several habitats. WOOPER favors the quiet banks rather than the loud center of the falls.",
+            "Look for the conditions a partner likes, not just the place its name appeared in a notebook."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_MP_INTERIOR_NATURE_STUDENT",
+          "actor": {
+            "sprite": "SPRITE_LASS",
+            "tile": [
+              3,
+              5
+            ],
+            "approach": [
+              3,
+              6
+            ]
+          },
+          "lines": [
+            "I drew the whole bank before I drew the WOOPER.",
+            "Now I can remember where to look again. My first notebook was just a page of delighted faces."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnMinneapolisSouthMarket",
+      "purpose": "Retained native drinks and Berries counter with a neighborhood picnic shopper.",
+      "texts": [],
+      "conversations": [
+        {
+          "script": "MN_MP_INTERIOR_SOUTH_SHOPPER",
+          "actor": {
+            "sprite": "SPRITE_POKEFAN_F",
+            "tile": [
+              5,
+              3
+            ],
+            "approach": [
+              5,
+              2
+            ]
+          },
+          "lines": [
+            "We are meeting at the lake with whatever everyone can carry.",
+            "The list says drinks, BERRIES, and remember the blanket this time. It is an unusually specific list."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnMinneapolisSupplyCoop",
+      "purpose": "Retained native co-op counter with a member explaining shared purchasing.",
+      "texts": [],
+      "conversations": [
+        {
+          "script": "MN_MP_INTERIOR_SUPPLY_MEMBER",
+          "actor": {
+            "sprite": "SPRITE_POKEFAN_M",
+            "tile": [
+              5,
+              3
+            ],
+            "approach": [
+              5,
+              2
+            ]
+          },
+          "lines": [
+            "Our co-op buys the useful things together. The meetings are less exciting than the savings.",
+            "The one exception was the meeting about whose turn it was to make coffee."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnMinneapolisToolFlat",
+      "purpose": "Existing Poke Doll advice in a repairer's apartment.",
+      "texts": [
+        {
+          "label": "MN_MP_TOOLFLAT_HOSTText",
+          "lines": [
+            "A POKE DOLL can help you retreat from a wild encounter. Preparation can be choosing a safe way out.",
+            "I repair tools for a living. Knowing when to stop pulling is half the skill."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_MP_INTERIOR_TOOL_FLAT_GUEST",
+          "actor": {
+            "sprite": "SPRITE_TEACHER",
+            "tile": [
+              5,
+              5
+            ],
+            "approach": [
+              5,
+              6
+            ]
+          },
+          "lines": [
+            "My partner keeps bringing broken handles here.",
+            "The repairer thanks it every time. We may have started a small business without meaning to."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnMinneapolisToolWorkshop",
+      "purpose": "A mill-tool repair room explaining water power through hands-on work.",
+      "texts": [
+        {
+          "label": "MN_MP_TOOLWORKSHOP_HOSTText",
+          "lines": [
+            "The falls turned the wheels; the wheels drove the mill. These tools kept the moving parts working.",
+            "An old machine can teach you a lot if you first learn which part is safe to touch."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_MP_INTERIOR_TOOL_APPRENTICE",
+          "actor": {
+            "sprite": "SPRITE_YOUNGSTER",
+            "tile": [
+              5,
+              5
+            ],
+            "approach": [
+              5,
+              6
+            ]
+          },
+          "lines": [
+            "I asked for the most important tool in the shop. The repairer handed me a pencil.",
+            "Measure, draw, then cut. My first good lesson saved a whole board."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnBemidjiHeritageHouse",
+      "purpose": "Heritage room telling Paul Bunyan tall tales while distinguishing camp stories from living histories.",
+      "texts": [
+        {
+          "label": "MN_BEMIDJI_ARCHIVISTText",
+          "lines": [
+            "Lumber-camp storytellers made PAUL and BABE larger with every retelling. A tall tale is allowed to grow.",
+            "We keep those tales beside ordinary camp letters. The letters give the real workers their own voices."
+          ]
+        }
+      ],
+      "conversations": []
+    },
+    {
+      "map": "MnBemidjiMart",
+      "purpose": "Existing native store, clerk and Itasca-trail shopper.",
+      "texts": [
+        {
+          "label": "MN_BEMIDJI_CUSTOMERText",
+          "lines": [
+            "I am stocking up before the ITASCA trail. Medicine first, then a snack I can eat with cold fingers.",
+            "My partner votes for the snack first. We are still negotiating."
+          ]
+        }
+      ],
+      "conversations": []
+    },
+    {
+      "map": "MnBemidjiNorthHouse",
+      "purpose": "A border-lakes household treating clean water as a shared responsibility.",
+      "texts": [
+        {
+          "label": "MN_BEMIDJI_NORTH_RESIDENTText",
+          "lines": [
+            "Our family stories cross borders. So do the birds, the clouds, and most of the water.",
+            "We keep a lake notebook because caring about a place should outlast the sign at its edge."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_SMALL_INTERIOR_BEMIDJI_NOTEBOOK",
+          "actor": {
+            "sprite": "SPRITE_LASS",
+            "tile": [
+              3,
+              3
+            ],
+            "approach": [
+              3,
+              4
+            ]
+          },
+          "lines": [
+            "I asked my aunt whose lake this was. She asked who was going to help look after it.",
+            "I came back with a litter sack and a better question."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnBemidjiPokecenter1F",
+      "purpose": "Existing free clinic and PC with independent Itasca mark directions.",
+      "texts": [],
+      "conversations": []
+    },
+    {
+      "map": "MnBemidjiShelfHouse",
+      "purpose": "A shelf-trail neighbor keeps the useful drop and east-climb advice.",
+      "texts": [
+        {
+          "label": "MN_BEMIDJI_SHELF_RESIDENTText",
+          "lines": [
+            "The shelf trail drops to the road. Use the east climb when you need to get back up.",
+            "My neighbor calls that the easy way. I call it the way with time to finish our conversation."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_SMALL_INTERIOR_BEMIDJI_TRAIL_GUEST",
+          "actor": {
+            "sprite": "SPRITE_GRAMPS",
+            "tile": [
+              7,
+              3
+            ],
+            "approach": [
+              7,
+              4
+            ]
+          },
+          "lines": [
+            "We used to race down the shelf when we were kids.",
+            "Now we compete over who can spot the first spring flower on the climb home. I prefer the new rules."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnBoundaryWatersSurveyShelter",
+      "purpose": "Retain the free medic, assistant, native chief battle, receiver gate and survey-restoration story without replacing their programs.",
+      "texts": [],
+      "conversations": []
+    },
+    {
+      "map": "MnBrainerdMart",
+      "purpose": "Retained native mart and a visitor choosing encounters versus a quiet road.",
+      "texts": [
+        {
+          "label": "MN_BRAINERD_MART_CUSTOMERText",
+          "lines": [
+            "REPELs for a quiet road, BALLs for a planned stop at the shore. I pack for the trip I actually want.",
+            "Last time I packed for three different trips and could not find my lunch."
+          ]
+        }
+      ],
+      "conversations": []
+    },
+    {
+      "map": "MnBrainerdOutfitter",
+      "purpose": "Outfitter and helper explain lake preparation without implying unearned Surf.",
+      "texts": [
+        {
+          "label": "MN_BRAINERD_GEAR_KEEPERText",
+          "lines": [
+            "Check the gear before you reach the landing. A loose strap is much easier to fix on this table than in a wet canoe.",
+            "Until you can SURF with a prepared partner, the dry roads still make a fine trip."
+          ]
+        }
+      ],
+      "conversations": []
+    },
+    {
+      "map": "MnBrainerdPokecenter1F",
+      "purpose": "Existing free recovery and witnesses to the falsified lake report.",
+      "texts": [],
+      "conversations": []
+    },
+    {
+      "map": "MnBrainerdRangerStation",
+      "purpose": "Preserve the archivist and volunteer evidence about duplicated survey numbers.",
+      "texts": [
+        {
+          "label": "MN_BRAINERD_VOLUNTEERText",
+          "lines": [
+            "The ranger outside can take your report. Keep your own copy of what you saw, too.",
+            "A quiet lake still has things to tell you. Identical numbers on every page do not mean somebody listened."
+          ]
+        }
+      ],
+      "conversations": []
+    },
+    {
+      "map": "MnGrandMaraisArtistHouse",
+      "purpose": "A painter and a visitor interpreting Superior cloud colors.",
+      "texts": [
+        {
+          "label": "MnGrandMaraisArtistHouseArtistText",
+          "lines": [
+            "The lake changes with every cloud. I paint from the pier at dawn, then come here to see what I missed.",
+            "The same shore gives me a new painting every morning. That is a generous neighbor."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_SMALL_INTERIOR_GRAND_MARAIS_ART_GUEST",
+          "actor": {
+            "sprite": "SPRITE_LASS",
+            "tile": [
+              3,
+              5
+            ],
+            "approach": [
+              3,
+              6
+            ]
+          },
+          "lines": [
+            "I thought I had brought the wrong blue paint.",
+            "The artist asked me to wait ten minutes. The lake changed to match it."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnGrandMaraisFieldStation",
+      "purpose": "Retain Dr Tamarack, the original starter/help scene and lighthouse part delivery.",
+      "texts": [],
+      "conversations": []
+    },
+    {
+      "map": "MnGrandMaraisFisherHouse",
+      "purpose": "Preserve a firsthand pulse/current witness and add a fisher's family voice.",
+      "texts": [],
+      "conversations": [
+        {
+          "script": "MN_SMALL_INTERIOR_GRAND_MARAIS_NET_MENDER",
+          "actor": {
+            "sprite": "SPRITE_GRAMPS",
+            "tile": [
+              3,
+              5
+            ],
+            "approach": [
+              3,
+              6
+            ]
+          },
+          "lines": [
+            "I mend nets while we compare what the lake did today. A knot gives your hands something to do while your ears work.",
+            "Keep the odd observations. They are the ones worth comparing later."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnGrandMaraisMart",
+      "purpose": "Retained native local supply counter and a northern-trail customer.",
+      "texts": [],
+      "conversations": [
+        {
+          "script": "MN_SMALL_INTERIOR_GRAND_MARAIS_SHOPPER",
+          "actor": {
+            "sprite": "SPRITE_TEACHER",
+            "tile": [
+              7,
+              3
+            ],
+            "approach": [
+              7,
+              2
+            ]
+          },
+          "lines": [
+            "I buy one extra ANTIDOTE before the long trail. The artist buys one extra blue pencil.",
+            "We both call it preparing for the unexpected."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnGrandMaraisPokecenter",
+      "purpose": "Retained nurse care and the existing trail hiker.",
+      "texts": [
+        {
+          "label": "MnGrandMaraisPokecenterHikerText",
+          "lines": [
+            "Long walks wear out my partners before they wear out my stories about the walk.",
+            "NURSE JOY makes us rest. I am working on remembering to do that before she asks."
+          ]
+        }
+      ],
+      "conversations": []
+    },
+    {
+      "map": "MnGrandRapidsMart",
+      "purpose": "Retained store and a cold-road shopper with useful preparation advice.",
+      "texts": [
+        {
+          "label": "MN_GR_MART_CUSTOMERText",
+          "lines": [
+            "The road descends, but the cold still finds you. I check my partners before I check my pack.",
+            "A good trip leaves enough energy for the walk back."
+          ]
+        }
+      ],
+      "conversations": []
+    },
+    {
+      "map": "MnGrandRapidsPokecenter1F",
+      "purpose": "Retained clinic and shift/depot witnesses in the main records story.",
+      "texts": [],
+      "conversations": []
+    },
+    {
+      "map": "MnGrandRapidsSurveyDepot",
+      "purpose": "Retain the native depot recipient and meter repairer, including original rewards and story gates.",
+      "texts": [],
+      "conversations": []
+    },
+    {
+      "map": "MnItascaGatehouse",
+      "purpose": "Existing attendant wayfinding and a witness who preserved independent survey copies.",
+      "texts": [],
+      "conversations": []
+    },
+    {
+      "map": "MnLeechLakeCareCabin",
+      "purpose": "Existing no-forms free care, with a paddler learning to take a break.",
+      "texts": [],
+      "conversations": [
+        {
+          "script": "MN_SMALL_INTERIOR_LEECH_CARE_VISITOR",
+          "actor": {
+            "sprite": "SPRITE_FISHER",
+            "tile": [
+              12,
+              11
+            ],
+            "approach": [
+              12,
+              12
+            ]
+          },
+          "lines": [
+            "I came in ready to explain the whole trip. The nurse said I could sit down first.",
+            "Sometimes the best welcome does not start with a question."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnLeechLakeFisherHouse",
+      "purpose": "Keep the diarist's original ICE intimidation evidence and add a family record keeper.",
+      "texts": [],
+      "conversations": [
+        {
+          "script": "MN_SMALL_INTERIOR_LEECH_DIARY_READER",
+          "actor": {
+            "sprite": "SPRITE_TEACHER",
+            "tile": [
+              3,
+              5
+            ],
+            "approach": [
+              3,
+              6
+            ]
+          },
+          "lines": [
+            "My uncle put dates on every lake note. It seemed fussy until someone tried to tell us what we had seen.",
+            "Now I date my drawings, too. Memory deserves a little help."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnMankatoMart",
+      "purpose": "Retained mart and prairie shopper with local supply planning.",
+      "texts": [
+        {
+          "label": "MN_MK_SHOPPERText",
+          "lines": [
+            "A few POTIONS make a prairie trip easier. I also leave room for the BERRIES a neighbor insists I take.",
+            "Planning is useful. Planning for hospitality takes practice."
+          ]
+        }
+      ],
+      "conversations": []
+    },
+    {
+      "map": "MnMankatoPokecenter1F",
+      "purpose": "Retained free clinic and a visitor preparing for the terrace climb.",
+      "texts": [
+        {
+          "label": "MN_MK_PATIENTText",
+          "lines": [
+            "A quick rest makes the next terrace climb easier. My partner likes watching the doors while we wait.",
+            "Every time someone comes in, it looks as if the whole town might be a friend."
+          ]
+        }
+      ],
+      "conversations": []
+    },
+    {
+      "map": "MnR01Farmhouse",
+      "purpose": "Retain the first-route farmer's ledge/ramp teaching, Berry pickup and Rochester direction; add a farm-family voice.",
+      "texts": [],
+      "conversations": [
+        {
+          "script": "MN_SMALL_INTERIOR_R01_FARM_CHILD",
+          "actor": {
+            "sprite": "SPRITE_YOUNGSTER",
+            "tile": [
+              3,
+              5
+            ],
+            "approach": [
+              3,
+              6
+            ]
+          },
+          "lines": [
+            "We watch the bluff shadows move across the garden. My favorite time is when the shade reaches the porch.",
+            "That is when the grownups stop weeding and somebody brings out lemonade."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnR02Farmhouse",
+      "purpose": "Retain the nursery farmer's first-badge acknowledgment, Mankato advice and Berry pickup.",
+      "texts": [],
+      "conversations": [
+        {
+          "script": "MN_SMALL_INTERIOR_R02_SEED_HELPER",
+          "actor": {
+            "sprite": "SPRITE_LASS",
+            "tile": [
+              2,
+              5
+            ],
+            "approach": [
+              2,
+              6
+            ]
+          },
+          "lines": [
+            "I label the nursery rows before anything comes up. Otherwise we spend spring arguing with the seedlings.",
+            "Some wild partners like the tall rows as much as we do. I leave them a little space."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnR02ToolShed",
+      "purpose": "Retain the native tool keeper, clear lane, fence-gap return and collectible cache.",
+      "texts": [
+        {
+          "label": "MN_R02_TOOL_KEEPERText",
+          "lines": [
+            "Tools stay inside so the working lane stays clear. The fence gap leads back to the road.",
+            "My rule is to return a tool sharper than you borrowed it. It makes borrowing feel like helping."
+          ]
+        }
+      ],
+      "conversations": []
+    },
+    {
+      "map": "MnR06NeedleCabin",
+      "purpose": "Retain native full-party free care and the original cabin pickup.",
+      "texts": [
+        {
+          "label": "MN_R06_CABIN_KEEPERText",
+          "lines": [
+            "Rest here a while. I will tend your whole team; the pine trail can wait.",
+            "I keep this cabin open because somebody did the same for me on a much colder walk."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_SMALL_INTERIOR_R06_KNITTER",
+          "actor": {
+            "sprite": "SPRITE_GRANNY",
+            "tile": [
+              3,
+              5
+            ],
+            "approach": [
+              3,
+              6
+            ]
+          },
+          "lines": [
+            "I knit while the travelers warm up. The scarf gets longer every time somebody tells a good story.",
+            "At this rate it will reach BRAINERD before I do."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnR12RangerHut",
+      "purpose": "Retain June's Lode/canoe sighting and the actual saddle-to-survey-shelter direction.",
+      "texts": [],
+      "conversations": [
+        {
+          "script": "MN_SMALL_INTERIOR_R12_RANGER_HELPER",
+          "actor": {
+            "sprite": "SPRITE_YOUNGSTER",
+            "tile": [
+              3,
+              5
+            ],
+            "approach": [
+              3,
+              6
+            ]
+          },
+          "lines": [
+            "JUNE asked me to note the wind before the canoe left. I thought it was a tiny detail.",
+            "A good ranger keeps tiny details until they fit a bigger picture."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnR15LakeCabin",
+      "purpose": "Retain Eli, the lake-pier connection and existing road-home cache.",
+      "texts": [],
+      "conversations": [
+        {
+          "script": "MN_SMALL_INTERIOR_R15_CABIN_GUEST",
+          "actor": {
+            "sprite": "SPRITE_POKEFAN_F",
+            "tile": [
+              3,
+              5
+            ],
+            "approach": [
+              3,
+              6
+            ]
+          },
+          "lines": [
+            "I promised myself a quiet hour at CAMP LAKE.",
+            "Then ELI asked how my trip was going. A quiet hour can include one very good conversation."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnR17RangerHut",
+      "purpose": "Retain the rest service and Falls circuit check-in, with a trail volunteer.",
+      "texts": [],
+      "conversations": [
+        {
+          "script": "MN_SMALL_INTERIOR_R17_TRAIL_VOLUNTEER",
+          "actor": {
+            "sprite": "SPRITE_TEACHER",
+            "tile": [
+              3,
+              5
+            ],
+            "approach": [
+              3,
+              6
+            ]
+          },
+          "lines": [
+            "I help dry the trail maps when people come in from the rain.",
+            "A map with soft corners is often one that got somebody home."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnRainyRiverWarmingHut",
+      "purpose": "Retain winter free care and clear distinction from the border report desk.",
+      "texts": [],
+      "conversations": [
+        {
+          "script": "MN_SMALL_INTERIOR_RAINY_MITTEN_MENDER",
+          "actor": {
+            "sprite": "SPRITE_GRANNY",
+            "tile": [
+              3,
+              4
+            ],
+            "approach": [
+              4,
+              4
+            ]
+          },
+          "lines": [
+            "I mend mittens while the river wind rattles the door.",
+            "Nobody needs to tell a heroic story to deserve a warm pair. Coming in was a good decision."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnRochesterClerkHouse",
+      "purpose": "Keep the clinic-freight discrepancy witness and add a neighbor who understands practical care.",
+      "texts": [],
+      "conversations": [
+        {
+          "script": "MN_SMALL_INTERIOR_ROCHESTER_FREIGHT_FAMILY",
+          "actor": {
+            "sprite": "SPRITE_TEACHER",
+            "tile": [
+              3,
+              5
+            ],
+            "approach": [
+              3,
+              6
+            ]
+          },
+          "lines": [
+            "My sister sorts clinic freight. She knows the difference between a tidy order and the right medicine in the box.",
+            "Care starts before a patient walks in the door."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnRochesterMart",
+      "purpose": "Retained mart and a medicine shopper preparing for a prairie walk.",
+      "texts": [
+        {
+          "label": "MN_RC_SHOPPERText",
+          "lines": [
+            "I keep a few POTIONS for the prairie, then check whether my partners need rest before we leave.",
+            "The clerk knows my list by now. I am trying to be as reliable as the clerk."
+          ]
+        }
+      ],
+      "conversations": []
+    },
+    {
+      "map": "MnRochesterPatientHouse",
+      "purpose": "A recovering trainer and a friend preparing calmly for Varel's match.",
+      "texts": [
+        {
+          "label": "MN_RC_RESTING_TRAINERText",
+          "lines": [
+            "VAREL watches how you use your team. A good plan starts with partners that have had a rest.",
+            "The clinic is free. Taking the time to use it is part of looking after each other."
+          ]
+        }
+      ],
+      "conversations": [
+        {
+          "script": "MN_SMALL_INTERIOR_ROCHESTER_PATIENT_FRIEND",
+          "actor": {
+            "sprite": "SPRITE_LASS",
+            "tile": [
+              3,
+              5
+            ],
+            "approach": [
+              3,
+              6
+            ]
+          },
+          "lines": [
+            "We were going to hurry straight to the GYM. Then my friend asked for a rest.",
+            "I am glad they told me. A traveling team should be able to say that."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnRochesterPokecenter1F",
+      "purpose": "Retain clinic healing, Dr Tamarack's recipient scene and the main freight progression.",
+      "texts": [],
+      "conversations": []
+    },
+    {
+      "map": "MnRyansHouse",
+      "purpose": "Ryan's existing personal Baptism River cabin, with a guest listening to the falls.",
+      "texts": [],
+      "conversations": [
+        {
+          "script": "MN_SMALL_INTERIOR_RYAN_CABIN_GUEST",
+          "actor": {
+            "sprite": "SPRITE_POKEFAN_M",
+            "tile": [
+              3,
+              5
+            ],
+            "approach": [
+              3,
+              6
+            ]
+          },
+          "lines": [
+            "RYAN said to listen to the BAPTISM RIVER for a while.",
+            "I was going to ask how long. Then I heard the falls and forgot to check."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnStCloudMart",
+      "purpose": "Retained native store, pine-road preparation and original stock.",
+      "texts": [
+        {
+          "label": "MN_ST_CLOUD_MART_CUSTOMERText",
+          "lines": [
+            "REPELs help when you want a quiet stretch of pine road. I still stop to watch the birds.",
+            "Avoiding a battle and paying attention to the forest can be the same kind of walk."
+          ]
+        }
+      ],
+      "conversations": []
+    },
+    {
+      "map": "MnStCloudPokecenter1F",
+      "purpose": "Retained free care, PC and granite-path/train visitors.",
+      "texts": [
+        {
+          "label": "MN_ST_CLOUD_CLINIC_WALKERText",
+          "lines": [
+            "The granite path gives a fine view of the river. My partner keeps choosing the long way back.",
+            "We are calling it field research. The nurse calls it another reason to rest."
+          ]
+        }
+      ],
+      "conversations": []
+    },
+    {
+      "map": "MnStCloudStation",
+      "purpose": "Retain actual Glacier Line dispatch and visited-stop rules; give the waiting passenger a local voice.",
+      "texts": [
+        {
+          "label": "MN_ST_CLOUD_STATION_PASSENGERText",
+          "lines": [
+            "North toward STAPLES, south toward ST PAUL. The conductor handles the actual route choices.",
+            "I bring a book for the wait and never finish it. There is always someone with a better story on the next bench."
+          ]
+        }
+      ],
+      "conversations": []
+    },
+    {
+      "map": "MnWinonaFieldStation",
+      "purpose": "Retain Dr Tamarack, aide, all three starter balls, original choice and home-town departure progression.",
+      "texts": [],
+      "conversations": []
+    },
+    {
+      "map": "MnWinonaHome1F",
+      "purpose": "Retain the guardian's original interception, dialogue pages and New Game/home exit story.",
+      "texts": [],
+      "conversations": []
+    },
+    {
+      "map": "MnWinonaHome2F",
+      "purpose": "The starting bedroom has a cousin visiting before the first adventure, clear of HOME spawn and stairs.",
+      "texts": [],
+      "conversations": [
+        {
+          "script": "MN_SMALL_INTERIOR_WINONA_COUSIN",
+          "actor": {
+            "sprite": "SPRITE_GAMEBOY_KID",
+            "tile": [
+              1,
+              3
+            ],
+            "approach": [
+              1,
+              4
+            ]
+          },
+          "lines": [
+            "I came over to wish you luck before you head out. I can watch the high score while you are gone.",
+            "When you get back, tell me one thing about each town that does not fit on a map. Those are the good stories."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnWinonaMart",
+      "purpose": "Retain the native shop and Driftless Trail Antidote advice.",
+      "texts": [
+        {
+          "label": "MN_W_CUSTOMERText",
+          "lines": [
+            "An ANTIDOTE helps on Driftless Trail. So does noticing when your partner is tired before you are.",
+            "My first trip taught me both lessons. The second one was much nicer."
+          ]
+        }
+      ],
+      "conversations": []
+    },
+    {
+      "map": "MnWinonaPokecenter1F",
+      "purpose": "Retain nurse care and the first independent station-readings witness.",
+      "texts": [
+        {
+          "label": "MN_W_NURSEText",
+          "lines": [
+            "A fresh start is worth a rest. Let us help your partners before the bluff trail.",
+            "You do not need to earn a welcome here. Come back whenever your team needs care."
+          ]
+        }
+      ],
+      "conversations": []
+    },
+    {
+      "map": "MnGrandMaraisLighthouse",
+      "purpose": "Preserve the keeper, delivered-part lighthouse restoration and native signal story.",
+      "texts": [],
+      "conversations": []
+    },
+    {
+      "map": "MnMinneapolisBattleClub",
+      "purpose": "Preserve all four existing optional native club battles, coach reward and the distinct indoor battle venue.",
+      "texts": [],
+      "conversations": []
+    },
+    {
+      "map": "MnMinneapolisDispatchOffice",
+      "purpose": "Preserve the native ICE enforcer battle, captive dispatcher rescue and original records story.",
+      "texts": [],
+      "conversations": []
+    },
+    {
+      "map": "MnR11SplitRockLighthouse",
+      "purpose": "Preserve the native lighthouse keeper, signal prerequisites and North Shore story return.",
+      "texts": [],
+      "conversations": []
+    },
+    {
+      "map": "MnR01Cave1F",
+      "purpose": "Preserve Cedar Hollows guide, bluff passage topology, native encounter habitat and existing reward.",
+      "texts": [],
+      "conversations": []
+    },
+    {
+      "map": "MnR03Cave1F",
+      "purpose": "Preserve the cave walker, bank passage, native encounters and existing pickup.",
+      "texts": [],
+      "conversations": []
+    },
+    {
+      "map": "MnR05RockCut",
+      "purpose": "Preserve the rock-cut walker, meaningful chamber topology, native encounters and original pickup.",
+      "texts": [],
+      "conversations": []
+    },
+    {
+      "map": "MnR09Cave1F",
+      "purpose": "Preserve the mine scout, depot foreman, survey cache and all original main-story conditions.",
+      "texts": [],
+      "conversations": []
+    },
+    {
+      "map": "MnR10Cave1F",
+      "purpose": "Preserve the gallery reader, native source cave chambers, encounter habitat and original reward.",
+      "texts": [],
+      "conversations": []
+    },
+    {
+      "map": "MnR12Cave1F",
+      "purpose": "Preserve Otta, the native northern passage topology, encounters and original cache.",
+      "texts": [],
+      "conversations": []
+    },
+    {
+      "map": "MnR13Cave1F",
+      "purpose": "Preserve Harper, the native shelter chamber, encounters and original Ether.",
+      "texts": [],
+      "conversations": []
+    },
+    {
+      "map": "MnR17Cave1F",
+      "purpose": "A dry rock shelter with the original reward and a local lichen observer.",
+      "texts": [],
+      "conversations": [
+        {
+          "script": "MN_INTERIOR_R17_LICHEN_READER",
+          "actor": {
+            "sprite": "SPRITE_SCIENTIST",
+            "tile": [
+              8,
+              10
+            ],
+            "approach": [
+              7,
+              10
+            ]
+          },
+          "lines": [
+            "I came to record the lichen at the shelter mouth. Growth that slow makes you careful where you put a boot.",
+            "The little chamber above has a supply left for travelers. Take what the trail offers and leave the stone as you found it."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnR20Cave1F",
+      "purpose": "A two-mouth northern cleft with its original reward and a passage scout who explains the return.",
+      "texts": [],
+      "conversations": [
+        {
+          "script": "MN_INTERIOR_R20_CLEFT_SCOUT",
+          "actor": {
+            "sprite": "SPRITE_POKEFAN_M",
+            "tile": [
+              6,
+              9
+            ],
+            "approach": [
+              5,
+              9
+            ]
+          },
+          "lines": [
+            "This cleft has two mouths along the northern trail. I checked both before coming in to mark the dry passage.",
+            "The shelf above is a side stop. The low passage connects the two returns. A good shortcut still deserves a look at where you will come out."
+          ]
+        }
+      ]
+    }
+  ],
+  "all_installed_interiors": true
+}

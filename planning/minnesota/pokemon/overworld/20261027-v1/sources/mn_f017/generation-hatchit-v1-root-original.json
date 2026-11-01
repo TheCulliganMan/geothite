@@ -1,0 +1,7 @@
+{
+  "tool": "built-in imagegen",
+  "default_path": "/Users/ryanculligan/.codex/generated_images/01a178da-4cf1-7e01-8516-667a332dc790/exec-b2b888bc-d50e-4715-a3e1-91e9b9815779.png",
+  "workspace_path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f017/hatchit.overworld.imagegen-v1.png",
+  "sha256": "f471e7ecbdc4449b982a14db934b74f70fc3ea96ffd3eb69600e57ac616fa20c",
+  "prompt": "prompt-hatchit-v1.txt"
+}

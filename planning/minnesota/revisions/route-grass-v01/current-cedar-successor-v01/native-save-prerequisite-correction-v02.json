@@ -1,0 +1,7 @@
+{
+  "status": "TEST_PREREQUISITE_CORRECTED",
+  "failed_log": ".local/route-grass-review/current-cedar-successor-native-v01.log",
+  "cause": "Missing caller-named CRYSTAL_MARAIS_SUPERIOR_SAVE_DIR; failure occurred at reached-save creation.",
+  "rerun_log": ".local/route-grass-review/current-cedar-successor-native-v02.log",
+  "map_changes": 0
+}

@@ -1,0 +1,7 @@
+{
+  "source": ".local/route-grass-review/current-boundary-basecamp-saves-v02/unqualified-free-care-80159-1793429563380370000.crystalsave",
+  "production_input": ".local/route-grass-review/current-boundary-basecamp-stdio-input-v01.crystalsave",
+  "sha256": "f46e93b052e4f6998dec223b002f5dd001d13df8bfe9c40c4ca9bafd8f9ff2e6",
+  "source_case": "native_town_exterior_all_facades_both_returns_and_continue",
+  "scope": "Actual reached Detroit gate-return town save; Mew60 and initial qualifications remain explicit QA fixtures."
+}

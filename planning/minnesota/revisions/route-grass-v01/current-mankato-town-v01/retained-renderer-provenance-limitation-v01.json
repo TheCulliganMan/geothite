@@ -1,0 +1,15 @@
+{
+  "status": "SUPPLEMENTARY_REFERENCE_ONLY_NOT_CURRENT_CHECKOUT_QA",
+  "renderer": ".local/route-grass-review/portable-tools-v01/render_saved_session",
+  "source_paths": [
+    "/Users/ryanculligan/.codex/worktrees/verdigrim-containment/geothite/crates/crystal-bevy/examples/render_saved_session.rs"
+  ],
+  "dependency_evidence": "planning/minnesota/revisions/route-grass-v01/current-mankato-town-v01/alternate-worktree-renderer-dependencies-v01.d",
+  "dependency_sha256": "9e6dae4e69d5218471a3b764f0e2f019e58b716063f917ec939bbce488d28d7e",
+  "affected_receipts": [
+    "harbor-facade-native-visual-receipt-v01.json",
+    "harbor-native-production-progress-v04.json"
+  ],
+  "explanation": "The three images are genuine GPU captures of the current candidate through a retained alternate-worktree renderer. They remain supplementary references. Current-checkout acceptance must use the new render_at_location executable and all nine standard source comparisons.",
+  "correct_current_renderer_provenance": "current-renderer-provenance-v01.json"
+}

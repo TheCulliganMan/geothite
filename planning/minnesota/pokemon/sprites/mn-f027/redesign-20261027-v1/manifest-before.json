@@ -1,0 +1,234 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F027",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_067": {
+      "species_id": "MN_067",
+      "name": "Clinklaw",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          24,
+          19,
+          14
+        ],
+        [
+          10,
+          13,
+          15
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        14968,
+        15786,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          198,
+          156,
+          115
+        ],
+        [
+          82,
+          107,
+          123
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#C69C73",
+        "#526B7B",
+        "#000000"
+      ]
+    },
+    "MN_068": {
+      "species_id": "MN_068",
+      "name": "Trapnack",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          20,
+          23,
+          22
+        ],
+        [
+          9,
+          10,
+          13
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        23284,
+        13641,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          165,
+          189,
+          181
+        ],
+        [
+          74,
+          82,
+          107
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#A5BDB5",
+        "#4A526B",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f027/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "board": "target/minnesota-pokemon/gen2-reference/bugs.png"
+  },
+  "sprites": [
+    {
+      "id": "mn-067-clinklaw-v1",
+      "species_id": "MN_067",
+      "view": "front",
+      "source": "sprites/mn-f027/mn-067-068.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        672,
+        561
+      ],
+      "fit": [
+        40,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        14968,
+        15786,
+        0
+      ]
+    },
+    {
+      "id": "mn-067-clinklaw-v1",
+      "species_id": "MN_067",
+      "view": "back",
+      "source": "sprites/mn-f027/mn-067-068.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        561,
+        672,
+        561
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        14968,
+        15786,
+        0
+      ]
+    },
+    {
+      "id": "mn-068-trapnack-v1",
+      "species_id": "MN_068",
+      "view": "front",
+      "source": "sprites/mn-f027/mn-067-068.front-back.imagegen-v1.png",
+      "crop": [
+        672,
+        0,
+        730,
+        561
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        23284,
+        13641,
+        0
+      ]
+    },
+    {
+      "id": "mn-068-trapnack-v1",
+      "species_id": "MN_068",
+      "view": "back",
+      "source": "sprites/mn-f027/mn-067-068.front-back.imagegen-v1.png",
+      "crop": [
+        672,
+        561,
+        730,
+        561
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        23284,
+        13641,
+        0
+      ]
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "notes": [
+      "Inspected frozen source-contour-v1 sheet: crayfish claws, stalk eyes and curled tail plates keep clear stepped contours, while metallic body planes retain color.",
+      "Trapnack cage ribs and their dark gaps remain legible, rear raised claws stay separated, and bottom crop remains open with no added black line."
+    ],
+    "sheet_sha256": "1a94a5df688fe1787ea510856b0c1c3b14a08858ce42a4f2daa15b0d233abd0f",
+    "outline_profile": "source-contour-v1"
+  }
+}

@@ -1,0 +1,251 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F108",
+  "status": "conversion-comparison-proposal",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_237": {
+      "species_id": "MN_237",
+      "name": "Prismip",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          24,
+          27,
+          31
+        ],
+        [
+          13,
+          9,
+          23
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        32632,
+        23853,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          198,
+          222,
+          255
+        ],
+        [
+          107,
+          74,
+          189
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#C6DEFF",
+        "#6B4ABD",
+        "#000000"
+      ]
+    },
+    "MN_238": {
+      "species_id": "MN_238",
+      "name": "Mirradian",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          29,
+          25,
+          30
+        ],
+        [
+          10,
+          12,
+          23
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        31549,
+        23946,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          239,
+          206,
+          247
+        ],
+        [
+          82,
+          99,
+          189
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#EFCEF7",
+        "#5263BD",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f108/prompt-v1.txt",
+  "reference_mapping": "sprites/mn-f108/reference-mapping-v1.json",
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-237-prismip-v1",
+      "species_id": "MN_237",
+      "view": "front",
+      "source": "sprites/mn-f108/mn-237-238.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        755,
+        500
+      ],
+      "fit": [
+        40,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        32632,
+        23853,
+        0
+      ],
+      "white_detail_min_samples": 8,
+      "interior_black_min_samples": 8,
+      "sampling": "area_vote",
+      "exterior_contour": "solid"
+    },
+    {
+      "id": "mn-237-prismip-v1",
+      "species_id": "MN_237",
+      "view": "back",
+      "source": "sprites/mn-f108/mn-237-238.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        500,
+        755,
+        524
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        32632,
+        23853,
+        0
+      ],
+      "white_detail_min_samples": 8,
+      "interior_black_min_samples": 8,
+      "sampling": "area_vote",
+      "exterior_contour": "solid"
+    },
+    {
+      "id": "mn-238-mirradian-v1",
+      "species_id": "MN_238",
+      "view": "front",
+      "source": "sprites/mn-f108/mn-237-238.front-back.imagegen-v1.png",
+      "crop": [
+        755,
+        0,
+        781,
+        500
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        31549,
+        23946,
+        0
+      ],
+      "white_detail_min_samples": 8,
+      "interior_black_min_samples": 8,
+      "sampling": "area_vote",
+      "exterior_contour": "solid"
+    },
+    {
+      "id": "mn-238-mirradian-v1",
+      "species_id": "MN_238",
+      "view": "back",
+      "source": "sprites/mn-f108/mn-237-238.front-back.imagegen-v1.png",
+      "crop": [
+        755,
+        500,
+        781,
+        524
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        31549,
+        23946,
+        0
+      ],
+      "white_detail_min_samples": 8,
+      "interior_black_min_samples": 8,
+      "sampling": "area_vote",
+      "exterior_contour": "solid"
+    }
+  ],
+  "source_sha256": "24d3a8fe569c5e764da444c176dc513528694482ba8614fee5e567ce3230f201",
+  "candidate_review": {
+    "status": "native-review-pending",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "a9098b75afa1fbeec47acc7ad52cc64c77e0af73fadedc833a415c045e2d4703",
+    "notes": "Actual native inspected twice, default and interior_black_min_samples8 variant archived. Threshold8 retains dark face surrounds and prism panel seams without filling broad colored planes. Strong growth from one prism/tabs40 to two offset shoulder columns/wedge torso54; close rear facets fill frames. Eye windows are very small, but black surround is clearer in8 variant; root must judge remaining pupil readability. No new art generated for conversion detail issue."
+  },
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "notes": "Root inspected both native prism pairs: single hexagonal core with broad tabs becomes unequal mirror-column shoulders and wedge torso. Structural interior seams retain flat crystal planes, and tiny white face windows remain readable within dark panels. Light blue/violet and pink/slate palettes are individually distinct; rear facets fill close portraits without a bottom cap.",
+    "sheet_sha256": "a9098b75afa1fbeec47acc7ad52cc64c77e0af73fadedc833a415c045e2d4703",
+    "outline_profile": "source-contour-v1"
+  }
+}

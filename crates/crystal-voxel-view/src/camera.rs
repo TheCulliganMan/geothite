@@ -14,11 +14,13 @@ pub const CAMERA_PITCH_DEGREES: f32 = 45.0;
 const CAMERA_FOCAL: f32 = 1.0;
 const FAR_DEPTH_MARGIN: f32 = 4096.0;
 
-/// Continuous browser controls; one rotation unit is 45 degrees.
+/// Continuous camera controls; one rotation unit is 45 degrees.
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct VoxelCameraControls {
     pub zoom_step: f32,
     pub rotation_step: f32,
+    pub pitch_degrees: f32,
+    pub first_person: bool,
 }
 
 impl Default for VoxelCameraControls {
@@ -26,6 +28,8 @@ impl Default for VoxelCameraControls {
         Self {
             zoom_step: 1.0,
             rotation_step: 0.0,
+            pitch_degrees: CAMERA_PITCH_DEGREES,
+            first_person: false,
         }
     }
 }
@@ -33,8 +37,67 @@ impl Default for VoxelCameraControls {
 impl VoxelCameraControls {
     pub fn new(zoom_step: f32, rotation_step: f32) -> Self {
         Self {
-            zoom_step: if zoom_step.is_finite() { zoom_step.clamp(0.0, 5.0) } else { 1.0 },
-            rotation_step: if rotation_step.is_finite() { rotation_step.rem_euclid(8.0) } else { 0.0 },
+            zoom_step: if zoom_step.is_finite() {
+                zoom_step.clamp(0.0, 5.0)
+            } else {
+                1.0
+            },
+            rotation_step: if rotation_step.is_finite() {
+                rotation_step.rem_euclid(8.0)
+            } else {
+                0.0
+            },
+            ..Self::default()
+        }
+    }
+
+    /// Browser presentation controls share the same bounds as native look input.
+    pub fn with_pose(zoom_step: f32, rotation_step: f32, pitch: f32, first_person: bool) -> Self {
+        let mut camera = Self::new(zoom_step, rotation_step);
+        camera.first_person = first_person;
+        camera.pitch_degrees = if pitch.is_finite() {
+            pitch.clamp(if first_person { -85.0 } else { 5.0 }, 85.0)
+        } else if first_person { 0.0 } else { CAMERA_PITCH_DEGREES };
+        camera
+    }
+
+    /// Look input is measured in radians; yaw wraps and pitch never flips over.
+    pub fn steer(&mut self, yaw: f32, pitch: f32) {
+        if yaw.is_finite() && pitch.is_finite() {
+            self.rotation_step =
+                (self.rotation_step + yaw / std::f32::consts::FRAC_PI_4).rem_euclid(8.0);
+            self.pitch_degrees = (self.pitch_degrees + pitch.to_degrees())
+                .clamp(if self.first_person { -85.0 } else { 5.0 }, 85.0);
+        }
+    }
+
+    pub fn toggle_first_person(&mut self, facing: Vec2) {
+        self.first_person = !self.first_person;
+        self.pitch_degrees = if self.first_person {
+            0.0
+        } else {
+            CAMERA_PITCH_DEGREES
+        };
+        if self.first_person && facing.is_finite() && facing.length_squared() > 0.0 {
+            self.rotation_step = (-facing.x)
+                .atan2(facing.y)
+                .rem_euclid(std::f32::consts::TAU)
+                / std::f32::consts::FRAC_PI_4;
+        }
+    }
+
+    /// Select cycles the two orbit distances and a trainer-aligned eye-level view.
+    pub fn cycle_view(&mut self, facing: Vec2) {
+        if self.first_person {
+            self.first_person = false;
+            self.zoom_step = 3.0;
+            self.pitch_degrees = CAMERA_PITCH_DEGREES;
+        } else if self.zoom_step > 1.0 {
+            self.zoom_step = 0.0;
+            self.pitch_degrees = CAMERA_PITCH_DEGREES;
+        } else {
+            self.toggle_first_person(facing);
+            self.zoom_step = 1.0;
         }
     }
 
@@ -43,9 +106,195 @@ impl VoxelCameraControls {
         let mut pose = camera_pose(viewport_size);
         let zoom = 0.75 + controls.zoom_step * 0.25;
         let yaw = controls.rotation_step * std::f32::consts::FRAC_PI_4;
-        pose.eye = pose.target + Quat::from_rotation_y(yaw) * (pose.eye - pose.target) / zoom;
+        let pitch = self.pitch_degrees.to_radians();
+        let offset = Vec3::new(0.0, pitch.sin(), pitch.cos());
+        if self.first_person {
+            pose.eye = Vec3::ZERO;
+            pose.target = -(Quat::from_rotation_y(yaw) * offset);
+            pose.vertical_fov_radians = (75.0 / zoom).to_radians();
+            pose.near = (viewport_size.y / EXPECTED_GRID_SIZE.y as f32 * 0.025).max(0.05);
+        } else if self.pitch_degrees == CAMERA_PITCH_DEGREES {
+            pose.eye = pose.target + Quat::from_rotation_y(yaw) * (pose.eye - pose.target) / zoom;
+        } else {
+            pose.eye = pose.target
+                + Quat::from_rotation_y(yaw) * offset * (CAMERA_FOCAL * viewport_size.y / zoom);
+        }
         pose
     }
+
+    /// Use the same interpolated player foot and terrain support as the actor rig.
+    pub fn world_pose(
+        self,
+        frame: &crystal_render_api::VisualWorldFrame,
+        heights: &[f32],
+    ) -> VoxelCameraPose {
+        let mut pose = self.pose(frame.viewport_size);
+        // The classic viewport clamps at room/map edges. Its center must not
+        // become the orbit pivot when the trainer walks away from it.
+        let pivot = frame.actors.iter()
+            .find(|actor| actor.id == crystal_render_api::VisualActorId::Player)
+            .map(|player| crate::footing::actor_ground_point(frame, player))
+            .filter(|point| point.is_finite())
+            .unwrap_or(frame.view_center);
+        let origin = crate::footing::visual_point_to_voxel(pivot, 0.);
+        pose.eye += origin;
+        pose.target += origin;
+        if !self.first_person {
+            if let Some(player) = frame.actors.iter().find(|a|
+                a.id == crystal_render_api::VisualActorId::Player) {
+                let height=crate::footing::resolved_footing_height(frame,
+                    crate::footing::actor_ground_point(frame, player), heights).unwrap_or(0.);
+                pose.eye.y += height;
+                pose.target.y += height;
+                // Look over raised native terrain rather than letting a low
+                // orbit bury the trainer behind a complete grass shelf.
+                // Keep user yaw, distance and target; only add needed pitch.
+                if crate::cave_water::outdoor(&frame.map_id)
+                    && frame.map_id.as_ref() != "IlexForest"
+                    && frame.tiles.first().is_some_and(|tile|
+                        matches!(tile.source.tileset_id.as_ref(), "johto" | "johto_modern" | "kanto")) {
+                    let foot = crate::footing::actor_ground_point(frame, player);
+                    pose = clear_foreground_terrain(pose, frame, heights,
+                        crate::footing::visual_point_to_voxel(foot, height));
+                }
+                if !crate::cave_water::outdoor(&frame.map_id)
+                    && let Some(stature) = crate::new_bark_actors::modeled_character_height(frame, player)
+                {
+                    let foot = crate::footing::visual_point_to_voxel(
+                        crate::footing::actor_ground_point(frame, player), height);
+                    pose = contain_actor_height(pose, foot, stature);
+                }
+            }
+        }
+        if self.first_person {
+            if let Some(player) = frame
+                .actors
+                .iter()
+                .find(|a| a.id == crystal_render_api::VisualActorId::Player)
+            {
+                let foot = crate::footing::actor_ground_point(frame, player);
+                let height = crate::footing::resolved_footing_height(frame, foot, heights)
+                    .or_else(|| crate::footing::footing_height(frame, foot))
+                    .unwrap_or(0.0);
+                let eye = crate::footing::visual_point_to_voxel(
+                    foot,
+                    height
+                        + frame.tile_size.y
+                            * 2.0
+                            * crate::new_bark_actors::player_eye_height(player),
+                );
+                pose.target = eye + (pose.target - pose.eye);
+                pose.eye = eye;
+            }
+        }
+        if crate::summit_vista::enabled(frame) {
+            pose.far=pose.far.max(6000.*crate::summit_vista::world_units(frame));
+        }
+        pose
+    }
+    /// Orbit cameras follow the gradual terrain rise; first person follows the
+    /// rider's airborne height. Neither reads a screen-space sprite lift.
+    pub(crate) fn world_pose_with_traversal(
+        self,
+        frame: &crystal_render_api::VisualWorldFrame,
+        heights: &[f32],
+        traversal: Option<&crystal_render_api::VisualPlayerTraversal>,
+    ) -> VoxelCameraPose {
+        let mut pose = self.world_pose(frame, heights);
+        if let Some(player) = frame.actors.iter().find(|a| a.id == crystal_render_api::VisualActorId::Player)
+            && let Some((height, arc)) = crate::footing::traversal_height(frame, player, heights, traversal)
+            && arc > 0.0
+        {
+            let ground = crate::footing::resolved_footing_height(frame, crate::footing::actor_ground_point(frame, player), heights).unwrap_or(height);
+            let step = traversal.and_then(|t| t.step).unwrap();
+            let offset = Vec2::Y * frame.tile_size.y;
+            let from = crate::footing::resolved_footing_height(frame, step.from + offset, heights).unwrap_or(ground);
+            let to = crate::footing::resolved_footing_height(frame, step.to + offset, heights).unwrap_or(ground);
+            let camera_height = if self.first_person { height } else { from + (to - from) * step.progress.clamp(0.0, 1.0) };
+            pose.eye.y += camera_height - ground;
+            pose.target.y += camera_height - ground;
+        }
+        pose
+    }
+
+}
+
+/// Pan within the camera plane when a clamped interior viewport would cut off
+/// the player at an entrance. Preserve projection, depth, orbit and rig scale.
+fn contain_actor_height(mut pose: VoxelCameraPose, foot: Vec3, stature: f32) -> VoxelCameraPose {
+    if !foot.is_finite() || !stature.is_finite() || stature <= 0. { return pose; }
+    let forward = (pose.target - pose.eye).normalize_or_zero();
+    let right = forward.cross(pose.up).normalize_or_zero();
+    let up = right.cross(forward);
+    if up.length_squared() < 0.5 { return pose; }
+    let tangent = (pose.vertical_fov_radians * 0.5).tan();
+    let mut low = f32::NEG_INFINITY;
+    let mut high = f32::INFINITY;
+    for point in [foot, foot + Vec3::Y * stature] {
+        let relative = point - pose.eye;
+        let depth = relative.dot(forward);
+        if depth <= pose.near || !depth.is_finite() { return pose; }
+        let half_height = depth * tangent * 0.9;
+        let height = relative.dot(up);
+        low = low.max(height - half_height);
+        high = high.min(height + half_height);
+    }
+    // A rig larger than the viewport needs the user's wider zoom. Panning
+    // cannot honestly contain both extremes in that case.
+    if !low.is_finite() || !high.is_finite() || low > high { return pose; }
+    let shift = up * 0_f32.clamp(low, high);
+    pose.eye += shift;
+    pose.target += shift;
+    pose
+}
+
+fn clear_foreground_terrain(
+    mut pose: VoxelCameraPose,
+    frame: &crystal_render_api::VisualWorldFrame,
+    heights: &[f32],
+    foot: Vec3,
+) -> VoxelCameraPose {
+    let offset = pose.eye - pose.target;
+    let horizontal = Vec2::new(offset.x, offset.z);
+    let distance = horizontal.length();
+    if distance <= 0.001 { return pose; }
+    let direction = horizontal / distance;
+    let pitch = offset.y.atan2(distance);
+    let mut needed = pitch;
+    // Half-cell sampling includes narrow shelves without inspecting source
+    // collision or changing the actual navigation/support geometry.
+    let stride = frame.tile_size.min_element() * 0.5;
+    if stride <= 0.0 || !stride.is_finite() { return pose; }
+    let mut d = stride;
+    while d <= distance {
+        let p = Vec2::new(foot.x, foot.z) + direction * d;
+        let visual = Vec2::new(p.x, -p.y);
+        // Obstruction needs the published cell crown, not the actor's exact
+        // stair interpolation (which reconstructs the terrace field).
+        if let Some(cell) = crate::footing::tile_at_visual_point(frame, visual)
+            && let Some(&height) = heights.get(cell.y as usize * frame.grid_size.x as usize + cell.x as usize)
+            && height > foot.y + frame.tile_size.y * 0.25 {
+            needed = needed.max((height + frame.tile_size.y * 0.5 - foot.y).atan2(d));
+        }
+        d += stride;
+    }
+    let angle = needed.min(80_f32.to_radians()).max(pitch);
+    #[cfg(not(target_arch = "wasm32"))]
+    if std::env::var_os("CRYSTAL_CAMERA_CLEARANCE_TRACE").is_some() && !heights.is_empty() {
+        static REPORTED: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
+        if !REPORTED.swap(true, std::sync::atomic::Ordering::Relaxed) {
+            eprintln!("camera-clearance map={} foot={foot:?} eye={:?} target={:?} tile={:?} grid={:?} center={:?} heights={:?} pitch={} needed={}",
+                frame.map_id, pose.eye, pose.target, frame.tile_size, frame.grid_size, frame.center,
+                heights.iter().copied().fold((f32::INFINITY,f32::NEG_INFINITY), |(lo,hi),h|(lo.min(h),hi.max(h))),
+                pitch.to_degrees(), angle.to_degrees());
+        }
+    }
+    if angle > pitch {
+        let length = offset.length();
+        pose.eye = pose.target + Vec3::new(direction.x * angle.cos(), angle.sin(),
+            direction.y * angle.cos()) * length;
+    }
+    pose
 }
 
 #[derive(Clone, Copy, Debug, PartialEq)]
@@ -111,6 +360,244 @@ mod tests {
     use super::*;
 
     #[test]
+    fn orbit_pivots_on_interpolated_trainer_away_from_clamped_room_center() {
+        use crystal_render_api::{VisualActor, VisualActorId, VisualWorldFrame};
+        let mut frame = VisualWorldFrame {
+            active: true,
+            map_id: "PlayersHouse2F".into(),
+            view_center: Vec2::new(80., -72.),
+            center: Vec2::new(80., -72.),
+            viewport_size: Vec2::new(160., 144.),
+            tile_size: Vec2::splat(8.),
+            grid_size: bevy::prelude::UVec2::new(20, 18),
+            actors: vec![VisualActor {
+                id: VisualActorId::Player, source_id: "player".into(),
+                model_palette: None, texture: Default::default(),
+                center: Vec2::new(32., -112.), size: Vec2::splat(16.),
+                flip_x: false, above_priority: false, facing: Some(Vec2::NEG_Y),
+            }],
+            ..Default::default()
+        };
+        let heights = vec![7.; 20 * 18];
+        for map in ["PlayersHouse2F", "PlayersHouse1F", "GoldenrodPokecenter1F"] {
+            frame.map_id = map.into();
+            for pitch in [30., 45., 65.] {
+                for yaw in 0..8 {
+                    let camera = VoxelCameraControls::with_pose(1., yaw as f32, pitch, false);
+                    let pose = camera.world_pose(&frame, &heights);
+                    let foot = crate::footing::actor_ground_point(&frame, &frame.actors[0]);
+                    assert!((pose.target.x - foot.x).abs() < 0.001, "{map} yaw={yaw}");
+                    assert!((pose.target.z + foot.y).abs() < 0.001, "{map} yaw={yaw}");
+                    let base = camera.pose(frame.viewport_size);
+                    assert!((pose.eye - pose.target).abs_diff_eq(base.eye - base.target, 0.001));
+                    let mut moved = frame.clone();
+                    let step = Vec2::new(0.25, -0.5);
+                    moved.actors[0].center += step;
+                    let delta = Vec3::new(step.x, 0., -step.y);
+                    let after = camera.world_pose(&moved, &heights);
+                    assert!(after.eye.abs_diff_eq(pose.eye + delta, 0.001));
+                    assert!(after.target.abs_diff_eq(pose.target + delta, 0.001));
+                    assert_eq!(after.vertical_fov_radians, pose.vertical_fov_radians);
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn orbit_without_a_player_keeps_the_published_view_origin() {
+        let frame = crystal_render_api::VisualWorldFrame {
+            view_center: Vec2::new(30., -20.),
+            viewport_size: Vec2::new(160., 144.),
+            ..Default::default()
+        };
+        let camera = VoxelCameraControls::default();
+        let base = camera.pose(frame.viewport_size);
+        let pose = camera.world_pose(&frame, &[]);
+        let offset = Vec3::new(30., 0., 20.);
+        assert_eq!(pose.eye, base.eye + offset);
+        assert_eq!(pose.target, base.target + offset);
+    }
+
+    #[test]
+    fn map_anchored_orbit_and_first_person_preserve_the_same_view() {
+        use crystal_render_api::{VisualWorldFrame,VisualActor,VisualActorId};
+        let frame=VisualWorldFrame {active:true, center:Vec2::new(12.,-4.),
+            grid_origin:bevy::prelude::IVec2::new(17,-9),
+            viewport_size:Vec2::splat(64.),grid_size:bevy::prelude::UVec2::splat(8),
+            tile_size:Vec2::splat(8.), actors:vec![VisualActor {id:VisualActorId::Player,
+                source_id:"player".into(),model_palette:None,texture:Default::default(),
+                center:Vec2::new(4.,8.),size:Vec2::splat(16.),flip_x:false,
+                above_priority:false,facing:Some(Vec2::Y)}],..Default::default()};
+        let mut anchored=frame.clone();let shift=anchored.anchor_to_map();
+        let delta=Vec3::new(shift.x,0.,-shift.y);
+        for first in [false,true] {for yaw in 0..8 {
+            let controls=VoxelCameraControls::with_pose(1.,yaw as f32,45.,first);
+            let old=controls.world_pose(&frame,&[7.;64]);
+            let new=controls.world_pose(&anchored,&[7.;64]);
+            assert!(new.eye.abs_diff_eq(old.eye+delta,0.0001));
+            assert!(new.target.abs_diff_eq(old.target+delta,0.0001));
+            assert_eq!(new.vertical_fov_radians,old.vertical_fov_radians);
+            assert_eq!((new.near,new.far),(old.near,old.far));
+        }}
+    }
+
+    #[test]
+    fn map_anchored_first_person_preload_without_actors_preserves_camera_origin() {
+        let mut frame=crystal_render_api::VisualWorldFrame {active:true,
+            center:Vec2::new(8.,-3.),grid_origin:bevy::prelude::IVec2::new(20,30),
+            tile_size:Vec2::splat(8.),viewport_size:Vec2::new(160.,144.),..Default::default()};
+        let controls=VoxelCameraControls::with_pose(1.,2.,0.,true);
+        let old=controls.world_pose(&frame,&[]);
+        let shift=frame.anchor_to_map();let delta=Vec3::new(shift.x,0.,-shift.y);
+        let new=controls.world_pose(&frame,&[]);
+        assert!(new.eye.abs_diff_eq(old.eye+delta,0.0001));
+        assert!(new.target.abs_diff_eq(old.target+delta,0.0001));
+    }
+
+    #[test]
+    fn interior_arrival_pan_contains_head_and_feet_without_changing_projection_or_scale() {
+        for yaw in [0., 2., 4., 6.] {
+            let before = VoxelCameraControls::with_pose(1., yaw, 45., false)
+                .pose(Vec2::new(640., 576.));
+            let forward = (before.target - before.eye).normalize();
+            let up = forward.cross(before.up).normalize().cross(forward);
+            let foot = before.eye + forward * 450. - up * 270.;
+            let after = contain_actor_height(before, foot, 72.);
+            assert_ne!(after, before, "the arrival foot starts below the viewport");
+            let projection = bevy::prelude::Mat4::perspective_rh(after.vertical_fov_radians,
+                640./576., after.near, after.far);
+            let view = after.transform().to_matrix().inverse();
+            for point in [foot, foot + Vec3::Y * 72.] {
+                let screen = (projection * view).project_point3(point);
+                assert!((-0.901..=0.901).contains(&screen.y));
+                let old_depth = (point - before.eye).dot(forward);
+                let new_depth = (point - after.eye).dot(forward);
+                assert!((old_depth - new_depth).abs() < 0.001);
+            }
+            assert!((after.eye - after.target).abs_diff_eq(before.eye - before.target, 0.001));
+            assert_eq!((after.vertical_fov_radians, after.near, after.far),
+                (before.vertical_fov_radians, before.near, before.far));
+            assert_eq!(contain_actor_height(before, before.target, 72.), before,
+                "an already readable player does not move the camera");
+        }
+    }
+
+    #[test]
+    fn raised_foreground_clears_orbit_without_moving_target_or_terrain() {
+        let frame = crystal_render_api::VisualWorldFrame {
+            viewport_size: Vec2::splat(128.), tile_size: Vec2::splat(8.),
+            grid_size: bevy::prelude::UVec2::splat(16), ..Default::default()
+        };
+        let pose = VoxelCameraPose {
+            eye: Vec3::new(0., 60., 100.), target: Vec3::new(0., 8., 0.),
+            ..camera_pose(frame.viewport_size)
+        };
+        let mut heights = vec![0.; 256];
+        assert_eq!(clear_foreground_terrain(pose, &frame, &heights, Vec3::ZERO), pose);
+        // A tall rear bank must never force the camera upward.
+        heights[4 * 16 + 8] = 100.;
+        assert_eq!(clear_foreground_terrain(pose, &frame, &heights, Vec3::ZERO), pose);
+        heights[10 * 16 + 8] = 30.;
+        let before = heights.clone();
+        let clear = clear_foreground_terrain(pose, &frame, &heights, Vec3::ZERO);
+        assert!(clear.eye.y > pose.eye.y);
+        assert_eq!(clear.target, pose.target);
+        assert_eq!(clear.eye.x, pose.eye.x);
+        assert!(((clear.eye - clear.target).length() - (pose.eye - pose.target).length()).abs() < 0.001);
+        assert_eq!(heights, before);
+        // Existing high views are retained exactly.
+        let overhead = VoxelCameraControls::with_pose(0., 0., 85., false).pose(frame.viewport_size);
+        assert_eq!(clear_foreground_terrain(overhead, &frame, &heights, Vec3::ZERO), overhead);
+    }
+
+    #[test]
+    fn select_cycles_close_wide_and_trainer_aligned_first_person() {
+        let mut camera = VoxelCameraControls::new(3., 2.);
+        camera.cycle_view(Vec2::NEG_Y);
+        assert_eq!(camera.zoom_step, 0.);
+        assert!(!camera.first_person);
+        camera.cycle_view(Vec2::NEG_Y);
+        assert!(camera.first_person);
+        assert!((camera.rotation_step - 4.).abs() < 0.00001);
+        assert_eq!(camera.pitch_degrees, 0.);
+        camera.cycle_view(Vec2::X);
+        assert!(!camera.first_person);
+        assert_eq!(camera.zoom_step, 3.);
+    }
+
+    #[test]
+    fn presentation_pose_bounds_pitch_and_first_person_zoom_changes_fov() {
+        let viewport = Vec2::new(640.0, 576.0);
+        let wide = VoxelCameraControls::with_pose(0.0, -1.0, -100.0, true);
+        let close = VoxelCameraControls::with_pose(5.0, 9.0, 100.0, true);
+        assert_eq!(wide.pitch_degrees, -85.0);
+        assert_eq!(wide.rotation_step, 7.0);
+        assert_eq!(close.pitch_degrees, 85.0);
+        assert!(close.pose(viewport).vertical_fov_radians < wide.pose(viewport).vertical_fov_radians);
+        assert_eq!(VoxelCameraControls::with_pose(1.0, 0.0, -100.0, false).pitch_degrees, 5.0);
+        assert_eq!(VoxelCameraControls::with_pose(1.0, 0.0, f32::NAN, true).pitch_degrees, 0.0);
+    }
+
+    #[test]
+    fn first_person_faces_the_trainer_direction_and_steers_without_flipping() {
+        for facing in [Vec2::X, Vec2::NEG_X, Vec2::Y, Vec2::NEG_Y] {
+            let mut camera = VoxelCameraControls::default();
+            camera.toggle_first_person(facing);
+            let pose = camera.pose(Vec2::new(640.0, 576.0));
+            let expected = Vec3::new(facing.x, 0.0, -facing.y);
+            assert!(pose.transform().forward().dot(expected) > 0.999);
+            assert!(pose.near < 1.0);
+            assert_eq!(pose.vertical_fov_radians, 75.0_f32.to_radians());
+            camera.steer(100.0, -100.0);
+            assert_eq!(camera.pitch_degrees, -85.0);
+            assert!(camera.rotation_step >= 0.0 && camera.rotation_step < 8.0);
+            let before = camera;
+            camera.steer(f32::NAN, 1.0);
+            assert_eq!(camera, before);
+            camera.toggle_first_person(facing);
+            assert!(!camera.first_person);
+            assert_eq!(camera.pitch_degrees, CAMERA_PITCH_DEGREES);
+        }
+    }
+
+    #[test]
+    fn first_person_eye_tracks_interpolated_player_and_terrain_support() {
+        use crystal_render_api::{VisualActor, VisualActorId, VisualWorldFrame};
+        let mut frame = VisualWorldFrame {
+            center: Vec2::new(20.0, 30.0),
+            viewport_size: Vec2::splat(32.0),
+            tile_size: Vec2::splat(8.0),
+            grid_size: bevy::prelude::UVec2::splat(4),
+            actors: vec![VisualActor {
+                id: VisualActorId::Player,
+                source_id: "player".into(),
+                model_palette: None,
+                texture: Default::default(),
+                center: Vec2::new(20.0, 34.0),
+                size: Vec2::splat(8.0),
+                flip_x: false,
+                above_priority: false,
+                facing: Some(Vec2::Y),
+            }],
+            ..Default::default()
+        };
+        let mut camera = VoxelCameraControls::default();
+        let orbit_base=camera.pose(frame.viewport_size);
+        let orbit=camera.world_pose(&frame,&vec![7.;16]);
+        assert_eq!(orbit.eye.y,orbit_base.eye.y+7.);
+        assert_eq!(orbit.target.y,orbit_base.target.y+7.);
+        camera.toggle_first_person(Vec2::Y);
+        let heights = vec![7.0; 16];
+        let pose = camera.world_pose(&frame, &heights);
+        assert_eq!(pose.eye.x, 20.0);
+        assert_eq!(pose.eye.z, -38.0);
+        assert!(pose.eye.y > 7.0);
+        frame.actors[0].center.x += 0.25;
+        assert_eq!(camera.world_pose(&frame, &heights).eye.x, 20.25);
+        assert!((camera.world_pose(&frame, &[0.0; 16]).eye.y - (pose.eye.y - 7.0)).abs() < 0.0001);
+    }
+
+    #[test]
     fn camera_controls_preserve_default_pose_and_bound_zoom() {
         let viewport = Vec2::new(640.0, 576.0);
         assert_eq!(
@@ -164,7 +651,10 @@ mod tests {
         let pose = VoxelCameraControls::new(1.5, 0.25).pose(viewport);
         let offset = pose.eye - pose.target;
         assert!((offset.x.atan2(offset.z) - std::f32::consts::FRAC_PI_4 * 0.25).abs() < 0.00001);
-        assert_eq!(VoxelCameraControls::new(f32::NAN, f32::INFINITY), VoxelCameraControls::default());
+        assert_eq!(
+            VoxelCameraControls::new(f32::NAN, f32::INFINITY),
+            VoxelCameraControls::default()
+        );
     }
 
     #[test]

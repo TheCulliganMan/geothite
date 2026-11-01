@@ -1,0 +1,48 @@
+{
+  "species_id": "MN_096",
+  "family_id": "MN_F045",
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f045/prompt-kettlurk-v1.txt",
+  "fit": [
+    14,
+    14
+  ],
+  "palette_binding": {
+    "transparent_index": 0,
+    "visible_indices": [
+      1,
+      2,
+      3
+    ],
+    "normal_rgb555_words": [
+      32767,
+      30508,
+      20711,
+      0
+    ],
+    "shiny_rgb555_words": [
+      32767,
+      26013,
+      7412,
+      0
+    ],
+    "white_body_region_policy": "Simplify formerly white body/highlight regions to light ink1. Index0 is transparent everywhere, not an opaque white paint color."
+  },
+  "style_reference": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+    "sha256": "4354a639ed1a80fd6686e43b273443ed894e58a84307a8049f638ee9ffa2a099",
+    "role": "ONLY supplied input; authentic native16 scale/style"
+  },
+  "identity_reviewed": {
+    "front": {
+      "path": "target/minnesota-pokemon/native/MN_F045/mn-096-kettlurk-polish-v1.front.png",
+      "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F045/mn-096-kettlurk-polish-v1.front.png",
+      "sha256": "a737f91146f468ebef2f867743abfdcdfa910126457bc4d95bb68cef52d6941b"
+    },
+    "back": {
+      "path": "target/minnesota-pokemon/native/MN_F045/mn-096-kettlurk-polish-v1.back.png",
+      "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F045/mn-096-kettlurk-polish-v1.back.png",
+      "sha256": "83fb2c7c2cdcb5c92cf5dd33d5df293f2ce1bbd7b43e917c2258f278e8c60bd4"
+    }
+  },
+  "anatomy": "KETTLURK, original Water/Ghost legendary embodied by the two currents of Devil\u2019s Kettle waterfall. A fierce compact upright water-gargoyle silhouette made of two thick continuous water ribbons; NOT a pot or actual kettle. Angular LIGHT cyan head with TWO swept pointed water horns, two small genuine black pupils in clear cyan eye surrounds (ONE near pupil in LEFT). Strong DARK indigo neck/shoulder bands. Its torso is a thick curved C/RING of cyan water with a LARGE genuine transparent central opening, at least2x3native logical pixels: a visible current runs down one side, the other slips through the opening and reappears BEHIND the shoulder as a thick return curl. Preserve the real alpha0 torso opening in DOWN and UP and a visible narrow opening in LEFT; do not fill it with white or blue. TWO long muscular water arms hang outward/down from shoulders, ending broad webbed three-lobed hands. TWO short broad water legs below the ring end in wide bracing feet, exactly2arms/2legs. Strong blocks, broad claw/hand lobes rather than skinny unsupported fingers. Full UP rear shows rear head/horns, back of both arms, both feet and the open current-loop torso, absolutely NO face/eyes. LEFT shows actual side depth, ONE near pupil, forearm projecting left and farther arm/foot partly behind, with the return current visible behind its back. No dragon wings, long snake tail, bird, humanoid clothing, pot handles, steam clouds or independent effects. Walk with opposite hand/foot motion1pixel while loop and horn mass stay stable. Keep this recognizable looping-water guardian at14x14logical pixels."
+}

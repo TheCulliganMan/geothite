@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "command": [
+    "cargo",
+    "clippy",
+    "--locked",
+    "--profile",
+    "wasm-dev",
+    "-p",
+    "crystal-bevy",
+    "--all-targets"
+  ],
+  "exit_code": 0,
+  "log": ".local/route-grass-review/boundary-basecamp-current-bevy-all-target-clippy-v01.log",
+  "source_sha256": {
+    "crates/crystal-bevy/src/bevy_shell/tests/boundary_basecamp_connections.rs": "a8ee04a49169255d0f8567f473c03b85e9b03ef31bc919036f5ccb287cf2d827"
+  },
+  "owned_leaf_format_exit_code": 0
+}

@@ -1,0 +1,391 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-r14-forest-bank-v01.crystalpack",
+  "sha256": "e9f4108d3b0a35f04145e4928446c03845982e1f13d7ff8f34e383bd701757d5",
+  "cases": [
+    {
+      "lane": 28,
+      "phase": "native-reached-upper",
+      "input_save": ".local/route-grass-review/r14-forest-bank-lane28-native-reached-upper-v02-input.crystalsave",
+      "source": ".local/route-grass-review/r14-forest-bank-native-denial-saves-v02/brainerd-16707-1793384661311845000.crystalsave",
+      "source_sha256": "c26074f88470f0a0b2a1410259608c307cda8437a06781b256f1379405f6691a",
+      "output_save": ".local/route-grass-review/r14-forest-bank-lane28-native-reached-upper-v02-output.crystalsave",
+      "initial": {
+        "badges": 0,
+        "dialogue": false,
+        "facing": "left",
+        "frame": 961,
+        "map": "MnR14C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 0
+        },
+        "position": {
+          "x": 29,
+          "y": 23
+        }
+      },
+      "final": {
+        "badges": 0,
+        "dialogue": false,
+        "facing": "left",
+        "frame": 1199,
+        "map": "MnR14C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 0
+        },
+        "position": {
+          "x": 29,
+          "y": 26
+        }
+      },
+      "stderr_bytes": 0
+    },
+    {
+      "lane": 28,
+      "phase": "continued-lower",
+      "input_save": ".local/route-grass-review/r14-forest-bank-lane28-continued-lower-v02-input.crystalsave",
+      "source": ".local/route-grass-review/r14-forest-bank-lane28-native-reached-upper-v02-output.crystalsave",
+      "source_sha256": "3082cc9b621d6571de6cb91ce607b9c190495227ca4b504d0485f716a37107ee",
+      "output_save": ".local/route-grass-review/r14-forest-bank-lane28-continued-lower-v02-output.crystalsave",
+      "initial": {
+        "badges": 0,
+        "dialogue": false,
+        "facing": "left",
+        "frame": 1199,
+        "map": "MnR14C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 0
+        },
+        "position": {
+          "x": 29,
+          "y": 26
+        }
+      },
+      "final": {
+        "badges": 0,
+        "dialogue": false,
+        "facing": "left",
+        "frame": 1220,
+        "map": "MnR14C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 0
+        },
+        "position": {
+          "x": 29,
+          "y": 26
+        }
+      },
+      "stderr_bytes": 0
+    },
+    {
+      "lane": 29,
+      "phase": "native-reached-upper",
+      "input_save": ".local/route-grass-review/r14-forest-bank-lane29-native-reached-upper-v02-input.crystalsave",
+      "source": ".local/route-grass-review/r14-forest-bank-native-denial-saves-v02/brainerd-16707-1793384661311845000.crystalsave",
+      "source_sha256": "c26074f88470f0a0b2a1410259608c307cda8437a06781b256f1379405f6691a",
+      "output_save": ".local/route-grass-review/r14-forest-bank-lane29-native-reached-upper-v02-output.crystalsave",
+      "initial": {
+        "badges": 0,
+        "dialogue": false,
+        "facing": "left",
+        "frame": 961,
+        "map": "MnR14C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 0
+        },
+        "position": {
+          "x": 29,
+          "y": 23
+        }
+      },
+      "final": {
+        "badges": 0,
+        "dialogue": false,
+        "facing": "left",
+        "frame": 985,
+        "map": "MnR14C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 0
+        },
+        "position": {
+          "x": 29,
+          "y": 26
+        }
+      },
+      "stderr_bytes": 0
+    },
+    {
+      "lane": 29,
+      "phase": "continued-lower",
+      "input_save": ".local/route-grass-review/r14-forest-bank-lane29-continued-lower-v02-input.crystalsave",
+      "source": ".local/route-grass-review/r14-forest-bank-lane29-native-reached-upper-v02-output.crystalsave",
+      "source_sha256": "d62353bfe8c4a2e5d9206e8176f6f855c7402a210e6a6aa2f18a8648e834c7e3",
+      "output_save": ".local/route-grass-review/r14-forest-bank-lane29-continued-lower-v02-output.crystalsave",
+      "initial": {
+        "badges": 0,
+        "dialogue": false,
+        "facing": "left",
+        "frame": 985,
+        "map": "MnR14C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 0
+        },
+        "position": {
+          "x": 29,
+          "y": 26
+        }
+      },
+      "final": {
+        "badges": 0,
+        "dialogue": false,
+        "facing": "left",
+        "frame": 1006,
+        "map": "MnR14C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 0
+        },
+        "position": {
+          "x": 29,
+          "y": 26
+        }
+      },
+      "stderr_bytes": 0
+    },
+    {
+      "lane": 30,
+      "phase": "native-reached-upper",
+      "input_save": ".local/route-grass-review/r14-forest-bank-lane30-native-reached-upper-v02-input.crystalsave",
+      "source": ".local/route-grass-review/r14-forest-bank-native-denial-saves-v02/brainerd-16707-1793384661311845000.crystalsave",
+      "source_sha256": "c26074f88470f0a0b2a1410259608c307cda8437a06781b256f1379405f6691a",
+      "output_save": ".local/route-grass-review/r14-forest-bank-lane30-native-reached-upper-v02-output.crystalsave",
+      "initial": {
+        "badges": 0,
+        "dialogue": false,
+        "facing": "left",
+        "frame": 961,
+        "map": "MnR14C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 0
+        },
+        "position": {
+          "x": 29,
+          "y": 23
+        }
+      },
+      "final": {
+        "badges": 0,
+        "dialogue": false,
+        "facing": "left",
+        "frame": 989,
+        "map": "MnR14C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 0
+        },
+        "position": {
+          "x": 29,
+          "y": 26
+        }
+      },
+      "stderr_bytes": 0
+    },
+    {
+      "lane": 30,
+      "phase": "continued-lower",
+      "input_save": ".local/route-grass-review/r14-forest-bank-lane30-continued-lower-v02-input.crystalsave",
+      "source": ".local/route-grass-review/r14-forest-bank-lane30-native-reached-upper-v02-output.crystalsave",
+      "source_sha256": "4dfe6d8059fa293f462105eee407c68d87735d41d6aea8afc22f304432bc5702",
+      "output_save": ".local/route-grass-review/r14-forest-bank-lane30-continued-lower-v02-output.crystalsave",
+      "initial": {
+        "badges": 0,
+        "dialogue": false,
+        "facing": "left",
+        "frame": 989,
+        "map": "MnR14C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 0
+        },
+        "position": {
+          "x": 29,
+          "y": 26
+        }
+      },
+      "final": {
+        "badges": 0,
+        "dialogue": false,
+        "facing": "left",
+        "frame": 1010,
+        "map": "MnR14C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 0
+        },
+        "position": {
+          "x": 29,
+          "y": 26
+        }
+      },
+      "stderr_bytes": 0
+    },
+    {
+      "lane": 31,
+      "phase": "native-reached-upper",
+      "input_save": ".local/route-grass-review/r14-forest-bank-lane31-native-reached-upper-v02-input.crystalsave",
+      "source": ".local/route-grass-review/r14-forest-bank-native-denial-saves-v02/brainerd-16707-1793384661311845000.crystalsave",
+      "source_sha256": "c26074f88470f0a0b2a1410259608c307cda8437a06781b256f1379405f6691a",
+      "output_save": ".local/route-grass-review/r14-forest-bank-lane31-native-reached-upper-v02-output.crystalsave",
+      "initial": {
+        "badges": 0,
+        "dialogue": false,
+        "facing": "left",
+        "frame": 961,
+        "map": "MnR14C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 0
+        },
+        "position": {
+          "x": 29,
+          "y": 23
+        }
+      },
+      "final": {
+        "badges": 0,
+        "dialogue": false,
+        "facing": "left",
+        "frame": 991,
+        "map": "MnR14C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 0
+        },
+        "position": {
+          "x": 29,
+          "y": 26
+        }
+      },
+      "stderr_bytes": 0
+    },
+    {
+      "lane": 31,
+      "phase": "continued-lower",
+      "input_save": ".local/route-grass-review/r14-forest-bank-lane31-continued-lower-v02-input.crystalsave",
+      "source": ".local/route-grass-review/r14-forest-bank-lane31-native-reached-upper-v02-output.crystalsave",
+      "source_sha256": "c444a1b9fa2da4733ac3a83c012b9dfcbf8c99591d8f7c73886589b4d224287b",
+      "output_save": ".local/route-grass-review/r14-forest-bank-lane31-continued-lower-v02-output.crystalsave",
+      "initial": {
+        "badges": 0,
+        "dialogue": false,
+        "facing": "left",
+        "frame": 991,
+        "map": "MnR14C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 0
+        },
+        "position": {
+          "x": 29,
+          "y": 26
+        }
+      },
+      "final": {
+        "badges": 0,
+        "dialogue": false,
+        "facing": "left",
+        "frame": 1012,
+        "map": "MnR14C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 0
+        },
+        "position": {
+          "x": 29,
+          "y": 26
+        }
+      },
+      "stderr_bytes": 0
+    }
+  ],
+  "calls": 392,
+  "ten_reachable_closed_faces_each_four_down_inputs_denied": true,
+  "two_other_closed_faces_have_wall_upper_approaches": true,
+  "east_forest_approach_denied": true,
+  "four_actual_native_hops_and_reverse_denials": true,
+  "four_reached_lower_saves_continued": true,
+  "menus_and_walking": true,
+  "scope": "One native-test reached upper checkpoint, four production hop lanes and four actual production lower checkpoints continued without retagging/state edits. Grass return is verified separately by the encounter-aware Headwaters native case. Initial test partner/location are QA fixtures."
+}

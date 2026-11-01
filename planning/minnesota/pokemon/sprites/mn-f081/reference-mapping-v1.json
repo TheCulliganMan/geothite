@@ -1,0 +1,25 @@
+{
+  "references": [
+    {
+      "path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/gen2-reference/starters.png",
+      "sha256": "af61f720a75b7e1b8e80ba14e8944612556397eedddd719669dec68b0e0fd534",
+      "role": "Authentic Gen2 pixel economy and close rear battle portrait camera, no character copying."
+    }
+  ],
+  "canonical_family_id": "MN_F081",
+  "regional_sources": [
+    {
+      "title": "Cook County SWCD, Winter2020\u20132021 newsletter",
+      "url": "https://cms7files1.revize.com/cookcountymn/Departments/soil%20%26%20water/SWCD%20Document%20Center/2020%20Winter%20Newspaper%20insert.pdf",
+      "supports": "Gunflint Trail divide and its two drainage destinations.",
+      "source_kind": "primary regional institutional source"
+    },
+    {
+      "title": "USFS, Superior National Forest ecological context",
+      "url": "https://www.fs.usda.gov/nrs/pubs/gtr/gtr_nrs159.pdf",
+      "supports": "Laurentian Divide separates Great Lakes and Hudson Bay drainage.",
+      "source_kind": "primary regional institutional source"
+    }
+  ],
+  "palette_plan": "sprites/mn-f081/palette-plan.json"
+}

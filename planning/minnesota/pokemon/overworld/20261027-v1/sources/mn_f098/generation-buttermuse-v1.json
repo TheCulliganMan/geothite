@@ -1,0 +1,15 @@
+{
+  "tool": "built-in image_gen",
+  "raw_default_path": "/Users/ryanculligan/.codex/generated_images/01a178da-4cf1-7e01-8516-667a332dc790/exec-675492bb-8403-46f2-9f38-2e22bbff8f3e.png",
+  "workspace_source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f098/buttermuse.overworld.imagegen-v1.png",
+  "source_sha256": "9545400ca9ab3ae4bbec16582b068b722fd5a72042bed1d57760f42954b58eea",
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f098/prompt-buttermuse-v1.txt",
+  "style_only_input": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+  "identity_reference_reviewed_separately": "target/minnesota-pokemon/native/MN_F098/line.review.png",
+  "status": "source generated; conversion pending",
+  "preserved_hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f098/buttermuse.overworld.imagegen-v1.png": "9545400ca9ab3ae4bbec16582b068b722fd5a72042bed1d57760f42954b58eea",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f098/prompt-buttermuse-v1.txt": "01344e4ac680728f69676fea1962acf9d912a33c6a524628ab5f71f17aee3720",
+    "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png": "4354a639ed1a80fd6686e43b273443ed894e58a84307a8049f638ee9ffa2a099"
+  }
+}

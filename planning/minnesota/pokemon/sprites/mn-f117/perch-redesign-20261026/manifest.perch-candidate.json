@@ -1,0 +1,252 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F117",
+  "status": "perch-candidate-pending",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_251": {
+      "species_id": "MN_251",
+      "name": "Winkfin",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          21,
+          28,
+          29
+        ],
+        [
+          8,
+          14,
+          12
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        30613,
+        12744,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          173,
+          231,
+          239
+        ],
+        [
+          66,
+          115,
+          99
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#ADE7EF",
+        "#427363",
+        "#000000"
+      ]
+    },
+    "MN_252": {
+      "species_id": "MN_252",
+      "name": "Glaciris",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          19,
+          27,
+          31
+        ],
+        [
+          8,
+          11,
+          18
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        32627,
+        18792,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          156,
+          222,
+          255
+        ],
+        [
+          66,
+          90,
+          148
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#9CDEFF",
+        "#425A94",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f117/perch-redesign-20261026/prompt-perch-v1.txt",
+  "reference_mapping": "sprites/mn-f117/perch-redesign-20261026/reference-mapping-v1.json",
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-251-winkfin-perch-v2",
+      "species_id": "MN_251",
+      "view": "front",
+      "source": "sprites/mn-f117/perch-redesign-20261026/mn-251-winkfin.front-back.perch-v1.png",
+      "crop": [
+        0,
+        0,
+        1536,
+        470
+      ],
+      "fit": [
+        44,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        30613,
+        12744,
+        0
+      ],
+      "white_detail_min_samples": 32,
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-251-winkfin-perch-v2",
+      "species_id": "MN_251",
+      "view": "back",
+      "source": "sprites/mn-f117/perch-redesign-20261026/mn-251-winkfin.front-back.perch-v1.png",
+      "crop": [
+        0,
+        470,
+        1536,
+        554
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        30613,
+        12744,
+        0
+      ],
+      "white_detail_min_samples": 8
+    },
+    {
+      "id": "mn-252-glaciris-v1",
+      "species_id": "MN_252",
+      "view": "front",
+      "source": "sprites/mn-f117/mn-251-252.front-back.imagegen-v1.png",
+      "crop": [
+        690,
+        0,
+        846,
+        500
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        32627,
+        18792,
+        0
+      ],
+      "white_detail_min_samples": 32,
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-252-glaciris-v1",
+      "species_id": "MN_252",
+      "view": "back",
+      "source": "sprites/mn-f117/mn-251-252.front-back.imagegen-v1.png",
+      "crop": [
+        690,
+        500,
+        846,
+        524
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        32627,
+        18792,
+        0
+      ],
+      "white_detail_min_samples": 8
+    }
+  ],
+  "style_reference": {
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png"
+    ]
+  },
+  "prompt_sources_by_species": {
+    "MN_251": "sprites/mn-f117/perch-redesign-20261026/prompt-perch-v1.txt",
+    "MN_252": "sprites/mn-f117/prompt-v1.txt"
+  },
+  "candidate_note": "Only MN251 chunky three-bar perch scout redesigned. MN252 middle walleye source/crops/fit/palettes/thresholds retained exactly. Root owns eventual third northern stage and canonical merge.",
+  "source_sha256_by_species": {
+    "MN_251": "d7adb0f664589749b963e2a1b0fd5efb959b0f8f18a234082387393b56b0c6e8",
+    "MN_252": "bd25bf6bd315707f5b0394ae88a64a02f59af96f9b5748330ececcfa4a233fc7"
+  },
+  "candidate_review": {
+    "status": "inspected-awaiting-root-merge",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "e8d13707f18ccac4bf51f08149e477e996d11e4b4276a1fc13eff89c6f1171ff",
+    "notes": [
+      "Inspected separate four-view native preview. New Winkfin is a short deep-bodied chunky perch with broad dark-green vertical flank bars, short stout dorsal rays, forked tail and large integral white/cyan crescent ice-lens brow. The lower gill region partly merges with the first bar, while rear upper body shows the broad stripe pattern most clearly.",
+      "Crescent lens is a physical eye shield/fin attached to the brow/nape rather than a prop. Dark eye/glint, small forward mouth and stepped exterior contours remain readable; no scale noise or extra colors. Front44 fit gives a notably deeper silhouette than former skinny40 fish.",
+      "Close rear portrait enlarges striped nape, spiny dorsal roots and turned crescent rim with lower body cropped. Exact canonical green/cyan palette and56/48 native dimensions/784/576byte sizes verified.",
+      "Glaciris old source/crops/fit/thresholds/palette rows unchanged exactly. Adult PNG/2bpp hashes stayed identical during candidate export. Canonical --family restore returned every original board/frame hash to baseline; canonical main manifest untouched. Root owns eventual third northern stage."
+    ]
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "families": [
+    {
+      "id": "MN_F117",
+      "region": "Minnesota lake country: Mille Lacs, Leech Lake, Upper Red and Lake of the Woods",
+      "theme": "Living ice-fishing tip-up: a predator whose integral hinged frost dorsal flag snaps upright when prey is caught. Perch scout to walleye hunter to great walleye sentinel. Ice-lens brow is secondary anatomy.",
+      "members": [
+        {
+          "id": "MN_251",
+          "name": "Winkfin",
+          "types": [
+            "WATER",
+            "ICE"
+          ],
+          "stage": 1,
+          "evolves_to": "MN_252"
+        },
+        {
+          "id": "MN_252",
+          "name": "Glaciris",
+          "types": [
+            "WATER",
+            "ICE"
+          ],
+          "stage": 2,
+          "evolves_to": "MN_266"
+        },
+        {
+          "id": "MN_266",
+          "name": "Tipulord",
+          "types": [
+            "WATER",
+            "ICE"
+          ],
+          "stage": 3,
+          "evolves_to": null
+        }
+      ],
+      "evolution_design": [
+        "Chunky three-bar perch with small crescent brow, tiny alert triangular dorsal fin and rounded tail trigger.",
+        "Elongated walleye with broad ice brow, single broad hinged flag dorsal and slightly curled muscular tail trigger.",
+        "Huge deep-bodied golden walleye with great two-lobed hinged frost flag, broad white ice rims and stout curved tail trigger."
+      ],
+      "silhouette": [
+        "Small rounded fish, short spiny alert fin.",
+        "Longer jaw and single conspicuous upright flag lobe.",
+        "Deep heavy fish body and two huge angular flag lobes separated by clear notch."
+      ],
+      "sources": [
+        {
+          "url": "https://www.dnr.state.mn.us/gofishing/ice-fishing-walleye.html",
+          "grounding": "DNR describes a tip-up flag release signaling a bait take, walleye as perch-family low-light piscivores, and major Minnesota winter walleye lakes. Living flag fins and freezing lens anatomy are original fantasy inventions."
+        },
+        {
+          "url": "https://www.dnr.state.mn.us/minnaqua/speciesprofile/yellowperch.html",
+          "grounding": "Perch body, dark vertical bars and spiny dorsal inspire compact young stage; three broad bars are a deliberate native56px abstraction."
+        }
+      ],
+      "proposed_routes": [
+        "Winter lake routes",
+        "Lake-country fishing encounters"
+      ],
+      "status": "art-candidate-pending-root-review",
+      "preserves_canonical_until_approved": true
+    }
+  ]
+}

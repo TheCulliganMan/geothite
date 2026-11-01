@@ -1,0 +1,69 @@
+{
+  "status": "RUNNING",
+  "portages": [
+    {
+      "id": "REED_POCKET_PORTAGE",
+      "minimum": 4,
+      "forward_steps": 12,
+      "forward_grass": 4,
+      "reverse_steps": 12,
+      "reverse_grass": 4,
+      "both_real_launches_and_dismounts": true
+    },
+    {
+      "id": "PINE_POCKET_PORTAGE",
+      "minimum": 4,
+      "forward_steps": 7,
+      "forward_grass": 4,
+      "reverse_steps": 7,
+      "reverse_grass": 4,
+      "both_real_launches_and_dismounts": true
+    },
+    {
+      "id": "NORTH_PINE_ARMS_PORTAGE",
+      "minimum": 8,
+      "forward_steps": 23,
+      "forward_grass": 9,
+      "reverse_steps": 23,
+      "reverse_grass": 8,
+      "both_real_launches_and_dismounts": true
+    },
+    {
+      "id": "ISLE_OF_PINES_PORTAGE",
+      "minimum": 6,
+      "forward_steps": 32,
+      "forward_grass": 6,
+      "reverse_steps": 32,
+      "reverse_grass": 6,
+      "both_real_launches_and_dismounts": true
+    },
+    {
+      "id": "PALISADE_GRASS_PORTAGE",
+      "minimum": 6,
+      "forward_steps": 45,
+      "forward_grass": 6,
+      "reverse_steps": 45,
+      "reverse_grass": 6,
+      "both_real_launches_and_dismounts": true
+    },
+    {
+      "id": "NORTHWIND_GRASS_PORTAGE",
+      "minimum": 6,
+      "forward_steps": 25,
+      "forward_grass": 6,
+      "reverse_steps": 25,
+      "reverse_grass": 6,
+      "both_real_launches_and_dismounts": true
+    }
+  ],
+  "stairs": [],
+  "calls": 1484,
+  "visited_maps": [
+    "MnBoundarySafariC00R00",
+    "MnBoundarySafariC00R01",
+    "MnBoundarySafariC01R00",
+    "MnBoundarySafariC01R01"
+  ],
+  "mounts": 20,
+  "dismounts": 20
+}

@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "id": "minnesota-weather-and-inland-winter-v1",
+  "status": "Native outdoor precipitation registered; four actual Bevy policy tests and bounded-particle test pass. Headless Boundary Waters clear/rain captures inspected with green pines and open lakes. The SystemParam/query-alias cleanup passes all-target Clippy with no weather-module warnings; scoped formatting passes. Larger inland climate terrain publication and broader weather gameplay verification remain pending.",
+  "guidance": {
+    "inland": "Connected central-north winter landscapes should not alternate between frozen and green at every map.",
+    "coast": "North Shore and Grand Marais remain warm and free of continuous snow/ice.",
+    "weather": "Occasional rainfall with subtle outdoor shading; retain readable UI."
+  },
+  "rain": {
+    "scope": "Minnesota TOWN/ROUTE maps only",
+    "schedule": "Saved or synchronized game-clock date and twenty-minute windows, approximately20percent wet; one shared warm-weather schedule across maps.",
+    "transitions": "Twelve-second intensity crossfade; same schedule across midnight and Continue.",
+    "presentation": "Bounded pool of80 narrow pale-blue drops,13percent maximum blue-gray world shade. Below UI, absent in interiors/battles/title. Snow uses a separate48-particle pool.",
+    "gameplay": "No battle-weather, collision, progression, RNG or save-format mutation."
+  },
+  "snow": {
+    "ely": "Retain existing native snowfall.",
+    "cold_routes": "Extend snowfall to real inland winter terrain, not warm coastal maps.",
+    "shore_pass": "Fade between Ely and the warm North Shore within the existing wooded pass.",
+    "boundary_waters": "Never enable snowfall in MnBoundaryWaters, any MnBoundarySafari chunk or MnPreservePineEntry, including if they share a winter art alias. Keep green land and open lakes."
+  },
+  "inland_candidates": [
+    {
+      "area": "Border Pines",
+      "current_gap": "MnR17 southern native mn_border_pines chunk before snowy International Falls.",
+      "next": "Inspect and winterize complete connected inland stretches using native snow/pine/icy-grass art; preserve authored paths, cave mouths, grass/battles, Cut and gates."
+    },
+    {
+      "area": "Tamarack Lake",
+      "current_gap": "Four green mn_headwaters exterior chunks beside Rainy River Icefields.",
+      "next": "Build a private native winter art variant and full connected snowy land/grass; keep real lake navigation and shoreline barriers. No isolated ice swatch substitute."
+    }
+  ],
+  "verification": [
+    "Saved-clock deterministic shower/clear intervals and map-seam equality",
+    "Midnight and fade continuity",
+    "Warm-coast snow exclusion, inland snow, indoor/original-region exclusion",
+    "Actual headless native rain/clear/snow screenshots and readable menu/dialogue/battle cases",
+    "Connected whole-area winter renders with original shoreline/stairs/palette fidelity",
+    "Production controller travel, encounters/resources, gate preservation and Continue",
+    "Strict parent preservation, regional roster and all377 audio checks"
+  ],
+  "scope_limit": "Policy tests alone do not establish native rendering or completed winter geography. Broad regional quality goal stays active.",
+  "implementation": [
+    "crates/crystal-bevy/src/bevy_shell/outdoor_weather_policy.rs",
+    "crates/crystal-bevy/src/bevy_shell/outdoor_precipitation.rs"
+  ],
+  "user_confirmed_inland_extent": [
+    "MnBemidji",
+    "MnGrandRapids",
+    "Iron Range connecting routes",
+    "Border Pines",
+    "Tamarack and Rainy River"
+  ],
+  "permanent_winter_exclusions": [
+    "MnBoundaryWaters",
+    "All MnBoundarySafari chunks",
+    "MnPreservePineEntry",
+    "MnR11 North Shore",
+    "MnGrandMarais",
+    "MnMaraisCedarApproach"
+  ],
+  "boundary_waters": "Explicit user correction: keep green pines, open connected lakes and grassy portages, campsites and Root Beer Lady; no winter recolor or snow effects.",
+  "current_priority": "Widen all seven North Shore footbridges and both town approaches with real rail collision and sufficient passing space; retain pending weather work.",
+  "boundary_waters_verification": {
+    "selected_pack_audit": ".local/boundary-waters-no-winter-v995.json",
+    "exteriors_checked": 8,
+    "ice_quadrants": 0,
+    "policy_tests": ".local/weather-policy-v995.log",
+    "native_clear_rain": "planning/minnesota/renders/boundary-waters-weather-v1001/receipt.json",
+    "terrain_mutated": false,
+    "latest_selected_pack_audit": ".local/boundary-waters-no-winter-v1005.json",
+    "latest_selected_revision": "northstar_title_revision"
+  },
+  "checks": {
+    "policy": ".local/weather-policy-v995.log",
+    "particles": ".local/weather-particle-v995.log",
+    "clippy": ".local/ely-pine-camp-bevy-clippy-v1002.log",
+    "clippy_exit": 0,
+    "weather_module_warnings": 0,
+    "scoped_format_exit": 0,
+    "workspace_format_exit": 1,
+    "workspace_format_log": ".local/weather-workspace-format-v1002.log",
+    "workspace_format_scope": "Existing unrelated changes; no broad formatting applied."
+  }
+}

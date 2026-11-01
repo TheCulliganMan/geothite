@@ -1,0 +1,30 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-mankato-native-exterior-v03.crystalpack",
+  "sha256": "4f22dd532f5dc1ca28f63383bb9a66030d4f93ced96ed4daa265b3f36680e02f",
+  "source_index": "planning/minnesota/revisions/route-grass-v01/current-mankato-town-v01/sources.json",
+  "source_index_sha256": "3fdba9cca3bcdfbf90af87d66dc867a3bebe0f73ce912166e2376b19330dd3ab",
+  "source_chain": [
+    "planning/minnesota/revisions/st-paul-civic-east-v01/sources.json",
+    "planning/minnesota/revisions/st-paul-inhabited-streets-v02/sources.json",
+    "planning/minnesota/revisions/duluth-interior-buoy-clearance-v01/sources.json",
+    "planning/minnesota/revisions/shore-rocks-open-routes-v01/sources.json",
+    "planning/minnesota/caves/current-r10-fitted-fork-v01/sources.json",
+    "planning/minnesota/revisions/duluth-harbor-platforms-v01/sources.json",
+    "planning/minnesota/revisions/outdoor-terrain-integration-v01/sources.json"
+  ],
+  "preserved_current_caves": [
+    "MnR10Cave1F"
+  ],
+  "current_layouts": [
+    "MnDuluth",
+    "MN_R10",
+    "MN_R12",
+    "MN_R15",
+    "MN_R16",
+    "MN_R17",
+    "MnStPaul",
+    "MnMankato"
+  ],
+  "all_source_hashes_exact": true
+}

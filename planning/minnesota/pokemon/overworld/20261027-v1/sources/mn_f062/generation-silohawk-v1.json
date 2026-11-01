@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_136",
+  "name": "Silohawk",
+  "family_id": "MN_F062",
+  "generation_tool": "built-in image_gen",
+  "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f062/silohawk.overworld.imagegen-v1.png",
+  "original_default_output": "/Users/ryanculligan/.codex/generated_images/01a179bf-dc2b-7352-8975-8b8f3a32e33b/exec-afc0ffd0-a680-4b1c-8509-58c2c400528f.png",
+  "source_sha256": "77ed8b85b4e0d839c8ea174a7dd7e44cfc60acfbeb0b056ce1ea2ba7c85a0024",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f062/prompt-silohawk-v1.txt",
+  "prompt_sha256": "864643c2c132b3f134912fc316e377e3b05b99d1de6aa04d5e8bb4709cc1d123",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f062/reference-mapping-silohawk-v1.json",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f062/manifest-silohawk-v1-pupil-proof.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f062/silohawk-v1-pupil-proof",
+  "source_pupil_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f062/manifest-silohawk-v1-pupil-proof.proof.json",
+  "status": "frozen candidate; author actual normal/shiny and source pupils reviewed, root context pending",
+  "accepted": false
+}

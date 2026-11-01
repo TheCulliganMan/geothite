@@ -1,0 +1,179 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F087",
+  "status": "native-candidate-awaiting-root-review",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f087/redesign-20261027-v2/prompt-v2.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-186-jotlet-v2",
+      "species_id": "MN_186",
+      "view": "front",
+      "source": "sprites/mn-f087/redesign-20261027-v2/front-back.imagegen-v2.png",
+      "crop": [
+        0,
+        0,
+        420,
+        512
+      ],
+      "fit": [
+        36,
+        36
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        17310,
+        6445,
+        0
+      ],
+      "white_detail_min_samples": 8,
+      "interior_black_min_samples": 8,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed"
+    },
+    {
+      "id": "mn-186-jotlet-v2",
+      "species_id": "MN_186",
+      "view": "back",
+      "source": "sprites/mn-f087/redesign-20261027-v2/front-back.imagegen-v2.png",
+      "crop": [
+        0,
+        512,
+        480,
+        512
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        17310,
+        6445,
+        0
+      ],
+      "white_detail_min_samples": 8,
+      "interior_black_min_samples": 8,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed"
+    },
+    {
+      "id": "mn-187-memofold-v2",
+      "species_id": "MN_187",
+      "view": "front",
+      "source": "sprites/mn-f087/redesign-20261027-v2/front-back.imagegen-v2.png",
+      "crop": [
+        420,
+        0,
+        510,
+        512
+      ],
+      "fit": [
+        46,
+        46
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        27324,
+        14572,
+        0
+      ],
+      "white_detail_min_samples": 8,
+      "interior_black_min_samples": 8,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed"
+    },
+    {
+      "id": "mn-187-memofold-v2",
+      "species_id": "MN_187",
+      "view": "back",
+      "source": "sprites/mn-f087/redesign-20261027-v2/front-back.imagegen-v2.png",
+      "crop": [
+        480,
+        512,
+        495,
+        512
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        27324,
+        14572,
+        0
+      ],
+      "white_detail_min_samples": 8,
+      "interior_black_min_samples": 8,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed"
+    },
+    {
+      "id": "mn-188-recallisk-v2",
+      "species_id": "MN_188",
+      "view": "front",
+      "source": "sprites/mn-f087/redesign-20261027-v2/front-back.imagegen-v2.png",
+      "crop": [
+        930,
+        0,
+        606,
+        512
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        23421,
+        15944,
+        0
+      ],
+      "white_detail_min_samples": 8,
+      "interior_black_min_samples": 8,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed"
+    },
+    {
+      "id": "mn-188-recallisk-v2",
+      "species_id": "MN_188",
+      "view": "back",
+      "source": "sprites/mn-f087/redesign-20261027-v2/front-back.imagegen-v2.png",
+      "crop": [
+        975,
+        512,
+        561,
+        512
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        23421,
+        15944,
+        0
+      ],
+      "white_detail_min_samples": 8,
+      "interior_black_min_samples": 8,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed"
+    }
+  ],
+  "visual_review": {
+    "status": "pending",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "",
+    "notes": "Proposal-only native conversion; all six views independently source-authored. No pixel_edits."
+  },
+  "raw_generation": {
+    "sha256": "1515412d67e16bb010453b031bfca7445c57ee0294ca6908f6a27d87527bff00",
+    "source_size": [
+      1536,
+      1024
+    ]
+  }
+}

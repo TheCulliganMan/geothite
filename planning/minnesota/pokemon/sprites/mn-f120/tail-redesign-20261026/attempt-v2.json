@@ -1,0 +1,14 @@
+{
+  "status": "no-image-returned",
+  "prompt_file": "sprites/mn-f120/tail-redesign-20261026/prompt-adult-tail-v2.txt",
+  "reference_mapping": "sprites/mn-f120/tail-redesign-20261026/reference-mapping-v2.json",
+  "failure": {
+    "http": 400,
+    "code": "moderation_blocked",
+    "stage": "output",
+    "categories": [
+      "other"
+    ],
+    "request_id": "7390556a-b28b-46c2-abd1-04e808c85a25"
+  }
+}

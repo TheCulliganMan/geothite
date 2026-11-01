@@ -1,0 +1,446 @@
+{
+  "family": {
+    "id": "MN_F015",
+    "members": [
+      {
+        "id": "MN_043",
+        "name": "Jiglet",
+        "types": [
+          "STEEL",
+          "WATER"
+        ],
+        "stage": 1,
+        "evolves_to": "MN_044"
+      },
+      {
+        "id": "MN_044",
+        "name": "Trollure",
+        "types": [
+          "STEEL",
+          "WATER"
+        ],
+        "stage": 2,
+        "evolves_to": "MN_318"
+      },
+      {
+        "id": "MN_318",
+        "name": "Crappeller",
+        "types": [
+          "STEEL",
+          "WATER"
+        ],
+        "stage": 3,
+        "evolves_to": null
+      }
+    ],
+    "theme": "Living fishing lure: a painted jig with a hook tail becomes a fin-spinning lure, then a broad crappie-patterned adult with a large crown spinner blade.",
+    "region": "central_lakes"
+  },
+  "profiles": [
+    {
+      "id": "MN_043",
+      "classification": "Jig Fish",
+      "height_inches": 8,
+      "weight_tenths_lb": 95,
+      "dex_pages": [
+        "It hides among @ fishing hooks @ on the lake bed.",
+        "Its twitching @ tail attracts fish @ looking for food."
+      ],
+      "base_stats": {
+        "hp": 42,
+        "attack": 53,
+        "defense": 56,
+        "speed": 45,
+        "special_attack": 31,
+        "special_defense": 48
+      },
+      "catch_rate": 190,
+      "base_exp": 60,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_MINERAL",
+        "EGG_WATER_2"
+      ],
+      "evolution": {
+        "method": "LEVEL",
+        "level": 24
+      },
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_FISH",
+      "footprint_species": "GOLDEEN",
+      "cry": {
+        "cry": "CRY_KRABBY",
+        "pitch": -24,
+        "length": 144
+      },
+      "shiny_rgb5": [
+        [
+          8,
+          29,
+          21
+        ],
+        [
+          19,
+          7,
+          14
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "TACKLE"
+        ],
+        [
+          1,
+          "HARDEN"
+        ],
+        [
+          5,
+          "WATER_GUN"
+        ],
+        [
+          9,
+          "ATTRACT"
+        ],
+        [
+          9,
+          "METAL_CLAW"
+        ],
+        [
+          17,
+          "SWEET_SCENT"
+        ],
+        [
+          22,
+          "PURSUIT"
+        ],
+        [
+          27,
+          "SWIFT"
+        ],
+        [
+          30,
+          "BUBBLEBEAM"
+        ],
+        [
+          34,
+          "AGILITY"
+        ],
+        [
+          37,
+          "IRON_TAIL"
+        ],
+        [
+          40,
+          "WATERFALL"
+        ],
+        [
+          41,
+          "SCREECH"
+        ],
+        [
+          46,
+          "HYDRO_PUMP"
+        ],
+        [
+          50,
+          "LOCK_ON"
+        ]
+      ],
+      "tmhm_moves": [
+        "SURF",
+        "WHIRLPOOL",
+        "RAIN_DANCE",
+        "IRON_TAIL",
+        "SWIFT",
+        "ATTRACT",
+        "THIEF",
+        "PROTECT"
+      ],
+      "egg_moves": [
+        "FLAIL",
+        "MIMIC",
+        "OCTAZOOKA"
+      ]
+    },
+    {
+      "id": "MN_044",
+      "classification": "Spinner",
+      "height_inches": 32,
+      "weight_tenths_lb": 640,
+      "dex_pages": [
+        "It spins its @ metal fins to @ look like a weak",
+        "fish. It attacks @ when a larger @ fish draws close."
+      ],
+      "base_stats": {
+        "hp": 65,
+        "attack": 80,
+        "defense": 85,
+        "speed": 60,
+        "special_attack": 45,
+        "special_defense": 75
+      },
+      "catch_rate": 90,
+      "base_exp": 137,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_MINERAL",
+        "EGG_WATER_2"
+      ],
+      "evolution": {
+        "method": "LEVEL",
+        "level": 40
+      },
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_FISH",
+      "footprint_species": "GOLDEEN",
+      "cry": {
+        "cry": "CRY_KRABBY",
+        "pitch": 0,
+        "length": 160
+      },
+      "shiny_rgb5": [
+        [
+          8,
+          28,
+          17
+        ],
+        [
+          16,
+          5,
+          10
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "TACKLE"
+        ],
+        [
+          1,
+          "HARDEN"
+        ],
+        [
+          1,
+          "WATER_GUN"
+        ],
+        [
+          11,
+          "ATTRACT"
+        ],
+        [
+          15,
+          "METAL_CLAW"
+        ],
+        [
+          19,
+          "SWEET_SCENT"
+        ],
+        [
+          24,
+          "PURSUIT"
+        ],
+        [
+          28,
+          "SWIFT"
+        ],
+        [
+          31,
+          "BUBBLEBEAM"
+        ],
+        [
+          35,
+          "AGILITY"
+        ],
+        [
+          38,
+          "IRON_TAIL"
+        ],
+        [
+          40,
+          "WATERFALL"
+        ],
+        [
+          42,
+          "SCREECH"
+        ],
+        [
+          47,
+          "HYDRO_PUMP"
+        ],
+        [
+          51,
+          "LOCK_ON"
+        ]
+      ],
+      "tmhm_moves": [
+        "SURF",
+        "WHIRLPOOL",
+        "RAIN_DANCE",
+        "IRON_TAIL",
+        "SWIFT",
+        "ATTRACT",
+        "THIEF",
+        "PROTECT"
+      ],
+      "egg_moves": [
+        "FLAIL",
+        "MIMIC",
+        "OCTAZOOKA"
+      ]
+    },
+    {
+      "id": "MN_318",
+      "classification": "Crown Lure",
+      "height_inches": 48,
+      "weight_tenths_lb": 1120,
+      "dex_pages": [
+        "It spins the @ blade on its head @ to stir up silt.",
+        "Hidden in the @ cloud, it waits @ for unwary fish."
+      ],
+      "base_stats": {
+        "hp": 85,
+        "attack": 120,
+        "defense": 105,
+        "speed": 80,
+        "special_attack": 65,
+        "special_defense": 95
+      },
+      "catch_rate": 45,
+      "base_exp": 218,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_MINERAL",
+        "EGG_WATER_2"
+      ],
+      "evolution": null,
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_FISH",
+      "footprint_species": "GOLDEEN",
+      "cry": {
+        "cry": "CRY_KRABBY",
+        "pitch": -40,
+        "length": 192
+      },
+      "shiny_rgb5": [
+        [
+          18,
+          29,
+          23
+        ],
+        [
+          18,
+          6,
+          14
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "TACKLE"
+        ],
+        [
+          1,
+          "HARDEN"
+        ],
+        [
+          1,
+          "WATER_GUN"
+        ],
+        [
+          11,
+          "ATTRACT"
+        ],
+        [
+          15,
+          "METAL_CLAW"
+        ],
+        [
+          19,
+          "SWEET_SCENT"
+        ],
+        [
+          24,
+          "PURSUIT"
+        ],
+        [
+          28,
+          "SWIFT"
+        ],
+        [
+          31,
+          "BUBBLEBEAM"
+        ],
+        [
+          35,
+          "AGILITY"
+        ],
+        [
+          38,
+          "IRON_TAIL"
+        ],
+        [
+          40,
+          "WATERFALL"
+        ],
+        [
+          42,
+          "SCREECH"
+        ],
+        [
+          44,
+          "SWORDS_DANCE"
+        ],
+        [
+          47,
+          "HYDRO_PUMP"
+        ],
+        [
+          51,
+          "LOCK_ON"
+        ]
+      ],
+      "tmhm_moves": [
+        "SURF",
+        "WHIRLPOOL",
+        "RAIN_DANCE",
+        "IRON_TAIL",
+        "SWIFT",
+        "ATTRACT",
+        "THIEF",
+        "PROTECT"
+      ],
+      "egg_moves": [
+        "FLAIL",
+        "MIMIC",
+        "OCTAZOOKA"
+      ]
+    }
+  ],
+  "reason": "Keep early Steel/Water progression fair, then reward level40 commitment with a desired 550-BST physical attacker. Final user-requested buff adds10Attack,5Speed and Swords Dance44.",
+  "base_stat_totals": [
+    275,
+    410,
+    550
+  ],
+  "evolution_levels": [
+    24,
+    40
+  ],
+  "unrelated_species_profiles_changed": false
+}

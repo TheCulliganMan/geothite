@@ -1,0 +1,123 @@
+{
+  "status": "PASS_CURRENT_BOUNDARY_SAFARI_GRASS_STAIRS_AND_TRAVERSAL",
+  "pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+  "pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33",
+  "native_cases": 3,
+  "production_stdio_calls": 2302,
+  "grass_quadrants": 316,
+  "ice_quadrants": 0,
+  "native_cave12_stairs_verified": 5,
+  "retired_high_cliff_jump_contracts_remain_retired": true,
+  "ordinary_portage_minimum_grass": [
+    4,
+    4,
+    8,
+    6,
+    6,
+    6
+  ],
+  "actual_portages": [
+    {
+      "id": "REED_POCKET_PORTAGE",
+      "minimum": 4,
+      "forward_steps": 12,
+      "forward_grass": 4,
+      "reverse_steps": 12,
+      "reverse_grass": 4,
+      "both_real_launches_and_dismounts": true
+    },
+    {
+      "id": "PINE_POCKET_PORTAGE",
+      "minimum": 4,
+      "forward_steps": 7,
+      "forward_grass": 4,
+      "reverse_steps": 7,
+      "reverse_grass": 4,
+      "both_real_launches_and_dismounts": true
+    },
+    {
+      "id": "NORTH_PINE_ARMS_PORTAGE",
+      "minimum": 8,
+      "forward_steps": 23,
+      "forward_grass": 9,
+      "reverse_steps": 23,
+      "reverse_grass": 8,
+      "both_real_launches_and_dismounts": true
+    },
+    {
+      "id": "ISLE_OF_PINES_PORTAGE",
+      "minimum": 6,
+      "forward_steps": 32,
+      "forward_grass": 6,
+      "reverse_steps": 32,
+      "reverse_grass": 6,
+      "both_real_launches_and_dismounts": true
+    },
+    {
+      "id": "PALISADE_GRASS_PORTAGE",
+      "minimum": 6,
+      "forward_steps": 45,
+      "forward_grass": 6,
+      "reverse_steps": 45,
+      "reverse_grass": 6,
+      "both_real_launches_and_dismounts": true
+    },
+    {
+      "id": "NORTHWIND_GRASS_PORTAGE",
+      "minimum": 6,
+      "forward_steps": 25,
+      "forward_grass": 6,
+      "reverse_steps": 25,
+      "reverse_grass": 6,
+      "both_real_launches_and_dismounts": true
+    }
+  ],
+  "actual_stairs": [
+    {
+      "metatile": [
+        40,
+        58
+      ],
+      "both_directions": true,
+      "side_wall_denied": true
+    },
+    {
+      "metatile": [
+        96,
+        18
+      ],
+      "both_directions": true,
+      "side_wall_denied": true
+    },
+    {
+      "metatile": [
+        90,
+        26
+      ],
+      "both_directions": true,
+      "side_wall_denied": true
+    },
+    {
+      "metatile": [
+        110,
+        32
+      ],
+      "both_directions": true,
+      "side_wall_denied": true
+    },
+    {
+      "metatile": [
+        106,
+        80
+      ],
+      "both_directions": true,
+      "side_wall_denied": true
+    }
+  ],
+  "surf_launches": 25,
+  "dismounts": 25,
+  "actual_reached_save_continue": true,
+  "all_six_complete_maps_used_pixels_collision_exact": true,
+  "whole_inherited_map_inspected": "planning/minnesota/renders/route-grass-v01/current-boundary-safari-successor-v01/whole-preserve-current-source-v01.png",
+  "scope": "Local grass/terrain/traversal only. Initial beyond-gate position, party and badges are QA fixtures. Paid admission/permit/capture runtime, ordinary Safari wild encounters, cabin identity and earned access are not claimed. Broader regional review remains active."
+}

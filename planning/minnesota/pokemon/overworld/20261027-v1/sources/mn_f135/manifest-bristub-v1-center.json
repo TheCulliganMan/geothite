@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F135",
+  "species": [
+    {
+      "species_id": "MN_298",
+      "runtime_token": "BRISTUB",
+      "palette_rgb555": [
+        32767,
+        9784,
+        6410,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        26168,
+        12489,
+        0
+      ],
+      "fit": [
+        13,
+        13
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 64,
+      "interior_black_samples": 64,
+      "opaque_interior_minimum_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "bristub.overworld.imagegen-v1.png",
+          "crop": [
+            29,
+            216,
+            413,
+            388
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "bristub.overworld.imagegen-v1.png",
+          "crop": [
+            400,
+            216,
+            413,
+            388
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "bristub.overworld.imagegen-v1.png",
+          "crop": [
+            815,
+            243,
+            413,
+            388
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "bristub.overworld.imagegen-v1.png",
+          "crop": [
+            29,
+            652,
+            413,
+            388
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "bristub.overworld.imagegen-v1.png",
+          "crop": [
+            400,
+            654,
+            413,
+            388
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "bristub.overworld.imagegen-v1.png",
+          "crop": [
+            815,
+            684,
+            413,
+            388
+          ]
+        }
+      ]
+    }
+  ]
+}

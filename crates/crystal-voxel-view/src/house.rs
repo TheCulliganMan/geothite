@@ -7,12 +7,83 @@ use crate::profile::{CellShape, SolidKind};
 pub(crate) const HOUSE_FLOOR_TILE: u16 = 0x01;
 pub(crate) const TRADITIONAL_HOUSE_FLOOR_TILE: u16 = 0x50;
 
+/// The lounge's plain gold table is one complete Mansion block, including
+/// its bottom frame. Similar bookcase caps do not identify this drawing.
+pub(crate) fn mansion_lounge_table_local(map:&str,s:&VisualTileSource)->Option<(u8,u8,usize,usize)> {
+    if map!="CeladonMansion1F" || s.tileset_id.as_ref()!="mansion"
+        || s.metatile_id!=0x10 || s.subtile_column>=4 || s.subtile_row>=4 {return None;}
+    const DRAWING:[[u16;4];4]=[
+        [0x36,0x37,0x37,0x38],[0x46,0x47,0x47,0x48],
+        [0x46,0x47,0x47,0x48],[0x56,0x57,0x57,0x58],
+    ];
+    (s.tile_index==DRAWING[s.subtile_row as usize][s.subtile_column as usize])
+        .then_some((s.subtile_column,s.subtile_row,4,4))
+}
+
+/// The club/warden/trainer-house table is one eight-by-eight drawing across
+/// six blocks. Its centerpiece belongs to this drawing, not to the floor.
+pub(crate) fn large_table_local(map:&str,s:&VisualTileSource)->Option<(u8,u8,usize,usize)> {
+    if !matches!(map,"PokemonFanClub"|"SafariZoneWardensHome"|"TrainerHouse1F")
+        || s.tileset_id.as_ref()!="house" || s.subtile_column>=4 || s.subtile_row>=4 {return None;}
+    let (x,y)=match s.metatile_id {
+        0x21 if s.subtile_column>=2=>(s.subtile_column-2,s.subtile_row),
+        0x1f=>(s.subtile_column+2,s.subtile_row),
+        0x22 if s.subtile_column<2=>(s.subtile_column+6,s.subtile_row),
+        0x23 if s.subtile_column>=2=>(s.subtile_column-2,s.subtile_row+4),
+        0x20=>(s.subtile_column+2,s.subtile_row+4),
+        0x24 if s.subtile_column<2=>(s.subtile_column+6,s.subtile_row+4),_=>return None,
+    };
+    const DRAWING:[[u16;8];8]=[
+        [0x26,0x27,0x27,0x27,0x27,0x27,0x27,0x29],
+        [0x36,0x2f,0x2f,0x2f,0x2f,0x2f,0x2f,0x39],
+        [0x36,0x2f,0x2f,0x22,0x23,0x2f,0x2f,0x39],
+        [0x36,0x2f,0x2f,0x52,0x53,0x2f,0x2f,0x39],
+        [0x36,0x2f,0x2f,0x25,0x35,0x2f,0x2f,0x39],
+        [0x36,0x2f,0x2f,0x2f,0x2f,0x2f,0x2f,0x39],
+        [0x05,0x2f,0x2f,0x2f,0x2f,0x2f,0x2f,0x15],
+        [0x3c,0x3a,0x3a,0x3a,0x3a,0x3a,0x3a,0x3b],
+    ];
+    (s.tile_index==DRAWING[y as usize][x as usize]).then_some((x,y,8,8))
+}
+
+/// The same complete desk/chair assembly occurs across up to four metatiles.
+/// Match its drawing and phase, rather than the surrounding wall/collision.
+pub(crate) fn mansion_workstation_local(map:&str,s:&VisualTileSource)->Option<(u8,u8,usize,usize)> {
+    if !matches!(map,"CeladonMansion2F"|"CeladonMansion3F") || s.tileset_id.as_ref()!="mansion"
+        || s.subtile_column>=4 || s.subtile_row>=4 {return None;}
+    let (x,y)=match s.metatile_id {
+        0x12 if s.subtile_row>=2=>(s.subtile_column,s.subtile_row-2),
+        0x18 if s.subtile_column>=2 && s.subtile_row>=2=>(s.subtile_column-2,s.subtile_row-2),
+        0x19 if s.subtile_column<2 && s.subtile_row>=2=>(s.subtile_column+2,s.subtile_row-2),
+        0x13 if s.subtile_row<2=>(s.subtile_column,s.subtile_row+2),
+        0x1b if s.subtile_column>=2 && s.subtile_row<2=>(s.subtile_column-2,s.subtile_row+2),
+        0x1a if s.subtile_column<2 && s.subtile_row<2=>(s.subtile_column+2,s.subtile_row+2),
+        0x1c=>(s.subtile_column,s.subtile_row),_=>return None,
+    };
+    (s.tile_index==[[0x2a,0x2b,0x2c,0x2d],[0x3a,0x3b,0x3c,0x3d],
+        [0x4a,0x4b,0x4c,0x4d],[0x5a,0x5b,0x11,0x11]][y as usize][x as usize])
+        .then_some((x,y,4,4))
+}
+pub(crate) fn mansion_office_seat_local(map:&str,s:&VisualTileSource)->Option<(u8,u8,usize,usize)> {
+    if !matches!(map,"CeladonMansion2F"|"CeladonMansion3F") || s.tileset_id.as_ref()!="mansion"
+        || s.subtile_column>=4 || s.subtile_row>=4 {return None;}
+    let (x,y)=match s.metatile_id {
+        0x13 if s.subtile_column<2 && s.subtile_row<2=>(s.subtile_column,s.subtile_row),
+        0x1b if s.subtile_column>=2 && s.subtile_row<2=>(s.subtile_column-2,s.subtile_row),
+        0x1c if s.subtile_column<2 && s.subtile_row>=2=>(s.subtile_column,s.subtile_row-2),_=>return None,
+    };
+    (s.tile_index==[[0x4a,0x4b],[0x5a,0x5b]][y as usize][x as usize]).then_some((x,y,2,2))
+}
+
 /// Traditional gift shops use block `$02` as a complete merchandise shelf:
 /// two source rows seen from above, followed by two native front rows.
 pub(crate) fn traditional_gift_shop_shelf_local(
     map_id: &str,
     source: &VisualTileSource,
 ) -> Option<(u8, u8)> {
+    if map_id=="MountMoonGiftShop" && (source.subtile_column>=4||source.subtile_row>=4
+        ||source.tile_index!=[[6,7,7,32],[22,23,23,48],[33,39,39,40],[49,55,55,56]]
+            [source.subtile_row as usize][source.subtile_column as usize]) {return None;}
     (matches!(map_id, "MahoganyMart1F" | "MountMoonGiftShop")
         && source.tileset_id.as_ref() == "traditional_house"
         && source.metatile_id == 0x02)

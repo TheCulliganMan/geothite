@@ -1,0 +1,9 @@
+{
+  "tool": "built-in image_gen",
+  "original": "/Users/ryanculligan/.codex/generated_images/01a179bf-dc2b-7352-8975-8b8f3a32e33b/exec-2cf0a03f-dbb1-451c-9a7c-a5302cbfd18f.png",
+  "preserved_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f117/tipulord.overworld.imagegen-v1.png",
+  "sha256": "75135d7f0c3fae0df51c8236debfadfdf7986ac13e68bc653260eb723f52e54d",
+  "exact_prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f117/prompt-tipulord-v1.txt",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f117/reference-mapping-tipulord-v1.json",
+  "status": "preserved; selected frames recorded in frozen manifest"
+}

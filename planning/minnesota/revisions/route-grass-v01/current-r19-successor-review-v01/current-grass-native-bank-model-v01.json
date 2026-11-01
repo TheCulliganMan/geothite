@@ -1,0 +1,74 @@
+{
+  "status": "MEASURED_CURRENT_NATIVE_SURFACE",
+  "pack": "content-packs/minnesota-current-r17-trail-guidance-v02.crystalpack",
+  "pack_sha256": "186c262b18d5174cb7ba9727358d4022bea9fce6d362529405728028ef92c60a",
+  "grass_quadrants": 156,
+  "ice_quadrants": 0,
+  "checks": [
+    {
+      "start": [
+        47,
+        13
+      ],
+      "end": [
+        49,
+        20
+      ],
+      "measurement": {
+        "status": "MEASURED",
+        "grass_steps": 7,
+        "grass_quadrants_in_contract": 156,
+        "ice_quadrants": 0
+      }
+    },
+    {
+      "start": [
+        49,
+        20
+      ],
+      "end": [
+        47,
+        13
+      ],
+      "measurement": {
+        "status": "MEASURED",
+        "grass_steps": 7,
+        "grass_quadrants_in_contract": 156,
+        "ice_quadrants": 0
+      }
+    },
+    {
+      "start": [
+        34,
+        34
+      ],
+      "end": [
+        34,
+        31
+      ],
+      "measurement": {
+        "status": "MEASURED",
+        "grass_steps": 3,
+        "grass_quadrants_in_contract": 156,
+        "ice_quadrants": 0
+      }
+    },
+    {
+      "start": [
+        35,
+        34
+      ],
+      "end": [
+        35,
+        31
+      ],
+      "measurement": {
+        "status": "MEASURED",
+        "grass_steps": 3,
+        "grass_quadrants_in_contract": 156,
+        "ice_quadrants": 0
+      }
+    }
+  ],
+  "scope": "Reciprocal bank masks and current-tile hops; actors clear, no Surf/Cut. Native tests separately establish gameplay."
+}

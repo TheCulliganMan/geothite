@@ -1,0 +1,243 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F080",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_174": {
+      "species_id": "MN_174",
+      "name": "Loomlet",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          21,
+          21,
+          27
+        ],
+        [
+          8,
+          9,
+          18
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        28341,
+        18728,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          173,
+          173,
+          222
+        ],
+        [
+          66,
+          74,
+          148
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#ADADDE",
+        "#424A94",
+        "#000000"
+      ]
+    },
+    "MN_175": {
+      "species_id": "MN_175",
+      "name": "Inverveil",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          21,
+          24,
+          31
+        ],
+        [
+          9,
+          7,
+          18
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        32533,
+        18665,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          173,
+          198,
+          255
+        ],
+        [
+          74,
+          57,
+          148
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#ADC6FF",
+        "#4A3994",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f080/prompt-v3.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "Original accepted native pixel-art board",
+    "reference_mapping": "sprites/mn-f080/reference-mapping-v3.json"
+  },
+  "sprites": [
+    {
+      "id": "mn-174-loomlet-v3",
+      "species_id": "MN_174",
+      "view": "front",
+      "source": "sprites/mn-f080/mn-174-175.front-back.imagegen-v3.png",
+      "crop": [
+        0,
+        0,
+        650,
+        492
+      ],
+      "fit": [
+        40,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        28341,
+        18728,
+        0
+      ],
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-174-loomlet-v3",
+      "species_id": "MN_174",
+      "view": "back",
+      "source": "sprites/mn-f080/mn-174-175.front-back.imagegen-v3.png",
+      "crop": [
+        0,
+        492,
+        650,
+        395
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        28341,
+        18728,
+        0
+      ],
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-175-inverveil-v3",
+      "species_id": "MN_175",
+      "view": "front",
+      "source": "sprites/mn-f080/mn-174-175.front-back.imagegen-v3.png",
+      "crop": [
+        800,
+        0,
+        974,
+        492
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        32533,
+        18665,
+        0
+      ],
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-175-inverveil-v3",
+      "species_id": "MN_175",
+      "view": "back",
+      "source": "sprites/mn-f080/mn-174-175.front-back.imagegen-v3.png",
+      "crop": [
+        800,
+        492,
+        974,
+        395
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        32533,
+        18665,
+        0
+      ],
+      "interior_black_min_samples": 16
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "notes": "Root inspected original raw and corrected nonuniform crops: adjacent broad vane ink excluded from the small creature cells; full feet retained across the actual row gutter. Stacked lower head/inverted upper fan becomes wide crown glider with genuine lift vanes, central bent neck and lower real eyes. Distinct violet palettes, small black pupils/white glints and close rear crops remain clear. Both failed no-image attempts and every crop variant preserved.",
+    "sheet_sha256": "fd1c64d69ac2ab45d7d4b167626c08ccb37b66fe93bb138729cc87c36b530d57",
+    "outline_profile": "source-contour-v1"
+  },
+  "raw_generation": {
+    "original_tool_path": "/Users/ryanculligan/.codex/generated_images/01a178da-4cf1-7e01-8516-667a332dc790/exec-73d183be-f376-4203-b7c3-059a9897abb3.png",
+    "sha256": "c08442179abdeb2f6be57dafba9aada216fadac383cd745460ba7317a9ca21ea",
+    "source_size": [
+      1774,
+      887
+    ]
+  }
+}

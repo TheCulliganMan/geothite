@@ -1,0 +1,129 @@
+{
+  "schema_version": 1,
+  "status": "FROZEN_TERRAIN_FOR_REVIEW_PENDING_ATTRIBUTE_ONLY_GEOGRAPHY_REBIND",
+  "review_contract_sha256": "7e345514059a5333fe383db501a0d82785fc294cb9f9b8d398b46f5ffeea2d9d",
+  "actual_art_pack_sha256": "1c6ba5d59097546ff8b94e09c809d270727ce1272acb93759b89f3b3c7d9b90a",
+  "candidates_sha256": {
+    "MN_R12.winter.candidate.layout.json": "d69d4621d66da01d1950de452e88755f9f750d23c99f05cab9d019e26e396a20",
+    "MN_R12.winter.candidate.json": "e6e082dabedf18555122abb9eed4f42d38d6b5d87408d6b1f50bbde43f5fc499",
+    "MN_R13.winter.candidate.layout.json": "d3e82a0a9c2d98ace9049f2a4b2f86a4e39dff5478918c935e10ec098fc43f9a",
+    "MN_R13.winter.candidate.json": "aad2b42348911214c8a8e5891a6558823e74582ab93ee5e8694edf9f1967688c"
+  },
+  "canonical_before_bytes_sha256": {
+    "MN_R12.layout.json.before": "1487492436561073790d9f1d81b239ae5c3b492f58c5201ca1d94b841787ec2e",
+    "MN_R13.json.before": "fca2144ea7b915e0634a367633ab1bab28883a6c3a60d0428fcce006f4e07083",
+    "MN_R12.json.before": "40c2699d6d7ef4e89765cc64ca7d092faabc5fa4107a48f5371614e6df6ac35e",
+    "MN_R13.layout.json.before": "a753c373f596d929d56c74f868ee2ee36c849aa0bea0975fd53d62b7994a6927"
+  },
+  "frozen_module_blocks": {
+    "MnR12C00R00": {
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "old_blocks_sha256": "c30f4708dbe3ce0a858b226bc5a60672e4c47ac22a04b36452a55c57d6b25b97",
+      "new_blocks_sha256": "9aa13680056eed58984d1c7096768db4e0bf66b979cb9d5a83ca65d63ff7fea8",
+      "cells": 563,
+      "old_tileset": "mn_gunflint",
+      "new_tileset": "mn_winter_gunflint"
+    },
+    "MnR12C00R01": {
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "old_blocks_sha256": "d2618412adbdfb4925e3124c741211e81ecf338afa9c1b5e2edab18c10ad2270",
+      "new_blocks_sha256": "1132a7be90ca99161c80049206daa7ddfc84cbb04dd43bef9478d95992e1840e",
+      "cells": 589,
+      "old_tileset": "mn_gunflint",
+      "new_tileset": "mn_winter_gunflint"
+    },
+    "MnR12C00R02": {
+      "dimensions_metatiles": [
+        32,
+        8
+      ],
+      "old_blocks_sha256": "ecafb777323175ee62b63cb3155a93509f07cb2a68c101a6bca636bcdcf85e0a",
+      "new_blocks_sha256": "81b5a90c2a0fa8f3e039d50cafa78116205ba67c83ae3f0026a74cb89820b0d4",
+      "cells": 254,
+      "old_tileset": "mn_gunflint",
+      "new_tileset": "mn_winter_gunflint"
+    },
+    "MnR12C01R00": {
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "old_blocks_sha256": "4491c25b51b886045949eae40c32c08e5cb8b05191f88b1bda60abae5b40d3d9",
+      "new_blocks_sha256": "fbb809fee8f6a07c4f6c55eb69b095f7ad008b593ba2a3362cc308281732c792",
+      "cells": 639,
+      "old_tileset": "mn_gunflint",
+      "new_tileset": "mn_winter_gunflint"
+    },
+    "MnR12C01R01": {
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "old_blocks_sha256": "02d8d22fab1e42fd2ad5a4bc84129f49a533733b3022813ea5cd7ff71a1229bd",
+      "new_blocks_sha256": "9fa7d6a438f6066b3e582128042fedfe520a0500fe0bf5c80bb93e20b6c9f32a",
+      "cells": 732,
+      "old_tileset": "mn_gunflint",
+      "new_tileset": "mn_winter_gunflint"
+    },
+    "MnR12C01R02": {
+      "dimensions_metatiles": [
+        32,
+        8
+      ],
+      "old_blocks_sha256": "127fd8108ad5d33fedd653737b18e745524e216389e8ee1e3b7dff909d9c0924",
+      "new_blocks_sha256": "0bff230bf695c914e65037995cdb1e27b1b0e907c1336ffd83c228ca1a63e9ed",
+      "cells": 256,
+      "old_tileset": "mn_gunflint",
+      "new_tileset": "mn_winter_gunflint"
+    },
+    "MnR13C00R00": {
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "old_blocks_sha256": "e62fa4c53c1304b54656e7f8fecb49ddda02b9b61417d00576fac96ebf8ab87d",
+      "new_blocks_sha256": "daca44312ea513255b86369ec382db44638d6912ffb3af41178742ccefc43c53",
+      "cells": 552,
+      "old_tileset": "johto",
+      "new_tileset": "mn_winter_north_shore"
+    },
+    "MnR13C00R01": {
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "old_blocks_sha256": "3cc9b7d6d99f91033ea428628050a2a6cffd418b0148cd37669b8c761fd9d3d0",
+      "new_blocks_sha256": "6f4e36ff380f0ee777326587ed021705c32e97aa913bd528143c4b49bb49b7ef",
+      "cells": 493,
+      "old_tileset": "johto",
+      "new_tileset": "mn_winter_north_shore"
+    },
+    "MnR13C00R02": {
+      "dimensions_metatiles": [
+        32,
+        16
+      ],
+      "old_blocks_sha256": "4003afa831a2024d24a9c57ce5c0f219a8331bb99acae31779b1e2d750100f23",
+      "new_blocks_sha256": "46d276630ae2dc5a4df001f894f94cbe8555ccc8ae43d6cbf521a7ea7f541df6",
+      "cells": 508,
+      "old_tileset": "johto",
+      "new_tileset": "mn_winter_north_shore"
+    }
+  },
+  "bounds": {
+    "cells": 4586,
+    "modules": 9,
+    "Floor_to_ICE_quadrants": 40,
+    "art_changes": 0,
+    "program_changes": 0,
+    "actor_changes": 0
+  },
+  "rebind_rule": "After final geography only full owned module/attribute SHA and inherited connection metadata may rebind. All old/new grids, dimensions/strides, seasonal cells/quadrants, actors/events/programs, art and canonical candidate bytes must remain exact. Any other drift requires explicit review and a fresh version.",
+  "canonical_policy": "Never apply here. Root performs joint guarded source promotion and narrow Layout aliases/explicit_source_edges registration only after native QA."
+}

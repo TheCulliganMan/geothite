@@ -1,0 +1,97 @@
+{
+  "id": "MnRochester",
+  "name": "ROCHESTER",
+  "dimensions_metatiles": [
+    20,
+    16
+  ],
+  "reference_anchor_percent": [
+    70,
+    86
+  ],
+  "role": "gym_1",
+  "tileset": "johto_modern",
+  "composition": "A public clinic courtyard between two sheltered residential lanes. The eastern arrival forks toward the freight recipient and first gym; flower beds and short paths frame the useful clearings.",
+  "ports": [
+    {
+      "route": "MN_R01",
+      "side": "E",
+      "gate_metatile": [
+        18,
+        9
+      ],
+      "landing_metatile": [
+        16,
+        9
+      ]
+    },
+    {
+      "route": "MN_R02",
+      "side": "W",
+      "gate_metatile": [
+        1,
+        9
+      ],
+      "landing_metatile": [
+        3,
+        9
+      ]
+    }
+  ],
+  "interiors": [
+    {
+      "id": "MnRochesterPokecenter1F",
+      "kind": "pokecenter",
+      "dimensions_metatiles": [
+        10,
+        8
+      ],
+      "authoring_file": "towns/MnRochester.json"
+    },
+    {
+      "id": "MnRochesterMart",
+      "kind": "mart",
+      "dimensions_metatiles": [
+        6,
+        4
+      ],
+      "authoring_file": "towns/MnRochester.json"
+    },
+    {
+      "id": "MnRochesterGym",
+      "kind": "gym_1",
+      "dimensions_metatiles": [
+        7,
+        10
+      ],
+      "authoring_file": "towns/MnRochester.json"
+    },
+    {
+      "id": "MnRochesterClerkHouse",
+      "kind": "house",
+      "dimensions_metatiles": [
+        5,
+        4
+      ],
+      "authoring_file": "towns/MnRochester.json"
+    },
+    {
+      "id": "MnRochesterPatientHouse",
+      "kind": "house",
+      "dimensions_metatiles": [
+        5,
+        4
+      ],
+      "authoring_file": "towns/MnRochester.json"
+    }
+  ],
+  "walkable_destinations": [
+    "each port landing",
+    "every visible exterior door",
+    "central square",
+    "local story NPC"
+  ],
+  "door_contract": "Assign exterior core-tile door coordinates only after selecting authentic facade quadrants; record reciprocal warp indices and indoor floor arrivals before export.",
+  "authoring_file": "towns/MnRochester.json",
+  "layout_file": "towns/MnRochester.layout.json"
+}

@@ -1,0 +1,50 @@
+[
+  {
+    "id": "r10-west-cache-stair-outside",
+    "map": "MnR10C00R00",
+    "core": [
+      33,
+      14
+    ]
+  },
+  {
+    "id": "r10-west-cache-stair-inside",
+    "map": "MnR10C00R00",
+    "core": [
+      33,
+      12
+    ]
+  },
+  {
+    "id": "r10-cache-west-grass-face",
+    "map": "MnR10C00R00",
+    "core": [
+      23,
+      10
+    ]
+  },
+  {
+    "id": "r10-cache-southwest-turn",
+    "map": "MnR10C00R00",
+    "core": [
+      23,
+      12
+    ]
+  },
+  {
+    "id": "r10-mine-forecourt-inset",
+    "map": "MnR10C00R00",
+    "core": [
+      35,
+      14
+    ]
+  },
+  {
+    "id": "r10-west-cache-reward",
+    "map": "MnR10C00R00",
+    "core": [
+      26,
+      9
+    ]
+  }
+]

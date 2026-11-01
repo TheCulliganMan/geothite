@@ -1,0 +1,425 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F001",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f001/prompt-v1.txt",
+  "sprites": [
+    {
+      "id": "mn-001-pouchid-v2",
+      "species_id": "MN_001",
+      "view": "front",
+      "source": "sprites/mn-f001/mn-001-003.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        512,
+        519
+      ],
+      "fit": [
+        36,
+        36
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13151,
+        7686,
+        0
+      ],
+      "source_palette_rgb555": [
+        32767,
+        25183,
+        8613,
+        0
+      ]
+    },
+    {
+      "id": "mn-001-pouchid-v2",
+      "species_id": "MN_001",
+      "view": "back",
+      "source": "sprites/mn-f001/back-portraits.imagegen-v3.png",
+      "crop": [
+        0,
+        0,
+        672,
+        724
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13151,
+        7686,
+        0
+      ],
+      "prompt_file": "sprites/mn-f001/prompt-back-v3.txt"
+    },
+    {
+      "id": "mn-002-slipperina-v2",
+      "species_id": "MN_002",
+      "view": "front",
+      "source": "sprites/mn-f001/mn-001-003.front-back.imagegen-v1.png",
+      "crop": [
+        512,
+        0,
+        512,
+        519
+      ],
+      "fit": [
+        44,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        30264,
+        12675,
+        0
+      ],
+      "source_palette_rgb555": [
+        32767,
+        25183,
+        8613,
+        0
+      ]
+    },
+    {
+      "id": "mn-002-slipperina-v2",
+      "species_id": "MN_002",
+      "view": "back",
+      "source": "sprites/mn-f001/back-portraits.imagegen-v3.png",
+      "crop": [
+        672,
+        0,
+        757,
+        724
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        30264,
+        12675,
+        0
+      ],
+      "prompt_file": "sprites/mn-f001/prompt-back-v3.txt"
+    },
+    {
+      "id": "mn-003-cyprielle-v2",
+      "species_id": "MN_003",
+      "view": "front",
+      "source": "sprites/mn-f001/mn-001-003.front-back.imagegen-v1.png",
+      "crop": [
+        1024,
+        0,
+        512,
+        519
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        24031,
+        7492,
+        0
+      ],
+      "source_palette_rgb555": [
+        32767,
+        25183,
+        8613,
+        0
+      ]
+    },
+    {
+      "id": "mn-003-cyprielle-v2",
+      "species_id": "MN_003",
+      "view": "back",
+      "source": "sprites/mn-f001/back-portraits.imagegen-v3.png",
+      "crop": [
+        1429,
+        0,
+        743,
+        724
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        24031,
+        7492,
+        0
+      ],
+      "prompt_file": "sprites/mn-f001/prompt-back-v3.txt"
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "notes": "Root inspected v1 front/back board: lady-slipper hoods and white petal edges retain stepped dark anchors; colored stems and distinct evolution silhouettes remain readable. Close rear portraits preserve open lower crops.",
+    "sheet_sha256": "80921579241ca341be3e56d90dd8a208b3fc840e2d57950fa6994a4f8e56ebe9",
+    "outline_profile": "source-contour-v1"
+  },
+  "pokemon_palettes": {
+    "MN_001": {
+      "species_id": "MN_001",
+      "name": "Pouchid",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          26,
+          12
+        ],
+        [
+          6,
+          16,
+          7
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        13151,
+        7686,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          214,
+          99
+        ],
+        [
+          49,
+          132,
+          57
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FFD663",
+        "#318439",
+        "#000000"
+      ]
+    },
+    "MN_002": {
+      "species_id": "MN_002",
+      "name": "Slipperina",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          24,
+          17,
+          29
+        ],
+        [
+          3,
+          12,
+          12
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        30264,
+        12675,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          198,
+          140,
+          239
+        ],
+        [
+          24,
+          99,
+          99
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#C68CEF",
+        "#186363",
+        "#000000"
+      ]
+    },
+    "MN_003": {
+      "species_id": "MN_003",
+      "name": "Cyprielle",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          14,
+          23
+        ],
+        [
+          4,
+          10,
+          7
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        24031,
+        7492,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          115,
+          189
+        ],
+        [
+          33,
+          82,
+          57
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FF73BD",
+        "#215239",
+        "#000000"
+      ]
+    }
+  },
+  "back_framing": "gen2-close-rear-portrait",
+  "conversion_revision": "Approved original front ink indices mapped to individual normal palettes; newly authored ImageGen close rear portraits use those target palettes directly. Original sheets, crop candidates and all native versions retained.",
+  "original_source_palette": {
+    "gbc_rgb5": [
+      [
+        31,
+        31,
+        31
+      ],
+      [
+        31,
+        18,
+        24
+      ],
+      [
+        5,
+        13,
+        8
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ],
+    "gbc_rgb555_words": [
+      32767,
+      25183,
+      8613,
+      0
+    ],
+    "rgb8": [
+      [
+        255,
+        255,
+        255
+      ],
+      [
+        255,
+        148,
+        198
+      ],
+      [
+        41,
+        107,
+        66
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ],
+    "hex": [
+      "#FFFFFF",
+      "#FF94C6",
+      "#296B42",
+      "#000000"
+    ]
+  },
+  "back_prompt_file": "sprites/mn-f001/prompt-back-v3.txt",
+  "back_reference_mapping": [
+    {
+      "role": "original anatomy",
+      "path": "sprites/mn-f001/mn-001-003.front-back.imagegen-v1.png"
+    },
+    {
+      "role": "target front colors and anatomy; top row authoritative",
+      "path": "sprites/mn-f001/reference-front-colors-before-back-v3.png"
+    },
+    {
+      "role": "authentic Gen2 cluster/framing reference only",
+      "path": "target/minnesota-pokemon/gen2-reference/starters.png"
+    }
+  ]
+}

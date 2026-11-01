@@ -516,7 +516,7 @@ fn time_set_renders_real_boot_window_font_and_arrow_assets() {
     assert_eq!(image.texture_descriptor.size.width, 160);
     assert_eq!(image.texture_descriptor.size.height, 144);
     assert_eq!(
-        &image.data[0..4],
+        &image.data.as_ref().expect("CPU image pixels")[0..4],
         &BOOT_UI_WHITE,
         "time-set field must use canonical boot UI white"
     );
@@ -524,20 +524,20 @@ fn time_set_renders_real_boot_window_font_and_arrow_assets() {
         + 18 * SOURCE_TILE_SIZE)
         * 4;
     assert_eq!(
-        &image.data[textbox_interior..textbox_interior + 4],
+        &image.data.as_ref().expect("CPU image pixels")[textbox_interior..textbox_interior + 4],
         &BOOT_UI_WHITE,
         "time-set field and textbox interior must be the exact same white"
     );
     assert!(
         image
-            .data
+            .data.as_ref().expect("CPU image pixels")
             .chunks_exact(4)
             .any(|pixel| pixel[0] < 16 && pixel[1] < 16 && pixel[2] < 16 && pixel[3] == 255),
         "time-set screen must contain black font/frame pixels from real assets"
     );
     assert!(
         image
-            .data
+            .data.as_ref().expect("CPU image pixels")
             .chunks_exact(4)
             .any(|pixel| pixel[0] == 255 && pixel[1] == 255 && pixel[2] == 255),
         "time-set screen must contain boot window fill from the real textbox layout"
@@ -547,6 +547,7 @@ fn time_set_renders_real_boot_window_font_and_arrow_assets() {
 #[test]
 fn oak_intro_renders_real_oak_wooper_and_player_portraits() {
     let mut runtime_shell = core_modular_title_shell_for_test();
+    runtime_shell.splash_screen = None;
     runtime_shell.intro_screen = None;
     runtime_shell.title_menu = None;
     open_visible_oak_intro_sequence(&mut runtime_shell).expect("open Oak intro");
@@ -640,10 +641,10 @@ fn oak_intro_renders_real_oak_wooper_and_player_portraits() {
         let has_textbox_text = (OAK_INTRO_TEXTBOX_Y * SOURCE_TILE_SIZE..144).any(|y| {
             (0..160).any(|x| {
                 let offset = (y * 160 + x) * 4;
-                image.data[offset] < 24
-                    && image.data[offset + 1] < 24
-                    && image.data[offset + 2] < 24
-                    && image.data[offset + 3] == 255
+                image.data.as_ref().expect("CPU image pixels")[offset] < 24
+                    && image.data.as_ref().expect("CPU image pixels")[offset + 1] < 24
+                    && image.data.as_ref().expect("CPU image pixels")[offset + 2] < 24
+                    && image.data.as_ref().expect("CPU image pixels")[offset + 3] == 255
             })
         });
         assert!(
@@ -886,7 +887,7 @@ fn custom_player_name_returns_through_exact_source_fades_and_bg_wait() {
 }
 
 #[test]
-fn oak_intro_fade_phases_gate_text_and_clear_sprite_on_fade_out() {
+fn oak_intro_fade_phases_gate_text_and_advance_without_an_extra_acknowledgement() {
     let mut runtime_shell = core_modular_title_shell_for_test();
     let oak_text_pages = visible_oak_text_groups(
         runtime_shell.runtime.title_presentation_program(),
@@ -946,10 +947,11 @@ fn oak_intro_fade_phases_gate_text_and_clear_sprite_on_fade_out() {
             .pending_oak_intro
             .as_ref()
             .expect("Oak intro pending after fade-out");
-        assert_eq!(oak_intro.scene_phase, VisibleOakIntroPhase::Complete);
-        assert!(oak_intro.finished);
-        assert_eq!(oak_intro.fade_alpha, 255);
-        assert_eq!(oak_intro.current_sprite, None);
+        assert_eq!(oak_intro.scene_phase, VisibleOakIntroPhase::WipeIn);
+        assert!(!oak_intro.finished);
+        assert_eq!(oak_intro.fade_alpha, 0);
+        assert_eq!(oak_intro.current_sprite.as_deref(), Some("WOOPER"));
+        assert_eq!(oak_intro.scene_index, 1);
     }
 }
 
@@ -1321,10 +1323,11 @@ fn player_name_entry_moves_to_end_at_max_length_like_typescript() {
 #[test]
 fn player_name_entry_renders_real_naming_screen_assets() {
     let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../..")
+        .join("../..")
         .canonicalize()
         .expect("repository root");
-    let asset_root = AssetRoot::new(repo_root);
+    let runtime = workspace_desktop_runtime(&AssetRoot::new(repo_root));
+    let asset_root = runtime.materialize_runtime_files().expect("materialize supplied naming assets");
     let input = PendingNameInput {
         label: "YOUR NAME?".to_string(),
         value: "KRIS".to_string(),
@@ -1343,18 +1346,18 @@ fn player_name_entry_renders_real_naming_screen_assets() {
     assert_eq!(image.texture_descriptor.size.height, 144);
     assert_eq!(frame.size, Vec2::new(160.0, 144.0));
     assert_eq!(name_entry_screen_center(), Vec3::ZERO);
-    assert_eq!(&image.data[0..4], &[255, 255, 255, 255]);
-    assert_eq!(&image.data[(161 * 4)..(162 * 4)], &[132, 115, 156, 255]);
-    assert_opaque_nonblack_lcd_pixels(&image.data, "name entry");
+    assert_eq!(&image.data.as_ref().expect("CPU image pixels")[0..4], &[255, 255, 255, 255]);
+    assert_eq!(&image.data.as_ref().expect("CPU image pixels")[(161 * 4)..(162 * 4)], &[132, 115, 156, 255]);
+    assert_opaque_nonblack_lcd_pixels(&image.data.as_ref().expect("CPU image pixels"), "name entry");
     assert!(
         image
-            .data
+            .data.as_ref().expect("CPU image pixels")
             .chunks_exact(4)
             .any(|pixel| pixel[0] < 248 || pixel[1] < 248 || pixel[2] < 248),
         "naming screen should contain real font, border, underline, and cursor pixels"
     );
     assert!(
-        image.data.chunks_exact(4).all(|pixel| pixel[3] == 255),
+        image.data.as_ref().expect("CPU image pixels").chunks_exact(4).all(|pixel| pixel[3] == 255),
         "naming screen must be fully opaque so the overworld cannot bleed through UI"
     );
 }
@@ -1390,7 +1393,7 @@ fn pokemon_name_entry_uses_the_two_line_asm_heading_without_clipping() {
 #[test]
 fn name_entry_replaces_the_visible_overworld_with_one_complete_lcd() {
     let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../..")
+        .join("../..")
         .canonicalize()
         .expect("repository root");
     let asset_root = AssetRoot::new(repo_root);
@@ -1479,7 +1482,7 @@ fn name_entry_replaces_the_visible_overworld_with_one_complete_lcd() {
         mark_runtime_snapshot_dirty(&mut shell);
     }
     app.update();
-    assert!(app.world().get_entity(presenter.entity).is_none(),
+    assert!(app.world().get_entity(presenter.entity).is_err(),
         "finished naming must release its retained keyboard when field dialogue resumes");
 
 }
@@ -1836,9 +1839,9 @@ fn gender_selection_renders_real_boot_window_palette_and_options() {
     let image = images.get(&frame.handle).expect("gender image");
     assert_eq!(image.texture_descriptor.size.width, 160);
     assert_eq!(image.texture_descriptor.size.height, 144);
-    assert_opaque_nonblack_lcd_pixels(&image.data, "gender selection");
+    assert_opaque_nonblack_lcd_pixels(&image.data.as_ref().expect("CPU image pixels"), "gender selection");
     assert_eq!(
-        &image.data[0..4],
+        &image.data.as_ref().expect("CPU image pixels")[0..4],
         &BOOT_UI_WHITE,
         "gender screen field must use the same white as its menu and textbox interiors"
     );
@@ -1848,14 +1851,14 @@ fn gender_selection_renders_real_boot_window_palette_and_options() {
     let textbox_interior = ((TIME_SET_TEXTBOX_Y + 1) * SOURCE_TILE_SIZE * 160
         + 2 * SOURCE_TILE_SIZE)
         * 4;
-    assert_eq!(&image.data[menu_interior..menu_interior + 4], &BOOT_UI_WHITE);
+    assert_eq!(&image.data.as_ref().expect("CPU image pixels")[menu_interior..menu_interior + 4], &BOOT_UI_WHITE);
     assert_eq!(
-        &image.data[textbox_interior..textbox_interior + 4],
+        &image.data.as_ref().expect("CPU image pixels")[textbox_interior..textbox_interior + 4],
         &BOOT_UI_WHITE
     );
     assert!(
         image
-            .data
+            .data.as_ref().expect("CPU image pixels")
             .chunks_exact(4)
             .any(|pixel| pixel[0] < 16 && pixel[1] < 16 && pixel[2] < 16 && pixel[3] == 255),
         "gender screen must contain black font/frame pixels from real assets"

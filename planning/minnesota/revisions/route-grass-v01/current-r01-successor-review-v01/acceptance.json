@@ -1,0 +1,37 @@
+{
+  "status": "PASS_CURRENT_ROUTE_AND_GUIDANCE",
+  "selected_revision": "route_grass_r01_stair_guidance_revision",
+  "publication": {
+    "kind": "native_local_stair_guidance_and_current_route_source_binding",
+    "parent_revision": "route_grass_brainerd_mart_roof_revision",
+    "parent_pack": "content-packs/minnesota-current-brainerd-mart-roof-v01.crystalpack",
+    "parent_pack_sha256": "e343cd9c65f7c876946be4b59878eabc564c9c7f42a7f29f54cb1a2fac89396d",
+    "pack": "content-packs/minnesota-current-r01-stair-guidance-v01.crystalpack",
+    "pack_sha256": "e6af050b697b6a9d52735713d5eabe0c069110f69ecdc5b81707e181b7ee30b2",
+    "content_identity": "f5bf4ff4560a959fb639b183b896055359cf08ae6bc219de0b86de6a2be38dd5",
+    "maps_with_text_changes": [
+      "MnR01C00R00",
+      "MnR01Farmhouse"
+    ],
+    "changed_local_text_programs": 5,
+    "all732_map_geometry_actors_events_teams_encounters_preserved_exact": true,
+    "all_art_audio_runtime_files_preserved_exact": true,
+    "grass_quadrants": 136,
+    "main_crossing_minimum_grass_steps_both_directions": 4,
+    "current_hop_quadrants": 0,
+    "current_ordinary_cave12_stairs": 1,
+    "native_child_opening_cases_passed": 1,
+    "production_route_stdio_calls_on_exact_terrain_parent": 1651,
+    "actual_route_wild_battles": 10,
+    "production_child_dialogue_stdio_calls": 251,
+    "actual_native_images_inspected_on_exact_terrain_parent": 3,
+    "source_native_pixel_mismatches": 0,
+    "authoring_source_index": "planning/minnesota/revisions/route-grass-v01/current-r01-successor-review-v01/sources.json",
+    "authoring_source_index_sha256": "86304a07076c41c4dc5d3335be7000eaf6f040717646710ccb852c20d963ff5c",
+    "runbook": "planning/minnesota/revisions/route-grass-v01/current-r01-successor-review-v01/README.md",
+    "code_lint_status": "PASS",
+    "status": "Current Route1 reviewed: required grass, ordinary bluff stairs, closed high cliff, wild RUN and Continue. Five local texts now direct players to the installed stairs. All geometry, progression and audio preserved; historical high-cliff jump contracts retired in current source."
+  },
+  "scope": "Current Route1 exterior and five local guidance texts; broader grass objective remains active. No campaign or original high-cliff hop claim.",
+  "goal_complete": false
+}

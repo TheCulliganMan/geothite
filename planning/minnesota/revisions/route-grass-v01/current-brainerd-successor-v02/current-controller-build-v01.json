@@ -1,0 +1,21 @@
+{
+  "status": "PASS",
+  "command": [
+    "cargo",
+    "test",
+    "--locked",
+    "--profile",
+    "wasm-dev",
+    "--config",
+    "profile.wasm-dev.package.crystal-bevy.opt-level=0",
+    "-p",
+    "crystal-bevy",
+    "--lib",
+    "--no-run",
+    "--message-format=json"
+  ],
+  "source": "crates/crystal-bevy/src/bevy_shell/tests/brainerd_city.rs",
+  "source_sha256": "0a0141ab57a49e1029aa71d692ad55c61257cd4e050421c775327588488bcd69",
+  "binary": ".local/route-grass-review/brainerd-current-controller-v01",
+  "binary_sha256": "c641c6952924b0d57d6203d9d2d5dc94d354c4cd096f7fe390cf4e52e9f66c6b"
+}

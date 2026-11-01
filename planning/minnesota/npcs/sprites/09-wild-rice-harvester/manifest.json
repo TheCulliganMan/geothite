@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "id": "MN_RICE_HARVESTER",
+  "name": "RICE HARVESTER SEDGE",
+  "status": "accepted-native-playable",
+  "overworld_frames": 6,
+  "overworld_size": [
+    16,
+    16
+  ],
+  "battle_size": [
+    56,
+    56
+  ],
+  "palette_rgb555": [
+    32767,
+    18239,
+    11749,
+    0
+  ],
+  "source": "native-pixels-v3.json",
+  "placement": "placement-v1.json",
+  "pack": "content-packs/minnesota-npcs-ref-09-v01.crystalpack",
+  "parent": "content-packs/minnesota-npcs-ref-08-v01.crystalpack",
+  "runtime_checks": {
+    "one_controller_test_passed": true,
+    "talk_and_input_ownership": true,
+    "battle_turn_and_pp": true,
+    "battle_save_load": true,
+    "actual_victory_and_defeat_flag_before_render_capture": true,
+    "post_battle_talk": true,
+    "existing_trainers_and_assets_preserved": true
+  },
+  "manual_visual_review": "Direct actual Crystal Pokefan F/Teacher/Chris six-pose comparison at equal palette/scale, own-palette 1x/8x and actual Leech Lake capture reviewed. Plain teal headband, dark swept hair and single connected same-shoulder braid in all views, rolled sleeves, teal vest/trousers, pale boots and same-side field bag/diagonal strap. Shifted rear bag one pixel to separate it from boot. Two short rice knockers remain in unchanged battle art only to avoid crowded tiny hand/tool clusters. Distinct profile/rear and true lifted-foot stride. Full encounter passed in 8.31s; battle/palette/gameplay/unrelated assets preserved.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/sprites/09-wild-rice-harvester/native-pixels-v3.json": "0a2027d4718f64e46752fcab8609e2d56f9e027c634ff0088129771e30c762cd",
+    "planning/minnesota/npcs/sprites/09-wild-rice-harvester/placement-v1.json": "573e8d2a83bd96daf25e2d1c722e16204a99ea5e9f9476031b5045c9c15e3ab2",
+    "content-packs/minnesota-npcs-ref-09-v01.crystalpack": "5030d7b5b0a5fd27ad20f89bc832964490eb3b637955b495e984e4f64a9f82ea",
+    "target/npc-sprites/rice/controller-reference-v01.log": "604dc084930cffc636abd56d80b79df3928c8b82680890a6241ed28c3ad3a0c9",
+    "target/npc-sprites/rice/gameplay-reference-v01/original-npc-trainer-intro.png": "462388adc3c073e7ceb8756c9f22c82e81219ab628a774612ad0d1446bbabc88",
+    "target/npc-sprites/rice/gameplay-reference-v01/original-npc-first-turn.png": "378c812dafb676510d747405c6e56eb404a9264cedb6147de99e33b8fdd1264e",
+    "target/npc-sprites/rice/gameplay-reference-v01/original-npc-overworld-state.png": "fc691b37e5b709d297722eaaa6c8fc33430f2ea27d8910c4fcdfd2d619e62113",
+    "target/npc-sprites/hand-review/rice-real-comparison-v2.png": "664520d92531b5c39c0539f997b527f687ea6c81b3329704322549b2e7dffd78",
+    "target/npc-sprites/rice/reference-v2/comparison.png": "45bd6595735c0fae70730e65b59b3aa06d06799b89e3110924507e8528120295",
+    "target/npc-sprites/rice/reference-v2/verification.json": "c3cc69104b9d90fa9ef165efe549a2ae30f070e0a47ab28509ae418682e71bdd",
+    "target/npc-sprites/rice/reference-v2/overworld-review.png": "d19b75231c54f92f1f90be23ce8c1c1b9314745f66b025182993099c20950870",
+    "target/npc-sprites/rice/reference-v2/overworld-review-8x.png": "86940e92ce0c1201c96be2d0631e4bf8bca4be42ba5768170eb503456e375b03"
+  },
+  "overworld_revision": "real-reference-hand-edited-v3",
+  "reference_review": "actual-crystal-sprites-common-palette-and-scale"
+}

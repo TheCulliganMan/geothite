@@ -1,0 +1,8 @@
+{
+  "tool": "built-in image_gen",
+  "default_path": "/Users/ryanculligan/.codex/generated_images/01a178da-4cf1-7e01-8516-667a332dc790/exec-2a001b0e-0b66-4976-a208-b398a6ebb9ad.png",
+  "retained_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f116/flarkindle.overworld.imagegen-v3-broad-face.png",
+  "sha256": "d44bfcc02b7bcad37016e336f68b65a3aaec9eac5105fd7ffa0ae85c26e3bf57",
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f116/prompt-flarkindle-broad-face-v3.txt",
+  "accepted": false
+}

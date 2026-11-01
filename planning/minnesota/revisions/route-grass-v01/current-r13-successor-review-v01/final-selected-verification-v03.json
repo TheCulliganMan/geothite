@@ -1,0 +1,35 @@
+{
+  "status": "PASS",
+  "selected_revision": "route_grass_r13_boundary_apron_revision",
+  "pack_sha256": "7d3987bfbf0378aed960495cc20981c0d258eb391f33630b8e3de6c2686e2e7d",
+  "source_index_and_native_contract_hashes_exact": true,
+  "only_changed_complete_map": [
+    "MnR13C00R00"
+  ],
+  "bemidji_stairs_and_iron_ventilation_preserved": true,
+  "coastal_zero_ice_maps": [
+    "MnDuluth",
+    "MnGrandMarais",
+    "MnR11C00R00",
+    "MnR11C00R01",
+    "MnR11C00R02",
+    "MnR11C00R03",
+    "MnR11C01R00",
+    "MnR11C01R01",
+    "MnR11C01R02",
+    "MnR11C01R03"
+  ],
+  "publisher_negative_cases": [
+    {
+      "case": "wrong-sha",
+      "exit_code": 1,
+      "stderr": "Error: parent SHA drift"
+    },
+    {
+      "case": "already-restored",
+      "exit_code": 1,
+      "stderr": "Error: exact reviewed League seam parent required"
+    }
+  ],
+  "goal_complete": false
+}

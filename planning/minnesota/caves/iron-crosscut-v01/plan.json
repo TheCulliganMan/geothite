@@ -1,0 +1,216 @@
+{
+  "schema_version": 1,
+  "id": "iron-crosscut-bends-v1",
+  "map": "MnIronDrillApproach",
+  "status": "Verified native fitted crosscut; selection follows world.json. Broader regional map review remains active.",
+  "parent_revision": "gunflint_spring_grotto_revision",
+  "parent_pack": "content-packs/minnesota-gunflint-grotto-v02.crystalpack",
+  "parent_pack_sha256": "45fa571daa78535af329f6c8f26a8770d24c56cbb1a5223942d5fbb1fc0979ca",
+  "source": "after.json",
+  "source_sha256": "8416ec3715365d2719408b35bcea723db684ccc7943d1ebdbabd5fb5ffe92ea9",
+  "dimensions_metatiles": [
+    16,
+    13
+  ],
+  "palette": "nite",
+  "purpose": "A fitted mining crosscut with a western Ether bench, a narrow northern rock-top traverse, a descending eastern ore seam and the two original faction encounters. A short standalone westward gravel lip returns to the entry across a solid rib; ordinary north traversal remains the uphill return. Original night palette, wild floor, cache, actors, programs and both ladder pairs are retained.",
+  "connections": [
+    {
+      "active": [
+        7,
+        21
+      ],
+      "passive": [
+        6,
+        21
+      ],
+      "destination": "MnR09Cave1F",
+      "destination_passive": [
+        19,
+        9
+      ],
+      "return_active": [
+        19,
+        11
+      ],
+      "prior_story_gate": "EVENT_MN_DEPOT_FOREMAN_DEFEATED opens the original public mine shaft; unchanged."
+    },
+    {
+      "active": [
+        25,
+        5
+      ],
+      "passive": [
+        24,
+        5
+      ],
+      "destination": "MnIronHaulage",
+      "destination_passive": [
+        4,
+        23
+      ],
+      "return_active": [
+        5,
+        22
+      ],
+      "return_approach": [
+        5,
+        23
+      ]
+    }
+  ],
+  "actors": [
+    {
+      "id": "MN_LODE_ARC_ACCESS",
+      "tile": [
+        10,
+        12
+      ],
+      "facing": "left",
+      "sight": 3,
+      "flag": "EVENT_MN_LODE_ARC_ACCESS_DEFEATED",
+      "unchanged": true
+    },
+    {
+      "id": "MN_LODE_ARC_SPOIL",
+      "tile": [
+        26,
+        18
+      ],
+      "facing": "up",
+      "sight": 3,
+      "flag": "EVENT_MN_LODE_ARC_SPOIL_DEFEATED",
+      "unchanged": true
+    }
+  ],
+  "cache": {
+    "id": "MN_IRON_APPROACH_ETHER",
+    "tile": [
+      5,
+      5
+    ],
+    "approach": [
+      4,
+      5
+    ],
+    "item": "ETHER",
+    "quantity": 1,
+    "flag": "EVENT_MN_IRON_APPROACH_ETHER",
+    "unchanged": true
+  },
+  "stair": {
+    "native_block": "30",
+    "metatile": [
+      3,
+      4
+    ],
+    "walking_column": 6,
+    "course": [
+      [
+        6,
+        10
+      ],
+      [
+        6,
+        9
+      ],
+      [
+        6,
+        8
+      ],
+      [
+        6,
+        7
+      ]
+    ]
+  },
+  "ledge": {
+    "native_block": "3b",
+    "metatile": [
+      6,
+      9
+    ],
+    "lanes": [
+      {
+        "source": [
+          13,
+          18
+        ],
+        "landing": [
+          11,
+          18
+        ]
+      },
+      {
+        "source": [
+          13,
+          19
+        ],
+        "landing": [
+          11,
+          19
+        ]
+      }
+    ],
+    "direction": "left",
+    "no_orthogonal_cliff_or_stair_neighbors": true
+  },
+  "walking_contract": {
+    "entry_to_upper_passive_steps": 34,
+    "entry_to_cache_steps": 24,
+    "return_walkaround_steps": [
+      27,
+      29
+    ],
+    "jump_steps": 2,
+    "lip_requires_native_left_jump": true,
+    "reverse_and_side_bypasses_blocked": true,
+    "spoil_to_entry_ordinary_steps": 38,
+    "spoil_to_entry_with_lip_movement_commands": 21
+  },
+  "wildlife": "Original rate-10 all-day cave walking tables remain exact; original active Minnesota species and all trainers are retained.",
+  "source_review": {
+    "first_rejected": "../../renders/iron-crosscut-v932/source-v01/103a6a68c42b-1793459490829268000/whole-original.png",
+    "final_terrain": "../../renders/iron-crosscut-v932/source-v03/787786f71f27-1793459929827954000/whole-original.png",
+    "defects_fixed": [
+      "Repeated perimeter boulder boxes replaced by fitted continuous rock.",
+      "The initial repeated upper alcove was rejected; the haulage side is now a bending ore seam.",
+      "The broad northeast floor was narrowed before native publication.",
+      "The standalone lip has no orthogonal cliff or stair neighbor."
+    ],
+    "measured_warm_seconds": 0.066,
+    "personally_inspected": true
+  },
+  "verification_required": [
+    "Exact full-parent preservation and strict Rust readback.",
+    "Both lip lanes: actual native jump, reverse/side denial, ordinary walkaround and Continue.",
+    "Straight stair up/down; both real paired ladder returns and reentry.",
+    "Both original trainer battles: native victory, PP/prize changes and persistent flags.",
+    "Original Ether quantity/flag/visibility, native PP use, capacity denial/TOSS/retry and Continue.",
+    "Whole room plus headless native camera review with forced night palette.",
+    "Regional roster policy, all377audio hashes/frame counts/loop ranges, scoped Clippy and formatting."
+  ],
+  "limits": [
+    "Declared local setup does not prove earned mine access or statewide progression.",
+    "Previously saved terrain overrides are not migrated.",
+    "Broader Minnesota map and cave review remains active."
+  ],
+  "implementation": {
+    "builder": "crystal_assets::rebuild_iron_crosscut",
+    "cli": "rebuild_iron_crosscut",
+    "installed_contract": "current.contract.json",
+    "new_rooms": 0,
+    "new_flags": 0,
+    "new_actors": 0
+  },
+  "review": {
+    "whole": "../../renders/iron-crosscut-v932/final-source-v947/8416ec371536-1793461255674286000/whole-original.png",
+    "native": "../../renders/iron-crosscut-v932/native-v936/MnIronDrillApproach-production-cameras.png",
+    "actual_reached": "../../renders/iron-crosscut-v932/acted-v946",
+    "gameplay": "../../renders/iron-crosscut-v932/gameplay-v943/controller.log",
+    "production": "../../renders/iron-crosscut-v932/mcp-v941/receipt.json",
+    "preservation": "../../renders/iron-crosscut-v932/preservation-v947.json",
+    "warm_source_seconds": 0.067,
+    "personally_inspected": true
+  }
+}

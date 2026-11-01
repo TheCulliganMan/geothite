@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "id": "MN_IRON_RANGE_MINER",
+  "name": "MINER MARA",
+  "status": "accepted-native-playable",
+  "overworld_frames": 6,
+  "overworld_size": [
+    16,
+    16
+  ],
+  "battle_size": [
+    56,
+    56
+  ],
+  "palette_rgb555": [
+    32767,
+    21343,
+    6450,
+    0
+  ],
+  "source": "native-pixels-v3.json",
+  "placement": "placement-v1.json",
+  "pack": "content-packs/minnesota-npcs-ref-03-v01.crystalpack",
+  "parent": "content-packs/minnesota-npcs-ref-02-v01.crystalpack",
+  "runtime_checks": {
+    "one_controller_test_passed": true,
+    "talk_and_input_ownership": true,
+    "battle_turn_and_pp": true,
+    "battle_save_load": true,
+    "actual_victory_and_defeat_flag_before_render_capture": true,
+    "post_battle_talk": true,
+    "existing_trainers_and_assets_preserved": true
+  },
+  "manual_visual_review": "Compared directly with actual Crystal Fisher/Pokefan F/Chris at equal palette/scale; inspected own palette at 1x/8x and actual Grand Rapids capture. Wider work-clothes silhouette, bobbed hair, separate headlamp and eyes, sleeves, overalls/bib/buckle, heavy boots and purposeful stride/arm movement. Tiny hammer/rock removed from overworld to avoid crowding, retained unchanged in battle art. Full encounter passed in 8.70s; battle/palette/gameplay/unrelated assets preserved.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/sprites/03-iron-range-miner/native-pixels-v3.json": "7aa0014de94885b536250b0517e12556ec8cbbe8a4bf2489069aede299ff44c0",
+    "planning/minnesota/npcs/sprites/03-iron-range-miner/placement-v1.json": "156befb6288dd82287ae73d6185d7b5feebd0775305489bbe85be304a396c031",
+    "content-packs/minnesota-npcs-ref-03-v01.crystalpack": "958537e7cf202f6e64771f5d00b932dc7978ad2323807d6933488ee6cca18458",
+    "target/npc-sprites/miner/controller-reference-v01.log": "7aad1c0ba6cd0dbc3ff526d3c97c23c684d85f0780268306656f844022654525",
+    "target/npc-sprites/miner/gameplay-reference-v01/original-npc-trainer-intro.png": "e624b0726c06082d68aab48b92af64df86eb183a597ab6325c674514467d7fce",
+    "target/npc-sprites/miner/gameplay-reference-v01/original-npc-first-turn.png": "8eb29c5adb20bff2407689761b552b96f2122366e28da642a19e1c9d63f1c606",
+    "target/npc-sprites/miner/gameplay-reference-v01/original-npc-overworld-state.png": "5b642faf8dc65f90e93ef9e19f6d335cfd362cdd3244b868e0e658ae9dc9996c",
+    "target/npc-sprites/hand-review/miner-real-comparison-v1.png": "0105fcc897fc8f990c1c8c348c65a15b41bfd677dbddf2cd42c184088cf76c02",
+    "target/npc-sprites/miner/reference-v1/comparison.png": "841a0be7695c3f8bb5ec4b8e0b8a8e3092788b54d72589b1831266e10f144d7b",
+    "target/npc-sprites/miner/reference-v1/verification.json": "e1e861128132ca098f0e8c5d82f313f3d58b2f73349e6193ff14700c3545d14d",
+    "target/npc-sprites/miner/reference-v1/overworld-review.png": "9945353e0480990dd13f03f5550e1c5cf46157a8cc432f6412265e5a41c815c9",
+    "target/npc-sprites/miner/reference-v1/overworld-review-8x.png": "11b3ccafb6404d965bed244a69f0a88fc2687d3690838981e6727db4f3f005ed"
+  },
+  "overworld_revision": "real-reference-hand-edited-v3",
+  "reference_review": "actual-crystal-sprites-common-palette-and-scale"
+}

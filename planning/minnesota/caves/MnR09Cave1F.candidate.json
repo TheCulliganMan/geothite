@@ -1,0 +1,278 @@
+{
+  "id": "MnR09Cave1F",
+  "template": "UnionCave1F",
+  "dimensions_metatiles": [
+    12,
+    11
+  ],
+  "width_metatiles": 12,
+  "height_metatiles": 11,
+  "tileset": "cave",
+  "border_block": 1,
+  "rows": [
+    "01 01 01 01 01 01 01 01 01 01 01 01",
+    "01 01 04 05 05 05 06 01 01 01 01 01",
+    "01 01 08 02 02 02 0a 01 04 05 06 01",
+    "01 01 20 21 30 02 0a 01 08 02 0a 01",
+    "01 01 01 04 0a 39 2f 2d 08 02 0a 01",
+    "01 01 08 02 02 02 0a 2e 30 02 0a 01",
+    "01 01 20 21 20 02 2b 21 21 22 01 01",
+    "01 01 01 01 04 30 2f 01 01 01 01 01",
+    "01 01 01 01 08 02 0a 01 01 01 01 01",
+    "01 01 01 01 20 21 07 22 01 01 01 01",
+    "01 01 01 01 01 01 01 01 01 01 01 01"
+  ],
+  "exits": [
+    [
+      13,
+      19
+    ]
+  ],
+  "clear_arrival": [
+    13,
+    18
+  ],
+  "exit_collision": "LADDER",
+  "exit_doors": [
+    [
+      40,
+      41
+    ]
+  ],
+  "residents": [
+    {
+      "id": "MN_R09_MINE_SCOUT",
+      "sprite": "SPRITE_SCIENTIST",
+      "tile": [
+        19,
+        7
+      ],
+      "facing": "south",
+      "lines": [
+        "The foreman took",
+        "the instrument.",
+        "The upper passage",
+        "reaches his cache."
+      ]
+    }
+  ],
+  "items": [],
+  "signs": [],
+  "mandatory": true,
+  "purpose": "Q06 mine confrontation and separate instrument recovery; Grand Rapids depot handover remains separate.",
+  "story_trainers": [
+    {
+      "id": "MN_R09_DEPOT_FOREMAN",
+      "tile": [
+        9,
+        5
+      ],
+      "approach": [
+        9,
+        6
+      ],
+      "sprite": "SPRITE_ROCKET",
+      "trainer_class": "GRUNTM",
+      "facing": "south",
+      "sight_range": 0,
+      "party": [
+        {
+          "species": "GRAVELER",
+          "level": 35
+        },
+        {
+          "species": "MACHOKE",
+          "level": 35
+        },
+        {
+          "species": "MAGNETON",
+          "level": 36
+        }
+      ],
+      "defeated_flag": "EVENT_MN_DEPOT_FOREMAN_DEFEATED",
+      "before_lines": [
+        "I read the report.",
+        "We run the test.",
+        "Copper and nickel",
+        "come first.",
+        "That meter stays.",
+        "Move aside."
+      ],
+      "after_lines": [
+        "The meter is in",
+        "the crate.",
+        "The receiver went",
+        "farther north."
+      ],
+      "loss_lines": [
+        "We are still on",
+        "schedule."
+      ],
+      "native_status": "Native prerequisite-checked talk battle in iron_range_story.rs; actual selected PP, victory/loss, repeat and Continue verified. The main story roster is authoritative.",
+      "battle": "MN_LODE_FOREMAN",
+      "interaction": "talk"
+    }
+  ],
+  "story_objects": [
+    {
+      "id": "MN_R09_SURVEY_CACHE",
+      "tile": [
+        7,
+        5
+      ],
+      "approach": [
+        7,
+        4
+      ],
+      "sprite": "SPRITE_POKE_BALL",
+      "kind": "quest instrument cache",
+      "requires": [
+        "EVENT_MN_DEPOT_FOREMAN_DEFEATED"
+      ],
+      "payload": "survey meter and original test log",
+      "denied_lines": [
+        "The foreman guards",
+        "this meter."
+      ],
+      "success_lines": [
+        "You take the meter",
+        "and its test log.",
+        "GRAND RAPIDS can",
+        "read the log."
+      ],
+      "native_status": "Native separate yes/no recovery using EVENT_MN_MINE_INSTRUMENT_RECOVERED; decline, acknowledgment, repeat, Continue and mine return verified. Grand Rapids handover remains separate.",
+      "facing": "south",
+      "recovered_flag": "EVENT_MN_MINE_INSTRUMENT_RECOVERED",
+      "payload_storage": "saved_event"
+    }
+  ],
+  "review_contract": {
+    "status": "SOURCE ONLY; Q06 native scripts and story guard are unchanged, not republished",
+    "palette_group": "nite",
+    "native_stair_blocks": [
+      [
+        4,
+        3
+      ],
+      [
+        8,
+        5
+      ],
+      [
+        5,
+        7
+      ]
+    ],
+    "loop_waypoints_core": [
+      [
+        13,
+        18
+      ],
+      [
+        7,
+        4
+      ],
+      [
+        9,
+        6
+      ],
+      [
+        19,
+        8
+      ],
+      [
+        10,
+        16
+      ]
+    ],
+    "one_way_ledges": [
+      {
+        "id": "FOREMAN_BENCH_DROP",
+        "source_block": "39",
+        "bounds_core": [
+          10,
+          8,
+          12,
+          10
+        ],
+        "direction": "south",
+        "upper_approach": [
+          10,
+          7
+        ],
+        "hop_from": [
+          10,
+          8
+        ],
+        "landing": [
+          10,
+          10
+        ],
+        "reverse_blocked": [
+          10,
+          9
+        ],
+        "side_barriers": [
+          [
+            9,
+            9
+          ],
+          [
+            12,
+            9
+          ]
+        ],
+        "ordinary_return_to_upper": [
+          10,
+          7
+        ],
+        "minimum_return_steps": 7
+      }
+    ],
+    "decision_views": [
+      {
+        "id": "MOUTH_OFFSET_STAIR",
+        "tile": [
+          13,
+          18
+        ]
+      },
+      {
+        "id": "FOREMAN_APPROACH",
+        "tile": [
+          9,
+          6
+        ]
+      },
+      {
+        "id": "METER_CACHE",
+        "tile": [
+          7,
+          4
+        ]
+      },
+      {
+        "id": "SCOUT_BAY",
+        "tile": [
+          19,
+          8
+        ]
+      },
+      {
+        "id": "BENCH_DROP",
+        "tile": [
+          10,
+          7
+        ]
+      },
+      {
+        "id": "WORKING_DRIFT",
+        "tile": [
+          12,
+          12
+        ]
+      }
+    ],
+    "quality_pass": "Fitted entrance rock face and lower corner narrow the working drift; all story anchors retained"
+  }
+}

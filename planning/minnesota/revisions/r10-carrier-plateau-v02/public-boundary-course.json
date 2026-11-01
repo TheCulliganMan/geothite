@@ -1,0 +1,106 @@
+[
+  {
+    "id": "southern-public-boundary",
+    "map": "MnR10C00R00",
+    "kind": "walk-course",
+    "upper": [
+      30,
+      23
+    ],
+    "commands": [
+      {
+        "action": "walk",
+        "direction": "down",
+        "steps": 2,
+        "to": [
+          30,
+          25
+        ]
+      },
+      {
+        "action": "deny",
+        "direction": "left"
+      },
+      {
+        "action": "deny",
+        "direction": "down"
+      },
+      {
+        "action": "walk",
+        "direction": "up",
+        "steps": 2,
+        "to": [
+          30,
+          23
+        ]
+      },
+      {
+        "action": "walk",
+        "direction": "left",
+        "steps": 2,
+        "to": [
+          28,
+          23
+        ]
+      },
+      {
+        "action": "deny",
+        "direction": "down"
+      },
+      {
+        "action": "walk",
+        "direction": "left",
+        "steps": 2,
+        "to": [
+          26,
+          23
+        ]
+      },
+      {
+        "action": "deny",
+        "direction": "down"
+      },
+      {
+        "action": "walk",
+        "direction": "right",
+        "steps": 6,
+        "to": [
+          32,
+          23
+        ]
+      },
+      {
+        "action": "walk",
+        "direction": "down",
+        "steps": 2,
+        "to": [
+          32,
+          25
+        ]
+      },
+      {
+        "action": "deny",
+        "direction": "down"
+      },
+      {
+        "action": "walk",
+        "direction": "up",
+        "steps": 2,
+        "to": [
+          32,
+          23
+        ]
+      },
+      {
+        "action": "walk",
+        "direction": "left",
+        "steps": 2,
+        "to": [
+          30,
+          23
+        ]
+      }
+    ],
+    "verify_continue": true
+  }
+]

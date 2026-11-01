@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "trainer_class": "MN_WINTER_COURIER",
+  "class_name": "COURIER",
+  "trainer_ids": [
+    "MN_DULUTH_X_T05"
+  ],
+  "actors": [
+    {
+      "map": "MnDuluthMaritimeCoop3F",
+      "script": "MN_DULUTH_X_T05",
+      "tile": [
+        10,
+        7
+      ],
+      "previous_sprite": "SPRITE_COOLTRAINER_M"
+    }
+  ]
+}

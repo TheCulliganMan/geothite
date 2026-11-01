@@ -1,0 +1,241 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F118",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_253": {
+      "species_id": "MN_253",
+      "name": "Murkib",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          27,
+          23,
+          12
+        ],
+        [
+          10,
+          7,
+          14
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        13051,
+        14570,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          222,
+          189,
+          99
+        ],
+        [
+          82,
+          57,
+          115
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#DEBD63",
+        "#523973",
+        "#000000"
+      ]
+    },
+    "MN_254": {
+      "species_id": "MN_254",
+      "name": "Barbastion",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          24,
+          22,
+          11
+        ],
+        [
+          8,
+          5,
+          13
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        11992,
+        13480,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          198,
+          181,
+          90
+        ],
+        [
+          66,
+          41,
+          107
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#C6B55A",
+        "#42296B",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f118/prompt-v1.txt",
+  "reference_mapping": "sprites/mn-f118/reference-mapping-v1.json",
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-253-murkib-v1",
+      "species_id": "MN_253",
+      "view": "front",
+      "source": "sprites/mn-f118/mn-253-254.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        575,
+        580
+      ],
+      "fit": [
+        40,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13051,
+        14570,
+        0
+      ],
+      "white_detail_min_samples": 32,
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-253-murkib-v1",
+      "species_id": "MN_253",
+      "view": "back",
+      "source": "sprites/mn-f118/mn-253-254.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        580,
+        575,
+        619
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13051,
+        14570,
+        0
+      ],
+      "white_detail_min_samples": 8
+    },
+    {
+      "id": "mn-254-barbastion-v1",
+      "species_id": "MN_254",
+      "view": "front",
+      "source": "sprites/mn-f118/mn-253-254.front-back.imagegen-v1.png",
+      "crop": [
+        575,
+        0,
+        737,
+        580
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        11992,
+        13480,
+        0
+      ],
+      "white_detail_min_samples": 32,
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-254-barbastion-v1",
+      "species_id": "MN_254",
+      "view": "back",
+      "source": "sprites/mn-f118/mn-253-254.front-back.imagegen-v1.png",
+      "crop": [
+        575,
+        580,
+        737,
+        619
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        11992,
+        13480,
+        0
+      ],
+      "white_detail_min_samples": 8
+    }
+  ],
+  "source_sha256": "5e2f9a005032790e650d4b64ca247a59afbd245d91a15a54dfe328c17760ea78",
+  "candidate_review": {
+    "status": "native-review-pending",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "bf08bdbef22b7b275b990ad5685a475969ccb23ed147b970404061e6fde1ab52",
+    "notes": "Actual native inspected: compact broad-headed Murkib40 grows a much wider/deeper Barbastion54 with three large fleshy defensive spine bases, heavy soft barbels and rounded unforked tail. Strong full swimming fish silhouette contrasts with long fork-tailed walleye line, no limbs/machinery. White eye windows and dark pupils survive; closed mouth and stout barbels remain readable. Source side-spine reservoirs rise above the shoulder rather than extending fully laterally; root should judge their anatomical read. Close rear napes and reservoir roots enlarge and crop lower fish body. Per-species ochre/violet palettes match front/back. Pending root final review."
+  },
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "notes": "Root inspected all four native views: rounded-tail bullhead fish preserve broad heads and expressive barbels. Adult thickens its body, lengthens barbels and develops three distinct reservoir spines rising around its shoulders. Side spines rise upward rather than full lateral spread, but three enlarged reservoirs and continuous fish anatomy remain readable. Exact ochre/purple individual palettes and close rear head/spines read clearly.",
+    "sheet_sha256": "bf08bdbef22b7b275b990ad5685a475969ccb23ed147b970404061e6fde1ab52",
+    "outline_profile": "source-contour-v1"
+  }
+}

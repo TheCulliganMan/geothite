@@ -1,0 +1,115 @@
+{
+  "schema_version": 1,
+  "map": "MnIronSump",
+  "native_module_sha256": "7caf4cf66cb03acd54c39c6cba17cd3777563878c862e18d7479de6b8ace62d5",
+  "parent_revision": "route_grass_r09_current_contract_revision",
+  "parent_pack": "content-packs/minnesota-current-r10-grass-and-stairs-v01.crystalpack",
+  "parent_pack_sha256": "840dc279fa9e35359f31885010766950d2487dae723eb11c3d5af2fa8e4da6cb",
+  "preserved_warps": [
+    {
+      "index": 1,
+      "x": 5,
+      "y": 18,
+      "target_map_constant": "MN_IRON_HAULAGE",
+      "target_map": "MN_IRON_HAULAGE",
+      "target_warp_id": 4
+    },
+    {
+      "index": 2,
+      "x": 4,
+      "y": 19,
+      "target_map_constant": "MN_IRON_HAULAGE",
+      "target_map": "MN_IRON_HAULAGE",
+      "target_warp_id": 4
+    },
+    {
+      "index": 3,
+      "x": 9,
+      "y": 4,
+      "target_map_constant": "MN_IRON_VENTILATION",
+      "target_map": "MN_IRON_VENTILATION",
+      "target_warp_id": 2
+    },
+    {
+      "index": 4,
+      "x": 8,
+      "y": 5,
+      "target_map_constant": "MN_IRON_VENTILATION",
+      "target_map": "MN_IRON_VENTILATION",
+      "target_warp_id": 2
+    },
+    {
+      "index": 5,
+      "x": 31,
+      "y": 18,
+      "target_map_constant": "MN_IRON_HAULAGE",
+      "target_map": "MN_IRON_HAULAGE",
+      "target_warp_id": 8
+    },
+    {
+      "index": 6,
+      "x": 30,
+      "y": 19,
+      "target_map_constant": "MN_IRON_HAULAGE",
+      "target_map": "MN_IRON_HAULAGE",
+      "target_warp_id": 8
+    },
+    {
+      "index": 7,
+      "x": 35,
+      "y": 4,
+      "target_map_constant": "MN_IRON_PUMP_GALLERY",
+      "target_map": "MN_IRON_PUMP_GALLERY",
+      "target_warp_id": 2
+    },
+    {
+      "index": 8,
+      "x": 34,
+      "y": 5,
+      "target_map_constant": "MN_IRON_PUMP_GALLERY",
+      "target_map": "MN_IRON_PUMP_GALLERY",
+      "target_warp_id": 2
+    },
+    {
+      "index": 9,
+      "x": 25,
+      "y": 10,
+      "target_map_constant": "MN_IRON_VENTILATION",
+      "target_map": "MN_IRON_VENTILATION",
+      "target_warp_id": 8
+    },
+    {
+      "index": 10,
+      "x": 24,
+      "y": 11,
+      "target_map_constant": "MN_IRON_VENTILATION",
+      "target_map": "MN_IRON_VENTILATION",
+      "target_warp_id": 8
+    }
+  ],
+  "preserved_actor_anchors": [
+    {
+      "id": "MN_LODE_ARC_SUMP",
+      "tile": [
+        14,
+        10
+      ]
+    },
+    {
+      "id": "MN_LODE_ARC_DRAIN",
+      "tile": [
+        25,
+        17
+      ]
+    }
+  ],
+  "closed_gate_metatile": [
+    16,
+    3
+  ],
+  "open_gate_block": 13,
+  "required_pressure_flags": [
+    "EVENT_MN_IRON_HAUL_PRESSURE_OFF",
+    "EVENT_MN_IRON_VENT_PRESSURE_OFF"
+  ]
+}

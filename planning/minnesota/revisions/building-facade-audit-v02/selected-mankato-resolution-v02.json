@@ -1,0 +1,25 @@
+{
+  "status": "PARTIAL_REPAIRS_VERIFIED",
+  "selected_revision": "route_grass_mankato_town_revision",
+  "pack": "content-packs/minnesota-current-mankato-native-exterior-v03.crystalpack",
+  "sha256": "4f22dd532f5dc1ca28f63383bb9a66030d4f93ced96ed4daa265b3f36680e02f",
+  "prior_resolved_lineage": "selected-rochester-resolution-v01.json",
+  "newly_resolved": {
+    "map": "MnMankato",
+    "building": "mart",
+    "former_origin": [
+      18,
+      12
+    ],
+    "proof": "planning/minnesota/revisions/route-grass-v01/current-mankato-town-v01/acceptance.json"
+  },
+  "remaining_original_frozen_candidates": 5,
+  "remaining_original_maps": {
+    "MnBemidji": 1,
+    "MnDuluth": 1,
+    "MnStCloud": 2,
+    "MnWinona": 1
+  },
+  "state_fair": "User-accepted facades preserved exactly.",
+  "scope": "Original frozen audit remains evidence. Later peer city edits require current preimage reconciliation. The additional Mankato forest-bank correction is separately verified and does not claim all current route/town/story scope complete."
+}

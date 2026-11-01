@@ -1,0 +1,861 @@
+{
+  "species_id": "MN_200",
+  "name": "valorythm",
+  "status": "native-review-recommended; root independent review and context required",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f091/valorythm.manifest-native-joint-phase-v1.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-valorythm-joint-phase-v1",
+  "shared_transform": {
+    "source_bounds": [
+      8,
+      12,
+      370,
+      397
+    ],
+    "native_size": [
+      13,
+      14
+    ],
+    "native_origin": [
+      1,
+      1
+    ]
+  },
+  "all_four_nonrear_poses_actual_pupils_pass": true,
+  "each_native_eye_cluster_maps_to_one_actual_small_source_pupil_component": true,
+  "actual_source_pupil_proofs": [
+    {
+      "pose": "down_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f091/valorythm.overworld.imagegen-v1.png",
+      "crop": [
+        79,
+        46,
+        384,
+        421
+      ],
+      "actual_source_eye_bounds": [
+        [
+          238,
+          263,
+          14,
+          26
+        ],
+        [
+          288,
+          263,
+          14,
+          26
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              8
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                4,
+                2,
+                0,
+                254
+              ],
+              "bounds": [
+                238,
+                263,
+                14,
+                26
+              ],
+              "pixels": 364,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                8
+              ],
+              "source_sample_pixel": [
+                243,
+                270
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              8,
+              8
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                2,
+                2,
+                2,
+                254
+              ],
+              "bounds": [
+                288,
+                263,
+                14,
+                26
+              ],
+              "pixels": 363,
+              "truncated_contour": false,
+              "native_pixel": [
+                8,
+                8
+              ],
+              "source_sample_pixel": [
+                300,
+                270
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f091/valorythm.overworld.imagegen-v1.png",
+      "crop": [
+        1127,
+        54,
+        384,
+        421
+      ],
+      "actual_source_eye_bounds": [
+        [
+          1198,
+          247,
+          14,
+          29
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              3,
+              7
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                2,
+                2,
+                0,
+                254
+              ],
+              "bounds": [
+                1198,
+                247,
+                14,
+                29
+              ],
+              "pixels": 402,
+              "truncated_contour": false,
+              "native_pixel": [
+                3,
+                7
+              ],
+              "source_sample_pixel": [
+                1206,
+                250
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f091/valorythm.overworld.imagegen-v1.png",
+      "crop": [
+        79,
+        527,
+        384,
+        421
+      ],
+      "actual_source_eye_bounds": [
+        [
+          238,
+          743,
+          14,
+          25
+        ],
+        [
+          288,
+          743,
+          14,
+          25
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              8
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                3,
+                2,
+                0,
+                254
+              ],
+              "bounds": [
+                238,
+                743,
+                14,
+                25
+              ],
+              "pixels": 350,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                8
+              ],
+              "source_sample_pixel": [
+                243,
+                751
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              8,
+              8
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                8,
+                6,
+                2,
+                254
+              ],
+              "bounds": [
+                288,
+                743,
+                14,
+                25
+              ],
+              "pixels": 350,
+              "truncated_contour": false,
+              "native_pixel": [
+                8,
+                8
+              ],
+              "source_sample_pixel": [
+                300,
+                751
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f091/valorythm.overworld.imagegen-v1.png",
+      "crop": [
+        1132,
+        535,
+        384,
+        421
+      ],
+      "actual_source_eye_bounds": [
+        [
+          1199,
+          720,
+          14,
+          36
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              3,
+              7
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                2,
+                1,
+                0,
+                253
+              ],
+              "bounds": [
+                1199,
+                720,
+                14,
+                36
+              ],
+              "pixels": 479,
+              "truncated_contour": false,
+              "native_pixel": [
+                3,
+                7
+              ],
+              "source_sample_pixel": [
+                1211,
+                731
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "old_native_poses_preserved_exactly": [],
+  "normal_shiny_runtime_parity": "all1536pixels exact each",
+  "canonical_palette_bytes": "exact",
+  "all_three_walk_pairs_distinct": true,
+  "rear_review": "both rear native poses viewed; no copied face",
+  "normal_shiny_native_boards_actually_viewed": true,
+  "accepted_coverage_native_pack_untouched": true,
+  "manifest_sha256": "c137c8cdf38d838f51d1300c752c4776713dd1fab0dc14c895e0f607233b56b3",
+  "compiled_index_sha256": "6da728ab54f9fcd7cb382140993e7a44db7d68500425fb135f3e0b67cdbf9095",
+  "four_palms_source_feature_proof": [
+    {
+      "pose": "down_idle",
+      "actual_four_palms": [
+        {
+          "actual_palm_source_bounds": [
+            105,
+            215,
+            65,
+            65
+          ],
+          "native_primary_palm_samples": [
+            {
+              "native": [
+                2,
+                7
+              ],
+              "source_sample": [
+                129,
+                242
+              ]
+            },
+            {
+              "native": [
+                3,
+                7
+              ],
+              "source_sample": [
+                158,
+                242
+              ]
+            },
+            {
+              "native": [
+                2,
+                8
+              ],
+              "source_sample": [
+                129,
+                270
+              ]
+            }
+          ]
+        },
+        {
+          "actual_palm_source_bounds": [
+            365,
+            215,
+            65,
+            65
+          ],
+          "native_primary_palm_samples": [
+            {
+              "native": [
+                11,
+                7
+              ],
+              "source_sample": [
+                385,
+                242
+              ]
+            },
+            {
+              "native": [
+                12,
+                7
+              ],
+              "source_sample": [
+                414,
+                242
+              ]
+            },
+            {
+              "native": [
+                12,
+                8
+              ],
+              "source_sample": [
+                414,
+                270
+              ]
+            }
+          ]
+        },
+        {
+          "actual_palm_source_bounds": [
+            110,
+            340,
+            55,
+            45
+          ],
+          "native_primary_palm_samples": [
+            {
+              "native": [
+                2,
+                11
+              ],
+              "source_sample": [
+                129,
+                355
+              ]
+            },
+            {
+              "native": [
+                3,
+                11
+              ],
+              "source_sample": [
+                158,
+                355
+              ]
+            }
+          ]
+        },
+        {
+          "actual_palm_source_bounds": [
+            375,
+            340,
+            50,
+            45
+          ],
+          "native_primary_palm_samples": [
+            {
+              "native": [
+                11,
+                11
+              ],
+              "source_sample": [
+                385,
+                355
+              ]
+            },
+            {
+              "native": [
+                12,
+                11
+              ],
+              "source_sample": [
+                414,
+                355
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "up_idle",
+      "actual_four_palms": [
+        {
+          "actual_palm_source_bounds": [
+            585,
+            215,
+            65,
+            65
+          ],
+          "native_primary_palm_samples": [
+            {
+              "native": [
+                2,
+                7
+              ],
+              "source_sample": [
+                597,
+                242
+              ]
+            },
+            {
+              "native": [
+                3,
+                7
+              ],
+              "source_sample": [
+                626,
+                242
+              ]
+            },
+            {
+              "native": [
+                2,
+                8
+              ],
+              "source_sample": [
+                597,
+                270
+              ]
+            }
+          ]
+        },
+        {
+          "actual_palm_source_bounds": [
+            850,
+            215,
+            65,
+            65
+          ],
+          "native_primary_palm_samples": [
+            {
+              "native": [
+                12,
+                7
+              ],
+              "source_sample": [
+                882,
+                242
+              ]
+            },
+            {
+              "native": [
+                13,
+                7
+              ],
+              "source_sample": [
+                910,
+                242
+              ]
+            },
+            {
+              "native": [
+                12,
+                8
+              ],
+              "source_sample": [
+                882,
+                270
+              ]
+            },
+            {
+              "native": [
+                13,
+                8
+              ],
+              "source_sample": [
+                910,
+                270
+              ]
+            }
+          ]
+        },
+        {
+          "actual_palm_source_bounds": [
+            590,
+            340,
+            50,
+            45
+          ],
+          "native_primary_palm_samples": [
+            {
+              "native": [
+                3,
+                11
+              ],
+              "source_sample": [
+                626,
+                355
+              ]
+            }
+          ]
+        },
+        {
+          "actual_palm_source_bounds": [
+            855,
+            340,
+            50,
+            45
+          ],
+          "native_primary_palm_samples": [
+            {
+              "native": [
+                12,
+                11
+              ],
+              "source_sample": [
+                882,
+                355
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "actual_four_palms": [
+        {
+          "actual_palm_source_bounds": [
+            105,
+            695,
+            65,
+            65
+          ],
+          "native_primary_palm_samples": [
+            {
+              "native": [
+                2,
+                7
+              ],
+              "source_sample": [
+                129,
+                723
+              ]
+            },
+            {
+              "native": [
+                2,
+                8
+              ],
+              "source_sample": [
+                129,
+                751
+              ]
+            }
+          ]
+        },
+        {
+          "actual_palm_source_bounds": [
+            365,
+            695,
+            65,
+            65
+          ],
+          "native_primary_palm_samples": [
+            {
+              "native": [
+                11,
+                7
+              ],
+              "source_sample": [
+                385,
+                723
+              ]
+            },
+            {
+              "native": [
+                12,
+                7
+              ],
+              "source_sample": [
+                414,
+                723
+              ]
+            },
+            {
+              "native": [
+                12,
+                8
+              ],
+              "source_sample": [
+                414,
+                751
+              ]
+            }
+          ]
+        },
+        {
+          "actual_palm_source_bounds": [
+            120,
+            820,
+            50,
+            45
+          ],
+          "native_primary_palm_samples": [
+            {
+              "native": [
+                3,
+                11
+              ],
+              "source_sample": [
+                158,
+                836
+              ]
+            }
+          ]
+        },
+        {
+          "actual_palm_source_bounds": [
+            375,
+            815,
+            50,
+            45
+          ],
+          "native_primary_palm_samples": [
+            {
+              "native": [
+                11,
+                11
+              ],
+              "source_sample": [
+                385,
+                836
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "up_step",
+      "actual_four_palms": [
+        {
+          "actual_palm_source_bounds": [
+            585,
+            695,
+            65,
+            65
+          ],
+          "native_primary_palm_samples": [
+            {
+              "native": [
+                2,
+                7
+              ],
+              "source_sample": [
+                597,
+                723
+              ]
+            },
+            {
+              "native": [
+                3,
+                7
+              ],
+              "source_sample": [
+                626,
+                723
+              ]
+            },
+            {
+              "native": [
+                2,
+                8
+              ],
+              "source_sample": [
+                597,
+                751
+              ]
+            }
+          ]
+        },
+        {
+          "actual_palm_source_bounds": [
+            850,
+            695,
+            65,
+            65
+          ],
+          "native_primary_palm_samples": [
+            {
+              "native": [
+                12,
+                7
+              ],
+              "source_sample": [
+                882,
+                723
+              ]
+            },
+            {
+              "native": [
+                13,
+                7
+              ],
+              "source_sample": [
+                910,
+                723
+              ]
+            },
+            {
+              "native": [
+                13,
+                8
+              ],
+              "source_sample": [
+                910,
+                751
+              ]
+            }
+          ]
+        },
+        {
+          "actual_palm_source_bounds": [
+            595,
+            820,
+            50,
+            45
+          ],
+          "native_primary_palm_samples": [
+            {
+              "native": [
+                3,
+                11
+              ],
+              "source_sample": [
+                626,
+                836
+              ]
+            }
+          ]
+        },
+        {
+          "actual_palm_source_bounds": [
+            855,
+            815,
+            50,
+            45
+          ],
+          "native_primary_palm_samples": [
+            {
+              "native": [
+                12,
+                11
+              ],
+              "source_sample": [
+                882,
+                836
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "anatomy_review": "Exactly four source-backed palms retained in both front and both rear native poses, each with visible primary ink. Profile shows near arm pair and occludes far pair. Lower forked tail counterweights are distinct from hands."
+}

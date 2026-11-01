@@ -1,0 +1,58 @@
+[
+  {
+    "id": "shore-gate-west",
+    "map": "MnGrandMaraisShoreGate",
+    "core": [
+      2,
+      4
+    ]
+  },
+  {
+    "id": "shore-gate-east",
+    "map": "MnGrandMaraisShoreGate",
+    "core": [
+      7,
+      4
+    ]
+  },
+  {
+    "id": "winona-hall",
+    "map": "MnWinonaStation",
+    "core": [
+      11,
+      14
+    ]
+  },
+  {
+    "id": "winona-nook",
+    "map": "MnWinonaStation",
+    "core": [
+      5,
+      11
+    ]
+  },
+  {
+    "id": "staples-hall",
+    "map": "MnStaplesStation",
+    "core": [
+      9,
+      14
+    ]
+  },
+  {
+    "id": "staples-ledger",
+    "map": "MnStaplesStation",
+    "core": [
+      4,
+      11
+    ]
+  },
+  {
+    "id": "brainerd-bookshelf",
+    "map": "MnBrainerdOutfitter",
+    "core": [
+      3,
+      2
+    ]
+  }
+]

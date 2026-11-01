@@ -1,0 +1,209 @@
+{
+  "species": "gougecrest",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f138/gougecrest-v8-actual-pupils",
+  "status": "actual-source native proof passes; root visual/context acceptance pending",
+  "all_four_nonrear_actual_isolated_source_pupils": true,
+  "six16px_alpha_border_normal_shiny_runtime_parity": true,
+  "canonical_palettes": true,
+  "proof": [
+    {
+      "pose": "down_idle",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            6,
+            7
+          ],
+          "source_sample": [
+            163,
+            362
+          ],
+          "source_component": [
+            157,
+            343,
+            20,
+            23
+          ],
+          "component_pixels": 431,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            5,
+            1,
+            1,
+            254
+          ]
+        },
+        {
+          "native": [
+            9,
+            7
+          ],
+          "source_sample": [
+            254,
+            362
+          ],
+          "source_component": [
+            244,
+            343,
+            19,
+            23
+          ],
+          "component_pixels": 436,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            6,
+            7
+          ],
+          "source_sample": [
+            998,
+            363
+          ],
+          "source_component": [
+            990,
+            342,
+            19,
+            23
+          ],
+          "component_pixels": 437,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            6,
+            7
+          ],
+          "source_sample": [
+            163,
+            870
+          ],
+          "source_component": [
+            157,
+            850,
+            20,
+            23
+          ],
+          "component_pixels": 425,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            4,
+            0,
+            0,
+            254
+          ]
+        },
+        {
+          "native": [
+            9,
+            7
+          ],
+          "source_sample": [
+            254,
+            870
+          ],
+          "source_component": [
+            244,
+            850,
+            19,
+            23
+          ],
+          "component_pixels": 437,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            2,
+            0,
+            0,
+            254
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            6,
+            7
+          ],
+          "source_sample": [
+            998,
+            871
+          ],
+          "source_component": [
+            990,
+            849,
+            19,
+            24
+          ],
+          "component_pixels": 439,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ]
+        }
+      ]
+    }
+  ],
+  "hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f138/gougecrest-v8-actual-pupils/compiled-index.json": "b78e718647a178bb69f4cfcf9640b968668a537ae251d82915edb550f0b4bc37",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f138/gougecrest.overworld.imagegen-v1.png": "f2ea1c367506a41f8445697e2903fc8fc43f678bd102e92fcc9f8af9e7dcd5ce"
+  },
+  "no_native_pixel_painting": true
+}

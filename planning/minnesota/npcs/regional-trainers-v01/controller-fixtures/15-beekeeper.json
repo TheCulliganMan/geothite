@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "id": "MN_R12_T03",
+      "map": "MnR12C00R00",
+      "actor_script": "MN_R12_T03",
+      "trainer_class": "MN_BEEKEEPER",
+      "sprite": "SPRITE_MN_BEEKEEPER",
+      "facing": "east",
+      "approach": [
+        52,
+        21
+      ],
+      "defeated_flag": "EVENT_MN_R12_TRAINER_03"
+    }
+  ]
+}

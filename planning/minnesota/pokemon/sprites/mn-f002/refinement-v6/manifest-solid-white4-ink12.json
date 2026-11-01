@@ -1,0 +1,352 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F002",
+  "status": "proposal-only-not-integrated",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_004": {
+      "species_id": "MN_004",
+      "name": "Cindore",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          13,
+          3
+        ],
+        [
+          8,
+          7,
+          8
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        3519,
+        8424,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          107,
+          24
+        ],
+        [
+          66,
+          57,
+          66
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FF6B18",
+        "#423942",
+        "#000000"
+      ]
+    },
+    "MN_005": {
+      "species_id": "MN_005",
+      "name": "Pelletor",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          21,
+          5
+        ],
+        [
+          12,
+          8,
+          7
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        5823,
+        7436,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          173,
+          41
+        ],
+        [
+          99,
+          66,
+          57
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FFAD29",
+        "#634239",
+        "#000000"
+      ]
+    },
+    "MN_006": {
+      "species_id": "MN_006",
+      "name": "Mesablast",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          9,
+          5
+        ],
+        [
+          5,
+          10,
+          16
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        5439,
+        16709,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          74,
+          41
+        ],
+        [
+          41,
+          82,
+          132
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FF4A29",
+        "#295284",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f002/refinement-v6/prompt-v6.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-004-cindore-v6",
+      "species_id": "MN_004",
+      "view": "front",
+      "source": "sprites/mn-f002/refinement-v6/front-back.imagegen-v6.png",
+      "crop": [
+        0,
+        0,
+        385,
+        535
+      ],
+      "fit": [
+        36,
+        36
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        3519,
+        8424,
+        0
+      ],
+      "exterior_contour": "solid",
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 12
+    },
+    {
+      "id": "mn-004-cindore-v6",
+      "species_id": "MN_004",
+      "view": "back",
+      "source": "sprites/mn-f002/refinement-v6/front-back.imagegen-v6.png",
+      "crop": [
+        0,
+        535,
+        432,
+        489
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        3519,
+        8424,
+        0
+      ],
+      "exterior_contour": "solid",
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 12
+    },
+    {
+      "id": "mn-005-pelletor-v6",
+      "species_id": "MN_005",
+      "view": "front",
+      "source": "sprites/mn-f002/refinement-v6/front-back.imagegen-v6.png",
+      "crop": [
+        385,
+        0,
+        500,
+        535
+      ],
+      "fit": [
+        44,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        5823,
+        7436,
+        0
+      ],
+      "exterior_contour": "solid",
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 12
+    },
+    {
+      "id": "mn-005-pelletor-v6",
+      "species_id": "MN_005",
+      "view": "back",
+      "source": "sprites/mn-f002/refinement-v6/front-back.imagegen-v6.png",
+      "crop": [
+        432,
+        535,
+        510,
+        489
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        5823,
+        7436,
+        0
+      ],
+      "exterior_contour": "solid",
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 12
+    },
+    {
+      "id": "mn-006-mesablast-v6",
+      "species_id": "MN_006",
+      "view": "front",
+      "source": "sprites/mn-f002/refinement-v6/front-back.imagegen-v6.png",
+      "crop": [
+        885,
+        0,
+        651,
+        535
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        5439,
+        16709,
+        0
+      ],
+      "exterior_contour": "solid",
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 12
+    },
+    {
+      "id": "mn-006-mesablast-v6",
+      "species_id": "MN_006",
+      "view": "back",
+      "source": "sprites/mn-f002/refinement-v6/front-back.imagegen-v6.png",
+      "crop": [
+        942,
+        535,
+        594,
+        489
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        5439,
+        16709,
+        0
+      ],
+      "exterior_contour": "solid",
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 12
+    }
+  ],
+  "reference_mapping": [
+    {
+      "role": "identity-preserved six-view refinement target",
+      "path": "sprites/mn-f002/refinement-v4/front-back.imagegen-v4.png"
+    }
+  ],
+  "raw_generation": {
+    "original_tool_path": "/Users/ryanculligan/.codex/generated_images/01a17aaa-5c78-7e50-b7c0-e5c016827c28/exec-2a75347a-3624-4d5b-9ace-78d51dc97a2d.png",
+    "sha256": "b0cc7718152e4e0a5f5a11e93cdb8c64f4b8bfaabde23ceaa69e89a7b9100a71"
+  }
+}

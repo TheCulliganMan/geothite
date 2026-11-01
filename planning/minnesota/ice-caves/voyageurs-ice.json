@@ -1,0 +1,276 @@
+{
+  "schema_version": 1,
+  "id": "minnesota-voyageurs-ice-v1",
+  "name": "Voyageurs Ice Cavern",
+  "tileset": "ice_path",
+  "border_block": 59,
+  "exterior": {
+    "map": "MnR20C01R00",
+    "constant": "MnR20C01R00",
+    "entrance": [
+      6,
+      33
+    ],
+    "return": [
+      6,
+      34
+    ],
+    "arrival_warp": 3,
+    "return_warp": 4,
+    "changes": [
+      {
+        "metatile": [
+          3,
+          16
+        ],
+        "previous": 114,
+        "replacement": 115
+      },
+      {
+        "metatile": [
+          3,
+          17
+        ],
+        "previous": 3,
+        "replacement": 1
+      }
+    ]
+  },
+  "rooms": [
+    {
+      "id": "MnVoyageursIce1F",
+      "constant": "MN_VOYAGEURS_ICE_1F",
+      "dimensions_metatiles": [
+        14,
+        12
+      ],
+      "purpose": "Teaching fissure: an attached southern rock shoulder stops the first eastward slide; the northern tooth turns the next slide east. Separate dry stop pockets lead to the Ice Heal and the lower-floor ladder. The ice remains a substantial connected area.",
+      "rows": [
+        "3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b",
+        "3b 3b 3b 3b 3b 3b 3b 04 05 05 05 05 06 3b",
+        "3b 3b 3b 3b 3b 3b 3b 1f 1f 1f 1f 03 0a 3b",
+        "3b 3b 3b 3b 3b 3b 3b 1f 1f 1f 1f 02 0e 3b",
+        "3b 3b 3b 04 05 06 3b 3b 1f 1f 1f 1f 3b 3b",
+        "3b 3b 3b 08 02 0a 3b 1f 1f 1f 1f 1f 3b 3b",
+        "3b 3b 3b 08 1f 1f 1f 1f 1f 1f 1f 0a 3b 3b",
+        "3b 04 05 02 1f 1f 1f 1f 1f 1f 1f 0a 3b 3b",
+        "3b 08 02 02 1f 1f 1f 1f 3b 3b 1f 0e 3b 3b",
+        "3b 08 02 0a 3e 3b 3b 3e 3b 3b 3e 3b 3b 3b",
+        "3b 08 07 0e 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b",
+        "3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b"
+      ],
+      "arrival": [
+        5,
+        19
+      ],
+      "warps": [
+        {
+          "tile": [
+            5,
+            21
+          ],
+          "target": "MnR20C01R00",
+          "target_warp": 4
+        },
+        {
+          "tile": [
+            23,
+            5
+          ],
+          "target": "MnVoyageursIceB1F",
+          "target_warp": 2
+        },
+        {
+          "tile": [
+            5,
+            19
+          ],
+          "target": "MnR20C01R00",
+          "target_warp": 4
+        },
+        {
+          "tile": [
+            23,
+            6
+          ],
+          "target": "MnVoyageursIceB1F",
+          "target_warp": 2
+        }
+      ],
+      "residents": [
+        {
+          "id": "MnVoyageursIceGuide",
+          "tile": [
+            3,
+            16
+          ],
+          "sprite": "SPRITE_POKEFAN_M",
+          "lines": [
+            "The ice carries you until rock or dry ground stops you.",
+            "Turn at the rock teeth. The lower chamber has a narrow northern shelf."
+          ]
+        }
+      ],
+      "items": [
+        {
+          "id": "MnVoyageursIceHeal",
+          "tile": [
+            9,
+            10
+          ],
+          "item": "ICE_HEAL",
+          "quantity": 1,
+          "flag": "EVENT_MN_VOYAGEURS_ICE_HEAL"
+        }
+      ],
+      "review_viewpoints": [
+        {
+          "id": "sheltered-arrival",
+          "tile": [
+            5,
+            19
+          ]
+        },
+        {
+          "id": "first-rock-stop",
+          "tile": [
+            15,
+            16
+          ]
+        },
+        {
+          "id": "healing-pocket",
+          "tile": [
+            8,
+            10
+          ]
+        },
+        {
+          "id": "north-tooth-turn",
+          "tile": [
+            15,
+            10
+          ]
+        },
+        {
+          "id": "lower-ladder",
+          "tile": [
+            23,
+            6
+          ]
+        }
+      ]
+    },
+    {
+      "id": "MnVoyageursIceB1F",
+      "constant": "MN_VOYAGEURS_ICE_B1F",
+      "dimensions_metatiles": [
+        16,
+        12
+      ],
+      "purpose": "Offset northern and southern glacier tongues divide two substantial ice basins. The first tooth feeds a northern Max Revive branch; the alternating stops form a turning course to the NeverMeltIce shelf. A central cross-slide reaches the sheltered west bank on return.",
+      "rows": [
+        "3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b",
+        "3b 3b 3b 3b 3b 3b 3b 3b 3b 04 06 3b 3b 3b 3b 3b",
+        "3b 3b 04 06 3b 3b 3b 3b 3b 08 0a 3b 3b 3b 3b 3b",
+        "3b 3b 2c 1f 1f 1f 1f 3b 3b 2c 1f 1f 1f 06 3b 3b",
+        "3b 3b 1f 1f 1f 1f 1f 3b 3b 1f 1f 2c 1f 0a 3b 3b",
+        "3b 3b 2e 1f 1f 1f 1f 3b 3b 1f 1f 3b 3b 3b 3b 3b",
+        "3b 08 1f 1f 1f 1f 1f 19 1f 1f 1f 3b 3b 3b 3b 3b",
+        "3b 08 1f 1f 1f 1f 1f 1f 1f 1f 1f 3b 3b 3b 3b 3b",
+        "3b 08 1f 1f 1f 1f 3b 1f 1f 1f 1f 0a 3b 3b 3b 3b",
+        "3b 08 02 1f 1f 1f 3b 1f 1f 1f 1f 0e 3b 3b 3b 3b",
+        "3b 0c 03 3e 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b",
+        "3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b"
+      ],
+      "arrival": [
+        5,
+        19
+      ],
+      "warps": [
+        {
+          "tile": [
+            5,
+            21
+          ],
+          "target": "MnVoyageursIce1F",
+          "target_warp": 4
+        },
+        {
+          "tile": [
+            5,
+            19
+          ],
+          "target": "MnVoyageursIce1F",
+          "target_warp": 4
+        }
+      ],
+      "residents": [],
+      "items": [
+        {
+          "id": "MnVoyageursIceNeverMelt",
+          "tile": [
+            19,
+            3
+          ],
+          "item": "NEVERMELTICE",
+          "quantity": 1,
+          "flag": "EVENT_MN_VOYAGEURS_ICE_NEVERMELT"
+        },
+        {
+          "id": "MnVoyageursIceRevive",
+          "tile": [
+            5,
+            5
+          ],
+          "item": "MAX_REVIVE",
+          "quantity": 1,
+          "flag": "EVENT_MN_VOYAGEURS_ICE_REVIVE"
+        }
+      ],
+      "review_viewpoints": [
+        {
+          "id": "deep-arrival",
+          "tile": [
+            5,
+            19
+          ]
+        },
+        {
+          "id": "western-cache-stop",
+          "tile": [
+            5,
+            6
+          ]
+        },
+        {
+          "id": "north-shelf",
+          "tile": [
+            19,
+            4
+          ]
+        },
+        {
+          "id": "eastern-basin-turn",
+          "tile": [
+            21,
+            15
+          ]
+        }
+      ]
+    }
+  ],
+  "source_status": "Verified scoped native ice terrain; resolve world.json for the current selected version.",
+  "retained_native_overlays": [
+    {
+      "source": "planning/minnesota/interior-life/voyageurs-surveyor-v01.json",
+      "map": "MnVoyageursIceB1F",
+      "script": "MN_INTERIOR_VOYAGEURS_SURVEYOR",
+      "tile": [
+        3,
+        20
+      ],
+      "status": "Exact installed native actor/program retained; included in all partial-pickup geometry checks."
+    }
+  ]
+}

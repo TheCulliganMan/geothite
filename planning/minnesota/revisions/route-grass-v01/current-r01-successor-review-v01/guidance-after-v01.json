@@ -1,0 +1,164 @@
+{
+  "MN_R01_BLUFF_WALKERText": [
+    {
+      "args": [
+        "\"The east stairs\""
+      ],
+      "command": "text"
+    },
+    {
+      "args": [
+        "\"climb this bluff.\""
+      ],
+      "command": "line"
+    },
+    {
+      "args": [
+        "\"Use the same steps\""
+      ],
+      "command": "para"
+    },
+    {
+      "args": [
+        "\"to head back down.\""
+      ],
+      "command": "line"
+    },
+    {
+      "args": [],
+      "command": "done"
+    }
+  ],
+  "MN_R01_SIGN_05Text": [
+    {
+      "args": [
+        "\"BLUFF STAIRS\""
+      ],
+      "command": "text"
+    },
+    {
+      "args": [
+        "\"EAST: UP OR DOWN\""
+      ],
+      "command": "line"
+    },
+    {
+      "args": [
+        "\"STAY ON THE STEPS\""
+      ],
+      "command": "para"
+    },
+    {
+      "args": [],
+      "command": "done"
+    }
+  ],
+  "MN_R01_T03Won": [
+    {
+      "args": [
+        "\"The east stairs\""
+      ],
+      "command": "text"
+    },
+    {
+      "args": [
+        "\"lead down safely.\""
+      ],
+      "command": "line"
+    },
+    {
+      "args": [],
+      "command": "done"
+    }
+  ],
+  "MN_R01_T03Lost": [
+    {
+      "args": [
+        "\"Use the east steps\""
+      ],
+      "command": "text"
+    },
+    {
+      "args": [
+        "\"to come back up.\""
+      ],
+      "command": "line"
+    },
+    {
+      "args": [],
+      "command": "done"
+    }
+  ],
+  "MN_R01_FARMERText": [
+    {
+      "args": [
+        "\"Wild partners hide\""
+      ],
+      "command": "text"
+    },
+    {
+      "args": [
+        "\"in the tall grass.\""
+      ],
+      "command": "line"
+    },
+    {
+      "args": [
+        "\"Grass hides along\""
+      ],
+      "command": "para"
+    },
+    {
+      "args": [
+        "\"the bluff steps.\""
+      ],
+      "command": "line"
+    },
+    {
+      "args": [
+        "\"Use the east steps\""
+      ],
+      "command": "para"
+    },
+    {
+      "args": [
+        "\"to reach the bluff\""
+      ],
+      "command": "line"
+    },
+    {
+      "args": [
+        "\"That BERRY is\""
+      ],
+      "command": "para"
+    },
+    {
+      "args": [
+        "\"for your partner.\""
+      ],
+      "command": "line"
+    },
+    {
+      "args": [
+        "\"Dr Tamarack waits\""
+      ],
+      "command": "para"
+    },
+    {
+      "args": [
+        "\"at the Rochester\""
+      ],
+      "command": "line"
+    },
+    {
+      "args": [
+        "\"clinic out west.\""
+      ],
+      "command": "para"
+    },
+    {
+      "args": [],
+      "command": "done"
+    }
+  ]
+}

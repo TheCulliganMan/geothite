@@ -1,0 +1,361 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_180",
+  "status": "source-proof-pass; root visual/context acceptance required",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f083/manifest-cinderfin-v1-pupil-proof.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f083/cinderfin-v1-pupil-proof",
+  "shared_transform": {
+    "source_bounds": [
+      52,
+      18,
+      437,
+      379
+    ],
+    "native_size": [
+      12,
+      10
+    ],
+    "native_origin": [
+      2,
+      5
+    ]
+  },
+  "all_four_nonrear_poses_have_actual_source_pupils": true,
+  "every_native_eye_cluster_maps_to_same_small_anatomical_source_pupil_component": true,
+  "actual_source_pupil_proofs": [
+    {
+      "pose": "down_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f083/cinderfin.overworld.imagegen-v1.png",
+      "crop": [
+        15,
+        73,
+        500,
+        430
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          213,
+          344,
+          34,
+          43
+        ],
+        [
+          319,
+          344,
+          33,
+          43
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              12
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                213,
+                344,
+                34,
+                43
+              ],
+              "pixels": 1442,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                12
+              ],
+              "source_sample_pixel": [
+                230,
+                375
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              9,
+              12
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                1,
+                1,
+                0,
+                253
+              ],
+              "bounds": [
+                319,
+                344,
+                33,
+                43
+              ],
+              "pixels": 1419,
+              "truncated_contour": false,
+              "native_pixel": [
+                9,
+                12
+              ],
+              "source_sample_pixel": [
+                340,
+                375
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f083/cinderfin.overworld.imagegen-v1.png",
+      "crop": [
+        1003,
+        102,
+        500,
+        430
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          1119,
+          322,
+          35,
+          42
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              4,
+              10
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                1119,
+                322,
+                35,
+                42
+              ],
+              "pixels": 1469,
+              "truncated_contour": false,
+              "native_pixel": [
+                4,
+                10
+              ],
+              "source_sample_pixel": [
+                1146,
+                328
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f083/cinderfin.overworld.imagegen-v1.png",
+      "crop": [
+        15,
+        543,
+        500,
+        430
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          213,
+          814,
+          34,
+          43
+        ],
+        [
+          319,
+          814,
+          34,
+          43
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              12
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                213,
+                814,
+                34,
+                43
+              ],
+              "pixels": 1459,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                12
+              ],
+              "source_sample_pixel": [
+                230,
+                845
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              9,
+              12
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                254
+              ],
+              "bounds": [
+                319,
+                814,
+                34,
+                43
+              ],
+              "pixels": 1440,
+              "truncated_contour": false,
+              "native_pixel": [
+                9,
+                12
+              ],
+              "source_sample_pixel": [
+                340,
+                845
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f083/cinderfin.overworld.imagegen-v1.png",
+      "crop": [
+        1004,
+        566,
+        500,
+        430
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          1120,
+          786,
+          35,
+          43
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              4,
+              10
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                1120,
+                786,
+                35,
+                43
+              ],
+              "pixels": 1465,
+              "truncated_contour": false,
+              "native_pixel": [
+                4,
+                10
+              ],
+              "source_sample_pixel": [
+                1147,
+                792
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "native_head_anchors_idle_walk_equal": true,
+  "validation": {
+    "runtime_2bpp_384_bytes_exact_allpixels": true,
+    "runtime_png16x96_index_parity": true,
+    "normal_shiny_palettebanks_exact": true,
+    "normal_shiny_all1536pixels_exact": true,
+    "transparent_border": true,
+    "idle_walk_pairs_distinct": true
+  },
+  "sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f083/cinderfin-v1-pupil-proof/gfx/pokemon/cinderfin/overworld.2bpp": "18f1c1d3fce2d9e128ab420be53269ea8262d1b804d2ad38deca830d93c06131",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f083/cinderfin-v1-pupil-proof/review/line.normal-8x.png": "104afc917dff6949e195a5492ab9291a344846d166874886305031db0bd687eb",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f083/manifest-cinderfin-v1-pupil-proof.json": "e939201c300162ee28c3141c457d93dc7394b6e6e797d8cab5c4820b430663f3",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f083/cinderfin-v1-pupil-proof/compiled-index.json": "1f7c700eaf16679409549e0dcc1af5f68dcd0cc281133149953693a81d0a1c98",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f083/cinderfin-v1-pupil-proof/gfx/pokemon/cinderfin/overworld.png": "298cf1f2c50647c98976b007b7c2e7cca2ccf0ea45115bca42aa7be13d121f6d",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f083/cinderfin-v1-pupil-proof/gfx/pokemon/cinderfin/overworld-shiny.gbcpal": "2b9a2b9e3ce805da444643dc2a7dfe6d43cb22c6ae43e769ff445ccfbde8b19a",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f083/cinderfin-v1-pupil-proof/review/line.shiny-8x.png": "f10008fdf286f7dd268db6bb638ffc7e2cc5cc8513c9524c3242ce6b62a2c0ea",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f083/cinderfin-v1-pupil-proof/gfx/pokemon/cinderfin/overworld.gbcpal": "6e1f5a32c116005c27c5d7f2aacb5127580a3ed84e3054029fa56df35ce5ee7b",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f083/cinderfin.overworld.imagegen-v1.png": "7f004d288bb6ed2b891d80521475d9d8ea4c72bae49bbf0e2110a97785186e54"
+  },
+  "actual_native_boards_viewed": true,
+  "rear_review": "Actual normal/shiny rear poses viewed: blank headTOP and curledtailBOTTOM, gill backs/fins, no pupils/face.",
+  "canonical_eye_form": "TWO real black pupils SOUTH/ONE real near pupil WEST, all complete native clusters map to actual small anatomical source pupil component, no coal-chamber/gill/plate seam dots counted.",
+  "design_authority": "Current redesign-v2 fish biology; older upright fin-feet design superseded. No legs/feet/arms invented.",
+  "signature_anatomy_review": "All6 actual native normal/shiny views inspected. Native12x10, compact apricot fish, char crescent cheek-gills, broad saltbrow simplified tolight1, curled forked coal tail, small shovel fins; no pasted flames.",
+  "source_motion_review": {
+    "source_sheet_actually_viewed": true,
+    "south": "Actual source paired pectoral fins and tail change shape/sweep, fixed face pupils.",
+    "north": "Actual source tail/fin stroke changes behind blank head; no whole-body translation substituted for anatomy.",
+    "west": "Actual source tail and pectoral fin alter swimming silhouette, no invented footsteps.",
+    "native_result": "All3 idle/swimstep pairs distinct; all actual pupil anchors equal."
+  }
+}

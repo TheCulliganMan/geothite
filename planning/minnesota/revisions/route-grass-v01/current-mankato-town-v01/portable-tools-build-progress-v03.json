@@ -1,0 +1,89 @@
+{
+  "pid": 9724,
+  "steps": [
+    {
+      "step": "publishers",
+      "exit_code": 0,
+      "log": "/Users/ryanculligan/GitHub/geothite/.local/route-grass-review/portable-map-tools-publishers-build-v01.log",
+      "outputs": [
+        {
+          "path": "/Users/ryanculligan/GitHub/geothite/.local/route-grass-review/portable-tools-v01/revise_mankato_mart_facade",
+          "sha256": "4257096351538afaa2465cfbaaf8d01f7dde363a88b0fcb156a68b1d78c66bcb"
+        },
+        {
+          "path": "/Users/ryanculligan/GitHub/geothite/.local/route-grass-review/portable-tools-v01/verify_notebook_acknowledgment",
+          "sha256": "579080d1c26cd3a187dd651ff134706d8234aa67ba21ef4db345e8c1351d8b54"
+        }
+      ]
+    },
+    {
+      "step": "native-controller",
+      "exit_code": 0,
+      "log": ".local/route-grass-review/portable-map-tools-native-controller-build-v01.log",
+      "completion_evidence": "Cargo Finished and Executable lines after compiler exited while wrapper was paused",
+      "outputs": [
+        {
+          "path": "/Users/ryanculligan/GitHub/geothite/.local/route-grass-review/portable-tools-v01/native-controller",
+          "sha256": "6a0c61da1dd77157003c7116551c8bfd3d49789137d085f5d2fed20dcde0fb75"
+        }
+      ]
+    },
+    {
+      "step": "production-client",
+      "exit_code": 0,
+      "log": ".local/route-grass-review/portable-map-tools-production-client-build-v03.log",
+      "command": [
+        "cargo",
+        "build",
+        "--profile",
+        "wasm-dev",
+        "--locked",
+        "--config",
+        "profile.wasm-dev.package.crystal-assets.opt-level=0",
+        "-p",
+        "geothite",
+        "--bin",
+        "geothite"
+      ],
+      "outputs": [
+        {
+          "path": "/Users/ryanculligan/GitHub/geothite/.local/route-grass-review/portable-tools-v01/geothite",
+          "sha256": "1eff8c6580430d231a4d5b03ae962b29ffc00d52ab16957473e092057a04cfff"
+        }
+      ]
+    },
+    {
+      "step": "native-renderer",
+      "exit_code": 0,
+      "log": ".local/route-grass-review/portable-map-tools-native-renderer-build-v03.log",
+      "command": [
+        "cargo",
+        "build",
+        "--profile",
+        "wasm-dev",
+        "--locked",
+        "--config",
+        "profile.wasm-dev.package.crystal-assets.opt-level=0",
+        "-p",
+        "crystal-bevy",
+        "--features",
+        "location-tester",
+        "--example",
+        "render_at_location"
+      ],
+      "outputs": [
+        {
+          "path": "/Users/ryanculligan/GitHub/geothite/.local/route-grass-review/portable-tools-v01/render_at_location",
+          "sha256": "2eccb21877082ebbf2e277ca85647a843775752f3a7b54d11f3f6551f2d622bf"
+        }
+      ]
+    }
+  ],
+  "build_target": "/Users/ryanculligan/GitHub/geothite/.local/route-grass-native-target",
+  "retained_tools": "/Users/ryanculligan/GitHub/geothite/.local/route-grass-review/portable-tools-v01",
+  "active_build_pid": 28766,
+  "active_build_script": ".local/route-grass-review/finish_portable_map_tools_fair_queue_v03.py",
+  "original_wrapper_retired_after_completed_compile": true,
+  "queue_handoff_to_pid": 11186,
+  "renderer_feature_correction": "location-tester required; superseded unexecuted renderer command will not run"
+}

@@ -1,0 +1,26 @@
+[
+  {
+    "id": "western-habitat",
+    "map": "MnMaraisCedarApproach",
+    "core": [
+      13,
+      10
+    ]
+  },
+  {
+    "id": "upper-ledge-choice",
+    "map": "MnMaraisCedarApproach",
+    "core": [
+      27,
+      17
+    ]
+  },
+  {
+    "id": "dry-lower-return",
+    "map": "MnMaraisCedarApproach",
+    "core": [
+      27,
+      20
+    ]
+  }
+]

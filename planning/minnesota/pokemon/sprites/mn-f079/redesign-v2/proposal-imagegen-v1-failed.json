@@ -1,0 +1,17 @@
+{
+  "family_id": "MN_F079",
+  "species_ids": [
+    "MN_172",
+    "MN_173"
+  ],
+  "status": "imagegen_failed_no_image",
+  "canonical_changed": false,
+  "tool": "built-in image_gen",
+  "prompt_file": "prompt-v1.txt",
+  "generation_failures": [
+    "generation-failure-v1.json",
+    "generation-failure-v1-retry.json"
+  ],
+  "design_scope": "Preserve Bobcast single-fin float ring and short weighted tail, Buoyostic three-pontoon body, three-node crown, two unequal fins and long depth coil. Improve distinct eyes, readable broad clusters, closed black outlines, individual four-ink palettes and close rear consistency.",
+  "native_qa": "No new image exists; no conversion performed."
+}

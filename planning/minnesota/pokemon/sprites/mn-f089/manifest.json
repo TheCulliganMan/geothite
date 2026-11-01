@@ -1,0 +1,345 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F089",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_192": {
+      "species_id": "MN_192",
+      "name": "Driptip",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          27,
+          25,
+          19
+        ],
+        [
+          12,
+          10,
+          12
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        20283,
+        12620,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          222,
+          206,
+          156
+        ],
+        [
+          99,
+          82,
+          99
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#DECE9C",
+        "#635263",
+        "#000000"
+      ]
+    },
+    "MN_193": {
+      "species_id": "MN_193",
+      "name": "Sinknook",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          25,
+          23,
+          16
+        ],
+        [
+          10,
+          8,
+          12
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        17145,
+        12554,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          206,
+          189,
+          132
+        ],
+        [
+          82,
+          66,
+          99
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#CEBD84",
+        "#524263",
+        "#000000"
+      ]
+    },
+    "MN_194": {
+      "species_id": "MN_194",
+      "name": "Karstalker",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          28,
+          26,
+          20
+        ],
+        [
+          8,
+          7,
+          11
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        21340,
+        11496,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          231,
+          214,
+          165
+        ],
+        [
+          66,
+          57,
+          90
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#E7D6A5",
+        "#42395A",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f089/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png",
+      "target/minnesota-pokemon/gen2-reference/bugs.png"
+    ]
+  },
+  "sprites": [
+    {
+      "id": "mn-192-driptip-v1",
+      "species_id": "MN_192",
+      "view": "front",
+      "source": "sprites/mn-f089/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        450,
+        490
+      ],
+      "fit": [
+        36,
+        36
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        20283,
+        12620,
+        0
+      ],
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-192-driptip-v1",
+      "species_id": "MN_192",
+      "view": "back",
+      "source": "sprites/mn-f089/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        490,
+        500,
+        534
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        20283,
+        12620,
+        0
+      ],
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-193-sinknook-v1",
+      "species_id": "MN_193",
+      "view": "front",
+      "source": "sprites/mn-f089/front-back.imagegen-v1.png",
+      "crop": [
+        450,
+        0,
+        494,
+        490
+      ],
+      "fit": [
+        44,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        17145,
+        12554,
+        0
+      ],
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-193-sinknook-v1",
+      "species_id": "MN_193",
+      "view": "back",
+      "source": "sprites/mn-f089/front-back.imagegen-v1.png",
+      "crop": [
+        500,
+        490,
+        482,
+        534
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        17145,
+        12554,
+        0
+      ],
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-194-karstalker-v1",
+      "species_id": "MN_194",
+      "view": "front",
+      "source": "sprites/mn-f089/front-back.imagegen-v1.png",
+      "crop": [
+        944,
+        0,
+        592,
+        490
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        21340,
+        11496,
+        0
+      ],
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-194-karstalker-v1",
+      "species_id": "MN_194",
+      "view": "back",
+      "source": "sprites/mn-f089/front-back.imagegen-v1.png",
+      "crop": [
+        982,
+        490,
+        554,
+        534
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        21340,
+        11496,
+        0
+      ],
+      "interior_black_min_samples": 16
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "notes": "Root inspected six native frames: dripstone cone becomes a four-pillar shelf, then a giant open bluff jaw with large column teeth and a readable eye under its overhang. The broad black final mouth is intentional source-authored cavity, not contour expansion. Limestone planes, connected shelf rims and close rear portraits remain clear.",
+    "sheet_sha256": "fe71475a7f003e602a2ea107ec9c773dca469a5435c7c2f60d6e8b9b99294ae2",
+    "outline_profile": "source-contour-v1"
+  }
+}

@@ -1,0 +1,6 @@
+Use case: precise-object-edit
+Edit ONLY the flame of this exact campfire source to produce one original pixel-art animation keyframe.
+Animation keyframe C: FLAME LEANS LEFT. Lift a thin left tongue 2 native pixels and lower the right tongue. Broaden the yellow core toward the left and narrow its top. Make the flame silhouette visibly different but keep its base anchored to the same log center.
+Keep the canvas size, camera, campfire position, transparent background, stone ring, charcoal logs and every gray pixel unchanged. No grass, ground patch, smoke, sparks outside the flame, glow, shadows or text. Do not enlarge or recenter the object.
+Maintain the same chunky source pixel lattice, charcoal outline, yellow #FFFF39 core and orange #FF8408 exterior. No smoothing, gradients or tiny details. Preserve true alpha outside the flame and campfire.
+This is a looping ambient overworld animation for the existing32×32 sprite. Movement should be a modest flicker, not a new campfire design.

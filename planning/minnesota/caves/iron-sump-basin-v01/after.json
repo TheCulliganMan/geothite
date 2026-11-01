@@ -1,0 +1,177 @@
+{
+  "schema_version": 1,
+  "id": "MnIronSump",
+  "tileset": "mn_iron_sump_rock",
+  "dimensions_metatiles": [
+    20,
+    12
+  ],
+  "border_block": 46,
+  "palette_group": "nite",
+  "purpose": "A flooded western drift with two bank climbs, separate eastern workings and the original two-circuit pump gate. Preserve five native shaft pairs and both LODE guards; no Surf is required for progression.",
+  "rows": [
+    "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e",
+    "2e 2e 04 05 05 05 06 2e 2e 2e 2e 2e 2e 2e 2e 2e 04 05 06 2e",
+    "2e 04 0d 0d 42 0d 0d 06 2e 2e 2e 2e 2e 2e 2e 2e 0d 42 1e 2e",
+    "2e 20 30 21 21 21 36 22 2e 2e 2e 04 05 05 05 06 41 2e 2e 2e",
+    "2e 04 0d 3e 27 3d 0d 1e 2e 2e 2e 08 0d 1d 0d 0d 0d 06 2e 2e",
+    "2e 08 0d 26 0f 25 0d 0d 06 2e 2e 08 42 0d 0d 19 0d 1e 2e 2e",
+    "2e 08 0d 43 0f 25 0d 0d 1e 2e 2e 20 0d 0d 0d 0d 0d 1e 2e 2e",
+    "2e 08 0d 0d 43 44 0d 1e 2e 2e 2e 2e 08 0d 1d 0d 0d 1e 2e 2e",
+    "2e 08 0d 0d 0d 0d 0d 1e 2e 2e 2e 2e 08 0d 0d 0d 0d 1e 2e 2e",
+    "2e 20 42 21 21 21 21 22 2e 2e 2e 2e 20 21 21 42 21 22 2e 2e",
+    "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e",
+    "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e"
+  ],
+  "existing_art_source": "planning/minnesota/caves/iron-haulage-rock-v01/current.json",
+  "script_floor_block": "0d",
+  "closed_gate_metatile": [
+    16,
+    3
+  ],
+  "closed_gate_block": "41",
+  "fishing_bank": {
+    "tile": [
+      12,
+      12
+    ],
+    "facing": "left",
+    "water": [
+      11,
+      12
+    ]
+  },
+  "review_viewpoints": [
+    {
+      "id": "west-arrival",
+      "tile": [
+        4,
+        19
+      ]
+    },
+    {
+      "id": "west-bank",
+      "tile": [
+        5,
+        12
+      ]
+    },
+    {
+      "id": "upper-west",
+      "tile": [
+        4,
+        8
+      ]
+    },
+    {
+      "id": "upper-east",
+      "tile": [
+        12,
+        8
+      ]
+    },
+    {
+      "id": "sump-guard",
+      "tile": [
+        13,
+        10
+      ]
+    },
+    {
+      "id": "fishing-bank",
+      "tile": [
+        12,
+        12
+      ]
+    },
+    {
+      "id": "east-arrival",
+      "tile": [
+        30,
+        19
+      ]
+    },
+    {
+      "id": "drain-guard",
+      "tile": [
+        26,
+        17
+      ]
+    },
+    {
+      "id": "gate-read",
+      "tile": [
+        32,
+        8
+      ]
+    },
+    {
+      "id": "pump-pocket",
+      "tile": [
+        34,
+        5
+      ]
+    }
+  ],
+  "base_tileset": "mn_iron_haulage_rock",
+  "derived_blocks": [
+    {
+      "id": "43",
+      "source_tileset": "mn_iron_haulage_rock",
+      "source_block": "26",
+      "tile_quadrant_sources": [
+        {
+          "source_block": "26",
+          "source_quadrant": 0
+        },
+        {
+          "source_block": "26",
+          "source_quadrant": 1
+        },
+        {
+          "source_block": "21",
+          "source_quadrant": 2
+        },
+        {
+          "source_block": "21",
+          "source_quadrant": 3
+        }
+      ],
+      "collision": [
+        "WATER",
+        "WATER",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "id": "44",
+      "source_tileset": "mn_iron_haulage_rock",
+      "source_block": "25",
+      "tile_quadrant_sources": [
+        {
+          "source_block": "25",
+          "source_quadrant": 0
+        },
+        {
+          "source_block": "25",
+          "source_quadrant": 1
+        },
+        {
+          "source_block": "21",
+          "source_quadrant": 2
+        },
+        {
+          "source_block": "21",
+          "source_quadrant": 3
+        }
+      ],
+      "collision": [
+        "WATER",
+        "WATER",
+        "WALL",
+        "WALL"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "status": "PASS_NATIVE_CLOSED_CLIFF_AND_STAIRS",
+  "pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+  "pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33",
+  "upper": [
+    21,
+    39
+  ],
+  "treads": [
+    [
+      21,
+      40
+    ],
+    [
+      21,
+      41
+    ]
+  ],
+  "lower": [
+    21,
+    42
+  ],
+  "side_walls": [
+    [
+      20,
+      41
+    ],
+    [
+      22,
+      41
+    ]
+  ],
+  "closed_gym_cliff_walls": [
+    [
+      25,
+      38
+    ],
+    [
+      25,
+      39
+    ]
+  ],
+  "bidirectional": true,
+  "every_tread_verified": true,
+  "continue_then_descent": true,
+  "source": "crates/crystal-bevy/src/bevy_shell/tests/brainerd_city.rs",
+  "source_sha256": "0a0141ab57a49e1029aa71d692ad55c61257cd4e050421c775327588488bcd69"
+}

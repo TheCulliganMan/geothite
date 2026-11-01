@@ -1,0 +1,233 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F065",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_141": {
+      "species_id": "MN_141",
+      "name": "Springear",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          28,
+          23,
+          16
+        ],
+        [
+          14,
+          9,
+          6
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        17148,
+        6446,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          231,
+          189,
+          132
+        ],
+        [
+          115,
+          74,
+          49
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#E7BD84",
+        "#734A31",
+        "#000000"
+      ]
+    },
+    "MN_142": {
+      "species_id": "MN_142",
+      "name": "Vaultjack",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          28,
+          18,
+          10
+        ],
+        [
+          10,
+          7,
+          7
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        10844,
+        7402,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          231,
+          148,
+          82
+        ],
+        [
+          82,
+          57,
+          57
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#E79452",
+        "#523939",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f065/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png",
+      "target/minnesota-pokemon/gen2-reference/bugs.png"
+    ]
+  },
+  "sprites": [
+    {
+      "id": "mn-141-springear-v1",
+      "species_id": "MN_141",
+      "view": "front",
+      "source": "sprites/mn-f065/mn-141-142.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        620,
+        680
+      ],
+      "fit": [
+        38,
+        38
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        17148,
+        6446,
+        0
+      ]
+    },
+    {
+      "id": "mn-141-springear-v1",
+      "species_id": "MN_141",
+      "view": "back",
+      "source": "sprites/mn-f065/mn-141-142.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        680,
+        620,
+        519
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        17148,
+        6446,
+        0
+      ]
+    },
+    {
+      "id": "mn-142-vaultjack-v1",
+      "species_id": "MN_142",
+      "view": "front",
+      "source": "sprites/mn-f065/mn-141-142.front-back.imagegen-v1.png",
+      "crop": [
+        620,
+        0,
+        692,
+        680
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        10844,
+        7402,
+        0
+      ]
+    },
+    {
+      "id": "mn-142-vaultjack-v1",
+      "species_id": "MN_142",
+      "view": "back",
+      "source": "sprites/mn-f065/mn-141-142.front-back.imagegen-v1.png",
+      "crop": [
+        620,
+        680,
+        692,
+        519
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        10844,
+        7402,
+        0
+      ]
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "notes": "Final source-contour-v1 board visually inspected: spring-ankled youngster develops giant vaulting ear arch and powerful extended hind leg in airborne pose. Colored ear and leg interiors now survive; white face highlight and stepped exterior remain legible. Close rear portraits show napes and shoulder mass with lower bodies cropped. Stage palettes remain consistent front/back and distinct between species.",
+    "sheet_sha256": "2a321c6d7e84a6d8aa637a92c40b0a2962ae67fc8bb774bd68d4e6ab3857b5d5",
+    "outline_profile": "source-contour-v1"
+  }
+}

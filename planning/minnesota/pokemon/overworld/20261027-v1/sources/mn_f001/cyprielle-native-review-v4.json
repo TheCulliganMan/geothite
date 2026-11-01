@@ -1,0 +1,120 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_003",
+  "runtime_token": "CYPRIELLE",
+  "family_id": "MN_F001",
+  "status": "ready_for_root_visual_acceptance",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/cyprielle-v4-phase-x-8-y-4.json",
+  "selected_candidate": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/cyprielle-candidate-v4-phase-x-8-y-4",
+  "source_generation": "built-in ImageGen; allsourceversions retained",
+  "visual_review": {
+    "viewed": [
+      "originalsource",
+      "native1xnormal",
+      "native8xnormal",
+      "native8xshiny"
+    ],
+    "finding": "Two clearfrontdoteyes, plainbackheadwithoutfalseface, singleleftdoteye; independentpalette and canonicalorchididentity. Directionandwalkingposesreadatnativeworldscale. Thincontoursretainminorsamplinggaps but facesarelegible.",
+    "root_acceptance_required": true
+  },
+  "native_validation": {
+    "size": [
+      16,
+      96
+    ],
+    "frames": 6,
+    "cell_size": [
+      16,
+      16
+    ],
+    "fit": [
+      14,
+      14
+    ],
+    "source_sampling": "source_center",
+    "common_source_window_dimensions": [
+      406,
+      406
+    ],
+    "native_bounds": [
+      [
+        1,
+        2,
+        14,
+        13
+      ],
+      [
+        1,
+        2,
+        14,
+        13
+      ],
+      [
+        3,
+        2,
+        10,
+        13
+      ],
+      [
+        1,
+        3,
+        14,
+        12
+      ],
+      [
+        1,
+        3,
+        13,
+        12
+      ],
+      [
+        2,
+        3,
+        11,
+        12
+      ]
+    ],
+    "independent_2bpp_roundtrip": true,
+    "bank_bytes": 384,
+    "alpha_zero_matches_index_zero": true,
+    "normal_palette_exact": true,
+    "shiny_palette_exact": true,
+    "idle_step_changed_pixels": [
+      47,
+      46,
+      39
+    ],
+    "right_frames": "exacthorizontalmirrorofleftatdisplay; no additionalstoredframes",
+    "pixel_painting": false
+  },
+  "evidence": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/cyprielle-v4-phase-x-8-y-4.json",
+      "sha256": "dcbb3270abd5611f6da66f2387bf96a3acaa93b6935ac34c124bf52de9c33f2d"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/cyprielle-candidate-v4-phase-x-8-y-4/compiled-index.json",
+      "sha256": "34cf1647ef3847389a16ef33d021ed42cae1ae75581ff9cb93946d0c3d9a7508"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/cyprielle.overworld.imagegen-v4.png",
+      "sha256": "35ea146bd57fde540b92c25710b0d30c26dacb02ae57842619b846c6d0f45eb1"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/prompt-cyprielle-v4.txt",
+      "sha256": "895720f0ecbee6046a624e35399ed45da6ad7a53d9700a2df5b2bd9b82c8c68e"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/cyprielle-candidate-v4-phase-x-8-y-4/review/line.normal.png",
+      "sha256": "7070ee3dbde06298727ffbcf839a13ce952db7ed64cf56ac8d9706cba846e3e1"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/cyprielle-candidate-v4-phase-x-8-y-4/review/line.normal-8x.png",
+      "sha256": "b42b74b486785cca7833544155a10c3615b1938c435c5f11e53335256df1edde"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/cyprielle-candidate-v4-phase-x-8-y-4/review/line.shiny-8x.png",
+      "sha256": "6aac93275f904d46e33565a5b580a0d1da8796035196b648c7ada7c05977ba62"
+    }
+  ]
+}

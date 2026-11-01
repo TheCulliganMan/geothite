@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_197",
+  "name": "Pailbaron",
+  "family_id": "MN_F090",
+  "generation_tool": "built-in image_gen",
+  "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f090/pailbaron.overworld.imagegen-v1.png",
+  "original_default_output": "/Users/ryanculligan/.codex/generated_images/01a179bf-dc2b-7352-8975-8b8f3a32e33b/exec-e05557ce-592a-46c2-8bad-007e0dfac970.png",
+  "source_sha256": "ad9c415f17a6d31c2c15bfa681c81a3c3ac43fb912412bcb39535dbef31824bf",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f090/prompt-pailbaron-v1.txt",
+  "prompt_sha256": "463e6f2568c6f8802d149cfb978c157c3c1cdb755742b8eb250cc1a8c942387b",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f090/reference-mapping-pailbaron-v1.json",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f090/manifest-pailbaron-v1-pupil-proof.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f090/pailbaron-v1-pupil-proof",
+  "source_pupil_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f090/manifest-pailbaron-v1-pupil-proof.proof.json",
+  "status": "frozen candidate; author actual normal/shiny and source pupils reviewed, root context pending",
+  "accepted": false
+}

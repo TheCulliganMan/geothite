@@ -1,0 +1,608 @@
+[
+  {
+    "queue_number": 180,
+    "dex_number": 180,
+    "master_source_order": 239,
+    "species_id": "MN_163",
+    "name": "Mitwist",
+    "family_id": "MN_F076",
+    "stage": 1,
+    "types": [
+      "GHOST",
+      "FAIRY"
+    ],
+    "evolves_to": "MN_164",
+    "section": "north_shore",
+    "status": "awaiting_generation",
+    "family_job_id": "MN_F076",
+    "selected_reference_path": "target/minnesota-pokemon/native/MN_F076/mn-163-mitwist-v6.front.png",
+    "references": {
+      "front": {
+        "native_png": {
+          "path": "target/minnesota-pokemon/native/MN_F076/mn-163-mitwist-v6.front.png",
+          "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F076/mn-163-mitwist-v6.front.png",
+          "sha256": "d99521063ae6bcd463d427e67e3676989c5cb85212071dae78e04f0bc28e2b28"
+        },
+        "native_indexed_json": {
+          "path": "target/minnesota-pokemon/native/MN_F076/mn-163-mitwist-v6.front.json",
+          "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F076/mn-163-mitwist-v6.front.json",
+          "sha256": "71bf2ba0169eb6b36189790e75773ef01099fffacc178b2a351df873db7aee63"
+        },
+        "native_2bpp": {
+          "path": "target/minnesota-pokemon/native/MN_F076/mn-163-mitwist-v6.front.2bpp",
+          "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F076/mn-163-mitwist-v6.front.2bpp",
+          "sha256": "60ba74149f0c27c9284b2cdb1809758fd4fc46f1c1ea204e36e2cbf133702587"
+        },
+        "source_image": {
+          "path": "planning/minnesota/pokemon/sprites/mn-f076/wardrobe-v6/mitwist-front-back.imagegen-v6.png",
+          "absolute_path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mn-f076/wardrobe-v6/mitwist-front-back.imagegen-v6.png",
+          "sha256": "9626a33d9df194350a3edbe29c788541d2fd08208cb8ec691705299d0569baef"
+        },
+        "source_crop": [
+          0,
+          0,
+          768,
+          1024
+        ],
+        "native_fit": [
+          34,
+          36
+        ],
+        "generation_prompt": {
+          "path": "planning/minnesota/pokemon/sprites/mn-f076/wardrobe-v3/prompt-v3.txt",
+          "absolute_path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mn-f076/wardrobe-v3/prompt-v3.txt",
+          "sha256": "d6699445b2babe30727280f37aad19217b62092f0951b43494760ff7f3524910",
+          "reference_kind": "declared_design_prompt_reference; authoritative view record takes precedence over family default"
+        },
+        "sampling": "source_center",
+        "exterior_contour": "solid",
+        "has_guarded_native_refinements": false,
+        "authority_note": "The current selected native PNG is the design authority; original source may contain detail simplified or refined in canonical conversion."
+      },
+      "back": {
+        "native_png": {
+          "path": "target/minnesota-pokemon/native/MN_F076/mn-163-mitwist-v6.back.png",
+          "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F076/mn-163-mitwist-v6.back.png",
+          "sha256": "b8e2208d0669c3f934c4b6a291434bacacf6d1018893a5df33325470658383d0"
+        },
+        "native_indexed_json": {
+          "path": "target/minnesota-pokemon/native/MN_F076/mn-163-mitwist-v6.back.json",
+          "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F076/mn-163-mitwist-v6.back.json",
+          "sha256": "1cf8346a8a483b03465657740ca0d8c0c8d9e30be9386d65d8e19ee330064007"
+        },
+        "native_2bpp": {
+          "path": "target/minnesota-pokemon/native/MN_F076/mn-163-mitwist-v6.back.2bpp",
+          "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F076/mn-163-mitwist-v6.back.2bpp",
+          "sha256": "f3b6ac90986540652e9ff6334304ba462d1898d4c617cb510e30b8db68eb5304"
+        },
+        "source_image": {
+          "path": "planning/minnesota/pokemon/sprites/mn-f076/wardrobe-v6/mitwist-front-back.imagegen-v6.png",
+          "absolute_path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mn-f076/wardrobe-v6/mitwist-front-back.imagegen-v6.png",
+          "sha256": "9626a33d9df194350a3edbe29c788541d2fd08208cb8ec691705299d0569baef"
+        },
+        "source_crop": [
+          768,
+          0,
+          768,
+          980
+        ],
+        "native_fit": [
+          46,
+          47
+        ],
+        "generation_prompt": {
+          "path": "planning/minnesota/pokemon/sprites/mn-f076/wardrobe-v3/prompt-v3.txt",
+          "absolute_path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mn-f076/wardrobe-v3/prompt-v3.txt",
+          "sha256": "d6699445b2babe30727280f37aad19217b62092f0951b43494760ff7f3524910",
+          "reference_kind": "declared_design_prompt_reference; authoritative view record takes precedence over family default"
+        },
+        "sampling": "source_center",
+        "exterior_contour": "solid",
+        "has_guarded_native_refinements": false,
+        "authority_note": "The current selected native PNG is the design authority; original source may contain detail simplified or refined in canonical conversion."
+      }
+    },
+    "palette": {
+      "species_id": "MN_163",
+      "name": "Mitwist",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          29,
+          27,
+          19
+        ],
+        [
+          10,
+          15,
+          19
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        20349,
+        19946,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          239,
+          222,
+          156
+        ],
+        [
+          82,
+          123,
+          156
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#EFDE9C",
+        "#527B9C",
+        "#000000"
+      ]
+    },
+    "design": {
+      "family_theme": "Lost mismatched winter clothes find one another. One mitten becomes a floating pair of two visibly mismatched mittens; the same two mittens then gather one mismatched triangular shawl, whose billowing cloth grants flight. A collective ghost wardrobe with no hidden body, animal anatomy, hood or hat. The first two stages remain lost Ghost/Fairy objects; completing the shawl releases the lost-object haunting into a reunited Fairy/Flying wardrobe.",
+      "member_body_growth": null,
+      "member_silhouette": null,
+      "family_design_lock": "Root approved all six final wardrobe native views; user authorized completion. One mitten, two mismatched mittens, then same completed pair plus smiling mismatched shawl.",
+      "family_sprite_design": null,
+      "silhouette_invariants_16px": [
+        "Preserve the accepted silhouette, face, limb/wing count and dominant theme shapes shown by the exact selected native references.",
+        "Choose one or two defining visible forms from the family theme; simplify directly for16pixels rather than scaling the battle sprite."
+      ],
+      "priority_invariants_manually_authored": false
+    },
+    "generation_attempts": [],
+    "selected_overworld_source": null,
+    "selected_native_candidate": null,
+    "native_visual_review": null,
+    "integration_proof": null,
+    "overworld_palette_binding": {
+      "transparent_index": 0,
+      "visible_indices": [
+        1,
+        2,
+        3
+      ],
+      "normal_rgb555_words": [
+        32767,
+        20349,
+        19946,
+        0
+      ],
+      "shiny_rgb555_words": [
+        32767,
+        23376,
+        15595,
+        0
+      ],
+      "white_body_region_policy": "Simplify formerly white body/highlight regions to light ink1. Index0 is transparent everywhere, not an opaque white paint color."
+    }
+  },
+  {
+    "queue_number": 181,
+    "dex_number": 181,
+    "master_source_order": 240,
+    "species_id": "MN_164",
+    "name": "Mispair",
+    "family_id": "MN_F076",
+    "stage": 2,
+    "types": [
+      "GHOST",
+      "FAIRY"
+    ],
+    "evolves_to": "MN_165",
+    "section": "north_shore",
+    "status": "awaiting_generation",
+    "family_job_id": "MN_F076",
+    "selected_reference_path": "target/minnesota-pokemon/native/MN_F076/mn-164-mispair-v3.front.png",
+    "references": {
+      "front": {
+        "native_png": {
+          "path": "target/minnesota-pokemon/native/MN_F076/mn-164-mispair-v3.front.png",
+          "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F076/mn-164-mispair-v3.front.png",
+          "sha256": "b09972c24f93404b86390d0f78c50eb95fe19f623cad4bc82d4ea53461f9d006"
+        },
+        "native_indexed_json": {
+          "path": "target/minnesota-pokemon/native/MN_F076/mn-164-mispair-v3.front.json",
+          "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F076/mn-164-mispair-v3.front.json",
+          "sha256": "40972fa02384008621363b3221f49d78c2825e9ddaa4062f3a07b510e7476f8f"
+        },
+        "native_2bpp": {
+          "path": "target/minnesota-pokemon/native/MN_F076/mn-164-mispair-v3.front.2bpp",
+          "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F076/mn-164-mispair-v3.front.2bpp",
+          "sha256": "e7e40833564cfaf8da44f8e5f601780fec31c3860f59175878ba83ae28c5b886"
+        },
+        "source_image": {
+          "path": "planning/minnesota/pokemon/sprites/mn-f076/wardrobe-v3/front-back.imagegen-v3.png",
+          "absolute_path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mn-f076/wardrobe-v3/front-back.imagegen-v3.png",
+          "sha256": "78a339b0d5bce3033c3815eddd77ac07e9669f1478ea25f637839eb43d01ae2a"
+        },
+        "source_crop": [
+          480,
+          0,
+          485,
+          512
+        ],
+        "native_fit": [
+          48,
+          48
+        ],
+        "generation_prompt": {
+          "path": "planning/minnesota/pokemon/sprites/mn-f076/wardrobe-v3/prompt-v3.txt",
+          "absolute_path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mn-f076/wardrobe-v3/prompt-v3.txt",
+          "sha256": "d6699445b2babe30727280f37aad19217b62092f0951b43494760ff7f3524910",
+          "reference_kind": "declared_design_prompt_reference; authoritative view record takes precedence over family default"
+        },
+        "sampling": "source_center",
+        "exterior_contour": "solid",
+        "has_guarded_native_refinements": false,
+        "authority_note": "The current selected native PNG is the design authority; original source may contain detail simplified or refined in canonical conversion."
+      },
+      "back": {
+        "native_png": {
+          "path": "target/minnesota-pokemon/native/MN_F076/mn-164-mispair-v3.back.png",
+          "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F076/mn-164-mispair-v3.back.png",
+          "sha256": "ebf93f926cc6312a9735a5218839faa4cae039da8b7de0bdf0f5207362b518d3"
+        },
+        "native_indexed_json": {
+          "path": "target/minnesota-pokemon/native/MN_F076/mn-164-mispair-v3.back.json",
+          "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F076/mn-164-mispair-v3.back.json",
+          "sha256": "ad17ffb0539d479acbc5373efbbd3d806537e6d309ba4759ac4f74abbb0718fb"
+        },
+        "native_2bpp": {
+          "path": "target/minnesota-pokemon/native/MN_F076/mn-164-mispair-v3.back.2bpp",
+          "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F076/mn-164-mispair-v3.back.2bpp",
+          "sha256": "c086031b6b2ab78716ca4cb031b505d03ad44eea2fa6cb4313fb45288acff6ad"
+        },
+        "source_image": {
+          "path": "planning/minnesota/pokemon/sprites/mn-f076/wardrobe-v3/front-back.imagegen-rear-v4.png",
+          "absolute_path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mn-f076/wardrobe-v3/front-back.imagegen-rear-v4.png",
+          "sha256": "7dbf6edde5cc60a0b61557993d336594d2fd1592a51c1ded3952c38aea60409b"
+        },
+        "source_crop": [
+          480,
+          540,
+          490,
+          380
+        ],
+        "native_fit": [
+          46,
+          47
+        ],
+        "generation_prompt": {
+          "path": "planning/minnesota/pokemon/sprites/mn-f076/wardrobe-v3/prompt-v3.txt",
+          "absolute_path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mn-f076/wardrobe-v3/prompt-v3.txt",
+          "sha256": "d6699445b2babe30727280f37aad19217b62092f0951b43494760ff7f3524910",
+          "reference_kind": "declared_design_prompt_reference; authoritative view record takes precedence over family default"
+        },
+        "sampling": "source_center",
+        "exterior_contour": "solid",
+        "has_guarded_native_refinements": false,
+        "authority_note": "The current selected native PNG is the design authority; original source may contain detail simplified or refined in canonical conversion."
+      }
+    },
+    "palette": {
+      "species_id": "MN_164",
+      "name": "Mispair",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          28,
+          25,
+          18
+        ],
+        [
+          12,
+          19,
+          24
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        19260,
+        25196,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          231,
+          206,
+          148
+        ],
+        [
+          99,
+          156,
+          198
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#E7CE94",
+        "#639CC6",
+        "#000000"
+      ]
+    },
+    "design": {
+      "family_theme": "Lost mismatched winter clothes find one another. One mitten becomes a floating pair of two visibly mismatched mittens; the same two mittens then gather one mismatched triangular shawl, whose billowing cloth grants flight. A collective ghost wardrobe with no hidden body, animal anatomy, hood or hat. The first two stages remain lost Ghost/Fairy objects; completing the shawl releases the lost-object haunting into a reunited Fairy/Flying wardrobe.",
+      "member_body_growth": null,
+      "member_silhouette": null,
+      "family_design_lock": "Root approved all six final wardrobe native views; user authorized completion. One mitten, two mismatched mittens, then same completed pair plus smiling mismatched shawl.",
+      "family_sprite_design": null,
+      "silhouette_invariants_16px": [
+        "Preserve the accepted silhouette, face, limb/wing count and dominant theme shapes shown by the exact selected native references.",
+        "Choose one or two defining visible forms from the family theme; simplify directly for16pixels rather than scaling the battle sprite."
+      ],
+      "priority_invariants_manually_authored": false
+    },
+    "generation_attempts": [],
+    "selected_overworld_source": null,
+    "selected_native_candidate": null,
+    "native_visual_review": null,
+    "integration_proof": null,
+    "overworld_palette_binding": {
+      "transparent_index": 0,
+      "visible_indices": [
+        1,
+        2,
+        3
+      ],
+      "normal_rgb555_words": [
+        32767,
+        19260,
+        25196,
+        0
+      ],
+      "shiny_rgb555_words": [
+        32767,
+        15068,
+        12744,
+        0
+      ],
+      "white_body_region_policy": "Simplify formerly white body/highlight regions to light ink1. Index0 is transparent everywhere, not an opaque white paint color."
+    }
+  },
+  {
+    "queue_number": 182,
+    "dex_number": 182,
+    "master_source_order": 241,
+    "species_id": "MN_165",
+    "name": "Shawlter",
+    "family_id": "MN_F076",
+    "stage": 3,
+    "types": [
+      "FAIRY",
+      "FLYING"
+    ],
+    "evolves_to": null,
+    "section": "north_shore",
+    "status": "awaiting_generation",
+    "family_job_id": "MN_F076",
+    "selected_reference_path": "target/minnesota-pokemon/native/MN_F076/mn-165-shawlter-v7.front.png",
+    "references": {
+      "front": {
+        "native_png": {
+          "path": "target/minnesota-pokemon/native/MN_F076/mn-165-shawlter-v7.front.png",
+          "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F076/mn-165-shawlter-v7.front.png",
+          "sha256": "80a2f7938706f6d012feeaf6544b8be4a39ea7b1eb10f67d22a66a68ba86e6d4"
+        },
+        "native_indexed_json": {
+          "path": "target/minnesota-pokemon/native/MN_F076/mn-165-shawlter-v7.front.json",
+          "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F076/mn-165-shawlter-v7.front.json",
+          "sha256": "1d896d61bfb44ce1624f4e761935795aef9026e61ed2062393e3b55fd2fc201e"
+        },
+        "native_2bpp": {
+          "path": "target/minnesota-pokemon/native/MN_F076/mn-165-shawlter-v7.front.2bpp",
+          "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F076/mn-165-shawlter-v7.front.2bpp",
+          "sha256": "4349dbf7627680e7c25575e60943d664fafa2161182c77729d0ba5bb1c122e22"
+        },
+        "source_image": {
+          "path": "planning/minnesota/pokemon/sprites/mn-f076/wardrobe-v7/shawlter-front-back.native-smile-v10.png",
+          "absolute_path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mn-f076/wardrobe-v7/shawlter-front-back.native-smile-v10.png",
+          "sha256": "98d382b9486ecd28ad86885e87ad2ca633d60c903367c482945d63f30f494506"
+        },
+        "source_crop": [
+          0,
+          0,
+          768,
+          1024
+        ],
+        "native_fit": [
+          54,
+          52
+        ],
+        "generation_prompt": {
+          "path": "planning/minnesota/pokemon/sprites/mn-f076/wardrobe-v3/prompt-v3.txt",
+          "absolute_path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mn-f076/wardrobe-v3/prompt-v3.txt",
+          "sha256": "d6699445b2babe30727280f37aad19217b62092f0951b43494760ff7f3524910",
+          "reference_kind": "declared_design_prompt_reference; authoritative view record takes precedence over family default"
+        },
+        "sampling": "source_center",
+        "exterior_contour": "solid",
+        "has_guarded_native_refinements": false,
+        "authority_note": "The current selected native PNG is the design authority; original source may contain detail simplified or refined in canonical conversion."
+      },
+      "back": {
+        "native_png": {
+          "path": "target/minnesota-pokemon/native/MN_F076/mn-165-shawlter-v7.back.png",
+          "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F076/mn-165-shawlter-v7.back.png",
+          "sha256": "069cccc697f696fabbad731ecd33d5df107f47b617bc21dec04383966fceacb4"
+        },
+        "native_indexed_json": {
+          "path": "target/minnesota-pokemon/native/MN_F076/mn-165-shawlter-v7.back.json",
+          "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F076/mn-165-shawlter-v7.back.json",
+          "sha256": "bab0f38e6cb3f1bd068d400672a8017accd5732387c564db0cec79a5630cacce"
+        },
+        "native_2bpp": {
+          "path": "target/minnesota-pokemon/native/MN_F076/mn-165-shawlter-v7.back.2bpp",
+          "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F076/mn-165-shawlter-v7.back.2bpp",
+          "sha256": "c8c8c86118152f299df40e4f8816a6153bb1233acee986aef16dc35cf972152c"
+        },
+        "source_image": {
+          "path": "planning/minnesota/pokemon/sprites/mn-f076/wardrobe-v7/shawlter-front-back.rear-thumb-v9.png",
+          "absolute_path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mn-f076/wardrobe-v7/shawlter-front-back.rear-thumb-v9.png",
+          "sha256": "000926993f7279aaa952d744cc5ac0664c0bf9f72a74b0dfa96e5bd3e2a3a337"
+        },
+        "source_crop": [
+          768,
+          0,
+          768,
+          800
+        ],
+        "native_fit": [
+          46,
+          47
+        ],
+        "generation_prompt": {
+          "path": "planning/minnesota/pokemon/sprites/mn-f076/wardrobe-v3/prompt-v3.txt",
+          "absolute_path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mn-f076/wardrobe-v3/prompt-v3.txt",
+          "sha256": "d6699445b2babe30727280f37aad19217b62092f0951b43494760ff7f3524910",
+          "reference_kind": "declared_design_prompt_reference; authoritative view record takes precedence over family default"
+        },
+        "sampling": "source_center",
+        "exterior_contour": "solid",
+        "has_guarded_native_refinements": false,
+        "authority_note": "The current selected native PNG is the design authority; original source may contain detail simplified or refined in canonical conversion."
+      }
+    },
+    "palette": {
+      "species_id": "MN_165",
+      "name": "Shawlter",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          30,
+          24,
+          12
+        ],
+        [
+          8,
+          19,
+          23
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        13086,
+        24168,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          247,
+          198,
+          99
+        ],
+        [
+          66,
+          156,
+          189
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#F7C663",
+        "#429CBD",
+        "#000000"
+      ]
+    },
+    "design": {
+      "family_theme": "Lost mismatched winter clothes find one another. One mitten becomes a floating pair of two visibly mismatched mittens; the same two mittens then gather one mismatched triangular shawl, whose billowing cloth grants flight. A collective ghost wardrobe with no hidden body, animal anatomy, hood or hat. The first two stages remain lost Ghost/Fairy objects; completing the shawl releases the lost-object haunting into a reunited Fairy/Flying wardrobe.",
+      "member_body_growth": null,
+      "member_silhouette": null,
+      "family_design_lock": "Root approved all six final wardrobe native views; user authorized completion. One mitten, two mismatched mittens, then same completed pair plus smiling mismatched shawl.",
+      "family_sprite_design": null,
+      "silhouette_invariants_16px": [
+        "Preserve the accepted silhouette, face, limb/wing count and dominant theme shapes shown by the exact selected native references.",
+        "Choose one or two defining visible forms from the family theme; simplify directly for16pixels rather than scaling the battle sprite."
+      ],
+      "priority_invariants_manually_authored": false
+    },
+    "generation_attempts": [],
+    "selected_overworld_source": null,
+    "selected_native_candidate": null,
+    "native_visual_review": null,
+    "integration_proof": null,
+    "overworld_palette_binding": {
+      "transparent_index": 0,
+      "visible_indices": [
+        1,
+        2,
+        3
+      ],
+      "normal_rgb555_words": [
+        32767,
+        13086,
+        24168,
+        0
+      ],
+      "shiny_rgb555_words": [
+        32767,
+        23067,
+        14758,
+        0
+      ],
+      "white_body_region_policy": "Simplify formerly white body/highlight regions to light ink1. Index0 is transparent everywhere, not an opaque white paint color."
+    }
+  }
+]

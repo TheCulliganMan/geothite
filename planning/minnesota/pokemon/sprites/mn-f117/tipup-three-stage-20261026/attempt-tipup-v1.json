@@ -1,0 +1,10 @@
+{
+  "status": "image-returned",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f117/tipup-three-stage-20261026/prompt-tipup-v1.txt",
+  "reference_mapping": "sprites/mn-f117/tipup-three-stage-20261026/reference-mapping-v1.json",
+  "tool_original_path": "/Users/ryanculligan/.codex/generated_images/01a179bf-dc2b-7352-8975-8b8f3a32e33b/exec-8e20e7f2-6511-48b4-bc9e-9692b69edf01.png",
+  "owned_raw_path": "planning/minnesota/pokemon/sprites/mn-f117/tipup-three-stage-20261026/mn-251-252-266.front-back.tipup-v1.png",
+  "sha256": "664841ec0048b28039f4afe6816ec7d6285500bf2d108d96358c7e9a1c3aed12",
+  "all_returned_renders_preserved": true
+}

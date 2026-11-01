@@ -1,0 +1,232 @@
+{
+  "id": "MnR05RockCut",
+  "template": "UnionCave1F",
+  "dimensions_metatiles": [
+    8,
+    10
+  ],
+  "rows": [
+    "2e 2e 2e 2e 2e 2e 2e 2e",
+    "2e 2e 2e 2e 04 06 2e 2e",
+    "2e 2e 04 05 02 07 06 2e",
+    "2e 2e 2d 39 12 21 22 2e",
+    "2e 2e 2e 02 2b 0a 2e 2e",
+    "2e 2e 2e 08 22 2e 2e 2e",
+    "2e 04 02 02 0a 2e 2e 2e",
+    "2e 2e 08 21 22 2e 2e 2e",
+    "2e 2e 07 2e 2e 2e 2e 2e",
+    "2e 2e 2e 2e 2e 2e 2e 2e"
+  ],
+  "exits": [
+    [
+      5,
+      17
+    ],
+    [
+      11,
+      5
+    ]
+  ],
+  "exit_doors": [
+    [
+      16,
+      77
+    ],
+    [
+      30,
+      27
+    ]
+  ],
+  "clear_arrival": [
+    5,
+    16
+  ],
+  "exit_collision": "LADDER",
+  "border_block": 46,
+  "residents": [
+    {
+      "id": "MN_R05_CUT_WALKER",
+      "sprite": "SPRITE_POKEFAN_M",
+      "tile": [
+        5,
+        13
+      ],
+      "facing": "east",
+      "lines": [
+        "Rest a while.",
+        "I'll treat them.",
+        "Both mouths join",
+        "the same old hill."
+      ],
+      "service": "heal_party"
+    }
+  ],
+  "items": [
+    {
+      "id": "MN_R05_ITEM_03",
+      "item": "REPEL",
+      "quantity": 1,
+      "flag": "EVENT_MN_R05_ITEM_03",
+      "tile": [
+        5,
+        5
+      ]
+    }
+  ],
+  "signs": [],
+  "purpose": "Two-mouth limestone rock cut: climb the ordinary fitted stairs to the upper Repel shelf; take a short native downward drop into the lower passage on the return. The original sheltered healer and both hillside mouths remain useful.",
+  "candidate_status": "Verified and selected local RockCut shelf drop, original healer/Repel/two mouths retained. Broad map objective active.",
+  "review_contract": {
+    "quality_revision": "r05-shelf-drop-v01",
+    "palette_group": "nite",
+    "native_stair_blocks": [
+      [
+        4,
+        3
+      ]
+    ],
+    "viewpoints": [
+      {
+        "id": "south-mouth",
+        "tile": [
+          5,
+          16
+        ]
+      },
+      {
+        "id": "healer",
+        "tile": [
+          6,
+          13
+        ]
+      },
+      {
+        "id": "bent-neck",
+        "tile": [
+          8,
+          9
+        ]
+      },
+      {
+        "id": "stair",
+        "tile": [
+          9,
+          7
+        ]
+      },
+      {
+        "id": "cache",
+        "tile": [
+          6,
+          5
+        ]
+      },
+      {
+        "id": "north-mouth",
+        "tile": [
+          11,
+          4
+        ]
+      },
+      {
+        "id": "shelf-drop",
+        "tile": [
+          6,
+          5
+        ]
+      },
+      {
+        "id": "landing",
+        "tile": [
+          6,
+          8
+        ]
+      }
+    ],
+    "notes": "A native39 double lip at6,6/7,6 drops over closed wall courses at6,7/7,7 into6,8/7,8. Both lanes retain an ordinary uphill return through x9 stairs. No diagonal or lateral bypass.",
+    "controller_probes": {
+      "drop": {
+        "approaches": [
+          [
+            6,
+            5
+          ],
+          [
+            7,
+            5
+          ]
+        ],
+        "lips": [
+          [
+            6,
+            6
+          ],
+          [
+            7,
+            6
+          ]
+        ],
+        "courses": [
+          [
+            6,
+            7
+          ],
+          [
+            7,
+            7
+          ]
+        ],
+        "landings": [
+          [
+            6,
+            8
+          ],
+          [
+            7,
+            8
+          ]
+        ],
+        "reverse_button": "up",
+        "ordinary_return": [
+          [
+            7,
+            8
+          ],
+          [
+            8,
+            8
+          ],
+          [
+            9,
+            8
+          ],
+          [
+            9,
+            7
+          ],
+          [
+            9,
+            6
+          ],
+          [
+            9,
+            5
+          ],
+          [
+            8,
+            5
+          ],
+          [
+            7,
+            5
+          ],
+          [
+            6,
+            5
+          ]
+        ]
+      }
+    },
+    "unpublished": false
+  }
+}

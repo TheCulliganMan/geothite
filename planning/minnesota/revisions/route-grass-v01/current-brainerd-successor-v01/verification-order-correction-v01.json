@@ -1,0 +1,5 @@
+{
+  "reason": "Allow completed publisher to build an unselected candidate and run native verification while lint waits for shared build slot. Selection still requires successful lint.",
+  "stopped_own_waiting_pipeline_pid": 36273,
+  "build_wrapper_unchanged_and_still_live": true
+}

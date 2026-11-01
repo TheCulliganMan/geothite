@@ -1,0 +1,233 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F137",
+  "species_id": "MN_303",
+  "name": "Ticklet",
+  "status": "native_compiled_author_inspected_root_world_context_review_pending",
+  "generation_tool": "built-in image_gen",
+  "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f137/ticklet.overworld.imagegen-v2.png",
+  "source_sha256": "8f1c0fe129011ed8fdd047f66cab2fa6fc2be926292ef23db1c4bcfeda816b8f",
+  "original_default_output": "/Users/ryanculligan/.codex/generated_images/01a179bf-dc2b-7352-8975-8b8f3a32e33b/exec-40ccc8aa-078d-44dc-a336-60dd9c81be84.png",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f137/prompt-ticklet-v2.txt",
+  "prompt_sha256": "c96e3160230076995e3da7bf0c3071ce932c8a6e96c7893b4fccfe76d4a75a70",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f137/reference-mapping-ticklet-v2.json",
+  "proposed_native_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f137/manifest-ticklet-v2-pupil-proof.json",
+  "manifest_sha256": "560e33b73bee92c11e1f866d562f27e1fd23279e80fe247e8e8cbb81adcaf95d",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f137/ticklet-v2-pupil-proof",
+  "normal_review": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f137/ticklet-v2-pupil-proof/review/line.normal-8x.png",
+  "review_sha256": "212dbad67d8d906c3c507c86ce472f520d8ef15d82912006df4577aa4c26421e",
+  "palette_rgb555": [
+    32767,
+    10904,
+    21095,
+    0
+  ],
+  "shiny_palette_rgb555": [
+    32767,
+    25078,
+    22022,
+    0
+  ],
+  "native_bounds": [
+    [
+      1,
+      5,
+      12,
+      10
+    ],
+    [
+      2,
+      5,
+      10,
+      10
+    ],
+    [
+      1,
+      5,
+      13,
+      10
+    ],
+    [
+      1,
+      5,
+      12,
+      10
+    ],
+    [
+      2,
+      5,
+      10,
+      9
+    ],
+    [
+      1,
+      5,
+      13,
+      10
+    ]
+  ],
+  "pupil_proof": [
+    {
+      "pose": "down_idle",
+      "source_proven_face_pupils": [
+        [
+          5,
+          12
+        ],
+        [
+          8,
+          12
+        ]
+      ],
+      "source_eye_boxes": [
+        [
+          241,
+          360,
+          253,
+          383
+        ],
+        [
+          313,
+          360,
+          325,
+          383
+        ]
+      ],
+      "other_isolated_ink_details": [],
+      "bounds": [
+        1,
+        5,
+        12,
+        10
+      ]
+    },
+    {
+      "pose": "up_idle",
+      "source_proven_face_pupils": [],
+      "source_eye_boxes": [],
+      "other_isolated_ink_details": [],
+      "bounds": [
+        2,
+        5,
+        10,
+        10
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "source_proven_face_pupils": [
+        [
+          3,
+          11
+        ]
+      ],
+      "source_eye_boxes": [
+        [
+          1129,
+          336,
+          1141,
+          359
+        ]
+      ],
+      "other_isolated_ink_details": [],
+      "bounds": [
+        1,
+        5,
+        13,
+        10
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source_proven_face_pupils": [
+        [
+          5,
+          12
+        ],
+        [
+          8,
+          12
+        ]
+      ],
+      "source_eye_boxes": [
+        [
+          241,
+          804,
+          253,
+          827
+        ],
+        [
+          313,
+          804,
+          325,
+          827
+        ]
+      ],
+      "other_isolated_ink_details": [
+        [
+          9,
+          9
+        ]
+      ],
+      "bounds": [
+        1,
+        5,
+        12,
+        10
+      ]
+    },
+    {
+      "pose": "up_step",
+      "source_proven_face_pupils": [],
+      "source_eye_boxes": [],
+      "other_isolated_ink_details": [],
+      "bounds": [
+        2,
+        5,
+        10,
+        9
+      ]
+    },
+    {
+      "pose": "left_step",
+      "source_proven_face_pupils": [
+        [
+          3,
+          11
+        ]
+      ],
+      "source_eye_boxes": [
+        [
+          1129,
+          779,
+          1141,
+          803
+        ]
+      ],
+      "other_isolated_ink_details": [],
+      "bounds": [
+        1,
+        5,
+        13,
+        10
+      ]
+    }
+  ],
+  "validation_results": {
+    "six_frames_16x16": true,
+    "runtime_png_16x96": true,
+    "native_2bpp_bytes": 384,
+    "tile_decode_matches_png_and_indexed_rows": true,
+    "binary_alpha": true,
+    "transparent_border": true,
+    "three_opaque_inks_only": true,
+    "normal_shiny_palette_words_exact": true,
+    "idle_step_pairs_different": true
+  },
+  "notes": "Actual native inspected: young low gold turtle dome with one raised turquoise triangular ridge, four attached turquoise foot tips and low broad exposed gold face. South two real source-proven pupils/west one real source-proven pupil have four light gold neighbors; anchors same across paired walks. Genuine north rear has plain dome/ridge/tail and no false face. V2 broadened real face preserves shell anatomy; v1 raw/native trials retained. Equal420x340 source crops/common native13 fit, no painted pixels.",
+  "accepted": false
+}

@@ -1,0 +1,9 @@
+{
+  "status": "PASS_CURRENT_INTERNATIONAL_FALLS_LOCAL_NATIVE_AND_PRODUCTION_REVIEW",
+  "pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+  "pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33",
+  "fresh_native_cases": 3,
+  "production_continue_calls": 13,
+  "complete_town_and_two_interiors_exact_to_r17_tested_pack": true,
+  "scope": "Town residents/rooms/carpets/southern R17 road, care/PC/recovery/shop, all missing departure requirements/free inbound care. Full border circuit reward is outside these fresh cases; prior local fixtures explicit, not earned statewide progression. No pack/terrain change or new visual capture."
+}

@@ -1,0 +1,35 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-r16-bank-guidance-v01.crystalpack",
+  "pack_sha256": "87c5fcda9bb9b0264813c99f7f88d12c0a2c3cc4e9a036e0ffeeb1c9d2ea2c47",
+  "content_identity": "57da2d05748a0e05da947b5425e5808af129524a1430c66fbedf97788f13de2d",
+  "parent": {
+    "status": "PASS",
+    "selected_revision": "route_grass_r15_open_shore_spur_revision",
+    "pack": "content-packs/minnesota-current-r15-open-shore-and-spur-v02.crystalpack",
+    "pack_sha256": "e02fb85d4db327d146cee269809b1af3e4b387dc2e29240b71cae0ae5837ec4c",
+    "maps": [
+      "MnR16C00R00",
+      "MnR16C01R00"
+    ],
+    "current_layout": {
+      "path": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R16.after.layout.json",
+      "sha256": "14170b8d63a3209b0c72f1aadbb94fd515bc105827d7b1ff8485cfa0e9f26d28"
+    },
+    "current_dossier": {
+      "path": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R16.dossier.json",
+      "sha256": "3d428be5a64e7111eb11326b449119c04b9c7cdba4a39d44ba4fdf01d68e3af4"
+    },
+    "source_metatiles_exact": 1152
+  },
+  "delta": {
+    "maps": [
+      "MnR16C00R00"
+    ],
+    "map_scripts": [
+      "MN_R16_RIVER_WARDENText",
+      "MN_R16_SIGN_DRAINText"
+    ]
+  },
+  "all_terrain_actors_events_items_encounters_and_battle_inputs_exact": true
+}

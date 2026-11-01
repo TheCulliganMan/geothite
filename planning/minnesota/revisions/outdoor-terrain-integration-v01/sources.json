@@ -1,0 +1,131 @@
+{
+  "kind": "ordered_native_map_authoring_sources",
+  "status": "Selected local native terrain review: exact composition, audio, production traversal, Continue and image review pass; broader map/campaign quality remains open.",
+  "pack": "content-packs/minnesota-current-outdoor-composed-towns-v01.crystalpack",
+  "pack_sha256": "fcac136e08876c25d5c8b6250fc7c0fa1aedbfc6977e165504505b2b4d02016f",
+  "base": {
+    "pack": "content-packs/minnesota-current-duluth-cliff-stairs-v03.crystalpack",
+    "sha256": "6878059cebf9826b319b840bbcb2a8f243a73556c68d00cc0d135ad4a597265f"
+  },
+  "current_layouts": {
+    "MnDuluth": {
+      "path": "planning/minnesota/revisions/duluth-garden-terrace-v02/after.layout.json",
+      "sha256": "5e897305035386ab59478b71556a6cd7df231e3c2f2df6b0d6aebeab795c1ed1"
+    },
+    "MN_R10": {
+      "path": "planning/minnesota/revisions/r10-carrier-plateau-v02/after.layout.json",
+      "sha256": "b06b49c06b87cb2c23ffe6acda417eb10f596237d6d9a69a6d4541bfc1194201"
+    }
+  },
+  "ordered_steps": [
+    {
+      "builder": "revise_duluth_terrace_stairs",
+      "source_files": [
+        "planning/minnesota/revisions/duluth-garden-terrace-v02/before.layout.json",
+        "planning/minnesota/revisions/duluth-garden-terrace-v02/after.layout.json",
+        "planning/minnesota/revisions/duluth-garden-terrace-v02/publication.contract.json"
+      ]
+    },
+    {
+      "builder": "revise_outdoor_stair_landings",
+      "source_files": [
+        "planning/minnesota/revisions/outdoor-stair-landings-v01/recipes.json"
+      ]
+    },
+    {
+      "builder": "revise_outdoor_cliff_joins",
+      "source_files": [
+        "planning/minnesota/revisions/outdoor-stair-landings-v01/cliff-joins.json"
+      ]
+    },
+    {
+      "builder": "revise_outdoor_ramp_stairs",
+      "source_files": [
+        "planning/minnesota/revisions/outdoor-stair-landings-v01/ramp-stairs.json"
+      ]
+    },
+    {
+      "builder": "revise_outdoor_cliff_joins",
+      "source_files": [
+        "planning/minnesota/revisions/outdoor-boulder-setbacks-v01/plan.json"
+      ]
+    },
+    {
+      "builder": "revise_outdoor_cliff_joins",
+      "source_files": [
+        "planning/minnesota/revisions/outdoor-trainer-sightlines-v01/plan.json"
+      ]
+    },
+    {
+      "builder": "revise_outdoor_cliff_joins",
+      "source_files": [
+        "planning/minnesota/revisions/outdoor-cliff-corners-v01/plan.json"
+      ]
+    },
+    {
+      "builder": "revise_outdoor_north_stairs",
+      "source_files": [
+        "planning/minnesota/revisions/outdoor-north-stairs-v01/plan.json"
+      ]
+    },
+    {
+      "builder": "revise_r10_cache",
+      "source_files": [
+        "planning/minnesota/revisions/r10-cache-cliff-v02/before.layout.json",
+        "planning/minnesota/revisions/r10-cache-cliff-v02/after.layout.json",
+        "planning/minnesota/revisions/r10-cache-cliff-v02/dossier.json"
+      ]
+    },
+    {
+      "builder": "revise_r10_west_terrace",
+      "source_files": [
+        "planning/minnesota/revisions/r10-west-terrace-v01/before.layout.json",
+        "planning/minnesota/revisions/r10-west-terrace-v01/after.layout.json",
+        "planning/minnesota/revisions/r10-west-terrace-v01/dossier.json"
+      ]
+    },
+    {
+      "builder": "revise_r10_carrier_plateau",
+      "source_files": [
+        "planning/minnesota/revisions/r10-carrier-plateau-v02/before.layout.json",
+        "planning/minnesota/revisions/r10-carrier-plateau-v02/after.layout.json",
+        "planning/minnesota/revisions/r10-carrier-plateau-v02/dossier.json"
+      ]
+    },
+    {
+      "builder": "revise_grand_rapids_sign_anchors",
+      "source_files": [
+        "planning/minnesota/revisions/route-grass-v01/current-grand-rapids-town-v01/dossier-at-review.json",
+        "planning/minnesota/revisions/route-grass-v01/current-grand-rapids-town-v01/MnGrandRapids.signs-after.v01.json"
+      ]
+    },
+    {
+      "builder": "revise_grand_rapids_depot_facade",
+      "source_files": [
+        "planning/minnesota/revisions/route-grass-v01/current-grand-rapids-town-v01/installed-composed.layout.v01.json",
+        "planning/minnesota/revisions/route-grass-v01/current-grand-rapids-town-v01/buildings-after-composed.layout.v02.json"
+      ]
+    },
+    {
+      "builder": "revise_grand_marais_mart_facade",
+      "source_files": [
+        "planning/minnesota/revisions/route-grass-v01/current-grand-marais-town-v01/before.layout.json",
+        "planning/minnesota/revisions/route-grass-v01/current-grand-marais-town-v01/after.layout.json"
+      ]
+    },
+    {
+      "builder": "revise_rochester_mart_facade",
+      "source_files": [
+        "planning/minnesota/revisions/route-grass-v01/current-rochester-town-v01/before-composed.layout.v01.json",
+        "planning/minnesota/revisions/route-grass-v01/current-rochester-town-v01/after-composed.layout.v01.json"
+      ]
+    }
+  ],
+  "coordinate_convention": "Layout positions are32px metatiles; event/controller positions are16px walking tiles.",
+  "baseline_source_policy": "Canonical Duluth and R10 layouts remain guarded build preimages. For these two current authored layouts use current_layouts. Other corrected maps use the ordered bounded plans above and the selected native pack.",
+  "limits": [
+    "Local traversal fixtures do not prove earned statewide access.",
+    "No reward collection, completed campaign or complete statewide quality acceptance.",
+    "Packs, renders, saves and verification output remain ignored and uncommitted."
+  ]
+}

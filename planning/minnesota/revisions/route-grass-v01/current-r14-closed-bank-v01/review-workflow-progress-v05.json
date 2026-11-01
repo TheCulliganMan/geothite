@@ -1,0 +1,44 @@
+{
+  "pid": 16960,
+  "status": "ALL_COMMANDS_PASS_AWAITING_VISUAL_INSPECTION_AND_SELECTION",
+  "steps": [
+    {
+      "step": "headwaters",
+      "command": [
+        "/Users/ryanculligan/GitHub/geothite/.local/route-grass-review/portable-tools-v01/native-controller",
+        "headwaters::",
+        "--ignored",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "exit_code": 0,
+      "log": ".local/route-grass-review/r14-forest-bank-headwaters-review-v01.log"
+    },
+    {
+      "step": "production-inputs",
+      "command": [
+        "python3",
+        ".local/route-grass-review/check_r14_forest_bank_stdio_v02.py"
+      ],
+      "exit_code": 0,
+      "log": ".local/route-grass-review/r14-forest-bank-production-inputs-review-v01.log"
+    },
+    {
+      "step": "native-captures",
+      "command": [
+        "python3",
+        "planning/minnesota/tools/review_connected_route_native.py",
+        "--pack",
+        "content-packs/minnesota-current-r14-forest-bank-v01.crystalpack",
+        "--binary",
+        ".local/route-grass-review/portable-tools-v01/render_at_location",
+        "--views",
+        "planning/minnesota/revisions/route-grass-v01/current-r14-closed-bank-v01/native-views.json",
+        "--output",
+        "planning/minnesota/renders/route-grass-v01/current-r14-closed-bank-v01/native-v01"
+      ],
+      "exit_code": 0,
+      "log": ".local/route-grass-review/r14-forest-bank-native-captures-review-v01.log"
+    }
+  ]
+}

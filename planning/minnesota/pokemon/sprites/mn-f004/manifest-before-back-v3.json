@@ -1,0 +1,425 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F004",
+  "status": "front-recolored-back-revision-pending",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f004/prompt-v1.txt",
+  "sprites": [
+    {
+      "id": "mn-010-birchit-v2",
+      "species_id": "MN_010",
+      "view": "front",
+      "source": "sprites/mn-f004/mn-010-012.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        460,
+        500
+      ],
+      "fit": [
+        36,
+        36
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13053,
+        4331,
+        0
+      ],
+      "source_palette_rgb555": [
+        32767,
+        11963,
+        12516,
+        0
+      ]
+    },
+    {
+      "id": "mn-010-birchit-v2",
+      "species_id": "MN_010",
+      "view": "back",
+      "source": "sprites/mn-f004/mn-010-012.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        500,
+        460,
+        402
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13053,
+        4331,
+        0
+      ],
+      "source_palette_rgb555": [
+        32767,
+        11963,
+        12516,
+        0
+      ]
+    },
+    {
+      "id": "mn-011-portabeau-v2",
+      "species_id": "MN_011",
+      "view": "front",
+      "source": "sprites/mn-f004/mn-010-012.front-back.imagegen-v1.png",
+      "crop": [
+        460,
+        0,
+        515,
+        500
+      ],
+      "fit": [
+        44,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        7639,
+        15686,
+        0
+      ],
+      "source_palette_rgb555": [
+        32767,
+        11963,
+        12516,
+        0
+      ]
+    },
+    {
+      "id": "mn-011-portabeau-v2",
+      "species_id": "MN_011",
+      "view": "back",
+      "source": "sprites/mn-f004/mn-010-012.front-back.imagegen-v1.png",
+      "crop": [
+        460,
+        500,
+        515,
+        332
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        7639,
+        15686,
+        0
+      ],
+      "source_palette_rgb555": [
+        32767,
+        11963,
+        12516,
+        0
+      ]
+    },
+    {
+      "id": "mn-012-voyagear-v2",
+      "species_id": "MN_012",
+      "view": "front",
+      "source": "sprites/mn-f004/mn-010-012.front-back.imagegen-v1.png",
+      "crop": [
+        975,
+        0,
+        561,
+        500
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        5428,
+        17668,
+        0
+      ],
+      "source_palette_rgb555": [
+        32767,
+        11963,
+        12516,
+        0
+      ]
+    },
+    {
+      "id": "mn-012-voyagear-v2",
+      "species_id": "MN_012",
+      "view": "back",
+      "source": "sprites/mn-f004/mn-010-012.front-back.imagegen-v1.png",
+      "crop": [
+        975,
+        500,
+        561,
+        325
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        5428,
+        17668,
+        0
+      ],
+      "source_palette_rgb555": [
+        32767,
+        11963,
+        12516,
+        0
+      ]
+    }
+  ],
+  "visual_review": {
+    "status": "pending",
+    "notes": [
+      "Individual front palettes reviewed and coherent. Early stages rear crops are enlarged, but later stages remain too small; new authored close back portraits are required. All earlier source/crop/native versions retained."
+    ]
+  },
+  "pokemon_palettes": {
+    "MN_010": {
+      "species_id": "MN_010",
+      "name": "Birchit",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          29,
+          23,
+          12
+        ],
+        [
+          11,
+          7,
+          4
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        13053,
+        4331,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          239,
+          189,
+          99
+        ],
+        [
+          90,
+          57,
+          33
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#EFBD63",
+        "#5A3921",
+        "#000000"
+      ]
+    },
+    "MN_011": {
+      "species_id": "MN_011",
+      "name": "Portabeau",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          23,
+          14,
+          7
+        ],
+        [
+          6,
+          10,
+          15
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        7639,
+        15686,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          189,
+          115,
+          57
+        ],
+        [
+          49,
+          82,
+          123
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#BD7339",
+        "#31527B",
+        "#000000"
+      ]
+    },
+    "MN_012": {
+      "species_id": "MN_012",
+      "name": "Voyagear",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          20,
+          9,
+          5
+        ],
+        [
+          4,
+          8,
+          17
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        5428,
+        17668,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          165,
+          74,
+          41
+        ],
+        [
+          33,
+          66,
+          140
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#A54A29",
+        "#21428C",
+        "#000000"
+      ]
+    }
+  },
+  "back_framing": "rear-crop-candidate-revision-pending",
+  "conversion_revision": "Individual palette mapping from original ink indices; close rear crop from separately authored back view. Original source and all prior native renders retained.",
+  "original_source_palette": {
+    "gbc_rgb5": [
+      [
+        31,
+        31,
+        31
+      ],
+      [
+        27,
+        21,
+        11
+      ],
+      [
+        4,
+        7,
+        12
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ],
+    "gbc_rgb555_words": [
+      32767,
+      11963,
+      12516,
+      0
+    ],
+    "rgb8": [
+      [
+        255,
+        255,
+        255
+      ],
+      [
+        222,
+        173,
+        90
+      ],
+      [
+        33,
+        57,
+        99
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ],
+    "hex": [
+      "#FFFFFF",
+      "#DEAD5A",
+      "#213963",
+      "#000000"
+    ]
+  }
+}

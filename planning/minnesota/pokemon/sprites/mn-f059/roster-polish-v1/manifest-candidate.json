@@ -1,0 +1,347 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F059",
+  "status": "native-conversion-pending",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_128": {
+      "species_id": "MN_128",
+      "name": "Driftpeg",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          20,
+          26,
+          29
+        ],
+        [
+          8,
+          13,
+          18
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        30548,
+        18856,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          165,
+          214,
+          239
+        ],
+        [
+          66,
+          107,
+          148
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#A5D6EF",
+        "#426B94",
+        "#000000"
+      ]
+    },
+    "MN_129": {
+      "species_id": "MN_129",
+      "name": "Fencicle",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          17,
+          24,
+          28
+        ],
+        [
+          7,
+          11,
+          17
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        29457,
+        17767,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          140,
+          198,
+          231
+        ],
+        [
+          57,
+          90,
+          140
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#8CC6E7",
+        "#395A8C",
+        "#000000"
+      ]
+    },
+    "MN_130": {
+      "species_id": "MN_130",
+      "name": "Rimeguard",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          21,
+          27,
+          30
+        ],
+        [
+          5,
+          10,
+          16
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        31605,
+        16709,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          173,
+          222,
+          247
+        ],
+        [
+          41,
+          82,
+          132
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#ADDEF7",
+        "#295284",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f059/prompt-v3.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "board": "target/minnesota-pokemon/gen2-reference/starters.png"
+  },
+  "sprites": [
+    {
+      "id": "mn-128-driftpeg-v3",
+      "species_id": "MN_128",
+      "view": "front",
+      "source": "sprites/mn-f059/mn-128-130.front-back.imagegen-v3.png",
+      "crop": [
+        0,
+        0,
+        400,
+        540
+      ],
+      "fit": [
+        36,
+        36
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        30548,
+        18856,
+        0
+      ],
+      "exterior_contour": "solid",
+      "sampling": "area_vote"
+    },
+    {
+      "id": "mn-128-driftpeg-v3",
+      "species_id": "MN_128",
+      "view": "back",
+      "source": "sprites/mn-f059/mn-128-130.front-back.imagegen-v3.png",
+      "crop": [
+        0,
+        540,
+        400,
+        484
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        30548,
+        18856,
+        0
+      ],
+      "exterior_contour": "solid",
+      "sampling": "area_vote"
+    },
+    {
+      "id": "mn-129-fencicle-v3",
+      "species_id": "MN_129",
+      "view": "front",
+      "source": "sprites/mn-f059/mn-128-130.front-back.imagegen-v3.png",
+      "crop": [
+        400,
+        0,
+        520,
+        540
+      ],
+      "fit": [
+        44,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        29457,
+        17767,
+        0
+      ],
+      "exterior_contour": "solid",
+      "sampling": "area_vote"
+    },
+    {
+      "id": "mn-129-fencicle-v3",
+      "species_id": "MN_129",
+      "view": "back",
+      "source": "sprites/mn-f059/mn-128-130.front-back.imagegen-v3.png",
+      "crop": [
+        400,
+        540,
+        520,
+        484
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        29457,
+        17767,
+        0
+      ],
+      "exterior_contour": "solid",
+      "sampling": "area_vote"
+    },
+    {
+      "id": "mn-130-rimeguard-v3",
+      "species_id": "MN_130",
+      "view": "front",
+      "source": "sprites/mn-f059/mn-128-130.front-back.imagegen-v3.png",
+      "crop": [
+        920,
+        0,
+        616,
+        540
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        31605,
+        16709,
+        0
+      ],
+      "exterior_contour": "solid",
+      "sampling": "area_vote"
+    },
+    {
+      "id": "mn-130-rimeguard-v3",
+      "species_id": "MN_130",
+      "view": "back",
+      "source": "sprites/mn-f059/mn-128-130.front-back.imagegen-v3.png",
+      "crop": [
+        920,
+        540,
+        616,
+        484
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        31605,
+        16709,
+        0
+      ],
+      "exterior_contour": "solid",
+      "sampling": "area_vote"
+    }
+  ],
+  "visual_review": {
+    "status": "pending",
+    "notes": "Final source-contour-v1 board and original v3 source visually inspected: compact frost peg grows into two-rail then three-rail protective quadrupedal snow fence. Front eyes remain small but visible below snowcaps; snow outlines and open rail gaps preserve the intended shapes without broad black flooding. Close rear portraits show upper posts, rail bases and shoulders, cropping feet and lower torso. Distinct ice palettes remain consistent between views; no neighbor crop fragments seen.",
+    "sheet_sha256": "",
+    "outline_profile": "solid-exterior-v1"
+  }
+}

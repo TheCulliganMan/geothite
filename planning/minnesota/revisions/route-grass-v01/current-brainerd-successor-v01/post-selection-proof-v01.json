@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "selected_revision": "route_grass_brainerd_mart_roof_revision",
+  "pack_sha256": "e343cd9c65f7c876946be4b59878eabc564c9c7f42a7f29f54cb1a2fac89396d",
+  "world_only_new_revision_and_selector_changed": true,
+  "all_parent_current_sources_preserved": true,
+  "all768_current_source_metatiles_exact": true,
+  "content_identity_verified": true,
+  "goal_complete": false
+}

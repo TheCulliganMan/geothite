@@ -1,0 +1,21 @@
+{
+  "references": [
+    {
+      "path": "target/minnesota-pokemon/native/MN_F060/mn-131-tugget-v1.front.png",
+      "sha256": "6794c6e484a78d2388006585c46071144480f4bc59f7489584ebefcc641a2c87",
+      "role": "earlier-stage family anatomy only"
+    },
+    {
+      "path": "target/minnesota-pokemon/native/MN_F060/mn-132-lakernaut-v1.front.png",
+      "sha256": "ccf6bac45880b93568c1fd8e448cadf66531262bfe16798f7a340839dc86356c",
+      "role": "earlier-stage family anatomy only"
+    },
+    {
+      "path": "target/minnesota-pokemon/gen2-reference/starters.png",
+      "sha256": "af61f720a75b7e1b8e80ba14e8944612556397eedddd719669dec68b0e0fd534",
+      "role": "authentic native Gen2 pixel clusters and battle framing only"
+    }
+  ],
+  "attached_to_imagegen": true,
+  "preservation": "No reference or existing source/native asset edited."
+}

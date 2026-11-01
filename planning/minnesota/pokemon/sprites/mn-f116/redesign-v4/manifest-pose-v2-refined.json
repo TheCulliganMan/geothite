@@ -1,0 +1,226 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F116",
+  "status": "redesign-v4-native-review-pending",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_250": {
+      "species_id": "MN_250",
+      "name": "Flarkindle",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          27,
+          23,
+          29
+        ],
+        [
+          7,
+          13,
+          11
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        30459,
+        11687,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          222,
+          189,
+          239
+        ],
+        [
+          57,
+          107,
+          90
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#DEBDEF",
+        "#396B5A",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f116/redesign-v4/prompt-v2.txt",
+  "reference_mapping": "sprites/mn-f116/reference-mapping-v1.json",
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-250-flarkindle-v4",
+      "species_id": "MN_250",
+      "view": "front",
+      "source": "sprites/mn-f116/redesign-v4/front-back.imagegen-v2.png",
+      "crop": [
+        0,
+        0,
+        1199,
+        640
+      ],
+      "fit": [
+        52,
+        53
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        30459,
+        11687,
+        0
+      ],
+      "exterior_contour": "solid",
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 12,
+      "sampling": "area_vote",
+      "pixel_edits": [
+        {
+          "x": 23,
+          "y": 21,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 24,
+          "y": 21,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 25,
+          "y": 21,
+          "from": 0,
+          "to": 3
+        },
+        {
+          "x": 23,
+          "y": 22,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 23,
+          "y": 23,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 29,
+          "y": 23,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 31,
+          "y": 23,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 23,
+          "y": 24,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 29,
+          "y": 24,
+          "from": 0,
+          "to": 3
+        },
+        {
+          "x": 31,
+          "y": 24,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 28,
+          "y": 25,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 31,
+          "y": 25,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 29,
+          "y": 26,
+          "from": 0,
+          "to": 3
+        },
+        {
+          "x": 31,
+          "y": 26,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 37,
+          "y": 26,
+          "from": 3,
+          "to": 1
+        }
+      ]
+    },
+    {
+      "id": "mn-250-flarkindle-v4",
+      "species_id": "MN_250",
+      "view": "back",
+      "source": "sprites/mn-f116/redesign-v4/front-back.imagegen-v2.png",
+      "crop": [
+        0,
+        640,
+        1199,
+        672
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        30459,
+        11687,
+        0
+      ],
+      "exterior_contour": "solid",
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 12,
+      "sampling": "area_vote"
+    }
+  ],
+  "source_sha256": "c382dc6c03a11c8748cdaff693301fb889fb8569140378af76e0625015deb758",
+  "visual_review": {
+    "status": "pending",
+    "reviewer": "roster_cut_review",
+    "outline_profile": "solid-exterior-v1",
+    "sheet_sha256": "4f7ea572f33ce8d29eb0d0afa0251f264068793f94f3cf3b775195981d7d0dca",
+    "notes": "Reviewed the complete native front/back sheet: both white eye windows retain dark pupils; the lavender head stays separate from three broad peat ribs and two dark pool gaps. The close rear enlarges the nape and crops the root tassel. Front 56\u00d756 and back 48\u00d748 retain the selected individual four-ink palette and closed exterior contours."
+  },
+  "native_refinement_note": "Guarded native face cleanup separates two upright pupils with white catchlights from the white face and removes one stray black pixel in the lavender hood. Source art, palette and asymmetric pose retained."
+}

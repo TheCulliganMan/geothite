@@ -1,0 +1,9 @@
+# RANGER ROWAN: accepted native and playable
+
+Deliverable: `content-packs/minnesota-npcs-ref-01-v01.crystalpack`. Parent: `content-packs/minnesota-original-npcs-13-v02.crystalpack`. Existing trainers and runtime assets passed preservation checks. Placement: MnR01C00R00 [8, 24], facing south, approach [8, 25].
+
+Six native 16x16 overworld poses and one 56x56 battle sprite share an independent four-color GBC palette. Source: `native-pixels-v3.json`. Placement: `placement-v2.json`. PNG/palette/tile/alpha agreement, nonblank poses, distinct walking pairs and independent tile decode passed.
+
+The production controller test passed exactly once, 0 failures. It checked native art loaders and visible palette, introduction/input ownership, a PP-spending move, battle save/load, a complete legal-input win, defeat flag before render capture, and follow-up talk. Log: `target/npc-sprites/ranger/controller-reference-v01.log`. Actual game captures: `target/npc-sprites/ranger/gameplay-reference-v01`. These images were manually inspected before this record was written: Direct comparison against real Fisher/Teacher/Chris six-pose native sprites at common palette and scale. Revised dome/brim, uncluttered open shirt/collar/cuffs, khaki trousers and boots, dedicated profile braid; dense miniature binocular chest pattern removed, binoculars retained in battle. Green cheek shading removed after own-palette review. Native 1x/8x and actual forest capture reviewed. Full encounter passed in 8.19s. Battle pixels/palette and all gameplay/unrelated content preserved by overworld-only pack update.
+
+Evidence hashes are in `manifest.json`. This record accepts this NPC only; the goal still requires at least 15. Continue one at a time using this pack as the next parent. The generic test runs with explicit CRYSTAL_INTERIOR_PACK, CRYSTAL_ORIGINAL_NPC_SOURCE, POKEGEAR_PC_RENDER_DIR and RUST_MIN_STACK=33554432.

@@ -1,0 +1,14 @@
+{
+  "status": "PASS_LOCAL_ELY_EXTERIOR_DOORS_CONTINUE_AND_EXISTING_PASS_CONNECTIONS",
+  "pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+  "pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33",
+  "fresh_native_facade_cases": 1,
+  "production_building_calls": 197,
+  "buildings": 3,
+  "exterior_entrances": 4,
+  "building_exit_checks": 8,
+  "distinct_exterior_return_carpets": 6,
+  "production_continue": true,
+  "existing_pass_coverage": "planning/minnesota/revisions/route-grass-v01/current-ely-pass-successor-v01/acceptance-v01.json",
+  "limits": "Generic public test fails on walkable sign collision assumption; League registration text test fails its historical wording assertion. Neither is claimed passing. Exterior entry/returns/menus/Continue pass; no League progression or earned regional access claimed. No pack or terrain change."
+}

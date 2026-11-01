@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F102",
+  "species": [
+    {
+      "species_id": "MN_223",
+      "runtime_token": "CINDERFEN",
+      "palette_rgb555": [
+        32767,
+        9789,
+        15595,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        18345,
+        7535,
+        0
+      ],
+      "fit": [
+        14,
+        14
+      ],
+      "alpha_threshold": 245,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 32,
+      "interior_black_samples": null,
+      "opaque_interior_minimum_samples": 60,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "cinderfen.overworld.imagegen-v15.png",
+          "crop": [
+            124,
+            63,
+            368,
+            429
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "cinderfen.overworld.imagegen-v15.png",
+          "crop": [
+            584,
+            68,
+            368,
+            429
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "cinderfen.overworld.imagegen-v15.png",
+          "crop": [
+            1073,
+            69,
+            368,
+            429
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "cinderfen.overworld.imagegen-v15.png",
+          "crop": [
+            125,
+            544,
+            368,
+            429
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "cinderfen.overworld.imagegen-v15.png",
+          "crop": [
+            579,
+            534,
+            368,
+            429
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "cinderfen.overworld.imagegen-v15.png",
+          "crop": [
+            1074,
+            539,
+            368,
+            429
+          ]
+        }
+      ]
+    }
+  ]
+}

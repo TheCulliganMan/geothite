@@ -1,0 +1,10 @@
+{
+  "tool": "built-in image_gen",
+  "original_tool_render": "/Users/ryanculligan/.codex/generated_images/01a179bf-dc2b-7352-8975-8b8f3a32e33b/exec-7bd53fc1-c19b-41b9-a4cc-cf6b18ed6311.png",
+  "preserved_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f053/furrowbank.source-eye-repair-north-v1.png",
+  "raw_sha256": "b2bf55d7eaf94ae66ee78844f17cabb2910a13072a79e9eb9f30f6bd949c9184",
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f053/prompt-furrowbank-source-eye-repair-north-v1.txt",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f053/reference-mapping-furrowbank-source-eye-repair-north-v1.json",
+  "selection": "south frames only; four other source frames remain originalv2",
+  "status": "native frozen, root independent context pending"
+}

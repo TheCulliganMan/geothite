@@ -1,0 +1,176 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F121",
+  "species_id": "MN_260",
+  "name": "Torrout",
+  "status": "native_compiled_author_inspected_root_world_context_review_pending",
+  "generation_tool": "built-in image_gen",
+  "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f121/torrout.overworld.imagegen-v1.png",
+  "source_sha256": "7170108c943f2d2404a395f50f1cb9af20ee8dad1af0dcb3a4b8790460320835",
+  "original_default_output": "/Users/ryanculligan/.codex/generated_images/01a179bf-dc2b-7352-8975-8b8f3a32e33b/exec-0a393180-ef78-41c5-8bbd-9a0a2944af23.png",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f121/prompt-torrout-v1.txt",
+  "prompt_sha256": "1b9783941d864772239bfd44bfd01f8650c2e4cd3fd844eb21e2271018c9767a",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f121/reference-mapping-torrout-v1.json",
+  "proposed_native_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f121/manifest-torrout-v1-phase-eyes.json",
+  "manifest_sha256": "3a0898612d88870558976bb740ef8add99f8a6c208080b9877d905a6ba08d100",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f121/torrout-v1-phase-eyes",
+  "normal_review": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f121/torrout-v1-phase-eyes/review/line.normal-8x.png",
+  "review_sha256": "1dc52acd71cf3aa70e3bcc78b397b1288fb714010cec38914153c00bc12347d4",
+  "palette_rgb555": [
+    32767,
+    18235,
+    9607,
+    0
+  ],
+  "shiny_palette_rgb555": [
+    32767,
+    26481,
+    12521,
+    0
+  ],
+  "native_bounds": [
+    [
+      3,
+      3,
+      11,
+      12
+    ],
+    [
+      1,
+      3,
+      11,
+      12
+    ],
+    [
+      2,
+      4,
+      13,
+      9
+    ],
+    [
+      3,
+      3,
+      12,
+      11
+    ],
+    [
+      1,
+      3,
+      11,
+      12
+    ],
+    [
+      2,
+      3,
+      13,
+      10
+    ]
+  ],
+  "pupil_proof": [
+    {
+      "pose": "down_idle",
+      "isolated_light_face_dots": [
+        [
+          7,
+          12
+        ],
+        [
+          9,
+          12
+        ]
+      ],
+      "bounds": [
+        3,
+        3,
+        11,
+        12
+      ]
+    },
+    {
+      "pose": "up_idle",
+      "isolated_light_face_dots": [],
+      "bounds": [
+        1,
+        3,
+        11,
+        12
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "isolated_light_face_dots": [
+        [
+          3,
+          9
+        ]
+      ],
+      "bounds": [
+        2,
+        4,
+        13,
+        9
+      ]
+    },
+    {
+      "pose": "down_step",
+      "isolated_light_face_dots": [
+        [
+          7,
+          12
+        ],
+        [
+          9,
+          12
+        ]
+      ],
+      "bounds": [
+        3,
+        3,
+        12,
+        11
+      ]
+    },
+    {
+      "pose": "up_step",
+      "isolated_light_face_dots": [],
+      "bounds": [
+        1,
+        3,
+        11,
+        12
+      ]
+    },
+    {
+      "pose": "left_step",
+      "isolated_light_face_dots": [
+        [
+          3,
+          9
+        ]
+      ],
+      "bounds": [
+        2,
+        3,
+        13,
+        10
+      ]
+    }
+  ],
+  "validation_results": {
+    "six_frames_16x16": true,
+    "runtime_png_16x96": true,
+    "native_2bpp_bytes": 384,
+    "tile_decode_matches_png_and_indexed_rows": true,
+    "binary_alpha": true,
+    "transparent_border": true,
+    "three_opaque_inks_only": true,
+    "normal_shiny_palette_words_exact": true,
+    "idle_step_pairs_different": true
+  },
+  "notes": "Actual native inspected: broad light-gold blunt face with two isolated south dot pupils and one west dot, anchors identical across flex pairs. Plain north back; gold flank patches simplify differently across poses but do not form a face. Heavy olive/gold C-body, raised squared tail, broad gold underbelly bow-fin best visible west. Larger mass/fin than Rillbow. Equal450x430 source registration/common native14 fit, no painting.",
+  "accepted": false
+}

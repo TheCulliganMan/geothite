@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "trainer_class": "MN_MAPLE_TAPPER",
+  "class_name": "MAPLE TAPPER",
+  "trainer_ids": [
+    "MN_R05_T05"
+  ],
+  "actors": [
+    {
+      "map": "MnR05C00R00",
+      "script": "MN_R05_T05",
+      "tile": [
+        33,
+        29
+      ],
+      "previous_sprite": "SPRITE_SUPER_NERD"
+    }
+  ]
+}

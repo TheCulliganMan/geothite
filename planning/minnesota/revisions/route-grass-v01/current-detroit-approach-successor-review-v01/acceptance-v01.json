@@ -1,0 +1,16 @@
+{
+  "status": "PASS_CURRENT_SELECTED_PACK_REVIEW",
+  "pack": "content-packs/minnesota-current-r19-detroit-gate-v05.crystalpack",
+  "pack_sha256": "b57516c0b77c7bcf94fa35e60ff8300bfd8a8781782827739742d8fc15b3f437",
+  "native_cases": 3,
+  "stdio_calls": 15,
+  "grass_quadrants": 44,
+  "minimum_grass_steps_eastbound": 11,
+  "minimum_grass_steps_westbound": 13,
+  "uphill_grass_steps": 3,
+  "dry_downhill_steps": 3,
+  "prior_terrain_art_exact": true,
+  "whole_map_inspected": "planning/minnesota/renders/route-grass-v01/current-detroit-approach-v01/source-candidate-v01/after.png",
+  "prior_native_pixel_evidence": "planning/minnesota/revisions/route-grass-v01/current-detroit-approach-v01/acceptance.json",
+  "scope": "Exact complete map/used art inheritance, fresh native gameplay and production Continue. Actual Approach-to-Detroit and Route16 ports proved; new Route19 gate has separate accepted cases. Initial QA party/badges/position are not earned progression; statewide review active."
+}

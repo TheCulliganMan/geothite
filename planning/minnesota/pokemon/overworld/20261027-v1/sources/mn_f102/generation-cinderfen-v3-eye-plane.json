@@ -1,0 +1,7 @@
+{
+  "tool": "built-in imagegen",
+  "default_path": "/Users/ryanculligan/.codex/generated_images/01a178da-4cf1-7e01-8516-667a332dc790/exec-94d200fc-3b10-43b1-99a2-8a975d8901ef.png",
+  "workspace_path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f102/cinderfen.overworld.imagegen-v3-eye-plane.png",
+  "sha256": "fdb976e8ad20864dc95a7b3e2596a3cb29962722e61ee1239884b0571ff3612d",
+  "prompt": "prompt-cinderfen-native-eye-plane-v3.txt"
+}

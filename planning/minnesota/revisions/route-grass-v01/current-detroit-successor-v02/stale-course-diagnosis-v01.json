@@ -1,0 +1,19 @@
+{
+  "status": "CURRENT_TEST_CONTRACT_REPAIR_REQUIRED",
+  "fresh_passes": [
+    "native_care_pc_and_priced_shop",
+    "ranger_denies_each_missing_requirement"
+  ],
+  "failed_historical_assumptions": [
+    {
+      "test": "all_rooms_residents_carpets_and_two_real_roads",
+      "cause": "Final closed woodland boundary at24,2 is superseded by authored R19 gatehouse; prior room/public/road/beach actions completed before stale endpoint."
+    },
+    {
+      "test": "observations_persist_on_the_real_itasca_return",
+      "cause": "Initial R19 local24,10 is now WALL; historical route sign course must be reauthored against current R19 and gatehouse."
+    }
+  ],
+  "next_action": "Repair scoped controller contracts using current R19 gatehouse and authored survey signs; preserve existing gatehouse and grass geometry. Run remaining full-pocket case separately.",
+  "scope": "Retained failures are evidence of stale tests, not proof current traversal passes. Broader goal remains active."
+}

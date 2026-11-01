@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "selected_revision": "route_grass_r13_pine_revision",
+  "native_source_metatiles_exact": 2048,
+  "all_three_chunks_bound": true,
+  "grass_quadrants": 208,
+  "inland_ice_quadrants": 16,
+  "parent_unknown_source_fields_preserved": true,
+  "goal_complete": false
+}

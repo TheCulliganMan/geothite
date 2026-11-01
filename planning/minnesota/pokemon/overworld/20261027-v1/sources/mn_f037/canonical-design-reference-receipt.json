@@ -1,0 +1,27 @@
+{
+  "family_id": "MN_F037",
+  "selected_native_front_back_and_original_family_source_actually_viewed": true,
+  "refs": {
+    "Scraplow": {
+      "front": {
+        "path": "target/minnesota-pokemon/native/MN_F037/mn-087-scraplow-v1.front.png",
+        "sha256": "921d54a243655229223a8b1df112abee11e3e9bc04df3c743cbb97772e311cab"
+      },
+      "back": {
+        "path": "target/minnesota-pokemon/native/MN_F037/mn-087-scraplow-v1.back.png",
+        "sha256": "d27cc650670a50d2a311bb7027a0dd54338b930436930d91f842333e76f1b2dc"
+      }
+    },
+    "Plowzer": {
+      "front": {
+        "path": "target/minnesota-pokemon/native/MN_F037/mn-088-plowzer-v1.front.png",
+        "sha256": "74b19b90bfcf8e2a1b95ab00642ba906b4ed16f40efd3198eac34f4b75252962"
+      },
+      "back": {
+        "path": "target/minnesota-pokemon/native/MN_F037/mn-088-plowzer-v1.back.png",
+        "sha256": "83cfde857f852cfa28fa86637903ceccd404b9f7f9ad18cf89aa20e171f8f0a0"
+      }
+    }
+  },
+  "body_lock": "Both quadrupedal snowplow machines with four spring/armored legs and one compact upturned rear pipe tail. Scraplow has two round headlamp/eyestalk eyes, one flat shovel face blade, small rounded shell. Plowzer has low hood head with two actual face eyes, broad V plow blade, two snow-covered shoulder masses, heavy armored feet and compact curled pipe tail. Neither has arms, hands, human body or wheels."
+}

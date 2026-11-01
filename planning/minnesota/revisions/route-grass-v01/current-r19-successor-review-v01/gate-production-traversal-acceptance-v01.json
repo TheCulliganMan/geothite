@@ -1,0 +1,31 @@
+{
+  "status": "PASS_PRODUCTION_TRAVERSAL_SOURCE_CHECKS_PENDING",
+  "pack": "content-packs/minnesota-current-r19-detroit-gate-v04.crystalpack",
+  "pack_sha256": "de1add590013c786bd3a2770c58ff46c656930cc3dd3944af203f7480e292e21",
+  "receipts": [
+    {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r19-successor-review-v01/gate-land-course-production-v02.json",
+      "sha256": "8a26fa0c7f830953a653d4984dda5620f8911b7736e50f619d52cc6d4a3792cf"
+    },
+    {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r19-successor-review-v01/gate-connections-production-v01.json",
+      "sha256": "e9571d83a1b7bca580906f9e7f8b49f181f32e2b27afc737916fb6001a4c55c7"
+    },
+    {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-r19-successor-review-v01/gate-denial-production-v01.json",
+      "sha256": "699715c696baf9b3b16c8084a965024db5e1bb0c76b54b72302c6f1446360faa"
+    }
+  ],
+  "total_production_calls": 3723,
+  "verified": [
+    "All four dry native drops and blocked reverse directions",
+    "All four ordinary uphill returns through grass",
+    "Both native stair crossings",
+    "Both room north/south carpet lanes and both route gate entrances",
+    "Detroit Lakes and actual Lake Itasca guarded corridor round trips",
+    "Six zero-badge northbound denials across Continue with both native rendered dialogue pages",
+    "Free return to Detroit, unchanged badge/money state, immutable source saves"
+  ],
+  "qa_limits": "Separate populated Mew60/zero-badge and empty-party/six-badge native fixtures; not earned statewide progression.",
+  "remaining": "Corrected native three-case harness rebuild/replay and affected-crate lint before final source selection"
+}

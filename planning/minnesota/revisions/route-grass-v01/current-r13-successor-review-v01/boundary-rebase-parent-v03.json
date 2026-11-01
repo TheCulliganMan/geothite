@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "parent_revision": "iron_ventilation_cleft_revision",
+  "pack": "content-packs/minnesota-iron-ventilation-cleft-v03.crystalpack",
+  "pack_sha256": "283c214cda8f5ed04e878bed7e698cc08d9f8a764ae9553161113d4837762330",
+  "only_changed_complete_map": [
+    "MnIronVentilation"
+  ],
+  "current_route_neighbor_art_and_battle_inputs_exact": true
+}

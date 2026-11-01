@@ -1,0 +1,99 @@
+{
+  "use_case": "precise-object-edit",
+  "inputs": [
+    {
+      "role": "edit target",
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f044/babehemoth.overworld.imagegen-v7-redraw.png"
+    },
+    {
+      "role": "native16 style only",
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png"
+    }
+  ],
+  "canonical_identity_refs_actually_viewed": {
+    "front": {
+      "native_png": {
+        "path": "target/minnesota-pokemon/native/MN_F044/mn-095-babehemoth-v1.front.png",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F044/mn-095-babehemoth-v1.front.png",
+        "sha256": "402d42e88ccfec404a1cde7602d7b3c05f8391c1094c90a405354efa7c1964ce"
+      },
+      "native_indexed_json": {
+        "path": "target/minnesota-pokemon/native/MN_F044/mn-095-babehemoth-v1.front.json",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F044/mn-095-babehemoth-v1.front.json",
+        "sha256": "056b13ac70659f0897ffe713a05dc90116511dd6a16bae78397aca74656c411a"
+      },
+      "native_2bpp": {
+        "path": "target/minnesota-pokemon/native/MN_F044/mn-095-babehemoth-v1.front.2bpp",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F044/mn-095-babehemoth-v1.front.2bpp",
+        "sha256": "cb82429a95a8437bf0e6812a0ec6b244d7acf810c29541fe271c451e02e569b8"
+      },
+      "source_image": {
+        "path": "planning/minnesota/pokemon/sprites/mn-f044/front-back.imagegen-v1.png",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mn-f044/front-back.imagegen-v1.png",
+        "sha256": "9c04aefb49e99d31c600e0e8e1e67ea271758aabff80414f873bf26bc4b2d9c4"
+      },
+      "source_crop": [
+        0,
+        0,
+        1199,
+        656
+      ],
+      "native_fit": [
+        54,
+        54
+      ],
+      "generation_prompt": {
+        "path": "planning/minnesota/pokemon/sprites/mn-f044/prompt-v1.txt",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mn-f044/prompt-v1.txt",
+        "sha256": "2649b2054b1614b7356e1f8a588cfede1f7c52652909621d2f4329c79d4d4760",
+        "reference_kind": "declared_design_prompt_reference; authoritative view record takes precedence over family default"
+      },
+      "sampling": "area_vote",
+      "exterior_contour": "source_backed",
+      "has_guarded_native_refinements": false,
+      "authority_note": "The current selected native PNG is the design authority; original source may contain detail simplified or refined in canonical conversion."
+    },
+    "back": {
+      "native_png": {
+        "path": "target/minnesota-pokemon/native/MN_F044/mn-095-babehemoth-v1.back.png",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F044/mn-095-babehemoth-v1.back.png",
+        "sha256": "8a808e56bcde35b9bc220a1483f6996d7a31175fc00255bf6198af8849e41d9a"
+      },
+      "native_indexed_json": {
+        "path": "target/minnesota-pokemon/native/MN_F044/mn-095-babehemoth-v1.back.json",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F044/mn-095-babehemoth-v1.back.json",
+        "sha256": "f833362b00f568269e748ff9795acb0f78cc8943d740880e63b7feacc833db81"
+      },
+      "native_2bpp": {
+        "path": "target/minnesota-pokemon/native/MN_F044/mn-095-babehemoth-v1.back.2bpp",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F044/mn-095-babehemoth-v1.back.2bpp",
+        "sha256": "3ed381d73b35bb709ed82db682b93da1ec3bdd3928bad1961b248515bc54c2af"
+      },
+      "source_image": {
+        "path": "planning/minnesota/pokemon/sprites/mn-f044/front-back.imagegen-v1.png",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mn-f044/front-back.imagegen-v1.png",
+        "sha256": "9c04aefb49e99d31c600e0e8e1e67ea271758aabff80414f873bf26bc4b2d9c4"
+      },
+      "source_crop": [
+        0,
+        656,
+        1199,
+        656
+      ],
+      "native_fit": [
+        46,
+        47
+      ],
+      "generation_prompt": {
+        "path": "planning/minnesota/pokemon/sprites/mn-f044/prompt-v1.txt",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mn-f044/prompt-v1.txt",
+        "sha256": "2649b2054b1614b7356e1f8a588cfede1f7c52652909621d2f4329c79d4d4760",
+        "reference_kind": "declared_design_prompt_reference; authoritative view record takes precedence over family default"
+      },
+      "sampling": "area_vote",
+      "exterior_contour": "source_backed",
+      "has_guarded_native_refinements": false,
+      "authority_note": "The current selected native PNG is the design authority; original source may contain detail simplified or refined in canonical conversion."
+    }
+  }
+}

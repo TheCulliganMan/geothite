@@ -1,0 +1,130 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F040",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_091": {
+      "species_id": "MN_091",
+      "name": "Goosnide",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          24,
+          25,
+          20
+        ],
+        [
+          6,
+          9,
+          11
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        21304,
+        11558,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          198,
+          206,
+          165
+        ],
+        [
+          49,
+          74,
+          90
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#C6CEA5",
+        "#314A5A",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f040/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png",
+      "target/minnesota-pokemon/gen2-reference/bugs.png"
+    ]
+  },
+  "sprites": [
+    {
+      "id": "mn-091-goosnide-v1",
+      "species_id": "MN_091",
+      "view": "front",
+      "source": "sprites/mn-f040/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        1245,
+        631
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        21304,
+        11558,
+        0
+      ]
+    },
+    {
+      "id": "mn-091-goosnide-v1",
+      "species_id": "MN_091",
+      "view": "back",
+      "source": "sprites/mn-f040/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        631,
+        1245,
+        632
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        21304,
+        11558,
+        0
+      ]
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "notes": "Inspected frozen v1: Goosnide welcoming wing and threatening feather-hand remain readable; dark neck/cream chest edges are coherent. Close rear head/shoulders match front without outline dots or cell bleed.",
+    "sheet_sha256": "dba55e5a34c543d9ff90078f492be5e0ae27093bcfc6e70789bfaf6ed6c85e4e",
+    "outline_profile": "source-contour-v1"
+  }
+}

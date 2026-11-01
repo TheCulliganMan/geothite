@@ -1,0 +1,229 @@
+{
+  "schema_version": 1,
+  "manifest": "minnesota-interior-layout-harbor-care-v1",
+  "rooms": [
+    {
+      "map": "MnDuluthFieldClinic",
+      "intent": "Complete native treatment desk and shift display, with a public waiting bench and the original free-care nurse behind a real counter.",
+      "before_tileset": "facility",
+      "before_rows": [
+        "17 17 17 17 17 17 17 17",
+        "17 01 01 01 01 01 01 17",
+        "17 1b 1b 1b 1b 1b 1b 17",
+        "17 1a 1b 1b 1b 1a 1b 17",
+        "17 1b 1b 1b 1b 1b 1b 17",
+        "17 17 17 17 0c 17 17 17"
+      ],
+      "tileset": "pokecenter",
+      "border_block": 0,
+      "rows": [
+        "00 00 00 00 00 00 00 00",
+        "00 00 00 00 00 00 00 00",
+        "00 01 02 03 13 13 09 00",
+        "00 05 06 07 04 04 0d 00",
+        "00 04 04 04 04 2e 2f 00",
+        "00 00 00 00 24 00 00 00"
+      ],
+      "arrival": [
+        8,
+        9
+      ],
+      "actor_approaches": [
+        {
+          "script": "MN_DULUTH_X_FIELDCLINIC_F1_HOST",
+          "tile": [
+            5,
+            7
+          ],
+          "counter_tile": [
+            5,
+            6
+          ]
+        },
+        {
+          "script": "MN_DL_INTERIOR_CLINIC_VISITOR",
+          "tile": [
+            10,
+            6
+          ]
+        }
+      ],
+      "exhibits": [
+        {
+          "id": "MN_INTERIOR_DETAIL_HARBOR_CLINIC_SHIFT",
+          "tile": [
+            7,
+            6
+          ],
+          "approach": [
+            7,
+            7
+          ],
+          "lines": [
+            "The desk display lists deck crews, hill walkers, and first trips in the same column. The fee column is blank. Someone has underlined: Rest counts as work."
+          ]
+        },
+        {
+          "id": "MN_INTERIOR_DETAIL_CLINIC_RETURN_SLIPS",
+          "tile": [
+            6,
+            6
+          ],
+          "approach": [
+            6,
+            7
+          ],
+          "lines": [
+            "A tray holds return-to-shift slips. Most say: Tomorrow. A careful note adds: Your partner does not have to earn a rest."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthBeachShelter",
+      "intent": "A warm timber shelter with a stove, dry cot, found-mitten cupboard and shared cleanup table; preserve the existing free rest.",
+      "before_tileset": "house",
+      "before_rows": [
+        "0a 0a 0a 0a 0a 0a",
+        "0a 04 1e 05 1d 0a",
+        "0a 0f 0f 0f 0f 0a",
+        "0a 01 02 0f 0f 0a",
+        "0a 0c 0d 0f 0f 0a",
+        "0a 0a 0a 0b 0a 0a"
+      ],
+      "tileset": "players_house",
+      "border_block": 0,
+      "rows": [
+        "00 00 00 00 00 00",
+        "00 07 11 1b 1a 00",
+        "00 03 03 03 03 00",
+        "00 1c 03 08 09 00",
+        "00 03 03 0c 0d 00",
+        "00 00 00 06 00 00"
+      ],
+      "arrival": [
+        6,
+        9
+      ],
+      "actor_approaches": [
+        {
+          "script": "MN_DULUTH_X_BEACHSHELTER_F1_HOST",
+          "tile": [
+            5,
+            6
+          ]
+        },
+        {
+          "script": "MN_DL_INTERIOR_BEACHCOMBER",
+          "tile": [
+            8,
+            4
+          ]
+        }
+      ],
+      "exhibits": [
+        {
+          "id": "MN_INTERIOR_DETAIL_POINT_FOUND_MITTEN",
+          "tile": [
+            6,
+            3
+          ],
+          "approach": [
+            6,
+            4
+          ],
+          "lines": [
+            "The dry-mitten shelf has room for a single red mitten. A card says: Found by the point. Take it if it is yours. Nobody has added a deadline."
+          ]
+        },
+        {
+          "id": "MN_INTERIOR_DETAIL_POINT_DRY_COT",
+          "tile": [
+            2,
+            7
+          ],
+          "approach": [
+            3,
+            7
+          ],
+          "lines": [
+            "A dry blanket waits beside the cot. The cleanup crew wrote: Cold feet first, agates later. The kettle stays on even when the lake looks empty."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluthHarborWorkshop",
+      "intent": "Replace the pair of household dining tables with one long cable/chart bench and a signal-log cupboard; retain both receiver staff, TV, radio and the original harbor-signal story.",
+      "before_tileset": "house",
+      "before_rows": [
+        "0a 0a 0a 0a 0a 0a 0a 0a",
+        "0a 04 1e 05 1d 04 04 0a",
+        "0a 0f 0f 0f 0f 0f 0f 0a",
+        "0a 01 02 0f 0f 01 02 0a",
+        "0a 0c 0d 0f 0f 0c 0d 0a",
+        "0a 0a 0a 0a 0b 0a 0a 0a"
+      ],
+      "tileset": "house",
+      "border_block": 10,
+      "rows": [
+        "0a 0a 0a 0a 0a 0a 0a 0a",
+        "0a 04 1e 05 1d 04 04 0a",
+        "0a 01 02 0f 0f 0f 0f 0a",
+        "0a 21 22 0f 0f 0f 1a 0a",
+        "0a 0c 0d 0f 0f 0f 0f 0a",
+        "0a 0a 0a 0a 0b 0a 0a 0a"
+      ],
+      "arrival": [
+        8,
+        9
+      ],
+      "actor_approaches": [
+        {
+          "script": "MN_HARBOR_RECEIVER",
+          "tile": [
+            11,
+            6
+          ]
+        },
+        {
+          "script": "MnDuluthHarborWorkshop_MN_DULUTH_WORKSHOP_KEEPER",
+          "tile": [
+            5,
+            6
+          ]
+        }
+      ],
+      "exhibits": [
+        {
+          "id": "MN_INTERIOR_DETAIL_HARBOR_CABLE_SPLICE",
+          "tile": [
+            4,
+            7
+          ],
+          "approach": [
+            5,
+            7
+          ],
+          "lines": [
+            "The long bench holds a cable-splice diagram and a flattened pasty wrapper. Someone kept the wrapper: its clean side was just right for drawing the missing connection."
+          ]
+        },
+        {
+          "id": "MN_INTERIOR_DETAIL_HARBOR_SIGNAL_LOG",
+          "tile": [
+            12,
+            7
+          ],
+          "approach": [
+            11,
+            7
+          ],
+          "lines": [
+            "The log pairs every test signal with a name and time. Its last note says: Check the wire before you blame Lake Superior. The older weather records belong in the reading hall."
+          ]
+        }
+      ]
+    }
+  ]
+}

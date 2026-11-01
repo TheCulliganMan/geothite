@@ -1,0 +1,34 @@
+[
+  {
+    "id": "west-closed-faces",
+    "map": "MnR14C00R00",
+    "core": [
+      21,
+      23
+    ]
+  },
+  {
+    "id": "four-working-lanes",
+    "map": "MnR14C00R00",
+    "core": [
+      29,
+      23
+    ]
+  },
+  {
+    "id": "east-closed-faces",
+    "map": "MnR14C00R00",
+    "core": [
+      33,
+      23
+    ]
+  },
+  {
+    "id": "grassy-uphill-return",
+    "map": "MnR14C00R00",
+    "core": [
+      15,
+      24
+    ]
+  }
+]

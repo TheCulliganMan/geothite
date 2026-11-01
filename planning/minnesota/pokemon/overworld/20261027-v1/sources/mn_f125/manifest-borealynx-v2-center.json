@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F125",
+  "species": [
+    {
+      "species_id": "MN_276",
+      "runtime_token": "BOREALYNX",
+      "palette_rgb555": [
+        32767,
+        6654,
+        29521,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        31122,
+        14076,
+        0
+      ],
+      "fit": [
+        14,
+        14
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 64,
+      "interior_black_samples": 64,
+      "opaque_interior_minimum_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "borealynx.overworld.imagegen-v2.png",
+          "crop": [
+            90,
+            110,
+            440,
+            420
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "borealynx.overworld.imagegen-v2.png",
+          "crop": [
+            555,
+            110,
+            440,
+            420
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "borealynx.overworld.imagegen-v2.png",
+          "crop": [
+            1000,
+            110,
+            440,
+            420
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "borealynx.overworld.imagegen-v2.png",
+          "crop": [
+            90,
+            512,
+            440,
+            420
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "borealynx.overworld.imagegen-v2.png",
+          "crop": [
+            555,
+            522,
+            440,
+            420
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "borealynx.overworld.imagegen-v2.png",
+          "crop": [
+            1000,
+            510,
+            440,
+            420
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F067",
+  "species": [
+    {
+      "species_id": "MN_145",
+      "runtime_token": "CARTICK",
+      "palette_rgb555": [
+        32767,
+        15123,
+        13577,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        25198,
+        8493,
+        0
+      ],
+      "fit": [
+        12,
+        12
+      ],
+      "alpha_threshold": 245,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 32,
+      "interior_black_samples": null,
+      "opaque_interior_minimum_samples": 60,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "cartick.overworld.imagegen-v1.png",
+          "crop": [
+            80,
+            83,
+            388,
+            398
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "cartick.overworld.imagegen-v1.png",
+          "crop": [
+            587,
+            83,
+            388,
+            398
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "cartick.overworld.imagegen-v1.png",
+          "crop": [
+            1101,
+            91,
+            388,
+            398
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "cartick.overworld.imagegen-v1.png",
+          "crop": [
+            76,
+            555,
+            388,
+            398
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "cartick.overworld.imagegen-v1.png",
+          "crop": [
+            589,
+            555,
+            388,
+            398
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "cartick.overworld.imagegen-v1.png",
+          "crop": [
+            1097,
+            555,
+            388,
+            398
+          ]
+        }
+      ]
+    }
+  ]
+}

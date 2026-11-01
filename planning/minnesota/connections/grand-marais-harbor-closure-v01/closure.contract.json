@@ -1,0 +1,593 @@
+{
+  "schema_version": 1,
+  "status": "SOURCE_CANDIDATE_NOT_NATIVE_PUBLICATION_OR_CONTROLLER_PROOF",
+  "map": "MnGrandMarais",
+  "base_pack": "content-packs/minnesota-state-cohesion-v01.crystalpack",
+  "base_pack_sha256": "c4816242295a236fdfe2a6a96fb248cd3eab11de1b526be0decb7df36e5e95eb",
+  "base_module_sha256": "bab81f0851b6b0cd3892deefafd4f52df3332cdeec444c9f8813995e8517a3cf",
+  "base_blocks_sha256": "fa6f758f81d3d70c958b50dad5eabf262383449432588a66fa86b009c46b7a52",
+  "candidate_blocks_sha256": "b81d4adb822e6e35caa43ef4cbdbfaa287d9734cbf95266829757ed9569010b6",
+  "candidate_layout": "planning/minnesota/connections/grand-marais-harbor-closure-v01/MnGrandMarais.candidate.layout.json",
+  "candidate_layout_sha256": "a6e3e4aea3c405e6bff28d9425bbdb1d0499e03f2d3d633002fe7786c3c79986",
+  "dimensions_metatiles": [
+    20,
+    19
+  ],
+  "intent": "Close only the reachable, unconnected south harbor edge with native rock breakwater art and BUOY collision.",
+  "cell_patches": [
+    {
+      "metatile": [
+        0,
+        18
+      ],
+      "before_block": 53,
+      "after_block": 56
+    },
+    {
+      "metatile": [
+        1,
+        18
+      ],
+      "before_block": 53,
+      "after_block": 57
+    },
+    {
+      "metatile": [
+        2,
+        18
+      ],
+      "before_block": 53,
+      "after_block": 57
+    },
+    {
+      "metatile": [
+        3,
+        18
+      ],
+      "before_block": 53,
+      "after_block": 57
+    },
+    {
+      "metatile": [
+        4,
+        18
+      ],
+      "before_block": 53,
+      "after_block": 57
+    },
+    {
+      "metatile": [
+        5,
+        18
+      ],
+      "before_block": 53,
+      "after_block": 57
+    },
+    {
+      "metatile": [
+        6,
+        18
+      ],
+      "before_block": 53,
+      "after_block": 57
+    },
+    {
+      "metatile": [
+        7,
+        18
+      ],
+      "before_block": 53,
+      "after_block": 57
+    },
+    {
+      "metatile": [
+        8,
+        18
+      ],
+      "before_block": 53,
+      "after_block": 57
+    },
+    {
+      "metatile": [
+        9,
+        18
+      ],
+      "before_block": 53,
+      "after_block": 57
+    },
+    {
+      "metatile": [
+        10,
+        18
+      ],
+      "before_block": 53,
+      "after_block": 57
+    },
+    {
+      "metatile": [
+        11,
+        18
+      ],
+      "before_block": 53,
+      "after_block": 57
+    },
+    {
+      "metatile": [
+        12,
+        18
+      ],
+      "before_block": 53,
+      "after_block": 57
+    },
+    {
+      "metatile": [
+        13,
+        18
+      ],
+      "before_block": 53,
+      "after_block": 57
+    },
+    {
+      "metatile": [
+        14,
+        18
+      ],
+      "before_block": 53,
+      "after_block": 57
+    },
+    {
+      "metatile": [
+        15,
+        18
+      ],
+      "before_block": 53,
+      "after_block": 57
+    },
+    {
+      "metatile": [
+        16,
+        18
+      ],
+      "before_block": 53,
+      "after_block": 57
+    },
+    {
+      "metatile": [
+        17,
+        18
+      ],
+      "before_block": 53,
+      "after_block": 57
+    },
+    {
+      "metatile": [
+        18,
+        18
+      ],
+      "before_block": 53,
+      "after_block": 57
+    },
+    {
+      "metatile": [
+        19,
+        18
+      ],
+      "before_block": 53,
+      "after_block": 58
+    }
+  ],
+  "core_collision_changes": [
+    {
+      "core": [
+        0,
+        36
+      ],
+      "before": "WATER",
+      "after": "BUOY"
+    },
+    {
+      "core": [
+        39,
+        36
+      ],
+      "before": "WATER",
+      "after": "BUOY"
+    },
+    {
+      "core": [
+        0,
+        37
+      ],
+      "before": "WATER",
+      "after": "BUOY"
+    },
+    {
+      "core": [
+        1,
+        37
+      ],
+      "before": "WATER",
+      "after": "BUOY"
+    },
+    {
+      "core": [
+        2,
+        37
+      ],
+      "before": "WATER",
+      "after": "BUOY"
+    },
+    {
+      "core": [
+        3,
+        37
+      ],
+      "before": "WATER",
+      "after": "BUOY"
+    },
+    {
+      "core": [
+        4,
+        37
+      ],
+      "before": "WATER",
+      "after": "BUOY"
+    },
+    {
+      "core": [
+        5,
+        37
+      ],
+      "before": "WATER",
+      "after": "BUOY"
+    },
+    {
+      "core": [
+        6,
+        37
+      ],
+      "before": "WATER",
+      "after": "BUOY"
+    },
+    {
+      "core": [
+        7,
+        37
+      ],
+      "before": "WATER",
+      "after": "BUOY"
+    },
+    {
+      "core": [
+        8,
+        37
+      ],
+      "before": "WATER",
+      "after": "BUOY"
+    },
+    {
+      "core": [
+        9,
+        37
+      ],
+      "before": "WATER",
+      "after": "BUOY"
+    },
+    {
+      "core": [
+        10,
+        37
+      ],
+      "before": "WATER",
+      "after": "BUOY"
+    },
+    {
+      "core": [
+        11,
+        37
+      ],
+      "before": "WATER",
+      "after": "BUOY"
+    },
+    {
+      "core": [
+        12,
+        37
+      ],
+      "before": "WATER",
+      "after": "BUOY"
+    },
+    {
+      "core": [
+        13,
+        37
+      ],
+      "before": "WATER",
+      "after": "BUOY"
+    },
+    {
+      "core": [
+        14,
+        37
+      ],
+      "before": "WATER",
+      "after": "BUOY"
+    },
+    {
+      "core": [
+        15,
+        37
+      ],
+      "before": "WATER",
+      "after": "BUOY"
+    },
+    {
+      "core": [
+        16,
+        37
+      ],
+      "before": "WATER",
+      "after": "BUOY"
+    },
+    {
+      "core": [
+        17,
+        37
+      ],
+      "before": "WATER",
+      "after": "BUOY"
+    },
+    {
+      "core": [
+        18,
+        37
+      ],
+      "before": "WATER",
+      "after": "BUOY"
+    },
+    {
+      "core": [
+        19,
+        37
+      ],
+      "before": "WATER",
+      "after": "BUOY"
+    },
+    {
+      "core": [
+        20,
+        37
+      ],
+      "before": "WATER",
+      "after": "BUOY"
+    },
+    {
+      "core": [
+        21,
+        37
+      ],
+      "before": "WATER",
+      "after": "BUOY"
+    },
+    {
+      "core": [
+        22,
+        37
+      ],
+      "before": "WATER",
+      "after": "BUOY"
+    },
+    {
+      "core": [
+        23,
+        37
+      ],
+      "before": "WATER",
+      "after": "BUOY"
+    },
+    {
+      "core": [
+        24,
+        37
+      ],
+      "before": "WATER",
+      "after": "BUOY"
+    },
+    {
+      "core": [
+        25,
+        37
+      ],
+      "before": "WATER",
+      "after": "BUOY"
+    },
+    {
+      "core": [
+        26,
+        37
+      ],
+      "before": "WATER",
+      "after": "BUOY"
+    },
+    {
+      "core": [
+        27,
+        37
+      ],
+      "before": "WATER",
+      "after": "BUOY"
+    },
+    {
+      "core": [
+        28,
+        37
+      ],
+      "before": "WATER",
+      "after": "BUOY"
+    },
+    {
+      "core": [
+        29,
+        37
+      ],
+      "before": "WATER",
+      "after": "BUOY"
+    },
+    {
+      "core": [
+        30,
+        37
+      ],
+      "before": "WATER",
+      "after": "BUOY"
+    },
+    {
+      "core": [
+        31,
+        37
+      ],
+      "before": "WATER",
+      "after": "BUOY"
+    },
+    {
+      "core": [
+        32,
+        37
+      ],
+      "before": "WATER",
+      "after": "BUOY"
+    },
+    {
+      "core": [
+        33,
+        37
+      ],
+      "before": "WATER",
+      "after": "BUOY"
+    },
+    {
+      "core": [
+        34,
+        37
+      ],
+      "before": "WATER",
+      "after": "BUOY"
+    },
+    {
+      "core": [
+        35,
+        37
+      ],
+      "before": "WATER",
+      "after": "BUOY"
+    },
+    {
+      "core": [
+        36,
+        37
+      ],
+      "before": "WATER",
+      "after": "BUOY"
+    },
+    {
+      "core": [
+        37,
+        37
+      ],
+      "before": "WATER",
+      "after": "BUOY"
+    },
+    {
+      "core": [
+        38,
+        37
+      ],
+      "before": "WATER",
+      "after": "BUOY"
+    },
+    {
+      "core": [
+        39,
+        37
+      ],
+      "before": "WATER",
+      "after": "BUOY"
+    }
+  ],
+  "shore_joins": [
+    {
+      "direction": "west",
+      "core": [
+        0,
+        37
+      ],
+      "neighbor": "MnR12C01R01",
+      "neighbor_core": [
+        63,
+        37
+      ],
+      "neighbor_collision": "WALL"
+    },
+    {
+      "direction": "east",
+      "core": [
+        39,
+        37
+      ],
+      "neighbor": "MnMaraisCedarApproach",
+      "neighbor_core": [
+        0,
+        37
+      ],
+      "neighbor_collision": "WALL"
+    }
+  ],
+  "original_anchor_count": 28,
+  "original_anchors_collision_unchanged": true,
+  "unchanged_except_listed_blocks": true,
+  "native_recipes": {
+    "35": [
+      "WATER",
+      "WATER",
+      "WATER",
+      "WATER"
+    ],
+    "38": [
+      "BUOY",
+      "WATER",
+      "BUOY",
+      "BUOY"
+    ],
+    "39": [
+      "WATER",
+      "WATER",
+      "BUOY",
+      "BUOY"
+    ],
+    "3a": [
+      "WATER",
+      "BUOY",
+      "BUOY",
+      "BUOY"
+    ]
+  },
+  "source_checks": [
+    {
+      "gate_state": "packed_closed",
+      "grand_marais_unmatched_edges": 0,
+      "other_unmatched_edge_count": 8
+    },
+    {
+      "gate_state": "native_open_changes_geometry_only",
+      "grand_marais_unmatched_edges": 0,
+      "other_unmatched_edge_count": 8
+    }
+  ],
+  "remaining_harbor_water_core_cells": 502,
+  "limitations": [
+    "Source candidate only; native681 pack is unchanged.",
+    "Future Rust delta must guard exact module/blocks preimages and preserve all other content.",
+    "Future native controller test must launch Surf from legal shore and reject every southward exit while retaining harbor access.",
+    "Review water-camera Surf sprite is a native source-art marker, not GPU or controller evidence."
+  ]
+}

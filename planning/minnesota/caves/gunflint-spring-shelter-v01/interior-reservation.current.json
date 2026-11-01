@@ -1,0 +1,73 @@
+{
+  "interior": "MnR12Cave1F",
+  "parent_route": "MN_R12",
+  "arrival_core": [
+    17,
+    23
+  ],
+  "clear_arrival_core": [
+    17,
+    22
+  ],
+  "return_trigger_core": [
+    17,
+    23
+  ],
+  "return_triggers_core": [
+    [
+      17,
+      23
+    ]
+  ],
+  "exterior_anchor_metatile": [
+    20,
+    7
+  ],
+  "exterior_door_core": [
+    40,
+    15
+  ],
+  "exterior_arrival_core": [
+    40,
+    15
+  ],
+  "exterior_clear_return_core": [
+    40,
+    16
+  ],
+  "requires_real_collision_check": true,
+  "validation": "Exact full-parent preservation;731other maps and all original native art/audio/encounters retained. Both native controller cases,400 stdio calls and eight full-frame/source cameras pass.",
+  "source_design": "caves/gunflint-spring-shelter-v01/current.json",
+  "source_collision_checked": true,
+  "mouths": [
+    {
+      "exterior_door_core": [
+        40,
+        15
+      ],
+      "interior_target_warp": 1,
+      "exterior_entry_warp": 1,
+      "exterior_return_warp": 1,
+      "safe_exterior_return_core": [
+        40,
+        16
+      ]
+    }
+  ],
+  "native_status": "Verified complete native spring shelter: two dry paths, correct30/36 climbs, original cache, refusal/retry and acknowledged full-party rest, real compact exterior return and Continue.",
+  "dimensions_metatiles": [
+    16,
+    12
+  ],
+  "native_palette": "nite",
+  "candidate_source_sha256": "92cf4227761b42fbb27feb171572e74a89ae102ff2fbccd9baf7954525727e7e",
+  "native_review_pack_sha256": "6a4af10d7d025cb9041878a63855c6d01cf4e5180c2672cf10a07b0ceda5fecb",
+  "runtime_settled_exterior_core": [
+    40,
+    16
+  ],
+  "return_semantics": "Original room exits return to compact exterior paired entry; ordinary Down reaches the recorded clear Floor.",
+  "source_file": "caves/gunflint-spring-shelter-v01/current.json",
+  "native_review_pack": "content-packs/minnesota-gunflint-spring-shelter-v02.crystalpack",
+  "verification": "planning/minnesota/renders/gunflint-spring-v631/acceptance-v656.json"
+}

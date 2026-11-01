@@ -1,0 +1,71 @@
+{
+  "tool": "built-in image_gen",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f012/goalossus-v4-native-pupils",
+  "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f012/manifest-goalossus-v4-native-pupils.json",
+  "normalized_receipt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f012/source-feature-proof-goalossus-v4-native-pupils.json",
+  "all_raws_prompts_rejected_trials_retained": true,
+  "no_native_pixel_painting": true,
+  "no_registry_or_pack_mutation": true,
+  "normal_shiny_boards_actually_viewed": true,
+  "canonical_palettes": [
+    [
+      32767,
+      31469,
+      17702,
+      0
+    ],
+    [
+      32767,
+      23998,
+      9425,
+      0
+    ]
+  ],
+  "native_bounds": [
+    [
+      1,
+      3,
+      14,
+      12
+    ],
+    [
+      1,
+      3,
+      14,
+      12
+    ],
+    [
+      4,
+      3,
+      9,
+      12
+    ],
+    [
+      1,
+      3,
+      14,
+      12
+    ],
+    [
+      1,
+      3,
+      14,
+      12
+    ],
+    [
+      4,
+      3,
+      9,
+      12
+    ]
+  ],
+  "retained_source_hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f012/goalossus.overworld.imagegen-v2-profile-pupil.png": "3013489dc51f7011b918bacc03676a8b202ebe7f112e5111080cdbccb0006c94",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f012/goalossus.overworld.imagegen-v1.png": "30d6737829fe946028ffb65c4832601c0f9a1c468d30a8aa5ecbdc83fbeca141",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f012/prompt-goalossus-v2-profile-pupil.txt": "3998419bfe77e1c2c23c4546c9baa36d5f605dab9e345843e77aa4e3893de1b5",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f012/prompt-goalossus-v1.txt": "5f2e74ec62bd569a20bbafcd4edcc5956aedb5f131fc669db7f74e54166e4c07",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f012/goalossus.v1.original-path.txt": "ca376d17ebc959fa180d4632ce46f93be041de408492a431a64791390b74da05",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f012/goalossus.v2-profile-pupil.original-path.txt": "f4fa1a4ac1636b3b8c20b913baedf04876c431a691dc1442273bfec92d824261"
+  },
+  "status": "root independent visual/context acceptance pending"
+}

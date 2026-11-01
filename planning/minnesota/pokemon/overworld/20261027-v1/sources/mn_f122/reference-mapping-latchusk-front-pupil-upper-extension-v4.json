@@ -1,0 +1,13 @@
+{
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f122/prompt-latchusk-front-pupil-upper-extension-v4.txt",
+  "input_images": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f122/latchusk.overworld.imagegen-v3-front-cheek-clearance.png",
+      "sha256": "5c9fecdeee9d4243dee1549cea0d51078dc0034286315a675cbba4b137fbd37d"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+      "sha256": "4354a639ed1a80fd6686e43b273443ed894e58a84307a8049f638ee9ffa2a099"
+    }
+  ]
+}

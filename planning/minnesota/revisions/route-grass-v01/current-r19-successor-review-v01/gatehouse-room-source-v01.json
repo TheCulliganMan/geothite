@@ -1,0 +1,56 @@
+{
+  "status": "PROPOSED_UNPUBLISHED_IDENTITY_GUARDED_AGAIN_AT_BUILD",
+  "parent_pack": "content-packs/minnesota-gunflint-spring-shelter-v02.crystalpack",
+  "parent_pack_sha256": "6a4af10d7d025cb9041878a63855c6d01cf4e5180c2672cf10a07b0ceda5fecb",
+  "room": "MnR19DetroitGate",
+  "native_constant": "MN_R19_DETROIT_GATE",
+  "group_name": "MINNESOTA_PRAIRIE_FOREST_LINK",
+  "group_id": 59,
+  "map_id": 3,
+  "spawn_identifier": 517,
+  "template": "Route35GoldenrodGate",
+  "compiled_tileset": "gate",
+  "dimensions_metatiles": [
+    5,
+    4
+  ],
+  "rows": [
+    "02 02 04 02 02",
+    "09 01 01 01 08",
+    "0d 01 01 01 0c",
+    "14 01 0a 01 14"
+  ],
+  "north_carpets": [
+    [
+      4,
+      0
+    ],
+    [
+      5,
+      0
+    ]
+  ],
+  "north_passive_arrival": [
+    4,
+    1
+  ],
+  "south_carpets": [
+    [
+      4,
+      7
+    ],
+    [
+      5,
+      7
+    ]
+  ],
+  "south_passive_arrival": [
+    4,
+    6
+  ],
+  "native_entry_requirement": "ENGINE_MINERALBADGE",
+  "requirement_note": "Six badges as the existing R19 endpoint plan; final guard behavior must be proved in native controller tests.",
+  "remaining": "Exterior native gate art fitting, paired warps, guard script and publisher, no registry or selector mutation yet",
+  "spawn_allocation_policy": "Append above actual maximum runtime spawn identifier; publisher rechecks no metadata/constant/spawn collision.",
+  "parent_content_identity": "01e986be28fb7e6fa88ffad3182b70da75541af92a8820c4f5183ee85438527a"
+}

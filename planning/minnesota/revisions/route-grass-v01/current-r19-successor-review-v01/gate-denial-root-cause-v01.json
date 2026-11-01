@@ -1,0 +1,10 @@
+{
+  "status": "PASS_CORRECTED_NATIVE_THREE_CASE_HARNESS",
+  "caller_trace": ".local/route-grass-review/r19-gate-wait-caller-v01.log",
+  "finding": "Premature wait acknowledgement hypothesis disproved. The sole wait caller is test finish_text after the first successful denial; failure occurs on a later one-input approach with the player still at4,3. Production move_exact_tiles retries direction up to four times.",
+  "fix": "Apply up to four normal Up inputs until textbox appears, asserting each pre-trigger position remains4,3; retain actual textbox, both rendered-page content, three denied attempts, badge state and free-return assertions.",
+  "engine_changes": "Rejected boundary predicate reverted and temporary opt-in stack trace removed. No engine behavior change retained.",
+  "pending_build": ".local/route-grass-review/build_r19_gate_controller_v11.py",
+  "pending_tests": ".local/route-grass-review/check_r19_gate_native_v11.py",
+  "native_acceptance": "planning/minnesota/revisions/route-grass-v01/current-r19-successor-review-v01/gate-native-cases-v11.json"
+}

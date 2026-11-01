@@ -1,0 +1,245 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F093",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_203": {
+      "species_id": "MN_203",
+      "name": "Siphlet",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          25,
+          22,
+          17
+        ],
+        [
+          9,
+          11,
+          16
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        18137,
+        16745,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          206,
+          181,
+          140
+        ],
+        [
+          74,
+          90,
+          132
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#CEB58C",
+        "#4A5A84",
+        "#000000"
+      ]
+    },
+    "MN_204": {
+      "species_id": "MN_204",
+      "name": "Obelurk",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          23,
+          25,
+          27
+        ],
+        [
+          9,
+          6,
+          14
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        28471,
+        14537,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          189,
+          206,
+          222
+        ],
+        [
+          74,
+          49,
+          115
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#BDCEDE",
+        "#4A3173",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f093/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png"
+    ]
+  },
+  "sprites": [
+    {
+      "id": "mn-203-siphlet-v1",
+      "species_id": "MN_203",
+      "view": "front",
+      "source": "sprites/mn-f093/mn-203-204.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        768,
+        512
+      ],
+      "fit": [
+        42,
+        42
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        18137,
+        16745,
+        0
+      ],
+      "interior_black_min_samples": 8
+    },
+    {
+      "id": "mn-203-siphlet-v1",
+      "species_id": "MN_203",
+      "view": "back",
+      "source": "sprites/mn-f093/mn-203-204.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        512,
+        768,
+        512
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        18137,
+        16745,
+        0
+      ],
+      "interior_black_min_samples": 8
+    },
+    {
+      "id": "mn-204-obelurk-v1",
+      "species_id": "MN_204",
+      "view": "front",
+      "source": "sprites/mn-f093/mn-203-204.front-back.imagegen-v1.png",
+      "crop": [
+        768,
+        0,
+        768,
+        512
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        28471,
+        14537,
+        0
+      ],
+      "interior_black_min_samples": 8
+    },
+    {
+      "id": "mn-204-obelurk-v1",
+      "species_id": "MN_204",
+      "view": "back",
+      "source": "sprites/mn-f093/mn-203-204.front-back.imagegen-v1.png",
+      "crop": [
+        768,
+        512,
+        768,
+        512
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        28471,
+        14537,
+        0
+      ],
+      "interior_black_min_samples": 8
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "12b6e033f71bdc5dadf09d5bbeae7c65d130781b09007a9e8a4595f4b0b413b7",
+    "notes": "Root inspected seam8 native frames: straight chamber divisions now remain legible on the pale shells, with a compact42px Siphlet and tall54px Obelurk. Ink hood, paddles and short feet remain separate planes with clear eye glints. Each species has its own exact4colorGBCpalette and enlarged close rear portraits. Raw source and prior seam32/native-size candidates remain saved."
+  },
+  "raw_generation": {
+    "original_tool_path": "/Users/ryanculligan/.codex/generated_images/01a178da-4cf1-7e01-8516-667a332dc790/exec-46f887ba-7561-467a-9162-9e13be8e8553.png",
+    "sha256": "2660e622e6b8fc137cc0c9964538f834f987d0bf01490c5299016df13d462bef",
+    "source_size": [
+      1536,
+      1024
+    ]
+  }
+}

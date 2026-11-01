@@ -1,0 +1,103 @@
+{
+  "schema_version": 1,
+  "id": "MN_R11",
+  "source_kind": "installed_route_exterior_review_contract",
+  "native_binding": {
+    "pack": "content-packs/minnesota-current-r11-stair-guidance-v02.crystalpack",
+    "pack_sha256": "332d6ee5c5b77c028119c898e774043895859929a46ff534ebbd14bc1cc2e5d4",
+    "content_identity": "f0489cf707e52b3240962500b99dcf0b82a8ee1e51f03201f89e21b5820e5d23"
+  },
+  "grass_quadrants": 380,
+  "new_grass_quadrants": 20,
+  "coastal_ice_quadrants": 0,
+  "retired_historical_ledge_contracts": [
+    "PALISADE_RIDGE_DROP",
+    "LESTER_TERRACE_DROP",
+    "BIRCH_SWITCHBACK_DROP"
+  ],
+  "stair_pairs": [
+    {
+      "upper": [
+        24,
+        51
+      ],
+      "lower": [
+        24,
+        54
+      ]
+    },
+    {
+      "upper": [
+        36,
+        89
+      ],
+      "lower": [
+        36,
+        92
+      ]
+    },
+    {
+      "upper": [
+        38,
+        171
+      ],
+      "lower": [
+        38,
+        174
+      ]
+    }
+  ],
+  "active_ledge_lanes": [
+    {
+      "upper": [
+        24,
+        130
+      ],
+      "lip": [
+        23,
+        130
+      ],
+      "landing": [
+        21,
+        130
+      ],
+      "reverse_denials": 4
+    },
+    {
+      "upper": [
+        24,
+        131
+      ],
+      "lip": [
+        23,
+        131
+      ],
+      "landing": [
+        21,
+        131
+      ],
+      "reverse_denials": 4
+    }
+  ],
+  "ordinary_ledge_return_minimum_grass_steps": 13,
+  "qualified_native_fixture": {
+    "badges": 8,
+    "event_flags": [
+      "EVENT_MN_LIGHTHOUSE_SIGNAL"
+    ],
+    "earned": false
+  },
+  "normal_land_course_maps": [
+    "MnR11C00R00",
+    "MnR11C00R01",
+    "MnR11C00R02",
+    "MnR11C00R03",
+    "MnR11C01R00"
+  ],
+  "healing_stops": 6,
+  "neighbor_connections": [
+    "MnGrandMarais",
+    "MnDuluth"
+  ],
+  "scope": "Current main normal shoreline walking course, three stairs, two low ledge lanes/reverses/grassy returns, both town round trips, actual healing, text/menu ownership and Continue. Eight-badge/lighthouse qualifiers are local QA setup. Three lake-only eastern chunks and Surf/islands, plus the newer ElyShorePass branch, are not freshly traversed here."
+}

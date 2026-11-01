@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F079",
+  "species": [
+    {
+      "species_id": "MN_172",
+      "runtime_token": "BOBCAST",
+      "palette_rgb555": [
+        32767,
+        7999,
+        18855,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        26599,
+        13554,
+        0
+      ],
+      "fit": [
+        12,
+        12
+      ],
+      "alpha_threshold": 200,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 64,
+      "interior_black_samples": 64,
+      "opaque_interior_minimum_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "bobcast.overworld.imagegen-v2-clear-eyes.png",
+          "crop": [
+            148,
+            131,
+            314,
+            384
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "bobcast.overworld.imagegen-v1.png",
+          "crop": [
+            600,
+            125,
+            314,
+            384
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "bobcast.overworld.imagegen-v2-clear-eyes.png",
+          "crop": [
+            1086,
+            130,
+            314,
+            384
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "bobcast.overworld.imagegen-v2-clear-eyes.png",
+          "crop": [
+            148,
+            554,
+            314,
+            384
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "bobcast.overworld.imagegen-v1.png",
+          "crop": [
+            600,
+            545,
+            314,
+            384
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "bobcast.overworld.imagegen-v2-clear-eyes.png",
+          "crop": [
+            1086,
+            558,
+            314,
+            384
+          ]
+        }
+      ]
+    }
+  ]
+}

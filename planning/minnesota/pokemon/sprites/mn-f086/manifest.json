@@ -1,0 +1,130 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F086",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_185": {
+      "species_id": "MN_185",
+      "name": "Cragcloak",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          20,
+          24,
+          15
+        ],
+        [
+          9,
+          12,
+          12
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        16148,
+        12681,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          165,
+          198,
+          123
+        ],
+        [
+          74,
+          99,
+          99
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#A5C67B",
+        "#4A6363",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f086/prompt-v1.txt",
+  "reference_mapping": "sprites/mn-f086/reference-mapping-v1.json",
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-185-cragcloak-v1",
+      "species_id": "MN_185",
+      "view": "front",
+      "source": "sprites/mn-f086/mn-185.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        1536,
+        512
+      ],
+      "fit": [
+        52,
+        52
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        16148,
+        12681,
+        0
+      ],
+      "interior_black_min_samples": 32,
+      "white_detail_min_samples": 8
+    },
+    {
+      "id": "mn-185-cragcloak-v1",
+      "species_id": "MN_185",
+      "view": "back",
+      "source": "sprites/mn-f086/mn-185.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        512,
+        1536,
+        512
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        16148,
+        12681,
+        0
+      ],
+      "interior_black_min_samples": 32
+    }
+  ],
+  "conversion_adjustments": [
+    "Front source eye corner glint was lost at ordinary white16. White8 visibly restores its small white eye glint inside the broad dark eye; retained. Interior black remains32."
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "notes": "Root inspected both native views: three-lobed green lichen mantle with curled tips surrounds dark stone anchor. Front eye retains a white glint; rear mantle folds and cropped stone base read clearly with separate pale-green/slate palette.",
+    "sheet_sha256": "095652e16406631564e03906c2ae2e76e95c6d3cd9355b8abbbcc70f704597fa",
+    "outline_profile": "source-contour-v1"
+  }
+}

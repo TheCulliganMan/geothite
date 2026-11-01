@@ -4605,3 +4605,36 @@
                 .any(|diagnostic| diagnostic.code == "unwalkable_coord_event_tile")
         );
     }
+
+    #[test]
+    fn decoration_callback_slots_are_valid_without_initializer_bindings() {
+        let mut data = GameDataSet::default();
+        let slots = ["SPRITE_CONSOLE", "SPRITE_DOLL_1", "SPRITE_DOLL_2", "SPRITE_BIG_DOLL"];
+        for slot in slots {
+            assert!(!data.saved_variable_sprite_exists(slot));
+        }
+        data.special_routines.insert("ToggleDecorationsVisibility".into(),
+            serde_json::from_value(serde_json::json!({})).unwrap());
+        for slot in slots {
+            data.validate_saved_variable_sprite_reference("decoration callback", slot).unwrap();
+        }
+        assert!(!data.saved_variable_sprite_exists("SPRITE_MON"));
+        assert!(!data.saved_variable_sprite_exists("SPRITE_UNKNOWN_DOLL"));
+        assert!(data.validate_saved_sprite_reference("replacement", "SPRITE_MISSING").is_err());
+        data.initialize_events.variable_sprites.insert("SPRITE_MON".into(), "SPRITE_PIKACHU".into());
+        assert!(data.saved_variable_sprite_exists("SPRITE_MON"));
+    }
+
+    #[test]
+    fn species_sprite_aliases_require_exact_menu_icon_catalog_entries() {
+        let mut data=GameDataSet::default();
+        assert!(!data.saved_sprite_exists("SPRITE_PIKACHU"));
+        data.menu_icons.insert("PIKACHU".into(),"ICON_PIKACHU".into());
+        data.menu_icons.insert("STARMIE".into(),"ICON_STARYU".into());
+        for species in ["PIKACHU","STARMIE"] {
+            data.validate_saved_sprite_reference("decoration replacement",&format!("SPRITE_{species}")).unwrap();
+        }
+        for missing in ["PIKACHU","SPRITE_pikachu","SPRITE_RAICHU","SPRITE_UNKNOWN_DOLL"] {
+            assert!(data.validate_saved_sprite_reference("replacement",missing).is_err(),"{missing}");
+        }
+    }

@@ -1,0 +1,234 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F020",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_053": {
+      "species_id": "MN_053",
+      "name": "Crispip",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          29,
+          17,
+          10
+        ],
+        [
+          10,
+          18,
+          7
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        10813,
+        7754,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          239,
+          140,
+          82
+        ],
+        [
+          82,
+          148,
+          57
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#EF8C52",
+        "#529439",
+        "#000000"
+      ]
+    },
+    "MN_054": {
+      "species_id": "MN_054",
+      "name": "Cidermaw",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          26,
+          12,
+          15
+        ],
+        [
+          10,
+          6,
+          16
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        15770,
+        16586,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          214,
+          99,
+          123
+        ],
+        [
+          82,
+          49,
+          132
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#D6637B",
+        "#523184",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f020/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "board": "target/minnesota-pokemon/gen2-reference/starters.png"
+  },
+  "sprites": [
+    {
+      "id": "mn-053-crispip-v1",
+      "species_id": "MN_053",
+      "view": "front",
+      "source": "sprites/mn-f020/mn-053-054.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        593,
+        590
+      ],
+      "fit": [
+        40,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        10813,
+        7754,
+        0
+      ]
+    },
+    {
+      "id": "mn-053-crispip-v1",
+      "species_id": "MN_053",
+      "view": "back",
+      "source": "sprites/mn-f020/mn-053-054.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        590,
+        593,
+        590
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        10813,
+        7754,
+        0
+      ]
+    },
+    {
+      "id": "mn-054-cidermaw-v1",
+      "species_id": "MN_054",
+      "view": "front",
+      "source": "sprites/mn-f020/mn-053-054.front-back.imagegen-v1.png",
+      "crop": [
+        593,
+        0,
+        740,
+        590
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        15770,
+        16586,
+        0
+      ]
+    },
+    {
+      "id": "mn-054-cidermaw-v1",
+      "species_id": "MN_054",
+      "view": "back",
+      "source": "sprites/mn-f020/mn-053-054.front-back.imagegen-v1.png",
+      "crop": [
+        593,
+        590,
+        740,
+        590
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        15770,
+        16586,
+        0
+      ]
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "notes": [
+      "Inspected frozen source-contour-v1 sheet: apple body, leaf hands and root feet retain clean black exterior anchors with no oversized internal black patches.",
+      "Cider pressure sacs and release bite are readable, purple fermentation bubbles retain their source-colored edges, and close rear fruit portraits preserve the lower-body crop."
+    ],
+    "sheet_sha256": "5de0b58b5558a03b5171b524c72a6c2f0c216716cfff7e37bd9bf185e7288733",
+    "outline_profile": "source-contour-v1"
+  }
+}

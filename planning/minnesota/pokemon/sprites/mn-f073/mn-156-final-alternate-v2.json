@@ -1,0 +1,107 @@
+{
+  "species_id": "MN_156",
+  "status": "candidate-native-inspected-awaiting-root-decision",
+  "selected_for_main_manifest": false,
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f073/prompt-mn-156-final-alternate-v2.txt",
+  "references": [
+    {
+      "path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mn-f073/mn-154-156.front-back.imagegen-v1.png",
+      "sha256": "23c5afa1b2bf828bbf7b82ad06347499bcd9fc2aaf8963b68a582b25ca1db17a",
+      "role": "Existing final-stage identity, face and palette; replace upright pose with low long anatomy, only rightmost column."
+    },
+    {
+      "path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/gen2-reference/starters.png",
+      "sha256": "af61f720a75b7e1b8e80ba14e8944612556397eedddd719669dec68b0e0fd534",
+      "role": "Authentic Gen2 coarse pixel economy and rear portrait framing only."
+    }
+  ],
+  "pokemon_palette": {
+    "species_id": "MN_156",
+    "name": "Contrakett",
+    "gbc_rgb5": [
+      [
+        31,
+        31,
+        31
+      ],
+      [
+        29,
+        12,
+        7
+      ],
+      [
+        8,
+        6,
+        10
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ],
+    "gbc_rgb555_words": [
+      32767,
+      7581,
+      10440,
+      0
+    ],
+    "rgb8": [
+      [
+        255,
+        255,
+        255
+      ],
+      [
+        239,
+        99,
+        57
+      ],
+      [
+        66,
+        49,
+        82
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ],
+    "hex": [
+      "#FFFFFF",
+      "#EF6339",
+      "#423152",
+      "#000000"
+    ]
+  },
+  "source": "sprites/mn-f073/mn-156-contrakett.final-alternate-v2.imagegen.png",
+  "source_sha256": "e03098abd38486181dd989ce2f9c183a8654fe3cf81db21c438634754b0235f5",
+  "source_size": [
+    1199,
+    1312
+  ],
+  "proposed_crops": {
+    "front": [
+      0,
+      0,
+      1199,
+      643
+    ],
+    "back": [
+      0,
+      643,
+      1199,
+      669
+    ]
+  },
+  "candidate_manifest": "sprites/mn-f073/manifest.final-alternate-v2.json",
+  "native_review_sha256": "74f8bd646074b36f8b953ef991da62615aa3db72c1e51598283b3f6447f2caa0",
+  "outline_profile": "source-contour-v1",
+  "review_notes": [
+    "Front transforms final into long low arch; far-separated dark-centered snowshoe feet and forward spout remain readable at native size.",
+    "Close back preserves arched spine and upper-right spout; no miniature feet.",
+    "Source retains shading beyond intended four colors; converter outputs exact Contrakett GBC palette. Root chooses candidate, current main manifest unchanged."
+  ]
+}

@@ -129,7 +129,7 @@ pub fn apply_trainer_smart_scores(
             }
             "TRAP_TARGET" => smart_trap_target_delta(state, rng),
             "CONFUSE" => smart_confuse_delta(state, rng),
-            "SP_DEF_UP_2" => smart_sp_def_up_2_delta(state, rng),
+            "SP_DEF_UP_2" | "SPECIAL_DEFENSE_UP_2" => smart_sp_def_up_2_delta(state, rng),
             "FLY" => {
                 if state.player_airborne_move.is_some() && smart_enemy_faster(state) {
                     -3
@@ -581,13 +581,7 @@ fn smart_sp_def_up_2_delta(state: &BattleCombatState, rng: &mut dyn BattleRandom
         return 0;
     }
     let player = trainer_ai_effective_pokemon(state, false);
-    let special_type = |type_id: &str| {
-        matches!(
-            type_id,
-            "FIRE" | "WATER" | "GRASS" | "ELECTRIC" | "PSYCHIC_TYPE" | "ICE" | "DRAGON" | "DARK"
-        )
-    };
-    if (special_type(&player.species.type1) || special_type(&player.species.type2))
+    if (smart_special_type(&player.species.type1) || smart_special_type(&player.species.type2))
         && rng.battle_random_byte() >= 50
     {
         -2
@@ -1065,7 +1059,15 @@ fn smart_weather_delta(
 fn smart_special_type(type_id: &str) -> bool {
     matches!(
         type_id,
-        "FIRE" | "WATER" | "GRASS" | "ELECTRIC" | "PSYCHIC_TYPE" | "ICE" | "DRAGON" | "DARK"
+        "FIRE"
+            | "WATER"
+            | "GRASS"
+            | "ELECTRIC"
+            | "PSYCHIC_TYPE"
+            | "ICE"
+            | "DRAGON"
+            | "DARK"
+            | "FAIRY"
     )
 }
 
@@ -1478,12 +1480,24 @@ pub fn trainer_ai_damage(
             let limit = state.enemy.level.saturating_add(state.enemy.level / 2);
             loop {
                 let roll = rng.battle_random_byte();
+                if let Some(error) = rng.source_error() {
+                    return Err(DamageCalculationError::RandomSource {
+                        error: error.to_owned(),
+                    });
+                }
                 if roll != 0 && roll < limit {
                     return Ok(u16::from(roll));
                 }
             }
         }
         _ => {}
+    }
+
+    // Match the damage engine's non-damaging path before resolving a type
+    // category. Curse's source CURSE_TYPE deliberately has no physical/special
+    // category; estimating a zero-power move must not reject the whole turn.
+    if move_data.power == 0 {
+        return Ok(0);
     }
 
     let mut attacker = trainer_ai_effective_pokemon(state, true);
@@ -2016,6 +2030,26 @@ mod tests {
     }
 
     #[test]
+    fn smart_setup_heuristics_recognize_either_fairy_type_slot() {
+        for secondary in [false, true] {
+            let mut state = ai_test_state();
+            if secondary {
+                state.player.species.type2 = pokemon_type("FAIRY");
+            } else {
+                state.player.species.type1 = pokemon_type("FAIRY");
+            }
+            let mut rng = ScriptedRandom(VecDeque::from([50]));
+            assert_eq!(smart_sp_def_up_2_delta(&state, &mut rng), -2);
+            assert!(rng.0.is_empty());
+
+            // Fairy follows the special-type branch without sampling the
+            // physical-opponent Curse encouragement roll.
+            let mut rng = ScriptedRandom(VecDeque::new());
+            assert_eq!(smart_curse_delta(&state, &mut rng), 0);
+        }
+    }
+
+    #[test]
     fn perish_song_checks_the_opponents_trapping_flag_not_the_targets_record() {
         use crate::battle::turn::{BattleEscapeTrapState, BattleSide};
 
@@ -2190,6 +2224,32 @@ mod tests {
             0,
         );
         assert!(rng.0.is_empty());
+    }
+
+    #[test]
+    fn ai_zero_power_curse_needs_no_damage_category_and_consumes_no_rng() {
+        let state = ai_test_state();
+        let move_data = Move {
+            source_index: 174, name: "CURSE".into(), move_type: pokemon_type("CURSE_TYPE"),
+            power: 0, accuracy: 100, pp: 10, effect: "CURSE".into(),
+            effect_chance: 0, stat: None, amount: None,
+        };
+        let mut rng = ScriptedRandom(VecDeque::from([42]));
+        let before = state.clone();
+        let categories = TypeCategories { physical: vec!["NORMAL".into()],
+            special: vec!["PSYCHIC".into()], ..Default::default() };
+        assert_eq!(trainer_ai_damage(&state, &move_data,
+            &BattleStatMultiplierTables::default(), &categories,
+            &TypeEffectivenessTable::default(), &WeatherModifiers::default(), 0, &mut rng).unwrap(), 0);
+        assert_eq!(rng.0, VecDeque::from([42]));
+        assert_eq!(state, before);
+        let mut damaging = move_data;
+        damaging.power = 40;
+        assert_eq!(trainer_ai_damage(&state, &damaging,
+            &BattleStatMultiplierTables::default(), &categories,
+            &TypeEffectivenessTable::default(), &WeatherModifiers::default(), 0, &mut rng),
+            Err(DamageCalculationError::MissingTypeCategory { move_type: "CURSE_TYPE".into() }),
+            "damaging moves still require the real damage category table");
     }
 
     #[test]
@@ -2640,3 +2700,7 @@ mod tests {
         assert_eq!(scores, [17]);
     }
 }
+
+#[cfg(test)]
+#[path = "ai_replay_exhaustion_tests.rs"]
+mod replay_exhaustion_tests;

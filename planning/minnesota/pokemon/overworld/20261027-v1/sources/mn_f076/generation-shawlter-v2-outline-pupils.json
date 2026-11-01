@@ -1,0 +1,15 @@
+{
+  "tool": "built-in image_gen",
+  "default_path": "/Users/ryanculligan/.codex/generated_images/01a178da-4cf1-7e01-8516-667a332dc790/exec-0bccb2db-dd68-40f9-9e33-298ffead7e83.png",
+  "retained_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/shawlter.overworld.imagegen-v2-outline-pupils.png",
+  "sha256": "321f1006cd42ace0e3956f8e83660fd9b19b70db47f58127dcabf80bd3f18046",
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/prompt-shawlter-outline-pupils-v2.txt",
+  "input_target": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/shawlter.overworld.imagegen-v1.png",
+  "input_target_sha256": "46507ac4a205a0ff7159b12267f61337f8b525c75cf67d2609df61aebe49020a",
+  "size": [
+    1536,
+    1024
+  ],
+  "status": "source-refinement; native conversion and root review pending",
+  "rejected_pose_notes": "LEFT step is incorrectly front-facing with two eyes; do not select pose5 from this source. Use v1 profile or make a profile-only source correction."
+}

@@ -1,0 +1,215 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_052",
+  "result": "pass",
+  "manifest_sha256": "a0deaef48c7f1ad50af29534dccc21551430852d225ece61d4db97e277dcd12f",
+  "bank_sha256": "3ae2af6184a04f9fde66b5415829d63994854b15f22d4310d1a9dd1316a6596e",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f019/leechurge.overworld.imagegen-v2.png": "f999fb458670e039a07093982cd766ec23f903002e565239ccd550cf42278508"
+  },
+  "canonical_eye_form": "Two actual front pupils, one visible west-profile pupil. Large suction mouth is a separate ring below the eye plane, not an eye. Both rear heads blank; accordion bands and disc-ended limbs retained, no head horns.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            6,
+            6
+          ],
+          "source_sample": [
+            219,
+            176
+          ],
+          "source_rgba": [
+            1,
+            0,
+            1,
+            254
+          ],
+          "actual_source_pupil_component": [
+            211,
+            170,
+            29,
+            31
+          ],
+          "component_pixels": 899,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "native": [
+            9,
+            6
+          ],
+          "source_sample": [
+            317,
+            176
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ],
+          "actual_source_pupil_component": [
+            298,
+            170,
+            29,
+            31
+          ],
+          "component_pixels": 899,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            5,
+            6
+          ],
+          "source_sample": [
+            1201,
+            176
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ],
+          "actual_source_pupil_component": [
+            1190,
+            169,
+            29,
+            31
+          ],
+          "component_pixels": 899,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            6,
+            6
+          ],
+          "source_sample": [
+            221,
+            651
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ],
+          "actual_source_pupil_component": [
+            211,
+            637,
+            30,
+            31
+          ],
+          "component_pixels": 884,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "native": [
+            9,
+            6
+          ],
+          "source_sample": [
+            319,
+            651
+          ],
+          "source_rgba": [
+            1,
+            0,
+            0,
+            253
+          ],
+          "actual_source_pupil_component": [
+            298,
+            637,
+            29,
+            31
+          ],
+          "component_pixels": 879,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            5,
+            6
+          ],
+          "source_sample": [
+            1201,
+            651
+          ],
+          "source_rgba": [
+            1,
+            0,
+            0,
+            253
+          ],
+          "actual_source_pupil_component": [
+            1191,
+            635,
+            29,
+            31
+          ],
+          "component_pixels": 898,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "notes": "both rear native poses viewed; no copied face. All six exact normal/shiny native poses inspected, three movement pairs distinct, transparent one-pixel border and max14x14 body verified."
+  }
+}

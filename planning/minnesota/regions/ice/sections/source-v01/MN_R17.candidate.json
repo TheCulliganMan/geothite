@@ -1,0 +1,1242 @@
+{
+  "id": "MN_R17",
+  "map_prefix": "MnR17",
+  "name": "Border Pines",
+  "dimensions_metatiles": [
+    32,
+    56
+  ],
+  "chunk_metatiles": [
+    32,
+    24
+  ],
+  "chunk_columns": 1,
+  "chunk_rows": 3,
+  "endpoints": [
+    {
+      "place": "BEMIDJI",
+      "side": "S",
+      "gate_metatile": [
+        16,
+        54
+      ],
+      "landing_metatile": [
+        16,
+        52
+      ]
+    },
+    {
+      "place": "INTERNATIONAL FALLS",
+      "side": "N",
+      "gate_metatile": [
+        18,
+        1
+      ],
+      "landing_metatile": [
+        18,
+        3
+      ]
+    }
+  ],
+  "required_flags": [
+    "BADGE_7"
+  ],
+  "quest": "SQ03",
+  "tileset": "forest",
+  "source_references": [
+    "IlexForest",
+    "Route30",
+    "Route42"
+  ],
+  "description": "Daylight forest passage with sedge-channel timber bridge, closed birdwatch deck, fern and cedar corridors, real ranger rest hut, optional granite den and native Cut return shortcut. Main travel and SQ03 check-in remain possible on foot without field moves.",
+  "main_path_metatiles": [
+    [
+      16,
+      54
+    ],
+    [
+      16,
+      48
+    ],
+    [
+      12,
+      48
+    ],
+    [
+      12,
+      41
+    ],
+    [
+      9,
+      41
+    ],
+    [
+      9,
+      33
+    ],
+    [
+      15,
+      33
+    ],
+    [
+      15,
+      26
+    ],
+    [
+      20,
+      26
+    ],
+    [
+      20,
+      17
+    ],
+    [
+      24,
+      17
+    ],
+    [
+      24,
+      10
+    ],
+    [
+      18,
+      10
+    ],
+    [
+      18,
+      1
+    ]
+  ],
+  "main_lane_width_gameplay_tiles": 2,
+  "districts": [
+    {
+      "id": "SOUTH_ROOST",
+      "name": "Bemidji cedar approach",
+      "bounds_metatiles": [
+        6,
+        41,
+        20,
+        55
+      ],
+      "purpose": "Shared grass neck and old-tree discovery"
+    },
+    {
+      "id": "SEDGE_FEN",
+      "name": "Sedge channel",
+      "bounds_metatiles": [
+        6,
+        25,
+        19,
+        42
+      ],
+      "purpose": "One actual timber crossing, closed lookout and useful Cut return"
+    },
+    {
+      "id": "RANGER_HUT",
+      "name": "Woodland rest yard",
+      "bounds_metatiles": [
+        20,
+        22,
+        26,
+        29
+      ],
+      "purpose": "Real rest-room door and map reading"
+    },
+    {
+      "id": "GRANITE_DEN",
+      "name": "West rock den",
+      "bounds_metatiles": [
+        3,
+        17,
+        8,
+        23
+      ],
+      "purpose": "Optional cave resource, separate from story check-in"
+    },
+    {
+      "id": "OLD_PINES",
+      "name": "Northern roosts",
+      "bounds_metatiles": [
+        7,
+        4,
+        29,
+        18
+      ],
+      "purpose": "Capture pockets and International Falls approach"
+    }
+  ],
+  "loops": [],
+  "trainers": [
+    {
+      "id": "MN_R17_T01",
+      "display_name": "BROOKE",
+      "trainer_class": "BIRD_KEEPER",
+      "sprite": "SPRITE_FISHER",
+      "tile": [
+        35,
+        103
+      ],
+      "facing": "west",
+      "sight_range": 3,
+      "party": [
+        {
+          "species": "NOCTOWL",
+          "level": 34
+        },
+        {
+          "species": "PINECO",
+          "level": 34
+        },
+        {
+          "species": "URSARING",
+          "level": 33
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R17_TRAINER_01",
+      "before_lines": [
+        "Pines shelter my",
+        "team on this road.",
+        "Hear their call!"
+      ],
+      "after_lines": [
+        "The ranger desk",
+        "is in the Falls."
+      ],
+      "loss_lines": [
+        "Rest at the hut.",
+        "Then try again."
+      ]
+    },
+    {
+      "id": "MN_R17_T02",
+      "display_name": "DANA",
+      "trainer_class": "BUG_CATCHER",
+      "sprite": "SPRITE_BUG_CATCHER",
+      "tile": [
+        17,
+        93
+      ],
+      "facing": "east",
+      "sight_range": 3,
+      "party": [
+        {
+          "species": "PINECO",
+          "level": 34
+        },
+        {
+          "species": "STANTLER",
+          "level": 34
+        },
+        {
+          "species": "GOLBAT",
+          "level": 33
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R17_TRAINER_02",
+      "before_lines": [
+        "Old trees hide",
+        "sturdy partners.",
+        "Show me your team!"
+      ],
+      "after_lines": [
+        "The ranger desk",
+        "is in the Falls."
+      ],
+      "loss_lines": [
+        "Rest at the hut.",
+        "Then try again."
+      ]
+    },
+    {
+      "id": "MN_R17_T03",
+      "display_name": "REED",
+      "trainer_class": "BIRD_KEEPER",
+      "sprite": "SPRITE_FISHER",
+      "tile": [
+        29,
+        59
+      ],
+      "facing": "east",
+      "sight_range": 3,
+      "party": [
+        {
+          "species": "STANTLER",
+          "level": 35
+        },
+        {
+          "species": "URSARING",
+          "level": 35
+        },
+        {
+          "species": "SNEASEL",
+          "level": 34
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R17_TRAINER_03",
+      "before_lines": [
+        "Stand still. The",
+        "birds return here.",
+        "First, a battle!"
+      ],
+      "after_lines": [
+        "The ranger desk",
+        "is in the Falls."
+      ],
+      "loss_lines": [
+        "Rest at the hut.",
+        "Then try again."
+      ]
+    },
+    {
+      "id": "MN_R17_T04",
+      "display_name": "ELLIS",
+      "trainer_class": "COOLTRAINERF",
+      "sprite": "SPRITE_COOLTRAINER_F",
+      "tile": [
+        11,
+        45
+      ],
+      "facing": "east",
+      "sight_range": 3,
+      "party": [
+        {
+          "species": "URSARING",
+          "level": 35
+        },
+        {
+          "species": "GOLBAT",
+          "level": 35
+        },
+        {
+          "species": "DELIBIRD",
+          "level": 34
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R17_TRAINER_04",
+      "before_lines": [
+        "The den is quiet.",
+        "The woodland team",
+        "I train is not!"
+      ],
+      "after_lines": [
+        "The ranger desk",
+        "is in the Falls."
+      ],
+      "loss_lines": [
+        "Rest at the hut.",
+        "Then try again."
+      ]
+    },
+    {
+      "id": "MN_R17_T05",
+      "display_name": "NOREK",
+      "trainer_class": "POKEFANM",
+      "sprite": "SPRITE_POKEFAN_M",
+      "tile": [
+        17,
+        25
+      ],
+      "facing": "east",
+      "sight_range": 3,
+      "party": [
+        {
+          "species": "GOLBAT",
+          "level": 36
+        },
+        {
+          "species": "SNEASEL",
+          "level": 36
+        },
+        {
+          "species": "NOCTOWL",
+          "level": 35
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R17_TRAINER_05",
+      "before_lines": [
+        "These old pines",
+        "shelter my team.",
+        "Ready to meet it?"
+      ],
+      "after_lines": [
+        "The ranger desk",
+        "is in the Falls."
+      ],
+      "loss_lines": [
+        "Rest at the hut.",
+        "Then try again."
+      ]
+    },
+    {
+      "id": "MN_R17_T06",
+      "display_name": "ALEX",
+      "trainer_class": "COOLTRAINERM",
+      "sprite": "SPRITE_COOLTRAINER_M",
+      "tile": [
+        39,
+        11
+      ],
+      "facing": "west",
+      "sight_range": 3,
+      "party": [
+        {
+          "species": "NOCTOWL",
+          "level": 36
+        },
+        {
+          "species": "DELIBIRD",
+          "level": 36
+        },
+        {
+          "species": "PINECO",
+          "level": 35
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R17_TRAINER_06",
+      "before_lines": [
+        "The Falls are near",
+        "One more forest",
+        "battle, then town?"
+      ],
+      "after_lines": [
+        "The ranger desk",
+        "is in the Falls."
+      ],
+      "loss_lines": [
+        "Rest at the hut.",
+        "Then try again."
+      ]
+    }
+  ],
+  "items": [
+    {
+      "id": "MN_R17_ITEM_01",
+      "item": "HYPER_POTION",
+      "quantity": 1,
+      "flag": "EVENT_MN_R17_ITEM_01",
+      "access": "Optional walking habitat spur; no Surf/Cut required",
+      "tile": [
+        55,
+        27
+      ]
+    },
+    {
+      "id": "MN_R17_ITEM_02",
+      "item": "ULTRA_BALL",
+      "quantity": 1,
+      "flag": "EVENT_MN_R17_ITEM_02",
+      "access": "Optional walking habitat spur; no Surf/Cut required",
+      "tile": [
+        11,
+        59
+      ]
+    },
+    {
+      "id": "MN_R17_ITEM_03",
+      "item": "MAX_REPEL",
+      "quantity": 1,
+      "flag": "EVENT_MN_R17_ITEM_03",
+      "access": "Walking marsh-side supply cache; optional Cut return reaches it faster, but no field move is mandatory.",
+      "tile": [
+        37,
+        73
+      ]
+    }
+  ],
+  "encounters": {
+    "grass_rates": {
+      "morning": 10,
+      "day": 10,
+      "night": 10
+    },
+    "grass": {
+      "morning": [
+        {
+          "species": "NOCTOWL",
+          "level": 34
+        },
+        {
+          "species": "PINECO",
+          "level": 35
+        },
+        {
+          "species": "STANTLER",
+          "level": 36
+        },
+        {
+          "species": "URSARING",
+          "level": 37
+        },
+        {
+          "species": "GOLBAT",
+          "level": 38
+        },
+        {
+          "species": "SNEASEL",
+          "level": 39
+        },
+        {
+          "species": "DELIBIRD",
+          "level": 40
+        }
+      ],
+      "day": [
+        {
+          "species": "NOCTOWL",
+          "level": 34
+        },
+        {
+          "species": "PINECO",
+          "level": 35
+        },
+        {
+          "species": "STANTLER",
+          "level": 36
+        },
+        {
+          "species": "URSARING",
+          "level": 37
+        },
+        {
+          "species": "GOLBAT",
+          "level": 38
+        },
+        {
+          "species": "SNEASEL",
+          "level": 39
+        },
+        {
+          "species": "DELIBIRD",
+          "level": 40
+        }
+      ],
+      "night": [
+        {
+          "species": "NOCTOWL",
+          "level": 34
+        },
+        {
+          "species": "ARIADOS",
+          "level": 35
+        },
+        {
+          "species": "STANTLER",
+          "level": 36
+        },
+        {
+          "species": "URSARING",
+          "level": 37
+        },
+        {
+          "species": "GOLBAT",
+          "level": 38
+        },
+        {
+          "species": "SNEASEL",
+          "level": 39
+        },
+        {
+          "species": "DELIBIRD",
+          "level": 40
+        }
+      ]
+    },
+    "water_rate": 4,
+    "water": [
+      {
+        "species": "POLIWAG",
+        "level": 34
+      },
+      {
+        "species": "WOOPER",
+        "level": 35
+      },
+      {
+        "species": "MARILL",
+        "level": 40
+      }
+    ]
+  },
+  "interiors": [
+    {
+      "id": "MnR17Cave1F",
+      "template": "UnionCave1F",
+      "dimensions_metatiles": [
+        7,
+        8
+      ],
+      "width_metatiles": 7,
+      "height_metatiles": 8,
+      "tileset": "cave",
+      "border_block": 46,
+      "rows": [
+        "2e 2e 2e 2e 2e 2e 2e",
+        "2e 2e 04 06 2e 2e 2e",
+        "2e 04 02 1e 2e 2e 2e",
+        "2e 20 02 2d 2e 2e 2e",
+        "2e 2e 08 2e 2e 2e 2e",
+        "2e 2e 08 1e 2e 2e 2e",
+        "2e 2e 20 21 07 22 2e",
+        "2e 2e 2e 2e 2e 2e 2e"
+      ],
+      "exits": [
+        [
+          9,
+          13
+        ]
+      ],
+      "clear_arrival": [
+        9,
+        12
+      ],
+      "exit_collision": "LADDER",
+      "exit_doors": [
+        [
+          10,
+          43
+        ]
+      ],
+      "residents": [],
+      "items": [
+        {
+          "id": "MN_R17_ITEM_04",
+          "item": "REVIVE",
+          "quantity": 1,
+          "flag": "EVENT_MN_R17_ITEM_04",
+          "access": "Optional granite den; native room return required",
+          "tile": [
+            5,
+            5
+          ]
+        }
+      ],
+      "signs": [],
+      "mandatory": false,
+      "purpose": "A short hooked talus den: fitted boulders join the northern overhang above the Revive. An attached lower stone toe makes the dry approach turn one tile earlier. Keep this optional discovery short; no new service, water or field-move gate.",
+      "candidate_status": "Source candidate under whole-room, player-camera and production traversal review.",
+      "review_contract": {
+        "quality_revision": "johto-quality-v01",
+        "palette_group": "nite",
+        "native_stair_blocks": [],
+        "viewpoints": [
+          {
+            "id": "mouth",
+            "tile": [
+              9,
+              12
+            ]
+          },
+          {
+            "id": "lower-turn",
+            "tile": [
+              7,
+              12
+            ]
+          },
+          {
+            "id": "stone-toe",
+            "tile": [
+              5,
+              11
+            ]
+          },
+          {
+            "id": "hook",
+            "tile": [
+              5,
+              9
+            ]
+          },
+          {
+            "id": "revive",
+            "tile": [
+              4,
+              5
+            ]
+          },
+          {
+            "id": "overhang",
+            "tile": [
+              6,
+              5
+            ]
+          }
+        ],
+        "notes": "A short hooked talus den: fitted boulders join the northern overhang above the Revive. An attached lower stone toe makes the dry approach turn one tile earlier. Keep this optional discovery short; no new service, water or field-move gate."
+      }
+    },
+    {
+      "id": "MnR17RangerHut",
+      "template": "VioletNicknameSpeechHouse",
+      "dimensions_metatiles": [
+        5,
+        4
+      ],
+      "width_metatiles": 5,
+      "height_metatiles": 4,
+      "tileset": "traditional_house",
+      "border_block": 0,
+      "rows": [
+        "00 02 08 2d 00",
+        "00 12 04 15 00",
+        "00 0d 04 04 00",
+        "00 20 06 20 00"
+      ],
+      "exits": [
+        [
+          5,
+          7
+        ]
+      ],
+      "clear_arrival": [
+        5,
+        6
+      ],
+      "exit_collision": "WARP_CARPET_DOWN",
+      "exit_doors": [
+        [
+          45,
+          49
+        ]
+      ],
+      "residents": [
+        {
+          "id": "MN_R17_HUT_KEEPER",
+          "sprite": "SPRITE_POKEFAN_F",
+          "tile": [
+            5,
+            5
+          ],
+          "facing": "south",
+          "service": "heal_party",
+          "lines": [
+            "Welcome in.",
+            "Rest your team.",
+            "For the circuit,",
+            "check in at the",
+            "Falls ranger desk."
+          ]
+        }
+      ],
+      "items": [],
+      "signs": [],
+      "mandatory": false,
+      "purpose": "Free optional native HealParty rest; no SQ03 check-in/reward flags set here."
+    }
+  ],
+  "shortcut": {
+    "id": "MN_R17_SHORTCUT",
+    "tile": [
+      36,
+      69
+    ],
+    "approach": [
+      36,
+      68
+    ],
+    "source_block": "0f",
+    "replacement_block": "17",
+    "requires": [
+      "MOVE_CUT",
+      "ENGINE_HIVEBADGE"
+    ],
+    "kind": "Native forest Cut return lane",
+    "mandatory": false,
+    "rejoins_main_route": true,
+    "compare_from": [
+      36,
+      67
+    ],
+    "compare_to": [
+      36,
+      73
+    ],
+    "minimum_saved_steps": 12,
+    "purpose": "Open a genuinely shorter ordinary return to the marsh-side Max Repel cache and watcher. Main north-south travel stays open and only saves two steps; the claimed useful shortcut is to these side activities.",
+    "useful_target_actor_ids": [
+      "MN_R17_ITEM_03",
+      "MN_R17_MARSH_WATCHER"
+    ]
+  },
+  "art_constraints": [
+    "Only original packed 8x8 source tiles.",
+    "No painted shadows, enlarged trees or perspective props.",
+    "Fit source shoreline/cliff quadrants; draw source trees in coherent metatile groups."
+  ],
+  "status": "Hand-authored 32\u00d756 source proposal; whole-map art and collision checked. Native publication, controller behavior and final visual review remain separate.",
+  "anchor_status": "Exact source core actors, doors, rooms, grass and Cut proposed; native controller evidence remains separate.",
+  "cut_gates": [],
+  "required_grass_crossings": [
+    {
+      "id": "MN_R17_SEDGE_NECK",
+      "bounds_core": [
+        22,
+        88,
+        28,
+        92
+      ],
+      "minimum_grass_steps": 4
+    }
+  ],
+  "one_way_ledges": [],
+  "battle_or_grass_choices": [],
+  "reserved_trainers": [
+    {
+      "id": "MN_R17_T07",
+      "district": "D1",
+      "anchor_metatile": [
+        15,
+        40
+      ],
+      "facing": "north",
+      "sight_range": 4,
+      "party": [
+        {
+          "species": "PINECO",
+          "level": 37
+        },
+        {
+          "species": "NOCTOWL",
+          "level": 37
+        },
+        {
+          "species": "STANTLER",
+          "level": 36
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R17_TRAINER_07",
+      "block_main_lane": false,
+      "before_text": "Border Pines rewards a careful trainer. Show me how you travel!",
+      "after_text": "A good team knows when to take the long way home.",
+      "loss_text": "Keep your footing and try another route.",
+      "status": "Unused in six-trainer forest revision; original flag and party retained."
+    },
+    {
+      "id": "MN_R17_T08",
+      "district": "D2",
+      "anchor_metatile": [
+        35,
+        40
+      ],
+      "facing": "west",
+      "sight_range": 4,
+      "party": [
+        {
+          "species": "STANTLER",
+          "level": 37
+        },
+        {
+          "species": "PINECO",
+          "level": 37
+        },
+        {
+          "species": "URSARING",
+          "level": 36
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R17_TRAINER_08",
+      "block_main_lane": false,
+      "before_text": "Border Pines rewards a careful trainer. Show me how you travel!",
+      "after_text": "A good team knows when to take the long way home.",
+      "loss_text": "Keep your footing and try another route.",
+      "status": "Unused in six-trainer forest revision; original flag and party retained."
+    },
+    {
+      "id": "MN_R17_T09",
+      "district": "D3",
+      "anchor_metatile": [
+        55,
+        40
+      ],
+      "facing": "south",
+      "sight_range": 4,
+      "party": [
+        {
+          "species": "URSARING",
+          "level": 38
+        },
+        {
+          "species": "STANTLER",
+          "level": 38
+        },
+        {
+          "species": "GOLBAT",
+          "level": 37
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R17_TRAINER_09",
+      "block_main_lane": false,
+      "before_text": "Border Pines rewards a careful trainer. Show me how you travel!",
+      "after_text": "A good team knows when to take the long way home.",
+      "loss_text": "Keep your footing and try another route.",
+      "status": "Unused in six-trainer forest revision; original flag and party retained."
+    },
+    {
+      "id": "MN_R17_T10",
+      "district": "D4",
+      "anchor_metatile": [
+        15,
+        110
+      ],
+      "facing": "east",
+      "sight_range": 4,
+      "party": [
+        {
+          "species": "GOLBAT",
+          "level": 38
+        },
+        {
+          "species": "URSARING",
+          "level": 38
+        },
+        {
+          "species": "SNEASEL",
+          "level": 37
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R17_TRAINER_10",
+      "block_main_lane": false,
+      "before_text": "Border Pines rewards a careful trainer. Show me how you travel!",
+      "after_text": "A good team knows when to take the long way home.",
+      "loss_text": "Keep your footing and try another route.",
+      "status": "Unused in six-trainer forest revision; original flag and party retained."
+    }
+  ],
+  "residents": [
+    {
+      "id": "MN_R17_ROUTE_RANGER",
+      "sprite": "SPRITE_OFFICER",
+      "tile": [
+        47,
+        53
+      ],
+      "facing": "west",
+      "lines": [
+        "The ranger desk",
+        "is in the Falls.",
+        "This hut is a rest",
+        "stop on the trail."
+      ]
+    },
+    {
+      "id": "MN_R17_MARSH_WATCHER",
+      "sprite": "SPRITE_TEACHER",
+      "tile": [
+        37,
+        77
+      ],
+      "facing": "west",
+      "lines": [
+        "That cache has a",
+        "MAX REPEL for the",
+        "long pine trail.",
+        "CUT opens a path."
+      ]
+    },
+    {
+      "id": "MN_R17_OLD_PINES_WATCHER",
+      "sprite": "SPRITE_SCIENTIST",
+      "tile": [
+        15,
+        27
+      ],
+      "facing": "east",
+      "lines": [
+        "These old crowns",
+        "shelter NOCTOWL.",
+        "Leave the trunks",
+        "standing here."
+      ]
+    }
+  ],
+  "signs": [
+    {
+      "id": "MN_R17_SIGN_01",
+      "tile": [
+        35,
+        107
+      ],
+      "lines": [
+        "BORDER PINES",
+        "NORTH: THE FALLS"
+      ]
+    },
+    {
+      "id": "MN_R17_SIGN_02",
+      "tile": [
+        27,
+        85
+      ],
+      "lines": [
+        "SEDGE TRAIL",
+        "STAY ON TIMBER"
+      ]
+    },
+    {
+      "id": "MN_R17_SIGN_03",
+      "tile": [
+        19,
+        65
+      ],
+      "lines": [
+        "MARSH CROSSING",
+        "RAILS PROTECT YOU"
+      ]
+    },
+    {
+      "id": "MN_R17_SIGN_04",
+      "tile": [
+        47,
+        51
+      ],
+      "lines": [
+        "RANGER REST HUT",
+        "DESK IN THE FALLS"
+      ]
+    },
+    {
+      "id": "MN_R17_SIGN_05",
+      "tile": [
+        13,
+        43
+      ],
+      "lines": [
+        "GRANITE DEN",
+        "RETURN SAME MOUTH"
+      ]
+    },
+    {
+      "id": "MN_R17_SIGN_06",
+      "tile": [
+        25,
+        25
+      ],
+      "lines": [
+        "OLD PINES ROOST",
+        "KEEP THE TREES"
+      ]
+    },
+    {
+      "id": "MN_R17_SIGN_07",
+      "tile": [
+        37,
+        7
+      ],
+      "lines": [
+        "INTERNATIONAL",
+        "FALLS: NORTH"
+      ]
+    },
+    {
+      "id": "MN_R17_SIGN_08",
+      "tile": [
+        53,
+        29
+      ],
+      "lines": [
+        "FERN ALCOVE",
+        "WILDLIFE HABITAT"
+      ]
+    },
+    {
+      "id": "MN_R17_FOREST_JUNCTION",
+      "tile": [
+        27,
+        45
+      ],
+      "lines": [
+        "GRANITE DEN: WEST",
+        "RANGER HUT: EAST"
+      ]
+    }
+  ],
+  "doors": [
+    {
+      "id": "MN_R17_GRANITE_DEN",
+      "warp_index": 1,
+      "return_warp_index": 2,
+      "tile": [
+        10,
+        43
+      ],
+      "collision": "CAVE",
+      "return_tile": [
+        10,
+        44
+      ],
+      "arrival_tile": [
+        10,
+        44
+      ],
+      "target": "MnR17Cave1F",
+      "target_warp": 1
+    },
+    {
+      "id": "MN_R17_RANGER_HUT_DOOR",
+      "warp_index": 1,
+      "return_warp_index": 2,
+      "tile": [
+        45,
+        49
+      ],
+      "collision": "DOOR",
+      "return_tile": [
+        45,
+        50
+      ],
+      "arrival_tile": [
+        45,
+        50
+      ],
+      "target": "MnR17RangerHut",
+      "target_warp": 1
+    }
+  ],
+  "viewpoints": [
+    {
+      "id": "BEMIDJI_APPROACH",
+      "tile": [
+        32,
+        105
+      ]
+    },
+    {
+      "id": "SOUTH_CEDAR_GROVE",
+      "tile": [
+        17,
+        90
+      ]
+    },
+    {
+      "id": "REQUIRED_SEDGE_GRASS",
+      "tile": [
+        25,
+        93
+      ]
+    },
+    {
+      "id": "MARSH_BRIDGE",
+      "tile": [
+        30,
+        66
+      ]
+    },
+    {
+      "id": "WETLAND_LOOKOUT",
+      "tile": [
+        28,
+        60
+      ]
+    },
+    {
+      "id": "CUT_NORTH_APPROACH",
+      "tile": [
+        36,
+        68
+      ]
+    },
+    {
+      "id": "CUT_SOUTH_APPROACH",
+      "tile": [
+        36,
+        71
+      ]
+    },
+    {
+      "id": "RANGER_HUT",
+      "tile": [
+        45,
+        50
+      ]
+    },
+    {
+      "id": "WEST_GRANITE_DEN",
+      "tile": [
+        10,
+        44
+      ]
+    },
+    {
+      "id": "MARSH_HABITAT_HOOK",
+      "tile": [
+        9,
+        58
+      ]
+    },
+    {
+      "id": "OLD_PINES",
+      "tile": [
+        19,
+        27
+      ]
+    },
+    {
+      "id": "FERN_ALCOVE",
+      "tile": [
+        55,
+        28
+      ]
+    },
+    {
+      "id": "FALLS_APPROACH",
+      "tile": [
+        36,
+        11
+      ]
+    },
+    {
+      "id": "DRY_RETURN_WAYFINDING",
+      "tile": [
+        36,
+        77
+      ]
+    },
+    {
+      "id": "QUIET_FOREST_SPUR",
+      "tile": [
+        29,
+        44
+      ]
+    },
+    {
+      "id": "WIDEST_RANGER_YARD",
+      "tile": [
+        44,
+        53
+      ]
+    },
+    {
+      "id": "SHORTCUT_SUPPLY_CACHE",
+      "tile": [
+        36,
+        73
+      ]
+    }
+  ],
+  "story_contract": {
+    "quest": "SQ03",
+    "requires": [
+      "BADGE_7"
+    ],
+    "check_in": "MnInternationalFalls ranger desk sets EVENT_MN_BORDER_REPORT; route hut only offers rest/directions.",
+    "next_route": "R20 retains all badges plus harbor signal; the side loop cannot bypass Q07 at the League approach.",
+    "completion": "Report completed circuit for one PP_UP at the authoritative ranger desk; EVENT_MN_BORDER_CIRCUIT_REWARDED prevents repeat gifts.",
+    "route_runtime": "Source renderer sets no story flag or reward."
+  },
+  "reservation_changes": [
+    "Replaced the 64\u00d7144 twelve-chunk lattice with a 32\u00d756 passage in three clipped chunks. Bemidji South and International Falls North identities are retained.",
+    "Six exterior trainers 01\u201306 are placed. Original trainer 07\u201310 IDs, parties and flags remain unused reservations.",
+    "MnR17Cave1F retains its identity and is resized from 16\u00d712 to 7\u00d78, with an exact same-mouth return. Existing Revive ITEM_04 moves inside.",
+    "Added MnR17RangerHut, a real 5\u00d74 room paired with the native facade. It fulfills the ranger rest-hut promise and does not replace the International Falls SQ03 desk.",
+    "Cut now provides a measured walking shortcut to marsh-side supplies using native forest 0f\u219217. No decorative Cut tree or arbitrary ledge is added.",
+    "Snow flecks remain an unfulfilled style reservation. This revision uses authenticated daylight forest pixels without inventing snow art."
+  ],
+  "compiled_tileset": "mn_winter_outdoor",
+  "winter_section_review": {
+    "status": "DETACHED_SOURCE_ONLY_USER_REVIEW_PENDING_NOT_NATIVE",
+    "identity": "Border Pines winter cedar-marsh section",
+    "snowline_description": "Irregular south edge follows actual cedar marsh and old southern forest transition",
+    "water_policy": "Upper cedar marsh meta y25..31 freezes as an actual new Foot surface. Original timber bridge/rails, lower lake, Cut tree/side walls and every outer water boundary remain exact. No free bridge or Cut bypass allowed.",
+    "actors_ports_gates": "Original indexed actors/room mouths/warps/story/programs unchanged; full native preimages and source model required before integration."
+  }
+}

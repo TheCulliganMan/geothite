@@ -1,0 +1,98 @@
+{
+  "family_id": "MN_F137",
+  "status": "root-approved-unregistered-native-ready",
+  "selected_mode": "area-solid",
+  "sampling": "area_vote",
+  "exterior_contour": "solid",
+  "white_detail_min_samples": 4,
+  "interior_black_min_samples": 12,
+  "review_sha256": "f410accf0e0887b821fcf4d2cd9935d66bbcea81b7d2db33976bafd7b728940a",
+  "manifest_sha256": "6957fdf0317a77d71b0ed963f95fd5439bc336f715f8df1af4bf853d2c517ef6",
+  "profiles_sha256": "277872090e4c2df3d8df685e42af1b926724eb75b3b2c2f278258f92bbaa8029",
+  "strict_production_validation": {
+    "base_references": true,
+    "family_id": "MN_F137",
+    "runtime_files": 14,
+    "species": 2,
+    "status": "passed",
+    "strict_profiles": true
+  },
+  "all_candidate_render_files_preserved_and_hash_verified": 150,
+  "generation_attempts": 1,
+  "generation_failures": 0,
+  "art_and_palette_qa": "All4views root-approved; exact4inks per species;56front/48back; PNG-indexed-2bpp verified by actual production loader. No native handpainting. Independent close upper-rear portraits.",
+  "frames": [
+    {
+      "species_id": "MN_303",
+      "view": "front",
+      "png_sha256": "18ad6eb1868fd3e9d23c7bdc0aef9323b70712a7d4576ceb24e8dcb4eff6aa94",
+      "2bpp_sha256": "79fa06baa7727ed9d5c7b32fa0dc359d95f971eaf22df1012a613934e2957aba",
+      "source_sha256": "69598f02982289d788a796ac6b8e3f986cb0d7876e37094f9fccef81b223888f",
+      "size": [
+        56,
+        56
+      ],
+      "palette_rgb555": [
+        32767,
+        10904,
+        21095,
+        0
+      ],
+      "native_pixels_equal_selected_root_approved_candidate": true
+    },
+    {
+      "species_id": "MN_303",
+      "view": "back",
+      "png_sha256": "1cf0c3ad5c211ca60c72197566bc5e9873603057861e16e535139b2fbf0a894e",
+      "2bpp_sha256": "2e60af8f58d2f249bb12f5760f060c7497c80b4b1ae3d71c03f3a1987f010599",
+      "source_sha256": "69598f02982289d788a796ac6b8e3f986cb0d7876e37094f9fccef81b223888f",
+      "size": [
+        48,
+        48
+      ],
+      "palette_rgb555": [
+        32767,
+        10904,
+        21095,
+        0
+      ],
+      "native_pixels_equal_selected_root_approved_candidate": true
+    },
+    {
+      "species_id": "MN_304",
+      "view": "front",
+      "png_sha256": "1101dd17ad54afdd0ae647c2328b8b51ff197049da4a8e1fd0f5e370d9b7ffb8",
+      "2bpp_sha256": "327ff31293274911dc3d0cc000c6db8a8abd06bcead10c2f38a0347c9ba037c4",
+      "source_sha256": "69598f02982289d788a796ac6b8e3f986cb0d7876e37094f9fccef81b223888f",
+      "size": [
+        56,
+        56
+      ],
+      "palette_rgb555": [
+        32767,
+        9949,
+        19816,
+        0
+      ],
+      "native_pixels_equal_selected_root_approved_candidate": true
+    },
+    {
+      "species_id": "MN_304",
+      "view": "back",
+      "png_sha256": "a2cf3829e77f8e7811e2c93471b4a890a3c6ae5cd7518e8db6225f3597a40e82",
+      "2bpp_sha256": "005c71e404362dd8bdbc45d64c2df4c338ffce4606f20a254d2c65b5648c3aae",
+      "source_sha256": "69598f02982289d788a796ac6b8e3f986cb0d7876e37094f9fccef81b223888f",
+      "size": [
+        48,
+        48
+      ],
+      "palette_rgb555": [
+        32767,
+        9949,
+        19816,
+        0
+      ],
+      "native_pixels_equal_selected_root_approved_candidate": true
+    }
+  ]
+}

@@ -1,0 +1,139 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-r19-detroit-gate-v04.crystalpack",
+  "pack_sha256": "de1add590013c786bd3a2770c58ff46c656930cc3dd3944af203f7480e292e21",
+  "calls": 373,
+  "phases": [
+    {
+      "phase": "walk-save",
+      "initial": {
+        "badges": 0,
+        "dialogue": false,
+        "facing": "up",
+        "frame": 55,
+        "map": "MnR19C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 1
+        },
+        "position": {
+          "x": 47,
+          "y": 13
+        }
+      },
+      "final": {
+        "badges": 0,
+        "dialogue": false,
+        "facing": "down",
+        "frame": 154,
+        "map": "MnR19DetroitGate",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 3
+        },
+        "position": {
+          "x": 4,
+          "y": 3
+        }
+      },
+      "output_save": ".local/route-grass-review/r19-gate-denial-production-walk-save-v01-output.crystalsave",
+      "stderr_bytes": 924,
+      "stderr_is_opt_in_dialogue_trace_only": true,
+      "input_unchanged": true
+    },
+    {
+      "phase": "continue-return",
+      "initial": {
+        "badges": 0,
+        "dialogue": false,
+        "facing": "down",
+        "frame": 154,
+        "map": "MnR19DetroitGate",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 3
+        },
+        "position": {
+          "x": 4,
+          "y": 3
+        }
+      },
+      "final": {
+        "badges": 0,
+        "dialogue": false,
+        "facing": "down",
+        "frame": 172,
+        "map": "MnR19DetroitGate",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 3
+        },
+        "position": {
+          "x": 4,
+          "y": 3
+        }
+      },
+      "output_save": ".local/route-grass-review/r19-gate-denial-production-continue-return-v01-output.crystalsave",
+      "stderr_bytes": 924,
+      "stderr_is_opt_in_dialogue_trace_only": true,
+      "input_unchanged": true
+    }
+  ],
+  "wild": [
+    {
+      "badges": 0,
+      "dialogue": true,
+      "facing": "left",
+      "frame": 78,
+      "map": "MnR19C00R00",
+      "menu": null,
+      "mode": "wildbattle",
+      "money": 3000,
+      "player": "CHRIS",
+      "pokedex": {
+        "owned": 0,
+        "seen": 2
+      },
+      "position": {
+        "x": 46,
+        "y": 29
+      }
+    },
+    {
+      "badges": 0,
+      "dialogue": true,
+      "facing": "down",
+      "frame": 99,
+      "map": "MnR19C00R00",
+      "menu": null,
+      "mode": "wildbattle",
+      "money": 3000,
+      "player": "CHRIS",
+      "pokedex": {
+        "owned": 0,
+        "seen": 3
+      },
+      "position": {
+        "x": 35,
+        "y": 39
+      }
+    }
+  ],
+  "scope": "Actual populated zero-badge native save, grassy route approach and gate/town round trip, three denied northbound attempts per phase, both dialogue pages proved by opt-in production dialogue rendering trace, unchanged badges/money, Save/Continue repeat. Source initial Mew60 and zero badges are explicit QA setup; no earned progression claim."
+}

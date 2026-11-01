@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "id": "MN_HOCKEY_CAPTAIN",
+  "name": "CAPTAIN LEIF",
+  "status": "accepted-native-playable",
+  "overworld_frames": 6,
+  "overworld_size": [
+    16,
+    16
+  ],
+  "battle_size": [
+    56,
+    56
+  ],
+  "palette_rgb555": [
+    32767,
+    22431,
+    18693,
+    0
+  ],
+  "source": "native-pixels-v1.json",
+  "placement": "placement-v1.json",
+  "pack": "content-packs/minnesota-original-npcs-07-v01.crystalpack",
+  "parent": "content-packs/minnesota-original-npcs-06-v01.crystalpack",
+  "runtime_checks": {
+    "one_controller_test_passed": true,
+    "talk_and_input_ownership": true,
+    "battle_turn_and_pp": true,
+    "battle_save_load": true,
+    "actual_victory_and_defeat_flag_before_render_capture": true,
+    "post_battle_talk": true,
+    "existing_trainers_and_assets_preserved": true
+  },
+  "manual_visual_review": "Reviewed native six-pose board, repaired separate facial features, restored deliberate stick-leg negative space and separated idle skates. Actual production battle intro and post-win St Cloud capture show swept dark hair, navy striped jersey, padded gloves, long socks, two skates and complete hockey stick. Palette and costume match both views; original civic actors, bridge and doors remain clear.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/sprites/07-hockey-captain/native-pixels-v1.json": "60f400af0bdc4d87132c32522473d01e497e016d6b91a68cba8cad13c1e78df2",
+    "planning/minnesota/npcs/sprites/07-hockey-captain/placement-v1.json": "5db11a7bb012806cc5e919f7cbc5870fc01d95bd0e38a0409949f026b414855c",
+    "content-packs/minnesota-original-npcs-07-v01.crystalpack": "5f871afb7f072b4a236c443c6bbf5085eb03ad01e42e9d819bd42e942da281e4",
+    "target/npc-sprites/hockey/controller-v01.log": "b62f58ff70adce7e6284b293e69bd044c1a0a8a39527f97c2d252733d0e14ac4",
+    "target/npc-sprites/hockey/gameplay-v01/original-npc-trainer-intro.png": "5105b23bd321f31db51c44808dbe6bbd9db219b536a88e3ac58f3cbcd6dde3d3",
+    "target/npc-sprites/hockey/gameplay-v01/original-npc-first-turn.png": "ab43b6212f70ba785c1f621684aeae42c70f62e419c8a205d177b349ec020de2",
+    "target/npc-sprites/hockey/gameplay-v01/original-npc-overworld-state.png": "e0268912438bfd0be76150c11426c8240c3519fd9617cef4863057b758850280"
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "selected_source": "front-back.imagegen-v8.png",
+  "selected_native_revision": "redesign-v12; manifest.json",
+  "native_authoring": "Source-center sampling, original per-species four-ink palettes; 5/8/13 guarded front refinements; no native back edits.",
+  "renders": [
+    {
+      "path": "front-back.imagegen-v1.png",
+      "prompt": "prompt-v1.txt",
+      "selection": "retained alternate"
+    },
+    {
+      "path": "front-back.imagegen-v2.png",
+      "prompt": "prompt-v2.txt",
+      "selection": "retained alternate"
+    },
+    {
+      "path": "front-back.imagegen-v3.png",
+      "prompt": "prompt-v3.txt",
+      "selection": "retained alternate"
+    },
+    {
+      "path": "front-back.imagegen-v4.png",
+      "prompt": "prompt-v4.txt",
+      "selection": "retained alternate"
+    },
+    {
+      "path": "front-back.imagegen-v5.png",
+      "prompt": "prompt-v5.txt",
+      "selection": "retained alternate"
+    },
+    {
+      "path": "front-back.imagegen-v6.png",
+      "prompt": "prompt-v6.txt",
+      "selection": "retained alternate"
+    },
+    {
+      "path": "front-back.imagegen-v7.png",
+      "prompt": "prompt-v7.txt",
+      "selection": "retained prior source; user requested redesign and battle-facing correction"
+    },
+    {
+      "path": "front-back.imagegen-v8.png",
+      "prompt": "prompt-v8.txt",
+      "selection": "selected source; left-facing fronts and upper-right rear portraits"
+    }
+  ],
+  "rejected_native_revision": "native-refinement-v8.rejected.json",
+  "references": [
+    {
+      "path": "target/minnesota-pokemon/gen2-reference/starters.png",
+      "role": "style/pixel-density reference; inspected locally, not copied into source art or shipped"
+    },
+    {
+      "path": "target/minnesota-pokemon/native/MN_F125/versions/",
+      "role": "immutable native conversion history including rejected face-mask revision"
+    }
+  ],
+  "redesign_notes": "User requested a modest lynx redesign and corrected battle orientation. Source v8 uses v7 as identity reference and the existing local Crystal starter board only for pixel scale/framing. All older sources and native refinements retained."
+}

@@ -1,0 +1,47 @@
+{
+  "species_id": "MN_248",
+  "family_id": "MN_F114",
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f114/prompt-strandrak-v1.txt",
+  "fit": [
+    14,
+    14
+  ],
+  "palette_binding": {
+    "transparent_index": 0,
+    "visible_indices": [
+      1,
+      2,
+      3
+    ],
+    "normal_rgb555_words": [
+      32767,
+      14075,
+      12713,
+      0
+    ],
+    "shiny_rgb555_words": [
+      32767,
+      24429,
+      13612,
+      0
+    ],
+    "white_body_region_policy": "Simplify formerly white body/highlight regions to light ink1. Index0 is transparent everywhere, not an opaque white paint color."
+  },
+  "references": [
+    {
+      "path": "target/minnesota-pokemon/native/MN_F114/mn-248-strandrak-v1.front.png",
+      "sha256": "573194bbf90c41f23b0199c60dc03dd22477570b319431a1d9217489e09fa7f9",
+      "role": "exact front identity"
+    },
+    {
+      "path": "target/minnesota-pokemon/native/MN_F114/mn-248-strandrak-v1.back.png",
+      "sha256": "c0f8822a046e3e06b2349ff73061b8f7e08a88a5c4d726aed70222d843ffa503",
+      "role": "exact rear identity; extend full rear naturally"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+      "sha256": "4354a639ed1a80fd6686e43b273443ed894e58a84307a8049f638ee9ffa2a099",
+      "role": "native16 style/scale only"
+    }
+  ]
+}

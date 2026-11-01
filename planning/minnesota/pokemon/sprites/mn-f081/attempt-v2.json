@@ -1,0 +1,11 @@
+{
+  "attempt": "v2",
+  "status": "returned-raw-preserved",
+  "source": "sprites/mn-f081/mn-176-177.front-back.imagegen-v2.png",
+  "source_sha256": "28527bac1b6dc90618d6f887186fe88777ef881b3b8c7105832e774e1d80686d",
+  "source_size": [
+    1536,
+    1024
+  ],
+  "prompt_file": "sprites/mn-f081/prompt-v2.txt"
+}

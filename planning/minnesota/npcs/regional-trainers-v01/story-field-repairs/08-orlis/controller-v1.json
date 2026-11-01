@@ -1,0 +1,23 @@
+{
+  "trainers": [
+    {
+      "id": "MN_GYM_7",
+      "map": "MnBemidjiGym",
+      "approach": [
+        5,
+        4
+      ],
+      "facing": "south",
+      "trainer_class": "MN_LEADER_ORLIS",
+      "sprite": "SPRITE_MN_LEADER_ORLIS",
+      "actor_script": "MnBemidjiGymLeader",
+      "fixture_events": [
+        "EVENT_MN_GYM_7_COURT_OPEN"
+      ],
+      "fixture_badges": 6,
+      "defeated_flag": "EVENT_MN_GYM_7_DEFEATED",
+      "badge_slot": 7,
+      "reward_item": "TM_GIGA_DRAIN"
+    }
+  ]
+}

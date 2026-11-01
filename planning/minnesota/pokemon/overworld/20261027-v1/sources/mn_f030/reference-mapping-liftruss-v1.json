@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_074",
+  "fit": 14,
+  "input_images": [
+    {
+      "role": "native16 style/logical pixel reference only",
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+      "sha256": "4354a639ed1a80fd6686e43b273443ed894e58a84307a8049f638ee9ffa2a099"
+    }
+  ],
+  "canonical_identity_reviewed": {
+    "front": {
+      "path": "target/minnesota-pokemon/native/MN_F030/mn-074-liftruss-v1.front.png",
+      "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F030/mn-074-liftruss-v1.front.png",
+      "sha256": "0d0da0e61048d9d8b78b06bf9c215399e691170ddecd36a48e83fb2da1b5e454"
+    },
+    "back": {
+      "path": "target/minnesota-pokemon/native/MN_F030/mn-074-liftruss-v1.back.png",
+      "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F030/mn-074-liftruss-v1.back.png",
+      "sha256": "f04a414eb7f304be3db61375d5ab1e11d527b3c48d9c4cf5626a356547c1cc05"
+    }
+  },
+  "canonical_eye_form": "TWO actual dark pupils SOUTH/ONE WEST on light girder face; rear plain.",
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f030/prompt-liftruss-v1.txt"
+}

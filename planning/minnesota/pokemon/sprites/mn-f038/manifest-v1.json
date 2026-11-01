@@ -1,0 +1,130 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F038",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_089": {
+      "species_id": "MN_089",
+      "name": "Lutebrisk",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          29,
+          27,
+          12
+        ],
+        [
+          11,
+          20,
+          25
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        13181,
+        26251,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          239,
+          222,
+          99
+        ],
+        [
+          90,
+          165,
+          206
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#EFDE63",
+        "#5AA5CE",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f038/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png",
+      "target/minnesota-pokemon/gen2-reference/bugs.png"
+    ]
+  },
+  "sprites": [
+    {
+      "id": "mn-089-lutebrisk-v1",
+      "species_id": "MN_089",
+      "view": "front",
+      "source": "sprites/mn-f038/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        1214,
+        647
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13181,
+        26251,
+        0
+      ]
+    },
+    {
+      "id": "mn-089-lutebrisk-v1",
+      "species_id": "MN_089",
+      "view": "back",
+      "source": "sprites/mn-f038/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        647,
+        1214,
+        648
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13181,
+        26251,
+        0
+      ]
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "notes": "Inspected frozen v1: Lutebrisk white jelly chest, curled feet/tail and back cheek retain coherent outlines against white paper. Butter heart/ribbons remain gold food detail, no fire; rear head/shoulder crop stays clean.",
+    "sheet_sha256": "910395ae0c57d0d5433a03177de5fa37f7ed172322576151d200ed4dcc670313",
+    "outline_profile": "source-contour-v1"
+  }
+}

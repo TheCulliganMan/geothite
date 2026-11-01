@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "id": "MN_R07",
+  "source_kind": "scoped_route_grass_review_contract",
+  "native_binding": {
+    "pack": "content-packs/minnesota-current-r07-grass-and-stairs-v02.crystalpack",
+    "pack_sha256": "7b0aea48dc662368dfa4a2482d6dce75c94f2b18e4f9f3ea2b94861f9c409316",
+    "content_identity": "ee9f8bafe7a31f4f7cb0aee63d6c51f39922edd2345583eb49374963741e6962"
+  },
+  "new_grass_quadrants": 32,
+  "route_grass_quadrants": 224,
+  "entrance_core": [
+    [
+      21,
+      4
+    ],
+    [
+      21,
+      9
+    ]
+  ],
+  "minimum_entrance_grass_steps": 2,
+  "pickup_core": [
+    25,
+    13
+  ],
+  "pickup_item": "REPEL",
+  "once_and_continue": true,
+  "active_native_hop_lanes": [],
+  "retired_historical_ledge_contracts": [
+    "SANDBANK_RETURN"
+  ],
+  "native_stair_metatile": [
+    8,
+    21
+  ],
+  "stair_block": "88",
+  "corrected_text_labels": [
+    "MN_R07_DROP_SIGNText",
+    "MN_R07_T02Won"
+  ],
+  "scope": "Whole route visually reviewed; scoped north grass, Repel, stair sign and actual trainer victory/Continue acceptance. Complete current route and neighboring town journeys still need their own proof."
+}

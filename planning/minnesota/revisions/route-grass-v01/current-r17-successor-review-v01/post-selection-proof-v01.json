@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "selected_revision": "route_grass_r17_trail_guidance_revision",
+  "pack_sha256": "186c262b18d5174cb7ba9727358d4022bea9fce6d362529405728028ef92c60a",
+  "native_source_metatiles_exact": 1792,
+  "grass_quadrants": 136,
+  "ice_quadrants": 92,
+  "all_other_maps_and_bemidji_stairs_exact": true,
+  "verified_maps": [
+    "MnBemidjiNorthwoods",
+    "MnInternationalFalls",
+    "MnR17C00R00",
+    "MnR17C00R01",
+    "MnR17C00R02",
+    "MnR17RangerHut"
+  ],
+  "goal_complete": false
+}

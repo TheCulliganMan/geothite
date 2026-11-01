@@ -1,0 +1,159 @@
+{
+  "species": [
+    {
+      "name": "scraplow",
+      "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f037/manifest-scraplow-v3-native-pupils.json",
+      "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f037/scraplow-v3-native-pupils",
+      "source_feature_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f037/source-feature-proof-scraplow-v3-native-pupils.json",
+      "all_raw_original_parity": [
+        {
+          "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f037/scraplow.overworld.imagegen-v1.png",
+          "original": "/Users/ryanculligan/.codex/generated_images/01a17dc4-dd75-7642-a1c6-4bf13fda70c6/exec-f0ea2491-7498-4865-a7c0-cd2924b679f2.png",
+          "sha256": "40db234cbc2d04c496b2d0c33c0b1379e02963b618bd3396d0f7fc6fbb5ee5ab"
+        },
+        {
+          "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f037/scraplow.overworld.imagegen-v2-roomy-lamps.png",
+          "original": "/Users/ryanculligan/.codex/generated_images/01a17dc4-dd75-7642-a1c6-4bf13fda70c6/exec-8d516d8e-f7f2-4376-9143-e172211128bc.png",
+          "sha256": "3e66009cd4ef4c82d6fa16fe56d0ee0bb4782ee3c67d90f30e43131f1aec92d6"
+        }
+      ],
+      "status": "root independent context acceptance required unless already registered"
+    },
+    {
+      "name": "plowzer",
+      "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f037/manifest-plowzer-v5-registered-pupils.json",
+      "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f037/plowzer-v5-registered-pupils",
+      "source_feature_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f037/source-feature-proof-plowzer-v5-registered-pupils.json",
+      "all_raw_original_parity": [
+        {
+          "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f037/plowzer.overworld.imagegen-v1.png",
+          "original": "/Users/ryanculligan/.codex/generated_images/01a17dc4-dd75-7642-a1c6-4bf13fda70c6/exec-aedab763-c83d-434d-866e-6b31891b09fb.png",
+          "sha256": "88679267b423342721b85442ea00ffd7f1acb10f234c8f21232b05780e15a135"
+        },
+        {
+          "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f037/plowzer.overworld.imagegen-v2-profile-face.png",
+          "original": "/Users/ryanculligan/.codex/generated_images/01a17dc4-dd75-7642-a1c6-4bf13fda70c6/exec-13535441-1471-47c9-8ea8-dcf1b73eb008.png",
+          "sha256": "07d63813556ccd3fb45f1061c62f3297990054a3fbb2b8cbe668f1daee1abf2c"
+        }
+      ],
+      "status": "root independent context acceptance required unless already registered"
+    },
+    {
+      "name": "pasquib",
+      "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f056/manifest-pasquib-v2-frozen-native.json",
+      "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f056/pasquib-v2-frozen-native",
+      "source_feature_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f056/source-feature-proof-pasquib-v2-frozen-native.json",
+      "all_raw_original_parity": [
+        {
+          "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f056/pasquib.overworld.imagegen-v1.png",
+          "original": "/Users/ryanculligan/.codex/generated_images/01a17f9b-beff-7771-977d-2d3d7b14de43/exec-9503f4d5-b651-4322-8be7-55e017d37639.png",
+          "sha256": "cb33fdeb4445ab1192d164facc30e59c0906932ae5c56b7facee7b6b30027928"
+        }
+      ],
+      "status": "root independent context acceptance required unless already registered"
+    },
+    {
+      "name": "thawbonnet",
+      "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f056/manifest-thawbonnet-v2-frozen-native.json",
+      "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f056/thawbonnet-v2-frozen-native",
+      "source_feature_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f056/source-feature-proof-thawbonnet-v2-frozen-native.json",
+      "all_raw_original_parity": [
+        {
+          "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f056/thawbonnet.overworld.imagegen-v1.png",
+          "original": "/Users/ryanculligan/.codex/generated_images/01a17f9b-beff-7771-977d-2d3d7b14de43/exec-dfe5452f-215b-46a4-8ad9-609f272a4ab0.png",
+          "sha256": "8e23e1a1d29aca64688d49cf53f8a517dccb7e03d3178135fa80cf0c52f160a0"
+        },
+        {
+          "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f056/thawbonnet.overworld.imagegen-v2-roomy-light-eyes.png",
+          "original": "/Users/ryanculligan/.codex/generated_images/01a17f9b-beff-7771-977d-2d3d7b14de43/exec-9b0e98f2-f855-4231-9d19-619d6a4aa7a9.png",
+          "sha256": "87d2b31a5dbd00972a5f10cf11849bb8913ed630fa6f1eb42f9f16ea77b9b62a"
+        }
+      ],
+      "status": "root independent context acceptance required unless already registered"
+    },
+    {
+      "name": "vernacape",
+      "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f056/manifest-vernacape-v2-frozen-native.json",
+      "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f056/vernacape-v2-frozen-native",
+      "source_feature_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f056/source-feature-proof-vernacape-v2-frozen-native.json",
+      "all_raw_original_parity": [
+        {
+          "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f056/vernacape.overworld.imagegen-v1.png",
+          "original": "/Users/ryanculligan/.codex/generated_images/01a17f9b-beff-7771-977d-2d3d7b14de43/exec-0f2edc78-a59a-418e-8eaa-6cec63bce58a.png",
+          "sha256": "097992bee6b4a049bc4d22dd979da4f8164d2eff3f47a62dbcdc3343e63a278d"
+        },
+        {
+          "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f056/vernacape.overworld.imagegen-v2-roomy-light-eyes.png",
+          "original": "/Users/ryanculligan/.codex/generated_images/01a17f9b-beff-7771-977d-2d3d7b14de43/exec-6c5c674c-cc09-44ad-bfa0-feae34046ad9.png",
+          "sha256": "368393159d957c5049bd43de8e009b4baf70d43ddad474a88203e048133fbfc6"
+        }
+      ],
+      "status": "root independent context acceptance required unless already registered"
+    },
+    {
+      "name": "driftpeg",
+      "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f059/manifest-driftpeg-v3-frozen-native.json",
+      "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f059/driftpeg-v3-frozen-native",
+      "source_feature_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f059/source-feature-proof-driftpeg-v3-frozen-native.json",
+      "all_raw_original_parity": [
+        {
+          "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f059/driftpeg.overworld.imagegen-v1.png",
+          "original": "/Users/ryanculligan/.codex/generated_images/01a17dc4-dd75-7642-a1c6-4bf13fda70c6/exec-c7ce8755-9129-45a2-ad4b-4d1ead06177b.png",
+          "sha256": "fba80c6edc7600385785bc8e9d5acc99b473e9812a0d7616243c4bafebce5c2a"
+        },
+        {
+          "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f059/driftpeg.overworld.imagegen-v2-profile-eye.png",
+          "original": "/Users/ryanculligan/.codex/generated_images/01a17f9b-beff-7771-977d-2d3d7b14de43/exec-c15dd6e4-6da4-45d4-9cc2-e38a01eb4202.png",
+          "sha256": "2f78e7c2082d9789dc506c018c2ac263d4cda7c03caa8d5d323fa681bb22cad5"
+        }
+      ],
+      "status": "root independent context acceptance required unless already registered"
+    },
+    {
+      "name": "fencicle",
+      "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f059/manifest-fencicle-v3-frozen-native.json",
+      "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f059/fencicle-v3-frozen-native",
+      "source_feature_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f059/source-feature-proof-fencicle-v3-frozen-native.json",
+      "all_raw_original_parity": [
+        {
+          "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f059/fencicle.overworld.imagegen-v1.png",
+          "original": "/Users/ryanculligan/.codex/generated_images/01a17dc4-dd75-7642-a1c6-4bf13fda70c6/exec-4de86a4b-bdd9-4116-9022-eb94476b468d.png",
+          "sha256": "63ccfe29aba713a3f770231324bf78264d6e1f682c9d1e2d1b829bb7d8010409"
+        },
+        {
+          "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f059/fencicle.overworld.imagegen-v2-roomy-face.png",
+          "original": "/Users/ryanculligan/.codex/generated_images/01a17f9b-beff-7771-977d-2d3d7b14de43/exec-e4472b75-3ecc-4199-98fa-9a1e304fa86e.png",
+          "sha256": "0c0c548af3683f61f8de010f69fed64d2cd5d4616536f3595f388b4d37ec3c78"
+        }
+      ],
+      "status": "root independent context acceptance required unless already registered"
+    },
+    {
+      "name": "rimeguard",
+      "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f059/manifest-rimeguard-v4-window-proof.json",
+      "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f059/rimeguard-v4-window-proof",
+      "source_feature_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f059/source-feature-proof-rimeguard-v4-window-proof.json",
+      "all_raw_original_parity": [
+        {
+          "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f059/rimeguard.overworld.imagegen-v1.png",
+          "original": "/Users/ryanculligan/.codex/generated_images/01a17dc4-dd75-7642-a1c6-4bf13fda70c6/exec-43c1d1ec-cbd4-4580-8a09-6f3ae2c962f1.png",
+          "sha256": "2416f561e56efe8b56af9a84f2688f2ff7788eb16698231e9df85bf7c9ca390c"
+        },
+        {
+          "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f059/rimeguard.overworld.imagegen-v2-three-rails.png",
+          "original": "/Users/ryanculligan/.codex/generated_images/01a17f9b-beff-7771-977d-2d3d7b14de43/exec-fa33f530-9914-4256-a536-40a3608799ad.png",
+          "sha256": "9127160e2e02ce0ffab8b89e2b765a32168d95846a328c93fb9315f44903aaaf"
+        },
+        {
+          "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f059/rimeguard.overworld.imagegen-v3-roomy-face.png",
+          "original": "/Users/ryanculligan/.codex/generated_images/01a17f9b-beff-7771-977d-2d3d7b14de43/exec-ce28bc87-3622-4941-bd28-0ee9cf8a2636.png",
+          "sha256": "bc9e175e94641459941c6a4115d1cf8697bbe83d2ba3535412b447fe7a3812af"
+        }
+      ],
+      "status": "root independent context acceptance required unless already registered"
+    }
+  ],
+  "no_registry_or_pack_writes_by_worker": true,
+  "original_raws_retained": true,
+  "all_generation_tools": "built-in image_gen"
+}

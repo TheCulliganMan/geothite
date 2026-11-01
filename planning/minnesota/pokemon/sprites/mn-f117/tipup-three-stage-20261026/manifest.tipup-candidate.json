@@ -1,0 +1,350 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F117",
+  "status": "three-stage-tipup-candidate-pending-root-review",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_251": {
+      "species_id": "MN_251",
+      "name": "Winkfin",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          21,
+          28,
+          29
+        ],
+        [
+          8,
+          14,
+          12
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        30613,
+        12744,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          173,
+          231,
+          239
+        ],
+        [
+          66,
+          115,
+          99
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#ADE7EF",
+        "#427363",
+        "#000000"
+      ]
+    },
+    "MN_252": {
+      "species_id": "MN_252",
+      "name": "Glaciris",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          19,
+          27,
+          31
+        ],
+        [
+          8,
+          11,
+          18
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        32627,
+        18792,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          156,
+          222,
+          255
+        ],
+        [
+          66,
+          90,
+          148
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#9CDEFF",
+        "#425A94",
+        "#000000"
+      ]
+    },
+    "MN_266": {
+      "species_id": "MN_266",
+      "name": "Tipulord",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          27,
+          23,
+          10
+        ],
+        [
+          5,
+          10,
+          15
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        11003,
+        15685,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          222,
+          189,
+          82
+        ],
+        [
+          41,
+          82,
+          123
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#DEBD52",
+        "#29527B",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f117/tipup-three-stage-20261026/prompt-tipup-v1.txt",
+  "reference_mapping": "sprites/mn-f117/tipup-three-stage-20261026/reference-mapping-v1.json",
+  "style_reference": {
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png"
+    ]
+  },
+  "back_framing": "gen2-close-rear-portrait",
+  "source_sha256": "664841ec0048b28039f4afe6816ec7d6285500bf2d108d96358c7e9a1c3aed12",
+  "sprites": [
+    {
+      "id": "mn-251-winkfin-tipup-v1",
+      "species_id": "MN_251",
+      "view": "front",
+      "source": "sprites/mn-f117/tipup-three-stage-20261026/mn-251-252-266.front-back.tipup-v1.png",
+      "crop": [
+        0,
+        0,
+        480,
+        460
+      ],
+      "fit": [
+        40,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        30613,
+        12744,
+        0
+      ],
+      "white_detail_min_samples": 32,
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-251-winkfin-tipup-v1",
+      "species_id": "MN_251",
+      "view": "back",
+      "source": "sprites/mn-f117/tipup-three-stage-20261026/mn-251-252-266.front-back.tipup-v1.png",
+      "crop": [
+        0,
+        460,
+        480,
+        564
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        30613,
+        12744,
+        0
+      ],
+      "white_detail_min_samples": 32,
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-252-glaciris-tipup-v1",
+      "species_id": "MN_252",
+      "view": "front",
+      "source": "sprites/mn-f117/tipup-three-stage-20261026/mn-251-252-266.front-back.tipup-v1.png",
+      "crop": [
+        480,
+        0,
+        490,
+        460
+      ],
+      "fit": [
+        48,
+        48
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        32627,
+        18792,
+        0
+      ],
+      "white_detail_min_samples": 32,
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-252-glaciris-tipup-v1",
+      "species_id": "MN_252",
+      "view": "back",
+      "source": "sprites/mn-f117/tipup-three-stage-20261026/mn-251-252-266.front-back.tipup-v1.png",
+      "crop": [
+        480,
+        460,
+        490,
+        564
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        32627,
+        18792,
+        0
+      ],
+      "white_detail_min_samples": 32,
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-266-tipulord-tipup-v1",
+      "species_id": "MN_266",
+      "view": "front",
+      "source": "sprites/mn-f117/tipup-three-stage-20261026/mn-251-252-266.front-back.tipup-v1.png",
+      "crop": [
+        970,
+        0,
+        566,
+        460
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        11003,
+        15685,
+        0
+      ],
+      "white_detail_min_samples": 32,
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-266-tipulord-tipup-v1",
+      "species_id": "MN_266",
+      "view": "back",
+      "source": "sprites/mn-f117/tipup-three-stage-20261026/mn-251-252-266.front-back.tipup-v1.png",
+      "crop": [
+        970,
+        460,
+        566,
+        564
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        11003,
+        15685,
+        0
+      ],
+      "white_detail_min_samples": 32,
+      "interior_black_min_samples": 16
+    }
+  ],
+  "candidate_review": {
+    "status": "inspected-awaiting-root-merge",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "d58b46674c1ea6df953d8c279ebb5e038b3019a93d49314a51ea52571b988ccf",
+    "review_board": "target/minnesota-pokemon/native/MN_F117/line.tipup-three-stage-20261026.review.png",
+    "notes": "Actual native six-view board inspected. Young is a chunky cyan/green three-bar perch with tiny alert fin, middle an elongated blue walleye with one broad upright frost flag, final a heavier gold/deep-blue walleye with two tall flag lobes and clear white notch. Expressive faces and strong white ice margins survive native reduction; final golden body and paired flags are distinct. All backs are enlarged turned rear portraits cropped at the lower torso. Tail peduncles are only slightly bent and do not emphasize the requested curled trigger as strongly as the dorsal flag progression. No held gear or humanoid anatomy. Each species uses its own exact four-color palette. Current canonical two-member manifest and all ten baseline native hashes restored unchanged after staged conversion."
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "status": "returned-image",
+  "tool": "built-in image_gen",
+  "original_path": "/Users/ryanculligan/.codex/generated_images/01a178da-4cf1-7e01-8516-667a332dc790/exec-4de9a4eb-3e95-48ab-bdbb-d2e851b8d3d3.png",
+  "saved_path": "planning/minnesota/pokemon/sprites/mn-f050/redesign-20261026/mn-103-taconarch.front-back.redesign-v2.png",
+  "sha256": "57e38f996ead3e71555017ea43cd1e22f386de6a0b97f8327a19dfe2189a2264",
+  "dimensions": [
+    1199,
+    1312
+  ],
+  "prompt_file": "sprites/mn-f050/redesign-20261026/prompt-v2.txt",
+  "referenced_image_paths": []
+}

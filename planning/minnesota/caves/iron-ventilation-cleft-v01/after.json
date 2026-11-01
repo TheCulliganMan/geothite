@@ -1,0 +1,123 @@
+{
+  "schema_version": 1,
+  "id": "MnIronVentilation",
+  "tileset": "mn_iron_vent_rock",
+  "base_tileset": "mn_iron_haulage_rock",
+  "dimensions_metatiles": [
+    18,
+    13
+  ],
+  "border_block": 46,
+  "palette_group": "nite",
+  "purpose": "A raised western shelf, a rock-fin loop to the retained valve, and a descending eastern service cleft around Vern and the original shift guard.",
+  "rows": [
+    "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e",
+    "2e 2e 2e 04 05 05 06 2e 2e 2e 2e 2e 2e 04 05 06 2e 2e",
+    "2e 2e 04 42 0d 0d 1e 2e 2e 2e 2e 2e 2e 08 42 1e 2e 2e",
+    "2e 2e 08 0d 0d 0d 1e 2e 2e 2e 2e 2e 2e 20 36 22 2e 2e",
+    "2e 2e 20 21 30 21 22 2e 2e 2e 2e 2e 04 05 0d 06 2e 2e",
+    "2e 04 05 0d 0d 0d 0d 05 06 2e 2e 04 0d 1d 0d 1e 2e 2e",
+    "2e 08 0d 1d 11 0d 0d 0d 0d 41 0d 0d 0d 0d 0d 1e 2e 2e",
+    "2e 08 0d 2e 08 0d 40 0d 1e 2e 20 0d 0d 1d 0d 06 2e 2e",
+    "2e 08 0d 04 05 1d 0d 0d 1e 2e 2e 20 0d 0d 0d 1e 2e 2e",
+    "2e 08 0d 1e 0d 0d 0d 0d 1e 2e 2e 2e 08 0d 1e 2e 2e 2e",
+    "2e 20 42 21 21 21 21 21 22 2e 2e 2e 20 42 22 2e 2e 2e",
+    "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e",
+    "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e"
+  ],
+  "block_overrides": [
+    {
+      "id": "07",
+      "source_tileset": "mn_iron_haulage_rock",
+      "source_block": "0d",
+      "collision": [
+        "FLOOR",
+        "FLOOR",
+        "FLOOR",
+        "FLOOR"
+      ],
+      "reason": "Retain original ventilation callback block7 as ordinary floor in the private alias."
+    }
+  ],
+  "review_contract": {
+    "viewpoints": [
+      {
+        "id": "west-arrival",
+        "tile": [
+          4,
+          21
+        ]
+      },
+      {
+        "id": "west-fin",
+        "tile": [
+          5,
+          15
+        ]
+      },
+      {
+        "id": "vent-guard",
+        "tile": [
+          11,
+          10
+        ]
+      },
+      {
+        "id": "west-climb",
+        "tile": [
+          8,
+          10
+        ]
+      },
+      {
+        "id": "upper-west",
+        "tile": [
+          6,
+          5
+        ]
+      },
+      {
+        "id": "valve",
+        "tile": [
+          13,
+          16
+        ]
+      },
+      {
+        "id": "crosscut",
+        "tile": [
+          17,
+          13
+        ]
+      },
+      {
+        "id": "east-climb",
+        "tile": [
+          28,
+          8
+        ]
+      },
+      {
+        "id": "east-middle",
+        "tile": [
+          24,
+          13
+        ]
+      },
+      {
+        "id": "vern",
+        "tile": [
+          24,
+          15
+        ]
+      },
+      {
+        "id": "east-arrival",
+        "tile": [
+          26,
+          21
+        ]
+      }
+    ]
+  }
+}

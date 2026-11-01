@@ -1,0 +1,1158 @@
+{
+  "reason": "Before user-approved starter parity and physical/special coverage changes",
+  "species": [
+    {
+      "id": "MN_001",
+      "classification": "Pouch Bloom",
+      "height_inches": 12,
+      "weight_tenths_lb": 80,
+      "dex_pages": [
+        "It seals its @ pouch at the first @ sign of frost.",
+        "Dew kept inside @ feeds it until @ the bog thaws."
+      ],
+      "base_stats": {
+        "hp": 48,
+        "attack": 39,
+        "defense": 48,
+        "speed": 51,
+        "special_attack": 69,
+        "special_defense": 63
+      },
+      "catch_rate": 45,
+      "base_exp": 70,
+      "gender_ratio": 31,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_SLOW",
+      "egg_groups": [
+        "EGG_PLANT",
+        "EGG_FAIRY"
+      ],
+      "evolution": {
+        "method": "LEVEL",
+        "level": 16
+      },
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_ODDISH",
+      "footprint_species": "CHIKORITA",
+      "cry": {
+        "cry": "CRY_CHIKORITA",
+        "pitch": -48,
+        "length": 144
+      },
+      "shiny_rgb5": [
+        [
+          12,
+          31,
+          26
+        ],
+        [
+          7,
+          6,
+          16
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "POUND"
+        ],
+        [
+          1,
+          "GROWL"
+        ],
+        [
+          5,
+          "VINE_WHIP"
+        ],
+        [
+          9,
+          "SWEET_SCENT"
+        ],
+        [
+          13,
+          "CONFUSION"
+        ],
+        [
+          17,
+          "STUN_SPORE"
+        ],
+        [
+          22,
+          "RAZOR_LEAF"
+        ],
+        [
+          27,
+          "MIMIC"
+        ],
+        [
+          32,
+          "PSYBEAM"
+        ],
+        [
+          37,
+          "SYNTHESIS"
+        ],
+        [
+          42,
+          "PETAL_DANCE"
+        ],
+        [
+          48,
+          "SAFEGUARD"
+        ],
+        [
+          55,
+          "PSYCHIC_M"
+        ],
+        [
+          62,
+          "SOLARBEAM"
+        ]
+      ],
+      "tmhm_moves": [
+        "SWEET_SCENT",
+        "GIGA_DRAIN",
+        "PSYCHIC_M",
+        "SUNNY_DAY",
+        "SOLARBEAM",
+        "ATTRACT",
+        "PROTECT",
+        "REST",
+        "FLASH"
+      ],
+      "egg_moves": [
+        "ENCORE",
+        "CHARM",
+        "LEECH_SEED"
+      ]
+    },
+    {
+      "id": "MN_002",
+      "classification": "Petal Dance",
+      "height_inches": 34,
+      "weight_tenths_lb": 310,
+      "dex_pages": [
+        "It sways its @ petals to draw @ insects closer.",
+        "Those that @ watch forget @ to fly away."
+      ],
+      "base_stats": {
+        "hp": 61,
+        "attack": 49,
+        "defense": 61,
+        "speed": 65,
+        "special_attack": 87,
+        "special_defense": 80
+      },
+      "catch_rate": 45,
+      "base_exp": 89,
+      "gender_ratio": 31,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_SLOW",
+      "egg_groups": [
+        "EGG_PLANT",
+        "EGG_FAIRY"
+      ],
+      "evolution": {
+        "method": "LEVEL",
+        "level": 36
+      },
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_ODDISH",
+      "footprint_species": "CHIKORITA",
+      "cry": {
+        "cry": "CRY_CHIKORITA",
+        "pitch": -24,
+        "length": 160
+      },
+      "shiny_rgb5": [
+        [
+          29,
+          24,
+          17
+        ],
+        [
+          12,
+          3,
+          12
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "POUND"
+        ],
+        [
+          1,
+          "GROWL"
+        ],
+        [
+          1,
+          "VINE_WHIP"
+        ],
+        [
+          11,
+          "SWEET_SCENT"
+        ],
+        [
+          15,
+          "CONFUSION"
+        ],
+        [
+          19,
+          "STUN_SPORE"
+        ],
+        [
+          24,
+          "RAZOR_LEAF"
+        ],
+        [
+          29,
+          "MIMIC"
+        ],
+        [
+          34,
+          "PSYBEAM"
+        ],
+        [
+          39,
+          "SYNTHESIS"
+        ],
+        [
+          44,
+          "PETAL_DANCE"
+        ],
+        [
+          50,
+          "SAFEGUARD"
+        ],
+        [
+          57,
+          "PSYCHIC_M"
+        ],
+        [
+          64,
+          "SOLARBEAM"
+        ]
+      ],
+      "tmhm_moves": [
+        "SWEET_SCENT",
+        "GIGA_DRAIN",
+        "PSYCHIC_M",
+        "SUNNY_DAY",
+        "SOLARBEAM",
+        "ATTRACT",
+        "PROTECT",
+        "REST",
+        "FLASH"
+      ],
+      "egg_moves": [
+        "ENCORE",
+        "CHARM",
+        "LEECH_SEED"
+      ]
+    },
+    {
+      "id": "MN_003",
+      "classification": "Waltz",
+      "height_inches": 62,
+      "weight_tenths_lb": 750,
+      "dex_pages": [
+        "A traveler who @ follows its @ dance may walk",
+        "all night, yet @ wake beside the @ path at dawn."
+      ],
+      "base_stats": {
+        "hp": 80,
+        "attack": 65,
+        "defense": 80,
+        "speed": 85,
+        "special_attack": 115,
+        "special_defense": 105
+      },
+      "catch_rate": 45,
+      "base_exp": 223,
+      "gender_ratio": 31,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_SLOW",
+      "egg_groups": [
+        "EGG_PLANT",
+        "EGG_FAIRY"
+      ],
+      "evolution": null,
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_ODDISH",
+      "footprint_species": "CHIKORITA",
+      "cry": {
+        "cry": "CRY_CHIKORITA",
+        "pitch": 0,
+        "length": 176
+      },
+      "shiny_rgb5": [
+        [
+          23,
+          31,
+          14
+        ],
+        [
+          7,
+          4,
+          10
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "POUND"
+        ],
+        [
+          1,
+          "GROWL"
+        ],
+        [
+          1,
+          "VINE_WHIP"
+        ],
+        [
+          1,
+          "SWEET_SCENT"
+        ],
+        [
+          17,
+          "CONFUSION"
+        ],
+        [
+          21,
+          "STUN_SPORE"
+        ],
+        [
+          26,
+          "RAZOR_LEAF"
+        ],
+        [
+          31,
+          "MIMIC"
+        ],
+        [
+          36,
+          "PSYBEAM"
+        ],
+        [
+          41,
+          "SYNTHESIS"
+        ],
+        [
+          46,
+          "PETAL_DANCE"
+        ],
+        [
+          52,
+          "SAFEGUARD"
+        ],
+        [
+          59,
+          "PSYCHIC_M"
+        ],
+        [
+          66,
+          "SOLARBEAM"
+        ]
+      ],
+      "tmhm_moves": [
+        "SWEET_SCENT",
+        "GIGA_DRAIN",
+        "PSYCHIC_M",
+        "SUNNY_DAY",
+        "SOLARBEAM",
+        "ATTRACT",
+        "PROTECT",
+        "REST",
+        "FLASH"
+      ],
+      "egg_moves": [
+        "ENCORE",
+        "CHARM",
+        "LEECH_SEED"
+      ]
+    },
+    {
+      "id": "MN_004",
+      "classification": "Warm Ore",
+      "height_inches": 14,
+      "weight_tenths_lb": 180,
+      "dex_pages": [
+        "It eats iron-rich @ stones to keep @ its ember lit.",
+        "A hungry one @ is cold enough @ to hold."
+      ],
+      "base_stats": {
+        "hp": 51,
+        "attack": 69,
+        "defense": 60,
+        "speed": 39,
+        "special_attack": 57,
+        "special_defense": 42
+      },
+      "catch_rate": 45,
+      "base_exp": 70,
+      "gender_ratio": 31,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_SLOW",
+      "egg_groups": [
+        "EGG_MINERAL",
+        "EGG_MONSTER"
+      ],
+      "evolution": {
+        "method": "LEVEL",
+        "level": 16
+      },
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_CHARMANDER",
+      "footprint_species": "CYNDAQUIL",
+      "cry": {
+        "cry": "CRY_CYNDAQUIL",
+        "pitch": -48,
+        "length": 144
+      },
+      "shiny_rgb5": [
+        [
+          3,
+          31,
+          13
+        ],
+        [
+          8,
+          8,
+          7
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "TACKLE"
+        ],
+        [
+          1,
+          "LEER"
+        ],
+        [
+          5,
+          "EMBER"
+        ],
+        [
+          9,
+          "HARDEN"
+        ],
+        [
+          13,
+          "ROCK_THROW"
+        ],
+        [
+          17,
+          "SMOKESCREEN"
+        ],
+        [
+          22,
+          "FLAME_WHEEL"
+        ],
+        [
+          27,
+          "METAL_CLAW"
+        ],
+        [
+          32,
+          "ROCK_SLIDE"
+        ],
+        [
+          37,
+          "IRON_TAIL"
+        ],
+        [
+          42,
+          "FLAMETHROWER"
+        ],
+        [
+          48,
+          "BARRIER"
+        ],
+        [
+          55,
+          "FIRE_BLAST"
+        ],
+        [
+          62,
+          "EXPLOSION"
+        ]
+      ],
+      "tmhm_moves": [
+        "FIRE_PUNCH",
+        "FIRE_BLAST",
+        "FLAMETHROWER",
+        "ROCK_SMASH",
+        "STRENGTH",
+        "EARTHQUAKE",
+        "IRON_TAIL",
+        "SUNNY_DAY",
+        "PROTECT",
+        "REST"
+      ],
+      "egg_moves": [
+        "COUNTER",
+        "ROLLOUT",
+        "CRUNCH"
+      ]
+    },
+    {
+      "id": "MN_005",
+      "classification": "Ore Pellet",
+      "height_inches": 38,
+      "weight_tenths_lb": 940,
+      "dex_pages": [
+        "It rolls ore @ pellets inside @ its hot belly.",
+        "Their rattle @ warns that it is @ about to spit."
+      ],
+      "base_stats": {
+        "hp": 65,
+        "attack": 87,
+        "defense": 76,
+        "speed": 49,
+        "special_attack": 72,
+        "special_defense": 53
+      },
+      "catch_rate": 45,
+      "base_exp": 88,
+      "gender_ratio": 31,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_SLOW",
+      "egg_groups": [
+        "EGG_MINERAL",
+        "EGG_MONSTER"
+      ],
+      "evolution": {
+        "method": "LEVEL",
+        "level": 36
+      },
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_CHARMANDER",
+      "footprint_species": "CYNDAQUIL",
+      "cry": {
+        "cry": "CRY_CYNDAQUIL",
+        "pitch": -24,
+        "length": 160
+      },
+      "shiny_rgb5": [
+        [
+          5,
+          31,
+          21
+        ],
+        [
+          7,
+          12,
+          8
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "TACKLE"
+        ],
+        [
+          1,
+          "LEER"
+        ],
+        [
+          1,
+          "EMBER"
+        ],
+        [
+          11,
+          "HARDEN"
+        ],
+        [
+          15,
+          "ROCK_THROW"
+        ],
+        [
+          19,
+          "SMOKESCREEN"
+        ],
+        [
+          24,
+          "FLAME_WHEEL"
+        ],
+        [
+          29,
+          "METAL_CLAW"
+        ],
+        [
+          34,
+          "ROCK_SLIDE"
+        ],
+        [
+          39,
+          "IRON_TAIL"
+        ],
+        [
+          44,
+          "FLAMETHROWER"
+        ],
+        [
+          50,
+          "BARRIER"
+        ],
+        [
+          57,
+          "FIRE_BLAST"
+        ],
+        [
+          64,
+          "EXPLOSION"
+        ]
+      ],
+      "tmhm_moves": [
+        "FIRE_PUNCH",
+        "FIRE_BLAST",
+        "FLAMETHROWER",
+        "ROCK_SMASH",
+        "STRENGTH",
+        "EARTHQUAKE",
+        "IRON_TAIL",
+        "SUNNY_DAY",
+        "PROTECT",
+        "REST"
+      ],
+      "egg_moves": [
+        "COUNTER",
+        "ROLLOUT",
+        "CRUNCH"
+      ]
+    },
+    {
+      "id": "MN_006",
+      "classification": "Furnace",
+      "height_inches": 70,
+      "weight_tenths_lb": 3240,
+      "dex_pages": [
+        "Snow hisses into @ steam around @ its fists.",
+        "Miners once used @ its shed metal @ to mend tools."
+      ],
+      "base_stats": {
+        "hp": 85,
+        "attack": 115,
+        "defense": 100,
+        "speed": 65,
+        "special_attack": 95,
+        "special_defense": 70
+      },
+      "catch_rate": 45,
+      "base_exp": 223,
+      "gender_ratio": 31,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_SLOW",
+      "egg_groups": [
+        "EGG_MINERAL",
+        "EGG_MONSTER"
+      ],
+      "evolution": null,
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_CHARMANDER",
+      "footprint_species": "CYNDAQUIL",
+      "cry": {
+        "cry": "CRY_CYNDAQUIL",
+        "pitch": 0,
+        "length": 176
+      },
+      "shiny_rgb5": [
+        [
+          5,
+          31,
+          9
+        ],
+        [
+          16,
+          5,
+          10
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "TACKLE"
+        ],
+        [
+          1,
+          "LEER"
+        ],
+        [
+          1,
+          "EMBER"
+        ],
+        [
+          1,
+          "HARDEN"
+        ],
+        [
+          17,
+          "ROCK_THROW"
+        ],
+        [
+          21,
+          "SMOKESCREEN"
+        ],
+        [
+          26,
+          "FLAME_WHEEL"
+        ],
+        [
+          31,
+          "METAL_CLAW"
+        ],
+        [
+          36,
+          "ROCK_SLIDE"
+        ],
+        [
+          41,
+          "IRON_TAIL"
+        ],
+        [
+          46,
+          "FLAMETHROWER"
+        ],
+        [
+          52,
+          "BARRIER"
+        ],
+        [
+          59,
+          "FIRE_BLAST"
+        ],
+        [
+          66,
+          "EXPLOSION"
+        ]
+      ],
+      "tmhm_moves": [
+        "FIRE_PUNCH",
+        "FIRE_BLAST",
+        "FLAMETHROWER",
+        "ROCK_SMASH",
+        "STRENGTH",
+        "EARTHQUAKE",
+        "IRON_TAIL",
+        "SUNNY_DAY",
+        "PROTECT",
+        "REST"
+      ],
+      "egg_moves": [
+        "COUNTER",
+        "ROLLOUT",
+        "CRUNCH"
+      ]
+    },
+    {
+      "id": "MN_010",
+      "classification": "Paddle Kit",
+      "height_inches": 14,
+      "weight_tenths_lb": 150,
+      "dex_pages": [
+        "Its first dam @ is often only @ a single twig.",
+        "It pats each @ addition with @ its paddle tail."
+      ],
+      "base_stats": {
+        "hp": 46,
+        "attack": 59,
+        "defense": 46,
+        "speed": 43,
+        "special_attack": 30,
+        "special_defense": 46
+      },
+      "catch_rate": 190,
+      "base_exp": 59,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_GROUND",
+        "EGG_WATER_1"
+      ],
+      "evolution": {
+        "method": "LEVEL",
+        "level": 18
+      },
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_SLOWPOKE",
+      "footprint_species": "SENTRET",
+      "cry": {
+        "cry": "CRY_RATTATA",
+        "pitch": -48,
+        "length": 144
+      },
+      "shiny_rgb5": [
+        [
+          12,
+          29,
+          23
+        ],
+        [
+          4,
+          11,
+          7
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "TACKLE"
+        ],
+        [
+          1,
+          "GROWL"
+        ],
+        [
+          5,
+          "WATER_GUN"
+        ],
+        [
+          9,
+          "DEFENSE_CURL"
+        ],
+        [
+          13,
+          "BITE"
+        ],
+        [
+          17,
+          "HEADBUTT"
+        ],
+        [
+          22,
+          "WATERFALL"
+        ],
+        [
+          27,
+          "FOCUS_ENERGY"
+        ],
+        [
+          32,
+          "SLAM"
+        ],
+        [
+          37,
+          "ROCK_SMASH"
+        ],
+        [
+          42,
+          "CRUNCH"
+        ],
+        [
+          48,
+          "SEISMIC_TOSS"
+        ],
+        [
+          55,
+          "SUPER_FANG"
+        ],
+        [
+          62,
+          "HYDRO_PUMP"
+        ]
+      ],
+      "tmhm_moves": [
+        "SURF",
+        "WATERFALL",
+        "WHIRLPOOL",
+        "CUT",
+        "HEADBUTT",
+        "ROCK_SMASH",
+        "STRENGTH",
+        "IRON_TAIL",
+        "RETURN",
+        "REST"
+      ],
+      "egg_moves": [
+        "COUNTER",
+        "ENDURE",
+        "AMNESIA"
+      ]
+    },
+    {
+      "id": "MN_011",
+      "classification": "Portage",
+      "height_inches": 34,
+      "weight_tenths_lb": 620,
+      "dex_pages": [
+        "It carries logs @ between ponds on @ its shoulders.",
+        "Paths worn by @ its tail fill @ with rainwater."
+      ],
+      "base_stats": {
+        "hp": 65,
+        "attack": 84,
+        "defense": 65,
+        "speed": 61,
+        "special_attack": 42,
+        "special_defense": 65
+      },
+      "catch_rate": 90,
+      "base_exp": 84,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_GROUND",
+        "EGG_WATER_1"
+      ],
+      "evolution": {
+        "method": "LEVEL",
+        "level": 36
+      },
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_SLOWPOKE",
+      "footprint_species": "SENTRET",
+      "cry": {
+        "cry": "CRY_RATTATA",
+        "pitch": -24,
+        "length": 160
+      },
+      "shiny_rgb5": [
+        [
+          7,
+          23,
+          14
+        ],
+        [
+          15,
+          6,
+          10
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "TACKLE"
+        ],
+        [
+          1,
+          "GROWL"
+        ],
+        [
+          1,
+          "WATER_GUN"
+        ],
+        [
+          11,
+          "DEFENSE_CURL"
+        ],
+        [
+          15,
+          "BITE"
+        ],
+        [
+          19,
+          "HEADBUTT"
+        ],
+        [
+          24,
+          "WATERFALL"
+        ],
+        [
+          29,
+          "FOCUS_ENERGY"
+        ],
+        [
+          34,
+          "SLAM"
+        ],
+        [
+          39,
+          "ROCK_SMASH"
+        ],
+        [
+          44,
+          "CRUNCH"
+        ],
+        [
+          50,
+          "SEISMIC_TOSS"
+        ],
+        [
+          57,
+          "SUPER_FANG"
+        ],
+        [
+          64,
+          "HYDRO_PUMP"
+        ]
+      ],
+      "tmhm_moves": [
+        "SURF",
+        "WATERFALL",
+        "WHIRLPOOL",
+        "CUT",
+        "HEADBUTT",
+        "ROCK_SMASH",
+        "STRENGTH",
+        "IRON_TAIL",
+        "RETURN",
+        "REST"
+      ],
+      "egg_moves": [
+        "COUNTER",
+        "ENDURE",
+        "AMNESIA"
+      ]
+    },
+    {
+      "id": "MN_012",
+      "classification": "Voyageur",
+      "height_inches": 58,
+      "weight_tenths_lb": 1680,
+      "dex_pages": [
+        "It beats its tail @ to guide groups @ through fog.",
+        "Each group has @ a rhythm known @ only to itself."
+      ],
+      "base_stats": {
+        "hp": 85,
+        "attack": 110,
+        "defense": 85,
+        "speed": 80,
+        "special_attack": 55,
+        "special_defense": 85
+      },
+      "catch_rate": 45,
+      "base_exp": 210,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_GROUND",
+        "EGG_WATER_1"
+      ],
+      "evolution": null,
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_SLOWPOKE",
+      "footprint_species": "SENTRET",
+      "cry": {
+        "cry": "CRY_RATTATA",
+        "pitch": 0,
+        "length": 176
+      },
+      "shiny_rgb5": [
+        [
+          5,
+          20,
+          9
+        ],
+        [
+          17,
+          4,
+          8
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "TACKLE"
+        ],
+        [
+          1,
+          "GROWL"
+        ],
+        [
+          1,
+          "WATER_GUN"
+        ],
+        [
+          1,
+          "DEFENSE_CURL"
+        ],
+        [
+          17,
+          "BITE"
+        ],
+        [
+          21,
+          "HEADBUTT"
+        ],
+        [
+          26,
+          "WATERFALL"
+        ],
+        [
+          31,
+          "FOCUS_ENERGY"
+        ],
+        [
+          36,
+          "SLAM"
+        ],
+        [
+          38,
+          "VITAL_THROW"
+        ],
+        [
+          41,
+          "ROCK_SMASH"
+        ],
+        [
+          46,
+          "CRUNCH"
+        ],
+        [
+          52,
+          "SEISMIC_TOSS"
+        ],
+        [
+          59,
+          "SUPER_FANG"
+        ],
+        [
+          66,
+          "HYDRO_PUMP"
+        ]
+      ],
+      "tmhm_moves": [
+        "SURF",
+        "WATERFALL",
+        "WHIRLPOOL",
+        "CUT",
+        "HEADBUTT",
+        "ROCK_SMASH",
+        "STRENGTH",
+        "IRON_TAIL",
+        "RETURN",
+        "REST"
+      ],
+      "egg_moves": [
+        "COUNTER",
+        "ENDURE",
+        "AMNESIA"
+      ]
+    }
+  ]
+}

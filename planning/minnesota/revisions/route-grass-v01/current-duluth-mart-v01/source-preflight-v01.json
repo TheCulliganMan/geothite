@@ -1,0 +1,30 @@
+{
+  "status": "PASS",
+  "current_source_equals_complete_native": true,
+  "native_recipe": [
+    "18",
+    "19",
+    "1a",
+    "33"
+  ],
+  "native_recipe_pixels_match_original": true,
+  "old_door": [
+    80,
+    39
+  ],
+  "new_door": [
+    79,
+    39
+  ],
+  "old_passive_return": [
+    80,
+    40
+  ],
+  "new_passive_return": [
+    79,
+    40
+  ],
+  "canonical_source_unchanged": true,
+  "selected_pack_unchanged": true,
+  "scope": "Only Mart candidate. Wider Duluth town/source acceptance is not implied."
+}

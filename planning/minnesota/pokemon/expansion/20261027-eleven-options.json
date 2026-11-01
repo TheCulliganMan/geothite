@@ -1,0 +1,428 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-27",
+  "status": "integrated-native-reviewed",
+  "proposal_count": 11,
+  "stage_mix": {
+    "three_stage_families": 3,
+    "two_stage_families": 6,
+    "single_stage_families": 2
+  },
+  "scope": "All eleven user-approved families are integrated after native art review. Twenty-three species replace twenty-three weaker overlapping species;220 active species and100 families remain. Original authoring and all replaced renders are preserved.",
+  "root_corrections": [
+    "Ticklet/Solstort retain WATER \u2192 WATER/PSYCHIC.",
+    "Driftile has eight plates plus one gap in a 3\u00d73 arrangement."
+  ],
+  "recommended_first_choices": [
+    "underwater-gardener-moose",
+    "climbing-anchor-porcupine",
+    "living-dream-den-bear",
+    "cavity-architect-woodpecker",
+    "finger-trap-sundew"
+  ],
+  "options": [
+    {
+      "proposal_key": "underwater-gardener-moose",
+      "status": "unregistered-option",
+      "stage_count": 3,
+      "members": [
+        {
+          "name": "Wadebud",
+          "stage": 1,
+          "types": [
+            "GRASS"
+          ]
+        },
+        {
+          "name": "Rakehorn",
+          "stage": 2,
+          "types": [
+            "GRASS",
+            "WATER"
+          ]
+        },
+        {
+          "name": "Marshrack",
+          "stage": 3,
+          "types": [
+            "GRASS",
+            "WATER"
+          ]
+        }
+      ],
+      "theme": "Moose and underwater gardening. Real aquatic foraging becomes fictional living rake and root anatomy.",
+      "visible_evolution": [
+        "Tiny forked brow buds and splayed seedling hooves.",
+        "Broad rake antlers, a deeper swimming chest and channelled brow.",
+        "Huge palmated antler channels comb submerged vegetation; long rootlike hooves brace the marsh floor."
+      ],
+      "priority": "high",
+      "source_urls": [
+        "https://www.dnr.state.mn.us/mammals/moose.html"
+      ],
+      "family_id": "MN_F134",
+      "species_ids": [
+        "MN_295",
+        "MN_296",
+        "MN_297"
+      ]
+    },
+    {
+      "proposal_key": "climbing-anchor-porcupine",
+      "status": "unregistered-option",
+      "stage_count": 2,
+      "members": [
+        {
+          "name": "Bristub",
+          "stage": 1,
+          "types": [
+            "NORMAL"
+          ]
+        },
+        {
+          "name": "Latchquill",
+          "stage": 2,
+          "types": [
+            "NORMAL",
+            "STEEL"
+          ]
+        }
+      ],
+      "theme": "Porcupine and locking climbing anchors; quills form the creature\u2019s own bracing frame rather than loose projectiles.",
+      "visible_evolution": [
+        "Short blunt quills and a thick rounded tail.",
+        "Alternating hooked quill bars interlock as the broad tail braces against the back, producing a compact climbing-anchor silhouette."
+      ],
+      "priority": "high",
+      "source_urls": [
+        "https://www.dnr.state.mn.us/mammals/porcupine.html"
+      ],
+      "family_id": "MN_F135",
+      "species_ids": [
+        "MN_298",
+        "MN_299"
+      ]
+    },
+    {
+      "proposal_key": "living-dream-den-bear",
+      "status": "unregistered-option",
+      "stage_count": 3,
+      "members": [
+        {
+          "name": "Densy",
+          "stage": 1,
+          "types": [
+            "NORMAL"
+          ]
+        },
+        {
+          "name": "Dozebear",
+          "stage": 2,
+          "types": [
+            "NORMAL",
+            "PSYCHIC"
+          ]
+        },
+        {
+          "name": "Denumbra",
+          "stage": 3,
+          "types": [
+            "NORMAL",
+            "PSYCHIC"
+          ]
+        }
+      ],
+      "theme": "Black bear and a living dream den. Its own folding body shelters an original luminous dream-face.",
+      "visible_evolution": [
+        "A cub curls behind small crescent forepaws.",
+        "Large folding forearms protect a newly developed chest recess.",
+        "An enormous dark bear folds crescent arms around its hollow chest, enclosing a small luminous dream-face."
+      ],
+      "priority": "high",
+      "source_urls": [
+        "https://www.dnr.state.mn.us/mammals/blackbear.html"
+      ],
+      "family_id": "MN_F136",
+      "species_ids": [
+        "MN_300",
+        "MN_301",
+        "MN_302"
+      ]
+    },
+    {
+      "proposal_key": "living-sundial-turtle",
+      "status": "unregistered-option",
+      "stage_count": 2,
+      "members": [
+        {
+          "name": "Ticklet",
+          "stage": 1,
+          "types": [
+            "WATER"
+          ]
+        },
+        {
+          "name": "Solstort",
+          "stage": 2,
+          "types": [
+            "WATER",
+            "PSYCHIC"
+          ]
+        }
+      ],
+      "theme": "Freshwater turtle and living sundial. Shell scutes create a second shadow expression above its sheltered real face.",
+      "visible_evolution": [
+        "A low shell bears one raised asymmetric ridge.",
+        "An asymmetric fan of raised scutes casts shifting facial shadows; the narrow real face stays beneath the front overhang."
+      ],
+      "priority": "medium",
+      "source_urls": [
+        "https://mnzoo.org/conservation/minnesota/freshwater-turtles/"
+      ],
+      "family_id": "MN_F137",
+      "species_ids": [
+        "MN_303",
+        "MN_304"
+      ]
+    },
+    {
+      "proposal_key": "cavity-architect-woodpecker",
+      "status": "unregistered-option",
+      "stage_count": 3,
+      "members": [
+        {
+          "name": "Peckit",
+          "stage": 1,
+          "types": [
+            "NORMAL",
+            "FLYING"
+          ]
+        },
+        {
+          "name": "Notchbill",
+          "stage": 2,
+          "types": [
+            "NORMAL",
+            "FLYING"
+          ]
+        },
+        {
+          "name": "Gougecrest",
+          "stage": 3,
+          "types": [
+            "FIGHTING",
+            "FLYING"
+          ]
+        }
+      ],
+      "theme": "Woodpecker and cavity architecture, with chisel and climbing-brace shapes grown as anatomy.",
+      "visible_evolution": [
+        "Short wedge beak and a compact supporting tail.",
+        "A deep notched chisel beak, braced feet and three developing tail blades.",
+        "A strong forked chisel beak and three stiff tail blades support the climber; folded wings create two large nestlike openings in its silhouette."
+      ],
+      "priority": "high",
+      "source_urls": [
+        "https://www.dnr.state.mn.us/birds/woodpeckers.html"
+      ],
+      "family_id": "MN_F138",
+      "species_ids": [
+        "MN_305",
+        "MN_306",
+        "MN_307"
+      ]
+    },
+    {
+      "proposal_key": "false-branch-marten",
+      "status": "unregistered-option",
+      "stage_count": 2,
+      "members": [
+        {
+          "name": "Crookit",
+          "stage": 1,
+          "types": [
+            "NORMAL"
+          ]
+        },
+        {
+          "name": "Crookveil",
+          "stage": 2,
+          "types": [
+            "DARK"
+          ]
+        }
+      ],
+      "theme": "Marten and false branches. The body itself bends into a crooked branch silhouette.",
+      "visible_evolution": [
+        "A flexible youngster has a sharply bent back and small divided tail.",
+        "An angular jointed back and broad forked tail align with branch shadows; a narrow pale throat slit reveals the hidden face."
+      ],
+      "priority": "medium",
+      "source_urls": [
+        "https://www.dnr.state.mn.us/mammals/index.html"
+      ],
+      "family_id": "MN_F139",
+      "species_ids": [
+        "MN_308",
+        "MN_309"
+      ]
+    },
+    {
+      "proposal_key": "nursery-mudpuppy",
+      "status": "unregistered-option",
+      "stage_count": 2,
+      "members": [
+        {
+          "name": "Gillpup",
+          "stage": 1,
+          "types": [
+            "WATER"
+          ]
+        },
+        {
+          "name": "Mudmender",
+          "stage": 2,
+          "types": [
+            "WATER",
+            "PSYCHIC"
+          ]
+        }
+      ],
+      "theme": "Mudpuppy and protective nursery. Permanent external gills become fictional sheltering fans.",
+      "visible_evolution": [
+        "Three pairs of small external gills frame a broad head and flat tail.",
+        "Broad interlocking gill fans shelter recovering creatures beneath the head; the flat tail folds forward into a living cradle."
+      ],
+      "priority": "medium",
+      "source_urls": [
+        "https://www.dnr.state.mn.us/eco/mbs/mudpuppy.html"
+      ],
+      "family_id": "MN_F140",
+      "species_ids": [
+        "MN_310",
+        "MN_311"
+      ]
+    },
+    {
+      "proposal_key": "returning-antler-deer",
+      "status": "unregistered-option",
+      "stage_count": 2,
+      "members": [
+        {
+          "name": "Velvawn",
+          "stage": 1,
+          "types": [
+            "GRASS"
+          ]
+        },
+        {
+          "name": "Shedstag",
+          "stage": 2,
+          "types": [
+            "GRASS",
+            "GHOST"
+          ]
+        }
+      ],
+      "theme": "White-tailed deer and discarded antlers returning as protective limbs; an original fantasy rather than a borrowed sacred being.",
+      "visible_evolution": [
+        "Soft velvet brow shoots and a small folded white tail.",
+        "An empty crown marks the head while two shed antlers hover beside it as curved protective limbs; the white tail opens into a stark warning fan."
+      ],
+      "priority": "medium",
+      "source_urls": [
+        "https://www.dnr.state.mn.us/mammals/index.html"
+      ],
+      "family_id": "MN_F141",
+      "species_ids": [
+        "MN_312",
+        "MN_313"
+      ]
+    },
+    {
+      "proposal_key": "finger-trap-sundew",
+      "status": "unregistered-option",
+      "stage_count": 2,
+      "members": [
+        {
+          "name": "Dewbit",
+          "stage": 1,
+          "types": [
+            "GRASS"
+          ]
+        },
+        {
+          "name": "Glisnare",
+          "stage": 2,
+          "types": [
+            "GRASS",
+            "DARK"
+          ]
+        }
+      ],
+      "theme": "Sundew and finger trap. Sticky leaf margins interlock around a false inviting face.",
+      "visible_evolution": [
+        "A small sticky rosette conceals tiny eyes beneath its central leaf.",
+        "Six broad curling leaf arms interlock gland-tipped margins around an inviting apparent face; the real eyes remain sheltered beneath the central leaf."
+      ],
+      "priority": "high",
+      "source_urls": [
+        "https://files.dnr.state.mn.us/forestry/ecssilviculture/npc_plantID_trailingherbs_index.pdf"
+      ],
+      "family_id": "MN_F142",
+      "species_ids": [
+        "MN_314",
+        "MN_315"
+      ]
+    },
+    {
+      "proposal_key": "opposing-lookout-whirligig",
+      "status": "unregistered-option",
+      "stage_count": 1,
+      "members": [
+        {
+          "name": "Rondive",
+          "stage": 1,
+          "types": [
+            "BUG",
+            "WATER"
+          ]
+        }
+      ],
+      "theme": "Whirligig beetle and opposing lookout stations at the waterline.",
+      "visible_evolution": "Solo silhouette: four large eyes ring one horizontal waterline seam; upper and lower paddle pairs turn independently around a compact spinning body.",
+      "priority": "medium",
+      "source_urls": [
+        "https://mdc.mo.gov/discover-nature/field-guide/whirligig-beetles"
+      ],
+      "family_id": "MN_F143",
+      "species_ids": [
+        "MN_316"
+      ]
+    },
+    {
+      "proposal_key": "sliding-puzzle-duckweed",
+      "status": "unregistered-option",
+      "stage_count": 1,
+      "members": [
+        {
+          "name": "Driftile",
+          "stage": 1,
+          "types": [
+            "GRASS",
+            "PSYCHIC"
+          ]
+        }
+      ],
+      "theme": "Duckweed colony and sliding puzzle, expressed as one rearranging living body.",
+      "visible_evolution": "Solo silhouette: eight large floating leaf plates plus one empty square form a 3\u00d73 sliding puzzle. Its single real eye peers through the gap; dangling roots rearrange into feet as the plates slide.",
+      "priority": "medium",
+      "source_urls": [],
+      "family_id": "MN_F144",
+      "species_ids": [
+        "MN_317"
+      ]
+    }
+  ],
+  "species_count": 23
+}

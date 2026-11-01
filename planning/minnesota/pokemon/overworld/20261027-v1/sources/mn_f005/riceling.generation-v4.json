@@ -1,0 +1,13 @@
+{
+  "tool": "built-in image_gen",
+  "original_tool_path": "/Users/ryanculligan/.codex/generated_images/01a17dcc-4f1a-77a2-9d21-0df036061346/exec-08b5d398-f37a-405a-b6e3-056263a24acb.png",
+  "source_size": [
+    1536,
+    1024
+  ],
+  "sha256": "a437d1fecb58a649567e318debd354d01955b30cd2d55fcfcbfc3ac38b51872d",
+  "reference_paths": [
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f005/riceling.overworld.imagegen-v3.png"
+  ],
+  "prompt": "riceling.prompt-v4.txt"
+}

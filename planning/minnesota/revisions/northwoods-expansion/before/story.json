@@ -1,0 +1,1885 @@
+{
+  "schema_version": 1,
+  "title": "The Northstar Survey",
+  "design_status": "Overarching story authored. Q06 foreman, separate meter recovery, Grand Rapids handover and guarded R09/R10 town crossings are native and locally verified. MS10 Duluth reveal and Q07 chief/receiver are native. Upstream earned chapters, Duluth regional travel links, League completion and Kettlurk spectacle remain implementation work. See STATUS.md.",
+  "professor": "Dr Tamarack",
+  "antagonist": "Team Lode",
+  "antagonist_motive": "Team Lode conceals the risks of a fictional copper-nickel sulfide operation by stealing survey instruments and falsifying readings. Its chief intends to force Kettlurk into service as a living pump to keep the project profitable. The leadership understands the harm and chooses coercion, secrecy and extraction anyway.",
+  "gyms": [
+    {
+      "slot": 1,
+      "town": "ROCHESTER",
+      "leader": "VAREL",
+      "type": "NORMAL",
+      "badge_display_name": "Care Badge",
+      "battle_id": "MN_GYM_1",
+      "party": [
+        {
+          "species": "SENTRET",
+          "level": 10
+        },
+        {
+          "species": "FURRET",
+          "level": 12
+        }
+      ],
+      "requires": [
+        "EVENT_MN_DELIVERED_ROCHESTER_PARCEL"
+      ],
+      "on_win": [
+        "BADGE_1",
+        "EVENT_MN_GYM_1_DEFEATED"
+      ],
+      "native_badge_storage": "GameState.badges.johto[0]",
+      "loss_behavior": "normal blackout recovery; do not set badge or victory flag",
+      "repeat_behavior": "post-win dialogue; no duplicate badge or reward"
+    },
+    {
+      "slot": 2,
+      "town": "MANKATO",
+      "leader": "TORVEN",
+      "type": "GROUND",
+      "badge_display_name": "Prairie Badge",
+      "battle_id": "MN_GYM_2",
+      "party": [
+        {
+          "species": "WOOPER",
+          "level": 14
+        },
+        {
+          "species": "SANDSHREW",
+          "level": 15
+        },
+        {
+          "species": "PHANPY",
+          "level": 16
+        }
+      ],
+      "requires": [
+        "BADGE_1"
+      ],
+      "on_win": [
+        "BADGE_2",
+        "EVENT_MN_GYM_2_DEFEATED"
+      ],
+      "native_badge_storage": "GameState.badges.johto[1]",
+      "loss_behavior": "normal blackout recovery; do not set badge or victory flag",
+      "repeat_behavior": "post-win dialogue; no duplicate badge or reward"
+    },
+    {
+      "slot": 3,
+      "town": "MINNEAPOLIS",
+      "leader": "AVRIN",
+      "type": "ELECTRIC",
+      "badge_display_name": "Current Badge",
+      "battle_id": "MN_GYM_3",
+      "party": [
+        {
+          "species": "MAREEP",
+          "level": 19
+        },
+        {
+          "species": "MAGNEMITE",
+          "level": 20
+        },
+        {
+          "species": "FLAAFFY",
+          "level": 21
+        }
+      ],
+      "requires": [
+        "BADGE_2"
+      ],
+      "on_win": [
+        "BADGE_3",
+        "EVENT_MN_GYM_3_DEFEATED"
+      ],
+      "native_badge_storage": "GameState.badges.johto[2]",
+      "loss_behavior": "normal blackout recovery; do not set badge or victory flag",
+      "repeat_behavior": "post-win dialogue; no duplicate badge or reward"
+    },
+    {
+      "slot": 4,
+      "town": "ST PAUL",
+      "leader": "BRANNIC",
+      "type": "STEEL",
+      "badge_display_name": "Capitol Badge",
+      "battle_id": "MN_GYM_4",
+      "party": [
+        {
+          "species": "MAGNEMITE",
+          "level": 23
+        },
+        {
+          "species": "PINECO",
+          "level": 24
+        },
+        {
+          "species": "SKARMORY",
+          "level": 25
+        }
+      ],
+      "requires": [
+        "BADGE_3"
+      ],
+      "on_win": [
+        "BADGE_4",
+        "EVENT_MN_GYM_4_DEFEATED"
+      ],
+      "native_badge_storage": "GameState.badges.johto[3]",
+      "loss_behavior": "normal blackout recovery; do not set badge or victory flag",
+      "repeat_behavior": "post-win dialogue; no duplicate badge or reward"
+    },
+    {
+      "slot": 5,
+      "town": "ST CLOUD",
+      "leader": "SAVEN",
+      "type": "FLYING",
+      "badge_display_name": "Wind Badge",
+      "battle_id": "MN_GYM_5",
+      "party": [
+        {
+          "species": "PIDGEOTTO",
+          "level": 28
+        },
+        {
+          "species": "NOCTOWL",
+          "level": 29
+        },
+        {
+          "species": "FEAROW",
+          "level": 30
+        }
+      ],
+      "requires": [
+        "BADGE_4"
+      ],
+      "on_win": [
+        "BADGE_5",
+        "EVENT_MN_GYM_5_DEFEATED"
+      ],
+      "native_badge_storage": "GameState.badges.johto[4]",
+      "loss_behavior": "normal blackout recovery; do not set badge or victory flag",
+      "repeat_behavior": "post-win dialogue; no duplicate badge or reward"
+    },
+    {
+      "slot": 6,
+      "town": "BRAINERD",
+      "leader": "SIVREN",
+      "type": "WATER",
+      "badge_display_name": "Lake Badge",
+      "battle_id": "MN_GYM_6",
+      "party": [
+        {
+          "species": "POLIWHIRL",
+          "level": 33
+        },
+        {
+          "species": "QUAGSIRE",
+          "level": 34
+        },
+        {
+          "species": "LANTURN",
+          "level": 35
+        }
+      ],
+      "requires": [
+        "BADGE_5"
+      ],
+      "on_win": [
+        "BADGE_6",
+        "EVENT_MN_GYM_6_DEFEATED"
+      ],
+      "native_badge_storage": "GameState.badges.johto[5]",
+      "loss_behavior": "normal blackout recovery; do not set badge or victory flag",
+      "repeat_behavior": "post-win dialogue; no duplicate badge or reward"
+    },
+    {
+      "slot": 7,
+      "town": "BEMIDJI",
+      "leader": "ORLIS",
+      "type": "GRASS",
+      "badge_display_name": "Pine Badge",
+      "battle_id": "MN_GYM_7",
+      "party": [
+        {
+          "species": "TANGELA",
+          "level": 38
+        },
+        {
+          "species": "JUMPLUFF",
+          "level": 39
+        },
+        {
+          "species": "BELLOSSOM",
+          "level": 40
+        }
+      ],
+      "requires": [
+        "BADGE_6"
+      ],
+      "on_win": [
+        "BADGE_7",
+        "EVENT_MN_GYM_7_DEFEATED"
+      ],
+      "native_badge_storage": "GameState.badges.johto[6]",
+      "loss_behavior": "normal blackout recovery; do not set badge or victory flag",
+      "repeat_behavior": "post-win dialogue; no duplicate badge or reward"
+    },
+    {
+      "slot": 8,
+      "town": "DULUTH",
+      "leader": "NOREK",
+      "type": "ICE",
+      "badge_display_name": "Harbor Badge",
+      "battle_id": "MN_GYM_8",
+      "party": [
+        {
+          "species": "DEWGONG",
+          "level": 42
+        },
+        {
+          "species": "PILOSWINE",
+          "level": 43
+        },
+        {
+          "species": "SNEASEL",
+          "level": 44
+        },
+        {
+          "species": "LAPRAS",
+          "level": 45
+        }
+      ],
+      "requires": [
+        "BADGE_7"
+      ],
+      "on_win": [
+        "BADGE_8",
+        "EVENT_MN_GYM_8_DEFEATED"
+      ],
+      "native_badge_storage": "GameState.badges.johto[7]",
+      "loss_behavior": "normal blackout recovery; do not set badge or victory flag",
+      "repeat_behavior": "post-win dialogue; no duplicate badge or reward"
+    }
+  ],
+  "quests": [
+    {
+      "id": "Q00",
+      "title": "A field season begins",
+      "maps": [
+        "MnWinonaHome2F",
+        "MnWinonaHome1F",
+        "MnWinonaFieldStation",
+        "MnWinona"
+      ],
+      "requires": [],
+      "steps": [
+        "Start upstairs; the guardian introduces the field station through page-by-page dialogue.",
+        "Choose CHIKORITA, CYNDAQUIL or TOTODILE at level 5.",
+        "Receive five POKE_BALL items and a parcel of original survey readings for Rochester, recorded by the existing parcel flag."
+      ],
+      "sets": [
+        "EVENT_MN_STARTER_RECEIVED",
+        "EVENT_MN_R01_PARCEL_RECEIVED"
+      ],
+      "opens": [
+        "MN_R01"
+      ],
+      "repeat_guard": "Never offer a second starter or repeat the item grant.",
+      "failure": "Canceling the starter choice leaves all choices available; starter is received before any route can open."
+    },
+    {
+      "id": "Q01",
+      "title": "The first station",
+      "maps": [
+        "MN_R01",
+        "MnRochester"
+      ],
+      "requires": [
+        "EVENT_MN_STARTER_RECEIVED"
+      ],
+      "steps": [
+        "Cross Driftless Trail; optional farmer teaches grass and ledge use.",
+        "Deliver the original readings at the Rochester clinic. Matching station records and instruments have gone missing.",
+        "A Lode shipping stamp suggests a delivery error; deliberate theft is not yet proven.",
+        "Win the first gym and register the Care Badge."
+      ],
+      "sets": [
+        "EVENT_MN_DELIVERED_ROCHESTER_PARCEL"
+      ],
+      "opens": [
+        "MN_R02"
+      ],
+      "repeat_guard": "Delivery text changes after handover; rewards are granted once."
+    },
+    {
+      "id": "Q02",
+      "title": "Prairie and river",
+      "maps": [
+        "MN_R02",
+        "MnMankato",
+        "MN_R03",
+        "MnMinneapolis"
+      ],
+      "requires": [
+        "BADGE_1"
+      ],
+      "steps": [
+        "Recover the publicly reachable Mankato notebook: distant stations supposedly returned identical readings.",
+        "Win Mankato gym, travel through the river valley, and win Minneapolis gym.",
+        "Confront Team ICE in Minneapolis: Lode-paid bullies posing as police confiscate a rail dispatcher's survey records and threaten witnesses. Win their enforcer battle to reach the dispatch copy; the crew remains hostile.",
+        "Read a rail dispatch note showing Team Lode diverted the missing instruments toward a northern pumping site."
+      ],
+      "sets": [
+        "EVENT_MN_PRAIRIE_NOTEBOOK",
+        "EVENT_MN_ICE_ENFORCER_DEFEATED",
+        "EVENT_MN_DISPATCH_NOTE"
+      ],
+      "opens": [
+        "MN_R03",
+        "MN_R04"
+      ],
+      "repeat_guard": "Team ICE defeat comes only from an actual battle win. A separate dispatch reading sets its own flag; losses, refusals, repeats and Continue cannot bypass either interaction or duplicate rewards."
+    },
+    {
+      "id": "Q03",
+      "title": "Two cities one watershed",
+      "maps": [
+        "MN_R04",
+        "MnStPaul",
+        "MN_R05",
+        "MnStCloud"
+      ],
+      "requires": [
+        "BADGE_3"
+      ],
+      "steps": [
+        "Confront the Team Lode courier at the St Paul depot. He calls the diversion a correction, then threatens the player to identify who kept the originals delivered to Rochester.",
+        "Win the courier battle; the manifest identifies DEEP BORE. He remains hostile and loyal to Lode.",
+        "Win St Paul gym, return across the city crossing, and pass the north checkpoint with both Twin Cities badges.",
+        "Continue to St Cloud and win its gym."
+      ],
+      "sets": [
+        "EVENT_MN_COURIER_DEFEATED"
+      ],
+      "opens": [
+        "MN_R05",
+        "MN_R06"
+      ],
+      "repeat_guard": "Courier remains defeated and the northern gate stays open after save/reload."
+    },
+    {
+      "id": "Q04",
+      "title": "Lake country",
+      "maps": [
+        "MN_R06",
+        "MnBrainerd",
+        "MN_R07",
+        "MnLeechLake",
+        "MN_R08",
+        "MnBemidji"
+      ],
+      "requires": [
+        "BADGE_5"
+      ],
+      "steps": [
+        "Win Brainerd gym and report at the ranger station. Fishers describe disrupted Pokemon habitats while the station reports insist nothing changed.",
+        "Receive the existing SURF field-move teaching item once; inherited badge permission still applies.",
+        "Reach Bemidji via the Leech Lake land route; Surf and lake side quests remain optional.",
+        "Win Bemidji gym; obtain an independent headwater reference to check the copied notebook values."
+      ],
+      "sets": [
+        "EVENT_MN_BRAINERD_REPORT",
+        "EVENT_MN_SURF_GIFT_RECEIVED"
+      ],
+      "opens": [
+        "MN_R07",
+        "MN_R08",
+        "MN_R14",
+        "MN_R15",
+        "MN_R18"
+      ],
+      "repeat_guard": "The teaching-item grant is once-only; no boating subsystem is introduced."
+    },
+    {
+      "id": "Q05",
+      "title": "Headwaters report",
+      "maps": [
+        "MN_R14",
+        "MnLakeItasca",
+        "MnBemidji"
+      ],
+      "requires": [
+        "BADGE_7"
+      ],
+      "steps": [
+        "Read the accessible dry-land headwaters marker at Lake Itasca.",
+        "Return to the Bemidji field officer. The independent reference and the officer's comparison copies expose one instrument log relabeled as multiple station surveys. The optional Mankato notebook is an earlier clue, not a required extra flag.",
+        "Investigate the tampered instruments on the Iron Range. The report does not claim Itasca drains into the northern mine."
+      ],
+      "sets": [
+        "EVENT_MN_HEADWATERS_READING",
+        "EVENT_MN_HEADWATERS_REPORT"
+      ],
+      "opens": [
+        "MN_R09"
+      ],
+      "repeat_guard": "The raw reading alone cannot open the Iron Range gate; the completed report does."
+    },
+    {
+      "id": "Q06",
+      "title": "The survey depot",
+      "maps": [
+        "MN_R09",
+        "MnR09Cave1F",
+        "MnGrandRapids",
+        "MnGrandRapidsSurveyDepot",
+        "MN_R10"
+      ],
+      "requires": [
+        "BADGE_7",
+        "EVENT_MN_HEADWATERS_REPORT"
+      ],
+      "steps": [
+        "Investigate the stolen instruments in the Route 9 mine cache beside the fictional closed pumping site.",
+        "The Team Lode foreman admits the copper-nickel project will keep testing despite the warnings; defeat him in the reserved battle.",
+        "Separately inspect the guarded cache, confirm taking the survey meter and acknowledge the recovery text. Its saved recovery event carries the quest payload without inventing a bag item; declining remains retryable.",
+        "Return the recovered instrument to Grand Rapids; victory alone does not complete the handover.",
+        "Its records reveal pulse-pump tests and a northern control relay. Lode is deliberately driving a powerful Water Pokemon out of hiding."
+      ],
+      "sets": [
+        "EVENT_MN_DEPOT_FOREMAN_DEFEATED",
+        "EVENT_MN_MINE_INSTRUMENT_RECOVERED",
+        "EVENT_MN_DEPOT_CLEARED"
+      ],
+      "opens": [
+        "MN_R10"
+      ],
+      "repeat_guard": "Losing never grants the recovered instrument; after victory the foreman uses post-battle dialogue."
+    },
+    {
+      "id": "Q07",
+      "title": "North Shore signal",
+      "maps": [
+        "MnDuluth",
+        "MnDuluthHarborWorkshop",
+        "MN_R11",
+        "MnGrandMarais",
+        "MN_R12",
+        "MnBoundaryWaters",
+        "MnBoundaryWatersSurveyShelter"
+      ],
+      "requires": [
+        "BADGE_7",
+        "EVENT_MN_DEPOT_CLEARED"
+      ],
+      "steps": [
+        "Win Duluth gym for badge 8; activate the workshop receiver with the recovered instrument.",
+        "Identify Kettlurk as Lode's intended captive. All eight badges and the harbor signal open North Shore travel.",
+        "Travel through Grand Marais and Gunflint. Keeper/fisher observations foreshadow a returning current; the local lamp repair remains its own quest.",
+        "At the free Boundary Waters shelter, confront the chief about the falsified surveys and plan to make Kettlurk pump for the ore works. Win the existing boss battle.",
+        "Use the separate receiver. Declining remains retryable; confirming and acknowledging alignment sends the real readings and warning, allowing harbor crews to halt the test. Safari fees and legendary capture never gate this scene."
+      ],
+      "sets": [
+        "EVENT_MN_LIGHTHOUSE_SIGNAL",
+        "EVENT_MN_SURVEY_CHIEF_DEFEATED",
+        "EVENT_MN_SURVEY_RESTORED"
+      ],
+      "opens": [
+        "MN_R11",
+        "MN_R12",
+        "MN_R13"
+      ],
+      "repeat_guard": "No world flooding simulation. Local visual changes use saved block overrides; the story flag persists independently.",
+      "safari_access_contract": "The Safari preserve is optional wildlife play; entry fee, balls, step exhaustion and rare catches cannot block Q07 or passage to the League."
+    },
+    {
+      "id": "Q08",
+      "title": "The Ely League",
+      "maps": [
+        "MN_R13",
+        "MnEly",
+        "MnLeagueLobby",
+        "MnLeagueRoom1",
+        "MnLeagueRoom2",
+        "MnLeagueRoom3",
+        "MnLeagueRoom4",
+        "MnLeagueChampion"
+      ],
+      "requires": [
+        "BADGE_1",
+        "BADGE_2",
+        "BADGE_3",
+        "BADGE_4",
+        "BADGE_5",
+        "BADGE_6",
+        "BADGE_7",
+        "BADGE_8",
+        "EVENT_MN_SURVEY_RESTORED"
+      ],
+      "steps": [
+        "Traverse the reopened League trail and register at Ely; the survey is working while local recovery continues.",
+        "Defeat four successive League trainers and champion Casey through the authoritative battle engine.",
+        "Record the winning party through the existing Hall of Fame behavior.",
+        "Return for rematches and exploration. A future voluntary Kettlurk encounter is separate from champion completion."
+      ],
+      "sets": [
+        "EVENT_MN_LEAGUE_CHAMPION"
+      ],
+      "opens": [
+        "postgame"
+      ],
+      "repeat_guard": "A blackout resets the active League run without clearing badges, story completion or prior Hall of Fame entries."
+    },
+    {
+      "id": "SQ01",
+      "title": "Three lake observations",
+      "maps": [
+        "MnLakeItasca",
+        "MN_R19",
+        "MnDetroitLakes"
+      ],
+      "requires": [
+        "BADGE_6"
+      ],
+      "steps": [
+        "Read the three dry-land observation signs on the Itasca and Detroit loop.",
+        "Report to the Detroit Lakes ranger for one MAX_REPEL."
+      ],
+      "sets": [
+        "EVENT_MN_LAKE_OBSERVATIONS_REWARDED"
+      ],
+      "opens": [],
+      "repeat_guard": "Reward once; not required for Q05."
+    },
+    {
+      "id": "SQ02",
+      "title": "The prairie return",
+      "maps": [
+        "MN_R15",
+        "MnDetroitLakes",
+        "MN_R16",
+        "MnMoorhead"
+      ],
+      "requires": [
+        "BADGE_6"
+      ],
+      "steps": [
+        "Complete the optional prairie trainer circuit.",
+        "Read the Red River flood marker and return to the Moorhead depot for one NUGGET."
+      ],
+      "sets": [
+        "EVENT_MN_PRAIRIE_CIRCUIT_REWARDED"
+      ],
+      "opens": [],
+      "repeat_guard": "No west exit across the state border."
+    },
+    {
+      "id": "SQ03",
+      "title": "Border ranger circuit",
+      "maps": [
+        "MN_R17",
+        "MnInternationalFalls",
+        "MN_R20",
+        "MnBoundaryWaters"
+      ],
+      "requires": [
+        "BADGE_7"
+      ],
+      "steps": [
+        "Check in at the International Falls ranger desk.",
+        "After all badges and the harbor signal, traverse the optional Voyageurs loop to Boundary Waters.",
+        "Report the completed circuit for one PP_UP."
+      ],
+      "sets": [
+        "EVENT_MN_BORDER_REPORT",
+        "EVENT_MN_BORDER_CIRCUIT_REWARDED"
+      ],
+      "opens": [
+        "MN_R20"
+      ],
+      "repeat_guard": "The side loop cannot bypass the Q07 flag at the League approach."
+    },
+    {
+      "id": "SQ04",
+      "title": "Mille Lacs shore watch",
+      "maps": [
+        "MN_R18",
+        "MnMilleLacs"
+      ],
+      "requires": [
+        "BADGE_6"
+      ],
+      "steps": [
+        "Speak to the three shore-watch volunteers using walking access.",
+        "Return to the dock ranger for an existing fishing-rod upgrade chosen after checking base-pack item IDs."
+      ],
+      "sets": [
+        "EVENT_MN_SHORE_WATCH_REWARDED"
+      ],
+      "opens": [],
+      "repeat_guard": "Optional Surf pickups are separate flags and cannot block this quest."
+    }
+  ],
+  "flag_allocation": "Allocate EVENT_MN tokens against the actual story constant catalog. BADGE_n is a planning condition resolved to johto[n-1], not a new event token.",
+  "league_levels": [
+    48,
+    49,
+    50,
+    51,
+    53
+  ],
+  "league_champion": "CASEY",
+  "flags": [
+    "EVENT_MN_BORDER_CIRCUIT_REWARDED",
+    "EVENT_MN_BORDER_REPORT",
+    "EVENT_MN_BRAINERD_REPORT",
+    "EVENT_MN_COURIER_DEFEATED",
+    "EVENT_MN_DELIVERED_ROCHESTER_PARCEL",
+    "EVENT_MN_DEPOT_CLEARED",
+    "EVENT_MN_DEPOT_FOREMAN_DEFEATED",
+    "EVENT_MN_DISPATCH_NOTE",
+    "EVENT_MN_GYM_1_DEFEATED",
+    "EVENT_MN_GYM_2_DEFEATED",
+    "EVENT_MN_GYM_3_DEFEATED",
+    "EVENT_MN_GYM_4_DEFEATED",
+    "EVENT_MN_GYM_5_DEFEATED",
+    "EVENT_MN_GYM_6_DEFEATED",
+    "EVENT_MN_GYM_7_DEFEATED",
+    "EVENT_MN_GYM_8_DEFEATED",
+    "EVENT_MN_HEADWATERS_READING",
+    "EVENT_MN_HEADWATERS_REPORT",
+    "EVENT_MN_HOME_INTRO",
+    "EVENT_MN_ICE_ENFORCER_DEFEATED",
+    "EVENT_MN_LAKE_OBSERVATIONS_REWARDED",
+    "EVENT_MN_LEAGUE_CHAMPION",
+    "EVENT_MN_LIGHTHOUSE_SIGNAL",
+    "EVENT_MN_MINE_INSTRUMENT_RECOVERED",
+    "EVENT_MN_PRAIRIE_CIRCUIT_REWARDED",
+    "EVENT_MN_PRAIRIE_NOTEBOOK",
+    "EVENT_MN_R01_ITEM_01",
+    "EVENT_MN_R01_ITEM_02",
+    "EVENT_MN_R01_ITEM_03",
+    "EVENT_MN_R01_ITEM_04",
+    "EVENT_MN_R01_PARCEL_RECEIVED",
+    "EVENT_MN_R01_TRAINER_01",
+    "EVENT_MN_R01_TRAINER_02",
+    "EVENT_MN_R01_TRAINER_03",
+    "EVENT_MN_R01_TRAINER_04",
+    "EVENT_MN_R01_TRAINER_05",
+    "EVENT_MN_R01_TRAINER_06",
+    "EVENT_MN_R02_ITEM_01",
+    "EVENT_MN_R02_ITEM_02",
+    "EVENT_MN_R02_ITEM_03",
+    "EVENT_MN_R02_ITEM_04",
+    "EVENT_MN_R02_TRAINER_01",
+    "EVENT_MN_R02_TRAINER_02",
+    "EVENT_MN_R02_TRAINER_03",
+    "EVENT_MN_R02_TRAINER_04",
+    "EVENT_MN_R02_TRAINER_05",
+    "EVENT_MN_R02_TRAINER_06",
+    "EVENT_MN_R03_ITEM_01",
+    "EVENT_MN_R03_ITEM_02",
+    "EVENT_MN_R03_ITEM_03",
+    "EVENT_MN_R03_ITEM_04",
+    "EVENT_MN_R03_TRAINER_01",
+    "EVENT_MN_R03_TRAINER_02",
+    "EVENT_MN_R03_TRAINER_03",
+    "EVENT_MN_R03_TRAINER_04",
+    "EVENT_MN_R03_TRAINER_05",
+    "EVENT_MN_R03_TRAINER_06",
+    "EVENT_MN_R03_TRAINER_07",
+    "EVENT_MN_R03_TRAINER_08",
+    "EVENT_MN_R04_ITEM_01",
+    "EVENT_MN_R04_ITEM_02",
+    "EVENT_MN_R04_ITEM_03",
+    "EVENT_MN_R04_ITEM_04",
+    "EVENT_MN_R04_TRAINER_01",
+    "EVENT_MN_R04_TRAINER_02",
+    "EVENT_MN_R04_TRAINER_03",
+    "EVENT_MN_R04_TRAINER_04",
+    "EVENT_MN_R04_TRAINER_05",
+    "EVENT_MN_R04_TRAINER_06",
+    "EVENT_MN_R04_TRAINER_07",
+    "EVENT_MN_R04_TRAINER_08",
+    "EVENT_MN_R05_ITEM_01",
+    "EVENT_MN_R05_ITEM_02",
+    "EVENT_MN_R05_ITEM_03",
+    "EVENT_MN_R05_ITEM_04",
+    "EVENT_MN_R05_TRAINER_01",
+    "EVENT_MN_R05_TRAINER_02",
+    "EVENT_MN_R05_TRAINER_03",
+    "EVENT_MN_R05_TRAINER_04",
+    "EVENT_MN_R05_TRAINER_05",
+    "EVENT_MN_R05_TRAINER_06",
+    "EVENT_MN_R05_TRAINER_07",
+    "EVENT_MN_R05_TRAINER_08",
+    "EVENT_MN_R06_ITEM_01",
+    "EVENT_MN_R06_ITEM_02",
+    "EVENT_MN_R06_ITEM_03",
+    "EVENT_MN_R06_ITEM_04",
+    "EVENT_MN_R06_TRAINER_01",
+    "EVENT_MN_R06_TRAINER_02",
+    "EVENT_MN_R06_TRAINER_03",
+    "EVENT_MN_R06_TRAINER_04",
+    "EVENT_MN_R06_TRAINER_05",
+    "EVENT_MN_R06_TRAINER_06",
+    "EVENT_MN_R06_TRAINER_07",
+    "EVENT_MN_R06_TRAINER_08",
+    "EVENT_MN_R07_ITEM_01",
+    "EVENT_MN_R07_ITEM_02",
+    "EVENT_MN_R07_ITEM_03",
+    "EVENT_MN_R07_ITEM_04",
+    "EVENT_MN_R07_TRAINER_01",
+    "EVENT_MN_R07_TRAINER_02",
+    "EVENT_MN_R07_TRAINER_03",
+    "EVENT_MN_R07_TRAINER_04",
+    "EVENT_MN_R07_TRAINER_05",
+    "EVENT_MN_R07_TRAINER_06",
+    "EVENT_MN_R07_TRAINER_07",
+    "EVENT_MN_R07_TRAINER_08",
+    "EVENT_MN_R08_ITEM_01",
+    "EVENT_MN_R08_ITEM_02",
+    "EVENT_MN_R08_ITEM_03",
+    "EVENT_MN_R08_ITEM_04",
+    "EVENT_MN_R08_TRAINER_01",
+    "EVENT_MN_R08_TRAINER_02",
+    "EVENT_MN_R08_TRAINER_03",
+    "EVENT_MN_R08_TRAINER_04",
+    "EVENT_MN_R08_TRAINER_05",
+    "EVENT_MN_R08_TRAINER_06",
+    "EVENT_MN_R08_TRAINER_07",
+    "EVENT_MN_R08_TRAINER_08",
+    "EVENT_MN_R09_ITEM_01",
+    "EVENT_MN_R09_ITEM_02",
+    "EVENT_MN_R09_ITEM_03",
+    "EVENT_MN_R09_ITEM_04",
+    "EVENT_MN_R09_TRAINER_01",
+    "EVENT_MN_R09_TRAINER_02",
+    "EVENT_MN_R09_TRAINER_03",
+    "EVENT_MN_R09_TRAINER_04",
+    "EVENT_MN_R09_TRAINER_05",
+    "EVENT_MN_R09_TRAINER_06",
+    "EVENT_MN_R09_TRAINER_07",
+    "EVENT_MN_R09_TRAINER_08",
+    "EVENT_MN_R09_TRAINER_09",
+    "EVENT_MN_R09_TRAINER_10",
+    "EVENT_MN_R10_ITEM_01",
+    "EVENT_MN_R10_ITEM_02",
+    "EVENT_MN_R10_ITEM_03",
+    "EVENT_MN_R10_ITEM_04",
+    "EVENT_MN_R10_TRAINER_01",
+    "EVENT_MN_R10_TRAINER_02",
+    "EVENT_MN_R10_TRAINER_03",
+    "EVENT_MN_R10_TRAINER_04",
+    "EVENT_MN_R10_TRAINER_05",
+    "EVENT_MN_R10_TRAINER_06",
+    "EVENT_MN_R10_TRAINER_07",
+    "EVENT_MN_R10_TRAINER_08",
+    "EVENT_MN_R10_TRAINER_09",
+    "EVENT_MN_R10_TRAINER_10",
+    "EVENT_MN_R11_ITEM_01",
+    "EVENT_MN_R11_ITEM_02",
+    "EVENT_MN_R11_ITEM_03",
+    "EVENT_MN_R11_ITEM_04",
+    "EVENT_MN_R11_TRAINER_01",
+    "EVENT_MN_R11_TRAINER_02",
+    "EVENT_MN_R11_TRAINER_03",
+    "EVENT_MN_R11_TRAINER_04",
+    "EVENT_MN_R11_TRAINER_05",
+    "EVENT_MN_R11_TRAINER_06",
+    "EVENT_MN_R11_TRAINER_07",
+    "EVENT_MN_R11_TRAINER_08",
+    "EVENT_MN_R11_TRAINER_09",
+    "EVENT_MN_R11_TRAINER_10",
+    "EVENT_MN_R12_CAVE_ETHER",
+    "EVENT_MN_R12_ITEM_01",
+    "EVENT_MN_R12_ITEM_02",
+    "EVENT_MN_R12_ITEM_03",
+    "EVENT_MN_R12_ITEM_04",
+    "EVENT_MN_R12_TRAINER_01",
+    "EVENT_MN_R12_TRAINER_02",
+    "EVENT_MN_R12_TRAINER_03",
+    "EVENT_MN_R12_TRAINER_04",
+    "EVENT_MN_R12_TRAINER_05",
+    "EVENT_MN_R12_TRAINER_06",
+    "EVENT_MN_R12_TRAINER_07",
+    "EVENT_MN_R12_TRAINER_08",
+    "EVENT_MN_R12_TRAINER_09",
+    "EVENT_MN_R12_TRAINER_10",
+    "EVENT_MN_R13_ITEM_01",
+    "EVENT_MN_R13_ITEM_02",
+    "EVENT_MN_R13_ITEM_03",
+    "EVENT_MN_R13_ITEM_04",
+    "EVENT_MN_R13_TRAINER_01",
+    "EVENT_MN_R13_TRAINER_02",
+    "EVENT_MN_R13_TRAINER_03",
+    "EVENT_MN_R13_TRAINER_04",
+    "EVENT_MN_R13_TRAINER_05",
+    "EVENT_MN_R13_TRAINER_06",
+    "EVENT_MN_R13_TRAINER_07",
+    "EVENT_MN_R13_TRAINER_08",
+    "EVENT_MN_R13_TRAINER_09",
+    "EVENT_MN_R13_TRAINER_10",
+    "EVENT_MN_R14_ITEM_01",
+    "EVENT_MN_R14_ITEM_02",
+    "EVENT_MN_R14_ITEM_03",
+    "EVENT_MN_R14_ITEM_04",
+    "EVENT_MN_R14_TRAINER_01",
+    "EVENT_MN_R14_TRAINER_02",
+    "EVENT_MN_R14_TRAINER_03",
+    "EVENT_MN_R14_TRAINER_04",
+    "EVENT_MN_R14_TRAINER_05",
+    "EVENT_MN_R14_TRAINER_06",
+    "EVENT_MN_R14_TRAINER_07",
+    "EVENT_MN_R14_TRAINER_08",
+    "EVENT_MN_R14_TRAINER_09",
+    "EVENT_MN_R14_TRAINER_10",
+    "EVENT_MN_R15_ITEM_01",
+    "EVENT_MN_R15_ITEM_02",
+    "EVENT_MN_R15_ITEM_03",
+    "EVENT_MN_R15_ITEM_04",
+    "EVENT_MN_R15_TRAINER_01",
+    "EVENT_MN_R15_TRAINER_02",
+    "EVENT_MN_R15_TRAINER_03",
+    "EVENT_MN_R15_TRAINER_04",
+    "EVENT_MN_R15_TRAINER_05",
+    "EVENT_MN_R15_TRAINER_06",
+    "EVENT_MN_R15_TRAINER_07",
+    "EVENT_MN_R15_TRAINER_08",
+    "EVENT_MN_R15_TRAINER_09",
+    "EVENT_MN_R15_TRAINER_10",
+    "EVENT_MN_R16_ITEM_01",
+    "EVENT_MN_R16_ITEM_02",
+    "EVENT_MN_R16_ITEM_03",
+    "EVENT_MN_R16_ITEM_04",
+    "EVENT_MN_R16_TRAINER_01",
+    "EVENT_MN_R16_TRAINER_02",
+    "EVENT_MN_R16_TRAINER_03",
+    "EVENT_MN_R16_TRAINER_04",
+    "EVENT_MN_R16_TRAINER_05",
+    "EVENT_MN_R16_TRAINER_06",
+    "EVENT_MN_R16_TRAINER_07",
+    "EVENT_MN_R16_TRAINER_08",
+    "EVENT_MN_R16_TRAINER_09",
+    "EVENT_MN_R16_TRAINER_10",
+    "EVENT_MN_R17_ITEM_01",
+    "EVENT_MN_R17_ITEM_02",
+    "EVENT_MN_R17_ITEM_03",
+    "EVENT_MN_R17_ITEM_04",
+    "EVENT_MN_R17_TRAINER_01",
+    "EVENT_MN_R17_TRAINER_02",
+    "EVENT_MN_R17_TRAINER_03",
+    "EVENT_MN_R17_TRAINER_04",
+    "EVENT_MN_R17_TRAINER_05",
+    "EVENT_MN_R17_TRAINER_06",
+    "EVENT_MN_R17_TRAINER_07",
+    "EVENT_MN_R17_TRAINER_08",
+    "EVENT_MN_R17_TRAINER_09",
+    "EVENT_MN_R17_TRAINER_10",
+    "EVENT_MN_R18_ITEM_01",
+    "EVENT_MN_R18_ITEM_02",
+    "EVENT_MN_R18_ITEM_03",
+    "EVENT_MN_R18_ITEM_04",
+    "EVENT_MN_R18_TRAINER_01",
+    "EVENT_MN_R18_TRAINER_02",
+    "EVENT_MN_R18_TRAINER_03",
+    "EVENT_MN_R18_TRAINER_04",
+    "EVENT_MN_R18_TRAINER_05",
+    "EVENT_MN_R18_TRAINER_06",
+    "EVENT_MN_R18_TRAINER_07",
+    "EVENT_MN_R18_TRAINER_08",
+    "EVENT_MN_R18_TRAINER_09",
+    "EVENT_MN_R18_TRAINER_10",
+    "EVENT_MN_R19_ITEM_01",
+    "EVENT_MN_R19_ITEM_02",
+    "EVENT_MN_R19_ITEM_03",
+    "EVENT_MN_R19_ITEM_04",
+    "EVENT_MN_R19_TRAINER_01",
+    "EVENT_MN_R19_TRAINER_02",
+    "EVENT_MN_R19_TRAINER_03",
+    "EVENT_MN_R19_TRAINER_04",
+    "EVENT_MN_R19_TRAINER_05",
+    "EVENT_MN_R19_TRAINER_06",
+    "EVENT_MN_R19_TRAINER_07",
+    "EVENT_MN_R19_TRAINER_08",
+    "EVENT_MN_R19_TRAINER_09",
+    "EVENT_MN_R19_TRAINER_10",
+    "EVENT_MN_R20_ITEM_01",
+    "EVENT_MN_R20_ITEM_02",
+    "EVENT_MN_R20_ITEM_03",
+    "EVENT_MN_R20_ITEM_04",
+    "EVENT_MN_R20_TRAINER_01",
+    "EVENT_MN_R20_TRAINER_02",
+    "EVENT_MN_R20_TRAINER_03",
+    "EVENT_MN_R20_TRAINER_04",
+    "EVENT_MN_R20_TRAINER_05",
+    "EVENT_MN_R20_TRAINER_06",
+    "EVENT_MN_R20_TRAINER_07",
+    "EVENT_MN_R20_TRAINER_08",
+    "EVENT_MN_R20_TRAINER_09",
+    "EVENT_MN_R20_TRAINER_10",
+    "EVENT_MN_SHORE_WATCH_REWARDED",
+    "EVENT_MN_STARTER_RECEIVED",
+    "EVENT_MN_SURF_GIFT_RECEIVED",
+    "EVENT_MN_SURVEY_CHIEF_DEFEATED",
+    "EVENT_MN_SURVEY_RESTORED"
+  ],
+  "milestones": [
+    {
+      "id": "MS_HOME",
+      "location": "MnWinonaHome1F",
+      "requires": [],
+      "sets": [
+        "EVENT_MN_HOME_INTRO"
+      ],
+      "completion": "guardian dialogue finishes and releases input",
+      "story_beat": "Familiar departure before the mystery.",
+      "narrative_status": "Authored scene direction and sample dialogue; native chapter implementation pending.",
+      "dialogue_pages": [
+        [
+          "The field station",
+          "has a job for you."
+        ]
+      ]
+    },
+    {
+      "id": "MS00",
+      "location": "MnWinonaFieldStation",
+      "requires": [
+        "EVENT_MN_HOME_INTRO"
+      ],
+      "sets": [
+        "EVENT_MN_STARTER_RECEIVED",
+        "EVENT_MN_R01_PARCEL_RECEIVED"
+      ],
+      "completion": "confirmed authoritative starter grant; item rewards checked separately",
+      "story_beat": "The first errand carries original evidence.",
+      "narrative_status": "Authored scene direction and sample dialogue; native chapter implementation pending.",
+      "dialogue_pages": [
+        [
+          "Take these to",
+          "ROCHESTER."
+        ],
+        [
+          "Keep the original",
+          "readings safe."
+        ]
+      ]
+    },
+    {
+      "id": "MS01",
+      "location": "MnRochester",
+      "requires": [
+        "EVENT_MN_STARTER_RECEIVED",
+        "EVENT_MN_R01_PARCEL_RECEIVED"
+      ],
+      "sets": [
+        "EVENT_MN_DELIVERED_ROCHESTER_PARCEL"
+      ],
+      "completion": "clinic recipient finishes delivery scene",
+      "story_beat": "The missing equipment makes the parcel valuable.",
+      "narrative_status": "Authored scene direction and sample dialogue; native chapter implementation pending.",
+      "dialogue_pages": [
+        [
+          "Our meters never",
+          "arrived."
+        ],
+        [
+          "This crate has",
+          "a LODE stamp."
+        ]
+      ]
+    },
+    {
+      "id": "MS02",
+      "location": "MnMankato",
+      "requires": [
+        "BADGE_1"
+      ],
+      "sets": [
+        "EVENT_MN_PRAIRIE_NOTEBOOK"
+      ],
+      "completion": "reachable notebook interaction",
+      "story_beat": "The notebook suggests copied station records.",
+      "narrative_status": "Authored scene direction and sample dialogue; native chapter implementation pending.",
+      "dialogue_pages": [
+        [
+          "Different lakes.",
+          "The same numbers."
+        ],
+        [
+          "Who copied these?"
+        ]
+      ]
+    },
+    {
+      "id": "MS03_ICE",
+      "location": "MnMinneapolis",
+      "requires": [
+        "BADGE_2"
+      ],
+      "sets": [
+        "EVENT_MN_ICE_ENFORCER_DEFEATED"
+      ],
+      "completion": "win the authoritative Team ICE enforcer battle; loss leaves the crew unbeaten",
+      "story_beat": "Lode hires counterfeit police to seize records and intimidate Minneapolis residents.",
+      "narrative_status": "User-requested scene authored; native Minneapolis geometry, actor placement, battle and progression verification pending.",
+      "actor": "MN_ICE_ENFORCER",
+      "battle": "MN_ICE_ENFORCER",
+      "dialogue_pages": [
+        [
+          "Official business.",
+          "Hand over the log."
+        ],
+        [
+          "You get no say.",
+          "We take the log."
+        ]
+      ],
+      "witness_pages": [
+        [
+          "They are not cops.",
+          "LODE pays them."
+        ]
+      ],
+      "repeat_pages": [
+        [
+          "This is not over.",
+          "We know your name."
+        ]
+      ]
+    },
+    {
+      "id": "MS03",
+      "location": "MnMinneapolis",
+      "requires": [
+        "BADGE_2",
+        "EVENT_MN_ICE_ENFORCER_DEFEATED"
+      ],
+      "sets": [
+        "EVENT_MN_DISPATCH_NOTE"
+      ],
+      "completion": "read depot dispatch note",
+      "story_beat": "A recovered dispatch copy proves Team ICE is shielding Lode's diverted survey shipments.",
+      "narrative_status": "Authored scene direction and sample dialogue; native chapter implementation pending.",
+      "dialogue_pages": [
+        [
+          "ESCORT: TEAM ICE",
+          "CLIENT: TEAM LODE"
+        ],
+        [
+          "SURVEY EQUIPMENT",
+          "REROUTE: ST PAUL"
+        ],
+        [
+          "CLIENT: TEAM LODE"
+        ]
+      ]
+    },
+    {
+      "id": "MS04",
+      "location": "MnStPaul",
+      "requires": [
+        "BADGE_3",
+        "EVENT_MN_DISPATCH_NOTE"
+      ],
+      "sets": [
+        "EVENT_MN_COURIER_DEFEATED"
+      ],
+      "completion": "courier battle win",
+      "story_beat": "The courier links the opening errand to the cover-up.",
+      "narrative_status": "Authored scene direction and sample dialogue; native chapter implementation pending.",
+      "dialogue_pages": [
+        [
+          "You delivered the",
+          "old readings."
+        ],
+        [
+          "Who has them now?"
+        ],
+        [
+          "This is your",
+          "last warning."
+        ]
+      ]
+    },
+    {
+      "id": "MS05",
+      "location": "MnBrainerd",
+      "requires": [
+        "BADGE_6"
+      ],
+      "sets": [
+        "EVENT_MN_BRAINERD_REPORT",
+        "EVENT_MN_SURF_GIFT_RECEIVED"
+      ],
+      "completion": "ranger report; grant existing teaching item once",
+      "story_beat": "Local people and Pokemon give the fraud consequences.",
+      "narrative_status": "Authored scene direction and sample dialogue; native chapter implementation pending.",
+      "dialogue_pages": [
+        [
+          "The fish moved on.",
+          "The report says"
+        ],
+        [
+          "nothing changed.",
+          "Ask the fishers."
+        ]
+      ]
+    },
+    {
+      "id": "MS06",
+      "location": "MnLakeItasca",
+      "requires": [
+        "BADGE_7"
+      ],
+      "sets": [
+        "EVENT_MN_HEADWATERS_READING"
+      ],
+      "completion": "interact with dry-land survey marker",
+      "story_beat": "The player obtains an independent reference.",
+      "narrative_status": "Authored scene direction and sample dialogue; native chapter implementation pending.",
+      "dialogue_pages": [
+        [
+          "HEADWATERS MARKER",
+          "Reading recorded."
+        ]
+      ]
+    },
+    {
+      "id": "MS07",
+      "location": "MnBemidji",
+      "requires": [
+        "BADGE_7",
+        "EVENT_MN_HEADWATERS_READING"
+      ],
+      "sets": [
+        "EVENT_MN_HEADWATERS_REPORT"
+      ],
+      "completion": "field officer compares the reading",
+      "story_beat": "The officer has comparison copies, so the independent reference exposes a relabeled instrument log even if the optional notebook was missed. Distinct basins stay distinct.",
+      "narrative_status": "Authored scene direction and sample dialogue; native chapter implementation pending.",
+      "dialogue_pages": [
+        [
+          "One meter log.",
+          "Three station IDs."
+        ],
+        [
+          "These were copied.",
+          "Separate basins."
+        ]
+      ]
+    },
+    {
+      "id": "MS08",
+      "location": "MnR09Cave1F",
+      "requires": [
+        "BADGE_7",
+        "EVENT_MN_HEADWATERS_REPORT"
+      ],
+      "sets": [
+        "EVENT_MN_DEPOT_FOREMAN_DEFEATED"
+      ],
+      "completion": "foreman battle win",
+      "story_beat": "The foreman knowingly continues dangerous tests.",
+      "narrative_status": "Native mine binding verified through production input: actual win/loss, separate recovery choices, repeat guards and Continue. MS09 now separately completes the native Grand Rapids handover.",
+      "dialogue_pages": [
+        [
+          "I read the report.",
+          "Run the next test."
+        ],
+        [
+          "You heard me.",
+          "Move aside."
+        ]
+      ],
+      "native_texts": {
+        "MnIronRangeForemanSeenText": [
+          "I read the report.",
+          "We run the test.",
+          "Copper and nickel",
+          "come first.",
+          "That meter stays.",
+          "Move aside."
+        ],
+        "MnIronRangeForemanWonText": [
+          "You stopped one",
+          "test. That is all."
+        ],
+        "MnIronRangeForemanLostText": [
+          "We are still on",
+          "schedule."
+        ],
+        "MnIronRangeForemanAfterText": [
+          "The meter is in",
+          "the crate.",
+          "The receiver went",
+          "farther north."
+        ],
+        "MnIronRangeForemanBadgeDeniedText": [
+          "Closed worksite.",
+          "Keep moving."
+        ],
+        "MnIronRangeForemanReportDeniedText": [
+          "Talk to the office",
+          "in BEMIDJI."
+        ]
+      }
+    },
+    {
+      "id": "MS08_CACHE",
+      "location": "MnR09Cave1F",
+      "requires": [
+        "EVENT_MN_DEPOT_FOREMAN_DEFEATED"
+      ],
+      "sets": [
+        "EVENT_MN_MINE_INSTRUMENT_RECOVERED"
+      ],
+      "completion": "separate cache interaction; confirm taking the meter and acknowledge its recovery text",
+      "story_beat": "The player saves the real instrument log after the foreman loses; victory alone neither carries the evidence nor finishes the Grand Rapids handover.",
+      "narrative_status": "Native mine binding verified through production input: actual win/loss, separate recovery choices, repeat guards and Continue. MS09 now separately completes the native Grand Rapids handover.",
+      "native_texts": {
+        "MnIronRangeCacheLockedText": [
+          "The foreman guards",
+          "this meter."
+        ],
+        "MnIronRangeCacheReadyText": [
+          "A survey meter.",
+          "Take it with you?"
+        ],
+        "MnIronRangeCacheDeclinedText": [
+          "Leave the meter",
+          "in the crate."
+        ],
+        "MnIronRangeCacheRecoveredText": [
+          "You take the meter",
+          "and its test log.",
+          "GRAND RAPIDS can",
+          "read the log."
+        ],
+        "MnIronRangeCacheAlreadyText": [
+          "The crate is empty",
+          "Return to the",
+          "GRAND RAPIDS depot"
+        ]
+      }
+    },
+    {
+      "id": "MS09",
+      "location": "MnGrandRapidsSurveyDepot",
+      "requires": [
+        "EVENT_MN_DEPOT_FOREMAN_DEFEATED",
+        "EVENT_MN_MINE_INSTRUMENT_RECOVERED"
+      ],
+      "sets": [
+        "EVENT_MN_DEPOT_CLEARED"
+      ],
+      "completion": "return the separately recovered instrument and test log at the depot",
+      "story_beat": "Recovered instrument records reveal a pulse pump and northern relay.",
+      "narrative_status": "Native depot handover verified through production input: both prerequisites, decline/Continue/retry, all reading pages acknowledged before clearance, repeat guards and actual east-road release. The meter stays at the depot; the player takes a saved quest-state log copy.",
+      "dialogue_pages": [
+        [
+          "These pulse tests",
+          "are no survey."
+        ],
+        [
+          "They are driving",
+          "something out."
+        ]
+      ],
+      "native_texts": {
+        "MnGrandRapidsDepotMissingText": [
+          "Bring the meter",
+          "from the guarded",
+          "IRON RANGE mine.",
+          "We need its log."
+        ],
+        "MnGrandRapidsDepotOfferText": [
+          "You found the real",
+          "meter and its log.",
+          "May I read them?"
+        ],
+        "MnGrandRapidsDepotDeclinedText": [
+          "Keep them safe.",
+          "I will be here."
+        ],
+        "MnGrandRapidsDepotReadText": [
+          "These pulse tests",
+          "are no survey.",
+          "They are driving",
+          "something out.",
+          "A northern relay",
+          "controls the pump.",
+          "We keep the meter.",
+          "I copied its log.",
+          "Take this copy to",
+          "the DULUTH harbor."
+        ],
+        "MnGrandRapidsDepotDoneText": [
+          "The DULUTH harbor",
+          "can trace it with",
+          "the copied log.",
+          "Use the east road."
+        ]
+      }
+    },
+    {
+      "id": "MS10",
+      "location": "MnDuluthHarborWorkshop",
+      "requires": [
+        "BADGE_1",
+        "BADGE_2",
+        "BADGE_3",
+        "BADGE_4",
+        "BADGE_5",
+        "BADGE_6",
+        "BADGE_7",
+        "BADGE_8",
+        "EVENT_MN_DEPOT_CLEARED"
+      ],
+      "sets": [
+        "EVENT_MN_LIGHTHOUSE_SIGNAL"
+      ],
+      "completion": "activate receiver before entering the North Shore",
+      "story_beat": "The harbor signal reveals the intended captive.",
+      "narrative_status": "NATIVE VERIFIED: all eight badges and MS09 clearance; nine acknowledged native pages name Kettlurk and establish prior warnings; only harbor signal is set; repeat and Continue pass. Regional R10/R11 city connections remain pending.",
+      "dialogue_pages": [
+        [
+          "You brought the",
+          "copied meter log."
+        ],
+        [
+          "These pulse tests",
+          "follow a current."
+        ],
+        [
+          "It vanishes, then",
+          "returns upstream."
+        ],
+        [
+          "That pattern is",
+          "KETTLURK."
+        ],
+        [
+          "LODE means to trap",
+          "it to run pumps."
+        ],
+        [
+          "The warnings were",
+          "in their own log."
+        ],
+        [
+          "They ran the tests",
+          "after the warning."
+        ],
+        [
+          "I sent the harbor",
+          "our true readings."
+        ],
+        [
+          "The relay is north",
+          "of GRAND MARAIS."
+        ]
+      ],
+      "native_texts": {
+        "MN_HARBOR_RECEIVERText": [
+          "You brought the",
+          "copied meter log.",
+          "These pulse tests",
+          "follow a current.",
+          "It vanishes, then",
+          "returns upstream.",
+          "That pattern is",
+          "KETTLURK.",
+          "LODE means to trap",
+          "it to run pumps.",
+          "The warnings were",
+          "in their own log.",
+          "They ran the tests",
+          "after the warning.",
+          "I sent the harbor",
+          "our true readings.",
+          "The relay is north",
+          "of GRAND MARAIS."
+        ],
+        "MN_HARBOR_RECEIVERDeniedText": [
+          "Bring eight BADGES",
+          "and the copied log",
+          "from the restored",
+          "GRAND RAPIDS depot"
+        ],
+        "MN_HARBOR_RECEIVERDoneText": [
+          "The harbor has",
+          "our true readings.",
+          "Follow the relay",
+          "past GRAND MARAIS."
+        ]
+      }
+    },
+    {
+      "id": "MS11",
+      "location": "MnBoundaryWatersSurveyShelter",
+      "requires": [
+        "BADGE_1",
+        "BADGE_2",
+        "BADGE_3",
+        "BADGE_4",
+        "BADGE_5",
+        "BADGE_6",
+        "BADGE_7",
+        "BADGE_8",
+        "EVENT_MN_LIGHTHOUSE_SIGNAL"
+      ],
+      "sets": [
+        "EVENT_MN_SURVEY_CHIEF_DEFEATED"
+      ],
+      "completion": "survey-chief battle win",
+      "story_beat": "The chief knowingly chooses the mine and control over evidence and Pokemon welfare.",
+      "narrative_status": "Chief/receiver dialogue bound natively; upstream chapters and Kettlurk spectacle remain pending.",
+      "native_texts": {
+        "MnBoundarySurveyChiefSeenText": [
+          "You kept the first",
+          "survey readings.",
+          "Yes, I changed",
+          "the reports.",
+          "I will not stop",
+          "this mine.",
+          "KETTLURK will keep",
+          "the pumps running.",
+          "You will step",
+          "aside."
+        ],
+        "MnBoundarySurveyChiefWonText": [
+          "You have cost me",
+          "enough already."
+        ],
+        "MnBoundarySurveyChiefLostText": [
+          "The work goes on."
+        ],
+        "MnBoundarySurveyChiefAfterText": [
+          "I lost the relay.",
+          "I have not changed",
+          "my mind.",
+          "The receiver is",
+          "at the east desk."
+        ],
+        "MnBoundarySurveyChiefBadgeDeniedText": [
+          "Eight BADGES first",
+          "Then face my team."
+        ],
+        "MnBoundarySurveyChiefSignalDeniedText": [
+          "The harbor signal",
+          "has not reached us",
+          "Check the workshop"
+        ]
+      }
+    },
+    {
+      "id": "MS12",
+      "location": "MnBoundaryWatersSurveyShelter",
+      "requires": [
+        "EVENT_MN_SURVEY_CHIEF_DEFEATED"
+      ],
+      "sets": [
+        "EVENT_MN_SURVEY_RESTORED"
+      ],
+      "completion": "restore receiver in the shelter",
+      "story_beat": "The receiver action, after the battle, exposes the real readings and stops the test.",
+      "narrative_status": "Chief/receiver dialogue bound natively; upstream chapters and Kettlurk spectacle remain pending.",
+      "native_texts": {
+        "MnBoundarySurveyReceiverLockedText": [
+          "The survey chief",
+          "holds this line.",
+          "Win the desk first"
+        ],
+        "MnBoundarySurveyReceiverAlreadyText": [
+          "SURVEY LINK ACTIVE",
+          "Real readings sent",
+          "The test is halted"
+        ],
+        "MnBoundarySurveyReceiverDeclinedText": [
+          "Leave the receiver",
+          "for another time."
+        ],
+        "MnBoundarySurveyReceiverReadyText": [
+          "The desk is clear.",
+          "Restore the link?"
+        ],
+        "MnBoundarySurveyReceiverRestoreText": [
+          "You align the dial",
+          "with the harbor."
+        ],
+        "MnBoundarySurveyReceiverDoneText": [
+          "SURVEY LINK ACTIVE",
+          "Real readings sent",
+          "Crews halt the",
+          "pump test.",
+          "KETTLURK is free.",
+          "The ELY trail is",
+          "ready to survey."
+        ]
+      }
+    },
+    {
+      "id": "MS13",
+      "location": "MnLeagueChampion",
+      "requires": [
+        "BADGE_1",
+        "BADGE_2",
+        "BADGE_3",
+        "BADGE_4",
+        "BADGE_5",
+        "BADGE_6",
+        "BADGE_7",
+        "BADGE_8",
+        "EVENT_MN_SURVEY_RESTORED"
+      ],
+      "sets": [
+        "EVENT_MN_LEAGUE_CHAMPION"
+      ],
+      "completion": "champion win and Hall of Fame recording",
+      "story_beat": "Sporting recognition follows protecting the region; recovery remains ongoing.",
+      "narrative_status": "Authored scene direction and sample dialogue; native chapter implementation pending.",
+      "dialogue_pages": [
+        [
+          "You stood by",
+          "your team."
+        ],
+        [
+          "Show me what",
+          "you have learned."
+        ]
+      ]
+    },
+    {
+      "id": "MS14",
+      "location": "MnDetroitLakes",
+      "requires": [
+        "BADGE_6"
+      ],
+      "sets": [
+        "EVENT_MN_LAKE_OBSERVATIONS_REWARDED"
+      ],
+      "completion": "three explicit observation flags plus once-only reward"
+    },
+    {
+      "id": "MS15",
+      "location": "MnMoorhead",
+      "requires": [
+        "BADGE_6"
+      ],
+      "sets": [
+        "EVENT_MN_PRAIRIE_CIRCUIT_REWARDED"
+      ],
+      "completion": "local trainer circuit and marker interaction"
+    },
+    {
+      "id": "MS16",
+      "location": "MnInternationalFalls",
+      "requires": [
+        "BADGE_7"
+      ],
+      "sets": [
+        "EVENT_MN_BORDER_REPORT"
+      ],
+      "completion": "ranger check-in"
+    },
+    {
+      "id": "MS17",
+      "location": "MnBoundaryWaters",
+      "requires": [
+        "BADGE_1",
+        "BADGE_2",
+        "BADGE_3",
+        "BADGE_4",
+        "BADGE_5",
+        "BADGE_6",
+        "BADGE_7",
+        "BADGE_8",
+        "EVENT_MN_BORDER_REPORT",
+        "EVENT_MN_LIGHTHOUSE_SIGNAL"
+      ],
+      "sets": [
+        "EVENT_MN_BORDER_CIRCUIT_REWARDED"
+      ],
+      "completion": "arrival by authored Voyageurs quest trigger"
+    },
+    {
+      "id": "MS18",
+      "location": "MnMilleLacs",
+      "requires": [
+        "BADGE_6"
+      ],
+      "sets": [
+        "EVENT_MN_SHORE_WATCH_REWARDED"
+      ],
+      "completion": "three distinct volunteer flags and once-only reward"
+    }
+  ],
+  "milestone_semantics": "Quest summaries group scenes. Apply flags only at the listed milestone, so early signals unlock travel before a chapter ends. Side-objective subflags and exact reward recovery branches must be authored before their chapter exports.",
+  "bosses": [
+    {
+      "id": "MN_ICE_ENFORCER",
+      "faction": "Team ICE",
+      "party": [
+        {
+          "species": "RATICATE",
+          "level": 19
+        },
+        {
+          "species": "GROWLITHE",
+          "level": 20
+        }
+      ],
+      "win_flag": "EVENT_MN_ICE_ENFORCER_DEFEATED"
+    },
+    {
+      "id": "MN_LODE_COURIER",
+      "party": [
+        {
+          "species": "MAGNEMITE",
+          "level": 23
+        },
+        {
+          "species": "DROWZEE",
+          "level": 22
+        }
+      ],
+      "win_flag": "EVENT_MN_COURIER_DEFEATED"
+    },
+    {
+      "id": "MN_LODE_FOREMAN",
+      "party": [
+        {
+          "species": "GRAVELER",
+          "level": 35
+        },
+        {
+          "species": "MACHOKE",
+          "level": 35
+        },
+        {
+          "species": "MAGNETON",
+          "level": 36
+        }
+      ],
+      "win_flag": "EVENT_MN_DEPOT_FOREMAN_DEFEATED"
+    },
+    {
+      "id": "MN_LODE_CHIEF",
+      "party": [
+        {
+          "species": "MAGNETON",
+          "level": 44
+        },
+        {
+          "species": "WEEZING",
+          "level": 44
+        },
+        {
+          "species": "CROBAT",
+          "level": 46
+        }
+      ],
+      "win_flag": "EVENT_MN_SURVEY_CHIEF_DEFEATED"
+    }
+  ],
+  "league": [
+    {
+      "id": "MN_LEAGUE_1",
+      "name": "FERN",
+      "type": "BUG",
+      "map": "MnLeagueRoom1",
+      "party": [
+        {
+          "species": "ARIADOS",
+          "level": 47
+        },
+        {
+          "species": "VENOMOTH",
+          "level": 48
+        },
+        {
+          "species": "PINSIR",
+          "level": 48
+        },
+        {
+          "species": "SCYTHER",
+          "level": 48
+        }
+      ]
+    },
+    {
+      "id": "MN_LEAGUE_2",
+      "name": "FLINT",
+      "type": "ROCK",
+      "map": "MnLeagueRoom2",
+      "party": [
+        {
+          "species": "GRAVELER",
+          "level": 48
+        },
+        {
+          "species": "ONIX",
+          "level": 48
+        },
+        {
+          "species": "SUDOWOODO",
+          "level": 49
+        },
+        {
+          "species": "GOLEM",
+          "level": 49
+        }
+      ]
+    },
+    {
+      "id": "MN_LEAGUE_3",
+      "name": "VEIL",
+      "type": "GHOST",
+      "map": "MnLeagueRoom3",
+      "party": [
+        {
+          "species": "HAUNTER",
+          "level": 49
+        },
+        {
+          "species": "MISDREAVUS",
+          "level": 50
+        },
+        {
+          "species": "GENGAR",
+          "level": 50
+        },
+        {
+          "species": "NOCTOWL",
+          "level": 49
+        }
+      ]
+    },
+    {
+      "id": "MN_LEAGUE_4",
+      "name": "REED",
+      "type": "DRAGON",
+      "map": "MnLeagueRoom4",
+      "party": [
+        {
+          "species": "DRAGONAIR",
+          "level": 50
+        },
+        {
+          "species": "GYARADOS",
+          "level": 50
+        },
+        {
+          "species": "SEADRA",
+          "level": 50
+        },
+        {
+          "species": "KINGDRA",
+          "level": 51
+        }
+      ]
+    },
+    {
+      "id": "MN_CHAMPION",
+      "name": "CASEY",
+      "type": "MIXED",
+      "map": "MnLeagueChampion",
+      "party": [
+        {
+          "species": "AMPHAROS",
+          "level": 51
+        },
+        {
+          "species": "QUAGSIRE",
+          "level": 51
+        },
+        {
+          "species": "HERACROSS",
+          "level": 52
+        },
+        {
+          "species": "HOUNDOOM",
+          "level": 52
+        },
+        {
+          "species": "LAPRAS",
+          "level": 52
+        },
+        {
+          "species": "DRAGONITE",
+          "level": 53
+        }
+      ]
+    }
+  ],
+  "league_run_state": {
+    "condition_names": [
+      "LEAGUE_RUN_WIN_1",
+      "LEAGUE_RUN_WIN_2",
+      "LEAGUE_RUN_WIN_3",
+      "LEAGUE_RUN_WIN_4"
+    ],
+    "storage": "existing persistent script memory; encode completed room count for the active run",
+    "reset": "new League registration and League blackout",
+    "permanent_completion_flag": "EVENT_MN_LEAGUE_CHAMPION"
+  },
+  "narrative": {
+    "tone": "A local mystery that grows into a Pokemon adventure. Villains have credible motives, professional competence and distinct personalities, but knowingly choose harmful means. No cartoon greed speeches, sympathetic absolution, redeemed courier or claim that the player and Team Lode are equally right.",
+    "logline": "A routine delivery carries the original readings Team Lode needs erased. Follow the missing instruments north, expose a copper-nickel cover-up, and stop the team from turning Kettlurk into a living pump.",
+    "player_stake": "The player personally delivers the original records and meets the people and Pokemon who depend on the surveyed places. The courier later demands to know who kept those records. The opening errand preserves the evidence that undoes the scheme; the delivered parcel is not secretly still in the player's bag.",
+    "public_cover": "Team Lode sells its DEEP BORE project as dependable work and essential metal. Its leaders use that promise to conceal risk, silence witnesses and keep their investment moving. Honest mine workers may oppose the scheme; occupation and hometown do not make someone a villain.",
+    "true_plan": "A fictional pulse pump and drilling tests disturb Kettlurk's returning current. Lode plans to capture it, force the current through its ore works and avoid stopping the mine. The chief knows the test readings are unsafe, withholds them, and treats the Pokemon's distress as an engineering obstacle.",
+    "legendary": {
+      "species_id": "MN_096",
+      "name": "Kettlurk",
+      "existing_family": "MN_F045",
+      "role": "Intended captive, never the cause of the cover-up or a willing villain. Reports of a disappearing and returning current foreshadow its identity.",
+      "main_story_requirement": "Stop Lode without catching, defeating, owning or registering Kettlurk. A later voluntary encounter stays on the existing optional Devil's Kettle branch near Grand Marais.",
+      "implementation_status": "Authored roster design, not a compiled encounter. A future apparition and machine set piece require native art/scripts. Current Q07 dialogue can identify the intended captive without inventing a runtime encounter."
+    },
+    "cast_arcs": [
+      {
+        "actor": "MN_TAMARACK",
+        "role": "Connects the ordinary field assignment to the falsified data; coordinates public reporting and gives concrete tasks. The original readings matter more than a final lecture."
+      },
+      {
+        "actor": "MN_CITY_COURIER",
+        "role": "Controlled and evasive. Calls the stolen equipment a shipping correction, then threatens the player to identify the keeper of the delivered originals. After losing, gives up the manifest but remains loyal to Lode."
+      },
+      {
+        "actor": "MN_DEPOT_FOREMAN",
+        "role": "Practical and intimidating. Knows instruments were tampered with and workers are at risk; orders the next test anyway. Sees Pokemon as replaceable equipment."
+      },
+      {
+        "actor": "MN_SURVEY_CHIEF",
+        "role": "Head of Team Lode, occupying a public survey shelter. Believes he alone can decide what the region must sacrifice for his project. Understands the evidence and deliberately suppresses it. Defeat costs him control; it does not produce repentance."
+      }
+    ],
+    "ending": "The boss battle clears access; the separate receiver action sends the true readings and warning to the harbor, allowing crews to stop the fictional test operation before Kettlurk is trapped. Survey work and the Ely trail resume. Local recovery continues. No instant purification or compulsory capture.",
+    "geography_rule": "Itasca is an independent reference used to expose copied records, not evidence that its water flows to the mine or Boundary Waters. Distinct basins stay distinct; Kettlurk's returning current and pulse machinery are explicitly fantasy.",
+    "sources": [
+      {
+        "url": "https://www.dnr.state.mn.us/lands_minerals/mining.html",
+        "use": "Distinguish iron/taconite from nonferrous copper and nickel. Team Lode and its project are fictional."
+      },
+      {
+        "url": "https://pubs.usgs.gov/sir/2020/5039/sir20205039.pdf",
+        "use": "Background for water-quality baseline surveys in copper-nickel-bearing sulfide terrain; not evidence for any fictional wrongdoing or supernatural hydrology."
+      }
+    ],
+    "reference_fallback": "The Bemidji officer keeps comparison copies of the station records and equipment manifest. Q05 can expose a duplicated instrument log without requiring the optional Mankato notebook flag. Finding that notebook gives the player an earlier clue, not a new progression gate."
+  },
+  "allied_antagonists": [
+    {
+      "name": "Team ICE",
+      "base": "MINNEAPOLIS",
+      "relationship": "Team Lode pays and directs this local enforcement crew.",
+      "direction": "Openly cruel bullies impersonating police. They use counterfeit badges and invented inspection powers to seize survey records, threaten residents and protect Lode shipments. Their claimed authority is fraudulent; losing does not reform them. Keep their language terse and abusive, with no ice puns or comic incompetence.",
+      "native_status": "Authored user-requested Minneapolis chapter; native city/battle implementation pending."
+    }
+  ]
+}

@@ -1,0 +1,241 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F027",
+  "status": "native-redesign-review-pending",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_067": {
+      "species_id": "MN_067",
+      "name": "Clinklaw",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          24,
+          19,
+          14
+        ],
+        [
+          10,
+          13,
+          15
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        14968,
+        15786,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          198,
+          156,
+          115
+        ],
+        [
+          82,
+          107,
+          123
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#C69C73",
+        "#526B7B",
+        "#000000"
+      ]
+    },
+    "MN_068": {
+      "species_id": "MN_068",
+      "name": "Trapnack",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          20,
+          23,
+          22
+        ],
+        [
+          9,
+          10,
+          13
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        23284,
+        13641,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          165,
+          189,
+          181
+        ],
+        [
+          74,
+          82,
+          107
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#A5BDB5",
+        "#4A526B",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f027/prompt-v3.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "board": "target/minnesota-pokemon/gen2-reference/bugs.png"
+  },
+  "sprites": [
+    {
+      "id": "mn-067-clinklaw-redesign-v3",
+      "species_id": "MN_067",
+      "view": "front",
+      "source": "sprites/mn-f027/mn-067-068.front-back.imagegen-v3.png",
+      "crop": [
+        0,
+        0,
+        730,
+        550
+      ],
+      "fit": [
+        46,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        14968,
+        15786,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "solid",
+      "pixel_edits": []
+    },
+    {
+      "id": "mn-067-clinklaw-redesign-v3",
+      "species_id": "MN_067",
+      "view": "back",
+      "source": "sprites/mn-f027/mn-067-068.front-back.imagegen-v3.png",
+      "crop": [
+        0,
+        550,
+        730,
+        474
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        14968,
+        15786,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "solid",
+      "pixel_edits": []
+    },
+    {
+      "id": "mn-068-trapnack-redesign-v3",
+      "species_id": "MN_068",
+      "view": "front",
+      "source": "sprites/mn-f027/mn-067-068.front-back.imagegen-v3.png",
+      "crop": [
+        730,
+        0,
+        806,
+        550
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        23284,
+        13641,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "solid",
+      "pixel_edits": []
+    },
+    {
+      "id": "mn-068-trapnack-redesign-v3",
+      "species_id": "MN_068",
+      "view": "back",
+      "source": "sprites/mn-f027/mn-067-068.front-back.imagegen-v3.png",
+      "crop": [
+        730,
+        550,
+        806,
+        474
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        23284,
+        13641,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "solid",
+      "pixel_edits": []
+    }
+  ],
+  "visual_review": {
+    "status": "pending",
+    "notes": "User requested a stronger and more appealing redesign of this line."
+  }
+}

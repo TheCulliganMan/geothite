@@ -1,0 +1,119 @@
+{
+  "route": "MN_R10",
+  "map": "MnR10C00R00",
+  "parent": "content-packs/minnesota-current-r10-cache-cliff-v04.crystalpack",
+  "parent_sha256": "b42c0c43dcf2f62ccaad99aa60443edf088907dce1debde5c8edb6eb891020e7",
+  "changes": [
+    {
+      "position": [
+        11,
+        4
+      ],
+      "before": "68",
+      "after": "83",
+      "reason": "Continuous native west rock face with encounter grass on its inside lip"
+    },
+    {
+      "position": [
+        11,
+        5
+      ],
+      "before": "0a",
+      "after": "83",
+      "reason": "Continuous native west rock face with encounter grass on its inside lip"
+    },
+    {
+      "position": [
+        11,
+        6
+      ],
+      "before": "0a",
+      "after": "6c",
+      "reason": "Close the cache southwest corner instead of ending its wall in a boulder"
+    },
+    {
+      "position": [
+        12,
+        6
+      ],
+      "before": "03",
+      "after": "84",
+      "reason": "Grass-lined front face closes the dry rim shortcut"
+    },
+    {
+      "position": [
+        13,
+        6
+      ],
+      "before": "03",
+      "after": "84",
+      "reason": "Grass-lined front face closes the dry rim shortcut"
+    },
+    {
+      "position": [
+        14,
+        6
+      ],
+      "before": "03",
+      "after": "84",
+      "reason": "Grass-lined front face closes the dry rim shortcut"
+    },
+    {
+      "position": [
+        15,
+        6
+      ],
+      "before": "03",
+      "after": "84",
+      "reason": "Grass-lined front face closes the dry rim shortcut"
+    },
+    {
+      "position": [
+        16,
+        6
+      ],
+      "before": "03",
+      "after": "82",
+      "reason": "Native cache stair beside the mine forecourt retaining corner"
+    },
+    {
+      "position": [
+        17,
+        6
+      ],
+      "before": "71",
+      "after": "6e",
+      "reason": "Recess the front into the mine forecourt with a native concave corner"
+    },
+    {
+      "position": [
+        17,
+        7
+      ],
+      "before": "6e",
+      "after": "68",
+      "reason": "Carry the mine forecourt west face to its existing southwest corner"
+    }
+  ],
+  "status": "Native Rust publication, complete native grass/return validation, strict art/terrain preservation, all377 audio,208 successful production calls and six inspected zero-mismatch GPU captures pass; scoped Clippy and broader integration remain pending.",
+  "unresolved": "Western spur and carrier-stair boulders remain outside this first contour correction.",
+  "viewpoint_change": {
+    "id": "UPPER_WIND_GRASS",
+    "before_core": [
+      27,
+      13
+    ],
+    "after_core": [
+      27,
+      11
+    ],
+    "reason": "Review the grass from the inside of its new retaining wall, rather than standing in the front face."
+  },
+  "scope": "Close the cache terrace west/front contour with a native southern stair, while retaining the separate carrier terrace and its western stair return.",
+  "publication": {
+    "pack": "/Users/ryanculligan/GitHub/geothite/content-packs/minnesota-current-r10-west-terrace-v01.crystalpack",
+    "sha256": "e6c2126e57e1349ae73ba42c6139d8e1cc7f3b61298e2df892b0d122866da536",
+    "art_sha256": "f44d294ca4b52e5382d2c439ec1d3f9ba67c3c708f3549e7c810bc3f5da0cf68"
+  },
+  "local_proof": "renders/r10-western-cliff-v01/west-local-review-proof-v127.json"
+}

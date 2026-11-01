@@ -1,0 +1,122 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F126",
+  "status": "native-review-pending",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f126/sodger-v1/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "pokemon_palettes": {
+    "MN_277": {
+      "species_id": "MN_277",
+      "name": "Sodger",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          26,
+          18,
+          9
+        ],
+        [
+          10,
+          7,
+          5
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        9818,
+        5354,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          214,
+          148,
+          74
+        ],
+        [
+          82,
+          58,
+          41
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#D6944A",
+        "#523A29",
+        "#000000"
+      ]
+    }
+  },
+  "sprites": [
+    {
+      "id": "mn-277-sodger-v1",
+      "species_id": "MN_277",
+      "view": "front",
+      "source": "sprites/mn-f126/sodger-v1/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        1050,
+        821
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        9818,
+        5354,
+        0
+      ],
+      "interior_black_min_samples": 12,
+      "white_detail_min_samples": 8,
+      "exterior_contour": "solid"
+    },
+    {
+      "id": "mn-277-sodger-v1",
+      "species_id": "MN_277",
+      "view": "back",
+      "source": "sprites/mn-f126/sodger-v1/front-back.imagegen-v1.png",
+      "crop": [
+        1150,
+        150,
+        766,
+        545
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        9818,
+        5354,
+        0
+      ],
+      "interior_black_min_samples": 12,
+      "white_detail_min_samples": 8,
+      "exterior_contour": "solid"
+    }
+  ]
+}

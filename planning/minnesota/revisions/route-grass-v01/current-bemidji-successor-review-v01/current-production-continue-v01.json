@@ -1,0 +1,24 @@
+{
+  "status": "PASS",
+  "source_save": ".local/route-grass-review/current-bemidji-reached-v01.crystalsave",
+  "source_sha256": "9b9770168acff49e24838d1b7ebaa9ae354a6904854a9ae78cf79f021f1bad31",
+  "input_source_unchanged": true,
+  "output_save": ".local/route-grass-review/current-bemidji-verified-stdio-v03-output-v01.crystalsave",
+  "pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33",
+  "pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+  "save": ".local/route-grass-review/current-bemidji-verified-stdio-v03-input-v01.crystalsave",
+  "initial_map": "MnBemidjiPokecenter1F",
+  "initial_position": {
+    "x": 13,
+    "y": 5
+  },
+  "moved_position": {
+    "x": 12,
+    "y": 5
+  },
+  "calls_passed": 15,
+  "stderr_bytes": 0,
+  "items_pocket_verified": true,
+  "balls_pocket": true,
+  "returned_to_walking": true
+}

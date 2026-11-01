@@ -1,0 +1,351 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F103",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_224": {
+      "species_id": "MN_224",
+      "name": "Hailpip",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          20,
+          28,
+          30
+        ],
+        [
+          7,
+          12,
+          21
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        31636,
+        21895,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          165,
+          231,
+          247
+        ],
+        [
+          57,
+          99,
+          173
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#A5E7F7",
+        "#3963AD",
+        "#000000"
+      ]
+    },
+    "MN_225": {
+      "species_id": "MN_225",
+      "name": "Rumbhail",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          21,
+          27,
+          31
+        ],
+        [
+          10,
+          9,
+          22
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        32629,
+        22826,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          173,
+          222,
+          255
+        ],
+        [
+          82,
+          74,
+          181
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#ADDEFF",
+        "#524AB5",
+        "#000000"
+      ]
+    },
+    "MN_226": {
+      "species_id": "MN_226",
+      "name": "Anvilisk",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          22,
+          28,
+          29
+        ],
+        [
+          9,
+          10,
+          20
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        30614,
+        20809,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          181,
+          231,
+          239
+        ],
+        [
+          74,
+          82,
+          165
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#B5E7EF",
+        "#4A52A5",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f103/prompt-v1.txt",
+  "reference_mapping": "sprites/mn-f103/reference-mapping-v1.json",
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-224-hailpip-v1",
+      "species_id": "MN_224",
+      "view": "front",
+      "source": "sprites/mn-f103/mn-224-226.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        420,
+        524
+      ],
+      "fit": [
+        36,
+        36
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        31636,
+        21895,
+        0
+      ],
+      "white_detail_min_samples": 32,
+      "interior_black_min_samples": 8
+    },
+    {
+      "id": "mn-224-hailpip-v1",
+      "species_id": "MN_224",
+      "view": "back",
+      "source": "sprites/mn-f103/mn-224-226.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        524,
+        420,
+        500
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        31636,
+        21895,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-225-rumbhail-v1",
+      "species_id": "MN_225",
+      "view": "front",
+      "source": "sprites/mn-f103/mn-224-226.front-back.imagegen-v1.png",
+      "crop": [
+        420,
+        0,
+        498,
+        524
+      ],
+      "fit": [
+        48,
+        48
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        32629,
+        22826,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-225-rumbhail-v1",
+      "species_id": "MN_225",
+      "view": "back",
+      "source": "sprites/mn-f103/mn-224-226.front-back.imagegen-v1.png",
+      "crop": [
+        420,
+        524,
+        498,
+        500
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        32629,
+        22826,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-226-anvilisk-v1",
+      "species_id": "MN_226",
+      "view": "front",
+      "source": "sprites/mn-f103/mn-224-226.front-back.imagegen-v1.png",
+      "crop": [
+        918,
+        0,
+        618,
+        524
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        30614,
+        20809,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-226-anvilisk-v1",
+      "species_id": "MN_226",
+      "view": "back",
+      "source": "sprites/mn-f103/mn-224-226.front-back.imagegen-v1.png",
+      "crop": [
+        918,
+        524,
+        618,
+        500
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        30614,
+        20809,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    }
+  ],
+  "source_sha256": "6d06129ae48b737fb48cd0acc5d62d4741c7c635cdaba7a5fbffaf62bd7b8ba4",
+  "candidate_review": {
+    "status": "native-review-pending",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "5b2adff652569b307cf011fefbfa08aeec24ae18292a8458e99b070288febd98",
+    "notes": "Actual native sheet inspected: clean stepped ice rims, cyan/navy planes and strong hail-seed to knuckle to broad anvil mass growth; back portraits crop the body and fill frame. Front eye white exists but tiny pupil and middle/final eye definition are weak after conversion; root should judge face readability before acceptance. One benign output-moderation failure retained with exact identical successful retry prompt."
+  },
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "notes": "Root inspected several authored threshold variants against the native board. Single bright ice-core eye remains the face cue as tiny source ring pupils simplify at this scale. Hail seed grows multi-lobed knuckles then a broad four-foot storm anvil with split crown and side fins; ice rims remain stepped and white planes stay enclosed. Rear portraits preserve large shoulder/crown silhouettes. All variants saved.",
+    "sheet_sha256": "6cb0ff6de6aa37845eacb946f1ffbf1c38eb76681cceb9ba314749e1f8512500",
+    "outline_profile": "source-contour-v1"
+  }
+}

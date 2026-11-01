@@ -1,0 +1,98 @@
+{
+  "schema_version": 1,
+  "id": "MN_R19",
+  "status": "LAND_COURSE_VERIFIED_REGIONAL_CONNECTION_INCOMPLETE",
+  "native_binding": {
+    "pack": "content-packs/minnesota-current-r17-trail-guidance-v02.crystalpack",
+    "pack_sha256": "186c262b18d5174cb7ba9727358d4022bea9fce6d362529405728028ef92c60a"
+  },
+  "grass_quadrants": 156,
+  "ice_quadrants": 0,
+  "pine_crossing": {
+    "start": [
+      47,
+      13
+    ],
+    "end": [
+      49,
+      20
+    ],
+    "minimum_grass_steps_both_directions": 7
+  },
+  "active_native_hop_lanes": [
+    {
+      "upper": [
+        34,
+        31
+      ],
+      "lip": [
+        34,
+        32
+      ],
+      "landing": [
+        34,
+        34
+      ],
+      "reverse_wall": [
+        34,
+        33
+      ],
+      "ordinary_uphill_minimum_grass_steps": 3
+    },
+    {
+      "upper": [
+        35,
+        31
+      ],
+      "lip": [
+        35,
+        32
+      ],
+      "landing": [
+        35,
+        34
+      ],
+      "reverse_wall": [
+        35,
+        33
+      ],
+      "ordinary_uphill_minimum_grass_steps": 3
+    }
+  ],
+  "native_stairs": [
+    {
+      "upper": [
+        11,
+        35
+      ],
+      "lower": [
+        11,
+        38
+      ],
+      "bidirectional": true
+    },
+    {
+      "upper": [
+        19,
+        35
+      ],
+      "lower": [
+        19,
+        38
+      ],
+      "bidirectional": true
+    }
+  ],
+  "current_east_side_closure": {
+    "at": [
+      36,
+      32
+    ],
+    "kind": "HEADBUTT_TREE",
+    "production_entry_denied": true
+  },
+  "production_receipt": "planning/minnesota/revisions/route-grass-v01/current-r19-successor-review-v01/current-land-course-production-v01.json",
+  "regional_connection_gap": "planning/minnesota/revisions/route-grass-v01/current-r19-successor-review-v01/southern-seam-geography-rejection-v01.json",
+  "terrain_unchanged": true,
+  "not_full_regional_acceptance": true
+}

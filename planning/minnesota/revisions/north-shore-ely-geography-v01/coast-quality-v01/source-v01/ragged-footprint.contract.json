@@ -1,0 +1,125 @@
+{
+  "schema_version": 1,
+  "source_canvas_dimensions_metatiles": [
+    56,
+    96
+  ],
+  "actual_chunks": [
+    {
+      "map": "MnR11C00R00",
+      "source_origin_metatiles": [
+        0,
+        0
+      ],
+      "actual_dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "map": "MnR11C01R00",
+      "source_origin_metatiles": [
+        32,
+        0
+      ],
+      "actual_dimensions_metatiles": [
+        4,
+        24
+      ]
+    },
+    {
+      "map": "MnR11C00R01",
+      "source_origin_metatiles": [
+        0,
+        24
+      ],
+      "actual_dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "map": "MnR11C01R01",
+      "source_origin_metatiles": [
+        32,
+        24
+      ],
+      "actual_dimensions_metatiles": [
+        24,
+        24
+      ]
+    },
+    {
+      "map": "MnR11C00R02",
+      "source_origin_metatiles": [
+        0,
+        48
+      ],
+      "actual_dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "map": "MnR11C01R02",
+      "source_origin_metatiles": [
+        32,
+        48
+      ],
+      "actual_dimensions_metatiles": [
+        24,
+        24
+      ]
+    },
+    {
+      "map": "MnR11C00R03",
+      "source_origin_metatiles": [
+        0,
+        72
+      ],
+      "actual_dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "map": "MnR11C01R03",
+      "source_origin_metatiles": [
+        32,
+        72
+      ],
+      "actual_dimensions_metatiles": [
+        24,
+        24
+      ]
+    }
+  ],
+  "unpublished_source_rectangles": [
+    {
+      "bounds_metatiles": [
+        36,
+        0,
+        56,
+        24
+      ],
+      "reason": "Retired long east-west green connector canvas. These480source cells are not published terrain and must not appear in connected native renders."
+    }
+  ],
+  "fixed_native_connections": [
+    "R11C00R00 east/C01R00 west offset0",
+    "C01R00 south/C01R01 north offset0"
+  ],
+  "town_native_connection": {
+    "a": "MnR11C01R00",
+    "side": "east",
+    "b": "MnGrandMarais",
+    "offset": 0
+  },
+  "source_sha256": {
+    "MN_R11.dossier.before.json": "d168fea56c8811fbeea2351bf5f2a6d9a816a3823ce4f9776ce6b4ca4ade1f43",
+    "MN_R11.dossier.candidate.json": "bb1a7c56a7c037f42a27874b7b744236776db32a6957552fec0e80e63cea8927",
+    "MN_R11.layout.before.json": "2efe424f20799606aee61e2f474b921c87819eb96b1498cfe48cfa55c0c7f37d",
+    "MN_R11.layout.candidate.json": "711365304ad5851e482986569cd9eba7243a5d7dcead2f8fa31c91dca3a88743"
+  },
+  "parent_pack_sha256": "65cf6f98e65ada839ec5afaa57728bf8289d3a50ba53ba6b9b50f08d3620bb17"
+}

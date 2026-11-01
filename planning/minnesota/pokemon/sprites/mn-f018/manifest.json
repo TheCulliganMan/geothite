@@ -1,0 +1,234 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F018",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_049": {
+      "species_id": "MN_049",
+      "name": "Castorock",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          23,
+          20,
+          15
+        ],
+        [
+          12,
+          10,
+          8
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        16023,
+        8524,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          189,
+          165,
+          123
+        ],
+        [
+          99,
+          82,
+          66
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#BDA57B",
+        "#635242",
+        "#000000"
+      ]
+    },
+    "MN_050": {
+      "species_id": "MN_050",
+      "name": "Castoroar",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          20,
+          23,
+          24
+        ],
+        [
+          10,
+          12,
+          15
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        25332,
+        15754,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          165,
+          189,
+          198
+        ],
+        [
+          82,
+          99,
+          123
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#A5BDC6",
+        "#52637B",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f018/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "board": "target/minnesota-pokemon/gen2-reference/starters.png"
+  },
+  "sprites": [
+    {
+      "id": "mn-049-castorock-v1",
+      "species_id": "MN_049",
+      "view": "front",
+      "source": "sprites/mn-f018/mn-049-050.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        583,
+        627
+      ],
+      "fit": [
+        40,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        16023,
+        8524,
+        0
+      ]
+    },
+    {
+      "id": "mn-049-castorock-v1",
+      "species_id": "MN_049",
+      "view": "back",
+      "source": "sprites/mn-f018/mn-049-050.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        627,
+        583,
+        627
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        16023,
+        8524,
+        0
+      ]
+    },
+    {
+      "id": "mn-050-castoroar-v1",
+      "species_id": "MN_050",
+      "view": "front",
+      "source": "sprites/mn-f018/mn-049-050.front-back.imagegen-v1.png",
+      "crop": [
+        583,
+        0,
+        671,
+        627
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        25332,
+        15754,
+        0
+      ]
+    },
+    {
+      "id": "mn-050-castoroar-v1",
+      "species_id": "MN_050",
+      "view": "back",
+      "source": "sprites/mn-f018/mn-049-050.front-back.imagegen-v1.png",
+      "crop": [
+        583,
+        627,
+        671,
+        627
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        25332,
+        15754,
+        0
+      ]
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "notes": [
+      "Inspected frozen source-contour-v1 sheet: fossil incisors, ribbed armor and slab tails remain separated by consistent outline steps with colored internal rock bands.",
+      "Massive final body growth and both rear shoulder portraits are readable; no dark seam was added across the open back-bottom crop."
+    ],
+    "sheet_sha256": "79ba3955638f9a725532d4b379bf2cf4a550244eb01bd4258a230e04e0b14318",
+    "outline_profile": "source-contour-v1"
+  }
+}

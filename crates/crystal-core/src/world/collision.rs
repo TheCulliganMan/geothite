@@ -516,6 +516,9 @@ pub fn is_permission_passable(
     facing: Direction,
     traversal_state: PlayerTraversalState,
 ) -> bool {
+    if let Some(passable) = super::bridge::can_enter(permission, facing, traversal_state) {
+        return passable;
+    }
     if is_warp_permission(permission) {
         return true;
     }

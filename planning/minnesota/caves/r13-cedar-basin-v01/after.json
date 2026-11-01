@@ -1,0 +1,250 @@
+{
+  "schema_version": 1,
+  "id": "MnR13Cave1F",
+  "tileset": "cave",
+  "dimensions_metatiles": [
+    10,
+    8
+  ],
+  "border_block": 46,
+  "palette_group": "nite",
+  "rows": [
+    "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e",
+    "2e 2e 2e 2e 2e 04 05 06 2e 2e",
+    "2e 04 05 06 04 02 02 0a 2e 2e",
+    "2e 08 27 27 2d 30 21 22 2e 2e",
+    "2e 08 0f 3e 08 02 0a 2e 2e 2e",
+    "2e 08 32 33 02 0a 36 02 0a 2e",
+    "2e 20 21 02 21 22 21 21 22 2e",
+    "2e 2e 2e 07 2e 2e 2e 2e 2e 2e"
+  ],
+  "review_contract": {
+    "palette_group": "nite",
+    "topology": "Three purposeful branches from the entrance: quiet west fishing bank, elevated north care terrace, east PP supply notch",
+    "unpublished": true,
+    "quality_revision": "r13-cedar-basin-v01",
+    "native_stair_blocks": [
+      [
+        5,
+        3
+      ],
+      [
+        6,
+        5
+      ]
+    ],
+    "ordinary_waypoints_core": [
+      [
+        7,
+        14
+      ],
+      [
+        7,
+        12
+      ],
+      [
+        3,
+        7
+      ],
+      [
+        5,
+        5
+      ],
+      [
+        8,
+        11
+      ],
+      [
+        10,
+        8
+      ],
+      [
+        10,
+        6
+      ],
+      [
+        13,
+        6
+      ],
+      [
+        12,
+        9
+      ],
+      [
+        12,
+        12
+      ],
+      [
+        14,
+        12
+      ],
+      [
+        14,
+        11
+      ]
+    ],
+    "viewpoints": [
+      {
+        "id": "entry",
+        "tile": [
+          7,
+          14
+        ]
+      },
+      {
+        "id": "fishing-bank",
+        "tile": [
+          3,
+          7
+        ]
+      },
+      {
+        "id": "upper-shore",
+        "tile": [
+          5,
+          5
+        ]
+      },
+      {
+        "id": "care-stair",
+        "tile": [
+          10,
+          7
+        ]
+      },
+      {
+        "id": "harper",
+        "tile": [
+          13,
+          6
+        ]
+      },
+      {
+        "id": "supply",
+        "tile": [
+          12,
+          11
+        ]
+      },
+      {
+        "id": "cache",
+        "tile": [
+          14,
+          11
+        ]
+      },
+      {
+        "id": "foyer",
+        "tile": [
+          8,
+          12
+        ]
+      }
+    ],
+    "controller_probes": {
+      "stairs": [
+        {
+          "id": "HARPER_TERRACE",
+          "metatile": [
+            5,
+            3
+          ],
+          "block": "30",
+          "before": [
+            10,
+            5
+          ],
+          "lane": [
+            [
+              10,
+              6
+            ],
+            [
+              10,
+              7
+            ]
+          ],
+          "after": [
+            10,
+            8
+          ],
+          "blocked_from": [
+            10,
+            7
+          ],
+          "blocked_target": [
+            11,
+            7
+          ]
+        },
+        {
+          "id": "SUPPLY_NOTCH",
+          "metatile": [
+            6,
+            5
+          ],
+          "block": "36",
+          "before": [
+            12,
+            9
+          ],
+          "lane": [
+            [
+              12,
+              10
+            ],
+            [
+              12,
+              11
+            ]
+          ],
+          "after": [
+            12,
+            12
+          ],
+          "blocked_from": [
+            12,
+            10
+          ],
+          "blocked_target": [
+            13,
+            10
+          ]
+        }
+      ],
+      "harper_approach": [
+        13,
+        6
+      ],
+      "harper_facing": "up",
+      "cache_approach": [
+        14,
+        11
+      ],
+      "cache_facing": "right",
+      "mouth": [
+        7,
+        15
+      ],
+      "clear_arrival": [
+        7,
+        14
+      ]
+    },
+    "healing_contract": "Keep actual original native special HealParty and allHP/status/PP/dialogue/input/Continue behavior; do not relower Harper as text-only or invent a second nurse.",
+    "visual_revision": "Restores useful west fishing space with a connected contained basin and native rock spur. Replaces upper stair12 with fitted left stair30. Keeps original supply36 and all native services.",
+    "fishing": {
+      "rod": "OLD_ROD",
+      "group": "FISHGROUP_MN_LAKE",
+      "approach": [
+        3,
+        7
+      ],
+      "facing": "right",
+      "water": [
+        4,
+        7
+      ]
+    }
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F016",
+  "species": [
+    {
+      "species_id": "MN_045",
+      "runtime_token": "FLAPIP",
+      "palette_rgb555": [
+        32767,
+        12062,
+        5457,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        25547,
+        10789,
+        0
+      ],
+      "fit": [
+        12,
+        12
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 64,
+      "interior_black_samples": 64,
+      "opaque_interior_minimum_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "flapip.overworld.imagegen-v1.png",
+          "crop": [
+            68,
+            118,
+            409,
+            354
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "flapip.overworld.imagegen-v1.png",
+          "crop": [
+            564,
+            118,
+            409,
+            354
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "flapip.overworld.imagegen-v1.png",
+          "crop": [
+            1079,
+            118,
+            409,
+            354
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "flapip.overworld.imagegen-v1.png",
+          "crop": [
+            68,
+            573,
+            409,
+            354
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "flapip.overworld.imagegen-v1.png",
+          "crop": [
+            564,
+            573,
+            409,
+            354
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "flapip.overworld.imagegen-v1.png",
+          "crop": [
+            1079,
+            573,
+            409,
+            354
+          ]
+        }
+      ]
+    }
+  ]
+}

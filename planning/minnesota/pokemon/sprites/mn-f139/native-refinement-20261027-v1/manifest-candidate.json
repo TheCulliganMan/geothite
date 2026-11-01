@@ -1,0 +1,330 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F139",
+  "status": "native-refinement-reviewed",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f139/proposal-v1/prompt-anatomy-v2.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "pokemon_palettes": {
+    "MN_308": {
+      "species_id": "MN_308",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          25,
+          16,
+          8
+        ],
+        [
+          10,
+          7,
+          9
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        8729,
+        9450,
+        0
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#CE8442",
+        "#52394A",
+        "#000000"
+      ],
+      "name": "Crookit",
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          206,
+          132,
+          66
+        ],
+        [
+          82,
+          57,
+          74
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    "MN_309": {
+      "species_id": "MN_309",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          13,
+          10,
+          16
+        ],
+        [
+          6,
+          8,
+          11
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        16717,
+        11526,
+        0
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#6B5284",
+        "#31425A",
+        "#000000"
+      ],
+      "name": "Crookveil",
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          107,
+          82,
+          132
+        ],
+        [
+          49,
+          66,
+          90
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ]
+    }
+  },
+  "sprites": [
+    {
+      "id": "mn-308-crookit-v1",
+      "species_id": "MN_308",
+      "view": "front",
+      "source": "sprites/mn-f139/proposal-v1/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        571,
+        625
+      ],
+      "fit": [
+        40,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        8729,
+        9450,
+        0
+      ],
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 12,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "pixel_edits": [
+        {
+          "x": 10,
+          "y": 38,
+          "from": 2,
+          "to": 0
+        },
+        {
+          "x": 11,
+          "y": 38,
+          "from": 0,
+          "to": 3
+        },
+        {
+          "x": 12,
+          "y": 38,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 18,
+          "y": 38,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 11,
+          "y": 39,
+          "from": 0,
+          "to": 3
+        },
+        {
+          "x": 12,
+          "y": 39,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 17,
+          "y": 39,
+          "from": 1,
+          "to": 0
+        },
+        {
+          "x": 18,
+          "y": 39,
+          "from": 0,
+          "to": 3
+        },
+        {
+          "x": 19,
+          "y": 39,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 11,
+          "y": 40,
+          "from": 1,
+          "to": 0
+        },
+        {
+          "x": 17,
+          "y": 40,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 18,
+          "y": 40,
+          "from": 0,
+          "to": 3
+        },
+        {
+          "x": 19,
+          "y": 40,
+          "from": 3,
+          "to": 0
+        }
+      ]
+    },
+    {
+      "id": "mn-309-crookveil-v1",
+      "species_id": "MN_309",
+      "view": "front",
+      "source": "sprites/mn-f139/proposal-v1/front-back.anatomy-v2.png",
+      "crop": [
+        571,
+        0,
+        741,
+        625
+      ],
+      "fit": [
+        54,
+        46
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        16717,
+        11526,
+        0
+      ],
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 12,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed"
+    },
+    {
+      "id": "mn-308-crookit-v1",
+      "species_id": "MN_308",
+      "view": "back",
+      "source": "sprites/mn-f139/proposal-v1/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        635,
+        620,
+        528
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        8729,
+        9450,
+        0
+      ],
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 12,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "mirror_horizontal": true
+    },
+    {
+      "id": "mn-309-crookveil-v1",
+      "species_id": "MN_309",
+      "view": "back",
+      "source": "sprites/mn-f139/proposal-v1/front-back.anatomy-v2.png",
+      "crop": [
+        630,
+        635,
+        682,
+        528
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        16717,
+        11526,
+        0
+      ],
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 12,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "mirror_horizontal": true
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "sheet_sha256": "17657559cc0438df41ac46cd0a7d0ff87b13ef3c7a70729fef5ffc05ffc07ca1",
+    "outline_profile": "source-contour-v1",
+    "notes": "Root approved SourceCenter + SourceBacked. A targeted ImageGen revision removed the false extra pair of legs and tapered the tail. Crookit stays on the original source. Clear branch-body silhouette with attached hidden head; cropped independent rears. All original sources, prompts and rejected variants retained. No pixel edits. Native refinement: inspected both views against source art; clarified existing facial whites and pupils, retained body geometry and palettes, and verified opponent-facing orientation. Exact guarded edits and previous manifest retained in native-refinement-20261027-v1/."
+  },
+  "source_sha256": {
+    "sprites/mn-f139/proposal-v1/front-back.anatomy-v2.png": "62b97fc2e9f4dd8df357f59fcaf8af986b1debfb50a99153051e8debefbbcfe9",
+    "sprites/mn-f139/proposal-v1/front-back.imagegen-v1.png": "1c39f45125bf3e7eea3eb75b6b91dea552737352fc75bba03d5978f98b2c2307"
+  },
+  "native_refinement_note": "Guarded native ink corrections clarify existing eyes and facial details. Source art, fit and per-species palettes retained. Orientation corrections keep enemy fronts facing left and player rear portraits facing upper right."
+}

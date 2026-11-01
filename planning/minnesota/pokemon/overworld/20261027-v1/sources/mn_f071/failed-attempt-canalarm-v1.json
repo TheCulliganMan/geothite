@@ -1,0 +1,7 @@
+{
+  "tool": "built-in image_gen",
+  "exact_prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f071/prompt-canalarm-v1.txt",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f071/reference-mapping-canalarm-v1.json",
+  "result": "No render returned; output moderation_blocked other HTTP400",
+  "request_id": "a70a0334-c20c-426c-89e4-c0dec640ae0c"
+}

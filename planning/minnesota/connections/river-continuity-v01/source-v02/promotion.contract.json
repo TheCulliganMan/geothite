@@ -1,0 +1,1854 @@
+{
+  "schema_version": 1,
+  "status": "DETACHED_CANONICAL_RECONCILIATION_NOT_APPLIED",
+  "native_pack": "content-packs/minnesota-city-river-bend-v01.crystalpack",
+  "native_pack_sha256": "57eefb675b9cb32ac66a01819f56961392e51678a6f9dd959888fbb9427e4e62",
+  "native_identity": "6ba03931721e00e50adbf8f058ef81f0ab9a94b75c2b8899ded9a198c75ffb2b",
+  "canonical_layout": "planning/minnesota/routes/MN_R03.layout.json",
+  "canonical_layout_before_sha256": "7b578385a4487f6dd260b4c53065b3381add8282660b9dee8eca50e4e56b25eb",
+  "canonical_dossier": "planning/minnesota/routes/MN_R03.json",
+  "canonical_dossier_before_sha256": "553323c8c28142f3c9d794436790b5aef3dd3ea0e6a54ca2d932bf2e5b86bc42",
+  "dimensions_metatiles": [
+    24,
+    32
+  ],
+  "effective_changed_cells": [
+    {
+      "metatile": [
+        15,
+        0
+      ],
+      "before": "30",
+      "after": "05"
+    },
+    {
+      "metatile": [
+        16,
+        0
+      ],
+      "before": "31",
+      "after": "05"
+    },
+    {
+      "metatile": [
+        17,
+        0
+      ],
+      "before": "31",
+      "after": "05"
+    },
+    {
+      "metatile": [
+        18,
+        0
+      ],
+      "before": "32",
+      "after": "05"
+    },
+    {
+      "metatile": [
+        8,
+        1
+      ],
+      "before": "59",
+      "after": "35"
+    },
+    {
+      "metatile": [
+        9,
+        1
+      ],
+      "before": "44",
+      "after": "83"
+    },
+    {
+      "metatile": [
+        10,
+        1
+      ],
+      "before": "01",
+      "after": "84"
+    },
+    {
+      "metatile": [
+        11,
+        1
+      ],
+      "before": "46",
+      "after": "85"
+    },
+    {
+      "metatile": [
+        12,
+        1
+      ],
+      "before": "54",
+      "after": "76"
+    },
+    {
+      "metatile": [
+        15,
+        1
+      ],
+      "before": "79",
+      "after": "76"
+    },
+    {
+      "metatile": [
+        16,
+        1
+      ],
+      "before": "35",
+      "after": "76"
+    },
+    {
+      "metatile": [
+        17,
+        1
+      ],
+      "before": "35",
+      "after": "76"
+    },
+    {
+      "metatile": [
+        18,
+        1
+      ],
+      "before": "59",
+      "after": "76"
+    },
+    {
+      "metatile": [
+        19,
+        1
+      ],
+      "before": "05",
+      "after": "76"
+    },
+    {
+      "metatile": [
+        20,
+        1
+      ],
+      "before": "05",
+      "after": "76"
+    },
+    {
+      "metatile": [
+        21,
+        1
+      ],
+      "before": "05",
+      "after": "76"
+    },
+    {
+      "metatile": [
+        22,
+        1
+      ],
+      "before": "05",
+      "after": "76"
+    },
+    {
+      "metatile": [
+        23,
+        1
+      ],
+      "before": "05",
+      "after": "76"
+    },
+    {
+      "metatile": [
+        6,
+        2
+      ],
+      "before": "05",
+      "after": "58"
+    },
+    {
+      "metatile": [
+        7,
+        2
+      ],
+      "before": "05",
+      "after": "35"
+    },
+    {
+      "metatile": [
+        8,
+        2
+      ],
+      "before": "05",
+      "after": "35"
+    },
+    {
+      "metatile": [
+        9,
+        2
+      ],
+      "before": "05",
+      "after": "83"
+    },
+    {
+      "metatile": [
+        10,
+        2
+      ],
+      "before": "01",
+      "after": "84"
+    },
+    {
+      "metatile": [
+        11,
+        2
+      ],
+      "before": "45",
+      "after": "85"
+    },
+    {
+      "metatile": [
+        12,
+        2
+      ],
+      "before": "05",
+      "after": "35"
+    },
+    {
+      "metatile": [
+        13,
+        2
+      ],
+      "before": "05",
+      "after": "35"
+    },
+    {
+      "metatile": [
+        14,
+        2
+      ],
+      "before": "05",
+      "after": "35"
+    },
+    {
+      "metatile": [
+        15,
+        2
+      ],
+      "before": "58",
+      "after": "35"
+    },
+    {
+      "metatile": [
+        18,
+        2
+      ],
+      "before": "59",
+      "after": "35"
+    },
+    {
+      "metatile": [
+        19,
+        2
+      ],
+      "before": "05",
+      "after": "35"
+    },
+    {
+      "metatile": [
+        20,
+        2
+      ],
+      "before": "05",
+      "after": "35"
+    },
+    {
+      "metatile": [
+        21,
+        2
+      ],
+      "before": "05",
+      "after": "35"
+    },
+    {
+      "metatile": [
+        22,
+        2
+      ],
+      "before": "05",
+      "after": "35"
+    },
+    {
+      "metatile": [
+        23,
+        2
+      ],
+      "before": "05",
+      "after": "35"
+    },
+    {
+      "metatile": [
+        6,
+        3
+      ],
+      "before": "02",
+      "after": "80"
+    },
+    {
+      "metatile": [
+        7,
+        3
+      ],
+      "before": "02",
+      "after": "80"
+    },
+    {
+      "metatile": [
+        8,
+        3
+      ],
+      "before": "02",
+      "after": "80"
+    },
+    {
+      "metatile": [
+        9,
+        3
+      ],
+      "before": "02",
+      "after": "83"
+    },
+    {
+      "metatile": [
+        10,
+        3
+      ],
+      "before": "01",
+      "after": "84"
+    },
+    {
+      "metatile": [
+        11,
+        3
+      ],
+      "before": "02",
+      "after": "85"
+    },
+    {
+      "metatile": [
+        12,
+        3
+      ],
+      "before": "05",
+      "after": "80"
+    },
+    {
+      "metatile": [
+        13,
+        3
+      ],
+      "before": "05",
+      "after": "80"
+    },
+    {
+      "metatile": [
+        14,
+        3
+      ],
+      "before": "05",
+      "after": "80"
+    },
+    {
+      "metatile": [
+        15,
+        3
+      ],
+      "before": "58",
+      "after": "35"
+    },
+    {
+      "metatile": [
+        19,
+        3
+      ],
+      "before": "05",
+      "after": "35"
+    },
+    {
+      "metatile": [
+        20,
+        3
+      ],
+      "before": "05",
+      "after": "35"
+    },
+    {
+      "metatile": [
+        21,
+        3
+      ],
+      "before": "05",
+      "after": "35"
+    },
+    {
+      "metatile": [
+        22,
+        3
+      ],
+      "before": "05",
+      "after": "35"
+    },
+    {
+      "metatile": [
+        23,
+        3
+      ],
+      "before": "05",
+      "after": "35"
+    },
+    {
+      "metatile": [
+        11,
+        4
+      ],
+      "before": "02",
+      "after": "45"
+    },
+    {
+      "metatile": [
+        19,
+        4
+      ],
+      "before": "05",
+      "after": "39"
+    },
+    {
+      "metatile": [
+        20,
+        4
+      ],
+      "before": "05",
+      "after": "39"
+    },
+    {
+      "metatile": [
+        21,
+        4
+      ],
+      "before": "05",
+      "after": "39"
+    },
+    {
+      "metatile": [
+        22,
+        4
+      ],
+      "before": "05",
+      "after": "39"
+    },
+    {
+      "metatile": [
+        23,
+        4
+      ],
+      "before": "05",
+      "after": "39"
+    }
+  ],
+  "inherited_native_overlay_differences": [
+    {
+      "metatile": [
+        9,
+        1
+      ],
+      "before": "44",
+      "after": "83"
+    },
+    {
+      "metatile": [
+        10,
+        1
+      ],
+      "before": "01",
+      "after": "84"
+    },
+    {
+      "metatile": [
+        11,
+        1
+      ],
+      "before": "46",
+      "after": "85"
+    },
+    {
+      "metatile": [
+        18,
+        1
+      ],
+      "before": "59",
+      "after": "35"
+    },
+    {
+      "metatile": [
+        19,
+        1
+      ],
+      "before": "05",
+      "after": "76"
+    },
+    {
+      "metatile": [
+        20,
+        1
+      ],
+      "before": "05",
+      "after": "76"
+    },
+    {
+      "metatile": [
+        21,
+        1
+      ],
+      "before": "05",
+      "after": "76"
+    },
+    {
+      "metatile": [
+        22,
+        1
+      ],
+      "before": "05",
+      "after": "76"
+    },
+    {
+      "metatile": [
+        23,
+        1
+      ],
+      "before": "05",
+      "after": "76"
+    },
+    {
+      "metatile": [
+        18,
+        2
+      ],
+      "before": "59",
+      "after": "35"
+    },
+    {
+      "metatile": [
+        19,
+        2
+      ],
+      "before": "05",
+      "after": "35"
+    },
+    {
+      "metatile": [
+        20,
+        2
+      ],
+      "before": "05",
+      "after": "35"
+    },
+    {
+      "metatile": [
+        21,
+        2
+      ],
+      "before": "05",
+      "after": "35"
+    },
+    {
+      "metatile": [
+        22,
+        2
+      ],
+      "before": "05",
+      "after": "35"
+    },
+    {
+      "metatile": [
+        23,
+        2
+      ],
+      "before": "05",
+      "after": "35"
+    }
+  ],
+  "newly_published_native_delta": [
+    {
+      "metatile": [
+        15,
+        0
+      ],
+      "before": "30",
+      "after": "05"
+    },
+    {
+      "metatile": [
+        16,
+        0
+      ],
+      "before": "31",
+      "after": "05"
+    },
+    {
+      "metatile": [
+        17,
+        0
+      ],
+      "before": "31",
+      "after": "05"
+    },
+    {
+      "metatile": [
+        18,
+        0
+      ],
+      "before": "32",
+      "after": "05"
+    },
+    {
+      "metatile": [
+        8,
+        1
+      ],
+      "before": "59",
+      "after": "35"
+    },
+    {
+      "metatile": [
+        12,
+        1
+      ],
+      "before": "54",
+      "after": "76"
+    },
+    {
+      "metatile": [
+        15,
+        1
+      ],
+      "before": "79",
+      "after": "76"
+    },
+    {
+      "metatile": [
+        16,
+        1
+      ],
+      "before": "35",
+      "after": "76"
+    },
+    {
+      "metatile": [
+        17,
+        1
+      ],
+      "before": "35",
+      "after": "76"
+    },
+    {
+      "metatile": [
+        18,
+        1
+      ],
+      "before": "35",
+      "after": "76"
+    },
+    {
+      "metatile": [
+        6,
+        2
+      ],
+      "before": "05",
+      "after": "58"
+    },
+    {
+      "metatile": [
+        7,
+        2
+      ],
+      "before": "05",
+      "after": "35"
+    },
+    {
+      "metatile": [
+        8,
+        2
+      ],
+      "before": "05",
+      "after": "35"
+    },
+    {
+      "metatile": [
+        9,
+        2
+      ],
+      "before": "05",
+      "after": "83"
+    },
+    {
+      "metatile": [
+        10,
+        2
+      ],
+      "before": "01",
+      "after": "84"
+    },
+    {
+      "metatile": [
+        11,
+        2
+      ],
+      "before": "45",
+      "after": "85"
+    },
+    {
+      "metatile": [
+        12,
+        2
+      ],
+      "before": "05",
+      "after": "35"
+    },
+    {
+      "metatile": [
+        13,
+        2
+      ],
+      "before": "05",
+      "after": "35"
+    },
+    {
+      "metatile": [
+        14,
+        2
+      ],
+      "before": "05",
+      "after": "35"
+    },
+    {
+      "metatile": [
+        15,
+        2
+      ],
+      "before": "58",
+      "after": "35"
+    },
+    {
+      "metatile": [
+        6,
+        3
+      ],
+      "before": "02",
+      "after": "80"
+    },
+    {
+      "metatile": [
+        7,
+        3
+      ],
+      "before": "02",
+      "after": "80"
+    },
+    {
+      "metatile": [
+        8,
+        3
+      ],
+      "before": "02",
+      "after": "80"
+    },
+    {
+      "metatile": [
+        9,
+        3
+      ],
+      "before": "02",
+      "after": "83"
+    },
+    {
+      "metatile": [
+        10,
+        3
+      ],
+      "before": "01",
+      "after": "84"
+    },
+    {
+      "metatile": [
+        11,
+        3
+      ],
+      "before": "02",
+      "after": "85"
+    },
+    {
+      "metatile": [
+        12,
+        3
+      ],
+      "before": "05",
+      "after": "80"
+    },
+    {
+      "metatile": [
+        13,
+        3
+      ],
+      "before": "05",
+      "after": "80"
+    },
+    {
+      "metatile": [
+        14,
+        3
+      ],
+      "before": "05",
+      "after": "80"
+    },
+    {
+      "metatile": [
+        15,
+        3
+      ],
+      "before": "58",
+      "after": "35"
+    },
+    {
+      "metatile": [
+        19,
+        3
+      ],
+      "before": "05",
+      "after": "35"
+    },
+    {
+      "metatile": [
+        20,
+        3
+      ],
+      "before": "05",
+      "after": "35"
+    },
+    {
+      "metatile": [
+        21,
+        3
+      ],
+      "before": "05",
+      "after": "35"
+    },
+    {
+      "metatile": [
+        22,
+        3
+      ],
+      "before": "05",
+      "after": "35"
+    },
+    {
+      "metatile": [
+        23,
+        3
+      ],
+      "before": "05",
+      "after": "35"
+    },
+    {
+      "metatile": [
+        11,
+        4
+      ],
+      "before": "02",
+      "after": "45"
+    },
+    {
+      "metatile": [
+        19,
+        4
+      ],
+      "before": "05",
+      "after": "39"
+    },
+    {
+      "metatile": [
+        20,
+        4
+      ],
+      "before": "05",
+      "after": "39"
+    },
+    {
+      "metatile": [
+        21,
+        4
+      ],
+      "before": "05",
+      "after": "39"
+    },
+    {
+      "metatile": [
+        22,
+        4
+      ],
+      "before": "05",
+      "after": "39"
+    },
+    {
+      "metatile": [
+        23,
+        4
+      ],
+      "before": "05",
+      "after": "39"
+    }
+  ],
+  "explicit_edge_materialization": [
+    {
+      "metatile": [
+        15,
+        0
+      ],
+      "before": "30",
+      "after": "05"
+    },
+    {
+      "metatile": [
+        16,
+        0
+      ],
+      "before": "31",
+      "after": "05"
+    },
+    {
+      "metatile": [
+        17,
+        0
+      ],
+      "before": "31",
+      "after": "05"
+    },
+    {
+      "metatile": [
+        18,
+        0
+      ],
+      "before": "32",
+      "after": "05"
+    },
+    {
+      "metatile": [
+        8,
+        1
+      ],
+      "before": "59",
+      "after": "35"
+    },
+    {
+      "metatile": [
+        9,
+        1
+      ],
+      "before": "44",
+      "after": "83"
+    },
+    {
+      "metatile": [
+        10,
+        1
+      ],
+      "before": "01",
+      "after": "84"
+    },
+    {
+      "metatile": [
+        11,
+        1
+      ],
+      "before": "46",
+      "after": "85"
+    },
+    {
+      "metatile": [
+        12,
+        1
+      ],
+      "before": "54",
+      "after": "76"
+    },
+    {
+      "metatile": [
+        15,
+        1
+      ],
+      "before": "79",
+      "after": "76"
+    },
+    {
+      "metatile": [
+        16,
+        1
+      ],
+      "before": "35",
+      "after": "76"
+    },
+    {
+      "metatile": [
+        17,
+        1
+      ],
+      "before": "35",
+      "after": "76"
+    },
+    {
+      "metatile": [
+        18,
+        1
+      ],
+      "before": "35",
+      "after": "76"
+    },
+    {
+      "metatile": [
+        19,
+        1
+      ],
+      "before": "05",
+      "after": "76"
+    },
+    {
+      "metatile": [
+        20,
+        1
+      ],
+      "before": "05",
+      "after": "76"
+    },
+    {
+      "metatile": [
+        21,
+        1
+      ],
+      "before": "05",
+      "after": "76"
+    },
+    {
+      "metatile": [
+        22,
+        1
+      ],
+      "before": "05",
+      "after": "76"
+    },
+    {
+      "metatile": [
+        23,
+        1
+      ],
+      "before": "05",
+      "after": "76"
+    },
+    {
+      "metatile": [
+        6,
+        2
+      ],
+      "before": "05",
+      "after": "58"
+    },
+    {
+      "metatile": [
+        7,
+        2
+      ],
+      "before": "05",
+      "after": "35"
+    },
+    {
+      "metatile": [
+        8,
+        2
+      ],
+      "before": "05",
+      "after": "35"
+    },
+    {
+      "metatile": [
+        9,
+        2
+      ],
+      "before": "05",
+      "after": "83"
+    },
+    {
+      "metatile": [
+        10,
+        2
+      ],
+      "before": "01",
+      "after": "84"
+    },
+    {
+      "metatile": [
+        11,
+        2
+      ],
+      "before": "45",
+      "after": "85"
+    },
+    {
+      "metatile": [
+        12,
+        2
+      ],
+      "before": "05",
+      "after": "35"
+    },
+    {
+      "metatile": [
+        13,
+        2
+      ],
+      "before": "05",
+      "after": "35"
+    },
+    {
+      "metatile": [
+        14,
+        2
+      ],
+      "before": "05",
+      "after": "35"
+    },
+    {
+      "metatile": [
+        19,
+        2
+      ],
+      "before": "05",
+      "after": "35"
+    },
+    {
+      "metatile": [
+        20,
+        2
+      ],
+      "before": "05",
+      "after": "35"
+    },
+    {
+      "metatile": [
+        21,
+        2
+      ],
+      "before": "05",
+      "after": "35"
+    },
+    {
+      "metatile": [
+        22,
+        2
+      ],
+      "before": "05",
+      "after": "35"
+    },
+    {
+      "metatile": [
+        23,
+        2
+      ],
+      "before": "05",
+      "after": "35"
+    },
+    {
+      "metatile": [
+        6,
+        3
+      ],
+      "before": "02",
+      "after": "80"
+    },
+    {
+      "metatile": [
+        7,
+        3
+      ],
+      "before": "02",
+      "after": "80"
+    },
+    {
+      "metatile": [
+        8,
+        3
+      ],
+      "before": "02",
+      "after": "80"
+    },
+    {
+      "metatile": [
+        9,
+        3
+      ],
+      "before": "02",
+      "after": "83"
+    },
+    {
+      "metatile": [
+        10,
+        3
+      ],
+      "before": "01",
+      "after": "84"
+    },
+    {
+      "metatile": [
+        11,
+        3
+      ],
+      "before": "02",
+      "after": "85"
+    },
+    {
+      "metatile": [
+        12,
+        3
+      ],
+      "before": "05",
+      "after": "80"
+    },
+    {
+      "metatile": [
+        13,
+        3
+      ],
+      "before": "05",
+      "after": "80"
+    },
+    {
+      "metatile": [
+        14,
+        3
+      ],
+      "before": "05",
+      "after": "80"
+    },
+    {
+      "metatile": [
+        18,
+        3
+      ],
+      "before": "35",
+      "after": "59"
+    },
+    {
+      "metatile": [
+        19,
+        3
+      ],
+      "before": "05",
+      "after": "35"
+    },
+    {
+      "metatile": [
+        20,
+        3
+      ],
+      "before": "05",
+      "after": "35"
+    },
+    {
+      "metatile": [
+        21,
+        3
+      ],
+      "before": "05",
+      "after": "35"
+    },
+    {
+      "metatile": [
+        22,
+        3
+      ],
+      "before": "05",
+      "after": "35"
+    },
+    {
+      "metatile": [
+        23,
+        3
+      ],
+      "before": "05",
+      "after": "35"
+    },
+    {
+      "metatile": [
+        11,
+        4
+      ],
+      "before": "02",
+      "after": "45"
+    },
+    {
+      "metatile": [
+        15,
+        4
+      ],
+      "before": "35",
+      "after": "58"
+    },
+    {
+      "metatile": [
+        18,
+        4
+      ],
+      "before": "35",
+      "after": "59"
+    },
+    {
+      "metatile": [
+        19,
+        4
+      ],
+      "before": "05",
+      "after": "39"
+    },
+    {
+      "metatile": [
+        20,
+        4
+      ],
+      "before": "05",
+      "after": "39"
+    },
+    {
+      "metatile": [
+        21,
+        4
+      ],
+      "before": "05",
+      "after": "39"
+    },
+    {
+      "metatile": [
+        22,
+        4
+      ],
+      "before": "05",
+      "after": "39"
+    },
+    {
+      "metatile": [
+        23,
+        4
+      ],
+      "before": "05",
+      "after": "39"
+    },
+    {
+      "metatile": [
+        15,
+        5
+      ],
+      "before": "35",
+      "after": "58"
+    },
+    {
+      "metatile": [
+        18,
+        5
+      ],
+      "before": "35",
+      "after": "59"
+    },
+    {
+      "metatile": [
+        15,
+        6
+      ],
+      "before": "35",
+      "after": "58"
+    },
+    {
+      "metatile": [
+        18,
+        6
+      ],
+      "before": "35",
+      "after": "59"
+    },
+    {
+      "metatile": [
+        14,
+        7
+      ],
+      "before": "35",
+      "after": "54"
+    },
+    {
+      "metatile": [
+        15,
+        7
+      ],
+      "before": "35",
+      "after": "79"
+    },
+    {
+      "metatile": [
+        18,
+        7
+      ],
+      "before": "35",
+      "after": "59"
+    },
+    {
+      "metatile": [
+        14,
+        8
+      ],
+      "before": "35",
+      "after": "58"
+    },
+    {
+      "metatile": [
+        18,
+        8
+      ],
+      "before": "35",
+      "after": "59"
+    },
+    {
+      "metatile": [
+        12,
+        9
+      ],
+      "before": "35",
+      "after": "54"
+    },
+    {
+      "metatile": [
+        13,
+        9
+      ],
+      "before": "35",
+      "after": "76"
+    },
+    {
+      "metatile": [
+        14,
+        9
+      ],
+      "before": "35",
+      "after": "79"
+    },
+    {
+      "metatile": [
+        17,
+        9
+      ],
+      "before": "35",
+      "after": "59"
+    },
+    {
+      "metatile": [
+        12,
+        10
+      ],
+      "before": "35",
+      "after": "58"
+    },
+    {
+      "metatile": [
+        17,
+        10
+      ],
+      "before": "35",
+      "after": "59"
+    },
+    {
+      "metatile": [
+        9,
+        11
+      ],
+      "before": "35",
+      "after": "54"
+    },
+    {
+      "metatile": [
+        10,
+        11
+      ],
+      "before": "35",
+      "after": "76"
+    },
+    {
+      "metatile": [
+        11,
+        11
+      ],
+      "before": "35",
+      "after": "76"
+    },
+    {
+      "metatile": [
+        12,
+        11
+      ],
+      "before": "35",
+      "after": "79"
+    },
+    {
+      "metatile": [
+        15,
+        11
+      ],
+      "before": "35",
+      "after": "59"
+    },
+    {
+      "metatile": [
+        9,
+        12
+      ],
+      "before": "35",
+      "after": "58"
+    },
+    {
+      "metatile": [
+        15,
+        12
+      ],
+      "before": "35",
+      "after": "59"
+    },
+    {
+      "metatile": [
+        9,
+        17
+      ],
+      "before": "35",
+      "after": "58"
+    },
+    {
+      "metatile": [
+        12,
+        17
+      ],
+      "before": "35",
+      "after": "59"
+    },
+    {
+      "metatile": [
+        9,
+        18
+      ],
+      "before": "35",
+      "after": "58"
+    },
+    {
+      "metatile": [
+        12,
+        18
+      ],
+      "before": "35",
+      "after": "59"
+    },
+    {
+      "metatile": [
+        9,
+        19
+      ],
+      "before": "35",
+      "after": "58"
+    },
+    {
+      "metatile": [
+        12,
+        19
+      ],
+      "before": "35",
+      "after": "59"
+    },
+    {
+      "metatile": [
+        9,
+        20
+      ],
+      "before": "35",
+      "after": "58"
+    },
+    {
+      "metatile": [
+        12,
+        20
+      ],
+      "before": "35",
+      "after": "59"
+    },
+    {
+      "metatile": [
+        9,
+        21
+      ],
+      "before": "35",
+      "after": "58"
+    },
+    {
+      "metatile": [
+        12,
+        21
+      ],
+      "before": "35",
+      "after": "7a"
+    },
+    {
+      "metatile": [
+        13,
+        21
+      ],
+      "before": "35",
+      "after": "55"
+    },
+    {
+      "metatile": [
+        9,
+        22
+      ],
+      "before": "35",
+      "after": "58"
+    },
+    {
+      "metatile": [
+        13,
+        22
+      ],
+      "before": "35",
+      "after": "59"
+    },
+    {
+      "metatile": [
+        10,
+        23
+      ],
+      "before": "35",
+      "after": "58"
+    },
+    {
+      "metatile": [
+        13,
+        23
+      ],
+      "before": "35",
+      "after": "7a"
+    },
+    {
+      "metatile": [
+        14,
+        23
+      ],
+      "before": "35",
+      "after": "76"
+    },
+    {
+      "metatile": [
+        15,
+        23
+      ],
+      "before": "35",
+      "after": "55"
+    },
+    {
+      "metatile": [
+        10,
+        24
+      ],
+      "before": "35",
+      "after": "58"
+    },
+    {
+      "metatile": [
+        15,
+        24
+      ],
+      "before": "35",
+      "after": "59"
+    },
+    {
+      "metatile": [
+        12,
+        25
+      ],
+      "before": "35",
+      "after": "58"
+    },
+    {
+      "metatile": [
+        14,
+        25
+      ],
+      "before": "35",
+      "after": "58"
+    },
+    {
+      "metatile": [
+        15,
+        25
+      ],
+      "before": "35",
+      "after": "7a"
+    },
+    {
+      "metatile": [
+        16,
+        25
+      ],
+      "before": "35",
+      "after": "76"
+    },
+    {
+      "metatile": [
+        17,
+        25
+      ],
+      "before": "35",
+      "after": "55"
+    },
+    {
+      "metatile": [
+        14,
+        30
+      ],
+      "before": "35",
+      "after": "58"
+    },
+    {
+      "metatile": [
+        17,
+        30
+      ],
+      "before": "35",
+      "after": "59"
+    }
+  ],
+  "explanation": "The 55-cell effective union comprises 15 inherited source/native differences and 41 newly published cells, overlapping at one cell. All 192 lower canonical cells stay exact; the clipped 21 by 8 native lower map is checked at its actual stride.",
+  "sign": {
+    "id": "MN_R03_NORTH_SIGN",
+    "before_core": [
+      22,
+      4
+    ],
+    "after_core": [
+      22,
+      8
+    ]
+  },
+  "required_parser_change": "Narrowly allow MN_R03 shore_fitting explicit_source_edges. Integration owner only; this helper does not edit Rust.",
+  "apply_guard": "No apply mode. Integration owner must verify accepted native controller/GPU evidence, candidate hashes, canonical preimage byte equality, full target grid and exact dossier delta before writing.",
+  "target_grid_sha256": "b5ee7cd18c141d74f5c714c4650025c6a0ab2a0aa1b75a4ae3f901a9ce44fe87",
+  "original_grid_sha256": "ddb8f98d26d8373d76dff784953a41ab694df2fe6c396153c4f2efae8db26e6c",
+  "checks": [
+    {
+      "check": "24 by 32 canonical extent exact",
+      "passed": true
+    },
+    {
+      "check": "all 768 target cells exact",
+      "passed": true
+    },
+    {
+      "check": "exact declared effective cell delta",
+      "passed": true
+    },
+    {
+      "check": "all 192 lower canonical cells exact",
+      "passed": true
+    },
+    {
+      "check": "all metadata except shore fitting and layers exact",
+      "passed": true
+    },
+    {
+      "check": "all original authoring layers retained as exact prefix",
+      "passed": true
+    },
+    {
+      "check": "explicit edge mode prevents neighbor refitting",
+      "passed": true
+    },
+    {
+      "check": "original north sign source coordinate exact",
+      "passed": true
+    },
+    {
+      "check": "entire dossier exact except north sign tile",
+      "passed": true
+    },
+    {
+      "check": "native upper grid exact",
+      "passed": true
+    },
+    {
+      "check": "native sign coordinate agrees",
+      "passed": true
+    }
+  ],
+  "negative_cases": [
+    {
+      "case": "unlisted lower terrain",
+      "rejected": true,
+      "failed_checks": [
+        "all 768 target cells exact",
+        "exact declared effective cell delta",
+        "all 192 lower canonical cells exact"
+      ]
+    },
+    {
+      "case": "wrong river cell",
+      "rejected": true,
+      "failed_checks": [
+        "all 768 target cells exact",
+        "exact declared effective cell delta"
+      ]
+    },
+    {
+      "case": "automatic refit restored",
+      "rejected": true,
+      "failed_checks": [
+        "all 768 target cells exact",
+        "exact declared effective cell delta",
+        "all metadata except shore fitting and layers exact",
+        "explicit edge mode prevents neighbor refitting"
+      ]
+    },
+    {
+      "case": "wrong compiled tileset",
+      "rejected": true,
+      "failed_checks": [
+        "all metadata except shore fitting and layers exact"
+      ]
+    },
+    {
+      "case": "old authoring stroke altered",
+      "rejected": true,
+      "failed_checks": [
+        "all original authoring layers retained as exact prefix"
+      ]
+    },
+    {
+      "case": "old sign source left behind",
+      "rejected": true,
+      "failed_checks": [
+        "entire dossier exact except north sign tile"
+      ]
+    },
+    {
+      "case": "unrelated dossier change",
+      "rejected": true,
+      "failed_checks": [
+        "entire dossier exact except north sign tile"
+      ]
+    }
+  ]
+}

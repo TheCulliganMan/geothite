@@ -1,0 +1,74 @@
+[
+  {
+    "id": "mart",
+    "map": "MnBemidji",
+    "core": [
+      41,
+      20
+    ]
+  },
+  {
+    "id": "gym",
+    "map": "MnBemidji",
+    "core": [
+      10,
+      10
+    ]
+  },
+  {
+    "id": "shelf-home",
+    "map": "MnBemidji",
+    "core": [
+      7,
+      16
+    ]
+  },
+  {
+    "id": "clinic",
+    "map": "MnBemidji",
+    "core": [
+      31,
+      10
+    ]
+  },
+  {
+    "id": "north-home",
+    "map": "MnBemidji",
+    "core": [
+      33,
+      18
+    ]
+  },
+  {
+    "id": "heritage",
+    "map": "MnBemidji",
+    "core": [
+      9,
+      38
+    ]
+  },
+  {
+    "id": "closed-cliff-base",
+    "map": "MnBemidji",
+    "core": [
+      11,
+      22
+    ]
+  },
+  {
+    "id": "north-trail",
+    "map": "MnBemidji",
+    "core": [
+      24,
+      4
+    ]
+  },
+  {
+    "id": "low-launch",
+    "map": "MnBemidji",
+    "core": [
+      28,
+      41
+    ]
+  }
+]

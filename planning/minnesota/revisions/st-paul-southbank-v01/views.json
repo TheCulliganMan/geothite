@@ -1,0 +1,42 @@
+[
+  {
+    "id": "western-neighborhood",
+    "map": "MnStPaul",
+    "core": [
+      14,
+      61
+    ]
+  },
+  {
+    "id": "western-bridge-mouth",
+    "map": "MnStPaul",
+    "core": [
+      26,
+      57
+    ]
+  },
+  {
+    "id": "boat-and-inn",
+    "map": "MnStPaul",
+    "core": [
+      48,
+      62
+    ]
+  },
+  {
+    "id": "eastern-bridge-reader",
+    "map": "MnStPaul",
+    "core": [
+      56,
+      57
+    ]
+  },
+  {
+    "id": "river-trainer-court",
+    "map": "MnStPaul",
+    "core": [
+      70,
+      63
+    ]
+  }
+]

@@ -1,0 +1,9 @@
+{
+  "tool": "built-in image_gen",
+  "species_id": "MN_064",
+  "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f025/hatchrush.overworld.imagegen-v2-face.png",
+  "sha256": "22676139a0471e21c45c5b71d645f54dd96909a635e70a846dd16ab17234d46f",
+  "original_default_path": "/Users/ryanculligan/.codex/generated_images/01a178da-4cf1-7e01-8516-667a332dc790/exec-d34c7f5a-ea49-4253-821c-f1479c344335.png",
+  "prompt": "prompt-hatchrush-v2-face.txt",
+  "status": "source_generated_not_accepted"
+}

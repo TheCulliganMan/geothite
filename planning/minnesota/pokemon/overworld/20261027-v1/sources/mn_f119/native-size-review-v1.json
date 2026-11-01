@@ -1,0 +1,167 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F119",
+  "status": "rejected_visual_quality",
+  "accepted_species_count": 0,
+  "technical_checks": [
+    {
+      "species_id": "MN_255",
+      "runtime_token": "WHIRLNUT",
+      "fit": [
+        14,
+        12
+      ],
+      "native_bounds_width_height": [
+        [
+          13,
+          11
+        ],
+        [
+          13,
+          11
+        ],
+        [
+          13,
+          12
+        ],
+        [
+          13,
+          12
+        ],
+        [
+          13,
+          12
+        ],
+        [
+          13,
+          12
+        ]
+      ],
+      "png_dimensions": [
+        16,
+        96
+      ],
+      "bank_bytes": 384,
+      "independent_tile_roundtrip": true,
+      "alpha_zero_equals_index_zero": true,
+      "same_crop_size_for_all_poses": true
+    },
+    {
+      "species_id": "MN_256",
+      "runtime_token": "SAMURREL",
+      "fit": [
+        14,
+        14
+      ],
+      "native_bounds_width_height": [
+        [
+          11,
+          13
+        ],
+        [
+          10,
+          13
+        ],
+        [
+          14,
+          10
+        ],
+        [
+          12,
+          13
+        ],
+        [
+          10,
+          13
+        ],
+        [
+          14,
+          11
+        ]
+      ],
+      "png_dimensions": [
+        16,
+        96
+      ],
+      "bank_bytes": 384,
+      "independent_tile_roundtrip": true,
+      "alpha_zero_equals_index_zero": true,
+      "same_crop_size_for_all_poses": true
+    }
+  ],
+  "viewed_evidence": [
+    "original_source",
+    "normal_1x",
+    "normal_8x",
+    "shiny_8x",
+    "source_center_alternative_normal_8x",
+    "black64_alternative_normal_8x"
+  ],
+  "findings": [
+    "Whirlnut silhouette/tail survives but both front eyes disappear.",
+    "Samurrel gliding silhouette survives but eyes disappear and broad membranes read as blank U shape."
+  ],
+  "required_fix": "Regenerate source with truly native 16x16-authored three-visible-ink pixel design; give light face plane and black single-pixel eyes enough area. Keep all poses coarse and reduce detail. Retain original sources and all conversion alternatives.",
+  "evidence": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/native-size-review/MN_F119/source-manifest.json",
+      "sha256": "28a8b9f53ad6d717e93e58ed03847ed260dd543219678232e42b8ca85c7483be"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/native-size-review/MN_F119/compiled-index.json",
+      "sha256": "d02323011b66e31c57316fd621c3eccbc77a0a63d63f2e0c8721cd3af07dea60"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/native-size-review/MN_F119/review/line.normal.png",
+      "sha256": "d7ee661b011f89e953342cfa45ab3eef0a56be2430879d1817531229e9603a3f"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/native-size-review/MN_F119/review/line.normal-8x.png",
+      "sha256": "ac799b2cc3f81e0338dcb11927908f38c4f62c1b8ec725783724bfa10440d1b8"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/native-size-review/MN_F119/review/line.shiny-8x.png",
+      "sha256": "c2b4d23ca2795c8784c1ee22aac0991765c070c36b61950803e024e81720645d"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/native-size-review-center/MN_F119/source-manifest.json",
+      "sha256": "13274ed1dfb7111549e06ddc4c949b9e20431886d6d9939e16177779ecc243b7"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/native-size-review-center/MN_F119/compiled-index.json",
+      "sha256": "92714c560cc2295521ffd801353ce2d3377422b342fc85005c84275d73cb836e"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/native-size-review-center/MN_F119/review/line.normal.png",
+      "sha256": "25a3ab0275a41512d9041d562b4cb19b72025ed18700fc74f8872be5ee3c75ad"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/native-size-review-center/MN_F119/review/line.normal-8x.png",
+      "sha256": "72f4ca461e668fa8cbc48592446b7f934dffa71598422cdb3418e92060662f93"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/native-size-review-center/MN_F119/review/line.shiny-8x.png",
+      "sha256": "f1afea8157b3ce8ca4e0259d51390681cdf73cee057c641bf39855411e9e2331"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/native-size-review-black64/MN_F119/source-manifest.json",
+      "sha256": "910da16e3cd09ab7dea3c6dce68174510ffb3a9a03b583bde3689c3ab5fe9a47"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/native-size-review-black64/MN_F119/compiled-index.json",
+      "sha256": "520aafce0cf3b7999cc2c66a1e53e920d9636528f514e94a4aa9f46daf930ac0"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/native-size-review-black64/MN_F119/review/line.normal.png",
+      "sha256": "dc9a74fd60d4042dfc88467f1b17c634ac80205b9fd530e85b2586e932bcc54e"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/native-size-review-black64/MN_F119/review/line.normal-8x.png",
+      "sha256": "74a2505567f14707dc23347bf742419acbf9bbce6e15352ca11afa34b79c6f17"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/native-size-review-black64/MN_F119/review/line.shiny-8x.png",
+      "sha256": "f4335bc548f092be5d3bb1ed66f723dedab1e1a23b803defb4d99a7ad69b9729"
+    }
+  ]
+}

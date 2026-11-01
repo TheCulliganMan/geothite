@@ -1,0 +1,103 @@
+#!/usr/bin/env python3
+"""Stored four-support canine skin, real fur roots and coherent fitted stripes."""
+import copy,math,os,unittest
+from pathlib import Path
+import fire_canine_glb as author
+from test_gengar_glb import Model,winding_alignment
+from test_ninetales_glb import logical_model
+from skin_glb_test_support import IDENTITY
+from sculpt_test_support import crossed_faces,indexed_ray_intersections as rays
+from test_fire_canine_sculpt import find,overlap,fitted_pairs
+ROOT=Path(os.environ.get('CRYSTAL_FIRE_CANINE_TEST_MODELS',Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'))
+class FireCanineSkinTests(unittest.TestCase):
+ @classmethod
+ def setUpClass(cls):
+  cls.blobs={s:(ROOT/(s+'.glb')).read_bytes() for s in author.SPECIES};cls.runtime={s:Model(b) for s,b in cls.blobs.items()};cls.models={s:logical_model(m) for s,m in cls.runtime.items()}
+ def test_exact_geometry_hierarchy_inverse_binds_and_budgets(self):
+  for s,m in self.models.items():
+   self.assertEqual(self.blobs[s],author.export_fire_canine(s));self.assertEqual(author.geometry_digest(m.neutral_model()),author.REST_DIGESTS[s]);self.assertEqual(author.geometry_digest(self.runtime[s].neutral_model()),author.PACKED_REST_DIGESTS[s])
+   expected=(57,38,16302,26140,18) if s=='growlithe' else (81,46,19539,31404,18)
+   self.assertEqual((len(m.parts),len(self.runtime[s].parts),sum(map(len,m.vertices)),sum(len(i)//3 for i in m.indices),len(m.joints)),expected);self.assertLessEqual(len(m.doc['accessors']),256);self.assertLess(len(self.blobs[s]),1024*1024)
+   self.assertEqual(m.parents[:18],[None,0,1,2,3,3,3,1,1,1,1,1,11,12,2,3,14,14]);self.assertEqual({j for ids,weights in zip(m.ids,m.weights) for js,ws in zip(ids,weights) for j,w in zip(js,ws) if w},set(range(18)))
+   for mat in m.matrices():self.assertLess(max(abs(a-b) for a,b in zip(mat,IDENTITY)),1e-7)
+ def test_runtime_support_details_never_span_multiple_legs(self):
+  # Walking IK assigns a whole runtime primitive to one leg. Read the actual
+  # packed source ranges to reject cross-leg assemblies before gait rebinding.
+  for s,m in self.runtime.items():
+   for part,meta in zip(m.parts,m.doc['extras']['source_part_ranges']):
+    names=[r['part'] for r in meta.get('source_parts',[])] or [part['extras']['part']]
+    legs=set()
+    for name in names:
+     kind=name.split(' /')[0]
+     if kind in ('Paw crease','Ankle tuft'):legs.add(tuple(map(int,name.split()[-3:-1])))
+     elif kind in ('Leg stripe','Ankle fur'):legs.add(tuple(map(int,name.split()[-2:])))
+    self.assertLessEqual(len(legs),1,(s,part['extras']['part'],'cross-leg runtime support'))
+ def test_complete_paws_face_ears_and_fitted_marking_owners(self):
+  for s,m in self.models.items():
+   for i,n in enumerate(m.names):
+    owner=0 if n.startswith(('Paw /','Paw crease /','Ankle fur /','Ankle tuft /')) else 1 if n.startswith(('Body /','Flank stripe /','Back stripe /')) else 3 if n.startswith(('Head /','Muzzle /','Nose /','Lip /','Eye socket /','Eye /','Pupil /','Eye glint /','Forehead stripe /')) else (4 if n.endswith('-1') else 5) if n.startswith(('Ear /','Ear inset /')) else 6 if n.startswith('Jaw /') else 14 if n.startswith('Mane /') else 15 if n.startswith('Forelock /') else None
+    if n.startswith('Leg stripe /'):
+     side,row=map(int,n.split()[-2:]);owner=7+row*2+(side>0)
+    if owner is not None:self.assertEqual({j for ids,ws in zip(m.ids[i],m.weights[i]) for j,w in zip(ids,ws) if w},{owner},(s,n))
+ def test_floor_strain_winding_and_neutral_endpoints(self):
+  for s,m in self.models.items():
+   for clip in m.clips:
+    for step in range(9):
+     mats=m.matrices(clip,step/8);floor=1e9
+     for i,n in enumerate(m.names):
+      vs=m.posed(i,mats);ns=m.posed(i,mats,True);floor=min(floor,min(v[1] for v in vs));self.assertGreaterEqual(min(v[1] for v in vs),-1e-7,(s,clip,n))
+      if n.startswith(('Paw /','Paw crease /','Ankle fur /','Ankle tuft /')):
+       for p,q in zip(vs,m.vertices[i]):self.assertLess(math.dist(p,q),1e-7)
+      for k in range(0,len(m.indices[i]),3):
+       tri=m.indices[i][k:k+3];cosine,area=winding_alignment(vs,ns,tri);self.assertGreater(cosine,0.,(s,clip,n,step));self.assertGreater(area,1e-12)
+       for a,b in zip(tri,tri[1:]+tri[:1]):self.assertTrue(.75<math.dist(vs[a],vs[b])/math.dist(m.vertices[i][a],m.vertices[i][b])<1.3,(s,clip,n,step))
+     self.assertLess(abs(floor),1e-7)
+     if step in (0,8):
+      for mat in mats:self.assertLess(max(abs(a-b) for a,b in zip(mat,IDENTITY)),1e-7)
+ def test_every_carrier_has_independent_motion(self):
+  for s,m in self.models.items():
+   rotations=m.rotations('attack',.31)
+   for j in range(1,18):
+    isolate=[[0.,0.,0.,1.] for _ in m.doc['nodes']];isolate[j]=rotations[j];mats=m.matrices(rotations=isolate);self.assertGreater(max(math.dist(p,q) for i,vs in enumerate(m.vertices) for p,q in zip(vs,m.posed(i,mats))),.0005,(s,j))
+ def test_actual_roots_and_uncrossed_surfaces_survive_clips(self):
+  for s,m in self.models.items():
+   ps=m.neutral_model()['primitives'];pairs=[]
+   def add(a,b,side=None,parent_side=None):pairs.append((m.names.index(find(ps,a,side)['part']),m.names.index(find(ps,b,parent_side)['part'])))
+   for a,b in (('Neck /','Body /'),('Head /','Neck /'),('Muzzle /','Head /'),('Jaw /','Muzzle /'),('Nose /','Muzzle /'),('Mane /','Neck /'),('Forelock /','Head /'),('Tail /','Body /')):add(a,b)
+   for side in (-1,1):
+    add('Ear /','Head /',side)
+    for row in range(2):
+     suffix=f'{side} {row}';add('Leg /','Body /',suffix);add('Paw /','Leg /',suffix,suffix)
+     if s=='arcanine':add('Ankle fur /','Leg /',suffix,suffix)
+   for i,n in enumerate(m.names):
+    if n.startswith('Mane tuft /'):pairs.append((i,m.names.index(find(ps,'Mane /')['part'])))
+    elif n.startswith('Tail tuft /'):pairs.append((i,m.names.index(find(ps,'Tail /')['part'])))
+    elif n.startswith('Ankle tuft /'):pairs.append((i,m.names.index(find(ps,'Ankle fur /',' '.join(n.split()[-3:-1]))['part'])))
+   for clip in m.clips:
+    for t in (0.,.13,.31,.67,.83):
+     mats=m.matrices(clip,t);posed=[dict(p,positions=sum(m.posed(i,mats),[])) for i,p in enumerate(ps)]
+     for a,b in pairs:self.assertTrue(overlap(posed[a],posed[b]),(s,clip,t,m.names[a],m.names[b]))
+     for i,n in enumerate(m.names):
+      if n.startswith(('Leg /','Ear /','Tail /','Mane tuft /','Forelock /','Ankle tuft /','Tail tuft /')):self.assertIsNone(crossed_faces(posed[i]),(s,clip,t,n))
+ def test_fitted_caps_follow_actual_posed_parent(self):
+  for s,m in self.models.items():
+   ps=m.neutral_model()['primitives'];authored=list(fitted_pairs(ps))
+   for clip in m.clips:
+    for t in (0.,.31,.67):
+     mats=m.matrices(clip,t);posed=[dict(p,positions=sum(m.posed(i,mats),[])) for i,p in enumerate(ps)]
+     for (rest,_),(child,parent) in zip(authored,fitted_pairs(posed)):
+      original=[rest['positions'][i:i+3] for i in range(0,len(rest['positions']),3)];points=[child['positions'][i:i+3] for i in range(0,len(child['positions']),3)]
+      for k in range(0,len(child['indices']),3):
+       ids=child['indices'][k:k+3];a,b,c=[original[i] for i in ids]
+       if (b[0]-a[0])*(c[1]-a[1])-(b[1]-a[1])*(c[0]-a[0])<=1e-12:continue
+       tri=[points[i] for i in ids]
+       for ws in ((1/3,1/3,1/3),(.5,.5,0),(.5,0,.5),(0,.5,.5),(1,0,0),(0,1,0),(0,0,1)):
+        x,y,z=[sum(ws[j]*tri[j][axis] for j in range(3)) for axis in range(3)];hits=rays(parent,x,y);self.assertTrue(hits,(s,clip,t,child['part']));gap=z-max(hits);self.assertGreater(gap,.0001,(s,clip,t,child['part'],gap));self.assertLess(gap,.012,(s,clip,t,child['part'],gap))
+        if any(w in child['part'] for w in ('stripe /','crease /','Lip /')):self.assertLess(gap,author.HEIGHTS[s]*.005,(s,clip,t,'raised marking',child['part'],gap))
+ def test_strict_reader_rejects_geometry_and_byte_mutations(self):
+  for s in author.SPECIES:
+   changed=bytearray(self.blobs[s]);changed[-8]^=1
+   with self.assertRaises(ValueError):author.decode_fire_canine(bytes(changed),s)
+   changed=copy.deepcopy(author.authoring_model(s));changed['primitives'][0]['positions'][0]+=.001
+   with self.assertRaises(ValueError):author.export_fire_canine(s,changed)
+if __name__=='__main__':unittest.main()

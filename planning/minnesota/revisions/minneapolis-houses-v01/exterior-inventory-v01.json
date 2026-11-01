@@ -1,0 +1,1370 @@
+[
+  {
+    "id": "RiverFamilyHome",
+    "door_core": [
+      15,
+      9
+    ],
+    "passive_return_core": [
+      15,
+      10
+    ],
+    "footprint_metatiles": [
+      6,
+      3,
+      8,
+      5
+    ],
+    "footprint_core": [
+      4,
+      4
+    ],
+    "current_style": "cyan brick, tall blue cap",
+    "residential": true,
+    "pilot_v03": false,
+    "current_block_ids": [
+      "18",
+      "19",
+      "10",
+      "1a"
+    ]
+  },
+  {
+    "id": "NortheastHome",
+    "door_core": [
+      74,
+      9
+    ],
+    "passive_return_core": [
+      74,
+      10
+    ],
+    "footprint_metatiles": [
+      36,
+      3,
+      38,
+      5
+    ],
+    "footprint_core": [
+      4,
+      4
+    ],
+    "current_style": "flat masonry",
+    "residential": true,
+    "pilot_v03": true,
+    "current_block_ids": [
+      "80",
+      "81",
+      "83",
+      "8a"
+    ]
+  },
+  {
+    "id": "GardenFlat",
+    "door_core": [
+      60,
+      17
+    ],
+    "passive_return_core": [
+      60,
+      18
+    ],
+    "footprint_metatiles": [
+      29,
+      7,
+      31,
+      9
+    ],
+    "footprint_core": [
+      4,
+      4
+    ],
+    "current_style": "flat masonry",
+    "residential": true,
+    "pilot_v03": true,
+    "current_block_ids": [
+      "80",
+      "81",
+      "83",
+      "8a"
+    ]
+  },
+  {
+    "id": "BridgeHome",
+    "door_core": [
+      27,
+      21
+    ],
+    "passive_return_core": [
+      27,
+      22
+    ],
+    "footprint_metatiles": [
+      12,
+      9,
+      14,
+      11
+    ],
+    "footprint_core": [
+      4,
+      4
+    ],
+    "current_style": "cyan brick, tall blue cap",
+    "residential": true,
+    "pilot_v03": false,
+    "current_block_ids": [
+      "18",
+      "19",
+      "10",
+      "1a"
+    ]
+  },
+  {
+    "id": "BoatHouse",
+    "door_core": [
+      9,
+      29
+    ],
+    "passive_return_core": [
+      9,
+      30
+    ],
+    "footprint_metatiles": [
+      2,
+      12,
+      6,
+      15
+    ],
+    "footprint_core": [
+      8,
+      6
+    ],
+    "current_style": "cyan brick, tall blue cap",
+    "residential": true,
+    "pilot_v03": false,
+    "current_block_ids": [
+      "18",
+      "18",
+      "18",
+      "19",
+      "20",
+      "20",
+      "20",
+      "20",
+      "10",
+      "11",
+      "1a",
+      "11"
+    ]
+  },
+  {
+    "id": "AnglerHome",
+    "door_core": [
+      19,
+      29
+    ],
+    "passive_return_core": [
+      19,
+      30
+    ],
+    "footprint_metatiles": [
+      8,
+      13,
+      10,
+      15
+    ],
+    "footprint_core": [
+      4,
+      4
+    ],
+    "current_style": "cyan brick, tall blue cap",
+    "residential": true,
+    "pilot_v03": false,
+    "current_block_ids": [
+      "18",
+      "19",
+      "10",
+      "1a"
+    ]
+  },
+  {
+    "id": "DispatcherHouse",
+    "door_core": [
+      23,
+      41
+    ],
+    "passive_return_core": [
+      23,
+      42
+    ],
+    "footprint_metatiles": [
+      11,
+      19,
+      13,
+      21
+    ],
+    "footprint_core": [
+      4,
+      4
+    ],
+    "current_style": "cyan brick, tall blue cap",
+    "residential": true,
+    "pilot_v03": false,
+    "current_block_ids": [
+      "18",
+      "19",
+      "1a",
+      "10"
+    ]
+  },
+  {
+    "id": "LakeCabin",
+    "door_core": [
+      7,
+      45
+    ],
+    "passive_return_core": [
+      7,
+      46
+    ],
+    "footprint_metatiles": [
+      2,
+      21,
+      5,
+      23
+    ],
+    "footprint_core": [
+      6,
+      4
+    ],
+    "current_style": "cyan brick, tall blue cap",
+    "residential": true,
+    "pilot_v03": false,
+    "current_block_ids": [
+      "18",
+      "18",
+      "19",
+      "10",
+      "1a",
+      "11"
+    ]
+  },
+  {
+    "id": "MillForemanHome",
+    "door_core": [
+      60,
+      45
+    ],
+    "passive_return_core": [
+      60,
+      46
+    ],
+    "footprint_metatiles": [
+      29,
+      21,
+      31,
+      23
+    ],
+    "footprint_core": [
+      4,
+      4
+    ],
+    "current_style": "flat masonry",
+    "residential": true,
+    "pilot_v03": false,
+    "current_block_ids": [
+      "80",
+      "81",
+      "83",
+      "8a"
+    ]
+  },
+  {
+    "id": "CooperativeFlat",
+    "door_core": [
+      44,
+      51
+    ],
+    "passive_return_core": [
+      44,
+      52
+    ],
+    "footprint_metatiles": [
+      21,
+      24,
+      23,
+      26
+    ],
+    "footprint_core": [
+      4,
+      4
+    ],
+    "current_style": "flat masonry",
+    "residential": true,
+    "pilot_v03": false,
+    "current_block_ids": [
+      "80",
+      "81",
+      "83",
+      "8a"
+    ]
+  },
+  {
+    "id": "ToolFlat",
+    "door_core": [
+      51,
+      51
+    ],
+    "passive_return_core": [
+      51,
+      52
+    ],
+    "footprint_metatiles": [
+      24,
+      24,
+      26,
+      26
+    ],
+    "footprint_core": [
+      4,
+      4
+    ],
+    "current_style": "cyan brick, tall blue cap",
+    "residential": true,
+    "pilot_v03": false,
+    "current_block_ids": [
+      "18",
+      "19",
+      "10",
+      "1a"
+    ]
+  },
+  {
+    "id": "CornerHome",
+    "door_core": [
+      56,
+      51
+    ],
+    "passive_return_core": [
+      56,
+      52
+    ],
+    "footprint_metatiles": [
+      27,
+      24,
+      29,
+      26
+    ],
+    "footprint_core": [
+      4,
+      4
+    ],
+    "current_style": "flat masonry",
+    "residential": true,
+    "pilot_v03": false,
+    "current_block_ids": [
+      "80",
+      "81",
+      "83",
+      "8a"
+    ]
+  },
+  {
+    "id": "CedarHome",
+    "door_core": [
+      63,
+      51
+    ],
+    "passive_return_core": [
+      63,
+      52
+    ],
+    "footprint_metatiles": [
+      30,
+      24,
+      33,
+      26
+    ],
+    "footprint_core": [
+      6,
+      4
+    ],
+    "current_style": "cyan brick, tall blue cap",
+    "residential": true,
+    "pilot_v03": false,
+    "current_block_ids": [
+      "18",
+      "18",
+      "19",
+      "10",
+      "1a",
+      "11"
+    ]
+  },
+  {
+    "id": "GardenersHome",
+    "door_core": [
+      7,
+      57
+    ],
+    "passive_return_core": [
+      7,
+      58
+    ],
+    "footprint_metatiles": [
+      2,
+      27,
+      4,
+      29
+    ],
+    "footprint_core": [
+      4,
+      4
+    ],
+    "current_style": "cyan brick, tall blue cap",
+    "residential": true,
+    "pilot_v03": false,
+    "current_block_ids": [
+      "18",
+      "19",
+      "10",
+      "1a"
+    ]
+  },
+  {
+    "id": "RiverInn",
+    "door_core": [
+      53,
+      59
+    ],
+    "passive_return_core": [
+      53,
+      60
+    ],
+    "footprint_metatiles": [
+      24,
+      27,
+      28,
+      30
+    ],
+    "footprint_core": [
+      8,
+      6
+    ],
+    "current_style": "cyan brick, tall blue cap",
+    "residential": true,
+    "pilot_v03": false,
+    "current_block_ids": [
+      "18",
+      "18",
+      "18",
+      "19",
+      "20",
+      "20",
+      "20",
+      "20",
+      "10",
+      "11",
+      "1a",
+      "11"
+    ]
+  },
+  {
+    "id": "MillWorkersHouse",
+    "door_core": [
+      71,
+      59
+    ],
+    "passive_return_core": [
+      71,
+      60
+    ],
+    "footprint_metatiles": [
+      34,
+      28,
+      37,
+      30
+    ],
+    "footprint_core": [
+      6,
+      4
+    ],
+    "current_style": "cyan brick, tall blue cap",
+    "residential": true,
+    "pilot_v03": false,
+    "current_block_ids": [
+      "18",
+      "18",
+      "19",
+      "10",
+      "1a",
+      "11"
+    ]
+  },
+  {
+    "id": "GrainExchange",
+    "door_core": [
+      22,
+      9
+    ],
+    "passive_return_core": [
+      22,
+      10
+    ],
+    "footprint_metatiles": [
+      9,
+      1,
+      14,
+      5
+    ],
+    "footprint_core": [
+      10,
+      8
+    ],
+    "current_style": "flat masonry",
+    "residential": false,
+    "pilot_v03": false,
+    "current_block_ids": [
+      "80",
+      "82",
+      "82",
+      "82",
+      "81",
+      "84",
+      "89",
+      "89",
+      "89",
+      "85",
+      "84",
+      "89",
+      "89",
+      "89",
+      "85",
+      "83",
+      "87",
+      "8a",
+      "87",
+      "88"
+    ]
+  },
+  {
+    "id": "CommunityLibrary",
+    "door_core": [
+      66,
+      9
+    ],
+    "passive_return_core": [
+      66,
+      10
+    ],
+    "footprint_metatiles": [
+      31,
+      1,
+      36,
+      5
+    ],
+    "footprint_core": [
+      10,
+      8
+    ],
+    "current_style": "flat masonry",
+    "residential": false,
+    "pilot_v03": false,
+    "current_block_ids": [
+      "80",
+      "82",
+      "82",
+      "82",
+      "81",
+      "84",
+      "89",
+      "89",
+      "89",
+      "85",
+      "84",
+      "89",
+      "89",
+      "89",
+      "85",
+      "83",
+      "87",
+      "8a",
+      "87",
+      "88"
+    ]
+  },
+  {
+    "id": "MusicRoom",
+    "door_core": [
+      57,
+      9
+    ],
+    "passive_return_core": [
+      57,
+      10
+    ],
+    "footprint_metatiles": [
+      26,
+      2,
+      30,
+      5
+    ],
+    "footprint_core": [
+      8,
+      6
+    ],
+    "current_style": "cyan brick, tall blue cap",
+    "residential": false,
+    "pilot_v03": false,
+    "current_block_ids": [
+      "18",
+      "18",
+      "18",
+      "19",
+      "20",
+      "20",
+      "20",
+      "20",
+      "10",
+      "11",
+      "1a",
+      "11"
+    ]
+  },
+  {
+    "id": "SupplyCoop",
+    "door_core": [
+      7,
+      9
+    ],
+    "passive_return_core": [
+      7,
+      10
+    ],
+    "footprint_metatiles": [
+      2,
+      3,
+      5,
+      5
+    ],
+    "footprint_core": [
+      6,
+      4
+    ],
+    "current_style": "cyan brick, tall blue cap",
+    "residential": false,
+    "pilot_v03": false,
+    "current_block_ids": [
+      "18",
+      "18",
+      "19",
+      "10",
+      "1a",
+      "11"
+    ]
+  },
+  {
+    "id": "PrintShop",
+    "door_core": [
+      47,
+      9
+    ],
+    "passive_return_core": [
+      47,
+      10
+    ],
+    "footprint_metatiles": [
+      22,
+      3,
+      25,
+      5
+    ],
+    "footprint_core": [
+      6,
+      4
+    ],
+    "current_style": "cyan brick, tall blue cap",
+    "residential": false,
+    "pilot_v03": false,
+    "current_block_ids": [
+      "18",
+      "18",
+      "19",
+      "10",
+      "1a",
+      "11"
+    ]
+  },
+  {
+    "id": "ToolWorkshop",
+    "door_core": [
+      24,
+      15
+    ],
+    "passive_return_core": [
+      24,
+      16
+    ],
+    "footprint_metatiles": [
+      11,
+      6,
+      14,
+      8
+    ],
+    "footprint_core": [
+      6,
+      4
+    ],
+    "current_style": "flat masonry",
+    "residential": false,
+    "pilot_v03": false,
+    "current_block_ids": [
+      "80",
+      "82",
+      "81",
+      "83",
+      "8a",
+      "88"
+    ]
+  },
+  {
+    "id": "FoundryMuseum",
+    "door_core": [
+      8,
+      19
+    ],
+    "passive_return_core": [
+      8,
+      20
+    ],
+    "footprint_metatiles": [
+      2,
+      7,
+      7,
+      10
+    ],
+    "footprint_core": [
+      10,
+      6
+    ],
+    "current_style": "flat masonry",
+    "residential": false,
+    "pilot_v03": false,
+    "current_block_ids": [
+      "80",
+      "82",
+      "82",
+      "82",
+      "81",
+      "84",
+      "89",
+      "89",
+      "89",
+      "85",
+      "83",
+      "87",
+      "8a",
+      "87",
+      "88"
+    ]
+  },
+  {
+    "id": "GardenShop",
+    "door_core": [
+      47,
+      17
+    ],
+    "passive_return_core": [
+      47,
+      18
+    ],
+    "footprint_metatiles": [
+      22,
+      7,
+      25,
+      9
+    ],
+    "footprint_core": [
+      6,
+      4
+    ],
+    "current_style": "cyan brick, tall blue cap",
+    "residential": false,
+    "pilot_v03": false,
+    "current_block_ids": [
+      "18",
+      "18",
+      "19",
+      "10",
+      "1a",
+      "11"
+    ]
+  },
+  {
+    "id": "RiverNaturalist",
+    "door_core": [
+      55,
+      17
+    ],
+    "passive_return_core": [
+      55,
+      18
+    ],
+    "footprint_metatiles": [
+      26,
+      7,
+      28,
+      9
+    ],
+    "footprint_core": [
+      4,
+      4
+    ],
+    "current_style": "cyan brick, tall blue cap",
+    "residential": false,
+    "pilot_v03": true,
+    "current_block_ids": [
+      "18",
+      "19",
+      "10",
+      "1a"
+    ]
+  },
+  {
+    "id": "PatternStudio",
+    "door_core": [
+      67,
+      17
+    ],
+    "passive_return_core": [
+      67,
+      18
+    ],
+    "footprint_metatiles": [
+      32,
+      7,
+      34,
+      9
+    ],
+    "footprint_core": [
+      4,
+      4
+    ],
+    "current_style": "cyan brick, tall blue cap",
+    "residential": false,
+    "pilot_v03": true,
+    "current_block_ids": [
+      "18",
+      "19",
+      "10",
+      "1a"
+    ]
+  },
+  {
+    "id": "Bookbinder",
+    "door_core": [
+      74,
+      17
+    ],
+    "passive_return_core": [
+      74,
+      18
+    ],
+    "footprint_metatiles": [
+      36,
+      7,
+      38,
+      9
+    ],
+    "footprint_core": [
+      4,
+      4
+    ],
+    "current_style": "flat masonry",
+    "residential": false,
+    "pilot_v03": false,
+    "current_block_ids": [
+      "80",
+      "81",
+      "83",
+      "8a"
+    ]
+  },
+  {
+    "id": "ArtsStudio",
+    "door_core": [
+      19,
+      19
+    ],
+    "passive_return_core": [
+      19,
+      20
+    ],
+    "footprint_metatiles": [
+      8,
+      8,
+      11,
+      10
+    ],
+    "footprint_core": [
+      6,
+      4
+    ],
+    "current_style": "cyan brick, tall blue cap",
+    "residential": false,
+    "pilot_v03": false,
+    "current_block_ids": [
+      "18",
+      "18",
+      "19",
+      "10",
+      "1a",
+      "11"
+    ]
+  },
+  {
+    "id": "DepartmentStore1F",
+    "door_core": [
+      54,
+      35
+    ],
+    "passive_return_core": [
+      54,
+      36
+    ],
+    "footprint_metatiles": [
+      25,
+      11,
+      30,
+      18
+    ],
+    "footprint_core": [
+      10,
+      14
+    ],
+    "current_style": "flat masonry",
+    "residential": false,
+    "pilot_v03": false,
+    "current_block_ids": [
+      "80",
+      "82",
+      "82",
+      "82",
+      "81",
+      "84",
+      "89",
+      "89",
+      "89",
+      "85",
+      "84",
+      "89",
+      "89",
+      "89",
+      "85",
+      "84",
+      "89",
+      "89",
+      "89",
+      "85",
+      "84",
+      "89",
+      "89",
+      "89",
+      "85",
+      "84",
+      "89",
+      "89",
+      "89",
+      "85",
+      "83",
+      "87",
+      "8a",
+      "87",
+      "88"
+    ]
+  },
+  {
+    "id": "Pokecenter1F",
+    "door_core": [
+      63,
+      25
+    ],
+    "passive_return_core": [
+      63,
+      26
+    ],
+    "footprint_metatiles": [
+      31,
+      11,
+      33,
+      13
+    ],
+    "footprint_core": [
+      4,
+      4
+    ],
+    "current_style": "cyan brick, tall blue cap",
+    "residential": false,
+    "pilot_v03": false,
+    "current_block_ids": [
+      "18",
+      "19",
+      "1a",
+      "1b"
+    ]
+  },
+  {
+    "id": "Mart",
+    "door_core": [
+      73,
+      25
+    ],
+    "passive_return_core": [
+      73,
+      26
+    ],
+    "footprint_metatiles": [
+      35,
+      11,
+      37,
+      13
+    ],
+    "footprint_core": [
+      4,
+      4
+    ],
+    "current_style": "cyan brick, tall blue cap",
+    "residential": false,
+    "pilot_v03": false,
+    "current_block_ids": [
+      "18",
+      "19",
+      "33",
+      "1a"
+    ]
+  },
+  {
+    "id": "DispatchOffice",
+    "door_core": [
+      25,
+      33
+    ],
+    "passive_return_core": [
+      25,
+      34
+    ],
+    "footprint_metatiles": [
+      11,
+      14,
+      14,
+      17
+    ],
+    "footprint_core": [
+      6,
+      6
+    ],
+    "current_style": "native special frontage",
+    "residential": false,
+    "pilot_v03": false,
+    "current_block_ids": [
+      "21",
+      "26",
+      "21",
+      "22",
+      "25",
+      "22",
+      "20",
+      "1a",
+      "20"
+    ]
+  },
+  {
+    "id": "Gym",
+    "door_core": [
+      64,
+      33
+    ],
+    "passive_return_core": [
+      64,
+      34
+    ],
+    "footprint_metatiles": [
+      31,
+      14,
+      34,
+      17
+    ],
+    "footprint_core": [
+      6,
+      6
+    ],
+    "current_style": "cyan brick, tall blue cap",
+    "residential": false,
+    "pilot_v03": false,
+    "current_block_ids": [
+      "18",
+      "18",
+      "19",
+      "20",
+      "20",
+      "20",
+      "1c",
+      "1d",
+      "1e"
+    ]
+  },
+  {
+    "id": "BattleClub",
+    "door_core": [
+      70,
+      45
+    ],
+    "passive_return_core": [
+      70,
+      46
+    ],
+    "footprint_metatiles": [
+      33,
+      19,
+      38,
+      23
+    ],
+    "footprint_core": [
+      10,
+      8
+    ],
+    "current_style": "flat masonry",
+    "residential": false,
+    "pilot_v03": false,
+    "current_block_ids": [
+      "80",
+      "82",
+      "82",
+      "82",
+      "81",
+      "84",
+      "89",
+      "89",
+      "89",
+      "85",
+      "84",
+      "89",
+      "89",
+      "89",
+      "85",
+      "83",
+      "87",
+      "8a",
+      "87",
+      "88"
+    ]
+  },
+  {
+    "id": "FieldClub",
+    "door_core": [
+      17,
+      51
+    ],
+    "passive_return_core": [
+      17,
+      52
+    ],
+    "footprint_metatiles": [
+      6,
+      23,
+      10,
+      26
+    ],
+    "footprint_core": [
+      8,
+      6
+    ],
+    "current_style": "cyan brick, tall blue cap",
+    "residential": false,
+    "pilot_v03": false,
+    "current_block_ids": [
+      "18",
+      "18",
+      "18",
+      "19",
+      "20",
+      "20",
+      "20",
+      "20",
+      "10",
+      "11",
+      "1a",
+      "11"
+    ]
+  },
+  {
+    "id": "CommunityKitchen",
+    "door_core": [
+      73,
+      53
+    ],
+    "passive_return_core": [
+      73,
+      54
+    ],
+    "footprint_metatiles": [
+      34,
+      24,
+      38,
+      27
+    ],
+    "footprint_core": [
+      8,
+      6
+    ],
+    "current_style": "cyan brick, tall blue cap",
+    "residential": false,
+    "pilot_v03": false,
+    "current_block_ids": [
+      "18",
+      "18",
+      "18",
+      "19",
+      "20",
+      "20",
+      "20",
+      "20",
+      "10",
+      "11",
+      "1a",
+      "11"
+    ]
+  },
+  {
+    "id": "Greenhouse",
+    "door_core": [
+      25,
+      55
+    ],
+    "passive_return_core": [
+      25,
+      56
+    ],
+    "footprint_metatiles": [
+      10,
+      26,
+      14,
+      28
+    ],
+    "footprint_core": [
+      8,
+      4
+    ],
+    "current_style": "cyan brick, tall blue cap",
+    "residential": false,
+    "pilot_v03": false,
+    "current_block_ids": [
+      "18",
+      "18",
+      "18",
+      "19",
+      "10",
+      "11",
+      "1a",
+      "11"
+    ]
+  },
+  {
+    "id": "SouthMarket",
+    "door_core": [
+      62,
+      59
+    ],
+    "passive_return_core": [
+      62,
+      60
+    ],
+    "footprint_metatiles": [
+      29,
+      27,
+      33,
+      30
+    ],
+    "footprint_core": [
+      8,
+      6
+    ],
+    "current_style": "flat masonry",
+    "residential": false,
+    "pilot_v03": false,
+    "current_block_ids": [
+      "80",
+      "82",
+      "82",
+      "81",
+      "84",
+      "89",
+      "89",
+      "85",
+      "83",
+      "87",
+      "8a",
+      "88"
+    ]
+  },
+  {
+    "id": "ArrivalInfo",
+    "door_core": [
+      45,
+      59
+    ],
+    "passive_return_core": [
+      45,
+      60
+    ],
+    "footprint_metatiles": [
+      21,
+      28,
+      23,
+      30
+    ],
+    "footprint_core": [
+      4,
+      4
+    ],
+    "current_style": "cyan brick, tall blue cap",
+    "residential": false,
+    "pilot_v03": false,
+    "current_block_ids": [
+      "18",
+      "19",
+      "10",
+      "1a"
+    ]
+  },
+  {
+    "id": "CouriersDesk",
+    "door_core": [
+      76,
+      59
+    ],
+    "passive_return_core": [
+      76,
+      60
+    ],
+    "footprint_metatiles": [
+      37,
+      28,
+      39,
+      30
+    ],
+    "footprint_core": [
+      4,
+      4
+    ],
+    "current_style": "flat masonry",
+    "residential": false,
+    "pilot_v03": false,
+    "current_block_ids": [
+      "80",
+      "81",
+      "83",
+      "8a"
+    ]
+  }
+]

@@ -1,0 +1,13 @@
+{
+  "status": "MODEL_CORRECTION_REQUIRED_BEFORE_WHOLE_GOAL_COMPLETION",
+  "native_code": [
+    "crates/crystal-core/src/world/collision.rs:209",
+    "crates/crystal-core/src/world/collision.rs:514",
+    "crates/crystal-core/src/world/movement.rs:263"
+  ],
+  "finding": "HOP permissions are native LAND for ordinary non-jumping directions, and TryJump reads the current tile. Historical audit graphs treated lateral lip entries as blocked.",
+  "r05_source_candidate_model": "NativeSurface in prepare_r05_cache_bank_v02.py includes correct current-tile hops and lateral walking, plus a cap-removal zero-grass negative control.",
+  "r03_corrected_static_report": "planning/minnesota/revisions/route-grass-v01/current-r03-successor-review-v01/current-grass-static-v02.json",
+  "remaining": "Refresh statewide ordinary-return minima and side-bypass audits with native semantics. Historical conservative costs alone cannot prove forced grass.",
+  "scope": "R03/R05 have no ICE; keep native ICE slide behavior when refreshing other routes."
+}

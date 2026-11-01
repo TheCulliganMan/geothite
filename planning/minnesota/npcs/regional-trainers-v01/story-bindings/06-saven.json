@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "trainer_class": "MN_LEADER_SAVEN",
+  "class_name": "LEADER",
+  "trainer_ids": [
+    "MN_GYM_5"
+  ],
+  "actors": [
+    {
+      "map": "MnStCloudGym",
+      "script": "MnStCloudGymLeader",
+      "tile": [
+        3,
+        3
+      ],
+      "previous_sprite": "SPRITE_COOLTRAINER_M"
+    }
+  ]
+}

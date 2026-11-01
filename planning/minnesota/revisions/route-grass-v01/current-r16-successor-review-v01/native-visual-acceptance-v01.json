@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-r16-bank-guidance-v01.crystalpack",
+  "pack_sha256": "87c5fcda9bb9b0264813c99f7f88d12c0a2c3cc4e9a036e0ffeeb1c9d2ea2c47",
+  "actual_native_images_inspected": 4,
+  "source_native_pixel_mismatches": 0,
+  "views": [
+    "hayfield-bank",
+    "cottonwood-neck",
+    "river-bridge",
+    "drainage-bridge"
+  ],
+  "native_capture_report": ".local/route-grass-review/r16-current-native-v01/capture-progress.json"
+}

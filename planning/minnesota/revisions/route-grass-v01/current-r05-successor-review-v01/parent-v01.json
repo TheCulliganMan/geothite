@@ -1,0 +1,10 @@
+{
+  "revision": "cave_reservations_current_revision",
+  "pack": "content-packs/minnesota-r20-winding-cleft-v02.crystalpack",
+  "pack_sha256": "bfd4e1091213f558bca8ffc4c86afbc93af8569d16a3145dd9da157c4b1164be",
+  "maps": [
+    "MnR05C00R00",
+    "MnR05C00R01",
+    "MnR05C00R02"
+  ]
+}

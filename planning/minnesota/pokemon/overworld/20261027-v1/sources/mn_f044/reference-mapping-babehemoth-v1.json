@@ -1,0 +1,48 @@
+{
+  "species_id": "MN_095",
+  "family_id": "MN_F044",
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f044/prompt-babehemoth-v1.txt",
+  "fit": [
+    14,
+    14
+  ],
+  "palette_binding": {
+    "transparent_index": 0,
+    "visible_indices": [
+      1,
+      2,
+      3
+    ],
+    "normal_rgb555_words": [
+      32767,
+      32394,
+      19684,
+      0
+    ],
+    "shiny_rgb555_words": [
+      32767,
+      20831,
+      7315,
+      0
+    ],
+    "white_body_region_policy": "Simplify formerly white body/highlight regions to light ink1. Index0 is transparent everywhere, not an opaque white paint color."
+  },
+  "style_reference": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+    "sha256": "4354a639ed1a80fd6686e43b273443ed894e58a84307a8049f638ee9ffa2a099",
+    "role": "ONLY supplied input; authentic native16 scale/style"
+  },
+  "identity_reviewed": {
+    "front": {
+      "path": "target/minnesota-pokemon/native/MN_F044/mn-095-babehemoth-v1.front.png",
+      "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F044/mn-095-babehemoth-v1.front.png",
+      "sha256": "402d42e88ccfec404a1cde7602d7b3c05f8391c1094c90a405354efa7c1964ce"
+    },
+    "back": {
+      "path": "target/minnesota-pokemon/native/MN_F044/mn-095-babehemoth-v1.back.png",
+      "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F044/mn-095-babehemoth-v1.back.png",
+      "sha256": "8a808e56bcde35b9bc220a1483f6996d7a31175fc00255bf6198af8849e41d9a"
+    }
+  },
+  "anatomy": "BABEHEMOTH, legendary enormous BLUE OX from lumberjack tall tales, original living ox anatomy, not a costume. Massive compact quadruped with a high powerful shoulder hump, heavy chest, broad lowered blunt bovine head, TWO long outward-curving crescent horns, a jagged thick shoulder mane simplified to LIGHT blue, FOUR short thick weight-bearing legs ending broad squared LIGHT hooves, and ONE short curling tufted tail attached high on the rump. Body DARK cobalt BLUE, broad LIGHT mane/forehead/muzzle accents. DOWN view: head faces viewer below the broad shoulder mass, TWO actual eyes above broad muzzle, two foreground forehooves with hindhooves partly visible outside behind them, exactly FOUR legs total. Horns dominate width but stay attached and inside native14pixel span; do not make ears into extra horns. LEFT: long high shoulder arch behind left-facing head, ONE actual near eye, TWO horns with far horn partly occluded, four hooves and tail attached at right rump. UP: genuine full rear quadruped, broad round rump and shoulder hump, curl tail at rump, four leg supports; horns peek above distant far head, NO face on rump. Only ONE ox, no person, axe, harness, saddle, cart or props. Keep the sheer ox mass and wide horn silhouette readable at map scale. Do not invent extra legs, humanoid arms, wings or reptile features."
+}

@@ -202,6 +202,7 @@ fn begin_visible_map_trainer_intro(
     runtime_shell: &mut BevyRuntimeShell,
     already_prepared: bool,
 ) -> Result<bool> {
+    runtime_shell.battle_origin.trainer_candidate = None;
     let snapshot = runtime_shell.shell.presentation_snapshot()?;
     let Some(next) = snapshot.script_events.next_script.as_ref() else {
         return Ok(false);
@@ -326,6 +327,7 @@ fn queue_visible_trainer_encounter_music(
     enqueue_bevy_audio_command(
         &mut runtime_shell.pending_audio,
         BevyAudioCommand {
+            battle_sound: None,
             cry_parameters: None,
             audio_id: music_id.to_string(),
             kind: ModpackAudioKind::Music,
@@ -428,6 +430,7 @@ fn finish_visible_map_trainer_intro(runtime_shell: &mut BevyRuntimeShell) -> Res
         &pending.source_script,
         pending.command_index,
     )?;
+    bind_visible_trainer_encounter(runtime_shell, &pending, &started);
     anyhow::ensure!(
         matches!(started, crate::TrainerBattleStartStatus::Started(_)),
         "trainer became defeated while its seen text was active"
@@ -650,6 +653,7 @@ fn apply_visible_script_entry_command(
         stepped.mutation.result.result_tag(),
         stepped.mutation.state_checksum
     ));
+    observe_visible_encounter_script_step(runtime_shell, &stepped);
     integrate_visible_script_mutation_outcome(runtime_shell, &stepped.mutation)?;
     if stepped.command == "waitsfx" {
         runtime_shell.visible_wait_sfx_boundary = true;
@@ -787,35 +791,20 @@ fn arm_visible_script_cursor_after_outcome(
             callback, ..
         }) => {
             runtime_shell.active_script_cursor = None;
-            if let Err(error) = consume_visible_script_end_state(runtime_shell) {
-                record_visible_runtime_system_error(
-                    runtime_shell,
-                    anyhow::anyhow!("failed to consume script end state for {script}: {error:#}"),
-                );
-                return;
-            }
-            if *callback {
-                return;
-            }
-            if visible_script_call_stack_has_return(runtime_shell) {
-                match resume_visible_script_return(runtime_shell) {
-                    Ok(()) => {}
-                    Err(error) => {
-                        runtime_shell.active_script_cursor = None;
-                        record_visible_runtime_system_error(
-                            runtime_shell,
-                            anyhow::anyhow!(
-                                "failed to resume script return for {script}: {error:#}"
-                            ),
-                        );
-                        return;
-                    }
-                }
+            let finished = if *callback {
+                consume_visible_script_end_state(runtime_shell)
             } else {
-                runtime_shell.active_script_cursor = None;
-                runtime_shell
-                    .last_audio_events
-                    .push(format!("script end={script}"));
+                // Normal end also resumes its caller or starts destination
+                // scenes deferred behind a retained cross-map source script.
+                take_visible_script_end_state(runtime_shell)
+            };
+            if let Err(error) = finished {
+                record_visible_runtime_system_error(runtime_shell,
+                    anyhow::anyhow!("failed to finish script end for {script}: {error:#}"));
+                return;
+            }
+            if !*callback && runtime_shell.active_script_cursor.is_none() {
+                runtime_shell.last_audio_events.push(format!("script end={script}"));
                 trim_event_log(&mut runtime_shell.last_audio_events);
             }
         }
@@ -866,8 +855,9 @@ fn resume_visible_script_return(runtime_shell: &mut BevyRuntimeShell) -> Result<
         returned.frame.source_script, returned.frame.next_command_index, returned.state_checksum
     ));
     trim_event_log(&mut runtime_shell.last_audio_events);
-    arm_visible_active_script_cursor(
+    arm_visible_active_script_cursor_with_origin(
         runtime_shell,
+        &returned.frame.origin_map_name,
         &returned.frame.source_script,
         returned.frame.next_command_index,
     );
@@ -1174,6 +1164,7 @@ fn execute_visible_active_script_step(runtime_shell: &mut BevyRuntimeShell) -> R
         stepped.mutation.result.result_tag(),
         stepped.mutation.state_checksum
     ));
+    observe_visible_encounter_script_step(runtime_shell, &stepped);
     integrate_visible_script_mutation_outcome(runtime_shell, &stepped.mutation)?;
     trim_event_log(&mut runtime_shell.last_audio_events);
     if cursor.source_script == "HeadbuttScript"
@@ -1270,6 +1261,7 @@ fn integrate_visible_compiled_script_run(
             step.mutation.result.result_tag(),
             step.mutation.state_checksum
         ));
+        observe_visible_encounter_script_step(runtime_shell, &step);
         integrate_visible_script_mutation_outcome(runtime_shell, &step.mutation)?;
         if matches!(
             &step.mutation.result,
@@ -1686,7 +1678,10 @@ fn integrate_visible_script_mutation_outcome(
                     // can make the following pause execute before this label
                     // has initialized its own printer.
                     runtime_shell.field_text_reveal = None;
-                    mark_runtime_presentation_dirty(runtime_shell);
+                    // Write changes the core text body too. An autonomous
+                    // continuation after pause may still cache the preceding
+                    // closed window; a presentation-only revision retains it.
+                    mark_runtime_snapshot_dirty(runtime_shell);
                 }
                 crate::core::systems::script_text::ScriptTextAction::YesNo { .. } => {
                     runtime_shell.yes_no_cursor = Some(MenuCursor {
@@ -5167,9 +5162,13 @@ fn dispatch_visible_overworld_interaction(
             interaction.script, interaction.target
         ),
     )?;
+    if safari_visible::open_ranger(runtime_shell, &interaction.script)? {
+        return Ok(());
+    }
     let dispatch = runtime_shell
         .shell
         .dispatch_interaction_script(&interaction)?;
+    stage_visible_scripted_trainer_candidate(runtime_shell, &interaction, &dispatch);
     runtime_shell.last_audio_events.push(format!(
         "interaction script={} target={:?} last_talked={:?} checksum={:?}",
         interaction.script,
@@ -5179,6 +5178,12 @@ fn dispatch_visible_overworld_interaction(
     ));
     trim_event_log(&mut runtime_shell.last_audio_events);
     take_visible_next_script(runtime_shell)?;
+    // Direct A challenges have the same settled trainer contact as sight
+    // challenges. Retain it after the original intro has faced the trainer
+    // toward the player; otherwise these battles lose their literal map.
+    if runtime_shell.pending_trainer_intro.is_some() {
+        stage_visible_trainer_candidate(runtime_shell, &interaction);
+    }
     // `take_visible_next_script` already runs the compiled entry through its
     // first authored boundary and integrates that boundary's presentation.
     // Advancing again here races the renderer that creates the typewriter
@@ -5314,6 +5319,7 @@ fn finish_visible_trainer_sight_script(runtime_shell: &mut BevyRuntimeShell) -> 
         begin_visible_map_trainer_intro(runtime_shell, true)?,
         "prepared SeenByTrainerScript did not dispatch a trainer intro"
     );
+    stage_visible_trainer_candidate(runtime_shell, &pending.interaction);
     Ok(())
 }
 
@@ -5357,6 +5363,22 @@ fn execute_last_coord_event_script(runtime_shell: &mut BevyRuntimeShell) -> Resu
 fn execute_visible_pending_script_warp(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
     record_visible_runtime_action(runtime_shell, "script:pending:warp")?;
     let next_cursor = visible_active_compiled_script_cursor(runtime_shell);
+    if let Some(cursor) = next_cursor.as_ref()
+        && runtime_shell.shell.runtime().compiled_script_command_name(
+            &cursor.source_script, cursor.command_index,
+        )? == "newloadmap"
+    {
+        // warpcheck selects a destination while the departure script still
+        // owns the interpreter. Stage its following newloadmap before the
+        // existing map-load consumer commits the warp and map setup together.
+        let step = runtime_shell.shell.step_compiled_script_command(
+            &cursor.origin_map_name, &cursor.source_script, cursor.command_index,
+            ScriptRuntimeInputs::default(), ScriptPhoneInputs::default(),
+        )?;
+        integrate_visible_compiled_script_run(runtime_shell, std::slice::from_ref(&step))?;
+        arm_visible_active_script_cursor_from_run(runtime_shell, step.next_cursor);
+        return Ok(());
+    }
     let transitioned = if let Some(cursor) = next_cursor {
         runtime_shell
             .shell
@@ -5608,15 +5630,21 @@ fn restore_visible_loaded_runtime_state(
     runtime_shell: &mut BevyRuntimeShell,
     reason: &str,
 ) -> Result<()> {
-    // The bedroom callback's decoration effect is already saved in map block
-    // overrides. Its visual-command fence is not a player menu and has no
-    // controller cursor to restore. A retained fence otherwise loads as an
-    // invisible Menu and rejects every overworld input indefinitely.
-    let memory = &runtime_shell.shell.session().state().script_runtime;
-    if memory.active_menu.as_deref() == Some("ToggleMaptileDecorations")
-        && !memory.window_open
-        && !memory.text_window_open
-    {
+    if consume_visible_post_credits_spawn(runtime_shell)? {
+        return settle_visible_overworld_arrival(runtime_shell, "post_credits");
+    }
+    // Resuming the bedroom reapplies its decoration callback. These specials
+    // finish synchronously and have no input surface to restore on Continue.
+    if matches!(
+        runtime_shell
+            .shell
+            .snapshot()?
+            .ui
+            .menu
+            .as_ref()
+            .map(|menu| menu.menu_id.as_str()),
+        Some("ToggleMaptileDecorations" | "ToggleDecorationsVisibility")
+    ) {
         runtime_shell.shell.close_active_menu()?;
     }
     reset_visible_navigation_state(runtime_shell);
@@ -5626,6 +5654,11 @@ fn restore_visible_loaded_runtime_state(
     queue_visible_current_music(runtime_shell)?;
     let snapshot = runtime_shell.shell.snapshot()?;
     runtime_shell.visible_map_name_sign = None;
+    field_dialogue_resume::restore(runtime_shell)?;
+    settle_visible_pending_fair_food(runtime_shell)?;
+    // The graphical host may draw immediately after Continue, before its first
+    // input tick. Restore the ordinary battle chooser at that same boundary.
+    sync_visible_battle_action_cursor(runtime_shell);
     record_visible_runtime_action(
         runtime_shell,
         format!(
@@ -5670,7 +5703,9 @@ fn quick_save_from_menu(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
 }
 
 fn quick_save_from_bill_pc(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
-    quick_save_with_policy(runtime_shell, true, true, true).map(|_| ())
+    anyhow::ensure!(quick_save_with_policy(runtime_shell, true, true, true)?,
+        "Bill's PC could not save the game");
+    Ok(())
 }
 
 fn persist_visible_battle_tower_sram(
@@ -5790,7 +5825,19 @@ fn quick_save_with_policy(
             pack_content_hash
         ),
     )?;
-    runtime_shell.shell.save(&path)?;
+    if allow_bill_pc && runtime_shell.pc_hub_session_open {
+        // SRAM does not restore PCScript's open menu/textbox on Continue.
+        // Close only those transient surfaces on a persistence copy, using
+        // the ordinary runtime mutations. The live PC owner and all party,
+        // box, map, script-variable and progression data remain intact.
+        let mut checkpoint=runtime_shell.shell.clone();
+        if snapshot_before_save.ui.menu.is_some() {checkpoint.close_active_menu()?;}
+        if snapshot_before_save.ui.window_open {checkpoint.close_runtime_window()?;}
+        if snapshot_before_save.ui.text_window_open {checkpoint.close_text_window()?;}
+        checkpoint.save(&path)?;
+    } else {
+        field_dialogue_resume::save(runtime_shell, &path)?;
+    }
     let summary = runtime_shell.shell.runtime().load_save_summary(&path)?;
     runtime_shell.last_audio_events.push(format!(
         "saved {} frame={} pack_hash={} state_hash={:#010x}",
@@ -5871,15 +5918,10 @@ fn quick_load(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
     Ok(())
 }
 
-fn load_visible_runtime_save(
-    runtime_shell: &mut BevyRuntimeShell,
-    path: &PathBuf,
-    arrival_reason: &str,
-) -> Result<()> {
-    runtime_shell.shell.load(path)?;
-    // Loading replaces the session. Old battle narration must not capture the
-    // restored map's script continuation or play over its arrival dialogue.
-    reset_visible_battle_presentation(runtime_shell);
+// Direct save loading and title Continue consume the same one-shot native
+// credits marker. Authored Hall of Fame maps may select their own registered
+// recovery spawn without changing the original Lance/Red destinations.
+fn consume_visible_post_credits_spawn(runtime_shell: &mut BevyRuntimeShell) -> Result<bool> {
     let post_credits_spawn = runtime_shell
         .shell
         .session()
@@ -5903,7 +5945,17 @@ fn load_visible_runtime_save(
         let spawn_lance = required_constant("SPAWN_LANCE")?;
         let spawn_red = required_constant("SPAWN_RED")?;
         let spawn_identifier = if marker == spawn_lance {
-            required_constant("SPAWN_NEW_BARK")?
+            if let Some(value) = snapshot
+                .story
+                .story_event_script_constants
+                .maps
+                .get(&snapshot.overworld.map_name)
+                .and_then(|m| m.get("GEOTHITE_POST_CREDITS_SPAWN"))
+            {
+                u16::try_from(*value).context("authored post-credits spawn must be a u16")?
+            } else {
+                required_constant("SPAWN_NEW_BARK")?
+            }
         } else if marker == spawn_red {
             required_constant("SPAWN_MT_SILVER")?
         } else {
@@ -5924,6 +5976,19 @@ fn load_visible_runtime_save(
             spawn_identifier, checksum
         ));
     }
+    Ok(post_credits_warped)
+}
+
+fn load_visible_runtime_save(
+    runtime_shell: &mut BevyRuntimeShell,
+    path: &PathBuf,
+    arrival_reason: &str,
+) -> Result<()> {
+    runtime_shell.shell.load(path)?;
+    // Loading replaces the session. Old battle narration must not capture the
+    // restored map's script continuation or play over its arrival dialogue.
+    reset_visible_battle_presentation(runtime_shell);
+    let post_credits_warped = consume_visible_post_credits_spawn(runtime_shell)?;
     runtime_shell.title_menu = None;
     runtime_shell.credits_screen = None;
     runtime_shell.pending_time_set = None;
@@ -5953,6 +6018,10 @@ fn load_visible_runtime_save(
 }
 
 fn reset_visible_navigation_state(runtime_shell: &mut BevyRuntimeShell) {
+    runtime_shell.battle_origin.scripted_trainer_candidate = None;
+    runtime_shell.battle_origin.static_candidate = None;
+    runtime_shell.battle_origin.trainer_candidate = None;
+    runtime_shell.battle_origin.fishing_pack_scene = None;
     reset_visible_script_navigation_state(runtime_shell);
     reset_visible_selection_cursors(runtime_shell);
     runtime_shell.pending_name_input = None;
@@ -5971,6 +6040,7 @@ fn reset_visible_navigation_state(runtime_shell: &mut BevyRuntimeShell) {
     runtime_shell.pending_oak_intro = None;
     runtime_shell.pending_gender_selection = None;
     runtime_shell.visible_blackout_phase = None;
+    runtime_shell.poison_blackout_recovery = false;
     runtime_shell.pending_poison_blackout = false;
     runtime_shell.visible_walk_warp_phase = None;
     runtime_shell.credits_screen = None;
@@ -5982,6 +6052,7 @@ fn reset_visible_navigation_state(runtime_shell: &mut BevyRuntimeShell) {
     runtime_shell.pending_battle_scenes_after_message.clear();
     runtime_shell.visible_capture_animation = None;
     runtime_shell.visible_move_animations.clear();
+    runtime_shell.visible_move_audio_wait = None;
     runtime_shell.battle_fainted_hud = [false; 2];
     runtime_shell.battle_retained_text.clear();
     runtime_shell.visible_send_out_animation = None;
@@ -6230,8 +6301,19 @@ fn reset_visible_battle_exit_state(runtime_shell: &mut BevyRuntimeShell) {
     if !runtime_shell.battle_messages.is_empty() {
         return;
     }
+    // Terminal narration keeps the same origin until its actual visible exit.
+    runtime_shell.battle_origin.clear();
     runtime_shell.battle_trainer_result = None;
-    runtime_shell.party_move_cursor = None;
+    if !runtime_shell.move_learn_forget_menu_open
+        || runtime_shell
+            .shell
+            .session()
+            .state()
+            .pending_move_learn
+            .is_none()
+    {
+        runtime_shell.party_move_cursor = None;
+    }
     runtime_shell.last_battle_cry_key = None;
     runtime_shell.pending_battle_cries_after_messages.clear();
     runtime_shell.battle_enemy_send_out_pending = false;
@@ -6239,6 +6321,7 @@ fn reset_visible_battle_exit_state(runtime_shell: &mut BevyRuntimeShell) {
     runtime_shell.battle_enemy_hp_at_player_send_out = None;
     runtime_shell.pending_battle_scenes_after_message.clear();
     runtime_shell.visible_move_animations.clear();
+    runtime_shell.visible_move_audio_wait = None;
     runtime_shell.battle_fainted_hud = [false; 2];
     runtime_shell.battle_retained_text.clear();
     runtime_shell.visible_send_out_animation = None;

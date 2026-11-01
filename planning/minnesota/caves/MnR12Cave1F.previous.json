@@ -1,0 +1,83 @@
+{
+  "id": "MnR12Cave1F",
+  "width_metatiles": 16,
+  "height_metatiles": 12,
+  "dimensions_metatiles": [
+    16,
+    12
+  ],
+  "tileset": "cave",
+  "template": "UnionCave1F",
+  "exterior_anchor_metatile": [
+    33,
+    11
+  ],
+  "exterior_door_core": [
+    66,
+    23
+  ],
+  "entrance_event": "CAVE",
+  "return": "Native exterior warp (66, 23), then walk to (66, 24).",
+  "mandatory": false,
+  "purpose": "Original split chamber with two passages around a central stone rib; northern cache and a shelter resident.",
+  "rows": [
+    "01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01",
+    "01 04 05 05 05 05 06 2d 2f 04 05 05 05 05 06 01",
+    "01 08 02 02 02 02 0a 2d 2f 08 02 02 02 02 0a 01",
+    "01 08 02 02 02 02 0a 2d 2f 08 02 02 02 02 0a 01",
+    "01 08 02 2a 02 02 02 02 02 02 02 02 29 02 0a 01",
+    "01 08 02 02 02 02 0a 2d 2f 08 02 02 02 02 0a 01",
+    "01 08 02 02 29 02 0a 2d 2f 08 02 02 2a 02 0a 01",
+    "01 08 02 02 02 02 0a 2d 2f 08 02 02 02 02 0a 01",
+    "01 20 21 21 21 21 02 02 02 02 21 21 21 21 22 01",
+    "01 01 01 01 01 01 01 20 02 22 01 01 01 01 01 01",
+    "01 01 01 01 01 01 01 08 02 0a 01 01 01 01 01 01",
+    "01 01 01 01 01 01 01 01 07 01 01 01 01 01 01 01"
+  ],
+  "exits": [
+    [
+      17,
+      23
+    ]
+  ],
+  "native_arrival": [
+    17,
+    23
+  ],
+  "clear_arrival": [
+    17,
+    22
+  ],
+  "exit_collision": "LADDER",
+  "residents": [
+    {
+      "id": "MN_R12_OTTA",
+      "name": "Otta",
+      "sprite": "SPRITE_POKEFAN_M",
+      "tile": [
+        5,
+        5
+      ],
+      "facing": "east",
+      "lines": [
+        "A dry rock roof",
+        "beats a wet tent!",
+        "Two paths curl",
+        "round the stone."
+      ]
+    }
+  ],
+  "items": [
+    {
+      "id": "MN_R12_CAVE_CACHE",
+      "tile": [
+        27,
+        5
+      ],
+      "item": "MAX_ETHER",
+      "quantity": 1,
+      "flag": "EVENT_MN_R12_CAVE_ETHER"
+    }
+  ],
+  "border_block": 1
+}

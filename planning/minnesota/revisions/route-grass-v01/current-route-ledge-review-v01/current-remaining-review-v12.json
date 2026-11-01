@@ -1,0 +1,222 @@
+{
+  "status": "REMAINING_REVIEW_INDEX_NOT_COMPLETION",
+  "native_surface_snapshot": "840dc279fa9e35359f31885010766950d2487dae723eb11c3d5af2fa8e4da6cb",
+  "routes": [
+    {
+      "route": "MN_R01",
+      "changed_native_chunks": [
+        "MnR01C00R00"
+      ],
+      "current_successor_review": "planning/minnesota/revisions/route-grass-v01/current-r01-successor-review-v01",
+      "current_full_course_receipt_present": true,
+      "coverage_status": "CURRENT_FULL_COURSE_REVIEW_PRESENT",
+      "current_full_course_receipt": "planning/minnesota/revisions/route-grass-v01/current-r01-successor-review-v01/production-current-route-v02.json"
+    },
+    {
+      "route": "MN_R02",
+      "changed_native_chunks": [],
+      "current_successor_review": null,
+      "current_full_course_receipt_present": false,
+      "coverage_status": "ORIGINAL_USED_SURFACE_EXACT"
+    },
+    {
+      "route": "MN_R03",
+      "changed_native_chunks": [
+        "MnR03C00R00"
+      ],
+      "current_successor_review": "planning/minnesota/revisions/route-grass-v01/current-r03-successor-review-v01",
+      "current_full_course_receipt_present": true,
+      "coverage_status": "CURRENT_FULL_COURSE_REVIEW_PRESENT",
+      "current_full_course_receipt": "planning/minnesota/revisions/route-grass-v01/current-r03-successor-review-v01/production-current-route-v01.json"
+    },
+    {
+      "route": "MN_R04",
+      "changed_native_chunks": [],
+      "current_successor_review": "planning/minnesota/revisions/route-grass-v01/current-r04-successor-review-v01",
+      "current_full_course_receipt_present": true,
+      "coverage_status": "CURRENT_RECOVERY_JOURNEY_REVIEW_PRESENT",
+      "current_full_course_receipt": "planning/minnesota/revisions/route-grass-v01/current-r04-successor-review-v01/current-recovery-journey-v01.json",
+      "current_full_course_receipt_sha256": "a078bf288d9f7fc6f9db40f05ab83792e2dc15410e300fc514e6876871538e0c"
+    },
+    {
+      "route": "MN_R05",
+      "changed_native_chunks": [
+        "MnR05C00R00",
+        "MnR05C00R01",
+        "MnR05C00R02"
+      ],
+      "current_successor_review": "planning/minnesota/revisions/route-grass-v01/current-r05-successor-review-v01",
+      "current_full_course_receipt_present": true,
+      "coverage_status": "CURRENT_FULL_COURSE_REVIEW_PRESENT",
+      "current_full_course_receipt": "planning/minnesota/revisions/route-grass-v01/current-r05-successor-review-v01/production-cache-bank-v03.json"
+    },
+    {
+      "route": "MN_R06",
+      "changed_native_chunks": [
+        "MnR06C00R00",
+        "MnR06C00R01"
+      ],
+      "current_successor_review": "planning/minnesota/revisions/route-grass-v01/current-r06-successor-review-v01",
+      "current_full_course_receipt_present": true,
+      "coverage_status": "CURRENT_FULL_COURSE_REVIEW_PRESENT"
+    },
+    {
+      "route": "MN_R07",
+      "changed_native_chunks": [
+        "MnR07C00R00",
+        "MnR07C00R01"
+      ],
+      "current_successor_review": "planning/minnesota/revisions/route-grass-v01/current-r07-successor-review-v01",
+      "current_full_course_receipt_present": true,
+      "coverage_status": "CURRENT_FULL_COURSE_REVIEW_PRESENT",
+      "current_full_course_receipt": "planning/minnesota/revisions/route-grass-v01/current-r07-successor-review-v01/full-route-production-v02.json"
+    },
+    {
+      "route": "MN_R08",
+      "changed_native_chunks": [
+        "MnR08C00R00",
+        "MnR08C00R01",
+        "MnR08C01R01"
+      ],
+      "current_successor_review": "planning/minnesota/revisions/route-grass-v01/current-r08-successor-review-v01",
+      "current_full_course_receipt_present": true,
+      "coverage_status": "CURRENT_FULL_COURSE_REVIEW_PRESENT"
+    },
+    {
+      "route": "MN_R09",
+      "changed_native_chunks": [
+        "MnR09C00R00",
+        "MnR09C00R01",
+        "MnR09C01R00",
+        "MnR09C01R01"
+      ],
+      "current_successor_review": "planning/minnesota/revisions/route-grass-v01/current-r09-successor-review-v01",
+      "current_full_course_receipt_present": true,
+      "coverage_status": "CURRENT_FULL_COURSE_REVIEW_PRESENT",
+      "current_full_course_receipt": "planning/minnesota/revisions/route-grass-v01/current-r09-successor-review-v01/full-route-production-v02.json"
+    },
+    {
+      "route": "MN_R10",
+      "changed_native_chunks": [
+        "MnR10C00R00",
+        "MnR10C01R00"
+      ],
+      "current_successor_review": "planning/minnesota/revisions/route-grass-v01/current-r10-successor-review-v01",
+      "current_full_course_receipt_present": true,
+      "coverage_status": "CURRENT_FULL_COURSE_REVIEW_PRESENT"
+    },
+    {
+      "route": "MN_R11",
+      "changed_native_chunks": [
+        "MnR11C00R00",
+        "MnR11C00R01",
+        "MnR11C00R03"
+      ],
+      "current_successor_review": "planning/minnesota/revisions/route-grass-v01/current-r11-successor-review-v01",
+      "current_full_course_receipt_present": true,
+      "coverage_status": "CURRENT_MAIN_LAND_COURSE_REVIEW_PRESENT",
+      "current_full_course_receipt": "planning/minnesota/revisions/route-grass-v01/current-r11-successor-review-v01/full-route-production-v08.json",
+      "bridge_collision_grass_inheritance": "planning/minnesota/revisions/route-grass-v01/current-route-ledge-review-v01/r11-bridge-grass-inheritance-v01.json"
+    },
+    {
+      "route": "MN_R12",
+      "changed_native_chunks": [],
+      "current_successor_review": null,
+      "current_full_course_receipt_present": false,
+      "coverage_status": "ORIGINAL_USED_SURFACE_EXACT"
+    },
+    {
+      "route": "MN_R13",
+      "changed_native_chunks": [
+        "MnR13C00R00"
+      ],
+      "current_successor_review": null,
+      "current_full_course_receipt_present": true,
+      "coverage_status": "CURRENT_FULL_LAND_COURSE_REVIEW_PRESENT",
+      "current_full_course_receipt": "planning/minnesota/revisions/route-grass-v01/current-r13-successor-review-v01/full-route-production-v12.json",
+      "selected_apron_preservation": "planning/minnesota/revisions/route-grass-v01/current-r13-successor-review-v01/boundary-child-preservation-v03.json"
+    },
+    {
+      "route": "MN_R14",
+      "changed_native_chunks": [
+        "MnR14C00R00"
+      ],
+      "current_successor_review": "planning/minnesota/revisions/route-grass-v01/current-r14-successor-review-v01",
+      "current_full_course_receipt_present": true,
+      "coverage_status": "CURRENT_FULL_LAND_COURSE_REVIEW_PRESENT",
+      "current_full_course_receipt": "planning/minnesota/revisions/route-grass-v01/current-r14-successor-review-v01/full-route-production-v01.json"
+    },
+    {
+      "route": "MN_R15",
+      "changed_native_chunks": [
+        "MnR15C00R00"
+      ],
+      "current_successor_review": "planning/minnesota/revisions/route-grass-v01/current-r15-successor-review-v01",
+      "current_full_course_receipt_present": true,
+      "coverage_status": "CURRENT_FULL_LAND_COURSE_REVIEW_PRESENT",
+      "current_full_course_receipt": "planning/minnesota/revisions/route-grass-v01/current-r15-successor-review-v01/full-route-production-v03.json"
+    },
+    {
+      "route": "MN_R16",
+      "changed_native_chunks": [
+        "MnR16C00R00",
+        "MnR16C01R00"
+      ],
+      "current_successor_review": "planning/minnesota/revisions/route-grass-v01/current-r16-successor-review-v01",
+      "current_full_course_receipt_present": true,
+      "coverage_status": "CURRENT_FULL_LAND_COURSE_EXACT_INHERITANCE_PRESENT",
+      "current_full_course_receipt": "planning/minnesota/revisions/route-grass-v01/current-r16-successor-review-v01/full-route-production-v01.json",
+      "current_inheritance_proof": "planning/minnesota/revisions/route-grass-v01/current-r16-successor-review-v01/production-native-inheritance-v02.json"
+    },
+    {
+      "route": "MN_R17",
+      "changed_native_chunks": [
+        "MnR17C00R01"
+      ],
+      "current_successor_review": "planning/minnesota/revisions/route-grass-v01/current-r17-successor-review-v01",
+      "current_full_course_receipt_present": true,
+      "coverage_status": "CURRENT_LAND_COURSE_NATIVE_CUT_BATTLE_AND_VISUAL_REVIEW_PRESENT",
+      "current_full_course_receipt": "planning/minnesota/revisions/route-grass-v01/current-r17-successor-review-v01/current-land-course-production-v01.json",
+      "scope": "Three exteriors, both neighbors, signs, healing and Continue; optional cave and all bank edges not freshly toured"
+    },
+    {
+      "route": "MN_R18",
+      "changed_native_chunks": [],
+      "current_successor_review": null,
+      "current_full_course_receipt_present": false,
+      "coverage_status": "ORIGINAL_USED_SURFACE_EXACT"
+    },
+    {
+      "route": "MN_R19",
+      "changed_native_chunks": [
+        "MnR19C00R00"
+      ],
+      "current_successor_review": "planning/minnesota/revisions/route-grass-v01/current-r19-successor-review-v01",
+      "current_full_course_receipt_present": false,
+      "coverage_status": "LAND_GRASS_LEDGES_STAIRS_VISUALS_VERIFIED_REGIONAL_LINK_INCOMPLETE",
+      "current_land_course_receipt": "planning/minnesota/revisions/route-grass-v01/current-r19-successor-review-v01/current-land-course-production-v01.json",
+      "regional_connection_issue": "planning/minnesota/revisions/route-grass-v01/current-r19-successor-review-v01/southern-seam-geography-rejection-v01.json",
+      "gate_candidate_status": "SELECTED_VERIFIED_REBASE",
+      "gate_production_acceptance": "planning/minnesota/revisions/route-grass-v01/current-r19-successor-review-v01/gate-production-traversal-acceptance-v01.json",
+      "current_controller_failure": null,
+      "gate_remaining": null,
+      "gate_native_acceptance": "planning/minnesota/revisions/route-grass-v01/current-r19-successor-review-v01/gate-native-cases-v12.json",
+      "gate_source_selection": "planning/minnesota/revisions/route-grass-v01/current-r19-successor-review-v01/post-selection-proof-v01.json"
+    },
+    {
+      "route": "MN_R20",
+      "changed_native_chunks": [],
+      "current_successor_review": null,
+      "current_full_course_receipt_present": false,
+      "coverage_status": "ORIGINAL_USED_SURFACE_EXACT"
+    }
+  ],
+  "scope": "Review index only. Historical native-surface snapshot remains labelled separately; full-course receipt presence is not statewide acceptance.",
+  "selected_revision": "route_grass_r17_trail_guidance_revision",
+  "selected_pack_sha256": "e47cfeeff4baf0e2fd9654d9859e2fd094d856f8d34bede6c1c333c8209bce26",
+  "bank_model_audit_note": "Side walls are native land with reciprocal entry/exit masks. R16 includes these explicitly; older floor-only screens are not complete proofs for bank variants.",
+  "pack": "content-packs/minnesota-current-r17-trail-guidance-v02.crystalpack",
+  "pack_sha256": "186c262b18d5174cb7ba9727358d4022bea9fce6d362529405728028ef92c60a",
+  "prior_index": "planning/minnesota/revisions/route-grass-v01/current-route-ledge-review-v01/current-remaining-review-v10.json",
+  "note": "Route-local evidence index; old native_surface_snapshot remains its original binding. This revision does not claim all maps accepted against the latest selected pack."
+}

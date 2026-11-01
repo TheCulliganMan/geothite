@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "map": "MnGrandRapids",
+      "approach": [
+        22,
+        25
+      ],
+      "id": "MN_EXTRA_LUMBERJACK",
+      "display_name": "AXEL",
+      "trainer_class": "MN_LUMBERJACK",
+      "class_name": "LUMBERJACK",
+      "template_class": "HIKER",
+      "sprite": "SPRITE_MN_LUMBERJACK",
+      "tile": [
+        22,
+        24
+      ],
+      "facing": "south",
+      "sight_range": 1,
+      "defeated_flag": "EVENT_MN_EXTRA_LUMBERJACK",
+      "party": [
+        {
+          "species": "BIRCHIT",
+          "level": 32
+        },
+        {
+          "species": "REEDRAFT",
+          "level": 34
+        }
+      ],
+      "before_lines": [
+        "A strong team",
+        "takes steady work."
+      ],
+      "after_lines": [
+        "Good solid work!",
+        "Mind the saplings."
+      ],
+      "loss_lines": [
+        "Keep at it!",
+        "Start small."
+      ]
+    }
+  ]
+}

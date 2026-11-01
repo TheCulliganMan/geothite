@@ -1,0 +1,1456 @@
+{
+  "species_id": "MN_035",
+  "result": "pass",
+  "manifest_sha256": "e2a21829df2a92234915a9644d584205c4975a30b701b3b5bdf09e411386b47e",
+  "bank_sha256": "8da252f9f90d4e2d2c3b16c8f37469d67b2440ee2ddd8dae751e3b03faa74c8c",
+  "canonical_limbs": "two gauntlet arms and two skate feet; one ice crest; profile far side naturally occluded",
+  "source_sha256": {
+    "skatuff.overworld.imagegen-v1.png": "150df2284f40c6a78fb1ea826e4043d8dc91b60654376c30275758d5807ca729"
+  },
+  "proof": [
+    {
+      "pose": "down_idle",
+      "features": [
+        {
+          "feature": "one_ice_crest",
+          "source_anatomical_region": [
+            282,
+            81,
+            389,
+            226
+          ],
+          "samples": [
+            {
+              "native": [
+                7,
+                2
+              ],
+              "source_sample": [
+                335,
+                96
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                7,
+                3
+              ],
+              "source_sample": [
+                335,
+                127
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                6,
+                4
+              ],
+              "source_sample": [
+                304,
+                158
+              ],
+              "ink": 1
+            },
+            {
+              "native": [
+                7,
+                4
+              ],
+              "source_sample": [
+                335,
+                158
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                6,
+                5
+              ],
+              "source_sample": [
+                304,
+                189
+              ],
+              "ink": 1
+            },
+            {
+              "native": [
+                7,
+                5
+              ],
+              "source_sample": [
+                335,
+                189
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                8,
+                5
+              ],
+              "source_sample": [
+                366,
+                189
+              ],
+              "ink": 1
+            },
+            {
+              "native": [
+                6,
+                6
+              ],
+              "source_sample": [
+                304,
+                220
+              ],
+              "ink": 1
+            },
+            {
+              "native": [
+                7,
+                6
+              ],
+              "source_sample": [
+                335,
+                220
+              ],
+              "ink": 1
+            },
+            {
+              "native": [
+                8,
+                6
+              ],
+              "source_sample": [
+                366,
+                220
+              ],
+              "ink": 1
+            }
+          ]
+        },
+        {
+          "feature": "left_gauntlet",
+          "source_anatomical_region": [
+            204,
+            313,
+            289,
+            422
+          ],
+          "samples": [
+            {
+              "native": [
+                3,
+                10
+              ],
+              "source_sample": [
+                211,
+                344
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                4,
+                10
+              ],
+              "source_sample": [
+                242,
+                344
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                4,
+                11
+              ],
+              "source_sample": [
+                242,
+                375
+              ],
+              "ink": 2
+            }
+          ]
+        },
+        {
+          "feature": "right_gauntlet",
+          "source_anatomical_region": [
+            372,
+            313,
+            468,
+            422
+          ],
+          "samples": [
+            {
+              "native": [
+                9,
+                9
+              ],
+              "source_sample": [
+                397,
+                313
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                10,
+                10
+              ],
+              "source_sample": [
+                428,
+                344
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                10,
+                11
+              ],
+              "source_sample": [
+                428,
+                375
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                9,
+                12
+              ],
+              "source_sample": [
+                397,
+                406
+              ],
+              "ink": 2
+            }
+          ]
+        },
+        {
+          "feature": "left_skate",
+          "source_anatomical_region": [
+            204,
+            425,
+            336,
+            487
+          ],
+          "samples": [
+            {
+              "native": [
+                5,
+                13
+              ],
+              "source_sample": [
+                273,
+                437
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                4,
+                14
+              ],
+              "source_sample": [
+                242,
+                468
+              ],
+              "ink": 1
+            },
+            {
+              "native": [
+                5,
+                14
+              ],
+              "source_sample": [
+                273,
+                468
+              ],
+              "ink": 1
+            }
+          ]
+        },
+        {
+          "feature": "right_skate",
+          "source_anatomical_region": [
+            335,
+            425,
+            468,
+            487
+          ],
+          "samples": [
+            {
+              "native": [
+                8,
+                13
+              ],
+              "source_sample": [
+                366,
+                437
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                9,
+                13
+              ],
+              "source_sample": [
+                397,
+                437
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                9,
+                14
+              ],
+              "source_sample": [
+                397,
+                468
+              ],
+              "ink": 1
+            }
+          ]
+        }
+      ],
+      "far_profile_limb_occlusion": false
+    },
+    {
+      "pose": "up_idle",
+      "features": [
+        {
+          "feature": "one_ice_crest",
+          "source_anatomical_region": [
+            719,
+            81,
+            825,
+            227
+          ],
+          "samples": [
+            {
+              "native": [
+                7,
+                3
+              ],
+              "source_sample": [
+                764,
+                127
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                7,
+                4
+              ],
+              "source_sample": [
+                764,
+                158
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                6,
+                5
+              ],
+              "source_sample": [
+                733,
+                189
+              ],
+              "ink": 1
+            },
+            {
+              "native": [
+                7,
+                5
+              ],
+              "source_sample": [
+                764,
+                189
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                8,
+                5
+              ],
+              "source_sample": [
+                795,
+                189
+              ],
+              "ink": 1
+            },
+            {
+              "native": [
+                6,
+                6
+              ],
+              "source_sample": [
+                733,
+                220
+              ],
+              "ink": 1
+            },
+            {
+              "native": [
+                7,
+                6
+              ],
+              "source_sample": [
+                764,
+                220
+              ],
+              "ink": 1
+            },
+            {
+              "native": [
+                8,
+                6
+              ],
+              "source_sample": [
+                795,
+                220
+              ],
+              "ink": 1
+            }
+          ]
+        },
+        {
+          "feature": "left_gauntlet",
+          "source_anatomical_region": [
+            641,
+            314,
+            725,
+            424
+          ],
+          "samples": [
+            {
+              "native": [
+                4,
+                10
+              ],
+              "source_sample": [
+                671,
+                344
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                4,
+                11
+              ],
+              "source_sample": [
+                671,
+                375
+              ],
+              "ink": 2
+            }
+          ]
+        },
+        {
+          "feature": "right_gauntlet",
+          "source_anatomical_region": [
+            808,
+            314,
+            904,
+            424
+          ],
+          "samples": [
+            {
+              "native": [
+                10,
+                10
+              ],
+              "source_sample": [
+                857,
+                344
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                11,
+                10
+              ],
+              "source_sample": [
+                888,
+                344
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                10,
+                11
+              ],
+              "source_sample": [
+                857,
+                375
+              ],
+              "ink": 2
+            }
+          ]
+        },
+        {
+          "feature": "left_skate",
+          "source_anatomical_region": [
+            641,
+            427,
+            773,
+            489
+          ],
+          "samples": [
+            {
+              "native": [
+                5,
+                13
+              ],
+              "source_sample": [
+                702,
+                437
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                6,
+                13
+              ],
+              "source_sample": [
+                733,
+                437
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                5,
+                14
+              ],
+              "source_sample": [
+                702,
+                468
+              ],
+              "ink": 1
+            }
+          ]
+        },
+        {
+          "feature": "right_skate",
+          "source_anatomical_region": [
+            772,
+            427,
+            904,
+            489
+          ],
+          "samples": [
+            {
+              "native": [
+                9,
+                13
+              ],
+              "source_sample": [
+                826,
+                437
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                9,
+                14
+              ],
+              "source_sample": [
+                826,
+                468
+              ],
+              "ink": 1
+            },
+            {
+              "native": [
+                10,
+                14
+              ],
+              "source_sample": [
+                857,
+                468
+              ],
+              "ink": 1
+            }
+          ]
+        }
+      ],
+      "far_profile_limb_occlusion": false
+    },
+    {
+      "pose": "left_idle",
+      "features": [
+        {
+          "feature": "one_backward_ice_crest",
+          "source_anatomical_region": [
+            1205,
+            93,
+            1359,
+            219
+          ],
+          "samples": [
+            {
+              "native": [
+                10,
+                2
+              ],
+              "source_sample": [
+                1316,
+                108
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                8,
+                3
+              ],
+              "source_sample": [
+                1254,
+                139
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                9,
+                3
+              ],
+              "source_sample": [
+                1285,
+                139
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                7,
+                4
+              ],
+              "source_sample": [
+                1223,
+                170
+              ],
+              "ink": 1
+            },
+            {
+              "native": [
+                7,
+                5
+              ],
+              "source_sample": [
+                1223,
+                201
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                8,
+                5
+              ],
+              "source_sample": [
+                1254,
+                201
+              ],
+              "ink": 1
+            }
+          ]
+        },
+        {
+          "feature": "near_gauntlet",
+          "source_anatomical_region": [
+            1192,
+            308,
+            1346,
+            422
+          ],
+          "samples": [
+            {
+              "native": [
+                8,
+                9
+              ],
+              "source_sample": [
+                1254,
+                325
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                7,
+                10
+              ],
+              "source_sample": [
+                1223,
+                356
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                8,
+                10
+              ],
+              "source_sample": [
+                1254,
+                356
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                9,
+                10
+              ],
+              "source_sample": [
+                1285,
+                356
+              ],
+              "ink": 2
+            }
+          ]
+        },
+        {
+          "feature": "near_skate",
+          "source_anatomical_region": [
+            1129,
+            429,
+            1346,
+            488
+          ],
+          "samples": [
+            {
+              "native": [
+                6,
+                13
+              ],
+              "source_sample": [
+                1192,
+                449
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                7,
+                13
+              ],
+              "source_sample": [
+                1223,
+                449
+              ],
+              "ink": 2
+            }
+          ]
+        }
+      ],
+      "far_profile_limb_occlusion": true
+    },
+    {
+      "pose": "down_step",
+      "features": [
+        {
+          "feature": "one_ice_crest",
+          "source_anatomical_region": [
+            274,
+            536,
+            381,
+            677
+          ],
+          "samples": [
+            {
+              "native": [
+                7,
+                2
+              ],
+              "source_sample": [
+                335,
+                551
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                7,
+                3
+              ],
+              "source_sample": [
+                335,
+                582
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                6,
+                4
+              ],
+              "source_sample": [
+                304,
+                613
+              ],
+              "ink": 1
+            },
+            {
+              "native": [
+                7,
+                4
+              ],
+              "source_sample": [
+                335,
+                613
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                6,
+                5
+              ],
+              "source_sample": [
+                304,
+                644
+              ],
+              "ink": 1
+            },
+            {
+              "native": [
+                7,
+                5
+              ],
+              "source_sample": [
+                335,
+                644
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                8,
+                5
+              ],
+              "source_sample": [
+                366,
+                644
+              ],
+              "ink": 1
+            },
+            {
+              "native": [
+                6,
+                6
+              ],
+              "source_sample": [
+                304,
+                675
+              ],
+              "ink": 1
+            },
+            {
+              "native": [
+                7,
+                6
+              ],
+              "source_sample": [
+                335,
+                675
+              ],
+              "ink": 1
+            },
+            {
+              "native": [
+                8,
+                6
+              ],
+              "source_sample": [
+                366,
+                675
+              ],
+              "ink": 1
+            }
+          ]
+        },
+        {
+          "feature": "left_gauntlet",
+          "source_anatomical_region": [
+            196,
+            762,
+            281,
+            868
+          ],
+          "samples": [
+            {
+              "native": [
+                4,
+                9
+              ],
+              "source_sample": [
+                242,
+                768
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                3,
+                10
+              ],
+              "source_sample": [
+                211,
+                799
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                4,
+                10
+              ],
+              "source_sample": [
+                242,
+                799
+              ],
+              "ink": 2
+            }
+          ]
+        },
+        {
+          "feature": "right_gauntlet",
+          "source_anatomical_region": [
+            364,
+            762,
+            460,
+            868
+          ],
+          "samples": [
+            {
+              "native": [
+                10,
+                10
+              ],
+              "source_sample": [
+                428,
+                799
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                10,
+                11
+              ],
+              "source_sample": [
+                428,
+                830
+              ],
+              "ink": 2
+            }
+          ]
+        },
+        {
+          "feature": "left_skate",
+          "source_anatomical_region": [
+            196,
+            871,
+            328,
+            930
+          ],
+          "samples": [
+            {
+              "native": [
+                5,
+                13
+              ],
+              "source_sample": [
+                273,
+                892
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                6,
+                13
+              ],
+              "source_sample": [
+                304,
+                892
+              ],
+              "ink": 2
+            }
+          ]
+        },
+        {
+          "feature": "right_skate",
+          "source_anatomical_region": [
+            327,
+            871,
+            460,
+            930
+          ],
+          "samples": [
+            {
+              "native": [
+                8,
+                13
+              ],
+              "source_sample": [
+                366,
+                892
+              ],
+              "ink": 2
+            }
+          ]
+        }
+      ],
+      "far_profile_limb_occlusion": false
+    },
+    {
+      "pose": "up_step",
+      "features": [
+        {
+          "feature": "one_ice_crest",
+          "source_anatomical_region": [
+            720,
+            535,
+            826,
+            681
+          ],
+          "samples": [
+            {
+              "native": [
+                7,
+                3
+              ],
+              "source_sample": [
+                764,
+                581
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                7,
+                4
+              ],
+              "source_sample": [
+                764,
+                612
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                6,
+                5
+              ],
+              "source_sample": [
+                733,
+                643
+              ],
+              "ink": 1
+            },
+            {
+              "native": [
+                7,
+                5
+              ],
+              "source_sample": [
+                764,
+                643
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                8,
+                5
+              ],
+              "source_sample": [
+                795,
+                643
+              ],
+              "ink": 1
+            },
+            {
+              "native": [
+                6,
+                6
+              ],
+              "source_sample": [
+                733,
+                674
+              ],
+              "ink": 1
+            },
+            {
+              "native": [
+                7,
+                6
+              ],
+              "source_sample": [
+                764,
+                674
+              ],
+              "ink": 1
+            },
+            {
+              "native": [
+                8,
+                6
+              ],
+              "source_sample": [
+                795,
+                674
+              ],
+              "ink": 1
+            }
+          ]
+        },
+        {
+          "feature": "left_gauntlet",
+          "source_anatomical_region": [
+            642,
+            768,
+            726,
+            878
+          ],
+          "samples": [
+            {
+              "native": [
+                4,
+                10
+              ],
+              "source_sample": [
+                671,
+                798
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                5,
+                10
+              ],
+              "source_sample": [
+                702,
+                798
+              ],
+              "ink": 2
+            }
+          ]
+        },
+        {
+          "feature": "right_gauntlet",
+          "source_anatomical_region": [
+            809,
+            768,
+            905,
+            878
+          ],
+          "samples": [
+            {
+              "native": [
+                10,
+                10
+              ],
+              "source_sample": [
+                857,
+                798
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                10,
+                11
+              ],
+              "source_sample": [
+                857,
+                829
+              ],
+              "ink": 2
+            }
+          ]
+        },
+        {
+          "feature": "left_skate",
+          "source_anatomical_region": [
+            642,
+            881,
+            774,
+            943
+          ],
+          "samples": [
+            {
+              "native": [
+                6,
+                13
+              ],
+              "source_sample": [
+                733,
+                891
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                6,
+                14
+              ],
+              "source_sample": [
+                733,
+                922
+              ],
+              "ink": 1
+            }
+          ]
+        },
+        {
+          "feature": "right_skate",
+          "source_anatomical_region": [
+            773,
+            881,
+            905,
+            943
+          ],
+          "samples": [
+            {
+              "native": [
+                8,
+                13
+              ],
+              "source_sample": [
+                795,
+                891
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                9,
+                13
+              ],
+              "source_sample": [
+                826,
+                891
+              ],
+              "ink": 2
+            }
+          ]
+        }
+      ],
+      "far_profile_limb_occlusion": false
+    },
+    {
+      "pose": "left_step",
+      "features": [
+        {
+          "feature": "one_backward_ice_crest",
+          "source_anatomical_region": [
+            1206,
+            546,
+            1361,
+            672
+          ],
+          "samples": [
+            {
+              "native": [
+                10,
+                2
+              ],
+              "source_sample": [
+                1316,
+                561
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                8,
+                3
+              ],
+              "source_sample": [
+                1254,
+                592
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                9,
+                3
+              ],
+              "source_sample": [
+                1285,
+                592
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                7,
+                4
+              ],
+              "source_sample": [
+                1223,
+                623
+              ],
+              "ink": 1
+            },
+            {
+              "native": [
+                7,
+                5
+              ],
+              "source_sample": [
+                1223,
+                654
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                8,
+                5
+              ],
+              "source_sample": [
+                1254,
+                654
+              ],
+              "ink": 1
+            }
+          ]
+        },
+        {
+          "feature": "near_gauntlet",
+          "source_anatomical_region": [
+            1193,
+            761,
+            1348,
+            876
+          ],
+          "samples": [
+            {
+              "native": [
+                9,
+                9
+              ],
+              "source_sample": [
+                1285,
+                778
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                7,
+                10
+              ],
+              "source_sample": [
+                1223,
+                809
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                8,
+                10
+              ],
+              "source_sample": [
+                1254,
+                809
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                9,
+                10
+              ],
+              "source_sample": [
+                1285,
+                809
+              ],
+              "ink": 2
+            }
+          ]
+        },
+        {
+          "feature": "near_skate",
+          "source_anatomical_region": [
+            1129,
+            883,
+            1348,
+            942
+          ],
+          "samples": [
+            {
+              "native": [
+                4,
+                13
+              ],
+              "source_sample": [
+                1130,
+                902
+              ],
+              "ink": 1
+            },
+            {
+              "native": [
+                5,
+                13
+              ],
+              "source_sample": [
+                1161,
+                902
+              ],
+              "ink": 1
+            },
+            {
+              "native": [
+                6,
+                13
+              ],
+              "source_sample": [
+                1192,
+                902
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                9,
+                13
+              ],
+              "source_sample": [
+                1285,
+                902
+              ],
+              "ink": 2
+            }
+          ]
+        }
+      ],
+      "far_profile_limb_occlusion": true
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+[
+  {
+    "id": "MnMoorheadPokecenter1F-arrival",
+    "map": "MnMoorheadPokecenter1F",
+    "core": [
+      3,
+      6
+    ]
+  },
+  {
+    "id": "MnMoorheadPokecenter1F-nurse",
+    "map": "MnMoorheadPokecenter1F",
+    "core": [
+      3,
+      3
+    ]
+  },
+  {
+    "id": "MnMoorheadPokecenter1F-volunteer",
+    "map": "MnMoorheadPokecenter1F",
+    "core": [
+      2,
+      4
+    ]
+  },
+  {
+    "id": "MnMoorheadPokecenter1F-pc",
+    "map": "MnMoorheadPokecenter1F",
+    "core": [
+      9,
+      2
+    ]
+  },
+  {
+    "id": "MnMoorheadMart-arrival",
+    "map": "MnMoorheadMart",
+    "core": [
+      3,
+      6
+    ]
+  },
+  {
+    "id": "MnMoorheadMart-counter",
+    "map": "MnMoorheadMart",
+    "core": [
+      3,
+      3
+    ]
+  },
+  {
+    "id": "MnMoorheadMart-gardener",
+    "map": "MnMoorheadMart",
+    "core": [
+      8,
+      6
+    ]
+  }
+]

@@ -1,0 +1,5022 @@
+[
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v2-registered-x0-y-12",
+    "actual_eye_hits": 6,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            338
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            338
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            768
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            768
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            10
+          ],
+          "source": [
+            1169,
+            326
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            10
+          ],
+          "source": [
+            1169,
+            756
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v2-registered-x4-y-8",
+    "actual_eye_hits": 6,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            336
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            336
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            766
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            766
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            10
+          ],
+          "source": [
+            1173,
+            328
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            10
+          ],
+          "source": [
+            1173,
+            758
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v2-registered-x-12-y8",
+    "actual_eye_hits": 6,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            333
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            333
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            763
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            763
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            5,
+            9
+          ],
+          "source": [
+            1184,
+            314
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            5,
+            9
+          ],
+          "source": [
+            1184,
+            744
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v2-registered-x0-y-8",
+    "actual_eye_hits": 6,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            336
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            336
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            766
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            766
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            10
+          ],
+          "source": [
+            1169,
+            328
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            10
+          ],
+          "source": [
+            1169,
+            758
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v2-registered-x8-y12",
+    "actual_eye_hits": 6,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            331
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            331
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            761
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            761
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            9
+          ],
+          "source": [
+            1177,
+            316
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            9
+          ],
+          "source": [
+            1177,
+            746
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v2-registered-x-12-y-8",
+    "actual_eye_hits": 6,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            336
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            336
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            766
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            766
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            5,
+            10
+          ],
+          "source": [
+            1184,
+            328
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            5,
+            10
+          ],
+          "source": [
+            1184,
+            758
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v2-registered-x12-y12",
+    "actual_eye_hits": 6,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            331
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            331
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            761
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            761
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            9
+          ],
+          "source": [
+            1181,
+            316
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            9
+          ],
+          "source": [
+            1181,
+            746
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v2-registered-x12-y8",
+    "actual_eye_hits": 6,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            333
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            333
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            763
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            763
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            9
+          ],
+          "source": [
+            1181,
+            314
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            9
+          ],
+          "source": [
+            1181,
+            744
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v2-registered-x12-y-12",
+    "actual_eye_hits": 6,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            338
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            338
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            768
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            768
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            10
+          ],
+          "source": [
+            1181,
+            326
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            10
+          ],
+          "source": [
+            1181,
+            756
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v2-registered-x4-y4",
+    "actual_eye_hits": 6,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            334
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            334
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            764
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            764
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            9
+          ],
+          "source": [
+            1173,
+            311
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            9
+          ],
+          "source": [
+            1173,
+            741
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v2-registered-x8-y8",
+    "actual_eye_hits": 6,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            333
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            333
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            763
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            763
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            9
+          ],
+          "source": [
+            1177,
+            314
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            9
+          ],
+          "source": [
+            1177,
+            744
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v2-registered-x0-y4",
+    "actual_eye_hits": 6,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            334
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            334
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            764
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            764
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            9
+          ],
+          "source": [
+            1169,
+            311
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            9
+          ],
+          "source": [
+            1169,
+            741
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v2-registered-x8-y-12",
+    "actual_eye_hits": 6,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            338
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            338
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            768
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            768
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            10
+          ],
+          "source": [
+            1177,
+            326
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            10
+          ],
+          "source": [
+            1177,
+            756
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v2-registered-x4-y-12",
+    "actual_eye_hits": 6,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            338
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            338
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            768
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            768
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            10
+          ],
+          "source": [
+            1173,
+            326
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            10
+          ],
+          "source": [
+            1173,
+            756
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v2-registered-x-12-y-12",
+    "actual_eye_hits": 6,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            338
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            338
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            768
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            768
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            5,
+            10
+          ],
+          "source": [
+            1184,
+            326
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            5,
+            10
+          ],
+          "source": [
+            1184,
+            756
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v2-registered-x-12-y4",
+    "actual_eye_hits": 6,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            334
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            334
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            764
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            764
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            5,
+            9
+          ],
+          "source": [
+            1184,
+            311
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            5,
+            9
+          ],
+          "source": [
+            1184,
+            741
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v2-registered-x12-y4",
+    "actual_eye_hits": 6,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            334
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            334
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            764
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            764
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            9
+          ],
+          "source": [
+            1181,
+            311
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            9
+          ],
+          "source": [
+            1181,
+            741
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v2-registered-x4-y12",
+    "actual_eye_hits": 6,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            331
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            331
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            761
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            761
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            9
+          ],
+          "source": [
+            1173,
+            316
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            9
+          ],
+          "source": [
+            1173,
+            746
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v2-registered-x-12-y12",
+    "actual_eye_hits": 6,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            331
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            331
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            761
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            761
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            5,
+            9
+          ],
+          "source": [
+            1184,
+            316
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            5,
+            9
+          ],
+          "source": [
+            1184,
+            746
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v2-registered-x0-y8",
+    "actual_eye_hits": 6,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            333
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            333
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            763
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            763
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            9
+          ],
+          "source": [
+            1169,
+            314
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            9
+          ],
+          "source": [
+            1169,
+            744
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v2-registered-x8-y-8",
+    "actual_eye_hits": 6,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            336
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            336
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            766
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            766
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            10
+          ],
+          "source": [
+            1177,
+            328
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            10
+          ],
+          "source": [
+            1177,
+            758
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v2-registered-x0-y12",
+    "actual_eye_hits": 6,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            331
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            331
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            761
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            761
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            9
+          ],
+          "source": [
+            1169,
+            316
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            9
+          ],
+          "source": [
+            1169,
+            746
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v2-registered-x8-y4",
+    "actual_eye_hits": 6,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            334
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            334
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            764
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            764
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            9
+          ],
+          "source": [
+            1177,
+            311
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            9
+          ],
+          "source": [
+            1177,
+            741
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v2-registered-x4-y8",
+    "actual_eye_hits": 6,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            333
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            333
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            763
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            763
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            9
+          ],
+          "source": [
+            1173,
+            314
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            9
+          ],
+          "source": [
+            1173,
+            744
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v2-registered-x12-y-8",
+    "actual_eye_hits": 6,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            336
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            336
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            766
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            766
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            10
+          ],
+          "source": [
+            1181,
+            328
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            10
+          ],
+          "source": [
+            1181,
+            758
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v2-registered-x-8-y-4",
+    "actual_eye_hits": 4,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            336
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            336
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            766
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            766
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v2-registered-x-12-y0",
+    "actual_eye_hits": 4,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            336
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            336
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            766
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            766
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v2-registered-x-4-y-12",
+    "actual_eye_hits": 4,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            338
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            338
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            768
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            768
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v2-registered-x12-y0",
+    "actual_eye_hits": 4,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            336
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            336
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            766
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            766
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v2-registered-x-4-y8",
+    "actual_eye_hits": 4,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            333
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            333
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            763
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            763
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v2-registered-x-8-y-12",
+    "actual_eye_hits": 4,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            338
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            338
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            768
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            768
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v2-registered-x-8-y4",
+    "actual_eye_hits": 4,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            334
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            334
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            764
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            764
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v2-registered-x-8-y12",
+    "actual_eye_hits": 4,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            331
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            331
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            761
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            761
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v2-registered-x-4-y0",
+    "actual_eye_hits": 4,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            336
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            336
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            766
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            766
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v2-registered-x-4-y-8",
+    "actual_eye_hits": 4,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            336
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            336
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            766
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            766
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v2-registered-x8-y0",
+    "actual_eye_hits": 4,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            336
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            336
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            766
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            766
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v2-registered-x12-y-4",
+    "actual_eye_hits": 4,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            336
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            336
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            766
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            766
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v2-registered-x8-y-4",
+    "actual_eye_hits": 4,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            336
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            336
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            766
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            766
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v2-registered-x4-y-4",
+    "actual_eye_hits": 4,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            336
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            336
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            766
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            766
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v2-registered-x-8-y-8",
+    "actual_eye_hits": 4,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            336
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            336
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            766
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            766
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v2-registered-x-4-y12",
+    "actual_eye_hits": 4,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            331
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            331
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            761
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            761
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v2-registered-x0-y-4",
+    "actual_eye_hits": 4,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            336
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            336
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            766
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            766
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v2-registered-x-12-y-4",
+    "actual_eye_hits": 4,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            336
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            336
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            766
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            766
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v2-registered-x-8-y8",
+    "actual_eye_hits": 4,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            333
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            333
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            763
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            763
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v2-registered-x-4-y4",
+    "actual_eye_hits": 4,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            334
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            334
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            764
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            764
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v2-registered-x-8-y0",
+    "actual_eye_hits": 4,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            336
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            336
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            766
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            766
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v2-registered-x4-y0",
+    "actual_eye_hits": 4,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            336
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            336
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            766
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            766
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v2-registered-x0-y0",
+    "actual_eye_hits": 4,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            336
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            336
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            766
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            766
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v2-registered-x-4-y-4",
+    "actual_eye_hits": 4,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            336
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            336
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            766
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            766
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v1-front-phase-x-8-y8",
+    "actual_eye_hits": 4,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            341
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            341
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            771
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            771
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v1-front-phase-x-8-y12",
+    "actual_eye_hits": 4,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            343
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            343
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            773
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            773
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v1-front-phase-x-8-y0",
+    "actual_eye_hits": 4,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            336
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            336
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            766
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            766
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v1-front-phase-x-4-y4",
+    "actual_eye_hits": 4,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            258,
+            338
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            313,
+            338
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            258,
+            768
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            313,
+            768
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v1-front-phase-x-4-y-8",
+    "actual_eye_hits": 4,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            258,
+            328
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            313,
+            328
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            258,
+            758
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            313,
+            758
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v1-front-phase-x-8-y-4",
+    "actual_eye_hits": 4,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            332
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            332
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            762
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            762
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v1-front-phase-x0-y0",
+    "actual_eye_hits": 4,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            261,
+            336
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            314,
+            336
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            261,
+            766
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            314,
+            766
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v1-front-phase-x0-y-4",
+    "actual_eye_hits": 4,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            261,
+            332
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            314,
+            332
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            261,
+            762
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            314,
+            762
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v1-front-phase-x-4-y8",
+    "actual_eye_hits": 4,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            258,
+            341
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            313,
+            341
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            258,
+            771
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            313,
+            771
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v1-front-phase-x-4-y0",
+    "actual_eye_hits": 4,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            258,
+            336
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            313,
+            336
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            258,
+            766
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            313,
+            766
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v1-front-phase-x-8-y4",
+    "actual_eye_hits": 4,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            338
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            338
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            768
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            768
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v1-front-phase-x-4-y-4",
+    "actual_eye_hits": 4,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            258,
+            332
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            313,
+            332
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            258,
+            762
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            313,
+            762
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v1-front-phase-x-8-y-8",
+    "actual_eye_hits": 4,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            328
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            328
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            256,
+            758
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            311,
+            758
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v1-front-phase-x0-y-8",
+    "actual_eye_hits": 4,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            261,
+            328
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            314,
+            328
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            261,
+            758
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            314,
+            758
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v1-front-phase-x4-y-4",
+    "actual_eye_hits": 3,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            263,
+            332
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            317,
+            332
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            317,
+            762
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v1-front-phase-x4-y0",
+    "actual_eye_hits": 3,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            263,
+            336
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            317,
+            336
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            317,
+            766
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v1-front-phase-x4-y-8",
+    "actual_eye_hits": 3,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            263,
+            328
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            317,
+            328
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            317,
+            758
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v1-front-phase-x4-y4",
+    "actual_eye_hits": 3,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            263,
+            338
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            317,
+            338
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            317,
+            768
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v1-front-phase-x12-y4",
+    "actual_eye_hits": 2,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            322,
+            338
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            322,
+            768
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v1-front-phase-x-12-y-8",
+    "actual_eye_hits": 2,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            254,
+            328
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            254,
+            758
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v1-front-phase-x8-y-8",
+    "actual_eye_hits": 2,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            320,
+            328
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            320,
+            758
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v1-front-phase-x12-y-4",
+    "actual_eye_hits": 2,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            322,
+            332
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            322,
+            762
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v1-front-phase-x-12-y0",
+    "actual_eye_hits": 2,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            254,
+            336
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            254,
+            766
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v1-front-phase-x12-y12",
+    "actual_eye_hits": 2,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            322,
+            343
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            322,
+            773
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v1-front-phase-x8-y4",
+    "actual_eye_hits": 2,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            320,
+            338
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            320,
+            768
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v1-front-phase-x-12-y8",
+    "actual_eye_hits": 2,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            254,
+            341
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            254,
+            771
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v1-front-phase-x-12-y-4",
+    "actual_eye_hits": 2,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            254,
+            332
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            254,
+            762
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v1-front-phase-x12-y0",
+    "actual_eye_hits": 2,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            322,
+            336
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            322,
+            766
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v1-front-phase-x12-y8",
+    "actual_eye_hits": 2,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            322,
+            341
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            322,
+            771
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v1-front-phase-x12-y-8",
+    "actual_eye_hits": 2,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            322,
+            328
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            322,
+            758
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v1-front-phase-x8-y-4",
+    "actual_eye_hits": 2,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            320,
+            332
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            320,
+            762
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v1-front-phase-x8-y12",
+    "actual_eye_hits": 2,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            247,
+            343
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            247,
+            773
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v1-front-phase-x8-y8",
+    "actual_eye_hits": 2,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            320,
+            341
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            320,
+            771
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v1-front-phase-x-12-y4",
+    "actual_eye_hits": 2,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            254,
+            338
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            254,
+            768
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v1-front-phase-x8-y0",
+    "actual_eye_hits": 2,
+    "proof": {
+      "down_idle": [
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            320,
+            336
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 1,
+          "native": [
+            8,
+            10
+          ],
+          "source": [
+            320,
+            766
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v1-front-phase-x4-y12",
+    "actual_eye_hits": 1,
+    "proof": {
+      "down_idle": [],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            245,
+            773
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v1-front-phase-x4-y8",
+    "actual_eye_hits": 1,
+    "proof": {
+      "down_idle": [],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            6,
+            10
+          ],
+          "source": [
+            245,
+            771
+          ]
+        }
+      ],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v1-front-phase-x-12-y-12",
+    "actual_eye_hits": 0,
+    "proof": {
+      "down_idle": [],
+      "down_step": [],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v1-front-phase-x12-y-12",
+    "actual_eye_hits": 0,
+    "proof": {
+      "down_idle": [],
+      "down_step": [],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v1-front-phase-x0-y-12",
+    "actual_eye_hits": 0,
+    "proof": {
+      "down_idle": [],
+      "down_step": [],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v1-front-phase-x-8-y-12",
+    "actual_eye_hits": 0,
+    "proof": {
+      "down_idle": [],
+      "down_step": [],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v1-front-phase-x-4-y-12",
+    "actual_eye_hits": 0,
+    "proof": {
+      "down_idle": [],
+      "down_step": [],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v1-front-phase-x0-y8",
+    "actual_eye_hits": 0,
+    "proof": {
+      "down_idle": [],
+      "down_step": [],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v1-front-phase-x4-y-12",
+    "actual_eye_hits": 0,
+    "proof": {
+      "down_idle": [],
+      "down_step": [],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v1-front-phase-x8-y-12",
+    "actual_eye_hits": 0,
+    "proof": {
+      "down_idle": [],
+      "down_step": [],
+      "left_idle": [],
+      "left_step": []
+    }
+  },
+  {
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/oatlet-v1-front-phase-x-4-y12",
+    "actual_eye_hits": 0,
+    "proof": {
+      "down_idle": [],
+      "down_step": [],
+      "left_idle": [],
+      "left_step": []
+    }
+  }
+]

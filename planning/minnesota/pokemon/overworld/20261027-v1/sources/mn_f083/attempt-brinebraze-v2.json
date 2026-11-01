@@ -1,0 +1,9 @@
+{
+  "tool": "built-in image_gen",
+  "original": "/Users/ryanculligan/.codex/generated_images/01a179bf-dc2b-7352-8975-8b8f3a32e33b/exec-dab46ab6-6790-4264-b963-674f64a352a0.png",
+  "preserved_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f083/brinebraze.overworld.imagegen-v2-safe-gutters.png",
+  "sha256": "4fd27810d3e2e1284945326dbc1c12de526db4db87c3754f9465ec365b5b5390",
+  "exact_prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f083/prompt-brinebraze-safe-gutters-v2.txt",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f083/reference-mapping-brinebraze-safe-gutters-v2.json",
+  "status": "preserved; selected frames recorded in frozen manifest"
+}

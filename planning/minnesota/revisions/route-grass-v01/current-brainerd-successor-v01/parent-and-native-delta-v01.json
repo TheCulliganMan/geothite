@@ -1,0 +1,77 @@
+{
+  "status": "CURRENT_BRAINERD_SUCCESSOR_REVIEW_STARTED",
+  "revision": "route_grass_boundary_safari_sources_revision",
+  "pack": "content-packs/minnesota-iron-crosscut-rock-cache-v02.crystalpack",
+  "sha256": "bc38b8920bdc6d5e3c0e18ddac283aa4087e0020d694861f277d10314a3875d1",
+  "tileset": "mn_outdoor_johto_stairs",
+  "deltas": [
+    {
+      "metatile": [
+        12,
+        19
+      ],
+      "before": 77,
+      "after": 105,
+      "after_collision": [
+        "FLOOR",
+        "WALL",
+        "FLOOR",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        10,
+        20
+      ],
+      "before": 116,
+      "after": 128,
+      "after_collision": [
+        "FLOOR",
+        "FLOOR",
+        "WALL",
+        "FLOOR"
+      ]
+    }
+  ],
+  "retired_historical_ledge": [
+    {
+      "upper": [
+        23,
+        38
+      ],
+      "lip": [
+        24,
+        38
+      ],
+      "landing": [
+        26,
+        38
+      ],
+      "out": "right",
+      "return_via": [
+        [
+          20,
+          41
+        ]
+      ]
+    }
+  ],
+  "grass_quadrants": 0,
+  "hops": 0,
+  "stairs": [
+    {
+      "metatile": [
+        10,
+        20
+      ],
+      "block": "80",
+      "collision": [
+        "FLOOR",
+        "FLOOR",
+        "WALL",
+        "FLOOR"
+      ]
+    }
+  ]
+}

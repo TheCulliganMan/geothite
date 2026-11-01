@@ -1,0 +1,55 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-duluth-mart-v01.crystalpack",
+  "pack_sha256": "d77baff3e597e6527450400022e0b9acf655b856983cf96e49fbebfe275464f3",
+  "source_save": ".local/route-grass-review/duluth-mart-native-facades-saves-v01/brainerd-90093-1793377700497258000.crystalsave",
+  "source_sha256": "10833776a846cff2ef0a1304f8ef6bedc100b1c9c8188e292693f23cb9e3749c",
+  "input_save": ".local/route-grass-review/duluth-mart-stdio-input-v01.crystalsave",
+  "source_and_input_unchanged": true,
+  "save": ".local/route-grass-review/duluth-mart-stdio-output-v01.crystalsave",
+  "initial": {
+    "badges": 0,
+    "dialogue": false,
+    "facing": "down",
+    "frame": 673,
+    "map": "MnDuluth",
+    "menu": null,
+    "mode": "overworld",
+    "money": 3000,
+    "player": "CHRIS",
+    "pokedex": {
+      "owned": 0,
+      "seen": 0
+    },
+    "position": {
+      "x": 79,
+      "y": 40
+    }
+  },
+  "final": {
+    "badges": 0,
+    "dialogue": false,
+    "facing": "left",
+    "frame": 701,
+    "map": "MnDuluth",
+    "menu": null,
+    "mode": "overworld",
+    "money": 3000,
+    "player": "CHRIS",
+    "pokedex": {
+      "owned": 0,
+      "seen": 0
+    },
+    "position": {
+      "x": 79,
+      "y": 40
+    }
+  },
+  "old_door_denied": true,
+  "new_door_both_carpet_roundtrips": true,
+  "reached_save_continue": true,
+  "items_balls_and_walking": true,
+  "calls": 46,
+  "stderr_bytes": 0,
+  "scope": "Actual saved Mart checkpoint from successful child facade native case, no retagging. Initial party and badge qualifications are explicit QA fixtures."
+}

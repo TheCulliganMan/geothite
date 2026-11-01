@@ -1,0 +1,202 @@
+{
+  "queue_number": 220,
+  "dex_number": 220,
+  "master_source_order": 309,
+  "species_id": "MN_099",
+  "name": "Vergloom",
+  "family_id": "MN_F048",
+  "stage": 1,
+  "types": [
+    "DARK",
+    "GRASS"
+  ],
+  "evolves_to": null,
+  "section": "legendary",
+  "status": "awaiting_generation",
+  "family_job_id": "MN_F048",
+  "selected_reference_path": "target/minnesota-pokemon/native/MN_F048/mn-099-vergloom-v1.front.png",
+  "references": {
+    "front": {
+      "native_png": {
+        "path": "target/minnesota-pokemon/native/MN_F048/mn-099-vergloom-v1.front.png",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F048/mn-099-vergloom-v1.front.png",
+        "sha256": "06156d1b7ccbd592ca5a53a42d960a412b3217191ad2b5a94211dabaa71fb950"
+      },
+      "native_indexed_json": {
+        "path": "target/minnesota-pokemon/native/MN_F048/mn-099-vergloom-v1.front.json",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F048/mn-099-vergloom-v1.front.json",
+        "sha256": "3e2c166b7d8803af361307d58565b4f24f14f58f28d21c9f1e3a0a34b700d686"
+      },
+      "native_2bpp": {
+        "path": "target/minnesota-pokemon/native/MN_F048/mn-099-vergloom-v1.front.2bpp",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F048/mn-099-vergloom-v1.front.2bpp",
+        "sha256": "cc1f16b29a12df857ce8f153ef09ceba2fe64bb68924ccfa9b5bae44ec6f5bd9"
+      },
+      "source_image": {
+        "path": "planning/minnesota/pokemon/sprites/mn-f048/front-back.imagegen-v1.png",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mn-f048/front-back.imagegen-v1.png",
+        "sha256": "ce1d06d1ed330dbc31321619951085447fe8f21d6a583f1aa554ae6ff78e5116"
+      },
+      "source_crop": [
+        0,
+        0,
+        1223,
+        700
+      ],
+      "native_fit": [
+        54,
+        54
+      ],
+      "generation_prompt": {
+        "path": "planning/minnesota/pokemon/sprites/mn-f048/prompt-v1.txt",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mn-f048/prompt-v1.txt",
+        "sha256": "1eeef0e0716dade9154afafc8499e7f5dce4d9ea0b26f6593f6d3b45761bc7af",
+        "reference_kind": "declared_design_prompt_reference; authoritative view record takes precedence over family default"
+      },
+      "sampling": "area_vote",
+      "exterior_contour": "source_backed",
+      "has_guarded_native_refinements": false,
+      "authority_note": "The current selected native PNG is the design authority; original source may contain detail simplified or refined in canonical conversion."
+    },
+    "back": {
+      "native_png": {
+        "path": "target/minnesota-pokemon/native/MN_F048/mn-099-vergloom-v1.back.png",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F048/mn-099-vergloom-v1.back.png",
+        "sha256": "968a396f155c50a9ab5eafe374cf35c1bf94bc72e2e9fe20b5d6fd2c16e02424"
+      },
+      "native_indexed_json": {
+        "path": "target/minnesota-pokemon/native/MN_F048/mn-099-vergloom-v1.back.json",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F048/mn-099-vergloom-v1.back.json",
+        "sha256": "3c4db8ea5c996ea66b3bab1b6a008f5e069467631f0fc1f682f40e16b9bd9fc8"
+      },
+      "native_2bpp": {
+        "path": "target/minnesota-pokemon/native/MN_F048/mn-099-vergloom-v1.back.2bpp",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F048/mn-099-vergloom-v1.back.2bpp",
+        "sha256": "5d9706a8df6ce79f94ae10f5be4e504fdbd9240ff7133f099f0d010283492364"
+      },
+      "source_image": {
+        "path": "planning/minnesota/pokemon/sprites/mn-f048/front-back.imagegen-v1.png",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mn-f048/front-back.imagegen-v1.png",
+        "sha256": "ce1d06d1ed330dbc31321619951085447fe8f21d6a583f1aa554ae6ff78e5116"
+      },
+      "source_crop": [
+        0,
+        700,
+        1223,
+        586
+      ],
+      "native_fit": [
+        44,
+        47
+      ],
+      "generation_prompt": {
+        "path": "planning/minnesota/pokemon/sprites/mn-f048/prompt-v1.txt",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mn-f048/prompt-v1.txt",
+        "sha256": "1eeef0e0716dade9154afafc8499e7f5dce4d9ea0b26f6593f6d3b45761bc7af",
+        "reference_kind": "declared_design_prompt_reference; authoritative view record takes precedence over family default"
+      },
+      "sampling": "area_vote",
+      "exterior_contour": "source_backed",
+      "has_guarded_native_refinements": false,
+      "authority_note": "The current selected native PNG is the design authority; original source may contain detail simplified or refined in canonical conversion."
+    }
+  },
+  "palette": {
+    "species_id": "MN_099",
+    "name": "Vergloom",
+    "gbc_rgb5": [
+      [
+        31,
+        31,
+        31
+      ],
+      [
+        15,
+        22,
+        10
+      ],
+      [
+        5,
+        10,
+        9
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ],
+    "gbc_rgb555_words": [
+      32767,
+      10959,
+      9541,
+      0
+    ],
+    "rgb8": [
+      [
+        255,
+        255,
+        255
+      ],
+      [
+        123,
+        181,
+        82
+      ],
+      [
+        41,
+        82,
+        74
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ],
+    "hex": [
+      "#FFFFFF",
+      "#7BB552",
+      "#29524A",
+      "#000000"
+    ]
+  },
+  "design": {
+    "family_theme": "Vergas Hairy Man: hanging moss-and-branch hair conceals the face of a hulking forest cryptid.",
+    "member_body_growth": null,
+    "member_silhouette": null,
+    "family_design_lock": null,
+    "family_sprite_design": null,
+    "silhouette_invariants_16px": [
+      "Preserve the accepted silhouette, face, limb/wing count and dominant theme shapes shown by the exact selected native references.",
+      "Choose one or two defining visible forms from the family theme; simplify directly for16pixels rather than scaling the battle sprite."
+    ],
+    "priority_invariants_manually_authored": false
+  },
+  "generation_attempts": [],
+  "selected_overworld_source": null,
+  "selected_native_candidate": null,
+  "native_visual_review": null,
+  "integration_proof": null,
+  "overworld_palette_binding": {
+    "transparent_index": 0,
+    "visible_indices": [
+      1,
+      2,
+      3
+    ],
+    "normal_rgb555_words": [
+      32767,
+      10959,
+      9541,
+      0
+    ],
+    "shiny_rgb555_words": [
+      32767,
+      23018,
+      10409,
+      0
+    ],
+    "white_body_region_policy": "Simplify formerly white body/highlight regions to light ink1. Index0 is transparent everywhere, not an opaque white paint color."
+  }
+}

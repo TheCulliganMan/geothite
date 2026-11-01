@@ -1,0 +1,21 @@
+{
+  "scope": "Turn Mina along the lower Iron Range bench; preserve her encounter and stop her geometric sightline from reaching the inaccessible upper cliff rim.",
+  "parent": "/Users/ryanculligan/GitHub/geothite/content-packs/minnesota-current-outdoor-boulder-setbacks-v02.crystalpack",
+  "parent_sha256": "bf81f17d876558892ea62d123ccffa76c486ac9e5855a6738cc1ca0eac83d8a6",
+  "modules": {
+    "MnR09C00R00": "fc8abc453471a3b7c84a74f8310183ff7f1028478f1b12cdef08e9542e9a1084"
+  },
+  "changes": [],
+  "trainer_turns": [
+    {
+      "map": "MnR09C00R00",
+      "script": "MN_R09_T03",
+      "tile": [
+        41,
+        37
+      ],
+      "before": "SPRITEMOVEDATA_STANDING_UP",
+      "after": "SPRITEMOVEDATA_STANDING_RIGHT"
+    }
+  ]
+}

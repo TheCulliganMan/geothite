@@ -1,0 +1,34 @@
+{
+  "name": "Sodger",
+  "types": [
+    "GROUND"
+  ],
+  "family_id": "MN_F126",
+  "species_id": "MN_277",
+  "stages": 1,
+  "theme": "Prairie badger, sod rolling, trench shoring and tamping. The earth collar, spade claws and broad tamping tail form one low compact original creature.",
+  "normal_rgb5": [
+    [
+      31,
+      31,
+      31
+    ],
+    [
+      26,
+      18,
+      9
+    ],
+    [
+      10,
+      7,
+      5
+    ],
+    [
+      0,
+      0,
+      0
+    ]
+  ],
+  "status": "user-rejected-unregistered",
+  "reason": "User rejected Sodger. Preserve source, exact prompt and every native conversion; do not add to active catalog."
+}

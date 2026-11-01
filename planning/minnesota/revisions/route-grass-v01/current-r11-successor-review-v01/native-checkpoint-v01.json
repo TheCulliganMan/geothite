@@ -1,0 +1,6 @@
+{
+  "status": "REQUIRES_DIAGNOSIS",
+  "exit_code": 101,
+  "log": ".local/route-grass-review/r11-upper-native-v01.log",
+  "scope": "Cross upper grass passage to existing resident and Save/Continue. Initial partner, badges and location are local QA setup."
+}

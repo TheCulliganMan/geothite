@@ -1,0 +1,345 @@
+{
+  "species_id": "MN_145",
+  "name": "cartick",
+  "status": "native-review-recommended; root independent review and context required",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f067/cartick.manifest-native-joint-phase-v3.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-cartick-joint-phase-v3",
+  "shared_transform": {
+    "source_bounds": [
+      12,
+      12,
+      426,
+      396
+    ],
+    "native_size": [
+      14,
+      13
+    ],
+    "native_origin": [
+      1,
+      2
+    ]
+  },
+  "all_four_nonrear_poses_actual_pupils_pass": true,
+  "each_native_eye_cluster_maps_to_one_actual_small_source_pupil_component": true,
+  "actual_source_pupil_proofs": [
+    {
+      "pose": "down_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f067/cartick.overworld.imagegen-v3.png",
+      "crop": [
+        47,
+        65,
+        450,
+        419
+      ],
+      "actual_source_eye_bounds": [
+        [
+          217,
+          351,
+          28,
+          35
+        ],
+        [
+          304,
+          351,
+          28,
+          35
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              11
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                2,
+                1,
+                1,
+                252
+              ],
+              "bounds": [
+                217,
+                351,
+                28,
+                35
+              ],
+              "pixels": 979,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                11
+              ],
+              "source_sample_pixel": [
+                226,
+                366
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              9,
+              11
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                304,
+                351,
+                28,
+                35
+              ],
+              "pixels": 978,
+              "truncated_contour": false,
+              "native_pixel": [
+                9,
+                11
+              ],
+              "source_sample_pixel": [
+                317,
+                366
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f067/cartick.overworld.imagegen-v3.png",
+      "crop": [
+        1080,
+        71,
+        450,
+        419
+      ],
+      "actual_source_eye_bounds": [
+        [
+          1151,
+          329,
+          28,
+          36
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              3,
+              10
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                1151,
+                329,
+                28,
+                36
+              ],
+              "pixels": 1008,
+              "truncated_contour": false,
+              "native_pixel": [
+                3,
+                10
+              ],
+              "source_sample_pixel": [
+                1168,
+                341
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f067/cartick.overworld.imagegen-v3.png",
+      "crop": [
+        47,
+        549,
+        450,
+        419
+      ],
+      "actual_source_eye_bounds": [
+        [
+          216,
+          810,
+          30,
+          35
+        ],
+        [
+          300,
+          810,
+          31,
+          35
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              10
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                252
+              ],
+              "bounds": [
+                216,
+                810,
+                30,
+                35
+              ],
+              "pixels": 1050,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                10
+              ],
+              "source_sample_pixel": [
+                226,
+                819
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              9,
+              10
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                252
+              ],
+              "bounds": [
+                300,
+                810,
+                31,
+                35
+              ],
+              "pixels": 1085,
+              "truncated_contour": false,
+              "native_pixel": [
+                9,
+                10
+              ],
+              "source_sample_pixel": [
+                317,
+                819
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f067/cartick.overworld.imagegen-v3.png",
+      "crop": [
+        1077,
+        549,
+        450,
+        419
+      ],
+      "actual_source_eye_bounds": [
+        [
+          1150,
+          794,
+          27,
+          32
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              3,
+              10
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                1150,
+                794,
+                27,
+                32
+              ],
+              "pixels": 860,
+              "truncated_contour": false,
+              "native_pixel": [
+                3,
+                10
+              ],
+              "source_sample_pixel": [
+                1165,
+                819
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "old_native_poses_preserved_exactly": [
+    "down_idle",
+    "up_idle",
+    "left_idle",
+    "down_step",
+    "up_step",
+    "left_step"
+  ],
+  "normal_shiny_runtime_parity": "all1536pixels exact each",
+  "canonical_palette_bytes": "exact",
+  "all_three_walk_pairs_distinct": true,
+  "rear_review": "both rear native poses viewed; no copied face",
+  "normal_shiny_native_boards_actually_viewed": true,
+  "accepted_coverage_native_pack_untouched": true,
+  "manifest_sha256": "4c447d4e4ba4d24fafbedf65427638b1887dd4d67f7ec08beed0daa93d14d649",
+  "compiled_index_sha256": "c884ad7e07c513c0fad81ae0ad687f59ee9027f3bc14668d40cd69bb356125f8"
+}

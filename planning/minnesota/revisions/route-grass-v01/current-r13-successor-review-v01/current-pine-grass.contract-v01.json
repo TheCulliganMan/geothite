@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "id": "MN_R13",
+  "source_kind": "scoped_route_grass_review_contract",
+  "native_binding": {
+    "pack": "content-packs/minnesota-current-r13-south-woods-grass-v01.crystalpack",
+    "pack_sha256": "10cd75cf9de2578966560721755ee761129d84d5e02122e174df07331f84679d",
+    "content_identity": "d1977ad46aeb9734e8c268d857e01c169a031a8abdc3a935e88a60420ce67b9c"
+  },
+  "new_grass_quadrants": 16,
+  "grass_quadrants": 208,
+  "inland_ice_quadrants_preserved": 16,
+  "checked_approaches": [
+    [
+      35,
+      100
+    ],
+    [
+      35,
+      112
+    ]
+  ],
+  "minimum_grass_steps_before": 6,
+  "minimum_grass_steps_after": 10,
+  "native_grass_block": "84",
+  "native_floor_preimage": "83",
+  "previous_current_dossier": null,
+  "scope": "Whole current source route visually reviewed; scoped southern winter grass crossing and existing Cut/Revive once/Continue verified. This is intentional inland winter; no coast ice is added. Full current route and neighboring town journeys remain separate."
+}

@@ -1,0 +1,4613 @@
+{
+  "schema_version": 2,
+  "id": "MnMississippiLowerWoods",
+  "tileset": "johto",
+  "compiled_tileset": "johto",
+  "dimensions_metatiles": [
+    64,
+    68
+  ],
+  "shore_fitting": "explicit_source_edges",
+  "reject_cliff_cuts": true,
+  "source_pixels_modified": false,
+  "layers": [
+    {
+      "name": "Explicit authored row 008 \u00b7 039..039",
+      "kind": "block_rect",
+      "bounds": [
+        39,
+        8,
+        40,
+        9
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Explicit authored row 008 \u00b7 041..041",
+      "kind": "block_rect",
+      "bounds": [
+        41,
+        8,
+        42,
+        9
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Explicit authored row 009 \u00b7 037..037",
+      "kind": "block_rect",
+      "bounds": [
+        37,
+        9,
+        38,
+        10
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Explicit authored row 009 \u00b7 038..038",
+      "kind": "block_rect",
+      "bounds": [
+        38,
+        9,
+        39,
+        10
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Explicit authored row 009 \u00b7 039..039",
+      "kind": "block_rect",
+      "bounds": [
+        39,
+        9,
+        40,
+        10
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 009 \u00b7 041..041",
+      "kind": "block_rect",
+      "bounds": [
+        41,
+        9,
+        42,
+        10
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit authored row 009 \u00b7 042..042",
+      "kind": "block_rect",
+      "bounds": [
+        42,
+        9,
+        43,
+        10
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Explicit authored row 009 \u00b7 043..043",
+      "kind": "block_rect",
+      "bounds": [
+        43,
+        9,
+        44,
+        10
+      ],
+      "block": "55"
+    },
+    {
+      "name": "Explicit authored row 010 \u00b7 034..034",
+      "kind": "block_rect",
+      "bounds": [
+        34,
+        10,
+        35,
+        11
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Explicit authored row 010 \u00b7 035..036",
+      "kind": "block_rect",
+      "bounds": [
+        35,
+        10,
+        37,
+        11
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Explicit authored row 010 \u00b7 037..037",
+      "kind": "block_rect",
+      "bounds": [
+        37,
+        10,
+        38,
+        11
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Explicit authored row 010 \u00b7 038..038",
+      "kind": "block_rect",
+      "bounds": [
+        38,
+        10,
+        39,
+        11
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 010 \u00b7 039..039",
+      "kind": "block_rect",
+      "bounds": [
+        39,
+        10,
+        40,
+        11
+      ],
+      "block": "7a"
+    },
+    {
+      "name": "Explicit authored row 010 \u00b7 040..040",
+      "kind": "block_rect",
+      "bounds": [
+        40,
+        10,
+        41,
+        11
+      ],
+      "block": "55"
+    },
+    {
+      "name": "Explicit authored row 010 \u00b7 041..041",
+      "kind": "block_rect",
+      "bounds": [
+        41,
+        10,
+        42,
+        11
+      ],
+      "block": "39"
+    },
+    {
+      "name": "Explicit authored row 010 \u00b7 042..042",
+      "kind": "block_rect",
+      "bounds": [
+        42,
+        10,
+        43,
+        11
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit authored row 010 \u00b7 043..043",
+      "kind": "block_rect",
+      "bounds": [
+        43,
+        10,
+        44,
+        11
+      ],
+      "block": "7a"
+    },
+    {
+      "name": "Explicit authored row 010 \u00b7 044..044",
+      "kind": "block_rect",
+      "bounds": [
+        44,
+        10,
+        45,
+        11
+      ],
+      "block": "55"
+    },
+    {
+      "name": "Explicit authored row 011 \u00b7 032..032",
+      "kind": "block_rect",
+      "bounds": [
+        32,
+        11,
+        33,
+        12
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Explicit authored row 011 \u00b7 033..033",
+      "kind": "block_rect",
+      "bounds": [
+        33,
+        11,
+        34,
+        12
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Explicit authored row 011 \u00b7 034..034",
+      "kind": "block_rect",
+      "bounds": [
+        34,
+        11,
+        35,
+        12
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Explicit authored row 011 \u00b7 035..039",
+      "kind": "block_rect",
+      "bounds": [
+        35,
+        11,
+        40,
+        12
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 011 \u00b7 040..040",
+      "kind": "block_rect",
+      "bounds": [
+        40,
+        11,
+        41,
+        12
+      ],
+      "block": "7a"
+    },
+    {
+      "name": "Explicit authored row 011 \u00b7 041..041",
+      "kind": "block_rect",
+      "bounds": [
+        41,
+        11,
+        42,
+        12
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Explicit authored row 011 \u00b7 042..042",
+      "kind": "block_rect",
+      "bounds": [
+        42,
+        11,
+        43,
+        12
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Explicit authored row 011 \u00b7 043..043",
+      "kind": "block_rect",
+      "bounds": [
+        43,
+        11,
+        44,
+        12
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 011 \u00b7 044..044",
+      "kind": "block_rect",
+      "bounds": [
+        44,
+        11,
+        45,
+        12
+      ],
+      "block": "7a"
+    },
+    {
+      "name": "Explicit authored row 011 \u00b7 045..045",
+      "kind": "block_rect",
+      "bounds": [
+        45,
+        11,
+        46,
+        12
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Explicit authored row 011 \u00b7 046..046",
+      "kind": "block_rect",
+      "bounds": [
+        46,
+        11,
+        47,
+        12
+      ],
+      "block": "55"
+    },
+    {
+      "name": "Explicit authored row 011 \u00b7 052..052",
+      "kind": "block_rect",
+      "bounds": [
+        52,
+        11,
+        53,
+        12
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Explicit authored row 011 \u00b7 053..053",
+      "kind": "block_rect",
+      "bounds": [
+        53,
+        11,
+        54,
+        12
+      ],
+      "block": "55"
+    },
+    {
+      "name": "Explicit authored row 012 \u00b7 031..031",
+      "kind": "block_rect",
+      "bounds": [
+        31,
+        12,
+        32,
+        13
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Explicit authored row 012 \u00b7 032..032",
+      "kind": "block_rect",
+      "bounds": [
+        32,
+        12,
+        33,
+        13
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Explicit authored row 012 \u00b7 033..037",
+      "kind": "block_rect",
+      "bounds": [
+        33,
+        12,
+        38,
+        13
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 012 \u00b7 038..038",
+      "kind": "block_rect",
+      "bounds": [
+        38,
+        12,
+        39,
+        13
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 012 \u00b7 042..042",
+      "kind": "block_rect",
+      "bounds": [
+        42,
+        12,
+        43,
+        13
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit authored row 012 \u00b7 043..045",
+      "kind": "block_rect",
+      "bounds": [
+        43,
+        12,
+        46,
+        13
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 012 \u00b7 046..046",
+      "kind": "block_rect",
+      "bounds": [
+        46,
+        12,
+        47,
+        13
+      ],
+      "block": "7a"
+    },
+    {
+      "name": "Explicit authored row 012 \u00b7 047..051",
+      "kind": "block_rect",
+      "bounds": [
+        47,
+        12,
+        52,
+        13
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Explicit authored row 012 \u00b7 052..052",
+      "kind": "block_rect",
+      "bounds": [
+        52,
+        12,
+        53,
+        13
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Explicit authored row 012 \u00b7 053..053",
+      "kind": "block_rect",
+      "bounds": [
+        53,
+        12,
+        54,
+        13
+      ],
+      "block": "7a"
+    },
+    {
+      "name": "Explicit authored row 012 \u00b7 054..054",
+      "kind": "block_rect",
+      "bounds": [
+        54,
+        12,
+        55,
+        13
+      ],
+      "block": "55"
+    },
+    {
+      "name": "Explicit authored row 013 \u00b7 031..031",
+      "kind": "block_rect",
+      "bounds": [
+        31,
+        13,
+        32,
+        14
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit authored row 013 \u00b7 032..034",
+      "kind": "block_rect",
+      "bounds": [
+        32,
+        13,
+        35,
+        14
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 013 \u00b7 035..035",
+      "kind": "block_rect",
+      "bounds": [
+        35,
+        13,
+        36,
+        14
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 013 \u00b7 044..044",
+      "kind": "block_rect",
+      "bounds": [
+        44,
+        13,
+        45,
+        14
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit authored row 013 \u00b7 045..053",
+      "kind": "block_rect",
+      "bounds": [
+        45,
+        13,
+        54,
+        14
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 013 \u00b7 054..054",
+      "kind": "block_rect",
+      "bounds": [
+        54,
+        13,
+        55,
+        14
+      ],
+      "block": "7a"
+    },
+    {
+      "name": "Explicit authored row 013 \u00b7 055..055",
+      "kind": "block_rect",
+      "bounds": [
+        55,
+        13,
+        56,
+        14
+      ],
+      "block": "55"
+    },
+    {
+      "name": "Explicit authored row 014 \u00b7 030..030",
+      "kind": "block_rect",
+      "bounds": [
+        30,
+        14,
+        31,
+        15
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Explicit authored row 014 \u00b7 031..031",
+      "kind": "block_rect",
+      "bounds": [
+        31,
+        14,
+        32,
+        15
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Explicit authored row 014 \u00b7 032..032",
+      "kind": "block_rect",
+      "bounds": [
+        32,
+        14,
+        33,
+        15
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 014 \u00b7 033..033",
+      "kind": "block_rect",
+      "bounds": [
+        33,
+        14,
+        34,
+        15
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 014 \u00b7 045..045",
+      "kind": "block_rect",
+      "bounds": [
+        45,
+        14,
+        46,
+        15
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit authored row 014 \u00b7 046..054",
+      "kind": "block_rect",
+      "bounds": [
+        46,
+        14,
+        55,
+        15
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 014 \u00b7 055..055",
+      "kind": "block_rect",
+      "bounds": [
+        55,
+        14,
+        56,
+        15
+      ],
+      "block": "7a"
+    },
+    {
+      "name": "Explicit authored row 014 \u00b7 056..056",
+      "kind": "block_rect",
+      "bounds": [
+        56,
+        14,
+        57,
+        15
+      ],
+      "block": "55"
+    },
+    {
+      "name": "Explicit authored row 015 \u00b7 030..030",
+      "kind": "block_rect",
+      "bounds": [
+        30,
+        15,
+        31,
+        16
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit authored row 015 \u00b7 031..032",
+      "kind": "block_rect",
+      "bounds": [
+        31,
+        15,
+        33,
+        16
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 015 \u00b7 033..033",
+      "kind": "block_rect",
+      "bounds": [
+        33,
+        15,
+        34,
+        16
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 015 \u00b7 047..047",
+      "kind": "block_rect",
+      "bounds": [
+        47,
+        15,
+        48,
+        16
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit authored row 015 \u00b7 053..053",
+      "kind": "block_rect",
+      "bounds": [
+        53,
+        15,
+        54,
+        16
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit authored row 015 \u00b7 054..055",
+      "kind": "block_rect",
+      "bounds": [
+        54,
+        15,
+        56,
+        16
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 015 \u00b7 056..056",
+      "kind": "block_rect",
+      "bounds": [
+        56,
+        15,
+        57,
+        16
+      ],
+      "block": "7a"
+    },
+    {
+      "name": "Explicit authored row 015 \u00b7 057..057",
+      "kind": "block_rect",
+      "bounds": [
+        57,
+        15,
+        58,
+        16
+      ],
+      "block": "55"
+    },
+    {
+      "name": "Explicit authored row 016 \u00b7 029..029",
+      "kind": "block_rect",
+      "bounds": [
+        29,
+        16,
+        30,
+        17
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Explicit authored row 016 \u00b7 030..030",
+      "kind": "block_rect",
+      "bounds": [
+        30,
+        16,
+        31,
+        17
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Explicit authored row 016 \u00b7 031..031",
+      "kind": "block_rect",
+      "bounds": [
+        31,
+        16,
+        32,
+        17
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 016 \u00b7 032..032",
+      "kind": "block_rect",
+      "bounds": [
+        32,
+        16,
+        33,
+        17
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 016 \u00b7 054..054",
+      "kind": "block_rect",
+      "bounds": [
+        54,
+        16,
+        55,
+        17
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit authored row 016 \u00b7 055..056",
+      "kind": "block_rect",
+      "bounds": [
+        55,
+        16,
+        57,
+        17
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 016 \u00b7 057..057",
+      "kind": "block_rect",
+      "bounds": [
+        57,
+        16,
+        58,
+        17
+      ],
+      "block": "7a"
+    },
+    {
+      "name": "Explicit authored row 016 \u00b7 058..058",
+      "kind": "block_rect",
+      "bounds": [
+        58,
+        16,
+        59,
+        17
+      ],
+      "block": "55"
+    },
+    {
+      "name": "Explicit authored row 017 \u00b7 029..029",
+      "kind": "block_rect",
+      "bounds": [
+        29,
+        17,
+        30,
+        18
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit authored row 017 \u00b7 030..031",
+      "kind": "block_rect",
+      "bounds": [
+        30,
+        17,
+        32,
+        18
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 017 \u00b7 032..032",
+      "kind": "block_rect",
+      "bounds": [
+        32,
+        17,
+        33,
+        18
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 017 \u00b7 055..055",
+      "kind": "block_rect",
+      "bounds": [
+        55,
+        17,
+        56,
+        18
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit authored row 017 \u00b7 056..057",
+      "kind": "block_rect",
+      "bounds": [
+        56,
+        17,
+        58,
+        18
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 017 \u00b7 058..058",
+      "kind": "block_rect",
+      "bounds": [
+        58,
+        17,
+        59,
+        18
+      ],
+      "block": "7a"
+    },
+    {
+      "name": "Explicit authored row 017 \u00b7 059..059",
+      "kind": "block_rect",
+      "bounds": [
+        59,
+        17,
+        60,
+        18
+      ],
+      "block": "55"
+    },
+    {
+      "name": "Explicit authored row 018 \u00b7 028..028",
+      "kind": "block_rect",
+      "bounds": [
+        28,
+        18,
+        29,
+        19
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Explicit authored row 018 \u00b7 029..029",
+      "kind": "block_rect",
+      "bounds": [
+        29,
+        18,
+        30,
+        19
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Explicit authored row 018 \u00b7 030..030",
+      "kind": "block_rect",
+      "bounds": [
+        30,
+        18,
+        31,
+        19
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 018 \u00b7 031..031",
+      "kind": "block_rect",
+      "bounds": [
+        31,
+        18,
+        32,
+        19
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 018 \u00b7 056..056",
+      "kind": "block_rect",
+      "bounds": [
+        56,
+        18,
+        57,
+        19
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit authored row 018 \u00b7 057..058",
+      "kind": "block_rect",
+      "bounds": [
+        57,
+        18,
+        59,
+        19
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 018 \u00b7 059..059",
+      "kind": "block_rect",
+      "bounds": [
+        59,
+        18,
+        60,
+        19
+      ],
+      "block": "7a"
+    },
+    {
+      "name": "Explicit authored row 018 \u00b7 060..060",
+      "kind": "block_rect",
+      "bounds": [
+        60,
+        18,
+        61,
+        19
+      ],
+      "block": "55"
+    },
+    {
+      "name": "Explicit authored row 019 \u00b7 029..029",
+      "kind": "block_rect",
+      "bounds": [
+        29,
+        19,
+        30,
+        20
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit authored row 019 \u00b7 030..030",
+      "kind": "block_rect",
+      "bounds": [
+        30,
+        19,
+        31,
+        20
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 019 \u00b7 031..031",
+      "kind": "block_rect",
+      "bounds": [
+        31,
+        19,
+        32,
+        20
+      ],
+      "block": "7a"
+    },
+    {
+      "name": "Explicit authored row 019 \u00b7 032..032",
+      "kind": "block_rect",
+      "bounds": [
+        32,
+        19,
+        33,
+        20
+      ],
+      "block": "55"
+    },
+    {
+      "name": "Explicit authored row 019 \u00b7 057..057",
+      "kind": "block_rect",
+      "bounds": [
+        57,
+        19,
+        58,
+        20
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit authored row 019 \u00b7 058..059",
+      "kind": "block_rect",
+      "bounds": [
+        58,
+        19,
+        60,
+        20
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 019 \u00b7 060..060",
+      "kind": "block_rect",
+      "bounds": [
+        60,
+        19,
+        61,
+        20
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 020 \u00b7 029..029",
+      "kind": "block_rect",
+      "bounds": [
+        29,
+        20,
+        30,
+        21
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit authored row 020 \u00b7 030..031",
+      "kind": "block_rect",
+      "bounds": [
+        30,
+        20,
+        32,
+        21
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 020 \u00b7 032..032",
+      "kind": "block_rect",
+      "bounds": [
+        32,
+        20,
+        33,
+        21
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 020 \u00b7 057..057",
+      "kind": "block_rect",
+      "bounds": [
+        57,
+        20,
+        58,
+        21
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit authored row 020 \u00b7 058..059",
+      "kind": "block_rect",
+      "bounds": [
+        58,
+        20,
+        60,
+        21
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 020 \u00b7 060..060",
+      "kind": "block_rect",
+      "bounds": [
+        60,
+        20,
+        61,
+        21
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 021 \u00b7 030..030",
+      "kind": "block_rect",
+      "bounds": [
+        30,
+        21,
+        31,
+        22
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit authored row 021 \u00b7 031..031",
+      "kind": "block_rect",
+      "bounds": [
+        31,
+        21,
+        32,
+        22
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 021 \u00b7 032..032",
+      "kind": "block_rect",
+      "bounds": [
+        32,
+        21,
+        33,
+        22
+      ],
+      "block": "7a"
+    },
+    {
+      "name": "Explicit authored row 021 \u00b7 033..033",
+      "kind": "block_rect",
+      "bounds": [
+        33,
+        21,
+        34,
+        22
+      ],
+      "block": "55"
+    },
+    {
+      "name": "Explicit authored row 021 \u00b7 057..057",
+      "kind": "block_rect",
+      "bounds": [
+        57,
+        21,
+        58,
+        22
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit authored row 021 \u00b7 058..059",
+      "kind": "block_rect",
+      "bounds": [
+        58,
+        21,
+        60,
+        22
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 021 \u00b7 060..060",
+      "kind": "block_rect",
+      "bounds": [
+        60,
+        21,
+        61,
+        22
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 022 \u00b7 030..030",
+      "kind": "block_rect",
+      "bounds": [
+        30,
+        22,
+        31,
+        23
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit authored row 022 \u00b7 031..032",
+      "kind": "block_rect",
+      "bounds": [
+        31,
+        22,
+        33,
+        23
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 022 \u00b7 033..033",
+      "kind": "block_rect",
+      "bounds": [
+        33,
+        22,
+        34,
+        23
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 022 \u00b7 058..058",
+      "kind": "block_rect",
+      "bounds": [
+        58,
+        22,
+        59,
+        23
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit authored row 022 \u00b7 059..059",
+      "kind": "block_rect",
+      "bounds": [
+        59,
+        22,
+        60,
+        23
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 022 \u00b7 060..060",
+      "kind": "block_rect",
+      "bounds": [
+        60,
+        22,
+        61,
+        23
+      ],
+      "block": "7a"
+    },
+    {
+      "name": "Explicit authored row 022 \u00b7 061..061",
+      "kind": "block_rect",
+      "bounds": [
+        61,
+        22,
+        62,
+        23
+      ],
+      "block": "55"
+    },
+    {
+      "name": "Explicit authored row 023 \u00b7 031..031",
+      "kind": "block_rect",
+      "bounds": [
+        31,
+        23,
+        32,
+        24
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit authored row 023 \u00b7 032..032",
+      "kind": "block_rect",
+      "bounds": [
+        32,
+        23,
+        33,
+        24
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 023 \u00b7 033..033",
+      "kind": "block_rect",
+      "bounds": [
+        33,
+        23,
+        34,
+        24
+      ],
+      "block": "7a"
+    },
+    {
+      "name": "Explicit authored row 023 \u00b7 034..034",
+      "kind": "block_rect",
+      "bounds": [
+        34,
+        23,
+        35,
+        24
+      ],
+      "block": "55"
+    },
+    {
+      "name": "Explicit authored row 023 \u00b7 058..058",
+      "kind": "block_rect",
+      "bounds": [
+        58,
+        23,
+        59,
+        24
+      ],
+      "block": "3a"
+    },
+    {
+      "name": "Explicit authored row 023 \u00b7 059..059",
+      "kind": "block_rect",
+      "bounds": [
+        59,
+        23,
+        60,
+        24
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit authored row 023 \u00b7 060..060",
+      "kind": "block_rect",
+      "bounds": [
+        60,
+        23,
+        61,
+        24
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 023 \u00b7 061..061",
+      "kind": "block_rect",
+      "bounds": [
+        61,
+        23,
+        62,
+        24
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 024 \u00b7 031..031",
+      "kind": "block_rect",
+      "bounds": [
+        31,
+        24,
+        32,
+        25
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit authored row 024 \u00b7 058..058",
+      "kind": "block_rect",
+      "bounds": [
+        58,
+        24,
+        59,
+        25
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Explicit authored row 024 \u00b7 059..059",
+      "kind": "block_rect",
+      "bounds": [
+        59,
+        24,
+        60,
+        25
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Explicit authored row 024 \u00b7 060..060",
+      "kind": "block_rect",
+      "bounds": [
+        60,
+        24,
+        61,
+        25
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 024 \u00b7 061..061",
+      "kind": "block_rect",
+      "bounds": [
+        61,
+        24,
+        62,
+        25
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 025 \u00b7 031..031",
+      "kind": "block_rect",
+      "bounds": [
+        31,
+        25,
+        32,
+        26
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit authored row 025 \u00b7 032..033",
+      "kind": "block_rect",
+      "bounds": [
+        32,
+        25,
+        34,
+        26
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Explicit authored row 025 \u00b7 034..034",
+      "kind": "block_rect",
+      "bounds": [
+        34,
+        25,
+        35,
+        26
+      ],
+      "block": "55"
+    },
+    {
+      "name": "Explicit authored row 025 \u00b7 057..057",
+      "kind": "block_rect",
+      "bounds": [
+        57,
+        25,
+        58,
+        26
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Explicit authored row 025 \u00b7 058..058",
+      "kind": "block_rect",
+      "bounds": [
+        58,
+        25,
+        59,
+        26
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Explicit authored row 025 \u00b7 059..060",
+      "kind": "block_rect",
+      "bounds": [
+        59,
+        25,
+        61,
+        26
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 025 \u00b7 061..061",
+      "kind": "block_rect",
+      "bounds": [
+        61,
+        25,
+        62,
+        26
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 026 \u00b7 030..030",
+      "kind": "block_rect",
+      "bounds": [
+        30,
+        26,
+        31,
+        27
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Explicit authored row 026 \u00b7 031..031",
+      "kind": "block_rect",
+      "bounds": [
+        31,
+        26,
+        32,
+        27
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Explicit authored row 026 \u00b7 032..033",
+      "kind": "block_rect",
+      "bounds": [
+        32,
+        26,
+        34,
+        27
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 026 \u00b7 034..034",
+      "kind": "block_rect",
+      "bounds": [
+        34,
+        26,
+        35,
+        27
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 026 \u00b7 057..057",
+      "kind": "block_rect",
+      "bounds": [
+        57,
+        26,
+        58,
+        27
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit authored row 026 \u00b7 058..060",
+      "kind": "block_rect",
+      "bounds": [
+        58,
+        26,
+        61,
+        27
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 026 \u00b7 061..061",
+      "kind": "block_rect",
+      "bounds": [
+        61,
+        26,
+        62,
+        27
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 027 \u00b7 020..020",
+      "kind": "block_rect",
+      "bounds": [
+        20,
+        27,
+        21,
+        28
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Explicit authored row 027 \u00b7 021..021",
+      "kind": "block_rect",
+      "bounds": [
+        21,
+        27,
+        22,
+        28
+      ],
+      "block": "55"
+    },
+    {
+      "name": "Explicit authored row 027 \u00b7 030..030",
+      "kind": "block_rect",
+      "bounds": [
+        30,
+        27,
+        31,
+        28
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit authored row 027 \u00b7 031..032",
+      "kind": "block_rect",
+      "bounds": [
+        31,
+        27,
+        33,
+        28
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 027 \u00b7 033..033",
+      "kind": "block_rect",
+      "bounds": [
+        33,
+        27,
+        34,
+        28
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 027 \u00b7 056..056",
+      "kind": "block_rect",
+      "bounds": [
+        56,
+        27,
+        57,
+        28
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Explicit authored row 027 \u00b7 057..057",
+      "kind": "block_rect",
+      "bounds": [
+        57,
+        27,
+        58,
+        28
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Explicit authored row 027 \u00b7 058..059",
+      "kind": "block_rect",
+      "bounds": [
+        58,
+        27,
+        60,
+        28
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 027 \u00b7 060..060",
+      "kind": "block_rect",
+      "bounds": [
+        60,
+        27,
+        61,
+        28
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 028 \u00b7 008..009",
+      "kind": "block_rect",
+      "bounds": [
+        8,
+        28,
+        10,
+        29
+      ],
+      "block": "03"
+    },
+    {
+      "name": "Explicit authored row 028 \u00b7 010..011",
+      "kind": "block_rect",
+      "bounds": [
+        10,
+        28,
+        12,
+        29
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Explicit authored row 028 \u00b7 013..013",
+      "kind": "block_rect",
+      "bounds": [
+        13,
+        28,
+        14,
+        29
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Explicit authored row 028 \u00b7 014..015",
+      "kind": "block_rect",
+      "bounds": [
+        14,
+        28,
+        16,
+        29
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Explicit authored row 028 \u00b7 016..016",
+      "kind": "block_rect",
+      "bounds": [
+        16,
+        28,
+        17,
+        29
+      ],
+      "block": "55"
+    },
+    {
+      "name": "Explicit authored row 028 \u00b7 017..017",
+      "kind": "block_rect",
+      "bounds": [
+        17,
+        28,
+        18,
+        29
+      ],
+      "block": "38"
+    },
+    {
+      "name": "Explicit authored row 028 \u00b7 018..018",
+      "kind": "block_rect",
+      "bounds": [
+        18,
+        28,
+        19,
+        29
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Explicit authored row 028 \u00b7 019..019",
+      "kind": "block_rect",
+      "bounds": [
+        19,
+        28,
+        20,
+        29
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Explicit authored row 028 \u00b7 020..020",
+      "kind": "block_rect",
+      "bounds": [
+        20,
+        28,
+        21,
+        29
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Explicit authored row 028 \u00b7 021..021",
+      "kind": "block_rect",
+      "bounds": [
+        21,
+        28,
+        22,
+        29
+      ],
+      "block": "7a"
+    },
+    {
+      "name": "Explicit authored row 028 \u00b7 022..022",
+      "kind": "block_rect",
+      "bounds": [
+        22,
+        28,
+        23,
+        29
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Explicit authored row 028 \u00b7 023..023",
+      "kind": "block_rect",
+      "bounds": [
+        23,
+        28,
+        24,
+        29
+      ],
+      "block": "55"
+    },
+    {
+      "name": "Explicit authored row 028 \u00b7 029..029",
+      "kind": "block_rect",
+      "bounds": [
+        29,
+        28,
+        30,
+        29
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Explicit authored row 028 \u00b7 030..030",
+      "kind": "block_rect",
+      "bounds": [
+        30,
+        28,
+        31,
+        29
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Explicit authored row 028 \u00b7 031..032",
+      "kind": "block_rect",
+      "bounds": [
+        31,
+        28,
+        33,
+        29
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 028 \u00b7 033..033",
+      "kind": "block_rect",
+      "bounds": [
+        33,
+        28,
+        34,
+        29
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 028 \u00b7 055..055",
+      "kind": "block_rect",
+      "bounds": [
+        55,
+        28,
+        56,
+        29
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Explicit authored row 028 \u00b7 056..056",
+      "kind": "block_rect",
+      "bounds": [
+        56,
+        28,
+        57,
+        29
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Explicit authored row 028 \u00b7 057..059",
+      "kind": "block_rect",
+      "bounds": [
+        57,
+        28,
+        60,
+        29
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 028 \u00b7 060..060",
+      "kind": "block_rect",
+      "bounds": [
+        60,
+        28,
+        61,
+        29
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 029 \u00b7 008..009",
+      "kind": "block_rect",
+      "bounds": [
+        8,
+        29,
+        10,
+        30
+      ],
+      "block": "03"
+    },
+    {
+      "name": "Explicit authored row 029 \u00b7 010..011",
+      "kind": "block_rect",
+      "bounds": [
+        10,
+        29,
+        12,
+        30
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Explicit authored row 029 \u00b7 012..012",
+      "kind": "block_rect",
+      "bounds": [
+        12,
+        29,
+        13,
+        30
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Explicit authored row 029 \u00b7 013..013",
+      "kind": "block_rect",
+      "bounds": [
+        13,
+        29,
+        14,
+        30
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Explicit authored row 029 \u00b7 014..015",
+      "kind": "block_rect",
+      "bounds": [
+        14,
+        29,
+        16,
+        30
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 029 \u00b7 016..016",
+      "kind": "block_rect",
+      "bounds": [
+        16,
+        29,
+        17,
+        30
+      ],
+      "block": "7a"
+    },
+    {
+      "name": "Explicit authored row 029 \u00b7 017..017",
+      "kind": "block_rect",
+      "bounds": [
+        17,
+        29,
+        18,
+        30
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Explicit authored row 029 \u00b7 018..018",
+      "kind": "block_rect",
+      "bounds": [
+        18,
+        29,
+        19,
+        30
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Explicit authored row 029 \u00b7 019..022",
+      "kind": "block_rect",
+      "bounds": [
+        19,
+        29,
+        23,
+        30
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 029 \u00b7 023..023",
+      "kind": "block_rect",
+      "bounds": [
+        23,
+        29,
+        24,
+        30
+      ],
+      "block": "7a"
+    },
+    {
+      "name": "Explicit authored row 029 \u00b7 024..024",
+      "kind": "block_rect",
+      "bounds": [
+        24,
+        29,
+        25,
+        30
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Explicit authored row 029 \u00b7 025..025",
+      "kind": "block_rect",
+      "bounds": [
+        25,
+        29,
+        26,
+        30
+      ],
+      "block": "55"
+    },
+    {
+      "name": "Explicit authored row 029 \u00b7 028..028",
+      "kind": "block_rect",
+      "bounds": [
+        28,
+        29,
+        29,
+        30
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Explicit authored row 029 \u00b7 029..029",
+      "kind": "block_rect",
+      "bounds": [
+        29,
+        29,
+        30,
+        30
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Explicit authored row 029 \u00b7 030..031",
+      "kind": "block_rect",
+      "bounds": [
+        30,
+        29,
+        32,
+        30
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 029 \u00b7 032..032",
+      "kind": "block_rect",
+      "bounds": [
+        32,
+        29,
+        33,
+        30
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 029 \u00b7 055..055",
+      "kind": "block_rect",
+      "bounds": [
+        55,
+        29,
+        56,
+        30
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit authored row 029 \u00b7 056..058",
+      "kind": "block_rect",
+      "bounds": [
+        56,
+        29,
+        59,
+        30
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 029 \u00b7 059..059",
+      "kind": "block_rect",
+      "bounds": [
+        59,
+        29,
+        60,
+        30
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 030 \u00b7 008..011",
+      "kind": "block_rect",
+      "bounds": [
+        8,
+        30,
+        12,
+        31
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Explicit authored row 030 \u00b7 012..012",
+      "kind": "block_rect",
+      "bounds": [
+        12,
+        30,
+        13,
+        31
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit authored row 030 \u00b7 013..024",
+      "kind": "block_rect",
+      "bounds": [
+        13,
+        30,
+        25,
+        31
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 030 \u00b7 025..025",
+      "kind": "block_rect",
+      "bounds": [
+        25,
+        30,
+        26,
+        31
+      ],
+      "block": "7a"
+    },
+    {
+      "name": "Explicit authored row 030 \u00b7 026..027",
+      "kind": "block_rect",
+      "bounds": [
+        26,
+        30,
+        28,
+        31
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Explicit authored row 030 \u00b7 028..028",
+      "kind": "block_rect",
+      "bounds": [
+        28,
+        30,
+        29,
+        31
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Explicit authored row 030 \u00b7 029..031",
+      "kind": "block_rect",
+      "bounds": [
+        29,
+        30,
+        32,
+        31
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 030 \u00b7 032..032",
+      "kind": "block_rect",
+      "bounds": [
+        32,
+        30,
+        33,
+        31
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 030 \u00b7 054..054",
+      "kind": "block_rect",
+      "bounds": [
+        54,
+        30,
+        55,
+        31
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Explicit authored row 030 \u00b7 055..055",
+      "kind": "block_rect",
+      "bounds": [
+        55,
+        30,
+        56,
+        31
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Explicit authored row 030 \u00b7 056..057",
+      "kind": "block_rect",
+      "bounds": [
+        56,
+        30,
+        58,
+        31
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 030 \u00b7 058..058",
+      "kind": "block_rect",
+      "bounds": [
+        58,
+        30,
+        59,
+        31
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 031 \u00b7 008..011",
+      "kind": "block_rect",
+      "bounds": [
+        8,
+        31,
+        12,
+        32
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Explicit authored row 031 \u00b7 012..012",
+      "kind": "block_rect",
+      "bounds": [
+        12,
+        31,
+        13,
+        32
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit authored row 031 \u00b7 013..013",
+      "kind": "block_rect",
+      "bounds": [
+        13,
+        31,
+        14,
+        32
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 031 \u00b7 022..022",
+      "kind": "block_rect",
+      "bounds": [
+        22,
+        31,
+        23,
+        32
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit authored row 031 \u00b7 023..030",
+      "kind": "block_rect",
+      "bounds": [
+        23,
+        31,
+        31,
+        32
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 031 \u00b7 031..031",
+      "kind": "block_rect",
+      "bounds": [
+        31,
+        31,
+        32,
+        32
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 031 \u00b7 054..054",
+      "kind": "block_rect",
+      "bounds": [
+        54,
+        31,
+        55,
+        32
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit authored row 031 \u00b7 055..057",
+      "kind": "block_rect",
+      "bounds": [
+        55,
+        31,
+        58,
+        32
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 031 \u00b7 058..058",
+      "kind": "block_rect",
+      "bounds": [
+        58,
+        31,
+        59,
+        32
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 032 \u00b7 009..009",
+      "kind": "block_rect",
+      "bounds": [
+        9,
+        32,
+        10,
+        33
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Explicit authored row 032 \u00b7 010..011",
+      "kind": "block_rect",
+      "bounds": [
+        10,
+        32,
+        12,
+        33
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Explicit authored row 032 \u00b7 012..012",
+      "kind": "block_rect",
+      "bounds": [
+        12,
+        32,
+        13,
+        33
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Explicit authored row 032 \u00b7 013..013",
+      "kind": "block_rect",
+      "bounds": [
+        13,
+        32,
+        14,
+        33
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 032 \u00b7 024..024",
+      "kind": "block_rect",
+      "bounds": [
+        24,
+        32,
+        25,
+        33
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit authored row 032 \u00b7 025..027",
+      "kind": "block_rect",
+      "bounds": [
+        25,
+        32,
+        28,
+        33
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 032 \u00b7 028..028",
+      "kind": "block_rect",
+      "bounds": [
+        28,
+        32,
+        29,
+        33
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 032 \u00b7 054..054",
+      "kind": "block_rect",
+      "bounds": [
+        54,
+        32,
+        55,
+        33
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit authored row 032 \u00b7 055..056",
+      "kind": "block_rect",
+      "bounds": [
+        55,
+        32,
+        57,
+        33
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 032 \u00b7 057..057",
+      "kind": "block_rect",
+      "bounds": [
+        57,
+        32,
+        58,
+        33
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 033 \u00b7 008..008",
+      "kind": "block_rect",
+      "bounds": [
+        8,
+        33,
+        9,
+        34
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Explicit authored row 033 \u00b7 009..009",
+      "kind": "block_rect",
+      "bounds": [
+        9,
+        33,
+        10,
+        34
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Explicit authored row 033 \u00b7 010..011",
+      "kind": "block_rect",
+      "bounds": [
+        10,
+        33,
+        12,
+        34
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 033 \u00b7 012..012",
+      "kind": "block_rect",
+      "bounds": [
+        12,
+        33,
+        13,
+        34
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 033 \u00b7 026..026",
+      "kind": "block_rect",
+      "bounds": [
+        26,
+        33,
+        27,
+        34
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit authored row 033 \u00b7 055..055",
+      "kind": "block_rect",
+      "bounds": [
+        55,
+        33,
+        56,
+        34
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit authored row 033 \u00b7 056..056",
+      "kind": "block_rect",
+      "bounds": [
+        56,
+        33,
+        57,
+        34
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 033 \u00b7 057..057",
+      "kind": "block_rect",
+      "bounds": [
+        57,
+        33,
+        58,
+        34
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 034 \u00b7 007..007",
+      "kind": "block_rect",
+      "bounds": [
+        7,
+        34,
+        8,
+        35
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Explicit authored row 034 \u00b7 008..008",
+      "kind": "block_rect",
+      "bounds": [
+        8,
+        34,
+        9,
+        35
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Explicit authored row 034 \u00b7 009..011",
+      "kind": "block_rect",
+      "bounds": [
+        9,
+        34,
+        12,
+        35
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 034 \u00b7 012..012",
+      "kind": "block_rect",
+      "bounds": [
+        12,
+        34,
+        13,
+        35
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 034 \u00b7 055..055",
+      "kind": "block_rect",
+      "bounds": [
+        55,
+        34,
+        56,
+        35
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit authored row 034 \u00b7 056..056",
+      "kind": "block_rect",
+      "bounds": [
+        56,
+        34,
+        57,
+        35
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 034 \u00b7 057..057",
+      "kind": "block_rect",
+      "bounds": [
+        57,
+        34,
+        58,
+        35
+      ],
+      "block": "7a"
+    },
+    {
+      "name": "Explicit authored row 034 \u00b7 058..058",
+      "kind": "block_rect",
+      "bounds": [
+        58,
+        34,
+        59,
+        35
+      ],
+      "block": "55"
+    },
+    {
+      "name": "Explicit authored row 035 \u00b7 001..001",
+      "kind": "block_rect",
+      "bounds": [
+        1,
+        35,
+        2,
+        36
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Explicit authored row 035 \u00b7 002..006",
+      "kind": "block_rect",
+      "bounds": [
+        2,
+        35,
+        7,
+        36
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Explicit authored row 035 \u00b7 007..007",
+      "kind": "block_rect",
+      "bounds": [
+        7,
+        35,
+        8,
+        36
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Explicit authored row 035 \u00b7 008..010",
+      "kind": "block_rect",
+      "bounds": [
+        8,
+        35,
+        11,
+        36
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 035 \u00b7 011..011",
+      "kind": "block_rect",
+      "bounds": [
+        11,
+        35,
+        12,
+        36
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 035 \u00b7 055..055",
+      "kind": "block_rect",
+      "bounds": [
+        55,
+        35,
+        56,
+        36
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit authored row 035 \u00b7 056..057",
+      "kind": "block_rect",
+      "bounds": [
+        56,
+        35,
+        58,
+        36
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 035 \u00b7 058..058",
+      "kind": "block_rect",
+      "bounds": [
+        58,
+        35,
+        59,
+        36
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 036 \u00b7 000..000",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        36,
+        1,
+        37
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Explicit authored row 036 \u00b7 001..001",
+      "kind": "block_rect",
+      "bounds": [
+        1,
+        36,
+        2,
+        37
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Explicit authored row 036 \u00b7 002..009",
+      "kind": "block_rect",
+      "bounds": [
+        2,
+        36,
+        10,
+        37
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 036 \u00b7 010..010",
+      "kind": "block_rect",
+      "bounds": [
+        10,
+        36,
+        11,
+        37
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 036 \u00b7 055..055",
+      "kind": "block_rect",
+      "bounds": [
+        55,
+        36,
+        56,
+        37
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit authored row 036 \u00b7 056..057",
+      "kind": "block_rect",
+      "bounds": [
+        56,
+        36,
+        58,
+        37
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 036 \u00b7 058..058",
+      "kind": "block_rect",
+      "bounds": [
+        58,
+        36,
+        59,
+        37
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 037 \u00b7 000..007",
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        37,
+        8,
+        38
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 037 \u00b7 008..008",
+      "kind": "block_rect",
+      "bounds": [
+        8,
+        37,
+        9,
+        38
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 037 \u00b7 056..056",
+      "kind": "block_rect",
+      "bounds": [
+        56,
+        37,
+        57,
+        38
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit authored row 037 \u00b7 057..057",
+      "kind": "block_rect",
+      "bounds": [
+        57,
+        37,
+        58,
+        38
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 037 \u00b7 058..058",
+      "kind": "block_rect",
+      "bounds": [
+        58,
+        37,
+        59,
+        38
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 038 \u00b7 001..001",
+      "kind": "block_rect",
+      "bounds": [
+        1,
+        38,
+        2,
+        39
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit authored row 038 \u00b7 002..005",
+      "kind": "block_rect",
+      "bounds": [
+        2,
+        38,
+        6,
+        39
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 038 \u00b7 006..006",
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        38,
+        7,
+        39
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 038 \u00b7 056..056",
+      "kind": "block_rect",
+      "bounds": [
+        56,
+        38,
+        57,
+        39
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit authored row 038 \u00b7 057..057",
+      "kind": "block_rect",
+      "bounds": [
+        57,
+        38,
+        58,
+        39
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 038 \u00b7 058..058",
+      "kind": "block_rect",
+      "bounds": [
+        58,
+        38,
+        59,
+        39
+      ],
+      "block": "7a"
+    },
+    {
+      "name": "Explicit authored row 038 \u00b7 059..059",
+      "kind": "block_rect",
+      "bounds": [
+        59,
+        38,
+        60,
+        39
+      ],
+      "block": "55"
+    },
+    {
+      "name": "Explicit authored row 039 \u00b7 055..055",
+      "kind": "block_rect",
+      "bounds": [
+        55,
+        39,
+        56,
+        40
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Explicit authored row 039 \u00b7 056..056",
+      "kind": "block_rect",
+      "bounds": [
+        56,
+        39,
+        57,
+        40
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Explicit authored row 039 \u00b7 057..058",
+      "kind": "block_rect",
+      "bounds": [
+        57,
+        39,
+        59,
+        40
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 039 \u00b7 059..059",
+      "kind": "block_rect",
+      "bounds": [
+        59,
+        39,
+        60,
+        40
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 040 \u00b7 049..052",
+      "kind": "block_rect",
+      "bounds": [
+        49,
+        40,
+        53,
+        41
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Explicit authored row 040 \u00b7 054..054",
+      "kind": "block_rect",
+      "bounds": [
+        54,
+        40,
+        55,
+        41
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Explicit authored row 040 \u00b7 055..055",
+      "kind": "block_rect",
+      "bounds": [
+        55,
+        40,
+        56,
+        41
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Explicit authored row 040 \u00b7 056..058",
+      "kind": "block_rect",
+      "bounds": [
+        56,
+        40,
+        59,
+        41
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 040 \u00b7 059..059",
+      "kind": "block_rect",
+      "bounds": [
+        59,
+        40,
+        60,
+        41
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 041 \u00b7 043..043",
+      "kind": "block_rect",
+      "bounds": [
+        43,
+        41,
+        44,
+        42
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Explicit authored row 041 \u00b7 044..044",
+      "kind": "block_rect",
+      "bounds": [
+        44,
+        41,
+        45,
+        42
+      ],
+      "block": "55"
+    },
+    {
+      "name": "Explicit authored row 041 \u00b7 049..052",
+      "kind": "block_rect",
+      "bounds": [
+        49,
+        41,
+        53,
+        42
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Explicit authored row 041 \u00b7 054..054",
+      "kind": "block_rect",
+      "bounds": [
+        54,
+        41,
+        55,
+        42
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit authored row 041 \u00b7 055..057",
+      "kind": "block_rect",
+      "bounds": [
+        55,
+        41,
+        58,
+        42
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 041 \u00b7 058..058",
+      "kind": "block_rect",
+      "bounds": [
+        58,
+        41,
+        59,
+        42
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 042 \u00b7 042..042",
+      "kind": "block_rect",
+      "bounds": [
+        42,
+        42,
+        43,
+        43
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Explicit authored row 042 \u00b7 043..043",
+      "kind": "block_rect",
+      "bounds": [
+        43,
+        42,
+        44,
+        43
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Explicit authored row 042 \u00b7 044..044",
+      "kind": "block_rect",
+      "bounds": [
+        44,
+        42,
+        45,
+        43
+      ],
+      "block": "7a"
+    },
+    {
+      "name": "Explicit authored row 042 \u00b7 045..047",
+      "kind": "block_rect",
+      "bounds": [
+        45,
+        42,
+        48,
+        43
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Explicit authored row 042 \u00b7 048..048",
+      "kind": "block_rect",
+      "bounds": [
+        48,
+        42,
+        49,
+        43
+      ],
+      "block": "55"
+    },
+    {
+      "name": "Explicit authored row 042 \u00b7 049..050",
+      "kind": "block_rect",
+      "bounds": [
+        49,
+        42,
+        51,
+        43
+      ],
+      "block": "03"
+    },
+    {
+      "name": "Explicit authored row 042 \u00b7 051..052",
+      "kind": "block_rect",
+      "bounds": [
+        51,
+        42,
+        53,
+        43
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Explicit authored row 042 \u00b7 053..053",
+      "kind": "block_rect",
+      "bounds": [
+        53,
+        42,
+        54,
+        43
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Explicit authored row 042 \u00b7 054..054",
+      "kind": "block_rect",
+      "bounds": [
+        54,
+        42,
+        55,
+        43
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Explicit authored row 042 \u00b7 055..056",
+      "kind": "block_rect",
+      "bounds": [
+        55,
+        42,
+        57,
+        43
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 042 \u00b7 057..057",
+      "kind": "block_rect",
+      "bounds": [
+        57,
+        42,
+        58,
+        43
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 043 \u00b7 040..040",
+      "kind": "block_rect",
+      "bounds": [
+        40,
+        43,
+        41,
+        44
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Explicit authored row 043 \u00b7 041..041",
+      "kind": "block_rect",
+      "bounds": [
+        41,
+        43,
+        42,
+        44
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Explicit authored row 043 \u00b7 042..042",
+      "kind": "block_rect",
+      "bounds": [
+        42,
+        43,
+        43,
+        44
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Explicit authored row 043 \u00b7 043..047",
+      "kind": "block_rect",
+      "bounds": [
+        43,
+        43,
+        48,
+        44
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 043 \u00b7 048..048",
+      "kind": "block_rect",
+      "bounds": [
+        48,
+        43,
+        49,
+        44
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 043 \u00b7 049..050",
+      "kind": "block_rect",
+      "bounds": [
+        49,
+        43,
+        51,
+        44
+      ],
+      "block": "03"
+    },
+    {
+      "name": "Explicit authored row 043 \u00b7 051..052",
+      "kind": "block_rect",
+      "bounds": [
+        51,
+        43,
+        53,
+        44
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Explicit authored row 043 \u00b7 053..053",
+      "kind": "block_rect",
+      "bounds": [
+        53,
+        43,
+        54,
+        44
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit authored row 043 \u00b7 054..055",
+      "kind": "block_rect",
+      "bounds": [
+        54,
+        43,
+        56,
+        44
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 043 \u00b7 056..056",
+      "kind": "block_rect",
+      "bounds": [
+        56,
+        43,
+        57,
+        44
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 044 \u00b7 039..039",
+      "kind": "block_rect",
+      "bounds": [
+        39,
+        44,
+        40,
+        45
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Explicit authored row 044 \u00b7 040..040",
+      "kind": "block_rect",
+      "bounds": [
+        40,
+        44,
+        41,
+        45
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Explicit authored row 044 \u00b7 041..041",
+      "kind": "block_rect",
+      "bounds": [
+        41,
+        44,
+        42,
+        45
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 044 \u00b7 042..042",
+      "kind": "block_rect",
+      "bounds": [
+        42,
+        44,
+        43,
+        45
+      ],
+      "block": "38"
+    },
+    {
+      "name": "Explicit authored row 044 \u00b7 043..043",
+      "kind": "block_rect",
+      "bounds": [
+        43,
+        44,
+        44,
+        45
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit authored row 044 \u00b7 044..047",
+      "kind": "block_rect",
+      "bounds": [
+        44,
+        44,
+        48,
+        45
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 044 \u00b7 048..048",
+      "kind": "block_rect",
+      "bounds": [
+        48,
+        44,
+        49,
+        45
+      ],
+      "block": "7a"
+    },
+    {
+      "name": "Explicit authored row 044 \u00b7 049..052",
+      "kind": "block_rect",
+      "bounds": [
+        49,
+        44,
+        53,
+        45
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Explicit authored row 044 \u00b7 053..053",
+      "kind": "block_rect",
+      "bounds": [
+        53,
+        44,
+        54,
+        45
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Explicit authored row 044 \u00b7 054..055",
+      "kind": "block_rect",
+      "bounds": [
+        54,
+        44,
+        56,
+        45
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 044 \u00b7 056..056",
+      "kind": "block_rect",
+      "bounds": [
+        56,
+        44,
+        57,
+        45
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 045 \u00b7 037..037",
+      "kind": "block_rect",
+      "bounds": [
+        37,
+        45,
+        38,
+        46
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Explicit authored row 045 \u00b7 038..038",
+      "kind": "block_rect",
+      "bounds": [
+        38,
+        45,
+        39,
+        46
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Explicit authored row 045 \u00b7 039..039",
+      "kind": "block_rect",
+      "bounds": [
+        39,
+        45,
+        40,
+        46
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Explicit authored row 045 \u00b7 040..040",
+      "kind": "block_rect",
+      "bounds": [
+        40,
+        45,
+        41,
+        46
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 045 \u00b7 041..041",
+      "kind": "block_rect",
+      "bounds": [
+        41,
+        45,
+        42,
+        46
+      ],
+      "block": "7a"
+    },
+    {
+      "name": "Explicit authored row 045 \u00b7 042..042",
+      "kind": "block_rect",
+      "bounds": [
+        42,
+        45,
+        43,
+        46
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Explicit authored row 045 \u00b7 043..043",
+      "kind": "block_rect",
+      "bounds": [
+        43,
+        45,
+        44,
+        46
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 045 \u00b7 048..048",
+      "kind": "block_rect",
+      "bounds": [
+        48,
+        45,
+        49,
+        46
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit authored row 045 \u00b7 049..054",
+      "kind": "block_rect",
+      "bounds": [
+        49,
+        45,
+        55,
+        46
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 045 \u00b7 055..055",
+      "kind": "block_rect",
+      "bounds": [
+        55,
+        45,
+        56,
+        46
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 046 \u00b7 038..038",
+      "kind": "block_rect",
+      "bounds": [
+        38,
+        46,
+        39,
+        47
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit authored row 046 \u00b7 039..041",
+      "kind": "block_rect",
+      "bounds": [
+        39,
+        46,
+        42,
+        47
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 046 \u00b7 042..042",
+      "kind": "block_rect",
+      "bounds": [
+        42,
+        46,
+        43,
+        47
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 046 \u00b7 052..052",
+      "kind": "block_rect",
+      "bounds": [
+        52,
+        46,
+        53,
+        47
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit authored row 046 \u00b7 054..054",
+      "kind": "block_rect",
+      "bounds": [
+        54,
+        46,
+        55,
+        47
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit authored row 047 \u00b7 037..037",
+      "kind": "block_rect",
+      "bounds": [
+        37,
+        47,
+        38,
+        48
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Explicit authored row 047 \u00b7 038..038",
+      "kind": "block_rect",
+      "bounds": [
+        38,
+        47,
+        39,
+        48
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Explicit authored row 047 \u00b7 039..039",
+      "kind": "block_rect",
+      "bounds": [
+        39,
+        47,
+        40,
+        48
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 047 \u00b7 040..040",
+      "kind": "block_rect",
+      "bounds": [
+        40,
+        47,
+        41,
+        48
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 048 \u00b7 037..037",
+      "kind": "block_rect",
+      "bounds": [
+        37,
+        48,
+        38,
+        49
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit authored row 048 \u00b7 038..039",
+      "kind": "block_rect",
+      "bounds": [
+        38,
+        48,
+        40,
+        49
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 048 \u00b7 040..040",
+      "kind": "block_rect",
+      "bounds": [
+        40,
+        48,
+        41,
+        49
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 049 \u00b7 037..037",
+      "kind": "block_rect",
+      "bounds": [
+        37,
+        49,
+        38,
+        50
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit authored row 049 \u00b7 038..039",
+      "kind": "block_rect",
+      "bounds": [
+        38,
+        49,
+        40,
+        50
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 049 \u00b7 040..040",
+      "kind": "block_rect",
+      "bounds": [
+        40,
+        49,
+        41,
+        50
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 050 \u00b7 037..037",
+      "kind": "block_rect",
+      "bounds": [
+        37,
+        50,
+        38,
+        51
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit authored row 050 \u00b7 038..038",
+      "kind": "block_rect",
+      "bounds": [
+        38,
+        50,
+        39,
+        51
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 050 \u00b7 039..039",
+      "kind": "block_rect",
+      "bounds": [
+        39,
+        50,
+        40,
+        51
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 051 \u00b7 036..036",
+      "kind": "block_rect",
+      "bounds": [
+        36,
+        51,
+        37,
+        52
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Explicit authored row 051 \u00b7 037..037",
+      "kind": "block_rect",
+      "bounds": [
+        37,
+        51,
+        38,
+        52
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Explicit authored row 051 \u00b7 038..038",
+      "kind": "block_rect",
+      "bounds": [
+        38,
+        51,
+        39,
+        52
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 051 \u00b7 039..039",
+      "kind": "block_rect",
+      "bounds": [
+        39,
+        51,
+        40,
+        52
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 052 \u00b7 026..026",
+      "kind": "block_rect",
+      "bounds": [
+        26,
+        52,
+        27,
+        53
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Explicit authored row 052 \u00b7 035..035",
+      "kind": "block_rect",
+      "bounds": [
+        35,
+        52,
+        36,
+        53
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Explicit authored row 052 \u00b7 036..036",
+      "kind": "block_rect",
+      "bounds": [
+        36,
+        52,
+        37,
+        53
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Explicit authored row 052 \u00b7 037..038",
+      "kind": "block_rect",
+      "bounds": [
+        37,
+        52,
+        39,
+        53
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 052 \u00b7 039..039",
+      "kind": "block_rect",
+      "bounds": [
+        39,
+        52,
+        40,
+        53
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 053 \u00b7 025..025",
+      "kind": "block_rect",
+      "bounds": [
+        25,
+        53,
+        26,
+        54
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Explicit authored row 053 \u00b7 026..026",
+      "kind": "block_rect",
+      "bounds": [
+        26,
+        53,
+        27,
+        54
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Explicit authored row 053 \u00b7 027..027",
+      "kind": "block_rect",
+      "bounds": [
+        27,
+        53,
+        28,
+        54
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Explicit authored row 053 \u00b7 028..028",
+      "kind": "block_rect",
+      "bounds": [
+        28,
+        53,
+        29,
+        54
+      ],
+      "block": "55"
+    },
+    {
+      "name": "Explicit authored row 053 \u00b7 033..033",
+      "kind": "block_rect",
+      "bounds": [
+        33,
+        53,
+        34,
+        54
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Explicit authored row 053 \u00b7 034..034",
+      "kind": "block_rect",
+      "bounds": [
+        34,
+        53,
+        35,
+        54
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Explicit authored row 053 \u00b7 035..035",
+      "kind": "block_rect",
+      "bounds": [
+        35,
+        53,
+        36,
+        54
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Explicit authored row 053 \u00b7 036..038",
+      "kind": "block_rect",
+      "bounds": [
+        36,
+        53,
+        39,
+        54
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 053 \u00b7 039..039",
+      "kind": "block_rect",
+      "bounds": [
+        39,
+        53,
+        40,
+        54
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 054 \u00b7 024..024",
+      "kind": "block_rect",
+      "bounds": [
+        24,
+        54,
+        25,
+        55
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Explicit authored row 054 \u00b7 025..025",
+      "kind": "block_rect",
+      "bounds": [
+        25,
+        54,
+        26,
+        55
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Explicit authored row 054 \u00b7 026..027",
+      "kind": "block_rect",
+      "bounds": [
+        26,
+        54,
+        28,
+        55
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 054 \u00b7 028..028",
+      "kind": "block_rect",
+      "bounds": [
+        28,
+        54,
+        29,
+        55
+      ],
+      "block": "7a"
+    },
+    {
+      "name": "Explicit authored row 054 \u00b7 029..032",
+      "kind": "block_rect",
+      "bounds": [
+        29,
+        54,
+        33,
+        55
+      ],
+      "block": "76"
+    },
+    {
+      "name": "Explicit authored row 054 \u00b7 033..033",
+      "kind": "block_rect",
+      "bounds": [
+        33,
+        54,
+        34,
+        55
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Explicit authored row 054 \u00b7 034..037",
+      "kind": "block_rect",
+      "bounds": [
+        34,
+        54,
+        38,
+        55
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 054 \u00b7 038..038",
+      "kind": "block_rect",
+      "bounds": [
+        38,
+        54,
+        39,
+        55
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 055 \u00b7 023..023",
+      "kind": "block_rect",
+      "bounds": [
+        23,
+        55,
+        24,
+        56
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Explicit authored row 055 \u00b7 024..024",
+      "kind": "block_rect",
+      "bounds": [
+        24,
+        55,
+        25,
+        56
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Explicit authored row 055 \u00b7 025..035",
+      "kind": "block_rect",
+      "bounds": [
+        25,
+        55,
+        36,
+        56
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 055 \u00b7 036..036",
+      "kind": "block_rect",
+      "bounds": [
+        36,
+        55,
+        37,
+        56
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 056 \u00b7 022..022",
+      "kind": "block_rect",
+      "bounds": [
+        22,
+        56,
+        23,
+        57
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Explicit authored row 056 \u00b7 023..023",
+      "kind": "block_rect",
+      "bounds": [
+        23,
+        56,
+        24,
+        57
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Explicit authored row 056 \u00b7 024..025",
+      "kind": "block_rect",
+      "bounds": [
+        24,
+        56,
+        26,
+        57
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 056 \u00b7 026..026",
+      "kind": "block_rect",
+      "bounds": [
+        26,
+        56,
+        27,
+        57
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 056 \u00b7 028..028",
+      "kind": "block_rect",
+      "bounds": [
+        28,
+        56,
+        29,
+        57
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit authored row 056 \u00b7 029..029",
+      "kind": "block_rect",
+      "bounds": [
+        29,
+        56,
+        30,
+        57
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 056 \u00b7 030..030",
+      "kind": "block_rect",
+      "bounds": [
+        30,
+        56,
+        31,
+        57
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 056 \u00b7 032..032",
+      "kind": "block_rect",
+      "bounds": [
+        32,
+        56,
+        33,
+        57
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit authored row 056 \u00b7 033..033",
+      "kind": "block_rect",
+      "bounds": [
+        33,
+        56,
+        34,
+        57
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 056 \u00b7 034..034",
+      "kind": "block_rect",
+      "bounds": [
+        34,
+        56,
+        35,
+        57
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 057 \u00b7 021..021",
+      "kind": "block_rect",
+      "bounds": [
+        21,
+        57,
+        22,
+        58
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Explicit authored row 057 \u00b7 022..022",
+      "kind": "block_rect",
+      "bounds": [
+        22,
+        57,
+        23,
+        58
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Explicit authored row 057 \u00b7 023..024",
+      "kind": "block_rect",
+      "bounds": [
+        23,
+        57,
+        25,
+        58
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 057 \u00b7 025..025",
+      "kind": "block_rect",
+      "bounds": [
+        25,
+        57,
+        26,
+        58
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 057 \u00b7 030..030",
+      "kind": "block_rect",
+      "bounds": [
+        30,
+        57,
+        31,
+        58
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit authored row 057 \u00b7 032..032",
+      "kind": "block_rect",
+      "bounds": [
+        32,
+        57,
+        33,
+        58
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit authored row 058 \u00b7 020..020",
+      "kind": "block_rect",
+      "bounds": [
+        20,
+        58,
+        21,
+        59
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Explicit authored row 058 \u00b7 021..021",
+      "kind": "block_rect",
+      "bounds": [
+        21,
+        58,
+        22,
+        59
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Explicit authored row 058 \u00b7 022..023",
+      "kind": "block_rect",
+      "bounds": [
+        22,
+        58,
+        24,
+        59
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 058 \u00b7 024..024",
+      "kind": "block_rect",
+      "bounds": [
+        24,
+        58,
+        25,
+        59
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 059 \u00b7 020..020",
+      "kind": "block_rect",
+      "bounds": [
+        20,
+        59,
+        21,
+        60
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit authored row 059 \u00b7 021..023",
+      "kind": "block_rect",
+      "bounds": [
+        21,
+        59,
+        24,
+        60
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 059 \u00b7 024..024",
+      "kind": "block_rect",
+      "bounds": [
+        24,
+        59,
+        25,
+        60
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 060 \u00b7 019..019",
+      "kind": "block_rect",
+      "bounds": [
+        19,
+        60,
+        20,
+        61
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Explicit authored row 060 \u00b7 020..020",
+      "kind": "block_rect",
+      "bounds": [
+        20,
+        60,
+        21,
+        61
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Explicit authored row 060 \u00b7 021..022",
+      "kind": "block_rect",
+      "bounds": [
+        21,
+        60,
+        23,
+        61
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 060 \u00b7 023..023",
+      "kind": "block_rect",
+      "bounds": [
+        23,
+        60,
+        24,
+        61
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 061 \u00b7 018..018",
+      "kind": "block_rect",
+      "bounds": [
+        18,
+        61,
+        19,
+        62
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Explicit authored row 061 \u00b7 019..019",
+      "kind": "block_rect",
+      "bounds": [
+        19,
+        61,
+        20,
+        62
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Explicit authored row 061 \u00b7 020..021",
+      "kind": "block_rect",
+      "bounds": [
+        20,
+        61,
+        22,
+        62
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 061 \u00b7 022..022",
+      "kind": "block_rect",
+      "bounds": [
+        22,
+        61,
+        23,
+        62
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 062 \u00b7 018..018",
+      "kind": "block_rect",
+      "bounds": [
+        18,
+        62,
+        19,
+        63
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit authored row 062 \u00b7 019..021",
+      "kind": "block_rect",
+      "bounds": [
+        19,
+        62,
+        22,
+        63
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 062 \u00b7 022..022",
+      "kind": "block_rect",
+      "bounds": [
+        22,
+        62,
+        23,
+        63
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 063 \u00b7 018..018",
+      "kind": "block_rect",
+      "bounds": [
+        18,
+        63,
+        19,
+        64
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit authored row 063 \u00b7 019..020",
+      "kind": "block_rect",
+      "bounds": [
+        19,
+        63,
+        21,
+        64
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 063 \u00b7 021..021",
+      "kind": "block_rect",
+      "bounds": [
+        21,
+        63,
+        22,
+        64
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 064 \u00b7 018..018",
+      "kind": "block_rect",
+      "bounds": [
+        18,
+        64,
+        19,
+        65
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit authored row 064 \u00b7 019..020",
+      "kind": "block_rect",
+      "bounds": [
+        19,
+        64,
+        21,
+        65
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 064 \u00b7 021..021",
+      "kind": "block_rect",
+      "bounds": [
+        21,
+        64,
+        22,
+        65
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 065 \u00b7 017..017",
+      "kind": "block_rect",
+      "bounds": [
+        17,
+        65,
+        18,
+        66
+      ],
+      "block": "54"
+    },
+    {
+      "name": "Explicit authored row 065 \u00b7 018..018",
+      "kind": "block_rect",
+      "bounds": [
+        18,
+        65,
+        19,
+        66
+      ],
+      "block": "79"
+    },
+    {
+      "name": "Explicit authored row 065 \u00b7 019..019",
+      "kind": "block_rect",
+      "bounds": [
+        19,
+        65,
+        20,
+        66
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 065 \u00b7 020..020",
+      "kind": "block_rect",
+      "bounds": [
+        20,
+        65,
+        21,
+        66
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 066 \u00b7 017..017",
+      "kind": "block_rect",
+      "bounds": [
+        17,
+        66,
+        18,
+        67
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit authored row 066 \u00b7 018..019",
+      "kind": "block_rect",
+      "bounds": [
+        18,
+        66,
+        20,
+        67
+      ],
+      "block": "35"
+    },
+    {
+      "name": "Explicit authored row 066 \u00b7 020..020",
+      "kind": "block_rect",
+      "bounds": [
+        20,
+        66,
+        21,
+        67
+      ],
+      "block": "59"
+    },
+    {
+      "name": "Explicit authored row 067 \u00b7 018..018",
+      "kind": "block_rect",
+      "bounds": [
+        18,
+        67,
+        19,
+        68
+      ],
+      "block": "58"
+    },
+    {
+      "name": "Explicit authored row 067 \u00b7 019..019",
+      "kind": "block_rect",
+      "bounds": [
+        19,
+        67,
+        20,
+        68
+      ],
+      "block": "59"
+    }
+  ]
+}

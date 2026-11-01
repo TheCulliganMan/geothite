@@ -1,0 +1,13 @@
+{
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f122/prompt-keypout-front-cheek-clearance-v4.txt",
+  "input_images": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f122/keypout.overworld.imagegen-v3-key-barbel-width.png",
+      "sha256": "a5079c2061da70642aa73d8959de7fa2d7469c4a7218b00802013dce296ac44f"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+      "sha256": "4354a639ed1a80fd6686e43b273443ed894e58a84307a8049f638ee9ffa2a099"
+    }
+  ]
+}

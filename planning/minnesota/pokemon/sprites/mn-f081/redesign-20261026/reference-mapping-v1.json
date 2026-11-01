@@ -1,0 +1,77 @@
+{
+  "use_case": "precise-object-edit",
+  "references": [
+    {
+      "path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mn-f081/mn-177-dividra.ridge-alternate-v3.imagegen.png",
+      "sha256": "3d3bf42cd0c2e15b6e35895839b5bf202d440b071316d05fab38b44aa7e25657",
+      "role": "Old original species art: identity, palette and theme context only; replace weak anatomy as specified, do not preserve flattened silhouette."
+    },
+    {
+      "path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/gen2-reference/starters.png",
+      "sha256": "af61f720a75b7e1b8e80ba14e8944612556397eedddd719669dec68b0e0fd534",
+      "role": "Authentic Gen2 coarse logical pixel clusters, selective black rims and cropped close-rear battle camera only. Do not copy reference characters."
+    }
+  ],
+  "species_id": "MN_177",
+  "palette": {
+    "species_id": "MN_177",
+    "name": "Dividra",
+    "gbc_rgb5": [
+      [
+        31,
+        31,
+        31
+      ],
+      [
+        23,
+        20,
+        10
+      ],
+      [
+        8,
+        13,
+        13
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ],
+    "gbc_rgb555_words": [
+      32767,
+      10903,
+      13736,
+      0
+    ],
+    "rgb8": [
+      [
+        255,
+        255,
+        255
+      ],
+      [
+        189,
+        165,
+        82
+      ],
+      [
+        66,
+        107,
+        107
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ],
+    "hex": [
+      "#FFFFFF",
+      "#BDA552",
+      "#426B6B",
+      "#000000"
+    ]
+  },
+  "canonical_manifest_sha256": "c1f68d6b0af7bac4f38d2b6583d01f67195522ea2dfcd2629a6a49d61644ec34"
+}

@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "selected_revision": "route_grass_r11_current_review_revision",
+  "all_eight_chunks_bound": true,
+  "native_source_metatiles_exact": 4896,
+  "grass_quadrants": 380,
+  "coastal_ice": 0,
+  "parent_unknown_source_fields_preserved": true,
+  "goal_complete": false
+}

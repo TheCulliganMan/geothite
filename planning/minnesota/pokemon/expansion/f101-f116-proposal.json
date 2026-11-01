@@ -1,0 +1,1002 @@
+{
+  "status": "root-reviewed-designs-locked",
+  "planned_species_count": 33,
+  "planned_family_count": 16,
+  "families": [
+    {
+      "id": "MN_F101",
+      "region": "prairie",
+      "theme": "Red River sugarbeets and stored energy: living taproots become energy-storing bulbs, then open root-rings with leaf terminals and four soil contacts. Electricity is original fantasy, not real beet biology.",
+      "members": [
+        {
+          "id": "MN_218",
+          "name": "Zapsap",
+          "types": [
+            "ELECTRIC"
+          ],
+          "stage": 1,
+          "evolves_to": "MN_219"
+        },
+        {
+          "id": "MN_219",
+          "name": "Tapacitor",
+          "types": [
+            "ELECTRIC",
+            "GRASS"
+          ],
+          "stage": 2,
+          "evolves_to": "MN_220"
+        },
+        {
+          "id": "MN_220",
+          "name": "Beetynamo",
+          "types": [
+            "ELECTRIC",
+            "GRASS"
+          ],
+          "stage": 3,
+          "evolves_to": null
+        }
+      ],
+      "evolution_design": [
+        "Tiny forked taproot, two stumpy root feet, paired leaf antennae and clear eyes.",
+        "Broad energy-storing bulb with thick conducting root forearms, split feet and broad leaf-terminal shoulders.",
+        "Broad organic OPEN RING taproot torso, one clean central opening, FOUR rooted feet, huge leaf-terminal shoulders and small clear-eyed upper root head. No cables, appliances or bolt decals."
+      ],
+      "habitat": "Sugarbeet field margins in the Red River Valley and west-central Minnesota.",
+      "proposed_routes": [
+        "MN_R16"
+      ],
+      "sources": [
+        {
+          "url": "https://extension.umn.edu/about/our-stories/news/source-magazine/staying-on-top-with-sugarbeets",
+          "publisher": "University of Minnesota Extension",
+          "evidence": "Sugarbeets characterize Red River Valley and west-central farming.",
+          "fantasy_extension": "Storage roots become biological energy capacitors."
+        }
+      ],
+      "design_lock": "locked by root; first153identities fixed",
+      "silhouettes": [
+        {
+          "species_id": "MN_218",
+          "front": "Tiny forked seed-root, two broad leaf antennae and two root feet.",
+          "back": "Large seed-root nape and leaf bases, lower feet cropped."
+        },
+        {
+          "species_id": "MN_219",
+          "front": "Broad storing bulb, root forearms, split feet and big leaf shoulders.",
+          "back": "Bulb nape and leaf-terminal shoulders fill width."
+        },
+        {
+          "species_id": "MN_220",
+          "front": "Large open-ring torso, four rooted feet, broad leaf shoulders and small clear-eyed root head.",
+          "back": "Close head/leaf shoulders and upper ring, lower ring and feet cropped."
+        }
+      ]
+    },
+    {
+      "id": "MN_F102",
+      "region": "peatlands",
+      "theme": "Smoldering peat and buried memory: a warm peat crumb grows a protective dark crust, then separates into layered peat slabs around an old ember spirit. It is a quiet underground ember, distinct from pine-resin campfire creatures and furnace-ore starters.",
+      "members": [
+        {
+          "id": "MN_221",
+          "name": "Emberm",
+          "types": [
+            "FIRE"
+          ],
+          "stage": 1,
+          "evolves_to": "MN_222"
+        },
+        {
+          "id": "MN_222",
+          "name": "Smoulden",
+          "types": [
+            "FIRE",
+            "POISON"
+          ],
+          "stage": 2,
+          "evolves_to": "MN_223"
+        },
+        {
+          "id": "MN_223",
+          "name": "Cinderfen",
+          "types": [
+            "FIRE",
+            "GHOST"
+          ],
+          "stage": 3,
+          "evolves_to": null
+        }
+      ],
+      "evolution_design": [
+        "A low peat crumb has one hot eye slit, forked root feet and a single blunt breathing vent.",
+        "The crumb becomes a broad four-rooted crust creature with two thick peat-clod forearms and three dorsal air slots; it can pull the ember face under its crust. The three air slots store and exhale fictional irritant ember-fumes as a defensive vent system.",
+        "The layered crust rises into four broad floating peat plates framing a hot face; the lower layers taper into one heavy smoky root spiral and the forearms become spectral clods."
+      ],
+      "silhouettes": [
+        {
+          "species_id": "MN_221",
+          "front": "Low rectangular ember crumb, fork feet, one blunt vent.",
+          "back": "Large back of peat crust and vent; feet below crop."
+        },
+        {
+          "species_id": "MN_222",
+          "front": "Wide low four-root crust, thick clod forearms.",
+          "back": "Peat shoulders and three air-slot bases fill width."
+        },
+        {
+          "species_id": "MN_223",
+          "front": "Tall separated peat slabs, broad ghost arms, one spiral lower body.",
+          "back": "Upper slab backs and ember-core crown, lower spiral out of frame."
+        }
+      ],
+      "habitat": "Dry-edge peat hummocks and old buried root beds; proposed rare ordinary family on northern bog margins.",
+      "proposed_routes": [
+        "MN_R17",
+        "MN_R20"
+      ],
+      "sources": [
+        {
+          "url": "https://www.lrl.mn.gov/docs/2019/Other/190664.pdf",
+          "publisher": "Minnesota DNR publication, Minnesota Legislative Reference Library",
+          "evidence": "Peat fires can persist below the surface as slow glowing combustion.",
+          "fantasy_extension": "Original ember creatures remember material stored in peat; this is invented lore."
+        },
+        {
+          "url": "https://www.dnr.state.mn.us/snas/peatlands.html",
+          "publisher": "Minnesota DNR",
+          "evidence": "Patterned peatlands include raised bogs, transverse peat ribs, pools and water tracks.",
+          "fantasy_extension": "Peat patterns become visible creature anatomy and fictional memory channels."
+        }
+      ],
+      "design_lock": "proposal-awaiting-root-lock",
+      "root_review": {
+        "status": "design-locked",
+        "note": "Middle stage Fire/Poison reflects its embodied vented irritant-fume defense; final Fire/Ghost preserves the buried-memory spirit."
+      }
+    },
+    {
+      "id": "MN_F103",
+      "region": "prairie",
+      "theme": "Hail growth and storm charge: a bouncing ice seed develops layered hail knuckles and a broad storm-anvil body, building mass through repeated storm updrafts rather than merely getting taller.",
+      "members": [
+        {
+          "id": "MN_224",
+          "name": "Hailpip",
+          "types": [
+            "ICE"
+          ],
+          "stage": 1,
+          "evolves_to": "MN_225"
+        },
+        {
+          "id": "MN_225",
+          "name": "Rumbhail",
+          "types": [
+            "ICE",
+            "ELECTRIC"
+          ],
+          "stage": 2,
+          "evolves_to": "MN_226"
+        },
+        {
+          "id": "MN_226",
+          "name": "Anvilisk",
+          "types": [
+            "ELECTRIC",
+            "ICE"
+          ],
+          "stage": 3,
+          "evolves_to": null
+        }
+      ],
+      "evolution_design": [
+        "One rounded hail seed with an offset eye window and two tiny chisel feet.",
+        "Three knuckled ice lobes grow around a dark charge core; broad short arms and a split crown replace the seed outline.",
+        "A low anvil-shaped storm body spans four chunky hail feet; two thick side fins and a split conducting crown grow directly from the layered ice, with one jagged physical tail."
+      ],
+      "silhouettes": [
+        {
+          "species_id": "MN_224",
+          "front": "Small asymmetric ice bead, two chisel feet.",
+          "back": "Back of bead and broad crown edge."
+        },
+        {
+          "species_id": "MN_225",
+          "front": "Three-lobed knuckle cluster with visible dark core.",
+          "back": "Large layered ice shoulders and split crown."
+        },
+        {
+          "species_id": "MN_226",
+          "front": "Wide anvil body, four hail feet, two thick fins and split crown.",
+          "back": "Anvil nape and upper side-fin bases, feet cropped."
+        }
+      ],
+      "habitat": "Open prairie under summer storm systems; field-edge encounter tables can vary with authored weather without changing route access.",
+      "proposed_routes": [
+        "MN_R02",
+        "MN_R16"
+      ],
+      "sources": [
+        {
+          "url": "https://www.dnr.state.mn.us/climate/journal/southern-minnesota-hailstorms-may-19-2022.html",
+          "publisher": "Minnesota DNR State Climatology Office",
+          "evidence": "Strong Minnesota thunderstorms have produced heavy hail across southern towns and the Twin Cities.",
+          "fantasy_extension": "Layered hail bodies store fictional electrical charge; no claim of a new documented species."
+        }
+      ],
+      "design_lock": "proposal-awaiting-root-lock"
+    },
+    {
+      "id": "MN_F104",
+      "region": "central_lakes",
+      "theme": "Eskers as preserved underground rivers: a hooked gravel ridge learns to move, then becomes an articulated six-foot landform dragon whose raised spine follows a vanished meltwater channel.",
+      "members": [
+        {
+          "id": "MN_227",
+          "name": "Eskit",
+          "types": [
+            "GROUND"
+          ],
+          "stage": 1,
+          "evolves_to": "MN_228"
+        },
+        {
+          "id": "MN_228",
+          "name": "Ridgear",
+          "types": [
+            "GROUND",
+            "DRAGON"
+          ],
+          "stage": 2,
+          "evolves_to": "MN_229"
+        },
+        {
+          "id": "MN_229",
+          "name": "Eskavern",
+          "types": [
+            "DRAGON",
+            "GROUND"
+          ],
+          "stage": 3,
+          "evolves_to": null
+        }
+      ],
+      "evolution_design": [
+        "A short hooked gravel wedge has two underside feet and an eye beneath its raised ridge.",
+        "Three thick arching ridge segments join a broad snout and short foreclaws, leaving two clean gaps below the spine.",
+        "Six strong pillar feet support five broad interlocked ridge segments, a blunt river-channel dragon head and a gravel fan tail. It is a heavy landform crawler, not a thin snake or a recolored Loessurge."
+      ],
+      "silhouettes": [
+        {
+          "species_id": "MN_227",
+          "front": "Hooked gravel wedge with low eye.",
+          "back": "Raised ridge nape, lower feet cropped."
+        },
+        {
+          "species_id": "MN_228",
+          "front": "Three articulated arches and short foreclaws.",
+          "back": "Broad ridge shoulders with two seams."
+        },
+        {
+          "species_id": "MN_229",
+          "front": "Long low five-segment ridge crawler on six pillar feet.",
+          "back": "Close blunt head, first two ridge shoulders and gravel crown; long body exits bottom."
+        }
+      ],
+      "habitat": "Sandy esker crests and glacial-gravel ridges in the west-central/central lake transition.",
+      "proposed_routes": [
+        "MN_R15",
+        "MN_R19"
+      ],
+      "sources": [
+        {
+          "url": "https://files.dnr.state.mn.us/mcvmagazine/young_naturalists/young-naturalists-article/glaciers/marapr2018_young_naturalists.pdf",
+          "publisher": "Minnesota DNR, The Glacier Did It",
+          "evidence": "Eskers preserve gravel and sand deposited by streams within former glacial ice; Lake Johanna esker is a Minnesota example.",
+          "fantasy_extension": "The former stream course becomes a living articulated ridge spine."
+        }
+      ],
+      "design_lock": "proposal-awaiting-root-lock"
+    },
+    {
+      "id": "MN_F105",
+      "region": "prairie",
+      "theme": "Popcorn pressure and springing punches: a hard warm kernel splits into an airy fighter whose tough seed hulls become rebounding knuckles. This family is the popping seed itself, with no griddle, pot, appliance or hotdish-ogy body.",
+      "members": [
+        {
+          "id": "MN_230",
+          "name": "Pipcorn",
+          "types": [
+            "FIRE"
+          ],
+          "stage": 1,
+          "evolves_to": "MN_231"
+        },
+        {
+          "id": "MN_231",
+          "name": "Pufflare",
+          "types": [
+            "FIRE",
+            "FIGHTING"
+          ],
+          "stage": 2,
+          "evolves_to": "MN_232"
+        },
+        {
+          "id": "MN_232",
+          "name": "Popummel",
+          "types": [
+            "FIRE",
+            "FIGHTING"
+          ],
+          "stage": 3,
+          "evolves_to": null
+        }
+      ],
+      "evolution_design": [
+        "A hard pointed kernel stands on two split hull feet; two eye whites sit above a small pressure seam.",
+        "The shell opens around a broad starch puff; one large puff forearm and one hard hull forearm create a lopsided springing pose.",
+        "Three broad popped-starch lobes form a light muscular torso, paired curved hull fists spring from short puff arms, and two strong bent hull feet brace its rebounds."
+      ],
+      "silhouettes": [
+        {
+          "species_id": "MN_230",
+          "front": "Compact pointed kernel, two split feet.",
+          "back": "Back hull seam and kernel crown."
+        },
+        {
+          "species_id": "MN_231",
+          "front": "Asymmetric two-arm puff, split hull base.",
+          "back": "Puff nape and one large hull shoulder."
+        },
+        {
+          "species_id": "MN_232",
+          "front": "Broad three-lobed starch fighter with curved hull fists and bent legs.",
+          "back": "Large puff shoulders and hull-fist bases, legs cropped."
+        }
+      ],
+      "habitat": "Prairie farm-edge gardens and grain-drying yards; proposed warm-season ordinary line.",
+      "proposed_routes": [
+        "MN_R02",
+        "MN_R16"
+      ],
+      "sources": [
+        {
+          "url": "https://extension.umn.edu/garden-and-home/yard-and-garden/gardening-in-minnesota/growing-popcorn",
+          "publisher": "University of Minnesota Extension",
+          "evidence": "Popcorn is grown in Minnesota gardens and is harvested as hard mature kernels for popping.",
+          "fantasy_extension": "The kernel-to-puff transformation becomes pressure-driven anatomy and rebounding fists."
+        }
+      ],
+      "design_lock": "proposal-awaiting-root-lock"
+    },
+    {
+      "id": "MN_F106",
+      "region": "prairie",
+      "theme": "Plains hognose bluffing and stage illusions: a shovel-snouted bluffer grows a false second face in its flared neck, rolling its body to swap which face an opponent sees. The theme is embodied in anatomy, not a snake wearing a theater mask.",
+      "members": [
+        {
+          "id": "MN_233",
+          "name": "Blufflet",
+          "types": [
+            "DARK"
+          ],
+          "stage": 1,
+          "evolves_to": "MN_234"
+        },
+        {
+          "id": "MN_234",
+          "name": "Hissario",
+          "types": [
+            "DARK",
+            "GHOST"
+          ],
+          "stage": 2,
+          "evolves_to": null
+        }
+      ],
+      "evolution_design": [
+        "A squat S-folded body, upturned shovel nose and two huge false-eye cheek patches exaggerate its bluff; the neck folds into a broad heart shape.",
+        "The neck opens into a large double-faced false jaw, while the real small head hides beneath the upturned snout; a broad curved tail can roll the body onto its back, and the shadow of the false face moves independently."
+      ],
+      "silhouettes": [
+        {
+          "species_id": "MN_233",
+          "front": "Compact heart-neck bluffer with blunt shovel nose, no thin stretched snake body.",
+          "back": "Back of folded neck and broad false-eye patches, tail exits crop."
+        },
+        {
+          "species_id": "MN_234",
+          "front": "Wide false-jaw hood, hidden real head and heavy rolling tail.",
+          "back": "Back of double-faced neck mantle; real face turned away and lower coil cropped."
+        }
+      ],
+      "habitat": "Sand prairie and gravelly open ground, including the prairie-forest transition.",
+      "proposed_routes": [
+        "MN_R16",
+        "MN_R19"
+      ],
+      "sources": [
+        {
+          "url": "https://files.dnr.state.mn.us/natural_resources/animals/reptiles_amphibians/snake_lizard_mn.pdf",
+          "publisher": "Minnesota DNR, Snakes and Lizards of Minnesota",
+          "evidence": "Plains hog-nosed snakes use upturned noses, display false eye patches, flatten their heads and bluff or play dead.",
+          "fantasy_extension": "A fictional false-face anatomy and independent shadow dramatize the bluffing behavior."
+        }
+      ],
+      "design_lock": "proposal-awaiting-root-lock"
+    },
+    {
+      "id": "MN_F107",
+      "region": "prairie",
+      "theme": "Prairie smoke and disappearing acts: nodding flower buds conceal an imp; the feathery seed plumes then become the imp body itself, scattering false silhouettes in the wind. Its smoke is seed fluff, not another fire monster.",
+      "members": [
+        {
+          "id": "MN_235",
+          "name": "Nodcloak",
+          "types": [
+            "GRASS",
+            "DARK"
+          ],
+          "stage": 1,
+          "evolves_to": "MN_236"
+        },
+        {
+          "id": "MN_236",
+          "name": "Plumourn",
+          "types": [
+            "GHOST",
+            "FLYING"
+          ],
+          "stage": 2,
+          "evolves_to": null
+        }
+      ],
+      "evolution_design": [
+        "Three nodding buds fold over one hidden face on a low leaf rosette; two thick root fingers let it peek out and close its cloak.",
+        "The root body disappears as three broad seed-plume fans coil into a floating cloak with one dark eye slit and two large plume hands. Its growing-season leaf mass becomes a ghostly seed-body, explaining the type change. The broad seed-plume fans actively lift and steer its light body on prairie thermals."
+      ],
+      "silhouettes": [
+        {
+          "species_id": "MN_235",
+          "front": "Low rosette with three hanging bud hoods and two root fingers.",
+          "back": "Back of nodding bud cluster and rosette shoulders."
+        },
+        {
+          "species_id": "MN_236",
+          "front": "Floating three-fan plume cloak with two broad hands; no tiny hair detail.",
+          "back": "Large plume nape and cloak shoulders, lower wind tail cropped."
+        }
+      ],
+      "habitat": "Dry prairie remnants and open glacial ridges; seed-plume stage most common after spring flowering.",
+      "proposed_routes": [
+        "MN_R16",
+        "MN_R19"
+      ],
+      "sources": [
+        {
+          "url": "https://seasonwatch.umn.edu/prairie-smoke",
+          "publisher": "University of Minnesota Season Watch",
+          "evidence": "Prairie smoke has nodding spring flowers and feathery seed plumes resembling smoke.",
+          "fantasy_extension": "Flowers become an illusion cloak, then living ghost seed plumes; the supernatural aspect is original."
+        }
+      ],
+      "design_lock": "proposal-awaiting-root-lock",
+      "root_review": {
+        "status": "design-locked",
+        "note": "Ghost/Flying follows the transition from rooted bud to airborne seed-spirit; adds ordinary Flying coverage."
+      }
+    },
+    {
+      "id": "MN_F108",
+      "region": "prairie",
+      "theme": "Light pillars and mirror alignment: an ice-crystal prism creature learns to stack reflections, growing two offset mirror columns and redirecting a light source into a false vertical image. It differs from Polarisma fixed-star auroral curtains by being a compact hard-edged mirror creature.",
+      "members": [
+        {
+          "id": "MN_237",
+          "name": "Prismip",
+          "types": [
+            "PSYCHIC"
+          ],
+          "stage": 1,
+          "evolves_to": "MN_238"
+        },
+        {
+          "id": "MN_238",
+          "name": "Mirradian",
+          "types": [
+            "ELECTRIC",
+            "PSYCHIC"
+          ],
+          "stage": 2,
+          "evolves_to": null
+        }
+      ],
+      "evolution_design": [
+        "A floating hexagonal prism with one dark face panel and two thick horizontal mirror tabs.",
+        "Two unequal upright prism shoulders flank a small central head and a broad wedge torso; the mirror tabs become articulated panel arms that can face the same direction or oppose one another."
+      ],
+      "silhouettes": [
+        {
+          "species_id": "MN_237",
+          "front": "One hexagonal prism, two broad mirror tabs.",
+          "back": "Faceted nape and panel tabs fill close frame."
+        },
+        {
+          "species_id": "MN_238",
+          "front": "Offset twin prism shoulders, wedge torso and two panel arms.",
+          "back": "Back faces of upper prisms and shoulders; lower body cropped."
+        }
+      ],
+      "habitat": "Cold clear nights near prairie towns and open-field lamps, proposed conditional ordinary encounters.",
+      "proposed_routes": [
+        "MN_R16",
+        "MN_R15"
+      ],
+      "sources": [
+        {
+          "url": "https://www.dnr.state.mn.us/climate/journal/spooky-minnesota-weather.html",
+          "publisher": "Minnesota DNR State Climatology Office",
+          "evidence": "Minnesota light pillars arise when aligned ice crystals reflect light; the DNR documents observations around St. Cloud and the Twin Cities.",
+          "fantasy_extension": "A fictional crystal creature controls reflection alignment and stores the redirected light as electrical power."
+        }
+      ],
+      "design_lock": "proposal-awaiting-root-lock"
+    },
+    {
+      "id": "MN_F109",
+      "region": "prairie",
+      "theme": "Fulgurites, or lightning-written glass roots: a broken fork of fused sand grows into a branching glass-boned dragon. Its lightning shape is its actual body structure rather than a bolt marking on an animal.",
+      "members": [
+        {
+          "id": "MN_239",
+          "name": "Fulglet",
+          "types": [
+            "ELECTRIC",
+            "ROCK"
+          ],
+          "stage": 1,
+          "evolves_to": "MN_240"
+        },
+        {
+          "id": "MN_240",
+          "name": "Fulgrawl",
+          "types": [
+            "ELECTRIC",
+            "DRAGON"
+          ],
+          "stage": 2,
+          "evolves_to": null
+        }
+      ],
+      "evolution_design": [
+        "A Y-shaped dark glass fork stands on two blunt sandy feet; one open branch socket contains a bright eye.",
+        "The fork grows into a powerful upright glass body, paired thick branching forearms, two angular glass legs and a three-pronged crown; hollow branch ends form the eyes and discharge points."
+      ],
+      "silhouettes": [
+        {
+          "species_id": "MN_239",
+          "front": "Thick Y-fork glass body and two sandy feet.",
+          "back": "Back glass fork and socket rim."
+        },
+        {
+          "species_id": "MN_240",
+          "front": "Broad upright branching glass dragon with two sturdy legs and three crown prongs.",
+          "back": "Forked glass nape and thick upper branch shoulders; legs cropped."
+        }
+      ],
+      "habitat": "Storm-exposed Minnesota sand prairie. This is an ecological/geological inference, not a claimed verified Minnesota fulgurite collecting locality.",
+      "proposed_routes": [
+        "MN_R16",
+        "MN_R19"
+      ],
+      "sources": [
+        {
+          "url": "https://www.nps.gov/articles/grsa-fulgurites.htm",
+          "publisher": "U.S. National Park Service",
+          "evidence": "Lightning can fuse sand into branched glass tubes called fulgurites; the cited example is in Colorado.",
+          "fantasy_extension": "The general process is combined with Minnesota storm and sand-prairie habitat to invent a living glass-root creature."
+        },
+        {
+          "url": "https://www.dnr.state.mn.us/ecs/223N/index.html",
+          "publisher": "Minnesota DNR",
+          "evidence": "The Agassiz landscape includes sandy deposits and old shoreline ridges.",
+          "fantasy_extension": "Provides Minnesota habitat context without inventing a documented mineral occurrence."
+        }
+      ],
+      "design_lock": "proposal-awaiting-root-lock"
+    },
+    {
+      "id": "MN_F110",
+      "region": "prairie",
+      "theme": "Ants, honeydew bargaining and living toll gates: a sly collector grows heavy scoop mandibles, a drop-shaped storage abdomen and interlocking leg bars. It trades passage for sweet sap, building the gate out of its own six limbs rather than wearing a guard uniform. The honeydew reservoir also stores a fictional sour defensive secretion, delivered by the scoop jaws; no claim is made about the toxicity of real honeydew.",
+      "members": [
+        {
+          "id": "MN_241",
+          "name": "Dewdant",
+          "types": [
+            "BUG",
+            "POISON"
+          ],
+          "stage": 1,
+          "evolves_to": "MN_242"
+        },
+        {
+          "id": "MN_242",
+          "name": "Barricant",
+          "types": [
+            "BUG",
+            "POISON"
+          ],
+          "stage": 2,
+          "evolves_to": null
+        }
+      ],
+      "evolution_design": [
+        "A broad-headed six-legged imp ant with two scoop jaws and one small pear-shaped storage segment.",
+        "The jaws grow into two curved scoop shields, the abdomen becomes a large honeydrop reservoir and the four rear legs interlock as a low barricade while the front pair barter. The reservoir and jaws become a paired defensive secretion system."
+      ],
+      "silhouettes": [
+        {
+          "species_id": "MN_241",
+          "front": "Wide ant head, scoop jaws and one pear abdomen.",
+          "back": "Broad back of head and small reservoir neck."
+        },
+        {
+          "species_id": "MN_242",
+          "front": "Low gate stance, enormous scoop jaws, honeydrop abdomen and six stout legs.",
+          "back": "Close reservoir shoulder and jaw hinges, lower barricade legs cropped."
+        }
+      ],
+      "habitat": "Sap-feeding insect colonies along prairie field margins and farm gardens.",
+      "proposed_routes": [
+        "MN_R02",
+        "MN_R16"
+      ],
+      "sources": [
+        {
+          "url": "https://extension.umn.edu/garden-and-home/yard-and-garden/yard-and-garden-insects/aphids",
+          "publisher": "University of Minnesota Extension",
+          "evidence": "Aphids secrete sugar-rich honeydew that attracts ants and other insects.",
+          "fantasy_extension": "The honeydew exchange becomes invented toll-taking and interlocking gate anatomy."
+        }
+      ],
+      "design_lock": "proposal-awaiting-root-lock",
+      "root_review": {
+        "status": "design-locked",
+        "note": "Bug/Poison instead of Bug/Dark broadens Poison through explicit stored-secretion anatomy while retaining the honeydew toll behavior."
+      }
+    },
+    {
+      "id": "MN_F111",
+      "region": "prairie",
+      "theme": "Frost heaving and leverage: a living ground wedge learns to jack its own body upward. It has no fence slats, separating it from Driftpeg and Rimeguard; the theme is soil pressure and mechanical leverage embodied in asymmetric forearms.",
+      "members": [
+        {
+          "id": "MN_243",
+          "name": "Prybit",
+          "types": [
+            "GROUND"
+          ],
+          "stage": 1,
+          "evolves_to": "MN_244"
+        },
+        {
+          "id": "MN_244",
+          "name": "Heavraul",
+          "types": [
+            "GROUND",
+            "FIGHTING"
+          ],
+          "stage": 2,
+          "evolves_to": null
+        }
+      ],
+      "evolution_design": [
+        "A squat split soil wedge has two wide bracing toes and one short prying forearm under a stone cap.",
+        "Two enormous unequal wedge forearms plant against the soil while thick jointed back legs lock into a lever stance; the split cap becomes a broad low head over an open triangular throat gap."
+      ],
+      "silhouettes": [
+        {
+          "species_id": "MN_243",
+          "front": "Split ground wedge, two bracing toes, one little pry arm.",
+          "back": "Stone cap nape and wedge shoulder."
+        },
+        {
+          "species_id": "MN_244",
+          "front": "Low broad head, asymmetric giant wedge arms and locked lever legs.",
+          "back": "Massive pry-arm shoulder bases and split cap; legs below crop."
+        }
+      ],
+      "habitat": "Freeze-thaw outcrops and stony prairie soil; optional westward prairie field/outcrop spur rather than a required travel gate.",
+      "proposed_routes": [
+        "MN_R16",
+        "MN_R19"
+      ],
+      "sources": [
+        {
+          "url": "https://www.dnr.state.mn.us/state-parks/blue-mounds/geology-details.html",
+          "publisher": "Minnesota DNR and Minnesota Geological Survey contributors",
+          "evidence": "Blue Mounds outcrops preserve effects of freezing and thawing, including frost heaving.",
+          "fantasy_extension": "Ground wedges and lever limbs express the uplifting force; no literal hydraulic machinery."
+        }
+      ],
+      "design_lock": "proposal-awaiting-root-lock"
+    },
+    {
+      "id": "MN_F112",
+      "region": "prairie",
+      "theme": "Ventifacts and wind-sculpted facets: a wind-polished triangular stone learns to change its angle, then grows three broad stone vanes that redirect gusts under its body. This is an angular gliding landform creature, not an animal with rock armor.",
+      "members": [
+        {
+          "id": "MN_245",
+          "name": "Skirrit",
+          "types": [
+            "ROCK",
+            "FLYING"
+          ],
+          "stage": 1,
+          "evolves_to": "MN_246"
+        },
+        {
+          "id": "MN_246",
+          "name": "Ventactor",
+          "types": [
+            "ROCK",
+            "FLYING"
+          ],
+          "stage": 2,
+          "evolves_to": null
+        }
+      ],
+      "evolution_design": [
+        "One blunt three-faced stone kite has a recessed eye on its sheltered side and two small skidding wedges. Its three facets already permit short controlled skimming flights; the wedges are landing skids.",
+        "Three thick triangular vanes open around a compact central face; a broad keel beneath the body and two short stone arms steer the air, creating a three-wing glider silhouette with no bird feathers."
+      ],
+      "silhouettes": [
+        {
+          "species_id": "MN_245",
+          "front": "Asymmetric three-faced stone kite, two little skid wedges.",
+          "back": "Back polished facet and blunt wedge shoulder."
+        },
+        {
+          "species_id": "MN_246",
+          "front": "Three broad triangular stone vanes, compact face, central keel and two short arms.",
+          "back": "Rear face of upper vane and vane roots, lower keel cropped."
+        }
+      ],
+      "habitat": "Wind-exposed prairie outcrops, inspired by southwestern quartzite ventifacts; proposed habitat uses an optional prairie outcrop pocket and does not claim Blue Mounds is on an existing authored route.",
+      "proposed_routes": [
+        "MN_R16",
+        "MN_R19"
+      ],
+      "sources": [
+        {
+          "url": "https://www.dnr.state.mn.us/state-parks/blue-mounds/geology-details.html",
+          "publisher": "Minnesota DNR and Minnesota Geological Survey contributors",
+          "evidence": "Wind-blown sand has abraded and polished exposed Blue Mounds rock into ventifacts.",
+          "fantasy_extension": "The sculpted facets become controllable aerodynamic stone vanes."
+        }
+      ],
+      "design_lock": "proposal-awaiting-root-lock",
+      "root_review": {
+        "status": "design-locked",
+        "note": "Both stages Rock/Flying: small faceted kite already skims in gusts, adult deploys large stone vanes."
+      }
+    },
+    {
+      "id": "MN_F113",
+      "region": "prairie",
+      "theme": "Minnesota ball-lightning accounts and a knot that will not stay tied: three thick luminous bands loop around a small dark core, forming a compact floating tangle with two blunt trailing ends. It can unthread itself through tiny openings. This ordinary rare encounter is inspired by reported weather oddities, not an asserted explanation for ball lightning.",
+      "members": [
+        {
+          "id": "MN_247",
+          "name": "Lumalint",
+          "types": [
+            "ELECTRIC",
+            "GHOST"
+          ],
+          "stage": 1,
+          "evolves_to": null
+        }
+      ],
+      "evolution_design": [
+        "Single-stage: the three thick luminous loops, dark eye core and two blunt band ends form one compact silhouette; do not add an evolution or a detached glow effect."
+      ],
+      "silhouettes": [
+        {
+          "species_id": "MN_247",
+          "front": "Compact interlocked three-band light knot, dark eye core, two blunt trailing ends.",
+          "back": "Back of luminous loops, core turned away, lower band ends cropped."
+        }
+      ],
+      "habitat": "Rare after-storm encounters at prairie-town edges and open shelter porches.",
+      "proposed_routes": [
+        "MN_R02",
+        "MN_R16"
+      ],
+      "sources": [
+        {
+          "url": "https://www.dnr.state.mn.us/climate/journal/spooky-minnesota-weather.html",
+          "publisher": "Minnesota DNR State Climatology Office",
+          "evidence": "The DNR recounts Minnesota ball-lightning reports, including Walnut Grove and North Minneapolis accounts.",
+          "fantasy_extension": "The light knot is a new fictional monster; eyewitness accounts are not proof of its existence or a settled physical mechanism."
+        }
+      ],
+      "design_lock": "proposal-awaiting-root-lock"
+    },
+    {
+      "id": "MN_F114",
+      "region": "prairie",
+      "theme": "Original legendary guardian of the vanished Lake Agassiz shoreline: a massive broad gate beast carries ONE solid crescent shell with three nested stepped beach ridges. Two enormous fork-palmed forearms brace a pair of short terrace heels, with a thick bifurcated outlet tail behind. Its power selects which way stored floodwater leaves a basin; successive former lake levels are embodied in its solid terraced carapace.",
+      "members": [
+        {
+          "id": "MN_248",
+          "name": "Strandrak",
+          "types": [
+            "DRAGON",
+            "GROUND"
+          ],
+          "stage": 1,
+          "evolves_to": null
+        }
+      ],
+      "evolution_design": [
+        "Single-stage legendary: a very broad crescent carapace rises over a central low dragon face, with three nested stepped beach ridges built into the ONE solid crescent shell. Two enormous fork-palmed dam forearms brace a pair of short terrace heels. A thick bifurcated outlet tail extends behind. Wide shield-crab/gate-beast proportions, not the elongated six-foot segmented ordinary esker dragon; no wings, detached ring torso or thin spines."
+      ],
+      "silhouettes": [
+        {
+          "species_id": "MN_248",
+          "front": "Enormous low terrace beast with six spade feet, three crescent back ridges and split outlet tail.",
+          "back": "Close blunt head and first two ridge shoulders; terrace body and feet exit bottom."
+        }
+      ],
+      "habitat": "Agassiz beach-ridge prairie between Detroit Lakes and Moorhead; a proposed fictional basin chamber beside an optional route spur.",
+      "proposed_routes": [
+        "MN_R16"
+      ],
+      "sources": [
+        {
+          "url": "https://www.dnr.state.mn.us/ecs/223N/index.html",
+          "publisher": "Minnesota DNR",
+          "evidence": "Agassiz beach ridges mark successively lower glacial-lake levels.",
+          "fantasy_extension": "An original guardian controls a fictional basin outlet and remembers former shorelines."
+        },
+        {
+          "url": "https://www.dnr.state.mn.us/whaf/5-component/geomorphology.html",
+          "publisher": "Minnesota DNR",
+          "evidence": "Retreating ice opened northern drainage outlets and Lake Agassiz drained northward.",
+          "fantasy_extension": "The drainage history inspires a landscape-scale power rather than a borrowed named cultural being."
+        }
+      ],
+      "design_lock": "proposal-awaiting-root-lock",
+      "rarity": "legendary",
+      "location": "Proposed Strandline Basin, an optional fictional chamber off MN_R16; not an existing registered map or a claim of public access to a protected site.",
+      "legendary_narrative": "Tracks three former water levels. Its optional survey puzzle opens safe overflow channels; it never blocks the main route. It steadies the basin while Frontagal moves the stormfront overhead.",
+      "root_review": {
+        "status": "design-locked",
+        "note": "Changed from six-foot ridge crawler to massive crescent-shell gate beast with two fork-palmed forearms, preserving the Agassiz outlet role and distinguishing it from ordinary Eskavern."
+      }
+    },
+    {
+      "id": "MN_F115",
+      "region": "prairie",
+      "theme": "Original legendary of the prairie stormfront: a huge flat wedge body and two long continuous shelf wings form a moving horizon. Three heavy downward forks are actual air-channel limbs, and the sheltered underside hides a narrow clear-eyed face. No thunder-bison, bird, sacred thunder-being or reused aurora curtain silhouette.",
+      "members": [
+        {
+          "id": "MN_249",
+          "name": "Frontagal",
+          "types": [
+            "ELECTRIC",
+            "FLYING"
+          ],
+          "stage": 1,
+          "evolves_to": null
+        }
+      ],
+      "evolution_design": [
+        "Single-stage legendary: one broad wedge torso, two continuous curved shelf wings, three thick descending forks and a short rudder tail. Large flat shapes and two eye slits remain readable at native resolution."
+      ],
+      "silhouettes": [
+        {
+          "species_id": "MN_249",
+          "front": "Very wide low stormfront wedge, two shelf wings and three downward fork limbs.",
+          "back": "Close sheltered nape and upper shelf-wing roots; outer wings and lower forks crop away."
+        }
+      ],
+      "habitat": "Open Red River prairie horizon after a scripted non-destructive storm event.",
+      "proposed_routes": [
+        "MN_R16"
+      ],
+      "sources": [
+        {
+          "url": "https://www.dnr.state.mn.us/climate/journal/spooky-minnesota-weather.html",
+          "publisher": "Minnesota DNR State Climatology Office",
+          "evidence": "Shelf and roll clouds form along advancing storm edges; Minnesota observations also document ominous cloud forms.",
+          "fantasy_extension": "The moving shelf is an original creature that steers storm air, not a named sacred figure or a claim of actual folklore."
+        }
+      ],
+      "design_lock": "proposal-awaiting-root-lock",
+      "rarity": "legendary",
+      "location": "Proposed Horizon Rise, a fictional high overlook reached from an optional MN_R16 prairie spur; no existing town or mandatory map connection is changed.",
+      "legendary_narrative": "Companion scale to Strandrak: one moves the front, one chooses the outlet. The player watches three horizon passes and grounds the fictional storm charge before a voluntary encounter; no battle is required to reopen regional travel."
+    },
+    {
+      "id": "MN_F116",
+      "region": "peatlands",
+      "theme": "Original mythical keeper of patterned-fen memory: three thick peat-rib fingers hover around a small teardrop tree-island head, with two clean dark pool gaps between them. It reads a past season from each layer and can fold one forgotten path into another. The name refers to flark pools, not an existing sacred spirit.",
+      "members": [
+        {
+          "id": "MN_250",
+          "name": "Flarkindle",
+          "types": [
+            "GHOST",
+            "PSYCHIC"
+          ],
+          "stage": 1,
+          "evolves_to": null
+        }
+      ],
+      "evolution_design": [
+        "Single-stage mythical: three broad offset peat-rib fingers form a cupped hand around the teardrop head; two large pool gaps stay open, one short root tassel hangs below. Keep three ribs only for native readability."
+      ],
+      "silhouettes": [
+        {
+          "species_id": "MN_250",
+          "front": "Small cupped three-rib peat hand with teardrop island head and two pool gaps.",
+          "back": "Large back of upper peat ribs and tree-island nape, lower tassel cropped."
+        }
+      ],
+      "habitat": "A proposed Big Bog-inspired patterned-fen side area, geographically a northwest optional spur from the Bemidji/Border Pines area rather than an invented claim that Waskish is already on MN_R17.",
+      "proposed_routes": [
+        "MN_R17"
+      ],
+      "sources": [
+        {
+          "url": "https://www.dnr.state.mn.us/snas/peatlands.html",
+          "publisher": "Minnesota DNR",
+          "evidence": "Patterned peatlands include raised bogs, transverse peat ribs, pools and water tracks.",
+          "fantasy_extension": "Peat patterns become visible creature anatomy and fictional memory channels."
+        },
+        {
+          "url": "https://www.dnr.state.mn.us/state-parks/virtual-tours/big-bog/dialup.html",
+          "publisher": "Minnesota DNR Big Bog State Recreation Area",
+          "evidence": "Big Bog near Waskish includes extensive patterned peatland and a boardwalk viewpoint.",
+          "fantasy_extension": "The fictional memory encounter is viewed from an authored boardwalk-inspired safe path; no real protected land is altered."
+        }
+      ],
+      "design_lock": "proposal-awaiting-root-lock",
+      "rarity": "mythical",
+      "location": "Proposed Memory Flark, a fictional optional boardwalk vista in a future Big Bog-inspired side area; no existing authored map/encounter is asserted.",
+      "mythical_narrative": "A short optional survey records three rib/pool patterns at different times. Flarkindle appears only when the player restores the pattern on a small map, representing peatland time and memory. Its lore is wholly original and does not reinterpret an Indigenous sacred being."
+    }
+  ],
+  "species_count": 33,
+  "family_count": 16,
+  "evolution_mix": {
+    "three_stage_families": 5,
+    "two_stage_families": 7,
+    "single_stage_species": 4,
+    "proposed_legendary_species": 2,
+    "proposed_mythical_species": 1
+  },
+  "design_boundary": "First153identities unchanged. OnlyF101locked/generated. Remaining concepts await root review, type balance and lock before any ImageGen. Source facts and invented fantasy extensions are separated; all rare narratives are original and optional, not borrowed sacred beings. Proposed routes are encounter-planning suggestions, not gameplay/map registration.",
+  "art_contract": "Per-Pokemon4color GBC palettes; same species front/back. Native56fronts/48close-rear portraits, exact RGB5/RGB555/RGB8/hex in prompts, stepped black source contours, broad color planes, clear white eyes, anatomical evolution, no gradients. Every raw/prompt/reference/nativeversion retained.",
+  "type_additions": {
+    "BUG": 2,
+    "DARK": 7,
+    "DRAGON": 4,
+    "ELECTRIC": 10,
+    "FIGHTING": 3,
+    "FIRE": 6,
+    "FLYING": 2,
+    "GHOST": 5,
+    "GRASS": 3,
+    "GROUND": 6,
+    "ICE": 3,
+    "PSYCHIC": 3,
+    "ROCK": 3
+  }
+}

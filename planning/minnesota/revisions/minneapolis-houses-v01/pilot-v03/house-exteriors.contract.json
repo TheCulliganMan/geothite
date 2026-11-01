@@ -1,0 +1,2148 @@
+{
+  "schema_version": 1,
+  "status": "DETACHED_SOURCE_CANDIDATE_NOT_NATIVE_PUBLICATION",
+  "parent_pack": "content-packs/minnesota-city-river-bend-v01.crystalpack",
+  "expected_parent_file_sha256": "57eefb675b9cb32ac66a01819f56961392e51678a6f9dd959888fbb9427e4e62",
+  "map": "MnMinneapolis",
+  "tileset": "mn_minneapolis_city",
+  "expected_existing_metatiles": 157,
+  "new_metatiles": [
+    {
+      "id": "9d",
+      "name": "native diamond gable left",
+      "glyphs": [
+        {
+          "tileset": "kanto",
+          "block": "0c",
+          "glyph": [
+            0,
+            0
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "0c",
+          "glyph": [
+            1,
+            0
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "0c",
+          "glyph": [
+            2,
+            0
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "0c",
+          "glyph": [
+            3,
+            0
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "0c",
+          "glyph": [
+            0,
+            1
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "0c",
+          "glyph": [
+            1,
+            1
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "0c",
+          "glyph": [
+            2,
+            1
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "0c",
+          "glyph": [
+            3,
+            1
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "0c",
+          "glyph": [
+            0,
+            2
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "0c",
+          "glyph": [
+            1,
+            2
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "0c",
+          "glyph": [
+            2,
+            2
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "0c",
+          "glyph": [
+            3,
+            2
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "0c",
+          "glyph": [
+            0,
+            3
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "0c",
+          "glyph": [
+            1,
+            3
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "0c",
+          "glyph": [
+            2,
+            3
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "0c",
+          "glyph": [
+            3,
+            3
+          ]
+        }
+      ],
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "id": "9e",
+      "name": "native diamond gable right",
+      "glyphs": [
+        {
+          "tileset": "kanto",
+          "block": "0e",
+          "glyph": [
+            0,
+            0
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "0e",
+          "glyph": [
+            1,
+            0
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "0e",
+          "glyph": [
+            2,
+            0
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "0e",
+          "glyph": [
+            3,
+            0
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "0e",
+          "glyph": [
+            0,
+            1
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "0e",
+          "glyph": [
+            1,
+            1
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "0e",
+          "glyph": [
+            2,
+            1
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "0e",
+          "glyph": [
+            3,
+            1
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "0e",
+          "glyph": [
+            0,
+            2
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "0e",
+          "glyph": [
+            1,
+            2
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "0e",
+          "glyph": [
+            2,
+            2
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "0e",
+          "glyph": [
+            3,
+            2
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "0e",
+          "glyph": [
+            0,
+            3
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "0e",
+          "glyph": [
+            1,
+            3
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "0e",
+          "glyph": [
+            2,
+            3
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "0e",
+          "glyph": [
+            3,
+            3
+          ]
+        }
+      ],
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "id": "9f",
+      "name": "native shallow pitch left",
+      "glyphs": [
+        {
+          "tileset": "kanto",
+          "block": "38",
+          "glyph": [
+            0,
+            0
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "38",
+          "glyph": [
+            1,
+            0
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "38",
+          "glyph": [
+            2,
+            0
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "38",
+          "glyph": [
+            3,
+            0
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "38",
+          "glyph": [
+            0,
+            1
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "38",
+          "glyph": [
+            1,
+            1
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "38",
+          "glyph": [
+            2,
+            1
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "38",
+          "glyph": [
+            3,
+            1
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "38",
+          "glyph": [
+            0,
+            2
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "38",
+          "glyph": [
+            1,
+            2
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "38",
+          "glyph": [
+            2,
+            2
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "38",
+          "glyph": [
+            3,
+            2
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "38",
+          "glyph": [
+            0,
+            3
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "38",
+          "glyph": [
+            1,
+            3
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "38",
+          "glyph": [
+            2,
+            3
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "38",
+          "glyph": [
+            3,
+            3
+          ]
+        }
+      ],
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "id": "a0",
+      "name": "native shallow pitch right",
+      "glyphs": [
+        {
+          "tileset": "kanto",
+          "block": "39",
+          "glyph": [
+            0,
+            0
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "39",
+          "glyph": [
+            1,
+            0
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "39",
+          "glyph": [
+            2,
+            0
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "39",
+          "glyph": [
+            3,
+            0
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "39",
+          "glyph": [
+            0,
+            1
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "39",
+          "glyph": [
+            1,
+            1
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "39",
+          "glyph": [
+            2,
+            1
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "39",
+          "glyph": [
+            3,
+            1
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "39",
+          "glyph": [
+            0,
+            2
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "39",
+          "glyph": [
+            1,
+            2
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "39",
+          "glyph": [
+            2,
+            2
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "39",
+          "glyph": [
+            3,
+            2
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "39",
+          "glyph": [
+            0,
+            3
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "39",
+          "glyph": [
+            1,
+            3
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "39",
+          "glyph": [
+            2,
+            3
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "39",
+          "glyph": [
+            3,
+            3
+          ]
+        }
+      ],
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "id": "a1",
+      "name": "weatherboard left with two native windows",
+      "glyphs": [
+        {
+          "tileset": "kanto",
+          "block": "3c",
+          "glyph": [
+            0,
+            0
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "3c",
+          "glyph": [
+            1,
+            0
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "3c",
+          "glyph": [
+            2,
+            0
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "3c",
+          "glyph": [
+            3,
+            0
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "3c",
+          "glyph": [
+            0,
+            1
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "3c",
+          "glyph": [
+            1,
+            1
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "3c",
+          "glyph": [
+            2,
+            1
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "3c",
+          "glyph": [
+            3,
+            1
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "3c",
+          "glyph": [
+            0,
+            2
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "3c",
+          "glyph": [
+            1,
+            2
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "3d",
+          "glyph": [
+            0,
+            2
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "3d",
+          "glyph": [
+            1,
+            2
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "3c",
+          "glyph": [
+            0,
+            3
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "3c",
+          "glyph": [
+            1,
+            3
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "3d",
+          "glyph": [
+            0,
+            3
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "3d",
+          "glyph": [
+            1,
+            3
+          ]
+        }
+      ],
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "id": "a2",
+      "name": "weatherboard right, fixed doorway quadrant 2",
+      "glyphs": [
+        {
+          "tileset": "kanto",
+          "block": "3d",
+          "glyph": [
+            0,
+            0
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "3d",
+          "glyph": [
+            1,
+            0
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "3d",
+          "glyph": [
+            2,
+            0
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "3d",
+          "glyph": [
+            3,
+            0
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "3d",
+          "glyph": [
+            0,
+            1
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "3d",
+          "glyph": [
+            1,
+            1
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "3d",
+          "glyph": [
+            2,
+            1
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "3d",
+          "glyph": [
+            3,
+            1
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "3c",
+          "glyph": [
+            2,
+            2
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "3c",
+          "glyph": [
+            3,
+            2
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "3d",
+          "glyph": [
+            2,
+            2
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "3d",
+          "glyph": [
+            3,
+            2
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "3c",
+          "glyph": [
+            2,
+            3
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "3c",
+          "glyph": [
+            3,
+            3
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "3d",
+          "glyph": [
+            2,
+            3
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "3d",
+          "glyph": [
+            3,
+            3
+          ]
+        }
+      ],
+      "collision": [
+        "WALL",
+        "WALL",
+        "DOOR",
+        "WALL"
+      ]
+    },
+    {
+      "id": "a3",
+      "name": "weatherboard right, fixed doorway quadrant 3",
+      "glyphs": [
+        {
+          "tileset": "kanto",
+          "block": "3d",
+          "glyph": [
+            0,
+            0
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "3d",
+          "glyph": [
+            1,
+            0
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "3d",
+          "glyph": [
+            2,
+            0
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "3d",
+          "glyph": [
+            3,
+            0
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "3d",
+          "glyph": [
+            0,
+            1
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "3d",
+          "glyph": [
+            1,
+            1
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "3d",
+          "glyph": [
+            2,
+            1
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "3d",
+          "glyph": [
+            3,
+            1
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "3d",
+          "glyph": [
+            0,
+            2
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "3d",
+          "glyph": [
+            1,
+            2
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "3c",
+          "glyph": [
+            2,
+            2
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "3c",
+          "glyph": [
+            3,
+            2
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "3d",
+          "glyph": [
+            0,
+            3
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "3d",
+          "glyph": [
+            1,
+            3
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "3c",
+          "glyph": [
+            2,
+            3
+          ]
+        },
+        {
+          "tileset": "kanto",
+          "block": "3c",
+          "glyph": [
+            3,
+            3
+          ]
+        }
+      ],
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "DOOR"
+      ]
+    },
+    {
+      "id": "a4",
+      "name": "native Ecruteak timber house left",
+      "glyphs": [
+        {
+          "tileset": "johto",
+          "block": "26",
+          "glyph": [
+            0,
+            0
+          ]
+        },
+        {
+          "tileset": "johto",
+          "block": "26",
+          "glyph": [
+            1,
+            0
+          ]
+        },
+        {
+          "tileset": "johto",
+          "block": "26",
+          "glyph": [
+            2,
+            0
+          ]
+        },
+        {
+          "tileset": "johto",
+          "block": "26",
+          "glyph": [
+            3,
+            0
+          ]
+        },
+        {
+          "tileset": "johto",
+          "block": "26",
+          "glyph": [
+            0,
+            1
+          ]
+        },
+        {
+          "tileset": "johto",
+          "block": "26",
+          "glyph": [
+            1,
+            1
+          ]
+        },
+        {
+          "tileset": "johto",
+          "block": "26",
+          "glyph": [
+            2,
+            1
+          ]
+        },
+        {
+          "tileset": "johto",
+          "block": "26",
+          "glyph": [
+            3,
+            1
+          ]
+        },
+        {
+          "tileset": "johto",
+          "block": "26",
+          "glyph": [
+            0,
+            2
+          ]
+        },
+        {
+          "tileset": "johto",
+          "block": "26",
+          "glyph": [
+            1,
+            2
+          ]
+        },
+        {
+          "tileset": "johto",
+          "block": "26",
+          "glyph": [
+            2,
+            2
+          ]
+        },
+        {
+          "tileset": "johto",
+          "block": "26",
+          "glyph": [
+            3,
+            2
+          ]
+        },
+        {
+          "tileset": "johto",
+          "block": "26",
+          "glyph": [
+            0,
+            3
+          ]
+        },
+        {
+          "tileset": "johto",
+          "block": "26",
+          "glyph": [
+            1,
+            3
+          ]
+        },
+        {
+          "tileset": "johto",
+          "block": "26",
+          "glyph": [
+            2,
+            3
+          ]
+        },
+        {
+          "tileset": "johto",
+          "block": "26",
+          "glyph": [
+            3,
+            3
+          ]
+        }
+      ],
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "id": "a5",
+      "name": "native Ecruteak timber house right doorway",
+      "glyphs": [
+        {
+          "tileset": "johto",
+          "block": "27",
+          "glyph": [
+            0,
+            0
+          ]
+        },
+        {
+          "tileset": "johto",
+          "block": "27",
+          "glyph": [
+            1,
+            0
+          ]
+        },
+        {
+          "tileset": "johto",
+          "block": "27",
+          "glyph": [
+            2,
+            0
+          ]
+        },
+        {
+          "tileset": "johto",
+          "block": "27",
+          "glyph": [
+            3,
+            0
+          ]
+        },
+        {
+          "tileset": "johto",
+          "block": "27",
+          "glyph": [
+            0,
+            1
+          ]
+        },
+        {
+          "tileset": "johto",
+          "block": "27",
+          "glyph": [
+            1,
+            1
+          ]
+        },
+        {
+          "tileset": "johto",
+          "block": "27",
+          "glyph": [
+            2,
+            1
+          ]
+        },
+        {
+          "tileset": "johto",
+          "block": "27",
+          "glyph": [
+            3,
+            1
+          ]
+        },
+        {
+          "tileset": "johto",
+          "block": "27",
+          "glyph": [
+            0,
+            2
+          ]
+        },
+        {
+          "tileset": "johto",
+          "block": "27",
+          "glyph": [
+            1,
+            2
+          ]
+        },
+        {
+          "tileset": "johto",
+          "block": "27",
+          "glyph": [
+            2,
+            2
+          ]
+        },
+        {
+          "tileset": "johto",
+          "block": "27",
+          "glyph": [
+            3,
+            2
+          ]
+        },
+        {
+          "tileset": "johto",
+          "block": "27",
+          "glyph": [
+            0,
+            3
+          ]
+        },
+        {
+          "tileset": "johto",
+          "block": "27",
+          "glyph": [
+            1,
+            3
+          ]
+        },
+        {
+          "tileset": "johto",
+          "block": "27",
+          "glyph": [
+            2,
+            3
+          ]
+        },
+        {
+          "tileset": "johto",
+          "block": "27",
+          "glyph": [
+            3,
+            3
+          ]
+        }
+      ],
+      "collision": [
+        "WALL",
+        "WALL",
+        "DOOR",
+        "WALL"
+      ]
+    },
+    {
+      "id": "a6",
+      "name": "studio blue eave over full upper glazing",
+      "glyphs": [
+        {
+          "tileset": "johto_modern",
+          "block": "12",
+          "glyph": [
+            0,
+            0
+          ]
+        },
+        {
+          "tileset": "johto_modern",
+          "block": "12",
+          "glyph": [
+            1,
+            0
+          ]
+        },
+        {
+          "tileset": "johto_modern",
+          "block": "12",
+          "glyph": [
+            2,
+            0
+          ]
+        },
+        {
+          "tileset": "johto_modern",
+          "block": "12",
+          "glyph": [
+            3,
+            0
+          ]
+        },
+        {
+          "tileset": "johto_modern",
+          "block": "12",
+          "glyph": [
+            0,
+            1
+          ]
+        },
+        {
+          "tileset": "johto_modern",
+          "block": "12",
+          "glyph": [
+            1,
+            1
+          ]
+        },
+        {
+          "tileset": "johto_modern",
+          "block": "12",
+          "glyph": [
+            2,
+            1
+          ]
+        },
+        {
+          "tileset": "johto_modern",
+          "block": "12",
+          "glyph": [
+            3,
+            1
+          ]
+        },
+        {
+          "tileset": "johto_modern",
+          "block": "20",
+          "glyph": [
+            0,
+            0
+          ]
+        },
+        {
+          "tileset": "johto_modern",
+          "block": "20",
+          "glyph": [
+            1,
+            0
+          ]
+        },
+        {
+          "tileset": "johto_modern",
+          "block": "20",
+          "glyph": [
+            2,
+            0
+          ]
+        },
+        {
+          "tileset": "johto_modern",
+          "block": "20",
+          "glyph": [
+            3,
+            0
+          ]
+        },
+        {
+          "tileset": "johto_modern",
+          "block": "20",
+          "glyph": [
+            0,
+            1
+          ]
+        },
+        {
+          "tileset": "johto_modern",
+          "block": "20",
+          "glyph": [
+            1,
+            1
+          ]
+        },
+        {
+          "tileset": "johto_modern",
+          "block": "20",
+          "glyph": [
+            2,
+            1
+          ]
+        },
+        {
+          "tileset": "johto_modern",
+          "block": "20",
+          "glyph": [
+            3,
+            1
+          ]
+        }
+      ],
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "id": "a7",
+      "name": "studio blue eave over full upper glazing",
+      "glyphs": [
+        {
+          "tileset": "johto_modern",
+          "block": "13",
+          "glyph": [
+            0,
+            0
+          ]
+        },
+        {
+          "tileset": "johto_modern",
+          "block": "13",
+          "glyph": [
+            1,
+            0
+          ]
+        },
+        {
+          "tileset": "johto_modern",
+          "block": "13",
+          "glyph": [
+            2,
+            0
+          ]
+        },
+        {
+          "tileset": "johto_modern",
+          "block": "13",
+          "glyph": [
+            3,
+            0
+          ]
+        },
+        {
+          "tileset": "johto_modern",
+          "block": "13",
+          "glyph": [
+            0,
+            1
+          ]
+        },
+        {
+          "tileset": "johto_modern",
+          "block": "13",
+          "glyph": [
+            1,
+            1
+          ]
+        },
+        {
+          "tileset": "johto_modern",
+          "block": "13",
+          "glyph": [
+            2,
+            1
+          ]
+        },
+        {
+          "tileset": "johto_modern",
+          "block": "13",
+          "glyph": [
+            3,
+            1
+          ]
+        },
+        {
+          "tileset": "johto_modern",
+          "block": "20",
+          "glyph": [
+            0,
+            0
+          ]
+        },
+        {
+          "tileset": "johto_modern",
+          "block": "20",
+          "glyph": [
+            1,
+            0
+          ]
+        },
+        {
+          "tileset": "johto_modern",
+          "block": "20",
+          "glyph": [
+            2,
+            0
+          ]
+        },
+        {
+          "tileset": "johto_modern",
+          "block": "20",
+          "glyph": [
+            3,
+            0
+          ]
+        },
+        {
+          "tileset": "johto_modern",
+          "block": "20",
+          "glyph": [
+            0,
+            1
+          ]
+        },
+        {
+          "tileset": "johto_modern",
+          "block": "20",
+          "glyph": [
+            1,
+            1
+          ]
+        },
+        {
+          "tileset": "johto_modern",
+          "block": "20",
+          "glyph": [
+            2,
+            1
+          ]
+        },
+        {
+          "tileset": "johto_modern",
+          "block": "20",
+          "glyph": [
+            3,
+            1
+          ]
+        }
+      ],
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "id": "a8",
+      "name": "studio cyan brick ground window band",
+      "glyphs": [
+        {
+          "tileset": "johto_modern",
+          "block": "10",
+          "glyph": [
+            0,
+            0
+          ]
+        },
+        {
+          "tileset": "johto_modern",
+          "block": "10",
+          "glyph": [
+            1,
+            0
+          ]
+        },
+        {
+          "tileset": "johto_modern",
+          "block": "10",
+          "glyph": [
+            2,
+            0
+          ]
+        },
+        {
+          "tileset": "johto_modern",
+          "block": "10",
+          "glyph": [
+            3,
+            0
+          ]
+        },
+        {
+          "tileset": "johto_modern",
+          "block": "10",
+          "glyph": [
+            0,
+            1
+          ]
+        },
+        {
+          "tileset": "johto_modern",
+          "block": "10",
+          "glyph": [
+            1,
+            1
+          ]
+        },
+        {
+          "tileset": "johto_modern",
+          "block": "10",
+          "glyph": [
+            2,
+            1
+          ]
+        },
+        {
+          "tileset": "johto_modern",
+          "block": "10",
+          "glyph": [
+            3,
+            1
+          ]
+        },
+        {
+          "tileset": "johto_modern",
+          "block": "10",
+          "glyph": [
+            0,
+            2
+          ]
+        },
+        {
+          "tileset": "johto_modern",
+          "block": "10",
+          "glyph": [
+            1,
+            2
+          ]
+        },
+        {
+          "tileset": "johto_modern",
+          "block": "10",
+          "glyph": [
+            2,
+            2
+          ]
+        },
+        {
+          "tileset": "johto_modern",
+          "block": "10",
+          "glyph": [
+            3,
+            2
+          ]
+        },
+        {
+          "tileset": "johto_modern",
+          "block": "10",
+          "glyph": [
+            0,
+            3
+          ]
+        },
+        {
+          "tileset": "johto_modern",
+          "block": "10",
+          "glyph": [
+            1,
+            3
+          ]
+        },
+        {
+          "tileset": "johto_modern",
+          "block": "10",
+          "glyph": [
+            2,
+            3
+          ]
+        },
+        {
+          "tileset": "johto_modern",
+          "block": "10",
+          "glyph": [
+            3,
+            3
+          ]
+        }
+      ],
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "id": "a9",
+      "name": "studio cyan brick ground window band",
+      "glyphs": [
+        {
+          "tileset": "johto_modern",
+          "block": "11",
+          "glyph": [
+            0,
+            0
+          ]
+        },
+        {
+          "tileset": "johto_modern",
+          "block": "11",
+          "glyph": [
+            1,
+            0
+          ]
+        },
+        {
+          "tileset": "johto_modern",
+          "block": "11",
+          "glyph": [
+            2,
+            0
+          ]
+        },
+        {
+          "tileset": "johto_modern",
+          "block": "11",
+          "glyph": [
+            3,
+            0
+          ]
+        },
+        {
+          "tileset": "johto_modern",
+          "block": "11",
+          "glyph": [
+            0,
+            1
+          ]
+        },
+        {
+          "tileset": "johto_modern",
+          "block": "11",
+          "glyph": [
+            1,
+            1
+          ]
+        },
+        {
+          "tileset": "johto_modern",
+          "block": "11",
+          "glyph": [
+            2,
+            1
+          ]
+        },
+        {
+          "tileset": "johto_modern",
+          "block": "11",
+          "glyph": [
+            3,
+            1
+          ]
+        },
+        {
+          "tileset": "johto_modern",
+          "block": "11",
+          "glyph": [
+            0,
+            2
+          ]
+        },
+        {
+          "tileset": "johto_modern",
+          "block": "11",
+          "glyph": [
+            1,
+            2
+          ]
+        },
+        {
+          "tileset": "johto_modern",
+          "block": "1a",
+          "glyph": [
+            2,
+            2
+          ]
+        },
+        {
+          "tileset": "johto_modern",
+          "block": "1a",
+          "glyph": [
+            3,
+            2
+          ]
+        },
+        {
+          "tileset": "johto_modern",
+          "block": "11",
+          "glyph": [
+            0,
+            3
+          ]
+        },
+        {
+          "tileset": "johto_modern",
+          "block": "11",
+          "glyph": [
+            1,
+            3
+          ]
+        },
+        {
+          "tileset": "johto_modern",
+          "block": "1a",
+          "glyph": [
+            2,
+            3
+          ]
+        },
+        {
+          "tileset": "johto_modern",
+          "block": "1a",
+          "glyph": [
+            3,
+            3
+          ]
+        }
+      ],
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "DOOR"
+      ]
+    }
+  ],
+  "map_patches": [
+    {
+      "metatile": [
+        36,
+        3
+      ],
+      "before": "80",
+      "after": "9d",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        37,
+        3
+      ],
+      "before": "81",
+      "after": "9e",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        36,
+        4
+      ],
+      "before": "83",
+      "after": "a1",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        37,
+        4
+      ],
+      "before": "8a",
+      "after": "a2",
+      "collision": [
+        "WALL",
+        "WALL",
+        "DOOR",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        26,
+        7
+      ],
+      "before": "18",
+      "after": "9f",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        27,
+        7
+      ],
+      "before": "19",
+      "after": "a0",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        29,
+        7
+      ],
+      "before": "80",
+      "after": "05",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        30,
+        7
+      ],
+      "before": "81",
+      "after": "05",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        32,
+        7
+      ],
+      "before": "18",
+      "after": "a6",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        33,
+        7
+      ],
+      "before": "19",
+      "after": "a7",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        26,
+        8
+      ],
+      "before": "10",
+      "after": "a1",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        27,
+        8
+      ],
+      "before": "1a",
+      "after": "a3",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "DOOR"
+      ]
+    },
+    {
+      "metatile": [
+        29,
+        8
+      ],
+      "before": "83",
+      "after": "a4",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        30,
+        8
+      ],
+      "before": "8a",
+      "after": "a5",
+      "collision": [
+        "WALL",
+        "WALL",
+        "DOOR",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        32,
+        8
+      ],
+      "before": "10",
+      "after": "a8",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "metatile": [
+        33,
+        8
+      ],
+      "before": "1a",
+      "after": "a9",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "DOOR"
+      ]
+    }
+  ],
+  "houses": [
+    {
+      "id": "NortheastHome",
+      "bounds": [
+        36,
+        3,
+        38,
+        5
+      ],
+      "door_core": [
+        74,
+        9
+      ],
+      "roof": [
+        157,
+        158
+      ],
+      "ground": [
+        161,
+        162
+      ],
+      "purpose": "Front gable home beside the library"
+    },
+    {
+      "id": "RiverNaturalist",
+      "bounds": [
+        26,
+        7,
+        28,
+        9
+      ],
+      "door_core": [
+        55,
+        17
+      ],
+      "roof": [
+        159,
+        160
+      ],
+      "ground": [
+        161,
+        163
+      ],
+      "purpose": "Lower pitched cottage beside the garden street"
+    },
+    {
+      "id": "GardenFlat",
+      "bounds": [
+        29,
+        7,
+        31,
+        9
+      ],
+      "door_core": [
+        60,
+        17
+      ],
+      "roof": [
+        5,
+        5
+      ],
+      "ground": [
+        164,
+        165
+      ],
+      "purpose": "Native warm timber cottage against its existing solid pine back strip"
+    },
+    {
+      "id": "PatternStudio",
+      "bounds": [
+        32,
+        7,
+        34,
+        9
+      ],
+      "door_core": [
+        67,
+        17
+      ],
+      "roof": [
+        166,
+        167
+      ],
+      "ground": [
+        168,
+        169
+      ],
+      "purpose": "Two glazed storeys under a short blue eave; bookbinder retains masonry"
+    }
+  ],
+  "preserve": "All old glyph pixels, palette banks, metatiles, collisions, maps, warps, scripts, objects, rooms, services, audio, recovery, HOME and reports exactly except declared new art and 16 block identifiers plus their native source mirror."
+}

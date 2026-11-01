@@ -1,0 +1,591 @@
+{
+  "schema_version": 1,
+  "id": "gunflint-spring-grotto-v1",
+  "map": "MnR12Cave1F",
+  "status": "Verified native spring grotto. Selection follows world.json; broader Minnesota map review remains active.",
+  "visual_mode": "native_2d_only",
+  "source": "after.json",
+  "source_sha256": "3a7eae3bec59ef9cb3713119f1cd30f2a5e443891443a2514cb80ecd9150e067",
+  "contract": "contract.json",
+  "parent_revision": "early_research_access_revision",
+  "parent_pack": "content-packs/minnesota-early-research-v01.crystalpack",
+  "parent_pack_sha256": "1fd1bfe59ad965809741259f88a7c251e59e2add5317bfc5eacd17da7b9b7548",
+  "old_dimensions_metatiles": [
+    16,
+    12
+  ],
+  "dimensions_metatiles": [
+    20,
+    14
+  ],
+  "entrance": {
+    "active": [
+      17,
+      23
+    ],
+    "clear": [
+      17,
+      22
+    ],
+    "exterior_map": "MnR12C00R00",
+    "exterior_active": [
+      40,
+      15
+    ],
+    "exterior_clear": [
+      40,
+      16
+    ]
+  },
+  "preserved_rest": {
+    "actor": "MN_R12_OTTA",
+    "tile": [
+      5,
+      5
+    ],
+    "approach": [
+      6,
+      5
+    ],
+    "source": "planning/minnesota/caves/gunflint-spring-shelter-v01/plan.json",
+    "source_sha256": "d5b7155ee9ea07d17d19acd900d195a9e062e85c402b9edf64a008168d848cf5",
+    "behavior": "Original native YES/NO refusal and acknowledged full-party HP/PP/status rest remain exact; no payment, quest grant or blackout-location change."
+  },
+  "cache": {
+    "id": "MN_R12_CAVE_CACHE",
+    "before": [
+      27,
+      5
+    ],
+    "after": [
+      35,
+      3
+    ],
+    "approach": [
+      34,
+      3
+    ],
+    "item": "MAX_ETHER",
+    "quantity": 1,
+    "flag": "EVENT_MN_R12_CAVE_ETHER"
+  },
+  "discovery": {
+    "id": "MN_R12_GROTTO_REVIVE",
+    "tile": [
+      28,
+      16
+    ],
+    "approach": [
+      27,
+      16
+    ],
+    "item": "REVIVE",
+    "quantity": 1,
+    "flag": "EVENT_MN_R12_GROTTO_REVIVE",
+    "requires": [
+      "SURF",
+      "native Surf badge"
+    ],
+    "purpose": "Search the blocked spring pillar from the water; both original services and the Max Ether remain accessible without Surf."
+  },
+  "stairs": [
+    {
+      "kind": "straight",
+      "metatile": [
+        3,
+        4
+      ],
+      "native_block": "30",
+      "walking_column": 6
+    },
+    {
+      "kind": "right_corner",
+      "metatile": [
+        17,
+        4
+      ],
+      "native_block": "36",
+      "walking_column": 34,
+      "blocked_side": [
+        35,
+        9
+      ]
+    }
+  ],
+  "routes": {
+    "west-fin": {
+      "steps": 16,
+      "path": [
+        [
+          13,
+          18
+        ],
+        [
+          12,
+          18
+        ],
+        [
+          11,
+          18
+        ],
+        [
+          10,
+          18
+        ],
+        [
+          9,
+          18
+        ],
+        [
+          9,
+          17
+        ],
+        [
+          9,
+          16
+        ],
+        [
+          9,
+          15
+        ],
+        [
+          10,
+          15
+        ],
+        [
+          10,
+          14
+        ],
+        [
+          10,
+          13
+        ],
+        [
+          10,
+          12
+        ],
+        [
+          10,
+          11
+        ],
+        [
+          10,
+          10
+        ],
+        [
+          11,
+          10
+        ],
+        [
+          12,
+          10
+        ],
+        [
+          13,
+          10
+        ]
+      ]
+    },
+    "east-fin": {
+      "steps": 14,
+      "path": [
+        [
+          13,
+          18
+        ],
+        [
+          14,
+          18
+        ],
+        [
+          15,
+          18
+        ],
+        [
+          16,
+          18
+        ],
+        [
+          16,
+          17
+        ],
+        [
+          16,
+          16
+        ],
+        [
+          16,
+          15
+        ],
+        [
+          15,
+          15
+        ],
+        [
+          15,
+          14
+        ],
+        [
+          15,
+          13
+        ],
+        [
+          15,
+          12
+        ],
+        [
+          15,
+          11
+        ],
+        [
+          15,
+          10
+        ],
+        [
+          14,
+          10
+        ],
+        [
+          13,
+          10
+        ]
+      ]
+    },
+    "north-spring": {
+      "steps": 30,
+      "path": [
+        [
+          21,
+          19
+        ],
+        [
+          21,
+          18
+        ],
+        [
+          21,
+          17
+        ],
+        [
+          21,
+          16
+        ],
+        [
+          21,
+          15
+        ],
+        [
+          22,
+          15
+        ],
+        [
+          23,
+          15
+        ],
+        [
+          23,
+          14
+        ],
+        [
+          23,
+          13
+        ],
+        [
+          24,
+          13
+        ],
+        [
+          25,
+          13
+        ],
+        [
+          25,
+          12
+        ],
+        [
+          25,
+          11
+        ],
+        [
+          26,
+          11
+        ],
+        [
+          27,
+          11
+        ],
+        [
+          28,
+          11
+        ],
+        [
+          29,
+          11
+        ],
+        [
+          30,
+          11
+        ],
+        [
+          31,
+          11
+        ],
+        [
+          32,
+          11
+        ],
+        [
+          33,
+          11
+        ],
+        [
+          34,
+          11
+        ],
+        [
+          35,
+          11
+        ],
+        [
+          36,
+          11
+        ],
+        [
+          36,
+          12
+        ],
+        [
+          36,
+          13
+        ],
+        [
+          36,
+          14
+        ],
+        [
+          36,
+          15
+        ],
+        [
+          36,
+          16
+        ],
+        [
+          36,
+          17
+        ],
+        [
+          36,
+          18
+        ]
+      ]
+    },
+    "south-spring": {
+      "steps": 26,
+      "path": [
+        [
+          21,
+          19
+        ],
+        [
+          21,
+          20
+        ],
+        [
+          22,
+          20
+        ],
+        [
+          23,
+          20
+        ],
+        [
+          23,
+          21
+        ],
+        [
+          23,
+          22
+        ],
+        [
+          24,
+          22
+        ],
+        [
+          25,
+          22
+        ],
+        [
+          26,
+          22
+        ],
+        [
+          27,
+          22
+        ],
+        [
+          27,
+          23
+        ],
+        [
+          27,
+          24
+        ],
+        [
+          28,
+          24
+        ],
+        [
+          29,
+          24
+        ],
+        [
+          30,
+          24
+        ],
+        [
+          31,
+          24
+        ],
+        [
+          32,
+          24
+        ],
+        [
+          33,
+          24
+        ],
+        [
+          34,
+          24
+        ],
+        [
+          35,
+          24
+        ],
+        [
+          36,
+          24
+        ],
+        [
+          36,
+          23
+        ],
+        [
+          36,
+          22
+        ],
+        [
+          36,
+          21
+        ],
+        [
+          36,
+          20
+        ],
+        [
+          36,
+          19
+        ],
+        [
+          36,
+          18
+        ]
+      ]
+    }
+  },
+  "spring": {
+    "quiet_walking_floor": true,
+    "existing_wildlife_unchanged": true,
+    "water_rate": 5,
+    "habitat_points": {
+      "shore": [
+        21,
+        19
+      ],
+      "water": [
+        22,
+        19
+      ],
+      "loop": [
+        23,
+        19
+      ]
+    },
+    "pillar_wall_tiles": [
+      [
+        28,
+        16
+      ],
+      [
+        29,
+        16
+      ],
+      [
+        28,
+        17
+      ],
+      [
+        29,
+        17
+      ]
+    ],
+    "hidden_item_water_approaches": [
+      [
+        27,
+        16
+      ],
+      [
+        28,
+        15
+      ]
+    ]
+  },
+  "composition": [
+    "Smaller camper recess with a clear native straight-stair approach.",
+    "A fitted hanging spur bends the main passage onto the northern spring notch.",
+    "A larger hooked pool has separate northern and southern dry routes.",
+    "The deeper eastern Max Ether recess has a rock knuckle requiring a choice of approaches.",
+    "The solid spring pillar creates an optional water-travel discovery while all original services remain dry-accessible."
+  ],
+  "implementation": {
+    "builder": "crystal_assets::rebuild_gunflint_grotto",
+    "cli": "rebuild_gunflint_grotto",
+    "new_rooms": 0,
+    "new_trainers": 0,
+    "new_flags": [
+      "EVENT_MN_R12_GROTTO_REVIVE"
+    ],
+    "preserve_original_programs_art_audio_and_encounters": true,
+    "shared_interior_dimensions_update_required": true,
+    "installed_contract": "current.contract.json"
+  },
+  "review": {
+    "whole": "../../renders/gunflint-grotto-v898/installed-v907/whole-original.png",
+    "source_collision": "../../renders/gunflint-grotto-v898/source-collision-v902.json",
+    "reference": "../../renders/gunflint-grotto-v898/UnionCave1F-reference-whole.png",
+    "measured_warm_source_seconds": 0.063,
+    "personally_inspected": true,
+    "native": "../../renders/gunflint-grotto-v898/native-v906/MnR12Cave1F-production-cameras.png",
+    "native_inheritance": "../../renders/gunflint-grotto-v898/native-inheritance-v923.json",
+    "actual_current_surf": "../../renders/gunflint-grotto-v898/current-acted-v923/pillar-surf.png",
+    "gameplay": "../../renders/gunflint-grotto-v898/current-gameplay-v919",
+    "production": "../../renders/gunflint-grotto-v898/current-mcp-v920/receipt.json"
+  },
+  "verification_required": [
+    "Native entry/clear step/exterior return and fresh-process Continue.",
+    "Original refusal/acknowledgement/full-party care remains intact.",
+    "Both fin paths and both dry spring paths; both correct native stairs in both directions.",
+    "Original Max Ether claim flag and moved cache, capacity retry and Continue.",
+    "Surf denial without prerequisites, actual launch, pillar interaction and hidden Revive once.",
+    "Native Revive use on a fainted partner and Itemfinder before/after.",
+    "Current-parent preservation, regional policy and all audio PCM/frame/loop checks.",
+    "Headless native views at correct night palette and actual saved Surf state.",
+    "Affected-crate all-target Clippy and owned/workspace format checks."
+  ],
+  "limits": [
+    "Local acceptance uses declared setup before production input; active pack is always resolved through world.json.",
+    "Previously saved terrain/actor overrides are not migrated.",
+    "Broader state map/cave quality review remains active."
+  ]
+}

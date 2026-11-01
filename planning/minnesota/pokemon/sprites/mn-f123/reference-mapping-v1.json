@@ -1,0 +1,10 @@
+{
+  "tool": "built-in image_gen",
+  "reference_images": [
+    {
+      "path": "target/minnesota-pokemon/gen2-reference/starters.png",
+      "role": "authentic Gen2 pixel clusters, black contours and close back portrait framing only"
+    }
+  ],
+  "prompt": "prompt-v1.txt"
+}

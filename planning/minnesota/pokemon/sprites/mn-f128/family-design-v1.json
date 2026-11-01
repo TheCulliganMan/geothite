@@ -1,0 +1,45 @@
+{
+  "id": "MN_F128",
+  "region": "northwoods",
+  "theme": "Minnesota moose and wetland browsing: a long-legged calf with velvet buds grows broad leaf-veined palmate antlers, a heavy shoulder hump and splayed bog hooves. The adult uses its living antler palms to part reeds and shelter feeding calves; no weather effects or trees planted on its body.",
+  "habitat": "Northern willow shores, shallow ponds and soft wetland margins.",
+  "members": [
+    {
+      "id": "MN_281",
+      "name": "Bogcalf",
+      "types": [
+        "GRASS"
+      ],
+      "stage": 1,
+      "evolves_to": "MN_282"
+    },
+    {
+      "id": "MN_282",
+      "name": "Reedrack",
+      "types": [
+        "GRASS"
+      ],
+      "stage": 2,
+      "evolves_to": "MN_283"
+    },
+    {
+      "id": "MN_283",
+      "name": "Mirecrown",
+      "types": [
+        "GRASS"
+      ],
+      "stage": 3,
+      "evolves_to": null
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.dnr.state.mn.us/mammals/moose.html",
+      "publisher": "Minnesota regional primary source",
+      "evidence": "Long legs, splayed hooves, palmate antlers, throat bell and aquatic-plant browsing.",
+      "fantasy_extension": "All powers, anatomy changes and discovery scenes are original fiction."
+    }
+  ],
+  "design_status": "authored-wildlife-replacement",
+  "replacement_context": "User requested forest wildlife in place of rejected weather families while retaining exactly220 active species. No encounter table or map event is changed."
+}

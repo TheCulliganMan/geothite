@@ -1,0 +1,20 @@
+{
+  "attached_to_imagegen": [],
+  "references": [
+    {
+      "path": "target/minnesota-pokemon/gen2-reference/starters.png",
+      "sha256": "af61f720a75b7e1b8e80ba14e8944612556397eedddd719669dec68b0e0fd534",
+      "role": "Previously inspected authentic Gen2 pixel language and camera only; not attached."
+    },
+    {
+      "path": "target/minnesota-pokemon/gen2-reference/bugs.png",
+      "sha256": "407fe86151d762ca6a2e4dfaa9e556a7da55fc9eecdf927c3c1600798b4e0884",
+      "role": "Previously inspected authentic Gen2 pixel language and camera only; not attached."
+    }
+  ],
+  "design_mode": "Fresh text-only anatomy; no old body reference attached.",
+  "retained_species": [
+    "MN_101",
+    "MN_102"
+  ]
+}

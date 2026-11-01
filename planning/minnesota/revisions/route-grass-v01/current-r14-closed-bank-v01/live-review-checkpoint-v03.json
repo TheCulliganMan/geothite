@@ -1,0 +1,28 @@
+{
+  "status": "CORRECTED_SOURCE_AND_CONFIRMED_LIVE_V02_BUILD_REVIEW",
+  "build_session_id": 59693,
+  "build_pid": 12056,
+  "review_session_id": 44474,
+  "review_pid": 12072,
+  "process_snapshot": "  PID ELAPSED STAT COMMAND\n12056   01:27 Ss   /Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python .local/route-grass-review/build_r14_forest_bank_v02.py\n12072   01:17 Ss   /Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python .local/route-grass-review/run_r14_forest_bank_review_v02.py\n",
+  "source_sha256": {
+    "crates/crystal-assets/src/r14_forest_bank.rs": "b9672b62a72250f80c905eeb53738e96b53d5037305935b4a7dbae64e75f1be8",
+    "crates/crystal-assets/src/bin/revise_r14_forest_bank.rs": "8b3997d61b88f04afdb2d8209f263b6855e26dc0c7417ad576d70234a74e48ec"
+  },
+  "standalone_corrected_guard_compiles": true,
+  "owned_leaf_rustfmt_pass": true,
+  "prior_jobs_terminal_exit_codes": [
+    143,
+    143
+  ],
+  "prior_cancellation": "queued-v01-cancelled-for-source-fix.json",
+  "build_progress": "planning/minnesota/revisions/route-grass-v01/current-r14-closed-bank-v01/bank-publisher-build-progress-v02.json",
+  "review_progress": "planning/minnesota/revisions/route-grass-v01/current-r14-closed-bank-v01/review-workflow-progress-v02.json",
+  "portable_publisher": ".local/route-grass-review/portable-r14-forest-bank-tools-v02/revise_r14_forest_bank",
+  "selection_changed": false,
+  "next": "Poll these same v02 sessions. After successful publisher, review workflow publishes via Rust and runs native denials/four hop-return-Continue lanes/five Headwaters cases/production MCP/four GPU comparisons. Inspect images, run seven publisher negatives, check lint, then guarded current-parent selection.",
+  "latest_parent_rebinding": "current-parent-rebinding-v02.json",
+  "active_plan": "plan-current-parent-v02.json",
+  "publisher_rejects_selection_drift_before_write": true,
+  "last_process_snapshot": "  PID ELAPSED STAT COMMAND\n12056   14:09 Ss   /Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python .local/route-grass-review/build_r14_forest_bank_v02.py\n12072   13:59 Ss   /Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python .local/route-grass-review/run_r14_forest_bank_review_v02.py\n"
+}

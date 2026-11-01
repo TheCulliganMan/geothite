@@ -1,0 +1,102 @@
+[
+  {
+    "interior": "MnVoyageursIce1F",
+    "parent": "MN_R20",
+    "source_file": "ice-caves/voyageurs-ice.json",
+    "source_room_id": "MnVoyageursIce1F",
+    "arrival_core": [
+      5,
+      19
+    ],
+    "arrival_warp_index": 3,
+    "return_trigger_core": [
+      5,
+      21
+    ],
+    "dimensions_metatiles": [
+      14,
+      12
+    ],
+    "warp_contracts": [
+      {
+        "tile": [
+          5,
+          21
+        ],
+        "target": "MnR20C01R00",
+        "target_warp": 4
+      },
+      {
+        "tile": [
+          23,
+          5
+        ],
+        "target": "MnVoyageursIceB1F",
+        "target_warp": 2
+      },
+      {
+        "tile": [
+          5,
+          19
+        ],
+        "target": "MnR20C01R00",
+        "target_warp": 4
+      },
+      {
+        "tile": [
+          23,
+          6
+        ],
+        "target": "MnVoyageursIceB1F",
+        "target_warp": 2
+      }
+    ],
+    "requires_real_collision_check": true,
+    "exterior_door_status": "Verified v02 production input: paired ladders, native slide stops, safe exterior return and same-mouth reentry; Save/Continue and MCP pass. See ice-caves/README.md.",
+    "purpose": "A glacial fissure with its ice guide, teaching slide and separate healing-supply pocket."
+  },
+  {
+    "interior": "MnVoyageursIceB1F",
+    "parent": "MnVoyageursIce1F",
+    "source_file": "ice-caves/voyageurs-ice.json",
+    "source_room_id": "MnVoyageursIceB1F",
+    "arrival_core": [
+      5,
+      19
+    ],
+    "arrival_warp_index": 2,
+    "return_trigger_core": [
+      5,
+      21
+    ],
+    "dimensions_metatiles": [
+      16,
+      12
+    ],
+    "warp_contracts": [
+      {
+        "tile": [
+          5,
+          21
+        ],
+        "target": "MnVoyageursIce1F",
+        "target_warp": 4
+      },
+      {
+        "tile": [
+          5,
+          19
+        ],
+        "target": "MnVoyageursIce1F",
+        "target_warp": 4
+      }
+    ],
+    "requires_real_collision_check": true,
+    "exterior_door_status": "Verified v02 production input: paired ladders, native slide stops, safe exterior return and same-mouth reentry; Save/Continue and MCP pass. See ice-caves/README.md.",
+    "purpose": "Offset rock teeth lead to two cache shelves; a Voyageurs canoe guide maps winter crossings for his grandson on the dry landing.",
+    "story_file": "interior-life/voyageurs-surveyor-v01.json",
+    "resident_scripts": [
+      "MN_INTERIOR_VOYAGEURS_SURVEYOR"
+    ]
+  }
+]

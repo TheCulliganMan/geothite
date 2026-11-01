@@ -1,0 +1,47 @@
+{
+  "species_id": "MN_100",
+  "family_id": "MN_F049",
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f049/prompt-icemyth-v1.txt",
+  "palette_binding": {
+    "transparent_index": 0,
+    "visible_indices": [
+      1,
+      2,
+      3
+    ],
+    "normal_rgb555_words": [
+      32767,
+      32628,
+      21866,
+      0
+    ],
+    "shiny_rgb555_words": [
+      32767,
+      28319,
+      11605,
+      0
+    ],
+    "white_body_region_policy": "Simplify formerly white body/highlight regions to light ink1. Index0 is transparent everywhere, not an opaque white paint color."
+  },
+  "fit": [
+    14,
+    14
+  ],
+  "references": [
+    {
+      "path": "target/minnesota-pokemon/native/MN_F049/mn-100-icemyth-v2.front.png",
+      "role": "exact approved front identity",
+      "sha256": "9f01e5edb6d5808d6f1a780ad71059165b78c035c1e3db22d8c4bfb4c5f0c704"
+    },
+    {
+      "path": "target/minnesota-pokemon/native/MN_F049/mn-100-icemyth-v2.back.png",
+      "role": "exact approved rear identity; extrapolate full back naturally",
+      "sha256": "e61bb04b7fd134ff2e9df67e99b6a247f090c28ae9c702baf339ed5674863fcc"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+      "role": "native16 style/scale only",
+      "sha256": "4354a639ed1a80fd6686e43b273443ed894e58a84307a8049f638ee9ffa2a099"
+    }
+  ]
+}

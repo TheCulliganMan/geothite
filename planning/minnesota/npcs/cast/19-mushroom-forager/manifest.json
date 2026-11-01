@@ -1,0 +1,40 @@
+{
+  "name": "MORRIS",
+  "role": "Mushroom Forager",
+  "status": "accepted-native-playable",
+  "source": "native-pixels-v2.json",
+  "integration": "placement-v1.json",
+  "controller": "placement-v1.json",
+  "native": "target/trainer-cast/forager/native-v2",
+  "pack": "content-packs/minnesota-trainer-cast-19-v01.crystalpack",
+  "gameplay": "target/trainer-cast/forager/gameplay-v1",
+  "log": "target/trainer-cast/forager/controller-v1.log",
+  "reference_review": "actual-crystal-sprites-common-palette-and-scale",
+  "review_notes": "Low bucket hat, gray moustache, stooped posture and cream trousers. Six hand-authored field poses; battle moustache and eyes redrawn, basket kept simple. Own palette, authentic Crystal comparisons and actual field/battle captures inspected.",
+  "fixture": "Three legal level-60 Minnesota starters; adjacent position and explicit prior-access setup. Local encounter/rewards proof, not earned traversal or intended-level balance.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/cast/19-mushroom-forager/native-pixels-v2.json": "2f25137e80dd5096602f4b427b374d8e7b32000f4be0489672469a2d449289eb",
+    "planning/minnesota/npcs/cast/19-mushroom-forager/placement-v1.json": "7b0b524d385d9523b7d01ab580b68da950d496d988ff4a876ed6f1e04b984564",
+    "target/trainer-cast/forager/native-v2/verification.json": "9cffa0505567d70780d2fd8761d65fd929763f2a89dce6f20c6aef291fb3eec6",
+    "content-packs/minnesota-trainer-cast-19-v01.crystalpack": "2e741e2ebdc6cc799c5ea7bad803ecdb8ce20f30b7f399d5b2c75c02aef13395",
+    "target/trainer-cast/forager/controller-v1.log": "c736560a965a619b5fbc59542f89ac60754833dd14205f07cf0673b52b9310b6",
+    "target/trainer-cast/forager/gameplay-v1/original-npc-trainer-intro.png": "1a7d279aaa951febbe31bde173b8bcc76b6c8b8d7e9abb986767a944155671da",
+    "target/trainer-cast/forager/gameplay-v1/original-npc-overworld-state.png": "7632c2be7002114e4d9cc5029d3e5898c6de61ea713d37f51282264bf67a662f",
+    "target/trainer-cast/forager/gameplay-v1/original-npc-first-turn.png": "ef3d77340c8c07d08a3d6d3e560fc48c811c66197116989089f7c0294ecfaff3",
+    "planning/minnesota/npcs/cast/19-mushroom-forager/battle-reference-prompt.txt": "b29c3d0afcd2109679a1b9f273b7a80acde28055d2e137defb527bb3de2c677f",
+    "planning/minnesota/npcs/cast/19-mushroom-forager/battle-reference-v1.png": "c9fe490e231ea7c3b0035b61add2320485278d85ec2ba94b9f948e7b6836d652",
+    "target/trainer-cast/forager/real-comparison.png": "6329790da435bc7802e0fb85dad0e8ff0e489c392d74cb7b02cab102b90a4626",
+    "target/trainer-cast/forager/battle-real-comparison.png": "99f95b10799104bfaf6dd4cf5499319d71460a9b53b98c6c6b650a5d94c98a21"
+  },
+  "final_pack": "content-packs/minnesota-trainer-cast-36-v01.crystalpack",
+  "final_gameplay": "target/trainer-cast/final-audit/gameplay/19-mushroom-forager",
+  "final_log": "target/trainer-cast/final-audit/gameplay/19-mushroom-forager/controller.log",
+  "final_status": "accepted-native-playable-final-pack",
+  "final_review": "Actual battle intro and field captures inspected on exact final pack; art retains accepted native sources and palette.",
+  "final_evidence_sha256": {
+    "target/trainer-cast/final-audit/gameplay/19-mushroom-forager/controller.log": "944c698d8bb4e94dde2097fa4ce2d9976fc5cc57f7b8b7045d438729ed29423d",
+    "target/trainer-cast/final-audit/gameplay/19-mushroom-forager/original-npc-trainer-intro.png": "1a7d279aaa951febbe31bde173b8bcc76b6c8b8d7e9abb986767a944155671da",
+    "target/trainer-cast/final-audit/gameplay/19-mushroom-forager/original-npc-overworld-state.png": "7d3a3ff3d4cdec1e68866288c9fd3e78ef686ffef2a8fbd8b647401f03f4d6b0",
+    "target/trainer-cast/final-audit/gameplay/19-mushroom-forager/original-npc-first-turn.png": "ef3d77340c8c07d08a3d6d3e560fc48c811c66197116989089f7c0294ecfaff3"
+  }
+}

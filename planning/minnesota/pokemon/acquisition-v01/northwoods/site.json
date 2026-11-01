@@ -1,0 +1,138 @@
+{
+  "schema_version": 1,
+  "id": "northwoods-tall-tales-site-v1",
+  "status": "Native Ilex gate and uninterrupted original water replace the buoy-lined pool. Fresh publication/controller/production-camera acceptance required.",
+  "map": "MnTallTaleTrail",
+  "tileset": "johto",
+  "dimensions_metatiles": [
+    20,
+    20
+  ],
+  "legend": {
+    "T": "05",
+    ".": "02",
+    "p": "01",
+    "g": "03",
+    "R": "0a",
+    "w": "35",
+    "u": "5d",
+    "v": "60",
+    "z": "62",
+    "k": "65",
+    "j": "04",
+    "W": "5d",
+    "M": "47",
+    "Q": "45"
+  },
+  "rows": [
+    "T T T T T T T T T T T T T T T T T T T T",
+    "T T T T T T T T T T T T T T T T T T T T",
+    "T T T T T T T T T T T T T . . T T T T T",
+    "T T T w w w w w T T T v T . . z T T T T",
+    "T T . w w w w w T T . . T . W . z T T T",
+    "T . . w w . . . . T . . T R . . . T T T",
+    "T . . w w w w w . . . . T . . Q z T T T",
+    "T T . w w w w w M . . . T T p . T T T T",
+    "T T T . . T T T T p . T T T W T T T T T",
+    "T T . j . T T u . p . . T . p . T T T T",
+    "T . . R . . T . . p p p p p W . . T T T",
+    "T . R R . . . . T T T . T . . g g T T T",
+    "T . . . . v . . . . . z T T . g g T T T",
+    "T T . . T T . . R R . . . . . . T T T T",
+    "T T . g g . . . R R T M j . . T T T T T",
+    "T T . g g . T T T T T . . . T T T T T T",
+    "T T . . j . T T T T . . . T T T T T T T",
+    "T T . p p . . . . j . T T T T T T T T T",
+    "T T T T T T T T T T T T T T T T T T T T",
+    "T T T T T T T T T T T T T T T T T T T T"
+  ],
+  "design": {
+    "arrival_candidate": [
+      3,
+      34
+    ],
+    "worker_candidate": [
+      10,
+      34
+    ],
+    "culvert_observation_candidate": [
+      23,
+      29
+    ],
+    "hoofprint_observation_candidate": [
+      17,
+      15
+    ],
+    "windthrow_observation_candidate": [
+      29,
+      20
+    ],
+    "marked_log_candidate": [
+      28,
+      8
+    ],
+    "babehemoth_candidate": [
+      18,
+      13
+    ],
+    "bunjant_candidate": [
+      30,
+      8
+    ],
+    "topology": "West pool loop remains independent. The eastern camp has one timber-blocked southern throat; solid tree sides prevent walking around it. A dry southern loop returns to the worker and native forest gatehouse.",
+    "unresolved": [
+      "Verify the pool contains zero BUOY collision quadrants and no buoy artwork; the entire water surface uses original native water blocks.",
+      "Verify both original gatehouse passage lanes, reciprocal exterior doors and Continue while preserving the north/south corridor.",
+      "Prove the camp is unreachable before timber clearance and reachable afterward through production input, reentry and Continue.",
+      "Crescent pool remains angular; inspect the revised full map and native camera before acceptance.",
+      "Runtime capture, retreat, KO, blackout recovery, full-party/full-storage and permanent caught-state coverage remain required."
+    ],
+    "path_interaction": [
+      28,
+      16
+    ],
+    "path_approach": [
+      28,
+      17
+    ],
+    "path_block_metatile": [
+      14,
+      8
+    ],
+    "path_closed_block": "5d",
+    "path_open_block": "01",
+    "camp_record_read": [
+      30,
+      12
+    ]
+  },
+  "gatehouse": {
+    "map": "MnTallTaleForestGate",
+    "constant": "MN_TALL_TALE_FOREST_GATE",
+    "template": "IlexForestAzaleaGate",
+    "outside_door": [
+      13,
+      11
+    ],
+    "outside_arrival": [
+      13,
+      12
+    ],
+    "trail_door": [
+      3,
+      33
+    ],
+    "trail_arrival": [
+      3,
+      34
+    ],
+    "gate_left_arrival": [
+      1,
+      4
+    ],
+    "gate_right_arrival": [
+      8,
+      4
+    ]
+  }
+}

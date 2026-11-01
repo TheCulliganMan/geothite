@@ -1,0 +1,11 @@
+Use case: stylized-concept. Make ONE original PYROPINE MN027 native16x16 Pokemon Crystal OVERWORLD sheet,6poses. ONLY inputimage1 gives authentic16px map STYLE and pixel density; do not copy any character. Coarse flat square pixels, not battle illustration.
+
+A broad mature living pine:3chunky triangular GREEN bough tiers,3attached ORANGE resin-flame lobes at crown and side-branch tips, stout GREEN roots. No brown trunk or extra ink. The flames grow from branches, never held torches. Keep the living pine body dominant.
+
+CRITICAL FACE: an OPEN CONTIGUOUS ORANGE lower-trunk face area occupying at least HALF the creature width and ONE THIRD its height (7nativepixels wide by5high). Do not make a narrow horizontal eye band. TWO BLACK SINGLE-PIXEL dot pupils centered well inside it in south view:2orange pixels between them, at least1orange pixel between each dot and ALL outlines/green regions in every direction. NO mouth, glints, nose, eyebrows or black mask. West has ONE isolated dot with orange on all sides. Plain rear green tiers and orange sap stripe have NO face or eyes. Broad lower trunk stays visible below the hood, no pot, clothes, human limbs or objects.
+
+Transparent canvas, exactly3columns x2rows: SOUTH idle, NORTH idle, WEST idle above; SOUTH root-step, NORTH root-step, WEST root-step below. Whole body slightly overhead map camera, pure left profile for WEST, plain back for NORTH. Root tips shift1logicalpixel, branch/flame tips slightly flex, but identical body/head scale and top anchor in paired poses. Large empty gutters and identically framed cells.
+
+Actual16x16construction, opaque max14x14with1transparentborder, HUGE nearest-neighbor square pixels. ONLY3opaque inks #FF8421 ORANGE, #185242 GREEN, #000000 BLACK. NO white or brown, NO extra shades, gradient, antialias, glow, shadow, grayedge, dither, texture, fine needles, labels, grid or scenery. Thin one-logicalpixel black contour.
+
+Normal GBC RGB5 [[31,31,31],[31,16,4],[3,10,8],[0,0,0]], packedRGB555 r|(g<<5)|(b<<10) [32767,4639,8515,0], expandedRGB8 (v<<3)|(v>>2) [[255,255,255],[255,132,33],[24,82,66],[0,0,0]], HEX #FFFFFF #FF8421 #185242 #000000. Index0transparentglobally,1/2/3opaque. Shinywords[32767,17380,10344,0]for toolingonly, noextrashinyframes.

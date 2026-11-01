@@ -1,0 +1,351 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_104",
+  "status": "source-proof-pass; root visual/context acceptance required",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/manifest-sodcalf-v1-pupil-proof.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f051/sodcalf-v1-pupil-proof",
+  "shared_transform": {
+    "source_bounds": [
+      25,
+      29,
+      352,
+      293
+    ],
+    "native_size": [
+      13,
+      10
+    ],
+    "native_origin": [
+      1,
+      5
+    ]
+  },
+  "all_four_nonrear_poses_have_actual_source_pupils": true,
+  "every_native_eye_cluster_maps_to_same_small_anatomical_source_pupil_component": true,
+  "actual_source_pupil_proofs": [
+    {
+      "pose": "down_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/sodcalf.overworld.imagegen-v1.png",
+      "crop": [
+        129,
+        296,
+        380,
+        350
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          238,
+          479,
+          14,
+          18
+        ],
+        [
+          298,
+          478,
+          13,
+          19
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              4,
+              10
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                5,
+                3,
+                1,
+                253
+              ],
+              "bounds": [
+                238,
+                479,
+                14,
+                18
+              ],
+              "pixels": 252,
+              "truncated_contour": false,
+              "native_pixel": [
+                4,
+                10
+              ],
+              "source_sample_pixel": [
+                248,
+                486
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              6,
+              10
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                2,
+                2,
+                0,
+                254
+              ],
+              "bounds": [
+                298,
+                478,
+                13,
+                19
+              ],
+              "pixels": 242,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                10
+              ],
+              "source_sample_pixel": [
+                302,
+                486
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/sodcalf.overworld.imagegen-v1.png",
+      "crop": [
+        795,
+        288,
+        380,
+        350
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          901,
+          465,
+          14,
+          20
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              4,
+              10
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                901,
+                465,
+                14,
+                20
+              ],
+              "pixels": 278,
+              "truncated_contour": false,
+              "native_pixel": [
+                4,
+                10
+              ],
+              "source_sample_pixel": [
+                914,
+                478
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/sodcalf.overworld.imagegen-v1.png",
+      "crop": [
+        129,
+        649,
+        380,
+        350
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          238,
+          832,
+          14,
+          19
+        ],
+        [
+          298,
+          832,
+          13,
+          19
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              4,
+              10
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                6,
+                5,
+                3,
+                253
+              ],
+              "bounds": [
+                238,
+                832,
+                14,
+                19
+              ],
+              "pixels": 266,
+              "truncated_contour": false,
+              "native_pixel": [
+                4,
+                10
+              ],
+              "source_sample_pixel": [
+                248,
+                839
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              6,
+              10
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                3,
+                2,
+                0,
+                253
+              ],
+              "bounds": [
+                298,
+                832,
+                13,
+                19
+              ],
+              "pixels": 247,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                10
+              ],
+              "source_sample_pixel": [
+                302,
+                839
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/sodcalf.overworld.imagegen-v1.png",
+      "crop": [
+        795,
+        640,
+        380,
+        350
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          901,
+          817,
+          14,
+          19
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              4,
+              10
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                254
+              ],
+              "bounds": [
+                901,
+                817,
+                14,
+                19
+              ],
+              "pixels": 266,
+              "truncated_contour": false,
+              "native_pixel": [
+                4,
+                10
+              ],
+              "source_sample_pixel": [
+                914,
+                830
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "native_head_anchors_idle_walk_equal": true,
+  "validation": {
+    "runtime_2bpp_384_bytes_exact_allpixels": true,
+    "runtime_png16x96_index_parity": true,
+    "normal_shiny_palettebanks_exact": true,
+    "normal_shiny_all1536pixels_exact": true,
+    "transparent_border": true,
+    "idle_walk_pairs_distinct": true
+  },
+  "sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f051/sodcalf-v1-pupil-proof/gfx/pokemon/sodcalf/overworld.png": "3fb1227f15a43367d6c080a9d5303beec02c00583411ebc98c73674572de5233",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f051/sodcalf-v1-pupil-proof/review/line.shiny-8x.png": "e070b1d7e54d7718869a755d52f74557078214474203269b3fd0c5b15aaab26c",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/sodcalf.overworld.imagegen-v1.png": "d4903b61b22d6110af820868b38883dd8a57e7b54c990153b74080297e96ee58",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f051/sodcalf-v1-pupil-proof/compiled-index.json": "4cc0a07d4154a312c9e323bbde6182b546e77c8716ecbbc99c29a0943b4d875b",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f051/sodcalf-v1-pupil-proof/gfx/pokemon/sodcalf/overworld.2bpp": "f5874a0e5ca8e46331205dd6571ed82d113183858035a10b5e0728868b2723dc",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/manifest-sodcalf-v1-pupil-proof.json": "232a9ada57e6fb35d99ab48f61ab8c7ec4a126705419938a0cb921277cae9337",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f051/sodcalf-v1-pupil-proof/review/line.normal-8x.png": "8ad8b86ba088acf9affb1a722bb9dd134dd611646451c83c1e246a052bd93c9c",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f051/sodcalf-v1-pupil-proof/gfx/pokemon/sodcalf/overworld.gbcpal": "a1e94ef1c54e2569966d23aaaa204273b2b848aabba07c3ccf178ac23a758f78",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f051/sodcalf-v1-pupil-proof/gfx/pokemon/sodcalf/overworld-shiny.gbcpal": "4d6519b0dad80839406a95c7a571c5d11fe6b9c8a584c2c06517531000a16ae1"
+  },
+  "actual_native_boards_viewed": true,
+  "rear_review": "plain rear head, no copied face; actual normal/shiny viewed"
+}

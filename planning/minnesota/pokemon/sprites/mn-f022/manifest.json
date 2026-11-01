@@ -1,0 +1,234 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F022",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_057": {
+      "species_id": "MN_057",
+      "name": "Tamarunt",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          17,
+          25,
+          9
+        ],
+        [
+          9,
+          12,
+          6
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        10033,
+        6537,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          140,
+          206,
+          74
+        ],
+        [
+          74,
+          99,
+          49
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#8CCE4A",
+        "#4A6331",
+        "#000000"
+      ]
+    },
+    "MN_058": {
+      "species_id": "MN_058",
+      "name": "Goldmourne",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          30,
+          24,
+          8
+        ],
+        [
+          13,
+          9,
+          7
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        8990,
+        7469,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          247,
+          198,
+          66
+        ],
+        [
+          107,
+          74,
+          57
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#F7C642",
+        "#6B4A39",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f022/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "board": "target/minnesota-pokemon/gen2-reference/starters.png"
+  },
+  "sprites": [
+    {
+      "id": "mn-057-tamarunt-v1",
+      "species_id": "MN_057",
+      "view": "front",
+      "source": "sprites/mn-f022/mn-057-058.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        624,
+        655
+      ],
+      "fit": [
+        44,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        10033,
+        6537,
+        0
+      ]
+    },
+    {
+      "id": "mn-057-tamarunt-v1",
+      "species_id": "MN_057",
+      "view": "back",
+      "source": "sprites/mn-f022/mn-057-058.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        655,
+        624,
+        544
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        10033,
+        6537,
+        0
+      ]
+    },
+    {
+      "id": "mn-058-goldmourne-v1",
+      "species_id": "MN_058",
+      "view": "front",
+      "source": "sprites/mn-f022/mn-057-058.front-back.imagegen-v1.png",
+      "crop": [
+        624,
+        0,
+        688,
+        655
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        8990,
+        7469,
+        0
+      ]
+    },
+    {
+      "id": "mn-058-goldmourne-v1",
+      "species_id": "MN_058",
+      "view": "back",
+      "source": "sprites/mn-f022/mn-057-058.front-back.imagegen-v1.png",
+      "crop": [
+        624,
+        655,
+        688,
+        544
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        8990,
+        7469,
+        0
+      ]
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "notes": [
+      "Inspected frozen source-contour-v1 sheet: needle and branch tips are clearly stepped, Tamarunt eye mark survives, and golden adult needle layers retain colored interior planes.",
+      "Floating needle attendants stay separate and roots retain planted shapes; rear upper-body portraits remain open at the bottom. Fine branch simplification is consistent with native scale."
+    ],
+    "sheet_sha256": "bd81a4f06d68eee2ead7c73ef0f740648e51cc31af79ed8030477a87adcf49e1",
+    "outline_profile": "source-contour-v1"
+  }
+}

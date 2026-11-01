@@ -1,0 +1,50 @@
+{
+  "pid": 45283,
+  "source_sha256": {
+    "crates/crystal-assets/src/r19_detroit_gate.rs": "a87c9ab348e8c4f7c1bf4fc621bc529f2bdb3e608444e7b00781cc2c49b21b7d",
+    "crates/crystal-assets/src/bin/pack_r19_detroit_gate.rs": "4efcff1803228e3c132875d10faed6bafe5475938eff2cb50f9b76d9dbba3785"
+  },
+  "steps": [
+    {
+      "step": "publisher",
+      "command": [
+        "cargo",
+        "build",
+        "--profile",
+        "wasm-dev",
+        "--locked",
+        "--config",
+        "profile.wasm-dev.package.crystal-assets.opt-level=0",
+        "-p",
+        "crystal-assets",
+        "--bin",
+        "pack_r19_detroit_gate"
+      ],
+      "exit_code": 0,
+      "log": ".local/route-grass-review/r19-detroit-gate-publisher-v04.log",
+      "outputs": [
+        {
+          "path": ".local/route-grass-review/portable-r19-detroit-gate-tools-v04/pack_r19_detroit_gate",
+          "sha256": "7aaaac8cb4e3e8eaac80806d1428cf9496ce4a41ffd65684506772218bc316a7"
+        }
+      ]
+    },
+    {
+      "step": "assets-all-target-clippy",
+      "command": [
+        "cargo",
+        "clippy",
+        "--profile",
+        "wasm-dev",
+        "--locked",
+        "--config",
+        "profile.wasm-dev.package.crystal-assets.opt-level=0",
+        "-p",
+        "crystal-assets",
+        "--all-targets"
+      ],
+      "exit_code": 0,
+      "log": ".local/route-grass-review/r19-detroit-gate-assets-all-target-clippy-v04.log"
+    }
+  ]
+}

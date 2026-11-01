@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F062",
+  "species": [
+    {
+      "species_id": "MN_135",
+      "runtime_token": "VANECHICK",
+      "palette_rgb555": [
+        32767,
+        10871,
+        9448,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        20202,
+        7433,
+        0
+      ],
+      "fit": [
+        12,
+        12
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 64,
+      "interior_black_samples": 64,
+      "opaque_interior_minimum_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "vanechick.overworld.imagegen-v1.png",
+          "crop": [
+            139,
+            120,
+            410,
+            365
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "vanechick.overworld.imagegen-v1.png",
+          "crop": [
+            582,
+            120,
+            410,
+            365
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "vanechick.overworld.imagegen-v1.png",
+          "crop": [
+            1030,
+            120,
+            410,
+            365
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "vanechick.overworld.imagegen-v1.png",
+          "crop": [
+            139,
+            533,
+            410,
+            365
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "vanechick.overworld.imagegen-v1.png",
+          "crop": [
+            582,
+            530,
+            410,
+            365
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "vanechick.overworld.imagegen-v1.png",
+          "crop": [
+            1030,
+            530,
+            410,
+            365
+          ]
+        }
+      ]
+    }
+  ]
+}

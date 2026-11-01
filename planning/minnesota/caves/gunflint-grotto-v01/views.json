@@ -1,0 +1,82 @@
+[
+  {
+    "map": "MnR12Cave1F",
+    "id": "mouth",
+    "core": [
+      17,
+      22
+    ]
+  },
+  {
+    "map": "MnR12Cave1F",
+    "id": "west-fin",
+    "core": [
+      8,
+      14
+    ]
+  },
+  {
+    "map": "MnR12Cave1F",
+    "id": "otta-rest",
+    "core": [
+      6,
+      5
+    ]
+  },
+  {
+    "map": "MnR12Cave1F",
+    "id": "left-stair",
+    "core": [
+      6,
+      9
+    ]
+  },
+  {
+    "map": "MnR12Cave1F",
+    "id": "spring-bank",
+    "core": [
+      21,
+      19
+    ]
+  },
+  {
+    "map": "MnR12Cave1F",
+    "id": "east-bank",
+    "core": [
+      36,
+      18
+    ]
+  },
+  {
+    "map": "MnR12Cave1F",
+    "id": "cache-recess",
+    "core": [
+      34,
+      3
+    ]
+  },
+  {
+    "map": "MnR12Cave1F",
+    "id": "corner-stair",
+    "core": [
+      34,
+      9
+    ]
+  },
+  {
+    "map": "MnR12Cave1F",
+    "id": "south-spring-path",
+    "core": [
+      28,
+      24
+    ]
+  },
+  {
+    "map": "MnR12Cave1F",
+    "id": "spring-pillar",
+    "core": [
+      23,
+      21
+    ]
+  }
+]

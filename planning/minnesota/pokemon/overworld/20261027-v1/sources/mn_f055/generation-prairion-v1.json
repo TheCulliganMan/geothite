@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_118",
+  "name": "Prairion",
+  "family_id": "MN_F055",
+  "generation_tool": "built-in image_gen",
+  "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f055/prairion.overworld.imagegen-v1.png",
+  "original_default_output": "/Users/ryanculligan/.codex/generated_images/01a179bf-dc2b-7352-8975-8b8f3a32e33b/exec-d2f8e94d-20ae-48d2-9234-b3acd15c92c0.png",
+  "source_sha256": "8a8af835beb87a8bd278d863bc17ddc15db0f9bb0d21911fdf7e5a1463040f20",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f055/prompt-prairion-v1.txt",
+  "prompt_sha256": "afcfc0ce64392d0dc06bf9994e5c5294fddc79afef5142c037ed85dce1fef066",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f055/reference-mapping-prairion-v1.json",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f055/manifest-prairion-v1-pupil-proof.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f055/prairion-v1-pupil-proof",
+  "source_pupil_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f055/manifest-prairion-v1-pupil-proof.proof.json",
+  "status": "frozen candidate; author actual normal/shiny and source pupils reviewed, root context pending",
+  "accepted": false
+}

@@ -1,4 +1,96 @@
 #[test]
+fn scene_table_constants_resolve_all_external_pack_scenes_and_research_callback() {
+    let Some(path) = std::env::var_os("CRYSTAL_RENDER_TEST_PACK") else {
+        return;
+    };
+    let pack = read_compiled_game_pack(path).expect("read explicit external pack");
+    let data = pack.data();
+    let constants = data.script_numeric_constants();
+    let mut compared = 0;
+    for (map_name, module) in data.maps.iter() {
+        for (index, scene) in module.scenes.scenes.iter().enumerate() {
+            assert_eq!(
+                constants.get(&scene.scene_id),
+                Some(&(index as i32)),
+                "{map_name} scene {}",
+                scene.scene_id
+            );
+            compared += 1;
+        }
+    }
+    assert!(
+        compared > 100,
+        "full pack must include authored scene tables"
+    );
+    let map = "RuinsOfAlphResearchCenter";
+    let script = "RuinsOfAlphResearchCenterScientistCallback";
+    for (value, should_jump) in [("0", false), ("1", true)] {
+        let mut state = GameState::default();
+        state.script_runtime.script_value = Some(value.into());
+        let action = data
+            .apply_script_control_command(&mut state, map, map, script, 1)
+            .expect("execute real research-center callback branch");
+        assert_eq!(
+            matches!(action, ScriptControlAction::Jump { .. }),
+            should_jump
+        );
+    }
+}
+
+#[test]
+fn scene_table_constants_drive_research_center_callback_branches() {
+    let map_name = "RuinsOfAlphResearchCenter";
+    let script = "RuinsOfAlphResearchCenterScientistCallback";
+    let target = "RuinsOfAlphResearchCenterScientistCallback.ShowScientist";
+    let mut module = test_map_module(map_name, "RUINS_OF_ALPH_RESEARCH_CENTER", None);
+    module.scenes = MapSceneTable {
+        scenes: vec![
+            MapScene {
+                scene_id: "SCENE_RUINSOFALPHRESEARCHCENTER_NOOP".into(),
+                script_name: None,
+            },
+            MapScene {
+                scene_id: "SCENE_RUINSOFALPHRESEARCHCENTER_GET_UNOWN_DEX".into(),
+                script_name: None,
+            },
+        ],
+    };
+    module.scripts.insert(script.into(), serde_json::json!([]));
+    module.scripts.insert(target.into(), serde_json::json!([]));
+    module.script_control_commands.push(ScriptControlCommand {
+        command: "ifequal".into(),
+        compare_value: Some("SCENE_RUINSOFALPHRESEARCHCENTER_GET_UNOWN_DEX".into()),
+        target_label: Some(".ShowScientist".into()),
+        resolved_target_script: Some(target.into()),
+        source_script: script.into(),
+        command_index: 1,
+    });
+    let data = GameDataSet {
+        maps: map_payload(vec![module]),
+        ..GameDataSet::default()
+    };
+    // No duplicate numeric scene catalog: the authored scene table is enough.
+    for (value, should_jump) in [("0", false), ("1", true)] {
+        let mut state = GameState::default();
+        state.script_runtime.script_value = Some(value.into());
+        let action = data
+            .apply_script_control_command(&mut state, map_name, map_name, script, 1)
+            .expect("resolve scene ordinal in production control dispatch");
+        assert_eq!(
+            matches!(action, ScriptControlAction::Jump { .. }),
+            should_jump
+        );
+        assert_eq!(
+            state
+                .script_runtime
+                .next_script
+                .as_ref()
+                .map(|location| location.script.as_str()),
+            should_jump.then_some(target)
+        );
+    }
+}
+#[test]
 fn execute_next_queued_script_command_enters_target_script_runtime() {
     let mut module = test_map_module("RuntimeQueueTestMap", "RUNTIME_QUEUE_TEST_MAP", None);
     module
@@ -339,6 +431,47 @@ fn map_module_extracts_money_script_commands_with_exact_tokens() {
         ),
         Ok(0)
     );
+}
+
+#[test]
+fn script_economy_resolves_own_map_prices_without_leaking_scopes_or_caps() {
+    let map = "PriceMap";
+    let scripts = BTreeMap::from([("Buy".into(), serde_json::json!([
+        {"command":"takemoney", "args":["YOUR_MONEY", "PRICE", "+", "GLOBAL_FEE"]},
+        {"command":"givemoney", "args":["YOUR_MONEY", "100"]}
+    ]))]);
+    let mut module = test_map_module(map, "PRICE_MAP", None);
+    module.script_economy_commands = parse_script_economy_commands(map, &scripts).unwrap();
+    let mut data = GameDataSet {
+        maps: map_payload(vec![module]),
+        currency_constants: CurrencyCatalog(BTreeMap::from([
+            ("PRICE".into(), 200), ("MAX_MONEY".into(), 999_999)
+        ])),
+        ..GameDataSet::default()
+    };
+    data.story_event_script_constants.global.insert("GLOBAL_FEE".into(), 10);
+    data.story_event_script_constants.maps.insert(map.into(), BTreeMap::from([
+        ("PRICE".into(), 300), ("MAX_MONEY".into(), 1)
+    ]));
+    data.story_event_script_constants.maps.insert("OtherMap".into(), BTreeMap::from([
+        ("PRICE".into(), 900), ("OTHER_PRICE".into(), 500)
+    ]));
+    let mut state = GameState { money: 1000, ..GameState::default() };
+    data.apply_script_economy_command(&mut state, map, map, "Buy", 0).unwrap();
+    assert_eq!(state.money, 690, "own-map price plus global fee");
+    data.apply_script_economy_command(&mut state, map, map, "Buy", 1).unwrap();
+    assert_eq!(state.money, 790, "map-local MAX_MONEY must not replace the pack's account cap");
+    for token in ["OTHER_PRICE", "NEGATIVE_PRICE", "OVERSIZED_PRICE"] {
+        data.story_event_script_constants.maps.get_mut(map).unwrap().extend([
+            ("NEGATIVE_PRICE".into(), -1), ("OVERSIZED_PRICE".into(), i64::MAX)
+        ]);
+        data.maps.get_mut(map).unwrap().script_economy_commands[0].amount_tokens = vec![token.into()];
+        let before = state.clone();
+        assert!(data.apply_script_economy_command(&mut state, map, map, "Buy", 0).is_err());
+        assert_eq!(state, before, "invalid or foreign prices cannot mutate money");
+    }
+    assert_eq!(data.currency_constants.get("PRICE"), Some(200));
+    assert_eq!(data.currency_constants.get("MAX_MONEY"), Some(999_999));
 }
 
 #[test]
@@ -1752,6 +1885,24 @@ fn overworld_map_requires_explicit_blocks_label_and_payload() {
 }
 
 #[test]
+fn overworld_map_reload_retains_authored_module_mods_and_supports_split_payloads() {
+    let mut module = test_map_module("Route29", "ROUTE_29", None);
+    module.attributes.width = 1;
+    module.attributes.height = 1;
+    module.attributes.blocks_label = Some("Route29_Blocks".to_string());
+    module.blocks = vec![0x05];
+    let mut data = GameDataSet::default();
+    data.map_attributes.insert("Route29".to_string(), module.attributes.clone());
+    data.map_blocks.insert("Route29_Blocks".to_string(), "AA==".to_string());
+    data.maps.insert("Route29".to_string(), module);
+    assert_eq!(data.overworld_map("Route29").unwrap().metatile_ids, vec![0x05],
+        "tile callback reload must retain the runtime module's grove mod");
+    data.maps.remove("Route29");
+    assert_eq!(data.overworld_map("Route29").unwrap().metatile_ids, vec![0x00],
+        "split-only build inputs still assemble their original payload");
+}
+
+#[test]
 fn runtime_map_assembly_rejects_malformed_attribute_labels_without_missing_fallback() {
     let mut data = GameDataSet::default();
     let mut attributes = test_map_module("Route29", "ROUTE_29", None).attributes;
@@ -1934,6 +2085,7 @@ fn modpack_items_require_explicit_script_name() {
         battle_focus_energy: None,
         battle_stat_drop_guard: None,
         confusion_heal: None,
+        confusion_inflict_turns: None,
         repel_steps: None,
         escape_rope_mode: None,
         price: 100,

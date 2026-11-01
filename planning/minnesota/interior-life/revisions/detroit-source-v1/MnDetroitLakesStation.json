@@ -1,0 +1,223 @@
+{
+  "id": "MnDetroitLakesStation",
+  "native_constant": "MN_DETROIT_LAKES_STATION",
+  "status": "SOURCE REVIEW ONLY; no train service or visit callback installed",
+  "tileset": "train_station",
+  "dimensions_metatiles": [
+    12,
+    10
+  ],
+  "border_block": "0f",
+  "rows": [
+    "0a 16 0a 16 0a 16 0a 16 0a 16 0a 16",
+    "0f 0b 0b 0b 0b 0b 0b 0b 0b 0b 0b 0f",
+    "0f 14 10 11 15 12 13 14 14 14 14 0f",
+    "0f 04 04 04 04 04 04 04 04 04 04 0f",
+    "0f 06 06 06 06 06 07 08 06 06 06 0f",
+    "0f 0f 24 25 24 03 03 03 30 0f 0f 0f",
+    "0f 0f 1d 1c 1e 03 03 03 0e 20 20 0f",
+    "0f 0f 1d 1c 1c 01 03 01 0e 21 22 0f",
+    "0f 0f 0f 0f 0c 03 03 03 0e 23 23 0f",
+    "0f 0f 0f 0f 0f 09 0f 0f 0f 0f 0f 0f"
+  ],
+  "public_arrival_core": [
+    11,
+    17
+  ],
+  "exit_tiles_core": [
+    [
+      10,
+      19
+    ],
+    [
+      11,
+      19
+    ]
+  ],
+  "passive_arrival": {
+    "index": 3,
+    "tile": [
+      11,
+      17
+    ],
+    "collision": "FLOOR"
+  },
+  "exits": [
+    {
+      "index": 1,
+      "tile": [
+        10,
+        19
+      ],
+      "target": "MnDetroitLakes",
+      "target_warp": 2,
+      "collision": "WARP_CARPET_DOWN"
+    },
+    {
+      "index": 2,
+      "tile": [
+        11,
+        19
+      ],
+      "target": "MnDetroitLakes",
+      "target_warp": 2,
+      "collision": "WARP_CARPET_DOWN"
+    }
+  ],
+  "boarding": {
+    "conductor_core": [
+      13,
+      9
+    ],
+    "approach_core": [
+      13,
+      10
+    ],
+    "platform_core": [
+      13,
+      7
+    ],
+    "train_door_core": [
+      6,
+      5
+    ],
+    "other_train_door_core": [
+      11,
+      5
+    ],
+    "ride_arrival_core": [
+      13,
+      11
+    ],
+    "conductor_open_steps": [
+      "up",
+      "up",
+      "right",
+      "right"
+    ],
+    "player_board_steps": [
+      "up",
+      "up",
+      "up",
+      "left",
+      "left",
+      "left",
+      "left",
+      "left",
+      "left",
+      "left",
+      "up",
+      "up"
+    ],
+    "conductor_restore_steps": [
+      "left",
+      "left",
+      "down",
+      "down"
+    ],
+    "note": "Single conductor seals native platform throat; no public warp targets train doors. Boarding movement remains uninstalled."
+  },
+  "residents": [
+    {
+      "id": "MN_DETROIT_GLACIER_CONDUCTOR",
+      "sprite": "SPRITE_OFFICER",
+      "tile": [
+        13,
+        9
+      ],
+      "facing": "south",
+      "lines": [
+        "GLACIER LINE",
+        "Rides are closed.",
+        "The hall is open."
+      ]
+    },
+    {
+      "id": "MN_DETROIT_STATION_TRAVELER",
+      "sprite": "SPRITE_TEACHER",
+      "tile": [
+        8,
+        14
+      ],
+      "facing": "east",
+      "lines": [
+        "Lake air makes a",
+        "fine waiting room."
+      ]
+    },
+    {
+      "id": "MN_DETROIT_STATION_PORTER",
+      "sprite": "SPRITE_FISHER",
+      "tile": [
+        6,
+        13
+      ],
+      "facing": "east",
+      "lines": [
+        "Keep the center",
+        "aisle clear for",
+        "other passengers."
+      ]
+    }
+  ],
+  "signs": [
+    {
+      "id": "MN_DETROIT_GLACIER_TIMETABLE",
+      "tile": [
+        7,
+        10
+      ],
+      "approach": [
+        7,
+        11
+      ],
+      "lines": [
+        "GLACIER LINE",
+        "DETROIT LAKES",
+        "STAPLES",
+        "ST CLOUD",
+        "ST PAUL",
+        "RED WING",
+        "WINONA"
+      ]
+    }
+  ],
+  "viewpoints": [
+    {
+      "id": "BOARDING_THROAT",
+      "tile": [
+        13,
+        11
+      ]
+    },
+    {
+      "id": "TIMBER_WAITING_HALL",
+      "tile": [
+        10,
+        15
+      ]
+    }
+  ],
+  "exterior_binding": {
+    "hub": "MnDetroitLakes",
+    "door": [
+      11,
+      9
+    ],
+    "safe_return": [
+      11,
+      10
+    ],
+    "active_warp": 1,
+    "passive_return_warp": 2,
+    "room_passive_arrival_warp": 3
+  },
+  "native_script_binding": {
+    "status": "Not installed",
+    "network": "glacier-line.json",
+    "entry_callback": "EVENT_MN_STATION_DETROIT_LAKES_VISITED",
+    "service_requires": "EVENT_MN_COURIER_DEFEATED",
+    "fare": 0,
+    "no_new_story_grants": true
+  }
+}

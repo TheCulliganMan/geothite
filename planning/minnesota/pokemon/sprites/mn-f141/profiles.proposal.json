@@ -1,0 +1,236 @@
+{
+  "schema_version": 1,
+  "species": [
+    {
+      "id": "MN_312",
+      "classification": "Velvet Bud",
+      "height_inches": 21,
+      "weight_tenths_lb": 240,
+      "dex_pages": [
+        "Soft green buds @ crown its head. @ They smell of dew.",
+        "It leaves tiny @ hoofprints around @ new forest shoots."
+      ],
+      "base_stats": {
+        "hp": 50,
+        "attack": 50,
+        "defense": 45,
+        "speed": 70,
+        "special_attack": 45,
+        "special_defense": 50
+      },
+      "catch_rate": 190,
+      "base_exp": 65,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_GROUND",
+        "EGG_PLANT"
+      ],
+      "evolution": {
+        "method": "LEVEL",
+        "level": 32
+      },
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_EQUINE",
+      "footprint_species": "STANTLER",
+      "cry": {
+        "cry": "CRY_GIRAFARIG",
+        "pitch": -24,
+        "length": 144
+      },
+      "shiny_rgb5": [
+        [
+          25,
+          16,
+          22
+        ],
+        [
+          12,
+          8,
+          16
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "TACKLE"
+        ],
+        [
+          1,
+          "GROWL"
+        ],
+        [
+          6,
+          "VINE_WHIP"
+        ],
+        [
+          11,
+          "LEECH_SEED"
+        ],
+        [
+          16,
+          "STOMP"
+        ],
+        [
+          21,
+          "RAZOR_LEAF"
+        ],
+        [
+          27,
+          "TAKE_DOWN"
+        ],
+        [
+          33,
+          "SYNTHESIS"
+        ],
+        [
+          40,
+          "SAFEGUARD"
+        ],
+        [
+          47,
+          "SOLARBEAM"
+        ]
+      ],
+      "tmhm_moves": [
+        "HEADBUTT",
+        "GIGA_DRAIN",
+        "SUNNY_DAY",
+        "SOLARBEAM",
+        "REST",
+        "PROTECT",
+        "RETURN",
+        "ATTRACT",
+        "FLASH"
+      ],
+      "egg_moves": [
+        "CHARM",
+        "DOUBLE_KICK",
+        "REFLECT"
+      ]
+    },
+    {
+      "id": "MN_313",
+      "classification": "Shed Guard",
+      "height_inches": 55,
+      "weight_tenths_lb": 1720,
+      "dex_pages": [
+        "Each spring, its @ shed antlers rise @ to guard the herd.",
+        "A pale tail fan @ guides lost young @ through dark woods"
+      ],
+      "base_stats": {
+        "hp": 75,
+        "attack": 95,
+        "defense": 75,
+        "speed": 90,
+        "special_attack": 75,
+        "special_defense": 90
+      },
+      "catch_rate": 60,
+      "base_exp": 175,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_GROUND",
+        "EGG_PLANT"
+      ],
+      "evolution": null,
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_EQUINE",
+      "footprint_species": "STANTLER",
+      "cry": {
+        "cry": "CRY_GIRAFARIG",
+        "pitch": 0,
+        "length": 160
+      },
+      "shiny_rgb5": [
+        [
+          22,
+          17,
+          9
+        ],
+        [
+          8,
+          12,
+          18
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "TACKLE"
+        ],
+        [
+          1,
+          "GROWL"
+        ],
+        [
+          1,
+          "LEECH_SEED"
+        ],
+        [
+          6,
+          "VINE_WHIP"
+        ],
+        [
+          16,
+          "STOMP"
+        ],
+        [
+          21,
+          "RAZOR_LEAF"
+        ],
+        [
+          27,
+          "TAKE_DOWN"
+        ],
+        [
+          32,
+          "CONFUSE_RAY"
+        ],
+        [
+          36,
+          "SHADOW_BALL"
+        ],
+        [
+          41,
+          "SYNTHESIS"
+        ],
+        [
+          47,
+          "SAFEGUARD"
+        ],
+        [
+          54,
+          "MEGAHORN"
+        ]
+      ],
+      "tmhm_moves": [
+        "HEADBUTT",
+        "GIGA_DRAIN",
+        "SUNNY_DAY",
+        "SOLARBEAM",
+        "REST",
+        "PROTECT",
+        "RETURN",
+        "ATTRACT",
+        "FLASH",
+        "SHADOW_BALL",
+        "NIGHTMARE"
+      ],
+      "egg_moves": [
+        "CHARM",
+        "DOUBLE_KICK",
+        "REFLECT"
+      ]
+    }
+  ]
+}

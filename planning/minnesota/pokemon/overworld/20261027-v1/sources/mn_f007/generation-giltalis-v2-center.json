@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_020",
+  "name": "Giltalis",
+  "family_id": "MN_F007",
+  "status": "native_candidate_compiled_and_sent_for_root_visual_review",
+  "generation_tool": "built-in image_gen",
+  "prompts": [
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f007/prompt-giltalis-v2.txt"
+  ],
+  "sources_selected": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f007/giltalis.overworld.imagegen-v2.png",
+      "sha256": "51616a45b4cba88b763502818c12352ee0592883cc89274891689370d0e66f28",
+      "dimensions": [
+        1254,
+        1254
+      ]
+    }
+  ],
+  "source_v2_original_default_output": "/Users/ryanculligan/.codex/generated_images/01a17dc4-dd75-7642-a1c6-4bf13fda70c6/exec-b1282942-41ee-4a1f-a207-aeb0b9d42674.png",
+  "generation_reference_only": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+  "identity_authority": "Exactcurrentcoverage.json active identity/palette and visualinspection of selectednativefront; NOhighresbattleinputs used for generation",
+  "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f007/manifest-giltalis-v2-center.json",
+  "manifest_sha256": "eb88a3220a1100259bfb27565e399ef86a7ced09dd6829bca326d699ddc42543",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f007/giltalis-v2-center",
+  "normal_review": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f007/giltalis-v2-center/review/line.normal-8x.png",
+  "sampling": "Rust source_center",
+  "alpha_threshold": 128,
+  "frame_size": [
+    16,
+    16
+  ],
+  "native_bounds": [
+    [
+      4,
+      2,
+      7,
+      13
+    ],
+    [
+      4,
+      2,
+      7,
+      13
+    ],
+    [
+      4,
+      2,
+      7,
+      13
+    ],
+    [
+      4,
+      2,
+      7,
+      12
+    ],
+    [
+      4,
+      2,
+      7,
+      12
+    ],
+    [
+      4,
+      2,
+      7,
+      12
+    ]
+  ],
+  "normal_rgb555": [
+    32767,
+    21356,
+    12707,
+    0
+  ],
+  "shiny_rgb555": [
+    32767,
+    28052,
+    13420,
+    0
+  ],
+  "native_pixels_painted": false,
+  "contract": "Sixposesdown/up/leftidle then down/up/leftstep;3opaquecanonicalinks+transparentindex0;max14pxopaquefootprintwithborder;onesharedspeciesworldscale andpairedheadregistration",
+  "notes": "Generatedraws andallvariantsretained. Nativeboards inspected locally and handed to root; finalacceptance/context/runtimeproof ownedbyroot."
+}

@@ -1,0 +1,11 @@
+{
+  "status": "returned-raw-preserved",
+  "source": "sprites/mn-f120/tail-redesign-20261026/mn-258-castanake.front-back.tail-v3.png",
+  "source_sha256": "cddb16d27a2321c9e04e9496e9001e15562a0a6247cd31383a6c0c7ad6f2e8bc",
+  "source_size": [
+    1536,
+    1024
+  ],
+  "prompt_file": "sprites/mn-f120/tail-redesign-20261026/prompt-adult-tail-v3.txt",
+  "reference_mapping": "sprites/mn-f120/tail-redesign-20261026/reference-mapping-v3.json"
+}

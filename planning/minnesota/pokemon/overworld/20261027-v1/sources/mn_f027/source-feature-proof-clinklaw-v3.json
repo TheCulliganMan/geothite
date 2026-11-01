@@ -1,0 +1,215 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_067",
+  "result": "pass",
+  "manifest_sha256": "e365c2f1c2c6ae62bf29b9f849066523238e1a3041b5b4c796d9a6688abfa9df",
+  "bank_sha256": "bb50e497095e1a6f71890042e0859d479c99645b6550ad679227303c8b86b80c",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f027/clinklaw.overworld.imagegen-v3.png": "f3f4966ece655ea1125731926a78bdeab2cd377a603072a81fd21d3b4be23d7e"
+  },
+  "canonical_eye_form": "Two separate actual black square pupils in front, one near black pupil in west; no rear pupils. Two open metal pincers, six source walking legs and slate tail plates.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            5,
+            5
+          ],
+          "source_sample": [
+            206,
+            167
+          ],
+          "source_rgba": [
+            1,
+            0,
+            0,
+            253
+          ],
+          "actual_source_pupil_component": [
+            180,
+            144,
+            36,
+            36
+          ],
+          "component_pixels": 1233,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "native": [
+            9,
+            5
+          ],
+          "source_sample": [
+            334,
+            167
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ],
+          "actual_source_pupil_component": [
+            325,
+            144,
+            36,
+            36
+          ],
+          "component_pixels": 1267,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            3,
+            4
+          ],
+          "source_sample": [
+            1137,
+            154
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ],
+          "actual_source_pupil_component": [
+            1129,
+            145,
+            36,
+            35
+          ],
+          "component_pixels": 1260,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            5,
+            5
+          ],
+          "source_sample": [
+            206,
+            611
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ],
+          "actual_source_pupil_component": [
+            181,
+            600,
+            35,
+            35
+          ],
+          "component_pixels": 1225,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "native": [
+            9,
+            5
+          ],
+          "source_sample": [
+            334,
+            611
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ],
+          "actual_source_pupil_component": [
+            325,
+            600,
+            36,
+            35
+          ],
+          "component_pixels": 1260,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            4,
+            5
+          ],
+          "source_sample": [
+            1152,
+            625
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ],
+          "actual_source_pupil_component": [
+            1127,
+            594,
+            46,
+            48
+          ],
+          "component_pixels": 2187,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "notes": "both rear native poses viewed; no copied face. All six exact normal/shiny native poses inspected, three movement pairs distinct, transparent one-pixel border and max14x14 body verified."
+  }
+}

@@ -1,0 +1,125 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+  "pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33",
+  "calls": 211,
+  "phases": [
+    {
+      "phase": "walk-and-save",
+      "initial": {
+        "badges": 0,
+        "dialogue": false,
+        "facing": "down",
+        "frame": 653,
+        "map": "MnStCloud",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 0
+        },
+        "position": {
+          "x": 7,
+          "y": 10
+        }
+      },
+      "final": {
+        "badges": 0,
+        "dialogue": false,
+        "facing": "up",
+        "frame": 745,
+        "map": "MnStCloud",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 0
+        },
+        "position": {
+          "x": 35,
+          "y": 27
+        }
+      },
+      "output_save": ".local/route-grass-review/current-st-cloud-stairs-walk-and-save-v01-output.crystalsave",
+      "input_source_unchanged": true,
+      "stderr_bytes": 0
+    },
+    {
+      "phase": "continue-and-descend",
+      "initial": {
+        "badges": 0,
+        "dialogue": false,
+        "facing": "up",
+        "frame": 745,
+        "map": "MnStCloud",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 0
+        },
+        "position": {
+          "x": 35,
+          "y": 27
+        }
+      },
+      "final": {
+        "badges": 0,
+        "dialogue": false,
+        "facing": "down",
+        "frame": 750,
+        "map": "MnStCloud",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 0
+        },
+        "position": {
+          "x": 35,
+          "y": 30
+        }
+      },
+      "output_save": ".local/route-grass-review/current-st-cloud-stairs-continue-and-descend-v01-output.crystalsave",
+      "input_source_unchanged": true,
+      "stderr_bytes": 0
+    }
+  ],
+  "upper": [
+    35,
+    27
+  ],
+  "treads": [
+    [
+      35,
+      28
+    ],
+    [
+      35,
+      29
+    ]
+  ],
+  "lower": [
+    35,
+    30
+  ],
+  "side_walls": [
+    [
+      34,
+      29
+    ],
+    [
+      36,
+      29
+    ]
+  ],
+  "scope": "Actual floor path from retained town checkpoint, each native stair tread/down/up/side-wall denials, upper Save/Continue/descent and Pack pockets. Initial QA party/badges/position are inherited fixture setup, not earned campaign access."
+}

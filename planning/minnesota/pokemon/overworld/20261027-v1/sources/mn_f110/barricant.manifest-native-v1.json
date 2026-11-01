@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F110",
+  "species": [
+    {
+      "species_id": "MN_242",
+      "runtime_token": "BARRICANT",
+      "palette_rgb555": [
+        32767,
+        14078,
+        16588,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        24525,
+        6544,
+        0
+      ],
+      "fit": [
+        14,
+        14
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 32,
+      "interior_black_samples": null,
+      "opaque_interior_minimum_samples": 60,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "barricant.overworld.imagegen-v1.png",
+          "crop": [
+            49,
+            78,
+            536,
+            446
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "barricant.overworld.imagegen-v1.png",
+          "crop": [
+            500,
+            78,
+            536,
+            446
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "barricant.overworld.imagegen-v1.png",
+          "crop": [
+            990,
+            78,
+            536,
+            446
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "barricant.overworld.imagegen-v1.png",
+          "crop": [
+            49,
+            476,
+            536,
+            446
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "barricant.overworld.imagegen-v1.png",
+          "crop": [
+            500,
+            500,
+            536,
+            446
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "barricant.overworld.imagegen-v1.png",
+          "crop": [
+            991,
+            482,
+            536,
+            446
+          ]
+        }
+      ]
+    }
+  ]
+}

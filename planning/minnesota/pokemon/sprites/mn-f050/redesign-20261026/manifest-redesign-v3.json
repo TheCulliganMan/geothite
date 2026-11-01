@@ -1,0 +1,379 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F050",
+  "status": "native-redesign-candidate-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_101": {
+      "species_id": "MN_101",
+      "name": "Taconib",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          19,
+          15,
+          13
+        ],
+        [
+          8,
+          11,
+          15
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        13811,
+        15720,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          156,
+          123,
+          107
+        ],
+        [
+          66,
+          90,
+          123
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#9C7B6B",
+        "#425A7B",
+        "#000000"
+      ]
+    },
+    "MN_102": {
+      "species_id": "MN_102",
+      "name": "Pelletank",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          17,
+          20,
+          24
+        ],
+        [
+          6,
+          9,
+          13
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        25233,
+        13606,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          140,
+          165,
+          198
+        ],
+        [
+          49,
+          74,
+          107
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#8CA5C6",
+        "#314A6B",
+        "#000000"
+      ]
+    },
+    "MN_103": {
+      "species_id": "MN_103",
+      "name": "Taconarch",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          15,
+          22,
+          25
+        ],
+        [
+          5,
+          7,
+          12
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        26319,
+        12517,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          123,
+          181,
+          206
+        ],
+        [
+          41,
+          57,
+          99
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#7BB5CE",
+        "#293963",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f050/redesign-20261026/prompt-v3.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png",
+      "target/minnesota-pokemon/gen2-reference/bugs.png"
+    ]
+  },
+  "sprites": [
+    {
+      "id": "mn-101-taconib-v1",
+      "species_id": "MN_101",
+      "view": "front",
+      "source": "sprites/mn-f050/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        460,
+        512
+      ],
+      "fit": [
+        36,
+        36
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13811,
+        15720,
+        0
+      ]
+    },
+    {
+      "id": "mn-101-taconib-v1",
+      "species_id": "MN_101",
+      "view": "back",
+      "source": "sprites/mn-f050/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        512,
+        460,
+        512
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13811,
+        15720,
+        0
+      ]
+    },
+    {
+      "id": "mn-102-pelletank-v1",
+      "species_id": "MN_102",
+      "view": "front",
+      "source": "sprites/mn-f050/front-back.imagegen-v1.png",
+      "crop": [
+        460,
+        0,
+        570,
+        512
+      ],
+      "fit": [
+        50,
+        50
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        25233,
+        13606,
+        0
+      ],
+      "white_detail_min_samples": 8
+    },
+    {
+      "id": "mn-102-pelletank-v1",
+      "species_id": "MN_102",
+      "view": "back",
+      "source": "sprites/mn-f050/front-back.imagegen-v1.png",
+      "crop": [
+        460,
+        512,
+        530,
+        512
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        25233,
+        13606,
+        0
+      ],
+      "white_detail_min_samples": 8
+    },
+    {
+      "id": "mn-103-taconarch-redesign-v3",
+      "species_id": "MN_103",
+      "view": "front",
+      "source": "sprites/mn-f050/redesign-20261026/mn-103-taconarch.front-back.redesign-v3.png",
+      "crop": [
+        0,
+        0,
+        1024,
+        740
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        26319,
+        12517,
+        0
+      ],
+      "white_detail_min_samples": 32
+    },
+    {
+      "id": "mn-103-taconarch-redesign-v3",
+      "species_id": "MN_103",
+      "view": "back",
+      "source": "sprites/mn-f050/redesign-20261026/mn-103-taconarch.front-back.redesign-v3.png",
+      "crop": [
+        0,
+        740,
+        1024,
+        796
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        26319,
+        12517,
+        0
+      ],
+      "white_detail_min_samples": 16
+    }
+  ],
+  "reference_mapping": "sprites/mn-f050/redesign-20261026/reference-mapping-v3.json",
+  "prompt_sources_by_species": {
+    "MN_101": "sprites/mn-f050/prompt-v3.txt",
+    "MN_102": "sprites/mn-f050/prompt-v3.txt",
+    "MN_103": "sprites/mn-f050/redesign-20261026/prompt-v3.txt"
+  },
+  "source_sha256": "1eeb48548d974d684bc98c0f3c759c91e694a0bd6e2beeae39e0e101489b492d",
+  "candidate_review": {
+    "status": "redesign-native-review-pending",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "00c97dca299f9fe428bb8e115919e569b20c208122c6d41896ffcf20339f82a6",
+    "notes": "Actually inspected native v3: compact nearly square four-legged dragon, head about quarter height, raised neck, clear triangle of three large round pellets with white crescents, thick light rail braces, floating elbow gaps and upward curled tail. Light-blue planes dominate rather than black. Rear enlarged head/nape and broad shoulder pellet bases are cropped; small far eye has weak white detail. Canonical young two stages retained exactly. Root final judgment pending.",
+    "native_ink_metrics": {
+      "front": {
+        "nonwhite_pixels": 1856,
+        "lightblue": 1043,
+        "navy": 438,
+        "black": 375,
+        "lightblue_fraction_nonwhite": 0.562,
+        "black_fraction_nonwhite": 0.202
+      },
+      "back": {
+        "nonwhite_pixels": 956,
+        "lightblue": 575,
+        "navy": 242,
+        "black": 139,
+        "lightblue_fraction_nonwhite": 0.6015,
+        "black_fraction_nonwhite": 0.1454
+      }
+    }
+  },
+  "candidate_exports": {
+    "native_sheet": "line.redesign-20261026-v3.native.png",
+    "review_sheet": "line.redesign-20261026-v3.review.png"
+  },
+  "comparison_before": "line.before-redesign-20261026.review.png",
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "notes": "Root inspected all six native views: young Taconib/Pelletank unchanged. Final now fills a near-square stance with larger crowned head, three triangle-arranged pellet masses, bright curved rails and clear magnetic elbow gaps. Upward curled tail preserves pixel budget. Back eye glint is small; large neck and shoulder rails remain distinct. Earlier too-wide/dark v2 retained.",
+    "sheet_sha256": "00c97dca299f9fe428bb8e115919e569b20c208122c6d41896ffcf20339f82a6",
+    "outline_profile": "source-contour-v1"
+  }
+}

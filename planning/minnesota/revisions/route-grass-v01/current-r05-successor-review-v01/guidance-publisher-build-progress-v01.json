@@ -1,0 +1,50 @@
+{
+  "pid": 53238,
+  "source_sha256": {
+    "crates/crystal-assets/src/r05_cache_bank.rs": "9f7af4dda8be6f56677398819adfe83603e4e8cda64b85819d5ec2712339d898",
+    "crates/crystal-assets/src/bin/revise_r05_cache_bank.rs": "66da51ed7b186b87c063e7570f00964c9ac19ecd374f3f00ffd7c883f7261fc0"
+  },
+  "steps": [
+    {
+      "step": "publisher",
+      "command": [
+        "cargo",
+        "build",
+        "--profile",
+        "wasm-dev",
+        "--locked",
+        "--config",
+        "profile.wasm-dev.package.crystal-assets.opt-level=0",
+        "-p",
+        "crystal-assets",
+        "--bin",
+        "revise_r05_cache_bank"
+      ],
+      "exit_code": 0,
+      "log": ".local/route-grass-review/r05-cache-bank-publisher-v01.log",
+      "outputs": [
+        {
+          "path": ".local/route-grass-review/portable-r05-cache-bank-tools-v01/revise_r05_cache_bank",
+          "sha256": "8ef0a7d69408a0410a1eb57ba3d0cc87f50cfc799d1b5069ec6ff80b907200c2"
+        }
+      ]
+    },
+    {
+      "step": "assets-all-target-clippy",
+      "command": [
+        "cargo",
+        "clippy",
+        "--profile",
+        "wasm-dev",
+        "--locked",
+        "--config",
+        "profile.wasm-dev.package.crystal-assets.opt-level=0",
+        "-p",
+        "crystal-assets",
+        "--all-targets"
+      ],
+      "exit_code": 0,
+      "log": ".local/route-grass-review/r05-cache-bank-assets-all-target-clippy-v01.log"
+    }
+  ]
+}

@@ -1,0 +1,410 @@
+{
+  "route": "MN_R10",
+  "parent": "content-packs/minnesota-current-r10-west-terrace-v01.crystalpack",
+  "parent_sha256": "e6c2126e57e1349ae73ba42c6139d8e1cc7f3b61298e2df892b0d122866da536",
+  "changes": [
+    {
+      "position": [
+        7,
+        1
+      ],
+      "before": "6a",
+      "after": "05",
+      "reason": "Remove the empty rock finger and restore its northern forest boundary"
+    },
+    {
+      "position": [
+        8,
+        1
+      ],
+      "before": "70",
+      "after": "05",
+      "reason": "Remove the empty rock finger and restore its northern forest boundary"
+    },
+    {
+      "position": [
+        9,
+        1
+      ],
+      "before": "6b",
+      "after": "05",
+      "reason": "Remove the empty rock finger and restore its northern forest boundary"
+    },
+    {
+      "position": [
+        7,
+        2
+      ],
+      "before": "68",
+      "after": "05",
+      "reason": "Remove the empty rock finger and restore its northern forest boundary"
+    },
+    {
+      "position": [
+        8,
+        2
+      ],
+      "before": "71",
+      "after": "05",
+      "reason": "Remove the empty rock finger and restore its northern forest boundary"
+    },
+    {
+      "position": [
+        9,
+        2
+      ],
+      "before": "69",
+      "after": "05",
+      "reason": "Remove the empty rock finger and restore its northern forest boundary"
+    },
+    {
+      "position": [
+        7,
+        3
+      ],
+      "before": "68",
+      "after": "05",
+      "reason": "Remove the empty rock finger and restore its northern forest boundary"
+    },
+    {
+      "position": [
+        8,
+        3
+      ],
+      "before": "71",
+      "after": "05",
+      "reason": "Remove the empty rock finger and restore its northern forest boundary"
+    },
+    {
+      "position": [
+        9,
+        3
+      ],
+      "before": "69",
+      "after": "05",
+      "reason": "Remove the empty rock finger and restore its northern forest boundary"
+    },
+    {
+      "position": [
+        6,
+        4
+      ],
+      "before": "6b",
+      "after": "70",
+      "reason": "Join the western porch and carrier ridge under one native north rim"
+    },
+    {
+      "position": [
+        7,
+        4
+      ],
+      "before": "68",
+      "after": "70",
+      "reason": "Join the western porch and carrier ridge under one native north rim"
+    },
+    {
+      "position": [
+        8,
+        4
+      ],
+      "before": "71",
+      "after": "70",
+      "reason": "Join the western porch and carrier ridge under one native north rim"
+    },
+    {
+      "position": [
+        9,
+        4
+      ],
+      "before": "71",
+      "after": "6b",
+      "reason": "Native northeast turn closes the new western ridge"
+    },
+    {
+      "position": [
+        10,
+        4
+      ],
+      "before": "6b",
+      "after": "05",
+      "reason": "Retain a forest cleft between the carrier ridge and the higher cache terrace"
+    },
+    {
+      "position": [
+        6,
+        5
+      ],
+      "before": "69",
+      "after": "05",
+      "reason": "Pine shoulder keeps the joined porch from becoming a wide empty clearing"
+    },
+    {
+      "position": [
+        6,
+        6
+      ],
+      "before": "69",
+      "after": "71",
+      "reason": "Carry the actual outside ridge contour; remove internal walls and stacked boulders"
+    },
+    {
+      "position": [
+        7,
+        6
+      ],
+      "before": "0a",
+      "after": "71",
+      "reason": "Carry the actual outside ridge contour; remove internal walls and stacked boulders"
+    },
+    {
+      "position": [
+        8,
+        5
+      ],
+      "before": "0a",
+      "after": "71",
+      "reason": "Carry the actual outside ridge contour; remove internal walls and stacked boulders"
+    },
+    {
+      "position": [
+        8,
+        6
+      ],
+      "before": "72",
+      "after": "71",
+      "reason": "Carry the actual outside ridge contour; remove internal walls and stacked boulders"
+    },
+    {
+      "position": [
+        9,
+        5
+      ],
+      "before": "6f",
+      "after": "69",
+      "reason": "Carry the actual outside ridge contour; remove internal walls and stacked boulders"
+    },
+    {
+      "position": [
+        9,
+        6
+      ],
+      "before": "6d",
+      "after": "69",
+      "reason": "Carry the actual outside ridge contour; remove internal walls and stacked boulders"
+    },
+    {
+      "position": [
+        10,
+        5
+      ],
+      "before": "6d",
+      "after": "05",
+      "reason": "Carry the actual outside ridge contour; remove internal walls and stacked boulders"
+    },
+    {
+      "position": [
+        10,
+        6
+      ],
+      "before": "6a",
+      "after": "05",
+      "reason": "Carry the actual outside ridge contour; remove internal walls and stacked boulders"
+    },
+    {
+      "position": [
+        7,
+        7
+      ],
+      "before": "70",
+      "after": "71",
+      "reason": "Carry the actual outside ridge contour; remove internal walls and stacked boulders"
+    },
+    {
+      "position": [
+        8,
+        7
+      ],
+      "before": "70",
+      "after": "71",
+      "reason": "Carry the actual outside ridge contour; remove internal walls and stacked boulders"
+    },
+    {
+      "position": [
+        9,
+        7
+      ],
+      "before": "70",
+      "after": "85",
+      "reason": "Carry the actual outside ridge contour; remove internal walls and stacked boulders"
+    },
+    {
+      "position": [
+        10,
+        7
+      ],
+      "before": "71",
+      "after": "70",
+      "reason": "Carry the actual outside ridge contour; remove internal walls and stacked boulders"
+    },
+    {
+      "position": [
+        7,
+        8
+      ],
+      "before": "0a",
+      "after": "6f",
+      "reason": "Wrap the carrier front with native concave turns and continuous faces; clear the stair landing"
+    },
+    {
+      "position": [
+        8,
+        8
+      ],
+      "before": "01",
+      "after": "72",
+      "reason": "Wrap the carrier front with native concave turns and continuous faces; clear the stair landing"
+    },
+    {
+      "position": [
+        9,
+        8
+      ],
+      "before": "01",
+      "after": "72",
+      "reason": "Wrap the carrier front with native concave turns and continuous faces; clear the stair landing"
+    },
+    {
+      "position": [
+        10,
+        8
+      ],
+      "before": "01",
+      "after": "72",
+      "reason": "Wrap the carrier front with native concave turns and continuous faces; clear the stair landing"
+    },
+    {
+      "position": [
+        11,
+        8
+      ],
+      "before": "01",
+      "after": "6e",
+      "reason": "Wrap the carrier front with native concave turns and continuous faces; clear the stair landing"
+    },
+    {
+      "position": [
+        4,
+        9
+      ],
+      "before": "0a",
+      "after": "68",
+      "reason": "Wrap the carrier front with native concave turns and continuous faces; clear the stair landing"
+    },
+    {
+      "position": [
+        6,
+        9
+      ],
+      "before": "0a",
+      "after": "71",
+      "reason": "Wrap the carrier front with native concave turns and continuous faces; clear the stair landing"
+    },
+    {
+      "position": [
+        7,
+        9
+      ],
+      "before": "0a",
+      "after": "69",
+      "reason": "Wrap the carrier front with native concave turns and continuous faces; clear the stair landing"
+    },
+    {
+      "position": [
+        8,
+        9
+      ],
+      "before": "72",
+      "after": "03",
+      "reason": "Reachable encounter-grass cove below the continuous carrier front"
+    },
+    {
+      "position": [
+        9,
+        9
+      ],
+      "before": "72",
+      "after": "03",
+      "reason": "Reachable encounter-grass cove below the continuous carrier front"
+    },
+    {
+      "position": [
+        10,
+        9
+      ],
+      "before": "72",
+      "after": "03",
+      "reason": "Reachable encounter-grass cove below the continuous carrier front"
+    },
+    {
+      "position": [
+        11,
+        9
+      ],
+      "before": "6e",
+      "after": "68",
+      "reason": "Wrap the carrier front with native concave turns and continuous faces; clear the stair landing"
+    },
+    {
+      "position": [
+        6,
+        10
+      ],
+      "before": "0a",
+      "after": "72",
+      "reason": "Wrap the carrier front with native concave turns and continuous faces; clear the stair landing"
+    },
+    {
+      "position": [
+        4,
+        11
+      ],
+      "before": "0a",
+      "after": "02",
+      "reason": "Wrap the carrier front with native concave turns and continuous faces; clear the stair landing"
+    },
+    {
+      "position": [
+        14,
+        12
+      ],
+      "before": "0a",
+      "after": "6b",
+      "reason": "Restore the native northeast turn instead of using a boulder as the rim"
+    },
+    {
+      "position": [
+        14,
+        13
+      ],
+      "before": "71",
+      "after": "85",
+      "reason": "Join the vertical face to the lower north rim with the reviewed native inward corner"
+    },
+    {
+      "position": [
+        13,
+        13
+      ],
+      "before": "71",
+      "after": "0a",
+      "reason": "Set the retained boulder back on flat interior ground away from the exposed corner"
+    }
+  ],
+  "retained_inset_boulder_metatile": [
+    7,
+    5
+  ],
+  "status": "Source v2: remove the visually rejected lower rim quadrant; native publication/input/GPU/Clippy required",
+  "source_variant": "corner-fidelity-v140/floor-ending",
+  "scope": "One continuous carrier ridge, reachable grass cove, clear stairs and matching southern ridge corner; one native inward turn with a plain inside floor."
+}

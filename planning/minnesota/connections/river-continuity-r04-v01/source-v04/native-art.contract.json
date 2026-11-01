@@ -1,0 +1,224 @@
+{
+  "schema_version": 1,
+  "status": "FOUR_EXACT_NATIVE_METATILE_APPEND_RECIPES_NOT_INSTALLED",
+  "parent_pack_sha256": "92bb645535db23c78491b6982ddf5fa17b72b1f0434dfb6456a395fbf8fdbd33",
+  "candidate_contract_sha256": "871977bb33b45ff06d7159e679843df778331b142e2c6d5d920ed8bbf456088f",
+  "tileset": "mn_river_park",
+  "old_definition_sha256": "4c0d5bbdbde5b09fea33007ba4d5a997be07054acd450ce547291cc98a147483",
+  "old_metatile_count": 68,
+  "new_metatile_count": 72,
+  "old_metatile_prefix_sha256": "d1056f688c780e84da89ec8fbbb3ce95bb9bedf562dfb16a3825f155440c4594",
+  "expected_metatile_bytes_sha256": "98e6f0d249a989b688da1de7156e9a8671b16121fd2ac6a55253cb73b3fcd2ed",
+  "all_existing_glyphs_and_palette_entries_must_be_byte_exact": true,
+  "new_physical_glyphs": 0,
+  "recipes": [
+    {
+      "id": "44",
+      "source_tileset": "mn_river_park",
+      "source_block": "07",
+      "tile_row_sources": [
+        {
+          "source_block": "3a",
+          "source_row": 0
+        },
+        {
+          "source_block": "07",
+          "source_row": 1
+        },
+        {
+          "source_block": "07",
+          "source_row": 2
+        },
+        {
+          "source_block": "07",
+          "source_row": 3
+        }
+      ],
+      "collision_source_block": "09",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ],
+      "required_native_addition": "Append exact existing native glyph rows only; no glyph/palette changes. Proposed, not installed."
+    },
+    {
+      "id": "45",
+      "source_tileset": "mn_river_park",
+      "source_block": "07",
+      "tile_row_sources": [
+        {
+          "source_block": "07",
+          "source_row": 0
+        },
+        {
+          "source_block": "07",
+          "source_row": 1
+        },
+        {
+          "source_block": "07",
+          "source_row": 2
+        },
+        {
+          "source_block": "3a",
+          "source_row": 3
+        }
+      ],
+      "collision_source_block": "09",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ],
+      "required_native_addition": "Append exact existing native glyph rows only; no glyph/palette changes. Proposed, not installed."
+    },
+    {
+      "id": "46",
+      "source_tileset": "mn_river_park",
+      "source_block": "19",
+      "tile_row_sources": [
+        {
+          "source_block": "07",
+          "source_row": 0
+        },
+        {
+          "source_block": "07",
+          "source_row": 1
+        },
+        {
+          "source_block": "19",
+          "source_row": 2
+        },
+        {
+          "source_block": "19",
+          "source_row": 3
+        }
+      ],
+      "collision_source_block": "09",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ],
+      "required_native_addition": "Append exact native Water07 and goldFence19 rows only; no glyph/palette changes. Proposed, not installed."
+    },
+    {
+      "id": "47",
+      "source_tileset": "mn_river_park",
+      "source_block": "19",
+      "tile_row_sources": [
+        {
+          "source_block": "19",
+          "source_row": 2
+        },
+        {
+          "source_block": "19",
+          "source_row": 3
+        },
+        {
+          "source_block": "07",
+          "source_row": 2
+        },
+        {
+          "source_block": "07",
+          "source_row": 3
+        }
+      ],
+      "collision_source_block": "09",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ],
+      "required_native_addition": "Append exact native Water07 and goldFence19 rows only; no glyph/palette changes. Proposed, not installed."
+    }
+  ],
+  "required_file_preimages": {
+    "data/tilesets/mn_river_park.json": "7bec5862855c98225a20cd410f6af544b03a07ceee82cd5a3476bdcaeb400097",
+    "data/tilesets/mn_river_park_metatiles.bin": "d1056f688c780e84da89ec8fbbb3ce95bb9bedf562dfb16a3825f155440c4594",
+    "data/tilesets/mn_river_park_palette_map.json": "fa96528e42e3585353b98a0267d275836a7a731b9377ac44ea287290c05b1bb8",
+    "gfx/tilesets/mn_river_park.2bpp": "545ca3d39e05298ed27b47a5c30f4987819d86fb8efa60e2873c1afd6509d276",
+    "gfx/tilesets/mn_river_park.png": "0409c0f27bd8681a08913d56e447da653d8e05e97fbd3f7234561d05f976eded"
+  },
+  "old_source_recipe_prefix_length": 4,
+  "preserve_original_installed_recipe_prefix": true,
+  "expected_four_blocks_glyphs": [
+    [
+      21,
+      21,
+      21,
+      21,
+      20,
+      20,
+      20,
+      20,
+      20,
+      20,
+      20,
+      20,
+      20,
+      20,
+      20,
+      20
+    ],
+    [
+      20,
+      20,
+      20,
+      20,
+      20,
+      20,
+      20,
+      20,
+      20,
+      20,
+      20,
+      20,
+      21,
+      21,
+      21,
+      21
+    ],
+    [
+      20,
+      20,
+      20,
+      20,
+      20,
+      20,
+      20,
+      20,
+      35,
+      36,
+      35,
+      36,
+      51,
+      52,
+      51,
+      52
+    ],
+    [
+      35,
+      36,
+      35,
+      36,
+      51,
+      52,
+      51,
+      52,
+      20,
+      20,
+      20,
+      20,
+      20,
+      20,
+      20,
+      20
+    ]
+  ],
+  "all_other_tilesets_and_files_must_remain_exact": true
+}

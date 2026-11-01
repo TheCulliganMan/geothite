@@ -1,0 +1,1036 @@
+{
+  "schema_version": 1,
+  "status": "root-reviewed-designs-locked",
+  "target_species_count": 32,
+  "target_species_ids": [
+    "MN_154",
+    "MN_185"
+  ],
+  "target_family_ids": [
+    "MN_F073",
+    "MN_F086"
+  ],
+  "evolution_mix": {
+    "three_stage_families": 6,
+    "two_stage_families": 6,
+    "single_stage_species": 2
+  },
+  "map_basis": [
+    "planning/minnesota/routes/MN_R11.json",
+    "planning/minnesota/routes/MN_R12.json",
+    "planning/minnesota/routes/MN_R13.json",
+    "planning/minnesota/routes/MN_R20.json",
+    "planning/minnesota/towns/MnGrandMarais.json",
+    "planning/minnesota/towns/MnEly.json"
+  ],
+  "families": [
+    {
+      "id": "MN_F073",
+      "region": "north_shore",
+      "theme": "Wild teakettle logging-camp folklore and misleading opposite snowshoe tracks: a warm spout-mouthed creature grows a pressure chest and oversized feet pointing in opposite directions.",
+      "members": [
+        {
+          "id": "MN_154",
+          "name": "Hissip",
+          "types": [
+            "FIRE"
+          ],
+          "stage": 1,
+          "evolves_to": "MN_155"
+        },
+        {
+          "id": "MN_155",
+          "name": "Crosspout",
+          "types": [
+            "FIRE",
+            "DARK"
+          ],
+          "stage": 2,
+          "evolves_to": "MN_156"
+        },
+        {
+          "id": "MN_156",
+          "name": "Contrakett",
+          "types": [
+            "FIRE",
+            "DARK"
+          ],
+          "stage": 3,
+          "evolves_to": null
+        }
+      ],
+      "evolution_design": {
+        "regional_evidence": "A North Shore tall tale describes a hissing spout-mouth creature whose odd feet leave snowshoe tracks pointing in opposite directions.",
+        "original_invention": "Kettle-like chest, pressure anatomy and the precise three-stage shapes below are original design inventions, not a claimed historical illustration.",
+        "body_growth": [
+          {
+            "species_id": "MN_154",
+            "body": "Small squat warm-bodied sprite; short spout muzzle, lid-like brow, two little oval feet with opposite toe directions. Compact alert face.",
+            "silhouette": "Low teardrop chest, one projecting muzzle, two deliberately mismatched foot tips; no separate held kettle."
+          },
+          {
+            "species_id": "MN_155",
+            "body": "Chest expands into a rounded pressure body, muzzle lengthens, and the two feet broaden into opposed snowshoe paddles. One short steam curl marks the mouth.",
+            "silhouette": "Round chest above two long low ovals pointing away from one another; the feet become the unmistakable family signature."
+          },
+          {
+            "species_id": "MN_156",
+            "body": "Very low horizontal pressure beast: long continuous arched spine, longer forward spout head, two folded short forearms beneath its chest, and enormous opposed snowshoe feet at opposite ends. Three vent slits remain on the chest.",
+            "silhouette": "Long low arch nearly twice as wide as tall, broad foot ovals at the two ends with one wide dark opening each; crouched pivoting anatomy changes the upright middle-stage silhouette."
+          }
+        ]
+      },
+      "silhouette_concept": "Opposed snowshoe feet grow from a tiny visual joke into a strong wide base; body volume and pressure anatomy increase at each stage. Black anchors around solid anatomy; steam stays a small controlled effect.",
+      "habitat": "Cutover second-growth woods above the North Shore, with snowy trail margins in winter.",
+      "proposed_routes": [
+        {
+          "id": "MN_R11",
+          "placement": "Optional wooded loop above the coast; use existing forest habitat, not the lighthouse interior.",
+          "status": "encounter proposal only; no map or story mutation"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Marjorie Edgar, Imaginary Animals of Northern Minnesota, Minnesota History21(4),1940,pp353\u2013356",
+          "url": "https://storage.googleapis.com/mnhs-org-support/mn_history_articles/21/v21i04p353-356.pdf",
+          "supports": "North Shore wild-teakettle tale, spout mouth, hissing steam and opposite-direction snowshoe tracks; PDF pages1\u20133.",
+          "source_kind": "primary historical field recollection"
+        }
+      ],
+      "nonduplication": "Existing Tugget/Lakernaut is ore-freighter boiler anatomy; this line is an opposite-footed forest trickster. Existing Kettlurk is a water-feature legendary and has no kettle-body or footprint theme.",
+      "classification": "ordinary",
+      "design_lock": "Root locked names/types and accepted targeted final-anatomy v2; first two forms retain v1 source."
+    },
+    {
+      "id": "MN_F074",
+      "region": "voyageurs_greenstone",
+      "theme": "Ancient underwater pillow-lava inflation and breakout growth, embodied as a quenched-crust creature that develops a long molten spine.",
+      "members": [
+        {
+          "id": "MN_157",
+          "name": "Pufflow",
+          "types": [
+            "FIRE",
+            "ROCK"
+          ],
+          "stage": 1,
+          "evolves_to": "MN_158"
+        },
+        {
+          "id": "MN_158",
+          "name": "Lobasalt",
+          "types": [
+            "FIRE",
+            "ROCK"
+          ],
+          "stage": 2,
+          "evolves_to": "MN_159"
+        },
+        {
+          "id": "MN_159",
+          "name": "Pyllowyrm",
+          "types": [
+            "FIRE",
+            "DRAGON"
+          ],
+          "stage": 3,
+          "evolves_to": null
+        }
+      ],
+      "evolution_design": {
+        "regional_evidence": "NPS documents ancient pillow structures in Voyageurs greenstone, including an islet near Steamboat Island north of Cranberry Bay. Basalt pillows form underwater; this is ancient geology, not an active Minnesota volcano.",
+        "original_invention": "A dormant pillow-body creature reawakens internal heat; the living molten spine and evolutionary anatomy are fiction. No real exposure is claimed at a map coordinate.",
+        "body_growth": [
+          {
+            "species_id": "MN_157",
+            "body": "One low inflated lobe with a short molten mouth seam and four nubby crust fins; its back looks swollen rather than angular.",
+            "silhouette": "One squat bean with a forward seam-mouth and low fins."
+          },
+          {
+            "species_id": "MN_158",
+            "body": "Three connected pillow lobes lift off the ground on two pairs of short splayed fins; a broad cracked collar makes a new forward head.",
+            "silhouette": "Three overlapping round volumes with a distinct blunt head and raised belly gap."
+          },
+          {
+            "species_id": "MN_159",
+            "body": "A long low wyrm develops a solid molten spine between separated inflated shell lobes. Four broad crust fins brace it, while two blunt basalt crown prongs frame the face.",
+            "silhouette": "Long segmented arch, four strong side fins and a forked blunt crown; no wings or thin serpent tail."
+          }
+        ]
+      },
+      "silhouette_concept": "One squat bean with a forward seam-mouth and low fins. \u2192 Three overlapping round volumes with a distinct blunt head and raised belly gap. \u2192 Long segmented arch, four strong side fins and a forked blunt crown; no wings or thin serpent tail.",
+      "habitat": "Ancient greenstone shores and rocky narrows of the Rainy Lake/Voyageurs region.",
+      "proposed_routes": [
+        {
+          "id": "MN_R20",
+          "placement": "Granite-narrows cave side branch; use geologic habitat grouping rather than claiming the authored granite is pillow basalt.",
+          "status": "encounter proposal only; no map or story mutation"
+        }
+      ],
+      "sources": [
+        {
+          "title": "NPS, Voyageurs National Park Geologic Resource Evaluation Report2007",
+          "url": "https://www.govinfo.gov/content/pkg/GOVPUB-I29-PURL-gpo79318/pdf/GOVPUB-I29-PURL-gpo79318.pdf",
+          "supports": "PDFp16 documents preserved pillow structures and their ancient submarine origin.",
+          "source_kind": "primary regional institutional source"
+        },
+        {
+          "title": "NPS, Pillow Basalts",
+          "url": "https://www.nps.gov/articles/000/pillow-basalts.htm",
+          "supports": "General pillow-lava morphology and underwater cooling.",
+          "source_kind": "primary geological explanation"
+        }
+      ],
+      "nonduplication": "Unlike hot taconite starterF002 and magnetic taconite wyrmF050: no ore pellets, furnace, metal, magnetic bands or industrial anatomy; the signature is inflated volcanic crust and breakout growth.",
+      "classification": "ordinary",
+      "design_lock": "Root locked names, types, geology and body-growth proposal; generation pending.",
+      "sprite_constraints": "Native56x56 front full body facing left;48x48 close rear portrait facing upper-right. Four colors per species, individually planned after design lock. Large solid anatomical landmarks, stepped black exterior anchors, sparse internal marks; no gradients, particles or texture-dependent identity."
+    },
+    {
+      "id": "MN_F075",
+      "region": "northeast_biwabik",
+      "theme": "Stromatolite fossil colonies become a living archive of many tiny vanished lives; successive mound growth changes a solitary dome into a cooperative stone apparition.",
+      "members": [
+        {
+          "id": "MN_160",
+          "name": "Stromit",
+          "types": [
+            "ROCK"
+          ],
+          "stage": 1,
+          "evolves_to": "MN_161"
+        },
+        {
+          "id": "MN_161",
+          "name": "Lamivive",
+          "types": [
+            "ROCK",
+            "GHOST"
+          ],
+          "stage": 2,
+          "evolves_to": "MN_162"
+        },
+        {
+          "id": "MN_162",
+          "name": "Chertheon",
+          "types": [
+            "ROCK",
+            "GHOST"
+          ],
+          "stage": 3,
+          "evolves_to": null
+        }
+      ],
+      "evolution_design": {
+        "regional_evidence": "Minnesota DNR describes layered cyanobacterial mounds preserved as chert in the Biwabik Iron Formation, sometimes red from hematite.",
+        "original_invention": "Ghost inhabitants, shared faces and free-standing archive anatomy are original fantasy. The fossil organisms themselves were microscopic colonies, not the proposed monster shapes.",
+        "body_growth": [
+          {
+            "species_id": "MN_160",
+            "body": "A low chert mound with two broad concentric terrace steps, two inset eyes and a single small root-like stone foot.",
+            "silhouette": "Low terraced cap above one foot."
+          },
+          {
+            "species_id": "MN_161",
+            "body": "The mound opens along a broad horizontal seam; two ghostly solid lobes lift the upper dome while two new lower mounds form a tripod base.",
+            "silhouette": "Split dome hovering over a triangular three-mound base."
+          },
+          {
+            "species_id": "MN_162",
+            "body": "Five low domed colony masses join around one hovering central face; broad stone ribs connect a crown of mounds to the three-point base, leaving two large readable voids.",
+            "silhouette": "Wide crown of five asymmetric mounds, central face and two open arch windows; no tall castle spire."
+          }
+        ]
+      },
+      "silhouette_concept": "Low terraced cap above one foot. \u2192 Split dome hovering over a triangular three-mound base. \u2192 Wide crown of five asymmetric mounds, central face and two open arch windows; no tall castle spire.",
+      "habitat": "Chert-bearing northeastern outcrops, interpreted through an optional fossil-inspection habitat.",
+      "proposed_routes": [
+        {
+          "id": "MN_R13",
+          "placement": "Dry pass stone-inspection branch; placement is fictional habitat planning, not a geological identification of the existing map.",
+          "status": "encounter proposal only; no map or story mutation"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Minnesota DNR, Stromatolites",
+          "url": "https://www.dnr.state.mn.us/snapshots/rocks_minerals/stromatolites.html",
+          "supports": "Minnesota fossil composition, colony layering and Biwabik occurrence.",
+          "source_kind": "primary regional institutional source"
+        }
+      ],
+      "nonduplication": "Unlike F011 Morton-gneiss dragon or F006 agate fortress: layered microbial mounds, a split-colony body and multiple tiny shared lives replace folded slabs, nested crystals or armor.",
+      "classification": "ordinary",
+      "design_lock": "proposal awaiting root design lock",
+      "sprite_constraints": "Native56x56 front full body facing left;48x48 close rear portrait facing upper-right. Four colors per species, individually planned after design lock. Large solid anatomical landmarks, stepped black exterior anchors, sparse internal marks; no gradients, particles or texture-dependent identity."
+    },
+    {
+      "id": "MN_F076",
+      "region": "lake_superior_coast",
+      "theme": "Lake Superior seiche oscillation becomes a counterweight grappler: alternating wave lobes grow into bracing arms and a hinged wrestling body.",
+      "members": [
+        {
+          "id": "MN_163",
+          "name": "Swaylet",
+          "types": [
+            "WATER"
+          ],
+          "stage": 1,
+          "evolves_to": "MN_164"
+        },
+        {
+          "id": "MN_164",
+          "name": "Seichamp",
+          "types": [
+            "WATER",
+            "FIGHTING"
+          ],
+          "stage": 2,
+          "evolves_to": "MN_165"
+        },
+        {
+          "id": "MN_165",
+          "name": "Surgewrit",
+          "types": [
+            "WATER",
+            "FIGHTING"
+          ],
+          "stage": 3,
+          "evolves_to": null
+        }
+      ],
+      "evolution_design": {
+        "regional_evidence": "NOAA explains seiches as standing oscillations in a basin following wind or pressure disturbances. The Lake Superior reserve monitoring metadata describes seiche-driven flow reversals in the St Louis River estuary.",
+        "original_invention": "The wave wrestler is an original creature built around alternating mass. It does not claim tides or perpetual motion, and no magical river portal is involved.",
+        "body_growth": [
+          {
+            "species_id": "MN_163",
+            "body": "One broad teetering water lobe with a low central pebble-colored face and two unequal side lobes, one lifted and one compressed.",
+            "silhouette": "Off-center seesaw bean with one high and one low side."
+          },
+          {
+            "species_id": "MN_164",
+            "body": "The side lobes become thick opposed forearms around a squat central body; broad heel-like flukes brace the backward swing.",
+            "silhouette": "Broad wave-arms and two short grounding heels; center now lifted."
+          },
+          {
+            "species_id": "MN_165",
+            "body": "Two heavy curl-knuckles connect to a low muscular central node through solid S-bent shoulders. A broad saddle tail serves as a counterweight and two feet brace a grappling stance.",
+            "silhouette": "Wide grappler with two large curled fists and a low saddle-tail counterweight, whole body continuous."
+          }
+        ]
+      },
+      "silhouette_concept": "Off-center seesaw bean with one high and one low side. \u2192 Broad wave-arms and two short grounding heels; center now lifted. \u2192 Wide grappler with two large curled fists and a low saddle-tail counterweight, whole body continuous.",
+      "habitat": "Shallow lake mouths, sheltered coves and exposed shore basins.",
+      "proposed_routes": [
+        {
+          "id": "MN_R11",
+          "placement": "Existing lake-facing fishing cove; ordinary encounter without changing waterfall story.",
+          "status": "encounter proposal only; no map or story mutation"
+        }
+      ],
+      "sources": [
+        {
+          "title": "NOAA, What is a seiche?",
+          "url": "https://oceanservice.noaa.gov/facts/seiche.html",
+          "supports": "Standing basin oscillations after meteorological forcing.",
+          "source_kind": "primary scientific explanation"
+        },
+        {
+          "title": "Lake Superior NERR, Water-quality monitoring metadata",
+          "url": "https://cdmo.baruch.sc.edu/waf/YearlyFiles/Lake%20Superior/water%20quality/metadata/lkswq01-12.22m.pdf",
+          "supports": "Lake Superior seiche effects and estuary flow reversals.",
+          "source_kind": "primary regional institutional source"
+        }
+      ],
+      "nonduplication": "Unlike F045 Devils Kettle legendary, no portal, disappearing waterfall, kettle shape or dual-current supernatural head. Unlike F003 skipping-ray, no hydrofoil fish anatomy.",
+      "classification": "ordinary",
+      "design_lock": "proposal awaiting root design lock",
+      "sprite_constraints": "Native56x56 front full body facing left;48x48 close rear portrait facing upper-right. Four colors per species, individually planned after design lock. Large solid anatomical landmarks, stepped black exterior anchors, sparse internal marks; no gradients, particles or texture-dependent identity."
+    },
+    {
+      "id": "MN_F077",
+      "region": "boundary_waters_winter",
+      "theme": "Thermal lake-ice cracking and dry-winter static combine into a split-plate clapper creature that stores charge between opposing ice slabs.",
+      "members": [
+        {
+          "id": "MN_166",
+          "name": "Icesnap",
+          "types": [
+            "ICE"
+          ],
+          "stage": 1,
+          "evolves_to": "MN_167"
+        },
+        {
+          "id": "MN_167",
+          "name": "Crickvolt",
+          "types": [
+            "ICE",
+            "ELECTRIC"
+          ],
+          "stage": 2,
+          "evolves_to": "MN_168"
+        },
+        {
+          "id": "MN_168",
+          "name": "Thundrift",
+          "types": [
+            "ICE",
+            "ELECTRIC"
+          ],
+          "stage": 3,
+          "evolves_to": null
+        }
+      ],
+      "evolution_design": {
+        "regional_evidence": "Minnesota DNR explains temperature-driven ice contraction, cracks and expansion. NWS describes static charge in dry winter air. These are two real inspirations, not evidence that ordinary ice cracks generate lightning.",
+        "original_invention": "A body that transfers winter static through its ice-plate arms is fictional. The evolutionary mechanism is widening separated slabs, not increasingly dense crack decoration.",
+        "body_growth": [
+          {
+            "species_id": "MN_166",
+            "body": "A chunky diamond ice body split at one corner into two short jaw-like plates; two low flat feet and one bright eye pair sit beneath a raised crack notch.",
+            "silhouette": "Single split diamond with a wide missing corner."
+          },
+          {
+            "species_id": "MN_167",
+            "body": "Two large plate forearms emerge from the split edges and frame a deep open V; a narrow dark central body connects to a pair of wide ice heels.",
+            "silhouette": "Wide V arms above separate blocky heels and narrow center."
+          },
+          {
+            "species_id": "MN_168",
+            "body": "The plate arms become tall offset tuning-fork halves around a low grounded chest, each ending in one blunt hooked knuckle. A broad rear slab counterbalances the fork and a single zigzag seam marks stored charge.",
+            "silhouette": "Two towering offset hooked slabs, low small chest and a broad backward counterweight; three large masses rather than a spiky ice humanoid."
+          }
+        ]
+      },
+      "silhouette_concept": "Single split diamond with a wide missing corner. \u2192 Wide V arms above separate blocky heels and narrow center. \u2192 Two towering offset hooked slabs, low small chest and a broad backward counterweight; three large masses rather than a spiky ice humanoid.",
+      "habitat": "Frozen inland lake margins and wind-exposed winter portages.",
+      "proposed_routes": [
+        {
+          "id": "MN_R12",
+          "placement": "Optional winter habitat at portage-lake edge; no seasonal map system is being implemented by this proposal.",
+          "status": "encounter proposal only; no map or story mutation"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Minnesota DNR, Ice formations and conditions",
+          "url": "https://www.dnr.state.mn.us/safety/ice/ice-formations-conditions.html",
+          "supports": "Physical contraction, cracks, expansion and pressure features.",
+          "source_kind": "primary regional institutional source"
+        },
+        {
+          "title": "National Weather Service, Lightning experiments",
+          "url": "https://www.weather.gov/safety/lightning-experiments",
+          "supports": "Dry winter conditions and static-electricity examples.",
+          "source_kind": "primary public science explanation"
+        }
+      ],
+      "nonduplication": "Unlike F059 snow-fence shelter, F037 snowplow and F012 hockey line: no fence, vehicle, stick, skate or costume; anatomy expresses opposing cracked plates.",
+      "classification": "ordinary",
+      "design_lock": "proposal awaiting root design lock",
+      "sprite_constraints": "Native56x56 front full body facing left;48x48 close rear portrait facing upper-right. Four colors per species, individually planned after design lock. Large solid anatomical landmarks, stepped black exterior anchors, sparse internal marks; no gradients, particles or texture-dependent identity."
+    },
+    {
+      "id": "MN_F078",
+      "region": "north_shore_cutover",
+      "theme": "Agropelter logging-camp folklore becomes a hollow-bodied branch flinger whose bowed forearms mature into opposing spring limbs.",
+      "members": [
+        {
+          "id": "MN_169",
+          "name": "Knothuck",
+          "types": [
+            "DARK"
+          ],
+          "stage": 1,
+          "evolves_to": "MN_170"
+        },
+        {
+          "id": "MN_170",
+          "name": "Boughlash",
+          "types": [
+            "DARK",
+            "FIGHTING"
+          ],
+          "stage": 2,
+          "evolves_to": "MN_171"
+        },
+        {
+          "id": "MN_171",
+          "name": "Agropummel",
+          "types": [
+            "DARK",
+            "FIGHTING"
+          ],
+          "stage": 3,
+          "evolves_to": null
+        }
+      ],
+      "evolution_design": {
+        "regional_evidence": "MNHS records the agropelter hiding in hollow trees near trails and throwing dead branches; accounts describe a small mean face but leave its overall body uncertain.",
+        "original_invention": "The knotted seed shape, hollow chest, spring forearms and three-stage anatomy are original inventions, not an illustration claimed from the historical source.",
+        "body_growth": [
+          {
+            "species_id": "MN_169",
+            "body": "A hollow knot creature with a tiny face peering from one deep side opening; two bent branch forearms fold below the round chest and root toes grip the trail edge.",
+            "silhouette": "Round hollow knot, small bent arms and two root feet."
+          },
+          {
+            "species_id": "MN_170",
+            "body": "The central knot splits vertically into a hollow wooden ribcage. One large bent arm curves above the shoulder and the other braces forward, producing an uneven ready-to-throw pose.",
+            "silhouette": "Open split trunk with one raised bow-arm and one long bracing arm."
+          },
+          {
+            "species_id": "MN_171",
+            "body": "A powerful squat branch-spring brawler with two enormous bowed arms attached by round growth joints, a hollow barrel chest and a low face tucked under a thick brow. Short stump legs keep the silhouette grounded.",
+            "silhouette": "Wide low brawler framed by two great asymmetric bowed arms; one large chest hollow, no held club."
+          }
+        ]
+      },
+      "silhouette_concept": "Round hollow knot, small bent arms and two root feet. \u2192 Open split trunk with one raised bow-arm and one long bracing arm. \u2192 Wide low brawler framed by two great asymmetric bowed arms; one large chest hollow, no held club.",
+      "habitat": "Second-growth hollow trees above North Shore portage trails.",
+      "proposed_routes": [
+        {
+          "id": "MN_R12",
+          "placement": "Windthrow district forest edge and optional deadwood pocket, keeping the navigation path readable.",
+          "status": "encounter proposal only; no map or story mutation"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Marjorie Edgar, Imaginary Animals of Northern Minnesota, Minnesota History21(4),1940,pp353\u2013356",
+          "url": "https://storage.googleapis.com/mnhs-org-support/mn_history_articles/21/v21i04p353-356.pdf",
+          "supports": "Historical logging-camp tall tales collected on the North Shore; each family notes the limited source anatomy.",
+          "source_kind": "primary historical field recollection"
+        }
+      ],
+      "nonduplication": "Unlike haunted axeF017, there is no blade or possessed tool; unlike F068 scarecrow, no human figure or crop guardian. Power comes from grown branch springs and a hollow chest.",
+      "classification": "ordinary",
+      "design_lock": "proposal awaiting root design lock",
+      "sprite_constraints": "Native56x56 front full body facing left;48x48 close rear portrait facing upper-right. Four colors per species, individually planned after design lock. Large solid anatomical landmarks, stepped black exterior anchors, sparse internal marks; no gradients, particles or texture-dependent identity."
+    },
+    {
+      "id": "MN_F079",
+      "region": "lake_superior_observatory",
+      "theme": "Weather-buoy observation becomes a floating sensory creature that predicts incoming waves using a mast crown and depth-sensing tail.",
+      "members": [
+        {
+          "id": "MN_172",
+          "name": "Bobcast",
+          "types": [
+            "ELECTRIC"
+          ],
+          "stage": 1,
+          "evolves_to": "MN_173"
+        },
+        {
+          "id": "MN_173",
+          "name": "Buoyostic",
+          "types": [
+            "ELECTRIC",
+            "PSYCHIC"
+          ],
+          "stage": 2,
+          "evolves_to": null
+        }
+      ],
+      "evolution_design": {
+        "regional_evidence": "Minnesota Sea Grant describes Lake Superior meteorological buoys measuring waves, winds, and air and water temperatures, with real-time observations used for forecasts.",
+        "original_invention": "Living sensory organs and psychic anticipation are fictional; the body grows around the actual observer functions rather than carrying a manufactured instrument.",
+        "body_growth": [
+          {
+            "species_id": "MN_172",
+            "body": "A squat float-ring body enclosing a small dark central face; one thick wind-vane fin rises from its brow and a short weighted tail curls beneath.",
+            "silhouette": "Low oval ring with one upright fin and one curled weight-tail."
+          },
+          {
+            "species_id": "MN_173",
+            "body": "The ring becomes a three-lobed pontoon body supporting a broad forecast brow and two unequal solid mast fins. A thick coiled sensing tail hangs below, and three large sensor nodes form a triangular face crown.",
+            "silhouette": "Three-point flotation base, asymmetric two-fin crown and one long solid coiled tail; no thin antenna forest."
+          }
+        ]
+      },
+      "silhouette_concept": "Low oval ring with one upright fin and one curled weight-tail. \u2192 Three-point flotation base, asymmetric two-fin crown and one long solid coiled tail; no thin antenna forest.",
+      "habitat": "Instrumented nearshore waters and research docks around the western lake.",
+      "proposed_routes": [
+        {
+          "id": "MN_R11",
+          "placement": "Fishing cove off the safe shore path; a research NPC could contextualize the observation theme later.",
+          "status": "encounter proposal only; no map or story mutation"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Minnesota Sea Grant, Extending and Improving Observational Capacity on Lake Superior",
+          "url": "https://seagrant.umn.edu/research/north-shore-observational-capacity",
+          "supports": "Regional weather-buoy measurements and forecasting context.",
+          "source_kind": "primary regional institutional source"
+        }
+      ],
+      "nonduplication": "Unlike F031 lighthouse prism beacon, this is floating distributed sensing without a flame, searchlight or tower; unlike F030 lift bridge, no counterweight arch or road span.",
+      "classification": "ordinary",
+      "design_lock": "proposal awaiting root design lock",
+      "sprite_constraints": "Native56x56 front full body facing left;48x48 close rear portrait facing upper-right. Four colors per species, individually planned after design lock. Large solid anatomical landmarks, stepped black exterior anchors, sparse internal marks; no gradients, particles or texture-dependent identity."
+    },
+    {
+      "id": "MN_F080",
+      "region": "lake_superior_cold_air",
+      "theme": "Superior-mirage inversion becomes a two-level trickster whose apparent face is displaced above its real body.",
+      "members": [
+        {
+          "id": "MN_174",
+          "name": "Loomlet",
+          "types": [
+            "DARK"
+          ],
+          "stage": 1,
+          "evolves_to": "MN_175"
+        },
+        {
+          "id": "MN_175",
+          "name": "Inverveil",
+          "types": [
+            "DARK",
+            "FLYING"
+          ],
+          "stage": 2,
+          "evolves_to": null
+        }
+      ],
+      "evolution_design": {
+        "regional_evidence": "WMO describes superior mirages over cold surfaces with warmer air above, sometimes lifting or inverting distant images. NPS documents cold water and fog on Lake Superior; the local creature placement is an inference from suitable lake conditions, not a sourced specific sighting.",
+        "original_invention": "The fake hovering face is an original solid body lobe supported by a narrow bent neck; no transparency, gradient or rendering trick is required for the sprite.",
+        "body_growth": [
+          {
+            "species_id": "MN_174",
+            "body": "A low dark mask-shaped body stands on two short feet; an inverted pale false-face flap rises just above it on a short S-neck. Real eyes peek from the lower rim.",
+            "silhouette": "Two stacked unequal masks connected by a visible short bent neck."
+          },
+          {
+            "species_id": "MN_175",
+            "body": "The false-face flap expands into a broad inverted crown above a small low body. Two folded side vanes open like flat horizon bars; the real lower eyes remain visible beneath a broad collar. Its broad horizon vanes carry the real body on rising shore winds beneath the displaced false face.",
+            "silhouette": "Wide high inverted crown over a very low narrow body, with two horizon-bar side vanes; no ghost wisps."
+          }
+        ]
+      },
+      "silhouette_concept": "Two stacked unequal masks connected by a visible short bent neck. \u2192 Wide high inverted crown over a very low narrow body, with two horizon-bar side vanes; no ghost wisps.",
+      "habitat": "Cold lake lookouts and sheltered shore ledges during inversion-like weather.",
+      "proposed_routes": [
+        {
+          "id": "MN_R11",
+          "placement": "Lake-facing lookout above the pebble/basalt district; no new mirage visual-effect system assumed.",
+          "status": "encounter proposal only; no map or story mutation"
+        }
+      ],
+      "sources": [
+        {
+          "title": "WMO International Cloud Atlas, Mirage",
+          "url": "https://cloudatlas.wmo.int/en/mirage.html",
+          "supports": "Cold-surface superior mirage, inversion and apparent image displacement.",
+          "source_kind": "primary scientific definition"
+        },
+        {
+          "title": "NPS Apostle Islands, Weather",
+          "url": "https://www.nps.gov/apis/planyourvisit/weather.htm",
+          "supports": "Regional Lake Superior cold-water weather and fog; this source is a Wisconsin park, not a Minnesota sighting.",
+          "source_kind": "primary regional institutional source"
+        }
+      ],
+      "nonduplication": "Unlike auroraF013 and sundogF069, the design uses an inverted false horizon and two solid stacked body lobes, without glowing curtains, sun halos or decoy-hound anatomy.",
+      "classification": "ordinary",
+      "design_lock": "proposal awaiting root design lock",
+      "sprite_constraints": "Native56x56 front full body facing left;48x48 close rear portrait facing upper-right. Four colors per species, individually planned after design lock. Large solid anatomical landmarks, stepped black exterior anchors, sparse internal marks; no gradients, particles or texture-dependent identity.",
+      "root_review": {
+        "status": "design-locked",
+        "note": "Adult rides inversion-layer winds with actual lift vanes: Dark/Flying adds ordinary Flying coverage while preserving its false-face misdirection theme."
+      }
+    },
+    {
+      "id": "MN_F081",
+      "region": "gunflint_divide",
+      "theme": "Laurentian watershed divide becomes a ridge-backed creature with opposing drainage flanks and a forked shedding tail.",
+      "members": [
+        {
+          "id": "MN_176",
+          "name": "Runnelisk",
+          "types": [
+            "GROUND"
+          ],
+          "stage": 1,
+          "evolves_to": "MN_177"
+        },
+        {
+          "id": "MN_177",
+          "name": "Dividra",
+          "types": [
+            "GROUND",
+            "DRAGON"
+          ],
+          "stage": 2,
+          "evolves_to": null
+        }
+      ],
+      "evolution_design": {
+        "regional_evidence": "Cook County SWCD describes the Gunflint Trail Laurentian Divide separating Rainy River Headwaters and Lake Superior North watersheds. This is a two-sided divide, not the three-way continental junction near Hibbing.",
+        "original_invention": "A mobile ridge that sends rain along its two flanks is original anatomy. The creature has no portal and does not reroute actual mapped rivers.",
+        "body_growth": [
+          {
+            "species_id": "MN_176",
+            "body": "A small wedge body with a high asymmetrical back ridge, two broad slope-like forelegs and a forked low tail. Water-shedding grooves are two large markings, not fine engraved maps.",
+            "silhouette": "Triangular wedge with one high ridge and two tail prongs."
+          },
+          {
+            "species_id": "MN_177",
+            "body": "The wedge grows into a long wingless dragon with a saddle ridge, a pronounced blunt head emerging at the ridge end and two pairs of splayed slope-plate legs. Its tail forks into two thick downward gutters.",
+            "silhouette": "Long saddle-ridge dragon, four broad slope feet and a heavy bifurcated tail; no wings or flowing-water appendages."
+          }
+        ]
+      },
+      "silhouette_concept": "Triangular wedge with one high ridge and two tail prongs. \u2192 Long saddle-ridge dragon, four broad slope feet and a heavy bifurcated tail; no wings or flowing-water appendages.",
+      "habitat": "Upland portage saddles and watershed ridges of the Gunflint corridor.",
+      "proposed_routes": [
+        {
+          "id": "MN_R12",
+          "placement": "Raven Rock / Windthrow upland edge; thematic habitat rather than claim of surveyed divide coordinates.",
+          "status": "encounter proposal only; no map or story mutation"
+        },
+        {
+          "id": "MN_R13",
+          "placement": "Grass saddle as a rarer later occurrence.",
+          "status": "encounter proposal only; no map or story mutation"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Cook County SWCD, Winter2020\u20132021 newsletter",
+          "url": "https://cms7files1.revize.com/cookcountymn/Departments/soil%20%26%20water/SWCD%20Document%20Center/2020%20Winter%20Newspaper%20insert.pdf",
+          "supports": "Gunflint Trail divide and its two drainage destinations.",
+          "source_kind": "primary regional institutional source"
+        },
+        {
+          "title": "USFS, Superior National Forest ecological context",
+          "url": "https://www.fs.usda.gov/nrs/pubs/gtr/gtr_nrs159.pdf",
+          "supports": "Laurentian Divide separates Great Lakes and Hudson Bay drainage.",
+          "source_kind": "primary regional institutional source"
+        }
+      ],
+      "nonduplication": "Unlike F045 water-feature legendary and F057 dust wyrm: this is an ordinary ridge animal with four shedding slope legs, no paired currents, tornado, sand tube or gravity portal.",
+      "classification": "ordinary",
+      "design_lock": "proposal awaiting root design lock",
+      "sprite_constraints": "Native56x56 front full body facing left;48x48 close rear portrait facing upper-right. Four colors per species, individually planned after design lock. Large solid anatomical landmarks, stepped black exterior anchors, sparse internal marks; no gradients, particles or texture-dependent identity."
+    },
+    {
+      "id": "MN_F082",
+      "region": "northwoods_logging_tales",
+      "theme": "Wild-auger-handle single-track folklore becomes a living corkscrew-foot counterrotator; its grown spiral anatomy excavates and braces.",
+      "members": [
+        {
+          "id": "MN_178",
+          "name": "Augrub",
+          "types": [
+            "GROUND"
+          ],
+          "stage": 1,
+          "evolves_to": "MN_179"
+        },
+        {
+          "id": "MN_179",
+          "name": "Heliknock",
+          "types": [
+            "GROUND",
+            "FIGHTING"
+          ],
+          "stage": 2,
+          "evolves_to": null
+        }
+      ],
+      "evolution_design": {
+        "regional_evidence": "MNHS records a wild-auger-handle leaving a single track and associates the tale with Minnesota logging camps. Detailed anatomy is not supplied.",
+        "original_invention": "The single spiral foot, counterrotating horn shoulders and fighting stance are inventions. The creature is not a real tool held by an animal.",
+        "body_growth": [
+          {
+            "species_id": "MN_178",
+            "body": "A squat body tapers into one broad spiral sole with a wide central eye; two short horizontal horn nubs balance it while its planted sole leaves one continuous track.",
+            "silhouette": "One spiral cone below an oval face and short horizontal horn nubs."
+          },
+          {
+            "species_id": "MN_179",
+            "body": "The sole stretches into a stout helical lower torso with three broad turns. Two massive opposing shoulder horns curl forward as grappling hooks, and a small face peers from between them.",
+            "silhouette": "Single thick spiral pedestal with two wide forward hook-shoulders; one grounded track rather than separate feet."
+          }
+        ]
+      },
+      "silhouette_concept": "One spiral cone below an oval face and short horizontal horn nubs. \u2192 Single thick spiral pedestal with two wide forward hook-shoulders; one grounded track rather than separate feet.",
+      "habitat": "Loose till and trail-edge soil in northern cutover woods.",
+      "proposed_routes": [
+        {
+          "id": "MN_R12",
+          "placement": "Deadwood/soft-soil optional loop outside the main granite lane.",
+          "status": "encounter proposal only; no map or story mutation"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Marjorie Edgar, Imaginary Animals of Northern Minnesota, Minnesota History21(4),1940,pp353\u2013356",
+          "url": "https://storage.googleapis.com/mnhs-org-support/mn_history_articles/21/v21i04p353-356.pdf",
+          "supports": "Historical logging-camp tall tales collected on the North Shore; each family notes the limited source anatomy.",
+          "source_kind": "primary historical field recollection"
+        }
+      ],
+      "nonduplication": "Unlike haunted axeF017 or snowplowF037: no blade, handle prop, driver or vehicle; unlike F073 opposed-foot trickster, this line is a single broad spiral lower body.",
+      "classification": "ordinary",
+      "design_lock": "proposal awaiting root design lock",
+      "sprite_constraints": "Native56x56 front full body facing left;48x48 close rear portrait facing upper-right. Four colors per species, individually planned after design lock. Large solid anatomical landmarks, stepped black exterior anchors, sparse internal marks; no gradients, particles or texture-dependent identity."
+    },
+    {
+      "id": "MN_F083",
+      "region": "duluth_smoked_fish",
+      "theme": "North Shore smoked lake fish becomes a brining-and-smoking creature with a coal-heart belly and kiln-rib fins.",
+      "members": [
+        {
+          "id": "MN_180",
+          "name": "Cinderfin",
+          "types": [
+            "FIRE"
+          ],
+          "stage": 1,
+          "evolves_to": "MN_181"
+        },
+        {
+          "id": "MN_181",
+          "name": "Brinebraze",
+          "types": [
+            "FIRE",
+            "DARK"
+          ],
+          "stage": 2,
+          "evolves_to": null
+        }
+      ],
+      "evolution_design": {
+        "regional_evidence": "Duluth-based Northern Waters Smokehaus describes its own smoked Lake Superior lake-trout practice and local smokehouse history. This is a first-person food-culture source, not an endorsement or claim that the dish originated there.",
+        "original_invention": "A fish-shaped cooking spirit grows its own broad smoker ribs and coal belly; no fish is shown burning or carrying a cooker. The dark typing expresses the creature hiding its coal-heart behind closed ribs.",
+        "body_growth": [
+          {
+            "species_id": "MN_180",
+            "body": "A compact fish-bodied ember with a broad curled tail, two thick cheek fins and one large pale salt-crust brow; a single dark belly opening contains its coal eye.",
+            "silhouette": "Compact sideways ember-fish, crescent tail and large salt brow."
+          },
+          {
+            "species_id": "MN_181",
+            "body": "The body becomes taller and deeper, supported by two thick fin-feet. Three broad hinged rib-plates curve over the belly like a smoke chamber, while a wide slotted tail acts as its bellows and the true face emerges above the chamber.",
+            "silhouette": "Upright deep-bodied fish spirit with solid rib chamber and a large fan-bellows tail; feet distinguish it from a swimming recolor."
+          }
+        ]
+      },
+      "silhouette_concept": "Compact sideways ember-fish, crescent tail and large salt brow. \u2192 Upright deep-bodied fish spirit with solid rib chamber and a large fan-bellows tail; feet distinguish it from a swimming recolor.",
+      "habitat": "Duluth harbor food stalls and inhabited shore-side cookfire areas.",
+      "proposed_routes": [
+        {
+          "id": "MN_R11",
+          "placement": "Southern rest district beside a future food NPC, outside the wild forest core.",
+          "status": "encounter proposal only; no map or story mutation"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Northern Waters Smokehaus, About",
+          "url": "https://northernwaterssmokehaus.com/about/",
+          "supports": "First-person Duluth smokehouse history and Lake Superior smoked lake trout.",
+          "source_kind": "primary regional food producer account"
+        }
+      ],
+      "nonduplication": "Unlike ore-freighter boilerF060 or generic fire-fish: the family grows salt brow, hinged smoking ribs, fin-feet and bellows tail. No steel hull, funnel or conventional fish with flames pasted on.",
+      "classification": "ordinary",
+      "design_lock": "proposal awaiting root design lock",
+      "sprite_constraints": "Native56x56 front full body facing left;48x48 close rear portrait facing upper-right. Four colors per species, individually planned after design lock. Large solid anatomical landmarks, stepped black exterior anchors, sparse internal marks; no gradients, particles or texture-dependent identity."
+    },
+    {
+      "id": "MN_F084",
+      "region": "rainy_lake_superior_fish",
+      "theme": "Ancient lake sturgeon becomes a lakebed cartographer, with five scute rows developing into contour-like armor ridges and tactile surveying barbels.",
+      "members": [
+        {
+          "id": "MN_182",
+          "name": "Scutlet",
+          "types": [
+            "WATER"
+          ],
+          "stage": 1,
+          "evolves_to": "MN_183"
+        },
+        {
+          "id": "MN_183",
+          "name": "Barbelisk",
+          "types": [
+            "WATER",
+            "DRAGON"
+          ],
+          "stage": 2,
+          "evolves_to": null
+        }
+      ],
+      "evolution_design": {
+        "regional_evidence": "Minnesota DNR identifies lake sturgeon in Lake Superior and the Rainy system, with five bony scute rows, a flattened snout, barbels and bottom-feeding anatomy.",
+        "original_invention": "Armor that records bottom contours and a compass-like barbel arrangement are fictional. There is no held chart, sextant or human surveyor outfit.",
+        "body_growth": [
+          {
+            "species_id": "MN_182",
+            "body": "A short heavy bottom fish with a broad shovel snout, four thick short barbels and five scute rows simplified into a few large shield blocks. The tail has a strongly longer upper lobe.",
+            "silhouette": "Shovel head, four visible stub-barbels, heavy armor blocks and unequal tail lobes."
+          },
+          {
+            "species_id": "MN_183",
+            "body": "The body grows long and low with a broad prow-like head; huge shoulder scutes step upward into a broken ridge, the four barbels broaden into sturdy downward sensing prongs and paired fins become strong bottom-bracing flippers.",
+            "silhouette": "Long armored low dragon-fish, broad plowless head, four sensing prongs and raised stepped scutes; no wings, lure hook or ray wings."
+          }
+        ]
+      },
+      "silhouette_concept": "Shovel head, four visible stub-barbels, heavy armor blocks and unequal tail lobes. \u2192 Long armored low dragon-fish, broad plowless head, four sensing prongs and raised stepped scutes; no wings, lure hook or ray wings.",
+      "habitat": "Deep lake bottoms, river mouths and rocky narrows of the Rainy/Lake Superior basins.",
+      "proposed_routes": [
+        {
+          "id": "MN_R20",
+          "placement": "Lakeshore fishing encounter near the granite narrows.",
+          "status": "encounter proposal only; no map or story mutation"
+        },
+        {
+          "id": "MN_R11",
+          "placement": "Rare fishing encounter in the existing cove after a later progression gate.",
+          "status": "encounter proposal only; no map or story mutation"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Minnesota DNR, How to catch lake sturgeon",
+          "url": "https://www.dnr.state.mn.us/gofishing/how-catch-lake-sturgeon.html",
+          "supports": "Regional occurrence and five-row scute, barbel, snout and bottom-feeding anatomy.",
+          "source_kind": "primary regional institutional source"
+        }
+      ],
+      "nonduplication": "Unlike lure lineF015, this is a living bottom fish with tactile surveying anatomy, without hooks or manufactured metal; unlike water starterF003 no hydrofoil-ray silhouette.",
+      "classification": "ordinary",
+      "design_lock": "proposal awaiting root design lock",
+      "sprite_constraints": "Native56x56 front full body facing left;48x48 close rear portrait facing upper-right. Four colors per species, individually planned after design lock. Large solid anatomical landmarks, stepped black exterior anchors, sparse internal marks; no gradients, particles or texture-dependent identity."
+    },
+    {
+      "id": "MN_F085",
+      "region": "boundary_waters_campcraft",
+      "theme": "Hanging food-cache counterbalance becomes an ambush grappler built as one living suspended storage body, with a loop-tail and counterweight fists.",
+      "members": [
+        {
+          "id": "MN_184",
+          "name": "Snagbag",
+          "types": [
+            "DARK",
+            "FIGHTING"
+          ],
+          "stage": 1,
+          "evolves_to": null
+        }
+      ],
+      "evolution_design": {
+        "regional_evidence": "A Superior National Forest primary release describes hanging food packs or using resistant containers in the Boundary Waters. Only the campcraft inspiration is used; this proposal supplies no current regulatory guidance.",
+        "original_invention": "The sentient cache and grappling mechanism are fiction. It mimics a suspended bundle with grown folds and a loop-tail, not an animal wearing or stealing a backpack.",
+        "body_growth": [
+          {
+            "species_id": "MN_184",
+            "body": "One broad folded bundle-body with a face beneath its overlapping upper lip; a thick tail rises into a closed hanging loop. Two unequal heavy fists hang from short broad arms as counterweights, while tucked hook-feet can unfold for a low wrestling stance.",
+            "silhouette": "One suspended diamond bundle, one thick overhead loop and two heavy counterweight fists; no visible rope network, straps, bear face or held food."
+          }
+        ]
+      },
+      "silhouette_concept": "One suspended diamond bundle, one thick overhead loop and two heavy counterweight fists; no visible rope network, straps, bear face or held food.",
+      "habitat": "Well-used inland lake campsites and portage rest clearings.",
+      "proposed_routes": [
+        {
+          "id": "MN_R12",
+          "placement": "Ranger Hollow or Bear Hollow optional clearing, using campcraft flavor without adding food theft to game inventory.",
+          "status": "encounter proposal only; no map or story mutation"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Superior National Forest, April30 2024 bear-aware release and Q&A",
+          "url": "https://www.fs.usda.gov/sites/nfs/files/r09/superior/publication/alerts/20240430_SNF_BWCAW_Bear-Resistant-09-09-24-02.pdf",
+          "supports": "Historical regional hanging-food and container campcraft.",
+          "source_kind": "primary historical agency release"
+        }
+      ],
+      "nonduplication": "Unlike seed-bank burglarsF053, no squirrel, grain vault or stolen seeds; unlike F062 silo bird, no cable heist. The entire body is the suspended cache and fighting counterbalance.",
+      "classification": "ordinary",
+      "design_lock": "proposal awaiting root design lock",
+      "sprite_constraints": "Native56x56 front full body facing left;48x48 close rear portrait facing upper-right. Four colors per species, individually planned after design lock. Large solid anatomical landmarks, stepped black exterior anchors, sparse internal marks; no gradients, particles or texture-dependent identity."
+    },
+    {
+      "id": "MN_F086",
+      "region": "boundary_waters_lichen",
+      "theme": "Rock-tripe lichen becomes a living folding weather-cloak anchored to its stone foot; the symbiotic mantle opens to catch moisture and closes over a dry refuge.",
+      "members": [
+        {
+          "id": "MN_185",
+          "name": "Cragcloak",
+          "types": [
+            "GRASS",
+            "ROCK"
+          ],
+          "stage": 1,
+          "evolves_to": null
+        }
+      ],
+      "evolution_design": {
+        "regional_evidence": "The Bell Museum Minnesota Biodiversity Atlas contains collected Umbilicaria specimens from Boundary Waters localities including the Brule fire-tower trail and Little Gabbro Lake. Primary botanical accounts describe broad foliose rock-tripe thalli; the monster is not a particular collected specimen.",
+        "original_invention": "The moisture-catching mantle, one-eyed anchor foot and deliberate folding are original biology-inspired fantasy. No ceremonial or survival-food story is borrowed.",
+        "body_growth": [
+          {
+            "species_id": "MN_185",
+            "body": "A broad asymmetric three-lobed lichen mantle folds over one stout rock anchor-foot. One large eye peers from the sheltered fold; two broad curled mantle tips frame the face, and the lower dark underside remains one simple solid shape.",
+            "silhouette": "Low three-lobed scalloped canopy around a single high stone foot and one eye; broad folded flaps rather than stippled lichen texture or a mushroom cap."
+          }
+        ]
+      },
+      "silhouette_concept": "Low three-lobed scalloped canopy around a single high stone foot and one eye; broad folded flaps rather than stippled lichen texture or a mushroom cap.",
+      "habitat": "Cool damp granite faces and shaded portage outcrops.",
+      "proposed_routes": [
+        {
+          "id": "MN_R12",
+          "placement": "Stone Bog cliff edge above the wet grass, keeping the passable path dry.",
+          "status": "encounter proposal only; no map or story mutation"
+        },
+        {
+          "id": "MN_R20",
+          "placement": "Shaded rock face at the granite narrows.",
+          "status": "encounter proposal only; no map or story mutation"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Bell Museum, Minnesota Biodiversity Atlas Umbilicaria collection records",
+          "url": "https://bellatlas.umn.edu/collections/list.php?comingFrom=newsearch&page=28&taxa=52460&taxontype=2&usethes=1",
+          "supports": "Vouchered rock-tripe specimens at named Boundary Waters localities.",
+          "source_kind": "primary specimen catalog"
+        },
+        {
+          "title": "Missouri Department of Conservation, Lichens",
+          "url": "https://mdc.mo.gov/discover-nature/field-guide/lichens",
+          "supports": "General foliose rock-lichen morphology and single-point attachment; this source does not establish Minnesota distribution.",
+          "source_kind": "primary botanical explanation"
+        },
+        {
+          "title": "Gockman, Thayer & Henderson2020, Contributions to the Lichen Flora of Minnesota",
+          "url": "https://sweetgum.nybg.org/images3/3764/952/op19p3_29April2020.pdf",
+          "supports": "Primary field report of Umbilicaria on northeastern Minnesota cliffs; printedp31.",
+          "source_kind": "primary botanical field research"
+        }
+      ],
+      "nonduplication": "Unlike morel-mazeF021 and autumn tamarackF022, no fungal maze, mushroom stalk, deciduous tree or ghost. The design uses a broad symbiotic lichen mantle attached to a rock foot.",
+      "classification": "ordinary",
+      "design_lock": "proposal awaiting root design lock",
+      "sprite_constraints": "Native56x56 front full body facing left;48x48 close rear portrait facing upper-right. Four colors per species, individually planned after design lock. Large solid anatomical landmarks, stepped black exterior anchors, sparse internal marks; no gradients, particles or texture-dependent identity."
+    }
+  ],
+  "research_date": "2026-10-26",
+  "scope_note": "Original fictional creatures grounded in the cited regional evidence. F073 and F074 are design-locked; F073 source and native candidate completed. Other families await root review. No central roster, palette catalog, encounters or maps modified.",
+  "source_policy": "Regional evidence and original anatomical inventions are explicitly separated. No sacred named beings or invented Indigenous legends. Older agency releases support cultural practice only, not current legal guidance."
+}

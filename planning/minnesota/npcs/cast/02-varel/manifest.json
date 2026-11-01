@@ -1,0 +1,41 @@
+{
+  "name": "VAREL",
+  "role": "Gym Leader 1",
+  "status": "accepted-native-playable",
+  "source": "native-pixels-v2.json",
+  "binding": "binding-v1.json",
+  "controller": "controller-v1.json",
+  "pack": "content-packs/minnesota-trainer-cast-02-v01.crystalpack",
+  "reference_review": "actual-crystal-sprites-common-palette-and-scale",
+  "verification": "Full real encounter, PP, battle save/load, victory, native badge, exactly one TM, repeat talk, saved victory/badges/progress",
+  "fixture": "Three legal level-60 Minnesota starters, adjacent position, completed parcel/practice prerequisites. Does not establish earned puzzle traversal or ordinary-party balance.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/cast/02-varel/native-pixels-v2.json": "5d2111863781b3a1998a4d958a9adeae650820407ef599f3644dbf0b5e7e253a",
+    "planning/minnesota/npcs/cast/02-varel/binding-v1.json": "2a06f33e5f4a941630aa682435bb3da511aa36c83131fb91e7d6e5f8fdbcedb9",
+    "planning/minnesota/npcs/cast/02-varel/controller-v1.json": "f8279c11550d141cb2db1ebc9c3d079d8f92a6a2f253d3cce1a26273a0cff5a5",
+    "planning/minnesota/npcs/cast/02-varel/battle-reference-v1.png": "3f0f1051df6e3a7972915023293825a724abbf50cabfeda155d9144598b18835",
+    "planning/minnesota/npcs/cast/02-varel/battle-reference-prompt.txt": "783f4ca6c29a6ce957b61c5875e621a9b091c1fbb71c0e284176c2a59a5f2788",
+    "target/trainer-cast/varel/real-comparison-v2.png": "ab589309eb25ef44701e7e35ea8ecf40da369900df429caef6dabcee72317da0",
+    "target/trainer-cast/varel/battle-real-comparison.png": "0cde5c4c7e4cb45431869771a01c5c5315fca3c3d98db0ebfd4f3220001ea1f4",
+    "target/trainer-cast/varel/controller-v2.log": "ae0e2f22bb8f9b730aeda6a70dfff9ada0c243ad93adc0699e3378b5b1d5999f",
+    "content-packs/minnesota-trainer-cast-02-v01.crystalpack": "893c12b98158ade14d170307c46f9b5fa24a96d082fa0b88ad6c9931d46790a3",
+    "target/trainer-cast/varel/gameplay-v2/original-npc-trainer-intro.png": "2c4a5aa72119383df7d31778f358d943f33a2e126b6a360b20b4727bd2d7f3f6",
+    "target/trainer-cast/varel/gameplay-v2/original-npc-overworld-state.png": "cc723ae651837d76970b31ce97ef1792a4471ac5ddfacc791866b36fa5f76915",
+    "target/trainer-cast/varel/gameplay-v2/original-npc-first-turn.png": "f4d19ce278d55eaf117ac6f42b4bc32f03807c698a34bbf010e0478a0e7cb485"
+  },
+  "native": "target/trainer-cast/varel/native-v2",
+  "gameplay": "target/trainer-cast/varel/gameplay-v2",
+  "log": "target/trainer-cast/varel/controller-v2.log",
+  "integration": "binding-v1.json",
+  "final_pack": "content-packs/minnesota-trainer-cast-36-v01.crystalpack",
+  "final_gameplay": "target/trainer-cast/final-audit/gameplay/02-varel",
+  "final_log": "target/trainer-cast/final-audit/gameplay/02-varel/controller.log",
+  "final_status": "accepted-native-playable-final-pack",
+  "final_review": "Actual battle intro and field captures inspected on exact final pack; art retains accepted native sources and palette.",
+  "final_evidence_sha256": {
+    "target/trainer-cast/final-audit/gameplay/02-varel/controller.log": "0554ffaa8efb59eff8beaaa61c858db795e3ab5e2168659f30acb1a4c42177ef",
+    "target/trainer-cast/final-audit/gameplay/02-varel/original-npc-trainer-intro.png": "2c4a5aa72119383df7d31778f358d943f33a2e126b6a360b20b4727bd2d7f3f6",
+    "target/trainer-cast/final-audit/gameplay/02-varel/original-npc-overworld-state.png": "cc723ae651837d76970b31ce97ef1792a4471ac5ddfacc791866b36fa5f76915",
+    "target/trainer-cast/final-audit/gameplay/02-varel/original-npc-first-turn.png": "f4d19ce278d55eaf117ac6f42b4bc32f03807c698a34bbf010e0478a0e7cb485"
+  }
+}

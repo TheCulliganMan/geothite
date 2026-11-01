@@ -1,0 +1,13 @@
+{
+  "tool": "built-in image_gen",
+  "original_tool_path": "/Users/ryanculligan/.codex/generated_images/01a17dcc-4f1a-77a2-9d21-0df036061346/exec-70da028d-a41e-4ad5-af62-77a5f6c04c0b.png",
+  "source_size": [
+    1254,
+    1254
+  ],
+  "sha256": "7ff4eed53bf2369e5c0d856394ed80301464e575000c9bbbd4096738ad110df8",
+  "reference_paths": [
+    "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png"
+  ],
+  "prompt": "paddarray.prompt-v1.txt"
+}

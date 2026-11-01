@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "parent_revision": "iron_ventilation_cleft_revision",
+  "parent_pack": "content-packs/minnesota-iron-ventilation-cleft-v03.crystalpack",
+  "parent_pack_sha256": "283c214cda8f5ed04e878bed7e698cc08d9f8a764ae9553161113d4837762330",
+  "pack": "content-packs/minnesota-current-r13-boundary-apron-v03.crystalpack",
+  "pack_sha256": "7d3987bfbf0378aed960495cc20981c0d258eb391f33630b8e3de6c2686e2e7d",
+  "content_identity": "557676e74fb5264e436590746046616fb503862e0db0dc403bac493ff4bd352c",
+  "only_data_changes": "One Route13 northern apron metatile 8b to 83 and its raw block mirror only; all other terrain, collision definitions, art, actors, scripts, offsets, wild encounters, trainers and items exact.",
+  "source_plan": "planning/minnesota/revisions/route-grass-v01/current-r13-successor-review-v01/boundary-apron-plan-v02.json",
+  "bemidji_plateau_stairs_exact": true,
+  "state_fair_exact": true
+}

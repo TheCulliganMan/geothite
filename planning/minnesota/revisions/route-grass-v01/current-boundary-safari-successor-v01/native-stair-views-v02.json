@@ -1,0 +1,18 @@
+[
+  {
+    "id": "palisade-stair-clear",
+    "map": "MnBoundarySafariC00R01",
+    "core": [
+      41,
+      9
+    ]
+  },
+  {
+    "id": "northwind-stair-clear",
+    "map": "MnBoundarySafariC01R00",
+    "core": [
+      33,
+      17
+    ]
+  }
+]

@@ -1,0 +1,8 @@
+# Local content-pack-derived renders and superseded generated concept images.
+/renders/
+/reference/*.png
+# Byte-preserved render generations are reusable local review artifacts.
+**/history/
+**/.render-archive/
+/route-plan-v1-rejected.json
+__pycache__/

@@ -1,0 +1,12 @@
+{
+  "name": "vernacape",
+  "version": "v2-roomy-light-eyes",
+  "folder": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f056",
+  "prompt": "Precise native-pixel FACE CLEARANCE correction of this VERNACAPE six-pose flower-creature sheet. Preserve all six outer silhouettes, flower hood/crown, arms/root/cape anatomy, three-by-two pose layout, original palette, transparent background, one shared body scale and actual south/north/west camera. Change ONLY the BLACK face cavity and its LIGHT LAVENDER eyes in FOUR nonrear cells. SOUTH face must become a broad simple BLACK rectangle/oval roughly180 source pixels wide by100 high, drawn across the existing hood opening, with exactly TWO LIGHT lavender32x32square eye blocks. Each LIGHT eye is enclosed on all4sides by at least32sourcepixels of solidBLACK face; eye center separation70px. Eyes are bright apertures, NOT blackpupils, NOT surrounding petal highlights. Expand blackface sideways into immediate cheek petals if needed while preserving OUTER hood/crown outline. PureWEST one bright32x32eye in a BLACKfacearea at least96x100px, eyesfullybuffered. Keep SOUTH eye center heights unchanged; all4front/profile faceeyes must be large and distinct enough to become real isolated1px eyes at13-14px native size. NORTH two cells unchanged: plain rear hood/crown, ZEROface/eyes. Preserve all three actual walk differences at roots/cape/arms. Strict3 flatinks existinglavender,deeppurple,black; alpha0outside. NO extra glints, NO foreheadeye, NO gradients/glow/labels/resize. Keep blackcavity attached inside flower and brightpupils separate from all light petals.",
+  "refs": [
+    "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f056/vernacape.overworld.imagegen-v1.png"
+  ],
+  "default_path": "/Users/ryanculligan/.codex/generated_images/01a17f9b-beff-7771-977d-2d3d7b14de43/exec-6c5c674c-cc09-44ad-bfa0-feae34046ad9.png",
+  "sha256": "368393159d957c5049bd43de8e009b4baf70d43ddad474a88203e048133fbfc6",
+  "tool": "built-in image_gen"
+}

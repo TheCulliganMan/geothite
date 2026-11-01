@@ -1,0 +1,239 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F106",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_233": {
+      "species_id": "MN_233",
+      "name": "Blufflet",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          24,
+          19,
+          13
+        ],
+        [
+          11,
+          7,
+          15
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        13944,
+        15595,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          198,
+          156,
+          107
+        ],
+        [
+          90,
+          57,
+          123
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#C69C6B",
+        "#5A397B",
+        "#000000"
+      ]
+    },
+    "MN_234": {
+      "species_id": "MN_234",
+      "name": "Hissario",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          25,
+          18,
+          15
+        ],
+        [
+          9,
+          6,
+          14
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        15961,
+        14537,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          206,
+          148,
+          123
+        ],
+        [
+          74,
+          49,
+          115
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#CE947B",
+        "#4A3173",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f106/prompt-v1.txt",
+  "reference_mapping": "sprites/mn-f106/reference-mapping-v1.json",
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-233-blufflet-v1",
+      "species_id": "MN_233",
+      "view": "front",
+      "source": "sprites/mn-f106/mn-233-234.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        620,
+        620
+      ],
+      "fit": [
+        40,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13944,
+        15595,
+        0
+      ],
+      "white_detail_min_samples": 8
+    },
+    {
+      "id": "mn-233-blufflet-v1",
+      "species_id": "MN_233",
+      "view": "back",
+      "source": "sprites/mn-f106/mn-233-234.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        620,
+        620,
+        579
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13944,
+        15595,
+        0
+      ],
+      "white_detail_min_samples": 8
+    },
+    {
+      "id": "mn-234-hissario-v1",
+      "species_id": "MN_234",
+      "view": "front",
+      "source": "sprites/mn-f106/mn-233-234.front-back.imagegen-v1.png",
+      "crop": [
+        620,
+        0,
+        692,
+        620
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        15961,
+        14537,
+        0
+      ],
+      "white_detail_min_samples": 8
+    },
+    {
+      "id": "mn-234-hissario-v1",
+      "species_id": "MN_234",
+      "view": "back",
+      "source": "sprites/mn-f106/mn-233-234.front-back.imagegen-v1.png",
+      "crop": [
+        620,
+        620,
+        692,
+        579
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        15961,
+        14537,
+        0
+      ],
+      "white_detail_min_samples": 8
+    }
+  ],
+  "source_sha256": "9ad11d872aff9e2adb81a61d0a33fd8e6cb1a760c580abb70eb65c5515d797ca",
+  "candidate_review": {
+    "status": "native-review-pending",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "472d7a2f216f0cd8c8f5a9ff38f337777e76445e278b4ace3aee4cb7b531de1b",
+    "notes": "Actual native inspected: small heart-neck bluffer grows a huge double false-jaw hood and heavy rolling coil; real small head sits above/inside false-face structure. Hood patches remain broad legible shapes, close rear portraits show nape and back hood with small real face turned right. All target colors distinct across stages and shared per front/back. Independent shadow is not depicted because sheet excludes cast effects; root should judge the anatomical illusion theme."
+  },
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "notes": "Root inspected both native pairs: wide heart-shaped hood with false-eye patches grows into double false-jaw display and rolling tail, while the actual small snout/head remains distinct. It is an embodied bluffing/deception creature rather than an animal recolor. Back views show the rear hood markings; independent moving shadow is not present in static source. Distinct exact palettes and close crops accepted.",
+    "sheet_sha256": "472d7a2f216f0cd8c8f5a9ff38f337777e76445e278b4ace3aee4cb7b531de1b",
+    "outline_profile": "source-contour-v1"
+  }
+}

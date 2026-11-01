@@ -1,0 +1,234 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F017",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_047": {
+      "species_id": "MN_047",
+      "name": "Hatchit",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          23,
+          24,
+          24
+        ],
+        [
+          11,
+          9,
+          7
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        25367,
+        7467,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          189,
+          198,
+          198
+        ],
+        [
+          90,
+          74,
+          57
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#BDC6C6",
+        "#5A4A39",
+        "#000000"
+      ]
+    },
+    "MN_048": {
+      "species_id": "MN_048",
+      "name": "Doublehex",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          17,
+          23,
+          25
+        ],
+        [
+          10,
+          7,
+          18
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        26353,
+        18666,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          140,
+          189,
+          206
+        ],
+        [
+          82,
+          57,
+          148
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#8CBDCE",
+        "#523994",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f017/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "board": "target/minnesota-pokemon/gen2-reference/starters.png"
+  },
+  "sprites": [
+    {
+      "id": "mn-047-hatchit-v1",
+      "species_id": "MN_047",
+      "view": "front",
+      "source": "sprites/mn-f017/mn-047-048.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        622,
+        615
+      ],
+      "fit": [
+        40,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        25367,
+        7467,
+        0
+      ]
+    },
+    {
+      "id": "mn-047-hatchit-v1",
+      "species_id": "MN_047",
+      "view": "back",
+      "source": "sprites/mn-f017/mn-047-048.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        615,
+        622,
+        573
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        25367,
+        7467,
+        0
+      ]
+    },
+    {
+      "id": "mn-048-doublehex-v1",
+      "species_id": "MN_048",
+      "view": "front",
+      "source": "sprites/mn-f017/mn-047-048.front-back.imagegen-v1.png",
+      "crop": [
+        622,
+        0,
+        702,
+        615
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        26353,
+        18666,
+        0
+      ]
+    },
+    {
+      "id": "mn-048-doublehex-v1",
+      "species_id": "MN_048",
+      "view": "back",
+      "source": "sprites/mn-f017/mn-047-048.front-back.imagegen-v1.png",
+      "crop": [
+        622,
+        615,
+        702,
+        573
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        26353,
+        18666,
+        0
+      ]
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "notes": [
+      "Inspected frozen source-contour-v1 sheet: hatchet blade and wooden handle retain a clear dark perimeter without filling the entire handle shadow black.",
+      "Double-bit blade eyes remain open; ghost arms intentionally use violet exterior effects from raw art, while solid axe anatomy has black anchors. Rear handle crop stays open and clean."
+    ],
+    "sheet_sha256": "851c173cf53a5c04b71c107b7ee268368d38e22de5b38e2faf06fdc60dd23435",
+    "outline_profile": "source-contour-v1"
+  }
+}

@@ -1,0 +1,336 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_128",
+  "result": "pass",
+  "manifest_sha256": "af5ca8175395eb661cb954ed4f49edb1ab3533360d6b5075ea305280f2dc265d",
+  "bank_sha256": "02887bfe60a8d3d2649d87d49a8c9ffd49f9030bb4f90671447eb77b2b1bd1d7",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f059/driftpeg.overworld.imagegen-v2-profile-eye.png": "2f78e7c2082d9789dc506c018c2ac263d4cda7c03caa8d5d323fa681bb22cad5"
+  },
+  "canonical_eye_form": "Two actual black isolated pupils south, one west, mapped to actual small source pupil components in all4 nonrear poses.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "down_idle",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f059/driftpeg.overworld.imagegen-v2-profile-eye.png",
+        "crop": [
+          138,
+          174,
+          364,
+          342
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            271,
+            381,
+            18,
+            24
+          ],
+          [
+            321,
+            381,
+            17,
+            24
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                6,
+                10
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  6,
+                  8,
+                  8,
+                  253
+                ],
+                "bounds": [
+                  271,
+                  381,
+                  18,
+                  24
+                ],
+                "pixels": 422,
+                "truncated_contour": false,
+                "native_pixel": [
+                  6,
+                  10
+                ],
+                "source_sample_pixel": [
+                  275,
+                  382
+                ]
+              }
+            ]
+          },
+          {
+            "native_cluster": [
+              [
+                8,
+                10
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  2,
+                  3,
+                  4,
+                  254
+                ],
+                "bounds": [
+                  321,
+                  381,
+                  17,
+                  24
+                ],
+                "pixels": 405,
+                "truncated_contour": false,
+                "native_pixel": [
+                  8,
+                  10
+                ],
+                "source_sample_pixel": [
+                  332,
+                  382
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "left_idle",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f059/driftpeg.overworld.imagegen-v2-profile-eye.png",
+        "crop": [
+          1081,
+          179,
+          364,
+          342
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            1154,
+            348,
+            23,
+            25
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                4,
+                9
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  0,
+                  0,
+                  0,
+                  253
+                ],
+                "bounds": [
+                  1154,
+                  348,
+                  23,
+                  25
+                ],
+                "pixels": 575,
+                "truncated_contour": false,
+                "native_pixel": [
+                  4,
+                  9
+                ],
+                "source_sample_pixel": [
+                  1162,
+                  358
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "down_step",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f059/driftpeg.overworld.imagegen-v2-profile-eye.png",
+        "crop": [
+          138,
+          569,
+          364,
+          342
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            271,
+            762,
+            18,
+            24
+          ],
+          [
+            321,
+            762,
+            17,
+            24
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                6,
+                10
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  5,
+                  6,
+                  6,
+                  253
+                ],
+                "bounds": [
+                  271,
+                  762,
+                  18,
+                  24
+                ],
+                "pixels": 415,
+                "truncated_contour": false,
+                "native_pixel": [
+                  6,
+                  10
+                ],
+                "source_sample_pixel": [
+                  275,
+                  777
+                ]
+              }
+            ]
+          },
+          {
+            "native_cluster": [
+              [
+                8,
+                10
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  3,
+                  2,
+                  2,
+                  253
+                ],
+                "bounds": [
+                  321,
+                  762,
+                  17,
+                  24
+                ],
+                "pixels": 408,
+                "truncated_contour": false,
+                "native_pixel": [
+                  8,
+                  10
+                ],
+                "source_sample_pixel": [
+                  332,
+                  777
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "left_step",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f059/driftpeg.overworld.imagegen-v2-profile-eye.png",
+        "crop": [
+          1081,
+          564,
+          364,
+          342
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            1156,
+            739,
+            22,
+            24
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                4,
+                9
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  6,
+                  3,
+                  2,
+                  253
+                ],
+                "bounds": [
+                  1156,
+                  739,
+                  22,
+                  24
+                ],
+                "pixels": 528,
+                "truncated_contour": false,
+                "native_pixel": [
+                  4,
+                  9
+                ],
+                "source_sample_pixel": [
+                  1162,
+                  743
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "notes": "Both native normal/shiny true rear poses actually reviewed: plain rear closed flower folds or snowcapped posts, no copied face. All anatomy is source-backed; native pixels were not painted."
+  },
+  "detailed_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f059/manifest-driftpeg-v3-frozen-native.proof.json"
+}

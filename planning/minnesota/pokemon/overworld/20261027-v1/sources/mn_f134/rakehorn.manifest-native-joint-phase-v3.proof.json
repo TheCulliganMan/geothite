@@ -1,0 +1,345 @@
+{
+  "species_id": "MN_296",
+  "name": "rakehorn",
+  "status": "native-review-recommended; root independent review and context required",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f134/rakehorn.manifest-native-joint-phase-v3.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-rakehorn-joint-phase-v3",
+  "shared_transform": {
+    "source_bounds": [
+      13,
+      12,
+      437,
+      420
+    ],
+    "native_size": [
+      14,
+      13
+    ],
+    "native_origin": [
+      1,
+      2
+    ]
+  },
+  "all_four_nonrear_poses_actual_pupils_pass": true,
+  "each_native_eye_cluster_maps_to_one_actual_small_source_pupil_component": true,
+  "actual_source_pupil_proofs": [
+    {
+      "pose": "down_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f134/rakehorn.overworld.imagegen-v3.png",
+      "crop": [
+        29,
+        81,
+        455,
+        444
+      ],
+      "actual_source_eye_bounds": [
+        [
+          216,
+          262,
+          29,
+          31
+        ],
+        [
+          287,
+          262,
+          29,
+          31
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              7,
+              7
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                3,
+                3,
+                0,
+                253
+              ],
+              "bounds": [
+                216,
+                262,
+                29,
+                31
+              ],
+              "pixels": 893,
+              "truncated_contour": false,
+              "native_pixel": [
+                7,
+                7
+              ],
+              "source_sample_pixel": [
+                244,
+                270
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              9,
+              7
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                1,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                287,
+                262,
+                29,
+                31
+              ],
+              "pixels": 899,
+              "truncated_contour": false,
+              "native_pixel": [
+                9,
+                7
+              ],
+              "source_sample_pixel": [
+                307,
+                270
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f134/rakehorn.overworld.imagegen-v3.png",
+      "crop": [
+        1043,
+        81,
+        455,
+        444
+      ],
+      "actual_source_eye_bounds": [
+        [
+          1146,
+          266,
+          30,
+          31
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              4,
+              7
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                1,
+                1,
+                0,
+                253
+              ],
+              "bounds": [
+                1146,
+                266,
+                30,
+                31
+              ],
+              "pixels": 923,
+              "truncated_contour": false,
+              "native_pixel": [
+                4,
+                7
+              ],
+              "source_sample_pixel": [
+                1165,
+                270
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f134/rakehorn.overworld.imagegen-v3.png",
+      "crop": [
+        29,
+        520,
+        455,
+        444
+      ],
+      "actual_source_eye_bounds": [
+        [
+          215,
+          709,
+          30,
+          31
+        ],
+        [
+          287,
+          709,
+          29,
+          30
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              7,
+              7
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                35,
+                53,
+                21,
+                253
+              ],
+              "bounds": [
+                215,
+                709,
+                30,
+                31
+              ],
+              "pixels": 900,
+              "truncated_contour": false,
+              "native_pixel": [
+                7,
+                7
+              ],
+              "source_sample_pixel": [
+                244,
+                709
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              9,
+              7
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                24,
+                33,
+                14,
+                253
+              ],
+              "bounds": [
+                287,
+                709,
+                29,
+                30
+              ],
+              "pixels": 870,
+              "truncated_contour": false,
+              "native_pixel": [
+                9,
+                7
+              ],
+              "source_sample_pixel": [
+                307,
+                709
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f134/rakehorn.overworld.imagegen-v3.png",
+      "crop": [
+        1044,
+        530,
+        455,
+        444
+      ],
+      "actual_source_eye_bounds": [
+        [
+          1146,
+          713,
+          29,
+          31
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              4,
+              7
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                1,
+                1,
+                0,
+                253
+              ],
+              "bounds": [
+                1146,
+                713,
+                29,
+                31
+              ],
+              "pixels": 889,
+              "truncated_contour": false,
+              "native_pixel": [
+                4,
+                7
+              ],
+              "source_sample_pixel": [
+                1166,
+                719
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "old_native_poses_preserved_exactly": [
+    "down_idle",
+    "up_idle",
+    "left_idle",
+    "down_step",
+    "up_step",
+    "left_step"
+  ],
+  "normal_shiny_runtime_parity": "all1536pixels exact each",
+  "canonical_palette_bytes": "exact",
+  "all_three_walk_pairs_distinct": true,
+  "rear_review": "both rear native poses viewed; no copied face",
+  "normal_shiny_native_boards_actually_viewed": true,
+  "accepted_coverage_native_pack_untouched": true,
+  "manifest_sha256": "047db2b6277e4ee40e3d01bf2e7c9e0bd2626687e6ebe09c6f1a62381d102ec3",
+  "compiled_index_sha256": "5ea8b93164d042a6704ed24fc17dd4055400abaf1eba4df75a99e337b9517571"
+}

@@ -70,7 +70,7 @@ pub(crate) struct Atmosphere {
 }
 
 impl Document {
-    fn parse(bytes: &[u8]) -> Result<Self, String> {
+    pub(crate) fn parse(bytes: &[u8]) -> Result<Self, String> {
         let document: Self = serde_json::from_slice(bytes).map_err(|e| e.to_string())?;
         if let Some(atmosphere) = &document.atmosphere {
             if atmosphere.maps.is_empty()

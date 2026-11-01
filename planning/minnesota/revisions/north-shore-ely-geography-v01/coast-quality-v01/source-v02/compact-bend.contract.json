@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "status": "DETACHED_GEOMETRY_PROPOSAL_NOT_NATIVE_PUBLISHED",
+  "parent_sha256": "65cf6f98e65ada839ec5afaa57728bf8289d3a50ba53ba6b9b50f08d3620bb17",
+  "old_module_sha256": "5624e112405638ff1695377b490e3656eff0187c7a639025bfc22d6d08b83716",
+  "proposed_map": "MnR11C01R00",
+  "dimensions_metatiles": [
+    4,
+    24
+  ],
+  "origin_metatiles": [
+    222,
+    -400
+  ],
+  "rows": [
+    "05 05 05 05",
+    "05 05 05 05",
+    "05 05 05 05",
+    "05 05 05 05",
+    "05 05 01 01",
+    "05 01 01 05",
+    "01 01 05 05",
+    "58 58 58 05",
+    "35 35 35 35",
+    "35 35 35 35",
+    "35 35 35 35",
+    "35 35 35 35",
+    "35 35 35 35",
+    "35 35 35 35",
+    "35 35 35 35",
+    "35 35 35 35",
+    "35 35 35 35",
+    "35 35 35 35",
+    "35 35 35 0a",
+    "35 35 35 0a",
+    "35 35 35 0a",
+    "35 35 35 0a",
+    "35 35 35 0a",
+    "35 35 35 0a"
+  ],
+  "town_origin_metatiles": [
+    226,
+    -400
+  ],
+  "cedar_origin_if_retained": [
+    207,
+    -419
+  ],
+  "neck_width_if_retained": 45,
+  "walking_seams_core": {
+    "west": [
+      [
+        0,
+        12
+      ],
+      [
+        0,
+        13
+      ]
+    ],
+    "east": [
+      [
+        7,
+        8
+      ],
+      [
+        7,
+        9
+      ]
+    ]
+  },
+  "shared_superior_east_core_rows": [
+    16,
+    35
+  ],
+  "footprints_fixed": [
+    "MnR11C00R00",
+    "all lower R11 chunks",
+    "R12",
+    "R13",
+    "BoundaryWaters"
+  ],
+  "limitations": [
+    "C00 original terminal approach still retained; root may choose further crop after reviewing.",
+    "Global graph, shore boundary and native controller proof remain pending.",
+    "No new long path, grass quota, encounter, reward or elevation is introduced into this four-metatile turn."
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "accepted": true,
+  "mode": "2D",
+  "pack_sha256": "e99a9eb0fa86b85369b6b3d7e5bb52a9d7abdb9eef4aacb54856ccb989c61c84",
+  "reviewed": [
+    "published-source-v01/whole-route.png",
+    "native-v01/north.png",
+    "native-v01/marsh.png",
+    "native-v01/green-bend.png"
+  ],
+  "findings": [
+    "Crossings visibly span the intended forest paths.",
+    "Upper frost and lower green native aliases retain their existing transition.",
+    "The full route, landmarks, Cut/ice paths and all native art remain intact."
+  ]
+}

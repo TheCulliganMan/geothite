@@ -1,0 +1,1202 @@
+[
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f025/manifest-mayquip-v1-fit14-x-12-y4.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f025/mayquip-v1-fit14-x-12-y4",
+    "source_pupil_proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            5,
+            9
+          ],
+          "source": [
+            246,
+            337
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            9
+          ],
+          "source": [
+            326,
+            337
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            5,
+            9
+          ],
+          "source": [
+            246,
+            777
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            9
+          ],
+          "source": [
+            326,
+            777
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            3,
+            8
+          ],
+          "source": [
+            1126,
+            304
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            3,
+            8
+          ],
+          "source": [
+            1126,
+            744
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f025/manifest-mayquip-v1-fit14-x-12-y8.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f025/mayquip-v1-fit14-x-12-y8",
+    "source_pupil_proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            5,
+            9
+          ],
+          "source": [
+            246,
+            341
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            9
+          ],
+          "source": [
+            326,
+            341
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            5,
+            9
+          ],
+          "source": [
+            246,
+            781
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            9
+          ],
+          "source": [
+            326,
+            781
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            3,
+            8
+          ],
+          "source": [
+            1126,
+            304
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            3,
+            8
+          ],
+          "source": [
+            1126,
+            744
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f025/manifest-mayquip-v1-fit14-x-12-y12.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f025/mayquip-v1-fit14-x-12-y12",
+    "source_pupil_proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            5,
+            9
+          ],
+          "source": [
+            246,
+            345
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            9
+          ],
+          "source": [
+            326,
+            345
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            5,
+            9
+          ],
+          "source": [
+            246,
+            785
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            9
+          ],
+          "source": [
+            326,
+            785
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            3,
+            8
+          ],
+          "source": [
+            1126,
+            304
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            3,
+            8
+          ],
+          "source": [
+            1126,
+            744
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f025/manifest-mayquip-v1-fit14-x-8-y4.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f025/mayquip-v1-fit14-x-8-y4",
+    "source_pupil_proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            5,
+            9
+          ],
+          "source": [
+            250,
+            337
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            9
+          ],
+          "source": [
+            330,
+            337
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            5,
+            9
+          ],
+          "source": [
+            250,
+            777
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            9
+          ],
+          "source": [
+            330,
+            777
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            3,
+            8
+          ],
+          "source": [
+            1126,
+            304
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            3,
+            8
+          ],
+          "source": [
+            1126,
+            744
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f025/manifest-mayquip-v1-fit14-x-8-y8.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f025/mayquip-v1-fit14-x-8-y8",
+    "source_pupil_proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            5,
+            9
+          ],
+          "source": [
+            250,
+            341
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            9
+          ],
+          "source": [
+            330,
+            341
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            5,
+            9
+          ],
+          "source": [
+            250,
+            781
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            9
+          ],
+          "source": [
+            330,
+            781
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            3,
+            8
+          ],
+          "source": [
+            1126,
+            304
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            3,
+            8
+          ],
+          "source": [
+            1126,
+            744
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f025/manifest-mayquip-v1-fit14-x-8-y12.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f025/mayquip-v1-fit14-x-8-y12",
+    "source_pupil_proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            5,
+            9
+          ],
+          "source": [
+            250,
+            345
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            9
+          ],
+          "source": [
+            330,
+            345
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            5,
+            9
+          ],
+          "source": [
+            250,
+            785
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            9
+          ],
+          "source": [
+            330,
+            785
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            3,
+            8
+          ],
+          "source": [
+            1126,
+            304
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            3,
+            8
+          ],
+          "source": [
+            1126,
+            744
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f025/manifest-mayquip-v1-fit14-x-4-y4.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f025/mayquip-v1-fit14-x-4-y4",
+    "source_pupil_proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            5,
+            9
+          ],
+          "source": [
+            254,
+            337
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            9
+          ],
+          "source": [
+            334,
+            337
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            5,
+            9
+          ],
+          "source": [
+            254,
+            777
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            9
+          ],
+          "source": [
+            334,
+            777
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            3,
+            8
+          ],
+          "source": [
+            1126,
+            304
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            3,
+            8
+          ],
+          "source": [
+            1126,
+            744
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f025/manifest-mayquip-v1-fit14-x-4-y8.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f025/mayquip-v1-fit14-x-4-y8",
+    "source_pupil_proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            5,
+            9
+          ],
+          "source": [
+            254,
+            341
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            9
+          ],
+          "source": [
+            334,
+            341
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            5,
+            9
+          ],
+          "source": [
+            254,
+            781
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            9
+          ],
+          "source": [
+            334,
+            781
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            3,
+            8
+          ],
+          "source": [
+            1126,
+            304
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            3,
+            8
+          ],
+          "source": [
+            1126,
+            744
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f025/manifest-mayquip-v1-fit14-x-4-y12.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f025/mayquip-v1-fit14-x-4-y12",
+    "source_pupil_proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            5,
+            9
+          ],
+          "source": [
+            254,
+            345
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            9
+          ],
+          "source": [
+            334,
+            345
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            5,
+            9
+          ],
+          "source": [
+            254,
+            785
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            8,
+            9
+          ],
+          "source": [
+            334,
+            785
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            3,
+            8
+          ],
+          "source": [
+            1126,
+            304
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            3,
+            8
+          ],
+          "source": [
+            1126,
+            744
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f025/manifest-mayquip-v1-fit14-x4-y4.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f025/mayquip-v1-fit14-x4-y4",
+    "source_pupil_proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            5,
+            9
+          ],
+          "source": [
+            262,
+            337
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            7,
+            9
+          ],
+          "source": [
+            315,
+            337
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            5,
+            9
+          ],
+          "source": [
+            262,
+            777
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            7,
+            9
+          ],
+          "source": [
+            315,
+            777
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            3,
+            8
+          ],
+          "source": [
+            1126,
+            304
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            3,
+            8
+          ],
+          "source": [
+            1126,
+            744
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f025/manifest-mayquip-v1-fit14-x4-y8.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f025/mayquip-v1-fit14-x4-y8",
+    "source_pupil_proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            5,
+            9
+          ],
+          "source": [
+            262,
+            341
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            7,
+            9
+          ],
+          "source": [
+            315,
+            341
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            5,
+            9
+          ],
+          "source": [
+            262,
+            781
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            7,
+            9
+          ],
+          "source": [
+            315,
+            781
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            3,
+            8
+          ],
+          "source": [
+            1126,
+            304
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            3,
+            8
+          ],
+          "source": [
+            1126,
+            744
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f025/manifest-mayquip-v1-fit14-x4-y12.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f025/mayquip-v1-fit14-x4-y12",
+    "source_pupil_proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            5,
+            9
+          ],
+          "source": [
+            262,
+            345
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            7,
+            9
+          ],
+          "source": [
+            315,
+            345
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            5,
+            9
+          ],
+          "source": [
+            262,
+            785
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            7,
+            9
+          ],
+          "source": [
+            315,
+            785
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            3,
+            8
+          ],
+          "source": [
+            1126,
+            304
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            3,
+            8
+          ],
+          "source": [
+            1126,
+            744
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f025/manifest-mayquip-v1-fit14-x12-y4.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f025/mayquip-v1-fit14-x12-y4",
+    "source_pupil_proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            9
+          ],
+          "source": [
+            244,
+            337
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            7,
+            9
+          ],
+          "source": [
+            323,
+            337
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            9
+          ],
+          "source": [
+            244,
+            777
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            7,
+            9
+          ],
+          "source": [
+            323,
+            777
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            3,
+            8
+          ],
+          "source": [
+            1126,
+            304
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            3,
+            8
+          ],
+          "source": [
+            1126,
+            744
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f025/manifest-mayquip-v1-fit14-x12-y8.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f025/mayquip-v1-fit14-x12-y8",
+    "source_pupil_proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            9
+          ],
+          "source": [
+            244,
+            341
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            7,
+            9
+          ],
+          "source": [
+            323,
+            341
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            9
+          ],
+          "source": [
+            244,
+            781
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            7,
+            9
+          ],
+          "source": [
+            323,
+            781
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            3,
+            8
+          ],
+          "source": [
+            1126,
+            304
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            3,
+            8
+          ],
+          "source": [
+            1126,
+            744
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f025/manifest-mayquip-v1-fit14-x12-y12.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f025/mayquip-v1-fit14-x12-y12",
+    "source_pupil_proof": {
+      "down_idle": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            9
+          ],
+          "source": [
+            244,
+            345
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            7,
+            9
+          ],
+          "source": [
+            323,
+            345
+          ]
+        }
+      ],
+      "down_step": [
+        {
+          "eye": 0,
+          "native": [
+            4,
+            9
+          ],
+          "source": [
+            244,
+            785
+          ]
+        },
+        {
+          "eye": 1,
+          "native": [
+            7,
+            9
+          ],
+          "source": [
+            323,
+            785
+          ]
+        }
+      ],
+      "left_idle": [
+        {
+          "eye": 0,
+          "native": [
+            3,
+            8
+          ],
+          "source": [
+            1126,
+            304
+          ]
+        }
+      ],
+      "left_step": [
+        {
+          "eye": 0,
+          "native": [
+            3,
+            8
+          ],
+          "source": [
+            1126,
+            744
+          ]
+        }
+      ]
+    }
+  }
+]

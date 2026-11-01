@@ -1,0 +1,8 @@
+{
+  "status": "REQUIRES_REVIEW",
+  "pack": "content-packs/minnesota-current-r17-trail-guidance-v02.crystalpack",
+  "pack_sha256": "186c262b18d5174cb7ba9727358d4022bea9fce6d362529405728028ef92c60a",
+  "exit_code": 101,
+  "log": ".local/route-grass-review/r19-current-native-v01.log",
+  "scope": "R19 native pine grass encounter/RUN/Continue, historical two ledges and watch-versus-grass geometry. Current stair changes may invalidate legacy ledge assertions; local party/flags/position are setup."
+}

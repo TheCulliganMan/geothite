@@ -1,0 +1,241 @@
+{
+  "schema_version": 1,
+  "source_kind": "installed_route_exterior_review_contract",
+  "id": "MN_R03",
+  "native_binding": {
+    "pack": "content-packs/minnesota-current-r03-stair-guidance-v01.crystalpack",
+    "pack_sha256": "78ccaed227c86c2ab162c97eeb5bf3d793467bb0550588641ed96cf5a0ec81c8",
+    "content_identity": "b12700ca6c0b9f8742a491763a6b0815407b5b363f158a3f7358c823fd338d1e"
+  },
+  "chunk_layout": "planning/minnesota/revisions/route-grass-v01/current-r03-successor-review-v01/current-native-chunks-v01.json",
+  "required_grass_crossings": [
+    {
+      "id": "LOWER_BANK_HABITAT",
+      "bounds_core": [
+        26,
+        34,
+        34,
+        40
+      ],
+      "minimum_grass_steps": 6
+    }
+  ],
+  "grass_quadrants": 224,
+  "one_way_ledges": [
+    {
+      "id": "BIRD_MEADOW_RETURN_CURRENT",
+      "bounds_core": [
+        10,
+        20,
+        16,
+        22
+      ],
+      "direction": "south",
+      "source_block": "57",
+      "upper_y": 19,
+      "landing_y": 22,
+      "lanes": [
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "dry_landing": true,
+      "reverse_wall_y": 21,
+      "minimum_ordinary_return_grass": 5,
+      "ordinary_returns": [
+        {
+          "lane": 10,
+          "minimum_ordinary_return_grass": 5
+        },
+        {
+          "lane": 11,
+          "minimum_ordinary_return_grass": 5
+        },
+        {
+          "lane": 12,
+          "minimum_ordinary_return_grass": 6
+        },
+        {
+          "lane": 13,
+          "minimum_ordinary_return_grass": 7
+        },
+        {
+          "lane": 14,
+          "minimum_ordinary_return_grass": 6
+        },
+        {
+          "lane": 15,
+          "minimum_ordinary_return_grass": 5
+        }
+      ],
+      "purpose": "Grass on the ordinary uphill return; six short low-bank drops land on dry trail."
+    }
+  ],
+  "superseded_ledge_contracts": [
+    {
+      "id": "TERRACE_DROP",
+      "bounds_core": [
+        36,
+        40,
+        40,
+        42
+      ],
+      "direction": "south",
+      "source_block": "57",
+      "upper_approach": [
+        37,
+        39
+      ],
+      "hop_from": [
+        37,
+        40
+      ],
+      "landing": [
+        37,
+        42
+      ],
+      "reverse_blocked": [
+        37,
+        41
+      ],
+      "side_barriers": [
+        [
+          35,
+          41
+        ],
+        [
+          40,
+          40
+        ]
+      ],
+      "purpose": "Optional terrace return; both gates remain connected through the two-way lower path and eastern ramp.",
+      "return_passage_core": [
+        40,
+        40,
+        42,
+        42
+      ],
+      "minimum_return_steps": 9
+    },
+    {
+      "id": "BIRD_MEADOW_RETURN",
+      "bounds_core": [
+        10,
+        20,
+        14,
+        22
+      ],
+      "direction": "south",
+      "source_block": "57",
+      "upper_approach": [
+        11,
+        19
+      ],
+      "hop_from": [
+        11,
+        20
+      ],
+      "landing": [
+        11,
+        22
+      ],
+      "reverse_blocked": [
+        11,
+        21
+      ],
+      "side_barriers": [
+        [
+          9,
+          21
+        ],
+        [
+          14,
+          20
+        ]
+      ],
+      "return_passage_core": [
+        16,
+        20,
+        18,
+        22
+      ],
+      "minimum_return_steps": 13,
+      "purpose": "Northbound walkers must cross the eastern grass neck; southbound travel hops from the dry woodland trail onto a clear landing. No dry uphill bypass."
+    }
+  ],
+  "ordinary_stairs": [
+    {
+      "map": "MnR03C00R00",
+      "metatile": [
+        20,
+        20
+      ],
+      "native_block": "86",
+      "upper": [
+        41,
+        39
+      ],
+      "treads": [
+        [
+          41,
+          40
+        ],
+        [
+          41,
+          41
+        ]
+      ],
+      "lower": [
+        41,
+        42
+      ],
+      "bidirectional": true
+    }
+  ],
+  "closed_high_cliffs": [
+    {
+      "wall_tiles": [
+        [
+          36,
+          41
+        ],
+        [
+          37,
+          41
+        ],
+        [
+          38,
+          41
+        ],
+        [
+          39,
+          41
+        ]
+      ],
+      "walkable_upper_lip": [
+        [
+          36,
+          40
+        ],
+        [
+          37,
+          40
+        ],
+        [
+          38,
+          40
+        ],
+        [
+          39,
+          40
+        ]
+      ]
+    }
+  ],
+  "local_guidance_source": "planning/minnesota/revisions/route-grass-v01/current-r03-successor-review-v01/guidance-after-v01.json",
+  "historical_base_phase_dossier": "planning/minnesota/routes/MN_R03.json",
+  "scope": "Current installed two-chunk exterior, grass, six low-bank hops, ordinary terrace stairs and local directions. Native actors, progression, rooms and encounters remain unchanged in the bound pack."
+}

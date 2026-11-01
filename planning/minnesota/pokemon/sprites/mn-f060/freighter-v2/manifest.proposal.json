@@ -1,0 +1,122 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F060",
+  "status": "proposal-only-do-not-run-against-shared-native-root",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_269": {
+      "species_id": "MN_269",
+      "name": "Oreviathan",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          27,
+          12,
+          4
+        ],
+        [
+          4,
+          11,
+          16
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        4507,
+        16740,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          222,
+          99,
+          33
+        ],
+        [
+          33,
+          90,
+          132
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#DE6321",
+        "#215A84",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f060/freighter-v2/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-269-oreviathan-v2",
+      "species_id": "MN_269",
+      "view": "front",
+      "source": "sprites/mn-f060/freighter-v2/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        1254,
+        702
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        4507,
+        16740,
+        0
+      ]
+    },
+    {
+      "id": "mn-269-oreviathan-v2",
+      "species_id": "MN_269",
+      "view": "back",
+      "source": "sprites/mn-f060/freighter-v2/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        702,
+        1254,
+        552
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        4507,
+        16740,
+        0
+      ]
+    }
+  ],
+  "visual_review": {
+    "status": "source-reviewed-native-conversion-pending",
+    "notes": "New final front/back source inspected. Huge triangular gantry shoulders and3finger ore scoops establish growth; compact hull face and twin steam horns preserve family. Furnace belly, copper trim, lake-blue hull and close rear gantry portrait read clearly. True black outer contours and clean arm holes; quantize minor source color variation to exact4inks. Existing Tugget/Lakernaut untouched.",
+    "sheet_sha256": "0551819a59186d3affc4209c333e849afc7f7dd852b8909b8f473cae6bdbf335",
+    "outline_profile": "source-contour-v1"
+  }
+}

@@ -1,0 +1,134 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F116",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_250": {
+      "species_id": "MN_250",
+      "name": "Flarkindle",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          27,
+          23,
+          29
+        ],
+        [
+          7,
+          13,
+          11
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        30459,
+        11687,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          222,
+          189,
+          239
+        ],
+        [
+          57,
+          107,
+          90
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#DEBDEF",
+        "#396B5A",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f116/prompt-v2.txt",
+  "reference_mapping": "sprites/mn-f116/reference-mapping-v1.json",
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-250-flarkindle-v2",
+      "species_id": "MN_250",
+      "view": "front",
+      "source": "sprites/mn-f116/mn-250-250.front-back.imagegen-v2.png",
+      "crop": [
+        0,
+        0,
+        1161,
+        650
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        30459,
+        11687,
+        0
+      ],
+      "white_detail_min_samples": 32,
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-250-flarkindle-v2",
+      "species_id": "MN_250",
+      "view": "back",
+      "source": "sprites/mn-f116/mn-250-250.front-back.imagegen-v2.png",
+      "crop": [
+        0,
+        650,
+        1161,
+        705
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        30459,
+        11687,
+        0
+      ],
+      "white_detail_min_samples": 8
+    }
+  ],
+  "source_sha256": "1ebcf7f5790b048c7668482bd326c5da2549fa739729d3dcfa6c6db7b7c3a248",
+  "candidate_review": {
+    "status": "native-review-pending",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "33b2cf686723fec57f55247a686002f76b1e17fa93009aca6620fbabe5b3e584",
+    "notes": "Actual native inspected: three connected thick curved peat fingers cup lavender teardrop head with exactly two broad open pool gaps and one short root tassel. Large white eyes retain substantial dark pupils at front white32/interior16; dark-green and lavender planes remain flat and stepped. Rear shows backs of fingers and teardrop nape, lower tassel cropped. Fresh compact anatomy-only prompt succeeded after two logged unchanged output-other failures. Root final review pending."
+  },
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "notes": "Root inspected raw and both native views: three connected curved dark-green peat fingers cup a lavender teardrop head, leaving two broad open pool gaps. Large white eye windows retain black pupils; the far eye is partly concealed by a finger. Close rear enlarges the nape and backs of peat fingers with lower tassel cropped. Flat four-color native planes and stepped black rims remain clear. Exact compact successful prompt and both no-image failure records retained.",
+    "sheet_sha256": "33b2cf686723fec57f55247a686002f76b1e17fa93009aca6620fbabe5b3e584",
+    "outline_profile": "source-contour-v1"
+  }
+}

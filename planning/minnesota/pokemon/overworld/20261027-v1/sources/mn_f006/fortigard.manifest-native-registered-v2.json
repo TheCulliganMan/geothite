@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F006",
+  "species": [
+    {
+      "species_id": "MN_018",
+      "runtime_token": "FORTIGARD",
+      "palette_rgb555": [
+        32767,
+        6524,
+        14628,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        12166,
+        9358,
+        0
+      ],
+      "fit": [
+        14,
+        14
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 32,
+      "interior_black_samples": null,
+      "opaque_interior_minimum_samples": 60,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "fortigard.overworld.imagegen-v2.png",
+          "crop": [
+            16,
+            129,
+            367,
+            370
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "fortigard.overworld.imagegen-v2.png",
+          "crop": [
+            390,
+            129,
+            367,
+            370
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "fortigard.overworld.imagegen-v2.png",
+          "crop": [
+            1160,
+            129,
+            367,
+            370
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "fortigard.overworld.imagegen-v2.png",
+          "crop": [
+            17,
+            542,
+            367,
+            370
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "fortigard.overworld.imagegen-v2.png",
+          "crop": [
+            390,
+            542,
+            367,
+            370
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "fortigard.overworld.imagegen-v2.png",
+          "crop": [
+            1160,
+            542,
+            367,
+            370
+          ]
+        }
+      ]
+    }
+  ]
+}

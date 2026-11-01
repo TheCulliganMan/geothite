@@ -1,0 +1,68 @@
+{
+  "id": "MnElyShorePass",
+  "ports": [
+    {
+      "side": "west",
+      "core": [
+        [
+          0,
+          14
+        ],
+        [
+          0,
+          15
+        ]
+      ]
+    },
+    {
+      "side": "east",
+      "core": [
+        [
+          13,
+          10
+        ],
+        [
+          13,
+          11
+        ]
+      ]
+    }
+  ],
+  "actors": [
+    {
+      "id": "MNELYSHOREPASS_NPC1",
+      "tile": [
+        8,
+        14
+      ],
+      "sprite": "SPRITE_FISHER",
+      "native_script": "MnElyShorePassTrailGuide",
+      "role": "trail_guide"
+    }
+  ],
+  "views": [
+    {
+      "id": "green-approach",
+      "core": [
+        8,
+        9
+      ]
+    },
+    {
+      "id": "coastal-exit",
+      "core": [
+        11,
+        10
+      ]
+    }
+  ],
+  "current_revision": "route_grass_ely_shore_pass_revision",
+  "current_native_source": "planning/minnesota/towns/MnElyShorePass.layout.json",
+  "historical_climate_contract": "planning/minnesota/revisions/ely-backroute-v01/source-v11/native.contract.json",
+  "grass_contract": {
+    "eastbound": 5,
+    "westbound": 5
+  },
+  "climate_contract": "All existing snowy western cells and the original mixed-climate border remain exact. Both added grass cells are on the green coastal side.",
+  "revision_runbook": "revisions/route-grass-v01/current-ely-shore-pass-v01/README.md"
+}

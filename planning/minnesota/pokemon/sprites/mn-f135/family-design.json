@@ -1,0 +1,416 @@
+{
+  "schema_version": 1,
+  "status": "root-approved-native-awaiting-global-integration",
+  "family_id": "MN_F135",
+  "roster_family": {
+    "id": "MN_F135",
+    "region": "north_woods",
+    "theme": "Porcupine and locking climbing anchors; quills form the creature\u2019s own bracing frame rather than loose projectiles.",
+    "habitat": "Mature conifers, steep wooded banks and high branches.",
+    "members": [
+      {
+        "id": "MN_298",
+        "name": "Bristub",
+        "types": [
+          "NORMAL"
+        ],
+        "stage": 1,
+        "evolves_to": "MN_299"
+      },
+      {
+        "id": "MN_299",
+        "name": "Latchquill",
+        "types": [
+          "NORMAL",
+          "STEEL"
+        ],
+        "stage": 2,
+        "evolves_to": null
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://www.dnr.state.mn.us/mammals/porcupine.html",
+        "publisher": "Minnesota regional primary source",
+        "evidence": "Regional animal natural history only.",
+        "fantasy_extension": "Short blunt bars and a rounded bracing tail become a compact interlocking frame of hooked quills, rooted visibly in the back. The quills remain anatomy; they are not loose projectiles."
+      }
+    ],
+    "design_status": "native-reviewed-expansion",
+    "replacement_context": "User authorized this original family among eleven proposals; root selects overlapping retirements and preserves the active count. No encounter or map event is changed."
+  },
+  "species_profiles": [
+    {
+      "id": "MN_298",
+      "classification": "Quill Brace",
+      "height_inches": 13,
+      "weight_tenths_lb": 180,
+      "dex_pages": [
+        "It braces its tail @ against bark to @ climb high trees.",
+        "Its blunt quills @ bend together @ into a snug frame."
+      ],
+      "base_stats": {
+        "hp": 55,
+        "attack": 55,
+        "defense": 65,
+        "speed": 30,
+        "special_attack": 35,
+        "special_defense": 60
+      },
+      "catch_rate": 190,
+      "base_exp": 65,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_GROUND",
+        "EGG_GROUND"
+      ],
+      "evolution": {
+        "method": "LEVEL",
+        "level": 28
+      },
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_MONSTER",
+      "footprint_species": "SANDSHREW",
+      "cry": {
+        "cry": "CRY_RATTATA",
+        "pitch": -24,
+        "length": 144
+      },
+      "shiny_rgb5": [
+        [
+          24,
+          17,
+          25
+        ],
+        [
+          9,
+          6,
+          12
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "TACKLE"
+        ],
+        [
+          1,
+          "DEFENSE_CURL"
+        ],
+        [
+          6,
+          "GROWL"
+        ],
+        [
+          10,
+          "ROLLOUT"
+        ],
+        [
+          15,
+          "BIND"
+        ],
+        [
+          20,
+          "HARDEN"
+        ],
+        [
+          25,
+          "TAKE_DOWN"
+        ],
+        [
+          30,
+          "PROTECT"
+        ],
+        [
+          36,
+          "COUNTER"
+        ],
+        [
+          43,
+          "DOUBLE_EDGE"
+        ]
+      ],
+      "tmhm_moves": [
+        "HEADBUTT",
+        "ROLLOUT",
+        "DEFENSE_CURL",
+        "PROTECT",
+        "REST",
+        "RETURN",
+        "ATTRACT",
+        "STRENGTH"
+      ],
+      "egg_moves": [
+        "ENDURE",
+        "BODY_SLAM",
+        "SAFEGUARD"
+      ]
+    },
+    {
+      "id": "MN_299",
+      "classification": "Latch Frame",
+      "height_inches": 36,
+      "weight_tenths_lb": 1250,
+      "dex_pages": [
+        "Hooked quill bars @ lock around its @ thick brace tail.",
+        "It can sleep on @ a sheer trunk @ without slipping."
+      ],
+      "base_stats": {
+        "hp": 85,
+        "attack": 95,
+        "defense": 115,
+        "speed": 35,
+        "special_attack": 45,
+        "special_defense": 105
+      },
+      "catch_rate": 60,
+      "base_exp": 175,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_GROUND",
+        "EGG_GROUND"
+      ],
+      "evolution": null,
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_MONSTER",
+      "footprint_species": "SANDSHREW",
+      "cry": {
+        "cry": "CRY_RATTATA",
+        "pitch": 0,
+        "length": 160
+      },
+      "shiny_rgb5": [
+        [
+          24,
+          18,
+          11
+        ],
+        [
+          11,
+          7,
+          13
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "TACKLE"
+        ],
+        [
+          1,
+          "DEFENSE_CURL"
+        ],
+        [
+          1,
+          "BIND"
+        ],
+        [
+          6,
+          "GROWL"
+        ],
+        [
+          10,
+          "ROLLOUT"
+        ],
+        [
+          20,
+          "HARDEN"
+        ],
+        [
+          25,
+          "TAKE_DOWN"
+        ],
+        [
+          28,
+          "METAL_CLAW"
+        ],
+        [
+          33,
+          "PROTECT"
+        ],
+        [
+          39,
+          "COUNTER"
+        ],
+        [
+          45,
+          "IRON_TAIL"
+        ],
+        [
+          52,
+          "DOUBLE_EDGE"
+        ]
+      ],
+      "tmhm_moves": [
+        "HEADBUTT",
+        "ROLLOUT",
+        "DEFENSE_CURL",
+        "PROTECT",
+        "REST",
+        "RETURN",
+        "ATTRACT",
+        "STRENGTH",
+        "IRON_TAIL",
+        "CURSE"
+      ],
+      "egg_moves": [
+        "ENDURE",
+        "BODY_SLAM",
+        "SAFEGUARD"
+      ]
+    }
+  ],
+  "pokemon_palettes": {
+    "MN_298": {
+      "species_id": "MN_298",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          24,
+          17,
+          9
+        ],
+        [
+          10,
+          8,
+          6
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        9784,
+        6410,
+        0
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#C68C4A",
+        "#524231",
+        "#000000"
+      ],
+      "name": "Bristub",
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          198,
+          140,
+          74
+        ],
+        [
+          82,
+          66,
+          49
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    "MN_299": {
+      "species_id": "MN_299",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          20,
+          23,
+          24
+        ],
+        [
+          11,
+          9,
+          6
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        25332,
+        6443,
+        0
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#A5BDC6",
+        "#5A4A31",
+        "#000000"
+      ],
+      "name": "Latchquill",
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          165,
+          189,
+          198
+        ],
+        [
+          90,
+          74,
+          49
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ]
+    }
+  },
+  "evolution_design": "Short blunt bars and a rounded bracing tail become a compact interlocking frame of hooked quills, rooted visibly in the back. The quills remain anatomy; they are not loose projectiles.",
+  "balance_notes": "Ordinary two-stage family; no rare classification. Only existing move/effect IDs; native borrowed cry programs with distinct pitch/length. Stats and progression remain proposals for root integration.",
+  "selected_manifest": "sprites/mn-f135/manifest.json",
+  "selected_native_directory": "target/minnesota-pokemon/native/MN_F135",
+  "review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "sheet_sha256": "96197c2ab7bec11ff476e5bdb920582094a19242a98f20e4817aad56dfe5fa99",
+    "outline_profile": "solid-exterior-v1",
+    "notes": "Root approved AreaVote + Solid, white16/black12 after comparing all five variants. Closed white quill rims, visible rooted bars and broad low tail; coherent native eye clusters. Close rears crop the lower body. All original sources, prompts and rejected variants retained. No pixel edits."
+  },
+  "source_hashes": {
+    "sprites/mn-f135/proposal-v1/front-back.imagegen-v1.png": "0bccde6ff91cbd597305b4e3922189117bbef8283e7cb4382c2f47680079f1f5"
+  },
+  "variants": [
+    "area-source",
+    "area-solid",
+    "center-source",
+    "center-solid",
+    "area-white16"
+  ]
+}

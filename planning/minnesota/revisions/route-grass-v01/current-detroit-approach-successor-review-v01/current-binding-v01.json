@@ -1,0 +1,9 @@
+{
+  "status": "PASS_EXACT_MAP_TILESET_AND_USED_SHARED_ART",
+  "selected_revision": "route_grass_r19_detroit_gate_revision",
+  "pack": "content-packs/minnesota-current-r19-detroit-gate-v05.crystalpack",
+  "pack_sha256": "b57516c0b77c7bcf94fa35e60ff8300bfd8a8781782827739742d8fc15b3f437",
+  "original_acceptance": "planning/minnesota/revisions/route-grass-v01/current-detroit-approach-v01/acceptance.json",
+  "original_acceptance_sha256": "6a63913ce4f0d9d9d81a018ee9662471c6bdaf67d65220f08b9a22453ec28b81",
+  "scope": "Local terrain and inspected art inheritance; gameplay rerun separately, no assumption of global encounter equivalence."
+}

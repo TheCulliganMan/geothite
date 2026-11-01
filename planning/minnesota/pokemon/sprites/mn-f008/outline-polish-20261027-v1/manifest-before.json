@@ -1,0 +1,343 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F008",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_022": {
+      "species_id": "MN_022",
+      "name": "Rustlebee",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          29,
+          23,
+          5
+        ],
+        [
+          10,
+          7,
+          4
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        5885,
+        4330,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          239,
+          189,
+          41
+        ],
+        [
+          82,
+          57,
+          33
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#EFBD29",
+        "#523921",
+        "#000000"
+      ]
+    },
+    "MN_023": {
+      "species_id": "MN_023",
+      "name": "Patchebee",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          25,
+          13,
+          5
+        ],
+        [
+          5,
+          10,
+          13
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        5561,
+        13637,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          206,
+          107,
+          41
+        ],
+        [
+          41,
+          82,
+          107
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#CE6B29",
+        "#29526B",
+        "#000000"
+      ]
+    },
+    "MN_024": {
+      "species_id": "MN_024",
+      "name": "Rivetqueen",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          27,
+          8,
+          4
+        ],
+        [
+          15,
+          20,
+          22
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        4379,
+        23183,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          222,
+          66,
+          33
+        ],
+        [
+          123,
+          165,
+          181
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#DE4221",
+        "#7BA5B5",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f008/prompt-v3-gen2.txt",
+  "base_design_prompt_file": "sprites/mn-f008/prompt-v1.txt",
+  "source_reference": "sprites/mn-f008/mn-022-024.front-back.imagegen-v2.png",
+  "sprites": [
+    {
+      "id": "mn-022-rustlebee-v3",
+      "species_id": "MN_022",
+      "view": "front",
+      "source": "sprites/mn-f008/mn-022-024.front-back.imagegen-v3.png",
+      "crop": [
+        0,
+        0,
+        460,
+        550
+      ],
+      "fit": [
+        36,
+        36
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        5885,
+        4330,
+        0
+      ]
+    },
+    {
+      "id": "mn-022-rustlebee-v3",
+      "species_id": "MN_022",
+      "view": "back",
+      "source": "sprites/mn-f008/mn-022-024.front-back.imagegen-v3.png",
+      "crop": [
+        0,
+        550,
+        460,
+        474
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        5885,
+        4330,
+        0
+      ]
+    },
+    {
+      "id": "mn-023-patchebee-v3",
+      "species_id": "MN_023",
+      "view": "front",
+      "source": "sprites/mn-f008/mn-022-024.front-back.imagegen-v3.png",
+      "crop": [
+        460,
+        0,
+        490,
+        550
+      ],
+      "fit": [
+        44,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        5561,
+        13637,
+        0
+      ]
+    },
+    {
+      "id": "mn-023-patchebee-v3",
+      "species_id": "MN_023",
+      "view": "back",
+      "source": "sprites/mn-f008/mn-022-024.front-back.imagegen-v3.png",
+      "crop": [
+        460,
+        550,
+        490,
+        474
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        5561,
+        13637,
+        0
+      ]
+    },
+    {
+      "id": "mn-024-rivetqueen-v3",
+      "species_id": "MN_024",
+      "view": "front",
+      "source": "sprites/mn-f008/mn-022-024.front-back.imagegen-v3.png",
+      "crop": [
+        950,
+        0,
+        586,
+        550
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        4379,
+        23183,
+        0
+      ]
+    },
+    {
+      "id": "mn-024-rivetqueen-v3",
+      "species_id": "MN_024",
+      "view": "back",
+      "source": "sprites/mn-f008/mn-022-024.front-back.imagegen-v3.png",
+      "crop": [
+        950,
+        550,
+        586,
+        474
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        4379,
+        23183,
+        0
+      ]
+    }
+  ],
+  "style_reference": {
+    "origin": "authentic local Crystal sprites, read from ignored text-tui.crystalpack",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "board": "target/minnesota-pokemon/gen2-reference/bugs.png",
+    "species": [
+      "LEDIAN",
+      "SCIZOR",
+      "HERACROSS"
+    ],
+    "scope": "pixel cluster language and battle front/back camera, not creature identity"
+  },
+  "back_framing": "gen2-close-rear-portrait",
+  "visual_review": {
+    "status": "reviewed",
+    "notes": "Root inspected v1 front/back board: bee wings and antennae retain stepped black anchors around white planes; orange/blue limbs no longer merge into excessive black masses. Deliberate selective highlights remain.",
+    "sheet_sha256": "9125965128928e81ce4f3e0da88b13bd7b436ec217cc91c5d52424db8428deb7",
+    "outline_profile": "source-contour-v1"
+  }
+}

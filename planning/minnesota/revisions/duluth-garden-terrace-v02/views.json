@@ -1,0 +1,146 @@
+[
+  {
+    "id": "observation-west",
+    "map": "MnDuluth",
+    "core": [
+      14,
+      17
+    ]
+  },
+  {
+    "id": "observation-east",
+    "map": "MnDuluth",
+    "core": [
+      37,
+      17
+    ]
+  },
+  {
+    "id": "civic-upper",
+    "map": "MnDuluth",
+    "core": [
+      46,
+      17
+    ]
+  },
+  {
+    "id": "hillside-west",
+    "map": "MnDuluth",
+    "core": [
+      71,
+      15
+    ]
+  },
+  {
+    "id": "hillside-front",
+    "map": "MnDuluth",
+    "core": [
+      80,
+      15
+    ]
+  },
+  {
+    "id": "outdoor-supplies",
+    "map": "MnDuluth",
+    "core": [
+      88,
+      11
+    ]
+  },
+  {
+    "id": "weather-west",
+    "map": "MnDuluth",
+    "core": [
+      99,
+      15
+    ]
+  },
+  {
+    "id": "weather-front",
+    "map": "MnDuluth",
+    "core": [
+      106,
+      15
+    ]
+  },
+  {
+    "id": "weather-east",
+    "map": "MnDuluth",
+    "core": [
+      114,
+      11
+    ]
+  },
+  {
+    "id": "garden-north",
+    "map": "MnDuluth",
+    "core": [
+      46,
+      25
+    ]
+  },
+  {
+    "id": "garden-corner",
+    "map": "MnDuluth",
+    "core": [
+      56,
+      41
+    ]
+  },
+  {
+    "id": "garden-upper",
+    "map": "MnDuluth",
+    "core": [
+      55,
+      39
+    ]
+  },
+  {
+    "id": "garden-low-street",
+    "map": "MnDuluth",
+    "core": [
+      60,
+      42
+    ]
+  },
+  {
+    "id": "closed-mid-height-spur",
+    "map": "MnDuluth",
+    "core": [
+      64,
+      37
+    ]
+  },
+  {
+    "id": "closed-observation-cliff",
+    "map": "MnDuluth",
+    "core": [
+      25,
+      14
+    ]
+  },
+  {
+    "id": "closed-hillside-cliff",
+    "map": "MnDuluth",
+    "core": [
+      85,
+      14
+    ]
+  },
+  {
+    "id": "closed-garden-cliff",
+    "map": "MnDuluth",
+    "core": [
+      46,
+      40
+    ]
+  },
+  {
+    "id": "garden-continuous-west-corner",
+    "map": "MnDuluth",
+    "core": [
+      41,
+      42
+    ]
+  }
+]

@@ -1,0 +1,23 @@
+{
+  "trainers": [
+    {
+      "id": "MN_GYM_8",
+      "map": "MnDuluthGym",
+      "approach": [
+        9,
+        3
+      ],
+      "facing": "east",
+      "trainer_class": "MN_LEADER_NOREK",
+      "sprite": "SPRITE_MN_LEADER_NOREK",
+      "actor_script": "MnDuluthGymLeader",
+      "fixture_events": [
+        "EVENT_MN_GYM_8_COURT_OPEN"
+      ],
+      "fixture_badges": 7,
+      "defeated_flag": "EVENT_MN_GYM_8_DEFEATED",
+      "badge_slot": 8,
+      "reward_item": "TM_ICY_WIND"
+    }
+  ]
+}

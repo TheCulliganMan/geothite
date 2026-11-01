@@ -1,0 +1,216 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_042",
+  "result": "pass",
+  "manifest_sha256": "ee12b099d105362869692c8e656be2c2589ba7ec8794b09d93e5a72f991c14f7",
+  "bank_sha256": "6a74d912f79b9ec841984e5af836d4f51ac55113d2394a7aa933b45c23c301a2",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f014/reverloon.overworld.imagegen-v2-broad-face.png": "59fd1acac1eecc8248ce8e6802303eeda21fb70a9125b41920f71b5dabb914d9",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f014/reverloon.overworld.imagegen-v1.png": "0cee1c78cfe6ffeb654b26a0b9b5fb01f2e21c96aaaf1c95ebb88dab40d73562"
+  },
+  "canonical_eye_form": "Two isolated actual black pupil dots south and one isolated actual black pupil west; source eye components verified in all four nonrear poses.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            6,
+            5
+          ],
+          "source_sample": [
+            236,
+            170
+          ],
+          "source_component": [
+            226,
+            166,
+            28,
+            29
+          ],
+          "component_pixels": 812,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ]
+        },
+        {
+          "native": [
+            9,
+            5
+          ],
+          "source_sample": [
+            335,
+            170
+          ],
+          "source_component": [
+            308,
+            166,
+            28,
+            29
+          ],
+          "component_pixels": 812,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            5,
+            5
+          ],
+          "source_sample": [
+            1176,
+            177
+          ],
+          "source_component": [
+            1163,
+            154,
+            15,
+            24
+          ],
+          "component_pixels": 360,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            3,
+            6,
+            11,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            6,
+            5
+          ],
+          "source_sample": [
+            236,
+            635
+          ],
+          "source_component": [
+            226,
+            628,
+            28,
+            29
+          ],
+          "component_pixels": 812,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            2,
+            0,
+            0,
+            253
+          ]
+        },
+        {
+          "native": [
+            9,
+            5
+          ],
+          "source_sample": [
+            335,
+            635
+          ],
+          "source_component": [
+            310,
+            628,
+            28,
+            29
+          ],
+          "component_pixels": 812,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            3,
+            5,
+            6,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            5,
+            5
+          ],
+          "source_sample": [
+            1188,
+            642
+          ],
+          "source_component": [
+            1176,
+            620,
+            13,
+            24
+          ],
+          "component_pixels": 312,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            2
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            254
+          ]
+        }
+      ]
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "notes": "Final spectral loon retains long neck, two violet bands across pale biological resonator throat, two broad attached layered echo-wing lobes, webbed feet and low hook tail. Front-only source head/cheek broadening makes actual pupils readable without changing neck/body/wings or other four source poses. Rear true violet nape and folded layered wings retain real source contour seams; no copied facial organs. Commonfit14, equal488x452 source windows retain all complete silhouettes. West step source head offset12px is registered; four actual isolated pupil proofs and normal/shiny boards reviewed. No individual pose scaling or native painting."
+  }
+}

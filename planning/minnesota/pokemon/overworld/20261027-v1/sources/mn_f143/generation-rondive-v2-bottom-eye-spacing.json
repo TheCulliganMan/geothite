@@ -1,0 +1,11 @@
+{
+  "tool": "built-in image_gen",
+  "original_path": "/Users/ryanculligan/.codex/generated_images/01a178da-4cf1-7e01-8516-667a332dc790/exec-033b3a71-a4f1-476b-be02-a987f3ab1f07.png",
+  "source_sha256": "2cf80b13669ddcc446ca8ce97810037cd7ca36e5bc48d9758a67417f2c06e99a",
+  "source_size": [
+    1536,
+    1024
+  ],
+  "prompt": "prompt-rondive-v2-bottom-eye-spacing.txt",
+  "reference": "rondive.overworld.imagegen-v1.png"
+}

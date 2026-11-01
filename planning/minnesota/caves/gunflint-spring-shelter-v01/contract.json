@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "map": "MnR12Cave1F",
+  "parent_revision": "iron_drill_core_revision",
+  "parent_pack": "content-packs/minnesota-iron-drill-core-v04.crystalpack",
+  "parent_pack_sha256": "4240537c844bf7e305e99c24f2b7054c314b84a03d17037747cb4ceabdbd17fd",
+  "native_module_sha256": "901ab7a5c547996469c2f773848c5d05f44968b33b88e06a0390b8c37f0fe1e3",
+  "preserved_warps": [
+    {
+      "index": 1,
+      "x": 17,
+      "y": 23,
+      "target_map_constant": "MN_R12_C00R00",
+      "target_map": "MN_R12_C00R00",
+      "target_warp_id": 1
+    }
+  ],
+  "preserved_actor_anchors": [
+    {
+      "id": "MN_R12_OTTA",
+      "tile": [
+        5,
+        5
+      ]
+    },
+    {
+      "id": "MN_R12_CAVE_CACHE",
+      "tile": [
+        27,
+        5
+      ]
+    }
+  ],
+  "purpose": "A dry Gunflint shelter with two climbable alcoves, a central rock fin, a winding spring bank and a working camp rest."
+}

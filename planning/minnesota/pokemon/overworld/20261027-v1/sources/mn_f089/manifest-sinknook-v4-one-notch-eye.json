@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F089",
+  "species": [
+    {
+      "species_id": "MN_193",
+      "runtime_token": "SINKNOOK",
+      "palette_rgb555": [
+        32767,
+        17145,
+        12554,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        24368,
+        8524,
+        0
+      ],
+      "fit": [
+        13,
+        13
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 64,
+      "interior_black_samples": 64,
+      "opaque_interior_minimum_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "sinknook.overworld.imagegen-v2-one-notch-eye.png",
+          "crop": [
+            4,
+            141,
+            497,
+            309
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "sinknook.overworld.imagegen-v1.png",
+          "crop": [
+            541,
+            141,
+            497,
+            309
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "sinknook.overworld.imagegen-v2-one-notch-eye.png",
+          "crop": [
+            1035,
+            156,
+            497,
+            309
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "sinknook.overworld.imagegen-v2-one-notch-eye.png",
+          "crop": [
+            4,
+            641,
+            497,
+            309
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "sinknook.overworld.imagegen-v1.png",
+          "crop": [
+            541,
+            639,
+            497,
+            309
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "sinknook.overworld.imagegen-v2-one-notch-eye.png",
+          "crop": [
+            1035,
+            657,
+            497,
+            309
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "status": "PASS_CURRENT_PARENT_REBINDING_BEFORE_PUBLICATION",
+  "old_parent_revision": "route_grass_st_cloud_fronts_revision",
+  "old_parent_pack": "content-packs/minnesota-current-st-cloud-fronts-v02.crystalpack",
+  "new_parent_revision": "minneapolis_citywide_cycling_revision",
+  "new_parent_pack": "content-packs/minnesota-minneapolis-citywide-cycling-v02.crystalpack",
+  "new_parent_sha256": "504938ec2d3b0230674ddc5ae4f8ec13e9e713dd4189c1f128ff23112959b24a",
+  "all_four_complete_r14_modules_exact": [
+    "MnR14C00R00",
+    "MnR14C00R01",
+    "MnR14C01R00",
+    "MnR14C01R01"
+  ],
+  "native_headwaters_tileset_and_runtime_art_exact": true,
+  "new_plan": "planning/minnesota/revisions/route-grass-v01/current-r14-closed-bank-v01/plan-current-parent-v02.json",
+  "no_candidate_previously_published": true,
+  "build_and_review_wrappers_reused": true
+}

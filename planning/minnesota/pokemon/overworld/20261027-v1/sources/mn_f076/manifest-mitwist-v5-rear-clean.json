@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F076",
+  "species": [
+    {
+      "species_id": "MN_163",
+      "runtime_token": "MITWIST",
+      "palette_rgb555": [
+        32767,
+        20349,
+        19946,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        23376,
+        15595,
+        0
+      ],
+      "fit": [
+        11,
+        11
+      ],
+      "alpha_threshold": 200,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 64,
+      "interior_black_samples": 64,
+      "opaque_interior_minimum_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "mitwist.overworld.imagegen-v2-outline-pupils.png",
+          "crop": [
+            116,
+            125,
+            315,
+            360
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "mitwist.overworld.imagegen-v3-rear-thumbs.png",
+          "crop": [
+            599,
+            129,
+            315,
+            360
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "mitwist.overworld.imagegen-v2-outline-pupils.png",
+          "crop": [
+            1112,
+            135,
+            315,
+            360
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "mitwist.overworld.imagegen-v2-outline-pupils.png",
+          "crop": [
+            117,
+            575,
+            315,
+            360
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "mitwist.overworld.imagegen-v3-rear-thumbs.png",
+          "crop": [
+            599,
+            577,
+            315,
+            360
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "mitwist.overworld.imagegen-v2-outline-pupils.png",
+          "crop": [
+            1132,
+            587,
+            315,
+            360
+          ]
+        }
+      ]
+    }
+  ]
+}

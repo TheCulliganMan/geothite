@@ -1,0 +1,61 @@
+{
+  "tool": "built-in image_gen",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f140/mudmender-v9-joint-phase",
+  "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f140/manifest-mudmender-v9-joint-phase.json",
+  "proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f140/source-feature-proof-mudmender-v9.json",
+  "all_prompts_renders_retained": true,
+  "no_native_pixel_painting": true,
+  "canonical_palettes": [
+    [
+      32767,
+      30418,
+      17583,
+      0
+    ],
+    [
+      32767,
+      14103,
+      16838,
+      0
+    ]
+  ],
+  "native_bounds": [
+    [
+      1,
+      4,
+      13,
+      10
+    ],
+    [
+      1,
+      4,
+      12,
+      11
+    ],
+    [
+      1,
+      4,
+      14,
+      11
+    ],
+    [
+      2,
+      4,
+      12,
+      11
+    ],
+    [
+      1,
+      4,
+      12,
+      11
+    ],
+    [
+      1,
+      4,
+      14,
+      11
+    ]
+  ],
+  "status": "root visual/context acceptance pending"
+}

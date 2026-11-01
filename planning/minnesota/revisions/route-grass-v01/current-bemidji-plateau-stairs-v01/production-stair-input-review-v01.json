@@ -1,0 +1,75 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-bemidji-plateau-stairs-v01.crystalpack",
+  "pack_sha256": "6200af583a20de0def7f4611ab59531e43549471cc5cf6ab7a6f4f7e52b832e8",
+  "source_save": ".local/route-grass-review/bemidji-plateau-native-public-saves-v01/bemidji-82516-1793375823856373000.crystalsave",
+  "source_save_sha256": "f13c9a8647fca95f8f1dbf797125557f07d1fa0b2ff522ebe3e55c7475fa42f4",
+  "input_save": ".local/route-grass-review/bemidji-plateau-input-v01.crystalsave",
+  "all_input_saves_unchanged": true,
+  "reached_upper_save": ".local/route-grass-review/bemidji-plateau-output-v01.crystalsave",
+  "reached_upper_save_sha256": "6ae2a7d0ad8c7e404009cc43b15846dbdab194a08a18361997c1682e4c5b8d88",
+  "initial": {
+    "badges": 7,
+    "dialogue": false,
+    "facing": "up",
+    "frame": 2924,
+    "map": "MnBemidji",
+    "menu": null,
+    "mode": "overworld",
+    "money": 10000,
+    "player": "CHRIS",
+    "pokedex": {
+      "owned": 0,
+      "seen": 0
+    },
+    "position": {
+      "x": 20,
+      "y": 24
+    }
+  },
+  "upper": {
+    "badges": 7,
+    "dialogue": false,
+    "facing": "up",
+    "frame": 2958,
+    "map": "MnBemidji",
+    "menu": null,
+    "mode": "overworld",
+    "money": 10000,
+    "player": "CHRIS",
+    "pokedex": {
+      "owned": 0,
+      "seen": 0
+    },
+    "position": {
+      "x": 11,
+      "y": 19
+    }
+  },
+  "final": {
+    "badges": 7,
+    "dialogue": false,
+    "facing": "down",
+    "frame": 2962,
+    "map": "MnBemidji",
+    "menu": null,
+    "mode": "overworld",
+    "money": 10000,
+    "player": "CHRIS",
+    "pokedex": {
+      "owned": 0,
+      "seen": 0
+    },
+    "position": {
+      "x": 11,
+      "y": 22
+    }
+  },
+  "both_directions_native_walk": true,
+  "both_stair_sides_denied": true,
+  "continued_upper_and_walked_down": true,
+  "start_items_balls_and_overworld": true,
+  "calls": 59,
+  "stderr_bytes": 0,
+  "scope": "Actual reached current-child public save; no retagging or flag/state edits. Initial party/badges are QA fixtures."
+}

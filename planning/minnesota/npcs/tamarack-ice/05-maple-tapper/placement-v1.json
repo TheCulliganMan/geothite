@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "map": "MnMankato",
+      "approach": [
+        32,
+        25
+      ],
+      "id": "MN_EXTRA_MAPLE_TAPPER",
+      "display_name": "VERN",
+      "trainer_class": "MN_MAPLE_TAPPER",
+      "class_name": "MAPLE TAPPER",
+      "template_class": "FISHER",
+      "sprite": "SPRITE_MN_MAPLE_TAPPER",
+      "tile": [
+        32,
+        24
+      ],
+      "facing": "south",
+      "sight_range": 1,
+      "defeated_flag": "EVENT_MN_EXTRA_MAPLE_TAPPER",
+      "party": [
+        {
+          "species": "ZAPSAP",
+          "level": 18
+        },
+        {
+          "species": "PINIT",
+          "level": 20
+        }
+      ],
+      "before_lines": [
+        "Sap runs on warm",
+        "days. So do we!"
+      ],
+      "after_lines": [
+        "A tidy tap helps.",
+        "See you next thaw."
+      ],
+      "loss_lines": [
+        "Try a fresh line.",
+        "There is time yet."
+      ]
+    }
+  ]
+}

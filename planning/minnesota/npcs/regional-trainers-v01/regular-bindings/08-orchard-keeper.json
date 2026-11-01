@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "trainer_class": "MN_ORCHARD_KEEPER",
+  "class_name": "ORCHARD KEEPER",
+  "trainer_ids": [
+    "MN_R16_T08"
+  ],
+  "actors": [
+    {
+      "map": "MnR16C01R00",
+      "script": "MN_R16_T08",
+      "tile": [
+        11,
+        39
+      ],
+      "previous_sprite": "SPRITE_POKEFAN_F"
+    }
+  ]
+}

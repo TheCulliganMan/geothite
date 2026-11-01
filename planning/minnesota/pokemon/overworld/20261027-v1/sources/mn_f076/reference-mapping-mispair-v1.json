@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_164",
+  "family_id": "MN_F076",
+  "tool": "built-in image_gen",
+  "default_path": "/Users/ryanculligan/.codex/generated_images/01a178da-4cf1-7e01-8516-667a332dc790/exec-e59f119b-c7b7-4711-9c5c-f87779fea67f.png",
+  "retained_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/mispair.overworld.imagegen-v1.png",
+  "sha256": "a60b16d3ddf7a88aaed630aa1cd31111bcd4971a4b596f9946efa4afd77fee95",
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/prompt-mispair-v1.txt",
+  "style_reference": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+    "sha256": "4354a639ed1a80fd6686e43b273443ed894e58a84307a8049f638ee9ffa2a099",
+    "role": "Only supplied reference; authentic native16 style and scale, no identity copying"
+  },
+  "canonical_identity_reviewed": {
+    "front": {
+      "path": "target/minnesota-pokemon/native/MN_F076/mn-164-mispair-v3.front.png",
+      "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F076/mn-164-mispair-v3.front.png",
+      "sha256": "b09972c24f93404b86390d0f78c50eb95fe19f623cad4bc82d4ea53461f9d006"
+    },
+    "back": {
+      "path": "target/minnesota-pokemon/native/MN_F076/mn-164-mispair-v3.back.png",
+      "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F076/mn-164-mispair-v3.back.png",
+      "sha256": "ebf93f926cc6312a9735a5218839faa4cae039da8b7de0bdf0f5207362b518d3"
+    }
+  },
+  "palette_binding": {
+    "transparent_index": 0,
+    "visible_indices": [
+      1,
+      2,
+      3
+    ],
+    "normal_rgb555_words": [
+      32767,
+      19260,
+      25196,
+      0
+    ],
+    "shiny_rgb555_words": [
+      32767,
+      15068,
+      12744,
+      0
+    ],
+    "white_body_region_policy": "Simplify formerly white body/highlight regions to light ink1. Index0 is transparent everywhere, not an opaque white paint color."
+  },
+  "accepted": false,
+  "fit": 12
+}

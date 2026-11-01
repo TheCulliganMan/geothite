@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_115",
+  "name": "Prairondo",
+  "family_id": "MN_F054",
+  "generation_tool": "built-in image_gen",
+  "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f054/prairondo.overworld.imagegen-v1.png",
+  "original_default_output": "/Users/ryanculligan/.codex/generated_images/01a179bf-dc2b-7352-8975-8b8f3a32e33b/exec-5589cbdf-b0e4-456b-a24c-e15d6f17e132.png",
+  "source_sha256": "d5f53227b2185beedfa13c4b6f5bbe44d1536ce8d149553a45be42b15ecdbaba",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f054/prompt-prairondo-v1.txt",
+  "prompt_sha256": "f377cbd0ee70016e9cc919466321d6b987e5ab4de13dfc9ec9f6bbf0e9a3ad2b",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f054/reference-mapping-prairondo-v1.json",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f054/manifest-prairondo-v1-pupil-proof.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f054/prairondo-v1-pupil-proof",
+  "source_pupil_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f054/manifest-prairondo-v1-pupil-proof.proof.json",
+  "status": "frozen candidate; author actual normal/shiny and source pupils reviewed, root context pending",
+  "accepted": false
+}

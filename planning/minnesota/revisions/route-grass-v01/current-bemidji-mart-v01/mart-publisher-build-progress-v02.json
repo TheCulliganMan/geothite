@@ -1,0 +1,27 @@
+{
+  "pid": 76001,
+  "source_sha256": {
+    "crates/crystal-assets/src/bemidji_mart_facade.rs": "59542b0663fbfca3f26fdb8b3524ebdf1eec59d45006bb491f86793408e98be3",
+    "crates/crystal-assets/src/bin/revise_bemidji_mart_facade.rs": "0b83f6db16b61075366c9cb09c767f10c5aba16878134f805096d3d2c8f90d93"
+  },
+  "steps": [
+    {
+      "step": "publisher",
+      "command": [
+        "cargo",
+        "build",
+        "--profile",
+        "wasm-dev",
+        "--locked",
+        "--config",
+        "profile.wasm-dev.package.crystal-assets.opt-level=0",
+        "-p",
+        "crystal-assets",
+        "--bin",
+        "revise_bemidji_mart_facade"
+      ],
+      "exit_code": 101,
+      "log": ".local/route-grass-review/bemidji-mart-publisher-v02.log"
+    }
+  ]
+}

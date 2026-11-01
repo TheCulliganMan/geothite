@@ -1,0 +1,16 @@
+{
+  "native_pixels_painted": false,
+  "idle_dx_dy": [
+    0,
+    -2
+  ],
+  "step_dx_dy": [
+    0,
+    -2
+  ],
+  "pair_registration_delta": [
+    0,
+    0
+  ],
+  "method": "Source crop phase only, all6share one fixedtransform"
+}

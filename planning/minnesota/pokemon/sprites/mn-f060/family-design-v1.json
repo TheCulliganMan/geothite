@@ -1,0 +1,27 @@
+{
+  "id": "MN_F060",
+  "members": [
+    {
+      "id": "MN_131",
+      "name": "Tugget",
+      "types": [
+        "FIRE",
+        "WATER"
+      ],
+      "stage": 1,
+      "evolves_to": "MN_132"
+    },
+    {
+      "id": "MN_132",
+      "name": "Lakernaut",
+      "types": [
+        "FIRE",
+        "WATER"
+      ],
+      "stage": 2,
+      "evolves_to": null
+    }
+  ],
+  "theme": "Ore shipping and steam power: a compact harbor stoker grows into a broad lake-freighter creature; its hot boiler belly turns stored water into lifting power for ore-hold arms.",
+  "region": "iron_range"
+}

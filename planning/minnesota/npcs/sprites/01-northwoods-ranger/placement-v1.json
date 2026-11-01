@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "map": "MnR01C00R00",
+      "approach": [
+        3,
+        22
+      ],
+      "id": "MN_EXTRA_NPC_RANGER_01",
+      "display_name": "ROWAN",
+      "trainer_class": "MN_NORTHWOODS_RANGER",
+      "sprite": "SPRITE_MN_NORTHWOODS_RANGER",
+      "tile": [
+        4,
+        22
+      ],
+      "facing": "west",
+      "sight_range": 2,
+      "defeated_flag": "EVENT_MN_EXTRA_NPC_RANGER_01",
+      "party": [
+        {
+          "species": "BIRCHIT",
+          "level": 5
+        },
+        {
+          "species": "POUCHID",
+          "level": 6
+        }
+      ],
+      "before_lines": [
+        "Watch the trail.",
+        "Watch my team too!"
+      ],
+      "after_lines": [
+        "You move with care",
+        "Protect the woods."
+      ],
+      "loss_lines": [
+        "Follow the trail.",
+        "Try again soon."
+      ],
+      "class_name": "RANGER",
+      "template_class": "POKEFANF"
+    }
+  ]
+}

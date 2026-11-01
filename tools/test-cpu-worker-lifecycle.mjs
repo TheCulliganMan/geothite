@@ -1,0 +1,51 @@
+import assert from 'node:assert/strict';
+import { createCpuWorkerLifecycle } from '../web-client/cpu-worker-lifecycle.js';
+const tick = () => new Promise(resolve => setImmediate(resolve));
+const deferred = () => { let resolve, reject; const promise = new Promise((a,b) => {resolve=a;reject=b;}); return {promise,resolve,reject}; };
+const metrics = () => ({ initializations:0,initFailures:0,status:'dormant' });
+const source = '{"version":1,"exact":"Pokémon source bytes"}';
+{
+ const m=metrics(),boot=deferred(),models=deferred(),calls=[];
+ const lifecycle=createCpuWorkerLifecycle(()=>{
+  calls.push('create');return {initialize:id=>{calls.push(['boot',id]);return boot.promise;},
+   installScenery:(id,json)=>{calls.push(['models',id,json]);return models.promise;},
+   submit:(...args)=>calls.push(['submit',...args]),cancel:()=>calls.push('cancel'),dispose:()=>calls.push('dispose')};
+ },m,{eager:false});
+ lifecycle.sources(source);await tick();
+ assert.equal(lifecycle.ready(false),1);assert.deepEqual(calls,[]);
+ assert.equal(m.initializations,0);assert.equal(m.retainedSourceCharacters,source.length);
+ assert.equal(lifecycle.ready(true),1);assert.equal(m.initializations,1);
+ assert.throws(()=>lifecycle.submit(3,new Uint8Array(0)),/not ready/);
+ boot.resolve();await tick();
+ assert.deepEqual(calls[2],['models','models',source]);assert.equal(m.retainedSourceCharacters,0);
+ models.resolve();await tick();assert.equal(lifecycle.ready(),2);assert.equal(m.modelsInstalled,1);
+ lifecycle.ready(true);assert.equal(m.initializations,1);
+ lifecycle.submit(7,'request',true);lifecycle.cancel();
+ assert.deepEqual(calls.at(-2),['submit',7,'request',true]);assert.equal(calls.at(-1),'cancel');
+ assert.throws(()=>lifecycle.sources(source),/already finalized/);
+ lifecycle.dispose();lifecycle.dispose();assert.equal(calls.filter(x=>x==='dispose').length,1);
+ assert.equal(lifecycle.ready(true),0);
+}
+{
+ const m=metrics();let created=0;
+ const lifecycle=createCpuWorkerLifecycle(()=>{created++;throw Error('must remain uncreated');},m,{eager:false});
+ lifecycle.sources(source);lifecycle.dispose();assert.equal(lifecycle.ready(true),0);
+ assert.equal(created,0);assert.equal(m.retainedSourceCharacters,0);assert.equal(m.initFailures,0);
+}
+{
+ const m=metrics(),boot=deferred();let disposed=0;
+ const lifecycle=createCpuWorkerLifecycle(()=>({initialize:()=>boot.promise,dispose:()=>disposed++}),m,{eager:false});
+ lifecycle.sources(source);lifecycle.ready(true);lifecycle.dispose();boot.resolve();await tick();
+ assert.equal(lifecycle.ready(),0);assert.equal(disposed,1);assert.equal(m.initFailures,0);
+}
+{
+ const m=metrics();const lifecycle=createCpuWorkerLifecycle(()=>{throw Error('Worker denied');},m,{eager:false});
+ lifecycle.sources(source);assert.equal(lifecycle.ready(true),0);assert.equal(m.initFailures,1);
+ assert.equal(m.retainedSourceCharacters,0);assert.equal(lifecycle.ready(true),0);assert.equal(m.initializations,1);
+}
+{
+ const m=metrics(),boot=deferred();const lifecycle=createCpuWorkerLifecycle(()=>({initialize:()=>boot.promise,installScenery:()=>Promise.reject(Error('invalid source'))}),m,{eager:false});
+ lifecycle.sources(source);lifecycle.ready(true);boot.resolve();await tick();
+ assert.equal(lifecycle.ready(),0);assert.equal(m.initFailures,1);assert.equal(m.retainedSourceCharacters,0);
+}
+console.log('CPU worker lifecycle: dormant2D creates no worker, exact source postedonce/released, first3D activation, atomic readiness, cancellation/disposal and failure gating PASS');

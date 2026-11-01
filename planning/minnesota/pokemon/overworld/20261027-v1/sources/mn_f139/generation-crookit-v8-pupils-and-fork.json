@@ -1,0 +1,74 @@
+{
+  "tool": "built-in image_gen",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f139/crookit-v8-pupils-and-fork",
+  "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f139/manifest-crookit-v8-pupils-and-fork.json",
+  "normalized_receipt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f139/source-feature-proof-crookit-v8-pupils-and-fork.json",
+  "all_raws_prompts_rejected_trials_retained": true,
+  "no_native_pixel_painting": true,
+  "no_registry_or_pack_mutation": true,
+  "normal_shiny_boards_actually_viewed": true,
+  "canonical_palettes": [
+    [
+      32767,
+      8729,
+      9450,
+      0
+    ],
+    [
+      32767,
+      14098,
+      16712,
+      0
+    ]
+  ],
+  "native_bounds": [
+    [
+      5,
+      4,
+      7,
+      11
+    ],
+    [
+      5,
+      4,
+      7,
+      10
+    ],
+    [
+      2,
+      4,
+      12,
+      10
+    ],
+    [
+      5,
+      4,
+      7,
+      11
+    ],
+    [
+      5,
+      4,
+      7,
+      10
+    ],
+    [
+      2,
+      4,
+      12,
+      10
+    ]
+  ],
+  "retained_source_hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f139/crookit.overworld.imagegen-v1.png": "815b0b934830082c60cc182a73f3e8d9fc26e5788198936eaeb80454a65f629e",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f139/crookit.overworld.imagegen-v2-eyes.png": "8776a8923ed23c7305ffcf15fa190f19ff5babb7df3f8cdbb0796fb4d1ee386a",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f139/crookit.overworld.imagegen-v3-clear-alpha.png": "84f4c5db3ba9db927f2112b139368a3bd9020c4adead4d0154e83c1ccd783d5e",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f139/prompt-crookit-v1.txt": "35839915ec816ca29ead6608ae5c76c9a583c9e625f0a2c99c1e45c9d2bf555c",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f139/prompt-crookit-v2-eyes.txt": "849ef24bb2c0ab487518cb235ff8c1e3d639e634d3cc4f2c085dc55b4d59b245",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f139/prompt-crookit-v3-clear-alpha.txt": "b04d6bd680e9a6877701f71163960f8d6dc92b0e507077fd796bcf34cd4cdf23",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f139/crookit.v1.original-path.txt": "68309aaa38a6b9aa1e7e464ec1fdb94e70d5472f26b7c2ad03c7275aa269905d",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f139/crookit.v2-eyes.original-path.txt": "292ae7540bfb4f7b852f5d287b583ec2087710445723599c571fe8abcc9674f5",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f139/crookit.v3-clear-alpha.original-path.txt": "39db57fcf0d8e78ca4e3d5e3214dde6551b68e03c5ef26b896aed0a344a5d42e"
+  },
+  "status": "root independent visual/context acceptance pending"
+}

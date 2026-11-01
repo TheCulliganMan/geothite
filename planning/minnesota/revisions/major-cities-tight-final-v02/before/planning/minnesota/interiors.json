@@ -1,0 +1,3729 @@
+{
+  "schema_version": 1,
+  "status": "Interior floor/door reservations; production warp indices and facade coordinates must be frozen after source-art fitting.",
+  "contracts": [
+    {
+      "interior": "MnWinonaPokecenter1F",
+      "parent": "MnWinona",
+      "arrival_core": [
+        4,
+        6
+      ],
+      "return_trigger_core": [
+        3,
+        7
+      ],
+      "exterior_door_status": "Native door/stair contracts published; source collision checked. New Game/home/field-station traversal is verified through production input; clinic/mart service regressions remain separate. See playable/winona.md.",
+      "reserved_town_district": "north clinic/shop street",
+      "requires_real_collision_check": true,
+      "source_file": "towns/MnWinona.json",
+      "source_room_id": "MnWinonaPokecenter1F",
+      "arrival_warp_index": 3,
+      "return_triggers_core": [
+        [
+          3,
+          7
+        ],
+        [
+          4,
+          7
+        ]
+      ],
+      "exterior_door_core": [
+        17,
+        7
+      ],
+      "exterior_safe_return_core": [
+        17,
+        8
+      ],
+      "exterior_warp_index": 3,
+      "exterior_return_warp_index": 4
+    },
+    {
+      "interior": "MnWinonaMart",
+      "parent": "MnWinona",
+      "arrival_core": [
+        6,
+        5
+      ],
+      "return_trigger_core": [
+        6,
+        7
+      ],
+      "exterior_door_status": "Native door/stair contracts published; source collision checked. New Game/home/field-station traversal is verified through production input; clinic/mart service regressions remain separate. See playable/winona.md.",
+      "reserved_town_district": "southwest shop street",
+      "requires_real_collision_check": true,
+      "source_file": "towns/MnWinona.json",
+      "source_room_id": "MnWinonaMart",
+      "arrival_warp_index": 3,
+      "return_triggers_core": [
+        [
+          6,
+          7
+        ],
+        [
+          7,
+          7
+        ]
+      ],
+      "exterior_door_core": [
+        7,
+        23
+      ],
+      "exterior_safe_return_core": [
+        7,
+        24
+      ],
+      "exterior_warp_index": 5,
+      "exterior_return_warp_index": 6
+    },
+    {
+      "interior": "MnWinonaHome1F",
+      "parent": "MnWinona",
+      "arrival_core": [
+        7,
+        6
+      ],
+      "return_trigger_core": [
+        6,
+        7
+      ],
+      "exterior_door_status": "Native door/stair contracts published; source collision checked. New Game/home/field-station traversal is verified through production input; clinic/mart service regressions remain separate. See playable/winona.md.",
+      "reserved_town_district": "west civic street",
+      "requires_real_collision_check": true,
+      "source_file": "towns/MnWinona.json",
+      "source_room_id": "MnWinonaHome1F",
+      "arrival_warp_index": 4,
+      "return_triggers_core": [
+        [
+          6,
+          7
+        ],
+        [
+          7,
+          7
+        ]
+      ],
+      "exterior_door_core": [
+        7,
+        7
+      ],
+      "exterior_safe_return_core": [
+        7,
+        8
+      ],
+      "exterior_warp_index": 1,
+      "exterior_return_warp_index": 2
+    },
+    {
+      "interior": "MnWinonaHome2F",
+      "parent": "MnWinonaHome1F",
+      "spawn_core": [
+        3,
+        3
+      ],
+      "stairs_core": [
+        7,
+        0
+      ],
+      "safe_arrival_core": [
+        7,
+        1
+      ],
+      "target_stairs_core": [
+        9,
+        0
+      ],
+      "source_file": "towns/MnWinona.json",
+      "source_room_id": "MnWinonaHome2F",
+      "arrival_core": [
+        7,
+        0
+      ],
+      "arrival_warp_index": 1,
+      "return_trigger_core": [
+        7,
+        0
+      ],
+      "return_triggers_core": [
+        [
+          7,
+          0
+        ]
+      ],
+      "return_room": "MnWinonaHome1F",
+      "return_room_warp": 3,
+      "access_kind": "internal_stairs",
+      "new_game_floor": [
+        3,
+        3
+      ],
+      "exterior_door_status": "Native door/stair contracts published; source collision checked. New Game/home/field-station traversal is verified through production input; clinic/mart service regressions remain separate. See playable/winona.md."
+    },
+    {
+      "interior": "MnWinonaFieldStation",
+      "parent": "MnWinona",
+      "arrival_core": [
+        4,
+        10
+      ],
+      "return_trigger_core": [
+        4,
+        11
+      ],
+      "exterior_door_status": "Native door/stair contracts published; source collision checked. New Game/home/field-station traversal is verified through production input; clinic/mart service regressions remain separate. See playable/winona.md.",
+      "reserved_town_district": "riverbank field station",
+      "requires_real_collision_check": true,
+      "source_file": "towns/MnWinona.json",
+      "source_room_id": "MnWinonaFieldStation",
+      "arrival_warp_index": 3,
+      "return_triggers_core": [
+        [
+          4,
+          11
+        ],
+        [
+          5,
+          11
+        ]
+      ],
+      "exterior_door_core": [
+        18,
+        19
+      ],
+      "exterior_safe_return_core": [
+        18,
+        20
+      ],
+      "exterior_warp_index": 7,
+      "exterior_return_warp_index": 8
+    },
+    {
+      "interior": "MnRochesterPokecenter1F",
+      "parent": "MnRochester",
+      "arrival_core": [
+        10,
+        13
+      ],
+      "return_trigger_core": [
+        10,
+        15
+      ],
+      "exterior_door_status": "Published source/native facade and carpet pairs. Earned clinic/gym arrival and local gym exits pass production input; full service regression scope is recorded in playable/rochester.md.",
+      "reserved_town_district": "north clinic/shop street",
+      "requires_real_collision_check": true,
+      "source_file": "towns/MnRochester.json",
+      "source_room_id": "MnRochesterPokecenter1F",
+      "arrival_warp_index": 3,
+      "return_triggers_core": [
+        [
+          10,
+          15
+        ],
+        [
+          11,
+          15
+        ]
+      ],
+      "exterior_door_core": [
+        15,
+        7
+      ],
+      "exterior_safe_return_core": [
+        15,
+        8
+      ],
+      "exterior_warp_index": 1,
+      "exterior_return_warp_index": 2
+    },
+    {
+      "interior": "MnRochesterMart",
+      "parent": "MnRochester",
+      "arrival_core": [
+        6,
+        5
+      ],
+      "return_trigger_core": [
+        6,
+        7
+      ],
+      "exterior_door_status": "Published source/native facade and carpet pairs. Earned clinic/gym arrival and local gym exits pass production input; full service regression scope is recorded in playable/rochester.md.",
+      "reserved_town_district": "east residential street",
+      "requires_real_collision_check": true,
+      "source_file": "towns/MnRochester.json",
+      "source_room_id": "MnRochesterMart",
+      "arrival_warp_index": 3,
+      "return_triggers_core": [
+        [
+          6,
+          7
+        ],
+        [
+          7,
+          7
+        ]
+      ],
+      "exterior_door_core": [
+        29,
+        9
+      ],
+      "exterior_safe_return_core": [
+        29,
+        10
+      ],
+      "exterior_warp_index": 3,
+      "exterior_return_warp_index": 4
+    },
+    {
+      "interior": "MnRochesterGym",
+      "parent": "MnRochester",
+      "arrival_core": [
+        6,
+        17
+      ],
+      "return_trigger_core": [
+        6,
+        19
+      ],
+      "exterior_door_status": "Published source/native facade and carpet pairs. Earned clinic/gym arrival and local gym exits pass production input; full service regression scope is recorded in playable/rochester.md.",
+      "reserved_town_district": "west civic street",
+      "requires_real_collision_check": true,
+      "source_file": "towns/MnRochester.json",
+      "source_room_id": "MnRochesterGym",
+      "arrival_warp_index": 3,
+      "return_triggers_core": [
+        [
+          6,
+          19
+        ],
+        [
+          7,
+          19
+        ]
+      ],
+      "exterior_door_core": [
+        30,
+        23
+      ],
+      "exterior_safe_return_core": [
+        30,
+        24
+      ],
+      "exterior_warp_index": 5,
+      "exterior_return_warp_index": 6
+    },
+    {
+      "interior": "MnMankatoPokecenter1F",
+      "parent": "MnMankato",
+      "arrival_core": [
+        10,
+        13
+      ],
+      "return_trigger_core": [
+        10,
+        15
+      ],
+      "exterior_door_status": "Native facade, passive arrival and both carpets published and production-controller verified. See playable/mankato.md.",
+      "reserved_town_district": "east upper-bank clinic",
+      "requires_real_collision_check": true,
+      "source_file": "towns/MnMankato.json",
+      "source_room_id": "MnMankatoPokecenter1F",
+      "arrival_warp_index": 3,
+      "return_triggers_core": [
+        [
+          10,
+          15
+        ],
+        [
+          11,
+          15
+        ]
+      ],
+      "exterior_door_core": [
+        31,
+        13
+      ],
+      "exterior_safe_return_core": [
+        31,
+        14
+      ],
+      "exterior_warp_index": 1,
+      "exterior_return_warp_index": 2
+    },
+    {
+      "interior": "MnMankatoMart",
+      "parent": "MnMankato",
+      "arrival_core": [
+        6,
+        5
+      ],
+      "return_trigger_core": [
+        6,
+        7
+      ],
+      "exterior_door_status": "Native facade, passive arrival and both carpets published and production-controller verified. See playable/mankato.md.",
+      "reserved_town_district": "lower garden market lane",
+      "requires_real_collision_check": true,
+      "source_file": "towns/MnMankato.json",
+      "source_room_id": "MnMankatoMart",
+      "arrival_warp_index": 3,
+      "return_triggers_core": [
+        [
+          6,
+          7
+        ],
+        [
+          7,
+          7
+        ]
+      ],
+      "exterior_door_core": [
+        37,
+        27
+      ],
+      "exterior_safe_return_core": [
+        37,
+        28
+      ],
+      "exterior_warp_index": 3,
+      "exterior_return_warp_index": 4
+    },
+    {
+      "interior": "MnMankatoGym",
+      "parent": "MnMankato",
+      "arrival_core": [
+        6,
+        17
+      ],
+      "return_trigger_core": [
+        6,
+        19
+      ],
+      "exterior_door_status": "Native facade, passive arrival and both carpets published and production-controller verified. See playable/mankato.md.",
+      "reserved_town_district": "west upper terrace",
+      "requires_real_collision_check": true,
+      "source_file": "towns/MnMankato.json",
+      "source_room_id": "MnMankatoGym",
+      "arrival_warp_index": 3,
+      "return_triggers_core": [
+        [
+          6,
+          19
+        ],
+        [
+          7,
+          19
+        ]
+      ],
+      "exterior_door_core": [
+        10,
+        11
+      ],
+      "exterior_safe_return_core": [
+        10,
+        12
+      ],
+      "exterior_warp_index": 5,
+      "exterior_return_warp_index": 6
+    },
+    {
+      "interior": "MnMinneapolisPokecenter1F",
+      "parent": "MnMinneapolis",
+      "arrival_core": [
+        10,
+        13
+      ],
+      "return_trigger_core": [
+        10,
+        15
+      ],
+      "exterior_door_status": "NATIVE VERIFIED: actual facade, passive arrival and paired carpets published; production controller verifies entry/return. See playable/minneapolis.md.",
+      "reserved_town_district": "north clinic/shop street",
+      "requires_real_collision_check": true,
+      "return_triggers_core": [
+        [
+          10,
+          15
+        ],
+        [
+          11,
+          15
+        ]
+      ],
+      "exterior_door_core": [
+        45,
+        11
+      ],
+      "exterior_safe_return_core": [
+        45,
+        12
+      ],
+      "interior_passive_arrival_warp": 3
+    },
+    {
+      "interior": "MnMinneapolisMart",
+      "parent": "MnMinneapolis",
+      "arrival_core": [
+        6,
+        5
+      ],
+      "return_trigger_core": [
+        6,
+        7
+      ],
+      "exterior_door_status": "NATIVE VERIFIED: actual facade, passive arrival and paired carpets published; production controller verifies entry/return. See playable/minneapolis.md.",
+      "reserved_town_district": "east residential street",
+      "requires_real_collision_check": true,
+      "return_triggers_core": [
+        [
+          6,
+          7
+        ],
+        [
+          7,
+          7
+        ]
+      ],
+      "exterior_door_core": [
+        55,
+        15
+      ],
+      "exterior_safe_return_core": [
+        55,
+        16
+      ],
+      "interior_passive_arrival_warp": 3
+    },
+    {
+      "interior": "MnMinneapolisGym",
+      "parent": "MnMinneapolis",
+      "arrival_core": [
+        4,
+        15
+      ],
+      "return_trigger_core": [
+        4,
+        17
+      ],
+      "exterior_door_status": "NATIVE VERIFIED: actual facade, passive arrival and paired carpets published; production controller verifies entry/return. See playable/minneapolis.md.",
+      "reserved_town_district": "west civic street",
+      "requires_real_collision_check": true,
+      "return_triggers_core": [
+        [
+          4,
+          17
+        ],
+        [
+          5,
+          17
+        ]
+      ],
+      "exterior_door_core": [
+        42,
+        23
+      ],
+      "exterior_safe_return_core": [
+        42,
+        24
+      ],
+      "interior_passive_arrival_warp": 3
+    },
+    {
+      "interior": "MnStPaulPokecenter1F",
+      "parent": "MnStPaul",
+      "arrival_core": [
+        3,
+        5
+      ],
+      "return_trigger_core": [
+        3,
+        7
+      ],
+      "exterior_door_status": "Native facade/passive arrival/all room carpets published and production-controller verified. Gym4 retains all four internal pad pairs. Depot quest/rail remain unfinished; see playable/st-paul.md.",
+      "reserved_town_district": "north clinic/shop street",
+      "requires_real_collision_check": true,
+      "source_file": "towns/MnStPaul.json",
+      "source_room_id": "MnStPaulPokecenter1F",
+      "return_triggers_core": [
+        [
+          3,
+          7
+        ],
+        [
+          4,
+          7
+        ]
+      ],
+      "arrival_warp_index": 3,
+      "exterior_door_core": [
+        7,
+        15
+      ],
+      "exterior_safe_return_core": [
+        7,
+        16
+      ],
+      "exterior_warp_index": 3,
+      "exterior_return_warp_index": 4
+    },
+    {
+      "interior": "MnStPaulMart",
+      "parent": "MnStPaul",
+      "arrival_core": [
+        3,
+        5
+      ],
+      "return_trigger_core": [
+        2,
+        7
+      ],
+      "exterior_door_status": "Native facade/passive arrival/all room carpets published and production-controller verified. Gym4 retains all four internal pad pairs. Depot quest/rail remain unfinished; see playable/st-paul.md.",
+      "reserved_town_district": "east residential street",
+      "requires_real_collision_check": true,
+      "source_file": "towns/MnStPaul.json",
+      "source_room_id": "MnStPaulMart",
+      "return_triggers_core": [
+        [
+          2,
+          7
+        ],
+        [
+          3,
+          7
+        ]
+      ],
+      "arrival_warp_index": 3,
+      "exterior_door_core": [
+        23,
+        15
+      ],
+      "exterior_safe_return_core": [
+        23,
+        16
+      ],
+      "exterior_warp_index": 5,
+      "exterior_return_warp_index": 6
+    },
+    {
+      "interior": "MnStPaulGym",
+      "parent": "MnStPaul",
+      "arrival_core": [
+        2,
+        17
+      ],
+      "return_trigger_core": [
+        2,
+        19
+      ],
+      "exterior_door_status": "Native facade/passive arrival/all room carpets published and production-controller verified. Gym4 retains all four internal pad pairs. Depot quest/rail remain unfinished; see playable/st-paul.md.",
+      "reserved_town_district": "west civic street",
+      "requires_real_collision_check": true,
+      "source_file": "towns/MnStPaul.json",
+      "source_room_id": "MnStPaulGym",
+      "return_triggers_core": [
+        [
+          2,
+          19
+        ],
+        [
+          3,
+          19
+        ]
+      ],
+      "arrival_warp_index": 3,
+      "exterior_door_core": [
+        54,
+        15
+      ],
+      "exterior_safe_return_core": [
+        54,
+        16
+      ],
+      "exterior_warp_index": 9,
+      "exterior_return_warp_index": 10
+    },
+    {
+      "interior": "MnStCloudPokecenter1F",
+      "parent": "MnStCloud",
+      "arrival_core": [
+        10,
+        13
+      ],
+      "return_trigger_core": [
+        10,
+        15
+      ],
+      "exterior_door_status": "Native facade/passive arrival/both carpets and production-controller course verified. Station rail remains unfinished; see playable/st-cloud.md.",
+      "reserved_town_district": "north clinic/shop street",
+      "requires_real_collision_check": true,
+      "source_file": "towns/MnStCloud.json",
+      "source_room_id": "MnStCloudPokecenter1F",
+      "return_triggers_core": [
+        [
+          10,
+          15
+        ],
+        [
+          11,
+          15
+        ]
+      ],
+      "arrival_warp_index": 3,
+      "exterior_door_core": [
+        6,
+        9
+      ],
+      "exterior_safe_return_core": [
+        6,
+        10
+      ],
+      "exterior_warp_index": 1,
+      "exterior_return_warp_index": 2
+    },
+    {
+      "interior": "MnStCloudMart",
+      "parent": "MnStCloud",
+      "arrival_core": [
+        6,
+        5
+      ],
+      "return_trigger_core": [
+        6,
+        7
+      ],
+      "exterior_door_status": "Native facade/passive arrival/both carpets and production-controller course verified. Station rail remains unfinished; see playable/st-cloud.md.",
+      "reserved_town_district": "east residential street",
+      "requires_real_collision_check": true,
+      "source_file": "towns/MnStCloud.json",
+      "source_room_id": "MnStCloudMart",
+      "return_triggers_core": [
+        [
+          6,
+          7
+        ],
+        [
+          7,
+          7
+        ]
+      ],
+      "arrival_warp_index": 3,
+      "exterior_door_core": [
+        14,
+        9
+      ],
+      "exterior_safe_return_core": [
+        14,
+        10
+      ],
+      "exterior_warp_index": 3,
+      "exterior_return_warp_index": 4
+    },
+    {
+      "interior": "MnStCloudGym",
+      "parent": "MnStCloud",
+      "arrival_core": [
+        4,
+        19
+      ],
+      "return_trigger_core": [
+        4,
+        21
+      ],
+      "exterior_door_status": "Native facade/passive arrival/both carpets and production-controller course verified. Station rail remains unfinished; see playable/st-cloud.md.",
+      "reserved_town_district": "west civic street",
+      "requires_real_collision_check": true,
+      "source_file": "towns/MnStCloud.json",
+      "source_room_id": "MnStCloudGym",
+      "return_triggers_core": [
+        [
+          4,
+          21
+        ],
+        [
+          5,
+          21
+        ]
+      ],
+      "arrival_warp_index": 3,
+      "exterior_door_core": [
+        8,
+        27
+      ],
+      "exterior_safe_return_core": [
+        8,
+        28
+      ],
+      "exterior_warp_index": 5,
+      "exterior_return_warp_index": 6
+    },
+    {
+      "interior": "MnBrainerdPokecenter1F",
+      "parent": "MnBrainerd",
+      "arrival_core": [
+        10,
+        13
+      ],
+      "return_trigger_core": [
+        10,
+        15
+      ],
+      "exterior_door_status": "Exact authored native DOOR quadrant and reciprocal passive FLOOR contract; consult city runbook for publication/controller status.",
+      "reserved_town_district": "north clinic/shop street",
+      "requires_real_collision_check": true,
+      "source_file": "towns/MnBrainerd.json",
+      "source_room_id": "MnBrainerdPokecenter1F",
+      "return_triggers_core": [
+        [
+          10,
+          15
+        ],
+        [
+          11,
+          15
+        ]
+      ],
+      "arrival_warp_index": 3,
+      "exterior_door_core": [
+        9,
+        21
+      ],
+      "exterior_safe_return_core": [
+        9,
+        22
+      ],
+      "exterior_warp_index": 1,
+      "exterior_return_warp_index": 2
+    },
+    {
+      "interior": "MnBrainerdMart",
+      "parent": "MnBrainerd",
+      "arrival_core": [
+        6,
+        5
+      ],
+      "return_trigger_core": [
+        6,
+        7
+      ],
+      "exterior_door_status": "Exact authored native DOOR quadrant and reciprocal passive FLOOR contract; consult city runbook for publication/controller status.",
+      "reserved_town_district": "east residential street",
+      "requires_real_collision_check": true,
+      "source_file": "towns/MnBrainerd.json",
+      "source_room_id": "MnBrainerdMart",
+      "return_triggers_core": [
+        [
+          6,
+          7
+        ],
+        [
+          7,
+          7
+        ]
+      ],
+      "arrival_warp_index": 3,
+      "exterior_door_core": [
+        19,
+        21
+      ],
+      "exterior_safe_return_core": [
+        19,
+        22
+      ],
+      "exterior_warp_index": 3,
+      "exterior_return_warp_index": 4
+    },
+    {
+      "interior": "MnBrainerdGym",
+      "parent": "MnBrainerd",
+      "arrival_core": [
+        4,
+        14
+      ],
+      "return_trigger_core": [
+        4,
+        15
+      ],
+      "exterior_door_status": "Exact authored city door5 and passive6; native binding must reuse the canonical gym room.",
+      "reserved_town_district": "west civic street",
+      "requires_real_collision_check": true,
+      "return_triggers_core": [
+        [
+          4,
+          15
+        ],
+        [
+          5,
+          15
+        ]
+      ],
+      "source_file": "towns/MnBrainerd.json",
+      "source_room_id": "MnBrainerdGym",
+      "exterior_door_core": [
+        12,
+        35
+      ],
+      "exterior_safe_return_core": [
+        12,
+        36
+      ],
+      "exterior_warp_index": 5,
+      "exterior_return_warp_index": 6
+    },
+    {
+      "interior": "MnBemidjiPokecenter1F",
+      "parent": "MnBemidji",
+      "arrival_core": [
+        10,
+        13
+      ],
+      "return_trigger_core": [
+        10,
+        15
+      ],
+      "exterior_door_status": "Exact authored native DOOR quadrant and reciprocal passive FLOOR contract; consult city runbook for publication/controller status.",
+      "reserved_town_district": "north clinic/shop street",
+      "requires_real_collision_check": true,
+      "source_file": "towns/MnBemidji.json",
+      "source_room_id": "MnBemidjiPokecenter1F",
+      "return_triggers_core": [
+        [
+          10,
+          15
+        ],
+        [
+          11,
+          15
+        ]
+      ],
+      "arrival_warp_index": 3,
+      "exterior_door_core": [
+        31,
+        9
+      ],
+      "exterior_safe_return_core": [
+        31,
+        10
+      ],
+      "exterior_warp_index": 5,
+      "exterior_return_warp_index": 6
+    },
+    {
+      "interior": "MnBemidjiMart",
+      "parent": "MnBemidji",
+      "arrival_core": [
+        6,
+        5
+      ],
+      "return_trigger_core": [
+        6,
+        7
+      ],
+      "exterior_door_status": "Exact authored native DOOR quadrant and reciprocal passive FLOOR contract; consult city runbook for publication/controller status.",
+      "reserved_town_district": "east residential street",
+      "requires_real_collision_check": true,
+      "source_file": "towns/MnBemidji.json",
+      "source_room_id": "MnBemidjiMart",
+      "return_triggers_core": [
+        [
+          6,
+          7
+        ],
+        [
+          7,
+          7
+        ]
+      ],
+      "arrival_warp_index": 3,
+      "exterior_door_core": [
+        42,
+        19
+      ],
+      "exterior_safe_return_core": [
+        42,
+        20
+      ],
+      "exterior_warp_index": 9,
+      "exterior_return_warp_index": 10
+    },
+    {
+      "interior": "MnBemidjiGym",
+      "parent": "MnBemidji",
+      "arrival_core": [
+        4,
+        17
+      ],
+      "return_trigger_core": [
+        4,
+        19
+      ],
+      "exterior_door_status": "Select a complete authenticated source facade, then freeze its core door and safe exterior floor in this record before export.",
+      "reserved_town_district": "west civic street",
+      "requires_real_collision_check": true
+    },
+    {
+      "interior": "MnGrandRapidsPokecenter1F",
+      "parent": "MnGrandRapids",
+      "arrival_core": [
+        10,
+        13
+      ],
+      "return_trigger_core": [
+        10,
+        15
+      ],
+      "exterior_door_status": "Frozen original-art facade and reciprocal native carpet/passive-floor pairing.",
+      "reserved_town_district": "north clinic/shop street",
+      "requires_real_collision_check": true,
+      "source_file": "towns/MnGrandRapids.json",
+      "exterior_door_core": [
+        9,
+        11
+      ],
+      "exterior_safe_return_core": [
+        9,
+        12
+      ],
+      "exterior_warp_index": 1,
+      "exterior_return_warp_index": 2,
+      "arrival_warp_index": 3,
+      "return_triggers_core": [
+        [
+          10,
+          15
+        ],
+        [
+          11,
+          15
+        ]
+      ],
+      "native_status": "Verified native publication, reciprocal carpets/passive returns, production service/handover inputs and Continue; see STATUS.md."
+    },
+    {
+      "interior": "MnGrandRapidsMart",
+      "parent": "MnGrandRapids",
+      "arrival_core": [
+        6,
+        5
+      ],
+      "return_trigger_core": [
+        6,
+        7
+      ],
+      "exterior_door_status": "Frozen original-art facade and reciprocal native carpet/passive-floor pairing.",
+      "reserved_town_district": "east residential street",
+      "requires_real_collision_check": true,
+      "source_file": "towns/MnGrandRapids.json",
+      "exterior_door_core": [
+        39,
+        15
+      ],
+      "exterior_safe_return_core": [
+        39,
+        16
+      ],
+      "exterior_warp_index": 3,
+      "exterior_return_warp_index": 4,
+      "arrival_warp_index": 3,
+      "return_triggers_core": [
+        [
+          6,
+          7
+        ],
+        [
+          7,
+          7
+        ]
+      ],
+      "native_status": "Verified native publication, reciprocal carpets/passive returns, production service/handover inputs and Continue; see STATUS.md."
+    },
+    {
+      "interior": "MnGrandRapidsSurveyDepot",
+      "parent": "MnGrandRapids",
+      "arrival_core": [
+        12,
+        17
+      ],
+      "return_trigger_core": [
+        12,
+        19
+      ],
+      "exterior_door_status": "Frozen original-art facade and reciprocal native carpet/passive-floor pairing.",
+      "reserved_town_district": "west civic street",
+      "requires_real_collision_check": true,
+      "source_file": "towns/MnGrandRapids.json",
+      "exterior_door_core": [
+        27,
+        13
+      ],
+      "exterior_safe_return_core": [
+        27,
+        14
+      ],
+      "exterior_warp_index": 5,
+      "exterior_return_warp_index": 6,
+      "arrival_warp_index": 3,
+      "return_triggers_core": [
+        [
+          12,
+          19
+        ],
+        [
+          13,
+          19
+        ]
+      ],
+      "native_status": "Verified native publication, reciprocal carpets/passive returns, production service/handover inputs and Continue; see STATUS.md."
+    },
+    {
+      "interior": "MnDuluthPokecenter1F",
+      "parent": "MnDuluth",
+      "arrival_core": [
+        10,
+        13
+      ],
+      "return_trigger_core": [
+        10,
+        15
+      ],
+      "exterior_door_status": "Exact authored native DOOR quadrant and reciprocal passive FLOOR contract; consult city runbook for publication/controller status.",
+      "reserved_town_district": "north clinic/shop street",
+      "requires_real_collision_check": true,
+      "source_file": "towns/MnDuluth.json",
+      "source_room_id": "MnDuluthPokecenter1F",
+      "return_triggers_core": [
+        [
+          10,
+          15
+        ],
+        [
+          11,
+          15
+        ]
+      ],
+      "arrival_warp_index": 3,
+      "exterior_door_core": [
+        37,
+        11
+      ],
+      "exterior_safe_return_core": [
+        37,
+        12
+      ],
+      "exterior_warp_index": 5,
+      "exterior_return_warp_index": 6
+    },
+    {
+      "interior": "MnDuluthMart",
+      "parent": "MnDuluth",
+      "arrival_core": [
+        6,
+        5
+      ],
+      "return_trigger_core": [
+        6,
+        7
+      ],
+      "exterior_door_status": "Exact authored native DOOR quadrant and reciprocal passive FLOOR contract; consult city runbook for publication/controller status.",
+      "reserved_town_district": "east residential street",
+      "requires_real_collision_check": true,
+      "source_file": "towns/MnDuluth.json",
+      "source_room_id": "MnDuluthMart",
+      "return_triggers_core": [
+        [
+          6,
+          7
+        ],
+        [
+          7,
+          7
+        ]
+      ],
+      "arrival_warp_index": 3,
+      "exterior_door_core": [
+        48,
+        19
+      ],
+      "exterior_safe_return_core": [
+        48,
+        20
+      ],
+      "exterior_warp_index": 7,
+      "exterior_return_warp_index": 8
+    },
+    {
+      "interior": "MnDuluthGym",
+      "parent": "MnDuluth",
+      "arrival_core": [
+        6,
+        17
+      ],
+      "return_trigger_core": [
+        6,
+        19
+      ],
+      "exterior_door_status": "Exact authored native DOOR quadrant and reciprocal passive FLOOR contract; consult city runbook for publication/controller status.",
+      "reserved_town_district": "west civic street",
+      "requires_real_collision_check": true,
+      "source_file": "towns/MnDuluth.json",
+      "source_room_id": "MnDuluthGym",
+      "return_triggers_core": [
+        [
+          6,
+          19
+        ],
+        [
+          7,
+          19
+        ]
+      ],
+      "arrival_warp_index": 3,
+      "exterior_door_core": [
+        16,
+        11
+      ],
+      "exterior_safe_return_core": [
+        16,
+        12
+      ],
+      "exterior_warp_index": 3,
+      "exterior_return_warp_index": 4
+    },
+    {
+      "interior": "MnDuluthHarborWorkshop",
+      "parent": "MnDuluth",
+      "arrival_core": [
+        8,
+        9
+      ],
+      "return_trigger_core": [
+        8,
+        11
+      ],
+      "exterior_door_status": "Exact authored native DOOR quadrant and reciprocal passive FLOOR contract; consult city runbook for publication/controller status.",
+      "reserved_town_district": "south park edge",
+      "requires_real_collision_check": true,
+      "source_file": "towns/MnDuluth.json",
+      "source_room_id": "MnDuluthHarborWorkshop",
+      "return_triggers_core": [
+        [
+          8,
+          11
+        ],
+        [
+          9,
+          11
+        ]
+      ],
+      "arrival_warp_index": 3,
+      "exterior_door_core": [
+        48,
+        35
+      ],
+      "exterior_safe_return_core": [
+        48,
+        36
+      ],
+      "exterior_warp_index": 13,
+      "exterior_return_warp_index": 14
+    },
+    {
+      "interior": "MnBoundaryWatersSurveyShelter",
+      "parent": "MnBoundaryWaters",
+      "arrival_core": [
+        8,
+        9
+      ],
+      "return_trigger_core": [
+        8,
+        11
+      ],
+      "exterior_door_status": "Select a complete authenticated source facade, then freeze its core door and safe exterior floor in this record before export.",
+      "reserved_town_district": "north clinic/shop street",
+      "requires_real_collision_check": true
+    },
+    {
+      "interior": "MnElyPokecenter1F",
+      "parent": "MnEly",
+      "arrival_core": [
+        10,
+        13
+      ],
+      "return_trigger_core": [
+        10,
+        15
+      ],
+      "exterior_door_status": "Select a complete authenticated source facade, then freeze its core door and safe exterior floor in this record before export.",
+      "reserved_town_district": "north clinic/shop street",
+      "requires_real_collision_check": true
+    },
+    {
+      "interior": "MnElyMart",
+      "parent": "MnEly",
+      "arrival_core": [
+        6,
+        5
+      ],
+      "return_trigger_core": [
+        6,
+        7
+      ],
+      "exterior_door_status": "Select a complete authenticated source facade, then freeze its core door and safe exterior floor in this record before export.",
+      "reserved_town_district": "east residential street",
+      "requires_real_collision_check": true
+    },
+    {
+      "interior": "MnLeagueLobby",
+      "parent": "MnEly",
+      "arrival_core": [
+        10,
+        13
+      ],
+      "return_trigger_core": [
+        10,
+        15
+      ],
+      "exterior_door_status": "Select a complete authenticated source facade, then freeze its core door and safe exterior floor in this record before export.",
+      "reserved_town_district": "west civic street",
+      "requires_real_collision_check": true
+    },
+    {
+      "interior": "MnLeagueRoom1",
+      "parent": "MnLeagueLobby",
+      "arrival_core": [
+        10,
+        13
+      ],
+      "return_core": [
+        10,
+        15
+      ],
+      "forward_core": [
+        10,
+        1
+      ],
+      "forward_requires": "LEAGUE_RUN_WIN_1",
+      "behavior": "League lobby controls active run. Loss returns to a registered Minnesota recovery center."
+    },
+    {
+      "interior": "MnLeagueRoom2",
+      "parent": "MnLeagueRoom1",
+      "arrival_core": [
+        10,
+        13
+      ],
+      "return_core": [
+        10,
+        15
+      ],
+      "forward_core": [
+        10,
+        1
+      ],
+      "forward_requires": "LEAGUE_RUN_WIN_2",
+      "behavior": "League lobby controls active run. Loss returns to a registered Minnesota recovery center."
+    },
+    {
+      "interior": "MnLeagueRoom3",
+      "parent": "MnLeagueRoom2",
+      "arrival_core": [
+        10,
+        13
+      ],
+      "return_core": [
+        10,
+        15
+      ],
+      "forward_core": [
+        10,
+        1
+      ],
+      "forward_requires": "LEAGUE_RUN_WIN_3",
+      "behavior": "League lobby controls active run. Loss returns to a registered Minnesota recovery center."
+    },
+    {
+      "interior": "MnLeagueRoom4",
+      "parent": "MnLeagueRoom3",
+      "arrival_core": [
+        10,
+        13
+      ],
+      "return_core": [
+        10,
+        15
+      ],
+      "forward_core": [
+        10,
+        1
+      ],
+      "forward_requires": "LEAGUE_RUN_WIN_4",
+      "behavior": "League lobby controls active run. Loss returns to a registered Minnesota recovery center."
+    },
+    {
+      "interior": "MnLeagueChampion",
+      "parent": "MnLeagueRoom4",
+      "arrival_core": [
+        10,
+        13
+      ],
+      "return_core": [
+        10,
+        15
+      ],
+      "forward_core": null,
+      "forward_requires": "EVENT_MN_LEAGUE_CHAMPION",
+      "behavior": "League lobby controls active run. Loss returns to a registered Minnesota recovery center."
+    },
+    {
+      "interior": "MnDetroitLakesPokecenter1F",
+      "parent": "MnDetroitLakes",
+      "arrival_core": [
+        8,
+        13
+      ],
+      "return_trigger_core": [
+        8,
+        15
+      ],
+      "exterior_door_status": "Exact authored native DOOR quadrant and reciprocal passive FLOOR contract; consult city runbook for publication/controller status.",
+      "reserved_town_district": "north clinic/shop street",
+      "requires_real_collision_check": true,
+      "source_file": "towns/MnDetroitLakes.json",
+      "source_room_id": "MnDetroitLakesPokecenter1F",
+      "return_triggers_core": [
+        [
+          8,
+          15
+        ],
+        [
+          9,
+          15
+        ]
+      ],
+      "arrival_warp_index": 3,
+      "exterior_door_core": [
+        33,
+        9
+      ],
+      "exterior_safe_return_core": [
+        33,
+        10
+      ],
+      "exterior_warp_index": 3,
+      "exterior_return_warp_index": 4
+    },
+    {
+      "interior": "MnDetroitLakesMart",
+      "parent": "MnDetroitLakes",
+      "arrival_core": [
+        3,
+        6
+      ],
+      "return_trigger_core": [
+        2,
+        7
+      ],
+      "exterior_door_status": "Exact authored native DOOR quadrant and reciprocal passive FLOOR contract; consult city runbook for publication/controller status.",
+      "reserved_town_district": "east residential street",
+      "requires_real_collision_check": true,
+      "source_file": "towns/MnDetroitLakes.json",
+      "source_room_id": "MnDetroitLakesMart",
+      "return_triggers_core": [
+        [
+          2,
+          7
+        ],
+        [
+          3,
+          7
+        ]
+      ],
+      "arrival_warp_index": 3,
+      "exterior_door_core": [
+        39,
+        17
+      ],
+      "exterior_safe_return_core": [
+        39,
+        18
+      ],
+      "exterior_warp_index": 5,
+      "exterior_return_warp_index": 6
+    },
+    {
+      "interior": "MnMoorheadPokecenter1F",
+      "parent": "MnMoorhead",
+      "arrival_core": [
+        10,
+        13
+      ],
+      "return_trigger_core": [
+        10,
+        15
+      ],
+      "exterior_door_status": "Select a complete authenticated source facade, then freeze its core door and safe exterior floor in this record before export.",
+      "reserved_town_district": "north clinic/shop street",
+      "requires_real_collision_check": true
+    },
+    {
+      "interior": "MnMoorheadMart",
+      "parent": "MnMoorhead",
+      "arrival_core": [
+        6,
+        5
+      ],
+      "return_trigger_core": [
+        6,
+        7
+      ],
+      "exterior_door_status": "Select a complete authenticated source facade, then freeze its core door and safe exterior floor in this record before export.",
+      "reserved_town_district": "east residential street",
+      "requires_real_collision_check": true
+    },
+    {
+      "interior": "MnInternationalFallsPokecenter1F",
+      "parent": "MnInternationalFalls",
+      "arrival_core": [
+        10,
+        13
+      ],
+      "return_trigger_core": [
+        10,
+        15
+      ],
+      "exterior_door_status": "Select a complete authenticated source facade, then freeze its core door and safe exterior floor in this record before export.",
+      "reserved_town_district": "north clinic/shop street",
+      "requires_real_collision_check": true
+    },
+    {
+      "interior": "MnInternationalFallsMart",
+      "parent": "MnInternationalFalls",
+      "arrival_core": [
+        6,
+        5
+      ],
+      "return_trigger_core": [
+        6,
+        7
+      ],
+      "exterior_door_status": "Select a complete authenticated source facade, then freeze its core door and safe exterior floor in this record before export.",
+      "reserved_town_district": "east residential street",
+      "requires_real_collision_check": true
+    },
+    {
+      "interior": "MnR09Cave1F",
+      "parent_route": "MN_R09",
+      "arrival_core": [
+        13,
+        18
+      ],
+      "return_trigger_core": [
+        13,
+        19
+      ],
+      "exterior_anchor_metatile": [
+        20,
+        20
+      ],
+      "exterior_door_core": [
+        40,
+        41
+      ],
+      "requires_real_collision_check": false,
+      "safe_exterior_return_core": [
+        40,
+        42
+      ],
+      "native_status": "Installed12x11 R09 native mine review candidate on b3b0c678 CURRENT510; original forced NITE. Three useful stairs both ways, two short drops with9/11 ordinary returns, scout pages, foreman prerequisites/real battle/win-loss, separate recovery yes-no/acknowledgement/repeat and Continue PASS. Regional earned progression and final visual approval remain separate.",
+      "dimensions_metatiles": [
+        12,
+        11
+      ],
+      "native_palette": "nite",
+      "native_warp_arrival_core": [
+        13,
+        19
+      ],
+      "clear_arrival_core": [
+        13,
+        18
+      ],
+      "exterior_clear_return_core": [
+        40,
+        42
+      ],
+      "source_collision_checked": true,
+      "mouths": [
+        {
+          "exterior_door_core": [
+            40,
+            41
+          ],
+          "interior_target_warp": 1,
+          "exterior_entry_warp": 1,
+          "exterior_return_warp": 2,
+          "safe_exterior_return_core": [
+            40,
+            42
+          ]
+        }
+      ],
+      "candidate_source_sha256": "243f04da49a01f59e6fe8fb004049fd942c3acac1e1e6a5ad6c865f89b650d43",
+      "native_review_pack_sha256": "b3b0c67847b6fa2ac1f65ba0e5075a55f5b7372657a9d69c7193b2a41ba15e69",
+      "runtime_settled_exterior_core": [
+        40,
+        42
+      ],
+      "return_semantics": "Original mine warp1 at13,19 LADDER returns directly to exterior passive warp2 at40,42 FLOOR; stable after native frames and walking away/back. Exterior active CAVE warp1 at40,41 deliberately reenters. Clear indoor arrival13,18 is distinct from actual warp arrival13,19.",
+      "validation": "Actual CURRENT510199-check preservation/nine captures, five assets and four production-controller cases PASS; whole original scout, foreman battle/party/indexes, separate saved-event cache and all warp/art/attribute records retained; exact historical19-root/NPC/event mirrors synchronized."
+    },
+    {
+      "interior": "MnR10Cave1F",
+      "parent_route": "MN_R10",
+      "arrival_core": [
+        3,
+        12
+      ],
+      "return_trigger_core": [
+        3,
+        13
+      ],
+      "exterior_anchor_metatile": [
+        18,
+        8
+      ],
+      "exterior_door_core": [
+        36,
+        17
+      ],
+      "requires_real_collision_check": true,
+      "safe_exterior_return_core": [
+        36,
+        18
+      ],
+      "native_status": "Native510-map tight-gallery review candidate: unchanged18x14/NITE;16 terrain metatiles refine ceiling and lower return. Exact original reader/text, Revive29,23/program/event/quantity, four stairs, both native hop lanes and actual13/15-step ordinary returns, mouth3,13/clear3,12/exterior passive36,18 preserved. Three actual local controller cases PASS7.14s, including both hop lanes/reverse/returns, full-bag refusal/native Potion use/original pickup retry and Continue;150 written-pack checks and eight headless native captures PASS. Root accepted bounded visuals. User final approval and earned Q06/regional progression are not claimed.",
+      "native_warp_arrival_core": [
+        3,
+        13
+      ],
+      "dimensions_metatiles": [
+        18,
+        14
+      ],
+      "native_palette": "nite",
+      "candidate_source_sha256": "be41b5fb81f3ef8536214e903a07d28685bd71b4383cb4c3fade9ebf8ab73161"
+    },
+    {
+      "interior": "MnR13Cave1F",
+      "parent_route": "MN_R13",
+      "arrival_core": [
+        7,
+        15
+      ],
+      "return_trigger_core": [
+        7,
+        15
+      ],
+      "exterior_anchor_metatile": [
+        7,
+        26
+      ],
+      "exterior_door_core": [
+        14,
+        53
+      ],
+      "requires_real_collision_check": false,
+      "clear_arrival_core": [
+        7,
+        14
+      ],
+      "return_triggers_core": [
+        [
+          7,
+          15
+        ]
+      ],
+      "exterior_arrival_core": [
+        14,
+        54
+      ],
+      "exterior_clear_return_core": [
+        14,
+        54
+      ],
+      "source_collision_checked": true,
+      "source_design": "routes/MN_R13.json",
+      "validation": "Actual CURRENT510 native terrain/preservation and three production-controller cases PASS; original whole Harper/text/native HealParty index4, MAX_ETHER1 event/program and all warp/art/attribute records retained.",
+      "mouths": [
+        {
+          "exterior_door_core": [
+            14,
+            53
+          ],
+          "interior_target_warp": 1,
+          "exterior_entry_warp": 1,
+          "exterior_return_warp": 2,
+          "safe_exterior_return_core": [
+            14,
+            54
+          ]
+        }
+      ],
+      "native_status": "Installed10x8 R13 native review candidate on a85fac64 CURRENT510; original forced NITE. Native two useful stairs both ways, original Harper pages/native HP-status-PP HealParty, genuine passive return, real Max Ether PP use/once/Continue PASS. Regional earned progression and final visual approval remain separate.",
+      "dimensions_metatiles": [
+        10,
+        8
+      ],
+      "native_palette": "nite",
+      "candidate_source_sha256": "e1e78dad0c18007d3b8b29f72097202193bf141b7d8b611cd6bdc7d0f1352e63",
+      "native_review_pack_sha256": "a85fac64ab31c86722c486b50213053eb16ba3f6453f99e41bd81c962badb980",
+      "runtime_settled_exterior_core": [
+        14,
+        54
+      ],
+      "return_semantics": "Original room warp1 returns directly to exterior passive warp2 at global14,54/local14,6 FLOOR; stable after presentation and walking away/back. Exterior active CAVE warp1 at global14,53/local14,5 deliberately reenters. No warp or automatic-downstep behavior is invented."
+    },
+    {
+      "interior": "MnR17Cave1F",
+      "parent_route": "MN_R17",
+      "arrival_core": [
+        9,
+        13
+      ],
+      "return_trigger_core": [
+        9,
+        13
+      ],
+      "exterior_anchor_metatile": [
+        5,
+        21
+      ],
+      "exterior_door_core": [
+        10,
+        43
+      ],
+      "requires_real_collision_check": false,
+      "clear_arrival_core": [
+        9,
+        12
+      ],
+      "return_triggers_core": [
+        [
+          9,
+          13
+        ]
+      ],
+      "exterior_arrival_core": [
+        10,
+        44
+      ],
+      "exterior_clear_return_core": [
+        10,
+        44
+      ],
+      "source_design": "routes/MN_R17.json",
+      "source_collision_checked": true,
+      "mouths": [
+        {
+          "exterior_door_core": [
+            10,
+            43
+          ],
+          "interior_target_warp": 1,
+          "exterior_entry_warp": 1,
+          "exterior_return_warp": 2,
+          "safe_exterior_return_core": [
+            10,
+            44
+          ]
+        }
+      ],
+      "validation": "Actual CURRENT510152-check native preservation/six exact production captures, one real controller case and377audio PASS. Fitted ordinary route, native directional UP_WALL behavior, actual Revive grant/printed Pocket pages/ownership/once/reentry/collected tile/Continue verified. Original whole item/program/flag/warps/art/attributes exact.",
+      "native_status": "Installed7x8 native tor review candidate on4891; forcedNITE. No NPC/stair/ledge/HM additions; original Revive1 at5,5 and passive warp2 retained. Earned regional progression and user visual approval remain separate.",
+      "dimensions_metatiles": [
+        7,
+        8
+      ],
+      "native_palette": "nite",
+      "native_warp_arrival_core": [
+        9,
+        13
+      ],
+      "runtime_settled_exterior_core": [
+        10,
+        44
+      ],
+      "candidate_source_sha256": "f590d69e806a4a9e8aae29d03ca2c3b40a386b45ab366755965730ecc67c5437",
+      "native_review_pack_sha256": "4891e6a084e21ea05866740fb04cc8c9891fca2433dbb5a93b58269aed78b72a",
+      "return_semantics": "Original indoor warp1 at9,13 LADDER returns directly to true passive exterior warp2 at10,44 FLOOR; stable through60 presentation frames and walking away/back. Active CAVE warp1 at10,43 deliberately reenters; indoor clear Floor9,12 is distinct from warp arrival9,13.",
+      "item_notice_observation_limit": "VisibleShellController internally settles automatic FoundText and native60-frame fanfare before returning at PocketText. The real input case asserts retained native found payload/ItemBall presentation, both fully printed PocketText pages and movement ownership; it does not claim an intermediate Found/Fanfare snapshot."
+    },
+    {
+      "interior": "MnR20Cave1F",
+      "parent_route": "MN_R20",
+      "arrival_core": [
+        5,
+        13
+      ],
+      "return_trigger_core": [
+        5,
+        13
+      ],
+      "exterior_anchor_metatile": [
+        30,
+        16
+      ],
+      "exterior_door_core": [
+        60,
+        33
+      ],
+      "requires_real_collision_check": true,
+      "clear_arrival_core": [
+        5,
+        12
+      ],
+      "return_triggers_core": [
+        [
+          5,
+          13
+        ],
+        [
+          13,
+          13
+        ]
+      ],
+      "exterior_arrival_core": [
+        60,
+        34
+      ],
+      "exterior_clear_return_core": [
+        60,
+        34
+      ],
+      "source_design": "routes/MN_R20.json",
+      "source_collision_checked": true,
+      "mouths": [
+        {
+          "exterior_door_core": [
+            60,
+            33
+          ],
+          "interior_target_warp": 1,
+          "exterior_entry_warp": 1,
+          "exterior_return_warp": 2,
+          "safe_exterior_return_core": [
+            60,
+            34
+          ]
+        },
+        {
+          "exterior_door_core": [
+            76,
+            31
+          ],
+          "interior_target_warp": 2,
+          "exterior_entry_warp": 1,
+          "exterior_return_warp": 2,
+          "safe_exterior_return_core": [
+            76,
+            32
+          ]
+        }
+      ],
+      "validation": "Actual written 510-map terrain/preservation150, nine native captures and six directional assets PASS; both original mouths/item/flag/program/art/attributes preserved. All three production-controller cases PASS.",
+      "native_status": "Installed dry9x8 Voyageurs cleft on1630ad06; original forced NITE. Leftward two-lane native drop, useful stairs and ordinary returns; no added field-move requirement or SQ03 authority. Native input/once/item use/Continue PASS.",
+      "dimensions_metatiles": [
+        9,
+        8
+      ],
+      "native_palette": "nite",
+      "candidate_source_sha256": "05617d4863db095ed7664ce6408f1d7f35e4ce3c6ed360d08bdfd36a35db2577",
+      "native_review_pack_sha256": "1630ad063aa4a1cf252087bdf743ca48a2a8cb6c9c46ad95cb7aceb1c74c3b05",
+      "runtime_settled_exterior_cores": [
+        [
+          60,
+          34
+        ],
+        [
+          76,
+          32
+        ]
+      ],
+      "return_semantics": "Original west room warp1 returns to MnR20C00R00 passive warp2 global60,34 FLOOR; east room warp2 returns to MnR20C01R00 passive warp2 global76,32/local12,32 FLOOR. Active west60,33 targets roomwarp1; active east76,31 targets roomwarp2. Preserve the existing inactive east Floor record's own targetwarp1; no warp records are normalized."
+    },
+    {
+      "interior": "MnR12Cave1F",
+      "parent_route": "MN_R12",
+      "arrival_core": [
+        17,
+        23
+      ],
+      "clear_arrival_core": [
+        17,
+        22
+      ],
+      "return_trigger_core": [
+        17,
+        23
+      ],
+      "return_triggers_core": [
+        [
+          17,
+          23
+        ]
+      ],
+      "exterior_anchor_metatile": [
+        33,
+        11
+      ],
+      "exterior_door_core": [
+        66,
+        23
+      ],
+      "exterior_arrival_core": [
+        66,
+        23
+      ],
+      "exterior_clear_return_core": [
+        66,
+        24
+      ],
+      "requires_real_collision_check": true,
+      "validation": "Actual CURRENT510 native terrain/preservation and three production-controller cases PASS; original whole Otta/text, MAX_ETHER1 event/program and all warp/art/attribute records retained.",
+      "source_design": "routes/MN_R12.json",
+      "source_collision_checked": true,
+      "mouths": [
+        {
+          "exterior_door_core": [
+            66,
+            23
+          ],
+          "interior_target_warp": 1,
+          "exterior_entry_warp": 1,
+          "exterior_return_warp": 1,
+          "safe_exterior_return_core": [
+            66,
+            24
+          ]
+        }
+      ],
+      "native_status": "Installed16x12 R12 native review candidate on c16af00c CURRENT510; original forced NITE. Native four stairs/two hop lanes/ordinary returns, Otta pages, real Max Ether PP use/once/Continue and PP-item refusal coverage PASS. Regional earned progression and final visual approval remain separate.",
+      "dimensions_metatiles": [
+        16,
+        12
+      ],
+      "native_palette": "nite",
+      "candidate_source_sha256": "7fe83d8e9bd69f01f57c77dd1ea1a7c759de3e6d4ceefdb33d9f42fed8dd9048",
+      "native_review_pack_sha256": "c16af00c82167c809620b956981ee80641ddc9fd1eeaf1e2c91f59ab16a9cc7d",
+      "runtime_settled_exterior_core": [
+        66,
+        24
+      ],
+      "return_semantics": "Original active exterior CAVE warp1 at global66,23/local2,23; native CheckTile may advance Down during presentation frames. If still on the active arrival, explicit Down reaches safe Floor66,24/local2,24 without reentry. Deliberate north input reenters. No passive exterior warp is added."
+    },
+    {
+      "interior": "MnR12RangerHut",
+      "parent_route": "MN_R12",
+      "arrival_core": [
+        4,
+        9
+      ],
+      "clear_arrival_core": [
+        4,
+        8
+      ],
+      "return_trigger_core": [
+        4,
+        9
+      ],
+      "return_triggers_core": [
+        [
+          4,
+          9
+        ],
+        [
+          5,
+          9
+        ]
+      ],
+      "exterior_anchor_metatile": [
+        42,
+        41
+      ],
+      "exterior_door_core": [
+        85,
+        83
+      ],
+      "exterior_arrival_core": [
+        85,
+        83
+      ],
+      "exterior_clear_return_core": [
+        85,
+        84
+      ],
+      "requires_real_collision_check": true,
+      "validation": "Current source rows/doors/safe returns checked; old native captures and fixtures are historical. Native publication/controller verification pending.",
+      "source_design": "routes/MN_R12.json",
+      "source_collision_checked": true,
+      "mouths": [
+        {
+          "exterior_door_core": [
+            85,
+            83
+          ],
+          "interior_target_warp": 1,
+          "exterior_entry_warp": 1,
+          "exterior_return_warp": 1,
+          "safe_exterior_return_core": [
+            85,
+            84
+          ]
+        }
+      ],
+      "native_status": "Source candidate; native revision pending."
+    },
+    {
+      "interior": "MnR15LakeCabin",
+      "parent": "MN_R15",
+      "arrival_core": [
+        5,
+        6
+      ],
+      "return_trigger_core": [
+        5,
+        7
+      ],
+      "exterior_map": "MnR15C00R00",
+      "exterior_door_core": [
+        53,
+        11
+      ],
+      "exterior_return_core": [
+        53,
+        12
+      ],
+      "exterior_warp_index": 1,
+      "interior_return_warp_indices": [
+        1,
+        2
+      ],
+      "exterior_door_status": "Exact DOOR, passive safe-floor return warp and both carpet exits verified through the production controller.",
+      "requires_real_collision_check": false,
+      "exterior_return_warp_index": 2
+    },
+    {
+      "interior": "MnR01Cave1F",
+      "parent": "MN_R01",
+      "arrival_core": [
+        9,
+        10
+      ],
+      "return_trigger_core": [
+        9,
+        11
+      ],
+      "exterior_map": "MnR01C00R00",
+      "exterior_door_core": [
+        18,
+        17
+      ],
+      "exterior_return_core": [
+        18,
+        18
+      ],
+      "exterior_warp_index": 1,
+      "exterior_return_warp_index": 2,
+      "exterior_door_status": "Original CAVE18,17 enters warp1; interior9,11 returns to original passive warp2 at18,18 FLOOR, verified stable through walking away/back and Continue.",
+      "requires_real_collision_check": false,
+      "source_collision_checked": true,
+      "native_warp_arrival_core": [
+        9,
+        11
+      ],
+      "native_review_pack_sha256": "e549c178f37a3137e8ca7f119aeee79460164f1dbd3ea6d205be8928415fd04c",
+      "candidate_source_sha256": "214bd2388b04598e4bca79834a7ac61684870ceffa301b9dac4580ebd9458243",
+      "native_status": "Installed8x7 limestone hollows: both stairs, guide pages, Antidote pickup/use/once, true passive return and Continue PASS.",
+      "validation": "147 native checks and6 production captures;2 controller cases PASS. Exact original actors/programs/item/ports, all509 other modules and art/audio retained. Local full-bag retry and earned regional progression are not claimed."
+    },
+    {
+      "interior": "MnR01Farmhouse",
+      "parent": "MN_R01",
+      "arrival_core": [
+        4,
+        8
+      ],
+      "return_trigger_core": [
+        4,
+        9
+      ],
+      "exterior_map": "MnR01C00R00",
+      "exterior_door_core": [
+        49,
+        15
+      ],
+      "exterior_return_core": [
+        49,
+        16
+      ],
+      "exterior_warp_index": 3,
+      "exterior_return_warp_index": 4,
+      "exterior_door_status": "Exact native entry and passive safe-floor return published and passed through production controller input; both farmhouse carpet exits checked.",
+      "requires_real_collision_check": false
+    },
+    {
+      "interior": "MnR02Farmhouse",
+      "parent": "MN_R02",
+      "arrival_core": [
+        4,
+        8
+      ],
+      "return_trigger_core": [
+        4,
+        9
+      ],
+      "exterior_map": "MnR02C00R00",
+      "exterior_door_core": [
+        11,
+        11
+      ],
+      "exterior_return_core": [
+        11,
+        12
+      ],
+      "exterior_warp_index": 1,
+      "exterior_return_warp_index": 2,
+      "exterior_door_status": "Exact native entry, both indoor carpets and passive safe-floor return passed through production controller input.",
+      "requires_real_collision_check": false
+    },
+    {
+      "interior": "MnR02ToolShed",
+      "parent": "MN_R02",
+      "arrival_core": [
+        5,
+        6
+      ],
+      "return_trigger_core": [
+        5,
+        7
+      ],
+      "exterior_map": "MnR02C00R00",
+      "exterior_door_core": [
+        52,
+        33
+      ],
+      "exterior_return_core": [
+        52,
+        34
+      ],
+      "exterior_warp_index": 3,
+      "exterior_return_warp_index": 4,
+      "exterior_door_status": "Exact native entry, both indoor carpets and passive safe-floor return passed through production controller input.",
+      "requires_real_collision_check": false
+    },
+    {
+      "interior": "MnR03Cave1F",
+      "parent": "MN_R03",
+      "arrival_core": [
+        7,
+        8
+      ],
+      "return_trigger_core": [
+        7,
+        9
+      ],
+      "exterior_map": "MnR03C00R00",
+      "exterior_door_core": [
+        8,
+        37
+      ],
+      "exterior_return_core": [
+        8,
+        38
+      ],
+      "exterior_warp_index": 1,
+      "exterior_return_warp_index": 2,
+      "exterior_door_status": "Actual native entry, granite-nose walking with directional roof land, all three original walker pages, Great Ball pickup once, collected-tile safety, passive Floor return and Continue PASS through production controller input.",
+      "requires_real_collision_check": false,
+      "dimensions_metatiles": [
+        8,
+        6
+      ],
+      "native_palette": "nite",
+      "candidate_source_sha256": "50738c06417b03802e513a6076b5fbfba301c9b3698723e3588f0ab4fcd92243",
+      "native_review_pack_sha256": "5fc652a6310beaf52d95e4ac339b4c12279e6fdae339d39c8c9597dc9b7a2df6",
+      "runtime_settled_exterior_core": [
+        8,
+        38
+      ],
+      "return_semantics": "Original room warp1 at7,9 returns directly to MnR03C00R00 passive exteriorwarp2 at8,38 FLOOR. Active CAVE8,37 exteriorwarp1 targets roomwarp1; inside clear Floor7,8 remains exact. Waiting on or revisiting passive Floor does not reenter; no warp record is changed.",
+      "validation": "Actual written 510-map terrain/preservation147, six native captures and31 source checks PASS; original walker six lines/native program, Great Ball1/flag and sole mouth/art/attributes preserved. Production-controller case PASS.",
+      "native_status": "Installed dry8x6 River Valley bank pocket on5fc652a6; original forced NITE. Granite-nose bend, actual directional roof land, original walker/Great Ball and genuine passive return; no added HM, service, story or field use. Native pages/input ownership/pickup once/cleared-tile safety/Continue PASS."
+    },
+    {
+      "interior": "MnR05RockCut",
+      "parent": "MN_R05",
+      "arrival_core": [
+        5,
+        16
+      ],
+      "return_trigger_core": [
+        5,
+        17
+      ],
+      "exterior_doors_core": [
+        [
+          16,
+          77
+        ],
+        [
+          30,
+          27
+        ]
+      ],
+      "safe_exterior_returns_core": [
+        [
+          16,
+          78
+        ],
+        [
+          30,
+          28
+        ]
+      ],
+      "native_interior_warp_indices": [
+        1,
+        2
+      ],
+      "exterior_return_warp_indices": [
+        2,
+        2
+      ],
+      "requires_real_collision_check": false,
+      "exterior_door_status": "Both original native mouth pairings, genuine passive Floor returns, useful bidirectional stair/sidewall, two printed healer pages/input lock, real HP/status/PP healing and Continue PASS.",
+      "dimensions_metatiles": [
+        8,
+        10
+      ],
+      "native_palette": "nite",
+      "candidate_source_sha256": "485652d7bdd92e37660acc187a71478d355cffde3e6e106801c22a125339c86b",
+      "native_geometry_pack_sha256": "96a10295af34deeb57cd8ebdaf882d8eb80a70e49f63f8bc27ef84980dc1bcc1",
+      "native_review_pack_sha256": "31258a1788a986b158d0679e4f3a26c4dd476964311f707a6e09c9640cad48c6",
+      "return_semantics": "Original south insidewarp1 at (5,17), clear Floor (5,16), returns to MnR05C00R01 passive exteriorwarp2 at local (16,30), global (16,78). Original north insidewarp2 at (11,5), clear Floor (11,4), returns to MnR05C00R00 passive exteriorwarp2 at (30,28). Active exterior CAVE tiles (16,77) and (30,27) target insidewarps1 and2 respectively. Both inactive passive records retain their original target insidewarp1. No warp record changes; waiting or revisiting actual passive Floor cannot reenter.",
+      "validation": "Source61/thirteen negative variants and actual native163/eight captures PASS; original actors, services, programs, rewards, paired mouths, NITE, art and all unrelated content preserved. Final100 pack inherits all510 geometry modules exactly; only canonical Repel duration/derived identity changes. Both production-controller cases PASS, including original Repel pickup once, actual Pack USE100, walking countdown and Continue.",
+      "native_status": "Installed winding8x10 river-bluff RockCut on96a10295, inherited exact in31258a17 with source-correct100-step Repel; one actual stair, original healer/Repel/two mouths, no new actors, HM, reward or story condition."
+    },
+    {
+      "interior": "MnR06NeedleCabin",
+      "parent": "MN_R06",
+      "arrival_core": [
+        5,
+        6
+      ],
+      "return_trigger_core": [
+        5,
+        7
+      ],
+      "exterior_doors_core": [
+        [
+          9,
+          61
+        ]
+      ],
+      "safe_exterior_returns_core": [
+        [
+          9,
+          62
+        ]
+      ],
+      "native_interior_warp_indices": [
+        1,
+        2
+      ],
+      "exterior_return_warp_indices": [
+        2
+      ],
+      "requires_real_collision_check": true,
+      "exterior_door_status": "Explicit native Johto facade points; source geometry checked, published controller return pending."
+    },
+    {
+      "interior": "MnR11SplitRockLighthouse",
+      "parent_route": "MN_R11",
+      "arrival_core": [
+        4,
+        9
+      ],
+      "clear_arrival_core": [
+        4,
+        8
+      ],
+      "return_trigger_core": [
+        4,
+        9
+      ],
+      "return_triggers_core": [
+        [
+          4,
+          9
+        ],
+        [
+          5,
+          9
+        ]
+      ],
+      "exterior_anchor_metatile": [
+        25,
+        49
+      ],
+      "exterior_door_core": [
+        51,
+        99
+      ],
+      "exterior_arrival_core": [
+        51,
+        100
+      ],
+      "exterior_clear_return_core": [
+        51,
+        100
+      ],
+      "source_design": "routes/MN_R11.json",
+      "source_collision_checked": true,
+      "requires_real_collision_check": true,
+      "mouths": [
+        {
+          "exterior_door_core": [
+            51,
+            99
+          ],
+          "interior_target_warp": 1,
+          "exterior_entry_warp": 1,
+          "exterior_return_warp": 2,
+          "safe_exterior_return_core": [
+            51,
+            100
+          ]
+        }
+      ],
+      "validation": "Current source rows/doors/safe returns checked; old native captures and fixtures are historical. Native publication/controller verification pending.",
+      "native_status": "Source candidate; native revision pending."
+    },
+    {
+      "interior": "MnR17RangerHut",
+      "parent_route": "MN_R17",
+      "arrival_core": [
+        5,
+        7
+      ],
+      "clear_arrival_core": [
+        5,
+        6
+      ],
+      "return_trigger_core": [
+        5,
+        7
+      ],
+      "return_triggers_core": [
+        [
+          5,
+          7
+        ]
+      ],
+      "exterior_anchor_metatile": [
+        22,
+        24
+      ],
+      "exterior_door_core": [
+        45,
+        49
+      ],
+      "exterior_arrival_core": [
+        45,
+        50
+      ],
+      "exterior_clear_return_core": [
+        45,
+        50
+      ],
+      "source_design": "routes/MN_R17.json",
+      "source_collision_checked": true,
+      "requires_real_collision_check": true,
+      "mouths": [
+        {
+          "exterior_door_core": [
+            45,
+            49
+          ],
+          "interior_target_warp": 1,
+          "exterior_entry_warp": 1,
+          "exterior_return_warp": 2,
+          "safe_exterior_return_core": [
+            45,
+            50
+          ]
+        }
+      ],
+      "validation": "Current source rows/doors/safe returns checked; old native captures and fixtures are historical. Native publication/controller verification pending.",
+      "native_status": "Source candidate; native revision pending."
+    },
+    {
+      "interior": "MnBoundaryRootBeerCabin",
+      "parent": "MN_BOUNDARY_WATERS_SAFARI",
+      "exterior_map": "MnBoundarySafariC01R01",
+      "dimensions_metatiles": [
+        5,
+        4
+      ],
+      "tileset": "traditional_house",
+      "native_group_id": 61,
+      "native_map_id": 5,
+      "native_map_constant": "MN_BOUNDARY_ROOT_BEER_CABIN",
+      "exterior_map_constant": "MN_BOUNDARY_SAFARI_C01R01",
+      "arrival_core": [
+        5,
+        6
+      ],
+      "clear_arrival_core": [
+        5,
+        6
+      ],
+      "return_trigger_core": [
+        5,
+        7
+      ],
+      "return_triggers_core": [
+        [
+          5,
+          7
+        ],
+        [
+          6,
+          7
+        ]
+      ],
+      "native_interior_warp_indices": [
+        1,
+        2,
+        3
+      ],
+      "passive_arrival": {
+        "index": 3,
+        "tile": [
+          5,
+          6
+        ],
+        "collision": "FLOOR",
+        "active_trigger": false
+      },
+      "exterior_door_core": [
+        71,
+        55
+      ],
+      "exterior_door_collision": "DOOR",
+      "exterior_return_core": [
+        71,
+        56
+      ],
+      "exterior_return_collision": "FLOOR",
+      "exterior_warp_index": 1,
+      "exterior_return_warp_index": 2,
+      "interior_target_warp_index": 3,
+      "carpet_exit_targets": [
+        {
+          "interior_warp_index": 1,
+          "tile": [
+            5,
+            7
+          ],
+          "collision": "WARP_CARPET_DOWN",
+          "exterior_target_warp": 2
+        },
+        {
+          "interior_warp_index": 2,
+          "tile": [
+            6,
+            7
+          ],
+          "collision": "WARP_CARPET_DOWN",
+          "exterior_target_warp": 2
+        }
+      ],
+      "native_warp_target_semantics": "Both WarpEvent.target_map and target_map_constant hold the exact uppercase native constant. GameData resolves that constant to the real map name; literal PascalCase map names in these target fields are invalid.",
+      "default_presence": "Interior empty; exactly one BWS_ROOT_BEER_LADY outside at global core [69,59], C01R01 local [5,11]. No indoor relocation scene or second serving actor.",
+      "source_design": "playable/root-beer-cabin.json",
+      "source_exterior_layout": "zones/boundary-waters-safari.layout.json",
+      "source_collision_checked": true,
+      "requires_real_collision_check": false,
+      "exterior_door_status": "Expanded v17 source binding: global DOOR1 [71,55] and passive FLOOR2 [71,56] in C01R01 (local [7,7]/[7,8]); existing group61 cabin map5 and interior warps1/2/3 remain. Actual expanded native publication and controller results must be recorded by the publisher before claiming verification.",
+      "validation": "Required expanded binding: exterior DOOR1 targets cabin passive FLOOR3 [5,6]; both cabin carpets and passive arrival record3 target MN_BOUNDARY_SAFARI_C01R01 exterior passive2. Interior rows/actors/services unchanged. Preserve closed admission and absence of Safari session/capture state; actual expanded controller verification remains separately recorded."
+    },
+    {
+      "interior": "MnDetroitLakesStation",
+      "parent": "MnDetroitLakes",
+      "source_file": "transit/MnDetroitLakesStation.json",
+      "source_room_id": "MnDetroitLakesStation",
+      "arrival_core": [
+        11,
+        17
+      ],
+      "return_trigger_core": [
+        10,
+        19
+      ],
+      "return_triggers_core": [
+        [
+          10,
+          19
+        ],
+        [
+          11,
+          19
+        ]
+      ],
+      "arrival_warp_index": 3,
+      "exterior_door_core": [
+        11,
+        9
+      ],
+      "exterior_safe_return_core": [
+        11,
+        10
+      ],
+      "exterior_warp_index": 1,
+      "exterior_return_warp_index": 2,
+      "exterior_door_status": "Exact authored native DOOR quadrant and reciprocal passive FLOOR contract; consult city runbook for publication/controller status.",
+      "requires_real_collision_check": true
+    },
+    {
+      "interior": "MnDetroitLakesCanoeCabin",
+      "parent": "MnDetroitLakes",
+      "source_file": "towns/MnDetroitLakes.json",
+      "source_room_id": "MnDetroitLakesCanoeCabin",
+      "arrival_core": [
+        4,
+        5
+      ],
+      "return_trigger_core": [
+        3,
+        7
+      ],
+      "return_triggers_core": [
+        [
+          3,
+          7
+        ],
+        [
+          4,
+          7
+        ]
+      ],
+      "arrival_warp_index": 3,
+      "exterior_door_core": [
+        33,
+        27
+      ],
+      "exterior_safe_return_core": [
+        33,
+        28
+      ],
+      "exterior_warp_index": 7,
+      "exterior_return_warp_index": 8,
+      "exterior_door_status": "Exact authored native DOOR quadrant and reciprocal passive FLOOR contract; consult city runbook for publication/controller status.",
+      "requires_real_collision_check": true
+    },
+    {
+      "interior": "MnDetroitLakesRangerCabin",
+      "parent": "MnDetroitLakes",
+      "source_file": "towns/MnDetroitLakes.json",
+      "source_room_id": "MnDetroitLakesRangerCabin",
+      "arrival_core": [
+        4,
+        5
+      ],
+      "return_trigger_core": [
+        3,
+        7
+      ],
+      "return_triggers_core": [
+        [
+          3,
+          7
+        ],
+        [
+          4,
+          7
+        ]
+      ],
+      "arrival_warp_index": 3,
+      "exterior_door_core": [
+        41,
+        27
+      ],
+      "exterior_safe_return_core": [
+        41,
+        28
+      ],
+      "exterior_warp_index": 9,
+      "exterior_return_warp_index": 10,
+      "exterior_door_status": "Exact authored native DOOR quadrant and reciprocal passive FLOOR contract; consult city runbook for publication/controller status.",
+      "requires_real_collision_check": true
+    },
+    {
+      "interior": "MnStCloudStation",
+      "parent": "MnStCloud",
+      "source_file": "transit/MnStCloudStation.json",
+      "source_room_id": "MnStCloudStation",
+      "arrival_core": [
+        11,
+        17
+      ],
+      "return_trigger_core": [
+        10,
+        19
+      ],
+      "return_triggers_core": [
+        [
+          10,
+          19
+        ],
+        [
+          11,
+          19
+        ]
+      ],
+      "arrival_warp_index": 3,
+      "exterior_door_core": [
+        35,
+        11
+      ],
+      "exterior_safe_return_core": [
+        35,
+        12
+      ],
+      "exterior_warp_index": 7,
+      "exterior_return_warp_index": 8,
+      "exterior_door_status": "Native facade/passive arrival/both carpets and production-controller course verified. Station rail remains unfinished; see playable/st-cloud.md.",
+      "requires_real_collision_check": true
+    },
+    {
+      "interior": "MnStPaulCapitolHall",
+      "parent": "MnStPaul",
+      "source_file": "towns/MnStPaul.json",
+      "source_room_id": "MnStPaulCapitolHall",
+      "arrival_core": [
+        3,
+        5
+      ],
+      "return_trigger_core": [
+        2,
+        7
+      ],
+      "return_triggers_core": [
+        [
+          2,
+          7
+        ],
+        [
+          3,
+          7
+        ]
+      ],
+      "arrival_warp_index": 3,
+      "exterior_door_core": [
+        34,
+        9
+      ],
+      "exterior_safe_return_core": [
+        34,
+        10
+      ],
+      "exterior_warp_index": 7,
+      "exterior_return_warp_index": 8,
+      "exterior_door_status": "Native facade/passive arrival/all room carpets published and production-controller verified. Gym4 retains all four internal pad pairs. Depot quest/rail remain unfinished; see playable/st-paul.md.",
+      "requires_real_collision_check": true
+    },
+    {
+      "interior": "MnStPaulUnionDepot",
+      "parent": "MnStPaul",
+      "source_file": "transit/MnStPaulUnionDepot.json",
+      "source_room_id": "MnStPaulUnionDepot",
+      "arrival_core": [
+        15,
+        21
+      ],
+      "return_trigger_core": [
+        14,
+        23
+      ],
+      "return_triggers_core": [
+        [
+          14,
+          23
+        ],
+        [
+          15,
+          23
+        ],
+        [
+          16,
+          23
+        ],
+        [
+          17,
+          23
+        ]
+      ],
+      "arrival_warp_index": 5,
+      "exterior_door_core": [
+        44,
+        37
+      ],
+      "exterior_safe_return_core": [
+        44,
+        38
+      ],
+      "exterior_warp_index": 1,
+      "exterior_return_warp_index": 2,
+      "exterior_door_status": "Native facade/passive arrival/all room carpets published and production-controller verified. Gym4 retains all four internal pad pairs. Depot quest/rail remain unfinished; see playable/st-paul.md.",
+      "requires_real_collision_check": true
+    },
+    {
+      "interior": "MnDuluthHillHouse",
+      "parent": "MnDuluth",
+      "source_file": "towns/MnDuluth.json",
+      "source_room_id": "MnDuluthHillHouse",
+      "arrival_core": [
+        4,
+        5
+      ],
+      "return_trigger_core": [
+        3,
+        7
+      ],
+      "return_triggers_core": [
+        [
+          3,
+          7
+        ],
+        [
+          4,
+          7
+        ]
+      ],
+      "arrival_warp_index": 3,
+      "exterior_door_core": [
+        9,
+        11
+      ],
+      "exterior_safe_return_core": [
+        9,
+        12
+      ],
+      "exterior_warp_index": 1,
+      "exterior_return_warp_index": 2,
+      "exterior_door_status": "Exact authored native DOOR quadrant and reciprocal passive FLOOR contract; consult city runbook for publication/controller status.",
+      "requires_real_collision_check": true
+    },
+    {
+      "interior": "MnDuluthHarborHouse",
+      "parent": "MnDuluth",
+      "source_file": "towns/MnDuluth.json",
+      "source_room_id": "MnDuluthHarborHouse",
+      "arrival_core": [
+        3,
+        5
+      ],
+      "return_trigger_core": [
+        2,
+        7
+      ],
+      "return_triggers_core": [
+        [
+          2,
+          7
+        ],
+        [
+          3,
+          7
+        ]
+      ],
+      "arrival_warp_index": 3,
+      "exterior_door_core": [
+        7,
+        31
+      ],
+      "exterior_safe_return_core": [
+        7,
+        32
+      ],
+      "exterior_warp_index": 9,
+      "exterior_return_warp_index": 10,
+      "exterior_door_status": "Exact authored native DOOR quadrant and reciprocal passive FLOOR contract; consult city runbook for publication/controller status.",
+      "requires_real_collision_check": true
+    },
+    {
+      "interior": "MnDuluthHistoryHouse",
+      "parent": "MnDuluth",
+      "source_file": "towns/MnDuluth.json",
+      "source_room_id": "MnDuluthHistoryHouse",
+      "arrival_core": [
+        4,
+        7
+      ],
+      "return_trigger_core": [
+        4,
+        9
+      ],
+      "return_triggers_core": [
+        [
+          4,
+          9
+        ],
+        [
+          5,
+          9
+        ]
+      ],
+      "arrival_warp_index": 3,
+      "exterior_door_core": [
+        19,
+        29
+      ],
+      "exterior_safe_return_core": [
+        19,
+        30
+      ],
+      "exterior_warp_index": 11,
+      "exterior_return_warp_index": 12,
+      "exterior_door_status": "Exact authored native DOOR quadrant and reciprocal passive FLOOR contract; consult city runbook for publication/controller status.",
+      "requires_real_collision_check": true
+    },
+    {
+      "interior": "MnBrainerdRangerStation",
+      "parent": "MnBrainerd",
+      "source_file": "towns/MnBrainerd.json",
+      "source_room_id": "MnBrainerdRangerStation",
+      "arrival_core": [
+        8,
+        9
+      ],
+      "return_trigger_core": [
+        8,
+        11
+      ],
+      "return_triggers_core": [
+        [
+          8,
+          11
+        ],
+        [
+          9,
+          11
+        ]
+      ],
+      "arrival_warp_index": 3,
+      "exterior_door_core": [
+        23,
+        15
+      ],
+      "exterior_safe_return_core": [
+        23,
+        16
+      ],
+      "exterior_warp_index": 7,
+      "exterior_return_warp_index": 8,
+      "exterior_door_status": "Exact authored native DOOR quadrant and reciprocal passive FLOOR contract; consult city runbook for publication/controller status.",
+      "requires_real_collision_check": true
+    },
+    {
+      "interior": "MnBrainerdOutfitter",
+      "parent": "MnBrainerd",
+      "source_file": "towns/MnBrainerd.json",
+      "source_room_id": "MnBrainerdOutfitter",
+      "arrival_core": [
+        6,
+        5
+      ],
+      "return_trigger_core": [
+        6,
+        7
+      ],
+      "return_triggers_core": [
+        [
+          6,
+          7
+        ],
+        [
+          7,
+          7
+        ]
+      ],
+      "arrival_warp_index": 3,
+      "exterior_door_core": [
+        47,
+        35
+      ],
+      "exterior_safe_return_core": [
+        47,
+        36
+      ],
+      "exterior_warp_index": 9,
+      "exterior_return_warp_index": 10,
+      "exterior_door_status": "Exact authored native DOOR quadrant and reciprocal passive FLOOR contract; consult city runbook for publication/controller status.",
+      "requires_real_collision_check": true
+    },
+    {
+      "interior": "MnBemidjiShelfHouse",
+      "parent": "MnBemidji",
+      "source_file": "towns/MnBemidji.json",
+      "source_room_id": "MnBemidjiShelfHouse",
+      "arrival_core": [
+        6,
+        5
+      ],
+      "return_trigger_core": [
+        6,
+        7
+      ],
+      "return_triggers_core": [
+        [
+          6,
+          7
+        ],
+        [
+          7,
+          7
+        ]
+      ],
+      "arrival_warp_index": 3,
+      "exterior_door_core": [
+        7,
+        15
+      ],
+      "exterior_safe_return_core": [
+        7,
+        16
+      ],
+      "exterior_warp_index": 3,
+      "exterior_return_warp_index": 4,
+      "exterior_door_status": "Exact authored native DOOR quadrant and reciprocal passive FLOOR contract; consult city runbook for publication/controller status.",
+      "requires_real_collision_check": true
+    },
+    {
+      "interior": "MnBemidjiNorthHouse",
+      "parent": "MnBemidji",
+      "source_file": "towns/MnBemidji.json",
+      "source_room_id": "MnBemidjiNorthHouse",
+      "arrival_core": [
+        6,
+        5
+      ],
+      "return_trigger_core": [
+        6,
+        7
+      ],
+      "return_triggers_core": [
+        [
+          6,
+          7
+        ],
+        [
+          7,
+          7
+        ]
+      ],
+      "arrival_warp_index": 3,
+      "exterior_door_core": [
+        33,
+        17
+      ],
+      "exterior_safe_return_core": [
+        33,
+        18
+      ],
+      "exterior_warp_index": 7,
+      "exterior_return_warp_index": 8,
+      "exterior_door_status": "Exact authored native DOOR quadrant and reciprocal passive FLOOR contract; consult city runbook for publication/controller status.",
+      "requires_real_collision_check": true
+    },
+    {
+      "interior": "MnBemidjiHeritageHouse",
+      "parent": "MnBemidji",
+      "source_file": "towns/MnBemidji.json",
+      "source_room_id": "MnBemidjiHeritageHouse",
+      "arrival_core": [
+        8,
+        9
+      ],
+      "return_trigger_core": [
+        8,
+        11
+      ],
+      "return_triggers_core": [
+        [
+          8,
+          11
+        ],
+        [
+          9,
+          11
+        ]
+      ],
+      "arrival_warp_index": 3,
+      "exterior_door_core": [
+        9,
+        37
+      ],
+      "exterior_safe_return_core": [
+        9,
+        38
+      ],
+      "exterior_warp_index": 11,
+      "exterior_return_warp_index": 12,
+      "exterior_door_status": "Exact authored native DOOR quadrant and reciprocal passive FLOOR contract; consult city runbook for publication/controller status.",
+      "requires_real_collision_check": true
+    },
+    {
+      "interior": "MnRyansHouse",
+      "parent_route": "MN_R11",
+      "exterior_map": "MnR11C00R00",
+      "exterior_door_core": [
+        23,
+        21
+      ],
+      "exterior_safe_return_core": [
+        23,
+        22
+      ],
+      "arrival_core": [
+        5,
+        6
+      ],
+      "return_triggers_core": [
+        [
+          5,
+          7
+        ],
+        [
+          6,
+          7
+        ]
+      ],
+      "interior_passive_arrival_warp": 3,
+      "exterior_warp_indices": [
+        1,
+        2
+      ],
+      "source_design": "playable/ryans-house.json",
+      "requires_real_collision_check": true,
+      "exterior_door_status": "NATIVE VERIFIED: actual DOOR enters passive FLOOR arrival3; both carpet returns, Ryan/sign text and indoor/outdoor Continue pass. See playable/ryans-house.md."
+    },
+    {
+      "interior": "MnMinneapolisDispatchOffice",
+      "parent": "MnMinneapolis",
+      "arrival_core": [
+        10,
+        14
+      ],
+      "return_trigger_core": [
+        10,
+        15
+      ],
+      "return_triggers_core": [
+        [
+          10,
+          15
+        ],
+        [
+          11,
+          15
+        ]
+      ],
+      "exterior_door_core": [
+        27,
+        33
+      ],
+      "exterior_safe_return_core": [
+        27,
+        34
+      ],
+      "interior_passive_arrival_warp": 3,
+      "exterior_door_status": "NATIVE VERIFIED: actual facade, passive arrival and paired carpets published; production controller verifies entry/return. See playable/minneapolis.md.",
+      "requires_real_collision_check": true
+    },
+    {
+      "interior": "MnMinneapolisDispatcherHouse",
+      "parent": "MnMinneapolis",
+      "arrival_core": [
+        5,
+        6
+      ],
+      "return_trigger_core": [
+        5,
+        7
+      ],
+      "return_triggers_core": [
+        [
+          5,
+          7
+        ],
+        [
+          6,
+          7
+        ]
+      ],
+      "exterior_door_core": [
+        27,
+        13
+      ],
+      "exterior_safe_return_core": [
+        27,
+        14
+      ],
+      "interior_passive_arrival_warp": 3,
+      "exterior_door_status": "NATIVE VERIFIED: actual facade, return-home witness visibility, family dialogue and Continue pass. See playable/minneapolis.md.",
+      "requires_real_collision_check": true
+    },
+    {
+      "interior": "MnRochesterClerkHouse",
+      "parent": "MnRochester",
+      "source_file": "towns/MnRochester.json",
+      "source_room_id": "MnRochesterClerkHouse",
+      "arrival_core": [
+        5,
+        6
+      ],
+      "arrival_warp_index": 3,
+      "return_trigger_core": [
+        5,
+        7
+      ],
+      "return_triggers_core": [
+        [
+          5,
+          7
+        ],
+        [
+          6,
+          7
+        ]
+      ],
+      "exterior_door_core": [
+        7,
+        7
+      ],
+      "exterior_safe_return_core": [
+        7,
+        8
+      ],
+      "exterior_warp_index": 7,
+      "exterior_return_warp_index": 8,
+      "exterior_door_status": "Published source/native facade and carpet pairs. Earned clinic/gym arrival and local gym exits pass production input; full service regression scope is recorded in playable/rochester.md.",
+      "requires_real_collision_check": true
+    },
+    {
+      "interior": "MnRochesterPatientHouse",
+      "parent": "MnRochester",
+      "source_file": "towns/MnRochester.json",
+      "source_room_id": "MnRochesterPatientHouse",
+      "arrival_core": [
+        5,
+        6
+      ],
+      "arrival_warp_index": 3,
+      "return_trigger_core": [
+        5,
+        7
+      ],
+      "return_triggers_core": [
+        [
+          5,
+          7
+        ],
+        [
+          6,
+          7
+        ]
+      ],
+      "exterior_door_core": [
+        7,
+        23
+      ],
+      "exterior_safe_return_core": [
+        7,
+        24
+      ],
+      "exterior_warp_index": 9,
+      "exterior_return_warp_index": 10,
+      "exterior_door_status": "Published source/native facade and carpet pairs. Earned clinic/gym arrival and local gym exits pass production input; full service regression scope is recorded in playable/rochester.md.",
+      "requires_real_collision_check": true
+    },
+    {
+      "interior": "MnLeechLakeCareCabin",
+      "parent": "MnLeechLake",
+      "arrival_core": [
+        10,
+        13
+      ],
+      "return_trigger_core": [
+        10,
+        15
+      ],
+      "return_triggers_core": [
+        [
+          10,
+          15
+        ],
+        [
+          11,
+          15
+        ]
+      ],
+      "exterior_door_status": "Native door/rooms/both carpets, care, testimony and Continue pass in the shore successor; full earned regional progression remains open.",
+      "reserved_town_district": "west shore cabins",
+      "requires_real_collision_check": true,
+      "source_file": "towns/MnLeechLake.json",
+      "source_room_id": "MnLeechLakeCareCabin",
+      "arrival_warp_index": 3,
+      "exterior_door_core": [
+        11,
+        13
+      ],
+      "exterior_safe_return_core": [
+        11,
+        14
+      ],
+      "exterior_warp_index": 1,
+      "exterior_return_warp_index": 2
+    },
+    {
+      "interior": "MnLeechLakeFisherHouse",
+      "parent": "MnLeechLake",
+      "arrival_core": [
+        5,
+        6
+      ],
+      "return_trigger_core": [
+        5,
+        7
+      ],
+      "return_triggers_core": [
+        [
+          5,
+          7
+        ],
+        [
+          6,
+          7
+        ]
+      ],
+      "exterior_door_status": "Native door/rooms/both carpets, care, testimony and Continue pass in the shore successor; full earned regional progression remains open.",
+      "reserved_town_district": "west shore cabins",
+      "requires_real_collision_check": true,
+      "source_file": "towns/MnLeechLake.json",
+      "source_room_id": "MnLeechLakeFisherHouse",
+      "arrival_warp_index": 3,
+      "exterior_door_core": [
+        9,
+        35
+      ],
+      "exterior_safe_return_core": [
+        9,
+        36
+      ],
+      "exterior_warp_index": 3,
+      "exterior_return_warp_index": 4
+    },
+    {
+      "interior": "MnItascaGatehouse",
+      "parent": "MnLakeItasca",
+      "source_file": "towns/MnLakeItasca.json",
+      "source_room_id": "MnItascaGatehouse",
+      "access_kind": "side_gatehouse",
+      "reference": "IlexForestAzaleaGate",
+      "arrival_core": [
+        1,
+        4
+      ],
+      "arrival_warp_index": 5,
+      "return_trigger_core": [
+        0,
+        4
+      ],
+      "return_triggers_core": [
+        [
+          0,
+          4
+        ],
+        [
+          0,
+          5
+        ],
+        [
+          9,
+          4
+        ],
+        [
+          9,
+          5
+        ]
+      ],
+      "passive_arrivals": [
+        {
+          "index": 5,
+          "tile": [
+            1,
+            4
+          ],
+          "target": "MN_LAKE_ITASCA",
+          "target_warp": 3
+        },
+        {
+          "index": 6,
+          "tile": [
+            1,
+            5
+          ],
+          "target": "MN_LAKE_ITASCA",
+          "target_warp": 4
+        },
+        {
+          "index": 7,
+          "tile": [
+            8,
+            4
+          ],
+          "target": "MnR14C00R00",
+          "target_warp": 3
+        },
+        {
+          "index": 8,
+          "tile": [
+            8,
+            5
+          ],
+          "target": "MnR14C00R00",
+          "target_warp": 4
+        }
+      ],
+      "park": {
+        "entrances": [
+          [
+            43,
+            24
+          ],
+          [
+            43,
+            25
+          ]
+        ],
+        "returns": [
+          [
+            42,
+            24
+          ],
+          [
+            42,
+            25
+          ]
+        ],
+        "active_indices": [
+          1,
+          2
+        ],
+        "passive_indices": [
+          3,
+          4
+        ]
+      },
+      "route": {
+        "map": "MnR14C00R00",
+        "entrances": [
+          [
+            4,
+            42
+          ],
+          [
+            4,
+            43
+          ]
+        ],
+        "returns": [
+          [
+            5,
+            42
+          ],
+          [
+            5,
+            43
+          ]
+        ],
+        "active_indices": [
+          1,
+          2
+        ],
+        "passive_indices": [
+          3,
+          4
+        ]
+      },
+      "requires_real_collision_check": true,
+      "exterior_door_status": "Native original floorplan, side carpet collision, same-mouth returns, both lanes and Continue verified; see playable/itasca-story.md. No new blackout destination."
+    },
+    {
+      "interior": "MnGrandMaraisFieldStation",
+      "parent": "MnGrandMarais",
+      "source_file": "playable/grand-marais.json",
+      "arrival_warp_index": 1,
+      "arrival_core": [
+        2,
+        7
+      ],
+      "public_arrival_core": [
+        2,
+        6
+      ],
+      "return_trigger_core": [
+        2,
+        7
+      ],
+      "return_triggers_core": [
+        [
+          2,
+          7
+        ],
+        [
+          3,
+          7
+        ]
+      ],
+      "exterior_door_core": [
+        6,
+        7
+      ],
+      "exterior_safe_return_core": [
+        6,
+        8
+      ],
+      "exterior_warp_index": 1,
+      "legacy_return_warp_index": 1,
+      "exterior_door_status": "Original active door index preserved; native exit automatically steps onto safe exterior floor. Not a passive-return retrofit.",
+      "requires_real_collision_check": true
+    },
+    {
+      "interior": "MnGrandMaraisPokecenter",
+      "parent": "MnGrandMarais",
+      "source_file": "playable/grand-marais.json",
+      "arrival_warp_index": 1,
+      "arrival_core": [
+        3,
+        7
+      ],
+      "public_arrival_core": [
+        3,
+        6
+      ],
+      "return_trigger_core": [
+        3,
+        7
+      ],
+      "return_triggers_core": [
+        [
+          3,
+          7
+        ],
+        [
+          4,
+          7
+        ]
+      ],
+      "exterior_door_core": [
+        15,
+        9
+      ],
+      "exterior_safe_return_core": [
+        15,
+        10
+      ],
+      "exterior_warp_index": 2,
+      "legacy_return_warp_index": 2,
+      "exterior_door_status": "Original active door index preserved; native exit automatically steps onto safe exterior floor. Not a passive-return retrofit.",
+      "requires_real_collision_check": true
+    },
+    {
+      "interior": "MnGrandMaraisMart",
+      "parent": "MnGrandMarais",
+      "source_file": "playable/grand-marais.json",
+      "arrival_warp_index": 1,
+      "arrival_core": [
+        2,
+        7
+      ],
+      "public_arrival_core": [
+        2,
+        6
+      ],
+      "return_trigger_core": [
+        2,
+        7
+      ],
+      "return_triggers_core": [
+        [
+          2,
+          7
+        ],
+        [
+          3,
+          7
+        ]
+      ],
+      "exterior_door_core": [
+        21,
+        9
+      ],
+      "exterior_safe_return_core": [
+        21,
+        10
+      ],
+      "exterior_warp_index": 3,
+      "legacy_return_warp_index": 3,
+      "exterior_door_status": "Original active door index preserved; native exit automatically steps onto safe exterior floor. Not a passive-return retrofit.",
+      "requires_real_collision_check": true
+    },
+    {
+      "interior": "MnGrandMaraisArtistHouse",
+      "parent": "MnGrandMarais",
+      "source_file": "playable/grand-marais.json",
+      "arrival_warp_index": 1,
+      "arrival_core": [
+        3,
+        7
+      ],
+      "public_arrival_core": [
+        3,
+        6
+      ],
+      "return_trigger_core": [
+        3,
+        7
+      ],
+      "return_triggers_core": [
+        [
+          3,
+          7
+        ],
+        [
+          4,
+          7
+        ]
+      ],
+      "exterior_door_core": [
+        9,
+        15
+      ],
+      "exterior_safe_return_core": [
+        9,
+        16
+      ],
+      "exterior_warp_index": 4,
+      "legacy_return_warp_index": 4,
+      "exterior_door_status": "Original active door index preserved; native exit automatically steps onto safe exterior floor. Not a passive-return retrofit.",
+      "requires_real_collision_check": true
+    },
+    {
+      "interior": "MnGrandMaraisFisherHouse",
+      "parent": "MnGrandMarais",
+      "source_file": "playable/grand-marais.json",
+      "arrival_warp_index": 1,
+      "arrival_core": [
+        2,
+        7
+      ],
+      "public_arrival_core": [
+        2,
+        6
+      ],
+      "return_trigger_core": [
+        2,
+        7
+      ],
+      "return_triggers_core": [
+        [
+          2,
+          7
+        ],
+        [
+          3,
+          7
+        ]
+      ],
+      "exterior_door_core": [
+        27,
+        15
+      ],
+      "exterior_safe_return_core": [
+        27,
+        16
+      ],
+      "exterior_warp_index": 5,
+      "legacy_return_warp_index": 5,
+      "exterior_door_status": "Original active door index preserved; native exit automatically steps onto safe exterior floor. Not a passive-return retrofit.",
+      "requires_real_collision_check": true
+    },
+    {
+      "interior": "MnGrandMaraisLighthouse",
+      "parent": "MnGrandMarais",
+      "source_file": "playable/grand-marais.json",
+      "arrival_warp_index": 1,
+      "arrival_core": [
+        4,
+        9
+      ],
+      "public_arrival_core": [
+        4,
+        8
+      ],
+      "return_trigger_core": [
+        4,
+        9
+      ],
+      "return_triggers_core": [
+        [
+          4,
+          9
+        ],
+        [
+          5,
+          9
+        ]
+      ],
+      "exterior_door_core": [
+        15,
+        27
+      ],
+      "exterior_safe_return_core": [
+        15,
+        28
+      ],
+      "exterior_warp_index": 6,
+      "legacy_return_warp_index": 6,
+      "exterior_door_status": "Original active door index preserved; native exit automatically steps onto safe exterior floor. Not a passive-return retrofit.",
+      "requires_real_collision_check": true
+    },
+    {
+      "interior": "MnGrandMaraisShoreGate",
+      "parent": "MnGrandMarais",
+      "source_file": "towns/MnGrandMarais.connections.json",
+      "reference": "IlexForestAzaleaGate",
+      "gate_pairs": [
+        {
+          "map": "MnR11C00R00",
+          "entrances": [
+            [
+              43,
+              4
+            ],
+            [
+              43,
+              5
+            ]
+          ],
+          "returns": [
+            [
+              42,
+              4
+            ],
+            [
+              42,
+              5
+            ]
+          ],
+          "first_active": 3,
+          "first_passive": 5,
+          "room_arrivals": [
+            [
+              1,
+              4
+            ],
+            [
+              1,
+              5
+            ]
+          ],
+          "room_passive_indices": [
+            5,
+            6
+          ],
+          "room_exits": [
+            [
+              0,
+              4
+            ],
+            [
+              0,
+              5
+            ]
+          ],
+          "room_exit_indices": [
+            1,
+            2
+          ]
+        },
+        {
+          "map": "MnGrandMarais",
+          "entrances": [
+            [
+              4,
+              18
+            ],
+            [
+              4,
+              19
+            ]
+          ],
+          "returns": [
+            [
+              8,
+              18
+            ],
+            [
+              8,
+              19
+            ]
+          ],
+          "first_active": 7,
+          "first_passive": 9,
+          "room_arrivals": [
+            [
+              8,
+              4
+            ],
+            [
+              8,
+              5
+            ]
+          ],
+          "room_passive_indices": [
+            7,
+            8
+          ],
+          "room_exits": [
+            [
+              9,
+              4
+            ],
+            [
+              9,
+              5
+            ]
+          ],
+          "room_exit_indices": [
+            3,
+            4
+          ]
+        }
+      ],
+      "requires_real_collision_check": true
+    }
+  ]
+}

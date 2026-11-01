@@ -1,0 +1,82 @@
+[
+  {
+    "id": "clinic-and-bakery",
+    "map": "MnStPaul",
+    "core": [
+      9,
+      46
+    ]
+  },
+  {
+    "id": "riverside-shop-and-angler",
+    "map": "MnStPaul",
+    "core": [
+      7,
+      60
+    ]
+  },
+  {
+    "id": "mart-and-garden",
+    "map": "MnStPaul",
+    "core": [
+      21,
+      34
+    ]
+  },
+  {
+    "id": "cafe-and-clinic",
+    "map": "MnStPaul",
+    "core": [
+      55,
+      34
+    ]
+  },
+  {
+    "id": "inn-and-boat-coop",
+    "map": "MnStPaul",
+    "core": [
+      47,
+      62
+    ]
+  },
+  {
+    "id": "fair-info-cottage",
+    "map": "MnStPaul",
+    "core": [
+      7,
+      8
+    ]
+  },
+  {
+    "id": "quiz-house",
+    "map": "MnStPaul",
+    "core": [
+      29,
+      16
+    ]
+  },
+  {
+    "id": "move-study-house",
+    "map": "MnStPaul",
+    "core": [
+      61,
+      8
+    ]
+  },
+  {
+    "id": "crafts-house",
+    "map": "MnStPaul",
+    "core": [
+      25,
+      44
+    ]
+  },
+  {
+    "id": "transit-house",
+    "map": "MnStPaul",
+    "core": [
+      59,
+      46
+    ]
+  }
+]

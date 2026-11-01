@@ -1,0 +1,828 @@
+{
+  "schema_version": 2,
+  "id": "MnLeechLake",
+  "tileset": "johto",
+  "compiled_tileset": "mn_headwaters",
+  "dimensions_metatiles": [
+    32,
+    24
+  ],
+  "shore_fitting": "johto_8_neighbors",
+  "reject_cliff_cuts": true,
+  "source_pixels_modified": false,
+  "layers": [
+    {
+      "name": "Care cabin garden",
+      "kind": "rect",
+      "bounds": [
+        4,
+        4,
+        10,
+        10
+      ],
+      "material": "lawn"
+    },
+    {
+      "name": "Narrow shore lane",
+      "kind": "rect",
+      "bounds": [
+        9,
+        9,
+        18,
+        17
+      ],
+      "material": "lawn"
+    },
+    {
+      "name": "Fisher garden",
+      "kind": "rect",
+      "bounds": [
+        3,
+        15,
+        10,
+        21
+      ],
+      "material": "lawn"
+    },
+    {
+      "name": "South welcome bank",
+      "kind": "rect",
+      "bounds": [
+        13,
+        17,
+        19,
+        23
+      ],
+      "material": "lawn"
+    },
+    {
+      "name": "North forest neck",
+      "kind": "path",
+      "points": [
+        [
+          16,
+          0
+        ],
+        [
+          16,
+          5
+        ],
+        [
+          13,
+          5
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "lawn"
+    },
+    {
+      "name": "Southern forest neck",
+      "kind": "path",
+      "points": [
+        [
+          16,
+          20
+        ],
+        [
+          16,
+          23
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "lawn"
+    },
+    {
+      "name": "Broad sheltered lake with an indented west bank",
+      "kind": "polygon",
+      "points": [
+        [
+          21,
+          3
+        ],
+        [
+          28,
+          3
+        ],
+        [
+          28,
+          5
+        ],
+        [
+          30,
+          5
+        ],
+        [
+          30,
+          18
+        ],
+        [
+          28,
+          18
+        ],
+        [
+          28,
+          21
+        ],
+        [
+          21,
+          21
+        ],
+        [
+          21,
+          20
+        ],
+        [
+          18,
+          20
+        ],
+        [
+          18,
+          16
+        ],
+        [
+          16,
+          16
+        ],
+        [
+          16,
+          12
+        ],
+        [
+          18,
+          12
+        ],
+        [
+          18,
+          8
+        ],
+        [
+          20,
+          8
+        ],
+        [
+          20,
+          5
+        ],
+        [
+          21,
+          5
+        ]
+      ],
+      "material": "water"
+    },
+    {
+      "name": "Bent public through path",
+      "kind": "path",
+      "points": [
+        [
+          16,
+          0
+        ],
+        [
+          16,
+          5
+        ],
+        [
+          13,
+          5
+        ],
+        [
+          13,
+          10
+        ],
+        [
+          11,
+          10
+        ],
+        [
+          11,
+          17
+        ],
+        [
+          16,
+          17
+        ],
+        [
+          16,
+          23
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "name": "Care porch lane",
+      "kind": "path",
+      "points": [
+        [
+          5,
+          7
+        ],
+        [
+          13,
+          7
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "name": "Fisher porch lane",
+      "kind": "path",
+      "points": [
+        [
+          4,
+          18
+        ],
+        [
+          11,
+          18
+        ],
+        [
+          11,
+          17
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "name": "Separate lake launch lane",
+      "kind": "path",
+      "points": [
+        [
+          11,
+          14
+        ],
+        [
+          15,
+          14
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "name": "Complete timber facade",
+      "kind": "point",
+      "position": [
+        5,
+        5
+      ],
+      "block": "2c"
+    },
+    {
+      "name": "Complete timber facade",
+      "kind": "point",
+      "position": [
+        6,
+        5
+      ],
+      "block": "2d"
+    },
+    {
+      "name": "Complete timber facade",
+      "kind": "point",
+      "position": [
+        5,
+        6
+      ],
+      "block": "2e"
+    },
+    {
+      "name": "Complete timber facade",
+      "kind": "point",
+      "position": [
+        6,
+        6
+      ],
+      "block": "2f"
+    },
+    {
+      "name": "Complete timber facade",
+      "kind": "point",
+      "position": [
+        4,
+        16
+      ],
+      "block": "2c"
+    },
+    {
+      "name": "Complete timber facade",
+      "kind": "point",
+      "position": [
+        5,
+        16
+      ],
+      "block": "2d"
+    },
+    {
+      "name": "Complete timber facade",
+      "kind": "point",
+      "position": [
+        4,
+        17
+      ],
+      "block": "2e"
+    },
+    {
+      "name": "Complete timber facade",
+      "kind": "point",
+      "position": [
+        5,
+        17
+      ],
+      "block": "2f"
+    },
+    {
+      "name": "Care flowers",
+      "kind": "rect",
+      "bounds": [
+        5,
+        8,
+        8,
+        9
+      ],
+      "material": "flowers"
+    },
+    {
+      "name": "Fisher garden flowers",
+      "kind": "rect",
+      "bounds": [
+        5,
+        19,
+        8,
+        20
+      ],
+      "material": "flowers"
+    },
+    {
+      "name": "Pier north posts",
+      "kind": "point",
+      "position": [
+        14,
+        10
+      ],
+      "block": "82"
+    },
+    {
+      "name": "Pier south posts",
+      "kind": "point",
+      "position": [
+        14,
+        11
+      ],
+      "block": "81"
+    },
+    {
+      "name": "Pier north posts",
+      "kind": "point",
+      "position": [
+        15,
+        10
+      ],
+      "block": "82"
+    },
+    {
+      "name": "Pier south posts",
+      "kind": "point",
+      "position": [
+        15,
+        11
+      ],
+      "block": "81"
+    },
+    {
+      "name": "Pier north posts",
+      "kind": "point",
+      "position": [
+        16,
+        10
+      ],
+      "block": "82"
+    },
+    {
+      "name": "Pier south posts",
+      "kind": "point",
+      "position": [
+        16,
+        11
+      ],
+      "block": "81"
+    },
+    {
+      "name": "Pier north posts",
+      "kind": "point",
+      "position": [
+        17,
+        10
+      ],
+      "block": "82"
+    },
+    {
+      "name": "Pier south posts",
+      "kind": "point",
+      "position": [
+        17,
+        11
+      ],
+      "block": "81"
+    },
+    {
+      "name": "Pier north posts",
+      "kind": "point",
+      "position": [
+        18,
+        10
+      ],
+      "block": "82"
+    },
+    {
+      "name": "Pier south posts",
+      "kind": "point",
+      "position": [
+        18,
+        11
+      ],
+      "block": "81"
+    },
+    {
+      "name": "Pier north posts",
+      "kind": "point",
+      "position": [
+        19,
+        10
+      ],
+      "block": "82"
+    },
+    {
+      "name": "Pier south posts",
+      "kind": "point",
+      "position": [
+        19,
+        11
+      ],
+      "block": "81"
+    },
+    {
+      "name": "Closed pier northeast corner",
+      "kind": "point",
+      "position": [
+        20,
+        10
+      ],
+      "block": "42"
+    },
+    {
+      "name": "Closed pier southeast corner",
+      "kind": "point",
+      "position": [
+        20,
+        11
+      ],
+      "block": "4a"
+    },
+    {
+      "name": "MN_LEECH_SHORE_WELCOME",
+      "kind": "point",
+      "position": [
+        17,
+        19
+      ],
+      "block": "45"
+    },
+    {
+      "name": "MN_LEECH_SHORE_CARE_SIGN",
+      "kind": "point",
+      "position": [
+        8,
+        7
+      ],
+      "block": "45"
+    },
+    {
+      "name": "MN_LEECH_SHORE_PIER_SIGN",
+      "kind": "point",
+      "position": [
+        13,
+        11
+      ],
+      "block": "45"
+    },
+    {
+      "name": "MN_LEECH_SHORE_LAUNCH_SIGN",
+      "kind": "point",
+      "position": [
+        14,
+        13
+      ],
+      "block": "45"
+    },
+    {
+      "name": "Island native cell 24,12",
+      "kind": "point",
+      "position": [
+        24,
+        12
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Island native cell 25,12",
+      "kind": "point",
+      "position": [
+        25,
+        12
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Island native cell 23,13",
+      "kind": "point",
+      "position": [
+        23,
+        13
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Island native cell 24,13",
+      "kind": "point",
+      "position": [
+        24,
+        13
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Island native cell 25,13",
+      "kind": "point",
+      "position": [
+        25,
+        13
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Island native cell 26,13",
+      "kind": "point",
+      "position": [
+        26,
+        13
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Island native cell 23,14",
+      "kind": "point",
+      "position": [
+        23,
+        14
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Island native cell 24,14",
+      "kind": "point",
+      "position": [
+        24,
+        14
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Island native cell 25,14",
+      "kind": "point",
+      "position": [
+        25,
+        14
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Island native cell 26,14",
+      "kind": "point",
+      "position": [
+        26,
+        14
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Island native cell 27,14",
+      "kind": "point",
+      "position": [
+        27,
+        14
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Island native cell 23,15",
+      "kind": "point",
+      "position": [
+        23,
+        15
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Island native cell 24,15",
+      "kind": "point",
+      "position": [
+        24,
+        15
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Island native cell 25,15",
+      "kind": "point",
+      "position": [
+        25,
+        15
+      ],
+      "block": "03"
+    },
+    {
+      "name": "Island native cell 26,15",
+      "kind": "point",
+      "position": [
+        26,
+        15
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Island native cell 27,15",
+      "kind": "point",
+      "position": [
+        27,
+        15
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Island native cell 23,16",
+      "kind": "point",
+      "position": [
+        23,
+        16
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Island native cell 24,16",
+      "kind": "point",
+      "position": [
+        24,
+        16
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Island native cell 25,16",
+      "kind": "point",
+      "position": [
+        25,
+        16
+      ],
+      "block": "03"
+    },
+    {
+      "name": "Island native cell 26,16",
+      "kind": "point",
+      "position": [
+        26,
+        16
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Island native cell 27,16",
+      "kind": "point",
+      "position": [
+        27,
+        16
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Island native cell 23,17",
+      "kind": "point",
+      "position": [
+        23,
+        17
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Island native cell 24,17",
+      "kind": "point",
+      "position": [
+        24,
+        17
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Island native cell 25,17",
+      "kind": "point",
+      "position": [
+        25,
+        17
+      ],
+      "block": "4f"
+    },
+    {
+      "name": "Island native cell 26,17",
+      "kind": "point",
+      "position": [
+        26,
+        17
+      ],
+      "block": "4f"
+    },
+    {
+      "name": "Island native cell 27,17",
+      "kind": "point",
+      "position": [
+        27,
+        17
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Island native cell 23,18",
+      "kind": "point",
+      "position": [
+        23,
+        18
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Island native cell 24,18",
+      "kind": "point",
+      "position": [
+        24,
+        18
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Island native cell 25,18",
+      "kind": "point",
+      "position": [
+        25,
+        18
+      ],
+      "block": "04"
+    },
+    {
+      "name": "Island native cell 26,18",
+      "kind": "point",
+      "position": [
+        26,
+        18
+      ],
+      "block": "02"
+    },
+    {
+      "name": "Island native cell 27,18",
+      "kind": "point",
+      "position": [
+        27,
+        18
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Island native cell 24,19",
+      "kind": "point",
+      "position": [
+        24,
+        19
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Island native cell 25,19",
+      "kind": "point",
+      "position": [
+        25,
+        19
+      ],
+      "block": "05"
+    },
+    {
+      "name": "Island native cell 26,19",
+      "kind": "point",
+      "position": [
+        26,
+        19
+      ],
+      "block": "05"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+/* Installed locations are exported by Rust alongside the reviewed catalog. */
+.locations-panel{border:1px solid var(--line,#c9d1c6);background:var(--paper,#f6f5ed);padding:1.5rem;margin:1.5rem 0;scroll-margin-top:1rem}
+.locations-panel h2{font:700 1.8rem/1.2 var(--display,Georgia,serif);margin:.5rem 0 1.2rem}
+.location-list{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}
+.location-list li{border-top:1px solid var(--line,#c9d1c6);padding-top:.8rem;min-width:0}
+.location-list strong,.location-list span{display:block;overflow-wrap:anywhere}
+.location-list strong{font-size:.95rem;line-height:1.5}.location-list span,.location-list p{font-size:.8rem;line-height:1.6;margin:.3rem 0}
+.location-method{color:var(--green,#234b3b);font-weight:600}.location-caption{font-size:.75rem;line-height:1.7;color:var(--muted,#606c62);margin:1.2rem 0 0;max-width:52rem}
+.location-pending{border-left:3px solid #9b7142;padding:.6rem 1rem;background:#f5eddf;font-size:.9rem;line-height:1.7}
+.location-evolution{font-size:.9rem;line-height:1.7}.location-evolution a{text-decoration:underline;text-underline-offset:3px}
+.more-locations{margin-top:1rem}.more-locations summary{cursor:pointer;font-size:.85rem;margin-bottom:1rem}
+@media(max-width:620px){.locations-panel{padding:1.1rem}.location-list{grid-template-columns:minmax(0,1fr)}}

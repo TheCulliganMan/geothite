@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "id": "MN_ORCHARD_KEEPER",
+  "name": "ORCHARD KEEPER POMONA",
+  "status": "accepted-native-playable",
+  "overworld_frames": 6,
+  "overworld_size": [
+    16,
+    16
+  ],
+  "battle_size": [
+    56,
+    56
+  ],
+  "palette_rgb555": [
+    32767,
+    22399,
+    8372,
+    0
+  ],
+  "source": "native-pixels-v3.json",
+  "placement": "placement-v1.json",
+  "pack": "content-packs/minnesota-npcs-ref-08-v01.crystalpack",
+  "parent": "content-packs/minnesota-npcs-ref-07-v01.crystalpack",
+  "runtime_checks": {
+    "one_controller_test_passed": true,
+    "talk_and_input_ownership": true,
+    "battle_turn_and_pp": true,
+    "battle_save_load": true,
+    "actual_victory_and_defeat_flag_before_render_capture": true,
+    "post_battle_talk": true,
+    "existing_trainers_and_assets_preserved": true
+  },
+  "manual_visual_review": "Direct actual Crystal Granny/Pokefan F/Chris six-pose comparison at equal palette/scale; own-palette 1x/8x and actual Rochester capture reviewed. Broad straw hat and burgundy band, twin braids and rosy face, pale sleeves, full burgundy apron with rounded hem, distinct rear ties and skirt movement over a lifted boot. Connected isolated skirt fold to hem after first review. Apple/basket retained in unchanged battle art only to avoid overworld crowding. Full encounter passed in 7.89s; battle/palette/gameplay/unrelated assets preserved.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/sprites/08-orchard-keeper/native-pixels-v3.json": "e5d5857b0e0f5deac662845eae949edbed7364de206d041492942d73657f00fb",
+    "planning/minnesota/npcs/sprites/08-orchard-keeper/placement-v1.json": "455618c403978e9af421520f382ceaf7a5c90f018dd1f890830c9bf527a803e8",
+    "content-packs/minnesota-npcs-ref-08-v01.crystalpack": "f4d8c89eb1e98c6ef5803c0a88bc107825ff1463ea2d553f66f3702491998364",
+    "target/npc-sprites/orchard/controller-reference-v01.log": "8edb7d791eeb26bc19fa4615c6ca5155e47f15631622ff4b594969206275866d",
+    "target/npc-sprites/orchard/gameplay-reference-v01/original-npc-trainer-intro.png": "1a9949a9d10183c2f0d19bb67ab03ab474f14feb2310cdb7faac3bac41f4700c",
+    "target/npc-sprites/orchard/gameplay-reference-v01/original-npc-first-turn.png": "aedd3754c579f7a1208c45a60114c9144d2da061a0a68f7e446980269d25ceed",
+    "target/npc-sprites/orchard/gameplay-reference-v01/original-npc-overworld-state.png": "5901a38d64d095059e4526a64a270da23b51bf72b8973fbc06978c7b89bb0143",
+    "target/npc-sprites/hand-review/orchard-real-comparison-v2.png": "086aa52ad0f7d5f36edcd26c0a49f58b8ce1e7ea4512795abd75ead349629724",
+    "target/npc-sprites/orchard/reference-v2/comparison.png": "1ba256c950a94a19d28424bf611231f317361278e42a3d60f9ef8fcce02b2d10",
+    "target/npc-sprites/orchard/reference-v2/verification.json": "d0ac1ea4e7a828bc26e9ca00c6404d970f8a0d8724b87af94df2dd5a2ed6288e",
+    "target/npc-sprites/orchard/reference-v2/overworld-review.png": "5833a105eda85ab7e3e90d65c6d83c9d1395c65e5ffe645a06621f2c90fce81b",
+    "target/npc-sprites/orchard/reference-v2/overworld-review-8x.png": "f9d772547d258db75dece82525e998c639abce8fd22c104d1a022642b9168811"
+  },
+  "overworld_revision": "real-reference-hand-edited-v3",
+  "reference_review": "actual-crystal-sprites-common-palette-and-scale"
+}

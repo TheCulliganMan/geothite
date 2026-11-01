@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F037",
+  "species": [
+    {
+      "species_id": "MN_088",
+      "runtime_token": "PLOWZER",
+      "palette_rgb555": [
+        32767,
+        32661,
+        21893,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        29375,
+        12469,
+        0
+      ],
+      "fit": [
+        14,
+        14
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 64,
+      "interior_black_samples": 64,
+      "opaque_interior_minimum_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "plowzer.overworld.imagegen-v1.png",
+          "crop": [
+            4,
+            89,
+            508,
+            412
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "plowzer.overworld.imagegen-v1.png",
+          "crop": [
+            511,
+            88,
+            508,
+            412
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "plowzer.overworld.imagegen-v1.png",
+          "crop": [
+            1007,
+            89,
+            508,
+            412
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "plowzer.overworld.imagegen-v1.png",
+          "crop": [
+            4,
+            544,
+            508,
+            412
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "plowzer.overworld.imagegen-v1.png",
+          "crop": [
+            511,
+            556,
+            508,
+            412
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "plowzer.overworld.imagegen-v1.png",
+          "crop": [
+            1007,
+            544,
+            508,
+            412
+          ]
+        }
+      ]
+    }
+  ]
+}

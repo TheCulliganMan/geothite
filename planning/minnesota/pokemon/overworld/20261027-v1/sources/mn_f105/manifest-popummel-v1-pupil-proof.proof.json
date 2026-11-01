@@ -1,0 +1,351 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_232",
+  "status": "source-proof-pass; root visual/context acceptance required",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f105/manifest-popummel-v1-pupil-proof.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f105/popummel-v1-pupil-proof",
+  "shared_transform": {
+    "source_bounds": [
+      46,
+      5,
+      378,
+      373
+    ],
+    "native_size": [
+      14,
+      13
+    ],
+    "native_origin": [
+      1,
+      2
+    ]
+  },
+  "all_four_nonrear_poses_have_actual_source_pupils": true,
+  "every_native_eye_cluster_maps_to_same_small_anatomical_source_pupil_component": true,
+  "actual_source_pupil_proofs": [
+    {
+      "pose": "down_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f105/popummel.overworld.imagegen-v1.png",
+      "crop": [
+        37,
+        118,
+        430,
+        380
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          237,
+          234,
+          24,
+          25
+        ],
+        [
+          297,
+          234,
+          23,
+          25
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              7,
+              6
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                8,
+                7,
+                4,
+                253
+              ],
+              "bounds": [
+                237,
+                234,
+                24,
+                25
+              ],
+              "pixels": 599,
+              "truncated_contour": false,
+              "native_pixel": [
+                7,
+                6
+              ],
+              "source_sample_pixel": [
+                258,
+                252
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              9,
+              6
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                1,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                297,
+                234,
+                23,
+                25
+              ],
+              "pixels": 575,
+              "truncated_contour": false,
+              "native_pixel": [
+                9,
+                6
+              ],
+              "source_sample_pixel": [
+                312,
+                252
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f105/popummel.overworld.imagegen-v1.png",
+      "crop": [
+        1026,
+        112,
+        430,
+        380
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          1176,
+          228,
+          23,
+          26
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              5,
+              6
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                1,
+                1,
+                0,
+                253
+              ],
+              "bounds": [
+                1176,
+                228,
+                23,
+                26
+              ],
+              "pixels": 598,
+              "truncated_contour": false,
+              "native_pixel": [
+                5,
+                6
+              ],
+              "source_sample_pixel": [
+                1193,
+                246
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f105/popummel.overworld.imagegen-v1.png",
+      "crop": [
+        37,
+        552,
+        430,
+        380
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          236,
+          668,
+          24,
+          26
+        ],
+        [
+          293,
+          668,
+          24,
+          26
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              7,
+              6
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                4,
+                3,
+                1,
+                253
+              ],
+              "bounds": [
+                236,
+                668,
+                24,
+                26
+              ],
+              "pixels": 623,
+              "truncated_contour": false,
+              "native_pixel": [
+                7,
+                6
+              ],
+              "source_sample_pixel": [
+                258,
+                686
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              9,
+              6
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                7,
+                5,
+                3,
+                253
+              ],
+              "bounds": [
+                293,
+                668,
+                24,
+                26
+              ],
+              "pixels": 624,
+              "truncated_contour": false,
+              "native_pixel": [
+                9,
+                6
+              ],
+              "source_sample_pixel": [
+                312,
+                686
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f105/popummel.overworld.imagegen-v1.png",
+      "crop": [
+        1026,
+        552,
+        430,
+        380
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          1176,
+          668,
+          23,
+          25
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              5,
+              6
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                1,
+                1,
+                0,
+                253
+              ],
+              "bounds": [
+                1176,
+                668,
+                23,
+                25
+              ],
+              "pixels": 575,
+              "truncated_contour": false,
+              "native_pixel": [
+                5,
+                6
+              ],
+              "source_sample_pixel": [
+                1193,
+                686
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "native_head_anchors_idle_walk_equal": true,
+  "validation": {
+    "runtime_2bpp_384_bytes_exact_allpixels": true,
+    "runtime_png16x96_index_parity": true,
+    "normal_shiny_palettebanks_exact": true,
+    "normal_shiny_all1536pixels_exact": true,
+    "transparent_border": true,
+    "idle_walk_pairs_distinct": true
+  },
+  "sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f105/popummel-v1-pupil-proof/review/line.normal-8x.png": "3af2a665e6bdb41c96a95b11f4283084c0fc94fb58bf9c0610307aa59310d113",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f105/popummel-v1-pupil-proof/gfx/pokemon/popummel/overworld-shiny.gbcpal": "8429a58e67d12e34e51659afbe4ac0163e5882a4de4298988b77eff26095f2c3",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f105/popummel.overworld.imagegen-v1.png": "4c64797c27afd5fc51b4cf461c5485f6d8fed56078ec005e0f39a20df9613e3d",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f105/manifest-popummel-v1-pupil-proof.json": "9578f11d521fc539f0beb82340b3aa3549fc64f3af666505b6ed41019651c71a",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f105/popummel-v1-pupil-proof/compiled-index.json": "7ce96e1933010be38ba1725aee386ec5f3b9b28865d43998924966a0817b2e94",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f105/popummel-v1-pupil-proof/gfx/pokemon/popummel/overworld.gbcpal": "e86c0cc20b7be9c56af13e81a362897c0f53ef9d872259b917991156b6462521",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f105/popummel-v1-pupil-proof/review/line.shiny-8x.png": "129019c2eb0fdbbabf5dc475f3f516f449ffd84ccecb3f38825ac2383b22e5ed",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f105/popummel-v1-pupil-proof/gfx/pokemon/popummel/overworld.2bpp": "5ad1456c3296bac73cb6b6f872fbb6af40ef1378a08426fbae29f2a2300da55d",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f105/popummel-v1-pupil-proof/gfx/pokemon/popummel/overworld.png": "e8cdf66a464c470419498057c7a4a5e1a2a4c8d62bbbb8d180f17c880bf587e9"
+  },
+  "actual_native_boards_viewed": true,
+  "rear_review": "plain rear head, no copied face; actual normal/shiny viewed"
+}

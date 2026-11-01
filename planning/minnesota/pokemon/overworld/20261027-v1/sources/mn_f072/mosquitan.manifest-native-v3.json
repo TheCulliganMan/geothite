@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F072",
+  "species": [
+    {
+      "species_id": "MN_153",
+      "runtime_token": "MOSQUITAN",
+      "palette_rgb555": [
+        32767,
+        9081,
+        10381,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        28456,
+        4522,
+        0
+      ],
+      "fit": [
+        14,
+        14
+      ],
+      "alpha_threshold": 245,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 32,
+      "interior_black_samples": null,
+      "opaque_interior_minimum_samples": 60,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "mosquitan.overworld.imagegen-v3.png",
+          "crop": [
+            26,
+            72,
+            466,
+            432
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "mosquitan.overworld.imagegen-v3.png",
+          "crop": [
+            537,
+            60,
+            466,
+            432
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "mosquitan.overworld.imagegen-v3.png",
+          "crop": [
+            1034,
+            36,
+            466,
+            432
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "mosquitan.overworld.imagegen-v3.png",
+          "crop": [
+            27,
+            551,
+            466,
+            432
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "mosquitan.overworld.imagegen-v3.png",
+          "crop": [
+            536,
+            541,
+            466,
+            432
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "mosquitan.overworld.imagegen-v3.png",
+          "crop": [
+            1034,
+            528,
+            466,
+            432
+          ]
+        }
+      ]
+    }
+  ]
+}

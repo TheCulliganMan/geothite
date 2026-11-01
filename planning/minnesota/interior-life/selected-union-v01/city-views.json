@@ -1,0 +1,5 @@
+[
+  { "id": "west-clinic", "map": "MnStPaul", "core": [15, 46] },
+  { "id": "east-clinic", "map": "MnStPaul", "core": [55, 32] },
+  { "id": "west-river-bend", "map": "MnStPaul", "core": [20, 47] }
+]

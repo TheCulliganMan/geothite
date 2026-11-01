@@ -1,0 +1,72 @@
+{
+  "use_case": "stylized-concept",
+  "references": [
+    {
+      "path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/gen2-reference/starters.png",
+      "sha256": "af61f720a75b7e1b8e80ba14e8944612556397eedddd719669dec68b0e0fd534",
+      "role": "Authentic Gen2 coarse logical pixels and close cropped rear camera only. Fresh original open-mantle anatomy."
+    }
+  ],
+  "old_identity_context_inspected_not_passed": "sprites/mn-f086/mn-185.front-back.imagegen-v1.png",
+  "species_id": "MN_185",
+  "palette": {
+    "species_id": "MN_185",
+    "name": "Cragcloak",
+    "gbc_rgb5": [
+      [
+        31,
+        31,
+        31
+      ],
+      [
+        20,
+        24,
+        15
+      ],
+      [
+        9,
+        12,
+        12
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ],
+    "gbc_rgb555_words": [
+      32767,
+      16148,
+      12681,
+      0
+    ],
+    "rgb8": [
+      [
+        255,
+        255,
+        255
+      ],
+      [
+        165,
+        198,
+        123
+      ],
+      [
+        74,
+        99,
+        99
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ],
+    "hex": [
+      "#FFFFFF",
+      "#A5C67B",
+      "#4A6363",
+      "#000000"
+    ]
+  }
+}

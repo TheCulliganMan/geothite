@@ -1,0 +1,44 @@
+{
+  "interior": "MnR10Cave1F",
+  "parent_route": "MN_R10",
+  "arrival_core": [
+    3,
+    13
+  ],
+  "return_trigger_core": [
+    3,
+    13
+  ],
+  "exterior_anchor_metatile": [
+    18,
+    8
+  ],
+  "exterior_door_core": [
+    36,
+    17
+  ],
+  "requires_real_collision_check": true,
+  "safe_exterior_return_core": [
+    36,
+    18
+  ],
+  "native_status": "Verified native24x18 R10 exploration rebuild. Original mouth, reader and Revive preserved; new Escape Rope and two optional trainers, both stairways, both drops, real exterior return, native fishing, item consumption and Continue verified. Local fixture evidence does not prove earned regional access.",
+  "native_warp_arrival_core": [
+    3,
+    13
+  ],
+  "dimensions_metatiles": [
+    24,
+    18
+  ],
+  "native_palette": "nite",
+  "candidate_source_sha256": "21a1860388c15d4439f7006c1c8ef1f67a2ebdae1c6d4c579aaaacdaee5ab075",
+  "clear_arrival_core": [
+    3,
+    12
+  ],
+  "source_design": "caves/r10-exploration-v01/route-dossier.json",
+  "native_review_pack_sha256": "bfd4e1091213f558bca8ffc4c86afbc93af8569d16a3145dd9da157c4b1164be",
+  "validation": "R10 acceptance-v435 and exact complete-module inheritance through the current R20 child; all physical mouth/clear-step collisions checked against that selected pack.",
+  "verification": "planning/minnesota/renders/r10-exploration-v402/acceptance-v435.json"
+}

@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "manifest": "minnesota-interior-life-fair-woodland-directions-v1",
+  "all_installed_interiors": false,
+  "rooms": [
+    {
+      "map": "MnStPaulCapitolHall",
+      "purpose": "Existing Capitol records office and Union Depot story direction.",
+      "texts": [
+        {
+          "label": "MN_ST_PAUL_RECORDS_CLERKText",
+          "lines": [
+            "These are public records. You do not need a fancy title to ask a question.",
+            "Reach the fairgrounds via MINNEAPOLIS and PINE COUNTRY. For the missing freight paperwork, try UNION DEPOT. The clerk there has the actual file."
+          ]
+        }
+      ],
+      "conversations": []
+    }
+  ]
+}

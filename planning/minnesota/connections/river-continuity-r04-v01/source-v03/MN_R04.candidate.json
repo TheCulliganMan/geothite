@@ -1,0 +1,588 @@
+{
+  "id": "MN_R04",
+  "map_prefix": "MnR04",
+  "name": "Twin Cities River Park",
+  "required_flags": [
+    "BADGE_3"
+  ],
+  "quest": "Q03",
+  "encounters": {
+    "grass_rates": {
+      "morning": 10,
+      "day": 10,
+      "night": 10
+    },
+    "grass": {
+      "morning": [
+        {
+          "species": "PIDGEY",
+          "level": 15
+        },
+        {
+          "species": "RATTATA",
+          "level": 16
+        },
+        {
+          "species": "HOPPIP",
+          "level": 17
+        },
+        {
+          "species": "ABRA",
+          "level": 18
+        },
+        {
+          "species": "SNUBBULL",
+          "level": 19
+        },
+        {
+          "species": "DITTO",
+          "level": 19
+        },
+        {
+          "species": "YANMA",
+          "level": 19
+        }
+      ],
+      "day": [
+        {
+          "species": "PIDGEY",
+          "level": 15
+        },
+        {
+          "species": "RATTATA",
+          "level": 16
+        },
+        {
+          "species": "HOPPIP",
+          "level": 17
+        },
+        {
+          "species": "ABRA",
+          "level": 18
+        },
+        {
+          "species": "SNUBBULL",
+          "level": 19
+        },
+        {
+          "species": "DITTO",
+          "level": 19
+        },
+        {
+          "species": "YANMA",
+          "level": 19
+        }
+      ],
+      "night": [
+        {
+          "species": "NOCTOWL",
+          "level": 15
+        },
+        {
+          "species": "SPINARAK",
+          "level": 16
+        },
+        {
+          "species": "HOPPIP",
+          "level": 17
+        },
+        {
+          "species": "ABRA",
+          "level": 18
+        },
+        {
+          "species": "SNUBBULL",
+          "level": 19
+        },
+        {
+          "species": "DITTO",
+          "level": 19
+        },
+        {
+          "species": "YANMA",
+          "level": 19
+        }
+      ]
+    },
+    "water_rate": 4,
+    "water": [
+      {
+        "species": "POLIWAG",
+        "level": 15
+      },
+      {
+        "species": "WOOPER",
+        "level": 16
+      },
+      {
+        "species": "MARILL",
+        "level": 19
+      }
+    ]
+  },
+  "art_constraints": [
+    "Only original packed 8x8 source tiles.",
+    "No painted shadows, enlarged trees or perspective props.",
+    "Fit source shoreline/cliff quadrants; draw source trees in coherent metatile groups."
+  ],
+  "dimensions_metatiles": [
+    28,
+    18
+  ],
+  "chunk_metatiles": [
+    32,
+    24
+  ],
+  "chunk_columns": 1,
+  "chunk_rows": 1,
+  "tileset": "park",
+  "source_references": [
+    "NationalPark",
+    "GoldenrodCity",
+    "Route34"
+  ],
+  "description": "A short civic park crossing with a gold-railed civic pond bridge, native roses and benches. The east promenade bends around a north-connected elm tongue toward the picnic gate; compact tree shoulders keep the crossing distinct from its garden turnouts. A trainer controls the short west paved lane; a longer nursery-grass walk bypasses the challenge in either direction. The fenced waterbody has visible closed northern and southern banks; the actual Mississippi remains a separate native channel south of this park.",
+  "endpoints": [
+    {
+      "place": "MINNEAPOLIS",
+      "side": "W",
+      "gate_metatile": [
+        1,
+        9
+      ],
+      "landing_metatile": [
+        3,
+        9
+      ]
+    },
+    {
+      "place": "ST PAUL",
+      "side": "E",
+      "gate_metatile": [
+        26,
+        9
+      ],
+      "landing_metatile": [
+        24,
+        9
+      ]
+    }
+  ],
+  "main_path_metatiles": [
+    [
+      0,
+      9
+    ],
+    [
+      21,
+      9
+    ],
+    [
+      21,
+      10
+    ],
+    [
+      23,
+      10
+    ],
+    [
+      23,
+      9
+    ],
+    [
+      27,
+      9
+    ]
+  ],
+  "main_lane_width_gameplay_tiles": 2,
+  "districts": [
+    {
+      "id": "WEST_GARDEN",
+      "name": "Minneapolis rose walk",
+      "bounds_metatiles": [
+        1,
+        2,
+        12,
+        11
+      ],
+      "landmark_metatile": [
+        8,
+        5
+      ],
+      "purpose": "Battle or grass decision, with a bench-side medicine"
+    },
+    {
+      "id": "CIVIC_BRIDGE",
+      "name": "Stone-bank crossing",
+      "bounds_metatiles": [
+        11,
+        0,
+        18,
+        18
+      ],
+      "landmark_metatile": [
+        14,
+        9
+      ],
+      "purpose": "One necessary protected crossing of the contained civic pond; the actual Mississippi remains a separate channel south of the park."
+    },
+    {
+      "id": "EAST_PARK",
+      "name": "Saint Paul forecourt",
+      "bounds_metatiles": [
+        18,
+        4,
+        27,
+        16
+      ],
+      "landmark_metatile": [
+        23,
+        7
+      ],
+      "purpose": "Flower islands, short picnic habitat and optional school battle"
+    }
+  ],
+  "loops": [
+    {
+      "id": "ROSE_WALK_ALTERNATIVE",
+      "path_metatiles": [
+        [
+          6,
+          9
+        ],
+        [
+          6,
+          5
+        ],
+        [
+          11,
+          5
+        ],
+        [
+          11,
+          9
+        ],
+        [
+          6,
+          9
+        ]
+      ],
+      "joins_districts": [
+        "WEST_GARDEN",
+        "CIVIC_BRIDGE"
+      ],
+      "entry_rule": "Choose grass or challenge Cole",
+      "return_rule": "Two-way",
+      "tradeoff": "The longer walk requires four habitat steps; the short paved pinch is covered by Cole until his defeat."
+    }
+  ],
+  "minimum_optional_branches": 2,
+  "trainers": [
+    {
+      "id": "MN_R04_T01",
+      "display_name": "COLE",
+      "trainer_class": "JUGGLER",
+      "sprite": "SPRITE_SUPER_NERD",
+      "tile": [
+        19,
+        18
+      ],
+      "facing": "west",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "DITTO",
+          "level": 17
+        },
+        {
+          "species": "YANMA",
+          "level": 17
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R04_TRAINER_01",
+      "before_lines": [
+        "A bridge is a",
+        "fine place to",
+        "practice balance!"
+      ],
+      "after_lines": [
+        "You found your",
+        "footing quickly!"
+      ],
+      "loss_lines": [
+        "I lost my balance!"
+      ],
+      "block_main_lane": true
+    },
+    {
+      "id": "MN_R04_T02",
+      "display_name": "MICA",
+      "trainer_class": "SCHOOLBOY",
+      "sprite": "SPRITE_YOUNGSTER",
+      "tile": [
+        41,
+        25
+      ],
+      "facing": "east",
+      "sight_range": 1,
+      "party": [
+        {
+          "species": "ABRA",
+          "level": 16
+        },
+        {
+          "species": "SNUBBULL",
+          "level": 17
+        }
+      ],
+      "defeated_flag": "EVENT_MN_R04_TRAINER_02",
+      "before_lines": [
+        "That bridge takes",
+        "me back to school.",
+        "A quick battle?"
+      ],
+      "after_lines": [
+        "The grass path",
+        "is a quiet break."
+      ],
+      "loss_lines": [
+        "Class dismissed!"
+      ],
+      "block_main_lane": false
+    }
+  ],
+  "residents": [
+    {
+      "id": "MN_R04_GARDENER",
+      "sprite": "SPRITE_GRAMPS",
+      "tile": [
+        7,
+        25
+      ],
+      "facing": "east",
+      "lines": [
+        "The flowers mark",
+        "the quiet paths.",
+        "Wild partners live",
+        "in the grass."
+      ]
+    },
+    {
+      "id": "MN_R04_BRIDGE_KEEPER",
+      "sprite": "SPRITE_OFFICER",
+      "tile": [
+        23,
+        23
+      ],
+      "facing": "east",
+      "lines": [
+        "The stone banks",
+        "keep traffic off",
+        "the water edge.",
+        "The deck is clear."
+      ]
+    }
+  ],
+  "items": [
+    {
+      "id": "MN_R04_ITEM_01",
+      "item": "SUPER_POTION",
+      "quantity": 1,
+      "flag": "EVENT_MN_R04_ITEM_01",
+      "tile": [
+        7,
+        13
+      ]
+    },
+    {
+      "id": "MN_R04_ITEM_02",
+      "item": "GREAT_BALL",
+      "quantity": 1,
+      "flag": "EVENT_MN_R04_ITEM_02",
+      "tile": [
+        49,
+        27
+      ]
+    },
+    {
+      "id": "MN_R04_ITEM_04",
+      "item": "ETHER",
+      "quantity": 1,
+      "flag": "EVENT_MN_R04_ITEM_04",
+      "tile": [
+        9,
+        27
+      ]
+    }
+  ],
+  "signs": [
+    {
+      "id": "MN_R04_WEST_SIGN",
+      "tile": [
+        2,
+        16
+      ],
+      "lines": [
+        "MINNEAPOLIS WEST",
+        "ST PAUL: EAST"
+      ]
+    },
+    {
+      "id": "MN_R04_EAST_SIGN",
+      "tile": [
+        52,
+        16
+      ],
+      "lines": [
+        "ST PAUL EAST",
+        "MINNEAPOLIS: WEST"
+      ]
+    },
+    {
+      "id": "MN_R04_GARDEN_SIGN",
+      "tile": [
+        12,
+        8
+      ],
+      "lines": [
+        "ROSE WALK",
+        "A longer grass way",
+        "around the lane."
+      ]
+    },
+    {
+      "id": "MN_R04_BRIDGE_SIGN",
+      "tile": [
+        36,
+        14
+      ],
+      "lines": [
+        "PARK POND BRIDGE",
+        "Keep to the deck."
+      ]
+    },
+    {
+      "id": "MN_R04_PICNIC_SIGN",
+      "tile": [
+        42,
+        24
+      ],
+      "lines": [
+        "RIVER PARK",
+        "A short grass spur",
+        "leads to the nook."
+      ]
+    }
+  ],
+  "doors": [],
+  "interiors": [],
+  "shortcut": null,
+  "viewpoints": [
+    {
+      "id": "WEST_ENTRY",
+      "tile": [
+        4,
+        18
+      ]
+    },
+    {
+      "id": "ROSE_BENCH",
+      "tile": [
+        8,
+        13
+      ]
+    },
+    {
+      "id": "GRASS_FORK",
+      "tile": [
+        12,
+        12
+      ]
+    },
+    {
+      "id": "COLE_LANE",
+      "tile": [
+        16,
+        18
+      ]
+    },
+    {
+      "id": "BRIDGE_DECK",
+      "tile": [
+        28,
+        19
+      ]
+    },
+    {
+      "id": "RIVER_BANK",
+      "tile": [
+        22,
+        23
+      ]
+    },
+    {
+      "id": "EAST_GARDENS",
+      "tile": [
+        47,
+        17
+      ]
+    },
+    {
+      "id": "PICNIC_GRASS",
+      "tile": [
+        43,
+        27
+      ]
+    }
+  ],
+  "required_grass_crossings": [],
+  "one_way_ledges": [],
+  "mandatory_trainer_lanes": [
+    "MN_R04_T01"
+  ],
+  "battle_or_grass_choices": [
+    {
+      "id": "ROSE_WALK_CHOICE",
+      "trainer_id": "MN_R04_T01",
+      "bounds_core": [
+        16,
+        8,
+        20,
+        14
+      ],
+      "minimum_grass_steps": 4
+    }
+  ],
+  "status": "Detached source-only civic pond continuity candidate. Native art/terrain/sign publication and production-controller/GPU acceptance remain pending.",
+  "anchor_status": "The original92bb504cell preimage is frozen. Candidatechanges45inaccessibleWater/Wall cells and one existing sign firstline; every old land/grass/actor/party/road/bridge/event/room anchor remains unchanged. No native acceptance inferred from source views.",
+  "terrain_revision": {
+    "id": "route-quality-next-v01",
+    "pack_sha256": "1186a24371251f741db88cf35a7863145ed5423da4ad3d7c6485c8f242753ecb",
+    "native_publication_inputs": "renders/route-quality-next/integration-inputs",
+    "controller_proof": "renders/route-quality-next/controller-v05/controller-proof.json",
+    "runbook": "playable/route-quality-next.md",
+    "scope": "Reviewed bounded terrain only; no full-route final acceptance or earned regional progression claim."
+  },
+  "river_continuity_review": {
+    "status": "DETACHED_SOURCE_ONLY_NOT_NATIVE_PUBLISHED",
+    "topology": "Contained fenced civic pond crossed by the original Foot-only park bridge; no Mississippi main-channel or Surf-through claim.",
+    "bounds_meta": [
+      [
+        12,
+        0,
+        17,
+        4
+      ],
+      [
+        12,
+        13,
+        17,
+        18
+      ]
+    ],
+    "outside_scope": "Actual one-metatile atlas void y27 remains unfilled; no Confluence/StPaul terrain or connections changed.",
+    "preserved": "Every original legal Foot/grass tile, directional permission, actor/room/story root, bridge8..10 and road/gate endpoint. Only inaccessible Water/Wall footprint ends become nativeWALL.",
+    "native_addition": "Two appended exact-native row-assembled shorecaps44/45, WALLallquadrants; no newglyphs/palettes.",
+    "parent_pack_sha256": "92bb645535db23c78491b6982ddf5fa17b72b1f0434dfb6456a395fbf8fdbd33"
+  }
+}

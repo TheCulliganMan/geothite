@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "command": [
+    "cargo",
+    "clippy",
+    "--locked",
+    "--profile",
+    "wasm-dev",
+    "-p",
+    "crystal-bevy",
+    "--all-targets"
+  ],
+  "exit_code": 0,
+  "log": ".local/route-grass-review/r19-gate-bevy-all-target-clippy-v03.log",
+  "source_sha256": {
+    "crates/crystal-bevy/src/bevy_shell/tests/r19_detroit_gate.rs": "c6e78d43503f3c68d29ddcdb760dc4fbb1af6fce7257537abbcbaee24aee10b5"
+  },
+  "owned_leaf_format_exit_code": 0
+}

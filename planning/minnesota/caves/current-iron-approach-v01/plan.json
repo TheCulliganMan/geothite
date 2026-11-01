@@ -1,0 +1,93 @@
+{
+  "schema_version": 1,
+  "status": "verified_selected_native_2d_current_parent_preserved",
+  "parent_revision": "route_grass_r14_forest_bank_revision",
+  "parent_pack": "content-packs/minnesota-current-r14-forest-bank-v01.crystalpack",
+  "parent_pack_sha256": "e9f4108d3b0a35f04145e4928446c03845982e1f13d7ff8f34e383bd701757d5",
+  "room": "MnIronDrillApproach",
+  "dimensions_metatiles": [
+    16,
+    13
+  ],
+  "terrain_delta": "80 existing opaque black WALL metatiles 01 become original solid native cave 2e, with the same solid border. All832 collision quadrants remain exact.",
+  "optional_discovery": {
+    "item": "ETHER",
+    "quantity": 1,
+    "actor": "MN_IRON_APPROACH_ETHER",
+    "tile": [
+      5,
+      5
+    ],
+    "approach": [
+      4,
+      5
+    ],
+    "flag": "EVENT_MN_IRON_APPROACH_ETHER",
+    "purpose": "Give the existing upper-left side circuit a useful resource before the longer mine network; leave the main route and all existing trainers unchanged."
+  },
+  "real_stairs": [
+    {
+      "active": [
+        7,
+        21
+      ],
+      "arrival": [
+        6,
+        21
+      ],
+      "destination": "MnR09Cave1F",
+      "destination_arrival": [
+        19,
+        9
+      ]
+    },
+    {
+      "active": [
+        25,
+        5
+      ],
+      "arrival": [
+        24,
+        5
+      ],
+      "destination": "MnIronHaulage",
+      "destination_arrival": [
+        4,
+        23
+      ]
+    }
+  ],
+  "preserve": [
+    "Every original program, actor, trainer party, defeat flag, warp/arrival pair and story dependency",
+    "Original forced NITE palette, cave art and native staircase assemblies",
+    "All outdoor maps, Minneapolis cycling, river/shore closures, roster, music/audio and recovery data"
+  ],
+  "required_verification": [
+    "Guarded Rust publication and strict readback",
+    "All original collision quadrants equal, every dry branch and cache/stair approach reachable with bodies",
+    "Only expected full-root terrain/cache/event-flag changes; all731 other complete maps exact",
+    "Actual native item-ball full-pocket denial, input ownership, native Toss/retry, once-only award and reached Continue",
+    "Both real stair pairs traversed in both directions, safe arrivals and reached Continue",
+    "Native2D capture inspection and source pixel/state comparison",
+    "Affected-crate formatting/Clippy; report unrelated failures"
+  ],
+  "render": "planning/minnesota/renders/iron-approach-v356/final-whole-room-original-v390.png",
+  "before_render": "planning/minnesota/renders/iron-approach-v356/before-whole-original.png",
+  "verified_evidence": {
+    "whole-root-preservation-v392.json": "planning/minnesota/renders/iron-approach-v356/whole-root-preservation-v392.json",
+    "final-native-gpu-v386/capture-progress.json": "planning/minnesota/renders/iron-approach-v356/final-native-gpu-v386/capture-progress.json",
+    "controller-result-v383.json": "planning/minnesota/renders/iron-approach-v356/controller-result-v383.json",
+    "final-production-stairs-v391/receipt.json": "planning/minnesota/renders/iron-approach-v356/final-production-stairs-v391/receipt.json",
+    "code-check-results-v393.json": "planning/minnesota/renders/iron-approach-v356/code-check-results-v393.json",
+    "final-fixtures-v390/whole-source-match.json": "planning/minnesota/renders/iron-approach-v356/final-fixtures-v390/whole-source-match.json",
+    "publisher_negative_guards": "planning/minnesota/renders/iron-approach-v356/guards-v360.log"
+  },
+  "pack": "content-packs/minnesota-iron-crosscut-rock-cache-v02.crystalpack",
+  "pack_sha256": "bc38b8920bdc6d5e3c0e18ddac283aa4087e0020d694861f277d10314a3875d1",
+  "content_identity": "762ea924b566ae78f839d72944bf5b19c9397a4730b4c6413f29bbd555a5e406",
+  "code_checks": {
+    "affected_crates_all_targets_clippy": "PASS shared current-source run; retained log and source hashes in code-check-results-v393.json",
+    "owned_leaf_rustfmt": "PASS",
+    "workspace_rustfmt": "Existing unrelated differences, first offset-allocator/src/lib.rs:408"
+  }
+}

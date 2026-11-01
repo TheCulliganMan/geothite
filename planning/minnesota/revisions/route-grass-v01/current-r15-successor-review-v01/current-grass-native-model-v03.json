@@ -1,0 +1,144 @@
+{
+  "status": "PASS_STATIC_NATIVE_MODEL",
+  "pack": "content-packs/minnesota-current-r15-open-shore-and-spur-v02.crystalpack",
+  "pack_sha256": "e02fb85d4db327d146cee269809b1af3e4b387dc2e29240b71cae0ae5837ec4c",
+  "checks": [
+    {
+      "id": "main-west-east",
+      "start": [
+        0,
+        24
+      ],
+      "end": [
+        63,
+        24
+      ],
+      "measurement": {
+        "status": "MEASURED",
+        "grass_steps": 9,
+        "grass_quadrants_in_contract": 92,
+        "ice_quadrants": 0
+      }
+    },
+    {
+      "id": "main-east-west",
+      "start": [
+        63,
+        24
+      ],
+      "end": [
+        0,
+        24
+      ],
+      "measurement": {
+        "status": "MEASURED",
+        "grass_steps": 9,
+        "grass_quadrants_in_contract": 92,
+        "ice_quadrants": 0
+      }
+    },
+    {
+      "id": "west-staples",
+      "start": [
+        0,
+        24
+      ],
+      "end": [
+        26,
+        0
+      ],
+      "measurement": {
+        "status": "MEASURED",
+        "grass_steps": 12,
+        "grass_quadrants_in_contract": 92,
+        "ice_quadrants": 0
+      }
+    },
+    {
+      "id": "staples-west",
+      "start": [
+        26,
+        0
+      ],
+      "end": [
+        0,
+        24
+      ],
+      "measurement": {
+        "status": "MEASURED",
+        "grass_steps": 6,
+        "grass_quadrants_in_contract": 92,
+        "ice_quadrants": 0
+      }
+    },
+    {
+      "id": "uphill-22",
+      "start": [
+        22,
+        20
+      ],
+      "end": [
+        22,
+        17
+      ],
+      "measurement": {
+        "status": "MEASURED",
+        "grass_steps": 6,
+        "grass_quadrants_in_contract": 92,
+        "ice_quadrants": 0
+      }
+    },
+    {
+      "id": "uphill-23",
+      "start": [
+        23,
+        20
+      ],
+      "end": [
+        23,
+        17
+      ],
+      "measurement": {
+        "status": "MEASURED",
+        "grass_steps": 6,
+        "grass_quadrants_in_contract": 92,
+        "ice_quadrants": 0
+      }
+    },
+    {
+      "id": "uphill-24",
+      "start": [
+        24,
+        20
+      ],
+      "end": [
+        24,
+        17
+      ],
+      "measurement": {
+        "status": "MEASURED",
+        "grass_steps": 6,
+        "grass_quadrants_in_contract": 92,
+        "ice_quadrants": 0
+      }
+    },
+    {
+      "id": "uphill-25",
+      "start": [
+        25,
+        20
+      ],
+      "end": [
+        25,
+        17
+      ],
+      "measurement": {
+        "status": "MEASURED",
+        "grass_steps": 6,
+        "grass_quadrants_in_contract": 92,
+        "ice_quadrants": 0
+      }
+    }
+  ],
+  "scope": "Native current-tile hop/lateral walking and projected connection model; actors clear, no Surf/Cut. Native/production gameplay is retained separately. Grassy ascent to Staples and drier downhill return are intentionally asymmetric."
+}

@@ -1,0 +1,72 @@
+{
+  "use_case": "stylized-concept",
+  "references": [
+    {
+      "path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/gen2-reference/starters.png",
+      "sha256": "af61f720a75b7e1b8e80ba14e8944612556397eedddd719669dec68b0e0fd534",
+      "role": "Authentic Gen2 coarse pixel grid and cropped close rear camera only; fresh original anatomy, no character copying."
+    }
+  ],
+  "old_identity_context_inspected_not_passed": "sprites/mn-f081/mn-177-dividra.ridge-alternate-v3.imagegen.png",
+  "species_id": "MN_177",
+  "palette": {
+    "species_id": "MN_177",
+    "name": "Dividra",
+    "gbc_rgb5": [
+      [
+        31,
+        31,
+        31
+      ],
+      [
+        23,
+        20,
+        10
+      ],
+      [
+        8,
+        13,
+        13
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ],
+    "gbc_rgb555_words": [
+      32767,
+      10903,
+      13736,
+      0
+    ],
+    "rgb8": [
+      [
+        255,
+        255,
+        255
+      ],
+      [
+        189,
+        165,
+        82
+      ],
+      [
+        66,
+        107,
+        107
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ],
+    "hex": [
+      "#FFFFFF",
+      "#BDA552",
+      "#426B6B",
+      "#000000"
+    ]
+  }
+}

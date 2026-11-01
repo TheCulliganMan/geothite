@@ -1,0 +1,27 @@
+{
+  "id": "MN_F140",
+  "members": [
+    {
+      "id": "MN_310",
+      "name": "Gillpup",
+      "types": [
+        "WATER"
+      ],
+      "stage": 1,
+      "evolves_to": "MN_311"
+    },
+    {
+      "id": "MN_311",
+      "name": "Mudmender",
+      "types": [
+        "WATER",
+        "PSYCHIC"
+      ],
+      "stage": 2,
+      "evolves_to": null
+    }
+  ],
+  "theme": "Mudpuppy \u00d7 protective nursery. Three pairs of external gills become broad interlocking shelter fans; the long paddle tail curls forward as a living cradle. The real salamander remains visible inside its shelter.",
+  "region": "peatlands",
+  "evolution_design": "Mudpuppy \u00d7 protective nursery. Three pairs of external gills become broad interlocking shelter fans; the long paddle tail curls forward as a living cradle. The real salamander remains visible inside its shelter."
+}

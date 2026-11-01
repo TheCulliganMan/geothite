@@ -939,7 +939,7 @@ fn every_species_has_loadable_normal_and_shiny_front_and_back_art() {
                     &shell.asset_root, id, side, shiny, 0, &mut images,
                 ).unwrap_or_else(|error| panic!("{id} {side:?} shiny={shiny} art: {error}"));
                 assert!(frame.size.x > 0.0 && frame.size.y > 0.0);
-                assert!(images.get(&frame.handle).unwrap().data
+                assert!(images.get(&frame.handle).unwrap().data.as_ref().expect("CPU image pixels")
                     .chunks_exact(4).any(|pixel| pixel[3] != 0));
             }
         }
@@ -977,7 +977,7 @@ fn shiny_unown_forms_and_hatch_art_use_the_shipped_palettes() {
     if let Ok(directory) = std::env::var("POKEGEAR_PC_RENDER_DIR") {
         let frame = &art.pokemon_cache[&key];
         let sprite = images.get(&frame.handle).unwrap();
-        image::RgbaImage::from_raw(sprite.width(), sprite.height(), sprite.data.clone()).unwrap()
+        image::RgbaImage::from_raw(sprite.width(), sprite.height(), sprite.data.as_ref().expect("CPU image pixels").clone()).unwrap()
             .save(PathBuf::from(directory).join("shiny-hatch-sprite.png")).unwrap();
     }
     quest_assert_save_round_trip(&mut shell, "shiny");
@@ -2038,7 +2038,7 @@ fn shiny_hatch_nickname_prompt_retains_the_front_sprite() {
     let key = PokemonArtKey { species_id: "togepi".into(), side: PokemonSpriteSide::Front,
         shiny: true, frame: 0 };
     let frame = art.pokemon_cache.get(&key).expect("nickname prompt retains shiny hatch art");
-    assert!(world.query::<&Handle<Image>>().iter(&world).any(|image| image == &frame.handle),
+    assert!(world.query::<&Sprite>().iter(&world).any(|image| image.image == frame.handle),
         "the retained frontpic must be drawn, not merely cached");
     let canvas = render_pc_audit_canvas(&mut world, &images, "shiny-hatch-nickname");
     if let Ok(directory) = std::env::var("POKEGEAR_PC_RENDER_DIR") {
@@ -2157,7 +2157,9 @@ fn every_oak_rating_resolves_its_authored_far_text() {
         assert_eq!(pages[0], "Current POKéDEX\ncompletion level:");
         assert!(pages[1].contains(&format!("{} POKéMON seen", rating.caught_count_limit)));
         assert!(pages[1].contains(&format!("{} POKéMON owned", rating.caught_count_limit)));
-        assert!(shell.pc_hub_cursor.is_some(), "return to PC after the final page");
+        assert_eq!(pages.last().map(String::as_str),Some("The link to PROF.\nOAK's PC closed."),
+            "the PC link closes after the rating, as in ProfOaksPC");
+        assert!(shell.pc_hub_cursor.is_some(), "return to PC after the closing page");
     }
 }
 
@@ -2188,7 +2190,7 @@ fn oak_assessment_prints_complete_pages_over_the_lab() {
         let expected_glyphs = normalize_bitmap_font_text(&boundary.details[0])
             .chars().filter(|ch| *ch != '\n').count();
         observed.extend(boundary.details.clone());
-        assert!(app.world_mut().query_filtered::<&Handle<Image>, With<DialogGlyphMarker>>()
+        assert!(app.world_mut().query_filtered::<&Sprite, With<DialogGlyphMarker>>()
             .iter(app.world()).count() >= expected_glyphs,
             "assessment page {index} glyphs must reach the renderer");
         save_live_pc_dialog_for_test(app.world_mut(), &format!("oak-assessment-{index}.png"));
@@ -2229,7 +2231,11 @@ fn oak_rating_fanfare_waits_for_final_text_and_remembers_acknowledgement() {
         assert!(shell.special_boundary.is_some(), "retain text while sound plays");
         shell.transient_audio_playing = false;
         advance_visible_special_text_pause(&mut shell).unwrap();
-        assert!(shell.special_boundary.is_none(), "no second button press required");
+        assert_eq!(shell.special_boundary.as_ref().map(|b|b.label.as_str()),Some("OakPCShutdown"),
+            "finished fanfare advances directly to the source shutdown text");
+        assert!(shell.pc_hub_cursor.is_none(),"closing text owns input before the hub returns");
+        close_visible_special_boundary(&mut shell).unwrap();
+        assert!(shell.special_boundary.is_none());
         assert!(shell.pc_hub_cursor.is_some());
     }
 }
@@ -2635,8 +2641,8 @@ fn moomoo_slow_cry_validates_base_pcm_and_keeps_distinct_output_and_cache() {
     assert!(shell.visible_wait_sfx_boundary);
     assert!(!visible_wait_sfx_finished(&mut shell), "queued cry must hold the script");
     let slow = shell.pending_audio[0].clone();
-    assert_eq!(slow.audio_id, "CRY_MON_MILTANK");
-    let source = shell.runtime.audio().require_cry(&slow.audio_id).unwrap().source.clone();
+    assert_eq!(slow.audio_id, shell.runtime.data().pokemon_cries["MILTANK"].cry);
+    let source = source_for_visible_audio_command(&shell.runtime,&slow).unwrap();
     let source_copy = source.clone();
     let AudioProgramSource::Midi { midi_base64, format, byte_len, payload_hash,
         loop_start_sample, loop_end_sample } = source else { panic!("browser species cry must retain its MIDI program") };

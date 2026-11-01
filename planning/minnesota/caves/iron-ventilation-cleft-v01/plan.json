@@ -1,0 +1,353 @@
+{
+  "schema_version": 1,
+  "map": "MnIronVentilation",
+  "status": "Verified and selected local native rock-floor revision; user visual acceptance and broader map/cave work remain open.",
+  "dimensions_metatiles": [
+    18,
+    13
+  ],
+  "coordinate_convention": "Unlabeled coordinates are 16px walking tiles. Metatile positions are explicitly labeled.",
+  "identity": "A raised western shelf, a rock-fin loop to the retained valve, and a descending eastern service cleft around Vern and the original shift guard.",
+  "terrain_source": "after.json",
+  "module_contract": "contract.json",
+  "composition": [
+    {
+      "area": "Raised western shelf",
+      "purpose": "Upper Haulage shaft and a native30 climb descend toward the original vent guard. The climb is a real ordinary return in both directions.",
+      "stair": {
+        "block": "30",
+        "metatile": [
+          4,
+          4
+        ],
+        "column": 8,
+        "climb_y": [
+          10,
+          9,
+          8,
+          7
+        ]
+      }
+    },
+    {
+      "area": "Western fin loop",
+      "purpose": "The southwest Sump shaft and pressure console are joined by two narrow routes around a contiguous central rock fin. Both branches return to useful destinations; neither is an empty disconnected pocket.",
+      "review_walk": [
+        [
+          5,
+          13
+        ],
+        [
+          5,
+          17
+        ],
+        [
+          9,
+          17
+        ],
+        [
+          9,
+          13
+        ]
+      ],
+      "solid_fin_tile": [
+        7,
+        14
+      ]
+    },
+    {
+      "area": "Eastern service cleft",
+      "purpose": "The upper Sump return descends through a native corner36 stair next to the shift guard. The passage bends around natural rock projections to Vern and the lower Haulage service shaft.",
+      "stair": {
+        "block": "36",
+        "metatile": [
+          14,
+          3
+        ],
+        "column": 28,
+        "climb_y": [
+          8,
+          7,
+          6,
+          5
+        ]
+      }
+    }
+  ],
+  "ports": [
+    {
+      "parent": "MnIronSump",
+      "parent_entry_core": [
+        9,
+        4
+      ],
+      "parent_entry_warp_index": 3,
+      "arrival_core": [
+        4,
+        21
+      ],
+      "arrival_warp_index": 2,
+      "arrival_collision": "FLOOR",
+      "return_trigger_indices": [
+        1
+      ],
+      "return_triggers_core": [
+        [
+          5,
+          20
+        ]
+      ],
+      "parent_safe_returns_core": [
+        [
+          8,
+          5
+        ]
+      ],
+      "pair_kind": "native_story_stairs"
+    },
+    {
+      "parent": "MnIronHaulage",
+      "parent_entry_core": [
+        27,
+        4
+      ],
+      "parent_entry_warp_index": 5,
+      "arrival_core": [
+        6,
+        5
+      ],
+      "arrival_warp_index": 4,
+      "arrival_collision": "FLOOR",
+      "return_trigger_indices": [
+        3
+      ],
+      "return_triggers_core": [
+        [
+          7,
+          4
+        ]
+      ],
+      "parent_safe_returns_core": [
+        [
+          26,
+          5
+        ]
+      ],
+      "pair_kind": "native_story_stairs"
+    },
+    {
+      "parent": "MnIronHaulage",
+      "parent_entry_core": [
+        13,
+        12
+      ],
+      "parent_entry_warp_index": 9,
+      "arrival_core": [
+        26,
+        21
+      ],
+      "arrival_warp_index": 6,
+      "arrival_collision": "FLOOR",
+      "return_trigger_indices": [
+        5
+      ],
+      "return_triggers_core": [
+        [
+          27,
+          20
+        ]
+      ],
+      "parent_safe_returns_core": [
+        [
+          12,
+          13
+        ]
+      ],
+      "pair_kind": "native_story_stairs"
+    },
+    {
+      "parent": "MnIronSump",
+      "parent_entry_core": [
+        25,
+        10
+      ],
+      "parent_entry_warp_index": 9,
+      "arrival_core": [
+        28,
+        5
+      ],
+      "arrival_warp_index": 8,
+      "arrival_collision": "FLOOR",
+      "return_trigger_indices": [
+        7
+      ],
+      "return_triggers_core": [
+        [
+          29,
+          4
+        ]
+      ],
+      "parent_safe_returns_core": [
+        [
+          24,
+          11
+        ]
+      ],
+      "pair_kind": "native_story_stairs"
+    }
+  ],
+  "actors": [
+    {
+      "id": "MnIronVentilationVern",
+      "tile": [
+        25,
+        15
+      ]
+    },
+    {
+      "id": "MN_LODE_ARC_VENT",
+      "tile": [
+        10,
+        10
+      ]
+    },
+    {
+      "id": "MN_LODE_ARC_SHIFT",
+      "tile": [
+        29,
+        8
+      ]
+    }
+  ],
+  "guards": {
+    "MN_LODE_ARC_VENT": [
+      {
+        "species": "GOOSNIDE",
+        "level": 39
+      },
+      {
+        "species": "LEECHURGE",
+        "level": 39
+      }
+    ],
+    "MN_LODE_ARC_SHIFT": [
+      {
+        "species": "PELLETOR",
+        "level": 39
+      },
+      {
+        "species": "SLUDGESKI",
+        "level": 39
+      }
+    ]
+  },
+  "pressure": {
+    "read_tile": [
+      13,
+      15
+    ],
+    "approach": [
+      13,
+      16
+    ],
+    "flag": "EVENT_MN_IRON_VENT_PRESSURE_OFF",
+    "closed_gate_metatile": [
+      9,
+      6
+    ],
+    "closed_block": "41",
+    "open_block": "07",
+    "physical_block_test": {
+      "position": [
+        17,
+        13
+      ],
+      "direction": "right",
+      "denied_until_valve": true
+    },
+    "open_crossing": [
+      [
+        17,
+        13
+      ],
+      [
+        18,
+        13
+      ],
+      [
+        19,
+        13
+      ],
+      [
+        20,
+        13
+      ]
+    ],
+    "choices": "Native refusal leaves the flag unset and crosscut closed. A later accepted choice opens it. Original restore callback retains the floor through Continue and reentry.",
+    "not_granted": [
+      "EVENT_MN_DRILL_FEED_ISOLATED",
+      "EVENT_MN_DRILL_TEST_WITNESSED",
+      "EVENT_MN_DRILL_STOPPED",
+      "EVENT_MN_MINE_INSTRUMENT_RECOVERED"
+    ]
+  },
+  "art": {
+    "tileset": "mn_iron_vent_rock",
+    "source_alias": "mn_iron_haulage_rock",
+    "palette": "nite",
+    "original_graphics_unchanged": true,
+    "private_floor_override": [
+      {
+        "id": "07",
+        "source_tileset": "mn_iron_haulage_rock",
+        "source_block": "0d",
+        "collision": [
+          "FLOOR",
+          "FLOOR",
+          "FLOOR",
+          "FLOOR"
+        ],
+        "reason": "Retain original ventilation callback block7 as ordinary floor in the private alias."
+      }
+    ],
+    "explanation": "The original facility callback opens numeric7. Native cave7 contains a ladder, so the private alias uses the exact cave floor glyphs and FLOOR quadrants there; otherwise the unchanged callback would create a phantom shaft. All other native metatiles retain their source pixels."
+  },
+  "story": "Original Vern safety dialogue, both LODE guards and all programs, actors, rewards and warp IDs are unchanged. The player reaches the live western valve by the existing multi-floor service loop. Its opened crosscut makes later east/west travel direct. Both mine circuits still control the separate Sump pump gate.",
+  "boundaries": "All outer cells are WALL; no water, hop, pit, Cut, Surf or new field requirement is introduced.",
+  "qa_setup": {
+    "kind": "Local chapter access before first input; not earned regional progression.",
+    "initial_map": "MnIronDrillApproach",
+    "initial_tile": [
+      24,
+      5
+    ],
+    "party": [
+      "VOYAGEAR",
+      "CINDORE",
+      "FORTIGARD",
+      "MUDMENDER"
+    ],
+    "initial_level": 55,
+    "badges": 8,
+    "supplies": {
+      "HYPER_POTION": 10,
+      "MAX_REPEL": 10,
+      "OLD_ROD": 1
+    },
+    "legal_surf": "VOYAGEAR has native legal SURF for existing battle coverage; no Surf is required on this dry floor.",
+    "flags": "No pressure or guard defeat flags are preseeded. Both local guards and the first valve are earned by controller input before the declined-valve MCP checkpoint."
+  },
+  "required_checks": [
+    "Full parent equality outside owned terrain, five room attributes, new private alias/files and derived identity.",
+    "Native controller: real shaft course, Vern dialogue, both guard wins with PP mutation, haul valve, physical closed gate, declined valve, Continue, accepted valve, physical crossing, both stair climbs and reverses, both fin branches, all four pairs both directions, pump access and mine-mouth return.",
+    "Independent stdio MCP from the actual reached declined-valve save: refusal/retry, physical crossing, both climbs, fin branches, all four pairs, Continue and mine-mouth return with clean stderr.",
+    "Eleven actual native player-camera comparisons and whole-floor visual review.",
+    "All377 PCM hashes, frame counts and loop ranges; active Minnesota guard/evolution closure; no generated pack or render committed."
+  ],
+  "unresolved": [
+    "Other mining floors, especially the pump gallery and drill core, still need quality review.",
+    "Local native chapter tests do not establish earned regional access or campaign balance.",
+    "User visual acceptance remains open."
+  ],
+  "current_parent_revision": "route_grass_r13_pine_revision"
+}

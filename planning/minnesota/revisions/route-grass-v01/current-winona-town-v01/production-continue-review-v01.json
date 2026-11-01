@@ -1,0 +1,48 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-winona-mart-v01.crystalpack",
+  "pack_sha256": "096585f981c5b0fcbe406f9f85e1454cf2a714d420e3dcf3284d9f3195751760",
+  "save": ".local/route-grass-review/winona-doors-output-v03.crystalsave",
+  "save_sha256": "a95393d0468731d0d4f3e6c3a595d869c87f5b29ab7de147edcd89bab4c18ddf",
+  "save_unchanged": true,
+  "initial": {
+    "badges": 0,
+    "dialogue": false,
+    "facing": "left",
+    "frame": 953,
+    "map": "MnWinona",
+    "menu": null,
+    "mode": "overworld",
+    "money": 3000,
+    "player": "CHRIS",
+    "pokedex": {
+      "owned": 0,
+      "seen": 0
+    },
+    "position": {
+      "x": 18,
+      "y": 14
+    }
+  },
+  "final": {
+    "badges": 0,
+    "dialogue": false,
+    "facing": "right",
+    "frame": 957,
+    "map": "MnWinona",
+    "menu": null,
+    "mode": "overworld",
+    "money": 3000,
+    "player": "CHRIS",
+    "pokedex": {
+      "owned": 0,
+      "seen": 0
+    },
+    "position": {
+      "x": 18,
+      "y": 14
+    }
+  },
+  "walking_and_items_balls_verified": true,
+  "stderr_bytes": 0
+}

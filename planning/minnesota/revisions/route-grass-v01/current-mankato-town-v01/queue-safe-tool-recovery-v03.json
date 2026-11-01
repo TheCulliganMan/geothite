@@ -1,0 +1,28 @@
+{
+  "status": "LIVE_COMPILER_FINISH_THEN_RELEASE_SHARED_LEASE",
+  "current_cargo_pid": 25218,
+  "paused_python_wrapper_pid": 9724,
+  "paused_wrapper_reason": "Prevent subsequent client/renderer builds from starting under the same lease. Cargo child is deliberately not paused. Supervisor retires this wrapper only after the compiler completes and retains its native executable.",
+  "supervisor_pid": 28766,
+  "supervisor_script": ".local/route-grass-review/finish_portable_map_tools_fair_queue_v03.py",
+  "verification_pid": 28852,
+  "verification_script": ".local/route-grass-review/verify_mankato_terrain_child_v06.py",
+  "scripts_sha256": {
+    ".local/route-grass-review/finish_portable_map_tools_fair_queue_v03.py": "a46f1a36270e1872873dff65e8041b9e9f563df56c5e11694f0255072fe95e3a",
+    ".local/route-grass-review/verify_mankato_terrain_child_v06.py": "08166f1adba7fd765d8c98f3514f91ff7dfa5a413fc18c6c66db45502c03ee66"
+  },
+  "next_queued_runner_pid": 11186,
+  "remaining_builds_use_separate_leases": true,
+  "renderer_required_feature": "location-tester",
+  "renderer_presentation": "explicit --view 2d",
+  "native_progress": "portable-tools-build-progress-v03.json",
+  "verification_progress": "verified-terrain-child-progress-v06.json",
+  "preserved_original_progress": [
+    "portable-tools-build-progress-v01.json",
+    "verified-terrain-child-progress-v04.json",
+    "verified-terrain-child-progress-v05.json"
+  ],
+  "no_compiler_interrupted": true,
+  "no_artifacts_discarded": true,
+  "selection_changed": false
+}

@@ -1,0 +1,159 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_204",
+  "result": "pass",
+  "manifest_sha256": "1b5b4fbb9c259d59b7def177116996b4ad5323e5f3e34276b0e3db53bcb46e39",
+  "bank_sha256": "a957fd7693f1eb6e0d8432181957e9449fe9323623311761e228e3af0d68c0c9",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f093/obelurk.overworld.imagegen-v1.png": "4eb4d0b3b71e676a81965d55c1f6314b20a1076a1c2b8389b92bcc00c6111e71",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f093/obelurk.overworld.imagegen-v2.png": "030421786ddb340b39d5b492d97e219ab887caea77a4a831086780438e548a57",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f093/obelurk.overworld.imagegen-v3.png": "5600802ada2d52afd3eb4fb6ec1792ca35234a267a238f127d0213b3db17b2aa"
+  },
+  "canonical_eye_form": "ONE visible side-eye organ in each front and west profile, under the shell rim. Its black native pupil is isolated within a pale window and maps to one actual tiny source pupil component; no other eye organs or rear eyes.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            4,
+            10
+          ],
+          "source_sample": [
+            156,
+            331
+          ],
+          "source_rgba": [
+            3,
+            4,
+            4,
+            253
+          ],
+          "actual_source_pupil_component": [
+            140,
+            321,
+            19,
+            20
+          ],
+          "component_pixels": 380,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            3,
+            9
+          ],
+          "source_sample": [
+            1162,
+            304
+          ],
+          "source_rgba": [
+            2,
+            2,
+            0,
+            253
+          ],
+          "actual_source_pupil_component": [
+            1154,
+            289,
+            29,
+            28
+          ],
+          "component_pixels": 806,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            4,
+            10
+          ],
+          "source_sample": [
+            156,
+            823
+          ],
+          "source_rgba": [
+            2,
+            2,
+            2,
+            253
+          ],
+          "actual_source_pupil_component": [
+            140,
+            810,
+            19,
+            21
+          ],
+          "component_pixels": 399,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            3,
+            9
+          ],
+          "source_sample": [
+            1162,
+            801
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ],
+          "actual_source_pupil_component": [
+            1154,
+            780,
+            29,
+            27
+          ],
+          "component_pixels": 783,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "notes": "both rear native poses viewed; no copied face. All six exact normal/shiny native poses inspected, three movement pairs distinct, transparent one-pixel border and max14x14 body verified."
+  }
+}

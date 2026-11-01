@@ -1,0 +1,26 @@
+[
+  {
+    "id": "r03-bridge-south-approach",
+    "map": "MnR03C00R00",
+    "core": [
+      20,
+      9
+    ]
+  },
+  {
+    "id": "r03-widened-deck-middle",
+    "map": "MnR03C00R00",
+    "core": [
+      20,
+      5
+    ]
+  },
+  {
+    "id": "r03-relocated-sign-approach",
+    "map": "MnR03C00R00",
+    "core": [
+      22,
+      9
+    ]
+  }
+]

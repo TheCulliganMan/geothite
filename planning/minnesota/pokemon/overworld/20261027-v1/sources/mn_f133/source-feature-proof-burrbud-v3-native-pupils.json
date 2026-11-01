@@ -1,0 +1,215 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_293",
+  "result": "pass",
+  "manifest_sha256": "f3f0766036afb283caff80ace7b5758ab16adced94b51c3e420f4a52a9227fc0",
+  "bank_sha256": "70100a304896cf2378a9148099332268bef5495dbcb53c89ab81b2f3aca5cd58",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f133/burrbud.overworld.imagegen-v2-plant.png": "d28a1e0e1b905140a51e228213957eff4871b776bdeb9cda5b3d0a8c011735ba"
+  },
+  "canonical_eye_form": "Two isolated actual black pupil dots south and one isolated actual black pupil west; source eye components verified in all four nonrear poses.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            4,
+            11
+          ],
+          "source_sample": [
+            176,
+            359
+          ],
+          "source_component": [
+            169,
+            335,
+            27,
+            32
+          ],
+          "component_pixels": 864,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ]
+        },
+        {
+          "native": [
+            6,
+            11
+          ],
+          "source_sample": [
+            248,
+            359
+          ],
+          "source_component": [
+            247,
+            335,
+            28,
+            32
+          ],
+          "component_pixels": 867,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            3,
+            11
+          ],
+          "source_sample": [
+            1155,
+            355
+          ],
+          "source_component": [
+            1144,
+            336,
+            28,
+            33
+          ],
+          "component_pixels": 919,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            1,
+            0,
+            0,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            4,
+            10
+          ],
+          "source_sample": [
+            176,
+            817
+          ],
+          "source_component": [
+            167,
+            811,
+            27,
+            33
+          ],
+          "component_pixels": 871,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            3,
+            1,
+            0,
+            253
+          ]
+        },
+        {
+          "native": [
+            6,
+            10
+          ],
+          "source_sample": [
+            248,
+            817
+          ],
+          "source_component": [
+            243,
+            811,
+            27,
+            32
+          ],
+          "component_pixels": 864,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            1,
+            1,
+            0,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            3,
+            10
+          ],
+          "source_sample": [
+            1155,
+            817
+          ],
+          "source_component": [
+            1148,
+            811,
+            27,
+            34
+          ],
+          "component_pixels": 917,
+          "native_neighbors": [
+            2,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ]
+        }
+      ]
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "notes": "Plain acorn back and fringed cup edge, not a rear face; top black zigzags are source-backed cup rim connected to the stem. Rounded tan seed, two side root nubs/two root feet and one arching stem with a broad oak leaf. Sharedfit12; actual south/west pupil anchor shifts upward1nativepixel during step, preserved in motion receipt. No canonical closed hole; open arch gap remains background."
+  }
+}

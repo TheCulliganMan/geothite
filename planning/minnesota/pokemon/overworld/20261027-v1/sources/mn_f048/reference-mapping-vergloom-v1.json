@@ -1,0 +1,47 @@
+{
+  "species_id": "MN_099",
+  "family_id": "MN_F048",
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f048/prompt-vergloom-v1.txt",
+  "fit": [
+    14,
+    14
+  ],
+  "palette_binding": {
+    "transparent_index": 0,
+    "visible_indices": [
+      1,
+      2,
+      3
+    ],
+    "normal_rgb555_words": [
+      32767,
+      10959,
+      9541,
+      0
+    ],
+    "shiny_rgb555_words": [
+      32767,
+      23018,
+      10409,
+      0
+    ],
+    "white_body_region_policy": "Simplify formerly white body/highlight regions to light ink1. Index0 is transparent everywhere, not an opaque white paint color."
+  },
+  "references": [
+    {
+      "path": "target/minnesota-pokemon/native/MN_F048/mn-099-vergloom-v1.front.png",
+      "sha256": "06156d1b7ccbd592ca5a53a42d960a412b3217191ad2b5a94211dabaa71fb950",
+      "role": "exact front identity"
+    },
+    {
+      "path": "target/minnesota-pokemon/native/MN_F048/mn-099-vergloom-v1.back.png",
+      "sha256": "968a396f155c50a9ab5eafe374cf35c1bf94bc72e2e9fe20b5d6fd2c16e02424",
+      "role": "exact rear identity; extend full rear naturally"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+      "sha256": "4354a639ed1a80fd6686e43b273443ed894e58a84307a8049f638ee9ffa2a099",
+      "role": "native16 style/scale only"
+    }
+  ]
+}

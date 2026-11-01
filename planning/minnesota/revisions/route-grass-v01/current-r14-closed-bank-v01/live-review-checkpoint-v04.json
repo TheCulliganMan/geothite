@@ -1,0 +1,21 @@
+{
+  "status": "V03_RETRY_CONFIRMED_LIVE_AFTER_SHARED_SOURCE_FIX",
+  "build_session_id": 31398,
+  "build_pid": 15522,
+  "review_session_id": 61984,
+  "review_pid": 15546,
+  "process_snapshot": "  PID ELAPSED STAT COMMAND\n15522   01:44 Ss   /Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python .local/route-grass-review/build_r14_forest_bank_v03.py\n15546   01:33 Ss   /Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python .local/route-grass-review/run_r14_forest_bank_review_v03.py\n",
+  "old_v02_build_terminal_exit_code": 1,
+  "old_v02_review_terminal_exit_code": 1,
+  "shared_source_fix": "shared-iron-coordinate-fix-observed-v01.json",
+  "build_progress": "planning/minnesota/revisions/route-grass-v01/current-r14-closed-bank-v01/bank-publisher-build-progress-v03.json",
+  "review_progress": "planning/minnesota/revisions/route-grass-v01/current-r14-closed-bank-v01/review-workflow-progress-v03.json",
+  "parent_plan": "plan-current-parent-v02.json",
+  "parent_rebinding": "current-parent-rebinding-v02.json",
+  "portable_publisher": ".local/route-grass-review/portable-r14-forest-bank-tools-v03/revise_r14_forest_bank",
+  "canonical_source_proof": "canonical-six-cell-source-proof-v01.json",
+  "selection_script": ".local/route-grass-review/select_r14_forest_bank_v01.py",
+  "negative_script": ".local/route-grass-review/check_r14_forest_bank_negatives_v01.py",
+  "selection_changed": false,
+  "next": "Poll these v03 handles. The v02 jobs are terminal and must not be polled/restarted. If publication parent guard fails, inspect newer current parent and resume from publication without rebuilding an unchanged successful publisher. After all commands, inspect four native images, run seven negatives, require affected-crate lint, then guarded selection."
+}

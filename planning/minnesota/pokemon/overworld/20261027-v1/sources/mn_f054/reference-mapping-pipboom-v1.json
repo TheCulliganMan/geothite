@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_113",
+  "family_id": "MN_F054",
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f054/prompt-pipboom-v1.txt",
+  "input_images": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+      "role": "ONLY input: authentic native16 overworld style, not identity",
+      "sha256": "4354a639ed1a80fd6686e43b273443ed894e58a84307a8049f638ee9ffa2a099"
+    }
+  ],
+  "identity_reviewed_not_supplied_to_imagegen": [
+    {
+      "path": "target/minnesota-pokemon/native/MN_F054/mn-113-pipboom-v1.front.png",
+      "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F054/mn-113-pipboom-v1.front.png",
+      "sha256": "46bb79b21fbff75ea55816d21dbc00ff654a69521ce7c1d7883088e6fac9bd15"
+    },
+    {
+      "path": "target/minnesota-pokemon/native/MN_F054/mn-113-pipboom-v1.back.png",
+      "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F054/mn-113-pipboom-v1.back.png",
+      "sha256": "67e462c1d412dd9a3f4523d8bce7494a59c2102f402224af05d2e2edf9ec0ad3"
+    }
+  ],
+  "canonical_theme": "Prairie chickens and drum circles: throat puffs become resonating drums; a semicircular tail acts as a sound reflector while its stamping feet keep rhythm.",
+  "palette_binding": {
+    "transparent_index": 0,
+    "visible_indices": [
+      1,
+      2,
+      3
+    ],
+    "normal_rgb555_words": [
+      32767,
+      13086,
+      4366,
+      0
+    ],
+    "shiny_rgb555_words": [
+      32767,
+      25548,
+      8644,
+      0
+    ],
+    "white_body_region_policy": "Simplify formerly white body/highlight regions to light ink1. Index0 is transparent everywhere, not an opaque white paint color."
+  },
+  "fit": 12
+}

@@ -1,0 +1,12 @@
+{
+  "status": "PASS_CURRENT_WINONA_LOCAL_PATHS_GUARDS_AND_ALL_BUILDING_RETURNS",
+  "pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+  "pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33",
+  "native_cases": 2,
+  "production_door_calls": 231,
+  "five_buildings_ten_exit_carpets": true,
+  "actual_home_arrival_dialogue_acknowledged": true,
+  "reached_save_continue_walking_items_balls": true,
+  "complete_local_maps_used_pixels_collision_exact": true,
+  "scope": "Local town acceptance; native visual evidence inherited through exact map/used-art equality. Fixture state is not earned statewide progress. Broader route review remains active."
+}

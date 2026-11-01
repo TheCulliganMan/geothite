@@ -1,0 +1,47 @@
+{
+  "name": "MECHANIC TOBIN",
+  "role": "preserved original NPC",
+  "status": "accepted-native-playable-rebased",
+  "source": "native-pixels-v3.json",
+  "source_path": "planning/minnesota/npcs/sprites/10-harbor-mechanic/native-pixels-v3.json",
+  "integration": "placement-v1.json",
+  "controller": "placement-v1.json",
+  "native": "target/npc-sprites/mechanic/reference-v2",
+  "pack": "content-packs/minnesota-trainer-cast-31-v01.crystalpack",
+  "gameplay": "target/trainer-cast/rebase/10-harbor-mechanic/gameplay",
+  "log": "target/trainer-cast/rebase/10-harbor-mechanic/controller.log",
+  "original_placement": "planning/minnesota/npcs/sprites/10-harbor-mechanic/placement-v1.json",
+  "old_map": "MnDuluth",
+  "new_map": "MnDuluth",
+  "old_tile": [
+    54,
+    59
+  ],
+  "new_tile": [
+    54,
+    59
+  ],
+  "scope": "Exact accepted original art, palette, party, class and dialogue. Placement rebased to safe compact geography; original geography not transplanted.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/cast/rebased-originals/10-harbor-mechanic/placement-v1.json": "9018bde9826dae673349ea62b85109cea27319d1455bed85858b66b5b456668b",
+    "planning/minnesota/npcs/sprites/10-harbor-mechanic/native-pixels-v3.json": "713e88db09d01183443f86cc09f7e0d4240e0d96bf65ca8f769b7b5a85ad6f4d",
+    "planning/minnesota/npcs/sprites/10-harbor-mechanic/manifest.json": "708d05223e0171a95eb951238d7bd62078678243fd143e543d534071840c3758",
+    "target/trainer-cast/rebase/10-harbor-mechanic/controller.log": "6f5e8ece09bec508a3dea4f1fd6b171b554071fb11d60bdecb51ad857b4c5922",
+    "content-packs/minnesota-trainer-cast-31-v01.crystalpack": "e9e5dacad7974da59e1fd381e3991e7b403fb111d02fb5e3150b58d1d93a7e89",
+    "target/npc-sprites/mechanic/reference-v2/verification.json": "1a02021519874569c3f7cf0c0ed88e7ecc5637d486b1c6522aff72c2cb20097a",
+    "target/trainer-cast/rebase/10-harbor-mechanic/gameplay/original-npc-trainer-intro.png": "ba24068fae698996e826c4a89a61e5395bc4c9bffe3a5b80a6e9a98005b0c1b9",
+    "target/trainer-cast/rebase/10-harbor-mechanic/gameplay/original-npc-overworld-state.png": "6d8d1d985dbaf34f263d711a918478a531ea63dcdbf8518200b70a0d0e6797e5",
+    "target/trainer-cast/rebase/10-harbor-mechanic/gameplay/original-npc-first-turn.png": "95bd91426ca03a368f60868887b475d24c344ca412e8a37d43cff8520391a5b1"
+  },
+  "final_pack": "content-packs/minnesota-trainer-cast-36-v01.crystalpack",
+  "final_gameplay": "target/trainer-cast/final-audit/gameplay/rebased-originals-10-harbor-mechanic",
+  "final_log": "target/trainer-cast/final-audit/gameplay/rebased-originals-10-harbor-mechanic/controller.log",
+  "final_status": "accepted-native-playable-final-pack",
+  "final_review": "Actual battle intro and field captures inspected on exact final pack; art retains accepted native sources and palette.",
+  "final_evidence_sha256": {
+    "target/trainer-cast/final-audit/gameplay/rebased-originals-10-harbor-mechanic/controller.log": "7ca739ddc3232100132d90bab887aa0f87c2cbfb251bc86af8b023b2c392c15c",
+    "target/trainer-cast/final-audit/gameplay/rebased-originals-10-harbor-mechanic/original-npc-trainer-intro.png": "ba24068fae698996e826c4a89a61e5395bc4c9bffe3a5b80a6e9a98005b0c1b9",
+    "target/trainer-cast/final-audit/gameplay/rebased-originals-10-harbor-mechanic/original-npc-overworld-state.png": "6d8d1d985dbaf34f263d711a918478a531ea63dcdbf8518200b70a0d0e6797e5",
+    "target/trainer-cast/final-audit/gameplay/rebased-originals-10-harbor-mechanic/original-npc-first-turn.png": "95bd91426ca03a368f60868887b475d24c344ca412e8a37d43cff8520391a5b1"
+  }
+}

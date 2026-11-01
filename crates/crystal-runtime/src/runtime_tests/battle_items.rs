@@ -3237,6 +3237,7 @@ fn runtime_save_rejects_special_saved_pokemon_references_missing_from_compiled_p
 
     let mut state = GameState::default();
     state.roaming_pokemon[0] = crystal_core::state::RoamingPokemonState {
+        scaled_hp: None,
         species: Some("CYNDAQUIL".to_string()),
         level: 40,
         map_group: 1,
@@ -3252,6 +3253,7 @@ fn runtime_save_rejects_special_saved_pokemon_references_missing_from_compiled_p
 
     let mut state = GameState::default();
     state.roaming_pokemon[0] = crystal_core::state::RoamingPokemonState {
+        scaled_hp: None,
         species: Some("CHIKORITA".to_string()),
         level: 41,
         map_group: 1,
@@ -3271,6 +3273,7 @@ fn runtime_save_rejects_special_saved_pokemon_references_missing_from_compiled_p
 
     let mut state = GameState::default();
     state.roaming_pokemon[0] = crystal_core::state::RoamingPokemonState {
+        scaled_hp: None,
         species: Some("CHIKORITA".to_string()),
         level: 40,
         map_group: 1,
@@ -3288,6 +3291,7 @@ fn runtime_save_rejects_special_saved_pokemon_references_missing_from_compiled_p
 
     let mut state = GameState::default();
     state.roaming_pokemon[0] = crystal_core::state::RoamingPokemonState {
+        scaled_hp: None,
         species: Some("CHIKORITA".to_string()),
         level: 40,
         map_group: 1,
@@ -4084,14 +4088,18 @@ fn runtime_save_rejects_script_runtime_references_missing_from_compiled_pack_imp
     pending_species_mismatch_data
         .pokedex_entries
         .insert("BAYLEEF".to_string(), bayleef_pokedex);
-    pending_species_mismatch_data.pokemon_frontpic_anim.insert(
-        "BAYLEEF".to_string(),
-        pending_species_mismatch_data
-            .pokemon_frontpic_anim
-            .get("CHIKORITA")
-            .expect("chikorita frontpic anim")
-            .clone(),
-    );
+    // This fixture tests the saved species reference, so both required art
+    // programs must be valid before runtime validation reaches that boundary.
+    for suffix in ["", "_IDLE"] {
+        pending_species_mismatch_data.pokemon_frontpic_anim.insert(
+            format!("BAYLEEF{suffix}"),
+            pending_species_mismatch_data
+                .pokemon_frontpic_anim
+                .get(&format!("CHIKORITA{suffix}"))
+                .expect("chikorita frontpic animation program")
+                .clone(),
+        );
+    }
     let pending_species_mismatch_report = report_for(&pending_species_mismatch_data);
     let pending_species_mismatch_runtime = CrystalRuntime::from_compiled_pack(
         &asset_root,
@@ -5085,4 +5093,29 @@ fn runtime_save_rejects_script_runtime_references_missing_from_compiled_pack_imp
         error.contains("saved script_runtime.item_use_events[0].item_id MISSING_ITEM is missing")
     );
     let _ = std::fs::remove_dir_all(root);
+}
+
+#[test]
+fn runtime_item_catalog_exposes_hp_medicine_without_confusing_pp_payloads() {
+    let id = "CUSTOM_MEDICINE".to_string();
+    let mut item = runtime_item(&id, item_pocket("ITEM"));
+    item.effect = "CUSTOM_HP_ROUTINE".into();
+    item.parameter = 35;
+    let evolutions = crystal_core::systems::evolution::EvolutionTable::default();
+    assert!(RuntimeItemCatalogSnapshot::from_item((&id, &item), &evolutions).party_hp_restore);
+
+    // PP medicine also carries a numeric parameter. It retains its move/party
+    // PP target instead of being exposed as HP recovery to frontend menus.
+    item.pp_restore_scope = Some("MOVE".into());
+    item.pp_restore_points = Some(10);
+    assert!(!RuntimeItemCatalogSnapshot::from_item((&id, &item), &evolutions).party_hp_restore);
+
+    item.pp_restore_scope = None;
+    item.pp_restore_points = None;
+    item.parameter = -1;
+    assert!(RuntimeItemCatalogSnapshot::from_item((&id, &item), &evolutions).party_hp_restore);
+
+    item.parameter = 0;
+    item.status_heals = vec!["POISON".into()];
+    assert!(!RuntimeItemCatalogSnapshot::from_item((&id, &item), &evolutions).party_hp_restore);
 }

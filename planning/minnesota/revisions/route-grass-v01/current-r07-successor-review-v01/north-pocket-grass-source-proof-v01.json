@@ -1,0 +1,129 @@
+{
+  "status": "SOURCE_CANDIDATE_NOT_PUBLISHED",
+  "parent": {
+    "revision": "route_grass_r06_current_contract_revision",
+    "pack": "content-packs/minnesota-current-r06-south-woods-grass-v01.crystalpack",
+    "pack_sha256": "1d906a7d4998ce8b25332b05413131d9d256961a284230143d82541b24c403d0",
+    "maps": [
+      "MnR07C00R00",
+      "MnR07C00R01"
+    ]
+  },
+  "changes": [
+    {
+      "metatile": [
+        10,
+        3
+      ],
+      "before": "01",
+      "after": "03"
+    },
+    {
+      "metatile": [
+        11,
+        3
+      ],
+      "before": "02",
+      "after": "03"
+    },
+    {
+      "metatile": [
+        11,
+        5
+      ],
+      "before": "02",
+      "after": "03"
+    },
+    {
+      "metatile": [
+        12,
+        5
+      ],
+      "before": "02",
+      "after": "03"
+    },
+    {
+      "metatile": [
+        11,
+        6
+      ],
+      "before": "01",
+      "after": "03"
+    },
+    {
+      "metatile": [
+        12,
+        6
+      ],
+      "before": "01",
+      "after": "03"
+    },
+    {
+      "metatile": [
+        13,
+        6
+      ],
+      "before": "02",
+      "after": "03"
+    },
+    {
+      "metatile": [
+        12,
+        7
+      ],
+      "before": "01",
+      "after": "03"
+    }
+  ],
+  "new_grass_quadrants": 32,
+  "existing_grass_removed": 0,
+  "native_movement_measurements": [
+    {
+      "start": [
+        21,
+        4
+      ],
+      "end": [
+        21,
+        9
+      ],
+      "before": {
+        "status": "MEASURED",
+        "grass_steps": 0,
+        "grass_quadrants_in_contract": 0,
+        "ice_quadrants": 0
+      },
+      "after": {
+        "status": "MEASURED",
+        "grass_steps": 2,
+        "grass_quadrants_in_contract": 8,
+        "ice_quadrants": 0
+      }
+    },
+    {
+      "start": [
+        21,
+        9
+      ],
+      "end": [
+        21,
+        4
+      ],
+      "before": {
+        "status": "MEASURED",
+        "grass_steps": 0,
+        "grass_quadrants_in_contract": 0,
+        "ice_quadrants": 0
+      },
+      "after": {
+        "status": "MEASURED",
+        "grass_steps": 2,
+        "grass_quadrants_in_contract": 8,
+        "ice_quadrants": 0
+      }
+    }
+  ],
+  "coastal_ice_quadrants": 0,
+  "all_cliffs_stairs_water_houses_actors_scripts_and_signs_unchanged": true,
+  "scope": "Whole-route source rendering inspected; native publication/gameplay still required."
+}

@@ -1,0 +1,242 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F120",
+  "status": "native-review-pending",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_257": {
+      "species_id": "MN_257",
+      "name": "Hushiss",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          23,
+          23,
+          21
+        ],
+        [
+          11,
+          8,
+          10
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        22263,
+        10507,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          189,
+          189,
+          173
+        ],
+        [
+          90,
+          66,
+          82
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#BDBDAD",
+        "#5A4252",
+        "#000000"
+      ]
+    },
+    "MN_258": {
+      "species_id": "MN_258",
+      "name": "Castanake",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          28,
+          19,
+          9
+        ],
+        [
+          10,
+          7,
+          8
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        9852,
+        8426,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          231,
+          156,
+          74
+        ],
+        [
+          82,
+          57,
+          66
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#E79C4A",
+        "#523942",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f120/prompt-v1.txt",
+  "reference_mapping": "sprites/mn-f120/reference-mapping-v1.json",
+  "style_reference": {
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png"
+    ]
+  },
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-257-hushiss-v1",
+      "species_id": "MN_257",
+      "view": "front",
+      "source": "sprites/mn-f120/mn-257-258.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        768,
+        520
+      ],
+      "fit": [
+        42,
+        42
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        22263,
+        10507,
+        0
+      ],
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-257-hushiss-v1",
+      "species_id": "MN_257",
+      "view": "back",
+      "source": "sprites/mn-f120/mn-257-258.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        520,
+        768,
+        504
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        22263,
+        10507,
+        0
+      ],
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-258-castanake-v1",
+      "species_id": "MN_258",
+      "view": "front",
+      "source": "sprites/mn-f120/mn-257-258.front-back.imagegen-v1.png",
+      "crop": [
+        768,
+        0,
+        768,
+        520
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        9852,
+        8426,
+        0
+      ],
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-258-castanake-v1",
+      "species_id": "MN_258",
+      "view": "back",
+      "source": "sprites/mn-f120/mn-257-258.front-back.imagegen-v1.png",
+      "crop": [
+        768,
+        520,
+        768,
+        504
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        9852,
+        8426,
+        0
+      ],
+      "interior_black_min_samples": 32
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "authoring-agent; root acceptance pending",
+    "sheet_sha256": "d95e688b480efc75ab90ea31e7d24b975707d71546bbe1046a018654838ccad9",
+    "outline_profile": "source-contour-v1",
+    "notes": [
+      "Inspected all four native views. Hushiss slim ash-gray flowing S body becomes Castanake longer heavier ochre serpent, with a broader alert head, wider natural bands and enlarged chambered rattle on a raised tail. No hood, limbs, rope braid, false-face pattern or held instrument.",
+      "Adult rattle reads as two main broad interlocking bulbous chambers beneath a small tip-cap, versus the younger narrow rounded chamber segments. It remains a fairly natural stacked rattle silhouette rather than a dramatically split shape; root should judge original two-tone anatomy before acceptance.",
+      "Rear portraits show enlarged head and upper neck/coil turned upper-right, lower body cropped, rattle rising from a tail connected below. Dark outlines preserve body flow and rattle seams at default32.",
+      "Individual ash/umber and ochre/umber exact GBC palettes match front/back,56/48 dimensions and784/576byte sizes verified. Thin source pupil centers simplify into glints, especially young front; broader head and brow silhouettes remain readable."
+    ]
+  }
+}

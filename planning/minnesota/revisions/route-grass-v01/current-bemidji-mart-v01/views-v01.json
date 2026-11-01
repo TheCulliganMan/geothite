@@ -1,0 +1,50 @@
+[
+  {
+    "id": "mart",
+    "map": "MnBemidji",
+    "core": [
+      41,
+      20
+    ]
+  },
+  {
+    "id": "gym-shelf",
+    "map": "MnBemidji",
+    "core": [
+      11,
+      19
+    ]
+  },
+  {
+    "id": "closed-cliff-base",
+    "map": "MnBemidji",
+    "core": [
+      11,
+      22
+    ]
+  },
+  {
+    "id": "north-trail",
+    "map": "MnBemidji",
+    "core": [
+      24,
+      4
+    ]
+  },
+  {
+    "id": "lake-pier",
+    "map": "MnBemidji",
+    "core": [
+      34,
+      35
+    ]
+  },
+  {
+    "id": "heritage",
+    "map": "MnBemidji",
+    "core": [
+      9,
+      38
+    ]
+  }
+]

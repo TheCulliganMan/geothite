@@ -1,0 +1,337 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F052",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_107": {
+      "species_id": "MN_107",
+      "name": "Tussnip",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          23,
+          26,
+          10
+        ],
+        [
+          7,
+          14,
+          7
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        11095,
+        7623,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          189,
+          214,
+          82
+        ],
+        [
+          57,
+          115,
+          57
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#BDD652",
+        "#397339",
+        "#000000"
+      ]
+    },
+    "MN_108": {
+      "species_id": "MN_108",
+      "name": "Silksod",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          19,
+          20,
+          9
+        ],
+        [
+          9,
+          10,
+          4
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        9875,
+        4425,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          156,
+          165,
+          74
+        ],
+        [
+          74,
+          82,
+          33
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#9CA54A",
+        "#4A5221",
+        "#000000"
+      ]
+    },
+    "MN_109": {
+      "species_id": "MN_109",
+      "name": "Dakotaskip",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          30,
+          22,
+          7
+        ],
+        [
+          12,
+          7,
+          4
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        7902,
+        4332,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          247,
+          181,
+          57
+        ],
+        [
+          99,
+          57,
+          33
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#F7B539",
+        "#633921",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f052/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png",
+      "target/minnesota-pokemon/gen2-reference/bugs.png"
+    ]
+  },
+  "sprites": [
+    {
+      "id": "mn-107-tussnip-v1",
+      "species_id": "MN_107",
+      "view": "front",
+      "source": "sprites/mn-f052/mn-107-109.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        480,
+        512
+      ],
+      "fit": [
+        36,
+        36
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        11095,
+        7623,
+        0
+      ]
+    },
+    {
+      "id": "mn-107-tussnip-v1",
+      "species_id": "MN_107",
+      "view": "back",
+      "source": "sprites/mn-f052/mn-107-109.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        512,
+        465,
+        512
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        11095,
+        7623,
+        0
+      ]
+    },
+    {
+      "id": "mn-108-silksod-v1",
+      "species_id": "MN_108",
+      "view": "front",
+      "source": "sprites/mn-f052/mn-107-109.front-back.imagegen-v1.png",
+      "crop": [
+        480,
+        0,
+        480,
+        512
+      ],
+      "fit": [
+        44,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        9875,
+        4425,
+        0
+      ]
+    },
+    {
+      "id": "mn-108-silksod-v1",
+      "species_id": "MN_108",
+      "view": "back",
+      "source": "sprites/mn-f052/mn-107-109.front-back.imagegen-v1.png",
+      "crop": [
+        465,
+        512,
+        500,
+        512
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        9875,
+        4425,
+        0
+      ]
+    },
+    {
+      "id": "mn-109-dakotaskip-v1",
+      "species_id": "MN_109",
+      "view": "front",
+      "source": "sprites/mn-f052/mn-107-109.front-back.imagegen-v1.png",
+      "crop": [
+        960,
+        0,
+        576,
+        512
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        7902,
+        4332,
+        0
+      ]
+    },
+    {
+      "id": "mn-109-dakotaskip-v1",
+      "species_id": "MN_109",
+      "view": "back",
+      "source": "sprites/mn-f052/mn-107-109.front-back.imagegen-v1.png",
+      "crop": [
+        965,
+        512,
+        571,
+        512
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        7902,
+        4332,
+        0
+      ]
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "notes": "Final source-contour-v1 board visually inspected: clipping larva, stitched sod pouch and large arrow-wing skipper show anatomical growth. Face eye whites, cocoon fold and wing chevrons remain legible with colored interiors restored; no neighboring crop fragments or disconnected exterior outline debris seen. Rear portraits expose nape, pouch back and wing bases with lower bodies cropped. Individual green, olive and amber stage palettes remain coherent.",
+    "sheet_sha256": "d16ec4c9c0305b4e817d77f63a665196790313c1c8655d93b41f959da7aa1d91",
+    "outline_profile": "source-contour-v1"
+  }
+}

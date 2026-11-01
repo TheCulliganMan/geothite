@@ -1,0 +1,594 @@
+{
+  "status": "INDEX_CHAIN_AND_CANONICAL_SOURCE_READINESS_ONLY",
+  "selected_revision": "r10_survey_spurs_revision",
+  "pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+  "pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33",
+  "towns": [
+    {
+      "map": "MnBemidji",
+      "source_refs": {
+        "current_layouts": {
+          "path": "planning/minnesota/revisions/route-grass-v01/current-bemidji-plateau-stairs-v01/after.layout.json",
+          "sha256": "1d4366cd015124784f505c76ee7329f7e8efdd4acc0bfc8e81a1df56b960959d",
+          "exists": true,
+          "hash_matches": true
+        },
+        "current_dossiers": {
+          "path": "planning/minnesota/revisions/route-grass-v01/current-bemidji-plateau-stairs-v01/dossier.after.json",
+          "sha256": "440dafefe90f90a08f40b8631a9c1af0c559ec05db3a6733ae8624051fc30d3d",
+          "exists": true,
+          "hash_matches": true
+        }
+      },
+      "resolved_index_refs": {
+        "current_layouts": {
+          "path": "planning/minnesota/revisions/route-grass-v01/current-bemidji-plateau-stairs-v01/after.layout.json",
+          "sha256": "1d4366cd015124784f505c76ee7329f7e8efdd4acc0bfc8e81a1df56b960959d",
+          "index": "planning/minnesota/caves/r10-survey-spurs-v01/sources.json",
+          "exists": true,
+          "hash_matches": true
+        },
+        "current_dossiers": {
+          "path": "planning/minnesota/revisions/route-grass-v01/current-bemidji-plateau-stairs-v01/dossier.after.json",
+          "sha256": "440dafefe90f90a08f40b8631a9c1af0c559ec05db3a6733ae8624051fc30d3d",
+          "index": "planning/minnesota/caves/r10-survey-spurs-v01/sources.json",
+          "exists": true,
+          "hash_matches": true
+        }
+      },
+      "canonical_fallbacks": {
+        "authoring_file": {
+          "path": "planning/minnesota/towns/MnBemidji.json",
+          "exists": true,
+          "sha256": "440dafefe90f90a08f40b8631a9c1af0c559ec05db3a6733ae8624051fc30d3d"
+        },
+        "layout_file": {
+          "path": "planning/minnesota/towns/MnBemidji.layout.json",
+          "exists": true,
+          "sha256": "1d4366cd015124784f505c76ee7329f7e8efdd4acc0bfc8e81a1df56b960959d"
+        }
+      },
+      "scope": "Missing direct overrides are not missing game source. These references and existing canonical files still require reconciliation against the compiled map before acceptance."
+    },
+    {
+      "map": "MnBoundaryWaters",
+      "source_refs": {},
+      "resolved_index_refs": {},
+      "canonical_fallbacks": {},
+      "scope": "Missing direct overrides are not missing game source. These references and existing canonical files still require reconciliation against the compiled map before acceptance."
+    },
+    {
+      "map": "MnBrainerd",
+      "source_refs": {
+        "current_layouts": {
+          "path": "planning/minnesota/revisions/route-grass-v01/current-brainerd-successor-v01/roof-after.layout.json",
+          "sha256": "83ac64424c38c6465b39870947cba6745f732330a5d19fa1ed41c621600f567b",
+          "exists": true,
+          "hash_matches": true
+        },
+        "current_dossiers": {
+          "path": "planning/minnesota/revisions/route-grass-v01/current-brainerd-successor-v01/current-dossier-v01.json",
+          "sha256": "639095bb221a4cf5d7594d15a8c1faece25f2a3b1baed7f48be81e5b7f98982c",
+          "exists": true,
+          "hash_matches": true
+        }
+      },
+      "resolved_index_refs": {
+        "current_layouts": {
+          "path": "planning/minnesota/revisions/route-grass-v01/current-brainerd-successor-v01/roof-after.layout.json",
+          "sha256": "83ac64424c38c6465b39870947cba6745f732330a5d19fa1ed41c621600f567b",
+          "index": "planning/minnesota/caves/r10-survey-spurs-v01/sources.json",
+          "exists": true,
+          "hash_matches": true
+        },
+        "current_dossiers": {
+          "path": "planning/minnesota/revisions/route-grass-v01/current-brainerd-successor-v01/current-dossier-v01.json",
+          "sha256": "639095bb221a4cf5d7594d15a8c1faece25f2a3b1baed7f48be81e5b7f98982c",
+          "index": "planning/minnesota/caves/r10-survey-spurs-v01/sources.json",
+          "exists": true,
+          "hash_matches": true
+        }
+      },
+      "canonical_fallbacks": {
+        "authoring_file": {
+          "path": "planning/minnesota/towns/MnBrainerd.json",
+          "exists": true,
+          "sha256": "de28fb76b25ab1da1985bec55ed244d081256618674d0e2d4376de9ef3e3bf0a"
+        },
+        "layout_file": {
+          "path": "planning/minnesota/towns/MnBrainerd.layout.json",
+          "exists": true,
+          "sha256": "f458e3b7e0a3f88cac5a30c00f7c7be9c4ef8f4d85e8cbff1a3891b5082397ec"
+        }
+      },
+      "scope": "Missing direct overrides are not missing game source. These references and existing canonical files still require reconciliation against the compiled map before acceptance."
+    },
+    {
+      "map": "MnDetroitLakes",
+      "source_refs": {},
+      "resolved_index_refs": {},
+      "canonical_fallbacks": {
+        "authoring_file": {
+          "path": "planning/minnesota/towns/MnDetroitLakes.json",
+          "exists": true,
+          "sha256": "6c7853bb5ec839dded0fa029c17979460052d785305a83b60115489a9edb1b50"
+        },
+        "layout_file": {
+          "path": "planning/minnesota/towns/MnDetroitLakes.layout.json",
+          "exists": true,
+          "sha256": "547608ec92c56cce716796c9cda70ed5c63a3ea798280b1d3887e0831416b2ae"
+        }
+      },
+      "scope": "Missing direct overrides are not missing game source. These references and existing canonical files still require reconciliation against the compiled map before acceptance."
+    },
+    {
+      "map": "MnDuluth",
+      "source_refs": {
+        "current_layouts": {
+          "path": "planning/minnesota/revisions/route-grass-v01/current-duluth-mart-v01/after.layout.json",
+          "sha256": "f4cf90c56079ec28859064079542a6dfdc2a1f83598fa4b8fa13aa3dd58f6db0",
+          "exists": true,
+          "hash_matches": true
+        },
+        "current_dossiers": {
+          "path": "planning/minnesota/revisions/route-grass-v01/current-duluth-mart-v01/dossier.after.json",
+          "sha256": "7c26daf1be648d7c9aef345923dc538fff39c694bf815241879be9ad0e004adf",
+          "exists": true,
+          "hash_matches": true
+        }
+      },
+      "resolved_index_refs": {
+        "current_layouts": {
+          "path": "planning/minnesota/revisions/route-grass-v01/current-duluth-mart-v01/after.layout.json",
+          "sha256": "f4cf90c56079ec28859064079542a6dfdc2a1f83598fa4b8fa13aa3dd58f6db0",
+          "index": "planning/minnesota/caves/r10-survey-spurs-v01/sources.json",
+          "exists": true,
+          "hash_matches": true
+        },
+        "current_dossiers": {
+          "path": "planning/minnesota/revisions/route-grass-v01/current-duluth-mart-v01/dossier.after.json",
+          "sha256": "7c26daf1be648d7c9aef345923dc538fff39c694bf815241879be9ad0e004adf",
+          "index": "planning/minnesota/caves/r10-survey-spurs-v01/sources.json",
+          "exists": true,
+          "hash_matches": true
+        }
+      },
+      "canonical_fallbacks": {
+        "authoring_file": {
+          "path": "planning/minnesota/towns/MnDuluth.json",
+          "exists": true,
+          "sha256": "7c26daf1be648d7c9aef345923dc538fff39c694bf815241879be9ad0e004adf"
+        },
+        "layout_file": {
+          "path": "planning/minnesota/towns/MnDuluth.layout.json",
+          "exists": true,
+          "sha256": "a01f332fc88ad4e2850f62164c554db8392b9e631cc32ed8a1f94caed238b3b2"
+        }
+      },
+      "scope": "Missing direct overrides are not missing game source. These references and existing canonical files still require reconciliation against the compiled map before acceptance."
+    },
+    {
+      "map": "MnEly",
+      "source_refs": {},
+      "resolved_index_refs": {},
+      "canonical_fallbacks": {
+        "layout_file": {
+          "path": "planning/minnesota/towns/MnEly.layout.json",
+          "exists": true,
+          "sha256": "42916dee1f0daa6b899c6fe79891ab973a185437a71bf9ac4c85dd101dc1e784"
+        }
+      },
+      "scope": "Missing direct overrides are not missing game source. These references and existing canonical files still require reconciliation against the compiled map before acceptance."
+    },
+    {
+      "map": "MnGrandMarais",
+      "source_refs": {},
+      "resolved_index_refs": {},
+      "canonical_fallbacks": {},
+      "scope": "Missing direct overrides are not missing game source. These references and existing canonical files still require reconciliation against the compiled map before acceptance."
+    },
+    {
+      "map": "MnGrandRapids",
+      "source_refs": {
+        "current_layouts": {
+          "path": "planning/minnesota/revisions/grand-rapids-riverfront-v01/after.json",
+          "sha256": "66c8daf93186471ca64bbddf66baab80c8b50067f96c503e1c034bf3f5379f3f",
+          "source_kind": "explicit_native_town_rows_and_art_recipes",
+          "exists": true,
+          "hash_matches": true
+        },
+        "current_dossiers": {
+          "path": "planning/minnesota/revisions/grand-rapids-riverfront-v01/current.json",
+          "sha256": "776e555e14ef0f12d8502803adc47a2bb233e40e4106e039ea24e0679023a97f",
+          "source_kind": "installed_town_exterior_review_contract",
+          "exists": true,
+          "hash_matches": true
+        }
+      },
+      "resolved_index_refs": {
+        "current_layouts": {
+          "path": "planning/minnesota/revisions/grand-rapids-riverfront-v01/after.json",
+          "sha256": "66c8daf93186471ca64bbddf66baab80c8b50067f96c503e1c034bf3f5379f3f",
+          "source_kind": "explicit_native_town_rows_and_art_recipes",
+          "index": "planning/minnesota/caves/r10-survey-spurs-v01/sources.json",
+          "exists": true,
+          "hash_matches": true
+        },
+        "current_dossiers": {
+          "path": "planning/minnesota/revisions/grand-rapids-riverfront-v01/current.json",
+          "sha256": "776e555e14ef0f12d8502803adc47a2bb233e40e4106e039ea24e0679023a97f",
+          "source_kind": "installed_town_exterior_review_contract",
+          "index": "planning/minnesota/caves/r10-survey-spurs-v01/sources.json",
+          "exists": true,
+          "hash_matches": true
+        }
+      },
+      "canonical_fallbacks": {
+        "authoring_file": {
+          "path": "planning/minnesota/towns/MnGrandRapids.json",
+          "exists": true,
+          "sha256": "a165aa3593111728b3013c800af3aaef2cb5d9818c7e66429e3b6bee757db17a"
+        },
+        "layout_file": {
+          "path": "planning/minnesota/towns/MnGrandRapids.layout.json",
+          "exists": true,
+          "sha256": "44c4b6578c0ea4434a3d20c87749afd5284233d6f2edfb74cbbc112cf822ee75"
+        }
+      },
+      "scope": "Missing direct overrides are not missing game source. These references and existing canonical files still require reconciliation against the compiled map before acceptance."
+    },
+    {
+      "map": "MnInternationalFalls",
+      "source_refs": {},
+      "resolved_index_refs": {},
+      "canonical_fallbacks": {
+        "layout_file": {
+          "path": "planning/minnesota/towns/MnInternationalFalls.layout.json",
+          "exists": true,
+          "sha256": "2f6c6e42c57ec85f420110f1891b21ef8a56b2a284c424705eb877ed72f08c04"
+        }
+      },
+      "scope": "Missing direct overrides are not missing game source. These references and existing canonical files still require reconciliation against the compiled map before acceptance."
+    },
+    {
+      "map": "MnLakeItasca",
+      "source_refs": {},
+      "resolved_index_refs": {},
+      "canonical_fallbacks": {
+        "authoring_file": {
+          "path": "planning/minnesota/towns/MnLakeItasca.json",
+          "exists": true,
+          "sha256": "9a4ccedba53c0c01e495361a9fabe25875662ad0a6c3817444f256f7aa0d197a"
+        }
+      },
+      "scope": "Missing direct overrides are not missing game source. These references and existing canonical files still require reconciliation against the compiled map before acceptance."
+    },
+    {
+      "map": "MnLeechLake",
+      "source_refs": {},
+      "resolved_index_refs": {},
+      "canonical_fallbacks": {
+        "authoring_file": {
+          "path": "planning/minnesota/towns/MnLeechLake.json",
+          "exists": true,
+          "sha256": "b818e0f767e16ae37d673bfd4e95baeb065f4010fd3b46e8bc3a29c5fe51af3c"
+        },
+        "layout_file": {
+          "path": "planning/minnesota/towns/MnLeechLake.layout.json",
+          "exists": true,
+          "sha256": "e57e1a37805250483fcb51b8c7e6662a71403716d4943ac1aea184d0157ef72e"
+        }
+      },
+      "scope": "Missing direct overrides are not missing game source. These references and existing canonical files still require reconciliation against the compiled map before acceptance."
+    },
+    {
+      "map": "MnMankato",
+      "source_refs": {
+        "current_layouts": {
+          "path": "planning/minnesota/revisions/route-grass-v01/current-mankato-town-v01/after-bank-composed.layout.v02.json",
+          "sha256": "df65e676b2e3f8b18a5ac291b5dde0b2f265c1630a744f6e9d6c36b17da47bf5",
+          "exists": true,
+          "hash_matches": true
+        },
+        "current_dossiers": {
+          "path": "planning/minnesota/towns/MnMankato.json",
+          "sha256": "2d683a2bdeabe5f2a2f9098624d1b645efe375f3535304804b4938c58dec8858",
+          "exists": true,
+          "hash_matches": true
+        }
+      },
+      "resolved_index_refs": {
+        "current_layouts": {
+          "path": "planning/minnesota/revisions/route-grass-v01/current-mankato-town-v01/after-bank-composed.layout.v02.json",
+          "sha256": "df65e676b2e3f8b18a5ac291b5dde0b2f265c1630a744f6e9d6c36b17da47bf5",
+          "index": "planning/minnesota/caves/r10-survey-spurs-v01/sources.json",
+          "exists": true,
+          "hash_matches": true
+        },
+        "current_dossiers": {
+          "path": "planning/minnesota/towns/MnMankato.json",
+          "sha256": "2d683a2bdeabe5f2a2f9098624d1b645efe375f3535304804b4938c58dec8858",
+          "index": "planning/minnesota/caves/r10-survey-spurs-v01/sources.json",
+          "exists": true,
+          "hash_matches": true
+        }
+      },
+      "canonical_fallbacks": {
+        "layout_file": {
+          "path": "planning/minnesota/towns/MnMankato.layout.json",
+          "exists": true,
+          "sha256": "a3f7fc599290fcfee51f02848c7088544fa1c50a5102b8e76c6818f1d933c374"
+        }
+      },
+      "scope": "Missing direct overrides are not missing game source. These references and existing canonical files still require reconciliation against the compiled map before acceptance."
+    },
+    {
+      "map": "MnMilleLacs",
+      "source_refs": {},
+      "resolved_index_refs": {},
+      "canonical_fallbacks": {},
+      "scope": "Missing direct overrides are not missing game source. These references and existing canonical files still require reconciliation against the compiled map before acceptance."
+    },
+    {
+      "map": "MnMinneapolis",
+      "source_refs": {
+        "current_layouts": {
+          "path": "planning/minnesota/revisions/minneapolis-mill-arts-v02/after.layout.json",
+          "sha256": "3cb9c8e2b23cc51f9f5ba3fa7fadc6fec32de869344e699523c9e4772cc18d85",
+          "exists": true,
+          "hash_matches": true
+        },
+        "current_dossiers": {
+          "path": "planning/minnesota/revisions/minneapolis-citywide-cycling-v01/town.dossier.json",
+          "sha256": "c246bbc765cad6e9ec5769556cdbdd3966ce83aa15640a9d5788a3d0220fd32f",
+          "exists": true,
+          "hash_matches": true
+        }
+      },
+      "resolved_index_refs": {
+        "current_layouts": {
+          "path": "planning/minnesota/revisions/minneapolis-mill-arts-v02/after.layout.json",
+          "sha256": "3cb9c8e2b23cc51f9f5ba3fa7fadc6fec32de869344e699523c9e4772cc18d85",
+          "index": "planning/minnesota/caves/r10-survey-spurs-v01/sources.json",
+          "exists": true,
+          "hash_matches": true
+        },
+        "current_dossiers": {
+          "path": "planning/minnesota/revisions/minneapolis-citywide-cycling-v01/town.dossier.json",
+          "sha256": "c246bbc765cad6e9ec5769556cdbdd3966ce83aa15640a9d5788a3d0220fd32f",
+          "index": "planning/minnesota/caves/r10-survey-spurs-v01/sources.json",
+          "exists": true,
+          "hash_matches": true
+        }
+      },
+      "canonical_fallbacks": {
+        "authoring_file": {
+          "path": "planning/minnesota/towns/MnMinneapolis.json",
+          "exists": true,
+          "sha256": "6838d9bb4cd7f10c3463688ce7131a1fc392d7491e559c4d0ccfb191933aa19c"
+        },
+        "layout_file": {
+          "path": "planning/minnesota/towns/MnMinneapolis.layout.json",
+          "exists": true,
+          "sha256": "7af9a692ed8773425d683df9ebb6f1529d6e06ded57f2ae1e8f191d354ff33b7"
+        }
+      },
+      "scope": "Missing direct overrides are not missing game source. These references and existing canonical files still require reconciliation against the compiled map before acceptance."
+    },
+    {
+      "map": "MnMoorhead",
+      "source_refs": {},
+      "resolved_index_refs": {},
+      "canonical_fallbacks": {
+        "layout_file": {
+          "path": "planning/minnesota/towns/MnMoorhead.layout.json",
+          "exists": true,
+          "sha256": "6308d89e7da0d7ab12935bf826bf267622b42712cdf7bcff1289468b20f97ccc"
+        }
+      },
+      "scope": "Missing direct overrides are not missing game source. These references and existing canonical files still require reconciliation against the compiled map before acceptance."
+    },
+    {
+      "map": "MnRochester",
+      "source_refs": {},
+      "resolved_index_refs": {},
+      "canonical_fallbacks": {
+        "authoring_file": {
+          "path": "planning/minnesota/towns/MnRochester.gates.json",
+          "exists": true,
+          "sha256": "07a0738259212848e1708dac09e0a7f7248eac81eb5657aa6ec3caa4945c3d8b"
+        },
+        "layout_file": {
+          "path": "planning/minnesota/towns/MnRochester.layout.json",
+          "exists": true,
+          "sha256": "bb797f2fdb00a8aa691ff5a16a4b872c6261f900fbccd7c4a81f93bd73f63175"
+        }
+      },
+      "scope": "Missing direct overrides are not missing game source. These references and existing canonical files still require reconciliation against the compiled map before acceptance."
+    },
+    {
+      "map": "MnStCloud",
+      "source_refs": {
+        "current_layouts": {
+          "path": "planning/minnesota/revisions/route-grass-v01/current-st-cloud-fronts-v01/after.layout.json",
+          "sha256": "11da4c6d1d49aef07a7e3fefd0d6332916af4fd0b85682ecaacdd20c9bc252ff",
+          "exists": true,
+          "hash_matches": true
+        },
+        "current_dossiers": {
+          "path": "planning/minnesota/revisions/route-grass-v01/current-st-cloud-fronts-v01/dossier.after.json",
+          "sha256": "d30b2663f6761a9c8dfc79405b15a0b8970fcf5f2cbc0146f72fdcf9477a220d",
+          "exists": true,
+          "hash_matches": true
+        }
+      },
+      "resolved_index_refs": {
+        "current_layouts": {
+          "path": "planning/minnesota/revisions/route-grass-v01/current-st-cloud-fronts-v01/after.layout.json",
+          "sha256": "11da4c6d1d49aef07a7e3fefd0d6332916af4fd0b85682ecaacdd20c9bc252ff",
+          "index": "planning/minnesota/caves/r10-survey-spurs-v01/sources.json",
+          "exists": true,
+          "hash_matches": true
+        },
+        "current_dossiers": {
+          "path": "planning/minnesota/revisions/route-grass-v01/current-st-cloud-fronts-v01/dossier.after.json",
+          "sha256": "d30b2663f6761a9c8dfc79405b15a0b8970fcf5f2cbc0146f72fdcf9477a220d",
+          "index": "planning/minnesota/caves/r10-survey-spurs-v01/sources.json",
+          "exists": true,
+          "hash_matches": true
+        }
+      },
+      "canonical_fallbacks": {
+        "authoring_file": {
+          "path": "planning/minnesota/towns/MnStCloud.json",
+          "exists": true,
+          "sha256": "76ef625ce7e8a9607d588d1328965d425f7c9db4914dc7b9c947d82bdd85bd14"
+        },
+        "layout_file": {
+          "path": "planning/minnesota/towns/MnStCloud.layout.json",
+          "exists": true,
+          "sha256": "ed62b6c560ee5fff3330c49f60b804fea7b05a2d4e340be7411acf7132531bc5"
+        }
+      },
+      "scope": "Missing direct overrides are not missing game source. These references and existing canonical files still require reconciliation against the compiled map before acceptance."
+    },
+    {
+      "map": "MnStPaul",
+      "source_refs": {
+        "current_layouts": {
+          "path": "planning/minnesota/revisions/st-paul-southbank-v01/after.layout.json",
+          "sha256": "a2208d44eff5fb3d49703904cacdf2bf83f3912e1a50585ca887308e66da0a38",
+          "exists": true,
+          "hash_matches": true
+        },
+        "current_dossiers": {
+          "path": "planning/minnesota/revisions/st-paul-southbank-v01/town.dossier.json",
+          "sha256": "7f3a04d0d1e0b04c25745c3161a5b01015504472240722bcdb8c43bb0ba5d8a8",
+          "exists": true,
+          "hash_matches": true
+        }
+      },
+      "resolved_index_refs": {
+        "current_layouts": {
+          "path": "planning/minnesota/revisions/st-paul-southbank-v01/after.layout.json",
+          "sha256": "a2208d44eff5fb3d49703904cacdf2bf83f3912e1a50585ca887308e66da0a38",
+          "index": "planning/minnesota/caves/r10-survey-spurs-v01/sources.json",
+          "exists": true,
+          "hash_matches": true
+        },
+        "current_dossiers": {
+          "path": "planning/minnesota/revisions/st-paul-southbank-v01/town.dossier.json",
+          "sha256": "7f3a04d0d1e0b04c25745c3161a5b01015504472240722bcdb8c43bb0ba5d8a8",
+          "index": "planning/minnesota/caves/r10-survey-spurs-v01/sources.json",
+          "exists": true,
+          "hash_matches": true
+        }
+      },
+      "canonical_fallbacks": {
+        "authoring_file": {
+          "path": "planning/minnesota/towns/MnStPaul.json",
+          "exists": true,
+          "sha256": "bc67e324f4d540423d34107f96180ea7acbb07182f447e66e40ded8da1b5582d"
+        },
+        "layout_file": {
+          "path": "planning/minnesota/towns/MnStPaul.layout.json",
+          "exists": true,
+          "sha256": "479329d79061c512b5fc0ae27bafda16f4e5324a4d004da7d09d6a088d7bcaa2"
+        }
+      },
+      "scope": "Missing direct overrides are not missing game source. These references and existing canonical files still require reconciliation against the compiled map before acceptance."
+    },
+    {
+      "map": "MnWinona",
+      "source_refs": {
+        "current_layouts": {
+          "path": "planning/minnesota/revisions/route-grass-v01/current-winona-town-v01/after-composed.layout.v01.json",
+          "sha256": "f34aa9ebe4358534542bbc13ff758f5626c302e780c8ec43c50692637f658afd",
+          "exists": true,
+          "hash_matches": true
+        },
+        "current_dossiers": {
+          "path": "planning/minnesota/towns/MnWinona.json",
+          "sha256": "d0653dfa2dfcaa9386f800769b8e9188a540f67fe891165f7096cc029fe64002",
+          "exists": true,
+          "hash_matches": true
+        }
+      },
+      "resolved_index_refs": {
+        "current_layouts": {
+          "path": "planning/minnesota/revisions/route-grass-v01/current-winona-town-v01/after-composed.layout.v01.json",
+          "sha256": "f34aa9ebe4358534542bbc13ff758f5626c302e780c8ec43c50692637f658afd",
+          "index": "planning/minnesota/caves/r10-survey-spurs-v01/sources.json",
+          "exists": true,
+          "hash_matches": true
+        },
+        "current_dossiers": {
+          "path": "planning/minnesota/towns/MnWinona.json",
+          "sha256": "d0653dfa2dfcaa9386f800769b8e9188a540f67fe891165f7096cc029fe64002",
+          "index": "planning/minnesota/caves/r10-survey-spurs-v01/sources.json",
+          "exists": true,
+          "hash_matches": true
+        }
+      },
+      "canonical_fallbacks": {
+        "authoring_file": {
+          "path": "planning/minnesota/towns/MnWinona.json",
+          "exists": true,
+          "sha256": "d0653dfa2dfcaa9386f800769b8e9188a540f67fe891165f7096cc029fe64002"
+        },
+        "layout_file": {
+          "path": "planning/minnesota/towns/MnWinona.layout.json",
+          "exists": true,
+          "sha256": "96b25adeb8a69d816e030e3fd6b15baf734a36512b51ed0c76139ee80ba14fc2"
+        }
+      },
+      "scope": "Missing direct overrides are not missing game source. These references and existing canonical files still require reconciliation against the compiled map before acceptance."
+    }
+  ],
+  "scope": "Readiness only, not native gameplay or source-recomposition acceptance. Resolve current override chain first, then canonical world authoring paths; do not classify absent direct override as missing source.",
+  "resolved_parent_indexes": [
+    "planning/minnesota/caves/r10-survey-spurs-v01/sources.json",
+    "planning/minnesota/revisions/route-grass-v01/current-r19-successor-review-v01/sources-v01.json",
+    "planning/minnesota/revisions/grand-rapids-riverfront-v01/sources.json",
+    "planning/minnesota/caves/gunflint-spring-shelter-v01/sources.json",
+    "planning/minnesota/revisions/route-grass-v01/current-r04-successor-review-v01/sources-v01.json",
+    "planning/minnesota/caves/iron-drill-core-v01/sources.json",
+    "planning/minnesota/revisions/route-grass-v01/current-r17-successor-review-v01/sources-v01.json",
+    "planning/minnesota/revisions/game-corner-v01/sources.json",
+    "planning/minnesota/revisions/route-grass-v01/current-r16-successor-review-v01/sources-v01.json",
+    "planning/minnesota/revisions/route-grass-v01/current-r15-successor-review-v01/sources-v01.json",
+    "planning/minnesota/revisions/route-grass-v01/current-r14-successor-review-v01/sources-v01.json",
+    "planning/minnesota/revisions/route-grass-v01/current-r13-successor-review-v01/sources-v01.json",
+    "planning/minnesota/revisions/route-grass-v01/current-r09-successor-review-v01/sources-v02.json",
+    "planning/minnesota/revisions/route-grass-v01/current-r06-successor-review-v01/sources-v02.json",
+    "planning/minnesota/ice-caves/turning-chambers-v01/sources.json",
+    "planning/minnesota/caves/current-reservations-v01/sources.json",
+    "planning/minnesota/caves/r20-winding-cleft-v01/sources.json",
+    "planning/minnesota/revisions/route-grass-v01/current-r03-successor-review-v01/sources-v02.json",
+    "planning/minnesota/caves/r10-exploration-v01/sources.json",
+    "planning/minnesota/revisions/route-grass-v01/current-r01-successor-review-v01/sources.json",
+    "planning/minnesota/revisions/route-grass-v01/current-brainerd-successor-v01/sources.json",
+    "planning/minnesota/revisions/route-grass-v01/current-boundary-safari-successor-v01/sources.json",
+    "planning/minnesota/caves/current-iron-approach-v01/sources.json",
+    "planning/minnesota/revisions/route-grass-v01/current-r14-closed-bank-v01/sources.json",
+    "planning/minnesota/revisions/minneapolis-citywide-cycling-v01/sources.json",
+    "planning/minnesota/revisions/route-grass-v01/current-st-cloud-fronts-v01/sources-v02.json",
+    "planning/minnesota/npcs/city-cyclists-v01/sources.json",
+    "planning/minnesota/revisions/minneapolis-mill-arts-v02/sources.json",
+    "planning/minnesota/revisions/route-grass-v01/current-duluth-mart-v01/sources.json",
+    "planning/minnesota/revisions/minneapolis-normal-houses-v01/sources.json",
+    "planning/minnesota/revisions/route-grass-v01/current-bemidji-plateau-stairs-v01/sources.json",
+    "planning/minnesota/revisions/route-grass-v01/current-bemidji-mart-v01/sources.json",
+    "planning/minnesota/caves/current-r03-gallery-v02/sources.json",
+    "planning/minnesota/revisions/route-grass-v01/current-winona-town-v01/sources.json",
+    "planning/minnesota/revisions/st-paul-southbank-v01/sources.json",
+    "planning/minnesota/revisions/route-grass-v01/current-mankato-town-v01/sources.json",
+    "planning/minnesota/revisions/st-paul-civic-east-v01/sources.json",
+    "planning/minnesota/revisions/st-paul-inhabited-streets-v02/sources.json",
+    "planning/minnesota/revisions/duluth-interior-buoy-clearance-v01/sources.json",
+    "planning/minnesota/revisions/shore-rocks-open-routes-v01/sources.json",
+    "planning/minnesota/caves/current-r10-fitted-fork-v01/sources.json",
+    "planning/minnesota/revisions/duluth-harbor-platforms-v01/sources.json",
+    "planning/minnesota/revisions/outdoor-terrain-integration-v01/sources.json"
+  ]
+}

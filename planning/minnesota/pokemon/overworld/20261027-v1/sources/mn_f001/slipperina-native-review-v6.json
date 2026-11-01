@@ -1,0 +1,120 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_002",
+  "runtime_token": "SLIPPERINA",
+  "family_id": "MN_F001",
+  "status": "ready_for_root_visual_acceptance",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/slipperina-v6-phase-x-8-y-8.json",
+  "selected_candidate": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/slipperina-candidate-v6-phase-x-8-y-8",
+  "source_generation": "built-in ImageGen; allsourceversions retained",
+  "visual_review": {
+    "viewed": [
+      "originalsource",
+      "native1xnormal",
+      "native8xnormal",
+      "native8xshiny"
+    ],
+    "finding": "Two clearfrontdoteyes, plainbackheadwithoutfalseface, singleleftdoteye; independentpalette and canonicalorchididentity. Directionandwalkingposesreadatnativeworldscale. Thincontoursretainminorsamplinggaps but facesarelegible.",
+    "root_acceptance_required": true
+  },
+  "native_validation": {
+    "size": [
+      16,
+      96
+    ],
+    "frames": 6,
+    "cell_size": [
+      16,
+      16
+    ],
+    "fit": [
+      14,
+      14
+    ],
+    "source_sampling": "source_center",
+    "common_source_window_dimensions": [
+      369,
+      424
+    ],
+    "native_bounds": [
+      [
+        2,
+        2,
+        11,
+        13
+      ],
+      [
+        2,
+        1,
+        11,
+        14
+      ],
+      [
+        2,
+        1,
+        10,
+        14
+      ],
+      [
+        2,
+        1,
+        11,
+        14
+      ],
+      [
+        2,
+        1,
+        11,
+        14
+      ],
+      [
+        2,
+        1,
+        10,
+        14
+      ]
+    ],
+    "independent_2bpp_roundtrip": true,
+    "bank_bytes": 384,
+    "alpha_zero_matches_index_zero": true,
+    "normal_palette_exact": true,
+    "shiny_palette_exact": true,
+    "idle_step_changed_pixels": [
+      27,
+      16,
+      31
+    ],
+    "right_frames": "exacthorizontalmirrorofleftatdisplay; no additionalstoredframes",
+    "pixel_painting": false
+  },
+  "evidence": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/slipperina-v6-phase-x-8-y-8.json",
+      "sha256": "e7e4510b438aa014047980660d86538ada2b80baa2a27471b0e48d13b54fa3e9"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/slipperina-candidate-v6-phase-x-8-y-8/compiled-index.json",
+      "sha256": "89fa460d54c2282b3419a6417dbb6273c1bc8bbaa79a2b7cf757220db6c8524b"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/slipperina.overworld.imagegen-v6.png",
+      "sha256": "dcc2fa51617a368b8892548f2dc7d4ea587f4c55aa7ed1f9efac03be8910e357"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/prompt-slipperina-v6.txt",
+      "sha256": "99f5cb8fd4f4fa8ab538870b61c19e6079ef4f0b9a99650abd7c80ecec622586"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/slipperina-candidate-v6-phase-x-8-y-8/review/line.normal.png",
+      "sha256": "47d7d3cbd21f23e4d3be085c8435f260a31b8ba44c4757008bf17e6b69b5bf1f"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/slipperina-candidate-v6-phase-x-8-y-8/review/line.normal-8x.png",
+      "sha256": "60c563e73fab6eebaee891fb97d798cc0f499b4e3158a0f3b6b22c506a0cfde4"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f001/slipperina-candidate-v6-phase-x-8-y-8/review/line.shiny-8x.png",
+      "sha256": "6d81476b4b6ad0c285eaf0f593e374a443b7d689b7ff1a592954d85a156490a0"
+    }
+  ]
+}

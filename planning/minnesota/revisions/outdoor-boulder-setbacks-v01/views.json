@@ -1,0 +1,82 @@
+[
+  {
+    "id": "MnBoundarySafariC00R01-boulder-16-5",
+    "map": "MnBoundarySafariC00R01",
+    "core": [
+      32,
+      10
+    ]
+  },
+  {
+    "id": "MnBoundarySafariC00R01-boulder-18-5",
+    "map": "MnBoundarySafariC00R01",
+    "core": [
+      36,
+      10
+    ]
+  },
+  {
+    "id": "MnBoundarySafariC01R00-boulder-22-16",
+    "map": "MnBoundarySafariC01R00",
+    "core": [
+      44,
+      32
+    ]
+  },
+  {
+    "id": "MnBoundarySafariC01R01-boulder-19-16",
+    "map": "MnBoundarySafariC01R01",
+    "core": [
+      38,
+      32
+    ]
+  },
+  {
+    "id": "MnR05C00R01-boulder-11-10",
+    "map": "MnR05C00R01",
+    "core": [
+      22,
+      20
+    ]
+  },
+  {
+    "id": "MnR09C00R00-boulder-20-17",
+    "map": "MnR09C00R00",
+    "core": [
+      40,
+      34
+    ]
+  },
+  {
+    "id": "MnR10C00R00-boulder-8-6",
+    "map": "MnR10C00R00",
+    "core": [
+      16,
+      12
+    ]
+  },
+  {
+    "id": "MnR10C00R00-boulder-26-8",
+    "map": "MnR10C00R00",
+    "core": [
+      52,
+      16
+    ]
+  },
+  {
+    "id": "MnR11C00R01-boulder-17-21",
+    "map": "MnR11C00R01",
+    "core": [
+      34,
+      42
+    ]
+  },
+  {
+    "id": "MnR13C00R00-boulder-20-12",
+    "map": "MnR13C00R00",
+    "core": [
+      40,
+      24
+    ]
+  }
+]

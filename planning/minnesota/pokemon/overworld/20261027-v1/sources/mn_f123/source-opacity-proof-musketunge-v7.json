@@ -1,0 +1,96 @@
+{
+  "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f123/musketunge.overworld.imagegen-v3-profile-pupils.png",
+  "source_sha256": "536c1bb7ed9c32216464f506d8a5193b16f6b50ccf63b9aa3f74f2b410a1a62a",
+  "alpha_threshold": 200,
+  "reason": "Source edit introduced dark background haze alpha129\u2013149 on isolated-window edge, distinct from actual opaque253 artwork. Removing this fringe avoids adjacent-row/crop contamination.",
+  "background_samples": [
+    {
+      "source": [
+        958,
+        530
+      ],
+      "rgba": [
+        0,
+        0,
+        0,
+        129
+      ]
+    },
+    {
+      "source": [
+        958,
+        535
+      ],
+      "rgba": [
+        0,
+        0,
+        0,
+        133
+      ]
+    },
+    {
+      "source": [
+        958,
+        540
+      ],
+      "rgba": [
+        0,
+        0,
+        0,
+        136
+      ]
+    },
+    {
+      "source": [
+        958,
+        545
+      ],
+      "rgba": [
+        0,
+        0,
+        0,
+        146
+      ]
+    },
+    {
+      "source": [
+        958,
+        549
+      ],
+      "rgba": [
+        0,
+        0,
+        0,
+        149
+      ]
+    }
+  ],
+  "pupil_core_samples": [
+    {
+      "source": [
+        1076,
+        306
+      ],
+      "rgba": [
+        0,
+        1,
+        0,
+        253
+      ]
+    },
+    {
+      "source": [
+        1076,
+        784
+      ],
+      "rgba": [
+        1,
+        0,
+        0,
+        252
+      ]
+    }
+  ],
+  "normal_shiny_native_boards_reviewed": true,
+  "complete_source_crop_isolation_passed": true
+}

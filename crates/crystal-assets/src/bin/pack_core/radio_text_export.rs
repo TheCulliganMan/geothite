@@ -4,61 +4,7 @@ use serde_json::{Value, json};
 use std::collections::{BTreeMap, BTreeSet};
 use std::path::Path;
 
-fn code_part(line: &str) -> &str {
-    let mut quoted = false;
-    let mut escaped = false;
-    for (index, ch) in line.char_indices() {
-        if escaped {
-            escaped = false;
-            continue;
-        }
-        if ch == '\\' && quoted {
-            escaped = true;
-            continue;
-        }
-        if ch == '"' {
-            quoted = !quoted;
-        }
-        if ch == ';' && !quoted {
-            return line[..index].trim();
-        }
-    }
-    line.trim()
-}
-
-fn source_arguments(source: &str) -> Result<Vec<String>> {
-    if source.trim().is_empty() {
-        return Ok(Vec::new());
-    }
-    let mut result = Vec::new();
-    let mut start = 0;
-    let mut quoted = false;
-    let mut escaped = false;
-    for (index, ch) in source.char_indices() {
-        if escaped {
-            escaped = false;
-            continue;
-        }
-        if ch == '\\' && quoted {
-            escaped = true;
-            continue;
-        }
-        if ch == '"' {
-            quoted = !quoted;
-        }
-        if ch == ',' && !quoted {
-            result.push(source[start..index].trim().to_string());
-            start = index + 1;
-        }
-    }
-    anyhow::ensure!(!quoted && !escaped, "unterminated radio text string");
-    result.push(source[start..].trim().to_string());
-    anyhow::ensure!(
-        result.iter().all(|arg| !arg.is_empty()),
-        "empty radio text operand"
-    );
-    Ok(result)
-}
+pub(super) use super::source_syntax::{code_part, source_arguments};
 
 pub(super) fn collect_text_bodies(
     source: &str,
@@ -454,6 +400,7 @@ fn source_selection_tables(repository: &Path) -> Result<BTreeMap<String, Value>>
 }
 
 pub fn export(repository: &Path) -> Result<()> {
+    super::source_scripts::ensure_standard_catalog(repository)?;
     let bodies = source_text_bodies(repository)?;
     let tables = source_selection_tables(repository)?;
     export_global_text_bodies(repository, &bodies, &tables)
@@ -508,7 +455,7 @@ mod tests {
 
     #[test]
     fn radio_trainer_selection_uses_source_class_and_party_slot_indices() {
-        let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../..");
+        let root = crate::source_syntax::test_workspace();
         let tables = source_selection_tables(&root).unwrap();
         let classes = tables
             .get("RadioTrainerClasses")
@@ -534,7 +481,7 @@ mod tests {
 
     #[test]
     fn radio_species_names_reject_truncation_wrong_width_and_embedded_terminators() {
-        let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../..");
+        let root = crate::source_syntax::test_workspace();
         let source =
             std::fs::read_to_string(root.join("vendor/pokecrystal/data/pokemon/names.asm"))
                 .unwrap();
@@ -550,7 +497,7 @@ mod tests {
 
     #[test]
     fn radio_species_names_keep_source_punctuation_and_all_fixed_slots() {
-        let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../..");
+        let root = crate::source_syntax::test_workspace();
         let tables = source_selection_tables(&root).unwrap();
         let names = tables
             .get("PokemonNames")
@@ -558,8 +505,9 @@ mod tests {
             .as_array()
             .unwrap();
         assert_eq!(names.len(), 256);
-        let source_bytes =
-            include_bytes!("../../../../../../tools/asm-oracle/fixtures/pokemon-names.bin");
+        let rom = std::fs::read(root.join("vendor/pokecrystal/pokecrystal.gbc")).unwrap();
+        let offset = crate::source_syntax::test_rom_offset(&root, "PokemonNames");
+        let source_bytes = &rom[offset..offset + 2560];
         let mut exported_bytes = Vec::new();
         for row in names {
             let name: String = serde_json::from_str(row["args"][0].as_str().unwrap()).unwrap();
@@ -589,7 +537,7 @@ mod tests {
 
     #[test]
     fn radio_landmarks_keep_source_coordinates_names_and_controls() {
-        let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../..");
+        let root = crate::source_syntax::test_workspace();
         let tables = source_selection_tables(&root).unwrap();
         let rows = tables
             .get("Landmarks")
@@ -651,7 +599,7 @@ mod tests {
                 "{source}"
             );
         }
-        let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../..");
+        let root = crate::source_syntax::test_workspace();
         let tables = source_selection_tables(&root).unwrap();
         for (label, count) in [
             ("OaksPKMNTalkRoutes", 15),
@@ -666,7 +614,7 @@ mod tests {
 
     #[test]
     fn all_radio_text_bodies_preserve_source_control_commands() {
-        let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../..");
+        let root = crate::source_syntax::test_workspace();
         let bodies = source_text_bodies(&root).unwrap();
         assert_eq!(bodies.len(), 113);
         assert_eq!(

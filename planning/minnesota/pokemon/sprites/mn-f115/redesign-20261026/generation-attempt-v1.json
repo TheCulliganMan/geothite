@@ -1,0 +1,15 @@
+{
+  "status": "returned-image",
+  "tool": "built-in image_gen",
+  "original_path": "/Users/ryanculligan/.codex/generated_images/01a178da-4cf1-7e01-8516-667a332dc790/exec-332a3598-6ac8-4aea-8d26-87db6dc579cf.png",
+  "saved_path": "planning/minnesota/pokemon/sprites/mn-f115/redesign-20261026/mn-249-frontagal.front-back.redesign-v1.png",
+  "sha256": "73c786e8fa3c362775fba740e697da6bd57d38c5db74deae939e890a522a74e5",
+  "dimensions": [
+    1145,
+    1374
+  ],
+  "prompt_file": "sprites/mn-f115/redesign-20261026/prompt-v1.txt",
+  "referenced_image_paths": [
+    "target/minnesota-pokemon/gen2-reference/starters.png"
+  ]
+}

@@ -28,8 +28,99 @@
 - Verify audio changes against the pack's PCM hashes, frame counts, and loop
   ranges. Preserve unaffected audio and unrelated game content.
 
+## Cargo build cache and disk space
+
+- Check free disk space with `df -h .` at task start, before substantial Cargo
+  builds, and at least hourly during long sessions. Check the sizes of `target/`,
+  agent-specific `CARGO_TARGET_DIR` directories, and any external
+  `CRYSTAL_PACK_BUILD_DIR`; separate target directories duplicate dependencies.
+- Keep at least 15% of the build volume free, and at least 100 GiB free on
+  volumes of 500 GiB or larger. Below either limit, stop starting new builds and
+  remove inactive build output before continuing. Do not wait for an out-of-space
+  error or create another target directory to work around it.
+- Clean up your Cargo build output when the task finishes and it is no longer
+  needed. Review abandoned agent caches and unused profiles daily during active
+  development; remove them periodically instead of accumulating every task's
+  dependency graph, incremental cache, and binaries indefinitely.
+- Check running Cargo, rustc, exporter, test, renderer, and server processes
+  before cleanup. Never remove an active build directory or an executable still
+  needed by a running review. Clean it after its owner finishes; never delete
+  another agent's cache to bypass a Cargo lock.
+- Use `cargo clean --target-dir DIRECTORY` only when that directory contains
+  exclusively disposable Cargo output. This repository also stores local review
+  material under `target/`: otherwise remove only confirmed inactive Cargo
+  profile directories (`debug`, `release`, `wasm-dev`, `web-release`, and
+  target-triple build directories). Preserve retained review evidence, source
+  inputs, packs, saves, and publication state.
+- For one-off checks that will be cleaned immediately, set
+  `CARGO_INCREMENTAL=0` to avoid retaining an unnecessary incremental cache.
+  Recheck `df -h .` after cleanup and report the recovered space. Build caches,
+  cleanup logs, captures, and generated verification reports remain ignored and
+  must never enter a code commit.
+
+## Minnesota Pokemon roster
+
+- Minnesota is native 2D only. Do not expose or enable 3D, voxel or 2.5D views
+  for Minnesota packs, including menus, preferences, shortcuts and previews.
+- Minnesota uses only original Minnesota Pokemon from the active roster in
+  `planning/minnesota/pokemon/roster.json`, excluding families retired in
+  `planning/minnesota/pokemon/roster-curation.json`. Never place non-Minnesota
+  Pokemon in Minnesota trainer teams, wild encounters, gifts, trades, starters,
+  static encounters, or visible creature actors. Apply this rule to added content
+  and to existing regional content touched by a change, including scaled teams
+  and their evolutions. Preserve Johto/Kanto content outside Minnesota.
+
+## Rust style
+
+- Follow [Google's Rust Style Guide](https://google.github.io/styleguide/rustguide.html)
+  for Rust implementation and review. Read the relevant sections before making
+  changes. Explicit repository rules take precedence; otherwise follow Google's
+  guide, then the official Rust Style Guide and Rust API Guidelines it references.
+- Respect the guide's exceptions and library/application distinction. Apply API
+  requirements to reusable libraries; keep application code simple and direct.
+  Chromium-, Android-, and Fuchsia-specific rules do not apply to this Cargo
+  workspace. Preserve its existing layout, Bevy integration, and test framework.
+- Keep implementations in focused leaf modules. Use clear names and explicit
+  imports grouped by source module.
+- Prefer borrowing over unnecessary cloning or shared ownership, standard traits
+  and derives over equivalent custom methods, and ordinary Rust over custom macros.
+- Use `Option` for missing values and `Result` for recoverable errors. Reserve
+  panics for violated invariants; prefer pattern matching and explanatory `expect`
+  messages over `unwrap`.
+- Document public API behavior, errors, panics, and safety contracts. Prefer safe
+  Rust; justify necessary unsafe code and explain correctness with `SAFETY:` comments.
+- Use the toolchain pinned in `rust-toolchain.toml`. Format changed Rust code and
+  check it with `cargo fmt --all -- --check`. Run
+  `cargo clippy --locked -p <affected-crate> --all-targets` with the applicable
+  features, plus relevant tests. Fix warnings introduced by the change and report
+  pre-existing failures. Keep formatting and refactoring within the task's scope.
+
 ## Crystalpack build and local runbook
 
+### Pack-build requests are implementation work
+
+- When the user asks to build a crystalpack or make the game playable, do the
+  build work. A missing local `.crystalpack` is not, by itself, a reason to
+  stop and ask the user to supply one.
+- Read `docs/game-content.md`, `docs/cold-start-3d.md`, and the Rust
+  `crystal-assets` builders. If the user references a URL or another Git
+  revision, inspect that exact document/revision before drawing conclusions
+  from this checkout's documentation.
+- Trace and execute the documented Rust pack-build path. Investigate missing
+  source inputs, generated manifests, schema mismatches, and exporter steps;
+  repair or implement the required Rust build steps within the authorized
+  task. Keep pret checkouts and generated game content outside tracked source.
+- Do not infer that pack-generation code is absent merely because the pack,
+  an intermediate JSON file, or a prepared export workspace is absent. Any
+  blocker report must identify the actual attempted command, its concrete
+  failure, and the code path responsible. Do not add a README warning claiming
+  there is no build pipeline in place of doing this investigation.
+- A client executable, `--help`, a ROM, a render dump, or a running compiler
+  is not a generated pack or a playable game. Validate the actual resulting
+  pack, run the gameplay regressions below, and launch the production client
+  before reporting the user's playable-game request complete.
+- Document the verified build/run commands and required inputs in the README
+  and content guide. Never describe an unexecuted or failed build as working.
 - Painted is the default across every TUI: native/curl, browser desktop and
   browser mobile. Text is an explicit presentation toggle (or tiny-terminal
   fallback), not a second default. Start directly in the game, without launch
@@ -444,35 +535,47 @@
 - Never hand a user a `/path/to/...` placeholder when a runnable local pack is
   requested. First check the ignored `content-packs/` directory and validate the
   chosen pack with the Rust client.
-- The known-good base pack path in this checkout is
-  `content-packs/realtime-clock.browser.crystalpack`. Build the dedicated TUI
-  pack from it with Rust:
-
-  ```sh
-  cargo run --release --locked -p crystal-assets --bin pack_text_tui -- . \
-    content-packs/realtime-clock.browser.crystalpack \
-    content-packs/text-tui.crystalpack
-  ```
-
-  Packs remain ignored by Git and must never be staged or committed.
-- To build fresh packs, use a compatible external export workspace. It must
-  contain `vendor/pokecrystal/`, `apps/web/assets/`,
-  `apps/web/assets/data/content-packs/core-modular.generated.json`,
-  `asm-source.lock.json`, and the Rust-generated battle animation provenance
-  consumed by `pack_core`. From this Geothite checkout run:
-
-  ```sh
-  cargo run --release --locked -p crystal-assets --bin pack_core -- \
-    /absolute/path/to/compatible-export-workspace
-  ```
-
-  The builder writes `content-packs/core-modular.crystalpack` and
-  `content-packs/core-modular.browser.crystalpack` inside the external
-  workspace. Do not copy either into tracked source paths.
-- `/Users/ryanculligan/repos/pokecrystal-python` currently contains a legacy
-  export schema, not the compatible generated manifest. Do not claim a pack was
-  built from it unless `pack_core` finishes successfully; its present failure
-  starts with the missing explicit `MASTER_BALL` item identity.
+- Initialize fresh game content with `tools/build-crystalpack.ps1` on Windows
+  (WSL Ubuntu-24.04) or `bash tools/build-crystalpack.sh` on Linux x86_64.
+  Install the build tools listed in `docs/game-content.md` first. The script
+  initializes Git LFS, assembles the source/toolchain pinned in
+  `pret-source.lock.json`, runs the Rust exporters and compiler, verifies all
+  audio PCM hashes/frame counts/loop ranges, and runs the gameplay regressions
+  below before publishing packs. The external workspace defaults to
+  `$HOME/.local/share/geothite/export-workspace` in the Linux environment.
+- Use the completed shared packs in this checkout:
+  `content-packs/core-modular.crystalpack` for native play,
+  `content-packs/core-modular.browser.crystalpack` for browsers, and
+  `content-packs/text-tui.crystalpack` for the text client/MCP. Packs remain
+  ignored and must never be staged or committed.
+- One agent owns source export and pack publication. Other agents consume the
+  completed shared pack; do not run competing exporters against the shared
+  external workspace. Give every concurrent agent a distinct
+  `CARGO_TARGET_DIR`, for example `target/agent-title`, and set
+  `CRYSTAL_RENDER_TEST_PACK` to the absolute completed TUI pack path when testing.
+  Do not delete another agent's build cache to bypass a lock.
+- Serialize memory-intensive Cargo builds on shared hosts, even when tasks use
+  distinct target directories. Use the default test profile for regressions;
+  `--profile wasm-dev` selects playable-renderer optimization instead. Preserve
+  the repository's two-job default unless the host has capacity for more.
+- Tests that need external oracle captures or ignored authoring fixtures must
+  read them at runtime and declare their prerequisites explicitly. Do not use
+  `include_str!` or `include_bytes!` for those inputs: even ignored tests must
+  compile in a checkout without external captures. Keep capture-dependent
+  replays opt-in while retaining self-contained tests in the default run.
+- The initializer uses its own persistent Cargo cache. Set
+  `CRYSTAL_PACK_BUILD_DIR` to choose its Linux cache directory and
+  `CRYSTAL_PACK_BUILD_PROFILE` to `release` (default) or `wasm-dev`.
+  Windows forwards both settings into WSL.
+- Automated render checks must be offscreen and must not open windows, steal
+  focus, or switch applications. Use `CRYSTAL_RENDER_TEST_HEADLESS=1` and
+  `CRYSTAL_RENDER_TEST_CAPTURE_TARGET=image` for native screenshot captures.
+  Only launch a visible render or live review when the user explicitly requests
+  it. Native one-shot screenshots default to headless image capture.
+- Visually inspect production work against 2D at the same position, time,
+  facing, and game state. Critique composition, scale, materials, lighting,
+  readability, and character/scenery fidelity; fix defects and inspect again
+  before claiming visual acceptance.
 - Validate a pack and the text renderer without entering fullscreen mode:
 
   ```sh
@@ -485,17 +588,13 @@
   pack present:
 
   ```sh
-  CRYSTAL_RENDER_TEST_PACK="$PWD/content-packs/text-tui.crystalpack" \
-    cargo test -p crystal-bevy \
+  export CRYSTAL_RENDER_TEST_PACK="$PWD/content-packs/text-tui.crystalpack"
+    cargo test --locked -p crystal-bevy \
     renderer_neutral_controller_exposes_battle_commands_and_executes_a_turn
-  CRYSTAL_RENDER_TEST_PACK="$PWD/content-packs/text-tui.crystalpack" \
-    cargo test -p crystal-bevy \
-    renderer_neutral_controller_moves_after_wild_battle_exit
-  cargo test -p crystal-bevy \
+  cargo test --locked -p crystal-bevy \
     renderer_neutral_controller_plays_mom_and_new_bark_gate
-  cargo test -p geothite mcp_drives_real_movement_and_production_start_menu
-  cargo test -p geothite mcp_battle_exit_restores_movement_and_start_menu
-  cargo test -p geothite --test stdio_clean
+  cargo test --locked -p geothite mcp_drives_real_movement_and_production_start_menu
+  cargo test --locked -p geothite --test stdio_clean
   ```
 
   The controller regression must prove all of the following: the game starts

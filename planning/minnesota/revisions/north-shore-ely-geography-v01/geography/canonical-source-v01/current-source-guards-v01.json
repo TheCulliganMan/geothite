@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "reason": "Unrelated shared-checkout source edits changed world/interiors full hashes; relevant coast descriptors remain byte-value identical to HEAD. These files are read-only to geography promotion.",
+  "comparison_revision": "2122c5cc39d666759b49279c01e29c5c91878224",
+  "read_only_current_guards": {
+    "planning/minnesota/world.json": {
+      "sha256": "e89769b5ead3e05fe7b1f9175aa7b8e8fd3cec332d7f7b3405e35b478c9c1c0a",
+      "owned_subtree_sha256": "191619517ff7def08bed71b4729456d6d56498e0a28409dc71d2373eb1343b49",
+      "owned_subtree_equal_to_comparison_revision": true
+    },
+    "planning/minnesota/interiors.json": {
+      "sha256": "2ce5e685a29434c8ae0c70f525daead37b0997c3ca41c0ecf8bb330be2e26cc5",
+      "owned_subtree_sha256": "b214331114475a0132ddea78eef019dba76a55f5b4d504f8389370e7144c902e",
+      "owned_subtree_equal_to_comparison_revision": true
+    }
+  }
+}

@@ -1,0 +1,167 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_044",
+  "name": "Trollure",
+  "result": "three source-backed blue hook prongs remain separately readable in both west native poses",
+  "manifest_sha256": "94ff3fb1464791cee0413a146807d1dcc0fab326ecdc9ecb6c8342af389e3dc9",
+  "bank_sha256": "6d85d0412b72777c0ba93650bdcaa6387f7b4e066cf71d10583780f5f80e5224",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f015/trollure.overworld.imagegen-v1.png": "5719f4e9bdd39cc74a21d18b7889c7e248188278b977a9335d783fc16f17a155",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f015/trollure.overworld.imagegen-v2-coarse-hooks.png": "e926c0cf04fd1f6ee2db5c2a0f7d48b22b60f43eb3bcd7b92dbfb419c8df298c"
+  },
+  "treble_hook_source_feature_proof": [
+    {
+      "pose": "left_idle",
+      "three_distinct_prong_tip_rows": true,
+      "actual_hook_tip_samples": [
+        {
+          "hook_prong": "upper_curved_prong",
+          "native": [
+            13,
+            8
+          ],
+          "source_sample": [
+            1415,
+            278
+          ],
+          "source_rgba": [
+            28,
+            82,
+            150,
+            252
+          ],
+          "native_ink": 2
+        },
+        {
+          "hook_prong": "middle_curved_prong",
+          "native": [
+            14,
+            10
+          ],
+          "source_sample": [
+            1444,
+            339
+          ],
+          "source_rgba": [
+            30,
+            79,
+            142,
+            252
+          ],
+          "native_ink": 2
+        },
+        {
+          "hook_prong": "lower_curved_prong",
+          "native": [
+            13,
+            12
+          ],
+          "source_sample": [
+            1415,
+            400
+          ],
+          "source_rgba": [
+            29,
+            77,
+            139,
+            253
+          ],
+          "native_ink": 2
+        }
+      ],
+      "transparent_native_tip_separation": [
+        {
+          "native": [
+            14,
+            9
+          ],
+          "ink": 0
+        },
+        {
+          "native": [
+            14,
+            11
+          ],
+          "ink": 0
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "three_distinct_prong_tip_rows": true,
+      "actual_hook_tip_samples": [
+        {
+          "hook_prong": "upper_curved_prong",
+          "native": [
+            13,
+            8
+          ],
+          "source_sample": [
+            1415,
+            734
+          ],
+          "source_rgba": [
+            30,
+            87,
+            159,
+            252
+          ],
+          "native_ink": 2
+        },
+        {
+          "hook_prong": "middle_curved_prong",
+          "native": [
+            14,
+            10
+          ],
+          "source_sample": [
+            1444,
+            795
+          ],
+          "source_rgba": [
+            30,
+            82,
+            148,
+            251
+          ],
+          "native_ink": 2
+        },
+        {
+          "hook_prong": "lower_curved_prong",
+          "native": [
+            13,
+            12
+          ],
+          "source_sample": [
+            1415,
+            856
+          ],
+          "source_rgba": [
+            28,
+            79,
+            143,
+            253
+          ],
+          "native_ink": 2
+        }
+      ],
+      "transparent_native_tip_separation": [
+        {
+          "native": [
+            14,
+            9
+          ],
+          "ink": 0
+        },
+        {
+          "native": [
+            14,
+            11
+          ],
+          "ink": 0
+        }
+      ]
+    }
+  ],
+  "no_native_pixel_painting": true
+}

@@ -1,0 +1,122 @@
+{
+  "pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+  "pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33",
+  "map": "MnEly",
+  "source_dossier": "planning/minnesota/towns/MnEly.json",
+  "start": [
+    27,
+    14
+  ],
+  "badge_count": 0,
+  "event_flags": [],
+  "arrival_discovery_flags": [
+    "ENGINE_FLYPOINT_MN_ELY"
+  ],
+  "roads": [
+    {
+      "inside": [
+        24,
+        0
+      ],
+      "out": "up",
+      "neighbor": "MnR13C00R02",
+      "there": [
+        34,
+        31
+      ]
+    },
+    {
+      "inside": [
+        25,
+        0
+      ],
+      "out": "up",
+      "neighbor": "MnR13C00R02",
+      "there": [
+        35,
+        31
+      ]
+    },
+    {
+      "inside": [
+        39,
+        14
+      ],
+      "out": "right",
+      "neighbor": "MnElyShorePass",
+      "there": [
+        0,
+        14
+      ]
+    },
+    {
+      "inside": [
+        39,
+        15
+      ],
+      "out": "right",
+      "neighbor": "MnElyShorePass",
+      "there": [
+        0,
+        15
+      ]
+    }
+  ],
+  "gates": [],
+  "ledges": [],
+  "doors": [
+    {
+      "room": "MnElyPokecenter1F",
+      "outside": [
+        11,
+        22
+      ],
+      "arrival": [
+        3,
+        5
+      ],
+      "carpets": [
+        [
+          3,
+          7
+        ],
+        [
+          4,
+          7
+        ]
+      ]
+    },
+    {
+      "room": "MnElyMart",
+      "outside": [
+        27,
+        28
+      ],
+      "arrival": [
+        2,
+        5
+      ],
+      "carpets": [
+        [
+          2,
+          7
+        ],
+        [
+          3,
+          7
+        ]
+      ]
+    }
+  ],
+  "fences": [],
+  "surf": null,
+  "counts": {
+    "roads": 4,
+    "gates": 0,
+    "ledges": 0,
+    "doors": 2,
+    "fences": 0,
+    "residents": 1,
+    "signs": 2
+  }
+}

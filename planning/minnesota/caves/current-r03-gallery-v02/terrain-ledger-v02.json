@@ -1,0 +1,162 @@
+[
+  {
+    "metatile": [
+      8,
+      1
+    ],
+    "before": "04",
+    "after": "2e"
+  },
+  {
+    "metatile": [
+      9,
+      1
+    ],
+    "before": "05",
+    "after": "04"
+  },
+  {
+    "metatile": [
+      11,
+      1
+    ],
+    "before": "05",
+    "after": "06"
+  },
+  {
+    "metatile": [
+      12,
+      1
+    ],
+    "before": "06",
+    "after": "2e"
+  },
+  {
+    "metatile": [
+      8,
+      2
+    ],
+    "before": "08",
+    "after": "04"
+  },
+  {
+    "metatile": [
+      11,
+      2
+    ],
+    "before": "02",
+    "after": "0a"
+  },
+  {
+    "metatile": [
+      12,
+      2
+    ],
+    "before": "0a",
+    "after": "2e"
+  },
+  {
+    "metatile": [
+      9,
+      3
+    ],
+    "before": "02",
+    "after": "3e"
+  },
+  {
+    "metatile": [
+      10,
+      3
+    ],
+    "before": "25",
+    "after": "3d"
+  },
+  {
+    "metatile": [
+      11,
+      3
+    ],
+    "before": "02",
+    "after": "0a"
+  },
+  {
+    "metatile": [
+      12,
+      3
+    ],
+    "before": "0a",
+    "after": "2e"
+  },
+  {
+    "metatile": [
+      8,
+      4
+    ],
+    "before": "20",
+    "after": "08"
+  },
+  {
+    "metatile": [
+      9,
+      4
+    ],
+    "before": "02",
+    "after": "32"
+  },
+  {
+    "metatile": [
+      10,
+      4
+    ],
+    "before": "02",
+    "after": "33"
+  },
+  {
+    "metatile": [
+      11,
+      4
+    ],
+    "before": "02",
+    "after": "0a"
+  },
+  {
+    "metatile": [
+      12,
+      4
+    ],
+    "before": "0e",
+    "after": "2e"
+  },
+  {
+    "metatile": [
+      8,
+      5
+    ],
+    "before": "2e",
+    "after": "20"
+  },
+  {
+    "metatile": [
+      9,
+      5
+    ],
+    "before": "08",
+    "after": "02"
+  },
+  {
+    "metatile": [
+      11,
+      5
+    ],
+    "before": "0d",
+    "after": "02"
+  },
+  {
+    "metatile": [
+      12,
+      5
+    ],
+    "before": "0a",
+    "after": "06"
+  }
+]

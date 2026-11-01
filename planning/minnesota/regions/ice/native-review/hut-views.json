@@ -1,0 +1,10 @@
+[
+  {
+    "id": "warming-hut-service-and-passive-floor",
+    "map": "MnRainyRiverWarmingHut",
+    "core": [
+      5,
+      6
+    ]
+  }
+]

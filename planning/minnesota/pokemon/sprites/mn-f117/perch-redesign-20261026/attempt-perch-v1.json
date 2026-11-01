@@ -1,0 +1,25 @@
+{
+  "status": "returned-raw-preserved",
+  "source": "sprites/mn-f117/perch-redesign-20261026/mn-251-winkfin.front-back.perch-v1.png",
+  "source_sha256": "d7adb0f664589749b963e2a1b0fd5efb959b0f8f18a234082387393b56b0c6e8",
+  "source_size": [
+    1536,
+    1024
+  ],
+  "prompt_file": "sprites/mn-f117/perch-redesign-20261026/prompt-perch-v1.txt",
+  "reference_mapping": "sprites/mn-f117/perch-redesign-20261026/reference-mapping-v1.json",
+  "proposed_crops": {
+    "front": [
+      0,
+      0,
+      1536,
+      470
+    ],
+    "back": [
+      0,
+      470,
+      1536,
+      554
+    ]
+  }
+}

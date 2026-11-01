@@ -1,0 +1,47 @@
+{
+  "name": "MINER MARA",
+  "role": "preserved original NPC",
+  "status": "accepted-native-playable-rebased",
+  "source": "native-pixels-v3.json",
+  "source_path": "planning/minnesota/npcs/sprites/03-iron-range-miner/native-pixels-v3.json",
+  "integration": "placement-v1.json",
+  "controller": "placement-v1.json",
+  "native": "target/npc-sprites/miner/reference-v1",
+  "pack": "content-packs/minnesota-trainer-cast-24-v01.crystalpack",
+  "gameplay": "target/trainer-cast/rebase/03-iron-range-miner/gameplay",
+  "log": "target/trainer-cast/rebase/03-iron-range-miner/controller.log",
+  "original_placement": "planning/minnesota/npcs/sprites/03-iron-range-miner/placement-v1.json",
+  "old_map": "MnGrandRapids",
+  "new_map": "MnGrandRapids",
+  "old_tile": [
+    22,
+    24
+  ],
+  "new_tile": [
+    21,
+    24
+  ],
+  "scope": "Exact accepted original art, palette, party, class and dialogue. Placement rebased to safe compact geography; original geography not transplanted.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/cast/rebased-originals/03-iron-range-miner/placement-v1.json": "084821f55f92442c570a463020eefe0fcf6a4e81d5da8753554d22732d633027",
+    "planning/minnesota/npcs/sprites/03-iron-range-miner/native-pixels-v3.json": "7aa0014de94885b536250b0517e12556ec8cbbe8a4bf2489069aede299ff44c0",
+    "planning/minnesota/npcs/sprites/03-iron-range-miner/manifest.json": "c946342aa86e0d8862a70c93a5d176ee884c652359eae484bcefcce5ed66cb07",
+    "target/trainer-cast/rebase/03-iron-range-miner/controller.log": "f415459f54d55518e1445dc0654922da4dd7467aa76d2a3b9718d898e921db2b",
+    "content-packs/minnesota-trainer-cast-24-v01.crystalpack": "0a4b2cf7f81c1ee5148b13463ecba72ff06101ecae7814a6b7423a5acfb41908",
+    "target/npc-sprites/miner/reference-v1/verification.json": "e1e861128132ca098f0e8c5d82f313f3d58b2f73349e6193ff14700c3545d14d",
+    "target/trainer-cast/rebase/03-iron-range-miner/gameplay/original-npc-trainer-intro.png": "e624b0726c06082d68aab48b92af64df86eb183a597ab6325c674514467d7fce",
+    "target/trainer-cast/rebase/03-iron-range-miner/gameplay/original-npc-overworld-state.png": "fdbdd4cc6aa829b8101b1eeca6e1553882c1310f89d7ca5b6ec8de95505e1d4a",
+    "target/trainer-cast/rebase/03-iron-range-miner/gameplay/original-npc-first-turn.png": "3fb52eb3b4e90667ca86ab9f5490f5157cac3c4f31f6da82c05795ba57ebf6a7"
+  },
+  "final_pack": "content-packs/minnesota-trainer-cast-36-v01.crystalpack",
+  "final_gameplay": "target/trainer-cast/final-audit/gameplay/rebased-originals-03-iron-range-miner",
+  "final_log": "target/trainer-cast/final-audit/gameplay/rebased-originals-03-iron-range-miner/controller.log",
+  "final_status": "accepted-native-playable-final-pack",
+  "final_review": "Actual battle intro and field captures inspected on exact final pack; art retains accepted native sources and palette.",
+  "final_evidence_sha256": {
+    "target/trainer-cast/final-audit/gameplay/rebased-originals-03-iron-range-miner/controller.log": "2a5186bc884122ce5484df757875d7276c0ae13f9cd8fa9b74d63235b111abd0",
+    "target/trainer-cast/final-audit/gameplay/rebased-originals-03-iron-range-miner/original-npc-trainer-intro.png": "e624b0726c06082d68aab48b92af64df86eb183a597ab6325c674514467d7fce",
+    "target/trainer-cast/final-audit/gameplay/rebased-originals-03-iron-range-miner/original-npc-overworld-state.png": "fdbdd4cc6aa829b8101b1eeca6e1553882c1310f89d7ca5b6ec8de95505e1d4a",
+    "target/trainer-cast/final-audit/gameplay/rebased-originals-03-iron-range-miner/original-npc-first-turn.png": "3fb52eb3b4e90667ca86ab9f5490f5157cac3c4f31f6da82c05795ba57ebf6a7"
+  }
+}

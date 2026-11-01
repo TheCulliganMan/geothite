@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "base_content_hash": "5328454f7ea4e3b138d4dea6e98e527b1c432b189b0157eb865b62740c15d446",
+  "mart": "MART_MN_ST_CLOUD",
+  "expected_stock": [
+    "POKE_BALL", "GREAT_BALL", "SUPER_POTION", "ANTIDOTE",
+    "PARLYZ_HEAL", "ESCAPE_ROPE", "REPEL"
+  ],
+  "append": "AWAKENING"
+}

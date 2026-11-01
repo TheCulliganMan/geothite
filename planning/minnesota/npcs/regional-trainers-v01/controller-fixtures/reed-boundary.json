@@ -1,0 +1,21 @@
+{
+  "trainers": [
+    {
+      "id": "MN_REED_BOUNDARY",
+      "map": "MnBoundaryIntake",
+      "actor_script": "MN_ARC_INTAKE_REED",
+      "approach": [
+        14,
+        9
+      ],
+      "facing": "west",
+      "trainer_class": "MN_RIVAL_REED",
+      "sprite": "SPRITE_MN_RIVAL_REED",
+      "fixture_events": [
+        "EVENT_MN_ARC_LINK_SENT"
+      ],
+      "fixture_badges": 8,
+      "defeated_flag": "EVENT_MN_REED_BOUNDARY_DEFEATED"
+    }
+  ]
+}

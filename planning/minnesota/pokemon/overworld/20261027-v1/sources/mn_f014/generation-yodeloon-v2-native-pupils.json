@@ -1,0 +1,68 @@
+{
+  "tool": "built-in image_gen",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f014/yodeloon-v2-native-pupils",
+  "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f014/manifest-yodeloon-v2-native-pupils.json",
+  "normalized_receipt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f014/source-feature-proof-yodeloon-v2-native-pupils.json",
+  "all_raws_prompts_rejected_trials_retained": true,
+  "no_native_pixel_painting": true,
+  "no_registry_or_pack_mutation": true,
+  "normal_shiny_boards_actually_viewed": true,
+  "canonical_palettes": [
+    [
+      32767,
+      27341,
+      17671,
+      0
+    ],
+    [
+      32767,
+      22970,
+      8433,
+      0
+    ]
+  ],
+  "native_bounds": [
+    [
+      3,
+      2,
+      9,
+      13
+    ],
+    [
+      3,
+      2,
+      9,
+      12
+    ],
+    [
+      2,
+      2,
+      11,
+      13
+    ],
+    [
+      3,
+      2,
+      9,
+      13
+    ],
+    [
+      3,
+      2,
+      9,
+      13
+    ],
+    [
+      2,
+      2,
+      11,
+      13
+    ]
+  ],
+  "retained_source_hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f014/yodeloon.overworld.imagegen-v1.png": "e665468e04283ed876ebb5dd3a1cd17c321445ab3c988e8c616271d0d842a5ee",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f014/prompt-yodeloon-v1.txt": "5ec8326c081a8aa9a0b5bd71c6fa66a69b2467ccddb40e2fc3a090874a11beba",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f014/yodeloon.v1.original-path.txt": "9e60fcfc43dcb6cffc670bc9418de37cdda8bfe9be43a3abba030bdd9ef2d307"
+  },
+  "status": "root independent visual/context acceptance pending"
+}

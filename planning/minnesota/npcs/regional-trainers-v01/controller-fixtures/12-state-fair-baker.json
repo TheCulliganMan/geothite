@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "id": "MN_FAIR_EXHIBITOR_03_TRAINER",
+      "map": "MnStateFairgrounds",
+      "actor_script": "MN_FAIR_EXHIBITOR_03_TRAINER",
+      "trainer_class": "MN_STATE_FAIR_BAKER",
+      "sprite": "SPRITE_MN_STATE_FAIR_BAKER",
+      "facing": "west",
+      "approach": [
+        26,
+        26
+      ],
+      "defeated_flag": "EVENT_MN_FAIR_EXHIBITOR_03_DEFEATED"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "name": "zapsap",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f101/zapsap-v3-actual-pupils",
+  "literal_bank": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f101/zapsap-v3-actual-pupils/gfx/pokemon/zapsap/overworld.2bpp",
+  "literal_bank_bytes": 384,
+  "all1536decoded_indices_match_compiled_frame_rows": true,
+  "actual_source_pupil_proof_revalidated": true,
+  "receipt_correction_cause": "Previous bank_sha256 hashed the equivalent indexed PNG, rather than literal2bpp bytes. No sprite asset changed.",
+  "previous_png_sha256": "1f6bbe43ef33f87b93d51bebea3562d6a3638c99cba5b91e897ab5b067d2801a",
+  "correct_bank_sha256": "fc1295e1d09faf375e21dba7926ff307a747664be88a61691a2e3a9738dd2266"
+}

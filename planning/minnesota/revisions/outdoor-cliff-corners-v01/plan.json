@@ -1,0 +1,107 @@
+{
+  "scope": "Replace seven boulders that interrupt real retaining corners. Five move diagonally inward onto flat ground; two clutter rocks on a narrow Iron shelf are removed to keep its path open.",
+  "parent_stage": "outdoor-boulder-setbacks-v01",
+  "modules": {
+    "MnBoundarySafariC01R00": "9b7c716fe0837b85345b23027426ebf045d8670353043f2eec6caa03f70dbbcd",
+    "MnBoundarySafariC01R01": "4056b0d216c97d00c38b532af298032f012b4267d9d394cb04e1d012320a622e",
+    "MnR08C00R00": "26ae18e113bd142e8bd7291e4ff8a66ca63c08c830a683860a23efd808486014",
+    "MnR09C01R00": "1951f8c252963fdd923904fe7e1c9fa77ef01d9ab25c14449077e9e8851eb56d",
+    "MnR13C00R00": "80d6c4fc638d6c78e7bb13e072ead2e7e255c6f37f8d6a5adc6ff986f2f4d50c"
+  },
+  "changes": [],
+  "corner_boulders": [
+    {
+      "map": "MnBoundarySafariC01R00",
+      "tileset": "mn_boundary_safari",
+      "metatile": [
+        20,
+        16
+      ],
+      "corner": "6c",
+      "destination": [
+        21,
+        15
+      ],
+      "destination_before": "02"
+    },
+    {
+      "map": "MnBoundarySafariC01R01",
+      "tileset": "mn_boundary_safari",
+      "metatile": [
+        17,
+        16
+      ],
+      "corner": "6c",
+      "destination": [
+        18,
+        15
+      ],
+      "destination_before": "03"
+    },
+    {
+      "map": "MnR08C00R00",
+      "tileset": "mn_outdoor_headwaters_stairs",
+      "metatile": [
+        12,
+        13
+      ],
+      "corner": "6c",
+      "destination": [
+        13,
+        12
+      ],
+      "destination_before": "71"
+    },
+    {
+      "map": "MnR08C00R00",
+      "tileset": "mn_outdoor_headwaters_stairs",
+      "metatile": [
+        21,
+        13
+      ],
+      "corner": "6d",
+      "destination": [
+        20,
+        12
+      ],
+      "destination_before": "71"
+    },
+    {
+      "map": "MnR09C01R00",
+      "tileset": "mn_iron_range",
+      "metatile": [
+        7,
+        20
+      ],
+      "corner": "6c",
+      "destination": null,
+      "destination_before": null
+    },
+    {
+      "map": "MnR09C01R00",
+      "tileset": "mn_iron_range",
+      "metatile": [
+        9,
+        20
+      ],
+      "corner": "6d",
+      "destination": null,
+      "destination_before": null
+    },
+    {
+      "map": "MnR13C00R00",
+      "tileset": "mn_outdoor_winter_stairs",
+      "metatile": [
+        18,
+        12
+      ],
+      "corner": "6c",
+      "destination": [
+        19,
+        11
+      ],
+      "destination_before": "71"
+    }
+  ],
+  "status": "Native plan guarded against the actual boulder-setbacks parent before publication. Source previews/static components pass; runtime and native images pending."
+}

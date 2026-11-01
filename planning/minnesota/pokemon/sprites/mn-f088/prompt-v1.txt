@@ -1,0 +1,27 @@
+Use case: stylized-concept. Asset type: production Game Boy Color creature battle sprite sheet.
+
+Create ORIGINAL Gen2-era monster pixel art. This is actual sprite artwork with coarse square-pixel clusters, not an illustration to be pixelated later. Pure white background. NO captions/text/grid lines/palette swatches/shadows. Crisp stepped black exterior silhouettes; spare connected interior black structural seams; flat color planes. No gradients, antialiasing, soft edges, glossy rendering, tiny noisy texture, single-pixel confetti or smooth vector curves. Respect authentic late-1990s Pokemon Crystal sprite economy, readable eyes and structural evolution; do not copy any existing Pokemon identity.
+
+Layout exactly 3 columns by 2 rows. Columns left-to-right: Riffbit, Dynarill, Cascavolt. Each column is ONE species. Upper row: full-body FRONT 3/4 facing LEFT at native56x56 language. Lower row: CLOSE REAR PORTRAIT facing UPPER RIGHT at native48x48 language. Back is a huge head/neck/near-shoulder view, lower body visibly cut at bottom, authentic Crystal battle framing. Enlarge each back head/shoulder strongly; do not draw a complete miniature full-body turnaround. Leave wide clean white gutters between cells, all artwork disjoint. Display artwork enlarged nearest-neighbor for source sheet; favor about5-7sourcepixels per nativepixel. Front stages show proportional growth; every back fills its cell as a close portrait.
+
+Theme: St Anthony Falls water power and hydroelectric generation: a riffle-running spark creature grows biological runner paddles and a dragon body that turns its own tail into a generator.
+
+Design constraints: Broad solid surfaces, three tail paddles at most, clear eye/crest. Keep distinct from Taconarch magnetic rails: organic scoop limbs and curled generator tail, no metal plates floating apart. Per-species electric blue/gold palette progression; no detached lightning clutter.
+
+Use low broad scoops on baby, upright fan-wrists on middle, genuinely tall flume crest plus heavy chest scutes on final. Huge paddle-tail wheel beside final hips; keep tail physically attached and solid torso. No ordinary blue dinosaur pasted to a turbine. The close backs show broad rear crest, shoulder scoops and partial wheel, not tiny feet.
+
+Species anatomy and each independent hardware palette (front and back MUST match). Each species uses EXACTLY FOUR inks: white, its own two chromatic colors and pure black. White is valid enclosed eye/body highlight ink; black also outlines white body parts. The sheet globally can exceed four colors because species use different palettes. Never share one palette across the whole evolution line. RGB555 packing is r|(g<<5)|(b<<10); RGB8 expansion is (v<<3)|(v>>2).
+
+MN_189 Riffbit ELECTRIC: A small squat runner has two scoop-shaped forepaws and a thick tail curled around one hip; one bright notch above its eyes resembles a falling-water lip. It charges while bracing its paws against a riffle. SILHOUETTE: Low broad head, two oversized scoops and one compact C-shaped hip tail.
+
+Exact Riffbit palette: RGB5=[(31, 31, 31), (29, 24, 9), (4, 11, 21), (0, 0, 0)]; RGB555=[32767, 10013, 21860, 0]; RGB8=[[255, 255, 255], [239, 198, 74], [33, 90, 173], [0, 0, 0]]; HEX=['#FFFFFF', '#EFC64A', '#215AAD', '#000000'].
+
+MN_190 Dynarill ELECTRIC/DRAGON: Scoop paws become three-bladed wrist fans, the body rises on strong hind feet, and the tail gains three broad paddles around its curl. Its cheek ridges extend into a flume-shaped crest. SILHOUETTE: Compact upright dragon with broad wrist fans and a three-paddle tail wheel alongside its hips.
+
+Exact Dynarill palette: RGB5=[(31, 31, 31), (28, 22, 7), (5, 14, 23), (0, 0, 0)]; RGB555=[32767, 7900, 24005, 0]; RGB8=[[255, 255, 255], [231, 181, 57], [41, 115, 189], [0, 0, 0]]; HEX=['#FFFFFF', '#E7B539', '#2973BD', '#000000'].
+
+MN_191 Cascavolt ELECTRIC/DRAGON: The neck arches into a high flume crest, heavy overlapping chest scutes lock like runner blades, and the muscular paddle tail sweeps a complete circle beside its body. Charging current travels through solid bright body seams, without a hollow torso. SILHOUETTE: Tall crest, wide interlocking chest, two heavy scooped forelimbs and one huge curling paddle tail; no attached appliance or literal dam.
+
+Exact Cascavolt palette: RGB5=[(31, 31, 31), (26, 24, 12), (3, 9, 20), (0, 0, 0)]; RGB555=[32767, 13082, 20771, 0]; RGB8=[[255, 255, 255], [214, 198, 99], [24, 74, 165], [0, 0, 0]]; HEX=['#FFFFFF', '#D6C663', '#184AA5', '#000000'].
+
+Final quality: original appealing themed monsters, clear eye whites, bold broad anatomical planes, readable limbs and deeply different evolutionary silhouettes. Black silhouette rims must be continuous wherever they border white paper; white highlights stay enclosed inside the rim. A few deliberate open colored contour accents may echo Gen2, but no fragmented dotted outlines. Keep open cropping of lower back at the bottom.

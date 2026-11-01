@@ -1,0 +1,351 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_101",
+  "status": "literal-source/native-proof-pass; root visual and terrain acceptance required",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f050/taconib.manifest-native-joint-phase-v1.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-taconib-joint-phase-v1",
+  "shared_transform": {
+    "source_bounds": [
+      16,
+      14,
+      422,
+      397
+    ],
+    "native_size": [
+      12,
+      11
+    ],
+    "native_origin": [
+      2,
+      4
+    ]
+  },
+  "all_four_nonrear_poses_have_actual_source_pupils": true,
+  "every_native_eye_cluster_maps_to_same_small_anatomical_source_pupil_component": true,
+  "actual_source_pupil_proofs": [
+    {
+      "pose": "down_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f050/taconib.overworld.imagegen-v1.png",
+      "crop": [
+        58,
+        118,
+        442,
+        416
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          216,
+          389,
+          27,
+          39
+        ],
+        [
+          313,
+          389,
+          27,
+          39
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              11
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                3,
+                2,
+                1,
+                253
+              ],
+              "bounds": [
+                216,
+                389,
+                27,
+                39
+              ],
+              "pixels": 932,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                11
+              ],
+              "source_sample_pixel": [
+                232,
+                402
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              9,
+              11
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                254
+              ],
+              "bounds": [
+                313,
+                389,
+                27,
+                39
+              ],
+              "pixels": 932,
+              "truncated_contour": false,
+              "native_pixel": [
+                9,
+                11
+              ],
+              "source_sample_pixel": [
+                337,
+                402
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f050/taconib.overworld.imagegen-v1.png",
+      "crop": [
+        1039,
+        94,
+        442,
+        416
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          1125,
+          314,
+          27,
+          38
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              4,
+              10
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                1125,
+                314,
+                27,
+                38
+              ],
+              "pixels": 903,
+              "truncated_contour": false,
+              "native_pixel": [
+                4,
+                10
+              ],
+              "source_sample_pixel": [
+                1142,
+                342
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f050/taconib.overworld.imagegen-v1.png",
+      "crop": [
+        58,
+        533,
+        442,
+        416
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          216,
+          804,
+          27,
+          38
+        ],
+        [
+          314,
+          804,
+          26,
+          38
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              11
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                3,
+                2,
+                2,
+                253
+              ],
+              "bounds": [
+                216,
+                804,
+                27,
+                38
+              ],
+              "pixels": 905,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                11
+              ],
+              "source_sample_pixel": [
+                232,
+                817
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              9,
+              11
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                1,
+                1,
+                1,
+                254
+              ],
+              "bounds": [
+                314,
+                804,
+                26,
+                38
+              ],
+              "pixels": 868,
+              "truncated_contour": false,
+              "native_pixel": [
+                9,
+                11
+              ],
+              "source_sample_pixel": [
+                337,
+                817
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f050/taconib.overworld.imagegen-v1.png",
+      "crop": [
+        1039,
+        513,
+        442,
+        416
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          1125,
+          733,
+          27,
+          37
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              4,
+              10
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                1125,
+                732,
+                27,
+                39
+              ],
+              "pixels": 885,
+              "truncated_contour": false,
+              "native_pixel": [
+                4,
+                10
+              ],
+              "source_sample_pixel": [
+                1142,
+                761
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "native_head_anchors_idle_walk_equal": true,
+  "validation": {
+    "runtime_2bpp_384_bytes_exact_allpixels": true,
+    "runtime_png16x96_index_parity": true,
+    "normal_shiny_palettebanks_exact": true,
+    "normal_shiny_all1536pixels_exact": true,
+    "transparent_border": true,
+    "idle_walk_pairs_distinct": true
+  },
+  "sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f050/taconib.overworld.imagegen-v1.png": "55b5c20cc41e12e31153e7289bc0aff291887ecd02cb0a99aca1da00c117cfac",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-taconib-joint-phase-v1/review/line.normal-8x.png": "deb4d125ead52cc401a420d5481c600f7c525b6894cbf4b4b29db735d60a03ff",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-taconib-joint-phase-v1/gfx/pokemon/taconib/overworld.gbcpal": "16b97c4300675b14f6ceced781903b3242cc8f73f78b00001218071a807a050c",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f050/taconib.manifest-native-joint-phase-v1.json": "edde1e4b9865f3112f3bf636f8b8bcbd5382c7d569e6a4f9f1417efaf7abf1b3",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-taconib-joint-phase-v1/gfx/pokemon/taconib/overworld-shiny.gbcpal": "c9d3c0096c0d464e6d11f6e3df004904d5bcc11abbf8b53f3e3d32ac45c97587",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-taconib-joint-phase-v1/gfx/pokemon/taconib/overworld.2bpp": "ef637733c11fe6e65d707ce0a8a0f165d6e6825c7c73a6f10fa8f08337b1d612",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-taconib-joint-phase-v1/gfx/pokemon/taconib/overworld.png": "13e6ea8f6b48c40baaf88937e4d99ae91c18c0c004760c0e227aa9046a70237a",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-taconib-joint-phase-v1/review/line.shiny-8x.png": "16884c27dadce02a66bc2c74c9dddb3929e296750a36d6465d98d4612636b09d",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-taconib-joint-phase-v1/compiled-index.json": "322768a551d2abab5c42a756b066bb531c04cf3fa072dcb25527dab994e5fbf1"
+  },
+  "actual_native_boards_viewed": true,
+  "rear_review": "Both true full rear bodies retain blank skull backs, two horn backs, three broad ore bands, short four-leg stance and low curled tail. Front has four stub-leg projections; west far legs naturally overlap near legs. The small original cheek glint becomes palette ink1, not an extra opaque color. Source fit is shared12x12 across all six poses; the bands simplify into broad slate rows at native scale."
+}

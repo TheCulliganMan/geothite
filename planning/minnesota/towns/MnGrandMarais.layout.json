@@ -1,0 +1,4456 @@
+{
+  "schema_version": 2,
+  "id": "MnGrandMarais",
+  "tileset": "johto",
+  "compiled_tileset": "mn_marais_shore",
+  "dimensions_metatiles": [
+    20,
+    19
+  ],
+  "shore_fitting": "explicit_source_edges",
+  "reject_cliff_cuts": true,
+  "source_pixels_modified": false,
+  "layers": [
+    {
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "block": "05",
+      "name": "Accepted Superior town source layer 0"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        1,
+        0,
+        2,
+        1
+      ],
+      "block": "05",
+      "name": "Accepted Superior town source layer 1"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        2,
+        0,
+        3,
+        1
+      ],
+      "block": "05",
+      "name": "Accepted Superior town source layer 2"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        3,
+        0,
+        4,
+        1
+      ],
+      "block": "05",
+      "name": "Accepted Superior town source layer 3"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        4,
+        0,
+        5,
+        1
+      ],
+      "block": "05",
+      "name": "Accepted Superior town source layer 4"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        5,
+        0,
+        6,
+        1
+      ],
+      "block": "05",
+      "name": "Accepted Superior town source layer 5"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        0,
+        7,
+        1
+      ],
+      "block": "05",
+      "name": "Accepted Superior town source layer 6"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        7,
+        0,
+        8,
+        1
+      ],
+      "block": "05",
+      "name": "Accepted Superior town source layer 7"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        8,
+        0,
+        9,
+        1
+      ],
+      "block": "05",
+      "name": "Accepted Superior town source layer 8"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        9,
+        0,
+        10,
+        1
+      ],
+      "block": "05",
+      "name": "Accepted Superior town source layer 9"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        10,
+        0,
+        11,
+        1
+      ],
+      "block": "05",
+      "name": "Accepted Superior town source layer 10"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        11,
+        0,
+        12,
+        1
+      ],
+      "block": "05",
+      "name": "Accepted Superior town source layer 11"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        12,
+        0,
+        13,
+        1
+      ],
+      "block": "05",
+      "name": "Accepted Superior town source layer 12"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        13,
+        0,
+        14,
+        1
+      ],
+      "block": "05",
+      "name": "Accepted Superior town source layer 13"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        14,
+        0,
+        15,
+        1
+      ],
+      "block": "05",
+      "name": "Accepted Superior town source layer 14"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        15,
+        0,
+        16,
+        1
+      ],
+      "block": "05",
+      "name": "Accepted Superior town source layer 15"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        16,
+        0,
+        17,
+        1
+      ],
+      "block": "05",
+      "name": "Accepted Superior town source layer 16"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        17,
+        0,
+        18,
+        1
+      ],
+      "block": "05",
+      "name": "Accepted Superior town source layer 17"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        18,
+        0,
+        19,
+        1
+      ],
+      "block": "05",
+      "name": "Accepted Superior town source layer 18"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        19,
+        0,
+        20,
+        1
+      ],
+      "block": "05",
+      "name": "Accepted Superior town source layer 19"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        1,
+        1,
+        2
+      ],
+      "block": "05",
+      "name": "Accepted Superior town source layer 20"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        1,
+        1,
+        2,
+        2
+      ],
+      "block": "05",
+      "name": "Accepted Superior town source layer 21"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        2,
+        1,
+        3,
+        2
+      ],
+      "block": "5d",
+      "name": "Accepted Superior town source layer 22"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        3,
+        1,
+        4,
+        2
+      ],
+      "block": "5d",
+      "name": "Accepted Superior town source layer 23"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        4,
+        1,
+        5,
+        2
+      ],
+      "block": "5d",
+      "name": "Accepted Superior town source layer 24"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        5,
+        1,
+        6,
+        2
+      ],
+      "block": "5d",
+      "name": "Accepted Superior town source layer 25"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        1,
+        7,
+        2
+      ],
+      "block": "05",
+      "name": "Accepted Superior town source layer 26"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        7,
+        1,
+        8,
+        2
+      ],
+      "block": "05",
+      "name": "Accepted Superior town source layer 27"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        8,
+        1,
+        9,
+        2
+      ],
+      "block": "5d",
+      "name": "Accepted Superior town source layer 28"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        9,
+        1,
+        10,
+        2
+      ],
+      "block": "5d",
+      "name": "Accepted Superior town source layer 29"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        10,
+        1,
+        11,
+        2
+      ],
+      "block": "5d",
+      "name": "Accepted Superior town source layer 30"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        11,
+        1,
+        12,
+        2
+      ],
+      "block": "5d",
+      "name": "Accepted Superior town source layer 31"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        12,
+        1,
+        13,
+        2
+      ],
+      "block": "5d",
+      "name": "Accepted Superior town source layer 32"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        13,
+        1,
+        14,
+        2
+      ],
+      "block": "05",
+      "name": "Accepted Superior town source layer 33"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        14,
+        1,
+        15,
+        2
+      ],
+      "block": "05",
+      "name": "Accepted Superior town source layer 34"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        15,
+        1,
+        16,
+        2
+      ],
+      "block": "05",
+      "name": "Accepted Superior town source layer 35"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        16,
+        1,
+        17,
+        2
+      ],
+      "block": "05",
+      "name": "Accepted Superior town source layer 36"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        17,
+        1,
+        18,
+        2
+      ],
+      "block": "05",
+      "name": "Accepted Superior town source layer 37"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        18,
+        1,
+        19,
+        2
+      ],
+      "block": "05",
+      "name": "Accepted Superior town source layer 38"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        19,
+        1,
+        20,
+        2
+      ],
+      "block": "05",
+      "name": "Accepted Superior town source layer 39"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        2,
+        1,
+        3
+      ],
+      "block": "05",
+      "name": "Accepted Superior town source layer 40"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        1,
+        2,
+        2,
+        3
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 41"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        2,
+        2,
+        3,
+        3
+      ],
+      "block": "18",
+      "name": "Accepted Superior town source layer 42"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        3,
+        2,
+        4,
+        3
+      ],
+      "block": "1f",
+      "name": "Accepted Superior town source layer 43"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        4,
+        2,
+        5,
+        3
+      ],
+      "block": "19",
+      "name": "Accepted Superior town source layer 44"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        5,
+        2,
+        6,
+        3
+      ],
+      "block": "02",
+      "name": "Accepted Superior town source layer 45"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        2,
+        7,
+        3
+      ],
+      "block": "05",
+      "name": "Accepted Superior town source layer 46"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        7,
+        2,
+        8,
+        3
+      ],
+      "block": "05",
+      "name": "Accepted Superior town source layer 47"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        8,
+        2,
+        9,
+        3
+      ],
+      "block": "02",
+      "name": "Accepted Superior town source layer 48"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        9,
+        2,
+        10,
+        3
+      ],
+      "block": "02",
+      "name": "Accepted Superior town source layer 49"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        10,
+        2,
+        11,
+        3
+      ],
+      "block": "02",
+      "name": "Accepted Superior town source layer 50"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        11,
+        2,
+        12,
+        3
+      ],
+      "block": "02",
+      "name": "Accepted Superior town source layer 51"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        12,
+        2,
+        13,
+        3
+      ],
+      "block": "02",
+      "name": "Accepted Superior town source layer 52"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        13,
+        2,
+        14,
+        3
+      ],
+      "block": "05",
+      "name": "Accepted Superior town source layer 53"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        14,
+        2,
+        15,
+        3
+      ],
+      "block": "05",
+      "name": "Accepted Superior town source layer 54"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        15,
+        2,
+        16,
+        3
+      ],
+      "block": "05",
+      "name": "Accepted Superior town source layer 55"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        16,
+        2,
+        17,
+        3
+      ],
+      "block": "05",
+      "name": "Accepted Superior town source layer 56"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        17,
+        2,
+        18,
+        3
+      ],
+      "block": "05",
+      "name": "Accepted Superior town source layer 57"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        18,
+        2,
+        19,
+        3
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 58"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        19,
+        2,
+        20,
+        3
+      ],
+      "block": "05",
+      "name": "Accepted Superior town source layer 59"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        3,
+        1,
+        4
+      ],
+      "block": "05",
+      "name": "Accepted Superior town source layer 60"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        1,
+        3,
+        2,
+        4
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 61"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        2,
+        3,
+        3,
+        4
+      ],
+      "block": "1c",
+      "name": "Accepted Superior town source layer 62"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        3,
+        3,
+        4,
+        4
+      ],
+      "block": "77",
+      "name": "Accepted Superior town source layer 63"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        4,
+        3,
+        5,
+        4
+      ],
+      "block": "1e",
+      "name": "Accepted Superior town source layer 64"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        5,
+        3,
+        6,
+        4
+      ],
+      "block": "02",
+      "name": "Accepted Superior town source layer 65"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        3,
+        7,
+        4
+      ],
+      "block": "04",
+      "name": "Accepted Superior town source layer 66"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        7,
+        3,
+        8,
+        4
+      ],
+      "block": "18",
+      "name": "Accepted Superior town source layer 67"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        8,
+        3,
+        9,
+        4
+      ],
+      "block": "19",
+      "name": "Accepted Superior town source layer 68"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        9,
+        3,
+        10,
+        4
+      ],
+      "block": "04",
+      "name": "Accepted Superior town source layer 69"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        10,
+        3,
+        11,
+        4
+      ],
+      "block": "18",
+      "name": "Accepted Superior town source layer 70"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        11,
+        3,
+        12,
+        4
+      ],
+      "block": "19",
+      "name": "Accepted Superior town source layer 71"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        12,
+        3,
+        13,
+        4
+      ],
+      "block": "02",
+      "name": "Accepted Superior town source layer 72"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        13,
+        3,
+        14,
+        4
+      ],
+      "block": "03",
+      "name": "Accepted Superior town source layer 73"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        14,
+        3,
+        15,
+        4
+      ],
+      "block": "03",
+      "name": "Accepted Superior town source layer 74"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        15,
+        3,
+        16,
+        4
+      ],
+      "block": "02",
+      "name": "Accepted Superior town source layer 75"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        16,
+        3,
+        17,
+        4
+      ],
+      "block": "05",
+      "name": "Accepted Superior town source layer 76"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        17,
+        3,
+        18,
+        4
+      ],
+      "block": "05",
+      "name": "Accepted Superior town source layer 77"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        18,
+        3,
+        19,
+        4
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 78"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        19,
+        3,
+        20,
+        4
+      ],
+      "block": "05",
+      "name": "Accepted Superior town source layer 79"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        4,
+        1,
+        5
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 80"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        1,
+        4,
+        2,
+        5
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 81"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        2,
+        4,
+        3,
+        5
+      ],
+      "block": "04",
+      "name": "Accepted Superior town source layer 82"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        3,
+        4,
+        4,
+        5
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 83"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        4,
+        4,
+        5,
+        5
+      ],
+      "block": "02",
+      "name": "Accepted Superior town source layer 84"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        5,
+        4,
+        6,
+        5
+      ],
+      "block": "04",
+      "name": "Accepted Superior town source layer 85"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        4,
+        7,
+        5
+      ],
+      "block": "02",
+      "name": "Accepted Superior town source layer 86"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        7,
+        4,
+        8,
+        5
+      ],
+      "block": "1a",
+      "name": "Accepted Superior town source layer 87"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        8,
+        4,
+        9,
+        5
+      ],
+      "block": "1b",
+      "name": "Accepted Superior town source layer 88"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        9,
+        4,
+        10,
+        5
+      ],
+      "block": "02",
+      "name": "Accepted Superior town source layer 89"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        10,
+        4,
+        11,
+        5
+      ],
+      "block": "16",
+      "name": "Accepted Superior town source layer 90"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        11,
+        4,
+        12,
+        5
+      ],
+      "block": "17",
+      "name": "Accepted Superior town source layer 91"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        12,
+        4,
+        13,
+        5
+      ],
+      "block": "02",
+      "name": "Accepted Superior town source layer 92"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        13,
+        4,
+        14,
+        5
+      ],
+      "block": "03",
+      "name": "Accepted Superior town source layer 93"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        14,
+        4,
+        15,
+        5
+      ],
+      "block": "03",
+      "name": "Accepted Superior town source layer 94"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        15,
+        4,
+        16,
+        5
+      ],
+      "block": "02",
+      "name": "Accepted Superior town source layer 95"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        16,
+        4,
+        17,
+        5
+      ],
+      "block": "05",
+      "name": "Accepted Superior town source layer 96"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        17,
+        4,
+        18,
+        5
+      ],
+      "block": "05",
+      "name": "Accepted Superior town source layer 97"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        18,
+        4,
+        19,
+        5
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 98"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        19,
+        4,
+        20,
+        5
+      ],
+      "block": "05",
+      "name": "Accepted Superior town source layer 99"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        5,
+        1,
+        6
+      ],
+      "block": "05",
+      "name": "Accepted Superior town source layer 100"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        1,
+        5,
+        2,
+        6
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 101"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        2,
+        5,
+        3,
+        6
+      ],
+      "block": "03",
+      "name": "Accepted Superior town source layer 102"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        3,
+        5,
+        4,
+        6
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 103"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        4,
+        5,
+        5,
+        6
+      ],
+      "block": "03",
+      "name": "Accepted Superior town source layer 104"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        5,
+        5,
+        6,
+        6
+      ],
+      "block": "45",
+      "name": "Accepted Superior town source layer 105"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        5,
+        7,
+        6
+      ],
+      "block": "02",
+      "name": "Accepted Superior town source layer 106"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        7,
+        5,
+        8,
+        6
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 107"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        8,
+        5,
+        9,
+        6
+      ],
+      "block": "02",
+      "name": "Accepted Superior town source layer 108"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        9,
+        5,
+        10,
+        6
+      ],
+      "block": "02",
+      "name": "Accepted Superior town source layer 109"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        10,
+        5,
+        11,
+        6
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 110"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        11,
+        5,
+        12,
+        6
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 111"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        12,
+        5,
+        13,
+        6
+      ],
+      "block": "02",
+      "name": "Accepted Superior town source layer 112"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        13,
+        5,
+        14,
+        6
+      ],
+      "block": "02",
+      "name": "Accepted Superior town source layer 113"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        14,
+        5,
+        15,
+        6
+      ],
+      "block": "02",
+      "name": "Accepted Superior town source layer 114"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        15,
+        5,
+        16,
+        6
+      ],
+      "block": "02",
+      "name": "Accepted Superior town source layer 115"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        16,
+        5,
+        17,
+        6
+      ],
+      "block": "05",
+      "name": "Accepted Superior town source layer 116"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        17,
+        5,
+        18,
+        6
+      ],
+      "block": "05",
+      "name": "Accepted Superior town source layer 117"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        18,
+        5,
+        19,
+        6
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 118"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        19,
+        5,
+        20,
+        6
+      ],
+      "block": "05",
+      "name": "Accepted Superior town source layer 119"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        6,
+        1,
+        7
+      ],
+      "block": "05",
+      "name": "Accepted Superior town source layer 120"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        1,
+        6,
+        2,
+        7
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 121"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        2,
+        6,
+        3,
+        7
+      ],
+      "block": "03",
+      "name": "Accepted Superior town source layer 122"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        3,
+        6,
+        4,
+        7
+      ],
+      "block": "02",
+      "name": "Accepted Superior town source layer 123"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        4,
+        6,
+        5,
+        7
+      ],
+      "block": "22",
+      "name": "Accepted Superior town source layer 124"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        5,
+        6,
+        6,
+        7
+      ],
+      "block": "23",
+      "name": "Accepted Superior town source layer 125"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        6,
+        7,
+        7
+      ],
+      "block": "02",
+      "name": "Accepted Superior town source layer 126"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        7,
+        6,
+        8,
+        7
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 127"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        8,
+        6,
+        9,
+        7
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 128"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        9,
+        6,
+        10,
+        7
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 129"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        10,
+        6,
+        11,
+        7
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 130"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        11,
+        6,
+        12,
+        7
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 131"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        12,
+        6,
+        13,
+        7
+      ],
+      "block": "04",
+      "name": "Accepted Superior town source layer 132"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        13,
+        6,
+        14,
+        7
+      ],
+      "block": "18",
+      "name": "Accepted Superior town source layer 133"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        14,
+        6,
+        15,
+        7
+      ],
+      "block": "19",
+      "name": "Accepted Superior town source layer 134"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        15,
+        6,
+        16,
+        7
+      ],
+      "block": "02",
+      "name": "Accepted Superior town source layer 135"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        16,
+        6,
+        17,
+        7
+      ],
+      "block": "04",
+      "name": "Accepted Superior town source layer 136"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        17,
+        6,
+        18,
+        7
+      ],
+      "block": "02",
+      "name": "Accepted Superior town source layer 137"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        18,
+        6,
+        19,
+        7
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 138"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        19,
+        6,
+        20,
+        7
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 139"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        7,
+        1,
+        8
+      ],
+      "block": "05",
+      "name": "Accepted Superior town source layer 140"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        1,
+        7,
+        2,
+        8
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 141"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        2,
+        7,
+        3,
+        8
+      ],
+      "block": "02",
+      "name": "Accepted Superior town source layer 142"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        3,
+        7,
+        4,
+        8
+      ],
+      "block": "02",
+      "name": "Accepted Superior town source layer 143"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        4,
+        7,
+        5,
+        8
+      ],
+      "block": "28",
+      "name": "Accepted Superior town source layer 144"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        5,
+        7,
+        6,
+        8
+      ],
+      "block": "29",
+      "name": "Accepted Superior town source layer 145"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        7,
+        7,
+        8
+      ],
+      "block": "45",
+      "name": "Accepted Superior town source layer 146"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        7,
+        7,
+        8,
+        8
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 147"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        8,
+        7,
+        9,
+        8
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 148"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        9,
+        7,
+        10,
+        8
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 149"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        10,
+        7,
+        11,
+        8
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 150"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        11,
+        7,
+        12,
+        8
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 151"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        12,
+        7,
+        13,
+        8
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 152"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        13,
+        7,
+        14,
+        8
+      ],
+      "block": "16",
+      "name": "Accepted Superior town source layer 153"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        14,
+        7,
+        15,
+        8
+      ],
+      "block": "1e",
+      "name": "Accepted Superior town source layer 154"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        15,
+        7,
+        16,
+        8
+      ],
+      "block": "02",
+      "name": "Accepted Superior town source layer 155"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        16,
+        7,
+        17,
+        8
+      ],
+      "block": "02",
+      "name": "Accepted Superior town source layer 156"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        17,
+        7,
+        18,
+        8
+      ],
+      "block": "02",
+      "name": "Accepted Superior town source layer 157"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        18,
+        7,
+        19,
+        8
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 158"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        19,
+        7,
+        20,
+        8
+      ],
+      "block": "54",
+      "name": "Accepted Superior town source layer 159"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        8,
+        1,
+        9
+      ],
+      "block": "55",
+      "name": "Accepted Superior town source layer 160"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        1,
+        8,
+        2,
+        9
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 161"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        2,
+        8,
+        3,
+        9
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 162"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        3,
+        8,
+        4,
+        9
+      ],
+      "block": "02",
+      "name": "Accepted Superior town source layer 163"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        4,
+        8,
+        5,
+        9
+      ],
+      "block": "02",
+      "name": "Accepted Superior town source layer 164"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        5,
+        8,
+        6,
+        9
+      ],
+      "block": "02",
+      "name": "Accepted Superior town source layer 165"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        8,
+        7,
+        9
+      ],
+      "block": "54",
+      "name": "Accepted Superior town source layer 166"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        7,
+        8,
+        8,
+        9
+      ],
+      "block": "76",
+      "name": "Accepted Superior town source layer 167"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        8,
+        8,
+        9,
+        9
+      ],
+      "block": "76",
+      "name": "Accepted Superior town source layer 168"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        9,
+        8,
+        10,
+        9
+      ],
+      "block": "76",
+      "name": "Accepted Superior town source layer 169"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        10,
+        8,
+        11,
+        9
+      ],
+      "block": "76",
+      "name": "Accepted Superior town source layer 170"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        11,
+        8,
+        12,
+        9
+      ],
+      "block": "76",
+      "name": "Accepted Superior town source layer 171"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        12,
+        8,
+        13,
+        9
+      ],
+      "block": "55",
+      "name": "Accepted Superior town source layer 172"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        13,
+        8,
+        14,
+        9
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 173"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        14,
+        8,
+        15,
+        9
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 174"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        15,
+        8,
+        16,
+        9
+      ],
+      "block": "02",
+      "name": "Accepted Superior town source layer 175"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        16,
+        8,
+        17,
+        9
+      ],
+      "block": "02",
+      "name": "Accepted Superior town source layer 176"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        17,
+        8,
+        18,
+        9
+      ],
+      "block": "02",
+      "name": "Accepted Superior town source layer 177"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        18,
+        8,
+        19,
+        9
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 178"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        19,
+        8,
+        20,
+        9
+      ],
+      "block": "58",
+      "name": "Accepted Superior town source layer 179"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        9,
+        1,
+        10
+      ],
+      "block": "59",
+      "name": "Accepted Superior town source layer 180"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        1,
+        9,
+        2,
+        10
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 181"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        2,
+        9,
+        3,
+        10
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 182"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        3,
+        9,
+        4,
+        10
+      ],
+      "block": "02",
+      "name": "Accepted Superior town source layer 183"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        4,
+        9,
+        5,
+        10
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 184"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        5,
+        9,
+        6,
+        10
+      ],
+      "block": "0a",
+      "name": "Accepted Superior town source layer 185"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        9,
+        7,
+        10
+      ],
+      "block": "79",
+      "name": "Accepted Superior town source layer 186"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        7,
+        9,
+        8,
+        10
+      ],
+      "block": "08",
+      "name": "Accepted Superior town source layer 187"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        8,
+        9,
+        9,
+        10
+      ],
+      "block": "09",
+      "name": "Accepted Superior town source layer 188"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        9,
+        9,
+        10,
+        10
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 189"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        10,
+        9,
+        11,
+        10
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 190"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        11,
+        9,
+        12,
+        10
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 191"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        12,
+        9,
+        13,
+        10
+      ],
+      "block": "59",
+      "name": "Accepted Superior town source layer 192"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        13,
+        9,
+        14,
+        10
+      ],
+      "block": "45",
+      "name": "Accepted Superior town source layer 193"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        14,
+        9,
+        15,
+        10
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 194"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        15,
+        9,
+        16,
+        10
+      ],
+      "block": "02",
+      "name": "Accepted Superior town source layer 195"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        16,
+        9,
+        17,
+        10
+      ],
+      "block": "02",
+      "name": "Accepted Superior town source layer 196"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        17,
+        9,
+        18,
+        10
+      ],
+      "block": "02",
+      "name": "Accepted Superior town source layer 197"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        18,
+        9,
+        19,
+        10
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 198"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        19,
+        9,
+        20,
+        10
+      ],
+      "block": "58",
+      "name": "Accepted Superior town source layer 199"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        10,
+        1,
+        11
+      ],
+      "block": "59",
+      "name": "Accepted Superior town source layer 200"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        1,
+        10,
+        2,
+        11
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 201"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        2,
+        10,
+        3,
+        11
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 202"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        3,
+        10,
+        4,
+        11
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 203"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        4,
+        10,
+        5,
+        11
+      ],
+      "block": "54",
+      "name": "Accepted Superior town source layer 204"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        5,
+        10,
+        6,
+        11
+      ],
+      "block": "76",
+      "name": "Accepted Superior town source layer 205"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        10,
+        7,
+        11
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 206"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        7,
+        10,
+        8,
+        11
+      ],
+      "block": "7e",
+      "name": "Accepted Superior town source layer 207"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        8,
+        10,
+        9,
+        11
+      ],
+      "block": "7f",
+      "name": "Accepted Superior town source layer 208"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        9,
+        10,
+        10,
+        11
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 209"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        10,
+        10,
+        11,
+        11
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 210"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        11,
+        10,
+        12,
+        11
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 211"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        12,
+        10,
+        13,
+        11
+      ],
+      "block": "59",
+      "name": "Accepted Superior town source layer 212"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        13,
+        10,
+        14,
+        11
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 213"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        14,
+        10,
+        15,
+        11
+      ],
+      "block": "05",
+      "name": "Accepted Superior town source layer 214"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        15,
+        10,
+        16,
+        11
+      ],
+      "block": "05",
+      "name": "Accepted Superior town source layer 215"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        16,
+        10,
+        17,
+        11
+      ],
+      "block": "05",
+      "name": "Accepted Superior town source layer 216"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        17,
+        10,
+        18,
+        11
+      ],
+      "block": "05",
+      "name": "Accepted Superior town source layer 217"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        18,
+        10,
+        19,
+        11
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 218"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        19,
+        10,
+        20,
+        11
+      ],
+      "block": "58",
+      "name": "Accepted Superior town source layer 219"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        11,
+        1,
+        12
+      ],
+      "block": "59",
+      "name": "Accepted Superior town source layer 220"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        1,
+        11,
+        2,
+        12
+      ],
+      "block": "49",
+      "name": "Accepted Superior town source layer 221"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        2,
+        11,
+        3,
+        12
+      ],
+      "block": "4a",
+      "name": "Accepted Superior town source layer 222"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        3,
+        11,
+        4,
+        12
+      ],
+      "block": "54",
+      "name": "Accepted Superior town source layer 223"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        4,
+        11,
+        5,
+        12
+      ],
+      "block": "79",
+      "name": "Accepted Superior town source layer 224"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        5,
+        11,
+        6,
+        12
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 225"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        11,
+        7,
+        12
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 226"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        7,
+        11,
+        8,
+        12
+      ],
+      "block": "13",
+      "name": "Accepted Superior town source layer 227"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        8,
+        11,
+        9,
+        12
+      ],
+      "block": "0f",
+      "name": "Accepted Superior town source layer 228"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        9,
+        11,
+        10,
+        12
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 229"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        10,
+        11,
+        11,
+        12
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 230"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        11,
+        11,
+        12,
+        12
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 231"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        12,
+        11,
+        13,
+        12
+      ],
+      "block": "59",
+      "name": "Accepted Superior town source layer 232"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        13,
+        11,
+        14,
+        12
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 233"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        14,
+        11,
+        15,
+        12
+      ],
+      "block": "05",
+      "name": "Accepted Superior town source layer 234"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        15,
+        11,
+        16,
+        12
+      ],
+      "block": "05",
+      "name": "Accepted Superior town source layer 235"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        16,
+        11,
+        17,
+        12
+      ],
+      "block": "05",
+      "name": "Accepted Superior town source layer 236"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        17,
+        11,
+        18,
+        12
+      ],
+      "block": "05",
+      "name": "Accepted Superior town source layer 237"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        18,
+        11,
+        19,
+        12
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 238"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        19,
+        11,
+        20,
+        12
+      ],
+      "block": "58",
+      "name": "Accepted Superior town source layer 239"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        12,
+        1,
+        13
+      ],
+      "block": "7a",
+      "name": "Accepted Superior town source layer 240"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        1,
+        12,
+        2,
+        13
+      ],
+      "block": "76",
+      "name": "Accepted Superior town source layer 241"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        2,
+        12,
+        3,
+        13
+      ],
+      "block": "76",
+      "name": "Accepted Superior town source layer 242"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        3,
+        12,
+        4,
+        13
+      ],
+      "block": "79",
+      "name": "Accepted Superior town source layer 243"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        4,
+        12,
+        5,
+        13
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 244"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        5,
+        12,
+        6,
+        13
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 245"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        12,
+        7,
+        13
+      ],
+      "block": "59",
+      "name": "Accepted Superior town source layer 246"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        7,
+        12,
+        8,
+        13
+      ],
+      "block": "13",
+      "name": "Accepted Superior town source layer 247"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        8,
+        12,
+        9,
+        13
+      ],
+      "block": "0f",
+      "name": "Accepted Superior town source layer 248"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        9,
+        12,
+        10,
+        13
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 249"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        10,
+        12,
+        11,
+        13
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 250"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        11,
+        12,
+        12,
+        13
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 251"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        12,
+        12,
+        13,
+        13
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 252"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        13,
+        12,
+        14,
+        13
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 253"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        14,
+        12,
+        15,
+        13
+      ],
+      "block": "02",
+      "name": "Accepted Superior town source layer 254"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        15,
+        12,
+        16,
+        13
+      ],
+      "block": "05",
+      "name": "Accepted Superior town source layer 255"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        16,
+        12,
+        17,
+        13
+      ],
+      "block": "05",
+      "name": "Accepted Superior town source layer 256"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        17,
+        12,
+        18,
+        13
+      ],
+      "block": "05",
+      "name": "Accepted Superior town source layer 257"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        18,
+        12,
+        19,
+        13
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 258"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        19,
+        12,
+        20,
+        13
+      ],
+      "block": "58",
+      "name": "Accepted Superior town source layer 259"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        13,
+        1,
+        14
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 260"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        1,
+        13,
+        2,
+        14
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 261"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        2,
+        13,
+        3,
+        14
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 262"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        3,
+        13,
+        4,
+        14
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 263"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        4,
+        13,
+        5,
+        14
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 264"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        5,
+        13,
+        6,
+        14
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 265"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        13,
+        7,
+        14
+      ],
+      "block": "59",
+      "name": "Accepted Superior town source layer 266"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        7,
+        13,
+        8,
+        14
+      ],
+      "block": "1a",
+      "name": "Accepted Superior town source layer 267"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        8,
+        13,
+        9,
+        14
+      ],
+      "block": "11",
+      "name": "Accepted Superior town source layer 268"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        9,
+        13,
+        10,
+        14
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 269"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        10,
+        13,
+        11,
+        14
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 270"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        11,
+        13,
+        12,
+        14
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 271"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        12,
+        13,
+        13,
+        14
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 272"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        13,
+        13,
+        14,
+        14
+      ],
+      "block": "02",
+      "name": "Accepted Superior town source layer 273"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        14,
+        13,
+        15,
+        14
+      ],
+      "block": "02",
+      "name": "Accepted Superior town source layer 274"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        15,
+        13,
+        16,
+        14
+      ],
+      "block": "02",
+      "name": "Accepted Superior town source layer 275"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        16,
+        13,
+        17,
+        14
+      ],
+      "block": "3c",
+      "name": "Accepted Superior town source layer 276"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        17,
+        13,
+        18,
+        14
+      ],
+      "block": "3d",
+      "name": "Accepted Superior town source layer 277"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        18,
+        13,
+        19,
+        14
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 278"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        19,
+        13,
+        20,
+        14
+      ],
+      "block": "58",
+      "name": "Accepted Superior town source layer 279"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        14,
+        1,
+        15
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 280"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        1,
+        14,
+        2,
+        15
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 281"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        2,
+        14,
+        3,
+        15
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 282"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        3,
+        14,
+        4,
+        15
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 283"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        4,
+        14,
+        5,
+        15
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 284"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        5,
+        14,
+        6,
+        15
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 285"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        14,
+        7,
+        15
+      ],
+      "block": "59",
+      "name": "Accepted Superior town source layer 286"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        7,
+        14,
+        8,
+        15
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 287"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        8,
+        14,
+        9,
+        15
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 288"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        9,
+        14,
+        10,
+        15
+      ],
+      "block": "49",
+      "name": "Accepted Superior town source layer 289"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        10,
+        14,
+        11,
+        15
+      ],
+      "block": "49",
+      "name": "Accepted Superior town source layer 290"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        11,
+        14,
+        12,
+        15
+      ],
+      "block": "49",
+      "name": "Accepted Superior town source layer 291"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        12,
+        14,
+        13,
+        15
+      ],
+      "block": "49",
+      "name": "Accepted Superior town source layer 292"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        13,
+        14,
+        14,
+        15
+      ],
+      "block": "02",
+      "name": "Accepted Superior town source layer 293"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        14,
+        14,
+        15,
+        15
+      ],
+      "block": "02",
+      "name": "Accepted Superior town source layer 294"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        15,
+        14,
+        16,
+        15
+      ],
+      "block": "02",
+      "name": "Accepted Superior town source layer 295"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        16,
+        14,
+        17,
+        15
+      ],
+      "block": "02",
+      "name": "Accepted Superior town source layer 296"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        17,
+        14,
+        18,
+        15
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 297"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        18,
+        14,
+        19,
+        15
+      ],
+      "block": "54",
+      "name": "Accepted Superior town source layer 298"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        19,
+        14,
+        20,
+        15
+      ],
+      "block": "79",
+      "name": "Accepted Superior town source layer 299"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        15,
+        1,
+        16
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 300"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        1,
+        15,
+        2,
+        16
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 301"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        2,
+        15,
+        3,
+        16
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 302"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        3,
+        15,
+        4,
+        16
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 303"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        4,
+        15,
+        5,
+        16
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 304"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        5,
+        15,
+        6,
+        16
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 305"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        15,
+        7,
+        16
+      ],
+      "block": "7a",
+      "name": "Accepted Superior town source layer 306"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        7,
+        15,
+        8,
+        16
+      ],
+      "block": "76",
+      "name": "Accepted Superior town source layer 307"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        8,
+        15,
+        9,
+        16
+      ],
+      "block": "76",
+      "name": "Accepted Superior town source layer 308"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        9,
+        15,
+        10,
+        16
+      ],
+      "block": "76",
+      "name": "Accepted Superior town source layer 309"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        10,
+        15,
+        11,
+        16
+      ],
+      "block": "76",
+      "name": "Accepted Superior town source layer 310"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        11,
+        15,
+        12,
+        16
+      ],
+      "block": "76",
+      "name": "Accepted Superior town source layer 311"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        12,
+        15,
+        13,
+        16
+      ],
+      "block": "55",
+      "name": "Accepted Superior town source layer 312"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        13,
+        15,
+        14,
+        16
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 313"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        14,
+        15,
+        15,
+        16
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 314"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        15,
+        15,
+        16,
+        16
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 315"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        16,
+        15,
+        17,
+        16
+      ],
+      "block": "01",
+      "name": "Accepted Superior town source layer 316"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        17,
+        15,
+        18,
+        16
+      ],
+      "block": "0a",
+      "name": "Accepted Superior town source layer 317"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        18,
+        15,
+        19,
+        16
+      ],
+      "block": "58",
+      "name": "Accepted Superior town source layer 318"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        19,
+        15,
+        20,
+        16
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 319"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        16,
+        1,
+        17
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 320"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        1,
+        16,
+        2,
+        17
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 321"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        2,
+        16,
+        3,
+        17
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 322"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        3,
+        16,
+        4,
+        17
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 323"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        4,
+        16,
+        5,
+        17
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 324"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        5,
+        16,
+        6,
+        17
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 325"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        16,
+        7,
+        17
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 326"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        7,
+        16,
+        8,
+        17
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 327"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        8,
+        16,
+        9,
+        17
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 328"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        9,
+        16,
+        10,
+        17
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 329"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        10,
+        16,
+        11,
+        17
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 330"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        11,
+        16,
+        12,
+        17
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 331"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        12,
+        16,
+        13,
+        17
+      ],
+      "block": "7a",
+      "name": "Accepted Superior town source layer 332"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        13,
+        16,
+        14,
+        17
+      ],
+      "block": "76",
+      "name": "Accepted Superior town source layer 333"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        14,
+        16,
+        15,
+        17
+      ],
+      "block": "76",
+      "name": "Accepted Superior town source layer 334"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        15,
+        16,
+        16,
+        17
+      ],
+      "block": "76",
+      "name": "Accepted Superior town source layer 335"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        16,
+        16,
+        17,
+        17
+      ],
+      "block": "76",
+      "name": "Accepted Superior town source layer 336"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        17,
+        16,
+        18,
+        17
+      ],
+      "block": "76",
+      "name": "Accepted Superior town source layer 337"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        18,
+        16,
+        19,
+        17
+      ],
+      "block": "79",
+      "name": "Accepted Superior town source layer 338"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        19,
+        16,
+        20,
+        17
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 339"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        17,
+        1,
+        18
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 340"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        1,
+        17,
+        2,
+        18
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 341"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        2,
+        17,
+        3,
+        18
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 342"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        3,
+        17,
+        4,
+        18
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 343"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        4,
+        17,
+        5,
+        18
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 344"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        5,
+        17,
+        6,
+        18
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 345"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        17,
+        7,
+        18
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 346"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        7,
+        17,
+        8,
+        18
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 347"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        8,
+        17,
+        9,
+        18
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 348"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        9,
+        17,
+        10,
+        18
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 349"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        10,
+        17,
+        11,
+        18
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 350"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        11,
+        17,
+        12,
+        18
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 351"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        12,
+        17,
+        13,
+        18
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 352"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        13,
+        17,
+        14,
+        18
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 353"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        14,
+        17,
+        15,
+        18
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 354"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        15,
+        17,
+        16,
+        18
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 355"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        16,
+        17,
+        17,
+        18
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 356"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        17,
+        17,
+        18,
+        18
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 357"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        18,
+        17,
+        19,
+        18
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 358"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        19,
+        17,
+        20,
+        18
+      ],
+      "block": "35",
+      "name": "Accepted Superior town source layer 359"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        0,
+        18,
+        1,
+        19
+      ],
+      "block": "38",
+      "name": "Accepted Superior town source layer 360"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        1,
+        18,
+        2,
+        19
+      ],
+      "block": "39",
+      "name": "Accepted Superior town source layer 361"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        2,
+        18,
+        3,
+        19
+      ],
+      "block": "39",
+      "name": "Accepted Superior town source layer 362"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        3,
+        18,
+        4,
+        19
+      ],
+      "block": "39",
+      "name": "Accepted Superior town source layer 363"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        4,
+        18,
+        5,
+        19
+      ],
+      "block": "39",
+      "name": "Accepted Superior town source layer 364"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        5,
+        18,
+        6,
+        19
+      ],
+      "block": "39",
+      "name": "Accepted Superior town source layer 365"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        18,
+        7,
+        19
+      ],
+      "block": "39",
+      "name": "Accepted Superior town source layer 366"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        7,
+        18,
+        8,
+        19
+      ],
+      "block": "39",
+      "name": "Accepted Superior town source layer 367"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        8,
+        18,
+        9,
+        19
+      ],
+      "block": "39",
+      "name": "Accepted Superior town source layer 368"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        9,
+        18,
+        10,
+        19
+      ],
+      "block": "39",
+      "name": "Accepted Superior town source layer 369"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        10,
+        18,
+        11,
+        19
+      ],
+      "block": "39",
+      "name": "Accepted Superior town source layer 370"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        11,
+        18,
+        12,
+        19
+      ],
+      "block": "39",
+      "name": "Accepted Superior town source layer 371"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        12,
+        18,
+        13,
+        19
+      ],
+      "block": "39",
+      "name": "Accepted Superior town source layer 372"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        13,
+        18,
+        14,
+        19
+      ],
+      "block": "39",
+      "name": "Accepted Superior town source layer 373"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        14,
+        18,
+        15,
+        19
+      ],
+      "block": "39",
+      "name": "Accepted Superior town source layer 374"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        15,
+        18,
+        16,
+        19
+      ],
+      "block": "39",
+      "name": "Accepted Superior town source layer 375"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        16,
+        18,
+        17,
+        19
+      ],
+      "block": "39",
+      "name": "Accepted Superior town source layer 376"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        17,
+        18,
+        18,
+        19
+      ],
+      "block": "39",
+      "name": "Accepted Superior town source layer 377"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        18,
+        18,
+        19,
+        19
+      ],
+      "block": "39",
+      "name": "Accepted Superior town source layer 378"
+    },
+    {
+      "kind": "block_rect",
+      "bounds": [
+        19,
+        18,
+        20,
+        19
+      ],
+      "block": "3a",
+      "name": "Accepted Superior town source layer 379"
+    },
+    {
+      "kind": "point",
+      "name": "north inland lane between Center and Mart; green coastal town ends at this port",
+      "position": [
+        9,
+        0
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "north inland lane between Center and Mart; green coastal town ends at this port",
+      "position": [
+        9,
+        1
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "north inland lane between Center and Mart; green coastal town ends at this port",
+      "position": [
+        9,
+        2
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "north inland lane between Center and Mart; green coastal town ends at this port",
+      "position": [
+        9,
+        3
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "north inland lane between Center and Mart; green coastal town ends at this port",
+      "position": [
+        9,
+        4
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "north inland lane between Center and Mart; green coastal town ends at this port",
+      "position": [
+        9,
+        5
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "close former east Foot exit with ordinary native pines",
+      "position": [
+        19,
+        6
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "native reefs close unmatched east water boundary",
+      "position": [
+        19,
+        7
+      ],
+      "block": "80"
+    },
+    {
+      "kind": "point",
+      "name": "open Superior water outside the shifted west lookout bank",
+      "position": [
+        0,
+        8
+      ],
+      "block": "35"
+    },
+    {
+      "kind": "point",
+      "name": "shift existing west bank inward; retain inner lookout walking lane and native shoreline corners",
+      "position": [
+        1,
+        8
+      ],
+      "block": "55"
+    },
+    {
+      "kind": "point",
+      "name": "native reefs close unmatched east water boundary",
+      "position": [
+        19,
+        8
+      ],
+      "block": "81"
+    },
+    {
+      "kind": "point",
+      "name": "open Superior water outside the shifted west lookout bank",
+      "position": [
+        0,
+        9
+      ],
+      "block": "35"
+    },
+    {
+      "kind": "point",
+      "name": "shift existing west bank inward; retain inner lookout walking lane and native shoreline corners",
+      "position": [
+        1,
+        9
+      ],
+      "block": "59"
+    },
+    {
+      "kind": "point",
+      "name": "native reefs close unmatched east water boundary",
+      "position": [
+        19,
+        9
+      ],
+      "block": "81"
+    },
+    {
+      "kind": "point",
+      "name": "open Superior water outside the shifted west lookout bank",
+      "position": [
+        0,
+        10
+      ],
+      "block": "35"
+    },
+    {
+      "kind": "point",
+      "name": "shift existing west bank inward; retain inner lookout walking lane and native shoreline corners",
+      "position": [
+        1,
+        10
+      ],
+      "block": "59"
+    },
+    {
+      "kind": "point",
+      "name": "native reefs close unmatched east water boundary",
+      "position": [
+        19,
+        10
+      ],
+      "block": "81"
+    },
+    {
+      "kind": "point",
+      "name": "open Superior water outside the shifted west lookout bank",
+      "position": [
+        0,
+        11
+      ],
+      "block": "35"
+    },
+    {
+      "kind": "point",
+      "name": "shift existing west bank inward; retain inner lookout walking lane and native shoreline corners",
+      "position": [
+        1,
+        11
+      ],
+      "block": "59"
+    },
+    {
+      "kind": "point",
+      "name": "native reefs close unmatched east water boundary",
+      "position": [
+        19,
+        11
+      ],
+      "block": "81"
+    },
+    {
+      "kind": "point",
+      "name": "open Superior water outside the shifted west lookout bank",
+      "position": [
+        0,
+        12
+      ],
+      "block": "35"
+    },
+    {
+      "kind": "point",
+      "name": "shift existing west bank inward; retain inner lookout walking lane and native shoreline corners",
+      "position": [
+        1,
+        12
+      ],
+      "block": "7a"
+    },
+    {
+      "kind": "point",
+      "name": "native reefs close unmatched east water boundary",
+      "position": [
+        19,
+        12
+      ],
+      "block": "81"
+    },
+    {
+      "kind": "point",
+      "name": "native reefs close unmatched east water boundary",
+      "position": [
+        19,
+        13
+      ],
+      "block": "81"
+    },
+    {
+      "kind": "point",
+      "name": "native reefs close unmatched east water boundary",
+      "position": [
+        19,
+        14
+      ],
+      "block": "85"
+    },
+    {
+      "kind": "point",
+      "name": "native reefs close unmatched east water boundary",
+      "position": [
+        19,
+        15
+      ],
+      "block": "86"
+    },
+    {
+      "kind": "point",
+      "name": "native reefs close unmatched east water boundary",
+      "position": [
+        19,
+        16
+      ],
+      "block": "86"
+    },
+    {
+      "kind": "point",
+      "name": "native reefs close unmatched east water boundary",
+      "position": [
+        19,
+        17
+      ],
+      "block": "86"
+    },
+    {
+      "name": "Complete native mart wall and endcap repair",
+      "kind": "point",
+      "position": [
+        10,
+        4
+      ],
+      "block": "1a"
+    }
+  ]
+}

@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F015",
+  "species": [
+    {
+      "species_id": "MN_318",
+      "runtime_token": "CRAPPELLER",
+      "palette_rgb555": [
+        32767,
+        11006,
+        17796,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        24498,
+        14546,
+        0
+      ],
+      "fit": [
+        14,
+        14
+      ],
+      "alpha_threshold": 128,
+      "sampling": "area_vote",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 20,
+      "interior_black_samples": 16,
+      "opaque_interior_minimum_samples": 40,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "crappeller.overworld.imagegen-v2-native.png",
+          "crop": [
+            0,
+            0,
+            512,
+            512
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "crappeller.overworld.imagegen-v2-native.png",
+          "crop": [
+            512,
+            0,
+            512,
+            512
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "crappeller.overworld.imagegen-v2-native.png",
+          "crop": [
+            1024,
+            0,
+            512,
+            512
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "crappeller.overworld.imagegen-v2-native.png",
+          "crop": [
+            0,
+            512,
+            512,
+            512
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "crappeller.overworld.imagegen-v2-native.png",
+          "crop": [
+            512,
+            512,
+            512,
+            512
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "crappeller.overworld.imagegen-v2-native.png",
+          "crop": [
+            1024,
+            512,
+            512,
+            512
+          ]
+        }
+      ]
+    }
+  ]
+}

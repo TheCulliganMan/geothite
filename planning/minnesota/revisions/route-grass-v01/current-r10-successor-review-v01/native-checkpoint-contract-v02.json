@@ -1,0 +1,28 @@
+{
+  "pack": "content-packs/minnesota-current-r10-south-woods-grass-v01.crystalpack",
+  "pack_sha256": "15fb2488f94ff981455b3405a8ee841d4336963402f67a66dba51c9c45a8d3ba",
+  "map": "MnR10C00R00",
+  "source_dossier": "planning/minnesota/revisions/route-grass-v01/current-r10-successor-review-v01/native-checkpoint-source-v02.json",
+  "start": [
+    45,
+    20
+  ],
+  "badge_count": 4,
+  "event_flags": [],
+  "roads": [],
+  "gates": [],
+  "ledges": [],
+  "doors": [],
+  "fences": [],
+  "counts": {
+    "roads": 0,
+    "gates": 0,
+    "ledges": 0,
+    "doors": 0,
+    "fences": 0,
+    "residents": 0,
+    "signs": 0
+  },
+  "arrival_discovery_flags": [],
+  "scope": "Save/Continue at upper passage; grass crossing is checked separately through production MCP. Initial partner, badges and location are local QA setup."
+}

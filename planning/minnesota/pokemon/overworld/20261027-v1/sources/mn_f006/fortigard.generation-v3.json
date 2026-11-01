@@ -1,0 +1,14 @@
+{
+  "tool": "built-in image_gen",
+  "original_tool_path": "/Users/ryanculligan/.codex/generated_images/01a17dcc-4f1a-77a2-9d21-0df036061346/exec-6b57339b-211d-4b06-ac78-d2ac964a54af.png",
+  "source_size": [
+    1774,
+    887
+  ],
+  "sha256": "c7db6d7f5a16e3b30356ff3ec2acd013444b674929064065f551262ddbe66c66",
+  "reference_paths": [
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-fortigard-registered-v2/MN_F006/review/line.normal-8x.png"
+  ],
+  "prompt": "fortigard.prompt-v3.txt",
+  "raw_review": "Broad face requested; opaque black pixels/contours lost in generated alpha and require built-in ImageGen repair. Zizalith also needs clean sixpose3x2layout."
+}

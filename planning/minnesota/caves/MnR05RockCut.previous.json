@@ -1,0 +1,77 @@
+{
+  "id": "MnR05RockCut",
+  "template": "UnionCave1F",
+  "dimensions_metatiles": [
+    8,
+    10
+  ],
+  "rows": [
+    "01 01 01 01 01 01 01 01",
+    "01 04 05 05 05 05 06 01",
+    "01 08 02 18 1a 07 0a 01",
+    "01 08 02 02 02 02 0a 01",
+    "01 08 02 18 1a 02 0a 01",
+    "01 08 02 02 02 02 0a 01",
+    "01 08 02 0c 0d 02 0a 01",
+    "01 08 02 02 02 02 0a 01",
+    "01 20 07 21 21 21 22 01",
+    "01 01 01 01 01 01 01 01"
+  ],
+  "exits": [
+    [
+      5,
+      17
+    ],
+    [
+      11,
+      5
+    ]
+  ],
+  "exit_doors": [
+    [
+      16,
+      77
+    ],
+    [
+      30,
+      27
+    ]
+  ],
+  "clear_arrival": [
+    5,
+    16
+  ],
+  "exit_collision": "LADDER",
+  "border_block": 1,
+  "residents": [
+    {
+      "id": "MN_R05_CUT_WALKER",
+      "sprite": "SPRITE_POKEFAN_M",
+      "tile": [
+        5,
+        13
+      ],
+      "facing": "east",
+      "lines": [
+        "Rest a while.",
+        "I'll treat them.",
+        "Both mouths join",
+        "the same old hill."
+      ],
+      "service": "heal_party"
+    }
+  ],
+  "items": [
+    {
+      "id": "MN_R05_ITEM_03",
+      "item": "REPEL",
+      "quantity": 1,
+      "flag": "EVENT_MN_R05_ITEM_03",
+      "tile": [
+        5,
+        5
+      ]
+    }
+  ],
+  "signs": []
+}

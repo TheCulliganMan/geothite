@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "map": "MnDuluth",
+      "approach": [
+        40,
+        45
+      ],
+      "id": "MN_EXTRA_ROCK_HOUND",
+      "display_name": "KIT",
+      "trainer_class": "MN_ROCK_HOUND",
+      "class_name": "ROCK HOUND",
+      "template_class": "PICNICKER",
+      "sprite": "SPRITE_MN_ROCK_HOUND",
+      "tile": [
+        40,
+        44
+      ],
+      "facing": "south",
+      "sight_range": 1,
+      "defeated_flag": "EVENT_MN_EXTRA_ROCK_HOUND",
+      "party": [
+        {
+          "species": "AGATOT",
+          "level": 32
+        },
+        {
+          "species": "BANDRAKE",
+          "level": 33
+        }
+      ],
+      "before_lines": [
+        "Look at my agate!",
+        "It has two bands!"
+      ],
+      "after_lines": [
+        "You rock!"
+      ],
+      "loss_lines": [
+        "A rough tumble!"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+[
+  {
+    "id": "MnDuluthFieldClinic-arrival",
+    "map": "MnDuluthFieldClinic",
+    "core": [
+      8,
+      9
+    ]
+  },
+  {
+    "id": "MnDuluthBeachShelter-arrival",
+    "map": "MnDuluthBeachShelter",
+    "core": [
+      6,
+      9
+    ]
+  },
+  {
+    "id": "MnDuluthHarborWorkshop-arrival",
+    "map": "MnDuluthHarborWorkshop",
+    "core": [
+      8,
+      9
+    ]
+  },
+  {
+    "id": "clinic-treatment-counter",
+    "map": "MnDuluthFieldClinic",
+    "core": [
+      5,
+      7
+    ]
+  },
+  {
+    "id": "point-dry-cot",
+    "map": "MnDuluthBeachShelter",
+    "core": [
+      3,
+      7
+    ]
+  },
+  {
+    "id": "harbor-workbench",
+    "map": "MnDuluthHarborWorkshop",
+    "core": [
+      5,
+      7
+    ]
+  }
+]

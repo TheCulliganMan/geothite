@@ -1,0 +1,425 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F001",
+  "status": "front-recolored-back-revision-pending",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f001/prompt-v1.txt",
+  "sprites": [
+    {
+      "id": "mn-001-pouchid-v2",
+      "species_id": "MN_001",
+      "view": "front",
+      "source": "sprites/mn-f001/mn-001-003.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        512,
+        519
+      ],
+      "fit": [
+        36,
+        36
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13151,
+        7686,
+        0
+      ],
+      "source_palette_rgb555": [
+        32767,
+        25183,
+        8613,
+        0
+      ]
+    },
+    {
+      "id": "mn-001-pouchid-v2",
+      "species_id": "MN_001",
+      "view": "back",
+      "source": "sprites/mn-f001/mn-001-003.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        519,
+        512,
+        384
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13151,
+        7686,
+        0
+      ],
+      "source_palette_rgb555": [
+        32767,
+        25183,
+        8613,
+        0
+      ]
+    },
+    {
+      "id": "mn-002-slipperina-v2",
+      "species_id": "MN_002",
+      "view": "front",
+      "source": "sprites/mn-f001/mn-001-003.front-back.imagegen-v1.png",
+      "crop": [
+        512,
+        0,
+        512,
+        519
+      ],
+      "fit": [
+        44,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        30264,
+        12675,
+        0
+      ],
+      "source_palette_rgb555": [
+        32767,
+        25183,
+        8613,
+        0
+      ]
+    },
+    {
+      "id": "mn-002-slipperina-v2",
+      "species_id": "MN_002",
+      "view": "back",
+      "source": "sprites/mn-f001/mn-001-003.front-back.imagegen-v1.png",
+      "crop": [
+        512,
+        519,
+        512,
+        317
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        30264,
+        12675,
+        0
+      ],
+      "source_palette_rgb555": [
+        32767,
+        25183,
+        8613,
+        0
+      ]
+    },
+    {
+      "id": "mn-003-cyprielle-v2",
+      "species_id": "MN_003",
+      "view": "front",
+      "source": "sprites/mn-f001/mn-001-003.front-back.imagegen-v1.png",
+      "crop": [
+        1024,
+        0,
+        512,
+        519
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        24031,
+        7492,
+        0
+      ],
+      "source_palette_rgb555": [
+        32767,
+        25183,
+        8613,
+        0
+      ]
+    },
+    {
+      "id": "mn-003-cyprielle-v2",
+      "species_id": "MN_003",
+      "view": "back",
+      "source": "sprites/mn-f001/mn-001-003.front-back.imagegen-v1.png",
+      "crop": [
+        1024,
+        519,
+        512,
+        323
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        24031,
+        7492,
+        0
+      ],
+      "source_palette_rgb555": [
+        32767,
+        25183,
+        8613,
+        0
+      ]
+    }
+  ],
+  "visual_review": {
+    "status": "pending",
+    "notes": [
+      "Individual front palettes reviewed and coherent. Early stages rear crops are enlarged, but later stages remain too small; new authored close back portraits are required. All earlier source/crop/native versions retained."
+    ]
+  },
+  "pokemon_palettes": {
+    "MN_001": {
+      "species_id": "MN_001",
+      "name": "Pouchid",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          26,
+          12
+        ],
+        [
+          6,
+          16,
+          7
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        13151,
+        7686,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          214,
+          99
+        ],
+        [
+          49,
+          132,
+          57
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FFD663",
+        "#318439",
+        "#000000"
+      ]
+    },
+    "MN_002": {
+      "species_id": "MN_002",
+      "name": "Slipperina",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          24,
+          17,
+          29
+        ],
+        [
+          3,
+          12,
+          12
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        30264,
+        12675,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          198,
+          140,
+          239
+        ],
+        [
+          24,
+          99,
+          99
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#C68CEF",
+        "#186363",
+        "#000000"
+      ]
+    },
+    "MN_003": {
+      "species_id": "MN_003",
+      "name": "Cyprielle",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          14,
+          23
+        ],
+        [
+          4,
+          10,
+          7
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        24031,
+        7492,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          115,
+          189
+        ],
+        [
+          33,
+          82,
+          57
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FF73BD",
+        "#215239",
+        "#000000"
+      ]
+    }
+  },
+  "back_framing": "rear-crop-candidate-revision-pending",
+  "conversion_revision": "Individual palette mapping from original ink indices; close rear crop from separately authored back view. Original source and all prior native renders retained.",
+  "original_source_palette": {
+    "gbc_rgb5": [
+      [
+        31,
+        31,
+        31
+      ],
+      [
+        31,
+        18,
+        24
+      ],
+      [
+        5,
+        13,
+        8
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ],
+    "gbc_rgb555_words": [
+      32767,
+      25183,
+      8613,
+      0
+    ],
+    "rgb8": [
+      [
+        255,
+        255,
+        255
+      ],
+      [
+        255,
+        148,
+        198
+      ],
+      [
+        41,
+        107,
+        66
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ],
+    "hex": [
+      "#FFFFFF",
+      "#FF94C6",
+      "#296B42",
+      "#000000"
+    ]
+  }
+}

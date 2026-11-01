@@ -1,0 +1,338 @@
+{
+  "species_id": "MN_213",
+  "name": "chislet",
+  "status": "native-review-recommended; root independent review and context required",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f098/chislet.manifest-native-joint-phase-v1.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-chislet-joint-phase-v1",
+  "shared_transform": {
+    "source_bounds": [
+      4,
+      8,
+      349,
+      350
+    ],
+    "native_size": [
+      11,
+      12
+    ],
+    "native_origin": [
+      2,
+      3
+    ]
+  },
+  "all_four_nonrear_poses_actual_pupils_pass": true,
+  "each_native_eye_cluster_maps_to_one_actual_small_source_pupil_component": true,
+  "actual_source_pupil_proofs": [
+    {
+      "pose": "down_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f098/chislet.overworld.imagegen-v1.png",
+      "crop": [
+        121,
+        96,
+        365,
+        370
+      ],
+      "actual_source_eye_bounds": [
+        [
+          261,
+          282,
+          19,
+          29
+        ],
+        [
+          344,
+          282,
+          19,
+          29
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              9
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                1,
+                1,
+                0,
+                253
+              ],
+              "bounds": [
+                261,
+                282,
+                19,
+                29
+              ],
+              "pixels": 551,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                9
+              ],
+              "source_sample_pixel": [
+                267,
+                293
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              9,
+              9
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                10,
+                10,
+                4,
+                254
+              ],
+              "bounds": [
+                344,
+                282,
+                19,
+                29
+              ],
+              "pixels": 551,
+              "truncated_contour": false,
+              "native_pixel": [
+                9,
+                9
+              ],
+              "source_sample_pixel": [
+                362,
+                293
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f098/chislet.overworld.imagegen-v1.png",
+      "crop": [
+        1091,
+        111,
+        365,
+        370
+      ],
+      "actual_source_eye_bounds": [
+        [
+          1231,
+          273,
+          19,
+          31
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              8
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                1,
+                1,
+                0,
+                254
+              ],
+              "bounds": [
+                1231,
+                273,
+                19,
+                31
+              ],
+              "pixels": 586,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                8
+              ],
+              "source_sample_pixel": [
+                1237,
+                279
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f098/chislet.overworld.imagegen-v1.png",
+      "crop": [
+        116,
+        545,
+        365,
+        370
+      ],
+      "actual_source_eye_bounds": [
+        [
+          261,
+          740,
+          19,
+          28
+        ],
+        [
+          344,
+          740,
+          19,
+          28
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              9
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                6,
+                6,
+                4,
+                254
+              ],
+              "bounds": [
+                261,
+                740,
+                19,
+                28
+              ],
+              "pixels": 532,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                9
+              ],
+              "source_sample_pixel": [
+                262,
+                742
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              9,
+              9
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                10,
+                9,
+                5,
+                253
+              ],
+              "bounds": [
+                344,
+                740,
+                19,
+                28
+              ],
+              "pixels": 532,
+              "truncated_contour": false,
+              "native_pixel": [
+                9,
+                9
+              ],
+              "source_sample_pixel": [
+                357,
+                742
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f098/chislet.overworld.imagegen-v1.png",
+      "crop": [
+        1095,
+        568,
+        365,
+        370
+      ],
+      "actual_source_eye_bounds": [
+        [
+          1237,
+          729,
+          19,
+          32
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              8
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                1,
+                1,
+                0,
+                253
+              ],
+              "bounds": [
+                1237,
+                729,
+                19,
+                32
+              ],
+              "pixels": 608,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                8
+              ],
+              "source_sample_pixel": [
+                1241,
+                736
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "old_native_poses_preserved_exactly": [],
+  "normal_shiny_runtime_parity": "all1536pixels exact each",
+  "canonical_palette_bytes": "exact",
+  "all_three_walk_pairs_distinct": true,
+  "rear_review": "Both rear native poses viewed: no copied face or actual pupil components. Black curl/tuft notches are anatomical butter-shaving outlines, not eyes; blank broad rear head plane.",
+  "normal_shiny_native_boards_actually_viewed": true,
+  "accepted_coverage_native_pack_untouched": true,
+  "manifest_sha256": "2207df5290ecc65a84cd91d7266470e2eb4e857742875515d7b62ac671b19696",
+  "compiled_index_sha256": "940a056fd2636e1c018637480a0bf5fecd6de91b0e86b294440eef37aef4ec0e"
+}

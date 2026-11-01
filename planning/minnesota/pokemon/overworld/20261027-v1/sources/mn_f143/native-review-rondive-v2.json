@@ -1,0 +1,23 @@
+{
+  "species_id": "MN_316",
+  "native_contract": "Six16x16poses; shared14x13sampling transform, transparent1pxborder, own3visible RGB555inks. Canonical4frontal and2profileeyeorgans.",
+  "rejected_retained": [
+    {
+      "candidate": "candidates/mn_f143/rondive-v1-center",
+      "reason": "Both actual profile pupils missed by sample rows."
+    },
+    {
+      "candidate": "candidates/mn_f143/rondive-v1-profile-y-12",
+      "reason": "Profiles fixed, but lower frontal stepping pupil samples join native lower outline."
+    },
+    {
+      "candidate": "candidates/mn_f143/rondive-v2-hybrid",
+      "reason": "Source edit alone does not fix sampling phase of lower frontal stepping pupils."
+    }
+  ],
+  "selected": "candidates/mn_f143/rondive-v2-hybrid-step-y8",
+  "source_feature_proof": "source-feature-proof-rondive-v2.json",
+  "root_viewed_normal_shiny_and_production_context": true,
+  "context": "diagnostics/batch-source-eye-fossil-beetle-six-v1",
+  "all_originals_and_unused_edit_frames_retained": true
+}

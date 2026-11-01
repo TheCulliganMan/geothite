@@ -8,18 +8,24 @@ rust-version.workspace = true
 
 [dependencies]
 anyhow.workspace = true
-base64 = "0.22"
+base64.workspace = true
 ciborium.workspace = true
-crystal-core = { path = "../crystal-core" }
-crystal-audio = { path = "../crystal-audio" }
-flate2 = "1.1"
+crystal-core.workspace = true
+crystal-audio.workspace = true
+flate2.workspace = true
 serde.workspace = true
 serde_path_to_error = "0.1"
 serde_json.workspace = true
 sha2.workspace = true
+sha1 = "0.10.7"
+
+# Apple Silicon keeps the exact SHA-256 algorithm while using its hardware
+# instructions. This feature is deliberately absent from browser targets.
+[target.'cfg(all(target_arch = "aarch64", not(target_arch = "wasm32")))'.dependencies]
+sha2 = { workspace = true, features = ["asm"] }
 
 [features]
 test-fixtures = ["crystal-core/test-fixtures"]
 
 [dev-dependencies]
-crystal-core = { path = "../crystal-core", features = ["test-fixtures"] }
+crystal-core = { workspace = true, features = ["test-fixtures"] }

@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "trainer_class": "MN_ICE_ENFORCER",
+  "class_name": "TEAM",
+  "trainer_ids": [
+    "MN_ICE_ENFORCER"
+  ],
+  "actors": [
+    {
+      "map": "MnMinneapolisDispatchOffice",
+      "script": "MN_ICE_ENFORCER",
+      "tile": [
+        8,
+        9
+      ],
+      "previous_sprite": "SPRITE_OFFICER"
+    }
+  ]
+}

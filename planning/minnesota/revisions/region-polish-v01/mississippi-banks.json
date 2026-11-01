@@ -1,0 +1,587 @@
+{
+  "schema_version": 1,
+  "source_parent": "content-packs/minnesota-fruit-compact-v01.crystalpack",
+  "source_content_hash": "8b5322108fe678d85451c6a23a1034f402aac936ee3b00e3451432adfe0b307c",
+  "features": [
+    {
+      "reach": "Lower",
+      "bank": "north_meadow",
+      "global_metatiles": [
+        [
+          34,
+          9
+        ],
+        [
+          35,
+          9
+        ],
+        [
+          35,
+          8
+        ],
+        [
+          36,
+          9
+        ],
+        [
+          37,
+          9
+        ]
+      ],
+      "purpose": "Uneven grassy woodland recess with a narrow tip and wider bank opening"
+    },
+    {
+      "reach": "Lower",
+      "bank": "last_portage",
+      "global_metatiles": [
+        [
+          14,
+          54
+        ],
+        [
+          15,
+          54
+        ],
+        [
+          15,
+          53
+        ],
+        [
+          16,
+          54
+        ],
+        [
+          17,
+          54
+        ]
+      ],
+      "purpose": "Uneven grassy woodland recess with a narrow tip and wider bank opening"
+    },
+    {
+      "reach": "Lower",
+      "bank": "pine_camp",
+      "global_metatiles": [
+        [
+          47,
+          36
+        ],
+        [
+          48,
+          36
+        ],
+        [
+          49,
+          36
+        ],
+        [
+          49,
+          35
+        ],
+        [
+          50,
+          36
+        ]
+      ],
+      "purpose": "Uneven grassy woodland recess with a narrow tip and wider bank opening"
+    },
+    {
+      "reach": "Lower",
+      "bank": "eagle_point",
+      "global_metatiles": [
+        [
+          44,
+          21
+        ],
+        [
+          45,
+          21
+        ],
+        [
+          45,
+          22
+        ],
+        [
+          46,
+          21
+        ],
+        [
+          47,
+          21
+        ]
+      ],
+      "purpose": "Uneven grassy woodland recess with a narrow tip and wider bank opening"
+    },
+    {
+      "reach": "Upstream",
+      "bank": "north_lookout",
+      "global_metatiles": [
+        [
+          36,
+          7
+        ],
+        [
+          37,
+          7
+        ],
+        [
+          38,
+          7
+        ],
+        [
+          38,
+          6
+        ],
+        [
+          39,
+          7
+        ]
+      ],
+      "purpose": "Uneven grassy woodland recess with a narrow tip and wider bank opening"
+    },
+    {
+      "reach": "Upstream",
+      "bank": "warbler_walk",
+      "global_metatiles": [
+        [
+          27,
+          56
+        ],
+        [
+          28,
+          56
+        ],
+        [
+          28,
+          55
+        ],
+        [
+          29,
+          56
+        ],
+        [
+          30,
+          56
+        ]
+      ],
+      "purpose": "Uneven grassy woodland recess with a narrow tip and wider bank opening"
+    },
+    {
+      "reach": "Upstream",
+      "bank": "gravel_point",
+      "global_metatiles": [
+        [
+          57,
+          30
+        ],
+        [
+          58,
+          30
+        ],
+        [
+          59,
+          30
+        ],
+        [
+          59,
+          29
+        ],
+        [
+          60,
+          30
+        ]
+      ],
+      "purpose": "Uneven grassy woodland recess with a narrow tip and wider bank opening"
+    },
+    {
+      "reach": "Upstream",
+      "bank": "western_reeds",
+      "global_metatiles": [
+        [
+          23,
+          25
+        ],
+        [
+          24,
+          25
+        ],
+        [
+          24,
+          26
+        ],
+        [
+          25,
+          25
+        ],
+        [
+          26,
+          25
+        ]
+      ],
+      "purpose": "Uneven grassy woodland recess with a narrow tip and wider bank opening"
+    }
+  ],
+  "maps": [
+    {
+      "id": "MnMississippiLowerWoodsC01R00",
+      "expected_blocks_sha256": "e4e189759e5bd0a51f8f9ba545fdc75fa96ab7b4bd66e154c582261ddf825b02",
+      "cells": [
+        {
+          "at": [
+            2,
+            9
+          ],
+          "before": 5,
+          "after": 3
+        },
+        {
+          "at": [
+            3,
+            9
+          ],
+          "before": 5,
+          "after": 3
+        },
+        {
+          "at": [
+            3,
+            8
+          ],
+          "before": 5,
+          "after": 3
+        },
+        {
+          "at": [
+            4,
+            9
+          ],
+          "before": 5,
+          "after": 3
+        },
+        {
+          "at": [
+            5,
+            9
+          ],
+          "before": 5,
+          "after": 3
+        },
+        {
+          "at": [
+            12,
+            21
+          ],
+          "before": 5,
+          "after": 3
+        },
+        {
+          "at": [
+            13,
+            21
+          ],
+          "before": 5,
+          "after": 3
+        },
+        {
+          "at": [
+            13,
+            22
+          ],
+          "before": 5,
+          "after": 3
+        },
+        {
+          "at": [
+            14,
+            21
+          ],
+          "before": 5,
+          "after": 3
+        },
+        {
+          "at": [
+            15,
+            21
+          ],
+          "before": 5,
+          "after": 3
+        }
+      ]
+    },
+    {
+      "id": "MnMississippiLowerWoodsC00R02",
+      "expected_blocks_sha256": "4c0603783a4f87ffd221ceffe62b4864e4fca61626acd53d9998386c1e98e78e",
+      "cells": [
+        {
+          "at": [
+            14,
+            6
+          ],
+          "before": 5,
+          "after": 3
+        },
+        {
+          "at": [
+            15,
+            6
+          ],
+          "before": 5,
+          "after": 3
+        },
+        {
+          "at": [
+            15,
+            5
+          ],
+          "before": 5,
+          "after": 3
+        },
+        {
+          "at": [
+            16,
+            6
+          ],
+          "before": 5,
+          "after": 3
+        },
+        {
+          "at": [
+            17,
+            6
+          ],
+          "before": 5,
+          "after": 3
+        }
+      ]
+    },
+    {
+      "id": "MnMississippiLowerWoodsC01R01",
+      "expected_blocks_sha256": "4ecd2feef55a25a431bbb743f5fb53648b1007e96998fd5f7e4eefe350454113",
+      "cells": [
+        {
+          "at": [
+            15,
+            12
+          ],
+          "before": 5,
+          "after": 3
+        },
+        {
+          "at": [
+            16,
+            12
+          ],
+          "before": 5,
+          "after": 3
+        },
+        {
+          "at": [
+            17,
+            12
+          ],
+          "before": 5,
+          "after": 3
+        },
+        {
+          "at": [
+            17,
+            11
+          ],
+          "before": 5,
+          "after": 3
+        },
+        {
+          "at": [
+            18,
+            12
+          ],
+          "before": 5,
+          "after": 3
+        }
+      ]
+    },
+    {
+      "id": "MnMississippiUpstreamWoodsC01R00",
+      "expected_blocks_sha256": "a47e40214ae0a2e41a9f36f9d971d51ba209750170687f577b52beee41fb59bf",
+      "cells": [
+        {
+          "at": [
+            4,
+            7
+          ],
+          "before": 5,
+          "after": 3
+        },
+        {
+          "at": [
+            5,
+            7
+          ],
+          "before": 5,
+          "after": 3
+        },
+        {
+          "at": [
+            6,
+            7
+          ],
+          "before": 5,
+          "after": 3
+        },
+        {
+          "at": [
+            6,
+            6
+          ],
+          "before": 5,
+          "after": 3
+        },
+        {
+          "at": [
+            7,
+            7
+          ],
+          "before": 5,
+          "after": 3
+        }
+      ]
+    },
+    {
+      "id": "MnMississippiUpstreamWoodsC00R02",
+      "expected_blocks_sha256": "bdb7db099f7190e177c6d92c105d0826898952ce65ba9e1ddf4b61de294c8578",
+      "cells": [
+        {
+          "at": [
+            27,
+            8
+          ],
+          "before": 5,
+          "after": 3
+        },
+        {
+          "at": [
+            28,
+            8
+          ],
+          "before": 5,
+          "after": 3
+        },
+        {
+          "at": [
+            28,
+            7
+          ],
+          "before": 5,
+          "after": 3
+        },
+        {
+          "at": [
+            29,
+            8
+          ],
+          "before": 5,
+          "after": 3
+        },
+        {
+          "at": [
+            30,
+            8
+          ],
+          "before": 5,
+          "after": 3
+        }
+      ]
+    },
+    {
+      "id": "MnMississippiUpstreamWoodsC01R01",
+      "expected_blocks_sha256": "a98f8ff1598e5f1e250ec6fb097f50b983941f91867d04267926402b9f1b757a",
+      "cells": [
+        {
+          "at": [
+            25,
+            6
+          ],
+          "before": 5,
+          "after": 3
+        },
+        {
+          "at": [
+            26,
+            6
+          ],
+          "before": 5,
+          "after": 3
+        },
+        {
+          "at": [
+            27,
+            6
+          ],
+          "before": 5,
+          "after": 3
+        },
+        {
+          "at": [
+            27,
+            5
+          ],
+          "before": 5,
+          "after": 3
+        },
+        {
+          "at": [
+            28,
+            6
+          ],
+          "before": 5,
+          "after": 3
+        }
+      ]
+    },
+    {
+      "id": "MnMississippiUpstreamWoodsC00R01",
+      "expected_blocks_sha256": "30b86367367992c0d35747e792745c818199c8b88d50a00472ef40deec12dad8",
+      "cells": [
+        {
+          "at": [
+            23,
+            1
+          ],
+          "before": 5,
+          "after": 3
+        },
+        {
+          "at": [
+            24,
+            1
+          ],
+          "before": 5,
+          "after": 3
+        },
+        {
+          "at": [
+            24,
+            2
+          ],
+          "before": 5,
+          "after": 3
+        },
+        {
+          "at": [
+            25,
+            1
+          ],
+          "before": 5,
+          "after": 3
+        },
+        {
+          "at": [
+            26,
+            1
+          ],
+          "before": 5,
+          "after": 3
+        }
+      ]
+    }
+  ]
+}

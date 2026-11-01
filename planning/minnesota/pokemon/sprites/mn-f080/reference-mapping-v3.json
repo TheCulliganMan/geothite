@@ -1,0 +1,11 @@
+{
+  "prompt": "sprites/mn-f080/prompt-v3.txt",
+  "references": [
+    {
+      "path": "target/minnesota-pokemon/native/MN_F087/line.review.png",
+      "role": "Original accepted Gen2 native pixel scale, outline and flat-color discipline only; different creature shapes",
+      "sha256": "1c199160c7947b365619beb14821ecccc5ae1d4890ee5ae94f33e5099a8809c2"
+    }
+  ],
+  "root_takeover": "Fresh concise ordinary fantasy anatomy prompt after two calls returned no image."
+}

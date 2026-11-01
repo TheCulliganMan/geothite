@@ -1,0 +1,259 @@
+{
+  "schema_version": 1,
+  "tileset_id": "mn_northwoods_props",
+  "source_sha256": "80132a4ddc33845c86677df140b30b5978cfda230d0719b5f1a5230d55eaf2b6",
+  "items": [
+    {
+      "id": "canoe_rack",
+      "name": "Canoe rack",
+      "crop": [
+        0,
+        0,
+        512,
+        512
+      ],
+      "palette": 5,
+      "source_colors": [
+        [
+          222,
+          255,
+          222
+        ],
+        [
+          198,
+          148,
+          57
+        ],
+        [
+          165,
+          123,
+          24
+        ],
+        [
+          57,
+          57,
+          57
+        ]
+      ],
+      "collision": [
+        "WALL",
+        "WALL",
+        "FLOOR",
+        "FLOOR"
+      ],
+      "placement": "Portage outfitter or landing; solid scenery, no boat interaction.",
+      "offset": [
+        0,
+        -8
+      ]
+    },
+    {
+      "id": "firewood",
+      "name": "Split firewood stack",
+      "crop": [
+        512,
+        0,
+        512,
+        512
+      ],
+      "palette": 5,
+      "source_colors": [
+        [
+          222,
+          255,
+          222
+        ],
+        [
+          198,
+          148,
+          57
+        ],
+        [
+          165,
+          123,
+          24
+        ],
+        [
+          57,
+          57,
+          57
+        ]
+      ],
+      "collision": [
+        "WALL",
+        "WALL",
+        "FLOOR",
+        "FLOOR"
+      ],
+      "placement": "Campsite or cabin edge; solid scenery.",
+      "offset": [
+        0,
+        -8
+      ]
+    },
+    {
+      "id": "picnic_table",
+      "name": "Picnic table",
+      "crop": [
+        1024,
+        0,
+        512,
+        512
+      ],
+      "palette": 5,
+      "source_colors": [
+        [
+          222,
+          255,
+          222
+        ],
+        [
+          198,
+          148,
+          57
+        ],
+        [
+          165,
+          123,
+          24
+        ],
+        [
+          57,
+          57,
+          57
+        ]
+      ],
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ],
+      "placement": "Rest turnout with a walkable approach on adjacent blocks."
+    },
+    {
+      "id": "portage_marker",
+      "name": "Portage marker",
+      "crop": [
+        0,
+        512,
+        512,
+        512
+      ],
+      "palette": 5,
+      "source_colors": [
+        [
+          222,
+          255,
+          222
+        ],
+        [
+          198,
+          148,
+          57
+        ],
+        [
+          165,
+          123,
+          24
+        ],
+        [
+          57,
+          57,
+          57
+        ]
+      ],
+      "collision": [
+        "FLOOR",
+        "WALL",
+        "FLOOR",
+        "WALL"
+      ],
+      "placement": "Portage marker on east half of block, with a clear western standing approach. Add an east-facing native BG read event on the board quadrant; no automatic sign script.",
+      "offset": [
+        7,
+        0
+      ]
+    },
+    {
+      "id": "shore_cobbles",
+      "name": "Shore cobbles",
+      "crop": [
+        512,
+        512,
+        512,
+        512
+      ],
+      "palette": 0,
+      "source_colors": [
+        [
+          222,
+          255,
+          222
+        ],
+        [
+          173,
+          173,
+          173
+        ],
+        [
+          107,
+          107,
+          107
+        ],
+        [
+          57,
+          57,
+          57
+        ]
+      ],
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ],
+      "placement": "Landward shore boundary; blocks walking and Surf, never place across a real seam."
+    },
+    {
+      "id": "cattails",
+      "name": "Cattail clump",
+      "crop": [
+        1024,
+        512,
+        512,
+        512
+      ],
+      "palette": 2,
+      "source_colors": [
+        [
+          222,
+          255,
+          222
+        ],
+        [
+          99,
+          206,
+          8
+        ],
+        [
+          41,
+          115,
+          0
+        ],
+        [
+          57,
+          57,
+          57
+        ]
+      ],
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ],
+      "placement": "Grass or marsh edge; solid scenery, no new encounter or water behavior."
+    }
+  ]
+}

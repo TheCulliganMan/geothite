@@ -1,0 +1,26 @@
+[
+  {
+    "id": "north-grass",
+    "map": "MnR17C00R00",
+    "core": [
+      37,
+      9
+    ]
+  },
+  {
+    "id": "marsh-path",
+    "map": "MnR17C00R01",
+    "core": [
+      19,
+      31
+    ]
+  },
+  {
+    "id": "south-grass",
+    "map": "MnR17C00R02",
+    "core": [
+      33,
+      1
+    ]
+  }
+]

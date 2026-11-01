@@ -1,0 +1,16 @@
+{
+  "status": "source-generated",
+  "attempts": [
+    {
+      "prompt_file": "prompt-v1.txt",
+      "error": "output moderation other",
+      "request_id": "dd9458ba-e59b-43c0-99f1-09c1b9946a87"
+    },
+    {
+      "prompt_file": "prompt-v2.txt",
+      "error": "output moderation other",
+      "request_id": "90fa90ed-c40c-4487-b062-80dd4c5d3497"
+    }
+  ],
+  "successful_prompt": "prompt-v3.txt"
+}

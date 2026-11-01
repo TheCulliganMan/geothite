@@ -1,0 +1,266 @@
+{
+  "id": "MnR20Cave1F",
+  "template": "UnionCave1F",
+  "dimensions_metatiles": [
+    14,
+    12
+  ],
+  "width_metatiles": 14,
+  "height_metatiles": 12,
+  "tileset": "cave",
+  "border_block": 46,
+  "rows": [
+    "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e",
+    "2e 2e 04 05 06 2e 2e 2e 2e 2e 2e 2e 2e 2e",
+    "2e 04 02 02 0a 2e 04 05 05 06 2e 2e 2e 2e",
+    "2e 08 02 02 02 02 02 02 02 0a 2e 2e 2e 2e",
+    "2e 20 30 21 21 21 21 21 36 2e 2e 2e 2e 2e",
+    "2e 2e 02 02 05 06 2e 04 02 05 06 2e 2e 2e",
+    "2e 2e 08 02 02 02 3b 02 02 02 0a 2e 2e 2e",
+    "2e 2e 08 02 0a 2e 2e 08 02 02 02 06 2e 2e",
+    "2e 2e 08 02 0a 3d 0f 0f 3e 08 02 0a 2e 2e",
+    "2e 2e 02 02 0a 33 0f 0f 32 08 02 02 0a 2e",
+    "2e 2e 07 21 22 2e 2e 2e 2e 20 21 07 22 2e",
+    "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e"
+  ],
+  "exits": [
+    [
+      5,
+      21
+    ],
+    [
+      23,
+      21
+    ]
+  ],
+  "clear_arrival": [
+    5,
+    20
+  ],
+  "exit_collision": "LADDER",
+  "exit_doors": [
+    [
+      60,
+      33
+    ],
+    [
+      76,
+      31
+    ]
+  ],
+  "residents": [],
+  "items": [
+    {
+      "id": "MN_R20_ITEM_01",
+      "item": "HYPER_POTION",
+      "quantity": 1,
+      "flag": "EVENT_MN_R20_ITEM_01",
+      "tile": [
+        5,
+        5
+      ],
+      "access": "Optional two-chamber granite passage; saved pickup flag retained."
+    }
+  ],
+  "signs": [],
+  "mandatory": false,
+  "purpose": "A winding two-mouth Voyageurs cleft. Dry passage climbs around an enclosed seep; the raised supply branch retains the original Hyper Potion. Two leftward jump lanes shorten the east-to-west return. A local wayfinder offers an optional regional challenge beside the eastern approach.",
+  "candidate_status": "Source review; native publication and gameplay pending.",
+  "review_contract": {
+    "quality_revision": "r20-winding-cleft-v01",
+    "palette_group": "nite",
+    "viewpoints": [
+      {
+        "id": "west-mouth",
+        "tile": [
+          5,
+          20
+        ]
+      },
+      {
+        "id": "west-climb",
+        "tile": [
+          4,
+          10
+        ]
+      },
+      {
+        "id": "original-supply",
+        "tile": [
+          4,
+          5
+        ]
+      },
+      {
+        "id": "passage-scout",
+        "tile": [
+          11,
+          7
+        ]
+      },
+      {
+        "id": "east-corner-stair",
+        "tile": [
+          16,
+          10
+        ]
+      },
+      {
+        "id": "lateral-drop",
+        "tile": [
+          14,
+          12
+        ]
+      },
+      {
+        "id": "east-wayfinder",
+        "tile": [
+          21,
+          18
+        ]
+      },
+      {
+        "id": "seep-bank",
+        "tile": [
+          17,
+          15
+        ]
+      },
+      {
+        "id": "east-mouth",
+        "tile": [
+          23,
+          20
+        ]
+      }
+    ],
+    "mouths": [
+      {
+        "index": 1,
+        "inside": [
+          5,
+          21
+        ],
+        "clear": [
+          5,
+          20
+        ],
+        "target": "MnR20C00R00",
+        "target_warp": 2,
+        "outside_active": [
+          60,
+          33
+        ],
+        "outside_return": [
+          60,
+          34
+        ]
+      },
+      {
+        "index": 2,
+        "inside": [
+          23,
+          21
+        ],
+        "clear": [
+          23,
+          20
+        ],
+        "target": "MnR20C01R00",
+        "target_warp": 2,
+        "outside_active": [
+          12,
+          31
+        ],
+        "outside_return": [
+          12,
+          32
+        ]
+      }
+    ],
+    "ledge_lanes": [
+      {
+        "approach": [
+          14,
+          12
+        ],
+        "hop": [
+          13,
+          12
+        ],
+        "landing": [
+          11,
+          12
+        ],
+        "direction": "left"
+      },
+      {
+        "approach": [
+          14,
+          13
+        ],
+        "hop": [
+          13,
+          13
+        ],
+        "landing": [
+          11,
+          13
+        ],
+        "direction": "left"
+      }
+    ],
+    "native_stairs": [
+      {
+        "block": "30",
+        "column": 2,
+        "row": 4
+      },
+      {
+        "block": "36",
+        "column": 8,
+        "row": 4
+      }
+    ],
+    "ordinary_return": "Native FLOOR route via both gallery stairways; no reverse/side bypass through the jump wall.",
+    "fishing_bank": {
+      "tile": [
+        17,
+        15
+      ],
+      "facing": "south",
+      "water": [
+        17,
+        16
+      ]
+    },
+    "ordinary_routes": {
+      "between_clear_mouths": 44,
+      "left_hop_upper_lane_return": 29,
+      "left_hop_lower_lane_return": 31,
+      "exterior_static_comparison": 18
+    },
+    "route_role": "Optional exploration and two-mouth shelter passage. The native outdoor walk is18steps and this dry cave route44steps; this is not a faster regional shortcut. The lateral drop shortens only the internal westbound return."
+  },
+  "proposed_actors": [
+    {
+      "id": "MN_EXTRA_R20_WAYFINDER",
+      "sprite": "SPRITE_COOLTRAINER_M",
+      "tile": [
+        21,
+        17
+      ]
+    }
+  ],
+  "retained_native_actors": [
+    {
+      "id": "MN_INTERIOR_R20_CLEFT_SCOUT",
+      "sprite": "SPRITE_POKEFAN_M",
+      "tile": [
+        12,
+        7
+      ],
+      "program_source": "planning/minnesota/interior-life/stories.json; current native program retained exactly."
+    }
+  ]
+}

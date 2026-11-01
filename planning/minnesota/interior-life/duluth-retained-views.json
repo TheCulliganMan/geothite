@@ -1,0 +1,122 @@
+[
+  {
+    "id": "MnDuluthDockSupplies-arrival",
+    "map": "MnDuluthDockSupplies",
+    "core": [
+      6,
+      9
+    ]
+  },
+  {
+    "id": "MnDuluthHarborHouse-arrival",
+    "map": "MnDuluthHarborHouse",
+    "core": [
+      3,
+      5
+    ]
+  },
+  {
+    "id": "MnDuluthHillHouse-arrival",
+    "map": "MnDuluthHillHouse",
+    "core": [
+      4,
+      5
+    ]
+  },
+  {
+    "id": "MnDuluthHillSupplies-arrival",
+    "map": "MnDuluthHillSupplies",
+    "core": [
+      6,
+      9
+    ]
+  },
+  {
+    "id": "MnDuluthHistoryHouse-arrival",
+    "map": "MnDuluthHistoryHouse",
+    "core": [
+      4,
+      7
+    ]
+  },
+  {
+    "id": "MnDuluthLakeOutfitter-arrival",
+    "map": "MnDuluthLakeOutfitter",
+    "core": [
+      6,
+      9
+    ]
+  },
+  {
+    "id": "MnDuluthMaritimeCoop1F-arrival",
+    "map": "MnDuluthMaritimeCoop1F",
+    "core": [
+      8,
+      9
+    ]
+  },
+  {
+    "id": "MnDuluthMaritimeCoop2F-arrival",
+    "map": "MnDuluthMaritimeCoop2F",
+    "core": [
+      8,
+      3
+    ]
+  },
+  {
+    "id": "MnDuluthMaritimeCoop3F-arrival",
+    "map": "MnDuluthMaritimeCoop3F",
+    "core": [
+      3,
+      3
+    ]
+  },
+  {
+    "id": "MnDuluthMart-arrival",
+    "map": "MnDuluthMart",
+    "core": [
+      6,
+      5
+    ]
+  },
+  {
+    "id": "MnDuluthPointOutfitter-arrival",
+    "map": "MnDuluthPointOutfitter",
+    "core": [
+      6,
+      9
+    ]
+  },
+  {
+    "id": "MnDuluthPokecenter1F-arrival",
+    "map": "MnDuluthPokecenter1F",
+    "core": [
+      10,
+      13
+    ]
+  },
+  {
+    "id": "MnDuluthQuarryPractice-arrival",
+    "map": "MnDuluthQuarryPractice",
+    "core": [
+      8,
+      9
+    ]
+  },
+  {
+    "id": "MnDuluthToolExchange-arrival",
+    "map": "MnDuluthToolExchange",
+    "core": [
+      6,
+      9
+    ]
+  },
+  {
+    "id": "MnDuluthTrainingAnnex-arrival",
+    "map": "MnDuluthTrainingAnnex",
+    "core": [
+      8,
+      9
+    ]
+  }
+]

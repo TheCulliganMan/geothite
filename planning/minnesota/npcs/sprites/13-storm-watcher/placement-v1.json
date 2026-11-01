@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "map": "MnMoorhead",
+      "approach": [
+        16,
+        14
+      ],
+      "id": "MN_EXTRA_NPC_STORM_01",
+      "display_name": "GALE",
+      "trainer_class": "MN_STORM_WATCHER",
+      "class_name": "STORM WATCHER",
+      "template_class": "SCIENTIST",
+      "sprite": "SPRITE_MN_STORM_WATCHER",
+      "tile": [
+        16,
+        13
+      ],
+      "facing": "south",
+      "sight_range": 2,
+      "defeated_flag": "EVENT_MN_EXTRA_NPC_STORM_01",
+      "party": [
+        {
+          "species": "WINDHOPPER",
+          "level": 24
+        },
+        {
+          "species": "VANECHICK",
+          "level": 26
+        }
+      ],
+      "before_lines": [
+        "The wind is up!",
+        "Test the forecast."
+      ],
+      "after_lines": [
+        "Clear skies ahead!",
+        "Watch the weather."
+      ],
+      "loss_lines": [
+        "A sudden squall!",
+        "Try a new angle."
+      ]
+    }
+  ]
+}

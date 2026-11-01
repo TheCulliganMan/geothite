@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "map": "MnBoundaryWaters",
+      "approach": [
+        21,
+        29
+      ],
+      "id": "MN_EXTRA_CONSERVATION_OFFICER",
+      "display_name": "WREN",
+      "trainer_class": "MN_CONSERVATION_OFFICER",
+      "class_name": "CONSERV. OFFICER",
+      "template_class": "OFFICER",
+      "sprite": "SPRITE_MN_CONSERVATION_OFFICER",
+      "tile": [
+        21,
+        28
+      ],
+      "facing": "south",
+      "sight_range": 1,
+      "defeated_flag": "EVENT_MN_EXTRA_CONSERVATION_OFFICER",
+      "party": [
+        {
+          "species": "SHEDSTAG",
+          "level": 42
+        },
+        {
+          "species": "BOOMRUFF",
+          "level": 43
+        }
+      ],
+      "before_lines": [
+        "Leave no litter!",
+        "Care for a battle?"
+      ],
+      "after_lines": [
+        "Keep the wild safe"
+      ],
+      "loss_lines": [
+        "Stay on the trail!"
+      ]
+    }
+  ]
+}

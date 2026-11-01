@@ -1,0 +1,6 @@
+{
+  "parent_revision": "glacier_line_passenger_revision",
+  "parent_pack": "content-packs/minnesota-glacier-current-v03.crystalpack",
+  "parent_pack_sha256": "fffff3a575234c28de03c6efe808fb46f6cd8d7910c76d97ce3e03bf0e5c4c5b",
+  "native_module_sha256": "d0ae82fddcc67631bf1a1d31102e37ef413099ee947c0f3abcc12b15576e925b"
+}

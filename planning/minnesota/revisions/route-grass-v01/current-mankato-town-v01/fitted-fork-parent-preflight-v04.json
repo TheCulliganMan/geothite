@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "prior_parent": {
+    "revision": "duluth_harbor_platforms_revision",
+    "pack": "content-packs/minnesota-current-duluth-harbor-v02.crystalpack",
+    "sha256": "2450f44c16fd9f783b8b1dae8e6fa292fbf6a1444a730527c7ebfc63af09b721"
+  },
+  "parent": {
+    "revision": "r10_fitted_fork_revision",
+    "pack": "content-packs/minnesota-current-r10-fitted-fork-v03.crystalpack",
+    "sha256": "1f16d2b3ca473cc5e937140b7ba6f3e190bcaf3718dd6854b40acd8e98a6ddff"
+  },
+  "mankato_module_and_johto_tileset_exact": true,
+  "only_changed_map": [
+    "MnR10Cave1F"
+  ],
+  "canonical_layout_unchanged": true
+}

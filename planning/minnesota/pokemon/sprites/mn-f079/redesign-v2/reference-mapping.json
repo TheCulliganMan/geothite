@@ -1,0 +1,7 @@
+{
+  "source": "front-back.imagegen-v2.png",
+  "identity_reference": "../mn-172-173.front-back.imagegen-v1.png",
+  "fronts": "Top row, original full silhouettes.",
+  "backs": "Bottom row, cropped at sourcey860 to retain nape/fins/float shoulders and remove hanging tails for close rear portraits.",
+  "palette_policy": "Exact original individual normal palettes retained; no global palette edits."
+}

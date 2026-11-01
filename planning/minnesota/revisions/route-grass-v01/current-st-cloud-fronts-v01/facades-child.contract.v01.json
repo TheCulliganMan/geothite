@@ -1,0 +1,116 @@
+{
+  "pack": "content-packs/minnesota-current-st-cloud-fronts-v01.crystalpack",
+  "pack_sha256": "09641f0c2769ed3fdb9860b163ceabc2586ecc0b6e4a22100e90c8c253a84f80",
+  "map": "MnStCloud",
+  "source_dossier": "planning/minnesota/revisions/route-grass-v01/current-st-cloud-fronts-v01/dossier.after.json",
+  "start": [
+    7,
+    10
+  ],
+  "badge_count": 8,
+  "event_flags": [],
+  "arrival_discovery_flags": [
+    "ENGINE_FLYPOINT_MN_ST_CLOUD"
+  ],
+  "roads": [],
+  "gates": [],
+  "ledges": [],
+  "fences": [],
+  "doors": [
+    {
+      "room": "MnStCloudPokecenter1F",
+      "outside": [
+        7,
+        10
+      ],
+      "arrival": [
+        10,
+        13
+      ],
+      "carpets": [
+        [
+          10,
+          15
+        ],
+        [
+          11,
+          15
+        ]
+      ]
+    },
+    {
+      "room": "MnStCloudMart",
+      "outside": [
+        15,
+        10
+      ],
+      "arrival": [
+        6,
+        5
+      ],
+      "carpets": [
+        [
+          6,
+          7
+        ],
+        [
+          7,
+          7
+        ]
+      ]
+    },
+    {
+      "room": "MnStCloudGym",
+      "outside": [
+        8,
+        28
+      ],
+      "arrival": [
+        4,
+        19
+      ],
+      "carpets": [
+        [
+          4,
+          21
+        ],
+        [
+          5,
+          21
+        ]
+      ]
+    },
+    {
+      "room": "MnStCloudStation",
+      "outside": [
+        35,
+        12
+      ],
+      "arrival": [
+        11,
+        17
+      ],
+      "carpets": [
+        [
+          10,
+          19
+        ],
+        [
+          11,
+          19
+        ]
+      ]
+    }
+  ],
+  "surf": null,
+  "counts": {
+    "roads": 0,
+    "gates": 0,
+    "ledges": 0,
+    "fences": 0,
+    "doors": 4,
+    "residents": 5,
+    "signs": 6
+  },
+  "scope": "All four exterior buildings and eight carpets only; no empty road/ledge/gate cases counted. Public route grass/bridge/plateau behavior is preserved, not newly claimed as fully reviewed. Initial party/badges are QA fixtures."
+}

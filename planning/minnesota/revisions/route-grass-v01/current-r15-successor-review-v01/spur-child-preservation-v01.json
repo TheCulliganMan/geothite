@@ -1,0 +1,71 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-r15-open-shore-and-spur-v01.crystalpack",
+  "pack_sha256": "1c16d7043f84b8cf7a51fe45a22ddc8d38450dfc97861ca8a9d5d7a2a6127981",
+  "content_identity": "3dee8065df92bd5e4441a79c02eb3bd4d6e1ab6ca536aa5580d57ef3a4e26e98",
+  "guidance_parent": {
+    "status": "PASS",
+    "pack": "content-packs/minnesota-current-r15-open-shore-guidance-v01.crystalpack",
+    "pack_sha256": "a49a0cd9d2660ddd2fa7942c5dde2b83c419f7bae43baacae4c9973718ff23d7",
+    "content_identity": "ce3db67b267246124624acaac014298f7c3380c8360093a6761e1be0f2f4207e",
+    "parent": {
+      "status": "PASS",
+      "selected_revision": "route_grass_r14_current_contract_revision",
+      "pack": "content-packs/minnesota-current-r13-boundary-apron-v03.crystalpack",
+      "pack_sha256": "7d3987bfbf0378aed960495cc20981c0d258eb391f33630b8e3de6c2686e2e7d",
+      "current_layout": {
+        "path": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R15.after.layout.json",
+        "sha256": "110312f7353b0b3e32f2d6bd523bad4da4f9f9c0b487732c8f5cc6f7c15c44bb"
+      },
+      "current_dossier": {
+        "path": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R15.dossier.json",
+        "sha256": "33b2a5e79c867ab186e158f36289aaf35c69898314ed47fdb02afb110797a1fb"
+      }
+    },
+    "delta": {
+      "maps": [
+        "MnR15C00R00"
+      ],
+      "map_scripts": [
+        "MN_R15_PIER_WATCHERText",
+        "MN_R15_SIGN_02Text"
+      ]
+    },
+    "all_terrain_actors_events_items_encounters_and_battle_inputs_exact": true
+  },
+  "only_terrain_changes": [
+    {
+      "metatile": [
+        9,
+        0
+      ],
+      "before": "0f",
+      "after": "6c"
+    },
+    {
+      "metatile": [
+        10,
+        0
+      ],
+      "before": "0f",
+      "after": "6c"
+    },
+    {
+      "metatile": [
+        11,
+        0
+      ],
+      "before": "0f",
+      "after": "6c"
+    },
+    {
+      "metatile": [
+        12,
+        0
+      ],
+      "before": "0f",
+      "after": "6c"
+    }
+  ],
+  "all_grass_ledge_water_events_actors_trainers_encounters_and_unrelated_maps_exact": true
+}

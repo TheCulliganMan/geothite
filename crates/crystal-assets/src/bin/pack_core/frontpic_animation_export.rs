@@ -95,10 +95,9 @@ pub fn export(repository: &Path) -> Result<()> {
         "pokemon_frontpic_anim.json",
         "content-packs/core-modular/pokemon_frontpic_anim/programs.json",
     ] {
-        std::fs::write(
-            repository.join("apps/web/assets/data").join(relative),
-            &bytes,
-        )?;
+        let path = repository.join("apps/web/assets/data").join(relative);
+        std::fs::create_dir_all(path.parent().context("frontpic output parent")?)?;
+        std::fs::write(path, &bytes)?;
     }
     Ok(())
 }

@@ -1,0 +1,60 @@
+[
+  {
+    "species_id": "MN_293",
+    "name": "Burrbud",
+    "front_back_native_images_actually_viewed": true,
+    "design": "Minnesota bur oaks, fringed acorn cups and deep roots: a small burr-cupped seed grows into a broad low guardian with four spreading root feet and three rounded-lobed leaf fans. The seed body becomes a rooted woody knot rather than a tall humanoid tree; no tools or costume.",
+    "canonical_views": {
+      "front": {
+        "path": "target/minnesota-pokemon/native/MN_F133/mn-293-burrbud-v1.front.png",
+        "sha256": "406336508f317acacc916be2925cb04687927596b53671bbf16faf88c8b00bcb"
+      },
+      "back": {
+        "path": "target/minnesota-pokemon/native/MN_F133/mn-293-burrbud-v1.back.png",
+        "sha256": "35731fee33311ecc426cd8cf9a9018c18d92fc6c090746b43a507eac1c8d27de"
+      }
+    },
+    "normal_rgb555": [
+      32767,
+      12985,
+      8746,
+      0
+    ],
+    "shiny_rgb555": [
+      32767,
+      22316,
+      17736,
+      0
+    ],
+    "imagegen_input_policy": "Only genuine16px style board supplied; canonical battle images viewed for identity and translated into textual prompt anatomy, never fed as source art."
+  },
+  {
+    "species_id": "MN_294",
+    "name": "Burroot",
+    "front_back_native_images_actually_viewed": true,
+    "design": "Minnesota bur oaks, fringed acorn cups and deep roots: a small burr-cupped seed grows into a broad low guardian with four spreading root feet and three rounded-lobed leaf fans. The seed body becomes a rooted woody knot rather than a tall humanoid tree; no tools or costume.",
+    "canonical_views": {
+      "front": {
+        "path": "target/minnesota-pokemon/native/MN_F133/mn-294-burroot-v1.front.png",
+        "sha256": "2c087b93baeb21f62896a014f123250557fd20b6eb54f9022967f9d64786b4ee"
+      },
+      "back": {
+        "path": "target/minnesota-pokemon/native/MN_F133/mn-294-burroot-v1.back.png",
+        "sha256": "af8f66832d346129c45e9d8855fc3797eafde977cc95dd5adcc71c4001bb0b1a"
+      }
+    },
+    "normal_rgb555": [
+      32767,
+      10838,
+      8647,
+      0
+    ],
+    "shiny_rgb555": [
+      32767,
+      19146,
+      14568,
+      0
+    ],
+    "imagegen_input_policy": "Only genuine16px style board supplied; canonical battle images viewed for identity and translated into textual prompt anatomy, never fed as source art."
+  }
+]

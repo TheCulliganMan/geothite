@@ -1,0 +1,66 @@
+{
+  "id": "MN_F087",
+  "theme": "Removable adhesive notes and remembered promises: a tiny sticky paper creature records impressions in its creases, then folds remembered routes into a long recollecting dragon.",
+  "region": "twin_cities",
+  "habitat": "Research workshops, library noticeboards and sheltered skyway bulletin corners in Minneapolis/St Paul.",
+  "map_placement": {
+    "towns": [
+      "MINNEAPOLIS",
+      "ST_PAUL"
+    ],
+    "routes": [
+      "MN_R04"
+    ],
+    "status": "proposed habitat only; no new map or encounter mutation"
+  },
+  "sources": [
+    {
+      "url": "https://www.mnhs.org/mnopedia/search/index/thing/post-it-notes",
+      "institution": "Minnesota Historical Society",
+      "supports": "Minnesota development of a light removable adhesive and its adaptation from bookmarks into repositionable paper notes. Memory powers and creature design are original fiction."
+    }
+  ],
+  "members": [
+    {
+      "id": "MN_186",
+      "name": "Jotlet",
+      "types": [
+        "PSYCHIC"
+      ],
+      "stage": 1,
+      "evolves_to": "MN_187",
+      "body_growth": "A single square page folded into a squat triangular head/body; peeled lower corners form two sticky toes and one lifted corner acts as an expressive ear. Its eyes sit on the folded seam, without writing or logos.",
+      "silhouette": "Small square-backed wedge with one raised triangular corner and two broad tab feet."
+    },
+    {
+      "id": "MN_187",
+      "name": "Memofold",
+      "types": [
+        "PSYCHIC"
+      ],
+      "stage": 2,
+      "evolves_to": "MN_188",
+      "body_growth": "The page multiplies into a short accordion spine, four folded tab legs and a hood formed from overlapping memory leaves. It peels off a lost fold and reattaches it as an extra arm to retrieve objects.",
+      "silhouette": "Low four-legged accordion with broad hood, raised reaching paper arm and a fan of three rear tabs."
+    },
+    {
+      "id": "MN_188",
+      "name": "Recallisk",
+      "types": [
+        "PSYCHIC",
+        "DRAGON"
+      ],
+      "stage": 3,
+      "evolves_to": null,
+      "body_growth": "Accordion spine unfolds into a long arched dragon neck; layers become a broad pleated shoulder frill and four strong crease-jointed limbs. Its curled tail is a stack of peelable tabs. It rebuilds the position of its folds after each attack, remembering its previous shape.",
+      "silhouette": "Tall arched neck above a wide pleated frill, planted four-fold limbs and a curled stepped tab tail; recognizably a paper creature rather than a normal dragon wearing paper."
+    }
+  ],
+  "sprite_design": "Large flat folded planes and 2-3 broad crease marks; no letters, logos or tiny writing. Each species gets its own related four-color GBC palette, proposed pale yellow/brown -> lavender/deep teal -> cream/violet. Front56x56, back48x48 close portrait focused on hood/frill and neck. Preserve white paper with deliberate stepped dark seams.",
+  "status": "root-locked",
+  "proposed_routes": [
+    "MN_R04"
+  ],
+  "design_status": "root-reviewed-locked-for-art",
+  "design_lock": "locked by root; first153identities fixed"
+}

@@ -1,0 +1,182 @@
+{
+  "schema_version": 1,
+  "id": "northstar-drill-lair-v2",
+  "status": "Published in character-story-v5; full native maze, piston, rival, shutdown, crew quest, return and Continue course passed. Finn stdio refusal/retry and follow-up passed with byte-empty stderr.",
+  "texts": {
+    "MnNDrillScoutQuestText": [
+      "NELL: My partner",
+      "is down there.",
+      "They started while",
+      "we were checking",
+      "the pressure line.",
+      "Find the feed.",
+      "Get them out."
+    ],
+    "MnNDrillCrewCallText": [
+      "Stop the test!",
+      "We're still below",
+      "the drill head!"
+    ],
+    "MnNDrillForemanText": [
+      "LODE: Keep it on.",
+      "I promised a full",
+      "test by tonight.",
+      "Nobody gets paid",
+      "for another delay."
+    ],
+    "MnNDrillReedWorkText": [
+      "REED: You heard",
+      "the foreman.",
+      "I'm paid to keep",
+      "this shift moving."
+    ],
+    "MnNDrillReedSeenText": [
+      "REED: ELLIS can",
+      "have their meters.",
+      "These people need",
+      "to do their jobs.",
+      "And you need to",
+      "leave us alone."
+    ],
+    "MnNDrillReedWonText": [
+      "They'll take this",
+      "out of my wages."
+    ],
+    "MnNDrillReedLostText": [
+      "Go back to ELLIS."
+    ],
+    "MnNDrillReedAfterText": [
+      "I'm not waiting",
+      "for your lecture.",
+      "LODE's paying",
+      "for the next run."
+    ],
+    "MnNDrillPowerText": [
+      "DRILL DRIVE",
+      "Stop the test?"
+    ],
+    "MnNDrillPowerDeniedText": [
+      "The feed line",
+      "is still live.",
+      "Isolate it in",
+      "the pump gallery."
+    ],
+    "MnNDrillPowerDoneText": [
+      "FINN: I thought",
+      "they had heard me.",
+      "NELL sent you?",
+      "I have the meter.",
+      "Come here."
+    ],
+    "MnNDrillPowerAfterText": [
+      "The drill drive",
+      "is switched off."
+    ],
+    "MnNDrillGalleryText": [
+      "PUMP FEED",
+      "Isolate the line?"
+    ],
+    "MnNDrillGalleryDoneText": [
+      "The valve closes.",
+      "Pressure falls.",
+      "The old crosscut",
+      "opens behind you."
+    ],
+    "MnNDrillGalleryAfterText": [
+      "The pump feed",
+      "is isolated."
+    ],
+    "MnNDrillMeterDeniedText": [
+      "NELL: Leave that",
+      "until we're clear.",
+      "It's connected",
+      "to the test line."
+    ],
+    "MnNDrillMeterQuestText": [
+      "FINN: ELLIS built",
+      "this pressure",
+      "meter for us.",
+      "The needle stuck",
+      "when they started.",
+      "Bring it to",
+      "GRAND RAPIDS.",
+      "The repair bench",
+      "can read it.",
+      "Tell NELL I am",
+      "taking the stair."
+    ],
+    "MnNDrillMeterAfterText": [
+      "FINN: I will call",
+      "TAMARACK myself.",
+      "She needs to know",
+      "we made it out."
+    ],
+    "MnNDrillEmptyCaseText": [
+      "The meter case",
+      "is empty.",
+      "FINN has it below",
+      "the pump gallery."
+    ],
+    "MnNDrillPublicAfterText": [
+      "NELL: FINN called.",
+      "I was frightened",
+      "to leave here.",
+      "Thank you for",
+      "going down there."
+    ],
+    "MnNDrillCrewReadyText": [
+      "FINN: Can you take",
+      "the meter to the",
+      "repair bench in",
+      "GRAND RAPIDS?"
+    ],
+    "MnNDrillReedBlocksText": [
+      "REED is guarding",
+      "the drive switch."
+    ],
+    "MnNSTPMinaInterruptText": [
+      "MINA: Stop.",
+      "My crew has not",
+      "cleared that pump.",
+      "They are still",
+      "working below it."
+    ],
+    "MnNSTPMinaReadyText": [
+      "MINA: My brother",
+      "works the lift",
+      "in BRAINERD.",
+      "Will you check",
+      "on his crew?"
+    ],
+    "MnNSTPMinaQuestText": [
+      "The north road",
+      "goes through",
+      "ST CLOUD.",
+      "Then BRAINERD.",
+      "Tell the lift crew",
+      "ELLIS never",
+      "cleared this pump.",
+      "I will stop the",
+      "next shipment."
+    ],
+    "MnNSTPMinaAfterText": [
+      "MINA: The next",
+      "shipment can wait.",
+      "Let LODE come here",
+      "and argue with me."
+    ],
+    "MnNSTPPaperFlavorText": [
+      "Shipping labels",
+      "for pump parts.",
+      "MINA knows where",
+      "they were loaded."
+    ],
+    "MnNDrillReedPostgameText": [
+      "REED: LODE stopped",
+      "calling me back.",
+      "You got your lake.",
+      "Do not ask me",
+      "to thank you."
+    ]
+  }
+}

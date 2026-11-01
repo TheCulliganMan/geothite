@@ -1,0 +1,213 @@
+{
+  "species": "stackajack",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f016/stackajack-v14-roomy-pupils",
+  "status": "actual-source native proof passes; root visual/context acceptance pending",
+  "all_four_nonrear_actual_isolated_source_pupils": true,
+  "six16px_alpha_border_normal_shiny_runtime_parity": true,
+  "canonical_palettes": true,
+  "literal_2bpp_all1536indices_exact": true,
+  "bank_sha256": "642780c35e7e8ea151aa47851119df29a1711c01306b609d1042edd6bbc9ea34",
+  "proof": [
+    {
+      "pose": "down_idle",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            7,
+            8
+          ],
+          "source_sample": [
+            255,
+            235
+          ],
+          "source_component": [
+            230,
+            232,
+            29,
+            28
+          ],
+          "component_pixels": 796,
+          "native_neighbors": [
+            1,
+            1,
+            2,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            254
+          ]
+        },
+        {
+          "native": [
+            9,
+            8
+          ],
+          "source_sample": [
+            329,
+            235
+          ],
+          "source_component": [
+            318,
+            232,
+            28,
+            28
+          ],
+          "component_pixels": 784,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            254
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            6,
+            8
+          ],
+          "source_sample": [
+            1206,
+            237
+          ],
+          "source_component": [
+            1185,
+            231,
+            29,
+            30
+          ],
+          "component_pixels": 849,
+          "native_neighbors": [
+            1,
+            1,
+            2,
+            1
+          ],
+          "source_rgba": [
+            2,
+            2,
+            1,
+            254
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            7,
+            8
+          ],
+          "source_sample": [
+            255,
+            676
+          ],
+          "source_component": [
+            230,
+            673,
+            29,
+            29
+          ],
+          "component_pixels": 821,
+          "native_neighbors": [
+            1,
+            1,
+            2,
+            1
+          ],
+          "source_rgba": [
+            8,
+            6,
+            1,
+            253
+          ]
+        },
+        {
+          "native": [
+            9,
+            8
+          ],
+          "source_sample": [
+            329,
+            676
+          ],
+          "source_component": [
+            317,
+            673,
+            29,
+            30
+          ],
+          "component_pixels": 863,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            6,
+            4,
+            1,
+            254
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            6,
+            8
+          ],
+          "source_sample": [
+            1206,
+            681
+          ],
+          "source_component": [
+            1186,
+            676,
+            28,
+            29
+          ],
+          "component_pixels": 812,
+          "native_neighbors": [
+            1,
+            1,
+            2,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            254
+          ]
+        }
+      ]
+    }
+  ],
+  "hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f016/stackajack-v14-roomy-pupils/compiled-index.json": "9ccf8ff949769a11550f7db544b2be9d6bfcf146cbfd2dd233c4ee0406c054c5",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f016/stackajack.overworld.imagegen-v4-coarse-outline.png": "189c4d4ad15dc906cc053fe1129fa5c9a423ca592de5f19db62db5f49de66886",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f016/stackajack.overworld.imagegen-v5-isolated-profiles.png": "7daf17dc93c70b5ec89170a98331fe10f305dc17f3cf10951443452cda2e8c18",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f016/stackajack-v14-roomy-pupils/gfx/pokemon/stackajack/overworld.2bpp": "642780c35e7e8ea151aa47851119df29a1711c01306b609d1042edd6bbc9ea34"
+  },
+  "no_native_pixel_painting": true
+}

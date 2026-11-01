@@ -9,14 +9,19 @@ members = [
     "crates/crystal-net",
     "crates/crystal-render-api",
     "crates/crystal-runtime",
+    "crates/crystal-terrain-worker",
+    "crates/crystal-actor-worker",
     "crates/crystal-tui",
+    "crates/crystal-tui-view",
     "crates/crystal-voxel-view",
     "crates/crystal-web-server",
+    "crates/offset-allocator",
 ]
-resolver = "2"
+resolver = "3"
 
 [patch.crates-io]
-bevy_winit = { path = "vendor/bevy_winit" }
+# Preserve Bevy's allocator contract while materializing metadata on demand.
+offset-allocator = { path = "crates/offset-allocator" }
 
 # The shipped Bevy binary is a real-time renderer.  Keep release builds
 # optimized across crate boundaries and avoid spending runtime CPU on unwind
@@ -48,27 +53,71 @@ opt-level = 3
 [profile.web-release.package.crystal-runtime]
 opt-level = 3
 
+# Damage preparation and competitive search execute inside a single frame.
+[profile.web-release.package.crystal-core]
+opt-level = 3
+codegen-units = 1
+
 [profile.web-release.package.crystal-voxel-view]
+opt-level = 3
+
+[profile.web-release.package.crystal-flygon]
+opt-level = 3
+
+# Pack decoding and integrity checks run before the first playable frame.
+# Keep their hot loops at speed optimization; the rest of the browser graph
+# retains download-oriented size optimization.
+[profile.web-release.package.crystal-assets]
+opt-level = 3
+codegen-units = 1
+
+[profile.web-release.package.ciborium]
+opt-level = 3
+
+[profile.web-release.package.ciborium-ll]
+opt-level = 3
+
+[profile.web-release.package.sha2]
 opt-level = 3
 
 # Bevy's default dev profile (opt-level 0) makes the renderer and ECS spend
 # most of their time in bounds checks and unoptimized scheduling code.  That
 # is useful for tiny crates, but it makes ordinary `cargo run` look like the
-# game is running at a few frames per second.  Keep symbols and fast
-# incremental builds while giving the playable shell a modest optimization
+# game is running at a few frames per second. Keep line-table symbols
+# while giving the playable shell a modest optimization
 # level; release still uses the fully optimized profile above.
 [profile.dev]
 opt-level = 2
 debug = 1
+# Reuse unchanged game code when iterating instead of optimizing the entire
+# renderer and asset catalog again after every source edit.
 incremental = true
+
+# Pack authoring and decoding do not run in the frame loop. Optimizing this
+# large catalog dominates otherwise small development builds.
+[profile.dev.package.crystal-assets]
+opt-level = 0
+
+# This local patch sits beneath Bevy. Keep its fingerprint stable across
+# development and test builds so a test edit cannot rebuild the GPU stack.
+[profile.dev.package.offset-allocator]
+opt-level = 2
+incremental = false
 
 # The shell is a real-time Bevy application.  Optimizing only workspace
 # crates leaves Bevy/ECS/render dependencies at opt-level 0, which can turn a
 # normal `cargo run` into a multi-second frame loop on an otherwise idle Mac.
-# Keep debug symbols and incremental builds, but optimize the dependency graph
+# Keep debug symbols, but optimize the dependency graph
 # that executes every frame as well.
 [profile.dev.package."*"]
 opt-level = 2
+
+# Tests need short edit/compile cycles, not optimized copies of every game
+# crate. Keep the engine dependency settings inherited from dev so tests and
+# normal development builds can reuse the same compiled Bevy artifacts.
+[profile.test]
+opt-level = 0
+incremental = true
 
 # Browser iteration should retain the responsive renderer settings from `dev`,
 # without paying the release profile's whole-program ThinLTO and single
@@ -82,11 +131,29 @@ strip = "symbols"
 [workspace.package]
 edition = "2024"
 license = "ISC"
-repository = "https://github.com/TheCulliganMan/crystal-llm"
-rust-version = "1.94"
+repository = "https://github.com/TheCulliganMan/geothite"
+rust-version = "1.99"
 
 [workspace.dependencies]
+crystal-assets = { path = "crates/crystal-assets" }
+crystal-audio = { path = "crates/crystal-audio" }
+crystal-tui-view = { path = "crates/crystal-tui-view" }
+crystal-bevy = { path = "crates/crystal-bevy" }
+crystal-core = { path = "crates/crystal-core" }
+crystal-net = { path = "crates/crystal-net" }
+crystal-render-api = { path = "crates/crystal-render-api" }
+crystal-runtime = { path = "crates/crystal-runtime" }
+crystal-voxel-view = { path = "crates/crystal-voxel-view" }
+bevy = { version = "0.20", default-features = false, features = ["std", "async_executor"] }
+image = { version = "0.25.10", default-features = false, features = ["png"] }
 anyhow = "1"
+base64 = "0.22"
+flate2 = "1.1"
+js-sys = "0.3"
+wasm-bindgen = "0.2"
+wasm-bindgen-futures = "0.4"
+web-sys = "0.3"
+uuid = "1"
 bincode = { version = "2", features = ["serde"] }
 chrono = { version = "0.4", default-features = false, features = ["clock"] }
 ciborium = "0.2"
@@ -95,6 +162,3 @@ serde_json = "1"
 sha2 = "0.10"
 thiserror = "2"
 web-time = "1"
-
-[profile.web-release.package.crystal-flygon]
-opt-level = 3

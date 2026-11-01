@@ -1,0 +1,41 @@
+{
+  "name": "BRANNIC",
+  "role": "Gym Leader 4",
+  "status": "accepted-native-playable",
+  "source": "native-pixels-v2.json",
+  "integration": "binding-v1.json",
+  "controller": "controller-v1.json",
+  "native": "target/trainer-cast/brannic/native-v2",
+  "pack": "content-packs/minnesota-trainer-cast-05-v01.crystalpack",
+  "gameplay": "target/trainer-cast/brannic/gameplay-v1",
+  "log": "target/trainer-cast/brannic/controller-v1.log",
+  "reference_review": "actual-crystal-sprites-common-palette-and-scale",
+  "review_notes": "Older Black leader with bald crown, silver side hair/beard, formal black coat and steel cane. Hand-authored field cane changes sides in the rear view and stays planted while the free arm/feet stride. Face, silver beard, lapels and sparse metal details refined in native battle pixels. Real Crystal field/battle comparisons and actual production captures reviewed; native badge/single-TM/repeat/Continue pass.",
+  "fixture": "Three legal level-60 Minnesota starters; adjacent position and explicit prior-access setup. Local encounter/rewards proof, not earned traversal or intended-level balance.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/cast/05-brannic/native-pixels-v2.json": "4b11fd73c17ebcdccf573519800e689e2e5ccca223d4713dd97420acfb2d93cf",
+    "planning/minnesota/npcs/cast/05-brannic/binding-v1.json": "8e116482b581db6c20eaed092d2509c06eb27418b4b10483131762aa93310e18",
+    "planning/minnesota/npcs/cast/05-brannic/controller-v1.json": "493978eb5329bebe24bc02fcb3bc9739c8d981bad05371ef780d2589c01e957a",
+    "target/trainer-cast/brannic/native-v2/verification.json": "07f38d62b5a1152289991b92940ea50e0fae6f5a0fece4f0ac1e27efed53dfde",
+    "content-packs/minnesota-trainer-cast-05-v01.crystalpack": "a985e8ccdea045bd93e5014254a808dc61126185e4fe54157ac7bc80a9042397",
+    "target/trainer-cast/brannic/controller-v1.log": "4ef5dd92577f33d265211dd0aede3d722568ee924337df9a7d7dcc0a1ee99213",
+    "target/trainer-cast/brannic/gameplay-v1/original-npc-trainer-intro.png": "8c42d211be2444227759fc181b524253ab994c4b74438733526516b41aca5f37",
+    "target/trainer-cast/brannic/gameplay-v1/original-npc-overworld-state.png": "2f5489994e294e787e1c274811cce70e78a9250daa10328ded1bc5fd8d96b02b",
+    "target/trainer-cast/brannic/gameplay-v1/original-npc-first-turn.png": "02eb26bf5317d00ea9feaa9128c7e3f7421de5ad98f78c89204094afb15d45f4",
+    "planning/minnesota/npcs/cast/05-brannic/battle-reference-prompt.txt": "7e7cf9367f96a7f69152eb3339b8ee2b76aa1d63c6df17c1e1d007517526fc5b",
+    "planning/minnesota/npcs/cast/05-brannic/battle-reference-v1.png": "d216ce13204232767caaf0d857327b7d2521a7b05e9ae6e7b3949e3f33c52ac1",
+    "target/trainer-cast/brannic/real-comparison.png": "032db10387467411c397be08c5a1d2e942be2f2b46dca0f78b3b40dabfb06011",
+    "target/trainer-cast/brannic/battle-real-comparison.png": "d086b3d4b56bde5313b2a74ec9b5f71e737897af3b4f3b629aefbd3b21cd91a0"
+  },
+  "final_pack": "content-packs/minnesota-trainer-cast-36-v01.crystalpack",
+  "final_gameplay": "target/trainer-cast/final-audit/gameplay/05-brannic",
+  "final_log": "target/trainer-cast/final-audit/gameplay/05-brannic/controller.log",
+  "final_status": "accepted-native-playable-final-pack",
+  "final_review": "Actual battle intro and field captures inspected on exact final pack; art retains accepted native sources and palette.",
+  "final_evidence_sha256": {
+    "target/trainer-cast/final-audit/gameplay/05-brannic/controller.log": "0c262357b06ae92da65c36a695a790fd8eb3cdae326393f2c6028bded111602d",
+    "target/trainer-cast/final-audit/gameplay/05-brannic/original-npc-trainer-intro.png": "8c42d211be2444227759fc181b524253ab994c4b74438733526516b41aca5f37",
+    "target/trainer-cast/final-audit/gameplay/05-brannic/original-npc-overworld-state.png": "2f5489994e294e787e1c274811cce70e78a9250daa10328ded1bc5fd8d96b02b",
+    "target/trainer-cast/final-audit/gameplay/05-brannic/original-npc-first-turn.png": "02eb26bf5317d00ea9feaa9128c7e3f7421de5ad98f78c89204094afb15d45f4"
+  }
+}

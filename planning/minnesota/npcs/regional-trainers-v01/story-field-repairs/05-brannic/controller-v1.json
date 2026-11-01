@@ -1,0 +1,23 @@
+{
+  "trainers": [
+    {
+      "id": "MN_GYM_4",
+      "map": "MnStPaulGym",
+      "approach": [
+        11,
+        3
+      ],
+      "facing": "south",
+      "trainer_class": "MN_LEADER_BRANNIC",
+      "sprite": "SPRITE_MN_LEADER_BRANNIC",
+      "actor_script": "MnStPaulGymLeader",
+      "fixture_events": [
+        "EVENT_MN_GYM_4_COURT_OPEN"
+      ],
+      "fixture_badges": 3,
+      "defeated_flag": "EVENT_MN_GYM_4_DEFEATED",
+      "badge_slot": 4,
+      "reward_item": "TM_STEEL_WING"
+    }
+  ]
+}

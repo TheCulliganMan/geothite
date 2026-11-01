@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "command": [
+    "cargo",
+    "clippy",
+    "--locked",
+    "--profile",
+    "wasm-dev",
+    "-p",
+    "crystal-bevy",
+    "--all-targets"
+  ],
+  "exit_code": 0,
+  "log": ".local/route-grass-review/brainerd-current-bevy-all-target-clippy-v01.log",
+  "source_sha256": {
+    "crates/crystal-bevy/src/bevy_shell/tests/brainerd_city.rs": "0a0141ab57a49e1029aa71d692ad55c61257cd4e050421c775327588488bcd69"
+  },
+  "owned_leaf_format_exit_code": 0
+}

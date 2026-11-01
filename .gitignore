@@ -4,6 +4,7 @@
 # Generated runtime captures, profiles, and browser scratch files.
 /output/
 /.playwright-cli/
+/trace-*.json
 
 # Local deployment secrets.
 .env
@@ -41,3 +42,11 @@ blob-report/
 .DS_Store
 __pycache__/
 *.py[cod]
+
+# Editable .blend files and published PNG previews are ordinary tracked assets.
+
+# Optional static model previews duplicate runtime geometry and stay local.
+*.stl
+
+# Generated Bemidji integration receipt; preserve the authored town contract.
+/planning/minnesota/towns/bemidji-roof-plateau-v01/INTEGRATION.json

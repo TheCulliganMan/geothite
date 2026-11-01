@@ -1,0 +1,103 @@
+{
+  "interior": "MnIronDrillApproach",
+  "parent": "MnR09Cave1F",
+  "source_file": "caves/iron-crosscut-v01/after.json",
+  "source_room_id": "MnIronDrillApproach",
+  "source_kind": "authored_story_floor",
+  "purpose": "Fitted Iron Range ore crosscut with original cache/encounters, real mine/haulage ladders and a standalone native westward return lip.",
+  "dimensions_metatiles": [
+    16,
+    13
+  ],
+  "arrival_core": [
+    6,
+    21
+  ],
+  "arrival_warp_index": 2,
+  "return_trigger_core": [
+    7,
+    21
+  ],
+  "return_triggers_core": [
+    [
+      7,
+      21
+    ]
+  ],
+  "paired_bindings": [
+    {
+      "parent": "MnR09Cave1F",
+      "parent_entry_core": [
+        19,
+        11
+      ],
+      "parent_entry_warp_index": 3,
+      "arrival_core": [
+        6,
+        21
+      ],
+      "arrival_warp_index": 2,
+      "arrival_collision": "FLOOR",
+      "return_trigger_indices": [
+        1
+      ],
+      "return_triggers_core": [
+        [
+          7,
+          21
+        ]
+      ],
+      "parent_safe_returns_core": [
+        [
+          19,
+          9
+        ]
+      ],
+      "pair_kind": "native_story_stairs"
+    },
+    {
+      "parent": "MnIronHaulage",
+      "parent_entry_core": [
+        5,
+        22
+      ],
+      "parent_entry_warp_index": 1,
+      "arrival_core": [
+        24,
+        5
+      ],
+      "arrival_warp_index": 4,
+      "arrival_collision": "FLOOR",
+      "return_trigger_indices": [
+        3
+      ],
+      "return_triggers_core": [
+        [
+          25,
+          5
+        ]
+      ],
+      "parent_safe_returns_core": [
+        [
+          4,
+          23
+        ]
+      ],
+      "pair_kind": "native_story_stairs"
+    }
+  ],
+  "resident_scripts": [
+    "MN_LODE_ARC_ACCESS",
+    "MN_LODE_ARC_SPOIL"
+  ],
+  "requires_real_collision_check": true,
+  "native_binding_scope": "Selected735-map current parent; only this floor terrain changes.",
+  "exterior_door_status": "Both original paired bindings remain exact, including Haulage active5,22 and passive4,23.",
+  "source_design": "caves/iron-crosscut-v01/after.json",
+  "source_collision_checked": true,
+  "candidate_source_sha256": "8416ec3715365d2719408b35bcea723db684ccc7943d1ebdbabd5fb5ffe92ea9",
+  "native_review_pack": "content-packs/minnesota-iron-crosscut-bends-v01.crystalpack",
+  "native_review_pack_sha256": "a69310b47d2e3583d9fb8378784c919584591d6e260d5f548ae10ea0cd3409ce",
+  "native_status": "Four native cases and1420 production calls verify both one-way lanes/reverse/Continue, straight stair, actual paired ladders, both original trainer victories, native Ether use, capacity retry and persistence.",
+  "verification": "planning/minnesota/renders/iron-crosscut-v932/acceptance-v949.json"
+}

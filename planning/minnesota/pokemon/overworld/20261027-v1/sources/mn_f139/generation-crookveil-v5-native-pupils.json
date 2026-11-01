@@ -1,0 +1,71 @@
+{
+  "tool": "built-in image_gen",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f139/crookveil-v5-native-pupils",
+  "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f139/manifest-crookveil-v5-native-pupils.json",
+  "normalized_receipt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f139/source-feature-proof-crookveil-v5-native-pupils.json",
+  "all_raws_prompts_rejected_trials_retained": true,
+  "no_native_pixel_painting": true,
+  "no_registry_or_pack_mutation": true,
+  "normal_shiny_boards_actually_viewed": true,
+  "canonical_palettes": [
+    [
+      32767,
+      16717,
+      11526,
+      0
+    ],
+    [
+      32767,
+      9717,
+      13546,
+      0
+    ]
+  ],
+  "native_bounds": [
+    [
+      4,
+      4,
+      8,
+      11
+    ],
+    [
+      4,
+      4,
+      8,
+      10
+    ],
+    [
+      1,
+      4,
+      14,
+      9
+    ],
+    [
+      4,
+      4,
+      8,
+      11
+    ],
+    [
+      4,
+      4,
+      8,
+      11
+    ],
+    [
+      1,
+      4,
+      14,
+      10
+    ]
+  ],
+  "retained_source_hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f139/crookveil.overworld.imagegen-v2-eyes.png": "478238c3415bcfb09f966b277c388420d5d1c106363452f62ec99450bf0abcc9",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f139/crookveil.overworld.imagegen-v1.png": "00e50173e085765c9a4a4a873fea8372e78a0eb0bcf41b4c0c1bb625c7feb55d",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f139/prompt-crookveil-v1.txt": "6303cd5f23e9e8783026eac3bbc6f1cbd7b990c5340f2a3af61d92a756382ecf",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f139/prompt-crookveil-v2-eyes.txt": "b734218bbfd22e5a16dd574ddd211e27dca5bfec35888b3514c9a3eee90636b7",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f139/crookveil.v2-eyes.original-path.txt": "918fc225a2960e9220991773e8df42525e0b32c5044e25a6efe33036ba8dd9cb",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f139/crookveil.v1.original-path.txt": "42bb463106aca4667608f5ed085b6c74213a21f1e58ded01ee0b7d9d8e5e8799"
+  },
+  "status": "root independent visual/context acceptance pending"
+}

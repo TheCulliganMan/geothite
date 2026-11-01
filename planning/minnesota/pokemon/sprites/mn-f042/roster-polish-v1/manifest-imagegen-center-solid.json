@@ -1,0 +1,138 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F042",
+  "status": "native-conversion-pending",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_093": {
+      "species_id": "MN_093",
+      "name": "Tiltawisp",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          23,
+          8
+        ],
+        [
+          12,
+          6,
+          20
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        8959,
+        20684,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          189,
+          66
+        ],
+        [
+          99,
+          49,
+          165
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FFBD42",
+        "#6331A5",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f042/roster-polish-v1/prompt-imagegen-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png",
+      "target/minnesota-pokemon/gen2-reference/bugs.png"
+    ]
+  },
+  "sprites": [
+    {
+      "id": "mn-093-tiltawisp-polish-v1",
+      "species_id": "MN_093",
+      "view": "front",
+      "source": "sprites/mn-f042/roster-polish-v1/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        930,
+        887
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        8959,
+        20684,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "solid",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-093-tiltawisp-polish-v1",
+      "species_id": "MN_093",
+      "view": "back",
+      "source": "sprites/mn-f042/roster-polish-v1/front-back.imagegen-v1.png",
+      "crop": [
+        940,
+        0,
+        834,
+        887
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        8959,
+        20684,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "solid",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    }
+  ],
+  "visual_review": {
+    "status": "pending",
+    "sheet_sha256": "",
+    "outline_profile": "solid-exterior-v1",
+    "notes": "New identity-preserving ImageGen source; native comparison pending."
+  }
+}

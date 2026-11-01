@@ -1,0 +1,2330 @@
+{
+  "schema_version": 2,
+  "id": "MnDuluth",
+  "tileset": "johto_modern",
+  "compiled_tileset": "mn_duluth",
+  "dimensions_metatiles": [
+    32,
+    24
+  ],
+  "coordinate_units": "32px metatiles; zero-based explicit hand strokes",
+  "shore_fitting": "johto_8_neighbors",
+  "reject_cliff_cuts": true,
+  "source_pixels_modified": false,
+  "additional_water_blocks": [
+    "30",
+    "31",
+    "32",
+    "34",
+    "36",
+    "38",
+    "39",
+    "3a"
+  ],
+  "derived_blocks": [],
+  "layers": [
+    {
+      "name": "Harbor basin and eastern Superior water",
+      "kind": "polygon",
+      "points": [
+        [
+          0,
+          21
+        ],
+        [
+          2,
+          21
+        ],
+        [
+          2,
+          20
+        ],
+        [
+          13,
+          20
+        ],
+        [
+          13,
+          19
+        ],
+        [
+          14,
+          19
+        ],
+        [
+          14,
+          14
+        ],
+        [
+          17,
+          14
+        ],
+        [
+          17,
+          13
+        ],
+        [
+          31,
+          13
+        ],
+        [
+          31,
+          23
+        ],
+        [
+          0,
+          23
+        ]
+      ],
+      "material": "water"
+    },
+    {
+      "name": "Congdon bluff contour and one real eastern ramp",
+      "kind": "cliff_polygon",
+      "points": [
+        [
+          2,
+          3
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          5,
+          2
+        ],
+        [
+          9,
+          2
+        ],
+        [
+          9,
+          3
+        ],
+        [
+          12,
+          3
+        ],
+        [
+          12,
+          4
+        ],
+        [
+          13,
+          4
+        ],
+        [
+          13,
+          6
+        ],
+        [
+          12,
+          6
+        ],
+        [
+          12,
+          10
+        ],
+        [
+          3,
+          10
+        ],
+        [
+          3,
+          8
+        ],
+        [
+          2,
+          8
+        ]
+      ]
+    },
+    {
+      "name": "Upper hillside residential garden",
+      "kind": "rect",
+      "bounds": [
+        3,
+        3,
+        12,
+        9
+      ],
+      "material": "lawn"
+    },
+    {
+      "name": "Upper shelf southern turf behind ledge",
+      "kind": "rect",
+      "bounds": [
+        4,
+        9,
+        11,
+        10
+      ],
+      "material": "lawn"
+    },
+    {
+      "name": "Service streets and north trailhead land",
+      "kind": "polygon",
+      "points": [
+        [
+          14,
+          2
+        ],
+        [
+          23,
+          2
+        ],
+        [
+          23,
+          5
+        ],
+        [
+          26,
+          5
+        ],
+        [
+          26,
+          7
+        ],
+        [
+          29,
+          7
+        ],
+        [
+          29,
+          12
+        ],
+        [
+          26,
+          12
+        ],
+        [
+          26,
+          13
+        ],
+        [
+          16,
+          13
+        ],
+        [
+          16,
+          12
+        ],
+        [
+          13,
+          12
+        ],
+        [
+          13,
+          9
+        ],
+        [
+          14,
+          9
+        ]
+      ],
+      "material": "lawn"
+    },
+    {
+      "name": "Lower hillside and working harbor mainland",
+      "kind": "polygon",
+      "points": [
+        [
+          2,
+          11
+        ],
+        [
+          13,
+          11
+        ],
+        [
+          13,
+          13
+        ],
+        [
+          15,
+          13
+        ],
+        [
+          15,
+          18
+        ],
+        [
+          13,
+          18
+        ],
+        [
+          13,
+          20
+        ],
+        [
+          3,
+          20
+        ],
+        [
+          3,
+          19
+        ],
+        [
+          2,
+          19
+        ]
+      ],
+      "material": "lawn"
+    },
+    {
+      "name": "Canal Park island and point",
+      "kind": "polygon",
+      "points": [
+        [
+          20,
+          15
+        ],
+        [
+          25,
+          15
+        ],
+        [
+          25,
+          16
+        ],
+        [
+          27,
+          16
+        ],
+        [
+          27,
+          20
+        ],
+        [
+          26,
+          20
+        ],
+        [
+          26,
+          21
+        ],
+        [
+          22,
+          21
+        ],
+        [
+          22,
+          20
+        ],
+        [
+          20,
+          20
+        ]
+      ],
+      "material": "lawn"
+    },
+    {
+      "name": "Original Iron Range west arrival street",
+      "kind": "path",
+      "points": [
+        [
+          0,
+          12
+        ],
+        [
+          16,
+          12
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "Original North Shore checkpoint approach",
+      "kind": "path",
+      "points": [
+        [
+          16,
+          0
+        ],
+        [
+          16,
+          12
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "Bluff and service street ordinary return",
+      "kind": "path",
+      "points": [
+        [
+          13,
+          8
+        ],
+        [
+          16,
+          8
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "Upper civic street below gym and house",
+      "kind": "path",
+      "points": [
+        [
+          4,
+          7
+        ],
+        [
+          11,
+          7
+        ],
+        [
+          11,
+          8
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "Upper hillside home porch",
+      "kind": "path",
+      "points": [
+        [
+          4,
+          6
+        ],
+        [
+          4,
+          7
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "Norek gym approach",
+      "kind": "path",
+      "points": [
+        [
+          8,
+          6
+        ],
+        [
+          8,
+          7
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "Clinic porch lane",
+      "kind": "path",
+      "points": [
+        [
+          16,
+          6
+        ],
+        [
+          20,
+          6
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "Mart shore lane",
+      "kind": "path",
+      "points": [
+        [
+          16,
+          10
+        ],
+        [
+          25,
+          10
+        ],
+        [
+          25,
+          12
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "Lower harbor street spine",
+      "kind": "path",
+      "points": [
+        [
+          5,
+          12
+        ],
+        [
+          5,
+          17
+        ],
+        [
+          13,
+          17
+        ],
+        [
+          13,
+          15
+        ],
+        [
+          15,
+          15
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "Harbor watch porch",
+      "kind": "path",
+      "points": [
+        [
+          4,
+          16
+        ],
+        [
+          4,
+          17
+        ],
+        [
+          5,
+          17
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "Ore history house porch",
+      "kind": "path",
+      "points": [
+        [
+          9,
+          16
+        ],
+        [
+          9,
+          17
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "Harbor launch lane",
+      "kind": "path",
+      "points": [
+        [
+          11,
+          17
+        ],
+        [
+          11,
+          19
+        ],
+        [
+          13,
+          19
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "Island workshop front street",
+      "kind": "path",
+      "points": [
+        [
+          20,
+          18
+        ],
+        [
+          25,
+          18
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "Island waterfront promenade",
+      "kind": "path",
+      "points": [
+        [
+          21,
+          17
+        ],
+        [
+          21,
+          19
+        ],
+        [
+          25,
+          19
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "Mainland bridge landing",
+      "kind": "path",
+      "points": [
+        [
+          13,
+          15
+        ],
+        [
+          15,
+          15
+        ],
+        [
+          15,
+          16
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "Native east hillside ramp",
+      "kind": "point",
+      "position": [
+        12,
+        8
+      ],
+      "block": "74"
+    },
+    {
+      "name": "Native rock face closes downhill ledge ends",
+      "kind": "point",
+      "position": [
+        5,
+        10
+      ],
+      "block": "72"
+    },
+    {
+      "name": "Useful downhill native ledge",
+      "kind": "point",
+      "position": [
+        6,
+        10
+      ],
+      "block": "57"
+    },
+    {
+      "name": "Useful downhill native ledge",
+      "kind": "point",
+      "position": [
+        7,
+        10
+      ],
+      "block": "57"
+    },
+    {
+      "name": "Useful downhill native ledge",
+      "kind": "point",
+      "position": [
+        8,
+        10
+      ],
+      "block": "57"
+    },
+    {
+      "name": "Native rock face closes downhill ledge ends",
+      "kind": "point",
+      "position": [
+        9,
+        10
+      ],
+      "block": "72"
+    },
+    {
+      "name": "Hill house complete cyan source facade",
+      "kind": "point",
+      "position": [
+        4,
+        4
+      ],
+      "block": "18"
+    },
+    {
+      "name": "Hill house complete cyan source facade",
+      "kind": "point",
+      "position": [
+        5,
+        4
+      ],
+      "block": "19"
+    },
+    {
+      "name": "Hill house complete cyan source facade",
+      "kind": "point",
+      "position": [
+        4,
+        5
+      ],
+      "block": "1a"
+    },
+    {
+      "name": "Hill house complete cyan source facade",
+      "kind": "point",
+      "position": [
+        5,
+        5
+      ],
+      "block": "11"
+    },
+    {
+      "name": "Gym complete native six-tile facade",
+      "kind": "point",
+      "position": [
+        7,
+        4
+      ],
+      "block": "18"
+    },
+    {
+      "name": "Gym complete native six-tile facade",
+      "kind": "point",
+      "position": [
+        8,
+        4
+      ],
+      "block": "1f"
+    },
+    {
+      "name": "Gym complete native six-tile facade",
+      "kind": "point",
+      "position": [
+        9,
+        4
+      ],
+      "block": "19"
+    },
+    {
+      "name": "Gym complete native six-tile facade",
+      "kind": "point",
+      "position": [
+        7,
+        5
+      ],
+      "block": "1c"
+    },
+    {
+      "name": "Gym complete native six-tile facade",
+      "kind": "point",
+      "position": [
+        8,
+        5
+      ],
+      "block": "1d"
+    },
+    {
+      "name": "Gym complete native six-tile facade",
+      "kind": "point",
+      "position": [
+        9,
+        5
+      ],
+      "block": "1e"
+    },
+    {
+      "name": "Clinic complete native facade",
+      "kind": "point",
+      "position": [
+        18,
+        4
+      ],
+      "block": "18"
+    },
+    {
+      "name": "Clinic complete native facade",
+      "kind": "point",
+      "position": [
+        19,
+        4
+      ],
+      "block": "19"
+    },
+    {
+      "name": "Clinic complete native facade",
+      "kind": "point",
+      "position": [
+        18,
+        5
+      ],
+      "block": "1a"
+    },
+    {
+      "name": "Clinic complete native facade",
+      "kind": "point",
+      "position": [
+        19,
+        5
+      ],
+      "block": "1b"
+    },
+    {
+      "name": "Mart complete native facade",
+      "kind": "point",
+      "position": [
+        23,
+        8
+      ],
+      "block": "18"
+    },
+    {
+      "name": "Mart complete native facade",
+      "kind": "point",
+      "position": [
+        24,
+        8
+      ],
+      "block": "19"
+    },
+    {
+      "name": "Mart complete native facade",
+      "kind": "point",
+      "position": [
+        23,
+        9
+      ],
+      "block": "1a"
+    },
+    {
+      "name": "Mart complete native facade",
+      "kind": "point",
+      "position": [
+        24,
+        9
+      ],
+      "block": "17"
+    },
+    {
+      "name": "Mart window is not a second door",
+      "kind": "point",
+      "position": [
+        23,
+        9
+      ],
+      "block": "10"
+    },
+    {
+      "name": "Working harbor watch house facade",
+      "kind": "point",
+      "position": [
+        3,
+        14
+      ],
+      "block": "18"
+    },
+    {
+      "name": "Working harbor watch house facade",
+      "kind": "point",
+      "position": [
+        4,
+        14
+      ],
+      "block": "19"
+    },
+    {
+      "name": "Working harbor watch house facade",
+      "kind": "point",
+      "position": [
+        3,
+        15
+      ],
+      "block": "1a"
+    },
+    {
+      "name": "Working harbor watch house facade",
+      "kind": "point",
+      "position": [
+        4,
+        15
+      ],
+      "block": "11"
+    },
+    {
+      "name": "Ore history house facade",
+      "kind": "point",
+      "position": [
+        9,
+        14
+      ],
+      "block": "14"
+    },
+    {
+      "name": "Ore history house facade",
+      "kind": "point",
+      "position": [
+        10,
+        14
+      ],
+      "block": "15"
+    },
+    {
+      "name": "Harbor receiver workshop facade",
+      "kind": "point",
+      "position": [
+        23,
+        16
+      ],
+      "block": "18"
+    },
+    {
+      "name": "Harbor receiver workshop facade",
+      "kind": "point",
+      "position": [
+        24,
+        16
+      ],
+      "block": "1f"
+    },
+    {
+      "name": "Harbor receiver workshop facade",
+      "kind": "point",
+      "position": [
+        25,
+        16
+      ],
+      "block": "19"
+    },
+    {
+      "name": "Harbor receiver workshop facade",
+      "kind": "point",
+      "position": [
+        23,
+        17
+      ],
+      "block": "10"
+    },
+    {
+      "name": "Harbor receiver workshop facade",
+      "kind": "point",
+      "position": [
+        24,
+        17
+      ],
+      "block": "24"
+    },
+    {
+      "name": "Harbor receiver workshop facade",
+      "kind": "point",
+      "position": [
+        25,
+        17
+      ],
+      "block": "11"
+    },
+    {
+      "name": "Clinic evergreen garden backing",
+      "kind": "rect",
+      "bounds": [
+        21,
+        3,
+        23,
+        6
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Clinic low flower border",
+      "kind": "rect",
+      "bounds": [
+        20,
+        6,
+        22,
+        7
+      ],
+      "material": "flowers"
+    },
+    {
+      "name": "North gate west tree screen",
+      "kind": "rect",
+      "bounds": [
+        13,
+        2,
+        15,
+        7
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "North gate east tree screen",
+      "kind": "rect",
+      "bounds": [
+        17,
+        2,
+        18,
+        5
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Mart northern street tree back",
+      "kind": "rect",
+      "bounds": [
+        23,
+        6,
+        26,
+        8
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "East shore pine shoulder",
+      "kind": "rect",
+      "bounds": [
+        27,
+        8,
+        30,
+        12
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "West harbor pines below the bluff",
+      "kind": "rect",
+      "bounds": [
+        2,
+        11,
+        4,
+        12
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Harbor house and history lane tree backing",
+      "kind": "rect",
+      "bounds": [
+        2,
+        13,
+        12,
+        14
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Harbor gardens west",
+      "kind": "rect",
+      "bounds": [
+        3,
+        18,
+        5,
+        20
+      ],
+      "material": "flowers"
+    },
+    {
+      "name": "History house flower garden",
+      "kind": "rect",
+      "bounds": [
+        10,
+        16,
+        12,
+        17
+      ],
+      "material": "flowers"
+    },
+    {
+      "name": "Upper gym eastern garden",
+      "kind": "rect",
+      "bounds": [
+        10,
+        4,
+        12,
+        7
+      ],
+      "material": "flowers"
+    },
+    {
+      "name": "Hill house western pine screen",
+      "kind": "rect",
+      "bounds": [
+        3,
+        3,
+        4,
+        7
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Island workshop pine backing",
+      "kind": "rect",
+      "bounds": [
+        22,
+        15,
+        26,
+        16
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Island south flower border",
+      "kind": "rect",
+      "bounds": [
+        22,
+        20,
+        25,
+        21
+      ],
+      "material": "flowers"
+    },
+    {
+      "name": "Upper bluff communal hardy flower strip",
+      "kind": "rect",
+      "bounds": [
+        3,
+        3,
+        12,
+        4
+      ],
+      "material": "flowers"
+    },
+    {
+      "name": "Hill home left downhill pine shoulder",
+      "kind": "rect",
+      "bounds": [
+        3,
+        7,
+        4,
+        10
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Hill western low garden joins pines",
+      "kind": "rect",
+      "bounds": [
+        4,
+        8,
+        6,
+        10
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Gym downhill east pine shoulder",
+      "kind": "rect",
+      "bounds": [
+        9,
+        9,
+        12,
+        10
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Upper hillside street west backdrop",
+      "kind": "rect",
+      "bounds": [
+        5,
+        6,
+        7,
+        7
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Clinic district northern pine roof backing",
+      "kind": "rect",
+      "bounds": [
+        17,
+        2,
+        24,
+        4
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Clinic east screen joins northern forest",
+      "kind": "rect",
+      "bounds": [
+        20,
+        4,
+        24,
+        6
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Clinic street south shoulder",
+      "kind": "rect",
+      "bounds": [
+        17,
+        7,
+        23,
+        10
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Central uphill road western tree shoulder",
+      "kind": "rect",
+      "bounds": [
+        13,
+        9,
+        16,
+        12
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Harbor edge northeast pine belt",
+      "kind": "rect",
+      "bounds": [
+        18,
+        11,
+        24,
+        14
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "East shore small forest headland",
+      "kind": "rect",
+      "bounds": [
+        26,
+        11,
+        30,
+        13
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Harbor houses separate evergreen yard",
+      "kind": "rect",
+      "bounds": [
+        6,
+        14,
+        9,
+        17
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Harbor western house shoulder",
+      "kind": "rect",
+      "bounds": [
+        2,
+        16,
+        3,
+        19
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "History house eastern pine backing",
+      "kind": "rect",
+      "bounds": [
+        11,
+        13,
+        13,
+        15
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Pier and low launch separate pine shoulder",
+      "kind": "rect",
+      "bounds": [
+        8,
+        18,
+        11,
+        20
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Workshop eastern connected pine shoulder",
+      "kind": "rect",
+      "bounds": [
+        26,
+        16,
+        28,
+        20
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Inter-house ridge canopy seals inaccessible building gap",
+      "kind": "rect",
+      "bounds": [
+        6,
+        4,
+        7,
+        6
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "West ledge end joins the pine ridge",
+      "kind": "rect",
+      "bounds": [
+        3,
+        10,
+        6,
+        11
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "West harbor facade side joins the tree screen",
+      "kind": "rect",
+      "bounds": [
+        2,
+        14,
+        3,
+        16
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Island eastern pine tip closes inaccessible shore nib",
+      "kind": "point",
+      "position": [
+        27,
+        20
+      ],
+      "block": "05"
+    },
+    {
+      "name": "East headland canopy finger defines civic crossing",
+      "kind": "rect",
+      "bounds": [
+        17,
+        11,
+        18,
+        13
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Canal bridge north solid railing",
+      "kind": "point",
+      "position": [
+        16,
+        15
+      ],
+      "block": "41"
+    },
+    {
+      "name": "Canal bridge south solid railing",
+      "kind": "point",
+      "position": [
+        16,
+        16
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Canal bridge north solid railing",
+      "kind": "point",
+      "position": [
+        17,
+        15
+      ],
+      "block": "41"
+    },
+    {
+      "name": "Canal bridge south solid railing",
+      "kind": "point",
+      "position": [
+        17,
+        16
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Canal bridge north solid railing",
+      "kind": "point",
+      "position": [
+        18,
+        15
+      ],
+      "block": "41"
+    },
+    {
+      "name": "Canal bridge south solid railing",
+      "kind": "point",
+      "position": [
+        18,
+        16
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Canal bridge north solid railing",
+      "kind": "point",
+      "position": [
+        19,
+        15
+      ],
+      "block": "41"
+    },
+    {
+      "name": "Canal bridge south solid railing",
+      "kind": "point",
+      "position": [
+        19,
+        16
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Mainland north bridge approach rail",
+      "kind": "point",
+      "position": [
+        14,
+        14
+      ],
+      "block": "41"
+    },
+    {
+      "name": "Mainland north bridge approach rail",
+      "kind": "point",
+      "position": [
+        15,
+        14
+      ],
+      "block": "41"
+    },
+    {
+      "name": "Mainland south bridge approach rail",
+      "kind": "point",
+      "position": [
+        14,
+        17
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Mainland south bridge approach rail",
+      "kind": "point",
+      "position": [
+        15,
+        17
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Mainland bridge cap",
+      "kind": "point",
+      "position": [
+        15,
+        14
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Island bridge cap",
+      "kind": "point",
+      "position": [
+        20,
+        15
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Public pier left actual rail",
+      "kind": "point",
+      "position": [
+        7,
+        20
+      ],
+      "block": "44"
+    },
+    {
+      "name": "Public pier right actual rail",
+      "kind": "point",
+      "position": [
+        8,
+        20
+      ],
+      "block": "46"
+    },
+    {
+      "name": "Public pier left actual rail",
+      "kind": "point",
+      "position": [
+        7,
+        21
+      ],
+      "block": "44"
+    },
+    {
+      "name": "Public pier right actual rail",
+      "kind": "point",
+      "position": [
+        8,
+        21
+      ],
+      "block": "46"
+    },
+    {
+      "name": "Public pier closed rocky tip",
+      "kind": "point",
+      "position": [
+        7,
+        22
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Public pier closed rocky tip",
+      "kind": "point",
+      "position": [
+        8,
+        22
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Dock access from lower street",
+      "kind": "path",
+      "points": [
+        [
+          7,
+          17
+        ],
+        [
+          7,
+          19
+        ],
+        [
+          8,
+          19
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "Working harbor edge protective curb",
+      "kind": "point",
+      "position": [
+        4,
+        20
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Working harbor edge protective curb",
+      "kind": "point",
+      "position": [
+        5,
+        20
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Working harbor edge protective curb",
+      "kind": "point",
+      "position": [
+        6,
+        20
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Working harbor edge protective curb",
+      "kind": "point",
+      "position": [
+        9,
+        20
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Working harbor edge protective curb",
+      "kind": "point",
+      "position": [
+        10,
+        20
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Working harbor edge protective curb",
+      "kind": "point",
+      "position": [
+        11,
+        20
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Working harbor edge protective curb",
+      "kind": "point",
+      "position": [
+        12,
+        20
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Canal Park point stone left rail",
+      "kind": "point",
+      "position": [
+        25,
+        20
+      ],
+      "block": "44"
+    },
+    {
+      "name": "Canal Park point stone right rail",
+      "kind": "point",
+      "position": [
+        26,
+        20
+      ],
+      "block": "46"
+    },
+    {
+      "name": "Canal Park point closed end",
+      "kind": "point",
+      "position": [
+        25,
+        21
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Canal Park point closed end",
+      "kind": "point",
+      "position": [
+        26,
+        21
+      ],
+      "block": "0a"
+    },
+    {
+      "name": "Western lake limit rock",
+      "kind": "point",
+      "position": [
+        0,
+        21
+      ],
+      "block": "34"
+    },
+    {
+      "name": "Western lake limit rock",
+      "kind": "point",
+      "position": [
+        0,
+        22
+      ],
+      "block": "34"
+    },
+    {
+      "name": "Southwest lake corner rock",
+      "kind": "point",
+      "position": [
+        0,
+        23
+      ],
+      "block": "38"
+    },
+    {
+      "name": "Southern lake rock chain",
+      "kind": "point",
+      "position": [
+        1,
+        23
+      ],
+      "block": "39"
+    },
+    {
+      "name": "Southern lake rock chain",
+      "kind": "point",
+      "position": [
+        2,
+        23
+      ],
+      "block": "39"
+    },
+    {
+      "name": "Southern lake rock chain",
+      "kind": "point",
+      "position": [
+        3,
+        23
+      ],
+      "block": "39"
+    },
+    {
+      "name": "Southern lake rock chain",
+      "kind": "point",
+      "position": [
+        4,
+        23
+      ],
+      "block": "39"
+    },
+    {
+      "name": "Southern lake rock chain",
+      "kind": "point",
+      "position": [
+        5,
+        23
+      ],
+      "block": "39"
+    },
+    {
+      "name": "Southern lake rock chain",
+      "kind": "point",
+      "position": [
+        6,
+        23
+      ],
+      "block": "39"
+    },
+    {
+      "name": "Southern lake rock chain",
+      "kind": "point",
+      "position": [
+        7,
+        23
+      ],
+      "block": "39"
+    },
+    {
+      "name": "Southern lake rock chain",
+      "kind": "point",
+      "position": [
+        8,
+        23
+      ],
+      "block": "39"
+    },
+    {
+      "name": "Southern lake rock chain",
+      "kind": "point",
+      "position": [
+        9,
+        23
+      ],
+      "block": "39"
+    },
+    {
+      "name": "Southern lake rock chain",
+      "kind": "point",
+      "position": [
+        10,
+        23
+      ],
+      "block": "39"
+    },
+    {
+      "name": "Southern lake rock chain",
+      "kind": "point",
+      "position": [
+        11,
+        23
+      ],
+      "block": "39"
+    },
+    {
+      "name": "Southern lake rock chain",
+      "kind": "point",
+      "position": [
+        12,
+        23
+      ],
+      "block": "39"
+    },
+    {
+      "name": "Southern lake rock chain",
+      "kind": "point",
+      "position": [
+        13,
+        23
+      ],
+      "block": "39"
+    },
+    {
+      "name": "Southern lake rock chain",
+      "kind": "point",
+      "position": [
+        14,
+        23
+      ],
+      "block": "39"
+    },
+    {
+      "name": "Southern lake rock chain",
+      "kind": "point",
+      "position": [
+        15,
+        23
+      ],
+      "block": "39"
+    },
+    {
+      "name": "Southern lake rock chain",
+      "kind": "point",
+      "position": [
+        16,
+        23
+      ],
+      "block": "39"
+    },
+    {
+      "name": "Southern lake rock chain",
+      "kind": "point",
+      "position": [
+        17,
+        23
+      ],
+      "block": "39"
+    },
+    {
+      "name": "Southern lake rock chain",
+      "kind": "point",
+      "position": [
+        18,
+        23
+      ],
+      "block": "39"
+    },
+    {
+      "name": "Southern lake rock chain",
+      "kind": "point",
+      "position": [
+        19,
+        23
+      ],
+      "block": "39"
+    },
+    {
+      "name": "Southern lake rock chain",
+      "kind": "point",
+      "position": [
+        20,
+        23
+      ],
+      "block": "39"
+    },
+    {
+      "name": "Southern lake rock chain",
+      "kind": "point",
+      "position": [
+        21,
+        23
+      ],
+      "block": "39"
+    },
+    {
+      "name": "Southern lake rock chain",
+      "kind": "point",
+      "position": [
+        22,
+        23
+      ],
+      "block": "39"
+    },
+    {
+      "name": "Southern lake rock chain",
+      "kind": "point",
+      "position": [
+        23,
+        23
+      ],
+      "block": "39"
+    },
+    {
+      "name": "Southern lake rock chain",
+      "kind": "point",
+      "position": [
+        24,
+        23
+      ],
+      "block": "39"
+    },
+    {
+      "name": "Southern lake rock chain",
+      "kind": "point",
+      "position": [
+        25,
+        23
+      ],
+      "block": "39"
+    },
+    {
+      "name": "Southern lake rock chain",
+      "kind": "point",
+      "position": [
+        26,
+        23
+      ],
+      "block": "39"
+    },
+    {
+      "name": "Southern lake rock chain",
+      "kind": "point",
+      "position": [
+        27,
+        23
+      ],
+      "block": "39"
+    },
+    {
+      "name": "Southern lake rock chain",
+      "kind": "point",
+      "position": [
+        28,
+        23
+      ],
+      "block": "39"
+    },
+    {
+      "name": "Southern lake rock chain",
+      "kind": "point",
+      "position": [
+        29,
+        23
+      ],
+      "block": "39"
+    },
+    {
+      "name": "Southern lake rock chain",
+      "kind": "point",
+      "position": [
+        30,
+        23
+      ],
+      "block": "39"
+    },
+    {
+      "name": "Eastern lake limit rock",
+      "kind": "point",
+      "position": [
+        31,
+        14
+      ],
+      "block": "36"
+    },
+    {
+      "name": "Eastern lake limit rock",
+      "kind": "point",
+      "position": [
+        31,
+        15
+      ],
+      "block": "36"
+    },
+    {
+      "name": "Eastern lake limit rock",
+      "kind": "point",
+      "position": [
+        31,
+        16
+      ],
+      "block": "36"
+    },
+    {
+      "name": "Eastern lake limit rock",
+      "kind": "point",
+      "position": [
+        31,
+        17
+      ],
+      "block": "36"
+    },
+    {
+      "name": "Eastern lake limit rock",
+      "kind": "point",
+      "position": [
+        31,
+        18
+      ],
+      "block": "36"
+    },
+    {
+      "name": "Eastern lake limit rock",
+      "kind": "point",
+      "position": [
+        31,
+        19
+      ],
+      "block": "36"
+    },
+    {
+      "name": "Eastern lake limit rock",
+      "kind": "point",
+      "position": [
+        31,
+        20
+      ],
+      "block": "36"
+    },
+    {
+      "name": "Eastern lake limit rock",
+      "kind": "point",
+      "position": [
+        31,
+        21
+      ],
+      "block": "36"
+    },
+    {
+      "name": "Eastern lake limit rock",
+      "kind": "point",
+      "position": [
+        31,
+        22
+      ],
+      "block": "36"
+    },
+    {
+      "name": "Northeastern lake corner rock",
+      "kind": "point",
+      "position": [
+        31,
+        13
+      ],
+      "block": "32"
+    },
+    {
+      "name": "Southeastern lake corner rock",
+      "kind": "point",
+      "position": [
+        31,
+        23
+      ],
+      "block": "3a"
+    },
+    {
+      "name": "Island west promenade rail",
+      "kind": "point",
+      "position": [
+        20,
+        17
+      ],
+      "block": "44"
+    },
+    {
+      "name": "Island west promenade rail",
+      "kind": "point",
+      "position": [
+        20,
+        18
+      ],
+      "block": "44"
+    },
+    {
+      "name": "Island west promenade rail",
+      "kind": "point",
+      "position": [
+        20,
+        19
+      ],
+      "block": "44"
+    },
+    {
+      "name": "Island west promenade rail",
+      "kind": "point",
+      "position": [
+        20,
+        20
+      ],
+      "block": "44"
+    },
+    {
+      "name": "Island north harbor rail",
+      "kind": "point",
+      "position": [
+        21,
+        15
+      ],
+      "block": "41"
+    },
+    {
+      "name": "Island southwest solid corner",
+      "kind": "point",
+      "position": [
+        20,
+        21
+      ],
+      "block": "48"
+    },
+    {
+      "name": "Island southern promenade rail",
+      "kind": "point",
+      "position": [
+        21,
+        21
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Island southern promenade rail",
+      "kind": "point",
+      "position": [
+        22,
+        21
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Island southern promenade rail",
+      "kind": "point",
+      "position": [
+        23,
+        21
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Island southern promenade rail",
+      "kind": "point",
+      "position": [
+        24,
+        21
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Mainland harbor southwest corner",
+      "kind": "point",
+      "position": [
+        3,
+        20
+      ],
+      "block": "48"
+    },
+    {
+      "name": "Mainland harbor western low rail",
+      "kind": "point",
+      "position": [
+        2,
+        19
+      ],
+      "block": "49"
+    },
+    {
+      "name": "Mainland launch western rail",
+      "kind": "point",
+      "position": [
+        13,
+        19
+      ],
+      "block": "46"
+    },
+    {
+      "name": "Mainland harbor southeast corner",
+      "kind": "point",
+      "position": [
+        13,
+        20
+      ],
+      "block": "4a"
+    },
+    {
+      "name": "Mainland bridge landing lower rail corner",
+      "kind": "point",
+      "position": [
+        15,
+        17
+      ],
+      "block": "4a"
+    },
+    {
+      "name": "North harbor west lookout rail",
+      "kind": "point",
+      "position": [
+        16,
+        13
+      ],
+      "block": "49"
+    },
+    {
+      "name": "North harbor west lookout corner",
+      "kind": "point",
+      "position": [
+        17,
+        13
+      ],
+      "block": "4a"
+    },
+    {
+      "name": "North harbor east lookout rail",
+      "kind": "point",
+      "position": [
+        24,
+        13
+      ],
+      "block": "49"
+    },
+    {
+      "name": "North harbor east lookout rail",
+      "kind": "point",
+      "position": [
+        25,
+        13
+      ],
+      "block": "49"
+    },
+    {
+      "name": "North harbor east lookout corner",
+      "kind": "point",
+      "position": [
+        26,
+        13
+      ],
+      "block": "4a"
+    },
+    {
+      "name": "DULUTH_SIGN",
+      "kind": "point",
+      "position": [
+        2,
+        12
+      ],
+      "block": "45"
+    },
+    {
+      "name": "GYM_SIGN",
+      "kind": "point",
+      "position": [
+        10,
+        7
+      ],
+      "block": "45"
+    },
+    {
+      "name": "HILL_HOP_SIGN",
+      "kind": "point",
+      "position": [
+        6,
+        9
+      ],
+      "block": "45"
+    },
+    {
+      "name": "NORTH_GATE_SIGN",
+      "kind": "point",
+      "position": [
+        17,
+        1
+      ],
+      "block": "45"
+    },
+    {
+      "name": "CANAL_SIGN",
+      "kind": "point",
+      "position": [
+        14,
+        15
+      ],
+      "block": "45"
+    },
+    {
+      "name": "LAUNCH_SIGN",
+      "kind": "point",
+      "position": [
+        12,
+        18
+      ],
+      "block": "45"
+    },
+    {
+      "name": "DOCK_SIGN",
+      "kind": "point",
+      "position": [
+        6,
+        19
+      ],
+      "block": "45"
+    },
+    {
+      "name": "HISTORY_SIGN",
+      "kind": "point",
+      "position": [
+        11,
+        15
+      ],
+      "block": "45"
+    },
+    {
+      "name": "CLINIC_SIGN",
+      "kind": "point",
+      "position": [
+        17,
+        6
+      ],
+      "block": "45"
+    },
+    {
+      "name": "MART_SIGN",
+      "kind": "point",
+      "position": [
+        25,
+        9
+      ],
+      "block": "45"
+    },
+    {
+      "name": "RECEIVER_SIGN",
+      "kind": "point",
+      "position": [
+        22,
+        18
+      ],
+      "block": "45"
+    },
+    {
+      "name": "West reserved two-tile seam",
+      "kind": "path",
+      "points": [
+        [
+          0,
+          12
+        ],
+        [
+          1,
+          12
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "North reserved two-tile seam",
+      "kind": "path",
+      "points": [
+        [
+          16,
+          0
+        ],
+        [
+          16,
+          1
+        ]
+      ],
+      "material": "floor",
+      "width_metatiles": 1
+    },
+    {
+      "name": "SUPERIOR_LOOKOUT_SIGN",
+      "kind": "point",
+      "position": [
+        24,
+        12
+      ],
+      "block": "45"
+    }
+  ]
+}

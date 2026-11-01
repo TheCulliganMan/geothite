@@ -1,0 +1,190 @@
+{
+  "schema_version": 1,
+  "status": "Rust candidate built, strict preservation/source match and production inputs/Continue/native GPU visual review passed. Not selected. Focused Clippy pending shared slot.",
+  "parent_pack": "content-packs/minnesota-north-shore-passing-width-fauna-v02.crystalpack",
+  "parent_pack_sha256": "e951fddafee3a0c09a2356d4dd683890ac498e23daeb266d08c5f12d79ec1167",
+  "native_module_sha256": "5c115e9e211f4a0bed2588a9421db66671fd3528d285e5a1bc3941a762b48e65",
+  "tileset": "mn_bemidji_plateau_stairs",
+  "map": "MnBemidji",
+  "changes": [
+    {
+      "at_metatile": [
+        4,
+        16
+      ],
+      "before": "02",
+      "after": "85"
+    },
+    {
+      "at_metatile": [
+        5,
+        16
+      ],
+      "before": "01",
+      "after": "86"
+    },
+    {
+      "at_metatile": [
+        9,
+        8
+      ],
+      "before": "04",
+      "after": "69"
+    }
+  ],
+  "native_roof_recipes": [
+    {
+      "id": "85",
+      "source_tileset": "johto",
+      "source_block": "2c",
+      "collision": [
+        "HEADBUTT_TREE",
+        "HEADBUTT_TREE",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "id": "86",
+      "source_tileset": "johto",
+      "source_block": "2d",
+      "collision": [
+        "HEADBUTT_TREE",
+        "HEADBUTT_TREE",
+        "WALL",
+        "WALL"
+      ]
+    }
+  ],
+  "preserved_warps": [
+    {
+      "index": 1,
+      "x": 10,
+      "y": 9,
+      "target_map_constant": "MN_BEMIDJI_GYM",
+      "target_map": "MN_BEMIDJI_GYM",
+      "target_warp_id": 3
+    },
+    {
+      "index": 2,
+      "x": 10,
+      "y": 10,
+      "target_map_constant": "MN_BEMIDJI_GYM",
+      "target_map": "MN_BEMIDJI_GYM",
+      "target_warp_id": 3
+    },
+    {
+      "index": 3,
+      "x": 7,
+      "y": 15,
+      "target_map_constant": "MN_BEMIDJI_SHELF_HOUSE",
+      "target_map": "MN_BEMIDJI_SHELF_HOUSE",
+      "target_warp_id": 3
+    },
+    {
+      "index": 4,
+      "x": 7,
+      "y": 16,
+      "target_map_constant": "MN_BEMIDJI_SHELF_HOUSE",
+      "target_map": "MN_BEMIDJI_SHELF_HOUSE",
+      "target_warp_id": 3
+    },
+    {
+      "index": 5,
+      "x": 31,
+      "y": 9,
+      "target_map_constant": "MN_BEMIDJI_POKECENTER_1F",
+      "target_map": "MN_BEMIDJI_POKECENTER_1F",
+      "target_warp_id": 3
+    },
+    {
+      "index": 6,
+      "x": 31,
+      "y": 10,
+      "target_map_constant": "MN_BEMIDJI_POKECENTER_1F",
+      "target_map": "MN_BEMIDJI_POKECENTER_1F",
+      "target_warp_id": 3
+    },
+    {
+      "index": 7,
+      "x": 33,
+      "y": 17,
+      "target_map_constant": "MN_BEMIDJI_NORTH_HOUSE",
+      "target_map": "MN_BEMIDJI_NORTH_HOUSE",
+      "target_warp_id": 3
+    },
+    {
+      "index": 8,
+      "x": 33,
+      "y": 18,
+      "target_map_constant": "MN_BEMIDJI_NORTH_HOUSE",
+      "target_map": "MN_BEMIDJI_NORTH_HOUSE",
+      "target_warp_id": 3
+    },
+    {
+      "index": 9,
+      "x": 41,
+      "y": 19,
+      "target_map_constant": "MN_BEMIDJI_MART",
+      "target_map": "MN_BEMIDJI_MART",
+      "target_warp_id": 3
+    },
+    {
+      "index": 10,
+      "x": 41,
+      "y": 20,
+      "target_map_constant": "MN_BEMIDJI_MART",
+      "target_map": "MN_BEMIDJI_MART",
+      "target_warp_id": 3
+    },
+    {
+      "index": 11,
+      "x": 9,
+      "y": 37,
+      "target_map_constant": "MN_BEMIDJI_HERITAGE_HOUSE",
+      "target_map": "MN_BEMIDJI_HERITAGE_HOUSE",
+      "target_warp_id": 3
+    },
+    {
+      "index": 12,
+      "x": 9,
+      "y": 38,
+      "target_map_constant": "MN_BEMIDJI_HERITAGE_HOUSE",
+      "target_map": "MN_BEMIDJI_HERITAGE_HOUSE",
+      "target_warp_id": 3
+    }
+  ],
+  "plateau_side_closure_core": [
+    [
+      19,
+      16
+    ],
+    [
+      19,
+      17
+    ]
+  ],
+  "existing_stair_core": [
+    [
+      11,
+      20
+    ],
+    [
+      11,
+      21
+    ]
+  ],
+  "roof_core_bounds": [
+    8,
+    32,
+    11,
+    33
+  ],
+  "preserved_heritage_entrance_core": [
+    9,
+    37
+  ],
+  "visual_review_pending": false,
+  "verified_candidate_pack": "content-packs/minnesota-bemidji-roof-plateau-v01.crystalpack",
+  "verified_candidate_sha256": "d14d30be991a78440e802bae1b5b5670be837e9c2dddef7017978952c3215fdd"
+}

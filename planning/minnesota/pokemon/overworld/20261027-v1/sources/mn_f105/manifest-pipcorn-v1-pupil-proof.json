@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F105",
+  "species": [
+    {
+      "species_id": "MN_230",
+      "runtime_token": "PIPCORN",
+      "palette_rgb555": [
+        32767,
+        11071,
+        5428,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        26602,
+        9861,
+        0
+      ],
+      "fit": [
+        11,
+        11
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 64,
+      "interior_black_samples": 64,
+      "opaque_interior_minimum_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "pipcorn.overworld.imagegen-v1.png",
+          "crop": [
+            100,
+            131,
+            330,
+            340
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "pipcorn.overworld.imagegen-v1.png",
+          "crop": [
+            581,
+            134,
+            330,
+            340
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "pipcorn.overworld.imagegen-v1.png",
+          "crop": [
+            1051,
+            139,
+            330,
+            340
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "pipcorn.overworld.imagegen-v1.png",
+          "crop": [
+            104,
+            568,
+            330,
+            340
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "pipcorn.overworld.imagegen-v1.png",
+          "crop": [
+            581,
+            585,
+            330,
+            340
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "pipcorn.overworld.imagegen-v1.png",
+          "crop": [
+            1053,
+            585,
+            330,
+            340
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,608 @@
+{
+  "family_id": "MN_F137",
+  "candidate_file_count": 150,
+  "files": [
+    {
+      "path": "candidates/area-solid/source-manifest.json",
+      "sha256": "e566faedf675e23d25915ab070fd78314704545e5a0075001e8840073dab5436"
+    },
+    {
+      "path": "candidates/area-solid/mn-303-ticklet-v1.front.json",
+      "sha256": "8fbada41c70b4d1050f2e61b54474d61820eb080d148843e7e690d53a5d69d43"
+    },
+    {
+      "path": "candidates/area-solid/mn-303-ticklet-v1.back.png",
+      "sha256": "1cf0c3ad5c211ca60c72197566bc5e9873603057861e16e535139b2fbf0a894e"
+    },
+    {
+      "path": "candidates/area-solid/mn-303-ticklet-v1.back.review.png",
+      "sha256": "4e09ef50d32bd3f61600c49895b94f6de52a354d5ef940d443a9d246b90a2cfd"
+    },
+    {
+      "path": "candidates/area-solid/line.native.png",
+      "sha256": "a4f6161e380ea9ee79c3c1ba1002849a8e423030303e35346b0e615209ab85a3"
+    },
+    {
+      "path": "candidates/area-solid/mn-303-ticklet-v1.front.source-crop.png",
+      "sha256": "914f6c6fc00908d373409dfa8adaa19b3dd6d28c471fe0a0e6bb0a4a03ac709e"
+    },
+    {
+      "path": "candidates/area-solid/mn-303-ticklet-v1.front.png",
+      "sha256": "18ad6eb1868fd3e9d23c7bdc0aef9323b70712a7d4576ceb24e8dcb4eff6aa94"
+    },
+    {
+      "path": "candidates/area-solid/mn-304-solstort-v1.back.source-crop.png",
+      "sha256": "40da4fff1e240939e35c62c80b428eb9eb6da17a82b6c05f0356b54d47ce29d8"
+    },
+    {
+      "path": "candidates/area-solid/line.review.png",
+      "sha256": "f410accf0e0887b821fcf4d2cd9935d66bbcea81b7d2db33976bafd7b728940a"
+    },
+    {
+      "path": "candidates/area-solid/mn-303-ticklet-v1.back.json",
+      "sha256": "0247f6226e3ab0f0af8814ccd16dcb33a8cac891218b7bdc34e77c72d5c3658d"
+    },
+    {
+      "path": "candidates/area-solid/source-prompt.txt",
+      "sha256": "d72b5c5d53d4366cb679fcea0bd7dd7601536598d6979cb23130b7e59d302f08"
+    },
+    {
+      "path": "candidates/area-solid/mn-304-solstort-v1.front.2bpp",
+      "sha256": "327ff31293274911dc3d0cc000c6db8a8abd06bcead10c2f38a0347c9ba037c4"
+    },
+    {
+      "path": "candidates/area-solid/mn-304-solstort-v1.back.2bpp",
+      "sha256": "005c71e404362dd8bdbc45d64c2df4c338ffce4606f20a254d2c65b5648c3aae"
+    },
+    {
+      "path": "candidates/area-solid/mn-303-ticklet-v1.front.review.png",
+      "sha256": "eaa92d806ee4afe5503efca8ae1e3e6c564da02148598e2d87f39e461707361e"
+    },
+    {
+      "path": "candidates/area-solid/mn-303-ticklet-v1.back.source-crop.png",
+      "sha256": "a575e051c27519c0aaa9c749026ab3da6ef49a99efc8b426740d0d8de7f117d3"
+    },
+    {
+      "path": "candidates/area-solid/mn-303-ticklet-v1.back.2bpp",
+      "sha256": "2e60af8f58d2f249bb12f5760f060c7497c80b4b1ae3d71c03f3a1987f010599"
+    },
+    {
+      "path": "candidates/area-solid/source-69598f02982289d788a796ac6b8e3f986cb0d7876e37094f9fccef81b223888f.png",
+      "sha256": "69598f02982289d788a796ac6b8e3f986cb0d7876e37094f9fccef81b223888f"
+    },
+    {
+      "path": "candidates/area-solid/mn-304-solstort-v1.front.json",
+      "sha256": "1000ddb298355f30b4e039d1e8d5bc138580f71962ae17338f59fd761368d251"
+    },
+    {
+      "path": "candidates/area-solid/mn-304-solstort-v1.back.png",
+      "sha256": "a2cf3829e77f8e7811e2c93471b4a890a3c6ae5cd7518e8db6225f3597a40e82"
+    },
+    {
+      "path": "candidates/area-solid/mn-304-solstort-v1.back.json",
+      "sha256": "2bcce950d0525bc2b0907af8d9b9eec370940a2d2878fbec13e76a2555e2c7a2"
+    },
+    {
+      "path": "candidates/area-solid/mn-303-ticklet-v1.front.2bpp",
+      "sha256": "79fa06baa7727ed9d5c7b32fa0dc359d95f971eaf22df1012a613934e2957aba"
+    },
+    {
+      "path": "candidates/area-solid/mn-304-solstort-v1.front.png",
+      "sha256": "1101dd17ad54afdd0ae647c2328b8b51ff197049da4a8e1fd0f5e370d9b7ffb8"
+    },
+    {
+      "path": "candidates/area-solid/mn-304-solstort-v1.back.review.png",
+      "sha256": "62bbc3a005b0e981c7cd7c49ee2c999e7b7a61fa6a946a9bc9a5c16c6275419e"
+    },
+    {
+      "path": "candidates/area-solid/mn-304-solstort-v1.front.source-crop.png",
+      "sha256": "855cf978fbd43964373f76324510a7dfaad26124350bfaa9d5fbfb7b3f123d0b"
+    },
+    {
+      "path": "candidates/area-solid/mn-304-solstort-v1.front.review.png",
+      "sha256": "032b38ba78f5fcab1473da2524ebec2e894e237aa040651b156b059d7c05985e"
+    },
+    {
+      "path": "candidates/area-solid/versions/327ff31293274911dc3d0cc000c6db8a8abd06bcead10c2f38a0347c9ba037c4.mn-304-solstort-v1.front.2bpp",
+      "sha256": "327ff31293274911dc3d0cc000c6db8a8abd06bcead10c2f38a0347c9ba037c4"
+    },
+    {
+      "path": "candidates/area-solid/versions/e566faedf675e23d25915ab070fd78314704545e5a0075001e8840073dab5436.source-manifest.json",
+      "sha256": "e566faedf675e23d25915ab070fd78314704545e5a0075001e8840073dab5436"
+    },
+    {
+      "path": "candidates/area-solid/versions/8fbada41c70b4d1050f2e61b54474d61820eb080d148843e7e690d53a5d69d43.mn-303-ticklet-v1.front.json",
+      "sha256": "8fbada41c70b4d1050f2e61b54474d61820eb080d148843e7e690d53a5d69d43"
+    },
+    {
+      "path": "candidates/area-solid/versions/a2cf3829e77f8e7811e2c93471b4a890a3c6ae5cd7518e8db6225f3597a40e82.mn-304-solstort-v1.back.png",
+      "sha256": "a2cf3829e77f8e7811e2c93471b4a890a3c6ae5cd7518e8db6225f3597a40e82"
+    },
+    {
+      "path": "candidates/area-solid/versions/a575e051c27519c0aaa9c749026ab3da6ef49a99efc8b426740d0d8de7f117d3.mn-303-ticklet-v1.back.source-crop.png",
+      "sha256": "a575e051c27519c0aaa9c749026ab3da6ef49a99efc8b426740d0d8de7f117d3"
+    },
+    {
+      "path": "candidates/area-solid/versions/1cf0c3ad5c211ca60c72197566bc5e9873603057861e16e535139b2fbf0a894e.mn-303-ticklet-v1.back.png",
+      "sha256": "1cf0c3ad5c211ca60c72197566bc5e9873603057861e16e535139b2fbf0a894e"
+    },
+    {
+      "path": "candidates/area-solid/versions/f410accf0e0887b821fcf4d2cd9935d66bbcea81b7d2db33976bafd7b728940a.line.review.png",
+      "sha256": "f410accf0e0887b821fcf4d2cd9935d66bbcea81b7d2db33976bafd7b728940a"
+    },
+    {
+      "path": "candidates/area-solid/versions/2bcce950d0525bc2b0907af8d9b9eec370940a2d2878fbec13e76a2555e2c7a2.mn-304-solstort-v1.back.json",
+      "sha256": "2bcce950d0525bc2b0907af8d9b9eec370940a2d2878fbec13e76a2555e2c7a2"
+    },
+    {
+      "path": "candidates/area-solid/versions/2e60af8f58d2f249bb12f5760f060c7497c80b4b1ae3d71c03f3a1987f010599.mn-303-ticklet-v1.back.2bpp",
+      "sha256": "2e60af8f58d2f249bb12f5760f060c7497c80b4b1ae3d71c03f3a1987f010599"
+    },
+    {
+      "path": "candidates/area-solid/versions/40da4fff1e240939e35c62c80b428eb9eb6da17a82b6c05f0356b54d47ce29d8.mn-304-solstort-v1.back.source-crop.png",
+      "sha256": "40da4fff1e240939e35c62c80b428eb9eb6da17a82b6c05f0356b54d47ce29d8"
+    },
+    {
+      "path": "candidates/area-solid/versions/a4f6161e380ea9ee79c3c1ba1002849a8e423030303e35346b0e615209ab85a3.line.native.png",
+      "sha256": "a4f6161e380ea9ee79c3c1ba1002849a8e423030303e35346b0e615209ab85a3"
+    },
+    {
+      "path": "candidates/area-solid/versions/005c71e404362dd8bdbc45d64c2df4c338ffce4606f20a254d2c65b5648c3aae.mn-304-solstort-v1.back.2bpp",
+      "sha256": "005c71e404362dd8bdbc45d64c2df4c338ffce4606f20a254d2c65b5648c3aae"
+    },
+    {
+      "path": "candidates/area-solid/versions/1101dd17ad54afdd0ae647c2328b8b51ff197049da4a8e1fd0f5e370d9b7ffb8.mn-304-solstort-v1.front.png",
+      "sha256": "1101dd17ad54afdd0ae647c2328b8b51ff197049da4a8e1fd0f5e370d9b7ffb8"
+    },
+    {
+      "path": "candidates/area-solid/versions/4e09ef50d32bd3f61600c49895b94f6de52a354d5ef940d443a9d246b90a2cfd.mn-303-ticklet-v1.back.review.png",
+      "sha256": "4e09ef50d32bd3f61600c49895b94f6de52a354d5ef940d443a9d246b90a2cfd"
+    },
+    {
+      "path": "candidates/area-solid/versions/0247f6226e3ab0f0af8814ccd16dcb33a8cac891218b7bdc34e77c72d5c3658d.mn-303-ticklet-v1.back.json",
+      "sha256": "0247f6226e3ab0f0af8814ccd16dcb33a8cac891218b7bdc34e77c72d5c3658d"
+    },
+    {
+      "path": "candidates/area-solid/versions/1000ddb298355f30b4e039d1e8d5bc138580f71962ae17338f59fd761368d251.mn-304-solstort-v1.front.json",
+      "sha256": "1000ddb298355f30b4e039d1e8d5bc138580f71962ae17338f59fd761368d251"
+    },
+    {
+      "path": "candidates/area-solid/versions/d72b5c5d53d4366cb679fcea0bd7dd7601536598d6979cb23130b7e59d302f08.source-prompt.txt",
+      "sha256": "d72b5c5d53d4366cb679fcea0bd7dd7601536598d6979cb23130b7e59d302f08"
+    },
+    {
+      "path": "candidates/area-solid/versions/eaa92d806ee4afe5503efca8ae1e3e6c564da02148598e2d87f39e461707361e.mn-303-ticklet-v1.front.review.png",
+      "sha256": "eaa92d806ee4afe5503efca8ae1e3e6c564da02148598e2d87f39e461707361e"
+    },
+    {
+      "path": "candidates/area-solid/versions/62bbc3a005b0e981c7cd7c49ee2c999e7b7a61fa6a946a9bc9a5c16c6275419e.mn-304-solstort-v1.back.review.png",
+      "sha256": "62bbc3a005b0e981c7cd7c49ee2c999e7b7a61fa6a946a9bc9a5c16c6275419e"
+    },
+    {
+      "path": "candidates/area-solid/versions/914f6c6fc00908d373409dfa8adaa19b3dd6d28c471fe0a0e6bb0a4a03ac709e.mn-303-ticklet-v1.front.source-crop.png",
+      "sha256": "914f6c6fc00908d373409dfa8adaa19b3dd6d28c471fe0a0e6bb0a4a03ac709e"
+    },
+    {
+      "path": "candidates/area-solid/versions/69598f02982289d788a796ac6b8e3f986cb0d7876e37094f9fccef81b223888f.source-69598f02982289d788a796ac6b8e3f986cb0d7876e37094f9fccef81b223888f.png",
+      "sha256": "69598f02982289d788a796ac6b8e3f986cb0d7876e37094f9fccef81b223888f"
+    },
+    {
+      "path": "candidates/area-solid/versions/18ad6eb1868fd3e9d23c7bdc0aef9323b70712a7d4576ceb24e8dcb4eff6aa94.mn-303-ticklet-v1.front.png",
+      "sha256": "18ad6eb1868fd3e9d23c7bdc0aef9323b70712a7d4576ceb24e8dcb4eff6aa94"
+    },
+    {
+      "path": "candidates/area-solid/versions/855cf978fbd43964373f76324510a7dfaad26124350bfaa9d5fbfb7b3f123d0b.mn-304-solstort-v1.front.source-crop.png",
+      "sha256": "855cf978fbd43964373f76324510a7dfaad26124350bfaa9d5fbfb7b3f123d0b"
+    },
+    {
+      "path": "candidates/area-solid/versions/032b38ba78f5fcab1473da2524ebec2e894e237aa040651b156b059d7c05985e.mn-304-solstort-v1.front.review.png",
+      "sha256": "032b38ba78f5fcab1473da2524ebec2e894e237aa040651b156b059d7c05985e"
+    },
+    {
+      "path": "candidates/area-solid/versions/79fa06baa7727ed9d5c7b32fa0dc359d95f971eaf22df1012a613934e2957aba.mn-303-ticklet-v1.front.2bpp",
+      "sha256": "79fa06baa7727ed9d5c7b32fa0dc359d95f971eaf22df1012a613934e2957aba"
+    },
+    {
+      "path": "candidates/center-source/source-manifest.json",
+      "sha256": "0f8955f1dcc3c0b470c4c0fe14732c1611cafab4804b9731ec24e15dad45e561"
+    },
+    {
+      "path": "candidates/center-source/mn-303-ticklet-v1.front.json",
+      "sha256": "efb6db93f08094a585f6e4625dfd2a33a6a3e118ba8c55533652ef41209a6fdc"
+    },
+    {
+      "path": "candidates/center-source/mn-303-ticklet-v1.back.png",
+      "sha256": "10dc220668ce78ad595f06619321b19efeb76873009de191d765d2820b1a4f8c"
+    },
+    {
+      "path": "candidates/center-source/mn-303-ticklet-v1.back.review.png",
+      "sha256": "5a376751262f5dce0ad29474c9a4ce24622208cdde3e9e7b682f08789f673365"
+    },
+    {
+      "path": "candidates/center-source/line.native.png",
+      "sha256": "f284cf7c4ffc52aa1f607060241bebf19fc76df5ac3c4f5ca89e004617adc1e1"
+    },
+    {
+      "path": "candidates/center-source/mn-303-ticklet-v1.front.source-crop.png",
+      "sha256": "914f6c6fc00908d373409dfa8adaa19b3dd6d28c471fe0a0e6bb0a4a03ac709e"
+    },
+    {
+      "path": "candidates/center-source/mn-303-ticklet-v1.front.png",
+      "sha256": "ca392b5dd1a1d6571bdd3e1e67cc44cdd782afd7930701686174c2d17319be0b"
+    },
+    {
+      "path": "candidates/center-source/mn-304-solstort-v1.back.source-crop.png",
+      "sha256": "40da4fff1e240939e35c62c80b428eb9eb6da17a82b6c05f0356b54d47ce29d8"
+    },
+    {
+      "path": "candidates/center-source/line.review.png",
+      "sha256": "d23b6bb0e0cc68151c056dffc27dd9ef4454a24b2f6702e19421502484093ac1"
+    },
+    {
+      "path": "candidates/center-source/mn-303-ticklet-v1.back.json",
+      "sha256": "5dd89a15eb657b110a5a77fe406e8e1e5fbd35414c141d466c4e167dc5a88b25"
+    },
+    {
+      "path": "candidates/center-source/source-prompt.txt",
+      "sha256": "d72b5c5d53d4366cb679fcea0bd7dd7601536598d6979cb23130b7e59d302f08"
+    },
+    {
+      "path": "candidates/center-source/mn-304-solstort-v1.front.2bpp",
+      "sha256": "d32b6726c282782c09ded8ea19f13d71b88fbb4f3e6a53130940492510ad9d70"
+    },
+    {
+      "path": "candidates/center-source/mn-304-solstort-v1.back.2bpp",
+      "sha256": "1a7a171c57250922ad5594666830d017c5c71948fe7c1e95575c1a01bc0b4b6b"
+    },
+    {
+      "path": "candidates/center-source/mn-303-ticklet-v1.front.review.png",
+      "sha256": "625976b1911a234838c4f53c059ba2c838462eca2f180599d22afa362d1d9120"
+    },
+    {
+      "path": "candidates/center-source/mn-303-ticklet-v1.back.source-crop.png",
+      "sha256": "a575e051c27519c0aaa9c749026ab3da6ef49a99efc8b426740d0d8de7f117d3"
+    },
+    {
+      "path": "candidates/center-source/mn-303-ticklet-v1.back.2bpp",
+      "sha256": "012812cc973656cc58ec9d1c1573208c9f69acfd5731d5be8a4f523274a81eec"
+    },
+    {
+      "path": "candidates/center-source/source-69598f02982289d788a796ac6b8e3f986cb0d7876e37094f9fccef81b223888f.png",
+      "sha256": "69598f02982289d788a796ac6b8e3f986cb0d7876e37094f9fccef81b223888f"
+    },
+    {
+      "path": "candidates/center-source/mn-304-solstort-v1.front.json",
+      "sha256": "342086467cd0d16040a1b893180569b7351c8257fc2a280110f3a68e47995396"
+    },
+    {
+      "path": "candidates/center-source/mn-304-solstort-v1.back.png",
+      "sha256": "537bd71f508c359f915e84241402f8212d48f80d619294f00ed86764aa3327fb"
+    },
+    {
+      "path": "candidates/center-source/mn-304-solstort-v1.back.json",
+      "sha256": "c1a0c81cd48014027f0045f87f2558e1d40db5e602efb40bda41ab4e760b3ee8"
+    },
+    {
+      "path": "candidates/center-source/mn-303-ticklet-v1.front.2bpp",
+      "sha256": "1b93e1208d778dbe4d9c265d5fa5920b97c6835a42d9d6bdb16db9bda80f490f"
+    },
+    {
+      "path": "candidates/center-source/mn-304-solstort-v1.front.png",
+      "sha256": "ce7e4090e3051a0ed8285d58b0f9719a7b2bad4f24ead8592f7851193f564bb0"
+    },
+    {
+      "path": "candidates/center-source/mn-304-solstort-v1.back.review.png",
+      "sha256": "db046f6c23e0b5f30b5c1050824676ae04e13ab21e2d170eba303663ec319448"
+    },
+    {
+      "path": "candidates/center-source/mn-304-solstort-v1.front.source-crop.png",
+      "sha256": "855cf978fbd43964373f76324510a7dfaad26124350bfaa9d5fbfb7b3f123d0b"
+    },
+    {
+      "path": "candidates/center-source/mn-304-solstort-v1.front.review.png",
+      "sha256": "6493f0e68384b1d7399cc60730cb7a34927b6da858b1dee66a11b7e549409021"
+    },
+    {
+      "path": "candidates/center-source/versions/10dc220668ce78ad595f06619321b19efeb76873009de191d765d2820b1a4f8c.mn-303-ticklet-v1.back.png",
+      "sha256": "10dc220668ce78ad595f06619321b19efeb76873009de191d765d2820b1a4f8c"
+    },
+    {
+      "path": "candidates/center-source/versions/d23b6bb0e0cc68151c056dffc27dd9ef4454a24b2f6702e19421502484093ac1.line.review.png",
+      "sha256": "d23b6bb0e0cc68151c056dffc27dd9ef4454a24b2f6702e19421502484093ac1"
+    },
+    {
+      "path": "candidates/center-source/versions/6493f0e68384b1d7399cc60730cb7a34927b6da858b1dee66a11b7e549409021.mn-304-solstort-v1.front.review.png",
+      "sha256": "6493f0e68384b1d7399cc60730cb7a34927b6da858b1dee66a11b7e549409021"
+    },
+    {
+      "path": "candidates/center-source/versions/625976b1911a234838c4f53c059ba2c838462eca2f180599d22afa362d1d9120.mn-303-ticklet-v1.front.review.png",
+      "sha256": "625976b1911a234838c4f53c059ba2c838462eca2f180599d22afa362d1d9120"
+    },
+    {
+      "path": "candidates/center-source/versions/db046f6c23e0b5f30b5c1050824676ae04e13ab21e2d170eba303663ec319448.mn-304-solstort-v1.back.review.png",
+      "sha256": "db046f6c23e0b5f30b5c1050824676ae04e13ab21e2d170eba303663ec319448"
+    },
+    {
+      "path": "candidates/center-source/versions/5dd89a15eb657b110a5a77fe406e8e1e5fbd35414c141d466c4e167dc5a88b25.mn-303-ticklet-v1.back.json",
+      "sha256": "5dd89a15eb657b110a5a77fe406e8e1e5fbd35414c141d466c4e167dc5a88b25"
+    },
+    {
+      "path": "candidates/center-source/versions/d32b6726c282782c09ded8ea19f13d71b88fbb4f3e6a53130940492510ad9d70.mn-304-solstort-v1.front.2bpp",
+      "sha256": "d32b6726c282782c09ded8ea19f13d71b88fbb4f3e6a53130940492510ad9d70"
+    },
+    {
+      "path": "candidates/center-source/versions/a575e051c27519c0aaa9c749026ab3da6ef49a99efc8b426740d0d8de7f117d3.mn-303-ticklet-v1.back.source-crop.png",
+      "sha256": "a575e051c27519c0aaa9c749026ab3da6ef49a99efc8b426740d0d8de7f117d3"
+    },
+    {
+      "path": "candidates/center-source/versions/f284cf7c4ffc52aa1f607060241bebf19fc76df5ac3c4f5ca89e004617adc1e1.line.native.png",
+      "sha256": "f284cf7c4ffc52aa1f607060241bebf19fc76df5ac3c4f5ca89e004617adc1e1"
+    },
+    {
+      "path": "candidates/center-source/versions/40da4fff1e240939e35c62c80b428eb9eb6da17a82b6c05f0356b54d47ce29d8.mn-304-solstort-v1.back.source-crop.png",
+      "sha256": "40da4fff1e240939e35c62c80b428eb9eb6da17a82b6c05f0356b54d47ce29d8"
+    },
+    {
+      "path": "candidates/center-source/versions/537bd71f508c359f915e84241402f8212d48f80d619294f00ed86764aa3327fb.mn-304-solstort-v1.back.png",
+      "sha256": "537bd71f508c359f915e84241402f8212d48f80d619294f00ed86764aa3327fb"
+    },
+    {
+      "path": "candidates/center-source/versions/012812cc973656cc58ec9d1c1573208c9f69acfd5731d5be8a4f523274a81eec.mn-303-ticklet-v1.back.2bpp",
+      "sha256": "012812cc973656cc58ec9d1c1573208c9f69acfd5731d5be8a4f523274a81eec"
+    },
+    {
+      "path": "candidates/center-source/versions/342086467cd0d16040a1b893180569b7351c8257fc2a280110f3a68e47995396.mn-304-solstort-v1.front.json",
+      "sha256": "342086467cd0d16040a1b893180569b7351c8257fc2a280110f3a68e47995396"
+    },
+    {
+      "path": "candidates/center-source/versions/efb6db93f08094a585f6e4625dfd2a33a6a3e118ba8c55533652ef41209a6fdc.mn-303-ticklet-v1.front.json",
+      "sha256": "efb6db93f08094a585f6e4625dfd2a33a6a3e118ba8c55533652ef41209a6fdc"
+    },
+    {
+      "path": "candidates/center-source/versions/ca392b5dd1a1d6571bdd3e1e67cc44cdd782afd7930701686174c2d17319be0b.mn-303-ticklet-v1.front.png",
+      "sha256": "ca392b5dd1a1d6571bdd3e1e67cc44cdd782afd7930701686174c2d17319be0b"
+    },
+    {
+      "path": "candidates/center-source/versions/d72b5c5d53d4366cb679fcea0bd7dd7601536598d6979cb23130b7e59d302f08.source-prompt.txt",
+      "sha256": "d72b5c5d53d4366cb679fcea0bd7dd7601536598d6979cb23130b7e59d302f08"
+    },
+    {
+      "path": "candidates/center-source/versions/1b93e1208d778dbe4d9c265d5fa5920b97c6835a42d9d6bdb16db9bda80f490f.mn-303-ticklet-v1.front.2bpp",
+      "sha256": "1b93e1208d778dbe4d9c265d5fa5920b97c6835a42d9d6bdb16db9bda80f490f"
+    },
+    {
+      "path": "candidates/center-source/versions/914f6c6fc00908d373409dfa8adaa19b3dd6d28c471fe0a0e6bb0a4a03ac709e.mn-303-ticklet-v1.front.source-crop.png",
+      "sha256": "914f6c6fc00908d373409dfa8adaa19b3dd6d28c471fe0a0e6bb0a4a03ac709e"
+    },
+    {
+      "path": "candidates/center-source/versions/1a7a171c57250922ad5594666830d017c5c71948fe7c1e95575c1a01bc0b4b6b.mn-304-solstort-v1.back.2bpp",
+      "sha256": "1a7a171c57250922ad5594666830d017c5c71948fe7c1e95575c1a01bc0b4b6b"
+    },
+    {
+      "path": "candidates/center-source/versions/c1a0c81cd48014027f0045f87f2558e1d40db5e602efb40bda41ab4e760b3ee8.mn-304-solstort-v1.back.json",
+      "sha256": "c1a0c81cd48014027f0045f87f2558e1d40db5e602efb40bda41ab4e760b3ee8"
+    },
+    {
+      "path": "candidates/center-source/versions/69598f02982289d788a796ac6b8e3f986cb0d7876e37094f9fccef81b223888f.source-69598f02982289d788a796ac6b8e3f986cb0d7876e37094f9fccef81b223888f.png",
+      "sha256": "69598f02982289d788a796ac6b8e3f986cb0d7876e37094f9fccef81b223888f"
+    },
+    {
+      "path": "candidates/center-source/versions/0f8955f1dcc3c0b470c4c0fe14732c1611cafab4804b9731ec24e15dad45e561.source-manifest.json",
+      "sha256": "0f8955f1dcc3c0b470c4c0fe14732c1611cafab4804b9731ec24e15dad45e561"
+    },
+    {
+      "path": "candidates/center-source/versions/855cf978fbd43964373f76324510a7dfaad26124350bfaa9d5fbfb7b3f123d0b.mn-304-solstort-v1.front.source-crop.png",
+      "sha256": "855cf978fbd43964373f76324510a7dfaad26124350bfaa9d5fbfb7b3f123d0b"
+    },
+    {
+      "path": "candidates/center-source/versions/ce7e4090e3051a0ed8285d58b0f9719a7b2bad4f24ead8592f7851193f564bb0.mn-304-solstort-v1.front.png",
+      "sha256": "ce7e4090e3051a0ed8285d58b0f9719a7b2bad4f24ead8592f7851193f564bb0"
+    },
+    {
+      "path": "candidates/center-source/versions/5a376751262f5dce0ad29474c9a4ce24622208cdde3e9e7b682f08789f673365.mn-303-ticklet-v1.back.review.png",
+      "sha256": "5a376751262f5dce0ad29474c9a4ce24622208cdde3e9e7b682f08789f673365"
+    },
+    {
+      "path": "candidates/area-source/source-manifest.json",
+      "sha256": "19d12b24b51df58c5b51e8e761f04309ea1b00051fec67cc5c847a6188acc23a"
+    },
+    {
+      "path": "candidates/area-source/mn-303-ticklet-v1.front.json",
+      "sha256": "0d8ab9e2a3dd3f402d3bc0e1c9d499b0add77f5d6f973abaebacfed30d739303"
+    },
+    {
+      "path": "candidates/area-source/mn-303-ticklet-v1.back.png",
+      "sha256": "eaaad218e0e03516c2efb44b52db8e71a69103695034259d53eb821b69cbab78"
+    },
+    {
+      "path": "candidates/area-source/mn-303-ticklet-v1.back.review.png",
+      "sha256": "f2a7652e76906a94156ca1bca248169108cf3a069031bef8e9767d693533d316"
+    },
+    {
+      "path": "candidates/area-source/line.native.png",
+      "sha256": "244d4a05e05f7b00540367d797cd4844e81f825a97945b7e3fd790aca2a849f1"
+    },
+    {
+      "path": "candidates/area-source/mn-303-ticklet-v1.front.source-crop.png",
+      "sha256": "914f6c6fc00908d373409dfa8adaa19b3dd6d28c471fe0a0e6bb0a4a03ac709e"
+    },
+    {
+      "path": "candidates/area-source/mn-303-ticklet-v1.front.png",
+      "sha256": "bf0eab2964a84458f8468f732aa6a3684e19900c1a670b427b41e7b267b1d918"
+    },
+    {
+      "path": "candidates/area-source/mn-304-solstort-v1.back.source-crop.png",
+      "sha256": "40da4fff1e240939e35c62c80b428eb9eb6da17a82b6c05f0356b54d47ce29d8"
+    },
+    {
+      "path": "candidates/area-source/line.review.png",
+      "sha256": "6d2af32ee806936e3cdfa8821f76f9753538966ab2d7d04a38c972b9fe6c2570"
+    },
+    {
+      "path": "candidates/area-source/mn-303-ticklet-v1.back.json",
+      "sha256": "125b609e27042433cd9b464473ee46dcfb5ef13c8468804a4874cd1ee589beb2"
+    },
+    {
+      "path": "candidates/area-source/source-prompt.txt",
+      "sha256": "d72b5c5d53d4366cb679fcea0bd7dd7601536598d6979cb23130b7e59d302f08"
+    },
+    {
+      "path": "candidates/area-source/mn-304-solstort-v1.front.2bpp",
+      "sha256": "f74c27f496492163676b1611c212a70e62b5b9deb386b35a0295e22d0ec79cce"
+    },
+    {
+      "path": "candidates/area-source/mn-304-solstort-v1.back.2bpp",
+      "sha256": "10dac698128593804ba65337a663f33e54da77ec1dc994dc54259d4d14dbdbbd"
+    },
+    {
+      "path": "candidates/area-source/mn-303-ticklet-v1.front.review.png",
+      "sha256": "d119f3730b384dc8d8b5feb250bb3fccd29fa4e68f492fb845ddf16393eb1972"
+    },
+    {
+      "path": "candidates/area-source/mn-303-ticklet-v1.back.source-crop.png",
+      "sha256": "a575e051c27519c0aaa9c749026ab3da6ef49a99efc8b426740d0d8de7f117d3"
+    },
+    {
+      "path": "candidates/area-source/mn-303-ticklet-v1.back.2bpp",
+      "sha256": "505fba20da812791c6d0d301dda70d708cd8b17dadb24eae54285427217394a7"
+    },
+    {
+      "path": "candidates/area-source/source-69598f02982289d788a796ac6b8e3f986cb0d7876e37094f9fccef81b223888f.png",
+      "sha256": "69598f02982289d788a796ac6b8e3f986cb0d7876e37094f9fccef81b223888f"
+    },
+    {
+      "path": "candidates/area-source/mn-304-solstort-v1.front.json",
+      "sha256": "9808abe76e89c356a8b08c37cbbb0e2c4a34e7e00c0b02cc468ecf08c06ec4b4"
+    },
+    {
+      "path": "candidates/area-source/mn-304-solstort-v1.back.png",
+      "sha256": "289d5698b079b26444e264d60f46039a6cce0bfaa006c451e7af77be96e2eb1a"
+    },
+    {
+      "path": "candidates/area-source/mn-304-solstort-v1.back.json",
+      "sha256": "c77da1a964516c8fbed2451a1676bcc1553579b2185b4b685c80591b8da56521"
+    },
+    {
+      "path": "candidates/area-source/mn-303-ticklet-v1.front.2bpp",
+      "sha256": "5a36c0901477badafdfd47bc3298995fb93f51267e483f0fcfd5fbe338a894e0"
+    },
+    {
+      "path": "candidates/area-source/mn-304-solstort-v1.front.png",
+      "sha256": "03980a0fd881fe5877f70a35447b8625104abab25a7212c22d7166b788b9cb9e"
+    },
+    {
+      "path": "candidates/area-source/mn-304-solstort-v1.back.review.png",
+      "sha256": "5508c7359eaa2cbb8f001d25d4a9441f1dd08b7632b452243deb9a41b8ece0a0"
+    },
+    {
+      "path": "candidates/area-source/mn-304-solstort-v1.front.source-crop.png",
+      "sha256": "855cf978fbd43964373f76324510a7dfaad26124350bfaa9d5fbfb7b3f123d0b"
+    },
+    {
+      "path": "candidates/area-source/mn-304-solstort-v1.front.review.png",
+      "sha256": "f9114303fcdd4cf7b2892f9c3d3cb5d098d4cf3f597650d9aa07633cdd7fa44d"
+    },
+    {
+      "path": "candidates/area-source/versions/19d12b24b51df58c5b51e8e761f04309ea1b00051fec67cc5c847a6188acc23a.source-manifest.json",
+      "sha256": "19d12b24b51df58c5b51e8e761f04309ea1b00051fec67cc5c847a6188acc23a"
+    },
+    {
+      "path": "candidates/area-source/versions/f9114303fcdd4cf7b2892f9c3d3cb5d098d4cf3f597650d9aa07633cdd7fa44d.mn-304-solstort-v1.front.review.png",
+      "sha256": "f9114303fcdd4cf7b2892f9c3d3cb5d098d4cf3f597650d9aa07633cdd7fa44d"
+    },
+    {
+      "path": "candidates/area-source/versions/505fba20da812791c6d0d301dda70d708cd8b17dadb24eae54285427217394a7.mn-303-ticklet-v1.back.2bpp",
+      "sha256": "505fba20da812791c6d0d301dda70d708cd8b17dadb24eae54285427217394a7"
+    },
+    {
+      "path": "candidates/area-source/versions/d119f3730b384dc8d8b5feb250bb3fccd29fa4e68f492fb845ddf16393eb1972.mn-303-ticklet-v1.front.review.png",
+      "sha256": "d119f3730b384dc8d8b5feb250bb3fccd29fa4e68f492fb845ddf16393eb1972"
+    },
+    {
+      "path": "candidates/area-source/versions/f2a7652e76906a94156ca1bca248169108cf3a069031bef8e9767d693533d316.mn-303-ticklet-v1.back.review.png",
+      "sha256": "f2a7652e76906a94156ca1bca248169108cf3a069031bef8e9767d693533d316"
+    },
+    {
+      "path": "candidates/area-source/versions/a575e051c27519c0aaa9c749026ab3da6ef49a99efc8b426740d0d8de7f117d3.mn-303-ticklet-v1.back.source-crop.png",
+      "sha256": "a575e051c27519c0aaa9c749026ab3da6ef49a99efc8b426740d0d8de7f117d3"
+    },
+    {
+      "path": "candidates/area-source/versions/244d4a05e05f7b00540367d797cd4844e81f825a97945b7e3fd790aca2a849f1.line.native.png",
+      "sha256": "244d4a05e05f7b00540367d797cd4844e81f825a97945b7e3fd790aca2a849f1"
+    },
+    {
+      "path": "candidates/area-source/versions/f74c27f496492163676b1611c212a70e62b5b9deb386b35a0295e22d0ec79cce.mn-304-solstort-v1.front.2bpp",
+      "sha256": "f74c27f496492163676b1611c212a70e62b5b9deb386b35a0295e22d0ec79cce"
+    },
+    {
+      "path": "candidates/area-source/versions/40da4fff1e240939e35c62c80b428eb9eb6da17a82b6c05f0356b54d47ce29d8.mn-304-solstort-v1.back.source-crop.png",
+      "sha256": "40da4fff1e240939e35c62c80b428eb9eb6da17a82b6c05f0356b54d47ce29d8"
+    },
+    {
+      "path": "candidates/area-source/versions/5508c7359eaa2cbb8f001d25d4a9441f1dd08b7632b452243deb9a41b8ece0a0.mn-304-solstort-v1.back.review.png",
+      "sha256": "5508c7359eaa2cbb8f001d25d4a9441f1dd08b7632b452243deb9a41b8ece0a0"
+    },
+    {
+      "path": "candidates/area-source/versions/03980a0fd881fe5877f70a35447b8625104abab25a7212c22d7166b788b9cb9e.mn-304-solstort-v1.front.png",
+      "sha256": "03980a0fd881fe5877f70a35447b8625104abab25a7212c22d7166b788b9cb9e"
+    },
+    {
+      "path": "candidates/area-source/versions/eaaad218e0e03516c2efb44b52db8e71a69103695034259d53eb821b69cbab78.mn-303-ticklet-v1.back.png",
+      "sha256": "eaaad218e0e03516c2efb44b52db8e71a69103695034259d53eb821b69cbab78"
+    },
+    {
+      "path": "candidates/area-source/versions/c77da1a964516c8fbed2451a1676bcc1553579b2185b4b685c80591b8da56521.mn-304-solstort-v1.back.json",
+      "sha256": "c77da1a964516c8fbed2451a1676bcc1553579b2185b4b685c80591b8da56521"
+    },
+    {
+      "path": "candidates/area-source/versions/289d5698b079b26444e264d60f46039a6cce0bfaa006c451e7af77be96e2eb1a.mn-304-solstort-v1.back.png",
+      "sha256": "289d5698b079b26444e264d60f46039a6cce0bfaa006c451e7af77be96e2eb1a"
+    },
+    {
+      "path": "candidates/area-source/versions/125b609e27042433cd9b464473ee46dcfb5ef13c8468804a4874cd1ee589beb2.mn-303-ticklet-v1.back.json",
+      "sha256": "125b609e27042433cd9b464473ee46dcfb5ef13c8468804a4874cd1ee589beb2"
+    },
+    {
+      "path": "candidates/area-source/versions/5a36c0901477badafdfd47bc3298995fb93f51267e483f0fcfd5fbe338a894e0.mn-303-ticklet-v1.front.2bpp",
+      "sha256": "5a36c0901477badafdfd47bc3298995fb93f51267e483f0fcfd5fbe338a894e0"
+    },
+    {
+      "path": "candidates/area-source/versions/0d8ab9e2a3dd3f402d3bc0e1c9d499b0add77f5d6f973abaebacfed30d739303.mn-303-ticklet-v1.front.json",
+      "sha256": "0d8ab9e2a3dd3f402d3bc0e1c9d499b0add77f5d6f973abaebacfed30d739303"
+    },
+    {
+      "path": "candidates/area-source/versions/d72b5c5d53d4366cb679fcea0bd7dd7601536598d6979cb23130b7e59d302f08.source-prompt.txt",
+      "sha256": "d72b5c5d53d4366cb679fcea0bd7dd7601536598d6979cb23130b7e59d302f08"
+    },
+    {
+      "path": "candidates/area-source/versions/9808abe76e89c356a8b08c37cbbb0e2c4a34e7e00c0b02cc468ecf08c06ec4b4.mn-304-solstort-v1.front.json",
+      "sha256": "9808abe76e89c356a8b08c37cbbb0e2c4a34e7e00c0b02cc468ecf08c06ec4b4"
+    },
+    {
+      "path": "candidates/area-source/versions/6d2af32ee806936e3cdfa8821f76f9753538966ab2d7d04a38c972b9fe6c2570.line.review.png",
+      "sha256": "6d2af32ee806936e3cdfa8821f76f9753538966ab2d7d04a38c972b9fe6c2570"
+    },
+    {
+      "path": "candidates/area-source/versions/914f6c6fc00908d373409dfa8adaa19b3dd6d28c471fe0a0e6bb0a4a03ac709e.mn-303-ticklet-v1.front.source-crop.png",
+      "sha256": "914f6c6fc00908d373409dfa8adaa19b3dd6d28c471fe0a0e6bb0a4a03ac709e"
+    },
+    {
+      "path": "candidates/area-source/versions/69598f02982289d788a796ac6b8e3f986cb0d7876e37094f9fccef81b223888f.source-69598f02982289d788a796ac6b8e3f986cb0d7876e37094f9fccef81b223888f.png",
+      "sha256": "69598f02982289d788a796ac6b8e3f986cb0d7876e37094f9fccef81b223888f"
+    },
+    {
+      "path": "candidates/area-source/versions/855cf978fbd43964373f76324510a7dfaad26124350bfaa9d5fbfb7b3f123d0b.mn-304-solstort-v1.front.source-crop.png",
+      "sha256": "855cf978fbd43964373f76324510a7dfaad26124350bfaa9d5fbfb7b3f123d0b"
+    },
+    {
+      "path": "candidates/area-source/versions/10dac698128593804ba65337a663f33e54da77ec1dc994dc54259d4d14dbdbbd.mn-304-solstort-v1.back.2bpp",
+      "sha256": "10dac698128593804ba65337a663f33e54da77ec1dc994dc54259d4d14dbdbbd"
+    },
+    {
+      "path": "candidates/area-source/versions/bf0eab2964a84458f8468f732aa6a3684e19900c1a670b427b41e7b267b1d918.mn-303-ticklet-v1.front.png",
+      "sha256": "bf0eab2964a84458f8468f732aa6a3684e19900c1a670b427b41e7b267b1d918"
+    }
+  ],
+  "all_source_prompts_and_renders_preserved": true,
+  "no_generation_failures": true
+}

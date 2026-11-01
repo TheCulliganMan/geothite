@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F051",
+  "species": [
+    {
+      "species_id": "MN_106",
+      "runtime_token": "THUNDRAZE",
+      "palette_rgb555": [
+        32767,
+        6975,
+        6410,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        26598,
+        8518,
+        0
+      ],
+      "fit": [
+        14,
+        14
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 64,
+      "interior_black_samples": 64,
+      "opaque_interior_minimum_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "thundraze.overworld.imagegen-v5-front-pupil-pitch.png",
+          "crop": [
+            4,
+            80,
+            520,
+            410
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "thundraze.overworld.imagegen-v3-profile-eyes.png",
+          "crop": [
+            476,
+            89,
+            520,
+            410
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "thundraze.overworld.imagegen-v6-profile-pupil-pitch.png",
+          "crop": [
+            991,
+            85,
+            520,
+            410
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "thundraze.overworld.imagegen-v5-front-pupil-pitch.png",
+          "crop": [
+            4,
+            526,
+            520,
+            410
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "thundraze.overworld.imagegen-v3-profile-eyes.png",
+          "crop": [
+            476,
+            538,
+            520,
+            410
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "thundraze.overworld.imagegen-v6-profile-pupil-pitch.png",
+          "crop": [
+            993,
+            533,
+            520,
+            410
+          ]
+        }
+      ]
+    }
+  ]
+}

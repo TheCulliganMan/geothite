@@ -1,0 +1,9 @@
+{
+  "status": "PASS_VISUAL_ONLY",
+  "actual_native_images_inspected": 3,
+  "whole_current_source_inspected": true,
+  "source_native_pixel_mismatches": 0,
+  "capture_receipt": "planning/minnesota/renders/route-grass-v01/current-r01-successor-review-v01/native-v01/capture-progress.json",
+  "composition": "Western woodland grass narrows the approach; eastern through-path crosses an unavoidable grass strip; bluff side branch meets native cave stairs through grass. Raised terrace remains a dry reward/trainer destination. No tall-cliff jump is promised.",
+  "current_production_traversal_pending": true
+}

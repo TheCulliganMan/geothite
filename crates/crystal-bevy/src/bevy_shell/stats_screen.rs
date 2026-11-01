@@ -456,16 +456,12 @@ fn spawn_source_stats_screen(
     )?;
     let (x, y) = battle_hud_tile_origin(3.0, 3.0);
     commands.spawn((
-        SpriteBundle {
-            texture: picture.handle,
-            sprite: Sprite {
+        (Sprite { image: picture.handle,
                 custom_size: Some(Vec2::splat(7.0 * TILE_SIZE)),
                 flip_x: pokemon.is_egg || pokemon.species.id != "UNOWN",
                 ..default()
             },
-            transform: Transform::from_xyz(x, y, z + 0.2),
-            ..default()
-        },
+Transform::from_xyz(x, y, z + 0.2),),
         FieldCommandMarker,
     ));
     Ok(())

@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "map": "MnBrainerd",
+      "approach": [
+        42,
+        22
+      ],
+      "id": "MN_EXTRA_CAMP_COOK",
+      "display_name": "GUS",
+      "trainer_class": "MN_CAMP_COOK",
+      "class_name": "CAMP COOK",
+      "template_class": "POKEFANM",
+      "sprite": "SPRITE_MN_CAMP_COOK",
+      "tile": [
+        42,
+        21
+      ],
+      "facing": "south",
+      "sight_range": 1,
+      "defeated_flag": "EVENT_MN_EXTRA_CAMP_COOK",
+      "party": [
+        {
+          "species": "DOUGHLIN",
+          "level": 26
+        },
+        {
+          "species": "PIPCORN",
+          "level": 28
+        }
+      ],
+      "before_lines": [
+        "The pan is hot!",
+        "Ready for a round?"
+      ],
+      "after_lines": [
+        "Well done! Lunch",
+        "is almost ready."
+      ],
+      "loss_lines": [
+        "Let it simmer.",
+        "Then try again."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "id": "MnR03C00R00",
+  "source_kind": "scoped_native_checkpoint_contract",
+  "residents": [],
+  "signs": [
+    {
+      "id": "MN_R03_TERRACE_SIGN",
+      "tile": [
+        40,
+        44
+      ]
+    }
+  ]
+}

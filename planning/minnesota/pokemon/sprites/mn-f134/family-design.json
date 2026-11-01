@@ -1,0 +1,269 @@
+{
+  "family_id": "MN_F134",
+  "status": "unregistered-proposal",
+  "theme": "Moose and underwater gardening. Real aquatic foraging becomes fictional living rake and root anatomy.",
+  "visible_evolution": [
+    "Tiny forked brow buds and splayed seedling hooves.",
+    "Broad rake antlers, a deeper swimming chest and channelled brow.",
+    "Huge palmated antler channels comb submerged vegetation; long rootlike hooves brace the marsh floor."
+  ],
+  "members": [
+    {
+      "id": "MN_295",
+      "name": "Wadebud",
+      "types": [
+        "GRASS"
+      ],
+      "base_stats": {
+        "hp": 55,
+        "attack": 50,
+        "defense": 60,
+        "speed": 35,
+        "special_attack": 45,
+        "special_defense": 45
+      },
+      "bst": 290
+    },
+    {
+      "id": "MN_296",
+      "name": "Rakehorn",
+      "types": [
+        "GRASS",
+        "WATER"
+      ],
+      "base_stats": {
+        "hp": 75,
+        "attack": 70,
+        "defense": 80,
+        "speed": 45,
+        "special_attack": 60,
+        "special_defense": 50
+      },
+      "bst": 380
+    },
+    {
+      "id": "MN_297",
+      "name": "Marshrack",
+      "types": [
+        "GRASS",
+        "WATER"
+      ],
+      "base_stats": {
+        "hp": 105,
+        "attack": 105,
+        "defense": 100,
+        "speed": 55,
+        "special_attack": 95,
+        "special_defense": 65
+      },
+      "bst": 525
+    }
+  ],
+  "evolution_levels": [
+    20,
+    38
+  ],
+  "source_urls": [
+    "https://www.dnr.state.mn.us/mammals/moose.html"
+  ],
+  "research_fact_distinction": "Natural-history source supplies regional identity; described supernatural anatomy/powers are original fiction.",
+  "palettes": {
+    "MN_295": {
+      "species_id": "MN_295",
+      "name": "Wadebud",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          26,
+          23,
+          16
+        ],
+        [
+          10,
+          17,
+          9
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        17146,
+        9770,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          214,
+          189,
+          132
+        ],
+        [
+          82,
+          140,
+          74
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#D6BD84",
+        "#528C4A",
+        "#000000"
+      ]
+    },
+    "MN_296": {
+      "species_id": "MN_296",
+      "name": "Rakehorn",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          18,
+          25,
+          12
+        ],
+        [
+          5,
+          14,
+          16
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        13106,
+        16837,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          148,
+          206,
+          99
+        ],
+        [
+          41,
+          115,
+          132
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#94CE63",
+        "#297384",
+        "#000000"
+      ]
+    },
+    "MN_297": {
+      "species_id": "MN_297",
+      "name": "Marshrack",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          21,
+          25,
+          13
+        ],
+        [
+          4,
+          11,
+          15
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        14133,
+        15716,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          173,
+          206,
+          107
+        ],
+        [
+          33,
+          90,
+          123
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#ADCE6B",
+        "#215A7B",
+        "#000000"
+      ]
+    }
+  },
+  "planned_native_move_pool": [
+    "TACKLE",
+    "GROWL",
+    "ABSORB",
+    "RAZOR_LEAF",
+    "WATER_GUN",
+    "MEGA_DRAIN",
+    "STOMP",
+    "GROWTH",
+    "BUBBLEBEAM",
+    "SYNTHESIS",
+    "BODY_SLAM",
+    "SURF",
+    "SOLARBEAM"
+  ],
+  "standalone_profile_batch": "species-profiles.proposal.json",
+  "standalone_roster_batch": "roster-family.proposal.json"
+}

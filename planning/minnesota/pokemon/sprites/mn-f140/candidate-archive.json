@@ -1,0 +1,608 @@
+{
+  "family_id": "MN_F140",
+  "candidate_file_count": 150,
+  "files": [
+    {
+      "path": "candidates/area-solid/mn-311-mudmender-v1.back.2bpp",
+      "sha256": "64401c3c067887fde08209774fced238bf5a53d0b0c57700b8ba2a4cd695c553"
+    },
+    {
+      "path": "candidates/area-solid/source-manifest.json",
+      "sha256": "27159cd4ad4b065c3755a2d6a96f2c8708ea9480b323134069dc5fa9ee88611b"
+    },
+    {
+      "path": "candidates/area-solid/mn-310-gillpup-v1.front.source-crop.png",
+      "sha256": "1c740cbefb1c4f361eb8cafbfe6a475bac1620d2ed4589b7444efe8686719de0"
+    },
+    {
+      "path": "candidates/area-solid/mn-311-mudmender-v1.back.source-crop.png",
+      "sha256": "79f3257588feb22afe8c6fa94c593d30af6f5867b508134af15955bc22f3b7ce"
+    },
+    {
+      "path": "candidates/area-solid/mn-311-mudmender-v1.front.json",
+      "sha256": "ce5ea033884becf621dc9cceefcd2ab822d86edac60e204cb9fb61d63d55dbb8"
+    },
+    {
+      "path": "candidates/area-solid/line.native.png",
+      "sha256": "b3708c50a9e31af9c89f8eab66c5558bd10fb7bda8afef562953b38fdd59d080"
+    },
+    {
+      "path": "candidates/area-solid/line.review.png",
+      "sha256": "d8a1edaef40304759f66d0fbf0b8193ae3cbc433efd49cc501f4c523ea155217"
+    },
+    {
+      "path": "candidates/area-solid/mn-311-mudmender-v1.back.png",
+      "sha256": "f3a61d302e8235fce0998d0a8fbffbab40783c73a6734e0ee8a3775341d9d69d"
+    },
+    {
+      "path": "candidates/area-solid/mn-310-gillpup-v1.front.png",
+      "sha256": "ffa6eb6ae82548f46ba099238dd392eb462afaef6dfa4ac5e1339a19fe973b69"
+    },
+    {
+      "path": "candidates/area-solid/source-prompt.txt",
+      "sha256": "e15907877c682cc42c8a70419b3cabe77b2ef1b8863d838fc715706335f6c111"
+    },
+    {
+      "path": "candidates/area-solid/mn-311-mudmender-v1.front.source-crop.png",
+      "sha256": "f231af24b6973b4144ff267b75ad91fdf97e64b578b9f79d45aa12ea0854a2be"
+    },
+    {
+      "path": "candidates/area-solid/source-834c2436313e3cc7a071c7d0d3dd20b8834d356edfddef1dd9e059e50a1780d8.png",
+      "sha256": "834c2436313e3cc7a071c7d0d3dd20b8834d356edfddef1dd9e059e50a1780d8"
+    },
+    {
+      "path": "candidates/area-solid/mn-310-gillpup-v1.front.json",
+      "sha256": "439849a80e6f583a1f0a869d819ad732286b0774c64d33c4b85517eb2fd79ce9"
+    },
+    {
+      "path": "candidates/area-solid/mn-310-gillpup-v1.back.json",
+      "sha256": "6a6b8ddaf561d0cd2ad07de8184a0de5c1e8585f24c46276798f84ba03d756f5"
+    },
+    {
+      "path": "candidates/area-solid/mn-311-mudmender-v1.front.review.png",
+      "sha256": "a3b0b2addb976948adafbfc2d4e8868167c5a2672da57b68fd66bf1d48452a40"
+    },
+    {
+      "path": "candidates/area-solid/mn-310-gillpup-v1.back.2bpp",
+      "sha256": "9b9ef6caf12600520ed685aed929ec256a88fb80bad7a1b2034b0b20124c807d"
+    },
+    {
+      "path": "candidates/area-solid/mn-310-gillpup-v1.front.2bpp",
+      "sha256": "fa3c417ca024126369f11512e63d19a8437713b40393038bf7653c57426b7249"
+    },
+    {
+      "path": "candidates/area-solid/mn-311-mudmender-v1.front.png",
+      "sha256": "ef420a87b28b55aa0d55197a84dbcde8907166398b4d0cc0fe8ca31764ac29a4"
+    },
+    {
+      "path": "candidates/area-solid/mn-310-gillpup-v1.back.source-crop.png",
+      "sha256": "8218336d3b8ebad5c1ee7ebf02cd04d301bfe619232edd1499a62c6338d267ab"
+    },
+    {
+      "path": "candidates/area-solid/mn-310-gillpup-v1.back.png",
+      "sha256": "0da6c547b2e651b8015ae430de84d8df72a486e23eefdf2106cefa688dc2b788"
+    },
+    {
+      "path": "candidates/area-solid/mn-310-gillpup-v1.back.review.png",
+      "sha256": "c95dfd2bbd070a9f328e24f5595dc9b476a185e00af51809a477de855cc05fe8"
+    },
+    {
+      "path": "candidates/area-solid/mn-311-mudmender-v1.back.json",
+      "sha256": "d1f5ea3fd3f6c14a43115f7f0d4e959b3a41ff90db9ae443eaabc8c6e56ab8a4"
+    },
+    {
+      "path": "candidates/area-solid/mn-311-mudmender-v1.back.review.png",
+      "sha256": "240b84057ec4b8de5f364720284bf1388e1d951aed699f16ab0c337b870c6348"
+    },
+    {
+      "path": "candidates/area-solid/mn-311-mudmender-v1.front.2bpp",
+      "sha256": "18ebd672e0fed3f1fb923a92cbee649b8fa0b0130eccec9c9bcfdc69733a12bc"
+    },
+    {
+      "path": "candidates/area-solid/mn-310-gillpup-v1.front.review.png",
+      "sha256": "693750d0da14e98828732e9a247307b792c19dcc46762dd9ca43aa8628cae3ff"
+    },
+    {
+      "path": "candidates/area-solid/versions/18ebd672e0fed3f1fb923a92cbee649b8fa0b0130eccec9c9bcfdc69733a12bc.mn-311-mudmender-v1.front.2bpp",
+      "sha256": "18ebd672e0fed3f1fb923a92cbee649b8fa0b0130eccec9c9bcfdc69733a12bc"
+    },
+    {
+      "path": "candidates/area-solid/versions/d8a1edaef40304759f66d0fbf0b8193ae3cbc433efd49cc501f4c523ea155217.line.review.png",
+      "sha256": "d8a1edaef40304759f66d0fbf0b8193ae3cbc433efd49cc501f4c523ea155217"
+    },
+    {
+      "path": "candidates/area-solid/versions/834c2436313e3cc7a071c7d0d3dd20b8834d356edfddef1dd9e059e50a1780d8.source-834c2436313e3cc7a071c7d0d3dd20b8834d356edfddef1dd9e059e50a1780d8.png",
+      "sha256": "834c2436313e3cc7a071c7d0d3dd20b8834d356edfddef1dd9e059e50a1780d8"
+    },
+    {
+      "path": "candidates/area-solid/versions/64401c3c067887fde08209774fced238bf5a53d0b0c57700b8ba2a4cd695c553.mn-311-mudmender-v1.back.2bpp",
+      "sha256": "64401c3c067887fde08209774fced238bf5a53d0b0c57700b8ba2a4cd695c553"
+    },
+    {
+      "path": "candidates/area-solid/versions/b3708c50a9e31af9c89f8eab66c5558bd10fb7bda8afef562953b38fdd59d080.line.native.png",
+      "sha256": "b3708c50a9e31af9c89f8eab66c5558bd10fb7bda8afef562953b38fdd59d080"
+    },
+    {
+      "path": "candidates/area-solid/versions/ce5ea033884becf621dc9cceefcd2ab822d86edac60e204cb9fb61d63d55dbb8.mn-311-mudmender-v1.front.json",
+      "sha256": "ce5ea033884becf621dc9cceefcd2ab822d86edac60e204cb9fb61d63d55dbb8"
+    },
+    {
+      "path": "candidates/area-solid/versions/439849a80e6f583a1f0a869d819ad732286b0774c64d33c4b85517eb2fd79ce9.mn-310-gillpup-v1.front.json",
+      "sha256": "439849a80e6f583a1f0a869d819ad732286b0774c64d33c4b85517eb2fd79ce9"
+    },
+    {
+      "path": "candidates/area-solid/versions/c95dfd2bbd070a9f328e24f5595dc9b476a185e00af51809a477de855cc05fe8.mn-310-gillpup-v1.back.review.png",
+      "sha256": "c95dfd2bbd070a9f328e24f5595dc9b476a185e00af51809a477de855cc05fe8"
+    },
+    {
+      "path": "candidates/area-solid/versions/d1f5ea3fd3f6c14a43115f7f0d4e959b3a41ff90db9ae443eaabc8c6e56ab8a4.mn-311-mudmender-v1.back.json",
+      "sha256": "d1f5ea3fd3f6c14a43115f7f0d4e959b3a41ff90db9ae443eaabc8c6e56ab8a4"
+    },
+    {
+      "path": "candidates/area-solid/versions/6a6b8ddaf561d0cd2ad07de8184a0de5c1e8585f24c46276798f84ba03d756f5.mn-310-gillpup-v1.back.json",
+      "sha256": "6a6b8ddaf561d0cd2ad07de8184a0de5c1e8585f24c46276798f84ba03d756f5"
+    },
+    {
+      "path": "candidates/area-solid/versions/f3a61d302e8235fce0998d0a8fbffbab40783c73a6734e0ee8a3775341d9d69d.mn-311-mudmender-v1.back.png",
+      "sha256": "f3a61d302e8235fce0998d0a8fbffbab40783c73a6734e0ee8a3775341d9d69d"
+    },
+    {
+      "path": "candidates/area-solid/versions/1c740cbefb1c4f361eb8cafbfe6a475bac1620d2ed4589b7444efe8686719de0.mn-310-gillpup-v1.front.source-crop.png",
+      "sha256": "1c740cbefb1c4f361eb8cafbfe6a475bac1620d2ed4589b7444efe8686719de0"
+    },
+    {
+      "path": "candidates/area-solid/versions/27159cd4ad4b065c3755a2d6a96f2c8708ea9480b323134069dc5fa9ee88611b.source-manifest.json",
+      "sha256": "27159cd4ad4b065c3755a2d6a96f2c8708ea9480b323134069dc5fa9ee88611b"
+    },
+    {
+      "path": "candidates/area-solid/versions/fa3c417ca024126369f11512e63d19a8437713b40393038bf7653c57426b7249.mn-310-gillpup-v1.front.2bpp",
+      "sha256": "fa3c417ca024126369f11512e63d19a8437713b40393038bf7653c57426b7249"
+    },
+    {
+      "path": "candidates/area-solid/versions/ffa6eb6ae82548f46ba099238dd392eb462afaef6dfa4ac5e1339a19fe973b69.mn-310-gillpup-v1.front.png",
+      "sha256": "ffa6eb6ae82548f46ba099238dd392eb462afaef6dfa4ac5e1339a19fe973b69"
+    },
+    {
+      "path": "candidates/area-solid/versions/79f3257588feb22afe8c6fa94c593d30af6f5867b508134af15955bc22f3b7ce.mn-311-mudmender-v1.back.source-crop.png",
+      "sha256": "79f3257588feb22afe8c6fa94c593d30af6f5867b508134af15955bc22f3b7ce"
+    },
+    {
+      "path": "candidates/area-solid/versions/e15907877c682cc42c8a70419b3cabe77b2ef1b8863d838fc715706335f6c111.source-prompt.txt",
+      "sha256": "e15907877c682cc42c8a70419b3cabe77b2ef1b8863d838fc715706335f6c111"
+    },
+    {
+      "path": "candidates/area-solid/versions/8218336d3b8ebad5c1ee7ebf02cd04d301bfe619232edd1499a62c6338d267ab.mn-310-gillpup-v1.back.source-crop.png",
+      "sha256": "8218336d3b8ebad5c1ee7ebf02cd04d301bfe619232edd1499a62c6338d267ab"
+    },
+    {
+      "path": "candidates/area-solid/versions/693750d0da14e98828732e9a247307b792c19dcc46762dd9ca43aa8628cae3ff.mn-310-gillpup-v1.front.review.png",
+      "sha256": "693750d0da14e98828732e9a247307b792c19dcc46762dd9ca43aa8628cae3ff"
+    },
+    {
+      "path": "candidates/area-solid/versions/0da6c547b2e651b8015ae430de84d8df72a486e23eefdf2106cefa688dc2b788.mn-310-gillpup-v1.back.png",
+      "sha256": "0da6c547b2e651b8015ae430de84d8df72a486e23eefdf2106cefa688dc2b788"
+    },
+    {
+      "path": "candidates/area-solid/versions/a3b0b2addb976948adafbfc2d4e8868167c5a2672da57b68fd66bf1d48452a40.mn-311-mudmender-v1.front.review.png",
+      "sha256": "a3b0b2addb976948adafbfc2d4e8868167c5a2672da57b68fd66bf1d48452a40"
+    },
+    {
+      "path": "candidates/area-solid/versions/240b84057ec4b8de5f364720284bf1388e1d951aed699f16ab0c337b870c6348.mn-311-mudmender-v1.back.review.png",
+      "sha256": "240b84057ec4b8de5f364720284bf1388e1d951aed699f16ab0c337b870c6348"
+    },
+    {
+      "path": "candidates/area-solid/versions/ef420a87b28b55aa0d55197a84dbcde8907166398b4d0cc0fe8ca31764ac29a4.mn-311-mudmender-v1.front.png",
+      "sha256": "ef420a87b28b55aa0d55197a84dbcde8907166398b4d0cc0fe8ca31764ac29a4"
+    },
+    {
+      "path": "candidates/area-solid/versions/f231af24b6973b4144ff267b75ad91fdf97e64b578b9f79d45aa12ea0854a2be.mn-311-mudmender-v1.front.source-crop.png",
+      "sha256": "f231af24b6973b4144ff267b75ad91fdf97e64b578b9f79d45aa12ea0854a2be"
+    },
+    {
+      "path": "candidates/area-solid/versions/9b9ef6caf12600520ed685aed929ec256a88fb80bad7a1b2034b0b20124c807d.mn-310-gillpup-v1.back.2bpp",
+      "sha256": "9b9ef6caf12600520ed685aed929ec256a88fb80bad7a1b2034b0b20124c807d"
+    },
+    {
+      "path": "candidates/center-source/mn-311-mudmender-v1.back.2bpp",
+      "sha256": "a96ddc44142f87f0033604467bca38eaa768e4cf1bb02b89d377530784747152"
+    },
+    {
+      "path": "candidates/center-source/source-manifest.json",
+      "sha256": "f3a44ec5b2ea267908fda22dae3c646288d26147c04bafdb6b6321006ce29a61"
+    },
+    {
+      "path": "candidates/center-source/mn-310-gillpup-v1.front.source-crop.png",
+      "sha256": "1c740cbefb1c4f361eb8cafbfe6a475bac1620d2ed4589b7444efe8686719de0"
+    },
+    {
+      "path": "candidates/center-source/mn-311-mudmender-v1.back.source-crop.png",
+      "sha256": "79f3257588feb22afe8c6fa94c593d30af6f5867b508134af15955bc22f3b7ce"
+    },
+    {
+      "path": "candidates/center-source/mn-311-mudmender-v1.front.json",
+      "sha256": "e2e4c84c94da502cb49ed7db38f57ac97a37e14569e09ea2054063f830f9bc4c"
+    },
+    {
+      "path": "candidates/center-source/line.native.png",
+      "sha256": "f089ed9aa4ceb74ab6cff1ae0179c17fa1d81e1811219cf47c4d7158a33081b6"
+    },
+    {
+      "path": "candidates/center-source/line.review.png",
+      "sha256": "2088d35377c3a4c674225eea0569181c6f4d1a4883080ae18c105d430fcc5968"
+    },
+    {
+      "path": "candidates/center-source/mn-311-mudmender-v1.back.png",
+      "sha256": "4ddbb06864eed9c5a76891d46c0c8ab1ea66b7e5f9daa89dc3ab2c8066eba126"
+    },
+    {
+      "path": "candidates/center-source/mn-310-gillpup-v1.front.png",
+      "sha256": "e062867d7c663db55006ee940533384ba16198d6cd2cbe8953eeb5a0eb35a334"
+    },
+    {
+      "path": "candidates/center-source/source-prompt.txt",
+      "sha256": "e15907877c682cc42c8a70419b3cabe77b2ef1b8863d838fc715706335f6c111"
+    },
+    {
+      "path": "candidates/center-source/mn-311-mudmender-v1.front.source-crop.png",
+      "sha256": "f231af24b6973b4144ff267b75ad91fdf97e64b578b9f79d45aa12ea0854a2be"
+    },
+    {
+      "path": "candidates/center-source/source-834c2436313e3cc7a071c7d0d3dd20b8834d356edfddef1dd9e059e50a1780d8.png",
+      "sha256": "834c2436313e3cc7a071c7d0d3dd20b8834d356edfddef1dd9e059e50a1780d8"
+    },
+    {
+      "path": "candidates/center-source/mn-310-gillpup-v1.front.json",
+      "sha256": "204d3a4efb601d41ba445010f94a727d8473de96aef2ee372020671b8e20789b"
+    },
+    {
+      "path": "candidates/center-source/mn-310-gillpup-v1.back.json",
+      "sha256": "572efb201a0418dd792575fd28dfd7a2319c7d74da1fe9ae3c591836232b80a0"
+    },
+    {
+      "path": "candidates/center-source/mn-311-mudmender-v1.front.review.png",
+      "sha256": "126ce3b617e9d5cb92ffcfa4231546006b97545543efbe6f6e3c32686eb15c18"
+    },
+    {
+      "path": "candidates/center-source/mn-310-gillpup-v1.back.2bpp",
+      "sha256": "e46b09afa4a59d880847b6f0ab76171f14c75cc1b56b15ee061b6f14c71b761c"
+    },
+    {
+      "path": "candidates/center-source/mn-310-gillpup-v1.front.2bpp",
+      "sha256": "28c8fb8e9ca43b98370509504df2073e860593d7d5ee76bf30189294f93757c6"
+    },
+    {
+      "path": "candidates/center-source/mn-311-mudmender-v1.front.png",
+      "sha256": "bcca41984a823f50e449ed5e3c41a79bdcb34e4252aafd090cbe7928cdc5e06e"
+    },
+    {
+      "path": "candidates/center-source/mn-310-gillpup-v1.back.source-crop.png",
+      "sha256": "8218336d3b8ebad5c1ee7ebf02cd04d301bfe619232edd1499a62c6338d267ab"
+    },
+    {
+      "path": "candidates/center-source/mn-310-gillpup-v1.back.png",
+      "sha256": "eb04b8044de85a8310bddb5d0e8aaecd722d8adc0d767b33a66777b12d261aba"
+    },
+    {
+      "path": "candidates/center-source/mn-310-gillpup-v1.back.review.png",
+      "sha256": "b5eb6c811ac2c49888df340446faf95cfcd426c71832605c6c9dce6f5348bf6c"
+    },
+    {
+      "path": "candidates/center-source/mn-311-mudmender-v1.back.json",
+      "sha256": "af05dcef2ae1f6a8a7419fc3c8e7744db4b9440f24ffb752f552392f8d04f772"
+    },
+    {
+      "path": "candidates/center-source/mn-311-mudmender-v1.back.review.png",
+      "sha256": "59fdcf401ce3c549de68caa22426356b38f7df29d7dfd87b2fdaa90ea17fd0a9"
+    },
+    {
+      "path": "candidates/center-source/mn-311-mudmender-v1.front.2bpp",
+      "sha256": "469f8a68d523c1254639d64f0a0f5e97117feefecc1b90c6e11fa58bc40e8e0e"
+    },
+    {
+      "path": "candidates/center-source/mn-310-gillpup-v1.front.review.png",
+      "sha256": "e3be6098ee0378dc4064da87026606148ff8fd8b0e567d9e1bfe867c7dba17dc"
+    },
+    {
+      "path": "candidates/center-source/versions/834c2436313e3cc7a071c7d0d3dd20b8834d356edfddef1dd9e059e50a1780d8.source-834c2436313e3cc7a071c7d0d3dd20b8834d356edfddef1dd9e059e50a1780d8.png",
+      "sha256": "834c2436313e3cc7a071c7d0d3dd20b8834d356edfddef1dd9e059e50a1780d8"
+    },
+    {
+      "path": "candidates/center-source/versions/eb04b8044de85a8310bddb5d0e8aaecd722d8adc0d767b33a66777b12d261aba.mn-310-gillpup-v1.back.png",
+      "sha256": "eb04b8044de85a8310bddb5d0e8aaecd722d8adc0d767b33a66777b12d261aba"
+    },
+    {
+      "path": "candidates/center-source/versions/204d3a4efb601d41ba445010f94a727d8473de96aef2ee372020671b8e20789b.mn-310-gillpup-v1.front.json",
+      "sha256": "204d3a4efb601d41ba445010f94a727d8473de96aef2ee372020671b8e20789b"
+    },
+    {
+      "path": "candidates/center-source/versions/59fdcf401ce3c549de68caa22426356b38f7df29d7dfd87b2fdaa90ea17fd0a9.mn-311-mudmender-v1.back.review.png",
+      "sha256": "59fdcf401ce3c549de68caa22426356b38f7df29d7dfd87b2fdaa90ea17fd0a9"
+    },
+    {
+      "path": "candidates/center-source/versions/2088d35377c3a4c674225eea0569181c6f4d1a4883080ae18c105d430fcc5968.line.review.png",
+      "sha256": "2088d35377c3a4c674225eea0569181c6f4d1a4883080ae18c105d430fcc5968"
+    },
+    {
+      "path": "candidates/center-source/versions/e2e4c84c94da502cb49ed7db38f57ac97a37e14569e09ea2054063f830f9bc4c.mn-311-mudmender-v1.front.json",
+      "sha256": "e2e4c84c94da502cb49ed7db38f57ac97a37e14569e09ea2054063f830f9bc4c"
+    },
+    {
+      "path": "candidates/center-source/versions/e46b09afa4a59d880847b6f0ab76171f14c75cc1b56b15ee061b6f14c71b761c.mn-310-gillpup-v1.back.2bpp",
+      "sha256": "e46b09afa4a59d880847b6f0ab76171f14c75cc1b56b15ee061b6f14c71b761c"
+    },
+    {
+      "path": "candidates/center-source/versions/b5eb6c811ac2c49888df340446faf95cfcd426c71832605c6c9dce6f5348bf6c.mn-310-gillpup-v1.back.review.png",
+      "sha256": "b5eb6c811ac2c49888df340446faf95cfcd426c71832605c6c9dce6f5348bf6c"
+    },
+    {
+      "path": "candidates/center-source/versions/f3a44ec5b2ea267908fda22dae3c646288d26147c04bafdb6b6321006ce29a61.source-manifest.json",
+      "sha256": "f3a44ec5b2ea267908fda22dae3c646288d26147c04bafdb6b6321006ce29a61"
+    },
+    {
+      "path": "candidates/center-source/versions/e3be6098ee0378dc4064da87026606148ff8fd8b0e567d9e1bfe867c7dba17dc.mn-310-gillpup-v1.front.review.png",
+      "sha256": "e3be6098ee0378dc4064da87026606148ff8fd8b0e567d9e1bfe867c7dba17dc"
+    },
+    {
+      "path": "candidates/center-source/versions/a96ddc44142f87f0033604467bca38eaa768e4cf1bb02b89d377530784747152.mn-311-mudmender-v1.back.2bpp",
+      "sha256": "a96ddc44142f87f0033604467bca38eaa768e4cf1bb02b89d377530784747152"
+    },
+    {
+      "path": "candidates/center-source/versions/1c740cbefb1c4f361eb8cafbfe6a475bac1620d2ed4589b7444efe8686719de0.mn-310-gillpup-v1.front.source-crop.png",
+      "sha256": "1c740cbefb1c4f361eb8cafbfe6a475bac1620d2ed4589b7444efe8686719de0"
+    },
+    {
+      "path": "candidates/center-source/versions/79f3257588feb22afe8c6fa94c593d30af6f5867b508134af15955bc22f3b7ce.mn-311-mudmender-v1.back.source-crop.png",
+      "sha256": "79f3257588feb22afe8c6fa94c593d30af6f5867b508134af15955bc22f3b7ce"
+    },
+    {
+      "path": "candidates/center-source/versions/f089ed9aa4ceb74ab6cff1ae0179c17fa1d81e1811219cf47c4d7158a33081b6.line.native.png",
+      "sha256": "f089ed9aa4ceb74ab6cff1ae0179c17fa1d81e1811219cf47c4d7158a33081b6"
+    },
+    {
+      "path": "candidates/center-source/versions/e15907877c682cc42c8a70419b3cabe77b2ef1b8863d838fc715706335f6c111.source-prompt.txt",
+      "sha256": "e15907877c682cc42c8a70419b3cabe77b2ef1b8863d838fc715706335f6c111"
+    },
+    {
+      "path": "candidates/center-source/versions/af05dcef2ae1f6a8a7419fc3c8e7744db4b9440f24ffb752f552392f8d04f772.mn-311-mudmender-v1.back.json",
+      "sha256": "af05dcef2ae1f6a8a7419fc3c8e7744db4b9440f24ffb752f552392f8d04f772"
+    },
+    {
+      "path": "candidates/center-source/versions/8218336d3b8ebad5c1ee7ebf02cd04d301bfe619232edd1499a62c6338d267ab.mn-310-gillpup-v1.back.source-crop.png",
+      "sha256": "8218336d3b8ebad5c1ee7ebf02cd04d301bfe619232edd1499a62c6338d267ab"
+    },
+    {
+      "path": "candidates/center-source/versions/126ce3b617e9d5cb92ffcfa4231546006b97545543efbe6f6e3c32686eb15c18.mn-311-mudmender-v1.front.review.png",
+      "sha256": "126ce3b617e9d5cb92ffcfa4231546006b97545543efbe6f6e3c32686eb15c18"
+    },
+    {
+      "path": "candidates/center-source/versions/4ddbb06864eed9c5a76891d46c0c8ab1ea66b7e5f9daa89dc3ab2c8066eba126.mn-311-mudmender-v1.back.png",
+      "sha256": "4ddbb06864eed9c5a76891d46c0c8ab1ea66b7e5f9daa89dc3ab2c8066eba126"
+    },
+    {
+      "path": "candidates/center-source/versions/e062867d7c663db55006ee940533384ba16198d6cd2cbe8953eeb5a0eb35a334.mn-310-gillpup-v1.front.png",
+      "sha256": "e062867d7c663db55006ee940533384ba16198d6cd2cbe8953eeb5a0eb35a334"
+    },
+    {
+      "path": "candidates/center-source/versions/28c8fb8e9ca43b98370509504df2073e860593d7d5ee76bf30189294f93757c6.mn-310-gillpup-v1.front.2bpp",
+      "sha256": "28c8fb8e9ca43b98370509504df2073e860593d7d5ee76bf30189294f93757c6"
+    },
+    {
+      "path": "candidates/center-source/versions/572efb201a0418dd792575fd28dfd7a2319c7d74da1fe9ae3c591836232b80a0.mn-310-gillpup-v1.back.json",
+      "sha256": "572efb201a0418dd792575fd28dfd7a2319c7d74da1fe9ae3c591836232b80a0"
+    },
+    {
+      "path": "candidates/center-source/versions/bcca41984a823f50e449ed5e3c41a79bdcb34e4252aafd090cbe7928cdc5e06e.mn-311-mudmender-v1.front.png",
+      "sha256": "bcca41984a823f50e449ed5e3c41a79bdcb34e4252aafd090cbe7928cdc5e06e"
+    },
+    {
+      "path": "candidates/center-source/versions/469f8a68d523c1254639d64f0a0f5e97117feefecc1b90c6e11fa58bc40e8e0e.mn-311-mudmender-v1.front.2bpp",
+      "sha256": "469f8a68d523c1254639d64f0a0f5e97117feefecc1b90c6e11fa58bc40e8e0e"
+    },
+    {
+      "path": "candidates/center-source/versions/f231af24b6973b4144ff267b75ad91fdf97e64b578b9f79d45aa12ea0854a2be.mn-311-mudmender-v1.front.source-crop.png",
+      "sha256": "f231af24b6973b4144ff267b75ad91fdf97e64b578b9f79d45aa12ea0854a2be"
+    },
+    {
+      "path": "candidates/area-source/mn-311-mudmender-v1.back.2bpp",
+      "sha256": "9a884291769f167003f092dbc7c37b2a226cd1c4bfc6af1e01f835e0566aa3f7"
+    },
+    {
+      "path": "candidates/area-source/source-manifest.json",
+      "sha256": "7d4287edbaa68cdcccce7087ee9d2aeec596689b1f6ffeff723d5e40ff78a566"
+    },
+    {
+      "path": "candidates/area-source/mn-310-gillpup-v1.front.source-crop.png",
+      "sha256": "1c740cbefb1c4f361eb8cafbfe6a475bac1620d2ed4589b7444efe8686719de0"
+    },
+    {
+      "path": "candidates/area-source/mn-311-mudmender-v1.back.source-crop.png",
+      "sha256": "79f3257588feb22afe8c6fa94c593d30af6f5867b508134af15955bc22f3b7ce"
+    },
+    {
+      "path": "candidates/area-source/mn-311-mudmender-v1.front.json",
+      "sha256": "1846a8884fb1453eda54f97daf317989565630346997c076780b75263cbffd82"
+    },
+    {
+      "path": "candidates/area-source/line.native.png",
+      "sha256": "1e7623daecb4cd8b9666e6a3736bd95948ef86ff2b6f636af2e5a009afed1bde"
+    },
+    {
+      "path": "candidates/area-source/line.review.png",
+      "sha256": "6d8b03a20e7410a4981dfbae5cf613a17e17e5e99f71545bb35d1a0d2061e6e5"
+    },
+    {
+      "path": "candidates/area-source/mn-311-mudmender-v1.back.png",
+      "sha256": "b2209ef7d2800ad7b85ec947888274d2cc6c60c3ba0c1eda5281f72bfc0bb686"
+    },
+    {
+      "path": "candidates/area-source/mn-310-gillpup-v1.front.png",
+      "sha256": "586c9b7205623c357e436e27a23dcd2bb0fd93b164c535595812c66e025743dd"
+    },
+    {
+      "path": "candidates/area-source/source-prompt.txt",
+      "sha256": "e15907877c682cc42c8a70419b3cabe77b2ef1b8863d838fc715706335f6c111"
+    },
+    {
+      "path": "candidates/area-source/mn-311-mudmender-v1.front.source-crop.png",
+      "sha256": "f231af24b6973b4144ff267b75ad91fdf97e64b578b9f79d45aa12ea0854a2be"
+    },
+    {
+      "path": "candidates/area-source/source-834c2436313e3cc7a071c7d0d3dd20b8834d356edfddef1dd9e059e50a1780d8.png",
+      "sha256": "834c2436313e3cc7a071c7d0d3dd20b8834d356edfddef1dd9e059e50a1780d8"
+    },
+    {
+      "path": "candidates/area-source/mn-310-gillpup-v1.front.json",
+      "sha256": "a04ac2e386a667133436394b7fc1e59a1b3145f6cfa300afd54c95e22da4b1e8"
+    },
+    {
+      "path": "candidates/area-source/mn-310-gillpup-v1.back.json",
+      "sha256": "87efdbb610787392c3130e617eaaa1070e5e9181e5192b3874118c11550816bd"
+    },
+    {
+      "path": "candidates/area-source/mn-311-mudmender-v1.front.review.png",
+      "sha256": "72418ba5ec9de4a18ef1baaa68064a624a52a4c9c9f31514e11e3d98730740e9"
+    },
+    {
+      "path": "candidates/area-source/mn-310-gillpup-v1.back.2bpp",
+      "sha256": "f533c72dfeaf2e6b6e57959c40e136ea675372c2daa89a1779a20f32c65d005f"
+    },
+    {
+      "path": "candidates/area-source/mn-310-gillpup-v1.front.2bpp",
+      "sha256": "fc91c8eaf74592c3f93cf5376b7fdd5c91be2c60aa3fd5f0865745345b8febcc"
+    },
+    {
+      "path": "candidates/area-source/mn-311-mudmender-v1.front.png",
+      "sha256": "a3f3763ec6f8e5c766be17fa0b3122d8d9f375f0efb027a656c9dc9de89c2e28"
+    },
+    {
+      "path": "candidates/area-source/mn-310-gillpup-v1.back.source-crop.png",
+      "sha256": "8218336d3b8ebad5c1ee7ebf02cd04d301bfe619232edd1499a62c6338d267ab"
+    },
+    {
+      "path": "candidates/area-source/mn-310-gillpup-v1.back.png",
+      "sha256": "cf9a157f99f63f525f09a6a0d3eabab7ef833f83f3b89f54bc245e4601018b03"
+    },
+    {
+      "path": "candidates/area-source/mn-310-gillpup-v1.back.review.png",
+      "sha256": "49f72a9af1f0ce2dbfe7e38fc3b544186086ded1c5574f23ba599d3e1bda060a"
+    },
+    {
+      "path": "candidates/area-source/mn-311-mudmender-v1.back.json",
+      "sha256": "d4daba76c431d5c1c211817a5e6d7712af7c7585c91819f21afb117c06727ab2"
+    },
+    {
+      "path": "candidates/area-source/mn-311-mudmender-v1.back.review.png",
+      "sha256": "de00d7bb0b36ee76f2e791fb6fd5c9d9f3df0af4399a3acd6597a7797688f13b"
+    },
+    {
+      "path": "candidates/area-source/mn-311-mudmender-v1.front.2bpp",
+      "sha256": "3d00b83fb909381e705f7bf36964b9e143697f845d8b24f338334cbdf533ce20"
+    },
+    {
+      "path": "candidates/area-source/mn-310-gillpup-v1.front.review.png",
+      "sha256": "a4a8424b2e26cba79b61695e378951002b5a60bbb60ce0d15e3f558df1209eb3"
+    },
+    {
+      "path": "candidates/area-source/versions/1e7623daecb4cd8b9666e6a3736bd95948ef86ff2b6f636af2e5a009afed1bde.line.native.png",
+      "sha256": "1e7623daecb4cd8b9666e6a3736bd95948ef86ff2b6f636af2e5a009afed1bde"
+    },
+    {
+      "path": "candidates/area-source/versions/a3f3763ec6f8e5c766be17fa0b3122d8d9f375f0efb027a656c9dc9de89c2e28.mn-311-mudmender-v1.front.png",
+      "sha256": "a3f3763ec6f8e5c766be17fa0b3122d8d9f375f0efb027a656c9dc9de89c2e28"
+    },
+    {
+      "path": "candidates/area-source/versions/72418ba5ec9de4a18ef1baaa68064a624a52a4c9c9f31514e11e3d98730740e9.mn-311-mudmender-v1.front.review.png",
+      "sha256": "72418ba5ec9de4a18ef1baaa68064a624a52a4c9c9f31514e11e3d98730740e9"
+    },
+    {
+      "path": "candidates/area-source/versions/834c2436313e3cc7a071c7d0d3dd20b8834d356edfddef1dd9e059e50a1780d8.source-834c2436313e3cc7a071c7d0d3dd20b8834d356edfddef1dd9e059e50a1780d8.png",
+      "sha256": "834c2436313e3cc7a071c7d0d3dd20b8834d356edfddef1dd9e059e50a1780d8"
+    },
+    {
+      "path": "candidates/area-source/versions/3d00b83fb909381e705f7bf36964b9e143697f845d8b24f338334cbdf533ce20.mn-311-mudmender-v1.front.2bpp",
+      "sha256": "3d00b83fb909381e705f7bf36964b9e143697f845d8b24f338334cbdf533ce20"
+    },
+    {
+      "path": "candidates/area-source/versions/49f72a9af1f0ce2dbfe7e38fc3b544186086ded1c5574f23ba599d3e1bda060a.mn-310-gillpup-v1.back.review.png",
+      "sha256": "49f72a9af1f0ce2dbfe7e38fc3b544186086ded1c5574f23ba599d3e1bda060a"
+    },
+    {
+      "path": "candidates/area-source/versions/586c9b7205623c357e436e27a23dcd2bb0fd93b164c535595812c66e025743dd.mn-310-gillpup-v1.front.png",
+      "sha256": "586c9b7205623c357e436e27a23dcd2bb0fd93b164c535595812c66e025743dd"
+    },
+    {
+      "path": "candidates/area-source/versions/9a884291769f167003f092dbc7c37b2a226cd1c4bfc6af1e01f835e0566aa3f7.mn-311-mudmender-v1.back.2bpp",
+      "sha256": "9a884291769f167003f092dbc7c37b2a226cd1c4bfc6af1e01f835e0566aa3f7"
+    },
+    {
+      "path": "candidates/area-source/versions/a04ac2e386a667133436394b7fc1e59a1b3145f6cfa300afd54c95e22da4b1e8.mn-310-gillpup-v1.front.json",
+      "sha256": "a04ac2e386a667133436394b7fc1e59a1b3145f6cfa300afd54c95e22da4b1e8"
+    },
+    {
+      "path": "candidates/area-source/versions/d4daba76c431d5c1c211817a5e6d7712af7c7585c91819f21afb117c06727ab2.mn-311-mudmender-v1.back.json",
+      "sha256": "d4daba76c431d5c1c211817a5e6d7712af7c7585c91819f21afb117c06727ab2"
+    },
+    {
+      "path": "candidates/area-source/versions/1c740cbefb1c4f361eb8cafbfe6a475bac1620d2ed4589b7444efe8686719de0.mn-310-gillpup-v1.front.source-crop.png",
+      "sha256": "1c740cbefb1c4f361eb8cafbfe6a475bac1620d2ed4589b7444efe8686719de0"
+    },
+    {
+      "path": "candidates/area-source/versions/79f3257588feb22afe8c6fa94c593d30af6f5867b508134af15955bc22f3b7ce.mn-311-mudmender-v1.back.source-crop.png",
+      "sha256": "79f3257588feb22afe8c6fa94c593d30af6f5867b508134af15955bc22f3b7ce"
+    },
+    {
+      "path": "candidates/area-source/versions/e15907877c682cc42c8a70419b3cabe77b2ef1b8863d838fc715706335f6c111.source-prompt.txt",
+      "sha256": "e15907877c682cc42c8a70419b3cabe77b2ef1b8863d838fc715706335f6c111"
+    },
+    {
+      "path": "candidates/area-source/versions/de00d7bb0b36ee76f2e791fb6fd5c9d9f3df0af4399a3acd6597a7797688f13b.mn-311-mudmender-v1.back.review.png",
+      "sha256": "de00d7bb0b36ee76f2e791fb6fd5c9d9f3df0af4399a3acd6597a7797688f13b"
+    },
+    {
+      "path": "candidates/area-source/versions/87efdbb610787392c3130e617eaaa1070e5e9181e5192b3874118c11550816bd.mn-310-gillpup-v1.back.json",
+      "sha256": "87efdbb610787392c3130e617eaaa1070e5e9181e5192b3874118c11550816bd"
+    },
+    {
+      "path": "candidates/area-source/versions/7d4287edbaa68cdcccce7087ee9d2aeec596689b1f6ffeff723d5e40ff78a566.source-manifest.json",
+      "sha256": "7d4287edbaa68cdcccce7087ee9d2aeec596689b1f6ffeff723d5e40ff78a566"
+    },
+    {
+      "path": "candidates/area-source/versions/8218336d3b8ebad5c1ee7ebf02cd04d301bfe619232edd1499a62c6338d267ab.mn-310-gillpup-v1.back.source-crop.png",
+      "sha256": "8218336d3b8ebad5c1ee7ebf02cd04d301bfe619232edd1499a62c6338d267ab"
+    },
+    {
+      "path": "candidates/area-source/versions/fc91c8eaf74592c3f93cf5376b7fdd5c91be2c60aa3fd5f0865745345b8febcc.mn-310-gillpup-v1.front.2bpp",
+      "sha256": "fc91c8eaf74592c3f93cf5376b7fdd5c91be2c60aa3fd5f0865745345b8febcc"
+    },
+    {
+      "path": "candidates/area-source/versions/1846a8884fb1453eda54f97daf317989565630346997c076780b75263cbffd82.mn-311-mudmender-v1.front.json",
+      "sha256": "1846a8884fb1453eda54f97daf317989565630346997c076780b75263cbffd82"
+    },
+    {
+      "path": "candidates/area-source/versions/cf9a157f99f63f525f09a6a0d3eabab7ef833f83f3b89f54bc245e4601018b03.mn-310-gillpup-v1.back.png",
+      "sha256": "cf9a157f99f63f525f09a6a0d3eabab7ef833f83f3b89f54bc245e4601018b03"
+    },
+    {
+      "path": "candidates/area-source/versions/b2209ef7d2800ad7b85ec947888274d2cc6c60c3ba0c1eda5281f72bfc0bb686.mn-311-mudmender-v1.back.png",
+      "sha256": "b2209ef7d2800ad7b85ec947888274d2cc6c60c3ba0c1eda5281f72bfc0bb686"
+    },
+    {
+      "path": "candidates/area-source/versions/a4a8424b2e26cba79b61695e378951002b5a60bbb60ce0d15e3f558df1209eb3.mn-310-gillpup-v1.front.review.png",
+      "sha256": "a4a8424b2e26cba79b61695e378951002b5a60bbb60ce0d15e3f558df1209eb3"
+    },
+    {
+      "path": "candidates/area-source/versions/f533c72dfeaf2e6b6e57959c40e136ea675372c2daa89a1779a20f32c65d005f.mn-310-gillpup-v1.back.2bpp",
+      "sha256": "f533c72dfeaf2e6b6e57959c40e136ea675372c2daa89a1779a20f32c65d005f"
+    },
+    {
+      "path": "candidates/area-source/versions/6d8b03a20e7410a4981dfbae5cf613a17e17e5e99f71545bb35d1a0d2061e6e5.line.review.png",
+      "sha256": "6d8b03a20e7410a4981dfbae5cf613a17e17e5e99f71545bb35d1a0d2061e6e5"
+    },
+    {
+      "path": "candidates/area-source/versions/f231af24b6973b4144ff267b75ad91fdf97e64b578b9f79d45aa12ea0854a2be.mn-311-mudmender-v1.front.source-crop.png",
+      "sha256": "f231af24b6973b4144ff267b75ad91fdf97e64b578b9f79d45aa12ea0854a2be"
+    }
+  ],
+  "all_source_prompts_and_renders_preserved": true,
+  "no_generation_failures": true
+}

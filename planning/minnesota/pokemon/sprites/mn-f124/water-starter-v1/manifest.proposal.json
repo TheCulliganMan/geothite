@@ -1,0 +1,372 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F124",
+  "status": "proposal-only-do-not-run-against-shared-native-root",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_271": {
+      "species_id": "MN_271",
+      "name": "Rillip",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          15,
+          25,
+          30
+        ],
+        [
+          9,
+          12,
+          16
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        31535,
+        16777,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          123,
+          206,
+          247
+        ],
+        [
+          74,
+          99,
+          132
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#7BCEF7",
+        "#4A6384",
+        "#000000"
+      ]
+    },
+    "MN_272": {
+      "species_id": "MN_272",
+      "name": "Sluimand",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          9,
+          23,
+          26
+        ],
+        [
+          12,
+          8,
+          5
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        27369,
+        5388,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          74,
+          189,
+          214
+        ],
+        [
+          99,
+          66,
+          41
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#4ABDD6",
+        "#634229",
+        "#000000"
+      ]
+    },
+    "MN_273": {
+      "species_id": "MN_273",
+      "name": "Artesurge",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          6,
+          18,
+          22
+        ],
+        [
+          20,
+          14,
+          7
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        23110,
+        7636,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          49,
+          148,
+          181
+        ],
+        [
+          165,
+          115,
+          57
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#3194B5",
+        "#A57339",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f124/water-starter-v1/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "source_sha256": "0024d91320a47533ee8881794431e4126f738e3e0207a4383a630e956fb46438",
+  "sprites": [
+    {
+      "id": "mn-271-rillip-v1",
+      "species_id": "MN_271",
+      "view": "front",
+      "source": "sprites/mn-f124/water-starter-v1/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        490,
+        520
+      ],
+      "fit": [
+        40,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        31535,
+        16777,
+        0
+      ],
+      "exterior_contour": "solid",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-271-rillip-v1",
+      "species_id": "MN_271",
+      "view": "back",
+      "source": "sprites/mn-f124/water-starter-v1/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        520,
+        470,
+        504
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        31535,
+        16777,
+        0
+      ],
+      "exterior_contour": "solid",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-272-sluimand-v1",
+      "species_id": "MN_272",
+      "view": "front",
+      "source": "sprites/mn-f124/water-starter-v1/front-back.imagegen-v1.png",
+      "crop": [
+        490,
+        0,
+        470,
+        520
+      ],
+      "fit": [
+        48,
+        49
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        27369,
+        5388,
+        0
+      ],
+      "exterior_contour": "solid",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-272-sluimand-v1",
+      "species_id": "MN_272",
+      "view": "back",
+      "source": "sprites/mn-f124/water-starter-v1/front-back.imagegen-v1.png",
+      "crop": [
+        470,
+        520,
+        480,
+        504
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        27369,
+        5388,
+        0
+      ],
+      "exterior_contour": "solid",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-273-artesurge-v1",
+      "species_id": "MN_273",
+      "view": "front",
+      "source": "sprites/mn-f124/water-starter-v1/front-back.imagegen-v1.png",
+      "crop": [
+        960,
+        0,
+        576,
+        520
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        23110,
+        7636,
+        0
+      ],
+      "exterior_contour": "solid",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-273-artesurge-v1",
+      "species_id": "MN_273",
+      "view": "back",
+      "source": "sprites/mn-f124/water-starter-v1/front-back.imagegen-v1.png",
+      "crop": [
+        950,
+        520,
+        586,
+        504
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        23110,
+        7636,
+        0
+      ],
+      "exterior_contour": "solid",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    }
+  ],
+  "visual_review": {
+    "status": "native-proposal-reviewed-awaiting-root",
+    "notes": "Source shows clear growth of cheek scoops to hollow shoulder arches and a substantial two-lipped tail; baby is low and friendly, adult has much heavier forequarters. Independently authored rear portraits crop the lower anatomy. All stages have independent declared palettes; raw ImageGen color variation must be quantized to those exact native inks. Native56/48views inspected: connected stepped black contours, large white channel paths and the vent holes remain clear; palette is exactly four inks independently per species, and lower bodies crop naturally in rear portraits. Strong size/mass progression. No canonical registration performed.",
+    "sheet_sha256": "0024d91320a47533ee8881794431e4126f738e3e0207a4383a630e956fb46438",
+    "outline_profile": "solid-exterior-v1"
+  },
+  "native_qa": {
+    "converter": "Current crates/crystal-assets/examples/minnesota_sprite_sheet.rs compiled directly with rustc and its exact current leaf modules; no external image exporter.",
+    "isolated_output": "target/agent-northwoods-animation/proposals/water-starter-v1",
+    "durable_output": "planning/minnesota/renders/proposals-20261026-v1/water-starter-v1",
+    "review": "planning/minnesota/renders/proposals-20261026-v1/water-starter-v1/line.review.png",
+    "native": "planning/minnesota/renders/proposals-20261026-v1/water-starter-v1/line.native.png",
+    "frame_sizes": {
+      "front": [
+        56,
+        56
+      ],
+      "back": [
+        48,
+        48
+      ]
+    },
+    "native_bytes": {
+      "front": 784,
+      "back": 576
+    },
+    "quantization": "exact per-species four-ink RGB555, source front/back crops independently converted",
+    "status": "proposal-only-native-inspected"
+  }
+}

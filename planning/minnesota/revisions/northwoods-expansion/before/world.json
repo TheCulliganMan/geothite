@@ -1,0 +1,4364 @@
+{
+  "schema_version": 2,
+  "status": "Implementation plan, not a compiled pack.",
+  "style_authority": "reference/johto-kanto-original.png",
+  "deprecated_art": "Earlier ImageGen region and route illustrations do not define scale, assets, collision or topology.",
+  "start_map": "MnWinonaHome2F",
+  "starter_species": [
+    "CHIKORITA",
+    "CYNDAQUIL",
+    "TOTODILE"
+  ],
+  "starter_level": 5,
+  "trainer_selection": "production requested trainer",
+  "coordinate_system": {
+    "metatile_pixels": 32,
+    "core_tile_pixels": 16,
+    "source_tile_pixels": 8,
+    "chunk_metatiles": [
+      32,
+      24
+    ],
+    "native_viewport_pixels": [
+      160,
+      144
+    ]
+  },
+  "towns": [
+    {
+      "id": "MnWinona",
+      "name": "WINONA",
+      "dimensions_metatiles": [
+        20,
+        18
+      ],
+      "reference_anchor_percent": [
+        87,
+        87
+      ],
+      "role": "starter",
+      "tileset": "johto",
+      "composition": "Riverbank home, field station and oak square.",
+      "ports": [
+        {
+          "route": "MN_R01",
+          "side": "W",
+          "gate_metatile": [
+            1,
+            9
+          ],
+          "landing_metatile": [
+            3,
+            9
+          ]
+        }
+      ],
+      "interiors": [
+        {
+          "id": "MnWinonaPokecenter1F",
+          "kind": "pokecenter",
+          "dimensions_metatiles": [
+            10,
+            8
+          ],
+          "source_behavior": "canonical healing, PC and blackout recovery"
+        },
+        {
+          "id": "MnWinonaMart",
+          "kind": "mart",
+          "dimensions_metatiles": [
+            6,
+            4
+          ],
+          "source_behavior": "canonical clerk, money deduction and inventory"
+        },
+        {
+          "id": "MnWinonaHome1F",
+          "kind": "home",
+          "dimensions_metatiles": [
+            6,
+            4
+          ]
+        },
+        {
+          "id": "MnWinonaHome2F",
+          "kind": "start",
+          "dimensions_metatiles": [
+            4,
+            4
+          ]
+        },
+        {
+          "id": "MnWinonaFieldStation",
+          "kind": "starter_lab",
+          "dimensions_metatiles": [
+            10,
+            6
+          ]
+        }
+      ],
+      "walkable_destinations": [
+        "each port landing",
+        "every visible exterior door",
+        "central square",
+        "local story NPC"
+      ],
+      "door_contract": "Assign exterior core-tile door coordinates only after selecting authentic facade quadrants; record reciprocal warp indices and indoor floor arrivals before export."
+    },
+    {
+      "id": "MnRochester",
+      "name": "ROCHESTER",
+      "dimensions_metatiles": [
+        24,
+        18
+      ],
+      "reference_anchor_percent": [
+        70,
+        86
+      ],
+      "role": "gym_1",
+      "tileset": "johto_modern",
+      "composition": "Clinic courtyard, first gym and two sheltered residential lanes.",
+      "ports": [
+        {
+          "route": "MN_R01",
+          "side": "E",
+          "gate_metatile": [
+            22,
+            9
+          ],
+          "landing_metatile": [
+            20,
+            9
+          ]
+        },
+        {
+          "route": "MN_R02",
+          "side": "W",
+          "gate_metatile": [
+            1,
+            9
+          ],
+          "landing_metatile": [
+            3,
+            9
+          ]
+        }
+      ],
+      "interiors": [
+        {
+          "id": "MnRochesterPokecenter1F",
+          "kind": "pokecenter",
+          "dimensions_metatiles": [
+            10,
+            8
+          ],
+          "source_behavior": "canonical healing, PC and blackout recovery"
+        },
+        {
+          "id": "MnRochesterMart",
+          "kind": "mart",
+          "dimensions_metatiles": [
+            6,
+            4
+          ],
+          "source_behavior": "canonical clerk, money deduction and inventory"
+        },
+        {
+          "id": "MnRochesterGym",
+          "kind": "gym_1",
+          "dimensions_metatiles": [
+            8,
+            10
+          ]
+        }
+      ],
+      "walkable_destinations": [
+        "each port landing",
+        "every visible exterior door",
+        "central square",
+        "local story NPC"
+      ],
+      "door_contract": "Assign exterior core-tile door coordinates only after selecting authentic facade quadrants; record reciprocal warp indices and indoor floor arrivals before export."
+    },
+    {
+      "id": "MnMankato",
+      "name": "MANKATO",
+      "dimensions_metatiles": [
+        24,
+        18
+      ],
+      "reference_anchor_percent": [
+        44,
+        84
+      ],
+      "role": "gym_2",
+      "tileset": "johto",
+      "composition": "Valley terrace, prairie market and university garden.",
+      "ports": [
+        {
+          "route": "MN_R02",
+          "side": "E",
+          "gate_metatile": [
+            22,
+            9
+          ],
+          "landing_metatile": [
+            20,
+            9
+          ]
+        },
+        {
+          "route": "MN_R03",
+          "side": "N",
+          "gate_metatile": [
+            12,
+            1
+          ],
+          "landing_metatile": [
+            12,
+            3
+          ]
+        }
+      ],
+      "interiors": [
+        {
+          "id": "MnMankatoPokecenter1F",
+          "kind": "pokecenter",
+          "dimensions_metatiles": [
+            10,
+            8
+          ],
+          "source_behavior": "canonical healing, PC and blackout recovery"
+        },
+        {
+          "id": "MnMankatoMart",
+          "kind": "mart",
+          "dimensions_metatiles": [
+            6,
+            4
+          ],
+          "source_behavior": "canonical clerk, money deduction and inventory"
+        },
+        {
+          "id": "MnMankatoGym",
+          "kind": "gym_2",
+          "dimensions_metatiles": [
+            9,
+            11
+          ]
+        }
+      ],
+      "walkable_destinations": [
+        "each port landing",
+        "every visible exterior door",
+        "central square",
+        "local story NPC"
+      ],
+      "door_contract": "Assign exterior core-tile door coordinates only after selecting authentic facade quadrants; record reciprocal warp indices and indoor floor arrivals before export."
+    },
+    {
+      "id": "MnMinneapolis",
+      "name": "MINNEAPOLIS",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "reference_anchor_percent": [
+        54,
+        70
+      ],
+      "role": "gym_3",
+      "tileset": "johto_modern",
+      "composition": "Compact river city with three distinct blocks and riverfront park.",
+      "ports": [
+        {
+          "route": "MN_R03",
+          "side": "S",
+          "gate_metatile": [
+            16,
+            22
+          ],
+          "landing_metatile": [
+            16,
+            20
+          ]
+        },
+        {
+          "route": "MN_R04",
+          "side": "E",
+          "gate_metatile": [
+            30,
+            12
+          ],
+          "landing_metatile": [
+            28,
+            12
+          ]
+        },
+        {
+          "route": "MN_R05",
+          "side": "N",
+          "gate_metatile": [
+            16,
+            1
+          ],
+          "landing_metatile": [
+            16,
+            3
+          ]
+        }
+      ],
+      "interiors": [
+        {
+          "id": "MnMinneapolisPokecenter1F",
+          "kind": "pokecenter",
+          "dimensions_metatiles": [
+            10,
+            8
+          ],
+          "source_behavior": "canonical healing, PC and blackout recovery"
+        },
+        {
+          "id": "MnMinneapolisMart",
+          "kind": "mart",
+          "dimensions_metatiles": [
+            6,
+            4
+          ],
+          "source_behavior": "canonical clerk, money deduction and inventory"
+        },
+        {
+          "id": "MnMinneapolisGym",
+          "kind": "gym_3",
+          "dimensions_metatiles": [
+            12,
+            10
+          ]
+        }
+      ],
+      "walkable_destinations": [
+        "each port landing",
+        "every visible exterior door",
+        "central square",
+        "local story NPC"
+      ],
+      "door_contract": "Assign exterior core-tile door coordinates only after selecting authentic facade quadrants; record reciprocal warp indices and indoor floor arrivals before export."
+    },
+    {
+      "id": "MnStPaul",
+      "name": "ST PAUL",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "reference_anchor_percent": [
+        68,
+        70
+      ],
+      "role": "gym_4",
+      "tileset": "kanto",
+      "composition": "Capitol plaza, depot district and bluff stairs.",
+      "ports": [
+        {
+          "route": "MN_R04",
+          "side": "W",
+          "gate_metatile": [
+            1,
+            12
+          ],
+          "landing_metatile": [
+            3,
+            12
+          ]
+        }
+      ],
+      "interiors": [
+        {
+          "id": "MnStPaulPokecenter1F",
+          "kind": "pokecenter",
+          "dimensions_metatiles": [
+            5,
+            4
+          ],
+          "source_behavior": "canonical healing, PC and blackout recovery",
+          "authoring_file": "towns/MnStPaul.json"
+        },
+        {
+          "id": "MnStPaulMart",
+          "kind": "mart",
+          "dimensions_metatiles": [
+            6,
+            4
+          ],
+          "source_behavior": "canonical clerk, money deduction and inventory",
+          "authoring_file": "towns/MnStPaul.json"
+        },
+        {
+          "id": "MnStPaulGym",
+          "kind": "gym_4",
+          "dimensions_metatiles": [
+            13,
+            13
+          ],
+          "authoring_file": "towns/MnStPaul.json"
+        },
+        {
+          "id": "MnStPaulCapitolHall",
+          "kind": "public_records",
+          "dimensions_metatiles": [
+            8,
+            4
+          ],
+          "source_behavior": "Ordinary public information only. No MS03 dispatch note, TM gift, courier battle or story completion is awarded here; Q03 courier remains in Root-owned depot.",
+          "authoring_file": "towns/MnStPaul.json"
+        },
+        {
+          "id": "MnStPaulUnionDepot",
+          "kind": "train_station",
+          "dimensions_metatiles": [
+            16,
+            12
+          ],
+          "authoring_file": "transit/MnStPaulUnionDepot.json"
+        }
+      ],
+      "walkable_destinations": [
+        "each port landing",
+        "every visible exterior door",
+        "central square",
+        "local story NPC"
+      ],
+      "door_contract": "Assign exterior core-tile door coordinates only after selecting authentic facade quadrants; record reciprocal warp indices and indoor floor arrivals before export.",
+      "authoring_file": "towns/MnStPaul.json",
+      "layout_file": "towns/MnStPaul.layout.json"
+    },
+    {
+      "id": "MnStCloud",
+      "name": "ST CLOUD",
+      "dimensions_metatiles": [
+        24,
+        18
+      ],
+      "reference_anchor_percent": [
+        44,
+        58
+      ],
+      "role": "gym_5",
+      "tileset": "johto",
+      "composition": "River overlook, oak park and northern trailhead.",
+      "ports": [
+        {
+          "route": "MN_R05",
+          "side": "S",
+          "gate_metatile": [
+            12,
+            16
+          ],
+          "landing_metatile": [
+            12,
+            14
+          ]
+        },
+        {
+          "route": "MN_R06",
+          "side": "N",
+          "gate_metatile": [
+            12,
+            1
+          ],
+          "landing_metatile": [
+            12,
+            3
+          ]
+        }
+      ],
+      "interiors": [
+        {
+          "id": "MnStCloudPokecenter1F",
+          "kind": "pokecenter",
+          "dimensions_metatiles": [
+            10,
+            8
+          ],
+          "source_behavior": "canonical healing, PC and blackout recovery",
+          "authoring_file": "towns/MnStCloud.json"
+        },
+        {
+          "id": "MnStCloudMart",
+          "kind": "mart",
+          "dimensions_metatiles": [
+            6,
+            4
+          ],
+          "source_behavior": "canonical clerk, money deduction and inventory",
+          "authoring_file": "towns/MnStCloud.json"
+        },
+        {
+          "id": "MnStCloudGym",
+          "kind": "gym_5",
+          "dimensions_metatiles": [
+            7,
+            12
+          ],
+          "authoring_file": "towns/MnStCloud.json"
+        },
+        {
+          "id": "MnStCloudStation",
+          "kind": "train_station",
+          "dimensions_metatiles": [
+            10,
+            10
+          ],
+          "source_behavior": "Authored Granite Bank depot; train service/callback/door publication pending",
+          "authoring_file": "transit/MnStCloudStation.json"
+        }
+      ],
+      "walkable_destinations": [
+        "each port landing",
+        "every visible exterior door",
+        "central square",
+        "local story NPC"
+      ],
+      "door_contract": "Assign exterior core-tile door coordinates only after selecting authentic facade quadrants; record reciprocal warp indices and indoor floor arrivals before export.",
+      "authoring_file": "towns/MnStCloud.json",
+      "layout_file": "towns/MnStCloud.layout.json"
+    },
+    {
+      "id": "MnBrainerd",
+      "name": "BRAINERD",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "reference_anchor_percent": [
+        47,
+        46
+      ],
+      "role": "gym_6",
+      "tileset": "johto",
+      "composition": "Four-way lake-country hub with shore, ranger station and camp street.",
+      "ports": [
+        {
+          "route": "MN_R06",
+          "side": "S",
+          "gate_metatile": [
+            16,
+            22
+          ],
+          "landing_metatile": [
+            16,
+            20
+          ]
+        },
+        {
+          "route": "MN_R07",
+          "side": "N",
+          "gate_metatile": [
+            16,
+            1
+          ],
+          "landing_metatile": [
+            16,
+            3
+          ]
+        },
+        {
+          "route": "MN_R15",
+          "side": "W",
+          "gate_metatile": [
+            1,
+            12
+          ],
+          "landing_metatile": [
+            3,
+            12
+          ]
+        },
+        {
+          "route": "MN_R18",
+          "side": "E",
+          "gate_metatile": [
+            30,
+            12
+          ],
+          "landing_metatile": [
+            28,
+            12
+          ]
+        }
+      ],
+      "interiors": [
+        {
+          "id": "MnBrainerdPokecenter1F",
+          "kind": "pokecenter",
+          "dimensions_metatiles": [
+            10,
+            8
+          ],
+          "source_behavior": "canonical healing, PC and blackout recovery",
+          "authoring_file": "towns/MnBrainerd.json"
+        },
+        {
+          "id": "MnBrainerdMart",
+          "kind": "mart",
+          "dimensions_metatiles": [
+            6,
+            4
+          ],
+          "source_behavior": "canonical clerk, money deduction and inventory",
+          "authoring_file": "towns/MnBrainerd.json"
+        },
+        {
+          "id": "MnBrainerdGym",
+          "kind": "gym_6",
+          "dimensions_metatiles": [
+            12,
+            11
+          ]
+        },
+        {
+          "id": "MnBrainerdRangerStation",
+          "kind": "ranger_station",
+          "dimensions_metatiles": [
+            8,
+            6
+          ],
+          "source_behavior": "Hand-authored survey archive interior using exact native lab workbench, lockers and report cabinet. Story reward remains outdoors at25,19.",
+          "authoring_file": "towns/MnBrainerd.json"
+        },
+        {
+          "id": "MnBrainerdOutfitter",
+          "kind": "camp_supply",
+          "dimensions_metatiles": [
+            6,
+            4
+          ],
+          "source_behavior": "Hand-authored small camp-supply cabin: table, gear lockers, map, two residents and success-only first aid gift; no duplicate laboratory interior.",
+          "authoring_file": "towns/MnBrainerd.json"
+        }
+      ],
+      "walkable_destinations": [
+        "each port landing",
+        "every visible exterior door",
+        "central square",
+        "local story NPC"
+      ],
+      "door_contract": "Assign exterior core-tile door coordinates only after selecting authentic facade quadrants; record reciprocal warp indices and indoor floor arrivals before export.",
+      "authoring_file": "towns/MnBrainerd.json",
+      "layout_file": "towns/MnBrainerd.layout.json"
+    },
+    {
+      "id": "MnLeechLake",
+      "name": "LEECH LAKE",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "reference_anchor_percent": [
+        42,
+        35
+      ],
+      "role": "landmark",
+      "tileset": "johto",
+      "composition": "Lake perimeter, two land approaches and optional Surf islands.",
+      "ports": [
+        {
+          "route": "MN_R07",
+          "side": "S",
+          "gate_metatile": [
+            16,
+            22
+          ],
+          "landing_metatile": [
+            16,
+            20
+          ]
+        },
+        {
+          "route": "MN_R08",
+          "side": "N",
+          "gate_metatile": [
+            16,
+            1
+          ],
+          "landing_metatile": [
+            16,
+            3
+          ]
+        }
+      ],
+      "interiors": [],
+      "walkable_destinations": [
+        "each port landing",
+        "every visible exterior door",
+        "central square",
+        "local story NPC"
+      ],
+      "door_contract": "Assign exterior core-tile door coordinates only after selecting authentic facade quadrants; record reciprocal warp indices and indoor floor arrivals before export."
+    },
+    {
+      "id": "MnBemidji",
+      "name": "BEMIDJI",
+      "dimensions_metatiles": [
+        24,
+        24
+      ],
+      "reference_anchor_percent": [
+        35,
+        25
+      ],
+      "role": "gym_7",
+      "tileset": "johto",
+      "composition": "Lake square, sawmill scenery and pine trailheads.",
+      "ports": [
+        {
+          "route": "MN_R08",
+          "side": "S",
+          "gate_metatile": [
+            12,
+            22
+          ],
+          "landing_metatile": [
+            12,
+            20
+          ]
+        },
+        {
+          "route": "MN_R09",
+          "side": "E",
+          "gate_metatile": [
+            22,
+            12
+          ],
+          "landing_metatile": [
+            20,
+            12
+          ]
+        },
+        {
+          "route": "MN_R14",
+          "side": "W",
+          "gate_metatile": [
+            1,
+            12
+          ],
+          "landing_metatile": [
+            3,
+            12
+          ]
+        },
+        {
+          "route": "MN_R17",
+          "side": "N",
+          "gate_metatile": [
+            12,
+            1
+          ],
+          "landing_metatile": [
+            12,
+            3
+          ]
+        }
+      ],
+      "interiors": [
+        {
+          "id": "MnBemidjiPokecenter1F",
+          "kind": "pokecenter",
+          "dimensions_metatiles": [
+            10,
+            8
+          ],
+          "source_behavior": "canonical healing, PC and blackout recovery",
+          "authoring_file": "towns/MnBemidji.json"
+        },
+        {
+          "id": "MnBemidjiMart",
+          "kind": "mart",
+          "dimensions_metatiles": [
+            6,
+            4
+          ],
+          "source_behavior": "canonical clerk, money deduction and inventory",
+          "authoring_file": "towns/MnBemidji.json"
+        },
+        {
+          "id": "MnBemidjiGym",
+          "kind": "gym_7",
+          "dimensions_metatiles": [
+            11,
+            10
+          ]
+        },
+        {
+          "id": "MnBemidjiShelfHouse",
+          "kind": "house",
+          "dimensions_metatiles": [
+            6,
+            4
+          ],
+          "authoring_file": "towns/MnBemidji.json"
+        },
+        {
+          "id": "MnBemidjiNorthHouse",
+          "kind": "house",
+          "dimensions_metatiles": [
+            6,
+            4
+          ],
+          "authoring_file": "towns/MnBemidji.json"
+        },
+        {
+          "id": "MnBemidjiHeritageHouse",
+          "kind": "history_house",
+          "dimensions_metatiles": [
+            8,
+            6
+          ],
+          "authoring_file": "towns/MnBemidji.json"
+        }
+      ],
+      "walkable_destinations": [
+        "each port landing",
+        "every visible exterior door",
+        "central square",
+        "local story NPC"
+      ],
+      "door_contract": "Assign exterior core-tile door coordinates only after selecting authentic facade quadrants; record reciprocal warp indices and indoor floor arrivals before export.",
+      "authoring_file": "towns/MnBemidji.json",
+      "layout_file": "towns/MnBemidji.layout.json"
+    },
+    {
+      "id": "MnGrandRapids",
+      "name": "GRAND RAPIDS",
+      "dimensions_metatiles": [
+        24,
+        24
+      ],
+      "reference_anchor_percent": [
+        57,
+        36
+      ],
+      "role": "story_hub",
+      "tileset": "johto_modern",
+      "composition": "Working survey depot and civic services above a protected river walk.",
+      "ports": [
+        {
+          "route": "MN_R09",
+          "side": "W",
+          "gate_metatile": [
+            1,
+            12
+          ],
+          "landing_metatile": [
+            3,
+            12
+          ],
+          "native_connection": {
+            "target_map": "MnR09C01R00",
+            "direction": "west",
+            "offset_metatiles": 0,
+            "reciprocal_offset_metatiles": 0,
+            "checkpoint": "MnGrandRapidsWestCheck"
+          }
+        },
+        {
+          "route": "MN_R10",
+          "side": "E",
+          "gate_metatile": [
+            22,
+            12
+          ],
+          "landing_metatile": [
+            20,
+            12
+          ],
+          "native_connection": {
+            "target_map": "MnR10C00R00",
+            "direction": "east",
+            "offset_metatiles": 7,
+            "reciprocal_offset_metatiles": -7,
+            "checkpoint": "MnGrandRapidsEastCheck"
+          }
+        }
+      ],
+      "interiors": [
+        {
+          "id": "MnGrandRapidsPokecenter1F",
+          "kind": "pokecenter",
+          "dimensions_metatiles": [
+            10,
+            8
+          ],
+          "source_behavior": "canonical healing, PC and blackout recovery",
+          "authoring_file": "towns/MnGrandRapids.json"
+        },
+        {
+          "id": "MnGrandRapidsMart",
+          "kind": "mart",
+          "dimensions_metatiles": [
+            6,
+            4
+          ],
+          "source_behavior": "canonical clerk, money deduction and inventory",
+          "authoring_file": "towns/MnGrandRapids.json"
+        },
+        {
+          "id": "MnGrandRapidsSurveyDepot",
+          "kind": "story",
+          "dimensions_metatiles": [
+            12,
+            10
+          ],
+          "authoring_file": "towns/MnGrandRapids.json"
+        }
+      ],
+      "walkable_destinations": [
+        "each port landing",
+        "every visible exterior door",
+        "central square",
+        "local story NPC"
+      ],
+      "door_contract": "Assign exterior core-tile door coordinates only after selecting authentic facade quadrants; record reciprocal warp indices and indoor floor arrivals before export.",
+      "authoring_file": "towns/MnGrandRapids.json",
+      "layout_file": "towns/MnGrandRapids.layout.json"
+    },
+    {
+      "id": "MnDuluth",
+      "name": "DULUTH",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "reference_anchor_percent": [
+        72,
+        45
+      ],
+      "role": "gym_8",
+      "tileset": "johto_modern",
+      "composition": "Harbor, low bluff city and North Shore checkpoint.",
+      "ports": [
+        {
+          "route": "MN_R10",
+          "side": "W",
+          "gate_metatile": [
+            1,
+            12
+          ],
+          "landing_metatile": [
+            3,
+            12
+          ]
+        },
+        {
+          "route": "MN_R11",
+          "side": "N",
+          "gate_metatile": [
+            16,
+            1
+          ],
+          "landing_metatile": [
+            16,
+            3
+          ]
+        }
+      ],
+      "interiors": [
+        {
+          "id": "MnDuluthPokecenter1F",
+          "kind": "pokecenter",
+          "dimensions_metatiles": [
+            10,
+            8
+          ],
+          "source_behavior": "canonical healing, PC and blackout recovery",
+          "authoring_file": "towns/MnDuluth.json"
+        },
+        {
+          "id": "MnDuluthMart",
+          "kind": "mart",
+          "dimensions_metatiles": [
+            6,
+            4
+          ],
+          "source_behavior": "canonical clerk, money deduction and inventory",
+          "authoring_file": "towns/MnDuluth.json"
+        },
+        {
+          "id": "MnDuluthGym",
+          "kind": "gym_8",
+          "dimensions_metatiles": [
+            12,
+            12
+          ],
+          "authoring_file": "towns/MnDuluth.json"
+        },
+        {
+          "id": "MnDuluthHarborWorkshop",
+          "kind": "story",
+          "dimensions_metatiles": [
+            8,
+            6
+          ],
+          "authoring_file": "towns/MnDuluth.json"
+        },
+        {
+          "id": "MnDuluthHillHouse",
+          "kind": "house",
+          "dimensions_metatiles": [
+            5,
+            4
+          ],
+          "authoring_file": "towns/MnDuluth.json"
+        },
+        {
+          "id": "MnDuluthHarborHouse",
+          "kind": "house",
+          "dimensions_metatiles": [
+            5,
+            4
+          ],
+          "authoring_file": "towns/MnDuluth.json"
+        },
+        {
+          "id": "MnDuluthHistoryHouse",
+          "kind": "house",
+          "dimensions_metatiles": [
+            6,
+            5
+          ],
+          "authoring_file": "towns/MnDuluth.json"
+        }
+      ],
+      "walkable_destinations": [
+        "each port landing",
+        "every visible exterior door",
+        "central square",
+        "local story NPC"
+      ],
+      "door_contract": "Assign exterior core-tile door coordinates only after selecting authentic facade quadrants; record reciprocal warp indices and indoor floor arrivals before export.",
+      "authoring_file": "towns/MnDuluth.json",
+      "layout_file": "towns/MnDuluth.layout.json"
+    },
+    {
+      "id": "MnGrandMarais",
+      "name": "GRAND MARAIS",
+      "dimensions_metatiles": [
+        24,
+        18
+      ],
+      "reference_anchor_percent": [
+        87,
+        26
+      ],
+      "role": "town",
+      "tileset": "johto",
+      "composition": "Fishing harbor, artist row and inland trailhead.",
+      "ports": [
+        {
+          "route": "MN_R11",
+          "side": "S",
+          "gate_metatile": [
+            12,
+            16
+          ],
+          "landing_metatile": [
+            12,
+            14
+          ]
+        },
+        {
+          "route": "MN_R12",
+          "side": "W",
+          "gate_metatile": [
+            1,
+            9
+          ],
+          "landing_metatile": [
+            3,
+            9
+          ]
+        }
+      ],
+      "interiors": [
+        {
+          "id": "MnGrandMaraisPokecenter1F",
+          "kind": "pokecenter",
+          "dimensions_metatiles": [
+            10,
+            8
+          ],
+          "source_behavior": "canonical healing, PC and blackout recovery"
+        },
+        {
+          "id": "MnGrandMaraisMart",
+          "kind": "mart",
+          "dimensions_metatiles": [
+            6,
+            4
+          ],
+          "source_behavior": "canonical clerk, money deduction and inventory"
+        }
+      ],
+      "walkable_destinations": [
+        "each port landing",
+        "every visible exterior door",
+        "central square",
+        "local story NPC"
+      ],
+      "door_contract": "Assign exterior core-tile door coordinates only after selecting authentic facade quadrants; record reciprocal warp indices and indoor floor arrivals before export."
+    },
+    {
+      "id": "MnBoundaryWaters",
+      "name": "BOUNDARY WATERS",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "reference_anchor_percent": [
+        77,
+        16
+      ],
+      "role": "safari_basecamp_and_story_hub",
+      "tileset": "johto",
+      "composition": "Free ranger basecamp and Q07 survey shelter at the edge of a Safari preserve made mostly of connected lakes, pine/grass shores and real portages.",
+      "ports": [
+        {
+          "route": "MN_R12",
+          "side": "E",
+          "gate_metatile": [
+            30,
+            12
+          ],
+          "landing_metatile": [
+            28,
+            12
+          ],
+          "native_connection": {
+            "target_map": "MnR12C00R01",
+            "direction": "east",
+            "offset_metatiles": 8,
+            "reciprocal_offset_metatiles": -8,
+            "checkpoint": "gunflint"
+          }
+        },
+        {
+          "route": "MN_R13",
+          "side": "S",
+          "gate_metatile": [
+            16,
+            22
+          ],
+          "landing_metatile": [
+            16,
+            20
+          ],
+          "native_connection": {
+            "target_map": "MnR13C00R00",
+            "direction": "south",
+            "offset_metatiles": 1,
+            "reciprocal_offset_metatiles": -1,
+            "checkpoint": "league"
+          }
+        },
+        {
+          "route": "MN_R20",
+          "side": "W",
+          "gate_metatile": [
+            1,
+            12
+          ],
+          "landing_metatile": [
+            3,
+            12
+          ],
+          "native_connection": {
+            "target_map": "MnR20C01R00",
+            "direction": "west",
+            "offset_metatiles": -6,
+            "reciprocal_offset_metatiles": 6,
+            "checkpoint": "voyageurs"
+          }
+        }
+      ],
+      "interiors": [
+        {
+          "id": "MnBoundaryWatersSurveyShelter",
+          "kind": "story",
+          "dimensions_metatiles": [
+            8,
+            6
+          ]
+        }
+      ],
+      "walkable_destinations": [
+        "each route port landing without paid entry",
+        "survey shelter and Q07 story actor without paid entry",
+        "ranger check-in",
+        "protected public canoe dock",
+        "free early-return arrival"
+      ],
+      "door_contract": "Assign exterior core-tile door coordinates only after selecting authentic facade quadrants; record reciprocal warp indices and indoor floor arrivals before export.",
+      "safari_zone_file": "zones/boundary-waters-safari.json"
+    },
+    {
+      "id": "MnEly",
+      "name": "ELY",
+      "dimensions_metatiles": [
+        24,
+        24
+      ],
+      "reference_anchor_percent": [
+        68,
+        22
+      ],
+      "role": "league",
+      "tileset": "johto",
+      "composition": "League forecourt and northern expedition base.",
+      "ports": [
+        {
+          "route": "MN_R13",
+          "side": "N",
+          "gate_metatile": [
+            12,
+            1
+          ],
+          "landing_metatile": [
+            12,
+            3
+          ]
+        }
+      ],
+      "interiors": [
+        {
+          "id": "MnElyPokecenter1F",
+          "kind": "pokecenter",
+          "dimensions_metatiles": [
+            10,
+            8
+          ],
+          "source_behavior": "canonical healing, PC and blackout recovery"
+        },
+        {
+          "id": "MnElyMart",
+          "kind": "mart",
+          "dimensions_metatiles": [
+            6,
+            4
+          ],
+          "source_behavior": "canonical clerk, money deduction and inventory"
+        },
+        {
+          "id": "MnLeagueLobby",
+          "kind": "league",
+          "dimensions_metatiles": [
+            10,
+            8
+          ]
+        },
+        {
+          "id": "MnLeagueRoom1",
+          "kind": "league",
+          "dimensions_metatiles": [
+            10,
+            8
+          ]
+        },
+        {
+          "id": "MnLeagueRoom2",
+          "kind": "league",
+          "dimensions_metatiles": [
+            10,
+            8
+          ]
+        },
+        {
+          "id": "MnLeagueRoom3",
+          "kind": "league",
+          "dimensions_metatiles": [
+            10,
+            8
+          ]
+        },
+        {
+          "id": "MnLeagueRoom4",
+          "kind": "league",
+          "dimensions_metatiles": [
+            10,
+            8
+          ]
+        },
+        {
+          "id": "MnLeagueChampion",
+          "kind": "league",
+          "dimensions_metatiles": [
+            10,
+            8
+          ]
+        }
+      ],
+      "walkable_destinations": [
+        "each port landing",
+        "every visible exterior door",
+        "central square",
+        "local story NPC"
+      ],
+      "door_contract": "Assign exterior core-tile door coordinates only after selecting authentic facade quadrants; record reciprocal warp indices and indoor floor arrivals before export."
+    },
+    {
+      "id": "MnLakeItasca",
+      "name": "LAKE ITASCA",
+      "dimensions_metatiles": [
+        24,
+        24
+      ],
+      "reference_anchor_percent": [
+        24,
+        33
+      ],
+      "role": "landmark",
+      "tileset": "johto",
+      "composition": "Narrow headwaters crossing and a reachable survey marker.",
+      "ports": [
+        {
+          "route": "MN_R14",
+          "side": "E",
+          "gate_metatile": [
+            22,
+            12
+          ],
+          "landing_metatile": [
+            20,
+            12
+          ]
+        },
+        {
+          "route": "MN_R19",
+          "side": "W",
+          "gate_metatile": [
+            1,
+            12
+          ],
+          "landing_metatile": [
+            3,
+            12
+          ]
+        }
+      ],
+      "interiors": [],
+      "walkable_destinations": [
+        "each port landing",
+        "every visible exterior door",
+        "central square",
+        "local story NPC"
+      ],
+      "door_contract": "Assign exterior core-tile door coordinates only after selecting authentic facade quadrants; record reciprocal warp indices and indoor floor arrivals before export."
+    },
+    {
+      "id": "MnDetroitLakes",
+      "name": "DETROIT LAKES",
+      "dimensions_metatiles": [
+        24,
+        18
+      ],
+      "reference_anchor_percent": [
+        28,
+        44
+      ],
+      "role": "town",
+      "tileset": "johto",
+      "composition": "Meadow edge, cabin street and public beach.",
+      "ports": [
+        {
+          "route": "MN_R15",
+          "side": "E",
+          "gate_metatile": [
+            22,
+            9
+          ],
+          "landing_metatile": [
+            20,
+            9
+          ]
+        },
+        {
+          "route": "MN_R16",
+          "side": "W",
+          "gate_metatile": [
+            1,
+            9
+          ],
+          "landing_metatile": [
+            3,
+            9
+          ]
+        },
+        {
+          "route": "MN_R19",
+          "side": "N",
+          "gate_metatile": [
+            12,
+            1
+          ],
+          "landing_metatile": [
+            12,
+            3
+          ]
+        }
+      ],
+      "interiors": [
+        {
+          "id": "MnDetroitLakesPokecenter1F",
+          "kind": "pokecenter",
+          "dimensions_metatiles": [
+            10,
+            8
+          ],
+          "source_behavior": "canonical healing, PC and blackout recovery",
+          "authoring_file": "towns/MnDetroitLakes.json"
+        },
+        {
+          "id": "MnDetroitLakesMart",
+          "kind": "mart",
+          "dimensions_metatiles": [
+            6,
+            4
+          ],
+          "source_behavior": "canonical clerk, money deduction and inventory",
+          "authoring_file": "towns/MnDetroitLakes.json"
+        },
+        {
+          "id": "MnDetroitLakesStation",
+          "kind": "train_station",
+          "dimensions_metatiles": [
+            12,
+            10
+          ],
+          "source_behavior": "Glacier Line source reservation; no visit flag or ride is installed.",
+          "authoring_file": "transit/MnDetroitLakesStation.json"
+        },
+        {
+          "id": "MnDetroitLakesCanoeCabin",
+          "kind": "house",
+          "dimensions_metatiles": [
+            5,
+            4
+          ],
+          "authoring_file": "towns/MnDetroitLakes.json"
+        },
+        {
+          "id": "MnDetroitLakesRangerCabin",
+          "kind": "quest",
+          "dimensions_metatiles": [
+            5,
+            4
+          ],
+          "authoring_file": "towns/MnDetroitLakes.json"
+        }
+      ],
+      "walkable_destinations": [
+        "each port landing",
+        "every visible exterior door",
+        "central square",
+        "local story NPC"
+      ],
+      "door_contract": "Assign exterior core-tile door coordinates only after selecting authentic facade quadrants; record reciprocal warp indices and indoor floor arrivals before export.",
+      "authoring_file": "towns/MnDetroitLakes.json",
+      "layout_file": "towns/MnDetroitLakes.layout.json"
+    },
+    {
+      "id": "MnMoorhead",
+      "name": "MOORHEAD",
+      "dimensions_metatiles": [
+        24,
+        18
+      ],
+      "reference_anchor_percent": [
+        12,
+        42
+      ],
+      "role": "town",
+      "tileset": "johto_modern",
+      "composition": "Red River square, rail bridge scenery and prairie edge.",
+      "ports": [
+        {
+          "route": "MN_R16",
+          "side": "E",
+          "gate_metatile": [
+            22,
+            9
+          ],
+          "landing_metatile": [
+            20,
+            9
+          ]
+        }
+      ],
+      "interiors": [
+        {
+          "id": "MnMoorheadPokecenter1F",
+          "kind": "pokecenter",
+          "dimensions_metatiles": [
+            10,
+            8
+          ],
+          "source_behavior": "canonical healing, PC and blackout recovery"
+        },
+        {
+          "id": "MnMoorheadMart",
+          "kind": "mart",
+          "dimensions_metatiles": [
+            6,
+            4
+          ],
+          "source_behavior": "canonical clerk, money deduction and inventory"
+        }
+      ],
+      "walkable_destinations": [
+        "each port landing",
+        "every visible exterior door",
+        "central square",
+        "local story NPC"
+      ],
+      "door_contract": "Assign exterior core-tile door coordinates only after selecting authentic facade quadrants; record reciprocal warp indices and indoor floor arrivals before export."
+    },
+    {
+      "id": "MnInternationalFalls",
+      "name": "INTERNATIONAL FALLS",
+      "dimensions_metatiles": [
+        24,
+        24
+      ],
+      "reference_anchor_percent": [
+        46,
+        13
+      ],
+      "role": "town",
+      "tileset": "johto",
+      "composition": "Border-side ranger base, colder palette and south/east walking exits.",
+      "ports": [
+        {
+          "route": "MN_R17",
+          "side": "S",
+          "gate_metatile": [
+            12,
+            22
+          ],
+          "landing_metatile": [
+            12,
+            20
+          ]
+        },
+        {
+          "route": "MN_R20",
+          "side": "E",
+          "gate_metatile": [
+            22,
+            12
+          ],
+          "landing_metatile": [
+            20,
+            12
+          ]
+        }
+      ],
+      "interiors": [
+        {
+          "id": "MnInternationalFallsPokecenter1F",
+          "kind": "pokecenter",
+          "dimensions_metatiles": [
+            10,
+            8
+          ],
+          "source_behavior": "canonical healing, PC and blackout recovery"
+        },
+        {
+          "id": "MnInternationalFallsMart",
+          "kind": "mart",
+          "dimensions_metatiles": [
+            6,
+            4
+          ],
+          "source_behavior": "canonical clerk, money deduction and inventory"
+        }
+      ],
+      "walkable_destinations": [
+        "each port landing",
+        "every visible exterior door",
+        "central square",
+        "local story NPC"
+      ],
+      "door_contract": "Assign exterior core-tile door coordinates only after selecting authentic facade quadrants; record reciprocal warp indices and indoor floor arrivals before export."
+    },
+    {
+      "id": "MnMilleLacs",
+      "name": "MILLE LACS",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "reference_anchor_percent": [
+        57,
+        53
+      ],
+      "role": "landmark",
+      "tileset": "johto",
+      "composition": "Shore park, dock and optional water circuit.",
+      "ports": [
+        {
+          "route": "MN_R18",
+          "side": "W",
+          "gate_metatile": [
+            1,
+            12
+          ],
+          "landing_metatile": [
+            3,
+            12
+          ]
+        }
+      ],
+      "interiors": [],
+      "walkable_destinations": [
+        "each port landing",
+        "every visible exterior door",
+        "central square",
+        "local story NPC"
+      ],
+      "door_contract": "Assign exterior core-tile door coordinates only after selecting authentic facade quadrants; record reciprocal warp indices and indoor floor arrivals before export."
+    }
+  ],
+  "routes": [
+    {
+      "id": "MN_R01",
+      "file": "routes/MN_R01.json",
+      "dimensions_metatiles": [
+        32,
+        20
+      ]
+    },
+    {
+      "id": "MN_R02",
+      "file": "routes/MN_R02.json",
+      "dimensions_metatiles": [
+        30,
+        22
+      ]
+    },
+    {
+      "id": "MN_R03",
+      "file": "routes/MN_R03.json",
+      "dimensions_metatiles": [
+        24,
+        32
+      ]
+    },
+    {
+      "id": "MN_R04",
+      "file": "routes/MN_R04.json",
+      "dimensions_metatiles": [
+        28,
+        18
+      ]
+    },
+    {
+      "id": "MN_R05",
+      "file": "routes/MN_R05.json",
+      "dimensions_metatiles": [
+        32,
+        56
+      ]
+    },
+    {
+      "id": "MN_R06",
+      "file": "routes/MN_R06.json",
+      "dimensions_metatiles": [
+        32,
+        44
+      ]
+    },
+    {
+      "id": "MN_R07",
+      "file": "routes/MN_R07.json",
+      "dimensions_metatiles": [
+        32,
+        48
+      ]
+    },
+    {
+      "id": "MN_R08",
+      "file": "routes/MN_R08.json",
+      "dimensions_metatiles": [
+        40,
+        48
+      ]
+    },
+    {
+      "id": "MN_R09",
+      "file": "routes/MN_R09.json",
+      "dimensions_metatiles": [
+        64,
+        36
+      ]
+    },
+    {
+      "id": "MN_R10",
+      "file": "routes/MN_R10.json",
+      "dimensions_metatiles": [
+        48,
+        20
+      ]
+    },
+    {
+      "id": "MN_R11",
+      "file": "routes/MN_R11.json",
+      "dimensions_metatiles": [
+        32,
+        72
+      ]
+    },
+    {
+      "id": "MN_R12",
+      "file": "routes/MN_R12.json",
+      "dimensions_metatiles": [
+        64,
+        56
+      ]
+    },
+    {
+      "id": "MN_R13",
+      "file": "routes/MN_R13.json",
+      "dimensions_metatiles": [
+        32,
+        64
+      ]
+    },
+    {
+      "id": "MN_R14",
+      "file": "routes/MN_R14.json",
+      "dimensions_metatiles": [
+        48,
+        32
+      ]
+    },
+    {
+      "id": "MN_R15",
+      "file": "routes/MN_R15.json",
+      "dimensions_metatiles": [
+        32,
+        18
+      ]
+    },
+    {
+      "id": "MN_R16",
+      "file": "routes/MN_R16.json",
+      "dimensions_metatiles": [
+        48,
+        24
+      ]
+    },
+    {
+      "id": "MN_R17",
+      "file": "routes/MN_R17.json",
+      "dimensions_metatiles": [
+        32,
+        56
+      ]
+    },
+    {
+      "id": "MN_R18",
+      "file": "routes/MN_R18.json",
+      "dimensions_metatiles": [
+        40,
+        24
+      ]
+    },
+    {
+      "id": "MN_R19",
+      "file": "routes/MN_R19.json",
+      "dimensions_metatiles": [
+        32,
+        30
+      ]
+    },
+    {
+      "id": "MN_R20",
+      "file": "routes/MN_R20.json",
+      "dimensions_metatiles": [
+        64,
+        32
+      ]
+    }
+  ],
+  "chunks": [
+    {
+      "id": "MnR01C00R00",
+      "route": "MN_R01",
+      "column": 0,
+      "row": 0,
+      "dimensions_metatiles": [
+        32,
+        20
+      ]
+    },
+    {
+      "id": "MnR02C00R00",
+      "route": "MN_R02",
+      "column": 0,
+      "row": 0,
+      "dimensions_metatiles": [
+        30,
+        22
+      ]
+    },
+    {
+      "id": "MnR03C00R00",
+      "route": "MN_R03",
+      "column": 0,
+      "row": 0,
+      "dimensions_metatiles": [
+        24,
+        24
+      ]
+    },
+    {
+      "id": "MnR03C00R01",
+      "route": "MN_R03",
+      "column": 0,
+      "row": 1,
+      "dimensions_metatiles": [
+        24,
+        8
+      ]
+    },
+    {
+      "id": "MnR04C00R00",
+      "route": "MN_R04",
+      "column": 0,
+      "row": 0,
+      "dimensions_metatiles": [
+        28,
+        18
+      ]
+    },
+    {
+      "id": "MnR05C00R00",
+      "route": "MN_R05",
+      "column": 0,
+      "row": 0,
+      "dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "id": "MnR05C00R01",
+      "route": "MN_R05",
+      "column": 0,
+      "row": 1,
+      "dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "id": "MnR05C00R02",
+      "route": "MN_R05",
+      "column": 0,
+      "row": 2,
+      "dimensions_metatiles": [
+        32,
+        8
+      ]
+    },
+    {
+      "id": "MnR06C00R00",
+      "route": "MN_R06",
+      "column": 0,
+      "row": 0,
+      "dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "id": "MnR06C00R01",
+      "route": "MN_R06",
+      "column": 0,
+      "row": 1,
+      "dimensions_metatiles": [
+        32,
+        20
+      ]
+    },
+    {
+      "id": "MnR07C00R00",
+      "route": "MN_R07",
+      "column": 0,
+      "row": 0,
+      "dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "id": "MnR07C00R01",
+      "route": "MN_R07",
+      "column": 0,
+      "row": 1,
+      "dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "id": "MnR08C00R00",
+      "route": "MN_R08",
+      "column": 0,
+      "row": 0,
+      "dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "id": "MnR08C01R00",
+      "route": "MN_R08",
+      "column": 1,
+      "row": 0,
+      "dimensions_metatiles": [
+        8,
+        24
+      ]
+    },
+    {
+      "id": "MnR08C00R01",
+      "route": "MN_R08",
+      "column": 0,
+      "row": 1,
+      "dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "id": "MnR08C01R01",
+      "route": "MN_R08",
+      "column": 1,
+      "row": 1,
+      "dimensions_metatiles": [
+        8,
+        24
+      ]
+    },
+    {
+      "id": "MnR09C00R00",
+      "route": "MN_R09",
+      "column": 0,
+      "row": 0,
+      "dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "id": "MnR09C01R00",
+      "route": "MN_R09",
+      "column": 1,
+      "row": 0,
+      "dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "id": "MnR09C00R01",
+      "route": "MN_R09",
+      "column": 0,
+      "row": 1,
+      "dimensions_metatiles": [
+        32,
+        12
+      ]
+    },
+    {
+      "id": "MnR09C01R01",
+      "route": "MN_R09",
+      "column": 1,
+      "row": 1,
+      "dimensions_metatiles": [
+        32,
+        12
+      ]
+    },
+    {
+      "id": "MnR10C00R00",
+      "route": "MN_R10",
+      "column": 0,
+      "row": 0,
+      "dimensions_metatiles": [
+        32,
+        20
+      ]
+    },
+    {
+      "id": "MnR10C01R00",
+      "route": "MN_R10",
+      "column": 1,
+      "row": 0,
+      "dimensions_metatiles": [
+        16,
+        20
+      ]
+    },
+    {
+      "id": "MnR11C00R00",
+      "route": "MN_R11",
+      "column": 0,
+      "row": 0,
+      "dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "id": "MnR11C00R01",
+      "route": "MN_R11",
+      "column": 0,
+      "row": 1,
+      "dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "id": "MnR11C00R02",
+      "route": "MN_R11",
+      "column": 0,
+      "row": 2,
+      "dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "id": "MnR12C00R00",
+      "route": "MN_R12",
+      "column": 0,
+      "row": 0,
+      "dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "id": "MnR12C01R00",
+      "route": "MN_R12",
+      "column": 1,
+      "row": 0,
+      "dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "id": "MnR12C00R01",
+      "route": "MN_R12",
+      "column": 0,
+      "row": 1,
+      "dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "id": "MnR12C01R01",
+      "route": "MN_R12",
+      "column": 1,
+      "row": 1,
+      "dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "id": "MnR12C00R02",
+      "route": "MN_R12",
+      "column": 0,
+      "row": 2,
+      "dimensions_metatiles": [
+        32,
+        8
+      ]
+    },
+    {
+      "id": "MnR12C01R02",
+      "route": "MN_R12",
+      "column": 1,
+      "row": 2,
+      "dimensions_metatiles": [
+        32,
+        8
+      ]
+    },
+    {
+      "id": "MnR13C00R00",
+      "route": "MN_R13",
+      "column": 0,
+      "row": 0,
+      "dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "id": "MnR13C00R01",
+      "route": "MN_R13",
+      "column": 0,
+      "row": 1,
+      "dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "id": "MnR13C00R02",
+      "route": "MN_R13",
+      "column": 0,
+      "row": 2,
+      "dimensions_metatiles": [
+        32,
+        16
+      ]
+    },
+    {
+      "id": "MnR14C00R00",
+      "route": "MN_R14",
+      "column": 0,
+      "row": 0,
+      "dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "id": "MnR14C01R00",
+      "route": "MN_R14",
+      "column": 1,
+      "row": 0,
+      "dimensions_metatiles": [
+        16,
+        24
+      ]
+    },
+    {
+      "id": "MnR14C00R01",
+      "route": "MN_R14",
+      "column": 0,
+      "row": 1,
+      "dimensions_metatiles": [
+        32,
+        8
+      ]
+    },
+    {
+      "id": "MnR14C01R01",
+      "route": "MN_R14",
+      "column": 1,
+      "row": 1,
+      "dimensions_metatiles": [
+        16,
+        8
+      ]
+    },
+    {
+      "id": "MnR15C00R00",
+      "route": "MN_R15",
+      "column": 0,
+      "row": 0,
+      "dimensions_metatiles": [
+        32,
+        18
+      ]
+    },
+    {
+      "id": "MnR16C00R00",
+      "route": "MN_R16",
+      "column": 0,
+      "row": 0,
+      "dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "id": "MnR16C01R00",
+      "route": "MN_R16",
+      "column": 1,
+      "row": 0,
+      "dimensions_metatiles": [
+        16,
+        24
+      ]
+    },
+    {
+      "id": "MnR17C00R00",
+      "route": "MN_R17",
+      "column": 0,
+      "row": 0,
+      "dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "id": "MnR17C00R01",
+      "route": "MN_R17",
+      "column": 0,
+      "row": 1,
+      "dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "id": "MnR17C00R02",
+      "route": "MN_R17",
+      "column": 0,
+      "row": 2,
+      "dimensions_metatiles": [
+        32,
+        8
+      ]
+    },
+    {
+      "id": "MnR18C00R00",
+      "route": "MN_R18",
+      "column": 0,
+      "row": 0,
+      "dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "id": "MnR18C01R00",
+      "route": "MN_R18",
+      "column": 1,
+      "row": 0,
+      "dimensions_metatiles": [
+        8,
+        24
+      ]
+    },
+    {
+      "id": "MnR19C00R00",
+      "route": "MN_R19",
+      "column": 0,
+      "row": 0,
+      "dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "id": "MnR19C00R01",
+      "route": "MN_R19",
+      "column": 0,
+      "row": 1,
+      "dimensions_metatiles": [
+        32,
+        6
+      ]
+    },
+    {
+      "id": "MnR20C00R00",
+      "route": "MN_R20",
+      "column": 0,
+      "row": 0,
+      "dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "id": "MnR20C01R00",
+      "route": "MN_R20",
+      "column": 1,
+      "row": 0,
+      "dimensions_metatiles": [
+        32,
+        24
+      ]
+    },
+    {
+      "id": "MnR20C00R01",
+      "route": "MN_R20",
+      "column": 0,
+      "row": 1,
+      "dimensions_metatiles": [
+        32,
+        8
+      ]
+    },
+    {
+      "id": "MnR20C01R01",
+      "route": "MN_R20",
+      "column": 1,
+      "row": 1,
+      "dimensions_metatiles": [
+        32,
+        8
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "kind": "gatehouse_warp",
+      "route": "MN_R01",
+      "a": "MnR01C00R00",
+      "a_gate_local_metatile": [
+        30,
+        12
+      ],
+      "a_arrival_local_metatile": [
+        29,
+        12
+      ],
+      "b": "MnWinona",
+      "b_gate_metatile": [
+        1,
+        9
+      ],
+      "b_arrival_metatile": [
+        3,
+        9
+      ],
+      "requires_flags": [
+        "EVENT_MN_STARTER_RECEIVED"
+      ],
+      "gate_script": "MnR01EntryGateScript",
+      "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+    },
+    {
+      "kind": "gatehouse_warp",
+      "route": "MN_R01",
+      "a": "MnR01C00R00",
+      "a_gate_local_metatile": [
+        1,
+        12
+      ],
+      "a_arrival_local_metatile": [
+        3,
+        12
+      ],
+      "b": "MnRochester",
+      "b_gate_metatile": [
+        22,
+        9
+      ],
+      "b_arrival_metatile": [
+        20,
+        9
+      ],
+      "requires_flags": [
+        "EVENT_MN_STARTER_RECEIVED"
+      ],
+      "gate_script": "MnR01EntryGateScript",
+      "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+    },
+    {
+      "kind": "gatehouse_warp",
+      "route": "MN_R02",
+      "a": "MnR02C00R00",
+      "a_gate_local_metatile": [
+        29,
+        7
+      ],
+      "a_arrival_local_metatile": [
+        27,
+        7
+      ],
+      "b": "MnRochester",
+      "b_gate_metatile": [
+        1,
+        9
+      ],
+      "b_arrival_metatile": [
+        3,
+        9
+      ],
+      "requires_flags": [
+        "BADGE_1"
+      ],
+      "gate_script": "MnR02EntryGateScript",
+      "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+    },
+    {
+      "kind": "gatehouse_warp",
+      "route": "MN_R02",
+      "a": "MnR02C00R00",
+      "a_gate_local_metatile": [
+        1,
+        15
+      ],
+      "a_arrival_local_metatile": [
+        3,
+        15
+      ],
+      "b": "MnMankato",
+      "b_gate_metatile": [
+        22,
+        9
+      ],
+      "b_arrival_metatile": [
+        20,
+        9
+      ],
+      "requires_flags": [
+        "BADGE_1"
+      ],
+      "gate_script": "MnR02EntryGateScript",
+      "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+    },
+    {
+      "kind": "gatehouse_warp",
+      "route": "MN_R03",
+      "a": "MnR03C00R01",
+      "a_gate_local_metatile": [
+        9,
+        6
+      ],
+      "a_arrival_local_metatile": [
+        9,
+        4
+      ],
+      "b": "MnMankato",
+      "b_gate_metatile": [
+        12,
+        1
+      ],
+      "b_arrival_metatile": [
+        12,
+        3
+      ],
+      "requires_flags": [
+        "BADGE_2"
+      ],
+      "gate_script": "MnR03EntryGateScript",
+      "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+    },
+    {
+      "kind": "gatehouse_warp",
+      "route": "MN_R03",
+      "a": "MnR03C00R00",
+      "a_gate_local_metatile": [
+        10,
+        1
+      ],
+      "a_arrival_local_metatile": [
+        10,
+        3
+      ],
+      "b": "MnMinneapolis",
+      "b_gate_metatile": [
+        16,
+        22
+      ],
+      "b_arrival_metatile": [
+        16,
+        20
+      ],
+      "requires_flags": [
+        "BADGE_2"
+      ],
+      "gate_script": "MnR03EntryGateScript",
+      "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+    },
+    {
+      "kind": "gatehouse_warp",
+      "route": "MN_R04",
+      "a": "MnR04C00R00",
+      "a_gate_local_metatile": [
+        1,
+        9
+      ],
+      "a_arrival_local_metatile": [
+        3,
+        9
+      ],
+      "b": "MnMinneapolis",
+      "b_gate_metatile": [
+        30,
+        12
+      ],
+      "b_arrival_metatile": [
+        28,
+        12
+      ],
+      "requires_flags": [
+        "BADGE_3"
+      ],
+      "gate_script": "MnR04EntryGateScript",
+      "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+    },
+    {
+      "kind": "gatehouse_warp",
+      "route": "MN_R04",
+      "a": "MnR04C00R00",
+      "a_gate_local_metatile": [
+        26,
+        9
+      ],
+      "a_arrival_local_metatile": [
+        24,
+        9
+      ],
+      "b": "MnStPaul",
+      "b_gate_metatile": [
+        1,
+        12
+      ],
+      "b_arrival_metatile": [
+        3,
+        12
+      ],
+      "requires_flags": [
+        "BADGE_3"
+      ],
+      "gate_script": "MnR04EntryGateScript",
+      "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+    },
+    {
+      "kind": "gatehouse_warp",
+      "route": "MN_R05",
+      "a": "MnR05C00R02",
+      "a_gate_local_metatile": [
+        11,
+        6
+      ],
+      "a_arrival_local_metatile": [
+        11,
+        4
+      ],
+      "b": "MnMinneapolis",
+      "b_gate_metatile": [
+        16,
+        1
+      ],
+      "b_arrival_metatile": [
+        16,
+        3
+      ],
+      "requires_flags": [
+        "BADGE_3",
+        "BADGE_4"
+      ],
+      "gate_script": "MnR05EntryGateScript",
+      "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+    },
+    {
+      "kind": "gatehouse_warp",
+      "route": "MN_R05",
+      "a": "MnR05C00R00",
+      "a_gate_local_metatile": [
+        12,
+        1
+      ],
+      "a_arrival_local_metatile": [
+        12,
+        3
+      ],
+      "b": "MnStCloud",
+      "b_gate_metatile": [
+        12,
+        16
+      ],
+      "b_arrival_metatile": [
+        12,
+        14
+      ],
+      "requires_flags": [
+        "BADGE_3",
+        "BADGE_4"
+      ],
+      "gate_script": "MnR05EntryGateScript",
+      "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+    },
+    {
+      "kind": "gatehouse_warp",
+      "route": "MN_R06",
+      "a": "MnR06C00R01",
+      "a_gate_local_metatile": [
+        8,
+        18
+      ],
+      "a_arrival_local_metatile": [
+        8,
+        16
+      ],
+      "b": "MnStCloud",
+      "b_gate_metatile": [
+        12,
+        1
+      ],
+      "b_arrival_metatile": [
+        12,
+        3
+      ],
+      "requires_flags": [
+        "BADGE_5"
+      ],
+      "gate_script": "MnR06EntryGateScript",
+      "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+    },
+    {
+      "kind": "gatehouse_warp",
+      "route": "MN_R06",
+      "a": "MnR06C00R00",
+      "a_gate_local_metatile": [
+        21,
+        1
+      ],
+      "a_arrival_local_metatile": [
+        21,
+        3
+      ],
+      "b": "MnBrainerd",
+      "b_gate_metatile": [
+        16,
+        22
+      ],
+      "b_arrival_metatile": [
+        16,
+        20
+      ],
+      "requires_flags": [
+        "BADGE_5"
+      ],
+      "gate_script": "MnR06EntryGateScript",
+      "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+    },
+    {
+      "kind": "gatehouse_warp",
+      "route": "MN_R07",
+      "a": "MnR07C00R01",
+      "a_gate_local_metatile": [
+        10,
+        22
+      ],
+      "a_arrival_local_metatile": [
+        10,
+        20
+      ],
+      "b": "MnBrainerd",
+      "b_gate_metatile": [
+        16,
+        1
+      ],
+      "b_arrival_metatile": [
+        16,
+        3
+      ],
+      "requires_flags": [
+        "BADGE_6"
+      ],
+      "gate_script": "MnR07EntryGateScript",
+      "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+    },
+    {
+      "kind": "gatehouse_warp",
+      "route": "MN_R07",
+      "a": "MnR07C00R00",
+      "a_gate_local_metatile": [
+        10,
+        1
+      ],
+      "a_arrival_local_metatile": [
+        10,
+        3
+      ],
+      "b": "MnLeechLake",
+      "b_gate_metatile": [
+        16,
+        22
+      ],
+      "b_arrival_metatile": [
+        16,
+        20
+      ],
+      "requires_flags": [
+        "BADGE_6"
+      ],
+      "gate_script": "MnR07EntryGateScript",
+      "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+    },
+    {
+      "kind": "gatehouse_warp",
+      "route": "MN_R08",
+      "a": "MnR08C00R01",
+      "a_gate_local_metatile": [
+        13,
+        23
+      ],
+      "a_arrival_local_metatile": [
+        13,
+        20
+      ],
+      "b": "MnLeechLake",
+      "b_gate_metatile": [
+        16,
+        1
+      ],
+      "b_arrival_metatile": [
+        16,
+        3
+      ],
+      "requires_flags": [
+        "BADGE_6"
+      ],
+      "gate_script": "MnR08EntryGateScript",
+      "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+    },
+    {
+      "kind": "gatehouse_warp",
+      "route": "MN_R08",
+      "a": "MnR08C00R00",
+      "a_gate_local_metatile": [
+        20,
+        0
+      ],
+      "a_arrival_local_metatile": [
+        20,
+        3
+      ],
+      "b": "MnBemidji",
+      "b_gate_metatile": [
+        12,
+        22
+      ],
+      "b_arrival_metatile": [
+        12,
+        20
+      ],
+      "requires_flags": [
+        "BADGE_6"
+      ],
+      "gate_script": "MnR08EntryGateScript",
+      "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+    },
+    {
+      "kind": "gatehouse_warp",
+      "route": "MN_R09",
+      "a": "MnR09C00R01",
+      "a_gate_local_metatile": [
+        1,
+        1
+      ],
+      "a_arrival_local_metatile": [
+        3,
+        1
+      ],
+      "b": "MnBemidji",
+      "b_gate_metatile": [
+        22,
+        12
+      ],
+      "b_arrival_metatile": [
+        20,
+        12
+      ],
+      "requires_flags": [
+        "BADGE_7",
+        "EVENT_MN_HEADWATERS_REPORT"
+      ],
+      "gate_script": "MnR09EntryGateScript",
+      "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+    },
+    {
+      "kind": "guarded_connection",
+      "route": "MN_R09",
+      "a": "MnR09C01R00",
+      "b": "MnGrandRapids",
+      "requires_flags": [
+        "BADGE_7",
+        "EVENT_MN_HEADWATERS_REPORT"
+      ],
+      "gate_script": "MnGrandRapidsWestCheck",
+      "gate_map": "MnGrandRapids",
+      "direction_a": "east",
+      "direction_b": "west",
+      "offset_a": 0,
+      "offset_b": 0,
+      "offset_units": "32px_metatiles",
+      "a_edge_core": [
+        [
+          63,
+          24
+        ],
+        [
+          63,
+          25
+        ]
+      ],
+      "b_edge_core": [
+        [
+          0,
+          24
+        ],
+        [
+          0,
+          25
+        ]
+      ],
+      "requires_apply_to": "town_departure",
+      "fee": 0,
+      "inbound_requires_flags": [],
+      "inbound_access": "free_care",
+      "inbound_facing_policy": "escort_unless_outward",
+      "authoring_file": "planning/minnesota/towns/MnGrandRapids.json",
+      "native_status": "NATIVE VERIFIED: paired walking seams, exact badge/report/depot checks, no walking/Surf bypass, earned handover release, inbound care, both directions and Continue."
+    },
+    {
+      "kind": "guarded_connection",
+      "route": "MN_R10",
+      "a": "MnR10C00R00",
+      "b": "MnGrandRapids",
+      "requires_flags": [
+        "BADGE_7",
+        "EVENT_MN_DEPOT_CLEARED"
+      ],
+      "gate_script": "MnGrandRapidsEastCheck",
+      "gate_map": "MnGrandRapids",
+      "direction_a": "west",
+      "direction_b": "east",
+      "offset_a": -7,
+      "offset_b": 7,
+      "offset_units": "32px_metatiles",
+      "a_edge_core": [
+        [
+          0,
+          10
+        ],
+        [
+          0,
+          11
+        ]
+      ],
+      "b_edge_core": [
+        [
+          47,
+          24
+        ],
+        [
+          47,
+          25
+        ]
+      ],
+      "requires_apply_to": "town_departure",
+      "fee": 0,
+      "inbound_requires_flags": [],
+      "inbound_access": "free_care",
+      "inbound_facing_policy": "escort_unless_outward",
+      "authoring_file": "planning/minnesota/towns/MnGrandRapids.json",
+      "native_status": "NATIVE VERIFIED: paired walking seams, exact badge/report/depot checks, no walking/Surf bypass, earned handover release, inbound care, both directions and Continue."
+    },
+    {
+      "kind": "gatehouse_warp",
+      "route": "MN_R10",
+      "a": "MnR10C01R00",
+      "a_gate_local_metatile": [
+        14,
+        12
+      ],
+      "a_arrival_local_metatile": [
+        12,
+        12
+      ],
+      "b": "MnDuluth",
+      "b_gate_metatile": [
+        1,
+        12
+      ],
+      "b_arrival_metatile": [
+        3,
+        12
+      ],
+      "requires_flags": [
+        "BADGE_7",
+        "EVENT_MN_DEPOT_CLEARED"
+      ],
+      "gate_script": "MnR10EntryGateScript",
+      "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+    },
+    {
+      "kind": "gatehouse_warp",
+      "route": "MN_R11",
+      "a": "MnR11C00R02",
+      "a_gate_local_metatile": [
+        17,
+        22
+      ],
+      "a_arrival_local_metatile": [
+        17,
+        20
+      ],
+      "b": "MnDuluth",
+      "b_gate_metatile": [
+        16,
+        1
+      ],
+      "b_arrival_metatile": [
+        16,
+        3
+      ],
+      "requires_flags": [
+        "BADGE_1",
+        "BADGE_2",
+        "BADGE_3",
+        "BADGE_4",
+        "BADGE_5",
+        "BADGE_6",
+        "BADGE_7",
+        "BADGE_8",
+        "EVENT_MN_LIGHTHOUSE_SIGNAL"
+      ],
+      "gate_script": "MnR11EntryGateScript",
+      "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+    },
+    {
+      "kind": "gatehouse_warp",
+      "route": "MN_R11",
+      "a": "MnR11C00R00",
+      "a_gate_local_metatile": [
+        20,
+        1
+      ],
+      "a_arrival_local_metatile": [
+        20,
+        3
+      ],
+      "b": "MnGrandMarais",
+      "b_gate_metatile": [
+        12,
+        16
+      ],
+      "b_arrival_metatile": [
+        12,
+        14
+      ],
+      "requires_flags": [
+        "BADGE_1",
+        "BADGE_2",
+        "BADGE_3",
+        "BADGE_4",
+        "BADGE_5",
+        "BADGE_6",
+        "BADGE_7",
+        "BADGE_8",
+        "EVENT_MN_LIGHTHOUSE_SIGNAL"
+      ],
+      "gate_script": "MnR11EntryGateScript",
+      "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+    },
+    {
+      "kind": "gatehouse_warp",
+      "route": "MN_R12",
+      "a": "MnR12C01R01",
+      "a_gate_local_metatile": [
+        30,
+        4
+      ],
+      "a_arrival_local_metatile": [
+        28,
+        4
+      ],
+      "b": "MnGrandMarais",
+      "b_gate_metatile": [
+        1,
+        9
+      ],
+      "b_arrival_metatile": [
+        3,
+        9
+      ],
+      "requires_flags": [
+        "BADGE_1",
+        "BADGE_2",
+        "BADGE_3",
+        "BADGE_4",
+        "BADGE_5",
+        "BADGE_6",
+        "BADGE_7",
+        "BADGE_8",
+        "EVENT_MN_LIGHTHOUSE_SIGNAL"
+      ],
+      "gate_script": "MnR12EntryGateScript",
+      "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+    },
+    {
+      "kind": "guarded_connection",
+      "route": "MN_R12",
+      "a": "MnR12C00R01",
+      "b": "MnBoundaryWaters",
+      "direction_a": "west",
+      "direction_b": "east",
+      "offset_a": -8,
+      "offset_b": 8,
+      "offset_units": "32px_metatiles",
+      "a_edge_core": [
+        [
+          0,
+          8
+        ],
+        [
+          0,
+          9
+        ]
+      ],
+      "b_edge_core": [
+        [
+          63,
+          24
+        ],
+        [
+          63,
+          25
+        ]
+      ],
+      "gate_map": "MnBoundaryWaters",
+      "gate_script": "MnBoundaryGunflintCheck",
+      "checkpoint": "gunflint",
+      "requires_flags": [
+        "BADGE_1",
+        "BADGE_2",
+        "BADGE_3",
+        "BADGE_4",
+        "BADGE_5",
+        "BADGE_6",
+        "BADGE_7",
+        "BADGE_8",
+        "EVENT_MN_LIGHTHOUSE_SIGNAL"
+      ],
+      "requires_apply_to": "camp_departure",
+      "fee": 0,
+      "inbound_requires_flags": [],
+      "inbound_access": "free_care",
+      "inbound_facing_policy": "escort_unless_outward"
+    },
+    {
+      "kind": "guarded_connection",
+      "route": "MN_R13",
+      "a": "MnR13C00R00",
+      "b": "MnBoundaryWaters",
+      "direction_a": "north",
+      "direction_b": "south",
+      "offset_a": -1,
+      "offset_b": 1,
+      "offset_units": "32px_metatiles",
+      "a_edge_core": [
+        [
+          30,
+          0
+        ],
+        [
+          31,
+          0
+        ]
+      ],
+      "b_edge_core": [
+        [
+          32,
+          47
+        ],
+        [
+          33,
+          47
+        ]
+      ],
+      "gate_map": "MnBoundaryWaters",
+      "gate_script": "MnBoundaryLeagueCheck",
+      "checkpoint": "league",
+      "requires_flags": [
+        "BADGE_1",
+        "BADGE_2",
+        "BADGE_3",
+        "BADGE_4",
+        "BADGE_5",
+        "BADGE_6",
+        "BADGE_7",
+        "BADGE_8",
+        "EVENT_MN_LIGHTHOUSE_SIGNAL",
+        "EVENT_MN_SURVEY_RESTORED"
+      ],
+      "requires_apply_to": "camp_departure",
+      "fee": 0,
+      "inbound_requires_flags": [],
+      "inbound_access": "free_care",
+      "inbound_facing_policy": "escort_unless_outward"
+    },
+    {
+      "kind": "gatehouse_warp",
+      "route": "MN_R13",
+      "a": "MnR13C00R02",
+      "a_gate_local_metatile": [
+        17,
+        14
+      ],
+      "a_arrival_local_metatile": [
+        17,
+        12
+      ],
+      "b": "MnEly",
+      "b_gate_metatile": [
+        12,
+        1
+      ],
+      "b_arrival_metatile": [
+        12,
+        3
+      ],
+      "requires_flags": [
+        "BADGE_1",
+        "BADGE_2",
+        "BADGE_3",
+        "BADGE_4",
+        "BADGE_5",
+        "BADGE_6",
+        "BADGE_7",
+        "BADGE_8",
+        "EVENT_MN_SURVEY_RESTORED"
+      ],
+      "gate_script": "MnR13EntryGateScript",
+      "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+    },
+    {
+      "kind": "gatehouse_warp",
+      "route": "MN_R14",
+      "a": "MnR14C01R00",
+      "a_gate_local_metatile": [
+        14,
+        13
+      ],
+      "a_arrival_local_metatile": [
+        12,
+        13
+      ],
+      "b": "MnBemidji",
+      "b_gate_metatile": [
+        1,
+        12
+      ],
+      "b_arrival_metatile": [
+        3,
+        12
+      ],
+      "requires_flags": [
+        "BADGE_6"
+      ],
+      "gate_script": "MnR14EntryGateScript",
+      "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+    },
+    {
+      "kind": "gatehouse_warp",
+      "route": "MN_R14",
+      "a": "MnR14C00R00",
+      "a_gate_local_metatile": [
+        1,
+        21
+      ],
+      "a_arrival_local_metatile": [
+        3,
+        21
+      ],
+      "b": "MnLakeItasca",
+      "b_gate_metatile": [
+        22,
+        12
+      ],
+      "b_arrival_metatile": [
+        20,
+        12
+      ],
+      "requires_flags": [
+        "BADGE_6"
+      ],
+      "gate_script": "MnR14EntryGateScript",
+      "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+    },
+    {
+      "kind": "gatehouse_warp",
+      "route": "MN_R15",
+      "a": "MnR15C00R00",
+      "a_gate_local_metatile": [
+        30,
+        12
+      ],
+      "a_arrival_local_metatile": [
+        28,
+        12
+      ],
+      "b": "MnBrainerd",
+      "b_gate_metatile": [
+        1,
+        12
+      ],
+      "b_arrival_metatile": [
+        3,
+        12
+      ],
+      "requires_flags": [
+        "BADGE_6"
+      ],
+      "gate_script": "MnR15EntryGateScript",
+      "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+    },
+    {
+      "kind": "gatehouse_warp",
+      "route": "MN_R15",
+      "a": "MnR15C00R00",
+      "a_gate_local_metatile": [
+        1,
+        12
+      ],
+      "a_arrival_local_metatile": [
+        2,
+        12
+      ],
+      "b": "MnDetroitLakes",
+      "b_gate_metatile": [
+        22,
+        9
+      ],
+      "b_arrival_metatile": [
+        20,
+        9
+      ],
+      "requires_flags": [
+        "BADGE_6"
+      ],
+      "gate_script": "MnR15EntryGateScript",
+      "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+    },
+    {
+      "kind": "gatehouse_warp",
+      "route": "MN_R16",
+      "a": "MnR16C01R00",
+      "a_gate_local_metatile": [
+        14,
+        12
+      ],
+      "a_arrival_local_metatile": [
+        12,
+        12
+      ],
+      "b": "MnDetroitLakes",
+      "b_gate_metatile": [
+        1,
+        9
+      ],
+      "b_arrival_metatile": [
+        3,
+        9
+      ],
+      "requires_flags": [
+        "BADGE_6"
+      ],
+      "gate_script": "MnR16EntryGateScript",
+      "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+    },
+    {
+      "kind": "gatehouse_warp",
+      "route": "MN_R16",
+      "a": "MnR16C00R00",
+      "a_gate_local_metatile": [
+        1,
+        12
+      ],
+      "a_arrival_local_metatile": [
+        3,
+        12
+      ],
+      "b": "MnMoorhead",
+      "b_gate_metatile": [
+        22,
+        9
+      ],
+      "b_arrival_metatile": [
+        20,
+        9
+      ],
+      "requires_flags": [
+        "BADGE_6"
+      ],
+      "gate_script": "MnR16EntryGateScript",
+      "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+    },
+    {
+      "kind": "gatehouse_warp",
+      "route": "MN_R17",
+      "a": "MnR17C00R02",
+      "a_gate_local_metatile": [
+        16,
+        6
+      ],
+      "a_arrival_local_metatile": [
+        16,
+        4
+      ],
+      "b": "MnBemidji",
+      "b_gate_metatile": [
+        12,
+        1
+      ],
+      "b_arrival_metatile": [
+        12,
+        3
+      ],
+      "requires_flags": [
+        "BADGE_7"
+      ],
+      "gate_script": "MnR17EntryGateScript",
+      "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+    },
+    {
+      "kind": "gatehouse_warp",
+      "route": "MN_R17",
+      "a": "MnR17C00R00",
+      "a_gate_local_metatile": [
+        18,
+        1
+      ],
+      "a_arrival_local_metatile": [
+        18,
+        3
+      ],
+      "b": "MnInternationalFalls",
+      "b_gate_metatile": [
+        12,
+        22
+      ],
+      "b_arrival_metatile": [
+        12,
+        20
+      ],
+      "requires_flags": [
+        "BADGE_7"
+      ],
+      "gate_script": "MnR17EntryGateScript",
+      "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+    },
+    {
+      "kind": "gatehouse_warp",
+      "route": "MN_R18",
+      "a": "MnR18C00R00",
+      "a_gate_local_metatile": [
+        1,
+        5
+      ],
+      "a_arrival_local_metatile": [
+        3,
+        5
+      ],
+      "b": "MnBrainerd",
+      "b_gate_metatile": [
+        30,
+        12
+      ],
+      "b_arrival_metatile": [
+        28,
+        12
+      ],
+      "requires_flags": [
+        "BADGE_6"
+      ],
+      "gate_script": "MnR18EntryGateScript",
+      "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+    },
+    {
+      "kind": "gatehouse_warp",
+      "route": "MN_R18",
+      "a": "MnR18C01R00",
+      "a_gate_local_metatile": [
+        6,
+        5
+      ],
+      "a_arrival_local_metatile": [
+        4,
+        5
+      ],
+      "b": "MnMilleLacs",
+      "b_gate_metatile": [
+        1,
+        12
+      ],
+      "b_arrival_metatile": [
+        3,
+        12
+      ],
+      "requires_flags": [
+        "BADGE_6"
+      ],
+      "gate_script": "MnR18EntryGateScript",
+      "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+    },
+    {
+      "kind": "gatehouse_warp",
+      "route": "MN_R19",
+      "a": "MnR19C00R00",
+      "a_gate_local_metatile": [
+        30,
+        6
+      ],
+      "a_arrival_local_metatile": [
+        28,
+        6
+      ],
+      "b": "MnLakeItasca",
+      "b_gate_metatile": [
+        1,
+        12
+      ],
+      "b_arrival_metatile": [
+        3,
+        12
+      ],
+      "requires_flags": [
+        "BADGE_6"
+      ],
+      "gate_script": "MnR19EntryGateScript",
+      "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+    },
+    {
+      "kind": "gatehouse_warp",
+      "route": "MN_R19",
+      "a": "MnR19C00R01",
+      "a_gate_local_metatile": [
+        12,
+        4
+      ],
+      "a_arrival_local_metatile": [
+        12,
+        2
+      ],
+      "b": "MnDetroitLakes",
+      "b_gate_metatile": [
+        12,
+        1
+      ],
+      "b_arrival_metatile": [
+        12,
+        3
+      ],
+      "requires_flags": [
+        "BADGE_6"
+      ],
+      "gate_script": "MnR19EntryGateScript",
+      "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+    },
+    {
+      "kind": "gatehouse_warp",
+      "route": "MN_R20",
+      "a": "MnR20C00R00",
+      "a_gate_local_metatile": [
+        1,
+        22
+      ],
+      "a_arrival_local_metatile": [
+        3,
+        22
+      ],
+      "b": "MnInternationalFalls",
+      "b_gate_metatile": [
+        22,
+        12
+      ],
+      "b_arrival_metatile": [
+        20,
+        12
+      ],
+      "requires_flags": [
+        "BADGE_1",
+        "BADGE_2",
+        "BADGE_3",
+        "BADGE_4",
+        "BADGE_5",
+        "BADGE_6",
+        "BADGE_7",
+        "BADGE_8",
+        "EVENT_MN_LIGHTHOUSE_SIGNAL"
+      ],
+      "gate_script": "MnR20EntryGateScript",
+      "warp_index_status": "Allocate from authored map events; target safe FLOOR arrival event rather than source trigger."
+    },
+    {
+      "kind": "guarded_connection",
+      "route": "MN_R20",
+      "a": "MnR20C01R00",
+      "b": "MnBoundaryWaters",
+      "direction_a": "east",
+      "direction_b": "west",
+      "offset_a": 6,
+      "offset_b": -6,
+      "offset_units": "32px_metatiles",
+      "a_edge_core": [
+        [
+          63,
+          36
+        ],
+        [
+          63,
+          37
+        ]
+      ],
+      "b_edge_core": [
+        [
+          0,
+          24
+        ],
+        [
+          0,
+          25
+        ]
+      ],
+      "gate_map": "MnBoundaryWaters",
+      "gate_script": "MnBoundaryVoyageursCheck",
+      "checkpoint": "voyageurs",
+      "requires_flags": [
+        "BADGE_1",
+        "BADGE_2",
+        "BADGE_3",
+        "BADGE_4",
+        "BADGE_5",
+        "BADGE_6",
+        "BADGE_7",
+        "BADGE_8",
+        "EVENT_MN_LIGHTHOUSE_SIGNAL"
+      ],
+      "requires_apply_to": "camp_departure",
+      "fee": 0,
+      "inbound_requires_flags": [],
+      "inbound_access": "free_care",
+      "inbound_facing_policy": "escort_unless_outward"
+    },
+    {
+      "kind": "connection",
+      "a": "MnR03C00R00",
+      "direction_a": "south",
+      "b": "MnR03C00R01",
+      "direction_b": "north",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR05C00R00",
+      "direction_a": "south",
+      "b": "MnR05C00R01",
+      "direction_b": "north",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR05C00R01",
+      "direction_a": "south",
+      "b": "MnR05C00R02",
+      "direction_b": "north",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR06C00R00",
+      "direction_a": "south",
+      "b": "MnR06C00R01",
+      "direction_b": "north",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR07C00R00",
+      "direction_a": "south",
+      "b": "MnR07C00R01",
+      "direction_b": "north",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR08C00R00",
+      "direction_a": "east",
+      "b": "MnR08C01R00",
+      "direction_b": "west",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR08C00R00",
+      "direction_a": "south",
+      "b": "MnR08C00R01",
+      "direction_b": "north",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR08C01R00",
+      "direction_a": "south",
+      "b": "MnR08C01R01",
+      "direction_b": "north",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR08C00R01",
+      "direction_a": "east",
+      "b": "MnR08C01R01",
+      "direction_b": "west",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR09C00R00",
+      "direction_a": "east",
+      "b": "MnR09C01R00",
+      "direction_b": "west",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR09C00R00",
+      "direction_a": "south",
+      "b": "MnR09C00R01",
+      "direction_b": "north",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR09C01R00",
+      "direction_a": "south",
+      "b": "MnR09C01R01",
+      "direction_b": "north",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR09C00R01",
+      "direction_a": "east",
+      "b": "MnR09C01R01",
+      "direction_b": "west",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR10C00R00",
+      "direction_a": "east",
+      "b": "MnR10C01R00",
+      "direction_b": "west",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR11C00R00",
+      "direction_a": "south",
+      "b": "MnR11C00R01",
+      "direction_b": "north",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR11C00R01",
+      "direction_a": "south",
+      "b": "MnR11C00R02",
+      "direction_b": "north",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR12C00R00",
+      "direction_a": "east",
+      "b": "MnR12C01R00",
+      "direction_b": "west",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR12C00R00",
+      "direction_a": "south",
+      "b": "MnR12C00R01",
+      "direction_b": "north",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR12C01R00",
+      "direction_a": "south",
+      "b": "MnR12C01R01",
+      "direction_b": "north",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR12C00R01",
+      "direction_a": "east",
+      "b": "MnR12C01R01",
+      "direction_b": "west",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR12C00R01",
+      "direction_a": "south",
+      "b": "MnR12C00R02",
+      "direction_b": "north",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR12C01R01",
+      "direction_a": "south",
+      "b": "MnR12C01R02",
+      "direction_b": "north",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR12C00R02",
+      "direction_a": "east",
+      "b": "MnR12C01R02",
+      "direction_b": "west",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR13C00R00",
+      "direction_a": "south",
+      "b": "MnR13C00R01",
+      "direction_b": "north",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR13C00R01",
+      "direction_a": "south",
+      "b": "MnR13C00R02",
+      "direction_b": "north",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR14C00R00",
+      "direction_a": "east",
+      "b": "MnR14C01R00",
+      "direction_b": "west",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR14C00R00",
+      "direction_a": "south",
+      "b": "MnR14C00R01",
+      "direction_b": "north",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR14C01R00",
+      "direction_a": "south",
+      "b": "MnR14C01R01",
+      "direction_b": "north",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR14C00R01",
+      "direction_a": "east",
+      "b": "MnR14C01R01",
+      "direction_b": "west",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR16C00R00",
+      "direction_a": "east",
+      "b": "MnR16C01R00",
+      "direction_b": "west",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR17C00R00",
+      "direction_a": "south",
+      "b": "MnR17C00R01",
+      "direction_b": "north",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR17C00R01",
+      "direction_a": "south",
+      "b": "MnR17C00R02",
+      "direction_b": "north",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR18C00R00",
+      "direction_a": "east",
+      "b": "MnR18C01R00",
+      "direction_b": "west",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR19C00R00",
+      "direction_a": "south",
+      "b": "MnR19C00R01",
+      "direction_b": "north",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR20C00R00",
+      "direction_a": "east",
+      "b": "MnR20C01R00",
+      "direction_b": "west",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR20C00R00",
+      "direction_a": "south",
+      "b": "MnR20C00R01",
+      "direction_b": "north",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR20C01R00",
+      "direction_a": "south",
+      "b": "MnR20C01R01",
+      "direction_b": "north",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    },
+    {
+      "kind": "connection",
+      "a": "MnR20C00R01",
+      "direction_a": "east",
+      "b": "MnR20C01R01",
+      "direction_b": "west",
+      "offset_a": 0,
+      "offset_b": 0,
+      "requires": [
+        "continuous matching authored border quadrants",
+        "no seam NPC or warp overlap"
+      ]
+    }
+  ],
+  "map_id_policy": "Allocate unused group/map/spawn IDs from the actual base; persist the registry; do not hard-code 250 or collide with other overlays.",
+  "pack_names": [
+    "minnesota.crystalpack",
+    "minnesota.browser.crystalpack",
+    "minnesota.text-tui.crystalpack"
+  ],
+  "story_file": "story.json",
+  "planned_flags": [
+    "EVENT_MN_BORDER_CIRCUIT_REWARDED",
+    "EVENT_MN_BORDER_REPORT",
+    "EVENT_MN_BRAINERD_REPORT",
+    "EVENT_MN_COURIER_DEFEATED",
+    "EVENT_MN_DELIVERED_ROCHESTER_PARCEL",
+    "EVENT_MN_DEPOT_CLEARED",
+    "EVENT_MN_DEPOT_FOREMAN_DEFEATED",
+    "EVENT_MN_DISPATCH_NOTE",
+    "EVENT_MN_GYM_1_DEFEATED",
+    "EVENT_MN_GYM_2_DEFEATED",
+    "EVENT_MN_GYM_3_DEFEATED",
+    "EVENT_MN_GYM_4_DEFEATED",
+    "EVENT_MN_GYM_5_DEFEATED",
+    "EVENT_MN_GYM_6_DEFEATED",
+    "EVENT_MN_GYM_7_DEFEATED",
+    "EVENT_MN_GYM_8_DEFEATED",
+    "EVENT_MN_HEADWATERS_READING",
+    "EVENT_MN_HEADWATERS_REPORT",
+    "EVENT_MN_HOME_INTRO",
+    "EVENT_MN_LAKE_OBSERVATIONS_REWARDED",
+    "EVENT_MN_LEAGUE_CHAMPION",
+    "EVENT_MN_LIGHTHOUSE_SIGNAL",
+    "EVENT_MN_PRAIRIE_CIRCUIT_REWARDED",
+    "EVENT_MN_PRAIRIE_NOTEBOOK",
+    "EVENT_MN_R01_ITEM_01",
+    "EVENT_MN_R01_ITEM_02",
+    "EVENT_MN_R01_ITEM_03",
+    "EVENT_MN_R01_ITEM_04",
+    "EVENT_MN_R01_PARCEL_RECEIVED",
+    "EVENT_MN_R01_TRAINER_01",
+    "EVENT_MN_R01_TRAINER_02",
+    "EVENT_MN_R01_TRAINER_03",
+    "EVENT_MN_R01_TRAINER_04",
+    "EVENT_MN_R01_TRAINER_05",
+    "EVENT_MN_R01_TRAINER_06",
+    "EVENT_MN_R02_ITEM_01",
+    "EVENT_MN_R02_ITEM_02",
+    "EVENT_MN_R02_ITEM_03",
+    "EVENT_MN_R02_ITEM_04",
+    "EVENT_MN_R02_TRAINER_01",
+    "EVENT_MN_R02_TRAINER_02",
+    "EVENT_MN_R02_TRAINER_03",
+    "EVENT_MN_R02_TRAINER_04",
+    "EVENT_MN_R02_TRAINER_05",
+    "EVENT_MN_R02_TRAINER_06",
+    "EVENT_MN_R03_ITEM_01",
+    "EVENT_MN_R03_ITEM_02",
+    "EVENT_MN_R03_ITEM_03",
+    "EVENT_MN_R03_ITEM_04",
+    "EVENT_MN_R03_TRAINER_01",
+    "EVENT_MN_R03_TRAINER_02",
+    "EVENT_MN_R03_TRAINER_03",
+    "EVENT_MN_R03_TRAINER_04",
+    "EVENT_MN_R03_TRAINER_05",
+    "EVENT_MN_R03_TRAINER_06",
+    "EVENT_MN_R03_TRAINER_07",
+    "EVENT_MN_R03_TRAINER_08",
+    "EVENT_MN_R04_ITEM_01",
+    "EVENT_MN_R04_ITEM_02",
+    "EVENT_MN_R04_ITEM_03",
+    "EVENT_MN_R04_ITEM_04",
+    "EVENT_MN_R04_TRAINER_01",
+    "EVENT_MN_R04_TRAINER_02",
+    "EVENT_MN_R04_TRAINER_03",
+    "EVENT_MN_R04_TRAINER_04",
+    "EVENT_MN_R04_TRAINER_05",
+    "EVENT_MN_R04_TRAINER_06",
+    "EVENT_MN_R04_TRAINER_07",
+    "EVENT_MN_R04_TRAINER_08",
+    "EVENT_MN_R05_ITEM_01",
+    "EVENT_MN_R05_ITEM_02",
+    "EVENT_MN_R05_ITEM_03",
+    "EVENT_MN_R05_ITEM_04",
+    "EVENT_MN_R05_TRAINER_01",
+    "EVENT_MN_R05_TRAINER_02",
+    "EVENT_MN_R05_TRAINER_03",
+    "EVENT_MN_R05_TRAINER_04",
+    "EVENT_MN_R05_TRAINER_05",
+    "EVENT_MN_R05_TRAINER_06",
+    "EVENT_MN_R05_TRAINER_07",
+    "EVENT_MN_R05_TRAINER_08",
+    "EVENT_MN_R06_ITEM_01",
+    "EVENT_MN_R06_ITEM_02",
+    "EVENT_MN_R06_ITEM_03",
+    "EVENT_MN_R06_ITEM_04",
+    "EVENT_MN_R06_TRAINER_01",
+    "EVENT_MN_R06_TRAINER_02",
+    "EVENT_MN_R06_TRAINER_03",
+    "EVENT_MN_R06_TRAINER_04",
+    "EVENT_MN_R06_TRAINER_05",
+    "EVENT_MN_R06_TRAINER_06",
+    "EVENT_MN_R06_TRAINER_07",
+    "EVENT_MN_R06_TRAINER_08",
+    "EVENT_MN_R07_ITEM_01",
+    "EVENT_MN_R07_ITEM_02",
+    "EVENT_MN_R07_ITEM_03",
+    "EVENT_MN_R07_ITEM_04",
+    "EVENT_MN_R07_TRAINER_01",
+    "EVENT_MN_R07_TRAINER_02",
+    "EVENT_MN_R07_TRAINER_03",
+    "EVENT_MN_R07_TRAINER_04",
+    "EVENT_MN_R07_TRAINER_05",
+    "EVENT_MN_R07_TRAINER_06",
+    "EVENT_MN_R07_TRAINER_07",
+    "EVENT_MN_R07_TRAINER_08",
+    "EVENT_MN_R08_ITEM_01",
+    "EVENT_MN_R08_ITEM_02",
+    "EVENT_MN_R08_ITEM_03",
+    "EVENT_MN_R08_ITEM_04",
+    "EVENT_MN_R08_TRAINER_01",
+    "EVENT_MN_R08_TRAINER_02",
+    "EVENT_MN_R08_TRAINER_03",
+    "EVENT_MN_R08_TRAINER_04",
+    "EVENT_MN_R08_TRAINER_05",
+    "EVENT_MN_R08_TRAINER_06",
+    "EVENT_MN_R08_TRAINER_07",
+    "EVENT_MN_R08_TRAINER_08",
+    "EVENT_MN_R09_ITEM_01",
+    "EVENT_MN_R09_ITEM_02",
+    "EVENT_MN_R09_ITEM_03",
+    "EVENT_MN_R09_ITEM_04",
+    "EVENT_MN_R09_TRAINER_01",
+    "EVENT_MN_R09_TRAINER_02",
+    "EVENT_MN_R09_TRAINER_03",
+    "EVENT_MN_R09_TRAINER_04",
+    "EVENT_MN_R09_TRAINER_05",
+    "EVENT_MN_R09_TRAINER_06",
+    "EVENT_MN_R09_TRAINER_07",
+    "EVENT_MN_R09_TRAINER_08",
+    "EVENT_MN_R09_TRAINER_09",
+    "EVENT_MN_R09_TRAINER_10",
+    "EVENT_MN_R10_ITEM_01",
+    "EVENT_MN_R10_ITEM_02",
+    "EVENT_MN_R10_ITEM_03",
+    "EVENT_MN_R10_ITEM_04",
+    "EVENT_MN_R10_TRAINER_01",
+    "EVENT_MN_R10_TRAINER_02",
+    "EVENT_MN_R10_TRAINER_03",
+    "EVENT_MN_R10_TRAINER_04",
+    "EVENT_MN_R10_TRAINER_05",
+    "EVENT_MN_R10_TRAINER_06",
+    "EVENT_MN_R10_TRAINER_07",
+    "EVENT_MN_R10_TRAINER_08",
+    "EVENT_MN_R10_TRAINER_09",
+    "EVENT_MN_R10_TRAINER_10",
+    "EVENT_MN_R11_ITEM_01",
+    "EVENT_MN_R11_ITEM_02",
+    "EVENT_MN_R11_ITEM_03",
+    "EVENT_MN_R11_ITEM_04",
+    "EVENT_MN_R11_TRAINER_01",
+    "EVENT_MN_R11_TRAINER_02",
+    "EVENT_MN_R11_TRAINER_03",
+    "EVENT_MN_R11_TRAINER_04",
+    "EVENT_MN_R11_TRAINER_05",
+    "EVENT_MN_R11_TRAINER_06",
+    "EVENT_MN_R11_TRAINER_07",
+    "EVENT_MN_R11_TRAINER_08",
+    "EVENT_MN_R11_TRAINER_09",
+    "EVENT_MN_R11_TRAINER_10",
+    "EVENT_MN_R12_ITEM_01",
+    "EVENT_MN_R12_ITEM_02",
+    "EVENT_MN_R12_ITEM_03",
+    "EVENT_MN_R12_ITEM_04",
+    "EVENT_MN_R12_TRAINER_01",
+    "EVENT_MN_R12_TRAINER_02",
+    "EVENT_MN_R12_TRAINER_03",
+    "EVENT_MN_R12_TRAINER_04",
+    "EVENT_MN_R12_TRAINER_05",
+    "EVENT_MN_R12_TRAINER_06",
+    "EVENT_MN_R12_TRAINER_07",
+    "EVENT_MN_R12_TRAINER_08",
+    "EVENT_MN_R12_TRAINER_09",
+    "EVENT_MN_R12_TRAINER_10",
+    "EVENT_MN_R13_ITEM_01",
+    "EVENT_MN_R13_ITEM_02",
+    "EVENT_MN_R13_ITEM_03",
+    "EVENT_MN_R13_ITEM_04",
+    "EVENT_MN_R13_TRAINER_01",
+    "EVENT_MN_R13_TRAINER_02",
+    "EVENT_MN_R13_TRAINER_03",
+    "EVENT_MN_R13_TRAINER_04",
+    "EVENT_MN_R13_TRAINER_05",
+    "EVENT_MN_R13_TRAINER_06",
+    "EVENT_MN_R13_TRAINER_07",
+    "EVENT_MN_R13_TRAINER_08",
+    "EVENT_MN_R13_TRAINER_09",
+    "EVENT_MN_R13_TRAINER_10",
+    "EVENT_MN_R14_ITEM_01",
+    "EVENT_MN_R14_ITEM_02",
+    "EVENT_MN_R14_ITEM_03",
+    "EVENT_MN_R14_ITEM_04",
+    "EVENT_MN_R14_TRAINER_01",
+    "EVENT_MN_R14_TRAINER_02",
+    "EVENT_MN_R14_TRAINER_03",
+    "EVENT_MN_R14_TRAINER_04",
+    "EVENT_MN_R14_TRAINER_05",
+    "EVENT_MN_R14_TRAINER_06",
+    "EVENT_MN_R14_TRAINER_07",
+    "EVENT_MN_R14_TRAINER_08",
+    "EVENT_MN_R14_TRAINER_09",
+    "EVENT_MN_R14_TRAINER_10",
+    "EVENT_MN_R15_ITEM_01",
+    "EVENT_MN_R15_ITEM_02",
+    "EVENT_MN_R15_ITEM_03",
+    "EVENT_MN_R15_ITEM_04",
+    "EVENT_MN_R15_TRAINER_01",
+    "EVENT_MN_R15_TRAINER_02",
+    "EVENT_MN_R15_TRAINER_03",
+    "EVENT_MN_R15_TRAINER_04",
+    "EVENT_MN_R15_TRAINER_05",
+    "EVENT_MN_R15_TRAINER_06",
+    "EVENT_MN_R15_TRAINER_07",
+    "EVENT_MN_R15_TRAINER_08",
+    "EVENT_MN_R15_TRAINER_09",
+    "EVENT_MN_R15_TRAINER_10",
+    "EVENT_MN_R16_ITEM_01",
+    "EVENT_MN_R16_ITEM_02",
+    "EVENT_MN_R16_ITEM_03",
+    "EVENT_MN_R16_ITEM_04",
+    "EVENT_MN_R16_TRAINER_01",
+    "EVENT_MN_R16_TRAINER_02",
+    "EVENT_MN_R16_TRAINER_03",
+    "EVENT_MN_R16_TRAINER_04",
+    "EVENT_MN_R16_TRAINER_05",
+    "EVENT_MN_R16_TRAINER_06",
+    "EVENT_MN_R16_TRAINER_07",
+    "EVENT_MN_R16_TRAINER_08",
+    "EVENT_MN_R16_TRAINER_09",
+    "EVENT_MN_R16_TRAINER_10",
+    "EVENT_MN_R17_ITEM_01",
+    "EVENT_MN_R17_ITEM_02",
+    "EVENT_MN_R17_ITEM_03",
+    "EVENT_MN_R17_ITEM_04",
+    "EVENT_MN_R17_TRAINER_01",
+    "EVENT_MN_R17_TRAINER_02",
+    "EVENT_MN_R17_TRAINER_03",
+    "EVENT_MN_R17_TRAINER_04",
+    "EVENT_MN_R17_TRAINER_05",
+    "EVENT_MN_R17_TRAINER_06",
+    "EVENT_MN_R17_TRAINER_07",
+    "EVENT_MN_R17_TRAINER_08",
+    "EVENT_MN_R17_TRAINER_09",
+    "EVENT_MN_R17_TRAINER_10",
+    "EVENT_MN_R18_ITEM_01",
+    "EVENT_MN_R18_ITEM_02",
+    "EVENT_MN_R18_ITEM_03",
+    "EVENT_MN_R18_ITEM_04",
+    "EVENT_MN_R18_TRAINER_01",
+    "EVENT_MN_R18_TRAINER_02",
+    "EVENT_MN_R18_TRAINER_03",
+    "EVENT_MN_R18_TRAINER_04",
+    "EVENT_MN_R18_TRAINER_05",
+    "EVENT_MN_R18_TRAINER_06",
+    "EVENT_MN_R18_TRAINER_07",
+    "EVENT_MN_R18_TRAINER_08",
+    "EVENT_MN_R18_TRAINER_09",
+    "EVENT_MN_R18_TRAINER_10",
+    "EVENT_MN_R19_ITEM_01",
+    "EVENT_MN_R19_ITEM_02",
+    "EVENT_MN_R19_ITEM_03",
+    "EVENT_MN_R19_ITEM_04",
+    "EVENT_MN_R19_TRAINER_01",
+    "EVENT_MN_R19_TRAINER_02",
+    "EVENT_MN_R19_TRAINER_03",
+    "EVENT_MN_R19_TRAINER_04",
+    "EVENT_MN_R19_TRAINER_05",
+    "EVENT_MN_R19_TRAINER_06",
+    "EVENT_MN_R19_TRAINER_07",
+    "EVENT_MN_R19_TRAINER_08",
+    "EVENT_MN_R19_TRAINER_09",
+    "EVENT_MN_R19_TRAINER_10",
+    "EVENT_MN_R20_ITEM_01",
+    "EVENT_MN_R20_ITEM_02",
+    "EVENT_MN_R20_ITEM_03",
+    "EVENT_MN_R20_ITEM_04",
+    "EVENT_MN_R20_TRAINER_01",
+    "EVENT_MN_R20_TRAINER_02",
+    "EVENT_MN_R20_TRAINER_03",
+    "EVENT_MN_R20_TRAINER_04",
+    "EVENT_MN_R20_TRAINER_05",
+    "EVENT_MN_R20_TRAINER_06",
+    "EVENT_MN_R20_TRAINER_07",
+    "EVENT_MN_R20_TRAINER_08",
+    "EVENT_MN_R20_TRAINER_09",
+    "EVENT_MN_R20_TRAINER_10",
+    "EVENT_MN_SHORE_WATCH_REWARDED",
+    "EVENT_MN_STARTER_RECEIVED",
+    "EVENT_MN_SURF_GIFT_RECEIVED",
+    "EVENT_MN_SURVEY_CHIEF_DEFEATED",
+    "EVENT_MN_SURVEY_RESTORED",
+    "EVENT_MN_R12_CAVE_ETHER"
+  ],
+  "regional_destinations": [
+    {
+      "id": "MN_STATE_FAIRGROUNDS",
+      "file": "zones/state-fairgrounds.json",
+      "parent_hub": "MnStPaul",
+      "kind": "planned_fairgrounds",
+      "status": "Dedicated playable destination in scope; St. Paul walking entrance reserved during current town authoring. Terrain and native gameplay are not published."
+    }
+  ],
+  "transit_networks": [
+    {
+      "id": "MN_GLACIER_LINE",
+      "file": "transit/glacier-line.json",
+      "kind": "planned_rail_service",
+      "status": "Six-stop source contract; St. Paul station interior has hand-authored rows and collision review. Cities, station doors and native train service are not installed."
+    }
+  ],
+  "special_zones": [
+    {
+      "id": "MN_BOUNDARY_WATERS_SAFARI",
+      "hub": "MnBoundaryWaters",
+      "file": "zones/boundary-waters-safari.json",
+      "status": "Four clipped native preserve maps and actual cabin are published and controller-verified locally. Regional basecamp access and Safari session/capture rules remain pending; native admission is closed without fees."
+    }
+  ]
+}

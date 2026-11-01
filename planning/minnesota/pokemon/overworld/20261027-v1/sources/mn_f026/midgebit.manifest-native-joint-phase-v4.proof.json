@@ -1,0 +1,339 @@
+{
+  "species_id": "MN_065",
+  "name": "midgebit",
+  "status": "native-review-recommended; root independent review and context required",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f026/midgebit.manifest-native-joint-phase-v4.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-midgebit-joint-phase-v4",
+  "shared_transform": {
+    "source_bounds": [
+      12,
+      12,
+      404,
+      354
+    ],
+    "native_size": [
+      14,
+      12
+    ],
+    "native_origin": [
+      1,
+      3
+    ]
+  },
+  "all_four_nonrear_poses_actual_pupils_pass": true,
+  "each_native_eye_cluster_maps_to_one_actual_small_source_pupil_component": true,
+  "actual_source_pupil_proofs": [
+    {
+      "pose": "down_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f026/midgebit.overworld.imagegen-v4.png",
+      "crop": [
+        68,
+        104,
+        423,
+        378
+      ],
+      "actual_source_eye_bounds": [
+        [
+          249,
+          304,
+          19,
+          29
+        ],
+        [
+          312,
+          304,
+          19,
+          29
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              7,
+              9
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                7,
+                4,
+                4,
+                253
+              ],
+              "bounds": [
+                249,
+                304,
+                19,
+                29
+              ],
+              "pixels": 551,
+              "truncated_contour": false,
+              "native_pixel": [
+                7,
+                9
+              ],
+              "source_sample_pixel": [
+                267,
+                307
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              9,
+              9
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                1,
+                0,
+                0,
+                254
+              ],
+              "bounds": [
+                312,
+                304,
+                19,
+                29
+              ],
+              "pixels": 551,
+              "truncated_contour": false,
+              "native_pixel": [
+                9,
+                9
+              ],
+              "source_sample_pixel": [
+                325,
+                307
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f026/midgebit.overworld.imagegen-v4.png",
+      "crop": [
+        1053,
+        120,
+        423,
+        378
+      ],
+      "actual_source_eye_bounds": [
+        [
+          1167,
+          282,
+          29,
+          30
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              5,
+              8
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                2,
+                2,
+                2,
+                253
+              ],
+              "bounds": [
+                1167,
+                282,
+                29,
+                30
+              ],
+              "pixels": 841,
+              "truncated_contour": false,
+              "native_pixel": [
+                5,
+                8
+              ],
+              "source_sample_pixel": [
+                1194,
+                294
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f026/midgebit.overworld.imagegen-v4.png",
+      "crop": [
+        68,
+        552,
+        423,
+        378
+      ],
+      "actual_source_eye_bounds": [
+        [
+          249,
+          747,
+          19,
+          29
+        ],
+        [
+          311,
+          746,
+          19,
+          30
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              7,
+              9
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                5,
+                4,
+                3,
+                253
+              ],
+              "bounds": [
+                249,
+                747,
+                19,
+                29
+              ],
+              "pixels": 551,
+              "truncated_contour": false,
+              "native_pixel": [
+                7,
+                9
+              ],
+              "source_sample_pixel": [
+                267,
+                755
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              9,
+              9
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                3,
+                2,
+                2,
+                254
+              ],
+              "bounds": [
+                311,
+                746,
+                19,
+                30
+              ],
+              "pixels": 563,
+              "truncated_contour": false,
+              "native_pixel": [
+                9,
+                9
+              ],
+              "source_sample_pixel": [
+                325,
+                755
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f026/midgebit.overworld.imagegen-v4.png",
+      "crop": [
+        1051,
+        567,
+        423,
+        378
+      ],
+      "actual_source_eye_bounds": [
+        [
+          1167,
+          729,
+          29,
+          30
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              5,
+              8
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                1,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                1167,
+                729,
+                29,
+                30
+              ],
+              "pixels": 864,
+              "truncated_contour": false,
+              "native_pixel": [
+                5,
+                8
+              ],
+              "source_sample_pixel": [
+                1192,
+                741
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "old_native_poses_preserved_exactly": [],
+  "normal_shiny_runtime_parity": "all1536pixels exact each",
+  "canonical_palette_bytes": "exact",
+  "all_three_walk_pairs_distinct": true,
+  "rear_review": "both rear native poses viewed; no copied face",
+  "normal_shiny_native_boards_actually_viewed": true,
+  "accepted_coverage_native_pack_untouched": true,
+  "manifest_sha256": "a604125e929f4caf4b92506162d19bf185a08a0bd14418b0cd3e94234a2a1ed6",
+  "compiled_index_sha256": "a9d726751d026c828cb91d23667bcdccf8dd2a210fb7b5531c6d828640c80b3b",
+  "anatomy_review": "Source v4 repairs both rear leg counts and thickens lowest front legs; six walking legs remain distinct from two wings in front and rear. Three near legs in west profile, far legs occluded. Literal blank rear cap and peach reservoir abdomen without false eyes."
+}

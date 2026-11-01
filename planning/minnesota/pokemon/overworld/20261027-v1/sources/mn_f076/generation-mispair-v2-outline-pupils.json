@@ -1,0 +1,15 @@
+{
+  "tool": "built-in image_gen",
+  "default_path": "/Users/ryanculligan/.codex/generated_images/01a178da-4cf1-7e01-8516-667a332dc790/exec-c002c4fc-37aa-486f-80bc-b90ee9b375d4.png",
+  "retained_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/mispair.overworld.imagegen-v2-outline-pupils.png",
+  "sha256": "92217323e7677b19600299fdabf3e64c38904c52c05365d85f4b6f31265430ac",
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/prompt-mispair-outline-pupils-v2.txt",
+  "input_target": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/mispair.overworld.imagegen-v1.png",
+  "input_target_sha256": "a60b16d3ddf7a88aaed630aa1cd31111bcd4971a4b596f9946efa4afd77fee95",
+  "size": [
+    1536,
+    1024
+  ],
+  "status": "source-refinement; native conversion and root review pending",
+  "rejected_pose_notes": "All six source identities visually close; actual native outline/pupil preservation still needs checking."
+}

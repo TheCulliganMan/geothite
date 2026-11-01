@@ -1,0 +1,884 @@
+{
+  "schema_version": 1,
+  "id": "MN_ITASCA_SNOWLINE",
+  "status": "Source proposal; native publication, field/controller/weather and GPU review still required",
+  "selected_parent_revision": "north_shore_passing_width_revision",
+  "selected_parent_sha256": "e951fddafee3a0c09a2356d4dd683890ac498e23daeb266d08c5f12d79ec1167",
+  "parent_pack": "content-packs/minnesota-headwaters-rock-clearance-v01.crystalpack",
+  "parent_pack_sha256": "d2b9d98f8204d216b9cdf7eb386441efd374a47424ee615c891071764f630bf9",
+  "parent_identity": {
+    "format_version": 13,
+    "runtime_modpack_id": "core-modular+all-251-catchable-v1+solo-evolutions-v1+modern-move-split+competitive-battles+wild-challenge+text-tui+minnesota-headwaters-art+minnesota-river-bluffs-0+minnesota-river-bluffs-1+minnesota-river-bluffs-2+minnesota-river-bluffs-3+minnesota-pine-country-0+minnesota-pine-country-1+minnesota-pine-country-2+minnesota-leech-lake-0+minnesota-leech-lake-1+minnesota-northern-lakes-0+minnesota-northern-lakes-1+minnesota-northern-lakes-2+minnesota-northern-lakes-3+minnesota-league-approach-0+minnesota-league-approach-1+minnesota-league-approach-2+minnesota-league-approach-3+minnesota-iron-range-art+minnesota-iron-range-0+minnesota-iron-range-1+minnesota-iron-range-2+minnesota-iron-range-3+minnesota-iron-range-4+minnesota-iron-range-descent-0+minnesota-iron-range-descent-1+minnesota-iron-range-descent-2+minnesota-red-river-prairie-0+minnesota-red-river-prairie-1+minnesota-gunflint-art+minnesota-border-pines-art+minnesota-border-pines-0+minnesota-border-pines-1+minnesota-border-pines-2+minnesota-border-pines-3+minnesota-border-pines-4+minnesota-mille-lacs-shore-0+minnesota-mille-lacs-shore-1+minnesota-voyageurs-border-loop-0+minnesota-voyageurs-border-loop-1+minnesota-voyageurs-border-loop-2+minnesota-voyageurs-border-loop-3+minnesota-voyageurs-border-loop-4+minnesota-north-shore-art+minnesota-north-shore-0+minnesota-north-shore-1+minnesota-north-shore-2+minnesota-north-shore-3+minnesota-gunflint-0+minnesota-gunflint-1+minnesota-gunflint-2+minnesota-gunflint-3+minnesota-gunflint-4+minnesota-gunflint-5+minnesota-gunflint-6+minnesota-gunflint-7+minnesota-headwaters-0+minnesota-headwaters-1+minnesota-headwaters-2+minnesota-headwaters-3+minnesota-prairie-forest-link-0+minnesota-prairie-forest-link-1+minnesota-boundary-safari-art+minnesota-root-beer-v1+minnesota-root-beer-lady-service-v1+minnesota-boundary-waters-terrain-v1-0+minnesota-boundary-waters-terrain-v1-1+minnesota-boundary-waters-terrain-v1-2+minnesota-boundary-waters-terrain-v1-3+minnesota-boundary-waters-terrain-v1-4+minnesota-boundary-waters-terrain-v1+native-field-scripts-source-repair+minnesota-driftless-0+minnesota-driftless-1+minnesota-driftless-2+minnesota-river-valley-0+minnesota-river-valley-1+minnesota-river-valley-2+minnesota-twin-cities-art+minnesota-twin-cities-0+minnesota-central-lakes-0+minnesota-central-lakes-1+minnesota-grand-marais-0+minnesota-grand-marais-1+minnesota-grand-marais-2+minnesota-grand-marais-3+minnesota-grand-marais-4+minnesota-grand-marais-5+minnesota-grand-marais-6+minnesota-prairie-farm-0+minnesota-prairie-farm-1+minnesota-prairie-farm-2+minnesota-boundary-basecamp-v1-0+minnesota-boundary-basecamp-v1-1+minnesota-boundary-basecamp-v1+minnesota-boundary-basecamp-connections-v1+minnesota-mn_prairie_kanto-art-v1+minnesota-mn_prairie_headwaters-art-v1+minnesota-gym-2-art-v1+minnesota-gym-3-art-v1+minnesota-gym-4-art-v1+minnesota-gym-5-art-v1+minnesota-gym-6-art-v1+minnesota-gym-7-art-v1+minnesota-gym-8-art-v1+minnesota-gym-interiors-v1-0+minnesota-gym-interiors-v1-1+minnesota-gym-interiors-v1-2+minnesota-gym-interiors-v1-3+minnesota-gym-interiors-v1-4+minnesota-gym-interiors-v1-5+minnesota-gym-interiors-v1-6+minnesota-gym-interiors-v1-7+minnesota-gym-interiors-v1-8+minnesota-duluth-city-v1-0+minnesota-duluth-city-v1-1+minnesota-duluth-city-v1-2+minnesota-duluth-city-v1-3+minnesota-duluth-city-v1-4+minnesota-duluth-city-v1-5+minnesota-duluth-city-v1-6+minnesota-duluth-city-v1+minnesota-brainerd-city-v1-0+minnesota-brainerd-city-v1-1+minnesota-brainerd-city-v1-2+minnesota-brainerd-city-v1-3+minnesota-brainerd-city-v1-4+minnesota-brainerd-city-v1-canonical-gym6-binding+minnesota-bemidji-timber-art-v1+minnesota-bemidji-city-v1-0+minnesota-bemidji-city-v1-1+minnesota-bemidji-city-v1-2+minnesota-bemidji-city-v1-3+minnesota-bemidji-city-v1-4+minnesota-bemidji-city-v1-5+minnesota-bemidji-city-v1+minnesota-grand-rapids-v1-0+minnesota-grand-rapids-v1-1+minnesota-grand-rapids-v1-2+minnesota-grand-rapids-v1-3+minnesota-grand-rapids-v1+minnesota-grand-rapids-connections-v1+minnesota-duluth-story-v1+minnesota-north-shore-stone-stairs-v1+minnesota-north-shore-expansion-v1-5+minnesota-north-shore-expansion-v1-6+minnesota-north-shore-expansion-v1-7+minnesota-north-shore-expansion-v1-8+minnesota-north-shore-expansion-v1-9+minnesota-north-shore-expansion-v1+minnesota-boundary-waters-stone-stairs-v1+minnesota-boundary-waters-expanded-terrain-v1-6+minnesota-boundary-waters-expanded-terrain-v1-7+minnesota-boundary-waters-expanded-terrain-v1+minnesota-duluth-connections-v2+minnesota-ryans-house-v1-room+minnesota-ryans-house-v1+minnesota-r10-seam-gallery-v1+minnesota-reviewed-gym3-replacement-v1+minnesota-minneapolis-v1-1+minnesota-minneapolis-v1-2+minnesota-minneapolis-v1-3+minnesota-minneapolis-v1-4+minnesota-minneapolis-v1-5+minnesota-minneapolis-v1+minnesota-winona-opening-v1-1+minnesota-winona-opening-v1-2+minnesota-winona-opening-v1-3+minnesota-winona-opening-v1-4+minnesota-winona-opening-v1-5+minnesota-winona-opening-v1-6+minnesota-winona-opening-v1+minnesota-gym-1-art-v1+minnesota-rochester-city-v1-0+minnesota-rochester-city-v1-1+minnesota-rochester-city-v1-2+minnesota-rochester-city-v1-4+minnesota-rochester-city-v1-5+minnesota-rochester-story-v1+minnesota-winona-rochester-links-v1+minnesota-reviewed-eight-gyms-refresh-v1+minnesota-mankato-city-v1-0+minnesota-mankato-city-v1-1+minnesota-mankato-city-v1-2+minnesota-mankato-city-v1+minnesota-st-paul-city-v1-0+minnesota-st-paul-city-v1-1+minnesota-st-paul-city-v1-2+minnesota-st-paul-city-v1-3+minnesota-st-paul-city-v1-5+minnesota-st-paul-city-v1+minnesota-st-cloud-city-v1-0+minnesota-st-cloud-city-v1-1+minnesota-st-cloud-city-v1-2+minnesota-st-cloud-city-v1-4+minnesota-st-cloud-city-v1+minnesota-prairie-story-v1+minnesota-river-city-links-v2+minnesota-courier-story-v1+minnesota-lake-country-story-v1+minnesota-leech-shore-v1-0+minnesota-leech-shore-v1-1+minnesota-leech-shore-v1-2+minnesota-leech-shore-v1+minnesota-itasca-story-v1-0+minnesota-itasca-story-v1-1+minnesota-itasca-story-v1+minnesota-r10-rockstairs-art+minnesota-r10-rockstairs-native-stair+mnminneapolis-expanded-city-art+mnminneapolissupplycoop-city-room+mnminneapolisgrainexchange-city-room+mnminneapolistoolworkshop-city-room+mnminneapolisprintshop-city-room+mnminneapolisfoundrymuseum-city-room+mnminneapolisartsstudio-city-room+mnminneapolismusicroom-city-room+mnminneapoliscommunitylibrary-city-room+mnminneapolisnortheasthome-city-room+mnminneapolisgardenshop-city-room+mnminneapolisrivernaturalist-city-room+mnminneapolisboathouse-city-room+mnminneapolisanglerhome-city-room+mnminneapolislakecabin-city-room+mnminneapolisgreenhouse-city-room+mnminneapolisbridgehome-city-room+mnminneapolisdepartmentstore1f-city-room+mnminneapolisbattleclub-city-room+mnminneapoliscedarhome-city-room+mnminneapoliscommunitykitchen-city-room+mnminneapoliscouriersdesk-city-room+mnminneapolisfieldclub-city-room+mnminneapolisgardenershome-city-room+mnminneapolisarrivalinfo-city-room+mnminneapolisriverinn-city-room+mnminneapolissouthmarket-city-room+mnminneapolismillworkershouse-city-room+mnminneapolisdepartmentstore2f-city-room+mnminneapolisdepartmentstore3f-city-room+mnminneapolisdepartmentstore4f-city-room+mnminneapolisdepartmentstore5f-city-room+mnminneapolisbookbinder-city-room+mnminneapoliscooperativeflat-city-room+mnminneapolistoolflat-city-room+mnminneapoliscornerhome-city-room+mnminneapolisriverfamilyhome-city-room+mnminneapolisgardenflat-city-room+mnminneapolispatternstudio-city-room+mnminneapolismillforemanhome-city-room+mnminneapolis-expanded-city+mnduluth-expanded-city-art+mnduluthlookoutlodge1f-city-room+mnduluthlookoutlodge2f-city-room+mnduluthpotteryhouse-city-room+mnduluthquarrypractice-city-room+mnduluthhillgardenhouse-city-room+mnduluthterracehome-city-room+mnduluthhillranger-city-room+mnduluthreadinghall1f-city-room+mnduluthreadinghall2f-city-room+mnduluthhillsidehostel1f-city-room+mnduluthhillsidehostel2f-city-room+mnduluthhillsupplies-city-room+mnduluthcommunitykitchen-city-room+mnduluthweatherstudy1f-city-room+mnduluthweatherstudy2f-city-room+mnduluthlakesidehome-city-room+mnduluthlakeoutfitter-city-room+mnduluthfieldclinic-city-room+mnduluthboatbuilder-city-room+mnduluthunionhall1f-city-room+mnduluthunionhall2f-city-room+mnduluthorewarehouse1f-city-room+mnduluthorewarehouse2f-city-room+mnduluthtoolexchange-city-room+mnduluthtrainingannex-city-room+mnduluthforemanhome-city-room+mnduluthmaritimecoop1f-city-room+mnduluthmaritimecoop2f-city-room+mnduluthmaritimecoop3f-city-room+mnduluthcargooffice-city-room+mnduluthsailorclub1f-city-room+mnduluthsailorclub2f-city-room+mnduluthdocksupplies-city-room+mnduluthsliphouse-city-room+mnduluthbeachshelter-city-room+mnduluthpointoutfitter-city-room+mnduluthsandhouse-city-room+mnduluthboatclub1f-city-room+mnduluthboatclub2f-city-room+mnduluthfishercottage-city-room+mnduluthpointgardenhome-city-room+mnduluth-expanded-city+mnstpaulfairfoodhall-city-room+mnstpaulfairgardenstand-city-room+mnstpaulfairagriculturehall-city-room+mnstpaulfairexhibitionhall-city-room+mnstpaulfaircrafthouse-city-room+mnstpaulfairquizpavilion-city-room+mnstpaulfairinfohouse-city-room+mnstpaulfairbreederbarn-city-room+mnstpaulfairberrysnack-city-room+mnstpaulfairfestivalmail-city-room+mnstpaulcapitolarchive-city-room+mnstpaulcapitollibrary-city-room+mnstpaulcivicmuseum-city-room+mnstpaulsummitmovestudyhouse-city-room+mnstpaulsummitexhibitionclub-city-room+mnstpaulsummitpresshouse-city-room+mnstpaulwestseventhbooks-city-room+mnstpaulwestseventhbakery-city-room+mnstpaulstreetgardenhouse-city-room+mnstpaullowertownexchange-city-room+mnstpaularchiveannex-city-room+mnstpaullowertowncrafts-city-room+mnstpauleastaidclinic-city-room+mnstpauleastworkshop-city-room+mnstpaulcommunityhall-city-room+mnstpaultransitheritagehouse-city-room+mnstpaulfreightoffice-city-room+mnstpaullowertowncafe-city-room+mnstpaulanglerhouse-city-room+mnstpaulriversidesupplies-city-room+mnstpaulwestsidecommunity-city-room+mnstpaulwestsidearena-city-room+mnstpaulboatcoop-city-room+mnstpaulsouthlandinginn-city-room+mnstpaulsouthlandingsurvey-city-room+mnstpaullowertownexchange2f-city-room+mnstpaullowertownexchange3f-city-room+mnstpaul-expanded-city+MN_MISSISSIPPI_CONNECTIONS-1+MN_MISSISSIPPI_CONNECTIONS-2+MN_MISSISSIPPI_CONNECTIONS-3+MN_MISSISSIPPI_CONNECTIONS-4+MN_MISSISSIPPI_CONNECTIONS-5+MN_MISSISSIPPI_CONNECTIONS-6+MN_MISSISSIPPI_CONNECTIONS-7+MN_MISSISSIPPI_CONNECTIONS-8+MN_MISSISSIPPI_CONNECTIONS-9+MN_MISSISSIPPI_CONNECTIONS-10+MN_MISSISSIPPI_CONNECTIONS-11+MN_MISSISSIPPI_CONNECTIONS-12+MN_MISSISSIPPI_CONNECTIONS-13+MN_MISSISSIPPI_CONNECTIONS-14+MN_MISSISSIPPI_CONNECTIONS-15+MN_MISSISSIPPI_CONNECTIONS-16+MN_MISSISSIPPI_CONNECTIONS-17+MN_STATE_COHESION-1+MN_STATE_COHESION-2+MN_STATE_COHESION-3+MN_STATE_COHESION-4+mn-winter-outdoor-art-v1+mn-winter-north-shore-art-v1+minnesota-rainy-river-ice-1+minnesota-rainy-river-ice-2+minnesota-winter-mixed-edges-v1+minnesota-ely-league-v1-0+minnesota-ely-league-v1-1+minnesota-ely-league-v1-2+minnesota-ely-league-v1-3+minnesota-ely-league-v1-4+minnesota-ely-league-v1-5+minnesota-ely-league-v1-6+minnesota-ely-league-v1-7+minnesota-ely-league-v1-8+minnesota-ely-league-v1-9+minnesota-ely-league-v1+minnesota-winter-gunflint-art-v1+minnesota-marais-shore-art-v1+minnesota-superior-inland-geography-v1+minnesota-ely-shore-pass-v1-snow+minnesota-ely-shore-pass-v1-0+minnesota-ely-shore-pass-v1-1+minnesota-ely-shore-pass-v1+northwoods-fairy-types-v1+minnesota-pokemon-v1+northwoods-moves-v1+northwoods-fairy-moves-v1+northstar-minnesota-only-v1+northstar-ancient-swamp-v1+minnesota-mississippi-fun-v1+minnesota-interior-life-compact-stories-v1+minnesota-interior-layout-v6+minnesota-interior-layout-clubs-v2+minnesota-interior-layout-harbor-care-v1+fishing-guru-house-0+fishing-guru-house-1+fishing-guru-house-2+minnesota-fishing-rods-v2+minnesota-interior-layout-fishing-v2+minnesota-compact-shore-gate-v1-0+minnesota-compact-shore-gate-v1+mndetroitlakes-expanded-city-art+minnesota-detroit-lakes-v1-0+minnesota-detroit-lakes-v1-1+minnesota-detroit-lakes-v1-2+minnesota-detroit-lakes-v1-3+minnesota-detroit-lakes-v1-4+minnesota-detroit-lakes-v1-5+minnesota-detroit-lakes-v1+minnesota-moorhead-v1-0+minnesota-moorhead-v1-1+minnesota-moorhead-v1-2+minnesota-moorhead-v1+minnesota-winona-station-v1-0+minnesota-winona-station-v1+minnesota-interior-layout-compact-reads-v1+minnesota-staples-station-v2-0+minnesota-staples-station-v2-1+minnesota-staples-station-v2+minnesota-voyageurs-ice-v1-0+minnesota-voyageurs-ice-v1-1+minnesota-voyageurs-ice-v1+minnesota-interior-terrain-sync-v1+minnesota-interior-terrain-sync-v2+mninternationalfalls-expanded-city-art+minnesota-international_falls-v1-0+minnesota-international_falls-v1-1+minnesota-international_falls-v1-2+minnesota-international_falls-v1+minnesota-interior-terrain-sync-v4+minnesota-interior-life-five-rail-stops-v1+state-fair-native-expanded-city-art+minnesota-state-fair-dense-v1-0+minnesota-state-fair-dense-v1-1+minnesota-state-fair-dense-v1-2+minnesota-state-fair-dense-v1-3+minnesota-state-fair-grass-v1+minnesota-interior-life-fair-woodland-directions-v1+minnesota-interior-terrain-sync-v5+minnesota-interior-terrain-sync-v6+minnesota-interior-life-active-regional-flavor-v1+minnesota-northstar-relay-art-v1+minnesota-northstar-relay-scene-v1+minnesota-northstar-supplies-v1+minnesota-northstar-returns-v1+minnesota-northstar-events-opening-v2+northstar-lair-mnicecargobasement+northstar-lair-mnicerelayfloor+minnesota-northstar-ice-lair-v2+northstar-lair-mnirondrillapproach+northstar-lair-mnironpumpgallery+northstar-lair-mnirondrillcore+minnesota-northstar-drill-lair-v2+northstar-ice-headquarters-panel-art-v1+northstar-lair-mniceoperations+northstar-lair-mnicerecords+northstar-lair-mnicemaintenance+northstar-lair-mnicetransfer+northstar-ice-headquarters-v1+northstar-lair-mnironhaulage+northstar-lair-mnironsump+northstar-lair-mnironventilation+northstar-iron-workings-v1+mn_arc_intake-native-v1+mn_arc_shelter-native-v1+mn_arc_shelter_gate-native-v1+northstar-lair-mnboundaryintake+mn_arc_harbor-native-v1+northstar-rival-arc-v3+northstar-league-finale-v1+northstar-current-story-v1+minnesota-interior-terrain-sync-v7+minnesota-interior-life-voyageurs-surveyor-v1+minnesota-interior-terrain-sync-v8+minnesota-mille-lacs-park-v1-0+minnesota-mille-lacs-park-v1+minnesota-interior-terrain-sync-v9+minnesota-interior-terrain-sync-v10+northstar-progression-rewards-v1+minnesota-interior-terrain-sync-v11+minnesota-species-habitats-v2+minneapolis-cyclists-v1+minnesota-hm-progression-v1+minnesota-script-map-command-repair-v1+minnesota-fossil-research-v1+minnesota-marais-cedar-warmth-v1+minnesota-castorock-incisor-gallery-v1+minnesota-bemidji-northwoods-grass-v1+minnesota-detroit-approach-grass-v1+minnesota-ely-shore-pass-grass-v1+minnesota-kindlit-research-v1+minnesota-mille-lacs-grass-v1+grand-marais-partner-retry-v1+minnesota-itasca-grass-v1+minnesota-preserve-pine-grass-v1+minnesota-lower-woods-grass-v1+minnesota-iron-cliff-native-stairs-v1+minnesota-upstream-woods-grass-v1+minnesota-confluence-grass-v1+minnesota-rainy-icefields-grass-v1+minnesota-state-fair-contiguous-buildings-v1+minnesota-duluth-cliff-stairs-v1+minnesota-duluth-terrace-stairs-v2+minnesota-duluth-north-stair-v1+minnesota-north-shore-corner-stairs-v1+minnesota-outdoor-stair-landings-v1+minnesota-outdoor-cliff-joins-v1+mn-outdoor-johto-stairs-expanded-city-art+mn-outdoor-modern-stairs-expanded-city-art+mn-outdoor-headwaters-stairs-expanded-city-art+mn-outdoor-winter-stairs-expanded-city-art+minnesota-outdoor-ramp-stairs-v1+minnesota-outdoor-boulder-setbacks-v1+minnesota-outdoor-trainer-sightlines-v1+minnesota-outdoor-cliff-corners-v1+minnesota-outdoor-north-stairs-v1+minnesota-r10-cache-terrain-art-v1+minnesota-r10-west-terrace-art-v1+minnesota-r10-carrier-corner-art-v2+minnesota-grand-rapids-sign-anchors-v1+minnesota-grand-rapids-building-facades-v1+minnesota-grand-marais-mart-facade-v1+minnesota-rochester-mart-facade-v1+north-shore-shops-v1-MnNorthShorePieShop+north-shore-shops-v1-MnNorthShoreSmokehouse+north-shore-shops-v1+minnesota-duluth-harbor-platforms-v1+minnesota-duluth-shore-rocks-v1+minnesota-duluth-interior-buoy-clearance-v1+minnesota-mankato-native-exterior-v2+minnesota-winona-mart-facade-v1+minnesota-bemidji-mart-facade-v1+minnesota-bemidji-plateau-stair-art-v1-expanded-city-art+minnesota-bemidji-plateau-stairs-v1+minnesota-duluth-mart-facade-v1+native-character-art-mn_city_cyclist_m-v1+native-character-art-mn_city_cyclist_f-v1+minnesota-st-cloud-service-fronts-v1+minnesota-r14-forest-bank-v1+minnesota-brainerd-mart-facade-v1+minnesota-r01-stair-guidance-v1+minnesota-r10-exploration-trainers-v1+minnesota-r03-stair-guidance-v1+minnesota-r20-winding-cleft-v1+minnesota-r05-cache-grass-bank-v1+minnesota-r09-southwest-grass-v1+minnesota-r11-upper-grass-v1+minnesota-r06-south-woods-grass-v1+minnesota-iron-haulage-native-rock-v1-expanded-city-art+minnesota-r07-north-pocket-grass-v1+minnesota-r07-stair-guidance-v1+minnesota-r08-shore-grass-v1+minnesota-r08-stair-guidance-v1+minnesota-r10-neck-grass-v1+minnesota-r10-stair-guidance-v1+minnesota-iron-sump-native-shore-v1+minnesota-r11-stair-guidance-v1+minnesota-r13-pine-grass-v1+minnesota-iron-ventilation-native-rock-v1+minnesota-r13-boundary-apron-v1+minnesota-north-shore-footbridges-v1+minnesota-r15-open-shore-guidance-v1+minnesota-r15-fence-free-staples-spur-v1+minnesota-iron-pump-gallery-rock-v1+minnesota-r16-earth-bank-guidance-v1+minnesota-game-corner-v1+minnesota-r17-trail-guidance-v1+minnesota-iron-core-native-rock-v1-expanded-city-art+minnesota-iron-core-rock-chamber-v1+minnesota-gunflint-spring-shelter-v1+minnesota-grand-rapids-riverfront-native-v1-expanded-city-art+minnesota-grand-rapids-riverfront-v1+minnesota-r19-detroit-gate-v1+minnesota-international-falls-windbreak-v1+minnesota-r13-cedar-basin-v1+northstar-lair-mndriftlesslampgallery+minnesota-driftless-fossil-gallery-v1+minnesota-glacier-line-service-v1+minnesota-landmark-habitats-v1+minnesota-fossil-lab-v1+minnesota-leech-eddy-native-animation-v1+minnesota-leech-pine-island-v1+minnesota-water-cave-habitats-v1+minnesota-leech-mainland-pines-v1+minnesota-early-research-access-v1+minnesota-gunflint-spring-grotto-v1+minnesota-iron-crosscut-bends-v1+minnesota-mn_f145-v1+minnesota-dex-roster-sync-v1+minnesota-current-release-composition-v1+mn_verdigrim_intake-native-v1+verdigrim-intake-scene-v1+northstar-lair-mndevilskettle+minnesota-marais-clinic-recovery-v1+minnesota-devils-kettle-v1+northstar-lair-mntalltaleforestgate+northstar-lair-mntalltaletrail+minnesota-northwoods-tall-tales-v1+minnesota-pepin-three-wakes-v1+northstar-lair-mnicemythservicepassage+minnesota-icemyth-exhibition-v1+northstar-lair-mnfieldmargin+minnesota-kensigard-field-margin-v1+northstar-lair-mnlayeredfen+minnesota-flarkindle-layered-fen-v1+northstar-lair-mnformershores+northstar-lair-mninnerbasin+minnesota-strandrak-former-shores-v1+minnesota-biome-ecology-v1+minnesota-encounter-progression-v1+minnesota-northstar-opening-v1+minnesota-north-shore-passing-width-v1+minnesota-bemidji-roof-plateau-v1+mn-winter-bemidji-art-v1+mn-winter-bemidji-northwoods-art-v1+mn-winter-grand-rapids-art-v1+mn-winter-iron-range-art-v1+mn-winter-border-pines-art-v1+mn-winter-border-pines-south-art-v1+minnesota-inland-winter-belt-v1+minnesota-iron-rock-clearance-v1+mn-winter-tamarack-art-v1+minnesota-tamarack-thaw-art-v1+minnesota-tamarack-snowline-v1+mn-winter-iron-descent-art-v1+minnesota-iron-descent-thaw-art-v1+minnesota-iron-descent-snowline-v1+minnesota-descent-rock-clearance-v1+minnesota-inland-grass-cut-v1+mn-winter-headwaters-art-v1+minnesota-headwaters-thaw-art-v1+mn-winter-headwaters-stairs-art-v1+minnesota-headwaters-snowline-v1+minnesota-headwaters-rock-clearance-v1",
+    "content_hash": "e226d86fe5eaea295b5db8cde2e85c559f9cd2d1cdb6bb9c56c1372748e997bc",
+    "pokemon_species": 476,
+    "maps": 743,
+    "items": 270,
+    "moves": 270,
+    "music": 102,
+    "sound_effects": 207,
+    "cries": 293
+  },
+  "cut_rule_sha256": "e99695538f3fe2d7d7c9865f5770444ebb5068d534eb465db7b778ae45e9bf13",
+  "art": {
+    "source": "mn_headwaters",
+    "target": "mn_winter_itasca_trail",
+    "partial_target": "mn_itasca_thaw",
+    "source_blocks": 134,
+    "source_definition_sha256": "d991a57443a473fe77a6aa28342c3c2dcc6cd3c0a1faecf4b35e7120a59e7ec0",
+    "source_runtime_sha256": {
+      "data/tilesets/mn_headwaters.json": "ae58732f1f7719a98ab4d2a1aea163a7b27d417add609474617b662ca903d87b",
+      "data/tilesets/mn_headwaters_metatiles.bin": "e5b9e897164be4776ab68f5f9f2b447464c5383d152ac2adf0cda3964f05e613",
+      "data/tilesets/mn_headwaters_palette_map.json": "742bc09a8a9054676f53f0d0ae5d75d49af48eb642c3661c5d2602e92f7128a7",
+      "data/tilesets/mn_headwaters_animations.json": "d6e9596a8e648c2457a2094161ba2e877d8f90fcdb1a5c3a0dabb4c3a033bbc5",
+      "gfx/tilesets/mn_headwaters.2bpp": "df89d2d0b35919bad824fbbe8fba4ef8d943df71da32f1a04361a647ca4089d8",
+      "gfx/tilesets/mn_headwaters.png": "1a71c81d7db8a647a2c0d3bade9e6eface8421b3cb7a2aa31048b03972647c91"
+    },
+    "ground_reference_block": "02",
+    "recipes": [
+      {
+        "block": "02",
+        "kind": "native_copy",
+        "donor_tileset": "mn_winter_outdoor",
+        "donor_block": "3c",
+        "collision": [
+          "FLOOR",
+          "FLOOR",
+          "FLOOR",
+          "FLOOR"
+        ]
+      },
+      {
+        "block": "03",
+        "kind": "native_copy",
+        "donor_tileset": "mn_winter_outdoor",
+        "donor_block": "3d",
+        "collision": [
+          "TALL_GRASS",
+          "TALL_GRASS",
+          "TALL_GRASS",
+          "TALL_GRASS"
+        ]
+      },
+      {
+        "block": "04",
+        "kind": "frost_flowers",
+        "collision": [
+          "FLOOR",
+          "FLOOR",
+          "FLOOR",
+          "FLOOR"
+        ]
+      },
+      {
+        "block": "05",
+        "kind": "native_copy",
+        "donor_tileset": "mn_winter_north_shore",
+        "donor_block": "8b",
+        "collision": [
+          "WALL",
+          "WALL",
+          "WALL",
+          "WALL"
+        ]
+      },
+      {
+        "block": "3c",
+        "kind": "mixed_foliage",
+        "collision": [
+          "HEADBUTT_TREE",
+          "FLOOR",
+          "FLOOR",
+          "FLOOR"
+        ]
+      },
+      {
+        "block": "3d",
+        "kind": "mixed_foliage",
+        "collision": [
+          "FLOOR",
+          "HEADBUTT_TREE",
+          "FLOOR",
+          "FLOOR"
+        ]
+      },
+      {
+        "block": "3e",
+        "kind": "mixed_foliage",
+        "collision": [
+          "FLOOR",
+          "FLOOR",
+          "HEADBUTT_TREE",
+          "FLOOR"
+        ]
+      },
+      {
+        "block": "3f",
+        "kind": "mixed_foliage",
+        "collision": [
+          "FLOOR",
+          "FLOOR",
+          "FLOOR",
+          "HEADBUTT_TREE"
+        ]
+      },
+      {
+        "block": "57",
+        "kind": "mixed_foliage",
+        "collision": [
+          "HOP_DOWN",
+          "HOP_DOWN",
+          "WALL",
+          "WALL"
+        ]
+      },
+      {
+        "block": "5b",
+        "kind": "mixed_foliage",
+        "collision": [
+          "HEADBUTT_TREE",
+          "CUT_TREE",
+          "FLOOR",
+          "FLOOR"
+        ]
+      },
+      {
+        "block": "5d",
+        "kind": "mixed_foliage",
+        "collision": [
+          "HEADBUTT_TREE",
+          "HEADBUTT_TREE",
+          "FLOOR",
+          "FLOOR"
+        ]
+      },
+      {
+        "block": "5f",
+        "kind": "mixed_foliage",
+        "collision": [
+          "FLOOR",
+          "HEADBUTT_TREE",
+          "FLOOR",
+          "CUT_TREE"
+        ]
+      },
+      {
+        "block": "61",
+        "kind": "mixed_foliage",
+        "collision": [
+          "HEADBUTT_TREE",
+          "HEADBUTT_TREE",
+          "HEADBUTT_TREE",
+          "HEADBUTT_TREE"
+        ]
+      },
+      {
+        "block": "63",
+        "kind": "mixed_foliage",
+        "collision": [
+          "FLOOR",
+          "FLOOR",
+          "CUT_TREE",
+          "HEADBUTT_TREE"
+        ]
+      },
+      {
+        "block": "65",
+        "kind": "mixed_foliage",
+        "collision": [
+          "FLOOR",
+          "FLOOR",
+          "HEADBUTT_TREE",
+          "HEADBUTT_TREE"
+        ]
+      },
+      {
+        "block": "67",
+        "kind": "mixed_foliage",
+        "collision": [
+          "CUT_TREE",
+          "FLOOR",
+          "HEADBUTT_TREE",
+          "FLOOR"
+        ]
+      }
+    ],
+    "maps": [
+      "MnR14C00R00",
+      "MnR14C00R01",
+      "MnR14C01R00",
+      "MnR14C01R01"
+    ],
+    "placed_blocks": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      8,
+      9,
+      11,
+      16,
+      17,
+      48,
+      49,
+      50,
+      53,
+      56,
+      57,
+      58,
+      60,
+      61,
+      62,
+      63,
+      64,
+      69,
+      72,
+      84,
+      85,
+      87,
+      88,
+      89,
+      91,
+      93,
+      95,
+      97,
+      99,
+      101,
+      103,
+      118,
+      121,
+      122,
+      129,
+      130
+    ],
+    "include_melt_variants": true,
+    "melt_white_ink_min": 230
+  },
+  "art_result": {
+    "full_alias": {
+      "source": "mn_headwaters",
+      "target": "mn_winter_itasca_trail",
+      "allocated_glyphs": [
+        224,
+        225,
+        226,
+        227,
+        228,
+        229,
+        230,
+        231,
+        232,
+        233,
+        234,
+        235,
+        236,
+        237,
+        238,
+        239
+      ],
+      "original_block_ids_preserved": true,
+      "all_collision_quadrants_exact": true
+    },
+    "partial_alias": "mn_itasca_thaw",
+    "duplicated_static_glyphs": {
+      "6": 240,
+      "49": 241,
+      "54": 242,
+      "65": 243,
+      "72": 244,
+      "81": 245,
+      "82": 246,
+      "52": 247,
+      "68": 248,
+      "84": 249,
+      "64": 250,
+      "26": 251,
+      "7": 252,
+      "38": 253,
+      "1": 254,
+      "2": 255,
+      "28": 96,
+      "22": 97,
+      "88": 98,
+      "90": 99,
+      "74": 100,
+      "89": 101,
+      "78": 102,
+      "79": 103,
+      "94": 104,
+      "95": 105,
+      "92": 106,
+      "76": 107,
+      "61": 108,
+      "93": 109,
+      "59": 110,
+      "77": 111,
+      "75": 112,
+      "32": 113,
+      "48": 114
+    },
+    "allocated_partial_glyphs": [
+      96,
+      97,
+      98,
+      99,
+      100,
+      101,
+      102,
+      103,
+      104,
+      105,
+      106,
+      107,
+      108,
+      109,
+      110,
+      111,
+      112,
+      113,
+      114,
+      240,
+      241,
+      242,
+      243,
+      244,
+      245,
+      246,
+      247,
+      248,
+      249,
+      250,
+      251,
+      252,
+      253,
+      254,
+      255
+    ],
+    "cold_variants": {
+      "01": "86",
+      "02": "87",
+      "03": "88",
+      "04": "89",
+      "05": "8a",
+      "08": "8b",
+      "09": "8c",
+      "0b": "8d",
+      "10": "8e",
+      "11": "8f",
+      "30": "90",
+      "31": "91",
+      "32": "92",
+      "35": "93",
+      "38": "94",
+      "39": "95",
+      "3a": "96",
+      "3c": "97",
+      "3d": "98",
+      "3e": "99",
+      "3f": "9a",
+      "40": "9b",
+      "45": "9c",
+      "48": "9d",
+      "54": "9e",
+      "55": "9f",
+      "57": "a0",
+      "58": "a1",
+      "59": "a2",
+      "5b": "a3",
+      "5d": "a4",
+      "5f": "a5",
+      "61": "a6",
+      "63": "a7",
+      "65": "a8",
+      "67": "a9",
+      "76": "aa",
+      "79": "ab",
+      "7a": "ac",
+      "81": "ad",
+      "82": "ae"
+    },
+    "native_background_addresses": 171,
+    "animated_native_glyphs_retained": [
+      3,
+      20,
+      50,
+      51,
+      66,
+      67
+    ],
+    "melt_variants": {
+      "01": "af",
+      "02": "b0",
+      "03": "b1",
+      "04": "b2",
+      "05": "b3",
+      "08": "b4",
+      "09": "b5",
+      "0b": "b6",
+      "10": "b7",
+      "11": "b8",
+      "30": "b9",
+      "31": "ba",
+      "32": "bb",
+      "35": "bc",
+      "38": "bd",
+      "39": "be",
+      "3a": "bf",
+      "3c": "c0",
+      "3d": "c1",
+      "3e": "c2",
+      "3f": "c3",
+      "40": "c4",
+      "45": "c5",
+      "48": "c6",
+      "54": "c7",
+      "55": "c8",
+      "57": "c9",
+      "58": "ca",
+      "59": "cb",
+      "5b": "cc",
+      "5d": "cd",
+      "5f": "ce",
+      "61": "cf",
+      "63": "d0",
+      "65": "d1",
+      "67": "d2",
+      "76": "d3",
+      "79": "d4",
+      "7a": "d5",
+      "81": "d6",
+      "82": "d7"
+    },
+    "allocated_melt_glyphs": [
+      115,
+      116,
+      117,
+      118,
+      119,
+      120,
+      121,
+      122,
+      123,
+      124,
+      125,
+      126,
+      127,
+      192,
+      193,
+      194
+    ],
+    "melted_glyphs": {
+      "224": 115,
+      "225": 116,
+      "226": 117,
+      "227": 118,
+      "228": 119,
+      "229": 120,
+      "230": 121,
+      "231": 122,
+      "232": 123,
+      "233": 124,
+      "234": 125,
+      "235": 126,
+      "236": 127,
+      "237": 192,
+      "238": 193,
+      "239": 194
+    },
+    "melt_static_sources": {
+      "240": 6,
+      "241": 49,
+      "242": 54,
+      "243": 65,
+      "244": 72,
+      "245": 81,
+      "246": 82,
+      "247": 52,
+      "248": 68,
+      "249": 84,
+      "250": 64,
+      "251": 26,
+      "252": 7,
+      "253": 38,
+      "254": 1,
+      "255": 2,
+      "96": 28,
+      "97": 22,
+      "98": 88,
+      "99": 90,
+      "100": 74,
+      "101": 89,
+      "102": 78,
+      "103": 79,
+      "104": 94,
+      "105": 95,
+      "106": 92,
+      "107": 76,
+      "108": 61,
+      "109": 93,
+      "110": 59,
+      "111": 77,
+      "112": 75,
+      "113": 32,
+      "114": 48
+    }
+  },
+  "maps": [
+    {
+      "id": "MnR14C00R00",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "source_tileset": "mn_headwaters",
+      "target_tileset": "mn_itasca_thaw",
+      "native_module_sha256": "71aaf1765aac26753deae64e90ed6e261f14bde7d18ce54fc608df11766f1fc9",
+      "before_rows": [
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 30 31 32 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 58 35 59 05 05 05 05 05 05 05",
+        "05 05 05 54 76 76 76 55 05 05 05 05 05 05 05 05 05 05 05 05 05 05 58 35 59 05 05 05 05 05 05 05",
+        "05 05 54 79 35 35 35 7a 55 02 02 02 05 05 05 05 05 05 05 05 05 05 58 35 59 05 05 05 05 05 05 05",
+        "05 05 58 35 35 35 35 35 59 02 02 3d 05 05 05 05 05 05 05 05 54 76 79 35 7a 76 76 55 05 05 05 04",
+        "05 05 58 35 35 35 35 35 59 01 45 02 05 05 03 03 03 05 05 05 58 35 35 35 35 35 35 59 05 05 05 01",
+        "05 05 05 58 35 35 35 35 59 01 03 03 03 02 03 02 03 05 54 76 79 35 35 35 35 35 35 59 05 05 05 01",
+        "05 05 05 58 59 40 82 82 82 02 01 01 01 01 01 01 03 05 58 35 35 35 35 35 35 35 35 59 05 05 05 01",
+        "05 05 05 58 59 48 81 81 81 01 01 03 03 03 03 03 03 05 58 35 35 35 35 35 35 35 35 59 05 05 05 05",
+        "05 05 05 05 58 76 76 55 05 05 01 03 03 03 03 02 02 05 58 35 35 35 35 35 35 35 59 05 05 05 05 05",
+        "05 05 05 05 05 05 05 01 01 01 01 01 01 01 01 02 02 05 58 35 35 35 35 35 35 35 59 05 05 05 05 05",
+        "05 05 05 05 05 05 05 03 05 05 05 05 05 05 57 57 05 05 05 05 05 05 58 35 35 35 59 05 05 05 05 05",
+        "05 05 05 05 05 05 05 03 05 05 05 05 05 05 01 01 05 05 05 05 54 76 79 35 59 05 05 05 05 05 05 01",
+        "05 05 05 05 05 05 05 01 05 05 05 05 05 05 05 01 05 05 05 05 58 35 35 35 59 05 05 05 05 05 05 01",
+        "05 05 05 05 05 05 05 01 02 02 02 05 05 05 05 01 05 05 05 05 05 05 58 35 59 01 01 01 05 05 05 01",
+        "05 05 05 05 05 05 05 01 03 03 03 02 02 05 05 01 05 05 05 05 05 05 58 35 59 05 05 01 05 05 05 01",
+        "05 05 05 05 05 05 05 01 03 03 03 03 03 05 05 01 05 05 05 05 05 05 58 35 59 05 05 45 03 03 05 05",
+        "05 05 05 05 01 01 01 01 03 03 01 01 01 01 01 01 02 05 05 05 05 82 82 82 82 82 82 02 03 03 05 05",
+        "01 01 01 01 01 05 05 01 03 03 01 03 03 02 02 01 01 01 01 01 01 81 81 81 81 81 81 01 03 03 01 01",
+        "08 09 05 05 05 05 05 01 03 03 01 02 02 02 02 02 02 05 05 05 05 05 54 76 76 55 05 05 03 03 05 05",
+        "10 11 0b 01 01 01 01 01 01 01 01 02 02 02 05 05 05 05 05 05 05 05 05 58 35 59 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 02 02 02 01 02 02 02 05 05 05 05 05 05 05 05 05 58 35 59 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 01 05 05 05 05 05 05 05 05 05 05 05 05 58 35 59 05 05 05 05 05 05"
+      ],
+      "after_rows": [
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 b3 b3 b3 b3 b3 b3 b3 8a 8a 8a 8a 8a 8a 8a 8a",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 b3 b3 b3 b3 b3 b9 ba 92 8a 8a 8a 8a 8a 8a 8a",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 b3 b3 b3 b3 b3 ca bc a2 8a 8a 8a 8a 8a 8a 8a",
+        "05 05 05 54 76 76 76 55 05 05 05 05 05 05 05 05 05 b3 b3 b3 b3 b3 ca bc a2 8a 8a 8a 8a 8a 8a 8a",
+        "05 05 54 79 35 35 35 7a 55 02 02 02 05 05 05 05 05 b3 b3 b3 b3 b3 ca bc a2 8a 8a 8a 8a 8a 8a 8a",
+        "05 05 58 35 35 35 35 35 59 02 02 3d 05 05 05 05 05 b3 b3 b3 c7 d3 d4 bc ac aa aa 9f 8a 8a 8a 89",
+        "05 05 58 35 35 35 35 35 59 01 45 02 05 05 03 03 03 b3 b3 b3 ca bc bc bc 93 93 93 a2 8a 8a 8a 86",
+        "05 05 05 58 35 35 35 35 59 01 03 03 03 02 03 02 03 b3 c7 d3 d4 bc bc bc 93 93 93 a2 8a 8a 8a 86",
+        "05 05 05 58 59 40 82 82 82 02 01 01 01 01 01 01 03 b3 ca bc bc bc bc bc 93 93 93 a2 8a 8a 8a 86",
+        "05 05 05 58 59 48 81 81 81 01 01 03 03 03 03 03 03 05 ca bc bc bc bc bc 93 93 93 a2 8a 8a 8a 8a",
+        "05 05 05 05 58 76 76 55 05 05 01 03 03 03 03 02 02 05 ca bc bc bc bc bc bc bc cb b3 b3 8a 8a 8a",
+        "05 05 05 05 05 05 05 01 01 01 01 01 01 01 01 02 02 05 ca bc bc bc bc bc bc bc cb b3 b3 8a 8a 8a",
+        "05 05 05 05 05 05 05 03 05 05 05 05 05 05 57 57 05 05 b3 b3 b3 b3 ca bc bc bc cb b3 b3 8a 8a 8a",
+        "05 05 05 05 05 05 05 03 05 05 05 05 05 05 01 01 05 05 b3 b3 c7 d3 d4 bc cb b3 b3 b3 b3 8a 8a 86",
+        "05 05 05 05 05 05 05 01 05 05 05 05 05 05 05 01 05 05 b3 b3 ca bc bc bc cb b3 b3 b3 b3 8a 8a 86",
+        "05 05 05 05 05 05 05 01 02 02 02 05 05 05 05 01 05 05 b3 b3 b3 b3 ca bc cb af af af b3 8a 8a 86",
+        "05 05 05 05 05 05 05 01 03 03 03 02 02 05 05 01 05 05 b3 b3 b3 b3 ca bc cb b3 b3 af b3 8a 8a 86",
+        "05 05 05 05 05 05 05 01 03 03 03 03 03 05 05 01 05 05 b3 b3 b3 b3 ca bc cb b3 b3 c5 b1 88 8a 8a",
+        "05 05 05 05 01 01 01 01 03 03 01 01 01 01 01 01 02 05 05 b3 b3 d7 d7 d7 d7 d7 d7 b0 b1 88 8a 8a",
+        "01 01 01 01 01 05 05 01 03 03 01 03 03 02 02 01 01 01 01 af af d6 d6 d6 d6 d6 d6 af b1 88 86 86",
+        "08 09 05 05 05 05 05 01 03 03 01 02 02 02 02 02 02 05 05 b3 b3 b3 c7 d3 d3 c8 b3 b3 b1 88 8a 8a",
+        "10 11 0b 01 01 01 01 01 01 01 01 02 02 02 05 05 05 05 05 b3 b3 b3 b3 ca bc cb b3 b3 b3 8a 8a 8a",
+        "05 05 05 05 05 05 05 02 02 02 01 02 02 02 05 05 05 05 05 b3 b3 b3 b3 ca bc cb b3 b3 b3 8a 8a 8a",
+        "05 05 05 05 05 05 05 05 05 05 01 05 05 05 05 05 05 05 05 b3 b3 b3 b3 ca bc cb b3 b3 b3 8a 8a 8a"
+      ]
+    },
+    {
+      "id": "MnR14C00R01",
+      "dimensions_metatiles": [
+        32,
+        8
+      ],
+      "source_tileset": "mn_headwaters",
+      "target_tileset": "mn_itasca_thaw",
+      "native_module_sha256": "1196aafba63992b2a451178ef32722186704798be962bc5d04433c38b45584f6",
+      "before_rows": [
+        "05 05 05 05 05 02 01 01 01 01 01 01 01 01 01 01 05 05 05 05 05 05 05 58 35 59 05 05 05 05 05 05",
+        "05 05 05 05 05 02 01 03 03 03 03 02 04 45 02 01 05 05 05 05 05 05 54 79 59 05 05 05 05 05 05 05",
+        "05 05 05 05 05 02 01 03 03 03 03 03 03 02 02 01 05 05 05 05 05 05 58 35 59 05 05 05 05 05 05 05",
+        "05 05 05 05 05 02 01 03 02 03 03 03 5d 02 02 01 05 05 05 05 05 05 58 35 59 05 05 05 05 05 05 05",
+        "05 05 05 05 05 02 01 01 01 01 01 01 01 01 01 01 05 05 05 05 05 05 58 35 59 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 03 03 03 02 02 02 02 02 05 05 05 05 05 05 05 58 35 59 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 38 39 3a 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05"
+      ],
+      "after_rows": [
+        "05 05 05 05 05 02 01 01 01 01 01 01 01 01 01 01 05 05 05 b3 b3 b3 b3 ca bc cb 8a 8a 8a 8a 8a 8a",
+        "05 05 05 05 05 02 01 03 03 03 03 02 04 45 02 01 05 b3 b3 b3 b3 b3 c7 d4 cb b3 8a 8a 8a 8a 8a 8a",
+        "05 05 05 05 05 02 01 03 03 03 03 03 03 02 02 01 05 b3 b3 b3 b3 b3 ca bc cb b3 8a 8a 8a 8a 8a 8a",
+        "05 05 05 05 05 02 01 03 02 03 03 03 5d 02 02 01 05 b3 b3 b3 b3 b3 ca bc cb b3 8a 8a 8a 8a 8a 8a",
+        "05 05 05 05 05 02 01 01 01 01 01 01 01 01 01 01 05 b3 b3 b3 b3 b3 ca bc cb b3 8a 8a 8a 8a 8a 8a",
+        "05 05 05 05 05 05 05 03 03 03 02 02 02 02 02 05 05 b3 b3 b3 b3 b3 ca bc cb b3 8a 8a 8a 8a 8a 8a",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 b3 b3 b3 b3 b3 bd be bf b3 8a 8a 8a 8a 8a 8a",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 b3 b3 b3 b3 b3 b3 b3 b3 b3 8a 8a 8a 8a 8a 8a"
+      ]
+    },
+    {
+      "id": "MnR14C01R00",
+      "dimensions_metatiles": [
+        16,
+        24
+      ],
+      "source_tileset": "mn_headwaters",
+      "target_tileset": "mn_winter_itasca_trail",
+      "native_module_sha256": "f3a95b147e11f086fb3b02bf42f08a2493f379f52fc77615e356b74e6b2a509c",
+      "before_rows": [
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 03 03 03 05 05 05 05 05",
+        "04 02 45 05 05 05 02 02 03 03 03 03 05 05 05 05",
+        "01 01 01 01 02 01 01 01 03 03 02 03 05 05 05 05",
+        "02 61 02 02 02 02 02 01 03 03 03 03 05 05 05 05",
+        "01 65 01 01 02 05 05 01 02 03 03 03 05 05 05 05",
+        "05 05 02 01 02 05 05 01 05 05 05 05 05 05 05 05",
+        "05 05 05 5b 05 05 05 01 05 05 05 05 05 05 05 05",
+        "05 05 05 01 05 05 05 01 05 05 05 05 05 05 05 05",
+        "05 05 05 01 05 05 05 01 05 05 05 02 02 45 02 05",
+        "01 01 01 01 01 01 01 01 01 01 01 01 02 01 01 01",
+        "05 05 05 01 05 05 02 01 02 5d 05 02 02 02 02 05",
+        "05 05 05 01 05 05 02 01 02 03 03 03 05 02 02 05",
+        "01 01 01 01 01 01 01 01 03 03 03 03 05 05 05 05",
+        "05 01 05 05 05 05 05 02 03 03 03 03 05 05 05 05",
+        "05 01 05 05 05 05 05 05 03 03 05 05 05 05 05 05",
+        "01 01 01 01 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 01 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 01 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 02 02 01 01 45 02 01 01 01 05 05 05 05 05",
+        "05 05 02 01 03 03 03 02 54 55 01 05 05 05 05 05"
+      ],
+      "after_rows": [
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 03 03 03 05 05 05 05 05",
+        "04 02 45 05 05 05 02 02 03 03 03 03 05 05 05 05",
+        "01 01 01 01 02 01 01 01 03 03 02 03 05 05 05 05",
+        "02 61 02 02 02 02 02 01 03 03 03 03 05 05 05 05",
+        "01 65 01 01 02 05 05 01 02 03 03 03 05 05 05 05",
+        "05 05 02 01 02 05 05 01 05 05 05 05 05 05 05 05",
+        "05 05 05 5b 05 05 05 01 05 05 05 05 05 05 05 05",
+        "05 05 05 01 05 05 05 01 05 05 05 05 05 05 05 05",
+        "05 05 05 01 05 05 05 01 05 05 05 02 02 45 02 05",
+        "01 01 01 01 01 01 01 01 01 01 01 01 02 01 01 01",
+        "05 05 05 01 05 05 02 01 02 5d 05 02 02 02 02 05",
+        "05 05 05 01 05 05 02 01 02 03 03 03 05 02 02 05",
+        "01 01 01 01 01 01 01 01 03 03 03 03 05 05 05 05",
+        "05 01 05 05 05 05 05 02 03 03 03 03 05 05 05 05",
+        "05 01 05 05 05 05 05 05 03 03 05 05 05 05 05 05",
+        "01 01 01 01 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 01 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 01 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 02 02 01 01 45 02 01 01 01 05 05 05 05 05",
+        "05 05 02 01 03 03 03 02 54 55 01 05 05 05 05 05"
+      ]
+    },
+    {
+      "id": "MnR14C01R01",
+      "dimensions_metatiles": [
+        16,
+        8
+      ],
+      "source_tileset": "mn_headwaters",
+      "target_tileset": "mn_winter_itasca_trail",
+      "native_module_sha256": "7bdf9349b352946bddcb43ddbd351265881f7ef295c1d20713f6a88bbfb2d772",
+      "before_rows": [
+        "05 05 02 01 03 03 03 02 58 59 01 54 03 03 03 05",
+        "05 05 02 01 03 03 03 02 58 59 01 58 03 03 03 05",
+        "05 05 02 01 03 03 3d 05 05 58 01 58 03 03 03 05",
+        "05 05 02 01 01 01 01 01 02 01 01 01 01 02 03 05",
+        "05 05 02 03 03 03 03 03 03 02 02 03 03 03 03 05",
+        "05 05 05 03 03 03 02 02 02 02 02 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05"
+      ],
+      "after_rows": [
+        "05 05 02 01 03 03 03 02 58 59 01 54 03 03 03 05",
+        "05 05 02 01 03 03 03 02 58 59 01 58 03 03 03 05",
+        "05 05 02 01 03 03 3d 05 05 58 01 58 03 03 03 05",
+        "05 05 02 01 01 01 01 01 02 01 01 01 01 02 03 05",
+        "05 05 02 03 03 03 03 03 03 02 02 03 03 03 03 05",
+        "05 05 05 03 03 03 02 02 02 02 02 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+        "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05"
+      ]
+    }
+  ],
+  "field_move_variants": [
+    {
+      "tileset": "mn_itasca_thaw",
+      "phase": "cold",
+      "source_block": "03",
+      "source_replacement": "02",
+      "block": "88",
+      "replacement": "87",
+      "variant": "grass"
+    },
+    {
+      "tileset": "mn_itasca_thaw",
+      "phase": "cold",
+      "source_block": "5b",
+      "source_replacement": "3c",
+      "block": "a3",
+      "replacement": "97",
+      "variant": "tree"
+    },
+    {
+      "tileset": "mn_itasca_thaw",
+      "phase": "cold",
+      "source_block": "5f",
+      "source_replacement": "3d",
+      "block": "a5",
+      "replacement": "98",
+      "variant": "tree"
+    },
+    {
+      "tileset": "mn_itasca_thaw",
+      "phase": "cold",
+      "source_block": "63",
+      "source_replacement": "3f",
+      "block": "a7",
+      "replacement": "9a",
+      "variant": "tree"
+    },
+    {
+      "tileset": "mn_itasca_thaw",
+      "phase": "cold",
+      "source_block": "67",
+      "source_replacement": "3e",
+      "block": "a9",
+      "replacement": "99",
+      "variant": "tree"
+    },
+    {
+      "tileset": "mn_itasca_thaw",
+      "phase": "melt",
+      "source_block": "03",
+      "source_replacement": "02",
+      "block": "b1",
+      "replacement": "b0",
+      "variant": "grass"
+    },
+    {
+      "tileset": "mn_itasca_thaw",
+      "phase": "melt",
+      "source_block": "5b",
+      "source_replacement": "3c",
+      "block": "cc",
+      "replacement": "c0",
+      "variant": "tree"
+    },
+    {
+      "tileset": "mn_itasca_thaw",
+      "phase": "melt",
+      "source_block": "5f",
+      "source_replacement": "3d",
+      "block": "ce",
+      "replacement": "c1",
+      "variant": "tree"
+    },
+    {
+      "tileset": "mn_itasca_thaw",
+      "phase": "melt",
+      "source_block": "63",
+      "source_replacement": "3f",
+      "block": "d0",
+      "replacement": "c3",
+      "variant": "tree"
+    },
+    {
+      "tileset": "mn_itasca_thaw",
+      "phase": "melt",
+      "source_block": "67",
+      "source_replacement": "3e",
+      "block": "d2",
+      "replacement": "c2",
+      "variant": "tree"
+    }
+  ],
+  "composition": {
+    "dimensions_metatiles": [
+      48,
+      32
+    ],
+    "cold_rectangles": [
+      [
+        29,
+        0,
+        32,
+        32
+      ],
+      [
+        24,
+        0,
+        29,
+        10
+      ],
+      [
+        26,
+        24,
+        29,
+        32
+      ]
+    ],
+    "melt_rectangles": [
+      [
+        20,
+        0,
+        32,
+        32
+      ],
+      [
+        17,
+        0,
+        20,
+        9
+      ],
+      [
+        18,
+        9,
+        20,
+        18
+      ],
+      [
+        19,
+        18,
+        20,
+        25
+      ],
+      [
+        17,
+        25,
+        20,
+        32
+      ]
+    ],
+    "full_cold_eastern_column": true,
+    "weather_zero_snow_through_core_x": 34,
+    "weather_full_snow_from_core_x": 58,
+    "identity": "Snowy Bemidji pine understory gives way to frosted young-river banks, then the green survey pond and original Itasca gatehouse. River/lakes stay open water; no sliding ice added.",
+    "native_cut_shortcut": {
+      "map": "MnR14C01R00",
+      "metatile": [
+        3,
+        10
+      ],
+      "block": "5b",
+      "replacement": "3c",
+      "purpose": "Preserve the existing mature-pine return shortcut and its longer ordinary route. Both the cut tree and its native remaining Headbutt-tree quadrant receive matching cold art."
+    },
+    "thaw_landform": "The broad frost bank bends east with the young river through the central crossing; high northern and southern pine banks retain longer cold tongues."
+  },
+  "constraints": [
+    "All four complete map modules, original collision quadrants, actors, encounters, rewards, scripts, warps, one-way ledges and reciprocal connections remain exact.",
+    "Use full cold art on the actual eastern chunks so the existing Cut shortcut retains native block IDs and behavior.",
+    "Retain every native Cut rule; cold/melt appended grass and tree variants receive explicit matching replacements even when not placed.",
+    "Western gatehouse/Itasca stay green; Bemidji remains continuous snow. Boundary Waters, Grand Marais and North Shore remain green.",
+    "Authoritative explicit rows and native recipes only; Python never writes a crystalpack."
+  ]
+}

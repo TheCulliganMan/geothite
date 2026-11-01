@@ -1,0 +1,9 @@
+{
+  "tool": "built-in imagegen",
+  "status": "success",
+  "raw_source": "/Users/ryanculligan/.codex/generated_images/01a17aa2-ca0b-7cc0-8219-cddf2150b02b/exec-94b2e468-321f-4f9c-b32c-a7ad18246aa1.png",
+  "saved_source": "planning/minnesota/pokemon/sprites/mn-f137/front-back.imagegen-v1.png",
+  "source_sha256": "69598f02982289d788a796ac6b8e3f986cb0d7876e37094f9fccef81b223888f",
+  "prompt_file": "prompt-v1.txt",
+  "reference_role": "Authentic Gen2 style only; no copied species anatomy."
+}

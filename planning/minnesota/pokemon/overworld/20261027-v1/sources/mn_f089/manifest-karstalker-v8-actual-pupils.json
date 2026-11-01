@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F089",
+  "species": [
+    {
+      "species_id": "MN_194",
+      "runtime_token": "KARSTALKER",
+      "palette_rgb555": [
+        32767,
+        21340,
+        11496,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        27540,
+        7435,
+        0
+      ],
+      "fit": [
+        14,
+        14
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 64,
+      "interior_black_samples": 64,
+      "opaque_interior_minimum_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "karstalker.overworld.imagegen-v3-widejaw.png",
+          "crop": [
+            74,
+            118,
+            437,
+            375
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "karstalker.overworld.imagegen-v1.png",
+          "crop": [
+            549,
+            107,
+            437,
+            375
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "karstalker.overworld.imagegen-v1.png",
+          "crop": [
+            1043,
+            113,
+            437,
+            375
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "karstalker.overworld.imagegen-v3-widejaw.png",
+          "crop": [
+            74,
+            555,
+            437,
+            375
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "karstalker.overworld.imagegen-v1.png",
+          "crop": [
+            549,
+            544,
+            437,
+            375
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "karstalker.overworld.imagegen-v1.png",
+          "crop": [
+            1043,
+            550,
+            437,
+            375
+          ]
+        }
+      ]
+    }
+  ]
+}

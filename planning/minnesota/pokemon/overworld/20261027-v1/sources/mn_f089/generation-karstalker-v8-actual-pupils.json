@@ -1,0 +1,42 @@
+{
+  "name": "karstalker",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f089/karstalker-v8-actual-pupils",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f089/manifest-karstalker-v8-actual-pupils.json",
+  "tool": "built-in image_gen",
+  "status": "source-generated/native-proven; root owns acceptance and context gate",
+  "native_frame_size": [
+    16,
+    16
+  ],
+  "canonical_normal_palette": [
+    32767,
+    21340,
+    11496,
+    0
+  ],
+  "canonical_shiny_palette": [
+    32767,
+    27540,
+    7435,
+    0
+  ],
+  "fit": [
+    14,
+    14
+  ],
+  "all_raw_renders_and_prompts_retained": true,
+  "no_native_pixel_painting": true,
+  "no_registry_or_pack_changes": true,
+  "retained_source_hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f089/karstalker.overworld.imagegen-v3-widejaw.png": "e0e602f9ed3991785f2faf61d220abceffae4e651d4fb0d08564ae494abd8d96",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f089/karstalker.overworld.imagegen-v2-teeth.png": "a95f8aaa76d2233eced4443503e80238e803087da771276d7c54934a2e134e83",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f089/karstalker.overworld.imagegen-v1.png": "7d3b04b8dc5038c4929ed75a78c898f5b07311e151d5604b7de379f7fe1100eb",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f089/prompt-karstalker-v3-widejaw.txt": "cd03939561508e328360f34e69f3b1ca6ea2bebae7f80ed69cbe58ad78de486f",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f089/prompt-karstalker-v1.txt": "a002a65e7656ae35bfb3925e2861ba18506e0db27dfad1f5e790bf03f6124f40",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f089/prompt-karstalker-v2-teeth.txt": "3366b3d17cd1375dc7cc5a8a413b1254c94952a61f6d20fe83dd242fc2b6096f",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f089/karstalker.v1.original-path.txt": "8e03884a375f8e873489ff952efdb71e10ebb45584a5e29f0069d4015c9be2ba",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f089/karstalker.v3.original-path.txt": "a043bd9fe4eccfd91510cd4ea0795b13fd808ba1b841d81a413414de6a856135",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f089/karstalker.v2.original-path.txt": "55d6e1781e3c00a5c11e71a48ba265c2930e9c65eb808f0e96041579c242e3cf"
+  },
+  "proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f089/proof-karstalker-v8-actual-pupils-actual-source.json"
+}

@@ -791,6 +791,7 @@ mod tests {
             battle_focus_energy: None,
             battle_stat_drop_guard: None,
             confusion_heal: None,
+            confusion_inflict_turns: None,
             repel_steps: None,
             escape_rope_mode: None,
             price: 0,

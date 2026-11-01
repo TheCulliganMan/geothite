@@ -68,6 +68,10 @@ pub struct Item {
     pub battle_stat_drop_guard: Option<bool>,
     #[serde(deserialize_with = "required_nullable_bool")]
     pub confusion_heal: Option<bool>,
+    /// Confusion imposed after successful HP recovery (1..=5 turns).
+    /// Field use carries into battle; switching out or ending battle clears it.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub confusion_inflict_turns: Option<u16>,
     #[serde(deserialize_with = "required_nullable_u16")]
     pub repel_steps: Option<u16>,
     #[serde(deserialize_with = "required_nullable_item_token")]
@@ -141,6 +145,8 @@ impl<'de> Deserialize<'de> for Item {
             battle_stat_drop_guard: Option<bool>,
             #[serde(deserialize_with = "required_nullable_bool")]
             confusion_heal: Option<bool>,
+            #[serde(default, deserialize_with = "required_nullable_u16")]
+            confusion_inflict_turns: Option<u16>,
             #[serde(deserialize_with = "required_nullable_u16")]
             repel_steps: Option<u16>,
             #[serde(deserialize_with = "required_nullable_item_token")]
@@ -190,6 +196,7 @@ impl<'de> Deserialize<'de> for Item {
             battle_focus_energy: raw.battle_focus_energy,
             battle_stat_drop_guard: raw.battle_stat_drop_guard,
             confusion_heal: raw.confusion_heal,
+            confusion_inflict_turns: raw.confusion_inflict_turns,
             repel_steps: raw.repel_steps,
             escape_rope_mode: raw.escape_rope_mode,
             price: raw.price,
@@ -229,6 +236,12 @@ fn validate_item_payload(item: &Item) -> Result<(), String> {
         .is_some_and(|stages| stages == 0)
     {
         return Err("item.battle_stat_boost_stages must be positive".to_string());
+    }
+    if item
+        .confusion_inflict_turns
+        .is_some_and(|turns| !(1..=5).contains(&turns))
+    {
+        return Err("item.confusion_inflict_turns must be in 1..=5".to_string());
     }
     if item.tmhm_index.is_some() != item.tmhm_move.is_some() {
         return Err("item TM/HM index and move must be declared together".to_string());

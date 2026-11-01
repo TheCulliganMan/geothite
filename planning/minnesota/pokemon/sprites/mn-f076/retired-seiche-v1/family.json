@@ -1,0 +1,85 @@
+{
+  "id": "MN_F076",
+  "region": "lake_superior_coast",
+  "theme": "Lake Superior seiche oscillation becomes a counterweight grappler: alternating wave lobes grow into bracing arms and a hinged wrestling body.",
+  "members": [
+    {
+      "id": "MN_163",
+      "name": "Swaylet",
+      "types": [
+        "WATER"
+      ],
+      "stage": 1,
+      "evolves_to": "MN_164"
+    },
+    {
+      "id": "MN_164",
+      "name": "Seichamp",
+      "types": [
+        "WATER",
+        "FIGHTING"
+      ],
+      "stage": 2,
+      "evolves_to": "MN_165"
+    },
+    {
+      "id": "MN_165",
+      "name": "Surgewrit",
+      "types": [
+        "WATER",
+        "FIGHTING"
+      ],
+      "stage": 3,
+      "evolves_to": null
+    }
+  ],
+  "evolution_design": {
+    "regional_evidence": "NOAA explains seiches as standing oscillations in a basin following wind or pressure disturbances. The Lake Superior reserve monitoring metadata describes seiche-driven flow reversals in the St Louis River estuary.",
+    "original_invention": "The wave wrestler is an original creature built around alternating mass. It does not claim tides or perpetual motion, and no magical river portal is involved.",
+    "body_growth": [
+      {
+        "species_id": "MN_163",
+        "body": "One broad teetering water lobe with a low central pebble-colored face and two unequal side lobes, one lifted and one compressed.",
+        "silhouette": "Off-center seesaw bean with one high and one low side."
+      },
+      {
+        "species_id": "MN_164",
+        "body": "The side lobes become thick opposed forearms around a squat central body; broad heel-like flukes brace the backward swing.",
+        "silhouette": "Broad wave-arms and two short grounding heels; center now lifted."
+      },
+      {
+        "species_id": "MN_165",
+        "body": "Two heavy curl-knuckles connect to a low muscular central node through solid S-bent shoulders. A broad saddle tail serves as a counterweight and two feet brace a grappling stance.",
+        "silhouette": "Wide grappler with two large curled fists and a low saddle-tail counterweight, whole body continuous."
+      }
+    ]
+  },
+  "silhouette_concept": "Off-center seesaw bean with one high and one low side. \u2192 Broad wave-arms and two short grounding heels; center now lifted. \u2192 Wide grappler with two large curled fists and a low saddle-tail counterweight, whole body continuous.",
+  "habitat": "Shallow lake mouths, sheltered coves and exposed shore basins.",
+  "proposed_routes": [
+    {
+      "id": "MN_R11",
+      "placement": "Existing lake-facing fishing cove; ordinary encounter without changing waterfall story.",
+      "status": "encounter proposal only; no map or story mutation"
+    }
+  ],
+  "sources": [
+    {
+      "title": "NOAA, What is a seiche?",
+      "url": "https://oceanservice.noaa.gov/facts/seiche.html",
+      "supports": "Standing basin oscillations after meteorological forcing.",
+      "source_kind": "primary scientific explanation"
+    },
+    {
+      "title": "Lake Superior NERR, Water-quality monitoring metadata",
+      "url": "https://cdmo.baruch.sc.edu/waf/YearlyFiles/Lake%20Superior/water%20quality/metadata/lkswq01-12.22m.pdf",
+      "supports": "Lake Superior seiche effects and estuary flow reversals.",
+      "source_kind": "primary regional institutional source"
+    }
+  ],
+  "nonduplication": "Unlike F045 Devils Kettle legendary, no portal, disappearing waterfall, kettle shape or dual-current supernatural head. Unlike F003 skipping-ray, no hydrofoil fish anatomy.",
+  "classification": "ordinary",
+  "design_lock": "locked by root; first153identities fixed",
+  "sprite_constraints": "Native56x56 front full body facing left;48x48 close rear portrait facing upper-right. Four colors per species, individually planned after design lock. Large solid anatomical landmarks, stepped black exterior anchors, sparse internal marks; no gradients, particles or texture-dependent identity.",
+  "design_status": "root-reviewed-locked-for-art"
+}

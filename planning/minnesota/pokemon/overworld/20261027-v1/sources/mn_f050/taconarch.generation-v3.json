@@ -1,0 +1,11 @@
+{
+  "default_output": "/Users/ryanculligan/.codex/generated_images/01a17f9b-d422-7510-8f49-c2c58dedb47a/exec-b696f16b-193c-4943-b0d9-e51a16d46822.png",
+  "saved_source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f050/taconarch.overworld.imagegen-v3.png",
+  "sha256": "897b127009d50a4dfdfa93d1443bd599c677eaa0947d8704225898440be2b61c",
+  "prompt": "taconarch.prompt-v3.txt",
+  "references": [
+    "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f050/taconarch.overworld.imagegen-v2.png"
+  ],
+  "tool": "built-in imagegen",
+  "accepted": false
+}

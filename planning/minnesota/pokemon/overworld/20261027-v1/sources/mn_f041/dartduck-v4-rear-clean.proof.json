@@ -1,0 +1,19 @@
+{
+  "status": "candidate root review pending",
+  "tool": "built-in image_gen precise edit",
+  "manifest": "manifest-dartduck-v4-rear-clean.json",
+  "source_raw": "dartduck.overworld.imagegen-v4-rear-clean.png",
+  "original_default_output": "/Users/ryanculligan/.codex/generated_images/01a17dc4-dd75-7642-a1c6-4bf13fda70c6/exec-7146777f-b4d0-4a9d-99d9-7465ca6e56a6.png",
+  "prompt": "prompt-dartduck-v4-rear-clean.txt",
+  "unchanged_front_west_native": true,
+  "changed_north_native": true,
+  "native_pixels_painted": false,
+  "frame_sources": [
+    "dartduck.overworld.imagegen-v3.png",
+    "dartduck.overworld.imagegen-v4-rear-clean.png",
+    "dartduck.overworld.imagegen-v3.png",
+    "dartduck.overworld.imagegen-v3.png",
+    "dartduck.overworld.imagegen-v4-rear-clean.png",
+    "dartduck.overworld.imagegen-v3.png"
+  ]
+}

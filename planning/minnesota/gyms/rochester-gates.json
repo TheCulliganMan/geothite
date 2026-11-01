@@ -1,0 +1,341 @@
+{
+  "schema_version": 1,
+  "status": "Published two-switch lane revision. Literal normal-control course, wrong-lane return, trainer denials, gate reversals, Continue, badge/TM and both city carpets pass. User visual acceptance remains open.",
+  "gyms": [
+    {
+      "slot": 1,
+      "id": "MnRochesterGym",
+      "constant": "MN_ROCHESTER_GYM",
+      "city": "ROCHESTER",
+      "leader": "VAREL",
+      "trainer_class": "COOLTRAINERF",
+      "leader_sprite": "SPRITE_COOLTRAINER_F",
+      "leader_at": [
+        10,
+        2
+      ],
+      "badge_flag": "ENGINE_ZEPHYRBADGE",
+      "requires": [
+        "EVENT_MN_DELIVERED_ROCHESTER_PARCEL"
+      ],
+      "reward": "TM_HEADBUTT",
+      "party": [
+        {
+          "species": "SENTRET",
+          "level": 10,
+          "moves": [
+            "TACKLE",
+            "DEFENSE_CURL"
+          ]
+        },
+        {
+          "species": "FURRET",
+          "level": 12,
+          "moves": [
+            "SCRATCH",
+            "QUICK_ATTACK",
+            "DEFENSE_CURL"
+          ]
+        }
+      ],
+      "rows": [
+        "zzz####",
+        "zzz#..#",
+        "#B##G##",
+        "#..p..#",
+        "#BG#G##",
+        "#.....#",
+        "##LsR##"
+      ],
+      "art": {
+        ".": [
+          "elite_four_room",
+          "2d"
+        ],
+        "#": [
+          "elite_four_room",
+          "14"
+        ],
+        "z": [
+          "game_corner",
+          "00"
+        ],
+        "p": [
+          "elite_four_room",
+          "3d"
+        ],
+        "G": [
+          "underground",
+          "0b"
+        ],
+        "B": [
+          "elite_four_room",
+          "37"
+        ],
+        "L": [
+          "elite_four_room",
+          "1d"
+        ],
+        "R": [
+          "elite_four_room",
+          "1e"
+        ],
+        "s": [
+          "elite_four_room",
+          "1c"
+        ]
+      },
+      "trainers": [
+        {
+          "id": "MN_GYM_1_TRAINER_1",
+          "name": "TAVEL",
+          "trainer_class": "SCHOOLBOY",
+          "sprite": "SPRITE_YOUNGSTER",
+          "at": [
+            4,
+            10
+          ],
+          "party": [
+            {
+              "species": "SENTRET",
+              "level": 8
+            }
+          ],
+          "optional": false,
+          "before_lines": [
+            "I found the path!",
+            "Can you keep up?"
+          ],
+          "after_lines": [
+            "The lower switch",
+            "swaps the lanes.",
+            "Left goes to ELVIK."
+          ],
+          "requires": []
+        },
+        {
+          "id": "MN_GYM_1_TRAINER_2",
+          "name": "ELVIK",
+          "trainer_class": "SCHOOLBOY",
+          "sprite": "SPRITE_YOUNGSTER",
+          "at": [
+            4,
+            6
+          ],
+          "party": [
+            {
+              "species": "HOOTHOOT",
+              "level": 9
+            }
+          ],
+          "optional": false,
+          "before_lines": [
+            "You made it here.",
+            "Now get past me!"
+          ],
+          "after_lines": [
+            "Press my switch.",
+            "Then go back and",
+            "swap to the right",
+            "lane for VAREL."
+          ],
+          "requires": [
+            "EVENT_MN_GYM_1_TRAINER_1_DEFEATED"
+          ]
+        }
+      ],
+      "stations": [],
+      "gates": [
+        {
+          "at": [
+            2,
+            4
+          ],
+          "requires": [
+            "EVENT_MN_GYM_1_LOWER_LEFT"
+          ],
+          "open_symbol": ".",
+          "event": "EVENT_MN_GYM_1_LEFT_LANE_OPEN"
+        },
+        {
+          "at": [
+            4,
+            4
+          ],
+          "requires": [
+            "EVENT_MN_GYM_1_LOWER_RIGHT"
+          ],
+          "open_symbol": ".",
+          "event": "EVENT_MN_GYM_1_RIGHT_LANE_OPEN"
+        },
+        {
+          "at": [
+            4,
+            2
+          ],
+          "requires": [
+            "EVENT_MN_GYM_1_UPPER_OPEN",
+            "EVENT_MN_GYM_1_TRAINER_1_DEFEATED",
+            "EVENT_MN_GYM_1_TRAINER_2_DEFEATED"
+          ],
+          "open_symbol": ".",
+          "event": "EVENT_MN_GYM_1_COURT_OPEN"
+        }
+      ],
+      "guide": [
+        "Beat TAVEL, then",
+        "press the lower",
+        "blue switch. It",
+        "swaps the lanes.",
+        "ELVIK guards the",
+        "upper gate switch."
+      ],
+      "walkthrough": [
+        "MN_GYM_1_TRAINER_1",
+        "LEFT",
+        "MN_GYM_1_TRAINER_2",
+        "OPEN",
+        "RIGHT"
+      ],
+      "dimensions_metatiles": [
+        7,
+        7
+      ],
+      "arrival_core": [
+        6,
+        11
+      ],
+      "exit_tiles_core": [
+        [
+          6,
+          13
+        ],
+        [
+          7,
+          13
+        ]
+      ],
+      "guide_at": [
+        10,
+        11
+      ],
+      "leader_court_locked": true,
+      "before_lines": [
+        "I am VAREL.",
+        "No fancy tricks.",
+        "Show me how well",
+        "you use your team!"
+      ],
+      "victory_lines": [
+        "You noticed when",
+        "the battle turned.",
+        "You earned this!"
+      ],
+      "after_lines": [
+        "Prairie Farm Road",
+        "leads to MANKATO.",
+        "Let your partners",
+        "rest on the way."
+      ],
+      "pads": [],
+      "routers": [
+        {
+          "id": "LowerGate",
+          "at": [
+            2,
+            9
+          ],
+          "toggle": true,
+          "prompt": [
+            "Lower gate switch."
+          ],
+          "modes": [
+            {
+              "id": "LEFT",
+              "label": "LEFT",
+              "requires": [
+                "EVENT_MN_GYM_1_TRAINER_1_DEFEATED"
+              ],
+              "event": "EVENT_MN_GYM_1_LOWER_LEFT",
+              "lines": [
+                "Left lane open.",
+                "Right lane closed."
+              ],
+              "denied_lines": [
+                "Win the battle",
+                "beside this switch",
+                "before using it."
+              ]
+            },
+            {
+              "id": "RIGHT",
+              "label": "RIGHT",
+              "requires": [
+                "EVENT_MN_GYM_1_TRAINER_1_DEFEATED"
+              ],
+              "event": "EVENT_MN_GYM_1_LOWER_RIGHT",
+              "lines": [
+                "Right lane open.",
+                "Left lane closed."
+              ],
+              "denied_lines": [
+                "Win the battle",
+                "beside this switch",
+                "before using it."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "UpperGate",
+          "at": [
+            2,
+            5
+          ],
+          "toggle": true,
+          "prompt": [
+            "Upper gate switch."
+          ],
+          "modes": [
+            {
+              "id": "OPEN",
+              "label": "OPEN",
+              "requires": [
+                "EVENT_MN_GYM_1_TRAINER_2_DEFEATED"
+              ],
+              "event": "EVENT_MN_GYM_1_UPPER_OPEN",
+              "lines": [
+                "The upper gate",
+                "slides open."
+              ],
+              "denied_lines": [
+                "Win the battle",
+                "beside this switch",
+                "before using it."
+              ]
+            },
+            {
+              "id": "CLOSED",
+              "label": "CLOSED",
+              "requires": [
+                "EVENT_MN_GYM_1_TRAINER_2_DEFEATED"
+              ],
+              "event": "EVENT_MN_GYM_1_UPPER_CLOSED",
+              "lines": [
+                "The upper gate",
+                "slides closed."
+              ],
+              "denied_lines": [
+                "Win the battle",
+                "beside this switch",
+                "before using it."
+              ]
+            }
+          ]
+        }
+      ],
+      "court_requires": [],
+      "court_denied_lines": []
+    }
+  ]
+}

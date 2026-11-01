@@ -1,0 +1,2336 @@
+{
+  "schema_version": 1,
+  "cities": [
+    {
+      "map": "MnWinona",
+      "trade": {
+        "requested": "HOOTHOOT",
+        "offered": "NATU",
+        "nickname": "BLUFF",
+        "trainer": "MARA"
+      },
+      "actors": [
+        {
+          "id": "MnWinonaLife01",
+          "sprite": "SPRITE_COOLTRAINER_M",
+          "lines": [
+            "MARA: I watch the bluff birds at sunrise. I brought a partner to swap."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnWinonaLife02",
+          "sprite": "SPRITE_FISHER",
+          "lines": [
+            "The river is high today. I keep my partners back from the bank."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnWinonaLife03",
+          "sprite": "SPRITE_LASS",
+          "lines": [
+            "My NATU keeps staring toward the bluffs. I wonder what it sees."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnWinonaLife04",
+          "sprite": "SPRITE_POKEFAN_M",
+          "lines": [
+            "Home is a good place to rest before taking the trail."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnWinonaLife05",
+          "sprite": "SPRITE_TEACHER",
+          "lines": [
+            "I count every partner before we leave. Someone always stops to smell flowers."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnWinonaLife06",
+          "sprite": "SPRITE_YOUNGSTER",
+          "lines": [
+            "Race you to the next bend! After I tie my shoes."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnWinonaLife07",
+          "sprite": "SPRITE_COOLTRAINER_F",
+          "lines": [
+            "A short walk with your partner beats sitting inside all day."
+          ],
+          "movement": "walk_x"
+        },
+        {
+          "id": "MnWinonaLife08",
+          "sprite": "SPRITE_POKEFAN_F",
+          "lines": [
+            "The whole neighborhood comes out when the river breeze picks up."
+          ],
+          "movement": "walk_y"
+        }
+      ],
+      "placements": [
+        {
+          "dimensions": [
+            16,
+            14
+          ],
+          "tiles": [
+            [
+              13,
+              9
+            ],
+            [
+              7,
+              12
+            ],
+            [
+              20,
+              12
+            ],
+            [
+              10,
+              21
+            ],
+            [
+              21,
+              23
+            ],
+            [
+              15,
+              13
+            ],
+            [
+              6,
+              16
+            ],
+            [
+              23,
+              18
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnRochester",
+      "trade": {
+        "requested": "BELLSPROUT",
+        "offered": "MAGNEMITE",
+        "nickname": "PULSE",
+        "trainer": "IRIS"
+      },
+      "actors": [
+        {
+          "id": "MnRochesterLife01",
+          "sprite": "SPRITE_SCIENTIST",
+          "lines": [
+            "IRIS: My MAGNEMITE helps sort clinic tools. I would like a garden partner."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnRochesterLife02",
+          "sprite": "SPRITE_NURSE",
+          "lines": [
+            "Even trainers need water and a break. Look after yourself, too."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnRochesterLife03",
+          "sprite": "SPRITE_POKEFAN_M",
+          "lines": [
+            "My partner used to fear checkups. Now it leads me to the clinic."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnRochesterLife04",
+          "sprite": "SPRITE_GENTLEMAN",
+          "lines": [
+            "Visitors from all over stop here. A friendly face helps a long day."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnRochesterLife05",
+          "sprite": "SPRITE_LASS",
+          "lines": [
+            "I made a recovery card with little leaf prints."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnRochesterLife06",
+          "sprite": "SPRITE_TEACHER",
+          "lines": [
+            "Different partners need different care. Watch how yours behaves."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnRochesterLife07",
+          "sprite": "SPRITE_COOLTRAINER_F",
+          "lines": [
+            "I take a lap between visits. Fresh air clears my head."
+          ],
+          "movement": "walk_x"
+        },
+        {
+          "id": "MnRochesterLife08",
+          "sprite": "SPRITE_YOUNGSTER",
+          "lines": [
+            "I am delivering flowers. Slowly. They spill if I run."
+          ],
+          "movement": "walk_y"
+        }
+      ],
+      "placements": [
+        {
+          "dimensions": [
+            20,
+            16
+          ],
+          "tiles": [
+            [
+              23,
+              12
+            ],
+            [
+              11,
+              11
+            ],
+            [
+              7,
+              15
+            ],
+            [
+              33,
+              13
+            ],
+            [
+              24,
+              26
+            ],
+            [
+              12,
+              27
+            ],
+            [
+              16,
+              14
+            ],
+            [
+              32,
+              27
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnMankato",
+      "trade": {
+        "requested": "WOOPER",
+        "offered": "MACHOP",
+        "nickname": "TERRACE",
+        "trainer": "OTTO"
+      },
+      "actors": [
+        {
+          "id": "MnMankatoLife01",
+          "sprite": "SPRITE_BLACK_BELT",
+          "lines": [
+            "OTTO: My MACHOP hauls supplies uphill. I want a friend for the river."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnMankatoLife02",
+          "sprite": "SPRITE_POKEFAN_F",
+          "lines": [
+            "The hill looks gentler from the top. My knees disagree."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnMankatoLife03",
+          "sprite": "SPRITE_FISHER",
+          "lines": [
+            "Mud on the boots means a good river walk."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnMankatoLife04",
+          "sprite": "SPRITE_YOUNGSTER",
+          "lines": [
+            "I roll snowballs down this slope in winter. Not at people!"
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnMankatoLife05",
+          "sprite": "SPRITE_TEACHER",
+          "lines": [
+            "We sketch the valley from here. No two drawings look alike."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnMankatoLife06",
+          "sprite": "SPRITE_GENTLEMAN",
+          "lines": [
+            "Take the long way once. You notice more on the return."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnMankatoLife07",
+          "sprite": "SPRITE_COOLTRAINER_M",
+          "lines": [
+            "Uphill, breathe. Downhill, watch your footing."
+          ],
+          "movement": "walk_x"
+        },
+        {
+          "id": "MnMankatoLife08",
+          "sprite": "SPRITE_LASS",
+          "lines": [
+            "My partner and I practice our turns on this flat stretch."
+          ],
+          "movement": "walk_y"
+        }
+      ],
+      "placements": [
+        {
+          "dimensions": [
+            24,
+            18
+          ],
+          "tiles": [
+            [
+              28,
+              15
+            ],
+            [
+              12,
+              15
+            ],
+            [
+              34,
+              16
+            ],
+            [
+              15,
+              23
+            ],
+            [
+              32,
+              30
+            ],
+            [
+              22,
+              32
+            ],
+            [
+              27,
+              9
+            ],
+            [
+              28,
+              23
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnStCloud",
+      "trade": {
+        "requested": "PIDGEOTTO",
+        "offered": "DROWZEE",
+        "nickname": "DREAM",
+        "trainer": "SUE"
+      },
+      "actors": [
+        {
+          "id": "MnStCloudLife01",
+          "sprite": "SPRITE_TEACHER",
+          "lines": [
+            "SUE: My DROWZEE naps through bird calls. Perhaps a new partner will wake me up."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnStCloudLife02",
+          "sprite": "SPRITE_GENTLEMAN",
+          "lines": [
+            "The granite holds the warmth after the sun moves on."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnStCloudLife03",
+          "sprite": "SPRITE_FISHER",
+          "lines": [
+            "I can hear the river before I see it."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnStCloudLife04",
+          "sprite": "SPRITE_POKEFAN_F",
+          "lines": [
+            "Students always ask where the bridge goes. Across the river, of course."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnStCloudLife05",
+          "sprite": "SPRITE_LASS",
+          "lines": [
+            "I leave time for the garden on my way home."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnStCloudLife06",
+          "sprite": "SPRITE_SAILOR",
+          "lines": [
+            "Good knots matter on a lake, too."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnStCloudLife07",
+          "sprite": "SPRITE_YOUNGSTER",
+          "lines": [
+            "One more lap before lessons!"
+          ],
+          "movement": "walk_x"
+        },
+        {
+          "id": "MnStCloudLife08",
+          "sprite": "SPRITE_COOLTRAINER_F",
+          "lines": [
+            "My partner likes the southern bank best. Fewer footsteps."
+          ],
+          "movement": "walk_y"
+        }
+      ],
+      "placements": [
+        {
+          "dimensions": [
+            24,
+            18
+          ],
+          "tiles": [
+            [
+              16,
+              12
+            ],
+            [
+              8,
+              12
+            ],
+            [
+              31,
+              13
+            ],
+            [
+              43,
+              13
+            ],
+            [
+              14,
+              29
+            ],
+            [
+              34,
+              31
+            ],
+            [
+              16,
+              11
+            ],
+            [
+              22,
+              31
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnBrainerd",
+      "trade": {
+        "requested": "GEODUDE",
+        "offered": "SLOWPOKE",
+        "nickname": "BOBBER",
+        "trainer": "LEN"
+      },
+      "actors": [
+        {
+          "id": "MnBrainerdLife01",
+          "sprite": "SPRITE_FISHER",
+          "lines": [
+            "LEN: My SLOWPOKE waits beside every fishing hole. I need a sturdy trail partner."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnBrainerdLife02",
+          "sprite": "SPRITE_TEACHER",
+          "lines": [
+            "Pack out the line and hooks you bring to the lake."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnBrainerdLife03",
+          "sprite": "SPRITE_YOUNGSTER",
+          "lines": [
+            "My grandpa says he saw a giant fish. His hands get farther apart each year."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnBrainerdLife04",
+          "sprite": "SPRITE_POKEFAN_F",
+          "lines": [
+            "Cabin weekends begin with a stop for supplies."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnBrainerdLife05",
+          "sprite": "SPRITE_GENTLEMAN",
+          "lines": [
+            "The old camp stories get better every summer."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnBrainerdLife06",
+          "sprite": "SPRITE_LASS",
+          "lines": [
+            "I listen for loons when the boats go quiet."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnBrainerdLife07",
+          "sprite": "SPRITE_COOLTRAINER_M",
+          "lines": [
+            "I am walking off my breakfast before we launch."
+          ],
+          "movement": "walk_x"
+        },
+        {
+          "id": "MnBrainerdLife08",
+          "sprite": "SPRITE_FISHER",
+          "lines": [
+            "If the fish are not biting, enjoy the view."
+          ],
+          "movement": "walk_y"
+        }
+      ],
+      "placements": [
+        {
+          "dimensions": [
+            32,
+            24
+          ],
+          "tiles": [
+            [
+              29,
+              23
+            ],
+            [
+              17,
+              15
+            ],
+            [
+              28,
+              16
+            ],
+            [
+              43,
+              24
+            ],
+            [
+              15,
+              38
+            ],
+            [
+              53,
+              36
+            ],
+            [
+              34,
+              29
+            ],
+            [
+              12,
+              24
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnLeechLake",
+      "trade": {
+        "requested": "WOOPER",
+        "offered": "POLIWAG",
+        "nickname": "RIPPLE",
+        "trainer": "JO"
+      },
+      "actors": [
+        {
+          "id": "MnLeechLakeLife01",
+          "sprite": "SPRITE_FISHER",
+          "lines": [
+            "JO: I raised this POLIWAG by the cabin. Could you bring me a WOOPER?"
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnLeechLakeLife02",
+          "sprite": "SPRITE_POKEFAN_F",
+          "lines": [
+            "The cabin smells of pine even with the windows shut."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnLeechLakeLife03",
+          "sprite": "SPRITE_SAILOR",
+          "lines": [
+            "Check the wind before you launch. It changes out on the lake."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnLeechLakeLife04",
+          "sprite": "SPRITE_TEACHER",
+          "lines": [
+            "Give nesting birds room. The shore is their home first."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnLeechLakeLife05",
+          "sprite": "SPRITE_YOUNGSTER",
+          "lines": [
+            "I am learning every bird call. My loon still sounds like a squeaky door."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnLeechLakeLife06",
+          "sprite": "SPRITE_GENTLEMAN",
+          "lines": [
+            "Coffee on the porch is my favorite part of the trip."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnLeechLakeLife07",
+          "sprite": "SPRITE_LASS",
+          "lines": [
+            "I walk down here when the morning mist lifts."
+          ],
+          "movement": "walk_x"
+        },
+        {
+          "id": "MnLeechLakeLife08",
+          "sprite": "SPRITE_FISHER",
+          "lines": [
+            "A loose knot makes for a very short fishing story."
+          ],
+          "movement": "walk_y"
+        }
+      ],
+      "placements": [
+        {
+          "dimensions": [
+            32,
+            24
+          ],
+          "tiles": [
+            [
+              24,
+              25
+            ],
+            [
+              14,
+              16
+            ],
+            [
+              22,
+              20
+            ],
+            [
+              22,
+              33
+            ],
+            [
+              16,
+              38
+            ],
+            [
+              29,
+              38
+            ],
+            [
+              23,
+              15
+            ],
+            [
+              27,
+              42
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnBemidji",
+      "trade": {
+        "requested": "ODDISH",
+        "offered": "PINECO",
+        "nickname": "CONE",
+        "trainer": "HAL"
+      },
+      "actors": [
+        {
+          "id": "MnBemidjiLife01",
+          "sprite": "SPRITE_POKEFAN_M",
+          "lines": [
+            "HAL: This PINECO followed my timber cart home. I would like an ODDISH for the garden."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnBemidjiLife02",
+          "sprite": "SPRITE_GENTLEMAN",
+          "lines": [
+            "The tall tales grow a little taller every time they are told."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnBemidjiLife03",
+          "sprite": "SPRITE_LASS",
+          "lines": [
+            "I made a scarf for my partner. It prefers to carry it."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnBemidjiLife04",
+          "sprite": "SPRITE_FISHER",
+          "lines": [
+            "You can spend a whole day watching the light change on the lake."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnBemidjiLife05",
+          "sprite": "SPRITE_TEACHER",
+          "lines": [
+            "Count tree rings on fallen wood. Leave living trees alone."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnBemidjiLife06",
+          "sprite": "SPRITE_YOUNGSTER",
+          "lines": [
+            "My snow fort had three rooms. Then spring arrived."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnBemidjiLife07",
+          "sprite": "SPRITE_COOLTRAINER_F",
+          "lines": [
+            "I like this boardwalk. There is always somebody to greet."
+          ],
+          "movement": "walk_x"
+        },
+        {
+          "id": "MnBemidjiLife08",
+          "sprite": "SPRITE_POKEFAN_F",
+          "lines": [
+            "I brought lunch for the crew. They can smell it from here."
+          ],
+          "movement": "walk_y"
+        }
+      ],
+      "placements": [
+        {
+          "dimensions": [
+            24,
+            24
+          ],
+          "tiles": [
+            [
+              21,
+              26
+            ],
+            [
+              16,
+              11
+            ],
+            [
+              29,
+              11
+            ],
+            [
+              30,
+              23
+            ],
+            [
+              13,
+              31
+            ],
+            [
+              21,
+              39
+            ],
+            [
+              10,
+              17
+            ],
+            [
+              22,
+              28
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnGrandRapids",
+      "trade": {
+        "requested": "GEODUDE",
+        "offered": "TEDDIURSA",
+        "nickname": "CEDAR",
+        "trainer": "ED"
+      },
+      "actors": [
+        {
+          "id": "MnGrandRapidsLife01",
+          "sprite": "SPRITE_POKEFAN_M",
+          "lines": [
+            "ED: My TEDDIURSA has a nose for picnic baskets. I am curious about cave partners."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnGrandRapidsLife02",
+          "sprite": "SPRITE_TEACHER",
+          "lines": [
+            "The mill whistle used to set the rhythm of the town."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnGrandRapidsLife03",
+          "sprite": "SPRITE_GENTLEMAN",
+          "lines": [
+            "A good story can travel farther than a canoe."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnGrandRapidsLife04",
+          "sprite": "SPRITE_LASS",
+          "lines": [
+            "We trade books when we finish them. Partners make good listeners."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnGrandRapidsLife05",
+          "sprite": "SPRITE_FISHER",
+          "lines": [
+            "Some days I only catch my own reflection."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnGrandRapidsLife06",
+          "sprite": "SPRITE_YOUNGSTER",
+          "lines": [
+            "I am saving a smooth stone from every place we visit."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnGrandRapidsLife07",
+          "sprite": "SPRITE_COOLTRAINER_F",
+          "lines": [
+            "I follow the river walk before heading east."
+          ],
+          "movement": "walk_x"
+        },
+        {
+          "id": "MnGrandRapidsLife08",
+          "sprite": "SPRITE_POKEFAN_F",
+          "lines": [
+            "My partner stops at every patch of shade."
+          ],
+          "movement": "walk_y"
+        }
+      ],
+      "placements": [
+        {
+          "dimensions": [
+            24,
+            24
+          ],
+          "tiles": [
+            [
+              26,
+              22
+            ],
+            [
+              13,
+              14
+            ],
+            [
+              31,
+              16
+            ],
+            [
+              41,
+              22
+            ],
+            [
+              20,
+              26
+            ],
+            [
+              28,
+              33
+            ],
+            [
+              10,
+              19
+            ],
+            [
+              28,
+              28
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnGrandMarais",
+      "trade": {
+        "requested": "TANGELA",
+        "offered": "CHINCHOU",
+        "nickname": "LANTERN",
+        "trainer": "NELL"
+      },
+      "actors": [
+        {
+          "id": "MnGrandMaraisLife01",
+          "sprite": "SPRITE_SAILOR",
+          "lines": [
+            "NELL: My CHINCHOU lights up the evening. I would like a partner from the shore grass."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnGrandMaraisLife02",
+          "sprite": "SPRITE_POKEFAN_F",
+          "lines": [
+            "The bakery gets busy before the boats leave."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnGrandMaraisLife03",
+          "sprite": "SPRITE_SUPER_NERD",
+          "lines": [
+            "I can never mix quite the right lake blue."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnGrandMaraisLife04",
+          "sprite": "SPRITE_FISHER",
+          "lines": [
+            "A calm harbor can hide rough water outside."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnGrandMaraisLife05",
+          "sprite": "SPRITE_GENTLEMAN",
+          "lines": [
+            "That long lake horizon always makes me stop."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnGrandMaraisLife06",
+          "sprite": "SPRITE_LASS",
+          "lines": [
+            "We came for the shore and stayed for the neighbors."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnGrandMaraisLife07",
+          "sprite": "SPRITE_COOLTRAINER_F",
+          "lines": [
+            "I stretch my legs before taking the north trail."
+          ],
+          "movement": "walk_x"
+        },
+        {
+          "id": "MnGrandMaraisLife08",
+          "sprite": "SPRITE_SAILOR",
+          "lines": [
+            "I check the weather twice before a crossing."
+          ],
+          "movement": "walk_y"
+        }
+      ],
+      "placements": [
+        {
+          "dimensions": [
+            20,
+            19
+          ],
+          "tiles": [
+            [
+              22,
+              12
+            ],
+            [
+              11,
+              9
+            ],
+            [
+              24,
+              8
+            ],
+            [
+              33,
+              17
+            ],
+            [
+              31,
+              27
+            ],
+            [
+              21,
+              25
+            ],
+            [
+              17,
+              11
+            ],
+            [
+              34,
+              14
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnBoundaryWaters",
+      "trade": {
+        "requested": "MARILL",
+        "offered": "WOOPER",
+        "nickname": "PORTAGE",
+        "trainer": "KIT"
+      },
+      "actors": [
+        {
+          "id": "MnBoundaryWatersLife01",
+          "sprite": "SPRITE_FISHER",
+          "lines": [
+            "KIT: This WOOPER likes the shallows. A MARILL would be fine canoe company."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnBoundaryWatersLife02",
+          "sprite": "SPRITE_TEACHER",
+          "lines": [
+            "Speak softly by the water. You hear much more."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnBoundaryWatersLife03",
+          "sprite": "SPRITE_POKEFAN_F",
+          "lines": [
+            "Wet boots outside the tent. I learned that lesson once."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnBoundaryWatersLife04",
+          "sprite": "SPRITE_YOUNGSTER",
+          "lines": [
+            "We spotted tracks at camp. We left them for the next visitor."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnBoundaryWatersLife05",
+          "sprite": "SPRITE_GENTLEMAN",
+          "lines": [
+            "Carry less, notice more. That is my portage advice."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnBoundaryWatersLife06",
+          "sprite": "SPRITE_LASS",
+          "lines": [
+            "I put every scrap back in my pack, even the tiny ones."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnBoundaryWatersLife07",
+          "sprite": "SPRITE_COOLTRAINER_M",
+          "lines": [
+            "A short walk gives paddling arms a rest."
+          ],
+          "movement": "walk_x"
+        },
+        {
+          "id": "MnBoundaryWatersLife08",
+          "sprite": "SPRITE_FISHER",
+          "lines": [
+            "Quiet water is worth protecting."
+          ],
+          "movement": "walk_y"
+        }
+      ],
+      "placements": [
+        {
+          "dimensions": [
+            32,
+            24
+          ],
+          "tiles": [
+            [
+              34,
+              10
+            ],
+            [
+              26,
+              16
+            ],
+            [
+              8,
+              25
+            ],
+            [
+              17,
+              29
+            ],
+            [
+              38,
+              37
+            ],
+            [
+              48,
+              35
+            ],
+            [
+              31,
+              24
+            ],
+            [
+              45,
+              21
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnLakeItasca",
+      "trade": {
+        "requested": "SENTRET",
+        "offered": "HOPPIP",
+        "nickname": "SPRING",
+        "trainer": "ADA"
+      },
+      "actors": [
+        {
+          "id": "MnLakeItascaLife01",
+          "sprite": "SPRITE_TEACHER",
+          "lines": [
+            "ADA: My HOPPIP drifts over the meadow. I would like a curious forest friend."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnLakeItascaLife02",
+          "sprite": "SPRITE_GENTLEMAN",
+          "lines": [
+            "Such a long river begins in such a small place."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnLakeItascaLife03",
+          "sprite": "SPRITE_LASS",
+          "lines": [
+            "I drew the headwaters on a postcard for my sister."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnLakeItascaLife04",
+          "sprite": "SPRITE_FISHER",
+          "lines": [
+            "I keep the bank clean so the next person sees it this way."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnLakeItascaLife05",
+          "sprite": "SPRITE_POKEFAN_F",
+          "lines": [
+            "We brought lunch and plenty of time."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnLakeItascaLife06",
+          "sprite": "SPRITE_YOUNGSTER",
+          "lines": [
+            "I tried to follow one leaf downstream. It was faster than me."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnLakeItascaLife07",
+          "sprite": "SPRITE_COOLTRAINER_F",
+          "lines": [
+            "The pine shade makes this a fine walking stop."
+          ],
+          "movement": "walk_x"
+        },
+        {
+          "id": "MnLakeItascaLife08",
+          "sprite": "SPRITE_TEACHER",
+          "lines": [
+            "A spring needs care all along its banks."
+          ],
+          "movement": "walk_y"
+        }
+      ],
+      "placements": [
+        {
+          "dimensions": [
+            24,
+            24
+          ],
+          "tiles": [
+            [
+              29,
+              25
+            ],
+            [
+              16,
+              19
+            ],
+            [
+              10,
+              25
+            ],
+            [
+              16,
+              36
+            ],
+            [
+              28,
+              30
+            ],
+            [
+              36,
+              23
+            ],
+            [
+              14,
+              28
+            ],
+            [
+              33,
+              32
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnEly",
+      "trade": {
+        "requested": "ONIX",
+        "offered": "SKARMORY",
+        "nickname": "AURORA",
+        "trainer": "BEA"
+      },
+      "actors": [
+        {
+          "id": "MnElyLife01",
+          "sprite": "SPRITE_COOLTRAINER_F",
+          "lines": [
+            "BEA: My SKARMORY has crossed many ridges. I would like a stone trail partner."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnElyLife02",
+          "sprite": "SPRITE_GENTLEMAN",
+          "lines": [
+            "Rest before a big challenge. There is no prize for arriving tired."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnElyLife03",
+          "sprite": "SPRITE_TEACHER",
+          "lines": [
+            "Everyone remembers their first trip north."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnElyLife04",
+          "sprite": "SPRITE_FISHER",
+          "lines": [
+            "Canoes in summer, snowshoes in winter. There is always a way out."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnElyLife05",
+          "sprite": "SPRITE_LASS",
+          "lines": [
+            "I am writing down the constellations I saw at camp."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnElyLife06",
+          "sprite": "SPRITE_POKEFAN_M",
+          "lines": [
+            "Win or lose, there will be a hot meal waiting."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnElyLife07",
+          "sprite": "SPRITE_COOLTRAINER_M",
+          "lines": [
+            "I take one quiet lap before I register."
+          ],
+          "movement": "walk_x"
+        },
+        {
+          "id": "MnElyLife08",
+          "sprite": "SPRITE_YOUNGSTER",
+          "lines": [
+            "Someday I will challenge the League. Today I am practicing."
+          ],
+          "movement": "walk_y"
+        }
+      ],
+      "placements": [
+        {
+          "dimensions": [
+            20,
+            18
+          ],
+          "tiles": [
+            [
+              28,
+              19
+            ],
+            [
+              20,
+              6
+            ],
+            [
+              33,
+              11
+            ],
+            [
+              12,
+              23
+            ],
+            [
+              29,
+              30
+            ],
+            [
+              35,
+              24
+            ],
+            [
+              18,
+              17
+            ],
+            [
+              10,
+              28
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnMinneapolis",
+      "trade": {
+        "requested": "ABRA",
+        "offered": "MACHOP",
+        "nickname": "MILL",
+        "trainer": "TESS"
+      },
+      "actors": [
+        {
+          "id": "MnMinneapolisLife01",
+          "sprite": "SPRITE_TEACHER",
+          "lines": [
+            "TESS: My MACHOP helped at the mill. I would like an ABRA for quiet study."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnMinneapolisLife02",
+          "sprite": "SPRITE_POKEFAN_M",
+          "lines": [
+            "You can feel the falls through the rail when the river is high."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnMinneapolisLife03",
+          "sprite": "SPRITE_LASS",
+          "lines": [
+            "We rehearse in the music room. You can hear us down the block."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnMinneapolisLife04",
+          "sprite": "SPRITE_GENTLEMAN",
+          "lines": [
+            "The old mills fed more than this city."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnMinneapolisLife05",
+          "sprite": "SPRITE_FISHER",
+          "lines": [
+            "Keep a hand on your hat near the river."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnMinneapolisLife06",
+          "sprite": "SPRITE_YOUNGSTER",
+          "lines": [
+            "I am choosing a book for my partner. It likes the pictures."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnMinneapolisLife07",
+          "sprite": "SPRITE_COOLTRAINER_F",
+          "lines": [
+            "I warm up on the neighborhood streets before a battle."
+          ],
+          "movement": "walk_x"
+        },
+        {
+          "id": "MnMinneapolisLife08",
+          "sprite": "SPRITE_POKEFAN_F",
+          "lines": [
+            "The co-op knows everybody by their shopping basket."
+          ],
+          "movement": "walk_y"
+        },
+        {
+          "id": "MnMinneapolisLife09",
+          "sprite": "SPRITE_SCIENTIST",
+          "lines": [
+            "The current carries energy. Watching it never gets old."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnMinneapolisLife10",
+          "sprite": "SPRITE_SAILOR",
+          "lines": [
+            "A river city always has one more bridge to cross."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnMinneapolisLife11",
+          "sprite": "SPRITE_TEACHER",
+          "lines": [
+            "A stage needs listeners as much as performers."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnMinneapolisLife12",
+          "sprite": "SPRITE_LASS",
+          "lines": [
+            "My partner keeps time with its feet."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnMinneapolisLife13",
+          "sprite": "SPRITE_GENTLEMAN",
+          "lines": [
+            "Take a seat after your errands. The city will wait."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnMinneapolisLife14",
+          "sprite": "SPRITE_YOUNGSTER",
+          "lines": [
+            "I deliver papers, then practice my throws."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnMinneapolisLife15",
+          "sprite": "SPRITE_COOLTRAINER_M",
+          "lines": [
+            "I like a route with a good view between battles."
+          ],
+          "movement": "walk_x"
+        },
+        {
+          "id": "MnMinneapolisLife16",
+          "sprite": "SPRITE_POKEFAN_F",
+          "lines": [
+            "Neighbors keep the streets warm even when the weather does not."
+          ],
+          "movement": "walk_y"
+        }
+      ],
+      "placements": [
+        {
+          "dimensions": [
+            40,
+            32
+          ],
+          "tiles": [
+            [
+              46,
+              20
+            ],
+            [
+              25,
+              17
+            ],
+            [
+              9,
+              13
+            ],
+            [
+              17,
+              20
+            ],
+            [
+              18,
+              35
+            ],
+            [
+              51,
+              19
+            ],
+            [
+              43,
+              11
+            ],
+            [
+              11,
+              34
+            ],
+            [
+              41,
+              28
+            ],
+            [
+              68,
+              35
+            ],
+            [
+              48,
+              47
+            ],
+            [
+              64,
+              53
+            ],
+            [
+              22,
+              43
+            ],
+            [
+              71,
+              55
+            ],
+            [
+              31,
+              56
+            ],
+            [
+              47,
+              58
+            ]
+          ]
+        },
+        {
+          "dimensions": [
+            32,
+            24
+          ],
+          "tiles": [
+            [
+              35,
+              18
+            ],
+            [
+              29,
+              9
+            ],
+            [
+              41,
+              12
+            ],
+            [
+              29,
+              16
+            ],
+            [
+              12,
+              21
+            ],
+            [
+              45,
+              25
+            ],
+            [
+              34,
+              6
+            ],
+            [
+              52,
+              18
+            ],
+            [
+              30,
+              24
+            ],
+            [
+              48,
+              27
+            ],
+            [
+              27,
+              36
+            ],
+            [
+              34,
+              36
+            ],
+            [
+              10,
+              27
+            ],
+            [
+              54,
+              24
+            ],
+            [
+              34,
+              28
+            ],
+            [
+              38,
+              22
+            ]
+          ]
+        },
+        {
+          "dimensions": [
+            64,
+            48
+          ],
+          "tiles": [
+            [
+              71,
+              46
+            ],
+            [
+              62,
+              36
+            ],
+            [
+              86,
+              30
+            ],
+            [
+              54,
+              30
+            ],
+            [
+              95,
+              56
+            ],
+            [
+              32,
+              40
+            ],
+            [
+              54,
+              20
+            ],
+            [
+              30,
+              68
+            ],
+            [
+              80,
+              60
+            ],
+            [
+              90,
+              72
+            ],
+            [
+              66,
+              54
+            ],
+            [
+              44,
+              62
+            ],
+            [
+              110,
+              44
+            ],
+            [
+              40,
+              75
+            ],
+            [
+              70,
+              76
+            ],
+            [
+              102,
+              78
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnStPaul",
+      "trade": {
+        "requested": "DROWZEE",
+        "offered": "GROWLITHE",
+        "nickname": "SUMMIT",
+        "trainer": "REMY"
+      },
+      "actors": [
+        {
+          "id": "MnStPaulLife01",
+          "sprite": "SPRITE_GENTLEMAN",
+          "lines": [
+            "REMY: My GROWLITHE loves a parade. I am looking for a sleepy reading companion."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnStPaulLife02",
+          "sprite": "SPRITE_TEACHER",
+          "lines": [
+            "The archives keep ordinary letters, too. Every life leaves a story."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnStPaulLife03",
+          "sprite": "SPRITE_LASS",
+          "lines": [
+            "I am saving room for one more fair snack."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnStPaulLife04",
+          "sprite": "SPRITE_POKEFAN_M",
+          "lines": [
+            "These hills make every grocery trip a little workout."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnStPaulLife05",
+          "sprite": "SPRITE_YOUNGSTER",
+          "lines": [
+            "Our class is drawing the capitol today."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnStPaulLife06",
+          "sprite": "SPRITE_FISHER",
+          "lines": [
+            "The river is a different color after rain."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnStPaulLife07",
+          "sprite": "SPRITE_COOLTRAINER_F",
+          "lines": [
+            "I walk past the old houses before practice."
+          ],
+          "movement": "walk_x"
+        },
+        {
+          "id": "MnStPaulLife08",
+          "sprite": "SPRITE_POKEFAN_F",
+          "lines": [
+            "The market smells different at every corner."
+          ],
+          "movement": "walk_y"
+        },
+        {
+          "id": "MnStPaulLife09",
+          "sprite": "SPRITE_GENTLEMAN",
+          "lines": [
+            "I still remember my first ride into this station."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnStPaulLife10",
+          "sprite": "SPRITE_TEACHER",
+          "lines": [
+            "Ask about the building, and someone will tell you a story."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnStPaulLife11",
+          "sprite": "SPRITE_LASS",
+          "lines": [
+            "My partner likes the noisy fair. I like the quiet walk home."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnStPaulLife12",
+          "sprite": "SPRITE_SAILOR",
+          "lines": [
+            "Freight comes and goes. The river keeps moving."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnStPaulLife13",
+          "sprite": "SPRITE_YOUNGSTER",
+          "lines": [
+            "I am counting steps uphill. I lose count downhill."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnStPaulLife14",
+          "sprite": "SPRITE_SCIENTIST",
+          "lines": [
+            "A little garden brings plenty of tiny visitors."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnStPaulLife15",
+          "sprite": "SPRITE_COOLTRAINER_M",
+          "lines": [
+            "My partner and I never skip our evening lap."
+          ],
+          "movement": "walk_x"
+        },
+        {
+          "id": "MnStPaulLife16",
+          "sprite": "SPRITE_POKEFAN_F",
+          "lines": [
+            "Come back with an appetite when the fair opens."
+          ],
+          "movement": "walk_y"
+        }
+      ],
+      "placements": [
+        {
+          "dimensions": [
+            32,
+            24
+          ],
+          "tiles": [
+            [
+              35,
+              23
+            ],
+            [
+              18,
+              12
+            ],
+            [
+              39,
+              11
+            ],
+            [
+              15,
+              18
+            ],
+            [
+              32,
+              15
+            ],
+            [
+              48,
+              19
+            ],
+            [
+              21,
+              24
+            ],
+            [
+              59,
+              27
+            ],
+            [
+              46,
+              38
+            ],
+            [
+              28,
+              38
+            ],
+            [
+              34,
+              42
+            ],
+            [
+              55,
+              40
+            ],
+            [
+              24,
+              32
+            ],
+            [
+              58,
+              16
+            ],
+            [
+              38,
+              26
+            ],
+            [
+              4,
+              24
+            ]
+          ]
+        },
+        {
+          "dimensions": [
+            64,
+            48
+          ],
+          "tiles": [
+            [
+              70,
+              50
+            ],
+            [
+              44,
+              24
+            ],
+            [
+              24,
+              32
+            ],
+            [
+              50,
+              42
+            ],
+            [
+              74,
+              24
+            ],
+            [
+              100,
+              63
+            ],
+            [
+              62,
+              37
+            ],
+            [
+              92,
+              42
+            ],
+            [
+              80,
+              64
+            ],
+            [
+              30,
+              52
+            ],
+            [
+              38,
+              70
+            ],
+            [
+              100,
+              72
+            ],
+            [
+              62,
+              60
+            ],
+            [
+              84,
+              30
+            ],
+            [
+              54,
+              52
+            ],
+            [
+              38,
+              75
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnDuluth",
+      "trade": {
+        "requested": "MACHOP",
+        "offered": "SEEL",
+        "nickname": "HARBOR",
+        "trainer": "GUS"
+      },
+      "actors": [
+        {
+          "id": "MnDuluthLife01",
+          "sprite": "SPRITE_SAILOR",
+          "lines": [
+            "GUS: My SEEL loves the cold lake. I need a strong partner to help with ropes."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnDuluthLife02",
+          "sprite": "SPRITE_FISHER",
+          "lines": [
+            "If the lake disappears in fog, listen for the horn."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnDuluthLife03",
+          "sprite": "SPRITE_GENTLEMAN",
+          "lines": [
+            "The hill streets have given me very strong legs."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnDuluthLife04",
+          "sprite": "SPRITE_LASS",
+          "lines": [
+            "We watch for ships from the lookout."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnDuluthLife05",
+          "sprite": "SPRITE_TEACHER",
+          "lines": [
+            "Iron ore starts far inland. The harbor is only one part of the trip."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnDuluthLife06",
+          "sprite": "SPRITE_POKEFAN_F",
+          "lines": [
+            "A warm kitchen feels better after lake wind."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnDuluthLife07",
+          "sprite": "SPRITE_COOLTRAINER_M",
+          "lines": [
+            "Stairs are part of my daily training."
+          ],
+          "movement": "walk_x"
+        },
+        {
+          "id": "MnDuluthLife08",
+          "sprite": "SPRITE_SAILOR",
+          "lines": [
+            "Check the line before putting your weight on it."
+          ],
+          "movement": "walk_y"
+        },
+        {
+          "id": "MnDuluthLife09",
+          "sprite": "SPRITE_YOUNGSTER",
+          "lines": [
+            "I wave at every ship. Sometimes someone waves back."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnDuluthLife10",
+          "sprite": "SPRITE_SCIENTIST",
+          "lines": [
+            "The lake changes the weather on both sides of town."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnDuluthLife11",
+          "sprite": "SPRITE_TEACHER",
+          "lines": [
+            "A working harbor has room for wildlife if we take care."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnDuluthLife12",
+          "sprite": "SPRITE_POKEFAN_M",
+          "lines": [
+            "I packed a jacket. It is always the right choice here."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnDuluthLife13",
+          "sprite": "SPRITE_LASS",
+          "lines": [
+            "I draw boats while my partner watches gulls."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnDuluthLife14",
+          "sprite": "SPRITE_GENTLEMAN",
+          "lines": [
+            "The best stories arrive with the crews."
+          ],
+          "movement": "stand"
+        },
+        {
+          "id": "MnDuluthLife15",
+          "sprite": "SPRITE_COOLTRAINER_F",
+          "lines": [
+            "One lap by the lake, then back up the hill."
+          ],
+          "movement": "walk_x"
+        },
+        {
+          "id": "MnDuluthLife16",
+          "sprite": "SPRITE_FISHER",
+          "lines": [
+            "No catch is worth leaving a hook on the shore."
+          ],
+          "movement": "walk_y"
+        }
+      ],
+      "placements": [
+        {
+          "dimensions": [
+            32,
+            24
+          ],
+          "tiles": [
+            [
+              27,
+              33
+            ],
+            [
+              19,
+              6
+            ],
+            [
+              18,
+              15
+            ],
+            [
+              22,
+              11
+            ],
+            [
+              39,
+              21
+            ],
+            [
+              12,
+              35
+            ],
+            [
+              29,
+              16
+            ],
+            [
+              45,
+              37
+            ],
+            [
+              10,
+              24
+            ],
+            [
+              31,
+              7
+            ],
+            [
+              23,
+              24
+            ],
+            [
+              42,
+              32
+            ],
+            [
+              9,
+              38
+            ],
+            [
+              50,
+              39
+            ],
+            [
+              36,
+              21
+            ],
+            [
+              23,
+              35
+            ]
+          ]
+        },
+        {
+          "dimensions": [
+            64,
+            48
+          ],
+          "tiles": [
+            [
+              80,
+              62
+            ],
+            [
+              60,
+              22
+            ],
+            [
+              42,
+              30
+            ],
+            [
+              20,
+              28
+            ],
+            [
+              96,
+              46
+            ],
+            [
+              30,
+              50
+            ],
+            [
+              64,
+              32
+            ],
+            [
+              100,
+              64
+            ],
+            [
+              76,
+              44
+            ],
+            [
+              42,
+              60
+            ],
+            [
+              58,
+              50
+            ],
+            [
+              104,
+              78
+            ],
+            [
+              28,
+              70
+            ],
+            [
+              86,
+              74
+            ],
+            [
+              20,
+              82
+            ],
+            [
+              110,
+              64
+            ]
+          ]
+        }
+      ]
+    }
+  ]
+}

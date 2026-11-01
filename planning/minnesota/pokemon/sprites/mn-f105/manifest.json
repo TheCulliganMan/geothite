@@ -1,0 +1,345 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F105",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_230": {
+      "species_id": "MN_230",
+      "name": "Pipcorn",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          25,
+          10
+        ],
+        [
+          20,
+          9,
+          5
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        11071,
+        5428,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          206,
+          82
+        ],
+        [
+          165,
+          74,
+          41
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FFCE52",
+        "#A54A29",
+        "#000000"
+      ]
+    },
+    "MN_231": {
+      "species_id": "MN_231",
+      "name": "Pufflare",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          30,
+          27,
+          16
+        ],
+        [
+          19,
+          7,
+          7
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        17278,
+        7411,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          247,
+          222,
+          132
+        ],
+        [
+          156,
+          57,
+          57
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#F7DE84",
+        "#9C3939",
+        "#000000"
+      ]
+    },
+    "MN_232": {
+      "species_id": "MN_232",
+      "name": "Popummel",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          28,
+          18
+        ],
+        [
+          21,
+          8,
+          6
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        19359,
+        6421,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          231,
+          148
+        ],
+        [
+          173,
+          66,
+          49
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FFE794",
+        "#AD4231",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f105/prompt-v1.txt",
+  "reference_mapping": "sprites/mn-f105/reference-mapping-v1.json",
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-230-pipcorn-v1",
+      "species_id": "MN_230",
+      "view": "front",
+      "source": "sprites/mn-f105/mn-230-232.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        400,
+        550
+      ],
+      "fit": [
+        36,
+        36
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        11071,
+        5428,
+        0
+      ],
+      "white_detail_min_samples": 8
+    },
+    {
+      "id": "mn-230-pipcorn-v1",
+      "species_id": "MN_230",
+      "view": "back",
+      "source": "sprites/mn-f105/mn-230-232.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        550,
+        400,
+        474
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        11071,
+        5428,
+        0
+      ],
+      "white_detail_min_samples": 8
+    },
+    {
+      "id": "mn-231-pufflare-v1",
+      "species_id": "MN_231",
+      "view": "front",
+      "source": "sprites/mn-f105/mn-230-232.front-back.imagegen-v1.png",
+      "crop": [
+        400,
+        0,
+        525,
+        550
+      ],
+      "fit": [
+        48,
+        48
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        17278,
+        7411,
+        0
+      ],
+      "white_detail_min_samples": 8
+    },
+    {
+      "id": "mn-231-pufflare-v1",
+      "species_id": "MN_231",
+      "view": "back",
+      "source": "sprites/mn-f105/mn-230-232.front-back.imagegen-v1.png",
+      "crop": [
+        400,
+        550,
+        525,
+        474
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        17278,
+        7411,
+        0
+      ],
+      "white_detail_min_samples": 8
+    },
+    {
+      "id": "mn-232-popummel-v1",
+      "species_id": "MN_232",
+      "view": "front",
+      "source": "sprites/mn-f105/mn-230-232.front-back.imagegen-v1.png",
+      "crop": [
+        925,
+        0,
+        611,
+        550
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        19359,
+        6421,
+        0
+      ],
+      "white_detail_min_samples": 8
+    },
+    {
+      "id": "mn-232-popummel-v1",
+      "species_id": "MN_232",
+      "view": "back",
+      "source": "sprites/mn-f105/mn-230-232.front-back.imagegen-v1.png",
+      "crop": [
+        925,
+        550,
+        611,
+        474
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        19359,
+        6421,
+        0
+      ],
+      "white_detail_min_samples": 8
+    }
+  ],
+  "source_sha256": "a4da5553a944a99eb9ba1ec7cc9b9e9d2e46fe537601d37cbfab7a474db32d9d",
+  "candidate_review": {
+    "status": "native-review-pending",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "ff89fb80dea9e811bdb3eea379a1c831dea1708e4477b3108b53ed5d9ebd4778",
+    "notes": "Actual native sheet inspected: kernel36 to asymmetric half-popped fighter48 to broad popcorn fighter54 gives anatomical growth; hull fists and bent feet read separately from popped starch. White eyes/pupils persist, fronts face left and close rear portraits face right with lower bodies cut. Very pale starch interiors use much white but have stepped black silhouettes and warm shading. Root final review pending."
+  },
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "notes": "Root inspected six frames: pointed kernel with hull feet becomes asymmetric puff/hull arms then broad starch fighter with curved tough-hull fists. White starch planes remain enclosed by deliberate stepped dark anchors; bright eyes and warm hull shadows are readable. Three species have distinct palettes and close backs preserve head/shoulder growth.",
+    "sheet_sha256": "ff89fb80dea9e811bdb3eea379a1c831dea1708e4477b3108b53ed5d9ebd4778",
+    "outline_profile": "source-contour-v1"
+  }
+}

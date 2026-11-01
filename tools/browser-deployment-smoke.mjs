@@ -30,14 +30,14 @@ try {
     assert.equal(startup.worker,'function');
     const state=await page.evaluate(async()=>{
      const script=[...document.scripts].map(s=>s.textContent).join('\n');
-     const path=script.match(/import\('(\.\/crystal-bevy(?:-[a-f0-9]{64})?\.js)'\)/)?.[1];
+     const path=globalThis.__crystalRendererBundle?.module ?? script.match(/import\('(\.\/crystal-bevy(?:-[a-f0-9]{64})?\.js)'\)/)?.[1];
      if(!path) throw new Error('Missing compiled bundle import');
      const wasm=await import(path);
      const {createGameBridge}=await import('./webmcp.js');
      const bridge=createGameBridge(wasm);
      let state=await bridge.execute({kind:'observe'});
-     for(let i=0;i<4&&state.status.screen==='intro';i++) state=await bridge.execute({kind:'press',button:'a',frames:8});
-     for(let i=0;i<6&&state.status.screen==='title'&&!state.observe.text.includes('NEW GAME');i++) state=await bridge.execute({kind:'press',button:'start',frames:8});
+     for(let i=0;i<30&&state.status.screen==='intro';i++) state=await bridge.execute({kind:'press',button:'a',frames:8});
+     for(let i=0;i<30&&state.status.screen==='title'&&!state.observe.text.includes('NEW GAME');i++) state=await bridge.execute({kind:'press',button:'start',frames:8});
      return {screen:state.status.screen,text:state.observe.text,path};
     });
     assert.equal(state.screen,'title');

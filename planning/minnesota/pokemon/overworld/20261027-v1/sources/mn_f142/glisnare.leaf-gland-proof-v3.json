@@ -1,0 +1,1008 @@
+{
+  "species_id": "MN_315",
+  "manifest_sha256": "80a433b729a0505dc280ac945c116d1efa2407d1f490fd1f1c832130cce7db4c",
+  "bank_sha256": "a8656f819ea63a22630887d4ffbf2bef8080e39907289f8230cb6e4d6fdf5b26",
+  "result": "pass",
+  "six_pose_source_to_native_gland_proof": [
+    {
+      "pose": "down_idle",
+      "actual_amber_leaf_tip_glands_excluding_central_real_face_and_decoy": [
+        {
+          "source_bounds": [
+            109,
+            183,
+            54,
+            50
+          ],
+          "source_pixels": 2124,
+          "native_samples": [
+            {
+              "native": [
+                3,
+                6
+              ],
+              "source": [
+                133,
+                211
+              ]
+            }
+          ]
+        },
+        {
+          "source_bounds": [
+            383,
+            183,
+            54,
+            50
+          ],
+          "source_pixels": 2141,
+          "native_samples": [
+            {
+              "native": [
+                11,
+                6
+              ],
+              "source": [
+                383,
+                211
+              ]
+            },
+            {
+              "native": [
+                12,
+                6
+              ],
+              "source": [
+                414,
+                211
+              ]
+            }
+          ]
+        },
+        {
+          "source_bounds": [
+            66,
+            285,
+            53,
+            48
+          ],
+          "source_pixels": 2048,
+          "native_samples": [
+            {
+              "native": [
+                1,
+                9
+              ],
+              "source": [
+                71,
+                306
+              ]
+            },
+            {
+              "native": [
+                2,
+                9
+              ],
+              "source": [
+                102,
+                306
+              ]
+            }
+          ]
+        },
+        {
+          "source_bounds": [
+            427,
+            285,
+            54,
+            48
+          ],
+          "source_pixels": 2069,
+          "native_samples": [
+            {
+              "native": [
+                13,
+                9
+              ],
+              "source": [
+                445,
+                306
+              ]
+            },
+            {
+              "native": [
+                14,
+                9
+              ],
+              "source": [
+                476,
+                306
+              ]
+            }
+          ]
+        },
+        {
+          "source_bounds": [
+            98,
+            380,
+            53,
+            51
+          ],
+          "source_pixels": 2190,
+          "native_samples": [
+            {
+              "native": [
+                2,
+                12
+              ],
+              "source": [
+                102,
+                401
+              ]
+            },
+            {
+              "native": [
+                3,
+                12
+              ],
+              "source": [
+                133,
+                401
+              ]
+            }
+          ]
+        },
+        {
+          "source_bounds": [
+            396,
+            380,
+            52,
+            51
+          ],
+          "source_pixels": 2137,
+          "native_samples": [
+            {
+              "native": [
+                12,
+                12
+              ],
+              "source": [
+                414,
+                401
+              ]
+            },
+            {
+              "native": [
+                13,
+                12
+              ],
+              "source": [
+                445,
+                401
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "up_idle",
+      "actual_amber_leaf_tip_glands_excluding_central_real_face_and_decoy": [
+        {
+          "source_bounds": [
+            606,
+            183,
+            54,
+            49
+          ],
+          "source_pixels": 2092,
+          "native_samples": [
+            {
+              "native": [
+                3,
+                5
+              ],
+              "source": [
+                630,
+                184
+              ]
+            },
+            {
+              "native": [
+                3,
+                6
+              ],
+              "source": [
+                630,
+                216
+              ]
+            }
+          ]
+        },
+        {
+          "source_bounds": [
+            876,
+            183,
+            54,
+            50
+          ],
+          "source_pixels": 2144,
+          "native_samples": [
+            {
+              "native": [
+                12,
+                5
+              ],
+              "source": [
+                911,
+                184
+              ]
+            },
+            {
+              "native": [
+                11,
+                6
+              ],
+              "source": [
+                880,
+                216
+              ]
+            },
+            {
+              "native": [
+                12,
+                6
+              ],
+              "source": [
+                911,
+                216
+              ]
+            }
+          ]
+        },
+        {
+          "source_bounds": [
+            568,
+            285,
+            52,
+            48
+          ],
+          "source_pixels": 1979,
+          "native_samples": [
+            {
+              "native": [
+                1,
+                9
+              ],
+              "source": [
+                568,
+                311
+              ]
+            },
+            {
+              "native": [
+                2,
+                9
+              ],
+              "source": [
+                599,
+                311
+              ]
+            }
+          ]
+        },
+        {
+          "source_bounds": [
+            918,
+            285,
+            53,
+            48
+          ],
+          "source_pixels": 2044,
+          "native_samples": [
+            {
+              "native": [
+                13,
+                9
+              ],
+              "source": [
+                942,
+                311
+              ]
+            }
+          ]
+        },
+        {
+          "source_bounds": [
+            596,
+            380,
+            53,
+            51
+          ],
+          "source_pixels": 2200,
+          "native_samples": [
+            {
+              "native": [
+                2,
+                12
+              ],
+              "source": [
+                599,
+                406
+              ]
+            },
+            {
+              "native": [
+                3,
+                12
+              ],
+              "source": [
+                630,
+                406
+              ]
+            }
+          ]
+        },
+        {
+          "source_bounds": [
+            886,
+            380,
+            54,
+            51
+          ],
+          "source_pixels": 2205,
+          "native_samples": [
+            {
+              "native": [
+                12,
+                12
+              ],
+              "source": [
+                911,
+                406
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "actual_amber_leaf_tip_glands_excluding_central_real_face_and_decoy": [
+        {
+          "source_bounds": [
+            1158,
+            149,
+            52,
+            57
+          ],
+          "source_pixels": 2459,
+          "native_samples": [
+            {
+              "native": [
+                4,
+                4
+              ],
+              "source": [
+                1173,
+                153
+              ]
+            },
+            {
+              "native": [
+                4,
+                5
+              ],
+              "source": [
+                1173,
+                184
+              ]
+            },
+            {
+              "native": [
+                5,
+                5
+              ],
+              "source": [
+                1204,
+                184
+              ]
+            }
+          ]
+        },
+        {
+          "source_bounds": [
+            1131,
+            260,
+            52,
+            58
+          ],
+          "source_pixels": 2476,
+          "native_samples": [
+            {
+              "native": [
+                3,
+                8
+              ],
+              "source": [
+                1141,
+                279
+              ]
+            },
+            {
+              "native": [
+                4,
+                8
+              ],
+              "source": [
+                1173,
+                279
+              ]
+            }
+          ]
+        },
+        {
+          "source_bounds": [
+            1172,
+            367,
+            51,
+            52
+          ],
+          "source_pixels": 2145,
+          "native_samples": [
+            {
+              "native": [
+                5,
+                11
+              ],
+              "source": [
+                1204,
+                374
+              ]
+            },
+            {
+              "native": [
+                4,
+                12
+              ],
+              "source": [
+                1173,
+                406
+              ]
+            },
+            {
+              "native": [
+                5,
+                12
+              ],
+              "source": [
+                1204,
+                406
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "actual_amber_leaf_tip_glands_excluding_central_real_face_and_decoy": [
+        {
+          "source_bounds": [
+            110,
+            629,
+            53,
+            49
+          ],
+          "source_pixels": 2067,
+          "native_samples": [
+            {
+              "native": [
+                3,
+                5
+              ],
+              "source": [
+                132,
+                632
+              ]
+            },
+            {
+              "native": [
+                3,
+                6
+              ],
+              "source": [
+                132,
+                664
+              ]
+            }
+          ]
+        },
+        {
+          "source_bounds": [
+            383,
+            631,
+            54,
+            47
+          ],
+          "source_pixels": 2012,
+          "native_samples": [
+            {
+              "native": [
+                12,
+                5
+              ],
+              "source": [
+                413,
+                632
+              ]
+            },
+            {
+              "native": [
+                12,
+                6
+              ],
+              "source": [
+                413,
+                664
+              ]
+            }
+          ]
+        },
+        {
+          "source_bounds": [
+            66,
+            722,
+            53,
+            48
+          ],
+          "source_pixels": 2029,
+          "native_samples": [
+            {
+              "native": [
+                2,
+                8
+              ],
+              "source": [
+                101,
+                727
+              ]
+            },
+            {
+              "native": [
+                2,
+                9
+              ],
+              "source": [
+                101,
+                759
+              ]
+            }
+          ]
+        },
+        {
+          "source_bounds": [
+            428,
+            722,
+            53,
+            48
+          ],
+          "source_pixels": 2032,
+          "native_samples": [
+            {
+              "native": [
+                13,
+                8
+              ],
+              "source": [
+                444,
+                727
+              ]
+            },
+            {
+              "native": [
+                13,
+                9
+              ],
+              "source": [
+                444,
+                759
+              ]
+            }
+          ]
+        },
+        {
+          "source_bounds": [
+            91,
+            843,
+            50,
+            49
+          ],
+          "source_pixels": 1937,
+          "native_samples": [
+            {
+              "native": [
+                2,
+                12
+              ],
+              "source": [
+                101,
+                854
+              ]
+            },
+            {
+              "native": [
+                3,
+                12
+              ],
+              "source": [
+                132,
+                854
+              ]
+            }
+          ]
+        },
+        {
+          "source_bounds": [
+            406,
+            843,
+            51,
+            49
+          ],
+          "source_pixels": 1989,
+          "native_samples": [
+            {
+              "native": [
+                12,
+                12
+              ],
+              "source": [
+                413,
+                854
+              ]
+            },
+            {
+              "native": [
+                13,
+                12
+              ],
+              "source": [
+                444,
+                854
+              ]
+            },
+            {
+              "native": [
+                13,
+                13
+              ],
+              "source": [
+                444,
+                885
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "up_step",
+      "actual_amber_leaf_tip_glands_excluding_central_real_face_and_decoy": [
+        {
+          "source_bounds": [
+            605,
+            630,
+            55,
+            48
+          ],
+          "source_pixels": 2055,
+          "native_samples": [
+            {
+              "native": [
+                3,
+                5
+              ],
+              "source": [
+                633,
+                634
+              ]
+            },
+            {
+              "native": [
+                3,
+                6
+              ],
+              "source": [
+                633,
+                666
+              ]
+            }
+          ]
+        },
+        {
+          "source_bounds": [
+            875,
+            631,
+            55,
+            46
+          ],
+          "source_pixels": 2046,
+          "native_samples": [
+            {
+              "native": [
+                12,
+                5
+              ],
+              "source": [
+                914,
+                634
+              ]
+            },
+            {
+              "native": [
+                12,
+                6
+              ],
+              "source": [
+                914,
+                666
+              ]
+            }
+          ]
+        },
+        {
+          "source_bounds": [
+            924,
+            733,
+            54,
+            48
+          ],
+          "source_pixels": 2074,
+          "native_samples": [
+            {
+              "native": [
+                13,
+                9
+              ],
+              "source": [
+                945,
+                761
+              ]
+            },
+            {
+              "native": [
+                14,
+                9
+              ],
+              "source": [
+                976,
+                761
+              ]
+            }
+          ]
+        },
+        {
+          "source_bounds": [
+            569,
+            734,
+            51,
+            54
+          ],
+          "source_pixels": 2260,
+          "native_samples": [
+            {
+              "native": [
+                1,
+                9
+              ],
+              "source": [
+                571,
+                761
+              ]
+            },
+            {
+              "native": [
+                2,
+                9
+              ],
+              "source": [
+                602,
+                761
+              ]
+            }
+          ]
+        },
+        {
+          "source_bounds": [
+            905,
+            821,
+            48,
+            51
+          ],
+          "source_pixels": 1986,
+          "native_samples": [
+            {
+              "native": [
+                12,
+                12
+              ],
+              "source": [
+                914,
+                856
+              ]
+            },
+            {
+              "native": [
+                13,
+                12
+              ],
+              "source": [
+                945,
+                856
+              ]
+            }
+          ]
+        },
+        {
+          "source_bounds": [
+            609,
+            843,
+            52,
+            49
+          ],
+          "source_pixels": 1994,
+          "native_samples": [
+            {
+              "native": [
+                3,
+                12
+              ],
+              "source": [
+                633,
+                856
+              ]
+            },
+            {
+              "native": [
+                3,
+                13
+              ],
+              "source": [
+                633,
+                887
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "actual_amber_leaf_tip_glands_excluding_central_real_face_and_decoy": [
+        {
+          "source_bounds": [
+            1149,
+            594,
+            53,
+            56
+          ],
+          "source_pixels": 2429,
+          "native_samples": [
+            {
+              "native": [
+                4,
+                4
+              ],
+              "source": [
+                1181,
+                601
+              ]
+            },
+            {
+              "native": [
+                3,
+                5
+              ],
+              "source": [
+                1149,
+                632
+              ]
+            },
+            {
+              "native": [
+                4,
+                5
+              ],
+              "source": [
+                1181,
+                632
+              ]
+            }
+          ]
+        },
+        {
+          "source_bounds": [
+            1149,
+            710,
+            51,
+            55
+          ],
+          "source_pixels": 2288,
+          "native_samples": [
+            {
+              "native": [
+                3,
+                8
+              ],
+              "source": [
+                1149,
+                727
+              ]
+            },
+            {
+              "native": [
+                4,
+                8
+              ],
+              "source": [
+                1181,
+                727
+              ]
+            },
+            {
+              "native": [
+                4,
+                9
+              ],
+              "source": [
+                1181,
+                759
+              ]
+            }
+          ]
+        },
+        {
+          "source_bounds": [
+            1168,
+            802,
+            54,
+            55
+          ],
+          "source_pixels": 2359,
+          "native_samples": [
+            {
+              "native": [
+                4,
+                11
+              ],
+              "source": [
+                1181,
+                822
+              ]
+            },
+            {
+              "native": [
+                5,
+                11
+              ],
+              "source": [
+                1212,
+                822
+              ]
+            },
+            {
+              "native": [
+                4,
+                12
+              ],
+              "source": [
+                1181,
+                854
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

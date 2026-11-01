@@ -1,0 +1,577 @@
+{
+  "schema_version": 1,
+  "id": "MnLeechLake",
+  "tileset": "mn_headwaters",
+  "dimensions_metatiles": [
+    32,
+    24
+  ],
+  "rows": [
+    "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 01 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+    "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 01 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+    "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 01 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05",
+    "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 01 05 05 05 05 54 76 76 76 76 76 76 55 05 05 05",
+    "05 05 05 05 02 02 02 02 02 02 05 05 05 05 05 05 01 05 05 05 05 58 35 35 35 35 35 35 59 05 05 05",
+    "05 05 05 05 02 2c 2d 02 02 02 05 05 05 01 01 01 01 05 05 05 54 79 35 35 35 35 35 35 7a 76 55 05",
+    "05 05 05 05 02 2e 2f 02 02 02 05 05 05 01 05 05 05 05 05 05 58 35 35 35 35 35 35 35 35 35 59 05",
+    "05 05 05 05 02 01 01 01 45 01 01 01 01 01 05 05 05 05 05 05 58 35 35 35 35 35 35 35 35 35 59 05",
+    "05 05 05 05 02 04 04 04 02 02 05 05 05 01 05 05 05 05 54 76 79 35 35 35 35 35 35 35 35 35 59 05",
+    "05 05 05 05 02 02 02 02 02 02 02 02 02 01 02 02 02 02 58 35 35 35 35 35 35 35 35 35 35 35 36 05",
+    "05 05 05 05 05 05 05 05 05 02 02 01 01 01 82 82 82 82 82 82 42 58 35 35 35 35 35 35 35 35 07 05",
+    "05 05 05 05 05 05 05 05 05 02 02 01 02 45 81 81 81 81 81 81 4a 58 35 35 35 35 35 35 35 35 59 05",
+    "05 05 05 05 05 05 05 05 05 02 02 01 02 02 02 02 54 76 76 76 76 79 35 59 05 05 58 35 35 35 59 05",
+    "05 05 05 05 05 05 05 05 05 02 02 01 02 02 45 02 58 35 35 35 35 35 59 05 05 05 05 58 35 35 59 05",
+    "05 05 05 05 05 05 05 05 05 02 02 01 01 01 01 01 58 35 35 35 35 35 59 05 05 05 05 05 58 35 59 05",
+    "05 05 05 02 02 02 02 02 02 02 02 01 02 02 02 02 58 35 35 35 35 35 59 02 02 05 02 05 58 35 59 05",
+    "05 05 05 02 2c 2d 02 02 02 02 02 01 02 02 02 02 58 35 35 35 35 35 59 05 02 03 02 05 58 35 59 05",
+    "05 05 05 02 2e 2f 02 02 02 02 05 01 01 01 01 01 01 02 58 35 35 35 59 05 3d 57 57 05 58 35 59 05",
+    "05 05 05 02 01 01 01 01 01 01 01 01 05 02 02 02 01 02 58 35 35 35 59 05 02 04 02 05 58 35 59 05",
+    "05 05 05 02 02 04 04 04 02 02 05 05 05 02 02 02 01 45 58 35 35 35 7a 55 05 05 05 54 59 05 05 05",
+    "05 05 05 02 02 02 02 02 02 02 05 05 05 02 02 02 01 02 58 35 35 35 35 7a 76 76 76 79 59 05 05 05",
+    "05 05 05 05 05 05 05 05 05 05 05 05 05 02 02 02 01 02 02 05 05 58 35 35 35 35 35 35 59 05 05 05",
+    "05 05 05 05 05 05 05 05 05 05 05 05 05 02 02 02 01 02 02 05 05 05 05 05 05 05 05 05 05 05 05 05",
+    "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 01 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05"
+  ],
+  "purpose": "Optional pine island reached from its west landing: a grass approach to an island naturalist and Mystic Water, a short ledge return avoiding grass, and a separate eastern Whirlpool rock cache. Existing dry road, care, witnesses, pier, launch and borders remain.",
+  "proposed_actors": [
+    {
+      "id": "MN_EXTRA_LEECH_ISLAND_NATURALIST",
+      "sprite": "SPRITE_COOLTRAINER_F",
+      "tile": [
+        53,
+        30
+      ]
+    }
+  ],
+  "proposed_items": [
+    {
+      "id": "MN_LEECH_ISLAND_WATER",
+      "tile": [
+        53,
+        33
+      ]
+    }
+  ],
+  "island_mask": {
+    "12": {
+      "24": "05",
+      "25": "05"
+    },
+    "13": {
+      "23": "05",
+      "24": "05",
+      "25": "05",
+      "26": "05"
+    },
+    "14": {
+      "23": "05",
+      "24": "05",
+      "25": "05",
+      "26": "05",
+      "27": "05"
+    },
+    "15": {
+      "23": "02",
+      "24": "02",
+      "25": "05",
+      "26": "02",
+      "27": "05"
+    },
+    "16": {
+      "23": "05",
+      "24": "02",
+      "25": "03",
+      "26": "02",
+      "27": "05"
+    },
+    "17": {
+      "23": "05",
+      "24": "3d",
+      "25": "57",
+      "26": "57",
+      "27": "05"
+    },
+    "18": {
+      "23": "05",
+      "24": "02",
+      "25": "04",
+      "26": "02",
+      "27": "05"
+    },
+    "19": {
+      "24": "05",
+      "25": "05",
+      "26": "05"
+    }
+  },
+  "landing": {
+    "water": [
+      45,
+      30
+    ],
+    "floor": [
+      46,
+      30
+    ]
+  },
+  "whirlpool": {
+    "cap_metatile": [
+      30,
+      9
+    ],
+    "closed_metatile": [
+      30,
+      10
+    ],
+    "current": [
+      60,
+      20
+    ],
+    "cache": [
+      61,
+      20
+    ]
+  },
+  "review_contract": {
+    "viewpoints": [
+      {
+        "id": "launch",
+        "tile": [
+          31,
+          29
+        ]
+      },
+      {
+        "id": "west-landing",
+        "tile": [
+          46,
+          30
+        ]
+      },
+      {
+        "id": "grass-choice",
+        "tile": [
+          49,
+          31
+        ]
+      },
+      {
+        "id": "naturalist",
+        "tile": [
+          52,
+          30
+        ]
+      },
+      {
+        "id": "water-cache",
+        "tile": [
+          52,
+          33
+        ]
+      },
+      {
+        "id": "ledge-return",
+        "tile": [
+          52,
+          34
+        ]
+      },
+      {
+        "id": "eastern-current",
+        "tile": [
+          59,
+          20
+        ]
+      }
+    ]
+  },
+  "status": "Source v06 shortens optional directions to three native pages; full candidate verification is recorded separately.",
+  "island_route": {
+    "landing": [
+      46,
+      30
+    ],
+    "required_grass": {
+      "min": [
+        50,
+        32
+      ],
+      "max": [
+        51,
+        33
+      ]
+    },
+    "naturalist": [
+      53,
+      30
+    ],
+    "reward": [
+      53,
+      33
+    ],
+    "ledge_lips": [
+      [
+        50,
+        34
+      ],
+      [
+        51,
+        34
+      ],
+      [
+        52,
+        34
+      ],
+      [
+        53,
+        34
+      ]
+    ],
+    "ledge_landings": [
+      [
+        50,
+        36
+      ],
+      [
+        51,
+        36
+      ],
+      [
+        52,
+        36
+      ],
+      [
+        53,
+        36
+      ]
+    ],
+    "west_side_barrier": [
+      [
+        49,
+        34
+      ]
+    ],
+    "ordinary_return_via": [
+      48,
+      36
+    ]
+  },
+  "trainer_source": {
+    "schema_version": 1,
+    "trainers": [
+      {
+        "map": "MnLeechLake",
+        "approach": [
+          52,
+          30
+        ],
+        "optional_battle": true,
+        "id": "MN_EXTRA_LEECH_ISLAND_NATURALIST",
+        "display_name": "ELLIS",
+        "trainer_class": "COOLTRAINERF",
+        "sprite": "SPRITE_COOLTRAINER_F",
+        "tile": [
+          53,
+          30
+        ],
+        "facing": "west",
+        "sight_range": 1,
+        "defeated_flag": "EVENT_MN_EXTRA_LEECH_ISLAND_NATURALIST",
+        "party": [
+          {
+            "species": "SHEDSTAG",
+            "level": 35
+          },
+          {
+            "species": "LEECHURGE",
+            "level": 36
+          }
+        ],
+        "before_lines": [
+          "The pines shelter",
+          "life on this lake.",
+          "Test your team?"
+        ],
+        "after_lines": [
+          "Water feeds roots.",
+          "Roots hold shores.",
+          "The low ledge is",
+          "a quick way back."
+        ],
+        "loss_lines": [
+          "A strong showing!",
+          "Keep exploring."
+        ]
+      }
+    ]
+  },
+  "encounters": {
+    "map_name": "MnLeechLake",
+    "grass_rates": {
+      "morning": 0,
+      "day": 0,
+      "night": 0
+    },
+    "water_rate": 0,
+    "grass": {
+      "morning": [
+        {
+          "species": "LEECHIMP",
+          "level": 30
+        },
+        {
+          "species": "VELVAWN",
+          "level": 30
+        },
+        {
+          "species": "YODELOON",
+          "level": 31
+        },
+        {
+          "species": "LEECHURGE",
+          "level": 32
+        },
+        {
+          "species": "SHEDSTAG",
+          "level": 33
+        },
+        {
+          "species": "SHEDSTAG",
+          "level": 35
+        },
+        {
+          "species": "YODELOON",
+          "level": 35
+        }
+      ],
+      "day": [
+        {
+          "species": "LEECHIMP",
+          "level": 30
+        },
+        {
+          "species": "VELVAWN",
+          "level": 30
+        },
+        {
+          "species": "YODELOON",
+          "level": 31
+        },
+        {
+          "species": "LEECHURGE",
+          "level": 32
+        },
+        {
+          "species": "SHEDSTAG",
+          "level": 33
+        },
+        {
+          "species": "SHEDSTAG",
+          "level": 35
+        },
+        {
+          "species": "YODELOON",
+          "level": 35
+        }
+      ],
+      "night": [
+        {
+          "species": "YODELOON",
+          "level": 30
+        },
+        {
+          "species": "LEECHIMP",
+          "level": 30
+        },
+        {
+          "species": "LEECHURGE",
+          "level": 31
+        },
+        {
+          "species": "VELVAWN",
+          "level": 31
+        },
+        {
+          "species": "YODELOON",
+          "level": 33
+        },
+        {
+          "species": "SHEDSTAG",
+          "level": 35
+        },
+        {
+          "species": "LEECHURGE",
+          "level": 35
+        }
+      ]
+    },
+    "water": {
+      "morning": [
+        {
+          "species": "LEECHIMP",
+          "level": 30
+        },
+        {
+          "species": "LEECHURGE",
+          "level": 32
+        },
+        {
+          "species": "YODELOON",
+          "level": 31
+        }
+      ],
+      "day": [
+        {
+          "species": "LEECHIMP",
+          "level": 30
+        },
+        {
+          "species": "LEECHURGE",
+          "level": 32
+        },
+        {
+          "species": "YODELOON",
+          "level": 31
+        }
+      ],
+      "night": [
+        {
+          "species": "LEECHIMP",
+          "level": 30
+        },
+        {
+          "species": "LEECHURGE",
+          "level": 32
+        },
+        {
+          "species": "YODELOON",
+          "level": 31
+        }
+      ]
+    },
+    "zones": [
+      {
+        "id": "MN_LEECH_PINE_ISLAND",
+        "minX": 50,
+        "minY": 32,
+        "maxX": 51,
+        "maxY": 33,
+        "grassRates": {
+          "morning": 10,
+          "day": 10,
+          "night": 10
+        },
+        "grass": {
+          "morning": [
+            {
+              "species": "LEECHIMP",
+              "level": 30
+            },
+            {
+              "species": "VELVAWN",
+              "level": 30
+            },
+            {
+              "species": "YODELOON",
+              "level": 31
+            },
+            {
+              "species": "LEECHURGE",
+              "level": 32
+            },
+            {
+              "species": "SHEDSTAG",
+              "level": 33
+            },
+            {
+              "species": "SHEDSTAG",
+              "level": 35
+            },
+            {
+              "species": "YODELOON",
+              "level": 35
+            }
+          ],
+          "day": [
+            {
+              "species": "LEECHIMP",
+              "level": 30
+            },
+            {
+              "species": "VELVAWN",
+              "level": 30
+            },
+            {
+              "species": "YODELOON",
+              "level": 31
+            },
+            {
+              "species": "LEECHURGE",
+              "level": 32
+            },
+            {
+              "species": "SHEDSTAG",
+              "level": 33
+            },
+            {
+              "species": "SHEDSTAG",
+              "level": 35
+            },
+            {
+              "species": "YODELOON",
+              "level": 35
+            }
+          ],
+          "night": [
+            {
+              "species": "YODELOON",
+              "level": 30
+            },
+            {
+              "species": "LEECHIMP",
+              "level": 30
+            },
+            {
+              "species": "LEECHURGE",
+              "level": 31
+            },
+            {
+              "species": "VELVAWN",
+              "level": 31
+            },
+            {
+              "species": "YODELOON",
+              "level": 33
+            },
+            {
+              "species": "SHEDSTAG",
+              "level": 35
+            },
+            {
+              "species": "LEECHURGE",
+              "level": 35
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "island_item": {
+    "id": "MN_LEECH_ISLAND_WATER",
+    "tile": [
+      53,
+      33
+    ],
+    "item": "MYSTIC_WATER",
+    "quantity": 1,
+    "flag": "EVENT_MN_LEECH_ISLAND_WATER"
+  },
+  "fisher_hint": [
+    "The pine island's",
+    "landing is west.",
+    "WHIRLPOOL opens",
+    "the eastern cove.",
+    "Try ITEMFINDER at",
+    "the eastern rocks."
+  ]
+}

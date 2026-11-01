@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F102",
+  "species": [
+    {
+      "species_id": "MN_223",
+      "runtime_token": "CINDERFEN",
+      "palette_rgb555": [
+        32767,
+        9789,
+        15595,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        18345,
+        7535,
+        0
+      ],
+      "fit": [
+        14,
+        14
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 64,
+      "interior_black_samples": 64,
+      "opaque_interior_minimum_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "cinderfen.overworld.imagegen-v20-compressed-levels.png",
+          "crop": [
+            124,
+            59,
+            480,
+            470
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "cinderfen.overworld.imagegen-v20-compressed-levels.png",
+          "crop": [
+            593,
+            62,
+            480,
+            470
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "cinderfen.overworld.imagegen-v20-compressed-levels.png",
+          "crop": [
+            1000,
+            60,
+            480,
+            470
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "cinderfen.overworld.imagegen-v20-compressed-levels.png",
+          "crop": [
+            130,
+            541,
+            480,
+            470
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "cinderfen.overworld.imagegen-v20-compressed-levels.png",
+          "crop": [
+            597,
+            538,
+            480,
+            470
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "cinderfen.overworld.imagegen-v20-compressed-levels.png",
+          "crop": [
+            984,
+            537,
+            480,
+            470
+          ]
+        }
+      ]
+    }
+  ]
+}

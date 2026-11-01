@@ -1,0 +1,233 @@
+{
+  "schema_version": 1,
+  "id": "ely-pine-camp-v1",
+  "map": "MnEly",
+  "status": "Authored and source-tested candidate; actual selected status follows world.json and acceptance.",
+  "parent_revision": "iron_crosscut_bends_revision",
+  "parent_pack": "content-packs/minnesota-iron-crosscut-bends-v01.crystalpack",
+  "parent_pack_sha256": "a69310b47d2e3583d9fb8378784c919584591d6e260d5f548ae10ea0cd3409ce",
+  "dimensions_metatiles": [
+    20,
+    18
+  ],
+  "source": "after.json",
+  "source_sha256": "5b3bb60de855283a42637e68090a2b8f69370f61cc6b34c4eb262821f719c306",
+  "activities": "activities.json",
+  "activities_sha256": "d6334c3e4d7932514d2d4a0ae905e7a6012bcd596b8420705ac279efb8bf56d9",
+  "purpose": "Sheltered final rest town in snow-covered pines. Narrow windbreaks fit around the original three real buildings; a northern packing loop passes behind the League lodge and reaches a small supply nook. Three residents explain local shelter, the nook and practical League preparation. Southern pines frame the existing supply road without adding vacant snowfield.",
+  "preserved": [
+    "Falling snow and native mn_ely_snow art/palette",
+    "All original active doors/passive return records, both Lodge lanes",
+    "Original Ranger, both signs, Fly callback and League registration rules",
+    "North R13 connection, east Shore Pass connection and warm coastal geography",
+    "All other maps, interiors, wildlife, trainer teams, assets and audio"
+  ],
+  "connections": [
+    {
+      "side": "north",
+      "town": [
+        [
+          24,
+          0
+        ],
+        [
+          25,
+          0
+        ]
+      ],
+      "target": "MnR13C00R02",
+      "target_tiles": [
+        [
+          34,
+          31
+        ],
+        [
+          35,
+          31
+        ]
+      ],
+      "mechanic": "ordinary reciprocal walk"
+    },
+    {
+      "side": "east",
+      "town": [
+        [
+          39,
+          14
+        ],
+        [
+          39,
+          15
+        ]
+      ],
+      "target": "MnElyShorePass",
+      "target_tiles": [
+        [
+          0,
+          14
+        ],
+        [
+          0,
+          15
+        ]
+      ],
+      "mechanic": "ordinary reciprocal walk"
+    }
+  ],
+  "rooms": [
+    {
+      "index": 1,
+      "x": 11,
+      "y": 21,
+      "target_map_constant": "MN_ELY_POKECENTER_1F",
+      "target_map": "MN_ELY_POKECENTER_1F",
+      "target_warp_id": 3
+    },
+    {
+      "index": 2,
+      "x": 27,
+      "y": 27,
+      "target_map_constant": "MN_ELY_MART",
+      "target_map": "MN_ELY_MART",
+      "target_warp_id": 3
+    },
+    {
+      "index": 3,
+      "x": 25,
+      "y": 13,
+      "target_map_constant": "MN_LEAGUE_LOBBY",
+      "target_map": "MN_LEAGUE_LOBBY",
+      "target_warp_id": 5
+    },
+    {
+      "index": 4,
+      "x": 26,
+      "y": 13,
+      "target_map_constant": "MN_LEAGUE_LOBBY",
+      "target_map": "MN_LEAGUE_LOBBY",
+      "target_warp_id": 6
+    },
+    {
+      "index": 5,
+      "x": 11,
+      "y": 22,
+      "target_map_constant": "MN_ELY_POKECENTER_1F",
+      "target_map": "MN_ELY_POKECENTER_1F",
+      "target_warp_id": 3
+    },
+    {
+      "index": 6,
+      "x": 27,
+      "y": 28,
+      "target_map_constant": "MN_ELY_MART",
+      "target_map": "MN_ELY_MART",
+      "target_warp_id": 3
+    },
+    {
+      "index": 7,
+      "x": 25,
+      "y": 14,
+      "target_map_constant": "MN_LEAGUE_LOBBY",
+      "target_map": "MN_LEAGUE_LOBBY",
+      "target_warp_id": 5
+    },
+    {
+      "index": 8,
+      "x": 26,
+      "y": 14,
+      "target_map_constant": "MN_LEAGUE_LOBBY",
+      "target_map": "MN_LEAGUE_LOBBY",
+      "target_warp_id": 6
+    }
+  ],
+  "new_residents": [
+    {
+      "id": "MN_ELY_EINO",
+      "sprite": "SPRITE_POKEFAN_M",
+      "tile": [
+        21,
+        5
+      ],
+      "facing": "north",
+      "approach": [
+        21,
+        4
+      ],
+      "lines": [
+        "Wind off the lake",
+        "stops at these",
+        "pines. Follow the",
+        "packed trail east",
+        "for the shore."
+      ]
+    },
+    {
+      "id": "MN_ELY_SKI_TRAINER",
+      "sprite": "SPRITE_COOLTRAINER_F",
+      "tile": [
+        32,
+        10
+      ],
+      "facing": "east",
+      "approach": [
+        33,
+        10
+      ],
+      "lines": [
+        "I warm up on the",
+        "loop behind the",
+        "lodge. The little",
+        "supply nook is",
+        "easy to miss."
+      ]
+    },
+    {
+      "id": "MN_ELY_CHALLENGER",
+      "sprite": "SPRITE_COOLTRAINER_M",
+      "tile": [
+        29,
+        16
+      ],
+      "facing": "south",
+      "approach": [
+        29,
+        17
+      ],
+      "lines": [
+        "I reached the last",
+        "League room with",
+        "no FULL HEAL left.",
+        "This time I am",
+        "checking my PACK",
+        "before I register."
+      ]
+    }
+  ],
+  "supply": {
+    "id": "MN_ELY_PINE_SUPPLY",
+    "item": "FULL_RESTORE",
+    "quantity": 1,
+    "flag": "EVENT_MN_ELY_PINE_SUPPLY",
+    "tile": [
+      35,
+      5
+    ],
+    "approach": [
+      34,
+      5
+    ],
+    "mechanic": "native itemball",
+    "denial": "Full Items pocket retains ball and flag for later retry.",
+    "effect": "Full Restore heals HP and status through Pack; does not restore PP.",
+    "persistence": "Once-only saved flag; no respawn after room return or Continue."
+  },
+  "terrain_policy": "No decorative Cut gates, new cliff edges, ledges or ice slides. Native snow FLOOR and solid pines preserve an ordinary safe town.",
+  "static_review": {
+    "walkable_floor_with_actors_and_ball": 561,
+    "reachable_floor": 561,
+    "north_to_supply_approach_steps": 17,
+    "scope": "Actor-aware graph; native gameplay required separately."
+  },
+  "quality_scope": "A refinement of Ely, not a complete regional campaign or broad map acceptance.",
+  "quality_correction": "Rejected initial Eino position20,5 occupied the old sign approach. Final21,5 faces north with approach21,4; preserve both original sign lanes and prove them through the inherited public-town controller check."
+}

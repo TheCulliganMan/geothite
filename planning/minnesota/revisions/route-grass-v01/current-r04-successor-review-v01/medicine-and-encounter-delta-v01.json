@@ -1,0 +1,369 @@
+{
+  "SUPER_POTION": {
+    "equal": true,
+    "before": {
+      "name": "SUPER POTION",
+      "description": "Restores #MON\nHP by 50.",
+      "effect": "RestoreHPEffect",
+      "status_heals": [],
+      "revive_hp_percent": null,
+      "party_revive_hp_percent": null,
+      "pp_restore_scope": null,
+      "pp_restore_points": null,
+      "pp_up_stages": null,
+      "vitamin_stat": null,
+      "vitamin_stat_exp": null,
+      "vitamin_max_stat_exp": null,
+      "rare_candy_level_gain": null,
+      "battle_stat_boost_stat": null,
+      "battle_stat_boost_stages": null,
+      "battle_escape_mode": null,
+      "battle_capture_ball": null,
+      "battle_focus_energy": null,
+      "battle_stat_drop_guard": null,
+      "confusion_heal": null,
+      "repel_steps": null,
+      "escape_rope_mode": null,
+      "price": 700,
+      "held_effect": "HELD_NONE",
+      "parameter": 50,
+      "property": "CANT_SELECT",
+      "pocket": "ITEM",
+      "field_menu": "ITEMMENU_PARTY",
+      "field_usable": true,
+      "battle_menu": "ITEMMENU_PARTY",
+      "battle_usable": true,
+      "script_name": "SUPER_POTION",
+      "consumable": true,
+      "tmhm_index": null,
+      "tmhm_move": null
+    },
+    "after": {
+      "name": "SUPER POTION",
+      "description": "Restores #MON\nHP by 50.",
+      "effect": "RestoreHPEffect",
+      "status_heals": [],
+      "revive_hp_percent": null,
+      "party_revive_hp_percent": null,
+      "pp_restore_scope": null,
+      "pp_restore_points": null,
+      "pp_up_stages": null,
+      "vitamin_stat": null,
+      "vitamin_stat_exp": null,
+      "vitamin_max_stat_exp": null,
+      "rare_candy_level_gain": null,
+      "battle_stat_boost_stat": null,
+      "battle_stat_boost_stages": null,
+      "battle_escape_mode": null,
+      "battle_capture_ball": null,
+      "battle_focus_energy": null,
+      "battle_stat_drop_guard": null,
+      "confusion_heal": null,
+      "repel_steps": null,
+      "escape_rope_mode": null,
+      "price": 700,
+      "held_effect": "HELD_NONE",
+      "parameter": 50,
+      "property": "CANT_SELECT",
+      "pocket": "ITEM",
+      "field_menu": "ITEMMENU_PARTY",
+      "field_usable": true,
+      "battle_menu": "ITEMMENU_PARTY",
+      "battle_usable": true,
+      "script_name": "SUPER_POTION",
+      "consumable": true,
+      "tmhm_index": null,
+      "tmhm_move": null
+    }
+  },
+  "ETHER": {
+    "equal": true,
+    "before": {
+      "name": "ETHER",
+      "description": "Restores PP of one\nmove by 10.",
+      "effect": "RestorePPEffect",
+      "status_heals": [],
+      "revive_hp_percent": null,
+      "party_revive_hp_percent": null,
+      "pp_restore_scope": "MOVE",
+      "pp_restore_points": 10,
+      "pp_up_stages": null,
+      "vitamin_stat": null,
+      "vitamin_stat_exp": null,
+      "vitamin_max_stat_exp": null,
+      "rare_candy_level_gain": null,
+      "battle_stat_boost_stat": null,
+      "battle_stat_boost_stages": null,
+      "battle_escape_mode": null,
+      "battle_capture_ball": null,
+      "battle_focus_energy": null,
+      "battle_stat_drop_guard": null,
+      "confusion_heal": null,
+      "repel_steps": null,
+      "escape_rope_mode": null,
+      "price": 1200,
+      "held_effect": "HELD_NONE",
+      "parameter": 10,
+      "property": "CANT_SELECT",
+      "pocket": "ITEM",
+      "field_menu": "ITEMMENU_PARTY",
+      "field_usable": true,
+      "battle_menu": "ITEMMENU_PARTY",
+      "battle_usable": true,
+      "script_name": "ETHER",
+      "consumable": true,
+      "tmhm_index": null,
+      "tmhm_move": null
+    },
+    "after": {
+      "name": "ETHER",
+      "description": "Restores PP of one\nmove by 10.",
+      "effect": "RestorePPEffect",
+      "status_heals": [],
+      "revive_hp_percent": null,
+      "party_revive_hp_percent": null,
+      "pp_restore_scope": "MOVE",
+      "pp_restore_points": 10,
+      "pp_up_stages": null,
+      "vitamin_stat": null,
+      "vitamin_stat_exp": null,
+      "vitamin_max_stat_exp": null,
+      "rare_candy_level_gain": null,
+      "battle_stat_boost_stat": null,
+      "battle_stat_boost_stages": null,
+      "battle_escape_mode": null,
+      "battle_capture_ball": null,
+      "battle_focus_energy": null,
+      "battle_stat_drop_guard": null,
+      "confusion_heal": null,
+      "repel_steps": null,
+      "escape_rope_mode": null,
+      "price": 1200,
+      "held_effect": "HELD_NONE",
+      "parameter": 10,
+      "property": "CANT_SELECT",
+      "pocket": "ITEM",
+      "field_menu": "ITEMMENU_PARTY",
+      "field_usable": true,
+      "battle_menu": "ITEMMENU_PARTY",
+      "battle_usable": true,
+      "script_name": "ETHER",
+      "consumable": true,
+      "tmhm_index": null,
+      "tmhm_move": null
+    }
+  },
+  "wild_delta": {},
+  "wild_added_fields": {
+    "zones": [
+      {
+        "id": "MN_HABITAT_BLUFF_WARNING",
+        "minX": 16,
+        "minY": 8,
+        "maxX": 19,
+        "maxY": 13,
+        "grassRates": {
+          "day": 10,
+          "morning": 10,
+          "night": 10
+        },
+        "grass": {
+          "morning": [
+            {
+              "level": 15,
+              "species": "PECKIT"
+            },
+            {
+              "level": 16,
+              "species": "NIBBIN"
+            },
+            {
+              "level": 17,
+              "species": "HUSHISS"
+            },
+            {
+              "level": 17,
+              "species": "HUSHISS"
+            },
+            {
+              "level": 19,
+              "species": "DENSY"
+            },
+            {
+              "level": 17,
+              "species": "HUSHISS"
+            },
+            {
+              "level": 17,
+              "species": "HUSHISS"
+            }
+          ],
+          "day": [
+            {
+              "level": 15,
+              "species": "PECKIT"
+            },
+            {
+              "level": 16,
+              "species": "NIBBIN"
+            },
+            {
+              "level": 17,
+              "species": "HUSHISS"
+            },
+            {
+              "level": 17,
+              "species": "HUSHISS"
+            },
+            {
+              "level": 19,
+              "species": "DENSY"
+            },
+            {
+              "level": 17,
+              "species": "HUSHISS"
+            },
+            {
+              "level": 17,
+              "species": "HUSHISS"
+            }
+          ],
+          "night": [
+            {
+              "level": 15,
+              "species": "PIPBOOM"
+            },
+            {
+              "level": 16,
+              "species": "DEWDANT"
+            },
+            {
+              "level": 17,
+              "species": "HUSHISS"
+            },
+            {
+              "level": 17,
+              "species": "HUSHISS"
+            },
+            {
+              "level": 19,
+              "species": "DENSY"
+            },
+            {
+              "level": 17,
+              "species": "HUSHISS"
+            },
+            {
+              "level": 17,
+              "species": "HUSHISS"
+            }
+          ]
+        }
+      },
+      {
+        "id": "MN_HABITAT_TERRITORIAL_GEESE",
+        "minX": 44,
+        "minY": 24,
+        "maxX": 47,
+        "maxY": 29,
+        "grassRates": {
+          "day": 10,
+          "morning": 10,
+          "night": 10
+        },
+        "grass": {
+          "morning": [
+            {
+              "level": 15,
+              "species": "PECKIT"
+            },
+            {
+              "level": 16,
+              "species": "NIBBIN"
+            },
+            {
+              "level": 18,
+              "species": "GOOSNIDE"
+            },
+            {
+              "level": 18,
+              "species": "GOOSNIDE"
+            },
+            {
+              "level": 19,
+              "species": "DENSY"
+            },
+            {
+              "level": 18,
+              "species": "GOOSNIDE"
+            },
+            {
+              "level": 18,
+              "species": "GOOSNIDE"
+            }
+          ],
+          "day": [
+            {
+              "level": 15,
+              "species": "PECKIT"
+            },
+            {
+              "level": 16,
+              "species": "NIBBIN"
+            },
+            {
+              "level": 18,
+              "species": "GOOSNIDE"
+            },
+            {
+              "level": 18,
+              "species": "GOOSNIDE"
+            },
+            {
+              "level": 19,
+              "species": "DENSY"
+            },
+            {
+              "level": 18,
+              "species": "GOOSNIDE"
+            },
+            {
+              "level": 18,
+              "species": "GOOSNIDE"
+            }
+          ],
+          "night": [
+            {
+              "level": 15,
+              "species": "PIPBOOM"
+            },
+            {
+              "level": 16,
+              "species": "DEWDANT"
+            },
+            {
+              "level": 18,
+              "species": "GOOSNIDE"
+            },
+            {
+              "level": 18,
+              "species": "GOOSNIDE"
+            },
+            {
+              "level": 19,
+              "species": "DENSY"
+            },
+            {
+              "level": 18,
+              "species": "GOOSNIDE"
+            },
+            {
+              "level": 18,
+              "species": "GOOSNIDE"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

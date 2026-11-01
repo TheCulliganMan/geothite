@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "selected_revision": "route_grass_r17_trail_guidance_revision",
+  "pack_sha256": "186c262b18d5174cb7ba9727358d4022bea9fce6d362529405728028ef92c60a",
+  "source_index_sha256": "0c30d24214b7c6ed951a45dd8dc9b89c374a7c6dbc71a05dcf57f7d0abeb8932",
+  "north_shore_zero_ice_maps": [
+    "MnDuluth",
+    "MnGrandMarais",
+    "MnR11C00R00",
+    "MnR11C00R01",
+    "MnR11C00R02",
+    "MnR11C00R03",
+    "MnR11C01R00",
+    "MnR11C01R01",
+    "MnR11C01R02",
+    "MnR11C01R03"
+  ],
+  "goal_complete": false
+}

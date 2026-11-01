@@ -1,0 +1,38 @@
+{
+  "MN_R07_DROP_SIGNText": [
+    {
+      "args": [
+        "\"LOW SANDBANK\""
+      ],
+      "command": "text"
+    },
+    {
+      "args": [
+        "\"TWO-WAY STAIRS\""
+      ],
+      "command": "line"
+    },
+    {
+      "args": [],
+      "command": "done"
+    }
+  ],
+  "MN_R07_T02Won": [
+    {
+      "args": [
+        "\"The bank stairs\""
+      ],
+      "command": "text"
+    },
+    {
+      "args": [
+        "\"work both ways.\""
+      ],
+      "command": "line"
+    },
+    {
+      "args": [],
+      "command": "done"
+    }
+  ]
+}

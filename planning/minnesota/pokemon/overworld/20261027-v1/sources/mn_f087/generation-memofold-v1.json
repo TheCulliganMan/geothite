@@ -1,0 +1,15 @@
+{
+  "tool": "built-in image_gen",
+  "default_source": "/Users/ryanculligan/.codex/generated_images/01a178da-4cf1-7e01-8516-667a332dc790/exec-081a41ef-7d0b-4a30-be20-588696bbb8a7.png",
+  "workspace_source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f087/memofold.overworld.imagegen-v1.png",
+  "source_sha256": "c252db612c3a5427820f8343b6f11120b259cb4a37dd06c63edd011cb440ce4b",
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f087/prompt-memofold-v1.txt",
+  "style_only_input": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+  "identity_review": "target/minnesota-pokemon/native/MN_F087/line.review.png",
+  "status": "source generated; conversion pending",
+  "preserved_hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f087/memofold.overworld.imagegen-v1.png": "c252db612c3a5427820f8343b6f11120b259cb4a37dd06c63edd011cb440ce4b",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f087/prompt-memofold-v1.txt": "3ab008707bdfeb5798ef8d90d68d5a0a4784fc7d0b377d0c62b73b3f4dd9ec3f",
+    "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png": "4354a639ed1a80fd6686e43b273443ed894e58a84307a8049f638ee9ffa2a099"
+  }
+}

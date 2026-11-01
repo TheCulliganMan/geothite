@@ -1,0 +1,186 @@
+{
+  "id": "MnMaraisCedarApproach",
+  "ports": [
+    {
+      "side": "west",
+      "core": [
+        [
+          0,
+          14
+        ],
+        [
+          0,
+          15
+        ]
+      ]
+    },
+    {
+      "side": "south",
+      "core": [
+        [
+          26,
+          23
+        ],
+        [
+          27,
+          23
+        ]
+      ]
+    }
+  ],
+  "actors": [
+    {
+      "id": "MN_COHESION_MARAIS_KEEPER",
+      "tile": [
+        15,
+        11
+      ],
+      "sprite": "SPRITE_YOUNGSTER",
+      "facing": "south",
+      "role": "optional_trainer",
+      "trainer_name": "CEDAR",
+      "trainer_class": "BIRD_KEEPER",
+      "party": [
+        {
+          "species": "NOCTOWL",
+          "level": 36
+        },
+        {
+          "species": "FARFETCH_D",
+          "level": 35
+        }
+      ],
+      "event_flag": "EVENT_MN_COHESION_MARAIS_KEEPER_DEFEATED",
+      "text": [
+        "A short forest walk.",
+        "Battle with me?"
+      ]
+    },
+    {
+      "id": "MN_COHESION_MARAIS_WALKER",
+      "tile": [
+        31,
+        15
+      ],
+      "sprite": "SPRITE_LASS",
+      "facing": "south",
+      "role": "optional_trainer",
+      "trainer_name": "MIRA",
+      "trainer_class": "LASS",
+      "party": [
+        {
+          "species": "VENONAT",
+          "level": 35
+        },
+        {
+          "species": "FURRET",
+          "level": 36
+        }
+      ],
+      "event_flag": "EVENT_MN_COHESION_MARAIS_WALKER_DEFEATED",
+      "text": [
+        "A short forest walk.",
+        "Battle with me?"
+      ]
+    }
+  ],
+  "signs": [
+    {
+      "id": "MN_COHESION_MARAIS_SIGN",
+      "tile": [
+        4,
+        12
+      ],
+      "lines": [
+        "CEDAR APPROACH",
+        "GRAND MARAIS south",
+        "GUNFLINT west."
+      ]
+    }
+  ],
+  "views": [
+    {
+      "id": "west-arrival",
+      "core": [
+        5,
+        14
+      ]
+    },
+    {
+      "id": "grass-turn",
+      "core": [
+        14,
+        10
+      ]
+    },
+    {
+      "id": "ledge-choice",
+      "core": [
+        26,
+        16
+      ]
+    },
+    {
+      "id": "south-arrival",
+      "core": [
+        26,
+        21
+      ]
+    }
+  ],
+  "native_connections": [
+    {
+      "direction": "west",
+      "target_map": "MnR12C00R01",
+      "offset": 4
+    },
+    {
+      "direction": "south",
+      "target_map": "MnGrandMarais",
+      "offset": 4
+    }
+  ],
+  "revision": "west-entry-v02",
+  "status": "DETACHED_SOURCE_REVIEW",
+  "dimensions_metatiles": [
+    20,
+    12
+  ],
+  "ledge": {
+    "block": [
+      13,
+      9
+    ],
+    "upper_core": [
+      26,
+      17
+    ],
+    "jump_core": [
+      26,
+      18
+    ],
+    "landing_core": [
+      26,
+      20
+    ],
+    "reverse_blocked": true,
+    "ordinary_return_metatiles": [
+      [
+        13,
+        10
+      ],
+      [
+        16,
+        10
+      ],
+      [
+        16,
+        7
+      ],
+      [
+        13,
+        7
+      ]
+    ]
+  }
+}

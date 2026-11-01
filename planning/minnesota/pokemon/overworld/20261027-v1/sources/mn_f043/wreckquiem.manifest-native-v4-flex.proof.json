@@ -1,0 +1,352 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_094",
+  "status": "source-proof-pass; root visual/context acceptance required",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f043/wreckquiem.manifest-native-v4-flex.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f043/wreckquiem-rare-native-v4-flex",
+  "shared_transform": {
+    "source_bounds": [
+      5,
+      12,
+      486,
+      427
+    ],
+    "native_size": [
+      13,
+      11
+    ],
+    "native_origin": [
+      1,
+      4
+    ]
+  },
+  "all_four_nonrear_poses_have_actual_source_pupils": true,
+  "every_native_eye_cluster_maps_to_same_small_anatomical_source_pupil_component": true,
+  "actual_source_pupil_proofs": [
+    {
+      "pose": "down_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f043/wreckquiem.overworld.imagegen-v3-solid-outline.png",
+      "crop": [
+        39,
+        66,
+        500,
+        450
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          249,
+          190,
+          23,
+          25
+        ],
+        [
+          304,
+          191,
+          24,
+          24
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              7
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                29,
+                32,
+                33,
+                253
+              ],
+              "bounds": [
+                249,
+                190,
+                23,
+                25
+              ],
+              "pixels": 553,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                7
+              ],
+              "source_sample_pixel": [
+                249,
+                213
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              8,
+              7
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                10,
+                7,
+                7,
+                253
+              ],
+              "bounds": [
+                304,
+                191,
+                24,
+                24
+              ],
+              "pixels": 565,
+              "truncated_contour": false,
+              "native_pixel": [
+                8,
+                7
+              ],
+              "source_sample_pixel": [
+                324,
+                213
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f043/wreckquiem.overworld.imagegen-v3-solid-outline.png",
+      "crop": [
+        1017,
+        56,
+        500,
+        450
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          1247,
+          183,
+          19,
+          24
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              7,
+              7
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                5,
+                6,
+                5,
+                254
+              ],
+              "bounds": [
+                1247,
+                183,
+                19,
+                24
+              ],
+              "pixels": 439,
+              "truncated_contour": false,
+              "native_pixel": [
+                7,
+                7
+              ],
+              "source_sample_pixel": [
+                1265,
+                203
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f043/wreckquiem.overworld.imagegen-v3-solid-outline.png",
+      "crop": [
+        39,
+        530,
+        500,
+        450
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          248,
+          656,
+          24,
+          24
+        ],
+        [
+          304,
+          656,
+          24,
+          24
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              7
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                7,
+                7,
+                8,
+                253
+              ],
+              "bounds": [
+                248,
+                656,
+                24,
+                24
+              ],
+              "pixels": 576,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                7
+              ],
+              "source_sample_pixel": [
+                249,
+                677
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              8,
+              7
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                2,
+                3,
+                2,
+                253
+              ],
+              "bounds": [
+                304,
+                656,
+                24,
+                24
+              ],
+              "pixels": 563,
+              "truncated_contour": false,
+              "native_pixel": [
+                8,
+                7
+              ],
+              "source_sample_pixel": [
+                324,
+                677
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f043/wreckquiem.overworld.imagegen-v3-solid-outline.png",
+      "crop": [
+        1016,
+        519,
+        500,
+        450
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          1247,
+          647,
+          19,
+          24
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              7,
+              7
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                5,
+                5,
+                5,
+                253
+              ],
+              "bounds": [
+                1247,
+                647,
+                19,
+                24
+              ],
+              "pixels": 456,
+              "truncated_contour": false,
+              "native_pixel": [
+                7,
+                7
+              ],
+              "source_sample_pixel": [
+                1264,
+                666
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "native_head_anchors_idle_walk_equal": true,
+  "validation": {
+    "runtime_2bpp_384_bytes_exact_allpixels": true,
+    "runtime_png16x96_index_parity": true,
+    "normal_shiny_palettebanks_exact": true,
+    "normal_shiny_all1536pixels_exact": true,
+    "transparent_border": true,
+    "idle_walk_pairs_distinct": true
+  },
+  "sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f043/wreckquiem-rare-native-v4-flex/gfx/pokemon/wreckquiem/overworld.gbcpal": "8ac533f32c61d6d316baaefc5abe91cb38717bdf211f4fddf67daf1aab49b83c",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f043/wreckquiem-rare-native-v4-flex/review/line.normal-8x.png": "55f00726c2985c009c479052471e6325294ad4cf2096e0754790c50ad904bc96",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f043/wreckquiem-rare-native-v4-flex/gfx/pokemon/wreckquiem/overworld.2bpp": "bbdbda25b33c4d3eea2136d65f4ddf1debd2c09202a729b4be695923d2fcf182",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f043/wreckquiem-rare-native-v4-flex/review/line.shiny-8x.png": "b37e14b5d721de14b665ace814b661d4a7becae9e9ae6c2c9569a8acf7a96236",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f043/wreckquiem.manifest-native-v4-flex.json": "2ba18a832a25380e11f93c9aed6502bd85f6946f8fc9bbaa415ae8a7311c4bf8",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f043/wreckquiem-rare-native-v4-flex/compiled-index.json": "c1da60378fe30a2335d64295b1b4694eade449b681bd1276329d14a5fe8c94c1",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f043/wreckquiem-rare-native-v4-flex/gfx/pokemon/wreckquiem/overworld.png": "faa2fff6af3366bc936c843183a49d08eebb6648f244206044849205fd1629c5",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f043/wreckquiem-rare-native-v4-flex/gfx/pokemon/wreckquiem/overworld-shiny.gbcpal": "43b04b4175658fb7a7538211edcaf068f10dc88d6e5a59df9281a6c369b9fa2b",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f043/wreckquiem.overworld.imagegen-v3-solid-outline.png": "c305271c624e0f13df008ca6c8a3d866425a8ffad785647382f479b1ee60de17"
+  },
+  "actual_native_boards_viewed": true,
+  "rear_review": "Agent viewed all six actual normal/shiny poses. Both full rear poses retain solid rusty hull with pale diagonal steel scar, torn funnel crest, two chain-anchor arms and spectral keel tail. No bell opening, copied face, eyes, legs or feet.",
+  "canonical_eye_form": "Two actual black source pupils on light steel upper face in front; one actual near black pupil in west. Hollow bell cavity below face is not another face. Source-backed native13x11 shared scale preserves all six poses."
+}

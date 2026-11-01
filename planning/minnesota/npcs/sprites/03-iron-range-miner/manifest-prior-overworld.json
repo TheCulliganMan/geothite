@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "id": "MN_IRON_RANGE_MINER",
+  "name": "MINER MARA",
+  "status": "accepted-native-playable",
+  "overworld_frames": 6,
+  "overworld_size": [
+    16,
+    16
+  ],
+  "battle_size": [
+    56,
+    56
+  ],
+  "palette_rgb555": [
+    32767,
+    21343,
+    6450,
+    0
+  ],
+  "source": "native-pixels-v1.json",
+  "placement": "placement-v1.json",
+  "pack": "content-packs/minnesota-original-npcs-03-v01.crystalpack",
+  "parent": "content-packs/minnesota-original-npcs-02-v02.crystalpack",
+  "runtime_checks": {
+    "one_controller_test_passed": true,
+    "talk_and_input_ownership": true,
+    "battle_turn_and_pp": true,
+    "battle_save_load": true,
+    "actual_victory_and_defeat_flag_before_render_capture": true,
+    "post_battle_talk": true,
+    "existing_trainers_and_assets_preserved": true
+  },
+  "manual_visual_review": "Reviewed native rows and enlarged poses, then actual battle intro and post-win map. Rounded hardhat lamp, dark bob, rust overalls, heavy boots, hammer and specimen read clearly; compact scale fits the player and civic path.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/sprites/03-iron-range-miner/native-pixels-v1.json": "876ef3d5b55997a1a99b67fb11d4a767875014ff9ff6f5e4d0b53847da96968b",
+    "planning/minnesota/npcs/sprites/03-iron-range-miner/placement-v1.json": "156befb6288dd82287ae73d6185d7b5feebd0775305489bbe85be304a396c031",
+    "content-packs/minnesota-original-npcs-03-v01.crystalpack": "45295bce7dd36131cbd0af665234d70e584a4bc5e1e62df49d723d2c3e326da4",
+    "target/npc-sprites/miner/controller-v01.log": "83ef70974d029bf27ce069a9dbcb21da984aeea37c7f97ba39eb1a836a8778e6",
+    "target/npc-sprites/miner/gameplay-v01/original-npc-trainer-intro.png": "e624b0726c06082d68aab48b92af64df86eb183a597ab6325c674514467d7fce",
+    "target/npc-sprites/miner/gameplay-v01/original-npc-first-turn.png": "8eb29c5adb20bff2407689761b552b96f2122366e28da642a19e1c9d63f1c606",
+    "target/npc-sprites/miner/gameplay-v01/original-npc-overworld-state.png": "0d006e131c62f94d3abb309dcb8900e9eb6a7db8a31638be4f656c4bd11e3060"
+  }
+}

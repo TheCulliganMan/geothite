@@ -1,0 +1,294 @@
+{
+  "schema_version": 1,
+  "result": "pass",
+  "scope": "All five rare solo sources and every existing variant through Wreckquiem/Pepivernv3, Bunjantv5, Vergloomv4 and Strandrakv5-gutter. Includes transferred artist variants existing at audit time.",
+  "generation_tool": "built-in image_gen",
+  "raw_count": 20,
+  "all_raws_retained_byte_exact": true,
+  "originals_deleted": false,
+  "native_art_manually_painted": false,
+  "raws": [
+    {
+      "name": "wreckquiem",
+      "generation_metadata": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f043/generation-wreckquiem-v1.json",
+      "generation_metadata_sha256": "b71e81262f0daedb41fcc26bad2ff524273d4487784c8e437deede9b05394f1f",
+      "default_raw": "/Users/ryanculligan/.codex/generated_images/01a178da-4cf1-7e01-8516-667a332dc790/exec-8d1e9323-dc44-4e2a-99fd-62685f3fe8ae.png",
+      "retained_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f043/wreckquiem.overworld.imagegen-v1.png",
+      "raw_sha256": "e0e66d05d88525f322f4a0c1fd4caf730f95954488c98afcd1f19e145e4b633e",
+      "byte_exact_original_copy": true,
+      "raw_bytes": 1508315
+    },
+    {
+      "name": "wreckquiem",
+      "generation_metadata": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f043/generation-wreckquiem-v2-native-face.json",
+      "generation_metadata_sha256": "fec27151714bdaa5a9df26161166644f4873caa95fefc0626acce4955d7898e1",
+      "default_raw": "/Users/ryanculligan/.codex/generated_images/01a178da-4cf1-7e01-8516-667a332dc790/exec-7f4c0aa2-ffeb-4d92-a677-5cfb8764c020.png",
+      "retained_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f043/wreckquiem.overworld.imagegen-v2-native-face.png",
+      "raw_sha256": "08e2de0bda722d73f0d325e807e2fd26e3f531d47b0ee8d0e7b6e3907ccc73d9",
+      "byte_exact_original_copy": true,
+      "raw_bytes": 1507025
+    },
+    {
+      "name": "wreckquiem",
+      "generation_metadata": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f043/generation-wreckquiem-v3-solid-outline.json",
+      "generation_metadata_sha256": "12bc4eb6dfcd17e62f888ddfa428a2a14f20de460210d11307da84f93f15ea82",
+      "default_raw": "/Users/ryanculligan/.codex/generated_images/01a17f9b-ed77-7d71-b5f3-0c5fcf365412/exec-7ff07ffc-7f18-4030-bc7d-358c1b8ea4da.png",
+      "retained_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f043/wreckquiem.overworld.imagegen-v3-solid-outline.png",
+      "raw_sha256": "c305271c624e0f13df008ca6c8a3d866425a8ffad785647382f479b1ee60de17",
+      "byte_exact_original_copy": true,
+      "raw_bytes": 1295870
+    },
+    {
+      "name": "pepivern",
+      "generation_metadata": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f046/generation-pepivern-v1.json",
+      "generation_metadata_sha256": "d4d23a3dd4b74eb47b2d882df18aa6aeeac75be4a29f686cd9dbd15591786195",
+      "default_raw": "/Users/ryanculligan/.codex/generated_images/01a178da-4cf1-7e01-8516-667a332dc790/exec-ab89172f-f139-4311-af9b-fed27a6b4223.png",
+      "retained_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f046/pepivern.overworld.imagegen-v1.png",
+      "raw_sha256": "de82738c757e45d709a6a8034008a4f55ccd4aa6f93bbefea33d72d7126d530c",
+      "byte_exact_original_copy": true,
+      "raw_bytes": 1642091
+    },
+    {
+      "name": "pepivern",
+      "generation_metadata": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f046/generation-pepivern-v2-native-face.json",
+      "generation_metadata_sha256": "6ab6abd559b26df3b821ce0c640ba487e0f5edcc9bf64da6fedf3b594ef5a127",
+      "default_raw": "/Users/ryanculligan/.codex/generated_images/01a178da-4cf1-7e01-8516-667a332dc790/exec-68e40882-02f0-475f-8a86-217da82b8318.png",
+      "retained_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f046/pepivern.overworld.imagegen-v2-native-face.png",
+      "raw_sha256": "685399128960a7e37b6120d7da24129f45e56c06b6b7f381b7ff77f3cbc199a5",
+      "byte_exact_original_copy": true,
+      "raw_bytes": 1648381
+    },
+    {
+      "name": "pepivern",
+      "generation_metadata": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f046/generation-pepivern-v3-solid-outline.json",
+      "generation_metadata_sha256": "5e94bbbbc2a8071408b634034566fc054d07bdb62bd7bb1d3050341c27776de1",
+      "default_raw": "/Users/ryanculligan/.codex/generated_images/01a17f9b-ed77-7d71-b5f3-0c5fcf365412/exec-ff78d063-a6a3-47ac-87c0-d0fd0c830477.png",
+      "retained_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f046/pepivern.overworld.imagegen-v3-solid-outline.png",
+      "raw_sha256": "663713c8f3f440fc566498d8c81001f9ac36e6186bdee5df8dad3fee81b6bcea",
+      "byte_exact_original_copy": true,
+      "raw_bytes": 1455917
+    },
+    {
+      "name": "bunjant",
+      "generation_metadata": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f047/generation-bunjant-v1.json",
+      "generation_metadata_sha256": "6a74debfdae37044a0b99fb8c52f1364cbf8d9f2a98a71cd02a123b6d06ccddc",
+      "default_raw": "/Users/ryanculligan/.codex/generated_images/01a178da-4cf1-7e01-8516-667a332dc790/exec-519bc551-7a3c-43f7-80c4-204154d05ed6.png",
+      "retained_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f047/bunjant.overworld.imagegen-v1.png",
+      "raw_sha256": "b0816d6773f54e29daaab7e95261c1ffe51886d5ba1577ad9f5843cd1ab6666f",
+      "byte_exact_original_copy": true,
+      "raw_bytes": 1854413
+    },
+    {
+      "name": "bunjant",
+      "generation_metadata": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f047/generation-bunjant-v2-native-face.json",
+      "generation_metadata_sha256": "993fa17c5f98442b463287d9b8bdf3ff7c4242a2410c296aaab9b09eaefe569e",
+      "default_raw": "/Users/ryanculligan/.codex/generated_images/01a178da-4cf1-7e01-8516-667a332dc790/exec-ed8e4736-baaa-4b3a-b0fc-fa3c14202fde.png",
+      "retained_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f047/bunjant.overworld.imagegen-v2-native-face.png",
+      "raw_sha256": "2b3966ebbaa44c5ba6c0ba536f10099bfd8ad2616bd84b094897510bca19975e",
+      "byte_exact_original_copy": true,
+      "raw_bytes": 1900705
+    },
+    {
+      "name": "bunjant",
+      "generation_metadata": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f047/generation-bunjant-v3-eye-clearance.json",
+      "generation_metadata_sha256": "4f345ddecfeba58512db192d7b99022b08d036746640f41ec27a9af985dbdca7",
+      "default_raw": "/Users/ryanculligan/.codex/generated_images/01a17f9b-ed77-7d71-b5f3-0c5fcf365412/exec-18cf125a-44c0-4820-a03a-f0116b99096c.png",
+      "retained_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f047/bunjant.overworld.imagegen-v3-eye-clearance.png",
+      "raw_sha256": "6eb8e181ac43874701cd324f41ad2d4d70170a66bfefa4de2f434ec6839973f9",
+      "byte_exact_original_copy": true,
+      "raw_bytes": 2040353
+    },
+    {
+      "name": "bunjant",
+      "generation_metadata": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f047/generation-bunjant-v4-solid-outline.json",
+      "generation_metadata_sha256": "f12d8014797a2f7632057aaa07be19e3ae65b6ff2fee9d7f2775cc5a24ae2359",
+      "default_raw": "/Users/ryanculligan/.codex/generated_images/01a17f9b-ed77-7d71-b5f3-0c5fcf365412/exec-9ff53bf7-73b0-4895-ace1-875ab8a1e4ed.png",
+      "retained_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f047/bunjant.overworld.imagegen-v4-solid-outline.png",
+      "raw_sha256": "b225f5d38a2c986d7cc474975036ca40ac097a979b8249843889325024f38f73",
+      "byte_exact_original_copy": true,
+      "raw_bytes": 1736201
+    },
+    {
+      "name": "bunjant",
+      "generation_metadata": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f047/generation-bunjant-v5-tall-eye-cavity.json",
+      "generation_metadata_sha256": "707bf632e3b08e29595fd0803e290e4b939c3f3bbc6d9041ef0dbb692b1f9df3",
+      "default_raw": "/Users/ryanculligan/.codex/generated_images/01a17f9b-beff-7771-977d-2d3d7b14de43/exec-21363b59-512f-4696-bf0e-6a4bc5261335.png",
+      "retained_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f047/bunjant.overworld.imagegen-v5-tall-eye-cavity.png",
+      "raw_sha256": "0a7d19cab9a7f16ad50dd67e40d69c5b1d3d67877ca1c99bfae4132f93153a72",
+      "byte_exact_original_copy": true,
+      "raw_bytes": 1908698
+    },
+    {
+      "name": "vergloom",
+      "generation_metadata": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f048/generation-vergloom-v1.json",
+      "generation_metadata_sha256": "fe7ca0f8ac39cb9bf3956d115bcbcc00323d9756c393dff2e0ceb0edf2bbfafe",
+      "default_raw": "/Users/ryanculligan/.codex/generated_images/01a178da-4cf1-7e01-8516-667a332dc790/exec-e55f90ab-e5cb-43de-8581-6d06e5b66723.png",
+      "retained_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f048/vergloom.overworld.imagegen-v1.png",
+      "raw_sha256": "51bbfe8d18661e8ce36655f5da673f1acfd62ceee83bcbad86ae530d3b7790b4",
+      "byte_exact_original_copy": true,
+      "raw_bytes": 1667723
+    },
+    {
+      "name": "vergloom",
+      "generation_metadata": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f048/generation-vergloom-v2-native-face.json",
+      "generation_metadata_sha256": "e836cbb9d907b65b2ec90142e47abaab81069b6751990956d13062c3d7a5bf0d",
+      "default_raw": "/Users/ryanculligan/.codex/generated_images/01a178da-4cf1-7e01-8516-667a332dc790/exec-09348b04-12e8-425c-b270-6f2ee29e4519.png",
+      "retained_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f048/vergloom.overworld.imagegen-v2-native-face.png",
+      "raw_sha256": "19ae86ddcbc79a01e6489e4476d3d22fcfc6c88679965f7eada031867d53ec06",
+      "byte_exact_original_copy": true,
+      "raw_bytes": 1643418
+    },
+    {
+      "name": "vergloom",
+      "generation_metadata": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f048/generation-vergloom-v3-eye-clearance.json",
+      "generation_metadata_sha256": "10c03788857d99eaaeac5d5fff4e735b3f3c4ae010aac25a312c142320808a53",
+      "default_raw": "/Users/ryanculligan/.codex/generated_images/01a17f9b-ed77-7d71-b5f3-0c5fcf365412/exec-deaf0209-3f25-484d-946a-3b6c94779e25.png",
+      "retained_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f048/vergloom.overworld.imagegen-v3-eye-clearance.png",
+      "raw_sha256": "becce4d02f92a8fe65acd56bd6647602a48caa2d8257f23b2d4ff81bf58a14fc",
+      "byte_exact_original_copy": true,
+      "raw_bytes": 1618334
+    },
+    {
+      "name": "vergloom",
+      "generation_metadata": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f048/generation-vergloom-v4-solid-outline.json",
+      "generation_metadata_sha256": "09df9d4a2abb16b8bd278c8721c714cb7db7f043ce92034ff36dbe7833b2f5f2",
+      "default_raw": "/Users/ryanculligan/.codex/generated_images/01a17f9b-ed77-7d71-b5f3-0c5fcf365412/exec-29e149c8-9087-48d8-b670-4bb6ca71d138.png",
+      "retained_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f048/vergloom.overworld.imagegen-v4-solid-outline.png",
+      "raw_sha256": "e3344d44391962954d21f4f0223cfdc9b8bb12d0d3773d75ef6d0c1ea5ea0d0b",
+      "byte_exact_original_copy": true,
+      "raw_bytes": 1561191
+    },
+    {
+      "name": "strandrak",
+      "generation_metadata": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f114/generation-strandrak-v1.json",
+      "generation_metadata_sha256": "08c7248d5e0af0656ba4132140addb74f88a58b376b14898cf82ca56de69762c",
+      "default_raw": "/Users/ryanculligan/.codex/generated_images/01a178da-4cf1-7e01-8516-667a332dc790/exec-5f4f0ebd-13c1-433d-b47a-e0eacd0e3b68.png",
+      "retained_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f114/strandrak.overworld.imagegen-v1.png",
+      "raw_sha256": "a775ae5ec31493cddb604260b669a2eeea7225fa8fa7efb124c3f0d05c8c6ba0",
+      "byte_exact_original_copy": true,
+      "raw_bytes": 1467056
+    },
+    {
+      "name": "strandrak",
+      "generation_metadata": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f114/generation-strandrak-v2-native-face.json",
+      "generation_metadata_sha256": "e3b75bf896dd8bc4d6665441a61f51e32c36c34b0e782f3b4008fc0eb81f4b66",
+      "default_raw": "/Users/ryanculligan/.codex/generated_images/01a178da-4cf1-7e01-8516-667a332dc790/exec-324a24e2-e151-456f-bd46-b8b000fb5d36.png",
+      "retained_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f114/strandrak.overworld.imagegen-v2-native-face.png",
+      "raw_sha256": "e25ad0e595e3b815161d36ac0fec2db2c5d7b8438ecb4cc173038e9014479581",
+      "byte_exact_original_copy": true,
+      "raw_bytes": 1501754
+    },
+    {
+      "name": "strandrak",
+      "generation_metadata": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f114/generation-strandrak-v3-eye-clearance.json",
+      "generation_metadata_sha256": "790a04d836f5b2d3eaa9d254d3f8cd1154ca345aac7c99507d4426f6695228fb",
+      "default_raw": "/Users/ryanculligan/.codex/generated_images/01a17f9b-ed77-7d71-b5f3-0c5fcf365412/exec-874ef448-aa17-47b7-ba72-10cf12928a5b.png",
+      "retained_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f114/strandrak.overworld.imagegen-v3-eye-clearance.png",
+      "raw_sha256": "103806192502d51f52ccc4b87838af50b29338c211191d36f884225b879f0e79",
+      "byte_exact_original_copy": true,
+      "raw_bytes": 1516728
+    },
+    {
+      "name": "strandrak",
+      "generation_metadata": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f114/generation-strandrak-v4-solid-outline.json",
+      "generation_metadata_sha256": "a4e4e5afb46cb5d9bed6827ba622845328bbd45b27bd47eca60081d80baf34cd",
+      "default_raw": "/Users/ryanculligan/.codex/generated_images/01a17f9b-ed77-7d71-b5f3-0c5fcf365412/exec-0cca9eeb-7782-4b51-9310-b39420d31c38.png",
+      "retained_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f114/strandrak.overworld.imagegen-v4-solid-outline.png",
+      "raw_sha256": "93ec6409d292e531c9ad8fda889dba0e4bd23d7c1bfdb7878abd7acde3738568",
+      "byte_exact_original_copy": true,
+      "raw_bytes": 1336115
+    },
+    {
+      "name": "strandrak",
+      "generation_metadata": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f114/generation-strandrak-v5-gutter.json",
+      "generation_metadata_sha256": "eea69b2374d23007aa3cab9c5d58e18c02c4cae4797ff3f453be0ab42ec04584",
+      "default_raw": "/Users/ryanculligan/.codex/generated_images/01a17f9b-ed77-7d71-b5f3-0c5fcf365412/exec-b072613b-fe89-435a-a02d-b4d9d64f5172.png",
+      "retained_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f114/strandrak.overworld.imagegen-v5-gutter.png",
+      "raw_sha256": "356f2a27b70d22688e1799b50e54cc362b2d7f923b20d592db8098dce8676036",
+      "byte_exact_original_copy": true,
+      "raw_bytes": 1429458
+    }
+  ],
+  "prompts": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f043/prompt-wreckquiem-native-face-v2.txt",
+      "sha256": "1fefd7ef99c660ddfeb5dbf034800d98606032949be442ddc144d424a5ebb4dd"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f043/prompt-wreckquiem-solid-outline-v3.txt",
+      "sha256": "444902a7dcede0bf217f8a0557c7b673d9412c07bac962006fe9b60527594f23"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f043/prompt-wreckquiem-v1.txt",
+      "sha256": "d92fd22ca55c63349e4b7357ab13dc68f1704f5e4adc3d0293302cd3f1693e86"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f046/prompt-pepivern-native-face-v2.txt",
+      "sha256": "32b7404886477b5cf0f5fc1a97657cba0dd041364726bdb539379d45bd1efd05"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f046/prompt-pepivern-solid-outline-v3.txt",
+      "sha256": "723142e25e9c9b5241943f134b61797c9ceb5550a9fdbb4b3787a939a18d7734"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f046/prompt-pepivern-v1.txt",
+      "sha256": "ba9b7538256b732d679a5e4a7bd7b57136f254808a1af4aa476a78cbe5159f2a"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f047/prompt-bunjant-eye-clearance-v3.txt",
+      "sha256": "ef1c492d323e5f4fdd8cc7f9dec4cee0e235ced38cdbc053a92a504f3802113b"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f047/prompt-bunjant-native-face-v2.txt",
+      "sha256": "8dbc22e5f24f4fff37ff01e959c51b3b4273d5c6b4d023cd0167fbf216a7fe41"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f047/prompt-bunjant-solid-outline-v4.txt",
+      "sha256": "7e6194571ce38988bef46e6d32576fa193f89e13b621805f8fae7736271a98cf"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f047/prompt-bunjant-v1.txt",
+      "sha256": "58e0a49c9a5fd219003134de40efcb41ded15324c725e7bd9a0ef2abffe3b5dd"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f047/prompt-bunjant-v5-tall-eye-cavity.txt",
+      "sha256": "2a216a30d227f22e37be152bbd5b6bd24bb7f0794e7ba461802eb7a4bdcbc235"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f048/prompt-vergloom-eye-clearance-v3.txt",
+      "sha256": "d47c846f45caac64c07b89241c3190d6327c996ad3a924cc03a6191ee0f096de"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f048/prompt-vergloom-native-face-v2.txt",
+      "sha256": "c794fbf5b437d65ade1f281dda6a32b32b97433df81957d815f6b7a05cecd4ee"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f048/prompt-vergloom-solid-outline-v4.txt",
+      "sha256": "848d33bb9f8337000044424e2364babe78e4f56b0ad8ade5bff3f1138574d4e3"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f048/prompt-vergloom-v1.txt",
+      "sha256": "67b8beded47d07b1c9874c99df10d584cb88838cc0bbb39754aa0f58dcb5f5c0"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f114/prompt-strandrak-eye-clearance-v3.txt",
+      "sha256": "71ff4585f5f0525651327fe088e4f86338ed5080084e46869c5c8df678cabb28"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f114/prompt-strandrak-gutter-v5.txt",
+      "sha256": "0fe576453ad5b2f357e58367019c5b3d79e43d52880363e0313132ddf761f94a"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f114/prompt-strandrak-native-face-v2.txt",
+      "sha256": "2c2548e002788a81d1bc5b167f1bfd68295fd5dd277944ed366ba08e885f64fb"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f114/prompt-strandrak-solid-outline-v4.txt",
+      "sha256": "b778561755875d378de106e48fe197847c1aa8a9e0406f348f959859c89ed287"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f114/prompt-strandrak-v1.txt",
+      "sha256": "a223c9bce11ba7368cd783a11c731d3ec554f583a25bdf2f0832194a273ef3a4"
+    }
+  ]
+}

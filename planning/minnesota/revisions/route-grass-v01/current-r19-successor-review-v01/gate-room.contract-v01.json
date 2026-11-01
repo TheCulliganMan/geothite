@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "id": "MnR19DetroitGate",
+  "status": "PRODUCTION_TRAVERSAL_PASS_NATIVE_HARNESS_SOURCE_CHECKS_PENDING",
+  "native_binding": {
+    "pack": "content-packs/minnesota-current-r19-detroit-gate-v04.crystalpack",
+    "pack_sha256": "de1add590013c786bd3a2770c58ff46c656930cc3dd3944af203f7480e292e21",
+    "content_identity": "1efd4ef468dc38f0346a74621151eb36cf15272736324ee9e0de925e0e4ba226"
+  },
+  "metadata": {
+    "constant": "MN_R19_DETROIT_GATE",
+    "name": "MnR19DetroitGate",
+    "groupName": "MINNESOTA_PRAIRIE_FOREST_LINK",
+    "groupId": 59,
+    "mapId": 3,
+    "width": 5,
+    "height": 4,
+    "environment": "GATE",
+    "phoneService": 0
+  },
+  "dimensions_metatiles": [
+    5,
+    4
+  ],
+  "native_warps": [
+    {
+      "index": 1,
+      "x": 4,
+      "y": 0,
+      "target_map_constant": "MnR19C00R01",
+      "target_map": "MnR19C00R01",
+      "target_warp_id": 3
+    },
+    {
+      "index": 2,
+      "x": 5,
+      "y": 0,
+      "target_map_constant": "MnR19C00R01",
+      "target_map": "MnR19C00R01",
+      "target_warp_id": 3
+    },
+    {
+      "index": 3,
+      "x": 4,
+      "y": 7,
+      "target_map_constant": "MN_DETROIT_LAKES",
+      "target_map": "MN_DETROIT_LAKES",
+      "target_warp_id": 12
+    },
+    {
+      "index": 4,
+      "x": 5,
+      "y": 7,
+      "target_map_constant": "MN_DETROIT_LAKES",
+      "target_map": "MN_DETROIT_LAKES",
+      "target_warp_id": 12
+    },
+    {
+      "index": 5,
+      "x": 4,
+      "y": 1,
+      "target_map_constant": "MnR19C00R01",
+      "target_map": "MnR19C00R01",
+      "target_warp_id": 3
+    },
+    {
+      "index": 6,
+      "x": 4,
+      "y": 6,
+      "target_map_constant": "MN_DETROIT_LAKES",
+      "target_map": "MN_DETROIT_LAKES",
+      "target_warp_id": 12
+    }
+  ],
+  "native_coord_events": [
+    {
+      "x": 4,
+      "y": 2,
+      "scene_id": "",
+      "script_name": "MnR19GateCheck"
+    },
+    {
+      "x": 5,
+      "y": 2,
+      "scene_id": "",
+      "script_name": "MnR19GateCheck"
+    }
+  ],
+  "native_guard_root": "MnR19GateCheck",
+  "northbound_required_flag": "ENGINE_MINERALBADGE",
+  "southbound_free": true,
+  "no_badge_or_quest_grants": true,
+  "registered_as_recovery_or_fly_destination": false,
+  "source_layout": "planning/minnesota/revisions/route-grass-v01/current-r19-successor-review-v01/gate-room-native-layout-v01.json",
+  "production_acceptance": "planning/minnesota/revisions/route-grass-v01/current-r19-successor-review-v01/gate-production-traversal-acceptance-v01.json"
+}

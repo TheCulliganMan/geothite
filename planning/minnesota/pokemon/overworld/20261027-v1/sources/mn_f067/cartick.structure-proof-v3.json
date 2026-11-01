@@ -1,0 +1,899 @@
+{
+  "species_id": "MN_145",
+  "result": "pass",
+  "manifest_sha256": "4c447d4e4ba4d24fafbedf65427638b1887dd4d67f7ec08beed0daa93d14d649",
+  "bank_sha256": "76b36665b9eb4fad562b100da45101c4e34fba5a0009fbcf9c85fffecc29fb3b",
+  "structure": [
+    {
+      "pose": "down_idle",
+      "single_eight_connected_silhouette": true,
+      "opaque_pixel_count": 109,
+      "four_distinct_actual_source_wheel_feet": [
+        {
+          "actual_wheel_foot_source_region": [
+            65,
+            317,
+            60,
+            55
+          ],
+          "colored_native_samples": [
+            {
+              "native": [
+                1,
+                10
+              ],
+              "source": [
+                74,
+                335
+              ],
+              "ink": 1
+            },
+            {
+              "native": [
+                2,
+                10
+              ],
+              "source": [
+                104,
+                335
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                2,
+                11
+              ],
+              "source": [
+                104,
+                366
+              ],
+              "ink": 2
+            }
+          ]
+        },
+        {
+          "actual_wheel_foot_source_region": [
+            420,
+            317,
+            55,
+            55
+          ],
+          "colored_native_samples": [
+            {
+              "native": [
+                13,
+                10
+              ],
+              "source": [
+                439,
+                335
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                14,
+                10
+              ],
+              "source": [
+                469,
+                335
+              ],
+              "ink": 1
+            },
+            {
+              "native": [
+                13,
+                11
+              ],
+              "source": [
+                439,
+                366
+              ],
+              "ink": 2
+            }
+          ]
+        },
+        {
+          "actual_wheel_foot_source_region": [
+            100,
+            388,
+            70,
+            70
+          ],
+          "colored_native_samples": [
+            {
+              "native": [
+                3,
+                12
+              ],
+              "source": [
+                135,
+                396
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                4,
+                12
+              ],
+              "source": [
+                165,
+                396
+              ],
+              "ink": 1
+            },
+            {
+              "native": [
+                2,
+                13
+              ],
+              "source": [
+                104,
+                427
+              ],
+              "ink": 1
+            },
+            {
+              "native": [
+                3,
+                13
+              ],
+              "source": [
+                135,
+                427
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                4,
+                13
+              ],
+              "source": [
+                165,
+                427
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                3,
+                14
+              ],
+              "source": [
+                135,
+                457
+              ],
+              "ink": 1
+            }
+          ]
+        },
+        {
+          "actual_wheel_foot_source_region": [
+            368,
+            388,
+            65,
+            70
+          ],
+          "colored_native_samples": [
+            {
+              "native": [
+                12,
+                12
+              ],
+              "source": [
+                408,
+                396
+              ],
+              "ink": 1
+            },
+            {
+              "native": [
+                11,
+                13
+              ],
+              "source": [
+                378,
+                427
+              ],
+              "ink": 1
+            },
+            {
+              "native": [
+                12,
+                13
+              ],
+              "source": [
+                408,
+                427
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                12,
+                14
+              ],
+              "source": [
+                408,
+                457
+              ],
+              "ink": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "up_idle",
+      "single_eight_connected_silhouette": true,
+      "opaque_pixel_count": 112,
+      "four_distinct_actual_source_wheel_feet": [
+        {
+          "actual_wheel_foot_source_region": [
+            577,
+            317,
+            60,
+            55
+          ],
+          "colored_native_samples": [
+            {
+              "native": [
+                1,
+                10
+              ],
+              "source": [
+                580,
+                335
+              ],
+              "ink": 1
+            },
+            {
+              "native": [
+                2,
+                10
+              ],
+              "source": [
+                610,
+                335
+              ],
+              "ink": 2
+            }
+          ]
+        },
+        {
+          "actual_wheel_foot_source_region": [
+            932,
+            317,
+            55,
+            55
+          ],
+          "colored_native_samples": [
+            {
+              "native": [
+                13,
+                10
+              ],
+              "source": [
+                945,
+                335
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                14,
+                10
+              ],
+              "source": [
+                975,
+                335
+              ],
+              "ink": 1
+            },
+            {
+              "native": [
+                13,
+                11
+              ],
+              "source": [
+                945,
+                366
+              ],
+              "ink": 2
+            }
+          ]
+        },
+        {
+          "actual_wheel_foot_source_region": [
+            612,
+            388,
+            70,
+            70
+          ],
+          "colored_native_samples": [
+            {
+              "native": [
+                3,
+                12
+              ],
+              "source": [
+                641,
+                396
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                4,
+                12
+              ],
+              "source": [
+                671,
+                396
+              ],
+              "ink": 1
+            },
+            {
+              "native": [
+                3,
+                13
+              ],
+              "source": [
+                641,
+                427
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                4,
+                13
+              ],
+              "source": [
+                671,
+                427
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                3,
+                14
+              ],
+              "source": [
+                641,
+                457
+              ],
+              "ink": 1
+            }
+          ]
+        },
+        {
+          "actual_wheel_foot_source_region": [
+            880,
+            388,
+            65,
+            70
+          ],
+          "colored_native_samples": [
+            {
+              "native": [
+                11,
+                12
+              ],
+              "source": [
+                884,
+                396
+              ],
+              "ink": 1
+            },
+            {
+              "native": [
+                12,
+                12
+              ],
+              "source": [
+                914,
+                396
+              ],
+              "ink": 1
+            },
+            {
+              "native": [
+                11,
+                13
+              ],
+              "source": [
+                884,
+                427
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                12,
+                13
+              ],
+              "source": [
+                914,
+                427
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                11,
+                14
+              ],
+              "source": [
+                884,
+                457
+              ],
+              "ink": 1
+            },
+            {
+              "native": [
+                12,
+                14
+              ],
+              "source": [
+                914,
+                457
+              ],
+              "ink": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "single_eight_connected_silhouette": true,
+      "opaque_pixel_count": 96
+    },
+    {
+      "pose": "down_step",
+      "single_eight_connected_silhouette": true,
+      "opaque_pixel_count": 104,
+      "four_distinct_actual_source_wheel_feet": [
+        {
+          "actual_wheel_foot_source_region": [
+            65,
+            770,
+            60,
+            55
+          ],
+          "colored_native_samples": [
+            {
+              "native": [
+                1,
+                9
+              ],
+              "source": [
+                74,
+                789
+              ],
+              "ink": 1
+            },
+            {
+              "native": [
+                2,
+                9
+              ],
+              "source": [
+                104,
+                789
+              ],
+              "ink": 2
+            }
+          ]
+        },
+        {
+          "actual_wheel_foot_source_region": [
+            420,
+            780,
+            55,
+            55
+          ],
+          "colored_native_samples": [
+            {
+              "native": [
+                13,
+                9
+              ],
+              "source": [
+                439,
+                789
+              ],
+              "ink": 1
+            },
+            {
+              "native": [
+                13,
+                10
+              ],
+              "source": [
+                439,
+                819
+              ],
+              "ink": 2
+            }
+          ]
+        },
+        {
+          "actual_wheel_foot_source_region": [
+            100,
+            837,
+            70,
+            65
+          ],
+          "colored_native_samples": [
+            {
+              "native": [
+                2,
+                11
+              ],
+              "source": [
+                104,
+                850
+              ],
+              "ink": 1
+            },
+            {
+              "native": [
+                3,
+                11
+              ],
+              "source": [
+                135,
+                850
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                4,
+                11
+              ],
+              "source": [
+                165,
+                850
+              ],
+              "ink": 1
+            },
+            {
+              "native": [
+                2,
+                12
+              ],
+              "source": [
+                104,
+                880
+              ],
+              "ink": 1
+            },
+            {
+              "native": [
+                3,
+                12
+              ],
+              "source": [
+                135,
+                880
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                4,
+                12
+              ],
+              "source": [
+                165,
+                880
+              ],
+              "ink": 1
+            }
+          ]
+        },
+        {
+          "actual_wheel_foot_source_region": [
+            368,
+            878,
+            65,
+            70
+          ],
+          "colored_native_samples": [
+            {
+              "native": [
+                11,
+                12
+              ],
+              "source": [
+                378,
+                880
+              ],
+              "ink": 1
+            },
+            {
+              "native": [
+                12,
+                12
+              ],
+              "source": [
+                408,
+                880
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                11,
+                13
+              ],
+              "source": [
+                378,
+                911
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                12,
+                13
+              ],
+              "source": [
+                408,
+                911
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                12,
+                14
+              ],
+              "source": [
+                408,
+                941
+              ],
+              "ink": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "up_step",
+      "single_eight_connected_silhouette": true,
+      "opaque_pixel_count": 109,
+      "four_distinct_actual_source_wheel_feet": [
+        {
+          "actual_wheel_foot_source_region": [
+            577,
+            770,
+            60,
+            55
+          ],
+          "colored_native_samples": [
+            {
+              "native": [
+                1,
+                9
+              ],
+              "source": [
+                581,
+                789
+              ],
+              "ink": 1
+            },
+            {
+              "native": [
+                2,
+                9
+              ],
+              "source": [
+                611,
+                789
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                2,
+                10
+              ],
+              "source": [
+                611,
+                819
+              ],
+              "ink": 2
+            }
+          ]
+        },
+        {
+          "actual_wheel_foot_source_region": [
+            932,
+            780,
+            55,
+            55
+          ],
+          "colored_native_samples": [
+            {
+              "native": [
+                13,
+                9
+              ],
+              "source": [
+                946,
+                789
+              ],
+              "ink": 1
+            },
+            {
+              "native": [
+                13,
+                10
+              ],
+              "source": [
+                946,
+                819
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                14,
+                10
+              ],
+              "source": [
+                976,
+                819
+              ],
+              "ink": 1
+            }
+          ]
+        },
+        {
+          "actual_wheel_foot_source_region": [
+            612,
+            837,
+            70,
+            65
+          ],
+          "colored_native_samples": [
+            {
+              "native": [
+                3,
+                11
+              ],
+              "source": [
+                642,
+                850
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                4,
+                11
+              ],
+              "source": [
+                672,
+                850
+              ],
+              "ink": 1
+            },
+            {
+              "native": [
+                3,
+                12
+              ],
+              "source": [
+                642,
+                880
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                4,
+                12
+              ],
+              "source": [
+                672,
+                880
+              ],
+              "ink": 1
+            }
+          ]
+        },
+        {
+          "actual_wheel_foot_source_region": [
+            880,
+            878,
+            65,
+            70
+          ],
+          "colored_native_samples": [
+            {
+              "native": [
+                11,
+                12
+              ],
+              "source": [
+                885,
+                880
+              ],
+              "ink": 1
+            },
+            {
+              "native": [
+                12,
+                12
+              ],
+              "source": [
+                915,
+                880
+              ],
+              "ink": 1
+            },
+            {
+              "native": [
+                11,
+                13
+              ],
+              "source": [
+                885,
+                911
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                12,
+                13
+              ],
+              "source": [
+                915,
+                911
+              ],
+              "ink": 2
+            },
+            {
+              "native": [
+                11,
+                14
+              ],
+              "source": [
+                885,
+                941
+              ],
+              "ink": 1
+            },
+            {
+              "native": [
+                12,
+                14
+              ],
+              "source": [
+                915,
+                941
+              ],
+              "ink": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "single_eight_connected_silhouette": true,
+      "opaque_pixel_count": 90
+    }
+  ]
+}

@@ -1,0 +1,167 @@
+{
+  "status": "integrated-native-reviewed",
+  "species_count": 23,
+  "families": [
+    {
+      "id": "MN_F134",
+      "species_ids": [
+        "MN_295",
+        "MN_296",
+        "MN_297"
+      ]
+    },
+    {
+      "id": "MN_F135",
+      "species_ids": [
+        "MN_298",
+        "MN_299"
+      ]
+    },
+    {
+      "id": "MN_F136",
+      "species_ids": [
+        "MN_300",
+        "MN_301",
+        "MN_302"
+      ]
+    },
+    {
+      "id": "MN_F137",
+      "species_ids": [
+        "MN_303",
+        "MN_304"
+      ]
+    },
+    {
+      "id": "MN_F138",
+      "species_ids": [
+        "MN_305",
+        "MN_306",
+        "MN_307"
+      ]
+    },
+    {
+      "id": "MN_F139",
+      "species_ids": [
+        "MN_308",
+        "MN_309"
+      ]
+    },
+    {
+      "id": "MN_F140",
+      "species_ids": [
+        "MN_310",
+        "MN_311"
+      ]
+    },
+    {
+      "id": "MN_F141",
+      "species_ids": [
+        "MN_312",
+        "MN_313"
+      ]
+    },
+    {
+      "id": "MN_F142",
+      "species_ids": [
+        "MN_314",
+        "MN_315"
+      ]
+    },
+    {
+      "id": "MN_F143",
+      "species_ids": [
+        "MN_316"
+      ]
+    },
+    {
+      "id": "MN_F144",
+      "species_ids": [
+        "MN_317"
+      ]
+    }
+  ],
+  "preserve_existing_art": true,
+  "active_species_target": 220,
+  "replacement_plan": [
+    {
+      "old_family": "MN_F127",
+      "replacement": [
+        "MN_F136"
+      ],
+      "reason": "Replace generic foraging bear with the living dream-den progression."
+    },
+    {
+      "old_family": "MN_F128",
+      "replacement": [
+        "MN_F134"
+      ],
+      "reason": "Replace leaf-antler moose with a distinct underwater-gardener anatomy progression."
+    },
+    {
+      "old_family": "MN_F129",
+      "replacement": [
+        "MN_F139",
+        "MN_F143"
+      ],
+      "reason": "Replace generic wolf silhouettes with branch-ambusher marten and four-eyed whirligig solo."
+    },
+    {
+      "old_family": "MN_F131",
+      "replacement": [
+        "MN_F138"
+      ],
+      "reason": "Replace woodpecker with stronger chisel/cavity-architect three-stage growth."
+    },
+    {
+      "old_family": "MN_F132",
+      "replacement": [
+        "MN_F137"
+      ],
+      "reason": "Replace ordinary snapping turtle with an integrated sundial-shell design."
+    },
+    {
+      "old_family": "MN_F022",
+      "replacement": [
+        "MN_F141"
+      ],
+      "reason": "Returning antlers give the seasonal Grass/Ghost niche a stronger visual story."
+    },
+    {
+      "old_family": "MN_F034",
+      "replacement": [
+        "MN_F135"
+      ],
+      "reason": "Reduce food repetition; replace flatbread with locking-anchor porcupine."
+    },
+    {
+      "old_family": "MN_F035",
+      "replacement": [
+        "MN_F142"
+      ],
+      "reason": "Reduce food repetition; sundew finger-trap preserves Grass/Dark coverage with stronger anatomy."
+    },
+    {
+      "old_family": "MN_F096",
+      "replacement": [
+        "MN_F144",
+        "MN_F138"
+      ],
+      "reason": "Reduce repeated Water/Psychic families as sundial turtle and nursery mudpuppy arrive; preserve the rarer Dark/Flying windvane pair. These two slots fund the leaf-puzzle solo and extra woodpecker stage."
+    },
+    {
+      "old_family": "MN_F118",
+      "replacement": [
+        "MN_F140"
+      ],
+      "reason": "Replace less distinct poisonous bullhead with the mudpuppy nursery line, keeping requested trout/walleye/burbot/northern/paddlefish."
+    }
+  ],
+  "preserve_other_new_families": [
+    "MN_F130",
+    "MN_F133"
+  ],
+  "replacement_slot_count": 23,
+  "independent_balance_review": "Keep F062 and replace F096 to retain Flying coverage and reduce repeated Water/Psychic. Same23-for23slots.",
+  "integration_report": "planning/minnesota/renders/roster-polish-20261027-v1/new-eleven/integration/summary.json"
+}

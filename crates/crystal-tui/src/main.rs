@@ -9,8 +9,8 @@ use crystal_bevy::VisibleShellController as RuntimeGameShell;
 use crystal_core::input::GameButton;
 use crystal_runtime::{CrystalRuntime, RuntimeCompiledScriptCursor};
 use geothite::{
-    PaintedRenderer, RuntimeTextRenderer, TerminalAction, TerminalCanvas, TerminalUi, TuiTheme,
-    map_key_event, render_snapshot_text,
+    PaintedRenderer, RuntimeTextRenderer, TerminalAction, TerminalCanvas, TerminalUi,
+    TextSnapshot, TuiTheme, map_key_event, render_snapshot_text,
 };
 use ratatui::{Terminal, backend::CrosstermBackend};
 use serde_json::{Value, json};
@@ -81,7 +81,7 @@ fn main() -> Result<()> {
         let mut active_cursor = None;
         finish_noninteractive_work(&mut game, &mut active_cursor, &mut renderer)?;
         let runtime_snapshot = game.snapshot()?;
-        let snapshot = renderer.render(&runtime_snapshot);
+        let snapshot = render_controller_snapshot(&game, &mut renderer, &runtime_snapshot);
         println!("{}", render_snapshot_text(&snapshot, options.compact));
         return Ok(());
     }
@@ -261,7 +261,8 @@ fn mcp_tools() -> Value {
                 "type": "object",
                 "properties": {
                     "direction": { "enum": ["up", "down", "left", "right"] },
-                    "steps": { "type": "integer", "minimum": 1, "maximum": 25 }
+                    "steps": { "type": "integer", "minimum": 1, "maximum": 25 },
+                    "run": { "type": "boolean", "default": false }
                 },
                 "required": ["direction"]
             }
@@ -388,7 +389,7 @@ fn call_mcp_tool(
         }
         "observe" => {
             let source = game.presentation_snapshot()?;
-            let snapshot = renderer.render(&source);
+            let snapshot = render_controller_snapshot(game, renderer, &source);
             let compact = arguments.get("detail").and_then(Value::as_str) == Some("compact");
             let text = render_snapshot_text(&snapshot, compact);
             Ok(json!({
@@ -405,7 +406,12 @@ fn call_mcp_tool(
                 .context("move requires direction")?;
             let button = parse_game_button(direction)?;
             let steps = bounded_argument(arguments, "steps", 1, 25, 1)?;
-            move_exact_tiles(game, renderer, active_cursor, button, steps)?;
+            let running = arguments
+                .get("run")
+                .map(|value| value.as_bool().context("run must be a boolean"))
+                .transpose()?
+                .unwrap_or(false);
+            move_exact_tiles(game, renderer, active_cursor, button, steps, running)?;
             save_after_mcp_action(game, save_path)?;
             mcp_status_result(game, renderer)
         }
@@ -457,7 +463,7 @@ fn call_mcp_tool(
                     let times = bounded_argument(action, "times", 1, 120, 1)?;
                     let button = parse_game_button(value)?;
                     if kind == "move" {
-                        move_exact_tiles(game, renderer, active_cursor, button, times)?;
+                        move_exact_tiles(game, renderer, active_cursor, button, times, false)?;
                     } else if kind == "button" {
                         for _ in 0..times {
                             apply_button(game, renderer, active_cursor, button)?;
@@ -501,7 +507,7 @@ fn call_mcp_tool(
         }
         "recent_events" | "journal" => {
             let source = game.presentation_snapshot()?;
-            let snapshot = renderer.render(&source);
+            let snapshot = render_controller_snapshot(game, renderer, &source);
             let payload = json!({
                 "actions": snapshot.action_log,
                 "status": mcp_status_payload(&source)
@@ -569,7 +575,7 @@ fn mcp_status_result(
 ) -> Result<Value> {
     let source = game.presentation_snapshot()?;
     let payload = mcp_status_payload(&source);
-    renderer.render(&source);
+    render_controller_snapshot(game, renderer, &source);
     Ok(mcp_json_result(payload))
 }
 
@@ -599,7 +605,7 @@ fn mcp_status_payload(source: &crystal_runtime::RuntimeShellSnapshot) -> Value {
         "badges": badges,
         "pokedex": { "seen": source.progression.pokedex_seen, "owned": source.progression.pokedex_owned },
         "menu": source.ui.menu.as_ref().map(|menu| menu.menu_id.as_str()),
-        "dialogue": source.ui.text_window_open || source.ui.pending_text_wait.is_some(),
+        "dialogue": source.ui.pending_text_wait.is_some() || source.ui.text.is_some(),
     })
 }
 
@@ -649,12 +655,18 @@ fn move_exact_tiles(
     active_cursor: &mut Option<RuntimeCompiledScriptCursor>,
     button: GameButton,
     steps: usize,
+    running: bool,
 ) -> Result<()> {
     for _ in 0..steps {
         let start = game.presentation_snapshot()?.overworld.tile;
         let mut moved = false;
         for _ in 0..4 {
-            apply_button(game, renderer, active_cursor, button)?;
+            if running {
+                game.press_buttons([GameButton::B, button])?;
+                renderer.record_action(format!("run: {:?}", button));
+            } else {
+                apply_button(game, renderer, active_cursor, button)?;
+            }
             finish_noninteractive_work(game, active_cursor, renderer)?;
             if game.presentation_snapshot()?.overworld.tile != start {
                 moved = true;
@@ -793,7 +805,7 @@ fn run_tui(
     finish_noninteractive_work(&mut game, &mut active_cursor, &mut renderer)?;
     save_after_mcp_action(&mut game, save_path.as_ref())?;
     let mut runtime_snapshot = game.presentation_snapshot()?;
-    let mut snapshot = renderer.render(&runtime_snapshot);
+    let mut snapshot = render_controller_snapshot(&game, &mut renderer, &runtime_snapshot);
     let mut state_dirty = false;
     let mut surface_dirty = true;
     let mut surface = None;
@@ -813,7 +825,7 @@ fn run_tui(
         }
         if state_dirty {
             runtime_snapshot = game.presentation_snapshot()?;
-            snapshot = renderer.render(&runtime_snapshot);
+            snapshot = render_controller_snapshot(&game, &mut renderer, &runtime_snapshot);
             state_dirty = false;
             surface_dirty = true;
         }
@@ -990,16 +1002,17 @@ fn run_tui(
                 None => ui.notice = Some("Start with --save PATH to enable F5 saves".to_string()),
             },
             TerminalAction::MoveSelection(delta) => {
-                if !snapshot.prompt.is_empty() {
-                    renderer.move_selection(delta, 2, true);
-                } else {
-                    renderer.move_selection(delta, snapshot.menu.len(), false);
-                }
                 game.press(if delta < 0 {
                     GameButton::Up
                 } else {
                     GameButton::Down
                 })?;
+            }
+            TerminalAction::RunDirection(button) => {
+                ui.notice = None;
+                game.press_buttons([GameButton::B, button])?;
+                renderer.record_action(format!("run: {:?}", button));
+                finish_noninteractive_work(&mut game, &mut active_cursor, &mut renderer)?;
             }
             TerminalAction::GameButton(button) => {
                 ui.notice = None;
@@ -1019,6 +1032,16 @@ fn run_tui(
     Ok(())
 }
 
+fn render_controller_snapshot(
+    game: &RuntimeGameShell,
+    renderer: &mut RuntimeTextRenderer,
+    source: &crystal_runtime::RuntimeShellSnapshot,
+) -> TextSnapshot {
+    let (menu_index, yes_no_index) = game.text_view_selection_indices(source);
+    renderer.set_selection(menu_index, yes_no_index);
+    renderer.render(source)
+}
+
 fn finish_noninteractive_work(
     _game: &mut RuntimeGameShell,
     _active_cursor: &mut Option<RuntimeCompiledScriptCursor>,
@@ -1033,25 +1056,13 @@ fn apply_button(
     _active_cursor: &mut Option<RuntimeCompiledScriptCursor>,
     button: GameButton,
 ) -> Result<()> {
-    if matches!(button, GameButton::Up | GameButton::Down) {
-        let snapshot = game.presentation_snapshot()?;
-        let delta = if button == GameButton::Up { -1 } else { 1 };
-        if snapshot.ui.pending_yes_no.is_some() {
-            renderer.move_selection(delta, 2, true);
-        } else if let Some(menu) = snapshot.ui.menu.as_ref()
-            && let Some(vertical) = menu.layout.vertical_menus.first()
-            && !vertical
-                .options
-                .iter()
-                .any(|option| option.trim_start().starts_with('>'))
-        {
-            renderer.move_selection(delta, vertical.options.len(), false);
-        }
-    }
     game.press(button)?;
     renderer.record_action(format!("input: {:?}", button));
     Ok(())
 }
+
+#[cfg(test)]
+mod minneapolis_text_tests;
 
 #[cfg(test)]
 mod tests {
@@ -1368,7 +1379,12 @@ mod tests {
             .join("../..")
             .canonicalize()
             .expect("repository root");
-        let pack_path = repo_root.join("content-packs/text-tui.crystalpack");
+        let explicit_pack = std::env::var_os("CRYSTAL_RENDER_TEST_PACK");
+        let pack_path = explicit_pack
+            .as_ref()
+            .map(PathBuf::from)
+            .unwrap_or_else(|| repo_root.join("content-packs/text-tui.crystalpack"));
+        assert!(explicit_pack.is_none() || pack_path.is_file(), "CRYSTAL_RENDER_TEST_PACK must identify an existing pack: {}", pack_path.display());
         if !pack_path.exists() {
             eprintln!(
                 "skipping external-pack MCP regression; build {} first",
@@ -1391,7 +1407,7 @@ mod tests {
             &mut renderer,
             &mut cursor,
             Some("move"),
-            &json!({ "direction": "right", "steps": 1 }),
+            &json!({ "direction": "right", "steps": 1, "run": true }),
             None,
         )
         .expect("MCP movement");

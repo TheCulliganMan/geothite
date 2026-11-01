@@ -1,0 +1,20 @@
+{
+  "status": "VERIFIED_NATIVE_CANDIDATE_WAITING_FOR_LIVE_REBUILD",
+  "checked_at": "2026-10-31T01:24:42.001351+00:00",
+  "selected_revision": "north_shore_footbridges_revision",
+  "candidate_pack": "content-packs/minnesota-current-r15-open-shore-and-spur-v01.crystalpack",
+  "candidate_pack_sha256": "1c16d7043f84b8cf7a51fe45a22ddc8d38450dfc97861ca8a9d5d7a2a6127981",
+  "production_calls": 3830,
+  "native_populated_cases": 3,
+  "native_views_inspected": 4,
+  "source_native_pixel_mismatches": 0,
+  "live_build_wrapper_pid": 10144,
+  "exec_session": 90188,
+  "build_log": ".local/route-grass-review/build-r15-staples-spur-v02.log",
+  "next_commands": [
+    "python3 .local/route-grass-review/replay_r15_spur_publisher_v02.py",
+    "PYTHONPATH=\"$PWD/.local/ely-backroute-python:$PWD/planning/minnesota/tools\" python3 .local/route-grass-review/select_r15_current_v01.py"
+  ],
+  "selection_requires_terminal_build_and_clippy": true,
+  "goal_complete": false
+}

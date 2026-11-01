@@ -1,0 +1,115 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-r09-southwest-grass-v01.crystalpack",
+  "pack_sha256": "0d04630cac6239d4e4f544d73fc3c32af0d33c5c680605c32f41c36cc9f30880",
+  "calls": 189,
+  "wild": [
+    {
+      "phase": "grass-and-save",
+      "map": "MnR09C00R01",
+      "position": {
+        "x": 10,
+        "y": 15
+      }
+    },
+    {
+      "phase": "continue-and-repeat",
+      "map": "MnR09C00R01",
+      "position": {
+        "x": 10,
+        "y": 15
+      }
+    }
+  ],
+  "phases": [
+    {
+      "phase": "grass-and-save",
+      "initial": {
+        "badges": 8,
+        "dialogue": false,
+        "facing": "up",
+        "frame": 96,
+        "map": "MnR09C00R01",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 0
+        },
+        "position": {
+          "x": 11,
+          "y": 16
+        }
+      },
+      "final": {
+        "badges": 8,
+        "dialogue": false,
+        "facing": "left",
+        "frame": 120,
+        "map": "MnR09C00R01",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 1
+        },
+        "position": {
+          "x": 10,
+          "y": 14
+        }
+      },
+      "output_save": ".local/route-grass-review/r09-southwest-grass-and-save-v02-output.crystalsave",
+      "source_unchanged": true,
+      "stderr_bytes": 0
+    },
+    {
+      "phase": "continue-and-repeat",
+      "initial": {
+        "badges": 8,
+        "dialogue": false,
+        "facing": "left",
+        "frame": 120,
+        "map": "MnR09C00R01",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 1
+        },
+        "position": {
+          "x": 10,
+          "y": 14
+        }
+      },
+      "final": {
+        "badges": 8,
+        "dialogue": false,
+        "facing": "left",
+        "frame": 153,
+        "map": "MnR09C00R01",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 2
+        },
+        "position": {
+          "x": 10,
+          "y": 14
+        }
+      },
+      "output_save": ".local/route-grass-review/r09-southwest-continue-and-repeat-v02-output.crystalsave",
+      "source_unchanged": true,
+      "stderr_bytes": 0
+    }
+  ],
+  "scope": "Actual reached Cut/pickup save; native walks and wild RUN, Save/Continue, repeat pickup interaction and menu. Local initial Cut partner/badge fixture is not earned regional progress."
+}

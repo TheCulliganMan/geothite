@@ -1,0 +1,365 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F125",
+  "status": "native-redesign-review-pending",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f125/prompt-v8.txt",
+  "pokemon_palettes": {
+    "MN_274": {
+      "species_id": "MN_274",
+      "name": "Kindlit",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          29,
+          21,
+          12
+        ],
+        [
+          8,
+          7,
+          8
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        12989,
+        8424,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          239,
+          173,
+          99
+        ],
+        [
+          66,
+          57,
+          66
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#EFAD63",
+        "#423942",
+        "#000000"
+      ]
+    },
+    "MN_275": {
+      "species_id": "MN_275",
+      "name": "Rimepelt",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          29,
+          16,
+          7
+        ],
+        [
+          9,
+          10,
+          13
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        7709,
+        13641,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          239,
+          132,
+          57
+        ],
+        [
+          74,
+          82,
+          107
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#EF8439",
+        "#4A526B",
+        "#000000"
+      ]
+    },
+    "MN_276": {
+      "species_id": "MN_276",
+      "name": "Borealynx",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          30,
+          15,
+          6
+        ],
+        [
+          17,
+          26,
+          28
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        6654,
+        29521,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          247,
+          123,
+          49
+        ],
+        [
+          140,
+          214,
+          231
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#F77B31",
+        "#8CD6E7",
+        "#000000"
+      ]
+    }
+  },
+  "sprites": [
+    {
+      "id": "mn-274-kindlit-redesign-v12",
+      "species_id": "MN_274",
+      "view": "front",
+      "source": "sprites/mn-f125/front-back.imagegen-v8.png",
+      "crop": [
+        0,
+        0,
+        480,
+        550
+      ],
+      "fit": [
+        42,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        12989,
+        8424,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "exterior_contour": "solid",
+      "sampling": "source_center",
+      "pixel_edits": []
+    },
+    {
+      "id": "mn-274-kindlit-redesign-v12",
+      "species_id": "MN_274",
+      "view": "back",
+      "source": "sprites/mn-f125/front-back.imagegen-v8.png",
+      "crop": [
+        0,
+        550,
+        480,
+        474
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        12989,
+        8424,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "exterior_contour": "solid",
+      "sampling": "source_center",
+      "pixel_edits": []
+    },
+    {
+      "id": "mn-275-rimepelt-redesign-v12",
+      "species_id": "MN_275",
+      "view": "front",
+      "source": "sprites/mn-f125/front-back.imagegen-v8.png",
+      "crop": [
+        480,
+        0,
+        490,
+        550
+      ],
+      "fit": [
+        52,
+        48
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        7709,
+        13641,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "exterior_contour": "solid",
+      "sampling": "source_center",
+      "pixel_edits": []
+    },
+    {
+      "id": "mn-275-rimepelt-redesign-v12",
+      "species_id": "MN_275",
+      "view": "back",
+      "source": "sprites/mn-f125/front-back.imagegen-v8.png",
+      "crop": [
+        480,
+        550,
+        490,
+        474
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        7709,
+        13641,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "exterior_contour": "solid",
+      "sampling": "source_center",
+      "pixel_edits": []
+    },
+    {
+      "id": "mn-276-borealynx-redesign-v12",
+      "species_id": "MN_276",
+      "view": "front",
+      "source": "sprites/mn-f125/front-back.imagegen-v8.png",
+      "crop": [
+        970,
+        0,
+        566,
+        550
+      ],
+      "fit": [
+        54,
+        52
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        6654,
+        29521,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "exterior_contour": "solid",
+      "sampling": "source_center",
+      "pixel_edits": []
+    },
+    {
+      "id": "mn-276-borealynx-redesign-v12",
+      "species_id": "MN_276",
+      "view": "back",
+      "source": "sprites/mn-f125/front-back.imagegen-v8.png",
+      "crop": [
+        970,
+        550,
+        566,
+        474
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        6654,
+        29521,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "exterior_contour": "solid",
+      "sampling": "source_center",
+      "pixel_edits": []
+    }
+  ],
+  "back_framing": "gen2-close-rear-portrait",
+  "design_lock": "Always on four paws. Expressive animal faces. Ember kitten -> flame-mantled coal prowler -> low frost-mantled winter lynx with blazing chest and frozen snowshoe paws. Exactly four native inks per species; no tall armor spikes or layered fur.",
+  "visual_review": {
+    "status": "pending",
+    "notes": "User reopened visual review for a modest lynx redesign and correct front/rear battle orientation."
+  },
+  "reference_mapping": "sprites/mn-f125/reference-mapping.json",
+  "native_refinement": {
+    "revision": 11,
+    "basis": "ImageGen v7 plus minimal guarded native-pixel edits.",
+    "notes": "The broad face-stencil revision 8 was rejected as boxy/derpy. Native v9 preserves the original slanted animal eye contours and short muzzle; it darkens misplaced Iris inks, clears a single kitten fang and a single adult fang, and removes colored noise inside mouths. No replacement eye boxes, white face masks or new face silhouette. User-directed third-evolution facial outline pass: four black pixels define the near eye/brow bridge and muzzle edge, plus one profile-eye rim pixel. Other two stages remain pixel-identical. Two compact 2x2 eye clusters preserve white around the black pupils inside the adult facial outlines; no boxed replacement muzzle."
+  }
+}

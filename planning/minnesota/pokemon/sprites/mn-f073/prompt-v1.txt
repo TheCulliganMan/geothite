@@ -1,0 +1,23 @@
+Use case: stylized-concept. Original1999 Game Boy Color RPG battle pixel sprite family, Minnesota forest folklore. THREE columns and TWO rows, exactly SIX isolated sprites on pure white. Top row whole-body FRONT views facing LEFT. Bottom row LARGE CLOSE REAR head-and-shoulder portraits facing upper-right, with lower body cropped off at bottom. No text, labels, dividers, shadows or scenery.
+Design theme: wild teakettle tall tale; a warm hissing ANIMAL with an actual SPOUT-SHAPED MUZZLE and two big feet pointing opposite ways. The funny opposing feet leave contradictory snowshoe-like tracks. All shapes are grown anatomy, not worn accessories. Animal-like rounded pressure torso with a continuous solid arched back, not a household kettle or hollow handle. No pot props.
+Column1 Hissip (FIRE): small squat amber animal, short true spout muzzle, lid-like rounded brow ridge and two oval anatomical feet, one toe end facing forward and the other backward. Two tiny forelimbs tuck beside chest. Low simple teardrop silhouette, readable black eyes with tiny white glints.
+Column2 Crosspout (FIRE/DARK): stockier orange pressure-chested animal, longer spout muzzle, two broad opposed snowshoe feet underneath a round belly, short bracing forelimbs and two simple chest vent marks. Snowshoe feet have ONLY two broad dark slots each, never fine woven texture. Clear wider and taller growth.
+Column3 Contrakett (FIRE/DARK): largest warm rust animal, low determined spout face, high smooth arched animal back, broad pressure ribs, three large simple chest vents, short powerful forelimbs and two enormous opposed snowshoe feet making a wide crossed-toe base. Solid animal anatomy, not a pot/handle silhouette. Opposing long feet and spout must remain obvious at56pixels. At most ONE small stepped steam curl from mouth; no clouds or steam texture noise.
+Authentic Generation2 pixel economy: target fronts56x56 occupying36/44/54logical pixels by stage; backs48x48 occupying46x47 as close REAR portraits. Each logical pixel appears as a big clean square, nearest-neighbor enlargement. Deliberate crisp ONE-logical-pixel stepped BLACK EXTERIOR RIMS, selective dark internal contours, broad flat colored interiors, sparse white highlights, expressive simple eyes. No gradients, antialiasing, dithering, texture, heavy black knots, double-thick ink or tiny details.
+Each species has a DIFFERENT exact FOUR-color GBC palette within warm ember and soot hues. Its front and back use the same own palette. RGB555=r|(g<<5)|(b<<10); expand RGB5 to RGB8 with(v<<3)|(v>>2). Indices0white,1warm body,2soot shade,3black.
+Hissip individual palette:
+index0: RGB5(31, 31, 31); packedRGB55532767 (0x7FFF); expandedRGB8(255, 255, 255); hex#FFFFFF.
+index1: RGB5(31, 21, 9); packedRGB5559919 (0x26BF); expandedRGB8(255, 173, 74); hex#FFAD4A.
+index2: RGB5(12, 7, 6); packedRGB5556380 (0x18EC); expandedRGB8(99, 57, 49); hex#633931.
+index3: RGB5(0, 0, 0); packedRGB5550 (0x0000); expandedRGB8(0, 0, 0); hex#000000.
+Crosspout individual palette:
+index0: RGB5(31, 31, 31); packedRGB55532767 (0x7FFF); expandedRGB8(255, 255, 255); hex#FFFFFF.
+index1: RGB5(30, 15, 6); packedRGB5556654 (0x19FE); expandedRGB8(247, 123, 49); hex#F77B31.
+index2: RGB5(9, 6, 8); packedRGB5558393 (0x20C9); expandedRGB8(74, 49, 66); hex#4A3142.
+index3: RGB5(0, 0, 0); packedRGB5550 (0x0000); expandedRGB8(0, 0, 0); hex#000000.
+Contrakett individual palette:
+index0: RGB5(31, 31, 31); packedRGB55532767 (0x7FFF); expandedRGB8(255, 255, 255); hex#FFFFFF.
+index1: RGB5(29, 12, 7); packedRGB5557581 (0x1D9D); expandedRGB8(239, 99, 57); hex#EF6339.
+index2: RGB5(8, 6, 10); packedRGB55510440 (0x28C8); expandedRGB8(66, 49, 82); hex#423152.
+index3: RGB5(0, 0, 0); packedRGB5550 (0x0000); expandedRGB8(0, 0, 0); hex#000000.
+Deliver only the six clean pixel sprites. Preserve the exact stage identity and corresponding palette between front and rear. Keep all front feet fully inside cells; lower bodies exit the bottom of CLOSE REAR portrait frames.

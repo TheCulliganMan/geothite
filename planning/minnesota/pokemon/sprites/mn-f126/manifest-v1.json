@@ -1,0 +1,59 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F126",
+  "status": "native-review-pending",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f126/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "pokemon_palettes": {},
+  "sprites": [
+    {
+      "id": "mn-277-vanesail-v1",
+      "species_id": "MN_277",
+      "view": "front",
+      "source": "sprites/mn-f126/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        887,
+        887
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13053,
+        18919,
+        0
+      ],
+      "interior_black_min_samples": 12,
+      "white_detail_min_samples": 8
+    },
+    {
+      "id": "mn-277-vanesail-v1",
+      "species_id": "MN_277",
+      "view": "back",
+      "source": "sprites/mn-f126/front-back.imagegen-v1.png",
+      "crop": [
+        887,
+        0,
+        887,
+        887
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13053,
+        18919,
+        0
+      ],
+      "interior_black_min_samples": 12,
+      "white_detail_min_samples": 8
+    }
+  ]
+}

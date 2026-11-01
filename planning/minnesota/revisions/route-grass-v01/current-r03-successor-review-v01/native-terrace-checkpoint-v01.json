@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "test": "native_town_exterior_public_paths_qualified_roads_and_water_boundary",
+  "exit_code": 0,
+  "log": ".local/route-grass-review/current-r03-native-terrace-v01.log",
+  "actual_scope": "Terrace sign, actual stair-mediated walk between closed upper/lower cliff edges, two wall denials and Continue only. Initial partner, two badges and location are QA setup; complete route and six low-bank hops are checked separately.",
+  "contract": "planning/minnesota/revisions/route-grass-v01/current-r03-successor-review-v01/native-terrace-contract-v01.json"
+}

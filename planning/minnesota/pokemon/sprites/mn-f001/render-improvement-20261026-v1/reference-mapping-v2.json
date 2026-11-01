@@ -1,0 +1,14 @@
+{
+  "tool": "built-in image_gen",
+  "prompt": "sprites/mn-f001/render-improvement-20261026-v1/prompt-v2.txt",
+  "output": "sprites/mn-f001/render-improvement-20261026-v1/front-back.imagegen-v2.png",
+  "output_sha256": "39761d0860818ae2bf26c764ab928472f5031d834b36f4e679e6ec1da6eb60e0",
+  "original_tool_path": "/Users/ryanculligan/.codex/generated_images/01a17abf-77f2-7b80-bc2a-d5aed1c72b88/exec-ceda22ef-38af-4dde-bd4a-9c62b0770117.png",
+  "references": [
+    {
+      "path": "sprites/mn-f001/render-improvement-20261026-v1/front-back.imagegen-v1.png",
+      "role": "rendering refinement target",
+      "sha256": "b0fd026ebcdc7ed41e4d17774af52eb645e751584e93193c24fba9d521aef852"
+    }
+  ]
+}

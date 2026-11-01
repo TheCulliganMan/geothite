@@ -1,0 +1,45 @@
+{
+  "id": "MN_F127",
+  "region": "northwoods",
+  "theme": "Minnesota black bears, seasonal foraging and winter dens: a curious scoop-pawed cub grows a powerful digging stance and a thick sheltering shoulder ruff. The adult protects its den with broad planted forepaws; its heavy fur arches over the nape without becoming a building, costume or armor.",
+  "habitat": "Dense woodland edges and secluded northern forest dens.",
+  "members": [
+    {
+      "id": "MN_278",
+      "name": "Berrcub",
+      "types": [
+        "NORMAL"
+      ],
+      "stage": 1,
+      "evolves_to": "MN_279"
+    },
+    {
+      "id": "MN_279",
+      "name": "Forabear",
+      "types": [
+        "NORMAL"
+      ],
+      "stage": 2,
+      "evolves_to": "MN_280"
+    },
+    {
+      "id": "MN_280",
+      "name": "Denwarden",
+      "types": [
+        "NORMAL"
+      ],
+      "stage": 3,
+      "evolves_to": null
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.dnr.state.mn.us/mammals/blackbear.html",
+      "publisher": "Minnesota regional primary source",
+      "evidence": "Black-bear anatomy, forest habitat, seasonal berries and nuts, and winter denning.",
+      "fantasy_extension": "All powers, anatomy changes and discovery scenes are original fiction."
+    }
+  ],
+  "design_status": "authored-wildlife-replacement",
+  "replacement_context": "User requested forest wildlife in place of rejected weather families while retaining exactly220 active species. No encounter table or map event is changed."
+}

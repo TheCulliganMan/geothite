@@ -1,0 +1,93 @@
+{
+  "schema_version": 1,
+  "map": "MnInternationalFalls",
+  "parent_revision": "r10_survey_spurs_revision",
+  "parent_pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+  "parent_pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33",
+  "native_module_sha256": "da54284665b197aaec19b2f29fd366755e1979b7b58c413b7a344f05c96b735a",
+  "preserved_warps": [
+    {
+      "index": 1,
+      "x": 9,
+      "y": 7,
+      "target_map_constant": "MN_INTERNATIONAL_FALLS_POKECENTER_1F",
+      "target_map": "MN_INTERNATIONAL_FALLS_POKECENTER_1F",
+      "target_warp_id": 3
+    },
+    {
+      "index": 2,
+      "x": 9,
+      "y": 8,
+      "target_map_constant": "MN_INTERNATIONAL_FALLS",
+      "target_map": "MN_INTERNATIONAL_FALLS",
+      "target_warp_id": 2
+    },
+    {
+      "index": 3,
+      "x": 23,
+      "y": 9,
+      "target_map_constant": "MN_INTERNATIONAL_FALLS_MART",
+      "target_map": "MN_INTERNATIONAL_FALLS_MART",
+      "target_warp_id": 3
+    },
+    {
+      "index": 4,
+      "x": 23,
+      "y": 10,
+      "target_map_constant": "MN_INTERNATIONAL_FALLS",
+      "target_map": "MN_INTERNATIONAL_FALLS",
+      "target_warp_id": 4
+    }
+  ],
+  "preserved_coordinate_events": [],
+  "preserved_readings": [
+    {
+      "x": 6,
+      "y": 12,
+      "event_type": "BGEVENT_READ",
+      "script": "MN_FALLS_WEATHER_BOARD"
+    },
+    {
+      "x": 18,
+      "y": 22,
+      "event_type": "BGEVENT_READ",
+      "script": "MN_FALLS_WELCOME"
+    },
+    {
+      "x": 26,
+      "y": 12,
+      "event_type": "BGEVENT_READ",
+      "script": "MN_FALLS_TRAIL_NOTICE"
+    }
+  ],
+  "preserved_actor_anchors": [
+    {
+      "script": "MN_FALLS_PLOW_DRIVER",
+      "tile": [
+        15,
+        15
+      ]
+    },
+    {
+      "script": "MN_FALLS_LIBRARIAN",
+      "tile": [
+        12,
+        20
+      ]
+    },
+    {
+      "script": "MN_FALLS_THERMOMETER_KEEPER",
+      "tile": [
+        7,
+        17
+      ]
+    },
+    {
+      "script": "MN_FALLS_NIGHT_SKIER",
+      "tile": [
+        24,
+        17
+      ]
+    }
+  ]
+}

@@ -858,6 +858,78 @@ fn runtime_timed_phase_cursor_preserves_exported_wait_boundaries() {
 }
 
 #[test]
+fn runtime_timed_phase_cursor_accounts_for_helpers_once_across_waits() {
+    let helper = |routine: &str, count: u16, cycles: u64, source: &str, model: &str| {
+        RuntimePresentationOperation {
+            op: "fill_memory".into(),
+            source_span: presentation_span(),
+            fields: serde_json::from_value(serde_json::json!({
+                "target":"testScratch", "byte_count":count, "value":0,
+                "source_caller_instruction_machine_cycles": [6],
+                "source_helper_timing": {
+                    "routine":routine, "byte_count":count, "machine_cycles":cycles,
+                    "source_file":source, "model":model,
+                    "caller_call_included":false, "interrupts_included":false,
+                }
+            })).unwrap(),
+        }
+    };
+    let program = RuntimePresentationProgram {
+        subprograms: vec![RuntimePresentationSubprogram {
+            id: "helpers".into(),
+            phases: vec![RuntimePresentationPhase {
+                id: "setup".into(),
+                operations: vec![
+                    helper("ClearSprites", 160, 969, "home/clear_sprites.asm", "clear_register_counter_loop_v1"),
+                    RuntimePresentationOperation {
+                        op: "wait_frames".into(),
+                        source_span: presentation_span(),
+                        fields: BTreeMap::from([("frames".into(), serde_json::json!(2))]),
+                    },
+                    helper("CopyBytes", 256, 2578, "home/copy.asm", "byte_count_and_counter_rollover_v1"),
+                ],
+                ..Default::default()
+            }],
+            ..Default::default()
+        }],
+        ..Default::default()
+    };
+    let mut cursor = RuntimePresentationTimedPhaseCursor::new(&program, "helpers", "setup", 0, 2).unwrap();
+    let first = cursor.tick(&program).unwrap();
+    assert_eq!(first.cpu_work_machine_cycles, 975); // Helper RET and caller CALL each once.
+    assert!(!first.complete);
+    let suspended = cursor.tick(&program).unwrap();
+    assert_eq!(suspended.cpu_work_machine_cycles, 0);
+    assert!(suspended.effects.is_empty());
+    let resumed = cursor.tick(&program).unwrap();
+    assert_eq!(resumed.cpu_work_machine_cycles, 2584);
+    assert!(resumed.complete);
+    assert_eq!(cursor.tick(&program).unwrap().cpu_work_machine_cycles, 0);
+
+    let mut farcall = program.clone();
+    let mut clear = helper("ClearSpriteAnims", 193, 2325, "engine/sprite_anims/core.asm", "clear_register_counter_loop_v1");
+    let (prefix, suffix) = runtime_intro_farcall_instruction_machine_cycles();
+    clear.fields.insert("source_caller_model".into(), serde_json::json!("farcall_hl_v1"));
+    clear.fields.insert("source_caller_instruction_machine_cycles".into(), serde_json::json!(prefix));
+    clear.fields.insert("source_return_instruction_machine_cycles".into(), serde_json::json!(suffix));
+    farcall.subprograms[0].phases[0].operations[0] = clear;
+    let mut cursor = RuntimePresentationTimedPhaseCursor::new(&farcall, "helpers", "setup", 0, 2).unwrap();
+    assert_eq!(cursor.tick(&farcall).unwrap().cpu_work_machine_cycles, 2416);
+    farcall.subprograms[0].phases[0].operations[0].fields
+        .insert("source_return_instruction_machine_cycles".into(), serde_json::json!([4]));
+    let mut cursor = RuntimePresentationTimedPhaseCursor::new(&farcall, "helpers", "setup", 0, 2).unwrap();
+    assert!(cursor.tick(&farcall).is_err(), "a shortened bank-restoration path must be rejected");
+
+    for replacement in [serde_json::json!([]), serde_json::json!([5]), serde_json::json!([0, 6])] {
+        let mut malformed = program.clone();
+        malformed.subprograms[0].phases[0].operations[0].fields
+            .insert("source_caller_instruction_machine_cycles".into(), replacement);
+        let mut cursor = RuntimePresentationTimedPhaseCursor::new(&malformed, "helpers", "setup", 0, 2).unwrap();
+        assert!(cursor.tick(&malformed).is_err());
+    }
+}
+
+#[test]
 fn runtime_timed_phase_cursor_blocks_for_each_exported_2bpp_vblank_chunk() {
     let operation = |op: &str, fields: BTreeMap<String, serde_json::Value>| {
         RuntimePresentationOperation {
@@ -1010,7 +1082,9 @@ fn intro_presentation_parameters_are_read_from_exported_scene_dispatch_labels() 
                 },
                 "interrupt_timing": {
                     "unit": "sm83_machine_cycles",
+                    "entry_memory": {"rWBK":1,"hTilesPerCycle":8,"wLinkMode":0,"hMobile":0,"hCGB":1,"hLCDCPointer":0,"wMusicPlaying":1,"hOAMUpdate":0,"hVBlankCounter":0,"hBGMapMode":0,"hBGMapThird":0,"hCGBPalUpdate":0,"wTextDelayFrames":0,"wVBlankOccurred":0},
                     "entry_to_first_input_machine_cycles": 59,
+                    "entry_to_first_input_instruction_machine_cycles": vec![3,4,2,3,3,4,3,4,6,1,3,2,3,1,3,4,4,6],
                     "outer_loop_body": {
                         "after_input_before_scene_dispatch": 21,
                         "scene_dispatch_to_sprite_scheduler": 48,
@@ -1734,6 +1808,22 @@ fn intro_presentation_parameters_are_read_from_exported_scene_dispatch_labels() 
             .expect("observed five-channel VBlank timing should compose"),
         2168
     );
+    let shadowed_sustain = RuntimeIntroActiveSoundChannelTiming {
+        class: RuntimeIntroActiveSoundChannelClass::MusicShadowedByActiveSfx,
+        update_channels_machine_cycles: None,
+        ..sfx_sustain
+    };
+    let shadowed_note_over = RuntimeIntroActiveSoundChannelTiming {
+        note_over: true,
+        parse_music_machine_cycles: Some(417),
+        ..shadowed_sustain
+    };
+    assert_eq!(
+        sound_timing.sound_update_machine_cycles(&[shadowed_note_over]).unwrap(),
+        sound_timing.sound_update_machine_cycles(&[shadowed_sustain]).unwrap()
+            + sound_timing.note_over_extra_before_parse_machine_cycles + 417,
+        "authored _UpdateSound parses a shadowed music note before suppressing its hardware write"
+    );
     assert!(
         sound_timing
             .sound_update_machine_cycles(&[RuntimeIntroActiveSoundChannelTiming {
@@ -2004,6 +2094,7 @@ fn intro_audio_command_boundary_rejects_non_asm_or_malformed_programs() {
         },
         cry_pitch: None,
         cry_length: None,
+        output_envelope: None,
     };
     assert!(
         program
@@ -2790,7 +2881,7 @@ fn native_vendor_runtime_file_compilation_covers_every_renderer_dependency() {
             .canonicalize()
             .expect("repository root"),
     );
-    let files = compile_runtime_files(&root).expect("compile native runtime files");
+    let files = compile_runtime_files(&root, &RuntimePresentationProgram::default()).expect("compile native runtime files");
     validate_compiled_runtime_files(&files).expect("complete native runtime file bundle");
     for &key in REQUIRED_VENDOR_RUNTIME_FILE_KEYS {
         assert!(
@@ -2803,7 +2894,7 @@ fn native_vendor_runtime_file_compilation_covers_every_renderer_dependency() {
 #[test]
 fn compiled_pokegear_layouts_preserve_source_bytes_and_are_required() {
     let root = AssetRoot::new(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../..").canonicalize().unwrap());
-    let files = compile_runtime_files(&root).unwrap();
+    let files = compile_runtime_files(&root, &RuntimePresentationProgram::default()).unwrap();
     for &key in REQUIRED_POKEGEAR_RUNTIME_FILE_KEYS {
         let source = std::fs::read(root.vendor_pokecrystal().join(key)).unwrap();
         assert_eq!(files.get(key), Some(&source), "compiled game is missing the source card layout {key}");
@@ -3091,6 +3182,7 @@ fn test_item(id: &str) -> Item {
         battle_focus_energy: None,
         battle_stat_drop_guard: None,
         confusion_heal: None,
+        confusion_inflict_turns: None,
         repel_steps: None,
         escape_rope_mode: None,
         price: 0,
@@ -3375,7 +3467,7 @@ fn add_runtime_species_and_move(data: &mut GameDataSet) {
         });
     }
     for (source_index, move_data) in data.moves.values_mut().enumerate() {
-        move_data.source_index = u8::try_from(source_index + 1).expect("test move source index");
+        move_data.source_index = u16::try_from(source_index + 1).expect("test move source index");
     }
     data.battle_stat_multipliers = test_battle_stat_multipliers();
     data.battle_escape_rules = test_battle_escape_rules();
@@ -3738,6 +3830,7 @@ fn add_complete_runtime_pack_fixture(data: &mut GameDataSet) {
         }
     }
     data.runtime_title_screen = RuntimeTitleScreen {
+        static_title_image: None,
         title_music: Some("MUSIC_TITLE".to_string()),
         program: complete_runtime_title_program(),
     };
@@ -4880,6 +4973,7 @@ fn roaming_wild_battle_run_saves_hp_and_runs_exact_route_update() {
         battle_active_enemy_party_index: Some(0),
         roaming_pokemon: [
             crystal_core::state::RoamingPokemonState {
+                scaled_hp: None,
                 species: Some("NEW_MON".to_string()),
                 level: 40,
                 map_group: 1,
@@ -4958,6 +5052,7 @@ fn roaming_escape_item_records_the_exact_route_update_rng() {
         battle_active_enemy_party_index: Some(0),
         roaming_pokemon: [
             crystal_core::state::RoamingPokemonState {
+                scaled_hp: None,
                 species: Some("NEW_MON".to_string()),
                 level: 40,
                 map_group: 1,
@@ -5022,6 +5117,7 @@ fn captured_roamer_is_cleared_without_route_rng() {
         battle_active_enemy_party_index: Some(0),
         roaming_pokemon: [
             crystal_core::state::RoamingPokemonState {
+                scaled_hp: None,
                 species: Some("NEW_MON".to_string()),
                 level: 40,
                 map_group: 1,
@@ -5103,6 +5199,7 @@ fn nonroaming_battle_end_uses_one_in_sixteen_gate_before_route_update() {
             battle_active_enemy_party_index: Some(0),
             roaming_pokemon: [
                 crystal_core::state::RoamingPokemonState {
+                    scaled_hp: None,
                     species: Some("NEW_MON".to_string()),
                     level: 40,
                     map_group: 1,
@@ -5174,6 +5271,7 @@ fn nonroaming_link_battle_end_uses_link_gate_then_divider_for_routes() {
         battle_active_enemy_party_index: Some(0),
         roaming_pokemon: [
             crystal_core::state::RoamingPokemonState {
+                scaled_hp: None,
                 species: Some("NEW_MON".to_string()),
                 level: 40,
                 map_group: 1,
@@ -6069,16 +6167,23 @@ fn deferred_level_evolution_queues_same_level_target_move_when_moves_are_full() 
     dragonite.int_id = 149;
     data.pokemon.insert(dragonair.id.clone(), dragonair.clone());
     data.pokemon.insert(dragonite.id.clone(), dragonite.clone());
-    for move_id in ["WRAP", "LEER", "THUNDER_WAVE", "TWISTER", "WING_ATTACK"] {
+    for move_id in [
+        "WRAP",
+        "LEER",
+        "THUNDER_WAVE",
+        "TWISTER",
+        "WING_ATTACK",
+        "SLAM",
+    ] {
         data.moves.insert(move_id.to_string(), test_move(move_id));
     }
     data.learnsets.insert(dragonair.id.clone(), Vec::new());
     data.learnsets.insert(
         dragonite.id.clone(),
-        vec![crystal_core::systems::learnsets::LearnsetEntry(
-            55,
-            "WING_ATTACK".to_string(),
-        )],
+        vec![
+            crystal_core::systems::learnsets::LearnsetEntry(55, "WING_ATTACK".to_string()),
+            crystal_core::systems::learnsets::LearnsetEntry(55, "SLAM".to_string()),
+        ],
     );
     data.evolutions.0.insert(
         dragonair.id.clone(),
@@ -6114,7 +6219,7 @@ fn deferred_level_evolution_queues_same_level_target_move_when_moves_are_full() 
     assert_eq!(evolved.moves, moves_before);
     assert!(!state.pokedex.seen_species.contains("DRAGONITE"));
     assert!(!state.pokedex.caught_species.contains("DRAGONITE"));
-    assert_eq!(report.pending_move_learns.len(), 1);
+    assert_eq!(report.pending_move_learns.len(), 2);
     let pending = state
         .pending_move_learn
         .as_ref()
@@ -6125,6 +6230,30 @@ fn deferred_level_evolution_queues_same_level_target_move_when_moves_are_full() 
     assert_eq!(pending.learned_move.name, "WING_ATTACK");
     assert_eq!(pending.learned_move.current_pp, 35);
     assert!(!pending.defer_level_evolution);
+    assert_eq!(state.pending_move_learn_queue.len(), 1);
+    data.decline_pending_move_learn(&mut state)
+        .expect("decline first evolution move");
+    assert_eq!(
+        state
+            .pending_move_learn
+            .as_ref()
+            .expect("second prompt")
+            .learned_move
+            .name,
+        "SLAM"
+    );
+    data.replace_pending_move_learn(&mut state, 0)
+        .expect("learn second evolution move");
+    assert!(state.pending_move_learn.is_none());
+    assert!(state.pending_move_learn_queue.is_empty());
+    assert_eq!(
+        state.storage.party.pokemon[0]
+            .as_ref()
+            .expect("evolved member")
+            .moves[0]
+            .name,
+        "SLAM"
+    );
 }
 
 #[test]
@@ -6257,6 +6386,37 @@ fn verifier_rejects_invalid_trainer_encounter_music_id_before_lookup() {
             && diagnostic.subject == "YOUNGSTER_JOEY"
             && diagnostic.message.contains("MUSIC YOUNGSTER ENCOUNTER")
     }));
+}
+
+#[test]
+fn saved_original_trainer_and_phone_rematch_each_require_one_complete_authored_request() {
+    let mut data = GameDataSet::default();
+    add_test_trainer(&mut data, "MUSIC_YOUNGSTER_ENCOUNTER");
+    let mut module = test_map_module("Start", "START_MAP", None);
+    let mut original = TrainerBattleRequest::new("YOUNGSTER", "YOUNGSTER_JOEY", "EVENT_BEAT_JOEY");
+    original.win_text = "OriginalWinText".into();
+    let mut rematch = original.clone();
+    rematch.event_flag.clear();
+    rematch.win_text = "RematchWinText".into();
+    module.trainer_scripts.insert("TrainerJoey".into(), original.clone());
+    module.scripted_trainer_battles.push(ScriptedTrainerBattle {
+        source_script: "TrainerJoey".into(), loadtrainer_command_index: 10,
+        startbattle_command_index: 11, request: rematch.clone(),
+    });
+    data.maps.insert("Start".into(), module);
+    data.asm_text.insert("OriginalWinText".into(), "Original win".into());
+    data.asm_text.insert("RematchWinText".into(), "Rematch win".into());
+    let trainer = data.trainers.get("YOUNGSTER_JOEY").unwrap();
+    let validate = |request: &TrainerBattleRequest| data.validate_saved_trainer_battle_origin_references(
+        trainer, &request.battle_type, &request.trainer_class, &request.event_flag,
+        &request.seen_text, &request.win_text, &request.loss_text, &request.callback, "TrainerJoey");
+    validate(&original).expect("the first challenge must not be shadowed by its rematch");
+    validate(&rematch).expect("the original phone rematch remains valid");
+    let mut hybrid = original.clone();
+    hybrid.win_text = rematch.win_text;
+    assert!(validate(&hybrid).is_err(), "fields from separate requests cannot be mixed");
+    hybrid.event_flag = "EVENT_STALE_JOEY".into();
+    assert!(validate(&hybrid).is_err(), "an undeclared event flag is still rejected");
 }
 
 #[test]
@@ -6491,7 +6651,7 @@ fn verifier_rejects_duplicate_trainer_object_scripts() {
 }
 
 #[test]
-fn verifier_rejects_trainer_object_event_flags_that_mismatch_battle_request() {
+fn verifier_preserves_independent_trainer_visibility_and_defeat_flags() {
     let mut module = test_map_module("Start", "START_MAP", None);
     let mut trainer = test_object("START_TRAINER", "EVENT_HIDE_START_TRAINER", 1, 1);
     trainer.object_type = "OBJECTTYPE_TRAINER".to_string();
@@ -6512,12 +6672,12 @@ fn verifier_rejects_trainer_object_event_flags_that_mismatch_battle_request() {
         &PlayabilityRules::default(),
     );
 
-    assert!(report.diagnostics.iter().any(|diagnostic| {
+    assert!(!report.diagnostics.iter().any(|diagnostic| {
         diagnostic.code == "trainer_object_event_flag_mismatch"
-            && diagnostic.subject == "Start:START_TRAINER"
-            && diagnostic.message.contains("EVENT_HIDE_START_TRAINER")
-            && diagnostic.message.contains("EVENT_BEAT_START_TRAINER")
+            || diagnostic.code == "invalid_trainer_object_visibility_flag"
     }));
+    assert_eq!(data.maps["Start"].objects[0].event_flag, "EVENT_HIDE_START_TRAINER");
+    assert_eq!(data.maps["Start"].trainer_scripts["StartTrainerScript"].event_flag, "EVENT_BEAT_START_TRAINER");
 }
 
 #[test]
@@ -6902,12 +7062,12 @@ fn verifier_requires_field_key_item_rules_match_exact_item_payloads() {
     data.field_moves.blue_card = FieldItemRule {
         item_id: "MOD_BLUE_CARD".to_string(),
     };
-    data.field_moves.town_map = FieldItemRule {
+    data.field_moves.town_map = Some(FieldItemRule {
         item_id: "MOD_TOWN_MAP".to_string(),
-    };
-    data.field_moves.pokegear = FieldItemRule {
+    });
+    data.field_moves.pokegear = Some(FieldItemRule {
         item_id: "MOD_POKEGEAR".to_string(),
-    };
+    });
 
     let report = verify_game_data(
         &AssetRoot::new(repository_root_for_tests()),
@@ -6989,9 +7149,9 @@ fn verifier_rejects_story_key_rules_that_diverge_from_compiled_map_content() {
 #[test]
 fn runtime_field_pokegear_item_uses_exact_pack_rule_without_literal_fallback() {
     let mut data = GameDataSet::default();
-    data.field_moves.pokegear = FieldItemRule {
+    data.field_moves.pokegear = Some(FieldItemRule {
         item_id: "MOD_POKEGEAR".to_string(),
-    };
+    });
     let mut bad = test_item("POKEGEAR");
     bad.effect = "POKEGEAR".to_string();
     bad.field_menu = "ITEMMENU_CLOSE".to_string();
@@ -7171,6 +7331,7 @@ fn verifier_requires_source_home_spawn_constant() {
 
     let mut data = GameDataSet {
         runtime_title_screen: RuntimeTitleScreen {
+            static_title_image: None,
             title_music: Some("MUSIC_TITLE".to_string()),
             program: RuntimePresentationProgram::default(),
         },
@@ -7206,6 +7367,7 @@ fn verifier_requires_source_home_spawn_constant() {
 fn verifier_requires_title_screen_music_declared_by_pack() {
     let data = GameDataSet {
         runtime_title_screen: RuntimeTitleScreen {
+            static_title_image: None,
             title_music: None,
             program: RuntimePresentationProgram::default(),
         },
@@ -7249,6 +7411,7 @@ fn verifier_requires_title_screen_music_declared_by_pack() {
 fn verifier_rejects_source_home_spawn_missing_from_spawn_table() {
     let mut data = GameDataSet {
         runtime_title_screen: RuntimeTitleScreen {
+            static_title_image: None,
             title_music: Some("MUSIC_TITLE".to_string()),
             program: RuntimePresentationProgram::default(),
         },
@@ -8256,6 +8419,7 @@ fn saved_roaming_battle_requires_selected_slot_map_and_normal_battles_never_refi
         ..GameDataSet::default()
     };
     let roaming = crystal_core::state::RoamingPokemonState {
+        scaled_hp: None,
         species: Some("NEW_MON".to_string()),
         level: 40,
         map_group: 1,
@@ -8285,6 +8449,27 @@ fn saved_roaming_battle_requires_selected_slot_map_and_normal_battles_never_refi
             ),
             "{normal_error}"
         );
+}
+
+#[test]
+fn saved_wild_origins_include_authored_grass_zones() {
+    let slots = serde_json::json!([{"species":"NEW_MON","level":23}]);
+    let encounters = serde_json::from_value(serde_json::json!({
+        "map_name":"Fair", "grass_rates":null, "grass":null,
+        "water_rate":null, "water":null,
+        "zones":[{"id":"dairy", "minX":2, "minY":2, "maxX":5, "maxY":5,
+            "grassRates":{"morning":25,"day":25,"night":25},
+            "grass":{"morning":slots,"day":slots,"night":slots}}]
+    }))
+    .expect("authored zone catalog");
+    let data = GameDataSet {
+        wild_encounters: [("Fair".into(), encounters)].into_iter().collect(),
+        ..GameDataSet::default()
+    };
+    assert!(data.saved_wild_encounter_exists("Fair", "NEW_MON", 23));
+    assert!(!data.saved_wild_encounter_exists("Fair", "NEW_MON", 24));
+    assert!(!data.saved_wild_encounter_exists("Fair", "OTHER_MON", 23));
+    assert!(!data.saved_wild_encounter_exists("OtherMap", "NEW_MON", 23));
 }
 
 #[test]
@@ -9694,4 +9879,82 @@ fn compiled_radio_text_preserves_pause_and_initial_line_commands() {
         {"command":"text", "args":["\"Can you\""]},
         {"command":"done", "args":[]}
     ]));
+}
+
+#[test]
+fn deferred_level_evolution_waits_for_all_item_move_choices() {
+    let data = GameDataSet::default();
+    let mut state = GameState::default();
+    let mut pokemon = crystal_core::models::Pokemon::new_for_tests(
+        species(),
+        36,
+        crystal_core::models::Dv::default(),
+    );
+    pokemon.moves = ["TACKLE", "GROWL", "LEER", "SWIFT"]
+        .into_iter()
+        .map(|name| crystal_core::models::LearnedMove {
+            name: name.into(),
+            current_pp: 20,
+            pp_ups: 0,
+        })
+        .collect();
+    state.storage.party.pokemon[0] = Some(pokemon);
+    let mut effect = crystal_core::systems::battle_items::BattleItemOutcome {
+        item_id: "RARE_CANDY".to_string(),
+        hp_before: 10,
+        hp_after: 10,
+        level_before: 16,
+        level_after: 16,
+        experience_before: 0,
+        experience_after: 0,
+        status_before: None,
+        status_after: None,
+        confusion_turns_before: 0,
+        confusion_turns_after: 0,
+        focus_energy_before: false,
+        focus_energy_after: false,
+        pp_changes: Vec::new(),
+        stat_changes: Vec::new(),
+        battle_stat_stage_changes: Vec::new(),
+        learned_moves: Vec::new(),
+        pending_move_learns: Vec::new(),
+        deferred_level_evolution: false,
+        evolution_target: None,
+        evolution_cancel_snapshot: None,
+        consumed: false,
+    };
+    effect.pending_move_learns = ["ICE_BEAM", "RIMEBRAND"]
+        .into_iter()
+        .map(|name| crystal_core::models::LearnedMove {
+            name: name.into(),
+            current_pp: 10,
+            pp_ups: 0,
+        })
+        .collect();
+    effect.deferred_level_evolution = true;
+    data.queue_item_pending_move_learn(&mut state, 0, &effect)
+        .expect("queue both item moves");
+    let first = state.pending_move_learn.as_ref().expect("first prompt");
+    assert_eq!(first.learned_move.name, "ICE_BEAM");
+    assert!(!first.defer_level_evolution);
+    assert_eq!(state.pending_move_learn_queue.len(), 1);
+    assert_eq!(
+        state.pending_move_learn_queue[0].learned_move.name,
+        "RIMEBRAND"
+    );
+    assert!(state.pending_move_learn_queue[0].defer_level_evolution);
+    let result = data
+        .decline_pending_move_learn(&mut state)
+        .expect("decline earlier choice");
+    assert!(result.deferred_evolution.is_none());
+    assert_eq!(
+        state
+            .pending_move_learn
+            .as_ref()
+            .expect("second prompt")
+            .learned_move
+            .name,
+        "RIMEBRAND"
+    );
+    assert!(state.pending_move_learn_queue.is_empty());
 }

@@ -1,0 +1,14 @@
+{
+  "map": "MnStPaul",
+  "tileset": "kanto",
+  "dimensions_metatiles": [40, 34],
+  "fair_to_city_offset": 3,
+  "edits": [
+    {"position": [5, 0], "before": "13", "after": "55"},
+    {"position": [5, 1], "before": "0f", "after": "55"},
+    {"position": [5, 2], "before": "01", "after": "55"},
+    {"position": [5, 3], "before": "01", "after": "55"},
+    {"position": [5, 4], "before": "01", "after": "55"}
+  ],
+  "scope": "Open the clear lane between the northwestern cottage and Capitol Library. Join the existing street at metatile (5,5). Preserve every facade, door, actor and existing river/road connection. City core x10/11 meets fair core x16/17 through reciprocal north -3 / south +3 metatile offsets."
+}

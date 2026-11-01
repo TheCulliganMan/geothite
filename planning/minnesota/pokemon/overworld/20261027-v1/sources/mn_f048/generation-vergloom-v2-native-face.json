@@ -1,0 +1,8 @@
+{
+  "tool": "built-in image_gen",
+  "default_path": "/Users/ryanculligan/.codex/generated_images/01a178da-4cf1-7e01-8516-667a332dc790/exec-09348b04-12e8-425c-b270-6f2ee29e4519.png",
+  "retained_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f048/vergloom.overworld.imagegen-v2-native-face.png",
+  "sha256": "19ae86ddcbc79a01e6489e4476d3d22fcfc6c88679965f7eada031867d53ec06",
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f048/prompt-vergloom-native-face-v2.txt",
+  "accepted": false
+}

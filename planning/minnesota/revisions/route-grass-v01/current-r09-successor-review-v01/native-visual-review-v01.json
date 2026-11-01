@@ -1,0 +1,16 @@
+{
+  "status": "PASS_VISUAL_REVIEW_NOT_GAMEPLAY_ACCEPTANCE",
+  "views_inspected": [
+    "cut-approach",
+    "pickup-grass"
+  ],
+  "pixel_mismatches": 0,
+  "existing_cut_gate_visible": true,
+  "sign_approach_clear": true,
+  "native_runtime_pending": [
+    "Cut denial and successful passage",
+    "new-grass encounter",
+    "pickup once and Continue"
+  ],
+  "selected": false
+}

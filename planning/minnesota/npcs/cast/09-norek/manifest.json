@@ -1,0 +1,41 @@
+{
+  "name": "NOREK",
+  "role": "Gym Leader 8",
+  "status": "accepted-native-playable",
+  "source": "native-pixels-v2.json",
+  "integration": "binding-v1.json",
+  "controller": "controller-v1.json",
+  "native": "target/trainer-cast/norek/native-v2",
+  "pack": "content-packs/minnesota-trainer-cast-09-v01.crystalpack",
+  "gameplay": "target/trainer-cast/norek/gameplay-v1",
+  "log": "target/trainer-cast/norek/controller-v1.log",
+  "reference_review": "actual-crystal-sprites-common-palette-and-scale",
+  "review_notes": "Weathered captain: flat navy cap and pale band, silver moustache/hair, cobalt pea coat, heavy collar and crossed-arm battle stance. Native battle cap/face/moustache and collar were redrawn to remove fragmented converter detail; field poses retain coat, cap and stride. Actual Crystal Fisher/Gramps/Sailor comparisons and game captures reviewed. East-side native floor approach used; native badge, single TM, repeat and Continue pass.",
+  "fixture": "Three legal level-60 Minnesota starters; adjacent position and explicit prior-access setup. Local encounter/rewards proof, not earned traversal or intended-level balance.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/cast/09-norek/native-pixels-v2.json": "07ad955c9a10085407351ebd8d07ea3702f9ce02bdb473d7448eb3d5d8eb5b50",
+    "planning/minnesota/npcs/cast/09-norek/binding-v1.json": "b4e60021938a817f177d9a40ac869891ab65b7a9575335da22cfcfb90a6ed86c",
+    "planning/minnesota/npcs/cast/09-norek/controller-v1.json": "65c2c202f8bb57fa6205395cb7aa9857d4859ea11b292f1469055dbddfd6158b",
+    "target/trainer-cast/norek/native-v2/verification.json": "6db43687205ac83c5d3dd243fbe3ca9786c430b512bdca5a93cdf69fb1432b4e",
+    "content-packs/minnesota-trainer-cast-09-v01.crystalpack": "33eefba5e7a87e8f2182ccc2d2c403d9f301e834f99593e4b91ef31054dc434f",
+    "target/trainer-cast/norek/controller-v1.log": "622970fcf0af74d3400372279eda550425fec65bb54c4c1cff9ffded32fdc48c",
+    "target/trainer-cast/norek/gameplay-v1/original-npc-trainer-intro.png": "9d993e5698fb5193b9bb5aa510e8c9fac1fc3cf3d84383d7b3e2ea46d648644f",
+    "target/trainer-cast/norek/gameplay-v1/original-npc-overworld-state.png": "16460cbb397896f0bd742aafc4df7c4d24ae212813e127a67601e88183f07f0c",
+    "target/trainer-cast/norek/gameplay-v1/original-npc-first-turn.png": "17cc122f71332c93575316a8ebcacdead3a7340d46eb4eaf78ec5105eaa93114",
+    "planning/minnesota/npcs/cast/09-norek/battle-reference-prompt.txt": "5b3ca14dd16c2649137e9837d435baff5c9379d69106648b2315c15afedba445",
+    "planning/minnesota/npcs/cast/09-norek/battle-reference-v1.png": "82b7ecd31eb3a026fd0ac5c12e313cd58c892c419b67eea0fb4dfab1e661b460",
+    "target/trainer-cast/norek/real-comparison.png": "4ad8ffc87cfe072fe0142cb85f86cb8895d70394634683965e166945dc4ad84b",
+    "target/trainer-cast/norek/battle-real-comparison.png": "50397becd448f30a2e5a29faad8fe08e0ab071d76612bb09b0600653146f97cf"
+  },
+  "final_pack": "content-packs/minnesota-trainer-cast-36-v01.crystalpack",
+  "final_gameplay": "target/trainer-cast/final-audit/gameplay/09-norek",
+  "final_log": "target/trainer-cast/final-audit/gameplay/09-norek/controller.log",
+  "final_status": "accepted-native-playable-final-pack",
+  "final_review": "Actual battle intro and field captures inspected on exact final pack; art retains accepted native sources and palette.",
+  "final_evidence_sha256": {
+    "target/trainer-cast/final-audit/gameplay/09-norek/controller.log": "55804a5ecb14bfb0cd1660bcb95284ed20d8d79c752cd67d4d23622480367c86",
+    "target/trainer-cast/final-audit/gameplay/09-norek/original-npc-trainer-intro.png": "9d993e5698fb5193b9bb5aa510e8c9fac1fc3cf3d84383d7b3e2ea46d648644f",
+    "target/trainer-cast/final-audit/gameplay/09-norek/original-npc-overworld-state.png": "16460cbb397896f0bd742aafc4df7c4d24ae212813e127a67601e88183f07f0c",
+    "target/trainer-cast/final-audit/gameplay/09-norek/original-npc-first-turn.png": "17cc122f71332c93575316a8ebcacdead3a7340d46eb4eaf78ec5105eaa93114"
+  }
+}

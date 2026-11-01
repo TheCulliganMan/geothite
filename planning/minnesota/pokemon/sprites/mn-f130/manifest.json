@@ -1,0 +1,244 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F130",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f130/prompt-v1.txt",
+  "pokemon_palettes": {
+    "MN_287": {
+      "species_id": "MN_287",
+      "name": "Rivvit",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          24,
+          22,
+          16
+        ],
+        [
+          8,
+          13,
+          14
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        17112,
+        14760,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          198,
+          181,
+          132
+        ],
+        [
+          66,
+          107,
+          115
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#C6B584",
+        "#426B73",
+        "#000000"
+      ]
+    },
+    "MN_288": {
+      "species_id": "MN_288",
+      "name": "Slidewake",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          21,
+          20,
+          13
+        ],
+        [
+          6,
+          11,
+          13
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        13973,
+        13670,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          173,
+          165,
+          107
+        ],
+        [
+          49,
+          90,
+          107
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#ADA56B",
+        "#315A6B",
+        "#000000"
+      ]
+    }
+  },
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png"
+    ]
+  },
+  "sprites": [
+    {
+      "id": "mn-287-rivvit-v1",
+      "species_id": "MN_287",
+      "view": "front",
+      "source": "sprites/mn-f130/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        665,
+        512
+      ],
+      "fit": [
+        38,
+        36
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        17112,
+        14760,
+        0
+      ],
+      "exterior_contour": "solid",
+      "interior_black_min_samples": 8,
+      "white_detail_min_samples": 4
+    },
+    {
+      "id": "mn-288-slidewake-v1",
+      "species_id": "MN_288",
+      "view": "front",
+      "source": "sprites/mn-f130/front-back.imagegen-v1.png",
+      "crop": [
+        665,
+        0,
+        871,
+        512
+      ],
+      "fit": [
+        54,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13973,
+        13670,
+        0
+      ],
+      "exterior_contour": "solid",
+      "interior_black_min_samples": 8,
+      "white_detail_min_samples": 4
+    },
+    {
+      "id": "mn-287-rivvit-v1",
+      "species_id": "MN_287",
+      "view": "back",
+      "source": "sprites/mn-f130/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        512,
+        768,
+        512
+      ],
+      "fit": [
+        38,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        17112,
+        14760,
+        0
+      ],
+      "exterior_contour": "solid",
+      "interior_black_min_samples": 8,
+      "white_detail_min_samples": 4
+    },
+    {
+      "id": "mn-288-slidewake-v1",
+      "species_id": "MN_288",
+      "view": "back",
+      "source": "sprites/mn-f130/front-back.imagegen-v1.png",
+      "crop": [
+        768,
+        512,
+        768,
+        512
+      ],
+      "fit": [
+        46,
+        46
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13973,
+        13670,
+        0
+      ],
+      "exterior_contour": "solid",
+      "interior_black_min_samples": 8,
+      "white_detail_min_samples": 4
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "outline_profile": "solid-exterior-v1",
+    "sheet_sha256": "39c8fcea368608c8679146a6b1ec537bea58478e7e82a08d732aebe0cc0bef51",
+    "review_note": "Inspected all four native views. Juvenile and adult retain small round ears, webbed paws and long round rudder tails, distinct from the voyageur beaver. Adult horizontal torso and looping tail remain readable; rear views are close shoulder/nape portraits."
+  }
+}

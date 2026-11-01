@@ -1,0 +1,200 @@
+{
+  "id": "MnMaraisCedarApproach",
+  "ports": [
+    {
+      "side": "west",
+      "core": [
+        [
+          0,
+          14
+        ],
+        [
+          0,
+          15
+        ]
+      ]
+    },
+    {
+      "side": "south",
+      "core": [
+        [
+          26,
+          23
+        ],
+        [
+          27,
+          23
+        ]
+      ]
+    }
+  ],
+  "actors": [
+    {
+      "id": "MN_COHESION_MARAIS_KEEPER",
+      "tile": [
+        15,
+        11
+      ],
+      "sprite": "SPRITE_YOUNGSTER",
+      "facing": "south",
+      "role": "optional_trainer",
+      "trainer_name": "CEDAR",
+      "trainer_class": "BIRD_KEEPER",
+      "party": [
+        {
+          "species": "NOCTOWL",
+          "level": 36
+        },
+        {
+          "species": "FARFETCH_D",
+          "level": 35
+        }
+      ],
+      "event_flag": "EVENT_MN_COHESION_MARAIS_KEEPER_DEFEATED",
+      "text": [
+        "A short forest walk.",
+        "Battle with me?"
+      ]
+    },
+    {
+      "id": "MN_COHESION_MARAIS_WALKER",
+      "tile": [
+        31,
+        15
+      ],
+      "sprite": "SPRITE_LASS",
+      "facing": "south",
+      "role": "optional_trainer",
+      "trainer_name": "MIRA",
+      "trainer_class": "LASS",
+      "party": [
+        {
+          "species": "VENONAT",
+          "level": 35
+        },
+        {
+          "species": "FURRET",
+          "level": 36
+        }
+      ],
+      "event_flag": "EVENT_MN_COHESION_MARAIS_WALKER_DEFEATED",
+      "text": [
+        "A short forest walk.",
+        "Battle with me?"
+      ]
+    }
+  ],
+  "signs": [
+    {
+      "id": "MN_COHESION_MARAIS_SIGN",
+      "tile": [
+        4,
+        12
+      ],
+      "lines": [
+        "CEDAR APPROACH",
+        "GRAND MARAIS south",
+        "GUNFLINT west."
+      ]
+    }
+  ],
+  "views": [
+    {
+      "id": "west-arrival",
+      "core": [
+        5,
+        14
+      ]
+    },
+    {
+      "id": "grass-turn",
+      "core": [
+        14,
+        10
+      ]
+    },
+    {
+      "id": "ledge-choice",
+      "core": [
+        26,
+        16
+      ]
+    },
+    {
+      "id": "south-arrival",
+      "core": [
+        26,
+        21
+      ]
+    }
+  ],
+  "native_connections": [
+    {
+      "direction": "west",
+      "target_map": "MnR12C00R01",
+      "offset": 4
+    },
+    {
+      "direction": "south",
+      "target_map": "MnGrandMarais",
+      "offset": 4
+    }
+  ],
+  "revision": "west-entry-v02",
+  "status": "MATCHES_COMPOSED_NATIVE_GEOGRAPHY",
+  "dimensions_metatiles": [
+    20,
+    12
+  ],
+  "ledge": {
+    "block": [
+      13,
+      9
+    ],
+    "upper_core": [
+      26,
+      17
+    ],
+    "jump_core": [
+      26,
+      18
+    ],
+    "landing_core": [
+      26,
+      20
+    ],
+    "reverse_blocked": true,
+    "ordinary_return_metatiles": [
+      [
+        13,
+        10
+      ],
+      [
+        16,
+        10
+      ],
+      [
+        16,
+        7
+      ],
+      [
+        13,
+        7
+      ]
+    ]
+  },
+  "native_geography_publication": {
+    "status": "MATCHES_COMPOSED_NATIVE_GEOGRAPHY",
+    "final_pack_sha256": "032304d0fd1d51863a2c3bf2562b20728e22c7535d1c194555621bc8e85b4899",
+    "content_identity": "f2ac93f14af05a2935947e1696385a26a16b2d2bd509e5da3e9223af02f98d63",
+    "verification": "revisions/superior-gunflint-quality-v01/VERIFICATION.md",
+    "progression_scope": "Explicit local fixtures do not establish earned campaign progression."
+  },
+  "coastal_warmth_revision": {
+    "revision_key": "coastal_cedar_warmth_revision",
+    "compiled_tileset": "mn_north_shore",
+    "pack_sha256": "34ba87d510d13b1345f14770a8d82a67c9fd07e220609db6d21bf1e36cb80976",
+    "runbook": "revisions/route-grass-v01/current-cedar-warmth-v01/README.md",
+    "scope": "Restore warm coastal art only; preserve every collision quadrant, border, actor, door, program and approved inland winter. Earlier native_geography_publication is historical."
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F012",
+  "species": [
+    {
+      "species_id": "MN_034",
+      "runtime_token": "PUCKLET",
+      "palette_rgb555": [
+        32767,
+        30480,
+        15685,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        25117,
+        10415,
+        0
+      ],
+      "fit": [
+        12,
+        12
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 64,
+      "interior_black_samples": 64,
+      "opaque_interior_minimum_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "pucklet.overworld.imagegen-v1.png",
+          "crop": [
+            27,
+            178,
+            468,
+            281
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "pucklet.overworld.imagegen-v1.png",
+          "crop": [
+            535,
+            178,
+            468,
+            281
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "pucklet.overworld.imagegen-v2-profile-eye.png",
+          "crop": [
+            1065,
+            178,
+            468,
+            281
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "pucklet.overworld.imagegen-v1.png",
+          "crop": [
+            27,
+            603,
+            468,
+            281
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "pucklet.overworld.imagegen-v1.png",
+          "crop": [
+            535,
+            603,
+            468,
+            281
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "pucklet.overworld.imagegen-v2-profile-eye.png",
+          "crop": [
+            1065,
+            604,
+            468,
+            281
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-r17-trail-guidance-v01.crystalpack",
+  "pack_sha256": "62842e780f621b066b074180c9c96cc256afa2cc1c017fa2c43ad5d44519b17d",
+  "exit_code": 0,
+  "log": ".local/route-grass-review/r17-child-native-v02.log",
+  "scope": "Current Cut permission denial/opening/shorter path/cache/rest/Continue reset, native trainer PP/victory/Continue, northern grass and marsh encounter/RUN/Continue. Initial party/badges/position/RNG are explicit native QA setup. Legacy removed-rail geometry is checked separately by the current production course."
+}

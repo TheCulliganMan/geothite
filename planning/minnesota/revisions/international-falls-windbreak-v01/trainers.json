@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "map": "MnInternationalFalls",
+      "id": "MN_EXTRA_FALLS_SKIER",
+      "display_name": "MARIT",
+      "trainer_class": "SKIER",
+      "sprite": "SPRITE_COOLTRAINER_F",
+      "tile": [
+        17,
+        12
+      ],
+      "approach": [
+        17,
+        13
+      ],
+      "facing": "south",
+      "optional_battle": true,
+      "sight_range": 1,
+      "defeated_flag": "EVENT_MN_EXTRA_FALLS_SKIER",
+      "party": [
+        {
+          "species": "LUTEBRISK",
+          "level": 39
+        },
+        {
+          "species": "FENCICLE",
+          "level": 40
+        }
+      ],
+      "before_lines": [
+        "Fresh tracks make",
+        "a quiet morning.",
+        "LUTEBRISK likes",
+        "the cold. A match?"
+      ],
+      "after_lines": [
+        "Good footing.",
+        "Nice timing, too.",
+        "Tracks tell me",
+        "who came home."
+      ],
+      "loss_lines": [
+        "A clean finish.",
+        "Keep your rhythm."
+      ]
+    }
+  ]
+}

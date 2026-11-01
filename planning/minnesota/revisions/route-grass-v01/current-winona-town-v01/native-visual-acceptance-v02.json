@@ -1,0 +1,479 @@
+{
+  "status": "PASS_SCOPED_SEVEN_NATIVE_VIEWS",
+  "pack_sha256": "096585f981c5b0fcbe406f9f85e1454cf2a714d420e3dcf3284d9f3195751760",
+  "actual_images_inspected": true,
+  "source_native_pixel_mismatches": 0,
+  "views": [
+    {
+      "id": "mart",
+      "map": "MnWinona",
+      "core": [
+        7,
+        24
+      ],
+      "command": [
+        "/Users/ryanculligan/GitHub/geothite/.local/connected-route-capture-71676",
+        "--pack",
+        "/Users/ryanculligan/GitHub/geothite/content-packs/minnesota-current-winona-mart-v01.crystalpack",
+        "--map",
+        "MnWinona",
+        "--x",
+        "7",
+        "--y",
+        "24",
+        "--view",
+        "2d",
+        "--hour",
+        "12",
+        "--screenshot",
+        "/Users/ryanculligan/GitHub/geothite/planning/minnesota/renders/route-grass-v01/current-winona-town-v01/native-v01/mart/production.png"
+      ],
+      "production_sha256": "c1130bfad3b0d6eeed34ffd0c44f22614af319169b22b0792e5203c726d045bd",
+      "pixel_mismatches": 0,
+      "compared_pixels": 368640,
+      "consistent_water14_phase": 0,
+      "consistent_falls_scroll_stage": 0,
+      "derived_player_origin": [
+        320,
+        288
+      ],
+      "lcd_origin_8px_cells": [
+        4,
+        39
+      ],
+      "centered_camera_assumption_used": false,
+      "source_foreground_pixels_over_actors": 0,
+      "source_connection_depth": 1,
+      "immediate_native_sources": [
+        {
+          "map": "MnWinona",
+          "origin_pixels": [
+            0,
+            0
+          ]
+        },
+        {
+          "map": "MnR01C00R00",
+          "origin_pixels": [
+            -1024,
+            -96
+          ]
+        },
+        {
+          "map": "MnMississippiWinonaMouth",
+          "origin_pixels": [
+            0,
+            -128
+          ]
+        }
+      ],
+      "raw_gpu_descriptors": [
+        "mart/.render-archive/production.png/gpu-readback-f703f05b62859ec94eec72c14eb5bdd5ae5c7de3f753b5fd0403d20355bd344e.json"
+      ]
+    },
+    {
+      "id": "home",
+      "map": "MnWinona",
+      "core": [
+        7,
+        8
+      ],
+      "command": [
+        "/Users/ryanculligan/GitHub/geothite/.local/connected-route-capture-71676",
+        "--pack",
+        "/Users/ryanculligan/GitHub/geothite/content-packs/minnesota-current-winona-mart-v01.crystalpack",
+        "--map",
+        "MnWinona",
+        "--x",
+        "7",
+        "--y",
+        "8",
+        "--view",
+        "2d",
+        "--hour",
+        "12",
+        "--screenshot",
+        "/Users/ryanculligan/GitHub/geothite/planning/minnesota/renders/route-grass-v01/current-winona-town-v01/native-v01/home/production.png"
+      ],
+      "production_sha256": "b3a28f610a4a6813de5de6f280f47d9f2263885d51f32c19ff331bff5d163f99",
+      "pixel_mismatches": 0,
+      "compared_pixels": 368640,
+      "consistent_water14_phase": 0,
+      "consistent_falls_scroll_stage": 0,
+      "derived_player_origin": [
+        320,
+        288
+      ],
+      "lcd_origin_8px_cells": [
+        4,
+        7
+      ],
+      "centered_camera_assumption_used": false,
+      "source_foreground_pixels_over_actors": 0,
+      "source_connection_depth": 1,
+      "immediate_native_sources": [
+        {
+          "map": "MnWinona",
+          "origin_pixels": [
+            0,
+            0
+          ]
+        },
+        {
+          "map": "MnR01C00R00",
+          "origin_pixels": [
+            -1024,
+            -96
+          ]
+        },
+        {
+          "map": "MnMississippiWinonaMouth",
+          "origin_pixels": [
+            0,
+            -128
+          ]
+        }
+      ],
+      "raw_gpu_descriptors": [
+        "home/.render-archive/production.png/gpu-readback-f3a8a9c5f0fbb561bfd94f199d88b24a5ebcc340bdf2679c243cad3888bb5bee.json"
+      ]
+    },
+    {
+      "id": "clinic",
+      "map": "MnWinona",
+      "core": [
+        17,
+        8
+      ],
+      "command": [
+        "/Users/ryanculligan/GitHub/geothite/.local/connected-route-capture-71676",
+        "--pack",
+        "/Users/ryanculligan/GitHub/geothite/content-packs/minnesota-current-winona-mart-v01.crystalpack",
+        "--map",
+        "MnWinona",
+        "--x",
+        "17",
+        "--y",
+        "8",
+        "--view",
+        "2d",
+        "--hour",
+        "12",
+        "--screenshot",
+        "/Users/ryanculligan/GitHub/geothite/planning/minnesota/renders/route-grass-v01/current-winona-town-v01/native-v01/clinic/production.png"
+      ],
+      "production_sha256": "f60413dd62d51ff1e4ec4d4f361bfc1f58e636067ce76ac9e4316bb2c46e15d5",
+      "pixel_mismatches": 0,
+      "compared_pixels": 368640,
+      "consistent_water14_phase": 0,
+      "consistent_falls_scroll_stage": 0,
+      "derived_player_origin": [
+        320,
+        288
+      ],
+      "lcd_origin_8px_cells": [
+        24,
+        7
+      ],
+      "centered_camera_assumption_used": false,
+      "source_foreground_pixels_over_actors": 0,
+      "source_connection_depth": 1,
+      "immediate_native_sources": [
+        {
+          "map": "MnWinona",
+          "origin_pixels": [
+            0,
+            0
+          ]
+        },
+        {
+          "map": "MnR01C00R00",
+          "origin_pixels": [
+            -1024,
+            -96
+          ]
+        },
+        {
+          "map": "MnMississippiWinonaMouth",
+          "origin_pixels": [
+            0,
+            -128
+          ]
+        }
+      ],
+      "raw_gpu_descriptors": [
+        "clinic/.render-archive/production.png/gpu-readback-9fdc554d065a892ec97fcc53dda96e8b295d0df71d73e9d2dc35ccada3a2a6e8.json"
+      ]
+    },
+    {
+      "id": "field-station",
+      "map": "MnWinona",
+      "core": [
+        18,
+        20
+      ],
+      "command": [
+        "/Users/ryanculligan/GitHub/geothite/.local/connected-route-capture-71676",
+        "--pack",
+        "/Users/ryanculligan/GitHub/geothite/content-packs/minnesota-current-winona-mart-v01.crystalpack",
+        "--map",
+        "MnWinona",
+        "--x",
+        "18",
+        "--y",
+        "20",
+        "--view",
+        "2d",
+        "--hour",
+        "12",
+        "--screenshot",
+        "/Users/ryanculligan/GitHub/geothite/planning/minnesota/renders/route-grass-v01/current-winona-town-v01/native-v01/field-station/production.png"
+      ],
+      "production_sha256": "b4099c6f1dc13e4dbd30e530eda573ebbbcc384f5949706976e37f0c054ea1d2",
+      "pixel_mismatches": 0,
+      "compared_pixels": 368640,
+      "consistent_water14_phase": 0,
+      "consistent_falls_scroll_stage": 0,
+      "derived_player_origin": [
+        320,
+        288
+      ],
+      "lcd_origin_8px_cells": [
+        26,
+        31
+      ],
+      "centered_camera_assumption_used": false,
+      "source_foreground_pixels_over_actors": 0,
+      "source_connection_depth": 1,
+      "immediate_native_sources": [
+        {
+          "map": "MnWinona",
+          "origin_pixels": [
+            0,
+            0
+          ]
+        },
+        {
+          "map": "MnR01C00R00",
+          "origin_pixels": [
+            -1024,
+            -96
+          ]
+        },
+        {
+          "map": "MnMississippiWinonaMouth",
+          "origin_pixels": [
+            0,
+            -128
+          ]
+        }
+      ],
+      "raw_gpu_descriptors": [
+        "field-station/.render-archive/production.png/gpu-readback-7b685c156d85034d9a11bfaa0d0d94e583938a662a0312e8346069660bf6f1f2.json"
+      ]
+    },
+    {
+      "id": "depot",
+      "map": "MnWinona",
+      "core": [
+        19,
+        14
+      ],
+      "command": [
+        "/Users/ryanculligan/GitHub/geothite/.local/connected-route-capture-71676",
+        "--pack",
+        "/Users/ryanculligan/GitHub/geothite/content-packs/minnesota-current-winona-mart-v01.crystalpack",
+        "--map",
+        "MnWinona",
+        "--x",
+        "19",
+        "--y",
+        "14",
+        "--view",
+        "2d",
+        "--hour",
+        "12",
+        "--screenshot",
+        "/Users/ryanculligan/GitHub/geothite/planning/minnesota/renders/route-grass-v01/current-winona-town-v01/native-v01/depot/production.png"
+      ],
+      "production_sha256": "25d514bf1ec946390e0991f9a531f7a966077e504b688c03ae39394e153f9568",
+      "pixel_mismatches": 0,
+      "compared_pixels": 368640,
+      "consistent_water14_phase": 0,
+      "consistent_falls_scroll_stage": 0,
+      "derived_player_origin": [
+        320,
+        288
+      ],
+      "lcd_origin_8px_cells": [
+        28,
+        19
+      ],
+      "centered_camera_assumption_used": false,
+      "source_foreground_pixels_over_actors": 0,
+      "source_connection_depth": 1,
+      "immediate_native_sources": [
+        {
+          "map": "MnWinona",
+          "origin_pixels": [
+            0,
+            0
+          ]
+        },
+        {
+          "map": "MnR01C00R00",
+          "origin_pixels": [
+            -1024,
+            -96
+          ]
+        },
+        {
+          "map": "MnMississippiWinonaMouth",
+          "origin_pixels": [
+            0,
+            -128
+          ]
+        }
+      ],
+      "raw_gpu_descriptors": [
+        "depot/.render-archive/production.png/gpu-readback-3eb5f48b9553cb760b35a9aa06253ba550f68bca02d339434afa36b5d9dcbc61.json"
+      ]
+    },
+    {
+      "id": "west-trail",
+      "map": "MnWinona",
+      "core": [
+        4,
+        18
+      ],
+      "command": [
+        "/Users/ryanculligan/GitHub/geothite/.local/connected-route-capture-71676",
+        "--pack",
+        "/Users/ryanculligan/GitHub/geothite/content-packs/minnesota-current-winona-mart-v01.crystalpack",
+        "--map",
+        "MnWinona",
+        "--x",
+        "4",
+        "--y",
+        "18",
+        "--view",
+        "2d",
+        "--hour",
+        "12",
+        "--screenshot",
+        "/Users/ryanculligan/GitHub/geothite/planning/minnesota/renders/route-grass-v01/current-winona-town-v01/native-v01/west-trail/production.png"
+      ],
+      "production_sha256": "32311e0acc12e77a1c29390049448f057e7f5ec5a2d11d542ad217206b7d34a9",
+      "pixel_mismatches": 0,
+      "compared_pixels": 368640,
+      "consistent_water14_phase": 0,
+      "consistent_falls_scroll_stage": 0,
+      "derived_player_origin": [
+        320,
+        288
+      ],
+      "lcd_origin_8px_cells": [
+        -2,
+        27
+      ],
+      "centered_camera_assumption_used": false,
+      "source_foreground_pixels_over_actors": 0,
+      "source_connection_depth": 1,
+      "immediate_native_sources": [
+        {
+          "map": "MnWinona",
+          "origin_pixels": [
+            0,
+            0
+          ]
+        },
+        {
+          "map": "MnR01C00R00",
+          "origin_pixels": [
+            -1024,
+            -96
+          ]
+        },
+        {
+          "map": "MnMississippiWinonaMouth",
+          "origin_pixels": [
+            0,
+            -128
+          ]
+        }
+      ],
+      "raw_gpu_descriptors": [
+        "west-trail/.render-archive/production.png/gpu-readback-a53429831607a4b1b653f6a887def6674e315ac2dd5d494b4ea6f0dfbff22ba0.json"
+      ]
+    },
+    {
+      "id": "river-bank",
+      "map": "MnWinona",
+      "core": [
+        23,
+        4
+      ],
+      "command": [
+        "/Users/ryanculligan/GitHub/geothite/.local/connected-route-capture-72166",
+        "--pack",
+        "/Users/ryanculligan/GitHub/geothite/content-packs/minnesota-current-winona-mart-v01.crystalpack",
+        "--map",
+        "MnWinona",
+        "--x",
+        "23",
+        "--y",
+        "4",
+        "--view",
+        "2d",
+        "--hour",
+        "12",
+        "--screenshot",
+        "/Users/ryanculligan/GitHub/geothite/planning/minnesota/renders/route-grass-v01/current-winona-town-v01/native-river-bank-v02/river-bank/production.png"
+      ],
+      "production_sha256": "f9b238f71dbedbf02205470c2661ad2cb1457d06a9f5293860a42447dec3c6f4",
+      "pixel_mismatches": 0,
+      "compared_pixels": 368640,
+      "consistent_water14_phase": 0,
+      "consistent_falls_scroll_stage": 0,
+      "derived_player_origin": [
+        320,
+        288
+      ],
+      "lcd_origin_8px_cells": [
+        36,
+        -1
+      ],
+      "centered_camera_assumption_used": false,
+      "source_foreground_pixels_over_actors": 0,
+      "source_connection_depth": 1,
+      "immediate_native_sources": [
+        {
+          "map": "MnWinona",
+          "origin_pixels": [
+            0,
+            0
+          ]
+        },
+        {
+          "map": "MnR01C00R00",
+          "origin_pixels": [
+            -1024,
+            -96
+          ]
+        },
+        {
+          "map": "MnMississippiWinonaMouth",
+          "origin_pixels": [
+            0,
+            -128
+          ]
+        }
+      ],
+      "raw_gpu_descriptors": [
+        "river-bank/.render-archive/production.png/gpu-readback-0aa865bb5f7c1434acdcca9e866c0dea115993f2cb015abd9ce842718268643e.json"
+      ]
+    }
+  ],
+  "earlier_water_placement_comparator_limitation_preserved": "native-visual-inspection-v01.json",
+  "limitation": "Earlier water capture uses surf sprite while comparator assumes walking sprite; mismatch bbox (320,288,368,336) is confined to player footprint. Original failed comparison retained. Dry-bank view independently verifies current river scenery without comparator changes."
+}

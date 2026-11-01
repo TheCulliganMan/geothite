@@ -1,0 +1,60 @@
+[
+  {
+    "species_id": "MN_308",
+    "name": "Crookit",
+    "front_back_native_images_actually_viewed": true,
+    "design": "Marten and false branches. The body itself bends into a crooked branch silhouette.",
+    "canonical_views": {
+      "front": {
+        "path": "target/minnesota-pokemon/native/MN_F139/mn-308-crookit-v1.front.png",
+        "sha256": "f0d260e9c14a1bf8f995273c5bf7f56785718fbb1e4448c25c2711d2c1180748"
+      },
+      "back": {
+        "path": "target/minnesota-pokemon/native/MN_F139/mn-308-crookit-v1.back.png",
+        "sha256": "1478c9c4e1afc5fcad87e5d46546f5e1d6c87f3e3e202470bd55be913c5e41f9"
+      }
+    },
+    "normal_rgb555": [
+      32767,
+      8729,
+      9450,
+      0
+    ],
+    "shiny_rgb555": [
+      32767,
+      14098,
+      16712,
+      0
+    ],
+    "imagegen_input_policy": "Only genuine16px style board supplied; canonical battle images viewed for identity and translated into textual prompt anatomy, never fed as source art."
+  },
+  {
+    "species_id": "MN_309",
+    "name": "Crookveil",
+    "front_back_native_images_actually_viewed": true,
+    "design": "Marten and false branches. The body itself bends into a crooked branch silhouette.",
+    "canonical_views": {
+      "front": {
+        "path": "target/minnesota-pokemon/native/MN_F139/mn-309-crookveil-v1.front.png",
+        "sha256": "e719a649ec916266eed4e2ac09388c228cbd8ac83abc2711e890f543a1aae827"
+      },
+      "back": {
+        "path": "target/minnesota-pokemon/native/MN_F139/mn-309-crookveil-v1.back.png",
+        "sha256": "3cab8110abe817abfe3a48a060d29820d576985289f6d0a7ab260fc6116c6b9b"
+      }
+    },
+    "normal_rgb555": [
+      32767,
+      16717,
+      11526,
+      0
+    ],
+    "shiny_rgb555": [
+      32767,
+      9717,
+      13546,
+      0
+    ],
+    "imagegen_input_policy": "Only genuine16px style board supplied; canonical battle images viewed for identity and translated into textual prompt anatomy, never fed as source art."
+  }
+]

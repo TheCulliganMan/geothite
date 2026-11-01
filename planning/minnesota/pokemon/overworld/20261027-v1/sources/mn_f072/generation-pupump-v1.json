@@ -1,0 +1,7 @@
+{
+  "tool": "built-in imagegen",
+  "default_path": "/Users/ryanculligan/.codex/generated_images/01a178da-4cf1-7e01-8516-667a332dc790/exec-4ecf6eed-7ec3-48d7-b3d9-9ed35e8f899b.png",
+  "workspace_path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f072/pupump.overworld.imagegen-v1.png",
+  "sha256": "80e0066069fae806fb2d581a8be4d930f097e7242733238be3e5f184da8d8aaa",
+  "prompt": "prompt-pupump-v1.txt"
+}

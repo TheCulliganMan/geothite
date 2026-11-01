@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F137",
+  "species_id": "MN_304",
+  "name": "Solstort",
+  "generation_tool": "built-in image_gen",
+  "status": "retained_unselected_narrow_face_variant",
+  "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f137/solstort.overworld.imagegen-v2.png",
+  "source_sha256": "c7c89fd1875311c2f7d0caf3a4b64b03c10649f97da86f7e2c1a5d0731317e46",
+  "original_default_output": "/Users/ryanculligan/.codex/generated_images/01a179bf-dc2b-7352-8975-8b8f3a32e33b/exec-1d938c74-c46d-4d0b-af20-4254bbdcd060.png",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f137/prompt-solstort-v2.txt",
+  "prompt_sha256": "6442922e98799c1df856b3866991fc178c4ee212fc77687031cff6bf7bcf9d5f",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f137/reference-mapping-solstort-v2.json",
+  "reference_mapping_sha256": "dbef935db98fcc370d3e3a15f3d3f1612d546322ea5e731fa166270b5a87fba6",
+  "unselected_native_review": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f137/solstort-v2-center/review/line.normal-8x.png",
+  "review_sha256": "b1d75467980f4eded2d222e6cf0915ac681618f3c4327d4c9c8d9400f0e50dcb",
+  "notes": "V2 asymmetrical scutes/diagonal ridge improved, but face remained a tiny low stripe and native14 lost both real pupils; preserve source/native. V3 explicitly projects large real head below smaller fan.",
+  "accepted": false
+}

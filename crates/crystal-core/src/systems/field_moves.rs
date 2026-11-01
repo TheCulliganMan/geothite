@@ -24,6 +24,16 @@ pub const FLASH_AERODACTYL_CHAMBER_MAP: &str = "RuinsOfAlphAerodactylChamber";
 pub const FLASH_AERODACTYL_CHAMBER_FLAG: &str = "EVENT_WALL_OPENED_IN_AERODACTYL_CHAMBER";
 pub const FLASH_DARK_MAP_PALETTE: &str = "dark";
 
+/// Persist the actual Surf user independently of the mutable party order.
+/// These presentation identities travel with ordinary script memory in saves.
+pub const SURF_ACTOR_SPECIES_MEMORY: &str = "geothiteSurfActorSpecies";
+pub const SURF_ACTOR_DVS_MEMORY: &str = "geothiteSurfActorDvs";
+pub const SURF_ACTOR_PARTY_MEMORY: &str = "geothiteSurfActorPartySlot";
+/// Passive key item used by Minnesota's shore-launch traversal.
+pub const CANOE_ITEM: &str = "CANOE";
+/// Saved presentation identity; ordinary Surf never sets this marker.
+pub const CANOE_ACTIVE_MEMORY: &str = "geothiteCanoeActive";
+
 #[derive(Debug, Default, Clone, PartialEq, Eq, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct FieldMoveCatalog {
@@ -48,8 +58,14 @@ pub struct FieldMoveCatalog {
     pub basement_key: FieldStoryKeyRule,
     pub coin_case: FieldItemRule,
     pub blue_card: FieldItemRule,
-    pub town_map: FieldItemRule,
-    pub pokegear: FieldItemRule,
+    pub town_map: Option<FieldItemRule>,
+    /// Optional modded bag entry; the authored Pokegear is a Start-menu device.
+    pub pokegear: Option<FieldItemRule>,
+}
+
+fn required_optional_field_item_rule<'de, D>(deserializer: D) -> Result<Option<FieldItemRule>, D::Error>
+where D: serde::Deserializer<'de> {
+    Option::<FieldItemRule>::deserialize(deserializer)
 }
 
 impl<'de> Deserialize<'de> for FieldMoveCatalog {
@@ -81,8 +97,10 @@ impl<'de> Deserialize<'de> for FieldMoveCatalog {
             basement_key: FieldStoryKeyRule,
             coin_case: FieldItemRule,
             blue_card: FieldItemRule,
-            town_map: FieldItemRule,
-            pokegear: FieldItemRule,
+            #[serde(deserialize_with = "required_optional_field_item_rule")]
+            town_map: Option<FieldItemRule>,
+            #[serde(deserialize_with = "required_optional_field_item_rule")]
+            pokegear: Option<FieldItemRule>,
         }
 
         let raw = RawFieldMoveCatalog::deserialize(deserializer)?;
@@ -565,18 +583,12 @@ pub fn field_move_catalog_issues(
         items,
         &mut issues,
     );
-    collect_field_item_rule_issues(
-        "field_moves:town_map",
-        &catalog.town_map,
-        items,
-        &mut issues,
-    );
-    collect_field_item_rule_issues(
-        "field_moves:pokegear",
-        &catalog.pokegear,
-        items,
-        &mut issues,
-    );
+    if let Some(rule) = &catalog.town_map {
+        collect_field_item_rule_issues("field_moves:town_map", rule, items, &mut issues);
+    }
+    if let Some(rule) = &catalog.pokegear {
+        collect_field_item_rule_issues("field_moves:pokegear", rule, items, &mut issues);
+    }
     issues
 }
 
@@ -610,8 +622,12 @@ fn validate_field_move_catalog_pack_tokens(catalog: &FieldMoveCatalog) -> Result
     validate_story_key_rule_pack_tokens("field_moves.basement_key", &catalog.basement_key)?;
     validate_item_rule_pack_tokens("field_moves.coin_case", &catalog.coin_case)?;
     validate_item_rule_pack_tokens("field_moves.blue_card", &catalog.blue_card)?;
-    validate_item_rule_pack_tokens("field_moves.town_map", &catalog.town_map)?;
-    validate_item_rule_pack_tokens("field_moves.pokegear", &catalog.pokegear)?;
+    if let Some(rule) = &catalog.town_map {
+        validate_item_rule_pack_tokens("field_moves.town_map", rule)?;
+    }
+    if let Some(rule) = &catalog.pokegear {
+        validate_item_rule_pack_tokens("field_moves.pokegear", rule)?;
+    }
     Ok(())
 }
 
@@ -1388,6 +1404,31 @@ fn apply_flag_field_move(
     )
 }
 
+/// Validate the native Surf actor, configured badge and bicycle restriction
+/// without starting travel. Admission services use the same permission checks
+/// as an actual Surf launch; this does not spend PP or move the player.
+///
+/// # Errors
+/// Returns the ordinary native field-move error for missing/invalid rules,
+/// missing party moves, badges or an always-on-bike map.
+pub fn validate_surf_field_access<'a>(
+    catalog: &FieldMoveCatalog,
+    state: &GameState,
+    storage: &'a PokemonStorage,
+    party_index: usize,
+) -> Result<&'a crate::models::Pokemon, FieldMoveError> {
+    let rule = &catalog.surf;
+    require_travel_rule_shape(rule, false)?;
+    let actor = require_party_move(storage, party_index, &rule.move_id)?;
+    require_badge(state, &rule.move_id, &rule.badge)?;
+    if state.flags.is_engine_flag_set("ENGINE_ALWAYS_ON_BIKE")? {
+        return Err(FieldMoveError::AlwaysOnBike {
+            move_id: rule.move_id.clone(),
+        });
+    }
+    Ok(actor)
+}
+
 pub fn apply_surf_field_move(
     catalog: &FieldMoveCatalog,
     state: &GameState,
@@ -1398,14 +1439,7 @@ pub fn apply_surf_field_move(
     party_index: usize,
 ) -> Result<FieldMoveTravelOutcome, FieldMoveError> {
     let rule = &catalog.surf;
-    require_travel_rule_shape(rule, false)?;
-    let actor = require_party_move(storage, party_index, &rule.move_id)?;
-    require_badge(state, &rule.move_id, &rule.badge)?;
-    if state.flags.is_engine_flag_set("ENGINE_ALWAYS_ON_BIKE")? {
-        return Err(FieldMoveError::AlwaysOnBike {
-            move_id: rule.move_id.clone(),
-        });
-    }
+    let actor = validate_surf_field_access(catalog, state, storage, party_index)?;
     if matches!(player.mode, MovementMode::Surf | MovementMode::SurfPika) {
         return Err(FieldMoveError::InvalidMovementMode {
             move_id: rule.move_id.clone(),
@@ -1729,14 +1763,14 @@ pub fn validate_town_map_item(
     catalog: &FieldMoveCatalog,
     item: &Item,
 ) -> Result<(), FieldMoveError> {
-    validate_field_item_id("town_map", &catalog.town_map, item)
+    validate_field_item_id("town_map", &catalog.town_map.clone().unwrap_or_default(), item)
 }
 
 pub fn validate_pokegear_item(
     catalog: &FieldMoveCatalog,
     item: &Item,
 ) -> Result<(), FieldMoveError> {
-    validate_field_item_id("pokegear", &catalog.pokegear, item)
+    validate_field_item_id("pokegear", &catalog.pokegear.clone().unwrap_or_default(), item)
 }
 
 pub fn blue_card_balance(state: &GameState) -> Result<u8, FieldMoveError> {
@@ -2239,6 +2273,35 @@ mod tests {
         replacements
     }
 
+    #[test]
+    fn pokegear_map_needs_no_bag_adapter_but_custom_map_items_stay_strict() {
+        let mut value = serde_json::to_value(catalog()).unwrap();
+        value["town_map"] = serde_json::Value::Null;
+        let decoded: FieldMoveCatalog = serde_json::from_value(value.clone()).unwrap();
+        assert!(decoded.town_map.is_none());
+        value["town_map"] = serde_json::json!({"item_id":" TOWN_MAP"});
+        assert!(serde_json::from_value::<FieldMoveCatalog>(value.clone()).is_err());
+        value["town_map"] = serde_json::json!({"item_id":"CUSTOM_MAP"});
+        assert_eq!(serde_json::from_value::<FieldMoveCatalog>(value.clone()).unwrap().town_map.unwrap().item_id, "CUSTOM_MAP");
+        value.as_object_mut().unwrap().remove("town_map");
+        assert!(serde_json::from_value::<FieldMoveCatalog>(value).is_err());
+    }
+
+    #[test]
+    fn start_menu_pokegear_needs_no_bag_item_but_optional_bag_rules_stay_strict() {
+        let mut value = serde_json::to_value(catalog()).unwrap();
+        value["pokegear"] = serde_json::Value::Null;
+        let decoded: FieldMoveCatalog = serde_json::from_value(value.clone()).unwrap();
+        assert!(decoded.pokegear.is_none());
+        value["pokegear"] = serde_json::json!({"item_id":" BAD"});
+        assert!(serde_json::from_value::<FieldMoveCatalog>(value.clone()).is_err());
+        value["pokegear"] = serde_json::json!({"item_id":"CUSTOM_POKEGEAR"});
+        assert_eq!(serde_json::from_value::<FieldMoveCatalog>(value.clone()).unwrap()
+            .pokegear.unwrap().item_id, "CUSTOM_POKEGEAR");
+        value.as_object_mut().unwrap().remove("pokegear");
+        assert!(serde_json::from_value::<FieldMoveCatalog>(value).is_err());
+    }
+
     fn catalog() -> FieldMoveCatalog {
         FieldMoveCatalog {
             cut: FieldMoveBlockRule {
@@ -2357,12 +2420,12 @@ mod tests {
             blue_card: FieldItemRule {
                 item_id: "BLUE_CARD".to_string(),
             },
-            town_map: FieldItemRule {
+            town_map: Some(FieldItemRule {
                 item_id: "TOWN_MAP".to_string(),
-            },
-            pokegear: FieldItemRule {
+            }),
+            pokegear: Some(FieldItemRule {
                 item_id: "POKEGEAR".to_string(),
-            },
+            }),
         }
     }
 
@@ -2512,6 +2575,7 @@ mod tests {
             battle_focus_energy: None,
             battle_stat_drop_guard: None,
             confusion_heal: None,
+            confusion_inflict_turns: None,
             repel_steps: None,
             escape_rope_mode: mode.map(str::to_string),
             price: 550,
@@ -2552,6 +2616,7 @@ mod tests {
             battle_focus_energy: None,
             battle_stat_drop_guard: None,
             confusion_heal: None,
+            confusion_inflict_turns: None,
             repel_steps: steps,
             escape_rope_mode: None,
             price: 350,
@@ -3744,14 +3809,14 @@ mod tests {
             ),
             (
                 "town_map",
-                |catalog| &mut catalog.town_map,
+                |catalog| catalog.town_map.as_mut().unwrap(),
                 validate_town_map_item,
                 "TOWN_MAP",
                 "MOD_TOWN_MAP_ITEM",
             ),
             (
                 "pokegear",
-                |catalog| &mut catalog.pokegear,
+                |catalog| catalog.pokegear.as_mut().unwrap(),
                 validate_pokegear_item,
                 "POKEGEAR",
                 "MOD_POKEGEAR_ITEM",

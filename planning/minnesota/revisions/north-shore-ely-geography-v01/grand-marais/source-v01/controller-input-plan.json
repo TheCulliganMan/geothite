@@ -1,0 +1,148 @@
+{
+  "status": "PLANNED_NATIVE_INPUTS_NOT_EXECUTED",
+  "source_contract_sha256": "994f327b0874a7bd346139d2274cfbbfc01e3248521d96308f552310bea93ee6",
+  "source_pack": "content-packs/minnesota-superior-warm-coast-v01.crystalpack",
+  "fixture_rule": "Initial map/position/legal party/Surf state, missing badge or signal setup are fixtures only. Thereafter use VisibleShellController::press. Bind actual published identity; no position/party/flag/resource rewrites after setup.",
+  "cases": [
+    {
+      "id": "closed-foot-denial",
+      "setup": {
+        "map": "MnGrandMarais",
+        "core": [
+          16,
+          32
+        ],
+        "prerequisite": "missing any required badge or separately missing EVENT_MN_LIGHTHOUSE_SIGNAL"
+      },
+      "inputs": [
+        "Down to33",
+        "Down to34",
+        "Read every refusal page with A"
+      ],
+      "expect": "Unchanged prerequisite, party, inventory; player pushed UP to33, guards16/17,35 block both lanes; alternate lane17 also denied."
+    },
+    {
+      "id": "open-foot-coast",
+      "setup": {
+        "map": "MnGrandMarais",
+        "core": [
+          16,
+          32
+        ],
+        "prerequisite": "all eight badges and existing Duluth signal"
+      },
+      "inputs": [
+        "Down to33",
+        "Down to34",
+        "Down to35",
+        "Down to36",
+        "Down to37",
+        "Down across seam"
+      ],
+      "expect": "Existing gate script hides both south officers. Inward wrapper facingDown ends without displacement. Reach MnR11C00R00 at40,0; other lane reaches41,0."
+    },
+    {
+      "id": "unqualified-foot-inward-care",
+      "setup": {
+        "map": "MnR11C00R00",
+        "core": [
+          40,
+          0
+        ],
+        "prerequisite": "missing required badge/signal"
+      },
+      "inputs": [
+        "Up across seam toGM16,37",
+        "Up to16,36",
+        "Allow existing two-step script to settle",
+        "Walk ordinary public path to15,10 then clinic door15,9",
+        "Complete native nurse YES/NO",
+        "Use clinic carpet and return"
+      ],
+      "expect": "Inward hides guards and scripts UP through35 to34, skipping outgoing coordinate interception; reconciliation restores guards behind. Free care and all six original room returns remain. No badge/story grants."
+    },
+    {
+      "id": "closed-surf-denial-all-lanes",
+      "setup": {
+        "map": "MnGrandMarais",
+        "core": [
+          28,
+          34
+        ],
+        "mode": "actual native Surf",
+        "prerequisite": "missing any required badge or separately missing Duluth signal"
+      },
+      "inputs": [
+        "Down to28,35",
+        "Read every refusal page"
+      ],
+      "expect": "Water wrapper calls existing badge/signal root. UP denial returns28,34; both35 and34 are native WATER, Surf mode unchanged. Repeat all34 source water-gate lanes; no physical officer bypass."
+    },
+    {
+      "id": "unqualified-surf-inward",
+      "setup": {
+        "map": "MnR11C00R00",
+        "core": [
+          52,
+          0
+        ],
+        "mode": "actual native Surf",
+        "prerequisite": "missing required badge/signal"
+      },
+      "inputs": [
+        "Up across seam toGM28,37",
+        "Up to28,36",
+        "Settle two scripted UP steps"
+      ],
+      "expect": "Stay Surf;36\u219235\u219234 allWATER. No outgoing water event fires during scripted movement. Free bank dismount and clinic care available. Trying Down from34 then triggers refusal at35."
+    },
+    {
+      "id": "open-surf-coast-roundtrip-continue",
+      "setup": {
+        "map": "MnGrandMarais",
+        "core": [
+          28,
+          34
+        ],
+        "mode": "actual native Surf",
+        "prerequisite": "all eight badges and existing signal"
+      },
+      "inputs": [
+        "Down35",
+        "Down36",
+        "Down37",
+        "Down across seam",
+        "Save/Continue",
+        "Up across seam",
+        "Up36 and settle to34"
+      ],
+      "expect": "MnR11C00R00 at52,0 in Surf; reciprocal water aperture14lanes exact. Party/resources/flags/mode retained; no save identity rewrite."
+    },
+    {
+      "id": "reef-and-quay-no-bypass",
+      "setup": {
+        "map": "MnGrandMarais",
+        "prerequisite": "closed then open fixtures"
+      },
+      "expect": "West/east water edges BUOY. South water only24..37. Quay rails/caps block side launch below checkpoint. North11 reef remains outside explicit seven-cell aperture. Attempt other south rock lanes, all shoreline corners and alternate manual headings."
+    },
+    {
+      "id": "inland-and-destinations",
+      "setup": {
+        "map": "MnGrandMarais",
+        "prerequisite": "open road fixtures"
+      },
+      "expect": "West0,8/9 reaches relocated inland Cedar63,8/9; old eastFoot and eastwater exits visibly closed. Keep exactly6room pairs, original nurse/shop/field-station/lamp quest. Read sign12,14: coastalSouth, GunflintWest, inlandEly snow. No seventh shore gatehouse or story lineage transplant."
+    }
+  ],
+  "acceptance_requires": [
+    "Actual written pack identity and full residual checks",
+    "Native glyph/palette/animation/Cut preservation",
+    "Production Surf-mode movement and encounter behavior",
+    "Dialogue ownership and no resource/flag mutation on refusal",
+    "Both actor lanes hidden on pass and free inbound script crossing",
+    "Six room warp/return/service regressions",
+    "Save/Continue on new actual identity",
+    "Matched source/native GPU cameras at exact fixture positions"
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "id": "MN_STORM_WATCHER",
+  "name": "STORM WATCHER GALE",
+  "status": "accepted-native-playable",
+  "overworld_frames": 6,
+  "overworld_size": [
+    16,
+    16
+  ],
+  "battle_size": [
+    56,
+    56
+  ],
+  "palette_rgb555": [
+    32767,
+    22399,
+    3643,
+    0
+  ],
+  "source": "native-pixels-v1.json",
+  "placement": "placement-v1.json",
+  "pack": "content-packs/minnesota-original-npcs-13-v02.crystalpack",
+  "parent": "content-packs/minnesota-npcs-hand-12-v01.crystalpack",
+  "runtime_checks": {
+    "one_controller_test_passed": true,
+    "talk_and_input_ownership": true,
+    "battle_turn_and_pp": true,
+    "battle_save_load": true,
+    "actual_victory_and_defeat_flag_before_render_capture": true,
+    "post_battle_talk": true,
+    "existing_trainers_and_assets_preserved": true
+  },
+  "manual_visual_review": "Direct real-Crystal comparison at same palette and scale: Fisher, Teacher and Chris overworlds; Scientist and Fisher battle art. Overworld redrawn to widen hood opening/face, paired cheek shading, collar/cuff clusters, dedicated side and rear hood, simplified clipboard and lifted boot stride. Wind meter retained in battle only to keep 16x16 uncluttered. Battle face/cups/coat pockets/folds/boot highlights refined directly. Native 1x and 8x strips plus actual Moorhead world, trainer intro and first-turn captures inspected. Full controller encounter passed in 8.01s. This per-character review does not restore the earlier twelve sets visual acceptance.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/sprites/13-storm-watcher/native-pixels-v1.json": "9977e591522496171c2f080e26ceba8b974cf1da81d8124688c48e2cec2954bd",
+    "planning/minnesota/npcs/sprites/13-storm-watcher/placement-v1.json": "1b16d99c270bd691b87b862810d71e1e52e33770ef3b6f3537c603710f69c7e9",
+    "content-packs/minnesota-original-npcs-13-v02.crystalpack": "31b4c6a56a8d066e050712897fc03347e99cb2ef4f8004d36f9bcf5dcbd0dfbe",
+    "target/npc-sprites/storm/controller-v01.log": "9f6d31865a31ebfd8ef055cbb7b3b4f36837fbb99f5158c356adc17e79daa528",
+    "target/npc-sprites/storm/gameplay-v01/original-npc-trainer-intro.png": "2c708e3da21015d54318c8fc808d3013a39787df047573f0f76e7c05c5ef368f",
+    "target/npc-sprites/storm/gameplay-v01/original-npc-first-turn.png": "c2d3a6658f85221ccd54f8af7e43102739eff075222ac8f065f29062144e6e42",
+    "target/npc-sprites/storm/gameplay-v01/original-npc-overworld-state.png": "426965187f2ba2e7a761b52f020f4fdb256cbd87698695dd0937df22ee03cdb5",
+    "target/npc-sprites/hand-review/real-sprite-comparison-v3.png": "28bde2645646f935fad6cac7555a5112c4428171ca3ea5de4cc3df7009691bcb",
+    "target/npc-sprites/hand-review/battle-real-comparison-v4.png": "87d154d86ed1ac9d0dd006aed3789d92aeb9018d966501c1a0b568688ddc3980",
+    "target/npc-sprites/storm/native-v4/verification.json": "fc44d8dba36d3f534a73616c5edbef0634c8316dda77b6f573926d3a48e97690"
+  },
+  "overworld_authoring": "direct-native-pixel-grids",
+  "reference_review": "actual-crystal-sprites-common-palette-and-scale"
+}

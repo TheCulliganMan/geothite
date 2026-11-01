@@ -1,0 +1,116 @@
+{
+  "id": "MnGrandMarais",
+  "name": "GRAND MARAIS",
+  "dimensions_metatiles": [
+    20,
+    19
+  ],
+  "reference_anchor_percent": [
+    87,
+    26
+  ],
+  "role": "town",
+  "tileset": "mn_marais_shore",
+  "composition": "Green Lake Superior harbor and lighthouse quay; direct North Shore arrival south, inland Gunflint/Ely departure west.",
+  "ports": [
+    {
+      "route": "MN_R11",
+      "side": "S",
+      "gate_metatile": [
+        8,
+        17
+      ],
+      "landing_metatile": [
+        8,
+        18
+      ],
+      "physical_facade": "Open-air fenced stone quay; direct Foot and Superior Surf map seams; no gatehouse detour",
+      "native_connection": "MnR11C00R00 north offset+12 / town south offset-12; core16/17 to40/41, water24..37 to48..61"
+    },
+    {
+      "route": "MN_R12",
+      "side": "W",
+      "gate_metatile": [
+        0,
+        4
+      ],
+      "landing_metatile": [
+        2,
+        4
+      ],
+      "native_connection": "MnMaraisCedarApproach east; offsets0/0; core8/9. Cedar is the inland section to the new neck and existing Gunflint, not the coastal approach."
+    }
+  ],
+  "interiors": [
+    {
+      "id": "MnGrandMaraisFieldStation",
+      "kind": "field_station",
+      "dimensions_metatiles": [
+        5,
+        4
+      ],
+      "source_behavior": "Preserve actual installed warm-parent room module and all existing behavior byte-for-byte. No alternate shore-successor room programs are imported."
+    },
+    {
+      "id": "MnGrandMaraisPokecenter",
+      "kind": "pokecenter",
+      "dimensions_metatiles": [
+        5,
+        4
+      ],
+      "source_behavior": "Preserve actual installed warm-parent room module and all existing behavior byte-for-byte. No alternate shore-successor room programs are imported."
+    },
+    {
+      "id": "MnGrandMaraisMart",
+      "kind": "mart",
+      "dimensions_metatiles": [
+        6,
+        4
+      ],
+      "source_behavior": "Preserve actual installed warm-parent room module and all existing behavior byte-for-byte. No alternate shore-successor room programs are imported."
+    },
+    {
+      "id": "MnGrandMaraisArtistHouse",
+      "kind": "house",
+      "dimensions_metatiles": [
+        4,
+        4
+      ],
+      "source_behavior": "Preserve actual installed warm-parent room module and all existing behavior byte-for-byte. No alternate shore-successor room programs are imported."
+    },
+    {
+      "id": "MnGrandMaraisFisherHouse",
+      "kind": "house",
+      "dimensions_metatiles": [
+        4,
+        4
+      ],
+      "source_behavior": "Preserve actual installed warm-parent room module and all existing behavior byte-for-byte. No alternate shore-successor room programs are imported."
+    },
+    {
+      "id": "MnGrandMaraisLighthouse",
+      "kind": "lighthouse",
+      "dimensions_metatiles": [
+        5,
+        5
+      ],
+      "source_behavior": "Preserve actual installed warm-parent room module and all existing behavior byte-for-byte. No alternate shore-successor room programs are imported."
+    }
+  ],
+  "walkable_destinations": [
+    "each port landing",
+    "every visible exterior door",
+    "central square",
+    "local story NPC"
+  ],
+  "door_contract": "Six original native indexed facade/room pairs and automatic outdoor exit steps are preserved. The regional coast uses direct outdoor Foot/Surf seams; no seventh gatehouse room.",
+  "implementation": {
+    "design": "../playable/grand-marais.json",
+    "map_constant": "MN_GRAND_MARAIS",
+    "scope": "Regional North Shore candidate; verification in playable/north-shore-story.md",
+    "interiors": 7,
+    "review": "../playable/north-shore-story.md",
+    "connections": "MnGrandMarais.connections.json"
+  },
+  "native_connections_source": "MnGrandMarais.connections.candidate.json"
+}

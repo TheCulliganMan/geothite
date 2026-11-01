@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F008",
+  "species_id": "MN_024",
+  "name": "Rivetqueen",
+  "status": "retained_source_and_native_face_revision_superseded",
+  "generation_tool": "built-in image_gen",
+  "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f008/rivetqueen.overworld.imagegen-v2.png",
+  "source_sha256": "17a94d4d09f8b0d6f7a7d3359ed0e481fd162e7d82068d04cece75f8a87e8005",
+  "original_default_output": "/Users/ryanculligan/.codex/generated_images/01a179bf-dc2b-7352-8975-8b8f3a32e33b/exec-5f5d2c77-c633-43a0-961b-8da5c24ef4d1.png",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f008/prompt-rivetqueen-v2.txt",
+  "prompt_sha256": "0520e644b17ea937a888a98b38780f4ae074bb9c81a311ceba0f6518a353d6d3",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f008/reference-mapping-rivetqueen-v2.json",
+  "only_input_image": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+  "proposed_native_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f008/manifest-rivetqueen-v2-center.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f008/rivetqueen-v2-center",
+  "six_frame_layout": "3columns2rows; down/up/left idle then down/up/left wing-cycle",
+  "conversion": "Rust source_center with equal380x360 crop windows; shared scale/anchor across6poses; no pixel painting",
+  "conversion_result": {
+    "exit_code": 0,
+    "stdout": "Compiled MN_F008: 1 species, 4 literal OBJ runtime files; retained reviews in planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f008/rivetqueen-v2-center\n",
+    "stderr": ""
+  },
+  "accepted": false,
+  "superseded_reason": "Author view found tiny separate eye planes lost clarity; broad-face v3 retained separately.",
+  "superseded_by": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f008/generation-rivetqueen-v3.json"
+}

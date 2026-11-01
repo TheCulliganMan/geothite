@@ -1,0 +1,40 @@
+{
+  "status": "CURRENT_BOUNDARY_SAFARI_REVIEW_STARTED",
+  "revision": "route_grass_r14_forest_bank_revision",
+  "pack": "content-packs/minnesota-current-r14-forest-bank-v01.crystalpack",
+  "sha256": "e9f4108d3b0a35f04145e4928446c03845982e1f13d7ff8f34e383bd701757d5",
+  "native_modules": [
+    "MnBoundarySafariC00R00",
+    "MnBoundarySafariC00R01",
+    "MnBoundarySafariC00R02",
+    "MnBoundarySafariC01R00",
+    "MnBoundarySafariC01R01",
+    "MnBoundarySafariC01R02"
+  ],
+  "grass_quadrants": 316,
+  "native_hop_quadrants": 0,
+  "native_cave12_stair_metatiles": [
+    [
+      40,
+      58
+    ],
+    [
+      96,
+      18
+    ],
+    [
+      90,
+      26
+    ],
+    [
+      110,
+      32
+    ],
+    [
+      106,
+      80
+    ]
+  ],
+  "source": "planning/minnesota/revisions/route-grass-v01/current-boundary-safari-v01/native-installed-v02.layout.json",
+  "scope": "Grass/landings/local traversal only. No paid permit, capture runtime or earned regional access is claimed."
+}

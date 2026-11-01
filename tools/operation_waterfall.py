@@ -14,6 +14,9 @@ from pathlib import Path
 import statistics
 
 
+from trace_stream import events, spans as stream_spans, span_fields, window
+
+
 def decode(events):
     stacks = defaultdict(list)
     spans, names = [], {}
@@ -34,10 +37,10 @@ def decode(events):
             if duration < 0:
                 raise ValueError('Trace has a negative span duration')
             spans.append(dict(name=start.get('name', '?'), start=start['ts'],
-                              duration=duration, thread=key, depth=depth))
+                              duration=duration, thread=key, depth=depth, args=span_fields(start)))
         elif phase == 'X':
             spans.append(dict(name=event.get('name', '?'), start=event['ts'],
-                              duration=event['dur'], thread=key, depth=0))
+                              duration=event['dur'], thread=key, depth=0, args=span_fields(event)))
     return spans, names, unmatched + sum(map(len, stacks.values()))
 
 
@@ -60,8 +63,14 @@ def main():
     parser.add_argument('trace', type=Path)
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
-    source = json.loads(args.trace.read_text())
-    spans, names, incomplete = decode(source if isinstance(source, list) else source['traceEvents'])
+    selected = None
+    audit_path = args.trace.with_name('audit.json')
+    if audit_path.exists():
+        audit = json.loads(audit_path.read_text())
+        selected = window(args.trace, {f['id'] for f in audit['frames'] if f['measured']})
+    names, counts = {}, {}
+    spans = list(stream_spans(events(args.trace), names, counts, selected))
+    incomplete = counts['incomplete']
     if not spans:
         raise ValueError('No completed spans in capture')
     spans.sort(key=lambda s: s['start'])
@@ -74,14 +83,16 @@ def main():
     operation_ids = {name: i for i, name in enumerate(operations)}
     compact = [[operation_ids[s['name']], round((s['start']-origin)/1000, 4),
                 round(s['duration']/1000, 4), thread_ids[s['thread']], s['depth']] for s in spans]
-    frames = [(s['start']-origin)/1000 for s in spans if s['name'].rstrip(': ') == 'update']
+    markers = [s for s in spans if s['name'].startswith('audit_frame_marker') and 'frame_id' in s['args']]
+    frames = [(s['start']-origin)/1000 for s in markers] if markers else [(s['start']-origin)/1000 for s in spans if s['name'].rstrip(': ') == 'update']
+    frame_ids = [int(s['args']['frame_id']) for s in markers] if markers else list(range(len(frames)))
     summary = summarize(spans)
     report = dict(source=str(args.trace), completed_spans=len(spans), incomplete_spans=incomplete,
                   duration_ms=(end-origin)/1000, threads=len(threads), operations=summary,
                   frame_intervals_ms=[b-a for a,b in zip(frames, frames[1:])])
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.with_suffix('.summary.json').write_text(json.dumps(report, indent=2))
-    data = json.dumps(dict(spans=compact, names=operations, threads=labels, frames=frames,
+    data = json.dumps(dict(spans=compact, names=operations, threads=labels, frames=frames, frame_ids=frame_ids,
                            end=(end-origin)/1000, summary=summary)).replace('<', '\\u003c')
     template = Path(__file__).with_name('operation_waterfall.html').read_text()
     args.output.write_text(template.replace('__DATA__', data).replace('__SOURCE__', html.escape(str(args.trace))))

@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F051",
+  "species": [
+    {
+      "species_id": "MN_105",
+      "runtime_token": "RUMBLEHIDE",
+      "palette_rgb555": [
+        32767,
+        8759,
+        5353,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        18152,
+        7461,
+        0
+      ],
+      "fit": [
+        13,
+        13
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 64,
+      "interior_black_samples": 64,
+      "opaque_interior_minimum_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "rumblehide.overworld.imagegen-v2-front-eyes.png",
+          "crop": [
+            37,
+            89,
+            500,
+            440
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "rumblehide.overworld.imagegen-v1.png",
+          "crop": [
+            501,
+            52,
+            500,
+            440
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "rumblehide.overworld.imagegen-v2-front-eyes.png",
+          "crop": [
+            1036,
+            77,
+            500,
+            440
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "rumblehide.overworld.imagegen-v2-front-eyes.png",
+          "crop": [
+            37,
+            544,
+            500,
+            440
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "rumblehide.overworld.imagegen-v1.png",
+          "crop": [
+            501,
+            514,
+            500,
+            440
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "rumblehide.overworld.imagegen-v3-profile-step-eye.png",
+          "crop": [
+            1024,
+            535,
+            500,
+            440
+          ]
+        }
+      ]
+    }
+  ]
+}

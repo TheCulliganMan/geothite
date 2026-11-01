@@ -1,0 +1,460 @@
+{
+  "schema_version": 2,
+  "id": "MnEly",
+  "tileset": "kanto",
+  "compiled_tileset": "kanto",
+  "dimensions_metatiles": [
+    20,
+    18
+  ],
+  "shore_fitting": "explicit_source_edges",
+  "reject_cliff_cuts": false,
+  "source_pixels_modified": false,
+  "materials": {
+    "floor": "31",
+    "lawn": "0a",
+    "forest": "0f",
+    "flowers": "74"
+  },
+  "layers": [
+    {
+      "name": "Sheltered League clearing",
+      "kind": "polygon",
+      "points": [
+        [
+          8,
+          1
+        ],
+        [
+          14,
+          1
+        ],
+        [
+          14,
+          3
+        ],
+        [
+          17,
+          3
+        ],
+        [
+          17,
+          8
+        ],
+        [
+          18,
+          8
+        ],
+        [
+          18,
+          16
+        ],
+        [
+          7,
+          16
+        ],
+        [
+          7,
+          14
+        ],
+        [
+          3,
+          14
+        ],
+        [
+          3,
+          8
+        ],
+        [
+          6,
+          8
+        ],
+        [
+          6,
+          5
+        ],
+        [
+          8,
+          5
+        ]
+      ],
+      "material": "lawn"
+    },
+    {
+      "name": "North trail bends around the lodge",
+      "kind": "path",
+      "points": [
+        [
+          12,
+          0
+        ],
+        [
+          12,
+          2
+        ],
+        [
+          9,
+          2
+        ],
+        [
+          9,
+          8
+        ],
+        [
+          13,
+          8
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "name": "League arrivals and registration steps",
+      "kind": "rect",
+      "bounds": [
+        11,
+        7,
+        15,
+        9
+      ],
+      "material": "floor"
+    },
+    {
+      "name": "Clinic approach",
+      "kind": "path",
+      "points": [
+        [
+          9,
+          8
+        ],
+        [
+          9,
+          11
+        ],
+        [
+          6,
+          11
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "name": "Supply loop through camp",
+      "kind": "path",
+      "points": [
+        [
+          13,
+          8
+        ],
+        [
+          13,
+          10
+        ],
+        [
+          17,
+          10
+        ],
+        [
+          17,
+          15
+        ],
+        [
+          8,
+          15
+        ],
+        [
+          8,
+          11
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "name": "Mart front step",
+      "kind": "path",
+      "points": [
+        [
+          14,
+          14
+        ],
+        [
+          17,
+          14
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "name": "Quiet rest garden",
+      "kind": "rect",
+      "bounds": [
+        4,
+        12,
+        7,
+        14
+      ],
+      "material": "flowers"
+    },
+    {
+      "name": "Eastern garden",
+      "kind": "rect",
+      "bounds": [
+        14,
+        9,
+        16,
+        11
+      ],
+      "material": "flowers"
+    },
+    {
+      "name": "League lodge",
+      "kind": "point",
+      "position": [
+        11,
+        4
+      ],
+      "block": "0c"
+    },
+    {
+      "name": "League lodge",
+      "kind": "point",
+      "position": [
+        12,
+        4
+      ],
+      "block": "0d"
+    },
+    {
+      "name": "League lodge",
+      "kind": "point",
+      "position": [
+        13,
+        4
+      ],
+      "block": "0d"
+    },
+    {
+      "name": "League lodge",
+      "kind": "point",
+      "position": [
+        14,
+        4
+      ],
+      "block": "0e"
+    },
+    {
+      "name": "League lodge",
+      "kind": "point",
+      "position": [
+        11,
+        5
+      ],
+      "block": "68"
+    },
+    {
+      "name": "League lodge",
+      "kind": "point",
+      "position": [
+        12,
+        5
+      ],
+      "block": "7f"
+    },
+    {
+      "name": "League lodge",
+      "kind": "point",
+      "position": [
+        13,
+        5
+      ],
+      "block": "7f"
+    },
+    {
+      "name": "League lodge",
+      "kind": "point",
+      "position": [
+        14,
+        5
+      ],
+      "block": "69"
+    },
+    {
+      "name": "League lodge",
+      "kind": "point",
+      "position": [
+        11,
+        6
+      ],
+      "block": "37"
+    },
+    {
+      "name": "League lodge",
+      "kind": "point",
+      "position": [
+        12,
+        6
+      ],
+      "block": "53"
+    },
+    {
+      "name": "League lodge",
+      "kind": "point",
+      "position": [
+        13,
+        6
+      ],
+      "block": "3a"
+    },
+    {
+      "name": "League lodge",
+      "kind": "point",
+      "position": [
+        14,
+        6
+      ],
+      "block": "7e"
+    },
+    {
+      "name": "Clinic",
+      "kind": "point",
+      "position": [
+        5,
+        9
+      ],
+      "block": "20"
+    },
+    {
+      "name": "Clinic",
+      "kind": "point",
+      "position": [
+        6,
+        9
+      ],
+      "block": "21"
+    },
+    {
+      "name": "Clinic",
+      "kind": "point",
+      "position": [
+        5,
+        10
+      ],
+      "block": "7c"
+    },
+    {
+      "name": "Clinic",
+      "kind": "point",
+      "position": [
+        6,
+        10
+      ],
+      "block": "72"
+    },
+    {
+      "name": "Mart",
+      "kind": "point",
+      "position": [
+        13,
+        12
+      ],
+      "block": "20"
+    },
+    {
+      "name": "Mart",
+      "kind": "point",
+      "position": [
+        14,
+        12
+      ],
+      "block": "21"
+    },
+    {
+      "name": "Mart",
+      "kind": "point",
+      "position": [
+        13,
+        13
+      ],
+      "block": "7c"
+    },
+    {
+      "name": "Mart",
+      "kind": "point",
+      "position": [
+        14,
+        13
+      ],
+      "block": "73"
+    },
+    {
+      "name": "League trail sign",
+      "kind": "point",
+      "position": [
+        10,
+        1
+      ],
+      "block": "08"
+    },
+    {
+      "name": "Ely town sign",
+      "kind": "point",
+      "position": [
+        7,
+        10
+      ],
+      "block": "08"
+    },
+    {
+      "name": "Rest garden stone",
+      "kind": "point",
+      "position": [
+        4,
+        11
+      ],
+      "block": "22"
+    },
+    {
+      "name": "East grove",
+      "kind": "point",
+      "position": [
+        16,
+        8
+      ],
+      "block": "32"
+    },
+    {
+      "name": "South grove",
+      "kind": "point",
+      "position": [
+        11,
+        14
+      ],
+      "block": "33"
+    },
+    {
+      "name": "Sheltering grove inside the supply loop",
+      "kind": "block_rect",
+      "bounds": [
+        10,
+        10,
+        13,
+        14
+      ],
+      "block": "0f"
+    },
+    {
+      "name": "Clinic back grove",
+      "kind": "block_rect",
+      "bounds": [
+        4,
+        7,
+        8,
+        9
+      ],
+      "block": "0f"
+    }
+  ]
+}

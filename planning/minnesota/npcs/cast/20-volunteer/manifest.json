@@ -1,0 +1,40 @@
+{
+  "name": "TESS",
+  "role": "Volunteer",
+  "status": "accepted-native-playable",
+  "source": "native-pixels-v2.json",
+  "integration": "placement-v1.json",
+  "controller": "placement-v1.json",
+  "native": "target/trainer-cast/volunteer/native-v2",
+  "pack": "content-packs/minnesota-trainer-cast-20-v01.crystalpack",
+  "gameplay": "target/trainer-cast/volunteer/gameplay-v1",
+  "log": "target/trainer-cast/volunteer/controller-v1.log",
+  "reference_review": "actual-crystal-sprites-common-palette-and-scale",
+  "review_notes": "White knit cap, short curls and broad reflective vest band in six hand-drawn field poses; battle crown, eyes, glove and vest bands corrected in native pixels. Actual game and Crystal common-scale comparisons inspected.",
+  "fixture": "Three legal level-60 Minnesota starters; adjacent position and explicit prior-access setup. Local encounter/rewards proof, not earned traversal or intended-level balance.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/cast/20-volunteer/native-pixels-v2.json": "9ebb163cece584ccaba77404be6e58778c3cfef4ffa6d26a96af74769eaa986c",
+    "planning/minnesota/npcs/cast/20-volunteer/placement-v1.json": "392cd25538d1ad220eda758f5a27debdf5db20f0967403a55b75f627a4a20533",
+    "target/trainer-cast/volunteer/native-v2/verification.json": "bc88767ff6352579f224f5431b6f91ed6e67de08ad5553cad822fb74d0a2a330",
+    "content-packs/minnesota-trainer-cast-20-v01.crystalpack": "9ceb580d5860a81649e8098f2f8ee0bda60cb72d47880736f19013a99839d0b9",
+    "target/trainer-cast/volunteer/controller-v1.log": "a07d4348edff193b1a7526d50dbe27dd074fcb565dd05abe0fbb829db5bec704",
+    "target/trainer-cast/volunteer/gameplay-v1/original-npc-trainer-intro.png": "6d6b65c76a309c63ff3e6423817345f65dde9e20733a4153635fc12132d7a2bb",
+    "target/trainer-cast/volunteer/gameplay-v1/original-npc-overworld-state.png": "454eb086c7efe0f7391e0278b62e33797e3ebdc1f30fcb37c5f9ecce072f020d",
+    "target/trainer-cast/volunteer/gameplay-v1/original-npc-first-turn.png": "29f4f357d5f7b81a694f53857433be15fd5b0e191477ec6a828577403c41baeb",
+    "planning/minnesota/npcs/cast/20-volunteer/battle-reference-prompt.txt": "d2be4ebcfff1187325ecb13b79457d0e20c471e04ed174e65c7fe876934ea848",
+    "planning/minnesota/npcs/cast/20-volunteer/battle-reference-v1.png": "ae9b767f7a104d9345b58bf8e30855490168c81bbeb77d3498cfdc066e526eb8",
+    "target/trainer-cast/volunteer/real-comparison.png": "8c69952280baffdcb3dc6db9a5fbed017d766040aee72c2ddc94fd7055e14635",
+    "target/trainer-cast/volunteer/battle-real-comparison.png": "d5a4f6cf568d920052eb0f3d01a469eb757a95ffd89a41e5ab26ddf1ba18a3cc"
+  },
+  "final_pack": "content-packs/minnesota-trainer-cast-36-v01.crystalpack",
+  "final_gameplay": "target/trainer-cast/final-audit/gameplay/20-volunteer",
+  "final_log": "target/trainer-cast/final-audit/gameplay/20-volunteer/controller.log",
+  "final_status": "accepted-native-playable-final-pack",
+  "final_review": "Actual battle intro and field captures inspected on exact final pack; art retains accepted native sources and palette.",
+  "final_evidence_sha256": {
+    "target/trainer-cast/final-audit/gameplay/20-volunteer/controller.log": "bc704a0305ed2aff09233245b46f0c47534ab1c51a3dcbb89347a68760b1c479",
+    "target/trainer-cast/final-audit/gameplay/20-volunteer/original-npc-trainer-intro.png": "6d6b65c76a309c63ff3e6423817345f65dde9e20733a4153635fc12132d7a2bb",
+    "target/trainer-cast/final-audit/gameplay/20-volunteer/original-npc-overworld-state.png": "b2cd40e556a7a170c1d9b3558704e9c59e3d84ac71c7d05e41f1d0013b9ea473",
+    "target/trainer-cast/final-audit/gameplay/20-volunteer/original-npc-first-turn.png": "29f4f357d5f7b81a694f53857433be15fd5b0e191477ec6a828577403c41baeb"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "tool": "built-in image_gen",
+  "species_id": "MN_029",
+  "original_default_path": "/Users/ryanculligan/.codex/generated_images/01a178da-4cf1-7e01-8516-667a332dc790/exec-b407d73b-7197-4164-adb8-92f811a0d4d7.png",
+  "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f010/millimp.overworld.imagegen-v1.png",
+  "sha256": "ad523f1b0adb0b278c41c6311097882413ee4abb4b6722368aaf27a3507e5c69",
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f010/prompt-millimp-v1.txt",
+  "status": "source_generated_not_accepted"
+}

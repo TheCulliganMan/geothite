@@ -1,0 +1,68 @@
+{
+  "tool": "built-in image_gen",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f087/recallisk-v2-native-pupils",
+  "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f087/manifest-recallisk-v2-native-pupils.json",
+  "normalized_receipt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f087/source-feature-proof-recallisk-v2-native-pupils.json",
+  "all_raws_prompts_rejected_trials_retained": true,
+  "no_native_pixel_painting": true,
+  "no_registry_or_pack_mutation": true,
+  "normal_shiny_boards_actually_viewed": true,
+  "canonical_palettes": [
+    [
+      32767,
+      23421,
+      15944,
+      0
+    ],
+    [
+      32767,
+      28598,
+      8596,
+      0
+    ]
+  ],
+  "native_bounds": [
+    [
+      1,
+      5,
+      14,
+      10
+    ],
+    [
+      1,
+      5,
+      14,
+      10
+    ],
+    [
+      6,
+      5,
+      7,
+      10
+    ],
+    [
+      1,
+      5,
+      14,
+      10
+    ],
+    [
+      1,
+      5,
+      14,
+      10
+    ],
+    [
+      5,
+      5,
+      9,
+      10
+    ]
+  ],
+  "retained_source_hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f087/recallisk.overworld.imagegen-v1.png": "3c0a4407202dfd8e80189da9564d244e7ff64aa7754e50b4f89109b28c8f5327",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f087/prompt-recallisk-v1.txt": "46a883b4ff5f7d7f5748f35741b7d460d425450c1cadd90a961085f9f4fc657c",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f087/recallisk.v1.original-path.txt": "7bca202b94656f567f262602048ff708113fd85029bf37f8187e2431c3d56504"
+  },
+  "status": "root independent visual/context acceptance pending"
+}

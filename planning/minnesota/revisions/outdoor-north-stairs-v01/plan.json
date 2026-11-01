@@ -1,0 +1,48 @@
+{
+  "scope": "Four north-facing gray stairs: paved87 for the three R05 paved approaches; rock88 for the R07 rock plateau. Match each actual inside landing and retain native74 collision.",
+  "baseline_parent": "/Users/ryanculligan/GitHub/geothite/content-packs/minnesota-current-outdoor-boulder-setbacks-v02.crystalpack",
+  "baseline_parent_sha256": "bf81f17d876558892ea62d123ccffa76c486ac9e5855a6738cc1ca0eac83d8a6",
+  "modules": {
+    "MnR05C00R00": "ca794dd4a219455e45772732ef793e4fc2bf5c3623ca56d21e69ca6899c0336a",
+    "MnR05C00R01": "7997dda991f47ce93c2f99aa38f1d3e5c9d7f4c6f364030239283fc8d274885f",
+    "MnR07C00R00": "54a7b8de0afd75f26e988f6641f903045132cb9c07a1c01553dcee4629b92aa3"
+  },
+  "placements": [
+    {
+      "map": "MnR05C00R00",
+      "tileset": "mn_outdoor_headwaters_stairs",
+      "metatile": [
+        12,
+        7
+      ],
+      "inside_landing": "paved"
+    },
+    {
+      "map": "MnR05C00R00",
+      "tileset": "mn_outdoor_headwaters_stairs",
+      "metatile": [
+        18,
+        13
+      ],
+      "inside_landing": "paved"
+    },
+    {
+      "map": "MnR05C00R01",
+      "tileset": "mn_outdoor_headwaters_stairs",
+      "metatile": [
+        14,
+        2
+      ],
+      "inside_landing": "paved"
+    },
+    {
+      "map": "MnR07C00R00",
+      "tileset": "mn_headwaters",
+      "metatile": [
+        8,
+        21
+      ],
+      "inside_landing": "rock"
+    }
+  ]
+}

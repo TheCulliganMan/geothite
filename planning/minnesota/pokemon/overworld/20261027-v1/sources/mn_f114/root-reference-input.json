@@ -1,0 +1,202 @@
+{
+  "queue_number": 221,
+  "dex_number": 221,
+  "master_source_order": 310,
+  "species_id": "MN_248",
+  "name": "Strandrak",
+  "family_id": "MN_F114",
+  "stage": 1,
+  "types": [
+    "DRAGON",
+    "GROUND"
+  ],
+  "evolves_to": null,
+  "section": "legendary",
+  "status": "awaiting_generation",
+  "family_job_id": "MN_F114",
+  "selected_reference_path": "target/minnesota-pokemon/native/MN_F114/mn-248-strandrak-v1.front.png",
+  "references": {
+    "front": {
+      "native_png": {
+        "path": "target/minnesota-pokemon/native/MN_F114/mn-248-strandrak-v1.front.png",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F114/mn-248-strandrak-v1.front.png",
+        "sha256": "573194bbf90c41f23b0199c60dc03dd22477570b319431a1d9217489e09fa7f9"
+      },
+      "native_indexed_json": {
+        "path": "target/minnesota-pokemon/native/MN_F114/mn-248-strandrak-v1.front.json",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F114/mn-248-strandrak-v1.front.json",
+        "sha256": "4b895f7555dc8c4d960796716ef762a0b43c30e950bc855e4f00cb8ccdc0bd80"
+      },
+      "native_2bpp": {
+        "path": "target/minnesota-pokemon/native/MN_F114/mn-248-strandrak-v1.front.2bpp",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F114/mn-248-strandrak-v1.front.2bpp",
+        "sha256": "ef5557d62e8b9dca70ff82cf74690e94eae4b7712d5e6e0132cae06ab4b3a099"
+      },
+      "source_image": {
+        "path": "planning/minnesota/pokemon/sprites/mn-f114/mn-248-248.front-back.imagegen-v1.png",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mn-f114/mn-248-248.front-back.imagegen-v1.png",
+        "sha256": "4a932a475fe48cc1f9a80ff6fa1fec8803f70f434ce6a55a38274e576da7e9ca"
+      },
+      "source_crop": [
+        0,
+        0,
+        1024,
+        800
+      ],
+      "native_fit": [
+        54,
+        54
+      ],
+      "generation_prompt": {
+        "path": "planning/minnesota/pokemon/sprites/mn-f114/prompt-v1.txt",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mn-f114/prompt-v1.txt",
+        "sha256": "701c29ff906fd111d5a53c20d2f9c9c83861196c55dfa3962d5d1242e683cb08",
+        "reference_kind": "declared_design_prompt_reference; authoritative view record takes precedence over family default"
+      },
+      "sampling": "area_vote",
+      "exterior_contour": "source_backed",
+      "has_guarded_native_refinements": false,
+      "authority_note": "The current selected native PNG is the design authority; original source may contain detail simplified or refined in canonical conversion."
+    },
+    "back": {
+      "native_png": {
+        "path": "target/minnesota-pokemon/native/MN_F114/mn-248-strandrak-v1.back.png",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F114/mn-248-strandrak-v1.back.png",
+        "sha256": "c0f8822a046e3e06b2349ff73061b8f7e08a88a5c4d726aed70222d843ffa503"
+      },
+      "native_indexed_json": {
+        "path": "target/minnesota-pokemon/native/MN_F114/mn-248-strandrak-v1.back.json",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F114/mn-248-strandrak-v1.back.json",
+        "sha256": "d9b047f669d288e191e095aeff0afac0a02bca83a63b1b590dbbb34fece0541f"
+      },
+      "native_2bpp": {
+        "path": "target/minnesota-pokemon/native/MN_F114/mn-248-strandrak-v1.back.2bpp",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F114/mn-248-strandrak-v1.back.2bpp",
+        "sha256": "2278e8ef8c1ad4a6e81d3fc3efd4003610b340aa7ded054d2697495ffeea1ee1"
+      },
+      "source_image": {
+        "path": "planning/minnesota/pokemon/sprites/mn-f114/mn-248-248.front-back.imagegen-v1.png",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mn-f114/mn-248-248.front-back.imagegen-v1.png",
+        "sha256": "4a932a475fe48cc1f9a80ff6fa1fec8803f70f434ce6a55a38274e576da7e9ca"
+      },
+      "source_crop": [
+        0,
+        800,
+        1024,
+        736
+      ],
+      "native_fit": [
+        46,
+        47
+      ],
+      "generation_prompt": {
+        "path": "planning/minnesota/pokemon/sprites/mn-f114/prompt-v1.txt",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mn-f114/prompt-v1.txt",
+        "sha256": "701c29ff906fd111d5a53c20d2f9c9c83861196c55dfa3962d5d1242e683cb08",
+        "reference_kind": "declared_design_prompt_reference; authoritative view record takes precedence over family default"
+      },
+      "sampling": "area_vote",
+      "exterior_contour": "source_backed",
+      "has_guarded_native_refinements": false,
+      "authority_note": "The current selected native PNG is the design authority; original source may contain detail simplified or refined in canonical conversion."
+    }
+  },
+  "palette": {
+    "species_id": "MN_248",
+    "name": "Strandrak",
+    "gbc_rgb5": [
+      [
+        31,
+        31,
+        31
+      ],
+      [
+        27,
+        23,
+        13
+      ],
+      [
+        9,
+        13,
+        12
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ],
+    "gbc_rgb555_words": [
+      32767,
+      14075,
+      12713,
+      0
+    ],
+    "rgb8": [
+      [
+        255,
+        255,
+        255
+      ],
+      [
+        222,
+        189,
+        107
+      ],
+      [
+        74,
+        107,
+        99
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ],
+    "hex": [
+      "#FFFFFF",
+      "#DEBD6B",
+      "#4A6B63",
+      "#000000"
+    ]
+  },
+  "design": {
+    "family_theme": "Original legendary guardian of the vanished Lake Agassiz shoreline: one huge crescent shell carries three nested stepped beach ridges over a low dragon face. Two fork-palmed dam forearms brace short terrace heels; a split outlet tail directs stored floodwater. Its silhouette embodies successive former lake levels.",
+    "member_body_growth": null,
+    "member_silhouette": null,
+    "family_design_lock": "locked by root; first153identities fixed",
+    "family_sprite_design": null,
+    "silhouette_invariants_16px": [
+      "Preserve the accepted silhouette, face, limb/wing count and dominant theme shapes shown by the exact selected native references.",
+      "Choose one or two defining visible forms from the family theme; simplify directly for16pixels rather than scaling the battle sprite."
+    ],
+    "priority_invariants_manually_authored": false
+  },
+  "generation_attempts": [],
+  "selected_overworld_source": null,
+  "selected_native_candidate": null,
+  "native_visual_review": null,
+  "integration_proof": null,
+  "overworld_palette_binding": {
+    "transparent_index": 0,
+    "visible_indices": [
+      1,
+      2,
+      3
+    ],
+    "normal_rgb555_words": [
+      32767,
+      14075,
+      12713,
+      0
+    ],
+    "shiny_rgb555_words": [
+      32767,
+      24429,
+      13612,
+      0
+    ],
+    "white_body_region_policy": "Simplify formerly white body/highlight regions to light ink1. Index0 is transparent everywhere, not an opaque white paint color."
+  }
+}

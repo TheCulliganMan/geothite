@@ -1,0 +1,92 @@
+{
+  "status": "awaiting-root-source-and-palettes",
+  "family_id": "MN_F087",
+  "species": [
+    {
+      "id": "MN_186",
+      "name": "Jotlet",
+      "initial_front_fit": [
+        36,
+        36
+      ]
+    },
+    {
+      "id": "MN_187",
+      "name": "Memofold",
+      "initial_front_fit": [
+        46,
+        46
+      ]
+    },
+    {
+      "id": "MN_188",
+      "name": "Recallisk",
+      "initial_front_fit": [
+        54,
+        54
+      ]
+    }
+  ],
+  "front_canvas": [
+    56,
+    56
+  ],
+  "back_canvas": [
+    48,
+    48
+  ],
+  "initial_back_fit": [
+    46,
+    47
+  ],
+  "back_requirement": "independently authored close rear head/upper-back portrait with open lower crop",
+  "palettes": "exact per-species four-ink RGB555 values supplied/approved by root; no global changes during proposals",
+  "candidate_modes": [
+    {
+      "sampling": "area_vote",
+      "exterior_contour": "source_backed"
+    },
+    {
+      "sampling": "area_vote",
+      "exterior_contour": "solid"
+    },
+    {
+      "sampling": "source_center",
+      "exterior_contour": "source_backed"
+    },
+    {
+      "sampling": "source_center",
+      "exterior_contour": "solid"
+    }
+  ],
+  "converter": "target/agent-roster-contour/minnesota_sprite_sampling_v5",
+  "working_outputs": "target/agent-sticky-native/f087-redesign-v2",
+  "durable_candidates": "planning/minnesota/pokemon/sprites/mn-f087/redesign-20261027-v2/candidates",
+  "pixel_edits": false,
+  "hand_painting": false,
+  "baseline_review_sheet_sha256": "1c199160c7947b365619beb14821ecccc5ae1d4890ee5ae94f33e5099a8809c2",
+  "production_capture_plan": {
+    "species": [
+      "JOTLET",
+      "MEMOFOLD",
+      "RECALLISK"
+    ],
+    "variants": [
+      "normal",
+      "shiny"
+    ],
+    "views": [
+      "actual enemy front56",
+      "actual player back48"
+    ],
+    "path": "production battler/HUD spawning and render_pc_audit_canvas",
+    "verify": [
+      "exact pack source2bpp and nativePNG against accepted canonical",
+      "normal/shiny RGB555 texture-bank selection",
+      "source opaque/transparent inks and native dimensions",
+      "actual front/back handles selected by production battlers",
+      "battle screen crops equal native texture rasters",
+      "no unintended animation/OAM state"
+    ]
+  }
+}

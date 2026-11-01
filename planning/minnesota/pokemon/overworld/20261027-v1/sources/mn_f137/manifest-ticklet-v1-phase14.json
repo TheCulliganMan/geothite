@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F137",
+  "species": [
+    {
+      "species_id": "MN_303",
+      "runtime_token": "TICKLET",
+      "palette_rgb555": [
+        32767,
+        10904,
+        21095,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        25078,
+        22022,
+        0
+      ],
+      "fit": [
+        14,
+        14
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 64,
+      "interior_black_samples": 64,
+      "opaque_interior_minimum_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "ticklet.overworld.imagegen-v1.png",
+          "crop": [
+            95,
+            151,
+            400,
+            340
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "ticklet.overworld.imagegen-v1.png",
+          "crop": [
+            599,
+            134,
+            400,
+            340
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "ticklet.overworld.imagegen-v1.png",
+          "crop": [
+            1066,
+            170,
+            400,
+            340
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "ticklet.overworld.imagegen-v1.png",
+          "crop": [
+            95,
+            605,
+            400,
+            340
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "ticklet.overworld.imagegen-v1.png",
+          "crop": [
+            599,
+            590,
+            400,
+            340
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "ticklet.overworld.imagegen-v1.png",
+          "crop": [
+            1066,
+            633,
+            400,
+            340
+          ]
+        }
+      ]
+    }
+  ]
+}

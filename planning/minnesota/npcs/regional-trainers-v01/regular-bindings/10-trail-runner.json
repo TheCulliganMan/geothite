@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "trainer_class": "MN_TRAIL_RUNNER",
+  "class_name": "TRAIL RUNNER",
+  "trainer_ids": [
+    "MN_R11_T08"
+  ],
+  "actors": [
+    {
+      "map": "MnR11C00R01",
+      "script": "MN_R11_T08",
+      "tile": [
+        45,
+        7
+      ],
+      "previous_sprite": "SPRITE_COOLTRAINER_F"
+    }
+  ]
+}

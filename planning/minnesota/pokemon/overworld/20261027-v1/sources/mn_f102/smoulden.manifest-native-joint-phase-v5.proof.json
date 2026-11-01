@@ -1,0 +1,339 @@
+{
+  "species_id": "MN_222",
+  "name": "smoulden",
+  "status": "native-review-recommended; root independent review and context required",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f102/smoulden.manifest-native-joint-phase-v5.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-smoulden-joint-phase-v5",
+  "shared_transform": {
+    "source_bounds": [
+      7,
+      8,
+      471,
+      319
+    ],
+    "native_size": [
+      13,
+      8
+    ],
+    "native_origin": [
+      1,
+      7
+    ]
+  },
+  "all_four_nonrear_poses_actual_pupils_pass": true,
+  "each_native_eye_cluster_maps_to_one_actual_small_source_pupil_component": true,
+  "actual_source_pupil_proofs": [
+    {
+      "pose": "down_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f102/smoulden.overworld.imagegen-v2-eye-plane.png",
+      "crop": [
+        22,
+        253,
+        490,
+        335
+      ],
+      "actual_source_eye_bounds": [
+        [
+          207,
+          476,
+          39,
+          40
+        ],
+        [
+          292,
+          476,
+          38,
+          40
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              12
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                2,
+                1,
+                0,
+                252
+              ],
+              "bounds": [
+                207,
+                476,
+                39,
+                40
+              ],
+              "pixels": 1523,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                12
+              ],
+              "source_sample_pixel": [
+                228,
+                480
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              8,
+              12
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                1,
+                0,
+                0,
+                251
+              ],
+              "bounds": [
+                292,
+                476,
+                38,
+                40
+              ],
+              "pixels": 1486,
+              "truncated_contour": false,
+              "native_pixel": [
+                8,
+                12
+              ],
+              "source_sample_pixel": [
+                300,
+                480
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f102/smoulden.overworld.imagegen-v2-eye-plane.png",
+      "crop": [
+        1022,
+        257,
+        490,
+        335
+      ],
+      "actual_source_eye_bounds": [
+        [
+          1206,
+          460,
+          38,
+          40
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              12
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                1,
+                1,
+                0,
+                252
+              ],
+              "bounds": [
+                1206,
+                460,
+                38,
+                40
+              ],
+              "pixels": 1520,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                12
+              ],
+              "source_sample_pixel": [
+                1228,
+                484
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f102/smoulden.overworld.imagegen-v2-eye-plane.png",
+      "crop": [
+        29,
+        624,
+        490,
+        335
+      ],
+      "actual_source_eye_bounds": [
+        [
+          213,
+          836,
+          39,
+          39
+        ],
+        [
+          292,
+          836,
+          39,
+          39
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              12
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                252
+              ],
+              "bounds": [
+                213,
+                836,
+                39,
+                39
+              ],
+              "pixels": 1521,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                12
+              ],
+              "source_sample_pixel": [
+                235,
+                851
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              8,
+              12
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                1,
+                0,
+                0,
+                252
+              ],
+              "bounds": [
+                292,
+                836,
+                39,
+                39
+              ],
+              "pixels": 1521,
+              "truncated_contour": false,
+              "native_pixel": [
+                8,
+                12
+              ],
+              "source_sample_pixel": [
+                307,
+                851
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f102/smoulden.overworld.imagegen-v2-eye-plane.png",
+      "crop": [
+        1022,
+        616,
+        490,
+        335
+      ],
+      "actual_source_eye_bounds": [
+        [
+          1193,
+          809,
+          39,
+          40
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              12
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                6,
+                3,
+                2,
+                253
+              ],
+              "bounds": [
+                1193,
+                809,
+                39,
+                40
+              ],
+              "pixels": 1560,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                12
+              ],
+              "source_sample_pixel": [
+                1228,
+                843
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "old_native_poses_preserved_exactly": [],
+  "normal_shiny_runtime_parity": "all1536pixels exact each",
+  "canonical_palette_bytes": "exact",
+  "all_three_walk_pairs_distinct": true,
+  "rear_review": "both rear native poses viewed; no copied face",
+  "normal_shiny_native_boards_actually_viewed": true,
+  "accepted_coverage_native_pack_untouched": true,
+  "manifest_sha256": "8bba5370a1e127ddf3f823adee7d4e1eb69bd10524367012f59727fb9f052033",
+  "compiled_index_sha256": "8a7075b91a622d8de2ea50f8aeafcf365cd4a34f30f71030e4c3ccf3e6115c8c",
+  "anatomy_review": "Broad vented four-root peat crust with wide orange face plane and two isolated actual pupils. Uses root-authored edited front/profile source and original rear source. Horizontal safe padding protects entire rears under the joint phase; all six full source bodies included. No added animal limbs or feet."
+}

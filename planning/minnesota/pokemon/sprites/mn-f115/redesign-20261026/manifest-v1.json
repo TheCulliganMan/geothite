@@ -1,0 +1,127 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F115",
+  "status": "redesign-candidate",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_249": {
+      "species_id": "MN_249",
+      "name": "Frontagal",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          24,
+          27,
+          30
+        ],
+        [
+          9,
+          10,
+          21
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        31608,
+        21833,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          198,
+          222,
+          247
+        ],
+        [
+          74,
+          82,
+          173
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#C6DEF7",
+        "#4A52AD",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f115/redesign-20261026/prompt-v1.txt",
+  "reference_mapping": "sprites/mn-f115/redesign-20261026/reference-mapping-v1.json",
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-249-frontagal-redesign-v1",
+      "species_id": "MN_249",
+      "view": "front",
+      "source": "sprites/mn-f115/redesign-20261026/mn-249-frontagal.front-back.redesign-v1.png",
+      "crop": [
+        0,
+        0,
+        1145,
+        790
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        31608,
+        21833,
+        0
+      ],
+      "white_detail_min_samples": 32,
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-249-frontagal-redesign-v1",
+      "species_id": "MN_249",
+      "view": "back",
+      "source": "sprites/mn-f115/redesign-20261026/mn-249-frontagal.front-back.redesign-v1.png",
+      "crop": [
+        0,
+        790,
+        1145,
+        584
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        31608,
+        21833,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 16
+    }
+  ],
+  "source_sha256": "73c786e8fa3c362775fba740e697da6bd57d38c5db74deae939e890a522a74e5",
+  "style_reference": {
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png"
+    ]
+  }
+}

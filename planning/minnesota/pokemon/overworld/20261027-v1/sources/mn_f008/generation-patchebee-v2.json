@@ -1,0 +1,97 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F008",
+  "species_id": "MN_023",
+  "name": "Patchebee",
+  "status": "retained_source_and_native_face_revision_superseded",
+  "generation_tool": "built-in image_gen",
+  "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f008/patchebee.overworld.imagegen-v2.png",
+  "source_sha256": "eb83d6647db7fd8340ac80540dc37a681519e93896bff8c341fee2c642b54a40",
+  "original_default_output": "/Users/ryanculligan/.codex/generated_images/01a179bf-dc2b-7352-8975-8b8f3a32e33b/exec-47453124-5440-4c97-bcf3-f8f97814d8b6.png",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f008/prompt-patchebee-v2.txt",
+  "prompt_sha256": "71f38c0c6a2c9f852310055b36d622e35999325ad1f675ac509209e7b1015d95",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f008/reference-mapping-patchebee-v2.json",
+  "only_input_image": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+  "proposed_native_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f008/manifest-patchebee-v2-native14.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f008/patchebee-v2-native14",
+  "six_frame_layout": "3columns2rows; down/up/left idle then down/up/left wing-cycle",
+  "conversion": "Rust source_center with equal360x370 crop windows; shared scale/anchor across6poses; no pixel painting",
+  "conversion_result": {
+    "exit_code": 0,
+    "stdout": "Compiled MN_F008: 1 species, 4 literal OBJ runtime files; retained reviews in planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f008/patchebee-v2-center\n",
+    "stderr": ""
+  },
+  "manifest_sha256": "5fe66845e793b848e3922aa582768a0b64dd98aeea46b70fe6d276b7be5b2306",
+  "normal_review": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f008/patchebee-v2-native14/review/line.normal-8x.png",
+  "review_sha256": "b2c155f40f9780f33c805cd24530773e2606c299690a258d1f6cfe7bdba788cd",
+  "native_bounds": [
+    [
+      1,
+      1,
+      13,
+      13
+    ],
+    [
+      1,
+      1,
+      13,
+      14
+    ],
+    [
+      1,
+      2,
+      13,
+      12
+    ],
+    [
+      1,
+      1,
+      13,
+      13
+    ],
+    [
+      1,
+      1,
+      13,
+      14
+    ],
+    [
+      1,
+      2,
+      13,
+      13
+    ]
+  ],
+  "palette_rgb555": [
+    32767,
+    5561,
+    13637,
+    0
+  ],
+  "shiny_palette_rgb555": [
+    32767,
+    14117,
+    10413,
+    0
+  ],
+  "sampling": "source_center",
+  "validation_results": {
+    "six_frames_16x16": true,
+    "runtime_png_16x96": true,
+    "native_2bpp_bytes": 384,
+    "tile_decode_matches_png_and_indexed_rows": true,
+    "binary_alpha": true,
+    "transparent_border": true,
+    "three_opaque_inks_only": true,
+    "normal_shiny_palette_words_exact": true,
+    "idle_step_pairs_different": true
+  },
+  "notes": "Actual native six poses inspected: distinct blue plated head/thorax, orange abdomen and shoulder wing roots; plain rear, small wing cycle. South black eye pixels survive at14fit but sit near dark steel planes and are less immediately expressive than Rustlebee. Native13 trial retained and not selected because it lost more eye detail.",
+  "accepted": false,
+  "superseded_reason": "Root rejected v2 blank steel face/pupil merge; open-face v3 retained separately.",
+  "superseded_by": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f008/generation-patchebee-v3.json"
+}

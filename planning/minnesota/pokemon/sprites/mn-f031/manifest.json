@@ -1,0 +1,234 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F031",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_075": {
+      "species_id": "MN_075",
+      "name": "Wickit",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          22,
+          6
+        ],
+        [
+          18,
+          5,
+          3
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        6879,
+        3250,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          181,
+          49
+        ],
+        [
+          148,
+          41,
+          24
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FFB531",
+        "#942918",
+        "#000000"
+      ]
+    },
+    "MN_076": {
+      "species_id": "MN_076",
+      "name": "Splitbeam",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          28,
+          10
+        ],
+        [
+          8,
+          10,
+          21
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        11167,
+        21832,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          231,
+          82
+        ],
+        [
+          66,
+          82,
+          173
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FFE752",
+        "#4252AD",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f031/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png",
+      "target/minnesota-pokemon/gen2-reference/bugs.png"
+    ]
+  },
+  "sprites": [
+    {
+      "id": "mn-075-wickit-v1",
+      "species_id": "MN_075",
+      "view": "front",
+      "source": "sprites/mn-f031/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        652,
+        603
+      ],
+      "fit": [
+        44,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        6879,
+        3250,
+        0
+      ]
+    },
+    {
+      "id": "mn-075-wickit-v1",
+      "species_id": "MN_075",
+      "view": "back",
+      "source": "sprites/mn-f031/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        603,
+        652,
+        604
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        6879,
+        3250,
+        0
+      ]
+    },
+    {
+      "id": "mn-076-splitbeam-v1",
+      "species_id": "MN_076",
+      "view": "front",
+      "source": "sprites/mn-f031/front-back.imagegen-v1.png",
+      "crop": [
+        652,
+        0,
+        651,
+        603
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        11167,
+        21832,
+        0
+      ]
+    },
+    {
+      "id": "mn-076-splitbeam-v1",
+      "species_id": "MN_076",
+      "view": "back",
+      "source": "sprites/mn-f031/front-back.imagegen-v1.png",
+      "crop": [
+        652,
+        603,
+        651,
+        604
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        11167,
+        21832,
+        0
+      ]
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "notes": "Inspected frozen source-contour-v1 sheet: Wickit flame/curled wax and Splitbeam prism/eye stalks retain clean outlines, chest lens now reads inside its black rim. Distinct species palettes, enlarged shoulder backs, no cell bleed.",
+    "sheet_sha256": "ec3ed0d00b6ba938fc83981aae114431ab0da20d51f88e5674ab9730dcfd8747",
+    "outline_profile": "source-contour-v1"
+  }
+}

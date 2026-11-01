@@ -1,0 +1,6 @@
+{
+  "manifest": "manifest-rivvit-v1-center.json",
+  "exit_code": 1,
+  "error": "LeftStep crop outside source:610+420>1024",
+  "action": "Retained source/failed manifest; use same440x400 windows for all frames."
+}

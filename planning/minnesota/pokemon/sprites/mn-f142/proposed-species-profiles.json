@@ -1,0 +1,226 @@
+{
+  "schema_version": 1,
+  "species": [
+    {
+      "id": "MN_314",
+      "classification": "Sticky Bud",
+      "height_inches": 9,
+      "weight_tenths_lb": 35,
+      "dex_pages": [
+        "Its sticky leaves @ hide its face. @ Sweet scent draws",
+        "lure tiny insects. @ Its real eyes peek @ beneath the bud."
+      ],
+      "base_stats": {
+        "hp": 45,
+        "attack": 45,
+        "defense": 50,
+        "speed": 40,
+        "special_attack": 70,
+        "special_defense": 40
+      },
+      "catch_rate": 150,
+      "base_exp": 70,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_PLANT",
+        "EGG_PLANT"
+      ],
+      "evolution": {
+        "method": "LEVEL",
+        "level": 28
+      },
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_ODDISH",
+      "footprint_species": "ODDISH",
+      "cry": {
+        "cry": "CRY_ODDISH",
+        "pitch": -16,
+        "length": 128
+      },
+      "shiny_rgb5": [
+        [
+          22,
+          18,
+          8
+        ],
+        [
+          6,
+          11,
+          19
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "ABSORB"
+        ],
+        [
+          1,
+          "GROWTH"
+        ],
+        [
+          7,
+          "WRAP"
+        ],
+        [
+          13,
+          "SWEET_SCENT"
+        ],
+        [
+          19,
+          "VINE_WHIP"
+        ],
+        [
+          25,
+          "STUN_SPORE"
+        ]
+      ],
+      "tmhm_moves": [
+        "GIGA_DRAIN",
+        "SOLARBEAM",
+        "SUNNY_DAY",
+        "CUT",
+        "PROTECT",
+        "REST",
+        "SLEEP_TALK",
+        "SNORE",
+        "RETURN",
+        "FRUSTRATION",
+        "TOXIC",
+        "HIDDEN_POWER",
+        "DOUBLE_TEAM",
+        "ATTRACT"
+      ],
+      "egg_moves": [
+        "LEECH_SEED",
+        "SYNTHESIS"
+      ]
+    },
+    {
+      "id": "MN_315",
+      "classification": "Leaf Snare",
+      "height_inches": 40,
+      "weight_tenths_lb": 280,
+      "dex_pages": [
+        "Its curved leaves @ form a false grin. @ When prey lean in,",
+        "six arms close. @ Its true eyes stay @ behind the snare."
+      ],
+      "base_stats": {
+        "hp": 75,
+        "attack": 80,
+        "defense": 85,
+        "speed": 45,
+        "special_attack": 115,
+        "special_defense": 80
+      },
+      "catch_rate": 60,
+      "base_exp": 175,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_PLANT",
+        "EGG_PLANT"
+      ],
+      "evolution": null,
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_ODDISH",
+      "footprint_species": "VICTREEBEL",
+      "cry": {
+        "cry": "CRY_VILEPLUME",
+        "pitch": -32,
+        "length": 160
+      },
+      "shiny_rgb5": [
+        [
+          25,
+          13,
+          19
+        ],
+        [
+          7,
+          15,
+          17
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "ABSORB"
+        ],
+        [
+          1,
+          "GROWTH"
+        ],
+        [
+          1,
+          "WRAP"
+        ],
+        [
+          13,
+          "SWEET_SCENT"
+        ],
+        [
+          19,
+          "VINE_WHIP"
+        ],
+        [
+          25,
+          "STUN_SPORE"
+        ],
+        [
+          28,
+          "BITE"
+        ],
+        [
+          34,
+          "MEGA_DRAIN"
+        ],
+        [
+          40,
+          "FAINT_ATTACK"
+        ],
+        [
+          46,
+          "GIGA_DRAIN"
+        ],
+        [
+          52,
+          "MEAN_LOOK"
+        ],
+        [
+          58,
+          "CRUNCH"
+        ]
+      ],
+      "tmhm_moves": [
+        "GIGA_DRAIN",
+        "SOLARBEAM",
+        "SUNNY_DAY",
+        "CUT",
+        "PROTECT",
+        "REST",
+        "SLEEP_TALK",
+        "SNORE",
+        "RETURN",
+        "FRUSTRATION",
+        "TOXIC",
+        "HIDDEN_POWER",
+        "DOUBLE_TEAM",
+        "ATTRACT"
+      ],
+      "egg_moves": [
+        "LEECH_SEED",
+        "SYNTHESIS"
+      ]
+    }
+  ]
+}

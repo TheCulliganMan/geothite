@@ -1,0 +1,7 @@
+# Current Bemidji town and plateau review
+
+All nine fresh Bemidji native cases pass on the selected R10 survey-spurs pack: six facades/both exit carpets/safe returns, each plateau tread both directions with side-wall denial and upper Save/Continue/descent, eight road lanes/Surf/guards/residents/signs, actual care/PC/shop mutations, battle loss/recovery/clinic memory, Party Teleport and officer dialogue without fabricated progress. A fresh retained clinic save passes15 production movement/menu calls with empty stderr and unchanged source/input. Current-source affected-crate all-target Clippy and the changed leaf format check pass.
+
+The complete repaired town, Mart and all six interiors match the accepted plateau-stairs pack; used native pixels/collision are exact. The inherited stair detail was inspected again. Upper11,19 connects through separate treads11,20 and11,21 to lower11,22, with side walls10,21/12,21.
+
+The obsolete hop test is replaced with the selected user-requested ordinary two-way stair contract. Each step permits at most four normal direction inputs and forbids changing to any tile except the next tread, so skipping a tread still fails. Original v01 failures (single-input assumption and an overbroad filter selecting an unrelated gym case) remain retained. The final v02 runner uses the exact Bemidji module and all9cases pass. No gameplay/art/pack selection changed. Initial QA fixtures do not establish earned statewide progression; broader review remains active.

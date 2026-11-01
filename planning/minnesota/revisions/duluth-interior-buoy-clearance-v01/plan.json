@@ -1,0 +1,9 @@
+{
+  "parent_revision": "shore_rocks_open_routes_revision",
+  "parent_pack": "content-packs/minnesota-current-shore-rocks-open-routes-v02.crystalpack",
+  "parent_pack_sha256": "7af6ebc795b0280a7d74626315da4331e42b50dcb62090e48a29d5d211ee48ff",
+  "clear_inner_buoys": true,
+  "shore_before": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MnDuluth.after.layout.json",
+  "shore_after": "planning/minnesota/revisions/duluth-interior-buoy-clearance-v01/MnDuluth.after.layout.json",
+  "routes": []
+}

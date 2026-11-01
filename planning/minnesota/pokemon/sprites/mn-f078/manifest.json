@@ -1,0 +1,338 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F078",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_169": {
+      "species_id": "MN_169",
+      "name": "Knothuck",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          24,
+          17,
+          10
+        ],
+        [
+          10,
+          7,
+          8
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        10808,
+        8426,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          198,
+          140,
+          82
+        ],
+        [
+          82,
+          57,
+          66
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#C68C52",
+        "#523942",
+        "#000000"
+      ]
+    },
+    "MN_170": {
+      "species_id": "MN_170",
+      "name": "Boughlash",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          21,
+          13,
+          8
+        ],
+        [
+          8,
+          6,
+          9
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        8629,
+        9416,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          173,
+          107,
+          66
+        ],
+        [
+          66,
+          49,
+          74
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#AD6B42",
+        "#42314A",
+        "#000000"
+      ]
+    },
+    "MN_171": {
+      "species_id": "MN_171",
+      "name": "Agropummel",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          19,
+          11,
+          8
+        ],
+        [
+          7,
+          5,
+          9
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        8563,
+        9383,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          156,
+          90,
+          66
+        ],
+        [
+          57,
+          41,
+          74
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#9C5A42",
+        "#39294A",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f078/prompt-v1.txt",
+  "reference_mapping": "sprites/mn-f078/reference-mapping-v1.json",
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-169-knothuck-v1",
+      "species_id": "MN_169",
+      "view": "front",
+      "source": "sprites/mn-f078/mn-169-171.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        480,
+        510
+      ],
+      "fit": [
+        36,
+        36
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        10808,
+        8426,
+        0
+      ],
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-169-knothuck-v1",
+      "species_id": "MN_169",
+      "view": "back",
+      "source": "sprites/mn-f078/mn-169-171.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        510,
+        490,
+        514
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        10808,
+        8426,
+        0
+      ],
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-170-boughlash-v1",
+      "species_id": "MN_170",
+      "view": "front",
+      "source": "sprites/mn-f078/mn-169-171.front-back.imagegen-v1.png",
+      "crop": [
+        480,
+        0,
+        520,
+        510
+      ],
+      "fit": [
+        44,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        8629,
+        9416,
+        0
+      ],
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-170-boughlash-v1",
+      "species_id": "MN_170",
+      "view": "back",
+      "source": "sprites/mn-f078/mn-169-171.front-back.imagegen-v1.png",
+      "crop": [
+        490,
+        510,
+        500,
+        514
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        8629,
+        9416,
+        0
+      ],
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-171-agropummel-v1",
+      "species_id": "MN_171",
+      "view": "front",
+      "source": "sprites/mn-f078/mn-169-171.front-back.imagegen-v1.png",
+      "crop": [
+        1000,
+        0,
+        536,
+        510
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        8563,
+        9383,
+        0
+      ],
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-171-agropummel-v1",
+      "species_id": "MN_171",
+      "view": "back",
+      "source": "sprites/mn-f078/mn-169-171.front-back.imagegen-v1.png",
+      "crop": [
+        990,
+        510,
+        546,
+        514
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        8563,
+        9383,
+        0
+      ],
+      "interior_black_min_samples": 32
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "notes": "Root inspected native board: hollow knot, asymmetric split trunk and huge bowed branch-spring arms produce clear three-stage anatomical growth. Dark chest cavities and corner eye glints remain legible; white arm/torso openings stay open. Distinct wood palettes and close rear portraits retained, with source-supported colored interior shadows.",
+    "sheet_sha256": "9eb7f3a12ae17f4cd494c46ddf4b429babe73e74ca0adcbf7175200b80980c64",
+    "outline_profile": "source-contour-v1"
+  }
+}

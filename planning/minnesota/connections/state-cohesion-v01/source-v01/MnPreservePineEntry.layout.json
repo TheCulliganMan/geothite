@@ -1,0 +1,94 @@
+{
+  "schema_version": 2,
+  "id": "MnPreservePineEntry",
+  "tileset": "johto",
+  "compiled_tileset": "johto",
+  "dimensions_metatiles": [
+    24,
+    16
+  ],
+  "shore_fitting": "explicit_source_edges",
+  "reject_cliff_cuts": true,
+  "source_pixels_modified": false,
+  "layers": [
+    {
+      "name": "Small ranger reading pocket",
+      "kind": "rect",
+      "bounds": [
+        6,
+        5,
+        10,
+        8
+      ],
+      "material": "lawn"
+    },
+    {
+      "name": "Public-facing pine approach to the closed preserve",
+      "kind": "path",
+      "points": [
+        [
+          8,
+          0
+        ],
+        [
+          8,
+          3
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          5,
+          6
+        ],
+        [
+          9,
+          6
+        ],
+        [
+          9,
+          10
+        ],
+        [
+          6,
+          10
+        ],
+        [
+          6,
+          13
+        ],
+        [
+          8,
+          13
+        ],
+        [
+          8,
+          15
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "name": "Attached flower verge",
+      "kind": "rect",
+      "bounds": [
+        7,
+        5,
+        8,
+        6
+      ],
+      "material": "flowers"
+    },
+    {
+      "name": "MN_COHESION_PRESERVE_NOTICE authentic signpost",
+      "kind": "point",
+      "position": [
+        6,
+        5
+      ],
+      "block": "45"
+    }
+  ]
+}

@@ -1,0 +1,337 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F058",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_125": {
+      "species_id": "MN_125",
+      "name": "Podlet",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          23,
+          25,
+          13
+        ],
+        [
+          10,
+          13,
+          6
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        14135,
+        6570,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          189,
+          206,
+          107
+        ],
+        [
+          82,
+          107,
+          49
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#BDCE6B",
+        "#526B31",
+        "#000000"
+      ]
+    },
+    "MN_126": {
+      "species_id": "MN_126",
+      "name": "Flossail",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          23,
+          21,
+          28
+        ],
+        [
+          12,
+          8,
+          16
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        29367,
+        16652,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          189,
+          173,
+          231
+        ],
+        [
+          99,
+          66,
+          132
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#BDADE7",
+        "#634284",
+        "#000000"
+      ]
+    },
+    "MN_127": {
+      "species_id": "MN_127",
+      "name": "Parafloss",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          25,
+          18,
+          27
+        ],
+        [
+          11,
+          7,
+          15
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        28249,
+        15595,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          206,
+          148,
+          222
+        ],
+        [
+          90,
+          57,
+          123
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#CE94DE",
+        "#5A397B",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f058/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png",
+      "target/minnesota-pokemon/gen2-reference/bugs.png"
+    ]
+  },
+  "sprites": [
+    {
+      "id": "mn-125-podlet-v1",
+      "species_id": "MN_125",
+      "view": "front",
+      "source": "sprites/mn-f058/mn-125-127.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        440,
+        530
+      ],
+      "fit": [
+        36,
+        36
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        14135,
+        6570,
+        0
+      ]
+    },
+    {
+      "id": "mn-125-podlet-v1",
+      "species_id": "MN_125",
+      "view": "back",
+      "source": "sprites/mn-f058/mn-125-127.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        530,
+        440,
+        494
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        14135,
+        6570,
+        0
+      ]
+    },
+    {
+      "id": "mn-126-flossail-v1",
+      "species_id": "MN_126",
+      "view": "front",
+      "source": "sprites/mn-f058/mn-125-127.front-back.imagegen-v1.png",
+      "crop": [
+        440,
+        0,
+        520,
+        530
+      ],
+      "fit": [
+        44,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        29367,
+        16652,
+        0
+      ]
+    },
+    {
+      "id": "mn-126-flossail-v1",
+      "species_id": "MN_126",
+      "view": "back",
+      "source": "sprites/mn-f058/mn-125-127.front-back.imagegen-v1.png",
+      "crop": [
+        440,
+        530,
+        520,
+        494
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        29367,
+        16652,
+        0
+      ]
+    },
+    {
+      "id": "mn-127-parafloss-v1",
+      "species_id": "MN_127",
+      "view": "front",
+      "source": "sprites/mn-f058/mn-125-127.front-back.imagegen-v1.png",
+      "crop": [
+        960,
+        0,
+        576,
+        530
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        28249,
+        15595,
+        0
+      ]
+    },
+    {
+      "id": "mn-127-parafloss-v1",
+      "species_id": "MN_127",
+      "view": "back",
+      "source": "sprites/mn-f058/mn-125-127.front-back.imagegen-v1.png",
+      "crop": [
+        960,
+        530,
+        576,
+        494
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        28249,
+        15595,
+        0
+      ]
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "notes": "Final source-contour-v1 board visually inspected: pod opens triangular seed-floss sail then broad three-lobed parachute canopy. Native white canopy rims and dark ribs remain legible with colored stem and arm interiors restored. Seed face eye whites and rear pod shoulders stay distinct; lower bodies cropped, no neighboring crop fragments seen.",
+    "sheet_sha256": "6c1efc2c9fc243df0cf7d0af0a028bc4c1ff34e81e85c21c66340c9d9d489798",
+    "outline_profile": "source-contour-v1"
+  }
+}

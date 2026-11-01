@@ -1,0 +1,175 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-winona-mart-v01.crystalpack",
+  "pack_sha256": "096585f981c5b0fcbe406f9f85e1454cf2a714d420e3dcf3284d9f3195751760",
+  "source_save": ".local/route-grass-review/winona-child-native-public-saves-v01/brainerd-70608-1793372609008551000.crystalsave",
+  "source_save_sha256": "f2ed03d242de08bd5ec7d0026211f3d9353d942f45bf933fbe93b2467c9a1a0e",
+  "input_save": ".local/route-grass-review/winona-doors-input-v03.crystalsave",
+  "save": ".local/route-grass-review/winona-doors-output-v03.crystalsave",
+  "all_ten_returns": [
+    {
+      "room": "MnWinonaHome1F",
+      "carpet": [
+        6,
+        7
+      ],
+      "return_position": [
+        7,
+        8
+      ],
+      "arrival_dialogue": "MNWINONAHOME1F\n   00 01 02 03 04 05 06 07 08 09\n00 #  #  #  #  #  #  #  #  #  D\n01 #  #  #  #  .  #  .  .  .  .\n02 .  .  .  #  .  .  .  .  .  .\n03 .  .  .  #  .  #  #  .  .  .\n04 .  .  .  .  .  #  #  N  .  .\n05 .  .  .  .  .  .  .  .  .  .\n06 .  .  .  .  .  .  .  @v .  .\n07 .  .  .  .  .  .  D  D  .  .\n\nTRAINER\nCHRIS \u00b7 $3000\nBadges 0/16 \u00b7 Dex 0/0\n  MEW        L60 190/190\n\nMARKER\n(7, 6) @\n\nDIALOGUE\nYour lunch is in\nthe front pocket.\n\nACTION LOG\ninput: Left\ninput: Left\ninput: Left\ninput: Left\ninput: Left\ninput: Left\ninput: Up\ninput: Up\n\nCONTROLS\nZ/J/Space advance\nX/K/B skip/back\nMNWINONAHOME1F\n   00 01 02 03 04 05 06 07 08 09\n00 #  #  #  #  #  #  #  #  #  D\n01 #  #  #  #  .  #  .  .  .  .\n02 .  .  .  #  .  .  .  .  .  .\n03 .  .  .  #  .  #  #  .  .  .\n04 .  .  .  .  .  #  #  N  .  .\n05 .  .  .  .  .  .  .  .  .  .\n06 .  .  .  .  .  .  .  @v .  .\n07 .  .  .  .  .  .  D  D  .  .\n\nTRAINER\nCHRIS \u00b7 $3000\nBadges 0/16 \u00b7 Dex 0/0\n  MEW        L60 190/190\n\nMARKER\n(7, 6) @\n\nDIALOGUE\nDR TAMARACK is\ndown by the river.\n\nACTION LOG\ninput: Left\ninput: Left\ninput: Left\ninput: Left\ninput: Left\ninput: Up\ninput: Up\ninput: A\n\nCONTROLS\nZ/J/Space advance\nX/K/B skip/back\nMNWINONAHOME1F\n   00 01 02 03 04 05 06 07 08 09\n00 #  #  #  #  #  #  #  #  #  D\n01 #  #  #  #  .  #  .  .  .  .\n02 .  .  .  #  .  .  .  .  .  .\n03 .  .  .  #  .  #  #  .  .  .\n04 .  .  .  .  .  #  #  N  .  .\n05 .  .  .  .  .  .  .  .  .  .\n06 .  .  .  .  .  .  .  @v .  .\n07 .  .  .  .  .  .  D  D  .  .\n\nTRAINER\nCHRIS \u00b7 $3000\nBadges 0/16 \u00b7 Dex 0/0\n  MEW        L60 190/190\n\nMARKER\n(7, 6) @\n\nDIALOGUE\nTake a partner.\nCome home hungry.\n\nACTION LOG\ninput: Left\ninput: Left\ninput: Left\ninput: Left\ninput: Up\ninput: Up\ninput: A\ninput: A\n\nCONTROLS\nZ/J/Space advance\nX/K/B skip/back"
+    },
+    {
+      "room": "MnWinonaHome1F",
+      "carpet": [
+        7,
+        7
+      ],
+      "return_position": [
+        7,
+        8
+      ],
+      "arrival_dialogue": ""
+    },
+    {
+      "room": "MnWinonaPokecenter1F",
+      "carpet": [
+        3,
+        7
+      ],
+      "return_position": [
+        17,
+        8
+      ],
+      "arrival_dialogue": ""
+    },
+    {
+      "room": "MnWinonaPokecenter1F",
+      "carpet": [
+        4,
+        7
+      ],
+      "return_position": [
+        17,
+        8
+      ],
+      "arrival_dialogue": ""
+    },
+    {
+      "room": "MnWinonaMart",
+      "carpet": [
+        6,
+        7
+      ],
+      "return_position": [
+        7,
+        24
+      ],
+      "arrival_dialogue": ""
+    },
+    {
+      "room": "MnWinonaMart",
+      "carpet": [
+        7,
+        7
+      ],
+      "return_position": [
+        7,
+        24
+      ],
+      "arrival_dialogue": ""
+    },
+    {
+      "room": "MnWinonaFieldStation",
+      "carpet": [
+        4,
+        11
+      ],
+      "return_position": [
+        18,
+        20
+      ],
+      "arrival_dialogue": ""
+    },
+    {
+      "room": "MnWinonaFieldStation",
+      "carpet": [
+        5,
+        11
+      ],
+      "return_position": [
+        18,
+        20
+      ],
+      "arrival_dialogue": ""
+    },
+    {
+      "room": "MnWinonaStation",
+      "carpet": [
+        10,
+        17
+      ],
+      "return_position": [
+        19,
+        14
+      ],
+      "arrival_dialogue": ""
+    },
+    {
+      "room": "MnWinonaStation",
+      "carpet": [
+        11,
+        17
+      ],
+      "return_position": [
+        19,
+        14
+      ],
+      "arrival_dialogue": ""
+    }
+  ],
+  "calls": 231,
+  "stderr_bytes": 0,
+  "initial": {
+    "badges": 0,
+    "dialogue": false,
+    "facing": "up",
+    "frame": 806,
+    "map": "MnWinona",
+    "menu": null,
+    "mode": "overworld",
+    "money": 3000,
+    "player": "CHRIS",
+    "pokedex": {
+      "owned": 0,
+      "seen": 0
+    },
+    "position": {
+      "x": 17,
+      "y": 8
+    }
+  },
+  "final": {
+    "badges": 0,
+    "dialogue": false,
+    "facing": "left",
+    "frame": 953,
+    "map": "MnWinona",
+    "menu": null,
+    "mode": "overworld",
+    "money": 3000,
+    "player": "CHRIS",
+    "pokedex": {
+      "owned": 0,
+      "seen": 0
+    },
+    "position": {
+      "x": 18,
+      "y": 14
+    }
+  },
+  "source_and_input_unchanged": true,
+  "arrival_dialogue_acknowledged_by_actual_input": true,
+  "items_and_balls_verified": true,
+  "scope": "Initial party and starter qualification are QA fixtures. Actual dialogue acknowledgments and depot arrival may legitimately set progress; no direct save edits or flag injection. Continue still requires a separate load of reached output."
+}

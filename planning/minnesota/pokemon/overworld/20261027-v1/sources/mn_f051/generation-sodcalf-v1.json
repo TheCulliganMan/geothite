@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_104",
+  "name": "Sodcalf",
+  "family_id": "MN_F051",
+  "generation_tool": "built-in image_gen",
+  "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/sodcalf.overworld.imagegen-v1.png",
+  "original_default_output": "/Users/ryanculligan/.codex/generated_images/01a179bf-dc2b-7352-8975-8b8f3a32e33b/exec-61217fbb-2180-48c0-b787-11f93b971f6a.png",
+  "source_sha256": "d4903b61b22d6110af820868b38883dd8a57e7b54c990153b74080297e96ee58",
+  "dimensions": [
+    1254,
+    1254
+  ],
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/prompt-sodcalf-v1.txt",
+  "prompt_sha256": "71f50408ffb73f55289b05248d2d7ff19640be3e656228487bd76834c8af47ea",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/reference-mapping-sodcalf-v1.json",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/manifest-sodcalf-v1-pupil-proof.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f051/sodcalf-v1-pupil-proof",
+  "source_pupil_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/manifest-sodcalf-v1-pupil-proof.proof.json",
+  "status": "frozen candidate; author actual normal/shiny and source pupils reviewed, root context pending",
+  "accepted": false
+}

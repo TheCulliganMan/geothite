@@ -1,0 +1,77 @@
+{
+  "status": "PASS_SELECTED_R14_CURRENT_STATE",
+  "selected_revision": "route_grass_r14_forest_bank_revision",
+  "pack": "content-packs/minnesota-current-r14-forest-bank-v01.crystalpack",
+  "sha256": "e9f4108d3b0a35f04145e4928446c03845982e1f13d7ff8f34e383bd701757d5",
+  "world_changed_keys": [
+    "active_local_review_revision",
+    "route_grass_r14_forest_bank_revision"
+  ],
+  "canonical_layout_only_six_appended_forest_bank_points": true,
+  "canonical_dossier_only_ledge_contract_updated": true,
+  "active_and_canonical_all1536_metatiles_match_native": true,
+  "all_parent_unknown_current_source_fields_preserved": true,
+  "r10_source_only_reconciliation_reapplied_on_exact_native_maps": true,
+  "bemidji_plateau_stair_preserved": true,
+  "coastal_zero_ice": [
+    {
+      "map": "MnDuluth",
+      "tileset": "mn_duluth_expanded",
+      "ice_quadrants": 0
+    },
+    {
+      "map": "MnGrandMarais",
+      "tileset": "mn_marais_shore",
+      "ice_quadrants": 0
+    },
+    {
+      "map": "MnMaraisCedarApproach",
+      "tileset": "mn_north_shore",
+      "ice_quadrants": 0
+    },
+    {
+      "map": "MnR11C00R00",
+      "tileset": "mn_north_shore",
+      "ice_quadrants": 0
+    },
+    {
+      "map": "MnR11C00R01",
+      "tileset": "mn_north_shore",
+      "ice_quadrants": 0
+    },
+    {
+      "map": "MnR11C00R02",
+      "tileset": "mn_north_shore",
+      "ice_quadrants": 0
+    },
+    {
+      "map": "MnR11C00R03",
+      "tileset": "mn_north_shore",
+      "ice_quadrants": 0
+    },
+    {
+      "map": "MnR11C01R00",
+      "tileset": "mn_north_shore",
+      "ice_quadrants": 0
+    },
+    {
+      "map": "MnR11C01R01",
+      "tileset": "mn_north_shore",
+      "ice_quadrants": 0
+    },
+    {
+      "map": "MnR11C01R02",
+      "tileset": "mn_north_shore",
+      "ice_quadrants": 0
+    },
+    {
+      "map": "MnR11C01R03",
+      "tileset": "mn_north_shore",
+      "ice_quadrants": 0
+    }
+  ],
+  "source_index": "planning/minnesota/revisions/route-grass-v01/current-r14-closed-bank-v01/sources.json",
+  "source_index_sha256": "fd0c6b4bfd7a45a43757355a73f3dff03726e7e5f9509d97b19bd568240b4a2f",
+  "native_2d_policy": "r14-forest-bank-native2d-policy-v01.log",
+  "scope": "Current selected bytes are the exact fully native-tested candidate. No additional runtime test is claimed merely from selector mutation. Broader goal completion audit remains separate."
+}

@@ -1,0 +1,6 @@
+{
+  "status": "FAILED_RETAINED_NOT_ACCEPTED",
+  "harness": ".local/route-grass-review/check_r11_full_route_v01.py",
+  "failure": "Blackout during repeated wild RUN without healing stops; native money halved and party respawned at MnWinonaHome2F.",
+  "next_course": "Use actual native Pokemon Centers in Grand Marais and Duluth; no state, party or RNG edits."
+}

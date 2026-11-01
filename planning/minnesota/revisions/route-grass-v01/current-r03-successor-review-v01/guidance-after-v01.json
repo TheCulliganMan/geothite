@@ -1,0 +1,44 @@
+{
+  "MN_R03_TERRACE_SIGNText": [
+    {
+      "args": [
+        "\"LOW BANK TERRACE\""
+      ],
+      "command": "text"
+    },
+    {
+      "args": [
+        "\"Steps to the east.\""
+      ],
+      "command": "line"
+    },
+    {
+      "args": [
+        "\"Use them both ways\""
+      ],
+      "command": "para"
+    },
+    {
+      "args": [],
+      "command": "done"
+    }
+  ],
+  "MN_R03_T04Won": [
+    {
+      "args": [
+        "\"The east stairs\""
+      ],
+      "command": "text"
+    },
+    {
+      "args": [
+        "\"join the low road.\""
+      ],
+      "command": "line"
+    },
+    {
+      "args": [],
+      "command": "done"
+    }
+  ]
+}

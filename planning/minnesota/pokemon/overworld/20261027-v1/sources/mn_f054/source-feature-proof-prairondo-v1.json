@@ -1,0 +1,336 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_115",
+  "result": "pass",
+  "manifest_sha256": "025288910145ac733754922f45986b4ec01815395ad17a4f13491c196979626b",
+  "bank_sha256": "7e96bed91df3a691010df6722b8a324fac89b4dc1b590bb7880305684adb0197",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f054/prairondo.overworld.imagegen-v1.png": "d5f53227b2185beedfa13c4b6f5bbe44d1536ce8d149553a45be42b15ecdbaba"
+  },
+  "canonical_eye_form": "TWO actual isolated south pupils, ONE actual isolated west pupil. Every pixel in each complete native eye cluster maps to the same small anatomical source pupil component.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "down_idle",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f054/prairondo.overworld.imagegen-v1.png",
+        "crop": [
+          27,
+          45,
+          480,
+          460
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            251,
+            274,
+            13,
+            17
+          ],
+          [
+            315,
+            274,
+            13,
+            17
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                7,
+                8
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  3,
+                  1,
+                  0,
+                  254
+                ],
+                "bounds": [
+                  251,
+                  274,
+                  13,
+                  17
+                ],
+                "pixels": 203,
+                "truncated_contour": false,
+                "native_pixel": [
+                  7,
+                  8
+                ],
+                "source_sample_pixel": [
+                  258,
+                  282
+                ]
+              }
+            ]
+          },
+          {
+            "native_cluster": [
+              [
+                9,
+                8
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  4,
+                  3,
+                  1,
+                  253
+                ],
+                "bounds": [
+                  315,
+                  274,
+                  13,
+                  17
+                ],
+                "pixels": 214,
+                "truncated_contour": false,
+                "native_pixel": [
+                  9,
+                  8
+                ],
+                "source_sample_pixel": [
+                  324,
+                  282
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "left_idle",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f054/prairondo.overworld.imagegen-v1.png",
+        "crop": [
+          1042,
+          77,
+          480,
+          460
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            1142,
+            280,
+            13,
+            16
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                3,
+                7
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  10,
+                  2,
+                  0,
+                  253
+                ],
+                "bounds": [
+                  1142,
+                  280,
+                  13,
+                  16
+                ],
+                "pixels": 208,
+                "truncated_contour": false,
+                "native_pixel": [
+                  3,
+                  7
+                ],
+                "source_sample_pixel": [
+                  1142,
+                  280
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "down_step",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f054/prairondo.overworld.imagegen-v1.png",
+        "crop": [
+          27,
+          499,
+          480,
+          460
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            252,
+            728,
+            13,
+            16
+          ],
+          [
+            315,
+            728,
+            13,
+            16
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                7,
+                8
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  0,
+                  0,
+                  0,
+                  253
+                ],
+                "bounds": [
+                  252,
+                  728,
+                  13,
+                  16
+                ],
+                "pixels": 208,
+                "truncated_contour": false,
+                "native_pixel": [
+                  7,
+                  8
+                ],
+                "source_sample_pixel": [
+                  258,
+                  736
+                ]
+              }
+            ]
+          },
+          {
+            "native_cluster": [
+              [
+                9,
+                8
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  2,
+                  0,
+                  0,
+                  254
+                ],
+                "bounds": [
+                  315,
+                  728,
+                  13,
+                  16
+                ],
+                "pixels": 208,
+                "truncated_contour": false,
+                "native_pixel": [
+                  9,
+                  8
+                ],
+                "source_sample_pixel": [
+                  324,
+                  736
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "left_step",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f054/prairondo.overworld.imagegen-v1.png",
+        "crop": [
+          1042,
+          536,
+          480,
+          460
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            1142,
+            736,
+            13,
+            16
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                3,
+                7
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  2,
+                  0,
+                  0,
+                  254
+                ],
+                "bounds": [
+                  1142,
+                  736,
+                  13,
+                  16
+                ],
+                "pixels": 208,
+                "truncated_contour": false,
+                "native_pixel": [
+                  3,
+                  7
+                ],
+                "source_sample_pixel": [
+                  1142,
+                  739
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "notes": "Both native normal/shiny rear poses actually inspected: plain rear head, no copied face. Head anchors stable, 1px transparent outer border, three walk pairs differ."
+  },
+  "detailed_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f054/manifest-prairondo-v1-pupil-proof.proof.json"
+}

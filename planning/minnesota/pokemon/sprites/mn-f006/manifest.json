@@ -1,0 +1,1195 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F006",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f006/prompt-v2.txt",
+  "generation_note": "The first attempt failed in the image service; this sheet is the successful simplified original-creature prompt.",
+  "sprites": [
+    {
+      "id": "mn-016-agatot-v2-v2",
+      "species_id": "MN_016",
+      "view": "front",
+      "source": "sprites/mn-f006/mn-016-018.front-back.imagegen-v2.png",
+      "crop": [
+        0,
+        0,
+        410,
+        550
+      ],
+      "fit": [
+        36,
+        36
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        7709,
+        15754,
+        0
+      ],
+      "source_palette_rgb555": [
+        32767,
+        7579,
+        18855,
+        0
+      ]
+    },
+    {
+      "id": "mn-016-agatot-v2-v2",
+      "species_id": "MN_016",
+      "view": "back",
+      "source": "sprites/mn-f006/mn-016-018.back.imagegen-v2.png",
+      "crop": [
+        0,
+        0,
+        690,
+        724
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        7709,
+        15754,
+        0
+      ]
+    },
+    {
+      "id": "mn-017-bandrake-v2-v2",
+      "species_id": "MN_017",
+      "view": "front",
+      "source": "sprites/mn-f006/mn-016-018.front-back.imagegen-v2.png",
+      "crop": [
+        410,
+        0,
+        520,
+        550
+      ],
+      "fit": [
+        44,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        10520,
+        21001,
+        0
+      ],
+      "source_palette_rgb555": [
+        32767,
+        7579,
+        18855,
+        0
+      ]
+    },
+    {
+      "id": "mn-017-bandrake-v2-v2",
+      "species_id": "MN_017",
+      "view": "back",
+      "source": "sprites/mn-f006/mn-016-018.back.imagegen-v2.png",
+      "crop": [
+        690,
+        0,
+        695,
+        724
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        10520,
+        21001,
+        0
+      ]
+    },
+    {
+      "id": "mn-018-fortigard-v2-v2",
+      "species_id": "MN_018",
+      "view": "front",
+      "source": "sprites/mn-f006/mn-016-018.front-back.imagegen-v2.png",
+      "crop": [
+        930,
+        0,
+        606,
+        550
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        6524,
+        14628,
+        0
+      ],
+      "source_palette_rgb555": [
+        32767,
+        7579,
+        18855,
+        0
+      ],
+      "sampling": "source_center",
+      "pixel_edits": [
+        {
+          "x": 38,
+          "y": 6,
+          "from": 3,
+          "to": 2
+        },
+        {
+          "x": 39,
+          "y": 6,
+          "from": 2,
+          "to": 0
+        },
+        {
+          "x": 40,
+          "y": 6,
+          "from": 2,
+          "to": 0
+        },
+        {
+          "x": 26,
+          "y": 7,
+          "from": 3,
+          "to": 2
+        },
+        {
+          "x": 38,
+          "y": 7,
+          "from": 2,
+          "to": 0
+        },
+        {
+          "x": 40,
+          "y": 7,
+          "from": 2,
+          "to": 0
+        },
+        {
+          "x": 39,
+          "y": 8,
+          "from": 2,
+          "to": 0
+        },
+        {
+          "x": 30,
+          "y": 10,
+          "from": 1,
+          "to": 2
+        },
+        {
+          "x": 12,
+          "y": 11,
+          "from": 2,
+          "to": 0
+        },
+        {
+          "x": 21,
+          "y": 12,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 22,
+          "y": 12,
+          "from": 0,
+          "to": 3
+        },
+        {
+          "x": 23,
+          "y": 12,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 27,
+          "y": 12,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 28,
+          "y": 12,
+          "from": 0,
+          "to": 3
+        },
+        {
+          "x": 35,
+          "y": 12,
+          "from": 1,
+          "to": 3
+        },
+        {
+          "x": 27,
+          "y": 13,
+          "from": 2,
+          "to": 0
+        },
+        {
+          "x": 28,
+          "y": 13,
+          "from": 0,
+          "to": 3
+        },
+        {
+          "x": 36,
+          "y": 13,
+          "from": 2,
+          "to": 3
+        },
+        {
+          "x": 27,
+          "y": 14,
+          "from": 2,
+          "to": 0
+        },
+        {
+          "x": 28,
+          "y": 14,
+          "from": 0,
+          "to": 3
+        },
+        {
+          "x": 17,
+          "y": 15,
+          "from": 3,
+          "to": 1
+        },
+        {
+          "x": 29,
+          "y": 15,
+          "from": 2,
+          "to": 0
+        },
+        {
+          "x": 39,
+          "y": 16,
+          "from": 3,
+          "to": 1
+        },
+        {
+          "x": 30,
+          "y": 17,
+          "from": 3,
+          "to": 1
+        },
+        {
+          "x": 13,
+          "y": 18,
+          "from": 3,
+          "to": 1
+        },
+        {
+          "x": 15,
+          "y": 18,
+          "from": 1,
+          "to": 0
+        },
+        {
+          "x": 16,
+          "y": 18,
+          "from": 1,
+          "to": 0
+        },
+        {
+          "x": 28,
+          "y": 18,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 33,
+          "y": 18,
+          "from": 1,
+          "to": 0
+        },
+        {
+          "x": 38,
+          "y": 18,
+          "from": 0,
+          "to": 1
+        },
+        {
+          "x": 40,
+          "y": 18,
+          "from": 3,
+          "to": 1
+        },
+        {
+          "x": 14,
+          "y": 19,
+          "from": 1,
+          "to": 0
+        },
+        {
+          "x": 27,
+          "y": 20,
+          "from": 0,
+          "to": 1
+        },
+        {
+          "x": 32,
+          "y": 20,
+          "from": 0,
+          "to": 1
+        },
+        {
+          "x": 42,
+          "y": 20,
+          "from": 3,
+          "to": 1
+        },
+        {
+          "x": 26,
+          "y": 21,
+          "from": 0,
+          "to": 1
+        },
+        {
+          "x": 33,
+          "y": 21,
+          "from": 0,
+          "to": 1
+        },
+        {
+          "x": 36,
+          "y": 21,
+          "from": 1,
+          "to": 0
+        },
+        {
+          "x": 34,
+          "y": 22,
+          "from": 0,
+          "to": 1
+        },
+        {
+          "x": 37,
+          "y": 22,
+          "from": 1,
+          "to": 0
+        },
+        {
+          "x": 13,
+          "y": 23,
+          "from": 1,
+          "to": 0
+        },
+        {
+          "x": 18,
+          "y": 23,
+          "from": 0,
+          "to": 1
+        },
+        {
+          "x": 31,
+          "y": 23,
+          "from": 0,
+          "to": 1
+        },
+        {
+          "x": 35,
+          "y": 23,
+          "from": 1,
+          "to": 0
+        },
+        {
+          "x": 10,
+          "y": 24,
+          "from": 2,
+          "to": 3
+        },
+        {
+          "x": 47,
+          "y": 24,
+          "from": 0,
+          "to": 3
+        },
+        {
+          "x": 22,
+          "y": 25,
+          "from": 0,
+          "to": 1
+        },
+        {
+          "x": 29,
+          "y": 25,
+          "from": 2,
+          "to": 0
+        },
+        {
+          "x": 38,
+          "y": 25,
+          "from": 0,
+          "to": 1
+        },
+        {
+          "x": 45,
+          "y": 25,
+          "from": 1,
+          "to": 3
+        },
+        {
+          "x": 19,
+          "y": 26,
+          "from": 1,
+          "to": 0
+        },
+        {
+          "x": 26,
+          "y": 26,
+          "from": 3,
+          "to": 2
+        },
+        {
+          "x": 43,
+          "y": 26,
+          "from": 3,
+          "to": 1
+        },
+        {
+          "x": 8,
+          "y": 27,
+          "from": 1,
+          "to": 0
+        },
+        {
+          "x": 18,
+          "y": 27,
+          "from": 1,
+          "to": 0
+        },
+        {
+          "x": 27,
+          "y": 27,
+          "from": 0,
+          "to": 2
+        },
+        {
+          "x": 31,
+          "y": 27,
+          "from": 2,
+          "to": 0
+        },
+        {
+          "x": 24,
+          "y": 28,
+          "from": 3,
+          "to": 2
+        },
+        {
+          "x": 39,
+          "y": 28,
+          "from": 0,
+          "to": 1
+        },
+        {
+          "x": 34,
+          "y": 29,
+          "from": 0,
+          "to": 1
+        },
+        {
+          "x": 49,
+          "y": 29,
+          "from": 1,
+          "to": 0
+        },
+        {
+          "x": 32,
+          "y": 30,
+          "from": 0,
+          "to": 2
+        },
+        {
+          "x": 40,
+          "y": 30,
+          "from": 0,
+          "to": 1
+        },
+        {
+          "x": 8,
+          "y": 31,
+          "from": 1,
+          "to": 0
+        },
+        {
+          "x": 40,
+          "y": 31,
+          "from": 0,
+          "to": 1
+        },
+        {
+          "x": 13,
+          "y": 32,
+          "from": 1,
+          "to": 3
+        },
+        {
+          "x": 40,
+          "y": 32,
+          "from": 0,
+          "to": 1
+        },
+        {
+          "x": 52,
+          "y": 32,
+          "from": 3,
+          "to": 1
+        },
+        {
+          "x": 21,
+          "y": 33,
+          "from": 0,
+          "to": 1
+        },
+        {
+          "x": 23,
+          "y": 33,
+          "from": 2,
+          "to": 0
+        },
+        {
+          "x": 35,
+          "y": 33,
+          "from": 0,
+          "to": 1
+        },
+        {
+          "x": 42,
+          "y": 33,
+          "from": 3,
+          "to": 1
+        },
+        {
+          "x": 48,
+          "y": 33,
+          "from": 0,
+          "to": 1
+        },
+        {
+          "x": 8,
+          "y": 34,
+          "from": 0,
+          "to": 1
+        },
+        {
+          "x": 13,
+          "y": 34,
+          "from": 3,
+          "to": 1
+        },
+        {
+          "x": 14,
+          "y": 34,
+          "from": 1,
+          "to": 3
+        },
+        {
+          "x": 19,
+          "y": 34,
+          "from": 1,
+          "to": 0
+        },
+        {
+          "x": 47,
+          "y": 34,
+          "from": 0,
+          "to": 1
+        },
+        {
+          "x": 9,
+          "y": 35,
+          "from": 0,
+          "to": 1
+        },
+        {
+          "x": 25,
+          "y": 35,
+          "from": 3,
+          "to": 2
+        },
+        {
+          "x": 39,
+          "y": 35,
+          "from": 0,
+          "to": 1
+        },
+        {
+          "x": 43,
+          "y": 35,
+          "from": 1,
+          "to": 0
+        },
+        {
+          "x": 2,
+          "y": 36,
+          "from": 3,
+          "to": 1
+        },
+        {
+          "x": 53,
+          "y": 36,
+          "from": 3,
+          "to": 1
+        },
+        {
+          "x": 11,
+          "y": 37,
+          "from": 1,
+          "to": 0
+        },
+        {
+          "x": 14,
+          "y": 37,
+          "from": 0,
+          "to": 3
+        },
+        {
+          "x": 27,
+          "y": 37,
+          "from": 0,
+          "to": 2
+        },
+        {
+          "x": 42,
+          "y": 37,
+          "from": 0,
+          "to": 1
+        },
+        {
+          "x": 16,
+          "y": 38,
+          "from": 3,
+          "to": 1
+        },
+        {
+          "x": 21,
+          "y": 38,
+          "from": 0,
+          "to": 1
+        },
+        {
+          "x": 32,
+          "y": 38,
+          "from": 1,
+          "to": 0
+        },
+        {
+          "x": 42,
+          "y": 38,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 3,
+          "y": 39,
+          "from": 3,
+          "to": 1
+        },
+        {
+          "x": 13,
+          "y": 39,
+          "from": 0,
+          "to": 3
+        },
+        {
+          "x": 41,
+          "y": 39,
+          "from": 0,
+          "to": 3
+        },
+        {
+          "x": 43,
+          "y": 39,
+          "from": 1,
+          "to": 0
+        },
+        {
+          "x": 4,
+          "y": 40,
+          "from": 0,
+          "to": 2
+        },
+        {
+          "x": 8,
+          "y": 40,
+          "from": 3,
+          "to": 2
+        },
+        {
+          "x": 9,
+          "y": 40,
+          "from": 3,
+          "to": 1
+        },
+        {
+          "x": 17,
+          "y": 40,
+          "from": 3,
+          "to": 1
+        },
+        {
+          "x": 27,
+          "y": 40,
+          "from": 1,
+          "to": 0
+        },
+        {
+          "x": 51,
+          "y": 40,
+          "from": 3,
+          "to": 2
+        },
+        {
+          "x": 3,
+          "y": 41,
+          "from": 0,
+          "to": 2
+        },
+        {
+          "x": 33,
+          "y": 41,
+          "from": 0,
+          "to": 1
+        },
+        {
+          "x": 36,
+          "y": 41,
+          "from": 1,
+          "to": 0
+        },
+        {
+          "x": 2,
+          "y": 42,
+          "from": 3,
+          "to": 2
+        },
+        {
+          "x": 7,
+          "y": 42,
+          "from": 3,
+          "to": 2
+        },
+        {
+          "x": 44,
+          "y": 42,
+          "from": 3,
+          "to": 1
+        },
+        {
+          "x": 35,
+          "y": 43,
+          "from": 3,
+          "to": 1
+        },
+        {
+          "x": 45,
+          "y": 44,
+          "from": 3,
+          "to": 2
+        },
+        {
+          "x": 45,
+          "y": 45,
+          "from": 3,
+          "to": 2
+        },
+        {
+          "x": 22,
+          "y": 46,
+          "from": 3,
+          "to": 1
+        },
+        {
+          "x": 25,
+          "y": 46,
+          "from": 1,
+          "to": 0
+        },
+        {
+          "x": 49,
+          "y": 48,
+          "from": 2,
+          "to": 3
+        },
+        {
+          "x": 31,
+          "y": 49,
+          "from": 1,
+          "to": 3
+        },
+        {
+          "x": 42,
+          "y": 49,
+          "from": 2,
+          "to": 3
+        },
+        {
+          "x": 14,
+          "y": 50,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 15,
+          "y": 50,
+          "from": 3,
+          "to": 2
+        },
+        {
+          "x": 17,
+          "y": 50,
+          "from": 3,
+          "to": 2
+        },
+        {
+          "x": 30,
+          "y": 50,
+          "from": 1,
+          "to": 3
+        },
+        {
+          "x": 18,
+          "y": 51,
+          "from": 3,
+          "to": 2
+        },
+        {
+          "x": 29,
+          "y": 51,
+          "from": 3,
+          "to": 1
+        },
+        {
+          "x": 37,
+          "y": 51,
+          "from": 3,
+          "to": 2
+        },
+        {
+          "x": 40,
+          "y": 51,
+          "from": 0,
+          "to": 2
+        },
+        {
+          "x": 19,
+          "y": 52,
+          "from": 3,
+          "to": 2
+        },
+        {
+          "x": 32,
+          "y": 52,
+          "from": 2,
+          "to": 3
+        },
+        {
+          "x": 36,
+          "y": 52,
+          "from": 3,
+          "to": 2
+        },
+        {
+          "x": 19,
+          "y": 53,
+          "from": 2,
+          "to": 3
+        },
+        {
+          "x": 32,
+          "y": 53,
+          "from": 2,
+          "to": 3
+        },
+        {
+          "x": 44,
+          "y": 53,
+          "from": 3,
+          "to": 2
+        }
+      ],
+      "refinement_note": "Restore the approved area-sampled silhouette and body from reproducible source-center samples, then correct seven eye pixels: both white sclerae remain open and both black pupils read at native size. No other native pixels change."
+    },
+    {
+      "id": "mn-018-fortigard-v2-v2",
+      "species_id": "MN_018",
+      "view": "back",
+      "source": "sprites/mn-f006/mn-016-018.back.imagegen-v2.png",
+      "crop": [
+        1385,
+        0,
+        787,
+        724
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        6524,
+        14628,
+        0
+      ]
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "notes": "Inspected native front/back family sheet after correcting seven Fortigard eye pixels. Both white sclerae and black pupils are distinct at 56px; the source bands, brow, silhouette, feet and all other pixels retain the approved baseline. Both other species and all rear views remain byte-identical. Source-center sampling plus guarded edits reproduces the earlier area-sampled body.",
+    "sheet_sha256": "eaf17c10e1145a6a78b11e9b9e55aa5ec6e77b250cb847ea011ae7a412639d9f",
+    "outline_profile": "source-contour-v1"
+  },
+  "pokemon_palettes": {
+    "MN_016": {
+      "species_id": "MN_016",
+      "name": "Agatot",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          29,
+          16,
+          7
+        ],
+        [
+          10,
+          12,
+          15
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        7709,
+        15754,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          239,
+          132,
+          57
+        ],
+        [
+          82,
+          99,
+          123
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#EF8439",
+        "#52637B",
+        "#000000"
+      ]
+    },
+    "MN_017": {
+      "species_id": "MN_017",
+      "name": "Bandrake",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          24,
+          8,
+          10
+        ],
+        [
+          9,
+          16,
+          20
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        10520,
+        21001,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          198,
+          66,
+          82
+        ],
+        [
+          74,
+          132,
+          165
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#C64252",
+        "#4A84A5",
+        "#000000"
+      ]
+    },
+    "MN_018": {
+      "species_id": "MN_018",
+      "name": "Fortigard",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          28,
+          11,
+          6
+        ],
+        [
+          4,
+          9,
+          14
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        6524,
+        14628,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          231,
+          90,
+          49
+        ],
+        [
+          33,
+          74,
+          115
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#E75A31",
+        "#214A73",
+        "#000000"
+      ]
+    }
+  },
+  "back_framing": "gen2-close-rear-portrait",
+  "conversion_revision": "Approved original front ink indices mapped to individual normal palettes; newly authored ImageGen close rear portraits use those target palettes directly. Original sheets, crop candidates and all native versions retained.",
+  "original_source_palette": {
+    "gbc_rgb5": [
+      [
+        31,
+        31,
+        31
+      ],
+      [
+        27,
+        12,
+        7
+      ],
+      [
+        7,
+        13,
+        18
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ],
+    "gbc_rgb555_words": [
+      32767,
+      7579,
+      18855,
+      0
+    ],
+    "rgb8": [
+      [
+        255,
+        255,
+        255
+      ],
+      [
+        222,
+        99,
+        57
+      ],
+      [
+        57,
+        107,
+        148
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ],
+    "hex": [
+      "#FFFFFF",
+      "#DE6339",
+      "#396B94",
+      "#000000"
+    ]
+  },
+  "back_prompt_file": "sprites/mn-f006/back-prompt-v2.txt",
+  "back_reference_mapping": "sprites/mn-f006/back-reference-mapping-v2.json"
+}

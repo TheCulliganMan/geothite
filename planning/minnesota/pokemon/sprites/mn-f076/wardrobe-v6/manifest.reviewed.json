@@ -1,0 +1,419 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F076",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_163": {
+      "species_id": "MN_163",
+      "name": "Mitwist",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          29,
+          27,
+          19
+        ],
+        [
+          10,
+          15,
+          19
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        20349,
+        19946,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          239,
+          222,
+          156
+        ],
+        [
+          82,
+          123,
+          156
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#EFDE9C",
+        "#527B9C",
+        "#000000"
+      ]
+    },
+    "MN_164": {
+      "species_id": "MN_164",
+      "name": "Mispair",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          28,
+          25,
+          18
+        ],
+        [
+          12,
+          19,
+          24
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        19260,
+        25196,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          231,
+          206,
+          148
+        ],
+        [
+          99,
+          156,
+          198
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#E7CE94",
+        "#639CC6",
+        "#000000"
+      ]
+    },
+    "MN_165": {
+      "species_id": "MN_165",
+      "name": "Shawlter",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          30,
+          24,
+          12
+        ],
+        [
+          8,
+          19,
+          23
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        13086,
+        24168,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          247,
+          198,
+          99
+        ],
+        [
+          66,
+          156,
+          189
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#F7C663",
+        "#429CBD",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f076/wardrobe-v3/prompt-v3.txt",
+  "back_framing": "Close rear portraits of actual mismatched garment backs; opposite-side thumbs, eye-free palms, large shawl rear seam; lower cuffs/fringe may exit bottom.",
+  "source_sha256": "9626a33d9df194350a3edbe29c788541d2fd08208cb8ec691705299d0569baef",
+  "sprites": [
+    {
+      "id": "mn-163-mitwist-v6",
+      "species_id": "MN_163",
+      "view": "front",
+      "source": "sprites/mn-f076/wardrobe-v6/mitwist-front-back.imagegen-v6.png",
+      "crop": [
+        0,
+        0,
+        768,
+        1024
+      ],
+      "fit": [
+        34,
+        36
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        20349,
+        19946,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "solid",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-163-mitwist-v6",
+      "species_id": "MN_163",
+      "view": "back",
+      "source": "sprites/mn-f076/wardrobe-v6/mitwist-front-back.imagegen-v6.png",
+      "crop": [
+        768,
+        0,
+        768,
+        980
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        20349,
+        19946,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "solid",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-164-mispair-v3",
+      "species_id": "MN_164",
+      "view": "front",
+      "source": "sprites/mn-f076/wardrobe-v3/front-back.imagegen-v3.png",
+      "crop": [
+        480,
+        0,
+        485,
+        512
+      ],
+      "fit": [
+        48,
+        48
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        19260,
+        25196,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "solid",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-164-mispair-v3",
+      "species_id": "MN_164",
+      "view": "back",
+      "source": "sprites/mn-f076/wardrobe-v3/front-back.imagegen-rear-v4.png",
+      "crop": [
+        480,
+        540,
+        490,
+        380
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        19260,
+        25196,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "solid",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-165-shawlter-v3",
+      "species_id": "MN_165",
+      "view": "front",
+      "source": "sprites/mn-f076/wardrobe-v3/front-back.imagegen-v3.png",
+      "crop": [
+        980,
+        0,
+        556,
+        512
+      ],
+      "fit": [
+        54,
+        52
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13086,
+        24168,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "solid",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-165-shawlter-v3",
+      "species_id": "MN_165",
+      "view": "back",
+      "source": "sprites/mn-f076/wardrobe-v3/front-back.imagegen-rear-v4.png",
+      "crop": [
+        980,
+        510,
+        556,
+        380
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13086,
+        24168,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "solid",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "coverage": "all-six-native-front-and-back-views",
+    "outline_profile": "solid-exterior-v1",
+    "sampling": "source_center",
+    "sheet_sha256": "9626a33d9df194350a3edbe29c788541d2fd08208cb8ec691705299d0569baef",
+    "native_sheet_sha256": "021cd9ffef18744140458b29bcf6ee479f231ecf032f2011761c4733f0ff131d",
+    "review_sheet_sha256": "b76ad7c393aae21761e35d67ac8c4dd2f6a65b244fccd5d07505517b8f43cc2f",
+    "source_sha256_by_view": {
+      "MN_163:front": "9626a33d9df194350a3edbe29c788541d2fd08208cb8ec691705299d0569baef",
+      "MN_163:back": "9626a33d9df194350a3edbe29c788541d2fd08208cb8ec691705299d0569baef",
+      "MN_164:front": "78a339b0d5bce3033c3815eddd77ac07e9669f1478ea25f637839eb43d01ae2a",
+      "MN_164:back": "7dbf6edde5cc60a0b61557993d336594d2fd1592a51c1ded3952c38aea60409b",
+      "MN_165:front": "78a339b0d5bce3033c3815eddd77ac07e9669f1478ea25f637839eb43d01ae2a",
+      "MN_165:back": "7dbf6edde5cc60a0b61557993d336594d2fd1592a51c1ded3952c38aea60409b"
+    },
+    "notes": "Root reviewed both new first-stage native views and retained the already approved middle/final4views. Mitwist is now the simple cream mitten identity from its later pair: small side palm eye, no mouth, side hook thumb, short flat cuff/stripe, own cream/dusty-blue palette. Matching rear has opposite thumb and no eyes. All6 use SourceCenter and Solid contours; no mixed mode. Rust verified every opaque4RGB555 PNG/indexed/2bpppixel; later4nativePNG/2bpp views remain byte-identical."
+  },
+  "source_edits": [
+    {
+      "views": [
+        "MN_164:back",
+        "MN_165:back"
+      ],
+      "source": "sprites/mn-f076/wardrobe-v3/front-back.imagegen-rear-v4.png",
+      "source_sha256": "7dbf6edde5cc60a0b61557993d336594d2fd1592a51c1ded3952c38aea60409b",
+      "prompt_file": "sprites/mn-f076/wardrobe-v3/prompt-rear-thumb-v4.txt",
+      "reason": "Short mismatched rear mitten thumbs must reverse sides; preserve original front designs."
+    },
+    {
+      "views": [
+        "MN_163:front"
+      ],
+      "source": "sprites/mn-f076/wardrobe-v3/front-back.imagegen-single-eye-v4.png",
+      "source_sha256": "d38221a385e3917726fb607573c6461c2422586475e8ef606e3b2a836b39b4f9",
+      "prompt_file": "sprites/mn-f076/wardrobe-v3/prompt-single-eye-v4.txt",
+      "reason": "Latest explicit user request: stage1 exactly ONE clear white palm eye with black pupil. All other5views retain their exact existing sources."
+    },
+    {
+      "views": [
+        "MN_163:front"
+      ],
+      "source": "sprites/mn-f076/wardrobe-v3/front-back.imagegen-gentle-eye-v5.png",
+      "source_sha256": "bc25881d784a4dca1300911f8af64b48b8b31cd1328b7a6264ba43a63e0dccb2",
+      "prompt_file": "sprites/mn-f076/wardrobe-v3/prompt-gentle-eye-v5.txt",
+      "reason": "User requested the single eye toned down modestly; reduce its window about15\u201320% while preserving one eye and all other5nativeviews."
+    },
+    {
+      "views": [
+        "MN_163:front",
+        "MN_163:back"
+      ],
+      "source": "sprites/mn-f076/wardrobe-v6/mitwist-front-back.imagegen-v6.png",
+      "source_sha256": "9626a33d9df194350a3edbe29c788541d2fd08208cb8ec691705299d0569baef",
+      "prompt_file": "sprites/mn-f076/wardrobe-v6/prompt-mitwist-identity-v6.txt",
+      "reason": "User requested first-stage identity match the cream mitten from later pair; own softer independent GBC palette, single small palm-side eye, no mouth, flat cuff."
+    }
+  ],
+  "native_qa": {
+    "status": "root-approved-canonical",
+    "converter": "target/agent-roster-contour/minnesota_sprite_sampling_v5",
+    "sampling": "source_center",
+    "exterior_contour": "solid",
+    "durable_output": "planning/minnesota/renders/line076-wardrobe-20261026-v6/selected-native",
+    "review": "planning/minnesota/renders/line076-wardrobe-20261026-v6/selected-native/line.review.png",
+    "native": "planning/minnesota/renders/line076-wardrobe-20261026-v6/selected-native/line.native.png",
+    "canonical_output": "target/minnesota-pokemon/native/MN_F076",
+    "verification": "Rust independently verified all6opaqueexact4RGB555PNGs,indexedrowsand2bpp. Other4viewPNG/2bpp byte-identical; firstfront has one4x7nativewhiteeye window20pixels, plus one1pixelwhite thumb crease that is not an eye."
+  }
+}

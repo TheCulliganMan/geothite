@@ -1,0 +1,6 @@
+# Preserve local conversion candidates, runtime exports and verification output.
+/baseline/
+/candidates/
+*.log
+*.2bpp
+/native-selected/

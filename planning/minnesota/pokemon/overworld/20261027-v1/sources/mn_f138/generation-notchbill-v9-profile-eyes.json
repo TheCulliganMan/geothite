@@ -1,0 +1,51 @@
+{
+  "name": "notchbill",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f138/notchbill-v9-profile-eyes",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f138/manifest-notchbill-v9-profile-eyes.json",
+  "tool": "built-in image_gen",
+  "status": "source-generated/native-proven; root owns acceptance and context gate",
+  "native_frame_size": [
+    16,
+    16
+  ],
+  "canonical_normal_palette": [
+    32767,
+    7481,
+    12616,
+    0
+  ],
+  "canonical_shiny_palette": [
+    32767,
+    8924,
+    9638,
+    0
+  ],
+  "fit": [
+    13,
+    13
+  ],
+  "all_raw_renders_and_prompts_retained": true,
+  "no_native_pixel_painting": true,
+  "no_registry_or_pack_changes": true,
+  "retained_source_hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f138/notchbill.overworld.imagegen-v1.png": "fd5fff714bd7d2a2e1c2791c4878d66a8cb1812e8f05b1135bb6d7b99c7f64ac",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f138/notchbill.overworld.imagegen-v4-inward-eyes.png": "8389087b231095ec9ac35d55e43497d97afe65beb359d420320729440dede928",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f138/notchbill.overworld.imagegen-v2-frontface.png": "5674a1ce2118f954f07e48d3ff864598bab9271ab12604fc1560979afbbc4195",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f138/notchbill.overworld.imagegen-v8-profile-eyes.png": "650eb6e900b52bde327ffbf72eee10c4497d5501e4769b1ed5152fdfd09f41d0",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f138/notchbill.overworld.imagegen-v3-forehead.png": "c6688fd615f7f07b8c8c15e3dc64aa3b18f328cdd0ee9fbac7ddd42397d2358f",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f138/notchbill.overworld.imagegen-v6-raised-eyes.png": "2e3e8da0fb6cf3aa5e71585dc5f5a0c71bc5bc64f6dc07d9b8652a5c90942805",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f138/prompt-notchbill-v3-forehead.txt": "9a45ffb7407470abbc80de09071e31846b80f763028f0364677e4a66a7053a1c",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f138/prompt-notchbill-v8-profile-eyes.txt": "f59e4b7ed89872e9f88de632cc1c5d5517b550c835959695a536c8e1577f5d9a",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f138/prompt-notchbill-v2-frontface.txt": "e88473b6b62de9c4d4fc13e8abc42fc246816a8deaad83be60661b7858d07408",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f138/prompt-notchbill-v6-raised-eyes.txt": "90d815d7157df826e06f191ee14ee8d64568101389a3d9cf6892d0bad0503d1e",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f138/prompt-notchbill-v1.txt": "15ea35e13e0a7fb3ffdab5d9ac4ba1f3a3ac652f59ba28d572df7a86e218f3a2",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f138/prompt-notchbill-v4-inward-eyes.txt": "03f1beeef1a19e5f556b2385668cb3f1c241dec739d630cfdc63cc04d2442b57",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f138/notchbill.v6.original-path.txt": "cd8b6d43ff4ff2dc08baae7fe08d8e9f6dc234bce0973f3e112cae4c889080db",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f138/notchbill.v3.original-path.txt": "b73ed068a46aae1cc49eba8f9775bb7815fb51316f86f3654ee4868b8c27db15",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f138/notchbill.v2.original-path.txt": "51d8d3e4de3a73d7fcf8eb8ca514cc6ebafcad30bee14ecda535b5f78646e8b6",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f138/notchbill.v4.original-path.txt": "9de6fe34b070300a6a7c5d00fdb7f42dcb35d29db542de5068a86733f9ee92e0",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f138/notchbill.v1.original-path.txt": "ade82d783308a8f975901478209d82d84760e9a1e3aaceac1b07fda1fe2d2973",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f138/notchbill.v8.original-path.txt": "965ce0d0bccac4e9ca788ea09148d6eaea93ddbe5502fee67892788aead46b9f"
+  },
+  "proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f138/proof-notchbill-v9-profile-eyes-actual-source.json"
+}

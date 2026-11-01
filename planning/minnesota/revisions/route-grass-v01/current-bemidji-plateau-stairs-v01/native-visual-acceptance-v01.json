@@ -1,0 +1,416 @@
+{
+  "status": "PASS",
+  "pack_sha256": "6200af583a20de0def7f4611ab59531e43549471cc5cf6ab7a6f4f7e52b832e8",
+  "actual_native2d_views_inspected": 5,
+  "source_native_pixel_mismatches": 0,
+  "production_sheet": "planning/minnesota/renders/route-grass-v01/current-bemidji-plateau-stairs-v01/native-v01/production-decisions.png",
+  "captures": [
+    {
+      "id": "upper",
+      "map": "MnBemidji",
+      "core": [
+        11,
+        19
+      ],
+      "command": [
+        "/Users/ryanculligan/GitHub/geothite/.local/connected-route-capture-82742",
+        "--pack",
+        "/Users/ryanculligan/GitHub/geothite/content-packs/minnesota-current-bemidji-plateau-stairs-v01.crystalpack",
+        "--map",
+        "MnBemidji",
+        "--x",
+        "11",
+        "--y",
+        "19",
+        "--view",
+        "2d",
+        "--hour",
+        "12",
+        "--screenshot",
+        "/Users/ryanculligan/GitHub/geothite/planning/minnesota/renders/route-grass-v01/current-bemidji-plateau-stairs-v01/native-v01/upper/production.png"
+      ],
+      "production_sha256": "7e6d29f1e4882c2c11802622dc659022f862965670d65e13738dc83c43361f8f",
+      "pixel_mismatches": 0,
+      "compared_pixels": 368640,
+      "consistent_water14_phase": 0,
+      "consistent_falls_scroll_stage": 0,
+      "derived_player_origin": [
+        320,
+        288
+      ],
+      "lcd_origin_8px_cells": [
+        12,
+        29
+      ],
+      "centered_camera_assumption_used": false,
+      "source_foreground_pixels_over_actors": 0,
+      "source_connection_depth": 1,
+      "immediate_native_sources": [
+        {
+          "map": "MnBemidji",
+          "origin_pixels": [
+            0,
+            0
+          ]
+        },
+        {
+          "map": "MnR08C00R00",
+          "origin_pixels": [
+            0,
+            768
+          ]
+        },
+        {
+          "map": "MnR14C01R00",
+          "origin_pixels": [
+            -512,
+            -32
+          ]
+        },
+        {
+          "map": "MnR09C00R01",
+          "origin_pixels": [
+            768,
+            352
+          ]
+        },
+        {
+          "map": "MnBemidjiNorthwoods",
+          "origin_pixels": [
+            256,
+            -448
+          ]
+        }
+      ],
+      "raw_gpu_descriptors": [
+        "upper/.render-archive/production.png/gpu-readback-9c52f907e87ba22407808fa299cb95453b58a5644026c6db0eb25927d7ce2d52.json"
+      ]
+    },
+    {
+      "id": "treads",
+      "map": "MnBemidji",
+      "core": [
+        11,
+        21
+      ],
+      "command": [
+        "/Users/ryanculligan/GitHub/geothite/.local/connected-route-capture-82742",
+        "--pack",
+        "/Users/ryanculligan/GitHub/geothite/content-packs/minnesota-current-bemidji-plateau-stairs-v01.crystalpack",
+        "--map",
+        "MnBemidji",
+        "--x",
+        "11",
+        "--y",
+        "21",
+        "--view",
+        "2d",
+        "--hour",
+        "12",
+        "--screenshot",
+        "/Users/ryanculligan/GitHub/geothite/planning/minnesota/renders/route-grass-v01/current-bemidji-plateau-stairs-v01/native-v01/treads/production.png"
+      ],
+      "production_sha256": "61c3496a7c7daee5556eed21f0916bc144f0b7d54cc057a50e1b812ab25bc93a",
+      "pixel_mismatches": 0,
+      "compared_pixels": 368640,
+      "consistent_water14_phase": 0,
+      "consistent_falls_scroll_stage": 0,
+      "derived_player_origin": [
+        320,
+        288
+      ],
+      "lcd_origin_8px_cells": [
+        12,
+        33
+      ],
+      "centered_camera_assumption_used": false,
+      "source_foreground_pixels_over_actors": 0,
+      "source_connection_depth": 1,
+      "immediate_native_sources": [
+        {
+          "map": "MnBemidji",
+          "origin_pixels": [
+            0,
+            0
+          ]
+        },
+        {
+          "map": "MnR08C00R00",
+          "origin_pixels": [
+            0,
+            768
+          ]
+        },
+        {
+          "map": "MnR14C01R00",
+          "origin_pixels": [
+            -512,
+            -32
+          ]
+        },
+        {
+          "map": "MnR09C00R01",
+          "origin_pixels": [
+            768,
+            352
+          ]
+        },
+        {
+          "map": "MnBemidjiNorthwoods",
+          "origin_pixels": [
+            256,
+            -448
+          ]
+        }
+      ],
+      "raw_gpu_descriptors": [
+        "treads/.render-archive/production.png/gpu-readback-a5763e29305c87fea439b8d5acecb3249327f58c8ed4d486f2f1db99046caba5.json"
+      ]
+    },
+    {
+      "id": "lower",
+      "map": "MnBemidji",
+      "core": [
+        11,
+        22
+      ],
+      "command": [
+        "/Users/ryanculligan/GitHub/geothite/.local/connected-route-capture-82742",
+        "--pack",
+        "/Users/ryanculligan/GitHub/geothite/content-packs/minnesota-current-bemidji-plateau-stairs-v01.crystalpack",
+        "--map",
+        "MnBemidji",
+        "--x",
+        "11",
+        "--y",
+        "22",
+        "--view",
+        "2d",
+        "--hour",
+        "12",
+        "--screenshot",
+        "/Users/ryanculligan/GitHub/geothite/planning/minnesota/renders/route-grass-v01/current-bemidji-plateau-stairs-v01/native-v01/lower/production.png"
+      ],
+      "production_sha256": "16ac95b91cd65f662d0111c0ce38675a9e583e722b601c7760481cc3e1cdb4db",
+      "pixel_mismatches": 0,
+      "compared_pixels": 368640,
+      "consistent_water14_phase": 0,
+      "consistent_falls_scroll_stage": 0,
+      "derived_player_origin": [
+        320,
+        288
+      ],
+      "lcd_origin_8px_cells": [
+        12,
+        35
+      ],
+      "centered_camera_assumption_used": false,
+      "source_foreground_pixels_over_actors": 0,
+      "source_connection_depth": 1,
+      "immediate_native_sources": [
+        {
+          "map": "MnBemidji",
+          "origin_pixels": [
+            0,
+            0
+          ]
+        },
+        {
+          "map": "MnR08C00R00",
+          "origin_pixels": [
+            0,
+            768
+          ]
+        },
+        {
+          "map": "MnR14C01R00",
+          "origin_pixels": [
+            -512,
+            -32
+          ]
+        },
+        {
+          "map": "MnR09C00R01",
+          "origin_pixels": [
+            768,
+            352
+          ]
+        },
+        {
+          "map": "MnBemidjiNorthwoods",
+          "origin_pixels": [
+            256,
+            -448
+          ]
+        }
+      ],
+      "raw_gpu_descriptors": [
+        "lower/.render-archive/production.png/gpu-readback-60abcda20d156c9e751dfed9a3647b2b1832faa5b9344af5b9abad3d2dd62389.json"
+      ]
+    },
+    {
+      "id": "east-access",
+      "map": "MnBemidji",
+      "core": [
+        20,
+        17
+      ],
+      "command": [
+        "/Users/ryanculligan/GitHub/geothite/.local/connected-route-capture-82742",
+        "--pack",
+        "/Users/ryanculligan/GitHub/geothite/content-packs/minnesota-current-bemidji-plateau-stairs-v01.crystalpack",
+        "--map",
+        "MnBemidji",
+        "--x",
+        "20",
+        "--y",
+        "17",
+        "--view",
+        "2d",
+        "--hour",
+        "12",
+        "--screenshot",
+        "/Users/ryanculligan/GitHub/geothite/planning/minnesota/renders/route-grass-v01/current-bemidji-plateau-stairs-v01/native-v01/east-access/production.png"
+      ],
+      "production_sha256": "bfc0143a0cc957669ba62b3ff04096c622ad64489b646cbc222d33e75a6b767c",
+      "pixel_mismatches": 0,
+      "compared_pixels": 368640,
+      "consistent_water14_phase": 0,
+      "consistent_falls_scroll_stage": 0,
+      "derived_player_origin": [
+        320,
+        288
+      ],
+      "lcd_origin_8px_cells": [
+        30,
+        25
+      ],
+      "centered_camera_assumption_used": false,
+      "source_foreground_pixels_over_actors": 0,
+      "source_connection_depth": 1,
+      "immediate_native_sources": [
+        {
+          "map": "MnBemidji",
+          "origin_pixels": [
+            0,
+            0
+          ]
+        },
+        {
+          "map": "MnR08C00R00",
+          "origin_pixels": [
+            0,
+            768
+          ]
+        },
+        {
+          "map": "MnR14C01R00",
+          "origin_pixels": [
+            -512,
+            -32
+          ]
+        },
+        {
+          "map": "MnR09C00R01",
+          "origin_pixels": [
+            768,
+            352
+          ]
+        },
+        {
+          "map": "MnBemidjiNorthwoods",
+          "origin_pixels": [
+            256,
+            -448
+          ]
+        }
+      ],
+      "raw_gpu_descriptors": [
+        "east-access/.render-archive/production.png/gpu-readback-3027aea71ffa0b66f1c29142fa7a17c415087521d946718fafbffdcc8d7184c6.json"
+      ]
+    },
+    {
+      "id": "mart-preserved",
+      "map": "MnBemidji",
+      "core": [
+        41,
+        20
+      ],
+      "command": [
+        "/Users/ryanculligan/GitHub/geothite/.local/connected-route-capture-82742",
+        "--pack",
+        "/Users/ryanculligan/GitHub/geothite/content-packs/minnesota-current-bemidji-plateau-stairs-v01.crystalpack",
+        "--map",
+        "MnBemidji",
+        "--x",
+        "41",
+        "--y",
+        "20",
+        "--view",
+        "2d",
+        "--hour",
+        "12",
+        "--screenshot",
+        "/Users/ryanculligan/GitHub/geothite/planning/minnesota/renders/route-grass-v01/current-bemidji-plateau-stairs-v01/native-v01/mart-preserved/production.png"
+      ],
+      "production_sha256": "5a50385df09aafe789a0603c2cf6673066c8738e905b3977d1c0d08da90269bb",
+      "pixel_mismatches": 0,
+      "compared_pixels": 368640,
+      "consistent_water14_phase": 0,
+      "consistent_falls_scroll_stage": 0,
+      "derived_player_origin": [
+        320,
+        288
+      ],
+      "lcd_origin_8px_cells": [
+        72,
+        31
+      ],
+      "centered_camera_assumption_used": false,
+      "source_foreground_pixels_over_actors": 0,
+      "source_connection_depth": 1,
+      "immediate_native_sources": [
+        {
+          "map": "MnBemidji",
+          "origin_pixels": [
+            0,
+            0
+          ]
+        },
+        {
+          "map": "MnR08C00R00",
+          "origin_pixels": [
+            0,
+            768
+          ]
+        },
+        {
+          "map": "MnR14C01R00",
+          "origin_pixels": [
+            -512,
+            -32
+          ]
+        },
+        {
+          "map": "MnR09C00R01",
+          "origin_pixels": [
+            768,
+            352
+          ]
+        },
+        {
+          "map": "MnBemidjiNorthwoods",
+          "origin_pixels": [
+            256,
+            -448
+          ]
+        }
+      ],
+      "raw_gpu_descriptors": [
+        "mart-preserved/.render-archive/production.png/gpu-readback-03043fc0d1279ab26bd6fa11121f1880591e287bcb7c52ad25ced0f1a1cf5ded.json"
+      ]
+    }
+  ],
+  "source_preview_v02_recipe_pixels_native": true,
+  "complete_before_after_town_source_inspected": true
+}

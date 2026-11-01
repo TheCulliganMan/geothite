@@ -1,0 +1,237 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F140",
+  "status": "native-front-back-candidate",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f140/prompt-v1.txt",
+  "back_framing": "independent-gen2-close-upper-rear-portrait",
+  "pokemon_palettes": {
+    "MN_310": {
+      "species_id": "MN_310",
+      "name": "Gillpup",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          12,
+          24,
+          25
+        ],
+        [
+          23,
+          8,
+          12
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        26380,
+        12567,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          99,
+          198,
+          206
+        ],
+        [
+          189,
+          66,
+          99
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#63C6CE",
+        "#BD4263",
+        "#000000"
+      ]
+    },
+    "MN_311": {
+      "species_id": "MN_311",
+      "name": "Mudmender",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          18,
+          22,
+          29
+        ],
+        [
+          15,
+          5,
+          17
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        30418,
+        17583,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          148,
+          181,
+          239
+        ],
+        [
+          123,
+          41,
+          140
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#94B5EF",
+        "#7B298C",
+        "#000000"
+      ]
+    }
+  },
+  "sprites": [
+    {
+      "id": "mn-310-gillpup-v1",
+      "species_id": "MN_310",
+      "view": "front",
+      "source": "sprites/mn-f140/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        720,
+        550
+      ],
+      "fit": [
+        44,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        26380,
+        12567,
+        0
+      ],
+      "sampling": "area_vote",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 12
+    },
+    {
+      "id": "mn-310-gillpup-v1",
+      "species_id": "MN_310",
+      "view": "back",
+      "source": "sprites/mn-f140/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        550,
+        720,
+        474
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        26380,
+        12567,
+        0
+      ],
+      "sampling": "area_vote",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 12
+    },
+    {
+      "id": "mn-311-mudmender-v1",
+      "species_id": "MN_311",
+      "view": "front",
+      "source": "sprites/mn-f140/front-back.imagegen-v1.png",
+      "crop": [
+        720,
+        0,
+        816,
+        550
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        30418,
+        17583,
+        0
+      ],
+      "sampling": "area_vote",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 12
+    },
+    {
+      "id": "mn-311-mudmender-v1",
+      "species_id": "MN_311",
+      "view": "back",
+      "source": "sprites/mn-f140/front-back.imagegen-v1.png",
+      "crop": [
+        720,
+        550,
+        816,
+        474
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        30418,
+        17583,
+        0
+      ],
+      "sampling": "area_vote",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 12
+    }
+  ],
+  "source_sha256": "834c2436313e3cc7a071c7d0d3dd20b8834d356edfddef1dd9e059e50a1780d8"
+}

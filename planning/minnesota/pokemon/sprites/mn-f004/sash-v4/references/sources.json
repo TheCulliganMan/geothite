@@ -1,0 +1,9 @@
+{
+  "geometry_reference_only": true,
+  "product_url": "https://www.bendingbranches.com/products/java-11",
+  "feature": "11-degree bent-shaft canoe paddle; forward blade pitch at throat, straight shaft",
+  "images": [
+    {"path": "java11-blade-angled.png", "url": "https://cdn.shopify.com/s/files/1/2236/0745/products/Java11BladeAngled.png?v=1658348126"},
+    {"path": "java11-full.png", "url": "https://cdn.shopify.com/s/files/1/2236/0745/products/Java11Full.png?v=1658348126"}
+  ]
+}

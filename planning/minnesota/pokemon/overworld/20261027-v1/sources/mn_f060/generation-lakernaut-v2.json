@@ -1,0 +1,20 @@
+{
+  "species_id": "MN_132",
+  "name": "Lakernaut",
+  "family_id": "MN_F060",
+  "tool": "built-in image_gen",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f060/manifest-lakernaut-v2-pupil-proof.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f060/lakernaut-v2-pupil-proof",
+  "normalized_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f060/source-feature-proof-lakernaut-v2.json",
+  "detailed_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f060/manifest-lakernaut-v2-pupil-proof.proof.json",
+  "sources": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f060/lakernaut.overworld.imagegen-v2-eye-window-clearance.png": "7d15ca6a1b6ad4eae3e7478f4d85ea321795cc32c2b6da80ecf04dbcae8c8fd5",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f060/lakernaut.overworld.imagegen-v1.png": "1248dbd5e2a413e08dd02916b62cd3b64fe574c7dfb3a0c2189eb0017a928113"
+  },
+  "preserved_attempt_receipts": [
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f060/attempt-lakernaut-v1.json",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f060/attempt-lakernaut-v2.json"
+  ],
+  "status": "frozen native candidate; actual normal/shiny source features reviewed; root context pending",
+  "accepted": false
+}

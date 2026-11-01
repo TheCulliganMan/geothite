@@ -1,0 +1,129 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F070",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_149": {
+      "species_id": "MN_149",
+      "name": "Pothollow",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          13,
+          24,
+          23
+        ],
+        [
+          12,
+          8,
+          17
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        24333,
+        17676,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          107,
+          198,
+          189
+        ],
+        [
+          99,
+          66,
+          140
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#6BC6BD",
+        "#63428C",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f070/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png",
+      "target/minnesota-pokemon/gen2-reference/bugs.png"
+    ]
+  },
+  "sprites": [
+    {
+      "id": "mn-149-pothollow-v1",
+      "species_id": "MN_149",
+      "view": "front",
+      "source": "sprites/mn-f070/mn-149.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        1151,
+        700
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        24333,
+        17676,
+        0
+      ]
+    },
+    {
+      "id": "mn-149-pothollow-v1",
+      "species_id": "MN_149",
+      "view": "back",
+      "source": "sprites/mn-f070/mn-149.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        700,
+        1151,
+        667
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        24333,
+        17676,
+        0
+      ]
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "notes": "Final source-contour-v1 board visually inspected: living basin retains a clear-water back pool, separate hanging sludge chamber, reed ears and broad shovel paws. Native pool rim and eye whites are readable, teal limbs keep colored interiors and exterior outline stays coherent. Rear basin/chamber and shoulder view faces away with lower body cropped; no neighboring crop pixels observed.",
+    "sheet_sha256": "3023e9d58687036dc79c1360f4b83ebb05fa36f6bcc739d5bfc9adbe6586bb04",
+    "outline_profile": "source-contour-v1"
+  }
+}

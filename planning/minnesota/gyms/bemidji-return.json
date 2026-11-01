@@ -1,0 +1,338 @@
+{
+  "schema_version": 1,
+  "status": "Hedge garden with a victory return gate; native proof pending.",
+  "gyms": [
+    {
+      "slot": 7,
+      "id": "MnBemidjiGym",
+      "constant": "MN_BEMIDJI_GYM",
+      "city": "BEMIDJI",
+      "leader": "ORLIS",
+      "trainer_class": "COOLTRAINERM",
+      "leader_sprite": "SPRITE_COOLTRAINER_M",
+      "leader_at": [
+        5,
+        3
+      ],
+      "badge_flag": "ENGINE_GLACIERBADGE",
+      "requires": [
+        "BADGE_6"
+      ],
+      "reward": "TM_GIGA_DRAIN",
+      "party": [
+        {
+          "species": "TANGELA",
+          "level": 38,
+          "moves": [
+            "MEGA_DRAIN",
+            "VINE_WHIP",
+            "BIND",
+            "STUN_SPORE"
+          ]
+        },
+        {
+          "species": "JUMPLUFF",
+          "level": 39,
+          "moves": [
+            "GIGA_DRAIN",
+            "LEECH_SEED",
+            "COTTON_SPORE",
+            "SYNTHESIS"
+          ]
+        },
+        {
+          "species": "BELLOSSOM",
+          "level": 40,
+          "moves": [
+            "GIGA_DRAIN",
+            "PETAL_DANCE",
+            "STUN_SPORE",
+            "SWEET_SCENT"
+          ]
+        }
+      ],
+      "rows": [
+        "WWWWWW",
+        "pffffp",
+        "p....p",
+        "###C##",
+        "p....p",
+        "p.#..p",
+        "#c#G##",
+        "a====b",
+        "=L==R=",
+        "==s==="
+      ],
+      "art": {
+        "#": [
+          "train_station",
+          "1a"
+        ],
+        "W": [
+          "train_station",
+          "1b"
+        ],
+        "p": [
+          "train_station",
+          "20"
+        ],
+        "f": [
+          "train_station",
+          "23"
+        ],
+        ".": [
+          "train_station",
+          "19"
+        ],
+        "=": [
+          "train_station",
+          "1c"
+        ],
+        "a": [
+          "train_station",
+          "21"
+        ],
+        "b": [
+          "train_station",
+          "22"
+        ],
+        "L": [
+          "train_station",
+          "1e"
+        ],
+        "R": [
+          "train_station",
+          "1d"
+        ],
+        "s": [
+          "train_station",
+          "1f"
+        ],
+        "c": [
+          "kanto",
+          "32"
+        ],
+        "C": [
+          "kanto",
+          "32"
+        ],
+        "o": [
+          "kanto",
+          "6d"
+        ],
+        "G": [
+          "underground",
+          "0b"
+        ]
+      },
+      "trainers": [
+        {
+          "id": "MN_GYM_7_TRAINER_1",
+          "name": "MOSLEN",
+          "trainer_class": "COOLTRAINERM",
+          "sprite": "SPRITE_COOLTRAINER_M",
+          "at": [
+            7,
+            14
+          ],
+          "party": [
+            {
+              "species": "TANGELA",
+              "level": 35
+            }
+          ],
+          "optional": false,
+          "before_lines": [
+            "Can your team",
+            "handle new growth?"
+          ],
+          "after_lines": [
+            "Cut the small tree",
+            "in the west hedge.",
+            "ELVREN is beyond."
+          ]
+        },
+        {
+          "id": "MN_GYM_7_TRAINER_2",
+          "name": "ELVREN",
+          "trainer_class": "COOLTRAINERF",
+          "sprite": "SPRITE_LASS",
+          "at": [
+            8,
+            9
+          ],
+          "party": [
+            {
+              "species": "HOPPIP",
+              "level": 35
+            },
+            {
+              "species": "GLOOM",
+              "level": 36
+            }
+          ],
+          "optional": false,
+          "before_lines": [
+            "Careful pruning",
+            "lets flowers grow."
+          ],
+          "after_lines": [
+            "The next small",
+            "tree is east.",
+            "ORLIS is beyond."
+          ],
+          "requires": [
+            "EVENT_MN_GYM_7_TRAINER_1_DEFEATED"
+          ]
+        },
+        {
+          "id": "MN_GYM_7_TRAINER_3",
+          "name": "BRINDEL",
+          "trainer_class": "GENTLEMAN",
+          "sprite": "SPRITE_GRAMPS",
+          "at": [
+            3,
+            9
+          ],
+          "party": [
+            {
+              "species": "WEEPINBELL",
+              "level": 36
+            }
+          ],
+          "optional": true,
+          "before_lines": [
+            "An old seed still",
+            "has life in it."
+          ],
+          "after_lines": [
+            "New shoots need",
+            "room to grow."
+          ]
+        }
+      ],
+      "stations": [],
+      "gates": [
+        {
+          "at": [
+            3,
+            6
+          ],
+          "requires": [
+            "EVENT_MN_GYM_7_DEFEATED"
+          ],
+          "open_symbol": "=",
+          "event": "EVENT_MN_GYM_7_RETURN_OPEN"
+        }
+      ],
+      "guide": [
+        "Battle MOSLEN.",
+        "Cut west to reach",
+        "ELVREN, then east",
+        "to ORLIS. The",
+        "gold gate opens",
+        "after ORLIS for",
+        "a shorter return."
+      ],
+      "walkthrough": [
+        "MN_GYM_7_TRAINER_1",
+        "SOUTH_HEDGE",
+        "MN_GYM_7_TRAINER_2",
+        "MN_GYM_7_TRAINER_3",
+        "NORTH_HEDGE"
+      ],
+      "dimensions_metatiles": [
+        6,
+        10
+      ],
+      "arrival_core": [
+        4,
+        17
+      ],
+      "exit_tiles_core": [
+        [
+          4,
+          19
+        ],
+        [
+          5,
+          19
+        ]
+      ],
+      "guide_at": [
+        9,
+        17
+      ],
+      "leader_court_locked": true,
+      "before_lines": [
+        "Nothing here grew",
+        "in a single day.",
+        "Show me what you",
+        "have tended."
+      ],
+      "victory_lines": [
+        "Strong roots.",
+        "Room to grow."
+      ],
+      "after_lines": [
+        "The gold gate is",
+        "open. Take that",
+        "short path back",
+        "to the entrance."
+      ],
+      "cut_gates": [
+        {
+          "id": "SOUTH_HEDGE",
+          "tree_core": [
+            3,
+            12
+          ],
+          "approach_core": [
+            3,
+            13
+          ],
+          "replacement_symbol": "o",
+          "targets_core": [
+            [
+              3,
+              11
+            ]
+          ],
+          "gated_trainers": [
+            "MN_GYM_7_TRAINER_2",
+            "MN_GYM_7_TRAINER_3"
+          ],
+          "event": "EVENT_MN_GYM_7_CUT_SOUTH_HEDGE_PRUNED"
+        },
+        {
+          "id": "NORTH_HEDGE",
+          "tree_core": [
+            7,
+            6
+          ],
+          "approach_core": [
+            7,
+            7
+          ],
+          "replacement_symbol": "o",
+          "targets_core": [
+            [
+              7,
+              5
+            ]
+          ],
+          "gated_trainers": [],
+          "event": "EVENT_MN_GYM_7_CUT_NORTH_HEDGE_PRUNED"
+        }
+      ],
+      "court_requires": [
+        "EVENT_MN_GYM_7_TRAINER_1_DEFEATED",
+        "EVENT_MN_GYM_7_TRAINER_2_DEFEATED"
+      ],
+      "court_denied_lines": [
+        "Battle MOSLEN and",
+        "ELVREN first."
+      ]
+    }
+  ]
+}

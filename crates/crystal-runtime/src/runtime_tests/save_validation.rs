@@ -426,3 +426,211 @@
         assert!(error.contains("bad_pack"));
         let _ = std::fs::remove_dir_all(root);
     }
+
+fn runtime_stone_table_save_fixture(
+    source_script: &str,
+    compiled_target: &str,
+    saved_target: &str,
+    global: bool,
+) -> (GameDataSet, GameState) {
+    let mut scripts = BTreeMap::new();
+    scripts.insert(
+        source_script.to_string(),
+        serde_json::json!([
+            {"command": "stonetable", "args": ["5", "RUNTIME_BOULDER", compiled_target]},
+            {"command": "db", "args": ["-1"]}
+        ]),
+    );
+    for label in [
+        ".Boulder",
+        ".Boulder@QueueCallback",
+        ".OtherBoulder@QueueCallback",
+        ".Boulder@OtherCallback",
+        "GlobalBoulder",
+        "OtherGlobalBoulder",
+    ] {
+        scripts.insert(label.to_string(), serde_json::json!([]));
+    }
+    let mut data = GameDataSet::default();
+    if global {
+        data.global_scripts = Some(crystal_assets::GlobalScriptModule {
+            definitions: scripts.clone(),
+            scripts,
+            ..Default::default()
+        });
+    } else {
+        let mut map = runtime_map();
+        map.scripts = scripts;
+        data.maps.insert("RuntimeMap".to_string(), map);
+    }
+    let mut state = GameState::default();
+    state
+        .script_runtime
+        .memory
+        .insert("wCmdQueueType0".to_string(), "2".to_string());
+    state
+        .script_runtime
+        .stone_table_entries
+        .push(ScriptRuntimeStoneTableEntry {
+            queue_slot: 0,
+            warp: 5,
+            object_event: "RUNTIME_BOULDER".to_string(),
+            script: saved_target.to_string(),
+            source_script: source_script.to_string(),
+            command_index: 0,
+        });
+    (data, state)
+}
+
+#[test]
+fn runtime_stone_table_save_references_accept_exact_resolved_targets() {
+    for global in [false, true] {
+        for (source, compiled, saved) in [
+            (
+                ".StoneTable@QueueCallback",
+                ".Boulder",
+                ".Boulder@QueueCallback",
+            ),
+            (
+                ".StoneTable@QueueCallback",
+                ".Boulder@QueueCallback",
+                ".Boulder@QueueCallback",
+            ),
+            ("QueueCallback", ".Boulder", ".Boulder@QueueCallback"),
+            (
+                ".StoneTable@QueueCallback",
+                "GlobalBoulder",
+                "GlobalBoulder",
+            ),
+        ] {
+            let (data, state) = runtime_stone_table_save_fixture(source, compiled, saved, global);
+            state
+                .validate_saved_state()
+                .expect("valid stone-table state shape");
+            validate_saved_script_runtime_references(&data, &state)
+                .expect("runtime save validation accepts the source-resolved target");
+        }
+    }
+    let (data, state) = runtime_stone_table_save_fixture(
+        ".StoneTable@QueueCallback",
+        ".Boulder",
+        ".Boulder@QueueCallback",
+        false,
+    );
+    let entry = &state.script_runtime.stone_table_entries[0];
+    let (command, args) = crystal_core::state::saved_stone_table_entry_command_payload(entry);
+    assert!(
+        data.validate_saved_script_command_payload_reference(
+            "generic.payload",
+            &entry.source_script,
+            0,
+            command,
+            &args,
+        )
+        .is_err(),
+        "generic payload validation must retain exact argument comparison"
+    );
+}
+
+#[test]
+fn runtime_stone_table_save_references_reject_forged_entries() {
+    let (data, state) = runtime_stone_table_save_fixture(
+        ".StoneTable@QueueCallback",
+        ".Boulder",
+        ".Boulder@QueueCallback",
+        false,
+    );
+    // All but the last two are existing labels, so existence alone is insufficient.
+    for target in [
+        ".OtherBoulder@QueueCallback",
+        ".Boulder@OtherCallback",
+        "GlobalBoulder",
+        ".Boulder",
+        ".Missing@QueueCallback",
+        ".Boulder@@QueueCallback",
+    ] {
+        let mut changed = state.clone();
+        changed.script_runtime.stone_table_entries[0].script = target.to_string();
+        assert!(
+            validate_saved_script_runtime_references(&data, &changed).is_err(),
+            "must reject substituted target {target}"
+        );
+    }
+    for (field, value) in [
+        ("warp", "6"),
+        ("object_event", "OTHER_BOULDER"),
+        ("source_script", "MissingTable"),
+        ("command_index", "1"),
+        ("command_index", "9"),
+    ] {
+        let mut changed = state.clone();
+        let entry = &mut changed.script_runtime.stone_table_entries[0];
+        match field {
+            "warp" => entry.warp = value.parse().expect("test warp"),
+            "object_event" => entry.object_event = value.to_string(),
+            "source_script" => entry.source_script = value.to_string(),
+            "command_index" => entry.command_index = value.parse().expect("test index"),
+            _ => unreachable!(),
+        }
+        assert!(
+            validate_saved_script_runtime_references(&data, &changed).is_err(),
+            "must reject changed {field}"
+        );
+    }
+}
+
+#[test]
+fn runtime_stone_table_save_references_reject_invalid_compiled_targets() {
+    for (compiled, saved) in [
+        (".Boulder@OtherCallback", ".Boulder@OtherCallback"),
+        (".Missing", ".Boulder@QueueCallback"),
+        (".Boulder@@QueueCallback", ".Boulder@QueueCallback"),
+    ] {
+        let (data, state) =
+            runtime_stone_table_save_fixture(".StoneTable@QueueCallback", compiled, saved, false);
+        assert!(
+            validate_saved_script_runtime_references(&data, &state).is_err(),
+            "must reject unresolved or cross-parent compiled target {compiled}"
+        );
+    }
+    let (data, state) = runtime_stone_table_save_fixture(
+        ".StoneTable@QueueCallback",
+        ".Boulder",
+        ".Boulder@QueueCallback",
+        false,
+    );
+    for command in [
+        serde_json::json!({"command": "stonetable"}),
+        serde_json::json!({"command": "stonetable", "args": "5, RUNTIME_BOULDER, .Boulder"}),
+        serde_json::json!({"command": "stonetable", "args": ["5", "RUNTIME_BOULDER"]}),
+        serde_json::json!({"command": "stonetable", "args": ["5", "RUNTIME_BOULDER", null]}),
+        serde_json::json!({"command": "stonetable", "args": [5, "RUNTIME_BOULDER", ".Boulder"]}),
+        serde_json::json!({"command": "stonetable", "args": ["5", "RUNTIME_BOULDER", ".Boulder", "extra"]}),
+        serde_json::json!({"command": "noop", "args": ["5", "RUNTIME_BOULDER", ".Boulder"]}),
+    ] {
+        let mut changed = data.clone();
+        changed
+            .maps
+            .get_mut("RuntimeMap")
+            .expect("map")
+            .scripts
+            .get_mut(".StoneTable@QueueCallback")
+            .expect("table")[0] = command;
+        assert!(validate_saved_script_runtime_references(&changed, &state).is_err());
+    }
+    // A globally known target in another map cannot satisfy a map-local table.
+    let mut changed = data;
+    let target = changed
+        .maps
+        .get_mut("RuntimeMap")
+        .expect("map")
+        .scripts
+        .remove(".Boulder@QueueCallback")
+        .expect("target");
+    let mut other_map = runtime_map();
+    other_map
+        .scripts
+        .insert(".Boulder@QueueCallback".to_string(), target);
+    changed.maps.insert("OtherMap".to_string(), other_map);
+    assert!(validate_saved_script_runtime_references(&changed, &state).is_err());
+}

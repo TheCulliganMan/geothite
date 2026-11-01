@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "parent_pack": "content-packs/minnesota-minneapolis-citywide-cycling-v02.crystalpack",
+  "parent_sha256": "504938ec2d3b0230674ddc5ae4f8ec13e9e713dd4189c1f128ff23112959b24a",
+  "all_1536_canonical_preimage_metatiles_exact": true,
+  "canonical_after_exactly_six_forest_bank_changes": true,
+  "source_fitting_preserved": true
+}

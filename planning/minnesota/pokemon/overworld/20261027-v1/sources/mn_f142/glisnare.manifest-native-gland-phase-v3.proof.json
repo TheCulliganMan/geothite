@@ -1,0 +1,345 @@
+{
+  "species_id": "MN_315",
+  "name": "glisnare",
+  "status": "native-review-recommended; root independent review and context required",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f142/glisnare.manifest-native-gland-phase-v3.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-glisnare-gland-phase-v3",
+  "shared_transform": {
+    "source_bounds": [
+      12,
+      12,
+      436,
+      379
+    ],
+    "native_size": [
+      14,
+      12
+    ],
+    "native_origin": [
+      1,
+      3
+    ]
+  },
+  "all_four_nonrear_poses_actual_pupils_pass": true,
+  "each_native_eye_cluster_maps_to_one_actual_small_source_pupil_component": true,
+  "actual_source_pupil_proofs": [
+    {
+      "pose": "down_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f142/glisnare.overworld.imagegen-v3.png",
+      "crop": [
+        44,
+        89,
+        460,
+        398
+      ],
+      "actual_source_eye_bounds": [
+        [
+          223,
+          339,
+          28,
+          32
+        ],
+        [
+          294,
+          339,
+          27,
+          32
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              11
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                14,
+                8,
+                2,
+                253
+              ],
+              "bounds": [
+                223,
+                339,
+                28,
+                32
+              ],
+              "pixels": 896,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                11
+              ],
+              "source_sample_pixel": [
+                227,
+                369
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              9,
+              11
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                10,
+                2,
+                0,
+                253
+              ],
+              "bounds": [
+                294,
+                339,
+                27,
+                32
+              ],
+              "pixels": 864,
+              "truncated_contour": false,
+              "native_pixel": [
+                9,
+                11
+              ],
+              "source_sample_pixel": [
+                320,
+                369
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f142/glisnare.overworld.imagegen-v3.png",
+      "crop": [
+        1052,
+        94,
+        460,
+        398
+      ],
+      "actual_source_eye_bounds": [
+        [
+          1278,
+          339,
+          28,
+          32
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              8,
+              10
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                3,
+                1,
+                0,
+                253
+              ],
+              "bounds": [
+                1278,
+                339,
+                28,
+                32
+              ],
+              "pixels": 896,
+              "truncated_contour": false,
+              "native_pixel": [
+                8,
+                10
+              ],
+              "source_sample_pixel": [
+                1297,
+                342
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f142/glisnare.overworld.imagegen-v3.png",
+      "crop": [
+        43,
+        542,
+        460,
+        398
+      ],
+      "actual_source_eye_bounds": [
+        [
+          223,
+          782,
+          28,
+          32
+        ],
+        [
+          294,
+          782,
+          27,
+          32
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              10
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                5,
+                2,
+                0,
+                253
+              ],
+              "bounds": [
+                223,
+                782,
+                28,
+                32
+              ],
+              "pixels": 896,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                10
+              ],
+              "source_sample_pixel": [
+                226,
+                790
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              9,
+              10
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                294,
+                782,
+                27,
+                32
+              ],
+              "pixels": 864,
+              "truncated_contour": false,
+              "native_pixel": [
+                9,
+                10
+              ],
+              "source_sample_pixel": [
+                319,
+                790
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f142/glisnare.overworld.imagegen-v3.png",
+      "crop": [
+        1060,
+        542,
+        460,
+        398
+      ],
+      "actual_source_eye_bounds": [
+        [
+          1278,
+          782,
+          28,
+          32
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              8,
+              10
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                67,
+                38,
+                13,
+                253
+              ],
+              "bounds": [
+                1278,
+                782,
+                28,
+                32
+              ],
+              "pixels": 896,
+              "truncated_contour": false,
+              "native_pixel": [
+                8,
+                10
+              ],
+              "source_sample_pixel": [
+                1305,
+                790
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "old_native_poses_preserved_exactly": [
+    "down_idle",
+    "up_idle",
+    "left_idle",
+    "down_step",
+    "up_step",
+    "left_step"
+  ],
+  "normal_shiny_runtime_parity": "all1536pixels exact each",
+  "canonical_palette_bytes": "exact",
+  "all_three_walk_pairs_distinct": true,
+  "rear_review": "both rear native poses viewed; no copied face",
+  "normal_shiny_native_boards_actually_viewed": true,
+  "accepted_coverage_native_pack_untouched": true,
+  "manifest_sha256": "80a433b729a0505dc280ac945c116d1efa2407d1f490fd1f1c832130cce7db4c",
+  "compiled_index_sha256": "b53a4f55dc1dd0b8a60790d094eefb3563017b47d2b34205cbfdcbd5c99c261a"
+}

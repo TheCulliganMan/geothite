@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "manifest": "minnesota-interior-life-five-rail-stops-v1",
+  "all_installed_interiors": false,
+  "rooms": [
+    {
+      "map": "MnDetroitLakesStation",
+      "purpose": "Display only the five user-approved Glacier Line stops.",
+      "texts": [
+        {
+          "label": "MN_DETROIT_GLACIER_TIMETABLEText",
+          "lines": [
+            "GLACIER LINE",
+            "DETROIT LAKES",
+            "STAPLES",
+            "ST CLOUD",
+            "ST PAUL",
+            "WINONA"
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnStPaulUnionDepot",
+      "purpose": "Display only the five user-approved Glacier Line stops.",
+      "texts": [
+        {
+          "label": "MN_GLACIER_LINE_TIMETABLEText",
+          "lines": [
+            "GLACIER LINE",
+            "DETROIT LAKES",
+            "STAPLES",
+            "ST CLOUD",
+            "ST PAUL",
+            "WINONA",
+            "Return to stops",
+            "you have visited."
+          ]
+        }
+      ]
+    }
+  ]
+}

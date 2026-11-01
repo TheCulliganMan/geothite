@@ -1,0 +1,9 @@
+{
+  "status": "DIAGNOSTIC_BUILD_RUNNING",
+  "build_script": ".local/route-grass-review/build_r19_gate_controller_v06.py",
+  "build_session": 49732,
+  "observed_active_cargo_pid": 53572,
+  "observed_active_rustc_pid": 53762,
+  "production_input_difference": "crystal-tui main.rs move_exact_tiles retries up to four directional inputs; failing native harness sends one press plus neutral frame before checking textbox. Diagnostic snapshot will distinguish facing or movement timing from text loss.",
+  "prior_diagnostic_compile_failure": "v05 used a range index on VecDeque; v06 uses iter().skip(history).collect, retaining UI assertion and gameplay unchanged."
+}

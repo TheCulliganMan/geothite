@@ -48,7 +48,13 @@ export function mountSaveManagement(wasm, { document, window }) {
   const file = dialog.querySelector('input[type=file]');
   const buttons = [...dialog.querySelectorAll('button')];
   let busy = false, pending = null, previousFocus, current = {};
-  const message = error => String(error?.message ?? error);
+  const message = error => {
+    const detail = String(error?.message ?? error);
+    if (detail.startsWith('This save is damaged or belongs to a different game pack.')) {
+      return 'This backup is damaged or uses different game content or settings. Use a backup from the matching game setup.';
+    }
+    return detail;
+  };
   const render = () => {
     for (const button of buttons) button.disabled = busy;
     dialog.querySelector('[data-action=save]').disabled = busy || !current.can_save;

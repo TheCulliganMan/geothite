@@ -1,0 +1,36 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-r10-grass-and-stairs-v01.crystalpack",
+  "pack_sha256": "840dc279fa9e35359f31885010766950d2487dae723eb11c3d5af2fa8e4da6cb",
+  "content_identity": "c68542065bac76644016febec0ff6217ecf1ac446caa247a1579d3cd024a9594",
+  "grass_parent": {
+    "status": "PASS_NATIVE_CHILD_NOT_SELECTED",
+    "parent_revision": "route_grass_r08_current_contract_revision",
+    "parent_pack": "content-packs/minnesota-current-r08-grass-and-stairs-v01.crystalpack",
+    "parent_pack_sha256": "1e1f2e2f40fdea4207e7ada6b34a85d33065cbe254a73864e47b8db4f0726e13",
+    "pack": "content-packs/minnesota-current-r10-south-woods-grass-v01.crystalpack",
+    "pack_sha256": "15fb2488f94ff981455b3405a8ee841d4336963402f67a66dba51c9c45a8d3ba",
+    "content_identity": "0c1b424477985277da0a09060de97eb9bb3b9152102673f1e1ab5b47a1ecbc2a",
+    "delta": {
+      "maps": [
+        "MnR10C00R00"
+      ],
+      "map_blocks": [
+        "MnR10C00R00_Blocks"
+      ]
+    },
+    "new_grass_quadrants": 16,
+    "all_other_maps_and_all_events_actors_scripts_teams_encounters_items_art_audio_exact": true
+  },
+  "delta": {
+    "maps": [
+      "MnR10C00R00"
+    ],
+    "map_scripts": [
+      "MN_R10_RAMP_SIGNText",
+      "MN_R10_ROAD_KEEPERText",
+      "MN_R10_T01Won"
+    ]
+  },
+  "all_terrain_actors_events_items_encounters_and_battle_inputs_exact": true
+}

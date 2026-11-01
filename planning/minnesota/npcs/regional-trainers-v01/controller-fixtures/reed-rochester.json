@@ -1,0 +1,22 @@
+{
+  "trainers": [
+    {
+      "id": "MN_REED_ROCHESTER",
+      "map": "MnRochesterPokecenter1F",
+      "actor_script": "MN_ARC_RC_REED",
+      "approach": [
+        8,
+        10
+      ],
+      "facing": "west",
+      "trainer_class": "MN_RIVAL_REED",
+      "sprite": "SPRITE_MN_RIVAL_REED",
+      "fixture_events": [
+        "EVENT_MN_DELIVERED_ROCHESTER_PARCEL",
+        "EVENT_MN_STARTER_RECEIVED"
+      ],
+      "fixture_badges": 0,
+      "defeated_flag": "EVENT_MN_REED_ROCHESTER_DEFEATED"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_181",
+  "fit": 14,
+  "input_images": [
+    {
+      "role": "native16 style/logical pixel reference only",
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+      "sha256": "4354a639ed1a80fd6686e43b273443ed894e58a84307a8049f638ee9ffa2a099"
+    }
+  ],
+  "canonical_identity_reviewed": {
+    "front": {
+      "path": "target/minnesota-pokemon/native/MN_F083/mn-181-brinebraze-v3.front.png",
+      "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F083/mn-181-brinebraze-v3.front.png",
+      "sha256": "b1234a9aa892ec494cfa5273c45b571da3f16a84b86f2286544566cf3f3cbec7"
+    },
+    "back": {
+      "path": "target/minnesota-pokemon/native/MN_F083/mn-181-brinebraze-v3.back.png",
+      "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F083/mn-181-brinebraze-v3.back.png",
+      "sha256": "eaad84e531a5a092e9e1681471c2ff3a52e6bfc1ff197a785d516a833b63ae9b"
+    }
+  },
+  "design_authority": "CURRENT redesign-v2 battle refs/prompt; older upright fin-feet concept superseded, both stay fin-propelled fish.",
+  "canonical_eye_form": "Two actual black pupils SOUTH/one WEST on broadlightface; rear plain headaway.",
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f083/prompt-brinebraze-v1.txt"
+}

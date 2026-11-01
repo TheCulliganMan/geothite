@@ -1,0 +1,68 @@
+{
+  "tool": "built-in image_gen",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f101/zapsap-v3-actual-pupils",
+  "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f101/manifest-zapsap-v3-actual-pupils.json",
+  "normalized_receipt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f101/source-feature-proof-zapsap-v3-actual-pupils.json",
+  "all_raws_prompts_rejected_trials_retained": true,
+  "no_native_pixel_painting": true,
+  "no_registry_or_pack_mutation": true,
+  "normal_shiny_boards_actually_viewed": true,
+  "canonical_palettes": [
+    [
+      32767,
+      16284,
+      7624,
+      0
+    ],
+    [
+      32767,
+      29583,
+      14599,
+      0
+    ]
+  ],
+  "native_bounds": [
+    [
+      3,
+      3,
+      10,
+      11
+    ],
+    [
+      3,
+      3,
+      10,
+      11
+    ],
+    [
+      4,
+      3,
+      8,
+      12
+    ],
+    [
+      4,
+      3,
+      9,
+      11
+    ],
+    [
+      3,
+      3,
+      10,
+      11
+    ],
+    [
+      3,
+      3,
+      8,
+      12
+    ]
+  ],
+  "retained_source_hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f101/zapsap.overworld.imagegen-v1.png": "6d819fa532ff3c8e383affc995465394dcf6e136621edf5fd851eb5cb4a4c062",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f101/prompt-zapsap-v1.txt": "1e4e04c46ccaaa14b623ac0ce93735312a4516e8d9c3fb81d4c8ba0e4ade5038",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f101/zapsap.v1.original-path.txt": "c50fb90dbea502a94a654abaad44e792c79d3376714a32a56f8e509ad4e0d690"
+  },
+  "status": "root independent visual/context acceptance pending"
+}

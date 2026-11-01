@@ -1,0 +1,13 @@
+{
+  "tool": "built-in image_gen",
+  "original_tool_path": "/Users/ryanculligan/.codex/generated_images/01a17dcc-4f1a-77a2-9d21-0df036061346/exec-b406749a-fc30-4663-aa01-8a000cbe6cf9.png",
+  "source_size": [
+    1536,
+    1024
+  ],
+  "sha256": "e34876212ebb8dfd211bc287539c5f4ad9995144eaa4084980043d66bcca64e1",
+  "reference_paths": [
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f099/tesslarv.overworld.imagegen-v1.png"
+  ],
+  "prompt": "tesslarv.prompt-v2.txt"
+}

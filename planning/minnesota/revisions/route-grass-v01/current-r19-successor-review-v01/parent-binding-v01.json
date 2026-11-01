@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "selected_revision": "route_grass_r17_trail_guidance_revision",
+  "pack": "content-packs/minnesota-current-r17-trail-guidance-v02.crystalpack",
+  "pack_sha256": "186c262b18d5174cb7ba9727358d4022bea9fce6d362529405728028ef92c60a",
+  "maps": [
+    "MnR19C00R00",
+    "MnR19C00R01"
+  ],
+  "current_layout": {
+    "path": "planning/minnesota/routes/MN_R19.layout.json"
+  },
+  "current_dossier": {
+    "path": "planning/minnesota/routes/MN_R19.json"
+  }
+}

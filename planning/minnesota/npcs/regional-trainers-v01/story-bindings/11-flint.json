@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "trainer_class": "MN_ELITE_FLINT",
+  "class_name": "ELITE FOUR",
+  "trainer_ids": [
+    "MN_LEAGUE_2"
+  ],
+  "actors": [
+    {
+      "map": "MnLeagueRoom2",
+      "script": "MnLeagueRoom2Challenge",
+      "tile": [
+        5,
+        7
+      ],
+      "previous_sprite": "SPRITE_POKEFAN_M"
+    }
+  ]
+}

@@ -1,0 +1,93 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F004",
+  "species": [
+    {
+      "species_id": "MN_011",
+      "runtime_token": "PORTABEAU",
+      "palette_rgb555": [
+        32767,
+        7639,
+        15686,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        15079,
+        10447,
+        0
+      ],
+      "fit": [
+        14,
+        14
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 8,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "portabeau.overworld.imagegen-v5.png",
+          "crop": [
+            71,
+            63,
+            428,
+            408
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "portabeau.overworld.imagegen-v5.png",
+          "crop": [
+            577,
+            61,
+            428,
+            408
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "portabeau.overworld.imagegen-v5.png",
+          "crop": [
+            1042,
+            64,
+            428,
+            408
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "portabeau.overworld.imagegen-v5.png",
+          "crop": [
+            70,
+            531,
+            428,
+            408
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "portabeau.overworld.imagegen-v5.png",
+          "crop": [
+            575,
+            531,
+            428,
+            408
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "portabeau.overworld.imagegen-v5.png",
+          "crop": [
+            1046,
+            531,
+            428,
+            408
+          ]
+        }
+      ],
+      "interior_black_samples": null
+    }
+  ]
+}

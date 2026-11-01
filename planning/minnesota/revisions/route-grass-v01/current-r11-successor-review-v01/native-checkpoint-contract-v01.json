@@ -1,0 +1,28 @@
+{
+  "pack": "content-packs/minnesota-current-r11-southwest-grass-v01.crystalpack",
+  "pack_sha256": "9f0ff0c7d0f6dd874ef1a581657900984ca75d360ffb04da2c92b00ab58475aa",
+  "map": "MnR11C00R00",
+  "source_dossier": "planning/minnesota/revisions/route-grass-v01/current-r11-successor-review-v01/native-checkpoint-source-v01.json",
+  "start": [
+    35,
+    17
+  ],
+  "badge_count": 4,
+  "event_flags": [],
+  "roads": [],
+  "gates": [],
+  "ledges": [],
+  "doors": [],
+  "fences": [],
+  "counts": {
+    "roads": 0,
+    "gates": 0,
+    "ledges": 0,
+    "doors": 0,
+    "fences": 0,
+    "residents": 1,
+    "signs": 0
+  },
+  "arrival_discovery_flags": [],
+  "scope": "Cross upper grass passage to existing resident and Save/Continue. Initial partner, badges and location are local QA setup."
+}

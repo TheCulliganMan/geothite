@@ -1,0 +1,24 @@
+{
+  "status": "PASS",
+  "source_save": ".local/route-grass-review/current-duluth-reached-v01.crystalsave",
+  "source_sha256": "aa37b646926ff8870f0b89225385d873a36a7edeb0e87ffa66fae8aacb531b3d",
+  "input_source_unchanged": true,
+  "output_save": ".local/route-grass-review/current-duluth-verified-stdio-v03-output-v01.crystalsave",
+  "pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33",
+  "pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+  "save": ".local/route-grass-review/current-duluth-verified-stdio-v03-input-v01.crystalsave",
+  "initial_map": "MnDuluth",
+  "initial_position": {
+    "x": 46,
+    "y": 18
+  },
+  "moved_position": {
+    "x": 45,
+    "y": 18
+  },
+  "calls_passed": 15,
+  "stderr_bytes": 0,
+  "items_pocket_verified": true,
+  "balls_pocket": true,
+  "returned_to_walking": true
+}

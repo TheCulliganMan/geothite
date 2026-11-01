@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "parent_revision": "north_shore_shops_revision",
+  "parent_pack": "content-packs/minnesota-north-shore-shops-v01.crystalpack",
+  "parent_pack_sha256": "66d03adbd5e245af480890ad985f0bfbd3093c835e0bb6d02b26e563629ecb27",
+  "before_layout": "planning/minnesota/revisions/duluth-garden-terrace-v02/after.layout.json",
+  "after_layout": "planning/minnesota/revisions/duluth-harbor-platforms-v01/after.layout.json",
+  "remove_inner_buoy_metatile": [
+    47,
+    33
+  ],
+  "platforms": [
+    {
+      "id": "west",
+      "origin_metatiles": [
+        26,
+        36
+      ],
+      "fisher_core": [
+        55,
+        75
+      ],
+      "boarding_core": [
+        52,
+        75
+      ]
+    },
+    {
+      "id": "east",
+      "origin_metatiles": [
+        34,
+        39
+      ],
+      "fisher_core": [
+        71,
+        81
+      ],
+      "boarding_core": [
+        68,
+        81
+      ]
+    }
+  ]
+}

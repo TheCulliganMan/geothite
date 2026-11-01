@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "id": "MN_R13_T01",
+      "map": "MnR13C00R00",
+      "actor_script": "MN_R13_T01",
+      "trainer_class": "MN_FOSSIL_RESEARCHER",
+      "sprite": "SPRITE_MN_FOSSIL_RESEARCHER",
+      "facing": "west",
+      "approach": [
+        22,
+        25
+      ],
+      "defeated_flag": "EVENT_MN_R13_TRAINER_01"
+    }
+  ]
+}

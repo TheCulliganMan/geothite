@@ -1,0 +1,9 @@
+{
+  "tool": "built-in image_gen",
+  "original": "/Users/ryanculligan/.codex/generated_images/01a179bf-dc2b-7352-8975-8b8f3a32e33b/exec-60f9f721-3822-46c3-b773-79cf2b173cfb.png",
+  "preserved_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f073/hissip.overworld.imagegen-v2-smooth-brow.png",
+  "sha256": "d2420651cbbe7e0499791c54bdb78af3fe6072695dbc1daa9439c44f8855e779",
+  "exact_prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f073/prompt-hissip-smooth-brow-v2.txt",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f073/reference-mapping-hissip-smooth-brow-v2.json",
+  "status": "preserved; selected frames recorded in frozen manifest"
+}

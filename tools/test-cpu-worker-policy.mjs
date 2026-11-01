@@ -1,0 +1,16 @@
+import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
+const source = await readFile(new URL('../web-client/cpu-worker-policy.js', import.meta.url), 'utf8');
+const { cpuWorkerPolicy } = await import(`data:text/javascript,${encodeURIComponent(source)}`);
+const wasm = { crystal_terrain_worker_header() {}, crystal_actor_worker_header() {} };
+const policy = (query = '', saved = null, embedded = false, exports = wasm, supported = true) => cpuWorkerPolicy({ params: new URLSearchParams(query), wasm: exports, storage: { getItem: () => saved }, embedded, workerSupported: supported });
+assert.deepEqual(policy(), { terrain: true, actor: true, eager: false, preview3D: false });
+assert.equal(policy('preview=route29').eager, true);
+assert.equal(policy('preview=house-door').eager, false);
+assert.equal(policy('', 'true').eager, true);
+assert.equal(policy('preview=route29', 'true', true).eager, false);
+assert.equal(policy('terrainWorker=0').terrain, false);
+assert.equal(policy('actorWorker=0').actor, false);
+assert.equal(policy('', null, false, {}).terrain, false);
+assert.equal(policy('', null, false, wasm, false).actor, false);
+console.log('CPU worker default/lazy/opt-out policy passed');

@@ -1,0 +1,35 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-r17-trail-guidance-v01.crystalpack",
+  "pack_sha256": "62842e780f621b066b074180c9c96cc256afa2cc1c017fa2c43ad5d44519b17d",
+  "content_identity": "251c03426ee1ba027e49da788c6e2d29b7f5e8a6f3c35e3f529241bdf812910f",
+  "parent": {
+    "status": "PASS",
+    "selected_revision": "route_grass_r16_bank_guidance_revision",
+    "pack": "content-packs/minnesota-current-r16-bank-guidance-v02.crystalpack",
+    "pack_sha256": "e47cfeeff4baf0e2fd9654d9859e2fd094d856f8d34bede6c1c333c8209bce26",
+    "maps": [
+      "MnR17C00R00",
+      "MnR17C00R01",
+      "MnR17C00R02"
+    ],
+    "current_layout": {
+      "path": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R17.after.layout.json",
+      "sha256": "8b82a99c35d311569bb04deec5a542129868403ac91a3b724cf0ec0617cbc532"
+    },
+    "current_dossier": {
+      "path": "planning/minnesota/caves/r17-talus-loop-v01/route-dossier.json",
+      "sha256": "b8f12db233c2715973a4a435e79f7587bb59650f57c9dc3c247404642a403bb4"
+    }
+  },
+  "delta": {
+    "maps": [
+      "MnR17C00R01"
+    ],
+    "map_scripts": [
+      "MN_R17_SIGN_02Text",
+      "MN_R17_SIGN_03Text"
+    ]
+  },
+  "all_terrain_actors_events_items_encounters_and_battle_inputs_exact": true
+}

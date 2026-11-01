@@ -1,0 +1,271 @@
+{
+  "schema_version": 1,
+  "status": "verified_native_gameplay",
+  "parent_revision": "route_grass_st_cloud_fronts_revision",
+  "parent_pack": "content-packs/minnesota-current-st-cloud-fronts-v02.crystalpack",
+  "parent_pack_sha256": "df5e4c47500d84046f542418a203c8d58b0e119e97bc235083434464c8682ef3",
+  "map": "MnMinneapolis",
+  "scope": "Redistribute the existing 18 optional cyclists across distinct city streets. Native terrain, doors, services, scripted gates, teams and rewards remain unchanged.",
+  "behavior": "Native SPRITEMOVEDATA_PATROL_CLOCKWISE; 8-frame bicycle strides, collision with player and actors, movement paused outside the native loaded viewport. No renderer-only animation.",
+  "routes": [
+    {
+      "id": "MN_EXTRA_MPLS_CYCLE_01",
+      "district": "Department store riverside lane",
+      "start_core": [
+        48,
+        20
+      ],
+      "size_core": [
+        1,
+        15
+      ],
+      "lap_steps": 32
+    },
+    {
+      "id": "MN_EXTRA_MPLS_CYCLE_02",
+      "district": "Mill exchange court",
+      "start_core": [
+        23,
+        10
+      ],
+      "size_core": [
+        6,
+        3
+      ],
+      "lap_steps": 18
+    },
+    {
+      "id": "MN_EXTRA_MPLS_CYCLE_03",
+      "district": "Museum arts passage",
+      "start_core": [
+        5,
+        22
+      ],
+      "size_core": [
+        4,
+        1
+      ],
+      "lap_steps": 10
+    },
+    {
+      "id": "MN_EXTRA_MPLS_CYCLE_04",
+      "district": "Boathouse quay",
+      "start_core": [
+        2,
+        33
+      ],
+      "size_core": [
+        10,
+        2
+      ],
+      "lap_steps": 24
+    },
+    {
+      "id": "MN_EXTRA_MPLS_CYCLE_05",
+      "district": "Dispatch waterfront",
+      "start_core": [
+        18,
+        35
+      ],
+      "size_core": [
+        8,
+        2
+      ],
+      "lap_steps": 20
+    },
+    {
+      "id": "MN_EXTRA_MPLS_CYCLE_06",
+      "district": "West cabin promenade",
+      "start_core": [
+        2,
+        41
+      ],
+      "size_core": [
+        1,
+        4
+      ],
+      "lap_steps": 10
+    },
+    {
+      "id": "MN_EXTRA_MPLS_CYCLE_07",
+      "district": "Canal neighborhood",
+      "start_core": [
+        16,
+        43
+      ],
+      "size_core": [
+        9,
+        2
+      ],
+      "lap_steps": 22
+    },
+    {
+      "id": "MN_EXTRA_MPLS_CYCLE_08",
+      "district": "Gardeners lane",
+      "start_core": [
+        6,
+        58
+      ],
+      "size_core": [
+        12,
+        1
+      ],
+      "lap_steps": 26
+    },
+    {
+      "id": "MN_EXTRA_MPLS_CYCLE_09",
+      "district": "Upper bridge",
+      "start_core": [
+        30,
+        14
+      ],
+      "size_core": [
+        13,
+        1
+      ],
+      "lap_steps": 28
+    },
+    {
+      "id": "MN_EXTRA_MPLS_CYCLE_10",
+      "district": "Library and northeast",
+      "start_core": [
+        60,
+        11
+      ],
+      "size_core": [
+        13,
+        1
+      ],
+      "lap_steps": 28
+    },
+    {
+      "id": "MN_EXTRA_MPLS_CYCLE_11",
+      "district": "Music and print",
+      "start_core": [
+        44,
+        11
+      ],
+      "size_core": [
+        6,
+        2
+      ],
+      "lap_steps": 16
+    },
+    {
+      "id": "MN_EXTRA_MPLS_CYCLE_12",
+      "district": "East garden avenue",
+      "start_core": [
+        66,
+        18
+      ],
+      "size_core": [
+        7,
+        1
+      ],
+      "lap_steps": 16
+    },
+    {
+      "id": "MN_EXTRA_MPLS_CYCLE_13",
+      "district": "Gym block",
+      "start_core": [
+        60,
+        27
+      ],
+      "size_core": [
+        15,
+        9
+      ],
+      "lap_steps": 48
+    },
+    {
+      "id": "MN_EXTRA_MPLS_CYCLE_14",
+      "district": "Central bridge",
+      "start_core": [
+        28,
+        36
+      ],
+      "size_core": [
+        15,
+        1
+      ],
+      "lap_steps": 32
+    },
+    {
+      "id": "MN_EXTRA_MPLS_CYCLE_15",
+      "district": "South bridge",
+      "start_core": [
+        28,
+        56
+      ],
+      "size_core": [
+        13,
+        1
+      ],
+      "lap_steps": 28
+    },
+    {
+      "id": "MN_EXTRA_MPLS_CYCLE_16",
+      "district": "Market square",
+      "start_core": [
+        38,
+        44
+      ],
+      "size_core": [
+        15,
+        3
+      ],
+      "lap_steps": 36
+    },
+    {
+      "id": "MN_EXTRA_MPLS_CYCLE_17",
+      "district": "South residential",
+      "start_core": [
+        50,
+        52
+      ],
+      "size_core": [
+        5,
+        1
+      ],
+      "lap_steps": 12
+    },
+    {
+      "id": "MN_EXTRA_MPLS_CYCLE_18",
+      "district": "Kitchen and cycle club",
+      "start_core": [
+        67,
+        47
+      ],
+      "size_core": [
+        9,
+        8
+      ],
+      "lap_steps": 34
+    }
+  ],
+  "verification_required": [
+    "Strict Rust publication and stale/blocked/overlap negative cases",
+    "All 18 complete native controller laps with actual player sidesteps, no post-input state writes",
+    "Cyclist optional decline and victory/return retain input ownership",
+    "Whole-root preservation including all 731 other complete maps, 18 return commands, parties, audio and runtime files",
+    "All 40 room arrivals outside cycle tracks; real door/bridge crossing walk; actual reached save and Continue",
+    "Whole-town source render and native 2D cycling captures reviewed"
+  ],
+  "route_source_sha256": "908221796555b6a7b5008edcee31a885347492a1f164103df3b072de325d8c05",
+  "pack": "content-packs/minnesota-minneapolis-citywide-cycling-v02.crystalpack",
+  "pack_sha256": "504938ec2d3b0230674ddc5ae4f8ec13e9e713dd4189c1f128ff23112959b24a",
+  "native_validation": {
+    "riders": 18,
+    "distinct_observed_track_tiles": 440,
+    "actual_forward_steps": 880,
+    "full_laps_per_rider": 2,
+    "midroute_save_Continue_checks": 18,
+    "optional_battle_controller_cases": 4,
+    "source_publication_guard_case": 1
+  },
+  "code_checks": {
+    "scoped_rustfmt": "PASS",
+    "workspace_rustfmt": "pre-existing differences starting offset-allocator/src/lib.rs:408",
+    "all_targets_clippy": "PASS for both affected crates; existing warnings retained. See code-recheck-v358.json."
+  }
+}

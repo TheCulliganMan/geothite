@@ -1,0 +1,236 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F080",
+  "status": "proposal-only-not-integrated",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_174": {
+      "species_id": "MN_174",
+      "name": "Loomlet",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          21,
+          21,
+          27
+        ],
+        [
+          8,
+          9,
+          18
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        28341,
+        18728,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          173,
+          173,
+          222
+        ],
+        [
+          66,
+          74,
+          148
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#ADADDE",
+        "#424A94",
+        "#000000"
+      ]
+    },
+    "MN_175": {
+      "species_id": "MN_175",
+      "name": "Inverveil",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          21,
+          24,
+          31
+        ],
+        [
+          9,
+          7,
+          18
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        32533,
+        18665,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          173,
+          198,
+          255
+        ],
+        [
+          74,
+          57,
+          148
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#ADC6FF",
+        "#4A3994",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f080/redesign-v4/prompt-v4.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-174-loomlet-v4",
+      "species_id": "MN_174",
+      "view": "front",
+      "source": "sprites/mn-f080/redesign-v4/front-back.imagegen-v4.png",
+      "crop": [
+        0,
+        0,
+        590,
+        633
+      ],
+      "fit": [
+        36,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        28341,
+        18728,
+        0
+      ],
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 12,
+      "exterior_contour": "source_backed"
+    },
+    {
+      "id": "mn-174-loomlet-v4",
+      "species_id": "MN_174",
+      "view": "back",
+      "source": "sprites/mn-f080/redesign-v4/front-back.imagegen-v4.png",
+      "crop": [
+        0,
+        633,
+        590,
+        566
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        28341,
+        18728,
+        0
+      ],
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 12,
+      "exterior_contour": "source_backed"
+    },
+    {
+      "id": "mn-175-inverveil-v4",
+      "species_id": "MN_175",
+      "view": "front",
+      "source": "sprites/mn-f080/redesign-v4/front-back.imagegen-v4.png",
+      "crop": [
+        590,
+        0,
+        722,
+        633
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        32533,
+        18665,
+        0
+      ],
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 12,
+      "exterior_contour": "source_backed"
+    },
+    {
+      "id": "mn-175-inverveil-v4",
+      "species_id": "MN_175",
+      "view": "back",
+      "source": "sprites/mn-f080/redesign-v4/front-back.imagegen-v4.png",
+      "crop": [
+        590,
+        633,
+        722,
+        566
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        32533,
+        18665,
+        0
+      ],
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 12,
+      "exterior_contour": "source_backed"
+    }
+  ],
+  "raw_generation": {
+    "original_tool_path": "/Users/ryanculligan/.codex/generated_images/01a17aaa-5c78-7e50-b7c0-e5c016827c28/exec-10b08633-644c-42e1-b820-fd02992cddba.png",
+    "sha256": "4af78b249becfe26bdd3a7f007e4f3df88b9cca91bc1e235a6170086f08c3f1c"
+  }
+}

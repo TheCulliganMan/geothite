@@ -1,0 +1,412 @@
+{
+  "status": "PASS",
+  "pack_sha256": "df5e4c47500d84046f542418a203c8d58b0e119e97bc235083434464c8682ef3",
+  "actual_current_child_native2d_views_inspected": 6,
+  "source_native_pixel_mismatches": 0,
+  "whole_town_source_before_after_inspected": true,
+  "fresh_renders_after_cyclist_parent_rebase": true,
+  "captures": [
+    {
+      "id": "clinic",
+      "map": "MnStCloud",
+      "core": [
+        7,
+        10
+      ],
+      "command": [
+        "/Users/ryanculligan/GitHub/geothite/.local/connected-route-capture-4858",
+        "--pack",
+        "/Users/ryanculligan/GitHub/geothite/content-packs/minnesota-current-st-cloud-fronts-v02.crystalpack",
+        "--map",
+        "MnStCloud",
+        "--x",
+        "7",
+        "--y",
+        "10",
+        "--view",
+        "2d",
+        "--hour",
+        "12",
+        "--screenshot",
+        "/Users/ryanculligan/GitHub/geothite/planning/minnesota/renders/route-grass-v01/current-st-cloud-fronts-v01/native-v02/clinic/production.png"
+      ],
+      "production_sha256": "8561b38b62bbb675350774cf45a1019688c10a77358e182324b9d278dc13a72c",
+      "pixel_mismatches": 0,
+      "compared_pixels": 368640,
+      "consistent_water14_phase": 0,
+      "consistent_falls_scroll_stage": 0,
+      "derived_player_origin": [
+        320,
+        288
+      ],
+      "lcd_origin_8px_cells": [
+        4,
+        11
+      ],
+      "centered_camera_assumption_used": false,
+      "source_foreground_pixels_over_actors": 0,
+      "source_connection_depth": 1,
+      "immediate_native_sources": [
+        {
+          "map": "MnStCloud",
+          "origin_pixels": [
+            0,
+            0
+          ]
+        },
+        {
+          "map": "MnR05C00R00",
+          "origin_pixels": [
+            0,
+            576
+          ]
+        },
+        {
+          "map": "MnR06C00R01",
+          "origin_pixels": [
+            128,
+            -640
+          ]
+        }
+      ],
+      "raw_gpu_descriptors": [
+        "clinic/.render-archive/production.png/gpu-readback-8bb9163e8d638ace18ae5d919791ba9e3d7f63600bce5db4c83b0b5b9c1750b3.json"
+      ]
+    },
+    {
+      "id": "mart",
+      "map": "MnStCloud",
+      "core": [
+        15,
+        10
+      ],
+      "command": [
+        "/Users/ryanculligan/GitHub/geothite/.local/connected-route-capture-4858",
+        "--pack",
+        "/Users/ryanculligan/GitHub/geothite/content-packs/minnesota-current-st-cloud-fronts-v02.crystalpack",
+        "--map",
+        "MnStCloud",
+        "--x",
+        "15",
+        "--y",
+        "10",
+        "--view",
+        "2d",
+        "--hour",
+        "12",
+        "--screenshot",
+        "/Users/ryanculligan/GitHub/geothite/planning/minnesota/renders/route-grass-v01/current-st-cloud-fronts-v01/native-v02/mart/production.png"
+      ],
+      "production_sha256": "62cc420387ff1ab71129b406b4c6f4cc03973f2988d67aa52b6cd573cc4ec43d",
+      "pixel_mismatches": 0,
+      "compared_pixels": 368640,
+      "consistent_water14_phase": 0,
+      "consistent_falls_scroll_stage": 0,
+      "derived_player_origin": [
+        320,
+        288
+      ],
+      "lcd_origin_8px_cells": [
+        20,
+        11
+      ],
+      "centered_camera_assumption_used": false,
+      "source_foreground_pixels_over_actors": 0,
+      "source_connection_depth": 1,
+      "immediate_native_sources": [
+        {
+          "map": "MnStCloud",
+          "origin_pixels": [
+            0,
+            0
+          ]
+        },
+        {
+          "map": "MnR05C00R00",
+          "origin_pixels": [
+            0,
+            576
+          ]
+        },
+        {
+          "map": "MnR06C00R01",
+          "origin_pixels": [
+            128,
+            -640
+          ]
+        }
+      ],
+      "raw_gpu_descriptors": [
+        "mart/.render-archive/production.png/gpu-readback-9a37387716328a79bf3e3671f7dce4e0474904586d9895bd1f4321d502af6ffb.json"
+      ]
+    },
+    {
+      "id": "clinic-side",
+      "map": "MnStCloud",
+      "core": [
+        10,
+        10
+      ],
+      "command": [
+        "/Users/ryanculligan/GitHub/geothite/.local/connected-route-capture-4858",
+        "--pack",
+        "/Users/ryanculligan/GitHub/geothite/content-packs/minnesota-current-st-cloud-fronts-v02.crystalpack",
+        "--map",
+        "MnStCloud",
+        "--x",
+        "10",
+        "--y",
+        "10",
+        "--view",
+        "2d",
+        "--hour",
+        "12",
+        "--screenshot",
+        "/Users/ryanculligan/GitHub/geothite/planning/minnesota/renders/route-grass-v01/current-st-cloud-fronts-v01/native-v02/clinic-side/production.png"
+      ],
+      "production_sha256": "4c6c0bf7ff8209f1f5e51ff034aa5f8dcca6d93d4c54100fab407c6f7f9dfa7e",
+      "pixel_mismatches": 0,
+      "compared_pixels": 368640,
+      "consistent_water14_phase": 0,
+      "consistent_falls_scroll_stage": 0,
+      "derived_player_origin": [
+        320,
+        288
+      ],
+      "lcd_origin_8px_cells": [
+        10,
+        11
+      ],
+      "centered_camera_assumption_used": false,
+      "source_foreground_pixels_over_actors": 0,
+      "source_connection_depth": 1,
+      "immediate_native_sources": [
+        {
+          "map": "MnStCloud",
+          "origin_pixels": [
+            0,
+            0
+          ]
+        },
+        {
+          "map": "MnR05C00R00",
+          "origin_pixels": [
+            0,
+            576
+          ]
+        },
+        {
+          "map": "MnR06C00R01",
+          "origin_pixels": [
+            128,
+            -640
+          ]
+        }
+      ],
+      "raw_gpu_descriptors": [
+        "clinic-side/.render-archive/production.png/gpu-readback-2f836ca6b86d7281bf218ef8f42ba075a3adf8188e0169770b488261cd3f49a4.json"
+      ]
+    },
+    {
+      "id": "station",
+      "map": "MnStCloud",
+      "core": [
+        35,
+        12
+      ],
+      "command": [
+        "/Users/ryanculligan/GitHub/geothite/.local/connected-route-capture-4858",
+        "--pack",
+        "/Users/ryanculligan/GitHub/geothite/content-packs/minnesota-current-st-cloud-fronts-v02.crystalpack",
+        "--map",
+        "MnStCloud",
+        "--x",
+        "35",
+        "--y",
+        "12",
+        "--view",
+        "2d",
+        "--hour",
+        "12",
+        "--screenshot",
+        "/Users/ryanculligan/GitHub/geothite/planning/minnesota/renders/route-grass-v01/current-st-cloud-fronts-v01/native-v02/station/production.png"
+      ],
+      "production_sha256": "d1e56f024151a3d50a4ded3ed0401c29822ccefca7a4ce37c51f658e1f42d519",
+      "pixel_mismatches": 0,
+      "compared_pixels": 368640,
+      "consistent_water14_phase": 0,
+      "consistent_falls_scroll_stage": 0,
+      "derived_player_origin": [
+        320,
+        288
+      ],
+      "lcd_origin_8px_cells": [
+        60,
+        15
+      ],
+      "centered_camera_assumption_used": false,
+      "source_foreground_pixels_over_actors": 0,
+      "source_connection_depth": 1,
+      "immediate_native_sources": [
+        {
+          "map": "MnStCloud",
+          "origin_pixels": [
+            0,
+            0
+          ]
+        },
+        {
+          "map": "MnR05C00R00",
+          "origin_pixels": [
+            0,
+            576
+          ]
+        },
+        {
+          "map": "MnR06C00R01",
+          "origin_pixels": [
+            128,
+            -640
+          ]
+        }
+      ],
+      "raw_gpu_descriptors": [
+        "station/.render-archive/production.png/gpu-readback-91b8d204e736ba7cd6be4e08222fbeeddfc76df7a725a06674069aa7b713f97a.json"
+      ]
+    },
+    {
+      "id": "gym",
+      "map": "MnStCloud",
+      "core": [
+        8,
+        28
+      ],
+      "command": [
+        "/Users/ryanculligan/GitHub/geothite/.local/connected-route-capture-4858",
+        "--pack",
+        "/Users/ryanculligan/GitHub/geothite/content-packs/minnesota-current-st-cloud-fronts-v02.crystalpack",
+        "--map",
+        "MnStCloud",
+        "--x",
+        "8",
+        "--y",
+        "28",
+        "--view",
+        "2d",
+        "--hour",
+        "12",
+        "--screenshot",
+        "/Users/ryanculligan/GitHub/geothite/planning/minnesota/renders/route-grass-v01/current-st-cloud-fronts-v01/native-v02/gym/production.png"
+      ],
+      "production_sha256": "80572f13afba158b77297c2fbc8ef89c62d06d98f3768de208a0fa9f951111b5",
+      "pixel_mismatches": 0,
+      "compared_pixels": 368640,
+      "consistent_water14_phase": 0,
+      "consistent_falls_scroll_stage": 0,
+      "derived_player_origin": [
+        320,
+        288
+      ],
+      "lcd_origin_8px_cells": [
+        6,
+        47
+      ],
+      "centered_camera_assumption_used": false,
+      "source_foreground_pixels_over_actors": 0,
+      "source_connection_depth": 1,
+      "immediate_native_sources": [
+        {
+          "map": "MnStCloud",
+          "origin_pixels": [
+            0,
+            0
+          ]
+        },
+        {
+          "map": "MnR05C00R00",
+          "origin_pixels": [
+            0,
+            576
+          ]
+        },
+        {
+          "map": "MnR06C00R01",
+          "origin_pixels": [
+            128,
+            -640
+          ]
+        }
+      ],
+      "raw_gpu_descriptors": [
+        "gym/.render-archive/production.png/gpu-readback-5609f0e3fe49ad2bbc2c330cf43fa4a70464dcd465e83b588b2d5464b71940aa.json"
+      ]
+    },
+    {
+      "id": "main-street",
+      "map": "MnStCloud",
+      "core": [
+        24,
+        12
+      ],
+      "command": [
+        "/Users/ryanculligan/GitHub/geothite/.local/connected-route-capture-4858",
+        "--pack",
+        "/Users/ryanculligan/GitHub/geothite/content-packs/minnesota-current-st-cloud-fronts-v02.crystalpack",
+        "--map",
+        "MnStCloud",
+        "--x",
+        "24",
+        "--y",
+        "12",
+        "--view",
+        "2d",
+        "--hour",
+        "12",
+        "--screenshot",
+        "/Users/ryanculligan/GitHub/geothite/planning/minnesota/renders/route-grass-v01/current-st-cloud-fronts-v01/native-v02/main-street/production.png"
+      ],
+      "production_sha256": "21c15accc01e875ec44838c07183cd72dda65ae0ddf46ac683ae6b57dee0972a",
+      "pixel_mismatches": 0,
+      "compared_pixels": 368640,
+      "consistent_water14_phase": 0,
+      "consistent_falls_scroll_stage": 0,
+      "derived_player_origin": [
+        320,
+        288
+      ],
+      "lcd_origin_8px_cells": [
+        38,
+        15
+      ],
+      "centered_camera_assumption_used": false,
+      "source_foreground_pixels_over_actors": 0,
+      "source_connection_depth": 1,
+      "immediate_native_sources": [
+        {
+          "map": "MnStCloud",
+          "origin_pixels": [
+            0,
+            0
+          ]
+        },
+        {
+          "map": "MnR05C00R00",
+          "origin_pixels": [
+            0,
+            576
+          ]
+        },
+        {
+          "map": "MnR06C00R01",
+          "origin_pixels": [
+            128,
+            -640
+          ]
+        }
+      ],
+      "raw_gpu_descriptors": [
+        "main-street/.render-archive/production.png/gpu-readback-933b4df27d642c6fc1d4f0521f12ece5c01a39ed56a01aeb4d0fc622bfe6595b.json"
+      ]
+    }
+  ]
+}

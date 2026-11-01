@@ -1,0 +1,215 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_012",
+  "result": "pass",
+  "manifest_sha256": "45e12014f077aff1b915bb0ee26d26e63eabdc7a36756af0491c24e429996ad9",
+  "bank_sha256": "b3bd708ba26bd45ca46cd64146f218948377f84d86e2463a82895688c199467c",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f004/voyagear.overworld.imagegen-v5-bulk.png": "766f89db3a290fe6ad787f823e06617011f31978b227ecea26f4398ac053b7d1"
+  },
+  "canonical_eye_form": "Two isolated actual black pupil dots south and one isolated actual black pupil west; source eye components verified in all four nonrear poses.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            6,
+            6
+          ],
+          "source_sample": [
+            253,
+            228
+          ],
+          "source_component": [
+            250,
+            219,
+            16,
+            25
+          ],
+          "component_pixels": 393,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            2
+          ],
+          "source_rgba": [
+            4,
+            1,
+            0,
+            253
+          ]
+        },
+        {
+          "native": [
+            8,
+            6
+          ],
+          "source_sample": [
+            312,
+            228
+          ],
+          "source_component": [
+            312,
+            219,
+            16,
+            25
+          ],
+          "component_pixels": 393,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            2
+          ],
+          "source_rgba": [
+            66,
+            21,
+            8,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            4,
+            6
+          ],
+          "source_sample": [
+            1164,
+            228
+          ],
+          "source_component": [
+            1160,
+            220,
+            17,
+            24
+          ],
+          "component_pixels": 408,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            4,
+            1,
+            0,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            6,
+            6
+          ],
+          "source_sample": [
+            253,
+            669
+          ],
+          "source_component": [
+            250,
+            659,
+            15,
+            24
+          ],
+          "component_pixels": 360,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            2
+          ],
+          "source_rgba": [
+            4,
+            1,
+            0,
+            253
+          ]
+        },
+        {
+          "native": [
+            8,
+            6
+          ],
+          "source_sample": [
+            312,
+            669
+          ],
+          "source_component": [
+            312,
+            659,
+            16,
+            24
+          ],
+          "component_pixels": 384,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            2
+          ],
+          "source_rgba": [
+            62,
+            20,
+            8,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            4,
+            6
+          ],
+          "source_sample": [
+            1164,
+            667
+          ],
+          "source_component": [
+            1160,
+            657,
+            17,
+            24
+          ],
+          "component_pixels": 408,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            4,
+            1,
+            0,
+            253
+          ]
+        }
+      ]
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "notes": "Root v5 source preserves fierce broad beaver face, heavy fists/chest, blue headband/diagonal sash/belt, compact shoulder canoe paddle and low attached blue paddle-tail. Both north poses show plain nape and sash, with no paired pupil-like rear marks. Native south13x12/119opaque idle and13x12/105step versus previous13x10/80; no individual pose rescaling. Canonical source pupil components verified in all four nonrear poses. Normal/shiny boards reviewed."
+  }
+}

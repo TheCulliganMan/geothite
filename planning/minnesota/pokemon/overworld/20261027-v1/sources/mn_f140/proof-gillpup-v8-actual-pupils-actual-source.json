@@ -1,0 +1,209 @@
+{
+  "species": "gillpup",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f140/gillpup-v8-actual-pupils",
+  "status": "actual-source native proof passes; root visual/context acceptance pending",
+  "all_four_nonrear_actual_isolated_source_pupils": true,
+  "six16px_alpha_border_normal_shiny_runtime_parity": true,
+  "canonical_palettes": true,
+  "proof": [
+    {
+      "pose": "down_idle",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            6,
+            10
+          ],
+          "source_sample": [
+            267,
+            335
+          ],
+          "source_component": [
+            248,
+            334,
+            24,
+            28
+          ],
+          "component_pixels": 665,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            10,
+            11,
+            11,
+            254
+          ]
+        },
+        {
+          "native": [
+            8,
+            10
+          ],
+          "source_sample": [
+            328,
+            335
+          ],
+          "source_component": [
+            322,
+            334,
+            24,
+            28
+          ],
+          "component_pixels": 672,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            7,
+            7,
+            7,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            4,
+            10
+          ],
+          "source_sample": [
+            1127,
+            355
+          ],
+          "source_component": [
+            1127,
+            329,
+            23,
+            29
+          ],
+          "component_pixels": 667,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            22,
+            35,
+            34,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            6,
+            10
+          ],
+          "source_sample": [
+            267,
+            723
+          ],
+          "source_component": [
+            246,
+            717,
+            24,
+            27
+          ],
+          "component_pixels": 648,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            1,
+            1,
+            2,
+            253
+          ]
+        },
+        {
+          "native": [
+            8,
+            10
+          ],
+          "source_sample": [
+            328,
+            723
+          ],
+          "source_component": [
+            322,
+            717,
+            24,
+            28
+          ],
+          "component_pixels": 672,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            3,
+            2,
+            1,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            4,
+            10
+          ],
+          "source_sample": [
+            1127,
+            737
+          ],
+          "source_component": [
+            1126,
+            711,
+            24,
+            27
+          ],
+          "component_pixels": 648,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            1,
+            2,
+            2,
+            254
+          ]
+        }
+      ]
+    }
+  ],
+  "hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f140/gillpup-v8-actual-pupils/compiled-index.json": "f90b44b8b1338148da521b05502675b2b6b64631ff8ae855ececc260b35c9390",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f140/gillpup.overworld.imagegen-v1.png": "2cbbf2a789367d52faff3b60ceae5dfee0f8db43a924853d9bcc63c5aa10af49"
+  },
+  "no_native_pixel_painting": true
+}

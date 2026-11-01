@@ -1,0 +1,386 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-r11-southwest-grass-v01.crystalpack",
+  "pack_sha256": "9f0ff0c7d0f6dd874ef1a581657900984ca75d360ffb04da2c92b00ab58475aa",
+  "calls": 6509,
+  "wild": [
+    {
+      "phase": "grass-and-save",
+      "map": "MnR11C00R01",
+      "position": {
+        "x": 40,
+        "y": 11
+      }
+    },
+    {
+      "phase": "grass-and-save",
+      "map": "MnR11C00R02",
+      "position": {
+        "x": 5,
+        "y": 28
+      }
+    },
+    {
+      "phase": "grass-and-save",
+      "map": "MnR11C00R02",
+      "position": {
+        "x": 9,
+        "y": 27
+      }
+    },
+    {
+      "phase": "grass-and-save",
+      "map": "MnR11C00R02",
+      "position": {
+        "x": 24,
+        "y": 33
+      }
+    },
+    {
+      "phase": "grass-and-save",
+      "map": "MnR11C00R01",
+      "position": {
+        "x": 29,
+        "y": 38
+      }
+    },
+    {
+      "phase": "grass-and-save",
+      "map": "MnR11C00R01",
+      "position": {
+        "x": 29,
+        "y": 30
+      }
+    },
+    {
+      "phase": "grass-and-save",
+      "map": "MnR11C00R00",
+      "position": {
+        "x": 37,
+        "y": 18
+      }
+    },
+    {
+      "phase": "grass-and-save",
+      "map": "MnR11C00R00",
+      "position": {
+        "x": 56,
+        "y": 8
+      }
+    },
+    {
+      "phase": "continue-and-repeat",
+      "map": "MnR11C00R00",
+      "position": {
+        "x": 37,
+        "y": 21
+      }
+    },
+    {
+      "phase": "continue-and-repeat",
+      "map": "MnR11C00R01",
+      "position": {
+        "x": 39,
+        "y": 8
+      }
+    },
+    {
+      "phase": "continue-and-repeat",
+      "map": "MnR11C00R01",
+      "position": {
+        "x": 29,
+        "y": 39
+      }
+    },
+    {
+      "phase": "continue-and-repeat",
+      "map": "MnR11C00R01",
+      "position": {
+        "x": 33,
+        "y": 40
+      }
+    },
+    {
+      "phase": "continue-and-repeat",
+      "map": "MnR11C00R02",
+      "position": {
+        "x": 5,
+        "y": 29
+      }
+    },
+    {
+      "phase": "continue-and-repeat",
+      "map": "MnR11C00R02",
+      "position": {
+        "x": 13,
+        "y": 28
+      }
+    },
+    {
+      "phase": "continue-and-repeat",
+      "map": "MnR11C00R02",
+      "position": {
+        "x": 12,
+        "y": 28
+      }
+    },
+    {
+      "phase": "continue-and-repeat",
+      "map": "MnR11C00R02",
+      "position": {
+        "x": 21,
+        "y": 30
+      }
+    },
+    {
+      "phase": "continue-and-repeat",
+      "map": "MnR11C00R01",
+      "position": {
+        "x": 29,
+        "y": 39
+      }
+    },
+    {
+      "phase": "continue-and-repeat",
+      "map": "MnR11C00R01",
+      "position": {
+        "x": 29,
+        "y": 30
+      }
+    },
+    {
+      "phase": "continue-and-repeat",
+      "map": "MnR11C00R01",
+      "position": {
+        "x": 34,
+        "y": 30
+      }
+    },
+    {
+      "phase": "continue-and-repeat",
+      "map": "MnR11C00R00",
+      "position": {
+        "x": 59,
+        "y": 8
+      }
+    },
+    {
+      "phase": "continue-and-repeat",
+      "map": "MnR11C00R00",
+      "position": {
+        "x": 59,
+        "y": 8
+      }
+    }
+  ],
+  "phases": [
+    {
+      "phase": "grass-and-save",
+      "initial": {
+        "badges": 8,
+        "dialogue": false,
+        "facing": "down",
+        "frame": 0,
+        "map": "MnR11C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 0
+        },
+        "position": {
+          "x": 35,
+          "y": 17
+        }
+      },
+      "final": {
+        "badges": 8,
+        "dialogue": false,
+        "facing": "left",
+        "frame": 1348,
+        "map": "MnR11C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 4
+        },
+        "position": {
+          "x": 35,
+          "y": 17
+        }
+      },
+      "output_save": ".local/route-grass-review/r11-full-route-grass-and-save-full-v08-output.crystalsave",
+      "source_unchanged": true,
+      "stderr_bytes": 0
+    },
+    {
+      "phase": "continue-and-repeat",
+      "initial": {
+        "badges": 8,
+        "dialogue": false,
+        "facing": "left",
+        "frame": 1348,
+        "map": "MnR11C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 4
+        },
+        "position": {
+          "x": 35,
+          "y": 17
+        }
+      },
+      "final": {
+        "badges": 8,
+        "dialogue": false,
+        "facing": "left",
+        "frame": 2696,
+        "map": "MnR11C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 5
+        },
+        "position": {
+          "x": 35,
+          "y": 17
+        }
+      },
+      "output_save": ".local/route-grass-review/r11-full-route-continue-and-repeat-full-v08-output.crystalsave",
+      "source_unchanged": true,
+      "stderr_bytes": 0
+    }
+  ],
+  "healing_stops": [
+    {
+      "phase": "grass-and-save",
+      "town": "MnGrandMarais",
+      "center": "MnGrandMaraisPokecenter",
+      "visible": "Good evening! You're out late. Welcome to our POK\u00e9MON CENTER. We can heal your POK\u00e9MON to perfect POK\u00e9MON to perfect health. Shall we heal your POK\u00e9MON? OK, may I see your POK\u00e9MON?"
+    },
+    {
+      "phase": "grass-and-save",
+      "town": "MnDuluth",
+      "center": "MnDuluthPokecenter1F",
+      "visible": "Welcome! We can rest your POKEMON."
+    },
+    {
+      "phase": "grass-and-save",
+      "town": "MnGrandMarais",
+      "center": "MnGrandMaraisPokecenter",
+      "visible": "Good evening! You're out late. Welcome to our POK\u00e9MON CENTER. We can heal your POK\u00e9MON to perfect POK\u00e9MON to perfect health. Shall we heal your POK\u00e9MON? OK, may I see your POK\u00e9MON?"
+    },
+    {
+      "phase": "continue-and-repeat",
+      "town": "MnGrandMarais",
+      "center": "MnGrandMaraisPokecenter",
+      "visible": "Good evening! You're out late. Welcome to our POK\u00e9MON CENTER. We can heal your POK\u00e9MON to perfect POK\u00e9MON to perfect health. Shall we heal your POK\u00e9MON? OK, may I see your POK\u00e9MON?"
+    },
+    {
+      "phase": "continue-and-repeat",
+      "town": "MnDuluth",
+      "center": "MnDuluthPokecenter1F",
+      "visible": "Welcome! We can rest your POKEMON."
+    },
+    {
+      "phase": "continue-and-repeat",
+      "town": "MnGrandMarais",
+      "center": "MnGrandMaraisPokecenter",
+      "visible": "Good evening! You're out late. Welcome to our POK\u00e9MON CENTER. We can heal your POK\u00e9MON to perfect POK\u00e9MON to perfect health. Shall we heal your POK\u00e9MON? OK, may I see your POK\u00e9MON?"
+    }
+  ],
+  "scope": "Complete normal land course through the four west shoreline chunks and narrow northeastern connection chunk, all three two-way native stairs, both HOP_LEFT lanes with reverse denials and ordinary grassy returns, both town round trips, six actual native nurse visits, menus and Continue. Initial native fixture has eight badges, EVENT_MN_LIGHTHOUSE_SIGNAL and a level60 local partner; qualifications are setup, not earned story progress. Three lake-only eastern chunks and Surf/islands are outside this normal walking course.",
+  "actual_maps_observed": [
+    "MnDuluth",
+    "MnDuluthPokecenter1F",
+    "MnGrandMarais",
+    "MnGrandMaraisPokecenter",
+    "MnR11C00R00",
+    "MnR11C00R01",
+    "MnR11C00R02",
+    "MnR11C00R03",
+    "MnR11C01R00"
+  ],
+  "initial_qa_badges": 8,
+  "initial_qa_event_flags": [
+    "EVENT_MN_LIGHTHOUSE_SIGNAL"
+  ],
+  "no_blackout_or_money_loss": true,
+  "stair_pairs": [
+    {
+      "upper": [
+        24,
+        51
+      ],
+      "lower": [
+        24,
+        54
+      ]
+    },
+    {
+      "upper": [
+        36,
+        89
+      ],
+      "lower": [
+        36,
+        92
+      ]
+    },
+    {
+      "upper": [
+        38,
+        171
+      ],
+      "lower": [
+        38,
+        174
+      ]
+    }
+  ],
+  "ledge_lanes": [
+    {
+      "upper": [
+        24,
+        130
+      ],
+      "lip": [
+        23,
+        130
+      ],
+      "landing": [
+        21,
+        130
+      ],
+      "reverse_denials": 4
+    },
+    {
+      "upper": [
+        24,
+        131
+      ],
+      "lip": [
+        23,
+        131
+      ],
+      "landing": [
+        21,
+        131
+      ],
+      "reverse_denials": 4
+    }
+  ],
+  "earlier_failed_harnesses_retained": true
+}

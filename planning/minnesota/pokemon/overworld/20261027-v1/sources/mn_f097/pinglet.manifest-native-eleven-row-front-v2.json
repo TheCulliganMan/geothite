@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F097",
+  "species": [
+    {
+      "species_id": "MN_211",
+      "runtime_token": "PINGLET",
+      "palette_rgb555": [
+        32767,
+        9981,
+        17861,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        24489,
+        14513,
+        0
+      ],
+      "fit": [
+        14,
+        14
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 32,
+      "interior_black_samples": null,
+      "opaque_interior_minimum_samples": 60,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "pinglet.overworld.imagegen-v2.png",
+          "crop": [
+            52,
+            119,
+            462,
+            399
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "pinglet.overworld.imagegen-v2.png",
+          "crop": [
+            536,
+            106,
+            462,
+            399
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "pinglet.overworld.imagegen-v2.png",
+          "crop": [
+            1012,
+            97,
+            462,
+            399
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "pinglet.overworld.imagegen-v2.png",
+          "crop": [
+            52,
+            550,
+            462,
+            399
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "pinglet.overworld.imagegen-v2.png",
+          "crop": [
+            537,
+            509,
+            462,
+            399
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "pinglet.overworld.imagegen-v2.png",
+          "crop": [
+            1011,
+            513,
+            462,
+            399
+          ]
+        }
+      ]
+    }
+  ]
+}

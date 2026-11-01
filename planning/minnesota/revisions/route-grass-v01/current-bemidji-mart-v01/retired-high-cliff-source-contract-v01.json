@@ -1,0 +1,62 @@
+{
+  "status": "RECONCILED_TO_CURRENT_SELECTED_TERRAIN",
+  "retired_one_way_ledges": [
+    {
+      "id": "MN_BEMIDJI_GYM_DOWNHILL",
+      "source_blocks": [
+        [
+          5,
+          10
+        ],
+        [
+          6,
+          10
+        ]
+      ],
+      "upper_approach": [
+        11,
+        19
+      ],
+      "hop_core": [
+        11,
+        20
+      ],
+      "landing": [
+        11,
+        22
+      ],
+      "reverse_blocked": [
+        11,
+        21
+      ],
+      "minimum_return_steps": 15,
+      "return_passage_core": [
+        19,
+        16,
+        20,
+        18
+      ],
+      "purpose": "Drop from the gym shelf to the west/Itasca street. Ordinary return climbs east ramp rather than reversing the drop."
+    }
+  ],
+  "current_selected_native_cells": [
+    {
+      "at": [
+        5,
+        10
+      ],
+      "block": "72"
+    },
+    {
+      "at": [
+        6,
+        10
+      ],
+      "block": "72"
+    }
+  ],
+  "source_only_reconciliation": true,
+  "reason": "Previously selected outdoor terrain closed these tall-cliff hop faces. Preserve current terrain and remove stale source claim; ordinary eastern shelf access stays open.",
+  "canonical_after": "after.layout.v03.json",
+  "dossier_after": "dossier.after.v03.json"
+}

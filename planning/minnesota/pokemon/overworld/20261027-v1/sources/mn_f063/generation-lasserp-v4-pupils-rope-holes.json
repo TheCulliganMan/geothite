@@ -1,0 +1,70 @@
+{
+  "tool": "built-in image_gen",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f063/lasserp-v4-pupils-rope-holes",
+  "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f063/manifest-lasserp-v4-pupils-rope-holes.json",
+  "normalized_receipt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f063/source-feature-proof-lasserp-v4-pupils-rope-holes.json",
+  "all_raws_prompts_rejected_trials_retained": true,
+  "no_native_pixel_painting": true,
+  "no_registry_or_pack_mutation": true,
+  "normal_shiny_boards_actually_viewed": true,
+  "canonical_palettes": [
+    [
+      32767,
+      8826,
+      4298,
+      0
+    ],
+    [
+      32767,
+      20296,
+      6468,
+      0
+    ]
+  ],
+  "native_bounds": [
+    [
+      1,
+      4,
+      12,
+      11
+    ],
+    [
+      1,
+      3,
+      12,
+      11
+    ],
+    [
+      2,
+      3,
+      11,
+      12
+    ],
+    [
+      1,
+      4,
+      13,
+      11
+    ],
+    [
+      1,
+      3,
+      13,
+      11
+    ],
+    [
+      2,
+      3,
+      12,
+      12
+    ]
+  ],
+  "retained_source_hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f063/lasserp.overworld.imagegen-v1.png": "3e7d2fd0289729a08dddd45298953d2ba5808752946c020364a2edd7d7b9b904",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f063/lasserp.overworld.imagegen-v2-native-face.png": "2d0ee05994ed971bb2013e421c978f61131970402930ac8461da55981373358b",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f063/prompt-lasserp-v2-native-face.txt": "6153165a4b8d22557c287ae77099ff11b107e0d1c41e4db868950c1619005feb",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f063/prompt-lasserp-v1.txt": "d2a80f08b6abf9cd0c45463980eef948a431b7f4485099cb11556456a1b72ca4",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f063/lasserp.v2-native-face.original-path.txt": "f13bc0f2722dd082a7fe31f9ca6ec50957f1e7d040a0d5c112d89d44887416d2"
+  },
+  "status": "root independent visual/context acceptance pending"
+}

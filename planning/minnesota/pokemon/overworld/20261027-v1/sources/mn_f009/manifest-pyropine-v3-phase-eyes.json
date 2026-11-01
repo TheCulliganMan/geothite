@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F009",
+  "species": [
+    {
+      "species_id": "MN_027",
+      "runtime_token": "PYROPINE",
+      "palette_rgb555": [
+        32767,
+        4639,
+        8515,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        17380,
+        10344,
+        0
+      ],
+      "fit": [
+        14,
+        14
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 64,
+      "interior_black_samples": 64,
+      "opaque_interior_minimum_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "pyropine.overworld.imagegen-v3.png",
+          "crop": [
+            60,
+            80,
+            420,
+            400
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "pyropine.overworld.imagegen-v3.png",
+          "crop": [
+            550,
+            80,
+            420,
+            400
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "pyropine.overworld.imagegen-v3.png",
+          "crop": [
+            1061,
+            80,
+            420,
+            400
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "pyropine.overworld.imagegen-v3.png",
+          "crop": [
+            60,
+            528,
+            420,
+            400
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "pyropine.overworld.imagegen-v3.png",
+          "crop": [
+            550,
+            539,
+            420,
+            400
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "pyropine.overworld.imagegen-v3.png",
+          "crop": [
+            1062,
+            539,
+            420,
+            400
+          ]
+        }
+      ]
+    }
+  ]
+}

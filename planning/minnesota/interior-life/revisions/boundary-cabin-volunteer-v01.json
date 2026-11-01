@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "id": "boundary-cabin-volunteer-v1",
+  "map": "MnBoundaryRootBeerCabin",
+  "canonical_exterior_service": "BWS_ROOT_BEER_LADYRootBeerService",
+  "authority": "zones/boundary-waters-safari.json#root_beer_lady.location_contract keeps Dorothy visibly outdoors. This revision supersedes only the duplicate identity in the preserved interior story source.",
+  "old_script": "MN_INTERIOR_DOROTHY",
+  "old_sprite": "SPRITE_GRANNY",
+  "new_script": "MN_INTERIOR_CABIN_VOLUNTEER",
+  "new_sprite": "SPRITE_TEACHER",
+  "tile": [5, 3],
+  "approach": [5, 4],
+  "preserved_paddler_script": "MN_INTERIOR_CABIN_PADDLER",
+  "lines": [
+    "DOROTHY is at the stand outside. I help look after the cabin.",
+    "Set your pack down. Your partners can rest here before the next portage.",
+    "Please carry your empty bottles out with you."
+  ],
+  "contracts": [
+    "There is exactly one outdoor Dorothy service actor; it remains unchanged.",
+    "The indoor volunteer is a distinct person, with a different native sprite and no self-identification as Dorothy or the Root Beer Lady.",
+    "Preserve the existing HealParty operation, dialogue acknowledgment boundary and all expedition counters, admission, inventory and fees.",
+    "Preserve both cabin exits, passive arrivals, terrain, the paddler and all unrelated story/art/audio content.",
+    "Preserve the hash-pinned original 187-room story input; apply this explicit revision after that story layer."
+  ]
+}

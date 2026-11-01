@@ -1,0 +1,21 @@
+{
+  "pack": "content-packs/minnesota-iron-crosscut-rock-cache-v02.crystalpack",
+  "pack_sha256": "bc38b8920bdc6d5e3c0e18ddac283aa4087e0020d694861f277d10314a3875d1",
+  "scope": "All Minnesota maps; exact native Mart with a tree replacing right roof component",
+  "findings": [
+    {
+      "map": "MnBrainerd",
+      "metatile": [
+        9,
+        9
+      ],
+      "blocks": [
+        "18",
+        "05",
+        "1a",
+        "17"
+      ],
+      "tileset": "mn_outdoor_johto_stairs"
+    }
+  ]
+}

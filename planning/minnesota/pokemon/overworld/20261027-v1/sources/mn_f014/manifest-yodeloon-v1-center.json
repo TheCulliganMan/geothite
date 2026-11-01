@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F014",
+  "species": [
+    {
+      "species_id": "MN_041",
+      "runtime_token": "YODELOON",
+      "palette_rgb555": [
+        32767,
+        27341,
+        17671,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        22970,
+        8433,
+        0
+      ],
+      "fit": [
+        13,
+        13
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 64,
+      "interior_black_samples": 64,
+      "opaque_interior_minimum_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "yodeloon.overworld.imagegen-v1.png",
+          "crop": [
+            107,
+            75,
+            399,
+            461
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "yodeloon.overworld.imagegen-v1.png",
+          "crop": [
+            569,
+            75,
+            399,
+            461
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "yodeloon.overworld.imagegen-v1.png",
+          "crop": [
+            1038,
+            75,
+            399,
+            461
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "yodeloon.overworld.imagegen-v1.png",
+          "crop": [
+            107,
+            519,
+            399,
+            461
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "yodeloon.overworld.imagegen-v1.png",
+          "crop": [
+            569,
+            519,
+            399,
+            461
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "yodeloon.overworld.imagegen-v1.png",
+          "crop": [
+            1038,
+            520,
+            399,
+            461
+          ]
+        }
+      ]
+    }
+  ]
+}

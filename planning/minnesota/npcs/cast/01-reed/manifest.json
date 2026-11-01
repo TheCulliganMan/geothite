@@ -1,0 +1,39 @@
+{
+  "name": "REED",
+  "role": "rival",
+  "user_direction": "overweight chud, not child",
+  "status": "accepted-native-playable-review-encounter",
+  "source": "native-pixels-v3.json",
+  "placement": "placement-v1.json",
+  "pack": "content-packs/minnesota-trainer-cast-01-v01.crystalpack",
+  "scope": "One actual Winona review encounter. Six story-arc rival scenes are absent from this current compact parent, and are not claimed complete. Halden remains the fourth Elite Four member.",
+  "reference_review": "actual-crystal-sprites-common-scale-and-native-size",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/cast/01-reed/native-pixels-v3.json": "5012214e8291d450f0a5a9b69c72427fd630446e13f9a0f26d5c8e802e0be665",
+    "planning/minnesota/npcs/cast/01-reed/placement-v1.json": "24731bf0ce1f40e0c91c43a4dd23bf38ff53191473096714ef0d75c7ec06cf1e",
+    "planning/minnesota/npcs/cast/01-reed/battle-reference-v1.png": "6d8d069c834bb958cb12ec5ca48ff040798fc95fe38beb42454d3c8bf78c64e8",
+    "planning/minnesota/npcs/cast/01-reed/battle-reference-prompt.txt": "2e3fbabaf478e8c66f6cce788727ce58c625a20c42af539ad032bb44e31ff0ba",
+    "target/trainer-cast/reed/real-comparison-v1.png": "dc4494b3102d19a0d60221b321a99f0fd319a8d1bc84bd233a1d052b57e96a63",
+    "target/trainer-cast/reed/controller-v1.log": "56aa54df274ee4753be5223e1706230adebed3444f9df7f78fe80651e039e03c",
+    "content-packs/minnesota-trainer-cast-01-v01.crystalpack": "8683c139937c5653bbe9c364857abf1634e7092a04dcd2a60bd49a2ce45467cf",
+    "target/trainer-cast/reed/gameplay-v1/original-npc-trainer-intro.png": "cbba49273b435dfd2b74025358405f63f8b2448c40d377dd94c35becf97f34cf",
+    "target/trainer-cast/reed/gameplay-v1/original-npc-overworld-state.png": "e44e5c5c2662ca06be6b941ead990d9da797b965263467c54afda8e726fab649",
+    "target/trainer-cast/reed/gameplay-v1/original-npc-first-turn.png": "4fd89e27ea37266e3f8d1e9b3616261d03081d0bddcf8580562ccea98d03bdee"
+  },
+  "native": "target/trainer-cast/reed/native-v3",
+  "controller": "placement-v1.json",
+  "gameplay": "target/trainer-cast/reed/gameplay-v1",
+  "log": "target/trainer-cast/reed/controller-v1.log",
+  "integration": "placement-v1.json",
+  "final_pack": "content-packs/minnesota-trainer-cast-36-v01.crystalpack",
+  "final_gameplay": "target/trainer-cast/final-audit/gameplay/01-reed",
+  "final_log": "target/trainer-cast/final-audit/gameplay/01-reed/controller.log",
+  "final_status": "accepted-native-playable-final-pack",
+  "final_review": "Actual battle intro and field captures inspected on exact final pack; art retains accepted native sources and palette.",
+  "final_evidence_sha256": {
+    "target/trainer-cast/final-audit/gameplay/01-reed/controller.log": "8e134dcaf3529472957e4d6604937f820ab7467b327da387a75e85d996dc6420",
+    "target/trainer-cast/final-audit/gameplay/01-reed/original-npc-trainer-intro.png": "cbba49273b435dfd2b74025358405f63f8b2448c40d377dd94c35becf97f34cf",
+    "target/trainer-cast/final-audit/gameplay/01-reed/original-npc-overworld-state.png": "ed963116c795b8ae34875e08df242471dc39b50430f71e5ea458f029f36abc55",
+    "target/trainer-cast/final-audit/gameplay/01-reed/original-npc-first-turn.png": "4fd89e27ea37266e3f8d1e9b3616261d03081d0bddcf8580562ccea98d03bdee"
+  }
+}

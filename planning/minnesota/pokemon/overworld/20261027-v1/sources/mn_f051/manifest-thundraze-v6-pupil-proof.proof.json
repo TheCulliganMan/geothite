@@ -1,0 +1,353 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_106",
+  "status": "source-proof-pass; root visual/context acceptance required",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/manifest-thundraze-v6-pupil-proof.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f051/thundraze-v6-pupil-proof",
+  "shared_transform": {
+    "source_bounds": [
+      7,
+      32,
+      490,
+      377
+    ],
+    "native_size": [
+      14,
+      10
+    ],
+    "native_origin": [
+      1,
+      5
+    ]
+  },
+  "all_four_nonrear_poses_have_actual_source_pupils": true,
+  "every_native_eye_cluster_maps_to_same_small_anatomical_source_pupil_component": true,
+  "actual_source_pupil_proofs": [
+    {
+      "pose": "down_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/thundraze.overworld.imagegen-v5-front-pupil-pitch.png",
+      "crop": [
+        4,
+        80,
+        520,
+        410
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          188,
+          344,
+          36,
+          36
+        ],
+        [
+          289,
+          344,
+          36,
+          36
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              11
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                188,
+                344,
+                36,
+                36
+              ],
+              "pixels": 1296,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                11
+              ],
+              "source_sample_pixel": [
+                203,
+                357
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              9,
+              11
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                289,
+                344,
+                36,
+                36
+              ],
+              "pixels": 1296,
+              "truncated_contour": false,
+              "native_pixel": [
+                9,
+                11
+              ],
+              "source_sample_pixel": [
+                308,
+                357
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/thundraze.overworld.imagegen-v6-profile-pupil-pitch.png",
+      "crop": [
+        991,
+        85,
+        520,
+        410
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          1120,
+          339,
+          28,
+          29
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              4,
+              11
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                5,
+                4,
+                0,
+                254
+              ],
+              "bounds": [
+                1120,
+                339,
+                28,
+                29
+              ],
+              "pixels": 794,
+              "truncated_contour": false,
+              "native_pixel": [
+                4,
+                11
+              ],
+              "source_sample_pixel": [
+                1120,
+                362
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/thundraze.overworld.imagegen-v5-front-pupil-pitch.png",
+      "crop": [
+        4,
+        526,
+        520,
+        410
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          187,
+          788,
+          36,
+          36
+        ],
+        [
+          290,
+          788,
+          36,
+          36
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              11
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                187,
+                788,
+                36,
+                36
+              ],
+              "pixels": 1296,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                11
+              ],
+              "source_sample_pixel": [
+                203,
+                803
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              9,
+              11
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                254
+              ],
+              "bounds": [
+                290,
+                788,
+                36,
+                36
+              ],
+              "pixels": 1264,
+              "truncated_contour": false,
+              "native_pixel": [
+                9,
+                11
+              ],
+              "source_sample_pixel": [
+                308,
+                803
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/thundraze.overworld.imagegen-v6-profile-pupil-pitch.png",
+      "crop": [
+        993,
+        533,
+        520,
+        410
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          1120,
+          787,
+          27,
+          28
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              4,
+              11
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                5,
+                4,
+                0,
+                254
+              ],
+              "bounds": [
+                1120,
+                787,
+                27,
+                28
+              ],
+              "pixels": 756,
+              "truncated_contour": false,
+              "native_pixel": [
+                4,
+                11
+              ],
+              "source_sample_pixel": [
+                1122,
+                810
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "native_head_anchors_idle_walk_equal": true,
+  "validation": {
+    "runtime_2bpp_384_bytes_exact_allpixels": true,
+    "runtime_png16x96_index_parity": true,
+    "normal_shiny_palettebanks_exact": true,
+    "normal_shiny_all1536pixels_exact": true,
+    "transparent_border": true,
+    "idle_walk_pairs_distinct": true
+  },
+  "sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f051/thundraze-v6-pupil-proof/compiled-index.json": "3edc741b71bf8e393685f97fe17f288b47fe8ef17f6a09f993995e8917aecc75",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f051/thundraze-v6-pupil-proof/gfx/pokemon/thundraze/overworld.2bpp": "1ebe263c7b5ac520d47d0eee06843e727ce4454312a918b1028eec1e41d25fac",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/thundraze.overworld.imagegen-v3-profile-eyes.png": "be39cd0869b933345054acf320836ea8ec39a4cdd334fb64543201cf158c9010",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/manifest-thundraze-v6-pupil-proof.json": "c5c0b973fca8120ab59037ed54f3928362b96ecf5a3727f817cae4c304de00ba",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f051/thundraze-v6-pupil-proof/review/line.shiny-8x.png": "f925064df25b2a1c6a6a095667662ff74724f800e4c69f6fd7c4b4c03487ab9c",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/thundraze.overworld.imagegen-v6-profile-pupil-pitch.png": "18cf4eb73ed7bed2c238874956cf53a4fc61d76a628fe525a832f34b51031527",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f051/thundraze-v6-pupil-proof/gfx/pokemon/thundraze/overworld-shiny.gbcpal": "f6696a4be65958ca0564f820511c5a9cdb12f1cd02870acddb4ce8f1c0f0de8c",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f051/thundraze-v6-pupil-proof/review/line.normal-8x.png": "df9324279d7cd679c0d751bd47a167326791ea42c510affe23d31e4dc7599504",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f051/thundraze-v6-pupil-proof/gfx/pokemon/thundraze/overworld.png": "2c96762de4e3d1094c86cc38f75ad28cc61e164fb39a6c1fd44daf7dbdd9761a",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/thundraze.overworld.imagegen-v5-front-pupil-pitch.png": "61c0ab5a30ccf078d3501a557ba11fc432b5af896f733522b77e8673a829b6ec",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f051/thundraze-v6-pupil-proof/gfx/pokemon/thundraze/overworld.gbcpal": "68efae051267429acaf2cab089df41cf0571bc78d7cc28c82bb16a2631540b10"
+  },
+  "actual_native_boards_viewed": true,
+  "rear_review": "plain rear head, no copied face; actual normal/shiny viewed"
+}

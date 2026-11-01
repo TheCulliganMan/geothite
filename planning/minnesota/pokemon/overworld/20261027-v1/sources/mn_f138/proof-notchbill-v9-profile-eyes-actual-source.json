@@ -1,0 +1,210 @@
+{
+  "species": "notchbill",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f138/notchbill-v9-profile-eyes",
+  "status": "actual-source native proof passes; root visual/context acceptance pending",
+  "all_four_nonrear_actual_isolated_source_pupils": true,
+  "six16px_alpha_border_normal_shiny_runtime_parity": true,
+  "canonical_palettes": true,
+  "proof": [
+    {
+      "pose": "down_idle",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            6,
+            6
+          ],
+          "source_sample": [
+            174,
+            315
+          ],
+          "source_component": [
+            162,
+            302,
+            21,
+            21
+          ],
+          "component_pixels": 441,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            254
+          ]
+        },
+        {
+          "native": [
+            8,
+            6
+          ],
+          "source_sample": [
+            241,
+            315
+          ],
+          "source_component": [
+            236,
+            302,
+            21,
+            21
+          ],
+          "component_pixels": 441,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            254
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            6,
+            6
+          ],
+          "source_sample": [
+            1003,
+            315
+          ],
+          "source_component": [
+            974,
+            286,
+            34,
+            37
+          ],
+          "component_pixels": 1236,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            6,
+            6
+          ],
+          "source_sample": [
+            174,
+            831
+          ],
+          "source_component": [
+            162,
+            815,
+            22,
+            21
+          ],
+          "component_pixels": 445,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            254
+          ]
+        },
+        {
+          "native": [
+            8,
+            6
+          ],
+          "source_sample": [
+            241,
+            831
+          ],
+          "source_component": [
+            236,
+            815,
+            21,
+            21
+          ],
+          "component_pixels": 441,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            3,
+            1,
+            1,
+            254
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            6,
+            6
+          ],
+          "source_sample": [
+            1003,
+            832
+          ],
+          "source_component": [
+            974,
+            802,
+            34,
+            36
+          ],
+          "component_pixels": 1224,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ]
+        }
+      ]
+    }
+  ],
+  "hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f138/notchbill-v9-profile-eyes/compiled-index.json": "72dc775e9bc30fc283c31bd6ceb17a2df452288fdb139c812c081dfce1a7f0f8",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f138/notchbill.overworld.imagegen-v6-raised-eyes.png": "2e3e8da0fb6cf3aa5e71585dc5f5a0c71bc5bc64f6dc07d9b8652a5c90942805",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f138/notchbill.overworld.imagegen-v8-profile-eyes.png": "650eb6e900b52bde327ffbf72eee10c4497d5501e4769b1ed5152fdfd09f41d0"
+  },
+  "no_native_pixel_painting": true
+}

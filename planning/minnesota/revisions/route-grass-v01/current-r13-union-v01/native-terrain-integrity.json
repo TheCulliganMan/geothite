@@ -1,0 +1,23 @@
+{
+  "status": "PASS",
+  "parent_pack": "content-packs/minnesota-interiors-selected-r12-v01.crystalpack",
+  "parent_sha256": "1d60940da0f42dbce7bd5a595ccd8d8b8d68c2e84dcfa4ca505c67d5abd6595b",
+  "pack": "content-packs/minnesota-current-grass-r13-union-v01.crystalpack",
+  "sha256": "87bba9f81e3a6b56eaf9f92641eacc5a0b4be185bb65ac62c42a5d81eb6f7d65",
+  "maps": 730,
+  "changed_metatiles": 19,
+  "all_floor_to_native_grass": true,
+  "ice_Cut_ledge_metatiles_exact": 6,
+  "coast_exact_and_zero_ice_including_script_changes": [
+    "MnDuluth",
+    "MnGrandMarais",
+    "MnR11C00R00",
+    "MnR11C00R01",
+    "MnR11C00R02",
+    "MnR11C00R03",
+    "MnR11C01R00",
+    "MnR11C01R01",
+    "MnR11C01R02",
+    "MnR11C01R03"
+  ]
+}

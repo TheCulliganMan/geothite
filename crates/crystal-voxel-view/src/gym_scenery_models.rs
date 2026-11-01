@@ -1,0 +1,240 @@
+//! Cached original Gym scenery prototypes; source bindings live separately.
+use super::Model;
+use std::sync::OnceLock;
+#[path = "gym_scenery_occlusion.rs"]
+mod occlusion;
+pub(crate) fn gym_model(index: usize) -> &'static Model {
+    static MODELS: OnceLock<Vec<Model>> = OnceLock::new();
+    &MODELS.get_or_init(|| {
+        [
+            crate::model_storage::include_model!("models/gym_scenery/planter_leafy.mesh.json"),
+            crate::model_storage::include_model!("models/gym_scenery/planter_round.mesh.json"),
+            crate::model_storage::include_model!(
+                "models/gym_scenery/azalea_broad_tree.mesh.json"
+            ),
+            crate::model_storage::include_model!(
+                "models/gym_scenery/celadon_round_hedge.mesh.json"
+            ),
+            crate::model_storage::include_model!("models/gym_scenery/maze_wall_00.mesh.json"),
+            crate::model_storage::include_model!("models/gym_scenery/maze_wall_01.mesh.json"),
+            crate::model_storage::include_model!("models/gym_scenery/maze_wall_02.mesh.json"),
+            crate::model_storage::include_model!("models/gym_scenery/maze_wall_03.mesh.json"),
+            crate::model_storage::include_model!("models/gym_scenery/maze_wall_04.mesh.json"),
+            crate::model_storage::include_model!("models/gym_scenery/maze_wall_05.mesh.json"),
+            crate::model_storage::include_model!("models/gym_scenery/maze_wall_06.mesh.json"),
+            crate::model_storage::include_model!("models/gym_scenery/maze_wall_07.mesh.json"),
+            crate::model_storage::include_model!("models/gym_scenery/maze_wall_08.mesh.json"),
+            crate::model_storage::include_model!("models/gym_scenery/maze_wall_09.mesh.json"),
+            crate::model_storage::include_model!("models/gym_scenery/maze_wall_0a.mesh.json"),
+            crate::model_storage::include_model!("models/gym_scenery/maze_wall_0b.mesh.json"),
+            crate::model_storage::include_model!("models/gym_scenery/maze_wall_0c.mesh.json"),
+            crate::model_storage::include_model!("models/gym_scenery/maze_wall_0d.mesh.json"),
+            crate::model_storage::include_model!("models/gym_scenery/maze_wall_0e.mesh.json"),
+            crate::model_storage::include_model!("models/gym_scenery/maze_wall_0f.mesh.json"),
+        ]
+        .into_iter()
+        .enumerate()
+        .map(|(index, source)| {
+            let parsed = if index < 2 {
+                occlusion::parse_planter(source)
+            } else {
+                Model::parse(source)
+            };
+            parsed.expect("validated original Gym model")
+        })
+        .collect()
+    })[index]
+}
+/// Ordinals of internal triangles with source-proven complete neighbor cover.
+/// The public model and full terrain mesh remain unchanged. Only the runtime
+/// draw partition consumes these ordinals, retaining their complete geometry.
+pub(crate) fn gym_wall_join_triangles(exposed: u8, covered: u8) -> &'static [usize] {
+    let exposed = exposed & 15;
+    let covered = covered & !exposed & 15;
+    static BATCHES: OnceLock<Vec<OnceLock<Vec<usize>>>> = OnceLock::new();
+    BATCHES.get_or_init(|| (0..256).map(|_| OnceLock::new()).collect())
+        [usize::from(exposed) * 16 + usize::from(covered)]
+    .get_or_init(|| {
+        let model = gym_model(4 + usize::from(exposed));
+        model
+            .surface
+            .indices
+            .chunks_exact(3)
+            .enumerate()
+            .filter_map(|(ordinal, triangle)| {
+                covered_join_triangle(model, triangle, covered).then_some(ordinal)
+            })
+            .collect()
+    })
+}
+
+fn covered_join_triangle(model: &Model, indices: &[u32], covered: u8) -> bool {
+    // N/E/S/W use the export's +Y up, +Z south coordinates. Exact plane and
+    // outward-normal checks retain beveled, inset, or non-boundary geometry.
+    [
+        (1, 2, model.min[2], -1.0),
+        (2, 0, model.max[0], 1.0),
+        (4, 2, model.max[2], 1.0),
+        (8, 0, model.min[0], -1.0),
+    ]
+    .into_iter()
+    .any(|(bit, axis, plane, direction)| {
+        covered & bit != 0
+            && indices.iter().all(|&i| {
+                model.surface.positions[i as usize][axis] == plane
+                    && model.surface.normals[i as usize][axis] == direction
+            })
+    })
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn gym_prototypes_decode_and_fit_finite_closed_volume_bounds() {
+        for index in 0..20 {
+            let mut mesh = crate::mesh::SurfaceMeshData::default();
+            gym_model(index).append(&mut mesh, [-8., 8., 16., 32.], 0., 12.);
+            assert!(!mesh.indices.is_empty());
+            assert!(mesh
+                .positions
+                .iter()
+                .all(|p| p.iter().all(|v| v.is_finite())
+                    && p[0] >= -8.001
+                    && p[0] <= 8.001
+                    && p[1] >= -0.001
+                    && p[1] <= 12.001
+                    && p[2] >= 15.999
+                    && p[2] <= 32.001));
+        }
+    }
+    #[test]
+    fn every_removed_join_triangle_is_inside_the_actual_neighbor_prism() {
+        let sources = [
+            crate::model_storage::include_model!("models/gym_scenery/maze_wall_00.mesh.json"),
+            crate::model_storage::include_model!("models/gym_scenery/maze_wall_01.mesh.json"),
+            crate::model_storage::include_model!("models/gym_scenery/maze_wall_02.mesh.json"),
+            crate::model_storage::include_model!("models/gym_scenery/maze_wall_03.mesh.json"),
+            crate::model_storage::include_model!("models/gym_scenery/maze_wall_04.mesh.json"),
+            crate::model_storage::include_model!("models/gym_scenery/maze_wall_05.mesh.json"),
+            crate::model_storage::include_model!("models/gym_scenery/maze_wall_06.mesh.json"),
+            crate::model_storage::include_model!("models/gym_scenery/maze_wall_07.mesh.json"),
+            crate::model_storage::include_model!("models/gym_scenery/maze_wall_08.mesh.json"),
+            crate::model_storage::include_model!("models/gym_scenery/maze_wall_09.mesh.json"),
+            crate::model_storage::include_model!("models/gym_scenery/maze_wall_0a.mesh.json"),
+            crate::model_storage::include_model!("models/gym_scenery/maze_wall_0b.mesh.json"),
+            crate::model_storage::include_model!("models/gym_scenery/maze_wall_0c.mesh.json"),
+            crate::model_storage::include_model!("models/gym_scenery/maze_wall_0d.mesh.json"),
+            crate::model_storage::include_model!("models/gym_scenery/maze_wall_0e.mesh.json"),
+            crate::model_storage::include_model!("models/gym_scenery/maze_wall_0f.mesh.json"),
+        ];
+        let exports: Vec<super::super::Export> = sources
+            .into_iter()
+            .map(|source| crate::model_storage::parse(source).unwrap())
+            .collect();
+        let mut checked = 0;
+        let mut triangles = 0;
+        for own in 0..16_u8 {
+            for (bit, opposite, axis, plane, direction, perpendicular) in [
+                (1, 4, 2, -0.5, -1.0, 10),
+                (2, 8, 0, 0.5, 1.0, 5),
+                (4, 1, 2, 0.5, 1.0, 10),
+                (8, 2, 0, -0.5, -1.0, 5),
+            ] {
+                if own & bit != 0 {
+                    continue;
+                }
+                for neighbor in 0..16_u8 {
+                    if neighbor & opposite != 0 || neighbor & perpendicular & !own != 0 {
+                        continue;
+                    }
+                    checked += 1;
+                    let mut removed = 0;
+                    for (part, source) in exports[usize::from(own)].primitives.iter().enumerate() {
+                        for tri in source.indices.chunks_exact(3) {
+                            if !tri.iter().all(|&i| {
+                                source.positions[i as usize * 3 + axis] == plane
+                                    && source.normals[i as usize * 3 + axis] == direction
+                            }) {
+                                continue;
+                            }
+                            assert!(source.name.starts_with("Closed masonry")
+                                || source.name.starts_with("Continuous recessed")
+                                || source.name.starts_with("Closed dressed-stone")
+                                || source.name.starts_with("Continuous coping")
+                                || source.name.starts_with("Beveled continuous stone coping"),
+                                "only closed masonry and coping parts may reach a join");
+                            let points = tri.iter().map(|&i| {
+                                let mut point = bevy::prelude::Vec3::from_slice(
+                                    &source.positions[i as usize * 3..i as usize * 3 + 3]);
+                                point[axis] -= direction;
+                                point
+                            }).collect::<Vec<_>>();
+                            // Beveled coping and the masonry courses are closed convex parts.
+                            // Require one actual neighboring part to contain
+                            // the entire triangle, rather than its bounding box.
+                            let contained = exports[usize::from(neighbor)].primitives.iter().any(|other| {
+                                other.indices.chunks_exact(3).all(|face| {
+                                    let [a,b,c] = [face[0],face[1],face[2]].map(|i|
+                                        bevy::prelude::Vec3::from_slice(
+                                            &other.positions[i as usize * 3..i as usize * 3 + 3]));
+                                    let normal = (b-a).cross(c-a).normalize();
+                                    points.iter().all(|point|normal.dot(*point-a)<=0.00001)
+                                })
+                            });
+                            assert!(contained,
+                                "join leaves closed neighbor: own={own} neighbor={neighbor} side={bit} part={part}");
+                            removed += 1;
+                        }
+                    }
+                    // The original four courses contribute eight triangles;
+                    // the beveled coping splits its joined face at the bevel datum.
+                    // Every selected triangle above must still be contained in
+                    // one actual convex part of the neighboring module.
+                    assert_eq!(removed, 10);
+                    triangles += removed;
+                }
+            }
+        }
+        assert_eq!((checked, triangles), (144, 1440));
+    }
+}
+
+/// The source flower drawing owns the same authored wooden container, but
+/// not the clipped shrub crowns. Retain named container parts verbatim.
+pub(crate) fn gym_flower_planter_base() -> &'static Model {
+    static BASE: OnceLock<Model> = OnceLock::new();
+    BASE.get_or_init(|| {
+        let mut source: serde_json::Value = crate::model_storage::parse(
+            crate::model_storage::include_model!("models/gym_scenery/planter_round.mesh.json"))
+            .expect("named flower container source");
+        assert_eq!(source["name"].as_str(),Some("planter_round"));
+        let parts=source["primitives"].as_array_mut().expect("named planter parts");
+        assert!(parts.iter().all(|p|matches!(p["name"].as_str().and_then(|n|n.rsplit(':').next()),
+            Some("oak"|"oak_light"|"oak_end"|"soil"|"brass"|"bark"|"leaf"|"leaf_light"|"leaf_gold"))));
+        parts.retain(|p|matches!(p["name"].as_str().and_then(|n|n.rsplit(':').next()),
+            Some("oak"|"oak_light"|"oak_end"|"soil"|"brass")));
+        assert!(!parts.is_empty());
+        let mut model=Model::parse(serde_json::to_string(&source).expect("retained container parts").as_str())
+            .expect("validated flower container");
+        // Keep the original assembly's fit; removing the canopy must not
+        // stretch the wooden container to the full plant height.
+        model.min=gym_model(1).min;model.max=gym_model(1).max;
+        model
+    })
+}
+
+#[cfg(test)]
+mod flower_tests {
+    use super::*;
+    #[test]
+    fn gym_planter_flower_container_preserves_named_cache_and_original_fit() {
+        let ordinary=gym_model(1);let before=ordinary.surface.clone();
+        let base=gym_flower_planter_base();
+        assert_eq!(base.min,ordinary.min);assert_eq!(base.max,ordinary.max);
+        assert!(base.surface.positions.iter().all(|p|p[1]<ordinary.max[1]*0.6));
+        assert!(base.surface.indices.len()<ordinary.surface.indices.len());
+        assert_eq!(gym_model(1).surface,before);
+        assert!(std::ptr::eq(base,gym_flower_planter_base()));
+    }
+}

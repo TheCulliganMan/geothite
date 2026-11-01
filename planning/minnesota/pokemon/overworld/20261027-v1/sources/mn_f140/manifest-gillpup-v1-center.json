@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F140",
+  "species": [
+    {
+      "species_id": "MN_310",
+      "runtime_token": "GILLPUP",
+      "palette_rgb555": [
+        32767,
+        26380,
+        12567,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        11960,
+        22825,
+        0
+      ],
+      "fit": [
+        12,
+        12
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 64,
+      "interior_black_samples": 64,
+      "opaque_interior_minimum_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "gillpup.overworld.imagegen-v1.png",
+          "crop": [
+            109,
+            171,
+            408,
+            328
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "gillpup.overworld.imagegen-v1.png",
+          "crop": [
+            569,
+            171,
+            408,
+            328
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "gillpup.overworld.imagegen-v1.png",
+          "crop": [
+            1029,
+            194,
+            408,
+            328
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "gillpup.overworld.imagegen-v1.png",
+          "crop": [
+            109,
+            559,
+            408,
+            328
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "gillpup.overworld.imagegen-v1.png",
+          "crop": [
+            569,
+            559,
+            408,
+            328
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "gillpup.overworld.imagegen-v1.png",
+          "crop": [
+            1029,
+            576,
+            408,
+            328
+          ]
+        }
+      ]
+    }
+  ]
+}

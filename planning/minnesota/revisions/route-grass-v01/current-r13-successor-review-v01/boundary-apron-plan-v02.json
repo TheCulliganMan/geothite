@@ -1,0 +1,33 @@
+{
+  "status": "RESTORE_EXISTING_AUTHORED_APRON",
+  "selected_revision": "route_grass_r13_pine_revision",
+  "pack": "content-packs/minnesota-current-r13-south-woods-grass-v01.crystalpack",
+  "pack_sha256": "10cd75cf9de2578966560721755ee761129d84d5e02122e174df07331f84679d",
+  "route_north_open_core_columns": [
+    30,
+    31
+  ],
+  "boundary_south_open_core_columns": [
+    32,
+    33
+  ],
+  "current_offsets": [
+    0,
+    0
+  ],
+  "native_evidence": [
+    ".local/route-grass-review/r13-full-route-diagnostic-v03.log",
+    ".local/route-grass-review/r13-full-route-v04.log",
+    ".local/route-grass-review/r13-full-route-v05.log"
+  ],
+  "scope": "Full current route acceptance is pending; earlier southern grass crossing and Cut acceptance remain valid. No save or content was changed to bypass the defect.",
+  "rejected_error": "inconsistent outdoor placement: MnBoundaryWaters/MnR12C00R00",
+  "source": "planning/minnesota/routes/MN_R13.layout.json",
+  "source_position_metatiles": [
+    16,
+    0
+  ],
+  "before_block": "8b",
+  "after_block": "83",
+  "connection_offsets_unchanged": true
+}

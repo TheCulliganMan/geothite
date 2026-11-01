@@ -1,0 +1,237 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F142",
+  "status": "native-front-back-candidate",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f142/prompt-v2-face.txt",
+  "back_framing": "independent-gen2-close-upper-rear-portrait",
+  "pokemon_palettes": {
+    "MN_314": {
+      "species_id": "MN_314",
+      "name": "Dewbit",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          18,
+          25,
+          7
+        ],
+        [
+          20,
+          5,
+          12
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        7986,
+        12468,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          148,
+          206,
+          57
+        ],
+        [
+          165,
+          41,
+          99
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#94CE39",
+        "#A52963",
+        "#000000"
+      ]
+    },
+    "MN_315": {
+      "species_id": "MN_315",
+      "name": "Glisnare",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          29,
+          17,
+          6
+        ],
+        [
+          4,
+          13,
+          9
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        6717,
+        9636,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          239,
+          140,
+          49
+        ],
+        [
+          33,
+          107,
+          74
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#EF8C31",
+        "#216B4A",
+        "#000000"
+      ]
+    }
+  },
+  "sprites": [
+    {
+      "id": "mn-314-dewbit-v2",
+      "species_id": "MN_314",
+      "view": "front",
+      "source": "sprites/mn-f142/front-back.imagegen-v2.png",
+      "crop": [
+        0,
+        0,
+        720,
+        550
+      ],
+      "fit": [
+        44,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        7986,
+        12468,
+        0
+      ],
+      "sampling": "area_vote",
+      "exterior_contour": "solid",
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 12
+    },
+    {
+      "id": "mn-314-dewbit-v2",
+      "species_id": "MN_314",
+      "view": "back",
+      "source": "sprites/mn-f142/front-back.imagegen-v2.png",
+      "crop": [
+        0,
+        550,
+        720,
+        474
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        7986,
+        12468,
+        0
+      ],
+      "sampling": "area_vote",
+      "exterior_contour": "solid",
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 12
+    },
+    {
+      "id": "mn-315-glisnare-v2",
+      "species_id": "MN_315",
+      "view": "front",
+      "source": "sprites/mn-f142/front-back.imagegen-v2.png",
+      "crop": [
+        720,
+        0,
+        816,
+        550
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        6717,
+        9636,
+        0
+      ],
+      "sampling": "area_vote",
+      "exterior_contour": "solid",
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 12
+    },
+    {
+      "id": "mn-315-glisnare-v2",
+      "species_id": "MN_315",
+      "view": "back",
+      "source": "sprites/mn-f142/front-back.imagegen-v2.png",
+      "crop": [
+        720,
+        550,
+        816,
+        474
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        6717,
+        9636,
+        0
+      ],
+      "sampling": "area_vote",
+      "exterior_contour": "solid",
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 12
+    }
+  ],
+  "source_sha256": "3b5b229c1461842e323cc57c5638bdfdce986c76b068b2c129e4727116062690"
+}

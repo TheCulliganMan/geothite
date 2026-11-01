@@ -1,0 +1,129 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F068",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_147": {
+      "species_id": "MN_147",
+      "name": "Crowscare",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          25,
+          19,
+          10
+        ],
+        [
+          8,
+          6,
+          11
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        10873,
+        11464,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          206,
+          156,
+          82
+        ],
+        [
+          66,
+          49,
+          90
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#CE9C52",
+        "#42315A",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f068/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png",
+      "target/minnesota-pokemon/gen2-reference/bugs.png"
+    ]
+  },
+  "sprites": [
+    {
+      "id": "mn-147-crowscare-v1",
+      "species_id": "MN_147",
+      "view": "front",
+      "source": "sprites/mn-f068/mn-147.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        1024,
+        800
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        10873,
+        11464,
+        0
+      ]
+    },
+    {
+      "id": "mn-147-crowscare-v1",
+      "species_id": "MN_147",
+      "view": "back",
+      "source": "sprites/mn-f068/mn-147.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        800,
+        1024,
+        736
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        10873,
+        11464,
+        0
+      ]
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "notes": "Final source-contour-v1 board visually inspected: hollow straw head, white slanted eyes, crooked talons and living crow shadow remain distinct. Black shadow mass is intentional anatomy, gold straw and violet rim accents preserve shape. Close rear portrait shows crow inside head, straw shoulder structure and cropped lower torso. No detached exterior outline debris or neighboring crop fragments seen.",
+    "sheet_sha256": "4599d0d916ff785c2e16c91a3d1247fa43570f045430970ff8c71c3c03c8b04a",
+    "outline_profile": "source-contour-v1"
+  }
+}

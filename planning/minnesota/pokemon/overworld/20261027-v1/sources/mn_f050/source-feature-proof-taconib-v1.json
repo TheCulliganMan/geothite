@@ -1,0 +1,215 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_101",
+  "result": "pass",
+  "manifest_sha256": "edde1e4b9865f3112f3bf636f8b8bcbd5382c7d569e6a4f9f1417efaf7abf1b3",
+  "bank_sha256": "ef637733c11fe6e65d707ce0a8a0f165d6e6825c7c73a6f10fa8f08337b1d612",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f050/taconib.overworld.imagegen-v1.png": "55b5c20cc41e12e31153e7289bc0aff291887ecd02cb0a99aca1da00c117cfac"
+  },
+  "canonical_eye_form": "Two actual black pupils in each south face and one actual black pupil in each west cheek; exact source connected components, never substitute contour dots.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            6,
+            11
+          ],
+          "source_sample": [
+            232,
+            402
+          ],
+          "source_rgba": [
+            3,
+            2,
+            1,
+            253
+          ],
+          "actual_source_pupil_component": [
+            216,
+            389,
+            27,
+            39
+          ],
+          "component_pixels": 932,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "native": [
+            9,
+            11
+          ],
+          "source_sample": [
+            337,
+            402
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            254
+          ],
+          "actual_source_pupil_component": [
+            313,
+            389,
+            27,
+            39
+          ],
+          "component_pixels": 932,
+          "native_neighbors": [
+            1,
+            2,
+            2,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            4,
+            10
+          ],
+          "source_sample": [
+            1142,
+            342
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ],
+          "actual_source_pupil_component": [
+            1125,
+            314,
+            27,
+            38
+          ],
+          "component_pixels": 903,
+          "native_neighbors": [
+            1,
+            2,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            6,
+            11
+          ],
+          "source_sample": [
+            232,
+            817
+          ],
+          "source_rgba": [
+            3,
+            2,
+            2,
+            253
+          ],
+          "actual_source_pupil_component": [
+            216,
+            804,
+            27,
+            38
+          ],
+          "component_pixels": 905,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "native": [
+            9,
+            11
+          ],
+          "source_sample": [
+            337,
+            817
+          ],
+          "source_rgba": [
+            1,
+            1,
+            1,
+            254
+          ],
+          "actual_source_pupil_component": [
+            314,
+            804,
+            26,
+            38
+          ],
+          "component_pixels": 868,
+          "native_neighbors": [
+            1,
+            2,
+            2,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            4,
+            10
+          ],
+          "source_sample": [
+            1142,
+            761
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ],
+          "actual_source_pupil_component": [
+            1125,
+            732,
+            27,
+            39
+          ],
+          "component_pixels": 885,
+          "native_neighbors": [
+            1,
+            2,
+            1,
+            1
+          ]
+        }
+      ]
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "notes": "Both true full rear bodies retain blank skull backs, two horn backs, three broad ore bands, short four-leg stance and low curled tail. Front has four stub-leg projections; west far legs naturally overlap near legs. The small original cheek glint becomes palette ink1, not an extra opaque color. Source fit is shared12x12 across all six poses; the bands simplify into broad slate rows at native scale. All six normal/shiny native poses actually inspected; three movement pairs distinct, transparent one-pixel border and max14x14 body verified."
+  }
+}

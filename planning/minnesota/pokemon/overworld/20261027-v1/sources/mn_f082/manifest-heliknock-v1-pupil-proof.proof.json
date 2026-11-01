@@ -1,0 +1,271 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_179",
+  "status": "source-proof-pass; root visual/context acceptance required",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f082/manifest-heliknock-v1-pupil-proof.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f082/heliknock-v1-pupil-proof",
+  "shared_transform": {
+    "source_bounds": [
+      17,
+      10,
+      425,
+      377
+    ],
+    "native_size": [
+      14,
+      12
+    ],
+    "native_origin": [
+      1,
+      3
+    ]
+  },
+  "all_four_nonrear_poses_have_actual_source_pupils": true,
+  "every_native_eye_cluster_maps_to_same_small_anatomical_source_pupil_component": true,
+  "actual_source_pupil_proofs": [
+    {
+      "pose": "down_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f082/heliknock.overworld.imagegen-v1.png",
+      "crop": [
+        61,
+        92,
+        460,
+        410
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          288,
+          238,
+          24,
+          36
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              8,
+              7
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                288,
+                238,
+                24,
+                36
+              ],
+              "pixels": 864,
+              "truncated_contour": false,
+              "native_pixel": [
+                8,
+                7
+              ],
+              "source_sample_pixel": [
+                305,
+                243
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f082/heliknock.overworld.imagegen-v1.png",
+      "crop": [
+        1036,
+        94,
+        460,
+        410
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          1138,
+          238,
+          24,
+          36
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              4,
+              7
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                1,
+                1,
+                1,
+                253
+              ],
+              "bounds": [
+                1138,
+                238,
+                24,
+                36
+              ],
+              "pixels": 864,
+              "truncated_contour": false,
+              "native_pixel": [
+                4,
+                7
+              ],
+              "source_sample_pixel": [
+                1159,
+                245
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f082/heliknock.overworld.imagegen-v1.png",
+      "crop": [
+        61,
+        545,
+        460,
+        410
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          288,
+          691,
+          25,
+          34
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              8,
+              7
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                288,
+                691,
+                25,
+                34
+              ],
+              "pixels": 850,
+              "truncated_contour": false,
+              "native_pixel": [
+                8,
+                7
+              ],
+              "source_sample_pixel": [
+                305,
+                696
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f082/heliknock.overworld.imagegen-v1.png",
+      "crop": [
+        1059,
+        552,
+        460,
+        410
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          1161,
+          698,
+          23,
+          34
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              4,
+              7
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                5,
+                4,
+                3,
+                253
+              ],
+              "bounds": [
+                1161,
+                698,
+                23,
+                34
+              ],
+              "pixels": 771,
+              "truncated_contour": false,
+              "native_pixel": [
+                4,
+                7
+              ],
+              "source_sample_pixel": [
+                1182,
+                703
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "native_head_anchors_idle_walk_equal": true,
+  "validation": {
+    "runtime_2bpp_384_bytes_exact_allpixels": true,
+    "runtime_png16x96_index_parity": true,
+    "normal_shiny_palettebanks_exact": true,
+    "normal_shiny_all1536pixels_exact": true,
+    "transparent_border": true,
+    "idle_walk_pairs_distinct": true
+  },
+  "sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f082/heliknock-v1-pupil-proof/gfx/pokemon/heliknock/overworld.png": "43c6d32ff4640fa34c0661d3fff809b111c90c1c7a0e44bcd9f0891665c401dc",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f082/heliknock-v1-pupil-proof/compiled-index.json": "4a6bc32c0aae53fdc5609b3d6edcb3ea66744df857e64eb352e38ad464227215",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f082/heliknock-v1-pupil-proof/review/line.shiny-8x.png": "03b6d5f3d2571ac5ed1d2f527b4098978bada5f03eedf53da4d1b5611c8069a3",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f082/heliknock-v1-pupil-proof/gfx/pokemon/heliknock/overworld.2bpp": "9b8c109bf1560e58531da29ca16afb17ec3a680f13f82738c72e927e64edc775",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f082/heliknock.overworld.imagegen-v1.png": "e07845fd60b0439e36f3301106bea0734af4e62c8fb8c651b19e187f3f90d165",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f082/heliknock-v1-pupil-proof/review/line.normal-8x.png": "5e3892ee4949ccbec0867f33eae1aa1b4ae93405b590800c616402bcd4e981fe",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f082/heliknock-v1-pupil-proof/gfx/pokemon/heliknock/overworld-shiny.gbcpal": "f41a1eb55806f7dbd0ca767300ce63698a0cb2ef1fce30f674b3ab88363d0d10",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f082/manifest-heliknock-v1-pupil-proof.json": "2f157777ae1eba419d609dec016fcad4f8921ccd18948fbae796d6b33e03fa2e",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f082/heliknock-v1-pupil-proof/gfx/pokemon/heliknock/overworld.gbcpal": "915148b80a8f39876dd21a2a835e527eb5ab3a9ef609c57e5b343cbb9e7e1806"
+  },
+  "actual_native_boards_viewed": true,
+  "rear_review": "plain rear head, no copied face; actual normal/shiny viewed",
+  "canonical_eye_form": "ONE actual central cyclops pupil in each nonrear pose, isolated on ochre face between shoulder hooks; no second eye invented. Every native pupil pixel maps to same actual small source pupil component, not horn tip or spiral seam.",
+  "signature_anatomy_review": "Actual six native normal/shiny views inspected. Broad paired crescent shoulder hooks curve outward/down with transparent inner gaps, widened14x12 silhouette vs baby11x12, three source spiral turns simplify into ochre/violet broad alternating pedestal bands. No invented feet/arms. Rear head blank, profile one true near pupil. Sole and hooked shoulders counter-sway for gait; head anchors stable."
+}

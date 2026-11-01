@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "id": "MN_IRON_RANGE_MINER",
+  "name": "MINER MARA",
+  "status": "accepted-native-playable",
+  "overworld_frames": 6,
+  "overworld_size": [
+    16,
+    16
+  ],
+  "battle_size": [
+    56,
+    56
+  ],
+  "palette_rgb555": [
+    32767,
+    21343,
+    6450,
+    0
+  ],
+  "source": "native-pixels-v2.json",
+  "placement": "placement-v1.json",
+  "pack": "content-packs/minnesota-npcs-hand-04-v02.crystalpack",
+  "parent": "content-packs/minnesota-npcs-hand-03-v02.crystalpack",
+  "runtime_checks": {
+    "one_controller_test_passed": true,
+    "talk_and_input_ownership": true,
+    "battle_turn_and_pp": true,
+    "battle_save_load": true,
+    "actual_victory_and_defeat_flag_before_render_capture": true,
+    "post_battle_talk": true,
+    "existing_trainers_and_assets_preserved": true
+  },
+  "manual_visual_review": "Directly hand-redrew all six grids with a separate hardhat lamp above the framed eyes, bobbed hair, rust overalls and pale shirt, visible rock and hammer, and purposeful fore/rear-foot walking phases. Tools remain in their anatomical hands across views; corrected the hammer head position in the rear/profile stride. Reviewed native-size/enlarged before-after strips and actual Grand Rapids post-win capture. Battle rows, palette, gameplay, audio and unrelated runtime files remain unchanged.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/sprites/03-iron-range-miner/native-pixels-v2.json": "0de5b672909256d9eeec2e51c96880f8fe6a78cb6582cda1360b5b6821eca32e",
+    "planning/minnesota/npcs/sprites/03-iron-range-miner/placement-v1.json": "156befb6288dd82287ae73d6185d7b5feebd0775305489bbe85be304a396c031",
+    "content-packs/minnesota-npcs-hand-04-v02.crystalpack": "ad439bf800221c7490d07bafaaf6e976b96711abe896569f9004c422eecf8a68",
+    "target/npc-sprites/miner/controller-hand-v01.log": "2925f18f08f25c0b42f8d860aa6f2b5eee026dcc6449f146c387b6b7b9555511",
+    "target/npc-sprites/miner/gameplay-hand-v01/original-npc-trainer-intro.png": "e624b0726c06082d68aab48b92af64df86eb183a597ab6325c674514467d7fce",
+    "target/npc-sprites/miner/gameplay-hand-v01/original-npc-first-turn.png": "8eb29c5adb20bff2407689761b552b96f2122366e28da642a19e1c9d63f1c606",
+    "target/npc-sprites/miner/gameplay-hand-v01/original-npc-overworld-state.png": "f5716657f373875418d3459820c5a060dd09dd8ae2e863763e3558ad8d57ea69",
+    "target/npc-sprites/miner/hand-v2/comparison.png": "0ae8aa8395a97818c174e389b956809adb0f63388645ac7b184f044ce30df6f2",
+    "target/npc-sprites/miner/hand-v2/overworld-review.png": "f71e47b002f1b35faea64256a62167dfb0422c3e424cc2ab0e3ed6e189b58383",
+    "target/npc-sprites/miner/hand-v2/overworld-review-8x.png": "d053c8612b3b6aa3ff2c893682dc388aa950757bff61155e9c54862f080806ae"
+  },
+  "overworld_revision": "hand-edited-v2",
+  "previous_visual_acceptance_reopened_by_user": true
+}

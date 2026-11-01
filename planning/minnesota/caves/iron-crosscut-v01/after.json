@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "id": "MnIronDrillApproach",
+  "tileset": "cave",
+  "dimensions_metatiles": [
+    16,
+    13
+  ],
+  "border_block": 46,
+  "palette_group": "nite",
+  "rows": [
+    "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e",
+    "2e 2e 04 05 05 06 2e 2e 2e 2e 2e 04 05 06 2e 2e",
+    "2e 04 02 02 02 0a 2e 2e 2e 2e 2e 08 07 0a 2e 2e",
+    "2e 08 02 02 02 0a 2e 2e 2e 2e 04 02 02 0a 2e 2e",
+    "2e 0c 0d 30 0d 0e 2e 2e 2e 2e 08 02 02 0a 2e 2e",
+    "2e 2e 04 02 02 02 0d 0d 0d 02 02 02 0d 0e 2e 2e",
+    "2e 2e 08 02 02 02 0a 2e 08 02 0a 2e 2e 2e 2e 2e",
+    "2e 2e 0c 0d 02 02 0a 2e 08 02 02 06 2e 2e 2e 2e",
+    "2e 2e 2e 2e 08 02 2e 05 04 02 02 02 02 06 2e 2e",
+    "2e 2e 04 02 02 02 3b 02 02 02 02 02 02 02 0a 2e",
+    "2e 2e 08 07 02 0a 2e 0c 0d 0d 0d 0d 0d 0d 0e 2e",
+    "2e 2e 0c 0d 0d 0e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e",
+    "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e"
+  ],
+  "purpose": "A fitted mining crosscut with a western Ether bench, a narrow northern rock-top traverse, a descending eastern ore seam and the two original faction encounters. A short standalone westward gravel lip returns to the entry across a solid rib; ordinary north traversal remains the uphill return. Original night palette, wild floor, cache, actors, programs and both ladder pairs are retained.",
+  "review_status": "Native review and selection are recorded in plan.json and world.json. All earlier source revisions are retained.",
+  "ledge": {
+    "native_block": "3b",
+    "metatile": [
+      6,
+      9
+    ],
+    "lanes": [
+      {
+        "source": [
+          13,
+          18
+        ],
+        "landing": [
+          11,
+          18
+        ]
+      },
+      {
+        "source": [
+          13,
+          19
+        ],
+        "landing": [
+          11,
+          19
+        ]
+      }
+    ],
+    "direction": "left",
+    "no_orthogonal_cliff_or_stair_neighbors": true
+  }
+}

@@ -1,0 +1,192 @@
+{
+  "schema_version": 1,
+  "manifest": "minnesota-interior-layout-fishing-v1",
+  "rooms": [
+    {
+      "map": "MnDriftlessFishingGuruHouse",
+      "intent": "Creek-side family teaching table, a field notebook and tackle cupboard; native complete table with both door lanes clear.",
+      "before_tileset": "house",
+      "before_rows": [
+        "04 1e 05 1d",
+        "0f 01 02 0f",
+        "0f 0c 0d 0f",
+        "06 0b 0f 07"
+      ],
+      "tileset": "house",
+      "border_block": 10,
+      "rows": [
+        "0a 04 16 0a",
+        "0a 01 02 0a",
+        "0a 0c 0d 0a",
+        "0a 0b 0a 0a"
+      ],
+      "arrival": [
+        2,
+        6
+      ],
+      "actor_approaches": [
+        {
+          "script": "MnDriftlessFishingGuruHouseGuru",
+          "tile": [
+            5,
+            4
+          ]
+        }
+      ],
+      "exhibits": [
+        {
+          "id": "MN_FISH_DRIFTLESS_NOTEBOOK",
+          "tile": [
+            2,
+            1
+          ],
+          "approach": [
+            2,
+            2
+          ],
+          "lines": [
+            "The creek notebook lists spring holes, shady banks and the first cast made by each grandchild. One page says: DRIFTLESS is home. Leave the cold water clean."
+          ]
+        },
+        {
+          "id": "MN_FISH_DRIFTLESS_TABLE",
+          "tile": [
+            3,
+            3
+          ],
+          "approach": [
+            3,
+            2
+          ],
+          "lines": [
+            "A little float lies beside the guru's old one. A note reads: My grandpa taught me here. Now I teach whoever comes up from the trail."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnRiverValleyFishingGuruHouse",
+      "intent": "River-level records line the back wall; a low complete writing bench leaves a broad open approach to the Good Rod teacher.",
+      "before_tileset": "house",
+      "before_rows": [
+        "04 1e 05 1d",
+        "0f 01 02 0f",
+        "0f 0c 0d 0f",
+        "06 0b 0f 07"
+      ],
+      "tileset": "house",
+      "border_block": 10,
+      "rows": [
+        "0a 1a 16 0a",
+        "0a 0f 0f 0a",
+        "0a 14 15 0a",
+        "0a 0b 0a 0a"
+      ],
+      "arrival": [
+        2,
+        6
+      ],
+      "actor_approaches": [
+        {
+          "script": "MnRiverValleyFishingGuruHouseGuru",
+          "tile": [
+            5,
+            4
+          ]
+        }
+      ],
+      "exhibits": [
+        {
+          "id": "MN_FISH_RIVER_FLOOD_BOOK",
+          "tile": [
+            2,
+            1
+          ],
+          "approach": [
+            2,
+            2
+          ],
+          "lines": [
+            "The RIVER VALLEY ledger records high water beside family birthdays. The guru's mother's entry says: We can mend a net. We cannot mend a person. Wait out the flood."
+          ]
+        },
+        {
+          "id": "MN_FISH_RIVER_BENCH",
+          "tile": [
+            3,
+            5
+          ],
+          "approach": [
+            3,
+            4
+          ],
+          "lines": [
+            "The bench holds repaired floats and a letter from WINONA: Your GOOD ROD taught three cousins to fish. We still argue over whose first catch was smallest."
+          ]
+        }
+      ]
+    },
+    {
+      "map": "MnPineCountryFishingGuruHouse",
+      "intent": "A timber fishing cabin with a real native bed, spare-gear cupboard and family ice-out photographs. The Super Rod teacher and both original carpet exits stay reachable.",
+      "before_tileset": "house",
+      "before_rows": [
+        "04 1e 05 1d",
+        "0f 01 02 0f",
+        "0f 0c 0d 0f",
+        "06 0b 0f 07"
+      ],
+      "tileset": "players_house",
+      "border_block": 0,
+      "rows": [
+        "00 1b 01 00",
+        "00 22 03 00",
+        "00 03 03 00",
+        "00 06 00 00"
+      ],
+      "arrival": [
+        2,
+        6
+      ],
+      "actor_approaches": [
+        {
+          "script": "MnPineCountryFishingGuruHouseGuru",
+          "tile": [
+            5,
+            4
+          ]
+        }
+      ],
+      "exhibits": [
+        {
+          "id": "MN_FISH_PINE_GEAR",
+          "tile": [
+            3,
+            1
+          ],
+          "approach": [
+            3,
+            2
+          ],
+          "lines": [
+            "The PINE COUNTRY cupboard holds patched mittens and three old line spools. The guru's niece wrote: A spare pair is for the person who forgot theirs."
+          ]
+        },
+        {
+          "id": "MN_FISH_PINE_PHOTOGRAPH",
+          "tile": [
+            2,
+            3
+          ],
+          "approach": [
+            3,
+            3
+          ],
+          "lines": [
+            "A faded photo tucked by the bed shows the guru and a small child at ice-out. The child is taller in every later photo. The same SUPER ROD is in both their hands."
+          ]
+        }
+      ]
+    }
+  ]
+}

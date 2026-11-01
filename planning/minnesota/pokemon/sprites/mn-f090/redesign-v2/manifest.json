@@ -1,0 +1,251 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F090",
+  "status": "proposal-only-not-integrated",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_196": {
+      "species_id": "MN_196",
+      "name": "Crumband",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          28,
+          18,
+          8
+        ],
+        [
+          10,
+          5,
+          3
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        8796,
+        3242,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          231,
+          148,
+          66
+        ],
+        [
+          82,
+          41,
+          24
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#E79442",
+        "#522918",
+        "#000000"
+      ]
+    },
+    "MN_197": {
+      "species_id": "MN_197",
+      "name": "Jarbaron",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          29,
+          16,
+          6
+        ],
+        [
+          9,
+          4,
+          3
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        6685,
+        3209,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          239,
+          132,
+          49
+        ],
+        [
+          74,
+          33,
+          24
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#EF8431",
+        "#4A2118",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f090/redesign-v2/prompt-v2.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png",
+      "target/minnesota-pokemon/gen2-reference/bugs.png"
+    ]
+  },
+  "preserve_species": {
+    "MN_195": {
+      "name": "Doughlin",
+      "instruction": "Retain native front/back PNG, index JSON, 2bpp and source records byte-for-byte. Never regenerate or reconvert the first stage. This proposal only replaces MN196 and MN197.",
+      "front.png_sha256": "a5f1c4b0a6627366fb2119e5d18780d78f2a6fab342f68730f143db0c5a04b18",
+      "back.png_sha256": "aff4e3d0a11845a5b71d087721b83c63c5acf9df857a90f146fcea79d1fc63f1",
+      "front.json_sha256": "7f5f92bc0c5a5446e824d89a7f659c977b04617eac70983f463c74a6ff32adae",
+      "back.json_sha256": "64bf9a2ccbd09475644063301c98f1107c0691824571bba96861b0452f70b32c",
+      "front.2bpp_sha256": "aa5147052efaf1ccee0e4dfaff7593fb92f51e18a57f3493f804aeda588b07af",
+      "back.2bpp_sha256": "dde2c0b2e4a31308cf05e2d86be126f7b9b2f794c1e8bab55198ee7d29be779e"
+    }
+  },
+  "sprites": [
+    {
+      "id": "mn-196-crumband-v2",
+      "species_id": "MN_196",
+      "view": "front",
+      "source": "sprites/mn-f090/redesign-v2/front-back.imagegen-v2.png",
+      "crop": [
+        0,
+        0,
+        768,
+        535
+      ],
+      "fit": [
+        44,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        8796,
+        3242,
+        0
+      ],
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-196-crumband-v2",
+      "species_id": "MN_196",
+      "view": "back",
+      "source": "sprites/mn-f090/redesign-v2/front-back.imagegen-v2.png",
+      "crop": [
+        0,
+        535,
+        768,
+        489
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        8796,
+        3242,
+        0
+      ],
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-197-jarbaron-v2",
+      "species_id": "MN_197",
+      "view": "front",
+      "source": "sprites/mn-f090/redesign-v2/front-back.imagegen-v2.png",
+      "crop": [
+        768,
+        0,
+        768,
+        535
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        6685,
+        3209,
+        0
+      ],
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-197-jarbaron-v2",
+      "species_id": "MN_197",
+      "view": "back",
+      "source": "sprites/mn-f090/redesign-v2/front-back.imagegen-v2.png",
+      "crop": [
+        768,
+        535,
+        768,
+        489
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        6685,
+        3209,
+        0
+      ],
+      "interior_black_min_samples": 16
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed-proposal-not-integrated",
+    "reviewer": "future_moves",
+    "notes": "Inspected source and native 56x56 front /48x48 close back frames. Crumband has one tall C-shaped cookie handle, a shallow rim body andtwo crescent arms; Jarbaron has a complete high handle arch, three overflowing cookies anddeep pail anatomy. Growth is legible atnative size. Both views ofeach stage use its own four-ink palette. Solid/source-backed conversion yielded identical native rows for allfour views. Doughlin native PNG/index/2bpp hashes remain exact. Source still contains stepped extra shades; Rust conversion enforces the specified2bpp palette.",
+    "sheet_sha256": "143d75509678c59acbd1282cb7c772cfa266e579b3b4ab277aba04bf5c56d736",
+    "outline_profile": "source-contour-v1"
+  }
+}

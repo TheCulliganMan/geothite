@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "id": "MN_DULUTH_X_T02",
+      "map": "MnDuluthQuarryPractice",
+      "actor_script": "MN_DULUTH_X_T02",
+      "trainer_class": "MN_PORT_PILOT",
+      "sprite": "SPRITE_MN_PORT_PILOT",
+      "facing": "south",
+      "approach": [
+        10,
+        6
+      ],
+      "defeated_flag": "EVENT_MN_DULUTH_X_TRAINER_02"
+    }
+  ]
+}

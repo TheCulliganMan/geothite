@@ -1,0 +1,202 @@
+{
+  "queue_number": 222,
+  "dex_number": 222,
+  "master_source_order": 312,
+  "species_id": "MN_100",
+  "name": "Icemyth",
+  "family_id": "MN_F049",
+  "stage": 1,
+  "types": [
+    "ICE",
+    "PSYCHIC"
+  ],
+  "evolves_to": null,
+  "section": "mythical",
+  "status": "awaiting_generation",
+  "family_job_id": "MN_F049",
+  "selected_reference_path": "target/minnesota-pokemon/native/MN_F049/mn-100-icemyth-v2.front.png",
+  "references": {
+    "front": {
+      "native_png": {
+        "path": "target/minnesota-pokemon/native/MN_F049/mn-100-icemyth-v2.front.png",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F049/mn-100-icemyth-v2.front.png",
+        "sha256": "9f01e5edb6d5808d6f1a780ad71059165b78c035c1e3db22d8c4bfb4c5f0c704"
+      },
+      "native_indexed_json": {
+        "path": "target/minnesota-pokemon/native/MN_F049/mn-100-icemyth-v2.front.json",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F049/mn-100-icemyth-v2.front.json",
+        "sha256": "172c89662337aa25aa7192f453377e46e8495d5625349dcb851e5c6d7bff10e0"
+      },
+      "native_2bpp": {
+        "path": "target/minnesota-pokemon/native/MN_F049/mn-100-icemyth-v2.front.2bpp",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F049/mn-100-icemyth-v2.front.2bpp",
+        "sha256": "43df7633c2d10e4c72bc6e4f233fa3f03f4721d3fa22be363d6a1bc8ee285c56"
+      },
+      "source_image": {
+        "path": "planning/minnesota/pokemon/sprites/mn-f049/redesign-v2/front-back.imagegen-v2.png",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mn-f049/redesign-v2/front-back.imagegen-v2.png",
+        "sha256": "c2ede0c557d5a8f8cd8b0eed171ded836cc0a6d97ea181bf42d597ec07033c99"
+      },
+      "source_crop": [
+        0,
+        0,
+        1161,
+        693
+      ],
+      "native_fit": [
+        54,
+        54
+      ],
+      "generation_prompt": {
+        "path": "planning/minnesota/pokemon/sprites/mn-f049/redesign-v2/prompt-v2.txt",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mn-f049/redesign-v2/prompt-v2.txt",
+        "sha256": "107dc4ea6268f20626a429996ebac96cb0141005be499aa43d4e52e7a92f7a82",
+        "reference_kind": "declared_design_prompt_reference; authoritative view record takes precedence over family default"
+      },
+      "sampling": "area_vote",
+      "exterior_contour": "solid",
+      "has_guarded_native_refinements": false,
+      "authority_note": "The current selected native PNG is the design authority; original source may contain detail simplified or refined in canonical conversion."
+    },
+    "back": {
+      "native_png": {
+        "path": "target/minnesota-pokemon/native/MN_F049/mn-100-icemyth-v2.back.png",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F049/mn-100-icemyth-v2.back.png",
+        "sha256": "e61bb04b7fd134ff2e9df67e99b6a247f090c28ae9c702baf339ed5674863fcc"
+      },
+      "native_indexed_json": {
+        "path": "target/minnesota-pokemon/native/MN_F049/mn-100-icemyth-v2.back.json",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F049/mn-100-icemyth-v2.back.json",
+        "sha256": "b6a70788bf31c8d392802a11f3d1dd8d7333a6266efef86f00f7e60b80eefcbe"
+      },
+      "native_2bpp": {
+        "path": "target/minnesota-pokemon/native/MN_F049/mn-100-icemyth-v2.back.2bpp",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F049/mn-100-icemyth-v2.back.2bpp",
+        "sha256": "e3d248754bdf64beb62e411565b605510b6a402f9336ea0c348dd854324873e7"
+      },
+      "source_image": {
+        "path": "planning/minnesota/pokemon/sprites/mn-f049/redesign-v2/front-back.imagegen-v2.png",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mn-f049/redesign-v2/front-back.imagegen-v2.png",
+        "sha256": "c2ede0c557d5a8f8cd8b0eed171ded836cc0a6d97ea181bf42d597ec07033c99"
+      },
+      "source_crop": [
+        250,
+        693,
+        800,
+        662
+      ],
+      "native_fit": [
+        46,
+        47
+      ],
+      "generation_prompt": {
+        "path": "planning/minnesota/pokemon/sprites/mn-f049/redesign-v2/prompt-v2.txt",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mn-f049/redesign-v2/prompt-v2.txt",
+        "sha256": "107dc4ea6268f20626a429996ebac96cb0141005be499aa43d4e52e7a92f7a82",
+        "reference_kind": "declared_design_prompt_reference; authoritative view record takes precedence over family default"
+      },
+      "sampling": "area_vote",
+      "exterior_contour": "solid",
+      "has_guarded_native_refinements": false,
+      "authority_note": "The current selected native PNG is the design authority; original source may contain detail simplified or refined in canonical conversion."
+    }
+  },
+  "palette": {
+    "species_id": "MN_100",
+    "name": "Icemyth",
+    "gbc_rgb5": [
+      [
+        31,
+        31,
+        31
+      ],
+      [
+        20,
+        27,
+        31
+      ],
+      [
+        10,
+        11,
+        21
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ],
+    "gbc_rgb555_words": [
+      32767,
+      32628,
+      21866,
+      0
+    ],
+    "rgb8": [
+      [
+        255,
+        255,
+        255
+      ],
+      [
+        165,
+        222,
+        255
+      ],
+      [
+        82,
+        90,
+        173
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ],
+    "hex": [
+      "#FFFFFF",
+      "#A5DEFF",
+      "#525AAD",
+      "#000000"
+    ]
+  },
+  "design": {
+    "family_theme": "Minnesota Iceman sideshow story: an uncertain silhouette sleeps inside walking cloudy ice; visitors remember different faces.",
+    "member_body_growth": null,
+    "member_silhouette": null,
+    "family_design_lock": null,
+    "family_sprite_design": null,
+    "silhouette_invariants_16px": [
+      "Preserve the accepted silhouette, face, limb/wing count and dominant theme shapes shown by the exact selected native references.",
+      "Choose one or two defining visible forms from the family theme; simplify directly for16pixels rather than scaling the battle sprite."
+    ],
+    "priority_invariants_manually_authored": false
+  },
+  "generation_attempts": [],
+  "selected_overworld_source": null,
+  "selected_native_candidate": null,
+  "native_visual_review": null,
+  "integration_proof": null,
+  "overworld_palette_binding": {
+    "transparent_index": 0,
+    "visible_indices": [
+      1,
+      2,
+      3
+    ],
+    "normal_rgb555_words": [
+      32767,
+      32628,
+      21866,
+      0
+    ],
+    "shiny_rgb555_words": [
+      32767,
+      28319,
+      11605,
+      0
+    ],
+    "white_body_region_policy": "Simplify formerly white body/highlight regions to light ink1. Index0 is transparent everywhere, not an opaque white paint color."
+  }
+}

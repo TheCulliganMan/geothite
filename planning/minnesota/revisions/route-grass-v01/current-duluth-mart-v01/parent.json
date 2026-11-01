@@ -1,0 +1,7 @@
+{
+  "revision": "route_grass_bemidji_plateau_stairs_revision",
+  "pack": "content-packs/minnesota-current-bemidji-plateau-stairs-v01.crystalpack",
+  "sha256": "6200af583a20de0def7f4611ab59531e43549471cc5cf6ab7a6f4f7e52b832e8",
+  "source_layout": "planning/minnesota/revisions/duluth-interior-buoy-clearance-v01/MnDuluth.after.layout.json",
+  "source_layout_sha256": "20c23839398443a611232c33e1119d61f9c64269f7e0d5023115cd0630c5241e"
+}

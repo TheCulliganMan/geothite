@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "status": "proposal-amendments-only",
+  "preserve": [
+    "MN_195 Doughlin: all art, profile fields, identity and palettes unchanged.",
+    "Existing stats, evolution thresholds, moves and types retained for MN_196 and MN_197."
+  ],
+  "species": [
+    {
+      "id": "MN_196",
+      "name": "Crumband",
+      "classification": "Cookie Pail",
+      "dex_pages": [
+        "It curls an ear @ into a handle @ for stolen crumbs.",
+        "The warm pocket @ beneath its rim @ bakes a new shell."
+      ],
+      "visual_theme": "The first-stage spiral ear stretches into an asymmetrical C-shaped baked handle. A shallow open torso cup, one overflowing cookie, thick rim arms and stout feet replace the slender bandit imp."
+    },
+    {
+      "id": "MN_197",
+      "name": "Jarbaron",
+      "classification": "Cookie Heap",
+      "dex_pages": [
+        "Its cookie hoard @ stays warm inside @ a thick baked rim.",
+        "An ear has grown @ into the handle @ over warm cookies."
+      ],
+      "visual_theme": "The C-handle closes into a huge shoulder-to-shoulder arch above three large cookies. Its face forms the open pail rim; deep cookie crust and heavy crescent-cookie clamps replace the separate head and lid hat."
+    }
+  ]
+}

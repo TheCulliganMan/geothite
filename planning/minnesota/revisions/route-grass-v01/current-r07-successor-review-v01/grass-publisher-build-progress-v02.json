@@ -1,0 +1,14 @@
+{
+  "source_sha256": {
+    "crates/crystal-assets/src/r07_north_pocket_grass.rs": "38affe14c0c8b188f2026d0b34f839a6949614f2de40701c7ddd149f09468a22",
+    "crates/crystal-assets/src/bin/revise_r07_north_pocket_grass.rs": "89a3eab9c28289d07f284b47af940101ede2c9c604d225779bf3bcc431a730a9"
+  },
+  "steps": [
+    {
+      "step": "publisher",
+      "exit_code": 0,
+      "log": ".local/route-grass-review/r07-north-pocket-grass-publisher-v02.log"
+    }
+  ],
+  "wrapper_receipt_path_failure_recovered": true
+}

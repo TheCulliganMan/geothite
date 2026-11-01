@@ -1,0 +1,297 @@
+{
+  "schema_version": 1,
+  "id": "MN_R11",
+  "source_kind": "installed_route_exterior_review_contract",
+  "native_binding": {
+    "pack": "content-packs/minnesota-north-shore-passing-width-fauna-v02.crystalpack",
+    "pack_sha256": "e951fddafee3a0c09a2356d4dd683890ac498e23daeb266d08c5f12d79ec1167",
+    "content_identity": "544539b3c51802c03cc284ae7ec3d683ea251596af80c71ef6f886ef4888aa16"
+  },
+  "grass_quadrants": 380,
+  "new_grass_quadrants": 20,
+  "coastal_ice_quadrants": 0,
+  "retired_historical_ledge_contracts": [
+    "PALISADE_RIDGE_DROP",
+    "LESTER_TERRACE_DROP",
+    "BIRCH_SWITCHBACK_DROP"
+  ],
+  "stair_pairs": [
+    {
+      "upper": [
+        24,
+        51
+      ],
+      "lower": [
+        24,
+        54
+      ]
+    },
+    {
+      "upper": [
+        36,
+        89
+      ],
+      "lower": [
+        36,
+        92
+      ]
+    },
+    {
+      "upper": [
+        38,
+        171
+      ],
+      "lower": [
+        38,
+        174
+      ]
+    }
+  ],
+  "active_ledge_lanes": [
+    {
+      "upper": [
+        24,
+        130
+      ],
+      "lip": [
+        23,
+        130
+      ],
+      "landing": [
+        21,
+        130
+      ],
+      "reverse_denials": 4
+    },
+    {
+      "upper": [
+        24,
+        131
+      ],
+      "lip": [
+        23,
+        131
+      ],
+      "landing": [
+        21,
+        131
+      ],
+      "reverse_denials": 4
+    }
+  ],
+  "ordinary_ledge_return_minimum_grass_steps": 13,
+  "qualified_native_fixture": {
+    "badges": 8,
+    "event_flags": [
+      "EVENT_MN_LIGHTHOUSE_SIGNAL"
+    ],
+    "earned": false
+  },
+  "normal_land_course_maps": [
+    "MnR11C00R00",
+    "MnR11C00R01",
+    "MnR11C00R02",
+    "MnR11C00R03",
+    "MnR11C01R00"
+  ],
+  "healing_stops": 6,
+  "neighbor_connections": [
+    "MnGrandMarais",
+    "MnDuluth"
+  ],
+  "scope": "Four clear walking tiles on all seven coastal decks, solid rail edges, wide town seams with original badge/signal checks, full no-Surf roundtrip, UI input ownership and Continue. Existing380grass quadrants, mandatory upper habitat and ordinary grassy ledge returns retained; prior stair/ledge service evidence remains inherited, not relabeled as a fresh run. No earned campaign, Surf/island or new ElyShorePass acceptance.",
+  "inherited_review_history": {
+    "footbridges": [
+      {
+        "map": "MnR11C00R00",
+        "metatile": [
+          20,
+          20
+        ],
+        "global_core": [
+          40,
+          40
+        ],
+        "before": "06",
+        "after": "84"
+      },
+      {
+        "map": "MnR11C00R01",
+        "metatile": [
+          20,
+          14
+        ],
+        "global_core": [
+          40,
+          76
+        ],
+        "before": "06",
+        "after": "84"
+      },
+      {
+        "map": "MnR11C00R02",
+        "metatile": [
+          23,
+          0
+        ],
+        "global_core": [
+          46,
+          96
+        ],
+        "before": "06",
+        "after": "84"
+      },
+      {
+        "map": "MnR11C00R02",
+        "metatile": [
+          23,
+          1
+        ],
+        "global_core": [
+          46,
+          98
+        ],
+        "before": "06",
+        "after": "84"
+      },
+      {
+        "map": "MnR11C00R02",
+        "metatile": [
+          20,
+          7
+        ],
+        "global_core": [
+          40,
+          110
+        ],
+        "before": "06",
+        "after": "84"
+      },
+      {
+        "map": "MnR11C00R02",
+        "metatile": [
+          17,
+          13
+        ],
+        "global_core": [
+          34,
+          122
+        ],
+        "before": "06",
+        "after": "84"
+      },
+      {
+        "map": "MnR11C00R03",
+        "metatile": [
+          20,
+          9
+        ],
+        "global_core": [
+          40,
+          162
+        ],
+        "before": "06",
+        "after": "84"
+      },
+      {
+        "map": "MnR11C00R03",
+        "metatile": [
+          23,
+          21
+        ],
+        "global_core": [
+          46,
+          186
+        ],
+        "before": "06",
+        "after": "84"
+      }
+    ],
+    "no_surf_mainland_proof": {
+      "path": "planning/minnesota/renders/north-shore-footpath-v563/replay-v569/no-surf-replay-v553.json",
+      "fixture": "Eight badges and EVENT_MN_LIGHTHOUSE_SIGNAL remain required by the existing Duluth shore check.",
+      "status": "PASS",
+      "mode": "Normal throughout",
+      "party_surf_moves": 0,
+      "rpc_calls": 1953
+    },
+    "native_camera_proof": {
+      "path": "planning/minnesota/renders/north-shore-footpath-v563/native-v569/capture-progress.json",
+      "views": 9,
+      "pixel_mismatches": 0
+    }
+  },
+  "passing_width": {
+    "source": "planning/minnesota/revisions/north-shore-passing-width-v01/after.json",
+    "gate_source": "planning/minnesota/revisions/north-shore-passing-width-v01/gate-coordinates.json",
+    "crossings_global_core": [
+      [
+        40,
+        40,
+        2
+      ],
+      [
+        40,
+        76,
+        2
+      ],
+      [
+        44,
+        96,
+        4
+      ],
+      [
+        40,
+        110,
+        2
+      ],
+      [
+        34,
+        122,
+        2
+      ],
+      [
+        40,
+        162,
+        2
+      ],
+      [
+        46,
+        186,
+        2
+      ]
+    ],
+    "clear_walking_tiles": 4,
+    "solid_outer_rail_tiles": 2,
+    "collision": {
+      "85": [
+        "WALL",
+        "FLOOR",
+        "WALL",
+        "FLOOR"
+      ],
+      "86": [
+        "FLOOR",
+        "WALL",
+        "FLOOR",
+        "WALL"
+      ]
+    },
+    "preservation": "planning/minnesota/renders/north-shore-width-fauna-v1029/preservation-v1030.json"
+  },
+  "no_surf_mainland_proof": {
+    "path": "planning/minnesota/renders/north-shore-width-fauna-v1029/mcp-v1031/no-surf-replay-v553.json",
+    "status": "PASS",
+    "mode": "Normal throughout six saved checkpoints",
+    "party_surf_moves": 0,
+    "rpc_calls": 1885,
+    "fixture": "Eight badges and lighthouse signal are initial qualifications, not earned campaign proof."
+  },
+  "current_grass_inheritance": "planning/minnesota/renders/north-shore-width-fauna-v1029/grass-retention-v1034.json",
+  "native_camera_proof": {
+    "path": "planning/minnesota/renders/north-shore-width-fauna-v1029/native-v1032/receipt.json",
+    "views": 10,
+    "reviewed_original_contact_sheet": "planning/minnesota/renders/north-shore-width-fauna-v1029/native-v1032/nine-views-original.png",
+    "pixel_comparison_scope": "Live reached native screenshots reviewed separately from the5505024pixel static source/installed equality."
+  }
+}

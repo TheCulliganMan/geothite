@@ -1,0 +1,9 @@
+{
+  "status": "SHARED_SOURCE_FIX_OBSERVED_NO_EDIT_BY_THIS_TASK",
+  "file": "crates/crystal-assets/src/iron_approach_revision.rs",
+  "sha256": "c9f412912d394606f097eba76f9232ff655fe871f61d2f3ef4eb5d74e35880eb",
+  "fixed_queue": "VecDeque::from([[6_u16, 21]])",
+  "fixed_seen": "BTreeSet::from([[6_u16, 21]])",
+  "reason": "The source owner added the necessary native u16 coordinate type after the E0689 build failure. The attempted guarded edit found the file already corrected and made no mutation.",
+  "failed_build": "bank-publisher-build-progress-v02.json"
+}

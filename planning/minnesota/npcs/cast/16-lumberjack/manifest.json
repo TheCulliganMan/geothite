@@ -1,0 +1,40 @@
+{
+  "name": "AXEL",
+  "role": "Lumberjack",
+  "status": "accepted-native-playable",
+  "source": "native-pixels-v2.json",
+  "integration": "placement-v1.json",
+  "controller": "placement-v1.json",
+  "native": "target/trainer-cast/lumber/native-v2",
+  "pack": "content-packs/minnesota-trainer-cast-16-v01.crystalpack",
+  "gameplay": "target/trainer-cast/lumber/gameplay-v1",
+  "log": "target/trainer-cast/lumber/controller-v1.log",
+  "reference_review": "actual-crystal-sprites-common-palette-and-scale",
+  "review_notes": "Hand-drawn broad beard, knit cap and simplified plaid; battle eyes and cream shirt corrected after conversion. Common-scale Crystal comparison and actual battle/field captures inspected.",
+  "fixture": "Three legal level-60 Minnesota starters; adjacent position and explicit prior-access setup. Local encounter/rewards proof, not earned traversal or intended-level balance.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/cast/16-lumberjack/native-pixels-v2.json": "98b59821abcffa07f8244bccf139aacd54f1cb9f710cd94e9cc1ae6f33883f9c",
+    "planning/minnesota/npcs/cast/16-lumberjack/placement-v1.json": "21ac17419cf2cbfba27f9c07aa9899f6a35bc3fe248107958f450cf0d3c33a73",
+    "target/trainer-cast/lumber/native-v2/verification.json": "d6ce50c21010e4ddc19f431691fc096f57246ce373579c58a233900493656893",
+    "content-packs/minnesota-trainer-cast-16-v01.crystalpack": "b8486ef99334b78b15c3c7202f0a38ed8eb660e6e9dc6d41c68d932257ae4819",
+    "target/trainer-cast/lumber/controller-v1.log": "baac58b17bbe530d62c8811a39813742641a5cf4a76cc1aa310cc3ec1b7efc7c",
+    "target/trainer-cast/lumber/gameplay-v1/original-npc-trainer-intro.png": "0ea39137d6ade88667fb06d8f23444fc50e617c9e91e7d85abcec7c0c0825d77",
+    "target/trainer-cast/lumber/gameplay-v1/original-npc-overworld-state.png": "f9edb2a0cf469c9eae8a70b8504e44652b13b68f696e12015baf602565ba13a6",
+    "target/trainer-cast/lumber/gameplay-v1/original-npc-first-turn.png": "fea002d4398fd56048e41548eea5ed9c1540a931a058ade1dbaf578e9df06b04",
+    "planning/minnesota/npcs/cast/16-lumberjack/battle-reference-prompt.txt": "e34efbaa09ed9e6c6f06cca9f9209c957ff9039cb80d20e0ce0e359f2125be13",
+    "planning/minnesota/npcs/cast/16-lumberjack/battle-reference-v1.png": "3e82c9244a3a4d0ca6276d2e78babc4255755bc4737d8003ac7ee99c3560f027",
+    "target/trainer-cast/lumber/real-comparison.png": "a4c29fe427f2aeb5a422fba31ed9dd0afb0ecdcf4f525926dfc981cede1e58f6",
+    "target/trainer-cast/lumber/battle-real-comparison.png": "e96842a6448332c450526ce6648776929df20eeae2dc1b2fcae5f9a26503619d"
+  },
+  "final_pack": "content-packs/minnesota-trainer-cast-36-v01.crystalpack",
+  "final_gameplay": "target/trainer-cast/final-audit/gameplay/16-lumberjack",
+  "final_log": "target/trainer-cast/final-audit/gameplay/16-lumberjack/controller.log",
+  "final_status": "accepted-native-playable-final-pack",
+  "final_review": "Actual battle intro and field captures inspected on exact final pack; art retains accepted native sources and palette.",
+  "final_evidence_sha256": {
+    "target/trainer-cast/final-audit/gameplay/16-lumberjack/controller.log": "d337200c1f217c616313c3b358f88cc0a56b2ac1f894e9c16c266e7eab42b7b7",
+    "target/trainer-cast/final-audit/gameplay/16-lumberjack/original-npc-trainer-intro.png": "0ea39137d6ade88667fb06d8f23444fc50e617c9e91e7d85abcec7c0c0825d77",
+    "target/trainer-cast/final-audit/gameplay/16-lumberjack/original-npc-overworld-state.png": "7689ab9642c08d7476e1cacba1c6de939fd0d4108c506c020add0970c8683854",
+    "target/trainer-cast/final-audit/gameplay/16-lumberjack/original-npc-first-turn.png": "fea002d4398fd56048e41548eea5ed9c1540a931a058ade1dbaf578e9df06b04"
+  }
+}

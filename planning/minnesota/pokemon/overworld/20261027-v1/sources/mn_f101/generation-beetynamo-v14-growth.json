@@ -1,0 +1,80 @@
+{
+  "tool": "built-in image_gen",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f101/beetynamo-v14-growth",
+  "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f101/manifest-beetynamo-v14-growth.json",
+  "normalized_receipt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f101/source-feature-proof-beetynamo-v14-growth.json",
+  "all_raws_prompts_rejected_trials_retained": true,
+  "no_native_pixel_painting": true,
+  "no_registry_or_pack_mutation": true,
+  "normal_shiny_boards_actually_viewed": true,
+  "canonical_palettes": [
+    [
+      32767,
+      13177,
+      14538,
+      0
+    ],
+    [
+      32767,
+      28460,
+      6478,
+      0
+    ]
+  ],
+  "native_bounds": [
+    [
+      1,
+      3,
+      14,
+      12
+    ],
+    [
+      1,
+      3,
+      14,
+      12
+    ],
+    [
+      2,
+      3,
+      12,
+      12
+    ],
+    [
+      1,
+      3,
+      14,
+      11
+    ],
+    [
+      1,
+      3,
+      14,
+      11
+    ],
+    [
+      2,
+      3,
+      12,
+      12
+    ]
+  ],
+  "retained_source_hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f101/beetynamo.overworld.imagegen-v1.png": "4f84a4499989de6d8820cbda935d3d0e51c45b06673762be579b772323e6b343",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f101/beetynamo.overworld.imagegen-v3-native-pupils.png": "3f455057f5813f1b8c3b7606ae912669671489003e71029501305e4a83780944",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f101/beetynamo.overworld.imagegen-v5-broad-front-face.png": "c1e4a3b117ee118f831ec71add68dbad409bb67d90563afa5e1c563d9ffda290",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f101/beetynamo.overworld.imagegen-v4-restore-ink.png": "34d993047b4fd4ff03d38895330fba769538fc9134b2d1640a53c29688219fcb",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f101/beetynamo.overworld.imagegen-v2-four-rootfeet.png": "785463c6f894ce63d3618e7b18dc526a4d95036725cf448f918abd2f0bd09b1c",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f101/prompt-beetynamo-v2-four-rootfeet.txt": "532faca761fca77256d8eb944d5b655fb802bf642ea77100123273d8876e04f8",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f101/prompt-beetynamo-v1.txt": "663adf66897319fe4567d57ed053492ad4d1d7dd3f5084265fc691b29b7501b1",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f101/prompt-beetynamo-v3-native-pupils.txt": "16cf81882164108c9b9e9dee78ba70a1e3d1a9e4f20c9123fb27aa28b52846a0",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f101/prompt-beetynamo-v5-broad-front-face.txt": "07d935c869a5fd141decb89cb6c67740314bd1bbc15f0b1b731191d2c177f7ed",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f101/prompt-beetynamo-v4-restore-ink.txt": "eeeb678e4d27d3fce0d73febbd5e66c8e000f955a48f4fbfe1d87634b4e4065e",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f101/beetynamo.v2.original-path.txt": "48f544c2b1fd47e9aabd77fd07f1c750f19012f3e3a02dde89fcf90df3d623d0",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f101/beetynamo.v3.original-path.txt": "9b106687af21e732bd9ee28ba9e88db31de869376f90a19a1caabb88e2f55cf5",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f101/beetynamo.v5.original-path.txt": "8e37462940e5e6c0c166bbc23819bd1f427afc5b39dfd27a20f5739b052ac230",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f101/beetynamo.v1.original-path.txt": "2d1c58044ac3c8042f254c6c1ac8aeb389ec2153fc3541030fc80f506d184dc7",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f101/beetynamo.v4.original-path.txt": "833acf995e2d239f0b5f9369f0cd57c105d6a57e940dc88b00bcf8f21cefdf15"
+  },
+  "status": "root independent visual/context acceptance pending"
+}

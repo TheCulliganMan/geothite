@@ -1,0 +1,31 @@
+{
+  "status": "REBASED_CHILD_WRITTEN_PRESERVATION_PASS_NATIVE_VERIFICATION_PENDING",
+  "latest_selected_revision": "outdoor_terrain_integrated_revision",
+  "latest_selected_pack": "content-packs/minnesota-current-outdoor-composed-towns-v01.crystalpack",
+  "latest_selected_sha256": "fcac136e08876c25d5c8b6250fc7c0fa1aedbfc6977e165504505b2b4d02016f",
+  "mankato_module_and_tileset_unchanged": true,
+  "latest_terrain_maps_preserved": 23,
+  "completed_old_child_native_cases": 6,
+  "completed_old_child_production_calls": 58,
+  "completed_old_child_native_2d_captures": 9,
+  "all_target_clippy_both_crates_passed": true,
+  "missing_disposable_build_products": [
+    "target/route-grass/wasm-dev",
+    "target/interior-life/wasm-dev"
+  ],
+  "portable_tools_rebuild": "portable-tools-build-progress-v01.json",
+  "fresh_parent_preflight": "terrain-parent-preflight-v02.json",
+  "scope": "No older pack is selected over the terrain integration. New publisher/client/controller/renderer tools are retained outside disposable build-profile directories; fresh-parent native and capture checks are required before final selection. The23 modified route/town terrain maps also require final grass/coverage inheritance audit.",
+  "candidate_pack": "content-packs/minnesota-current-mankato-mart-v02.crystalpack",
+  "candidate_sha256": "697d7c2f964a14e5e2795d6e53e15ddec1cf1e228b842e78e5da88f07ab9c6d8",
+  "candidate_identity": "73be5e3ba8a843741b1c29c510252ff2c15fd54642d0886fd1b9917d621f1cad",
+  "changed_metatiles": 2,
+  "other_complete_maps_exact": 729,
+  "state_fair_exact": true,
+  "selection_changed": false,
+  "fresh_contract": "exterior-child.contract.v03.json",
+  "fresh_verification_wrapper_pid": 23851,
+  "fresh_verification_script": ".local/route-grass-review/verify_mankato_terrain_child_v03.py",
+  "fresh_verification_script_sha256": "55023b7d6d1f5b88e02f845b582c8801bf362beb1529de7f8f7e849d2beb9259",
+  "grass_inheritance_audit": "../terrain-successor-grass-audit-v02/README.md"
+}

@@ -1,0 +1,81 @@
+{
+  "pack": "content-packs/minnesota-current-mankato-native-exterior-v03.crystalpack",
+  "sha256": "4f22dd532f5dc1ca28f63383bb9a66030d4f93ced96ed4daa265b3f36680e02f",
+  "files": {
+    "crates/crystal-assets/src/mankato_mart_facade.rs": "d2c1e0fca5f07ddd0db237c2b330a73abe413132e9a4fc669378b2e9aa980433",
+    "crates/crystal-assets/src/bin/revise_mankato_mart_facade.rs": "0fb5518c769acc1f64893d2ad6eac595cabbd4e1e25b7a521cf47f2d1152af20",
+    "crates/crystal-bevy/src/bevy_shell/tests/town_exterior_review.rs": "78c044e35c5ae5b4f29cfa59ac436a5c1856b8cc0617dfc524c59d089cf69ae3",
+    "crates/crystal-bevy/src/bevy_shell/tests/mankato_notebook_review.rs": "b9067ce88b65e112269b96ab2212a627bafd157c475b25ce0dc5195ed8d9e12f",
+    "crates/crystal-bevy/src/bevy_shell/tests/prairie_story.rs": "217222bbb45786393d1c70f73e3dd90904716302e04337bcfc3af9a6955a5515"
+  },
+  "native_binary": ".local/route-grass-review/portable-tools-v01/native-controller",
+  "native_binary_sha256": "6a0c61da1dd77157003c7116551c8bfd3d49789137d085f5d2fed20dcde0fb75",
+  "steps": [
+    {
+      "step": "mankato-bank-town-native-controller-v03",
+      "exit_code": 0,
+      "expected_codes": [
+        0
+      ],
+      "log": ".local/route-grass-review/mankato-bank-town-native-controller-v03.log"
+    },
+    {
+      "step": "mankato-bank-notebook-denial-native-v03",
+      "exit_code": 0,
+      "expected_codes": [
+        0
+      ],
+      "log": ".local/route-grass-review/mankato-bank-notebook-denial-native-v03.log"
+    },
+    {
+      "step": "mankato-bank-selected-notebook-native-v03",
+      "exit_code": 0,
+      "expected_codes": [
+        0
+      ],
+      "log": ".local/route-grass-review/mankato-bank-selected-notebook-native-v03.log"
+    },
+    {
+      "step": "mankato-bank-legacy-prose-control-v03",
+      "exit_code": 101,
+      "expected_codes": [
+        0,
+        101
+      ],
+      "log": ".local/route-grass-review/mankato-bank-legacy-prose-control-v03.log"
+    },
+    {
+      "step": "mankato-bank-town-stdio-v03",
+      "exit_code": 0,
+      "expected_codes": [
+        0
+      ],
+      "log": ".local/route-grass-review/mankato-bank-town-stdio-v03.log"
+    },
+    {
+      "step": "mankato-bank-notebook-stdio-v03",
+      "exit_code": 0,
+      "expected_codes": [
+        0
+      ],
+      "log": ".local/route-grass-review/mankato-bank-notebook-stdio-v03.log"
+    },
+    {
+      "step": "mankato-bank-notebook-saved-progress-v03",
+      "exit_code": 0,
+      "expected_codes": [
+        0
+      ],
+      "log": ".local/route-grass-review/mankato-bank-notebook-saved-progress-v03.log"
+    },
+    {
+      "step": "mankato-bank-native-renders-v03",
+      "exit_code": 0,
+      "expected_codes": [
+        0
+      ],
+      "log": ".local/route-grass-review/mankato-bank-native-renders-v03.log"
+    }
+  ],
+  "selection_changed": false
+}

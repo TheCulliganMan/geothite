@@ -641,7 +641,11 @@ pub fn apply_script_text_action_to_state(state: &mut GameState, action: &ScriptT
             source_script,
             command_index,
         } => {
-            state.script_runtime.text_window_open = true;
+            // A picture's native button wait must not synthesize a field
+            // textbox underneath it. Ordinary text waits retain their window.
+            if state.script_runtime.active_pokemon_picture.is_none() {
+                state.script_runtime.text_window_open = true;
+            }
             state.script_runtime.pending_text_wait = Some(ScriptTextWait {
                 command: command.clone(),
                 source_script: source_script.clone(),
@@ -1119,6 +1123,28 @@ mod tests {
             Err(ScriptTextCommandError::UnknownCommand {
                 command: "text".to_string(),
             })
+        );
+    }
+
+    #[test]
+    fn picture_button_wait_preserves_the_picture_without_opening_a_textbox() {
+        let mut state = GameState::default();
+        state.script_runtime.active_pokemon_picture = Some("CHIKORITA".into());
+        apply_script_text_command(&mut state, command("waitbutton", None), &labels())
+            .expect("native picture input wait");
+        assert!(!state.script_runtime.text_window_open);
+        assert_eq!(
+            state.script_runtime.active_pokemon_picture.as_deref(),
+            Some("CHIKORITA")
+        );
+        assert_eq!(
+            state
+                .script_runtime
+                .pending_text_wait
+                .as_ref()
+                .expect("persisted picture wait")
+                .command,
+            "waitbutton"
         );
     }
 

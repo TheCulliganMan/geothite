@@ -1,0 +1,73 @@
+{
+  "tool": "built-in image_gen",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f063/knotlet-v7-native-pupils",
+  "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f063/manifest-knotlet-v7-native-pupils.json",
+  "normalized_receipt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f063/source-feature-proof-knotlet-v7-native-pupils.json",
+  "all_raws_prompts_rejected_trials_retained": true,
+  "no_native_pixel_painting": true,
+  "no_registry_or_pack_mutation": true,
+  "normal_shiny_boards_actually_viewed": true,
+  "canonical_palettes": [
+    [
+      32767,
+      11996,
+      5388,
+      0
+    ],
+    [
+      32767,
+      23435,
+      8581,
+      0
+    ]
+  ],
+  "native_bounds": [
+    [
+      3,
+      6,
+      9,
+      9
+    ],
+    [
+      4,
+      6,
+      7,
+      9
+    ],
+    [
+      2,
+      6,
+      11,
+      9
+    ],
+    [
+      3,
+      6,
+      9,
+      9
+    ],
+    [
+      4,
+      6,
+      8,
+      9
+    ],
+    [
+      2,
+      6,
+      11,
+      8
+    ]
+  ],
+  "retained_source_hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f063/knotlet.overworld.imagegen-v3-profile-cheek.png": "01697477013a5cd097483c96e3a809f06130cd6ef3874c5482f658a7e3b6efd7",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f063/knotlet.overworld.imagegen-v1.png": "f00f5353f12eae794bdba5a25e6f16f08256e6b095e46aa7a6f709556e8a6823",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f063/knotlet.overworld.imagegen-v2-broad-face.png": "575c0d611f5bc0682cde1b607b2ede9d98617018b617903eda465689dd3db598",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f063/prompt-knotlet-v1.txt": "94757c62c811e1725f3fa8fcfc5cccc7624d2ead675c38000f6dbaa79b9064cf",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f063/prompt-knotlet-v3-profile-cheek.txt": "438117ac75284ba6056f425dddc9f96c09f172504d2c73900a3b5cd88a565b03",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f063/prompt-knotlet-v2-broad-face.txt": "0f3790a8fafdb33fd8b87e6d5b8d6d6a22664513390acadf52bed94fc52f142f",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f063/knotlet.v2-broad-face.original-path.txt": "e52363ff6ab268bc0d8403566cc98661811146d6295ac4db62ae392a333f77fb",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f063/knotlet.v3-profile-cheek.original-path.txt": "e6a201dc4205fb2cbee2dcf386555e526d80155160c88cb6092e23f51814d88d"
+  },
+  "status": "root independent visual/context acceptance pending"
+}

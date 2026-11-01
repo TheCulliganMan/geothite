@@ -1,0 +1,970 @@
+{
+  "schema_version": 1,
+  "status": "active-roster-curation",
+  "scope": "Whole evolution families are retired from the active Northwoods Pok\u00e9dex. Keep all authoring records, generated renders, native outputs, archived inventories and previous website releases. Stable source IDs and app evolution-line numbers are unchanged. Active species numbers are repacked in master order, with pseudo-legendaries, legendaries and mythicals last.",
+  "source_species_count": 313,
+  "active_species_count": 220,
+  "active_family_count": 100,
+  "type_counts_before": {
+    "BUG": 27,
+    "DARK": 35,
+    "DRAGON": 21,
+    "ELECTRIC": 32,
+    "FIGHTING": 28,
+    "FIRE": 35,
+    "FLYING": 25,
+    "GHOST": 26,
+    "GRASS": 41,
+    "GROUND": 29,
+    "ICE": 26,
+    "NORMAL": 39,
+    "POISON": 21,
+    "PSYCHIC": 30,
+    "ROCK": 34,
+    "STEEL": 23,
+    "WATER": 51
+  },
+  "type_counts_after": {
+    "BUG": 27,
+    "DARK": 23,
+    "DRAGON": 11,
+    "ELECTRIC": 15,
+    "FIGHTING": 23,
+    "FIRE": 27,
+    "FLYING": 17,
+    "GHOST": 17,
+    "GRASS": 28,
+    "GROUND": 17,
+    "ICE": 19,
+    "NORMAL": 31,
+    "POISON": 19,
+    "PSYCHIC": 19,
+    "ROCK": 17,
+    "STEEL": 21,
+    "WATER": 42
+  },
+  "retired_families": [
+    {
+      "id": "MN_F003",
+      "app_line_number": 3,
+      "authority": "user",
+      "species_ids": [
+        "MN_007",
+        "MN_008",
+        "MN_009"
+      ],
+      "names": [
+        "Skiplit",
+        "Ripplisk",
+        "Skimoray"
+      ],
+      "reason": "User rejected the Skiplit / Ripplisk / Skimoray skipping-stone and hydrofoil line by its LINE003 label."
+    },
+    {
+      "id": "MN_F011",
+      "app_line_number": 11,
+      "authority": "curation_review",
+      "species_ids": [
+        "MN_031",
+        "MN_032",
+        "MN_033"
+      ],
+      "names": [
+        "Pebgneiss",
+        "Foldgneiss",
+        "Mortyrant"
+      ],
+      "reason": "Banded stone-to-dragon repeats the stronger magnetic taconite line."
+    },
+    {
+      "id": "MN_F021",
+      "app_line_number": 21,
+      "authority": "user",
+      "species_ids": [
+        "MN_055",
+        "MN_056"
+      ],
+      "names": [
+        "Morlit",
+        "Morelord"
+      ],
+      "reason": "User explicitly removed the Morlit / Morelord morel hide-and-seek line."
+    },
+    {
+      "id": "MN_F023",
+      "app_line_number": 23,
+      "authority": "curation_review",
+      "species_ids": [
+        "MN_059",
+        "MN_060"
+      ],
+      "names": [
+        "Thomblip",
+        "Thomseer"
+      ],
+      "reason": "Concentric mineral eyes and foresight repeat the agate Rock/Psychic line."
+    },
+    {
+      "id": "MN_F024",
+      "app_line_number": 24,
+      "authority": "user",
+      "species_ids": [
+        "MN_061",
+        "MN_062"
+      ],
+      "names": [
+        "Claylit",
+        "Catlisk"
+      ],
+      "reason": "User explicitly removed Claylit / Catlisk."
+    },
+    {
+      "id": "MN_F028",
+      "app_line_number": 28,
+      "authority": "user",
+      "species_ids": [
+        "MN_069",
+        "MN_070"
+      ],
+      "names": [
+        "Barnib",
+        "Owsilo"
+      ],
+      "reason": "User explicitly removed Barnib / Owsilo."
+    },
+    {
+      "id": "MN_F029",
+      "app_line_number": 29,
+      "authority": "user",
+      "species_ids": [
+        "MN_071",
+        "MN_072"
+      ],
+      "names": [
+        "Arclet",
+        "Skyspan"
+      ],
+      "reason": "User explicitly removed this complete evolutionary line by app LINE label and names."
+    },
+    {
+      "id": "MN_F036",
+      "app_line_number": 36,
+      "authority": "user",
+      "species_ids": [
+        "MN_085",
+        "MN_086"
+      ],
+      "names": [
+        "Birchip",
+        "Canoarmor"
+      ],
+      "reason": "User explicitly removed this complete evolutionary line by app LINE label and names."
+    },
+    {
+      "id": "MN_F061",
+      "app_line_number": 61,
+      "authority": "curation_review",
+      "species_ids": [
+        "MN_133",
+        "MN_134"
+      ],
+      "names": [
+        "Binglint",
+        "Silkflare"
+      ],
+      "reason": "Glowing mineral progression repeats stronger furnace and taconite identities."
+    },
+    {
+      "id": "MN_F065",
+      "app_line_number": 65,
+      "authority": "user",
+      "species_ids": [
+        "MN_141",
+        "MN_142"
+      ],
+      "names": [
+        "Springear",
+        "Vaultjack"
+      ],
+      "reason": "User explicitly removed this complete evolutionary line by app LINE label and names."
+    },
+    {
+      "id": "MN_F074",
+      "app_line_number": 74,
+      "authority": "curation_review",
+      "species_ids": [
+        "MN_157",
+        "MN_158",
+        "MN_159"
+      ],
+      "names": [
+        "Pufflow",
+        "Lobasalt",
+        "Pyllowyrm"
+      ],
+      "reason": "Another stone-to-dragon progression; weak distinction beside the furnace starter."
+    },
+    {
+      "id": "MN_F075",
+      "app_line_number": 75,
+      "authority": "user",
+      "species_ids": [
+        "MN_160",
+        "MN_161",
+        "MN_162"
+      ],
+      "names": [
+        "Stromit",
+        "Lamivive",
+        "Chertheon"
+      ],
+      "reason": "User explicitly removed LINE075 Stromit / Lamivive / Chertheon."
+    },
+    {
+      "id": "MN_F081",
+      "app_line_number": 81,
+      "authority": "user",
+      "species_ids": [
+        "MN_176",
+        "MN_177"
+      ],
+      "names": [
+        "Runnelisk",
+        "Dividra"
+      ],
+      "reason": "Watershed/divider line rejected by the user."
+    },
+    {
+      "id": "MN_F085",
+      "app_line_number": 85,
+      "authority": "user",
+      "species_ids": [
+        "MN_184"
+      ],
+      "names": [
+        "Snagbag"
+      ],
+      "reason": "Rejected by the user using the app evolution-line number."
+    },
+    {
+      "id": "MN_F086",
+      "app_line_number": 86,
+      "authority": "user",
+      "species_ids": [
+        "MN_185"
+      ],
+      "names": [
+        "Cragcloak"
+      ],
+      "reason": "Rejected by the user using the app evolution-line number."
+    },
+    {
+      "id": "MN_F087",
+      "app_line_number": 87,
+      "authority": "user",
+      "species_ids": [
+        "MN_186",
+        "MN_187",
+        "MN_188"
+      ],
+      "names": [
+        "Jotlet",
+        "Memofold",
+        "Recallisk"
+      ],
+      "reason": "Rejected by the user using the app evolution-line number."
+    },
+    {
+      "id": "MN_F088",
+      "app_line_number": 88,
+      "authority": "user",
+      "species_ids": [
+        "MN_189",
+        "MN_190",
+        "MN_191"
+      ],
+      "names": [
+        "Riffbit",
+        "Dynarill",
+        "Cascavolt"
+      ],
+      "reason": "Rejected by the user using the app evolution-line number."
+    },
+    {
+      "id": "MN_F094",
+      "app_line_number": 94,
+      "authority": "user",
+      "species_ids": [
+        "MN_205",
+        "MN_206"
+      ],
+      "names": [
+        "Kilnook",
+        "Glazaur"
+      ],
+      "reason": "Rejected by the user using the app evolution-line number."
+    },
+    {
+      "id": "MN_F095",
+      "app_line_number": 95,
+      "authority": "user",
+      "species_ids": [
+        "MN_207",
+        "MN_208"
+      ],
+      "names": [
+        "Hushuff",
+        "Scatacomb"
+      ],
+      "reason": "Rejected by the user using the app evolution-line number."
+    },
+    {
+      "id": "MN_F104",
+      "app_line_number": 104,
+      "authority": "curation_review",
+      "species_ids": [
+        "MN_227",
+        "MN_228",
+        "MN_229"
+      ],
+      "names": [
+        "Eskit",
+        "Ridgear",
+        "Eskavern"
+      ],
+      "reason": "Another landform-to-Ground/Dragon progression; the dust-devil line has a clearer behavior and silhouette."
+    },
+    {
+      "id": "MN_F106",
+      "app_line_number": 106,
+      "authority": "user",
+      "species_ids": [
+        "MN_233",
+        "MN_234"
+      ],
+      "names": [
+        "Blufflet",
+        "Hissario"
+      ],
+      "reason": "Rejected by the user using the app evolution-line number."
+    },
+    {
+      "id": "MN_F107",
+      "app_line_number": 107,
+      "authority": "user",
+      "species_ids": [
+        "MN_235",
+        "MN_236"
+      ],
+      "names": [
+        "Nodcloak",
+        "Plumourn"
+      ],
+      "reason": "Rejected by the user using the app evolution-line number."
+    },
+    {
+      "id": "MN_F109",
+      "app_line_number": 109,
+      "authority": "user",
+      "species_ids": [
+        "MN_239",
+        "MN_240"
+      ],
+      "names": [
+        "Fulglet",
+        "Fulgrawl"
+      ],
+      "reason": "Rejected by the user using the app evolution-line number."
+    },
+    {
+      "id": "MN_F111",
+      "app_line_number": 111,
+      "authority": "curation_review",
+      "species_ids": [
+        "MN_243",
+        "MN_244"
+      ],
+      "names": [
+        "Prybit",
+        "Heavraul"
+      ],
+      "reason": "Ground wedge and leverage fighter repeat stronger auger-folklore and bracing concepts."
+    },
+    {
+      "id": "MN_F013",
+      "app_line_number": 13,
+      "authority": "user",
+      "species_ids": [
+        "MN_037",
+        "MN_038",
+        "MN_039"
+      ],
+      "names": [
+        "Sparkveil",
+        "Aurorill",
+        "Polarisma"
+      ],
+      "reason": "User rejected the weather families except Bobcast/Buoyostic and requested wildlife replacements."
+    },
+    {
+      "id": "MN_F069",
+      "app_line_number": 69,
+      "authority": "user",
+      "species_ids": [
+        "MN_148"
+      ],
+      "names": [
+        "Halound"
+      ],
+      "reason": "User rejected the weather families except Bobcast/Buoyostic and requested wildlife replacements."
+    },
+    {
+      "id": "MN_F077",
+      "app_line_number": 77,
+      "authority": "user",
+      "species_ids": [
+        "MN_166",
+        "MN_167",
+        "MN_168"
+      ],
+      "names": [
+        "Icesnap",
+        "Crickvolt",
+        "Thundrift"
+      ],
+      "reason": "User rejected the weather families except Bobcast/Buoyostic and requested wildlife replacements."
+    },
+    {
+      "id": "MN_F080",
+      "app_line_number": 80,
+      "authority": "user",
+      "species_ids": [
+        "MN_174",
+        "MN_175"
+      ],
+      "names": [
+        "Loomlet",
+        "Inverveil"
+      ],
+      "reason": "User rejected the weather families except Bobcast/Buoyostic and requested wildlife replacements."
+    },
+    {
+      "id": "MN_F100",
+      "app_line_number": 100,
+      "authority": "user",
+      "species_ids": [
+        "MN_217"
+      ],
+      "names": [
+        "Torchcap"
+      ],
+      "reason": "User explicitly removed Torchcap."
+    },
+    {
+      "id": "MN_F103",
+      "app_line_number": 103,
+      "authority": "user",
+      "species_ids": [
+        "MN_224",
+        "MN_225",
+        "MN_226"
+      ],
+      "names": [
+        "Hailpip",
+        "Rumbhail",
+        "Anvilisk"
+      ],
+      "reason": "User rejected the weather families except Bobcast/Buoyostic and requested wildlife replacements."
+    },
+    {
+      "id": "MN_F108",
+      "app_line_number": 108,
+      "authority": "user",
+      "species_ids": [
+        "MN_237",
+        "MN_238"
+      ],
+      "names": [
+        "Prismip",
+        "Mirradian"
+      ],
+      "reason": "User rejected the weather families except Bobcast/Buoyostic and requested wildlife replacements."
+    },
+    {
+      "id": "MN_F113",
+      "app_line_number": 113,
+      "authority": "user",
+      "species_ids": [
+        "MN_247"
+      ],
+      "names": [
+        "Lumalint"
+      ],
+      "reason": "User rejected the weather families except Bobcast/Buoyostic and requested wildlife replacements."
+    },
+    {
+      "id": "MN_F115",
+      "app_line_number": 115,
+      "authority": "user",
+      "species_ids": [
+        "MN_249"
+      ],
+      "names": [
+        "Frontagal"
+      ],
+      "reason": "User rejected the weather families except Bobcast/Buoyostic and requested wildlife replacements."
+    },
+    {
+      "id": "MN_F127",
+      "app_line_number": 127,
+      "authority": "user_requested_design_replacement",
+      "species_ids": [
+        "MN_278",
+        "MN_279",
+        "MN_280"
+      ],
+      "names": [
+        "Berrcub",
+        "Forabear",
+        "Denwarden"
+      ],
+      "reason": "Replace generic foraging bear with the living dream-den progression.",
+      "replacement_families": [
+        "MN_F136"
+      ],
+      "date": "2026-10-27"
+    },
+    {
+      "id": "MN_F128",
+      "app_line_number": 128,
+      "authority": "user_requested_design_replacement",
+      "species_ids": [
+        "MN_281",
+        "MN_282",
+        "MN_283"
+      ],
+      "names": [
+        "Bogcalf",
+        "Reedrack",
+        "Mirecrown"
+      ],
+      "reason": "Replace leaf-antler moose with a distinct underwater-gardener anatomy progression.",
+      "replacement_families": [
+        "MN_F134"
+      ],
+      "date": "2026-10-27"
+    },
+    {
+      "id": "MN_F129",
+      "app_line_number": 129,
+      "authority": "user_requested_design_replacement",
+      "species_ids": [
+        "MN_284",
+        "MN_285",
+        "MN_286"
+      ],
+      "names": [
+        "Yipup",
+        "Loperuff",
+        "Timberhowl"
+      ],
+      "reason": "Replace generic wolf silhouettes with branch-ambusher marten and four-eyed whirligig solo.",
+      "replacement_families": [
+        "MN_F139",
+        "MN_F143"
+      ],
+      "date": "2026-10-27"
+    },
+    {
+      "id": "MN_F131",
+      "app_line_number": 131,
+      "authority": "user_requested_design_replacement",
+      "species_ids": [
+        "MN_289",
+        "MN_290"
+      ],
+      "names": [
+        "Taplet",
+        "Drumcrest"
+      ],
+      "reason": "Replace woodpecker with stronger chisel/cavity-architect three-stage growth.",
+      "replacement_families": [
+        "MN_F138"
+      ],
+      "date": "2026-10-27"
+    },
+    {
+      "id": "MN_F132",
+      "app_line_number": 132,
+      "authority": "user_requested_design_replacement",
+      "species_ids": [
+        "MN_291",
+        "MN_292"
+      ],
+      "names": [
+        "Mudnip",
+        "Bankmaw"
+      ],
+      "reason": "Replace ordinary snapping turtle with an integrated sundial-shell design.",
+      "replacement_families": [
+        "MN_F137"
+      ],
+      "date": "2026-10-27"
+    },
+    {
+      "id": "MN_F022",
+      "app_line_number": 22,
+      "authority": "user_requested_design_replacement",
+      "species_ids": [
+        "MN_057",
+        "MN_058"
+      ],
+      "names": [
+        "Tamarunt",
+        "Goldmourne"
+      ],
+      "reason": "Returning antlers give the seasonal Grass/Ghost niche a stronger visual story.",
+      "replacement_families": [
+        "MN_F141"
+      ],
+      "date": "2026-10-27"
+    },
+    {
+      "id": "MN_F034",
+      "app_line_number": 34,
+      "authority": "user_requested_design_replacement",
+      "species_ids": [
+        "MN_081",
+        "MN_082"
+      ],
+      "names": [
+        "Leflet",
+        "Lefold"
+      ],
+      "reason": "Reduce food repetition; replace flatbread with locking-anchor porcupine.",
+      "replacement_families": [
+        "MN_F135"
+      ],
+      "date": "2026-10-27"
+    },
+    {
+      "id": "MN_F035",
+      "app_line_number": 35,
+      "authority": "user_requested_design_replacement",
+      "species_ids": [
+        "MN_083",
+        "MN_084"
+      ],
+      "names": [
+        "Berryboo",
+        "Muffiend"
+      ],
+      "reason": "Reduce food repetition; sundew finger-trap preserves Grass/Dark coverage with stronger anatomy.",
+      "replacement_families": [
+        "MN_F142"
+      ],
+      "date": "2026-10-27"
+    },
+    {
+      "id": "MN_F096",
+      "app_line_number": 96,
+      "authority": "user_requested_design_replacement",
+      "species_ids": [
+        "MN_209",
+        "MN_210"
+      ],
+      "names": [
+        "Mimuss",
+        "Mantasm"
+      ],
+      "reason": "Reduce repeated Water/Psychic families as sundial turtle and nursery mudpuppy arrive; preserve the rarer Dark/Flying windvane pair. These two slots fund the leaf-puzzle solo and extra woodpecker stage.",
+      "replacement_families": [
+        "MN_F144",
+        "MN_F138"
+      ],
+      "date": "2026-10-27"
+    },
+    {
+      "id": "MN_F118",
+      "app_line_number": 118,
+      "authority": "user_requested_design_replacement",
+      "species_ids": [
+        "MN_253",
+        "MN_254"
+      ],
+      "names": [
+        "Murkib",
+        "Barbastion"
+      ],
+      "reason": "Replace less distinct poisonous bullhead with the mudpuppy nursery line, keeping requested trout/walleye/burbot/northern/paddlefish.",
+      "replacement_families": [
+        "MN_F140"
+      ],
+      "date": "2026-10-27"
+    }
+  ],
+  "removed_evolutions": [
+    {
+      "id": "MN_269",
+      "family_id": "MN_F060",
+      "name": "Oreviathan",
+      "authority": "user",
+      "reason": "User rejected and removed the added freighter final evolution. Existing Tugget/Lakernaut line remains. All source/native renders and proposals retained.",
+      "member": {
+        "id": "MN_269",
+        "name": "Oreviathan",
+        "types": [
+          "FIRE",
+          "WATER"
+        ],
+        "stage": 3,
+        "evolves_to": null
+      },
+      "profile": {
+        "id": "MN_269",
+        "classification": "Ore Hauler",
+        "height_inches": 180,
+        "weight_tenths_lb": 31000,
+        "dex_pages": [
+          "Its boiler lets @ it haul ore too @ heavy for ships.",
+          "Twin steam horns @ sound before it @ enters a harbor."
+        ],
+        "base_stats": {
+          "hp": 110,
+          "attack": 85,
+          "defense": 100,
+          "speed": 35,
+          "special_attack": 115,
+          "special_defense": 95
+        },
+        "catch_rate": 45,
+        "base_exp": 230,
+        "gender_ratio": 127,
+        "hatch_cycles": 40,
+        "growth_rate": "GROWTH_SLOW",
+        "egg_groups": [
+          "EGG_WATER_1",
+          "EGG_MINERAL"
+        ],
+        "evolution": null,
+        "held_items": [
+          null,
+          null
+        ],
+        "menu_icon": "ICON_LAPRAS",
+        "footprint_species": "BLASTOISE",
+        "cry": {
+          "cry": "CRY_BLASTOISE",
+          "pitch": -12,
+          "length": 176
+        },
+        "shiny_rgb5": [
+          [
+            13,
+            29,
+            24
+          ],
+          [
+            15,
+            6,
+            10
+          ]
+        ],
+        "level_moves": [
+          [
+            1,
+            "TACKLE"
+          ],
+          [
+            1,
+            "LEER"
+          ],
+          [
+            1,
+            "EMBER"
+          ],
+          [
+            1,
+            "WATER_GUN"
+          ],
+          [
+            15,
+            "SMOKESCREEN"
+          ],
+          [
+            19,
+            "BUBBLEBEAM"
+          ],
+          [
+            24,
+            "STOMP"
+          ],
+          [
+            29,
+            "FIRE_SPIN"
+          ],
+          [
+            34,
+            "BODY_SLAM"
+          ],
+          [
+            39,
+            "RAIN_DANCE"
+          ],
+          [
+            44,
+            "FLAMETHROWER"
+          ],
+          [
+            50,
+            "VITAL_THROW"
+          ],
+          [
+            57,
+            "HYDRO_PUMP"
+          ],
+          [
+            64,
+            "FIRE_BLAST"
+          ]
+        ],
+        "tmhm_moves": [
+          "SURF",
+          "WATERFALL",
+          "WHIRLPOOL",
+          "FIRE_BLAST",
+          "FLAMETHROWER",
+          "ROCK_SMASH",
+          "STRENGTH",
+          "RAIN_DANCE",
+          "PROTECT",
+          "REST"
+        ],
+        "egg_moves": [
+          "AMNESIA",
+          "COUNTER",
+          "HAZE"
+        ]
+      },
+      "palette": {
+        "species_id": "MN_269",
+        "name": "Oreviathan",
+        "gbc_rgb5": [
+          [
+            31,
+            31,
+            31
+          ],
+          [
+            27,
+            12,
+            4
+          ],
+          [
+            4,
+            11,
+            16
+          ],
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        "gbc_rgb555_words": [
+          32767,
+          4507,
+          16740,
+          0
+        ],
+        "rgb8": [
+          [
+            255,
+            255,
+            255
+          ],
+          [
+            222,
+            99,
+            33
+          ],
+          [
+            33,
+            90,
+            132
+          ],
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        "hex": [
+          "#FFFFFF",
+          "#DE6321",
+          "#215A84",
+          "#000000"
+        ]
+      },
+      "sprite_imports": [
+        {
+          "id": "mn-269-oreviathan-v2",
+          "species_id": "MN_269",
+          "view": "front",
+          "source": "sprites/mn-f060/freighter-v2/front-back.imagegen-v1.png",
+          "crop": [
+            0,
+            0,
+            1254,
+            702
+          ],
+          "fit": [
+            54,
+            54
+          ],
+          "normal_palette_rgb555": [
+            32767,
+            4507,
+            16740,
+            0
+          ],
+          "exterior_contour": "solid",
+          "interior_black_min_samples": 12,
+          "white_detail_min_samples": 4
+        },
+        {
+          "id": "mn-269-oreviathan-v2",
+          "species_id": "MN_269",
+          "view": "back",
+          "source": "sprites/mn-f060/freighter-v2/front-back.imagegen-v1.png",
+          "crop": [
+            0,
+            702,
+            1254,
+            552
+          ],
+          "fit": [
+            46,
+            47
+          ],
+          "normal_palette_rgb555": [
+            32767,
+            4507,
+            16740,
+            0
+          ],
+          "exterior_contour": "solid",
+          "interior_black_min_samples": 12,
+          "white_detail_min_samples": 4
+        }
+      ]
+    }
+  ],
+  "evolution_mix": {
+    "three_stage_families": 39,
+    "two_stage_families": 42,
+    "single_stage_species": 19,
+    "legendary_species": 6,
+    "mythical_species": 2
+  }
+}

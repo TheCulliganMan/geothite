@@ -1,0 +1,31 @@
+{
+  "status": "LATEST_HARBOR_PARENT_CHILD_PRESERVATION_PASS_NATIVE_VERIFICATION_PENDING",
+  "parent": {
+    "revision": "duluth_harbor_platforms_revision",
+    "pack": "content-packs/minnesota-current-duluth-harbor-v02.crystalpack",
+    "sha256": "2450f44c16fd9f783b8b1dae8e6fa292fbf6a1444a730527c7ebfc63af09b721"
+  },
+  "candidate_pack": "content-packs/minnesota-current-mankato-mart-v03.crystalpack",
+  "candidate_sha256": "fa75cf2b83da156751debe1a52f7a24c42d277b845554870f1f9eb79711d9f7d",
+  "candidate_identity": "26564993c17dc83a2c9943fbdc0f420405b5a2f8e2cb8dbd899bfa973e22e361",
+  "changed_metatiles": 2,
+  "other_complete_maps_exact": 731,
+  "state_fair_exact": true,
+  "canonical_layout_unchanged": true,
+  "selection_changed": false,
+  "contract": "exterior-child.contract.v04.json",
+  "verification_pid": 29700,
+  "verification_script": ".local/route-grass-review/verify_mankato_terrain_child_v07.py",
+  "verification_script_sha256": "8cfba71ec62b784d590b1ce2c9af09db8c698196a71f35c492cf224801d6f8c1",
+  "verification_progress": "verified-terrain-child-progress-v07.json",
+  "tool_supervisor_pid": 28766,
+  "tool_progress": "portable-tools-build-progress-v03.json",
+  "current_cargo_pid": 25218,
+  "original_wrapper_pid": 9724,
+  "original_wrapper_state": "INTENTIONALLY_STOPPED_PARENT_ONLY_UNTIL_CURRENT_CARGO_FINISHES",
+  "prior_candidates_retained": [
+    "minnesota-current-mankato-mart-v01.crystalpack",
+    "minnesota-current-mankato-mart-v02.crystalpack"
+  ],
+  "limits": "Earlier native/MCP/GPU receipts remain bound to their original identities. This child needs fresh native cases, reached saves, production input and native 2D images. Preserve latest selected harbor/shopping lineage; no historical child is selected over it."
+}

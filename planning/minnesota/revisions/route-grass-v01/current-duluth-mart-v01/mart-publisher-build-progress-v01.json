@@ -1,0 +1,27 @@
+{
+  "pid": 86009,
+  "source_sha256": {
+    "crates/crystal-assets/src/duluth_mart_facade.rs": "4dac2de9eeff45f29ec7a9609f0c073f6986f2db272d035101ca4ab65b322534",
+    "crates/crystal-assets/src/bin/revise_duluth_mart_facade.rs": "c302594fcbfa229679b1f373188d9aab8a10b49e8e8ae7d3374a7284c4ff3f03"
+  },
+  "steps": [
+    {
+      "step": "publisher",
+      "command": [
+        "cargo",
+        "build",
+        "--profile",
+        "wasm-dev",
+        "--locked",
+        "--config",
+        "profile.wasm-dev.package.crystal-assets.opt-level=0",
+        "-p",
+        "crystal-assets",
+        "--bin",
+        "revise_duluth_mart_facade"
+      ],
+      "exit_code": 101,
+      "log": ".local/route-grass-review/duluth-mart-publisher-v01.log"
+    }
+  ]
+}

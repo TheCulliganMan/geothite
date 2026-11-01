@@ -1,0 +1,234 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F021",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_055": {
+      "species_id": "MN_055",
+      "name": "Morlit",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          26,
+          23,
+          14
+        ],
+        [
+          13,
+          10,
+          6
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        15098,
+        6477,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          214,
+          189,
+          115
+        ],
+        [
+          107,
+          82,
+          49
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#D6BD73",
+        "#6B5231",
+        "#000000"
+      ]
+    },
+    "MN_056": {
+      "species_id": "MN_056",
+      "name": "Morelord",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          22,
+          20,
+          15
+        ],
+        [
+          9,
+          8,
+          15
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        16022,
+        15625,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          181,
+          165,
+          123
+        ],
+        [
+          74,
+          66,
+          123
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#B5A57B",
+        "#4A427B",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f021/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "board": "target/minnesota-pokemon/gen2-reference/starters.png"
+  },
+  "sprites": [
+    {
+      "id": "mn-055-morlit-v1",
+      "species_id": "MN_055",
+      "view": "front",
+      "source": "sprites/mn-f021/mn-055-056.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        740,
+        560
+      ],
+      "fit": [
+        40,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        15098,
+        6477,
+        0
+      ]
+    },
+    {
+      "id": "mn-055-morlit-v1",
+      "species_id": "MN_055",
+      "view": "back",
+      "source": "sprites/mn-f021/mn-055-056.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        560,
+        740,
+        464
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        15098,
+        6477,
+        0
+      ]
+    },
+    {
+      "id": "mn-056-morelord-v1",
+      "species_id": "MN_056",
+      "view": "front",
+      "source": "sprites/mn-f021/mn-055-056.front-back.imagegen-v1.png",
+      "crop": [
+        740,
+        0,
+        796,
+        560
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        16022,
+        15625,
+        0
+      ]
+    },
+    {
+      "id": "mn-056-morelord-v1",
+      "species_id": "MN_056",
+      "view": "back",
+      "source": "sprites/mn-f021/mn-055-056.front-back.imagegen-v1.png",
+      "crop": [
+        740,
+        560,
+        796,
+        464
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        16022,
+        15625,
+        0
+      ]
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "notes": [
+      "Inspected frozen source-contour-v1 sheet: maze-cap hollows stay dark and distinct while straw-colored bridges between openings remain intact.",
+      "Ghost root curls retain separated tips and colored interiors instead of heavy knots; rear cap/stalk portraits crop cleanly with no stray front pixels."
+    ],
+    "sheet_sha256": "1a95682f091a1daea488787992b547c36d3bdb533ca525f0310bcb862a547738",
+    "outline_profile": "source-contour-v1"
+  }
+}

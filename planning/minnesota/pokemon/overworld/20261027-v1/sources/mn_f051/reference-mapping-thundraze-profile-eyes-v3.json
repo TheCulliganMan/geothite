@@ -1,0 +1,17 @@
+{
+  "species_id": "MN_106",
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/prompt-thundraze-profile-eyes-v3.txt",
+  "intent": "shift only two existing profile pupil marks into readable native grid positions; actual face/head unchanged",
+  "input_images": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/thundraze.overworld.imagegen-v2-compact-profiles.png",
+      "sha256": "4c5996f70918ab0838e4d6599e6be00e2ade3eec168864174a5989d8a4861b5b",
+      "role": "EDIT TARGET"
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+      "sha256": "4354a639ed1a80fd6686e43b273443ed894e58a84307a8049f638ee9ffa2a099",
+      "role": "Authentic native16 STYLE"
+    }
+  ]
+}

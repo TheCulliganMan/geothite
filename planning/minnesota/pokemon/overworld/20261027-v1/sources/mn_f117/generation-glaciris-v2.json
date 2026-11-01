@@ -1,0 +1,20 @@
+{
+  "species_id": "MN_252",
+  "name": "Glaciris",
+  "family_id": "MN_F117",
+  "tool": "built-in image_gen",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f117/manifest-glaciris-v2-pupil-proof.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f117/glaciris-v2-pupil-proof",
+  "normalized_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f117/source-feature-proof-glaciris-v2.json",
+  "detailed_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f117/manifest-glaciris-v2-pupil-proof.proof.json",
+  "sources": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f117/glaciris.overworld.imagegen-v1.png": "728c621aeccd1d9e5a578db911d691ddfb29ea2c7f638f7d9f73ee5a1f5c34f8",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f117/glaciris.overworld.imagegen-v2-compact-profile.png": "85a692de045294673605a18986503360000448e1e7afded5107a9d9f7c20b267"
+  },
+  "preserved_attempt_receipts": [
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f117/attempt-glaciris-v1.json",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f117/attempt-glaciris-v2.json"
+  ],
+  "status": "frozen native candidate; actual normal/shiny source features reviewed; root context pending",
+  "accepted": false
+}

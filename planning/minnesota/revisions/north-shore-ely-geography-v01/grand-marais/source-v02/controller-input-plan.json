@@ -1,0 +1,21 @@
+{
+  "status": "PENDING_REAL_VISIBLE_SHELL_CONTROLLER_INPUT",
+  "scope": "28towncells/10native reefs; west coastalFoot+Surf/north inlandFoot; setupfixtures only",
+  "cases": [
+    "Missing badge west/north outgoing refusal, text owns input, A advances, safe denial one-step, guards reappear",
+    "All badges but missing Duluth signal still refused; separate local lamp never substitutes",
+    "All8badges+signal clear west/north officers and both real lanes reach neighbor via production input",
+    "Unqualified inbound west/north both lanes hides guards, moves two steps, reconciles behind and reaches nurse",
+    "Every21 water gate row16..36 denies outbound safely onto Water without losing Surf; test northern-bank launch and bottom-row detour",
+    "Inbound Surf crossing right invokes wrapper then old inward script, retains Surf mode, moves1→2→3, reaches town, Continue preserves state",
+    "Vertical Surf on inward column1 does not trigger unintended push; reversing left from outer column1 remains possible",
+    "Boundary attempts fail east/south buoy line and north pines; only declared neighbor ports open",
+    "All6original rooms enter and return correctly; nurse/shop/fieldstation/local lamp behaviors exact",
+    "Sign points NorthShore west and Gunflint/Ely north; no coastal snow, separate substantial inland winter"
+  ],
+  "forbidden_after_setup": [
+    "position/flags/party/badges writes",
+    "RuntimeGameShell tick-only gameplay"
+  ],
+  "source_graph_not_execution": true
+}

@@ -1,0 +1,305 @@
+"""Standard-library closed surface helpers for original static model recipes.
+
+Geometry only: species palettes, anatomical profiles and features live in their
+own recipes. Coordinates are +Y up, +Z front. No generated mesh catalog.
+"""
+import math
+from chikorita_sculpt import mesh,linear,add,sub,mul,dot,cross,unit
+
+def part(name,color,vertices,faces,smooth=False):
+    p=mesh(name,'body',vertices,faces,smooth)
+    p['base_color']=linear(color);return p
+
+
+def loft(name,color,profiles,segments=20):
+    v=[(rx*math.sin(math.tau*i/segments),y,z+rz*math.cos(math.tau*i/segments))
+       for y,rx,rz,z in profiles for i in range(segments)]
+    f=[tuple(reversed(range(segments))),tuple((len(profiles)-1)*segments+i for i in range(segments))]
+    for k in range(len(profiles)-1):
+        for i in range(segments):
+            a=k*segments+i;b=k*segments+(i+1)%segments
+            f.append((a,b,b+segments,a+segments))
+    return part(name,color,v,f,True)
+
+
+def ellipsoid(name,color,center,radii,segments=16,rings=10):
+    # Small nonzero polar rings retain a closed, nondegenerate authored solid.
+    return translate(loft(name,color,[(center[1]+radii[1]*math.cos(math.pi*(i+.025)/(rings+.05)),radii[0]*math.sin(math.pi*(i+.025)/(rings+.05)),radii[2]*math.sin(math.pi*(i+.025)/(rings+.05)),center[2]) for i in reversed(range(rings+1))],segments),center[0],0,0)
+
+
+def translate(p,x,y,z):
+    p['positions']=[value+(x,y,z)[i%3] for i,value in enumerate(p['positions'])];return p
+
+
+def tube(name,color,points,radii,segments=12):
+    # Parallel-transport ring frame prevents abrupt striped-tail twists.
+    v=[];f=[];side=None
+    for k,p in enumerate(points):
+        tangent=unit(sub(points[min(k+1,len(points)-1)],points[max(0,k-1)]))
+        if side is None:side=cross(tangent,(0,1,0) if abs(tangent[1])<.9 else (1,0,0))
+        side=unit(sub(side,mul(tangent,dot(side,tangent))));other=cross(tangent,side)
+        v.extend(add(p,mul(add(mul(side,math.cos(i*math.tau/segments)),mul(other,math.sin(i*math.tau/segments))),radii[k])) for i in range(segments))
+    f=[tuple(reversed(range(segments))),tuple((len(points)-1)*segments+i for i in range(segments))]
+    for k in range(len(points)-1):
+        for i in range(segments):
+            a=k*segments+i;b=k*segments+(i+1)%segments;f.append((a,b,b+segments,a+segments))
+    return part(name,color,v,f,True)
+
+
+def fitted_patch(name,color,outline,surface,thickness=.008,*,center=None):
+    """Closed shallow marking follows a real surface instead of floating on it.
+
+    The XY outline must be convex. Three concentric front/back rings preserve
+    the underlying curvature, and shared edges give a closed oriented solid.
+    """
+    outline=list(outline)
+    if sum(a[0]*b[1]-b[0]*a[1] for a,b in zip(outline,outline[1:]+outline[:1]))<0:
+        outline.reverse()
+    cx,cy=center if center is not None else (sum(x for x,y in outline)/len(outline),sum(y for x,y in outline)/len(outline))
+    xy=[(cx,cy)]
+    for radius in (.33,.67,1.):xy.extend((cx+(x-cx)*radius,cy+(y-cy)*radius) for x,y in outline)
+    front=[(x,y,surface(y,x)+thickness) for x,y in xy]
+    back=[(x,y,surface(y,x)-thickness*.35) for x,y in xy]
+    n=len(outline);count=len(front);faces=[]
+    for i in range(n):faces.append((0,1+i,1+(i+1)%n))
+    for ring in range(2):
+        for i in range(n):
+            a=1+ring*n+i;b=1+ring*n+(i+1)%n;faces.append((a,a+n,b+n,b))
+    faces += [tuple(i+count for i in reversed(f)) for f in list(faces)]
+    last=1+2*n
+    faces += [(last+(i+1)%n,last+i,last+i+count,last+(i+1)%n+count) for i in range(n)]
+    return part(name,color,front+back,faces)
+
+
+def subdivided_part(name,color,vertices,faces,steps=1,smooth=False):
+    """Chamfer a closed cage with bounded Catmull-Clark subdivision.
+
+    Operates on authored polygon faces before triangulation. This changes the
+    actual silhouette, rather than just hiding facets with lighting normals.
+    """
+    vertices=[tuple(v) for v in vertices];faces=[tuple(f) for f in faces]
+    def mean(points):return tuple(sum(p[k] for p in points)/len(points) for k in range(3))
+    for _ in range(steps):
+        face_points=[mean([vertices[i] for i in f]) for f in faces]
+        edges={};touch=[[] for v in vertices]
+        for index,f in enumerate(faces):
+            for a in f:touch[a].append(index)
+            for a,b in zip(f,f[1:]+f[:1]):edges.setdefault(tuple(sorted((a,b))),[]).append(index)
+        if any(len(fs)!=2 for fs in edges.values()):raise ValueError('subdivision requires a closed cage')
+        neighbors=[[] for v in vertices]
+        for (a,b),fs in edges.items():
+            middle=mean([vertices[a],vertices[b]]);neighbors[a].append(middle);neighbors[b].append(middle)
+        new=[]
+        for i,v in enumerate(vertices):
+            n=len(touch[i]);f=mean([face_points[j] for j in touch[i]]);r=mean(neighbors[i])
+            new.append(tuple((f[k]+2*r[k]+(n-3)*v[k])/n for k in range(3)))
+        edge_ids={}
+        for edge,fs in edges.items():edge_ids[edge]=len(new);new.append(mean([vertices[i] for i in edge]+[face_points[j] for j in fs]))
+        face_start=len(new);new.extend(face_points);next_faces=[]
+        for j,f in enumerate(faces):
+            for i,a in enumerate(f):
+                b=f[(i+1)%len(f)];c=f[i-1]
+                next_faces.append((a,edge_ids[tuple(sorted((a,b)))],face_start+j,edge_ids[tuple(sorted((a,c)))]))
+        vertices,faces=new,next_faces
+    return part(name,color,vertices,faces,smooth)
+
+
+def curved_profiles(profiles,steps=3):
+    """Monotone cubic contours retain authored knots and avoid radius overshoot."""
+    profiles=list(profiles);ys=[p[0] for p in profiles];columns=[]
+    for axis in range(1,4):
+        values=[p[axis] for p in profiles]
+        slopes=[(b-a)/(ys[i+1]-ys[i]) for i,(a,b) in enumerate(zip(values,values[1:]))]
+        tangents=[slopes[0]]
+        for i in range(1,len(values)-1):
+            a,b=slopes[i-1:i+1];h0=ys[i]-ys[i-1];h1=ys[i+1]-ys[i]
+            tangents.append(0. if a*b<=0 else (3*(h0+h1))/((2*h1+h0)/a+(h1+2*h0)/b))
+        tangents.append(slopes[-1]);columns.append((values,tangents))
+    out=[]
+    for i in range(len(profiles)-1):
+        h=ys[i+1]-ys[i]
+        for j in range(steps):
+            t=j/steps;row=[ys[i]+t*h]
+            for values,tangents in columns:
+                value=(2*t**3-3*t*t+1)*values[i]+(t**3-2*t*t+t)*h*tangents[i]+(-2*t**3+3*t*t)*values[i+1]+(t**3-t*t)*h*tangents[i+1]
+                row.append(max(min(values[i:i+2]),min(max(values[i:i+2]),value)))
+            out.append(tuple(row))
+    return out+[profiles[-1]]
+
+
+def crease_normals(p,degrees=40.):
+    """Smooth connected curved faces, preserving sharp folds and exact geometry.
+
+    Weld only for adjacency; output still splits corners across sharp edges.
+    Material regions should be split after this function to avoid shading seams.
+    """
+    from chikorita_sculpt import f32
+    ps=[tuple(p['positions'][i:i+3]) for i in range(0,len(p['positions']),3)]
+    ts=[tuple(p['indices'][i:i+3]) for i in range(0,len(p['indices']),3)]
+    areas=[cross(sub(ps[b],ps[a]),sub(ps[c],ps[a])) for a,b,c in ts];normals=[unit(n) for n in areas]
+    incident={};edges={}
+    for i,tri in enumerate(ts):
+        coords=[ps[j] for j in tri]
+        for v in coords:incident.setdefault(v,set()).add(i)
+        for a,b in zip(coords,coords[1:]+coords[:1]):edges.setdefault(tuple(sorted((a,b))),[]).append(i)
+    links={v:{} for v in incident};threshold=math.cos(math.radians(degrees))
+    for (a,b),faces in edges.items():
+        if len(faces)!=2:continue
+        i,j=faces
+        if dot(normals[i],normals[j])<threshold:continue
+        for v in (a,b):
+            links[v].setdefault(i,set()).add(j);links[v].setdefault(j,set()).add(i)
+    out=dict(p);out['positions']=[];out['normals']=[];out['indices']=[];lookup={};cache={}
+    for i,tri in enumerate(ts):
+        for old in tri:
+            v=ps[old];key=(v,i)
+            if key not in cache:
+                seen=set();queue=[i]
+                while queue:
+                    j=queue.pop()
+                    if j in seen or dot(normals[i],normals[j])<threshold:continue
+                    seen.add(j);queue.extend(links[v].get(j,set())-seen)
+                n=unit(tuple(sum(areas[j][k] for j in sorted(seen)) for k in range(3)))
+                cache[key]=tuple(f32(c) for c in n)
+            n=cache[key];key=v+n
+            if key not in lookup:
+                lookup[key]=len(out['positions'])//3;out['positions'].extend(v);out['normals'].extend(n)
+            out['indices'].append(lookup[key])
+    return out
+
+
+def fitted_contour(name,color,outline,skin,thickness=.009,subdivisions=2):
+    """Closed concave XY patch, subdivided before fitting to stored skin."""
+    from abra_sculpt import polygon_caps
+    # Ear clipping preserves the concave smile and crown notch. Subdivide the
+    # cap before fitting: a radial fan can fold across a crescent's inner edge.
+    if sum(a[0]*b[1]-b[0]*a[1] for a,b in zip(outline,outline[1:]+outline[:1]))<0:outline=list(reversed(outline))
+    xy=list(outline);caps=polygon_caps(outline)
+    for step in range(subdivisions):
+        mids={};refined=[]
+        def midpoint(a,b):
+            key=tuple(sorted((a,b)))
+            if key not in mids:
+                mids[key]=len(xy);xy.append(tuple((xy[a][j]+xy[b][j])/2 for j in range(2)))
+            return mids[key]
+        for a,b,c in caps:
+            ab,bc,ca=midpoint(a,b),midpoint(b,c),midpoint(c,a);refined.extend(((a,ab,ca),(ab,b,bc),(ca,bc,c),(ab,bc,ca)))
+        caps=refined
+    count=len(xy);v=[(x,y,skin(y,x)+offset) for offset in (thickness,-thickness*.35) for x,y in xy]
+    f=list(caps)+[tuple(i+count for i in reversed(face)) for face in caps]
+    edges={}
+    for face in caps:
+        for a,b in zip(face,face[1:]+face[:1]):edges.setdefault(tuple(sorted((a,b))),[]).append((a,b))
+    for uses in edges.values():
+        if len(uses)==1:
+            a,b=uses[0];f.append((b,a,a+count,b+count))
+    return part(name,color,v,f)
+
+
+
+def fitted_adaptive_contour(name,color,outline,parent,thickness=.012,*,surface_at=None,initial_subdivisions=3,max_surface_error=None):
+ # Conforming local refinement preserves the outline while resolving only the
+ # cap faces whose chords would cut through the stored curved parent.
+ # Rigid curved caps can also bound excessive clearance above concave skin.
+ from abra_sculpt import polygon_caps,surface
+ skin=surface(parent) if surface_at is None else surface_at;xy=list(outline);caps=polygon_caps(outline);th=thickness
+ def refine(marked):
+  nonlocal caps
+  mids={}
+  for a,b in sorted(marked):
+   mids[(a,b)]=len(xy);xy.append(((xy[a][0]+xy[b][0])/2,(xy[a][1]+xy[b][1])/2))
+  refined=[]
+  for face in caps:
+   flags=[tuple(sorted((face[i],face[(i+1)%3]))) in marked for i in range(3)];count=sum(flags)
+   if not count:refined.append(face);continue
+   if count==1:shift=flags.index(True)
+   elif count==2:shift=(flags.index(False)+1)%3
+   else:shift=0
+   a,b,c=face[shift:]+face[:shift];ab=mids[tuple(sorted((a,b)))]
+   if count==1:refined.extend(((a,ab,c),(ab,b,c)));continue
+   bc=mids[tuple(sorted((b,c)))]
+   if count==2:refined.extend(((ab,b,bc),(a,ab,c),(ab,bc,c)));continue
+   ca=mids[tuple(sorted((c,a)))];refined.extend(((a,ab,ca),(ab,b,bc),(ca,bc,c),(ab,bc,ca)))
+  caps=refined
+ if max_surface_error is not None and (not math.isfinite(max_surface_error) or max_surface_error<=0.):raise ValueError('invalid maximum surface error')
+ if not 0<=initial_subdivisions<=3:raise ValueError('invalid initial contour subdivisions')
+ for step in range(initial_subdivisions):refine({tuple(sorted((f[i],f[(i+1)%3]))) for f in caps for i in range(3)})
+ for step in range(6):
+  zs=[skin(y,x)+th for x,y in xy];marked=set()
+  for face in caps:
+   samples=[tuple(sum(xy[i][j] for i in face)/3 for j in range(2))]
+   gaps=[sum(zs[i] for i in face)/3-skin(samples[0][1],samples[0][0])]
+   for a,b in zip(face,face[1:]+face[:1]):
+    x,y=((xy[a][j]+xy[b][j])/2 for j in range(2));gaps.append((zs[a]+zs[b])/2-skin(y,x))
+   if min(gaps)<.001 or max_surface_error is not None and max(abs(gap-th) for gap in gaps)>max_surface_error:marked.update(tuple(sorted((face[i],face[(i+1)%3]))) for i in range(3))
+  if not marked:break
+  refine(marked)
+ else:raise ValueError(name+' did not clear its stored parent')
+ count=len(xy);v=[(x,y,skin(y,x)+offset) for offset in (th,-th*.35) for x,y in xy];faces=list(caps)+[tuple(i+count for i in reversed(f)) for f in caps];edges={}
+ for f in caps:
+  for a,b in zip(f,f[1:]+f[:1]):edges.setdefault(tuple(sorted((a,b))),[]).append((a,b))
+ for uses in edges.values():
+  if len(uses)==1:
+   a,b=uses[0];faces.append((b,a,a+count,b+count))
+ return crease_normals(part(name,color,v,faces),35)
+
+
+def fitted_triangle_contour(name,color,outline,parent,thickness=.001,*,precision=10):
+    """Closed layer conforming to a stored front heightfield, including concave outlines.
+
+    Clip the parent's actual front triangles to an ear-clipped outline rather
+    than bridging a recessed surface with raised chords. Buried back faces and
+    boundary walls close the layer; +Z remains the authored front direction.
+    Precision controls welding before the caller rounds exported coordinates.
+    """
+    from abra_sculpt import polygon_caps
+    if sum(a[0]*b[1]-b[0]*a[1] for a,b in zip(outline,outline[1:]+outline[:1]))<0:
+        outline=list(reversed(outline))
+    turns=[(b[0]-a[0])*(c[1]-b[1])-(b[1]-a[1])*(c[0]-b[0]) for a,b,c in zip(outline,outline[1:]+outline[:1],outline[2:]+outline[:2])]
+    regions=[outline] if min(turns)>=-1e-12 else [[outline[i] for i in tri] for tri in polygon_caps(outline)]
+    points=[tuple(parent['positions'][i:i+3]) for i in range(0,len(parent['positions']),3)]
+    vertices=[];faces=[];lookup={}
+    def vertex(point):
+        key=tuple(round(v,precision) for v in point)
+        if key not in lookup:
+            lookup[key]=len(vertices);vertices.append(key)
+        return lookup[key]
+    for k in range(0,len(parent['indices']),3):
+        tri=[points[i] for i in parent['indices'][k:k+3]];a,b,c=tri
+        if (b[0]-a[0])*(c[1]-a[1])-(b[1]-a[1])*(c[0]-a[0])<=1e-12:
+            continue
+        for region in regions:
+            poly=tri
+            for a,b in zip(region,region[1:]+region[:1]):
+                clipped=[]
+                def distance(q):
+                    return (b[0]-a[0])*(q[1]-a[1])-(b[1]-a[1])*(q[0]-a[0])
+                for u,v in zip(poly,poly[1:]+poly[:1]):
+                    du,dv=distance(u),distance(v);inside_u,inside_v=du>=-1e-12,dv>=-1e-12
+                    if inside_u:
+                        clipped.append(u)
+                    if inside_u!=inside_v:
+                        fraction=du/(du-dv)
+                        clipped.append(tuple(u[j]+fraction*(v[j]-u[j]) for j in range(3)))
+                poly=clipped
+                if len(poly)<3:
+                    break
+            if len(poly)<3:
+                continue
+            ids=[vertex(q) for q in poly]
+            for j in range(1,len(ids)-1):
+                if len({ids[0],ids[j],ids[j+1]})==3:
+                    faces.append((ids[0],ids[j],ids[j+1]))
+    edges={}
+    for face in faces:
+        for a,b in zip(face,face[1:]+face[:1]):
+            edges.setdefault(tuple(sorted((a,b))),[]).append((a,b))
+    if not faces or any(len(uses)>2 for uses in edges.values()):
+        raise ValueError(name+' has an invalid conforming front surface')
+    count=len(vertices)
+    positions=[(x,y,z+offset) for offset in (thickness,-thickness*.35) for x,y,z in vertices]
+    closed=faces+[tuple(i+count for i in reversed(face)) for face in faces]
+    for uses in edges.values():
+        if len(uses)==1:
+            a,b=uses[0];closed.append((b,a,a+count,b+count))
+    return part(name,color,positions,closed,True)

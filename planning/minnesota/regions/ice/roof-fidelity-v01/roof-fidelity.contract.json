@@ -1,0 +1,119 @@
+{
+  "schema_version": 1,
+  "base_pack_sha256": "aa1aa251f7383640412b82b9b3ed9d6e0bb1304569230a79624c75274db60e5a",
+  "base_identity": "ab1c60993ffc1bb0d4c3ef4c02f2455208cadc939faee3ffa5ce310ebbb61805",
+  "base_map_count": 683,
+  "map": "MnR11C00R00",
+  "tileset": "mn_winter_north_shore",
+  "base_module_sha256": "12a44ebf2dc4a5a6f395e8f87917756bb0849aec912224e5aa6e7e5fcc43488e",
+  "base_definition_sha256": "70f05af25fd5d117fcc410f9397d525fbc2fea899eca12f26131f86de86e2180",
+  "source_files_sha256": {
+    "data/tilesets/mn_winter_north_shore_metatiles.bin": "cd54acd379e709626bc29b7dd7e5ef45d1937e8f256a0a2c600df76186a34faf",
+    "gfx/tilesets/mn_winter_north_shore.2bpp": "528ed5b914d892849aa5e1755f12bfc4a253f9a07086683ce25f4bf76e0fc277",
+    "gfx/tilesets/mn_winter_north_shore.png": "f6d8ef7f76adbfd83e9267fd68373929f5955fb02c9ca0a06e0b0a9e006c857b",
+    "data/tilesets/mn_winter_north_shore_foregrounds.json": "4e5745baf9f9b170f10f3ec41a085cfdcba8f91bc36b87baa569e053c5772096",
+    "data/tilesets/mn_winter_north_shore_palette_map.json": "13efa19c83bfa3e8e7ab07c8e805d38e392f403b2d8cc91d5b668965414e2a34",
+    "data/tilesets/mn_winter_north_shore.json": "686459a2976341318d65d0d946da597f2a8cb4ff0ae59ce8049b82892d39dffa",
+    "gfx/tilesets/mn_north_shore.2bpp": "72661575e29288cb9ecc73e14ce0b63aef763b2a085b900f2f910c2a2c89f49d",
+    "data/tilesets/mn_north_shore_metatiles.bin": "1c735fded81b29e8920ead944b89bce687179dea04d4e40080a3fea6f397e049"
+  },
+  "expected_blocks": 137,
+  "glyphs": [
+    {
+      "source": 30,
+      "target": 250,
+      "remapped_pixels_sha256": "4325aab7d7898dcfcb8c399e7dac3ee3423e50d500bdb45976b4e0aa62c919c1"
+    },
+    {
+      "source": 31,
+      "target": 251,
+      "remapped_pixels_sha256": "f50e69782f53e7c4470dad01968451400cb6430116a17f052c74184521692cd6"
+    },
+    {
+      "source": 62,
+      "target": 252,
+      "remapped_pixels_sha256": "f5b9ac48462a69343447347fd4f77c15df0d75b99a43a0d255aee76489657f6d"
+    },
+    {
+      "source": 63,
+      "target": 253,
+      "remapped_pixels_sha256": "cbfc45ec8e1b2108d265d35eadfa18a406d117fd027adbd5aa9ac1fc25399d1c"
+    }
+  ],
+  "blocks": [
+    {
+      "source": 44,
+      "target": 137,
+      "glyphs": [
+        250,
+        251,
+        250,
+        251,
+        252,
+        253,
+        252,
+        253,
+        49,
+        83,
+        83,
+        83,
+        65,
+        83,
+        83,
+        83
+      ],
+      "collision": [
+        "HEADBUTT_TREE",
+        "HEADBUTT_TREE",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "source": 45,
+      "target": 138,
+      "glyphs": [
+        250,
+        251,
+        250,
+        251,
+        252,
+        253,
+        252,
+        253,
+        83,
+        83,
+        83,
+        52,
+        83,
+        83,
+        83,
+        68
+      ],
+      "collision": [
+        "HEADBUTT_TREE",
+        "HEADBUTT_TREE",
+        "WALL",
+        "WALL"
+      ]
+    }
+  ],
+  "cells": [
+    {
+      "metatile": [
+        11,
+        9
+      ],
+      "before": 44,
+      "after": 137
+    },
+    {
+      "metatile": [
+        12,
+        9
+      ],
+      "before": 45,
+      "after": 138
+    }
+  ]
+}

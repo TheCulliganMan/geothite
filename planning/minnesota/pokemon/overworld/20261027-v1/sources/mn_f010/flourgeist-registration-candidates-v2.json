@@ -1,0 +1,50 @@
+[
+  {
+    "dx": -12,
+    "dy": -4,
+    "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f010/manifest-flourgeist-v2-registered-x-12-y-4.json",
+    "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f010/flourgeist-v2-registered-x-12-y-4",
+    "eyes": [
+      [
+        [
+          [
+            6,
+            8
+          ],
+          [
+            6,
+            9
+          ]
+        ],
+        [
+          [
+            10,
+            8
+          ]
+        ]
+      ],
+      [
+        [
+          [
+            6,
+            8
+          ],
+          [
+            6,
+            9
+          ],
+          [
+            7,
+            8
+          ]
+        ],
+        [
+          [
+            9,
+            8
+          ]
+        ]
+      ]
+    ]
+  }
+]

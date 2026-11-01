@@ -1,0 +1,24 @@
+{
+  "status": "PASS_CURRENT_CEDAR_USED_ART_AND_COLLISION_EXACT",
+  "old_pack": "content-packs/minnesota-current-cedar-warmth-r20-v01.crystalpack",
+  "current_pack": "content-packs/minnesota-current-r14-forest-bank-v01.crystalpack",
+  "current_sha256": "e9f4108d3b0a35f04145e4928446c03845982e1f13d7ff8f34e383bd701757d5",
+  "complete_native_map_exact": true,
+  "used_metatiles": [
+    1,
+    3,
+    5,
+    8,
+    9,
+    11,
+    14,
+    16,
+    17,
+    69,
+    86
+  ],
+  "used_native_pixels_and_collision_exact": true,
+  "whole_source_actor_scene_exact": true,
+  "global_tileset_table_exact": false,
+  "scope": "The old changed-map inventory compared complete shared tileset tables. Cedar uses unchanged metatiles/art/collision; the larger table differences do not alter this map. Three fresh current native GPU views are separately reviewed."
+}

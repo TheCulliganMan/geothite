@@ -1,0 +1,102 @@
+{
+  "status": "PASS_STATIC_NATIVE_BANK_ICE_MODEL",
+  "pack": "content-packs/minnesota-current-r16-bank-guidance-v02.crystalpack",
+  "pack_sha256": "e47cfeeff4baf0e2fd9654d9859e2fd094d856f8d34bede6c1c333c8209bce26",
+  "checks": [
+    {
+      "id": "main-north-south",
+      "start": [
+        36,
+        0
+      ],
+      "end": [
+        32,
+        111
+      ],
+      "bounds": [
+        0,
+        0,
+        64,
+        112
+      ],
+      "measurement": {
+        "status": "MEASURED",
+        "grass_steps": 20,
+        "grass_quadrants_in_contract": 136,
+        "ice_quadrants": 92
+      }
+    },
+    {
+      "id": "main-south-north",
+      "start": [
+        32,
+        111
+      ],
+      "end": [
+        36,
+        0
+      ],
+      "bounds": [
+        0,
+        0,
+        64,
+        112
+      ],
+      "measurement": {
+        "status": "MEASURED",
+        "grass_steps": 20,
+        "grass_quadrants_in_contract": 136,
+        "ice_quadrants": 92
+      }
+    },
+    {
+      "id": "sedge-north-south",
+      "start": [
+        36,
+        0
+      ],
+      "end": [
+        32,
+        111
+      ],
+      "bounds": [
+        22,
+        88,
+        28,
+        92
+      ],
+      "measurement": {
+        "status": "MEASURED",
+        "grass_steps": 4,
+        "grass_quadrants_in_contract": 24,
+        "ice_quadrants": 92
+      }
+    },
+    {
+      "id": "sedge-south-north",
+      "start": [
+        32,
+        111
+      ],
+      "end": [
+        36,
+        0
+      ],
+      "bounds": [
+        22,
+        88,
+        28,
+        92
+      ],
+      "measurement": {
+        "status": "MEASURED",
+        "grass_steps": 4,
+        "grass_quadrants_in_contract": 24,
+        "ice_quadrants": 92
+      }
+    }
+  ],
+  "model": ".local/route-grass-review/native_bank_ice_surface_v01.py",
+  "model_sha256": "d3ff0c985722310b2ba058cc40a2edba77f2e24db68bb287bd4a27cd12521470",
+  "scope": "Native current-tile cardinal hops, reciprocal bank entry/exit masks and straight ice slides. Actors clear, no Surf/Cut/interior warps; native gameplay reviewed separately."
+}

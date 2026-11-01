@@ -1,4 +1,8 @@
 use serde::{Deserialize, Deserializer, Serialize, de::Error as _};
+
+#[cfg(test)]
+#[path = "state_object_identity_tests.rs"]
+mod object_identity_tests;
 use std::collections::{BTreeMap, BTreeSet};
 
 use crate::battle::turn::BattleCombatState;
@@ -153,6 +157,9 @@ pub struct GameState {
     pub pending_special_battle_type: Option<String>,
     pub magikarp_record: MagikarpRecordState,
     pub day_care: DayCareState,
+    /// Independent regional sites, keyed by stable daycare identity.
+    #[serde(skip_serializing_if = "crate::day_care::omit_locations_for_legacy_save")]
+    pub day_care_locations: BTreeMap<String, DayCareState>,
     pub bug_contest: BugContestState,
     pub link_session: LinkSessionState,
     pub battle_tower: BattleTowerState,
@@ -257,6 +264,8 @@ impl<'de> Deserialize<'de> for GameState {
             pending_special_battle_type: Option<String>,
             magikarp_record: MagikarpRecordState,
             day_care: DayCareState,
+            #[serde(default, deserialize_with = "crate::day_care::deserialize_locations")]
+            day_care_locations: BTreeMap<String, DayCareState>,
             bug_contest: BugContestState,
             link_session: LinkSessionState,
             battle_tower: BattleTowerState,
@@ -346,6 +355,7 @@ impl<'de> Deserialize<'de> for GameState {
             pending_special_battle_type: raw.pending_special_battle_type,
             magikarp_record: raw.magikarp_record,
             day_care: raw.day_care,
+            day_care_locations: raw.day_care_locations,
             bug_contest: raw.bug_contest,
             link_session: raw.link_session,
             battle_tower: raw.battle_tower,
@@ -482,6 +492,7 @@ impl GameState {
                 best_owner_name: "RALPH".to_string(),
             },
             day_care: DayCareState::default(),
+            day_care_locations: BTreeMap::new(),
             bug_contest: BugContestState::default(),
             link_session: LinkSessionState::default(),
             battle_tower: BattleTowerState::default(),
@@ -1550,11 +1561,6 @@ impl DayCareState {
         if self.egg.as_ref().is_some_and(|egg| !egg.is_egg) {
             return Err("day_care.egg must retain egg identity".to_string());
         }
-        if self.egg_present && !both_residents_active {
-            return Err(
-                "day_care.egg_present cannot be saved without both residents active".to_string(),
-            );
-        }
         if self.compatibility_score != 0 && !both_residents_active {
             return Err(format!(
                 "day_care.compatibility_score {} cannot be saved without both residents active",
@@ -1675,16 +1681,42 @@ pub struct BuenasPasswordState {
     pub option_index: usize,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
-#[serde(deny_unknown_fields)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct RoamingPokemonState {
     pub species: Option<String>,
     pub level: u8,
     pub map_group: u8,
     pub map_number: u8,
     pub hp: u8,
+    /// Opt-in full-width HP for scaled roamers; stock saves retain the WRAM byte.
+    pub scaled_hp: Option<u16>,
     /// Big-endian packed DV bytes: attack/defense, then speed/special.
     pub dvs_be: [u8; 2],
+}
+
+impl Serialize for RoamingPokemonState {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        use serde::ser::SerializeStruct;
+        // Binary structs are positional: skipping None would consume the DV
+        // bytes as an Option tag and corrupt every following roamer/save field.
+        let omit_hp = crate::save::roaming_save_v24_wire()
+            || (serializer.is_human_readable() && self.scaled_hp.is_none());
+        let mut value = serializer
+            .serialize_struct("RoamingPokemonState", if omit_hp { 6 } else { 7 })?;
+        value.serialize_field("species", &self.species)?;
+        value.serialize_field("level", &self.level)?;
+        value.serialize_field("map_group", &self.map_group)?;
+        value.serialize_field("map_number", &self.map_number)?;
+        value.serialize_field("hp", &self.hp)?;
+        if !omit_hp {
+            value.serialize_field("scaled_hp", &self.scaled_hp)?;
+        }
+        value.serialize_field("dvs_be", &self.dvs_be)?;
+        value.end()
+    }
 }
 
 impl Default for RoamingPokemonState {
@@ -1697,6 +1729,7 @@ impl Default for RoamingPokemonState {
             map_group: u8::MAX,
             map_number: u8::MAX,
             hp: 0,
+            scaled_hp: None,
             dvs_be: [0, 0],
         }
     }
@@ -1715,16 +1748,41 @@ impl<'de> Deserialize<'de> for RoamingPokemonState {
             map_group: u8,
             map_number: u8,
             hp: u8,
+            #[serde(default)]
+            scaled_hp: Option<u16>,
             dvs_be: [u8; 2],
         }
 
-        let raw = RawRoamingPokemonState::deserialize(deserializer)?;
+        let raw = if crate::save::roaming_save_v24_wire() {
+            #[derive(Deserialize)]
+            struct V24RoamingPokemonState {
+                species: Option<String>,
+                level: u8,
+                map_group: u8,
+                map_number: u8,
+                hp: u8,
+                dvs_be: [u8; 2],
+            }
+            let old = V24RoamingPokemonState::deserialize(deserializer)?;
+            RawRoamingPokemonState {
+                species: old.species,
+                level: old.level,
+                map_group: old.map_group,
+                map_number: old.map_number,
+                hp: old.hp,
+                scaled_hp: None,
+                dvs_be: old.dvs_be,
+            }
+        } else {
+            RawRoamingPokemonState::deserialize(deserializer)?
+        };
         let state = Self {
             species: raw.species,
             level: raw.level,
             map_group: raw.map_group,
             map_number: raw.map_number,
             hp: raw.hp,
+            scaled_hp: raw.scaled_hp,
             dvs_be: raw.dvs_be,
         };
         state.validate_saved_state(0).map_err(D::Error::custom)?;
@@ -1733,7 +1791,23 @@ impl<'de> Deserialize<'de> for RoamingPokemonState {
 }
 
 impl RoamingPokemonState {
+    pub fn current_hp(&self) -> u16 {
+        self.scaled_hp.unwrap_or(u16::from(self.hp))
+    }
+
+    pub fn set_current_hp(&mut self, hp: u16) {
+        if self.scaled_hp.is_some() {
+            self.scaled_hp = Some(hp);
+            self.hp = hp.min(u16::from(u8::MAX)) as u8;
+        } else {
+            self.hp = hp as u8;
+        }
+    }
+
     fn validate_saved_state(&self, index: usize) -> Result<(), String> {
+        if self.scaled_hp.is_some_and(|hp| self.hp != hp.min(u16::from(u8::MAX)) as u8) {
+            return Err(format!("roaming_pokemon[{index}] scaled HP does not match its HP byte"));
+        }
         if let Some(species) = &self.species {
             validate_script_runtime_token(&format!("roaming_pokemon[{index}].species"), species)?;
             if self.level == 0 {
@@ -2080,16 +2154,18 @@ impl OverworldObjectMapMemory {
         let mut slots = BTreeSet::new();
         let mut map_objects = BTreeSet::new();
         let mut normal_follower_slot = self.object_structs.player_normal_following.then_some(0);
-        if self.object_structs.structs.len() > 12 {
+        if self.object_structs.structs.len() > crate::world::object_capacity::MAX_MAP_OBJECTS {
             return Err(format!(
-                "map_object_overrides[{map_name}].object_structs contains {} non-player structs; Crystal has 12 slots",
+                "map_object_overrides[{map_name}].object_structs contains {} non-player structs; Geothite supports 255 slots",
                 self.object_structs.structs.len()
             ));
         }
         for object_struct in &self.object_structs.structs {
-            if !(1..=12).contains(&object_struct.slot) {
+            if !(1..=crate::world::object_capacity::MAX_MAP_OBJECTS as u8)
+                .contains(&object_struct.slot)
+            {
                 return Err(format!(
-                    "map_object_overrides[{map_name}].object_structs slot {} is outside 1..=12",
+                    "map_object_overrides[{map_name}].object_structs slot {} is outside 1..=255",
                     object_struct.slot
                 ));
             }
@@ -2099,9 +2175,12 @@ impl OverworldObjectMapMemory {
                     object_struct.slot
                 ));
             }
-            if !(1..=15).contains(&object_struct.map_object_index) {
+            // Active struct slots are limited above. This is the independent
+            // one-based map-event identity, which authored maps store in a byte.
+            // Pack-aware restore separately checks it against the event count.
+            if object_struct.map_object_index == 0 {
                 return Err(format!(
-                    "map_object_overrides[{map_name}].object_structs map-object index {} is outside 1..=15",
+                    "map_object_overrides[{map_name}].object_structs map-object index {} must be nonzero",
                     object_struct.map_object_index
                 ));
             }
@@ -2152,15 +2231,6 @@ impl OverworldObjectMapMemory {
                     object_struct.slot
                 ));
             }
-            if object_struct
-                .following_not_exact_leader_slot
-                .is_some_and(|slot| slot > 12)
-            {
-                return Err(format!(
-                    "map_object_overrides[{map_name}].object_structs slot {} has a follow-not-exact leader slot outside 0..=12",
-                    object_struct.slot
-                ));
-            }
             if object_struct.normal_following
                 && object_struct.following_not_exact_leader_slot.is_some()
             {
@@ -2195,16 +2265,6 @@ impl OverworldObjectMapMemory {
             if following.leader_slot.is_none() && following.follower_slot.is_none() {
                 return Err(format!(
                     "map_object_overrides[{map_name}].following cannot have both slots absent"
-                ));
-            }
-            if following.leader_slot.is_some_and(|slot| slot > 12) {
-                return Err(format!(
-                    "map_object_overrides[{map_name}].following leader slot is outside 0..=12"
-                ));
-            }
-            if following.follower_slot.is_some_and(|slot| slot > 12) {
-                return Err(format!(
-                    "map_object_overrides[{map_name}].following follower slot is outside 0..=12"
                 ));
             }
         }
@@ -3914,11 +3974,11 @@ impl ScriptRuntimeMemory {
             validate_queued_command_payload(index, command)?;
         }
         validate_optional_script_runtime_token("current_music", self.current_music.as_deref())?;
-        validate_optional_script_runtime_token(
+        validate_optional_script_runtime_label(
             "active_text_label",
             self.active_text_label.as_deref(),
         )?;
-        validate_optional_script_runtime_token(
+        validate_optional_script_runtime_label(
             "pending_text_label",
             self.pending_text_label.as_deref(),
         )?;
@@ -3976,8 +4036,9 @@ impl ScriptRuntimeMemory {
                 &format!("map_events[{index}].target_map"),
                 event.target_map.as_deref(),
             )?;
-            validate_optional_script_runtime_token(
+            validate_optional_script_map_setup_token(
                 &format!("map_events[{index}].map_setup"),
+                &event.command,
                 event.map_setup.as_deref(),
             )?;
             validate_script_runtime_label(
@@ -4005,8 +4066,9 @@ impl ScriptRuntimeMemory {
         }
         if let Some(refresh) = &self.pending_map_refresh {
             validate_script_runtime_token("pending_map_refresh.command", &refresh.command)?;
-            validate_optional_script_runtime_token(
+            validate_optional_script_map_setup_token(
                 "pending_map_refresh.map_setup",
+                &refresh.command,
                 refresh.map_setup.as_deref(),
             )?;
             validate_script_runtime_label(
@@ -4020,7 +4082,7 @@ impl ScriptRuntimeMemory {
                 &format!("text_events[{index}].command"),
                 &event.command,
             )?;
-            validate_optional_script_runtime_token(
+            validate_optional_script_runtime_label(
                 &format!("text_events[{index}].text_label"),
                 event.text_label.as_deref(),
             )?;
@@ -4113,7 +4175,7 @@ impl ScriptRuntimeMemory {
                     "pending_text_label {text_label} cannot be saved without an open text window"
                 ));
             }
-            if self.pending_text_wait.is_some() {
+            if self.pending_text_wait.is_some() && self.active_pokemon_picture.is_none() {
                 return Err(
                     "pending_text_wait cannot be saved without an open text window".to_string(),
                 );
@@ -6334,7 +6396,23 @@ pub fn validate_saved_object_overrides(
     memory: &OverworldObjectMapMemory,
     runtime_tile_bounds: impl FnOnce(&str) -> Option<(u16, u16)>,
     map_object_count: impl FnOnce(&str) -> Option<usize>,
+    object_exists: impl FnMut(&str) -> bool,
+) -> Result<(), ObjectOverrideSaveError> {
+    validate_saved_object_overrides_with_source_positions(
+        map_name, memory, runtime_tile_bounds, map_object_count, object_exists, |_| None,
+    )
+}
+
+/// Validate staging against the compiled event's unchanged coordinates and
+/// event index. A staged event must not be backed by a saved object struct.
+/// Callers without authoritative source positions retain the strict validator.
+pub fn validate_saved_object_overrides_with_source_positions(
+    map_name: &str,
+    memory: &OverworldObjectMapMemory,
+    runtime_tile_bounds: impl FnOnce(&str) -> Option<(u16, u16)>,
+    map_object_count: impl FnOnce(&str) -> Option<usize>,
     mut object_exists: impl FnMut(&str) -> bool,
+    mut source_position: impl FnMut(&str) -> Option<(usize, u16, u16)>,
 ) -> Result<(), ObjectOverrideSaveError> {
     let Some((width, height)) = runtime_tile_bounds(map_name) else {
         return Err(ObjectOverrideSaveError::MissingMap {
@@ -6362,11 +6440,17 @@ pub fn validate_saved_object_overrides(
                 y: object_memory.y,
             });
         };
-        if runtime_tile.x < 0
+        let outside = runtime_tile.x < 0
             || runtime_tile.y < 0
             || i32::from(runtime_tile.x) >= i32::from(width)
-            || i32::from(runtime_tile.y) >= i32::from(height)
-        {
+            || i32::from(runtime_tile.y) >= i32::from(height);
+        let source_staging = outside && source_position(object_id).is_some_and(|(index, x, y)| {
+            index < object_count && x == object_memory.x && y == object_memory.y
+                && !memory.object_structs.structs.iter().any(|slot| {
+                    usize::from(slot.map_object_index) == index + 1
+                })
+        });
+        if outside && !source_staging {
             return Err(ObjectOverrideSaveError::RuntimeTileOutOfBounds {
                 map_name: map_name.to_string(),
                 object_id: object_id.clone(),
@@ -7792,6 +7876,20 @@ fn validate_optional_script_runtime_token(field: &str, value: Option<&str>) -> R
     Ok(())
 }
 
+fn validate_optional_script_map_setup_token(
+    field: &str, command: &str, value: Option<&str>,
+) -> Result<(), String> {
+    // Native reanchormap operands can be literal bytes (the Elite Four uses
+    // $86). Keep that operand verbatim; refresh events do not dispatch a named
+    // map-setup callback. Other commands retain their identifier contract.
+    if command == "reanchormap" && value.is_some_and(|value|
+        value.strip_prefix('$').is_some_and(|digits|
+            (1..=2).contains(&digits.len()) && digits.bytes().all(|b| b.is_ascii_hexdigit()))) {
+        return Ok(());
+    }
+    validate_optional_script_runtime_token(field, value)
+}
+
 fn validate_empty_or_script_runtime_token(field: &str, value: &str) -> Result<(), String> {
     if value.is_empty() {
         Ok(())
@@ -8396,6 +8494,11 @@ impl GameState {
     {
         let mut next = self.clone();
         next.fishing.daily_flags1 = 0;
+        // Fruit pickups use one saved flag per native tree. Expire the
+        // harvest, while leaving item pickups and story flags permanent.
+        next.flags.event_flags.retain(|flag, _| {
+            !(flag.starts_with("FRUITTREE_") && flag.ends_with("_COLLECTED"))
+        });
         // CheckDailyResetTimer clears the daily, swarm, rematch and phone flag
         // banks. Named flags are stored separately from fishing's raw bytes.
         // Keep permanent story/event flags and the retained Buena password.
@@ -8522,7 +8625,12 @@ impl GameState {
     }
 
     pub fn validate_saved_state(&self) -> Result<(), String> {
+        if let Some(pending) = crate::systems::fair_food::PendingFairFood::read(self)? {
+            pending.validate(self)?;
+        }
         validate_saved_player_name(&self.player_name)?;
+        crate::systems::safari::validate_saved_session(self).map_err(|error| error.to_string())?;
+        crate::systems::safari_prompt::prompt(self).map_err(|error| error.to_string())?;
         validate_saved_player_gender(self.player_gender)?;
         if self.blue_card_balance > 30 {
             return Err(format!(
@@ -9091,6 +9199,16 @@ impl GameState {
         self.bug_contest.validate_saved_state()?;
         self.mystery_gift.validate_saved_state()?;
         self.day_care.validate_saved_state()?;
+        for (id, site) in &self.day_care_locations {
+            if !matches!(
+                id.as_str(),
+                crate::day_care::MANKATO_DAY_CARE | crate::day_care::BEMIDJI_DAY_CARE
+            ) {
+                return Err(format!("unknown daycare identity {id}"));
+            }
+            site.validate_saved_state()
+                .map_err(|error| format!("day_care_locations[{id}]: {error}"))?;
+        }
         self.mobile_link.validate_saved_state()?;
         self.magikarp_record.validate_saved_state()?;
         Ok(())
@@ -10576,6 +10694,42 @@ mod tests {
     }
 
     #[test]
+    fn daily_fruit_harvests_regrow_without_resetting_permanent_pickups() {
+        let mut state = GameState::default();
+        state.kenji_break_timer = 2;
+        for flag in [
+            "FRUITTREE_ROUTE_29_COLLECTED",
+            "FRUITTREE_MN_GROVE_001_COLLECTED",
+            "EVENT_MN_SUPPLY_COLLECTED",
+            "EVENT_BEAT_BUGSY",
+        ] {
+            state
+                .flags
+                .set_event_flag(flag, true)
+                .expect("fixture flag");
+        }
+        state
+            .apply_daily_reset(&mut ReplayDivider::new([]))
+            .expect("daily reset");
+        for flag in [
+            "FRUITTREE_ROUTE_29_COLLECTED",
+            "FRUITTREE_MN_GROVE_001_COLLECTED",
+        ] {
+            assert!(!state.flags.is_event_flag_set(flag).expect("harvest flag"));
+        }
+        for flag in ["EVENT_MN_SUPPLY_COLLECTED", "EVENT_BEAT_BUGSY"] {
+            assert!(state.flags.is_event_flag_set(flag).expect("permanent flag"));
+        }
+        let saved = serde_json::to_string(&state.flags).expect("saved flags");
+        let restored: EventFlagMemory = serde_json::from_str(&saved).expect("continued flags");
+        assert!(
+            !restored
+                .is_event_flag_set("FRUITTREE_MN_GROVE_001_COLLECTED")
+                .expect("continued harvest")
+        );
+    }
+
+    #[test]
     fn daily_quest_claims_expire_without_erasing_story_progress() {
         let mut state = GameState::default();
         state.kenji_break_timer = 2;
@@ -11215,11 +11369,11 @@ mod tests {
                 ..OverworldObjectMapMemory::default()
             },
         );
-        assert_eq!(
-            state.validate_saved_state(),
-            Err(
-                "map_object_overrides[Route29].following leader slot is outside 0..=12".to_string()
-            )
+        assert!(
+            state.map_object_overrides["Route29"]
+                .validate_saved_state("Route29")
+                .is_ok(),
+            "byte-sized leader slots above twelve are valid for expanded maps"
         );
 
         state = GameState::default();
@@ -11233,12 +11387,11 @@ mod tests {
                 ..OverworldObjectMapMemory::default()
             },
         );
-        assert_eq!(
-            state.validate_saved_state(),
-            Err(
-                "map_object_overrides[Route29].following follower slot is outside 0..=12"
-                    .to_string()
-            )
+        assert!(
+            state.map_object_overrides["Route29"]
+                .validate_saved_state("Route29")
+                .is_ok(),
+            "byte-sized follower slots above twelve are valid for expanded maps"
         );
 
         state = GameState::default();
@@ -11418,10 +11571,7 @@ mod tests {
         );
         prebuilt_egg.is_egg = true;
         state.day_care.egg = Some(prebuilt_egg);
-        assert_eq!(
-            state.validate_saved_state(),
-            Err("day_care.egg_present cannot be saved without both residents active".to_string())
-        );
+        state.validate_saved_state().expect("a ready egg survives parent withdrawal");
 
         state = GameState::default();
         state.day_care.compatibility_score = 70;
@@ -11655,6 +11805,7 @@ mod tests {
 
         state = GameState::default();
         state.roaming_pokemon[0] = RoamingPokemonState {
+            scaled_hp: None,
             species: Some("RAIK OU".to_string()),
             level: 40,
             map_group: 1,
@@ -11669,6 +11820,7 @@ mod tests {
 
         state = GameState::default();
         state.roaming_pokemon[0] = RoamingPokemonState {
+            scaled_hp: None,
             species: Some("RAIKOU".to_string()),
             level: 0,
             map_group: 1,
@@ -11683,6 +11835,7 @@ mod tests {
 
         state = GameState::default();
         state.roaming_pokemon[0] = RoamingPokemonState {
+            scaled_hp: None,
             species: Some("RAIKOU".to_string()),
             level: 40,
             map_group: 1,
@@ -13037,6 +13190,42 @@ mod tests {
 
         state.bag.key_items.insert("BICYCLE".to_string(), 1);
         assert_eq!(state.validate_saved_state(), Ok(()));
+    }
+
+    #[test]
+    fn saved_script_runtime_accepts_scoped_field_text_labels() {
+        let label = ".UseStrengthText@Script_UsedStrength";
+        let mut runtime = ScriptRuntimeMemory {
+            text_window_open: true,
+            active_text_label: Some(label.to_string()),
+            pending_text_label: Some(label.to_string()),
+            ..ScriptRuntimeMemory::default()
+        };
+        runtime.text_events.push(ScriptTextRuntimeEvent {
+            command: "writetext".to_string(),
+            kind: ScriptTextRuntimeKind::Write,
+            text_label: Some(label.to_string()),
+            face_player: false,
+            closes_text: false,
+            source_script: "Script_UsedStrength".to_string(),
+            command_index: 1,
+        });
+        assert_eq!(runtime.validate(), Ok(()));
+        let encoded = serde_json::to_string(&runtime).expect("scoped text save");
+        let decoded: ScriptRuntimeMemory =
+            serde_json::from_str(&encoded).expect("scoped text Continue");
+        assert_eq!(decoded, runtime);
+        for invalid in [
+            " .UseStrengthText@Script_UsedStrength",
+            "Bad Text",
+            "Bad\nText",
+        ] {
+            runtime.active_text_label = Some(invalid.to_string());
+            assert!(
+                runtime.validate().is_err(),
+                "invalid scoped label {invalid:?}"
+            );
+        }
     }
 
     #[test]
@@ -14975,6 +15164,10 @@ mod tests {
             runtime.validate(),
             Err("pending_text_wait cannot be saved without an open text window".to_string())
         );
+        runtime.active_pokemon_picture = Some("CHIKORITA".into());
+        runtime
+            .validate()
+            .expect("a native Pokemon picture owns its saved button wait");
 
         runtime = ScriptRuntimeMemory::default();
         runtime.pending_yes_no = Some(ScriptYesNoPrompt {
@@ -15260,6 +15453,7 @@ mod tests {
         let catalog = roaming_catalog_for_tests();
         let mut slots = std::array::from_fn(|_| RoamingPokemonState::default());
         slots[0] = RoamingPokemonState {
+            scaled_hp: None,
             species: Some("RAIKOU".to_string()),
             level: 40,
             map_group: 1,

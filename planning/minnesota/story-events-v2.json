@@ -1,0 +1,219 @@
+{
+  "schema_version": 1,
+  "id": "northstar-events-v2",
+  "status": "Character-story-v5 published; nine native chapter/balance tests, regional asset audits, paired scene review and two stdio quest replays passed. Later chapters use declared prior-access fixtures; no new uninterrupted Hall of Fame claim.",
+  "parent_dialogue_hash": "1c66ba1d8c4d06daa960a036691f03681f030e18c40f740e4a4de9a1a402fd54",
+  "direction": "Playable character conflict drives the journey. Found text is optional background and never the main-story completion action.",
+  "rival": {
+    "name": "REED",
+    "sprite": "SPRITE_RIVAL",
+    "trainer_class": "RIVAL1",
+    "motive": "Wants status, wages and power over people. Treats care work as weakness. Deliberately joins Team ICE in front of a captive, knowing they kidnap people. Remains hostile and unrepentant.",
+    "arc": [
+      {
+        "scene": "Winona field station",
+        "action": "Brings a discarded egg case, dismisses its needs, challenges the player and leaves to seek paid backing.",
+        "status": "native chapter verified in regional-story-v2"
+      },
+      {
+        "scene": "Minneapolis intake",
+        "action": "Accepts a counterfeit badge and paid ICE post in front of Ellis.",
+        "status": "native chapter verified in regional-story-v2"
+      },
+      {
+        "scene": "Minneapolis lair",
+        "action": "Defends the holding-system controls after the player navigates the cargo/relay maze.",
+        "status": "native chapter verified in regional-story-v2"
+      },
+      {
+        "scene": "Iron Range lair",
+        "action": "Oversees the drilling route with Lode, obstructs shutdown and fights the player again.",
+        "status": "native chapter verified in character-story-v5: live piston, Reed battle, shutdown, crew quest, return and Continue"
+      },
+      {
+        "scene": "Iron Range after the Boundary Waters shutdown",
+        "action": "LODE has stopped returning his calls. He blames the player and refuses gratitude; losing paid status does not redeem him.",
+        "status": "implemented source; not an earned full-campaign aftermath claim"
+      }
+    ],
+    "parties": {
+      "Winona": [
+        [
+          "CROOKIT",
+          3
+        ]
+      ]
+    },
+    "team_source": "story-pokemon.json:rival_parties and faction_teams"
+  },
+  "tamarack": {
+    "motive": "Protect the field crew and nesting Pok\u00e9mon displaced by drilling. Refuses to trade their safety for a contractor timetable. Personally tends the egg Reed discards.",
+    "quests": [
+      "Take the original readings to IVY in Rochester because field instruments have stopped arriving.",
+      "Find the missing dispatcher and remove the stolen equipment from the ICE compound.",
+      "Investigate and stop the working drill operation with the field crew, then coordinate the harbor shutdown."
+    ],
+    "egg": {
+      "species": "GILLPUP",
+      "level": 5,
+      "event": "EVENT_MN_TAMARACK_EGG_RECEIVED",
+      "requires": "EVENT_MN_DELIVERED_ROCHESTER_PARCEL",
+      "behavior": "Optional actual giveegg offer. Decline/full party allow retry; success alone sets the once-only flag. Continue preserves the egg. No PC fallback or mandatory hatch/capture gate."
+    }
+  },
+  "lairs": [
+    {
+      "id": "minneapolis_ice_compound",
+      "status": "planned",
+      "purpose": "Rescue Ellis and witness the diverted shipment and Reed joining ICE.",
+      "rooms": [
+        "MnIceCargoBasement",
+        "MnIceRelayFloor"
+      ],
+      "topology": "Cargo-floor loop and upper relay maze, two distinct switches, blocked holding-system access, guarded alternative and earned short return.",
+      "events": [
+        "Reed accepts the ICE post.",
+        "A shipment moves while Ellis is held.",
+        "Player cuts holding-system power through the maze.",
+        "Reed fights for control; victory permits separate release.",
+        "Ellis walks out and gives the next destination in person."
+      ],
+      "evidence": "Rescued witness and observed stolen instruments. The old dispatch paper cannot replace the lair or rescue."
+    },
+    {
+      "id": "iron_range_drillworks",
+      "status": "planned",
+      "purpose": "Reach active drilling, recover stolen apparatus and stop a dangerous test.",
+      "rooms": [
+        "MnIronDrillApproach",
+        "MnIronPumpGallery",
+        "MnIronDrillCore"
+      ],
+      "topology": "Branching mine approach, pump-gallery valve route and guarded core; real stairs, long approach before a shutdown shortcut, and no walking bypass of the objective.",
+      "events": [
+        "Player sees and hears the drill operating.",
+        "Reed and foreman knowingly continue the test.",
+        "Player navigates the gallery and disables its feed.",
+        "Actual battles and separate apparatus recovery resolve the lair.",
+        "A field worker examines the apparatus with the player and directs the harbor expedition."
+      ],
+      "evidence": "Observed drilling and recovered machinery. A found log cannot award the chapter."
+    }
+  ],
+  "acceptance": [
+    "Rival appears early, visibly joins ICE and recurs with escalating choices and distinct parties.",
+    "Two substantial hand-authored maze-like lairs are connected and completed through production input.",
+    "Events, witnesses and physical actions grant progress; found text cannot substitute.",
+    "Tamarack/allies have personal motives, concrete quests and useful rewards.",
+    "Actual egg gift supports decline, full-party retry, once-only success and Continue.",
+    "Lair routes, gates, shortcuts, battles, losses, input ownership and persistence are verified.",
+    "Whole-map and matched native visual review pass; unrelated content and original audio are preserved."
+  ],
+  "opening_texts": {
+    "MnNSEReedArrivalText": [
+      "REED: So that is",
+      "your new partner.",
+      "For courier work?",
+      "What a waste."
+    ],
+    "MnNSEReedCaseText": [
+      "They left this",
+      "by the drill road.",
+      "Can you sell",
+      "an EGG like that?"
+    ],
+    "MnNSETamarackCaseText": [
+      "TAMARACK: An EGG",
+      "is alive, REED.",
+      "Put the case down.",
+      "Carefully."
+    ],
+    "MnNSEReedDismissText": [
+      "Then you take it.",
+      "I want a real job."
+    ],
+    "MnNSETamarackWarmText": [
+      "It's cold.",
+      "I'll keep it warm."
+    ],
+    "MnNSEReedChallengeText": [
+      "You've got time",
+      "for a battle.",
+      "Unless you're",
+      "scared of losing."
+    ],
+    "MnNSEReedWonText": [
+      "For once, you",
+      "got lucky."
+    ],
+    "MnNSEReedLostText": [
+      "Stick to errands."
+    ],
+    "MnNSEReedAfterText": [
+      "You'll be carrying",
+      "parcels all year.",
+      "I'll find someone",
+      "who can pay."
+    ],
+    "MnNSETamarackQuestText": [
+      "IVY is waiting",
+      "in ROCHESTER.",
+      "Her crew missed",
+      "our morning call.",
+      "Take my readings.",
+      "Check on them."
+    ],
+    "MnNSEEggOfferText": [
+      "That EGG REED left",
+      "needs a journey.",
+      "Would you take",
+      "it with your team?"
+    ],
+    "MnNSEEggDeclineText": [
+      "I'll keep it warm.",
+      "Come back any time"
+    ],
+    "MnNSEEggFullText": [
+      "Your team is full.",
+      "Come back with",
+      "a little room."
+    ],
+    "MnNSEEggGivenText": [
+      "TAMARACK handed",
+      "you the EGG.",
+      "Keep it close.",
+      "Let it hear you."
+    ],
+    "MnNSEEggAfterText": [
+      "How is the little",
+      "one getting on?"
+    ],
+    "MnNSETamarackRestText": [
+      "Your partner can",
+      "rest here, too."
+    ]
+  },
+  "quest_texts": {
+    "MnRCDeliveryText": [
+      "IVY: You made it.",
+      "No meters, though.",
+      "ELLIS was bringing",
+      "the last case.",
+      "JO hasn't seen",
+      "them come home.",
+      "Find JO in",
+      "MINNEAPOLIS.",
+      "I'll check the",
+      "river landings."
+    ]
+  },
+  "pokemon_policy": {
+    "scope": "Every Pokemon appearing in the Minnesota story: starters, rival/villain/gym/League/route teams, gifts and eggs, wild encounters, trades, story pictures/cries and dialogue references.",
+    "roster": "pokemon/roster.json",
+    "curation": "pokemon/roster-curation.json",
+    "rule": "Only active Minnesota original species; no legacy species fallback. Historical packs and out-of-region source maps are not the playable Minnesota story.",
+    "audit_status": "Character-story-v5 runtime-verified. The regional binder rejects foreign trainer, grant, encounter, actor, visible-text and cry appearances; current-policy preservation/legality tests pass. All nine native chapter/balance cases and both final-pack stdio quest replays pass.",
+    "bindings": "story-pokemon.json",
+    "faction_team_authority": "story-pokemon.json:faction_teams"
+  }
+}

@@ -1,0 +1,209 @@
+{
+  "species": "tapacitor",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f101/tapacitor-v3-actual-pupils",
+  "status": "actual-source native proof passes; root visual/context acceptance pending",
+  "all_four_nonrear_actual_isolated_source_pupils": true,
+  "six16px_alpha_border_normal_shiny_runtime_parity": true,
+  "canonical_palettes": true,
+  "proof": [
+    {
+      "pose": "down_idle",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            6,
+            9
+          ],
+          "source_sample": [
+            302,
+            332
+          ],
+          "source_component": [
+            291,
+            313,
+            18,
+            24
+          ],
+          "component_pixels": 432,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            254
+          ]
+        },
+        {
+          "native": [
+            8,
+            9
+          ],
+          "source_sample": [
+            354,
+            332
+          ],
+          "source_component": [
+            354,
+            313,
+            18,
+            24
+          ],
+          "component_pixels": 432,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            8,
+            6,
+            1,
+            254
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            4,
+            7
+          ],
+          "source_sample": [
+            1157,
+            280
+          ],
+          "source_component": [
+            1151,
+            280,
+            18,
+            24
+          ],
+          "component_pixels": 432,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            2,
+            2,
+            0,
+            254
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            6,
+            8
+          ],
+          "source_sample": [
+            302,
+            691
+          ],
+          "source_component": [
+            289,
+            683,
+            18,
+            25
+          ],
+          "component_pixels": 449,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            4,
+            4,
+            3,
+            254
+          ]
+        },
+        {
+          "native": [
+            8,
+            8
+          ],
+          "source_sample": [
+            354,
+            691
+          ],
+          "source_component": [
+            353,
+            683,
+            18,
+            25
+          ],
+          "component_pixels": 449,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            2,
+            2,
+            1,
+            254
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            4,
+            7
+          ],
+          "source_sample": [
+            1157,
+            673
+          ],
+          "source_component": [
+            1153,
+            671,
+            18,
+            26
+          ],
+          "component_pixels": 466,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            8,
+            7,
+            3,
+            254
+          ]
+        }
+      ]
+    }
+  ],
+  "hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f101/tapacitor-v3-actual-pupils/compiled-index.json": "c0d47695ecfa55366ce43cb66fc99fc550b847e1bb765e723797647df04883e7",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f101/tapacitor.overworld.imagegen-v1.png": "1b83170453d9e2cb8f0e8b01e1bd13dec711805da3d7735a7e382ad5400720d8"
+  },
+  "no_native_pixel_painting": true
+}

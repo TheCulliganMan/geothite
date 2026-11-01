@@ -1,0 +1,35 @@
+{
+  "status": "PASS",
+  "selected_revision": "route_grass_r15_open_shore_spur_revision",
+  "pack_sha256": "e02fb85d4db327d146cee269809b1af3e4b387dc2e29240b71cae0ae5837ec4c",
+  "source_index_and_layout_contract_hashes_exact": true,
+  "all731_unrelated_complete_maps_preserved": true,
+  "north_shore_footbridges_exact": true,
+  "bemidji_plateau_stairs_exact": true,
+  "coastal_zero_ice_maps": [
+    "MnDuluth",
+    "MnGrandMarais",
+    "MnR11C00R00",
+    "MnR11C00R01",
+    "MnR11C00R02",
+    "MnR11C00R03",
+    "MnR11C01R00",
+    "MnR11C01R01",
+    "MnR11C01R02",
+    "MnR11C01R03"
+  ],
+  "fresh_publisher_negative_cases": [
+    {
+      "case": "repeat",
+      "exit_code": 1,
+      "stderr": "Error: blocked spur preimage drift"
+    },
+    {
+      "case": "wrong-sha",
+      "exit_code": 1,
+      "stderr": "Error: parent SHA drift"
+    }
+  ],
+  "clean_publisher_byte_identical_to_native_tested_pack": true,
+  "goal_complete": false
+}

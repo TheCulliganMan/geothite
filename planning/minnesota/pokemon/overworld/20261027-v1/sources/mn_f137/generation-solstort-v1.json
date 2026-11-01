@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F137",
+  "species_id": "MN_304",
+  "name": "Solstort",
+  "generation_tool": "built-in image_gen",
+  "status": "retained_unselected_narrow_face_variant",
+  "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f137/solstort.overworld.imagegen-v1.png",
+  "source_sha256": "0b693832a81c9a2834556738e72df841bd876b519b071661dd4d517c8ecc7d0c",
+  "original_default_output": "/Users/ryanculligan/.codex/generated_images/01a179bf-dc2b-7352-8975-8b8f3a32e33b/exec-14c896c8-264d-43ae-ae05-0c4aeaecbe9e.png",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f137/prompt-solstort-v1.txt",
+  "prompt_sha256": "239c98e9ff889d115703a173b9fc3d395d629f7a733fc213848d88755ca7d9da",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f137/reference-mapping-solstort-v1.json",
+  "reference_mapping_sha256": "144388c74f47348de6447757b4a1b338f37330953a95938e457b130b2d35c697",
+  "unselected_native_review": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f137/solstort-v1-center/review/line.normal-8x.png",
+  "review_sha256": "39278bef009e364f863b34fd15e1b9fe08034dcdcdfdae2a4965438578c1f794",
+  "notes": "Raw and native14 trial retained. Three-scute fan and diagonal ridge read; exposed face reduced to blank narrow gold stripe. Targeted broad-face source v2 requested.",
+  "accepted": false
+}

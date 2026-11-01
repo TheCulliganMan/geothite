@@ -1,0 +1,37 @@
+{
+  "id": "MN_F133",
+  "region": "hardwood_canopy",
+  "theme": "Minnesota bur oaks, fringed acorn cups and deep roots: a small burr-cupped seed grows into a broad low guardian with four spreading root feet and three rounded-lobed leaf fans. The seed body becomes a rooted woody knot rather than a tall humanoid tree; no tools or costume.",
+  "habitat": "Bur-oak savanna edges and deep-rooted woodland clearings.",
+  "members": [
+    {
+      "id": "MN_293",
+      "name": "Burrbud",
+      "types": [
+        "GRASS"
+      ],
+      "stage": 1,
+      "evolves_to": "MN_294"
+    },
+    {
+      "id": "MN_294",
+      "name": "Burroot",
+      "types": [
+        "GRASS",
+        "GROUND"
+      ],
+      "stage": 2,
+      "evolves_to": null
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.dnr.state.mn.us/trees/native-trees.html",
+      "publisher": "Minnesota regional primary source",
+      "evidence": "Native Minnesota oak inspiration; moving root anatomy and creature powers are original fiction.",
+      "fantasy_extension": "All powers, anatomy changes and discovery scenes are original fiction."
+    }
+  ],
+  "design_status": "authored-wildlife-replacement",
+  "replacement_context": "User requested forest wildlife in place of rejected weather families while retaining exactly220 active species. No encounter table or map event is changed."
+}

@@ -1,0 +1,10 @@
+{
+  "tool": "built-in ImageGen",
+  "raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/shawlter.overworld.imagegen-v4-rear-finish.png",
+  "raw_sha256": "b4cf76e4da4c17968271d942aecce41ec598c93426b7b08395d088e333131e5c",
+  "default_original": "/Users/ryanculligan/.codex/generated_images/01a17dc4-dd75-7642-a1c6-4bf13fda70c6/exec-f6eccee5-3ab1-4d7f-a198-6d48b46f6b6c.png",
+  "default_original_preserved": true,
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/prompt-shawlter-v4-rear-finish.txt",
+  "edit": "rear gold thumb handedness correction",
+  "source_only_not_native_accepted": true
+}

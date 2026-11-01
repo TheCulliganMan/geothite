@@ -1,141 +1,18 @@
-//! Server-owned Gen 2 encounter expansion. No gameplay rules live here.
-use std::collections::BTreeSet;
+//! Serve the shared default solo-completion content with hosted features.
+use anyhow::Result;
+use crystal_assets::read_verified_compiled_game_pack;
+use flate2::{Compression, write::GzEncoder};
+use std::io::{self, BufReader, BufWriter, Write};
 use std::path::{Path, PathBuf};
 
-use anyhow::{Context, Result, ensure};
-use crystal_assets::{CompiledGamePack, read_verified_compiled_game_pack};
-use flate2::{Compression, write::GzEncoder};
-use serde::Deserialize;
-use std::io::{self, BufReader, BufWriter, Write};
-
-pub const MANIFEST_ID: &str = "all-251-catchable-v1";
+pub use crystal_assets::{
+    ALL_251_MANIFEST_ID as MANIFEST_ID, verify_all_251_coverage as verify_coverage,
+};
 pub const BROWSER_PACK_FILENAME: &str = "core-modular.browser.crystalpack";
 
-#[derive(Debug, Deserialize)]
-#[serde(deny_unknown_fields)]
-struct Placement {
-    map: String,
-    surface: String,
-    slot: usize,
-    species: String,
-    level: u8,
-}
-
-pub fn build(base: &CompiledGamePack) -> Result<CompiledGamePack> {
-    let placements: Vec<Placement> =
-        serde_json::from_str(include_str!("../modpacks/all-251/encounters.json"))?;
-    let mut encounters = base.data().wild_encounters.clone();
-    let mut occupied = BTreeSet::new();
-    for placement in placements {
-        ensure!(
-            occupied.insert((
-                placement.map.clone(),
-                placement.surface.clone(),
-                placement.slot
-            )),
-            "duplicate encounter slot"
-        );
-        ensure!(
-            (1..=100).contains(&placement.level),
-            "invalid encounter level"
-        );
-        ensure!(
-            base.data().pokemon.contains_key(&placement.species),
-            "unknown species {}",
-            placement.species
-        );
-        let table = encounters
-            .get_mut(&placement.map)
-            .with_context(|| format!("missing encounter map {}", placement.map))?;
-        let encounter_table = match placement.surface.as_str() {
-            "grass" => table.grass.as_mut(),
-            "water" => table.water.as_mut(),
-            _ => anyhow::bail!("unknown encounter surface"),
-        }
-        .context("placement requires an existing encounter table")?;
-        for slots in [
-            &mut encounter_table.morning,
-            &mut encounter_table.day,
-            &mut encounter_table.night,
-        ] {
-            let slot = slots
-                .get_mut(placement.slot)
-                .context("missing encounter slot")?;
-            slot.species = placement.species.clone();
-            slot.level = placement.level;
-        }
-    }
-    let pack = base.with_wild_encounter_overlay(MANIFEST_ID, encounters)?;
-    verify_coverage(&pack)?;
-    Ok(pack)
-}
-
-/// Every Gen 2 species must have a renewable, nonzero-rate grass or Surf encounter.
-/// Vanilla day/night differences remain meaningful; additions appear in all three periods.
-pub fn verify_coverage(pack: &CompiledGamePack) -> Result<()> {
-    let expected = pack
-        .data()
-        .pokemon
-        .values()
-        .filter(|p| (1..=251).contains(&p.int_id))
-        .collect::<Vec<_>>();
-    ensure!(
-        expected.len() == 251,
-        "all-251 requires the complete Gen 2 catalog"
-    );
-    ensure!(
-        expected
-            .iter()
-            .map(|species| species.int_id)
-            .collect::<BTreeSet<_>>()
-            == (1..=251).collect(),
-        "all-251 requires each Gen 2 Pokédex number exactly once"
-    );
-    ensure!(
-        expected.iter().all(|species| species.catch_rate > 0),
-        "all-251 requires nonzero capture rates"
-    );
-    let mut found = BTreeSet::new();
-    for (map, table) in &pack.data().wild_encounters {
-        ensure!(pack.data().maps.contains_key(map), "unknown map {map}");
-        for (surface, encounters) in [("grass", &table.grass), ("water", &table.water)] {
-            let Some(encounters) = encounters else {
-                continue;
-            };
-            for (period, slots) in [
-                ("morning", &encounters.morning),
-                ("day", &encounters.day),
-                ("night", &encounters.night),
-            ] {
-                let rate = if surface == "grass" {
-                    table
-                        .grass_rates
-                        .as_ref()
-                        .and_then(|rates| rates.get(period))
-                        .copied()
-                } else {
-                    table.water_rate
-                };
-                if !rate.is_some_and(|rate| rate > 0) {
-                    continue;
-                }
-                for slot in slots {
-                    found.insert(slot.species.as_str());
-                }
-            }
-        }
-    }
-    let missing = expected
-        .iter()
-        .filter(|p| !found.contains(p.id.as_str()))
-        .map(|p| p.id.as_str())
-        .collect::<Vec<_>>();
-    ensure!(
-        missing.is_empty(),
-        "uncatchable species: {}",
-        missing.join(", ")
-    );
-    Ok(())
+/// Every hosted entry point gets the same trainer and wild battle defaults.
+pub fn build(base: &crystal_assets::CompiledGamePack) -> Result<crystal_assets::CompiledGamePack> {
+    crystal_assets::build_default_battle_modpack(&crystal_assets::build_all_pokemon_modpack(base)?)
 }
 
 /// Materialize into writable server data, preserving the source and audio storage.
@@ -147,7 +24,7 @@ pub fn prepare(
         web_root.join(BROWSER_PACK_FILENAME),
     )?)?;
     let pack = crystal_assets::build_player_customization_modpack(
-        &crystal_assets::build_realtime_clock_modpack(&build(&base)?)?
+        &crystal_assets::build_realtime_clock_modpack(&build(&base)?)?,
     )?;
     let directory = data_dir.join("modpacks");
     std::fs::create_dir_all(&directory)?;
@@ -171,15 +48,12 @@ mod tests {
     use super::*;
 
     #[test]
-    fn real_browser_pack_has_all_251_renewable_without_changing_gameplay_rules() {
+    fn real_browser_pack_has_all_251_renewable_and_default_battle_rules() {
         let source = Path::new(env!("CARGO_MANIFEST_DIR"))
             .join("../../content-packs/core-modular.browser.crystalpack");
         let base =
             read_verified_compiled_game_pack(std::fs::canonicalize(source).unwrap()).unwrap();
-        assert!(
-            verify_coverage(&base).is_err(),
-            "vanilla should expose the completion barrier"
-        );
+
         let pack = build(&base).unwrap();
         verify_coverage(&pack).unwrap();
         assert!(
@@ -220,11 +94,8 @@ mod tests {
                 .to_string()
                 .contains("CELEBI")
         );
-        assert_ne!(
-            base.identity().unwrap().content_hash,
-            pack.identity().unwrap().content_hash
-        );
-        assert!(pack.runtime_modpack_id().unwrap().ends_with(MANIFEST_ID));
+
+        assert!(pack.runtime_modpack_id().unwrap().contains(MANIFEST_ID));
         let identity = pack.identity().unwrap();
         let mut hub = crate::hub::Hub::default();
         hub.connect(
@@ -244,6 +115,12 @@ mod tests {
         .unwrap();
         let mut unchanged = pack.data().clone();
         unchanged.wild_encounters = base.data().wild_encounters.clone();
+        unchanged.items = base.data().items.clone();
+        unchanged.marts = base.data().marts.clone();
+        unchanged.evolutions = base.data().evolutions.clone();
+        unchanged.competitive_battles = base.data().competitive_battles;
+        unchanged.type_categories = base.data().type_categories.clone();
+        unchanged.wild_challenge = base.data().wild_challenge;
         assert_eq!(&unchanged, base.data());
         assert_eq!(pack.runtime_files(), base.runtime_files());
         assert_eq!(pack.compiled_audio(), base.compiled_audio());
@@ -251,7 +128,10 @@ mod tests {
             pack.audio_manifest().unwrap(),
             base.audio_manifest().unwrap()
         );
-        assert!(build(&pack).is_err(), "duplicate overlay must fail");
+        assert_eq!(
+            build(&pack).unwrap().identity().unwrap(),
+            pack.identity().unwrap()
+        );
         assert_eq!(
             build(&base).unwrap().identity().unwrap(),
             pack.identity().unwrap()
@@ -277,6 +157,19 @@ fn hosted_pack_composes_server_clock_and_encounters() {
     let pack = read_verified_compiled_game_pack(path).unwrap();
     assert!(pack.data().server_clock);
     assert!(pack.data().player_customization);
+    assert!(pack.data().competitive_battles);
+    assert!(pack.data().wild_challenge.is_some());
+    assert!(
+        identity
+            .runtime_modpack_id
+            .contains(crystal_assets::WILD_CHALLENGE_MANIFEST_ID)
+    );
+    assert_eq!(pack.data().type_categories.moves.len(), 251);
+    assert!(
+        identity
+            .runtime_modpack_id
+            .contains(crystal_assets::COMPETITIVE_BATTLES_MANIFEST_ID)
+    );
     assert!(identity.runtime_modpack_id.contains(MANIFEST_ID));
     assert!(
         identity

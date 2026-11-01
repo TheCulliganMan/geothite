@@ -6,16 +6,89 @@ const COMPILED_GAME_PACK_PAYLOAD_LENGTH_OFFSET: usize = COMPILED_GAME_PACK_VERSI
 const COMPILED_GAME_PACK_PAYLOAD_HASH_OFFSET: usize = COMPILED_GAME_PACK_PAYLOAD_LENGTH_OFFSET + 4;
 const COMPILED_GAME_PACK_HEADER_LEN: usize = COMPILED_GAME_PACK_PAYLOAD_HASH_OFFSET + 4;
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+/// A source directory or an owned temporary asset mount.
+///
+/// Keep this value (or a clone) alive while using paths resolved from it. Path
+/// copies and serialization do not transfer temporary-directory ownership.
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AssetRoot {
     pub repository_root: PathBuf,
+    #[serde(skip)]
+    _temporary_mount: Option<std::sync::Arc<TemporaryAssetMount>>,
+}
+
+// Ownership is process-local bookkeeping, not part of an asset root's identity.
+impl PartialEq for AssetRoot {
+    fn eq(&self, other: &Self) -> bool {
+        self.repository_root == other.repository_root
+    }
+}
+
+impl Eq for AssetRoot {}
+
+#[derive(Debug)]
+struct TemporaryAssetMount {
+    // Retain the exclusively created path independently of the public lookup
+    // path: changing repository_root must never redirect cleanup to user data.
+    path: PathBuf,
+}
+
+impl Drop for TemporaryAssetMount {
+    fn drop(&mut self) {
+        // Best effort: never panic during teardown or print into the TUI. The
+        // OS may reject removal, and abort/kill cannot run this destructor.
+        let _ = std::fs::remove_dir_all(&self.path);
+    }
 }
 
 impl AssetRoot {
+    /// Reference an existing source directory without taking ownership of it.
     pub fn new(repository_root: impl Into<PathBuf>) -> Self {
         Self {
             repository_root: repository_root.into(),
+            _temporary_mount: None,
         }
+    }
+
+    /// Create an exclusive temporary child of `parent`, removed after its last
+    /// clone is dropped. Existing directories are never adopted or removed.
+    pub fn new_temporary_in(parent: impl AsRef<Path>) -> Result<Self> {
+        use std::sync::atomic::{AtomicUsize, Ordering};
+        static NEXT_MOUNT: AtomicUsize = AtomicUsize::new(0);
+        let parent = std::fs::canonicalize(parent.as_ref())
+            .context("resolve temporary asset mount parent")?;
+        let nonce = std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .unwrap_or_default()
+            .as_nanos();
+        for _ in 0..128 {
+            let sequence = NEXT_MOUNT.fetch_add(1, Ordering::Relaxed);
+            let path = parent.join(format!(
+                "crystal-pack-assets-{}-{nonce}-{sequence}",
+                std::process::id()
+            ));
+            let mut builder = std::fs::DirBuilder::new();
+            #[cfg(unix)]
+            {
+                use std::os::unix::fs::DirBuilderExt;
+                builder.mode(0o700);
+            }
+            match builder.create(&path) {
+                Ok(()) => {
+                    return Ok(Self {
+                        repository_root: path.clone(),
+                        _temporary_mount: Some(std::sync::Arc::new(TemporaryAssetMount { path })),
+                    });
+                }
+                Err(error) if error.kind() == std::io::ErrorKind::AlreadyExists => continue,
+                Err(error) => {
+                    return Err(error).with_context(|| {
+                        format!("create temporary asset mount {}", path.display())
+                    });
+                }
+            }
+        }
+        anyhow::bail!("could not create a unique temporary asset mount")
     }
 
     pub fn vendor_pokecrystal(&self) -> PathBuf {
@@ -965,6 +1038,8 @@ pub struct DecorationCatalog {
 #[derive(Debug, Default, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct ModpackPayload {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub running_shoes: Option<bool>,
     pub pokemon: BTreeMap<String, PokemonSpecies>,
     pub maps: BTreeMap<String, MapModule>,
     pub items: BTreeMap<String, Item>,
@@ -1055,6 +1130,10 @@ pub struct PokemonCryMetadata {
 pub struct RuntimeTitleScreen {
     #[serde(deserialize_with = "required_nullable_audio_reference_token")]
     pub title_music: Option<String>,
+    /// A complete native 160x144 title image. Skips the source studio/movie
+    /// sequence and holds this image until the player opens the main menu.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub static_title_image: Option<String>,
     pub program: RuntimePresentationProgram,
 }
 
@@ -1201,15 +1280,35 @@ pub struct RuntimePresentationPhaseRun {
     pub returned: bool,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct RuntimePresentationTimedPhaseCursor {
     pub subprogram: String,
     pub phase: String,
     pub operation_index: usize,
     pub end_operation_index: usize,
     pub wait_frames_remaining: u16,
+    pub wait_kind: Option<RuntimePresentationTimedWaitKind>,
+    pub blocking_request: Option<RuntimePresentationOperation>,
     pub transfer_mode: Option<RuntimePresentation2bppTransferMode>,
     pub frame_t_cycles: Option<u32>,
+}
+
+impl std::hash::Hash for RuntimePresentationTimedPhaseCursor {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        // A request is identified by its authored phase and operation index.
+        // Its retained JSON payload need not be hashed to distinguish cursors.
+        std::hash::Hash::hash(&(&self.subprogram, &self.phase, self.operation_index,
+            self.end_operation_index, self.wait_frames_remaining, self.wait_kind,
+            self.blocking_request.is_some(), self.transfer_mode, self.frame_t_cycles), state);
+    }
+}
+
+/// Why a source call is suspended; render settling never consumes DelayFrame.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub enum RuntimePresentationTimedWaitKind {
+    RenderSettling,
+    DelayFrame,
+    Transfer2bpp,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
@@ -1223,6 +1322,12 @@ pub struct RuntimePresentationTimedPhaseTick {
     pub effects: Vec<RuntimePresentationOperation>,
     pub cpu_work_machine_cycles: u64,
     pub complete: bool,
+    /// Source instruction work in execution order, excluding idle frame waits.
+    pub instruction_machine_cycles: Vec<u64>,
+    /// Effect commits at instruction-boundary offsets (zero means before work).
+    pub instruction_effects: Vec<(usize, RuntimePresentationOperation)>,
+    /// False when an operation lacks source timing; strict consumers must reject it.
+    pub source_instruction_timing_complete: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -1562,6 +1667,53 @@ pub struct RuntimeIntroPresentationParameters {
     pub interrupt_timing: RuntimeIntroInterruptTiming,
 }
 
+/// Validate timing provenance before accepting any intro clock measurement.
+pub fn validate_runtime_intro_timing_oracle(oracle: &Value) -> Result<()> {
+    anyhow::ensure!(
+        oracle.as_object().is_some_and(valid_intro_timing_oracle),
+        "intro timing oracle provenance is invalid"
+    );
+    Ok(())
+}
+
+fn valid_intro_timing_oracle(oracle: &serde_json::Map<String, Value>) -> bool {
+    if oracle.get("rom_sha1").and_then(Value::as_str)
+        != Some("f4cd194bdee0d04ca4eac29e09b8e4e9d818c133")
+    {
+        return false;
+    }
+    match oracle.get("runner").and_then(Value::as_str) {
+        Some("tools/asm-oracle/intro_trace.py --timing") => true,
+        Some("pack_core Rust intro oracle") => {
+            oracle.get("schema_version").and_then(Value::as_u64) == Some(1)
+                && oracle.get("validated").and_then(Value::as_bool) == Some(true)
+                && oracle.get("instruction_core").and_then(Value::as_str) == Some("sm83_mcycle_v1")
+                && oracle.get("timer_model").and_then(Value::as_str)
+                    == Some("cgb_timer_falling_edge_delayed_reload_v1")
+                && oracle.get("certification").is_some_and(|certificate| {
+                    certificate.get("scene_count").and_then(Value::as_u64) == Some(28)
+                        && certificate
+                            .get("decompression_count")
+                            .and_then(Value::as_u64)
+                            == Some(37)
+                        && certificate
+                            .get("sprite_allocation_count")
+                            .and_then(Value::as_u64)
+                            == Some(19)
+                        && certificate
+                            .get("complete_phase_machine_matches_rom")
+                            .and_then(Value::as_bool)
+                            == Some(true)
+                        && certificate
+                            .get("audio_irq_model_matches_rom")
+                            .and_then(Value::as_bool)
+                            == Some(true)
+                })
+        }
+        _ => false,
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct RuntimeIntroSpriteSchedulerFrameCrossing {
     pub dispatcher_entry: usize,
@@ -1576,6 +1728,41 @@ pub struct RuntimeIntroFrameClock {
     pub elapsed_t_cycles: u64,
 }
 
+#[path = "intro_instruction_timing.rs"]
+mod intro_instruction_timing;
+pub use intro_instruction_timing::{
+    runtime_intro_decompress_instruction_machine_cycles,
+    runtime_intro_request2bpp_instruction_segments,
+    runtime_intro_tilemap_xor_instruction_machine_cycles,
+    runtime_intro_sprite_sine_instruction_machine_cycles,
+    runtime_intro_sprite_init_instruction_machine_cycles,
+    runtime_intro_sprite_reinit_instruction_machine_cycles,
+    runtime_intro_sprite_group_instruction_machine_cycles,
+    runtime_intro_sprite_update_instruction_machine_cycles,
+    runtime_intro_sprite_scheduler_instruction_machine_cycles,
+    runtime_intro_scheduled_audio_instruction_machine_cycles,
+    runtime_intro_farcall_instruction_machine_cycles,
+    runtime_intro_byte_loop_instruction_machine_cycles,
+    runtime_intro_clear_loop_instruction_machine_cycles,
+    runtime_intro_helper_instruction_machine_cycles,
+};
+
+#[path = "intro_operation_timing.rs"]
+mod intro_operation_timing;
+pub use intro_operation_timing::{runtime_intro_operation_instruction_machine_cycles, runtime_intro_operation_instruction_machine_cycles_with_context, runtime_intro_decode_lz3};
+
+#[path = "intro_ram_regions.rs"]
+mod intro_ram_regions;
+pub use intro_ram_regions::runtime_intro_apply_region_effect;
+
+#[path = "intro_audio_clock_timing.rs"]
+mod intro_audio_clock_timing;
+pub use intro_audio_clock_timing::{runtime_intro_source_audio_update_machine_cycles, RuntimeIntroAudioPlaybackTiming, runtime_intro_source_audio_playback_timing};
+
+#[path = "intro_vblank_timing.rs"]
+mod intro_vblank_timing;
+pub use intro_vblank_timing::runtime_intro_vblank_machine_cycles;
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct RuntimeIntroInstructionClockAdvance {
     pub frame_boundaries_crossed: u64,
@@ -1586,7 +1773,10 @@ pub struct RuntimeIntroInstructionClockAdvance {
 
 impl RuntimeIntroFrameClock {
     pub fn new(frame_t_cycles: u32, phase_t_cycles: u32) -> Result<Self> {
-        anyhow::ensure!(frame_t_cycles > 0, "intro frame clock has no frame duration");
+        anyhow::ensure!(
+            frame_t_cycles > 0,
+            "intro frame clock has no frame duration"
+        );
         anyhow::ensure!(
             phase_t_cycles < frame_t_cycles,
             "intro frame clock phase is outside its frame"
@@ -1604,8 +1794,8 @@ impl RuntimeIntroFrameClock {
             .context("intro frame clock T-cycle total overflowed")?;
         let frame_t_cycles = u64::from(self.frame_t_cycles);
         let crossed = total / frame_t_cycles;
-        self.phase_t_cycles = u32::try_from(total % frame_t_cycles)
-            .context("intro frame clock phase exceeds u32")?;
+        self.phase_t_cycles =
+            u32::try_from(total % frame_t_cycles).context("intro frame clock phase exceeds u32")?;
         self.elapsed_t_cycles = self
             .elapsed_t_cycles
             .checked_add(elapsed_t_cycles)
@@ -1753,8 +1943,8 @@ impl RuntimeIntroInterruptTiming {
     fn service_pending_instruction_interrupts(
         &self,
         clock: &mut RuntimeIntroFrameClock,
-        callback_nonzero: bool,
-        vblank_body_machine_cycles: &mut dyn FnMut() -> Result<u64>,
+        callback_nonzero: &mut dyn FnMut() -> bool,
+        vblank_body_machine_cycles: &mut dyn FnMut(u32) -> Result<u64>,
         next_vblank_request: &mut u64,
         next_lcd_request: &mut u64,
         next_timer_request: &mut u64,
@@ -1772,7 +1962,10 @@ impl RuntimeIntroInterruptTiming {
                 *vblank_interrupts_serviced = vblank_interrupts_serviced
                     .checked_add(1)
                     .context("intro VBlank interrupt count overflowed")?;
-                vblank_body_machine_cycles()?
+                let handler_phase = (u64::from(clock.phase_t_cycles)
+                    + 4 * u64::from(self.hardware_entry_machine_cycles + self.vector_jump_machine_cycles))
+                    % u64::from(clock.frame_t_cycles);
+                vblank_body_machine_cycles(handler_phase as u32)?
                     .checked_add(u64::from(self.hardware_entry_machine_cycles))
                     .and_then(|value| value.checked_add(u64::from(self.vector_jump_machine_cycles)))
                     .context("intro VBlank interrupt timing overflowed")?
@@ -1781,7 +1974,7 @@ impl RuntimeIntroInterruptTiming {
                 *lcd_interrupts_serviced = lcd_interrupts_serviced
                     .checked_add(1)
                     .context("intro LCD interrupt count overflowed")?;
-                u64::from(if callback_nonzero {
+                u64::from(if callback_nonzero() {
                     self.lcd_callback_nonzero_machine_cycles
                 } else {
                     self.lcd_callback_zero_machine_cycles
@@ -1822,6 +2015,72 @@ impl RuntimeIntroInterruptTiming {
         instruction_machine_cycles: impl IntoIterator<Item = u64>,
         callback_nonzero: bool,
         vblank_body_machine_cycles: &mut dyn FnMut() -> Result<u64>,
+    ) -> Result<RuntimeIntroInstructionClockAdvance> {
+        self.advance_instruction_sequence_with_interrupts_and_effects(
+            clock,
+            instruction_machine_cycles,
+            &mut || callback_nonzero,
+            &mut |_| Ok(()),
+            vblank_body_machine_cycles,
+        )
+    }
+
+    /// Commit source instruction effects before servicing requests latched
+    /// during that instruction. LCD callbacks observe the resulting register
+    /// state, while requests pending at entry still observe the preceding state.
+    pub fn advance_instruction_sequence_with_interrupts_and_effects(
+        &self,
+        clock: &mut RuntimeIntroFrameClock,
+        instruction_machine_cycles: impl IntoIterator<Item = u64>,
+        callback_nonzero: &mut dyn FnMut() -> bool,
+        instruction_completed: &mut dyn FnMut(usize) -> Result<()>,
+        vblank_body_machine_cycles: &mut dyn FnMut() -> Result<u64>,
+    ) -> Result<RuntimeIntroInstructionClockAdvance> {
+        self.advance_instruction_sequence_with_interrupts_and_phase_effects(
+            clock, instruction_machine_cycles, callback_nonzero, instruction_completed,
+            &mut |_| vblank_body_machine_cycles(),
+        )
+    }
+
+    /// The VBlank provider receives the handler-entry LCD phase after hardware
+    /// entry and the vector jump, so LY-dependent transfer admission is exact.
+    pub fn advance_instruction_sequence_with_interrupts_and_phase_effects(
+        &self,
+        clock: &mut RuntimeIntroFrameClock,
+        instruction_machine_cycles: impl IntoIterator<Item = u64>,
+        callback_nonzero: &mut dyn FnMut() -> bool,
+        instruction_completed: &mut dyn FnMut(usize) -> Result<()>,
+        vblank_body_machine_cycles: &mut dyn FnMut(u32) -> Result<u64>,
+    ) -> Result<RuntimeIntroInstructionClockAdvance> {
+        let cycles = instruction_machine_cycles.into_iter().map(|machine_cycles| {
+            anyhow::ensure!(machine_cycles > 0, "intro instruction clock received a zero-cycle instruction");
+            machine_cycles.checked_mul(4).context("intro instruction T-cycle conversion overflowed")
+        }).collect::<Result<Vec<_>>>()?;
+        self.advance_t_cycle_sequence_with_interrupts_and_phase_effects(clock, cycles,
+            callback_nonzero, instruction_completed, vblank_body_machine_cycles)
+    }
+
+    /// Halted hardware can wake between CPU machine-cycle boundaries. Idle
+    /// spans preserve those exact PPU edges without charging an opcode.
+    pub fn advance_idle_t_cycles_with_interrupts_and_phase_effects(
+        &self,
+        clock: &mut RuntimeIntroFrameClock,
+        elapsed_t_cycles: u64,
+        callback_nonzero: &mut dyn FnMut() -> bool,
+        vblank_body_machine_cycles: &mut dyn FnMut(u32) -> Result<u64>,
+    ) -> Result<RuntimeIntroInstructionClockAdvance> {
+        self.advance_t_cycle_sequence_with_interrupts_and_phase_effects(clock,
+            std::iter::once(elapsed_t_cycles).filter(|cycles| *cycles > 0),
+            callback_nonzero, &mut |_| Ok(()), vblank_body_machine_cycles)
+    }
+
+    fn advance_t_cycle_sequence_with_interrupts_and_phase_effects(
+        &self,
+        clock: &mut RuntimeIntroFrameClock,
+        instruction_t_cycles: impl IntoIterator<Item = u64>,
+        callback_nonzero: &mut dyn FnMut() -> bool,
+        instruction_completed: &mut dyn FnMut(usize) -> Result<()>,
+        vblank_body_machine_cycles: &mut dyn FnMut(u32) -> Result<u64>,
     ) -> Result<RuntimeIntroInstructionClockAdvance> {
         anyhow::ensure!(
             self.timer_request_period_t_cycles > 0,
@@ -1891,14 +2150,8 @@ impl RuntimeIntroInterruptTiming {
                 &mut timer_interrupts_serviced,
             )?)
             .context("intro instruction frame-boundary count overflowed")?;
-        for machine_cycles in instruction_machine_cycles {
-            anyhow::ensure!(
-                machine_cycles > 0,
-                "intro instruction clock received a zero-cycle instruction"
-            );
-            let instruction_t_cycles = machine_cycles
-                .checked_mul(4)
-                .context("intro instruction T-cycle conversion overflowed")?;
+        for (instruction_index, instruction_t_cycles) in instruction_t_cycles.into_iter().enumerate() {
+            anyhow::ensure!(instruction_t_cycles > 0, "intro clock received a zero-duration span");
             frame_boundaries_crossed = frame_boundaries_crossed
                 .checked_add(self.advance_interrupt_scheduled_segment(
                     clock,
@@ -1911,6 +2164,7 @@ impl RuntimeIntroInterruptTiming {
                     &mut pending_timer,
                 )?)
                 .context("intro instruction frame-boundary count overflowed")?;
+            instruction_completed(instruction_index)?;
             frame_boundaries_crossed = frame_boundaries_crossed
                 .checked_add(self.service_pending_instruction_interrupts(
                     clock,
@@ -1958,10 +2212,7 @@ impl RuntimeIntroInterruptTiming {
             .map(u64::from)
     }
 
-    pub fn t_cycles_until_next_lcd_hblank(
-        &self,
-        clock: &RuntimeIntroFrameClock,
-    ) -> Result<u32> {
+    pub fn t_cycles_until_next_lcd_hblank(&self, clock: &RuntimeIntroFrameClock) -> Result<u32> {
         anyhow::ensure!(
             clock.frame_t_cycles == self.frame_t_cycles,
             "intro LCD timing and frame clock disagree"
@@ -2021,11 +2272,7 @@ impl RuntimeIntroInterruptTiming {
             .context("intro next-frame VBlank request distance overflowed")
     }
 
-    pub fn joy_text_delay_machine_cycles(
-        &self,
-        joy_pressed: bool,
-        text_delay_frames: u8,
-    ) -> u16 {
+    pub fn joy_text_delay_machine_cycles(&self, joy_pressed: bool, text_delay_frames: u8) -> u16 {
         if joy_pressed {
             self.joy_text_delay_pressed_repeat_reset_machine_cycles
         } else if text_delay_frames == 0 {
@@ -2038,9 +2285,7 @@ impl RuntimeIntroInterruptTiming {
     pub fn outer_loop_body_machine_cycles(&self) -> Result<u16> {
         self.after_input_before_scene_dispatch_machine_cycles
             .checked_add(self.scene_dispatch_to_sprite_scheduler_machine_cycles)
-            .and_then(|value| {
-                value.checked_add(self.sprite_scheduler_to_frame_wait_machine_cycles)
-            })
+            .and_then(|value| value.checked_add(self.sprite_scheduler_to_frame_wait_machine_cycles))
             .context("intro outer-loop body machine-cycle total overflowed")
     }
 
@@ -2067,9 +2312,8 @@ impl RuntimeIntroInterruptTiming {
                 }
                 RuntimeIntroActiveSoundChannelClass::MusicShadowedByActiveSfx => {
                     anyhow::ensure!(
-                        channel.update_channels_machine_cycles.is_none()
-                            && channel.parse_music_machine_cycles.is_none(),
-                        "shadowed music channel executed an inaudible write or parser"
+                        channel.update_channels_machine_cycles.is_none(),
+                        "shadowed music channel executed an inaudible hardware write"
                     );
                     self.shadowed_music_channel_extra_machine_cycles
                 }
@@ -2156,7 +2400,9 @@ impl RuntimeIntroParseMusicTiming {
         octave_command_count: u8,
     ) -> u16 {
         self.normal_note_base_machine_cycles
-            + self.set_note_duration.machine_cycles(note_length, duration_nibble)
+            + self
+                .set_note_duration
+                .machine_cycles(note_length, duration_nibble)
             + self.get_frequency.machine_cycles(effective_octave)
             + u16::from(octave_command_count) * self.octave_command_machine_cycles
     }
@@ -2168,7 +2414,9 @@ impl RuntimeIntroParseMusicTiming {
         octave_command_count: u8,
     ) -> u16 {
         self.music_noise_note_base_machine_cycles
-            + self.set_note_duration.machine_cycles(note_length, duration_nibble)
+            + self
+                .set_note_duration
+                .machine_cycles(note_length, duration_nibble)
             + u16::from(octave_command_count) * self.octave_command_machine_cycles
     }
 }
@@ -2200,15 +2448,11 @@ pub enum RuntimeIntroUpdateChannelsPath {
 impl RuntimeIntroUpdateChannelsTiming {
     pub fn machine_cycles(&self, path: RuntimeIntroUpdateChannelsPath) -> u16 {
         match path {
-            RuntimeIntroUpdateChannelsPath::Pulse1Unchanged => {
-                self.pulse1_unchanged_machine_cycles
-            }
+            RuntimeIntroUpdateChannelsPath::Pulse1Unchanged => self.pulse1_unchanged_machine_cycles,
             RuntimeIntroUpdateChannelsPath::Pulse1NoiseSampling => {
                 self.pulse1_noise_sampling_machine_cycles
             }
-            RuntimeIntroUpdateChannelsPath::Pulse2Unchanged => {
-                self.pulse2_unchanged_machine_cycles
-            }
+            RuntimeIntroUpdateChannelsPath::Pulse2Unchanged => self.pulse2_unchanged_machine_cycles,
             RuntimeIntroUpdateChannelsPath::Pulse2VibratoOverride => {
                 self.pulse2_vibrato_override_machine_cycles
             }
@@ -2269,9 +2513,7 @@ impl RuntimeIntroTrackVibratoTiming {
             RuntimeIntroVibratoBranch::ToggleUpNoBorrow => {
                 self.toggle_up_no_borrow_extra_machine_cycles
             }
-            RuntimeIntroVibratoBranch::ToggleUpBorrow => {
-                self.toggle_up_borrow_extra_machine_cycles
-            }
+            RuntimeIntroVibratoBranch::ToggleUpBorrow => self.toggle_up_borrow_extra_machine_cycles,
             RuntimeIntroVibratoBranch::ToggleDownNoCarry => {
                 self.toggle_down_no_carry_extra_machine_cycles
             }
@@ -2344,6 +2586,28 @@ impl RuntimeIntroNoiseTiming {
 
 impl RuntimeIntroPresentationParameters {
     pub fn from_program(program: &RuntimePresentationProgram) -> Result<Self> {
+        Self::from_program_with_oracle_check(program, valid_intro_timing_oracle)
+    }
+
+    /// Parse real, uncertified ROM measurements solely for explicit diagnostics.
+    #[cfg(any(test, feature = "test-fixtures"))]
+    pub fn from_unverified_program_for_timing_diagnostic(
+        program: &RuntimePresentationProgram,
+    ) -> Result<Self> {
+        Self::from_program_with_oracle_check(program, |oracle| {
+            valid_intro_timing_oracle(oracle)
+                || (oracle.get("runner").and_then(Value::as_str) == Some("pack_core Rust intro oracle")
+                    && oracle.get("rom_sha1").and_then(Value::as_str)
+                        == Some("f4cd194bdee0d04ca4eac29e09b8e4e9d818c133")
+                    && oracle.get("schema_version").and_then(Value::as_u64) == Some(1)
+                    && oracle.get("validated").and_then(Value::as_bool) == Some(false))
+        })
+    }
+
+    fn from_program_with_oracle_check(
+        program: &RuntimePresentationProgram,
+        oracle_check: impl Fn(&serde_json::Map<String, Value>) -> bool,
+    ) -> Result<Self> {
         let subprogram = program
             .subprograms
             .iter()
@@ -2359,8 +2623,7 @@ impl RuntimeIntroPresentationParameters {
             .iter()
             .find(|operation| {
                 operation.op == "dispatch_table"
-                    && operation.fields.get("table").and_then(Value::as_str)
-                        == Some("IntroScenes")
+                    && operation.fields.get("table").and_then(Value::as_str) == Some("IntroScenes")
             })
             .context("runtime presentation crystal_intro dispatch_table operation is missing")?;
         let dispatch_contract = subprogram
@@ -2452,9 +2715,7 @@ impl RuntimeIntroPresentationParameters {
                     .fields
                     .get("target")
                     .and_then(Value::as_str)
-                    .filter(|target| {
-                        target.starts_with('.') && !target.ends_with("@CrystalIntro")
-                    })
+                    .filter(|target| target.starts_with('.') && !target.ends_with("@CrystalIntro"))
                 {
                     let target_offset = phase.labels.get(target).copied().with_context(|| {
                         format!(
@@ -2483,13 +2744,18 @@ impl RuntimeIntroPresentationParameters {
                         .get("audio")
                         .and_then(Value::as_str)
                         .filter(|audio| !audio.is_empty())
-                        .context("runtime presentation crystal_intro audio operation has no audio id")?;
+                        .context(
+                            "runtime presentation crystal_intro audio operation has no audio id",
+                        )?;
                     anyhow::ensure!(
                         operation_entry == dispatcher_entry && operation_tick > 0,
                         "runtime presentation crystal_intro audio operation disagrees with its scene operation range"
                     );
                     anyhow::ensure!(
-                        subprogram.audio.iter().any(|candidate| candidate.id == audio)
+                        subprogram
+                            .audio
+                            .iter()
+                            .any(|candidate| candidate.id == audio)
                             || program.audio.iter().any(|candidate| candidate.id == audio),
                         "runtime presentation crystal_intro audio operation references missing audio {audio}"
                     );
@@ -2503,20 +2769,21 @@ impl RuntimeIntroPresentationParameters {
                                 == Some(u64::from(u8::MAX)),
                         "runtime presentation crystal_intro scheduled audio has an invalid clock or sentinel"
                     );
-                    let on_match = operation
-                        .fields
-                        .get("on_match")
-                        .context("runtime presentation crystal_intro scheduled audio has no match behavior")?;
+                    let on_match = operation.fields.get("on_match").context(
+                        "runtime presentation crystal_intro scheduled audio has no match behavior",
+                    )?;
                     anyhow::ensure!(
                         on_match.get("play_entry").and_then(Value::as_bool) == Some(true)
                             && on_match
                                 .get("stop_sfx_channels")
                                 .and_then(Value::as_array)
                                 .is_some_and(|channels| {
-                                    channels
-                                        .iter()
-                                        .map(Value::as_u64)
-                                        .eq([Some(5), Some(6), Some(7), Some(8)])
+                                    channels.iter().map(Value::as_u64).eq([
+                                        Some(5),
+                                        Some(6),
+                                        Some(7),
+                                        Some(8),
+                                    ])
                                 }),
                         "runtime presentation crystal_intro scheduled audio has invalid playback semantics"
                     );
@@ -2524,7 +2791,9 @@ impl RuntimeIntroPresentationParameters {
                         .fields
                         .get("entries")
                         .and_then(Value::as_array)
-                        .context("runtime presentation crystal_intro scheduled audio has no entries")?;
+                        .context(
+                            "runtime presentation crystal_intro scheduled audio has no entries",
+                        )?;
                     anyhow::ensure!(
                         !entries.is_empty(),
                         "runtime presentation crystal_intro scheduled audio is empty"
@@ -2540,7 +2809,9 @@ impl RuntimeIntroPresentationParameters {
                             .get("audio")
                             .and_then(Value::as_str)
                             .filter(|audio| !audio.is_empty())
-                            .context("runtime presentation crystal_intro scheduled audio id is invalid")?;
+                            .context(
+                                "runtime presentation crystal_intro scheduled audio id is invalid",
+                            )?;
                         anyhow::ensure!(
                             frame < u8::MAX
                                 && previous_frame.is_none_or(|previous| frame > previous),
@@ -2548,14 +2819,20 @@ impl RuntimeIntroPresentationParameters {
                         );
                         previous_frame = Some(frame);
                         anyhow::ensure!(
-                            subprogram.audio.iter().any(|candidate| candidate.id == audio)
+                            subprogram
+                                .audio
+                                .iter()
+                                .any(|candidate| candidate.id == audio)
                                 || program.audio.iter().any(|candidate| candidate.id == audio),
                             "runtime presentation crystal_intro scheduled audio references missing audio {audio}"
                         );
                     }
                     continue;
                 }
-                if !matches!(operation.op.as_str(), "sprite_init_group" | "sprite_activate") {
+                if !matches!(
+                    operation.op.as_str(),
+                    "sprite_init_group" | "sprite_activate"
+                ) {
                     continue;
                 }
                 let operation_entry = operation
@@ -2568,16 +2845,17 @@ impl RuntimeIntroPresentationParameters {
                     .fields
                     .get("dispatch_tick")
                     .and_then(Value::as_u64)
-                    .context("runtime presentation crystal_intro sprite activation has no dispatch tick")?;
+                    .context(
+                        "runtime presentation crystal_intro sprite activation has no dispatch tick",
+                    )?;
                 anyhow::ensure!(
                     operation_entry == dispatcher_entry && operation_tick > 0,
                     "runtime presentation crystal_intro sprite activation disagrees with its scene operation range"
                 );
                 if operation.op == "sprite_activate" {
-                    let lifetime = operation
-                        .fields
-                        .get("lifetime")
-                        .context("runtime presentation crystal_intro sprite activation has no lifetime")?;
+                    let lifetime = operation.fields.get("lifetime").context(
+                        "runtime presentation crystal_intro sprite activation has no lifetime",
+                    )?;
                     anyhow::ensure!(
                         lifetime
                             .get("allocation_dispatcher_entry")
@@ -2594,7 +2872,9 @@ impl RuntimeIntroPresentationParameters {
                         .fields
                         .get("instances")
                         .and_then(Value::as_array)
-                        .context("runtime presentation crystal_intro sprite group has no instances")?;
+                        .context(
+                            "runtime presentation crystal_intro sprite group has no instances",
+                        )?;
                     anyhow::ensure!(
                         !instances.is_empty(),
                         "runtime presentation crystal_intro sprite group is empty"
@@ -2646,10 +2926,7 @@ impl RuntimeIntroPresentationParameters {
                     "runtime presentation crystal_intro decompression has no ROM timing oracle",
                 )?;
             anyhow::ensure!(
-                timing_oracle.get("runner").and_then(Value::as_str)
-                    == Some("tools/asm-oracle/intro_trace.py --timing")
-                    && timing_oracle.get("rom_sha1").and_then(Value::as_str)
-                        == Some("f4cd194bdee0d04ca4eac29e09b8e4e9d818c133"),
+                oracle_check(timing_oracle),
                 "runtime presentation crystal_intro decompression timing oracle is invalid"
             );
             let start_frame = timing_oracle
@@ -2759,10 +3036,7 @@ impl RuntimeIntroPresentationParameters {
                     "runtime presentation crystal_intro 2bpp request has no ROM timing oracle",
                 )?;
             anyhow::ensure!(
-                request_oracle.get("runner").and_then(Value::as_str)
-                    == Some("tools/asm-oracle/intro_trace.py --timing")
-                    && request_oracle.get("rom_sha1").and_then(Value::as_str)
-                        == Some("f4cd194bdee0d04ca4eac29e09b8e4e9d818c133"),
+                oracle_check(request_oracle),
                 "runtime presentation crystal_intro 2bpp request timing oracle is invalid"
             );
             let request_start_frame = request_oracle
@@ -2807,10 +3081,7 @@ impl RuntimeIntroPresentationParameters {
                     "runtime presentation crystal_intro decompression request has no ROM timing oracle",
                 )?;
             anyhow::ensure!(
-                wrapper_oracle.get("runner").and_then(Value::as_str)
-                    == Some("tools/asm-oracle/intro_trace.py --timing")
-                    && wrapper_oracle.get("rom_sha1").and_then(Value::as_str)
-                        == Some("f4cd194bdee0d04ca4eac29e09b8e4e9d818c133"),
+                oracle_check(wrapper_oracle),
                 "runtime presentation crystal_intro decompression request timing oracle is invalid"
             );
             let wrapper_start_frame = wrapper_oracle
@@ -2907,14 +3178,8 @@ impl RuntimeIntroPresentationParameters {
             scheduler.get("op").and_then(Value::as_str) == Some("sprite_scheduler_step")
                 && scheduler
                     .get("timing_oracle")
-                    .and_then(|oracle| oracle.get("runner"))
-                    .and_then(Value::as_str)
-                    == Some("tools/asm-oracle/intro_trace.py --timing")
-                && scheduler
-                    .get("timing_oracle")
-                    .and_then(|oracle| oracle.get("rom_sha1"))
-                    .and_then(Value::as_str)
-                    == Some("f4cd194bdee0d04ca4eac29e09b8e4e9d818c133"),
+                    .and_then(Value::as_object)
+                    .is_some_and(&oracle_check),
             "runtime presentation crystal_intro sprite scheduler timing oracle is invalid"
         );
         let raw_crossings = scheduler
@@ -2968,8 +3233,7 @@ impl RuntimeIntroPresentationParameters {
             .get("interrupt_timing")
             .context("runtime presentation crystal_intro interrupt timing is missing")?;
         anyhow::ensure!(
-            interrupt_timing.get("unit").and_then(Value::as_str)
-                == Some("sm83_machine_cycles"),
+            interrupt_timing.get("unit").and_then(Value::as_str) == Some("sm83_machine_cycles"),
             "runtime presentation crystal_intro interrupt timing unit is invalid"
         );
         let exact_u16 = |value: Option<&Value>, field: &str| -> Result<u16> {
@@ -3034,13 +3298,9 @@ impl RuntimeIntroPresentationParameters {
         anyhow::ensure!(
             intro_entry_phase_t_cycles < frame_t_cycles
                 && frame_clock
-                    .pointer("/timing_oracle/runner")
-                    .and_then(Value::as_str)
-                    == Some("tools/asm-oracle/intro_trace.py --timing")
-                && frame_clock
-                    .pointer("/timing_oracle/rom_sha1")
-                    .and_then(Value::as_str)
-                    == Some("f4cd194bdee0d04ca4eac29e09b8e4e9d818c133"),
+                    .get("timing_oracle")
+                    .and_then(Value::as_object)
+                    .is_some_and(&oracle_check),
             "runtime presentation crystal_intro frame clock oracle is invalid"
         );
         let outer_loop_body = interrupt_timing
@@ -3064,8 +3324,7 @@ impl RuntimeIntroPresentationParameters {
                 && lcd.get("trigger_register").and_then(Value::as_str) == Some("rSTAT")
                 && lcd.get("trigger_mask").and_then(Value::as_str) == Some("STAT_MODE_0")
                 && lcd.get("trigger").and_then(Value::as_str) == Some("hblank")
-                && lcd.get("callback_pointer").and_then(Value::as_str)
-                    == Some("hLCDCPointer"),
+                && lcd.get("callback_pointer").and_then(Value::as_str) == Some("hLCDCPointer"),
             "runtime presentation crystal_intro LCD interrupt semantics are invalid"
         );
         let timer = interrupt_timing
@@ -3074,9 +3333,13 @@ impl RuntimeIntroPresentationParameters {
         anyhow::ensure!(
             timer.get("handler").and_then(Value::as_str) == Some("MobileTimer")
                 && timer.get("enable").and_then(Value::as_str) == Some("IE_TIMER")
-                && timer.pointer("/inactive_guard/source").and_then(Value::as_str)
+                && timer
+                    .pointer("/inactive_guard/source")
+                    .and_then(Value::as_str)
                     == Some("hMobile")
-                && timer.pointer("/inactive_guard/predicate").and_then(Value::as_str)
+                && timer
+                    .pointer("/inactive_guard/predicate")
+                    .and_then(Value::as_str)
                     == Some("zero"),
             "runtime presentation crystal_intro inactive timer semantics are invalid"
         );
@@ -3085,18 +3348,27 @@ impl RuntimeIntroPresentationParameters {
             .context("runtime presentation crystal_intro VBlank timing is missing")?;
         anyhow::ensure!(
             vblank.get("handler").and_then(Value::as_str) == Some("VBlank_Normal")
-                && vblank.pointer("/selector/source").and_then(Value::as_str)
-                    == Some("hVBlank")
+                && vblank.pointer("/selector/source").and_then(Value::as_str) == Some("hVBlank")
                 && vblank.pointer("/selector/value").and_then(Value::as_u64) == Some(0)
-                && vblank.pointer("/audio_update/routine").and_then(Value::as_str)
+                && vblank
+                    .pointer("/audio_update/routine")
+                    .and_then(Value::as_str)
                     == Some("_UpdateSound")
-                && vblank.pointer("/audio_update/cadence").and_then(Value::as_str)
+                && vblank
+                    .pointer("/audio_update/cadence")
+                    .and_then(Value::as_str)
                     == Some("every_vblank")
-                && vblank.pointer("/audio_update/playing_guard/source").and_then(Value::as_str)
+                && vblank
+                    .pointer("/audio_update/playing_guard/source")
+                    .and_then(Value::as_str)
                     == Some("wMusicPlaying")
-                && vblank.pointer("/audio_update/playing_guard/predicate").and_then(Value::as_str)
+                && vblank
+                    .pointer("/audio_update/playing_guard/predicate")
+                    .and_then(Value::as_str)
                     == Some("nonzero")
-                && vblank.pointer("/audio_update/timing").and_then(Value::as_str)
+                && vblank
+                    .pointer("/audio_update/timing")
+                    .and_then(Value::as_str)
                     == Some("state_dependent")
                 && vblank
                     .pointer("/audio_update/all_channels_inactive/predicate")
@@ -3127,9 +3399,7 @@ impl RuntimeIntroPresentationParameters {
                     .and_then(Value::as_str)
                     == Some("zero")
                 && vblank
-                    .pointer(
-                        "/audio_update/active_channel_paths/guard/sustained_note_duration",
-                    )
+                    .pointer("/audio_update/active_channel_paths/guard/sustained_note_duration",)
                     .and_then(Value::as_str)
                     == Some("at_least_2"),
             "runtime presentation crystal_intro VBlank sound timing semantics are invalid"
@@ -3742,8 +4012,7 @@ impl RuntimeTitlePresentationParameters {
             .skip(title_end_index)
             .find_map(|(index, operation)| {
                 (operation.op == "fill_memory"
-                    && operation.fields.get("target").and_then(Value::as_str)
-                        == Some("wShadowOAM"))
+                    && operation.fields.get("target").and_then(Value::as_str) == Some("wShadowOAM"))
                 .then_some(index)
             })
             .context("runtime presentation title phase has no teardown OAM clear")?;
@@ -3935,12 +4204,7 @@ impl RuntimePresentationTimedPhaseCursor {
             .subprograms
             .iter()
             .find(|candidate| candidate.id == subprogram_id)
-            .and_then(|subprogram| {
-                subprogram
-                    .phases
-                    .iter()
-                    .find(|phase| phase.id == phase_id)
-            })
+            .and_then(|subprogram| subprogram.phases.iter().find(|phase| phase.id == phase_id))
             .with_context(|| {
                 format!(
                     "runtime presentation subprogram {subprogram_id} phase {phase_id} is missing"
@@ -3956,6 +4220,8 @@ impl RuntimePresentationTimedPhaseCursor {
             operation_index,
             end_operation_index,
             wait_frames_remaining: 0,
+            wait_kind: None,
+            blocking_request: None,
             transfer_mode: None,
             frame_t_cycles: None,
         })
@@ -3970,7 +4236,10 @@ impl RuntimePresentationTimedPhaseCursor {
     }
 
     pub fn with_frame_t_cycles(mut self, frame_t_cycles: u32) -> Result<Self> {
-        anyhow::ensure!(frame_t_cycles > 0, "runtime presentation frame clock is zero");
+        anyhow::ensure!(
+            frame_t_cycles > 0,
+            "runtime presentation frame clock is zero"
+        );
         self.frame_t_cycles = Some(frame_t_cycles);
         Ok(self)
     }
@@ -3979,6 +4248,27 @@ impl RuntimePresentationTimedPhaseCursor {
         &mut self,
         program: &RuntimePresentationProgram,
     ) -> Result<RuntimePresentationTimedPhaseTick> {
+        self.tick_with_resources(program, &mut |_| anyhow::bail!("source-timed cursor requires compressed graphics resources"))
+    }
+
+    pub fn tick_with_resources(
+        &mut self,
+        program: &RuntimePresentationProgram,
+        resource: &mut impl FnMut(&str) -> Result<Vec<u8>>,
+    ) -> Result<RuntimePresentationTimedPhaseTick> {
+        self.tick_with_source_context(program, &BTreeMap::new(), &BTreeMap::new(), &BTreeMap::new(), resource)
+    }
+
+    pub fn tick_with_source_context(
+        &mut self,
+        program: &RuntimePresentationProgram,
+        memory: &BTreeMap<String, u16>,
+        values: &BTreeMap<String, u16>,
+        regions: &BTreeMap<String, Vec<u8>>,
+        resource: &mut impl FnMut(&str) -> Result<Vec<u8>>,
+    ) -> Result<RuntimePresentationTimedPhaseTick> {
+        let mut memory = memory.clone();
+        let mut regions = regions.clone();
         let phase = program
             .subprograms
             .iter()
@@ -4000,17 +4290,28 @@ impl RuntimePresentationTimedPhaseCursor {
             if self.wait_frames_remaining > 0 {
                 return Ok(RuntimePresentationTimedPhaseTick {
                     effects: Vec::new(),
+                    instruction_machine_cycles: Vec::new(),
+                    instruction_effects: Vec::new(),
+                    source_instruction_timing_complete: true,
                     cpu_work_machine_cycles: 0,
                     complete: false,
                 });
             }
         }
+        self.wait_kind = None;
+        self.blocking_request = None;
         let mut effects = Vec::new();
+        let mut instruction_machine_cycles = Vec::new();
+        let mut instruction_effects = Vec::new();
+        let mut source_instruction_timing_complete = true;
         let mut cpu_work_machine_cycles = 0_u64;
         for _ in 0..1_024 {
             if self.operation_index > self.end_operation_index {
                 return Ok(RuntimePresentationTimedPhaseTick {
                     effects,
+                    instruction_machine_cycles,
+                    instruction_effects,
+                    source_instruction_timing_complete,
                     cpu_work_machine_cycles,
                     complete: true,
                 });
@@ -4021,6 +4322,75 @@ impl RuntimePresentationTimedPhaseCursor {
                 .cloned()
                 .context("runtime presentation timed cursor reached a missing operation")?;
             self.operation_index += 1;
+            if operation.fields.contains_key("source_decompress_timing") {
+                let name = operation.fields.get("resource").and_then(Value::as_str)
+                    .context("source decompression has no graphic resource")?;
+                let path = program.resources.iter().find(|entry| entry.path == name)
+                    .map(|entry| entry.path.as_str()).unwrap_or(name);
+                let bytes = resource(path)?;
+                instruction_machine_cycles.extend(
+                    runtime_intro_operation_instruction_machine_cycles_with_context(&operation, false,
+                        &memory, values, &regions, Some(&bytes))?);
+            } else if operation.fields.contains_key("source_helper_timing")
+                || operation.fields.contains_key("source_instruction_machine_cycles")
+                || operation.fields.contains_key("source_instruction_timing_variants")
+                || operation.fields.contains_key("source_tilemap_timing")
+                || operation.fields.contains_key("source_sprite_init_timing")
+            {
+                instruction_machine_cycles.extend(
+                    runtime_intro_operation_instruction_machine_cycles_with_context(&operation, false, &memory, values, &regions, None)?);
+            } else {
+                source_instruction_timing_complete = false;
+            }
+            instruction_effects.push((instruction_machine_cycles.len(), operation.clone()));
+            if operation.fields.contains_key("source_helper_timing")
+                || operation.fields.contains_key("source_instruction_machine_cycles")
+                || operation.fields.contains_key("source_decompress_timing")
+                || operation.fields.contains_key("source_tilemap_timing")
+                || operation.fields.contains_key("source_sprite_init_timing")
+                || operation.fields.contains_key("source_instruction_timing_variants") {
+                runtime_intro_apply_region_effect(&mut regions, &operation, &mut memory, resource)?;
+            }
+            if matches!(operation.op.as_str(), "write_memory_byte" | "palette_transfer_request") {
+                if let (Some(target), Some(value)) = (operation.fields.get("target").and_then(Value::as_str),
+                    operation.fields.get("value").and_then(Value::as_u64)) {
+                    anyhow::ensure!(value <= 255, "intro source memory write exceeds one byte");
+                    memory.insert(target.to_string(), value as u16);
+                }
+            }
+            if let Some(helper) = operation.fields.get("source_helper_timing") {
+                let helper_cycles = runtime_intro_helper_instruction_machine_cycles(helper)?;
+                let caller = operation.fields.get("source_caller_instruction_machine_cycles")
+                    .and_then(Value::as_array)
+                    .context("runtime presentation helper has no caller instruction sequence")?;
+                let returns = if operation.fields.get("source_caller_model").and_then(Value::as_str)
+                    == Some("farcall_hl_v1") {
+                    let (prefix, suffix) = runtime_intro_farcall_instruction_machine_cycles();
+                    anyhow::ensure!(caller.iter().map(Value::as_u64).eq(prefix.iter().copied().map(Some)),
+                        "runtime presentation farcall prefix disagrees with its instruction model");
+                    let returns = operation.fields.get("source_return_instruction_machine_cycles")
+                        .and_then(Value::as_array).context("runtime presentation farcall has no return sequence")?;
+                    anyhow::ensure!(returns.iter().map(Value::as_u64).eq(suffix.iter().copied().map(Some)),
+                        "runtime presentation farcall return disagrees with its instruction model");
+                    returns.as_slice()
+                } else {
+                    anyhow::ensure!(!operation.fields.contains_key("source_caller_model")
+                        && !operation.fields.contains_key("source_return_instruction_machine_cycles")
+                        && caller.last().and_then(Value::as_u64) == Some(6),
+                        "runtime presentation helper caller does not end with its direct CALL");
+                    &[]
+                };
+                for cost in caller.iter().map(|cost| cost.as_u64()
+                    .filter(|cost| *cost > 0)
+                    .context("runtime presentation helper caller has an invalid instruction cost"))
+                    .chain(helper_cycles.into_iter().map(Ok))
+                    .chain(returns.iter().map(|cost| cost.as_u64()
+                        .context("runtime presentation farcall return has an invalid instruction cost")))
+                {
+                    cpu_work_machine_cycles = cpu_work_machine_cycles.checked_add(cost?)
+                        .context("runtime presentation CPU work cycle count overflowed")?;
+                }
+            }
             if operation.op == "decompress_lz3_resource" {
                 let machine_cycles = operation
                     .fields
@@ -4050,9 +4420,7 @@ impl RuntimePresentationTimedPhaseCursor {
                         .get("start_frame_phase_t_cycles")
                         .and_then(Value::as_u64)
                         .and_then(|value| u32::try_from(value).ok())
-                        .context(
-                            "runtime presentation exact decompression has no start phase",
-                        )?;
+                        .context("runtime presentation exact decompression has no start phase")?;
                     let elapsed_t_cycles = oracle
                         .get("elapsed_t_cycles_between_hooks")
                         .and_then(Value::as_u64)
@@ -4074,8 +4442,12 @@ impl RuntimePresentationTimedPhaseCursor {
                 effects.push(operation);
                 if frame_boundaries_crossed > 0 {
                     self.wait_frames_remaining = frame_boundaries_crossed;
+                    self.wait_kind = Some(RuntimePresentationTimedWaitKind::RenderSettling);
                     return Ok(RuntimePresentationTimedPhaseTick {
                         effects,
+                        instruction_machine_cycles,
+                        instruction_effects,
+                        source_instruction_timing_complete,
                         cpu_work_machine_cycles,
                         complete: false,
                     });
@@ -4091,9 +4463,13 @@ impl RuntimePresentationTimedPhaseCursor {
                     .filter(|frames| *frames > 0)
                     .context("runtime presentation wait_frames has no positive exact duration")?;
                 self.wait_frames_remaining = frames;
+                self.wait_kind = Some(RuntimePresentationTimedWaitKind::DelayFrame);
                 effects.push(operation);
                 return Ok(RuntimePresentationTimedPhaseTick {
                     effects,
+                    instruction_machine_cycles,
+                    instruction_effects,
+                    source_instruction_timing_complete,
                     cpu_work_machine_cycles,
                     complete: false,
                 });
@@ -4106,8 +4482,7 @@ impl RuntimePresentationTimedPhaseCursor {
                     .context("runtime presentation 2bpp request has no completion contract")?;
                 anyhow::ensure!(
                     completion.get("blocking").and_then(Value::as_bool) == Some(true)
-                        && completion.get("wait").and_then(Value::as_str)
-                            == Some("DelayFrame")
+                        && completion.get("wait").and_then(Value::as_str) == Some("DelayFrame")
                         && completion.get("until").and_then(Value::as_str)
                             == Some("wRequested2bppSize == 0"),
                     "runtime presentation 2bpp request has an unsupported completion contract"
@@ -4120,9 +4495,7 @@ impl RuntimePresentationTimedPhaseCursor {
                 let chunk_field = match self.transfer_mode.context(
                     "runtime presentation blocking 2bpp request requires an exact transfer mode",
                 )? {
-                    RuntimePresentation2bppTransferMode::Default => {
-                        "default_tiles_per_vblank"
-                    }
+                    RuntimePresentation2bppTransferMode::Default => "default_tiles_per_vblank",
                     RuntimePresentation2bppTransferMode::Mobile => "mobile_tiles_per_vblank",
                 };
                 let tiles_per_vblank = chunking
@@ -4141,7 +4514,9 @@ impl RuntimePresentationTimedPhaseCursor {
                     .and_then(Value::as_u64)
                     .and_then(|value| u16::try_from(value).ok())
                     .filter(|value| *value > 0)
-                    .context("runtime presentation 2bpp request has no positive exact tile_count")?;
+                    .context(
+                        "runtime presentation 2bpp request has no positive exact tile_count",
+                    )?;
                 let exact_frame_boundaries = operation
                     .fields
                     .get("request_2bpp_frame_boundaries_crossed")
@@ -4160,16 +4535,12 @@ impl RuntimePresentationTimedPhaseCursor {
                         .fields
                         .get("request_2bpp_timing_oracle")
                         .and_then(Value::as_object)
-                        .context(
-                            "runtime presentation exact 2bpp request has no phase oracle",
-                        )?;
+                        .context("runtime presentation exact 2bpp request has no phase oracle")?;
                     let start_phase = oracle
                         .get("start_frame_phase_t_cycles")
                         .and_then(Value::as_u64)
                         .and_then(|value| u32::try_from(value).ok())
-                        .context(
-                            "runtime presentation exact 2bpp request has no start phase",
-                        )?;
+                        .context("runtime presentation exact 2bpp request has no start phase")?;
                     let elapsed_t_cycles = oracle
                         .get("elapsed_t_cycles_between_hooks")
                         .and_then(Value::as_u64)
@@ -4188,11 +4559,16 @@ impl RuntimePresentationTimedPhaseCursor {
                         "runtime presentation exact 2bpp request disagrees with its frame clock"
                     );
                 }
-                self.wait_frames_remaining = exact_frame_boundaries
-                    .unwrap_or_else(|| tile_count.div_ceil(tiles_per_vblank));
+                self.wait_frames_remaining =
+                    exact_frame_boundaries.unwrap_or_else(|| tile_count.div_ceil(tiles_per_vblank));
+                self.wait_kind = Some(RuntimePresentationTimedWaitKind::Transfer2bpp);
+                self.blocking_request = Some(operation.clone());
                 effects.push(operation);
                 return Ok(RuntimePresentationTimedPhaseTick {
                     effects,
+                    instruction_machine_cycles,
+                    instruction_effects,
+                    source_instruction_timing_complete,
                     cpu_work_machine_cycles,
                     complete: false,
                 });
@@ -4201,6 +4577,20 @@ impl RuntimePresentationTimedPhaseCursor {
         }
         anyhow::bail!("runtime presentation timed phase exceeded its operation limit")
     }
+}
+
+/// One executed source operation, including its actual control-flow outcome.
+/// Borrowed state is observed after ordered host effects have been applied.
+pub struct RuntimePresentationOperationObservation<'a> {
+    pub operation: &'a RuntimePresentationOperation,
+    pub operation_index: usize,
+    pub next_operation_index: usize,
+    pub returned: bool,
+    pub control_transfer_taken: bool,
+    pub memory_before: &'a BTreeMap<String, u16>,
+    pub values_before: &'a BTreeMap<String, u16>,
+    pub memory_after: &'a BTreeMap<String, u16>,
+    pub values_after: &'a BTreeMap<String, u16>,
 }
 
 impl RuntimePresentationPhaseMachine {
@@ -4228,6 +4618,31 @@ impl RuntimePresentationPhaseMachine {
     ) -> Result<RuntimePresentationPhaseRun> {
         self.interpreter.jump_to_label(program, label)?;
         self.run_until_return(program, input)
+    }
+
+    /// Execute host presentation effects at their authored position, before
+    /// subsequent control operations read or overwrite the same memory.
+    pub fn run_from_label_with_effects(
+        &mut self,
+        program: &RuntimePresentationProgram,
+        label: &str,
+        input: u8,
+        effect: &mut dyn FnMut(&RuntimePresentationOperation, &mut BTreeMap<String, u16>) -> Result<()>,
+    ) -> Result<RuntimePresentationPhaseRun> {
+        self.interpreter.jump_to_label(program, label)?;
+        self.run_with_effects(program, input, effect)
+    }
+
+    pub fn run_from_label_with_observer(
+        &mut self,
+        program: &RuntimePresentationProgram,
+        label: &str,
+        input: u8,
+        effect: &mut dyn FnMut(&RuntimePresentationOperation, &mut BTreeMap<String, u16>) -> Result<()>,
+        observer: &mut dyn FnMut(RuntimePresentationOperationObservation<'_>) -> Result<()>,
+    ) -> Result<RuntimePresentationPhaseRun> {
+        self.interpreter.jump_to_label(program, label)?;
+        self.run_with_observer(program, input, effect, Some(observer))
     }
 
     pub fn run_from_operation_index(
@@ -4268,12 +4683,54 @@ impl RuntimePresentationPhaseMachine {
         program: &RuntimePresentationProgram,
         input: u8,
     ) -> Result<RuntimePresentationPhaseRun> {
+        self.run_with_effects(program, input, &mut |_, _| Ok(()))
+    }
+
+    fn run_with_effects(
+        &mut self,
+        program: &RuntimePresentationProgram,
+        input: u8,
+        effect: &mut dyn FnMut(&RuntimePresentationOperation, &mut BTreeMap<String, u16>) -> Result<()>,
+    ) -> Result<RuntimePresentationPhaseRun> {
+        self.run_with_observer(program, input, effect, None)
+    }
+
+    fn run_with_observer(
+        &mut self,
+        program: &RuntimePresentationProgram,
+        input: u8,
+        effect: &mut dyn FnMut(&RuntimePresentationOperation, &mut BTreeMap<String, u16>) -> Result<()>,
+        mut observer: Option<&mut dyn FnMut(RuntimePresentationOperationObservation<'_>) -> Result<()>>,
+    ) -> Result<RuntimePresentationPhaseRun> {
         let mut effects = Vec::new();
         for _ in 0..1_024 {
+            let effect_start = effects.len();
+            let mut control_transfer_taken = false;
+            let operation_index = self.interpreter.operation_index;
+            let before = observer.as_ref().map(|_| (self.memory.clone(), self.values.clone()));
             let operation = self
                 .interpreter
                 .step(program)?
                 .context("runtime presentation source label reached the end without returning")?;
+            let observed_operation = observer.as_ref().map(|_| operation.clone());
+            macro_rules! observe {
+                ($returned:expr) => {
+                    if let Some(callback) = observer.as_deref_mut() {
+                        let (memory_before, values_before) = before.as_ref().expect("observer state");
+                        callback(RuntimePresentationOperationObservation {
+                            operation: observed_operation.as_ref().expect("observer operation"),
+                            operation_index,
+                            next_operation_index: self.interpreter.operation_index,
+                            returned: $returned,
+                            control_transfer_taken: $returned || control_transfer_taken,
+                            memory_before,
+                            values_before,
+                            memory_after: &self.memory,
+                            values_after: &self.values,
+                        })?;
+                    }
+                };
+            }
             let numeric = |field: &str| {
                 operation
                     .fields
@@ -4346,12 +4803,16 @@ impl RuntimePresentationPhaseMachine {
             };
             match operation.op.as_str() {
                 "return" | "return_with_carry" => {
+                    observe!(true);
                     return Ok(RuntimePresentationPhaseRun {
                         effects,
                         returned: true,
                     });
                 }
-                "jump" => self.interpreter.jump_to_label(program, string("target")?)?,
+                "jump" => {
+                    control_transfer_taken = true;
+                    self.interpreter.jump_to_label(program, string("target")?)?;
+                }
                 "branch_memory_compare" => {
                     let source = string("source")?;
                     let operand = numeric("operand")?;
@@ -4369,6 +4830,7 @@ impl RuntimePresentationPhaseMachine {
                         ),
                     };
                     if matches {
+                        control_transfer_taken = true;
                         self.interpreter.jump_to_label(program, string("target")?)?;
                     }
                 }
@@ -4399,6 +4861,7 @@ impl RuntimePresentationPhaseMachine {
                         ),
                     };
                     if matches {
+                        control_transfer_taken = true;
                         self.interpreter.jump_to_label(program, string("target")?)?;
                     }
                 }
@@ -4422,15 +4885,14 @@ impl RuntimePresentationPhaseMachine {
                         ),
                     };
                     if matches {
+                        control_transfer_taken = true;
                         self.interpreter.jump_to_label(program, string("target")?)?;
                     }
                 }
                 "branch_compare" => {
                     let name = string("value")?;
                     let value = self.values.get(name).copied().with_context(|| {
-                        format!(
-                            "runtime presentation result {name} was read before initialization"
-                        )
+                        format!("runtime presentation result {name} was read before initialization")
                     })?;
                     let operand = numeric("operand")?;
                     let matches = match string("predicate")? {
@@ -4442,6 +4904,7 @@ impl RuntimePresentationPhaseMachine {
                         ),
                     };
                     if matches {
+                        control_transfer_taken = true;
                         self.interpreter.jump_to_label(program, string("target")?)?;
                     }
                 }
@@ -4468,12 +4931,13 @@ impl RuntimePresentationPhaseMachine {
                         "runtime presentation transform_memory_byte has unsupported wrapping semantics"
                     );
                     let input = string("input")?;
-                    let value = u8::try_from(self.values.get(input).copied().with_context(|| {
-                        format!(
-                            "runtime presentation result {input} was read before initialization"
-                        )
-                    })?)
-                    .context("runtime presentation transform input exceeds one byte")?;
+                    let value =
+                        u8::try_from(self.values.get(input).copied().with_context(|| {
+                            format!(
+                                "runtime presentation result {input} was read before initialization"
+                            )
+                        })?)
+                        .context("runtime presentation transform input exceeds one byte")?;
                     let operand = u8::try_from(numeric("operand")?)
                         .context("runtime presentation transform operand exceeds one byte")?;
                     let result = match string("operator")? {
@@ -4536,7 +5000,8 @@ impl RuntimePresentationPhaseMachine {
                     effects.push(operation);
                 }
                 "set_local" => {
-                    self.values.insert(string("name")?.to_string(), numeric("value")?);
+                    self.values
+                        .insert(string("name")?.to_string(), numeric("value")?);
                 }
                 "set_local_from_result" => {
                     let source = string("source")?;
@@ -4598,7 +5063,9 @@ impl RuntimePresentationPhaseMachine {
                         .and_then(Value::as_array)
                         .context("runtime presentation masked local has no valid-value domain")?;
                     anyhow::ensure!(
-                        valid.iter().any(|candidate| candidate.as_u64() == Some(u64::from(result))),
+                        valid
+                            .iter()
+                            .any(|candidate| candidate.as_u64() == Some(u64::from(result))),
                         "runtime presentation masked local result leaves its valid-value domain"
                     );
                     self.values
@@ -4616,8 +5083,9 @@ impl RuntimePresentationPhaseMachine {
                         string("wrap")? == "u8",
                         "runtime presentation set_local_from_memory has unsupported wrapping semantics"
                     );
-                    let subtract = u8::try_from(numeric("subtract")?)
-                        .context("runtime presentation memory-local subtraction exceeds one byte")?;
+                    let subtract = u8::try_from(numeric("subtract")?).context(
+                        "runtime presentation memory-local subtraction exceeds one byte",
+                    )?;
                     self.values.insert(
                         string("name")?.to_string(),
                         u16::from(value.wrapping_sub(subtract)),
@@ -4625,12 +5093,13 @@ impl RuntimePresentationPhaseMachine {
                 }
                 "compute_byte" => {
                     let input = string("input")?;
-                    let mut value = u8::try_from(self.values.get(input).copied().with_context(|| {
-                        format!(
-                            "runtime presentation result {input} was read before initialization"
-                        )
-                    })?)
-                    .context("runtime presentation compute_byte input exceeds one byte")?;
+                    let mut value =
+                        u8::try_from(self.values.get(input).copied().with_context(|| {
+                            format!(
+                                "runtime presentation result {input} was read before initialization"
+                            )
+                        })?)
+                        .context("runtime presentation compute_byte input exceeds one byte")?;
                     let steps = operation
                         .fields
                         .get("steps")
@@ -4714,10 +5183,9 @@ impl RuntimePresentationPhaseMachine {
                         .get("condition")
                         .and_then(Value::as_object)
                         .context("runtime presentation indexed_2bpp_request has no condition")?;
-                    let source = condition
-                        .get("source")
-                        .and_then(Value::as_str)
-                        .context("runtime presentation indexed_2bpp_request has no condition source")?;
+                    let source = condition.get("source").and_then(Value::as_str).context(
+                        "runtime presentation indexed_2bpp_request has no condition source",
+                    )?;
                     let value = self.memory.get(source).copied().with_context(|| {
                         format!(
                             "runtime presentation memory {source} was read before initialization"
@@ -4891,6 +5359,7 @@ impl RuntimePresentationPhaseMachine {
                     if value == 0 {
                         self.interpreter
                             .jump_to_label(program, string("zero_target")?)?;
+                        control_transfer_taken = true;
                     } else {
                         self.memory.insert(target, value - 1);
                     }
@@ -4941,6 +5410,7 @@ impl RuntimePresentationPhaseMachine {
                         )
                     })?;
                     if value != 0 {
+                        observe!(true);
                         return Ok(RuntimePresentationPhaseRun {
                             effects,
                             returned: true,
@@ -4957,8 +5427,10 @@ impl RuntimePresentationPhaseMachine {
                     if value == 0 {
                         if let Some(target) = operation.fields.get("target").and_then(Value::as_str)
                         {
+                            control_transfer_taken = true;
                             self.interpreter.jump_to_label(program, target)?;
                         } else {
+                            observe!(true);
                             return Ok(RuntimePresentationPhaseRun {
                                 effects,
                                 returned: true,
@@ -4974,6 +5446,7 @@ impl RuntimePresentationPhaseMachine {
                         )
                     })?;
                     if value == numeric("operand")? {
+                        observe!(true);
                         return Ok(RuntimePresentationPhaseRun {
                             effects,
                             returned: true,
@@ -4983,9 +5456,7 @@ impl RuntimePresentationPhaseMachine {
                 "return_if_compare" => {
                     let name = string("value")?;
                     let value = self.values.get(name).copied().with_context(|| {
-                        format!(
-                            "runtime presentation result {name} was read before initialization"
-                        )
+                        format!("runtime presentation result {name} was read before initialization")
                     })?;
                     let operand = numeric("operand")?;
                     let matches = match string("predicate")? {
@@ -4998,6 +5469,7 @@ impl RuntimePresentationPhaseMachine {
                         ),
                     };
                     if matches {
+                        observe!(true);
                         return Ok(RuntimePresentationPhaseRun {
                             effects,
                             returned: true,
@@ -5007,9 +5479,7 @@ impl RuntimePresentationPhaseMachine {
                 "return_unless_compare" => {
                     let name = string("value")?;
                     let value = self.values.get(name).copied().with_context(|| {
-                        format!(
-                            "runtime presentation result {name} was read before initialization"
-                        )
+                        format!("runtime presentation result {name} was read before initialization")
                     })?;
                     let operand = numeric("operand")?;
                     let matches = match string("predicate")? {
@@ -5022,6 +5492,7 @@ impl RuntimePresentationPhaseMachine {
                         ),
                     };
                     if !matches {
+                        observe!(true);
                         return Ok(RuntimePresentationPhaseRun {
                             effects,
                             returned: true,
@@ -5036,6 +5507,7 @@ impl RuntimePresentationPhaseMachine {
                         )
                     })?;
                     if value & numeric("mask")? != numeric("operand")? {
+                        observe!(true);
                         return Ok(RuntimePresentationPhaseRun {
                             effects,
                             returned: true,
@@ -5048,6 +5520,7 @@ impl RuntimePresentationPhaseMachine {
                         format!("runtime presentation result {name} was read before initialization")
                     })?;
                     if value & numeric("mask")? != 0 {
+                        observe!(true);
                         return Ok(RuntimePresentationPhaseRun {
                             effects,
                             returned: true,
@@ -5061,15 +5534,16 @@ impl RuntimePresentationPhaseMachine {
                         .get("fade_register")
                         .and_then(Value::as_object)
                     {
-                        let target = register
-                            .get("target")
-                            .and_then(Value::as_str)
-                            .context("runtime presentation fade_audio has no fade-register target")?;
+                        let target = register.get("target").and_then(Value::as_str).context(
+                            "runtime presentation fade_audio has no fade-register target",
+                        )?;
                         let value = register
                             .get("value")
                             .and_then(Value::as_u64)
                             .and_then(|value| u16::try_from(value).ok())
-                            .context("runtime presentation fade_audio has no exact fade-register value")?;
+                            .context(
+                                "runtime presentation fade_audio has no exact fade-register value",
+                            )?;
                         anyhow::ensure!(
                             value > 0 && value <= 0x3f,
                             "runtime presentation fade_audio rate {value} is outside wMusicFade's low-six-bit domain"
@@ -5122,6 +5596,10 @@ impl RuntimePresentationPhaseMachine {
                     "runtime presentation phase machine cannot execute source operation {op}"
                 ),
             }
+            for operation in &effects[effect_start..] {
+                effect(operation, &mut self.memory)?;
+            }
+            observe!(false);
         }
         anyhow::bail!("runtime presentation source phase exceeded its operation limit")
     }
@@ -5571,21 +6049,54 @@ pub enum RuntimeIntroAudioPitch {
 pub enum RuntimeIntroAudioCommand {
     Label(String),
     Tempo(u16),
-    Volume { left: u8, right: u8 },
+    Volume {
+        left: u8,
+        right: u8,
+    },
     PitchOffset(i16),
-    Vibrato { delay: u8, extent: u8, rate: u8 },
+    Vibrato {
+        delay: u8,
+        extent: u8,
+        rate: u8,
+    },
     DutyCycle(u8),
-    StereoPanning { left: bool, right: bool },
-    NoteType { length: u8, volume: u8, fade: i8 },
+    StereoPanning {
+        left: bool,
+        right: bool,
+    },
+    NoteType {
+        length: u8,
+        volume: u8,
+        fade: i8,
+    },
     Octave(u8),
-    Note { pitch: RuntimeIntroAudioPitch, duration: u8 },
+    Note {
+        pitch: RuntimeIntroAudioPitch,
+        duration: u8,
+    },
     Rest(u8),
     ToggleNoise(u8),
     DrumSpeed(u8),
-    DrumNote { instrument: u8, duration: u8 },
-    PitchSweep { duration: u8, pitch: i8 },
-    SquareNote { duration: u8, volume: u8, fade: i8, frequency: u16 },
-    NoiseNote { duration: u8, volume: u8, fade: i8, frequency: u8 },
+    DrumNote {
+        instrument: u8,
+        duration: u8,
+    },
+    PitchSweep {
+        duration: u8,
+        pitch: i8,
+    },
+    SquareNote {
+        duration: u8,
+        volume: u8,
+        fade: i8,
+        frequency: u16,
+    },
+    NoiseNote {
+        duration: u8,
+        volume: u8,
+        fade: i8,
+        frequency: u8,
+    },
     SoundRet,
 }
 
@@ -5616,19 +6127,31 @@ impl ModpackAsmAudioCommand {
 
     fn nibble(&self, id: &str, index: usize, name: &str) -> Result<u8> {
         let value = self.integer::<u8>(id, index, name)?;
-        anyhow::ensure!(value <= 0x0f, "audio asset '{id}' ASM command '{}' {name} exceeds one nibble", self.command);
+        anyhow::ensure!(
+            value <= 0x0f,
+            "audio asset '{id}' ASM command '{}' {name} exceeds one nibble",
+            self.command
+        );
         Ok(value)
     }
 
     fn signed_nibble(&self, id: &str, index: usize, name: &str) -> Result<i8> {
         let value = self.integer::<i8>(id, index, name)?;
-        anyhow::ensure!((-8..=8).contains(&value), "audio asset '{id}' ASM command '{}' {name} cannot be encoded in one signed-magnitude nibble", self.command);
+        anyhow::ensure!(
+            (-8..=8).contains(&value),
+            "audio asset '{id}' ASM command '{}' {name} cannot be encoded in one signed-magnitude nibble",
+            self.command
+        );
         Ok(value)
     }
 
     fn duration_nibble(&self, id: &str, index: usize) -> Result<u8> {
         let duration = self.integer::<u8>(id, index, "duration")?;
-        anyhow::ensure!((1..=16).contains(&duration), "audio asset '{id}' ASM command '{}' duration is outside 1..=16", self.command);
+        anyhow::ensure!(
+            (1..=16).contains(&duration),
+            "audio asset '{id}' ASM command '{}' duration is outside 1..=16",
+            self.command
+        );
         Ok(duration)
     }
 
@@ -5636,7 +6159,10 @@ impl ModpackAsmAudioCommand {
         match self.args[index].as_str() {
             "TRUE" => Ok(true),
             "FALSE" => Ok(false),
-            value => anyhow::bail!("audio asset '{id}' ASM command '{}' has invalid {name} '{value}'", self.command),
+            value => anyhow::bail!(
+                "audio asset '{id}' ASM command '{}' has invalid {name} '{value}'",
+                self.command
+            ),
         }
     }
 
@@ -5666,7 +6192,11 @@ impl ModpackAsmAudioCommand {
             }
             "vibrato" => {
                 self.require_args(id, 3)?;
-                RuntimeIntroAudioCommand::Vibrato { delay: self.integer(id, 0, "delay")?, extent: self.nibble(id, 1, "extent")?, rate: self.nibble(id, 2, "rate")? }
+                RuntimeIntroAudioCommand::Vibrato {
+                    delay: self.integer(id, 0, "delay")?,
+                    extent: self.nibble(id, 1, "extent")?,
+                    rate: self.nibble(id, 2, "rate")?,
+                }
             }
             "duty_cycle" => {
                 self.require_args(id, 1)?;
@@ -5676,30 +6206,51 @@ impl ModpackAsmAudioCommand {
             }
             "stereo_panning" => {
                 self.require_args(id, 2)?;
-                RuntimeIntroAudioCommand::StereoPanning { left: self.boolean(id, 0, "left panning")?, right: self.boolean(id, 1, "right panning")? }
+                RuntimeIntroAudioCommand::StereoPanning {
+                    left: self.boolean(id, 0, "left panning")?,
+                    right: self.boolean(id, 1, "right panning")?,
+                }
             }
             "note_type" => {
                 self.require_args(id, 3)?;
-                RuntimeIntroAudioCommand::NoteType { length: self.integer(id, 0, "note length")?, volume: self.nibble(id, 1, "volume")?, fade: self.signed_nibble(id, 2, "fade")? }
+                RuntimeIntroAudioCommand::NoteType {
+                    length: self.integer(id, 0, "note length")?,
+                    volume: self.nibble(id, 1, "volume")?,
+                    fade: self.signed_nibble(id, 2, "fade")?,
+                }
             }
             "octave" => {
                 self.require_args(id, 1)?;
                 let octave = self.integer::<u8>(id, 0, "octave")?;
-                anyhow::ensure!((1..=8).contains(&octave), "audio asset '{id}' octave is outside 1..=8");
+                anyhow::ensure!(
+                    (1..=8).contains(&octave),
+                    "audio asset '{id}' octave is outside 1..=8"
+                );
                 RuntimeIntroAudioCommand::Octave(octave)
             }
             "note" => {
                 self.require_args(id, 2)?;
                 let pitch = match self.args[0].as_str() {
-                    "C_" => RuntimeIntroAudioPitch::C, "C#" => RuntimeIntroAudioPitch::CSharp,
-                    "D_" => RuntimeIntroAudioPitch::D, "D#" => RuntimeIntroAudioPitch::DSharp,
-                    "E_" => RuntimeIntroAudioPitch::E, "F_" => RuntimeIntroAudioPitch::F,
-                    "F#" => RuntimeIntroAudioPitch::FSharp, "G_" => RuntimeIntroAudioPitch::G,
-                    "G#" => RuntimeIntroAudioPitch::GSharp, "A_" => RuntimeIntroAudioPitch::A,
-                    "A#" => RuntimeIntroAudioPitch::ASharp, "B_" => RuntimeIntroAudioPitch::B,
-                    pitch => anyhow::bail!("audio asset '{id}' ASM note has invalid pitch '{pitch}'"),
+                    "C_" => RuntimeIntroAudioPitch::C,
+                    "C#" => RuntimeIntroAudioPitch::CSharp,
+                    "D_" => RuntimeIntroAudioPitch::D,
+                    "D#" => RuntimeIntroAudioPitch::DSharp,
+                    "E_" => RuntimeIntroAudioPitch::E,
+                    "F_" => RuntimeIntroAudioPitch::F,
+                    "F#" => RuntimeIntroAudioPitch::FSharp,
+                    "G_" => RuntimeIntroAudioPitch::G,
+                    "G#" => RuntimeIntroAudioPitch::GSharp,
+                    "A_" => RuntimeIntroAudioPitch::A,
+                    "A#" => RuntimeIntroAudioPitch::ASharp,
+                    "B_" => RuntimeIntroAudioPitch::B,
+                    pitch => {
+                        anyhow::bail!("audio asset '{id}' ASM note has invalid pitch '{pitch}'")
+                    }
                 };
-                RuntimeIntroAudioCommand::Note { pitch, duration: self.duration_nibble(id, 1)? }
+                RuntimeIntroAudioCommand::Note {
+                    pitch,
+                    duration: self.duration_nibble(id, 1)?,
+                }
             }
             "rest" => {
                 self.require_args(id, 1)?;
@@ -5716,28 +6267,52 @@ impl ModpackAsmAudioCommand {
             "drum_note" => {
                 self.require_args(id, 2)?;
                 let instrument = self.nibble(id, 0, "drum instrument")?;
-                anyhow::ensure!((1..=12).contains(&instrument), "audio asset '{id}' drum instrument is outside 1..=12");
-                RuntimeIntroAudioCommand::DrumNote { instrument, duration: self.duration_nibble(id, 1)? }
+                anyhow::ensure!(
+                    (1..=12).contains(&instrument),
+                    "audio asset '{id}' drum instrument is outside 1..=12"
+                );
+                RuntimeIntroAudioCommand::DrumNote {
+                    instrument,
+                    duration: self.duration_nibble(id, 1)?,
+                }
             }
             "pitch_sweep" => {
                 self.require_args(id, 2)?;
-                RuntimeIntroAudioCommand::PitchSweep { duration: self.nibble(id, 0, "sweep duration")?, pitch: self.signed_nibble(id, 1, "sweep pitch")? }
+                RuntimeIntroAudioCommand::PitchSweep {
+                    duration: self.nibble(id, 0, "sweep duration")?,
+                    pitch: self.signed_nibble(id, 1, "sweep pitch")?,
+                }
             }
             "square_note" => {
                 self.require_args(id, 4)?;
                 let frequency = self.integer::<u16>(id, 3, "frequency")?;
-                anyhow::ensure!(frequency <= 0x07ff, "audio asset '{id}' square-note frequency exceeds 11 bits");
-                RuntimeIntroAudioCommand::SquareNote { duration: self.integer(id, 0, "duration")?, volume: self.nibble(id, 1, "volume")?, fade: self.signed_nibble(id, 2, "fade")?, frequency }
+                anyhow::ensure!(
+                    frequency <= 0x07ff,
+                    "audio asset '{id}' square-note frequency exceeds 11 bits"
+                );
+                RuntimeIntroAudioCommand::SquareNote {
+                    duration: self.integer(id, 0, "duration")?,
+                    volume: self.nibble(id, 1, "volume")?,
+                    fade: self.signed_nibble(id, 2, "fade")?,
+                    frequency,
+                }
             }
             "noise_note" => {
                 self.require_args(id, 4)?;
-                RuntimeIntroAudioCommand::NoiseNote { duration: self.integer(id, 0, "duration")?, volume: self.nibble(id, 1, "volume")?, fade: self.signed_nibble(id, 2, "fade")?, frequency: self.integer(id, 3, "frequency")? }
+                RuntimeIntroAudioCommand::NoiseNote {
+                    duration: self.integer(id, 0, "duration")?,
+                    volume: self.nibble(id, 1, "volume")?,
+                    fade: self.signed_nibble(id, 2, "fade")?,
+                    frequency: self.integer(id, 3, "frequency")?,
+                }
             }
             "sound_ret" => {
                 self.require_args(id, 0)?;
                 RuntimeIntroAudioCommand::SoundRet
             }
-            command => anyhow::bail!("audio asset '{id}' uses unsupported CrystalIntro ASM command '{command}'"),
+            command => anyhow::bail!(
+                "audio asset '{id}' uses unsupported CrystalIntro ASM command '{command}'"
+            ),
         };
         Ok(parsed)
     }
@@ -5767,6 +6342,8 @@ pub struct ModpackCrystalMidiProgram {
     pub music_data: ModpackAsmMusicData,
     pub cry_pitch: Option<i64>,
     pub cry_length: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub output_envelope: Option<crystal_audio::synth::OutputEnvelope>,
 }
 
 impl ModpackCrystalMidiProgram {
@@ -5778,8 +6355,7 @@ impl ModpackCrystalMidiProgram {
         );
         anyhow::ensure!(
             self.music_data.channel_count > 0
-                && usize::from(self.music_data.channel_count)
-                    == self.music_data.channels.len(),
+                && usize::from(self.music_data.channel_count) == self.music_data.channels.len(),
             "audio asset '{id}' embedded ASM program has an invalid channel count"
         );
         let mut channel_numbers = BTreeSet::new();
@@ -5862,13 +6438,18 @@ fn read_midi_u32(bytes: &[u8], offset: usize, id: &str) -> Result<u32> {
     let encoded = bytes
         .get(offset..offset + 4)
         .with_context(|| format!("audio asset '{id}' MIDI contains a truncated u32"))?;
-    Ok(u32::from_be_bytes(encoded.try_into().expect("four-byte slice")))
+    Ok(u32::from_be_bytes(
+        encoded.try_into().expect("four-byte slice"),
+    ))
 }
 
 fn read_midi_vlq(bytes: &[u8], mut offset: usize, end: usize, id: &str) -> Result<(u32, usize)> {
     let mut value = 0_u32;
     for _ in 0..4 {
-        anyhow::ensure!(offset < end, "audio asset '{id}' MIDI contains a truncated VLQ");
+        anyhow::ensure!(
+            offset < end,
+            "audio asset '{id}' MIDI contains a truncated VLQ"
+        );
         let byte = bytes[offset];
         offset += 1;
         value = value
@@ -5900,7 +6481,10 @@ fn crystal_midi_program_from_bytes(bytes: &[u8], id: &str) -> Result<ModpackCrys
         let end = start
             .checked_add(chunk_length)
             .context("MIDI chunk end overflowed")?;
-        anyhow::ensure!(end <= bytes.len(), "audio asset '{id}' MIDI chunk is truncated");
+        anyhow::ensure!(
+            end <= bytes.len(),
+            "audio asset '{id}' MIDI chunk is truncated"
+        );
         if chunk_type == b"MTrk" {
             let mut offset = start;
             let mut running_status = None;
@@ -5918,20 +6502,29 @@ fn crystal_midi_program_from_bytes(bytes: &[u8], id: &str) -> Result<ModpackCrys
                     status
                 };
                 if status == 0xff {
-                    anyhow::ensure!(offset < end, "audio asset '{id}' MIDI meta event is truncated");
+                    anyhow::ensure!(
+                        offset < end,
+                        "audio asset '{id}' MIDI meta event is truncated"
+                    );
                     let event_type = bytes[offset];
                     offset += 1;
                     let (length, payload_start) = read_midi_vlq(bytes, offset, end, id)?;
                     let payload_end = payload_start
-                        .checked_add(usize::try_from(length).context("MIDI event length exceeds usize")?)
+                        .checked_add(
+                            usize::try_from(length).context("MIDI event length exceeds usize")?,
+                        )
                         .context("MIDI event end overflowed")?;
-                    anyhow::ensure!(payload_end <= end, "audio asset '{id}' MIDI meta payload is truncated");
+                    anyhow::ensure!(
+                        payload_end <= end,
+                        "audio asset '{id}' MIDI meta payload is truncated"
+                    );
                     let payload = &bytes[payload_start..payload_end];
                     if event_type == 0x7f && payload.starts_with(POKECRYSTAL_MIDI_MAGIC) {
-                        let program: ModpackCrystalMidiProgram = serde_json::from_slice(
-                            &payload[POKECRYSTAL_MIDI_MAGIC.len()..],
-                        )
-                        .with_context(|| format!("decode audio asset '{id}' ASM program"))?;
+                        let program: ModpackCrystalMidiProgram =
+                            serde_json::from_slice(&payload[POKECRYSTAL_MIDI_MAGIC.len()..])
+                                .with_context(|| {
+                                    format!("decode audio asset '{id}' ASM program")
+                                })?;
                         program.validate(id)?;
                         return Ok(program);
                     }
@@ -5941,18 +6534,33 @@ fn crystal_midi_program_from_bytes(bytes: &[u8], id: &str) -> Result<ModpackCrys
                 if status == 0xf0 || status == 0xf7 {
                     let (length, payload_start) = read_midi_vlq(bytes, offset, end, id)?;
                     offset = payload_start
-                        .checked_add(usize::try_from(length).context("MIDI SysEx length exceeds usize")?)
+                        .checked_add(
+                            usize::try_from(length).context("MIDI SysEx length exceeds usize")?,
+                        )
                         .context("MIDI SysEx end overflowed")?;
-                    anyhow::ensure!(offset <= end, "audio asset '{id}' MIDI SysEx payload is truncated");
+                    anyhow::ensure!(
+                        offset <= end,
+                        "audio asset '{id}' MIDI SysEx payload is truncated"
+                    );
                     continue;
                 }
-                anyhow::ensure!(status < 0xf0, "audio asset '{id}' MIDI has an unsupported system event");
+                anyhow::ensure!(
+                    status < 0xf0,
+                    "audio asset '{id}' MIDI has an unsupported system event"
+                );
                 let command = status & 0xf0;
-                let data_length = if command == 0xc0 || command == 0xd0 { 1 } else { 2 };
+                let data_length = if command == 0xc0 || command == 0xd0 {
+                    1
+                } else {
+                    2
+                };
                 offset = offset
                     .checked_add(data_length)
                     .context("MIDI channel event end overflowed")?;
-                anyhow::ensure!(offset <= end, "audio asset '{id}' MIDI channel event is truncated");
+                anyhow::ensure!(
+                    offset <= end,
+                    "audio asset '{id}' MIDI channel event is truncated"
+                );
             }
         }
         chunk_offset = end;
@@ -6170,7 +6778,10 @@ impl ModpackAudioAsset {
         validate_modpack_audio_id(self.kind, &self.id)?;
         match (self.kind, self.sfx_priority) {
             (ModpackAudioKind::SoundEffect, None) => {
-                anyhow::bail!("sound-effect audio asset '{}' must declare sfx_priority", self.id)
+                anyhow::bail!(
+                    "sound-effect audio asset '{}' must declare sfx_priority",
+                    self.id
+                )
             }
             (ModpackAudioKind::Music | ModpackAudioKind::Cry, Some(_)) => anyhow::bail!(
                 "non-SFX audio asset '{}' must not declare sfx_priority",
@@ -6226,7 +6837,10 @@ impl ModpackAudioAsset {
             }
             ModpackAudioSource::Midi if extension == "mid" => {
                 let Some(format) = &self.pcm_format else {
-                    anyhow::bail!("MIDI audio asset '{}' must declare output pcm_format", self.id);
+                    anyhow::bail!(
+                        "MIDI audio asset '{}' must declare output pcm_format",
+                        self.id
+                    );
                 };
                 format.validate(&self.id)?;
                 validate_optional_pcm_payload_metadata(

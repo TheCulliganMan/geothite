@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#234b3b"><meta name="description" content="Northwoods signature attacks and later-generation moves, with native Game Boy Color battle animations.">
+  <title>Moves · Northwoods Pokédex · Geothite</title>
+  <link rel="icon" href="{{ASSET_BASE}}/mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="{{ASSET_BASE}}/style.css"><script defer src="{{ASSET_BASE}}/app.js"></script>
+</head>
+<body data-page="moves">
+  <a class="skip" href="#moves">Skip to moves</a>
+  {{HEADER}}
+  <main class="wrap moves-page" id="moves">
+    <div class="breadcrumb"><a href="/pokedex/">← Regional index</a><span>NORTHWOODS BATTLE CATALOG</span></div>
+    <span class="eyebrow">REGIONAL TECHNIQUES</span><h1>Moves</h1>
+    <p class="moves-intro">Five signature attacks shaped by the Northwoods, plus later-generation techniques. Every technique has a playable native Game Boy Color battle animation. Explore its effects and learners, switch sides, or compare normal and shiny Pokémon.</p>
+    <nav class="move-index" aria-label="Jump to a move animation">{{MOVE_INDEX}}</nav>
+    <section aria-labelledby="signature-title"><div class="panel-title"><h2 id="signature-title">Signature moves</h2><span class="move-note">160 × 144 · native battle renderer</span></div><div class="signature-grid">{{SIGNATURE_MOVES}}</div></section>
+    <section class="move-panel" aria-labelledby="import-title"><div class="panel-title"><h2 id="import-title">Later-generation moves</h2><span class="move-note">Adapted for Geothite battles</span></div><div class="signature-grid">{{IMPORTED_ANIMATIONS}}</div><details class="training-notes"><summary>Compare move statistics <span>＋</span></summary>{{IMPORTED_MOVES}}</details><details class="training-notes"><summary>Battle rules &amp; source <span>＋</span></summary><p>{{MOVE_RULES}}</p><p><a href="{{MOVE_SOURCE}}" target="_blank" rel="noopener noreferrer">Move definitions · pinned source ↗</a></p></details></section>
+  </main>
+  {{FOOTER}}
+</body>
+</html>

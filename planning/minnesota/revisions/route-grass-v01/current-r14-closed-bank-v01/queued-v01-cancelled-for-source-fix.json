@@ -1,0 +1,13 @@
+{
+  "status": "OWN_WAITING_WRAPPERS_TERMINATED_BEFORE_ANY_BUILD_OR_PACK_WRITE",
+  "pids": [
+    10151,
+    11004
+  ],
+  "terminal_session_exit_codes": [
+    143,
+    143
+  ],
+  "reason": "Standalone pinned Rust compiler confirms Chain<Range,Range> has no contains method (E0599). Replace with two stable Range::contains checks before compilation. Both wrappers had no child processes. External build remains untouched.",
+  "next": "Fresh v02 build wrapper with corrected source hashes; v01 evidence retained."
+}

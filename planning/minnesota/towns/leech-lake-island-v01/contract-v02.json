@@ -1,0 +1,7 @@
+{
+  "parent_revision": "landmark_habitats_revision",
+  "parent_pack": "content-packs/minnesota-landmark-habitats-v02.crystalpack",
+  "parent_pack_sha256": "f6498564aec5f6cec506e47329f2eb72d248fe73d97677a6f0b4af0e6272fcf8",
+  "native_module_sha256": "d0ae82fddcc67631bf1a1d31102e37ef413099ee947c0f3abcc12b15576e925b",
+  "schema_version": 1
+}

@@ -1,0 +1,71 @@
+{
+  "tool": "built-in image_gen",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f037/plowzer-v5-registered-pupils",
+  "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f037/manifest-plowzer-v5-registered-pupils.json",
+  "normalized_receipt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f037/source-feature-proof-plowzer-v5-registered-pupils.json",
+  "all_raws_prompts_rejected_trials_retained": true,
+  "no_native_pixel_painting": true,
+  "no_registry_or_pack_mutation": true,
+  "normal_shiny_boards_actually_viewed": true,
+  "canonical_palettes": [
+    [
+      32767,
+      32661,
+      21893,
+      0
+    ],
+    [
+      32767,
+      29375,
+      12469,
+      0
+    ]
+  ],
+  "native_bounds": [
+    [
+      2,
+      4,
+      12,
+      11
+    ],
+    [
+      3,
+      4,
+      11,
+      11
+    ],
+    [
+      1,
+      4,
+      14,
+      11
+    ],
+    [
+      2,
+      4,
+      12,
+      11
+    ],
+    [
+      2,
+      4,
+      12,
+      11
+    ],
+    [
+      1,
+      4,
+      14,
+      11
+    ]
+  ],
+  "retained_source_hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f037/plowzer.overworld.imagegen-v2-profile-face.png": "07d63813556ccd3fb45f1061c62f3297990054a3fbb2b8cbe668f1daee1abf2c",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f037/plowzer.overworld.imagegen-v1.png": "88679267b423342721b85442ea00ffd7f1acb10f234c8f21232b05780e15a135",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f037/prompt-plowzer-v1.txt": "0c55eb3807e3d95281f865df5de6518c071e5256b1ac000ce962389dd0620cce",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f037/prompt-plowzer-v2-profile-face.txt": "69de6fcaaea10a8000f8fd7f0926187b619cc60b0270df5cfccbd2960a74006d",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f037/plowzer.v2-profile-face.original-path.txt": "08c737877e5ee5bd24dca98d1f0f18a05b31b27400d89b974552c8528fe08a23",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f037/plowzer.v1.original-path.txt": "ecde5115d0617644350991891cc02840abd011e5299cd92544af1d01ce9da51a"
+  },
+  "status": "root independent visual/context acceptance pending"
+}

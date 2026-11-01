@@ -1,0 +1,37 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-mankato-mart-v03.crystalpack",
+  "sha256": "fa75cf2b83da156751debe1a52f7a24c42d277b845554870f1f9eb79711d9f7d",
+  "parent": {
+    "revision": "duluth_harbor_platforms_revision",
+    "pack": "content-packs/minnesota-current-duluth-harbor-v02.crystalpack",
+    "sha256": "2450f44c16fd9f783b8b1dae8e6fa292fbf6a1444a730527c7ebfc63af09b721"
+  },
+  "identity": {
+    "stored": "26564993c17dc83a2c9943fbdc0f420405b5a2f8e2cb8dbd899bfa973e22e361",
+    "independently_recomputed": "26564993c17dc83a2c9943fbdc0f420405b5a2f8e2cb8dbd899bfa973e22e361",
+    "exact": true
+  },
+  "changed_metatiles": [
+    {
+      "at": [
+        18,
+        13
+      ],
+      "before": 22,
+      "after": 26
+    },
+    {
+      "at": [
+        19,
+        13
+      ],
+      "before": 51,
+      "after": 23
+    }
+  ],
+  "other_complete_maps_exact": 731,
+  "state_fair_exact": true,
+  "all_events_scripts_art_audio_encounters_exact": true,
+  "entire_normalized_pack_exact": true
+}

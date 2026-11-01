@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "map": "MnMinneapolis",
+      "approach": [
+        29,
+        36
+      ],
+      "id": "MN_EXTRA_ROLLER_SKATER",
+      "display_name": "MADDIE",
+      "trainer_class": "MN_ROLLER_SKATER",
+      "class_name": "ROLLER SKATER",
+      "template_class": "LASS",
+      "sprite": "SPRITE_MN_ROLLER_SKATER",
+      "tile": [
+        29,
+        35
+      ],
+      "facing": "south",
+      "sight_range": 1,
+      "defeated_flag": "EVENT_MN_EXTRA_ROLLER_SKATER",
+      "party": [
+        {
+          "species": "PIPULSE",
+          "level": 18
+        },
+        {
+          "species": "TILTAWISP",
+          "level": 20
+        }
+      ],
+      "before_lines": [
+        "I know the smooth",
+        "way across town!"
+      ],
+      "after_lines": [
+        "Good pace! I need",
+        "a breather now."
+      ],
+      "loss_lines": [
+        "Try another lap.",
+        "There is room yet."
+      ]
+    }
+  ]
+}

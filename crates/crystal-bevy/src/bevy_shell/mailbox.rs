@@ -170,16 +170,34 @@ fn move_visible_mailbox_confirmation_cursor(shell: &mut BevyRuntimeShell, delta:
     Ok(())
 }
 
+// The historical response field is shared by every source PC YesNoBox.
+// Retain its displayed choice through InterpretTwoOptionMenu's DelayFrames.
+fn begin_visible_pc_yes_no_answer(shell: &mut BevyRuntimeShell, accepted: bool) -> Result<()> {
+    if shell.mailbox_confirmation_response.is_some() || !visible_pc_toss_confirmation_ready(shell) {return Ok(());}
+    queue_visible_shell_sound_effect(shell, "SFX_READ_TEXT_2")?;
+    shell.mailbox_confirmation_response=Some(accepted);
+    shell.pc_menu_input_wait_frames=15;
+    mark_runtime_presentation_dirty(shell);
+    Ok(())
+}
+
+fn finish_visible_pc_yes_no_answer(shell: &mut BevyRuntimeShell) -> Result<()> {
+    if shell.pc_menu_input_wait_frames == 0 && let Some(accepted)=shell.mailbox_confirmation_response {
+        resolve_visible_pc_confirmation(shell, accepted)?;
+        shell.pc_menu_input_wait_frames=4;
+    }
+    Ok(())
+}
+
 fn apply_visible_mailbox_confirmation_controls(shell: &mut BevyRuntimeShell, down: u8, a_consumed: bool) {
     use crate::core::input::{B_PAD_A, B_PAD_B, B_PAD_SELECT, B_PAD_START,
         B_PAD_RIGHT, B_PAD_LEFT, B_PAD_UP, B_PAD_DOWN};
     shell.ui_held_direction = None;
     shell.ui_direction_repeat_ticks = 0;
-    if let Some(accepted) = shell.mailbox_confirmation_response {
+    if shell.mailbox_confirmation_response.is_some() {
         // InterpretTwoOptionMenu's DelayFrames(15) does not poll GetJoypad.
         if shell.pc_menu_input_wait_frames == 0 {
-            run_bevy_action(shell, |shell| resolve_visible_pc_confirmation(shell, accepted));
-            shell.pc_menu_input_wait_frames = 4;
+            run_bevy_action(shell, finish_visible_pc_yes_no_answer);
         }
         return;
     }
@@ -203,11 +221,7 @@ fn apply_visible_mailbox_confirmation_controls(shell: &mut BevyRuntimeShell, dow
         run_bevy_action(shell, |shell| {
             let selected = strict_readonly_cursor_index(&shell.yes_no_cursor, "pc:confirmation", 2)
                 .context("mailbox confirmation requires a valid cursor")?;
-            queue_visible_shell_sound_effect(shell, "SFX_READ_TEXT_2")?;
-            shell.mailbox_confirmation_response = Some(pressed & B_PAD_B == 0 && selected == 0);
-            shell.pc_menu_input_wait_frames = 15;
-            mark_runtime_presentation_dirty(shell);
-            Ok(())
+            begin_visible_pc_yes_no_answer(shell, pressed & B_PAD_B == 0 && selected == 0)
         });
     } else if buttons != 0 || last & (B_PAD_RIGHT | B_PAD_LEFT) != 0 {
         // Disabled higher-priority inputs do not fall through to directions.

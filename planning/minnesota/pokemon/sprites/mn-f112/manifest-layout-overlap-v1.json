@@ -1,0 +1,226 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F112",
+  "status": "native-review-pending",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_245": {
+      "species_id": "MN_245",
+      "name": "Skirrit",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          27,
+          22,
+          21
+        ],
+        [
+          13,
+          9,
+          15
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        22235,
+        15661,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          222,
+          181,
+          173
+        ],
+        [
+          107,
+          74,
+          123
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#DEB5AD",
+        "#6B4A7B",
+        "#000000"
+      ]
+    },
+    "MN_246": {
+      "species_id": "MN_246",
+      "name": "Ventactor",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          28,
+          24,
+          22
+        ],
+        [
+          12,
+          10,
+          16
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        23324,
+        16716,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          231,
+          198,
+          181
+        ],
+        [
+          99,
+          82,
+          132
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#E7C6B5",
+        "#635284",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f112/prompt-v1.txt",
+  "reference_mapping": "sprites/mn-f112/reference-mapping-v1.json",
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-245-skirrit-v1",
+      "species_id": "MN_245",
+      "view": "front",
+      "source": "sprites/mn-f112/mn-245-246.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        725,
+        530
+      ],
+      "fit": [
+        40,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        22235,
+        15661,
+        0
+      ],
+      "white_detail_min_samples": 8
+    },
+    {
+      "id": "mn-245-skirrit-v1",
+      "species_id": "MN_245",
+      "view": "back",
+      "source": "sprites/mn-f112/mn-245-246.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        530,
+        725,
+        494
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        22235,
+        15661,
+        0
+      ],
+      "white_detail_min_samples": 8
+    },
+    {
+      "id": "mn-246-ventactor-v1",
+      "species_id": "MN_246",
+      "view": "front",
+      "source": "sprites/mn-f112/mn-245-246.front-back.imagegen-v1.png",
+      "crop": [
+        725,
+        0,
+        811,
+        530
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        23324,
+        16716,
+        0
+      ],
+      "white_detail_min_samples": 8
+    },
+    {
+      "id": "mn-246-ventactor-v1",
+      "species_id": "MN_246",
+      "view": "back",
+      "source": "sprites/mn-f112/mn-245-246.front-back.imagegen-v1.png",
+      "crop": [
+        725,
+        530,
+        811,
+        494
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        23324,
+        16716,
+        0
+      ],
+      "white_detail_min_samples": 8
+    }
+  ],
+  "source_sha256": "b4771401b2b3e5b24608042dedb3bbacbe851d8438ac995dff4b0757db203695"
+}

@@ -712,6 +712,7 @@ fn item_data(id: &str) -> Item {
         battle_focus_energy: None,
         battle_stat_drop_guard: None,
         confusion_heal: None,
+        confusion_inflict_turns: None,
         repel_steps: None,
         escape_rope_mode: None,
         price: 0,
@@ -1573,7 +1574,9 @@ fn heal_party_restores_hp_status_and_pp_from_exact_move_catalog() {
         assert_eq!(pokemon.hp, pokemon.max_hp);
         assert_eq!(pokemon.status, None);
         assert_eq!(pokemon.sleep_turns, 0);
-        assert_eq!(pokemon.confusion_turns, 2);
+        // Field drinks can now leave confusion on a party member. Full-party
+        // healing must cure it along with the other recoverable conditions.
+        assert_eq!(pokemon.confusion_turns, 0);
         assert!(pokemon.focus_energy);
         assert_eq!(pokemon.moves[0].current_pp, 42);
         assert_eq!(pokemon.moves[1].current_pp, 40);
@@ -8095,6 +8098,7 @@ fn bills_grandfather_and_init_roam_mons_write_saveable_state() {
     state.roaming_pokemon[0].dvs_be = [0x12, 0x34];
     state.roaming_pokemon[1].dvs_be = [0x56, 0x78];
     state.roaming_pokemon[2] = RoamingPokemonState {
+        scaled_hp: None,
         species: Some("SUICUNE".to_string()),
         level: 40,
         map_group: 7,
@@ -8119,6 +8123,7 @@ fn bills_grandfather_and_init_roam_mons_write_saveable_state() {
         state.roaming_pokemon,
         [
             RoamingPokemonState {
+                scaled_hp: None,
                 species: Some("RAIKOU".to_string()),
                 level: 40,
                 map_group: 2,
@@ -8127,6 +8132,7 @@ fn bills_grandfather_and_init_roam_mons_write_saveable_state() {
                 dvs_be: [0x12, 0x34],
             },
             RoamingPokemonState {
+                scaled_hp: None,
                 species: Some("ENTEI".to_string()),
                 level: 40,
                 map_group: 10,
@@ -8135,6 +8141,7 @@ fn bills_grandfather_and_init_roam_mons_write_saveable_state() {
                 dvs_be: [0x56, 0x78],
             },
             RoamingPokemonState {
+                scaled_hp: None,
                 species: Some("SUICUNE".to_string()),
                 level: 40,
                 map_group: 7,
@@ -9240,6 +9247,10 @@ fn day_care_deposit_is_atomic_when_countdown_trace_is_exhausted() {
         .storage
         .register_capture_in_box(0, male)
         .expect("store second parent");
+    state
+        .storage
+        .register_capture_in_box(0, pokemon("TOTODILE"))
+        .expect("retain a healthy traveling partner");
     state.sync_party_from_storage();
     state.script_runtime.pending_day_care_input = Some(DayCareInput::Deposit { party_slot: 0 });
     let before = state.clone();
@@ -9499,7 +9510,9 @@ fn day_care_shiny_ditto_preserves_random_special_bit_and_derives_hp() {
 
 #[test]
 fn bred_shiny_survives_collection_hatching_and_pokemon_save_round_trip() {
-    use crate::systems::step_events::{process_overworld_step, OverworldStepContext, StepEventRules};
+    use crate::systems::step_events::{
+        OverworldStepContext, StepEventRules, process_overworld_step,
+    };
     let mut state = GameState::default();
     state.player_name = "CHRIS".to_string();
     state.player_id = 1234;
@@ -12304,6 +12317,47 @@ fn runtime_spawn_point_catalog_rejects_identifiers_past_num_spawns() {
 }
 
 #[test]
+fn runtime_spawn_point_catalog_accepts_addon_recovery_without_accepting_reserved_gap() {
+    let runtime_map_names = [("ROUTE_29".to_string(), "Route29".to_string())]
+        .into_iter()
+        .collect();
+    for identifier in [0, 27, FIRST_ADDON_RECOVERY_SPAWN, u16::MAX] {
+        let spawn_points = [(
+            identifier.to_string(),
+            RuntimeSpawnPointRef {
+                map_constant: "ROUTE_29".to_string(),
+                map_name: "Route29".to_string(),
+                group_name: "GROUP_ROUTE_29".to_string(),
+                ..spawn_point(identifier, "ROUTE_29", 1, 1, 0, 0)
+            },
+        )]
+        .into_iter()
+        .collect();
+        assert!(runtime_spawn_point_catalog_issues(&spawn_points, &runtime_map_names).is_empty());
+    }
+    for identifier in [28, 255] {
+        let spawn_points = [(
+            identifier.to_string(),
+            RuntimeSpawnPointRef {
+                map_constant: "ROUTE_29".to_string(),
+                map_name: "Route29".to_string(),
+                group_name: "GROUP_ROUTE_29".to_string(),
+                ..spawn_point(identifier, "ROUTE_29", 1, 1, 0, 0)
+            },
+        )]
+        .into_iter()
+        .collect();
+        assert_eq!(
+            runtime_spawn_point_catalog_issues(&spawn_points, &runtime_map_names),
+            vec![RuntimeSpawnPointCatalogIssue::IdentifierOutOfRange {
+                key: identifier.to_string(),
+                identifier,
+            }]
+        );
+    }
+}
+
+#[test]
 fn runtime_spawn_point_catalog_issues_reject_inconsistent_tile_fields() {
     let spawn_points = [(
         "1".to_string(),
@@ -12480,3 +12534,6 @@ fn special_routine_issue_json_rejects_unknown_fallback_fields() {
         "{source_error}"
     );
 }
+
+#[path = "day_care_locations_tests.rs"]
+mod day_care_locations_tests;

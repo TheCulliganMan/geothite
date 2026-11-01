@@ -1,0 +1,131 @@
+{
+  "schema_version": 1,
+  "status": "authored-story-contract-not-installed-in-playable-maps",
+  "family_id": "MN_F145",
+  "species_id": "MN_319",
+  "name": "Verdigrim",
+  "types": [
+    "STEEL",
+    "POISON"
+  ],
+  "counterpart": {
+    "family_id": "MN_F045",
+    "species_id": "MN_096",
+    "name": "Kettlurk",
+    "relationship": "Kettlurk returns diverted water. Verdigrim seals channels and contaminates their returning flow. They are opposing natural powers, not a type-effectiveness immunity pair."
+  },
+  "setting": {
+    "region": "Minnesota northeastern copper-bearing bedrock and Lake Superior North Shore",
+    "discovery": "Team Lode strips glacial overburden above its drainage workings. A buried float-copper mass is a sleeping wolf, not loose ore.",
+    "integration_candidates": [
+      "MnIronPumpGallery",
+      "MnBoundaryIntake"
+    ],
+    "placement_status": "Existing story maps are integration candidates only. Exact actor, collision, camera, water-palette region and trigger coordinates must be authored against the selected world revision before publication."
+  },
+  "reveal": [
+    {
+      "beat": "warning",
+      "action": "Finn reports green grit in the test sump. A worker asks for overburden removal to stop; the foreman continues.",
+      "dialogue": [
+        "FINN: That is not ore dust. The water was clear before the last cut.",
+        "FOREMAN: Keep digging. Clear the rest of that copper."
+      ]
+    },
+    {
+      "beat": "exposure",
+      "action": "The overburden falls from a rounded copper mass. Two white eyes open beneath tall wolf ears. A low howl stops the crew; an enormous nugget forepaw crushes the test line and Verdigrim rises.",
+      "dialogue": [
+        "WORKER: The seam is moving!",
+        "IVY: Back from the water. All of you."
+      ],
+      "completion_event": "EVENT_MN_VERDIGRIM_EXPOSED"
+    },
+    {
+      "beat": "green_water",
+      "action": "A dark green plume leaves its jaws and copper joints, spreads from the sump into the local outflow and stops at the authored containment boundary. The water remains animated and readable as water.",
+      "completion_event": "EVENT_MN_VERDIGRIM_GREEN_WATER"
+    },
+    {
+      "beat": "counter_current",
+      "action": "Verdigrim braces its forepaws at the return channel and pins it with its heavy copper tail. Kettlurk pushes water back; the wave curls green and stalls at the seal. Neither legendary becomes a trainer-owned tool.",
+      "dialogue": [
+        "IVY: Kettlurk is sending it back.",
+        "FINN: It cannot clear the channel while that creature is holding it shut."
+      ],
+      "completion_event": "EVENT_MN_VERDIGRIM_COUNTER_CURRENT"
+    },
+    {
+      "beat": "containment",
+      "action": "The player stops the local drill and closes the contaminated outlet, then opens the independent clean bypass. The crew withdraws; Verdigrim returns to the exposed glacial chamber and Kettlurk restores the clean return.",
+      "dialogue": [
+        "FINN: The green water is contained. Keep that outlet closed.",
+        "IVY: The current is moving again. We still have work to do here."
+      ],
+      "completion_event": "EVENT_MN_VERDIGRIM_CONTAINED"
+    }
+  ],
+  "gameplay_contract": {
+    "presentation": "Native 2D only. New authored creature actor must use reviewed Minnesota field art; never substitute another species or a 3D view.",
+    "green_water": "Use a persisted map-scoped water-state transition. Preserve water animation, collision, Surf rules and clean neighboring maps. Continue and map re-entry must reproduce the same contaminated footprint. Do not recolor a globally shared water palette.",
+    "control_order": [
+      "stop drill",
+      "close contaminated outlet",
+      "open clean bypass",
+      "acknowledge crew clearance"
+    ],
+    "completion": "Containment is a separate player action; winning a battle or viewing the reveal never completes it. Restoration remains separate from capture. Exact integration with existing restoration flags must be tested before publishing.",
+    "optional_encounter": {
+      "species": "VERDIGRIM",
+      "level": 60,
+      "requires": [
+        "EVENT_MN_VERDIGRIM_CONTAINED"
+      ],
+      "moves": [
+        "CRUNCH",
+        "POISON_JAB",
+        "IRON_TAIL",
+        "SLUDGE_BOMB"
+      ],
+      "capture_required": false,
+      "retry": "Loss, blackout or escape must allow another attempt. Capture is once-only and must persist. A full party uses production storage delivery."
+    },
+    "battle_role": "600 BST: 110 HP, 120 Attack, 130 Defense, 60 Speed, 80 Special Attack, 100 Special Defense. Physical Crunch threatens Water/Ghost Kettlurk through its Ghost weakness. Steel/Poison itself does not imply a Water or Ghost immunity. Keep ordinary Ground and Fire counterplay.",
+    "acceptance": [
+      "VisibleShellController owns every input and acknowledged dialogue page.",
+      "Excavation reveal precedes green water; the player cannot move during it.",
+      "Native captures show massive wolf anatomy, the green plume and stalled returning current.",
+      "Water-state regions survive Continue and map re-entry without tinting unrelated lakes.",
+      "Stopping only the pump, winning a trainer battle or catching a legendary cannot satisfy containment.",
+      "Mandatory story completion never requires capture, a Safari permit or a paid gate.",
+      "Keyboard and stdio MCP produce the same flags, actors and water state."
+    ]
+  },
+  "sources": [
+    {
+      "title": "1854 Treaty Authority: Wolf Research",
+      "url": "https://www.1854treatyauthority.org/management/biological-resources/wildlife/wolf-research",
+      "supports": "Ma\u2019iingan and wolf research near Duluth and in northeastern Minnesota."
+    },
+    {
+      "title": "1854 Treaty Authority: Climate Adaptation Plan (2016), section 4.11.3",
+      "url": "https://www.1854treatyauthority.org/images/ClimateAdaptationPlan_Final-July_2016-optimized%281%29.pdf",
+      "supports": "Minnesota Ojibwe context for the wolf as a companion whose fate is linked with people. The copper coat, poison and Kettlurk conflict are original game fiction."
+    },
+    {
+      "title": "University of Minnesota mineral guide: Native Copper, page35",
+      "url": "https://conservancy.umn.edu/bitstreams/7452b0d6-8260-4e78-9b7a-a22cf0b0070a/download",
+      "supports": "Rare native copper in Minnesota glacial drift; exposed metal weathers from rose/copper-red to brown or green. The giant living wolf is fiction."
+    }
+  ],
+  "inspiration_boundary": "Original fictional wolf species. The Ojibwe wolf tradition informs its companion/guardian character; copper anatomy, poison powers, Team Lode excavation and the Kettlurk rivalry are game inventions, not an attributed traditional story. Use its original species name without fabricated Indigenous translations or copied ceremonial imagery.",
+  "assets": {
+    "species": "VERDIGRIM",
+    "field_actor_sprite": "SPRITE_VERDIGRIM",
+    "overworld_manifest": "overworld/20261027-v1/sources/mn_f145/verdigrim.manifest-v3-eye-registration.json",
+    "cry": "CRY_MN_319",
+    "cry_species_operand": "VERDIGRIM",
+    "handoff": "sprites/mn-f145/STORY-HANDOFF.md",
+    "status": "assets-ready-story-wiring-pending"
+  }
+}

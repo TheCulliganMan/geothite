@@ -1,0 +1,214 @@
+{
+  "schema_version": 1,
+  "id": "MnDriftlessLampGallery",
+  "tileset": "cave",
+  "dimensions_metatiles": [
+    12,
+    10
+  ],
+  "border_block": 46,
+  "palette_group": "dark",
+  "rows": [
+    "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e",
+    "2e 2e 04 05 05 06 2e 2e 2e 2e 2e 2e",
+    "2e 04 02 1d 02 0a 2e 2e 2e 2e 2e 2e",
+    "2e 08 02 02 02 0a 2e 2e 04 05 06 2e",
+    "2e 20 21 30 21 22 2e 04 02 02 0a 2e",
+    "2e 2e 04 02 02 02 0a 08 02 02 0a 2e",
+    "2e 2e 20 21 02 02 0a 2f 36 21 22 2e",
+    "2e 2e 2e 2e 20 21 21 21 02 02 0a 2e",
+    "2e 2e 2e 2e 2e 2e 2e 2e 20 0b 22 2e",
+    "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e"
+  ],
+  "parent": "MnR01Cave1F",
+  "parent_stair_metatile": [
+    5,
+    4
+  ],
+  "parent_before": "02",
+  "parent_after": "0b",
+  "parent_active": [
+    11,
+    9
+  ],
+  "parent_arrival": [
+    10,
+    9
+  ],
+  "active_exit": [
+    19,
+    17
+  ],
+  "passive_arrival": [
+    18,
+    17
+  ],
+  "cache": [
+    19,
+    9
+  ],
+  "cache_approach": [
+    18,
+    9
+  ],
+  "cache_facing": "right",
+  "reward": "RARE_CANDY",
+  "quantity": 1,
+  "flag": "EVENT_MN_LAMP_GALLERY_CACHE",
+  "read": [
+    6,
+    4
+  ],
+  "read_approach": [
+    5,
+    4
+  ],
+  "read_facing": "right",
+  "read_flag": "EVENT_MN_LAMP_GALLERY_READ",
+  "visibility_flag": "EVENT_MN_LAMP_GALLERY_HIDDEN",
+  "read_requires_native_flash": true,
+  "read_pages": [
+    [
+      "Shells lie in the",
+      "limestone layers."
+    ],
+    [
+      "A shallow sea once",
+      "covered this land."
+    ],
+    [
+      "A field kit waits",
+      "on the east shelf."
+    ]
+  ],
+  "guide_hint": [
+    "A lower gallery is",
+    "unlit. FLASH shows",
+    "its fossil layers."
+  ],
+  "purpose": "Optional dry Driftless fossil gallery: descend from the lit tutorial hollow, climb the west fossil ledge, acknowledge the sea-life clue under real native Flash, then investigate the eastern sample-cache alcove. Both climbs and the low cleft have fitted native terrain; the original hollow, HM giver, Antidote and exterior exit remain.",
+  "status": "Source candidate: full native publication and controller acceptance pending.",
+  "review_contract": {
+    "viewpoints": [
+      {
+        "id": "entry",
+        "tile": [
+          18,
+          17
+        ]
+      },
+      {
+        "id": "low-cleft",
+        "tile": [
+          14,
+          14
+        ]
+      },
+      {
+        "id": "west-stair",
+        "tile": [
+          6,
+          9
+        ]
+      },
+      {
+        "id": "fossil-wall",
+        "tile": [
+          5,
+          4
+        ]
+      },
+      {
+        "id": "bedding-pocket",
+        "tile": [
+          9,
+          11
+        ]
+      },
+      {
+        "id": "east-stair",
+        "tile": [
+          16,
+          13
+        ]
+      },
+      {
+        "id": "sample-cache",
+        "tile": [
+          18,
+          9
+        ]
+      }
+    ],
+    "stairs": [
+      {
+        "id": "FOSSIL_LEDGE",
+        "metatile": [
+          3,
+          4
+        ],
+        "block": "30",
+        "before": [
+          6,
+          7
+        ],
+        "lane": [
+          [
+            6,
+            8
+          ],
+          [
+            6,
+            9
+          ]
+        ],
+        "after": [
+          6,
+          10
+        ],
+        "blocked_from": [
+          6,
+          9
+        ],
+        "blocked_target": [
+          7,
+          9
+        ]
+      },
+      {
+        "id": "SAMPLE_ALCOVE",
+        "metatile": [
+          8,
+          6
+        ],
+        "block": "36",
+        "before": [
+          16,
+          11
+        ],
+        "lane": [
+          [
+            16,
+            12
+          ],
+          [
+            16,
+            13
+          ]
+        ],
+        "after": [
+          16,
+          14
+        ],
+        "blocked_from": [
+          16,
+          13
+        ],
+        "blocked_target": [
+          17,
+          13
+        ]
+      }
+    ]
+  }
+}

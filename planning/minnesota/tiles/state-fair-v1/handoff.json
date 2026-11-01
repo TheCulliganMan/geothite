@@ -1,0 +1,171 @@
+{
+  "schema_version": 1,
+  "tileset_id": "mn_state_fair_props",
+  "behavior_source": "johto",
+  "catalog": "catalog.json",
+  "source": "source.png",
+  "candidate_pack": "content-packs/minnesota-state-fair-props-v5.crystalpack",
+  "base_pack": "content-packs/minnesota-northstar-north-shore-story.crystalpack",
+  "objects": [
+    {
+      "id": "fair_ferris_wheel",
+      "name": "Ferris wheel landmark",
+      "district": "MIDWAY",
+      "size_metatiles": [
+        2,
+        2
+      ],
+      "size_native_pixels": [
+        64,
+        64
+      ],
+      "blocks": [
+        [
+          "80",
+          "81"
+        ],
+        [
+          "82",
+          "83"
+        ]
+      ],
+      "items": [
+        [
+          "wheel_nw",
+          "wheel_ne"
+        ],
+        [
+          "wheel_sw",
+          "wheel_se"
+        ]
+      ],
+      "south_approach_core": [
+        [
+          1,
+          4
+        ],
+        [
+          2,
+          4
+        ]
+      ],
+      "notes": "Static solid scenery. Preserve all four blocks as one assembly; openings between spokes are not a walkable ride interior."
+    },
+    {
+      "id": "fair_corn_roast",
+      "name": "Corn-roast kiosk",
+      "district": "FOOD_ROW",
+      "size_metatiles": [
+        1,
+        1
+      ],
+      "size_native_pixels": [
+        32,
+        32
+      ],
+      "blocks": [
+        [
+          "84"
+        ]
+      ],
+      "items": [
+        [
+          "corn_roast"
+        ]
+      ],
+      "south_approach_core": [
+        [
+          0,
+          2
+        ],
+        [
+          1,
+          2
+        ]
+      ],
+      "notes": "Place native vendor NPC or BG menu on the adjacent approach. No warp or inventory item is implied by the service window."
+    },
+    {
+      "id": "fair_cookie_stand",
+      "name": "Cookie-pail stand",
+      "district": "FOOD_ROW",
+      "size_metatiles": [
+        1,
+        1
+      ],
+      "size_native_pixels": [
+        32,
+        32
+      ],
+      "blocks": [
+        [
+          "85"
+        ]
+      ],
+      "items": [
+        [
+          "cookie_stand"
+        ]
+      ],
+      "south_approach_core": [
+        [
+          0,
+          2
+        ],
+        [
+          1,
+          2
+        ]
+      ],
+      "notes": "Use existing Doughlin/Crumband family identity. A native shop/menu is supplied by map authoring."
+    },
+    {
+      "id": "fair_butter_display",
+      "name": "Refrigerated butter bust",
+      "district": "DAIRY_BUILDING",
+      "size_metatiles": [
+        1,
+        1
+      ],
+      "size_native_pixels": [
+        32,
+        32
+      ],
+      "blocks": [
+        [
+          "86"
+        ]
+      ],
+      "items": [
+        [
+          "butter_display"
+        ]
+      ],
+      "south_approach_core": [
+        [
+          0,
+          2
+        ],
+        [
+          1,
+          2
+        ]
+      ],
+      "notes": "Use existing Chislet/Buttermuse exhibit identity. Adjacent demonstrator supplies dialogue or stamp activity."
+    }
+  ],
+  "collision_order": [
+    "NW",
+    "NE",
+    "SW",
+    "SE"
+  ],
+  "all_new_block_collision": [
+    "WALL",
+    "WALL",
+    "WALL",
+    "WALL"
+  ],
+  "coordinates": "Blocks are row-major 32px metatiles. Approach coordinates are 16px core tiles relative to the object top-left. All approaches require FLOOR supplied by the map.",
+  "integration_status": "Art-only additive extension is published and verified separately; State Fairgrounds terrain, scripts and active shared-pack placement belong to the mapping owner."
+}

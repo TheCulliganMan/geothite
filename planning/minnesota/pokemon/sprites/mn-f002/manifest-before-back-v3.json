@@ -1,0 +1,425 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F002",
+  "status": "front-recolored-back-revision-pending",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f002/prompt-v1.txt",
+  "sprites": [
+    {
+      "id": "mn-004-cindore-v2",
+      "species_id": "MN_004",
+      "view": "front",
+      "source": "sprites/mn-f002/mn-004-006.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        350,
+        524
+      ],
+      "fit": [
+        36,
+        36
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        3519,
+        8424,
+        0
+      ],
+      "source_palette_rgb555": [
+        32767,
+        4639,
+        13606,
+        0
+      ]
+    },
+    {
+      "id": "mn-004-cindore-v2",
+      "species_id": "MN_004",
+      "view": "back",
+      "source": "sprites/mn-f002/mn-004-006.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        524,
+        350,
+        373
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        3519,
+        8424,
+        0
+      ],
+      "source_palette_rgb555": [
+        32767,
+        4639,
+        13606,
+        0
+      ]
+    },
+    {
+      "id": "mn-005-pelletor-v2",
+      "species_id": "MN_005",
+      "view": "front",
+      "source": "sprites/mn-f002/mn-004-006.front-back.imagegen-v1.png",
+      "crop": [
+        350,
+        0,
+        525,
+        524
+      ],
+      "fit": [
+        44,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        5823,
+        7436,
+        0
+      ],
+      "source_palette_rgb555": [
+        32767,
+        4639,
+        13606,
+        0
+      ]
+    },
+    {
+      "id": "mn-005-pelletor-v2",
+      "species_id": "MN_005",
+      "view": "back",
+      "source": "sprites/mn-f002/mn-004-006.front-back.imagegen-v1.png",
+      "crop": [
+        350,
+        524,
+        525,
+        333
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        5823,
+        7436,
+        0
+      ],
+      "source_palette_rgb555": [
+        32767,
+        4639,
+        13606,
+        0
+      ]
+    },
+    {
+      "id": "mn-006-mesablast-v2",
+      "species_id": "MN_006",
+      "view": "front",
+      "source": "sprites/mn-f002/mn-004-006.front-back.imagegen-v1.png",
+      "crop": [
+        875,
+        0,
+        661,
+        524
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        5439,
+        16709,
+        0
+      ],
+      "source_palette_rgb555": [
+        32767,
+        4639,
+        13606,
+        0
+      ]
+    },
+    {
+      "id": "mn-006-mesablast-v2",
+      "species_id": "MN_006",
+      "view": "back",
+      "source": "sprites/mn-f002/mn-004-006.front-back.imagegen-v1.png",
+      "crop": [
+        875,
+        524,
+        661,
+        317
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        5439,
+        16709,
+        0
+      ],
+      "source_palette_rgb555": [
+        32767,
+        4639,
+        13606,
+        0
+      ]
+    }
+  ],
+  "visual_review": {
+    "status": "pending",
+    "notes": [
+      "Individual front palettes reviewed and coherent. Early stages rear crops are enlarged, but later stages remain too small; new authored close back portraits are required. All earlier source/crop/native versions retained."
+    ]
+  },
+  "pokemon_palettes": {
+    "MN_004": {
+      "species_id": "MN_004",
+      "name": "Cindore",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          13,
+          3
+        ],
+        [
+          8,
+          7,
+          8
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        3519,
+        8424,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          107,
+          24
+        ],
+        [
+          66,
+          57,
+          66
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FF6B18",
+        "#423942",
+        "#000000"
+      ]
+    },
+    "MN_005": {
+      "species_id": "MN_005",
+      "name": "Pelletor",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          21,
+          5
+        ],
+        [
+          12,
+          8,
+          7
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        5823,
+        7436,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          173,
+          41
+        ],
+        [
+          99,
+          66,
+          57
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FFAD29",
+        "#634239",
+        "#000000"
+      ]
+    },
+    "MN_006": {
+      "species_id": "MN_006",
+      "name": "Mesablast",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          9,
+          5
+        ],
+        [
+          5,
+          10,
+          16
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        5439,
+        16709,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          74,
+          41
+        ],
+        [
+          41,
+          82,
+          132
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FF4A29",
+        "#295284",
+        "#000000"
+      ]
+    }
+  },
+  "back_framing": "rear-crop-candidate-revision-pending",
+  "conversion_revision": "Individual palette mapping from original ink indices; close rear crop from separately authored back view. Original source and all prior native renders retained.",
+  "original_source_palette": {
+    "gbc_rgb5": [
+      [
+        31,
+        31,
+        31
+      ],
+      [
+        31,
+        16,
+        4
+      ],
+      [
+        6,
+        9,
+        13
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ],
+    "gbc_rgb555_words": [
+      32767,
+      4639,
+      13606,
+      0
+    ],
+    "rgb8": [
+      [
+        255,
+        255,
+        255
+      ],
+      [
+        255,
+        132,
+        33
+      ],
+      [
+        49,
+        74,
+        107
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ],
+    "hex": [
+      "#FFFFFF",
+      "#FF8421",
+      "#314A6B",
+      "#000000"
+    ]
+  }
+}

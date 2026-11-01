@@ -1,0 +1,23 @@
+{
+  "trainers": [
+    {
+      "id": "MN_GYM_5",
+      "map": "MnStCloudGym",
+      "approach": [
+        3,
+        4
+      ],
+      "facing": "south",
+      "trainer_class": "MN_LEADER_SAVEN",
+      "sprite": "SPRITE_MN_LEADER_SAVEN",
+      "actor_script": "MnStCloudGymLeader",
+      "fixture_events": [
+        "EVENT_MN_GYM_5_COURT_OPEN"
+      ],
+      "fixture_badges": 4,
+      "defeated_flag": "EVENT_MN_GYM_5_DEFEATED",
+      "badge_slot": 5,
+      "reward_item": "TM_SWIFT"
+    }
+  ]
+}

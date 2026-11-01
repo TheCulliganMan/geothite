@@ -1,0 +1,1 @@
+Authoring-driver failure before rendering: rect strokes require material, not block. Exact initial candidates retained, not executable/frozen for publication. Use source-v02.

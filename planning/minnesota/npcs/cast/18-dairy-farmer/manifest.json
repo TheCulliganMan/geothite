@@ -1,0 +1,40 @@
+{
+  "name": "EDDA",
+  "role": "Dairy Farmer",
+  "status": "accepted-native-playable",
+  "source": "native-pixels-v2.json",
+  "integration": "placement-v1.json",
+  "controller": "placement-v1.json",
+  "native": "target/trainer-cast/dairy/native-v2",
+  "pack": "content-packs/minnesota-trainer-cast-18-v01.crystalpack",
+  "gameplay": "target/trainer-cast/dairy/gameplay-v1",
+  "log": "target/trainer-cast/dairy/controller-v1.log",
+  "reference_review": "actual-crystal-sprites-common-palette-and-scale",
+  "review_notes": "Pointed kerchief and blue bib overalls remain consistent across six hand-authored poses; front eyes separated and battle face corrected. Actual Crystal comparison, own palette and game captures inspected.",
+  "fixture": "Three legal level-60 Minnesota starters; adjacent position and explicit prior-access setup. Local encounter/rewards proof, not earned traversal or intended-level balance.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/cast/18-dairy-farmer/native-pixels-v2.json": "f6790e840d64f77dc0ffbcd564553ceaece0d2548b947827f061fe01502e55d9",
+    "planning/minnesota/npcs/cast/18-dairy-farmer/placement-v1.json": "02c3e1f1f935ba8ab723c432eaf5738622bed352752874fe0dbbb45ca036e165",
+    "target/trainer-cast/dairy/native-v2/verification.json": "2af66ec3c61c3708787ada503fb6298003c03e97176a83cac12d62abc779f179",
+    "content-packs/minnesota-trainer-cast-18-v01.crystalpack": "8cd7f86b6c87e1e2a8a5b67b0afafda9760c6a48171aa3f74cd0e90961ad7d9b",
+    "target/trainer-cast/dairy/controller-v1.log": "3f39e5fc5aa4e3ce6270a4f0ee4693604489a8d38e8cd6fe900f4471320dd9b2",
+    "target/trainer-cast/dairy/gameplay-v1/original-npc-trainer-intro.png": "0602eb27a4e11dce397e9799895bc9b1170a6b0dd265abb8c8923bfcf1abbd96",
+    "target/trainer-cast/dairy/gameplay-v1/original-npc-overworld-state.png": "68aad2119a6e07f24664736d3723a17f949d04fae42f95b68ddf841dee34d67b",
+    "target/trainer-cast/dairy/gameplay-v1/original-npc-first-turn.png": "d45426a6fe3ab8ad9c92bb816a70bd75c1d91277323ce85fafaa2635cd7e3fca",
+    "planning/minnesota/npcs/cast/18-dairy-farmer/battle-reference-prompt.txt": "384ce562e7066332729d91c6dabc6b69530debc51dc63aaa2f3115a59b67ca74",
+    "planning/minnesota/npcs/cast/18-dairy-farmer/battle-reference-v1.png": "86d9fac8ec139fb987ac743e8ebb5408dc457ee90dea477c128fd4ab5474a881",
+    "target/trainer-cast/dairy/real-comparison.png": "24fa48d81b541cff3081d45c0ca3eadf81a68f3528d96c239142099bee2355ff",
+    "target/trainer-cast/dairy/battle-real-comparison.png": "3584ca1443bb653dfa9b827280a2be9efd818e39b2bdf517b5bf94f04e622e72"
+  },
+  "final_pack": "content-packs/minnesota-trainer-cast-36-v01.crystalpack",
+  "final_gameplay": "target/trainer-cast/final-audit/gameplay/18-dairy-farmer",
+  "final_log": "target/trainer-cast/final-audit/gameplay/18-dairy-farmer/controller.log",
+  "final_status": "accepted-native-playable-final-pack",
+  "final_review": "Actual battle intro and field captures inspected on exact final pack; art retains accepted native sources and palette.",
+  "final_evidence_sha256": {
+    "target/trainer-cast/final-audit/gameplay/18-dairy-farmer/controller.log": "063946de1a785f363014b076f64cf43670e26a08dbdfa22f2cf57e16ded92ee5",
+    "target/trainer-cast/final-audit/gameplay/18-dairy-farmer/original-npc-trainer-intro.png": "0602eb27a4e11dce397e9799895bc9b1170a6b0dd265abb8c8923bfcf1abbd96",
+    "target/trainer-cast/final-audit/gameplay/18-dairy-farmer/original-npc-overworld-state.png": "d4424826e9651666b6a47a419883cdcf4bbf44cb546a923fbafd8c4f1552b7c0",
+    "target/trainer-cast/final-audit/gameplay/18-dairy-farmer/original-npc-first-turn.png": "d45426a6fe3ab8ad9c92bb816a70bd75c1d91277323ce85fafaa2635cd7e3fca"
+  }
+}

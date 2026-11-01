@@ -1,0 +1,109 @@
+{
+  "scope": "Individually reviewed remaining straight-front boulders, each set back one32px tile from its existing tall cliff. No corner replacements or stacked ore piles.",
+  "parent": "/Users/ryanculligan/GitHub/geothite/content-packs/minnesota-current-outdoor-stair-repair-v02.crystalpack",
+  "parent_sha256": "cc639313098f1ea797cfdfb52f4d0ae950b5f47fa134ea30a85a333934ba375e",
+  "changes": [],
+  "boulder_moves": [
+    {
+      "map": "MnBoundarySafariC00R01",
+      "tileset": "mn_boundary_safari",
+      "from": [
+        16,
+        5
+      ],
+      "destination_before": "71"
+    },
+    {
+      "map": "MnBoundarySafariC00R01",
+      "tileset": "mn_boundary_safari",
+      "from": [
+        18,
+        5
+      ],
+      "destination_before": "03"
+    },
+    {
+      "map": "MnBoundarySafariC01R00",
+      "tileset": "mn_boundary_safari",
+      "from": [
+        22,
+        16
+      ],
+      "destination_before": "02"
+    },
+    {
+      "map": "MnBoundarySafariC01R01",
+      "tileset": "mn_boundary_safari",
+      "from": [
+        19,
+        16
+      ],
+      "destination_before": "02"
+    },
+    {
+      "map": "MnR05C00R01",
+      "tileset": "mn_outdoor_headwaters_stairs",
+      "from": [
+        11,
+        10
+      ],
+      "destination_before": "02"
+    },
+    {
+      "map": "MnR09C00R00",
+      "tileset": "mn_iron_range",
+      "from": [
+        20,
+        17
+      ],
+      "destination_before": "03"
+    },
+    {
+      "map": "MnR10C00R00",
+      "tileset": "mn_r10_rockstairs",
+      "from": [
+        8,
+        6
+      ],
+      "destination_before": "71"
+    },
+    {
+      "map": "MnR10C00R00",
+      "tileset": "mn_r10_rockstairs",
+      "from": [
+        26,
+        8
+      ],
+      "destination_before": "71"
+    },
+    {
+      "map": "MnR11C00R01",
+      "tileset": "mn_north_shore",
+      "from": [
+        17,
+        21
+      ],
+      "destination_before": "03"
+    },
+    {
+      "map": "MnR13C00R00",
+      "tileset": "mn_outdoor_winter_stairs",
+      "from": [
+        20,
+        12
+      ],
+      "destination_before": "71"
+    }
+  ],
+  "modules": {
+    "MnBoundarySafariC00R01": "80d6f8fe7ca5ced64cfbc000a3a7a6cb84bb32ba1f5557cf7102e9a30d78434b",
+    "MnBoundarySafariC01R00": "3284c17b6f80061ec451222bcc16b44d4ec4a089f57241d688bc7b05e0f01708",
+    "MnBoundarySafariC01R01": "09f4fd527f386f9c1efaa22d41448654084c18383150c1b07813cbe12f3c3b50",
+    "MnR05C00R01": "ae1048ccc116ce571ed322a461372872a880d18eaeda134d032a1fc16bed010e",
+    "MnR09C00R00": "a2ce003510fdf9fe287537c3e7b1e956af39762edba9c47d95b8ea18563d70b4",
+    "MnR10C00R00": "c50bdca410e20233dd868069a5cbb1c81f4553767d0884037d659cf6bd55e33c",
+    "MnR11C00R01": "b6fcbe3d1b59eea4572669f810d419424781d9031b353a6ea30781cca9ecea25",
+    "MnR13C00R00": "3523754d438064a73880f5d4c7fbe7cad395923e640a0bf098adb3379615f7ec"
+  },
+  "status": "Source reviewed; all ten boulders moved together per map; no old ordinary walking component splits with NPC bodies included. Native publication and production input pending."
+}

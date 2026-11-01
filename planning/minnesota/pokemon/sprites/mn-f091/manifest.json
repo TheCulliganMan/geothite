@@ -1,0 +1,345 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F091",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_198": {
+      "species_id": "MN_198",
+      "name": "Pipulse",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          30,
+          25,
+          15
+        ],
+        [
+          6,
+          13,
+          21
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        16190,
+        21926,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          247,
+          206,
+          123
+        ],
+        [
+          49,
+          107,
+          173
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#F7CE7B",
+        "#316BAD",
+        "#000000"
+      ]
+    },
+    "MN_199": {
+      "species_id": "MN_199",
+      "name": "Cadenset",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          29,
+          21,
+          9
+        ],
+        [
+          5,
+          11,
+          20
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        9917,
+        20837,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          239,
+          173,
+          74
+        ],
+        [
+          41,
+          90,
+          165
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#EFAD4A",
+        "#295AA5",
+        "#000000"
+      ]
+    },
+    "MN_200": {
+      "species_id": "MN_200",
+      "name": "Valorythm",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          30,
+          23,
+          12
+        ],
+        [
+          4,
+          9,
+          18
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        13054,
+        18724,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          247,
+          189,
+          99
+        ],
+        [
+          33,
+          74,
+          148
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#F7BD63",
+        "#214A94",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f091/prompt-v3.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png",
+      "target/minnesota-pokemon/gen2-reference/bugs.png"
+    ]
+  },
+  "sprites": [
+    {
+      "id": "mn-198-pipulse-v3",
+      "species_id": "MN_198",
+      "view": "front",
+      "source": "sprites/mn-f091/front-back.imagegen-v3.png",
+      "crop": [
+        0,
+        0,
+        450,
+        555
+      ],
+      "fit": [
+        36,
+        36
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        16190,
+        21926,
+        0
+      ],
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-198-pipulse-v3",
+      "species_id": "MN_198",
+      "view": "back",
+      "source": "sprites/mn-f091/front-back.imagegen-v3.png",
+      "crop": [
+        0,
+        555,
+        465,
+        469
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        16190,
+        21926,
+        0
+      ],
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-199-cadenset-v3",
+      "species_id": "MN_199",
+      "view": "front",
+      "source": "sprites/mn-f091/front-back.imagegen-v3.png",
+      "crop": [
+        450,
+        0,
+        518,
+        555
+      ],
+      "fit": [
+        44,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        9917,
+        20837,
+        0
+      ],
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-199-cadenset-v3",
+      "species_id": "MN_199",
+      "view": "back",
+      "source": "sprites/mn-f091/front-back.imagegen-v3.png",
+      "crop": [
+        465,
+        555,
+        515,
+        469
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        9917,
+        20837,
+        0
+      ],
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-200-valorythm-v3",
+      "species_id": "MN_200",
+      "view": "front",
+      "source": "sprites/mn-f091/front-back.imagegen-v3.png",
+      "crop": [
+        968,
+        0,
+        568,
+        555
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13054,
+        18724,
+        0
+      ],
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-200-valorythm-v3",
+      "species_id": "MN_200",
+      "view": "back",
+      "source": "sprites/mn-f091/front-back.imagegen-v3.png",
+      "crop": [
+        980,
+        555,
+        556,
+        469
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13054,
+        18724,
+        0
+      ],
+      "interior_black_min_samples": 16
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "notes": "Root inspected all six native views: pendulum juvenile grows looped counterweight arms then four clear palms and sweeping conductor crest. Middle fingers are compact clusters at native scale but open hand gaps and eye windows remain readable. Enlarged rear portraits preserve crest and shoulder growth.",
+    "sheet_sha256": "cf68c372336bc7ca2cb802a7f2fb7fb15c0c679fd11255e43fbe92fe0b5678a0",
+    "outline_profile": "source-contour-v1"
+  }
+}

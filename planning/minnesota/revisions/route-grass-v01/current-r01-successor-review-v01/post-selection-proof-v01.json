@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "selected_revision": "route_grass_r01_stair_guidance_revision",
+  "pack_sha256": "e6af050b697b6a9d52735713d5eabe0c069110f69ecdc5b81707e181b7ee30b2",
+  "world_only_new_revision_and_selector_changed": true,
+  "all_parent_current_sources_preserved": true,
+  "all640_current_layout_metatiles_exact": true,
+  "all_five_text_programs_global_and_local_mirrors_exact": true,
+  "embedded_identity_matches_selection": true,
+  "goal_complete": false
+}

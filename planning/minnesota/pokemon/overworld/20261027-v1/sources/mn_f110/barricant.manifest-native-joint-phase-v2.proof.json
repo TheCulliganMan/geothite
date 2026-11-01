@@ -1,0 +1,345 @@
+{
+  "species_id": "MN_242",
+  "name": "barricant",
+  "status": "native-review-recommended; root independent review and context required",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f110/barricant.manifest-native-joint-phase-v2.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-barricant-joint-phase-v2",
+  "shared_transform": {
+    "source_bounds": [
+      16,
+      12,
+      488,
+      357
+    ],
+    "native_size": [
+      14,
+      10
+    ],
+    "native_origin": [
+      1,
+      5
+    ]
+  },
+  "all_four_nonrear_poses_actual_pupils_pass": true,
+  "each_native_eye_cluster_maps_to_one_actual_small_source_pupil_component": true,
+  "actual_source_pupil_proofs": [
+    {
+      "pose": "down_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f110/barricant.overworld.imagegen-v2.png",
+      "crop": [
+        50,
+        109,
+        512,
+        381
+      ],
+      "actual_source_eye_bounds": [
+        [
+          201,
+          312,
+          27,
+          33
+        ],
+        [
+          275,
+          312,
+          25,
+          33
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              5,
+              10
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                1,
+                1,
+                0,
+                254
+              ],
+              "bounds": [
+                201,
+                312,
+                27,
+                33
+              ],
+              "pixels": 891,
+              "truncated_contour": false,
+              "native_pixel": [
+                5,
+                10
+              ],
+              "source_sample_pixel": [
+                222,
+                317
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              7,
+              10
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                275,
+                312,
+                25,
+                33
+              ],
+              "pixels": 821,
+              "truncated_contour": false,
+              "native_pixel": [
+                7,
+                10
+              ],
+              "source_sample_pixel": [
+                292,
+                317
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f110/barricant.overworld.imagegen-v2.png",
+      "crop": [
+        1024,
+        111,
+        512,
+        381
+      ],
+      "actual_source_eye_bounds": [
+        [
+          1115,
+          332,
+          25,
+          34
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              3,
+              11
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                1115,
+                332,
+                25,
+                34
+              ],
+              "pixels": 847,
+              "truncated_contour": false,
+              "native_pixel": [
+                3,
+                11
+              ],
+              "source_sample_pixel": [
+                1127,
+                355
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f110/barricant.overworld.imagegen-v2.png",
+      "crop": [
+        53,
+        573,
+        512,
+        381
+      ],
+      "actual_source_eye_bounds": [
+        [
+          204,
+          765,
+          26,
+          33
+        ],
+        [
+          277,
+          764,
+          25,
+          34
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              5,
+              10
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                6,
+                4,
+                2,
+                253
+              ],
+              "bounds": [
+                204,
+                765,
+                26,
+                33
+              ],
+              "pixels": 858,
+              "truncated_contour": false,
+              "native_pixel": [
+                5,
+                10
+              ],
+              "source_sample_pixel": [
+                225,
+                781
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              7,
+              10
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                277,
+                764,
+                25,
+                34
+              ],
+              "pixels": 829,
+              "truncated_contour": false,
+              "native_pixel": [
+                7,
+                10
+              ],
+              "source_sample_pixel": [
+                295,
+                781
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f110/barricant.overworld.imagegen-v2.png",
+      "crop": [
+        1024,
+        576,
+        512,
+        381
+      ],
+      "actual_source_eye_bounds": [
+        [
+          1115,
+          778,
+          25,
+          32
+        ]
+      ],
+      "eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              3,
+              10
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                1,
+                1,
+                0,
+                253
+              ],
+              "bounds": [
+                1115,
+                778,
+                25,
+                32
+              ],
+              "pixels": 800,
+              "truncated_contour": false,
+              "native_pixel": [
+                3,
+                10
+              ],
+              "source_sample_pixel": [
+                1127,
+                784
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "old_native_poses_preserved_exactly": [
+    "down_idle",
+    "up_idle",
+    "left_idle",
+    "down_step",
+    "up_step",
+    "left_step"
+  ],
+  "normal_shiny_runtime_parity": "all1536pixels exact each",
+  "canonical_palette_bytes": "exact",
+  "all_three_walk_pairs_distinct": true,
+  "rear_review": "both rear native poses viewed; no copied face",
+  "normal_shiny_native_boards_actually_viewed": true,
+  "accepted_coverage_native_pack_untouched": true,
+  "manifest_sha256": "eb29f4ba33e21783db23bde367ee115b834e377a4a6463286af300dfb8465a27",
+  "compiled_index_sha256": "ddb5210f0aac0518b86d7f36cd1bd1e86ffcf72e0dfbedc6e50be24df9707ebb"
+}

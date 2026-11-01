@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "id": "MnR19DetroitGate",
+  "source_kind": "installed_native_map_layout",
+  "native_binding": {
+    "pack": "content-packs/minnesota-current-r19-detroit-gate-v04.crystalpack",
+    "pack_sha256": "de1add590013c786bd3a2770c58ff46c656930cc3dd3944af203f7480e292e21",
+    "content_identity": "1efd4ef468dc38f0346a74621151eb36cf15272736324ee9e0de925e0e4ba226"
+  },
+  "dimensions_metatiles": [
+    5,
+    4
+  ],
+  "compiled_tileset": "gate",
+  "rows": [
+    "02 02 04 02 02",
+    "09 01 01 01 08",
+    "0d 01 01 01 0c",
+    "14 01 0a 01 14"
+  ]
+}

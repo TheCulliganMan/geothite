@@ -1,0 +1,13 @@
+{
+  "tool": "built-in image_gen",
+  "original_tool_path": "/Users/ryanculligan/.codex/generated_images/01a17dcc-4f1a-77a2-9d21-0df036061346/exec-b95fc7f6-2691-46a9-9148-5b29ff4aaeab.png",
+  "source_size": [
+    1536,
+    1024
+  ],
+  "sha256": "10e0863cb51adc5179f6d236e931da735ba03ec22c61491406a48ff03b818299",
+  "reference_paths": [
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f005/zizalith.overworld.imagegen-v3.png"
+  ],
+  "prompt": "zizalith.prompt-v4.txt"
+}

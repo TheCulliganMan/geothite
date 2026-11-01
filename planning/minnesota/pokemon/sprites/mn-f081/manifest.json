@@ -1,0 +1,242 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F081",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_176": {
+      "species_id": "MN_176",
+      "name": "Runnelisk",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          23,
+          24,
+          13
+        ],
+        [
+          11,
+          12,
+          8
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        14103,
+        8587,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          189,
+          198,
+          107
+        ],
+        [
+          90,
+          99,
+          66
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#BDC66B",
+        "#5A6342",
+        "#000000"
+      ]
+    },
+    "MN_177": {
+      "species_id": "MN_177",
+      "name": "Dividra",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          23,
+          20,
+          10
+        ],
+        [
+          8,
+          13,
+          13
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        10903,
+        13736,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          189,
+          165,
+          82
+        ],
+        [
+          66,
+          107,
+          107
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#BDA552",
+        "#426B6B",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f081/prompt-mn-177-ridge-alternate-v3.txt",
+  "reference_mapping": "sprites/mn-f081/reference-mapping-mn-177-v3.json",
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-176-runnelisk-v2",
+      "species_id": "MN_176",
+      "view": "front",
+      "source": "sprites/mn-f081/mn-176-177.front-back.imagegen-v2.png",
+      "crop": [
+        0,
+        0,
+        700,
+        530
+      ],
+      "fit": [
+        40,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        14103,
+        8587,
+        0
+      ],
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-176-runnelisk-v2",
+      "species_id": "MN_176",
+      "view": "back",
+      "source": "sprites/mn-f081/mn-176-177.front-back.imagegen-v2.png",
+      "crop": [
+        0,
+        530,
+        768,
+        494
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        14103,
+        8587,
+        0
+      ],
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-177-dividra-v3",
+      "species_id": "MN_177",
+      "view": "front",
+      "source": "sprites/mn-f081/mn-177-dividra.ridge-alternate-v3.imagegen.png",
+      "crop": [
+        0,
+        0,
+        1199,
+        640
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        10903,
+        13736,
+        0
+      ],
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-177-dividra-v3",
+      "species_id": "MN_177",
+      "view": "back",
+      "source": "sprites/mn-f081/mn-177-dividra.ridge-alternate-v3.imagegen.png",
+      "crop": [
+        0,
+        640,
+        1199,
+        672
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        10903,
+        13736,
+        0
+      ],
+      "interior_black_min_samples": 32
+    }
+  ],
+  "style_reference": {
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png"
+    ]
+  },
+  "prompt_sources_by_species": {
+    "MN_176": "sprites/mn-f081/prompt-v2.txt",
+    "MN_177": "sprites/mn-f081/prompt-mn-177-ridge-alternate-v3.txt"
+  },
+  "candidate_note": "Final-only triangular watershed-ridge alternate; MN176 young source untouched. Main manifest unchanged pending root decision.",
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "notes": "Root inspected all four native views of the final-only ridge alternate. Young Runnelisk retains the saved v2 anatomy; Dividra grows one continuous triangular watershed torso with broad opposed ochre/slate slope planes, buttress feet and two separated downturned tail gutters with a white V gap. Close back reads as continuous terrain planes rather than segmented lizard plates. Small face glints simplify at native scale; broad silhouette and colored interior remain clear. Earlier final sources and manifests retained.",
+    "sheet_sha256": "35f2f08e957d61cbaf9f36548593781e0dbb8cf8391a6264e4fbe3f385e009bd",
+    "outline_profile": "source-contour-v1"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "revision": "driftless_fossil_gallery_revision",
+  "kind": "native_optional_driftless_fossil_gallery",
+  "parent_revision": "r05_shelf_drop_revision",
+  "parent_pack": "content-packs/minnesota-r05-shelf-drop-v01.crystalpack",
+  "parent_pack_sha256": "71a40f87927ed85404c631869295b091225ac0e26c76fef0d084adf32e5f8d67",
+  "pack": "content-packs/minnesota-driftless-fossil-gallery-v03.crystalpack",
+  "pack_sha256": "3f3d12312ff947ea9f219a9368b98b51f4348ea7a76ed2caf7b062a8ef45316d",
+  "content_identity": "a0ef8d003f5ab60307757e45d685e6b95f06f020aa2885cf19ee35123adb01d6",
+  "maps": [
+    "MnR01Cave1F",
+    "MnDriftlessLampGallery"
+  ],
+  "authoring_source_index": "planning/minnesota/caves/driftless-fossil-gallery-v01/sources.json",
+  "authoring_source_index_sha256": "12cb5de02e9b5b06fe418f3a9d0642051e56029288ba5e48da38a4630d31658e",
+  "runbook": "planning/minnesota/caves/driftless-fossil-gallery-v01/README.md",
+  "verification": "planning/minnesota/renders/driftless-fossil-gallery-v774/acceptance-v792.json",
+  "native_controller_cases": 3,
+  "production_stdio_calls": 233,
+  "status": "Verified optional12x10 lower gallery, native Flash/acknowledged fossil clue/once-only cache, capacity retry and paired returns. Original lit hollow/HM/Antidote/world exit retained; all732 other existing maps and art/audio exact. Broad map review active."
+}

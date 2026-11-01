@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "selected_revision": "route_grass_r09_current_contract_revision",
+  "gameplay_pack_unchanged": true,
+  "current_native_course_inputs_exact": true,
+  "actual_native_stair_treads_observed": true,
+  "goal_complete": false
+}

@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F071",
+  "species": [
+    {
+      "species_id": "MN_150",
+      "runtime_token": "CANALARM",
+      "palette_rgb555": [
+        32767,
+        7998,
+        15689,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        26567,
+        10543,
+        0
+      ],
+      "fit": [
+        14,
+        14
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 64,
+      "interior_black_samples": 64,
+      "opaque_interior_minimum_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "canalarm.overworld.imagegen-v2-neutral.png",
+          "crop": [
+            14,
+            88,
+            500,
+            440
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "canalarm.overworld.imagegen-v2-neutral.png",
+          "crop": [
+            568,
+            79,
+            500,
+            440
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "canalarm.overworld.imagegen-v2-neutral.png",
+          "crop": [
+            1027,
+            106,
+            500,
+            440
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "canalarm.overworld.imagegen-v2-neutral.png",
+          "crop": [
+            17,
+            541,
+            500,
+            440
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "canalarm.overworld.imagegen-v2-neutral.png",
+          "crop": [
+            565,
+            546,
+            500,
+            440
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "canalarm.overworld.imagegen-v2-neutral.png",
+          "crop": [
+            1030,
+            569,
+            500,
+            440
+          ]
+        }
+      ]
+    }
+  ]
+}

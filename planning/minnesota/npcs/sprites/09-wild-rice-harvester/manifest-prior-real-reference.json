@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "id": "MN_RICE_HARVESTER",
+  "name": "RICE HARVESTER SEDGE",
+  "status": "accepted-native-playable",
+  "overworld_frames": 6,
+  "overworld_size": [
+    16,
+    16
+  ],
+  "battle_size": [
+    56,
+    56
+  ],
+  "palette_rgb555": [
+    32767,
+    18239,
+    11749,
+    0
+  ],
+  "source": "native-pixels-v2.json",
+  "placement": "placement-v1.json",
+  "pack": "content-packs/minnesota-npcs-hand-10-v01.crystalpack",
+  "parent": "content-packs/minnesota-npcs-hand-09-v01.crystalpack",
+  "runtime_checks": {
+    "one_controller_test_passed": true,
+    "talk_and_input_ownership": true,
+    "battle_turn_and_pp": true,
+    "battle_save_load": true,
+    "actual_victory_and_defeat_flag_before_render_capture": true,
+    "post_battle_talk": true,
+    "existing_trainers_and_assets_preserved": true
+  },
+  "manual_visual_review": "Six hand-authored 16x16 grids reviewed at native size, 8x comparison and actual Leech Lake capture. Larger face with dark hair frame, plain teal headband, connected single braid, rolled sleeves, vest, two short wooden tools and same-side field bag. Distinct rear hair/strap and real raised-foot stride preserve gear in walking poses. Full controller encounter passed; battle rows/palette unchanged.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/sprites/09-wild-rice-harvester/native-pixels-v2.json": "fd5cbf46ad03fdca8f53ae13a5e47be5be49fa5c5179f94efcb9fa185167c857",
+    "planning/minnesota/npcs/sprites/09-wild-rice-harvester/placement-v1.json": "573e8d2a83bd96daf25e2d1c722e16204a99ea5e9f9476031b5045c9c15e3ab2",
+    "content-packs/minnesota-npcs-hand-10-v01.crystalpack": "70762beb9723085d312d53070ffb5848b59816eba5a9f623a98bf6d621cd3d14",
+    "target/npc-sprites/rice/controller-hand-v01.log": "05f075617da8ee1c2e1a57eec37060165bf4f3555c61ffc71dc80de7c8a40712",
+    "target/npc-sprites/rice/gameplay-hand-v01/original-npc-trainer-intro.png": "462388adc3c073e7ceb8756c9f22c82e81219ab628a774612ad0d1446bbabc88",
+    "target/npc-sprites/rice/gameplay-hand-v01/original-npc-first-turn.png": "378c812dafb676510d747405c6e56eb404a9264cedb6147de99e33b8fdd1264e",
+    "target/npc-sprites/rice/gameplay-hand-v01/original-npc-overworld-state.png": "23c1f6c24ad5e65c465a35bc861aaad5975b90c552a67edea8db790751a50c3f",
+    "target/npc-sprites/rice/hand-v2/comparison.png": "23a401fb8fdeb9f3a1683838a31ae1e9788d34b25fa0816e41d649a80d10eada",
+    "target/npc-sprites/rice/hand-v2/overworld-review.png": "3c643a62eb10728b6af4597f92437475ba3169013262e8e3dce4253f9c2cdc77",
+    "target/npc-sprites/rice/hand-v2/overworld-review-8x.png": "c49b1bfd46ab2e72b254808fe79e2d1cbdf9f68e135ef7aec745339d7aac0688"
+  },
+  "overworld_revision": "hand-edited-v2",
+  "previous_visual_acceptance_reopened_by_user": true
+}

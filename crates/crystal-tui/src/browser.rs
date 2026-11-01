@@ -87,7 +87,7 @@ mod wasm {
         renderer: RuntimeTextRenderer,
         ui: TerminalUi,
         save_path: PathBuf,
-        painted: crate::painted::PaintedRenderer,
+        painted: crate::PaintedRenderer,
     }
 
     #[wasm_bindgen]
@@ -161,7 +161,7 @@ mod wasm {
                 renderer: RuntimeTextRenderer::default(),
                 ui: TerminalUi::new(TuiTheme::default()),
                 save_path,
-                painted: crate::painted::PaintedRenderer::default(),
+                painted: crate::PaintedRenderer::default(),
             })
         }
     }

@@ -1,0 +1,808 @@
+{
+  "schema_version": 1,
+  "base_pack_sha256": "2fe6fc2a2c59833886b9ffa2fa04584f1f95841efaf87e865f11230cf4cdf54e",
+  "status": "native collision inventory plus proposed explicit underpass masks; no implementation claimed",
+  "bridges": [
+    {
+      "id": "MinneapolisMillBridge",
+      "map": "MnMinneapolis",
+      "tileset": "mn_minneapolis_city",
+      "native_module_sha256": "4050f97ee2df28a403bffad1c110e5a49bcbd4f99cac750f30f3ae396df0ccd8",
+      "metatile_bounds_exclusive": [
+        16,
+        6,
+        18,
+        9
+      ],
+      "axis": "north_south",
+      "water_mouths_core": [
+        [
+          34,
+          11
+        ],
+        [
+          34,
+          18
+        ]
+      ],
+      "aperture_width_core": 4,
+      "metatiles": [
+        {
+          "metatile": [
+            16,
+            6
+          ],
+          "block_decimal": 65,
+          "block_hex": "41",
+          "foot_collision": [
+            "WALL",
+            "WALL",
+            "FLOOR",
+            "FLOOR"
+          ],
+          "proposed_surf_underpass_collision": [
+            "WATER",
+            "WATER",
+            "WATER",
+            "WATER"
+          ]
+        },
+        {
+          "metatile": [
+            17,
+            6
+          ],
+          "block_decimal": 65,
+          "block_hex": "41",
+          "foot_collision": [
+            "WALL",
+            "WALL",
+            "FLOOR",
+            "FLOOR"
+          ],
+          "proposed_surf_underpass_collision": [
+            "WATER",
+            "WATER",
+            "WATER",
+            "WATER"
+          ]
+        },
+        {
+          "metatile": [
+            16,
+            7
+          ],
+          "block_decimal": 6,
+          "block_hex": "06",
+          "foot_collision": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ],
+          "proposed_surf_underpass_collision": [
+            "WATER",
+            "WATER",
+            "WATER",
+            "WATER"
+          ]
+        },
+        {
+          "metatile": [
+            17,
+            7
+          ],
+          "block_decimal": 6,
+          "block_hex": "06",
+          "foot_collision": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ],
+          "proposed_surf_underpass_collision": [
+            "WATER",
+            "WATER",
+            "WATER",
+            "WATER"
+          ]
+        },
+        {
+          "metatile": [
+            16,
+            8
+          ],
+          "block_decimal": 73,
+          "block_hex": "49",
+          "foot_collision": [
+            "FLOOR",
+            "FLOOR",
+            "WALL",
+            "WALL"
+          ],
+          "proposed_surf_underpass_collision": [
+            "WATER",
+            "WATER",
+            "WATER",
+            "WATER"
+          ]
+        },
+        {
+          "metatile": [
+            17,
+            8
+          ],
+          "block_decimal": 73,
+          "block_hex": "49",
+          "foot_collision": [
+            "FLOOR",
+            "FLOOR",
+            "WALL",
+            "WALL"
+          ],
+          "proposed_surf_underpass_collision": [
+            "WATER",
+            "WATER",
+            "WATER",
+            "WATER"
+          ]
+        }
+      ],
+      "existing_foot_collision_must_remain_exact": true,
+      "layer_boundary_note": "Entering underpass must retain Surf on the lower layer; adjacent upper-deck FLOOR is not a legal dismount from below. Rail WALL quadrants block walking but are water below. Only this explicit bounded aperture is water below; no global FLOOR/WALL override."
+    },
+    {
+      "id": "MinneapolisCivicBridge",
+      "map": "MnMinneapolis",
+      "tileset": "mn_minneapolis_city",
+      "native_module_sha256": "4050f97ee2df28a403bffad1c110e5a49bcbd4f99cac750f30f3ae396df0ccd8",
+      "metatile_bounds_exclusive": [
+        16,
+        17,
+        18,
+        20
+      ],
+      "axis": "north_south",
+      "water_mouths_core": [
+        [
+          34,
+          33
+        ],
+        [
+          34,
+          40
+        ]
+      ],
+      "aperture_width_core": 4,
+      "metatiles": [
+        {
+          "metatile": [
+            16,
+            17
+          ],
+          "block_decimal": 65,
+          "block_hex": "41",
+          "foot_collision": [
+            "WALL",
+            "WALL",
+            "FLOOR",
+            "FLOOR"
+          ],
+          "proposed_surf_underpass_collision": [
+            "WATER",
+            "WATER",
+            "WATER",
+            "WATER"
+          ]
+        },
+        {
+          "metatile": [
+            17,
+            17
+          ],
+          "block_decimal": 65,
+          "block_hex": "41",
+          "foot_collision": [
+            "WALL",
+            "WALL",
+            "FLOOR",
+            "FLOOR"
+          ],
+          "proposed_surf_underpass_collision": [
+            "WATER",
+            "WATER",
+            "WATER",
+            "WATER"
+          ]
+        },
+        {
+          "metatile": [
+            16,
+            18
+          ],
+          "block_decimal": 6,
+          "block_hex": "06",
+          "foot_collision": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ],
+          "proposed_surf_underpass_collision": [
+            "WATER",
+            "WATER",
+            "WATER",
+            "WATER"
+          ]
+        },
+        {
+          "metatile": [
+            17,
+            18
+          ],
+          "block_decimal": 6,
+          "block_hex": "06",
+          "foot_collision": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ],
+          "proposed_surf_underpass_collision": [
+            "WATER",
+            "WATER",
+            "WATER",
+            "WATER"
+          ]
+        },
+        {
+          "metatile": [
+            16,
+            19
+          ],
+          "block_decimal": 73,
+          "block_hex": "49",
+          "foot_collision": [
+            "FLOOR",
+            "FLOOR",
+            "WALL",
+            "WALL"
+          ],
+          "proposed_surf_underpass_collision": [
+            "WATER",
+            "WATER",
+            "WATER",
+            "WATER"
+          ]
+        },
+        {
+          "metatile": [
+            17,
+            19
+          ],
+          "block_decimal": 73,
+          "block_hex": "49",
+          "foot_collision": [
+            "FLOOR",
+            "FLOOR",
+            "WALL",
+            "WALL"
+          ],
+          "proposed_surf_underpass_collision": [
+            "WATER",
+            "WATER",
+            "WATER",
+            "WATER"
+          ]
+        }
+      ],
+      "existing_foot_collision_must_remain_exact": true,
+      "layer_boundary_note": "Entering underpass must retain Surf on the lower layer; adjacent upper-deck FLOOR is not a legal dismount from below. Rail WALL quadrants block walking but are water below. Only this explicit bounded aperture is water below; no global FLOOR/WALL override."
+    },
+    {
+      "id": "MinneapolisSouthBridge",
+      "map": "MnMinneapolis",
+      "tileset": "mn_minneapolis_city",
+      "native_module_sha256": "4050f97ee2df28a403bffad1c110e5a49bcbd4f99cac750f30f3ae396df0ccd8",
+      "metatile_bounds_exclusive": [
+        16,
+        27,
+        18,
+        30
+      ],
+      "axis": "north_south",
+      "water_mouths_core": [
+        [
+          34,
+          53
+        ],
+        [
+          34,
+          60
+        ]
+      ],
+      "aperture_width_core": 4,
+      "metatiles": [
+        {
+          "metatile": [
+            16,
+            27
+          ],
+          "block_decimal": 65,
+          "block_hex": "41",
+          "foot_collision": [
+            "WALL",
+            "WALL",
+            "FLOOR",
+            "FLOOR"
+          ],
+          "proposed_surf_underpass_collision": [
+            "WATER",
+            "WATER",
+            "WATER",
+            "WATER"
+          ]
+        },
+        {
+          "metatile": [
+            17,
+            27
+          ],
+          "block_decimal": 65,
+          "block_hex": "41",
+          "foot_collision": [
+            "WALL",
+            "WALL",
+            "FLOOR",
+            "FLOOR"
+          ],
+          "proposed_surf_underpass_collision": [
+            "WATER",
+            "WATER",
+            "WATER",
+            "WATER"
+          ]
+        },
+        {
+          "metatile": [
+            16,
+            28
+          ],
+          "block_decimal": 6,
+          "block_hex": "06",
+          "foot_collision": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ],
+          "proposed_surf_underpass_collision": [
+            "WATER",
+            "WATER",
+            "WATER",
+            "WATER"
+          ]
+        },
+        {
+          "metatile": [
+            17,
+            28
+          ],
+          "block_decimal": 6,
+          "block_hex": "06",
+          "foot_collision": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ],
+          "proposed_surf_underpass_collision": [
+            "WATER",
+            "WATER",
+            "WATER",
+            "WATER"
+          ]
+        },
+        {
+          "metatile": [
+            16,
+            29
+          ],
+          "block_decimal": 73,
+          "block_hex": "49",
+          "foot_collision": [
+            "FLOOR",
+            "FLOOR",
+            "WALL",
+            "WALL"
+          ],
+          "proposed_surf_underpass_collision": [
+            "WATER",
+            "WATER",
+            "WATER",
+            "WATER"
+          ]
+        },
+        {
+          "metatile": [
+            17,
+            29
+          ],
+          "block_decimal": 73,
+          "block_hex": "49",
+          "foot_collision": [
+            "FLOOR",
+            "FLOOR",
+            "WALL",
+            "WALL"
+          ],
+          "proposed_surf_underpass_collision": [
+            "WATER",
+            "WATER",
+            "WATER",
+            "WATER"
+          ]
+        }
+      ],
+      "existing_foot_collision_must_remain_exact": true,
+      "layer_boundary_note": "Entering underpass must retain Surf on the lower layer; adjacent upper-deck FLOOR is not a legal dismount from below. Rail WALL quadrants block walking but are water below. Only this explicit bounded aperture is water below; no global FLOOR/WALL override."
+    },
+    {
+      "id": "R05CityHookBridge",
+      "map": "MnR05C00R02",
+      "tileset": "mn_headwaters",
+      "native_module_sha256": "db0515db685e73fad50be2f398bcadd1467eaf6f1eed20b969e54a34311fa164",
+      "metatile_bounds_exclusive": [
+        10,
+        6,
+        13,
+        7
+      ],
+      "axis": "east_west",
+      "water_mouths_core": [
+        [
+          19,
+          13
+        ],
+        [
+          26,
+          13
+        ]
+      ],
+      "aperture_width_core": 2,
+      "metatiles": [
+        {
+          "metatile": [
+            10,
+            6
+          ],
+          "block_decimal": 68,
+          "block_hex": "44",
+          "foot_collision": [
+            "WALL",
+            "FLOOR",
+            "WALL",
+            "FLOOR"
+          ],
+          "proposed_surf_underpass_collision": [
+            "WATER",
+            "WATER",
+            "WATER",
+            "WATER"
+          ]
+        },
+        {
+          "metatile": [
+            11,
+            6
+          ],
+          "block_decimal": 1,
+          "block_hex": "01",
+          "foot_collision": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ],
+          "proposed_surf_underpass_collision": [
+            "WATER",
+            "WATER",
+            "WATER",
+            "WATER"
+          ]
+        },
+        {
+          "metatile": [
+            12,
+            6
+          ],
+          "block_decimal": 70,
+          "block_hex": "46",
+          "foot_collision": [
+            "FLOOR",
+            "WALL",
+            "FLOOR",
+            "WALL"
+          ],
+          "proposed_surf_underpass_collision": [
+            "WATER",
+            "WATER",
+            "WATER",
+            "WATER"
+          ]
+        }
+      ],
+      "existing_foot_collision_must_remain_exact": true,
+      "layer_boundary_note": "Entering underpass must retain Surf on the lower layer; adjacent upper-deck FLOOR is not a legal dismount from below. Rail WALL quadrants block walking but are water below. Only this explicit bounded aperture is water below; no global FLOOR/WALL override."
+    },
+    {
+      "id": "R03ConfluenceBridge",
+      "map": "MnR03C00R00",
+      "tileset": "mn_headwaters",
+      "native_module_sha256": "b34e904f8380fdcb73e6728f68bac51412dddc530f6736705c84b64993796065",
+      "metatile_bounds_exclusive": [
+        9,
+        1,
+        12,
+        2
+      ],
+      "axis": "east_west",
+      "water_mouths_core": [
+        [
+          17,
+          3
+        ],
+        [
+          24,
+          3
+        ]
+      ],
+      "aperture_width_core": 2,
+      "metatiles": [
+        {
+          "metatile": [
+            9,
+            1
+          ],
+          "block_decimal": 68,
+          "block_hex": "44",
+          "foot_collision": [
+            "WALL",
+            "FLOOR",
+            "WALL",
+            "FLOOR"
+          ],
+          "proposed_surf_underpass_collision": [
+            "WATER",
+            "WATER",
+            "WATER",
+            "WATER"
+          ]
+        },
+        {
+          "metatile": [
+            10,
+            1
+          ],
+          "block_decimal": 1,
+          "block_hex": "01",
+          "foot_collision": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ],
+          "proposed_surf_underpass_collision": [
+            "WATER",
+            "WATER",
+            "WATER",
+            "WATER"
+          ]
+        },
+        {
+          "metatile": [
+            11,
+            1
+          ],
+          "block_decimal": 70,
+          "block_hex": "46",
+          "foot_collision": [
+            "FLOOR",
+            "WALL",
+            "FLOOR",
+            "WALL"
+          ],
+          "proposed_surf_underpass_collision": [
+            "WATER",
+            "WATER",
+            "WATER",
+            "WATER"
+          ]
+        }
+      ],
+      "existing_foot_collision_must_remain_exact": true,
+      "layer_boundary_note": "Entering underpass must retain Surf on the lower layer; adjacent upper-deck FLOOR is not a legal dismount from below. Rail WALL quadrants block walking but are water below. Only this explicit bounded aperture is water below; no global FLOOR/WALL override."
+    },
+    {
+      "id": "StPaulWestBridgeCompact40",
+      "map": "MnStPaul",
+      "tileset": "kanto",
+      "native_module_sha256": "10c8ddb5dd3005d0f586917c6b3b64160d08e08283b4ce83adcf1de067a6dd2b",
+      "metatile_bounds_exclusive": [
+        12,
+        26,
+        15,
+        27
+      ],
+      "axis": "east_west",
+      "water_mouths_core": [
+        [
+          23,
+          53
+        ],
+        [
+          30,
+          53
+        ]
+      ],
+      "aperture_width_core": 2,
+      "metatiles": [
+        {
+          "metatile": [
+            12,
+            26
+          ],
+          "block_decimal": 27,
+          "block_hex": "1b",
+          "foot_collision": [
+            "WALL",
+            "FLOOR",
+            "WALL",
+            "FLOOR"
+          ],
+          "proposed_surf_underpass_collision": [
+            "WATER",
+            "WATER",
+            "WATER",
+            "WATER"
+          ]
+        },
+        {
+          "metatile": [
+            13,
+            26
+          ],
+          "block_decimal": 49,
+          "block_hex": "31",
+          "foot_collision": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ],
+          "proposed_surf_underpass_collision": [
+            "WATER",
+            "WATER",
+            "WATER",
+            "WATER"
+          ]
+        },
+        {
+          "metatile": [
+            14,
+            26
+          ],
+          "block_decimal": 95,
+          "block_hex": "5f",
+          "foot_collision": [
+            "FLOOR",
+            "WALL",
+            "FLOOR",
+            "WALL"
+          ],
+          "proposed_surf_underpass_collision": [
+            "WATER",
+            "WATER",
+            "WATER",
+            "WATER"
+          ]
+        }
+      ],
+      "existing_foot_collision_must_remain_exact": true,
+      "layer_boundary_note": "Entering underpass must retain Surf on the lower layer; adjacent upper-deck FLOOR is not a legal dismount from below. Rail WALL quadrants block walking but are water below. Only this explicit bounded aperture is water below; no global FLOOR/WALL override."
+    },
+    {
+      "id": "StPaulEastBridgeCompact40",
+      "map": "MnStPaul",
+      "tileset": "kanto",
+      "native_module_sha256": "10c8ddb5dd3005d0f586917c6b3b64160d08e08283b4ce83adcf1de067a6dd2b",
+      "metatile_bounds_exclusive": [
+        27,
+        26,
+        30,
+        27
+      ],
+      "axis": "east_west",
+      "water_mouths_core": [
+        [
+          53,
+          53
+        ],
+        [
+          60,
+          53
+        ]
+      ],
+      "aperture_width_core": 2,
+      "metatiles": [
+        {
+          "metatile": [
+            27,
+            26
+          ],
+          "block_decimal": 27,
+          "block_hex": "1b",
+          "foot_collision": [
+            "WALL",
+            "FLOOR",
+            "WALL",
+            "FLOOR"
+          ],
+          "proposed_surf_underpass_collision": [
+            "WATER",
+            "WATER",
+            "WATER",
+            "WATER"
+          ]
+        },
+        {
+          "metatile": [
+            28,
+            26
+          ],
+          "block_decimal": 49,
+          "block_hex": "31",
+          "foot_collision": [
+            "FLOOR",
+            "FLOOR",
+            "FLOOR",
+            "FLOOR"
+          ],
+          "proposed_surf_underpass_collision": [
+            "WATER",
+            "WATER",
+            "WATER",
+            "WATER"
+          ]
+        },
+        {
+          "metatile": [
+            29,
+            26
+          ],
+          "block_decimal": 95,
+          "block_hex": "5f",
+          "foot_collision": [
+            "FLOOR",
+            "WALL",
+            "FLOOR",
+            "WALL"
+          ],
+          "proposed_surf_underpass_collision": [
+            "WATER",
+            "WATER",
+            "WATER",
+            "WATER"
+          ]
+        }
+      ],
+      "existing_foot_collision_must_remain_exact": true,
+      "layer_boundary_note": "Entering underpass must retain Surf on the lower layer; adjacent upper-deck FLOOR is not a legal dismount from below. Rail WALL quadrants block walking but are water below. Only this explicit bounded aperture is water below; no global FLOOR/WALL override."
+    }
+  ],
+  "notes": [
+    "StPaul inventory uses actual2fe6 compact40\u00d734 native module; original64 version is separately retained.",
+    "Minneapolis mainriver aperture is4corewide through middleofthree existing bridges; existing wider deck and all foot traffic stay intact.",
+    "R05/R03 verticalroad bridges are6core-long/2core-wide water underpasses with4core-wide ordinary foot decks."
+  ]
+}

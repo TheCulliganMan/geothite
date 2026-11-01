@@ -1,0 +1,42 @@
+{
+  "name": "sinknook",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f089/sinknook-v9-isolated-eye",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f089/manifest-sinknook-v9-isolated-eye.json",
+  "tool": "built-in image_gen",
+  "status": "source-generated/native-proven; root owns acceptance and context gate",
+  "native_frame_size": [
+    16,
+    16
+  ],
+  "canonical_normal_palette": [
+    32767,
+    17145,
+    12554,
+    0
+  ],
+  "canonical_shiny_palette": [
+    32767,
+    24368,
+    8524,
+    0
+  ],
+  "fit": [
+    13,
+    13
+  ],
+  "all_raw_renders_and_prompts_retained": true,
+  "no_native_pixel_painting": true,
+  "no_registry_or_pack_changes": true,
+  "retained_source_hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f089/sinknook.overworld.imagegen-v3-clean-notch.png": "b387197fcb975cc189bcc38d9850b69479e64a16b89a029829de740e84122729",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f089/sinknook.overworld.imagegen-v1.png": "8cc3a91e0ed89826a3e4aeb05e8d7448da9ea45c5702f0ce28b1e15253364c04",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f089/sinknook.overworld.imagegen-v2-one-notch-eye.png": "0d39bbf9e1016e519ea4acad215623c532eeab57ae52aaa8ab1975c081c0f9d8",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f089/prompt-sinknook-v3-clean-notch.txt": "7107d3a630742292e09e11bb0f8a3cc4c6c77d590a6a93a89465d7af79b42d5e",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f089/prompt-sinknook-v1.txt": "a077461f42255806b036fa38223be2e252e74f9e9e1fc334d26376b065a72258",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f089/prompt-sinknook-v2-one-notch-eye.txt": "183df6d605cde6dae5999a2c9bd58fe2510a15e285cc0ae75f7560298fc99cf6",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f089/sinknook.v2.original-path.txt": "5e0251005b136a3018eac8d000ca2554ae68b5c31fec080656ce00e636db53d1",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f089/sinknook.v3.original-path.txt": "4ffbb70688f275e3b3c69290c07a649dd0b044e87c5ac5389886db887499494d",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f089/sinknook.v1.original-path.txt": "7ed221d3138dc5e613a5292c86181b3b1bc6972e477262c3ac36304835974931"
+  },
+  "proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f089/proof-sinknook-v9-isolated-eye-actual-source.json"
+}

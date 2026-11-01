@@ -1,0 +1,311 @@
+{
+  "schema_version": 1,
+  "id": "glacier-current-v01",
+  "status": "Verified and selected local five-stop passenger service. Broader map review remains active.",
+  "parent_revision": "driftless_fossil_gallery_revision",
+  "parent_pack": "content-packs/minnesota-driftless-fossil-gallery-v03.crystalpack",
+  "maps": [
+    "MnDetroitLakesStation",
+    "MnStaplesStation",
+    "MnStCloudStation",
+    "MnStPaulUnionDepot",
+    "MnWinonaStation"
+  ],
+  "service_event": "EVENT_MN_COURIER_DEFEATED",
+  "story": "After the existing St. Paul courier victory, the player can return freely to station halls already visited on foot. Five existing places gain actual passenger travel; their original local stories and services remain.",
+  "fare": 0,
+  "new_mandatory_fetch_quest": false,
+  "connections": [
+    {
+      "source": "MnDetroitLakesStation",
+      "destination": "MnStaplesStation",
+      "native_script": "MnGlacierDETROIT_LAKESRide1",
+      "destination_core": [
+        11,
+        11
+      ],
+      "requires": [
+        "EVENT_MN_COURIER_DEFEATED",
+        "EVENT_MN_STATION_STAPLES_VISITED"
+      ],
+      "transport": "native MagnetTrain then warpfacing/newloadmap MAPSETUP_TRAIN"
+    },
+    {
+      "source": "MnDetroitLakesStation",
+      "destination": "MnStCloudStation",
+      "native_script": "MnGlacierDETROIT_LAKESRide2",
+      "destination_core": [
+        11,
+        11
+      ],
+      "requires": [
+        "EVENT_MN_COURIER_DEFEATED",
+        "EVENT_MN_STATION_ST_CLOUD_VISITED"
+      ],
+      "transport": "native MagnetTrain then warpfacing/newloadmap MAPSETUP_TRAIN"
+    },
+    {
+      "source": "MnDetroitLakesStation",
+      "destination": "MnStPaulUnionDepot",
+      "native_script": "MnGlacierDETROIT_LAKESRide3",
+      "destination_core": [
+        17,
+        11
+      ],
+      "requires": [
+        "EVENT_MN_COURIER_DEFEATED",
+        "EVENT_MN_STATION_ST_PAUL_VISITED"
+      ],
+      "transport": "native MagnetTrain then warpfacing/newloadmap MAPSETUP_TRAIN"
+    },
+    {
+      "source": "MnDetroitLakesStation",
+      "destination": "MnWinonaStation",
+      "native_script": "MnGlacierDETROIT_LAKESRide4",
+      "destination_core": [
+        11,
+        11
+      ],
+      "requires": [
+        "EVENT_MN_COURIER_DEFEATED",
+        "EVENT_MN_STATION_WINONA_VISITED"
+      ],
+      "transport": "native MagnetTrain then warpfacing/newloadmap MAPSETUP_TRAIN"
+    },
+    {
+      "source": "MnStaplesStation",
+      "destination": "MnDetroitLakesStation",
+      "native_script": "MnGlacierSTAPLESRide0",
+      "destination_core": [
+        13,
+        11
+      ],
+      "requires": [
+        "EVENT_MN_COURIER_DEFEATED",
+        "EVENT_MN_STATION_DETROIT_LAKES_VISITED"
+      ],
+      "transport": "native MagnetTrain then warpfacing/newloadmap MAPSETUP_TRAIN"
+    },
+    {
+      "source": "MnStaplesStation",
+      "destination": "MnStCloudStation",
+      "native_script": "MnGlacierSTAPLESRide2",
+      "destination_core": [
+        11,
+        11
+      ],
+      "requires": [
+        "EVENT_MN_COURIER_DEFEATED",
+        "EVENT_MN_STATION_ST_CLOUD_VISITED"
+      ],
+      "transport": "native MagnetTrain then warpfacing/newloadmap MAPSETUP_TRAIN"
+    },
+    {
+      "source": "MnStaplesStation",
+      "destination": "MnStPaulUnionDepot",
+      "native_script": "MnGlacierSTAPLESRide3",
+      "destination_core": [
+        17,
+        11
+      ],
+      "requires": [
+        "EVENT_MN_COURIER_DEFEATED",
+        "EVENT_MN_STATION_ST_PAUL_VISITED"
+      ],
+      "transport": "native MagnetTrain then warpfacing/newloadmap MAPSETUP_TRAIN"
+    },
+    {
+      "source": "MnStaplesStation",
+      "destination": "MnWinonaStation",
+      "native_script": "MnGlacierSTAPLESRide4",
+      "destination_core": [
+        11,
+        11
+      ],
+      "requires": [
+        "EVENT_MN_COURIER_DEFEATED",
+        "EVENT_MN_STATION_WINONA_VISITED"
+      ],
+      "transport": "native MagnetTrain then warpfacing/newloadmap MAPSETUP_TRAIN"
+    },
+    {
+      "source": "MnStCloudStation",
+      "destination": "MnDetroitLakesStation",
+      "native_script": "MnGlacierST_CLOUDRide0",
+      "destination_core": [
+        13,
+        11
+      ],
+      "requires": [
+        "EVENT_MN_COURIER_DEFEATED",
+        "EVENT_MN_STATION_DETROIT_LAKES_VISITED"
+      ],
+      "transport": "native MagnetTrain then warpfacing/newloadmap MAPSETUP_TRAIN"
+    },
+    {
+      "source": "MnStCloudStation",
+      "destination": "MnStaplesStation",
+      "native_script": "MnGlacierST_CLOUDRide1",
+      "destination_core": [
+        11,
+        11
+      ],
+      "requires": [
+        "EVENT_MN_COURIER_DEFEATED",
+        "EVENT_MN_STATION_STAPLES_VISITED"
+      ],
+      "transport": "native MagnetTrain then warpfacing/newloadmap MAPSETUP_TRAIN"
+    },
+    {
+      "source": "MnStCloudStation",
+      "destination": "MnStPaulUnionDepot",
+      "native_script": "MnGlacierST_CLOUDRide3",
+      "destination_core": [
+        17,
+        11
+      ],
+      "requires": [
+        "EVENT_MN_COURIER_DEFEATED",
+        "EVENT_MN_STATION_ST_PAUL_VISITED"
+      ],
+      "transport": "native MagnetTrain then warpfacing/newloadmap MAPSETUP_TRAIN"
+    },
+    {
+      "source": "MnStCloudStation",
+      "destination": "MnWinonaStation",
+      "native_script": "MnGlacierST_CLOUDRide4",
+      "destination_core": [
+        11,
+        11
+      ],
+      "requires": [
+        "EVENT_MN_COURIER_DEFEATED",
+        "EVENT_MN_STATION_WINONA_VISITED"
+      ],
+      "transport": "native MagnetTrain then warpfacing/newloadmap MAPSETUP_TRAIN"
+    },
+    {
+      "source": "MnStPaulUnionDepot",
+      "destination": "MnDetroitLakesStation",
+      "native_script": "MnGlacierST_PAULRide0",
+      "destination_core": [
+        13,
+        11
+      ],
+      "requires": [
+        "EVENT_MN_COURIER_DEFEATED",
+        "EVENT_MN_STATION_DETROIT_LAKES_VISITED"
+      ],
+      "transport": "native MagnetTrain then warpfacing/newloadmap MAPSETUP_TRAIN"
+    },
+    {
+      "source": "MnStPaulUnionDepot",
+      "destination": "MnStaplesStation",
+      "native_script": "MnGlacierST_PAULRide1",
+      "destination_core": [
+        11,
+        11
+      ],
+      "requires": [
+        "EVENT_MN_COURIER_DEFEATED",
+        "EVENT_MN_STATION_STAPLES_VISITED"
+      ],
+      "transport": "native MagnetTrain then warpfacing/newloadmap MAPSETUP_TRAIN"
+    },
+    {
+      "source": "MnStPaulUnionDepot",
+      "destination": "MnStCloudStation",
+      "native_script": "MnGlacierST_PAULRide2",
+      "destination_core": [
+        11,
+        11
+      ],
+      "requires": [
+        "EVENT_MN_COURIER_DEFEATED",
+        "EVENT_MN_STATION_ST_CLOUD_VISITED"
+      ],
+      "transport": "native MagnetTrain then warpfacing/newloadmap MAPSETUP_TRAIN"
+    },
+    {
+      "source": "MnStPaulUnionDepot",
+      "destination": "MnWinonaStation",
+      "native_script": "MnGlacierST_PAULRide4",
+      "destination_core": [
+        11,
+        11
+      ],
+      "requires": [
+        "EVENT_MN_COURIER_DEFEATED",
+        "EVENT_MN_STATION_WINONA_VISITED"
+      ],
+      "transport": "native MagnetTrain then warpfacing/newloadmap MAPSETUP_TRAIN"
+    },
+    {
+      "source": "MnWinonaStation",
+      "destination": "MnDetroitLakesStation",
+      "native_script": "MnGlacierWINONARide0",
+      "destination_core": [
+        13,
+        11
+      ],
+      "requires": [
+        "EVENT_MN_COURIER_DEFEATED",
+        "EVENT_MN_STATION_DETROIT_LAKES_VISITED"
+      ],
+      "transport": "native MagnetTrain then warpfacing/newloadmap MAPSETUP_TRAIN"
+    },
+    {
+      "source": "MnWinonaStation",
+      "destination": "MnStaplesStation",
+      "native_script": "MnGlacierWINONARide1",
+      "destination_core": [
+        11,
+        11
+      ],
+      "requires": [
+        "EVENT_MN_COURIER_DEFEATED",
+        "EVENT_MN_STATION_STAPLES_VISITED"
+      ],
+      "transport": "native MagnetTrain then warpfacing/newloadmap MAPSETUP_TRAIN"
+    },
+    {
+      "source": "MnWinonaStation",
+      "destination": "MnStCloudStation",
+      "native_script": "MnGlacierWINONARide2",
+      "destination_core": [
+        11,
+        11
+      ],
+      "requires": [
+        "EVENT_MN_COURIER_DEFEATED",
+        "EVENT_MN_STATION_ST_CLOUD_VISITED"
+      ],
+      "transport": "native MagnetTrain then warpfacing/newloadmap MAPSETUP_TRAIN"
+    },
+    {
+      "source": "MnWinonaStation",
+      "destination": "MnStPaulUnionDepot",
+      "native_script": "MnGlacierWINONARide3",
+      "destination_core": [
+        17,
+        11
+      ],
+      "requires": [
+        "EVENT_MN_COURIER_DEFEATED",
+        "EVENT_MN_STATION_ST_PAUL_VISITED"
+      ],
+      "transport": "native MagnetTrain then warpfacing/newloadmap MAPSETUP_TRAIN"
+    }
+  ],
+  "public_access": "city-access.json",
+  "review_pack": "content-packs/minnesota-glacier-current-v03.crystalpack",
+  "runbook": "README.md",
+  "broader_goal_complete": false,
+  "parent_pack_sha256": "3f3d12312ff947ea9f219a9368b98b51f4348ea7a76ed2caf7b062a8ef45316d",
+  "fishing_policy": {
+    "group": "FISHGROUP_NONE",
+    "requires_dry_halls": true,
+    "wet_hall_rejected": true
+  },
+  "verification": "planning/minnesota/renders/glacier-current-v794/acceptance-v818.json"
+}

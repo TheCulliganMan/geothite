@@ -1,0 +1,107 @@
+{
+  "id": "MnR17Cave1F",
+  "template": "UnionCave1F",
+  "dimensions_metatiles": [
+    7,
+    8
+  ],
+  "width_metatiles": 7,
+  "height_metatiles": 8,
+  "tileset": "cave",
+  "border_block": 46,
+  "rows": [
+    "2e 2e 2e 2e 2e 2e 2e",
+    "2e 2e 04 06 2e 2e 2e",
+    "2e 04 02 1e 2e 2e 2e",
+    "2e 20 02 2d 2e 2e 2e",
+    "2e 2e 08 2e 2e 2e 2e",
+    "2e 2e 08 1e 2e 2e 2e",
+    "2e 2e 20 21 07 22 2e",
+    "2e 2e 2e 2e 2e 2e 2e"
+  ],
+  "exits": [
+    [
+      9,
+      13
+    ]
+  ],
+  "clear_arrival": [
+    9,
+    12
+  ],
+  "exit_collision": "LADDER",
+  "exit_doors": [
+    [
+      10,
+      43
+    ]
+  ],
+  "residents": [],
+  "items": [
+    {
+      "id": "MN_R17_ITEM_04",
+      "item": "REVIVE",
+      "quantity": 1,
+      "flag": "EVENT_MN_R17_ITEM_04",
+      "access": "Optional granite den; native room return required",
+      "tile": [
+        5,
+        5
+      ]
+    }
+  ],
+  "signs": [],
+  "mandatory": false,
+  "purpose": "A short hooked talus den: fitted boulders join the northern overhang above the Revive. An attached lower stone toe makes the dry approach turn one tile earlier. Keep this optional discovery short; no new service, water or field-move gate.",
+  "candidate_status": "Source candidate under whole-room, player-camera and production traversal review.",
+  "review_contract": {
+    "quality_revision": "johto-quality-v01",
+    "palette_group": "nite",
+    "native_stair_blocks": [],
+    "viewpoints": [
+      {
+        "id": "mouth",
+        "tile": [
+          9,
+          12
+        ]
+      },
+      {
+        "id": "lower-turn",
+        "tile": [
+          7,
+          12
+        ]
+      },
+      {
+        "id": "stone-toe",
+        "tile": [
+          5,
+          11
+        ]
+      },
+      {
+        "id": "hook",
+        "tile": [
+          5,
+          9
+        ]
+      },
+      {
+        "id": "revive",
+        "tile": [
+          4,
+          5
+        ]
+      },
+      {
+        "id": "overhang",
+        "tile": [
+          6,
+          5
+        ]
+      }
+    ],
+    "notes": "A short hooked talus den: fitted boulders join the northern overhang above the Revive. An attached lower stone toe makes the dry approach turn one tile earlier. Keep this optional discovery short; no new service, water or field-move gate."
+  }
+}

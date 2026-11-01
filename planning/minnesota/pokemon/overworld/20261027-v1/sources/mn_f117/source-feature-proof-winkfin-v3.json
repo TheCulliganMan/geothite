@@ -1,0 +1,791 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_251",
+  "result": "pass",
+  "manifest_sha256": "23d245ad3eb314c744617a458f0cce43313246fd1ada6ac546864e122918c807",
+  "bank_sha256": "d71a66bd8b7710b0d0dd70a4845c791adaa17f009dc42f48a223608d8c7dab54",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f117/winkfin.overworld.imagegen-v2-three-palette-bars.png": "54a6ac28254b4420a83fbc6e0557a8c368d067e44ae7b2d67e9f580ed27794dc",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f117/winkfin.overworld.imagegen-v3-profile-three-bars.png": "d6105ac621eeda0ba7f3406384f94d38d506c0a8a299ac323fa751f05bf613fc"
+  },
+  "canonical_eye_form": "TWO actual isolated south pupils, ONE actual isolated west pupil. Every pixel in each complete native eye cluster maps to the same small anatomical source pupil component.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "down_idle",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f117/winkfin.overworld.imagegen-v2-three-palette-bars.png",
+        "crop": [
+          53,
+          149,
+          360,
+          330
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            238,
+            373,
+            15,
+            24
+          ],
+          [
+            291,
+            373,
+            15,
+            24
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                7,
+                12
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  2,
+                  3,
+                  3,
+                  254
+                ],
+                "bounds": [
+                  238,
+                  373,
+                  15,
+                  24
+                ],
+                "pixels": 360,
+                "truncated_contour": false,
+                "native_pixel": [
+                  7,
+                  12
+                ],
+                "source_sample_pixel": [
+                  241,
+                  378
+                ]
+              }
+            ]
+          },
+          {
+            "native_cluster": [
+              [
+                9,
+                12
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  5,
+                  6,
+                  7,
+                  254
+                ],
+                "bounds": [
+                  291,
+                  373,
+                  15,
+                  24
+                ],
+                "pixels": 337,
+                "truncated_contour": false,
+                "native_pixel": [
+                  9,
+                  12
+                ],
+                "source_sample_pixel": [
+                  292,
+                  378
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "left_idle",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f117/winkfin.overworld.imagegen-v3-profile-three-bars.png",
+        "crop": [
+          1081,
+          211,
+          360,
+          330
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            1185,
+            357,
+            15,
+            23
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                4,
+                9
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  0,
+                  0,
+                  0,
+                  253
+                ],
+                "bounds": [
+                  1185,
+                  357,
+                  15,
+                  23
+                ],
+                "pixels": 344,
+                "truncated_contour": false,
+                "native_pixel": [
+                  4,
+                  9
+                ],
+                "source_sample_pixel": [
+                  1194,
+                  361
+                ]
+              }
+            ]
+          }
+        ],
+        "signature_feature_proofs": [
+          {
+            "feature": "body_bar_1",
+            "anatomical_source_region_xywh": [
+              1236,
+              315,
+              29,
+              70
+            ],
+            "source_mapped_native_pixels": [
+              {
+                "native_pixel": [
+                  6,
+                  8
+                ],
+                "native_ink": 2,
+                "source_sample_pixel": [
+                  1244,
+                  335
+                ],
+                "source_rgba": [
+                  69,
+                  111,
+                  99,
+                  253
+                ]
+              },
+              {
+                "native_pixel": [
+                  6,
+                  9
+                ],
+                "native_ink": 2,
+                "source_sample_pixel": [
+                  1244,
+                  361
+                ],
+                "source_rgba": [
+                  69,
+                  111,
+                  98,
+                  253
+                ]
+              }
+            ]
+          },
+          {
+            "feature": "cyan_gap_1",
+            "anatomical_source_region_xywh": [
+              1265,
+              315,
+              21,
+              70
+            ],
+            "source_mapped_native_pixels": [
+              {
+                "native_pixel": [
+                  7,
+                  8
+                ],
+                "native_ink": 1,
+                "source_sample_pixel": [
+                  1269,
+                  335
+                ],
+                "source_rgba": [
+                  180,
+                  238,
+                  251,
+                  253
+                ]
+              },
+              {
+                "native_pixel": [
+                  7,
+                  9
+                ],
+                "native_ink": 1,
+                "source_sample_pixel": [
+                  1269,
+                  361
+                ],
+                "source_rgba": [
+                  178,
+                  237,
+                  251,
+                  253
+                ]
+              }
+            ]
+          },
+          {
+            "feature": "body_bar_2",
+            "anatomical_source_region_xywh": [
+              1286,
+              315,
+              30,
+              70
+            ],
+            "source_mapped_native_pixels": [
+              {
+                "native_pixel": [
+                  8,
+                  8
+                ],
+                "native_ink": 2,
+                "source_sample_pixel": [
+                  1295,
+                  335
+                ],
+                "source_rgba": [
+                  70,
+                  112,
+                  98,
+                  253
+                ]
+              },
+              {
+                "native_pixel": [
+                  8,
+                  9
+                ],
+                "native_ink": 2,
+                "source_sample_pixel": [
+                  1295,
+                  361
+                ],
+                "source_rgba": [
+                  69,
+                  112,
+                  99,
+                  253
+                ]
+              }
+            ]
+          },
+          {
+            "feature": "cyan_gap_2",
+            "anatomical_source_region_xywh": [
+              1316,
+              315,
+              20,
+              70
+            ],
+            "source_mapped_native_pixels": [
+              {
+                "native_pixel": [
+                  9,
+                  8
+                ],
+                "native_ink": 1,
+                "source_sample_pixel": [
+                  1320,
+                  335
+                ],
+                "source_rgba": [
+                  177,
+                  236,
+                  251,
+                  253
+                ]
+              },
+              {
+                "native_pixel": [
+                  9,
+                  9
+                ],
+                "native_ink": 1,
+                "source_sample_pixel": [
+                  1320,
+                  361
+                ],
+                "source_rgba": [
+                  178,
+                  236,
+                  251,
+                  253
+                ]
+              }
+            ]
+          },
+          {
+            "feature": "body_bar_3",
+            "anatomical_source_region_xywh": [
+              1336,
+              315,
+              23,
+              70
+            ],
+            "source_mapped_native_pixels": [
+              {
+                "native_pixel": [
+                  10,
+                  8
+                ],
+                "native_ink": 2,
+                "source_sample_pixel": [
+                  1345,
+                  335
+                ],
+                "source_rgba": [
+                  71,
+                  113,
+                  100,
+                  253
+                ]
+              },
+              {
+                "native_pixel": [
+                  10,
+                  9
+                ],
+                "native_ink": 2,
+                "source_sample_pixel": [
+                  1345,
+                  361
+                ],
+                "source_rgba": [
+                  71,
+                  114,
+                  101,
+                  253
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "down_step",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f117/winkfin.overworld.imagegen-v2-three-palette-bars.png",
+        "crop": [
+          53,
+          566,
+          360,
+          330
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            238,
+            790,
+            15,
+            24
+          ],
+          [
+            291,
+            790,
+            14,
+            24
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                7,
+                12
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  2,
+                  3,
+                  3,
+                  254
+                ],
+                "bounds": [
+                  238,
+                  790,
+                  15,
+                  24
+                ],
+                "pixels": 360,
+                "truncated_contour": false,
+                "native_pixel": [
+                  7,
+                  12
+                ],
+                "source_sample_pixel": [
+                  241,
+                  795
+                ]
+              }
+            ]
+          },
+          {
+            "native_cluster": [
+              [
+                9,
+                12
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  5,
+                  6,
+                  7,
+                  253
+                ],
+                "bounds": [
+                  291,
+                  790,
+                  14,
+                  24
+                ],
+                "pixels": 336,
+                "truncated_contour": false,
+                "native_pixel": [
+                  9,
+                  12
+                ],
+                "source_sample_pixel": [
+                  292,
+                  795
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "left_step",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f117/winkfin.overworld.imagegen-v3-profile-three-bars.png",
+        "crop": [
+          1081,
+          628,
+          360,
+          330
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            1184,
+            774,
+            16,
+            23
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                4,
+                9
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  0,
+                  0,
+                  0,
+                  253
+                ],
+                "bounds": [
+                  1184,
+                  774,
+                  16,
+                  23
+                ],
+                "pixels": 353,
+                "truncated_contour": false,
+                "native_pixel": [
+                  4,
+                  9
+                ],
+                "source_sample_pixel": [
+                  1194,
+                  778
+                ]
+              }
+            ]
+          }
+        ],
+        "signature_feature_proofs": [
+          {
+            "feature": "body_bar_1",
+            "anatomical_source_region_xywh": [
+              1236,
+              732,
+              29,
+              70
+            ],
+            "source_mapped_native_pixels": [
+              {
+                "native_pixel": [
+                  6,
+                  8
+                ],
+                "native_ink": 2,
+                "source_sample_pixel": [
+                  1244,
+                  752
+                ],
+                "source_rgba": [
+                  69,
+                  109,
+                  96,
+                  253
+                ]
+              },
+              {
+                "native_pixel": [
+                  6,
+                  9
+                ],
+                "native_ink": 2,
+                "source_sample_pixel": [
+                  1244,
+                  778
+                ],
+                "source_rgba": [
+                  68,
+                  110,
+                  97,
+                  253
+                ]
+              }
+            ]
+          },
+          {
+            "feature": "cyan_gap_1",
+            "anatomical_source_region_xywh": [
+              1265,
+              732,
+              21,
+              70
+            ],
+            "source_mapped_native_pixels": [
+              {
+                "native_pixel": [
+                  7,
+                  8
+                ],
+                "native_ink": 1,
+                "source_sample_pixel": [
+                  1269,
+                  752
+                ],
+                "source_rgba": [
+                  178,
+                  237,
+                  251,
+                  253
+                ]
+              },
+              {
+                "native_pixel": [
+                  7,
+                  9
+                ],
+                "native_ink": 1,
+                "source_sample_pixel": [
+                  1269,
+                  778
+                ],
+                "source_rgba": [
+                  178,
+                  237,
+                  251,
+                  253
+                ]
+              }
+            ]
+          },
+          {
+            "feature": "body_bar_2",
+            "anatomical_source_region_xywh": [
+              1286,
+              732,
+              30,
+              70
+            ],
+            "source_mapped_native_pixels": [
+              {
+                "native_pixel": [
+                  8,
+                  8
+                ],
+                "native_ink": 2,
+                "source_sample_pixel": [
+                  1295,
+                  752
+                ],
+                "source_rgba": [
+                  69,
+                  110,
+                  97,
+                  253
+                ]
+              },
+              {
+                "native_pixel": [
+                  8,
+                  9
+                ],
+                "native_ink": 2,
+                "source_sample_pixel": [
+                  1295,
+                  778
+                ],
+                "source_rgba": [
+                  71,
+                  111,
+                  99,
+                  253
+                ]
+              }
+            ]
+          },
+          {
+            "feature": "cyan_gap_2",
+            "anatomical_source_region_xywh": [
+              1316,
+              732,
+              20,
+              70
+            ],
+            "source_mapped_native_pixels": [
+              {
+                "native_pixel": [
+                  9,
+                  8
+                ],
+                "native_ink": 1,
+                "source_sample_pixel": [
+                  1320,
+                  752
+                ],
+                "source_rgba": [
+                  177,
+                  235,
+                  251,
+                  253
+                ]
+              },
+              {
+                "native_pixel": [
+                  9,
+                  9
+                ],
+                "native_ink": 1,
+                "source_sample_pixel": [
+                  1320,
+                  778
+                ],
+                "source_rgba": [
+                  178,
+                  236,
+                  251,
+                  253
+                ]
+              }
+            ]
+          },
+          {
+            "feature": "body_bar_3",
+            "anatomical_source_region_xywh": [
+              1336,
+              732,
+              23,
+              70
+            ],
+            "source_mapped_native_pixels": [
+              {
+                "native_pixel": [
+                  10,
+                  8
+                ],
+                "native_ink": 2,
+                "source_sample_pixel": [
+                  1345,
+                  752
+                ],
+                "source_rgba": [
+                  72,
+                  114,
+                  101,
+                  253
+                ]
+              },
+              {
+                "native_pixel": [
+                  10,
+                  9
+                ],
+                "native_ink": 2,
+                "source_sample_pixel": [
+                  1345,
+                  778
+                ],
+                "source_rgba": [
+                  72,
+                  113,
+                  100,
+                  253
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "notes": "Both native normal/shiny rear poses actually inspected: plain rear head, no copied face. Head anchors stable, 1px transparent outer border, three walk pairs differ."
+  },
+  "detailed_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f117/manifest-winkfin-v3-pupil-proof.proof.json"
+}

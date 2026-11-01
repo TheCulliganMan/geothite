@@ -1,0 +1,365 @@
+{
+  "schema_version": 1,
+  "status": "Published physical dock control; ordinary-party literal course, reversals, badge/loss/poolside denials and native state views verified; user acceptance open.",
+  "gyms": [
+    {
+      "slot": 6,
+      "id": "MnBrainerdGym",
+      "constant": "MN_BRAINERD_GYM",
+      "city": "BRAINERD",
+      "leader": "SIVREN",
+      "trainer_class": "COOLTRAINERF",
+      "leader_sprite": "SPRITE_COOLTRAINER_F",
+      "leader_at": [
+        5,
+        3
+      ],
+      "badge_flag": "ENGINE_MINERALBADGE",
+      "requires": [
+        "BADGE_5"
+      ],
+      "reward": "TM_RAIN_DANCE",
+      "party": [
+        {
+          "species": "POLIWHIRL",
+          "level": 33,
+          "moves": [
+            "WATER_GUN",
+            "RAIN_DANCE",
+            "HYPNOSIS",
+            "DOUBLESLAP"
+          ]
+        },
+        {
+          "species": "QUAGSIRE",
+          "level": 34,
+          "moves": [
+            "SURF",
+            "SLAM",
+            "AMNESIA",
+            "MUD_SLAP"
+          ]
+        },
+        {
+          "species": "LANTURN",
+          "level": 35,
+          "moves": [
+            "WATER_GUN",
+            "SPARK",
+            "CONFUSE_RAY",
+            "RAIN_DANCE"
+          ]
+        }
+      ],
+      "rows": [
+        "ttttt",
+        "awcwb",
+        "lhhAr",
+        "luudr",
+        "lBCWr",
+        "lh.Wr",
+        "lL.Sr",
+        "ffsff"
+      ],
+      "art": {
+        "#": [
+          "port",
+          "2a"
+        ],
+        "t": [
+          "port",
+          "2b"
+        ],
+        "a": [
+          "port",
+          "37"
+        ],
+        "w": [
+          "port",
+          "36"
+        ],
+        "c": [
+          "port",
+          "39"
+        ],
+        "b": [
+          "port",
+          "38"
+        ],
+        "l": [
+          "port",
+          "2e"
+        ],
+        "h": [
+          "port",
+          "27"
+        ],
+        "j": [
+          "port",
+          "29"
+        ],
+        "r": [
+          "port",
+          "2f"
+        ],
+        "u": [
+          "port",
+          "0c"
+        ],
+        "d": [
+          "port",
+          "2d"
+        ],
+        "v": [
+          "port",
+          "14"
+        ],
+        ".": [
+          "port",
+          "26"
+        ],
+        "W": [
+          "port",
+          "08"
+        ],
+        "A": [
+          "port",
+          "08"
+        ],
+        "B": [
+          "port",
+          "08"
+        ],
+        "C": [
+          "port",
+          "08"
+        ],
+        "L": [
+          "port",
+          "32"
+        ],
+        "f": [
+          "port",
+          "31"
+        ],
+        "s": [
+          "port",
+          "33"
+        ],
+        "S": [
+          "elite_four_room",
+          "37"
+        ]
+      },
+      "trainers": [
+        {
+          "id": "MN_GYM_6_TRAINER_1",
+          "name": "LORLA",
+          "trainer_class": "SWIMMERF",
+          "sprite": "SPRITE_SWIMMER_GIRL",
+          "at": [
+            2,
+            10
+          ],
+          "party": [
+            {
+              "species": "POLIWAG",
+              "level": 30
+            },
+            {
+              "species": "GOLDEEN",
+              "level": 30
+            }
+          ],
+          "optional": false,
+          "before_lines": [
+            "Keep your footing",
+            "on a narrow pier!"
+          ],
+          "after_lines": [
+            "Use the blue",
+            "winch on the",
+            "south pier. First",
+            "press centers",
+            "the walk."
+          ]
+        },
+        {
+          "id": "MN_GYM_6_TRAINER_2",
+          "name": "BRAVEL",
+          "trainer_class": "FISHER",
+          "sprite": "SPRITE_FISHER",
+          "at": [
+            2,
+            7
+          ],
+          "party": [
+            {
+              "species": "WOOPER",
+              "level": 31
+            },
+            {
+              "species": "CHINCHOU",
+              "level": 31
+            }
+          ],
+          "optional": false,
+          "before_lines": [
+            "A pool can teach",
+            "you to read a lake."
+          ],
+          "after_lines": [
+            "Return to the",
+            "blue winch. Press",
+            "it again to shift",
+            "the walk left",
+            "toward SIVREN."
+          ]
+        }
+      ],
+      "stations": [],
+      "gates": [
+        {
+          "at": [
+            2,
+            4
+          ],
+          "requires": [
+            "EVENT_MN_GYM_6_TRAINER_1_DEFEATED",
+            "EVENT_MN_GYM_6_WALK_CENTER"
+          ],
+          "open_symbol": "v",
+          "event": "EVENT_MN_GYM_6_CENTER_WALK_OPEN"
+        },
+        {
+          "at": [
+            1,
+            4
+          ],
+          "requires": [
+            "EVENT_MN_GYM_6_TRAINER_1_DEFEATED",
+            "EVENT_MN_GYM_6_TRAINER_2_DEFEATED",
+            "EVENT_MN_GYM_6_WALK_LEFT"
+          ],
+          "open_symbol": "v",
+          "event": "EVENT_MN_GYM_6_LEFT_WALK_OPEN"
+        },
+        {
+          "at": [
+            3,
+            2
+          ],
+          "requires": [
+            "EVENT_MN_GYM_6_TRAINER_1_DEFEATED",
+            "EVENT_MN_GYM_6_TRAINER_2_DEFEATED",
+            "EVENT_MN_GYM_6_WALK_LEFT"
+          ],
+          "open_symbol": "j",
+          "event": "EVENT_MN_GYM_6_COURT_OPEN"
+        }
+      ],
+      "guide": [
+        "Beat LORLA first.",
+        "The blue winch",
+        "centers the walk.",
+        "Beat BRAVEL, then",
+        "return and press",
+        "it again for",
+        "SIVREN."
+      ],
+      "walkthrough": [
+        "MN_GYM_6_TRAINER_1",
+        "CENTER",
+        "MN_GYM_6_TRAINER_2",
+        "LEFT"
+      ],
+      "dimensions_metatiles": [
+        5,
+        8
+      ],
+      "arrival_core": [
+        4,
+        14
+      ],
+      "exit_tiles_core": [
+        [
+          4,
+          15
+        ],
+        [
+          5,
+          15
+        ]
+      ],
+      "guide_at": [
+        7,
+        14
+      ],
+      "leader_court_locked": true,
+      "before_lines": [
+        "A lake looks quiet",
+        "from the shore.",
+        "Out on the water,",
+        "you must pay heed."
+      ],
+      "victory_lines": [
+        "You kept a steady",
+        "hand on the tiller."
+      ],
+      "after_lines": [
+        "Visit the ranger",
+        "before setting out.",
+        "There is more than",
+        "one way north."
+      ],
+      "routers": [
+        {
+          "id": "FLOAT_WALK",
+          "operator": null,
+          "at": [
+            6,
+            13
+          ],
+          "prompt": [
+            "Shift the floating",
+            "walk to which side?"
+          ],
+          "modes": [
+            {
+              "id": "CENTER",
+              "label": "CENTER",
+              "requires": [
+                "EVENT_MN_GYM_6_TRAINER_1_DEFEATED"
+              ],
+              "event": "EVENT_MN_GYM_6_WALK_CENTER",
+              "lines": [
+                "The walk slides",
+                "to the center."
+              ],
+              "denied_lines": [
+                "Battle LORLA first."
+              ]
+            },
+            {
+              "id": "LEFT",
+              "label": "LEFT",
+              "requires": [
+                "EVENT_MN_GYM_6_TRAINER_1_DEFEATED"
+              ],
+              "event": "EVENT_MN_GYM_6_WALK_LEFT",
+              "lines": [
+                "The walk slides",
+                "to the left."
+              ],
+              "denied_lines": [
+                "Battle LORLA first."
+              ]
+            }
+          ],
+          "toggle": true
+        }
+      ],
+      "enclosed_pool": true
+    }
+  ]
+}

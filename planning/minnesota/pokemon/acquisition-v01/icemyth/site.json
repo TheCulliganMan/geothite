@@ -1,0 +1,123 @@
+{
+  "schema_version": 1,
+  "id": "minnesota-icemyth-exhibition-site-v1",
+  "status": "Corrected candidate passes15 native source collision/reachability checks; complete terrain renders inspected. Actor/case presentation, Rust publication and production-controller acceptance remain pending; not installed.",
+  "review_parent_content_hash": "23b1f17967c004b1a5bf6b21b38a056aa110a37afcb7f3f01bbc5e2227b15b77",
+  "hall": "MnStPaulFairExhibitionHall",
+  "hall_dimensions_metatiles": [
+    8,
+    6
+  ],
+  "hall_stair": {
+    "metatile": [
+      6,
+      4
+    ],
+    "before": "0f",
+    "after": "25",
+    "active": [
+      12,
+      8
+    ],
+    "arrival": [
+      13,
+      8
+    ],
+    "approach": [
+      13,
+      9
+    ]
+  },
+  "hall_actors": {
+    "attendant": [
+      10,
+      8
+    ],
+    "delivery_worker": [
+      7,
+      8
+    ],
+    "visitor": [
+      4,
+      8
+    ],
+    "frozen_case": [
+      10,
+      7
+    ]
+  },
+  "hall_observations": {
+    "latch": {
+      "at": [
+        9,
+        8
+      ],
+      "approach": [
+        9,
+        7
+      ]
+    },
+    "tray": {
+      "at": [
+        13,
+        7
+      ],
+      "approach": [
+        13,
+        8
+      ]
+    }
+  },
+  "service": {
+    "map": "MnIcemythServicePassage",
+    "constant": "MN_ICEMYTH_SERVICE_PASSAGE",
+    "dimensions_metatiles": [
+      7,
+      7
+    ],
+    "tileset": "house",
+    "rows": [
+      "0a 0a 0a 0a 0a 0a 0a",
+      "0a 08 0f 04 0f 08 0a",
+      "0a 0f 04 0f 0f 0f 0a",
+      "0a 0f 0f 0f 0f 1f 0a",
+      "0a 04 0f 0f 0f 0f 0a",
+      "0a 25 0f 0f 0f 0f 0a",
+      "0a 0a 0a 0a 0a 0a 0a"
+    ],
+    "active_stair": [
+      2,
+      10
+    ],
+    "arrival": [
+      3,
+      11
+    ],
+    "case_read": {
+      "at": [
+        5,
+        4
+      ],
+      "approach": [
+        6,
+        4
+      ]
+    },
+    "icemyth": [
+      9,
+      5
+    ],
+    "icemyth_approach": [
+      9,
+      6
+    ]
+  },
+  "preservation": [
+    "Do not add actors to the255-actor fairgrounds map or alter its terrain, crowd, buildings or entry services.",
+    "Keep the exhibition hall's original two actors, statue detail read, original three warp records, all original scripts and its StPaul return exact.",
+    "Only the reviewed0f floor metatile becomes native25 stairs; preserve every other original hall metatile.",
+    "Both new stairs target passive FLOOR arrivals, with explicit reciprocal indices. The publisher must verify native stair collision and non-looping arrivals.",
+    "Use original house metatiles and the active Minnesota Icemyth field bank. No homemade sign, table, campfire or buoy art.",
+    "Clue completion and the optional encounter must not control ordinary exits or any paid-admission lifecycle."
+  ]
+}

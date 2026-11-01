@@ -1,0 +1,107 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-iron-crosscut-rock-cache-v02.crystalpack",
+  "sha256": "bc38b8920bdc6d5e3c0e18ddac283aa4087e0020d694861f277d10314a3875d1",
+  "cases": [
+    {
+      "phase": "stairs-and-cliff",
+      "source_save": ".local/route-grass-review/current-brainerd-successor-public-saves-v01/brainerd-33176-1793389694221439000.crystalsave",
+      "source_sha256": "8712a0ee20c710e19424c3b5fe20af7146c38cbc55d12d42c404fd8b83a395a2",
+      "input_save": ".local/route-grass-review/current-brainerd-successor-stairs-and-cliff-v01-input.crystalsave",
+      "output_save": ".local/route-grass-review/current-brainerd-successor-stairs-and-cliff-v01-output.crystalsave",
+      "input_source_unchanged": true,
+      "initial": {
+        "badges": 6,
+        "dialogue": false,
+        "facing": "down",
+        "frame": 3451,
+        "map": "MnBrainerd",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 0
+        },
+        "position": {
+          "x": 32,
+          "y": 24
+        }
+      },
+      "final": {
+        "badges": 6,
+        "dialogue": false,
+        "facing": "up",
+        "frame": 3612,
+        "map": "MnBrainerd",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 0
+        },
+        "position": {
+          "x": 21,
+          "y": 39
+        }
+      },
+      "stderr_bytes": 0
+    },
+    {
+      "phase": "continued-upper",
+      "source_save": ".local/route-grass-review/current-brainerd-successor-stairs-and-cliff-v01-output.crystalsave",
+      "source_sha256": "45840e8174e039a43cfb64456766fa08e5524592068d676c65be9ff7ec047d05",
+      "input_save": ".local/route-grass-review/current-brainerd-successor-continued-upper-v01-input.crystalsave",
+      "output_save": ".local/route-grass-review/current-brainerd-successor-continued-upper-v01-output.crystalsave",
+      "input_source_unchanged": true,
+      "initial": {
+        "badges": 6,
+        "dialogue": false,
+        "facing": "up",
+        "frame": 3612,
+        "map": "MnBrainerd",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 0
+        },
+        "position": {
+          "x": 21,
+          "y": 39
+        }
+      },
+      "final": {
+        "badges": 6,
+        "dialogue": false,
+        "facing": "up",
+        "frame": 3619,
+        "map": "MnBrainerd",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 0
+        },
+        "position": {
+          "x": 21,
+          "y": 39
+        }
+      },
+      "stderr_bytes": 0
+    }
+  ],
+  "calls": 351,
+  "actual_native_stair_both_directions": true,
+  "stair_side_wall_denied": true,
+  "old_high_cliff_no_jump_from_either_side": true,
+  "actual_reached_upper_save_continued": true,
+  "scope": "Actual native public-path checkpoint followed by production inputs only. Initial Mew/badges/position are QA setup; no later state edits or retagging. Retired cliff jump is not restored."
+}

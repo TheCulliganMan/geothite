@@ -1,0 +1,30 @@
+{
+  "references": [
+    {
+      "path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/gen2-reference/starters.png",
+      "sha256": "af61f720a75b7e1b8e80ba14e8944612556397eedddd719669dec68b0e0fd534",
+      "role": "Authentic Gen2 coarse native pixels and close rear battle framing only; original serpent anatomy, no character copying."
+    }
+  ],
+  "regional_sources": [
+    {
+      "title": "Minnesota DNR, Minnesota Profile: Timber Rattlesnake,2016",
+      "url": "https://www.dnr.state.mn.us/mcvmagazine/issues/2016/jul-aug/minnesota-profile-timber-rattlesnake.html",
+      "supports": "Southeastern bluff habitat, natural bands, juvenile gray/adult warm colors, rattle segment growth.",
+      "source_kind": "primary regional wildlife account"
+    },
+    {
+      "title": "Minnesota DNR, Timber rattlesnake survey and habitat improvement",
+      "url": "https://www.dnr.state.mn.us/eco/nongame/projects/timber_rattle.html",
+      "supports": "Minnesota bluff-prairie and associated forest habitat.",
+      "source_kind": "primary regional agency account"
+    },
+    {
+      "title": "Smithsonian National Zoo, Timber rattlesnake",
+      "url": "https://nationalzoo.si.edu/animals/timber-rattlesnake",
+      "supports": "Keratin rattle sections, physical contact producing warning sound.",
+      "source_kind": "primary zoo biological explanation"
+    }
+  ],
+  "fantasy_design": "Unequal two-lobe resonant rattle is invented; body proportions/natural bands and bluff habitat grounded in primary sources."
+}

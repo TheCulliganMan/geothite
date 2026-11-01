@@ -1,0 +1,244 @@
+{
+  "schema_version": 1,
+  "status": "source proposal; StPaul preimage is exact frozen compact layout before native publication",
+  "maps": {
+    "MnStPaul": {
+      "dimensions_metatiles": [
+        40,
+        34
+      ],
+      "native_module_sha256": "10c8ddb5dd3005d0f586917c6b3b64160d08e08283b4ce83adcf1de067a6dd2b",
+      "compact_layout_sha256": "0f19bd50edf28922b24f592235e14acf21a3211d9f891843074c8e3436199313",
+      "changes": [
+        {
+          "metatile": [
+            37,
+            28
+          ],
+          "before": 1,
+          "after": 67
+        },
+        {
+          "metatile": [
+            38,
+            28
+          ],
+          "before": 1,
+          "after": 100
+        },
+        {
+          "metatile": [
+            37,
+            29
+          ],
+          "before": 1,
+          "after": 67
+        },
+        {
+          "metatile": [
+            38,
+            29
+          ],
+          "before": 1,
+          "after": 100
+        },
+        {
+          "metatile": [
+            37,
+            30
+          ],
+          "before": 1,
+          "after": 67
+        },
+        {
+          "metatile": [
+            38,
+            30
+          ],
+          "before": 1,
+          "after": 100
+        },
+        {
+          "metatile": [
+            37,
+            31
+          ],
+          "before": 85,
+          "after": 67
+        },
+        {
+          "metatile": [
+            38,
+            31
+          ],
+          "before": 1,
+          "after": 100
+        },
+        {
+          "metatile": [
+            37,
+            32
+          ],
+          "before": 1,
+          "after": 67
+        },
+        {
+          "metatile": [
+            38,
+            32
+          ],
+          "before": 1,
+          "after": 100
+        },
+        {
+          "metatile": [
+            37,
+            33
+          ],
+          "before": 19,
+          "after": 67
+        },
+        {
+          "metatile": [
+            38,
+            33
+          ],
+          "before": 19,
+          "after": 100
+        }
+      ]
+    },
+    "MnWinona": {
+      "dimensions_metatiles": [
+        16,
+        14
+      ],
+      "native_module_sha256": "e385a15723f968bf15340d507e08750b9fcf05f365eff4c11d36fa443a6957fd",
+      "compact_layout_sha256": null,
+      "changes": [
+        {
+          "metatile": [
+            13,
+            0
+          ],
+          "before": 5,
+          "after": 88
+        },
+        {
+          "metatile": [
+            14,
+            0
+          ],
+          "before": 5,
+          "after": 89
+        }
+      ]
+    },
+    "MnR03C00R00": {
+      "dimensions_metatiles": [
+        24,
+        24
+      ],
+      "native_module_sha256": "b34e904f8380fdcb73e6728f68bac51412dddc530f6736705c84b64993796065",
+      "compact_layout_sha256": null,
+      "changes": [
+        {
+          "metatile": [
+            18,
+            1
+          ],
+          "before": 89,
+          "after": 53
+        },
+        {
+          "metatile": [
+            19,
+            1
+          ],
+          "before": 5,
+          "after": 118
+        },
+        {
+          "metatile": [
+            20,
+            1
+          ],
+          "before": 5,
+          "after": 118
+        },
+        {
+          "metatile": [
+            21,
+            1
+          ],
+          "before": 5,
+          "after": 118
+        },
+        {
+          "metatile": [
+            22,
+            1
+          ],
+          "before": 5,
+          "after": 118
+        },
+        {
+          "metatile": [
+            23,
+            1
+          ],
+          "before": 5,
+          "after": 118
+        },
+        {
+          "metatile": [
+            18,
+            2
+          ],
+          "before": 89,
+          "after": 53
+        },
+        {
+          "metatile": [
+            19,
+            2
+          ],
+          "before": 5,
+          "after": 53
+        },
+        {
+          "metatile": [
+            20,
+            2
+          ],
+          "before": 5,
+          "after": 53
+        },
+        {
+          "metatile": [
+            21,
+            2
+          ],
+          "before": 5,
+          "after": 53
+        },
+        {
+          "metatile": [
+            22,
+            2
+          ],
+          "before": 5,
+          "after": 53
+        },
+        {
+          "metatile": [
+            23,
+            2
+          ],
+          "before": 5,
+          "after": 53
+        }
+      ]
+    }
+  }
+}

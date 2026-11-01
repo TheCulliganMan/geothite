@@ -1,0 +1,22 @@
+{
+  "trainers": [
+    {
+      "id": "MN_REED_MINE",
+      "map": "MnIronDrillCore",
+      "actor_script": "MN_NDRILL_REED",
+      "approach": [
+        8,
+        9
+      ],
+      "facing": "south",
+      "trainer_class": "MN_RIVAL_REED",
+      "sprite": "SPRITE_MN_RIVAL_REED",
+      "fixture_events": [
+        "EVENT_MN_DRILL_TEST_WITNESSED",
+        "EVENT_MN_DRILL_FEED_ISOLATED"
+      ],
+      "fixture_badges": 5,
+      "defeated_flag": "EVENT_MN_REED_MINE_DEFEATED"
+    }
+  ]
+}

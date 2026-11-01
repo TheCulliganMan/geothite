@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F025",
+  "species": [
+    {
+      "species_id": "MN_064",
+      "runtime_token": "HATCHRUSH",
+      "palette_rgb555": [
+        32767,
+        27510,
+        18792,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        28378,
+        11538,
+        0
+      ],
+      "fit": [
+        14,
+        14
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 64,
+      "interior_black_samples": 64,
+      "opaque_interior_minimum_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "hatchrush.overworld.imagegen-v3-headwide.png",
+          "crop": [
+            77,
+            73,
+            450,
+            460
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "hatchrush.overworld.imagegen-v3-headwide.png",
+          "crop": [
+            545,
+            65,
+            450,
+            460
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "hatchrush.overworld.imagegen-v3-headwide.png",
+          "crop": [
+            1025,
+            65,
+            450,
+            460
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "hatchrush.overworld.imagegen-v3-headwide.png",
+          "crop": [
+            77,
+            523,
+            450,
+            460
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "hatchrush.overworld.imagegen-v3-headwide.png",
+          "crop": [
+            545,
+            515,
+            450,
+            460
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "hatchrush.overworld.imagegen-v3-headwide.png",
+          "crop": [
+            1025,
+            515,
+            450,
+            460
+          ]
+        }
+      ]
+    }
+  ]
+}

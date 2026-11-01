@@ -1,0 +1,178 @@
+{
+  "route": "MN_R02",
+  "active_parent": "content-packs/minnesota-r10-rock-gallery-v01.crystalpack",
+  "active_parent_sha256": "a69aa145e6ea870b459d79859958806170b56036af4f85e0c1e007629a2f67d6",
+  "status": "detached historical terrain deltas; not publication approval",
+  "cells": [
+    {
+      "map": "MnR02C00R00",
+      "metatile": [
+        26,
+        9
+      ],
+      "global_metatile": [
+        26,
+        9
+      ],
+      "before": 49,
+      "after": 129,
+      "current": 49
+    },
+    {
+      "map": "MnR02C00R00",
+      "metatile": [
+        26,
+        10
+      ],
+      "global_metatile": [
+        26,
+        10
+      ],
+      "before": 49,
+      "after": 129,
+      "current": 49
+    },
+    {
+      "map": "MnR02C00R00",
+      "metatile": [
+        10,
+        12
+      ],
+      "global_metatile": [
+        10,
+        12
+      ],
+      "before": 49,
+      "after": 129,
+      "current": 49
+    },
+    {
+      "map": "MnR02C00R00",
+      "metatile": [
+        11,
+        12
+      ],
+      "global_metatile": [
+        11,
+        12
+      ],
+      "before": 49,
+      "after": 129,
+      "current": 49
+    },
+    {
+      "map": "MnR02C00R00",
+      "metatile": [
+        10,
+        13
+      ],
+      "global_metatile": [
+        10,
+        13
+      ],
+      "before": 49,
+      "after": 129,
+      "current": 49
+    },
+    {
+      "map": "MnR02C00R00",
+      "metatile": [
+        11,
+        13
+      ],
+      "global_metatile": [
+        11,
+        13
+      ],
+      "before": 49,
+      "after": 129,
+      "current": 49
+    },
+    {
+      "map": "MnR02C00R00",
+      "metatile": [
+        22,
+        13
+      ],
+      "global_metatile": [
+        22,
+        13
+      ],
+      "before": 49,
+      "after": 129,
+      "current": 49
+    },
+    {
+      "map": "MnR02C00R00",
+      "metatile": [
+        23,
+        13
+      ],
+      "global_metatile": [
+        23,
+        13
+      ],
+      "before": 49,
+      "after": 129,
+      "current": 49
+    },
+    {
+      "map": "MnR02C00R00",
+      "metatile": [
+        24,
+        13
+      ],
+      "global_metatile": [
+        24,
+        13
+      ],
+      "before": 49,
+      "after": 129,
+      "current": 49
+    },
+    {
+      "map": "MnR02C00R00",
+      "metatile": [
+        7,
+        15
+      ],
+      "global_metatile": [
+        7,
+        15
+      ],
+      "before": 49,
+      "after": 129,
+      "current": 49
+    },
+    {
+      "map": "MnR02C00R00",
+      "metatile": [
+        8,
+        15
+      ],
+      "global_metatile": [
+        8,
+        15
+      ],
+      "before": 49,
+      "after": 129,
+      "current": 49
+    },
+    {
+      "map": "MnR02C00R00",
+      "metatile": [
+        9,
+        15
+      ],
+      "global_metatile": [
+        9,
+        15
+      ],
+      "before": 49,
+      "after": 129,
+      "current": 49
+    }
+  ],
+  "conflicts": [],
+  "already_present": 0
+}

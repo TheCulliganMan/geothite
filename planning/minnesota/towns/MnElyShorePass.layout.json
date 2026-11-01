@@ -1,0 +1,431 @@
+{
+  "schema_version": 2,
+  "id": "MnElyShorePass",
+  "tileset": "johto",
+  "compiled_tileset": "mn_winter_north_shore",
+  "dimensions_metatiles": [
+    7,
+    12
+  ],
+  "shore_fitting": "explicit_source_edges",
+  "reject_cliff_cuts": true,
+  "source_pixels_modified": false,
+  "layers": [
+    {
+      "kind": "block_rect",
+      "name": "Preserved inland forest frame",
+      "bounds": [
+        0,
+        0,
+        7,
+        12
+      ],
+      "block": "8b"
+    },
+    {
+      "kind": "point",
+      "name": "Existing reviewed pass cell",
+      "position": [
+        4,
+        0
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Existing reviewed pass cell",
+      "position": [
+        5,
+        0
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Existing reviewed pass cell",
+      "position": [
+        6,
+        0
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Existing reviewed pass cell",
+      "position": [
+        4,
+        1
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Existing reviewed pass cell",
+      "position": [
+        5,
+        1
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Existing reviewed pass cell",
+      "position": [
+        6,
+        1
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Existing reviewed pass cell",
+      "position": [
+        4,
+        2
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Existing reviewed pass cell",
+      "position": [
+        5,
+        2
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Existing reviewed pass cell",
+      "position": [
+        6,
+        2
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Existing reviewed pass cell",
+      "position": [
+        4,
+        3
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Existing reviewed pass cell",
+      "position": [
+        5,
+        3
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Existing reviewed pass cell",
+      "position": [
+        6,
+        3
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Existing reviewed pass cell",
+      "position": [
+        2,
+        4
+      ],
+      "block": "83"
+    },
+    {
+      "kind": "point",
+      "name": "Existing reviewed pass cell",
+      "position": [
+        3,
+        4
+      ],
+      "block": "83"
+    },
+    {
+      "kind": "point",
+      "name": "Existing reviewed pass cell",
+      "position": [
+        4,
+        4
+      ],
+      "block": "02"
+    },
+    {
+      "kind": "point",
+      "name": "Existing reviewed pass cell",
+      "position": [
+        5,
+        4
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Existing reviewed pass cell",
+      "position": [
+        6,
+        4
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Existing reviewed pass cell",
+      "position": [
+        2,
+        5
+      ],
+      "block": "83"
+    },
+    {
+      "kind": "point",
+      "name": "Existing reviewed pass cell",
+      "position": [
+        4,
+        5
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Existing reviewed pass cell",
+      "position": [
+        5,
+        5
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Existing reviewed pass cell",
+      "position": [
+        6,
+        5
+      ],
+      "block": "01"
+    },
+    {
+      "kind": "point",
+      "name": "Existing reviewed pass cell",
+      "position": [
+        1,
+        6
+      ],
+      "block": "83"
+    },
+    {
+      "kind": "point",
+      "name": "Existing reviewed pass cell",
+      "position": [
+        2,
+        6
+      ],
+      "block": "83"
+    },
+    {
+      "kind": "point",
+      "name": "Existing reviewed pass cell",
+      "position": [
+        4,
+        6
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Existing reviewed pass cell",
+      "position": [
+        5,
+        6
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Existing reviewed pass cell",
+      "position": [
+        6,
+        6
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Existing reviewed pass cell",
+      "position": [
+        0,
+        7
+      ],
+      "block": "83"
+    },
+    {
+      "kind": "point",
+      "name": "Existing reviewed pass cell",
+      "position": [
+        1,
+        7
+      ],
+      "block": "83"
+    },
+    {
+      "kind": "point",
+      "name": "Existing reviewed pass cell",
+      "position": [
+        4,
+        7
+      ],
+      "block": "02"
+    },
+    {
+      "kind": "point",
+      "name": "Existing reviewed pass cell",
+      "position": [
+        5,
+        7
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Existing reviewed pass cell",
+      "position": [
+        6,
+        7
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Existing reviewed pass cell",
+      "position": [
+        4,
+        8
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Existing reviewed pass cell",
+      "position": [
+        5,
+        8
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Existing reviewed pass cell",
+      "position": [
+        6,
+        8
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Existing reviewed pass cell",
+      "position": [
+        4,
+        9
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Existing reviewed pass cell",
+      "position": [
+        5,
+        9
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Existing reviewed pass cell",
+      "position": [
+        6,
+        9
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Existing reviewed pass cell",
+      "position": [
+        4,
+        10
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Existing reviewed pass cell",
+      "position": [
+        5,
+        10
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Existing reviewed pass cell",
+      "position": [
+        6,
+        10
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Existing reviewed pass cell",
+      "position": [
+        4,
+        11
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Existing reviewed pass cell",
+      "position": [
+        5,
+        11
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Existing reviewed pass cell",
+      "position": [
+        6,
+        11
+      ],
+      "block": "05"
+    },
+    {
+      "kind": "point",
+      "name": "Green approach habitat",
+      "position": [
+        4,
+        4
+      ],
+      "block": "03"
+    },
+    {
+      "kind": "point",
+      "name": "Coastal exit habitat",
+      "position": [
+        5,
+        5
+      ],
+      "block": "03"
+    }
+  ]
+}

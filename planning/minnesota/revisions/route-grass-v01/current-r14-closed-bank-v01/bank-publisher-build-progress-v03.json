@@ -1,0 +1,50 @@
+{
+  "pid": 15522,
+  "source_sha256": {
+    "crates/crystal-assets/src/r14_forest_bank.rs": "b9672b62a72250f80c905eeb53738e96b53d5037305935b4a7dbae64e75f1be8",
+    "crates/crystal-assets/src/bin/revise_r14_forest_bank.rs": "8b3997d61b88f04afdb2d8209f263b6855e26dc0c7417ad576d70234a74e48ec"
+  },
+  "steps": [
+    {
+      "step": "publisher",
+      "command": [
+        "cargo",
+        "build",
+        "--profile",
+        "wasm-dev",
+        "--locked",
+        "--config",
+        "profile.wasm-dev.package.crystal-assets.opt-level=0",
+        "-p",
+        "crystal-assets",
+        "--bin",
+        "revise_r14_forest_bank"
+      ],
+      "exit_code": 0,
+      "log": ".local/route-grass-review/r14-forest-bank-publisher-v03.log",
+      "outputs": [
+        {
+          "path": ".local/route-grass-review/portable-r14-forest-bank-tools-v03/revise_r14_forest_bank",
+          "sha256": "da001d422a712c3b967c720d1a921a7ec9799b8f40ba05b18bc3ade363f00850"
+        }
+      ]
+    },
+    {
+      "step": "assets-all-target-clippy",
+      "command": [
+        "cargo",
+        "clippy",
+        "--profile",
+        "wasm-dev",
+        "--locked",
+        "--config",
+        "profile.wasm-dev.package.crystal-assets.opt-level=0",
+        "-p",
+        "crystal-assets",
+        "--all-targets"
+      ],
+      "exit_code": 0,
+      "log": ".local/route-grass-review/r14-forest-bank-assets-all-target-clippy-v03.log"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "cases": [
+    {
+      "case": "wrong-parent-sha",
+      "exit_code": 1,
+      "stderr": "Error: parent SHA drift",
+      "no_output": true
+    },
+    {
+      "case": "already-restored-child",
+      "exit_code": 1,
+      "stderr": "Error: exact reviewed League seam parent required",
+      "no_output": true
+    }
+  ]
+}

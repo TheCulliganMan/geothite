@@ -1,0 +1,124 @@
+{
+  "id": "MnMaraisCedarApproach",
+  "ports": [
+    {
+      "side": "west",
+      "core": [
+        [
+          0,
+          12
+        ],
+        [
+          0,
+          13
+        ]
+      ]
+    },
+    {
+      "side": "south",
+      "core": [
+        [
+          56,
+          37
+        ],
+        [
+          57,
+          37
+        ]
+      ]
+    }
+  ],
+  "actors": [
+    {
+      "id": "MN_COHESION_MARAIS_KEEPER",
+      "tile": [
+        29,
+        19
+      ],
+      "sprite": "SPRITE_YOUNGSTER",
+      "facing": "south",
+      "role": "optional_trainer",
+      "trainer_name": "CEDAR",
+      "trainer_class": "BIRD_KEEPER",
+      "party": [
+        {
+          "species": "NOCTOWL",
+          "level": 36
+        },
+        {
+          "species": "FARFETCH_D",
+          "level": 35
+        }
+      ],
+      "event_flag": "EVENT_MN_COHESION_MARAIS_KEEPER_DEFEATED",
+      "text": [
+        "A short forest walk.",
+        "Battle with me?"
+      ]
+    },
+    {
+      "id": "MN_COHESION_MARAIS_WALKER",
+      "tile": [
+        53,
+        31
+      ],
+      "sprite": "SPRITE_LASS",
+      "facing": "south",
+      "role": "optional_trainer",
+      "trainer_name": "MIRA",
+      "trainer_class": "LASS",
+      "party": [
+        {
+          "species": "VENONAT",
+          "level": 35
+        },
+        {
+          "species": "FURRET",
+          "level": 36
+        }
+      ],
+      "event_flag": "EVENT_MN_COHESION_MARAIS_WALKER_DEFEATED",
+      "text": [
+        "A short forest walk.",
+        "Battle with me?"
+      ]
+    }
+  ],
+  "signs": [
+    {
+      "id": "MN_COHESION_MARAIS_SIGN",
+      "tile": [
+        7,
+        9
+      ],
+      "lines": [
+        "CEDAR APPROACH",
+        "GRAND MARAIS west.",
+        "NORTH SHORE south."
+      ]
+    }
+  ],
+  "views": [
+    {
+      "id": "west-arrival",
+      "core": [
+        7,
+        12
+      ]
+    },
+    {
+      "id": "cedar-meadow",
+      "core": [
+        31,
+        19
+      ]
+    },
+    {
+      "id": "south-pine-turn",
+      "core": [
+        49,
+        32
+      ]
+    }
+  ]
+}

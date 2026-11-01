@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "map": "MnBemidji",
+      "approach": [
+        27,
+        36
+      ],
+      "id": "MN_EXTRA_LIFEGUARD",
+      "display_name": "CAL",
+      "trainer_class": "MN_LIFEGUARD",
+      "class_name": "LIFEGUARD",
+      "template_class": "SAILOR",
+      "sprite": "SPRITE_MN_LIFEGUARD",
+      "tile": [
+        27,
+        35
+      ],
+      "facing": "south",
+      "sight_range": 1,
+      "defeated_flag": "EVENT_MN_EXTRA_LIFEGUARD",
+      "party": [
+        {
+          "species": "RIVVIT",
+          "level": 30
+        },
+        {
+          "species": "TICKLET",
+          "level": 32
+        }
+      ],
+      "before_lines": [
+        "Swim with a buddy!",
+        "We battle in twos."
+      ],
+      "after_lines": [
+        "You kept cool.",
+        "Have a safe swim!"
+      ],
+      "loss_lines": [
+        "Take a breather.",
+        "Then try again."
+      ]
+    }
+  ]
+}

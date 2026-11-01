@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "selected_revision": "route_grass_r03_model_sources_revision",
+  "complete_native_r03_maps_and_used_tilesets_exact": true,
+  "gameplay_pack_unchanged": true,
+  "current_static_return_minima": [
+    3,
+    3,
+    4,
+    4,
+    4,
+    4
+  ],
+  "main_crossing_minimum_both_directions": 6,
+  "goal_complete": false
+}

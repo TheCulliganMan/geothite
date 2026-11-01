@@ -1,0 +1,118 @@
+{
+  "rejected_threshold_trials": [
+    250,
+    253
+  ],
+  "selected_threshold": 128,
+  "actual_source_mask_repair": "Built-in ImageGen background extraction only, original rear poses retained.",
+  "versions": [
+    {
+      "version": "v2-eyes",
+      "sha256": "8776a8923ed23c7305ffcf15fa190f19ff5babb7df3f8cdbb0796fb4d1ee386a",
+      "samples": [
+        {
+          "position": [
+            0,
+            0
+          ],
+          "rgba": [
+            1,
+            0,
+            0,
+            243
+          ]
+        },
+        {
+          "position": [
+            170,
+            102
+          ],
+          "rgba": [
+            3,
+            1,
+            1,
+            9
+          ]
+        },
+        {
+          "position": [
+            300,
+            340
+          ],
+          "rgba": [
+            210,
+            126,
+            60,
+            253
+          ]
+        },
+        {
+          "position": [
+            270,
+            340
+          ],
+          "rgba": [
+            0,
+            0,
+            0,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "version": "v3-clear-alpha",
+      "sha256": "84f4c5db3ba9db927f2112b139368a3bd9020c4adead4d0154e83c1ccd783d5e",
+      "samples": [
+        {
+          "position": [
+            0,
+            0
+          ],
+          "rgba": [
+            1,
+            1,
+            1,
+            0
+          ]
+        },
+        {
+          "position": [
+            170,
+            102
+          ],
+          "rgba": [
+            2,
+            1,
+            0,
+            0
+          ]
+        },
+        {
+          "position": [
+            300,
+            340
+          ],
+          "rgba": [
+            247,
+            137,
+            50,
+            253
+          ]
+        },
+        {
+          "position": [
+            270,
+            340
+          ],
+          "rgba": [
+            0,
+            0,
+            0,
+            253
+          ]
+        }
+      ]
+    }
+  ]
+}

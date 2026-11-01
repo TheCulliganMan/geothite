@@ -3,36 +3,62 @@ WORKDIR /ascii
 COPY tools/tui-ascii/package.json tools/tui-ascii/package-lock.json ./
 RUN npm ci --ignore-scripts --no-audit --no-fund
 
-FROM rust:1.94-bookworm AS build
+FROM rust:1.99.0-bookworm AS build
 WORKDIR /source
 
 RUN rustup target add wasm32-unknown-unknown \
     && cargo install wasm-bindgen-cli --version 0.2.128 --locked
 
 WORKDIR /source/rust
-COPY Cargo.toml Cargo.lock ./
+COPY Cargo.toml Cargo.lock rust-toolchain.toml ./
 COPY .cargo ./.cargo
-COPY vendor ./vendor
 COPY crates ./crates
+COPY assets ./assets
+COPY art/battles/arena-palettes.json ./art/battles/arena-palettes.json
 COPY modpacks/modern-move-split/data.json ./modpacks/modern-move-split/data.json
+COPY modpacks/all-pokemon/encounters.json ./modpacks/all-pokemon/encounters.json
 COPY modpacks/voxel-view/profiles.json ./modpacks/voxel-view/profiles.json
+COPY modpacks/flygon/operant.json ./modpacks/flygon/operant.json
+# Compile-time authoring inputs used by the shared Rust libraries.
+COPY planning/minnesota/story.json ./planning/minnesota/story.json
+COPY planning/minnesota/pokemon/starter-signature-moves.json planning/minnesota/pokemon/northwoods-moves.json planning/minnesota/pokemon/fairy-moves.json ./planning/minnesota/pokemon/
+COPY planning/minnesota/regions/ice/winter-art-v01.json ./planning/minnesota/regions/ice/winter-art-v01.json
+COPY planning/minnesota/revisions/north-shore-ely-geography-v01/inland-winter-r12-r13/source-v02/art-and-geography.preimages.json ./planning/minnesota/revisions/north-shore-ely-geography-v01/inland-winter-r12-r13/source-v02/art-and-geography.preimages.json
 ARG CARGO_BUILD_JOBS=2
+ARG CRYSTAL_RENDER_FEATURES=fullscreen-scaling,voxel-view,location-tester,terrain-worker-qa,actor-worker-qa
 # Keep dependency and target caches across source edits. Run from the workspace
 # so Cargo reads its WASM target configuration.
+# Git archive mtimes can predate cached artifacts; refresh workspace inputs so
+# Cargo cannot combine a new crate with an old dependency from another release.
 RUN --mount=type=cache,target=/usr/local/cargo/registry,sharing=locked \
     --mount=type=cache,target=/usr/local/cargo/git,sharing=locked \
     --mount=type=cache,target=/source/rust/target,sharing=locked \
-    cargo build --locked --release --package crystal-web-server --bin crystal-web-server \
+    find crates -type f -exec touch {} + \
+    && cargo build --locked --release --package crystal-web-server --bin crystal-web-server \
+    && cargo build --locked --profile web-release --package crystal-terrain-worker \
+        --package crystal-actor-worker --target wasm32-unknown-unknown \
     && cargo build --locked --profile web-release --package crystal-bevy \
-        --bin crystal-bevy --features fullscreen-scaling,voxel-view --target wasm32-unknown-unknown \
-    && cargo build --locked --profile web-release --package crystal-audio --lib \
+        --bin crystal-bevy --features "$CRYSTAL_RENDER_FEATURES" --target wasm32-unknown-unknown \
+    && mkdir -p /out/web/flygon /out/web/tui \
+    && wasm-bindgen --target web --no-typescript --out-dir /out/web --out-name crystal-bevy \
+        target/wasm32-unknown-unknown/web-release/crystal-bevy.wasm \
+    && cargo build --locked --profile web-release --package crystal-bevy \
+        --bin crystal-bevy --features "$CRYSTAL_RENDER_FEATURES,browser-webgpu" --target wasm32-unknown-unknown \
+    && wasm-bindgen --target web --no-typescript --out-dir /out/web --out-name crystal-bevy-webgpu \
+        target/wasm32-unknown-unknown/web-release/crystal-bevy.wasm \
+    && wasm-bindgen --target web --no-typescript --out-dir /out/web --out-name crystal-terrain-worker \
+        target/wasm32-unknown-unknown/web-release/crystal_terrain_worker.wasm \
+    && wasm-bindgen --target web --no-typescript --out-dir /out/web --out-name crystal-actor-worker \
+        target/wasm32-unknown-unknown/web-release/crystal_actor_worker.wasm \
+    && cargo rustc --locked --profile web-release --package crystal-audio --lib --crate-type cdylib \
         --features browser-synth --target wasm32-unknown-unknown \
     && cargo build --locked --profile web-release --package crystal-flygon --lib --target wasm32-unknown-unknown \
     && cargo build --locked --profile web-release --package geothite --lib --target wasm32-unknown-unknown \
-    && mkdir -p /out/web/flygon /out/web/tui \
+    && wasm-bindgen --target web --no-typescript --out-dir /out/web/tui --out-name geothite \
+        target/wasm32-unknown-unknown/web-release/geothite.wasm \
+    && cargo run --locked --release -p crystal-voxel-view --bin bundle_open_models -- assets/open-models /out/web/open-models.json \
+    && cargo run --locked --release -p crystal-voxel-view --bin bundle_open_people -- assets/open-models /out/web/open-people.json \
     && cp target/release/crystal-web-server /out/crystal-web-server \
-    && wasm-bindgen --target web --no-typescript --out-dir /out/web --out-name crystal-bevy \
-        target/wasm32-unknown-unknown/web-release/crystal-bevy.wasm \
     && wasm-bindgen --target web --no-typescript --out-dir /out/web --out-name crystal-audio \
         target/wasm32-unknown-unknown/web-release/crystal_audio.wasm \
     && wasm-bindgen --target web --no-typescript --out-dir /out/web/flygon \
@@ -44,6 +70,9 @@ RUN --mount=type=cache,target=/usr/local/cargo/registry,sharing=locked \
 
 # Page, audio, and pack updates do not invalidate the Rust compilation layer.
 COPY web-client /source/web-client
+COPY --from=ascii /ascii/node_modules/ascii.rest/dist/mount.js /out/web/tui/ascii-mount.js
+COPY --from=ascii /ascii/node_modules/ascii.rest/LICENSE /out/web/tui/ASCII-LICENSE.txt
+COPY tools/version-tui-bundle.sh /source/version-tui-bundle.sh
 COPY tools/version-browser-bundle.sh /source/version-browser-bundle.sh
 COPY tools/version-tui-bundle.sh /source/version-tui-bundle.sh
 COPY --from=ascii /ascii/node_modules/ascii.rest/dist/mount.js /out/web/tui/ascii-mount.js
@@ -51,11 +80,10 @@ COPY --from=ascii /ascii/node_modules/ascii.rest/LICENSE /out/web/tui/ASCII-LICE
 # Supply this ignored file locally; see docs/game-content.md.
 COPY --from=game_content /core-modular.browser.crystalpack /out/web/core-modular.browser.crystalpack
 COPY modpacks/flygon /source/flygon-config
-RUN cp /source/web-client/asset-progress.js /source/web-client/loading-progress.css /out/web/ \
-    && cp /source/web-client/install.sh /out/web/install.sh \
-    && cp /source/web-client/save-management.js /source/web-client/save-management.css /out/web/ \
-    && cp /source/web-client/server-clock.js /source/web-client/audio-worker.js /source/web-client/audio-worker-client.js /out/web/ \
-    && cp /source/web-client/player-customization.js /source/web-client/player-customization.css /source/web-client/index.html /source/web-client/audio-unlock.js /source/web-client/view-toggle.js /source/web-client/touch-controls.js /source/web-client/gamepad-controls.js /source/web-client/mobile-player.css /source/web-client/browser-session.js /source/web-client/webmcp.js /source/web-client/social-chat.js /source/web-client/social-chat.css /out/web/ \
+RUN cp /source/web-client/install.sh /out/web/install.sh \
+    && cp /source/web-client/index.html /out/web/ \
+    && cp /source/web-client/audio-unlock.js /out/web/ \
+    && cp /source/web-client/*.js /source/web-client/*.css /out/web/ \
     && gzip -9 -k /out/web/core-modular.browser.crystalpack \
     && cp /source/web-client/flygon* /out/web/ \
     && for source in /source/flygon-config/*.json; do cp "$source" "/out/web/flygon-$(basename "$source")"; done \

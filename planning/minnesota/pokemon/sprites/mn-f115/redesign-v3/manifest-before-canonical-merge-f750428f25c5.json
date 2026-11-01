@@ -1,0 +1,134 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F115",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_249": {
+      "species_id": "MN_249",
+      "name": "Frontagal",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          24,
+          27,
+          30
+        ],
+        [
+          9,
+          10,
+          21
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        31608,
+        21833,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          198,
+          222,
+          247
+        ],
+        [
+          74,
+          82,
+          173
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#C6DEF7",
+        "#4A52AD",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f115/prompt-v1.txt",
+  "reference_mapping": "sprites/mn-f115/reference-mapping-v1.json",
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-249-frontagal-v1",
+      "species_id": "MN_249",
+      "view": "front",
+      "source": "sprites/mn-f115/mn-249-249.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        1024,
+        800
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        31608,
+        21833,
+        0
+      ],
+      "white_detail_min_samples": 32,
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-249-frontagal-v1",
+      "species_id": "MN_249",
+      "view": "back",
+      "source": "sprites/mn-f115/mn-249-249.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        800,
+        1024,
+        736
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        31608,
+        21833,
+        0
+      ],
+      "white_detail_min_samples": 8
+    }
+  ],
+  "source_sha256": "1b5acce0256586c7a06dbaa309ab6972e636b5a3c47672f036bd44a789638582",
+  "candidate_review": {
+    "status": "native-review-pending",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "75f5a9c96f24ada538dde4649ddb9e83959d5554d9d836d05197e109553227af",
+    "notes": "Actual native inspected: enormous continuous shelf-wing wedge with three thick downward air-channel limbs and short rear rudder tail; no feathers or animal mount. Clear broad blue planes and connected stepped silhouette, face is a very small sheltered pair of white slits beneath the shelf at54-wide native front. Close rear nape/wing roots deliberately crop outer wings and lower forks. Front white32/interior16 used to retain dark face marks. Root should judge tiny face readability before acceptance."
+  },
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "notes": "Root inspected raw source and both native views, including a retained white48/interior8 alternative. Original white32/interior16 is clearer: compact white eye slits remain beneath a continuous low shelf wing and three descending broad air-channel limbs. Face is intentionally very small and pupil detail simplifies; horizon silhouette and uninterrupted blue planes carry identity. Close rear enlarges nape and wing roots, cropping outer spans and lower forks. Strong separated limbs and source-backed black contour remain readable.",
+    "sheet_sha256": "75f5a9c96f24ada538dde4649ddb9e83959d5554d9d836d05197e109553227af",
+    "outline_profile": "source-contour-v1"
+  }
+}

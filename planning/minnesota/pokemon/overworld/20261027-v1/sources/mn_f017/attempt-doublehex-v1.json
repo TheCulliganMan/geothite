@@ -1,0 +1,11 @@
+{
+  "tool": "built-in imagegen",
+  "root_authored": true,
+  "default_path": "/Users/ryanculligan/.codex/generated_images/01a178da-4cf1-7e01-8516-667a332dc790/exec-4132a43c-b907-48fc-b584-2cf19a620182.png",
+  "workspace_path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f017/doublehex.overworld.imagegen-v1.png",
+  "sha256": "dcb213d299880db7d6d8d94b95484b3835da42e7c75de1ec898aa5b205ddc20c",
+  "exact_default_copy_verified": true,
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f017/prompt-doublehex-v1.txt",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f017/reference-mapping-doublehex-v1.json",
+  "original_generation_receipt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f017/generation-doublehex-v1-root-original.json"
+}

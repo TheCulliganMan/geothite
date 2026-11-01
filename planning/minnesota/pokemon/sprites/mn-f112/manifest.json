@@ -1,0 +1,241 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F112",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_245": {
+      "species_id": "MN_245",
+      "name": "Skirrit",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          27,
+          22,
+          21
+        ],
+        [
+          13,
+          9,
+          15
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        22235,
+        15661,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          222,
+          181,
+          173
+        ],
+        [
+          107,
+          74,
+          123
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#DEB5AD",
+        "#6B4A7B",
+        "#000000"
+      ]
+    },
+    "MN_246": {
+      "species_id": "MN_246",
+      "name": "Ventactor",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          28,
+          24,
+          22
+        ],
+        [
+          12,
+          10,
+          16
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        23324,
+        16716,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          231,
+          198,
+          181
+        ],
+        [
+          99,
+          82,
+          132
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#E7C6B5",
+        "#635284",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f112/prompt-v2.txt",
+  "reference_mapping": "sprites/mn-f112/reference-mapping-v1.json",
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-245-skirrit-v2",
+      "species_id": "MN_245",
+      "view": "front",
+      "source": "sprites/mn-f112/mn-245-246.front-back.imagegen-v2.png",
+      "crop": [
+        0,
+        0,
+        625,
+        600
+      ],
+      "fit": [
+        40,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        22235,
+        15661,
+        0
+      ],
+      "white_detail_min_samples": 32,
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-245-skirrit-v2",
+      "species_id": "MN_245",
+      "view": "back",
+      "source": "sprites/mn-f112/mn-245-246.front-back.imagegen-v2.png",
+      "crop": [
+        0,
+        600,
+        625,
+        599
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        22235,
+        15661,
+        0
+      ],
+      "white_detail_min_samples": 8
+    },
+    {
+      "id": "mn-246-ventactor-v2",
+      "species_id": "MN_246",
+      "view": "front",
+      "source": "sprites/mn-f112/mn-245-246.front-back.imagegen-v2.png",
+      "crop": [
+        625,
+        0,
+        687,
+        600
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        23324,
+        16716,
+        0
+      ],
+      "white_detail_min_samples": 32,
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-246-ventactor-v2",
+      "species_id": "MN_246",
+      "view": "back",
+      "source": "sprites/mn-f112/mn-245-246.front-back.imagegen-v2.png",
+      "crop": [
+        625,
+        600,
+        687,
+        599
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        23324,
+        16716,
+        0
+      ],
+      "white_detail_min_samples": 8
+    }
+  ],
+  "source_sha256": "b29bdf4c989bd06a48f176e3d26e58563151fa5ca846d75653134e3db5c43ece",
+  "candidate_review": {
+    "status": "native-review-pending",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "4ead04d170fec256ab3a751fc834c368169ecc759dd8ee3aacf1eb4c8a8a15bd",
+    "notes": "Actual v2 native inspected: triangular skim stone40 deploys three broad stone vanes/keel54, no animal armor silhouette; rear upper vane and roots fill close frame. V1 raw retained because top keel and rear vane row bounding boxes overlapped; v2 has clean white row gutter and clean crop rectangles. White eye windows persist but tiny pupils weak, consistent conversion detail flag. Root final judgment pending."
+  },
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "notes": "Root inspected four native views after front white32/interior16 restored dark eye definition. Small triangular skimming stone grows three broad deployed vanes around a central keel. Clear white gaps separate adult blades; close rear preserves pink/purple faces and vane roots. V1 overlap source and prior native variant retained.",
+    "sheet_sha256": "d3387ce976646c24fb1d9b4b050c90e664b17f849107da6b6ef20b1674d416a0",
+    "outline_profile": "source-contour-v1"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "trainer_class": "MN_HOCKEY_CAPTAIN",
+  "class_name": "CAPTAIN",
+  "trainer_ids": [
+    "MN_R09_T08"
+  ],
+  "actors": [
+    {
+      "map": "MnR09C01R00",
+      "script": "MN_R09_T08",
+      "tile": [
+        49,
+        19
+      ],
+      "previous_sprite": "SPRITE_POKEFAN_F"
+    }
+  ]
+}

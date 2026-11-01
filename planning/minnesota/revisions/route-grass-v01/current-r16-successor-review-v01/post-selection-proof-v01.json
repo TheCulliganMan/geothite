@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "selected_revision": "route_grass_r16_bank_guidance_revision",
+  "pack_sha256": "e47cfeeff4baf0e2fd9654d9859e2fd094d856f8d34bede6c1c333c8209bce26",
+  "native_source_metatiles_exact": 1152,
+  "grass_quadrants": 1016,
+  "terrain_unchanged": true,
+  "requested_fence_removal_preserved": true,
+  "actual_maps_observed_in_exact_inherited_course": [
+    "MnDetroitLakes",
+    "MnDetroitLakesApproach",
+    "MnMoorhead",
+    "MnR16C00R00",
+    "MnR16C01R00"
+  ],
+  "goal_complete": false
+}

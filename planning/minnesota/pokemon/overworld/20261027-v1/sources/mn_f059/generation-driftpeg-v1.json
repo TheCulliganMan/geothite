@@ -1,0 +1,9 @@
+{
+  "tool": "built-in ImageGen",
+  "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f059/driftpeg.overworld.imagegen-v1.png",
+  "default_original": "/Users/ryanculligan/.codex/generated_images/01a17dc4-dd75-7642-a1c6-4bf13fda70c6/exec-c7ce8755-9129-45a2-ad4b-4d1ead06177b.png",
+  "sha256": "fba80c6edc7600385785bc8e9d5acc99b473e9812a0d7616243c4bafebce5c2a",
+  "one_species_per_call": true,
+  "genuine16_style_only_input": true,
+  "initial_review": "source generated; native review pending"
+}

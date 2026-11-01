@@ -1,0 +1,92 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F001",
+  "species": [
+    {
+      "species_id": "MN_002",
+      "runtime_token": "SLIPPERINA",
+      "palette_rgb555": [
+        32767,
+        30264,
+        12675,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        18205,
+        12396,
+        0
+      ],
+      "fit": [
+        14,
+        14
+      ],
+      "sampling": "source_center",
+      "black_priority_samples": 64,
+      "interior_black_samples": 64,
+      "opaque_interior_minimum_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "slipperina.overworld.imagegen-v5.png",
+          "crop": [
+            107,
+            118,
+            419,
+            385
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "slipperina.overworld.imagegen-v5.png",
+          "crop": [
+            545,
+            111,
+            419,
+            385
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "slipperina.overworld.imagegen-v5.png",
+          "crop": [
+            1034,
+            114,
+            419,
+            385
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "slipperina.overworld.imagegen-v5.png",
+          "crop": [
+            108,
+            542,
+            419,
+            385
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "slipperina.overworld.imagegen-v5.png",
+          "crop": [
+            546,
+            537,
+            419,
+            385
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "slipperina.overworld.imagegen-v5.png",
+          "crop": [
+            1033,
+            536,
+            419,
+            385
+          ]
+        }
+      ]
+    }
+  ]
+}

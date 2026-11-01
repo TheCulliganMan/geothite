@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "parent_source_index": "planning/minnesota/revisions/outdoor-terrain-integration-v01/sources.json",
+  "pack": "content-packs/minnesota-current-duluth-harbor-v02.crystalpack",
+  "pack_sha256": "2450f44c16fd9f783b8b1dae8e6fa292fbf6a1444a730527c7ebfc63af09b721",
+  "current_layouts": {
+    "MnDuluth": {
+      "path": "planning/minnesota/revisions/duluth-harbor-platforms-v01/after.layout.json",
+      "sha256": "3e8ca58723e8b7dc9650f845c34d7cce22eeaba9f3ad3c8a6e5f0992ebcb0d11"
+    },
+    "MN_R10": {
+      "path": "planning/minnesota/revisions/r10-carrier-plateau-v02/after.layout.json",
+      "sha256": "b06b49c06b87cb2c23ffe6acda417eb10f596237d6d9a69a6d4541bfc1194201"
+    }
+  },
+  "ordered_stages": [
+    {
+      "builder": "revise_duluth_harbor",
+      "parent_pack": "content-packs/minnesota-north-shore-shops-v01.crystalpack",
+      "parent_pack_sha256": "66d03adbd5e245af480890ad985f0bfbd3093c835e0bb6d02b26e563629ecb27",
+      "before_layout": "planning/minnesota/revisions/duluth-garden-terrace-v02/after.layout.json",
+      "after_layout": "planning/minnesota/revisions/duluth-harbor-platforms-v01/after.layout.json"
+    }
+  ],
+  "parent_revision": "north_shore_shops_revision",
+  "parent_authoring_source": "planning/minnesota/landmarks/north-shore-shops.json"
+}

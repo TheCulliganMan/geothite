@@ -1,0 +1,27 @@
+{
+  "id": "MnBoundaryIntake",
+  "template": "TeamRocketBaseB2F",
+  "tileset": "facility",
+  "dimensions_metatiles": [16,12],
+  "border_block": "17",
+  "rows": [
+    "17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17",
+    "17 07 07 07 07 07 07 07 07 07 07 07 07 07 07 17",
+    "17 07 12 13 07 07 07 07 07 07 02 02 02 02 07 17",
+    "17 07 07 07 07 07 07 07 07 07 02 07 07 02 07 17",
+    "17 07 07 07 07 07 07 07 07 07 19 07 07 02 07 17",
+    "17 07 07 07 07 07 07 07 16 07 02 02 02 02 07 17",
+    "17 07 12 13 07 07 07 07 07 07 40 40 40 40 40 17",
+    "17 07 07 07 07 07 07 07 07 07 07 07 07 07 07 17",
+    "17 07 07 07 07 07 07 07 07 07 02 02 02 02 02 17",
+    "17 07 04 07 07 07 07 07 07 07 07 07 07 07 07 17",
+    "17 07 07 07 07 07 07 07 07 07 07 07 07 07 07 17",
+    "17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17"
+  ],
+  "contract": [
+    "Original facility machinery and a separately imported native cave water block form a real outflow.",
+    "Kettlurk is visible inside a physically sealed intake; its gate opens only after the separate local shutdown choice.",
+    "The full escape and crew movement finish before survey restoration is granted.",
+    "No capture, Safari fee, party change, badge or rival victory alone grants restoration."
+  ]
+}

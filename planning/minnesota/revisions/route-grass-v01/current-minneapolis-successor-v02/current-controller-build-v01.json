@@ -1,0 +1,21 @@
+{
+  "status": "PASS",
+  "command": [
+    "cargo",
+    "test",
+    "--locked",
+    "--profile",
+    "wasm-dev",
+    "--config",
+    "profile.wasm-dev.package.crystal-bevy.opt-level=0",
+    "-p",
+    "crystal-bevy",
+    "--lib",
+    "--no-run",
+    "--message-format=json"
+  ],
+  "source": "crates/crystal-bevy/src/bevy_shell/tests/minneapolis.rs",
+  "source_sha256": "e847dad7e3e6e47a7fc5fa0fe12f9a66615ce8270c183ea211f32b8773e900b5",
+  "binary": ".local/route-grass-review/minneapolis-current-controller-v01",
+  "binary_sha256": "4098f51499e625d3e9d480290a942272818e78ec88293b9d7464316abc0fff01"
+}

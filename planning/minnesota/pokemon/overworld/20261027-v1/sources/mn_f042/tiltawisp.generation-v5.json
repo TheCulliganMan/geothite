@@ -1,0 +1,8 @@
+{
+  "default_output": "/Users/ryanculligan/.codex/generated_images/01a17dcc-4f1a-77a2-9d21-0df036061346/exec-fc6264c4-a17d-49e7-84e7-70ca16c8ad64.png",
+  "saved_source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f042/tiltawisp.overworld.imagegen-v5.png",
+  "exact_prompt": "tiltawisp.prompt-v5.txt",
+  "reference": "tiltawisp.overworld.imagegen-v4.png",
+  "mode": "targeted profile direction correction",
+  "source_layout": "4x2 generated; first three columns selected by explicit isolated pose windows"
+}

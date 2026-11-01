@@ -1,0 +1,47 @@
+{
+  "name": "FOSSIL RESEARCHER FARA",
+  "role": "preserved original NPC",
+  "status": "accepted-native-playable-rebased",
+  "source": "native-pixels-v1.json",
+  "source_path": "planning/minnesota/npcs/sprites/14-fossil-researcher/native-pixels-v1.json",
+  "integration": "placement-v1.json",
+  "controller": "placement-v1.json",
+  "native": "target/npc-sprites/fossil/native-v6",
+  "pack": "content-packs/minnesota-trainer-cast-35-v01.crystalpack",
+  "gameplay": "target/trainer-cast/rebase/14-fossil-researcher/gameplay",
+  "log": "target/trainer-cast/rebase/14-fossil-researcher/controller.log",
+  "original_placement": "planning/minnesota/npcs/sprites/14-fossil-researcher/placement-v1.json",
+  "old_map": "MnWinona",
+  "new_map": "MnWinona",
+  "old_tile": [
+    16,
+    13
+  ],
+  "new_tile": [
+    15,
+    13
+  ],
+  "scope": "Exact accepted original art, palette, party, class and dialogue. Placement rebased to safe compact geography; original geography not transplanted.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/cast/rebased-originals/14-fossil-researcher/placement-v1.json": "795badad9a3465ca4d4868c691542df2aabb773565e4e1c490b6149c16ac2c18",
+    "planning/minnesota/npcs/sprites/14-fossil-researcher/native-pixels-v1.json": "74e606bebeee4cbef212c50e315e279ae3366709f938954e9d1ba03f240595f5",
+    "planning/minnesota/npcs/sprites/14-fossil-researcher/manifest.json": "1446d7fc34009bb70ebb80da88907705dd90e0a6e536c0e954d0f226c4d9b9e0",
+    "target/trainer-cast/rebase/14-fossil-researcher/controller.log": "fcab0e7cd17a094c2535fd661e75652a30941c17d067d48a1808f42b857c5d02",
+    "content-packs/minnesota-trainer-cast-35-v01.crystalpack": "bb76c11a3a372d8aa05e16dcce1fbf310f3b10101b44057e4d6183ebc72d7a26",
+    "target/npc-sprites/fossil/native-v6/verification.json": "a57d1f18441bfcc602826bdbb28ec4487504980dbe2aa787eef2d03d97de6dd5",
+    "target/trainer-cast/rebase/14-fossil-researcher/gameplay/original-npc-trainer-intro.png": "9a092775f8010b21cf22cdad1cbbd47ed95bc245f415c1f2ebe8912cf9013526",
+    "target/trainer-cast/rebase/14-fossil-researcher/gameplay/original-npc-overworld-state.png": "777d64a6bd518c8c06bbee2b1e74b49ca3a55b1ec142b8a15c78782195308f8a",
+    "target/trainer-cast/rebase/14-fossil-researcher/gameplay/original-npc-first-turn.png": "2e2ef0e25747edc684b0f72bcba1b75fbd997f7ffd925a4254f8ab5c0124d525"
+  },
+  "final_pack": "content-packs/minnesota-trainer-cast-36-v01.crystalpack",
+  "final_gameplay": "target/trainer-cast/final-audit/gameplay/rebased-originals-14-fossil-researcher",
+  "final_log": "target/trainer-cast/final-audit/gameplay/rebased-originals-14-fossil-researcher/controller.log",
+  "final_status": "accepted-native-playable-final-pack",
+  "final_review": "Actual battle intro and field captures inspected on exact final pack; art retains accepted native sources and palette.",
+  "final_evidence_sha256": {
+    "target/trainer-cast/final-audit/gameplay/rebased-originals-14-fossil-researcher/controller.log": "974ccd06438f83891cc004c64b056cbf092e58dc5d67dec1431b908dd5e67288",
+    "target/trainer-cast/final-audit/gameplay/rebased-originals-14-fossil-researcher/original-npc-trainer-intro.png": "9a092775f8010b21cf22cdad1cbbd47ed95bc245f415c1f2ebe8912cf9013526",
+    "target/trainer-cast/final-audit/gameplay/rebased-originals-14-fossil-researcher/original-npc-overworld-state.png": "777d64a6bd518c8c06bbee2b1e74b49ca3a55b1ec142b8a15c78782195308f8a",
+    "target/trainer-cast/final-audit/gameplay/rebased-originals-14-fossil-researcher/original-npc-first-turn.png": "2e2ef0e25747edc684b0f72bcba1b75fbd997f7ffd925a4254f8ab5c0124d525"
+  }
+}

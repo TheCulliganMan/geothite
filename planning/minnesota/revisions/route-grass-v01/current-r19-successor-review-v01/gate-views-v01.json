@@ -1,0 +1,26 @@
+[
+  {
+    "id": "route-gate",
+    "map": "MnR19C00R01",
+    "core": [
+      25,
+      8
+    ]
+  },
+  {
+    "id": "town-gate",
+    "map": "MnDetroitLakes",
+    "core": [
+      25,
+      4
+    ]
+  },
+  {
+    "id": "gate-interior",
+    "map": "MnR19DetroitGate",
+    "core": [
+      4,
+      3
+    ]
+  }
+]

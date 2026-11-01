@@ -1,0 +1,247 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F087",
+  "reviewer": "roster_cut_review",
+  "status": "accepted final six-view area-solid-large proposal; no remaining visual blocker",
+  "selected_manifest": "planning/minnesota/pokemon/sprites/mn-f087/redesign-20261027-v2/candidate-manifests/area-solid-large.json",
+  "selected_manifest_sha256": "bcc2fe761897f7104d2982af5f7d9a9c1b002c65b0b75c4cf0ae36008b7d0ed4",
+  "selected_board": "planning/minnesota/pokemon/sprites/mn-f087/redesign-20261027-v2/candidates/area-solid-large/line.review.png",
+  "selected_board_sha256": "323f976da8223b6c64ce6e716e6b1a4069a8881fa09e173c25bf1caf4fd1cda3",
+  "source": "planning/minnesota/pokemon/sprites/mn-f087/redesign-20261027-v2/front-back.imagegen-v2.png",
+  "source_sha256": "1515412d67e16bb010453b031bfca7445c57ee0294ca6908f6a27d87527bff00",
+  "comparison_boards": [
+    "planning/minnesota/pokemon/sprites/mn-f087/redesign-20261027-v2/candidates/area-solid/line.review.png",
+    "planning/minnesota/pokemon/sprites/mn-f087/redesign-20261027-v2/candidates/area-solid-large/line.review.png",
+    "planning/minnesota/pokemon/sprites/mn-f087/redesign-20261027-v2/candidates/area-source-large/line.review.png"
+  ],
+  "observations": {
+    "growth": "Single flat sticky-note face becomes overlapping connected notes, then a broad layered keeper. The living sheet identity persists through evolution. No animal/dragon muzzle, long neck, horns or tail remains.",
+    "eyes": "The larger40pixelJotlet and48pixelMemofold fronts retain separate black eyes and white windows. Recallisk54 has a central face distinct from its surrounding stacks. Native eyes need not retain every source highlight fleck.",
+    "hands": "Recallisk has two separate folded square sheet hands facing forward; Memofold has readable side sheet arms. No extra animal limbs are introduced.",
+    "outline": "Selected solid exterior closes the pale outer highlights and curled-page corners more continuously than source-backed comparison, with stepped edges and distinct fold gaps.",
+    "backs": "All three are independent close upper-rear portraits with blank reverse sides, matching large curled/adhesive top edges, stage colors and layered sheet anatomy. They do not introduce a second rear face or shrink a full creature into the back frame.",
+    "palettes": "Exact four inks per species, matching approved white/yellow/brown, white/pink/mauve and white/cream/mint RGB555 words. Front/back share only their own species palette.",
+    "source_consistency": "All six selected native views retain the source arrangement, central faces, large fold forms and color assignment. Quantization necessarily simplifies small source glints/texture into native clusters.",
+    "page_count_limit": "The design target is1/3/7notes. Overlapping folds expose tabs/reverse planes, so a unique unfolded sheet count is not provable from these opaque sprites; this review accepts the visible single-note\u2192connected-note\u2192large-keeper growth rather than claiming a mechanically audited page count."
+  },
+  "views": [
+    {
+      "species_id": "MN_186",
+      "view": "front",
+      "size": [
+        56,
+        56
+      ],
+      "source": "sprites/mn-f087/redesign-20261027-v2/front-back.imagegen-v2.png",
+      "source_sha256": "1515412d67e16bb010453b031bfca7445c57ee0294ca6908f6a27d87527bff00",
+      "crop": [
+        0,
+        0,
+        420,
+        512
+      ],
+      "fit": [
+        40,
+        40
+      ],
+      "sampling": "area_vote",
+      "contour": "solid",
+      "native_png": "planning/minnesota/pokemon/sprites/mn-f087/redesign-20261027-v2/candidates/area-solid-large/mn-186-jotlet-v2.front.png",
+      "native_png_sha256": "941ae35af8c385f99ecd258588199e89a9f2c0fd6af812c1395d0ba87406c329",
+      "indexed_json_sha256": "974e37c30e588d3e616752b14eb1c5b6944d0d509c3f3bca065fbf74bb888364",
+      "native_2bpp_sha256": "e02a736be8b2343526cc82d0c32e9146b92521a23f64b87499653f4d8609b33d",
+      "palette_rgb555": [
+        32767,
+        17310,
+        6445,
+        0
+      ],
+      "actual_unique_rgb_colors": 4,
+      "png_indexed_2bpp_exact": true,
+      "decision": "accepted"
+    },
+    {
+      "species_id": "MN_186",
+      "view": "back",
+      "size": [
+        48,
+        48
+      ],
+      "source": "sprites/mn-f087/redesign-20261027-v2/front-back.imagegen-v2.png",
+      "source_sha256": "1515412d67e16bb010453b031bfca7445c57ee0294ca6908f6a27d87527bff00",
+      "crop": [
+        0,
+        512,
+        480,
+        512
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "sampling": "area_vote",
+      "contour": "solid",
+      "native_png": "planning/minnesota/pokemon/sprites/mn-f087/redesign-20261027-v2/candidates/area-solid-large/mn-186-jotlet-v2.back.png",
+      "native_png_sha256": "9eaaeaa56ba8248910f05494dc222b132add61043db8079c494db75069114ce2",
+      "indexed_json_sha256": "20f0c658960a047f5e4c1e34607a85ed2263e4abbff1fff3cbfaca98b03f14fc",
+      "native_2bpp_sha256": "8542b58876fadef2cb3814474198c4fdbd1d04b4456a992738746e2616c1340e",
+      "palette_rgb555": [
+        32767,
+        17310,
+        6445,
+        0
+      ],
+      "actual_unique_rgb_colors": 4,
+      "png_indexed_2bpp_exact": true,
+      "decision": "accepted"
+    },
+    {
+      "species_id": "MN_187",
+      "view": "front",
+      "size": [
+        56,
+        56
+      ],
+      "source": "sprites/mn-f087/redesign-20261027-v2/front-back.imagegen-v2.png",
+      "source_sha256": "1515412d67e16bb010453b031bfca7445c57ee0294ca6908f6a27d87527bff00",
+      "crop": [
+        420,
+        0,
+        510,
+        512
+      ],
+      "fit": [
+        48,
+        48
+      ],
+      "sampling": "area_vote",
+      "contour": "solid",
+      "native_png": "planning/minnesota/pokemon/sprites/mn-f087/redesign-20261027-v2/candidates/area-solid-large/mn-187-memofold-v2.front.png",
+      "native_png_sha256": "ffa3e81430ef6486a4d2db5dc09aca2cfd869aec082dd1f2c2d378d21b8382f5",
+      "indexed_json_sha256": "4e2a29fc0df1745a019a579ae33cfa3a454219ccbdd64bca88a9cafa21c61a41",
+      "native_2bpp_sha256": "67a4660361ba0aec05bd22a3e7ccc8e355004958f489ccca44d68d912704cb9f",
+      "palette_rgb555": [
+        32767,
+        27324,
+        14572,
+        0
+      ],
+      "actual_unique_rgb_colors": 4,
+      "png_indexed_2bpp_exact": true,
+      "decision": "accepted"
+    },
+    {
+      "species_id": "MN_187",
+      "view": "back",
+      "size": [
+        48,
+        48
+      ],
+      "source": "sprites/mn-f087/redesign-20261027-v2/front-back.imagegen-v2.png",
+      "source_sha256": "1515412d67e16bb010453b031bfca7445c57ee0294ca6908f6a27d87527bff00",
+      "crop": [
+        480,
+        512,
+        495,
+        512
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "sampling": "area_vote",
+      "contour": "solid",
+      "native_png": "planning/minnesota/pokemon/sprites/mn-f087/redesign-20261027-v2/candidates/area-solid-large/mn-187-memofold-v2.back.png",
+      "native_png_sha256": "20a9925ca9505cce974c1f5bbffd69be43424bab6ced0ef3bc176ac72588bc14",
+      "indexed_json_sha256": "cefafaea0ac5151d8d86ad1f38db58e65fd63f2c71a3ee14983d2e06d14131c7",
+      "native_2bpp_sha256": "808efbb90ce90b4ce3e0b15ae110ea6de35aa75103324aaf2e318030fadbfcc7",
+      "palette_rgb555": [
+        32767,
+        27324,
+        14572,
+        0
+      ],
+      "actual_unique_rgb_colors": 4,
+      "png_indexed_2bpp_exact": true,
+      "decision": "accepted"
+    },
+    {
+      "species_id": "MN_188",
+      "view": "front",
+      "size": [
+        56,
+        56
+      ],
+      "source": "sprites/mn-f087/redesign-20261027-v2/front-back.imagegen-v2.png",
+      "source_sha256": "1515412d67e16bb010453b031bfca7445c57ee0294ca6908f6a27d87527bff00",
+      "crop": [
+        930,
+        0,
+        606,
+        512
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "sampling": "area_vote",
+      "contour": "solid",
+      "native_png": "planning/minnesota/pokemon/sprites/mn-f087/redesign-20261027-v2/candidates/area-solid-large/mn-188-recallisk-v2.front.png",
+      "native_png_sha256": "f390ed6e2f46f1cf6e3b6401d5097420e208afadea54a96b6af435adf5890712",
+      "indexed_json_sha256": "69c2913f8cf3d3cacdb640c17252ace932af8974f2b899e33f1cc2ded5f7a847",
+      "native_2bpp_sha256": "347db29003bfb4bc6cf77cbee23603fa1016ed854356abf9c6c862e8731a6cac",
+      "palette_rgb555": [
+        32767,
+        23421,
+        15944,
+        0
+      ],
+      "actual_unique_rgb_colors": 4,
+      "png_indexed_2bpp_exact": true,
+      "decision": "accepted"
+    },
+    {
+      "species_id": "MN_188",
+      "view": "back",
+      "size": [
+        48,
+        48
+      ],
+      "source": "sprites/mn-f087/redesign-20261027-v2/front-back.imagegen-v2.png",
+      "source_sha256": "1515412d67e16bb010453b031bfca7445c57ee0294ca6908f6a27d87527bff00",
+      "crop": [
+        975,
+        512,
+        561,
+        512
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "sampling": "area_vote",
+      "contour": "solid",
+      "native_png": "planning/minnesota/pokemon/sprites/mn-f087/redesign-20261027-v2/candidates/area-solid-large/mn-188-recallisk-v2.back.png",
+      "native_png_sha256": "ba41b5d52292ffbb13bafe19704bce58e8e6af84d0e17accdd95b4e3ecf2c959",
+      "indexed_json_sha256": "04f8d11db53ccc01b3c6165a76456bc51a67186b6133cf9e01fd4c2331fc0149",
+      "native_2bpp_sha256": "47e1f6147edbf411b94c9b7c0958180352c06ecc295f81363bd07ac7e7688e84",
+      "palette_rgb555": [
+        32767,
+        23421,
+        15944,
+        0
+      ],
+      "actual_unique_rgb_colors": 4,
+      "png_indexed_2bpp_exact": true,
+      "decision": "accepted"
+    }
+  ],
+  "validation_summary": {
+    "all6_native_dimensions": true,
+    "all6_exact4colors": true,
+    "all6_png_indexed_2bpp_exact": true,
+    "palette_words_match_proposal_and_manifest": true,
+    "art_or_global_mutations": false
+  },
+  "remaining_scope": "Root selects/promotes canonical manifest/native files. Integration and final production pack/web validation remain with root and assigned workers. This receipt does not alter roster/profiles/palettes/programs or generated art."
+}

@@ -1,0 +1,234 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F033",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_079": {
+      "species_id": "MN_079",
+      "name": "Curdlet",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          27,
+          13
+        ],
+        [
+          21,
+          14,
+          4
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        14207,
+        4565,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          222,
+          107
+        ],
+        [
+          173,
+          115,
+          33
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FFDE6B",
+        "#AD7321",
+        "#000000"
+      ]
+    },
+    "MN_080": {
+      "species_id": "MN_080",
+      "name": "Squeakurd",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          21,
+          6
+        ],
+        [
+          17,
+          8,
+          2
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        6847,
+        2321,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          173,
+          49
+        ],
+        [
+          140,
+          66,
+          16
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FFAD31",
+        "#8C4210",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f033/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png",
+      "target/minnesota-pokemon/gen2-reference/bugs.png"
+    ]
+  },
+  "sprites": [
+    {
+      "id": "mn-079-curdlet-v1",
+      "species_id": "MN_079",
+      "view": "front",
+      "source": "sprites/mn-f033/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        656,
+        599
+      ],
+      "fit": [
+        44,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        14207,
+        4565,
+        0
+      ]
+    },
+    {
+      "id": "mn-079-curdlet-v1",
+      "species_id": "MN_079",
+      "view": "back",
+      "source": "sprites/mn-f033/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        599,
+        656,
+        600
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        14207,
+        4565,
+        0
+      ]
+    },
+    {
+      "id": "mn-080-squeakurd-v1",
+      "species_id": "MN_080",
+      "view": "front",
+      "source": "sprites/mn-f033/front-back.imagegen-v1.png",
+      "crop": [
+        656,
+        0,
+        656,
+        599
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        6847,
+        2321,
+        0
+      ]
+    },
+    {
+      "id": "mn-080-squeakurd-v1",
+      "species_id": "MN_080",
+      "view": "back",
+      "source": "sprites/mn-f033/front-back.imagegen-v1.png",
+      "crop": [
+        656,
+        599,
+        656,
+        600
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        6847,
+        2321,
+        0
+      ]
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "notes": "Inspected frozen v1: folded-cheese Curdlet and battered-glove Squeakurd have distinct growth, visible eyes and crisp single-pixel silhouette stairs. Both rear heads/upper shoulders fill cropped portraits.",
+    "sheet_sha256": "6252cfdc6b144e6593335e77acb439486dd436fa60021eb522bbc23b19daef88",
+    "outline_profile": "source-contour-v1"
+  }
+}

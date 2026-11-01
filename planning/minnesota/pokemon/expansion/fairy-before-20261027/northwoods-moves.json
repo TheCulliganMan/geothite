@@ -1,0 +1,814 @@
+{
+  "schema_version": 1,
+  "id": "northwoods-moves-v1",
+  "source": {
+    "repository": "https://github.com/smogon/pokemon-showdown",
+    "commit": "8f9ab4949d0bf64d5a5ac985a298d1313f2b9a29",
+    "url": "https://github.com/smogon/pokemon-showdown/blob/8f9ab4949d0bf64d5a5ac985a298d1313f2b9a29/data/moves.ts"
+  },
+  "rules": "Eight later-generation attacks adapted to the existing single-battle Gen2 effect engine. Current power/accuracy/PP, per-move physical/special categories and basic secondary effects are retained. No abilities, contact flags, doubles targeting, terrain or modern status changes are implied. Native Metronome intentionally continues selecting only moves 1\u2013251. Extension IDs are engine presentation indices, not ROM-compatible move bytes.",
+  "moves": [
+    {
+      "id": "WATER_PULSE",
+      "display_name": "Water Pulse",
+      "kind": "imported",
+      "introduced_generation": 3,
+      "canonical_number": 352,
+      "category": "special",
+      "description": "A pulsing blast of water. Has a 20% chance to confuse the target.",
+      "animation_donor": "BUBBLEBEAM",
+      "battle": {
+        "source_index": 252,
+        "name": "WATER_PULSE",
+        "type": "WATER",
+        "power": 60,
+        "accuracy": 100,
+        "pp": 20,
+        "effect": "CONFUSE_HIT",
+        "effect_chance": 20,
+        "stat": null,
+        "amount": null
+      },
+      "learners": [
+        {
+          "species_id": "MN_011",
+          "runtime_name": "PORTABEAU",
+          "level": 18
+        },
+        {
+          "species_id": "MN_012",
+          "runtime_name": "VOYAGEAR",
+          "level": 18
+        },
+        {
+          "species_id": "MN_043",
+          "runtime_name": "JIGLET",
+          "level": 24
+        },
+        {
+          "species_id": "MN_044",
+          "runtime_name": "TROLLURE",
+          "level": 24
+        },
+        {
+          "species_id": "MN_251",
+          "runtime_name": "WINKFIN",
+          "level": 24
+        },
+        {
+          "species_id": "MN_252",
+          "runtime_name": "GLACIRIS",
+          "level": 24
+        },
+        {
+          "species_id": "MN_266",
+          "runtime_name": "TIPULORD",
+          "level": 24
+        },
+        {
+          "species_id": "MN_259",
+          "runtime_name": "RILLBOW",
+          "level": 24
+        },
+        {
+          "species_id": "MN_260",
+          "runtime_name": "TORROUT",
+          "level": 24
+        },
+        {
+          "species_id": "MN_261",
+          "runtime_name": "KEYPOUT",
+          "level": 24
+        },
+        {
+          "species_id": "MN_262",
+          "runtime_name": "LATCHUSK",
+          "level": 24
+        },
+        {
+          "species_id": "MN_010",
+          "runtime_name": "BIRCHIT",
+          "level": 18
+        }
+      ]
+    },
+    {
+      "id": "AQUA_JET",
+      "display_name": "Aqua Jet",
+      "kind": "imported",
+      "introduced_generation": 4,
+      "canonical_number": 453,
+      "category": "physical",
+      "description": "A sudden water-propelled lunge with +1 priority.",
+      "animation_donor": "QUICK_ATTACK",
+      "battle": {
+        "source_index": 253,
+        "name": "AQUA_JET",
+        "type": "WATER",
+        "power": 40,
+        "accuracy": 100,
+        "pp": 20,
+        "effect": "PRIORITY_HIT",
+        "effect_chance": 0,
+        "stat": null,
+        "amount": null
+      },
+      "learners": [
+        {
+          "species_id": "MN_263",
+          "runtime_name": "PIKELING",
+          "level": 14
+        },
+        {
+          "species_id": "MN_264",
+          "runtime_name": "PIKEMAN",
+          "level": 14
+        },
+        {
+          "species_id": "MN_265",
+          "runtime_name": "MUSKETUNGE",
+          "level": 14
+        },
+        {
+          "species_id": "MN_259",
+          "runtime_name": "RILLBOW",
+          "level": 14
+        },
+        {
+          "species_id": "MN_260",
+          "runtime_name": "TORROUT",
+          "level": 14
+        },
+        {
+          "species_id": "MN_251",
+          "runtime_name": "WINKFIN",
+          "level": 14
+        },
+        {
+          "species_id": "MN_252",
+          "runtime_name": "GLACIRIS",
+          "level": 14
+        },
+        {
+          "species_id": "MN_266",
+          "runtime_name": "TIPULORD",
+          "level": 14
+        },
+        {
+          "species_id": "MN_010",
+          "runtime_name": "BIRCHIT",
+          "level": 9
+        },
+        {
+          "species_id": "MN_011",
+          "runtime_name": "PORTABEAU",
+          "level": 13
+        },
+        {
+          "species_id": "MN_012",
+          "runtime_name": "VOYAGEAR",
+          "level": 13
+        },
+        {
+          "species_id": "MN_287",
+          "runtime_name": "RIVVIT",
+          "level": 9
+        },
+        {
+          "species_id": "MN_288",
+          "runtime_name": "SLIDEWAKE",
+          "level": 9
+        }
+      ]
+    },
+    {
+      "id": "ICE_SHARD",
+      "display_name": "Ice Shard",
+      "kind": "imported",
+      "introduced_generation": 4,
+      "canonical_number": 420,
+      "category": "physical",
+      "description": "An ice shard strikes with +1 priority.",
+      "animation_donor": "POWDER_SNOW",
+      "battle": {
+        "source_index": 254,
+        "name": "ICE_SHARD",
+        "type": "ICE",
+        "power": 40,
+        "accuracy": 100,
+        "pp": 30,
+        "effect": "PRIORITY_HIT",
+        "effect_chance": 0,
+        "stat": null,
+        "amount": null
+      },
+      "learners": [
+        {
+          "species_id": "MN_034",
+          "runtime_name": "PUCKLET",
+          "level": 16
+        },
+        {
+          "species_id": "MN_035",
+          "runtime_name": "SKATUFF",
+          "level": 16
+        },
+        {
+          "species_id": "MN_036",
+          "runtime_name": "GOALOSSUS",
+          "level": 16
+        },
+        {
+          "species_id": "MN_251",
+          "runtime_name": "WINKFIN",
+          "level": 18
+        },
+        {
+          "species_id": "MN_252",
+          "runtime_name": "GLACIRIS",
+          "level": 18
+        },
+        {
+          "species_id": "MN_266",
+          "runtime_name": "TIPULORD",
+          "level": 18
+        },
+        {
+          "species_id": "MN_089",
+          "runtime_name": "LUTEBRISK",
+          "level": 20
+        },
+        {
+          "species_id": "MN_087",
+          "runtime_name": "SCRAPLOW",
+          "level": 18
+        },
+        {
+          "species_id": "MN_088",
+          "runtime_name": "PLOWZER",
+          "level": 18
+        }
+      ]
+    },
+    {
+      "id": "ENERGY_BALL",
+      "display_name": "Energy Ball",
+      "kind": "imported",
+      "introduced_generation": 4,
+      "canonical_number": 412,
+      "category": "special",
+      "description": "A concentrated burst of plant energy. Has a 10% chance to lower the target\u2019s Special Defense by one stage.",
+      "animation_donor": "GIGA_DRAIN",
+      "battle": {
+        "source_index": 255,
+        "name": "ENERGY_BALL",
+        "type": "GRASS",
+        "power": 90,
+        "accuracy": 100,
+        "pp": 10,
+        "effect": "SPECIAL_DEFENSE_DOWN_HIT",
+        "effect_chance": 10,
+        "stat": "SPECIAL_DEFENSE",
+        "amount": -1
+      },
+      "learners": [
+        {
+          "species_id": "MN_002",
+          "runtime_name": "SLIPPERINA",
+          "level": 38
+        },
+        {
+          "species_id": "MN_003",
+          "runtime_name": "CYPRIELLE",
+          "level": 38
+        },
+        {
+          "species_id": "MN_014",
+          "runtime_name": "REEDRAFT",
+          "level": 38
+        },
+        {
+          "species_id": "MN_015",
+          "runtime_name": "ZIZALITH",
+          "level": 38
+        },
+        {
+          "species_id": "MN_058",
+          "runtime_name": "GOLDMOURNE",
+          "level": 40
+        },
+        {
+          "species_id": "MN_117",
+          "runtime_name": "STEMBOLT",
+          "level": 40
+        },
+        {
+          "species_id": "MN_118",
+          "runtime_name": "PRAIRION",
+          "level": 40
+        }
+      ]
+    },
+    {
+      "id": "DRAIN_PUNCH",
+      "display_name": "Drain Punch",
+      "kind": "imported",
+      "introduced_generation": 4,
+      "canonical_number": 409,
+      "category": "physical",
+      "description": "A draining punch restores half the actual damage dealt, rounded down, with a one-HP minimum.",
+      "animation_donor": "DYNAMICPUNCH",
+      "battle": {
+        "source_index": 256,
+        "name": "DRAIN_PUNCH",
+        "type": "FIGHTING",
+        "power": 75,
+        "accuracy": 100,
+        "pp": 10,
+        "effect": "LEECH_HIT",
+        "effect_chance": 0,
+        "stat": null,
+        "amount": null
+      },
+      "learners": [
+        {
+          "species_id": "MN_036",
+          "runtime_name": "GOALOSSUS",
+          "level": 38
+        },
+        {
+          "species_id": "MN_012",
+          "runtime_name": "VOYAGEAR",
+          "level": 38
+        }
+      ]
+    },
+    {
+      "id": "SIGNAL_BEAM",
+      "display_name": "Signal Beam",
+      "kind": "imported",
+      "introduced_generation": 3,
+      "canonical_number": 324,
+      "category": "special",
+      "description": "A peculiar beam. Has a 10% chance to confuse the target.",
+      "animation_donor": "PSYBEAM",
+      "battle": {
+        "source_index": 257,
+        "name": "SIGNAL_BEAM",
+        "type": "BUG",
+        "power": 75,
+        "accuracy": 100,
+        "pp": 15,
+        "effect": "CONFUSE_HIT",
+        "effect_chance": 10,
+        "stat": null,
+        "amount": null
+      },
+      "learners": [
+        {
+          "species_id": "MN_021",
+          "runtime_name": "REGALARCH",
+          "level": 24
+        },
+        {
+          "species_id": "MN_024",
+          "runtime_name": "RIVETQUEEN",
+          "level": 36
+        },
+        {
+          "species_id": "MN_109",
+          "runtime_name": "DAKOTASKIP",
+          "level": 24
+        },
+        {
+          "species_id": "MN_152",
+          "runtime_name": "PUPUMP",
+          "level": 30
+        },
+        {
+          "species_id": "MN_153",
+          "runtime_name": "MOSQUITAN",
+          "level": 40
+        },
+        {
+          "species_id": "MN_019",
+          "runtime_name": "STRIPILLAR",
+          "level": 24
+        },
+        {
+          "species_id": "MN_020",
+          "runtime_name": "GILTALIS",
+          "level": 24
+        },
+        {
+          "species_id": "MN_063",
+          "runtime_name": "MAYQUIP",
+          "level": 24
+        },
+        {
+          "species_id": "MN_064",
+          "runtime_name": "HATCHRUSH",
+          "level": 24
+        },
+        {
+          "species_id": "MN_107",
+          "runtime_name": "TUSSNIP",
+          "level": 24
+        },
+        {
+          "species_id": "MN_108",
+          "runtime_name": "SILKSOD",
+          "level": 24
+        },
+        {
+          "species_id": "MN_215",
+          "runtime_name": "TESSLARV",
+          "level": 24
+        },
+        {
+          "species_id": "MN_216",
+          "runtime_name": "MOTHOSAIC",
+          "level": 24
+        },
+        {
+          "species_id": "MN_151",
+          "runtime_name": "WRIGGLET",
+          "level": 28
+        }
+      ]
+    },
+    {
+      "id": "IRON_HEAD",
+      "display_name": "Iron Head",
+      "kind": "imported",
+      "introduced_generation": 4,
+      "canonical_number": 442,
+      "category": "physical",
+      "description": "A heavy steel headbutt. Has a 30% chance to make the target flinch if it has not acted.",
+      "animation_donor": "HEADBUTT",
+      "battle": {
+        "source_index": 258,
+        "name": "IRON_HEAD",
+        "type": "STEEL",
+        "power": 80,
+        "accuracy": 100,
+        "pp": 15,
+        "effect": "FLINCH_HIT",
+        "effect_chance": 30,
+        "stat": null,
+        "amount": null
+      },
+      "learners": [
+        {
+          "species_id": "MN_102",
+          "runtime_name": "PELLETANK",
+          "level": 34
+        },
+        {
+          "species_id": "MN_103",
+          "runtime_name": "TACONARCH",
+          "level": 34
+        },
+        {
+          "species_id": "MN_074",
+          "runtime_name": "LIFTRUSS",
+          "level": 34
+        },
+        {
+          "species_id": "MN_088",
+          "runtime_name": "PLOWZER",
+          "level": 34
+        },
+        {
+          "species_id": "MN_265",
+          "runtime_name": "MUSKETUNGE",
+          "level": 44
+        },
+        {
+          "species_id": "MN_006",
+          "runtime_name": "MESABLAST",
+          "level": 36
+        },
+        {
+          "species_id": "MN_034",
+          "runtime_name": "PUCKLET",
+          "level": 34
+        },
+        {
+          "species_id": "MN_035",
+          "runtime_name": "SKATUFF",
+          "level": 34
+        },
+        {
+          "species_id": "MN_036",
+          "runtime_name": "GOALOSSUS",
+          "level": 34
+        },
+        {
+          "species_id": "MN_043",
+          "runtime_name": "JIGLET",
+          "level": 34
+        },
+        {
+          "species_id": "MN_044",
+          "runtime_name": "TROLLURE",
+          "level": 34
+        },
+        {
+          "species_id": "MN_047",
+          "runtime_name": "HATCHIT",
+          "level": 34
+        },
+        {
+          "species_id": "MN_048",
+          "runtime_name": "DOUBLEHEX",
+          "level": 34
+        },
+        {
+          "species_id": "MN_073",
+          "runtime_name": "SPANLET",
+          "level": 34
+        },
+        {
+          "species_id": "MN_087",
+          "runtime_name": "SCRAPLOW",
+          "level": 34
+        },
+        {
+          "species_id": "MN_094",
+          "runtime_name": "WRECKQUIEM",
+          "level": 34
+        },
+        {
+          "species_id": "MN_101",
+          "runtime_name": "TACONIB",
+          "level": 34
+        },
+        {
+          "species_id": "MN_022",
+          "runtime_name": "RUSTLEBEE",
+          "level": 40
+        },
+        {
+          "species_id": "MN_023",
+          "runtime_name": "PATCHEBEE",
+          "level": 40
+        },
+        {
+          "species_id": "MN_024",
+          "runtime_name": "RIVETQUEEN",
+          "level": 40
+        }
+      ]
+    },
+    {
+      "id": "X_SCISSOR",
+      "display_name": "X-Scissor",
+      "kind": "imported",
+      "introduced_generation": 4,
+      "canonical_number": 404,
+      "category": "physical",
+      "description": "Crossed slicing strikes deal damage without a secondary effect.",
+      "animation_donor": "FURY_CUTTER",
+      "battle": {
+        "source_index": 259,
+        "name": "X_SCISSOR",
+        "type": "BUG",
+        "power": 80,
+        "accuracy": 100,
+        "pp": 15,
+        "effect": "NORMAL_HIT",
+        "effect_chance": 0,
+        "stat": null,
+        "amount": null
+      },
+      "learners": [
+        {
+          "species_id": "MN_021",
+          "runtime_name": "REGALARCH",
+          "level": 44
+        },
+        {
+          "species_id": "MN_024",
+          "runtime_name": "RIVETQUEEN",
+          "level": 28
+        },
+        {
+          "species_id": "MN_109",
+          "runtime_name": "DAKOTASKIP",
+          "level": 44
+        },
+        {
+          "species_id": "MN_153",
+          "runtime_name": "MOSQUITAN",
+          "level": 55
+        },
+        {
+          "species_id": "MN_022",
+          "runtime_name": "RUSTLEBEE",
+          "level": 28
+        },
+        {
+          "species_id": "MN_023",
+          "runtime_name": "PATCHEBEE",
+          "level": 28
+        },
+        {
+          "species_id": "MN_065",
+          "runtime_name": "MIDGEBIT",
+          "level": 28
+        },
+        {
+          "species_id": "MN_066",
+          "runtime_name": "SKEETEREX",
+          "level": 28
+        },
+        {
+          "species_id": "MN_067",
+          "runtime_name": "CLINKLAW",
+          "level": 28
+        },
+        {
+          "species_id": "MN_068",
+          "runtime_name": "TRAPNACK",
+          "level": 28
+        },
+        {
+          "species_id": "MN_143",
+          "runtime_name": "CLICKIT",
+          "level": 28
+        },
+        {
+          "species_id": "MN_144",
+          "runtime_name": "WINDHOPPER",
+          "level": 28
+        },
+        {
+          "species_id": "MN_201",
+          "runtime_name": "TRILUME",
+          "level": 28
+        },
+        {
+          "species_id": "MN_202",
+          "runtime_name": "PANOPLITE",
+          "level": 28
+        },
+        {
+          "species_id": "MN_241",
+          "runtime_name": "DEWDANT",
+          "level": 28
+        },
+        {
+          "species_id": "MN_242",
+          "runtime_name": "BARRICANT",
+          "level": 28
+        }
+      ]
+    },
+    {
+      "id": "MAGNETIC_RAIL",
+      "display_name": "Magnetic Rail",
+      "kind": "signature",
+      "introduced_generation": null,
+      "canonical_number": null,
+      "category": "physical",
+      "description": "Magnetic armor plates align into an iron rail and ram the target. Has a 30% chance to lower Defense by one stage.",
+      "animation_donor": "IRON_TAIL",
+      "battle": {
+        "source_index": 260,
+        "name": "MAGNETIC_RAIL",
+        "type": "STEEL",
+        "power": 85,
+        "accuracy": 95,
+        "pp": 10,
+        "effect": "DEFENSE_DOWN_HIT",
+        "effect_chance": 30,
+        "stat": "DEFENSE",
+        "amount": -1
+      },
+      "learners": [
+        {
+          "species_id": "MN_103",
+          "runtime_name": "TACONARCH",
+          "level": 48
+        }
+      ]
+    },
+    {
+      "id": "BOG_SIPHON",
+      "display_name": "Bog Siphon",
+      "kind": "signature",
+      "introduced_generation": null,
+      "canonical_number": null,
+      "category": "physical",
+      "description": "A marsh-pressure proboscis drains the target. Restores half the actual damage dealt, rounded down, with a one-HP minimum.",
+      "animation_donor": "LEECH_LIFE",
+      "battle": {
+        "source_index": 261,
+        "name": "BOG_SIPHON",
+        "type": "BUG",
+        "power": 80,
+        "accuracy": 100,
+        "pp": 10,
+        "effect": "LEECH_HIT",
+        "effect_chance": 0,
+        "stat": null,
+        "amount": null
+      },
+      "learners": [
+        {
+          "species_id": "MN_153",
+          "runtime_name": "MOSQUITAN",
+          "level": 58
+        }
+      ]
+    },
+    {
+      "id": "TIP_UP_STRIKE",
+      "display_name": "Tip-Up Strike",
+      "kind": "signature",
+      "introduced_generation": null,
+      "canonical_number": null,
+      "category": "physical",
+      "description": "The hinged frost flag snaps upright and fires an ice-fishing ambush with +1 priority.",
+      "animation_donor": "ICE_BEAM",
+      "battle": {
+        "source_index": 262,
+        "name": "TIP_UP_STRIKE",
+        "type": "ICE",
+        "power": 70,
+        "accuracy": 100,
+        "pp": 15,
+        "effect": "PRIORITY_HIT",
+        "effect_chance": 0,
+        "stat": null,
+        "amount": null
+      },
+      "learners": [
+        {
+          "species_id": "MN_266",
+          "runtime_name": "TIPULORD",
+          "level": 46
+        }
+      ]
+    },
+    {
+      "id": "SLIPPER_WALTZ",
+      "display_name": "Slipper Waltz",
+      "kind": "signature",
+      "introduced_generation": null,
+      "canonical_number": null,
+      "category": "special",
+      "description": "Two slipper steps spiral into petals. Has a 20% chance to confuse the target; the user is not locked into the dance.",
+      "animation_donor": "PETAL_DANCE",
+      "battle": {
+        "source_index": 263,
+        "name": "SLIPPER_WALTZ",
+        "type": "GRASS",
+        "power": 75,
+        "accuracy": 100,
+        "pp": 15,
+        "effect": "CONFUSE_HIT",
+        "effect_chance": 20,
+        "stat": null,
+        "amount": null
+      },
+      "learners": [
+        {
+          "species_id": "MN_003",
+          "runtime_name": "CYPRIELLE",
+          "level": 36
+        }
+      ]
+    },
+    {
+      "id": "PIKE_DRILL",
+      "display_name": "Pike Drill",
+      "kind": "signature",
+      "introduced_generation": null,
+      "canonical_number": null,
+      "category": "physical",
+      "description": "Pressure-chamber gills propel a spinning muzzle-first charge. Has a 30% chance to lower Defense by one stage.",
+      "animation_donor": "WATERFALL",
+      "battle": {
+        "source_index": 264,
+        "name": "PIKE_DRILL",
+        "type": "WATER",
+        "power": 85,
+        "accuracy": 100,
+        "pp": 10,
+        "effect": "DEFENSE_DOWN_HIT",
+        "effect_chance": 30,
+        "stat": "DEFENSE",
+        "amount": -1
+      },
+      "learners": [
+        {
+          "species_id": "MN_265",
+          "runtime_name": "MUSKETUNGE",
+          "level": 48
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "status": "NATIVE_UI_ASSERTION_REPRODUCED_DIAGNOSTIC_BUILD_RUNNING",
+  "own_controller_binary": ".local/route-grass-review/r19-gate-controller-v04",
+  "own_controller_log": ".local/route-grass-review/r19-gate-own-controller-denial-v01.log",
+  "evidence": "Same missing ui.text assertion reproduces on independently compiled current-source controller, not just reused shared binary. Production replay passes remain separately bound.",
+  "diagnostic_build": ".local/route-grass-review/build_r19_gate_controller_v05.py",
+  "diagnostic_change": "Failure now reports complete snapshot, field notice, active cursor and newly shown dialogue, without relaxing assertion or changing gameplay.",
+  "debugger_attempt": ".local/route-grass-review/r19-gate-denial-debug-v01.log",
+  "debugger_status": "Stopped only owned debugger and debuggee after no run output; direct controller run completed and reproduced failure."
+}

@@ -1,0 +1,24 @@
+{
+  "status": "PASS",
+  "source_save": ".local/route-grass-review/current-itasca-reached-v01.crystalsave",
+  "source_sha256": "8626242cbc10bcf0e5da64e71811be0d88827214aed8db8b4155e5bf056932da",
+  "input_source_unchanged": true,
+  "output_save": ".local/route-grass-review/current-itasca-verified-stdio-v03-output-v01.crystalsave",
+  "pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33",
+  "pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+  "save": ".local/route-grass-review/current-itasca-verified-stdio-v03-input-v01.crystalsave",
+  "initial_map": "MnLakeItasca",
+  "initial_position": {
+    "x": 35,
+    "y": 22
+  },
+  "moved_position": {
+    "x": 34,
+    "y": 22
+  },
+  "calls_passed": 15,
+  "stderr_bytes": 0,
+  "items_pocket_verified": true,
+  "balls_pocket": true,
+  "returned_to_walking": true
+}

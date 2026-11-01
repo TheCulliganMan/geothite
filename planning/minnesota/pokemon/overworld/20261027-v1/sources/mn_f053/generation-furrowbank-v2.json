@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F053",
+  "species_id": "MN_112",
+  "name": "Furrowbank",
+  "status": "native_compiled_root_visual_and_world_context_review_pending",
+  "generation_tool": "built-in image_gen",
+  "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f053/furrowbank.overworld.imagegen-v2.png",
+  "source_sha256": "78f790d22465d532ffdd055ecc5b6534c9953797c456de81f50c1e3460d59265",
+  "original_default_output": "/Users/ryanculligan/.codex/generated_images/01a17dc4-dd75-7642-a1c6-4bf13fda70c6/exec-8c88bc3b-67c8-4807-b546-18f6de429838.png",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f053/prompt-furrowbank-v2.txt",
+  "only_input_image": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+  "identity_source": "coverage.json current textual body locks and visual inspection of exact selected native battle fronts; battle images NOT ImageGen input",
+  "six_frame_layout": "3columns2rows; down/up/left idle then down/up/left step",
+  "proposed_native_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f053/manifest-furrowbank-v2-paired-eyes.json",
+  "manifest_sha256": "d90768a03c99320a8e5c49cd30919534e8e21914440d235fbd62748848de9f48",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f053/furrowbank-v2-paired-eyes",
+  "normal_review": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f053/furrowbank-v2-paired-eyes/review/line.normal-8x.png",
+  "native_frame_size": [
+    16,
+    16
+  ],
+  "native_bounds": [
+    [
+      2,
+      4,
+      12,
+      11
+    ],
+    [
+      2,
+      4,
+      12,
+      11
+    ],
+    [
+      1,
+      5,
+      14,
+      10
+    ],
+    [
+      2,
+      4,
+      12,
+      11
+    ],
+    [
+      2,
+      4,
+      12,
+      11
+    ],
+    [
+      1,
+      5,
+      14,
+      10
+    ]
+  ],
+  "palette_rgb555": [
+    32767,
+    10839,
+    5320,
+    0
+  ],
+  "shiny_palette_rgb555": [
+    32767,
+    19178,
+    6405,
+    0
+  ],
+  "alpha_threshold": 128,
+  "conversion": "Rust compile_minnesota_overworld source_center, equal-sized crop windows per species, common world scale; registration adjustment only, zero native painted pixels",
+  "notes": "Native boards inspected; both south poses retain two separated black dot eyes, up backs have no face, west profile. Max14px footprint; source bank retains all six idle-step differences. No shared queue or pack writes. Root acceptance/context proof pending."
+}

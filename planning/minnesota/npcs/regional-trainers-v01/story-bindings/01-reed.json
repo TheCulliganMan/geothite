@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "trainer_class": "MN_RIVAL_REED",
+  "class_name": "RIVAL",
+  "trainer_ids": [
+    "MN_REED_WINONA",
+    "MN_REED_ROCHESTER",
+    "MN_REED_STPAUL",
+    "MN_REED_RELAY",
+    "MN_REED_MINE",
+    "MN_REED_BOUNDARY"
+  ],
+  "actors": [
+    {
+      "map": "MnBoundaryIntake",
+      "script": "MN_ARC_INTAKE_REED",
+      "tile": [
+        15,
+        9
+      ],
+      "previous_sprite": "SPRITE_RIVAL"
+    },
+    {
+      "map": "MnIceRelayFloor",
+      "script": "MN_NICE_RELAY_REED",
+      "tile": [
+        21,
+        4
+      ],
+      "previous_sprite": "SPRITE_RIVAL"
+    },
+    {
+      "map": "MnIronDrillCore",
+      "script": "MN_NDRILL_REED",
+      "tile": [
+        8,
+        8
+      ],
+      "previous_sprite": "SPRITE_RIVAL"
+    },
+    {
+      "map": "MnMinneapolisDispatchOffice",
+      "script": "MN_NICE_REED",
+      "tile": [
+        11,
+        9
+      ],
+      "previous_sprite": "SPRITE_RIVAL"
+    },
+    {
+      "map": "MnRochesterPokecenter1F",
+      "script": "MN_ARC_RC_REED",
+      "tile": [
+        9,
+        10
+      ],
+      "previous_sprite": "SPRITE_RIVAL"
+    },
+    {
+      "map": "MnStCloud",
+      "script": "MN_ARC_SC_REED",
+      "tile": [
+        25,
+        5
+      ],
+      "previous_sprite": "SPRITE_RIVAL"
+    },
+    {
+      "map": "MnStCloudStation",
+      "script": "MN_ARC_AFTERMATH_REED",
+      "tile": [
+        15,
+        16
+      ],
+      "previous_sprite": "SPRITE_RIVAL"
+    },
+    {
+      "map": "MnStPaulUnionDepot",
+      "script": "MN_ARC_SP_REED",
+      "tile": [
+        22,
+        17
+      ],
+      "previous_sprite": "SPRITE_RIVAL"
+    },
+    {
+      "map": "MnWinonaFieldStation",
+      "script": "MN_NSE_REED",
+      "tile": [
+        4,
+        9
+      ],
+      "previous_sprite": "SPRITE_RIVAL"
+    }
+  ]
+}

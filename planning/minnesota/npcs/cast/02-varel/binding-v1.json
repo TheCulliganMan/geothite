@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "trainer_class": "MN_LEADER_VAREL",
+  "class_name": "LEADER",
+  "trainer_ids": [
+    "MN_GYM_1"
+  ],
+  "actors": [
+    {
+      "map": "MnRochesterGym",
+      "script": "MnRochesterGymLeader",
+      "tile": [
+        6,
+        3
+      ],
+      "previous_sprite": "SPRITE_COOLTRAINER_F"
+    }
+  ]
+}

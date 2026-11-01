@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "ruleset": "modern-move-split",
+  "gym_ace_levels": [
+    12,
+    16,
+    21,
+    25,
+    30,
+    35,
+    40,
+    45
+  ],
+  "league_levels": [
+    48,
+    49,
+    50,
+    51,
+    53
+  ],
+  "ordinary_base_bst": [
+    240,
+    330
+  ],
+  "ordinary_middle_bst": [
+    340,
+    440
+  ],
+  "ordinary_final_bst": [
+    440,
+    550
+  ],
+  "ordinary_two_stage_evolution": [
+    20,
+    36
+  ],
+  "ordinary_three_stage_evolutions": [
+    [
+      16,
+      28
+    ],
+    [
+      34,
+      48
+    ]
+  ],
+  "starter_bst": [
+    318,
+    405,
+    530
+  ],
+  "starter_evolutions": [
+    16,
+    36
+  ],
+  "pseudo_legendary_bst": [
+    300,
+    420,
+    600
+  ],
+  "pseudo_legendary_evolutions": [
+    30,
+    55
+  ],
+  "legendary_bst": [
+    580,
+    600
+  ],
+  "type_access_level": 30,
+  "stat_matched_attack_level": 45,
+  "early_finishers": {
+    "MN_F007": {
+      "bst": [
+        264,
+        371,
+        490
+      ],
+      "evolutions": [
+        10,
+        18
+      ]
+    },
+    "MN_F052": {
+      "bst": [
+        256,
+        361,
+        475
+      ],
+      "evolutions": [
+        12,
+        22
+      ]
+    }
+  }
+}

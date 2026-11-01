@@ -1,0 +1,36 @@
+{
+  "name": "gougecrest",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f138/gougecrest-v8-actual-pupils",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f138/manifest-gougecrest-v8-actual-pupils.json",
+  "tool": "built-in image_gen",
+  "status": "source-generated/native-proven; root owns acceptance and context gate",
+  "native_frame_size": [
+    16,
+    16
+  ],
+  "canonical_normal_palette": [
+    32767,
+    6397,
+    16677,
+    0
+  ],
+  "canonical_shiny_palette": [
+    32767,
+    26377,
+    19693,
+    0
+  ],
+  "fit": [
+    14,
+    14
+  ],
+  "all_raw_renders_and_prompts_retained": true,
+  "no_native_pixel_painting": true,
+  "no_registry_or_pack_changes": true,
+  "retained_source_hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f138/gougecrest.overworld.imagegen-v1.png": "f2ea1c367506a41f8445697e2903fc8fc43f678bd102e92fcc9f8af9e7dcd5ce",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f138/prompt-gougecrest-v1.txt": "eaf46953a634ab2c0d880d7ee87c71890255025fe18271ca3e2ddd7a207a1491",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f138/gougecrest.v1.original-path.txt": "e4e47db99f8ebd2212e19f84a65677bd7b00bfba9ee264895df668ce3571ec76"
+  },
+  "proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f138/proof-gougecrest-v8-actual-pupils-actual-source.json"
+}

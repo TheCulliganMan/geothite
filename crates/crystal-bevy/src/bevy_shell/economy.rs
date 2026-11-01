@@ -792,7 +792,7 @@ fn use_visible_field_bag_item_by_id(
             )?;
             runtime_shell.field_notice = Some(visible_asm_text(
                 &snapshot,
-                "RepelUsedEarlierIsStillInEffectText",
+                "_RepelUsedEarlierIsStillInEffectText",
             )?);
             mark_runtime_snapshot_dirty(runtime_shell);
             set_shell_action_status(runtime_shell, "REPEL STILL IN EFFECT");
@@ -822,7 +822,11 @@ fn use_visible_field_bag_item_by_id(
             format!("REPEL ACTIVE {} STEPS", item_use.repel_steps_after),
         );
         close_visible_field_pack_without_log(runtime_shell);
-        runtime_shell.field_notice = Some(visible_asm_text(&snapshot, "RepelUseText")?);
+        runtime_shell.field_notice = Some(
+            // The source _ItemUsedText uses text_low before the item name.
+            visible_asm_text(&snapshot, "_ItemUsedText")?
+                .replace("<STRING_BUFFER_2>", &format!("\n{}", item.name.replace('_', " "))),
+        );
         mark_runtime_snapshot_dirty(runtime_shell);
         continue_visible_script_after_prompt(runtime_shell)?;
         return Ok(());
@@ -855,7 +859,7 @@ fn use_visible_field_bag_item_by_id(
             ),
         );
         close_visible_field_pack_without_log(runtime_shell);
-        runtime_shell.field_notice = Some(visible_asm_text(&snapshot, "UseEscapeRopeText")?);
+        runtime_shell.field_notice = Some(visible_asm_text(&snapshot, ".UseEscapeRopeText@EscapeRopeOrDig")?);
         retain_visible_field_notice_scene(runtime_shell, &snapshot);
         runtime_shell.pending_field_travel_arrival = true;
         runtime_shell.pending_field_travel_delay_frames = None;
@@ -900,12 +904,7 @@ fn use_visible_field_bag_item_by_id(
             ),
         );
         close_visible_field_pack_without_log(runtime_shell);
-        present_visible_fishing_cast(
-            runtime_shell,
-            &scene,
-            item_use.cast.bite,
-            item_use.cast.wild_battle.is_some(),
-        )?;
+        present_visible_fishing_cast(runtime_shell, &scene, &item_use.cast)?;
         return Ok(());
     }
     if field_rule_item_matches(&runtime_shell.shell, "bicycle", &item_id) {
@@ -915,7 +914,7 @@ fn use_visible_field_bag_item_by_id(
                 .active_engine_flags
                 .contains("ENGINE_ALWAYS_ON_BIKE")
         {
-            runtime_shell.field_notice = Some(visible_asm_text(&snapshot, "CantGetOffBikeText")?);
+            runtime_shell.field_notice = Some(visible_asm_text(&snapshot, ".CantGetOffBikeText@Script_CantGetOffBike")?);
             mark_runtime_snapshot_dirty(runtime_shell);
             set_shell_action_status(runtime_shell, "CAN'T GET OFF HERE");
             return Ok(());
@@ -1003,6 +1002,7 @@ fn use_visible_field_bag_item_by_id(
         return Ok(());
     }
     if field_rule_item_matches(&runtime_shell.shell, "squirtbottle", &item_id) {
+        runtime_shell.battle_origin.static_candidate = None;
         let item_use = match runtime_shell.shell.use_bag_squirtbottle_in_field(&item_id) {
             Ok(item_use) => item_use,
             Err(error) if party_field_move_error_is_play_refusal(&error) => {
@@ -1030,8 +1030,12 @@ fn use_visible_field_bag_item_by_id(
                 item_use.target_object_identifier
             ),
         );
+        stage_visible_squirtbottle_candidate(runtime_shell, &snapshot, &item_use);
         close_visible_field_pack_without_log(runtime_shell);
-        consume_visible_dispatched_field_script(runtime_shell)?;
+        if let Err(error) = consume_visible_dispatched_field_script(runtime_shell) {
+            runtime_shell.battle_origin.static_candidate = None;
+            return Err(error);
+        }
         return Ok(());
     }
     if field_rule_item_matches(&runtime_shell.shell, "card_key", &item_id)
@@ -1298,6 +1302,7 @@ fn handle_visible_field_action_refusal(
     status: impl Into<String>,
     error: anyhow::Error,
 ) -> Result<()> {
+    runtime_shell.battle_origin.static_candidate = None;
     let status = status.into();
     runtime_shell
         .last_audio_events
@@ -1311,25 +1316,6 @@ fn handle_visible_field_action_refusal(
     set_shell_action_status(runtime_shell, status);
     trim_event_log(&mut runtime_shell.last_audio_events);
     Ok(())
-}
-
-fn item_targets_party_move_fields(
-    pp_restore_scope: Option<&str>,
-    pp_restore_points: Option<u8>,
-    pp_up_stages: Option<u8>,
-) -> bool {
-    pp_up_stages.is_some() || (pp_restore_scope == Some("MOVE") && pp_restore_points.is_some())
-}
-
-fn item_targets_party_pokemon_fields(item: &crate::RuntimeItemCatalogSnapshot) -> bool {
-    item.party_hp_restore
-        || item.revive_hp_percent.is_some()
-        || !item.status_heals.is_empty()
-        || item.confusion_heal == Some(true)
-        || (item.pp_restore_scope.as_deref() == Some("ALL") && item.pp_restore_points.is_some())
-        || item.vitamin_stat.is_some()
-        || item.rare_candy_level_gain.is_some()
-        || item.party_special_effect
 }
 
 fn item_targets_active_battle_pokemon_fields(item: &crate::RuntimeItemCatalogSnapshot) -> bool {
@@ -3234,21 +3220,22 @@ fn selected_enemy_battle_move_slot_with_rng(
     combat: &crystal_core::battle::turn::BattleCombatState,
     rng: &mut dyn BattleRandomSource,
 ) -> Result<crystal_core::battle::turn::EnemyMoveSelection> {
-    let RuntimeBattleKind::Trainer { ai_move_flags, .. } = &battle.kind else {
+    let RuntimeBattleKind::Trainer {
+        trainer_class, ai_move_flags, ..
+    } = &battle.kind else {
         anyhow::bail!("trainer move scorer received a wild battle");
     };
-    data.select_trainer_enemy_move_with_scratch(combat, *ai_move_flags, rng)
+    data.select_trainer_enemy_move_for_class(combat, trainer_class, *ai_move_flags, rng)
 }
 
 
 fn selected_wild_enemy_move_slot(
+    data: &crystal_assets::GameDataSet,
+    battle_type: &str,
     combat: &crystal_core::battle::turn::BattleCombatState,
     rng: &mut dyn BattleRandomSource,
 ) -> Result<crystal_core::battle::turn::EnemyMoveSelection> {
-    Ok(crystal_core::battle::turn::EnemyMoveSelection {
-        slot: crystal_core::battle::turn::select_wild_enemy_move_slot(combat, rng),
-        ai_damage_register: 0,
-    })
+    data.select_wild_enemy_move_for_battle(combat, battle_type, rng)
 }
 
 fn selected_enemy_trainer_post_order_action(
@@ -3261,15 +3248,17 @@ fn selected_enemy_trainer_post_order_action(
 ) -> Result<BattleAction> {
     let RuntimeBattleKind::Trainer {
         trainer_id,
+        trainer_class,
         ai_item_switch_flags,
         ..
     } = &battle.kind
     else {
         anyhow::bail!("trainer post-order action requested for a wild battle");
     };
-    data.select_trainer_post_order_action(
+    data.select_trainer_post_order_action_for_class(
         combat,
         trainer_id,
+        trainer_class,
         &battle.battle_type,
         *ai_item_switch_flags,
         trainer_items_used,
@@ -3332,7 +3321,7 @@ fn resolve_active_battle_turn_with_enemy_ai(
                     selected_enemy_battle_move_slot_with_rng(data, battle, combat, rng)
                 }
                 RuntimeBattleKind::Wild { .. } | RuntimeBattleKind::StaticWild { .. } => {
-                    selected_wild_enemy_move_slot(combat, rng)
+                    selected_wild_enemy_move_slot(data, &battle.battle_type, combat, rng)
                 }
             },
             |selected_move_slot, combat, rng| match &battle.kind {
@@ -3381,7 +3370,7 @@ fn resolve_active_battle_item_turn_with_enemy_ai(
                     selected_enemy_battle_move_slot_with_rng(data, battle, combat, rng)
                 }
                 RuntimeBattleKind::Wild { .. } | RuntimeBattleKind::StaticWild { .. } => {
-                    selected_wild_enemy_move_slot(combat, rng)
+                    selected_wild_enemy_move_slot(data, &battle.battle_type, combat, rng)
                 }
             },
             |selected_move_slot, combat, rng| match &battle.kind {
@@ -3434,7 +3423,7 @@ fn resolve_active_battle_party_item_turn_with_enemy_ai(
                     selected_enemy_battle_move_slot_with_rng(data, battle, combat, rng)
                 }
                 RuntimeBattleKind::Wild { .. } | RuntimeBattleKind::StaticWild { .. } => {
-                    selected_wild_enemy_move_slot(combat, rng)
+                    selected_wild_enemy_move_slot(data, &battle.battle_type, combat, rng)
                 }
             },
             |selected_move_slot, combat, rng| match &battle.kind {
@@ -3483,7 +3472,7 @@ fn resolve_active_battle_ball_turn_with_enemy_ai(
                     selected_enemy_battle_move_slot_with_rng(data, battle, combat, rng)
                 }
                 RuntimeBattleKind::Wild { .. } | RuntimeBattleKind::StaticWild { .. } => {
-                    selected_wild_enemy_move_slot(combat, rng)
+                    selected_wild_enemy_move_slot(data, &battle.battle_type, combat, rng)
                 }
             },
             |selected_move_slot, combat, rng| match &battle.kind {
@@ -3768,6 +3757,19 @@ fn stage_visible_battle_item_effect(
     };
     if let Some(notice) = notice {
         runtime_shell.battle_messages.push_back(notice);
+        mark_runtime_snapshot_dirty(runtime_shell);
+    }
+    if outcome.confusion_turns_after > 0
+        && outcome.hp_after > outcome.hp_before
+        && snapshot
+            .items
+            .iter()
+            .find(|item| item.item_id == outcome.item_id)
+            .is_some_and(|item| item.confusion_inflict_turns.is_some())
+    {
+        runtime_shell
+            .battle_messages
+            .push_back(format!("{target_name}\nbecame confused!"));
         mark_runtime_snapshot_dirty(runtime_shell);
     }
     Ok(())

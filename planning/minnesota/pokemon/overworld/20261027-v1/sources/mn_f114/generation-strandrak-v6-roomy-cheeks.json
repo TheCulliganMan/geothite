@@ -1,0 +1,8 @@
+{
+  "tool": "built-in image_gen",
+  "default_path": "/Users/ryanculligan/.codex/generated_images/01a17f9b-beff-7771-977d-2d3d7b14de43/exec-27c4cf9b-fb17-494d-9c38-d0d300219173.png",
+  "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f114/strandrak.overworld.imagegen-v6-roomy-cheeks.png",
+  "sha256": "5488596642f0442231179b962e9d75bd582768a2a379868c849b40f15ab6546b",
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f114/prompt-strandrak-v6-roomy-cheeks.txt",
+  "accepted": false
+}

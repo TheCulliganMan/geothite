@@ -18,10 +18,10 @@ fn fullscreen_pixels_per_world_unit(physical_size: Vec2, dpi: f32) -> f32 {
 
 fn sync_fullscreen_scaling(
     windows: Query<&Window, With<bevy::window::PrimaryWindow>>,
-    mut cameras: Query<&mut OrthographicProjection, With<MainCameraMarker>>,
+    mut cameras: Query<&mut Projection, With<MainCameraMarker>>,
     mut overlays: Query<&mut Sprite, Or<(With<ScreenFadeOverlay>, With<PoisonFlashOverlay>)>>,
 ) {
-    let Ok(window) = windows.get_single() else {
+    let Ok(window) = windows.single() else {
         return;
     };
     let physical_size = Vec2::new(
@@ -33,10 +33,10 @@ fn sync_fullscreen_scaling(
     }
     let pixel_scale = fullscreen_pixels_per_world_unit(physical_size, window.scale_factor());
     for mut projection in &mut cameras {
-        let mode = bevy::render::camera::ScalingMode::WindowSize(pixel_scale);
-        if !matches!(projection.scaling_mode, bevy::render::camera::ScalingMode::WindowSize(current) if current == pixel_scale)
-        {
-            projection.scaling_mode = mode;
+        let Projection::Orthographic(ortho) = &mut *projection else { continue; };
+        if !matches!(ortho.scaling_mode, bevy::camera::ScalingMode::WindowSize) || ortho.scale != 1.0 / pixel_scale {
+            ortho.scaling_mode = bevy::camera::ScalingMode::WindowSize;
+            ortho.scale = 1.0 / pixel_scale;
         }
     }
     let size = physical_size / window.scale_factor() / pixel_scale;
@@ -66,6 +66,10 @@ mod fullscreen_scaling_tests {
         for (width, height) in [
             (320.0, 568.0),
             (640.0, 576.0),
+            (1280.0, 800.0),
+            (1280.0, 720.0),
+            (1920.0, 1080.0),
+            (1920.0, 1200.0),
             (2560.0, 1440.0),
             (3840.0, 2160.0),
             (7680.0, 4320.0),
@@ -97,7 +101,7 @@ mod fullscreen_scaling_tests {
 
     #[test]
     fn fullscreen_modal_preserves_the_complete_lcd_at_every_aspect_ratio() {
-        for physical in [Vec2::new(320.0, 568.0), Vec2::new(1920.0, 1080.0), Vec2::new(3440.0, 1440.0)] {
+        for physical in [Vec2::new(320.0, 568.0), Vec2::new(1280.0, 800.0), Vec2::new(1280.0, 720.0), Vec2::new(1920.0, 1080.0), Vec2::new(1920.0, 1200.0), Vec2::new(3440.0, 1440.0)] {
             let pixels_per_unit = fullscreen_pixels_per_world_unit(physical, 1.0);
             let view = physical / pixels_per_unit;
             let size = fullscreen_modal_size(view, pixels_per_unit);
@@ -106,6 +110,25 @@ mod fullscreen_scaling_tests {
             let texel = size.x * pixels_per_unit / 160.0;
             assert!((texel - texel.round()).abs() < 0.0001);
         }
+    }
+
+    #[test]
+    fn fullscreen_battle_fills_an_exact_lcd_viewport_after_projection_round_trip() {
+        for physical in [Vec2::new(640.0, 576.0), Vec2::new(1280.0, 1152.0)] {
+            let pixels_per_unit = fullscreen_pixels_per_world_unit(physical, 1.0);
+            let view = physical / pixels_per_unit;
+            let size = fullscreen_modal_size(view, pixels_per_unit);
+            assert!(
+                (size * pixels_per_unit - physical).length() < 0.001,
+                "integer LCD fits must not lose a complete source-pixel scale: {size:?}"
+            );
+        }
+        let almost = fullscreen_art_size(Vec2::new(160.0, 144.0), Vec2::new(639.0, 575.0), 1.0);
+        assert_eq!(
+            almost,
+            Vec2::new(480.0, 432.0),
+            "a real fractional fit must still round down"
+        );
     }
 
     #[test]
@@ -129,7 +152,7 @@ mod fullscreen_scaling_tests {
             .add_systems(Update, sync_fullscreen_scaling);
         app.world_mut().spawn((
             Window {
-                resolution: WindowResolution::new(1920.0, 1080.0).with_scale_factor_override(1.0),
+                resolution: WindowResolution::new(1920, 1080).with_scale_factor_override(1.0),
                 ..default()
             },
             bevy::window::PrimaryWindow,
@@ -137,13 +160,15 @@ mod fullscreen_scaling_tests {
         app.update();
         let world = app.world_mut();
         let projection = world
-            .query_filtered::<&OrthographicProjection, With<MainCameraMarker>>()
-            .single(world);
+            .query_filtered::<&Projection, With<MainCameraMarker>>()
+            .single(world).unwrap();
+        let Projection::Orthographic(projection) = projection else { panic!("2D orthographic camera"); };
         assert!(matches!(projection.scaling_mode,
-            bevy::render::camera::ScalingMode::WindowSize(scale) if scale == 0.75));
+            bevy::camera::ScalingMode::WindowSize));
+        assert_eq!(projection.scale, 1.0 / 0.75);
         let overlay = world
             .query_filtered::<&Sprite, With<ScreenFadeOverlay>>()
-            .single(world);
+            .single(world).unwrap();
         assert_eq!(overlay.custom_size, Some(Vec2::new(2560.0, 1440.0)));
     }
 }
@@ -160,23 +185,19 @@ enum FullscreenTitlePiece {
 }
 
 fn setup_fullscreen_scene(mut commands: Commands) {
-    commands.spawn((SpatialBundle::default(), FullscreenWorldRoot));
-    commands.spawn((SpatialBundle::default(), FullscreenDialogRoot));
-    commands.spawn((SpatialBundle::default(), FullscreenModalRoot));
+    commands.spawn(((Transform::default(), Visibility::default()), FullscreenWorldRoot));
+    commands.spawn(((Transform::default(), Visibility::default()), FullscreenDialogRoot));
+    commands.spawn(((Transform::default(), Visibility::default()), FullscreenModalRoot));
     commands.spawn((
-        SpriteBundle {
-            visibility: Visibility::Hidden,
-            transform: Transform::from_xyz(0.0, 0.0, 5.8),
-            ..default()
-        },
+        (Sprite::default(),
+Visibility::Hidden,
+Transform::from_xyz(0.0, 0.0, 5.8),),
         FullscreenBootDialogue,
     ));
     commands.spawn((
-        SpriteBundle {
-            transform: Transform::from_xyz(0.0, 0.0, PRESENTED_FULLSCREEN_BASE_Z - 0.01),
-            visibility: Visibility::Hidden,
-            ..default()
-        },
+        (Sprite::default(),
+Transform::from_xyz(0.0, 0.0, PRESENTED_FULLSCREEN_BASE_Z - 0.01),
+Visibility::Hidden,),
         FullscreenSceneBackdrop,
     ));
 }
@@ -192,21 +213,15 @@ fn spawn_fullscreen_title_artwork(
     let art = title_screen_frame_for_art(rendered_art, &runtime_shell.asset_root, title, images)
         .context("fullscreen menu requires the native title artwork")?;
     commands.spawn((
-        SpriteBundle {
-            texture: art.handle,
-            transform: Transform::from_xyz(0.0, 0.0, PRESENTED_FULLSCREEN_BASE_Z),
-            ..default()
-        },
+        (Sprite { image: art.handle, ..Sprite::default() },
+Transform::from_xyz(0.0, 0.0, PRESENTED_FULLSCREEN_BASE_Z),),
         TitleScreenMarker,
         FullscreenTitlePiece::Artwork,
     ));
     if title_continue_save_path(runtime_shell, title).is_some() {
         commands.spawn((
-            SpriteBundle {
-                texture: menu.handle.clone(),
-                transform: Transform::from_xyz(0.0, 0.0, PRESENTED_FULLSCREEN_BASE_Z + 0.01),
-                ..default()
-            },
+            (Sprite { image: menu.handle.clone(), ..Sprite::default() },
+Transform::from_xyz(0.0, 0.0, PRESENTED_FULLSCREEN_BASE_Z + 0.01),),
             TitleScreenMarker,
             FullscreenTitlePiece::Clock,
         ));
@@ -216,7 +231,13 @@ fn spawn_fullscreen_title_artwork(
 
 fn fullscreen_art_size(native: Vec2, available: Vec2, physical_pixels_per_unit: f32) -> Vec2 {
     let fit = (available.max(Vec2::ONE) / native).min_element() * physical_pixels_per_unit;
-    let pixels = if fit >= 1.0 { fit.floor() } else { fit };
+    // Projection's world/physical round trip can turn exactly four source
+    // pixels into 3.9999998. Absorb only floating-point error before flooring.
+    let pixels = if fit >= 1.0 {
+        (fit + 4.0 * f32::EPSILON * fit).floor()
+    } else {
+        fit
+    };
     native * pixels / physical_pixels_per_unit
 }
 
@@ -273,9 +294,10 @@ fn sync_fullscreen_scene_layout(
     windows: Query<&Window, With<bevy::window::PrimaryWindow>>,
     runtime: Res<BevyRuntimeShell>,
     rendered: Res<RenderedViewport>,
+    #[cfg(feature = "voxel-view")] battle_view: Option<Res<crystal_voxel_view::BattleViewStatus>>,
     images: Res<Assets<Image>>,
     mut pieces: ParamSet<(
-        Query<(&Handle<Image>, &mut Sprite, &mut Transform), With<VisibleIntroSurface>>,
+        Query<(&mut Sprite, &mut Transform), With<VisibleIntroSurface>>,
         Query<(
             &FullscreenTitlePiece,
             &mut Sprite,
@@ -285,7 +307,6 @@ fn sync_fullscreen_scene_layout(
         Query<(&mut Sprite, &mut Visibility), With<FullscreenSceneBackdrop>>,
         Query<
             (
-                &mut Handle<Image>,
                 &mut Sprite,
                 &mut Transform,
                 &mut Visibility,
@@ -294,7 +315,7 @@ fn sync_fullscreen_scene_layout(
         >,
     )>,
 ) {
-    let Ok(window) = windows.get_single() else {
+    let Ok(window) = windows.single() else {
         return;
     };
     let physical = Vec2::new(
@@ -320,20 +341,27 @@ fn sync_fullscreen_scene_layout(
     let modal_active = fullscreen_modal_active(&runtime, &rendered);
     // Partial PC/Mart windows retain the room behind them. The fullscreen
     // backdrop sits above terrain, so reserve it for opaque LCD screens.
-    let mut background = (modal_active && !fullscreen_field_panel_active(&runtime))
-        .then_some(Color::BLACK);
+    #[cfg(feature = "voxel-view")]
+    let modeled_battle_active = battle_view.is_some_and(|status| status.active);
+    #[cfg(not(feature = "voxel-view"))]
+    let modeled_battle_active = false;
+    // The modeled battle camera already supplies the complete backdrop. An
+    // opaque LCD backing here would cover both its sky and arena geometry.
+    let mut background =
+        (modal_active && !fullscreen_field_panel_active(&runtime) && !modeled_battle_active)
+            .then_some(Color::BLACK);
     let mut layout = None;
     {
         let mut presenters = pieces.p0();
-        if let Ok((texture, mut sprite, mut transform)) = presenters.get_single_mut() {
+        if let Ok((mut sprite, mut transform)) = presenters.single_mut() {
             sprite.rect = None;
             sprite.custom_size = Some(Vec2::new(PLAYFIELD_WIDTH, PLAYFIELD_HEIGHT));
             transform.translation.x = 0.0;
             transform.translation.y = 0.0;
             if rendered.title_active {
                 background = images
-                    .get(texture)
-                    .and_then(|image| image.data.get(..4))
+                    .get(&sprite.image)
+                    .and_then(|image| image.data.as_ref().expect("CPU image pixels").get(..4))
                     .map(|p| Color::srgb_u8(p[0], p[1], p[2]));
                 if let Some(choice) = naming {
                     if let Some(menu) = choice.player_menu.as_ref() {
@@ -358,7 +386,7 @@ fn sync_fullscreen_scene_layout(
                         ));
                         transform.translation.x = positions.art.center().x;
                         transform.translation.y = positions.art.center().y + 112.0;
-                        boot_dialogue = Some(texture.clone());
+                        boot_dialogue = Some(sprite.image.clone());
                     }
                 } else if let Some(title) = title_menu {
                     let rect = Rect::from_corners(
@@ -427,14 +455,14 @@ fn sync_fullscreen_scene_layout(
         transform.translation.x = center.x;
         transform.translation.y = center.y;
     }
-    for (mut texture, mut sprite, mut transform, mut visibility) in &mut pieces.p3() {
+    for (mut sprite, mut transform, mut visibility) in &mut pieces.p3() {
         *visibility = if boot_dialogue.is_some() {
             Visibility::Inherited
         } else {
             Visibility::Hidden
         };
         if let Some(handle) = boot_dialogue.as_ref() {
-            *texture = handle.clone();
+            sprite.image = handle.clone();
             sprite.rect = Some(Rect::from_corners(
                 Vec2::new(0.0, 96.0),
                 Vec2::new(160.0, 144.0),
@@ -521,7 +549,8 @@ fn fullscreen_modal_active(runtime: &BevyRuntimeShell, rendered: &RenderedViewpo
 
 fn fullscreen_battle_active(runtime: &BevyRuntimeShell) -> bool {
     runtime.visible_battle_transition.is_none()
-        && (runtime.battle_lcd_animation_active
+        && (safari_visible::battle_active(runtime)
+            || runtime.battle_lcd_animation_active
             || runtime.battle_message_scene.as_ref().is_some_and(|scene| scene.battle.is_some()))
 }
 
@@ -604,7 +633,7 @@ fn sync_fullscreen_world_layout(
     dialog_root: Query<Entity, With<FullscreenDialogRoot>>,
     modal_root: Query<Entity, With<FullscreenModalRoot>>,
     modal_entities: Query<
-        (Entity, Option<&Parent>, Option<&SceneDialogMarker>),
+        (Entity, Option<&ChildOf>, Option<&SceneDialogMarker>),
         Or<(
             With<FieldCommandMarker>, With<VisibleIntroSurface>, With<SceneDialogMarker>,
             With<BattleBattlerMarker>, With<BattleHudMarker>, With<BattleCommandMarker>,
@@ -612,7 +641,7 @@ fn sync_fullscreen_world_layout(
         )>,
     >,
     world_entities: Query<
-        (Entity, Option<&Parent>),
+        (Entity, Option<&ChildOf>),
         Or<(
             With<PlayfieldTile>,
             With<PlayerMarker>,
@@ -623,14 +652,14 @@ fn sync_fullscreen_world_layout(
             With<HealMachineWorldSprite>,
         )>,
     >,
-    dialog_entities: Query<(Entity, Option<&Parent>), With<SceneDialogMarker>>,
+    dialog_entities: Query<(Entity, Option<&ChildOf>), With<SceneDialogMarker>>,
     #[cfg(feature = "voxel-view")] voxel: Option<Res<crystal_voxel_view::VoxelViewSettings>>,
 ) {
     let (Ok(window), Ok(world_root), Ok(dialog_root), Ok(modal_root)) = (
-        windows.get_single(),
-        world_root.get_single(),
-        dialog_root.get_single(),
-        modal_root.get_single(),
+        windows.single(),
+        world_root.single(),
+        dialog_root.single(),
+        modal_root.single(),
     ) else {
         return;
     };
@@ -638,14 +667,14 @@ fn sync_fullscreen_world_layout(
     let field_panel_active = !rendered.title_active && fullscreen_field_panel_active(&runtime);
     for (entity, parent) in &world_entities {
         if !(modal_active && modal_entities.get(entity).is_ok())
-            && parent.map(Parent::get) != Some(world_root) {
-            commands.entity(entity).set_parent(world_root);
+            && parent.map(ChildOf::parent) != Some(world_root) {
+            commands.entity(entity).insert(ChildOf(world_root));
         }
     }
     for (entity, parent) in &dialog_entities {
         if !(modal_active && modal_entities.get(entity).is_ok())
-            && parent.map(Parent::get) != Some(dialog_root) {
-            commands.entity(entity).set_parent(dialog_root);
+            && parent.map(ChildOf::parent) != Some(dialog_root) {
+            commands.entity(entity).insert(ChildOf(dialog_root));
         }
     }
     let physical = Vec2::new(
@@ -671,11 +700,11 @@ fn sync_fullscreen_world_layout(
         } else {
             None
         };
-        if parent.map(Parent::get) != desired {
+        if parent.map(ChildOf::parent) != desired {
             if let Some(root) = desired {
-                commands.entity(entity).set_parent(root);
-            } else if parent.is_some_and(|parent| parent.get() == modal_root) {
-                commands.entity(entity).remove_parent();
+                commands.entity(entity).insert(ChildOf(root));
+            } else if parent.is_some_and(|parent| parent.parent() == modal_root) {
+                commands.entity(entity).remove::<ChildOf>();
             }
         }
     }

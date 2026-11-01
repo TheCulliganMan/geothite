@@ -1,0 +1,47 @@
+{
+  "name": "PHOTOGRAPHER LARK",
+  "role": "preserved original NPC",
+  "status": "accepted-native-playable-rebased",
+  "source": "native-pixels-v3.json",
+  "source_path": "planning/minnesota/npcs/sprites/11-trail-photographer/native-pixels-v3.json",
+  "integration": "placement-v1.json",
+  "controller": "placement-v1.json",
+  "native": "target/npc-sprites/photo/reference-v1",
+  "pack": "content-packs/minnesota-trainer-cast-32-v01.crystalpack",
+  "gameplay": "target/trainer-cast/rebase/11-trail-photographer/gameplay",
+  "log": "target/trainer-cast/rebase/11-trail-photographer/controller.log",
+  "original_placement": "planning/minnesota/npcs/sprites/11-trail-photographer/placement-v1.json",
+  "old_map": "MnEly",
+  "new_map": "MnEly",
+  "old_tile": [
+    23,
+    18
+  ],
+  "new_tile": [
+    22,
+    18
+  ],
+  "scope": "Exact accepted original art, palette, party, class and dialogue. Placement rebased to safe compact geography; original geography not transplanted.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/cast/rebased-originals/11-trail-photographer/placement-v1.json": "eae49c92cf91b06c381014ea2384dc803fb9cf6d91bdb725f9756f7c1639f246",
+    "planning/minnesota/npcs/sprites/11-trail-photographer/native-pixels-v3.json": "701972396256bfea8663c6572cf3a7d37175d7075f95fa514e33349b79812ba1",
+    "planning/minnesota/npcs/sprites/11-trail-photographer/manifest.json": "74010e44f7598c4a6055cf1684dc1b223e50da824cb62669b72133faeebc14ba",
+    "target/trainer-cast/rebase/11-trail-photographer/controller.log": "c9fcbe9882be29ee80471e3c50d94666767781eea0c04819f27976ae01aaf64c",
+    "content-packs/minnesota-trainer-cast-32-v01.crystalpack": "0040fc8ba1a629e2ae9c4f062693fa6eb83b4dcd90de80c199bb3f2045e15b24",
+    "target/npc-sprites/photo/reference-v1/verification.json": "858a65d435b2fbab0feb7c3b5c7e48aeb5064177d57db738c3d08a186eac481b",
+    "target/trainer-cast/rebase/11-trail-photographer/gameplay/original-npc-trainer-intro.png": "e3d88ef3406f9c66e0d034a060b251b8de4fb376bc86a6c057eec88f831906f4",
+    "target/trainer-cast/rebase/11-trail-photographer/gameplay/original-npc-overworld-state.png": "a675bbf5519baae9b8f178e4013b28920af956aaa834426f1d4668ae792887d7",
+    "target/trainer-cast/rebase/11-trail-photographer/gameplay/original-npc-first-turn.png": "59dba657b4eafbe0a4304050a1a717d50ec7489a0eb9f6fc1efece3e44dbb927"
+  },
+  "final_pack": "content-packs/minnesota-trainer-cast-36-v01.crystalpack",
+  "final_gameplay": "target/trainer-cast/final-audit/gameplay/rebased-originals-11-trail-photographer",
+  "final_log": "target/trainer-cast/final-audit/gameplay/rebased-originals-11-trail-photographer/controller.log",
+  "final_status": "accepted-native-playable-final-pack",
+  "final_review": "Actual battle intro and field captures inspected on exact final pack; art retains accepted native sources and palette.",
+  "final_evidence_sha256": {
+    "target/trainer-cast/final-audit/gameplay/rebased-originals-11-trail-photographer/controller.log": "86e34551f47f84d8f67ccd934bfed17a4cfd07d5bb0b960b76b4bbecf84f01e5",
+    "target/trainer-cast/final-audit/gameplay/rebased-originals-11-trail-photographer/original-npc-trainer-intro.png": "e3d88ef3406f9c66e0d034a060b251b8de4fb376bc86a6c057eec88f831906f4",
+    "target/trainer-cast/final-audit/gameplay/rebased-originals-11-trail-photographer/original-npc-overworld-state.png": "a675bbf5519baae9b8f178e4013b28920af956aaa834426f1d4668ae792887d7",
+    "target/trainer-cast/final-audit/gameplay/rebased-originals-11-trail-photographer/original-npc-first-turn.png": "59dba657b4eafbe0a4304050a1a717d50ec7489a0eb9f6fc1efece3e44dbb927"
+  }
+}

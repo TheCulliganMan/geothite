@@ -1,0 +1,233 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F137",
+  "species_id": "MN_304",
+  "name": "Solstort",
+  "status": "native_compiled_author_inspected_root_world_context_review_pending",
+  "generation_tool": "built-in image_gen",
+  "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f137/solstort.overworld.imagegen-v3.png",
+  "source_sha256": "03908976798b7e8b6af859dd3d89a6cf30f213caa8021887b799a75072cae302",
+  "original_default_output": "/Users/ryanculligan/.codex/generated_images/01a179bf-dc2b-7352-8975-8b8f3a32e33b/exec-48d92524-cbea-4abf-9c4c-2060a61dea73.png",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f137/prompt-solstort-v3.txt",
+  "prompt_sha256": "c20542315cb0267cfad8506d44872258e014aae7327a33053ae074f644a93a93",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f137/reference-mapping-solstort-v3.json",
+  "proposed_native_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f137/manifest-solstort-v3-center.json",
+  "manifest_sha256": "43228119bc75a9d68646c0fbacf05067728af288c76f3350a092fca984a8a2a9",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f137/solstort-v3-center",
+  "normal_review": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f137/solstort-v3-center/review/line.normal-8x.png",
+  "review_sha256": "b8925b97e2ed05fc7b7be13691596b9a839247d494ee34059997f153e9f51fdf",
+  "palette_rgb555": [
+    32767,
+    9949,
+    19816,
+    0
+  ],
+  "shiny_palette_rgb555": [
+    32767,
+    25113,
+    14823,
+    0
+  ],
+  "native_bounds": [
+    [
+      1,
+      4,
+      11,
+      11
+    ],
+    [
+      1,
+      4,
+      11,
+      11
+    ],
+    [
+      1,
+      4,
+      13,
+      10
+    ],
+    [
+      1,
+      4,
+      11,
+      11
+    ],
+    [
+      1,
+      4,
+      11,
+      10
+    ],
+    [
+      1,
+      4,
+      13,
+      10
+    ]
+  ],
+  "pupil_proof": [
+    {
+      "pose": "down_idle",
+      "source_proven_face_pupils": [
+        [
+          4,
+          11
+        ],
+        [
+          8,
+          11
+        ]
+      ],
+      "source_eye_boxes": [
+        [
+          237,
+          359,
+          259,
+          383
+        ],
+        [
+          336,
+          359,
+          357,
+          384
+        ]
+      ],
+      "other_isolated_ink_details": [],
+      "bounds": [
+        1,
+        4,
+        11,
+        11
+      ]
+    },
+    {
+      "pose": "up_idle",
+      "source_proven_face_pupils": [],
+      "source_eye_boxes": [],
+      "other_isolated_ink_details": [],
+      "bounds": [
+        1,
+        4,
+        11,
+        11
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "source_proven_face_pupils": [
+        [
+          4,
+          10
+        ]
+      ],
+      "source_eye_boxes": [
+        [
+          1132,
+          335,
+          1153,
+          364
+        ]
+      ],
+      "other_isolated_ink_details": [],
+      "bounds": [
+        1,
+        4,
+        13,
+        10
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source_proven_face_pupils": [
+        [
+          4,
+          11
+        ],
+        [
+          8,
+          11
+        ]
+      ],
+      "source_eye_boxes": [
+        [
+          237,
+          797,
+          259,
+          821
+        ],
+        [
+          336,
+          797,
+          358,
+          821
+        ]
+      ],
+      "other_isolated_ink_details": [],
+      "bounds": [
+        1,
+        4,
+        11,
+        11
+      ]
+    },
+    {
+      "pose": "up_step",
+      "source_proven_face_pupils": [],
+      "source_eye_boxes": [],
+      "other_isolated_ink_details": [],
+      "bounds": [
+        1,
+        4,
+        11,
+        10
+      ]
+    },
+    {
+      "pose": "left_step",
+      "source_proven_face_pupils": [
+        [
+          4,
+          10
+        ]
+      ],
+      "source_eye_boxes": [
+        [
+          1132,
+          777,
+          1153,
+          801
+        ]
+      ],
+      "other_isolated_ink_details": [
+        [
+          6,
+          8
+        ]
+      ],
+      "bounds": [
+        1,
+        4,
+        13,
+        10
+      ]
+    }
+  ],
+  "validation_results": {
+    "six_frames_16x16": true,
+    "runtime_png_16x96": true,
+    "native_2bpp_bytes": 384,
+    "tile_decode_matches_png_and_indexed_rows": true,
+    "binary_alpha": true,
+    "transparent_border": true,
+    "three_opaque_inks_only": true,
+    "normal_shiny_palette_words_exact": true,
+    "idle_step_pairs_different": true
+  },
+  "notes": "Actual native inspected: blue low turtle with three unequal golden fan-scutes, diagonal blue ridge and large projecting gold real head; four feet/stubby tail. South two source-proven pupils/west one source-proven pupil have four gold orthogonal neighbors and stable paired-walk anchors. Plain north shell/blue rear with no false face. V3 oversized face/coarse logical clusters fixes lost pupils from v1/v2; all sources/native trials retained. Growth versus young is clearest in three-scute fan, much heavier real head and taller south body (11vs10); west footprints remain13x10 for both stages and south adult width11vs young12. This is silhouette/anatomical growth within the shared14 cap, not universally larger envelopes. Equal450x380 source crops/common native14 transform, no painted pixels.",
+  "accepted": false
+}

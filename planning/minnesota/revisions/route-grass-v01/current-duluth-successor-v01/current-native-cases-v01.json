@@ -1,0 +1,25 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+  "pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33",
+  "binary": ".local/route-grass-review/duluth-current-controller-v01",
+  "binary_sha256": "b8b2931aa932ff0be38bd7deb8386e84a67b61c771a6e6cda5b0ab9fe4c18813",
+  "test_source_sha256": "bc47ab6926967a623f38bfbf3927ecd752ffe9e5c14bcfb23d39ca5db6d50809",
+  "results": [
+    {
+      "case": "stairs",
+      "status": "PASS",
+      "log": ".local/route-grass-review/current-duluth-stairs-native-v01.log",
+      "cases": 3,
+      "exit_code": 0
+    },
+    {
+      "case": "doors",
+      "status": "PASS",
+      "log": ".local/route-grass-review/current-duluth-doors-native-v01.log",
+      "cases": 1,
+      "exit_code": 0
+    }
+  ],
+  "scope": "All11native cave stair flights/cliff denials/terrace-to-clinic care/Continue and all38current paired door returns. Historical pre-expansion geometry courses are not selected. Initial local position/party/badges are QA fixtures, not earned campaign progress."
+}

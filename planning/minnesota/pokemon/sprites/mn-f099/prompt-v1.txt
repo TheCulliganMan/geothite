@@ -1,0 +1,23 @@
+Use case: stylized-concept. Asset type: production Game Boy Color creature battle sprite sheet.
+
+Create ORIGINAL Gen2-era monster pixel art. This is actual sprite artwork with coarse square-pixel clusters, not an illustration to be pixelated later. Pure white background. NO captions/text/grid lines/palette swatches/shadows. Crisp stepped black exterior silhouettes; spare connected interior black structural seams; flat color planes. No gradients, antialiasing, soft edges, glossy rendering, tiny noisy texture, single-pixel confetti or smooth vector curves. Respect authentic late-1990s Pokemon Crystal sprite economy, readable eyes and structural evolution; do not copy any existing Pokemon identity.
+
+Layout exactly 2 columns by 2 rows. Columns left-to-right: Tesslarv, Mothosaic. Each column is ONE species. Upper row: full-body FRONT 3/4 facing LEFT at native56x56 language. Lower row: CLOSE REAR PORTRAIT facing UPPER RIGHT at native48x48 language. Back is a huge head/neck/near-shoulder view, lower body visibly cut at bottom, authentic Crystal battle framing. Enlarge each back head/shoulder strongly; do not draw a complete miniature full-body turnaround. Leave wide clean white gutters between cells, all artwork disjoint. Display artwork enlarged nearest-neighbor for source sheet; favor about5-7sourcepixels per nativepixel. Front stages show proportional growth; every back fills its cell as a close portrait.
+
+Theme: Minnesota caddisfly silk cases and mosaic assembly: a pebble-case larva learns to rearrange its shell pieces, then unfolds a broad tile-patterned wing canopy that confuses depth perception.
+
+Design constraints: Only3-4 large mosaic tiles per wing pair; no tiny tessellation or glass gradients. Larva stone case and adult panel hinges show actual transformation. Separate from Mayquip hatch/fishing-fly theme and Dakotaskip grass stitching.
+
+Baby has three-sided stone tile case with three broad slab tiles framing a raised face, short measuring antennae and six gripping feet. Adult unfolds FOUR large tiled wing panels, thick silk hinges and stepped tent-canopy around stout center; broad face and measuring feelers remain. Three or four big mosaic tiles per wing pair, no intricate butterfly eyespots, floating tiles or gradients.
+
+Species anatomy and each independent hardware palette (front and back MUST match). Each species uses EXACTLY FOUR inks: white, its own two chromatic colors and pure black. White is valid enclosed eye/body highlight ink; black also outlines white body parts. The sheet globally can exceed four colors because species use different palettes. Never share one palette across the whole evolution line. RGB555 packing is r|(g<<5)|(b<<10); RGB8 expansion is (v<<3)|(v>>2).
+
+MN_215 Tesslarv BUG/ROCK: A determined larva pulls a squat three-sided stone case with six little gripping feet. Three broad contrasting pebble slabs fit like tiles around its raised face, and two feelers act like short measuring arms. SILHOUETTE: Angular triangular case with a broad exposed face and short gripping front feet.
+
+Exact Tesslarv palette: RGB5=[(31, 31, 31), (24, 21, 13), (8, 13, 15), (0, 0, 0)]; RGB555=[32767, 14008, 15784, 0]; RGB8=[[255, 255, 255], [198, 173, 107], [66, 107, 123], [0, 0, 0]]; HEX=['#FFFFFF', '#C6AD6B', '#426B7B', '#000000'].
+
+MN_216 Mothosaic BUG/PSYCHIC: The case tiles become four large wing panels joined by thick silk veins, folding into a tent over a compact insect body. The broad face and measuring feelers remain; it tilts the panels to make its outline seem farther away or broken into separate shapes. SILHOUETTE: Four tiled wing planes in a stepped canopy, stout center and two short measuring antennae; no ordinary butterfly pattern or detached tile swarm.
+
+Exact Mothosaic palette: RGB5=[(31, 31, 31), (24, 19, 29), (8, 10, 20), (0, 0, 0)]; RGB555=[32767, 30328, 20808, 0]; RGB8=[[255, 255, 255], [198, 156, 239], [66, 82, 165], [0, 0, 0]]; HEX=['#FFFFFF', '#C69CEF', '#4252A5', '#000000'].
+
+Final quality: original appealing themed monsters, clear eye whites, bold broad anatomical planes, readable limbs and deeply different evolutionary silhouettes. Black silhouette rims must be continuous wherever they border white paper; white highlights stay enclosed inside the rim. A few deliberate open colored contour accents may echo Gen2, but no fragmented dotted outlines. Keep open cropping of lower back at the bottom.

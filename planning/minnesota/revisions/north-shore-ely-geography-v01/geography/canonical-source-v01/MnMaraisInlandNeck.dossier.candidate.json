@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "id": "MnMaraisInlandNeck",
+  "name": "Gunflint Portage Camp",
+  "dimensions_metatiles": [
+    65,
+    19
+  ],
+  "origin_metatiles": [
+    162,
+    -419
+  ],
+  "native_connections": [
+    {
+      "direction": "west",
+      "target_map": "MnR12C01R01",
+      "offset": 0
+    },
+    {
+      "direction": "east",
+      "target_map": "MnMaraisCedarApproach",
+      "offset": 0
+    }
+  ],
+  "encounters": {
+    "source": "MnMaraisCedarApproach",
+    "source_sha256": "50d1260ec4b74e462a5442199f28b31daa120ae4816fd968d3d8c095ff5aafab",
+    "preserve_table_except_map_name": true
+  },
+  "items": [
+    {
+      "id": "MN_INLAND_CAMP_SUPPLY",
+      "core": [
+        63,
+        27
+      ],
+      "item": "BERRY",
+      "quantity": 3,
+      "event_flag": "EVENT_MN_GUNFLINT_CAMP_SUPPLY",
+      "fresh_event": 2387
+    }
+  ],
+  "signs": [
+    {
+      "id": "MN_INLAND_CAMP_SIGN",
+      "core": [
+        69,
+        25
+      ],
+      "lines": [
+        "PORTAGE CAMP",
+        "Three BERRIES for",
+        "the trail ahead."
+      ]
+    }
+  ],
+  "one_way_ledges": [
+    {
+      "takeoff_core": [
+        24,
+        10
+      ],
+      "landing_core": [
+        24,
+        12
+      ],
+      "walking_return_inputs": 26
+    },
+    {
+      "takeoff_core": [
+        82,
+        12
+      ],
+      "landing_core": [
+        82,
+        14
+      ],
+      "walking_return_inputs": 24
+    }
+  ],
+  "native_registration": {
+    "constant": "MN_MARAIS_INLAND_NECK",
+    "group_id": 40,
+    "map_id": 8
+  },
+  "status": "Detached final geography candidate; controller and visual acceptance pending"
+}

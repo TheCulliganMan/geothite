@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "id": "northstar-current-story-v1",
+  "approved_parents": [
+    {
+      "content_hash": "bdbef89c2ca7af31cc21a78b355431c5743b40a1154df54b37c2d91b32824942",
+      "maps": 691,
+      "review": "Accepted R20 seep-cleft successor retaining R04 grass, compact coast, regional roster and optional Vergloom. All original story program preimages remain checked by the chapter builders."
+    },
+    {
+      "content_hash": "2cd511deac839c29e8ddd4729f6faa2aa255e7e4af6e48bff7f8026ec4a7a6b2",
+      "maps": 691,
+      "review": "Accepted R01 limestone-hollows child of R20. Independent residual comparison: only MnR01Cave1F and its attribute/block mirrors differ; every story input, trainer, art/runtime file and audio program remains exact."
+    },
+    {
+      "content_hash": "b04a7ba2bbfe1c930eef15d41662e0a7c7bbd1bc64923da4fb1b10d47305f37f",
+      "maps": 691,
+      "review": "Rust revise_authored_cave merged the exact accepted R01 room onto the accepted R05 grass + written-League child of R20. Independent residual comparison permits only MnR01Cave1F and its two geometry mirrors; all690othermaps, teams, programs, art/runtimefiles and audio remain exact to the R05/League parent."
+    }
+  ]
+}

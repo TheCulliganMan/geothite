@@ -1,0 +1,13 @@
+{
+  "tool": "image_gen.imagegen",
+  "original_path": "/Users/ryanculligan/.codex/generated_images/01a17dcc-4f1a-77a2-9d21-0df036061346/exec-88846ea4-c705-4d6f-a46c-4e9189533e11.png",
+  "source_size": [
+    1536,
+    1024
+  ],
+  "sha256": "f2c032047567ec796a92bcd29befcde44ebfd4091b01ed4de97bcb5a60b28ff8",
+  "reference_paths": [
+    "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f066/windhopper.overworld.imagegen-v1.png"
+  ],
+  "prompt": "windhopper.prompt-v2.txt"
+}

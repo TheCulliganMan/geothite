@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "species": [
+    {
+      "token": "wreckquiem",
+      "manifest": "sources/mn_f043/wreckquiem.manifest-native-v4-flex.json",
+      "candidate": "candidates/mn_f043/wreckquiem-rare-native-v4-flex",
+      "source_feature_review": "sources/mn_f043/source-feature-proof-wreckquiem-v4-flex.json",
+      "prompts": [
+        "prompt-wreckquiem-v1.txt",
+        "prompt-wreckquiem-native-face-v2.txt",
+        "prompt-wreckquiem-solid-outline-v3.txt"
+      ],
+      "visual_review": {
+        "source_anatomy": "All six true directions retain established creature anatomy; normal and shiny boards personally viewed by finish_rare agent. Root visual/context acceptance pending.",
+        "eyes": "Both actual source front eyes and actual west eye survive all4nonrearposes with stable idle/walk anchors; no invented native pupils.",
+        "scaling": "One common fit, bounds and pixel grid per species; translated source crop registration only, no individual pose scaling.",
+        "rear": "True full rear anatomy with no copied face or false eyes.",
+        "motion": "All3 idle/step pairs distinct; Pepivern fins/coil/tail and Wreckquiem chain-anchor/keel motion, no invented legs."
+      }
+    },
+    {
+      "token": "pepivern",
+      "manifest": "sources/mn_f046/pepivern.manifest-native-v4-flex.json",
+      "candidate": "candidates/mn_f046/pepivern-rare-native-v4-flex",
+      "source_feature_review": "sources/mn_f046/source-feature-proof-pepivern-v4-flex.json",
+      "prompts": [
+        "prompt-pepivern-v1.txt",
+        "prompt-pepivern-native-face-v2.txt",
+        "prompt-pepivern-solid-outline-v3.txt"
+      ],
+      "visual_review": {
+        "source_anatomy": "All six true directions retain established creature anatomy; normal and shiny boards personally viewed by finish_rare agent. Root visual/context acceptance pending.",
+        "eyes": "Both actual source front eyes and actual west eye survive all4nonrearposes with stable idle/walk anchors; no invented native pupils.",
+        "scaling": "One common fit, bounds and pixel grid per species; translated source crop registration only, no individual pose scaling.",
+        "rear": "True full rear anatomy with no copied face or false eyes.",
+        "motion": "All3 idle/step pairs distinct; Pepivern fins/coil/tail and Wreckquiem chain-anchor/keel motion, no invented legs."
+      }
+    }
+  ],
+  "root_context_review_required": true
+}

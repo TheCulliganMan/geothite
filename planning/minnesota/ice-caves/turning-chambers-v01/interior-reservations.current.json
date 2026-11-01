@@ -1,0 +1,108 @@
+[
+  {
+    "interior": "MnVoyageursIce1F",
+    "parent": "MN_R20",
+    "source_file": "ice-caves/voyageurs-ice.json",
+    "source_room_id": "MnVoyageursIce1F",
+    "arrival_core": [
+      5,
+      19
+    ],
+    "arrival_warp_index": 3,
+    "return_trigger_core": [
+      5,
+      21
+    ],
+    "dimensions_metatiles": [
+      14,
+      12
+    ],
+    "warp_contracts": [
+      {
+        "tile": [
+          5,
+          21
+        ],
+        "target": "MnR20C01R00",
+        "target_warp": 4
+      },
+      {
+        "tile": [
+          23,
+          5
+        ],
+        "target": "MnVoyageursIceB1F",
+        "target_warp": 2
+      },
+      {
+        "tile": [
+          5,
+          19
+        ],
+        "target": "MnR20C01R00",
+        "target_warp": 4
+      },
+      {
+        "tile": [
+          23,
+          6
+        ],
+        "target": "MnVoyageursIceB1F",
+        "target_warp": 2
+      }
+    ],
+    "requires_real_collision_check": true,
+    "exterior_door_status": "Verified current two-floor turning chambers: both controller cases,482production stdio RPC and nine source-matched native GPU views. Original warp records/programs remain exact.",
+    "purpose": "Teaching fissure: an attached southern rock shoulder stops the first eastward slide; the northern tooth turns the next slide east. Separate dry stop pockets lead to the Ice Heal and the lower-floor ladder. The ice remains a substantial connected area.",
+    "source_sha256": "a7b1887d5523a2f52a2bdf4278735c3f58fc3646b2e6379672851ea0f072a819",
+    "native_review_pack_sha256": "0f734df8621b02da80cc45cb905de3d793e28b4f987f98d24203232ddb4cd3b4",
+    "verification": "ice-caves/turning-chambers-v01/README.md"
+  },
+  {
+    "interior": "MnVoyageursIceB1F",
+    "parent": "MnVoyageursIce1F",
+    "source_file": "ice-caves/voyageurs-ice.json",
+    "source_room_id": "MnVoyageursIceB1F",
+    "arrival_core": [
+      5,
+      19
+    ],
+    "arrival_warp_index": 2,
+    "return_trigger_core": [
+      5,
+      21
+    ],
+    "dimensions_metatiles": [
+      16,
+      12
+    ],
+    "warp_contracts": [
+      {
+        "tile": [
+          5,
+          21
+        ],
+        "target": "MnVoyageursIce1F",
+        "target_warp": 4
+      },
+      {
+        "tile": [
+          5,
+          19
+        ],
+        "target": "MnVoyageursIce1F",
+        "target_warp": 4
+      }
+    ],
+    "requires_real_collision_check": true,
+    "exterior_door_status": "Verified current two-floor turning chambers: both controller cases,482production stdio RPC and nine source-matched native GPU views. Original warp records/programs remain exact.",
+    "purpose": "Offset northern and southern glacier tongues divide two substantial ice basins. The first tooth feeds a northern Max Revive branch; the alternating stops form a turning course to the NeverMeltIce shelf. A central cross-slide reaches the sheltered west bank on return.",
+    "story_file": "interior-life/voyageurs-surveyor-v01.json",
+    "resident_scripts": [
+      "MN_INTERIOR_VOYAGEURS_SURVEYOR"
+    ],
+    "source_sha256": "a7b1887d5523a2f52a2bdf4278735c3f58fc3646b2e6379672851ea0f072a819",
+    "native_review_pack_sha256": "0f734df8621b02da80cc45cb905de3d793e28b4f987f98d24203232ddb4cd3b4",
+    "verification": "ice-caves/turning-chambers-v01/README.md"
+  }
+]

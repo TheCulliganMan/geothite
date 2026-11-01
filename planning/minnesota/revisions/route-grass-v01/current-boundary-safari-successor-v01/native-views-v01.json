@@ -1,0 +1,66 @@
+[
+  {
+    "id": "reed-portage",
+    "map": "MnBoundarySafariC00R01",
+    "core": [
+      10,
+      46
+    ]
+  },
+  {
+    "id": "pine-portage",
+    "map": "MnBoundarySafariC00R00",
+    "core": [
+      26,
+      22
+    ]
+  },
+  {
+    "id": "north-pine-portage",
+    "map": "MnBoundarySafariC00R00",
+    "core": [
+      62,
+      26
+    ]
+  },
+  {
+    "id": "isle-portage",
+    "map": "MnBoundarySafariC01R01",
+    "core": [
+      14,
+      14
+    ]
+  },
+  {
+    "id": "palisade-portage",
+    "map": "MnBoundarySafariC00R01",
+    "core": [
+      44,
+      6
+    ]
+  },
+  {
+    "id": "northwind-portage",
+    "map": "MnBoundarySafariC01R00",
+    "core": [
+      24,
+      32
+    ]
+  },
+  {
+    "id": "palisade-stair",
+    "map": "MnBoundarySafariC00R01",
+    "core": [
+      41,
+      11
+    ]
+  },
+  {
+    "id": "northwind-stair",
+    "map": "MnBoundarySafariC01R00",
+    "core": [
+      33,
+      19
+    ]
+  }
+]

@@ -1,0 +1,18 @@
+{
+  "species_id": "MN_090",
+  "name": "Sludgeski",
+  "family_id": "MN_F039",
+  "tool": "built-in image_gen",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f039/manifest-sludgeski-v1-pupil-proof.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f039/sludgeski-v1-pupil-proof",
+  "normalized_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f039/source-feature-proof-sludgeski-v1.json",
+  "detailed_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f039/manifest-sludgeski-v1-pupil-proof.proof.json",
+  "sources": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f039/sludgeski.overworld.imagegen-v1.png": "7e9e66f56df66c8410f1a191acbdee1db597d0dd330f2bd046eb8296533d9573"
+  },
+  "preserved_attempt_receipts": [
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f039/attempt-sludgeski-v1.json"
+  ],
+  "status": "frozen native candidate; actual normal/shiny source features reviewed; root context pending",
+  "accepted": false
+}

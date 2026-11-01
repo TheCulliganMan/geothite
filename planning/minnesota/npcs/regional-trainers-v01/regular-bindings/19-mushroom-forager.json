@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "trainer_class": "MN_MUSHROOM_FORAGER",
+  "class_name": "MUSHROOM FORAGER",
+  "trainer_ids": [
+    "MN_FAIR_EXHIBITOR_06_TRAINER"
+  ],
+  "actors": [
+    {
+      "map": "MnStateFairgrounds",
+      "script": "MN_FAIR_EXHIBITOR_06_TRAINER",
+      "tile": [
+        62,
+        28
+      ],
+      "previous_sprite": "SPRITE_GENTLEMAN"
+    }
+  ]
+}

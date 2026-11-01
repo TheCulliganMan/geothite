@@ -1,0 +1,13 @@
+{
+  "status": "success",
+  "original_tool_path": "/Users/ryanculligan/.codex/generated_images/01a179c0-8064-7d62-9f6b-2356ce51b543/exec-0f4ab23a-e52c-42cd-849c-13637e981018.png",
+  "raw_copy": "sprites/mn-f050/redesign-20261026/mn-103-taconarch.front-back.redesign-v3.png",
+  "sha256": "1eeb48548d974d684bc98c0f3c759c91e694a0bd6e2beeae39e0e101489b492d",
+  "full_resolution": [
+    1024,
+    1536
+  ],
+  "prompt_file": "prompt-v3.txt",
+  "reference_mapping": "reference-mapping-v3.json",
+  "attached_references": []
+}

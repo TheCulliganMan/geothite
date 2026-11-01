@@ -1,0 +1,8 @@
+{
+  "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f012/skatuff.overworld.imagegen-v1.png",
+  "default_original": "/Users/ryanculligan/.codex/generated_images/01a17dc4-dd75-7642-a1c6-4bf13fda70c6/exec-3d8aeb7a-cf41-4303-94b0-0aafe6228684.png",
+  "sha256": "150df2284f40c6a78fb1ea826e4043d8dc91b60654376c30275758d5807ca729",
+  "tool": "built-in ImageGen",
+  "one_species_per_call": true,
+  "genuine16_style_only_reference": true
+}

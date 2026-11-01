@@ -1,0 +1,44 @@
+{
+  "MN_R03_TERRACE_SIGNText": [
+    {
+      "args": [
+        "\"LOW BANK TERRACE\""
+      ],
+      "command": "text"
+    },
+    {
+      "args": [
+        "\"Ramp to the east.\""
+      ],
+      "command": "line"
+    },
+    {
+      "args": [
+        "\"Ledge returns down\""
+      ],
+      "command": "para"
+    },
+    {
+      "args": [],
+      "command": "done"
+    }
+  ],
+  "MN_R03_T04Won": [
+    {
+      "args": [
+        "\"The ledge returns\""
+      ],
+      "command": "text"
+    },
+    {
+      "args": [
+        "\"to the lower road.\""
+      ],
+      "command": "line"
+    },
+    {
+      "args": [],
+      "command": "done"
+    }
+  ]
+}

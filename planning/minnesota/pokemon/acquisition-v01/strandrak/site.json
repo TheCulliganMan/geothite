@@ -1,0 +1,287 @@
+{
+  "schema_version": 1,
+  "id": "minnesota-strandrak-former-shores-site-v1",
+  "status": "unpublished native geometry candidate; no runtime acquisition installed",
+  "parent": "MnR16C00R00",
+  "parent_opening": {
+    "metatile": [
+      21,
+      23
+    ],
+    "before": "05",
+    "after": "02",
+    "south_offset": 14
+  },
+  "ridge": {
+    "map": "MnFormerShores",
+    "constant": "MN_FORMER_SHORES",
+    "tileset": "mn_prairie_headwaters",
+    "dimensions_metatiles": [
+      18,
+      14
+    ],
+    "north_offset": -14,
+    "arrival": [
+      14,
+      0
+    ],
+    "surveyor": [
+      17,
+      5
+    ],
+    "surveyor_approach": [
+      17,
+      6
+    ],
+    "rows": [
+      "05 05 05 05 05 05 05 01 05 05 05 05 05 05 05 05 05 05",
+      "05 05 05 05 05 02 02 01 02 02 02 05 05 05 05 05 05 05",
+      "05 05 05 05 02 02 03 03 02 02 02 02 02 02 05 05 05 05",
+      "05 05 05 02 02 02 03 03 02 02 02 02 02 02 02 05 05 05",
+      "05 05 05 02 02 70 70 70 70 70 70 70 02 02 02 05 05 05",
+      "05 05 05 02 02 02 02 03 02 02 02 02 02 02 02 05 05 05",
+      "05 05 05 05 02 02 02 03 03 02 02 02 02 02 02 05 05 05",
+      "05 05 05 70 70 70 70 70 70 70 70 70 02 02 02 02 05 05",
+      "05 05 05 02 02 02 03 03 02 02 02 02 02 02 02 02 05 05",
+      "05 05 05 05 02 02 03 03 02 02 02 02 02 02 02 05 05 05",
+      "05 05 05 02 02 02 70 70 70 70 70 70 70 70 02 02 05 05",
+      "05 05 05 02 02 03 03 02 02 73 02 02 02 05 05 05 05 05",
+      "05 05 05 05 02 02 02 02 02 02 02 02 02 05 05 05 05 05",
+      "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05"
+    ],
+    "reads": {
+      "upper_shore": {
+        "at": [
+          16,
+          8
+        ],
+        "approach": [
+          16,
+          9
+        ],
+        "kind": "UP_WALL",
+        "script": "MnBasinHighShore"
+      },
+      "middle_shore": {
+        "at": [
+          20,
+          14
+        ],
+        "approach": [
+          20,
+          15
+        ],
+        "kind": "UP_WALL",
+        "script": "MnBasinMiddleShore"
+      },
+      "lower_shore": {
+        "at": [
+          12,
+          20
+        ],
+        "approach": [
+          12,
+          21
+        ],
+        "kind": "UP_WALL",
+        "script": "MnBasinLowShore"
+      }
+    },
+    "cave_active": [
+      18,
+      23
+    ],
+    "cave_arrival": [
+      18,
+      24
+    ]
+  },
+  "basin": {
+    "map": "MnInnerBasin",
+    "constant": "MN_INNER_BASIN",
+    "tileset": "cave",
+    "dimensions_metatiles": [
+      14,
+      14
+    ],
+    "rows": [
+      "1d 1d 1d 1d 1d 1d 1d 1d 1d 1d 1d 1d 1d 1d",
+      "1d 02 02 02 0f 0f 02 02 02 0f 0f 02 02 1d",
+      "1d 02 02 02 0f 0f 02 02 02 0f 0f 02 02 1d",
+      "1d 1d 1d 1d 1d 1d 1d 1d 1d 1d 1d 1d 1d 1d",
+      "1d 02 02 02 02 02 02 02 02 02 02 02 02 1d",
+      "1d 02 02 02 1d 02 02 1d 1d 1d 1d 02 02 1d",
+      "1d 02 02 1d 1d 1d 02 02 02 02 1d 02 02 1d",
+      "1d 02 02 02 02 02 02 02 02 1d 1d 02 02 1d",
+      "1d 02 02 1d 1d 1d 1d 1d 02 02 1d 02 02 1d",
+      "1d 02 02 02 02 1d 02 02 02 02 02 02 02 1d",
+      "1d 02 02 02 1d 1d 1d 0c 1d 1d 1d 02 02 1d",
+      "1d 02 02 02 02 02 02 02 02 02 02 02 02 1d",
+      "1d 0b 02 02 02 02 02 02 02 02 02 02 02 1d",
+      "1d 1d 1d 1d 1d 1d 1d 1d 1d 1d 1d 1d 1d 1d"
+    ],
+    "active_stair": [
+      3,
+      25
+    ],
+    "arrival": [
+      2,
+      25
+    ],
+    "controls": {
+      "upper": {
+        "at": [
+          9,
+          10
+        ],
+        "approach": [
+          10,
+          10
+        ],
+        "script": "MnBasinUpperDial"
+      },
+      "middle": {
+        "at": [
+          18,
+          14
+        ],
+        "approach": [
+          17,
+          14
+        ],
+        "script": "MnBasinCenterDial"
+      },
+      "lower": {
+        "at": [
+          11,
+          18
+        ],
+        "approach": [
+          12,
+          18
+        ],
+        "script": "MnBasinLowerDial"
+      },
+      "lever": {
+        "at": [
+          14,
+          20
+        ],
+        "approach": [
+          15,
+          20
+        ],
+        "script": "MnBasinLever"
+      }
+    },
+    "creature": [
+      14,
+      2
+    ],
+    "creature_approach": [
+      14,
+      3
+    ],
+    "terrain_changes": [
+      {
+        "metatile": [
+          7,
+          3
+        ],
+        "before": "1d",
+        "after": "02"
+      },
+      {
+        "metatile": [
+          4,
+          1
+        ],
+        "before": "0f",
+        "after": "02"
+      },
+      {
+        "metatile": [
+          5,
+          1
+        ],
+        "before": "0f",
+        "after": "02"
+      },
+      {
+        "metatile": [
+          9,
+          1
+        ],
+        "before": "0f",
+        "after": "02"
+      },
+      {
+        "metatile": [
+          10,
+          1
+        ],
+        "before": "0f",
+        "after": "02"
+      },
+      {
+        "metatile": [
+          4,
+          2
+        ],
+        "before": "0f",
+        "after": "02"
+      },
+      {
+        "metatile": [
+          5,
+          2
+        ],
+        "before": "0f",
+        "after": "02"
+      },
+      {
+        "metatile": [
+          9,
+          2
+        ],
+        "before": "0f",
+        "after": "02"
+      },
+      {
+        "metatile": [
+          10,
+          2
+        ],
+        "before": "0f",
+        "after": "02"
+      }
+    ],
+    "terrain_hook": "MnBasinOpenInnerOutlet",
+    "tiles_callback": "MnBasinTiles",
+    "native_presentation_template": "SlowpokeWellB1F",
+    "palette": "PALETTE_NITE",
+    "music": "MUSIC_DARK_CAVE"
+  },
+  "static_review": {
+    "ridge_dry_tiles": 482,
+    "closed_basin_surf_tiles": 333,
+    "open_basin_dry_tiles": 432,
+    "all_three_shore_reads_and_return_connected": true,
+    "all_three_dials_and_lever_reachable_before_solution": true,
+    "surf_cannot_bypass_closed_sill": true,
+    "outside_water_changes": 0,
+    "incidental_cut_buoy_pit_quadrants": 0
+  },
+  "production_acceptance": [
+    "native reciprocal R16 walking seam/return",
+    "all three native terrace detours return without hopping shortcuts",
+    "held shore clues and surveyor acknowledgment/Continue",
+    "all three dials touched including lower default-low value",
+    "wrong settings retain clues/exit and spend nothing",
+    "acknowledged outlet opens nine exact local blocks only",
+    "native cave active/passive stairs both directions and Continue",
+    "optional refusal RUN KO native blackout recovery retry",
+    "capture PC full storage once-only",
+    "production MCP and full native 2D scene review"
+  ]
+}

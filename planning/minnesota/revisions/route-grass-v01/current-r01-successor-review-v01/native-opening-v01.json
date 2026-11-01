@@ -1,0 +1,9 @@
+{
+  "status": "FAILED_REQUIRES_DIAGNOSIS",
+  "pack": "content-packs/minnesota-iron-crosscut-rock-cache-v02.crystalpack",
+  "pack_sha256": "bc38b8920bdc6d5e3c0e18ddac283aa4087e0020d694861f277d10314a3875d1",
+  "test": "rochester_new_game_walks_r01_delivers_acknowledged_originals_and_returns_home",
+  "exit_code": 101,
+  "log": ".local/route-grass-review/current-r01-successor-opening-v01.log",
+  "scope": "Actual New Game opening and both-direction Route1 travel with acknowledged delivery and Continue; not a whole-campaign claim."
+}

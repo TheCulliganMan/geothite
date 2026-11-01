@@ -1,0 +1,216 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_164",
+  "result": "pass",
+  "manifest_sha256": "e72369a188da1a29c8b703e96d1cc026342e550e0ce45b2df762660328357015",
+  "bank_sha256": "a8b09c9c136ed84dc0cae99f6b8bb0ddd292e750aa502cce28f7c09fcb571865",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/mispair.overworld.imagegen-v2-outline-pupils.png": "92217323e7677b19600299fdabf3e64c38904c52c05365d85f4b6f31265430ac",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f076/mispair.overworld.imagegen-v5-piece-spacing.png": "cb32f139d5926e82a08b10a44ccaaae9c9b6b929b1b8ae387dbfa99e750de01f"
+  },
+  "canonical_eye_form": "Two isolated actual black pupil dots south and one isolated actual black pupil west; source eye components verified in all four nonrear poses.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            5,
+            9
+          ],
+          "source_sample": [
+            195,
+            262
+          ],
+          "source_component": [
+            170,
+            246,
+            28,
+            28
+          ],
+          "component_pixels": 784,
+          "native_neighbors": [
+            2,
+            2,
+            2,
+            2
+          ],
+          "source_rgba": [
+            1,
+            2,
+            3,
+            254
+          ]
+        },
+        {
+          "native": [
+            9,
+            10
+          ],
+          "source_sample": [
+            340,
+            300
+          ],
+          "source_component": [
+            340,
+            280,
+            29,
+            29
+          ],
+          "component_pixels": 841,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            67,
+            60,
+            37,
+            254
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            5,
+            9
+          ],
+          "source_sample": [
+            1209,
+            262
+          ],
+          "source_component": [
+            1182,
+            246,
+            28,
+            28
+          ],
+          "component_pixels": 784,
+          "native_neighbors": [
+            2,
+            2,
+            2,
+            2
+          ],
+          "source_rgba": [
+            26,
+            47,
+            67,
+            254
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            5,
+            9
+          ],
+          "source_sample": [
+            195,
+            704
+          ],
+          "source_component": [
+            170,
+            688,
+            28,
+            29
+          ],
+          "component_pixels": 812,
+          "native_neighbors": [
+            2,
+            2,
+            2,
+            2
+          ],
+          "source_rgba": [
+            1,
+            1,
+            1,
+            254
+          ]
+        },
+        {
+          "native": [
+            9,
+            10
+          ],
+          "source_sample": [
+            340,
+            742
+          ],
+          "source_component": [
+            340,
+            741,
+            29,
+            28
+          ],
+          "component_pixels": 812,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            75,
+            65,
+            37,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            5,
+            9
+          ],
+          "source_sample": [
+            1209,
+            698
+          ],
+          "source_component": [
+            1181,
+            684,
+            29,
+            29
+          ],
+          "component_pixels": 831,
+          "native_neighbors": [
+            2,
+            2,
+            2,
+            2
+          ],
+          "source_rgba": [
+            31,
+            56,
+            78,
+            253
+          ]
+        }
+      ]
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "notes": "Two genuine separate mismatched mitten source components in every pose; full south/north views keep native air between pieces. North blue thumb points right and cream thumb left; both backs plain with no eyes. Actual one pupil per mitten south, near blue pupil only west; cuff slits excluded. Complete finger domes and opposite-color cuffs traced in source-cloth-feature-proof; far west contours can overlap naturally."
+  }
+}

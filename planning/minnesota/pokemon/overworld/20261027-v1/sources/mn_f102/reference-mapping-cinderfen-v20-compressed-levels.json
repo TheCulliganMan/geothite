@@ -1,0 +1,99 @@
+{
+  "use_case": "precise-object-edit",
+  "inputs": [
+    {
+      "role": "edit target",
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f102/cinderfen.overworld.imagegen-v19-separated-levels.png"
+    },
+    {
+      "role": "native16 style only",
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png"
+    }
+  ],
+  "canonical_identity_refs_actually_viewed": {
+    "front": {
+      "native_png": {
+        "path": "target/minnesota-pokemon/native/MN_F102/mn-223-cinderfen-v1.front.png",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F102/mn-223-cinderfen-v1.front.png",
+        "sha256": "9bf6baa2fc251afc12f563b8f450df34f06ad085516f7b426481f4dee5fc2935"
+      },
+      "native_indexed_json": {
+        "path": "target/minnesota-pokemon/native/MN_F102/mn-223-cinderfen-v1.front.json",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F102/mn-223-cinderfen-v1.front.json",
+        "sha256": "2d28af7b647c632fca3bb8bfeb1fdf7a04dbc5866fb15ac5875cad2c76b3ec3d"
+      },
+      "native_2bpp": {
+        "path": "target/minnesota-pokemon/native/MN_F102/mn-223-cinderfen-v1.front.2bpp",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F102/mn-223-cinderfen-v1.front.2bpp",
+        "sha256": "a79e10d350134a30ed76d7a5607c7a16724826b8fb4731be46db9e7669b901ec"
+      },
+      "source_image": {
+        "path": "planning/minnesota/pokemon/sprites/mn-f102/mn-221-223.front-back.imagegen-v1.png",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mn-f102/mn-221-223.front-back.imagegen-v1.png",
+        "sha256": "99e1e0a7123b6bafc9d6315f44544554944061e3f87ad82d90c2e65e11991050"
+      },
+      "source_crop": [
+        1008,
+        0,
+        528,
+        536
+      ],
+      "native_fit": [
+        54,
+        54
+      ],
+      "generation_prompt": {
+        "path": "planning/minnesota/pokemon/sprites/mn-f102/prompt-v1.txt",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mn-f102/prompt-v1.txt",
+        "sha256": "e2ee0746834748c45655b894efce45b64f8b7b8a38ed899578379bf5dc4e12d2",
+        "reference_kind": "declared_design_prompt_reference; authoritative view record takes precedence over family default"
+      },
+      "sampling": "area_vote",
+      "exterior_contour": "source_backed",
+      "has_guarded_native_refinements": false,
+      "authority_note": "The current selected native PNG is the design authority; original source may contain detail simplified or refined in canonical conversion."
+    },
+    "back": {
+      "native_png": {
+        "path": "target/minnesota-pokemon/native/MN_F102/mn-223-cinderfen-v1.back.png",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F102/mn-223-cinderfen-v1.back.png",
+        "sha256": "32f141257bf104875f69a8b2fcdb3f623d94f38ee9cdd6b1449e78043959b326"
+      },
+      "native_indexed_json": {
+        "path": "target/minnesota-pokemon/native/MN_F102/mn-223-cinderfen-v1.back.json",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F102/mn-223-cinderfen-v1.back.json",
+        "sha256": "22e5268d871ded115e0e15cce1f544733bd85e6e95ede577a5c7523f8660a645"
+      },
+      "native_2bpp": {
+        "path": "target/minnesota-pokemon/native/MN_F102/mn-223-cinderfen-v1.back.2bpp",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F102/mn-223-cinderfen-v1.back.2bpp",
+        "sha256": "7693aec91bf2832cbf2265eb4e5a94e0a267cd09eab2e58f596372d07ffb85ea"
+      },
+      "source_image": {
+        "path": "planning/minnesota/pokemon/sprites/mn-f102/mn-221-223.front-back.imagegen-v1.png",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mn-f102/mn-221-223.front-back.imagegen-v1.png",
+        "sha256": "99e1e0a7123b6bafc9d6315f44544554944061e3f87ad82d90c2e65e11991050"
+      },
+      "source_crop": [
+        1008,
+        536,
+        528,
+        488
+      ],
+      "native_fit": [
+        46,
+        47
+      ],
+      "generation_prompt": {
+        "path": "planning/minnesota/pokemon/sprites/mn-f102/prompt-v1.txt",
+        "absolute_path": "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/sprites/mn-f102/prompt-v1.txt",
+        "sha256": "e2ee0746834748c45655b894efce45b64f8b7b8a38ed899578379bf5dc4e12d2",
+        "reference_kind": "declared_design_prompt_reference; authoritative view record takes precedence over family default"
+      },
+      "sampling": "area_vote",
+      "exterior_contour": "source_backed",
+      "has_guarded_native_refinements": false,
+      "authority_note": "The current selected native PNG is the design authority; original source may contain detail simplified or refined in canonical conversion."
+    }
+  }
+}

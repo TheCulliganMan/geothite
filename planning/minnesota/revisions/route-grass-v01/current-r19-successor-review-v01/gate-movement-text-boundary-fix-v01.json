@@ -1,0 +1,11 @@
+{
+  "status": "REJECTED_AND_REVERTED",
+  "source": "crates/crystal-bevy/src/bevy_shell/deterministic_session.rs",
+  "source_sha256": "da9fc694ae1eebc6494afa4f6b7d2821546846e7d18edc661b306febe1d16103",
+  "change": "visible_player_boundary now treats the authoritative jumptext closing wait as a player boundary after scripted movement, preventing automatic A from acknowledging it before the printer is available.",
+  "failure_log": ".local/route-grass-review/r19-gate-native-v09.log",
+  "build": "planning/minnesota/revisions/route-grass-v01/current-r19-successor-review-v01/gate-controller-build-v09.json",
+  "test": "planning/minnesota/revisions/route-grass-v01/current-r19-successor-review-v01/gate-native-cases-v10.json",
+  "scope": "One additional boundary predicate; no pack/script/art/terrain or selector changes.",
+  "reason": "Native v10 reproduces identical premature wait acknowledgement; added movement boundary predicate did not fix the consuming path. Only that owned predicate was reverted."
+}

@@ -1,0 +1,522 @@
+{
+  "schema_version": 2,
+  "id": "MnRochester",
+  "tileset": "johto_modern",
+  "compiled_tileset": "johto_modern",
+  "dimensions_metatiles": [
+    20,
+    16
+  ],
+  "shore_fitting": "johto_8_neighbors",
+  "reject_cliff_cuts": true,
+  "source_pixels_modified": false,
+  "layers": [
+    {
+      "name": "Clinic and two residential lanes",
+      "kind": "polygon",
+      "points": [
+        [
+          2,
+          2
+        ],
+        [
+          10,
+          2
+        ],
+        [
+          10,
+          3
+        ],
+        [
+          17,
+          3
+        ],
+        [
+          17,
+          7
+        ],
+        [
+          18,
+          7
+        ],
+        [
+          18,
+          12
+        ],
+        [
+          17,
+          12
+        ],
+        [
+          17,
+          14
+        ],
+        [
+          3,
+          14
+        ],
+        [
+          3,
+          12
+        ],
+        [
+          2,
+          12
+        ]
+      ],
+      "material": "lawn"
+    },
+    {
+      "name": "Clinic public brick courtyard",
+      "kind": "block_rect",
+      "bounds": [
+        6,
+        4,
+        10,
+        6
+      ],
+      "block": "06"
+    },
+    {
+      "name": "Central grove divides the two lanes",
+      "kind": "rect",
+      "bounds": [
+        9,
+        8,
+        11,
+        10
+      ],
+      "material": "forest"
+    },
+    {
+      "name": "Eastern arrival to clinic courtyard",
+      "kind": "path",
+      "points": [
+        [
+          18,
+          9
+        ],
+        [
+          12,
+          9
+        ],
+        [
+          12,
+          6
+        ],
+        [
+          7,
+          6
+        ],
+        [
+          7,
+          4
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "name": "Westward prairie turn",
+      "kind": "path",
+      "points": [
+        [
+          1,
+          9
+        ],
+        [
+          4,
+          9
+        ],
+        [
+          4,
+          8
+        ],
+        [
+          8,
+          8
+        ],
+        [
+          8,
+          6
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "name": "Northern residential lane",
+      "kind": "path",
+      "points": [
+        [
+          3,
+          4
+        ],
+        [
+          3,
+          5
+        ],
+        [
+          7,
+          5
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "name": "Mart spur",
+      "kind": "path",
+      "points": [
+        [
+          12,
+          6
+        ],
+        [
+          14,
+          6
+        ],
+        [
+          14,
+          5
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "name": "Southern gym walk",
+      "kind": "path",
+      "points": [
+        [
+          12,
+          9
+        ],
+        [
+          12,
+          12
+        ],
+        [
+          15,
+          12
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "name": "Patient home lane",
+      "kind": "path",
+      "points": [
+        [
+          4,
+          9
+        ],
+        [
+          4,
+          12
+        ],
+        [
+          3,
+          12
+        ]
+      ],
+      "width_metatiles": 1,
+      "material": "floor"
+    },
+    {
+      "name": "Clinic garden beds",
+      "kind": "rect",
+      "bounds": [
+        9,
+        4,
+        11,
+        5
+      ],
+      "material": "flowers"
+    },
+    {
+      "name": "Quiet southern bed",
+      "kind": "rect",
+      "bounds": [
+        7,
+        11,
+        10,
+        12
+      ],
+      "material": "flowers"
+    },
+    {
+      "name": "Mart window bed",
+      "kind": "rect",
+      "bounds": [
+        15,
+        6,
+        17,
+        7
+      ],
+      "material": "flowers"
+    },
+    {
+      "name": "Clinic complete facade",
+      "kind": "point",
+      "position": [
+        7,
+        2
+      ],
+      "block": "18"
+    },
+    {
+      "name": "Clinic complete facade",
+      "kind": "point",
+      "position": [
+        8,
+        2
+      ],
+      "block": "19"
+    },
+    {
+      "name": "Clinic complete facade",
+      "kind": "point",
+      "position": [
+        7,
+        3
+      ],
+      "block": "1a"
+    },
+    {
+      "name": "Clinic complete facade",
+      "kind": "point",
+      "position": [
+        8,
+        3
+      ],
+      "block": "1b"
+    },
+    {
+      "name": "Mart complete facade",
+      "kind": "point",
+      "position": [
+        14,
+        3
+      ],
+      "block": "18"
+    },
+    {
+      "name": "Mart complete facade",
+      "kind": "point",
+      "position": [
+        15,
+        3
+      ],
+      "block": "19"
+    },
+    {
+      "name": "Mart complete facade",
+      "kind": "point",
+      "position": [
+        14,
+        4
+      ],
+      "block": "16"
+    },
+    {
+      "name": "Mart complete facade",
+      "kind": "point",
+      "position": [
+        15,
+        4
+      ],
+      "block": "33"
+    },
+    {
+      "name": "Gym complete facade",
+      "kind": "point",
+      "position": [
+        14,
+        10
+      ],
+      "block": "18"
+    },
+    {
+      "name": "Gym complete facade",
+      "kind": "point",
+      "position": [
+        15,
+        10
+      ],
+      "block": "1f"
+    },
+    {
+      "name": "Gym complete facade",
+      "kind": "point",
+      "position": [
+        16,
+        10
+      ],
+      "block": "19"
+    },
+    {
+      "name": "Gym complete facade",
+      "kind": "point",
+      "position": [
+        14,
+        11
+      ],
+      "block": "1c"
+    },
+    {
+      "name": "Gym complete facade",
+      "kind": "point",
+      "position": [
+        15,
+        11
+      ],
+      "block": "1d"
+    },
+    {
+      "name": "Gym complete facade",
+      "kind": "point",
+      "position": [
+        16,
+        11
+      ],
+      "block": "1e"
+    },
+    {
+      "name": "Clerk home complete facade",
+      "kind": "point",
+      "position": [
+        3,
+        2
+      ],
+      "block": "18"
+    },
+    {
+      "name": "Clerk home complete facade",
+      "kind": "point",
+      "position": [
+        4,
+        2
+      ],
+      "block": "19"
+    },
+    {
+      "name": "Clerk home complete facade",
+      "kind": "point",
+      "position": [
+        3,
+        3
+      ],
+      "block": "16"
+    },
+    {
+      "name": "Clerk home complete facade",
+      "kind": "point",
+      "position": [
+        4,
+        3
+      ],
+      "block": "1e"
+    },
+    {
+      "name": "Patient home complete facade",
+      "kind": "point",
+      "position": [
+        3,
+        10
+      ],
+      "block": "18"
+    },
+    {
+      "name": "Patient home complete facade",
+      "kind": "point",
+      "position": [
+        4,
+        10
+      ],
+      "block": "19"
+    },
+    {
+      "name": "Patient home complete facade",
+      "kind": "point",
+      "position": [
+        3,
+        11
+      ],
+      "block": "16"
+    },
+    {
+      "name": "Patient home complete facade",
+      "kind": "point",
+      "position": [
+        4,
+        11
+      ],
+      "block": "1e"
+    },
+    {
+      "name": "MnRCClinicSign",
+      "kind": "point",
+      "position": [
+        9,
+        4
+      ],
+      "block": "45"
+    },
+    {
+      "name": "MnRCMartSign",
+      "kind": "point",
+      "position": [
+        16,
+        5
+      ],
+      "block": "45"
+    },
+    {
+      "name": "MnRCGymSign",
+      "kind": "point",
+      "position": [
+        17,
+        12
+      ],
+      "block": "45"
+    },
+    {
+      "name": "MnRCCitySign",
+      "kind": "point",
+      "position": [
+        16,
+        8
+      ],
+      "block": "45"
+    },
+    {
+      "name": "Complete native mart wall and endcap repair",
+      "kind": "point",
+      "position": [
+        14,
+        4
+      ],
+      "block": "1a"
+    },
+    {
+      "name": "Existing published reciprocal road mouth",
+      "kind": "point",
+      "position": [
+        0,
+        9
+      ],
+      "block": "01"
+    },
+    {
+      "name": "Existing published reciprocal road mouth",
+      "kind": "point",
+      "position": [
+        19,
+        9
+      ],
+      "block": "01"
+    }
+  ]
+}

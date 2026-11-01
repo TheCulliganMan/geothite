@@ -1,0 +1,386 @@
+{
+  "schema_version": 1,
+  "species": [
+    {
+      "id": "MN_163",
+      "classification": "Wave Sway",
+      "height_inches": 12,
+      "weight_tenths_lb": 90,
+      "dex_pages": [
+        "Its swaying body @ starts waves on @ a still pond.",
+        "It stops only @ when both shores @ answer at once."
+      ],
+      "base_stats": {
+        "hp": 49,
+        "attack": 59,
+        "defense": 46,
+        "speed": 46,
+        "special_attack": 40,
+        "special_defense": 43
+      },
+      "catch_rate": 190,
+      "base_exp": 62,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_SLOW",
+      "egg_groups": [
+        "EGG_WATER_1",
+        "EGG_HUMANSHAPE"
+      ],
+      "evolution": {
+        "method": "LEVEL",
+        "level": 22
+      },
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_FIGHTER",
+      "footprint_species": "POLIWRATH",
+      "cry": {
+        "cry": "CRY_MANTINE",
+        "pitch": -48,
+        "length": 144
+      },
+      "shiny_rgb5": [
+        [
+          29,
+          13,
+          27
+        ],
+        [
+          20,
+          5,
+          12
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "POUND"
+        ],
+        [
+          1,
+          "LEER"
+        ],
+        [
+          5,
+          "WATER_GUN"
+        ],
+        [
+          9,
+          "FOCUS_ENERGY"
+        ],
+        [
+          13,
+          "ROCK_SMASH"
+        ],
+        [
+          17,
+          "COUNTER"
+        ],
+        [
+          22,
+          "BUBBLEBEAM"
+        ],
+        [
+          27,
+          "SEISMIC_TOSS"
+        ],
+        [
+          32,
+          "DETECT"
+        ],
+        [
+          37,
+          "VITAL_THROW"
+        ],
+        [
+          42,
+          "BODY_SLAM"
+        ],
+        [
+          48,
+          "SUBMISSION"
+        ],
+        [
+          55,
+          "HYDRO_PUMP"
+        ],
+        [
+          62,
+          "REVERSAL"
+        ]
+      ],
+      "tmhm_moves": [
+        "SURF",
+        "WATERFALL",
+        "WHIRLPOOL",
+        "ROCK_SMASH",
+        "STRENGTH",
+        "DYNAMICPUNCH",
+        "RAIN_DANCE",
+        "ENDURE",
+        "PROTECT"
+      ],
+      "egg_moves": [
+        "HAZE",
+        "ENCORE",
+        "CROSS_CHOP"
+      ]
+    },
+    {
+      "id": "MN_164",
+      "classification": "Wave Grip",
+      "height_inches": 36,
+      "weight_tenths_lb": 620,
+      "dex_pages": [
+        "It catches a wave @ with one arm, @ then the other.",
+        "The returning @ surge supplies its @ throwing power."
+      ],
+      "base_stats": {
+        "hp": 68,
+        "attack": 84,
+        "defense": 65,
+        "speed": 65,
+        "special_attack": 57,
+        "special_defense": 61
+      },
+      "catch_rate": 90,
+      "base_exp": 88,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_SLOW",
+      "egg_groups": [
+        "EGG_WATER_1",
+        "EGG_HUMANSHAPE"
+      ],
+      "evolution": {
+        "method": "LEVEL",
+        "level": 40
+      },
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_FIGHTER",
+      "footprint_species": "POLIWRATH",
+      "cry": {
+        "cry": "CRY_MANTINE",
+        "pitch": -24,
+        "length": 160
+      },
+      "shiny_rgb5": [
+        [
+          30,
+          8,
+          24
+        ],
+        [
+          19,
+          4,
+          9
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "POUND"
+        ],
+        [
+          1,
+          "LEER"
+        ],
+        [
+          1,
+          "WATER_GUN"
+        ],
+        [
+          11,
+          "FOCUS_ENERGY"
+        ],
+        [
+          15,
+          "ROCK_SMASH"
+        ],
+        [
+          19,
+          "COUNTER"
+        ],
+        [
+          24,
+          "BUBBLEBEAM"
+        ],
+        [
+          29,
+          "SEISMIC_TOSS"
+        ],
+        [
+          34,
+          "DETECT"
+        ],
+        [
+          39,
+          "VITAL_THROW"
+        ],
+        [
+          44,
+          "BODY_SLAM"
+        ],
+        [
+          50,
+          "SUBMISSION"
+        ],
+        [
+          57,
+          "HYDRO_PUMP"
+        ],
+        [
+          64,
+          "REVERSAL"
+        ]
+      ],
+      "tmhm_moves": [
+        "SURF",
+        "WATERFALL",
+        "WHIRLPOOL",
+        "ROCK_SMASH",
+        "STRENGTH",
+        "DYNAMICPUNCH",
+        "RAIN_DANCE",
+        "ENDURE",
+        "PROTECT"
+      ],
+      "egg_moves": [
+        "HAZE",
+        "ENCORE",
+        "CROSS_CHOP"
+      ]
+    },
+    {
+      "id": "MN_165",
+      "classification": "Seiche Grip",
+      "height_inches": 78,
+      "weight_tenths_lb": 1540,
+      "dex_pages": [
+        "It waits through @ a lake's long @ outward surge.",
+        "It throws foes @ with the force of @ a returning wave."
+      ],
+      "base_stats": {
+        "hp": 90,
+        "attack": 110,
+        "defense": 85,
+        "speed": 85,
+        "special_attack": 75,
+        "special_defense": 80
+      },
+      "catch_rate": 45,
+      "base_exp": 220,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_SLOW",
+      "egg_groups": [
+        "EGG_WATER_1",
+        "EGG_HUMANSHAPE"
+      ],
+      "evolution": null,
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_FIGHTER",
+      "footprint_species": "POLIWRATH",
+      "cry": {
+        "cry": "CRY_MANTINE",
+        "pitch": 0,
+        "length": 176
+      },
+      "shiny_rgb5": [
+        [
+          31,
+          10,
+          21
+        ],
+        [
+          16,
+          5,
+          7
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "POUND"
+        ],
+        [
+          1,
+          "LEER"
+        ],
+        [
+          1,
+          "WATER_GUN"
+        ],
+        [
+          1,
+          "FOCUS_ENERGY"
+        ],
+        [
+          17,
+          "ROCK_SMASH"
+        ],
+        [
+          21,
+          "COUNTER"
+        ],
+        [
+          26,
+          "BUBBLEBEAM"
+        ],
+        [
+          31,
+          "SEISMIC_TOSS"
+        ],
+        [
+          36,
+          "DETECT"
+        ],
+        [
+          41,
+          "VITAL_THROW"
+        ],
+        [
+          46,
+          "BODY_SLAM"
+        ],
+        [
+          52,
+          "SUBMISSION"
+        ],
+        [
+          59,
+          "HYDRO_PUMP"
+        ],
+        [
+          66,
+          "REVERSAL"
+        ]
+      ],
+      "tmhm_moves": [
+        "SURF",
+        "WATERFALL",
+        "WHIRLPOOL",
+        "ROCK_SMASH",
+        "STRENGTH",
+        "DYNAMICPUNCH",
+        "RAIN_DANCE",
+        "ENDURE",
+        "PROTECT"
+      ],
+      "egg_moves": [
+        "HAZE",
+        "ENCORE",
+        "CROSS_CHOP"
+      ]
+    }
+  ]
+}

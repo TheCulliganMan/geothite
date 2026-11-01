@@ -1,0 +1,2455 @@
+{
+  "schema_version": 1,
+  "status": "All eight interiors rebuilt and native-reviewed against original Crystal gyms with original character names. The 538-map regional story candidate now contains every current room and real city facade; one production suite passes all eight local city courses, badges/TMs, saves and both returns. Earned opening/R01/Rochester regressions also pass. Missing regional links, required story gates and a continuous earned badge journey remain unproved.",
+  "gyms": [
+    {
+      "slot": 1,
+      "id": "MnRochesterGym",
+      "constant": "MN_ROCHESTER_GYM",
+      "city": "ROCHESTER",
+      "leader": "VAREL",
+      "trainer_class": "COOLTRAINERF",
+      "leader_sprite": "SPRITE_COOLTRAINER_F",
+      "leader_at": [
+        6,
+        3
+      ],
+      "badge_flag": "ENGINE_ZEPHYRBADGE",
+      "requires": [
+        "EVENT_MN_DELIVERED_ROCHESTER_PARCEL"
+      ],
+      "reward": "TM_HEADBUTT",
+      "party": [
+        {
+          "species": "SENTRET",
+          "level": 10,
+          "moves": [
+            "TACKLE",
+            "DEFENSE_CURL"
+          ]
+        },
+        {
+          "species": "FURRET",
+          "level": 12,
+          "moves": [
+            "SCRATCH",
+            "QUICK_ATTACK",
+            "DEFENSE_CURL"
+          ]
+        }
+      ],
+      "rows": [
+        "dtttttf",
+        "l.....r",
+        "guuuu.r",
+        "lr.euuh",
+        "lruuc.r",
+        "gu..l.r",
+        "l.uul.r",
+        "leuuuuh",
+        "l.....r",
+        ".L.s.R."
+      ],
+      "art": {
+        ".": [
+          "elite_four_room",
+          "02"
+        ],
+        "a": [
+          "elite_four_room",
+          "0f"
+        ],
+        "b": [
+          "elite_four_room",
+          "11"
+        ],
+        "t": [
+          "elite_four_room",
+          "05"
+        ],
+        "c": [
+          "elite_four_room",
+          "0b"
+        ],
+        "l": [
+          "elite_four_room",
+          "08"
+        ],
+        "d": [
+          "elite_four_room",
+          "04"
+        ],
+        "e": [
+          "elite_four_room",
+          "13"
+        ],
+        "r": [
+          "elite_four_room",
+          "0a"
+        ],
+        "f": [
+          "elite_four_room",
+          "06"
+        ],
+        "u": [
+          "elite_four_room",
+          "0d"
+        ],
+        "g": [
+          "elite_four_room",
+          "0c"
+        ],
+        "h": [
+          "elite_four_room",
+          "0e"
+        ],
+        "#": [
+          "elite_four_room",
+          "07"
+        ],
+        "L": [
+          "elite_four_room",
+          "25"
+        ],
+        "R": [
+          "elite_four_room",
+          "26"
+        ],
+        "s": [
+          "elite_four_room",
+          "03"
+        ]
+      },
+      "trainers": [
+        {
+          "id": "MN_GYM_1_TRAINER_1",
+          "name": "TAVEL",
+          "trainer_class": "SCHOOLBOY",
+          "sprite": "SPRITE_YOUNGSTER",
+          "at": [
+            5,
+            16
+          ],
+          "party": [
+            {
+              "species": "SENTRET",
+              "level": 8
+            }
+          ],
+          "optional": false,
+          "before_lines": [
+            "I found the path!",
+            "Can you keep up?"
+          ],
+          "after_lines": [
+            "Look for the gap",
+            "at each turn."
+          ],
+          "requires": []
+        },
+        {
+          "id": "MN_GYM_1_TRAINER_2",
+          "name": "ELVIK",
+          "trainer_class": "SCHOOLBOY",
+          "sprite": "SPRITE_YOUNGSTER",
+          "at": [
+            5,
+            8
+          ],
+          "party": [
+            {
+              "species": "HOOTHOOT",
+              "level": 9
+            }
+          ],
+          "optional": false,
+          "before_lines": [
+            "You made it here.",
+            "Now get past me!"
+          ],
+          "after_lines": [
+            "Go right around",
+            "the last planter.",
+            "VAREL is ahead!"
+          ],
+          "requires": [
+            "EVENT_MN_GYM_1_TRAINER_1_DEFEATED"
+          ]
+        }
+      ],
+      "stations": [],
+      "gates": [],
+      "guide": [
+        "Follow the gaps",
+        "between planters.",
+        "Beat TAVEL, then",
+        "ELVIK. VAREL waits",
+        "at the far end."
+      ],
+      "walkthrough": [
+        "MN_GYM_1_TRAINER_1",
+        "MN_GYM_1_TRAINER_2"
+      ],
+      "dimensions_metatiles": [
+        7,
+        10
+      ],
+      "arrival_core": [
+        6,
+        17
+      ],
+      "exit_tiles_core": [
+        [
+          6,
+          19
+        ],
+        [
+          7,
+          19
+        ]
+      ],
+      "guide_at": [
+        9,
+        17
+      ],
+      "leader_court_locked": false,
+      "before_lines": [
+        "I am VAREL.",
+        "No fancy tricks.",
+        "Show me how well",
+        "you use your team!"
+      ],
+      "victory_lines": [
+        "You noticed when",
+        "the battle turned.",
+        "You earned this!"
+      ],
+      "after_lines": [
+        "Prairie Farm Road",
+        "leads to MANKATO.",
+        "Let your partners",
+        "rest on the way."
+      ],
+      "pads": [],
+      "routers": [],
+      "court_requires": [
+        "EVENT_MN_GYM_1_TRAINER_1_DEFEATED",
+        "EVENT_MN_GYM_1_TRAINER_2_DEFEATED"
+      ],
+      "court_denied_lines": [
+        "Beat TAVEL and",
+        "ELVIK first. Then",
+        "show me your team!"
+      ]
+    },
+    {
+      "slot": 2,
+      "id": "MnMankatoGym",
+      "constant": "MN_MANKATO_GYM",
+      "city": "MANKATO",
+      "leader": "TORVEN",
+      "trainer_class": "HIKER",
+      "leader_sprite": "SPRITE_POKEFAN_M",
+      "leader_at": [
+        11,
+        3
+      ],
+      "badge_flag": "ENGINE_HIVEBADGE",
+      "requires": [
+        "BADGE_1"
+      ],
+      "reward": "TM_MUD_SLAP",
+      "party": [
+        {
+          "species": "WOOPER",
+          "level": 14,
+          "moves": [
+            "WATER_GUN",
+            "TAIL_WHIP",
+            "SLAM"
+          ]
+        },
+        {
+          "species": "SANDSHREW",
+          "level": 15,
+          "moves": [
+            "SCRATCH",
+            "DEFENSE_CURL",
+            "SAND_ATTACK"
+          ]
+        },
+        {
+          "species": "PHANPY",
+          "level": 16,
+          "moves": [
+            "TACKLE",
+            "GROWL",
+            "DEFENSE_CURL",
+            "MUD_SLAP"
+          ]
+        }
+      ],
+      "rows": [
+        "STTETTTE",
+        "l..r...r",
+        "l..r...r",
+        "l..rphBE",
+        "ltphp..r",
+        "l.p....r",
+        "l.pp...r",
+        "SAphhhhE",
+        "lL....Rr",
+        "###s####"
+      ],
+      "art": {
+        "#": [
+          "champions_room",
+          "2a"
+        ],
+        ".": [
+          "tower",
+          "09"
+        ],
+        "S": [
+          "tower",
+          "33"
+        ],
+        "E": [
+          "tower",
+          "34"
+        ],
+        "T": [
+          "tower",
+          "32"
+        ],
+        "l": [
+          "tower",
+          "35"
+        ],
+        "r": [
+          "tower",
+          "36"
+        ],
+        "p": [
+          "champions_room",
+          "2a"
+        ],
+        "h": [
+          "cave",
+          "39"
+        ],
+        "t": [
+          "champions_room",
+          "21"
+        ],
+        "A": [
+          "champions_room",
+          "2a"
+        ],
+        "B": [
+          "champions_room",
+          "2a"
+        ],
+        "L": [
+          "tower",
+          "19"
+        ],
+        "R": [
+          "tower",
+          "1a"
+        ],
+        "s": [
+          "tower",
+          "26"
+        ]
+      },
+      "trainers": [
+        {
+          "id": "MN_GYM_2_TRAINER_1",
+          "name": "CALDREN",
+          "trainer_class": "CAMPER",
+          "sprite": "SPRITE_YOUNGSTER",
+          "at": [
+            4,
+            17
+          ],
+          "party": [
+            {
+              "species": "SANDSHREW",
+              "level": 12
+            }
+          ],
+          "optional": false,
+          "before_lines": [
+            "Mind your footing.",
+            "These banks go",
+            "one way!"
+          ],
+          "after_lines": [
+            "The lower stair",
+            "is clear now.",
+            "Climb left. Find",
+            "the low edge."
+          ]
+        },
+        {
+          "id": "MN_GYM_2_TRAINER_2",
+          "name": "JOREL",
+          "trainer_class": "PICNICKER",
+          "sprite": "SPRITE_LASS",
+          "at": [
+            11,
+            11
+          ],
+          "party": [
+            {
+              "species": "WOOPER",
+              "level": 13
+            }
+          ],
+          "optional": false,
+          "before_lines": [
+            "You found the drop",
+            "Now show me how",
+            "your team battles."
+          ],
+          "after_lines": [
+            "The upper stair",
+            "is clear. TORVEN",
+            "is waiting above."
+          ],
+          "requires": [
+            "EVENT_MN_GYM_2_TRAINER_1_DEFEATED"
+          ]
+        }
+      ],
+      "stations": [],
+      "gates": [
+        {
+          "at": [
+            1,
+            7
+          ],
+          "requires": [
+            "EVENT_MN_GYM_2_TRAINER_1_DEFEATED"
+          ],
+          "open_symbol": "t",
+          "event": "EVENT_MN_GYM_2_LOWER_STAIR_OPEN"
+        },
+        {
+          "at": [
+            6,
+            3
+          ],
+          "requires": [
+            "EVENT_MN_GYM_2_TRAINER_1_DEFEATED",
+            "EVENT_MN_GYM_2_TRAINER_2_DEFEATED"
+          ],
+          "open_symbol": "t",
+          "event": "EVENT_MN_GYM_2_COURT_OPEN"
+        }
+      ],
+      "guide": [
+        "Beat CALDREN, then",
+        "climb the left",
+        "stair. Drop down",
+        "to reach JOREL.",
+        "Banks go one way.",
+        "Stairs go both."
+      ],
+      "walkthrough": [
+        "MN_GYM_2_TRAINER_1",
+        "MN_GYM_2_TRAINER_2"
+      ],
+      "dimensions_metatiles": [
+        8,
+        10
+      ],
+      "arrival_core": [
+        6,
+        17
+      ],
+      "exit_tiles_core": [
+        [
+          6,
+          19
+        ],
+        [
+          7,
+          19
+        ]
+      ],
+      "guide_at": [
+        9,
+        16
+      ],
+      "leader_court_locked": true,
+      "before_lines": [
+        "The river moves.",
+        "The banks settle.",
+        "Can your team find",
+        "its footing?"
+      ],
+      "victory_lines": [
+        "You kept your feet",
+        "as plans changed."
+      ],
+      "after_lines": [
+        "The north road",
+        "crosses the fields",
+        "Look for partners",
+        "among the crops."
+      ],
+      "ledges": [
+        {
+          "id": "WEST_BANK_DROP",
+          "direction": "south",
+          "hop_from": [
+            6,
+            8
+          ],
+          "landing": [
+            6,
+            10
+          ],
+          "return_passage_core": [
+            2,
+            14,
+            4,
+            16
+          ],
+          "minimum_return_steps": 24
+        },
+        {
+          "id": "COURT_RETURN_DROP",
+          "direction": "south",
+          "hop_from": [
+            10,
+            6
+          ],
+          "landing": [
+            10,
+            8
+          ],
+          "return_passage_core": [
+            12,
+            6,
+            14,
+            8
+          ],
+          "minimum_return_steps": 6
+        },
+        {
+          "id": "LOWER_ESCAPE_DROP",
+          "direction": "south",
+          "hop_from": [
+            10,
+            14
+          ],
+          "landing": [
+            10,
+            16
+          ],
+          "return_passage_core": [
+            2,
+            14,
+            4,
+            16
+          ],
+          "minimum_return_steps": 28
+        }
+      ]
+    },
+    {
+      "slot": 3,
+      "id": "MnMinneapolisGym",
+      "constant": "MN_MINNEAPOLIS_GYM",
+      "city": "MINNEAPOLIS",
+      "leader": "AVRIN",
+      "trainer_class": "COOLTRAINERF",
+      "leader_sprite": "SPRITE_LASS",
+      "leader_at": [
+        4,
+        3
+      ],
+      "badge_flag": "ENGINE_PLAINBADGE",
+      "requires": [
+        "BADGE_2"
+      ],
+      "reward": "TM_THUNDERPUNCH",
+      "party": [
+        {
+          "species": "MAREEP",
+          "level": 19,
+          "moves": [
+            "THUNDERSHOCK",
+            "TACKLE",
+            "GROWL",
+            "THUNDER_WAVE"
+          ]
+        },
+        {
+          "species": "MAGNEMITE",
+          "level": 20,
+          "moves": [
+            "THUNDERSHOCK",
+            "TACKLE",
+            "SWIFT"
+          ]
+        },
+        {
+          "species": "FLAAFFY",
+          "level": 21,
+          "moves": [
+            "THUNDERSHOCK",
+            "THUNDERPUNCH",
+            "GROWL",
+            "THUNDER_WAVE"
+          ]
+        }
+      ],
+      "rows": [
+        "LTTTR",
+        "l...r",
+        "uvBuv",
+        "uvAuv",
+        ".ccc.",
+        ".ccc.",
+        ".....",
+        ".S.E.",
+        "..s.."
+      ],
+      "art": {
+        "#": [
+          "game_corner",
+          "22"
+        ],
+        "L": [
+          "game_corner",
+          "22"
+        ],
+        "T": [
+          "game_corner",
+          "26"
+        ],
+        "R": [
+          "game_corner",
+          "24"
+        ],
+        "l": [
+          "game_corner",
+          "23"
+        ],
+        "r": [
+          "game_corner",
+          "25"
+        ],
+        "u": [
+          "game_corner",
+          "20"
+        ],
+        "v": [
+          "game_corner",
+          "21"
+        ],
+        ".": [
+          "game_corner",
+          "01"
+        ],
+        "c": [
+          "game_corner",
+          "1f"
+        ],
+        "S": [
+          "game_corner",
+          "1d"
+        ],
+        "E": [
+          "game_corner",
+          "1e"
+        ],
+        "s": [
+          "game_corner",
+          "0c"
+        ],
+        "A": [
+          "elite_four_room",
+          "14"
+        ],
+        "B": [
+          "elite_four_room",
+          "14"
+        ]
+      },
+      "trainers": [
+        {
+          "id": "MN_GYM_3_TRAINER_1",
+          "name": "LENVI",
+          "trainer_class": "SCIENTIST",
+          "sprite": "SPRITE_SCIENTIST",
+          "at": [
+            1,
+            13
+          ],
+          "party": [
+            {
+              "species": "MAREEP",
+              "level": 17
+            }
+          ],
+          "optional": false,
+          "before_lines": [
+            "A spark is enough.",
+            "Watch my MAREEP!"
+          ],
+          "after_lines": [
+            "First, beat JOSSA.",
+            "Then try the left",
+            "can in the top row"
+          ]
+        },
+        {
+          "id": "MN_GYM_3_TRAINER_2",
+          "name": "JOSSA",
+          "trainer_class": "SUPER_NERD",
+          "sprite": "SPRITE_SUPER_NERD",
+          "at": [
+            8,
+            10
+          ],
+          "party": [
+            {
+              "species": "MAGNEMITE",
+              "level": 18
+            },
+            {
+              "species": "VOLTORB",
+              "level": 18
+            }
+          ],
+          "optional": false,
+          "before_lines": [
+            "My team is wired",
+            "for this battle!"
+          ],
+          "after_lines": [
+            "The second switch",
+            "is right beside",
+            "the first one.",
+            "Stay in that row."
+          ],
+          "requires": [
+            "EVENT_MN_GYM_3_TRAINER_1_DEFEATED"
+          ]
+        }
+      ],
+      "stations": [],
+      "gates": [
+        {
+          "at": [
+            2,
+            3
+          ],
+          "requires": [
+            "EVENT_MN_GYM_3_TRAINER_1_DEFEATED",
+            "EVENT_MN_GYM_3_TRAINER_2_DEFEATED",
+            "EVENT_MN_GYM_3_FIRST_SWITCH_ON"
+          ],
+          "open_symbol": ".",
+          "event": "EVENT_MN_GYM_3_FIRST_GATE_OPEN"
+        },
+        {
+          "at": [
+            2,
+            2
+          ],
+          "requires": [
+            "EVENT_MN_GYM_3_TRAINER_1_DEFEATED",
+            "EVENT_MN_GYM_3_TRAINER_2_DEFEATED",
+            "EVENT_MN_GYM_3_FIRST_SWITCH_ON",
+            "EVENT_MN_GYM_3_SECOND_SWITCH_ON"
+          ],
+          "open_symbol": ".",
+          "event": "EVENT_MN_GYM_3_COURT_OPEN"
+        }
+      ],
+      "guide": [
+        "Beat LENVI, then",
+        "JOSSA. They know",
+        "the switch pair.",
+        "Listen to them,",
+        "open both locks."
+      ],
+      "walkthrough": [
+        "MN_GYM_3_TRAINER_1",
+        "MN_GYM_3_TRAINER_2",
+        "UPPER_LEFT",
+        "UPPER_MIDDLE"
+      ],
+      "dimensions_metatiles": [
+        5,
+        9
+      ],
+      "arrival_core": [
+        4,
+        15
+      ],
+      "exit_tiles_core": [
+        [
+          4,
+          17
+        ],
+        [
+          5,
+          17
+        ]
+      ],
+      "guide_at": [
+        7,
+        15
+      ],
+      "leader_court_locked": true,
+      "before_lines": [
+        "I am AVRIN.",
+        "A spark can change",
+        "the whole battle!"
+      ],
+      "victory_lines": [
+        "You kept the spark",
+        "alive to the end."
+      ],
+      "after_lines": [
+        "Before ST. PAUL,",
+        "read the note at",
+        "the dispatch desk."
+      ],
+      "routers": [],
+      "switch_puzzle": {
+        "controls": [
+          {
+            "id": "UPPER_LEFT",
+            "at": [
+              3,
+              9
+            ]
+          },
+          {
+            "id": "UPPER_MIDDLE",
+            "at": [
+              5,
+              9
+            ]
+          },
+          {
+            "id": "UPPER_RIGHT",
+            "at": [
+              7,
+              9
+            ]
+          },
+          {
+            "id": "LOWER_LEFT",
+            "at": [
+              3,
+              11
+            ]
+          },
+          {
+            "id": "LOWER_MIDDLE",
+            "at": [
+              5,
+              11
+            ]
+          },
+          {
+            "id": "LOWER_RIGHT",
+            "at": [
+              7,
+              11
+            ]
+          }
+        ],
+        "sequence": [
+          "UPPER_LEFT",
+          "UPPER_MIDDLE"
+        ],
+        "events": [
+          "EVENT_MN_GYM_3_FIRST_SWITCH_ON",
+          "EVENT_MN_GYM_3_SECOND_SWITCH_ON"
+        ],
+        "requires": [
+          "EVENT_MN_GYM_3_TRAINER_1_DEFEATED",
+          "EVENT_MN_GYM_3_TRAINER_2_DEFEATED"
+        ],
+        "denied_lines": [
+          "Beat LENVI and",
+          "JOSSA first."
+        ],
+        "first_lines": [
+          "Click! First lock",
+          "released. Find the",
+          "switch beside it."
+        ],
+        "second_lines": [
+          "Click! Both locks",
+          "are released."
+        ],
+        "reset_lines": [
+          "No switch here.",
+          "Both locks reset."
+        ],
+        "solved_lines": [
+          "Both locks are",
+          "already released."
+        ]
+      }
+    },
+    {
+      "slot": 4,
+      "id": "MnStPaulGym",
+      "constant": "MN_ST_PAUL_GYM",
+      "city": "ST PAUL",
+      "leader": "BRANNIC",
+      "trainer_class": "GENTLEMAN",
+      "leader_sprite": "SPRITE_GENTLEMAN",
+      "leader_at": [
+        11,
+        2
+      ],
+      "badge_flag": "ENGINE_FOGBADGE",
+      "requires": [
+        "BADGE_3"
+      ],
+      "reward": "TM_STEEL_WING",
+      "party": [
+        {
+          "species": "MAGNEMITE",
+          "level": 23,
+          "moves": [
+            "THUNDERSHOCK",
+            "SONICBOOM",
+            "THUNDER_WAVE",
+            "SWIFT"
+          ]
+        },
+        {
+          "species": "PINECO",
+          "level": 24,
+          "moves": [
+            "TACKLE",
+            "PROTECT",
+            "TAKE_DOWN",
+            "RAPID_SPIN"
+          ]
+        },
+        {
+          "species": "SKARMORY",
+          "level": 25,
+          "moves": [
+            "PECK",
+            "STEEL_WING",
+            "SWIFT",
+            "AGILITY"
+          ]
+        }
+      ],
+      "rows": [
+        "WWWjWWW",
+        "p..v...",
+        "..pjWXW",
+        "...v.u.",
+        "WWWjWWW",
+        "p..vp..",
+        "..pv...",
+        ".M.v.p.",
+        "L.Rv...",
+        ".s.v..."
+      ],
+      "art": {
+        "#": [
+          "underground",
+          "00"
+        ],
+        "W": [
+          "underground",
+          "09"
+        ],
+        "j": [
+          "underground",
+          "08"
+        ],
+        "v": [
+          "underground",
+          "0c"
+        ],
+        ".": [
+          "underground",
+          "0d"
+        ],
+        "p": [
+          "underground",
+          "0f"
+        ],
+        "M": [
+          "underground",
+          "0f"
+        ],
+        "u": [
+          "underground",
+          "0f"
+        ],
+        "X": [
+          "elite_four_room",
+          "14"
+        ],
+        "L": [
+          "underground",
+          "36"
+        ],
+        "R": [
+          "underground",
+          "37"
+        ],
+        "s": [
+          "underground",
+          "24"
+        ]
+      },
+      "trainers": [
+        {
+          "id": "MN_GYM_4_TRAINER_1",
+          "name": "BELVA",
+          "trainer_class": "COOLTRAINERF",
+          "sprite": "SPRITE_LASS",
+          "at": [
+            3,
+            3
+          ],
+          "party": [
+            {
+              "species": "MAGNEMITE",
+              "level": 21
+            }
+          ],
+          "optional": false,
+          "before_lines": [
+            "Steel can bend",
+            "without breaking.",
+            "Can your team?"
+          ],
+          "after_lines": [
+            "The other pad",
+            "leads to ORVEN.",
+            "Beat us both to",
+            "open the grille."
+          ]
+        },
+        {
+          "id": "MN_GYM_4_TRAINER_2",
+          "name": "ORVEN",
+          "trainer_class": "POKEFANM",
+          "sprite": "SPRITE_POKEFAN_M",
+          "at": [
+            11,
+            12
+          ],
+          "party": [
+            {
+              "species": "PINECO",
+              "level": 22
+            },
+            {
+              "species": "MAGNEMITE",
+              "level": 22
+            }
+          ],
+          "optional": false,
+          "before_lines": [
+            "Light or heavy,",
+            "steel stays tough!"
+          ],
+          "after_lines": [
+            "The other pad",
+            "takes you south.",
+            "The middle pad",
+            "leads to BRANNIC."
+          ]
+        }
+      ],
+      "stations": [],
+      "gates": [
+        {
+          "at": [
+            5,
+            2
+          ],
+          "requires": [
+            "EVENT_MN_GYM_4_TRAINER_1_DEFEATED",
+            "EVENT_MN_GYM_4_TRAINER_2_DEFEATED"
+          ],
+          "open_symbol": ".",
+          "event": "EVENT_MN_GYM_4_COURT_OPEN"
+        }
+      ],
+      "guide": [
+        "Use the side pads.",
+        "Beat BELVA and",
+        "ORVEN. Any order.",
+        "Then take the",
+        "middle pad north.",
+        "Step off a pad to",
+        "ride it back."
+      ],
+      "walkthrough": [
+        "MN_GYM_4_TRAINER_1",
+        "MN_GYM_4_TRAINER_2"
+      ],
+      "dimensions_metatiles": [
+        7,
+        10
+      ],
+      "arrival_core": [
+        2,
+        17
+      ],
+      "exit_tiles_core": [
+        [
+          2,
+          19
+        ],
+        [
+          3,
+          19
+        ]
+      ],
+      "guide_at": [
+        4,
+        16
+      ],
+      "leader_court_locked": true,
+      "before_lines": [
+        "Steel holds firm.",
+        "Show me how your",
+        "team can break it!"
+      ],
+      "victory_lines": [
+        "A clean strike.",
+        "You earned this."
+      ],
+      "after_lines": [
+        "MPLS north gate",
+        "needs both BADGES.",
+        "The depot courier",
+        "is another matter."
+      ],
+      "routers": [],
+      "lifts": [
+        {
+          "id": "WEST_ROOM",
+          "ends_core": [
+            [
+              1,
+              11
+            ],
+            [
+              1,
+              3
+            ]
+          ]
+        },
+        {
+          "id": "CROSS_ROOM",
+          "ends_core": [
+            [
+              5,
+              5
+            ],
+            [
+              9,
+              11
+            ]
+          ]
+        },
+        {
+          "id": "EAST_RETURN",
+          "ends_core": [
+            [
+              11,
+              15
+            ],
+            [
+              5,
+              13
+            ]
+          ]
+        },
+        {
+          "id": "MAIN_LIFT",
+          "ends_core": [
+            [
+              3,
+              15
+            ],
+            [
+              11,
+              7
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "slot": 5,
+      "id": "MnStCloudGym",
+      "constant": "MN_ST_CLOUD_GYM",
+      "city": "ST CLOUD",
+      "leader": "SAVEN",
+      "trainer_class": "BIRD_KEEPER",
+      "leader_sprite": "SPRITE_COOLTRAINER_M",
+      "leader_at": [
+        3,
+        3
+      ],
+      "badge_flag": "ENGINE_STORMBADGE",
+      "requires": [
+        "BADGE_4"
+      ],
+      "reward": "TM_SWIFT",
+      "party": [
+        {
+          "species": "PIDGEOTTO",
+          "level": 28,
+          "moves": [
+            "GUST",
+            "QUICK_ATTACK",
+            "SWIFT",
+            "WHIRLWIND"
+          ]
+        },
+        {
+          "species": "NOCTOWL",
+          "level": 29,
+          "moves": [
+            "PECK",
+            "HYPNOSIS",
+            "REFLECT",
+            "SWIFT"
+          ]
+        },
+        {
+          "species": "FEAROW",
+          "level": 30,
+          "moves": [
+            "PECK",
+            "FURY_ATTACK",
+            "PURSUIT",
+            "SWIFT"
+          ]
+        }
+      ],
+      "rows": [
+        "#tt######",
+        "#..f##tt#",
+        "#...>>..#",
+        "#b.###b.#",
+        "#...<<A.#",
+        "#bbf##..#",
+        "#..B>>..#",
+        "#b..##.b#",
+        "#...<<..#",
+        "#L.R##bb#",
+        "#bsb#####"
+      ],
+      "art": {
+        "#": [
+          "elite_four_room",
+          "17"
+        ],
+        ".": [
+          "elite_four_room",
+          "2d"
+        ],
+        "t": [
+          "elite_four_room",
+          "15"
+        ],
+        "b": [
+          "elite_four_room",
+          "19"
+        ],
+        "f": [
+          "elite_four_room",
+          "33"
+        ],
+        "L": [
+          "elite_four_room",
+          "1e"
+        ],
+        "R": [
+          "elite_four_room",
+          "1d"
+        ],
+        "s": [
+          "elite_four_room",
+          "1c"
+        ],
+        "A": [
+          "elite_four_room",
+          "14"
+        ],
+        "B": [
+          "elite_four_room",
+          "14"
+        ],
+        ">": [
+          "tower",
+          "0b"
+        ],
+        "<": [
+          "tower",
+          "0b"
+        ]
+      },
+      "trainers": [
+        {
+          "id": "MN_GYM_5_TRAINER_1",
+          "name": "WYREL",
+          "trainer_class": "COOLTRAINERF",
+          "sprite": "SPRITE_COOLTRAINER_F",
+          "at": [
+            4,
+            15
+          ],
+          "party": [
+            {
+              "species": "PIDGEOTTO",
+              "level": 25
+            }
+          ],
+          "optional": false,
+          "before_lines": [
+            "Feel that gust?",
+            "Keep your footing!"
+          ],
+          "after_lines": [
+            "Upper lane east.",
+            "Lower lane west.",
+            "Cross east first."
+          ]
+        },
+        {
+          "id": "MN_GYM_5_TRAINER_2",
+          "name": "HALLEN",
+          "trainer_class": "BIRD_KEEPER",
+          "sprite": "SPRITE_YOUNGSTER",
+          "at": [
+            14,
+            10
+          ],
+          "party": [
+            {
+              "species": "SPEAROW",
+              "level": 25
+            },
+            {
+              "species": "NOCTOWL",
+              "level": 26
+            }
+          ],
+          "optional": false,
+          "before_lines": [
+            "Ready for a turn?",
+            "My birds are!"
+          ],
+          "after_lines": [
+            "Head north.",
+            "Lower lane west",
+            "reaches SAVEN."
+          ]
+        }
+      ],
+      "stations": [],
+      "gates": [
+        {
+          "at": [
+            3,
+            6
+          ],
+          "requires": [
+            "EVENT_MN_GYM_5_TRAINER_1_DEFEATED"
+          ],
+          "open_symbol": ".",
+          "event": "EVENT_MN_GYM_5_LOWER_CROSSING_OPEN"
+        },
+        {
+          "at": [
+            6,
+            4
+          ],
+          "requires": [
+            "EVENT_MN_GYM_5_TRAINER_1_DEFEATED",
+            "EVENT_MN_GYM_5_TRAINER_2_DEFEATED"
+          ],
+          "open_symbol": ".",
+          "event": "EVENT_MN_GYM_5_COURT_OPEN"
+        }
+      ],
+      "guide": [
+        "At each crossing:",
+        "upper lane EAST,",
+        "lower lane WEST.",
+        "Beat WYREL, cross",
+        "east to HALLEN.",
+        "Then west: SAVEN.",
+        "Stone is safe.",
+        "Slats carry you."
+      ],
+      "walkthrough": [
+        "MN_GYM_5_TRAINER_1",
+        "MN_GYM_5_TRAINER_2"
+      ],
+      "dimensions_metatiles": [
+        9,
+        11
+      ],
+      "arrival_core": [
+        4,
+        19
+      ],
+      "exit_tiles_core": [
+        [
+          4,
+          21
+        ],
+        [
+          5,
+          21
+        ]
+      ],
+      "guide_at": [
+        7,
+        18
+      ],
+      "leader_court_locked": true,
+      "before_lines": [
+        "From up here, you",
+        "can see a turn",
+        "before it happens.",
+        "Shall we?"
+      ],
+      "victory_lines": [
+        "You read the turn",
+        "before I made it."
+      ],
+      "after_lines": [
+        "Pine country lies",
+        "north of town.",
+        "Stop at the river",
+        "lookout before",
+        "you leave."
+      ],
+      "winds": {
+        ">": "WALK_RIGHT",
+        "<": "WALK_LEFT"
+      }
+    },
+    {
+      "slot": 6,
+      "id": "MnBrainerdGym",
+      "constant": "MN_BRAINERD_GYM",
+      "city": "BRAINERD",
+      "leader": "SIVREN",
+      "trainer_class": "COOLTRAINERF",
+      "leader_sprite": "SPRITE_COOLTRAINER_F",
+      "leader_at": [
+        5,
+        3
+      ],
+      "badge_flag": "ENGINE_MINERALBADGE",
+      "requires": [
+        "BADGE_5"
+      ],
+      "reward": "TM_RAIN_DANCE",
+      "party": [
+        {
+          "species": "POLIWHIRL",
+          "level": 33,
+          "moves": [
+            "WATER_GUN",
+            "RAIN_DANCE",
+            "HYPNOSIS",
+            "DOUBLESLAP"
+          ]
+        },
+        {
+          "species": "QUAGSIRE",
+          "level": 34,
+          "moves": [
+            "SURF",
+            "SLAM",
+            "AMNESIA",
+            "MUD_SLAP"
+          ]
+        },
+        {
+          "species": "LANTURN",
+          "level": 35,
+          "moves": [
+            "WATER_GUN",
+            "SPARK",
+            "CONFUSE_RAY",
+            "RAIN_DANCE"
+          ]
+        }
+      ],
+      "rows": [
+        "ttttt",
+        "awcwb",
+        "lhhAr",
+        "luudr",
+        "lBCWr",
+        "lh.Wr",
+        "lL.Lr",
+        "ffsff"
+      ],
+      "art": {
+        "#": [
+          "port",
+          "2a"
+        ],
+        "t": [
+          "port",
+          "2b"
+        ],
+        "a": [
+          "port",
+          "37"
+        ],
+        "w": [
+          "port",
+          "36"
+        ],
+        "c": [
+          "port",
+          "39"
+        ],
+        "b": [
+          "port",
+          "38"
+        ],
+        "l": [
+          "port",
+          "2e"
+        ],
+        "h": [
+          "port",
+          "27"
+        ],
+        "j": [
+          "port",
+          "29"
+        ],
+        "r": [
+          "port",
+          "2f"
+        ],
+        "u": [
+          "port",
+          "0c"
+        ],
+        "d": [
+          "port",
+          "2d"
+        ],
+        "v": [
+          "port",
+          "14"
+        ],
+        ".": [
+          "port",
+          "26"
+        ],
+        "W": [
+          "port",
+          "08"
+        ],
+        "A": [
+          "port",
+          "08"
+        ],
+        "B": [
+          "port",
+          "08"
+        ],
+        "C": [
+          "port",
+          "08"
+        ],
+        "L": [
+          "port",
+          "32"
+        ],
+        "f": [
+          "port",
+          "31"
+        ],
+        "s": [
+          "port",
+          "33"
+        ]
+      },
+      "trainers": [
+        {
+          "id": "MN_GYM_6_TRAINER_1",
+          "name": "LORLA",
+          "trainer_class": "SWIMMERF",
+          "sprite": "SPRITE_SWIMMER_GIRL",
+          "at": [
+            2,
+            10
+          ],
+          "party": [
+            {
+              "species": "POLIWAG",
+              "level": 30
+            },
+            {
+              "species": "GOLDEEN",
+              "level": 30
+            }
+          ],
+          "optional": false,
+          "before_lines": [
+            "Keep your footing",
+            "on a narrow pier!"
+          ],
+          "after_lines": [
+            "I can shift the",
+            "floating walk.",
+            "Talk to me again."
+          ]
+        },
+        {
+          "id": "MN_GYM_6_TRAINER_2",
+          "name": "BRAVEL",
+          "trainer_class": "FISHER",
+          "sprite": "SPRITE_FISHER",
+          "at": [
+            2,
+            7
+          ],
+          "party": [
+            {
+              "species": "WOOPER",
+              "level": 31
+            },
+            {
+              "species": "CHINCHOU",
+              "level": 31
+            }
+          ],
+          "optional": false,
+          "before_lines": [
+            "A pool can teach",
+            "you to read a lake."
+          ],
+          "after_lines": [
+            "Ask LORLA to shift",
+            "the walk left.",
+            "SIVREN is up ahead."
+          ]
+        }
+      ],
+      "stations": [],
+      "gates": [
+        {
+          "at": [
+            2,
+            4
+          ],
+          "requires": [
+            "EVENT_MN_GYM_6_TRAINER_1_DEFEATED",
+            "EVENT_MN_GYM_6_WALK_CENTER"
+          ],
+          "open_symbol": "v",
+          "event": "EVENT_MN_GYM_6_CENTER_WALK_OPEN"
+        },
+        {
+          "at": [
+            1,
+            4
+          ],
+          "requires": [
+            "EVENT_MN_GYM_6_TRAINER_1_DEFEATED",
+            "EVENT_MN_GYM_6_TRAINER_2_DEFEATED",
+            "EVENT_MN_GYM_6_WALK_LEFT"
+          ],
+          "open_symbol": "v",
+          "event": "EVENT_MN_GYM_6_LEFT_WALK_OPEN"
+        },
+        {
+          "at": [
+            3,
+            2
+          ],
+          "requires": [
+            "EVENT_MN_GYM_6_TRAINER_1_DEFEATED",
+            "EVENT_MN_GYM_6_TRAINER_2_DEFEATED",
+            "EVENT_MN_GYM_6_WALK_LEFT"
+          ],
+          "open_symbol": "j",
+          "event": "EVENT_MN_GYM_6_COURT_OPEN"
+        }
+      ],
+      "guide": [
+        "Beat LORLA, then",
+        "ask her to move",
+        "the floating walk.",
+        "CENTER leads to",
+        "BRAVEL. LEFT leads",
+        "to SIVREN after both",
+        "trainers pass you."
+      ],
+      "walkthrough": [
+        "MN_GYM_6_TRAINER_1",
+        "CENTER",
+        "MN_GYM_6_TRAINER_2",
+        "LEFT"
+      ],
+      "dimensions_metatiles": [
+        5,
+        8
+      ],
+      "arrival_core": [
+        4,
+        14
+      ],
+      "exit_tiles_core": [
+        [
+          4,
+          15
+        ],
+        [
+          5,
+          15
+        ]
+      ],
+      "guide_at": [
+        7,
+        14
+      ],
+      "leader_court_locked": true,
+      "before_lines": [
+        "A lake looks quiet",
+        "from the shore.",
+        "Out on the water,",
+        "you must pay heed."
+      ],
+      "victory_lines": [
+        "You kept a steady",
+        "hand on the tiller."
+      ],
+      "after_lines": [
+        "Visit the ranger",
+        "before setting out.",
+        "There is more than",
+        "one way north."
+      ],
+      "routers": [
+        {
+          "id": "FLOAT_WALK",
+          "operator": "MN_GYM_6_TRAINER_1",
+          "at": [
+            2,
+            10
+          ],
+          "prompt": [
+            "Shift the floating",
+            "walk to which side?"
+          ],
+          "modes": [
+            {
+              "id": "CENTER",
+              "label": "CENTER",
+              "requires": [
+                "EVENT_MN_GYM_6_TRAINER_1_DEFEATED"
+              ],
+              "event": "EVENT_MN_GYM_6_WALK_CENTER",
+              "lines": [
+                "The walk slides",
+                "to the center."
+              ],
+              "denied_lines": [
+                "Battle LORLA first."
+              ]
+            },
+            {
+              "id": "LEFT",
+              "label": "LEFT",
+              "requires": [
+                "EVENT_MN_GYM_6_TRAINER_1_DEFEATED"
+              ],
+              "event": "EVENT_MN_GYM_6_WALK_LEFT",
+              "lines": [
+                "The walk slides",
+                "to the left."
+              ],
+              "denied_lines": [
+                "Battle LORLA first."
+              ]
+            }
+          ]
+        }
+      ],
+      "enclosed_pool": true
+    },
+    {
+      "slot": 7,
+      "id": "MnBemidjiGym",
+      "constant": "MN_BEMIDJI_GYM",
+      "city": "BEMIDJI",
+      "leader": "ORLIS",
+      "trainer_class": "COOLTRAINERM",
+      "leader_sprite": "SPRITE_COOLTRAINER_M",
+      "leader_at": [
+        5,
+        3
+      ],
+      "badge_flag": "ENGINE_GLACIERBADGE",
+      "requires": [
+        "BADGE_6"
+      ],
+      "reward": "TM_GIGA_DRAIN",
+      "party": [
+        {
+          "species": "TANGELA",
+          "level": 38,
+          "moves": [
+            "MEGA_DRAIN",
+            "VINE_WHIP",
+            "BIND",
+            "STUN_SPORE"
+          ]
+        },
+        {
+          "species": "JUMPLUFF",
+          "level": 39,
+          "moves": [
+            "GIGA_DRAIN",
+            "LEECH_SEED",
+            "COTTON_SPORE",
+            "SYNTHESIS"
+          ]
+        },
+        {
+          "species": "BELLOSSOM",
+          "level": 40,
+          "moves": [
+            "GIGA_DRAIN",
+            "PETAL_DANCE",
+            "STUN_SPORE",
+            "SWEET_SCENT"
+          ]
+        }
+      ],
+      "rows": [
+        "WWWWWW",
+        "pffffp",
+        "p....p",
+        "###C##",
+        "p....p",
+        "p.##.p",
+        "#c####",
+        "a====b",
+        "=L==R=",
+        "==s==="
+      ],
+      "art": {
+        "#": [
+          "train_station",
+          "1a"
+        ],
+        "W": [
+          "train_station",
+          "1b"
+        ],
+        "p": [
+          "train_station",
+          "20"
+        ],
+        "f": [
+          "train_station",
+          "23"
+        ],
+        ".": [
+          "train_station",
+          "19"
+        ],
+        "=": [
+          "train_station",
+          "1c"
+        ],
+        "a": [
+          "train_station",
+          "21"
+        ],
+        "b": [
+          "train_station",
+          "22"
+        ],
+        "L": [
+          "train_station",
+          "1e"
+        ],
+        "R": [
+          "train_station",
+          "1d"
+        ],
+        "s": [
+          "train_station",
+          "1f"
+        ],
+        "c": [
+          "kanto",
+          "32"
+        ],
+        "C": [
+          "kanto",
+          "32"
+        ],
+        "o": [
+          "kanto",
+          "6d"
+        ]
+      },
+      "trainers": [
+        {
+          "id": "MN_GYM_7_TRAINER_1",
+          "name": "MOSLEN",
+          "trainer_class": "COOLTRAINERM",
+          "sprite": "SPRITE_COOLTRAINER_M",
+          "at": [
+            7,
+            14
+          ],
+          "party": [
+            {
+              "species": "TANGELA",
+              "level": 35
+            }
+          ],
+          "optional": false,
+          "before_lines": [
+            "Can your team",
+            "handle new growth?"
+          ],
+          "after_lines": [
+            "Cut the small tree",
+            "in the west hedge.",
+            "ELVREN is beyond."
+          ]
+        },
+        {
+          "id": "MN_GYM_7_TRAINER_2",
+          "name": "ELVREN",
+          "trainer_class": "COOLTRAINERF",
+          "sprite": "SPRITE_LASS",
+          "at": [
+            8,
+            9
+          ],
+          "party": [
+            {
+              "species": "HOPPIP",
+              "level": 35
+            },
+            {
+              "species": "GLOOM",
+              "level": 36
+            }
+          ],
+          "optional": false,
+          "before_lines": [
+            "Careful pruning",
+            "lets flowers grow."
+          ],
+          "after_lines": [
+            "The next small",
+            "tree is east.",
+            "ORLIS is beyond."
+          ],
+          "requires": [
+            "EVENT_MN_GYM_7_TRAINER_1_DEFEATED"
+          ]
+        },
+        {
+          "id": "MN_GYM_7_TRAINER_3",
+          "name": "BRINDEL",
+          "trainer_class": "GENTLEMAN",
+          "sprite": "SPRITE_GRAMPS",
+          "at": [
+            3,
+            9
+          ],
+          "party": [
+            {
+              "species": "WEEPINBELL",
+              "level": 36
+            }
+          ],
+          "optional": true,
+          "before_lines": [
+            "An old seed still",
+            "has life in it."
+          ],
+          "after_lines": [
+            "New shoots need",
+            "room to grow."
+          ]
+        }
+      ],
+      "stations": [],
+      "gates": [],
+      "guide": [
+        "CUT opens gaps",
+        "in the hedges.",
+        "Battle MOSLEN.",
+        "Find ELVREN past",
+        "the west hedge.",
+        "Then cut east",
+        "to reach ORLIS."
+      ],
+      "walkthrough": [
+        "MN_GYM_7_TRAINER_1",
+        "SOUTH_HEDGE",
+        "MN_GYM_7_TRAINER_2",
+        "MN_GYM_7_TRAINER_3",
+        "NORTH_HEDGE"
+      ],
+      "dimensions_metatiles": [
+        6,
+        10
+      ],
+      "arrival_core": [
+        4,
+        17
+      ],
+      "exit_tiles_core": [
+        [
+          4,
+          19
+        ],
+        [
+          5,
+          19
+        ]
+      ],
+      "guide_at": [
+        9,
+        17
+      ],
+      "leader_court_locked": true,
+      "before_lines": [
+        "Nothing here grew",
+        "in a single day.",
+        "Show me what you",
+        "have tended."
+      ],
+      "victory_lines": [
+        "Strong roots.",
+        "Room to grow."
+      ],
+      "after_lines": [
+        "The field officer",
+        "needs a reading",
+        "from LAKE ITASCA.",
+        "Take the west",
+        "trail."
+      ],
+      "cut_gates": [
+        {
+          "id": "SOUTH_HEDGE",
+          "tree_core": [
+            3,
+            12
+          ],
+          "approach_core": [
+            3,
+            13
+          ],
+          "replacement_symbol": "o",
+          "targets_core": [
+            [
+              3,
+              11
+            ]
+          ],
+          "gated_trainers": [
+            "MN_GYM_7_TRAINER_2",
+            "MN_GYM_7_TRAINER_3"
+          ],
+          "event": "EVENT_MN_GYM_7_CUT_SOUTH_HEDGE_PRUNED"
+        },
+        {
+          "id": "NORTH_HEDGE",
+          "tree_core": [
+            7,
+            6
+          ],
+          "approach_core": [
+            7,
+            7
+          ],
+          "replacement_symbol": "o",
+          "targets_core": [
+            [
+              7,
+              5
+            ]
+          ],
+          "gated_trainers": [],
+          "event": "EVENT_MN_GYM_7_CUT_NORTH_HEDGE_PRUNED"
+        }
+      ],
+      "court_requires": [
+        "EVENT_MN_GYM_7_TRAINER_1_DEFEATED",
+        "EVENT_MN_GYM_7_TRAINER_2_DEFEATED"
+      ],
+      "court_denied_lines": [
+        "Battle MOSLEN and",
+        "ELVREN first."
+      ]
+    },
+    {
+      "slot": 8,
+      "id": "MnDuluthGym",
+      "constant": "MN_DULUTH_GYM",
+      "city": "DULUTH",
+      "leader": "NOREK",
+      "trainer_class": "SAILOR",
+      "leader_sprite": "SPRITE_SAILOR",
+      "leader_at": [
+        8,
+        3
+      ],
+      "badge_flag": "ENGINE_RISINGBADGE",
+      "requires": [
+        "BADGE_7"
+      ],
+      "reward": "TM_ICY_WIND",
+      "party": [
+        {
+          "species": "DEWGONG",
+          "level": 42,
+          "moves": [
+            "AURORA_BEAM",
+            "SURF",
+            "HEADBUTT",
+            "ICY_WIND"
+          ]
+        },
+        {
+          "species": "PILOSWINE",
+          "level": 43,
+          "moves": [
+            "POWDER_SNOW",
+            "EARTHQUAKE",
+            "TAKE_DOWN",
+            "MIST"
+          ]
+        },
+        {
+          "species": "SNEASEL",
+          "level": 44,
+          "moves": [
+            "FAINT_ATTACK",
+            "QUICK_ATTACK",
+            "SCREECH",
+            "ICE_PUNCH"
+          ]
+        },
+        {
+          "species": "LAPRAS",
+          "level": 45,
+          "moves": [
+            "ICE_BEAM",
+            "SURF",
+            "BODY_SLAM",
+            "RAIN_DANCE"
+          ]
+        }
+      ],
+      "rows": [
+        "WWWWWWW",
+        "l.#...r",
+        "l..XWWW",
+        "BB.V.rr",
+        "lIa#lBr",
+        "lIr#bIB",
+        "lIr#lIr",
+        "BrY#BZB",
+        "..L.R..",
+        "...s..."
+      ],
+      "art": {
+        "#": [
+          "elite_four_room",
+          "17"
+        ],
+        "W": [
+          "elite_four_room",
+          "27"
+        ],
+        ".": [
+          "elite_four_room",
+          "2d"
+        ],
+        "B": [
+          "elite_four_room",
+          "14"
+        ],
+        "I": [
+          "elite_four_room",
+          "39"
+        ],
+        "a": [
+          "elite_four_room",
+          "31"
+        ],
+        "b": [
+          "elite_four_room",
+          "32"
+        ],
+        "l": [
+          "elite_four_room",
+          "36"
+        ],
+        "r": [
+          "elite_four_room",
+          "35"
+        ],
+        "X": [
+          "elite_four_room",
+          "14"
+        ],
+        "Y": [
+          "elite_four_room",
+          "14"
+        ],
+        "Z": [
+          "elite_four_room",
+          "14"
+        ],
+        "V": [
+          "elite_four_room",
+          "14"
+        ],
+        "L": [
+          "elite_four_room",
+          "1e"
+        ],
+        "R": [
+          "elite_four_room",
+          "1d"
+        ],
+        "s": [
+          "elite_four_room",
+          "1c"
+        ]
+      },
+      "trainers": [
+        {
+          "id": "MN_GYM_8_TRAINER_1",
+          "name": "LIVRA",
+          "trainer_class": "COOLTRAINERF",
+          "sprite": "SPRITE_COOLTRAINER_F",
+          "at": [
+            3,
+            4
+          ],
+          "party": [
+            {
+              "species": "SEEL",
+              "level": 39
+            },
+            {
+              "species": "SWINUB",
+              "level": 40
+            }
+          ],
+          "optional": false,
+          "before_lines": [
+            "Choose your line",
+            "before you move."
+          ],
+          "after_lines": [
+            "The east launch",
+            "and the west",
+            "return are open."
+          ]
+        },
+        {
+          "id": "MN_GYM_8_TRAINER_2",
+          "name": "TORDEL",
+          "trainer_class": "SAILOR",
+          "sprite": "SPRITE_SAILOR",
+          "at": [
+            9,
+            6
+          ],
+          "party": [
+            {
+              "species": "SNEASEL",
+              "level": 40
+            }
+          ],
+          "optional": false,
+          "before_lines": [
+            "A good landing",
+            "takes planning."
+          ],
+          "after_lines": [
+            "The cross passage",
+            "is clear.",
+            "ANVER is waiting."
+          ],
+          "requires": [
+            "EVENT_MN_GYM_8_TRAINER_1_DEFEATED"
+          ]
+        },
+        {
+          "id": "MN_GYM_8_TRAINER_3",
+          "name": "ANVER",
+          "trainer_class": "COOLTRAINERM",
+          "sprite": "SPRITE_COOLTRAINER_M",
+          "at": [
+            5,
+            6
+          ],
+          "party": [
+            {
+              "species": "DEWGONG",
+              "level": 41
+            }
+          ],
+          "optional": false,
+          "requires": [
+            "EVENT_MN_GYM_8_TRAINER_2_DEFEATED"
+          ],
+          "before_lines": [
+            "One last bout",
+            "before NOREK."
+          ],
+          "after_lines": [
+            "The upper court",
+            "is yours."
+          ]
+        }
+      ],
+      "stations": [],
+      "gates": [
+        {
+          "at": [
+            2,
+            7
+          ],
+          "requires": [
+            "EVENT_MN_GYM_8_TRAINER_1_DEFEATED"
+          ],
+          "open_symbol": ".",
+          "event": "EVENT_MN_GYM_8_WEST_RETURN_OPEN"
+        },
+        {
+          "at": [
+            5,
+            7
+          ],
+          "requires": [
+            "EVENT_MN_GYM_8_TRAINER_1_DEFEATED"
+          ],
+          "open_symbol": "l",
+          "event": "EVENT_MN_GYM_8_EAST_ENTRY_OPEN"
+        },
+        {
+          "at": [
+            3,
+            3
+          ],
+          "requires": [
+            "EVENT_MN_GYM_8_TRAINER_2_DEFEATED"
+          ],
+          "open_symbol": ".",
+          "event": "EVENT_MN_GYM_8_EAST_RETURN_OPEN"
+        },
+        {
+          "at": [
+            3,
+            2
+          ],
+          "requires": [
+            "EVENT_MN_GYM_8_TRAINER_1_DEFEATED",
+            "EVENT_MN_GYM_8_TRAINER_2_DEFEATED",
+            "EVENT_MN_GYM_8_TRAINER_3_DEFEATED"
+          ],
+          "open_symbol": ".",
+          "event": "EVENT_MN_GYM_8_COURT_OPEN"
+        }
+      ],
+      "guide": [
+        "Use the small",
+        "rough patches to",
+        "change direction.",
+        "Find LIVRA on",
+        "the west side.",
+        "Then try the east",
+        "launch for TORDEL.",
+        "Return to ANVER."
+      ],
+      "walkthrough": [
+        "MN_GYM_8_TRAINER_1",
+        "MN_GYM_8_TRAINER_2",
+        "MN_GYM_8_TRAINER_3"
+      ],
+      "dimensions_metatiles": [
+        7,
+        10
+      ],
+      "arrival_core": [
+        6,
+        17
+      ],
+      "exit_tiles_core": [
+        [
+          6,
+          19
+        ],
+        [
+          7,
+          19
+        ]
+      ],
+      "guide_at": [
+        10,
+        17
+      ],
+      "leader_court_locked": true,
+      "before_lines": [
+        "The harbor froze.",
+        "The lake moves on.",
+        "Your last BADGE",
+        "is waiting here."
+      ],
+      "victory_lines": [
+        "You held your",
+        "course. Well done."
+      ],
+      "after_lines": [
+        "Eight BADGES.",
+        "The journey goes",
+        "on. Take the",
+        "instrument to",
+        "the workshop."
+      ]
+    }
+  ]
+}

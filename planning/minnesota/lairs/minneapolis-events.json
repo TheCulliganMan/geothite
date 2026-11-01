@@ -1,0 +1,188 @@
+{
+  "schema_version": 1,
+  "id": "northstar-ice-lair-v2",
+  "status": "Published in character-story-v5; full native recruitment, two-floor rescue, return, both entry lanes and intended-level starter-family balance tests passed.",
+  "texts": {
+    "MnNICECaptainOfferText": [
+      "ICE: Same terms.",
+      "A wage. A badge.",
+      "You keep people",
+      "out of our way."
+    ],
+    "MnNICEReedQuestionText": [
+      "REED: And ELLIS?",
+      "What did they do?"
+    ],
+    "MnNICEEllisObjectsText": [
+      "ELLIS: Asked them",
+      "who they were.",
+      "REED, go get JO.",
+      "Tell JO I'm here."
+    ],
+    "MnNICECaptainAnswerText": [
+      "ICE: Interfered.",
+      "So they stay.",
+      "Still want",
+      "the job?"
+    ],
+    "MnNICEReedAcceptText": [
+      "REED: Pay me",
+      "every Friday.",
+      "And I choose who",
+      "comes downstairs."
+    ],
+    "MnNICECaptainBadgeText": [
+      "ICE: Take this.",
+      "You're with us."
+    ],
+    "MnNICEReedPlayerText": [
+      "REED: You heard.",
+      "Get out.",
+      "You don't get to",
+      "give me orders."
+    ],
+    "MnNICEEllisCallText": [
+      "ELLIS: Their",
+      "holding controls",
+      "are downstairs.",
+      "Please find them."
+    ],
+    "MnNICEPowerLockedText": [
+      "The holding lock",
+      "still has power.",
+      "Its controls are",
+      "below the office."
+    ],
+    "MnNICECargoUmaText": [
+      "UMA: Those meters",
+      "are ELLIS's.",
+      "I loaded them.",
+      "I needed the pay.",
+      "They took ELLIS.",
+      "Cut that feed.",
+      "I'll keep them off",
+      "the loading stair."
+    ],
+    "MnNICEBreakerText": [
+      "CARGO FEED",
+      "Cut the power?"
+    ],
+    "MnNICEBreakerDoneText": [
+      "The belt stops.",
+      "The stair shutter",
+      "and return aisle",
+      "slide open."
+    ],
+    "MnNICEBreakerAfterText": [
+      "The cargo feed",
+      "is switched off."
+    ],
+    "MnNICEReedSeenText": [
+      "REED: They're",
+      "paying me now.",
+      "And you expect me",
+      "to let ELLIS go?",
+      "You don't even",
+      "work here."
+    ],
+    "MnNICEReedWonText": [
+      "That costs me",
+      "a week's pay."
+    ],
+    "MnNICEReedLostText": [
+      "Now get upstairs."
+    ],
+    "MnNICEReedAfterText": [
+      "LODE needs people",
+      "up at the mine.",
+      "I'm taking",
+      "the next shift.",
+      "You can clean up",
+      "after ELLIS."
+    ],
+    "MnNICEHoldingText": [
+      "HOLDING CIRCUIT",
+      "Cut the power?"
+    ],
+    "MnNICEHoldingDoneText": [
+      "The relay goes",
+      "quiet.",
+      "The cell latch",
+      "can be opened."
+    ],
+    "MnNICEHoldingDeniedText": [
+      "REED reaches for",
+      "the controls.",
+      "REED: You touch",
+      "that, I stop you."
+    ],
+    "MnNICEHoldingAfterText": [
+      "The holding relay",
+      "is switched off."
+    ],
+    "MnNICECopyFlavorText": [
+      "ELLIS's carbon",
+      "copy is here.",
+      "They should be",
+      "home with JO now."
+    ],
+    "MnNICEEllisQuestText": [
+      "ELLIS: JO put",
+      "the kettle on.",
+      "I can talk now.",
+      "I saw my meters",
+      "loaded for the",
+      "ST. PAUL depot.",
+      "The courier leaves",
+      "on the night run.",
+      "Go before him.",
+      "I'll call IVY."
+    ],
+    "MnNICEEllisAfterText": [
+      "JO wants me home",
+      "for a few days.",
+      "I'll keep calling",
+      "the field crew."
+    ],
+    "MnNICEJoinDeniedText": [
+      "The stair shutter",
+      "is locked."
+    ],
+    "MN_ICE_CARGO_GUARDSeenText": [
+      "ICE: This aisle",
+      "is closed.",
+      "You can turn",
+      "around yourself.",
+      "Or I can do it."
+    ],
+    "MN_ICE_CARGO_GUARDWonText": [
+      "Get out of my way."
+    ],
+    "MN_ICE_CARGO_GUARDLostText": [
+      "You were warned."
+    ],
+    "MN_ICE_CARGO_GUARDAfterText": [
+      "The captain said",
+      "nobody gets past.",
+      "He can come down",
+      "and stop you."
+    ],
+    "MN_ICE_RELAY_GUARDSeenText": [
+      "ICE: No visitors.",
+      "That includes",
+      "you."
+    ],
+    "MN_ICE_RELAY_GUARDWonText": [
+      "Keep your hands",
+      "off the controls."
+    ],
+    "MN_ICE_RELAY_GUARDLostText": [
+      "Now get upstairs."
+    ],
+    "MN_ICE_RELAY_GUARDAfterText": [
+      "I am not taking",
+      "the blame for",
+      "this."
+    ]
+  }
+}

@@ -1,0 +1,454 @@
+[
+  {
+    "name": "Pokecenter",
+    "old_bounds": [
+      6,
+      21,
+      9,
+      23
+    ],
+    "position": [
+      6,
+      21
+    ],
+    "rows": [
+      "20 21",
+      "7c 72"
+    ],
+    "entry_warp": 3,
+    "door": [
+      13,
+      45
+    ],
+    "return_tile": [
+      13,
+      46
+    ],
+    "reference": "VermilionCity clinic: 20 21 / 7c 72"
+  },
+  {
+    "name": "EastAidClinic",
+    "old_bounds": [
+      26,
+      14,
+      29,
+      16
+    ],
+    "position": [
+      26,
+      14
+    ],
+    "rows": [
+      "20 21",
+      "7c 72"
+    ],
+    "entry_warp": 55,
+    "door": [
+      53,
+      31
+    ],
+    "return_tile": [
+      53,
+      32
+    ],
+    "reference": "VermilionCity clinic: 20 21 / 7c 72"
+  },
+  {
+    "name": "Mart",
+    "old_bounds": [
+      12,
+      15,
+      15,
+      17
+    ],
+    "position": [
+      12,
+      15
+    ],
+    "rows": [
+      "20 21",
+      "7c 73"
+    ],
+    "entry_warp": 5,
+    "door": [
+      25,
+      33
+    ],
+    "return_tile": [
+      25,
+      34
+    ],
+    "reference": "VermilionCity Mart: 20 21 / 7c 73"
+  },
+  {
+    "name": "RiversideSupplies",
+    "old_bounds": [
+      2,
+      27,
+      5,
+      29
+    ],
+    "position": [
+      2,
+      27
+    ],
+    "rows": [
+      "20 21",
+      "7c 73"
+    ],
+    "entry_warp": 69,
+    "door": [
+      5,
+      57
+    ],
+    "return_tile": [
+      5,
+      58
+    ],
+    "reference": "VermilionCity Mart: 20 21 / 7c 73"
+  },
+  {
+    "name": "WestSeventhBakery",
+    "old_bounds": [
+      2,
+      20,
+      5,
+      22
+    ],
+    "position": [
+      2,
+      21
+    ],
+    "rows": [
+      "02 03"
+    ],
+    "entry_warp": 45,
+    "door": [
+      5,
+      43
+    ],
+    "return_tile": [
+      5,
+      44
+    ],
+    "reference": "PewterCity compact blue house: 02 03"
+  },
+  {
+    "name": "LowertownCafe",
+    "old_bounds": [
+      27,
+      18,
+      30,
+      20
+    ],
+    "position": [
+      27,
+      18
+    ],
+    "rows": [
+      "20 21",
+      "7c 7e"
+    ],
+    "entry_warp": 65,
+    "door": [
+      55,
+      39
+    ],
+    "return_tile": [
+      55,
+      40
+    ],
+    "reference": "VermilionCity townhouse: 20 21 / 7c 7e"
+  },
+  {
+    "name": "SouthLandingInn",
+    "old_bounds": [
+      25,
+      29,
+      28,
+      31
+    ],
+    "position": [
+      25,
+      29
+    ],
+    "rows": [
+      "20 21",
+      "7c 7e"
+    ],
+    "entry_warp": 77,
+    "door": [
+      51,
+      61
+    ],
+    "return_tile": [
+      51,
+      62
+    ],
+    "reference": "VermilionCity townhouse: 20 21 / 7c 7e"
+  },
+  {
+    "name": "FairCraftHouse",
+    "old_bounds": [
+      8,
+      11,
+      10,
+      13
+    ],
+    "position": [
+      8,
+      12
+    ],
+    "rows": [
+      "02 03"
+    ],
+    "entry_warp": 19,
+    "door": [
+      17,
+      25
+    ],
+    "return_tile": [
+      17,
+      26
+    ],
+    "reference": "PewterCity compact blue house: 02 03"
+  },
+  {
+    "name": "FairInfoHouse",
+    "old_bounds": [
+      2,
+      2,
+      4,
+      4
+    ],
+    "position": [
+      2,
+      3
+    ],
+    "rows": [
+      "02 03"
+    ],
+    "entry_warp": 23,
+    "door": [
+      5,
+      7
+    ],
+    "return_tile": [
+      5,
+      8
+    ],
+    "reference": "PewterCity compact blue house: 02 03"
+  },
+  {
+    "name": "SummitPressHouse",
+    "old_bounds": [
+      29,
+      9,
+      31,
+      11
+    ],
+    "position": [
+      29,
+      10
+    ],
+    "rows": [
+      "02 03"
+    ],
+    "entry_warp": 41,
+    "door": [
+      59,
+      21
+    ],
+    "return_tile": [
+      59,
+      22
+    ],
+    "reference": "PewterCity compact blue house: 02 03"
+  },
+  {
+    "name": "StreetGardenHouse",
+    "old_bounds": [
+      7,
+      15,
+      9,
+      17
+    ],
+    "position": [
+      7,
+      16
+    ],
+    "rows": [
+      "02 03"
+    ],
+    "entry_warp": 47,
+    "door": [
+      15,
+      33
+    ],
+    "return_tile": [
+      15,
+      34
+    ],
+    "reference": "PewterCity compact blue house: 02 03"
+  },
+  {
+    "name": "AnglerHouse",
+    "old_bounds": [
+      2,
+      30,
+      4,
+      32
+    ],
+    "position": [
+      2,
+      31
+    ],
+    "rows": [
+      "02 03"
+    ],
+    "entry_warp": 67,
+    "door": [
+      5,
+      63
+    ],
+    "return_tile": [
+      5,
+      64
+    ],
+    "reference": "PewterCity compact blue house: 02 03"
+  },
+  {
+    "name": "BoatCoop",
+    "old_bounds": [
+      21,
+      29,
+      23,
+      31
+    ],
+    "position": [
+      21,
+      30
+    ],
+    "rows": [
+      "02 03"
+    ],
+    "entry_warp": 75,
+    "door": [
+      43,
+      61
+    ],
+    "return_tile": [
+      43,
+      62
+    ],
+    "reference": "PewterCity compact blue house: 02 03"
+  },
+  {
+    "name": "FairQuizPavilion",
+    "old_bounds": [
+      13,
+      6,
+      15,
+      8
+    ],
+    "position": [
+      13,
+      6
+    ],
+    "rows": [
+      "20 21",
+      "7c 7e"
+    ],
+    "entry_warp": 21,
+    "door": [
+      27,
+      15
+    ],
+    "return_tile": [
+      27,
+      16
+    ],
+    "reference": "VermilionCity townhouse: 20 21 / 7c 7e"
+  },
+  {
+    "name": "SummitMoveStudyHouse",
+    "old_bounds": [
+      29,
+      2,
+      31,
+      4
+    ],
+    "position": [
+      29,
+      2
+    ],
+    "rows": [
+      "20 21",
+      "7c 7e"
+    ],
+    "entry_warp": 37,
+    "door": [
+      59,
+      7
+    ],
+    "return_tile": [
+      59,
+      8
+    ],
+    "reference": "VermilionCity townhouse: 20 21 / 7c 7e"
+  },
+  {
+    "name": "LowertownCrafts",
+    "old_bounds": [
+      11,
+      20,
+      13,
+      22
+    ],
+    "position": [
+      11,
+      20
+    ],
+    "rows": [
+      "20 21",
+      "7c 7e"
+    ],
+    "entry_warp": 53,
+    "door": [
+      23,
+      43
+    ],
+    "return_tile": [
+      23,
+      44
+    ],
+    "reference": "VermilionCity townhouse: 20 21 / 7c 7e"
+  },
+  {
+    "name": "TransitHeritageHouse",
+    "old_bounds": [
+      28,
+      21,
+      30,
+      23
+    ],
+    "position": [
+      28,
+      21
+    ],
+    "rows": [
+      "20 21",
+      "7c 7e"
+    ],
+    "entry_warp": 61,
+    "door": [
+      57,
+      45
+    ],
+    "return_tile": [
+      57,
+      46
+    ],
+    "reference": "VermilionCity townhouse: 20 21 / 7c 7e"
+  }
+]

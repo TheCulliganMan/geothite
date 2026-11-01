@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "map": "MnGrandMarais",
+      "approach": [
+        26,
+        28
+      ],
+      "id": "MN_EXTRA_NPC_SKY_01",
+      "display_name": "ASTER",
+      "trainer_class": "MN_NIGHT_SKY_OBSERVER",
+      "class_name": "NIGHT SKY OBSERVER",
+      "template_class": "GENTLEMAN",
+      "sprite": "SPRITE_MN_NIGHT_SKY_OBSERVER",
+      "tile": [
+        26,
+        27
+      ],
+      "facing": "south",
+      "sight_range": 2,
+      "defeated_flag": "EVENT_MN_EXTRA_NPC_SKY_01",
+      "party": [
+        {
+          "species": "MOTHOSAIC",
+          "level": 32
+        },
+        {
+          "species": "SOLSTORT",
+          "level": 34
+        }
+      ],
+      "before_lines": [
+        "Look to the stars!",
+        "A skyward battle!"
+      ],
+      "after_lines": [
+        "A bright result!",
+        "Keep dark skies."
+      ],
+      "loss_lines": [
+        "Clouds drift past.",
+        "Watch and learn."
+      ]
+    }
+  ]
+}

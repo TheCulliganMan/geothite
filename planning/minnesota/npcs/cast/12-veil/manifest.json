@@ -1,0 +1,41 @@
+{
+  "name": "VEIL",
+  "role": "Elite Four 3",
+  "status": "accepted-native-playable",
+  "source": "native-pixels-v3.json",
+  "integration": "binding-v1.json",
+  "controller": "controller-v1.json",
+  "native": "target/trainer-cast/veil/native-v3",
+  "pack": "content-packs/minnesota-trainer-cast-12-v02.crystalpack",
+  "gameplay": "target/trainer-cast/veil/gameplay-v1",
+  "log": "target/trainer-cast/veil/controller-v1.log",
+  "reference_review": "actual-crystal-sprites-common-palette-and-scale",
+  "review_notes": "Elderly pale human face framed by a violet hood, broad pale cuffs and a long robe. Six field poses hand-authored; rear hood seam connected after reference review to remove disconnected marks. Battle eyes/mouth and raised index finger refined at native size. Real Crystal robe/elder and Will battle comparisons plus actual captures reviewed. League counter 2-to-3, PP, save/load, legal victory, repeat guard and saved progress pass.",
+  "fixture": "Three legal level-60 Minnesota starters; adjacent position and explicit prior-access setup. Local encounter/rewards proof, not earned traversal or intended-level balance.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/cast/12-veil/native-pixels-v3.json": "893bc193a17dc650a24ffc305fc5b5942a954477c357c26503af4fe52b8fdd5f",
+    "planning/minnesota/npcs/cast/12-veil/binding-v1.json": "e67328b0444e92c7d559f52ffc1c5286900b0baf988d162aee015c812d3ee092",
+    "planning/minnesota/npcs/cast/12-veil/controller-v1.json": "9f5d0b6d0fa698225b8eaa24c2afc62dcdf71c227e137c481ef83dfb51bccdad",
+    "target/trainer-cast/veil/native-v3/verification.json": "9cf6ac05609a503d289ad1ccd016ae191c37f1c51f467d51b4f2bccbced3b9b0",
+    "content-packs/minnesota-trainer-cast-12-v02.crystalpack": "e2f92d13c84a9c72c1d751f7b9a25c9fc5cb788195f168c9548bb66ff23a07da",
+    "target/trainer-cast/veil/controller-v1.log": "41772f188220ccac253ada3abcda202a9aa06d2a07156ae8e000ee62e224b952",
+    "target/trainer-cast/veil/gameplay-v1/original-npc-trainer-intro.png": "c81a74410bbf212922f13d1409bacf8c77545f6290f4dab9df6bb9fecc95124b",
+    "target/trainer-cast/veil/gameplay-v1/original-npc-overworld-state.png": "4b3af57c67b935c9b0b95982fedca33c59bbb4d8e18672a8aa5b60ba925d5914",
+    "target/trainer-cast/veil/gameplay-v1/original-npc-first-turn.png": "2d4ebeb22e933276133c97f01cba16133614065b753c7554c59866d6c0aaa3fb",
+    "planning/minnesota/npcs/cast/12-veil/battle-reference-prompt.txt": "80e0fca65c32e36f78c64d05e6dce8df09e772b82943d56b323b5a4161e7f595",
+    "planning/minnesota/npcs/cast/12-veil/battle-reference-v1.png": "fd48bb003833151c3b74d78c660e229fcfa1bb076394f08bbb5dd871ccaa21f1",
+    "target/trainer-cast/veil/real-comparison.png": "70ad1bcce01350b89001708728633c9f0e37fa38e1c4e3a4634c0dc4ce1c7d8b",
+    "target/trainer-cast/veil/battle-real-comparison.png": "9b387670ace38413b9eceb5a681a932a8bcf8962297805acb6c378cf820fea1d"
+  },
+  "final_pack": "content-packs/minnesota-trainer-cast-36-v01.crystalpack",
+  "final_gameplay": "target/trainer-cast/final-audit/gameplay/12-veil",
+  "final_log": "target/trainer-cast/final-audit/gameplay/12-veil/controller.log",
+  "final_status": "accepted-native-playable-final-pack",
+  "final_review": "Actual battle intro and field captures inspected on exact final pack; art retains accepted native sources and palette.",
+  "final_evidence_sha256": {
+    "target/trainer-cast/final-audit/gameplay/12-veil/controller.log": "5d7aacdd14add819e1557390ffbed2e87f0958cce3ebe3c080cbc6b3658b902b",
+    "target/trainer-cast/final-audit/gameplay/12-veil/original-npc-trainer-intro.png": "c81a74410bbf212922f13d1409bacf8c77545f6290f4dab9df6bb9fecc95124b",
+    "target/trainer-cast/final-audit/gameplay/12-veil/original-npc-overworld-state.png": "4b3af57c67b935c9b0b95982fedca33c59bbb4d8e18672a8aa5b60ba925d5914",
+    "target/trainer-cast/final-audit/gameplay/12-veil/original-npc-first-turn.png": "2d4ebeb22e933276133c97f01cba16133614065b753c7554c59866d6c0aaa3fb"
+  }
+}

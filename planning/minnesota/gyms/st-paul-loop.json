@@ -1,0 +1,299 @@
+{
+  "schema_version": 1,
+  "status": "Published four-room pad loop; ordinary-party literal controls, reverse order, loss and native views verified; user acceptance open.",
+  "gyms": [
+    {
+      "slot": 4,
+      "id": "MnStPaulGym",
+      "constant": "MN_ST_PAUL_GYM",
+      "city": "ST PAUL",
+      "leader": "BRANNIC",
+      "trainer_class": "GENTLEMAN",
+      "leader_sprite": "SPRITE_GENTLEMAN",
+      "leader_at": [
+        11,
+        2
+      ],
+      "badge_flag": "ENGINE_FOGBADGE",
+      "requires": [
+        "BADGE_3"
+      ],
+      "reward": "TM_STEEL_WING",
+      "party": [
+        {
+          "species": "MAGNEMITE",
+          "level": 23,
+          "moves": [
+            "THUNDERSHOCK",
+            "SONICBOOM",
+            "THUNDER_WAVE",
+            "SWIFT"
+          ]
+        },
+        {
+          "species": "PINECO",
+          "level": 24,
+          "moves": [
+            "TACKLE",
+            "PROTECT",
+            "TAKE_DOWN",
+            "RAPID_SPIN"
+          ]
+        },
+        {
+          "species": "SKARMORY",
+          "level": 25,
+          "moves": [
+            "PECK",
+            "STEEL_WING",
+            "SWIFT",
+            "AGILITY"
+          ]
+        }
+      ],
+      "rows": [
+        "WWWjWWW",
+        "p..v...",
+        "...jWXW",
+        "..pvpp.",
+        "WWWjWWW",
+        "p..vp..",
+        "...v...",
+        "..pv...",
+        "L.Rv.p.",
+        ".s.v..."
+      ],
+      "art": {
+        "#": [
+          "underground",
+          "00"
+        ],
+        "W": [
+          "underground",
+          "09"
+        ],
+        "j": [
+          "underground",
+          "08"
+        ],
+        "v": [
+          "underground",
+          "0c"
+        ],
+        ".": [
+          "underground",
+          "0d"
+        ],
+        "p": [
+          "underground",
+          "0f"
+        ],
+        "M": [
+          "underground",
+          "0f"
+        ],
+        "u": [
+          "underground",
+          "0f"
+        ],
+        "X": [
+          "elite_four_room",
+          "14"
+        ],
+        "L": [
+          "underground",
+          "36"
+        ],
+        "R": [
+          "underground",
+          "37"
+        ],
+        "s": [
+          "underground",
+          "24"
+        ]
+      },
+      "trainers": [
+        {
+          "id": "MN_GYM_4_TRAINER_1",
+          "name": "BELVA",
+          "trainer_class": "COOLTRAINERF",
+          "sprite": "SPRITE_LASS",
+          "at": [
+            3,
+            3
+          ],
+          "party": [
+            {
+              "species": "MAGNEMITE",
+              "level": 21
+            }
+          ],
+          "optional": false,
+          "before_lines": [
+            "Steel can bend",
+            "without breaking.",
+            "Can your team?"
+          ],
+          "after_lines": [
+            "Cross to the pad",
+            "in the far corner.",
+            "ORVEN is next."
+          ]
+        },
+        {
+          "id": "MN_GYM_4_TRAINER_2",
+          "name": "ORVEN",
+          "trainer_class": "POKEFANM",
+          "sprite": "SPRITE_POKEFAN_M",
+          "at": [
+            11,
+            12
+          ],
+          "party": [
+            {
+              "species": "PINECO",
+              "level": 22
+            },
+            {
+              "species": "MAGNEMITE",
+              "level": 22
+            }
+          ],
+          "optional": false,
+          "before_lines": [
+            "Light or heavy,",
+            "steel stays tough!"
+          ],
+          "after_lines": [
+            "The far corner",
+            "leads to BRANNIC.",
+            "His other pad",
+            "returns you to",
+            "the entrance."
+          ]
+        }
+      ],
+      "stations": [],
+      "gates": [
+        {
+          "at": [
+            5,
+            2
+          ],
+          "requires": [
+            "EVENT_MN_GYM_4_TRAINER_1_DEFEATED",
+            "EVENT_MN_GYM_4_TRAINER_2_DEFEATED"
+          ],
+          "open_symbol": ".",
+          "event": "EVENT_MN_GYM_4_COURT_OPEN"
+        }
+      ],
+      "guide": [
+        "The left pad goes",
+        "to BELVA. Cross",
+        "each room to its",
+        "far pad. Beat both",
+        "trainers to open",
+        "BRANNIC's grille."
+      ],
+      "walkthrough": [
+        "MN_GYM_4_TRAINER_1",
+        "MN_GYM_4_TRAINER_2"
+      ],
+      "dimensions_metatiles": [
+        7,
+        10
+      ],
+      "arrival_core": [
+        2,
+        17
+      ],
+      "exit_tiles_core": [
+        [
+          2,
+          19
+        ],
+        [
+          3,
+          19
+        ]
+      ],
+      "guide_at": [
+        4,
+        16
+      ],
+      "leader_court_locked": true,
+      "before_lines": [
+        "Steel holds firm.",
+        "Show me how your",
+        "team can break it!"
+      ],
+      "victory_lines": [
+        "A clean strike.",
+        "You earned this."
+      ],
+      "after_lines": [
+        "MPLS north gate",
+        "needs both BADGES.",
+        "The depot courier",
+        "is another matter."
+      ],
+      "routers": [],
+      "lifts": [
+        {
+          "id": "WEST_ROOM",
+          "ends_core": [
+            [
+              1,
+              11
+            ],
+            [
+              1,
+              3
+            ]
+          ]
+        },
+        {
+          "id": "CROSS_ROOM",
+          "ends_core": [
+            [
+              5,
+              7
+            ],
+            [
+              9,
+              11
+            ]
+          ]
+        },
+        {
+          "id": "EAST_RETURN",
+          "ends_core": [
+            [
+              11,
+              17
+            ],
+            [
+              9,
+              7
+            ]
+          ]
+        },
+        {
+          "id": "MAIN_LIFT",
+          "ends_core": [
+            [
+              5,
+              15
+            ],
+            [
+              11,
+              7
+            ]
+          ]
+        }
+      ]
+    }
+  ]
+}

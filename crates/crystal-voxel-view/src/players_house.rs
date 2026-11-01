@@ -6,6 +6,20 @@ use crate::profile::CellShape;
 
 pub(crate) const FLOOR_TILE: u16 = 0x01;
 
+/// Red's desk spans the lower two rows of block20 and the feet in block12.
+/// Keep this distinct from the player's radio cabinet and dining table.
+pub(crate) fn red_desk_local(source: &VisualTileSource) -> Option<(u8,u8)> {
+    if source.tileset_id.as_ref()!="players_house" || source.subtile_column>=4 {return None;}
+    let row=match (source.metatile_id,source.subtile_row) {
+        (0x20,2..=3)=>source.subtile_row-2,
+        (0x12,0)=>2,
+        _=>return None,
+    };
+    let column=source.subtile_column;
+    const DRAWING:[[u16;4];3]=[[0x23,0x22,0x22,0x24],[0x33,0x32,0x32,0x34],[0x1c,0x40,0x40,0x1d]];
+    (source.tile_index==DRAWING[row as usize][column as usize]).then_some((column,row))
+}
+
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub(crate) enum StairKind {
     UpEast,
@@ -14,7 +28,8 @@ pub(crate) enum StairKind {
 
 /// Return the exact 2x2 source coordinate and direction for each authored
 /// player-house stair drawing. Blocks `$0a`/`$0b` are embedded in the north
-/// wall course. Block `$0f` contains a refrigerator, not a staircase.
+/// wall course; Copycat's `$23` places the same ascending flight at its west
+/// origin. Block `$0f` contains a refrigerator, not a staircase.
 pub(crate) fn stair_local(source: &VisualTileSource) -> Option<(u8, u8, StairKind)> {
     if source.tileset_id.as_ref() != "players_house" {
         return None;
@@ -22,6 +37,7 @@ pub(crate) fn stair_local(source: &VisualTileSource) -> Option<(u8, u8, StairKin
     let (origin_column, origin_row, drawing, kind) = match source.metatile_id {
         0x0a => (2, 0, [[0x4c, 0x4d], [0x5c, 0x5d]], StairKind::UpEast),
         0x0b => (2, 0, [[0x4e, 0x4f], [0x5e, 0x5f]], StairKind::DownWest),
+        0x23 => (0, 0, [[0x4c, 0x4d], [0x5c, 0x5d]], StairKind::UpEast),
         _ => return None,
     };
     if source.subtile_column < origin_column
@@ -160,6 +176,7 @@ pub(crate) fn bed_local(source: &VisualTileSource) -> Option<(u8, u8)> {
     if source.tileset_id.as_ref() != "players_house"
         || source.metatile_id != 0x22
         || source.subtile_column >= 2
+        || source.subtile_row >= 4
     {
         return None;
     }
@@ -275,6 +292,7 @@ mod tests {
     fn house_stairs_use_their_exact_drawing_and_direction() {
         for (block, origin_column, origin_row, drawing, kind) in [
             (0x0a, 2, 0, [[0x4c, 0x4d], [0x5c, 0x5d]], StairKind::UpEast),
+            (0x23, 0, 0, [[0x4c, 0x4d], [0x5c, 0x5d]], StairKind::UpEast),
             (
                 0x0b,
                 2,
@@ -312,5 +330,9 @@ mod tests {
         assert_eq!(stair_shape(&source(0x0f, 0, 0, 0x11)), None);
         assert_eq!(stair_shape(&source(0x0f, 2, 1, 0x25)), None);
         assert_eq!(stair_shape(&source(0x0f, 0, 1, 0x0b)), None);
+        for (x,y) in [(2,0),(3,0),(0,2),(0,3),(3,3)] {
+            assert_eq!(stair_local(&source(0x23,x,y,0x4c)),None,
+                "Copycat's mixed block keeps its wall/floor cells separate");
+        }
     }
 }

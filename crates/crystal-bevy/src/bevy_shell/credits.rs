@@ -500,8 +500,14 @@ fn close_visible_credits_screen(
 }
 
 fn select_visible_title_menu_option(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
+    if runtime_shell.visible_continue_screen.as_ref()
+        .is_some_and(|screen| screen.remaining_delay_frames != 0) { return Ok(()); }
     if let Some(continue_screen) = runtime_shell.visible_continue_screen.take() {
         let save_path = continue_screen.save_path;
+        let saved = runtime_shell.shell.runtime().load_save(&save_path)?;
+        if saved.time.rtc_status_flags & (crate::core::systems::time::RTC_RESET | crate::core::systems::time::RTC_DAYS_EXCEED_255) != 0 {
+            return open_visible_restart_clock(runtime_shell, save_path);
+        }
         record_visible_runtime_action(
             runtime_shell,
             format!("title:continue:confirm:{}", save_path.display()),
@@ -571,7 +577,17 @@ fn select_visible_title_menu_option(runtime_shell: &mut BevyRuntimeShell) -> Res
                 .filter(|owned| **owned)
                 .count();
             let has_pokedex = state.flags.is_engine_flag_set("ENGINE_POKEDEX")?;
+            let program = runtime_shell.runtime.title_presentation_program();
+            let remaining_delay_frames = if let Some(entry) = program.entrypoints.get("continue") {
+                let block = program.blocks.get(entry).context("Continue entry has no block")?;
+                let summary = block.operations.iter().filter(|operation|
+                    operation.op == "present_continue_summary").collect::<Vec<_>>();
+                anyhow::ensure!(summary.len() == 1, "Continue requires one source summary operation");
+                u16::try_from(summary[0].fields.get("wait_frames")
+                    .and_then(serde_json::Value::as_u64).context("Continue summary has no frame delay")?)?
+            } else { 0 };
             runtime_shell.visible_continue_screen = Some(VisibleContinueScreen {
+                remaining_delay_frames,
                 save_path,
                 player_name: state.player_name,
                 badge_count,
@@ -934,16 +950,17 @@ fn visible_nickname_prompt_pages(
     Ok(pages.into())
 }
 
-fn advance_visible_nickname_prompt(runtime_shell: &mut BevyRuntimeShell) -> bool {
+fn advance_visible_nickname_prompt(runtime_shell: &mut BevyRuntimeShell) -> Result<bool> {
     let Some(choice) = runtime_shell.pending_name_choice.as_mut() else {
-        return false;
+        return Ok(false);
     };
     if choice.nickname_pages.len() <= 1 {
-        return false;
+        return Ok(false);
     }
     choice.nickname_pages.pop_front();
     mark_runtime_snapshot_dirty(runtime_shell);
-    true
+    safari_catch_visible::advance_prompt_page(runtime_shell)?;
+    Ok(true)
 }
 
 fn move_visible_name_choice(runtime_shell: &mut BevyRuntimeShell, delta: isize) -> Result<()> {
@@ -974,11 +991,12 @@ fn move_visible_name_choice(runtime_shell: &mut BevyRuntimeShell, delta: isize) 
         choice.selected
     };
     record_visible_runtime_action(runtime_shell, format!("player_name:choice:{selected}"))?;
+    safari_catch_visible::sync_choice(runtime_shell)?;
     Ok(())
 }
 
 fn confirm_visible_name_choice(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
-    if advance_visible_nickname_prompt(runtime_shell) {
+    if advance_visible_nickname_prompt(runtime_shell)? {
         return Ok(());
     }
     let Some(mut choice) = runtime_shell.pending_name_choice.take() else {
@@ -990,6 +1008,7 @@ fn confirm_visible_name_choice(runtime_shell: &mut BevyRuntimeShell) -> Result<(
         runtime_shell.pending_name_choice = Some(choice);
         return Ok(());
     }
+    if safari_catch_visible::confirm_choice(runtime_shell)? { return Ok(()); }
     if runtime_shell.pending_egg_hatch_nickname.is_some() {
         if choice.selected == 0 {
             let species_name = runtime_shell
@@ -1502,11 +1521,11 @@ fn apply_visible_name_input_smoke_key(runtime_shell: &mut BevyRuntimeShell, key:
 }
 
 fn visible_name_input_grid_width() -> usize {
-    9
+    crate::core::systems::name_entry::NAME_ENTRY_COLUMNS
 }
 
 fn visible_name_input_grid_height() -> usize {
-    5
+    crate::core::systems::name_entry::NAME_ENTRY_ROWS
 }
 
 fn visible_name_input_bottom_row_index() -> usize {
@@ -1514,22 +1533,7 @@ fn visible_name_input_bottom_row_index() -> usize {
 }
 
 fn visible_name_input_layout(case: NameInputCase) -> &'static [&'static str; 5] {
-    match case {
-        NameInputCase::Upper => &[
-            "A B C D E F G H I",
-            "J K L M N O P Q R",
-            "S T U V W X Y Z  ",
-            "- ? ! / . ,      ",
-            "lower  DEL   END ",
-        ],
-        NameInputCase::Lower => &[
-            "a b c d e f g h i",
-            "j k l m n o p q r",
-            "s t u v w x y z  ",
-            "× ( ) : ; [ ] <PK> <MN>",
-            "UPPER  DEL   END ",
-        ],
-    }
+    crate::core::systems::name_entry::name_entry_layout(case == NameInputCase::Upper)
 }
 
 fn visible_name_input_row_chars(case: NameInputCase, row: usize) -> [Option<char>; 9] {
@@ -1609,6 +1613,7 @@ fn toggle_visible_player_name_case(runtime_shell: &mut BevyRuntimeShell) -> Resu
         .last_audio_events
         .push(format!("player name case {next_case:?}"));
     trim_event_log(&mut runtime_shell.last_audio_events);
+    safari_catch_visible::sync_name(runtime_shell)?;
     Ok(())
 }
 
@@ -1623,6 +1628,7 @@ fn move_visible_player_name_cursor_to_end(runtime_shell: &mut BevyRuntimeShell) 
         .last_audio_events
         .push("player name cursor END".to_string());
     trim_event_log(&mut runtime_shell.last_audio_events);
+    safari_catch_visible::sync_name(runtime_shell)?;
     Ok(())
 }
 
@@ -1678,6 +1684,7 @@ fn move_visible_player_name_cursor(
         .last_audio_events
         .push(format!("player name cursor row={next_row} col={next_col}"));
     trim_event_log(&mut runtime_shell.last_audio_events);
+    safari_catch_visible::sync_name(runtime_shell)?;
     Ok(())
 }
 
@@ -1730,6 +1737,7 @@ fn append_visible_player_name_char(runtime_shell: &mut BevyRuntimeShell, ch: cha
         .last_audio_events
         .push(format!("player name add {ch}"));
     trim_event_log(&mut runtime_shell.last_audio_events);
+    safari_catch_visible::sync_name(runtime_shell)?;
     Ok(())
 }
 
@@ -1747,6 +1755,7 @@ fn delete_visible_player_name_char(runtime_shell: &mut BevyRuntimeShell) -> Resu
         .last_audio_events
         .push("player name delete".to_string());
     trim_event_log(&mut runtime_shell.last_audio_events);
+    safari_catch_visible::sync_name(runtime_shell)?;
     Ok(())
 }
 
@@ -1754,6 +1763,7 @@ fn complete_visible_smoke_player_name_if_needed(
     runtime_shell: &mut BevyRuntimeShell,
     smoke_player_name: Option<&str>,
 ) -> Result<()> {
+    if safari_catch_visible::native_surface_owns(runtime_shell) { return Ok(()); }
     complete_visible_smoke_gender_if_needed(runtime_shell)?;
     complete_visible_smoke_time_set_if_needed(runtime_shell)?;
     complete_visible_smoke_oak_intro_if_needed(runtime_shell)?;
@@ -1932,6 +1942,7 @@ fn confirm_visible_player_name_input(runtime_shell: &mut BevyRuntimeShell) -> Re
         runtime_shell.pending_name_input = Some(input);
         anyhow::bail!("player name must be exact");
     }
+    if safari_catch_visible::finish_name(runtime_shell, &input)? { return Ok(()); }
     if input.label == "BOX NAME?" {
         let box_index = strict_readonly_cursor_index(
             &runtime_shell.bill_pc_box_cursor,
@@ -4194,6 +4205,9 @@ fn close_visible_text_window(runtime_shell: &mut BevyRuntimeShell) -> Result<()>
 }
 
 fn close_visible_pokemon_picture(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
+    if runtime_shell.shell.snapshot()?.ui.pending_text_wait.is_some() {
+        return advance_visible_pending_text_wait(runtime_shell);
+    }
     record_visible_runtime_action(runtime_shell, "ui:pokemon_picture:close")?;
     let close = runtime_shell.shell.close_active_pokemon_picture()?;
     runtime_shell.last_audio_events.push(format!(
@@ -4518,10 +4532,19 @@ fn take_visible_pending_map_load(runtime_shell: &mut BevyRuntimeShell) -> Result
             ));
         }
     }
-    let reload_return_cursor = reload_current_map
+    let load_return_cursor = (reload_current_map || new_map_load)
         .then(|| visible_active_compiled_script_cursor(runtime_shell))
         .flatten();
     reset_visible_navigation_state(runtime_shell);
+    if map_setup == "MAPSETUP_BADWARP" {
+        // The bedroom PC's `warp NONE, 0, 0` replaces the whole map graphics
+        // after changing decorations; it has no following closetext. Retire
+        // its inherited textbox before callbacks can publish new text, as the
+        // native map redraw does, rather than retaining an empty input owner.
+        if runtime_shell.shell.snapshot()?.ui.text_window_open {
+            runtime_shell.shell.close_text_window()?;
+        }
+    }
     runtime_shell
         .last_audio_events
         .push(format!("took pending map load {:?}", request));
@@ -4530,7 +4553,7 @@ fn take_visible_pending_map_load(runtime_shell: &mut BevyRuntimeShell) -> Result
         // run the map's scene, NEWMAP, OBJECTS, or CMDQUEUE callbacks. Its
         // LoadBlockData and LoadMapGraphics steps invoke TILES then SPRITES.
         runtime_shell.pending_scene_script = None;
-        runtime_shell.map_reload_return_cursor = reload_return_cursor;
+        runtime_shell.map_reload_return_cursor = load_return_cursor;
         runtime_shell
             .shell
             .apply_current_map_setup_callbacks(map_setup)?;
@@ -4547,8 +4570,15 @@ fn take_visible_pending_map_load(runtime_shell: &mut BevyRuntimeShell) -> Result
                 .shell
                 .apply_current_map_setup_callbacks(map_setup)?;
         }
-        arm_visible_current_scene_script(runtime_shell, "map_load")?;
-        take_visible_pending_scene_script(runtime_shell)?;
+        if let Some(cursor) = load_return_cursor {
+            // Script_newloadmap stops this frame, not the retained command
+            // stream. Resume it on the destination before new scene input.
+            runtime_shell.deferred_script_warp_arrival_scripts = true;
+            arm_visible_active_script_cursor_from_run(runtime_shell, Some(cursor));
+        } else {
+            arm_visible_current_scene_script(runtime_shell, "map_load")?;
+            take_visible_pending_scene_script(runtime_shell)?;
+        }
     }
     queue_visible_current_music(runtime_shell)?;
     if !reload_current_map {

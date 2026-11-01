@@ -1,0 +1,350 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F123",
+  "status": "native-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_263": {
+      "species_id": "MN_263",
+      "name": "Pikeling",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          20,
+          25,
+          15
+        ],
+        [
+          7,
+          12,
+          9
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        16180,
+        9607,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          165,
+          206,
+          123
+        ],
+        [
+          57,
+          99,
+          74
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#A5CE7B",
+        "#39634A",
+        "#000000"
+      ]
+    },
+    "MN_264": {
+      "species_id": "MN_264",
+      "name": "Pikeman",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          23,
+          21,
+          12
+        ],
+        [
+          5,
+          11,
+          12
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        12983,
+        12645,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          189,
+          173,
+          99
+        ],
+        [
+          41,
+          90,
+          99
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#BDAD63",
+        "#295A63",
+        "#000000"
+      ]
+    },
+    "MN_265": {
+      "species_id": "MN_265",
+      "name": "Musketunge",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          20,
+          23,
+          25
+        ],
+        [
+          9,
+          10,
+          8
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        26356,
+        8521,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          165,
+          189,
+          206
+        ],
+        [
+          74,
+          82,
+          66
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#A5BDCE",
+        "#4A5242",
+        "#000000"
+      ]
+    }
+  },
+  "source_sha256": "60256a4aab2d14f4ead82dc2e03f1c79e2888c08821a62f8dfc49c0379d4ade0",
+  "style_reference": {
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png"
+    ]
+  },
+  "sprites": [
+    {
+      "id": "mn-263-pikeling-v1",
+      "species_id": "MN_263",
+      "view": "front",
+      "source": "sprites/mn-f123/mn-263-265.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        512,
+        548
+      ],
+      "fit": [
+        39,
+        39
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        16180,
+        9607,
+        0
+      ],
+      "white_detail_min_samples": 32,
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-263-pikeling-v1",
+      "species_id": "MN_263",
+      "view": "back",
+      "source": "sprites/mn-f123/mn-263-265.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        548,
+        512,
+        476
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        16180,
+        9607,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-264-pikeman-v1",
+      "species_id": "MN_264",
+      "view": "front",
+      "source": "sprites/mn-f123/mn-263-265.front-back.imagegen-v1.png",
+      "crop": [
+        512,
+        0,
+        512,
+        548
+      ],
+      "fit": [
+        50,
+        50
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        12983,
+        12645,
+        0
+      ],
+      "white_detail_min_samples": 32,
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-264-pikeman-v1",
+      "species_id": "MN_264",
+      "view": "back",
+      "source": "sprites/mn-f123/mn-263-265.front-back.imagegen-v1.png",
+      "crop": [
+        512,
+        548,
+        512,
+        476
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        12983,
+        12645,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-265-musketunge-v1",
+      "species_id": "MN_265",
+      "view": "front",
+      "source": "sprites/mn-f123/mn-263-265.front-back.imagegen-v1.png",
+      "crop": [
+        1024,
+        0,
+        512,
+        548
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        26356,
+        8521,
+        0
+      ],
+      "white_detail_min_samples": 32,
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-265-musketunge-v1",
+      "species_id": "MN_265",
+      "view": "back",
+      "source": "sprites/mn-f123/mn-263-265.front-back.imagegen-v1.png",
+      "crop": [
+        1024,
+        548,
+        512,
+        476
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        26356,
+        8521,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 16
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "notes": "Root inspected actual native six-view sheet: short spear fry grows to lance-jawed pike then heavy pressure-cheek muskellunge; clear individual palettes, dark muzzle aperture and close rear framing.",
+    "sheet_sha256": "122ad0495443b3e8e45679cf516f0b1073e8f9ef54e8605c46a373a94cf1a590",
+    "outline_profile": "source-contour-v1"
+  },
+  "prompt_file": "sprites/mn-f123/prompt-v1.txt",
+  "reference_mapping": "sprites/mn-f123/reference-mapping-v1.json",
+  "back_framing": "gen2-close-rear-portrait"
+}

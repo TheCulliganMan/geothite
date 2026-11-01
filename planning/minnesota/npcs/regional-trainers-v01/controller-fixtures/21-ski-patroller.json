@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "id": "MN_ICE_SKIER_ELSA",
+      "map": "MnRainyRiverIcefields",
+      "actor_script": "MN_ICE_SKIER_ELSA",
+      "trainer_class": "MN_SKI_PATROLLER",
+      "sprite": "SPRITE_MN_SKI_PATROLLER",
+      "facing": "south",
+      "approach": [
+        47,
+        23
+      ],
+      "defeated_flag": "EVENT_MN_ICE_SKIER_ELSA"
+    }
+  ]
+}

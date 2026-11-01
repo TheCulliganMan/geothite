@@ -1,0 +1,213 @@
+{
+  "species": "knotitan",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f063/knotitan-v15-all-holes",
+  "status": "actual-source native proof passes; root visual/context acceptance pending",
+  "all_four_nonrear_actual_isolated_source_pupils": true,
+  "six16px_alpha_border_normal_shiny_runtime_parity": true,
+  "canonical_palettes": true,
+  "literal_2bpp_all1536indices_exact": true,
+  "bank_sha256": "4929e20b9af78f7c19fc9dd4f7645ff84da21993eab496a888d8d554a930b976",
+  "proof": [
+    {
+      "pose": "down_idle",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            6,
+            7
+          ],
+          "source_sample": [
+            219,
+            201
+          ],
+          "source_component": [
+            192,
+            187,
+            30,
+            30
+          ],
+          "component_pixels": 900,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ]
+        },
+        {
+          "native": [
+            8,
+            7
+          ],
+          "source_sample": [
+            290,
+            201
+          ],
+          "source_component": [
+            287,
+            187,
+            30,
+            30
+          ],
+          "component_pixels": 900,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            7,
+            5,
+            2,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            6,
+            7
+          ],
+          "source_sample": [
+            1213,
+            212
+          ],
+          "source_component": [
+            1191,
+            188,
+            28,
+            28
+          ],
+          "component_pixels": 780,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            5,
+            3,
+            1,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            6,
+            7
+          ],
+          "source_sample": [
+            219,
+            644
+          ],
+          "source_component": [
+            192,
+            628,
+            30,
+            31
+          ],
+          "component_pixels": 930,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            3,
+            2,
+            0,
+            253
+          ]
+        },
+        {
+          "native": [
+            8,
+            7
+          ],
+          "source_sample": [
+            290,
+            644
+          ],
+          "source_component": [
+            287,
+            628,
+            30,
+            31
+          ],
+          "component_pixels": 930,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            7,
+            5,
+            2,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "actual_small_isolated_pupils": [
+        {
+          "native": [
+            6,
+            7
+          ],
+          "source_sample": [
+            1213,
+            654
+          ],
+          "source_component": [
+            1189,
+            632,
+            28,
+            29
+          ],
+          "component_pixels": 812,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            3,
+            2,
+            1,
+            253
+          ]
+        }
+      ]
+    }
+  ],
+  "hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f063/knotitan-v15-all-holes/compiled-index.json": "1856f945fd9e7e527fdf490f054894e3abd83d8d67f32b9dfe8825978d35e74d",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f063/knotitan.overworld.imagegen-v5-tall-face.png": "6bb341233fd0f3b7e021f008bc5b83fd6058d5dde936056deb17a42ef39f5e33",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f063/knotitan.overworld.imagegen-v4-profile-cheek.png": "65cf0b0448fd81c18c8ad99af0182c7f8d0c91f49326527bf7eea9a15b117b73",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f063/knotitan-v15-all-holes/gfx/pokemon/knotitan/overworld.2bpp": "4929e20b9af78f7c19fc9dd4f7645ff84da21993eab496a888d8d554a930b976"
+  },
+  "no_native_pixel_painting": true
+}

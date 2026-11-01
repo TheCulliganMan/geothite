@@ -1,0 +1,129 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F060",
+  "status": "proposal-native-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_269": {
+      "species_id": "MN_269",
+      "name": "Oreviathan",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          27,
+          12,
+          4
+        ],
+        [
+          4,
+          11,
+          16
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        4507,
+        16740,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          222,
+          99,
+          33
+        ],
+        [
+          33,
+          90,
+          132
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#DE6321",
+        "#215A84",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f060/freighter-v3/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-269-oreviathan-v3",
+      "species_id": "MN_269",
+      "view": "front",
+      "source": "sprites/mn-f060/freighter-v3/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        1312,
+        600
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        4507,
+        16740,
+        0
+      ],
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 16,
+      "exterior_contour": "source_backed"
+    },
+    {
+      "id": "mn-269-oreviathan-v3",
+      "species_id": "MN_269",
+      "view": "back",
+      "source": "sprites/mn-f060/freighter-v3/front-back.imagegen-v1.png",
+      "crop": [
+        145,
+        605,
+        760,
+        560
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        4507,
+        16740,
+        0
+      ],
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 16,
+      "exterior_contour": "source_backed"
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "d10bf1f004f98fd3332f57d87280223849759497574ed0d1a2dd3387ad9a27a9",
+    "notes": "The new hull is long, legless and lake-going. The face is in the bow; open gantry elbows, three large ore holds and aft pressure stacks remain clear at56px. SourceBacked preserves both steam curls and the8-pixel enclosed bow-eye white without extra interior black. Close rear crops the stern/deck/gantry at deliberate portrait edges. Earlier131/132 untouched. This review covers only the newly rendered species; root must regenerate the full family review after merging.",
+    "reviewer": "roster_cut_review"
+  }
+}

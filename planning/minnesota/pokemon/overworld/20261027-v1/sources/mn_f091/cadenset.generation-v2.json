@@ -1,0 +1,7 @@
+{
+  "default_output": "/Users/ryanculligan/.codex/generated_images/01a17dcc-4f1a-77a2-9d21-0df036061346/exec-2d2cabfb-cb0a-441c-92a5-6b6113d4ee48.png",
+  "saved_source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f091/cadenset.overworld.imagegen-v2.png",
+  "exact_prompt": "cadenset.prompt-v2.txt",
+  "reference": "cadenset.overworld.imagegen-v1.png",
+  "mode": "targeted source edit"
+}

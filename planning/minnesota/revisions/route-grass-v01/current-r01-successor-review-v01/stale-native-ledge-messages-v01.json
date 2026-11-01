@@ -1,0 +1,874 @@
+{
+  "status": "REPAIR_REQUIRED",
+  "pack": "content-packs/minnesota-current-brainerd-mart-roof-v01.crystalpack",
+  "pack_sha256": "e343cd9c65f7c876946be4b59878eabc564c9c7f42a7f29f54cb1a2fac89396d",
+  "messages": [
+    {
+      "label": "MN_R01_BLUFF_WALKERText",
+      "commands": [
+        {
+          "args": [
+            "\"The ramp climbs\""
+          ],
+          "command": "text"
+        },
+        {
+          "args": [
+            "\"the low bluff.\""
+          ],
+          "command": "line"
+        },
+        {
+          "args": [
+            "\"The ledge lets\""
+          ],
+          "command": "para"
+        },
+        {
+          "args": [
+            "\"you hop back down.\""
+          ],
+          "command": "line"
+        },
+        {
+          "args": [],
+          "command": "done"
+        }
+      ]
+    },
+    {
+      "label": "MN_R01_FARMERText",
+      "commands": [
+        {
+          "args": [
+            "\"Wild partners hide\""
+          ],
+          "command": "text"
+        },
+        {
+          "args": [
+            "\"in the tall grass.\""
+          ],
+          "command": "line"
+        },
+        {
+          "args": [
+            "\"Ledges let you hop\""
+          ],
+          "command": "para"
+        },
+        {
+          "args": [
+            "\"down, but not up.\""
+          ],
+          "command": "line"
+        },
+        {
+          "args": [
+            "\"Use the east ramp\""
+          ],
+          "command": "para"
+        },
+        {
+          "args": [
+            "\"to reach the bluff\""
+          ],
+          "command": "line"
+        },
+        {
+          "args": [
+            "\"That BERRY is\""
+          ],
+          "command": "para"
+        },
+        {
+          "args": [
+            "\"for your partner.\""
+          ],
+          "command": "line"
+        },
+        {
+          "args": [
+            "\"Dr Tamarack waits\""
+          ],
+          "command": "para"
+        },
+        {
+          "args": [
+            "\"at the Rochester\""
+          ],
+          "command": "line"
+        },
+        {
+          "args": [
+            "\"clinic out west.\""
+          ],
+          "command": "para"
+        },
+        {
+          "args": [],
+          "command": "done"
+        }
+      ]
+    },
+    {
+      "label": "MN_R01_SIGN_05Text",
+      "commands": [
+        {
+          "args": [
+            "\"ONE WAY LEDGE\""
+          ],
+          "command": "text"
+        },
+        {
+          "args": [
+            "\"DOWN: TRAIL\""
+          ],
+          "command": "line"
+        },
+        {
+          "args": [
+            "\"UP: EAST RAMP\""
+          ],
+          "command": "para"
+        },
+        {
+          "args": [],
+          "command": "done"
+        }
+      ]
+    },
+    {
+      "label": "MN_R01_T03Lost",
+      "commands": [
+        {
+          "args": [
+            "\"Use the east ramp\""
+          ],
+          "command": "text"
+        },
+        {
+          "args": [
+            "\"to come back up.\""
+          ],
+          "command": "line"
+        },
+        {
+          "args": [],
+          "command": "done"
+        }
+      ]
+    },
+    {
+      "label": "MN_R01_T03Won",
+      "commands": [
+        {
+          "args": [
+            "\"The ledge below\""
+          ],
+          "command": "text"
+        },
+        {
+          "args": [
+            "\"is a quick drop.\""
+          ],
+          "command": "line"
+        },
+        {
+          "args": [],
+          "command": "done"
+        }
+      ]
+    },
+    {
+      "label": "MnR01Farmhouse_MapEvents",
+      "commands": [
+        {
+          "args": [
+            "0",
+            "0"
+          ],
+          "command": "db"
+        },
+        {
+          "args": [],
+          "command": "def_warp_events"
+        },
+        {
+          "args": [
+            "4",
+            "9",
+            "MnR01C00R00",
+            "4"
+          ],
+          "command": "warp_event"
+        },
+        {
+          "args": [
+            "5",
+            "9",
+            "MnR01C00R00",
+            "4"
+          ],
+          "command": "warp_event"
+        },
+        {
+          "args": [],
+          "command": "def_coord_events"
+        },
+        {
+          "args": [],
+          "command": "def_bg_events"
+        },
+        {
+          "args": [
+            "4",
+            "0",
+            "BGEVENT_READ",
+            "MN_R01_FARM_NOTICE"
+          ],
+          "command": "bg_event"
+        },
+        {
+          "args": [],
+          "command": "def_object_events"
+        },
+        {
+          "args": [
+            "5",
+            "3",
+            "SPRITE_GRAMPS",
+            "SPRITEMOVEDATA_STANDING_DOWN",
+            "0",
+            "0",
+            "-1",
+            "-1",
+            "0",
+            "OBJECTTYPE_SCRIPT",
+            "0",
+            "MN_R01_FARMER",
+            "-1"
+          ],
+          "command": "object_event"
+        },
+        {
+          "args": [
+            "8",
+            "7",
+            "SPRITE_POKE_BALL",
+            "SPRITEMOVEDATA_STANDING_DOWN",
+            "0",
+            "0",
+            "-1",
+            "-1",
+            "0",
+            "OBJECTTYPE_ITEMBALL",
+            "0",
+            "MN_R01_ITEM_04",
+            "EVENT_MN_R01_ITEM_04"
+          ],
+          "command": "object_event"
+        },
+        {
+          "args": [
+            "3",
+            "5",
+            "SPRITE_YOUNGSTER",
+            "SPRITEMOVEDATA_STANDING_DOWN",
+            "0",
+            "0",
+            "-1",
+            "-1",
+            "0",
+            "OBJECTTYPE_SCRIPT",
+            "0",
+            "MN_SMALL_INTERIOR_R01_FARM_CHILD",
+            "-1"
+          ],
+          "command": "object_event"
+        }
+      ]
+    },
+    {
+      "label": "MnR05C00R01_MapEvents",
+      "commands": [
+        {
+          "args": [
+            "0",
+            "0"
+          ],
+          "command": "db"
+        },
+        {
+          "args": [],
+          "command": "def_warp_events"
+        },
+        {
+          "args": [
+            "16",
+            "29",
+            "MnR05RockCut",
+            "1"
+          ],
+          "command": "warp_event"
+        },
+        {
+          "args": [
+            "16",
+            "30",
+            "MnR05RockCut",
+            "1"
+          ],
+          "command": "warp_event"
+        },
+        {
+          "args": [],
+          "command": "def_coord_events"
+        },
+        {
+          "args": [],
+          "command": "def_bg_events"
+        },
+        {
+          "args": [
+            "12",
+            "30",
+            "BGEVENT_READ",
+            "MN_R05_RAMP_SIGN"
+          ],
+          "command": "bg_event"
+        },
+        {
+          "args": [
+            "18",
+            "30",
+            "BGEVENT_READ",
+            "MN_R05_CUT_SIGN"
+          ],
+          "command": "bg_event"
+        },
+        {
+          "args": [
+            "46",
+            "38",
+            "BGEVENT_READ",
+            "MN_R05_PIER_SIGN"
+          ],
+          "command": "bg_event"
+        },
+        {
+          "args": [],
+          "command": "def_object_events"
+        },
+        {
+          "args": [
+            "11",
+            "37",
+            "SPRITE_POKEFAN_M",
+            "SPRITEMOVEDATA_STANDING_DOWN",
+            "0",
+            "0",
+            "-1",
+            "-1",
+            "0",
+            "OBJECTTYPE_TRAINER",
+            "1",
+            "MN_R05_T01",
+            "-1"
+          ],
+          "command": "object_event"
+        },
+        {
+          "args": [
+            "31",
+            "17",
+            "SPRITE_YOUNGSTER",
+            "SPRITEMOVEDATA_STANDING_RIGHT",
+            "0",
+            "0",
+            "-1",
+            "-1",
+            "0",
+            "OBJECTTYPE_TRAINER",
+            "1",
+            "MN_R05_T02",
+            "-1"
+          ],
+          "command": "object_event"
+        },
+        {
+          "args": [
+            "57",
+            "41",
+            "SPRITE_FISHER",
+            "SPRITEMOVEDATA_STANDING_LEFT",
+            "0",
+            "0",
+            "-1",
+            "-1",
+            "0",
+            "OBJECTTYPE_SCRIPT",
+            "0",
+            "MN_R05_FISHER",
+            "-1"
+          ],
+          "command": "object_event"
+        },
+        {
+          "args": [
+            "9",
+            "41",
+            "SPRITE_POKE_BALL",
+            "SPRITEMOVEDATA_STANDING_DOWN",
+            "0",
+            "0",
+            "-1",
+            "-1",
+            "0",
+            "OBJECTTYPE_ITEMBALL",
+            "0",
+            "MN_R05_ITEM_01",
+            "EVENT_MN_R05_ITEM_01"
+          ],
+          "command": "object_event"
+        },
+        {
+          "args": [
+            "41",
+            "33",
+            "SPRITE_POKE_BALL",
+            "SPRITEMOVEDATA_STANDING_DOWN",
+            "0",
+            "0",
+            "-1",
+            "-1",
+            "0",
+            "OBJECTTYPE_ITEMBALL",
+            "0",
+            "MN_R05_ITEM_04",
+            "EVENT_MN_R05_ITEM_04"
+          ],
+          "command": "object_event"
+        }
+      ]
+    },
+    {
+      "label": "MnR11C00R01_MapEvents",
+      "commands": [
+        {
+          "args": [
+            "0",
+            "0"
+          ],
+          "command": "db"
+        },
+        {
+          "args": [],
+          "command": "def_warp_events"
+        },
+        {
+          "args": [
+            "31",
+            "35",
+            "MN_NORTH_SHORE_PIE_SHOP",
+            "3"
+          ],
+          "command": "warp_event"
+        },
+        {
+          "args": [
+            "31",
+            "36",
+            "MN_NORTH_SHORE_PIE_SHOP",
+            "3"
+          ],
+          "command": "warp_event"
+        },
+        {
+          "args": [],
+          "command": "def_coord_events"
+        },
+        {
+          "args": [],
+          "command": "def_bg_events"
+        },
+        {
+          "args": [
+            "44",
+            "6",
+            "BGEVENT_READ",
+            "MN_R11_SIGN_03"
+          ],
+          "command": "bg_event"
+        },
+        {
+          "args": [
+            "30",
+            "18",
+            "BGEVENT_READ",
+            "MN_R11_SIGN_04"
+          ],
+          "command": "bg_event"
+        },
+        {
+          "args": [
+            "42",
+            "44",
+            "BGEVENT_READ",
+            "MN_R11_SIGN_05"
+          ],
+          "command": "bg_event"
+        },
+        {
+          "args": [
+            "26",
+            "4",
+            "BGEVENT_READ",
+            "MN_R11_PALISADE_SIGN"
+          ],
+          "command": "bg_event"
+        },
+        {
+          "args": [
+            "36",
+            "36",
+            "BGEVENT_READ",
+            "MN_NORTH_SHORE_PIE_SHOP_SIGN"
+          ],
+          "command": "bg_event"
+        },
+        {
+          "args": [],
+          "command": "def_object_events"
+        },
+        {
+          "args": [
+            "33",
+            "45",
+            "SPRITE_POKEFAN_M",
+            "SPRITEMOVEDATA_STANDING_RIGHT",
+            "0",
+            "0",
+            "-1",
+            "-1",
+            "0",
+            "OBJECTTYPE_TRAINER",
+            "1",
+            "MN_R11_T04",
+            "-1"
+          ],
+          "command": "object_event"
+        },
+        {
+          "args": [
+            "43",
+            "17",
+            "SPRITE_FISHER",
+            "SPRITEMOVEDATA_STANDING_DOWN",
+            "0",
+            "0",
+            "-1",
+            "-1",
+            "0",
+            "OBJECTTYPE_TRAINER",
+            "1",
+            "MN_R11_T05",
+            "-1"
+          ],
+          "command": "object_event"
+        },
+        {
+          "args": [
+            "35",
+            "35",
+            "SPRITE_YOUNGSTER",
+            "SPRITEMOVEDATA_STANDING_RIGHT",
+            "0",
+            "0",
+            "-1",
+            "-1",
+            "0",
+            "OBJECTTYPE_TRAINER",
+            "1",
+            "MN_R11_T06",
+            "-1"
+          ],
+          "command": "object_event"
+        },
+        {
+          "args": [
+            "33",
+            "3",
+            "SPRITE_POKEFAN_M",
+            "SPRITEMOVEDATA_STANDING_LEFT",
+            "0",
+            "0",
+            "-1",
+            "-1",
+            "0",
+            "OBJECTTYPE_TRAINER",
+            "1",
+            "MN_R11_T07",
+            "-1"
+          ],
+          "command": "object_event"
+        },
+        {
+          "args": [
+            "45",
+            "7",
+            "SPRITE_COOLTRAINER_F",
+            "SPRITEMOVEDATA_STANDING_LEFT",
+            "0",
+            "0",
+            "-1",
+            "-1",
+            "0",
+            "OBJECTTYPE_TRAINER",
+            "1",
+            "MN_R11_T08",
+            "-1"
+          ],
+          "command": "object_event"
+        },
+        {
+          "args": [
+            "27",
+            "21",
+            "SPRITE_SAILOR",
+            "SPRITEMOVEDATA_STANDING_DOWN",
+            "0",
+            "0",
+            "-1",
+            "-1",
+            "0",
+            "OBJECTTYPE_SCRIPT",
+            "0",
+            "MN_R11_N03",
+            "-1"
+          ],
+          "command": "object_event"
+        },
+        {
+          "args": [
+            "49",
+            "7",
+            "SPRITE_POKE_BALL",
+            "SPRITEMOVEDATA_STANDING_DOWN",
+            "0",
+            "0",
+            "-1",
+            "-1",
+            "0",
+            "OBJECTTYPE_ITEMBALL",
+            "0",
+            "MN_R11_ITEM_01",
+            "EVENT_MN_R11_ITEM_01"
+          ],
+          "command": "object_event"
+        },
+        {
+          "args": [
+            "45",
+            "19",
+            "SPRITE_POKE_BALL",
+            "SPRITEMOVEDATA_STANDING_DOWN",
+            "0",
+            "0",
+            "-1",
+            "-1",
+            "0",
+            "OBJECTTYPE_ITEMBALL",
+            "0",
+            "MN_R11_ITEM_03",
+            "EVENT_MN_R11_ITEM_03"
+          ],
+          "command": "object_event"
+        },
+        {
+          "args": [
+            "15",
+            "1",
+            "SPRITE_POKE_BALL",
+            "SPRITEMOVEDATA_STANDING_DOWN",
+            "0",
+            "0",
+            "-1",
+            "-1",
+            "0",
+            "OBJECTTYPE_ITEMBALL",
+            "0",
+            "MN_R11_ITEM_05",
+            "EVENT_MN_R11_ITEM_05"
+          ],
+          "command": "object_event"
+        }
+      ]
+    },
+    {
+      "label": "MnR12C00R01_MapEvents",
+      "commands": [
+        {
+          "args": [
+            "0",
+            "0"
+          ],
+          "command": "db"
+        },
+        {
+          "args": [],
+          "command": "def_warp_events"
+        },
+        {
+          "args": [],
+          "command": "def_coord_events"
+        },
+        {
+          "args": [],
+          "command": "def_bg_events"
+        },
+        {
+          "args": [
+            "61",
+            "5",
+            "BGEVENT_READ",
+            "MN_R12_SIGN_01"
+          ],
+          "command": "bg_event"
+        },
+        {
+          "args": [
+            "47",
+            "1",
+            "BGEVENT_READ",
+            "MN_R12_SIGN_04"
+          ],
+          "command": "bg_event"
+        },
+        {
+          "args": [
+            "55",
+            "5",
+            "BGEVENT_READ",
+            "MN_INLAND_CAMP_SIGN"
+          ],
+          "command": "bg_event"
+        },
+        {
+          "args": [],
+          "command": "def_object_events"
+        },
+        {
+          "args": [
+            "55",
+            "1",
+            "SPRITE_POKEFAN_M",
+            "SPRITEMOVEDATA_STANDING_UP",
+            "0",
+            "0",
+            "-1",
+            "-1",
+            "0",
+            "OBJECTTYPE_TRAINER",
+            "2",
+            "MN_R12_T01",
+            "-1"
+          ],
+          "command": "object_event"
+        },
+        {
+          "args": [
+            "25",
+            "7",
+            "SPRITE_YOUNGSTER",
+            "SPRITEMOVEDATA_STANDING_LEFT",
+            "0",
+            "0",
+            "-1",
+            "-1",
+            "0",
+            "OBJECTTYPE_TRAINER",
+            "2",
+            "MN_R12_T07",
+            "-1"
+          ],
+          "command": "object_event"
+        },
+        {
+          "args": [
+            "59",
+            "7",
+            "SPRITE_GRAMPS",
+            "SPRITEMOVEDATA_STANDING_LEFT",
+            "0",
+            "0",
+            "-1",
+            "-1",
+            "0",
+            "OBJECTTYPE_SCRIPT",
+            "0",
+            "MN_R12_N01",
+            "-1"
+          ],
+          "command": "object_event"
+        },
+        {
+          "args": [
+            "22",
+            "7",
+            "SPRITE_POKEFAN_F",
+            "SPRITEMOVEDATA_STANDING_RIGHT",
+            "0",
+            "0",
+            "-1",
+            "-1",
+            "0",
+            "OBJECTTYPE_SCRIPT",
+            "0",
+            "MN_R12_N04",
+            "-1"
+          ],
+          "command": "object_event"
+        },
+        {
+          "args": [
+            "23",
+            "7",
+            "SPRITE_POKE_BALL",
+            "SPRITEMOVEDATA_STANDING_DOWN",
+            "0",
+            "0",
+            "-1",
+            "-1",
+            "0",
+            "OBJECTTYPE_ITEMBALL",
+            "0",
+            "MN_R12_ITEM_03",
+            "EVENT_MN_R12_ITEM_03"
+          ],
+          "command": "object_event"
+        },
+        {
+          "args": [
+            "51",
+            "5",
+            "SPRITE_POKE_BALL",
+            "SPRITEMOVEDATA_STILL",
+            "0",
+            "0",
+            "-1",
+            "-1",
+            "0",
+            "OBJECTTYPE_ITEMBALL",
+            "0",
+            "MN_INLAND_CAMP_SUPPLY",
+            "EVENT_MN_GUNFLINT_CAMP_SUPPLY"
+          ],
+          "command": "object_event"
+        }
+      ]
+    }
+  ],
+  "native_terrain_and_traversal_pass": true,
+  "reason": "Current closed tall cliff and ordinary native stairs contradict old ledge messages."
+}

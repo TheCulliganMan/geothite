@@ -1,0 +1,180 @@
+{
+  "schema_version": 1,
+  "id": "MnIronHaulage",
+  "tileset": "mn_iron_haulage_rock",
+  "base_tileset": "cave",
+  "dimensions_metatiles": [
+    18,
+    14
+  ],
+  "border_block": 46,
+  "palette_group": "nite",
+  "purpose": "Rock galleries and raised workings around a pressure-operated crosscut. Preserve all five original ladder pairs, Ruth, two LODE guards, controls and quest ordering.",
+  "rows": [
+    "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e",
+    "2e 2e 04 05 06 2e 2e 2e 2e 2e 2e 2e 04 05 06 2e 2e 2e",
+    "2e 04 0d 42 0d 05 05 06 2e 2e 2e 04 0d 42 0d 06 2e 2e",
+    "2e 08 0d 0d 1d 0d 0d 1e 2e 2e 2e 08 0d 0d 0d 1e 2e 2e",
+    "2e 20 21 21 21 30 21 22 2e 2e 2e 20 21 36 21 22 2e 2e",
+    "2e 2e 2e 04 05 0d 06 2e 2e 2e 2e 04 0d 0d 40 2e 2e 2e",
+    "2e 2e 04 0d 19 0d 42 1e 2e 2e 04 0d 1d 0d 0d 1e 2e 2e",
+    "2e 04 0d 0d 1e 0d 0d 0d 06 2e 08 0d 1e 0d 0d 1e 2e 2e",
+    "2e 08 0d 0d 0d 1d 0d 0d 0d 41 0d 0d 0d 0d 0d 1e 2e 2e",
+    "2e 20 0d 0d 0d 0d 0d 21 22 2e 20 21 0d 1d 0d 1e 2e 2e",
+    "2e 2e 1e 0d 0d 1e 2e 2e 2e 2e 2e 2e 08 0d 0d 1e 2e 2e",
+    "2e 2e 42 21 21 22 2e 2e 2e 2e 2e 2e 20 21 42 22 2e 2e",
+    "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e",
+    "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e"
+  ],
+  "derived_blocks": [
+    {
+      "id": "40",
+      "source_tileset": "underground",
+      "source_block": "2b",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "id": "41",
+      "source_tileset": "facility",
+      "source_block": "16",
+      "collision": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL"
+      ],
+      "tile_order": [
+        2,
+        3,
+        2,
+        3,
+        6,
+        7,
+        6,
+        7,
+        10,
+        11,
+        10,
+        11,
+        14,
+        15,
+        14,
+        15
+      ]
+    },
+    {
+      "id": "42",
+      "source_tileset": "cave",
+      "source_block": "0b",
+      "tile_quadrant_sources": [
+        {
+          "source_block": "0b",
+          "source_quadrant": 0
+        },
+        {
+          "source_block": "0b",
+          "source_quadrant": 3
+        },
+        {
+          "source_block": "0b",
+          "source_quadrant": 2
+        },
+        {
+          "source_block": "0b",
+          "source_quadrant": 1
+        }
+      ],
+      "collision": [
+        "FLOOR",
+        "LADDER",
+        "FLOOR",
+        "FLOOR"
+      ]
+    }
+  ],
+  "block_overrides": [
+    {
+      "id": "0d",
+      "source_tileset": "cave",
+      "source_block": "02",
+      "collision": [
+        "FLOOR",
+        "FLOOR",
+        "FLOOR",
+        "FLOOR"
+      ],
+      "reason": "Retained pressure scripts open block13; preserve that numeric floor meaning in the private alias."
+    }
+  ],
+  "review_viewpoints": [
+    {
+      "id": "mouth",
+      "tile": [
+        4,
+        23
+      ]
+    },
+    {
+      "id": "ruth",
+      "tile": [
+        5,
+        16
+      ]
+    },
+    {
+      "id": "west-crosscut",
+      "tile": [
+        17,
+        17
+      ]
+    },
+    {
+      "id": "west-stair",
+      "tile": [
+        10,
+        10
+      ]
+    },
+    {
+      "id": "north-guard",
+      "tile": [
+        13,
+        7
+      ]
+    },
+    {
+      "id": "east-stair",
+      "tile": [
+        26,
+        10
+      ]
+    },
+    {
+      "id": "valve",
+      "tile": [
+        29,
+        12
+      ]
+    },
+    {
+      "id": "conveyor",
+      "tile": [
+        29,
+        13
+      ]
+    },
+    {
+      "id": "east-south",
+      "tile": [
+        28,
+        23
+      ]
+    }
+  ],
+  "extended_graphics": true
+}

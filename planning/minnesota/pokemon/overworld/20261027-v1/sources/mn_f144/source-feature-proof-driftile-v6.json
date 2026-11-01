@@ -1,0 +1,254 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_317",
+  "result": "pass",
+  "manifest_sha256": "cae2878e42e5599240ebddb576a17d2b77f952140639e123421dd633c94bd97a",
+  "bank_sha256": "5e463c4a627307019499cef7d9eb0597f84d003c1721bfb44fd1751b769027f7",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f144/driftile.overworld.imagegen-v6-violet-inner-seams.png": "d685e959d28be0d5171a1268f69a617964ad73a85ebd83a6bfd9696bdd42f801"
+  },
+  "canonical_eye_form": "ONE actual recessed pupil per nonrear pose, in the single eye gap of an eight-leaf duckweed puzzle colony; no second eye, no leaf-mark substitutes. Whole native eye maps to the same actual anatomical source pupil component.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "down_idle",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f144/driftile.overworld.imagegen-v6-violet-inner-seams.png",
+        "crop": [
+          57,
+          97,
+          420,
+          350
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            191,
+            300,
+            25,
+            24
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                5,
+                10
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  6,
+                  8,
+                  3,
+                  253
+                ],
+                "bounds": [
+                  192,
+                  300,
+                  24,
+                  23
+                ],
+                "pixels": 552,
+                "truncated_contour": false,
+                "native_pixel": [
+                  5,
+                  10
+                ],
+                "source_sample_pixel": [
+                  197,
+                  300
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "left_idle",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f144/driftile.overworld.imagegen-v6-violet-inner-seams.png",
+        "crop": [
+          1099,
+          122,
+          420,
+          350
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            1165,
+            323,
+            24,
+            24
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                3,
+                10
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  6,
+                  6,
+                  3,
+                  253
+                ],
+                "bounds": [
+                  1165,
+                  323,
+                  24,
+                  24
+                ],
+                "pixels": 555,
+                "truncated_contour": false,
+                "native_pixel": [
+                  3,
+                  10
+                ],
+                "source_sample_pixel": [
+                  1182,
+                  325
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "down_step",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f144/driftile.overworld.imagegen-v6-violet-inner-seams.png",
+        "crop": [
+          58,
+          591,
+          420,
+          350
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            192,
+            793,
+            24,
+            23
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                5,
+                10
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  4,
+                  6,
+                  2,
+                  254
+                ],
+                "bounds": [
+                  192,
+                  793,
+                  24,
+                  23
+                ],
+                "pixels": 552,
+                "truncated_contour": false,
+                "native_pixel": [
+                  5,
+                  10
+                ],
+                "source_sample_pixel": [
+                  198,
+                  794
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "left_step",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f144/driftile.overworld.imagegen-v6-violet-inner-seams.png",
+        "crop": [
+          1099,
+          603,
+          420,
+          350
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            1165,
+            804,
+            24,
+            24
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                3,
+                10
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  5,
+                  6,
+                  3,
+                  254
+                ],
+                "bounds": [
+                  1165,
+                  804,
+                  24,
+                  24
+                ],
+                "pixels": 576,
+                "truncated_contour": false,
+                "native_pixel": [
+                  3,
+                  10
+                ],
+                "source_sample_pixel": [
+                  1182,
+                  806
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "notes": "Both native normal/shiny rear root-colony poses actually viewed: eight source leaf plates connected by violet root web, no eye/face on rear, four rooted gait pads rather than fish fins. Native foreshortening merges some leaf separations; all three gait pairs differ, 1px border."
+  },
+  "detailed_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f144/manifest-driftile-v6-pupil-proof.proof.json"
+}

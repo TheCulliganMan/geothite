@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-r19-detroit-gate-v04.crystalpack",
+  "pack_sha256": "de1add590013c786bd3a2770c58ff46c656930cc3dd3944af203f7480e292e21",
+  "content_identity": "1efd4ef468dc38f0346a74621151eb36cf15272736324ee9e0de925e0e4ba226",
+  "parent_pack": "content-packs/minnesota-gunflint-spring-shelter-v02.crystalpack",
+  "parent_pack_sha256": "6a4af10d7d025cb9041878a63855c6d01cf4e5180c2672cf10a07b0ceda5fecb",
+  "changed_existing_maps": [
+    "MnDetroitLakes",
+    "MnR19C00R01"
+  ],
+  "new_room": "MnR19DetroitGate",
+  "changed_exterior_metatiles": 8,
+  "all_other_maps_exact": true,
+  "all_art_audio_exact": true,
+  "selected": false
+}

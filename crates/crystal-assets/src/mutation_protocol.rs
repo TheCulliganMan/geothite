@@ -13,7 +13,16 @@ fn read_loaded_compiled_game_pack(path: impl AsRef<Path>) -> Result<LoadedCompil
         path: path.to_path_buf(),
         bytes,
         pack,
+        runtime_verified: false,
     })
+}
+
+/// Decode an uncertified pack for explicit intro timing diagnostics only.
+#[cfg(any(test, feature = "test-fixtures"))]
+pub fn read_unverified_compiled_game_pack_for_intro_timing_diagnostic(
+    path: impl AsRef<Path>,
+) -> Result<LoadedCompiledGamePack> {
+    read_loaded_compiled_game_pack(path)
 }
 
 pub fn read_verified_compiled_game_pack(path: impl AsRef<Path>) -> Result<CompiledGamePack> {
@@ -24,8 +33,9 @@ pub fn read_verified_compiled_game_pack(path: impl AsRef<Path>) -> Result<Compil
 pub fn read_loaded_verified_compiled_game_pack(
     path: impl AsRef<Path>,
 ) -> Result<LoadedCompiledGamePack> {
-    let loaded = read_loaded_compiled_game_pack(path)?;
+    let mut loaded = read_loaded_compiled_game_pack(path)?;
     verify_compiled_game_pack_for_runtime(loaded.pack())?;
+    loaded.runtime_verified = true;
     Ok(loaded)
 }
 
@@ -37,7 +47,7 @@ pub fn load_verified_compiled_game_pack_bytes(
     validate_compiled_game_pack_path(&path)?;
     let pack = decode_compiled_game_pack(&bytes, &path)?;
     verify_compiled_game_pack_for_runtime(&pack)?;
-    Ok(LoadedCompiledGamePack { path, bytes, pack })
+    Ok(LoadedCompiledGamePack { path, bytes, pack, runtime_verified: true })
 }
 
 /// A complete, already-materialized runtime map addition for an existing
@@ -475,7 +485,7 @@ mod compiled_tileset_extension_tests {
         let data = asset_root
             .load_base_game_data()
             .expect("load canonical game data");
-        let runtime_files = compile_runtime_files(&asset_root).expect("compile runtime files");
+        let runtime_files = compile_runtime_files(&asset_root, &data.runtime_title_screen.program).expect("compile runtime files");
         let report = canonical_test_compile_report(&data, "tileset-extension-base");
         CompiledGamePack::new_unchecked_for_tests(data, report)
             .with_runtime_files_for_tests(runtime_files)
@@ -847,13 +857,34 @@ pub fn verify_compiled_game_pack_for_runtime(pack: &CompiledGamePack) -> Result<
         );
     }
     validate_compiled_game_pack_identity(pack)?;
-    validate_compiled_report_manifest_identity(&pack.report)?;
-    validate_compiled_report_data_counts(&pack.report, &pack.data)?;
-    validate_compiled_report_map_references(&pack.report, &pack.data)?;
-    validate_compiled_report_progression_outputs(&pack.report, &pack.data)?;
-    validate_compiled_runtime_game_data(&pack.data)?;
-    validate_compiled_audio_payloads(pack)?;
+    if let Some(path) = &pack.data.runtime_title_screen.static_title_image {
+        let bytes = pack
+            .runtime_files
+            .get(path)
+            .context("missing static title image")?;
+        anyhow::ensure!(
+            bytes.len() >= 24
+                && &bytes[..8] == b"\x89PNG\r\n\x1a\n"
+                && bytes[16..20] == 160_u32.to_be_bytes()
+                && bytes[20..24] == 144_u32.to_be_bytes(),
+            "static title must contain a native 160x144 PNG"
+        );
+    }
 
+    {
+        let _trace = pack_load_trace::Span::new("pack.semantic_validation");
+        validate_compiled_report_manifest_identity(&pack.report)?;
+        validate_compiled_report_data_counts(&pack.report, &pack.data)?;
+        validate_compiled_report_map_references(&pack.report, &pack.data)?;
+        validate_compiled_report_progression_outputs(&pack.report, &pack.data)?;
+        validate_compiled_runtime_game_data(&pack.data)?;
+    }
+    {
+        let _trace = pack_load_trace::Span::new("pack.audio_validation");
+        validate_compiled_audio_payloads(pack)?;
+    }
+
+    let _trace = pack_load_trace::Span::new("pack.runtime_diagnostics");
     let mut diagnostics = pack
         .report
         .diagnostics
@@ -893,6 +924,7 @@ fn validate_compiled_game_pack_identity(pack: &CompiledGamePack) -> Result<()> {
         counts.set((runtime, identity + 1));
     });
     validate_compiled_runtime_files(&pack.runtime_files)?;
+    let identity_trace = pack_load_trace::Span::new("pack.identity_hash");
     let derived = if matches!(
         pack.audio_compression.as_deref(),
         Some(PACK_AUDIO_COMPRESSION_GZIP | PACK_AUDIO_COMPRESSION_MIDI)
@@ -913,6 +945,7 @@ fn validate_compiled_game_pack_identity(pack: &CompiledGamePack) -> Result<()> {
             &pack.report,
         )?
     };
+    drop(identity_trace);
     if pack.identity != derived {
         anyhow::bail!(
             "compiled game pack identity {} does not match derived identity {}",
@@ -978,6 +1011,10 @@ pub fn validate_compiled_runtime_file_key(key: &str) -> Result<()> {
 }
 
 fn validate_compiled_runtime_game_data(data: &GameDataSet) -> Result<()> {
+    if data.competitive_battles && data.type_categories.moves.len() != data.moves.len() {
+        anyhow::bail!("competitive battles require an exhaustive per-move category catalog");
+    }
+    if let Some(rules) = data.wild_challenge { rules.validate()?; }
     if data.pokemon.is_empty() {
         anyhow::bail!("compiled game pack has no Pokemon species data");
     }
@@ -1313,6 +1350,7 @@ fn compiled_game_pack_runtime_modpack_id(report: &ModpackCompileReport) -> Resul
 }
 
 fn decode_compiled_game_pack(bytes: &[u8], path: &Path) -> Result<CompiledGamePack> {
+    let _trace = pack_load_trace::Span::new("pack.decode");
     if !bytes.starts_with(COMPILED_GAME_PACK_MAGIC) {
         anyhow::bail!("{} is not a compiled Crystal game pack", path.display());
     }
@@ -1358,7 +1396,10 @@ fn decode_compiled_game_pack(bytes: &[u8], path: &Path) -> Result<CompiledGamePa
         bytes[COMPILED_GAME_PACK_PAYLOAD_HASH_OFFSET + 3],
     ]);
     let payload = &bytes[COMPILED_GAME_PACK_HEADER_LEN..];
-    let actual_hash = fnv1a32_bytes(payload);
+    let actual_hash = {
+        let _trace = pack_load_trace::Span::new("pack.frame_hash");
+        fnv1a32_bytes(payload)
+    };
     if actual_hash != expected_hash {
         anyhow::bail!(
             "compiled game pack {} payload hash {actual_hash:#010x} does not match declared {expected_hash:#010x}",
@@ -1366,8 +1407,11 @@ fn decode_compiled_game_pack(bytes: &[u8], path: &Path) -> Result<CompiledGamePa
         );
     }
     let mut cursor = std::io::Cursor::new(payload);
-    let pack: CompiledGamePack = ciborium::from_reader(&mut cursor)
-        .with_context(|| format!("decode compiled game pack {}", path.display()))?;
+    let pack: CompiledGamePack = {
+        let _trace = pack_load_trace::Span::new("pack.decode_cbor");
+        ciborium::from_reader(&mut cursor)
+            .with_context(|| format!("decode compiled game pack {}", path.display()))?
+    };
     if cursor.position() as usize != payload.len() {
         anyhow::bail!(
             "compiled game pack {} has {} trailing bytes",
@@ -1949,9 +1993,10 @@ fn insert_fly_destination(
     destination: FlyDestination,
 ) -> Result<()> {
     anyhow::ensure!(
-        destination.destination_spawn_identifier
-            < crystal_core::systems::special_routines::CRYSTAL_NUM_SPAWN_POINTS,
-        "fly destination '{flypoint_flag}' spawn identifier {} is outside Crystal's SpawnPoints table",
+        crystal_core::systems::special_routines::is_runtime_recovery_spawn_identifier(
+            destination.destination_spawn_identifier,
+        ),
+        "fly destination '{flypoint_flag}' spawn identifier {} is outside source/addon spawn ranges",
         destination.destination_spawn_identifier
     );
     if flypoint_flag != destination.flypoint_flag {
@@ -2501,7 +2546,10 @@ fn validate_map_module_extracted_script_commands(map_id: &str, map: &MapModule) 
             ),
         )?;
     }
-    for issue in script_variable_command_issues(&map.script_variable_commands) {
+    if let Some(issue) = script_variable_command_issues(&map.script_variable_commands)
+        .into_iter()
+        .next()
+    {
         anyhow::bail!(
             "map '{map_id}' script variable command {} in '{}' is malformed: {:?}",
             issue.command_index,
@@ -2712,6 +2760,7 @@ fn is_static_wild_battle_type(battle_type: &str) -> bool {
             | "BATTLETYPE_SUICUNE"
             | "BATTLETYPE_TRAP"
             | "BATTLETYPE_CELEBI"
+            | crystal_core::battle::capture::OPTIONAL_LEGENDARY_BATTLE_TYPE
             | "BATTLETYPE_TUTORIAL"
     )
 }
@@ -2766,7 +2815,10 @@ fn validate_script_text_command_shapes(map_id: &str, map: &MapModule) -> Result<
                 command.command_index
             ),
         )?;
-        for issue in script_text_command_issues(command, &text_labels) {
+        if let Some(issue) = script_text_command_issues(command, &text_labels)
+            .into_iter()
+            .next()
+        {
             anyhow::bail!(
                 "map '{map_id}' script text command {} in '{}' is malformed: {:?}",
                 command.command_index,
@@ -2780,7 +2832,7 @@ fn validate_script_text_command_shapes(map_id: &str, map: &MapModule) -> Result<
 
 fn validate_script_text_body_shapes(map_id: &str, map: &MapModule) -> Result<()> {
     for (label, body) in &map.script_text_bodies {
-        for issue in script_text_body_issues(label, body) {
+        if let Some(issue) = script_text_body_issues(label, body).into_iter().next() {
             anyhow::bail!(
                 "map '{map_id}' script text body '{label}' is malformed: {:?}",
                 issue
@@ -2803,7 +2855,10 @@ fn validate_script_text_body_shapes(map_id: &str, map: &MapModule) -> Result<()>
 
 fn validate_script_menu_definition_shapes(map_id: &str, map: &MapModule) -> Result<()> {
     for (label, menu) in &map.script_menu_definitions {
-        for issue in script_menu_definition_issues(label, menu) {
+        if let Some(issue) = script_menu_definition_issues(label, menu)
+            .into_iter()
+            .next()
+        {
             anyhow::bail!(
                 "map '{map_id}' script menu definition '{label}' is malformed: {:?}",
                 issue
@@ -2931,7 +2986,10 @@ fn validate_script_control_command_shapes(map_id: &str, map: &MapModule) -> Resu
                 command.command_index
             ),
         )?;
-        for issue in script_control_command_issues(command, &script_labels) {
+        if let Some(issue) = script_control_command_issues(command, &script_labels)
+            .into_iter()
+            .next()
+        {
             anyhow::bail!(
                 "map '{map_id}' script control command {} in '{}' is malformed: {:?}",
                 command.command_index,
@@ -3042,7 +3100,7 @@ fn validate_script_movement_shape(map_id: &str, movement: &ScriptMovement) -> Re
                 movement.label, step.index
             ),
         )?;
-        for issue in script_movement_step_issues(step) {
+        if let Some(issue) = script_movement_step_issues(step).into_iter().next() {
             anyhow::bail!(
                 "map '{map_id}' script movement '{}' step {} is malformed: {}",
                 movement.label,
@@ -3079,12 +3137,15 @@ fn validate_script_block_change_shape(
             change.command_index
         ),
     )?;
-    for issue in script_block_change_issues(
+    if let Some(issue) = script_block_change_issues(
         std::slice::from_ref(change),
         map.attributes.width,
         map.attributes.height,
         map.blocks.len(),
-    ) {
+    )
+    .into_iter()
+    .next()
+    {
         anyhow::bail!(
             "map '{map_id}' script block change command {} in '{}' is malformed: {:?}",
             change.command_index,
@@ -3125,12 +3186,15 @@ fn validate_script_object_command_shapes(map_id: &str, map: &MapModule) -> Resul
                 command.command_index
             ),
         )?;
-        for issue in script_object_command_issues(
+        if let Some(issue) = script_object_command_issues(
             command,
             &object_event_flags,
             &hideable_event_flags,
             &movements,
-        ) {
+        )
+        .into_iter()
+        .next()
+        {
             anyhow::bail!(
                 "map '{map_id}' script object command {} in '{}' is malformed: {}",
                 command.command_index,
@@ -3224,7 +3288,7 @@ fn validate_script_field_pickup_shape(map_id: &str, pickup: &ScriptFieldPickup) 
 }
 
 fn validate_script_flag_command_shape(map_id: &str, command: &ScriptFlagCommand) -> Result<()> {
-    for issue in script_flag_command_issues(command) {
+    if let Some(issue) = script_flag_command_issues(command).into_iter().next() {
         anyhow::bail!(
             "map '{map_id}' script flag command {} in '{}' is malformed: {:?}",
             command.command_index,
@@ -3243,7 +3307,7 @@ fn validate_script_flag_command_shape(map_id: &str, command: &ScriptFlagCommand)
 }
 
 fn validate_script_scene_command_shape(map_id: &str, command: &ScriptSceneCommand) -> Result<()> {
-    for issue in script_scene_command_issues(command) {
+    if let Some(issue) = script_scene_command_issues(command).into_iter().next() {
         anyhow::bail!(
             "map '{map_id}' script scene command {} in '{}' is malformed: {:?}",
             command.command_index,

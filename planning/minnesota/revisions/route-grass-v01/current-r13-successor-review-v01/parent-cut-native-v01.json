@@ -1,0 +1,7 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-r11-stair-guidance-v02.crystalpack",
+  "pack_sha256": "332d6ee5c5b77c028119c898e774043895859929a46ff534ebbd14bc1cc2e5d4",
+  "log": ".local/route-grass-review/r13-parent-cut-native-v01.log",
+  "scope": "Existing current-parent Cut gate, Revive once, Save/Continue and inside return. Initial local partner/position/Cut badge are native QA fixtures; candidate grass has not been published yet."
+}

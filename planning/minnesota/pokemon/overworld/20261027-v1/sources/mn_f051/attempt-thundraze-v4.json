@@ -1,0 +1,9 @@
+{
+  "tool": "built-in image_gen",
+  "original": "/Users/ryanculligan/.codex/generated_images/01a179bf-dc2b-7352-8975-8b8f3a32e33b/exec-f25f5de3-6d59-490a-aae9-4180e7b18df2.png",
+  "preserved_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/thundraze.overworld.imagegen-v4-front-face-clearance.png",
+  "sha256": "99018c355aadfc3279d4f9201e94a2576ae37891c2d5146ed42da680e33c03d9",
+  "exact_prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/prompt-thundraze-front-face-clearance-v4.txt",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f051/reference-mapping-thundraze-front-face-clearance-v4.json",
+  "status": "preserved; selection pending native source-proof"
+}

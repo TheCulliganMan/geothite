@@ -129,7 +129,7 @@ fn mart_top_menu_text_stays_inside_its_window() {
 
 #[test]
 fn mart_cancel_and_empty_buy_list_preserve_valid_menu_flow() {
-    let session = include_str!("../deterministic_session.rs");
+    let session = include_str!("../deterministic_session_settling.rs");
     let interactions = include_str!("../battle_messages.rs");
 
     let cancel_quantity = session
@@ -268,14 +268,15 @@ fn mart_frames_and_glyphs_share_the_fullscreen_dialog_layer() {
     )
     .expect("render mart");
     queue.apply(&mut world);
-    let mut query = world.query::<(Entity, Option<&SceneDialogMarker>)>();
+    // Bevy 0.20 stores resources as entities; only rendered sprites belong to the mart.
+    let mut query = world.query_filtered::<(Entity, Option<&SceneDialogMarker>), With<Sprite>>();
     for (entity, marker) in query.iter(&world) {
         assert!(
             marker.is_some(),
             "mart entity {entity:?} would detach from its text in fullscreen"
         );
     }
-    assert!(world.entities().len() > 50, "frames and text were spawned");
+    assert!(query.iter(&world).count() > 50, "frames and text were spawned");
 }
 
 #[test]
@@ -451,9 +452,9 @@ fn tm_shop_renders_move_description_on_a_cleared_menu_screen() {
 fn rendered_mart_text_for_test(app: &mut App) -> String {
     let glyphs = app.world().resource::<RenderedTilesetArt>().font_cache.as_ref().unwrap()
         .glyphs.iter().map(|(character, frame)| (*character, frame.handle.clone())).collect::<Vec<_>>();
-    let mut letters = app.world_mut().query::<(&Handle<Image>, &Transform, &Visibility)>()
+    let mut letters = app.world_mut().query::<(&Sprite, &Transform, &Visibility)>()
         .iter(app.world()).filter(|(_, _, visibility)| **visibility != Visibility::Hidden)
-        .filter_map(|(image, transform, _)| glyphs.iter().find(|(_, handle)| handle == image)
+        .filter_map(|(image, transform, _)| glyphs.iter().find(|(_, handle)| handle == &image.image)
             .map(|(character, _)| (transform.translation.y, transform.translation.x, *character)))
         .collect::<Vec<_>>();
     letters.sort_by(|a, b| b.0.total_cmp(&a.0).then(a.1.total_cmp(&b.1)));
@@ -552,5 +553,128 @@ fn mart_poke_ball_tokens_render_consistently_in_list_and_confirmation() {
                 expected = Some(canvas);
             }
         }
+    }
+}
+
+#[test]
+fn renderer_neutral_controller_opens_and_closes_both_department_store_clerks() {
+    let repo=PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../..");
+    let explicit=std::env::var_os("CRYSTAL_RENDER_TEST_PACK");
+    let pack=explicit.as_ref().map(PathBuf::from)
+        .unwrap_or_else(||repo.join("content-packs/text-tui.crystalpack"));
+    assert!(explicit.is_none()||pack.is_file(),"explicit external pack must exist");
+    if !pack.is_file() {return;}
+    let asset_root=AssetRoot::new(pack.parent().unwrap());
+    let loaded=crystal_assets::read_loaded_verified_compiled_game_pack(&pack).expect("verified external pack");
+    let runtime=CrystalRuntime::from_loaded_compiled_pack(&asset_root,loaded).expect("external runtime");
+    let spawn=runtime.title_new_game_spawn_identifier().unwrap();
+    for map in ["GoldenrodDeptStore5F","CeladonDeptStore5F"] {
+        let shell=initialize_bevy_runtime_shell(asset_root.clone(),runtime.clone(),
+            BevyShellStart::NewGameAtRuntimeTile{spawn_identifier:spawn,map_name:map.into(),tile_x:8,tile_y:2},
+            BevyShellConfig{smoke_player_name:Some("CHRIS".into()),..Default::default()}).unwrap();
+        let mut controller=VisibleShellController{shell};
+        settle_visible_shell_until_input(&mut controller.shell).unwrap();
+        let money=controller.shell.shell.session().state().money;
+        for _ in 0..12 {
+            if controller.snapshot().unwrap().overworld.tile==TilePosition::new(8,3) {break;}
+            controller.press(GameButton::Down).unwrap();
+        }
+        assert_eq!(controller.snapshot().unwrap().overworld.tile,TilePosition::new(8,3),"{map}: approach counter");
+        for _ in 0..8 {
+            if controller.snapshot().unwrap().pending_shop.is_some() {break;}
+            controller.press(GameButton::A).unwrap();
+        }
+        let snapshot=controller.snapshot().unwrap();
+        let shop=snapshot.pending_shop.expect("authored clerk opens real shop");
+        let clerk_script=if map=="CeladonDeptStore5F" {"CeladonDeptStore5FClerk2Script"} else {"GoldenrodDeptStore5FClerkScript"};
+        assert_eq!(shop.source_script.rsplit('@').next(),Some(clerk_script),"{map}: authored clerk");
+        assert!(!shop.inventory.is_empty());
+        let mut buy_menu=false;
+        for _ in 0..8 {
+            // Shop surfaces own their production cursor outside the generic script menu.
+            buy_menu=controller.shell.shop_top_cursor.is_some();
+            if buy_menu {break;}
+            controller.press(GameButton::A).unwrap();
+        }
+        assert!(buy_menu,"{map}: production BUY/SELL/QUIT surface");
+        for _ in 0..8 {
+            if controller.shell.shop_top_cursor.is_none() {break;}
+            controller.press(GameButton::A).unwrap();
+        }
+        assert!(controller.shell.shop_top_cursor.is_none(),"{map}: BUY opens inventory");
+        assert!(controller.snapshot().unwrap().pending_shop.is_some());
+        for _ in 0..12 {
+            let snapshot=controller.snapshot().unwrap();
+            if snapshot.pending_shop.is_none()&&!snapshot.ui.text_window_open&&snapshot.ui.menu.is_none() {break;}
+            controller.press(GameButton::B).unwrap();
+        }
+        let closed=controller.snapshot().unwrap();
+        assert!(closed.pending_shop.is_none(),"{map}: shop actually closes");
+        assert!(!closed.ui.text_window_open&&closed.ui.menu.is_none(),"{map}: modal input released");
+        assert_eq!(controller.shell.shell.session().state().money,money,"browse without buying");
+        for _ in 0..12 {
+            controller.press(GameButton::Up).unwrap();
+            if controller.snapshot().unwrap().overworld.tile==TilePosition::new(8,2) {break;}
+        }
+        assert_eq!(controller.snapshot().unwrap().overworld.tile,TilePosition::new(8,2),"{map}: movement resumes");
+    }
+}
+
+#[test]
+#[ignore = "requires an external verified pack via CRYSTAL_RENDER_TEST_PACK"]
+fn renderer_neutral_controller_standard_mart_checkout_browses_and_returns_walking_in_all_thirteen_rooms() {
+    let pack=PathBuf::from(std::env::var_os("CRYSTAL_RENDER_TEST_PACK").expect("external pack"));
+    let root=AssetRoot::new(pack.parent().unwrap());
+    let runtime=CrystalRuntime::from_loaded_compiled_pack(&root,
+        crystal_assets::read_loaded_verified_compiled_game_pack(&pack).unwrap()).unwrap();
+    let maps=["AzaleaMart","BlackthornMart","CherrygroveMart","EcruteakMart","OlivineMart","VioletMart",
+        "CeruleanMart","FuchsiaMart","LavenderMart","PewterMart","SaffronMart","VermilionMart","ViridianMart"];
+    for map in maps {
+        // Only room/player placement is a disposable fixture. Facing, counter
+        // interaction, shop navigation, logoff and walking use real input.
+        let shell=initialize_bevy_runtime_shell(root.clone(),runtime.clone(),
+            BevyShellStart::NewGameAtRuntimeTile{spawn_identifier:runtime.title_new_game_spawn_identifier().unwrap(),
+                map_name:map.into(),tile_x:3,tile_y:3},
+            BevyShellConfig{smoke_player_name:Some("CHRIS".into()),..Default::default()}).unwrap();
+        let mut controller=VisibleShellController{shell};
+        complete_visible_smoke_player_name_if_needed(&mut controller.shell,Some("CHRIS")).unwrap();
+        settle_visible_shell_until_input(&mut controller.shell).unwrap();
+        let money=controller.shell.shell.session().state().money;
+        let bag=controller.shell.shell.session().state().bag.clone();
+        controller.press(GameButton::Left).unwrap();
+        assert_eq!(controller.snapshot().unwrap().overworld.tile,TilePosition::new(3,3));
+        let clerk=&runtime.data().maps[map].objects[0];
+        assert_eq!(clerk.sprite,"SPRITE_CLERK");
+        let expected=&clerk.script;
+        assert_eq!(controller.shell.shell.current_overworld_interaction_checked().unwrap().map(|i|i.script),Some(expected.clone()),
+            "{map}: interact across the authoritative counter");
+        for _ in 0..16 {
+            if controller.snapshot().unwrap().pending_shop.is_some() && controller.shell.shop_top_cursor.is_some() {break;}
+            controller.press(GameButton::A).unwrap();
+        }
+        let shop=controller.snapshot().unwrap().pending_shop.expect("real authored shop");
+        assert_eq!(shop.source_script.rsplit('@').next(),Some(expected.as_str()));
+        assert!(!shop.inventory.is_empty());assert!(controller.shell.shop_top_cursor.is_some());
+        for _ in 0..8 {
+            controller.press(GameButton::A).unwrap();
+            if controller.shell.shop_top_cursor.is_none() {break;}
+        }
+        assert!(controller.shell.shop_top_cursor.is_none());
+        assert!(controller.snapshot().unwrap().pending_shop.is_some(),"BUY opens the actual inventory");
+        for _ in 0..16 {
+            let snapshot=controller.snapshot().unwrap();
+            if snapshot.pending_shop.is_none()&&!snapshot.ui.text_window_open&&snapshot.ui.menu.is_none() {break;}
+            controller.press(GameButton::B).unwrap();
+        }
+        let closed=controller.snapshot().unwrap();assert!(closed.pending_shop.is_none());
+        assert!(!closed.ui.text_window_open&&closed.ui.menu.is_none());
+        assert_eq!(controller.shell.shell.session().state().money,money);
+        assert_eq!(controller.shell.shell.session().state().bag,bag);
+        for _ in 0..8 {
+            controller.press(GameButton::Down).unwrap();
+            if controller.snapshot().unwrap().overworld.tile==TilePosition::new(3,4) {break;}
+        }
+        assert_eq!(controller.snapshot().unwrap().overworld.tile,TilePosition::new(3,4),"{map}: modal input released");
+        assert_eq!(controller.shell.last_error,None);
     }
 }

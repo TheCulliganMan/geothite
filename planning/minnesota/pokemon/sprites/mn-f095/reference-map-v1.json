@@ -1,0 +1,15 @@
+{
+  "generation": "new original artwork",
+  "input_images": [],
+  "text_style_reference_boards": [
+    "target/minnesota-pokemon/gen2-reference/starters.png",
+    "target/minnesota-pokemon/gen2-reference/bugs.png"
+  ],
+  "regional_sources": [
+    {
+      "url": "https://www.wabashacaves.com/tours",
+      "institution": "Wabasha Street Caves operator",
+      "supports": "Operator describes silica-mine/mushroom-farm/nightclub history, ghost-story tours and live swing dancing. Only venue/cultural inspiration is factual."
+    }
+  ]
+}

@@ -1,0 +1,106 @@
+[
+  {
+    "id": "MnDuluthBoatClub1F-arrival",
+    "map": "MnDuluthBoatClub1F",
+    "core": [
+      8,
+      9
+    ]
+  },
+  {
+    "id": "MnDuluthBoatClub2F-arrival",
+    "map": "MnDuluthBoatClub2F",
+    "core": [
+      2,
+      3
+    ]
+  },
+  {
+    "id": "MnDuluthSailorClub1F-arrival",
+    "map": "MnDuluthSailorClub1F",
+    "core": [
+      8,
+      9
+    ]
+  },
+  {
+    "id": "MnDuluthSailorClub2F-arrival",
+    "map": "MnDuluthSailorClub2F",
+    "core": [
+      2,
+      3
+    ]
+  },
+  {
+    "id": "MnDuluthLookoutLodge1F-arrival",
+    "map": "MnDuluthLookoutLodge1F",
+    "core": [
+      8,
+      9
+    ]
+  },
+  {
+    "id": "MnDuluthLookoutLodge2F-arrival",
+    "map": "MnDuluthLookoutLodge2F",
+    "core": [
+      2,
+      3
+    ]
+  },
+  {
+    "id": "MnDuluthCommunityKitchen-arrival",
+    "map": "MnDuluthCommunityKitchen",
+    "core": [
+      8,
+      9
+    ]
+  },
+  {
+    "id": "MnDuluthReadingHall1F-arrival",
+    "map": "MnDuluthReadingHall1F",
+    "core": [
+      8,
+      9
+    ]
+  },
+  {
+    "id": "MnDuluthReadingHall2F-arrival",
+    "map": "MnDuluthReadingHall2F",
+    "core": [
+      2,
+      3
+    ]
+  },
+  {
+    "id": "MnDuluthUnionHall1F-arrival",
+    "map": "MnDuluthUnionHall1F",
+    "core": [
+      8,
+      9
+    ]
+  },
+  {
+    "id": "MnDuluthUnionHall2F-arrival",
+    "map": "MnDuluthUnionHall2F",
+    "core": [
+      2,
+      3
+    ]
+  },
+  {
+    "id": "MnDuluthWeatherStudy1F-arrival",
+    "map": "MnDuluthWeatherStudy1F",
+    "core": [
+      8,
+      9
+    ]
+  },
+  {
+    "id": "MnDuluthWeatherStudy2F-arrival",
+    "map": "MnDuluthWeatherStudy2F",
+    "core": [
+      2,
+      3
+    ]
+  }
+]

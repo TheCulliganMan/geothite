@@ -1,0 +1,511 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F138",
+  "status": "native-refinement-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_305": {
+      "species_id": "MN_305",
+      "name": "Peckit",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          27,
+          24,
+          17
+        ],
+        [
+          12,
+          8,
+          6
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        18203,
+        6412,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          222,
+          198,
+          140
+        ],
+        [
+          99,
+          66,
+          49
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#DEC68C",
+        "#634231",
+        "#000000"
+      ]
+    },
+    "MN_306": {
+      "species_id": "MN_306",
+      "name": "Notchbill",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          25,
+          9,
+          7
+        ],
+        [
+          8,
+          10,
+          12
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        7481,
+        12616,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          206,
+          74,
+          57
+        ],
+        [
+          66,
+          82,
+          99
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#CE4A39",
+        "#425263",
+        "#000000"
+      ]
+    },
+    "MN_307": {
+      "species_id": "MN_307",
+      "name": "Gougecrest",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          29,
+          7,
+          6
+        ],
+        [
+          5,
+          9,
+          16
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        6397,
+        16677,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          239,
+          57,
+          49
+        ],
+        [
+          41,
+          74,
+          132
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#EF3931",
+        "#294A84",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f138/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "role": "pixel-art style only",
+    "board": "target/minnesota-pokemon/gen2-reference/starters.png"
+  },
+  "sprites": [
+    {
+      "id": "mn-305-peckit-v1",
+      "species_id": "MN_305",
+      "view": "front",
+      "source": "sprites/mn-f138/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        500,
+        540
+      ],
+      "fit": [
+        36,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        18203,
+        6412,
+        0
+      ],
+      "sampling": "area_vote",
+      "exterior_contour": "solid",
+      "white_detail_min_samples": 8,
+      "interior_black_min_samples": 32,
+      "pixel_edits": [
+        {
+          "x": 20,
+          "y": 26,
+          "from": 0,
+          "to": 3
+        },
+        {
+          "x": 21,
+          "y": 26,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 20,
+          "y": 27,
+          "from": 0,
+          "to": 3
+        },
+        {
+          "x": 21,
+          "y": 27,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 19,
+          "y": 28,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 21,
+          "y": 28,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 20,
+          "y": 29,
+          "from": 3,
+          "to": 0
+        }
+      ]
+    },
+    {
+      "id": "mn-305-peckit-v1",
+      "species_id": "MN_305",
+      "view": "back",
+      "source": "sprites/mn-f138/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        540,
+        500,
+        484
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        18203,
+        6412,
+        0
+      ],
+      "sampling": "area_vote",
+      "exterior_contour": "solid",
+      "white_detail_min_samples": 8,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-306-notchbill-v1",
+      "species_id": "MN_306",
+      "view": "front",
+      "source": "sprites/mn-f138/front-back.imagegen-v1.png",
+      "crop": [
+        500,
+        0,
+        490,
+        540
+      ],
+      "fit": [
+        48,
+        48
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        7481,
+        12616,
+        0
+      ],
+      "sampling": "area_vote",
+      "exterior_contour": "solid",
+      "white_detail_min_samples": 8,
+      "interior_black_min_samples": 32,
+      "pixel_edits": [
+        {
+          "x": 15,
+          "y": 25,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 15,
+          "y": 26,
+          "from": 0,
+          "to": 3
+        },
+        {
+          "x": 16,
+          "y": 26,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 15,
+          "y": 27,
+          "from": 0,
+          "to": 3
+        },
+        {
+          "x": 16,
+          "y": 27,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 15,
+          "y": 28,
+          "from": 3,
+          "to": 0
+        }
+      ]
+    },
+    {
+      "id": "mn-306-notchbill-v1",
+      "species_id": "MN_306",
+      "view": "back",
+      "source": "sprites/mn-f138/front-back.imagegen-v1.png",
+      "crop": [
+        500,
+        540,
+        490,
+        484
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        7481,
+        12616,
+        0
+      ],
+      "sampling": "area_vote",
+      "exterior_contour": "solid",
+      "white_detail_min_samples": 8,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-307-gougecrest-v1",
+      "species_id": "MN_307",
+      "view": "front",
+      "source": "sprites/mn-f138/front-back.imagegen-v1.png",
+      "crop": [
+        990,
+        0,
+        546,
+        540
+      ],
+      "fit": [
+        54,
+        52
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        6397,
+        16677,
+        0
+      ],
+      "sampling": "area_vote",
+      "exterior_contour": "solid",
+      "white_detail_min_samples": 8,
+      "interior_black_min_samples": 32,
+      "pixel_edits": [
+        {
+          "x": 17,
+          "y": 16,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 16,
+          "y": 17,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 17,
+          "y": 17,
+          "from": 0,
+          "to": 3
+        },
+        {
+          "x": 18,
+          "y": 17,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 17,
+          "y": 18,
+          "from": 0,
+          "to": 3
+        },
+        {
+          "x": 18,
+          "y": 18,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 19,
+          "y": 18,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 17,
+          "y": 19,
+          "from": 0,
+          "to": 3
+        },
+        {
+          "x": 18,
+          "y": 19,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 19,
+          "y": 19,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 18,
+          "y": 20,
+          "from": 3,
+          "to": 0
+        }
+      ]
+    },
+    {
+      "id": "mn-307-gougecrest-v1",
+      "species_id": "MN_307",
+      "view": "back",
+      "source": "sprites/mn-f138/front-back.imagegen-v1.png",
+      "crop": [
+        990,
+        540,
+        546,
+        484
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        6397,
+        16677,
+        0
+      ],
+      "sampling": "area_vote",
+      "exterior_contour": "solid",
+      "white_detail_min_samples": 8,
+      "interior_black_min_samples": 32
+    }
+  ],
+  "source_sha256": "bb164f1fff6c8c00ca92b8e5f082b3362c3cb0e8c1defa4983fcb217ae1b36a6",
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "outline_profile": "solid-exterior-v1",
+    "notes": "Root approved all six native views: short wedge beak grows deep notch then forked chisel, three supporting tail blades and anatomical wing/body cavity gaps. Readable woodpecker faces and true close upper rear portraits; stage palettes independent. Native refinement: inspected both views against source art; clarified existing facial whites and pupils, retained body geometry and palettes, and verified opponent-facing orientation. Exact guarded edits and previous manifest retained in native-refinement-20261027-v1/.",
+    "sheet_sha256": "6d71b251ff7d70a9f989ff5d47d77bd41c828fe0588bedf5499958e741158228"
+  },
+  "native_refinement_note": "Guarded native ink corrections clarify existing eyes and facial details. Source art, fit and per-species palettes retained. Orientation corrections keep enemy fronts facing left and player rear portraits facing upper right."
+}

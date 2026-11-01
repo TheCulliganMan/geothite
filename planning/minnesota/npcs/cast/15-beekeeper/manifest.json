@@ -1,0 +1,40 @@
+{
+  "name": "NELL",
+  "role": "Beekeeper",
+  "status": "accepted-native-playable",
+  "source": "native-pixels-v2.json",
+  "integration": "placement-v1.json",
+  "controller": "placement-v1.json",
+  "native": "target/trainer-cast/bee/native-v2",
+  "pack": "content-packs/minnesota-trainer-cast-15-v01.crystalpack",
+  "gameplay": "target/trainer-cast/bee/gameplay-v1",
+  "log": "target/trainer-cast/bee/controller-v1.log",
+  "reference_review": "actual-crystal-sprites-common-palette-and-scale",
+  "review_notes": "Round hood and face window read clearly at native size; simplified honey frame in battle, six hand-authored protective-suit walking poses reviewed against Crystal sprites and actual game captures.",
+  "fixture": "Three legal level-60 Minnesota starters; adjacent position and explicit prior-access setup. Local encounter/rewards proof, not earned traversal or intended-level balance.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/cast/15-beekeeper/native-pixels-v2.json": "0409a7ec35a11a95d17e8013228fd70ce732cb362f8439e9d9e9e8b79aa91219",
+    "planning/minnesota/npcs/cast/15-beekeeper/placement-v1.json": "1741b1175e149cc94472d41ddfaa53435d0af245894bdf5b0fa5146332ed5247",
+    "target/trainer-cast/bee/native-v2/verification.json": "bf320ba58b3ec0eb4c4d775d89fb9c067b7e9f5ab182dfac9fdeceab6fc84d07",
+    "content-packs/minnesota-trainer-cast-15-v01.crystalpack": "45d69a5fab5476b0e25b54a4400fc0709253bd37eae78695a5b2562126b3a786",
+    "target/trainer-cast/bee/controller-v1.log": "c4c3e0f577f21db7b7ba023ef9224b2280f718dd98bddea2ba703d983f5c472e",
+    "target/trainer-cast/bee/gameplay-v1/original-npc-trainer-intro.png": "9686e097694fe027cfa4faa2b9db151fe60d28c89470da0be10e8135cde2260f",
+    "target/trainer-cast/bee/gameplay-v1/original-npc-overworld-state.png": "081a1d56efe592675baa28d2a066b26967a2e5758714dc313ee7384a5aeb8ae6",
+    "target/trainer-cast/bee/gameplay-v1/original-npc-first-turn.png": "274a1979333d0f31fb16e5215d38bf17cb2d7fe3eb6c69133efd8e6d16548557",
+    "planning/minnesota/npcs/cast/15-beekeeper/battle-reference-prompt.txt": "a0ebe3c566d115bdff19b62b5e1f8cbf3de2ea97c02f775d37eca6b3e31eb21e",
+    "planning/minnesota/npcs/cast/15-beekeeper/battle-reference-v1.png": "0460ff4616729fc17b4c76c87f3ca6ab2f3d86597e0fa5ba49a14b19d0f4cbe2",
+    "target/trainer-cast/bee/real-comparison.png": "5441b4b18dd7a5b9205721c6437830e7464fa506e62aa02134d0623ef46cd59a",
+    "target/trainer-cast/bee/battle-real-comparison.png": "553f20051f674e143908177f176dca82968a6d7d28e09dfbbe5a3ff43e68902b"
+  },
+  "final_pack": "content-packs/minnesota-trainer-cast-36-v01.crystalpack",
+  "final_gameplay": "target/trainer-cast/final-audit/gameplay/15-beekeeper",
+  "final_log": "target/trainer-cast/final-audit/gameplay/15-beekeeper/controller.log",
+  "final_status": "accepted-native-playable-final-pack",
+  "final_review": "Actual battle intro and field captures inspected on exact final pack; art retains accepted native sources and palette.",
+  "final_evidence_sha256": {
+    "target/trainer-cast/final-audit/gameplay/15-beekeeper/controller.log": "2381c4a2a43f95a496e0d606384b0cc6fc1d93151d899913c3824cf751e0d849",
+    "target/trainer-cast/final-audit/gameplay/15-beekeeper/original-npc-trainer-intro.png": "9686e097694fe027cfa4faa2b9db151fe60d28c89470da0be10e8135cde2260f",
+    "target/trainer-cast/final-audit/gameplay/15-beekeeper/original-npc-overworld-state.png": "76a3d81f5f1d4a999fb57113d16af067c6a68ff143fcd646d624f5ede1e62606",
+    "target/trainer-cast/final-audit/gameplay/15-beekeeper/original-npc-first-turn.png": "274a1979333d0f31fb16e5215d38bf17cb2d7fe3eb6c69133efd8e6d16548557"
+  }
+}

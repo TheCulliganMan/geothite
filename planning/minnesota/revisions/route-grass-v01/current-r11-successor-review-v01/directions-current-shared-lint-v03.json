@@ -1,0 +1,35 @@
+{
+  "status": "PASS_CURRENT_SHARED_ALL_TARGET_LINT",
+  "log": ".local/research-reward-clippy-v23.log",
+  "log_sha256": "cc74c7e6237e5400e9e7da3fad667674eb53e7a22563cf4dff9a214f69d2d8e7",
+  "progress": ".local/research-reward-build-progress-v23.json",
+  "source_sha256": {
+    "crates/crystal-assets/src/r11_stair_guidance.rs": "b4a51d87621db817d31f3e7006326b45407f47bf554653e59585e9745ad29f15",
+    "crates/crystal-assets/src/bin/revise_r11_stair_guidance.rs": "f973596c294ee4533ae3aa27ad480d684175a9175f67221a8e9b047f825734d0"
+  },
+  "checked_route11_binary_artifacts": [
+    {
+      "path": "target/verdigrim-scene/debug/deps/librevise_r11_stair_guidance-84c611292f126e17.rmeta",
+      "mtime": 1793405801.5812633
+    },
+    {
+      "path": "target/verdigrim-scene/debug/deps/librevise_r11_stair_guidance-7211237ce0e4f128.rmeta",
+      "mtime": 1793405817.7307577
+    }
+  ],
+  "command": [
+    "cargo",
+    "clippy",
+    "--locked",
+    "-p",
+    "crystal-assets",
+    "-p",
+    "crystal-bevy",
+    "--all-targets",
+    "--features",
+    "crystal-assets/test-fixtures,crystal-bevy/location-tester"
+  ],
+  "scope": "Completed shared dev-profile all-target Clippy includes the unchanged Route11 library module and publisher. Metadata artifacts postdate both owned source files and predate successful log completion. The queued duplicate wrapper had no child and was canceled; no own wasm-profile lint run is claimed.",
+  "verified_command_source": ".local/build_mine_income_controller_v01.py",
+  "verified_command_source_sha256": "f0ad1615dae462c05de9b3fd79f67eb700f00195dc072408d671965d33aeb974"
+}

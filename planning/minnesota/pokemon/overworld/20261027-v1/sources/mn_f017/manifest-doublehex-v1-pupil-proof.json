@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F017",
+  "species": [
+    {
+      "species_id": "MN_048",
+      "runtime_token": "DOUBLEHEX",
+      "palette_rgb555": [
+        32767,
+        26353,
+        18666,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        24121,
+        7506,
+        0
+      ],
+      "fit": [
+        14,
+        14
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 64,
+      "interior_black_samples": 64,
+      "opaque_interior_minimum_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "doublehex.overworld.imagegen-v1.png",
+          "crop": [
+            5,
+            89,
+            470,
+            440
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "doublehex.overworld.imagegen-v1.png",
+          "crop": [
+            515,
+            99,
+            470,
+            440
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "doublehex.overworld.imagegen-v1.png",
+          "crop": [
+            1041,
+            62,
+            470,
+            440
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "doublehex.overworld.imagegen-v1.png",
+          "crop": [
+            5,
+            554,
+            470,
+            440
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "doublehex.overworld.imagegen-v1.png",
+          "crop": [
+            515,
+            567,
+            470,
+            440
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "doublehex.overworld.imagegen-v1.png",
+          "crop": [
+            1041,
+            529,
+            470,
+            440
+          ]
+        }
+      ]
+    }
+  ]
+}

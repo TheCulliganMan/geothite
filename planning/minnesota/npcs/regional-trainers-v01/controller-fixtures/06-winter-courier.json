@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "id": "MN_DULUTH_X_T05",
+      "map": "MnDuluthMaritimeCoop3F",
+      "actor_script": "MN_DULUTH_X_T05",
+      "trainer_class": "MN_WINTER_COURIER",
+      "sprite": "SPRITE_MN_WINTER_COURIER",
+      "facing": "south",
+      "approach": [
+        10,
+        8
+      ],
+      "defeated_flag": "EVENT_MN_DULUTH_X_TRAINER_05"
+    }
+  ]
+}

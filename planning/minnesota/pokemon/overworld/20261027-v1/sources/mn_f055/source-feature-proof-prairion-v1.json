@@ -1,0 +1,336 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_118",
+  "result": "pass",
+  "manifest_sha256": "379cdca764ce2cf989ab713f27d9ccc6c3abe6954bad03e53addfc6bdb94f648",
+  "bank_sha256": "4961b707a9dfe63c1dd637f77cccdbb42583f47b1c18a57edfdc25ed601d67c1",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f055/prairion.overworld.imagegen-v1.png": "8a8af835beb87a8bd278d863bc17ddc15db0f9bb0d21911fdf7e5a1463040f20"
+  },
+  "canonical_eye_form": "TWO actual isolated south pupils, ONE actual isolated west pupil. Every pixel in each complete native eye cluster maps to the same small anatomical source pupil component.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "down_idle",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f055/prairion.overworld.imagegen-v1.png",
+        "crop": [
+          119,
+          60,
+          470,
+          480
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            275,
+            273,
+            13,
+            13
+          ],
+          [
+            325,
+            273,
+            13,
+            13
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                5,
+                7
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  6,
+                  7,
+                  3,
+                  253
+                ],
+                "bounds": [
+                  275,
+                  273,
+                  13,
+                  13
+                ],
+                "pixels": 169,
+                "truncated_contour": false,
+                "native_pixel": [
+                  5,
+                  7
+                ],
+                "source_sample_pixel": [
+                  276,
+                  281
+                ]
+              }
+            ]
+          },
+          {
+            "native_cluster": [
+              [
+                7,
+                7
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  6,
+                  6,
+                  2,
+                  253
+                ],
+                "bounds": [
+                  325,
+                  273,
+                  13,
+                  13
+                ],
+                "pixels": 169,
+                "truncated_contour": false,
+                "native_pixel": [
+                  7,
+                  7
+                ],
+                "source_sample_pixel": [
+                  336,
+                  281
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "left_idle",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f055/prairion.overworld.imagegen-v1.png",
+        "crop": [
+          1052,
+          46,
+          470,
+          480
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            1167,
+            260,
+            13,
+            14
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                4,
+                7
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  39,
+                  44,
+                  15,
+                  253
+                ],
+                "bounds": [
+                  1167,
+                  260,
+                  13,
+                  14
+                ],
+                "pixels": 182,
+                "truncated_contour": false,
+                "native_pixel": [
+                  4,
+                  7
+                ],
+                "source_sample_pixel": [
+                  1179,
+                  267
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "down_step",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f055/prairion.overworld.imagegen-v1.png",
+        "crop": [
+          119,
+          515,
+          470,
+          480
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            275,
+            728,
+            13,
+            14
+          ],
+          [
+            325,
+            727,
+            12,
+            15
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                5,
+                7
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  8,
+                  9,
+                  5,
+                  253
+                ],
+                "bounds": [
+                  275,
+                  728,
+                  13,
+                  14
+                ],
+                "pixels": 177,
+                "truncated_contour": false,
+                "native_pixel": [
+                  5,
+                  7
+                ],
+                "source_sample_pixel": [
+                  276,
+                  736
+                ]
+              }
+            ]
+          },
+          {
+            "native_cluster": [
+              [
+                7,
+                7
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  2,
+                  3,
+                  0,
+                  253
+                ],
+                "bounds": [
+                  325,
+                  727,
+                  12,
+                  15
+                ],
+                "pixels": 169,
+                "truncated_contour": false,
+                "native_pixel": [
+                  7,
+                  7
+                ],
+                "source_sample_pixel": [
+                  336,
+                  736
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": {
+        "pose": "left_step",
+        "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f055/prairion.overworld.imagegen-v1.png",
+        "crop": [
+          1052,
+          503,
+          470,
+          480
+        ],
+        "anatomically_identified_source_eye_boxes_xywh": [
+          [
+            1167,
+            717,
+            13,
+            13
+          ]
+        ],
+        "actual_eye_proofs": [
+          {
+            "native_cluster": [
+              [
+                4,
+                7
+              ]
+            ],
+            "samples": [
+              {
+                "black": true,
+                "rgba": [
+                  0,
+                  0,
+                  0,
+                  253
+                ],
+                "bounds": [
+                  1167,
+                  717,
+                  13,
+                  13
+                ],
+                "pixels": 169,
+                "truncated_contour": false,
+                "native_pixel": [
+                  4,
+                  7
+                ],
+                "source_sample_pixel": [
+                  1179,
+                  724
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "notes": "Both native normal/shiny rear poses actually inspected: plain rear head, no copied face. Head anchors stable, 1px transparent outer border, three walk pairs differ."
+  },
+  "detailed_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f055/manifest-prairion-v1-pupil-proof.proof.json"
+}

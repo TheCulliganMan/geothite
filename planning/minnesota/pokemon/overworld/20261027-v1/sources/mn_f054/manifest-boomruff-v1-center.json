@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F054",
+  "species": [
+    {
+      "species_id": "MN_114",
+      "runtime_token": "BOOMRUFF",
+      "palette_rgb555": [
+        32767,
+        7774,
+        4330,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        19399,
+        7492,
+        0
+      ],
+      "fit": [
+        13,
+        13
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 64,
+      "interior_black_samples": 64,
+      "opaque_interior_minimum_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "boomruff.overworld.imagegen-v1.png",
+          "crop": [
+            71,
+            80,
+            440,
+            390
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "boomruff.overworld.imagegen-v1.png",
+          "crop": [
+            557,
+            80,
+            440,
+            390
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "boomruff.overworld.imagegen-v1.png",
+          "crop": [
+            1048,
+            80,
+            440,
+            390
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "boomruff.overworld.imagegen-v1.png",
+          "crop": [
+            71,
+            526,
+            440,
+            390
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "boomruff.overworld.imagegen-v1.png",
+          "crop": [
+            557,
+            530,
+            440,
+            390
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "boomruff.overworld.imagegen-v1.png",
+          "crop": [
+            1048,
+            530,
+            440,
+            390
+          ]
+        }
+      ]
+    }
+  ]
+}

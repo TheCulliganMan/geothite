@@ -1,0 +1,118 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_301",
+  "name": "Dozebear",
+  "family_id": "MN_F136",
+  "status": "compiled_native_candidate_root_visual_context_acceptance_authoritative",
+  "generation_tool": "built-in image_gen",
+  "prompts": [
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f136/prompt-dozebear-v1.txt"
+  ],
+  "sources_selected": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f136/dozebear.overworld.imagegen-v1.png",
+      "sha256": "81de118af6105fc0c36d1b10211b722f987b03ecd2e5d48c79b8924b702852cd",
+      "dimensions": [
+        1254,
+        1254
+      ]
+    }
+  ],
+  "default_output_originals": [
+    {
+      "record": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f136/dozebear.v1.original-path.txt",
+      "path": "/Users/ryanculligan/.codex/generated_images/01a17dc4-dd75-7642-a1c6-4bf13fda70c6/exec-095a1ee8-3c84-448c-a8c3-de8bb7f9383f.png"
+    }
+  ],
+  "generation_style_reference_only": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+  "identity_authority": "Currentactivecoverage.json exactcanonicalpalettes,textbodylocks,andvisualinspectionofselectednativefront; no battleartinputforgeneration",
+  "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f136/manifest-dozebear-v1-phase-eyes.json",
+  "manifest_sha256": "2d398b827ba9fb440c6ef5eb81ac6abf765c82e522df79327621cdda0f1b8890",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f136/dozebear-v1-phase-eyes",
+  "normal_review": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f136/dozebear-v1-phase-eyes/review/line.normal-8x.png",
+  "frame_size": [
+    16,
+    16
+  ],
+  "native_bounds": [
+    [
+      1,
+      5,
+      12,
+      10
+    ],
+    [
+      2,
+      5,
+      11,
+      10
+    ],
+    [
+      1,
+      5,
+      13,
+      10
+    ],
+    [
+      1,
+      5,
+      12,
+      10
+    ],
+    [
+      2,
+      5,
+      11,
+      10
+    ],
+    [
+      1,
+      5,
+      13,
+      10
+    ]
+  ],
+  "sampling": "source_center",
+  "normal_palette_rgb555": [
+    32767,
+    20881,
+    18237,
+    0
+  ],
+  "shiny_palette_rgb555": [
+    32767,
+    18983,
+    15131,
+    0
+  ],
+  "alpha_threshold": 128,
+  "transparent_index": 0,
+  "visible_indices": [
+    1,
+    2,
+    3
+  ],
+  "native_pixels_painted": false,
+  "notes": "All6frames strictRustcompiled andretained. Sameper-speciesworldscale/equalcropwindowswithpairedheadregistration. Max14pxopaquefootprint+transparentborder. Rootreviewandruntimecontextproofsdetermineacceptance; thisreceiptisnotacceptance. Noqueue/registry/packwrites.",
+  "selected_sources": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f136/dozebear.overworld.imagegen-v1.png",
+      "sha256": "81de118af6105fc0c36d1b10211b722f987b03ecd2e5d48c79b8924b702852cd",
+      "dimensions": [
+        1254,
+        1254
+      ]
+    }
+  ],
+  "default_output_records": [
+    {
+      "record": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f136/dozebear.v1.original-path.txt",
+      "path": "/Users/ryanculligan/.codex/generated_images/01a17dc4-dd75-7642-a1c6-4bf13fda70c6/exec-095a1ee8-3c84-448c-a8c3-de8bb7f9383f.png"
+    }
+  ],
+  "only_generation_reference": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+  "native_frame_size": [
+    16,
+    16
+  ]
+}

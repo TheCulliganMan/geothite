@@ -1,0 +1,62 @@
+[
+  {
+    "label": "MN_R11_LESTER_SIGNText",
+    "commands": [
+      {
+        "args": [
+          "\"LESTER GORGE\""
+        ],
+        "command": "text"
+      },
+      {
+        "args": [
+          "\"West: lower falls\""
+        ],
+        "command": "line"
+      },
+      {
+        "args": [
+          "\"North: return ramp\""
+        ],
+        "command": "para"
+      },
+      {
+        "args": [],
+        "command": "done"
+      }
+    ]
+  },
+  {
+    "label": "MN_R11_PALISADE_SIGNText",
+    "commands": [
+      {
+        "args": [
+          "\"PALISADE RIDGE\""
+        ],
+        "command": "text"
+      },
+      {
+        "args": [
+          "\"Downhill shortcut.\""
+        ],
+        "command": "line"
+      },
+      {
+        "args": [
+          "\"The east ramp\""
+        ],
+        "command": "para"
+      },
+      {
+        "args": [
+          "\"returns uphill.\""
+        ],
+        "command": "line"
+      },
+      {
+        "args": [],
+        "command": "done"
+      }
+    ]
+  }
+]

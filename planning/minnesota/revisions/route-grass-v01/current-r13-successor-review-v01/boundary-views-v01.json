@@ -1,0 +1,18 @@
+[
+  {
+    "id": "route-north-seam",
+    "map": "MnR13C00R00",
+    "core": [
+      30,
+      0
+    ]
+  },
+  {
+    "id": "boundary-south-seam",
+    "map": "MnBoundaryWaters",
+    "core": [
+      32,
+      47
+    ]
+  }
+]

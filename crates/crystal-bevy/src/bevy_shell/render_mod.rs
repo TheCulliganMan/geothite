@@ -1,27 +1,42 @@
-/// Publish the already-rendered overworld as a read-only frame for optional
-/// presentation plugins.  This is intentionally downstream of
-/// `render_playfield`: it observes presentation state and entities only and
-/// never reads or mutates authoritative movement, collision, scripts, or game
-/// state.
+#[cfg(feature = "voxel-view")]
+type ConnectedActorParams<'world, 'state> = (
+    Option<ResMut<'world, RenderedTilesetArt>>,
+    Option<ResMut<'world, Assets<Image>>>,
+    Local<'state, connected_actors::History>,
+);
+
+/// Publish the rendered overworld and controller-owned continuous pose as a
+/// read-only frame for optional presentation plugins. Extraction runs after
+/// `render_playfield`; gameplay movement, collisions, scripts and input ownership
+/// remain in the production controller.
 fn publish_visual_world_frame(
-    rendered: Res<RenderedViewport>,
+    mut rendered: ResMut<RenderedViewport>,
     runtime_shell: Res<BevyRuntimeShell>,
-    #[cfg(feature = "voxel-view")]
-    settings: Option<Res<crystal_voxel_view::VoxelViewSettings>>,
+    #[cfg(feature = "voxel-view")] settings: Option<Res<crystal_voxel_view::VoxelViewSettings>>,
+    #[cfg(feature = "location-tester")] capture_hold: Option<Res<render_capture::PairedCaptureHold>>,
     map_sprites: Query<
-        (&Handle<Image>, &Transform),
+        (&Sprite, &Transform),
         (With<PlayfieldTile>, Without<PlayfieldPriorityTile>),
     >,
-    players: Query<(&Handle<Image>, &Sprite, &Transform, Option<&PlayerSpriteFrames>), With<PlayerMarker>>,
+    players: Query<
+        (
+
+            &Sprite,
+            &Transform,
+            Option<&PlayerSpriteFrames>,
+        ),
+        With<PlayerMarker>,
+    >,
     multiplayer_ghosts: Query<
-        (&MultiplayerGhost, &Handle<Image>, &Sprite, &Transform),
+        (&MultiplayerGhost,  &Sprite, &Transform),
         Without<PlayerMarker>,
     >,
     grass_rustles: Query<
-        (&Handle<Image>, &Sprite, &Transform),
+        ( &Sprite, &Transform),
         (With<GrassRustleMarker>, Without<PlayerMarker>),
     >,
-    objects: Query<(&VisibleObjectSprite, &Handle<Image>, &Sprite, &Transform), With<ObjectMarker>>,
+    healing: Query<(&HealMachineWorldSprite,&Sprite,&Transform)>,
+    objects: Query<(&VisibleObjectSprite,  &Sprite, &Transform), With<ObjectMarker>>,
     battle_entities: Query<
         (),
         Or<(
@@ -34,14 +49,72 @@ fn publish_visual_world_frame(
     >,
     fullscreen_entities: Query<(), Or<(With<TitleScreenMarker>, With<VisibleIntroSurface>)>>,
     mut published: ResMut<crystal_render_api::VisualWorldFrame>,
+    presentation: (
+        Option<ResMut<crystal_render_api::VisualWorldLighting>>,
+        Option<Res<RuntimeTickTimer>>,
+        Option<ResMut<crystal_render_api::VisualPlayerTraversal>>,
+    ),
+    timing: (
+        Option<ResMut<crystal_render_api::VisualTileAnimationFrame>>,
+        Option<ResMut<crystal_render_api::VisualWorldClock>>,
+    ),
+    #[cfg(feature = "voxel-view")] connected_assets: ConnectedActorParams<'_, '_>,
 ) {
+    let (lighting, tick_timer, mut traversal) = presentation;
+    let (phases, clock) = timing;
+    #[cfg(feature = "voxel-view")]
+    let _trace = crystal_voxel_view::loading_trace::span("frame.publish_world", || serde_json::json!({"map": rendered.map_name.as_deref()}));
+    if let Some(mut lighting) = lighting {
+        if *lighting != rendered.visual_lighting {
+            *lighting = rendered.visual_lighting;
+        }
+    }
+    if let Some(mut clock) = clock {
+        let next_clock = if rendered.visual_clock_enabled {
+            runtime_shell.cached_snapshot.as_ref()
+                .filter(|(_, snapshot)| {
+                    rendered.map_name.as_deref() == Some(snapshot.overworld.map_name.as_str())
+                })
+                .map(|_| {
+                    // RTC ticks can leave the retained presentation snapshot
+                    // unchanged. Read the live authoritative clock so idle
+                    // lighting still progresses without a terrain rebuild.
+                    let registers = &runtime_shell.shell.session().state().time.registers;
+                    crystal_render_api::VisualWorldClock {
+                        minute_of_day: Some(
+                            u16::from(registers.hours) * 60 + u16::from(registers.minutes),
+                        ),
+                        second_of_minute: registers.seconds,
+                    }
+                })
+                // A warp can commit before its destination is rendered.
+                // Keep the retained field's light until that render succeeds.
+                .unwrap_or(*clock)
+        } else {
+            Default::default()
+        };
+        if *clock != next_clock {
+            *clock = next_clock;
+        }
+    }
+    if let Some(traversal) = traversal.as_mut() {
+        traversal.step = None;
+    }
+
     // A feature-enabled browser normally starts in classic 2D mode. Do not
     // enumerate, sort, and clone every visible actor for an optional renderer
     // the player has not selected. Tests that exercise extraction in
     // isolation intentionally omit the settings resource.
     #[cfg(feature = "voxel-view")]
     {
-        if settings.as_ref().is_some_and(|settings| !settings.enabled) {
+        // A frozen passive pair still compares the same source actors while
+        // showing 2D. Rendering remains disabled; only this read-only extraction
+        // stays live so the normal disabled-frame clear cannot fake state drift.
+        #[cfg(feature = "location-tester")]
+        let paired_hold = capture_hold.as_ref().is_some_and(|hold| hold.frozen);
+        #[cfg(not(feature = "location-tester"))]
+        let paired_hold = false;
+        if settings.as_ref().is_some_and(|settings| !settings.enabled) && !paired_hold {
             clear_published_visual_world(&mut published);
             return;
         }
@@ -51,12 +124,59 @@ fn publish_visual_world_frame(
     // Keep the last complete optional-renderer frame underneath them instead
     // of clearing it: clearing deactivates the optional world and visibly
     // interrupts a manually selected 2.5D view for the duration of an
-    // emote, jump, fishing motion, or dust puff. The screen-space effect still
+    // emote, scripted jump, fishing motion, or dust puff. Ledge traversal
+    // publishes its ground endpoints and lift separately. The screen-space effect still
     // composites above the retained world through the normal layer-0 camera.
-    if !voxel_spatial_effects_supported(&runtime_shell) {
+    // Pack hides the world before USE. If fishing starts from that inactive
+    // publication, there is no complete frame to retain yet. Extract the actual
+    // restored field once, subject to every ordinary entity/texture/grid check
+    // below. This is display recovery only; it never supplies battle anchors.
+    let restore_fishing_field = !published.active
+        && runtime_shell.visible_fishing_animation.is_some()
+        && runtime_shell.field_notice_scene.as_ref().is_some_and(|scene| {
+            scene.battle.is_none()
+                && rendered.map_name.as_deref() == Some(scene.overworld.map_name.as_str())
+                && rendered.tile == Some(scene.overworld.tile)
+                && rendered.player_sprite_facing == Some(scene.overworld.facing)
+                && rendered.player_sprite_mode == Some(scene.overworld.mode)
+        });
+    let mounted_ledge_jump = runtime_shell.visible_ledge_jump.is_some()
+        && rendered.player_sprite_mode == Some(MovementMode::Bike);
+    if (!voxel_spatial_effects_supported(&runtime_shell) || mounted_ledge_jump) && !restore_fishing_field {
         return;
     }
 
+    // A walking or Surf encounter commits core battle state before its original walk
+    // lands. Keep extracting that genuinely rendered field so a moving
+    // pre-step witness can observe the committed walk on the next update.
+    // This exception belongs only to the current bound encounter and ends
+    // when the existing transition replaces the map; all scene guards below
+    // still apply.
+    let step_field_visible = runtime_shell.battle_origin.bound_walking.as_ref()
+        .map(|bound| &bound.origin)
+        .or_else(|| runtime_shell.battle_origin.bound_surf.as_ref().map(|bound| &bound.origin))
+        .is_some_and(|bound_origin| {
+            runtime_shell.battle_origin.published()
+                .is_some_and(|origin| Arc::ptr_eq(origin, bound_origin))
+        })
+        && (matches!(runtime_shell.pending_overworld_step_boundary,
+            Some(PendingOverworldStepBoundary::WildBattle))
+            || runtime_shell.visible_battle_transition
+                .is_some_and(|transition| transition.frame < 3));
+    // The selected 3D field owns the source flash/wipe. Continue extracting
+    // its authenticated source actors so the final movement pose settles;
+    // battle canvas entities must not clear that field during the transition.
+    #[cfg(feature = "voxel-view")]
+    let retain_entry = settings.as_ref().is_some_and(|settings| settings.enabled) || {
+        #[cfg(feature = "location-tester")]
+        { capture_hold.as_ref().is_some_and(|hold| hold.frozen) }
+        #[cfg(not(feature = "location-tester"))]
+        { false }
+    };
+    #[cfg(feature = "voxel-view")]
+    let entry_field = retain_entry && published.active && runtime_shell.visible_battle_transition.is_some();
+    #[cfg(not(feature = "voxel-view"))]
+    let entry_field = false;
     if rendered.title_active
         // The naming screen is committed through Commands later in the classic
         // render pass. Check its live state too: waiting for the presenter
@@ -65,8 +185,8 @@ fn publish_visual_world_frame(
         || naming_screen_blocks_world_presentation(runtime_shell.pending_name_input.as_ref())
         || runtime_shell.pending_mail_input.is_some()
         || runtime_shell.pending_mail_read.is_some()
-        || runtime_shell.battle_lcd_animation_active
-        || battle_entities.iter().next().is_some()
+        || (runtime_shell.battle_lcd_animation_active && !step_field_visible && !entry_field)
+        || (!entry_field && battle_entities.iter().next().is_some())
         || fullscreen_entities.iter().next().is_some()
         || rendered.map_name.is_none()
         || rendered.visual_tiles_revision.is_none()
@@ -85,7 +205,7 @@ fn publish_visual_world_frame(
     };
     let Some((_, map_transform)) = map_sprites
         .iter()
-        .find(|(texture, _)| texture.id() == map_texture.id())
+        .find(|(sprite, _)| sprite.image.id() == map_texture.id())
     else {
         clear_published_visual_world(&mut published);
         return;
@@ -96,18 +216,32 @@ fn publish_visual_world_frame(
         return;
     }
     #[cfg(feature = "voxel-view")]
-    let (published_map_texture, published_grid_size) = {
+    let (published_map_texture, published_grid_size, grid_origin) = {
         let Some(texture) = rendered.visual_world_texture.as_ref() else {
             clear_published_visual_world(&mut published);
             return;
         };
-        (texture.clone(), rendered.visual_world_grid_size)
+        (texture.clone(), rendered.visual_world_grid_size, rendered.visual_world_grid_origin)
     };
     #[cfg(not(feature = "voxel-view"))]
-    let (published_map_texture, published_grid_size) = (
+    let (published_map_texture, published_grid_size, grid_origin) = (
         map_texture.clone(),
         UVec2::new(VISUAL_WORLD_TILES_X as u32, VISUAL_WORLD_TILES_Y as u32),
+        {
+            let (x,y)=rendered.viewport_origin.expect("validated viewport origin");
+            IVec2::new(i32::from(x),i32::from(y))
+                -(IVec2::new(VISUAL_WORLD_TILES_X as i32,VISUAL_WORLD_TILES_Y as i32)
+                    -IVec2::new(VIEWPORT_TILES_X as i32,VIEWPORT_TILES_Y as i32))/2
+        },
     );
+    #[cfg(feature = "voxel-view")]
+    let center = {
+        let (x,y)=rendered.viewport_origin.expect("validated viewport origin");
+        let source_center=grid_origin.as_vec2()+published_grid_size.as_vec2()*0.5;
+        let viewport_center=Vec2::new(x as f32,y as f32)
+            +Vec2::new(VIEWPORT_TILES_X as f32,VIEWPORT_TILES_Y as f32)*0.5;
+        center+(source_center-viewport_center)*Vec2::new(TILE_SIZE,-TILE_SIZE)
+    };
 
     let mut actors = Vec::with_capacity(
         players.iter().count()
@@ -116,7 +250,8 @@ fn publish_visual_world_frame(
             + grass_rustles.iter().count(),
     );
     let mut player_iter = players.iter();
-    if let Some((texture, sprite, transform, _frames)) = player_iter.next() {
+    if let Some((sprite, transform, _frames)) = player_iter.next() {
+        let texture = &sprite.image;
         // A second player sprite is an incomplete deferred scene transition,
         // not a valid immutable frame to hand to a renderer mod.
         if player_iter.next().is_some() {
@@ -130,25 +265,34 @@ fn publish_visual_world_frame(
                 return;
             };
             let facing = match rendered.player_sprite_facing.unwrap_or(Direction::Down) {
-                Direction::Down => 0, Direction::Left => 1,
-                Direction::Up => 2, Direction::Right => 3,
+                Direction::Down => 0,
+                Direction::Left => 1,
+                Direction::Up => 2,
+                Direction::Right => 3,
             };
-            let orbit = settings.as_ref().map_or(0.0, |settings| settings.camera.rotation_step);
+            let orbit = settings
+                .as_ref()
+                .map_or(0.0, |settings| settings.camera.rotation_step);
             let side = (facing + (orbit / 2.0).round().rem_euclid(4.0) as usize) % 4;
             let Some((standing, walking)) = frames.directional_frames.get(side) else {
                 clear_published_visual_world(&mut published);
                 return;
             };
-            let action = frames.walking.as_ref().is_some_and(|walking| walking == texture);
+            let action = frames
+                .walking
+                .as_ref()
+                .is_some_and(|walking| walking == texture);
             let mut view_sprite = sprite.clone();
             view_sprite.flip_x = action && side % 2 == 0 && runtime_shell.player_walk_mirror_stride;
             (if action { walking } else { standing }, view_sprite)
         };
         #[cfg(feature = "voxel-view")]
         let sprite = &directional_sprite;
-        let Some(actor) = visual_actor(
+        let Some(mut actor) = visual_actor(
             crystal_render_api::VisualActorId::Player,
-            Arc::from("player"),
+            _frames
+                .map(|frames| frames.source_id.clone())
+                .unwrap_or_else(|| Arc::from("player")),
             texture,
             sprite,
             transform,
@@ -157,17 +301,66 @@ fn publish_visual_world_frame(
             clear_published_visual_world(&mut published);
             return;
         };
+        actor.facing = Some(visual_facing(
+            rendered.player_sprite_facing.unwrap_or(Direction::Down),
+        ));
+        // Strip source LCD lift from the ground coordinate before pitching it
+        // into 3D. Height is rendered independently from map displacement.
+        actor.center.y -= visible_ledge_jump_y_offset(runtime_shell.visible_ledge_jump);
+        if runtime_shell.visible_ledge_jump.is_some() {
+            // The classic jump presenter samples integer LCD ticks. Align its
+            // ground with the actually rendered terrain center, which may be a
+            // retained camera sample, rather than recomputing another subframe.
+            actor.center += center
+                - visible_overworld_camera_offset(&rendered, &runtime_shell, 0.0);
+        }
+        if let Some(traversal) = traversal.as_mut() {
+            if traversal.map_id.as_ref() != map_id {
+                traversal.map_id = Arc::from(map_id);
+            }
+            let jump = runtime_shell.visible_ledge_jump;
+            let from = jump.map(|jump| jump.from).or(runtime_shell.player_walk_from);
+            let to = jump.map(|jump| jump.to).or(rendered.tile);
+            let (remaining, total) = jump.map_or(
+                (runtime_shell.player_walk_frame_ticks, runtime_shell.player_walk_total_ticks),
+                |jump| (16_u8.saturating_sub(jump.frame), 16),
+            );
+            if let (Some(from), Some(to)) = (from, to) {
+                if remaining > 0 {
+                    let progress = jump.map_or_else(
+                        || visible_movement_progress_with_subframe(
+                            remaining, total, tick_timer.as_ref().map_or(0.0, |timer| timer.presentation_subframe()),
+                        ),
+                        |jump| f32::from(jump.frame) / 16.0,
+                    );
+                    let delta = Vec2::new(f32::from(to.x - from.x), -f32::from(to.y - from.y))
+                        * (TILE_SIZE * f32::from(RENDER_TILES_PER_RUNTIME_TILE));
+                    let foot = actor.center - Vec2::Y * actor.size.y * 0.5;
+                    traversal.step = Some(crystal_render_api::VisualTraversalStep {
+                        from: foot - delta * progress,
+                        to: foot + delta * (1.0 - progress),
+                        progress,
+                        ledge_jump: jump.is_some(),
+                    });
+                }
+            }
+        }
+        if let Some(tile) = rendered.tile {
+            actor.center += runtime_shell.natural_movement.displacement(map_id, tile);
+            if let Some(facing) = runtime_shell.natural_movement.facing(map_id, tile) { actor.facing = Some(facing); }
+        }
         actors.push(actor);
     }
 
     let mut visible_ghosts = multiplayer_ghosts.iter().collect::<Vec<_>>();
     visible_ghosts.sort_by(|left, right| left.0.user_id.cmp(&right.0.user_id));
-    for (ghost, texture, sprite, transform) in visible_ghosts {
-        let Some(actor) = visual_actor(
+    for (ghost, sprite, transform) in visible_ghosts {
+        let texture = &sprite.image;
+        let Some(mut actor) = visual_actor(
             crystal_render_api::VisualActorId::RemotePlayer(remote_player_visual_id(
                 &ghost.user_id,
             )),
-            Arc::from("remote_player"),
+            ghost.source_id.clone(),
             texture,
             sprite,
             transform,
@@ -176,6 +369,7 @@ fn publish_visual_world_frame(
             clear_published_visual_world(&mut published);
             return;
         };
+        actor.facing = Some(visual_facing(ghost.facing));
         if visual_actor_intersects_grid(&actor, center, published_grid_size) {
             actors.push(actor);
         }
@@ -185,7 +379,7 @@ fn publish_visual_world_frame(
     // stable ASM/object-slot order so renderer caches receive deterministic
     // input even when Bevy archetypes move.
     let mut visible_objects = objects.iter().collect::<Vec<_>>();
-    visible_objects.sort_by_key(|(object, _, _, _)| object.object_index);
+    visible_objects.sort_by_key(|(object, _, _)| object.object_index);
     if visible_objects
         .windows(2)
         .any(|pair| pair[0].0.object_index == pair[1].0.object_index)
@@ -193,7 +387,8 @@ fn publish_visual_world_frame(
         clear_published_visual_world(&mut published);
         return;
     }
-    for (object, texture, sprite, transform) in visible_objects {
+    for (object, sprite, transform) in visible_objects {
+        let texture = &sprite.image;
         let Ok(object_index) = u32::try_from(object.object_index) else {
             clear_published_visual_world(&mut published);
             return;
@@ -201,32 +396,58 @@ fn publish_visual_world_frame(
         #[cfg(feature = "voxel-view")]
         let (texture, directional_sprite) = {
             let facing = match object.world_facing {
-                Direction::Down => 0, Direction::Left => 1,
-                Direction::Up => 2, Direction::Right => 3,
+                Direction::Down => 0,
+                Direction::Left => 1,
+                Direction::Up => 2,
+                Direction::Right => 3,
             };
-            let orbit = settings.as_ref().map_or(0.0, |settings| settings.camera.rotation_step);
+            let orbit = settings
+                .as_ref()
+                .map_or(0.0, |settings| settings.camera.rotation_step);
             let side = (facing + (orbit / 2.0).round().rem_euclid(4.0) as usize) % 4;
             let Some((standing, walking)) = object.directional_frames.get(side) else {
                 clear_published_visual_world(&mut published);
                 return;
             };
-            let action = object.walking.as_ref().is_some_and(|walking| walking == texture);
+            let action = object
+                .walking
+                .as_ref()
+                .is_some_and(|walking| walking == texture);
             let mut view_sprite = sprite.clone();
             // Read the current stride, not a value retained when this entity
             // was last reconciled: animation can advance without a map redraw.
             let phase = object.object_identifier.as_ref().and_then(|id| {
                 (runtime_shell.object_walk_from.contains_key(id)
-                    || runtime_shell.trainer_walk_from.as_ref().is_some_and(|(walking, _)| walking == id))
-                    .then(|| runtime_shell.object_walk_phases.get(id).copied().unwrap_or(1))
+                    || runtime_shell
+                        .trainer_walk_from
+                        .as_ref()
+                        .is_some_and(|(walking, _)| walking == id))
+                .then(|| {
+                    runtime_shell
+                        .object_walk_phases
+                        .get(id)
+                        .copied()
+                        .unwrap_or(1)
+                })
             });
-            view_sprite.flip_x = action && side % 2 == 0 && phase.map_or(
-                !runtime_shell.object_walk_stride, object_walk_uses_mirrored_action_frame,
-            );
-            (if action { walking.as_ref().unwrap_or(standing) } else { standing }, view_sprite)
+            view_sprite.flip_x = action
+                && side % 2 == 0
+                && phase.map_or(
+                    !runtime_shell.object_walk_stride,
+                    object_walk_uses_mirrored_action_frame,
+                );
+            (
+                if action {
+                    walking.as_ref().unwrap_or(standing)
+                } else {
+                    standing
+                },
+                view_sprite,
+            )
         };
         #[cfg(feature = "voxel-view")]
         let sprite = &directional_sprite;
-        let Some(actor) = visual_actor(
+        let Some(mut actor) = visual_actor(
             crystal_render_api::VisualActorId::Object(object_index),
             object.source_id.clone(),
             texture,
@@ -237,13 +458,16 @@ fn publish_visual_world_frame(
             clear_published_visual_world(&mut published);
             return;
         };
+        actor.facing = Some(visual_facing(object.world_facing));
+        actor.model_palette = object.model_palette;
         if visual_actor_intersects_grid(&actor, center, published_grid_size) {
             actors.push(actor);
         }
     }
 
     let mut rustle_iter = grass_rustles.iter();
-    if let Some((texture, sprite, transform)) = rustle_iter.next() {
+    if let Some((sprite, transform)) = rustle_iter.next() {
+        let texture = &sprite.image;
         if rustle_iter.next().is_some() {
             clear_published_visual_world(&mut published);
             return;
@@ -266,18 +490,108 @@ fn publish_visual_world_frame(
         }
     }
 
+    #[cfg(feature="voxel-view")]
+    if map_id == "HallOfFame" || crystal_voxel_view::native_clinic_healing_map(map_id) {
+        for (marker,sprite,transform) in &healing {
+            let source=match marker.0 {
+                crystal_render_api::VisualEffectId::HealMachineBall(_)=>"effect_heal_ball",
+                crystal_render_api::VisualEffectId::HealMachineLamp(_)=>"effect_heal_lamp",
+                _=>continue,
+            };
+            if let Some(effect)=visual_actor(crystal_render_api::VisualActorId::Effect(marker.0),
+                Arc::from(source),&sprite.image,sprite,transform,false) {
+                actors.push(effect);
+            }
+        }
+    }
+
+    // The downstream 3D follower publisher owns this presentation actor.
+    // Retain it during extraction so an idle follower does not invalidate
+    // otherwise identical terrain/actor publications every host frame.
+    #[cfg(feature = "voxel-view")]
+    actors.extend(published.actors.iter().filter(|actor| matches!(actor.id,
+        crystal_render_api::VisualActorId::PartyFollower | crystal_render_api::VisualActorId::SurfMount)).cloned());
     let terrain_unchanged = published.active
+        && published.source_regions == rendered.visual_source_regions
         && published.map_id.as_ref() == map_id
+        && published.source_map_size_core_tiles == rendered.source_map_size_core_tiles
+        && published.jump_ledges == rendered.visual_jump_ledges
+        && published.terrace_datum == rendered.visual_terrace_datum
         && published.terrain_revision == terrain_revision
         && published.map_texture == published_map_texture
         && published.viewport_size == Vec2::new(PLAYFIELD_WIDTH, PLAYFIELD_HEIGHT)
         && published.tile_size == Vec2::splat(TILE_SIZE)
-        && published.grid_size == published_grid_size;
-    if terrain_unchanged && published.center == center && published.actors == actors {
+        && published.grid_size == published_grid_size
+        && published.grid_origin == grid_origin;
+    if let Some(mut phases) = phases {
+        let animated = || rendered.visual_tiles.iter()
+            .filter(|tile| tile.animation_frames.is_some());
+        // Compare before allocating: an idle world retains both geometry and
+        // phase storage. Only live source-art changes publish sparse updates.
+        if phases.map_id.as_ref() != map_id || phases.grid_origin != grid_origin
+            || !phases.tiles.iter().eq(animated())
+        {
+            *phases = crystal_render_api::VisualTileAnimationFrame {
+                map_id: Arc::from(map_id),
+                grid_origin,
+                tiles: animated().cloned().collect(),
+            };
+        }
+    }
+    // Keep the retained terrain hierarchy fixed in source-map space. Camera,
+    // actors and traversal endpoints receive the same translation; classic
+    // sprite transforms and authoritative controller state remain untouched.
+    let anchored_center = grid_origin.as_vec2() * Vec2::new(TILE_SIZE, -TILE_SIZE);
+    let view_center = anchored_center - center;
+    let camera_movement = rendered.tile.map_or(Vec2::ZERO, |tile| runtime_shell.natural_movement.displacement(map_id,tile));
+    let center = anchored_center;
+    for actor in &mut actors { actor.center += view_center; }
+    #[cfg(feature = "voxel-view")]
+    if let (Some(mut art), Some(mut images), mut history) = connected_assets {
+        let window = crystal_render_api::VisualWorldFrame {
+            map_id: Arc::from(map_id),
+            source_regions: rendered.visual_source_regions.clone(),
+            grid_origin,
+            grid_size: published_grid_size,
+            center,
+            tile_size: Vec2::splat(TILE_SIZE),
+            ..default()
+        };
+        if let Err(error) = connected_actors::append(
+            &runtime_shell,
+            &window,
+            settings
+                .as_ref()
+                .map_or(0., |settings| settings.camera.rotation_step),
+            &mut art,
+            &mut images,
+            &mut actors,
+            &mut history,
+        ) {
+            bevy::log::warn!("connected actor presentation unavailable: {error:#}");
+        }
+    }
+    if let Some(traversal) = traversal.as_mut() {
+        if let Some(step) = traversal.step.as_mut() {
+            step.from += view_center;
+            step.to += view_center;
+        }
+    }
+    let view_center = view_center + camera_movement;
+    let player_facing = actors
+        .iter()
+        .find(|actor| actor.id == crystal_render_api::VisualActorId::Player)
+        .and_then(|actor| actor.facing);
+    if terrain_unchanged && published.center == center && published.view_center == view_center
+        && published.actors == actors {
         // The optional renderer consumes change detection. Do not republish an
         // identical 6,888-tile frame on every host update: that cloned the
         // complete grid and forced validation/profile work while standing
         // still, even though neither simulation nor presentation had moved.
+        if rendered.visual_player_displacement != camera_movement {
+            rendered.visual_player_displacement = camera_movement;
+        }
+        rendered.visual_player_facing = player_facing;
         return;
     }
     let tiles = if terrain_unchanged {
@@ -288,15 +602,24 @@ fn publish_visual_world_frame(
     let next = crystal_render_api::VisualWorldFrame {
         active: true,
         map_id: Arc::from(map_id),
-        terrain_revision,
-        grid_origin: {
-            let (x, y) = rendered.viewport_origin.expect("published terrain has a viewport origin");
-            IVec2::new(i32::from(x), i32::from(y))
-                - (published_grid_size.as_ivec2()
-                    - IVec2::new(VIEWPORT_TILES_X as i32, VIEWPORT_TILES_Y as i32)) / 2
+        source_regions: rendered.visual_source_regions.clone(),
+        source_map_size_core_tiles: rendered.source_map_size_core_tiles,
+        boundary_warps: if published.map_id.as_ref() == map_id {
+            published.boundary_warps.clone()
+        } else {
+            runtime_shell.runtime.data().maps.get(map_id).into_iter()
+                .flat_map(|map| map.events.warps.iter())
+                .filter_map(warp_tile_position_checked)
+                .map(|tile| IVec2::new(i32::from(tile.x), i32::from(tile.y)))
+                .collect()
         },
+        jump_ledges: rendered.visual_jump_ledges.clone(),
+        terrace_datum: rendered.visual_terrace_datum.clone(),
+        terrain_revision,
+        grid_origin,
         map_texture: published_map_texture,
         center,
+        view_center,
         viewport_size: Vec2::new(PLAYFIELD_WIDTH, PLAYFIELD_HEIGHT),
         tile_size: Vec2::splat(TILE_SIZE),
         grid_size: published_grid_size,
@@ -305,6 +628,10 @@ fn publish_visual_world_frame(
     };
     if terrain_unchanged || next.validate().is_ok() {
         *published = next;
+        rendered.visual_player_facing = player_facing;
+        if rendered.visual_player_displacement != camera_movement {
+            rendered.visual_player_displacement = camera_movement;
+        }
     } else {
         clear_published_visual_world(&mut published);
     }
@@ -334,15 +661,14 @@ fn naming_screen_blocks_world_presentation(input: Option<&PendingNameInput>) -> 
     input.is_some()
 }
 
-/// Effects in this list are still authored in classic screen coordinates.
+/// Scripted effects in this list are still authored in classic screen coordinates.
 /// Publishing a displaced actor against an undisplaced ground point would
 /// turn a jump into motion across the pitched floor. Callers retain the last
 /// complete world frame while these screen-space overlays run; they must not
 /// change the user's manually selected presentation mode.
 fn voxel_spatial_effects_supported(runtime_shell: &BevyRuntimeShell) -> bool {
-    let scripted_actor_displacement =
-        runtime_shell.visible_player_sprite_y_offset != 0
-            || runtime_shell
+    let scripted_actor_displacement = runtime_shell.visible_player_sprite_y_offset != 0
+        || runtime_shell
             .visible_script_movement
             .as_ref()
             .is_some_and(|movement| {
@@ -351,11 +677,19 @@ fn voxel_spatial_effects_supported(runtime_shell: &BevyRuntimeShell) -> bool {
                     || movement.stationary_y_offset != 0
             });
 
-    runtime_shell.visible_ledge_jump.is_none()
-        && !scripted_actor_displacement
+    !scripted_actor_displacement
         && runtime_shell.visible_fishing_animation.is_none()
         && runtime_shell.visible_strength_boulder_dust.is_none()
         && runtime_shell.visible_overworld_emote.is_none()
+}
+
+fn visual_facing(direction: Direction) -> Vec2 {
+    match direction {
+        Direction::Down => Vec2::NEG_Y,
+        Direction::Up => Vec2::Y,
+        Direction::Left => Vec2::NEG_X,
+        Direction::Right => Vec2::X,
+    }
 }
 
 fn visual_actor(
@@ -379,6 +713,8 @@ fn visual_actor(
         size,
         flip_x: sprite.flip_x,
         above_priority,
+        facing: None,
+        model_palette: None,
     })
 }
 
@@ -393,14 +729,14 @@ fn visual_actor_intersects_grid(
     delta.x.abs() <= half_grid.x + half_actor.x && delta.y.abs() <= half_grid.y + half_actor.y
 }
 
-fn visual_tile_grid_is_complete(tiles: &[crystal_render_api::VisualTile]) -> bool {
-    let Ok(width) = usize::try_from(VISUAL_WORLD_TILES_X) else {
+fn visual_tile_grid_is_complete(tiles: &[crystal_render_api::VisualTile], size: UVec2) -> bool {
+    let Ok(width) = usize::try_from(size.x) else {
         return false;
     };
-    let Ok(height) = usize::try_from(VISUAL_WORLD_TILES_Y) else {
+    let Ok(height) = usize::try_from(size.y) else {
         return false;
     };
-    tiles.len() == width * height
+    width > 0 && height > 0 && width.checked_mul(height) == Some(tiles.len())
         && tiles.iter().enumerate().all(|(index, tile)| {
             usize::try_from(tile.column).ok() == Some(index % width)
                 && usize::try_from(tile.row).ok() == Some(index / width)
@@ -460,9 +796,8 @@ mod render_mod_tests {
                         tile_index: u16::try_from(row * VISUAL_WORLD_TILES_X as u32 + column)
                             .expect("test tile index fits u16"),
                     },
-                    texture: Handle::weak_from_u128(
-                        1 + u128::from(row * VISUAL_WORLD_TILES_X as u32 + column),
-                    ),
+                    texture: Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(1 + u128::from(row * VISUAL_WORLD_TILES_X as u32 + column)), std::marker::PhantomData),
+                    animation_frames: None,
                     priority: false,
                 })
             })
@@ -472,34 +807,32 @@ mod render_mod_tests {
     #[test]
     fn visual_tile_grid_requires_one_row_major_cell_per_terrain_position() {
         let mut tiles = complete_visual_grid();
-        assert!(visual_tile_grid_is_complete(&tiles));
+        let size=UVec2::new(VISUAL_WORLD_TILES_X as u32,VISUAL_WORLD_TILES_Y as u32);
+        assert!(visual_tile_grid_is_complete(&tiles,size));
 
         tiles.pop();
-        assert!(!visual_tile_grid_is_complete(&tiles));
+        assert!(!visual_tile_grid_is_complete(&tiles,size));
 
         let mut tiles = complete_visual_grid();
         tiles.swap(0, 1);
-        assert!(!visual_tile_grid_is_complete(&tiles));
+        assert!(!visual_tile_grid_is_complete(&tiles,size));
     }
 
     #[test]
     fn fully_clipped_actor_is_not_published_to_renderer_mod() {
         let grid_size = UVec2::new(40, 36);
         let half_grid_width = grid_size.x as f32 * TILE_SIZE * 0.5;
-        let actor = crystal_render_api::VisualActor {
+        let actor = crystal_render_api::VisualActor { model_palette: None,
             id: crystal_render_api::VisualActorId::Object(1),
             source_id: Arc::from("edge_npc"),
-            texture: Handle::weak_from_u128(7),
+            texture: Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(7), std::marker::PhantomData),
             center: Vec2::new(half_grid_width + 17.0, 0.0),
             size: Vec2::splat(16.0),
             flip_x: false,
             above_priority: false,
+            facing: None,
         };
-        assert!(!visual_actor_intersects_grid(
-            &actor,
-            Vec2::ZERO,
-            grid_size
-        ));
+        assert!(!visual_actor_intersects_grid(&actor, Vec2::ZERO, grid_size));
 
         let touching = crystal_render_api::VisualActor {
             center: Vec2::new(half_grid_width + 8.0, 0.0),
@@ -535,7 +868,8 @@ mod render_mod_tests {
         let iterations = 10_000;
         let start = Instant::now();
         for _ in 0..iterations {
-            assert!(visual_tile_grid_is_complete(black_box(&tiles)));
+            assert!(visual_tile_grid_is_complete(black_box(&tiles),
+                UVec2::new(VISUAL_WORLD_TILES_X as u32,VISUAL_WORLD_TILES_Y as u32)));
             black_box(visual_terrain_revision(7, (-4, 12), black_box(&tiles)));
         }
         let uncached = start.elapsed();
@@ -568,10 +902,23 @@ mod render_mod_tests {
         );
 
         let mut changed_texture = complete_visual_grid();
-        changed_texture[0].texture = Handle::weak_from_u128(10_000);
+        changed_texture[0].texture = Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(10_000), std::marker::PhantomData);
         assert_eq!(
             baseline,
             visual_terrain_revision(7, (-4, 12), &changed_texture)
         );
+    }
+}
+
+#[cfg(feature="voxel-view")]
+fn sync_native_healing_sprite_visibility(
+    frame:Res<crystal_render_api::VisualWorldFrame>,
+    status:Res<crystal_voxel_view::VoxelViewStatus>,
+    healing:Option<Res<crystal_voxel_view::NativeHealingEffectsStatus>>,
+    mut sprites:Query<&mut Visibility,With<HealMachineWorldSprite>>,
+) {
+    let consumed=frame.active&&status.active&&healing.is_some_and(|h|h.consumed);
+    for mut visibility in &mut sprites {
+        *visibility=if consumed {Visibility::Hidden}else{Visibility::Inherited};
     }
 }

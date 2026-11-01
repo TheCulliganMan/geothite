@@ -322,6 +322,11 @@ impl Renderer<'_> {
                 offset + count <= SAMPLE_RATE * 900,
                 "audio channel exceeds 900 seconds"
             );
+            if self.timing_only {
+                frame += frames;
+                offset += count;
+                continue;
+            }
             let audio = match op {
                 "rest" => {
                     if is_pulse {

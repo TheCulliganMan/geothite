@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "parent_revision": "route_grass_bemidji_mart_revision",
+  "parent_source_index": "planning/minnesota/revisions/route-grass-v01/current-bemidji-mart-v01/sources.json",
+  "parent_source_index_sha256": "90aa4916eb2b66e574e62e1fd553602a33590eedfaf90767feed7d80bb54df17",
+  "pack": "content-packs/minnesota-current-bemidji-plateau-stairs-v01.crystalpack",
+  "pack_sha256": "6200af583a20de0def7f4611ab59531e43549471cc5cf6ab7a6f4f7e52b832e8",
+  "current_layouts": {
+    "MnDuluth": {
+      "path": "planning/minnesota/revisions/duluth-interior-buoy-clearance-v01/MnDuluth.after.layout.json",
+      "sha256": "20c23839398443a611232c33e1119d61f9c64269f7e0d5023115cd0630c5241e"
+    },
+    "MN_R10": {
+      "path": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R10.after.layout.json",
+      "sha256": "24bb1efea3a5f28e9cbccfec8f75960a3a7536dd351c3fa3481300764c257a93"
+    },
+    "MN_R12": {
+      "path": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R12.after.layout.json",
+      "sha256": "51df4d5ff1a923c79c99f089eea790b1f71210e5118520a192dc2b85c694f163"
+    },
+    "MN_R15": {
+      "path": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R15.after.layout.json",
+      "sha256": "110312f7353b0b3e32f2d6bd523bad4da4f9f9c0b487732c8f5cc6f7c15c44bb"
+    },
+    "MN_R16": {
+      "path": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R16.after.layout.json",
+      "sha256": "14170b8d63a3209b0c72f1aadbb94fd515bc105827d7b1ff8485cfa0e9f26d28"
+    },
+    "MN_R17": {
+      "path": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R17.after.layout.json",
+      "sha256": "8b82a99c35d311569bb04deec5a542129868403ac91a3b724cf0ec0617cbc532"
+    },
+    "MnStPaul": {
+      "path": "planning/minnesota/revisions/st-paul-southbank-v01/after.layout.json",
+      "sha256": "a2208d44eff5fb3d49703904cacdf2bf83f3912e1a50585ca887308e66da0a38"
+    },
+    "MnMankato": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-mankato-town-v01/after-bank-composed.layout.v02.json",
+      "sha256": "df65e676b2e3f8b18a5ac291b5dde0b2f265c1630a744f6e9d6c36b17da47bf5"
+    },
+    "MnWinona": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-winona-town-v01/after-composed.layout.v01.json",
+      "sha256": "f34aa9ebe4358534542bbc13ff758f5626c302e780c8ec43c50692637f658afd"
+    },
+    "MnBemidji": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-bemidji-plateau-stairs-v01/after.layout.json",
+      "sha256": "1d4366cd015124784f505c76ee7329f7e8efdd4acc0bfc8e81a1df56b960959d"
+    }
+  },
+  "current_dossiers": {
+    "MN_R10": {
+      "path": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R10.dossier.json",
+      "sha256": "f9c9f0ac98b24d3bd639e32d2df230b990dbc0906413acb45720c73509a5812d"
+    },
+    "MN_R12": {
+      "path": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R12.dossier.json",
+      "sha256": "e788ce43279078fa2135ab566671fd30c7c59a6b3f402b60ca2a5ba773a91740"
+    },
+    "MN_R15": {
+      "path": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R15.dossier.json",
+      "sha256": "33b2a5e79c867ab186e158f36289aaf35c69898314ed47fdb02afb110797a1fb"
+    },
+    "MN_R16": {
+      "path": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R16.dossier.json",
+      "sha256": "3d428be5a64e7111eb11326b449119c04b9c7cdba4a39d44ba4fdf01d68e3af4"
+    },
+    "MN_R17": {
+      "path": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R17.dossier.json",
+      "sha256": "9567be1ebbcaf3cf8b8fc0f387b127f0371be16e5c8cc0bb70922be771721a24"
+    },
+    "MnStPaul": {
+      "path": "planning/minnesota/revisions/st-paul-southbank-v01/town.dossier.json",
+      "sha256": "7f3a04d0d1e0b04c25745c3161a5b01015504472240722bcdb8c43bb0ba5d8a8"
+    },
+    "MnMankato": {
+      "path": "planning/minnesota/towns/MnMankato.json",
+      "sha256": "2d683a2bdeabe5f2a2f9098624d1b645efe375f3535304804b4938c58dec8858"
+    },
+    "MnWinona": {
+      "path": "planning/minnesota/towns/MnWinona.json",
+      "sha256": "d0653dfa2dfcaa9386f800769b8e9188a540f67fe891165f7096cc029fe64002"
+    },
+    "MnBemidji": {
+      "path": "planning/minnesota/revisions/route-grass-v01/current-bemidji-plateau-stairs-v01/dossier.after.json",
+      "sha256": "440dafefe90f90a08f40b8631a9c1af0c559ec05db3a6733ae8624051fc30d3d"
+    }
+  },
+  "current_caves": {
+    "MnR10Cave1F": {
+      "path": "planning/minnesota/caves/current-r10-fitted-fork-v01/source-v02/MnR10Cave1F.json",
+      "sha256": "c64b59fd073a8f141d0dd038618f5f6367aeea6344d1c9c5d5e7505ba0182cc8"
+    }
+  }
+}

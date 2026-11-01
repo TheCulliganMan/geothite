@@ -1,0 +1,143 @@
+{
+  "schema_version": 1,
+  "status": "native-approved-pending-global-integration",
+  "family": {
+    "id": "MN_F143",
+    "region": "northern_lakes",
+    "classification": "ordinary",
+    "theme": "Surface-skating whirligig beetles and opposing lookout stations: four eye organs straddle a strong horizontal seam while offset paddle pairs sweep in opposite directions.",
+    "members": [
+      {
+        "id": "MN_316",
+        "name": "Rondive",
+        "stage": 1,
+        "types": [
+          "BUG",
+          "WATER"
+        ],
+        "evolves_to": null
+      }
+    ]
+  },
+  "species_profiles": [
+    {
+      "id": "MN_316",
+      "classification": "Lookout",
+      "height_inches": 18,
+      "weight_tenths_lb": 85,
+      "dex_pages": [
+        "Its four eyes @ never agree on @ which way to turn.",
+        "It settles this @ by spinning until @ all four agree."
+      ],
+      "base_stats": {
+        "hp": 75,
+        "attack": 65,
+        "defense": 80,
+        "speed": 105,
+        "special_attack": 70,
+        "special_defense": 60
+      },
+      "catch_rate": 90,
+      "base_exp": 160,
+      "held_items": [
+        null,
+        null
+      ],
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_BUG",
+        "EGG_BUG"
+      ],
+      "level_moves": [
+        [
+          1,
+          "WATER_GUN"
+        ],
+        [
+          1,
+          "LEER"
+        ],
+        [
+          7,
+          "QUICK_ATTACK"
+        ],
+        [
+          13,
+          "RAPID_SPIN"
+        ],
+        [
+          19,
+          "BUBBLEBEAM"
+        ],
+        [
+          25,
+          "TWINEEDLE"
+        ],
+        [
+          31,
+          "DETECT"
+        ],
+        [
+          37,
+          "AGILITY"
+        ],
+        [
+          43,
+          "WHIRLPOOL"
+        ],
+        [
+          49,
+          "HYDRO_PUMP"
+        ],
+        [
+          55,
+          "BATON_PASS"
+        ]
+      ],
+      "evolution": null,
+      "egg_moves": [
+        "BUBBLE",
+        "PSYBEAM",
+        "MIND_READER"
+      ],
+      "tmhm_moves": [
+        "TOXIC",
+        "PROTECT",
+        "REST",
+        "SLEEP_TALK",
+        "SNORE",
+        "RETURN",
+        "FRUSTRATION",
+        "DOUBLE_TEAM",
+        "ENDURE",
+        "HIDDEN_POWER",
+        "SWIFT",
+        "RAIN_DANCE",
+        "SURF",
+        "WHIRLPOOL",
+        "ICY_WIND"
+      ],
+      "menu_icon": "ICON_BUG",
+      "cry": {
+        "cry": "CRY_VENONAT",
+        "pitch": 20,
+        "length": 128
+      },
+      "footprint_species": "VENONAT",
+      "shiny_rgb5": [
+        [
+          26,
+          18,
+          11
+        ],
+        [
+          10,
+          5,
+          13
+        ]
+      ]
+    }
+  ]
+}

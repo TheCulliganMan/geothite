@@ -1,0 +1,8 @@
+{
+  "tool": "built-in image_gen",
+  "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f010/millimp.overworld.imagegen-v2-eyes.png",
+  "sha256": "870b888b453f2b060a4464ec111828b31455d1bcc8578111766a778da9a620be",
+  "original_default_path": "/Users/ryanculligan/.codex/generated_images/01a178da-4cf1-7e01-8516-667a332dc790/exec-b2b50419-bf02-484a-afaf-13b6c3cd7b6c.png",
+  "prompt": "prompt-millimp-v2-eyes.txt",
+  "status": "source_generated_not_accepted"
+}

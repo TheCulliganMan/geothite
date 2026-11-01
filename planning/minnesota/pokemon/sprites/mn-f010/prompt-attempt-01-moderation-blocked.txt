@@ -1,0 +1,22 @@
+Use case: stylized-concept
+Asset type: exact Game Boy Color Generation 2 battle pixel sprite sheet, original Minnesota monster family.
+Primary request: Minneapolis flour milling: a grain imp grows millstone limbs, then becomes flour dust held together by rotating stones.
+Style reference: authentic Pokemon Crystal / Gold / Silver Gen 2 pixel art: coarse visibly square pixels, low native resolution, simple sculpted clusters, selective black outlines, restrained internal dark lines, sparse white highlights, readable eyes. Do not copy any existing Pokemon. No modern vector look, gradients, antialiasing, soft shadows, textures, excessive tiny details or dithering.
+Composition: 3 columns and exactly 2 rows on pure white, no labels, dividers or text. One species per column in evolutionary order. Top row whole-body FRONT battle view facing LEFT, all extremities inside its cell. Bottom row CLOSE REAR battle PORTRAIT of same species, facing UPPER RIGHT; head and upper back fill the cell, lower torso cut off at bottom. Backs are zoomed-in rear portraits, never small whole-body turnarounds. Maintain broad white gutters. Each cell behaves as a 64x64 logical grid enlarged by nearest neighbor. Fronts ultimately occupy 56x56; backs 48x48.
+GBC color definitions: palette indices 0..3; RGB5 channels are integers0..31; packed RGB555=r|(g<<5)|(b<<10); RGB8 expansion=(v<<3)|(v>>2). Each species has its OWN four-color palette, shared ONLY between its front/back. Do not share one palette across all stages. Use flat exact colors only. Index0 white is also the sheet background.
+Column 1: Oatlet (NORMAL) — A small oat-kernel imp, pointed grain tuft, two short husk arms, alert face, squat split-kernel feet. Its body is a grain, not a sack costume. Front grows in size relative to previous stage. Back must retain its unique anatomy and palette.
+  palette index0: RGB5 [31, 31, 31], packedRGB555 32767 (0x7FFF), expandedRGB8 [255, 255, 255], hex #FFFFFF.
+  palette index1: RGB5 (27, 23, 12), packedRGB555 13051 (0x32FB), expandedRGB8 [222, 189, 99], hex #DEBD63.
+  palette index2: RGB5 (14, 9, 5), packedRGB555 5422 (0x152E), expandedRGB8 [115, 74, 41], hex #734A29.
+  palette index3: RGB5 [0, 0, 0], packedRGB555 0 (0x0000), expandedRGB8 [0, 0, 0], hex #000000.
+Column 2: Millimp (NORMAL/GROUND) — Stocky mill imp with round millstone forearms, grain-tuft head, broad two-toed feet, central turning axle in its belly. Front grows in size relative to previous stage. Back must retain its unique anatomy and palette.
+  palette index0: RGB5 [31, 31, 31], packedRGB555 32767 (0x7FFF), expandedRGB8 [255, 255, 255], hex #FFFFFF.
+  palette index1: RGB5 (24, 20, 12), packedRGB555 12952 (0x3298), expandedRGB8 [198, 165, 99], hex #C6A563.
+  palette index2: RGB5 (11, 9, 7), packedRGB555 7467 (0x1D2B), expandedRGB8 [90, 74, 57], hex #5A4A39.
+  palette index3: RGB5 [0, 0, 0], packedRGB555 0 (0x0000), expandedRGB8 [0, 0, 0], hex #000000.
+Column 3: Flourgeist (NORMAL/GHOST) — Whirling flour-dust spirit, tapered ghost body held between two rotating millstone shoulders, grain-tuft crown and dust-ribbon arms; asymmetrical curling silhouette, face simple and readable. Front grows in size relative to previous stage. Back must retain its unique anatomy and palette.
+  palette index0: RGB5 [31, 31, 31], packedRGB555 32767 (0x7FFF), expandedRGB8 [255, 255, 255], hex #FFFFFF.
+  palette index1: RGB5 (26, 24, 21), packedRGB555 22298 (0x571A), expandedRGB8 [214, 198, 173], hex #D6C6AD.
+  palette index2: RGB5 (12, 10, 17), packedRGB555 17740 (0x454C), expandedRGB8 [99, 82, 140], hex #63528C.
+  palette index3: RGB5 [0, 0, 0], packedRGB555 0 (0x0000), expandedRGB8 [0, 0, 0], hex #000000.
+All six/four views are ORIGINAL creature designs that embody the theme in their anatomy. No accessories held by humans, no costumes, no scenery, no ground shadows, no text or palette swatches. Prioritize Gen2 battle readability over illustration detail.

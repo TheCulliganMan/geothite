@@ -1,0 +1,391 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F004",
+  "status": "native-review-recommended; root independent review pending for Birchit and Portabeau; adult provisionalPASS preserved",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f004/family.manifest-native-candidate-v4.json",
+  "runtime_output": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-water-family-v4/MN_F004",
+  "tool": "built-in image_gen",
+  "proof": [
+    {
+      "species_id": "MN_010",
+      "runtime_token": "BIRCHIT",
+      "frames": [
+        {
+          "pose": "down_idle",
+          "native_bounds": [
+            2,
+            4,
+            12,
+            11
+          ],
+          "opaque_pixels": 98,
+          "pixel_sha256": "5d8e6cdd171479c97c79bc6925543c695cb241ee4d0cc9da3ab292daa44a6314"
+        },
+        {
+          "pose": "up_idle",
+          "native_bounds": [
+            2,
+            4,
+            12,
+            11
+          ],
+          "opaque_pixels": 94,
+          "pixel_sha256": "2dcd59e62b0df7717ffcbf71c183eac4be4d4e9086f187bd7b007af5d9759403"
+        },
+        {
+          "pose": "left_idle",
+          "native_bounds": [
+            1,
+            4,
+            14,
+            11
+          ],
+          "opaque_pixels": 90,
+          "pixel_sha256": "b5b280eba35a2f70858291cd4e70b9df673c247ef5eb9753285554828232aec5"
+        },
+        {
+          "pose": "down_step",
+          "native_bounds": [
+            2,
+            4,
+            12,
+            11
+          ],
+          "opaque_pixels": 95,
+          "pixel_sha256": "5a4420adc691e124dcb03b3697805329ecbc5feab9029631bb54bc89cd674d92"
+        },
+        {
+          "pose": "up_step",
+          "native_bounds": [
+            2,
+            4,
+            12,
+            11
+          ],
+          "opaque_pixels": 89,
+          "pixel_sha256": "b87bad7e0521769ee19e4a117204ebed281891b60eab9dccd083e47b45937f7c"
+        },
+        {
+          "pose": "left_step",
+          "native_bounds": [
+            1,
+            4,
+            14,
+            11
+          ],
+          "opaque_pixels": 85,
+          "pixel_sha256": "d4a427467074dd197f94bef6257bd69887adeec868f58916da3c5c84aa44b5db"
+        }
+      ],
+      "native_frame_geometry": "six literal16x16cells in16x96grayscaleindexPNG",
+      "normal_and_shiny_review_vs_index_png": "all1536pixels exact each",
+      "canonical_palettes_and_little_endian_bytes": "exact",
+      "walking": "allthreepairsdistinct",
+      "face_eye_audit": [
+        {
+          "pose": "down_idle",
+          "eye_clusters": [
+            [
+              [
+                4,
+                8
+              ]
+            ],
+            [
+              [
+                7,
+                8
+              ]
+            ]
+          ],
+          "orthogonal_neighbors_outside_cluster": "all opaque ink1or2; never ink0or3"
+        },
+        {
+          "pose": "down_step",
+          "eye_clusters": [
+            [
+              [
+                4,
+                8
+              ]
+            ],
+            [
+              [
+                7,
+                8
+              ]
+            ]
+          ],
+          "orthogonal_neighbors_outside_cluster": "all opaque ink1or2; never ink0or3"
+        }
+      ]
+    },
+    {
+      "species_id": "MN_011",
+      "runtime_token": "PORTABEAU",
+      "frames": [
+        {
+          "pose": "down_idle",
+          "native_bounds": [
+            1,
+            3,
+            14,
+            12
+          ],
+          "opaque_pixels": 125,
+          "pixel_sha256": "34a5937bb5b1be20a6e5a5e780e239273c8d862632c5560775b57d33b1127e1a"
+        },
+        {
+          "pose": "up_idle",
+          "native_bounds": [
+            2,
+            3,
+            12,
+            12
+          ],
+          "opaque_pixels": 116,
+          "pixel_sha256": "12640f49e6ffc466b5c897147a5677fba5f883b5a2c491892b2d28a94989fc7c"
+        },
+        {
+          "pose": "left_idle",
+          "native_bounds": [
+            1,
+            3,
+            14,
+            12
+          ],
+          "opaque_pixels": 103,
+          "pixel_sha256": "e8502a87c969de5c76964289898582d27fd8dcd8e096d87cd95722a90920cff8"
+        },
+        {
+          "pose": "down_step",
+          "native_bounds": [
+            1,
+            2,
+            14,
+            13
+          ],
+          "opaque_pixels": 131,
+          "pixel_sha256": "4fbb4c2635fe663e0782728e9941251fa6f94e8b5f0504f7da34d1fccf9d730e"
+        },
+        {
+          "pose": "up_step",
+          "native_bounds": [
+            2,
+            2,
+            12,
+            13
+          ],
+          "opaque_pixels": 112,
+          "pixel_sha256": "d99a6a92b911229660abb2a3e8bf5d4e4afa636aa80e2e6592ded74767e76ecf"
+        },
+        {
+          "pose": "left_step",
+          "native_bounds": [
+            1,
+            2,
+            14,
+            13
+          ],
+          "opaque_pixels": 100,
+          "pixel_sha256": "29722e626e4b979f88a428d1396e0513d1c2e46e32f4b01743ce2eeb1a451731"
+        }
+      ],
+      "native_frame_geometry": "six literal16x16cells in16x96grayscaleindexPNG",
+      "normal_and_shiny_review_vs_index_png": "all1536pixels exact each",
+      "canonical_palettes_and_little_endian_bytes": "exact",
+      "walking": "allthreepairsdistinct",
+      "face_eye_audit": [
+        {
+          "pose": "down_idle",
+          "eye_clusters": [
+            [
+              [
+                4,
+                6
+              ],
+              [
+                5,
+                6
+              ]
+            ],
+            [
+              [
+                8,
+                6
+              ],
+              [
+                9,
+                6
+              ]
+            ]
+          ],
+          "orthogonal_neighbors_outside_cluster": "all opaque ink1or2; never ink0or3"
+        },
+        {
+          "pose": "down_step",
+          "eye_clusters": [
+            [
+              [
+                4,
+                6
+              ],
+              [
+                5,
+                6
+              ]
+            ],
+            [
+              [
+                8,
+                6
+              ],
+              [
+                9,
+                6
+              ]
+            ]
+          ],
+          "orthogonal_neighbors_outside_cluster": "all opaque ink1or2; never ink0or3"
+        }
+      ]
+    },
+    {
+      "species_id": "MN_012",
+      "runtime_token": "VOYAGEAR",
+      "frames": [
+        {
+          "pose": "down_idle",
+          "native_bounds": [
+            1,
+            5,
+            13,
+            10
+          ],
+          "opaque_pixels": 80,
+          "pixel_sha256": "b032b0da36b2ce95417686b23552e462e414e3171c3ceee4d4410d08e6b4c8f4"
+        },
+        {
+          "pose": "up_idle",
+          "native_bounds": [
+            1,
+            5,
+            14,
+            10
+          ],
+          "opaque_pixels": 80,
+          "pixel_sha256": "544d4a3d15cfd95d89dd04d631da2077f03fe0a1a297135de8f6428f238c479b"
+        },
+        {
+          "pose": "left_idle",
+          "native_bounds": [
+            1,
+            5,
+            14,
+            10
+          ],
+          "opaque_pixels": 79,
+          "pixel_sha256": "d6a19182d7c08413f0383655c966c7782d4d8c2309afa970683a18687a6e8467"
+        },
+        {
+          "pose": "down_step",
+          "native_bounds": [
+            1,
+            4,
+            13,
+            11
+          ],
+          "opaque_pixels": 72,
+          "pixel_sha256": "291d7bca7c43baf069afb6cf5eb3cae9661869f2e17825669a4e7934386409eb"
+        },
+        {
+          "pose": "up_step",
+          "native_bounds": [
+            1,
+            4,
+            14,
+            11
+          ],
+          "opaque_pixels": 77,
+          "pixel_sha256": "0a221f7ef8470ac6ef207f7986a0db780440382ec6c156077cad181835836d4c"
+        },
+        {
+          "pose": "left_step",
+          "native_bounds": [
+            1,
+            4,
+            14,
+            11
+          ],
+          "opaque_pixels": 78,
+          "pixel_sha256": "dffc00bbc4fb5fbe11ad3be1216c5c0b0b515e009479b6b87b5626fa5e9f5745"
+        }
+      ],
+      "native_frame_geometry": "six literal16x16cells in16x96grayscaleindexPNG",
+      "normal_and_shiny_review_vs_index_png": "all1536pixels exact each",
+      "canonical_palettes_and_little_endian_bytes": "exact",
+      "walking": "allthreepairsdistinct",
+      "face_eye_audit": [
+        {
+          "pose": "down_idle",
+          "eye_clusters": [
+            [
+              [
+                5,
+                8
+              ]
+            ],
+            [
+              [
+                8,
+                8
+              ]
+            ]
+          ],
+          "orthogonal_neighbors_outside_cluster": "all opaque ink1or2; never ink0or3"
+        },
+        {
+          "pose": "down_step",
+          "eye_clusters": [
+            [
+              [
+                5,
+                7
+              ]
+            ],
+            [
+              [
+                8,
+                7
+              ]
+            ]
+          ],
+          "orthogonal_neighbors_outside_cluster": "all opaque ink1or2; never ink0or3"
+        }
+      ]
+    }
+  ],
+  "visual_review": {
+    "reviewer": "overworld_true16_regeneration",
+    "normal_shiny_boards_actually_viewed": true,
+    "Birchit": "Goldkit with two1x1isolatedblackpupils inbothfrontposes, no blackmouth, roundears, lowattachedflat tail. Broadgoldface staysclear.",
+    "Portabeau": "Brownface with two isolated2x1blackeyeclusters inbothfrontposes, no mouth or teeth. Slatebluepack+sash, nohat/paddle. Frontidle8sourcepixel verticalregistration stopsdoubleheightpupil; one sharedspeciestransform retained.",
+    "Voyagear": "RootprovisionalPASS preserved. Rust/navyadult withtuque/navyband, diagonalsash, straightshoulderpaddle, naturallowtail. Two1x1isolatedblackpupils eachfrontpose, navybandabovevalidnonblackneighbor.",
+    "simplification": "Perrootinstruction, omit teeth andmouth onbaby/middle to prioritize cleanface and eyes atnative16. No source detailrepurposedas extra opaque color."
+  },
+  "source_versions": {
+    "MN_010": "birchit.overworld.imagegen-v8.png",
+    "MN_011": "portabeau.overworld.imagegen-v7.png",
+    "MN_012": "voyagear.overworld.imagegen-v4.png"
+  },
+  "all_prior_raw_sources_prompts_and_candidates_retained": true,
+  "sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f004/family.manifest-native-candidate-v4.json": "ed3b0d8a720a92c33c79a714958be973af1fadfb85aab14589865ff4dd7e873b",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f004/birchit.overworld.imagegen-v8.png": "3b67519d542a787f6157a77c167c1e76f6abf2c098a6c2d42d485a01fdf2b06e",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f004/portabeau.overworld.imagegen-v7.png": "14dd50ed0d4b604757cbd42c00938704b9b4d8aac3d6124e1e123dbb25a98e87",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f004/voyagear.overworld.imagegen-v4.png": "1b8b8d40a12b37b6a9da37ede7db09e2fb877d7020f9980e81af8d95b0b96cf9",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-water-family-v4/MN_F004/compiled-index.json": "0f0f136040c7b9ae0d4ef2ad69fd69c2b7556a79a25b88e5dc5a173f7f676fab",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-water-family-v4/MN_F004/review/line.normal-8x.png": "fe0e06aca5a9975e2222a4f7cdcb8798ec808a106bd7046b611b3c83b5cefda5",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-water-family-v4/MN_F004/review/line.shiny-8x.png": "166c7df45c9a66a120f0ef513cb2162e4f5475e7d297e96689a02f2e52f9445a"
+  }
+}

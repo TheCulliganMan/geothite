@@ -1,0 +1,97 @@
+{
+  "status": "SOURCE_CANDIDATE_NOT_PUBLISHED",
+  "parent": {
+    "revision": "route_grass_r08_current_contract_revision",
+    "pack": "content-packs/minnesota-current-r08-grass-and-stairs-v01.crystalpack",
+    "pack_sha256": "1e1f2e2f40fdea4207e7ada6b34a85d33065cbe254a73864e47b8db4f0726e13",
+    "maps": [
+      "MnR10C00R00",
+      "MnR10C01R00"
+    ]
+  },
+  "changes": [
+    {
+      "metatile": [
+        23,
+        9
+      ],
+      "before": "02",
+      "after": "03"
+    },
+    {
+      "metatile": [
+        23,
+        10
+      ],
+      "before": "01",
+      "after": "03"
+    },
+    {
+      "metatile": [
+        23,
+        11
+      ],
+      "before": "01",
+      "after": "03"
+    },
+    {
+      "metatile": [
+        24,
+        8
+      ],
+      "before": "02",
+      "after": "03"
+    }
+  ],
+  "new_grass_quadrants": 16,
+  "existing_grass_removed": 0,
+  "native_movement_measurements": [
+    {
+      "start": [
+        45,
+        20
+      ],
+      "end": [
+        57,
+        20
+      ],
+      "before": {
+        "status": "MEASURED",
+        "grass_steps": 7,
+        "grass_quadrants_in_contract": 152,
+        "ice_quadrants": 0
+      },
+      "after": {
+        "status": "MEASURED",
+        "grass_steps": 9,
+        "grass_quadrants_in_contract": 168,
+        "ice_quadrants": 0
+      }
+    },
+    {
+      "start": [
+        57,
+        20
+      ],
+      "end": [
+        45,
+        20
+      ],
+      "before": {
+        "status": "MEASURED",
+        "grass_steps": 7,
+        "grass_quadrants_in_contract": 152,
+        "ice_quadrants": 0
+      },
+      "after": {
+        "status": "MEASURED",
+        "grass_steps": 9,
+        "grass_quadrants_in_contract": 168,
+        "ice_quadrants": 0
+      }
+    }
+  ],
+  "coastal_ice_quadrants": 0,
+  "all_cliffs_stairs_water_houses_actors_scripts_and_signs_unchanged": true,
+  "scope": "Whole-route source rendering inspected; native publication/gameplay still required."
+}

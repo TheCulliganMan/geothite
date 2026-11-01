@@ -1,0 +1,177 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-iron-crosscut-rock-cache-v02.crystalpack",
+  "pack_sha256": "bc38b8920bdc6d5e3c0e18ddac283aa4087e0020d694861f277d10314a3875d1",
+  "calls": 1651,
+  "actual_wild_battles": [
+    {
+      "map": "MnR01C00R00",
+      "position": {
+        "x": 42,
+        "y": 23
+      }
+    },
+    {
+      "map": "MnR01C00R00",
+      "position": {
+        "x": 12,
+        "y": 24
+      }
+    },
+    {
+      "map": "MnR01C00R00",
+      "position": {
+        "x": 40,
+        "y": 23
+      }
+    },
+    {
+      "map": "MnR01C00R00",
+      "position": {
+        "x": 34,
+        "y": 24
+      }
+    },
+    {
+      "map": "MnR01C00R00",
+      "position": {
+        "x": 30,
+        "y": 24
+      }
+    },
+    {
+      "map": "MnR01C00R00",
+      "position": {
+        "x": 39,
+        "y": 20
+      }
+    },
+    {
+      "map": "MnR01C00R00",
+      "position": {
+        "x": 56,
+        "y": 22
+      }
+    },
+    {
+      "map": "MnR01C00R00",
+      "position": {
+        "x": 57,
+        "y": 24
+      }
+    },
+    {
+      "map": "MnR01C00R00",
+      "position": {
+        "x": 23,
+        "y": 28
+      }
+    },
+    {
+      "map": "MnR01C00R00",
+      "position": {
+        "x": 11,
+        "y": 24
+      }
+    }
+  ],
+  "phases": [
+    {
+      "phase": "earned-town-route-and-stairs",
+      "source_save": ".local/route-grass-review/current-r01-successor-opening-saves-v01/winona-CYNDAQUIL-town-39243-1793391832414799000.crystalsave",
+      "source_sha256": "2b02ff4285e73ad51a7ea7278dea336d44b7a190895137676ded79e5d00ec39a",
+      "input_source_unchanged": true,
+      "output_save": ".local/route-grass-review/current-r01-earned-town-route-and-stairs-v02-output.crystalsave",
+      "initial": {
+        "badges": 0,
+        "dialogue": false,
+        "facing": "down",
+        "frame": 120,
+        "map": "MnWinona",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3180,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 1,
+          "seen": 2
+        },
+        "position": {
+          "x": 18,
+          "y": 20
+        }
+      },
+      "final": {
+        "badges": 0,
+        "dialogue": false,
+        "facing": "right",
+        "frame": 502,
+        "map": "MnR01C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3180,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 1,
+          "seen": 6
+        },
+        "position": {
+          "x": 63,
+          "y": 24
+        }
+      },
+      "stderr_bytes": 0
+    },
+    {
+      "phase": "continued-route-return",
+      "source_save": ".local/route-grass-review/current-r01-earned-town-route-and-stairs-v02-output.crystalsave",
+      "source_sha256": "9167980663edf7273093065571a4fa2e7399c696ae8e1cf42c4dfda0eaaf542a",
+      "input_source_unchanged": true,
+      "output_save": ".local/route-grass-review/current-r01-continued-route-return-v02-output.crystalsave",
+      "initial": {
+        "badges": 0,
+        "dialogue": false,
+        "facing": "right",
+        "frame": 502,
+        "map": "MnR01C00R00",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3180,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 1,
+          "seen": 6
+        },
+        "position": {
+          "x": 63,
+          "y": 24
+        }
+      },
+      "final": {
+        "badges": 0,
+        "dialogue": false,
+        "facing": "right",
+        "frame": 668,
+        "map": "MnWinona",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3180,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 1,
+          "seen": 6
+        },
+        "position": {
+          "x": 0,
+          "y": 18
+        }
+      },
+      "stderr_bytes": 0
+    }
+  ],
+  "source_and_input_saves_unchanged": true,
+  "ordinary_stairs_both_directions": true,
+  "closed_old_high_cliff_denied": true,
+  "actual_route_save_continued": true,
+  "scope": "From actual reached starter/town save, then production inputs only. No state edits, retagging or party/position fixture injection. Delivery completion is not claimed."
+}

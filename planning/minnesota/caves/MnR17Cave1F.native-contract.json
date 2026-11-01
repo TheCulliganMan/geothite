@@ -1,0 +1,89 @@
+{
+  "status": "Frozen installed preimage; no R17 candidate published",
+  "native_pack_sha256": "e549c178f37a3137e8ca7f119aeee79460164f1dbd3ea6d205be8928415fd04c",
+  "whole_previous_source_sha256": "37ba34f06fe3abf8948643510eaeb2b7a7d65994997c61aed09e0e49ce204967",
+  "source_files_sha256": {
+    "planning/minnesota/routes/MN_R17.json": "6347b08de0a54ed5d3a6bb633a545dfd5d6276ebe2eb127dddce60bdfe14cff1",
+    "planning/minnesota/interiors.json": "cf00f5c028f03a1f1770b3fb9d83364e17f9468238dc9b37475625d3cc367e09"
+  },
+  "native_module_canonical_json_sha256": "d85522dff5cb6868845b27b72a0847ebf6b0c5bba786909d19a1e66058ac8ec6",
+  "native_attributes": {
+    "tileset_name": "cave",
+    "border_block": 1,
+    "width": 7,
+    "height": 8,
+    "connections": [],
+    "time_of_day": "nite",
+    "phone_service": 18,
+    "phone_flag": true,
+    "environment": "CAVE",
+    "location": "LANDMARK_MN_BORDER_PINES",
+    "music": "MUSIC_UNION_CAVE",
+    "palette": "PALETTE_NITE",
+    "fishing_group": "FISHGROUP_LAKE",
+    "map_constant": "MnR17Cave1F",
+    "map_group_constant": "MAPGROUP_MINNESOTA_BORDER_PINES",
+    "blocks_label": "MnR17Cave1F_Blocks",
+    "map_scripts_label": "MnR17Cave1F_MapScripts",
+    "map_events_label": "MnR17Cave1F_MapEvents",
+    "connection_flags": null
+  },
+  "native_map_identity": {
+    "constant": "MnR17Cave1F",
+    "name": "MnR17Cave1F",
+    "groupName": "MINNESOTA_BORDER_PINES",
+    "groupId": 57,
+    "mapId": 4,
+    "width": 7,
+    "height": 8,
+    "environment": "CAVE",
+    "phoneService": 18
+  },
+  "mouths": [
+    {
+      "index": 1,
+      "x": 9,
+      "y": 13,
+      "target_map_constant": "MnR17C00R00",
+      "target_map": "MnR17C00R00",
+      "target_warp_id": 2
+    }
+  ],
+  "actors": [
+    {
+      "id": "MN_R17_ITEM_04",
+      "tile": [
+        5,
+        5
+      ],
+      "sprite": "SPRITE_POKE_BALL",
+      "facing": "SPRITEMOVEDATA_STANDING_DOWN",
+      "object_type": "OBJECTTYPE_ITEMBALL",
+      "event_flag": "EVENT_MN_R17_ITEM_04"
+    }
+  ],
+  "original_pickup": {
+    "command": "itemball",
+    "item_id": "REVIVE",
+    "quantity": 1,
+    "event_flag": "EVENT_MN_R17_ITEM_04",
+    "fruit_tree_id": null,
+    "source_script": "MN_R17_ITEM_04",
+    "command_index": 0
+  },
+  "npc_residents": 0,
+  "expected_changes": "room rows/editorial review metadata only; retain every whole actor/item/warp/attribute/program field",
+  "clear_arrival": [
+    9,
+    12
+  ],
+  "exterior_active": [
+    10,
+    43
+  ],
+  "exterior_passive": [
+    10,
+    44
+  ],
+  "native_palette": "nite"
+}

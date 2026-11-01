@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "field_only": true,
+  "trainer_class": "MN_CITY_CYCLIST_F",
+  "class_name": "CITY CYCLIST",
+  "trainer_ids": [],
+  "actors": [
+    {
+      "map": "MnMinneapolis",
+      "script": "MN_EXTRA_MPLS_CYCLE_02",
+      "tile": [
+        60,
+        21
+      ],
+      "previous_sprite": "SPRITE_KRIS_BIKE"
+    },
+    {
+      "map": "MnMinneapolis",
+      "script": "MN_EXTRA_MPLS_CYCLE_04",
+      "tile": [
+        40,
+        22
+      ],
+      "previous_sprite": "SPRITE_KRIS_BIKE"
+    },
+    {
+      "map": "MnMinneapolis",
+      "script": "MN_EXTRA_MPLS_CYCLE_06",
+      "tile": [
+        40,
+        24
+      ],
+      "previous_sprite": "SPRITE_KRIS_BIKE"
+    },
+    {
+      "map": "MnMinneapolis",
+      "script": "MN_EXTRA_MPLS_CYCLE_08",
+      "tile": [
+        61,
+        27
+      ],
+      "previous_sprite": "SPRITE_KRIS_BIKE"
+    },
+    {
+      "map": "MnMinneapolis",
+      "script": "MN_EXTRA_MPLS_CYCLE_10",
+      "tile": [
+        38,
+        44
+      ],
+      "previous_sprite": "SPRITE_KRIS_BIKE"
+    },
+    {
+      "map": "MnMinneapolis",
+      "script": "MN_EXTRA_MPLS_CYCLE_12",
+      "tile": [
+        40,
+        44
+      ],
+      "previous_sprite": "SPRITE_KRIS_BIKE"
+    },
+    {
+      "map": "MnMinneapolis",
+      "script": "MN_EXTRA_MPLS_CYCLE_14",
+      "tile": [
+        46,
+        44
+      ],
+      "previous_sprite": "SPRITE_KRIS_BIKE"
+    },
+    {
+      "map": "MnMinneapolis",
+      "script": "MN_EXTRA_MPLS_CYCLE_16",
+      "tile": [
+        38,
+        46
+      ],
+      "previous_sprite": "SPRITE_KRIS_BIKE"
+    },
+    {
+      "map": "MnMinneapolis",
+      "script": "MN_EXTRA_MPLS_CYCLE_18",
+      "tile": [
+        41,
+        46
+      ],
+      "previous_sprite": "SPRITE_KRIS_BIKE"
+    }
+  ]
+}

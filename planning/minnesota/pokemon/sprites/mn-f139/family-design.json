@@ -1,0 +1,417 @@
+{
+  "schema_version": 1,
+  "status": "root-approved-native-awaiting-global-integration",
+  "family_id": "MN_F139",
+  "roster_family": {
+    "id": "MN_F139",
+    "region": "north_woods",
+    "theme": "Marten and false branches. The body itself bends into a crooked branch silhouette.",
+    "habitat": "Root tangles and fallen conifers in dense northern forest.",
+    "members": [
+      {
+        "id": "MN_308",
+        "name": "Crookit",
+        "types": [
+          "NORMAL"
+        ],
+        "stage": 1,
+        "evolves_to": "MN_309"
+      },
+      {
+        "id": "MN_309",
+        "name": "Crookveil",
+        "types": [
+          "DARK"
+        ],
+        "stage": 2,
+        "evolves_to": null
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://www.dnr.state.mn.us/mammals/index.html",
+        "publisher": "Minnesota regional primary source",
+        "evidence": "Regional animal natural history only.",
+        "fantasy_extension": "A crooked youngster develops an angular overhanging back and tapered forked tail. The continuous single body resembles a fallen branch; its real face hides beneath its own shoulder. Exactly four legs, with one naturally occluded in the three-quarter front."
+      }
+    ],
+    "design_status": "native-reviewed-expansion",
+    "replacement_context": "User authorized this original family among eleven proposals; root selects overlapping retirements and preserves the active count. No encounter or map event is changed."
+  },
+  "species_profiles": [
+    {
+      "id": "MN_308",
+      "classification": "Crook",
+      "height_inches": 16,
+      "weight_tenths_lb": 95,
+      "dex_pages": [
+        "It crooks its back @ beside fallen @ branches to hide.",
+        "The fork in its @ tail sways like @ a windblown twig."
+      ],
+      "base_stats": {
+        "hp": 45,
+        "attack": 60,
+        "defense": 40,
+        "speed": 75,
+        "special_attack": 35,
+        "special_defense": 50
+      },
+      "catch_rate": 190,
+      "base_exp": 65,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_GROUND",
+        "EGG_GROUND"
+      ],
+      "evolution": {
+        "method": "LEVEL",
+        "level": 30
+      },
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_FOX",
+      "footprint_species": "FURRET",
+      "cry": {
+        "cry": "CRY_SENTRET",
+        "pitch": -24,
+        "length": 144
+      },
+      "shiny_rgb5": [
+        [
+          18,
+          24,
+          13
+        ],
+        [
+          8,
+          10,
+          16
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "SCRATCH"
+        ],
+        [
+          1,
+          "TAIL_WHIP"
+        ],
+        [
+          5,
+          "QUICK_ATTACK"
+        ],
+        [
+          10,
+          "BITE"
+        ],
+        [
+          15,
+          "PURSUIT"
+        ],
+        [
+          20,
+          "DOUBLE_TEAM"
+        ],
+        [
+          25,
+          "SLASH"
+        ],
+        [
+          31,
+          "AGILITY"
+        ],
+        [
+          38,
+          "SCREECH"
+        ],
+        [
+          45,
+          "CRUNCH"
+        ]
+      ],
+      "tmhm_moves": [
+        "HEADBUTT",
+        "SWIFT",
+        "THIEF",
+        "DOUBLE_TEAM",
+        "REST",
+        "PROTECT",
+        "RETURN",
+        "ATTRACT",
+        "FURY_CUTTER"
+      ],
+      "egg_moves": [
+        "BATON_PASS",
+        "CHARM",
+        "REVERSAL"
+      ]
+    },
+    {
+      "id": "MN_309",
+      "classification": "FalseBranch",
+      "height_inches": 38,
+      "weight_tenths_lb": 480,
+      "dex_pages": [
+        "Its angular back @ looks like a @ snapped pine limb.",
+        "Only two eyes @ betray the hunter @ beneath the arch."
+      ],
+      "base_stats": {
+        "hp": 75,
+        "attack": 95,
+        "defense": 60,
+        "speed": 105,
+        "special_attack": 80,
+        "special_defense": 80
+      },
+      "catch_rate": 60,
+      "base_exp": 175,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_GROUND",
+        "EGG_GROUND"
+      ],
+      "evolution": null,
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_FOX",
+      "footprint_species": "FURRET",
+      "cry": {
+        "cry": "CRY_SENTRET",
+        "pitch": 0,
+        "length": 160
+      },
+      "shiny_rgb5": [
+        [
+          21,
+          15,
+          9
+        ],
+        [
+          10,
+          7,
+          13
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "SCRATCH"
+        ],
+        [
+          1,
+          "TAIL_WHIP"
+        ],
+        [
+          1,
+          "PURSUIT"
+        ],
+        [
+          5,
+          "QUICK_ATTACK"
+        ],
+        [
+          10,
+          "BITE"
+        ],
+        [
+          20,
+          "DOUBLE_TEAM"
+        ],
+        [
+          25,
+          "SLASH"
+        ],
+        [
+          30,
+          "FAINT_ATTACK"
+        ],
+        [
+          34,
+          "AGILITY"
+        ],
+        [
+          40,
+          "SCREECH"
+        ],
+        [
+          46,
+          "CRUNCH"
+        ],
+        [
+          53,
+          "BATON_PASS"
+        ]
+      ],
+      "tmhm_moves": [
+        "HEADBUTT",
+        "SWIFT",
+        "THIEF",
+        "DOUBLE_TEAM",
+        "REST",
+        "PROTECT",
+        "RETURN",
+        "ATTRACT",
+        "FURY_CUTTER",
+        "PSYCH_UP"
+      ],
+      "egg_moves": [
+        "BATON_PASS",
+        "CHARM",
+        "REVERSAL"
+      ]
+    }
+  ],
+  "pokemon_palettes": {
+    "MN_308": {
+      "species_id": "MN_308",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          25,
+          16,
+          8
+        ],
+        [
+          10,
+          7,
+          9
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        8729,
+        9450,
+        0
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#CE8442",
+        "#52394A",
+        "#000000"
+      ],
+      "name": "Crookit",
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          206,
+          132,
+          66
+        ],
+        [
+          82,
+          57,
+          74
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    "MN_309": {
+      "species_id": "MN_309",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          13,
+          10,
+          16
+        ],
+        [
+          6,
+          8,
+          11
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        16717,
+        11526,
+        0
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#6B5284",
+        "#31425A",
+        "#000000"
+      ],
+      "name": "Crookveil",
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          107,
+          82,
+          132
+        ],
+        [
+          49,
+          66,
+          90
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ]
+    }
+  },
+  "evolution_design": "A crooked youngster develops an angular overhanging back and tapered forked tail. The continuous single body resembles a fallen branch; its real face hides beneath its own shoulder. Exactly four legs, with one naturally occluded in the three-quarter front.",
+  "balance_notes": "Ordinary two-stage family; no rare classification. Only existing move/effect IDs; native borrowed cry programs with distinct pitch/length. Stats and progression remain proposals for root integration.",
+  "selected_manifest": "sprites/mn-f139/manifest.json",
+  "selected_native_directory": "target/minnesota-pokemon/native/MN_F139",
+  "review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "sheet_sha256": "e8116b6302fbd1223bed7dd6cfd88140f663a1557a67609b35f094eccb5522f5",
+    "outline_profile": "source-contour-v1",
+    "notes": "Root approved SourceCenter + SourceBacked. A targeted ImageGen revision removed the false extra pair of legs and tapered the tail. Crookit stays on the original source. Clear branch-body silhouette with attached hidden head; cropped independent rears. All original sources, prompts and rejected variants retained. No pixel edits."
+  },
+  "source_hashes": {
+    "sprites/mn-f139/proposal-v1/front-back.anatomy-v2.png": "62b97fc2e9f4dd8df357f59fcaf8af986b1debfb50a99153051e8debefbbcfe9",
+    "sprites/mn-f139/proposal-v1/front-back.imagegen-v1.png": "1c39f45125bf3e7eea3eb75b6b91dea552737352fc75bba03d5978f98b2c2307"
+  },
+  "variants": [
+    "area-source",
+    "area-solid",
+    "center-source",
+    "center-solid",
+    "area-white16"
+  ]
+}

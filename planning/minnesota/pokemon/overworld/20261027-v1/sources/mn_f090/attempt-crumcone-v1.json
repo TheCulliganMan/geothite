@@ -1,0 +1,9 @@
+{
+  "tool": "built-in image_gen",
+  "original": "/Users/ryanculligan/.codex/generated_images/01a179bf-dc2b-7352-8975-8b8f3a32e33b/exec-835f2aa5-5757-412e-b717-fd043bb309dd.png",
+  "preserved_raw": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f090/crumcone.overworld.imagegen-v1.png",
+  "sha256": "123375185391d7628c9a696aca1f3d70797420564c093bbde39d3d885a664b11",
+  "exact_prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f090/prompt-crumcone-v1.txt",
+  "reference_mapping": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f090/reference-mapping-crumcone-v1.json",
+  "status": "preserved; see frozen manifest for pose selection"
+}

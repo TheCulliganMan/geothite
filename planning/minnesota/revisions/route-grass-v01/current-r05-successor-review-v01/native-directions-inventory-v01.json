@@ -1,0 +1,23 @@
+[
+  {
+    "label": "MN_R05_RAMP_SIGNText",
+    "commands": [
+      {
+        "args": [
+          "\"CLIMB THE BENDS\""
+        ],
+        "command": "text"
+      },
+      {
+        "args": [
+          "\"DROP TO RETURN\""
+        ],
+        "command": "line"
+      },
+      {
+        "args": [],
+        "command": "done"
+      }
+    ]
+  }
+]

@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-iron-drill-core-v04.crystalpack",
+  "pack_sha256": "4240537c844bf7e305e99c24f2b7054c314b84a03d17037747cb4ceabdbd17fd",
+  "comparison": "planning/minnesota/revisions/route-grass-v01/current-r04-successor-review-v01/recovery-trace-comparison-runs-v01.json",
+  "trace": ".local/route-grass-review/r04-recovery-traced-current-v01.trace",
+  "trace_sha256": "d643c65c4e4bc406c1f921f363b807bc9b59211f70fa522d8ce7fce7d1f53df2",
+  "field_revive_uses": 1,
+  "reached_save": ".local/route-grass-review/r04-recovery-traced-current-journey-v01.crystalsave",
+  "reached_save_sha256": "6afb68336065a6cd1bb4c1244724fba48eed27f88f5ca9509e70ee4e4bcad232",
+  "scope": "Both trainer bypass directions, actual wild RUN with possible fainting, native carried Revive/Super Potion recovery, actual Mica and Cole wins with PP use, pickups, Ether, dry passing bay and Save/Continue. Initial original Minnesota party18/16, three badges and carried supplies are explicit QA setup, not earned progression.",
+  "unchanged_authored_content": true
+}

@@ -1,0 +1,273 @@
+[
+  {
+    "label": "MN_R14_T01Seen",
+    "source_field": "before_lines",
+    "lines": [
+      "The pines make a",
+      "fine camp spot.",
+      "My partners know",
+      "every root here!"
+    ]
+  },
+  {
+    "label": "MN_R14_T01Won",
+    "source_field": "after_lines",
+    "lines": [
+      "We will take a",
+      "quiet walk now."
+    ]
+  },
+  {
+    "label": "MN_R14_T01Lost",
+    "source_field": "loss_lines",
+    "lines": [
+      "A soft path beats",
+      "a stony road."
+    ]
+  },
+  {
+    "label": "MN_R14_T02Seen",
+    "source_field": "before_lines",
+    "lines": [
+      "These flowers turn",
+      "toward the light.",
+      "Watch how my team",
+      "follows the light!"
+    ]
+  },
+  {
+    "label": "MN_R14_T02Won",
+    "source_field": "after_lines",
+    "lines": [
+      "A bright battle",
+      "for a shady path."
+    ]
+  },
+  {
+    "label": "MN_R14_T02Lost",
+    "source_field": "loss_lines",
+    "lines": [
+      "Look for flowers",
+      "beside the trail."
+    ]
+  },
+  {
+    "label": "MN_R14_T03Seen",
+    "source_field": "before_lines",
+    "lines": [
+      "See the ripples?",
+      "A bug just landed.",
+      "My team is quick",
+      "on its feet too!"
+    ]
+  },
+  {
+    "label": "MN_R14_T03Won",
+    "source_field": "after_lines",
+    "lines": [
+      "You saw our moves",
+      "before they came."
+    ]
+  },
+  {
+    "label": "MN_R14_T03Lost",
+    "source_field": "loss_lines",
+    "lines": [
+      "Please keep clear",
+      "of the pond reeds."
+    ]
+  },
+  {
+    "label": "MN_R14_T04Seen",
+    "source_field": "before_lines",
+    "lines": [
+      "This hollow keeps",
+      "the wind away.",
+      "We can practice",
+      "without a chill."
+    ]
+  },
+  {
+    "label": "MN_R14_T04Won",
+    "source_field": "after_lines",
+    "lines": [
+      "Your team looks",
+      "ready to travel."
+    ]
+  },
+  {
+    "label": "MN_R14_T04Lost",
+    "source_field": "loss_lines",
+    "lines": [
+      "The west gate is",
+      "past these pines."
+    ]
+  },
+  {
+    "label": "MN_R14_T05Seen",
+    "source_field": "before_lines",
+    "lines": [
+      "A little patience",
+      "helps at the pond.",
+      "Does your team",
+      "know how to wait?"
+    ]
+  },
+  {
+    "label": "MN_R14_T05Won",
+    "source_field": "after_lines",
+    "lines": [
+      "That was worth",
+      "the quiet wait.",
+      "Try the ROD GURU!",
+      "His house is above",
+      "the lakeside deck",
+      "on PINE COUNTRY RD",
+      "south of BRAINERD.",
+      "A free SUPER ROD!"
+    ]
+  },
+  {
+    "label": "MN_R14_T05Lost",
+    "source_field": "loss_lines",
+    "lines": [
+      "I will stay here",
+      "and watch the bank"
+    ]
+  },
+  {
+    "label": "MN_R14_T06Seen",
+    "source_field": "before_lines",
+    "lines": [
+      "The marsh hums",
+      "in the warm sun.",
+      "Let us add a",
+      "battle song!"
+    ]
+  },
+  {
+    "label": "MN_R14_T06Won",
+    "source_field": "after_lines",
+    "lines": [
+      "Even the bugs",
+      "fell quiet for us."
+    ]
+  },
+  {
+    "label": "MN_R14_T06Lost",
+    "source_field": "loss_lines",
+    "lines": [
+      "A dry loop leads",
+      "round the reeds."
+    ]
+  },
+  {
+    "label": "MN_R14_TRAIL_GUIDEText",
+    "source_field": "residents.lines",
+    "lines": [
+      "Lake Itasca lies",
+      "west of this path.",
+      "Our survey marks",
+      "follow the trail."
+    ]
+  },
+  {
+    "label": "MN_R14_BOTANISTText",
+    "source_field": "residents.lines",
+    "lines": [
+      "These pines shade",
+      "the small flowers.",
+      "A clear path keeps",
+      "their roots safe."
+    ]
+  },
+  {
+    "label": "MN_R14_POND_WATCHERText",
+    "source_field": "residents.lines",
+    "lines": [
+      "I count the birds",
+      "from the dry bank.",
+      "Itasca has more",
+      "places to explore."
+    ]
+  },
+  {
+    "label": "MN_R14_BRIDGE_KEEPERText",
+    "source_field": "residents.lines",
+    "lines": [
+      "This small stream",
+      "has so far to go.",
+      "Use the boardwalk.",
+      "Leave the reeds."
+    ]
+  },
+  {
+    "label": "MN_R14_HOLLOW_WALKERText",
+    "source_field": "residents.lines",
+    "lines": [
+      "We pause in this",
+      "hollow as we walk.",
+      "There is no shop",
+      "among these pines."
+    ]
+  },
+  {
+    "label": "MN_R14_MARSH_WATCHERText",
+    "source_field": "residents.lines",
+    "lines": [
+      "WINDHOPPER skim",
+      "across",
+      "the marsh water.",
+      "I stay on the bank",
+      "watch them turn."
+    ]
+  },
+  {
+    "label": "MN_R14_SIGN_01Text",
+    "source_field": "signs.lines",
+    "lines": [
+      "HEADWATERS TRAIL",
+      "ITASCA: WEST"
+    ]
+  },
+  {
+    "label": "MN_R14_SIGN_02Text",
+    "source_field": "signs.lines",
+    "lines": [
+      "OLD PINE WALK",
+      "FOLLOW THE GAPS"
+    ]
+  },
+  {
+    "label": "MN_R14_SIGN_03Text",
+    "source_field": "signs.lines",
+    "lines": [
+      "YOUNG MISSISSIPPI",
+      "USE THE BOARDWALK"
+    ]
+  },
+  {
+    "label": "MN_R14_SIGN_04Text",
+    "source_field": "signs.lines",
+    "lines": [
+      "SURVEY POND",
+      "WATCH FROM SHORE"
+    ]
+  },
+  {
+    "label": "MN_R14_SIGN_05Text",
+    "source_field": "signs.lines",
+    "lines": [
+      "FERN HOLLOW",
+      "REST IN THE SHADE"
+    ]
+  },
+  {
+    "label": "MN_R14_SIGN_06Text",
+    "source_field": "signs.lines",
+    "lines": [
+      "MARSH OBSERVATION",
+      "PROTECT THE REEDS"
+    ]
+  }
+]

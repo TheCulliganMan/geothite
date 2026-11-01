@@ -1,0 +1,5 @@
+# Detroit current town and survey review
+
+Five native cases pass: all original rooms/residents/signs/two roads/beach and actual gatehouse return/Continue; care/PC/shop; ranger requirements; all three R19 observations through real Itasca return/Continue; and full pocket/native Toss/reward retry. Fresh production Continue from the actual reached town save passes15 calls, walking and Items/Balls, with empty stderr and unchanged input/source saves. Scoped formatting and affected all-target Clippy pass with existing warnings.
+
+The obsolete closed north boundary is replaced in the test by the installed gatehouse and its real25,4 arrival. Survey starts at current25,8 landing. Wild-challenge scales encounters, so a regional GILLPUP60 holding SMOKE_BALL is an explicit initial traversal fixture; native RUN still resolves each encounter. Earlier failed fixtures, blackout attempts and compiler diagnostics remain retained. No gameplay terrain, pack, selector or engine behavior changed. No earned regional progression or new visual capture claimed. Broader review remains active.

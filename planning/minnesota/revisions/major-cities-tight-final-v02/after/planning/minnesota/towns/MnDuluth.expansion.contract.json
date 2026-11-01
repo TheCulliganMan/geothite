@@ -1,0 +1,5184 @@
+{
+  "schema_version": 1,
+  "city": "MnDuluth",
+  "native_module_sha256": "ad4f81453ba40e40efe055adb55e323c060a74fcce4a46bd4afb4b9d55eb51cc",
+  "old_dimensions_metatiles": [
+    32,
+    24
+  ],
+  "dimensions_metatiles": [
+    64,
+    48
+  ],
+  "translation_core": [
+    32,
+    24
+  ],
+  "arrival_core": [
+    69,
+    36
+  ],
+  "clinic_constant": "MN_DULUTH_POKECENTER_1F",
+  "clinic_recovery_core": [
+    10,
+    13
+  ],
+  "default_mart": "MART_MN_DULUTH",
+  "anchor_overrides": [
+    {
+      "kind": "object",
+      "index": 8,
+      "before": [
+        2,
+        24
+      ],
+      "after": [
+        2,
+        48
+      ]
+    },
+    {
+      "kind": "object",
+      "index": 9,
+      "before": [
+        2,
+        25
+      ],
+      "after": [
+        2,
+        49
+      ]
+    },
+    {
+      "kind": "object",
+      "index": 10,
+      "before": [
+        32,
+        2
+      ],
+      "after": [
+        64,
+        2
+      ]
+    },
+    {
+      "kind": "object",
+      "index": 11,
+      "before": [
+        33,
+        2
+      ],
+      "after": [
+        65,
+        2
+      ]
+    },
+    {
+      "kind": "coordinate",
+      "index": 0,
+      "before": [
+        3,
+        24
+      ],
+      "after": [
+        3,
+        48
+      ]
+    },
+    {
+      "kind": "coordinate",
+      "index": 1,
+      "before": [
+        1,
+        24
+      ],
+      "after": [
+        1,
+        48
+      ]
+    },
+    {
+      "kind": "coordinate",
+      "index": 2,
+      "before": [
+        3,
+        25
+      ],
+      "after": [
+        3,
+        49
+      ]
+    },
+    {
+      "kind": "coordinate",
+      "index": 3,
+      "before": [
+        1,
+        25
+      ],
+      "after": [
+        1,
+        49
+      ]
+    },
+    {
+      "kind": "coordinate",
+      "index": 4,
+      "before": [
+        32,
+        3
+      ],
+      "after": [
+        64,
+        3
+      ]
+    },
+    {
+      "kind": "coordinate",
+      "index": 5,
+      "before": [
+        32,
+        1
+      ],
+      "after": [
+        64,
+        1
+      ]
+    },
+    {
+      "kind": "coordinate",
+      "index": 6,
+      "before": [
+        33,
+        3
+      ],
+      "after": [
+        65,
+        3
+      ]
+    },
+    {
+      "kind": "coordinate",
+      "index": 7,
+      "before": [
+        33,
+        1
+      ],
+      "after": [
+        65,
+        1
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "direction": "west",
+      "target": "MnR10C01R00",
+      "old_offset": 0,
+      "offset": 12,
+      "town_edge": [
+        [
+          0,
+          48
+        ],
+        [
+          0,
+          49
+        ]
+      ],
+      "route_edge": [
+        [
+          31,
+          24
+        ],
+        [
+          31,
+          25
+        ]
+      ]
+    },
+    {
+      "direction": "north",
+      "target": "MnR11C00R03",
+      "old_offset": -7,
+      "offset": 9,
+      "town_edge": [
+        [
+          64,
+          0
+        ],
+        [
+          65,
+          0
+        ]
+      ],
+      "route_edge": [
+        [
+          46,
+          47
+        ],
+        [
+          47,
+          47
+        ]
+      ]
+    }
+  ],
+  "spawn_overrides": [],
+  "residents": [
+    {
+      "id": "MN_DULUTH_X_OBSERVATION_VIEW",
+      "sprite": "SPRITE_GRAMPS",
+      "tile": [
+        33,
+        13
+      ],
+      "facing": "south",
+      "lines": [
+        "Our streets follow",
+        "the old stone bluff."
+      ]
+    },
+    {
+      "id": "MN_DULUTH_X_LINCOLN_LOADER",
+      "sprite": "SPRITE_FISHER",
+      "tile": [
+        17,
+        46
+      ],
+      "facing": "south",
+      "lines": [
+        "The narrow street",
+        "keeps our yards safe."
+      ]
+    },
+    {
+      "id": "MN_DULUTH_X_POINT_WALKER",
+      "sprite": "SPRITE_LASS",
+      "tile": [
+        91,
+        77
+      ],
+      "facing": "south",
+      "lines": [
+        "The point bends",
+        "around the harbor."
+      ]
+    },
+    {
+      "id": "MN_DULUTH_X_LAKEWALK_FISHER",
+      "sprite": "SPRITE_FISHER",
+      "tile": [
+        121,
+        41
+      ],
+      "facing": "south",
+      "lines": [
+        "The pier is railed.",
+        "Rocks close the lake."
+      ]
+    },
+    {
+      "id": "MN_DULUTH_X_UNION_READER",
+      "sprite": "SPRITE_GENTLEMAN",
+      "tile": [
+        9,
+        36
+      ],
+      "facing": "south",
+      "lines": [
+        "Meeting upstairs,",
+        "practice downstairs."
+      ]
+    },
+    {
+      "id": "MN_DULUTH_X_DOCK_HAND",
+      "sprite": "SPRITE_FISHER",
+      "tile": [
+        20,
+        77
+      ],
+      "facing": "south",
+      "lines": [
+        "Our tool request",
+        "is at cargo office."
+      ]
+    }
+  ],
+  "signs": [
+    {
+      "id": "MN_DULUTH_X_SIGN_OBSERVATION",
+      "tile": [
+        20,
+        16
+      ],
+      "lines": [
+        "OBSERVATION HILL",
+        "Lodge and hill loop"
+      ]
+    },
+    {
+      "id": "MN_DULUTH_X_SIGN_HILLSIDE",
+      "tile": [
+        68,
+        20
+      ],
+      "lines": [
+        "HILLSIDE",
+        "Reading hall west",
+        "Co-op southeast"
+      ]
+    },
+    {
+      "id": "MN_DULUTH_X_SIGN_LINCOLN",
+      "tile": [
+        14,
+        48
+      ],
+      "lines": [
+        "LINCOLN PARK",
+        "Union hall north",
+        "Practice annex south"
+      ]
+    },
+    {
+      "id": "MN_DULUTH_X_SIGN_LAKEWALK",
+      "tile": [
+        102,
+        64
+      ],
+      "lines": [
+        "LAKEWALK",
+        "Co-op training3F"
+      ]
+    },
+    {
+      "id": "MN_DULUTH_X_SIGN_BAYFRONT",
+      "tile": [
+        14,
+        82
+      ],
+      "lines": [
+        "BAYFRONT",
+        "Cargo office north"
+      ]
+    },
+    {
+      "id": "MN_DULUTH_X_SIGN_POINT",
+      "tile": [
+        84,
+        76
+      ],
+      "lines": [
+        "PARK POINT",
+        "Return to the canal"
+      ]
+    },
+    {
+      "id": "MN_DULUTH_X_SIGN_COOP",
+      "tile": [
+        116,
+        62
+      ],
+      "lines": [
+        "MARITIME CO-OP",
+        "1F GEAR 2F HEALTH",
+        "3F TRAINING"
+      ]
+    }
+  ],
+  "doors": [
+    {
+      "tile": [
+        8,
+        9
+      ],
+      "return_tile": [
+        8,
+        10
+      ],
+      "arrival_tile": [
+        8,
+        10
+      ],
+      "target": "MnDuluthLookoutLodge1F",
+      "warp_index": 15,
+      "return_warp_index": 16,
+      "target_warp": 3
+    },
+    {
+      "tile": [
+        19,
+        9
+      ],
+      "return_tile": [
+        19,
+        10
+      ],
+      "arrival_tile": [
+        19,
+        10
+      ],
+      "target": "MnDuluthPotteryHouse",
+      "warp_index": 17,
+      "return_warp_index": 18,
+      "target_warp": 3
+    },
+    {
+      "tile": [
+        30,
+        9
+      ],
+      "return_tile": [
+        30,
+        10
+      ],
+      "arrival_tile": [
+        30,
+        10
+      ],
+      "target": "MnDuluthQuarryPractice",
+      "warp_index": 19,
+      "return_warp_index": 20,
+      "target_warp": 3
+    },
+    {
+      "tile": [
+        39,
+        7
+      ],
+      "return_tile": [
+        39,
+        8
+      ],
+      "arrival_tile": [
+        39,
+        8
+      ],
+      "target": "MnDuluthHillGardenHouse",
+      "warp_index": 21,
+      "return_warp_index": 22,
+      "target_warp": 3
+    },
+    {
+      "tile": [
+        53,
+        15
+      ],
+      "return_tile": [
+        53,
+        16
+      ],
+      "arrival_tile": [
+        53,
+        16
+      ],
+      "target": "MnDuluthTerraceHome",
+      "warp_index": 23,
+      "return_warp_index": 24,
+      "target_warp": 3
+    },
+    {
+      "tile": [
+        9,
+        19
+      ],
+      "return_tile": [
+        9,
+        20
+      ],
+      "arrival_tile": [
+        9,
+        20
+      ],
+      "target": "MnDuluthHillRanger",
+      "warp_index": 25,
+      "return_warp_index": 26,
+      "target_warp": 3
+    },
+    {
+      "tile": [
+        46,
+        9
+      ],
+      "return_tile": [
+        46,
+        10
+      ],
+      "arrival_tile": [
+        46,
+        10
+      ],
+      "target": "MnDuluthReadingHall1F",
+      "warp_index": 27,
+      "return_warp_index": 28,
+      "target_warp": 3
+    },
+    {
+      "tile": [
+        72,
+        9
+      ],
+      "return_tile": [
+        72,
+        10
+      ],
+      "arrival_tile": [
+        72,
+        10
+      ],
+      "target": "MnDuluthHillsideHostel1F",
+      "warp_index": 29,
+      "return_warp_index": 30,
+      "target_warp": 3
+    },
+    {
+      "tile": [
+        86,
+        9
+      ],
+      "return_tile": [
+        86,
+        10
+      ],
+      "arrival_tile": [
+        86,
+        10
+      ],
+      "target": "MnDuluthHillSupplies",
+      "warp_index": 31,
+      "return_warp_index": 32,
+      "target_warp": 3
+    },
+    {
+      "tile": [
+        74,
+        19
+      ],
+      "return_tile": [
+        74,
+        20
+      ],
+      "arrival_tile": [
+        74,
+        20
+      ],
+      "target": "MnDuluthCommunityKitchen",
+      "warp_index": 33,
+      "return_warp_index": 34,
+      "target_warp": 3
+    },
+    {
+      "tile": [
+        100,
+        9
+      ],
+      "return_tile": [
+        100,
+        10
+      ],
+      "arrival_tile": [
+        100,
+        10
+      ],
+      "target": "MnDuluthWeatherStudy1F",
+      "warp_index": 35,
+      "return_warp_index": 36,
+      "target_warp": 3
+    },
+    {
+      "tile": [
+        111,
+        9
+      ],
+      "return_tile": [
+        111,
+        10
+      ],
+      "arrival_tile": [
+        111,
+        10
+      ],
+      "target": "MnDuluthLakesideHome",
+      "warp_index": 37,
+      "return_warp_index": 38,
+      "target_warp": 3
+    },
+    {
+      "tile": [
+        116,
+        21
+      ],
+      "return_tile": [
+        116,
+        22
+      ],
+      "arrival_tile": [
+        116,
+        22
+      ],
+      "target": "MnDuluthLakeOutfitter",
+      "warp_index": 39,
+      "return_warp_index": 40,
+      "target_warp": 3
+    },
+    {
+      "tile": [
+        102,
+        29
+      ],
+      "return_tile": [
+        102,
+        30
+      ],
+      "arrival_tile": [
+        102,
+        30
+      ],
+      "target": "MnDuluthFieldClinic",
+      "warp_index": 41,
+      "return_warp_index": 42,
+      "target_warp": 3
+    },
+    {
+      "tile": [
+        102,
+        41
+      ],
+      "return_tile": [
+        102,
+        42
+      ],
+      "arrival_tile": [
+        102,
+        42
+      ],
+      "target": "MnDuluthBoatBuilder",
+      "warp_index": 43,
+      "return_warp_index": 44,
+      "target_warp": 3
+    },
+    {
+      "tile": [
+        6,
+        33
+      ],
+      "return_tile": [
+        6,
+        34
+      ],
+      "arrival_tile": [
+        6,
+        34
+      ],
+      "target": "MnDuluthUnionHall1F",
+      "warp_index": 45,
+      "return_warp_index": 46,
+      "target_warp": 3
+    },
+    {
+      "tile": [
+        18,
+        41
+      ],
+      "return_tile": [
+        18,
+        42
+      ],
+      "arrival_tile": [
+        18,
+        42
+      ],
+      "target": "MnDuluthOreWarehouse1F",
+      "warp_index": 47,
+      "return_warp_index": 48,
+      "target_warp": 3
+    },
+    {
+      "tile": [
+        24,
+        47
+      ],
+      "return_tile": [
+        24,
+        48
+      ],
+      "arrival_tile": [
+        24,
+        48
+      ],
+      "target": "MnDuluthToolExchange",
+      "warp_index": 49,
+      "return_warp_index": 50,
+      "target_warp": 3
+    },
+    {
+      "tile": [
+        6,
+        55
+      ],
+      "return_tile": [
+        6,
+        56
+      ],
+      "arrival_tile": [
+        6,
+        56
+      ],
+      "target": "MnDuluthTrainingAnnex",
+      "warp_index": 51,
+      "return_warp_index": 52,
+      "target_warp": 3
+    },
+    {
+      "tile": [
+        23,
+        61
+      ],
+      "return_tile": [
+        23,
+        62
+      ],
+      "arrival_tile": [
+        23,
+        62
+      ],
+      "target": "MnDuluthForemanHome",
+      "warp_index": 53,
+      "return_warp_index": 54,
+      "target_warp": 3
+    },
+    {
+      "tile": [
+        106,
+        61
+      ],
+      "return_tile": [
+        106,
+        62
+      ],
+      "arrival_tile": [
+        106,
+        62
+      ],
+      "target": "MnDuluthMaritimeCoop1F",
+      "warp_index": 55,
+      "return_warp_index": 56,
+      "target_warp": 3
+    },
+    {
+      "tile": [
+        8,
+        69
+      ],
+      "return_tile": [
+        8,
+        70
+      ],
+      "arrival_tile": [
+        8,
+        70
+      ],
+      "target": "MnDuluthCargoOffice",
+      "warp_index": 57,
+      "return_warp_index": 58,
+      "target_warp": 3
+    },
+    {
+      "tile": [
+        20,
+        73
+      ],
+      "return_tile": [
+        20,
+        74
+      ],
+      "arrival_tile": [
+        20,
+        74
+      ],
+      "target": "MnDuluthSailorClub1F",
+      "warp_index": 59,
+      "return_warp_index": 60,
+      "target_warp": 3
+    },
+    {
+      "tile": [
+        12,
+        81
+      ],
+      "return_tile": [
+        12,
+        82
+      ],
+      "arrival_tile": [
+        12,
+        82
+      ],
+      "target": "MnDuluthDockSupplies",
+      "warp_index": 61,
+      "return_warp_index": 62,
+      "target_warp": 3
+    },
+    {
+      "tile": [
+        23,
+        85
+      ],
+      "return_tile": [
+        23,
+        86
+      ],
+      "arrival_tile": [
+        23,
+        86
+      ],
+      "target": "MnDuluthSlipHouse",
+      "warp_index": 63,
+      "return_warp_index": 64,
+      "target_warp": 3
+    },
+    {
+      "tile": [
+        81,
+        75
+      ],
+      "return_tile": [
+        81,
+        76
+      ],
+      "arrival_tile": [
+        81,
+        76
+      ],
+      "target": "MnDuluthBeachShelter",
+      "warp_index": 65,
+      "return_warp_index": 66,
+      "target_warp": 3
+    },
+    {
+      "tile": [
+        90,
+        81
+      ],
+      "return_tile": [
+        90,
+        82
+      ],
+      "arrival_tile": [
+        90,
+        82
+      ],
+      "target": "MnDuluthPointOutfitter",
+      "warp_index": 67,
+      "return_warp_index": 68,
+      "target_warp": 3
+    },
+    {
+      "tile": [
+        99,
+        81
+      ],
+      "return_tile": [
+        99,
+        82
+      ],
+      "arrival_tile": [
+        99,
+        82
+      ],
+      "target": "MnDuluthSandHouse",
+      "warp_index": 69,
+      "return_warp_index": 70,
+      "target_warp": 3
+    },
+    {
+      "tile": [
+        106,
+        87
+      ],
+      "return_tile": [
+        106,
+        88
+      ],
+      "arrival_tile": [
+        106,
+        88
+      ],
+      "target": "MnDuluthBoatClub1F",
+      "warp_index": 71,
+      "return_warp_index": 72,
+      "target_warp": 3
+    },
+    {
+      "tile": [
+        117,
+        89
+      ],
+      "return_tile": [
+        117,
+        90
+      ],
+      "arrival_tile": [
+        117,
+        90
+      ],
+      "target": "MnDuluthFisherCottage",
+      "warp_index": 73,
+      "return_warp_index": 74,
+      "target_warp": 3
+    },
+    {
+      "tile": [
+        97,
+        87
+      ],
+      "return_tile": [
+        97,
+        88
+      ],
+      "arrival_tile": [
+        97,
+        88
+      ],
+      "target": "MnDuluthPointGardenHome",
+      "warp_index": 75,
+      "return_warp_index": 76,
+      "target_warp": 3
+    }
+  ],
+  "rooms": [
+    {
+      "id": "MnDuluthLookoutLodge1F",
+      "native_constant": "MN_DULUTH_X_LOOKOUTLODGE_1F",
+      "template": "MnDuluthHarborWorkshop",
+      "tileset": "house",
+      "border_block": 10,
+      "dimensions_metatiles": [
+        8,
+        6
+      ],
+      "rows": [
+        "0a 0a 0a 0a 0a 0a 0a 0a",
+        "0a 04 1e 05 04 05 25 0a",
+        "0a 0f 0f 0f 0f 0f 0f 0a",
+        "0a 01 02 0f 0f 01 02 0a",
+        "0a 0c 0d 0f 0f 0c 0d 0a",
+        "0a 0a 0a 0a 0b 0a 0a 0a"
+      ],
+      "arrival_core": [
+        8,
+        9
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            8,
+            11
+          ],
+          "target": "MN_DULUTH",
+          "target_warp": 16,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            9,
+            11
+          ],
+          "target": "MN_DULUTH",
+          "target_warp": 16,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            8,
+            9
+          ],
+          "target": "MN_DULUTH_X_LOOKOUTLODGE_1F",
+          "target_warp": 3,
+          "passive": true
+        },
+        {
+          "index": 4,
+          "tile": [
+            12,
+            2
+          ],
+          "target": "MN_DULUTH_X_LOOKOUTLODGE_2F",
+          "target_warp": 2,
+          "passive": false
+        },
+        {
+          "index": 5,
+          "tile": [
+            12,
+            3
+          ],
+          "target": "MN_DULUTH_X_LOOKOUTLODGE_1F",
+          "target_warp": 5,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_DULUTH_X_LOOKOUTLODGE_F1_HOST",
+          "sprite": "SPRITE_GENTLEMAN",
+          "tile": [
+            5,
+            5
+          ],
+          "facing": "south",
+          "lines": [
+            "The ore docks are",
+            "below this ridge.",
+            "Upstairs has maps."
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnDuluthLookoutLodge2F",
+      "native_constant": "MN_DULUTH_X_LOOKOUTLODGE_2F",
+      "template": "MnDuluthHarborWorkshop",
+      "tileset": "house",
+      "border_block": 10,
+      "dimensions_metatiles": [
+        8,
+        6
+      ],
+      "rows": [
+        "0a 0a 0a 0a 0a 0a 0a 0a",
+        "0a 25 1e 05 04 05 1d 0a",
+        "0a 0f 0f 0f 0f 0f 0f 0a",
+        "0a 01 02 0f 0f 01 02 0a",
+        "0a 0c 0d 0f 0f 0c 0d 0a",
+        "0a 0a 0a 0a 0a 0a 0a 0a"
+      ],
+      "arrival_core": [
+        2,
+        3
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            2
+          ],
+          "target": "MN_DULUTH_X_LOOKOUTLODGE_1F",
+          "target_warp": 5,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            2,
+            3
+          ],
+          "target": "MN_DULUTH_X_LOOKOUTLODGE_2F",
+          "target_warp": 2,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_DULUTH_X_LOOKOUTLODGE_F2_HOST",
+          "sprite": "SPRITE_GENTLEMAN",
+          "tile": [
+            5,
+            5
+          ],
+          "facing": "south",
+          "lines": [
+            "The upper floor",
+            "is a quiet place.",
+            "Watch the wind."
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnDuluthPotteryHouse",
+      "native_constant": "MN_DULUTH_X_POTTERYHOUSE",
+      "template": "MnDuluthHarborWorkshop",
+      "tileset": "house",
+      "border_block": 10,
+      "dimensions_metatiles": [
+        6,
+        6
+      ],
+      "rows": [
+        "0a 0a 0a 0a 0a 0a",
+        "0a 04 1e 05 1d 0a",
+        "0a 0f 0f 0f 0f 0a",
+        "0a 01 02 0f 0f 0a",
+        "0a 0c 0d 0f 0f 0a",
+        "0a 0a 0a 0b 0a 0a"
+      ],
+      "arrival_core": [
+        6,
+        9
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            6,
+            11
+          ],
+          "target": "MN_DULUTH",
+          "target_warp": 18,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            7,
+            11
+          ],
+          "target": "MN_DULUTH",
+          "target_warp": 18,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            6,
+            9
+          ],
+          "target": "MN_DULUTH_X_POTTERYHOUSE",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_DULUTH_X_POTTERYHOUSE_F1_HOST",
+          "sprite": "SPRITE_TEACHER",
+          "tile": [
+            5,
+            5
+          ],
+          "facing": "south",
+          "lines": [
+            "Lake clay changes",
+            "color in the kiln.",
+            "Cool air helps."
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnDuluthQuarryPractice",
+      "native_constant": "MN_DULUTH_X_QUARRYPRACTICE",
+      "template": "MnDuluthHarborWorkshop",
+      "tileset": "house",
+      "border_block": 10,
+      "dimensions_metatiles": [
+        8,
+        6
+      ],
+      "rows": [
+        "0a 0a 0a 0a 0a 0a 0a 0a",
+        "0a 04 05 04 04 05 1d 0a",
+        "0a 0f 0f 0f 0f 0f 0f 0a",
+        "0a 0f 0f 0f 0f 0f 0f 0a",
+        "0a 04 0f 0f 0f 0f 04 0a",
+        "0a 0a 0a 0a 0b 0a 0a 0a"
+      ],
+      "arrival_core": [
+        8,
+        9
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            8,
+            11
+          ],
+          "target": "MN_DULUTH",
+          "target_warp": 20,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            9,
+            11
+          ],
+          "target": "MN_DULUTH",
+          "target_warp": 20,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            8,
+            9
+          ],
+          "target": "MN_DULUTH_X_QUARRYPRACTICE",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_DULUTH_X_QUARRYPRACTICE_F1_HOST",
+          "sprite": "SPRITE_GENTLEMAN",
+          "tile": [
+            5,
+            5
+          ],
+          "facing": "south",
+          "lines": [
+            "Our practice court",
+            "has no badge prize",
+            "Ask VESKA to duel."
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [
+        {
+          "id": "MN_DULUTH_X_T02",
+          "display_name": "VESKA",
+          "trainer_class": "COOLTRAINERF",
+          "sprite": "SPRITE_COOLTRAINER_F",
+          "tile": [
+            10,
+            5
+          ],
+          "facing": "south",
+          "sight_range": 0,
+          "defeated_flag": "EVENT_MN_DULUTH_X_TRAINER_02",
+          "party": [
+            {
+              "species": "PILOSWINE",
+              "level": 42
+            },
+            {
+              "species": "NOCTOWL",
+              "level": 42
+            }
+          ],
+          "before_lines": [
+            "A friendly match?",
+            "Show your teamwork!"
+          ],
+          "after_lines": [
+            "You read the field!"
+          ],
+          "loss_lines": [
+            "We train here",
+            "every windy day."
+          ]
+        }
+      ],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnDuluthHillGardenHouse",
+      "native_constant": "MN_DULUTH_X_HILLGARDENHOUSE",
+      "template": "MnDuluthHarborWorkshop",
+      "tileset": "house",
+      "border_block": 10,
+      "dimensions_metatiles": [
+        6,
+        6
+      ],
+      "rows": [
+        "0a 0a 0a 0a 0a 0a",
+        "0a 04 1e 05 1d 0a",
+        "0a 0f 0f 0f 0f 0a",
+        "0a 01 02 0f 0f 0a",
+        "0a 0c 0d 0f 0f 0a",
+        "0a 0a 0a 0b 0a 0a"
+      ],
+      "arrival_core": [
+        6,
+        9
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            6,
+            11
+          ],
+          "target": "MN_DULUTH",
+          "target_warp": 22,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            7,
+            11
+          ],
+          "target": "MN_DULUTH",
+          "target_warp": 22,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            6,
+            9
+          ],
+          "target": "MN_DULUTH_X_HILLGARDENHOUSE",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_DULUTH_X_HILLGARDENHOUSE_F1_HOST",
+          "sprite": "SPRITE_TEACHER",
+          "tile": [
+            5,
+            5
+          ],
+          "facing": "south",
+          "lines": [
+            "These windbreaks",
+            "hold the soil here",
+            "Please use paths."
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnDuluthTerraceHome",
+      "native_constant": "MN_DULUTH_X_TERRACEHOME",
+      "template": "MnDuluthHarborWorkshop",
+      "tileset": "house",
+      "border_block": 10,
+      "dimensions_metatiles": [
+        6,
+        6
+      ],
+      "rows": [
+        "0a 0a 0a 0a 0a 0a",
+        "0a 04 1e 05 1d 0a",
+        "0a 0f 0f 0f 0f 0a",
+        "0a 01 02 0f 0f 0a",
+        "0a 0c 0d 0f 0f 0a",
+        "0a 0a 0a 0b 0a 0a"
+      ],
+      "arrival_core": [
+        6,
+        9
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            6,
+            11
+          ],
+          "target": "MN_DULUTH",
+          "target_warp": 24,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            7,
+            11
+          ],
+          "target": "MN_DULUTH",
+          "target_warp": 24,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            6,
+            9
+          ],
+          "target": "MN_DULUTH_X_TERRACEHOME",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_DULUTH_X_TERRACEHOME_F1_HOST",
+          "sprite": "SPRITE_TEACHER",
+          "tile": [
+            5,
+            5
+          ],
+          "facing": "south",
+          "lines": [
+            "We walk uphill to",
+            "buy our supplies.",
+            "An easy trip home!"
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnDuluthHillRanger",
+      "native_constant": "MN_DULUTH_X_HILLRANGER",
+      "template": "MnDuluthHarborWorkshop",
+      "tileset": "house",
+      "border_block": 10,
+      "dimensions_metatiles": [
+        6,
+        6
+      ],
+      "rows": [
+        "0a 0a 0a 0a 0a 0a",
+        "0a 04 1e 05 1d 0a",
+        "0a 0f 0f 0f 0f 0a",
+        "0a 01 02 0f 0f 0a",
+        "0a 0c 0d 0f 0f 0a",
+        "0a 0a 0a 0b 0a 0a"
+      ],
+      "arrival_core": [
+        6,
+        9
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            6,
+            11
+          ],
+          "target": "MN_DULUTH",
+          "target_warp": 26,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            7,
+            11
+          ],
+          "target": "MN_DULUTH",
+          "target_warp": 26,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            6,
+            9
+          ],
+          "target": "MN_DULUTH_X_HILLRANGER",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_DULUTH_X_HILLRANGER_F1_HOST",
+          "sprite": "SPRITE_GENTLEMAN",
+          "tile": [
+            5,
+            5
+          ],
+          "facing": "south",
+          "lines": [
+            "Stone steps climb",
+            "the stone wall.",
+            "Hop down to return"
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnDuluthReadingHall1F",
+      "native_constant": "MN_DULUTH_X_READINGHALL_1F",
+      "template": "MnDuluthHarborWorkshop",
+      "tileset": "house",
+      "border_block": 10,
+      "dimensions_metatiles": [
+        8,
+        6
+      ],
+      "rows": [
+        "0a 0a 0a 0a 0a 0a 0a 0a",
+        "0a 04 04 0e 04 05 25 0a",
+        "0a 1a 0f 0f 04 04 0f 0a",
+        "0a 1a 01 02 0f 0f 06 0a",
+        "0a 0f 0c 0d 0f 0f 0f 0a",
+        "0a 0a 0a 0a 0b 0a 0a 0a"
+      ],
+      "arrival_core": [
+        8,
+        9
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            8,
+            11
+          ],
+          "target": "MN_DULUTH",
+          "target_warp": 28,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            9,
+            11
+          ],
+          "target": "MN_DULUTH",
+          "target_warp": 28,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            8,
+            9
+          ],
+          "target": "MN_DULUTH_X_READINGHALL_1F",
+          "target_warp": 3,
+          "passive": true
+        },
+        {
+          "index": 4,
+          "tile": [
+            12,
+            2
+          ],
+          "target": "MN_DULUTH_X_READINGHALL_2F",
+          "target_warp": 2,
+          "passive": false
+        },
+        {
+          "index": 5,
+          "tile": [
+            12,
+            3
+          ],
+          "target": "MN_DULUTH_X_READINGHALL_1F",
+          "target_warp": 5,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_DULUTH_X_READINGHALL_F1_HOST",
+          "sprite": "SPRITE_TEACHER",
+          "tile": [
+            5,
+            5
+          ],
+          "facing": "south",
+          "lines": [
+            "Local charts are",
+            "on the upper floor",
+            "Buy gear at co-op."
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnDuluthReadingHall2F",
+      "native_constant": "MN_DULUTH_X_READINGHALL_2F",
+      "template": "MnDuluthHarborWorkshop",
+      "tileset": "house",
+      "border_block": 10,
+      "dimensions_metatiles": [
+        8,
+        6
+      ],
+      "rows": [
+        "0a 0a 0a 0a 0a 0a 0a 0a",
+        "0a 25 05 04 04 05 1d 0a",
+        "0a 0f 0f 0f 04 0f 06 0a",
+        "0a 0f 0f 1a 04 01 02 0a",
+        "0a 06 0f 0f 0f 0c 0d 0a",
+        "0a 0a 0a 0a 0a 0a 0a 0a"
+      ],
+      "arrival_core": [
+        2,
+        3
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            2
+          ],
+          "target": "MN_DULUTH_X_READINGHALL_1F",
+          "target_warp": 5,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            2,
+            3
+          ],
+          "target": "MN_DULUTH_X_READINGHALL_2F",
+          "target_warp": 2,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_DULUTH_X_READINGHALL_F2_HOST",
+          "sprite": "SPRITE_TEACHER",
+          "tile": [
+            5,
+            5
+          ],
+          "facing": "south",
+          "lines": [
+            "Neighbors gather",
+            "here after work."
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnDuluthHillsideHostel1F",
+      "native_constant": "MN_DULUTH_X_HILLSIDEHOSTEL_1F",
+      "template": "MnDuluthHarborWorkshop",
+      "tileset": "facility",
+      "border_block": 23,
+      "dimensions_metatiles": [
+        8,
+        6
+      ],
+      "rows": [
+        "17 17 17 17 17 17 17 17",
+        "17 01 01 01 01 01 04 17",
+        "17 1b 1b 1b 1b 1b 1b 17",
+        "17 1a 1b 1b 1b 1a 1b 17",
+        "17 1b 1b 1b 1b 1b 1b 17",
+        "17 17 17 17 0c 17 17 17"
+      ],
+      "arrival_core": [
+        8,
+        9
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            8,
+            11
+          ],
+          "target": "MN_DULUTH",
+          "target_warp": 30,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            9,
+            11
+          ],
+          "target": "MN_DULUTH",
+          "target_warp": 30,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            8,
+            9
+          ],
+          "target": "MN_DULUTH_X_HILLSIDEHOSTEL_1F",
+          "target_warp": 3,
+          "passive": true
+        },
+        {
+          "index": 4,
+          "tile": [
+            13,
+            2
+          ],
+          "target": "MN_DULUTH_X_HILLSIDEHOSTEL_2F",
+          "target_warp": 2,
+          "passive": false
+        },
+        {
+          "index": 5,
+          "tile": [
+            13,
+            3
+          ],
+          "target": "MN_DULUTH_X_HILLSIDEHOSTEL_1F",
+          "target_warp": 5,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_DULUTH_X_HILLSIDEHOSTEL_F1_HOST",
+          "sprite": "SPRITE_GENTLEMAN",
+          "tile": [
+            5,
+            5
+          ],
+          "facing": "south",
+          "lines": [
+            "Rest your partners",
+            "before hill walks."
+          ],
+          "service": "heal_party"
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {
+        "MN_DULUTH_X_HILLSIDEHOSTEL_F1_HOSTRestText": [
+          {
+            "command": "text",
+            "args": [
+              "Let your partners"
+            ]
+          },
+          {
+            "command": "line",
+            "args": [
+              "rest a moment."
+            ]
+          },
+          {
+            "command": "done",
+            "args": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "MnDuluthHillsideHostel2F",
+      "native_constant": "MN_DULUTH_X_HILLSIDEHOSTEL_2F",
+      "template": "MnDuluthHarborWorkshop",
+      "tileset": "facility",
+      "border_block": 23,
+      "dimensions_metatiles": [
+        8,
+        6
+      ],
+      "rows": [
+        "17 17 17 17 17 17 17 17",
+        "17 05 01 01 01 01 01 17",
+        "17 1b 1b 1b 1b 1b 1b 17",
+        "17 1a 1b 1b 1b 1a 1b 17",
+        "17 1b 1b 1b 1b 1b 1b 17",
+        "17 17 17 17 17 17 17 17"
+      ],
+      "arrival_core": [
+        3,
+        3
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            3,
+            2
+          ],
+          "target": "MN_DULUTH_X_HILLSIDEHOSTEL_1F",
+          "target_warp": 5,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            3,
+            3
+          ],
+          "target": "MN_DULUTH_X_HILLSIDEHOSTEL_2F",
+          "target_warp": 2,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_DULUTH_X_HILLSIDEHOSTEL_F2_HOST",
+          "sprite": "SPRITE_GENTLEMAN",
+          "tile": [
+            5,
+            5
+          ],
+          "facing": "south",
+          "lines": [
+            "Neighbors gather",
+            "here after work."
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnDuluthHillSupplies",
+      "native_constant": "MN_DULUTH_X_HILLSUPPLIES",
+      "template": "MnDuluthMart",
+      "tileset": "mart",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        7,
+        6
+      ],
+      "rows": [
+        "00 00 00 00 00 00 00",
+        "00 14 27 13 13 13 00",
+        "00 2b 22 2b 2b 2b 00",
+        "00 15 29 2b 2b 28 00",
+        "00 2b 2b 2b 2b 2b 00",
+        "00 00 00 2a 00 00 00"
+      ],
+      "arrival_core": [
+        6,
+        9
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            6,
+            11
+          ],
+          "target": "MN_DULUTH",
+          "target_warp": 32,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            7,
+            11
+          ],
+          "target": "MN_DULUTH",
+          "target_warp": 32,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            6,
+            9
+          ],
+          "target": "MN_DULUTH_X_HILLSUPPLIES",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_DULUTH_X_HILLSUPPLIES_F1_HOST",
+          "sprite": "SPRITE_CLERK",
+          "tile": [
+            3,
+            5
+          ],
+          "facing": "east",
+          "lines": [
+            "Hillside supplies!",
+            "For lake and hill."
+          ],
+          "service": "pokemart",
+          "stock": [
+            "ESCAPE_ROPE",
+            "MAX_REPEL",
+            "ULTRA_BALL"
+          ],
+          "approach": [
+            5,
+            5
+          ],
+          "counter_tile": [
+            4,
+            5
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnDuluthCommunityKitchen",
+      "native_constant": "MN_DULUTH_X_COMMUNITYKITCHEN",
+      "template": "MnDuluthHarborWorkshop",
+      "tileset": "house",
+      "border_block": 10,
+      "dimensions_metatiles": [
+        8,
+        6
+      ],
+      "rows": [
+        "0a 0a 0a 0a 0a 0a 0a 0a",
+        "0a 04 05 1e 05 04 1d 0a",
+        "0a 0f 0f 0f 0f 0f 0f 0a",
+        "0a 01 02 0f 01 02 0f 0a",
+        "0a 0c 0d 0f 0c 0d 0f 0a",
+        "0a 0a 0a 0a 0b 0a 0a 0a"
+      ],
+      "arrival_core": [
+        8,
+        9
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            8,
+            11
+          ],
+          "target": "MN_DULUTH",
+          "target_warp": 34,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            9,
+            11
+          ],
+          "target": "MN_DULUTH",
+          "target_warp": 34,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            8,
+            9
+          ],
+          "target": "MN_DULUTH_X_COMMUNITYKITCHEN",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_DULUTH_X_COMMUNITYKITCHEN_F1_HOST",
+          "sprite": "SPRITE_CLERK",
+          "tile": [
+            5,
+            5
+          ],
+          "facing": "south",
+          "lines": [
+            "Cold wind calls",
+            "for a warm drink."
+          ],
+          "service": "pokemart",
+          "stock": [
+            "FRESH_WATER",
+            "SODA_POP",
+            "LEMONADE"
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnDuluthWeatherStudy1F",
+      "native_constant": "MN_DULUTH_X_WEATHERSTUDY_1F",
+      "template": "MnDuluthHarborWorkshop",
+      "tileset": "house",
+      "border_block": 10,
+      "dimensions_metatiles": [
+        8,
+        6
+      ],
+      "rows": [
+        "0a 0a 0a 0a 0a 0a 0a 0a",
+        "0a 1c 0e 05 1d 05 25 0a",
+        "0a 0f 0f 0f 0f 0f 0f 0a",
+        "0a 06 0f 0f 01 02 1a 0a",
+        "0a 0f 0f 0f 0c 0d 1a 0a",
+        "0a 0a 0a 0a 0b 0a 0a 0a"
+      ],
+      "arrival_core": [
+        8,
+        9
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            8,
+            11
+          ],
+          "target": "MN_DULUTH",
+          "target_warp": 36,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            9,
+            11
+          ],
+          "target": "MN_DULUTH",
+          "target_warp": 36,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            8,
+            9
+          ],
+          "target": "MN_DULUTH_X_WEATHERSTUDY_1F",
+          "target_warp": 3,
+          "passive": true
+        },
+        {
+          "index": 4,
+          "tile": [
+            12,
+            2
+          ],
+          "target": "MN_DULUTH_X_WEATHERSTUDY_2F",
+          "target_warp": 2,
+          "passive": false
+        },
+        {
+          "index": 5,
+          "tile": [
+            12,
+            3
+          ],
+          "target": "MN_DULUTH_X_WEATHERSTUDY_1F",
+          "target_warp": 5,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_DULUTH_X_WEATHERSTUDY_F1_HOST",
+          "sprite": "SPRITE_TEACHER",
+          "tile": [
+            5,
+            5
+          ],
+          "facing": "south",
+          "lines": [
+            "The lake turns a",
+            "calm day windy.",
+            "Charts upstairs."
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnDuluthWeatherStudy2F",
+      "native_constant": "MN_DULUTH_X_WEATHERSTUDY_2F",
+      "template": "MnDuluthHarborWorkshop",
+      "tileset": "house",
+      "border_block": 10,
+      "dimensions_metatiles": [
+        8,
+        6
+      ],
+      "rows": [
+        "0a 0a 0a 0a 0a 0a 0a 0a",
+        "0a 25 1c 05 0e 05 1d 0a",
+        "0a 0f 0f 0f 01 02 1a 0a",
+        "0a 06 0f 0f 0c 0d 1a 0a",
+        "0a 0f 1a 1a 0f 0f 0f 0a",
+        "0a 0a 0a 0a 0a 0a 0a 0a"
+      ],
+      "arrival_core": [
+        2,
+        3
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            2
+          ],
+          "target": "MN_DULUTH_X_WEATHERSTUDY_1F",
+          "target_warp": 5,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            2,
+            3
+          ],
+          "target": "MN_DULUTH_X_WEATHERSTUDY_2F",
+          "target_warp": 2,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_DULUTH_X_WEATHERSTUDY_F2_HOST",
+          "sprite": "SPRITE_TEACHER",
+          "tile": [
+            5,
+            5
+          ],
+          "facing": "south",
+          "lines": [
+            "The upper floor",
+            "is a quiet place.",
+            "Watch the wind."
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnDuluthLakesideHome",
+      "native_constant": "MN_DULUTH_X_LAKESIDEHOME",
+      "template": "MnDuluthHarborWorkshop",
+      "tileset": "house",
+      "border_block": 10,
+      "dimensions_metatiles": [
+        6,
+        6
+      ],
+      "rows": [
+        "0a 0a 0a 0a 0a 0a",
+        "0a 04 1e 05 1d 0a",
+        "0a 0f 0f 0f 0f 0a",
+        "0a 01 02 0f 0f 0a",
+        "0a 0c 0d 0f 0f 0a",
+        "0a 0a 0a 0b 0a 0a"
+      ],
+      "arrival_core": [
+        6,
+        9
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            6,
+            11
+          ],
+          "target": "MN_DULUTH",
+          "target_warp": 38,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            7,
+            11
+          ],
+          "target": "MN_DULUTH",
+          "target_warp": 38,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            6,
+            9
+          ],
+          "target": "MN_DULUTH_X_LAKESIDEHOME",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_DULUTH_X_LAKESIDEHOME_F1_HOST",
+          "sprite": "SPRITE_TEACHER",
+          "tile": [
+            5,
+            5
+          ],
+          "facing": "south",
+          "lines": [
+            "Our home faces",
+            "Lake SUPERIOR.",
+            "The pier has rails"
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnDuluthLakeOutfitter",
+      "native_constant": "MN_DULUTH_X_LAKEOUTFITTER",
+      "template": "MnDuluthMart",
+      "tileset": "mart",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        7,
+        6
+      ],
+      "rows": [
+        "00 00 00 00 00 00 00",
+        "00 14 27 13 13 13 00",
+        "00 2b 22 2b 2b 2b 00",
+        "00 15 29 2b 2b 28 00",
+        "00 2b 2b 2b 2b 2b 00",
+        "00 00 00 2a 00 00 00"
+      ],
+      "arrival_core": [
+        6,
+        9
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            6,
+            11
+          ],
+          "target": "MN_DULUTH",
+          "target_warp": 40,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            7,
+            11
+          ],
+          "target": "MN_DULUTH",
+          "target_warp": 40,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            6,
+            9
+          ],
+          "target": "MN_DULUTH_X_LAKEOUTFITTER",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_DULUTH_X_LAKEOUTFITTER_F1_HOST",
+          "sprite": "SPRITE_CLERK",
+          "tile": [
+            3,
+            5
+          ],
+          "facing": "east",
+          "lines": [
+            "Pack a REPEL for",
+            "your next portage."
+          ],
+          "service": "pokemart",
+          "stock": [
+            "GREAT_BALL",
+            "SUPER_REPEL",
+            "PARLYZ_HEAL"
+          ],
+          "approach": [
+            5,
+            5
+          ],
+          "counter_tile": [
+            4,
+            5
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnDuluthFieldClinic",
+      "native_constant": "MN_DULUTH_X_FIELDCLINIC",
+      "template": "MnDuluthHarborWorkshop",
+      "tileset": "facility",
+      "border_block": 23,
+      "dimensions_metatiles": [
+        8,
+        6
+      ],
+      "rows": [
+        "17 17 17 17 17 17 17 17",
+        "17 01 01 01 01 01 01 17",
+        "17 1b 1b 1b 1b 1b 1b 17",
+        "17 1a 1b 1b 1b 1a 1b 17",
+        "17 1b 1b 1b 1b 1b 1b 17",
+        "17 17 17 17 0c 17 17 17"
+      ],
+      "arrival_core": [
+        8,
+        9
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            8,
+            11
+          ],
+          "target": "MN_DULUTH",
+          "target_warp": 42,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            9,
+            11
+          ],
+          "target": "MN_DULUTH",
+          "target_warp": 42,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            8,
+            9
+          ],
+          "target": "MN_DULUTH_X_FIELDCLINIC",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_DULUTH_X_FIELDCLINIC_F1_HOST",
+          "sprite": "SPRITE_NURSE",
+          "tile": [
+            5,
+            5
+          ],
+          "facing": "south",
+          "lines": [
+            "Partners need rest",
+            "after long walks."
+          ],
+          "service": "heal_party"
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {
+        "MN_DULUTH_X_FIELDCLINIC_F1_HOSTRestText": [
+          {
+            "command": "text",
+            "args": [
+              "Let your partners"
+            ]
+          },
+          {
+            "command": "line",
+            "args": [
+              "rest a moment."
+            ]
+          },
+          {
+            "command": "done",
+            "args": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "MnDuluthBoatBuilder",
+      "native_constant": "MN_DULUTH_X_BOATBUILDER",
+      "template": "MnDuluthHarborWorkshop",
+      "tileset": "facility",
+      "border_block": 23,
+      "dimensions_metatiles": [
+        8,
+        6
+      ],
+      "rows": [
+        "17 17 17 17 17 17 17 17",
+        "17 10 08 08 10 08 10 17",
+        "17 1b 1b 1b 1b 1b 1b 17",
+        "17 0f 22 1b 1b 21 0f 17",
+        "17 1b 1b 1b 1b 1b 1b 17",
+        "17 17 17 17 0c 17 17 17"
+      ],
+      "arrival_core": [
+        8,
+        9
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            8,
+            11
+          ],
+          "target": "MN_DULUTH",
+          "target_warp": 44,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            9,
+            11
+          ],
+          "target": "MN_DULUTH",
+          "target_warp": 44,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            8,
+            9
+          ],
+          "target": "MN_DULUTH_X_BOATBUILDER",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_DULUTH_X_BOATBUILDER_F1_HOST",
+          "sprite": "SPRITE_GENTLEMAN",
+          "tile": [
+            5,
+            5
+          ],
+          "facing": "south",
+          "lines": [
+            "The slips belong",
+            "to working crews.",
+            "Use our safe pier."
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnDuluthUnionHall1F",
+      "native_constant": "MN_DULUTH_X_UNIONHALL_1F",
+      "template": "MnDuluthHarborWorkshop",
+      "tileset": "house",
+      "border_block": 10,
+      "dimensions_metatiles": [
+        8,
+        6
+      ],
+      "rows": [
+        "0a 0a 0a 0a 0a 0a 0a 0a",
+        "0a 05 1e 05 04 05 25 0a",
+        "0a 0f 0f 0f 04 0f 0f 0a",
+        "0a 01 02 0f 0f 0f 06 0a",
+        "0a 0c 0d 0f 0f 04 04 0a",
+        "0a 0a 0a 0a 0b 0a 0a 0a"
+      ],
+      "arrival_core": [
+        8,
+        9
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            8,
+            11
+          ],
+          "target": "MN_DULUTH",
+          "target_warp": 46,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            9,
+            11
+          ],
+          "target": "MN_DULUTH",
+          "target_warp": 46,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            8,
+            9
+          ],
+          "target": "MN_DULUTH_X_UNIONHALL_1F",
+          "target_warp": 3,
+          "passive": true
+        },
+        {
+          "index": 4,
+          "tile": [
+            12,
+            2
+          ],
+          "target": "MN_DULUTH_X_UNIONHALL_2F",
+          "target_warp": 2,
+          "passive": false
+        },
+        {
+          "index": 5,
+          "tile": [
+            12,
+            3
+          ],
+          "target": "MN_DULUTH_X_UNIONHALL_1F",
+          "target_warp": 5,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_DULUTH_X_UNIONHALL_F1_HOST",
+          "sprite": "SPRITE_GENTLEMAN",
+          "tile": [
+            5,
+            5
+          ],
+          "facing": "south",
+          "lines": [
+            "Meetings are held",
+            "upstairs tonight.",
+            "The yard is open."
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnDuluthUnionHall2F",
+      "native_constant": "MN_DULUTH_X_UNIONHALL_2F",
+      "template": "MnDuluthHarborWorkshop",
+      "tileset": "house",
+      "border_block": 10,
+      "dimensions_metatiles": [
+        8,
+        6
+      ],
+      "rows": [
+        "0a 0a 0a 0a 0a 0a 0a 0a",
+        "0a 25 05 0e 05 04 04 0a",
+        "0a 0f 0f 0f 01 02 06 0a",
+        "0a 0f 0f 0f 21 22 0f 0a",
+        "0a 06 0f 0f 0c 0d 0f 0a",
+        "0a 0a 0a 0a 0a 0a 0a 0a"
+      ],
+      "arrival_core": [
+        2,
+        3
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            2
+          ],
+          "target": "MN_DULUTH_X_UNIONHALL_1F",
+          "target_warp": 5,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            2,
+            3
+          ],
+          "target": "MN_DULUTH_X_UNIONHALL_2F",
+          "target_warp": 2,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_DULUTH_X_UNIONHALL_F2_HOST",
+          "sprite": "SPRITE_GENTLEMAN",
+          "tile": [
+            5,
+            5
+          ],
+          "facing": "south",
+          "lines": [
+            "Neighbors gather",
+            "here after work."
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnDuluthOreWarehouse1F",
+      "native_constant": "MN_DULUTH_X_OREWAREHOUSE_1F",
+      "template": "MnDuluthHarborWorkshop",
+      "tileset": "facility",
+      "border_block": 23,
+      "dimensions_metatiles": [
+        8,
+        6
+      ],
+      "rows": [
+        "17 17 17 17 17 17 17 17",
+        "17 10 08 08 10 08 04 17",
+        "17 1b 1b 1b 1b 1b 1b 17",
+        "17 0f 22 1b 1b 21 0f 17",
+        "17 1b 1b 1b 1b 1b 1b 17",
+        "17 17 17 17 0c 17 17 17"
+      ],
+      "arrival_core": [
+        8,
+        9
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            8,
+            11
+          ],
+          "target": "MN_DULUTH",
+          "target_warp": 48,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            9,
+            11
+          ],
+          "target": "MN_DULUTH",
+          "target_warp": 48,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            8,
+            9
+          ],
+          "target": "MN_DULUTH_X_OREWAREHOUSE_1F",
+          "target_warp": 3,
+          "passive": true
+        },
+        {
+          "index": 4,
+          "tile": [
+            13,
+            2
+          ],
+          "target": "MN_DULUTH_X_OREWAREHOUSE_2F",
+          "target_warp": 2,
+          "passive": false
+        },
+        {
+          "index": 5,
+          "tile": [
+            13,
+            3
+          ],
+          "target": "MN_DULUTH_X_OREWAREHOUSE_1F",
+          "target_warp": 5,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_DULUTH_X_OREWAREHOUSE_F1_HOST",
+          "sprite": "SPRITE_GENTLEMAN",
+          "tile": [
+            5,
+            5
+          ],
+          "facing": "south",
+          "lines": [
+            "Our tool counter",
+            "faces a work lane.",
+            "No rail stop here."
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnDuluthOreWarehouse2F",
+      "native_constant": "MN_DULUTH_X_OREWAREHOUSE_2F",
+      "template": "MnDuluthHarborWorkshop",
+      "tileset": "facility",
+      "border_block": 23,
+      "dimensions_metatiles": [
+        8,
+        6
+      ],
+      "rows": [
+        "17 17 17 17 17 17 17 17",
+        "17 05 08 08 10 08 10 17",
+        "17 1b 1b 1b 1b 1b 1b 17",
+        "17 0f 22 1b 1b 21 0f 17",
+        "17 1b 1b 1b 1b 1b 1b 17",
+        "17 17 17 17 17 17 17 17"
+      ],
+      "arrival_core": [
+        3,
+        3
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            3,
+            2
+          ],
+          "target": "MN_DULUTH_X_OREWAREHOUSE_1F",
+          "target_warp": 5,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            3,
+            3
+          ],
+          "target": "MN_DULUTH_X_OREWAREHOUSE_2F",
+          "target_warp": 2,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_DULUTH_X_OREWAREHOUSE_F2_HOST",
+          "sprite": "SPRITE_GENTLEMAN",
+          "tile": [
+            5,
+            5
+          ],
+          "facing": "south",
+          "lines": [
+            "Neighbors gather",
+            "here after work."
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnDuluthToolExchange",
+      "native_constant": "MN_DULUTH_X_TOOLEXCHANGE",
+      "template": "MnDuluthMart",
+      "tileset": "mart",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        7,
+        6
+      ],
+      "rows": [
+        "00 00 00 00 00 00 00",
+        "00 14 27 13 13 13 00",
+        "00 2b 22 2b 2b 2b 00",
+        "00 15 29 2b 2b 28 00",
+        "00 2b 2b 2b 2b 2b 00",
+        "00 00 00 2a 00 00 00"
+      ],
+      "arrival_core": [
+        6,
+        9
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            6,
+            11
+          ],
+          "target": "MN_DULUTH",
+          "target_warp": 50,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            7,
+            11
+          ],
+          "target": "MN_DULUTH",
+          "target_warp": 50,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            6,
+            9
+          ],
+          "target": "MN_DULUTH_X_TOOLEXCHANGE",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_DULUTH_X_TOOLEXCHANGE_F1_HOST",
+          "sprite": "SPRITE_CLERK",
+          "tile": [
+            3,
+            5
+          ],
+          "facing": "east",
+          "lines": [
+            "Training supplies",
+            "for a fair battle."
+          ],
+          "service": "pokemart",
+          "stock": [
+            "X_ATTACK",
+            "X_DEFEND",
+            "DIRE_HIT",
+            "GUARD_SPEC"
+          ],
+          "approach": [
+            5,
+            5
+          ],
+          "counter_tile": [
+            4,
+            5
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnDuluthTrainingAnnex",
+      "native_constant": "MN_DULUTH_X_TRAININGANNEX",
+      "template": "MnDuluthHarborWorkshop",
+      "tileset": "facility",
+      "border_block": 23,
+      "dimensions_metatiles": [
+        8,
+        6
+      ],
+      "rows": [
+        "17 17 17 17 17 17 17 17",
+        "17 01 01 01 01 01 01 17",
+        "17 1b 1b 1b 1b 1b 1b 17",
+        "17 1b 1b 1b 1b 1b 1b 17",
+        "17 1b 1b 1b 1b 1b 1b 17",
+        "17 17 17 17 0c 17 17 17"
+      ],
+      "arrival_core": [
+        8,
+        9
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            8,
+            11
+          ],
+          "target": "MN_DULUTH",
+          "target_warp": 52,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            9,
+            11
+          ],
+          "target": "MN_DULUTH",
+          "target_warp": 52,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            8,
+            9
+          ],
+          "target": "MN_DULUTH_X_TRAININGANNEX",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_DULUTH_X_TRAININGANNEX_F1_HOST",
+          "sprite": "SPRITE_GENTLEMAN",
+          "tile": [
+            5,
+            5
+          ],
+          "facing": "south",
+          "lines": [
+            "Ask TERA for a",
+            "practice battle.",
+            "No entry fee here."
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [
+        {
+          "id": "MN_DULUTH_X_T03",
+          "display_name": "TERA",
+          "trainer_class": "SUPER_NERD",
+          "sprite": "SPRITE_SUPER_NERD",
+          "tile": [
+            10,
+            5
+          ],
+          "facing": "south",
+          "sight_range": 0,
+          "defeated_flag": "EVENT_MN_DULUTH_X_TRAINER_03",
+          "party": [
+            {
+              "species": "MAGNETON",
+              "level": 42
+            },
+            {
+              "species": "FORRETRESS",
+              "level": 42
+            }
+          ],
+          "before_lines": [
+            "A friendly match?",
+            "Show your teamwork!"
+          ],
+          "after_lines": [
+            "You read the field!"
+          ],
+          "loss_lines": [
+            "We train here",
+            "every windy day."
+          ]
+        }
+      ],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnDuluthForemanHome",
+      "native_constant": "MN_DULUTH_X_FOREMANHOME",
+      "template": "MnDuluthHarborWorkshop",
+      "tileset": "house",
+      "border_block": 10,
+      "dimensions_metatiles": [
+        6,
+        6
+      ],
+      "rows": [
+        "0a 0a 0a 0a 0a 0a",
+        "0a 04 1e 05 1d 0a",
+        "0a 0f 0f 0f 0f 0a",
+        "0a 01 02 0f 0f 0a",
+        "0a 0c 0d 0f 0f 0a",
+        "0a 0a 0a 0b 0a 0a"
+      ],
+      "arrival_core": [
+        6,
+        9
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            6,
+            11
+          ],
+          "target": "MN_DULUTH",
+          "target_warp": 54,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            7,
+            11
+          ],
+          "target": "MN_DULUTH",
+          "target_warp": 54,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            6,
+            9
+          ],
+          "target": "MN_DULUTH_X_FOREMANHOME",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_DULUTH_X_FOREMANHOME_F1_HOST",
+          "sprite": "SPRITE_TEACHER",
+          "tile": [
+            5,
+            5
+          ],
+          "facing": "south",
+          "lines": [
+            "The harbor takes",
+            "many hands to run.",
+            "Ask cargo staff."
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnDuluthMaritimeCoop1F",
+      "native_constant": "MN_DULUTH_X_MARITIMECOOP_1F",
+      "template": "MnDuluthMart",
+      "tileset": "mart",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        8,
+        6
+      ],
+      "rows": [
+        "00 00 00 00 00 00 00 00",
+        "00 14 27 13 13 13 01 00",
+        "00 2b 22 2b 2b 2b 2b 00",
+        "00 15 29 2b 2b 28 2b 00",
+        "00 2b 2b 2b 2b 2b 2b 00",
+        "00 00 00 00 2a 00 00 00"
+      ],
+      "arrival_core": [
+        8,
+        9
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            8,
+            11
+          ],
+          "target": "MN_DULUTH",
+          "target_warp": 56,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            9,
+            11
+          ],
+          "target": "MN_DULUTH",
+          "target_warp": 56,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            8,
+            9
+          ],
+          "target": "MN_DULUTH_X_MARITIMECOOP_1F",
+          "target_warp": 3,
+          "passive": true
+        },
+        {
+          "index": 4,
+          "tile": [
+            12,
+            2
+          ],
+          "target": "MN_DULUTH_X_MARITIMECOOP_2F",
+          "target_warp": 2,
+          "passive": false
+        },
+        {
+          "index": 5,
+          "tile": [
+            12,
+            3
+          ],
+          "target": "MN_DULUTH_X_MARITIMECOOP_1F",
+          "target_warp": 5,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_DULUTH_X_MARITIMECOOP_F1_HOST",
+          "sprite": "SPRITE_CLERK",
+          "tile": [
+            3,
+            5
+          ],
+          "facing": "east",
+          "lines": [
+            "Outdoor gear1F,",
+            "health goods2F,",
+            "training on3F."
+          ],
+          "service": "pokemart",
+          "stock": [
+            "GREAT_BALL",
+            "ULTRA_BALL",
+            "ESCAPE_ROPE",
+            "MAX_REPEL"
+          ],
+          "approach": [
+            5,
+            5
+          ],
+          "counter_tile": [
+            4,
+            5
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnDuluthMaritimeCoop2F",
+      "native_constant": "MN_DULUTH_X_MARITIMECOOP_2F",
+      "template": "MnDuluthMart",
+      "tileset": "mart",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        8,
+        6
+      ],
+      "rows": [
+        "00 00 00 00 00 00 00 00",
+        "00 14 27 13 05 13 01 00",
+        "00 2b 22 2b 2b 2b 2b 00",
+        "00 15 29 2b 2b 28 2b 00",
+        "00 2b 2b 2b 2b 2b 2b 00",
+        "00 00 00 00 00 00 00 00"
+      ],
+      "arrival_core": [
+        8,
+        3
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            8,
+            2
+          ],
+          "target": "MN_DULUTH_X_MARITIMECOOP_1F",
+          "target_warp": 5,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            8,
+            3
+          ],
+          "target": "MN_DULUTH_X_MARITIMECOOP_2F",
+          "target_warp": 2,
+          "passive": true
+        },
+        {
+          "index": 3,
+          "tile": [
+            12,
+            2
+          ],
+          "target": "MN_DULUTH_X_MARITIMECOOP_3F",
+          "target_warp": 2,
+          "passive": false
+        },
+        {
+          "index": 4,
+          "tile": [
+            12,
+            3
+          ],
+          "target": "MN_DULUTH_X_MARITIMECOOP_2F",
+          "target_warp": 4,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_DULUTH_X_MARITIMECOOP_F2_HOST",
+          "sprite": "SPRITE_CLERK",
+          "tile": [
+            3,
+            5
+          ],
+          "facing": "east",
+          "lines": [
+            "Neighbors gather",
+            "here after work."
+          ],
+          "service": "pokemart",
+          "stock": [
+            "HP_UP",
+            "PROTEIN",
+            "IRON",
+            "CARBOS",
+            "CALCIUM"
+          ],
+          "approach": [
+            5,
+            5
+          ],
+          "counter_tile": [
+            4,
+            5
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnDuluthMaritimeCoop3F",
+      "native_constant": "MN_DULUTH_X_MARITIMECOOP_3F",
+      "template": "MnDuluthHarborWorkshop",
+      "tileset": "facility",
+      "border_block": 23,
+      "dimensions_metatiles": [
+        8,
+        6
+      ],
+      "rows": [
+        "17 17 17 17 17 17 17 17",
+        "17 05 01 01 01 01 01 17",
+        "17 1b 1b 1b 1b 1b 1b 17",
+        "17 1b 1b 1b 1b 1b 1b 17",
+        "17 1b 1b 1b 1b 1b 1b 17",
+        "17 17 17 17 17 17 17 17"
+      ],
+      "arrival_core": [
+        3,
+        3
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            3,
+            2
+          ],
+          "target": "MN_DULUTH_X_MARITIMECOOP_2F",
+          "target_warp": 4,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            3,
+            3
+          ],
+          "target": "MN_DULUTH_X_MARITIMECOOP_3F",
+          "target_warp": 2,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_DULUTH_X_MARITIMECOOP_F3_HOST",
+          "sprite": "SPRITE_GENTLEMAN",
+          "tile": [
+            5,
+            5
+          ],
+          "facing": "south",
+          "lines": [
+            "Neighbors gather",
+            "here after work."
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [
+        {
+          "id": "MN_DULUTH_X_T04",
+          "display_name": "NILS",
+          "trainer_class": "BLACKBELT_T",
+          "sprite": "SPRITE_COOLTRAINER_M",
+          "tile": [
+            6,
+            5
+          ],
+          "facing": "south",
+          "sight_range": 0,
+          "defeated_flag": "EVENT_MN_DULUTH_X_TRAINER_04",
+          "party": [
+            {
+              "species": "POLIWRATH",
+              "level": 43
+            },
+            {
+              "species": "MACHOKE",
+              "level": 42
+            }
+          ],
+          "before_lines": [
+            "A friendly match?",
+            "Show your teamwork!"
+          ],
+          "after_lines": [
+            "You read the field!"
+          ],
+          "loss_lines": [
+            "We train here",
+            "every windy day."
+          ]
+        },
+        {
+          "id": "MN_DULUTH_X_T05",
+          "display_name": "IVAR",
+          "trainer_class": "COOLTRAINERM",
+          "sprite": "SPRITE_COOLTRAINER_M",
+          "tile": [
+            10,
+            7
+          ],
+          "facing": "south",
+          "sight_range": 0,
+          "defeated_flag": "EVENT_MN_DULUTH_X_TRAINER_05",
+          "party": [
+            {
+              "species": "URSARING",
+              "level": 42
+            },
+            {
+              "species": "SKARMORY",
+              "level": 43
+            }
+          ],
+          "before_lines": [
+            "A friendly match?",
+            "Show your teamwork!"
+          ],
+          "after_lines": [
+            "You read the field!"
+          ],
+          "loss_lines": [
+            "We train here",
+            "every windy day."
+          ]
+        }
+      ],
+      "items": [],
+      "programs": {
+        "MN_DULUTH_X_MARITIMECOOP_F3_HOST": [
+          {
+            "command": "faceplayer",
+            "args": []
+          },
+          {
+            "command": "opentext",
+            "args": []
+          },
+          {
+            "command": "checkevent",
+            "args": [
+              "EVENT_MN_DULUTH_X_TRAINING_REWARDED"
+            ]
+          },
+          {
+            "command": "iftrue",
+            "args": [
+              "MN_DULUTH_X_COOP_REWARDDone"
+            ]
+          },
+          {
+            "command": "checkevent",
+            "args": [
+              "EVENT_MN_DULUTH_X_TRAINER_04"
+            ]
+          },
+          {
+            "command": "iffalse",
+            "args": [
+              "MN_DULUTH_X_COOP_REWARDNeed"
+            ]
+          },
+          {
+            "command": "checkevent",
+            "args": [
+              "EVENT_MN_DULUTH_X_TRAINER_05"
+            ]
+          },
+          {
+            "command": "iffalse",
+            "args": [
+              "MN_DULUTH_X_COOP_REWARDNeed"
+            ]
+          },
+          {
+            "command": "giveitem",
+            "args": [
+              "METAL_COAT",
+              "1"
+            ]
+          },
+          {
+            "command": "iffalse",
+            "args": [
+              "MN_DULUTH_X_COOP_REWARDFull"
+            ]
+          },
+          {
+            "command": "setevent",
+            "args": [
+              "EVENT_MN_DULUTH_X_TRAINING_REWARDED"
+            ]
+          },
+          {
+            "command": "writetext",
+            "args": [
+              "MN_DULUTH_X_COOP_REWARDThanksText"
+            ]
+          },
+          {
+            "command": "waitbutton",
+            "args": []
+          },
+          {
+            "command": "closetext",
+            "args": []
+          },
+          {
+            "command": "end",
+            "args": []
+          }
+        ],
+        "MN_DULUTH_X_COOP_REWARDDoneText": [
+          {
+            "command": "text",
+            "args": [
+              "You earned our"
+            ]
+          },
+          {
+            "command": "line",
+            "args": [
+              "training award."
+            ]
+          },
+          {
+            "command": "done",
+            "args": []
+          }
+        ],
+        "MN_DULUTH_X_COOP_REWARDDone": [
+          {
+            "command": "writetext",
+            "args": [
+              "MN_DULUTH_X_COOP_REWARDDoneText"
+            ]
+          },
+          {
+            "command": "waitbutton",
+            "args": []
+          },
+          {
+            "command": "closetext",
+            "args": []
+          },
+          {
+            "command": "end",
+            "args": []
+          }
+        ],
+        "MN_DULUTH_X_COOP_REWARDNeedText": [
+          {
+            "command": "text",
+            "args": [
+              "Beat NILS and IVAR"
+            ]
+          },
+          {
+            "command": "line",
+            "args": [
+              "in fair matches"
+            ]
+          },
+          {
+            "command": "line",
+            "args": [
+              "for a METAL COAT."
+            ]
+          },
+          {
+            "command": "done",
+            "args": []
+          }
+        ],
+        "MN_DULUTH_X_COOP_REWARDNeed": [
+          {
+            "command": "writetext",
+            "args": [
+              "MN_DULUTH_X_COOP_REWARDNeedText"
+            ]
+          },
+          {
+            "command": "waitbutton",
+            "args": []
+          },
+          {
+            "command": "closetext",
+            "args": []
+          },
+          {
+            "command": "end",
+            "args": []
+          }
+        ],
+        "MN_DULUTH_X_COOP_REWARDFullText": [
+          {
+            "command": "text",
+            "args": [
+              "Your PACK is full."
+            ]
+          },
+          {
+            "command": "line",
+            "args": [
+              "Your award waits."
+            ]
+          },
+          {
+            "command": "done",
+            "args": []
+          }
+        ],
+        "MN_DULUTH_X_COOP_REWARDFull": [
+          {
+            "command": "writetext",
+            "args": [
+              "MN_DULUTH_X_COOP_REWARDFullText"
+            ]
+          },
+          {
+            "command": "waitbutton",
+            "args": []
+          },
+          {
+            "command": "closetext",
+            "args": []
+          },
+          {
+            "command": "end",
+            "args": []
+          }
+        ],
+        "MN_DULUTH_X_COOP_REWARDThanksText": [
+          {
+            "command": "text",
+            "args": [
+              "A METAL COAT gift!"
+            ]
+          },
+          {
+            "command": "line",
+            "args": [
+              "for your teamwork!"
+            ]
+          },
+          {
+            "command": "done",
+            "args": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "MnDuluthCargoOffice",
+      "native_constant": "MN_DULUTH_X_CARGOOFFICE",
+      "template": "MnDuluthHarborWorkshop",
+      "tileset": "facility",
+      "border_block": 23,
+      "dimensions_metatiles": [
+        8,
+        6
+      ],
+      "rows": [
+        "17 17 17 17 17 17 17 17",
+        "17 10 08 08 10 08 10 17",
+        "17 1b 1b 1b 1b 1b 1b 17",
+        "17 0f 22 1b 1b 21 0f 17",
+        "17 1b 1b 1b 1b 1b 1b 17",
+        "17 17 17 17 0c 17 17 17"
+      ],
+      "arrival_core": [
+        8,
+        9
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            8,
+            11
+          ],
+          "target": "MN_DULUTH",
+          "target_warp": 58,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            9,
+            11
+          ],
+          "target": "MN_DULUTH",
+          "target_warp": 58,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            8,
+            9
+          ],
+          "target": "MN_DULUTH_X_CARGOOFFICE",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_DULUTH_X_CARGOOFFICE_F1_HOST",
+          "sprite": "SPRITE_GENTLEMAN",
+          "tile": [
+            5,
+            5
+          ],
+          "facing": "south",
+          "lines": [
+            "The crew needs one",
+            "X DEFEND. I can",
+            "offer an HP UP."
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {
+        "MN_DULUTH_X_CARGOOFFICE_F1_HOST": [
+          {
+            "command": "faceplayer",
+            "args": []
+          },
+          {
+            "command": "opentext",
+            "args": []
+          },
+          {
+            "command": "checkevent",
+            "args": [
+              "EVENT_MN_DULUTH_X_REQUISITION_REWARDED"
+            ]
+          },
+          {
+            "command": "iftrue",
+            "args": [
+              "MN_DULUTH_X_REQUISITIONDone"
+            ]
+          },
+          {
+            "command": "checkevent",
+            "args": [
+              "EVENT_MN_DULUTH_X_REQUISITION_DELIVERED"
+            ]
+          },
+          {
+            "command": "iftrue",
+            "args": [
+              "MN_DULUTH_X_REQUISITIONReward"
+            ]
+          },
+          {
+            "command": "writetext",
+            "args": [
+              "MN_DULUTH_X_REQUISITIONOfferText"
+            ]
+          },
+          {
+            "command": "yesorno",
+            "args": []
+          },
+          {
+            "command": "iffalse",
+            "args": [
+              "MN_DULUTH_X_REQUISITIONNo"
+            ]
+          },
+          {
+            "command": "checkitem",
+            "args": [
+              "X_DEFEND"
+            ]
+          },
+          {
+            "command": "iffalse",
+            "args": [
+              "MN_DULUTH_X_REQUISITIONMissing"
+            ]
+          },
+          {
+            "command": "takeitem",
+            "args": [
+              "X_DEFEND"
+            ]
+          },
+          {
+            "command": "setevent",
+            "args": [
+              "EVENT_MN_DULUTH_X_REQUISITION_DELIVERED"
+            ]
+          },
+          {
+            "command": "sjump",
+            "args": [
+              "MN_DULUTH_X_REQUISITIONReward"
+            ]
+          }
+        ],
+        "MN_DULUTH_X_REQUISITIONReward": [
+          {
+            "command": "giveitem",
+            "args": [
+              "HP_UP",
+              "1"
+            ]
+          },
+          {
+            "command": "iffalse",
+            "args": [
+              "MN_DULUTH_X_REQUISITIONFull"
+            ]
+          },
+          {
+            "command": "setevent",
+            "args": [
+              "EVENT_MN_DULUTH_X_REQUISITION_REWARDED"
+            ]
+          },
+          {
+            "command": "writetext",
+            "args": [
+              "MN_DULUTH_X_REQUISITIONThanksText"
+            ]
+          },
+          {
+            "command": "waitbutton",
+            "args": []
+          },
+          {
+            "command": "closetext",
+            "args": []
+          },
+          {
+            "command": "end",
+            "args": []
+          }
+        ],
+        "MN_DULUTH_X_REQUISITIONDoneText": [
+          {
+            "command": "text",
+            "args": [
+              "Thanks again for"
+            ]
+          },
+          {
+            "command": "line",
+            "args": [
+              "helping the crew."
+            ]
+          },
+          {
+            "command": "done",
+            "args": []
+          }
+        ],
+        "MN_DULUTH_X_REQUISITIONDone": [
+          {
+            "command": "writetext",
+            "args": [
+              "MN_DULUTH_X_REQUISITIONDoneText"
+            ]
+          },
+          {
+            "command": "waitbutton",
+            "args": []
+          },
+          {
+            "command": "closetext",
+            "args": []
+          },
+          {
+            "command": "end",
+            "args": []
+          }
+        ],
+        "MN_DULUTH_X_REQUISITIONNoText": [
+          {
+            "command": "text",
+            "args": [
+              "No problem. Bring"
+            ]
+          },
+          {
+            "command": "line",
+            "args": [
+              "one when you can."
+            ]
+          },
+          {
+            "command": "done",
+            "args": []
+          }
+        ],
+        "MN_DULUTH_X_REQUISITIONNo": [
+          {
+            "command": "writetext",
+            "args": [
+              "MN_DULUTH_X_REQUISITIONNoText"
+            ]
+          },
+          {
+            "command": "waitbutton",
+            "args": []
+          },
+          {
+            "command": "closetext",
+            "args": []
+          },
+          {
+            "command": "end",
+            "args": []
+          }
+        ],
+        "MN_DULUTH_X_REQUISITIONMissingText": [
+          {
+            "command": "text",
+            "args": [
+              "You need one"
+            ]
+          },
+          {
+            "command": "line",
+            "args": [
+              "X DEFEND to trade."
+            ]
+          },
+          {
+            "command": "done",
+            "args": []
+          }
+        ],
+        "MN_DULUTH_X_REQUISITIONMissing": [
+          {
+            "command": "writetext",
+            "args": [
+              "MN_DULUTH_X_REQUISITIONMissingText"
+            ]
+          },
+          {
+            "command": "waitbutton",
+            "args": []
+          },
+          {
+            "command": "closetext",
+            "args": []
+          },
+          {
+            "command": "end",
+            "args": []
+          }
+        ],
+        "MN_DULUTH_X_REQUISITIONFullText": [
+          {
+            "command": "text",
+            "args": [
+              "Your PACK is full."
+            ]
+          },
+          {
+            "command": "line",
+            "args": [
+              "Your delivery is"
+            ]
+          },
+          {
+            "command": "line",
+            "args": [
+              "on file. Try again"
+            ]
+          },
+          {
+            "command": "done",
+            "args": []
+          }
+        ],
+        "MN_DULUTH_X_REQUISITIONFull": [
+          {
+            "command": "writetext",
+            "args": [
+              "MN_DULUTH_X_REQUISITIONFullText"
+            ]
+          },
+          {
+            "command": "waitbutton",
+            "args": []
+          },
+          {
+            "command": "closetext",
+            "args": []
+          },
+          {
+            "command": "end",
+            "args": []
+          }
+        ],
+        "MN_DULUTH_X_REQUISITIONThanksText": [
+          {
+            "command": "text",
+            "args": [
+              "One HP UP for you!"
+            ]
+          },
+          {
+            "command": "line",
+            "args": [
+              "Thanks for the"
+            ]
+          },
+          {
+            "command": "line",
+            "args": [
+              "X DEFEND."
+            ]
+          },
+          {
+            "command": "done",
+            "args": []
+          }
+        ],
+        "MN_DULUTH_X_REQUISITIONOfferText": [
+          {
+            "command": "text",
+            "args": [
+              "Trade one X DEFEND"
+            ]
+          },
+          {
+            "command": "line",
+            "args": [
+              "for one HP UP?"
+            ]
+          },
+          {
+            "command": "line",
+            "args": [
+              "One crew trade."
+            ]
+          },
+          {
+            "command": "done",
+            "args": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "MnDuluthSailorClub1F",
+      "native_constant": "MN_DULUTH_X_SAILORCLUB_1F",
+      "template": "MnDuluthHarborWorkshop",
+      "tileset": "house",
+      "border_block": 10,
+      "dimensions_metatiles": [
+        8,
+        6
+      ],
+      "rows": [
+        "0a 0a 0a 0a 0a 0a 0a 0a",
+        "0a 04 05 1e 05 04 25 0a",
+        "0a 0f 0f 0f 0f 0f 0f 0a",
+        "0a 01 02 0f 01 02 0f 0a",
+        "0a 0c 0d 0f 0c 0d 0f 0a",
+        "0a 0a 0a 0a 0b 0a 0a 0a"
+      ],
+      "arrival_core": [
+        8,
+        9
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            8,
+            11
+          ],
+          "target": "MN_DULUTH",
+          "target_warp": 60,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            9,
+            11
+          ],
+          "target": "MN_DULUTH",
+          "target_warp": 60,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            8,
+            9
+          ],
+          "target": "MN_DULUTH_X_SAILORCLUB_1F",
+          "target_warp": 3,
+          "passive": true
+        },
+        {
+          "index": 4,
+          "tile": [
+            12,
+            2
+          ],
+          "target": "MN_DULUTH_X_SAILORCLUB_2F",
+          "target_warp": 2,
+          "passive": false
+        },
+        {
+          "index": 5,
+          "tile": [
+            12,
+            3
+          ],
+          "target": "MN_DULUTH_X_SAILORCLUB_1F",
+          "target_warp": 5,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_DULUTH_X_SAILORCLUB_F1_HOST",
+          "sprite": "SPRITE_GENTLEMAN",
+          "tile": [
+            5,
+            5
+          ],
+          "facing": "south",
+          "lines": [
+            "The pier practice",
+            "is just for fun.",
+            "Our lounge is up."
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnDuluthSailorClub2F",
+      "native_constant": "MN_DULUTH_X_SAILORCLUB_2F",
+      "template": "MnDuluthHarborWorkshop",
+      "tileset": "house",
+      "border_block": 10,
+      "dimensions_metatiles": [
+        8,
+        6
+      ],
+      "rows": [
+        "0a 0a 0a 0a 0a 0a 0a 0a",
+        "0a 25 05 1e 05 04 1d 0a",
+        "0a 0f 0f 0f 0f 0f 0f 0a",
+        "0a 01 02 0f 01 02 0f 0a",
+        "0a 0c 0d 0f 0c 0d 0f 0a",
+        "0a 0a 0a 0a 0a 0a 0a 0a"
+      ],
+      "arrival_core": [
+        2,
+        3
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            2
+          ],
+          "target": "MN_DULUTH_X_SAILORCLUB_1F",
+          "target_warp": 5,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            2,
+            3
+          ],
+          "target": "MN_DULUTH_X_SAILORCLUB_2F",
+          "target_warp": 2,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_DULUTH_X_SAILORCLUB_F2_HOST",
+          "sprite": "SPRITE_GENTLEMAN",
+          "tile": [
+            5,
+            5
+          ],
+          "facing": "south",
+          "lines": [
+            "Neighbors gather",
+            "here after work."
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnDuluthDockSupplies",
+      "native_constant": "MN_DULUTH_X_DOCKSUPPLIES",
+      "template": "MnDuluthMart",
+      "tileset": "mart",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        7,
+        6
+      ],
+      "rows": [
+        "00 00 00 00 00 00 00",
+        "00 14 27 13 13 13 00",
+        "00 2b 22 2b 2b 2b 00",
+        "00 15 29 2b 2b 28 00",
+        "00 2b 2b 2b 2b 2b 00",
+        "00 00 00 2a 00 00 00"
+      ],
+      "arrival_core": [
+        6,
+        9
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            6,
+            11
+          ],
+          "target": "MN_DULUTH",
+          "target_warp": 62,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            7,
+            11
+          ],
+          "target": "MN_DULUTH",
+          "target_warp": 62,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            6,
+            9
+          ],
+          "target": "MN_DULUTH_X_DOCKSUPPLIES",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_DULUTH_X_DOCKSUPPLIES_F1_HOST",
+          "sprite": "SPRITE_CLERK",
+          "tile": [
+            3,
+            5
+          ],
+          "facing": "east",
+          "lines": [
+            "The right gear",
+            "is on your list."
+          ],
+          "service": "pokemart",
+          "stock": [
+            "FULL_HEAL",
+            "HYPER_POTION",
+            "REVIVE"
+          ],
+          "approach": [
+            5,
+            5
+          ],
+          "counter_tile": [
+            4,
+            5
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnDuluthSlipHouse",
+      "native_constant": "MN_DULUTH_X_SLIPHOUSE",
+      "template": "MnDuluthHarborWorkshop",
+      "tileset": "house",
+      "border_block": 10,
+      "dimensions_metatiles": [
+        6,
+        6
+      ],
+      "rows": [
+        "0a 0a 0a 0a 0a 0a",
+        "0a 04 1e 05 1d 0a",
+        "0a 0f 0f 0f 0f 0a",
+        "0a 01 02 0f 0f 0a",
+        "0a 0c 0d 0f 0f 0a",
+        "0a 0a 0a 0b 0a 0a"
+      ],
+      "arrival_core": [
+        6,
+        9
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            6,
+            11
+          ],
+          "target": "MN_DULUTH",
+          "target_warp": 64,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            7,
+            11
+          ],
+          "target": "MN_DULUTH",
+          "target_warp": 64,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            6,
+            9
+          ],
+          "target": "MN_DULUTH_X_SLIPHOUSE",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_DULUTH_X_SLIPHOUSE_F1_HOST",
+          "sprite": "SPRITE_TEACHER",
+          "tile": [
+            5,
+            5
+          ],
+          "facing": "south",
+          "lines": [
+            "Please keep the",
+            "work pier clear.",
+            "Fishing is fine."
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnDuluthBeachShelter",
+      "native_constant": "MN_DULUTH_X_BEACHSHELTER",
+      "template": "MnDuluthHarborWorkshop",
+      "tileset": "house",
+      "border_block": 10,
+      "dimensions_metatiles": [
+        6,
+        6
+      ],
+      "rows": [
+        "0a 0a 0a 0a 0a 0a",
+        "0a 04 1e 05 1d 0a",
+        "0a 0f 0f 0f 0f 0a",
+        "0a 01 02 0f 0f 0a",
+        "0a 0c 0d 0f 0f 0a",
+        "0a 0a 0a 0b 0a 0a"
+      ],
+      "arrival_core": [
+        6,
+        9
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            6,
+            11
+          ],
+          "target": "MN_DULUTH",
+          "target_warp": 66,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            7,
+            11
+          ],
+          "target": "MN_DULUTH",
+          "target_warp": 66,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            6,
+            9
+          ],
+          "target": "MN_DULUTH_X_BEACHSHELTER",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_DULUTH_X_BEACHSHELTER_F1_HOST",
+          "sprite": "SPRITE_GENTLEMAN",
+          "tile": [
+            5,
+            5
+          ],
+          "facing": "south",
+          "lines": [
+            "The point is long.",
+            "Rest your partners",
+            "before going back."
+          ],
+          "service": "heal_party"
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {
+        "MN_DULUTH_X_BEACHSHELTER_F1_HOSTRestText": [
+          {
+            "command": "text",
+            "args": [
+              "Let your partners"
+            ]
+          },
+          {
+            "command": "line",
+            "args": [
+              "rest a moment."
+            ]
+          },
+          {
+            "command": "done",
+            "args": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "MnDuluthPointOutfitter",
+      "native_constant": "MN_DULUTH_X_POINTOUTFITTER",
+      "template": "MnDuluthMart",
+      "tileset": "mart",
+      "border_block": 0,
+      "dimensions_metatiles": [
+        7,
+        6
+      ],
+      "rows": [
+        "00 00 00 00 00 00 00",
+        "00 14 27 13 13 13 00",
+        "00 2b 22 2b 2b 2b 00",
+        "00 15 29 2b 2b 28 00",
+        "00 2b 2b 2b 2b 2b 00",
+        "00 00 00 2a 00 00 00"
+      ],
+      "arrival_core": [
+        6,
+        9
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            6,
+            11
+          ],
+          "target": "MN_DULUTH",
+          "target_warp": 68,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            7,
+            11
+          ],
+          "target": "MN_DULUTH",
+          "target_warp": 68,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            6,
+            9
+          ],
+          "target": "MN_DULUTH_X_POINTOUTFITTER",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_DULUTH_X_POINTOUTFITTER_F1_HOST",
+          "sprite": "SPRITE_CLERK",
+          "tile": [
+            3,
+            5
+          ],
+          "facing": "east",
+          "lines": [
+            "Supplies for the",
+            "far point walks."
+          ],
+          "service": "pokemart",
+          "stock": [
+            "FRESH_WATER",
+            "LEMONADE",
+            "REPEL"
+          ],
+          "approach": [
+            5,
+            5
+          ],
+          "counter_tile": [
+            4,
+            5
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnDuluthSandHouse",
+      "native_constant": "MN_DULUTH_X_SANDHOUSE",
+      "template": "MnDuluthHarborWorkshop",
+      "tileset": "house",
+      "border_block": 10,
+      "dimensions_metatiles": [
+        6,
+        6
+      ],
+      "rows": [
+        "0a 0a 0a 0a 0a 0a",
+        "0a 04 1e 05 1d 0a",
+        "0a 0f 0f 0f 0f 0a",
+        "0a 01 02 0f 0f 0a",
+        "0a 0c 0d 0f 0f 0a",
+        "0a 0a 0a 0b 0a 0a"
+      ],
+      "arrival_core": [
+        6,
+        9
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            6,
+            11
+          ],
+          "target": "MN_DULUTH",
+          "target_warp": 70,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            7,
+            11
+          ],
+          "target": "MN_DULUTH",
+          "target_warp": 70,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            6,
+            9
+          ],
+          "target": "MN_DULUTH_X_SANDHOUSE",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_DULUTH_X_SANDHOUSE_F1_HOST",
+          "sprite": "SPRITE_TEACHER",
+          "tile": [
+            5,
+            5
+          ],
+          "facing": "south",
+          "lines": [
+            "The sand shifts,",
+            "so our path bends."
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnDuluthBoatClub1F",
+      "native_constant": "MN_DULUTH_X_BOATCLUB_1F",
+      "template": "MnDuluthHarborWorkshop",
+      "tileset": "house",
+      "border_block": 10,
+      "dimensions_metatiles": [
+        8,
+        6
+      ],
+      "rows": [
+        "0a 0a 0a 0a 0a 0a 0a 0a",
+        "0a 04 05 1e 05 04 25 0a",
+        "0a 0f 0f 0f 0f 0f 0f 0a",
+        "0a 01 02 0f 01 02 0f 0a",
+        "0a 0c 0d 0f 0c 0d 0f 0a",
+        "0a 0a 0a 0a 0b 0a 0a 0a"
+      ],
+      "arrival_core": [
+        8,
+        9
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            8,
+            11
+          ],
+          "target": "MN_DULUTH",
+          "target_warp": 72,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            9,
+            11
+          ],
+          "target": "MN_DULUTH",
+          "target_warp": 72,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            8,
+            9
+          ],
+          "target": "MN_DULUTH_X_BOATCLUB_1F",
+          "target_warp": 3,
+          "passive": true
+        },
+        {
+          "index": 4,
+          "tile": [
+            12,
+            2
+          ],
+          "target": "MN_DULUTH_X_BOATCLUB_2F",
+          "target_warp": 2,
+          "passive": false
+        },
+        {
+          "index": 5,
+          "tile": [
+            12,
+            3
+          ],
+          "target": "MN_DULUTH_X_BOATCLUB_1F",
+          "target_warp": 5,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_DULUTH_X_BOATCLUB_F1_HOST",
+          "sprite": "SPRITE_GENTLEMAN",
+          "tile": [
+            5,
+            5
+          ],
+          "facing": "south",
+          "lines": [
+            "SULO trains here.",
+            "Try a fair match."
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [
+        {
+          "id": "MN_DULUTH_X_T06",
+          "display_name": "SULO",
+          "trainer_class": "FISHER",
+          "sprite": "SPRITE_FISHER",
+          "tile": [
+            10,
+            5
+          ],
+          "facing": "south",
+          "sight_range": 0,
+          "defeated_flag": "EVENT_MN_DULUTH_X_TRAINER_06",
+          "party": [
+            {
+              "species": "LANTURN",
+              "level": 41
+            },
+            {
+              "species": "MANTINE",
+              "level": 42
+            }
+          ],
+          "before_lines": [
+            "A friendly match?",
+            "Show your teamwork!"
+          ],
+          "after_lines": [
+            "You read the field!"
+          ],
+          "loss_lines": [
+            "We train here",
+            "every windy day."
+          ]
+        }
+      ],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnDuluthBoatClub2F",
+      "native_constant": "MN_DULUTH_X_BOATCLUB_2F",
+      "template": "MnDuluthHarborWorkshop",
+      "tileset": "house",
+      "border_block": 10,
+      "dimensions_metatiles": [
+        8,
+        6
+      ],
+      "rows": [
+        "0a 0a 0a 0a 0a 0a 0a 0a",
+        "0a 25 05 1e 05 04 1d 0a",
+        "0a 0f 0f 0f 0f 0f 0f 0a",
+        "0a 01 02 0f 01 02 0f 0a",
+        "0a 0c 0d 0f 0c 0d 0f 0a",
+        "0a 0a 0a 0a 0a 0a 0a 0a"
+      ],
+      "arrival_core": [
+        2,
+        3
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            2
+          ],
+          "target": "MN_DULUTH_X_BOATCLUB_1F",
+          "target_warp": 5,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            2,
+            3
+          ],
+          "target": "MN_DULUTH_X_BOATCLUB_2F",
+          "target_warp": 2,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_DULUTH_X_BOATCLUB_F2_HOST",
+          "sprite": "SPRITE_GENTLEMAN",
+          "tile": [
+            5,
+            5
+          ],
+          "facing": "south",
+          "lines": [
+            "Neighbors gather",
+            "here after work."
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnDuluthFisherCottage",
+      "native_constant": "MN_DULUTH_X_FISHERCOTTAGE",
+      "template": "MnDuluthHarborWorkshop",
+      "tileset": "house",
+      "border_block": 10,
+      "dimensions_metatiles": [
+        6,
+        6
+      ],
+      "rows": [
+        "0a 0a 0a 0a 0a 0a",
+        "0a 04 1e 05 1d 0a",
+        "0a 0f 0f 0f 0f 0a",
+        "0a 01 02 0f 0f 0a",
+        "0a 0c 0d 0f 0f 0a",
+        "0a 0a 0a 0b 0a 0a"
+      ],
+      "arrival_core": [
+        6,
+        9
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            6,
+            11
+          ],
+          "target": "MN_DULUTH",
+          "target_warp": 74,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            7,
+            11
+          ],
+          "target": "MN_DULUTH",
+          "target_warp": 74,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            6,
+            9
+          ],
+          "target": "MN_DULUTH_X_FISHERCOTTAGE",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_DULUTH_X_FISHERCOTTAGE_F1_HOST",
+          "sprite": "SPRITE_TEACHER",
+          "tile": [
+            5,
+            5
+          ],
+          "facing": "south",
+          "lines": [
+            "Far from hills,",
+            "near the waves."
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    },
+    {
+      "id": "MnDuluthPointGardenHome",
+      "native_constant": "MN_DULUTH_X_POINTGARDENHOME",
+      "template": "MnDuluthHarborWorkshop",
+      "tileset": "house",
+      "border_block": 10,
+      "dimensions_metatiles": [
+        6,
+        6
+      ],
+      "rows": [
+        "0a 0a 0a 0a 0a 0a",
+        "0a 04 1e 05 1d 0a",
+        "0a 0f 0f 0f 0f 0a",
+        "0a 01 02 0f 0f 0a",
+        "0a 0c 0d 0f 0f 0a",
+        "0a 0a 0a 0b 0a 0a"
+      ],
+      "arrival_core": [
+        6,
+        9
+      ],
+      "warps": [
+        {
+          "index": 1,
+          "tile": [
+            6,
+            11
+          ],
+          "target": "MN_DULUTH",
+          "target_warp": 76,
+          "passive": false
+        },
+        {
+          "index": 2,
+          "tile": [
+            7,
+            11
+          ],
+          "target": "MN_DULUTH",
+          "target_warp": 76,
+          "passive": false
+        },
+        {
+          "index": 3,
+          "tile": [
+            6,
+            9
+          ],
+          "target": "MN_DULUTH_X_POINTGARDENHOME",
+          "target_warp": 3,
+          "passive": true
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_DULUTH_X_POINTGARDENHOME_F1_HOST",
+          "sprite": "SPRITE_TEACHER",
+          "tile": [
+            5,
+            5
+          ],
+          "facing": "south",
+          "lines": [
+            "Pines block wind",
+            "from our garden."
+          ]
+        }
+      ],
+      "signs": [],
+      "trainers": [],
+      "items": [],
+      "programs": {}
+    }
+  ],
+  "event_flags": [
+    "EVENT_MN_DULUTH_X_TRAINER_01",
+    "EVENT_MN_DULUTH_X_TRAINER_02",
+    "EVENT_MN_DULUTH_X_TRAINER_03",
+    "EVENT_MN_DULUTH_X_TRAINER_04",
+    "EVENT_MN_DULUTH_X_TRAINER_05",
+    "EVENT_MN_DULUTH_X_TRAINER_06",
+    "EVENT_MN_DULUTH_X_TRAINER_07",
+    "EVENT_MN_DULUTH_X_TRAINER_08",
+    "EVENT_MN_DULUTH_X_ITEM_01",
+    "EVENT_MN_DULUTH_X_ITEM_02",
+    "EVENT_MN_DULUTH_X_ITEM_03",
+    "EVENT_MN_DULUTH_X_ITEM_04",
+    "EVENT_MN_DULUTH_X_ITEM_05",
+    "EVENT_MN_DULUTH_X_ITEM_06",
+    "EVENT_MN_DULUTH_X_REQUISITION_DELIVERED",
+    "EVENT_MN_DULUTH_X_REQUISITION_REWARDED",
+    "EVENT_MN_DULUTH_X_TRAINING_REWARDED"
+  ],
+  "programs": {},
+  "trainers": [
+    {
+      "id": "MN_DULUTH_X_T01",
+      "display_name": "HOLT",
+      "trainer_class": "SAILOR",
+      "sprite": "SPRITE_SAILOR",
+      "tile": [
+        31,
+        79
+      ],
+      "facing": "south",
+      "sight_range": 0,
+      "defeated_flag": "EVENT_MN_DULUTH_X_TRAINER_01",
+      "party": [
+        {
+          "species": "MACHOKE",
+          "level": 41
+        },
+        {
+          "species": "LANTURN",
+          "level": 42
+        }
+      ],
+      "before_lines": [
+        "A friendly match?",
+        "Show your teamwork!"
+      ],
+      "after_lines": [
+        "You read the field!"
+      ],
+      "loss_lines": [
+        "We train here",
+        "every windy day."
+      ]
+    },
+    {
+      "id": "MN_DULUTH_X_T07",
+      "display_name": "ESKER",
+      "trainer_class": "HIKER",
+      "sprite": "SPRITE_POKEFAN_M",
+      "tile": [
+        35,
+        19
+      ],
+      "facing": "south",
+      "sight_range": 0,
+      "defeated_flag": "EVENT_MN_DULUTH_X_TRAINER_07",
+      "party": [
+        {
+          "species": "SANDSLASH",
+          "level": 41
+        },
+        {
+          "species": "PILOSWINE",
+          "level": 42
+        }
+      ],
+      "before_lines": [
+        "A friendly match?",
+        "Show your teamwork!"
+      ],
+      "after_lines": [
+        "You read the field!"
+      ],
+      "loss_lines": [
+        "We train here",
+        "every windy day."
+      ]
+    },
+    {
+      "id": "MN_DULUTH_X_T08",
+      "display_name": "MAIJA",
+      "trainer_class": "BEAUTY",
+      "sprite": "SPRITE_COOLTRAINER_F",
+      "tile": [
+        107,
+        35
+      ],
+      "facing": "south",
+      "sight_range": 0,
+      "defeated_flag": "EVENT_MN_DULUTH_X_TRAINER_08",
+      "party": [
+        {
+          "species": "GRANBULL",
+          "level": 42
+        },
+        {
+          "species": "NOCTOWL",
+          "level": 42
+        }
+      ],
+      "before_lines": [
+        "A friendly match?",
+        "Show your teamwork!"
+      ],
+      "after_lines": [
+        "You read the field!"
+      ],
+      "loss_lines": [
+        "We train here",
+        "every windy day."
+      ]
+    }
+  ],
+  "items": [
+    {
+      "id": "MN_DULUTH_X_ITEM_01",
+      "item": "NUGGET",
+      "quantity": 1,
+      "flag": "EVENT_MN_DULUTH_X_ITEM_01",
+      "tile": [
+        27,
+        13
+      ]
+    },
+    {
+      "id": "MN_DULUTH_X_ITEM_02",
+      "item": "MAX_REPEL",
+      "quantity": 1,
+      "flag": "EVENT_MN_DULUTH_X_ITEM_02",
+      "tile": [
+        111,
+        43
+      ]
+    },
+    {
+      "id": "MN_DULUTH_X_ITEM_03",
+      "item": "ULTRA_BALL",
+      "quantity": 1,
+      "flag": "EVENT_MN_DULUTH_X_ITEM_03",
+      "tile": [
+        33,
+        79
+      ]
+    },
+    {
+      "id": "MN_DULUTH_X_ITEM_04",
+      "item": "PP_UP",
+      "quantity": 1,
+      "flag": "EVENT_MN_DULUTH_X_ITEM_04",
+      "tile": [
+        121,
+        91
+      ]
+    },
+    {
+      "id": "MN_DULUTH_X_ITEM_05",
+      "item": "FULL_RESTORE",
+      "quantity": 1,
+      "flag": "EVENT_MN_DULUTH_X_ITEM_05",
+      "tile": [
+        119,
+        41
+      ]
+    },
+    {
+      "id": "MN_DULUTH_X_ITEM_06",
+      "item": "ULTRA_BALL",
+      "quantity": 1,
+      "flag": "EVENT_MN_DULUTH_X_ITEM_06",
+      "tile": [
+        15,
+        19
+      ]
+    }
+  ],
+  "text_revisions": []
+}

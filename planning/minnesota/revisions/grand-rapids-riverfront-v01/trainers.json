@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "map": "MnGrandRapids",
+      "id": "MN_EXTRA_GR_BANK_FISHER",
+      "display_name": "KNUTE",
+      "trainer_class": "FISHER",
+      "sprite": "SPRITE_FISHER",
+      "tile": [
+        25,
+        36
+      ],
+      "approach": [
+        26,
+        36
+      ],
+      "facing": "south",
+      "optional_battle": true,
+      "sight_range": 1,
+      "defeated_flag": "EVENT_MN_EXTRA_GR_BANK_FISHER",
+      "party": [
+        {
+          "species": "SCUTLET",
+          "level": 29
+        },
+        {
+          "species": "TORROUT",
+          "level": 31
+        }
+      ],
+      "before_lines": [
+        "The river slows",
+        "behind this bank.",
+        "Want a quick match",
+        "before you cast?"
+      ],
+      "after_lines": [
+        "A steady hand wins",
+        "more than a rush.",
+        "Cast from the end",
+        "Watch your line."
+      ],
+      "loss_lines": [
+        "Keep your footing.",
+        "Watch the edge."
+      ]
+    }
+  ]
+}

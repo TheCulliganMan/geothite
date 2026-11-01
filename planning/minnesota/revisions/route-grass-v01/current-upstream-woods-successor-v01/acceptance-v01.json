@@ -1,0 +1,54 @@
+{
+  "status": "PASS_CURRENT_UPSTREAM_WOODS_GRASS_AND_ACTIVITIES_REVIEW",
+  "pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+  "pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33",
+  "native_cases": 3,
+  "activities_passed": [
+    "MN_RIVER_FUN_UPSTREAM_ALDER",
+    "MN_RIVER_FUN_UPSTREAM_COVE",
+    "MN_RIVER_FUN_UPSTREAM_DAWN",
+    "MN_RIVER_FUN_UPSTREAM_ETHER",
+    "MN_RIVER_FUN_UPSTREAM_FINN",
+    "MN_RIVER_FUN_UPSTREAM_FLINT",
+    "MN_RIVER_FUN_UPSTREAM_GUS",
+    "MN_RIVER_FUN_UPSTREAM_HANK",
+    "MN_RIVER_FUN_UPSTREAM_HOLLY",
+    "MN_RIVER_FUN_UPSTREAM_JET",
+    "MN_RIVER_FUN_UPSTREAM_KIP",
+    "MN_RIVER_FUN_UPSTREAM_MAPLE",
+    "MN_RIVER_FUN_UPSTREAM_MEDIC",
+    "MN_RIVER_FUN_UPSTREAM_NELL",
+    "MN_RIVER_FUN_UPSTREAM_OTTO",
+    "MN_RIVER_FUN_UPSTREAM_PETAL",
+    "MN_RIVER_FUN_UPSTREAM_ROWAN",
+    "MN_RIVER_FUN_UPSTREAM_SAGE",
+    "MN_RIVER_FUN_UPSTREAM_STONE",
+    "MN_RIVER_FUN_UPSTREAM_SUPER_POTION",
+    "MN_RIVER_FUN_UPSTREAM_ULTRA_BALL",
+    "MN_RIVER_FUN_UPSTREAM_WREN",
+    "MN_RIVER_UPSTREAM_BANK_FISHER",
+    "MN_RIVER_UPSTREAM_WOODS_KEEPER"
+  ],
+  "trainer_battles_passed": 20,
+  "supplies_passed": 3,
+  "medic_passed": 1,
+  "stdio_calls": 15,
+  "grass_quadrants": 796,
+  "ordinary_eastbound_grass_steps": [
+    3,
+    3
+  ],
+  "dry_westbound_hop_grass_steps": [
+    0,
+    0
+  ],
+  "supply_minimum_grass_steps": [
+    2,
+    3,
+    2
+  ],
+  "medic_minimum_grass_steps": 0,
+  "all_six_complete_maps_used_pixels_collision_exact": true,
+  "whole_inherited_map_inspected": "planning/minnesota/renders/route-grass-v01/current-upstream-woods-v01/source-candidate-v01/whole-current.png",
+  "scope": "Fresh native24activities with actual PP/XP/money/reward/care/Continue, grass wild RUN and both eastbound grassy loops/westbound dry hops/reverse denials. Strong starting party/badges/position/Repel are QA fixtures, not earned progression or balance; statewide review active."
+}

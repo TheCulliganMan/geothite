@@ -1,0 +1,46 @@
+{
+  "actor_relocations": [
+    {
+      "map": "MnR17Cave1F",
+      "script": "MN_INTERIOR_R17_LICHEN_READER",
+      "sprite": "SPRITE_SCIENTIST",
+      "before": [
+        8,
+        10
+      ],
+      "tile": [
+        6,
+        10
+      ],
+      "approach": [
+        5,
+        10
+      ],
+      "arrival": [
+        9,
+        12
+      ]
+    },
+    {
+      "map": "MnR20Cave1F",
+      "script": "MN_INTERIOR_R20_CLEFT_SCOUT",
+      "sprite": "SPRITE_POKEFAN_M",
+      "before": [
+        6,
+        9
+      ],
+      "tile": [
+        12,
+        7
+      ],
+      "approach": [
+        11,
+        7
+      ],
+      "arrival": [
+        5,
+        12
+      ]
+    }
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "tool": "built-in image_gen",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f133/burroot-v3-native-pupils",
+  "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f133/manifest-burroot-v3-native-pupils.json",
+  "normalized_receipt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f133/source-feature-proof-burroot-v3-native-pupils.json",
+  "all_raws_prompts_rejected_trials_retained": true,
+  "no_native_pixel_painting": true,
+  "no_registry_or_pack_mutation": true,
+  "normal_shiny_boards_actually_viewed": true,
+  "canonical_palettes": [
+    [
+      32767,
+      10838,
+      8647,
+      0
+    ],
+    [
+      32767,
+      19146,
+      14568,
+      0
+    ]
+  ],
+  "native_bounds": [
+    [
+      2,
+      3,
+      12,
+      12
+    ],
+    [
+      1,
+      3,
+      14,
+      12
+    ],
+    [
+      3,
+      3,
+      11,
+      12
+    ],
+    [
+      2,
+      3,
+      13,
+      12
+    ],
+    [
+      1,
+      3,
+      14,
+      12
+    ],
+    [
+      3,
+      3,
+      11,
+      12
+    ]
+  ],
+  "retained_source_hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f133/burroot.overworld.imagegen-v2-plant.png": "e9ea527826fd7714ee049c3a98ae2bd7318ccbaac66d6c4e9c4ed85c81a8e515",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f133/prompt-burroot-v1.txt": "b1adfbc978e866a7c63f62db5281bf0560d70f4279ba445c80abe9c3084eed8b",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f133/prompt-burroot-v2-plant.txt": "8f67b37328722b4501f1a9ffdbc60e82fcf4691788410ad5ee57e54a98ffd103",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f133/burroot.v2-plant.original-path.txt": "694eecb61875830ed34a3c631994dbf47963191492ba6ad4fbdf41ba0a9b597d"
+  },
+  "status": "root independent visual/context acceptance pending"
+}

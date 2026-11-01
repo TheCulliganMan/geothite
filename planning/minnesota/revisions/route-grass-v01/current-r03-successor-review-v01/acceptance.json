@@ -1,0 +1,51 @@
+{
+  "status": "PASS_CURRENT_ROUTE_AND_GUIDANCE",
+  "selected_revision": "route_grass_r03_stair_guidance_revision",
+  "publication": {
+    "kind": "native_local_stair_guidance_and_current_route_source_binding",
+    "parent_revision": "r10_exploration_revision",
+    "parent_pack": "content-packs/minnesota-r10-exploration-v03.crystalpack",
+    "parent_pack_sha256": "acc5e63d532de34614cbcc0ac4bd414b190d8cdc9e5d319fdf71f3de3302e073",
+    "pack": "content-packs/minnesota-current-r03-stair-guidance-v01.crystalpack",
+    "pack_sha256": "78ccaed227c86c2ab162c97eeb5bf3d793467bb0550588641ed96cf5a0ec81c8",
+    "content_identity": "b12700ca6c0b9f8742a491763a6b0815407b5b363f158a3f7358c823fd338d1e",
+    "maps_with_text_changes": [
+      "MnR03C00R00"
+    ],
+    "changed_local_text_programs": 2,
+    "all732_map_geometry_actors_events_teams_encounters_preserved_exact": true,
+    "all_art_audio_runtime_files_preserved_exact": true,
+    "grass_quadrants": 224,
+    "main_crossing_minimum_grass_steps_both_directions": 6,
+    "current_native_low_bank_hop_lanes": 6,
+    "actual_ordinary_return_grass_entries": [
+      8,
+      8,
+      8,
+      7,
+      6,
+      5
+    ],
+    "ordinary_terrace_stairs_bidirectional": true,
+    "closed_high_cliff_denied_from_both_sides": true,
+    "native_child_scoped_checkpoint_cases_passed": 1,
+    "production_route_stdio_calls_on_exact_terrain_parent": 2022,
+    "actual_route_wild_battles": 10,
+    "production_child_dialogue_and_battle_stdio_calls": 214,
+    "actual_child_terrace_trainer_victories": 1,
+    "actual_native_images_inspected_on_exact_terrain_parent": 5,
+    "source_native_pixel_mismatches": 0,
+    "authoring_source_index": "planning/minnesota/revisions/route-grass-v01/current-r03-successor-review-v01/sources-v02.json",
+    "authoring_source_index_sha256": "8d5165c5c8730c759a887e43ae59bb4b1bc87891b7811acd708e40aae21a529f",
+    "runbook": "planning/minnesota/revisions/route-grass-v01/current-r03-successor-review-v01/README.md",
+    "code_lint_status": "PASS",
+    "status": "Current Route3 reviewed: six dry low-bank drops with forced grassy returns, both bridges and neighboring town connections, ordinary terrace stairs and closed high cliff. Two local directions corrected; actual trainer win/reward/repeat and Continue verified. All geometry, progression and audio preserved.",
+    "native_visual_actual_capture_pack": "content-packs/minnesota-current-r01-stair-guidance-v01.crystalpack",
+    "native_visual_exact_successor_inheritance": "planning/minnesota/revisions/route-grass-v01/current-r03-successor-review-v01/native-visual-successor-inheritance-v01.json"
+  },
+  "scope": "Current Route3 walking/grass/ledge/stair course and two local directions; initial party/badges/location are native QA setup. No earned regional or complete-campaign claim.",
+  "goal_complete": false,
+  "native_visual_actual_pack_and_inheritance_explicit": true,
+  "current_selected_successor_revision": "cave_reservations_current_revision",
+  "current_successor_exact_r03_inheritance": "post-selection-proof-v01.json"
+}

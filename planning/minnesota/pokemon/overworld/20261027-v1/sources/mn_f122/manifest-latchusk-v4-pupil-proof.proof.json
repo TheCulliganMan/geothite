@@ -1,0 +1,353 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_262",
+  "status": "source-proof-pass; root visual/context acceptance required",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f122/manifest-latchusk-v4-pupil-proof.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f122/latchusk-v4-pupil-proof",
+  "shared_transform": {
+    "source_bounds": [
+      5,
+      15,
+      501,
+      430
+    ],
+    "native_size": [
+      14,
+      12
+    ],
+    "native_origin": [
+      1,
+      3
+    ]
+  },
+  "all_four_nonrear_poses_have_actual_source_pupils": true,
+  "every_native_eye_cluster_maps_to_same_small_anatomical_source_pupil_component": true,
+  "actual_source_pupil_proofs": [
+    {
+      "pose": "down_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f122/latchusk.overworld.imagegen-v4-front-pupil-upper-extension.png",
+      "crop": [
+        33,
+        67,
+        520,
+        448
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          224,
+          337,
+          20,
+          35
+        ],
+        [
+          299,
+          337,
+          21,
+          35
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              10
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                1,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                224,
+                337,
+                20,
+                35
+              ],
+              "pixels": 700,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                10
+              ],
+              "source_sample_pixel": [
+                234,
+                350
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              8,
+              10
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                299,
+                337,
+                21,
+                35
+              ],
+              "pixels": 708,
+              "truncated_contour": false,
+              "native_pixel": [
+                8,
+                10
+              ],
+              "source_sample_pixel": [
+                306,
+                350
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f122/latchusk.overworld.imagegen-v2-key-barbel-width.png",
+      "crop": [
+        990,
+        110,
+        520,
+        448
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          1040,
+          321,
+          21,
+          24
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              2,
+              8
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                6,
+                5,
+                6,
+                253
+              ],
+              "bounds": [
+                1040,
+                321,
+                21,
+                24
+              ],
+              "pixels": 504,
+              "truncated_contour": false,
+              "native_pixel": [
+                2,
+                8
+              ],
+              "source_sample_pixel": [
+                1048,
+                322
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f122/latchusk.overworld.imagegen-v4-front-pupil-upper-extension.png",
+      "crop": [
+        33,
+        516,
+        520,
+        448
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          224,
+          791,
+          20,
+          37
+        ],
+        [
+          299,
+          791,
+          21,
+          37
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              10
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                224,
+                791,
+                20,
+                37
+              ],
+              "pixels": 740,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                10
+              ],
+              "source_sample_pixel": [
+                234,
+                799
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              8,
+              10
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                299,
+                791,
+                21,
+                37
+              ],
+              "pixels": 763,
+              "truncated_contour": false,
+              "native_pixel": [
+                8,
+                10
+              ],
+              "source_sample_pixel": [
+                306,
+                799
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f122/latchusk.overworld.imagegen-v2-key-barbel-width.png",
+      "crop": [
+        991,
+        572,
+        520,
+        448
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          1041,
+          782,
+          21,
+          25
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              2,
+              8
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                7,
+                7,
+                7,
+                253
+              ],
+              "bounds": [
+                1041,
+                782,
+                21,
+                25
+              ],
+              "pixels": 525,
+              "truncated_contour": false,
+              "native_pixel": [
+                2,
+                8
+              ],
+              "source_sample_pixel": [
+                1049,
+                784
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "native_head_anchors_idle_walk_equal": true,
+  "validation": {
+    "runtime_2bpp_384_bytes_exact_allpixels": true,
+    "runtime_png16x96_index_parity": true,
+    "normal_shiny_palettebanks_exact": true,
+    "normal_shiny_all1536pixels_exact": true,
+    "transparent_border": true,
+    "idle_walk_pairs_distinct": true
+  },
+  "sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f122/latchusk-v4-pupil-proof/gfx/pokemon/latchusk/overworld.gbcpal": "5858e4f9ae2d8df6b3ae5c45fe924de71b1747cdc09365d00c70a09c6ed1537d",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f122/latchusk-v4-pupil-proof/review/line.shiny-8x.png": "ec933ffbeaaeea0505d66de4ef8332c1bf2d7249c0d3ab448187577ef7a24d51",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f122/latchusk-v4-pupil-proof/gfx/pokemon/latchusk/overworld.2bpp": "5c250c3cf00d0330a5e9251a1e97830143a4d10d55cc5c543a05377484e5b1e1",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f122/latchusk.overworld.imagegen-v2-key-barbel-width.png": "7558a96718033554798b8f0409db30fe4d30b4df1ab28e3c52c007b8ae8c8e03",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f122/latchusk.overworld.imagegen-v1.png": "a51b9e5803522318ed49878d7624adaed4197de02af5d1b5229fd6c76d854946",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f122/manifest-latchusk-v4-pupil-proof.json": "94ca76aa3eebb5f24be71e0cf0f9c3d4664b04f914e95ee5ea759b70bef0152b",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f122/latchusk-v4-pupil-proof/compiled-index.json": "93fca50970bb6ed7edc115b3b8bb1ff7fe10e1f7b03f197d8921bfb297f09c50",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f122/latchusk.overworld.imagegen-v4-front-pupil-upper-extension.png": "667cbfbf715484e32adcb328ed688480fe83209df0f4220cbcbf99d27b9ea848",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f122/latchusk-v4-pupil-proof/review/line.normal-8x.png": "a14b908610dd78e5510962c15061f8fe9a2049c1bccc8d4d1a25c170e0906e10",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f122/latchusk-v4-pupil-proof/gfx/pokemon/latchusk/overworld-shiny.gbcpal": "ec6776a6e16f783cb712c432bc474b8e2dd96410d0b904f1716224c5a6599ec1",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f122/latchusk-v4-pupil-proof/gfx/pokemon/latchusk/overworld.png": "5a37e53a2ee3655e58cbc772c9fbc83e3bac7e9d52584a7294c3f7fd5a2310e5"
+  },
+  "actual_native_boards_viewed": true,
+  "rear_review": "plain rear head, no copied face; actual normal/shiny viewed"
+}

@@ -1,0 +1,364 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F076",
+  "status": "native-proposal-awaiting-review",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_163": {
+      "species_id": "MN_163",
+      "name": "Mitwist",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          28,
+          25,
+          18
+        ],
+        [
+          8,
+          10,
+          15
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        19260,
+        15688,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          231,
+          206,
+          148
+        ],
+        [
+          66,
+          82,
+          123
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#E7CE94",
+        "#42527B",
+        "#000000"
+      ]
+    },
+    "MN_164": {
+      "species_id": "MN_164",
+      "name": "Hemhowl",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          24,
+          22,
+          28
+        ],
+        [
+          7,
+          8,
+          14
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        29400,
+        14599,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          198,
+          181,
+          231
+        ],
+        [
+          57,
+          66,
+          115
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#C6B5E7",
+        "#394273",
+        "#000000"
+      ]
+    },
+    "MN_165": {
+      "species_id": "MN_165",
+      "name": "Gustitch",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          19,
+          24,
+          26
+        ],
+        [
+          9,
+          7,
+          14
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        27411,
+        14569,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          156,
+          198,
+          214
+        ],
+        [
+          74,
+          57,
+          115
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#9CC6D6",
+        "#4A3973",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f076/woolwind-v2/prompt-v2-retry.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "source_sha256": "1afe9a3f71712fab1bc64ca18b7b53a2c7e32da3ca2f8048622896d73aead2d5",
+  "sprites": [
+    {
+      "id": "mn-163-mitwist-v2",
+      "species_id": "MN_163",
+      "view": "front",
+      "source": "sprites/mn-f076/woolwind-v2/front-back.imagegen-v2.png",
+      "crop": [
+        0,
+        0,
+        360,
+        512
+      ],
+      "fit": [
+        42,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        19260,
+        15688,
+        0
+      ],
+      "exterior_contour": "solid",
+      "sampling": "source_center",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-163-mitwist-v2",
+      "species_id": "MN_163",
+      "view": "back",
+      "source": "sprites/mn-f076/woolwind-v2/front-back.imagegen-v2.png",
+      "crop": [
+        0,
+        560,
+        380,
+        360
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        19260,
+        15688,
+        0
+      ],
+      "exterior_contour": "solid",
+      "sampling": "source_center",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-164-hemhowl-v2",
+      "species_id": "MN_164",
+      "view": "front",
+      "source": "sprites/mn-f076/woolwind-v2/front-back.imagegen-v2.png",
+      "crop": [
+        380,
+        0,
+        480,
+        512
+      ],
+      "fit": [
+        46,
+        52
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        29400,
+        14599,
+        0
+      ],
+      "exterior_contour": "solid",
+      "sampling": "source_center",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-164-hemhowl-v2",
+      "species_id": "MN_164",
+      "view": "back",
+      "source": "sprites/mn-f076/woolwind-v2/front-back.imagegen-v2.png",
+      "crop": [
+        440,
+        520,
+        430,
+        360
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        29400,
+        14599,
+        0
+      ],
+      "exterior_contour": "solid",
+      "sampling": "source_center",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-165-gustitch-v2",
+      "species_id": "MN_165",
+      "view": "front",
+      "source": "sprites/mn-f076/woolwind-v2/front-back.imagegen-v2.png",
+      "crop": [
+        900,
+        0,
+        636,
+        530
+      ],
+      "fit": [
+        54,
+        52
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        27411,
+        14569,
+        0
+      ],
+      "exterior_contour": "solid",
+      "sampling": "source_center",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-165-gustitch-v2",
+      "species_id": "MN_165",
+      "view": "back",
+      "source": "sprites/mn-f076/woolwind-v2/front-back.imagegen-v2.png",
+      "crop": [
+        880,
+        530,
+        656,
+        360
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        27411,
+        14569,
+        0
+      ],
+      "exterior_contour": "solid",
+      "sampling": "source_center",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    }
+  ],
+  "visual_review": {
+    "status": "awaiting-native-review",
+    "sheet_sha256": "1afe9a3f71712fab1bc64ca18b7b53a2c7e32da3ca2f8048622896d73aead2d5",
+    "outline_profile": "solid-exterior-v1",
+    "sampling": "source_center",
+    "notes": "New asymmetric mitten, long cuff/sleeve and diagonal three-panel quilt. No head, hood, animal limbs, feather wings or feet. Replaces user-rejected owl-like version."
+  },
+  "source_edits": [],
+  "native_qa": {
+    "converter": "target/agent-roster-contour/minnesota_sprite_sampling_v5",
+    "sampling": "source_center",
+    "exterior_contour": "solid",
+    "status": "awaiting-native-review",
+    "isolated_output": "target/agent-northwoods-animation/proposals/woolwind-v2-asymmetric"
+  }
+}

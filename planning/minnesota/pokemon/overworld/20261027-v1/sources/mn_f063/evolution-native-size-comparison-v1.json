@@ -1,0 +1,212 @@
+[
+  {
+    "name": "knotlet",
+    "variant": "v7-native-pupils",
+    "fit": [
+      11,
+      11
+    ],
+    "native_bounds": [
+      {
+        "pose": "down_idle",
+        "bounds": [
+          3,
+          6,
+          9,
+          9
+        ],
+        "opaque": 48
+      },
+      {
+        "pose": "up_idle",
+        "bounds": [
+          4,
+          6,
+          7,
+          9
+        ],
+        "opaque": 39
+      },
+      {
+        "pose": "left_idle",
+        "bounds": [
+          2,
+          6,
+          11,
+          9
+        ],
+        "opaque": 45
+      },
+      {
+        "pose": "down_step",
+        "bounds": [
+          3,
+          6,
+          9,
+          9
+        ],
+        "opaque": 49
+      },
+      {
+        "pose": "up_step",
+        "bounds": [
+          4,
+          6,
+          8,
+          9
+        ],
+        "opaque": 36
+      },
+      {
+        "pose": "left_step",
+        "bounds": [
+          2,
+          6,
+          11,
+          8
+        ],
+        "opaque": 46
+      }
+    ]
+  },
+  {
+    "name": "lasserp",
+    "variant": "v4-pupils-rope-holes",
+    "fit": [
+      13,
+      13
+    ],
+    "native_bounds": [
+      {
+        "pose": "down_idle",
+        "bounds": [
+          1,
+          4,
+          12,
+          11
+        ],
+        "opaque": 85
+      },
+      {
+        "pose": "up_idle",
+        "bounds": [
+          1,
+          3,
+          12,
+          11
+        ],
+        "opaque": 75
+      },
+      {
+        "pose": "left_idle",
+        "bounds": [
+          2,
+          3,
+          11,
+          12
+        ],
+        "opaque": 76
+      },
+      {
+        "pose": "down_step",
+        "bounds": [
+          1,
+          4,
+          13,
+          11
+        ],
+        "opaque": 88
+      },
+      {
+        "pose": "up_step",
+        "bounds": [
+          1,
+          3,
+          13,
+          11
+        ],
+        "opaque": 82
+      },
+      {
+        "pose": "left_step",
+        "bounds": [
+          2,
+          3,
+          12,
+          12
+        ],
+        "opaque": 79
+      }
+    ]
+  },
+  {
+    "name": "knotitan",
+    "variant": "v15-all-holes",
+    "fit": [
+      14,
+      14
+    ],
+    "native_bounds": [
+      {
+        "pose": "down_idle",
+        "bounds": [
+          1,
+          5,
+          14,
+          10
+        ],
+        "opaque": 81
+      },
+      {
+        "pose": "up_idle",
+        "bounds": [
+          1,
+          4,
+          13,
+          10
+        ],
+        "opaque": 79
+      },
+      {
+        "pose": "left_idle",
+        "bounds": [
+          3,
+          5,
+          12,
+          10
+        ],
+        "opaque": 73
+      },
+      {
+        "pose": "down_step",
+        "bounds": [
+          1,
+          5,
+          14,
+          10
+        ],
+        "opaque": 79
+      },
+      {
+        "pose": "up_step",
+        "bounds": [
+          1,
+          4,
+          12,
+          10
+        ],
+        "opaque": 80
+      },
+      {
+        "pose": "left_step",
+        "bounds": [
+          3,
+          5,
+          12,
+          10
+        ],
+        "opaque": 72
+      }
+    ]
+  }
+]

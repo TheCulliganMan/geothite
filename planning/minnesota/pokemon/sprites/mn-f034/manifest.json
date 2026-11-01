@@ -1,0 +1,234 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F034",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_081": {
+      "species_id": "MN_081",
+      "name": "Leflet",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          30,
+          26,
+          16
+        ],
+        [
+          18,
+          12,
+          6
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        17246,
+        6546,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          247,
+          214,
+          132
+        ],
+        [
+          148,
+          99,
+          49
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#F7D684",
+        "#946331",
+        "#000000"
+      ]
+    },
+    "MN_082": {
+      "species_id": "MN_082",
+      "name": "Lefold",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          28,
+          23,
+          13
+        ],
+        [
+          14,
+          8,
+          4
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        14076,
+        4366,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          231,
+          189,
+          107
+        ],
+        [
+          115,
+          66,
+          33
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#E7BD6B",
+        "#734221",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f034/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png",
+      "target/minnesota-pokemon/gen2-reference/bugs.png"
+    ]
+  },
+  "sprites": [
+    {
+      "id": "mn-081-leflet-v1",
+      "species_id": "MN_081",
+      "view": "front",
+      "source": "sprites/mn-f034/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        656,
+        599
+      ],
+      "fit": [
+        44,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        17246,
+        6546,
+        0
+      ]
+    },
+    {
+      "id": "mn-081-leflet-v1",
+      "species_id": "MN_081",
+      "view": "back",
+      "source": "sprites/mn-f034/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        599,
+        656,
+        600
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        17246,
+        6546,
+        0
+      ]
+    },
+    {
+      "id": "mn-082-lefold-v1",
+      "species_id": "MN_082",
+      "view": "front",
+      "source": "sprites/mn-f034/front-back.imagegen-v1.png",
+      "crop": [
+        656,
+        0,
+        656,
+        599
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        14076,
+        4366,
+        0
+      ]
+    },
+    {
+      "id": "mn-082-lefold-v1",
+      "species_id": "MN_082",
+      "view": "back",
+      "source": "sprites/mn-f034/front-back.imagegen-v1.png",
+      "crop": [
+        656,
+        599,
+        656,
+        600
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        14076,
+        4366,
+        0
+      ]
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "notes": "Inspected frozen v1: triangular Leflet hood and spiral Lefold chest/tail stay readable with clean toasted outlines. Close backs preserve hood and roll identity; no accidental silhouette holes or extra borders.",
+    "sheet_sha256": "3083d5cbc3ce4dff1bd3a51e0c8c6449a46262a422a6a73b609f136fef93a48b",
+    "outline_profile": "source-contour-v1"
+  }
+}

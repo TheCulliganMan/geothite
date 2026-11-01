@@ -1,0 +1,351 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_102",
+  "status": "literal-source/native-proof-pass; root visual and terrain acceptance required",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f050/pelletank.manifest-native-joint-phase-v3.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-pelletank-joint-phase-v3",
+  "shared_transform": {
+    "source_bounds": [
+      37,
+      52,
+      402,
+      324
+    ],
+    "native_size": [
+      13,
+      10
+    ],
+    "native_origin": [
+      1,
+      5
+    ]
+  },
+  "all_four_nonrear_poses_have_actual_source_pupils": true,
+  "every_native_eye_cluster_maps_to_same_small_anatomical_source_pupil_component": true,
+  "actual_source_pupil_proofs": [
+    {
+      "pose": "down_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f050/pelletank.overworld.imagegen-v3.png",
+      "crop": [
+        31,
+        140,
+        444,
+        380
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          199,
+          330,
+          38,
+          36
+        ],
+        [
+          292,
+          330,
+          37,
+          36
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              5,
+              9
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                199,
+                330,
+                38,
+                37
+              ],
+              "pixels": 1374,
+              "truncated_contour": false,
+              "native_pixel": [
+                5,
+                9
+              ],
+              "source_sample_pixel": [
+                207,
+                337
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              8,
+              9
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                254
+              ],
+              "bounds": [
+                292,
+                330,
+                37,
+                37
+              ],
+              "pixels": 1334,
+              "truncated_contour": false,
+              "native_pixel": [
+                8,
+                9
+              ],
+              "source_sample_pixel": [
+                299,
+                337
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f050/pelletank.overworld.imagegen-v3.png",
+      "crop": [
+        1040,
+        140,
+        444,
+        380
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          1126,
+          308,
+          36,
+          37
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              3,
+              9
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                1126,
+                308,
+                36,
+                37
+              ],
+              "pixels": 1332,
+              "truncated_contour": false,
+              "native_pixel": [
+                3,
+                9
+              ],
+              "source_sample_pixel": [
+                1154,
+                337
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f050/pelletank.overworld.imagegen-v3.png",
+      "crop": [
+        31,
+        549,
+        444,
+        380
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          199,
+          739,
+          38,
+          37
+        ],
+        [
+          292,
+          739,
+          38,
+          37
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              5,
+              9
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                1,
+                1,
+                0,
+                253
+              ],
+              "bounds": [
+                199,
+                739,
+                38,
+                37
+              ],
+              "pixels": 1405,
+              "truncated_contour": false,
+              "native_pixel": [
+                5,
+                9
+              ],
+              "source_sample_pixel": [
+                207,
+                746
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              8,
+              9
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                292,
+                739,
+                38,
+                37
+              ],
+              "pixels": 1393,
+              "truncated_contour": false,
+              "native_pixel": [
+                8,
+                9
+              ],
+              "source_sample_pixel": [
+                299,
+                746
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f050/pelletank.overworld.imagegen-v3.png",
+      "crop": [
+        1039,
+        547,
+        444,
+        380
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          1125,
+          715,
+          36,
+          36
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              3,
+              9
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                1,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                1125,
+                715,
+                36,
+                36
+              ],
+              "pixels": 1296,
+              "truncated_contour": false,
+              "native_pixel": [
+                3,
+                9
+              ],
+              "source_sample_pixel": [
+                1153,
+                744
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "native_head_anchors_idle_walk_equal": true,
+  "validation": {
+    "runtime_2bpp_384_bytes_exact_allpixels": true,
+    "runtime_png16x96_index_parity": true,
+    "normal_shiny_palettebanks_exact": true,
+    "normal_shiny_all1536pixels_exact": true,
+    "transparent_border": true,
+    "idle_walk_pairs_distinct": true
+  },
+  "sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-pelletank-joint-phase-v3/gfx/pokemon/pelletank/overworld.gbcpal": "55cf9e28c34695751e6268b920ae345e62c086e05b970f82b18ffd61a984b9f2",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f050/pelletank.overworld.imagegen-v3.png": "490cdff5c30d51ef2744e6e374ad7d711ab7999ba69b5fc963e36f1f96b64d4f",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-pelletank-joint-phase-v3/gfx/pokemon/pelletank/overworld.2bpp": "50eed7997340585bbaf53574cf86d616228cf5252817f532be7c6676077f12ef",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-pelletank-joint-phase-v3/compiled-index.json": "5e7f3d33b6a7f6ffbabaf767a30e7b331a2541cc72b69d10479198365853abdb",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-pelletank-joint-phase-v3/gfx/pokemon/pelletank/overworld.png": "02091d6fbfb7db0eac1872d4ba6b0b037e0082148ebe7e7abf52d364e93011eb",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-pelletank-joint-phase-v3/review/line.normal-8x.png": "2a39561faa58230caf71e3147d3f65be749e060673d37d346bedb1f85ab1395f",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-pelletank-joint-phase-v3/review/line.shiny-8x.png": "44027ab3837eb74165555b040d58faa0721c26d0c02a5e6066c8debcaa20d3cd",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-pelletank-joint-phase-v3/gfx/pokemon/pelletank/overworld-shiny.gbcpal": "2f799c503af8602cb6c90f86a893287e3c2e6727384a305657f73da0c376c7b8",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f050/pelletank.manifest-native-joint-phase-v3.json": "d96ce044318e73dd6fa4d8b6a6b5b48258b89dabeb62f4101e30def605b7d102"
+  },
+  "actual_native_boards_viewed": true,
+  "rear_review": "True full rears show blank skull backs and the three broad back pellet forms with attached short legs and curled hip tail. Compact profile redesign folds the tail inward and shortens the ore body while preserving shoulder scale. Front has two large actual black pupils; each west retains one actual pupil. Thick pellet planes and magnetic rails simplify to broad dark/light armor, not independent tiny circles. Shared13x13 fit across all six poses, between the12fit baby and14fit final."
+}

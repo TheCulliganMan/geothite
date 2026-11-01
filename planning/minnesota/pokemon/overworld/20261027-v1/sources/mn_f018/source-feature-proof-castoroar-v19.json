@@ -1,0 +1,216 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_050",
+  "result": "pass",
+  "manifest_sha256": "5fd0c091b1024ce43c333dfb870e9b14025a6729b0cfea0a1913781a9aba75cf",
+  "bank_sha256": "f62531df8e32d4c4446d01f57012966a25571416adad4a5a9c85789762f90827",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f018/castoroar.overworld.imagegen-v8-bold-front-pupils.png": "e96693cd2459d231968feac510051ad50c6d99d5105c961babd32d2e8739a8d8",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f018/castoroar.overworld.imagegen-v7-taller-torso.png": "0c14626059d90049f9ec53cefa80b7d2099c9b9977c72815d1cd708c03bfce0d"
+  },
+  "canonical_eye_form": "Two genuine isolated black pupil dots on broad pale fossil-beaver face in south views; one genuine black pupil on west profiles. Large paired hanging stone incisors remain separate below pupils.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            6,
+            6
+          ],
+          "source_sample": [
+            203,
+            203
+          ],
+          "source_component": [
+            197,
+            181,
+            34,
+            34
+          ],
+          "component_pixels": 1155,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ]
+        },
+        {
+          "native": [
+            9,
+            6
+          ],
+          "source_sample": [
+            307,
+            203
+          ],
+          "source_component": [
+            294,
+            181,
+            34,
+            34
+          ],
+          "component_pixels": 1151,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            2
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            3,
+            6
+          ],
+          "source_sample": [
+            1072,
+            258
+          ],
+          "source_component": [
+            1051,
+            234,
+            24,
+            27
+          ],
+          "component_pixels": 626,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            3,
+            3,
+            3,
+            254
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            6,
+            6
+          ],
+          "source_sample": [
+            203,
+            658
+          ],
+          "source_component": [
+            197,
+            632,
+            34,
+            34
+          ],
+          "component_pixels": 1156,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ]
+        },
+        {
+          "native": [
+            9,
+            6
+          ],
+          "source_sample": [
+            307,
+            658
+          ],
+          "source_component": [
+            294,
+            632,
+            34,
+            34
+          ],
+          "component_pixels": 1140,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            2
+          ],
+          "source_rgba": [
+            1,
+            0,
+            0,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            3,
+            6
+          ],
+          "source_sample": [
+            1072,
+            708
+          ],
+          "source_component": [
+            1051,
+            683,
+            24,
+            26
+          ],
+          "component_pixels": 624,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            13,
+            16,
+            16,
+            254
+          ]
+        }
+      ]
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "notes": "Both rears viewed normal/shiny: broad tall slate petrified back, three pale rib bands and compact slabridged tail; no copied face or paired eye-like interior marks. Front12x12, rear13x12, west14x9 under one shared transform; footstep changes retain head anchors."
+  }
+}

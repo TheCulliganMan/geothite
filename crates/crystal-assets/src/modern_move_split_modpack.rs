@@ -5,7 +5,7 @@ use crystal_core::battle::damage::MoveCategory;
 use serde::Deserialize;
 
 use crate::{
-    CompiledGamePack, derive_compiled_game_pack_identity_from_manifest,
+    CompiledGamePack, GameDataSet, derive_compiled_game_pack_identity_from_manifest,
     verify_compiled_game_pack_for_runtime,
 };
 
@@ -39,6 +39,17 @@ fn catalog() -> Result<BTreeMap<String, MoveCategory>> {
         "move split must classify all 251 Crystal moves"
     );
     Ok(source.moves)
+}
+
+/// Northwoods balance is authored for this exact split, including native moves.
+pub(crate) fn verify_modern_categories(data: &GameDataSet) -> Result<()> {
+    for (id, category) in catalog()? {
+        ensure!(
+            data.type_categories.moves.get(&id) == Some(&category),
+            "Northwoods requires the modern physical/special category for {id}"
+        );
+    }
+    Ok(())
 }
 
 /// Apply per-move categories while retaining the base pack's species stats,
@@ -95,5 +106,17 @@ mod tests {
             assert_eq!(moves[id], MoveCategory::Special, "{id}");
         }
         assert_eq!(moves["GROWL"], MoveCategory::Status);
+    }
+
+    #[test]
+    fn northwoods_rejects_missing_or_reverted_move_categories() {
+        let mut data = GameDataSet::default();
+        assert!(verify_modern_categories(&data).is_err());
+        data.type_categories.moves = catalog().expect("authored native split");
+        verify_modern_categories(&data).expect("modern rules");
+        data.type_categories
+            .moves
+            .insert("FIRE_PUNCH".to_string(), MoveCategory::Special);
+        assert!(verify_modern_categories(&data).is_err());
     }
 }

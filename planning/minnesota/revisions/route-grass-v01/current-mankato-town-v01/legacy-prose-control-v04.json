@@ -1,0 +1,17 @@
+{
+  "pack": "content-packs/minnesota-current-mankato-mart-v03.crystalpack",
+  "pack_sha256": "fa75cf2b83da156751debe1a52f7a24c42d277b845554870f1f9eb79711d9f7d",
+  "control": {
+    "step": "mankato-legacy-prose-control-v04",
+    "exit_code": 101,
+    "log": ".local/route-grass-review/mankato-legacy-prose-control-v04.log",
+    "expected_codes": [
+      0,
+      101
+    ]
+  },
+  "reached_notebook_save": ".local/route-grass-review/mankato-legacy-prose-control-saves-v04/winona-mankato-local-before-notebook-30834-1793363657027066000.crystalsave",
+  "save_sha256": "d056cd8820d76d9d43ae11c01f65f493c54cde79cc9cb8b81fd547801c723075",
+  "status": "SOURCE_PROSE_MISMATCH_REPRODUCED",
+  "not_counted_as_native_mechanics_case": true
+}

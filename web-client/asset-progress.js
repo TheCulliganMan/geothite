@@ -1,5 +1,5 @@
 // Browser transport only; byte counts come from the response stream.
-export async function fetchAsset(url, { label, expectedBytes, maxBytes = 256 * 1024 * 1024, report = () => {} } = {}) {
+export async function fetchAsset(url, { label, expectedBytes, maxBytes = 256 * 1024 * 1024, report = () => {}, response: suppliedResponse, retainBytes = true, onError = () => {} } = {}) {
   let loaded = 0, total = null;
   const update = phase => report({ label, loaded, total, phase });
   update('connecting');
@@ -7,16 +7,17 @@ export async function fetchAsset(url, { label, expectedBytes, maxBytes = 256 * 1
     if (!Number.isSafeInteger(maxBytes) || maxBytes <= 0 ||
         (expectedBytes !== undefined && (!Number.isSafeInteger(expectedBytes) || expectedBytes < 0 || expectedBytes > maxBytes)))
       throw Error(`${label}: invalid download size limit`);
-    const response = await fetch(url);
+    const response = suppliedResponse ?? await fetch(url);
     if (!response.ok) throw Error(`${label}: HTTP ${response.status}`);
     const size = expectedBytes ?? response.headers.get('x-asset-bytes') ??
       (!response.headers.get('content-encoding') ? response.headers.get('content-length') : null);
     total = Number(size) > 0 ? Number(size) : null;
     if (total !== null && (!Number.isSafeInteger(total) || total > maxBytes)) {
+      onError(Error(`${label}: download exceeds size limit`));
       await response.body?.cancel();
       throw Error(`${label}: download exceeds size limit`);
     }
-    const buffer = total ? new Uint8Array(total) : null;
+    const buffer = retainBytes && total ? new Uint8Array(total) : null;
     const chunks = [];
     let last = 0;
     if (response.body) {
@@ -26,30 +27,33 @@ export async function fetchAsset(url, { label, expectedBytes, maxBytes = 256 * 1
           const { done, value } = await reader.read();
           if (done) break;
           if (loaded + value.byteLength > maxBytes) throw Error(`${label}: download exceeds size limit`);
+          if (total !== null && loaded + value.byteLength > total) throw Error(`${label}: unexpected download size`);
           if (buffer) {
             if (loaded + value.byteLength > buffer.length) throw Error(`${label}: unexpected download size`);
             buffer.set(value, loaded);
-          } else chunks.push(value);
+          } else if (retainBytes) chunks.push(value);
           loaded += value.byteLength;
           if (performance.now() - last > 80) { update('downloading'); last = performance.now(); }
         }
       } catch (error) {
+        onError(error);
         await reader.cancel().catch(() => {});
         throw error;
       } finally { reader.releaseLock(); }
     } else {
       const bytes = new Uint8Array(await response.arrayBuffer());
       if (bytes.byteLength > maxBytes) throw Error(`${label}: download exceeds size limit`);
-      if (buffer) buffer.set(bytes); else chunks.push(bytes);
+      if (buffer) buffer.set(bytes); else if (retainBytes) chunks.push(bytes);
       loaded = bytes.byteLength;
     }
     if (total !== null && loaded !== total) throw Error(`${label}: incomplete download (${loaded} / ${total} bytes)`);
+    if (!retainBytes) { update('downloaded'); return loaded; }
     const bytes = buffer || new Uint8Array(loaded);
     let offset = 0;
     for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.byteLength; }
     update('downloaded');
     return bytes;
-  } catch (error) { report({ label, loaded, total, phase: 'error', error: String(error.message || error) }); throw error; }
+  } catch (error) { onError(error); report({ label, loaded, total, phase: 'error', error: String(error.message || error) }); throw error; }
 }
 // Dataset identity, not a reusable file URL, keys the persistent large assets.
 const CONNECTOME_CACHE = 'flygon-connectome-v1';
@@ -100,13 +104,25 @@ export async function pruneConnectomeCache(graphId) {
   } catch { /* Best-effort cleanup after the current dataset has been stored. */ }
 }
 export async function loadWasm(init, url, label, report) {
-  const bytes = await fetchAsset(url, { label, report });
-  report({ label, loaded: bytes.byteLength, total: bytes.byteLength, phase: 'initializing' });
+  const controller = new AbortController();
+  let finished = false;
+  const progressReport = event => { if (!finished) report(event); };
   try {
-    const runtime = await init({ module_or_path: bytes });
-    report({ label, loaded: bytes.byteLength, total: bytes.byteLength, phase: 'ready' });
+    report({ label, loaded: 0, total: null, phase: 'connecting' });
+    const response = await fetch(url, { signal: controller.signal });
+    if (!response.ok) throw Error(`${label}: HTTP ${response.status}`);
+    // Give wasm-bindgen the original response: compilation can overlap the
+    // transfer and the browser can cache compiled code by its response URL.
+    // The progress branch counts bytes without retaining another module copy.
+    const progress = fetchAsset(url, { label, report: progressReport, response: response.clone(),
+      retainBytes: false, onError: () => controller.abort() });
+    const [runtime, loaded] = await Promise.all([init({ module_or_path: response }), progress]);
+    finished = true;
+    report({ label, loaded, total: loaded, phase: 'ready' });
     return runtime;
   } catch (error) {
+    finished = true;
+    controller.abort();
     report({ label, phase: 'error', error: String(error.message || error) });
     throw error;
   }

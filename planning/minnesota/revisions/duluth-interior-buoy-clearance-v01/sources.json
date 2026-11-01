@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "parent_revision": "shore_rocks_open_routes_revision",
+  "parent_source_index": "planning/minnesota/revisions/shore-rocks-open-routes-v01/sources.json",
+  "pack": "content-packs/minnesota-current-shore-rocks-open-routes-v03.crystalpack",
+  "pack_sha256": "22ddc24c06b8e15dd4211a902e118a50daa2fefecc2a6d592b0db14420bd5c22",
+  "current_layouts": {
+    "MnDuluth": {
+      "path": "planning/minnesota/revisions/duluth-interior-buoy-clearance-v01/MnDuluth.after.layout.json",
+      "sha256": "20c23839398443a611232c33e1119d61f9c64269f7e0d5023115cd0630c5241e"
+    },
+    "MN_R10": {
+      "path": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R10.after.layout.json",
+      "sha256": "24bb1efea3a5f28e9cbccfec8f75960a3a7536dd351c3fa3481300764c257a93"
+    },
+    "MN_R12": {
+      "path": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R12.after.layout.json",
+      "sha256": "51df4d5ff1a923c79c99f089eea790b1f71210e5118520a192dc2b85c694f163"
+    },
+    "MN_R15": {
+      "path": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R15.after.layout.json",
+      "sha256": "110312f7353b0b3e32f2d6bd523bad4da4f9f9c0b487732c8f5cc6f7c15c44bb"
+    },
+    "MN_R16": {
+      "path": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R16.after.layout.json",
+      "sha256": "14170b8d63a3209b0c72f1aadbb94fd515bc105827d7b1ff8485cfa0e9f26d28"
+    },
+    "MN_R17": {
+      "path": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R17.after.layout.json",
+      "sha256": "8b82a99c35d311569bb04deec5a542129868403ac91a3b724cf0ec0617cbc532"
+    }
+  },
+  "current_dossiers": {
+    "MN_R10": {
+      "path": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R10.dossier.json",
+      "sha256": "f9c9f0ac98b24d3bd639e32d2df230b990dbc0906413acb45720c73509a5812d"
+    },
+    "MN_R12": {
+      "path": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R12.dossier.json",
+      "sha256": "e788ce43279078fa2135ab566671fd30c7c59a6b3f402b60ca2a5ba773a91740"
+    },
+    "MN_R15": {
+      "path": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R15.dossier.json",
+      "sha256": "33b2a5e79c867ab186e158f36289aaf35c69898314ed47fdb02afb110797a1fb"
+    },
+    "MN_R16": {
+      "path": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R16.dossier.json",
+      "sha256": "3d428be5a64e7111eb11326b449119c04b9c7cdba4a39d44ba4fdf01d68e3af4"
+    },
+    "MN_R17": {
+      "path": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R17.dossier.json",
+      "sha256": "9567be1ebbcaf3cf8b8fc0f387b127f0371be16e5c8cc0bb70922be771721a24"
+    }
+  },
+  "ordered_stages": [
+    {
+      "builder": "revise_shoreline_and_fences",
+      "plan": "planning/minnesota/revisions/duluth-interior-buoy-clearance-v01/plan.json",
+      "clear_inner_buoys": true
+    }
+  ],
+  "status": "Verified local native terrain sources; resolve world.json for selection.",
+  "scope": "Current native trainer parties and wild encounters are reflected in the frozen dossiers. Inherited prose is historical context; final terrain is specified by these layouts. All rooms, actors, programs, catalogs, art and audio remain exact."
+}

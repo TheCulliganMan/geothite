@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "canonical_preimages_sha256": {
+    "planning/minnesota/routes/MN_R11.layout.json": "022353fdc855967a02a8f99dd9664624d6b7dfb0a9273f9a98051d36dca64813",
+    "planning/minnesota/routes/MN_R11.json": "27cd3a73d84564fc87f38fc3666c339e54a2c94b380f53bf5c43c635fcbbacfd",
+    "planning/minnesota/connections/state-cohesion-v01/source-v01/MnMaraisCedarApproach.layout.json": "831d10d3d446d4cd6e502ee2370e20d72406e5529e512d3f5989324b773e4b37",
+    "planning/minnesota/connections/state-cohesion-v01/source-v01/MnMaraisCedarApproach.dossier.json": "6ecb8e0c3325f46c6ac1e1a3aa927263372ede11c8c21c4d5169b17522abaa5b",
+    "planning/minnesota/world.json": "4428f6fd297d7289a88d8eafa98238528b03e3ea6e286849f0a991f78a54f6f1",
+    "planning/minnesota/interiors.json": "e245cd0ee551da63dc0c4ebd2838b0d77b340e6b8d94b50af0ac73058871586f"
+  },
+  "contract_sha256": "ee195bcfc318fa55e5c31d6f37f75ebbf1bb033760c98267303bc46a6beecc5c",
+  "candidate_sha256": {
+    "MN_R11.layout.candidate.json": "2efe424f20799606aee61e2f474b921c87819eb96b1498cfe48cfa55c0c7f37d",
+    "MnMaraisInlandNeck.layout.candidate.json": "3595f7a257a2f25c9f49feb87883e54341b478b201b6173d6b59b278063c521c",
+    "MnMaraisCedarApproach.layout.candidate.json": "2edc9fc248d0772d9e5cd18a7abe3061021a5fb0763ae23645494effffa21b0f",
+    "MN_R11.dossier.candidate.json": "34e5715982444218c3d707b40e4d2810554157dc277df46c37f8462dd3c679da",
+    "MnMaraisCedarApproach.dossier.candidate.json": "36bc17127d755c63da82102adbf5a143bdb646669890cf9546bbe8af45d8d28f",
+    "MnMaraisInlandNeck.dossier.candidate.json": "49c7822019f78870ab8f1c688da6a2ee589f55664b9d29f8ce034d317b78437e"
+  },
+  "exact_row_proof": {
+    "MnMaraisCedarApproach": 608,
+    "MnMaraisInlandNeck": 1235,
+    "MnR11C00R00": 768,
+    "MnR11C01R00": 576
+  },
+  "publication_status": "Detached candidates only; native publication/controller/render acceptance pending."
+}

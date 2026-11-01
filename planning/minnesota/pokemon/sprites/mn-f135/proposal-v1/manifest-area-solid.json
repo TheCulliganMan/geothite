@@ -1,0 +1,190 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F135",
+  "status": "unregistered-native-proposal",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f135/proposal-v1/prompt-v1-retry.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "pokemon_palettes": {
+    "MN_298": {
+      "species_id": "MN_298",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          24,
+          17,
+          9
+        ],
+        [
+          10,
+          8,
+          6
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        9784,
+        6410,
+        0
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#C68C4A",
+        "#524231",
+        "#000000"
+      ]
+    },
+    "MN_299": {
+      "species_id": "MN_299",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          20,
+          23,
+          24
+        ],
+        [
+          11,
+          9,
+          6
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        25332,
+        6443,
+        0
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#A5BDC6",
+        "#5A4A31",
+        "#000000"
+      ]
+    }
+  },
+  "sprites": [
+    {
+      "id": "mn-298-bristub-v1",
+      "species_id": "MN_298",
+      "view": "front",
+      "source": "sprites/mn-f135/proposal-v1/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        580,
+        680
+      ],
+      "fit": [
+        40,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        9784,
+        6410,
+        0
+      ],
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 12,
+      "sampling": "area_vote",
+      "exterior_contour": "solid"
+    },
+    {
+      "id": "mn-299-latchquill-v1",
+      "species_id": "MN_299",
+      "view": "front",
+      "source": "sprites/mn-f135/proposal-v1/front-back.imagegen-v1.png",
+      "crop": [
+        580,
+        0,
+        674,
+        680
+      ],
+      "fit": [
+        54,
+        52
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        25332,
+        6443,
+        0
+      ],
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 12,
+      "sampling": "area_vote",
+      "exterior_contour": "solid"
+    },
+    {
+      "id": "mn-298-bristub-v1",
+      "species_id": "MN_298",
+      "view": "back",
+      "source": "sprites/mn-f135/proposal-v1/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        700,
+        580,
+        495
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        9784,
+        6410,
+        0
+      ],
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 12,
+      "sampling": "area_vote",
+      "exterior_contour": "solid"
+    },
+    {
+      "id": "mn-299-latchquill-v1",
+      "species_id": "MN_299",
+      "view": "back",
+      "source": "sprites/mn-f135/proposal-v1/front-back.imagegen-v1.png",
+      "crop": [
+        600,
+        700,
+        654,
+        495
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        25332,
+        6443,
+        0
+      ],
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 12,
+      "sampling": "area_vote",
+      "exterior_contour": "solid"
+    }
+  ]
+}

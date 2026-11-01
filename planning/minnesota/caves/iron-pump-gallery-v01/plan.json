@@ -1,0 +1,121 @@
+{
+  "schema_version": 1,
+  "map": "MnIronPumpGallery",
+  "purpose": "Native rock maintenance gallery linking the interleaved pressure floors to the original drill core.",
+  "parent": {
+    "revision": "route_grass_r15_open_shore_spur_revision",
+    "pack": "content-packs/minnesota-current-r15-open-shore-and-spur-v02.crystalpack",
+    "pack_sha256": "e02fb85d4db327d146cee269809b1af3e4b387dc2e29240b71cae0ae5837ec4c"
+  },
+  "dimensions_metatiles": [
+    16,
+    12
+  ],
+  "native_art": {
+    "tileset": "mn_iron_haulage_rock",
+    "source_pixels_modified": false,
+    "palette": "nite",
+    "ordinary_stair": "cave30 at meta3,4; walking x6 y10 to7",
+    "corner_stair": "cave36 at meta8,4; walking x16 y10 to7",
+    "shaft": "existing private42 retains active upper-right LADDER and safe passive floor",
+    "console": "existing private40; read25,17 from25,18",
+    "closed_shutters": "existing private41; original feed callback opens numeric13"
+  },
+  "traversal": {
+    "start": [
+      4,
+      19
+    ],
+    "main_route": "Climb the western stair, cross the mandatory pump-guard sight, descend the eastern corner stair, pass the intake guard and reach the feed console.",
+    "feed": [
+      25,
+      18
+    ],
+    "core_shaft": [
+      25,
+      4
+    ],
+    "closed_path_steps": 44,
+    "open_return_steps": 24,
+    "ordinary_return": "The original winding route remains available before accepting the feed choice.",
+    "field_moves_required": []
+  },
+  "story": {
+    "initial_setup": "Tests explicitly qualify prior foreman chapter and badges at mine mouth before first input. No local pressure/guard/feed results supplied.",
+    "earned_actions": [
+      "original haulage pressure control",
+      "original ventilation pressure control",
+      "original pump guard battle",
+      "original intake guard battle",
+      "native feed isolation choice"
+    ],
+    "refusal": "Both shutters stay solid; main return remains available.",
+    "acceptance": "Original command opens both core shutter meta12,3 and service return meta7,8. Neither action witnesses/stops the drill or grants the recovered instrument.",
+    "original_adjacent_core_guard": "The original core-west guard sees the return ladder. Resolve its actual battle, then step off and retry the shaft; do not bypass its input ownership."
+  },
+  "connections": [
+    {
+      "index": 1,
+      "x": 5,
+      "y": 18,
+      "target_map_constant": "MN_IRON_SUMP",
+      "target_map": "MN_IRON_SUMP",
+      "target_warp_id": 8
+    },
+    {
+      "index": 2,
+      "x": 4,
+      "y": 19,
+      "target_map_constant": "MN_IRON_SUMP",
+      "target_map": "MN_IRON_SUMP",
+      "target_warp_id": 8
+    },
+    {
+      "index": 3,
+      "x": 25,
+      "y": 4,
+      "target_map_constant": "MN_IRON_DRILL_CORE",
+      "target_map": "MN_IRON_DRILL_CORE",
+      "target_warp_id": 2
+    },
+    {
+      "index": 4,
+      "x": 24,
+      "y": 5,
+      "target_map_constant": "MN_IRON_DRILL_CORE",
+      "target_map": "MN_IRON_DRILL_CORE",
+      "target_warp_id": 2
+    }
+  ],
+  "guard_sight_cutsets": [
+    [
+      [
+        12,
+        6
+      ],
+      [
+        12,
+        7
+      ],
+      [
+        12,
+        8
+      ]
+    ],
+    [
+      [
+        26,
+        13
+      ],
+      [
+        27,
+        13
+      ],
+      [
+        28,
+        13
+      ]
+    ]
+  ],
+  "review_status": "Verified R15-parent native implementation: full controller course, 846-call stdio replay, nine exact native cameras, both physical openings and Continue. Resolve world.json for selection status; broader campaign work remains active."
+}

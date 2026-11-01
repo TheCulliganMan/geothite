@@ -1,0 +1,130 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F047",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_098": {
+      "species_id": "MN_098",
+      "name": "Bunjant",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          17,
+          24,
+          11
+        ],
+        [
+          10,
+          9,
+          4
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        12049,
+        4394,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          140,
+          198,
+          90
+        ],
+        [
+          82,
+          74,
+          33
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#8CC65A",
+        "#524A21",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f047/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png",
+      "target/minnesota-pokemon/gen2-reference/bugs.png"
+    ]
+  },
+  "sprites": [
+    {
+      "id": "mn-098-bunjant-v1",
+      "species_id": "MN_098",
+      "view": "front",
+      "source": "sprites/mn-f047/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        1218,
+        680
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        12049,
+        4394,
+        0
+      ]
+    },
+    {
+      "id": "mn-098-bunjant-v1",
+      "species_id": "MN_098",
+      "view": "back",
+      "source": "sprites/mn-f047/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        680,
+        1218,
+        611
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        12049,
+        4394,
+        0
+      ]
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "notes": "Inspected frozen v1: Bunjant crown, white eye slit, pine beard, stump fists and checkered bark shoulders retain readable planes. Connected contours preserve foliage structure without excessive black fill; matching close rear crown/shoulders.",
+    "sheet_sha256": "84b72156c17414cd1699a12f70f6949666f2038fb2ad2afbcc219b50f78b14ea",
+    "outline_profile": "source-contour-v1"
+  }
+}

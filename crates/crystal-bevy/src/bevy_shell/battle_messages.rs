@@ -2252,7 +2252,7 @@ fn stage_visible_battle_messages(
                         // shifts with a two-frame delay after each one.
                         total_frames: 14,
                         sound_events: if *side == BattleSide::Enemy {
-                            vec![(0, "SFX_KINESIS".to_string()), (14, "SFX_FAINT".to_string())]
+                            vec![(0, "SFX_KINESIS".into()), (14, "SFX_FAINT".into())]
                         } else {
                             Vec::new()
                         },
@@ -2902,594 +2902,7 @@ fn queue_visible_terminal_animation_boundary(
         });
 }
 
-fn visible_move_animation_definition(
-    snapshot: &RuntimeShellSnapshot,
-    move_id: &str,
-    animation_param: i32,
-) -> Option<(
-    String,
-    u16,
-    Vec<(u16, String)>,
-    Vec<(u16, u8)>,
-    Vec<VisibleMoveObjectEvent>,
-    Vec<VisibleMoveBgEvent>,
-)> {
-    let normalized = move_id.replace(' ', "_").to_ascii_uppercase();
-    let move_index = snapshot
-        .presentation
-        .move_names
-        .iter()
-        .position(|name| name.replace(' ', "_").to_ascii_uppercase() == normalized)?;
-    // BattleAnimations begins with the status-animation entry; move one is
-    // therefore table entry one, matching TypeScript's table.slice(1).
-    let label = snapshot
-        .presentation
-        .battle_animation_table
-        .get(move_index.saturating_add(1))?
-        .clone();
-    visible_battle_animation_definition(snapshot, label, animation_param)
-}
-
-fn visible_battle_animation_definition(
-    snapshot: &RuntimeShellSnapshot,
-    label: String,
-    animation_param: i32,
-) -> Option<(
-    String,
-    u16,
-    Vec<(u16, String)>,
-    Vec<(u16, u8)>,
-    Vec<VisibleMoveObjectEvent>,
-    Vec<VisibleMoveBgEvent>,
-)> {
-    let (timeline_frame, sound_events, cry_events, object_events, bg_events) =
-        compile_visible_battle_animation_timeline(snapshot, &label, animation_param)?;
-    // RunBattleAnimCommand stops the root script at anim_ret. Live objects
-    // and BG effects do not extend it; RunBattleAnimScript clears OAM as soon
-    // as that tick completes. Events are one-based, so include the return tick.
-    Some((
-        label,
-        timeline_frame.saturating_add(1),
-        sound_events,
-        cry_events,
-        object_events,
-        bg_events,
-    ))
-}
-
-fn visible_move_animation_definition_with_substitute(
-    snapshot: &RuntimeShellSnapshot,
-    move_id: &str,
-    animation_param: i32,
-    lower_substitute: bool,
-    raise_substitute: bool,
-) -> Option<(
-    String,
-    u16,
-    Vec<(u16, String)>,
-    Vec<(u16, u8)>,
-    Vec<VisibleMoveObjectEvent>,
-    Vec<VisibleMoveBgEvent>,
-)> {
-    if !lower_substitute && !raise_substitute {
-        return visible_move_animation_definition(snapshot, move_id, animation_param);
-    }
-    let mut parts = Vec::new();
-    if lower_substitute {
-        parts.push(visible_move_animation_definition(
-            snapshot,
-            "SUBSTITUTE",
-            1,
-        )?);
-    }
-    parts.push(visible_move_animation_definition(
-        snapshot,
-        move_id,
-        animation_param,
-    )?);
-    if raise_substitute {
-        parts.push(visible_move_animation_definition(
-            snapshot,
-            "SUBSTITUTE",
-            2,
-        )?);
-    }
-
-    let mut labels = Vec::new();
-    let mut total_frames = 0_u16;
-    let mut sounds = Vec::new();
-    let mut cries = Vec::new();
-    let mut objects = Vec::new();
-    let mut bg_effects = Vec::new();
-    for (label, frames, part_sounds, part_cries, part_objects, part_bg_effects) in parts {
-        labels.push(label);
-        sounds.extend(
-            part_sounds
-                .into_iter()
-                .map(|(frame, sound)| (frame.saturating_add(total_frames), sound)),
-        );
-        cries.extend(
-            part_cries
-                .into_iter()
-                .map(|(frame, selector)| (frame.saturating_add(total_frames), selector)),
-        );
-        objects.extend(part_objects.into_iter().map(|mut event| {
-            event.frame = event.frame.saturating_add(total_frames);
-            event
-        }));
-        bg_effects.extend(part_bg_effects.into_iter().map(|mut event| {
-            event.frame = event.frame.saturating_add(total_frames);
-            event
-        }));
-        total_frames = total_frames.saturating_add(frames);
-    }
-    Some((
-        labels.join(" → "),
-        total_frames,
-        sounds,
-        cries,
-        objects,
-        bg_effects,
-    ))
-}
-
-fn visible_substitute_move_delay_definition(
-    snapshot: &RuntimeShellSnapshot,
-) -> Option<(
-    String,
-    u16,
-    Vec<(u16, String)>,
-    Vec<(u16, u8)>,
-    Vec<VisibleMoveObjectEvent>,
-    Vec<VisibleMoveBgEvent>,
-)> {
-    let (_, lower_frames, mut sounds, mut cries, mut objects, mut bg_effects) =
-        visible_move_animation_definition(snapshot, "SUBSTITUTE", 1)?;
-    let (_, raise_frames, raise_sounds, raise_cries, raise_objects, raise_bg_effects) =
-        visible_move_animation_definition(snapshot, "SUBSTITUTE", 2)?;
-    let raise_offset = lower_frames.saturating_add(40);
-    sounds.extend(
-        raise_sounds
-            .into_iter()
-            .map(|(frame, sound)| (frame.saturating_add(raise_offset), sound)),
-    );
-    cries.extend(
-        raise_cries
-            .into_iter()
-            .map(|(frame, selector)| (frame.saturating_add(raise_offset), selector)),
-    );
-    objects.extend(raise_objects.into_iter().map(|mut event| {
-        event.frame = event.frame.saturating_add(raise_offset);
-        event
-    }));
-    bg_effects.extend(raise_bg_effects.into_iter().map(|mut event| {
-        event.frame = event.frame.saturating_add(raise_offset);
-        event
-    }));
-    Some((
-        "BattleCommand_LowerSub_MoveDelay_RaiseSub".to_string(),
-        raise_offset.saturating_add(raise_frames),
-        sounds,
-        cries,
-        objects,
-        bg_effects,
-    ))
-}
-
-fn visible_substitute_raise_after_delay_definition(
-    snapshot: &RuntimeShellSnapshot,
-) -> Option<(
-    String,
-    u16,
-    Vec<(u16, String)>,
-    Vec<(u16, u8)>,
-    Vec<VisibleMoveObjectEvent>,
-    Vec<VisibleMoveBgEvent>,
-)> {
-    let (_, raise_frames, mut sounds, mut cries, mut objects, mut bg_effects) =
-        visible_move_animation_definition(snapshot, "SUBSTITUTE", 2)?;
-    for (frame, _) in &mut sounds {
-        *frame = frame.saturating_add(40);
-    }
-    for (frame, _) in &mut cries {
-        *frame = frame.saturating_add(40);
-    }
-    for event in &mut objects {
-        event.frame = event.frame.saturating_add(40);
-    }
-    for event in &mut bg_effects {
-        event.frame = event.frame.saturating_add(40);
-    }
-    Some((
-        "BattleCommand_MoveDelay_RaiseSub".to_string(),
-        40_u16.saturating_add(raise_frames),
-        sounds,
-        cries,
-        objects,
-        bg_effects,
-    ))
-}
-
-#[derive(Default)]
-struct VisibleBattleAnimationTimeline {
-    frame: u16,
-    sounds: Vec<(u16, String)>,
-    cries: Vec<(u16, u8)>,
-    objects: Vec<VisibleMoveObjectEvent>,
-    bg_effects: Vec<VisibleMoveBgEvent>,
-    loops: std::collections::BTreeMap<(String, usize), i32>,
-    anim_var: i32,
-    anim_param: i32,
-    commands_executed: usize,
-}
-
-fn compile_visible_battle_animation_timeline(
-    snapshot: &RuntimeShellSnapshot,
-    root_label: &str,
-    animation_param: i32,
-) -> Option<(
-    u16,
-    Vec<(u16, String)>,
-    Vec<(u16, u8)>,
-    Vec<VisibleMoveObjectEvent>,
-    Vec<VisibleMoveBgEvent>,
-)> {
-    let mut timeline = VisibleBattleAnimationTimeline {
-        anim_param: animation_param,
-        ..Default::default()
-    };
-    execute_visible_battle_animation_script(snapshot, root_label, &mut timeline, 0)?;
-    Some((
-        timeline.frame,
-        timeline.sounds,
-        timeline.cries,
-        timeline.objects,
-        timeline.bg_effects,
-    ))
-}
-
-fn execute_visible_battle_animation_script(
-    snapshot: &RuntimeShellSnapshot,
-    script_label: &str,
-    timeline: &mut VisibleBattleAnimationTimeline,
-    depth: usize,
-) -> Option<()> {
-    if depth > 32 {
-        return None;
-    }
-    let source = snapshot.presentation.battle_animations.get(script_label)?;
-    let mut labels = std::collections::BTreeMap::<String, usize>::new();
-    let mut commands = Vec::<String>::new();
-    for line in source {
-        let trimmed = line.trim();
-        if trimmed.starts_with('.') && !trimmed.contains(char::is_whitespace) {
-            labels.insert(trimmed.to_string(), commands.len());
-        } else {
-            commands.push(trimmed.to_string());
-        }
-    }
-    let mut pointer = 0_usize;
-    while pointer < commands.len() {
-        timeline.commands_executed = timeline.commands_executed.saturating_add(1);
-        if timeline.commands_executed > 65_535 {
-            return None;
-        }
-        let command_index = pointer;
-        let command = &commands[pointer];
-        pointer += 1;
-        let (opcode, raw_arguments) = command
-            .split_once(char::is_whitespace)
-            .map_or((command.as_str(), ""), |(opcode, arguments)| {
-                (opcode, arguments)
-            });
-        let arguments = raw_arguments
-            .split(',')
-            .map(str::trim)
-            .filter(|argument| !argument.is_empty())
-            .collect::<Vec<_>>();
-        match opcode {
-            "anim_wait" => {
-                let frames = arguments
-                    .first()
-                    .and_then(|argument| parse_visible_battle_animation_int(argument))
-                    .and_then(|frames| u16::try_from(frames).ok())?;
-                timeline.frame = timeline.frame.saturating_add(frames);
-            }
-            "anim_sound" => {
-                if let Some(sound) = arguments.get(2) {
-                    timeline
-                        .sounds
-                        .push((timeline.frame.saturating_add(1), (*sound).to_string()));
-                }
-            }
-            "anim_cry" => {
-                let selector = arguments
-                    .first()
-                    .and_then(|argument| parse_visible_battle_animation_int(argument))
-                    .unwrap_or(0);
-                timeline.cries.push((
-                    timeline.frame.saturating_add(1),
-                    u8::try_from(selector & 0x03).ok()?,
-                ));
-            }
-            "anim_obj" if arguments.len() == 4 => {
-                let (x, y, param) = (
-                    parse_visible_battle_animation_int(arguments[1])?,
-                    parse_visible_battle_animation_int(arguments[2])?,
-                    parse_visible_battle_animation_int(arguments[3])?,
-                );
-                timeline.objects.push(VisibleMoveObjectEvent {
-                    frame: timeline.frame.saturating_add(1),
-                    command: VisibleMoveObjectCommand::Spawn {
-                        object_id: arguments[0].to_string(),
-                        x: i16::try_from(x).ok()?,
-                        y: i16::try_from(y).ok()?,
-                        param: u8::try_from(param & 0xff).ok()?,
-                    },
-                });
-            }
-            "anim_clearobjs" => timeline.objects.push(VisibleMoveObjectEvent {
-                frame: timeline.frame.saturating_add(1),
-                command: VisibleMoveObjectCommand::Clear,
-            }),
-            "anim_incobj" => {
-                let slot = parse_visible_battle_animation_int(arguments.first()?)?;
-                timeline.objects.push(VisibleMoveObjectEvent {
-                    frame: timeline.frame.saturating_add(1),
-                    command: VisibleMoveObjectCommand::Increment {
-                        index: u8::try_from(slot).ok()?,
-                    },
-                });
-            }
-            "anim_setobj" => {
-                let slot = parse_visible_battle_animation_int(arguments.first()?)?;
-                let value = parse_visible_battle_animation_int(arguments.get(1)?)?;
-                timeline.objects.push(VisibleMoveObjectEvent {
-                    frame: timeline.frame.saturating_add(1),
-                    command: VisibleMoveObjectCommand::Set {
-                        index: u8::try_from(slot).ok()?,
-                        value: u8::try_from(value & 0xff).ok()?,
-                    },
-                });
-            }
-            "anim_transform"
-            | "anim_raisesub"
-            | "anim_dropsub"
-            | "anim_minimize"
-            | "anim_updateactorpic" => {
-                timeline.bg_effects.push(VisibleMoveBgEvent {
-                    frame: timeline.frame.saturating_add(1),
-                    effect_id: format!(
-                        "BATTLE_ACTOR_{}",
-                        opcode.trim_start_matches("anim_").to_ascii_uppercase()
-                    ),
-                    duration: 0,
-                    target: "BG_EFFECT_USER".to_string(),
-                    param: 0,
-                    incremented: false,
-                });
-            }
-            "anim_bgp" | "anim_obp0" | "anim_obp1" => {
-                let value = parse_visible_battle_animation_int(arguments.first()?)?;
-                timeline.bg_effects.push(VisibleMoveBgEvent {
-                    frame: timeline.frame.saturating_add(1),
-                    effect_id: format!(
-                        "BATTLE_PALETTE_{}",
-                        opcode.trim_start_matches("anim_").to_ascii_uppercase()
-                    ),
-                    duration: 0,
-                    target: String::new(),
-                    param: u8::try_from(value & 0xff).ok()?,
-                    incremented: false,
-                });
-            }
-            "anim_resetobp0" => timeline.bg_effects.push(VisibleMoveBgEvent {
-                frame: timeline.frame.saturating_add(1),
-                effect_id: "BATTLE_PALETTE_OBP0".to_string(),
-                duration: 0,
-                target: String::new(),
-                // BattleAnimCmd_ResetObp0 writes $e0 unless hSGB is set. The
-                // Rust runtime has no Super Game Boy execution mode.
-                param: battle_anim_reset_obp0_value(false),
-                incremented: false,
-            }),
-            "anim_beatup" => timeline.bg_effects.push(VisibleMoveBgEvent {
-                frame: timeline.frame.saturating_add(1),
-                effect_id: "BATTLE_ACTOR_BEATUP".to_string(),
-                duration: 0,
-                target: "BG_EFFECT_USER".to_string(),
-                param: u8::try_from(timeline.anim_param & 0xff).ok()?,
-                incremented: false,
-            }),
-            "anim_1gfx"
-            | "anim_2gfx"
-            | "anim_3gfx"
-            | "anim_battlergfx_1row"
-            | "anim_battlergfx_2row"
-            | "anim_checkpokeball"
-            | "anim_keepsprites" => {}
-            "anim_bgeffect" if arguments.len() >= 4 => {
-                let duration = parse_visible_battle_animation_int(arguments[1])?;
-                // This byte is BG_EFFECT_STRUCT_BATTLE_TURN. Most effects use
-                // the user/target constants, while palette effects use it as
-                // their reload counter.
-                parse_visible_battle_animation_int(arguments[2])?;
-                let param = parse_visible_battle_animation_int(arguments[3])?;
-                timeline.bg_effects.push(VisibleMoveBgEvent {
-                    frame: timeline.frame.saturating_add(1),
-                    effect_id: arguments[0].to_string(),
-                    duration: u16::try_from(duration & 0xffff).ok()?,
-                    target: arguments[2].to_string(),
-                    param: u8::try_from(param & 0xff).ok()?,
-                    incremented: false,
-                });
-            }
-            "anim_incbgeffect" => {
-                timeline.bg_effects.push(VisibleMoveBgEvent {
-                    frame: timeline.frame.saturating_add(1),
-                    effect_id: arguments.first()?.to_string(),
-                    duration: 0,
-                    target: String::new(),
-                    param: 0,
-                    incremented: true,
-                });
-            }
-            "anim_call" => {
-                let target = *arguments.first()?;
-                if target.starts_with('.') {
-                    return None;
-                }
-                execute_visible_battle_animation_script(snapshot, target, timeline, depth + 1)?;
-            }
-            "anim_jump" => {
-                let target = *arguments.first()?;
-                if target.starts_with('.') {
-                    pointer = *labels.get(target)?;
-                } else {
-                    execute_visible_battle_animation_script(snapshot, target, timeline, depth + 1)?;
-                    return Some(());
-                }
-            }
-            "anim_loop" => {
-                let count = parse_visible_battle_animation_int(arguments.first()?)?;
-                let target = *arguments.get(1)?;
-                let key = (script_label.to_string(), command_index);
-                if advance_visible_battle_animation_loop(&mut timeline.loops, key, count) {
-                    pointer = *labels.get(target)?;
-                }
-            }
-            "anim_setvar" => {
-                timeline.anim_var = parse_visible_battle_animation_int(arguments.first()?)?;
-            }
-            "anim_incvar" => timeline.anim_var = (timeline.anim_var + 1) & 0xff,
-            "anim_if_var_equal" => {
-                let value = parse_visible_battle_animation_int(arguments.first()?)?;
-                if timeline.anim_var == value {
-                    let target = *arguments.get(1)?;
-                    if target.starts_with('.') {
-                        pointer = *labels.get(target)?;
-                    } else {
-                        execute_visible_battle_animation_script(
-                            snapshot,
-                            target,
-                            timeline,
-                            depth + 1,
-                        )?;
-                        return Some(());
-                    }
-                }
-            }
-            "anim_if_param_equal" => {
-                let value = parse_visible_battle_animation_int(arguments.first()?)?;
-                if timeline.anim_param == value {
-                    let target = *arguments.get(1)?;
-                    if target.starts_with('.') {
-                        pointer = *labels.get(target)?;
-                    } else {
-                        execute_visible_battle_animation_script(
-                            snapshot,
-                            target,
-                            timeline,
-                            depth + 1,
-                        )?;
-                        return Some(());
-                    }
-                }
-            }
-            "anim_if_param_and" => {
-                let mask = parse_visible_battle_animation_int(arguments.first()?)?;
-                if timeline.anim_param & mask != 0 {
-                    pointer = *labels.get(*arguments.get(1)?)?;
-                }
-            }
-            "anim_jumpuntil" => {
-                if timeline.anim_param > 0 {
-                    timeline.anim_param -= 1;
-                    pointer = *labels.get(*arguments.first()?)?;
-                }
-            }
-            "anim_ret" => return Some(()),
-            _ => return None,
-        }
-    }
-    Some(())
-}
-
-fn advance_visible_battle_animation_loop(
-    loops: &mut std::collections::BTreeMap<(String, usize), i32>,
-    key: (String, usize),
-    count: i32,
-) -> bool {
-    if let Some(remaining) = loops.get_mut(&key) {
-        if *remaining < 0 {
-            return true;
-        }
-        if *remaining > 0 {
-            *remaining -= 1;
-            return true;
-        }
-        loops.remove(&key);
-        return false;
-    }
-    if count <= 0 {
-        loops.insert(key, -1);
-        return true;
-    }
-    if count > 1 {
-        loops.insert(key, count - 2);
-        return true;
-    }
-    false
-}
-
-fn battle_anim_reset_obp0_value(super_game_boy: bool) -> u8 {
-    if super_game_boy { 0xf0 } else { 0xe0 }
-}
-
-fn visible_battle_animation_frameset_lifetime(
-    bundle: &serde_json::Value,
-    frameset_name: &str,
-) -> Option<u16> {
-    let frames = bundle.get("framesets")?.get(frameset_name)?.as_array()?;
-    let mut duration = 0_u16;
-    for frame in frames {
-        match frame.get("command")?.as_str()? {
-            "frame" | "wait" => {
-                let frames = frame.get("duration")?.as_u64()?.saturating_add(1);
-                duration = duration.saturating_add(u16::try_from(frames).ok()?);
-            }
-            "delete" => return Some(duration.max(1)),
-            "restart" | "end" => return None,
-            _ => return None,
-        }
-    }
-    None
-}
-
-fn parse_visible_battle_animation_int(token: &str) -> Option<i32> {
-    let token = token.trim().replace('_', "");
-    if let Some(hex) = token.strip_prefix('$') {
-        i32::from_str_radix(hex, 16).ok()
-    } else if let Some(binary) = token.strip_prefix('%') {
-        i32::from_str_radix(binary, 2).ok()
-    } else if let Some(hex) = token.strip_prefix("0x") {
-        i32::from_str_radix(hex, 16).ok()
-    } else if let Some(binary) = token.strip_prefix("0b") {
-        i32::from_str_radix(binary, 2).ok()
-    } else {
-        token.parse::<i32>().ok().or_else(|| match token.as_str() {
-            // constants/item_constants.asm. These are the only symbolic byte
-            // values used in numeric battle-animation command positions.
-            "NOITEM" => Some(0x00),
-            "MASTERBALL" => Some(0x01),
-            "ULTRABALL" => Some(0x02),
-            "GREATBALL" => Some(0x04),
-            "BGEFFECTTARGET" => Some(0),
-            "BGEFFECTUSER" => Some(1),
-            _ => None,
-        })
-    }
-}
+include!("battle_animation_sources.rs");
 
 fn battle_stat_display_name(stat: &str) -> &str {
     match stat {
@@ -3886,7 +3299,7 @@ fn use_visible_repel(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
     if snapshot.progression.repel_steps_remaining > 0 {
         runtime_shell.field_notice = Some(visible_asm_text(
             &snapshot,
-            "RepelUsedEarlierIsStillInEffectText",
+            "_RepelUsedEarlierIsStillInEffectText",
         )?);
         mark_runtime_snapshot_dirty(runtime_shell);
         set_shell_action_status(runtime_shell, "REPEL STILL IN EFFECT");
@@ -3921,7 +3334,7 @@ fn use_visible_bicycle(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
             .active_engine_flags
             .contains("ENGINE_ALWAYS_ON_BIKE")
     {
-        runtime_shell.field_notice = Some(visible_asm_text(&snapshot, "CantGetOffBikeText")?);
+        runtime_shell.field_notice = Some(visible_asm_text(&snapshot, ".CantGetOffBikeText@Script_CantGetOffBike")?);
         mark_runtime_snapshot_dirty(runtime_shell);
         set_shell_action_status(runtime_shell, "CAN'T GET OFF HERE");
         return Ok(());
@@ -4020,7 +3433,7 @@ fn use_visible_escape_rope(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
             item_use.destination_map, item_use.destination_warp_index
         ),
     );
-    runtime_shell.field_notice = Some(visible_asm_text(&snapshot, "UseEscapeRopeText")?);
+    runtime_shell.field_notice = Some(visible_asm_text(&snapshot, ".UseEscapeRopeText@EscapeRopeOrDig")?);
     runtime_shell.pending_field_travel_arrival = true;
     runtime_shell.pending_field_travel_delay_frames = None;
     Ok(())
@@ -4071,12 +3484,7 @@ fn use_visible_fishing_rod(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
         ),
     );
     close_visible_field_pack_without_log(runtime_shell);
-    present_visible_fishing_cast(
-        runtime_shell,
-        &scene,
-        item_use.cast.bite,
-        item_use.cast.wild_battle.is_some(),
-    )?;
+    present_visible_fishing_cast(runtime_shell, &scene, &item_use.cast)?;
     Ok(())
 }
 
@@ -4098,9 +3506,25 @@ fn visible_fishing_cant_cast_text() -> String {
 fn present_visible_fishing_cast(
     runtime_shell: &mut BevyRuntimeShell,
     scene: &RuntimeShellSnapshot,
-    bite: Option<bool>,
-    starts_battle: bool,
+    cast: &crate::RuntimeFishingCast,
 ) -> Result<()> {
+    runtime_shell.battle_origin.bound_fishing = None;
+    // Both Pack USE and the registered-item shortcut reach this helper. Freeze
+    // the exact validated water contact before presentation advances the clock.
+    if let Some(battle) = cast.wild_battle.as_ref() {
+        stage_visible_battle_origin(
+            runtime_shell,
+            &scene.overworld,
+            BattleOriginKind::Wild,
+            &battle.battle_type,
+            Some(BattleOriginContact::FishingWaterTarget {
+                map_id: scene.overworld.map_name.clone(),
+                tile: cast.checked_water_target,
+            }),
+            None,
+        );
+        bind_visible_fishing_encounter(runtime_shell, &scene.overworld, cast.checked_water_target);
+    }
     retain_visible_field_notice_scene(runtime_shell, scene);
     runtime_shell.field_notice_queue.clear();
     runtime_shell.field_notice = None;
@@ -4109,8 +3533,8 @@ fn present_visible_fishing_cast(
         phase: VisibleFishingPhase::Cast,
         frame: 0,
         facing_up: scene.overworld.facing == Direction::Up,
-        bite: bite == Some(true),
-        starts_battle,
+        bite: cast.bite == Some(true),
+        starts_battle: cast.wild_battle.is_some(),
     });
     mark_runtime_snapshot_dirty(runtime_shell);
     Ok(())
@@ -4152,6 +3576,7 @@ fn use_visible_itemfinder(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
 }
 
 fn use_visible_squirtbottle(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
+    runtime_shell.battle_origin.static_candidate = None;
     let snapshot = runtime_shell.shell.snapshot()?;
     let item_id = carried_field_rule_item(&snapshot, &runtime_shell.shell, "squirtbottle")?;
     record_visible_runtime_action(runtime_shell, format!("field:item:{item_id}:squirtbottle"))?;
@@ -4182,8 +3607,12 @@ fn use_visible_squirtbottle(runtime_shell: &mut BevyRuntimeShell) -> Result<()> 
             item_use.target_object_identifier
         ),
     );
+    stage_visible_squirtbottle_candidate(runtime_shell, &snapshot, &item_use);
     close_visible_field_pack_without_log(runtime_shell);
-    consume_visible_dispatched_field_script(runtime_shell)?;
+    if let Err(error) = consume_visible_dispatched_field_script(runtime_shell) {
+        runtime_shell.battle_origin.static_candidate = None;
+        return Err(error);
+    }
     Ok(())
 }
 
@@ -4283,6 +3712,9 @@ fn use_visible_surf(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
 }
 
 fn execute_visible_contextual_field_move(runtime_shell: &mut BevyRuntimeShell) -> Result<bool> {
+    if runtime_shell.visible_waterfall_animation.is_some() {
+        return Ok(false);
+    }
     if !visible_field_shortcut_allowed(runtime_shell)? {
         return Ok(false);
     }
@@ -4304,10 +3736,10 @@ fn execute_visible_contextual_field_move(runtime_shell: &mut BevyRuntimeShell) -
             open_visible_contextual_field_move_prompt(
                 runtime_shell,
                 PartyFieldMove::Waterfall,
-                "AskWaterfallText",
+                ".AskWaterfallText@Script_AskWaterfall",
             )?;
         } else {
-            runtime_shell.field_notice = Some(visible_asm_text(&snapshot, "HugeWaterfallText")?);
+            runtime_shell.field_notice = Some(visible_asm_text(&snapshot, ".HugeWaterfallText@Script_CantDoWaterfall")?);
             mark_runtime_snapshot_dirty(runtime_shell);
         }
         return Ok(true);
@@ -4356,7 +3788,7 @@ fn execute_visible_contextual_field_move(runtime_shell: &mut BevyRuntimeShell) -
                 "AskWhirlpoolText",
             )?;
         } else {
-            runtime_shell.field_notice = Some(visible_asm_text(&snapshot, "MayPassWhirlpoolText")?);
+            runtime_shell.field_notice = Some(visible_asm_text(&snapshot, ".MayPassWhirlpoolText@Script_MightyWhirlpool")?);
             mark_runtime_snapshot_dirty(runtime_shell);
         }
         return Ok(true);
@@ -4459,12 +3891,50 @@ fn snapshot_has_field_move_block_replacement(
     ))
 }
 
+/// Resolve only a contextual prompt's exported pure TX_FAR wrappers. Some
+/// source definitions, including AskSurfText, are outside executable global
+/// roots and therefore have no materialized RuntimeTextSnapshot body.
+fn visible_contextual_field_text_label(
+    label: &str,
+    asm_text: &BTreeMap<String, String>,
+    definitions: Option<&BTreeMap<String, serde_json::Value>>,
+) -> Result<String> {
+    let mut current = label.to_string();
+    let mut visited = BTreeSet::new();
+    for _ in 0..8 {
+        anyhow::ensure!(visited.insert(current.clone()),
+            "contextual field text TX_FAR cycle at {current}");
+        // Preserve direct catalog resolution, including packs without wrappers.
+        if asm_text.contains_key(&current) {
+            return Ok(current);
+        }
+        let commands = definitions.and_then(|definitions| definitions.get(&current))
+            .and_then(serde_json::Value::as_array)
+            .with_context(|| format!("contextual field text {current} has no exported body"))?;
+        anyhow::ensure!(commands.len() == 2
+            && commands[0].get("command").and_then(serde_json::Value::as_str) == Some("text_far")
+            && commands[1].get("command").and_then(serde_json::Value::as_str) == Some("text_end")
+            && commands[1].get("args").and_then(serde_json::Value::as_array).is_some_and(Vec::is_empty),
+            "contextual field text {current} is not a pure TX_FAR wrapper");
+        let args = commands[0].get("args").and_then(serde_json::Value::as_array)
+            .with_context(|| format!("contextual field text {current} has no TX_FAR operand"))?;
+        anyhow::ensure!(args.len() == 1, "contextual field text {current} needs one TX_FAR operand");
+        current = args[0].as_str().filter(|target| !target.is_empty() && target.trim() == *target)
+            .with_context(|| format!("contextual field text {current} has no exact TX_FAR label"))?
+            .to_string();
+    }
+    anyhow::bail!("contextual field text TX_FAR chain exceeds eight bodies")
+}
+
 fn open_visible_contextual_field_move_prompt(
     runtime_shell: &mut BevyRuntimeShell,
     field_move: PartyFieldMove,
     text_label: &str,
 ) -> Result<()> {
     let snapshot = runtime_shell.shell.snapshot()?;
+    let resolved = visible_contextual_field_text_label(text_label, &snapshot.presentation.asm_text,
+        runtime_shell.shell.runtime().data().global_scripts.as_ref().map(|module| &module.definitions))?;
+    let notice = visible_asm_text(&snapshot, &resolved)?;
     runtime_shell.party_cursor = party_index_for_field_move_rule(
         &snapshot,
         &runtime_shell.shell,
@@ -4483,7 +3953,7 @@ fn open_visible_contextual_field_move_prompt(
         surface_id: "field:move-confirm".to_string(),
         option_index: 0,
     });
-    runtime_shell.field_notice = Some(visible_asm_text(&snapshot, text_label)?);
+    runtime_shell.field_notice = Some(notice);
     mark_runtime_snapshot_dirty(runtime_shell);
     Ok(())
 }
@@ -4960,8 +4430,16 @@ fn active_fly_destinations(
             .progression
             .active_engine_flags
             .contains("ENGINE_FLYPOINT_INDIGO_PLATEAU");
+    let destinations = shell
+        .fly_destination_keys()
+        .into_iter()
+        .filter(|destination| {
+            let regional = destination.flypoint_flag.starts_with("ENGINE_FLYPOINT_MN_");
+            regional == minnesota_map_active(snapshot)
+        })
+        .collect();
     ordered_active_fly_destinations(
-        shell.fly_destination_keys(),
+        destinations,
         &snapshot.presentation.pokegear_landmarks,
         &snapshot.progression.active_engine_flags,
         use_kanto_map,
@@ -5006,6 +4484,16 @@ fn ordered_active_fly_destinations(
 }
 
 fn fly_destination_label(destination: &RuntimeFlyDestinationKey) -> String {
+    if let Some(town) = destination
+        .flypoint_flag
+        .strip_prefix("ENGINE_FLYPOINT_MN_")
+    {
+        let name = town.replace('_', " ");
+        return match minnesota_town_map::fly_town_name(&name) {
+            Some(town) => town.to_string(),
+            None => name,
+        };
+    }
     destination
         .label
         .strip_prefix("LANDMARK_")
@@ -5075,7 +4563,7 @@ fn use_visible_teleport(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
             field_move.destination_tile.y
         ),
     );
-    runtime_shell.field_notice = Some(visible_asm_text(&snapshot, "TeleportReturnText")?);
+    runtime_shell.field_notice = Some(visible_asm_text(&snapshot, ".TeleportReturnText@TeleportFunction")?);
     retain_visible_field_notice_scene(runtime_shell, &snapshot);
     runtime_shell.pending_field_travel_arrival = true;
     runtime_shell.pending_field_travel_delay_frames = Some(60);
@@ -5277,6 +4765,14 @@ fn carried_item_quantity(snapshot: &RuntimeShellSnapshot, item_id: &str) -> Opti
         )
         .find(|item| item.quantity > 0 && item.item_id == item_id)
         .map(|item| item.quantity)
+        .or_else(|| {
+            snapshot
+                .bag
+                .tm_hm
+                .iter()
+                .find(|item| item.quantity > 0 && item.item_id == item_id)
+                .map(|item| item.quantity)
+        })
 }
 
 fn item_catalog_detail_label(snapshot: &RuntimeShellSnapshot, item_id: &str) -> String {
@@ -6462,7 +5958,19 @@ fn throw_visible_battle_ball_id(
             })
             .cloned()
             .collect::<Vec<_>>();
+        // The generic stager builds per-message scenes from an empty queue.
+        // Stage the actual enemy response there first, then prepend the ball's
+        // authored narration with the pre-turn scene. Otherwise its nonempty
+        // prefix selects the stager's unsequenced path and leaks future HP.
+        let capture_messages = std::mem::take(&mut runtime_shell.battle_messages);
         stage_visible_battle_messages(runtime_shell, &snapshot, &response_events);
+        let capture_scene = Arc::new(snapshot.clone());
+        for message in capture_messages.into_iter().rev() {
+            runtime_shell.battle_messages.push_front(message);
+            runtime_shell.battle_message_scenes.push_front(Arc::clone(&capture_scene));
+        }
+        runtime_shell.battle_message_scene = Some(capture_scene);
+        retarget_visible_battle_hp_tween(runtime_shell, &snapshot);
         if !outcome.caught {
             settle_visible_resolved_battle_turn(runtime_shell, &battle_before_turn)?;
         }
@@ -7639,6 +7147,15 @@ fn finalize_visible_shop_close(runtime_shell: &mut BevyRuntimeShell) -> Result<(
 
 fn dismiss_visible_shop_notice(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
     queue_visible_shell_sound_effect(runtime_shell, "SFX_READ_TEXT_2")?;
+    if !runtime_shell.shop_close_after_notice
+        && let Some(pending) = crate::core::systems::fair_food::PendingFairFood::read(runtime_shell.shell.session().state()).map_err(anyhow::Error::msg)?
+    {
+        runtime_shell.shop_notice = Some(pending.reveal().into());
+        runtime_shell.shop_close_after_notice = true;
+        runtime_shell.shop_return_to_top_after_notice = false;
+        mark_runtime_snapshot_dirty(runtime_shell);
+        return Ok(());
+    }
     runtime_shell.shop_notice = None;
     if runtime_shell.shop_close_after_notice {
         return finalize_visible_shop_close(runtime_shell);
@@ -7748,6 +7265,29 @@ fn visible_pc_source_text_pages(
     Ok(pages)
 }
 
+fn visible_pc_item_source_text(shell:&BevyRuntimeShell,snapshot:&RuntimeShellSnapshot,
+    label:&str,item_name:&str,quantity:u16)->Result<String> {
+    let text=shell.shell.text_snapshot(label)?;
+    let source=text.asm_text.as_deref().with_context(||format!("PC item text {label} has no exported source"))?;
+    let mut buffers=snapshot.script_events.named_buffers.clone();
+    buffers.insert("wStringBuffer1".into(),item_name.into());
+    buffers.insert("wStringBuffer2".into(),item_name.into());
+    buffers.insert("wItemQuantityChange".into(),quantity.to_string());
+    // Flattened exported ASM text retains string terminators around RAM/decimal
+    // chunks. They move the source text cursor; @ is never a visible glyph.
+    // Older verified packs encode text_decimal's two digit columns as @@.
+    // Resolve that retained quantity slot before removing string terminators;
+    // newer packs may carry the explicit DECIMAL buffer token instead.
+    let source=if label=="_ItemsThrowAwayText"&&source.contains("@@") {
+        source.replacen("@@",&quantity.to_string(),1)
+    } else {source.to_owned()};
+    let source=source.replace('@',"");
+    let mut pages=render_visible_asm_text_pages(&source,&buffers,&snapshot.trainer.player_name,
+        visible_rival_name(snapshot),snapshot.progression.time.day_of_week);
+    anyhow::ensure!(pages.len()==1,"PC item notice {label} must retain its single authored page");
+    Ok(pages.remove(0))
+}
+
 fn visible_pc_hub_actions(snapshot: &RuntimeShellSnapshot) -> Vec<VisiblePcHubAction> {
     let mut actions = vec![VisiblePcHubAction::BillsPc, VisiblePcHubAction::PlayerPc];
     if snapshot
@@ -7767,6 +7307,28 @@ fn visible_pc_hub_actions(snapshot: &RuntimeShellSnapshot) -> Vec<VisiblePcHubAc
     }
     actions.push(VisiblePcHubAction::TurnOff);
     actions
+}
+
+fn visible_bill_pc_save_pages(shell:&BevyRuntimeShell,snapshot:&RuntimeShellSnapshot,label:&str)->Result<Vec<String>> {
+    // The exported CONT course retains three lines in one paragraph. Use
+    // the shared two-line scrolling window rather than treating it as one
+    // oversized field page or dropping its final question.
+    Ok(visible_pc_source_text_pages(shell,snapshot,label)?.iter()
+        .flat_map(|paragraph|visible_field_notice_pages(paragraph)).collect())
+}
+
+fn begin_visible_bill_pc_save_intro(shell:&mut BevyRuntimeShell,snapshot:&RuntimeShellSnapshot,label:&str)->Result<()> {
+    if !shell.pc_hub_session_open {return Ok(());}
+    let mut pages=visible_bill_pc_save_pages(shell,snapshot,label)?;
+    pages.pop(); // YesNoBox retains the final scrolled pair after CONT.
+    if !pages.is_empty() {
+        shell.special_boundary=Some(SpecialBoundaryDisplay {
+            label:if label==SAVE_TEXT_CHANGE_BOX {"PokecenterChangeBoxSaveText"}else{"PokecenterMoveSaveText"}.into(),
+            details:pages,
+        });
+        shell.field_text_reveal=None;
+    }
+    Ok(())
 }
 
 fn visible_pc_hub_action_label(
@@ -7846,9 +7408,12 @@ fn confirm_visible_bill_pc_action(runtime_shell: &mut BevyRuntimeShell) -> Resul
         }
         VisibleBillPcAction::MoveWithoutMail => {
             let snapshot = runtime_shell.shell.snapshot()?;
-            if visible_storage_contains_mail(&snapshot) {
-                runtime_shell.pc_notice =
-                    Some("There is a #MON holding MAIL.\n\nPlease remove the MAIL.".to_string());
+            if visible_party_holds_mail(&snapshot) {
+                runtime_shell.special_boundary=Some(SpecialBoundaryDisplay {
+                    label:"PokecenterMoveMailText".into(),
+                    details:visible_pc_source_text_pages(runtime_shell,&snapshot,"_PCMonHoldingMailText")?,
+                });
+                runtime_shell.field_text_reveal=None;
                 runtime_shell.bill_pc_action_cursor = Some(MenuCursor {
                     surface_id: "pc:bill-actions".to_string(),
                     option_index: 3,
@@ -7871,6 +7436,7 @@ fn confirm_visible_bill_pc_action(runtime_shell: &mut BevyRuntimeShell) -> Resul
                     .is_ok(),
                 yes_no_index: 0,
             });
+            begin_visible_bill_pc_save_intro(runtime_shell,&snapshot,SAVE_TEXT_MOVE_MON_WITHOUT_MAIL)?;
             set_shell_action_status(runtime_shell, "MOVE POKEMON SAVE");
         }
         VisibleBillPcAction::SeeYa => return close_visible_bill_pc_actions(runtime_shell),
@@ -7989,6 +7555,7 @@ fn begin_visible_bill_pc_box_switch(
             .is_ok(),
         yes_no_index: 0,
     });
+    begin_visible_bill_pc_save_intro(runtime_shell,&snapshot,SAVE_TEXT_CHANGE_BOX)?;
     set_shell_action_status(runtime_shell, "CHANGE BOX SAVE");
     Ok(())
 }
@@ -8112,10 +7679,13 @@ fn confirm_visible_bill_pc_move(runtime_shell: &mut BevyRuntimeShell) -> Result<
         cursor: runtime_shell.storage_cursor.clone().context("Move save has no insertion cursor")?,
         scroll: runtime_shell.pc_list_scroll,
     };
+    let source_scroll = runtime_shell.bill_pc_move_source.as_ref()
+        .context("Move insertion lost its pickup")?.scroll;
     runtime_shell.bill_pc_move_source = None;
     runtime_shell.bill_pc_move_save = Some(VisibleBillPcMoveSave {
         presentation,
         source,
+        source_scroll,
         target,
         phase: VisibleBillPcMoveSavePhase::BeforeMove,
         frames_remaining: 20,
@@ -8165,9 +7735,27 @@ fn commit_visible_bill_pc_move_save(runtime_shell: &mut BevyRuntimeShell) -> Res
         })
         .cloned()
         .context("Bill's PC MOVE save reached commit without its completed 20-frame hold")?;
+    // Retain the pre-move shell and leave the destination cursor unchanged
+    // until persistence succeeds. A failed write must not leave BeforeMove armed against a
+    // source slot whose Pokemon has already been removed.
+    let before_move = runtime_shell.shell.clone();
     let moved = runtime_shell
         .shell
-        .move_pokemon_without_mail(pending.source, pending.target)?;
+        .move_pokemon_without_mail(pending.source.clone(), pending.target)?;
+    if let Err(error) = quick_save_from_bill_pc(runtime_shell) {
+        runtime_shell.shell = before_move;
+        runtime_shell.bill_pc_move_save = None;
+        runtime_shell.bill_pc_move_source = Some(VisiblePcMoveSource {
+            location: pending.source,
+            scroll: pending.source_scroll,
+        });
+        runtime_shell.pc_notice = Some("SAVE FAILED.\nTry again.".to_string());
+        runtime_shell.last_audio_events.push(format!("PC move save failed: {error:#}"));
+        trim_event_log(&mut runtime_shell.last_audio_events);
+        set_shell_action_status(runtime_shell, "SAVE FAILED");
+        mark_runtime_snapshot_dirty(runtime_shell);
+        return Ok(());
+    }
     let (surface_id, slot) = match moved.target {
         crystal_assets::RuntimePokemonStorageLocation::Party { slot } => {
             runtime_shell.bill_pc_move_party_open = true;
@@ -8184,7 +7772,6 @@ fn commit_visible_bill_pc_move_save(runtime_shell: &mut BevyRuntimeShell) -> Res
     runtime_shell.pc_list_scroll = runtime_shell.pc_list_scroll.min(slot);
     runtime_shell.storage_cursor = Some(MenuCursor { surface_id, option_index: slot });
     mark_runtime_snapshot_dirty(runtime_shell);
-    quick_save_from_bill_pc(runtime_shell)?;
     queue_visible_shell_sound_effect(runtime_shell, "SFX_SAVE")?;
     let active = runtime_shell
         .bill_pc_move_save
@@ -8195,25 +7782,17 @@ fn commit_visible_bill_pc_move_save(runtime_shell: &mut BevyRuntimeShell) -> Res
     Ok(())
 }
 
-fn visible_storage_contains_mail(snapshot: &RuntimeShellSnapshot) -> bool {
+fn visible_party_holds_mail(snapshot: &RuntimeShellSnapshot) -> bool {
+    // IsAnyMonHoldingMail walks wPartyMon1Item through wPartyCount. Boxed
+    // Pokémon cannot hold Mail in the source game; do not scan other stores
+    // or use a detached message payload as a replacement for the held item.
     snapshot
         .party
         .slots
         .iter()
         .map(|slot| &slot.pokemon)
-        .chain(
-            snapshot
-                .storage
-                .boxes
-                .iter()
-                .flat_map(|pc_box| pc_box.slots.iter().map(|slot| &slot.pokemon)),
-        )
         .any(|pokemon| {
-            pokemon.mail.is_some()
-                || pokemon
-                    .item
-                    .as_deref()
-                    .is_some_and(crate::core::models::item::is_mail_item_id)
+            pokemon.item.as_deref().is_some_and(crate::core::models::item::is_mail_item_id)
         })
 }
 
@@ -8300,29 +7879,9 @@ fn confirm_visible_pc_hub(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
             set_shell_action_status(runtime_shell, "PLAYER'S PC");
         }
         VisiblePcHubAction::OakPc => {
-            let oak = runtime_shell.shell.show_prof_oaks_pc_boot()?;
-            let SpecialRoutineEffect::ProfOaksPcBoot {
-                seen_count,
-                caught_count,
-                rating_label,
-            } = &oak.outcome.effect
-            else {
-                anyhow::bail!("Prof. Oak PC returned the wrong special effect");
-            };
-            open_visible_prof_oak_rating(runtime_shell, *seen_count, *caught_count, rating_label)?;
-            let rating_boundary = runtime_shell
-                .special_boundary
-                .take()
-                .context("Prof. Oak PC did not open its rating boundary")?;
-            runtime_shell
-                .special_boundary_queue
-                .push_front(rating_boundary);
             runtime_shell.special_boundary = Some(SpecialBoundaryDisplay {
                 label: "PokecenterOaksPCText".to_string(),
-                details: vec![
-                    "PROF.OAK'S PC accessed.".to_string(),
-                    "#DEX Rating System opened.".to_string(),
-                ],
+                details: visible_pc_source_text_pages(runtime_shell, &snapshot, "_PokecenterOaksPCText")?,
             });
         }
         VisiblePcHubAction::HallOfFame => {
@@ -8339,6 +7898,27 @@ fn confirm_visible_pc_hub(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
         }
     }
     trim_event_log(&mut runtime_shell.last_audio_events);
+    Ok(())
+}
+
+fn open_visible_oak_rating_question(shell: &mut BevyRuntimeShell) -> Result<()> {
+    let snapshot = shell.shell.snapshot()?;
+    let pages = visible_pc_source_text_pages(shell, &snapshot, "_OakPCText1")?;
+    anyhow::ensure!(pages.len() == 1, "Oak PC question must be one source page");
+    shell.pc_notice = pages.into_iter().next();
+    shell.pc_confirmation = Some(VisiblePcConfirmation::OakRating);
+    shell.yes_no_cursor = Some(MenuCursor { surface_id: "pc:confirmation".into(), option_index: 0 });
+    mark_runtime_presentation_dirty(shell);
+    Ok(())
+}
+
+fn open_visible_oak_pc_shutdown(shell: &mut BevyRuntimeShell) -> Result<()> {
+    let snapshot = shell.shell.snapshot()?;
+    shell.special_boundary = Some(SpecialBoundaryDisplay {
+        label: "OakPCShutdown".into(),
+        details: visible_pc_source_text_pages(shell, &snapshot, "_OakPCText4")?,
+    });
+    mark_runtime_presentation_dirty(shell);
     Ok(())
 }
 
@@ -8971,6 +8551,7 @@ fn resolve_visible_pc_confirmation(
         && !matches!(
             &confirmation,
             VisiblePcConfirmation::LinkTrade
+                | VisiblePcConfirmation::OakRating
                 | VisiblePcConfirmation::NpcTrade(_)
                 | VisiblePcConfirmation::ScriptPartyIntro(_)
                 | VisiblePcConfirmation::NameRaterRename
@@ -8984,6 +8565,17 @@ fn resolve_visible_pc_confirmation(
         return Ok(());
     }
     match confirmation {
+        VisiblePcConfirmation::OakRating => {
+            if accepted {
+                let oak = runtime_shell.shell.show_prof_oaks_pc_boot()?;
+                let SpecialRoutineEffect::ProfOaksPcBoot { seen_count, caught_count, rating_label } = &oak.outcome.effect else {
+                    anyhow::bail!("Prof. Oak PC returned the wrong special effect");
+                };
+                open_visible_prof_oak_rating(runtime_shell, *seen_count, *caught_count, rating_label)?;
+            } else {
+                open_visible_oak_pc_shutdown(runtime_shell)?;
+            }
+        }
         VisiblePcConfirmation::LinkTrade => {
             runtime_shell.pending_link_trade_confirmation = Some(accepted);
             runtime_shell.last_action_status = Some(if accepted {
@@ -9004,10 +8596,9 @@ fn resolve_visible_pc_confirmation(
             let transfer = runtime_shell
                 .shell
                 .toss_pc_item(&item_id, stack_index, quantity)?;
-            runtime_shell.pc_notice = Some(format!(
-                "Discarded\n{}(S).",
-                item_display_name(&runtime_shell.shell.snapshot()?, &transfer.item_id)
-            ));
+            let snapshot=runtime_shell.shell.snapshot()?;
+            runtime_shell.pc_notice=Some(visible_pc_item_source_text(runtime_shell,&snapshot,
+                "_ItemsDiscardedText",&item_display_name(&snapshot,&transfer.item_id),quantity)?);
             restore_visible_pc_item_list_position(runtime_shell)?;
         }
         VisiblePcConfirmation::PutMailInPack(mailbox_index) => {
@@ -9016,8 +8607,9 @@ fn resolve_visible_pc_confirmation(
                     runtime_shell.pc_notice = Some(visible_mailbox_text(
                         &runtime_shell.shell.snapshot()?, "_MailClearedPutAwayText")?)
                 }
-                Err(error) if error.to_string().contains("bag") => {
-                    runtime_shell.pc_notice = Some("The PACK is full.".to_string())
+                Err(error) if error.root_cause().to_string().starts_with("bag rejected Mail item ") => {
+                    runtime_shell.pc_notice = Some(visible_mailbox_text(
+                        &runtime_shell.shell.snapshot()?, "_MailPackFullText")?)
                 }
                 Err(error) => return Err(error),
             }
@@ -9582,11 +9174,11 @@ fn attach_visible_mailbox_mail(runtime_shell: &mut BevyRuntimeShell) -> Result<(
             // PrintText must finish before .exit2 calls CloseSubmenu.
             runtime_shell.mailbox_attach_return_index = Some(mailbox_index);
         }
-        Err(error) if error.to_string().contains("Egg") => {
+        Err(error) if error.root_cause().to_string()=="Mail cannot be attached to an Egg" => {
             runtime_shell.pc_notice = Some(visible_mailbox_text(
                 &runtime_shell.shell.snapshot()?, "_MailEggText")?)
         }
-        Err(error) if error.to_string().contains("already holding") => {
+        Err(error) if error.root_cause().to_string()=="party Pokemon is already holding an item" => {
             runtime_shell.pc_notice = Some(visible_mailbox_text(
                 &runtime_shell.shell.snapshot()?, "_MailAlreadyHoldingItemText")?)
         }

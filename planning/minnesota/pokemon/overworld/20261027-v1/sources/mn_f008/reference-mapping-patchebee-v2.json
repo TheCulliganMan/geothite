@@ -1,0 +1,50 @@
+{
+  "family_id": "MN_F008",
+  "species_id": "MN_023",
+  "prompt_file": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f008/prompt-patchebee-v2.txt",
+  "input_references": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+      "sha256": "4354a639ed1a80fd6686e43b273443ed894e58a84307a8049f638ee9ffa2a099",
+      "role": "Only style input: authentic16px coarse clusters and directions; no character copying."
+    }
+  ],
+  "inspected_identity_context": {
+    "canonical_front": {
+      "path": "target/minnesota-pokemon/native/MN_F008/mn-023-patchebee-v3-polish-v1.front.png",
+      "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F008/mn-023-patchebee-v3-polish-v1.front.png",
+      "sha256": "22536b3c83e93a0af8c5f5791b61594814ec324806ba1219cc5ea8c22006dea7"
+    },
+    "canonical_back": {
+      "path": "target/minnesota-pokemon/native/MN_F008/mn-023-patchebee-v3-polish-v1.back.png",
+      "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F008/mn-023-patchebee-v3-polish-v1.back.png",
+      "sha256": "5f2c1f9042b40bf7740d7d0888d5c137160f99d0ed9644dff05bdb05faa84340"
+    },
+    "invariants": [
+      "Bee with growing steel/wax plates, orange abdomen and attached insect legs.",
+      "Distinct plated thorax and wing roots; no humanoid armor suit."
+    ]
+  },
+  "battle_refs_passed_to_tool": false,
+  "palette_binding": {
+    "transparent_index": 0,
+    "visible_indices": [
+      1,
+      2,
+      3
+    ],
+    "normal_rgb555_words": [
+      32767,
+      5561,
+      13637,
+      0
+    ],
+    "shiny_rgb555_words": [
+      32767,
+      14117,
+      10413,
+      0
+    ],
+    "white_body_region_policy": "Simplify formerly white body/highlight regions to light ink1. Index0 is transparent everywhere, not an opaque white paint color."
+  }
+}

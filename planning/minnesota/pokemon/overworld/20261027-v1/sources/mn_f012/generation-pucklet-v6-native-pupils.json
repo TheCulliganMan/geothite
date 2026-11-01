@@ -1,0 +1,74 @@
+{
+  "tool": "built-in image_gen",
+  "candidate": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f012/pucklet-v6-native-pupils",
+  "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f012/manifest-pucklet-v6-native-pupils.json",
+  "normalized_receipt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f012/source-feature-proof-pucklet-v6-native-pupils.json",
+  "all_raws_prompts_rejected_trials_retained": true,
+  "no_native_pixel_painting": true,
+  "no_registry_or_pack_mutation": true,
+  "normal_shiny_boards_actually_viewed": true,
+  "canonical_palettes": [
+    [
+      32767,
+      30480,
+      15685,
+      0
+    ],
+    [
+      32767,
+      25117,
+      10415,
+      0
+    ]
+  ],
+  "native_bounds": [
+    [
+      2,
+      8,
+      12,
+      7
+    ],
+    [
+      2,
+      8,
+      12,
+      7
+    ],
+    [
+      4,
+      8,
+      8,
+      7
+    ],
+    [
+      2,
+      8,
+      12,
+      6
+    ],
+    [
+      2,
+      8,
+      12,
+      7
+    ],
+    [
+      4,
+      8,
+      8,
+      7
+    ]
+  ],
+  "retained_source_hashes": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f012/pucklet.overworld.imagegen-v2-profile-eye.png": "edc3163334897304db1c7470df8ed8f3030f36799ff6487e4e7cf15a2ece9316",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f012/pucklet.overworld.imagegen-v3-profile-buffer.png": "0c593afa70bacfc5a34b45576f0a252b9cdc587a2a2422c31c9b62887fd27be2",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f012/pucklet.overworld.imagegen-v1.png": "89e2525fe10b45145958dc735c634ea7b961807a0271fc4ed213c09aaca27ecb",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f012/prompt-pucklet-v1.txt": "ae276f895f18df080e569b783f321efc17deaa42c167e6204b350ebf80c2db6e",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f012/prompt-pucklet-v3-profile-buffer.txt": "f97f996bf99e6d3bf9936e2a40215fcd11e83d6fedea132c144651291be56e84",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f012/prompt-pucklet-v2-profile-eye.txt": "78a51e961202535f094e3b1bf0b4f5262933076239fabeec10e770c793841005",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f012/pucklet.v2-profile-eye.original-path.txt": "a580b55e47e3f342d6dd173a2c5194a031bf74e1493072eae9b14f7d007e9a9d",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f012/pucklet.v1.original-path.txt": "6b28f287216b87c494221d47450cabf40fa35ce7fef68da2e1c5c7554764badc",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f012/pucklet.v3-profile-buffer.original-path.txt": "621d007f3a246ae0c4a9b7cc4a2334b884b77fe68590967bec888509f551d8b6"
+  },
+  "status": "root independent visual/context acceptance pending"
+}

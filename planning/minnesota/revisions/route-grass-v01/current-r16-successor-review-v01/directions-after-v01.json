@@ -1,0 +1,50 @@
+{
+  "MN_R16_RIVER_WARDENText": [
+    {
+      "args": [
+        "\"MOORHEAD lies\""
+      ],
+      "command": "text"
+    },
+    {
+      "args": [
+        "\"west.\""
+      ],
+      "command": "line"
+    },
+    {
+      "args": [
+        "\"Cross the bridge\""
+      ],
+      "command": "para"
+    },
+    {
+      "args": [
+        "\"between the banks.\""
+      ],
+      "command": "line"
+    },
+    {
+      "args": [],
+      "command": "done"
+    }
+  ],
+  "MN_R16_SIGN_DRAINText": [
+    {
+      "args": [
+        "\"DRAINAGE CROSSING\""
+      ],
+      "command": "text"
+    },
+    {
+      "args": [
+        "\"Cross the bridge.\""
+      ],
+      "command": "line"
+    },
+    {
+      "args": [],
+      "command": "done"
+    }
+  ]
+}

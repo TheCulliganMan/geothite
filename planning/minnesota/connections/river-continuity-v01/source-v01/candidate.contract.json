@@ -1,0 +1,464 @@
+{
+  "schema_version": 1,
+  "status": "DETACHED_SOURCE_CANDIDATE_NOT_PUBLISHED",
+  "parent_pack": "content-packs/minnesota-northern-winter-v02.crystalpack",
+  "parent_pack_sha256": "92bb645535db23c78491b6982ddf5fa17b72b1f0434dfb6456a395fbf8fdbd33",
+  "parent_identity": "043b57b8814714bcf7b14f1571931eadbd139c12ad3e9afba596c193034c358f",
+  "changes": [
+    {
+      "map": "MnR03C00R00",
+      "module_sha256": "5223e9949dc2a6dad00e89b3a5bb624733d4cf525ba37a1ebd7109e5a55dc783",
+      "dimensions_metatiles": [
+        24,
+        24
+      ],
+      "tileset": "mn_headwaters",
+      "cells": [
+        {
+          "metatile": [
+            15,
+            0
+          ],
+          "before": "30",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            16,
+            0
+          ],
+          "before": "31",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            17,
+            0
+          ],
+          "before": "31",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            18,
+            0
+          ],
+          "before": "32",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            8,
+            1
+          ],
+          "before": "59",
+          "after": "35"
+        },
+        {
+          "metatile": [
+            12,
+            1
+          ],
+          "before": "54",
+          "after": "76"
+        },
+        {
+          "metatile": [
+            15,
+            1
+          ],
+          "before": "79",
+          "after": "76"
+        },
+        {
+          "metatile": [
+            16,
+            1
+          ],
+          "before": "35",
+          "after": "76"
+        },
+        {
+          "metatile": [
+            17,
+            1
+          ],
+          "before": "35",
+          "after": "76"
+        },
+        {
+          "metatile": [
+            18,
+            1
+          ],
+          "before": "35",
+          "after": "76"
+        },
+        {
+          "metatile": [
+            6,
+            2
+          ],
+          "before": "05",
+          "after": "58"
+        },
+        {
+          "metatile": [
+            7,
+            2
+          ],
+          "before": "05",
+          "after": "35"
+        },
+        {
+          "metatile": [
+            8,
+            2
+          ],
+          "before": "05",
+          "after": "35"
+        },
+        {
+          "metatile": [
+            9,
+            2
+          ],
+          "before": "05",
+          "after": "83"
+        },
+        {
+          "metatile": [
+            10,
+            2
+          ],
+          "before": "01",
+          "after": "84"
+        },
+        {
+          "metatile": [
+            11,
+            2
+          ],
+          "before": "45",
+          "after": "85"
+        },
+        {
+          "metatile": [
+            12,
+            2
+          ],
+          "before": "05",
+          "after": "35"
+        },
+        {
+          "metatile": [
+            13,
+            2
+          ],
+          "before": "05",
+          "after": "35"
+        },
+        {
+          "metatile": [
+            14,
+            2
+          ],
+          "before": "05",
+          "after": "35"
+        },
+        {
+          "metatile": [
+            15,
+            2
+          ],
+          "before": "58",
+          "after": "35"
+        },
+        {
+          "metatile": [
+            6,
+            3
+          ],
+          "before": "02",
+          "after": "80"
+        },
+        {
+          "metatile": [
+            7,
+            3
+          ],
+          "before": "02",
+          "after": "80"
+        },
+        {
+          "metatile": [
+            8,
+            3
+          ],
+          "before": "02",
+          "after": "80"
+        },
+        {
+          "metatile": [
+            9,
+            3
+          ],
+          "before": "02",
+          "after": "83"
+        },
+        {
+          "metatile": [
+            10,
+            3
+          ],
+          "before": "01",
+          "after": "84"
+        },
+        {
+          "metatile": [
+            11,
+            3
+          ],
+          "before": "02",
+          "after": "85"
+        },
+        {
+          "metatile": [
+            12,
+            3
+          ],
+          "before": "05",
+          "after": "80"
+        },
+        {
+          "metatile": [
+            13,
+            3
+          ],
+          "before": "05",
+          "after": "80"
+        },
+        {
+          "metatile": [
+            14,
+            3
+          ],
+          "before": "05",
+          "after": "80"
+        },
+        {
+          "metatile": [
+            15,
+            3
+          ],
+          "before": "58",
+          "after": "35"
+        },
+        {
+          "metatile": [
+            19,
+            3
+          ],
+          "before": "05",
+          "after": "35"
+        },
+        {
+          "metatile": [
+            20,
+            3
+          ],
+          "before": "05",
+          "after": "35"
+        },
+        {
+          "metatile": [
+            21,
+            3
+          ],
+          "before": "05",
+          "after": "35"
+        },
+        {
+          "metatile": [
+            22,
+            3
+          ],
+          "before": "05",
+          "after": "35"
+        },
+        {
+          "metatile": [
+            23,
+            3
+          ],
+          "before": "05",
+          "after": "35"
+        },
+        {
+          "metatile": [
+            11,
+            4
+          ],
+          "before": "02",
+          "after": "45"
+        },
+        {
+          "metatile": [
+            19,
+            4
+          ],
+          "before": "05",
+          "after": "39"
+        },
+        {
+          "metatile": [
+            20,
+            4
+          ],
+          "before": "05",
+          "after": "39"
+        },
+        {
+          "metatile": [
+            21,
+            4
+          ],
+          "before": "05",
+          "after": "39"
+        },
+        {
+          "metatile": [
+            22,
+            4
+          ],
+          "before": "05",
+          "after": "39"
+        },
+        {
+          "metatile": [
+            23,
+            4
+          ],
+          "before": "05",
+          "after": "39"
+        }
+      ],
+      "event_changes": [
+        {
+          "group": "bg_events",
+          "script": "MN_R03_NORTH_SIGN",
+          "before_core": [
+            22,
+            4
+          ],
+          "after_core": [
+            22,
+            8
+          ],
+          "reason": "Retain the existing sign beside the widened bridge, on a visible native sign block."
+        }
+      ]
+    },
+    {
+      "map": "MnMississippiConfluenceC00R00",
+      "module_sha256": "a871a8e747f26c972e87c78974aab84915430ea6dadc7c0ff7b1ebaeca18d6f2",
+      "dimensions_metatiles": [
+        6,
+        8
+      ],
+      "tileset": "johto",
+      "cells": [
+        {
+          "metatile": [
+            0,
+            3
+          ],
+          "before": "05",
+          "after": "35"
+        },
+        {
+          "metatile": [
+            1,
+            3
+          ],
+          "before": "05",
+          "after": "35"
+        },
+        {
+          "metatile": [
+            2,
+            3
+          ],
+          "before": "58",
+          "after": "35"
+        },
+        {
+          "metatile": [
+            3,
+            3
+          ],
+          "before": "38",
+          "after": "35"
+        },
+        {
+          "metatile": [
+            4,
+            3
+          ],
+          "before": "58",
+          "after": "35"
+        },
+        {
+          "metatile": [
+            0,
+            4
+          ],
+          "before": "05",
+          "after": "39"
+        },
+        {
+          "metatile": [
+            1,
+            4
+          ],
+          "before": "05",
+          "after": "39"
+        },
+        {
+          "metatile": [
+            2,
+            4
+          ],
+          "before": "05",
+          "after": "39"
+        },
+        {
+          "metatile": [
+            3,
+            4
+          ],
+          "before": "54",
+          "after": "39"
+        },
+        {
+          "metatile": [
+            4,
+            4
+          ],
+          "before": "79",
+          "after": "38"
+        }
+      ],
+      "event_changes": []
+    }
+  ],
+  "retained_connections": "Every native connection is byte-for-byte unchanged.",
+  "preserved": "Every module field except listed blocks and one declared sign bg-event coordinate; every other map, art, program, event, NPC, room, audio and registry is unchanged in this in-memory proposal. A Rust publisher must update the matching native event declaration and mirrors.",
+  "required_native_tests": [
+    "Original city gate and waterfall denials still hold.",
+    "Walk the north/south R03 bridge in both directions; read the existing north sign.",
+    "Surf through all three bridge rows in both directions.",
+    "Cross the widened two-sided R03/Confluence seam in both directions.",
+    "Follow Winona\u2013St. Cloud through the complete long wooded reaches."
+  ]
+}

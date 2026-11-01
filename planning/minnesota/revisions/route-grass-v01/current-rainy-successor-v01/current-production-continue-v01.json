@@ -1,0 +1,24 @@
+{
+  "status": "PASS",
+  "source_save": ".local/route-grass-review/current-rainy-new-grass-client-v01.crystalsave",
+  "source_sha256": "5794e94891941687faaab15709be0aa2025e691e02459bd66082e43f3d9c0937",
+  "input_source_unchanged": true,
+  "output_save": ".local/route-grass-review/current-rainy-verified-stdio-v03-output-v01.crystalsave",
+  "pack_sha256": "8ae24f320b31423a8824d943c98bdd5548aac2fecc9394e7679bcd48a0db5b33",
+  "pack": "content-packs/minnesota-r10-survey-spurs-v02.crystalpack",
+  "save": ".local/route-grass-review/current-rainy-verified-stdio-v03-input-v01.crystalsave",
+  "initial_map": "MnRainyRiverIcefields",
+  "initial_position": {
+    "x": 46,
+    "y": 22
+  },
+  "moved_position": {
+    "x": 46,
+    "y": 23
+  },
+  "calls_passed": 15,
+  "stderr_bytes": 0,
+  "items_pocket_verified": true,
+  "balls_pocket": true,
+  "returned_to_walking": true
+}

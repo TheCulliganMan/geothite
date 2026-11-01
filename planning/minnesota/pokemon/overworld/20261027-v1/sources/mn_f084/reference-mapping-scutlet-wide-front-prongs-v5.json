@@ -1,0 +1,16 @@
+{
+  "fit": 12,
+  "prompt": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f084/prompt-scutlet-wide-front-prongs-v5.txt",
+  "input_images": [
+    {
+      "role": "edit target",
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f084/scutlet.overworld.imagegen-v4-coarse-wide-shovel.png",
+      "sha256": "e291ac3831bdd3bf18b9ae0284bbc22ae6cd1a2965490770cdb018ef2327c253"
+    },
+    {
+      "role": "native16 style only",
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+      "sha256": "4354a639ed1a80fd6686e43b273443ed894e58a84307a8049f638ee9ffa2a099"
+    }
+  ]
+}

@@ -1,0 +1,183 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_306",
+  "name": "Notchbill",
+  "family_id": "MN_F138",
+  "status": "compiled_native_candidate_root_visual_context_acceptance_authoritative",
+  "generation_tool": "built-in image_gen",
+  "prompts": [
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f138/prompt-notchbill-v1.txt",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f138/prompt-notchbill-v2-frontface.txt",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f138/prompt-notchbill-v3-forehead.txt",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f138/prompt-notchbill-v4-inward-eyes.txt",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f138/prompt-notchbill-v6-raised-eyes.txt"
+  ],
+  "sources_selected": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f138/notchbill.overworld.imagegen-v1.png",
+      "sha256": "fd5fff714bd7d2a2e1c2791c4878d66a8cb1812e8f05b1135bb6d7b99c7f64ac",
+      "dimensions": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f138/notchbill.overworld.imagegen-v6-raised-eyes.png",
+      "sha256": "2e3e8da0fb6cf3aa5e71585dc5f5a0c71bc5bc64f6dc07d9b8652a5c90942805",
+      "dimensions": [
+        1254,
+        1254
+      ]
+    }
+  ],
+  "default_output_originals": [
+    {
+      "record": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f138/notchbill.v1.original-path.txt",
+      "path": "/Users/ryanculligan/.codex/generated_images/01a17dc4-dd75-7642-a1c6-4bf13fda70c6/exec-9542ae00-69cd-412f-8b24-843de628c458.png"
+    },
+    {
+      "record": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f138/notchbill.v2.original-path.txt",
+      "path": "/Users/ryanculligan/.codex/generated_images/01a17dc4-dd75-7642-a1c6-4bf13fda70c6/exec-72335b01-8cc0-483e-94e2-ff41d86c7064.png"
+    },
+    {
+      "record": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f138/notchbill.v3.original-path.txt",
+      "path": "/Users/ryanculligan/.codex/generated_images/01a17dc4-dd75-7642-a1c6-4bf13fda70c6/exec-f23e085a-a247-40fc-ba0a-339c5c7a732b.png"
+    },
+    {
+      "record": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f138/notchbill.v4.original-path.txt",
+      "path": "/Users/ryanculligan/.codex/generated_images/01a17dc4-dd75-7642-a1c6-4bf13fda70c6/exec-92d3af7a-fb80-418b-8b2f-7445fc176773.png"
+    },
+    {
+      "record": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f138/notchbill.v6.original-path.txt",
+      "path": "/Users/ryanculligan/.codex/generated_images/01a17dc4-dd75-7642-a1c6-4bf13fda70c6/exec-03ed4dfc-9911-4864-960c-4cfca4437d0c.png"
+    }
+  ],
+  "generation_style_reference_only": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+  "identity_authority": "Currentactivecoverage.json exactcanonicalpalettes,textbodylocks,andvisualinspectionofselectednativefront; no battleartinputforgeneration",
+  "manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f138/manifest-notchbill-v6-raised-eyes.json",
+  "manifest_sha256": "98de13e70372aca2777c6083ac1acecc550d885635b49c8fcb31b6dd83d8d0ed",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f138/notchbill-v6-raised-eyes",
+  "normal_review": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f138/notchbill-v6-raised-eyes/review/line.normal-8x.png",
+  "frame_size": [
+    16,
+    16
+  ],
+  "native_bounds": [
+    [
+      3,
+      2,
+      9,
+      13
+    ],
+    [
+      3,
+      2,
+      9,
+      13
+    ],
+    [
+      2,
+      2,
+      11,
+      13
+    ],
+    [
+      3,
+      2,
+      9,
+      13
+    ],
+    [
+      3,
+      2,
+      9,
+      13
+    ],
+    [
+      2,
+      2,
+      11,
+      13
+    ]
+  ],
+  "sampling": "source_center",
+  "normal_palette_rgb555": [
+    32767,
+    7481,
+    12616,
+    0
+  ],
+  "shiny_palette_rgb555": [
+    32767,
+    8924,
+    9638,
+    0
+  ],
+  "alpha_threshold": 128,
+  "transparent_index": 0,
+  "visible_indices": [
+    1,
+    2,
+    3
+  ],
+  "native_pixels_painted": false,
+  "notes": "All6frames strictRustcompiled andretained. Sameper-speciesworldscale/equalcropwindowswithpairedheadregistration. Max14pxopaquefootprint+transparentborder. Rootreviewandruntimecontextproofsdetermineacceptance; thisreceiptisnotacceptance. Noqueue/registry/packwrites.",
+  "rejected_variants": [
+    "v1frontalvisoreyes(rootrejected)",
+    "v2introducedduplicateforeheaddots",
+    "v3foreheadcleanbuteye/billmergedatnative",
+    "v4pupilsinwardbutbilladjacent"
+  ],
+  "selected_repair": "v6inwardraisedpupilswithredmarginabovethebluebill.",
+  "selected_sources": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f138/notchbill.overworld.imagegen-v1.png",
+      "sha256": "fd5fff714bd7d2a2e1c2791c4878d66a8cb1812e8f05b1135bb6d7b99c7f64ac",
+      "dimensions": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f138/notchbill.overworld.imagegen-v6-raised-eyes.png",
+      "sha256": "2e3e8da0fb6cf3aa5e71585dc5f5a0c71bc5bc64f6dc07d9b8652a5c90942805",
+      "dimensions": [
+        1254,
+        1254
+      ]
+    }
+  ],
+  "default_output_records": [
+    {
+      "record": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f138/notchbill.v1.original-path.txt",
+      "path": "/Users/ryanculligan/.codex/generated_images/01a17dc4-dd75-7642-a1c6-4bf13fda70c6/exec-9542ae00-69cd-412f-8b24-843de628c458.png"
+    },
+    {
+      "record": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f138/notchbill.v2.original-path.txt",
+      "path": "/Users/ryanculligan/.codex/generated_images/01a17dc4-dd75-7642-a1c6-4bf13fda70c6/exec-72335b01-8cc0-483e-94e2-ff41d86c7064.png"
+    },
+    {
+      "record": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f138/notchbill.v3.original-path.txt",
+      "path": "/Users/ryanculligan/.codex/generated_images/01a17dc4-dd75-7642-a1c6-4bf13fda70c6/exec-f23e085a-a247-40fc-ba0a-339c5c7a732b.png"
+    },
+    {
+      "record": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f138/notchbill.v4.original-path.txt",
+      "path": "/Users/ryanculligan/.codex/generated_images/01a17dc4-dd75-7642-a1c6-4bf13fda70c6/exec-92d3af7a-fb80-418b-8b2f-7445fc176773.png"
+    },
+    {
+      "record": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f138/notchbill.v6.original-path.txt",
+      "path": "/Users/ryanculligan/.codex/generated_images/01a17dc4-dd75-7642-a1c6-4bf13fda70c6/exec-03ed4dfc-9911-4864-960c-4cfca4437d0c.png"
+    }
+  ],
+  "only_generation_reference": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+  "native_frame_size": [
+    16,
+    16
+  ],
+  "rejected_source_trials": [
+    "v1nativeblankvisor",
+    "v2duplicateforeheaddots",
+    "v3pupiltooclosesilhouette",
+    "v4pupiltooclosebill"
+  ]
+}

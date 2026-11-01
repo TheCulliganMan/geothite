@@ -1,0 +1,138 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F038",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_089": {
+      "species_id": "MN_089",
+      "name": "Lutebrisk",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          29,
+          27,
+          12
+        ],
+        [
+          11,
+          20,
+          25
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        13181,
+        26251,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          239,
+          222,
+          99
+        ],
+        [
+          90,
+          165,
+          206
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#EFDE63",
+        "#5AA5CE",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f038/prompt-v2.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png",
+      "target/minnesota-pokemon/gen2-reference/bugs.png"
+    ]
+  },
+  "sprites": [
+    {
+      "id": "mn-089-lutebrisk-v2",
+      "species_id": "MN_089",
+      "view": "front",
+      "source": "sprites/mn-f038/front-back.imagegen-v2.png",
+      "crop": [
+        0,
+        0,
+        1215,
+        647
+      ],
+      "fit": [
+        54,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13181,
+        26251,
+        0
+      ],
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 20,
+      "exterior_contour": "solid"
+    },
+    {
+      "id": "mn-089-lutebrisk-v2",
+      "species_id": "MN_089",
+      "view": "back",
+      "source": "sprites/mn-f038/front-back.imagegen-v2.png",
+      "crop": [
+        0,
+        647,
+        1215,
+        648
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13181,
+        26251,
+        0
+      ],
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 20,
+      "exterior_contour": "solid"
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "sheet_sha256": "10a077c575ea18df5c774c42809b784cc1fe751cd614eb61f5fb3a9753791694",
+    "outline_profile": "solid-exterior-v1",
+    "notes": "Both native views reviewed before/after. Source-evidence Solid contours close white cod-fin and forked-tail boundaries while retaining chin barbel, butter heart and fish silhouette. Existing exact palette, source, crop, thresholds and close rear framing unchanged. No pixel edits or dilation. Earlier native versions retained.",
+    "reviewer": "future_moves; root approved native before/after",
+    "native_sheet_sha256": "909dad7c17abadc25f2fe2104dfa290d8e7ddc280e93e8f7b06966270aef0008"
+  }
+}

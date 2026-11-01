@@ -1,0 +1,138 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F044",
+  "status": "native-conversion-pending",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_095": {
+      "species_id": "MN_095",
+      "name": "Babehemoth",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          10,
+          20,
+          31
+        ],
+        [
+          4,
+          7,
+          19
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        32394,
+        19684,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          82,
+          165,
+          255
+        ],
+        [
+          33,
+          57,
+          156
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#52A5FF",
+        "#21399C",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f044/roster-polish-v1/prompt-imagegen-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png",
+      "target/minnesota-pokemon/gen2-reference/bugs.png"
+    ]
+  },
+  "sprites": [
+    {
+      "id": "mn-095-babehemoth-polish-v1",
+      "species_id": "MN_095",
+      "view": "front",
+      "source": "sprites/mn-f044/roster-polish-v1/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        980,
+        821
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        32394,
+        19684,
+        0
+      ],
+      "sampling": "area_vote",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-095-babehemoth-polish-v1",
+      "species_id": "MN_095",
+      "view": "back",
+      "source": "sprites/mn-f044/roster-polish-v1/front-back.imagegen-v1.png",
+      "crop": [
+        1000,
+        0,
+        916,
+        821
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        32394,
+        19684,
+        0
+      ],
+      "sampling": "area_vote",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    }
+  ],
+  "visual_review": {
+    "status": "pending",
+    "sheet_sha256": "",
+    "outline_profile": "source-contour-v1",
+    "notes": "New identity-preserving ImageGen source; native comparison pending."
+  }
+}

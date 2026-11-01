@@ -1,0 +1,13 @@
+{
+  "attempts": [
+    {
+      "attempt": 1,
+      "prompt": "prompt-v1.txt",
+      "result": "success",
+      "tool": "built-in image_gen",
+      "original_path": "/Users/ryanculligan/.codex/generated_images/01a17aa2-ca0b-7cc0-8219-cddf2150b02b/exec-9dd01bac-795b-491c-a34f-029d8e0ee90d.png",
+      "saved_path": "front-back.imagegen-v1.png",
+      "sha256": "0551819a59186d3affc4209c333e849afc7f7dd852b8909b8f473cae6bdbf335"
+    }
+  ]
+}

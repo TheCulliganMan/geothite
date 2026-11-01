@@ -1,0 +1,50 @@
+{
+  "family_id": "MN_F008",
+  "species_id": "MN_024",
+  "prompt_file": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f008/prompt-rivetqueen-v2.txt",
+  "input_references": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+      "sha256": "4354a639ed1a80fd6686e43b273443ed894e58a84307a8049f638ee9ffa2a099",
+      "role": "Only style input: authentic16px coarse clusters and directions; no character copying."
+    }
+  ],
+  "inspected_identity_context": {
+    "canonical_front": {
+      "path": "target/minnesota-pokemon/native/MN_F008/mn-024-rivetqueen-v3-polish-v1.front.png",
+      "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F008/mn-024-rivetqueen-v3-polish-v1.front.png",
+      "sha256": "5de5651664bd483e13d6047a64f93b523f316583432fb9b7c053c577e03d5d6e"
+    },
+    "canonical_back": {
+      "path": "target/minnesota-pokemon/native/MN_F008/mn-024-rivetqueen-v3-polish-v1.back.png",
+      "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F008/mn-024-rivetqueen-v3-polish-v1.back.png",
+      "sha256": "f0a30ccdb69a686be46a08d3706efdb59aaea590e01018852dad8d8dd2ee1204"
+    },
+    "invariants": [
+      "Broad mature queen bee with chunky blue steel plates and orange abdomen.",
+      "Keep true insect body/wing silhouette; imply small leg pairs with clear clustered protrusions."
+    ]
+  },
+  "battle_refs_passed_to_tool": false,
+  "palette_binding": {
+    "transparent_index": 0,
+    "visible_indices": [
+      1,
+      2,
+      3
+    ],
+    "normal_rgb555_words": [
+      32767,
+      4379,
+      23183,
+      0
+    ],
+    "shiny_rgb555_words": [
+      32767,
+      9060,
+      20982,
+      0
+    ],
+    "white_body_region_policy": "Simplify formerly white body/highlight regions to light ink1. Index0 is transparent everywhere, not an opaque white paint color."
+  }
+}

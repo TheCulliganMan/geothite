@@ -1,0 +1,18 @@
+{
+  "species_id": "MN_131",
+  "name": "Tugget",
+  "family_id": "MN_F060",
+  "tool": "built-in image_gen",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f060/manifest-tugget-v1-pupil-proof.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f060/tugget-v1-pupil-proof",
+  "normalized_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f060/source-feature-proof-tugget-v1.json",
+  "detailed_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f060/manifest-tugget-v1-pupil-proof.proof.json",
+  "sources": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f060/tugget.overworld.imagegen-v1.png": "135cd817700dca34b35f769ec9d78d89a9f8ad81dc990661353cfc75600a44aa"
+  },
+  "preserved_attempt_receipts": [
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f060/attempt-tugget-v1.json"
+  ],
+  "status": "frozen native candidate; actual normal/shiny source features reviewed; root context pending",
+  "accepted": false
+}

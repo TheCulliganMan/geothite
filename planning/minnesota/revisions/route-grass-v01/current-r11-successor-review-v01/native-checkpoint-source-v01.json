@@ -1,0 +1,15 @@
+{
+  "id": "MnR11C00R00",
+  "source_kind": "scoped_native_grass_checkpoint",
+  "residents": [
+    {
+      "id": "MN_R11_N02",
+      "tile": [
+        35,
+        31
+      ],
+      "facing": "south"
+    }
+  ],
+  "signs": []
+}

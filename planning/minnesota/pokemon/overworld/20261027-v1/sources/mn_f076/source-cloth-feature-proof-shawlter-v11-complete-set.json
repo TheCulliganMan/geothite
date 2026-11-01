@@ -1,0 +1,1908 @@
+{
+  "species_id": "MN_165",
+  "result": "pass",
+  "manifest_sha256": "2816b97176c2b97bd05c47dfcbaab670d7ac5dc9c278249ac0a3b58e5076dcec",
+  "bank_sha256": "f3cdbc72c45c3b5ce07e97261c665c87042b723e499678c9dc13be7ab11cb7cc",
+  "source_sha256": {
+    "shawlter.overworld.imagegen-v7-front-cuffs.png": "03748a5ac696fb0f08fa2059f2b9d3320e6c0e0accd0238ed25bd0b4b254c611",
+    "shawlter.overworld.imagegen-v5-clear-alpha.png": "957f1a42cb2e1d4e3eb3673f532dd672f75a14ab6c8c6a3a296623e98e46d2d5",
+    "shawlter.overworld.imagegen-v2-outline-pupils.png": "321f1006cd42ace0e3956f8e83660fd9b19b70db47f58127dcabf80bd3f18046",
+    "shawlter.overworld.imagegen-v1.png": "46507ac4a205a0ff7159b12267f61337f8b525c75cf67d2609df61aebe49020a"
+  },
+  "canonical_pieces": [
+    "complete_blue_mitten",
+    "complete_gold_mitten",
+    "one_triangular_shawl"
+  ],
+  "shawl_has_no_eyes": true,
+  "no_hidden_body": true,
+  "shawl_smile_only_south": true,
+  "west_far_hand_occlusion_is_natural": true,
+  "proof": [
+    {
+      "pose": "down_idle",
+      "real_eye_count": 2,
+      "rear_thumb_sides": null,
+      "two_complete_mittens_plus_one_shawl": true,
+      "features": [
+        {
+          "feature": "blue_complete_finger_body",
+          "source_region": [
+            127,
+            156,
+            219,
+            192
+          ],
+          "samples": [
+            {
+              "native": [
+                4,
+                5
+              ],
+              "source_sample": [
+                137,
+                170
+              ],
+              "native_ink": 2,
+              "source_rgba": [
+                50,
+                150,
+                195,
+                254
+              ]
+            },
+            {
+              "native": [
+                5,
+                5
+              ],
+              "source_sample": [
+                166,
+                170
+              ],
+              "native_ink": 2,
+              "source_rgba": [
+                52,
+                151,
+                196,
+                254
+              ]
+            },
+            {
+              "native": [
+                6,
+                5
+              ],
+              "source_sample": [
+                196,
+                170
+              ],
+              "native_ink": 2,
+              "source_rgba": [
+                51,
+                151,
+                197,
+                254
+              ]
+            }
+          ]
+        },
+        {
+          "feature": "gold_complete_finger_body",
+          "source_region": [
+            304,
+            150,
+            378,
+            189
+          ],
+          "samples": [
+            {
+              "native": [
+                10,
+                5
+              ],
+              "source_sample": [
+                315,
+                170
+              ],
+              "native_ink": 1,
+              "source_rgba": [
+                254,
+                195,
+                74,
+                254
+              ]
+            },
+            {
+              "native": [
+                11,
+                5
+              ],
+              "source_sample": [
+                345,
+                170
+              ],
+              "native_ink": 1,
+              "source_rgba": [
+                254,
+                197,
+                75,
+                254
+              ]
+            },
+            {
+              "native": [
+                12,
+                5
+              ],
+              "source_sample": [
+                374,
+                170
+              ],
+              "native_ink": 1,
+              "source_rgba": [
+                252,
+                195,
+                75,
+                254
+              ]
+            }
+          ]
+        },
+        {
+          "feature": "blue_real_thumb",
+          "source_region": [
+            78,
+            180,
+            118,
+            221
+          ],
+          "samples": [
+            {
+              "native": [
+                3,
+                6
+              ],
+              "source_sample": [
+                107,
+                202
+              ],
+              "native_ink": 2,
+              "source_rgba": [
+                53,
+                153,
+                199,
+                254
+              ]
+            }
+          ]
+        },
+        {
+          "feature": "gold_real_thumb",
+          "source_region": [
+            391,
+            181,
+            432,
+            224
+          ],
+          "samples": [
+            {
+              "native": [
+                13,
+                6
+              ],
+              "source_sample": [
+                404,
+                202
+              ],
+              "native_ink": 1,
+              "source_rgba": [
+                254,
+                196,
+                72,
+                253
+              ]
+            }
+          ]
+        },
+        {
+          "feature": "blue_mitten_gold_cuff",
+          "source_region": [
+            128,
+            252,
+            221,
+            286
+          ],
+          "samples": [
+            {
+              "native": [
+                4,
+                8
+              ],
+              "source_sample": [
+                137,
+                266
+              ],
+              "native_ink": 1,
+              "source_rgba": [
+                254,
+                191,
+                66,
+                253
+              ]
+            },
+            {
+              "native": [
+                5,
+                8
+              ],
+              "source_sample": [
+                166,
+                266
+              ],
+              "native_ink": 1,
+              "source_rgba": [
+                251,
+                194,
+                74,
+                254
+              ]
+            },
+            {
+              "native": [
+                6,
+                8
+              ],
+              "source_sample": [
+                196,
+                266
+              ],
+              "native_ink": 1,
+              "source_rgba": [
+                252,
+                192,
+                71,
+                253
+              ]
+            }
+          ]
+        },
+        {
+          "feature": "gold_mitten_blue_cuff",
+          "source_region": [
+            301,
+            251,
+            395,
+            287
+          ],
+          "samples": [
+            {
+              "native": [
+                10,
+                8
+              ],
+              "source_sample": [
+                315,
+                266
+              ],
+              "native_ink": 2,
+              "source_rgba": [
+                50,
+                149,
+                195,
+                254
+              ]
+            },
+            {
+              "native": [
+                11,
+                8
+              ],
+              "source_sample": [
+                345,
+                266
+              ],
+              "native_ink": 2,
+              "source_rgba": [
+                52,
+                151,
+                197,
+                254
+              ]
+            },
+            {
+              "native": [
+                12,
+                8
+              ],
+              "source_sample": [
+                374,
+                266
+              ],
+              "native_ink": 2,
+              "source_rgba": [
+                49,
+                151,
+                199,
+                254
+              ]
+            }
+          ]
+        },
+        {
+          "feature": "raised_left_smile_corner",
+          "source_region": [
+            209,
+            313,
+            251,
+            351
+          ],
+          "samples": [
+            {
+              "native": [
+                7,
+                10
+              ],
+              "source_sample": [
+                226,
+                330
+              ],
+              "native_ink": 3,
+              "source_rgba": [
+                0,
+                0,
+                0,
+                253
+              ]
+            }
+          ]
+        },
+        {
+          "feature": "lower_connected_smile_middle",
+          "source_region": [
+            234,
+            340,
+            305,
+            379
+          ],
+          "samples": [
+            {
+              "native": [
+                8,
+                11
+              ],
+              "source_sample": [
+                255,
+                362
+              ],
+              "native_ink": 3,
+              "source_rgba": [
+                46,
+                38,
+                13,
+                253
+              ]
+            },
+            {
+              "native": [
+                9,
+                11
+              ],
+              "source_sample": [
+                285,
+                362
+              ],
+              "native_ink": 3,
+              "source_rgba": [
+                57,
+                45,
+                16,
+                253
+              ]
+            }
+          ]
+        },
+        {
+          "feature": "raised_right_smile_corner",
+          "source_region": [
+            286,
+            313,
+            330,
+            351
+          ],
+          "samples": [
+            {
+              "native": [
+                10,
+                10
+              ],
+              "source_sample": [
+                315,
+                330
+              ],
+              "native_ink": 3,
+              "source_rgba": [
+                9,
+                7,
+                3,
+                254
+              ]
+            }
+          ]
+        },
+        {
+          "feature": "one_actual_source_U_fold",
+          "source_black_component_bounds_and_pixels": [
+            [
+              218,
+              322,
+              100,
+              41
+            ],
+            2111
+          ],
+          "shawl_eye_count": 0
+        }
+      ]
+    },
+    {
+      "pose": "up_idle",
+      "real_eye_count": 0,
+      "rear_thumb_sides": [
+        "right",
+        "left"
+      ],
+      "two_complete_mittens_plus_one_shawl": true,
+      "features": [
+        {
+          "feature": "blue_complete_finger_body",
+          "source_region": [
+            630,
+            126,
+            719,
+            171
+          ],
+          "samples": [
+            {
+              "native": [
+                4,
+                4
+              ],
+              "source_sample": [
+                669,
+                157
+              ],
+              "native_ink": 2,
+              "source_rgba": [
+                46,
+                149,
+                195,
+                254
+              ]
+            },
+            {
+              "native": [
+                5,
+                4
+              ],
+              "source_sample": [
+                698,
+                157
+              ],
+              "native_ink": 2,
+              "source_rgba": [
+                46,
+                151,
+                197,
+                254
+              ]
+            }
+          ]
+        },
+        {
+          "feature": "gold_complete_finger_body",
+          "source_region": [
+            837,
+            149,
+            910,
+            189
+          ],
+          "samples": [
+            {
+              "native": [
+                10,
+                4
+              ],
+              "source_sample": [
+                847,
+                157
+              ],
+              "native_ink": 1,
+              "source_rgba": [
+                253,
+                194,
+                78,
+                254
+              ]
+            },
+            {
+              "native": [
+                11,
+                4
+              ],
+              "source_sample": [
+                877,
+                157
+              ],
+              "native_ink": 1,
+              "source_rgba": [
+                253,
+                195,
+                79,
+                254
+              ]
+            }
+          ]
+        },
+        {
+          "feature": "blue_real_thumb",
+          "source_region": [
+            737,
+            176,
+            770,
+            216
+          ],
+          "samples": [
+            {
+              "native": [
+                7,
+                5
+              ],
+              "source_sample": [
+                758,
+                189
+              ],
+              "native_ink": 2,
+              "source_rgba": [
+                51,
+                157,
+                204,
+                254
+              ]
+            }
+          ]
+        },
+        {
+          "feature": "gold_real_thumb",
+          "source_region": [
+            781,
+            181,
+            819,
+            223
+          ],
+          "samples": [
+            {
+              "native": [
+                8,
+                5
+              ],
+              "source_sample": [
+                787,
+                189
+              ],
+              "native_ink": 1,
+              "source_rgba": [
+                251,
+                194,
+                81,
+                253
+              ]
+            },
+            {
+              "native": [
+                9,
+                6
+              ],
+              "source_sample": [
+                817,
+                221
+              ],
+              "native_ink": 1,
+              "source_rgba": [
+                253,
+                195,
+                76,
+                254
+              ]
+            }
+          ]
+        },
+        {
+          "feature": "blue_mitten_gold_cuff",
+          "source_region": [
+            634,
+            247,
+            743,
+            291
+          ],
+          "samples": [
+            {
+              "native": [
+                6,
+                7
+              ],
+              "source_sample": [
+                728,
+                253
+              ],
+              "native_ink": 1,
+              "source_rgba": [
+                254,
+                194,
+                80,
+                254
+              ]
+            },
+            {
+              "native": [
+                3,
+                8
+              ],
+              "source_sample": [
+                639,
+                285
+              ],
+              "native_ink": 1,
+              "source_rgba": [
+                254,
+                195,
+                81,
+                253
+              ]
+            }
+          ]
+        },
+        {
+          "feature": "gold_mitten_blue_cuff",
+          "source_region": [
+            828,
+            250,
+            913,
+            287
+          ],
+          "samples": [
+            {
+              "native": [
+                10,
+                7
+              ],
+              "source_sample": [
+                847,
+                253
+              ],
+              "native_ink": 2,
+              "source_rgba": [
+                46,
+                158,
+                209,
+                254
+              ]
+            },
+            {
+              "native": [
+                10,
+                8
+              ],
+              "source_sample": [
+                847,
+                285
+              ],
+              "native_ink": 2,
+              "source_rgba": [
+                59,
+                181,
+                225,
+                254
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "real_eye_count": 1,
+      "rear_thumb_sides": null,
+      "two_complete_mittens_plus_one_shawl": true,
+      "features": [
+        {
+          "feature": "blue_complete_finger_body",
+          "source_region": [
+            1201,
+            130,
+            1287,
+            174
+          ],
+          "samples": [
+            {
+              "native": [
+                5,
+                4
+              ],
+              "source_sample": [
+                1216,
+                157
+              ],
+              "native_ink": 2,
+              "source_rgba": [
+                51,
+                150,
+                193,
+                254
+              ]
+            },
+            {
+              "native": [
+                6,
+                4
+              ],
+              "source_sample": [
+                1246,
+                157
+              ],
+              "native_ink": 2,
+              "source_rgba": [
+                52,
+                149,
+                195,
+                254
+              ]
+            }
+          ]
+        },
+        {
+          "feature": "gold_complete_finger_body",
+          "source_region": [
+            1345,
+            161,
+            1410,
+            199
+          ],
+          "samples": [
+            {
+              "native": [
+                10,
+                5
+              ],
+              "source_sample": [
+                1365,
+                189
+              ],
+              "native_ink": 1,
+              "source_rgba": [
+                254,
+                195,
+                75,
+                254
+              ]
+            },
+            {
+              "native": [
+                11,
+                5
+              ],
+              "source_sample": [
+                1395,
+                189
+              ],
+              "native_ink": 1,
+              "source_rgba": [
+                252,
+                193,
+                78,
+                254
+              ]
+            }
+          ]
+        },
+        {
+          "feature": "blue_real_thumb",
+          "source_region": [
+            1145,
+            178,
+            1184,
+            219
+          ],
+          "samples": [
+            {
+              "native": [
+                3,
+                5
+              ],
+              "source_sample": [
+                1157,
+                189
+              ],
+              "native_ink": 2,
+              "source_rgba": [
+                49,
+                149,
+                196,
+                253
+              ]
+            }
+          ]
+        },
+        {
+          "feature": "gold_real_thumb",
+          "source_region": [
+            1416,
+            190,
+            1444,
+            224
+          ],
+          "samples": [
+            {
+              "native": [
+                12,
+                6
+              ],
+              "source_sample": [
+                1424,
+                221
+              ],
+              "native_ink": 1,
+              "source_rgba": [
+                242,
+                192,
+                78,
+                253
+              ]
+            }
+          ]
+        },
+        {
+          "feature": "blue_mitten_gold_cuff",
+          "source_region": [
+            1210,
+            250,
+            1294,
+            282
+          ],
+          "samples": [
+            {
+              "native": [
+                5,
+                7
+              ],
+              "source_sample": [
+                1216,
+                253
+              ],
+              "native_ink": 1,
+              "source_rgba": [
+                252,
+                191,
+                70,
+                253
+              ]
+            },
+            {
+              "native": [
+                6,
+                7
+              ],
+              "source_sample": [
+                1246,
+                253
+              ],
+              "native_ink": 1,
+              "source_rgba": [
+                253,
+                194,
+                74,
+                253
+              ]
+            },
+            {
+              "native": [
+                7,
+                7
+              ],
+              "source_sample": [
+                1276,
+                253
+              ],
+              "native_ink": 1,
+              "source_rgba": [
+                249,
+                196,
+                87,
+                253
+              ]
+            }
+          ]
+        },
+        {
+          "feature": "gold_mitten_blue_cuff",
+          "source_region": [
+            1356,
+            247,
+            1428,
+            285
+          ],
+          "samples": [
+            {
+              "native": [
+                11,
+                7
+              ],
+              "source_sample": [
+                1395,
+                253
+              ],
+              "native_ink": 2,
+              "source_rgba": [
+                44,
+                156,
+                198,
+                253
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "real_eye_count": 2,
+      "rear_thumb_sides": null,
+      "two_complete_mittens_plus_one_shawl": true,
+      "features": [
+        {
+          "feature": "blue_complete_finger_body",
+          "source_region": [
+            127,
+            632,
+            219,
+            671
+          ],
+          "samples": [
+            {
+              "native": [
+                5,
+                5
+              ],
+              "source_sample": [
+                159,
+                648
+              ],
+              "native_ink": 2,
+              "source_rgba": [
+                51,
+                152,
+                197,
+                254
+              ]
+            },
+            {
+              "native": [
+                6,
+                5
+              ],
+              "source_sample": [
+                189,
+                648
+              ],
+              "native_ink": 2,
+              "source_rgba": [
+                52,
+                151,
+                197,
+                254
+              ]
+            }
+          ]
+        },
+        {
+          "feature": "gold_complete_finger_body",
+          "source_region": [
+            304,
+            626,
+            378,
+            668
+          ],
+          "samples": [
+            {
+              "native": [
+                10,
+                5
+              ],
+              "source_sample": [
+                308,
+                648
+              ],
+              "native_ink": 1,
+              "source_rgba": [
+                254,
+                195,
+                74,
+                253
+              ]
+            },
+            {
+              "native": [
+                11,
+                5
+              ],
+              "source_sample": [
+                338,
+                648
+              ],
+              "native_ink": 1,
+              "source_rgba": [
+                253,
+                196,
+                76,
+                253
+              ]
+            },
+            {
+              "native": [
+                12,
+                5
+              ],
+              "source_sample": [
+                367,
+                648
+              ],
+              "native_ink": 1,
+              "source_rgba": [
+                253,
+                195,
+                74,
+                253
+              ]
+            }
+          ]
+        },
+        {
+          "feature": "blue_real_thumb",
+          "source_region": [
+            77,
+            655,
+            116,
+            700
+          ],
+          "samples": [
+            {
+              "native": [
+                3,
+                6
+              ],
+              "source_sample": [
+                100,
+                680
+              ],
+              "native_ink": 2,
+              "source_rgba": [
+                52,
+                152,
+                198,
+                254
+              ]
+            }
+          ]
+        },
+        {
+          "feature": "gold_real_thumb",
+          "source_region": [
+            391,
+            655,
+            432,
+            703
+          ],
+          "samples": [
+            {
+              "native": [
+                13,
+                6
+              ],
+              "source_sample": [
+                397,
+                680
+              ],
+              "native_ink": 1,
+              "source_rgba": [
+                254,
+                197,
+                76,
+                253
+              ]
+            }
+          ]
+        },
+        {
+          "feature": "blue_mitten_gold_cuff",
+          "source_region": [
+            127,
+            730,
+            219,
+            764
+          ],
+          "samples": [
+            {
+              "native": [
+                4,
+                8
+              ],
+              "source_sample": [
+                130,
+                744
+              ],
+              "native_ink": 1,
+              "source_rgba": [
+                208,
+                165,
+                75,
+                253
+              ]
+            },
+            {
+              "native": [
+                5,
+                8
+              ],
+              "source_sample": [
+                159,
+                744
+              ],
+              "native_ink": 1,
+              "source_rgba": [
+                253,
+                192,
+                72,
+                253
+              ]
+            },
+            {
+              "native": [
+                6,
+                8
+              ],
+              "source_sample": [
+                189,
+                744
+              ],
+              "native_ink": 1,
+              "source_rgba": [
+                253,
+                193,
+                74,
+                254
+              ]
+            }
+          ]
+        },
+        {
+          "feature": "gold_mitten_blue_cuff",
+          "source_region": [
+            300,
+            730,
+            394,
+            765
+          ],
+          "samples": [
+            {
+              "native": [
+                10,
+                8
+              ],
+              "source_sample": [
+                308,
+                744
+              ],
+              "native_ink": 2,
+              "source_rgba": [
+                52,
+                151,
+                197,
+                254
+              ]
+            },
+            {
+              "native": [
+                11,
+                8
+              ],
+              "source_sample": [
+                338,
+                744
+              ],
+              "native_ink": 2,
+              "source_rgba": [
+                50,
+                147,
+                193,
+                254
+              ]
+            },
+            {
+              "native": [
+                12,
+                8
+              ],
+              "source_sample": [
+                367,
+                744
+              ],
+              "native_ink": 2,
+              "source_rgba": [
+                47,
+                147,
+                194,
+                253
+              ]
+            }
+          ]
+        },
+        {
+          "feature": "raised_left_smile_corner",
+          "source_region": [
+            209,
+            789,
+            251,
+            831
+          ],
+          "samples": [
+            {
+              "native": [
+                7,
+                10
+              ],
+              "source_sample": [
+                219,
+                808
+              ],
+              "native_ink": 3,
+              "source_rgba": [
+                2,
+                2,
+                1,
+                254
+              ]
+            }
+          ]
+        },
+        {
+          "feature": "lower_connected_smile_middle",
+          "source_region": [
+            232,
+            818,
+            305,
+            859
+          ],
+          "samples": [
+            {
+              "native": [
+                8,
+                11
+              ],
+              "source_sample": [
+                248,
+                840
+              ],
+              "native_ink": 3,
+              "source_rgba": [
+                7,
+                5,
+                2,
+                254
+              ]
+            },
+            {
+              "native": [
+                9,
+                11
+              ],
+              "source_sample": [
+                278,
+                840
+              ],
+              "native_ink": 3,
+              "source_rgba": [
+                5,
+                4,
+                1,
+                253
+              ]
+            }
+          ]
+        },
+        {
+          "feature": "raised_right_smile_corner",
+          "source_region": [
+            284,
+            789,
+            329,
+            831
+          ],
+          "samples": [
+            {
+              "native": [
+                10,
+                10
+              ],
+              "source_sample": [
+                308,
+                808
+              ],
+              "native_ink": 3,
+              "source_rgba": [
+                5,
+                3,
+                1,
+                254
+              ]
+            }
+          ]
+        },
+        {
+          "feature": "one_actual_source_U_fold",
+          "source_black_component_bounds_and_pixels": [
+            [
+              218,
+              801,
+              99,
+              41
+            ],
+            2083
+          ],
+          "shawl_eye_count": 0
+        }
+      ]
+    },
+    {
+      "pose": "up_step",
+      "real_eye_count": 0,
+      "rear_thumb_sides": [
+        "right",
+        "left"
+      ],
+      "two_complete_mittens_plus_one_shawl": true,
+      "features": [
+        {
+          "feature": "blue_complete_finger_body",
+          "source_region": [
+            630,
+            605,
+            719,
+            651
+          ],
+          "samples": [
+            {
+              "native": [
+                4,
+                3
+              ],
+              "source_sample": [
+                669,
+                605
+              ],
+              "native_ink": 2,
+              "source_rgba": [
+                48,
+                157,
+                206,
+                253
+              ]
+            },
+            {
+              "native": [
+                5,
+                3
+              ],
+              "source_sample": [
+                698,
+                605
+              ],
+              "native_ink": 2,
+              "source_rgba": [
+                44,
+                154,
+                202,
+                253
+              ]
+            },
+            {
+              "native": [
+                4,
+                4
+              ],
+              "source_sample": [
+                669,
+                637
+              ],
+              "native_ink": 2,
+              "source_rgba": [
+                47,
+                150,
+                198,
+                254
+              ]
+            },
+            {
+              "native": [
+                5,
+                4
+              ],
+              "source_sample": [
+                698,
+                637
+              ],
+              "native_ink": 2,
+              "source_rgba": [
+                46,
+                150,
+                196,
+                254
+              ]
+            }
+          ]
+        },
+        {
+          "feature": "gold_complete_finger_body",
+          "source_region": [
+            837,
+            629,
+            910,
+            670
+          ],
+          "samples": [
+            {
+              "native": [
+                10,
+                4
+              ],
+              "source_sample": [
+                847,
+                637
+              ],
+              "native_ink": 1,
+              "source_rgba": [
+                253,
+                194,
+                79,
+                254
+              ]
+            },
+            {
+              "native": [
+                11,
+                4
+              ],
+              "source_sample": [
+                877,
+                637
+              ],
+              "native_ink": 1,
+              "source_rgba": [
+                255,
+                197,
+                81,
+                254
+              ]
+            },
+            {
+              "native": [
+                10,
+                5
+              ],
+              "source_sample": [
+                847,
+                669
+              ],
+              "native_ink": 1,
+              "source_rgba": [
+                254,
+                195,
+                78,
+                254
+              ]
+            },
+            {
+              "native": [
+                11,
+                5
+              ],
+              "source_sample": [
+                877,
+                669
+              ],
+              "native_ink": 1,
+              "source_rgba": [
+                253,
+                194,
+                78,
+                254
+              ]
+            },
+            {
+              "native": [
+                12,
+                5
+              ],
+              "source_sample": [
+                906,
+                669
+              ],
+              "native_ink": 1,
+              "source_rgba": [
+                253,
+                194,
+                83,
+                253
+              ]
+            }
+          ]
+        },
+        {
+          "feature": "blue_real_thumb",
+          "source_region": [
+            737,
+            655,
+            770,
+            695
+          ],
+          "samples": [
+            {
+              "native": [
+                7,
+                5
+              ],
+              "source_sample": [
+                758,
+                669
+              ],
+              "native_ink": 2,
+              "source_rgba": [
+                46,
+                150,
+                197,
+                253
+              ]
+            }
+          ]
+        },
+        {
+          "feature": "gold_real_thumb",
+          "source_region": [
+            781,
+            660,
+            819,
+            702
+          ],
+          "samples": [
+            {
+              "native": [
+                8,
+                5
+              ],
+              "source_sample": [
+                787,
+                669
+              ],
+              "native_ink": 1,
+              "source_rgba": [
+                250,
+                189,
+                73,
+                253
+              ]
+            },
+            {
+              "native": [
+                9,
+                6
+              ],
+              "source_sample": [
+                817,
+                701
+              ],
+              "native_ink": 1,
+              "source_rgba": [
+                254,
+                194,
+                78,
+                253
+              ]
+            }
+          ]
+        },
+        {
+          "feature": "blue_mitten_gold_cuff",
+          "source_region": [
+            634,
+            727,
+            743,
+            771
+          ],
+          "samples": [
+            {
+              "native": [
+                6,
+                7
+              ],
+              "source_sample": [
+                728,
+                733
+              ],
+              "native_ink": 1,
+              "source_rgba": [
+                253,
+                191,
+                76,
+                254
+              ]
+            },
+            {
+              "native": [
+                3,
+                8
+              ],
+              "source_sample": [
+                639,
+                765
+              ],
+              "native_ink": 1,
+              "source_rgba": [
+                253,
+                194,
+                77,
+                253
+              ]
+            }
+          ]
+        },
+        {
+          "feature": "gold_mitten_blue_cuff",
+          "source_region": [
+            828,
+            730,
+            913,
+            766
+          ],
+          "samples": [
+            {
+              "native": [
+                10,
+                7
+              ],
+              "source_sample": [
+                847,
+                733
+              ],
+              "native_ink": 2,
+              "source_rgba": [
+                44,
+                153,
+                198,
+                254
+              ]
+            },
+            {
+              "native": [
+                10,
+                8
+              ],
+              "source_sample": [
+                847,
+                765
+              ],
+              "native_ink": 2,
+              "source_rgba": [
+                48,
+                167,
+                212,
+                253
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "real_eye_count": 1,
+      "rear_thumb_sides": null,
+      "two_complete_mittens_plus_one_shawl": true,
+      "features": [
+        {
+          "feature": "blue_complete_finger_body",
+          "source_region": [
+            1196,
+            626,
+            1272,
+            668
+          ],
+          "samples": [
+            {
+              "native": [
+                5,
+                4
+              ],
+              "source_sample": [
+                1217,
+                652
+              ],
+              "native_ink": 2,
+              "source_rgba": [
+                42,
+                145,
+                193,
+                253
+              ]
+            },
+            {
+              "native": [
+                6,
+                4
+              ],
+              "source_sample": [
+                1247,
+                652
+              ],
+              "native_ink": 2,
+              "source_rgba": [
+                46,
+                146,
+                193,
+                253
+              ]
+            }
+          ]
+        },
+        {
+          "feature": "gold_complete_finger_body",
+          "source_region": [
+            1346,
+            664,
+            1403,
+            706
+          ],
+          "samples": [
+            {
+              "native": [
+                10,
+                5
+              ],
+              "source_sample": [
+                1366,
+                684
+              ],
+              "native_ink": 1,
+              "source_rgba": [
+                252,
+                194,
+                60,
+                253
+              ]
+            }
+          ]
+        },
+        {
+          "feature": "blue_real_thumb",
+          "source_region": [
+            1172,
+            663,
+            1208,
+            700
+          ],
+          "samples": [
+            {
+              "native": [
+                4,
+                5
+              ],
+              "source_sample": [
+                1188,
+                684
+              ],
+              "native_ink": 2,
+              "source_rgba": [
+                44,
+                143,
+                189,
+                253
+              ]
+            }
+          ]
+        },
+        {
+          "feature": "gold_real_thumb",
+          "source_region": [
+            1412,
+            690,
+            1442,
+            728
+          ],
+          "samples": [
+            {
+              "native": [
+                12,
+                6
+              ],
+              "source_sample": [
+                1425,
+                716
+              ],
+              "native_ink": 1,
+              "source_rgba": [
+                251,
+                197,
+                67,
+                253
+              ]
+            }
+          ]
+        },
+        {
+          "feature": "blue_mitten_gold_cuff",
+          "source_region": [
+            1220,
+            735,
+            1292,
+            766
+          ],
+          "samples": [
+            {
+              "native": [
+                6,
+                7
+              ],
+              "source_sample": [
+                1247,
+                748
+              ],
+              "native_ink": 1,
+              "source_rgba": [
+                252,
+                193,
+                60,
+                253
+              ]
+            }
+          ]
+        },
+        {
+          "feature": "gold_mitten_blue_cuff",
+          "source_region": [
+            1350,
+            742,
+            1426,
+            787
+          ],
+          "samples": [
+            {
+              "native": [
+                11,
+                8
+              ],
+              "source_sample": [
+                1396,
+                780
+              ],
+              "native_ink": 2,
+              "source_rgba": [
+                38,
+                135,
+                186,
+                252
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

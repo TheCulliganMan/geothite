@@ -1,0 +1,207 @@
+{
+  "schema_version": 1,
+  "id": "MN_R16",
+  "source_kind": "installed_route_exterior_review_contract",
+  "native_binding": {
+    "pack": "content-packs/minnesota-current-r16-bank-guidance-v02.crystalpack",
+    "pack_sha256": "e47cfeeff4baf0e2fd9654d9859e2fd094d856f8d34bede6c1c333c8209bce26",
+    "content_identity": "2306f83ca53691eef46de0d36c606773a04665e130ab98c11cea856bc7eba838"
+  },
+  "previous_dossier": {
+    "path": "planning/minnesota/revisions/shore-rocks-open-routes-v01/MN_R16.dossier.json",
+    "sha256": "3d428be5a64e7111eb11326b449119c04b9c7cdba4a39d44ba4fdf01d68e3af4"
+  },
+  "grass_quadrants": 1016,
+  "ice_quadrants": 0,
+  "main_crossing": {
+    "west": [
+      0,
+      24
+    ],
+    "east": [
+      95,
+      24
+    ],
+    "cottonwood_bounds": [
+      82,
+      18,
+      86,
+      28
+    ],
+    "minimum_grass_steps_both_directions": 4
+  },
+  "active_native_hop_lanes": [
+    {
+      "upper": [
+        52,
+        15
+      ],
+      "lip": [
+        52,
+        16
+      ],
+      "landing": [
+        52,
+        18
+      ],
+      "reverse_wall": [
+        52,
+        17
+      ],
+      "ordinary_uphill_minimum_grass_steps": 6
+    },
+    {
+      "upper": [
+        53,
+        15
+      ],
+      "lip": [
+        53,
+        16
+      ],
+      "landing": [
+        53,
+        18
+      ],
+      "reverse_wall": [
+        53,
+        17
+      ],
+      "ordinary_uphill_minimum_grass_steps": 6
+    }
+  ],
+  "current_bank_stops": [
+    {
+      "stand": [
+        19,
+        23
+      ],
+      "direction": "up",
+      "expected_stop": [
+        19,
+        22
+      ],
+      "collision_at_stop": "UP_WALL"
+    },
+    {
+      "stand": [
+        19,
+        24
+      ],
+      "direction": "down",
+      "expected_stop": [
+        19,
+        24
+      ],
+      "collision_at_stop": "FLOOR"
+    },
+    {
+      "stand": [
+        63,
+        29
+      ],
+      "direction": "up",
+      "expected_stop": [
+        63,
+        28
+      ],
+      "collision_at_stop": "UP_WALL"
+    },
+    {
+      "stand": [
+        63,
+        30
+      ],
+      "direction": "down",
+      "expected_stop": [
+        63,
+        30
+      ],
+      "collision_at_stop": "FLOOR"
+    },
+    {
+      "stand": [
+        18,
+        15
+      ],
+      "direction": "right",
+      "expected_stop": [
+        19,
+        15
+      ],
+      "collision_at_stop": "FLOOR"
+    },
+    {
+      "stand": [
+        18,
+        16
+      ],
+      "direction": "right",
+      "expected_stop": [
+        19,
+        16
+      ],
+      "collision_at_stop": "FLOOR"
+    },
+    {
+      "stand": [
+        16,
+        15
+      ],
+      "direction": "up",
+      "expected_stop": [
+        16,
+        14
+      ],
+      "collision_at_stop": "UP_WALL"
+    },
+    {
+      "stand": [
+        16,
+        16
+      ],
+      "direction": "down",
+      "expected_stop": [
+        16,
+        16
+      ],
+      "collision_at_stop": "FLOOR"
+    }
+  ],
+  "side_wall_entry_exit_masks_included_in_grass_model": true,
+  "requested_fence_removal_preserved": true,
+  "terrain_unchanged": true,
+  "changed_texts": [
+    "MN_R16_RIVER_WARDENText",
+    "MN_R16_SIGN_DRAINText"
+  ],
+  "neighbor_connections": [
+    {
+      "route": [
+        0,
+        24
+      ],
+      "neighbor": "MnMoorhead",
+      "neighbor_arrival": [
+        31,
+        12
+      ]
+    },
+    {
+      "route": [
+        95,
+        24
+      ],
+      "neighbor": "MnDetroitLakesApproach",
+      "neighbor_arrival": [
+        0,
+        18
+      ],
+      "actual_city_trip": "MnDetroitLakes"
+    }
+  ],
+  "source_production_receipt": "planning/minnesota/revisions/route-grass-v01/current-r16-successor-review-v01/full-route-production-v01.json",
+  "exact_rebase_inheritance": "planning/minnesota/revisions/route-grass-v01/current-r16-successor-review-v01/production-native-inheritance-v02.json",
+  "scope": "Both Route16 chunks, both dry ledges/reverse denials/grassy returns, Moorhead and actual Detroit Lakes via its grassy approach, both rows of both bridges, current bank edges, four caches once-only across Continue, corrected NPC/sign text, wild RUN, Pack and Save/Continue. Explicit initial local Typhlosion/Feraligatr60/six-badge QA setup is not earned campaign progress. Surf is outside this land course.",
+  "historical_story_scope_not_promoted": true
+}

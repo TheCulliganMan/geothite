@@ -1,0 +1,50 @@
+{
+  "family_id": "MN_F009",
+  "species_id": "MN_025",
+  "prompt_file": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f009/prompt-pinit-v2.txt",
+  "input_references": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png",
+      "sha256": "4354a639ed1a80fd6686e43b273443ed894e58a84307a8049f638ee9ffa2a099",
+      "role": "Only tool input: authentic16px map style, native pixel density and direction guidance."
+    }
+  ],
+  "inspected_identity_context": {
+    "canonical_front": {
+      "path": "target/minnesota-pokemon/native/MN_F009/mn-025-pinit-v1.front.png",
+      "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F009/mn-025-pinit-v1.front.png",
+      "sha256": "9a07f55a7c558bfd3b183faaaa85f94f501deefa73fd9f2d578e732e15c91651"
+    },
+    "canonical_back": {
+      "path": "target/minnesota-pokemon/native/MN_F009/mn-025-pinit-v1.back.png",
+      "absolute_path": "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F009/mn-025-pinit-v1.back.png",
+      "sha256": "4c17e35bd33a5c05e7eccf0c1e26697773c8685da9112a5a4e4c49b785d6faa6"
+    },
+    "invariants": [
+      "Low living pine-cone sprout with a visible small trunk face and two broad branch clumps.",
+      "Do not reduce it to a generic round bush."
+    ]
+  },
+  "battle_refs_passed_to_tool": false,
+  "palette_binding": {
+    "transparent_index": 0,
+    "visible_indices": [
+      1,
+      2,
+      3
+    ],
+    "normal_rgb555_words": [
+      32767,
+      8909,
+      4365,
+      0
+    ],
+    "shiny_rgb555_words": [
+      32767,
+      22952,
+      8612,
+      0
+    ],
+    "white_body_region_policy": "Simplify formerly white body/highlight regions to light ink1. Index0 is transparent everywhere, not an opaque white paint color."
+  }
+}

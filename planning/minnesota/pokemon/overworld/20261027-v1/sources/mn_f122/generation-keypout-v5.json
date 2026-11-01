@@ -1,0 +1,24 @@
+{
+  "species_id": "MN_261",
+  "name": "Keypout",
+  "family_id": "MN_F122",
+  "tool": "built-in image_gen",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f122/manifest-keypout-v5-pupil-proof.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f122/keypout-v5-pupil-proof",
+  "normalized_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f122/source-feature-proof-keypout-v5.json",
+  "detailed_proof": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f122/manifest-keypout-v5-pupil-proof.proof.json",
+  "sources": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f122/keypout.overworld.imagegen-v5-front-pupil-upper-extension.png": "56c36d3c4e19a245fb8ee044f9870d77a91d25a8e55366648956f684fe5b74a5",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f122/keypout.overworld.imagegen-v2-true-rears.png": "873bdb5fe9e4f6762d452983bc1460f7dc649fa28644bc28c305b77283799230",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f122/keypout.overworld.imagegen-v3-key-barbel-width.png": "a5079c2061da70642aa73d8959de7fa2d7469c4a7218b00802013dce296ac44f"
+  },
+  "preserved_attempt_receipts": [
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f122/attempt-keypout-v1.json",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f122/attempt-keypout-v2.json",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f122/attempt-keypout-v3.json",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f122/attempt-keypout-v4.json",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f122/attempt-keypout-v5.json"
+  ],
+  "status": "frozen native candidate; actual normal/shiny source features reviewed; root context pending",
+  "accepted": false
+}

@@ -1,0 +1,7 @@
+[
+  { "id": "fair-grandstand-arrival", "map": "MnFairGrandstand", "core": [5, 12] },
+  { "id": "fair-barn-arrival", "map": "MnFairBarn", "core": [3, 6] },
+  { "id": "fair-dairy-arrival", "map": "MnFairDairy", "core": [3, 6] },
+  { "id": "voyageurs-upper-arrival", "map": "MnVoyageursIce1F", "core": [5, 19] },
+  { "id": "voyageurs-lower-arrival", "map": "MnVoyageursIceB1F", "core": [5, 19] }
+]

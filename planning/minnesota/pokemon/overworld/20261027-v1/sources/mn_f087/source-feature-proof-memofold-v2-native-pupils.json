@@ -1,0 +1,215 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_187",
+  "result": "pass",
+  "manifest_sha256": "c487f17fce3cdd3e635b199b43e4f089c577ded7c4822fc3d67919502c24c167",
+  "bank_sha256": "ee3601e3d45de79ac5938b596f567d83fa810f7a3a05feb028a4a12e39afa6fe",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f087/memofold.overworld.imagegen-v1.png": "c252db612c3a5427820f8343b6f11120b259cb4a37dd06c63edd011cb440ce4b"
+  },
+  "canonical_eye_form": "Two isolated actual black pupil dots south and one isolated actual black pupil west; source eye components verified in all four nonrear poses.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            5,
+            10
+          ],
+          "source_sample": [
+            213,
+            306
+          ],
+          "source_component": [
+            203,
+            283,
+            39,
+            39
+          ],
+          "component_pixels": 1520,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            1,
+            0,
+            0,
+            253
+          ]
+        },
+        {
+          "native": [
+            8,
+            10
+          ],
+          "source_sample": [
+            306,
+            306
+          ],
+          "source_component": [
+            295,
+            283,
+            39,
+            39
+          ],
+          "component_pixels": 1521,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            5,
+            9
+          ],
+          "source_sample": [
+            1217,
+            289
+          ],
+          "source_component": [
+            1209,
+            283,
+            39,
+            39
+          ],
+          "component_pixels": 1521,
+          "native_neighbors": [
+            1,
+            2,
+            1,
+            1
+          ],
+          "source_rgba": [
+            1,
+            0,
+            0,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            5,
+            10
+          ],
+          "source_sample": [
+            213,
+            729
+          ],
+          "source_component": [
+            203,
+            708,
+            39,
+            39
+          ],
+          "component_pixels": 1521,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            1,
+            0,
+            0,
+            253
+          ]
+        },
+        {
+          "native": [
+            8,
+            10
+          ],
+          "source_sample": [
+            306,
+            729
+          ],
+          "source_component": [
+            298,
+            708,
+            39,
+            40
+          ],
+          "component_pixels": 1521,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            5,
+            9
+          ],
+          "source_sample": [
+            1217,
+            710
+          ],
+          "source_component": [
+            1203,
+            705,
+            39,
+            39
+          ],
+          "component_pixels": 1521,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            2
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ]
+        }
+      ]
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "notes": "Exactly three connected sheet planes retained, central square face and two broad curled side notes, no animal anatomy. Both rears have plain central paper and folded side sheets with no false face. Only source registration changed, no raw edits; all four actual pupil components are isolated single native pixels. Normal/shiny native boards actually reviewed and six full source shapes retained under common fit13."
+  }
+}

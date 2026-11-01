@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "selected_revision": "route_grass_r19_detroit_gate_revision",
+  "pack": "content-packs/minnesota-current-r19-detroit-gate-v05.crystalpack",
+  "pack_sha256": "b57516c0b77c7bcf94fa35e60ff8300bfd8a8781782827739742d8fc15b3f437",
+  "content_identity": "04344bc05748fa78c033e4e17f2c0a12a2d56caee0aeb64f2a48da1f3ab19821",
+  "parent_revision": "grand_rapids_riverfront_revision",
+  "current_grand_rapids_preserved_exact": true,
+  "all_other_parent_maps_and_art_audio_preserved_exact": true,
+  "source_index_sha256": "8e6a4224b9a19d84bc8e191c936b598e77d5107e9d2dcf6f0e03c26061ea2fce",
+  "fresh_native_cases": 5,
+  "source_checks_pass": true,
+  "scope": "Local route acceptance; statewide objective remains active."
+}

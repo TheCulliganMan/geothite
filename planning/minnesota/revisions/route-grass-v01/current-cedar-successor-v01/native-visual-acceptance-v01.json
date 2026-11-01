@@ -1,0 +1,29 @@
+{
+  "status": "PASS",
+  "pack_sha256": "e9f4108d3b0a35f04145e4928446c03845982e1f13d7ff8f34e383bd701757d5",
+  "actual_native_views_inspected": 3,
+  "whole_route_source_inspected": true,
+  "pixel_mismatches": 0,
+  "views": [
+    {
+      "id": "western-habitat",
+      "image": "planning/minnesota/renders/route-grass-v01/current-cedar-successor-v01/native-v01/western-habitat/production.png",
+      "sha256": "0dd42ea3ee034f6fb43c4b9cce5382de9ac6ae0cd4022b50ef8c7ef391e32168"
+    },
+    {
+      "id": "upper-ledge-choice",
+      "image": "planning/minnesota/renders/route-grass-v01/current-cedar-successor-v01/native-v01/upper-ledge-choice/production.png",
+      "sha256": "fb44a859e61fd97986ed0b6b6c4582df1ca3ef6f7faf6f63691495c14c28d289"
+    },
+    {
+      "id": "dry-lower-return",
+      "image": "planning/minnesota/renders/route-grass-v01/current-cedar-successor-v01/native-v01/dry-lower-return/production.png",
+      "sha256": "f97ef272cfad499f80fde37da91bf9ed0c539fd1f9734e2b383e27a2d2ca4711"
+    }
+  ],
+  "findings": [
+    "Western habitat spans the through approach between forest walls.",
+    "The eastern short drop has a clear dry lower landing and a visible grass route for the uphill return.",
+    "The complete small route stays green and reads as a compact wooded gateway; no new terrain is needed."
+  ]
+}

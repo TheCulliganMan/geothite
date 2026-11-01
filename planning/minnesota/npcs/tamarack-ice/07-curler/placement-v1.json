@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "map": "MnGrandMarais",
+      "approach": [
+        16,
+        15
+      ],
+      "id": "MN_EXTRA_CURLER",
+      "display_name": "GORDY",
+      "trainer_class": "MN_CURLER",
+      "class_name": "CURLER",
+      "template_class": "BOARDER",
+      "sprite": "SPRITE_MN_CURLER",
+      "tile": [
+        16,
+        14
+      ],
+      "facing": "south",
+      "sight_range": 1,
+      "defeated_flag": "EVENT_MN_EXTRA_CURLER",
+      "party": [
+        {
+          "species": "PUCKLET",
+          "level": 38
+        },
+        {
+          "species": "LUTEBRISK",
+          "level": 40
+        }
+      ],
+      "before_lines": [
+        "Sweep! A clear",
+        "line makes it!"
+      ],
+      "after_lines": [
+        "Right on the mark.",
+        "Good curling!"
+      ],
+      "loss_lines": [
+        "Try a little less",
+        "weight next time."
+      ]
+    }
+  ]
+}

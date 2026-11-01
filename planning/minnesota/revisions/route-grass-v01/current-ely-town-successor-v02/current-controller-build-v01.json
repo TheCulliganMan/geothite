@@ -1,0 +1,21 @@
+{
+  "status": "PASS",
+  "command": [
+    "cargo",
+    "test",
+    "--locked",
+    "--profile",
+    "wasm-dev",
+    "--config",
+    "profile.wasm-dev.package.crystal-bevy.opt-level=0",
+    "-p",
+    "crystal-bevy",
+    "--lib",
+    "--no-run",
+    "--message-format=json"
+  ],
+  "source": "crates/crystal-bevy/src/bevy_shell/tests/ely_shore_pass.rs",
+  "source_sha256": "e03ff1cb3bb5a75f4bca56ec817c69d0a9d636cd143cba508bcb3b92b5a4824a",
+  "binary": ".local/route-grass-review/ely-town-current-controller-v01",
+  "binary_sha256": "7967c361a1b0ef9f98bf93eb2b0487560aa17e6d6cb87d24c5ce0aded775f88d"
+}

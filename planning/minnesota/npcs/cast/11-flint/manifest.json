@@ -1,0 +1,41 @@
+{
+  "name": "FLINT",
+  "role": "Elite Four 2",
+  "status": "accepted-native-playable",
+  "source": "native-pixels-v3.json",
+  "integration": "binding-v1.json",
+  "controller": "controller-v1.json",
+  "native": "target/trainer-cast/flint/native-v3",
+  "pack": "content-packs/minnesota-trainer-cast-11-v02.crystalpack",
+  "gameplay": "target/trainer-cast/flint/gameplay-v1",
+  "log": "target/trainer-cast/flint/controller-v1.log",
+  "reference_review": "actual-crystal-sprites-common-palette-and-scale",
+  "review_notes": "Stocky warm-brown Rock specialist with short central mohawk, shaved sides, stubble and broad slate quarry vest. Field hair ridge shortened above the eyes after reference review; native battle frown, stubble and fist/palm crease refined. Real Crystal broad-build/Bruno comparisons and actual game captures reviewed. League counter 1-to-2, PP, save/load, victory and repeat guard pass from explicit prior-room setup.",
+  "fixture": "Three legal level-60 Minnesota starters; adjacent position and explicit prior-access setup. Local encounter/rewards proof, not earned traversal or intended-level balance.",
+  "evidence_sha256": {
+    "planning/minnesota/npcs/cast/11-flint/native-pixels-v3.json": "8611def61d9feaa8a159467d9ba6b2b2e1b4ffacc0c416444d793a2f3d3236a4",
+    "planning/minnesota/npcs/cast/11-flint/binding-v1.json": "16b69db3a1fac3176fb6c1c1b73880f8a97e610cd28427dcd4d51ffde5aaf555",
+    "planning/minnesota/npcs/cast/11-flint/controller-v1.json": "0615ec01427436b6eec0506f8e6b995f1e51d8488820a5d0296b05e2ce3896dd",
+    "target/trainer-cast/flint/native-v3/verification.json": "d9c12264664cad9780ea8a66ca33253cd8d5fcb4ace2aa8fc0901f0cafc54f0c",
+    "content-packs/minnesota-trainer-cast-11-v02.crystalpack": "6aa46ac21eaccc58469b63f68f46b85ebd790f7adfb78b3ce85273a3533857e3",
+    "target/trainer-cast/flint/controller-v1.log": "e04c2a92b02523842fb433e136f4c28e612338c32d9216ae00f13ea60cd82d1a",
+    "target/trainer-cast/flint/gameplay-v1/original-npc-trainer-intro.png": "67352f02f967b639fbd90aea9a80e19a57c42036644d6e5b6021368a665d4e08",
+    "target/trainer-cast/flint/gameplay-v1/original-npc-overworld-state.png": "05014249828def41dbfec05e22e5be13126f67b70094a31ae64a0959c76b14da",
+    "target/trainer-cast/flint/gameplay-v1/original-npc-first-turn.png": "8bfe6a44e795314a5a938ad4a40a2b448c80ae04e5b225c57d0c2262cf1d168c",
+    "planning/minnesota/npcs/cast/11-flint/battle-reference-prompt.txt": "a2dcc57d21d18fc5d00cb63adf317e1e323f3a50894a5bfd3bd52e060aaee159",
+    "planning/minnesota/npcs/cast/11-flint/battle-reference-v1.png": "6d8b5fff9fb1cc0adbcb01e10a18c192fe721d511d2ea8a8a46e33e181627a31",
+    "target/trainer-cast/flint/real-comparison.png": "d041784996f10d128a62ff8008e613b1ed92cadc7fc9af2b83a20e08b5c7506a",
+    "target/trainer-cast/flint/battle-real-comparison.png": "53190109b82dae711cfb860413b66aa8d3daa0708aa0e1b21ec925dc680ebff5"
+  },
+  "final_pack": "content-packs/minnesota-trainer-cast-36-v01.crystalpack",
+  "final_gameplay": "target/trainer-cast/final-audit/gameplay/11-flint",
+  "final_log": "target/trainer-cast/final-audit/gameplay/11-flint/controller.log",
+  "final_status": "accepted-native-playable-final-pack",
+  "final_review": "Actual battle intro and field captures inspected on exact final pack; art retains accepted native sources and palette.",
+  "final_evidence_sha256": {
+    "target/trainer-cast/final-audit/gameplay/11-flint/controller.log": "ce3a95e74732d400c8045f808052906e50f699329553870dd031691f474edeb2",
+    "target/trainer-cast/final-audit/gameplay/11-flint/original-npc-trainer-intro.png": "67352f02f967b639fbd90aea9a80e19a57c42036644d6e5b6021368a665d4e08",
+    "target/trainer-cast/final-audit/gameplay/11-flint/original-npc-overworld-state.png": "05014249828def41dbfec05e22e5be13126f67b70094a31ae64a0959c76b14da",
+    "target/trainer-cast/final-audit/gameplay/11-flint/original-npc-first-turn.png": "8bfe6a44e795314a5a938ad4a40a2b448c80ae04e5b225c57d0c2262cf1d168c"
+  }
+}

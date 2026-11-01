@@ -1,0 +1,7 @@
+{
+  "status": "PASS",
+  "selected_revision": "route_grass_r10_current_contract_revision",
+  "gameplay_pack_unchanged": true,
+  "both_route_maps_and_used_tilesets_exact_to_tested_child": true,
+  "goal_complete": false
+}

@@ -1,0 +1,284 @@
+{
+  "species_id": "MN_016",
+  "family_id": "MN_F006",
+  "status": "native-review-recommended; independentrootreviewpending",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f006/agatot.manifest-native-v2.json",
+  "runtime_output": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-agatot-v2/MN_F006",
+  "tool": "built-in image_gen",
+  "normal_and_shiny_boards_actually_viewed": true,
+  "proof": {
+    "six_literal_frames": [
+      16,
+      16
+    ],
+    "runtime_index_stack": [
+      16,
+      96
+    ],
+    "normal_shiny_and_runtime_indices": "exact1536pixels each",
+    "canonical_normal_shiny_palettes_and_bytes": "exact",
+    "transparent_borders": "allposesindex0",
+    "walk_pairs": "allthreedistinct"
+  },
+  "frames": [
+    {
+      "crop": [
+        43,
+        249,
+        357,
+        335
+      ],
+      "native_bounds": [
+        1,
+        2,
+        14,
+        13
+      ],
+      "pixel_sha256": "4280ff00dddae0083088f4d5778d090f3f456a4d613278250676fa78bbb207e0",
+      "pose": "down_idle",
+      "rows": [
+        "0000000000000000",
+        "0000000000000000",
+        "0000000330000000",
+        "0000032222300000",
+        "0000322222230000",
+        "0000222222220000",
+        "0003111111111000",
+        "0031113113111300",
+        "0033111111111300",
+        "0311211111123130",
+        "0311221111223130",
+        "0013222222223100",
+        "0003112222113000",
+        "0000032111300000",
+        "0000333003330000",
+        "0000000000000000"
+      ],
+      "source": "agatot.overworld.imagegen-v2.png",
+      "source_alpha_bounds": [
+        12,
+        12,
+        333,
+        311
+      ],
+      "source_sha256": "97e4f960a06651056e1f5de9a343bf74430ea89659c2ff8c03cdd63874c084f8"
+    },
+    {
+      "crop": [
+        449,
+        249,
+        357,
+        335
+      ],
+      "native_bounds": [
+        1,
+        2,
+        14,
+        13
+      ],
+      "pixel_sha256": "15f011dac0e7c1c63148ffedcdd0c367ecb32e5b985f8df6a72d22d0d5844b88",
+      "pose": "up_idle",
+      "rows": [
+        "0000000000000000",
+        "0000000000000000",
+        "0000000330000000",
+        "0000032222300000",
+        "0000322222230000",
+        "0000322222220000",
+        "0003111111113000",
+        "0001111111111000",
+        "0031111111111300",
+        "0313211111123130",
+        "0313222222223130",
+        "0033222222223300",
+        "0000112222110000",
+        "0000033333300000",
+        "0000033003300000",
+        "0000000000000000"
+      ],
+      "source": "agatot.overworld.imagegen-v2.png",
+      "source_alpha_bounds": [
+        16,
+        12,
+        324,
+        311
+      ],
+      "source_sha256": "97e4f960a06651056e1f5de9a343bf74430ea89659c2ff8c03cdd63874c084f8"
+    },
+    {
+      "crop": [
+        860,
+        249,
+        357,
+        335
+      ],
+      "native_bounds": [
+        1,
+        2,
+        14,
+        13
+      ],
+      "pixel_sha256": "c58e194b0cf3ee8053b6f858ef6f8f30c4af4bfb619d9913a47b6700fc54aa8d",
+      "pose": "left_idle",
+      "rows": [
+        "0000000000000000",
+        "0000000000000000",
+        "0000000330000000",
+        "0000032222000000",
+        "0000033222230000",
+        "0000311222230000",
+        "0003111113310000",
+        "0001131111113000",
+        "0313111111122300",
+        "0313111122231130",
+        "0002222222231130",
+        "0002222221113100",
+        "0000312211110000",
+        "0000033333300000",
+        "0000033003300000",
+        "0000000000000000"
+      ],
+      "source": "agatot.overworld.imagegen-v2.png",
+      "source_alpha_bounds": [
+        18,
+        12,
+        321,
+        311
+      ],
+      "source_sha256": "97e4f960a06651056e1f5de9a343bf74430ea89659c2ff8c03cdd63874c084f8"
+    },
+    {
+      "crop": [
+        43,
+        674,
+        357,
+        335
+      ],
+      "native_bounds": [
+        1,
+        2,
+        14,
+        13
+      ],
+      "pixel_sha256": "98274edf46f83ee6861f30329b07bd4fc8e2315228812326071f84c43e71d9bb",
+      "pose": "down_step",
+      "rows": [
+        "0000000000000000",
+        "0000000000000000",
+        "0000000330000000",
+        "0000032222300000",
+        "0000322222230000",
+        "0000332222330000",
+        "0003111111111000",
+        "0031113113111300",
+        "0033113113111300",
+        "0313211111122130",
+        "0311221111223130",
+        "0033122222211300",
+        "0000311113330000",
+        "0000033332200000",
+        "0000323000000000",
+        "0000000000000000"
+      ],
+      "source": "agatot.overworld.imagegen-v2.png",
+      "source_alpha_bounds": [
+        12,
+        15,
+        332,
+        308
+      ],
+      "source_sha256": "97e4f960a06651056e1f5de9a343bf74430ea89659c2ff8c03cdd63874c084f8"
+    },
+    {
+      "crop": [
+        449,
+        674,
+        357,
+        335
+      ],
+      "native_bounds": [
+        1,
+        2,
+        14,
+        13
+      ],
+      "pixel_sha256": "5909760b6e57f1844a2bb5436012d6ba913ea8252ce89dc8e0f37310f69df200",
+      "pose": "up_step",
+      "rows": [
+        "0000000000000000",
+        "0000000000000000",
+        "0000000330000000",
+        "0000032222300000",
+        "0000322222230000",
+        "0000332222330000",
+        "0003111111113000",
+        "0001111111111000",
+        "0031111111111300",
+        "0312211111122130",
+        "0313222222223130",
+        "0033222222223300",
+        "0000311111130000",
+        "0000033333300000",
+        "0000003003230000",
+        "0000000000000000"
+      ],
+      "source": "agatot.overworld.imagegen-v2.png",
+      "source_alpha_bounds": [
+        16,
+        15,
+        324,
+        308
+      ],
+      "source_sha256": "97e4f960a06651056e1f5de9a343bf74430ea89659c2ff8c03cdd63874c084f8"
+    },
+    {
+      "crop": [
+        860,
+        674,
+        357,
+        335
+      ],
+      "native_bounds": [
+        1,
+        2,
+        14,
+        13
+      ],
+      "pixel_sha256": "1b5242e71320e3150e5152606fb9be134236b16a49bf0e6b9b646b2fa7cec2e6",
+      "pose": "left_step",
+      "rows": [
+        "0000000000000000",
+        "0000000000000000",
+        "0000000330000000",
+        "0000032222000000",
+        "0000033222330000",
+        "0000311222230000",
+        "0003111113310000",
+        "0001131111113000",
+        "0313111111123300",
+        "0313111122232100",
+        "0002222222231130",
+        "0003122221113100",
+        "0000033111230000",
+        "0000322333300000",
+        "0000033002220000",
+        "0000000000000000"
+      ],
+      "source": "agatot.overworld.imagegen-v2.png",
+      "source_alpha_bounds": [
+        18,
+        15,
+        321,
+        308
+      ],
+      "source_sha256": "97e4f960a06651056e1f5de9a343bf74430ea89659c2ff8c03cdd63874c084f8"
+    }
+  ],
+  "sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f006/agatot.overworld.imagegen-v2.png": "97e4f960a06651056e1f5de9a343bf74430ea89659c2ff8c03cdd63874c084f8",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f006/agatot.manifest-native-v2.json": "3f33a3c3b121d90df98ff04485620c9c75703bd7c3b28c7c6a2bb4f1e1afc9a3",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-agatot-v2/MN_F006/compiled-index.json": "be3de577f67058d31226ee7ff5a82652cc97c7b9ef979ae4ba4cc345b2c0e04a",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-agatot-v2/MN_F006/review/line.normal-8x.png": "1d17adae2ba5c4ef2716f823d23690088dd48ed614bb3bb694e603460066afb4",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/true16-agatot-v2/MN_F006/review/line.shiny-8x.png": "4ffc8963b811c1ba7ce8f3f522f1a3b12be158cb2712e7cfcbce407c55cbeba3"
+  }
+}

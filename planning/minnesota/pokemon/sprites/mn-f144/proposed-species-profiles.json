@@ -1,0 +1,124 @@
+{
+  "schema_version": 1,
+  "species": [
+    {
+      "id": "MN_317",
+      "classification": "Puzzle Mat",
+      "height_inches": 24,
+      "weight_tenths_lb": 110,
+      "dex_pages": [
+        "Eight leaves slide @ around its eye. @ It never follows",
+        "the same route @ twice, even across @ a familiar pond."
+      ],
+      "base_stats": {
+        "hp": 65,
+        "attack": 45,
+        "defense": 85,
+        "speed": 55,
+        "special_attack": 100,
+        "special_defense": 100
+      },
+      "catch_rate": 60,
+      "base_exp": 165,
+      "held_items": [
+        null,
+        null
+      ],
+      "gender_ratio": 255,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_PLANT",
+        "EGG_PLANT"
+      ],
+      "level_moves": [
+        [
+          1,
+          "ABSORB"
+        ],
+        [
+          1,
+          "CONFUSION"
+        ],
+        [
+          1,
+          "HARDEN"
+        ],
+        [
+          7,
+          "GROWTH"
+        ],
+        [
+          13,
+          "REFLECT"
+        ],
+        [
+          19,
+          "MEGA_DRAIN"
+        ],
+        [
+          25,
+          "TELEPORT"
+        ],
+        [
+          31,
+          "LIGHT_SCREEN"
+        ],
+        [
+          37,
+          "PSYCHIC_M"
+        ],
+        [
+          43,
+          "GIGA_DRAIN"
+        ],
+        [
+          49,
+          "RECOVER"
+        ],
+        [
+          55,
+          "FUTURE_SIGHT"
+        ]
+      ],
+      "evolution": null,
+      "egg_moves": [],
+      "tmhm_moves": [
+        "TOXIC",
+        "PROTECT",
+        "REST",
+        "SLEEP_TALK",
+        "SNORE",
+        "RETURN",
+        "FRUSTRATION",
+        "DOUBLE_TEAM",
+        "ENDURE",
+        "HIDDEN_POWER",
+        "GIGA_DRAIN",
+        "PSYCHIC_M",
+        "SOLARBEAM",
+        "SUNNY_DAY",
+        "FLASH"
+      ],
+      "menu_icon": "ICON_ODDISH",
+      "cry": {
+        "cry": "CRY_NATU",
+        "pitch": -10,
+        "length": 144
+      },
+      "footprint_species": "EXEGGCUTE",
+      "shiny_rgb5": [
+        [
+          25,
+          18,
+          26
+        ],
+        [
+          8,
+          10,
+          14
+        ]
+      ]
+    }
+  ]
+}

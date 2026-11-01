@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "previous_parent": {
+    "revision": "outdoor_terrain_integrated_revision",
+    "pack": "content-packs/minnesota-current-outdoor-composed-towns-v01.crystalpack",
+    "sha256": "fcac136e08876c25d5c8b6250fc7c0fa1aedbfc6977e165504505b2b4d02016f"
+  },
+  "current_parent": {
+    "revision": "duluth_harbor_platforms_revision",
+    "pack": "content-packs/minnesota-current-duluth-harbor-v02.crystalpack",
+    "sha256": "2450f44c16fd9f783b8b1dae8e6fa292fbf6a1444a730527c7ebfc63af09b721"
+  },
+  "mankato_complete_module_exact": true,
+  "johto_complete_tileset_exact": true,
+  "canonical_layout_preimage_exact": true,
+  "maps": 732,
+  "active_selector_unchanged_during_preflight": true
+}

@@ -1,0 +1,210 @@
+{
+  "status": "SOURCE_COLLISION_POINTS_READY_NATIVE_EXECUTION_PENDING",
+  "art_parent_sha256": "87660aad1dea2a811dbb070c1a592e3ab46246edd05852aa4033d4ec44c6c536",
+  "source_hashes": {
+    "MnRainyRiverIcefields.json": "9f795c5da670c0db655906d7d046fd4c6862805b790209a40f3731e7d4f42019",
+    "MnRainyRiverIcefields.layout.json": "0e474ee47f0f3fdea0fcd3c32f0f5683d1f206222ce74457214f29f7017b1c78"
+  },
+  "views": [
+    {
+      "id": "r20_entry",
+      "map": "MnRainyRiverIcefields",
+      "core": [
+        60,
+        44
+      ],
+      "collision": "FLOOR",
+      "unoccupied": true
+    },
+    {
+      "id": "lower_ice_start",
+      "map": "MnRainyRiverIcefields",
+      "core": [
+        54,
+        36
+      ],
+      "collision": "FLOOR",
+      "unoccupied": true
+    },
+    {
+      "id": "lower_ice_stop",
+      "map": "MnRainyRiverIcefields",
+      "core": [
+        37,
+        36
+      ],
+      "collision": "FLOOR",
+      "unoccupied": true
+    },
+    {
+      "id": "grass_choice",
+      "map": "MnRainyRiverIcefields",
+      "core": [
+        23,
+        33
+      ],
+      "collision": "FLOOR",
+      "unoccupied": true
+    },
+    {
+      "id": "hut_mouth",
+      "map": "MnRainyRiverIcefields",
+      "core": [
+        9,
+        28
+      ],
+      "collision": "FLOOR",
+      "unoccupied": true
+    },
+    {
+      "id": "west_return",
+      "map": "MnRainyRiverIcefields",
+      "core": [
+        8,
+        21
+      ],
+      "collision": "FLOOR",
+      "unoccupied": true
+    },
+    {
+      "id": "upper_bend",
+      "map": "MnRainyRiverIcefields",
+      "core": [
+        16,
+        5
+      ],
+      "collision": "FLOOR",
+      "unoccupied": true
+    },
+    {
+      "id": "cache_tongue",
+      "map": "MnRainyRiverIcefields",
+      "core": [
+        20,
+        11
+      ],
+      "collision": "FLOOR",
+      "unoccupied": true
+    },
+    {
+      "id": "mid_channel",
+      "map": "MnRainyRiverIcefields",
+      "core": [
+        43,
+        20
+      ],
+      "collision": "FLOOR",
+      "unoccupied": true
+    },
+    {
+      "id": "east_snow_return",
+      "map": "MnRainyRiverIcefields",
+      "core": [
+        48,
+        26
+      ],
+      "collision": "FLOOR",
+      "unoccupied": true
+    },
+    {
+      "id": "weakest_south_bank",
+      "map": "MnRainyRiverIcefields",
+      "core": [
+        29,
+        36
+      ],
+      "collision": "FLOOR",
+      "unoccupied": true
+    },
+    {
+      "id": "northern_stopping_bank",
+      "map": "MnRainyRiverIcefields",
+      "core": [
+        27,
+        7
+      ],
+      "collision": "FLOOR",
+      "unoccupied": true
+    },
+    {
+      "id": "stationary-ice-wall-stop",
+      "map": "MnRainyRiverIcefields",
+      "core": [
+        12,
+        10
+      ],
+      "collision": "ICE",
+      "unoccupied": true
+    },
+    {
+      "id": "icy-grass-priority",
+      "map": "MnRainyRiverIcefields",
+      "core": [
+        19,
+        31
+      ],
+      "collision": "TALL_GRASS",
+      "unoccupied": true
+    },
+    {
+      "id": "upper-cache-launch",
+      "map": "MnRainyRiverIcefields",
+      "core": [
+        19,
+        7
+      ],
+      "collision": "FLOOR",
+      "unoccupied": true
+    },
+    {
+      "id": "region-seam-lane44",
+      "map": "MnRainyRiverIcefields",
+      "core": [
+        63,
+        44
+      ],
+      "collision": "FLOOR",
+      "unoccupied": true
+    },
+    {
+      "id": "region-seam-lane45",
+      "map": "MnRainyRiverIcefields",
+      "core": [
+        63,
+        45
+      ],
+      "collision": "FLOOR",
+      "unoccupied": true
+    },
+    {
+      "id": "r20-seam-lane44",
+      "map": "MnR20C00R00",
+      "core": [
+        0,
+        44
+      ],
+      "collision": "FLOOR",
+      "unoccupied": true
+    },
+    {
+      "id": "r20-seam-lane45",
+      "map": "MnR20C00R00",
+      "core": [
+        0,
+        45
+      ],
+      "collision": "FLOOR",
+      "unoccupied": true
+    },
+    {
+      "id": "warming-hut-service-and-passive-floor",
+      "map": "MnRainyRiverWarmingHut",
+      "core": [
+        5,
+        6
+      ],
+      "collision": "FLOOR",
+      "unoccupied": true
+    }
+  ]
+}

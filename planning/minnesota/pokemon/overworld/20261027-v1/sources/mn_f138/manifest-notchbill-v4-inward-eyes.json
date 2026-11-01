@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F138",
+  "species": [
+    {
+      "species_id": "MN_306",
+      "runtime_token": "NOTCHBILL",
+      "palette_rgb555": [
+        32767,
+        7481,
+        12616,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        8924,
+        9638,
+        0
+      ],
+      "fit": [
+        13,
+        13
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 64,
+      "interior_black_samples": 64,
+      "opaque_interior_minimum_samples": 64,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "notchbill.overworld.imagegen-v4-inward-eyes.png",
+          "crop": [
+            3,
+            147,
+            411,
+            470
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "notchbill.overworld.imagegen-v1.png",
+          "crop": [
+            414,
+            147,
+            411,
+            470
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "notchbill.overworld.imagegen-v1.png",
+          "crop": [
+            832,
+            147,
+            411,
+            470
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "notchbill.overworld.imagegen-v4-inward-eyes.png",
+          "crop": [
+            3,
+            663,
+            411,
+            470
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "notchbill.overworld.imagegen-v1.png",
+          "crop": [
+            414,
+            664,
+            411,
+            470
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "notchbill.overworld.imagegen-v1.png",
+          "crop": [
+            832,
+            664,
+            411,
+            470
+          ]
+        }
+      ]
+    }
+  ]
+}

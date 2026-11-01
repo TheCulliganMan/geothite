@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "binary": ".local/route-grass-review/r19-gate-controller-shared-v04",
+  "binary_sha256": "f4baab5a88f58793192ee1c6dc274c8283d31e7dd020681984afe30cdaa062fa",
+  "source": "crates/crystal-bevy/src/bevy_shell/tests/r19_detroit_gate.rs",
+  "source_sha256": "787cc1395e75a7922929aa77bcb3bd5aa2171e9031f6d4556a135ef701443572",
+  "shared_build_receipt": "planning/minnesota/renders/grand-rapids-riverfront-v659/controller-binary-v665.json",
+  "shared_build_receipt_sha256": "754f22c1340c3f58b4b79922ab754cabe9966845b6fd03c981fe97e3244ac0ec",
+  "shared_build_log": "planning/minnesota/renders/grand-rapids-riverfront-v659/controller-build-v665.log",
+  "shared_build_log_sha256": "04df09393d4d25b0204a6790907f075e8e9594ecf9b15ba737a90311f6fb34c2",
+  "dependency_file": "/Users/ryanculligan/GitHub/geothite/target/verdigrim-scene/debug/deps/crystal_bevy-87227860eb49cc28.d",
+  "source_predates_shared_build_start": true,
+  "registered_gate_cases": 3,
+  "reused_completed_shared_build": true
+}

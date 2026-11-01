@@ -1,0 +1,97 @@
+{
+  "status": "LEGACY_SIDE_APPROACH_REQUIRES_CURRENT_PRODUCTION_REPLACEMENT",
+  "checks": [
+    {
+      "at": [
+        35,
+        32
+      ],
+      "kind": "HOP_DOWN",
+      "moves": {
+        "right": null,
+        "down": [
+          35,
+          34
+        ],
+        "left": [
+          34,
+          32
+        ],
+        "up": [
+          35,
+          31
+        ]
+      }
+    },
+    {
+      "at": [
+        36,
+        32
+      ],
+      "kind": "HEADBUTT_TREE",
+      "moves": {
+        "right": null,
+        "down": null,
+        "left": [
+          35,
+          32
+        ],
+        "up": null
+      }
+    },
+    {
+      "at": [
+        36,
+        33
+      ],
+      "kind": "HEADBUTT_TREE",
+      "moves": {
+        "right": null,
+        "down": null,
+        "left": null,
+        "up": null
+      }
+    },
+    {
+      "at": [
+        33,
+        34
+      ],
+      "kind": "FLOOR",
+      "moves": {
+        "right": [
+          34,
+          34
+        ],
+        "down": [
+          33,
+          35
+        ],
+        "left": [
+          32,
+          34
+        ],
+        "up": null
+      }
+    },
+    {
+      "at": [
+        33,
+        33
+      ],
+      "kind": "WALL",
+      "moves": {
+        "right": null,
+        "down": [
+          33,
+          34
+        ],
+        "left": null,
+        "up": [
+          33,
+          32
+        ]
+      }
+    }
+  ]
+}

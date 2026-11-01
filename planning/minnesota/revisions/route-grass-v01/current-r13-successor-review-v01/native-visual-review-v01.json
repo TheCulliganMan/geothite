@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "views_inspected": [
+    "pine-bend",
+    "pine-narrow-crossing"
+  ],
+  "pixel_mismatches": 0,
+  "native_winter_grass_foreground_preserved": true
+}

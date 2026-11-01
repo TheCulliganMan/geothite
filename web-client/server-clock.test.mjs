@@ -2,6 +2,28 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { startServerClock } from './server-clock.js';
 
+test('transient connection and gateway failures recover before startup', async () => {
+  let attempts = 0;
+  const clock = await startServerClock({ monotonicNow: () => 0, schedule: () => {}, retryDelay: async () => {},
+    fetch: async () => {
+      attempts++;
+      if (attempts === 1) throw new DOMException('signal timed out', 'TimeoutError');
+      if (attempts === 2) return { ok: false, status: 503 };
+      return { ok: true, json: async () => ({ unixMillis: 1000, timeZone: 'UTC' }) };
+    },
+  });
+  assert.equal(attempts, 3);
+  assert.equal(clock.sample(), 1000);
+});
+
+test('persistent network failure is bounded and explains the failed dependency', async () => {
+  let attempts = 0;
+  await assert.rejects(startServerClock({ schedule: () => {}, retryDelay: async () => {},
+    fetch: async () => { attempts++; throw new TypeError('Failed to fetch'); },
+  }), /Unable to synchronize game time/);
+  assert.equal(attempts, 3);
+});
+
 test('server time advances independently of device wall time and resynchronizes', async () => {
   let now = 100;
   let server = Date.UTC(2026, 8, 6, 23, 59, 59);

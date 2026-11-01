@@ -1,0 +1,13 @@
+{
+  "tool": "built-in image_gen",
+  "original_tool_path": "/Users/ryanculligan/.codex/generated_images/01a17dcc-4f1a-77a2-9d21-0df036061346/exec-94e8cd5b-636d-4f2d-9833-a65ccf69bdbf.png",
+  "source_size": [
+    1536,
+    1024
+  ],
+  "sha256": "0ce7342d662b7c45e1420007ef52a0915346335e6ff0276b3f424380c2572a72",
+  "reference_paths": [
+    "planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png"
+  ],
+  "prompt": "fortigard.prompt-v2.txt"
+}

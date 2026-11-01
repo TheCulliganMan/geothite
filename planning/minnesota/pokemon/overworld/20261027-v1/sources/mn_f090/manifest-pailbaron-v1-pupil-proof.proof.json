@@ -1,0 +1,351 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_197",
+  "status": "source-proof-pass; root visual/context acceptance required",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f090/manifest-pailbaron-v1-pupil-proof.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f090/pailbaron-v1-pupil-proof",
+  "shared_transform": {
+    "source_bounds": [
+      7,
+      7,
+      481,
+      404
+    ],
+    "native_size": [
+      14,
+      11
+    ],
+    "native_origin": [
+      1,
+      4
+    ]
+  },
+  "all_four_nonrear_poses_have_actual_source_pupils": true,
+  "every_native_eye_cluster_maps_to_same_small_anatomical_source_pupil_component": true,
+  "actual_source_pupil_proofs": [
+    {
+      "pose": "down_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f090/pailbaron.overworld.imagegen-v1.png",
+      "crop": [
+        14,
+        82,
+        500,
+        440
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          229,
+          356,
+          23,
+          27
+        ],
+        [
+          300,
+          356,
+          23,
+          26
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              7,
+              11
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                229,
+                356,
+                23,
+                27
+              ],
+              "pixels": 600,
+              "truncated_contour": false,
+              "native_pixel": [
+                7,
+                11
+              ],
+              "source_sample_pixel": [
+                244,
+                364
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              9,
+              11
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                300,
+                356,
+                23,
+                26
+              ],
+              "pixels": 580,
+              "truncated_contour": false,
+              "native_pixel": [
+                9,
+                11
+              ],
+              "source_sample_pixel": [
+                313,
+                364
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f090/pailbaron.overworld.imagegen-v1.png",
+      "crop": [
+        1004,
+        100,
+        500,
+        440
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          1190,
+          345,
+          23,
+          27
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              10
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                1190,
+                345,
+                23,
+                27
+              ],
+              "pixels": 614,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                10
+              ],
+              "source_sample_pixel": [
+                1199,
+                345
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f090/pailbaron.overworld.imagegen-v1.png",
+      "crop": [
+        14,
+        542,
+        500,
+        440
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          229,
+          816,
+          23,
+          28
+        ],
+        [
+          300,
+          816,
+          23,
+          28
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              7,
+              11
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                7,
+                3,
+                0,
+                253
+              ],
+              "bounds": [
+                229,
+                816,
+                23,
+                28
+              ],
+              "pixels": 643,
+              "truncated_contour": false,
+              "native_pixel": [
+                7,
+                11
+              ],
+              "source_sample_pixel": [
+                244,
+                824
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              9,
+              11
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                254
+              ],
+              "bounds": [
+                300,
+                816,
+                23,
+                28
+              ],
+              "pixels": 642,
+              "truncated_contour": false,
+              "native_pixel": [
+                9,
+                11
+              ],
+              "source_sample_pixel": [
+                313,
+                824
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f090/pailbaron.overworld.imagegen-v1.png",
+      "crop": [
+        1004,
+        565,
+        500,
+        440
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          1190,
+          810,
+          23,
+          26
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              6,
+              10
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                3,
+                3,
+                1,
+                253
+              ],
+              "bounds": [
+                1190,
+                810,
+                23,
+                26
+              ],
+              "pixels": 595,
+              "truncated_contour": false,
+              "native_pixel": [
+                6,
+                10
+              ],
+              "source_sample_pixel": [
+                1199,
+                810
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "native_head_anchors_idle_walk_equal": true,
+  "validation": {
+    "runtime_2bpp_384_bytes_exact_allpixels": true,
+    "runtime_png16x96_index_parity": true,
+    "normal_shiny_palettebanks_exact": true,
+    "normal_shiny_all1536pixels_exact": true,
+    "transparent_border": true,
+    "idle_walk_pairs_distinct": true
+  },
+  "sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f090/pailbaron-v1-pupil-proof/review/line.shiny-8x.png": "a6247d1d6ca700d7266fd7c855eafdeef1722d96e38a1b885a6d3b154cbe0838",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f090/pailbaron-v1-pupil-proof/gfx/pokemon/pailbaron/overworld.png": "7e3ca736fd57cebb2171e0ec79f186a6409db9a6f7c1c5ef2d327739438e021f",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f090/pailbaron.overworld.imagegen-v1.png": "ad9c415f17a6d31c2c15bfa681c81a3c3ac43fb912412bcb39535dbef31824bf",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f090/pailbaron-v1-pupil-proof/review/line.normal-8x.png": "966cb3ea8df95d4d30975a198c08c0f64531d8709cd860e407596a06dc9df173",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f090/pailbaron-v1-pupil-proof/gfx/pokemon/pailbaron/overworld-shiny.gbcpal": "f8565658a5ebd7acce000788cc5672094725a42d1eaa509931449cab50cba01a",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f090/pailbaron-v1-pupil-proof/gfx/pokemon/pailbaron/overworld.gbcpal": "bbc6c7cc1003e1c008084197f5b663c45adba603ece8d728656469d6818e09a8",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f090/pailbaron-v1-pupil-proof/gfx/pokemon/pailbaron/overworld.2bpp": "58a905ab686203bdd443fb28b0220dccb6f352d2b0e6acf70df314446e88d072",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f090/pailbaron-v1-pupil-proof/compiled-index.json": "6308def6839a685a2f5fa761d45cccd126b1c23fef3a4c15162c7ffcd1b26860",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f090/manifest-pailbaron-v1-pupil-proof.json": "1d43abdcbf8297eff47a31f557d3c5f8a44c846e6d26b30a086e4e84eec6d0ca"
+  },
+  "actual_native_boards_viewed": true,
+  "rear_review": "plain rear head, no copied face; actual normal/shiny viewed"
+}

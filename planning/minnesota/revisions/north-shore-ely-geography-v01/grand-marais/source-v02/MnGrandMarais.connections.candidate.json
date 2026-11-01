@@ -1,0 +1,162 @@
+{
+  "schema_version": 1,
+  "status": "DETACHED_WEST_ENTRY_NOT_NATIVE_PUBLICATION",
+  "map": "MnGrandMarais",
+  "world_origin_proposed": [
+    246,
+    -400
+  ],
+  "attributes_before": {
+    "tileset_name": "johto",
+    "border_block": 53,
+    "width": 20,
+    "height": 19,
+    "connections": [
+      {
+        "direction": "east",
+        "target_map": "MnMaraisCedarApproach",
+        "offset": 0
+      },
+      {
+        "direction": "west",
+        "target_map": "MnR12C01R01",
+        "offset": 0
+      }
+    ],
+    "time_of_day": null,
+    "phone_service": 0,
+    "phone_flag": false,
+    "environment": "TOWN",
+    "location": "LANDMARK_MN_GRAND_MARAIS",
+    "music": "MUSIC_CHERRYGROVE_CITY",
+    "palette": "PALETTE_AUTO",
+    "fishing_group": "FISHGROUP_SHORE",
+    "map_constant": "MN_GRAND_MARAIS",
+    "map_group_constant": "MAPGROUP_MINNESOTA",
+    "blocks_label": "MnGrandMarais_Blocks",
+    "map_scripts_label": "MnGrandMarais_MapScripts",
+    "map_events_label": "MnGrandMarais_MapEvents",
+    "connection_flags": "EAST | WEST"
+  },
+  "attributes_after": {
+    "tileset_name": "mn_marais_shore",
+    "border_block": 53,
+    "width": 20,
+    "height": 19,
+    "connections": [
+      {
+        "direction": "north",
+        "target_map": "MnMaraisCedarApproach",
+        "offset": -19
+      },
+      {
+        "direction": "west",
+        "target_map": "MnR11C01R00",
+        "offset": 0
+      }
+    ],
+    "time_of_day": null,
+    "phone_service": 0,
+    "phone_flag": false,
+    "environment": "TOWN",
+    "location": "LANDMARK_MN_GRAND_MARAIS",
+    "music": "MUSIC_CHERRYGROVE_CITY",
+    "palette": "PALETTE_AUTO",
+    "fishing_group": "FISHGROUP_SHORE",
+    "map_constant": "MN_GRAND_MARAIS",
+    "map_group_constant": "MAPGROUP_MINNESOTA",
+    "blocks_label": "MnGrandMarais_Blocks",
+    "map_scripts_label": "MnGrandMarais_MapScripts",
+    "map_events_label": "MnGrandMarais_MapEvents",
+    "connection_flags": "NORTH | WEST"
+  },
+  "foot_seams": [
+    {
+      "side": "west",
+      "town_core": [
+        [
+          0,
+          8
+        ],
+        [
+          0,
+          9
+        ]
+      ],
+      "target_map": "MnR11C01R00",
+      "target_core": [
+        [
+          47,
+          8
+        ],
+        [
+          47,
+          9
+        ]
+      ],
+      "offset": 0
+    },
+    {
+      "side": "north",
+      "town_core": [
+        [
+          18,
+          0
+        ],
+        [
+          19,
+          0
+        ]
+      ],
+      "target_map": "MnMaraisCedarApproach",
+      "target_core": [
+        [
+          56,
+          37
+        ],
+        [
+          57,
+          37
+        ]
+      ],
+      "offset": -19
+    }
+  ],
+  "surf_seam": {
+    "side": "west",
+    "town_core_x": 0,
+    "target_core_x": 47,
+    "core_y": [
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35
+    ]
+  },
+  "preserved_room_ids": [
+    "MnGrandMaraisArtistHouse",
+    "MnGrandMaraisFieldStation",
+    "MnGrandMaraisFisherHouse",
+    "MnGrandMaraisLighthouse",
+    "MnGrandMaraisMart",
+    "MnGrandMaraisPokecenter"
+  ],
+  "new_rooms": [],
+  "canonical_world_edited": false
+}

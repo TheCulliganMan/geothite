@@ -1,0 +1,352 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_097",
+  "status": "source-proof-pass; root visual/context acceptance required",
+  "selected_manifest": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f046/pepivern.manifest-native-v4-flex.json",
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f046/pepivern-rare-native-v4-flex",
+  "shared_transform": {
+    "source_bounds": [
+      10,
+      3,
+      489,
+      455
+    ],
+    "native_size": [
+      14,
+      13
+    ],
+    "native_origin": [
+      1,
+      2
+    ]
+  },
+  "all_four_nonrear_poses_have_actual_source_pupils": true,
+  "every_native_eye_cluster_maps_to_same_small_anatomical_source_pupil_component": true,
+  "actual_source_pupil_proofs": [
+    {
+      "pose": "down_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f046/pepivern.overworld.imagegen-v3-solid-outline.png",
+      "crop": [
+        41,
+        44,
+        500,
+        460
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          191,
+          196,
+          26,
+          33
+        ],
+        [
+          272,
+          196,
+          27,
+          33
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              5,
+              6
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                191,
+                196,
+                26,
+                33
+              ],
+              "pixels": 858,
+              "truncated_contour": false,
+              "native_pixel": [
+                5,
+                6
+              ],
+              "source_sample_pixel": [
+                208,
+                204
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              7,
+              6
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                1,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                272,
+                196,
+                27,
+                33
+              ],
+              "pixels": 890,
+              "truncated_contour": false,
+              "native_pixel": [
+                7,
+                6
+              ],
+              "source_sample_pixel": [
+                278,
+                204
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f046/pepivern.overworld.imagegen-v3-solid-outline.png",
+      "crop": [
+        1028,
+        66,
+        500,
+        460
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          1120,
+          184,
+          27,
+          35
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              3,
+              5
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                3,
+                4,
+                6,
+                253
+              ],
+              "bounds": [
+                1120,
+                184,
+                27,
+                35
+              ],
+              "pixels": 900,
+              "truncated_contour": false,
+              "native_pixel": [
+                3,
+                5
+              ],
+              "source_sample_pixel": [
+                1125,
+                191
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f046/pepivern.overworld.imagegen-v3-solid-outline.png",
+      "crop": [
+        41,
+        525,
+        500,
+        460
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          191,
+          676,
+          26,
+          33
+        ],
+        [
+          272,
+          676,
+          27,
+          33
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              5,
+              6
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                1,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                191,
+                676,
+                26,
+                33
+              ],
+              "pixels": 858,
+              "truncated_contour": false,
+              "native_pixel": [
+                5,
+                6
+              ],
+              "source_sample_pixel": [
+                208,
+                685
+              ]
+            }
+          ]
+        },
+        {
+          "native_cluster": [
+            [
+              7,
+              6
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                0,
+                0,
+                253
+              ],
+              "bounds": [
+                272,
+                676,
+                27,
+                33
+              ],
+              "pixels": 891,
+              "truncated_contour": false,
+              "native_pixel": [
+                7,
+                6
+              ],
+              "source_sample_pixel": [
+                278,
+                685
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f046/pepivern.overworld.imagegen-v3-solid-outline.png",
+      "crop": [
+        1028,
+        548,
+        500,
+        460
+      ],
+      "anatomically_identified_source_eye_boxes_xywh": [
+        [
+          1120,
+          665,
+          27,
+          34
+        ]
+      ],
+      "actual_eye_proofs": [
+        {
+          "native_cluster": [
+            [
+              3,
+              5
+            ]
+          ],
+          "samples": [
+            {
+              "black": true,
+              "rgba": [
+                0,
+                2,
+                3,
+                253
+              ],
+              "bounds": [
+                1120,
+                665,
+                27,
+                34
+              ],
+              "pixels": 867,
+              "truncated_contour": false,
+              "native_pixel": [
+                3,
+                5
+              ],
+              "source_sample_pixel": [
+                1125,
+                673
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "native_head_anchors_idle_walk_equal": true,
+  "validation": {
+    "runtime_2bpp_384_bytes_exact_allpixels": true,
+    "runtime_png16x96_index_parity": true,
+    "normal_shiny_palettebanks_exact": true,
+    "normal_shiny_all1536pixels_exact": true,
+    "transparent_border": true,
+    "idle_walk_pairs_distinct": true
+  },
+  "sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f046/pepivern-rare-native-v4-flex/gfx/pokemon/pepivern/overworld.gbcpal": "b4c5aa611b793c6eac4d78bd176c5068970c697c427876cebdfd318921046e63",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f046/pepivern-rare-native-v4-flex/gfx/pokemon/pepivern/overworld.2bpp": "94ccf76737c2d7ee3c42025b37a5d1bfc370cea71e840ca7c0cec752506c6d26",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f046/pepivern-rare-native-v4-flex/compiled-index.json": "09673d56ee27f4d6d8de8eab42e9be208aad904a0295144d0a48974ecf349944",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f046/pepivern-rare-native-v4-flex/gfx/pokemon/pepivern/overworld-shiny.gbcpal": "46c1402814cad9629617ea77074a384a514968c7433bec4591822cdc73f20209",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f046/pepivern-rare-native-v4-flex/gfx/pokemon/pepivern/overworld.png": "554fd9fed0cc0c36d5ef71d83c3de995ef5b9e77f4e81c7d68322c71d2724a26",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f046/pepivern.manifest-native-v4-flex.json": "7dbf89702ea8f0dd3c7c891361b5d28c7380c99e8dcf9edbd842f70156fc81ee",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f046/pepivern-rare-native-v4-flex/review/line.shiny-8x.png": "b13cb317e469a7c3493f5dcf713ab77003cc9e0a606119f34cc6a4ef1601c1d6",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f046/pepivern.overworld.imagegen-v3-solid-outline.png": "663713c8f3f440fc566498d8c81001f9ac36e6186bdee5df8dad3fee81b6bcea",
+    "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mn_f046/pepivern-rare-native-v4-flex/review/line.normal-8x.png": "0de975c63043f2bd53185af4b5c8239b672bd68e703703479419ccc0cc9f4188"
+  },
+  "actual_native_boards_viewed": true,
+  "rear_review": "Agent viewed all six actual normal/shiny poses. Both full rear poses have solid rear head with wake crests, dark neck stripe, complete coiled body, attached organic fins, three wake ridges and curled tail. No copied face, eyes or legs.",
+  "canonical_eye_form": "Two actual black source pupils on broad light dragon head in front; one actual near black pupil in west. Source eye positions were widened before conversion, no invented native pixels."
+}

@@ -1,0 +1,697 @@
+{
+  "schema_version": 1,
+  "status": "DETACHED_HAND_AUTHORED_SOURCE_NOT_NATIVE",
+  "parent_pack_sha256": "92bb645535db23c78491b6982ddf5fa17b72b1f0434dfb6456a395fbf8fdbd33",
+  "design": "One quiet wooded river itinerary with unequal reaches, close banks and retained original trainer landings. Fixed native rectangles/ports remain; old R05 is separated lookout/fishing coves rather than a visually continuous parallel river.",
+  "regions": {
+    "MnMississippiUpstreamWoods": {
+      "dimensions_metatiles": [
+        64,
+        68
+      ],
+      "purpose": "Long lower run, one east-bank quiet pool, a narrow south-facing pine tongue, and the final landing at the northern woods keeper. This is not a copy of the lower river silhouette.",
+      "layers": [
+        {
+          "name": "South landing reach",
+          "kind": "path",
+          "material": "water",
+          "points": [
+            [
+              0,
+              66
+            ],
+            [
+              12,
+              66
+            ],
+            [
+              12,
+              61
+            ],
+            [
+              30,
+              63
+            ],
+            [
+              40,
+              58
+            ],
+            [
+              49,
+              59
+            ],
+            [
+              52,
+              53
+            ]
+          ],
+          "width_metatiles": 3
+        },
+        {
+          "name": "East-bank quiet reach and unequal bend",
+          "kind": "path",
+          "material": "water",
+          "points": [
+            [
+              52,
+              53
+            ],
+            [
+              49,
+              47
+            ],
+            [
+              58,
+              42
+            ],
+            [
+              54,
+              35
+            ],
+            [
+              43,
+              33
+            ]
+          ],
+          "width_metatiles": 3
+        },
+        {
+          "name": "Pine tongue return upstream",
+          "kind": "path",
+          "material": "water",
+          "points": [
+            [
+              43,
+              33
+            ],
+            [
+              41,
+              27
+            ],
+            [
+              48,
+              25
+            ],
+            [
+              51,
+              18
+            ],
+            [
+              43,
+              14
+            ],
+            [
+              35,
+              14
+            ]
+          ],
+          "width_metatiles": 3
+        },
+        {
+          "name": "Keeper bank and northbound finishing reaches",
+          "kind": "path",
+          "material": "water",
+          "points": [
+            [
+              35,
+              14
+            ],
+            [
+              30,
+              16
+            ],
+            [
+              22,
+              18
+            ],
+            [
+              16,
+              23
+            ],
+            [
+              8,
+              23
+            ],
+            [
+              0,
+              20
+            ]
+          ],
+          "width_metatiles": 3
+        },
+        {
+          "name": "Quiet pool widens into the east bank",
+          "kind": "polygon",
+          "material": "water",
+          "points": [
+            [
+              55,
+              39
+            ],
+            [
+              58,
+              39
+            ],
+            [
+              59,
+              41
+            ],
+            [
+              59,
+              44
+            ],
+            [
+              57,
+              46
+            ],
+            [
+              54,
+              45
+            ],
+            [
+              54,
+              42
+            ]
+          ]
+        },
+        {
+          "name": "Attached north pool bank nose",
+          "kind": "block_rect",
+          "bounds": [
+            54,
+            38,
+            56,
+            40
+          ],
+          "block": "05"
+        }
+      ],
+      "landings": [
+        {
+          "name": "Existing southern angler bank, hand-fitted to preserve all actor approaches",
+          "old_bounds": [
+            14,
+            64,
+            18,
+            68
+          ],
+          "layers": [
+            {
+              "name": "Smaller fitted bank",
+              "kind": "rect",
+              "material": "lawn",
+              "bounds": [
+                15,
+                64,
+                18,
+                67
+              ]
+            },
+            {
+              "name": "Real two-core western landing",
+              "kind": "rect",
+              "material": "lawn",
+              "bounds": [
+                14,
+                65,
+                15,
+                66
+              ]
+            },
+            {
+              "name": "Optional bank grass",
+              "kind": "rect",
+              "material": "encounter",
+              "bounds": [
+                15,
+                66,
+                16,
+                67
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Existing keeper bank with nearby shore",
+          "old_bounds": [
+            32,
+            9,
+            36,
+            13
+          ],
+          "layers": [
+            {
+              "name": "Smaller fitted keeper bank",
+              "kind": "rect",
+              "material": "lawn",
+              "bounds": [
+                33,
+                10,
+                36,
+                13
+              ]
+            },
+            {
+              "name": "Optional bank grass",
+              "kind": "rect",
+              "material": "encounter",
+              "bounds": [
+                33,
+                10,
+                34,
+                11
+              ]
+            }
+          ]
+        }
+      ],
+      "interior_seam_tapers": [
+        {
+          "metatile": [
+            1,
+            19
+          ],
+          "before": "54",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            1,
+            20
+          ],
+          "before": "79",
+          "after": "76"
+        },
+        {
+          "metatile": [
+            1,
+            22
+          ],
+          "before": "58",
+          "after": "05"
+        }
+      ]
+    },
+    "MnMississippiLowerWoods": {
+      "dimensions_metatiles": [
+        64,
+        68
+      ],
+      "purpose": "St Paul leaves through a short angler approach, opens into a northern still reach, passes the existing southeast pine-bank trainer, then descends through a longer wooded southern course toward Winona.",
+      "layers": [
+        {
+          "name": "St Paul and the existing angler bank",
+          "kind": "path",
+          "material": "water",
+          "points": [
+            [
+              0,
+              36
+            ],
+            [
+              7,
+              36
+            ],
+            [
+              12,
+              32
+            ],
+            [
+              14,
+              27
+            ]
+          ],
+          "width_metatiles": 3
+        },
+        {
+          "name": "Angler's natural broad landing",
+          "kind": "path",
+          "material": "water",
+          "points": [
+            [
+              12,
+              32
+            ],
+            [
+              14,
+              27
+            ],
+            [
+              23,
+              28
+            ]
+          ],
+          "width_metatiles": 5
+        },
+        {
+          "name": "Long northern still reach",
+          "kind": "path",
+          "material": "water",
+          "points": [
+            [
+              23,
+              28
+            ],
+            [
+              28,
+              24
+            ],
+            [
+              26,
+              18
+            ],
+            [
+              31,
+              15
+            ],
+            [
+              39,
+              15
+            ],
+            [
+              44,
+              11
+            ],
+            [
+              50,
+              13
+            ],
+            [
+              51,
+              21
+            ],
+            [
+              56,
+              26
+            ],
+            [
+              55,
+              34
+            ]
+          ],
+          "width_metatiles": 3
+        },
+        {
+          "name": "Existing pine-bank trainer frontage",
+          "kind": "path",
+          "material": "water",
+          "points": [
+            [
+              55,
+              34
+            ],
+            [
+              54,
+              40
+            ],
+            [
+              54,
+              45
+            ],
+            [
+              46,
+              44
+            ],
+            [
+              44,
+              50
+            ],
+            [
+              47,
+              58
+            ]
+          ],
+          "width_metatiles": 3
+        },
+        {
+          "name": "Southwestern wooded descent",
+          "kind": "path",
+          "material": "water",
+          "points": [
+            [
+              47,
+              58
+            ],
+            [
+              38,
+              61
+            ],
+            [
+              30,
+              59
+            ],
+            [
+              27,
+              54
+            ],
+            [
+              23,
+              55
+            ],
+            [
+              20,
+              60
+            ],
+            [
+              18,
+              67
+            ]
+          ],
+          "width_metatiles": 3
+        },
+        {
+          "name": "Northern still reach with fitted wooded shoulders",
+          "kind": "polygon",
+          "material": "water",
+          "points": [
+            [
+              31,
+              14
+            ],
+            [
+              35,
+              13
+            ],
+            [
+              39,
+              14
+            ],
+            [
+              39,
+              17
+            ],
+            [
+              35,
+              18
+            ],
+            [
+              31,
+              17
+            ]
+          ]
+        },
+        {
+          "name": "Attached south-bank cottonwood nose",
+          "kind": "block_rect",
+          "bounds": [
+            43,
+            47,
+            44,
+            48
+          ],
+          "block": "05"
+        }
+      ],
+      "landings": [
+        {
+          "name": "Existing northwest angler bank",
+          "old_bounds": [
+            8,
+            28,
+            12,
+            32
+          ],
+          "layers": [
+            {
+              "name": "Compact existing angler bank",
+              "kind": "rect",
+              "material": "lawn",
+              "bounds": [
+                9,
+                29,
+                12,
+                32
+              ]
+            },
+            {
+              "name": "Optional bank grass",
+              "kind": "rect",
+              "material": "encounter",
+              "bounds": [
+                9,
+                29,
+                10,
+                30
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Existing southeast keeper bank",
+          "old_bounds": [
+            49,
+            40,
+            53,
+            44
+          ],
+          "layers": [
+            {
+              "name": "Compact existing pine bank",
+              "kind": "rect",
+              "material": "lawn",
+              "bounds": [
+                50,
+                40,
+                53,
+                43
+              ]
+            },
+            {
+              "name": "Optional bank grass",
+              "kind": "rect",
+              "material": "encounter",
+              "bounds": [
+                50,
+                42,
+                51,
+                43
+              ]
+            }
+          ]
+        }
+      ],
+      "interior_seam_tapers": [
+        {
+          "metatile": [
+            1,
+            35
+          ],
+          "before": "54",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            1,
+            36
+          ],
+          "before": "79",
+          "after": "76"
+        },
+        {
+          "metatile": [
+            1,
+            38
+          ],
+          "before": "58",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            2,
+            35
+          ],
+          "before": "76",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            2,
+            36
+          ],
+          "before": "35",
+          "after": "76"
+        },
+        {
+          "metatile": [
+            3,
+            35
+          ],
+          "before": "76",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            3,
+            36
+          ],
+          "before": "35",
+          "after": "76"
+        }
+      ]
+    }
+  },
+  "r05_water_only_closures": [
+    {
+      "bounds_metatiles": [
+        26,
+        14,
+        32,
+        41
+      ],
+      "replacement": "05",
+      "purpose": "Native forest closes only original Water cells between the lookout cove and southern fishing cove; all original land, bridges, piers, actors, gates and room mouths remain exact.",
+      "allow_original_wall_quadrants": true
+    }
+  ],
+  "preservation": [
+    "Hand-fit all four original trainer landings around the unchanged actors; preserve body and all four adjacent approach collisions while reducing empty lawns.",
+    "Keep every original external Water-port cell and its native quadrant collision exactly; changes to nonwater outer bank cells only close formerly empty lawn shoulders visibly.",
+    "All15 native map identities, extents, world placements, connections, programs, actors, items, flags, rooms and art remain exact; candidate changes only explicit terrain cells.",
+    "R05 closures change only original native Water/Wall cells with at least one Water quadrant, plus exactly the six declared blocking buoy cells. Every original Foot/bridge/ledge/door permission and Cut quadrant remains exact."
+  ],
+  "rasterization_only_hand_intent": true,
+  "native_publisher_inputs": "Use the explicit clipped candidate layouts and exact cell contract emitted by review_long_river.py, not these intermediate native-art hand strokes.",
+  "r05_exact_barrier_replacements": [
+    {
+      "map": "MnR05C00R01",
+      "metatiles": [
+        [
+          26,
+          12
+        ],
+        [
+          27,
+          12
+        ],
+        [
+          28,
+          12
+        ],
+        [
+          29,
+          12
+        ],
+        [
+          30,
+          12
+        ],
+        [
+          31,
+          12
+        ]
+      ],
+      "before": [
+        "30",
+        "31",
+        "31",
+        "31",
+        "31",
+        "32"
+      ],
+      "after": "05",
+      "purpose": "Old visible buoy cut becomes fitted forest where both adjoining old channel arms are now closed; all six remain native blocking collision."
+    }
+  ],
+  "source_geometry_identical_to_geography_v03": false,
+  "source_status_note": "v05 removes the retained old shoreline stubs at the two woods entry seams and steps the lower-bank widening farther inland. Ten explicit interior cells; every actual outer seam quadrant remains unchanged. All earlier epochs retained."
+}

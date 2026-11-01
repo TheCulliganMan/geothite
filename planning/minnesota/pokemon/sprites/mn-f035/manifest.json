@@ -1,0 +1,234 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F035",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_083": {
+      "species_id": "MN_083",
+      "name": "Berryboo",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          13,
+          17,
+          28
+        ],
+        [
+          5,
+          8,
+          15
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        29229,
+        15621,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          107,
+          140,
+          231
+        ],
+        [
+          41,
+          66,
+          123
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#6B8CE7",
+        "#29427B",
+        "#000000"
+      ]
+    },
+    "MN_084": {
+      "species_id": "MN_084",
+      "name": "Muffiend",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          27,
+          20,
+          12
+        ],
+        [
+          7,
+          6,
+          17
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        12955,
+        17607,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          222,
+          165,
+          99
+        ],
+        [
+          57,
+          49,
+          140
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#DEA563",
+        "#39318C",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f035/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png",
+      "target/minnesota-pokemon/gen2-reference/bugs.png"
+    ]
+  },
+  "sprites": [
+    {
+      "id": "mn-083-berryboo-v1",
+      "species_id": "MN_083",
+      "view": "front",
+      "source": "sprites/mn-f035/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        600,
+        599
+      ],
+      "fit": [
+        44,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        29229,
+        15621,
+        0
+      ]
+    },
+    {
+      "id": "mn-083-berryboo-v1",
+      "species_id": "MN_083",
+      "view": "back",
+      "source": "sprites/mn-f035/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        599,
+        600,
+        600
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        29229,
+        15621,
+        0
+      ]
+    },
+    {
+      "id": "mn-084-muffiend-v1",
+      "species_id": "MN_084",
+      "view": "front",
+      "source": "sprites/mn-f035/front-back.imagegen-v1.png",
+      "crop": [
+        600,
+        0,
+        712,
+        599
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        12955,
+        17607,
+        0
+      ]
+    },
+    {
+      "id": "mn-084-muffiend-v1",
+      "species_id": "MN_084",
+      "view": "back",
+      "source": "sprites/mn-f035/front-back.imagegen-v1.png",
+      "crop": [
+        600,
+        599,
+        712,
+        600
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        12955,
+        17607,
+        0
+      ]
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "notes": "Inspected frozen v1: Berryboo calyx/leaf limbs and Muffiend split muffin/berry fists remain distinct. Outer contours connect and close rear portraits retain matching species inks, without earlier neighboring strips.",
+    "sheet_sha256": "65e32973cd92c3750b87c4c0b6c9e5147ad3fd508bded9e6bf5c300086a73636",
+    "outline_profile": "source-contour-v1"
+  }
+}

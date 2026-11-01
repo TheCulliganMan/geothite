@@ -1,0 +1,226 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F041",
+  "status": "proposal-only-do-not-run-against-shared-native-root",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_267": {
+      "species_id": "MN_267",
+      "name": "Taplet",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          25,
+          6
+        ],
+        [
+          18,
+          9,
+          3
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        6975,
+        3378,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          206,
+          49
+        ],
+        [
+          148,
+          74,
+          24
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FFCE31",
+        "#944A18",
+        "#000000"
+      ]
+    },
+    "MN_268": {
+      "species_id": "MN_268",
+      "name": "Dartduck",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          13,
+          27,
+          18
+        ],
+        [
+          3,
+          12,
+          9
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        19309,
+        9603,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          107,
+          222,
+          148
+        ],
+        [
+          24,
+          99,
+          74
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#6BDE94",
+        "#18634A",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f041/pre-evolutions-v2/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-267-taplet-v2",
+      "species_id": "MN_267",
+      "view": "front",
+      "source": "sprites/mn-f041/pre-evolutions-v2/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        627,
+        714
+      ],
+      "fit": [
+        38,
+        38
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        6975,
+        3378,
+        0
+      ]
+    },
+    {
+      "id": "mn-267-taplet-v2",
+      "species_id": "MN_267",
+      "view": "back",
+      "source": "sprites/mn-f041/pre-evolutions-v2/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        714,
+        627,
+        540
+      ],
+      "fit": [
+        44,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        6975,
+        3378,
+        0
+      ]
+    },
+    {
+      "id": "mn-268-dartduck-v2",
+      "species_id": "MN_268",
+      "view": "front",
+      "source": "sprites/mn-f041/pre-evolutions-v2/front-back.imagegen-v1.png",
+      "crop": [
+        627,
+        0,
+        627,
+        714
+      ],
+      "fit": [
+        48,
+        52
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        19309,
+        9603,
+        0
+      ]
+    },
+    {
+      "id": "mn-268-dartduck-v2",
+      "species_id": "MN_268",
+      "view": "back",
+      "source": "sprites/mn-f041/pre-evolutions-v2/front-back.imagegen-v1.png",
+      "crop": [
+        627,
+        714,
+        627,
+        540
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        19309,
+        9603,
+        0
+      ]
+    }
+  ],
+  "visual_review": {
+    "status": "source-reviewed-native-conversion-pending",
+    "notes": "Inspected all4frames. Golden round tapper and moss-teal angular runner have distinct proportions, feet, hand crests and growing wing palms. Crisp black contours; rear views are close cropped portraits. Source has minor color noise and must be mapped onto the exact individual4ink palettes by the existing converter. FinalGraytag notredrawn.",
+    "sheet_sha256": "49287cd57cb9d5b246b0e4f5d17458000b4e6e773b1e47c4ab0d54dc73561bb7",
+    "outline_profile": "source-contour-v1"
+  }
+}

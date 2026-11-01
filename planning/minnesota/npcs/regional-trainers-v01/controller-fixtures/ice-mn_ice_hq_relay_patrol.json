@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "approach": [
+        5,
+        7
+      ],
+      "defeated_flag": "EVENT_MN_ICE_HQ_RELAY_PATROL_DEFEATED",
+      "facing": "south",
+      "id": "MN_ICE_HQ_RELAY_PATROL",
+      "map": "MnIceRelayFloor",
+      "sprite": "SPRITE_MN_ICE_OPERATIVE",
+      "tile": [
+        5,
+        6
+      ],
+      "trainer_class": "MN_ICE_OPERATIVE"
+    }
+  ]
+}

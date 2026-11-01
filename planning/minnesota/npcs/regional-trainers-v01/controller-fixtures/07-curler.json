@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {
+      "id": "MN_ICE_BOARDER_NILS",
+      "map": "MnRainyRiverIcefields",
+      "actor_script": "MN_ICE_BOARDER_NILS",
+      "trainer_class": "MN_CURLER",
+      "sprite": "SPRITE_MN_CURLER",
+      "facing": "south",
+      "approach": [
+        9,
+        20
+      ],
+      "defeated_flag": "EVENT_MN_ICE_BOARDER_NILS"
+    }
+  ]
+}

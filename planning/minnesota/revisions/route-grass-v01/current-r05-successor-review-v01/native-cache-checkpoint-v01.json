@@ -1,0 +1,7 @@
+{
+  "status": "PASS",
+  "test": "native_town_exterior_public_paths_qualified_roads_and_water_boundary",
+  "exit_code": 0,
+  "log": ".local/route-grass-review/r05-cache-bank-native-checkpoint-v01.log",
+  "scope": "Native dry path to river lookout, forest cap denial, low-bank reverse wall and actual Save/Continue. Initial location/partner/four badges are QA setup; new grass, both hops and full-route checks use production input afterward."
+}

@@ -1,0 +1,18 @@
+[
+  {
+    "id": "north-shore-roof-canopy",
+    "map": "MnR11C00R00",
+    "core": [23, 22],
+    "expected_tileset": "mn_winter_north_shore",
+    "expected_block": "83",
+    "expected_collision": "FLOOR"
+  },
+  {
+    "id": "north-shore-waterfall-and-roof",
+    "map": "MnR11C00R00",
+    "core": [23, 24],
+    "expected_tileset": "mn_winter_north_shore",
+    "expected_block": "83",
+    "expected_collision": "FLOOR"
+  }
+]

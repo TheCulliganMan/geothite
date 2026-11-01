@@ -151,7 +151,7 @@ fn webmcp_observation(
     #[cfg(feature = "fullscreen-scaling")]
     let snapshot = {
         let mut snapshot = snapshot;
-        expand_fullscreen_object_presentation(&mut snapshot, runtime)?;
+        object_presentation::expand_fullscreen_object_presentation(&mut snapshot, runtime)?;
         snapshot
     };
     let (screen, text) = if runtime.intro_screen.is_some() {
@@ -488,7 +488,15 @@ fn finish_webmcp_request(
     runtime: Res<BevyRuntimeShell>,
     multiplayer: Option<NonSend<MultiplayerRuntime>>,
     art: Res<RenderedTilesetArt>,
-    glyphs: Query<(&Handle<Image>, &Transform, &Visibility)>,
+    glyphs: Query<(&Sprite, &Transform, &Visibility)>,
+    #[cfg(all(feature = "location-tester", feature = "voxel-view"))]
+    voxel_status: Option<Res<crystal_voxel_view::VoxelViewStatus>>,
+    #[cfg(all(feature = "location-tester", feature = "voxel-view"))]
+    battle_status: Option<Res<crystal_voxel_view::BattleViewStatus>>,
+    #[cfg(all(feature = "location-tester", feature = "voxel-view"))]
+    filters: Query<(&Camera, &bevy::camera::RenderTarget, &bevy::light::ShadowFilteringMethod)>,
+    #[cfg(all(feature = "location-tester", feature = "voxel-view"))]
+    battle_frame: Option<Res<VisualBattleFrame>>,
 ) {
     WEBMCP_BRIDGE.with_borrow_mut(|bridge| {
         let Some(pending) = bridge.pending.as_ref() else { return; };
@@ -503,7 +511,7 @@ fn finish_webmcp_request(
                     if let Some(font) = art.font_cache.as_ref() {
                         for (texture, transform, visibility) in &glyphs {
                             if *visibility == Visibility::Hidden { continue; }
-                            if let Some((character, _)) = font.glyphs.iter().find(|(_, frame)| frame.handle == *texture) {
+                            if let Some((character, _)) = font.glyphs.iter().find(|(_, frame)| frame.handle == texture.image) {
                                 letters.push((transform.translation.y, transform.translation.x, *character));
                             }
                         }
@@ -516,9 +524,71 @@ fn finish_webmcp_request(
                         if let Some(line) = lines.last_mut() { line.push(character); }
                     }
                     value["observe"]["rendered_text"] = serde_json::json!(lines);
+                    // Read-only developer evidence; gameplay never consumes
+                    // this field or changes input settlement to wait for it.
+                    #[cfg(all(feature = "location-tester", feature = "voxel-view"))]
+                    if let Some(status) = voxel_status.as_ref() {
+                        value["presentation"]["voxel"] = serde_json::json!({
+                            "shadow_filters": filters.iter().filter(|(camera, target, _)| camera.is_active
+                                && matches!(target, bevy::camera::RenderTarget::Window(_)))
+                                .map(|(_, _, filter)| format!("{filter:?}")).collect::<Vec<_>>(),
+                            "active": status.active,
+                            "active_frames": status.active_frames,
+                            "terrain_builds": status.terrain_builds,
+                            "terrain_map": status.terrain_map,
+                            "terrain_pending": status.terrain_pending,
+                            "connected_terrain": status.connected_terrain,
+                            "profiles_pending": status.profiles_pending,
+                            "inactive_reason": status.inactive_reason,
+                            "scenery_full_detail": crystal_voxel_view::scenery_full_detail_enabled(),
+                            "understory_full_detail": crystal_voxel_view::understory_full_detail_enabled(),
+                        });
+                    }
+                    #[cfg(all(feature = "location-tester", feature = "voxel-view"))]
+                    if let Some(status) = battle_status.as_ref() {
+                        value["presentation"]["battle_view"] = serde_json::json!({
+                            "trainer_anchor":runtime.battle_origin.bound_trainer.as_ref().map(|bound|serde_json::json!({
+                                "warm_checked":bound.candidate.warm_checked,
+                                "capture_attempted":bound.candidate.capture_attempted,
+                                "has_anchors":bound.candidate.anchors.is_some(),
+                                "minimum_revision":bound.candidate.minimum_snapshot_revision,
+                                "map":bound.candidate.source.map_name,
+                            })),
+                            "cues":battle_frame.as_ref().map(|frame| frame.cues.iter()
+                                .map(|cue|format!("{:?}:{}",cue.kind,cue.move_id)).collect::<Vec<_>>()),
+                            "active":status.active,"prepared":status.prepared,
+                            "preparation_pending":status.preparation_pending,
+                            "last_error":status.last_error,
+                            "scenery":status.map_scenery_id,
+                            "scenery_error":status.map_scenery_fallback_reason,
+                            "capture_error":status.capture_fallback_reason,
+                            "capture_ready":status.row_capture_ready,
+                            "capture_pending":status.row_capture_pending,
+                            "modeled_species":status.modeled_species,
+                            "modeled_trainers":status.modeled_trainers,
+                            "source_art_species":status.source_art_species,
+                        });
+                    }
                     value
                 }, Err(error) => serde_json::json!({"error": error.to_string()}) } };
         bridge.result = Some((pending.id, result.to_string()));
         bridge.pending = None;
     });
+}
+#[cfg(feature = "voxel-view")]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen::prelude::wasm_bindgen)]
+pub fn crystal_loading_trace_start() { crystal_voxel_view::loading_trace::start(); }
+
+#[cfg(feature = "voxel-view")]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen::prelude::wasm_bindgen)]
+pub fn crystal_loading_trace_read() -> String { crystal_voxel_view::loading_trace::snapshot() }
+
+#[cfg(all(target_arch = "wasm32", feature = "allocation-tester"))]
+#[wasm_bindgen::prelude::wasm_bindgen]
+pub fn crystal_loading_memory_read() -> String { crate::browser_allocations::snapshot() }
+
+#[cfg(all(target_arch = "wasm32", feature = "browser-webgpu"))]
+#[wasm_bindgen::prelude::wasm_bindgen]
+pub fn crystal_normalize_webgpu_shader(source: &str) -> Result<String, wasm_bindgen::JsValue> {
+    crate::browser_shader::normalize(source).map_err(|error| wasm_bindgen::JsValue::from_str(&error))
 }

@@ -1,0 +1,13 @@
+{
+  "tool": "built-in image_gen",
+  "original_tool_path": "/Users/ryanculligan/.codex/generated_images/01a17dcc-4f1a-77a2-9d21-0df036061346/exec-3930b1af-9de8-4b5e-b501-2fb8348f18dd.png",
+  "source_size": [
+    1536,
+    1024
+  ],
+  "sha256": "e920fa0314b009d1cd7aac6513572832e6183c06f2b40fb5bfd7737b37ea88de",
+  "reference_paths": [
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f099/mothosaic.overworld.imagegen-v1.png"
+  ],
+  "prompt": "mothosaic.prompt-v2.txt"
+}

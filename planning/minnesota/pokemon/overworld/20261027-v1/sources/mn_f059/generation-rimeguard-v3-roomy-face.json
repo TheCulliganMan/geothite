@@ -1,0 +1,12 @@
+{
+  "name": "rimeguard",
+  "version": "v3-roomy-face",
+  "folder": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f059",
+  "prompt": "Precise FACE-ONLY correction of this THREE-RAIL living snowfence six-pose source. Preserve exactly THREE continuous horizontal ice rails, TWO genuine ALPHA0 windwindows, THREEverticalsupportposts, FOURshortfeet with farocclusion, all6fullbody silhouettes/cellpositions/worldscale. SOUTH: broaden the existing middle-post face only horizontally to180sourcepixels wide, retain current face top/bottom aroundy270..370(toprow) andy715..815(lowerrow). Two actual BLACKsquare pupils32x32 with centers separated70sourcepixels, eachsurrounded32px of paleice onall4sides. Keep middleface attached tocentralpost; doNOT fill windwindows beyondsmallcenterface. Sourceeyes currenttiny17px are too narrow; replaceoldpupils withice, redraw32px pupils. WEST: broaden nearhead/faceplane to atleast110px wide but preserve rest offence; ONE32x32BLACKpupil fullybufferedby32pxice on4sides, sameheight; removeoldpupil. Keep NORTHcells eyeless/plain headpost. Absolutely retain3rails/2windows inall6; profilewindows should notbe filled. Palette exact frostice#ADDEF7 deepblue#295284 black#000000 +alpha0outside ANDinsidewindwindows. No shading/glow/labels/extra limbs; alteronlyface/eyes enough for isolatednative14px pupils.",
+  "refs": [
+    "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f059/rimeguard.overworld.imagegen-v2-three-rails.png"
+  ],
+  "default_path": "/Users/ryanculligan/.codex/generated_images/01a17f9b-beff-7771-977d-2d3d7b14de43/exec-ce28bc87-3622-4941-bd28-0ee9cf8a2636.png",
+  "sha256": "bc9e175e94641459941c6a4115d1cf8697bbe83d2ba3535412b447fe7a3812af",
+  "tool": "built-in image_gen"
+}

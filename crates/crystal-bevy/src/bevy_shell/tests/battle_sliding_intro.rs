@@ -130,10 +130,10 @@ fn battle_sliding_intro_art_uses_source_blackout_palette() {
         let frame =
             battle_sliding_intro_art(&mut art, &shell.asset_root, &mut images, asset).unwrap();
         let image = images.get(&frame.handle).unwrap();
-        assert!(image.data.chunks_exact(4).any(|p| p[3] != 0));
+        assert!(image.data.as_ref().expect("CPU image pixels").chunks_exact(4).any(|p| p[3] != 0));
         assert!(
             image
-                .data
+                .data.as_ref().expect("CPU image pixels")
                 .chunks_exact(4)
                 .filter(|p| p[3] != 0)
                 .all(|p| palette.iter().any(|colour| p[..3] == colour[..]))

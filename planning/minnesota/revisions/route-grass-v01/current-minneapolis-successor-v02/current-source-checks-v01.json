@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "command": [
+    "cargo",
+    "clippy",
+    "--locked",
+    "--profile",
+    "wasm-dev",
+    "-p",
+    "crystal-bevy",
+    "--all-targets"
+  ],
+  "exit_code": 0,
+  "log": ".local/route-grass-review/minneapolis-current-bevy-all-target-clippy-v01.log",
+  "source_sha256": {
+    "crates/crystal-bevy/src/bevy_shell/tests/minneapolis.rs": "e847dad7e3e6e47a7fc5fa0fe12f9a66615ce8270c183ea211f32b8773e900b5"
+  },
+  "owned_leaf_format_exit_code": 0
+}

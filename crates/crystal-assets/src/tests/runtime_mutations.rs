@@ -2282,8 +2282,7 @@ fn player_event_warps_select_the_exact_source_map_setup() {
     );
 }
 
-#[test]
-fn directional_carpet_requires_a_second_matching_input_after_turning() {
+fn blocked_warp_fixture(permission: &str) -> GameDataSet {
     let mut source = test_map_module("CarpetSource", "CARPET_SOURCE", None);
     source.events.warps = vec![WarpEvent {
         index: 1,
@@ -2307,13 +2306,13 @@ fn directional_carpet_requires_a_second_matching_input_after_turning() {
     tileset.collision.insert(
         "1".to_string(),
         vec![
-            "WARP_CARPET_RIGHT".to_string(),
+            permission.to_string(),
             "WALL".to_string(),
             "FLOOR".to_string(),
             "FLOOR".to_string(),
         ],
     );
-    let data = GameDataSet {
+    GameDataSet {
         maps: map_payload(vec![source, destination.clone()]),
         map_attributes: BTreeMap::from([(
             "CarpetDestination".to_string(),
@@ -2345,7 +2344,12 @@ fn directional_carpet_requires_a_second_matching_input_after_turning() {
             "CarpetDestination",
         ]),
         ..GameDataSet::default()
-    };
+    }
+}
+
+#[test]
+fn directional_carpet_requires_a_second_matching_input_after_turning() {
+    let data = blocked_warp_fixture("WARP_CARPET_RIGHT");
     let mut state = GameState::default();
     let mut session = data
         .overworld_session("CarpetSource", TilePosition::new(0, 0), 0)
@@ -2376,6 +2380,46 @@ fn directional_carpet_requires_a_second_matching_input_after_turning() {
         .expect("enter directional carpet after matching turn");
     assert!(warp.warp.is_some());
     assert_eq!(session.map.name, "CarpetDestination");
+}
+
+#[test]
+fn blocked_steps_do_not_reactivate_stairs_ladders_or_warp_panels() {
+    for permission in ["STAIRCASE", "STAIRCASE_73", "LADDER", "WARP_PANEL"] {
+        let mut data = blocked_warp_fixture(permission);
+        if permission == "STAIRCASE" {
+            // CheckTile forces Down on 7a and ignores terrain collision.
+            // An occupied landing blocks that step; other cases bump a wall.
+            data.maps.get_mut("CarpetSource").unwrap().objects.push(
+                test_object("STAIR_BLOCKER", "-1", 0, 1));
+        }
+        let mut state = GameState::default();
+        let mut session = data.overworld_session("CarpetSource", TilePosition::new(0,0),0).unwrap();
+        session.player.facing = Direction::Right;
+        for _ in 0..8 {
+            let frame = data.apply_overworld_input(&mut state,&mut session,[GameButton::Right],
+                &BTreeSet::new(),&mut ReplayDivider::new([])).unwrap();
+            assert!(matches!(frame.movement,Some(StepOutcome::Blocked{..}|StepOutcome::BlockedByObject{..})),"{permission}: {:?}",frame.movement);
+            assert!(frame.warp.is_none(),"blocked input reactivated {permission}");
+            assert_eq!(session.map.name,"CarpetSource");
+            assert_eq!(session.player.tile,TilePosition::new(0,0));
+        }
+        // Unforced stairs/ladders/panels can be left and reentered. The 7a
+        // fixture deliberately blocks its mandatory step with an NPC.
+        if permission == "STAIRCASE" { continue; }
+        for _ in 0..2 {
+            data.apply_overworld_input(&mut state,&mut session,[GameButton::Down],
+                &BTreeSet::new(),&mut ReplayDivider::new([])).unwrap();
+        }
+        assert_eq!(session.player.tile,TilePosition::new(0,1));
+        let mut warped = false;
+        for _ in 0..2 {
+            let frame = data.apply_overworld_input(&mut state,&mut session,[GameButton::Up],
+                &BTreeSet::new(),&mut ReplayDivider::new([])).unwrap();
+            warped |= frame.warp.is_some();
+        }
+        assert!(warped,"reentry into {permission} did not warp");
+        assert_eq!(session.map.name,"CarpetDestination");
+    }
 }
 
 #[test]
@@ -2548,6 +2592,36 @@ fn overworld_session_rejects_player_tiles_outside_runtime_bounds() {
         ),
         "{overflow:#}"
     );
+}
+
+#[test]
+fn overworld_session_validates_saved_block_edits_before_occupancy() {
+    let mut module=test_map_module("RuntimeMap","RUNTIME_MAP",None);
+    module.attributes.width=1;module.attributes.height=1;module.blocks=vec![0];
+    let data=GameDataSet {
+        maps:map_payload(vec![module]),
+        tilesets:BTreeMap::from([("johto".into(),TilesetDefinition {
+            collision:BTreeMap::from([("0".into(),vec!["WALL".into();4]),
+                ("1".into(),vec!["FLOOR".into();4])]),
+            palette_map:vec![0,0],
+        })]),..GameDataSet::default()
+    };
+    let tile=TilePosition::new(0,0);
+    assert!(data.overworld_session("RuntimeMap",tile,0).is_err());
+    let mut state=GameState::default();
+    state.map_block_overrides.insert("RuntimeMap".into(),BTreeMap::from([((0,0),1)]));
+    let session=data.overworld_session_for_traversal_with_state("RuntimeMap",tile,0,
+        PlayerTraversalState::Walk,Some(&state)).expect("earned open floor must be occupiable");
+    assert_eq!(session.map.metatile_ids,vec![1]);
+    state.map_block_overrides.get_mut("RuntimeMap").unwrap().insert((0,0),0);
+    assert!(data.overworld_session_for_traversal_with_state("RuntimeMap",tile,0,
+        PlayerTraversalState::Walk,Some(&state)).is_err(),"closed edit remains blocked");
+    state.map_block_overrides.insert("RuntimeMap".into(),BTreeMap::from([((1,0),1)]));
+    assert!(data.overworld_session_for_traversal_with_state("RuntimeMap",tile,0,
+        PlayerTraversalState::Walk,Some(&state)).is_err(),"out-of-bounds edit rejected before indexing");
+    state.map_block_overrides.insert("RuntimeMap".into(),BTreeMap::from([((0,0),255)]));
+    assert!(data.overworld_session_for_traversal_with_state("RuntimeMap",tile,0,
+        PlayerTraversalState::Walk,Some(&state)).is_err(),"undeclared block rejected");
 }
 
 #[test]
@@ -2868,12 +2942,12 @@ fn verifier_rejects_map_object_and_event_records_that_do_not_fit_asm_storage() {
     too_many.attributes.width = 8;
     too_many.blocks = vec![1; 8];
     too_many.scripts = BTreeMap::from([("ObjectScript".to_string(), Value::Array(Vec::new()))]);
-    too_many.objects = (0..16)
+    too_many.objects = (0..256)
         .map(|index| {
             test_object(
                 &format!("OBJECT_{index}"),
                 &format!("EVENT_OBJECT_{index}"),
-                index,
+                index % 16,
                 0,
             )
         })
@@ -2940,7 +3014,7 @@ fn verifier_rejects_map_object_and_event_records_that_do_not_fit_asm_storage() {
     assert!(report.diagnostics.iter().any(|diagnostic| {
         diagnostic.code == "too_many_map_objects"
             && diagnostic.subject == "TooMany"
-            && diagnostic.message.contains("16")
+            && diagnostic.message.contains("256")
     }));
     assert!(report.diagnostics.iter().any(|diagnostic| {
         diagnostic.code == "object_event_coordinate_storage_overflow"
@@ -4108,7 +4182,8 @@ fn compiled_game_pack_round_trips_as_runtime_artifact() {
         .save_modpack_identity()
         .expect("loaded pack has canonical save identity");
     assert_eq!(identity.id(), "base-game");
-    assert_eq!(identity.hash(), sha256_hex(raw));
+    use sha2::Digest;
+    assert_eq!(identity.hash(), format!("{:x}", sha2::Sha256::digest(raw)));
     assert!(loaded.data().pokemon.contains_key("CHIKORITA"));
     let _ = std::fs::remove_file(path);
 }
@@ -6289,6 +6364,7 @@ fn modpack_manifest_supports_typed_pokemon_and_map_additions() {
                 battle_focus_energy: None,
                 battle_stat_drop_guard: None,
                 confusion_heal: None,
+                confusion_inflict_turns: None,
                 repel_steps: None,
                 escape_rope_mode: None,
                 price: 100,

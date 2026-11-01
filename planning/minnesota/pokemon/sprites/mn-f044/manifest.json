@@ -1,0 +1,130 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F044",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_095": {
+      "species_id": "MN_095",
+      "name": "Babehemoth",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          10,
+          20,
+          31
+        ],
+        [
+          4,
+          7,
+          19
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        32394,
+        19684,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          82,
+          165,
+          255
+        ],
+        [
+          33,
+          57,
+          156
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#52A5FF",
+        "#21399C",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f044/prompt-v1.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png",
+      "target/minnesota-pokemon/gen2-reference/bugs.png"
+    ]
+  },
+  "sprites": [
+    {
+      "id": "mn-095-babehemoth-v1",
+      "species_id": "MN_095",
+      "view": "front",
+      "source": "sprites/mn-f044/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        1199,
+        656
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        32394,
+        19684,
+        0
+      ]
+    },
+    {
+      "id": "mn-095-babehemoth-v1",
+      "species_id": "MN_095",
+      "view": "back",
+      "source": "sprites/mn-f044/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        656,
+        1199,
+        656
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        32394,
+        19684,
+        0
+      ]
+    }
+  ],
+  "visual_review": {
+    "status": "reviewed",
+    "notes": "Inspected frozen v1: Babehemoth white crescent horns and mane now have coherent connected source-backed outlines, with cobalt ox mass and cleft hooves preserved. Close rear horn/mane silhouette remains readable with no floating rim dots.",
+    "sheet_sha256": "f574a732b9e7aac92fb2d4ae0cfb09f9637377cfd102af430d2f944d36cb1b1c",
+    "outline_profile": "source-contour-v1"
+  }
+}

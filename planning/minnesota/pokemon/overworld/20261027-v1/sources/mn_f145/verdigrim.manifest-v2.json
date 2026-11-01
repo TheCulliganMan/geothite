@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F145",
+  "species": [
+    {
+      "species_id": "MN_319",
+      "runtime_token": "VERDIGRIM",
+      "palette_rgb555": [
+        32767,
+        7641,
+        9637,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        21368,
+        19692,
+        0
+      ],
+      "fit": [
+        14,
+        14
+      ],
+      "alpha_threshold": 128,
+      "sampling": "source_center",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 32,
+      "interior_black_samples": 32,
+      "opaque_interior_minimum_samples": 60,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "verdigrim.overworld.imagegen-v2.png",
+          "crop": [
+            0,
+            0,
+            540,
+            500
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "verdigrim.overworld.imagegen-v2.png",
+          "crop": [
+            440,
+            0,
+            540,
+            500
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "verdigrim.overworld.imagegen-v2.png",
+          "crop": [
+            980,
+            0,
+            540,
+            500
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "verdigrim.overworld.imagegen-v2.png",
+          "crop": [
+            0,
+            512,
+            540,
+            500
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "verdigrim.overworld.imagegen-v2.png",
+          "crop": [
+            440,
+            512,
+            540,
+            500
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "verdigrim.overworld.imagegen-v2.png",
+          "crop": [
+            980,
+            512,
+            540,
+            500
+          ]
+        }
+      ]
+    }
+  ]
+}

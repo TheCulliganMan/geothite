@@ -1,0 +1,16 @@
+{
+  "prompt": "sprites/mn-f117/tipup-three-stage-20261026/prompt-tipup-v1.txt",
+  "mode": "generate",
+  "references": [
+    {
+      "path": "target/minnesota-pokemon/gen2-reference/starters.png",
+      "sha256": "af61f720a75b7e1b8e80ba14e8944612556397eedddd719669dec68b0e0fd534",
+      "role": "Authentic Crystal coarse native pixel clusters and front/close-back camera only; no character copying."
+    }
+  ],
+  "identity_context_inspected": [
+    "sprites/mn-f117/perch-redesign-20261026/mn-251-winkfin.front-back.perch-v1.png",
+    "sprites/mn-f117/mn-251-252.front-back.imagegen-v1.png"
+  ],
+  "identity_context_passed_to_tool": false
+}

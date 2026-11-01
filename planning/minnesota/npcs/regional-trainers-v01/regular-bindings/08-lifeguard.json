@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "trainer_class": "MN_LIFEGUARD",
+  "class_name": "LIFEGUARD",
+  "trainer_ids": [
+    "MN_RIVER_UPSTREAM_BANK_FISHER"
+  ],
+  "actors": [
+    {
+      "map": "MnMississippiUpstreamWoodsC00R02",
+      "script": "MN_RIVER_UPSTREAM_BANK_FISHER",
+      "tile": [
+        33,
+        35
+      ],
+      "previous_sprite": "SPRITE_FISHER"
+    }
+  ]
+}

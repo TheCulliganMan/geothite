@@ -1,0 +1,56 @@
+{
+  "id": "MnMoorhead",
+  "name": "MOORHEAD",
+  "dimensions_metatiles": [
+    24,
+    18
+  ],
+  "reference_anchor_percent": [
+    12,
+    42
+  ],
+  "role": "town",
+  "tileset": "johto_modern",
+  "composition": "Red River square, rail bridge scenery and prairie edge.",
+  "ports": [
+    {
+      "route": "MN_R16",
+      "side": "E",
+      "gate_metatile": [
+        22,
+        9
+      ],
+      "landing_metatile": [
+        20,
+        9
+      ]
+    }
+  ],
+  "interiors": [
+    {
+      "id": "MnMoorheadPokecenter1F",
+      "kind": "pokecenter",
+      "dimensions_metatiles": [
+        10,
+        8
+      ],
+      "source_behavior": "canonical healing, PC and blackout recovery"
+    },
+    {
+      "id": "MnMoorheadMart",
+      "kind": "mart",
+      "dimensions_metatiles": [
+        6,
+        4
+      ],
+      "source_behavior": "canonical clerk, money deduction and inventory"
+    }
+  ],
+  "walkable_destinations": [
+    "each port landing",
+    "every visible exterior door",
+    "central square",
+    "local story NPC"
+  ],
+  "door_contract": "Assign exterior core-tile door coordinates only after selecting authentic facade quadrants; record reciprocal warp indices and indoor floor arrivals before export."
+}

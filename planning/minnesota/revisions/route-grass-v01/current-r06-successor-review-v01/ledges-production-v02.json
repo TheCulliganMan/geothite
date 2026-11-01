@@ -1,0 +1,211 @@
+{
+  "status": "PASS",
+  "pack": "content-packs/minnesota-current-r06-south-woods-grass-v01.crystalpack",
+  "pack_sha256": "1d906a7d4998ce8b25332b05413131d9d256961a284230143d82541b24c403d0",
+  "calls": 1879,
+  "wild": [
+    {
+      "phase": "grass-and-save",
+      "map": "MnR06C00R01",
+      "position": {
+        "x": 52,
+        "y": 11
+      }
+    },
+    {
+      "phase": "grass-and-save",
+      "map": "MnR06C00R00",
+      "position": {
+        "x": 49,
+        "y": 26
+      }
+    },
+    {
+      "phase": "grass-and-save",
+      "map": "MnR06C00R00",
+      "position": {
+        "x": 47,
+        "y": 9
+      }
+    },
+    {
+      "phase": "grass-and-save",
+      "map": "MnR06C00R00",
+      "position": {
+        "x": 48,
+        "y": 11
+      }
+    },
+    {
+      "phase": "grass-and-save",
+      "map": "MnR06C00R00",
+      "position": {
+        "x": 47,
+        "y": 9
+      }
+    },
+    {
+      "phase": "grass-and-save",
+      "map": "MnR06C00R00",
+      "position": {
+        "x": 50,
+        "y": 26
+      }
+    },
+    {
+      "phase": "grass-and-save",
+      "map": "MnR06C00R01",
+      "position": {
+        "x": 52,
+        "y": 10
+      }
+    },
+    {
+      "phase": "grass-and-save",
+      "map": "MnR06C00R01",
+      "position": {
+        "x": 21,
+        "y": 26
+      }
+    },
+    {
+      "phase": "continue-and-repeat",
+      "map": "MnR06C00R01",
+      "position": {
+        "x": 16,
+        "y": 28
+      }
+    },
+    {
+      "phase": "continue-and-repeat",
+      "map": "MnR06C00R00",
+      "position": {
+        "x": 49,
+        "y": 29
+      }
+    }
+  ],
+  "phases": [
+    {
+      "phase": "grass-and-save",
+      "initial": {
+        "badges": 4,
+        "dialogue": false,
+        "facing": "down",
+        "frame": 0,
+        "map": "MnR06C00R01",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 0
+        },
+        "position": {
+          "x": 16,
+          "y": 24
+        }
+      },
+      "final": {
+        "badges": 4,
+        "dialogue": false,
+        "facing": "left",
+        "frame": 345,
+        "map": "MnR06C00R01",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 2
+        },
+        "position": {
+          "x": 16,
+          "y": 33
+        }
+      },
+      "output_save": ".local/route-grass-review/r06-south-woods-grass-and-save-ledges-v01-output.crystalsave",
+      "source_unchanged": true,
+      "stderr_bytes": 0
+    },
+    {
+      "phase": "continue-and-repeat",
+      "initial": {
+        "badges": 4,
+        "dialogue": false,
+        "facing": "left",
+        "frame": 345,
+        "map": "MnR06C00R01",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 2
+        },
+        "position": {
+          "x": 16,
+          "y": 33
+        }
+      },
+      "final": {
+        "badges": 4,
+        "dialogue": false,
+        "facing": "left",
+        "frame": 699,
+        "map": "MnR06C00R01",
+        "menu": null,
+        "mode": "overworld",
+        "money": 3000,
+        "player": "CHRIS",
+        "pokedex": {
+          "owned": 0,
+          "seen": 3
+        },
+        "position": {
+          "x": 16,
+          "y": 33
+        }
+      },
+      "output_save": ".local/route-grass-review/r06-south-woods-continue-and-repeat-ledges-v01-output.crystalsave",
+      "source_unchanged": true,
+      "stderr_bytes": 0
+    }
+  ],
+  "scope": "Both current native lanes x44/45: upper y9, lip y10, downward jump to y12, four reverse denials per lane and ordinary walking return. Repeated after actual Save/Continue; wild RUN and menus included. Local initial partner, badges and position are QA fixtures.",
+  "verified_lanes": [
+    {
+      "upper": [
+        44,
+        9
+      ],
+      "lip": [
+        44,
+        10
+      ],
+      "landing": [
+        44,
+        12
+      ],
+      "reverse_denials": 4
+    },
+    {
+      "upper": [
+        45,
+        9
+      ],
+      "lip": [
+        45,
+        10
+      ],
+      "landing": [
+        45,
+        12
+      ],
+      "reverse_denials": 4
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "tool": "built-in image_gen",
+  "source": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f092/panoplite.overworld.imagegen-v1.png",
+  "original_default_path": "/Users/ryanculligan/.codex/generated_images/01a178da-4cf1-7e01-8516-667a332dc790/exec-d378a136-40d5-4796-98cf-cd8c4ee80b2a.png",
+  "sha256": "576a2625ec8d348c9df090a149c951e08eacd82b81a80fbd0a43d46be1b57cb3",
+  "prompt": "prompt-panoplite-v1.txt",
+  "status": "source_generated_pending_review"
+}

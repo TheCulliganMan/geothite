@@ -1,0 +1,58 @@
+[
+  {
+    "id": "entry",
+    "map": "MnMilleLacs",
+    "core": [
+      4,
+      13
+    ]
+  },
+  {
+    "id": "lookout",
+    "map": "MnMilleLacs",
+    "core": [
+      16,
+      16
+    ]
+  },
+  {
+    "id": "dock",
+    "map": "MnMilleLacs",
+    "core": [
+      24,
+      23
+    ]
+  },
+  {
+    "id": "picnic",
+    "map": "MnMilleLacs",
+    "core": [
+      12,
+      30
+    ]
+  },
+  {
+    "id": "launch",
+    "map": "MnMilleLacs",
+    "core": [
+      19,
+      29
+    ]
+  },
+  {
+    "id": "north-shore",
+    "map": "MnMilleLacs",
+    "core": [
+      38,
+      10
+    ]
+  },
+  {
+    "id": "roost",
+    "map": "MnMilleLacs",
+    "core": [
+      35,
+      29
+    ]
+  }
+]

@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "rooms": [
+    {
+      "id": "MnVoyageursIce1F",
+      "native_module_sha256": "6ea31097e5633f49596aece6b5dfe2690c1da444761d5d39bc84a30fca181441"
+    },
+    {
+      "id": "MnVoyageursIceB1F",
+      "native_module_sha256": "33c5b46126868132a30eb78cc477dc224e5ba6943983b5c498cb422dc65a9f56"
+    }
+  ],
+  "purpose": "Terrain-only two-floor ice puzzle rebuild; exact native identities, dimensions, all actors/reward programs and all paired warp records retained."
+}

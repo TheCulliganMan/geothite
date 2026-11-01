@@ -3,6 +3,9 @@ pub struct LoadedCompiledGamePack {
     path: PathBuf,
     bytes: Vec<u8>,
     pack: CompiledGamePack,
+    // Set only after every production runtime check succeeds. The loaded
+    // wrapper exposes no mutable pack access, so certification stays valid.
+    runtime_verified: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -91,9 +94,15 @@ pub struct SweetScentEncounterOutcome {
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct FishingCastOutcome {
+    /// The facing tile already validated as water by the cast transaction.
+    /// Transient result metadata, never GameState, save or journal payload data.
+    /// The core encounter/catch tile intentionally remains the player's tile.
+    pub checked_water_target: TilePosition,
     pub session: FishingSession,
     pub bite: Option<bool>,
     pub wild_battle: Option<WildBattleStart>,
+    /// An actual native rod encounter owned by the capture expedition.
+    pub safari_encounter: Option<crystal_core::systems::safari::SafariEncounter>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -165,6 +174,13 @@ pub struct TeleportFieldMoveOutcome {
 }
 
 impl LoadedCompiledGamePack {
+    /// Whether this immutable owned pack completed the production verifier.
+    /// Diagnostic/test decoders leave this false and must still be verified
+    /// before an ordinary runtime can consume them.
+    pub fn is_runtime_verified(&self) -> bool {
+        self.runtime_verified
+    }
+
     pub fn path(&self) -> &Path {
         &self.path
     }
@@ -311,6 +327,11 @@ impl<'a> ModpackCompiler<'a> {
         Self { asset_root }
     }
 
+    /// Run the compiler's complete authored-data checks without producing a pack.
+    pub fn audit(&self, data: &GameDataSet) -> ModpackCompileReport {
+        verify_game_data(self.asset_root, data, &data.playability)
+    }
+
     pub fn compile(
         &self,
         manifests: &[ModpackManifest],
@@ -378,7 +399,7 @@ impl<'a> ModpackCompiler<'a> {
 
         let compiled_audio = compile_audio_payloads(self.asset_root, &mut data)?;
         let audio_manifest = ModpackAudioManifest::from_assets(&data.audio, &compiled_audio)?;
-        let runtime_files = compile_runtime_files(self.asset_root)?;
+        let runtime_files = compile_runtime_files(self.asset_root, &data.runtime_title_screen.program)?;
         let identity = derive_compiled_game_pack_identity(
             COMPILED_GAME_PACK_FORMAT_VERSION,
             &data,
@@ -486,10 +507,22 @@ pub const REQUIRED_POKEGEAR_RUNTIME_FILE_KEYS: &[&str] = &[
     "gfx/pokegear/radio.tilemap.rle",
 ];
 
-fn compile_runtime_files(asset_root: &AssetRoot) -> Result<BTreeMap<String, Vec<u8>>> {
+fn compile_runtime_files(asset_root: &AssetRoot, presentation: &RuntimePresentationProgram) -> Result<BTreeMap<String, Vec<u8>>> {
     let root = asset_root.runtime_assets();
     let mut files = BTreeMap::new();
     collect_runtime_files(&root, &root, &mut files)?;
+    // These compressed graphics are live inputs to the source decompressor's
+    // instruction clock. Retain only resources authored by this presentation,
+    // rather than every assembler/build intermediate in the export workspace.
+    for resource in &presentation.resources {
+        if resource.kind == "graphics" && resource.path.ends_with(".lz") {
+            validate_compiled_runtime_file_key(&resource.path)?;
+            let bytes = std::fs::read(root.join(&resource.path))
+                .with_context(|| format!("read source-timed graphic {}", resource.path))?;
+            anyhow::ensure!(!bytes.is_empty(), "source-timed graphic {} is empty", resource.path);
+            files.insert(resource.path.clone(), bytes);
+        }
+    }
     for &relative in REQUIRED_VENDOR_RUNTIME_FILE_KEYS {
         let source = asset_root.repository_root.join(relative);
         let bytes = std::fs::read(&source)

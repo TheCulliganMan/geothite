@@ -1,0 +1,137 @@
+{
+  "schema_version": 1,
+  "species": [
+    {
+      "id": "MN_270",
+      "classification": "Twine Titan",
+      "height_inches": 144,
+      "weight_tenths_lb": 16800,
+      "dex_pages": [
+        "Its giant body @ is wound from @ one long braid.",
+        "Loop arms pin @ rivals while its @ body rolls tight."
+      ],
+      "base_stats": {
+        "hp": 105,
+        "attack": 125,
+        "defense": 100,
+        "speed": 95,
+        "special_attack": 45,
+        "special_defense": 90
+      },
+      "catch_rate": 45,
+      "base_exp": 240,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_SLOW",
+      "egg_groups": [
+        "EGG_DRAGON",
+        "EGG_HUMANSHAPE"
+      ],
+      "evolution": null,
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_SERPENT",
+      "footprint_species": "EKANS",
+      "cry": {
+        "cry": "CRY_EKANS",
+        "pitch": -16,
+        "length": 176
+      },
+      "shiny_rgb5": [
+        [
+          14,
+          28,
+          24
+        ],
+        [
+          5,
+          10,
+          13
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "WRAP"
+        ],
+        [
+          1,
+          "LEER"
+        ],
+        [
+          1,
+          "DRAGON_RAGE"
+        ],
+        [
+          1,
+          "DEFENSE_CURL"
+        ],
+        [
+          11,
+          "FOCUS_ENERGY"
+        ],
+        [
+          15,
+          "BIND"
+        ],
+        [
+          19,
+          "TWISTER"
+        ],
+        [
+          24,
+          "SLAM"
+        ],
+        [
+          29,
+          "GLARE"
+        ],
+        [
+          34,
+          "DRAGONBREATH"
+        ],
+        [
+          39,
+          "VITAL_THROW"
+        ],
+        [
+          44,
+          "ROLLOUT"
+        ],
+        [
+          49,
+          "SUBMISSION"
+        ],
+        [
+          54,
+          "ENDURE"
+        ],
+        [
+          59,
+          "OUTRAGE"
+        ],
+        [
+          66,
+          "REVERSAL"
+        ]
+      ],
+      "tmhm_moves": [
+        "DRAGONBREATH",
+        "ROCK_SMASH",
+        "STRENGTH",
+        "IRON_TAIL",
+        "HEADBUTT",
+        "ENDURE",
+        "PROTECT",
+        "REST"
+      ],
+      "egg_moves": [
+        "COUNTER",
+        "CRUNCH",
+        "SCREECH"
+      ]
+    }
+  ]
+}

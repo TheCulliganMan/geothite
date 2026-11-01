@@ -1,0 +1,217 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_270",
+  "result": "pass",
+  "manifest_sha256": "afb03dacdc42ae1e98d1c44f4b77199bd4ecd82db1b29480d70354757d8b0579",
+  "bank_sha256": "4929e20b9af78f7c19fc9dd4f7645ff84da21993eab496a888d8d554a930b976",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f063/knotitan.overworld.imagegen-v5-tall-face.png": "6bb341233fd0f3b7e021f008bc5b83fd6058d5dde936056deb17a42ef39f5e33",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f063/knotitan.overworld.imagegen-v2-native-face.png": "27384c12b9894301c921b52f07eb06fe120f7a218987ca427b811fc1cdfba74f",
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f063/knotitan.overworld.imagegen-v4-profile-cheek.png": "65cf0b0448fd81c18c8ad99af0182c7f8d0c91f49326527bf7eea9a15b117b73"
+  },
+  "canonical_eye_form": "Two isolated actual black pupil dots south and one isolated actual black pupil west; source eye components verified in all four nonrear poses.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            6,
+            7
+          ],
+          "source_sample": [
+            219,
+            201
+          ],
+          "source_component": [
+            192,
+            187,
+            30,
+            30
+          ],
+          "component_pixels": 900,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            0,
+            0,
+            0,
+            253
+          ]
+        },
+        {
+          "native": [
+            8,
+            7
+          ],
+          "source_sample": [
+            290,
+            201
+          ],
+          "source_component": [
+            287,
+            187,
+            30,
+            30
+          ],
+          "component_pixels": 900,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            7,
+            5,
+            2,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            6,
+            7
+          ],
+          "source_sample": [
+            1213,
+            212
+          ],
+          "source_component": [
+            1191,
+            188,
+            28,
+            28
+          ],
+          "component_pixels": 780,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            5,
+            3,
+            1,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            6,
+            7
+          ],
+          "source_sample": [
+            219,
+            644
+          ],
+          "source_component": [
+            192,
+            628,
+            30,
+            31
+          ],
+          "component_pixels": 930,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            3,
+            2,
+            0,
+            253
+          ]
+        },
+        {
+          "native": [
+            8,
+            7
+          ],
+          "source_sample": [
+            290,
+            644
+          ],
+          "source_component": [
+            287,
+            628,
+            30,
+            31
+          ],
+          "component_pixels": 930,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            7,
+            5,
+            2,
+            253
+          ]
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "native": [
+            6,
+            7
+          ],
+          "source_sample": [
+            1213,
+            654
+          ],
+          "source_component": [
+            1189,
+            632,
+            28,
+            29
+          ],
+          "component_pixels": 812,
+          "native_neighbors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source_rgba": [
+            3,
+            2,
+            1,
+            253
+          ]
+        }
+      ]
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "notes": "Massive wound twine-ball body, two closed loop arms, two feet, horned braided head and stopper-knot tail. Both true rear heads plain with former corner notches removed in source. All four actual pupils isolated; two south/north rope holes and one near west rope hole remain actual source alpha0, separately proven in all six poses. Shared14 fit, equal531x441 windows, source-only cheek height refinement and crop registration, no native painting."
+  }
+}

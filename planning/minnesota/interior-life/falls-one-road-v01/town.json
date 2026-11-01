@@ -1,0 +1,690 @@
+{
+  "id": "MnInternationalFalls",
+  "name": "INTERNATIONAL FALLS",
+  "dimensions_metatiles": [
+    16,
+    14
+  ],
+  "reference_anchor_percent": [
+    46,
+    13
+  ],
+  "role": "town",
+  "tileset": "johto_modern",
+  "composition": "A plowed border town with a public clinic/ranger desk, winter supplies, weather notebook and neighborly cold-weather checks.",
+  "ports": [
+    {
+      "route": "MN_R17",
+      "side": "S",
+      "gate_metatile": [
+        10,
+        12
+      ],
+      "landing_metatile": [
+        10,
+        10
+      ]
+    }
+  ],
+  "interiors": [
+    {
+      "id": "MnInternationalFallsPokecenter1F",
+      "native_constant": "MN_INTERNATIONAL_FALLS_POKECENTER_1F",
+      "kind": "pokecenter",
+      "dimensions_metatiles": [
+        5,
+        5
+      ],
+      "source_behavior": "canonical free HP/PP/status care, PC and blackout recovery",
+      "purpose": "Free winter care and the actual SQ03 ranger check-in and circuit reporting desk.",
+      "template": "CherrygrovePokecenter1F",
+      "tileset": "pokecenter",
+      "border_block": 0,
+      "rows": [
+        "01 02 03 13 08",
+        "05 06 07 04 0c",
+        "04 04 04 2e 2f",
+        "04 04 04 2e 2f",
+        "04 11 27 04 04"
+      ],
+      "passive_arrival": {
+        "index": 3,
+        "tile": [
+          3,
+          8
+        ],
+        "collision": "FLOOR"
+      },
+      "exits": [
+        {
+          "index": 1,
+          "tile": [
+            3,
+            9
+          ],
+          "target": "MnInternationalFalls",
+          "target_warp": 2
+        },
+        {
+          "index": 2,
+          "tile": [
+            4,
+            9
+          ],
+          "target": "MnInternationalFalls",
+          "target_warp": 2
+        }
+      ],
+      "pc": {
+        "tile": [
+          9,
+          1
+        ],
+        "approach": [
+          9,
+          2
+        ]
+      },
+      "residents": [
+        {
+          "id": "MN_FALLS_NURSE",
+          "sprite": "SPRITE_NURSE",
+          "tile": [
+            3,
+            1
+          ],
+          "facing": "south",
+          "lines": [
+            "Come in and warm",
+            "up. Your partners",
+            "can rest here."
+          ],
+          "service": "heal_party",
+          "approach": [
+            3,
+            3
+          ],
+          "counter_tile": [
+            3,
+            2
+          ]
+        },
+        {
+          "id": "MN_FALLS_RANGER",
+          "sprite": "SPRITE_OFFICER",
+          "tile": [
+            2,
+            5
+          ],
+          "facing": "east",
+          "lines": [
+            "We keep a route",
+            "notebook here.",
+            "A check-in means",
+            "someone expects",
+            "you home."
+          ],
+          "approach": [
+            2,
+            6
+          ]
+        },
+        {
+          "id": "MN_FALLS_CLINIC_NEIGHBOR",
+          "sprite": "SPRITE_TEACHER",
+          "tile": [
+            1,
+            8
+          ],
+          "facing": "north",
+          "lines": [
+            "Dad calls this",
+            "cold weather.",
+            "Grandma calls it",
+            "good soup weather."
+          ],
+          "approach": [
+            1,
+            7
+          ]
+        }
+      ],
+      "signs": [],
+      "status": "Published: actual residents, services, carpets and native 2D cameras verified; see interior-life/INTERNATIONAL-FALLS.md.",
+      "viewpoints": [
+        {
+          "id": "arrival",
+          "tile": [
+            3,
+            8
+          ]
+        },
+        {
+          "id": "nurse",
+          "tile": [
+            3,
+            3
+          ]
+        },
+        {
+          "id": "ranger",
+          "tile": [
+            2,
+            6
+          ]
+        },
+        {
+          "id": "pc",
+          "tile": [
+            9,
+            2
+          ]
+        }
+      ],
+      "clear_arrival": [
+        3,
+        8
+      ]
+    },
+    {
+      "id": "MnInternationalFallsMart",
+      "native_constant": "MN_INTERNATIONAL_FALLS_MART",
+      "kind": "mart",
+      "dimensions_metatiles": [
+        6,
+        4
+      ],
+      "source_behavior": "canonical stocked clerk, money deduction and inventory",
+      "purpose": "A winter-trail outfitter, shared supply shelf and ordinary priced native shop.",
+      "template": "CherrygroveMart",
+      "tileset": "mart",
+      "border_block": 0,
+      "rows": [
+        "14 27 14 13 13 13",
+        "2b 22 2b 2b 2b 2b",
+        "15 29 13 13 13 28",
+        "2b 2a 2b 2b 2b 23"
+      ],
+      "passive_arrival": {
+        "index": 3,
+        "tile": [
+          3,
+          6
+        ]
+      },
+      "exits": [
+        {
+          "index": 1,
+          "tile": [
+            2,
+            7
+          ],
+          "target": "MnInternationalFalls",
+          "target_warp": 4
+        },
+        {
+          "index": 2,
+          "tile": [
+            3,
+            7
+          ],
+          "target": "MnInternationalFalls",
+          "target_warp": 4
+        }
+      ],
+      "residents": [
+        {
+          "id": "MN_FALLS_CLERK",
+          "sprite": "SPRITE_CLERK",
+          "tile": [
+            1,
+            3
+          ],
+          "facing": "east",
+          "lines": [
+            "Supplies for the",
+            "prairie trail.",
+            "Tell the clinic if",
+            "the garden crew",
+            "needs a hand."
+          ],
+          "approach": [
+            3,
+            3
+          ],
+          "service": "pokemart",
+          "counter_tile": [
+            2,
+            3
+          ],
+          "stock": [
+            "ULTRA_BALL",
+            "HYPER_POTION",
+            "FULL_HEAL",
+            "ICE_HEAL",
+            "ESCAPE_ROPE",
+            "MAX_REPEL"
+          ]
+        },
+        {
+          "id": "MN_FALLS_SHOP_NEIGHBOR",
+          "sprite": "SPRITE_COOLTRAINER_M",
+          "tile": [
+            7,
+            6
+          ],
+          "facing": "north",
+          "lines": [
+            "I buy the spare",
+            "mittens first.",
+            "My brother always",
+            "forgets his pair."
+          ],
+          "approach": [
+            8,
+            6
+          ]
+        }
+      ],
+      "signs": [],
+      "status": "Published: actual residents, services, carpets and native 2D cameras verified; see interior-life/INTERNATIONAL-FALLS.md.",
+      "viewpoints": [
+        {
+          "id": "arrival",
+          "tile": [
+            3,
+            6
+          ]
+        },
+        {
+          "id": "counter",
+          "tile": [
+            3,
+            3
+          ]
+        },
+        {
+          "id": "neighbor",
+          "tile": [
+            8,
+            6
+          ]
+        }
+      ]
+    }
+  ],
+  "walkable_destinations": [
+    "each port landing",
+    "every visible exterior door",
+    "central square",
+    "local story NPC"
+  ],
+  "door_contract": "Complete native JohtoModern clinic/Mart assemblies, safe passive exterior returns and paired native carpets. Actual door returns, both roads and all room services pass production input; see interior-life/INTERNATIONAL-FALLS.md.",
+  "compiled_tileset": "mn_international_falls",
+  "native_constant": "MN_INTERNATIONAL_FALLS",
+  "status": "Published in minnesota-international-falls-v02: four production controller cases, thirteen preserved native 2D frames, strict preservation and all audio checks pass. Regional 3D acceptance remains open; see interior-life/INTERNATIONAL-FALLS.md.",
+  "doors": [
+    {
+      "id": "MN_FALLS_CLINIC_DOOR",
+      "warp_index": 1,
+      "return_warp_index": 2,
+      "tile": [
+        9,
+        7
+      ],
+      "target": "MnInternationalFallsPokecenter1F",
+      "target_warp": 3,
+      "return_tile": [
+        9,
+        8
+      ],
+      "arrival_tile": [
+        3,
+        8
+      ],
+      "collision": "DOOR"
+    },
+    {
+      "id": "MN_FALLS_MART_DOOR",
+      "warp_index": 3,
+      "return_warp_index": 4,
+      "tile": [
+        23,
+        9
+      ],
+      "target": "MnInternationalFallsMart",
+      "target_warp": 3,
+      "return_tile": [
+        23,
+        10
+      ],
+      "arrival_tile": [
+        3,
+        6
+      ],
+      "collision": "DOOR"
+    }
+  ],
+  "residents": [
+    {
+      "id": "MN_FALLS_PLOW_DRIVER",
+      "sprite": "SPRITE_POKEFAN_M",
+      "tile": [
+        15,
+        15
+      ],
+      "approach": [
+        15,
+        14
+      ],
+      "facing": "north",
+      "lines": [
+        "The plow comes",
+        "before daylight.",
+        "We leave the last",
+        "driveway for JUNE.",
+        "She brings cocoa."
+      ]
+    },
+    {
+      "id": "MN_FALLS_LIBRARIAN",
+      "sprite": "SPRITE_TEACHER",
+      "tile": [
+        12,
+        20
+      ],
+      "approach": [
+        13,
+        20
+      ],
+      "facing": "east",
+      "lines": [
+        "Our book drop has",
+        "a wool scarf.",
+        "The books do not",
+        "need it. I do."
+      ]
+    },
+    {
+      "id": "MN_FALLS_THERMOMETER_KEEPER",
+      "sprite": "SPRITE_FISHER",
+      "tile": [
+        7,
+        17
+      ],
+      "approach": [
+        8,
+        17
+      ],
+      "facing": "east",
+      "lines": [
+        "The old",
+        "thermometer",
+        "lost its minus",
+        "sign.",
+        "We still know when",
+        "to bring soup."
+      ]
+    },
+    {
+      "id": "MN_FALLS_NIGHT_SKIER",
+      "sprite": "SPRITE_COOLTRAINER_F",
+      "tile": [
+        24,
+        17
+      ],
+      "approach": [
+        23,
+        17
+      ],
+      "facing": "west",
+      "lines": [
+        "My sister keeps",
+        "dry socks at the",
+        "RAINY RIVER hut.",
+        "Take the long road",
+        "through BEMIDJI",
+        "and ELY. She says",
+        "hurry is no reason",
+        "to skip a",
+        "check-in."
+      ]
+    }
+  ],
+  "signs": [
+    {
+      "id": "MN_FALLS_WEATHER_BOARD",
+      "tile": [
+        6,
+        12
+      ],
+      "lines": [
+        "WEATHER NOTEBOOK",
+        "Record the wind,",
+        "then your return.",
+        "Cold is a fact.",
+        "Going alone is a",
+        "choice. Leave",
+        "word."
+      ],
+      "approach": [
+        7,
+        12
+      ]
+    },
+    {
+      "id": "MN_FALLS_WELCOME",
+      "tile": [
+        18,
+        22
+      ],
+      "lines": [
+        "INTERNATIONAL",
+        "FALLS",
+        "Warm doors.",
+        "Long winters.",
+        "Tell a neighbor",
+        "when you get home."
+      ],
+      "approach": [
+        19,
+        22
+      ]
+    },
+    {
+      "id": "MN_FALLS_TRAIL_NOTICE",
+      "tile": [
+        26,
+        12
+      ],
+      "lines": [
+        "BORDER CIRCUIT",
+        "South to BEMIDJI,",
+        "then through ELY.",
+        "Check in here for",
+        "the RAINY RIVER",
+        "and VOYAGEURS run."
+      ],
+      "approach": [
+        27,
+        12
+      ]
+    }
+  ],
+  "viewpoints": [
+    {
+      "id": "clinic-street",
+      "tile": [
+        9,
+        8
+      ]
+    },
+    {
+      "id": "winter-supplies",
+      "tile": [
+        23,
+        10
+      ]
+    },
+    {
+      "id": "weather-notebook",
+      "tile": [
+        7,
+        12
+      ]
+    },
+    {
+      "id": "plow-court",
+      "tile": [
+        16,
+        14
+      ]
+    },
+    {
+      "id": "southern-road",
+      "tile": [
+        20,
+        25
+      ]
+    },
+    {
+      "id": "wooded-court",
+      "tile": [
+        26,
+        14
+      ]
+    }
+  ],
+  "quest_contract": {
+    "id": "SQ03",
+    "ranger": "MN_FALLS_RANGER",
+    "report": "EVENT_MN_BORDER_REPORT",
+    "arrived": "EVENT_MN_FALLS_VOYAGEURS_ARRIVAL",
+    "rewarded": "EVENT_MN_BORDER_CIRCUIT_REWARDED",
+    "reward_item": "PP_UP",
+    "reward_quantity": 1,
+    "check_in_badge": "ENGINE_GLACIERBADGE",
+    "outlet_requires": [
+      "BADGE_1",
+      "BADGE_2",
+      "BADGE_3",
+      "BADGE_4",
+      "BADGE_5",
+      "BADGE_6",
+      "BADGE_7",
+      "BADGE_8",
+      "EVENT_MN_BORDER_REPORT",
+      "EVENT_MN_LIGHTHOUSE_SIGNAL"
+    ],
+    "arrival_map": "MnBoundaryWaters",
+    "arrival_tiles": [
+      [
+        0,
+        24
+      ],
+      [
+        0,
+        25
+      ]
+    ],
+    "arrival_facing": "RIGHT",
+    "denied_lines": [
+      "The winter loop",
+      "needs eight",
+      "BADGES,",
+      "our ranger",
+      "check-in",
+      "and harbor signal."
+    ],
+    "register_lines": [
+      "I write down",
+      "names,",
+      "not just a number.",
+      "Check in for the",
+      "border loop?"
+    ],
+    "registered_lines": [
+      "You are on our",
+      "list.",
+      "Bring eight BADGES",
+      "and harbor signal.",
+      "Reach the far",
+      "camp,",
+      "then report here."
+    ],
+    "waiting_lines": [
+      "The far camp is",
+      "still in your",
+      "route",
+      "notebook. Return",
+      "after the",
+      "crossing."
+    ],
+    "complete_lines": [
+      "You made the loop.",
+      "That is good news",
+      "for everyone who",
+      "waited up for you."
+    ],
+    "reward_lines": [
+      "Take this PP UP.",
+      "Keep one more move",
+      "for the way home."
+    ],
+    "full_lines": [
+      "Your Pack is full.",
+      "The PP UP can",
+      "wait.",
+      "I keep my",
+      "promises."
+    ],
+    "repeat_lines": [
+      "Your name is here.",
+      "Your neighbors",
+      "know",
+      "you made it home."
+    ],
+    "badge_lines": [
+      "Earn the seventh",
+      "BADGE before the",
+      "ranger check-in."
+    ],
+    "decline_lines": [
+      "No hurry. Rest up.",
+      "The notebook stays",
+      "right here."
+    ],
+    "arrival_mode": "MAPCALLBACK_NEWMAP",
+    "checkpoint_map": "MnRainyRiverIcefields",
+    "checkpoint_tiles": [
+      [
+        61,
+        44
+      ],
+      [
+        61,
+        45
+      ]
+    ],
+    "warden_tile": [
+      60,
+      44
+    ],
+    "warden_approach": [
+      60,
+      45
+    ],
+    "warden_lines": [
+      "Checking the wind?",
+      "Leave your name",
+      "with the FALLS",
+      "ranger first.",
+      "All eight BADGES",
+      "and harbor signal",
+      "for the east loop.",
+      "Coming home? Our",
+      "lamp stays lit."
+    ]
+  },
+  "compact_rebase": "One physical R17 southern road; the old direct icefield shortcut is geographically inconsistent and visibly closed. The guarded circuit uses the existing road through Bemidji/Ely and the actual Rainy River eastern outlet."
+}

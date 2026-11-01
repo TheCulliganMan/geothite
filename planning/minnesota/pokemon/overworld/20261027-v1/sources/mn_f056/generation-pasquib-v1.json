@@ -1,0 +1,14 @@
+{
+  "name": "pasquib",
+  "version": "v1",
+  "folder": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f056",
+  "prompt": "Create ONE original creature as genuine native16x16 Game Boy Color Crystal-style OVERWORLD walking/hover sheet. Attached genuine16pixel styleboard ONLY for sparse cluster density and slightly overhead map camera, never copy its creatures.1536x1024alpha0sheet,3columns x2rows512pxcells: SOUTH/NORTH/WEST idle top; SOUTH/NORTH/WEST step bottom. One worldscale and head/torsoanchor acrossall6, onlyone rootprong orcapehem1logicalpixel shifts in step. Fullbodymapposes, trueNORTH plain back ofhood/crown NOface/pupils; pureWEST one nearpupil only. Never3/4battlepose/croppedbody or detailed miniature. Eachcreature sourceextent~390-420px, safely withinowncell, max14x14logicalopaque in16x16 with1pixeltransparentborder. Three EXACT flatinks below+alpha0outside; NOwhitepaint, gradients/glow/shadows/glints/foreheadgem/speckles/text/grid. Strongblackcontours30-36sourcepx, sparsebroadpetalclusters. CRITICAL canonical eyeform: FACE is BLACK VOID#000000 ink3; TWO actual LIGHTPURPLE ink1 pupilblocks32-36sourcepxsquare SOUTH, ONE LIGHTPURPLE pupil WEST. Eachpupil enclosed by full32-36px BLACK facebufferall4sides, isolated from lightpurplehood/petals. No blackpupils or lightface, no thirdforeheadeye/gem. Broad blackfaceinterior6logicalpxwide4high, separateactual2lightdots. PASQUIB baby frost-insulated PASQUEFLOWER BUD: compact closedflower with THREE primaryfoldedpetals, one tallpointedcentralhood andtwofoldedsidepetalcheeks, BLACKVOIDface visible betweenfrontfolds. Exactly THREE short darkpurple ROOTPRONGS below, no arms/hands/animalears/tail. One pale-lavender frostcap at tip, broadsidepetals lavenderwithdarkpurple underside, no fineveins. Rear simple closed3foldbud, zeroeyes. Babyfit12. Exactpalette lightlavender#CEADEF RGB55530393, deeppurple#5A5294 RGB55518763, black#000000 RGB5550. PUPILS use lightlavender, frostwhite mapslightlavender, never transparency onbody.  Keep light pupils truly distinct in black face and complete canonical flower anatomy in each ofsixfullbodies.\n",
+  "refs": [
+    "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F056/mn-119-pasquib-v1.front.png",
+    "/Users/ryanculligan/GitHub/geothite/target/minnesota-pokemon/native/MN_F056/mn-119-pasquib-v1.back.png",
+    "/Users/ryanculligan/GitHub/geothite/planning/minnesota/pokemon/overworld/20261027-v1/references/native-pack-16px/native-six-frame-style-board.8x.png"
+  ],
+  "default_path": "/Users/ryanculligan/.codex/generated_images/01a17f9b-beff-7771-977d-2d3d7b14de43/exec-9503f4d5-b651-4322-8be7-55e017d37639.png",
+  "sha256": "cb33fdeb4445ab1192d164facc30e59c0906932ae5c56b7facee7b6b30027928",
+  "tool": "built-in image_gen"
+}

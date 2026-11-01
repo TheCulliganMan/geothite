@@ -1,0 +1,2566 @@
+{
+  "schema_version": 1,
+  "status": "DETACHED WEST-ENTRY CANDIDATE; supersedes the seven-cell north opening",
+  "parent_pack_sha256": "ebea77ccb9b9dbe54aa5101e32590c1b075ed8130f6e7fcfe2d8c8451dab11d8",
+  "changes": [
+    {
+      "map": "MnR11C00R00",
+      "native_module_sha256": "6a6ec704034d19bc369102b3f20cd29e858750f9539e0e652b9912299acf25e9",
+      "dimensions_metatiles": [
+        32,
+        24
+      ],
+      "cells": [
+        {
+          "metatile": [
+            20,
+            0
+          ],
+          "before": "01",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            24,
+            0
+          ],
+          "before": "30",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            25,
+            0
+          ],
+          "before": "31",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            26,
+            0
+          ],
+          "before": "31",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            27,
+            0
+          ],
+          "before": "31",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            28,
+            0
+          ],
+          "before": "31",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            29,
+            0
+          ],
+          "before": "31",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            30,
+            0
+          ],
+          "before": "31",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            31,
+            0
+          ],
+          "before": "31",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            24,
+            1
+          ],
+          "before": "58",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            25,
+            1
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            26,
+            1
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            27,
+            1
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            28,
+            1
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            29,
+            1
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            30,
+            1
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            31,
+            1
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            24,
+            2
+          ],
+          "before": "58",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            25,
+            2
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            26,
+            2
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            27,
+            2
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            28,
+            2
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            29,
+            2
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            30,
+            2
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            31,
+            2
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            21,
+            3
+          ],
+          "before": "05",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            22,
+            3
+          ],
+          "before": "05",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            23,
+            3
+          ],
+          "before": "05",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            24,
+            3
+          ],
+          "before": "58",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            25,
+            3
+          ],
+          "before": "35",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            26,
+            3
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            27,
+            3
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            28,
+            3
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            29,
+            3
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            30,
+            3
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            31,
+            3
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            24,
+            4
+          ],
+          "before": "58",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            25,
+            4
+          ],
+          "before": "35",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            26,
+            4
+          ],
+          "before": "35",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            27,
+            4
+          ],
+          "before": "35",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            28,
+            4
+          ],
+          "before": "35",
+          "after": "03"
+        },
+        {
+          "metatile": [
+            29,
+            4
+          ],
+          "before": "35",
+          "after": "03"
+        },
+        {
+          "metatile": [
+            30,
+            4
+          ],
+          "before": "35",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            31,
+            4
+          ],
+          "before": "35",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            24,
+            5
+          ],
+          "before": "58",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            25,
+            5
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            26,
+            5
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            27,
+            5
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            28,
+            5
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            29,
+            5
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            30,
+            5
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            31,
+            5
+          ],
+          "before": "35",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            24,
+            6
+          ],
+          "before": "58",
+          "after": "54"
+        },
+        {
+          "metatile": [
+            25,
+            6
+          ],
+          "before": "35",
+          "after": "76"
+        },
+        {
+          "metatile": [
+            26,
+            6
+          ],
+          "before": "35",
+          "after": "55"
+        },
+        {
+          "metatile": [
+            27,
+            6
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            28,
+            6
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            29,
+            6
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            30,
+            6
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            31,
+            6
+          ],
+          "before": "35",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            26,
+            7
+          ],
+          "before": "35",
+          "after": "7a"
+        },
+        {
+          "metatile": [
+            27,
+            7
+          ],
+          "before": "35",
+          "after": "76"
+        },
+        {
+          "metatile": [
+            28,
+            7
+          ],
+          "before": "35",
+          "after": "76"
+        },
+        {
+          "metatile": [
+            29,
+            7
+          ],
+          "before": "35",
+          "after": "76"
+        },
+        {
+          "metatile": [
+            30,
+            7
+          ],
+          "before": "35",
+          "after": "76"
+        },
+        {
+          "metatile": [
+            31,
+            7
+          ],
+          "before": "35",
+          "after": "76"
+        }
+      ]
+    },
+    {
+      "map": "MnR11C01R00",
+      "native_module_sha256": "a006465783cb94c54c5b1c3bc3752c27c3caa77d64a1d267d70614d3933cb848",
+      "dimensions_metatiles": [
+        24,
+        24
+      ],
+      "cells": [
+        {
+          "metatile": [
+            0,
+            0
+          ],
+          "before": "31",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            1,
+            0
+          ],
+          "before": "31",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            2,
+            0
+          ],
+          "before": "31",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            3,
+            0
+          ],
+          "before": "31",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            4,
+            0
+          ],
+          "before": "31",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            5,
+            0
+          ],
+          "before": "31",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            6,
+            0
+          ],
+          "before": "31",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            7,
+            0
+          ],
+          "before": "31",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            8,
+            0
+          ],
+          "before": "31",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            9,
+            0
+          ],
+          "before": "31",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            10,
+            0
+          ],
+          "before": "31",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            11,
+            0
+          ],
+          "before": "31",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            12,
+            0
+          ],
+          "before": "31",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            13,
+            0
+          ],
+          "before": "31",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            14,
+            0
+          ],
+          "before": "31",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            15,
+            0
+          ],
+          "before": "31",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            16,
+            0
+          ],
+          "before": "31",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            17,
+            0
+          ],
+          "before": "31",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            18,
+            0
+          ],
+          "before": "31",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            19,
+            0
+          ],
+          "before": "31",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            20,
+            0
+          ],
+          "before": "31",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            21,
+            0
+          ],
+          "before": "31",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            22,
+            0
+          ],
+          "before": "31",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            23,
+            0
+          ],
+          "before": "32",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            0,
+            1
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            1,
+            1
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            2,
+            1
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            3,
+            1
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            4,
+            1
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            5,
+            1
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            6,
+            1
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            7,
+            1
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            8,
+            1
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            9,
+            1
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            10,
+            1
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            11,
+            1
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            12,
+            1
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            13,
+            1
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            14,
+            1
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            15,
+            1
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            16,
+            1
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            17,
+            1
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            18,
+            1
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            19,
+            1
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            20,
+            1
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            21,
+            1
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            22,
+            1
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            23,
+            1
+          ],
+          "before": "36",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            0,
+            2
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            1,
+            2
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            2,
+            2
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            3,
+            2
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            4,
+            2
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            5,
+            2
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            6,
+            2
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            7,
+            2
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            8,
+            2
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            9,
+            2
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            10,
+            2
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            11,
+            2
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            12,
+            2
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            13,
+            2
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            14,
+            2
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            15,
+            2
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            16,
+            2
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            17,
+            2
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            18,
+            2
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            19,
+            2
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            20,
+            2
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            21,
+            2
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            22,
+            2
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            23,
+            2
+          ],
+          "before": "36",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            0,
+            3
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            1,
+            3
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            2,
+            3
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            3,
+            3
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            4,
+            3
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            5,
+            3
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            6,
+            3
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            7,
+            3
+          ],
+          "before": "35",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            8,
+            3
+          ],
+          "before": "35",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            9,
+            3
+          ],
+          "before": "35",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            10,
+            3
+          ],
+          "before": "35",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            11,
+            3
+          ],
+          "before": "35",
+          "after": "03"
+        },
+        {
+          "metatile": [
+            12,
+            3
+          ],
+          "before": "35",
+          "after": "03"
+        },
+        {
+          "metatile": [
+            13,
+            3
+          ],
+          "before": "35",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            14,
+            3
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            15,
+            3
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            16,
+            3
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            17,
+            3
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            18,
+            3
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            19,
+            3
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            20,
+            3
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            21,
+            3
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            22,
+            3
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            23,
+            3
+          ],
+          "before": "36",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            0,
+            4
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            1,
+            4
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            2,
+            4
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            3,
+            4
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            4,
+            4
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            5,
+            4
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            6,
+            4
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            7,
+            4
+          ],
+          "before": "35",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            8,
+            4
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            9,
+            4
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            10,
+            4
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            11,
+            4
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            12,
+            4
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            13,
+            4
+          ],
+          "before": "35",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            14,
+            4
+          ],
+          "before": "35",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            15,
+            4
+          ],
+          "before": "35",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            16,
+            4
+          ],
+          "before": "35",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            17,
+            4
+          ],
+          "before": "35",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            18,
+            4
+          ],
+          "before": "35",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            19,
+            4
+          ],
+          "before": "35",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            20,
+            4
+          ],
+          "before": "35",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            21,
+            4
+          ],
+          "before": "35",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            22,
+            4
+          ],
+          "before": "35",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            23,
+            4
+          ],
+          "before": "36",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            0,
+            5
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            1,
+            5
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            2,
+            5
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            3,
+            5
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            4,
+            5
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            5,
+            5
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            6,
+            5
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            7,
+            5
+          ],
+          "before": "35",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            8,
+            5
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            9,
+            5
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            10,
+            5
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            11,
+            5
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            12,
+            5
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            13,
+            5
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            14,
+            5
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            15,
+            5
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            16,
+            5
+          ],
+          "before": "35",
+          "after": "02"
+        },
+        {
+          "metatile": [
+            17,
+            5
+          ],
+          "before": "35",
+          "after": "02"
+        },
+        {
+          "metatile": [
+            18,
+            5
+          ],
+          "before": "35",
+          "after": "02"
+        },
+        {
+          "metatile": [
+            19,
+            5
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            20,
+            5
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            21,
+            5
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            22,
+            5
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            23,
+            5
+          ],
+          "before": "36",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            0,
+            6
+          ],
+          "before": "35",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            1,
+            6
+          ],
+          "before": "35",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            2,
+            6
+          ],
+          "before": "35",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            3,
+            6
+          ],
+          "before": "35",
+          "after": "03"
+        },
+        {
+          "metatile": [
+            4,
+            6
+          ],
+          "before": "35",
+          "after": "03"
+        },
+        {
+          "metatile": [
+            5,
+            6
+          ],
+          "before": "35",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            6,
+            6
+          ],
+          "before": "35",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            7,
+            6
+          ],
+          "before": "35",
+          "after": "01"
+        },
+        {
+          "metatile": [
+            8,
+            6
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            9,
+            6
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            10,
+            6
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            11,
+            6
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            12,
+            6
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            13,
+            6
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            14,
+            6
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            15,
+            6
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            16,
+            6
+          ],
+          "before": "35",
+          "after": "02"
+        },
+        {
+          "metatile": [
+            17,
+            6
+          ],
+          "before": "35",
+          "after": "02"
+        },
+        {
+          "metatile": [
+            18,
+            6
+          ],
+          "before": "35",
+          "after": "02"
+        },
+        {
+          "metatile": [
+            19,
+            6
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            20,
+            6
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            21,
+            6
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            22,
+            6
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            23,
+            6
+          ],
+          "before": "36",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            0,
+            7
+          ],
+          "before": "35",
+          "after": "76"
+        },
+        {
+          "metatile": [
+            1,
+            7
+          ],
+          "before": "35",
+          "after": "55"
+        },
+        {
+          "metatile": [
+            2,
+            7
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            3,
+            7
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            4,
+            7
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            5,
+            7
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            6,
+            7
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            7,
+            7
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            8,
+            7
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            9,
+            7
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            10,
+            7
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            11,
+            7
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            12,
+            7
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            13,
+            7
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            14,
+            7
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            15,
+            7
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            16,
+            7
+          ],
+          "before": "35",
+          "after": "48"
+        },
+        {
+          "metatile": [
+            17,
+            7
+          ],
+          "before": "35",
+          "after": "49"
+        },
+        {
+          "metatile": [
+            18,
+            7
+          ],
+          "before": "35",
+          "after": "4a"
+        },
+        {
+          "metatile": [
+            19,
+            7
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            20,
+            7
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            21,
+            7
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            22,
+            7
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            23,
+            7
+          ],
+          "before": "36",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            1,
+            8
+          ],
+          "before": "35",
+          "after": "7a"
+        },
+        {
+          "metatile": [
+            2,
+            8
+          ],
+          "before": "35",
+          "after": "76"
+        },
+        {
+          "metatile": [
+            3,
+            8
+          ],
+          "before": "35",
+          "after": "76"
+        },
+        {
+          "metatile": [
+            4,
+            8
+          ],
+          "before": "35",
+          "after": "76"
+        },
+        {
+          "metatile": [
+            5,
+            8
+          ],
+          "before": "35",
+          "after": "76"
+        },
+        {
+          "metatile": [
+            6,
+            8
+          ],
+          "before": "35",
+          "after": "76"
+        },
+        {
+          "metatile": [
+            7,
+            8
+          ],
+          "before": "35",
+          "after": "76"
+        },
+        {
+          "metatile": [
+            8,
+            8
+          ],
+          "before": "35",
+          "after": "76"
+        },
+        {
+          "metatile": [
+            9,
+            8
+          ],
+          "before": "35",
+          "after": "55"
+        },
+        {
+          "metatile": [
+            10,
+            8
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            11,
+            8
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            12,
+            8
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            13,
+            8
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            14,
+            8
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            15,
+            8
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            16,
+            8
+          ],
+          "before": "35",
+          "after": "54"
+        },
+        {
+          "metatile": [
+            17,
+            8
+          ],
+          "before": "35",
+          "after": "76"
+        },
+        {
+          "metatile": [
+            18,
+            8
+          ],
+          "before": "35",
+          "after": "76"
+        },
+        {
+          "metatile": [
+            19,
+            8
+          ],
+          "before": "35",
+          "after": "76"
+        },
+        {
+          "metatile": [
+            20,
+            8
+          ],
+          "before": "35",
+          "after": "76"
+        },
+        {
+          "metatile": [
+            21,
+            8
+          ],
+          "before": "35",
+          "after": "76"
+        },
+        {
+          "metatile": [
+            22,
+            8
+          ],
+          "before": "35",
+          "after": "76"
+        },
+        {
+          "metatile": [
+            23,
+            8
+          ],
+          "before": "36",
+          "after": "76"
+        },
+        {
+          "metatile": [
+            9,
+            9
+          ],
+          "before": "35",
+          "after": "59"
+        },
+        {
+          "metatile": [
+            10,
+            9
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            11,
+            9
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            12,
+            9
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            13,
+            9
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            14,
+            9
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            15,
+            9
+          ],
+          "before": "35",
+          "after": "05"
+        },
+        {
+          "metatile": [
+            16,
+            9
+          ],
+          "before": "35",
+          "after": "58"
+        },
+        {
+          "metatile": [
+            23,
+            9
+          ],
+          "before": "36",
+          "after": "35"
+        },
+        {
+          "metatile": [
+            9,
+            10
+          ],
+          "before": "35",
+          "after": "7a"
+        },
+        {
+          "metatile": [
+            10,
+            10
+          ],
+          "before": "35",
+          "after": "76"
+        },
+        {
+          "metatile": [
+            11,
+            10
+          ],
+          "before": "35",
+          "after": "76"
+        },
+        {
+          "metatile": [
+            12,
+            10
+          ],
+          "before": "35",
+          "after": "76"
+        },
+        {
+          "metatile": [
+            13,
+            10
+          ],
+          "before": "35",
+          "after": "76"
+        },
+        {
+          "metatile": [
+            14,
+            10
+          ],
+          "before": "35",
+          "after": "76"
+        },
+        {
+          "metatile": [
+            15,
+            10
+          ],
+          "before": "35",
+          "after": "76"
+        },
+        {
+          "metatile": [
+            16,
+            10
+          ],
+          "before": "35",
+          "after": "79"
+        },
+        {
+          "metatile": [
+            23,
+            10
+          ],
+          "before": "36",
+          "after": "35"
+        },
+        {
+          "metatile": [
+            23,
+            11
+          ],
+          "before": "36",
+          "after": "35"
+        },
+        {
+          "metatile": [
+            23,
+            12
+          ],
+          "before": "36",
+          "after": "35"
+        },
+        {
+          "metatile": [
+            23,
+            13
+          ],
+          "before": "36",
+          "after": "35"
+        },
+        {
+          "metatile": [
+            23,
+            14
+          ],
+          "before": "36",
+          "after": "35"
+        },
+        {
+          "metatile": [
+            23,
+            15
+          ],
+          "before": "36",
+          "after": "35"
+        },
+        {
+          "metatile": [
+            23,
+            16
+          ],
+          "before": "36",
+          "after": "35"
+        },
+        {
+          "metatile": [
+            23,
+            17
+          ],
+          "before": "36",
+          "after": "35"
+        }
+      ]
+    }
+  ],
+  "connection_replacements": [
+    {
+      "map": "MnR11C00R00",
+      "direction": "north",
+      "before": {
+        "target_map": "MnMaraisCedarApproach",
+        "offset": -8
+      },
+      "after": null
+    },
+    {
+      "map": "MnR11C01R00",
+      "direction": "east",
+      "before": null,
+      "after": {
+        "target_map": "MnGrandMarais",
+        "offset": 0
+      }
+    }
+  ],
+  "paired_town_ports": {
+    "foot": {
+      "r11": [
+        [
+          47,
+          8
+        ],
+        [
+          47,
+          9
+        ]
+      ],
+      "gm": [
+        [
+          0,
+          8
+        ],
+        [
+          0,
+          9
+        ]
+      ]
+    },
+    "water": {
+      "r11": [
+        [
+          47,
+          16
+        ],
+        [
+          47,
+          35
+        ]
+      ],
+      "gm": [
+        [
+          0,
+          16
+        ],
+        [
+          0,
+          35
+        ]
+      ]
+    }
+  },
+  "source_physical": {
+    "existing_trail_core": [
+      40,
+      6
+    ],
+    "town_edge_whole_core": [
+      111,
+      8
+    ],
+    "steps": 83,
+    "all_proposed_north_edges_closed": true,
+    "all_20_Superior_seam_lanes_water": true,
+    "all_original_events_actors_programs": true
+  },
+  "features": [
+    "Winding two-core-wide pine trail over a warm hand-drawn headland",
+    "Three mandatory grass saddles, subject to source minimum-grass check",
+    "Fenced actual-Superior overlook one short spur from the main path",
+    "All old falls, creeks, cabin and lower routes remain outside the new terminal footprint"
+  ],
+  "limitations": [
+    "Actual GM paired west water gate belongs to town author",
+    "Source crops not GPU/controller/clamp acceptance",
+    "Rebind exact native preimages to final town/art parent before publication"
+  ]
+}
