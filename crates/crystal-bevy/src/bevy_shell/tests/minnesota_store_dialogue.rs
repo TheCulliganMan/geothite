@@ -56,9 +56,8 @@ fn minnesota_store_customers_speak_and_release_input() {
             6,
             "MN_RC_SHOPPERText",
             &[
-                "A few POTIONS for\nthe prairie. My",
-                "partners are\nrested, so we are",
-                "ready to go!",
+                "POTIONS for the\nbluff trails. My",
+                "partners are\nready to go!",
             ],
         ),
         (

@@ -6,7 +6,7 @@ use crystal_core::world::movement::MovementMode;
 
 use crate::CrystalRuntime;
 
-const TARGET_HOSTED_HASH: &str = "2164f61b4d431999284bdab1584e2dda0b753d8944141a2c707de8bb7329aec8";
+const TARGET_HOSTED_HASH: &str = "e5c8e750080d98eceb3779ab058e5bb1b8a8679260e27cdeaf971b89b702693f";
 const RESTORED_CENTERS_MARKER: &str = "minnesota-native-center-restoration-v1";
 const RESIZED_CENTERS: &[&str] = &[
     "MnBemidjiPokecenter1F",

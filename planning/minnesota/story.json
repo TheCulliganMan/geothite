@@ -9583,19 +9583,27 @@
       "MnWinonaMart": {
         "MN_W_CUSTOMERText": [
           [
-            "An ANTIDOTE helps",
-            "on Driftless"
+            "My partner was",
+            "poisoned on"
           ],
           [
-            "Trail."
+            "Driftless Trail. I",
+            "always carry an"
+          ],
+          [
+            "ANTIDOTE now."
           ]
         ]
       },
       "MnRochesterMart": {
         "MN_RC_SHOPPERText": [
           [
-            "A few POTIONS help",
-            "on the prairie."
+            "POTIONS for the",
+            "bluff trails. My"
+          ],
+          [
+            "partners are",
+            "ready to go!"
           ]
         ]
       },
@@ -9672,8 +9680,15 @@
       "MnMankatoMart": {
         "MN_MK_SHOPPERText": [
           [
-            "A few POTIONS help",
-            "on the prairie."
+            "POTIONS for the",
+            "prairie, and room"
+          ],
+          [
+            "in my pack for the",
+            "BERRIES my"
+          ],
+          [
+            "neighbor gave me."
           ]
         ]
       },
@@ -10925,8 +10940,15 @@
         ],
         "MN_ST_CLOUD_MART_CUSTOMERText": [
           [
-            "REPELs are useful",
-            "on the pine roads."
+            "I use REPELs on",
+            "the pine road when"
+          ],
+          [
+            "I want to watch",
+            "the birds in"
+          ],
+          [
+            "peace."
           ]
         ]
       },
@@ -10962,11 +10984,15 @@
         ],
         "MN_BRAINERD_MART_CUSTOMERText": [
           [
-            "REPELs for roads.",
-            "BALLs for the"
+            "REPELs for the",
+            "road, and BALLS"
           ],
           [
-            "shore."
+            "for the shore. I",
+            "hope I left room"
+          ],
+          [
+            "for lunch!"
           ]
         ]
       },
@@ -11217,8 +11243,15 @@
         ],
         "MN_BEMIDJI_CUSTOMERText": [
           [
-            "Supply up before",
-            "the Itasca trail."
+            "Medicine for the",
+            "ITASCA trail, and"
+          ],
+          [
+            "a snack for my",
+            "partner. The snack"
+          ],
+          [
+            "was their idea."
           ]
         ]
       },
@@ -11358,8 +11391,16 @@
         ],
         "MN_GR_MART_CUSTOMERText": [
           [
-            "The road descends.",
-            "Pack for the cold."
+            "It gets cold on",
+            "the road down. I"
+          ],
+          [
+            "make sure my",
+            "partners have"
+          ],
+          [
+            "enough energy for",
+            "the walk back."
           ]
         ]
       },

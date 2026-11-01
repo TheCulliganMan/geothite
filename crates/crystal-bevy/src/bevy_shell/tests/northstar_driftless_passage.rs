@@ -125,6 +125,7 @@ fn voyageurs_cleft_controller_exits_and_reenters_aligned_mouths() {
     indoor_walk(&mut c, &runtime, (23, 18));
     indoor_walk(&mut c, &runtime, (5, 20));
     indoor_walk(&mut c, &runtime, (5, 21));
+    c.wait_frames(30).expect("settle the western cave exit");
     assert_eq!(map(&mut c), "MnR20C00R00");
     assert_eq!(tile(&mut c), (60, 34));
     for _ in 0..6 {
