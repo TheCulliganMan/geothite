@@ -204,8 +204,9 @@ fn header() -> String {
     )
 }
 fn footer() -> &'static str {
-    "<footer class=\"site-footer wrap\"><a class=\"footer-brand\" href=\"/pokedex/\">GEOTHITE <span>✦</span></a><p>REGIONAL POKÉDEX · #001–{{SPECIES_COUNT}}</p><small>Original fan-made creatures. Pokémon is a trademark of Nintendo / Creatures / GAME FREAK.</small><a href=\"#\">BACK TO TOP ↑</a></footer>"
+    include_str!("../../../../web-client/pokedex/footer.html").trim_end()
 }
+
 fn render(template: &str, fields: &[(&str, String)], base: &str) -> Result<String> {
     let mut html = template
         .replace("{{HEADER}}", &header())
